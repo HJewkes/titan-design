@@ -1,0 +1,4221 @@
+{
+  "entries": [
+    {
+      "composes": [
+        "Card",
+        "FilePathLabel",
+        "Pill",
+        "Typography"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/CoChangeChip.tsx",
+      "name": "CoChangeChip",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/ActiveWork/CoChangeChip.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-cochangechip--default",
+        "custom-activework-cochangechip--weak-pair"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Card",
+        "DataRow",
+        "DateTime",
+        "Eyebrow",
+        "FileActivityRow",
+        "FilePathLabel",
+        "Pill",
+        "SparkBars",
+        "Tile",
+        "Typography"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/FileActivityDetail.tsx",
+      "name": "FileActivityDetail",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/ActiveWork/FileActivityDetail.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-fileactivitydetail--default",
+        "custom-activework-fileactivitydetail--net-shrink",
+        "custom-activework-fileactivitydetail--no-co-changes"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "FilePathLabel",
+        "SparkBars",
+        "Typography"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/FileActivityRow.tsx",
+      "name": "FileActivityRow",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/ActiveWork/FileActivityRow.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-fileactivityrow--default",
+        "custom-activework-fileactivityrow--net-shrink",
+        "custom-activework-fileactivityrow--palette-categorical",
+        "custom-activework-fileactivityrow--palette-semantic",
+        "custom-activework-fileactivityrow--selected"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Card",
+        "CoChangeChip",
+        "Divider",
+        "Eyebrow",
+        "FileActivityDetail",
+        "FileActivityRow",
+        "Tile",
+        "Typography"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/FileHistoryExplorer.tsx",
+      "name": "FileHistoryExplorer",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/ActiveWork/FileHistoryExplorer.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-filehistoryexplorer--default",
+        "custom-activework-filehistoryexplorer--net-shrink-selected",
+        "custom-activework-filehistoryexplorer--no-co-changes",
+        "custom-activework-filehistoryexplorer--single-file"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Typography"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/FilePathLabel.tsx",
+      "name": "FilePathLabel",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/ActiveWork/FilePathLabel.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-filepathlabel--base-only",
+        "custom-activework-filepathlabel--default",
+        "custom-activework-filepathlabel--no-directory",
+        "custom-activework-filepathlabel--small"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Eyebrow",
+        "MarkdownProse",
+        "Typography"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/InitiativeBrief.tsx",
+      "name": "InitiativeBrief",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/ActiveWork/InitiativeBrief.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-initiativebrief--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Card",
+        "Pill",
+        "SegmentedBar",
+        "SeverityLabel",
+        "StatusDot",
+        "Typography"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/InitiativeCard.tsx",
+      "name": "InitiativeCard",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/ActiveWork/InitiativeCard.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-initiativecard--backburner",
+        "custom-activework-initiativecard--default",
+        "custom-activework-initiativecard--no-open-tasks"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "DateTime",
+        "InitiativeCard",
+        "Pill",
+        "StatusDot",
+        "Typography"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/InitiativeHeader.tsx",
+      "name": "InitiativeHeader",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/ActiveWork/InitiativeHeader.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-initiativeheader--backburner",
+        "custom-activework-initiativeheader--default",
+        "custom-activework-initiativeheader--done"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Divider",
+        "Eyebrow",
+        "MarkdownProse",
+        "Pill",
+        "Typography"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/OpenLoops.tsx",
+      "name": "OpenLoops",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/ActiveWork/OpenLoops.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-openloops--default",
+        "custom-activework-openloops--empty"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Card",
+        "Eyebrow",
+        "InitiativeCard",
+        "Metric",
+        "Typography"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/PortfolioOverview.tsx",
+      "name": "PortfolioOverview",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/ActiveWork/PortfolioOverview.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-portfoliooverview--default",
+        "custom-activework-portfoliooverview--no-open-work"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Card",
+        "Collapse",
+        "DateTime",
+        "Divider",
+        "MarkdownProse",
+        "Pill",
+        "SessionListItem",
+        "TaskRow",
+        "TaskTable",
+        "Tooltip",
+        "Typography"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/SessionDetail.tsx",
+      "name": "SessionDetail",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/ActiveWork/SessionDetail.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-sessiondetail--ad-hoc",
+        "custom-activework-sessiondetail--default",
+        "custom-activework-sessiondetail--inert",
+        "custom-activework-sessiondetail--short",
+        "custom-activework-sessiondetail--without-tasks"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Divider",
+        "Eyebrow",
+        "SessionListItem",
+        "Typography"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/SessionList.tsx",
+      "name": "SessionList",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/ActiveWork/SessionList.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-sessionlist--custom-label",
+        "custom-activework-sessionlist--default",
+        "custom-activework-sessionlist--no-selection",
+        "custom-activework-sessionlist--single-month"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "DateTime",
+        "Tooltip",
+        "Typography"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/SessionListItem.tsx",
+      "name": "SessionListItem",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/ActiveWork/SessionListItem.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-sessionlistitem--ad-hoc",
+        "custom-activework-sessionlistitem--default",
+        "custom-activework-sessionlistitem--selected",
+        "custom-activework-sessionlistitem--short"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Indicator",
+        "Typography"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/SeverityLabel.tsx",
+      "name": "SeverityLabel",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/ActiveWork/SeverityLabel.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-severitylabel--all-severities",
+        "custom-activework-severitylabel--default",
+        "custom-activework-severitylabel--dot-only",
+        "custom-activework-severitylabel--unset"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "DateTime",
+        "Pill",
+        "SeverityLabel",
+        "Table",
+        "TableCell",
+        "Tooltip",
+        "Typography"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/TaskRow.tsx",
+      "name": "TaskRow",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/ActiveWork/TaskRow.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-taskrow--critical-with-overflowing-tags",
+        "custom-activework-taskrow--default",
+        "custom-activework-taskrow--long-title",
+        "custom-activework-taskrow--missing-severity-and-estimate"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Eyebrow",
+        "SeverityLabel",
+        "Table",
+        "TableHeaderCell",
+        "TaskRow",
+        "Typography"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/TaskTable.tsx",
+      "name": "TaskTable",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/ActiveWork/TaskTable.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-tasktable--default",
+        "custom-activework-tasktable--embedded-narrow",
+        "custom-activework-tasktable--empty",
+        "custom-activework-tasktable--narrow",
+        "custom-activework-tasktable--no-legend",
+        "custom-activework-tasktable--sorted-by-age",
+        "custom-activework-tasktable--sorted-by-estimate",
+        "custom-activework-tasktable--sorted-by-severity"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Button",
+        "Card",
+        "Typography"
+      ],
+      "family": "custom/Chat",
+      "file": "packages/ui/src/components/custom/Chat/ChatCard.tsx",
+      "name": "ChatCard",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Chat/ChatCard.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-chat-chatcard--checkin",
+        "custom-chat-chatcard--default",
+        "custom-chat-chatcard--read-only"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Button",
+        "Input",
+        "Surface"
+      ],
+      "family": "custom/Chat",
+      "file": "packages/ui/src/components/custom/Chat/Composer.tsx",
+      "name": "Composer",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Chat/Composer.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-chat-composer--default",
+        "custom-chat-composer--disabled",
+        "custom-chat-composer--sending",
+        "custom-chat-composer--typed"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Avatar",
+        "Typography"
+      ],
+      "family": "custom/Chat",
+      "file": "packages/ui/src/components/custom/Chat/ConversationIdentity.tsx",
+      "name": "ConversationIdentity",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Chat/ConversationIdentity.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-chat-conversationidentity--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "DateTime",
+        "Divider",
+        "Typography"
+      ],
+      "family": "custom/Chat",
+      "file": "packages/ui/src/components/custom/Chat/DateSeparator.tsx",
+      "name": "DateSeparator",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Chat/DateSeparator.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-chat-messagelist-dateseparator--older",
+        "custom-chat-messagelist-dateseparator--today",
+        "custom-chat-messagelist-dateseparator--yesterday"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Avatar",
+        "MarkdownProse",
+        "Surface",
+        "Typography"
+      ],
+      "family": "custom/Chat",
+      "file": "packages/ui/src/components/custom/Chat/MessageBubble.tsx",
+      "name": "MessageBubble",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Chat/MessageBubble.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-chat-messagelist-messagebubble--default",
+        "custom-chat-messagelist-messagebubble--own",
+        "custom-chat-messagelist-messagebubble--streaming",
+        "custom-chat-messagelist-messagebubble--undeliverable",
+        "custom-chat-messagelist-messagebubble--with-data-part"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Button",
+        "ConversationIdentity",
+        "DateSeparator",
+        "MarkdownProse",
+        "MessageBubble",
+        "RevealRow",
+        "TypingIndicator",
+        "UnreadBadge"
+      ],
+      "family": "custom/Chat",
+      "file": "packages/ui/src/components/custom/Chat/MessageList.tsx",
+      "name": "MessageList",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Chat/MessageList.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-chat-messagelist--default",
+        "custom-chat-messagelist--direct",
+        "custom-chat-messagelist--empty",
+        "custom-chat-messagelist--endorsed",
+        "custom-chat-messagelist--group",
+        "custom-chat-messagelist--new-messages-while-scrolled-up",
+        "custom-chat-messagelist--revealed-times",
+        "custom-chat-messagelist--time-breaks",
+        "custom-chat-messagelist--typing",
+        "custom-chat-messagelist--windowed"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "DateTime"
+      ],
+      "family": "custom/Chat",
+      "file": "packages/ui/src/components/custom/Chat/RevealRow.tsx",
+      "name": "RevealRow",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Indicator",
+        "Surface",
+        "Typography"
+      ],
+      "family": "custom/Chat",
+      "file": "packages/ui/src/components/custom/Chat/TypingIndicator.tsx",
+      "name": "TypingIndicator",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Chat/TypingIndicator.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-chat-messagelist-typingindicator--default",
+        "custom-chat-messagelist-typingindicator--two-typists"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Pill"
+      ],
+      "family": "custom/Chat",
+      "file": "packages/ui/src/components/custom/Chat/UnreadBadge.tsx",
+      "name": "UnreadBadge",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Chat/UnreadBadge.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-chat-messagelist-unreadbadge--capped",
+        "custom-chat-messagelist-unreadbadge--count",
+        "custom-chat-messagelist-unreadbadge--jump-to-newest"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Progress"
+      ],
+      "family": "custom/CircularTimer",
+      "file": "packages/ui/src/components/custom/CircularTimer/CircularTimer.tsx",
+      "name": "CircularTimer",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/CircularTimer/CircularTimer.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-circulartimer--countdown-midway",
+        "components-molecules-circulartimer--countup-midway",
+        "components-molecules-circulartimer--done-with-label",
+        "components-molecules-circulartimer--playground",
+        "components-molecules-circulartimer--with-controls"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Typography"
+      ],
+      "family": "custom/DateTime",
+      "file": "packages/ui/src/components/custom/DateTime/DateTime.tsx",
+      "name": "DateTime",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/DateTime/DateTime.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-datetime--all-formats",
+        "components-molecules-datetime--colors",
+        "components-molecules-datetime--default",
+        "components-molecules-datetime--different-input-types",
+        "components-molecules-datetime--hour-cycle",
+        "components-molecules-datetime--live-clock",
+        "components-molecules-datetime--null-value",
+        "components-molecules-datetime--relative-time",
+        "components-molecules-datetime--seconds",
+        "components-molecules-datetime--usage-example",
+        "components-molecules-datetime--utc-time"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "GhostBand",
+        "GhostBloom",
+        "GhostSpark"
+      ],
+      "family": "custom/Fatigue",
+      "file": "packages/ui/src/components/custom/Fatigue/DualGhostSpark.tsx",
+      "name": "DualGhostSpark",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Fatigue/DualGhostSpark.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-fatigue-dual-ghost-spark--asymmetric-controlled",
+        "custom-fatigue-dual-ghost-spark--asymmetric-left-right",
+        "custom-fatigue-dual-ghost-spark--empty",
+        "custom-fatigue-dual-ghost-spark--one-side-lagging",
+        "custom-fatigue-dual-ghost-spark--symmetric",
+        "custom-fatigue-dual-ghost-spark--tint-range"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "StatusDot",
+        "Tooltip"
+      ],
+      "family": "custom/Fatigue",
+      "file": "packages/ui/src/components/custom/Fatigue/FatigueLights.tsx",
+      "name": "FatigueLights",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Fatigue/FatigueLights.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-fatigue-fatigue-lights--across-states",
+        "custom-fatigue-fatigue-lights--spread"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [],
+      "family": "custom/Fatigue",
+      "file": "packages/ui/src/components/custom/Fatigue/GhostBand.tsx",
+      "name": "GhostBand",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "custom/Fatigue",
+      "file": "packages/ui/src/components/custom/Fatigue/GhostBloom.tsx",
+      "name": "GhostBloom",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "GhostBand",
+        "GhostBloom"
+      ],
+      "family": "custom/Fatigue",
+      "file": "packages/ui/src/components/custom/Fatigue/GhostSpark.tsx",
+      "name": "GhostSpark",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Fatigue/GhostSpark.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-fatigue-ghost-spark--control-aware-tint",
+        "custom-fatigue-ghost-spark--default",
+        "custom-fatigue-ghost-spark--empty-before-first-rep",
+        "custom-fatigue-ghost-spark--paused-rep-band"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "FatigueLights",
+        "GhostSpark",
+        "RomProgressionChart",
+        "Surface",
+        "VerdictHero"
+      ],
+      "family": "custom/Fatigue",
+      "file": "packages/ui/src/components/custom/Fatigue/LiveFatigueCard.tsx",
+      "name": "LiveFatigueCard",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Fatigue/LiveFatigueCard.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-fatigue-live-fatigue-card--default",
+        "custom-fatigue-live-fatigue-card--states",
+        "custom-fatigue-live-fatigue-card--wall-height",
+        "custom-fatigue-live-fatigue-card--warming-up",
+        "custom-fatigue-live-fatigue-card--with-planned-reps",
+        "custom-fatigue-live-fatigue-card--without-planned-reps"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "LiveAuraFrame",
+        "LiveFatigueCard",
+        "VelocityHero"
+      ],
+      "family": "custom/Fatigue",
+      "file": "packages/ui/src/components/custom/Fatigue/LiveFatiguePanel.tsx",
+      "name": "LiveFatiguePanel",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Fatigue/LiveFatiguePanel.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-fatigue-live-fatigue-panel--live-panel-v-2",
+        "custom-fatigue-live-fatigue-panel--live-states",
+        "custom-fatigue-live-fatigue-panel--on-light-surface",
+        "custom-fatigue-live-fatigue-panel--responsive-tiers",
+        "custom-fatigue-live-fatigue-panel--wall-width"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "SetBarChart"
+      ],
+      "family": "custom/Fatigue",
+      "file": "packages/ui/src/components/custom/Fatigue/RomProgressionChart.tsx",
+      "name": "RomProgressionChart",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Fatigue/RomProgressionChart.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-fatigue-rom-progression--across-states",
+        "custom-fatigue-rom-progression--planned-to-do"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "VelocityStrip"
+      ],
+      "family": "custom/Fatigue",
+      "file": "packages/ui/src/components/custom/Fatigue/VelocityHero.tsx",
+      "name": "VelocityHero",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Fatigue/VelocityHero.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-fatigue-velocity-hero--default",
+        "custom-fatigue-velocity-hero--mid-set"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [],
+      "family": "custom/Fatigue",
+      "file": "packages/ui/src/components/custom/Fatigue/VerdictHero.tsx",
+      "name": "VerdictHero",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Fatigue/VerdictHero.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-fatigue-verdict-hero--across-states"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "custom/Gauge",
+      "file": "packages/ui/src/components/custom/Gauge/Gauge.tsx",
+      "name": "Gauge",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Gauge/Gauge.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-charts-gauge--arbitrary-domain",
+        "custom-charts-gauge--critical",
+        "custom-charts-gauge--healthy",
+        "custom-charts-gauge--over-max",
+        "custom-charts-gauge--override-color",
+        "custom-charts-gauge--warning",
+        "custom-charts-gauge--zero"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "custom/Metric",
+      "file": "packages/ui/src/components/custom/Metric/Metric.tsx",
+      "name": "Metric",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Metric/Metric.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-metric--all-sizes",
+        "components-molecules-metric--default",
+        "components-molecules-metric--full-metric",
+        "components-molecules-metric--group",
+        "components-molecules-metric--group-small",
+        "components-molecules-metric--large",
+        "components-molecules-metric--small",
+        "components-molecules-metric--with-trend-down",
+        "components-molecules-metric--with-trend-neutral",
+        "components-molecules-metric--with-trend-up",
+        "components-molecules-metric--with-unit"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "Typography"
+      ],
+      "family": "custom/Prose",
+      "file": "packages/ui/src/components/custom/Prose/MarkdownProse.tsx",
+      "name": "MarkdownProse",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Prose/MarkdownProse.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-prose-markdownprose--default",
+        "custom-prose-markdownprose--no-linkers",
+        "custom-prose-markdownprose--pressable"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [],
+      "family": "custom/Scatter",
+      "file": "packages/ui/src/components/custom/Scatter/Scatter.tsx",
+      "name": "Scatter",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Scatter/Scatter.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-charts-scatter--default",
+        "custom-charts-scatter--empty",
+        "custom-charts-scatter--light",
+        "custom-charts-scatter--no-diagonal",
+        "custom-charts-scatter--outlier",
+        "custom-charts-scatter--selected",
+        "custom-charts-scatter--single-point"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "custom/Sidebar",
+      "file": "packages/ui/src/components/custom/Sidebar/Sidebar.tsx",
+      "name": "Sidebar",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Sidebar/Sidebar.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-organisms-sidebar--collapsed",
+        "components-organisms-sidebar--default",
+        "components-organisms-sidebar--with-active-item",
+        "components-organisms-sidebar--with-badge",
+        "components-organisms-sidebar--with-icons",
+        "components-organisms-sidebar--with-sections"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "custom/Table",
+      "file": "packages/ui/src/components/custom/Table/Table.tsx",
+      "name": "Table",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Table/Table.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-organisms-table--column-drop-order",
+        "components-organisms-table--default",
+        "components-organisms-table--empty-state",
+        "components-organisms-table--loading",
+        "components-organisms-table--sorting-and-selection",
+        "components-organisms-table--use-table-hook",
+        "components-organisms-table--with-column-widths",
+        "components-organisms-table--with-pagination",
+        "components-organisms-table--with-row-selection",
+        "components-organisms-table--with-sorting"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "custom/Table",
+      "file": "packages/ui/src/components/custom/Table/TableCell.tsx",
+      "name": "TableCell",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "custom/Table",
+      "file": "packages/ui/src/components/custom/Table/TableEmptyState.tsx",
+      "name": "TableEmptyState",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "Tooltip"
+      ],
+      "family": "custom/Table",
+      "file": "packages/ui/src/components/custom/Table/TableHeaderCell.tsx",
+      "name": "TableHeaderCell",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "organism"
+    },
+    {
+      "composes": [],
+      "family": "custom/Table",
+      "file": "packages/ui/src/components/custom/Table/TablePagination.tsx",
+      "name": "TablePagination",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "Typography"
+      ],
+      "family": "custom/TimerReadout",
+      "file": "packages/ui/src/components/custom/TimerReadout/TimerReadout.tsx",
+      "name": "TimerReadout",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/TimerReadout/TimerReadout.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-timerreadout--countdown-running",
+        "components-molecules-timerreadout--live-auto-tick",
+        "components-molecules-timerreadout--paused",
+        "components-molecules-timerreadout--running",
+        "components-molecules-timerreadout--with-total"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [],
+      "family": "custom/Treemap",
+      "file": "packages/ui/src/components/custom/Treemap/Treemap.tsx",
+      "name": "Treemap",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Treemap/Treemap.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-charts-treemap--default",
+        "custom-charts-treemap--light",
+        "custom-charts-treemap--outlier-linear",
+        "custom-charts-treemap--outlier-sqrt",
+        "custom-charts-treemap--truncated"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "ExerciseCard",
+        "InputBar",
+        "RestTimer",
+        "SetRow",
+        "SupersetWrapper"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/ActiveWorkoutPage.tsx",
+      "name": "ActiveWorkoutPage",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/ActiveWorkoutPage.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "pages-active-workout--all-collapsed",
+        "pages-active-workout--default",
+        "pages-active-workout--resting"
+      ],
+      "tier": "page"
+    },
+    {
+      "composes": [],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/BaseBadge.tsx",
+      "name": "BaseBadge",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/BaseBadge.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-basebadge--all-variants",
+        "custom-workout-basebadge--plain",
+        "custom-workout-basebadge--pr",
+        "custom-workout-basebadge--with-icon"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/BodyMap.tsx",
+      "name": "BodyMap",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/BodyMap.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-dataviz-bodymap--back",
+        "custom-workout-dataviz-bodymap--detailed",
+        "custom-workout-dataviz-bodymap--empty",
+        "custom-workout-dataviz-bodymap--front",
+        "custom-workout-dataviz-bodymap--highlighted",
+        "custom-workout-dataviz-bodymap--interactive",
+        "custom-workout-dataviz-bodymap--simple",
+        "custom-workout-dataviz-bodymap--wall"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "Badge",
+        "BodyMapDetailSections",
+        "Sparkline"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/BodyMapDetailPanel.tsx",
+      "name": "BodyMapDetailPanel",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/BodyMapDetailPanel.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-dataviz-bodymapdetailpanel--default",
+        "custom-workout-dataviz-bodymapdetailpanel--interactive",
+        "custom-workout-dataviz-bodymapdetailpanel--maintenance",
+        "custom-workout-dataviz-bodymapdetailpanel--minimal",
+        "custom-workout-dataviz-bodymapdetailpanel--over-reaching",
+        "custom-workout-dataviz-bodymapdetailpanel--productive",
+        "custom-workout-dataviz-bodymapdetailpanel--right-side-sheet-at-phone",
+        "custom-workout-dataviz-bodymapdetailpanel--right-side-sheet-at-wall",
+        "custom-workout-dataviz-bodymapdetailpanel--right-side-sheet-closed-at-wall",
+        "custom-workout-dataviz-bodymapdetailpanel--sections-bilateral-at-wall",
+        "custom-workout-dataviz-bodymapdetailpanel--sections-bilateral-right-at-wall",
+        "custom-workout-dataviz-bodymapdetailpanel--sections-empty-at-wall",
+        "custom-workout-dataviz-bodymapdetailpanel--sections-empty-right-at-wall",
+        "custom-workout-dataviz-bodymapdetailpanel--sections-single-exercise-at-wall",
+        "custom-workout-dataviz-bodymapdetailpanel--sections-single-exercise-right-at-wall",
+        "custom-workout-dataviz-bodymapdetailpanel--under-trained",
+        "custom-workout-dataviz-bodymapdetailpanel--without-history",
+        "custom-workout-dataviz-bodymapdetailpanel--without-upcoming"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "GoalTrajectoryBand",
+        "StatCard",
+        "Typography",
+        "ZoneTrack",
+        "wholeBodyCardParts"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/BodyweightGoalCard.tsx",
+      "name": "BodyweightGoalCard",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/BodyweightGoalCard.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-goals-bodyweightgoalcard--default",
+        "custom-workout-goals-bodyweightgoalcard--gain",
+        "custom-workout-goals-bodyweightgoalcard--hold",
+        "custom-workout-goals-bodyweightgoalcard--light",
+        "custom-workout-goals-bodyweightgoalcard--no-readings",
+        "custom-workout-goals-bodyweightgoalcard--one-reading",
+        "custom-workout-goals-bodyweightgoalcard--one-reading-tip",
+        "custom-workout-goals-bodyweightgoalcard--outside-hold",
+        "custom-workout-goals-bodyweightgoalcard--rate-vetoed",
+        "custom-workout-goals-bodyweightgoalcard--slow-loss",
+        "custom-workout-goals-bodyweightgoalcard--slow-loss-one-line",
+        "custom-workout-goals-bodyweightgoalcard--tag-tip"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/CapacityBandChart.tsx",
+      "name": "CapacityBandChart",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/CapacityBandChart.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-dataviz-capacitybandchart--compact",
+        "custom-workout-dataviz-capacitybandchart--default",
+        "custom-workout-dataviz-capacitybandchart--empty",
+        "custom-workout-dataviz-capacitybandchart--interactive",
+        "custom-workout-dataviz-capacitybandchart--sparse-data",
+        "custom-workout-dataviz-capacitybandchart--without-projection"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/DeviationBar.tsx",
+      "name": "DeviationBar",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/DeviationBar.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-dataviz-deviationbar--full-range",
+        "custom-workout-dataviz-deviationbar--much-harder",
+        "custom-workout-dataviz-deviationbar--much-lighter",
+        "custom-workout-dataviz-deviationbar--on-plan",
+        "custom-workout-dataviz-deviationbar--slightly-harder",
+        "custom-workout-dataviz-deviationbar--slightly-lighter",
+        "custom-workout-dataviz-deviationbar--wide-bar"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "ExerciseCardHeading",
+        "ExerciseIndicator",
+        "SetBar",
+        "SetRow",
+        "SetTableHeader",
+        "VelocityStrip"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/ExerciseCard.tsx",
+      "name": "ExerciseCard",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/ExerciseCard.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-exercisecard--collapsed-with-pr",
+        "custom-workout-exercisecard--collapsed-with-velocity",
+        "custom-workout-exercisecard--expanded-with-sets",
+        "custom-workout-exercisecard--expanded-with-tempo",
+        "custom-workout-exercisecard--superset-first",
+        "custom-workout-exercisecard--superset-last",
+        "custom-workout-exercisecard--upcoming"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "ExerciseHeading",
+        "SetBar",
+        "SetStrip",
+        "Tooltip"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/ExerciseCardHeading.tsx",
+      "name": "ExerciseCardHeading",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/ExerciseCardHeading.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-exercisecardheading--compact",
+        "custom-workout-exercisecardheading--default",
+        "custom-workout-exercisecardheading--dimmed",
+        "custom-workout-exercisecardheading--live",
+        "custom-workout-exercisecardheading--selected",
+        "custom-workout-exercisecardheading--upcoming",
+        "custom-workout-exercisecardheading--without-strip"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "CapacityBandChart",
+        "ExerciseCard",
+        "MesoStatusCard",
+        "SetRow",
+        "StrengthTrendChart",
+        "VelocityStrip"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/ExerciseDetailPage.tsx",
+      "name": "ExerciseDetailPage",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/ExerciseDetailPage.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "pages-exercise-detail--default",
+        "pages-exercise-detail--no-vbt-data"
+      ],
+      "tier": "page"
+    },
+    {
+      "composes": [
+        "ExerciseIndicator",
+        "SetsRepsLoad",
+        "TempoDisplay",
+        "Typography"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/ExerciseHeading.tsx",
+      "name": "ExerciseHeading",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/ExerciseHeading.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-exerciseheading--default",
+        "custom-workout-exerciseheading--dimmed",
+        "custom-workout-exerciseheading--no-tempo-no-indicator",
+        "custom-workout-exerciseheading--rep-range"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "SvgIcon",
+        "icons"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/ExerciseIndicator.tsx",
+      "name": "ExerciseIndicator",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/ExerciseIndicator.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-exerciseindicator--all-kinds",
+        "custom-workout-exerciseindicator--imbalance",
+        "custom-workout-exerciseindicator--info",
+        "custom-workout-exerciseindicator--missed-reps",
+        "custom-workout-exerciseindicator--overshoot",
+        "custom-workout-exerciseindicator--personal-record",
+        "custom-workout-exerciseindicator--resolve-precedence",
+        "custom-workout-exerciseindicator--velocity-loss"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "ZoneTrack"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/FatigueMeter.tsx",
+      "name": "FatigueMeter",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/FatigueMeter.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-dataviz-fatiguemeter--custom-scale",
+        "custom-workout-dataviz-fatiguemeter--fresh",
+        "custom-workout-dataviz-fatiguemeter--stop-zone",
+        "custom-workout-dataviz-fatiguemeter--vl-20",
+        "custom-workout-dataviz-fatiguemeter--wall-density"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Card",
+        "GoalMilestoneSummary",
+        "GoalMilestoneWeekStrip",
+        "GoalPriorityIcon",
+        "GoalTrajectoryChart",
+        "GoalWeekColumnsChart",
+        "Indicator",
+        "Pill",
+        "PrBadge",
+        "TipTrigger",
+        "Typography"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/GoalCard.tsx",
+      "name": "GoalCard",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/GoalCard.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-workout-goals-goalcard--ahead",
+        "custom-workout-goals-goalcard--behind",
+        "custom-workout-goals-goalcard--beyond-goal",
+        "custom-workout-goals-goalcard--calibrating",
+        "custom-workout-goals-goalcard--compact",
+        "custom-workout-goals-goalcard--hit-exact",
+        "custom-workout-goals-goalcard--on-track",
+        "custom-workout-goals-goalcard--phone",
+        "custom-workout-goals-goalcard--status-beyond-goal",
+        "custom-workout-goals-goalcard--status-goal-met",
+        "lab-decisions-goal-card-header--compact-long",
+        "lab-decisions-goal-card-header--compact-medium",
+        "lab-decisions-goal-card-header--compact-pasted",
+        "lab-decisions-goal-card-header--compact-short",
+        "lab-decisions-goal-card-header--compact-stacked-facts",
+        "lab-decisions-goal-card-header--full-long",
+        "lab-decisions-goal-card-header--full-medium",
+        "lab-decisions-goal-card-header--full-pasted",
+        "lab-decisions-goal-card-header--full-pasted-no-marks",
+        "lab-decisions-goal-card-header--full-short",
+        "lab-decisions-goal-card-header--full-stacked-facts"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "GoalMilestoneWeekStrip",
+        "GoalTrajectoryPlot",
+        "Typography"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/GoalMilestoneSummary.tsx",
+      "name": "GoalMilestoneSummary",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "GoalMilestoneSummary",
+        "Indicator",
+        "Surface",
+        "Typography"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/GoalMilestoneTile.tsx",
+      "name": "GoalMilestoneTile",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/GoalMilestoneTile.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-workout-goalmilestonetile--ahead",
+        "custom-workout-goalmilestonetile--behind",
+        "custom-workout-goalmilestonetile--compact",
+        "custom-workout-goalmilestonetile--hit",
+        "custom-workout-goalmilestonetile--hit-exact",
+        "custom-workout-goalmilestonetile--loss-goal",
+        "custom-workout-goalmilestonetile--missed",
+        "custom-workout-goalmilestonetile--narrow-stacked",
+        "custom-workout-goalmilestonetile--on-track"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "GoalTrajectoryPlot",
+        "Pill",
+        "SegmentedBar",
+        "TipTrigger",
+        "Typography"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/GoalMilestoneWeekStrip.tsx",
+      "name": "GoalMilestoneWeekStrip",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Card",
+        "GoalCard",
+        "Indicator",
+        "MuscleGlyph",
+        "Pill",
+        "Typography"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/GoalMuscleCard.tsx",
+      "name": "GoalMuscleCard",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/GoalMuscleCard.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-goalmusclecard--default",
+        "custom-workout-goalmusclecard--no-week-variance",
+        "custom-workout-goalmusclecard--single-lift"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "SvgIcon",
+        "TipTrigger",
+        "Typography",
+        "icons"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/GoalPriorityIcon.tsx",
+      "name": "GoalPriorityIcon",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "GoalPriorityIcon",
+        "Typography"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/GoalPriorityIndex.tsx",
+      "name": "GoalPriorityIndex",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/GoalPriorityIndex.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-goals-goalpriorityindex--default",
+        "custom-workout-goals-goalpriorityindex--small"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "GoalTrajectoryBand",
+        "GoalTrajectoryCalibrating",
+        "GoalTrajectoryPlot",
+        "GoalTrajectoryWeekTips"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/GoalTrajectoryChart.tsx",
+      "name": "GoalTrajectoryChart",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/GoalTrajectoryChart.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-dataviz-goaltrajectorychart--ahead",
+        "custom-workout-dataviz-goaltrajectorychart--behind",
+        "custom-workout-dataviz-goaltrajectorychart--calibrating",
+        "custom-workout-dataviz-goaltrajectorychart--calibrating-real-wall-data",
+        "custom-workout-dataviz-goaltrajectorychart--current-week-without-reading",
+        "custom-workout-dataviz-goaltrajectorychart--deload-week",
+        "custom-workout-dataviz-goaltrajectorychart--empty-calibrating",
+        "custom-workout-dataviz-goaltrajectorychart--explore-all-treatments",
+        "custom-workout-dataviz-goaltrajectorychart--explore-band-fade-across-20",
+        "custom-workout-dataviz-goaltrajectorychart--explore-band-fade-centre-14",
+        "custom-workout-dataviz-goaltrajectorychart--explore-band-fade-centre-20",
+        "custom-workout-dataviz-goaltrajectorychart--explore-band-flat",
+        "custom-workout-dataviz-goaltrajectorychart--explore-band-smoothed",
+        "custom-workout-dataviz-goaltrajectorychart--explore-band-straight",
+        "custom-workout-dataviz-goaltrajectorychart--explore-baseline-inset-rule",
+        "custom-workout-dataviz-goaltrajectorychart--explore-baseline-lip",
+        "custom-workout-dataviz-goaltrajectorychart--loss-goal-bodyweight",
+        "custom-workout-dataviz-goaltrajectorychart--no-motion",
+        "custom-workout-dataviz-goaltrajectorychart--on-track",
+        "custom-workout-dataviz-goaltrajectorychart--phone-loss-goal",
+        "custom-workout-dataviz-goaltrajectorychart--phone-motion",
+        "custom-workout-dataviz-goaltrajectorychart--phone-on-track",
+        "custom-workout-dataviz-goaltrajectorychart--stalled",
+        "custom-workout-dataviz-goaltrajectorychart--tolerated",
+        "custom-workout-dataviz-goaltrajectorychart--wall-motion"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "GoalTrajectoryChart",
+        "GoalTrajectoryPlot"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/GoalTrajectoryMini.tsx",
+      "name": "GoalTrajectoryMini",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "GoalTrajectoryBand",
+        "GoalTrajectoryCalibrating",
+        "SvgIcon",
+        "icons"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/GoalTrajectoryPlot.tsx",
+      "name": "GoalTrajectoryPlot",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Metric",
+        "Pill",
+        "PrBadge",
+        "TipTrigger",
+        "Tooltip",
+        "Typography"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/GoalTrajectoryWeekTips.tsx",
+      "name": "GoalTrajectoryWeekTips",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "GoalMilestoneWeekStrip",
+        "GoalTrajectoryMini"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/GoalWeekColumnsChart.tsx",
+      "name": "GoalWeekColumnsChart",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "organism"
+    },
+    {
+      "composes": [],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/InputBar.tsx",
+      "name": "InputBar",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/InputBar.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-inputbar--default",
+        "custom-workout-inputbar--disabled",
+        "custom-workout-inputbar--kilograms",
+        "custom-workout-inputbar--with-filled-values"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/IntensityBar.tsx",
+      "name": "IntensityBar",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/IntensityBar.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-dataviz-intensitybar--all-zones",
+        "custom-workout-dataviz-intensitybar--high",
+        "custom-workout-dataviz-intensitybar--horizontal",
+        "custom-workout-dataviz-intensitybar--low",
+        "custom-workout-dataviz-intensitybar--moderate"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/LiveAuraFrame.tsx",
+      "name": "LiveAuraFrame",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/LiveAuraFrame.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-liveauraframe--all-states",
+        "custom-workout-liveauraframe--productive",
+        "custom-workout-liveauraframe--stop",
+        "custom-workout-liveauraframe--threshold"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "Badge",
+        "Card",
+        "WeekRow"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/MesoCard.tsx",
+      "name": "MesoCard",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/MesoCard.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-mesocard--collapsed",
+        "custom-workout-mesocard--expanded",
+        "custom-workout-mesocard--highlighted",
+        "custom-workout-mesocard--interactive",
+        "custom-workout-mesocard--strength-block"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/MesoProgressBar.tsx",
+      "name": "MesoProgressBar",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/MesoProgressBar.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-mesoprogressbar--active-current",
+        "custom-workout-mesoprogressbar--default",
+        "custom-workout-mesoprogressbar--first-week-progress",
+        "custom-workout-mesoprogressbar--interactive"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "Card",
+        "StatusDot"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/MesoStatusCard.tsx",
+      "name": "MesoStatusCard",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/MesoStatusCard.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-mesostatuscard--default",
+        "custom-workout-mesostatuscard--info-badge",
+        "custom-workout-mesostatuscard--minimal",
+        "custom-workout-mesostatuscard--overreaching",
+        "custom-workout-mesostatuscard--warning",
+        "custom-workout-mesostatuscard--with-basis"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Stack",
+        "Tile"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/MetricTiles.tsx",
+      "name": "MetricTiles",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/MetricTiles.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-metrictiles--four-tiles",
+        "custom-workout-metrictiles--session-stats",
+        "custom-workout-metrictiles--two-tiles"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/MuscleGlyph.tsx",
+      "name": "MuscleGlyph",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "Pill"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/MuscleGroupChip.tsx",
+      "name": "MuscleGroupChip",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/MuscleGroupChip.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-musclegroupchip--all-statuses",
+        "custom-workout-musclegroupchip--approaching",
+        "custom-workout-musclegroupchip--behind",
+        "custom-workout-musclegroupchip--default",
+        "custom-workout-musclegroupchip--muscle-groups",
+        "custom-workout-musclegroupchip--on-track",
+        "custom-workout-musclegroupchip--over",
+        "custom-workout-musclegroupchip--tappable",
+        "custom-workout-musclegroupchip--target",
+        "custom-workout-musclegroupchip--untrained",
+        "custom-workout-musclegroupchip--without-status"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "MuscleGroupChip"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/MuscleStrip.tsx",
+      "name": "MuscleStrip",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/MuscleStrip.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-musclestrip--default",
+        "custom-workout-musclestrip--empty-untrained",
+        "custom-workout-musclestrip--one-of-each-status",
+        "custom-workout-musclestrip--phone",
+        "custom-workout-musclestrip--wall"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/PlaceholderStrip.tsx",
+      "name": "PlaceholderStrip",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/PlaceholderStrip.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-placeholderstrip--default",
+        "custom-workout-placeholderstrip--fixed-width",
+        "custom-workout-placeholderstrip--mixed-modes",
+        "custom-workout-placeholderstrip--multiple-strips",
+        "custom-workout-placeholderstrip--segmented",
+        "custom-workout-placeholderstrip--segmented-three"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "BaseBadge",
+        "Typography",
+        "icons"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/PrBadge.tsx",
+      "name": "PrBadge",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/PrBadge.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-prbadge--all-types",
+        "custom-workout-prbadge--animated",
+        "custom-workout-prbadge--compact",
+        "custom-workout-prbadge--compact-animated",
+        "custom-workout-prbadge--custom-label",
+        "custom-workout-prbadge--reps-pr",
+        "custom-workout-prbadge--static",
+        "custom-workout-prbadge--velocity-pr",
+        "custom-workout-prbadge--weight-pr"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Drawer",
+        "icons"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/PrHistoryModal.tsx",
+      "name": "PrHistoryModal",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/PrHistoryModal.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-prhistorymodal--default",
+        "custom-workout-prhistorymodal--empty",
+        "custom-workout-prhistorymodal--falls-back-to-exercise-id",
+        "custom-workout-prhistorymodal--interactive",
+        "custom-workout-prhistorymodal--recent-prs-highlighted",
+        "custom-workout-prhistorymodal--single-record"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "GoalCard"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/PrimaryGoalCard.tsx",
+      "name": "PrimaryGoalCard",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "ExerciseCard",
+        "MesoCard",
+        "MesoProgressBar",
+        "WeekRow",
+        "WorkoutCard",
+        "WorkoutPill"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/ProgramPlanningPage.tsx",
+      "name": "ProgramPlanningPage",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/ProgramPlanningPage.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "pages-program-planning--default",
+        "pages-program-planning--single-meso"
+      ],
+      "tier": "page"
+    },
+    {
+      "composes": [
+        "Badge",
+        "Card"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/ReadinessCheck.tsx",
+      "name": "ReadinessCheck",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/ReadinessCheck.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-readinesscheck--default",
+        "custom-workout-readinesscheck--high-readiness",
+        "custom-workout-readinesscheck--interactive",
+        "custom-workout-readinesscheck--low-readiness",
+        "custom-workout-readinesscheck--with-warm-up-caution",
+        "custom-workout-readinesscheck--with-warm-up-good"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "CircularTimer"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/RestTimer.tsx",
+      "name": "RestTimer",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/RestTimer.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-resttimer--default",
+        "custom-workout-resttimer--just-started",
+        "custom-workout-resttimer--nearly-complete",
+        "custom-workout-resttimer--ring-almost-done",
+        "custom-workout-resttimer--ring-display-only",
+        "custom-workout-resttimer--ring-done",
+        "custom-workout-resttimer--ring-just-started",
+        "custom-workout-resttimer--ring-midway",
+        "custom-workout-resttimer--ring-playground",
+        "custom-workout-resttimer--with-next-set-info"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "DateTime",
+        "Stack",
+        "Tile"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/ScheduleTiles.tsx",
+      "name": "ScheduleTiles",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/ScheduleTiles.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-scheduletiles--soon-under-a-day",
+        "custom-workout-scheduletiles--two-days-out"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/SegmentedBar.tsx",
+      "name": "SegmentedBar",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/SegmentedBar.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-segmentedbar--equal-segments",
+        "custom-workout-segmentedbar--partial-fills",
+        "custom-workout-segmentedbar--weighted",
+        "custom-workout-segmentedbar--with-marker"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "SegmentedBar"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/SegmentedProgressBar.tsx",
+      "name": "SegmentedProgressBar",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/SegmentedProgressBar.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-segmentedprogressbar--ahead",
+        "custom-workout-segmentedprogressbar--behind",
+        "custom-workout-segmentedprogressbar--empty",
+        "custom-workout-segmentedprogressbar--no-target"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "MetricTiles",
+        "ScheduleTiles",
+        "SegmentedProgressBar",
+        "Surface",
+        "TimerReadout",
+        "Typography"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/SessionHeader.tsx",
+      "name": "SessionHeader",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/SessionHeader.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "shell-sessionrail-sessionheader--live-behind",
+        "shell-sessionrail-sessionheader--live-no-time",
+        "shell-sessionrail-sessionheader--upcoming"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "ExerciseCard",
+        "ExerciseCardHeading",
+        "ExerciseIndicator",
+        "MetricTiles",
+        "SessionHeader",
+        "SetBar",
+        "SetRow",
+        "Surface"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/SessionRail.tsx",
+      "name": "SessionRail",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/SessionRail.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "shell-sessionrail--default",
+        "shell-sessionrail--no-time-target",
+        "shell-sessionrail--upcoming"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "GoalCard",
+        "Progress",
+        "SegmentedBar",
+        "StatCard",
+        "wholeBodyCardParts"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/SessionsGoalCard.tsx",
+      "name": "SessionsGoalCard",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/SessionsGoalCard.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-goals-sessionsgoalcard--default",
+        "custom-workout-goals-sessionsgoalcard--large-commitment",
+        "custom-workout-goals-sessionsgoalcard--over-commitment",
+        "custom-workout-goals-sessionsgoalcard--real-history",
+        "custom-workout-goals-sessionsgoalcard--window-started"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "SegmentedBar"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/SetBar.tsx",
+      "name": "SetBar",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/SetBar.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-setbar--active",
+        "custom-workout-setbar--active-range-set",
+        "custom-workout-setbar--done",
+        "custom-workout-setbar--drop",
+        "custom-workout-setbar--myo",
+        "custom-workout-setbar--myo-upcoming",
+        "custom-workout-setbar--range",
+        "custom-workout-setbar--todo"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Typography",
+        "VelocityStrip"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/SetRow.tsx",
+      "name": "SetRow",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/SetRow.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-setrow--done",
+        "custom-workout-setrow--live",
+        "custom-workout-setrow--table-in-context",
+        "custom-workout-setrow--todo",
+        "custom-workout-setrow--with-type-badge"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "SetBar"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/SetStrip.tsx",
+      "name": "SetStrip",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/SetStrip.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-setstrip--active-range-set",
+        "custom-workout-setstrip--completed",
+        "custom-workout-setstrip--expected-range-long-label",
+        "custom-workout-setstrip--expected-range-only",
+        "custom-workout-setstrip--in-progress",
+        "custom-workout-setstrip--prescribed-and-expected",
+        "custom-workout-setstrip--rep-range",
+        "custom-workout-setstrip--rep-range-absent",
+        "custom-workout-setstrip--rep-range-single-number",
+        "custom-workout-setstrip--set-types",
+        "custom-workout-setstrip--short-strip",
+        "custom-workout-setstrip--upcoming"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Typography"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/SetTableHeader.tsx",
+      "name": "SetTableHeader",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/SetTableHeader.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-settableheader--kg",
+        "custom-workout-settableheader--lbs",
+        "custom-workout-settableheader--no-previous"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "metricText"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/SetsRepsLoad.tsx",
+      "name": "SetsRepsLoad",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/SetsRepsLoad.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-setsrepsload--default",
+        "custom-workout-setsrepsload--kilograms",
+        "custom-workout-setsrepsload--rep-range"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Typography"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/Sparkline.tsx",
+      "name": "Sparkline",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/Sparkline.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-dataviz-sparkline--all-shapes",
+        "custom-workout-dataviz-sparkline--ascending",
+        "custom-workout-dataviz-sparkline--custom-size",
+        "custom-workout-dataviz-sparkline--default",
+        "custom-workout-dataviz-sparkline--descending",
+        "custom-workout-dataviz-sparkline--dots-and-highlight-last",
+        "custom-workout-dataviz-sparkline--flat",
+        "custom-workout-dataviz-sparkline--highlight-last",
+        "custom-workout-dataviz-sparkline--u-curve",
+        "custom-workout-dataviz-sparkline--with-reference-lines"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Typography"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/StatusDot.tsx",
+      "name": "StatusDot",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/StatusDot.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-statusdot--all-variants",
+        "custom-workout-statusdot--deviation",
+        "custom-workout-statusdot--error",
+        "custom-workout-statusdot--future",
+        "custom-workout-statusdot--neutral",
+        "custom-workout-statusdot--on-track",
+        "custom-workout-statusdot--small-with-label",
+        "custom-workout-statusdot--success",
+        "custom-workout-statusdot--warning",
+        "custom-workout-statusdot--with-glow",
+        "custom-workout-statusdot--with-label"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Pill",
+        "StatusDot"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/StatusPill.tsx",
+      "name": "StatusPill",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/StatusPill.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-statuspill--all-states",
+        "custom-workout-statuspill--productive",
+        "custom-workout-statuspill--stop",
+        "custom-workout-statuspill--threshold",
+        "custom-workout-statuspill--with-custom-label"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/StrengthTrendChart.tsx",
+      "name": "StrengthTrendChart",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/StrengthTrendChart.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-dataviz-strengthtrendchart--compact",
+        "custom-workout-dataviz-strengthtrendchart--declining",
+        "custom-workout-dataviz-strengthtrendchart--default",
+        "custom-workout-dataviz-strengthtrendchart--empty",
+        "custom-workout-dataviz-strengthtrendchart--interactive",
+        "custom-workout-dataviz-strengthtrendchart--single-point",
+        "custom-workout-dataviz-strengthtrendchart--without-projection"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "Typography"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/SupersetWrapper.tsx",
+      "name": "SupersetWrapper",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/SupersetWrapper.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-supersetwrapper--custom-color",
+        "custom-workout-supersetwrapper--custom-label",
+        "custom-workout-supersetwrapper--default",
+        "custom-workout-supersetwrapper--with-exercise-cards"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "metricText"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/TempoDisplay.tsx",
+      "name": "TempoDisplay",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/TempoDisplay.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-tempodisplay--active-tempo-conditions",
+        "custom-workout-tempodisplay--live-animated",
+        "custom-workout-tempodisplay--live-playground",
+        "custom-workout-tempodisplay--prescription",
+        "custom-workout-tempodisplay--static-vs-live"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "BodyMap",
+        "BodyMapDetailPanel",
+        "MesoStatusCard"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/TrainingStatusPage.tsx",
+      "name": "TrainingStatusPage",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/TrainingStatusPage.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "pages-training-status--default",
+        "pages-training-status--needs-attention",
+        "pages-training-status--wall"
+      ],
+      "tier": "page"
+    },
+    {
+      "composes": [
+        "SetBarChart",
+        "Typography"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/VelocityBandOverlay.tsx",
+      "name": "VelocityBandOverlay",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/VelocityBandOverlay.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-workout-velocitybandoverlay--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "SetBarChart",
+        "VelocityBandOverlay"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/VelocityBandPreview.tsx",
+      "name": "VelocityBandPreview",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "SetBarChart"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/VelocityStrip.tsx",
+      "name": "VelocityStrip",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/VelocityStrip.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-dataviz-velocitystrip--all-views",
+        "custom-workout-dataviz-velocitystrip--in-context",
+        "custom-workout-dataviz-velocitystrip--playground",
+        "custom-workout-dataviz-velocitystrip-compact--default",
+        "custom-workout-dataviz-velocitystrip-compact--dual-lagging-side",
+        "custom-workout-dataviz-velocitystrip-compact--empty-cold-boot",
+        "custom-workout-dataviz-velocitystrip-compact--fatigue-decline",
+        "custom-workout-dataviz-velocitystrip-compact--rep-types",
+        "custom-workout-dataviz-velocitystrip-compact--responsive",
+        "custom-workout-dataviz-velocitystrip-compact--set-types",
+        "custom-workout-dataviz-velocitystrip-expanded--default",
+        "custom-workout-dataviz-velocitystrip-expanded--dual-lagging-side",
+        "custom-workout-dataviz-velocitystrip-expanded--empty-cold-boot",
+        "custom-workout-dataviz-velocitystrip-expanded--fatigue-decline",
+        "custom-workout-dataviz-velocitystrip-expanded--framed-chrome",
+        "custom-workout-dataviz-velocitystrip-expanded--in-progress",
+        "custom-workout-dataviz-velocitystrip-expanded--interactive",
+        "custom-workout-dataviz-velocitystrip-expanded--rep-types",
+        "custom-workout-dataviz-velocitystrip-expanded--responsive",
+        "custom-workout-dataviz-velocitystrip-expanded--set-types",
+        "custom-workout-dataviz-velocitystrip-hero--default",
+        "custom-workout-dataviz-velocitystrip-hero--dual-lagging-side",
+        "custom-workout-dataviz-velocitystrip-hero--edge-cases",
+        "custom-workout-dataviz-velocitystrip-hero--empty-cold-boot",
+        "custom-workout-dataviz-velocitystrip-hero--fatigue-decline",
+        "custom-workout-dataviz-velocitystrip-hero--fixed-scale-headroom",
+        "custom-workout-dataviz-velocitystrip-hero--in-progress",
+        "custom-workout-dataviz-velocitystrip-hero--rep-types",
+        "custom-workout-dataviz-velocitystrip-hero--responsive",
+        "custom-workout-dataviz-velocitystrip-hero--set-types"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "DataRow",
+        "Typography",
+        "ZoneTrack"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/VolumeLandmarkBar.tsx",
+      "name": "VolumeLandmarkBar",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/VolumeLandmarkBar.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-dataviz-volumelandmarkbar--all-zones",
+        "custom-workout-dataviz-volumelandmarkbar--approaching-mrv",
+        "custom-workout-dataviz-volumelandmarkbar--maintenance",
+        "custom-workout-dataviz-volumelandmarkbar--optimal",
+        "custom-workout-dataviz-volumelandmarkbar--over-mrv",
+        "custom-workout-dataviz-volumelandmarkbar--under-mev"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "IntensityBar",
+        "Typography",
+        "WorkoutPill"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/WeekRow.tsx",
+      "name": "WeekRow",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/WeekRow.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-weekrow--current-week",
+        "custom-workout-weekrow--default",
+        "custom-workout-weekrow--deload-week",
+        "custom-workout-weekrow--mesocycle-progression"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "BaseBadge",
+        "Typography",
+        "icons"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/WeightBadge.tsx",
+      "name": "WeightBadge",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/WeightBadge.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-weightbadge--all-variants",
+        "custom-workout-weightbadge--default",
+        "custom-workout-weightbadge--pr-with-delta",
+        "custom-workout-weightbadge--rep-max",
+        "custom-workout-weightbadge--with-negative-delta",
+        "custom-workout-weightbadge--with-positive-delta",
+        "custom-workout-weightbadge--with-pr",
+        "custom-workout-weightbadge--without-icon"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Card",
+        "ExerciseCard",
+        "MuscleGroupChip",
+        "Typography"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/WorkoutCard.tsx",
+      "name": "WorkoutCard",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/WorkoutCard.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-workoutcard--completed",
+        "custom-workout-workoutcard--expanded",
+        "custom-workout-workoutcard--no-toggle",
+        "custom-workout-workoutcard--today",
+        "custom-workout-workoutcard--upcoming"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Typography"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/WorkoutPill.tsx",
+      "name": "WorkoutPill",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/WorkoutPill.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-workoutpill--all-statuses",
+        "custom-workout-workoutpill--completed",
+        "custom-workout-workoutpill--current",
+        "custom-workout-workoutpill--current-no-pulse",
+        "custom-workout-workoutpill--deload",
+        "custom-workout-workoutpill--missed",
+        "custom-workout-workoutpill--next",
+        "custom-workout-workoutpill--upcoming"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Tooltip"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/ZoneTrack.tsx",
+      "name": "ZoneTrack",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/Workout/ZoneTrack.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "custom-workout-dataviz-zonetrack--band-with-marker",
+        "custom-workout-dataviz-zonetrack--bare-track",
+        "custom-workout-dataviz-zonetrack--colored-tooltip-ticks",
+        "custom-workout-dataviz-zonetrack--glow",
+        "custom-workout-dataviz-zonetrack--gradient-fill",
+        "custom-workout-dataviz-zonetrack--needle",
+        "custom-workout-dataviz-zonetrack--solid-trend-fill",
+        "custom-workout-dataviz-zonetrack--wall-density"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [],
+      "family": "custom/charts",
+      "file": "packages/ui/src/components/custom/charts/SetBarChart.tsx",
+      "name": "SetBarChart",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "custom/charts",
+      "file": "packages/ui/src/components/custom/charts/SparkBars.tsx",
+      "name": "SparkBars",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/charts/SparkBars.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-charts-sparkbars--all-negative",
+        "custom-charts-sparkbars--all-positive",
+        "custom-charts-sparkbars--default",
+        "custom-charts-sparkbars--empty",
+        "custom-charts-sparkbars--tall",
+        "custom-charts-sparkbars--truncated"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "custom/stepper",
+      "file": "packages/ui/src/components/custom/stepper/Stepper.tsx",
+      "name": "Stepper",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/custom/stepper/Stepper.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-stepper--active-step-progression",
+        "components-molecules-stepper--default",
+        "components-molecules-stepper--horizontal",
+        "components-molecules-stepper--step-states",
+        "components-molecules-stepper--vertical",
+        "components-molecules-stepper--vertical-with-content",
+        "components-molecules-stepper--with-error-state"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "icons",
+      "file": "packages/ui/src/components/icons/SvgIcon.tsx",
+      "name": "SvgIcon",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "SideNav",
+        "Surface",
+        "TopBar",
+        "brands"
+      ],
+      "family": "shell",
+      "file": "packages/ui/src/components/shell/AppShell.tsx",
+      "name": "AppShell",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/shell/AppShell.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "pages-appshell--audiobook-app",
+        "pages-appshell--brain-app",
+        "pages-appshell--default",
+        "pages-appshell--replaced-regions"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Typography",
+        "brands"
+      ],
+      "family": "shell",
+      "file": "packages/ui/src/components/shell/BrandLockup.tsx",
+      "name": "BrandLockup",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/shell/BrandLockup.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "shell-brandlockup--brand-variants",
+        "shell-brandlockup--brand-variants-collapsed",
+        "shell-brandlockup--custom-brand",
+        "shell-brandlockup--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Typography"
+      ],
+      "family": "shell",
+      "file": "packages/ui/src/components/shell/NavItem.tsx",
+      "name": "NavItem",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/shell/NavItem.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "shell-navitem--active",
+        "shell-navitem--default",
+        "shell-navitem--live-elsewhere"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "NavItem"
+      ],
+      "family": "shell",
+      "file": "packages/ui/src/components/shell/SideNav.tsx",
+      "name": "SideNav",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/shell/SideNav.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "shell-sidenav--another-app",
+        "shell-sidenav--default",
+        "shell-sidenav--live-elsewhere"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "BrandLockup",
+        "DateTime",
+        "Divider",
+        "brands"
+      ],
+      "family": "shell",
+      "file": "packages/ui/src/components/shell/TopBar.tsx",
+      "name": "TopBar",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/shell/TopBar.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "shell-topbar--default",
+        "shell-topbar--single-trailing-item",
+        "shell-topbar--with-app-chrome"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "icons"
+      ],
+      "family": "shell",
+      "file": "packages/ui/src/components/shell/workout/DeviceIndicator.tsx",
+      "name": "DeviceIndicator",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/shell/workout/DeviceIndicator.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "shell-workout-deviceindicator--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "DeviceIndicator",
+        "DeviceRow",
+        "Popover",
+        "Typography"
+      ],
+      "family": "shell",
+      "file": "packages/ui/src/components/shell/workout/DeviceMenu.tsx",
+      "name": "DeviceMenu",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/shell/workout/DeviceMenu.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "shell-workout-devicemenu--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Indicator",
+        "Typography"
+      ],
+      "family": "shell",
+      "file": "packages/ui/src/components/shell/workout/DeviceRow.tsx",
+      "name": "DeviceRow",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/shell/workout/DeviceRow.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "shell-workout-devicerow--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Typography",
+        "VelocityStrip",
+        "icons",
+        "pinnedLiveStripParts"
+      ],
+      "family": "shell",
+      "file": "packages/ui/src/components/shell/workout/DualPinnedLiveStrip.tsx",
+      "name": "DualPinnedLiveStrip",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/shell/workout/DualPinnedLiveStrip.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "shell-workout-dualpinnedlivestrip--default",
+        "shell-workout-dualpinnedlivestrip--rest"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "SetBarChart",
+        "VelocityStrip",
+        "icons",
+        "pinnedLiveStripParts"
+      ],
+      "family": "shell",
+      "file": "packages/ui/src/components/shell/workout/PinnedLiveStrip.tsx",
+      "name": "PinnedLiveStrip",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/shell/workout/PinnedLiveStrip.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "shell-workout-pinnedlivestrip--default",
+        "shell-workout-pinnedlivestrip--rest",
+        "shell-workout-pinnedlivestrip--targets-from-last-time"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Indicator",
+        "Typography"
+      ],
+      "family": "shell",
+      "file": "packages/ui/src/components/shell/workout/SessionStatePill.tsx",
+      "name": "SessionStatePill",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/shell/workout/SessionStatePill.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "shell-workout-sessionstatepill--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "AppShell",
+        "DeviceRow",
+        "SessionStatePill",
+        "SideNav",
+        "WorkoutTopBar",
+        "workoutNavItems"
+      ],
+      "family": "shell",
+      "file": "packages/ui/src/components/shell/workout/WorkoutShell.tsx",
+      "name": "WorkoutShell",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/shell/workout/WorkoutShell.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "pages-workoutshell--default",
+        "pages-workoutshell--with-content"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "DeviceMenu",
+        "DeviceRow",
+        "SessionStatePill",
+        "TopBar"
+      ],
+      "family": "shell",
+      "file": "packages/ui/src/components/shell/workout/WorkoutTopBar.tsx",
+      "name": "WorkoutTopBar",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/shell/workout/WorkoutTopBar.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "shell-workout-workouttopbar--default",
+        "shell-workout-workouttopbar--device-lost"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [],
+      "family": "ui/alert",
+      "file": "packages/ui/src/components/ui/alert/Alert.tsx",
+      "name": "Alert",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/alert/Alert.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-molecules-alert--all-statuses",
+        "components-molecules-alert--all-variants",
+        "components-molecules-alert--compact-error-cue",
+        "components-molecules-alert--compact-live-cue",
+        "components-molecules-alert--compact-warning-cue",
+        "components-molecules-alert--default",
+        "components-molecules-alert--default-vs-compact",
+        "components-molecules-alert--description-only",
+        "components-molecules-alert--error",
+        "components-molecules-alert--solid-variants",
+        "components-molecules-alert--success",
+        "components-molecules-alert--warning",
+        "components-molecules-alert--with-close-button",
+        "components-molecules-alert--without-icon"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "Surface"
+      ],
+      "family": "ui/autocomplete",
+      "file": "packages/ui/src/components/ui/autocomplete/Autocomplete.tsx",
+      "name": "Autocomplete",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/autocomplete/Autocomplete.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-molecules-autocomplete--custom-no-results-text",
+        "components-molecules-autocomplete--default",
+        "components-molecules-autocomplete--disabled",
+        "components-molecules-autocomplete--disabled-options",
+        "components-molecules-autocomplete--form-example",
+        "components-molecules-autocomplete--loading",
+        "components-molecules-autocomplete--minimum-characters",
+        "components-molecules-autocomplete--non-clearable",
+        "components-molecules-autocomplete--with-descriptions",
+        "components-molecules-autocomplete--with-error",
+        "components-molecules-autocomplete--with-label"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [],
+      "family": "ui/avatar",
+      "file": "packages/ui/src/components/ui/avatar/Avatar.tsx",
+      "name": "Avatar",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/avatar/Avatar.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-atoms-avatar--all-sizes",
+        "components-atoms-avatar--default",
+        "components-atoms-avatar--fallback-initials",
+        "components-atoms-avatar--group",
+        "components-atoms-avatar--light",
+        "components-atoms-avatar--with-badge",
+        "components-atoms-avatar--with-image"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "Indicator",
+        "Pill"
+      ],
+      "family": "ui/badge",
+      "file": "packages/ui/src/components/ui/badge/Badge.tsx",
+      "name": "Badge",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/badge/Badge.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-atoms-badge--all-colors",
+        "components-atoms-badge--all-sizes",
+        "components-atoms-badge--all-variants",
+        "components-atoms-badge--default",
+        "components-atoms-badge--with-badge-text"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [],
+      "family": "ui/breadcrumbs",
+      "file": "packages/ui/src/components/ui/breadcrumbs/Breadcrumbs.tsx",
+      "name": "Breadcrumbs",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/breadcrumbs/Breadcrumbs.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-molecules-breadcrumbs--custom-separator",
+        "components-molecules-breadcrumbs--default",
+        "components-molecules-breadcrumbs--long-path",
+        "components-molecules-breadcrumbs--single-item",
+        "components-molecules-breadcrumbs--with-max-items"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/button",
+      "file": "packages/ui/src/components/ui/button/Button.tsx",
+      "name": "Button",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/button/Button.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-molecules-button--all-colors",
+        "components-molecules-button--all-sizes",
+        "components-molecules-button--all-variants",
+        "components-molecules-button--disabled",
+        "components-molecules-button--ghost",
+        "components-molecules-button--icon-button",
+        "components-molecules-button--link",
+        "components-molecules-button--loading",
+        "components-molecules-button--outline",
+        "components-molecules-button--primary",
+        "components-molecules-button--secondary"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "Surface"
+      ],
+      "family": "ui/card",
+      "file": "packages/ui/src/components/ui/card/Card.tsx",
+      "name": "Card",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/card/Card.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-molecules-card--brand-colored-cards",
+        "components-molecules-card--clickable",
+        "components-molecules-card--default",
+        "components-molecules-card--elevated",
+        "components-molecules-card--elevation-levels",
+        "components-molecules-card--filled",
+        "components-molecules-card--inset-elements",
+        "components-molecules-card--inside-a-card",
+        "components-molecules-card--interactive",
+        "components-molecules-card--loading",
+        "components-molecules-card--outline",
+        "components-molecules-card--simple-card",
+        "components-molecules-card--skeleton",
+        "components-molecules-card--status-filled-cards",
+        "components-molecules-card--status-outline-cards"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Button",
+        "icons"
+      ],
+      "family": "ui/carousel",
+      "file": "packages/ui/src/components/ui/carousel/Carousel.tsx",
+      "name": "Carousel",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/carousel/Carousel.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-carousel--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [],
+      "family": "ui/checkbox",
+      "file": "packages/ui/src/components/ui/checkbox/Checkbox.tsx",
+      "name": "Checkbox",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/checkbox/Checkbox.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-molecules-checkbox--all-sizes",
+        "components-molecules-checkbox--checked",
+        "components-molecules-checkbox--default",
+        "components-molecules-checkbox--disabled",
+        "components-molecules-checkbox--group",
+        "components-molecules-checkbox--indeterminate",
+        "components-molecules-checkbox--invalid",
+        "components-molecules-checkbox--with-helper-text"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "Pill"
+      ],
+      "family": "ui/chip",
+      "file": "packages/ui/src/components/ui/chip/Chip.tsx",
+      "name": "Chip",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/chip/Chip.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-atoms-chip--all-colors",
+        "components-atoms-chip--all-sizes",
+        "components-atoms-chip--all-variants",
+        "components-atoms-chip--as-tag-list",
+        "components-atoms-chip--clickable",
+        "components-atoms-chip--default",
+        "components-atoms-chip--disabled",
+        "components-atoms-chip--dismissible"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [],
+      "family": "ui/collapse",
+      "file": "packages/ui/src/components/ui/collapse/Collapse.tsx",
+      "name": "Collapse",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/collapse/Collapse.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-organisms-accordion--allow-multiple",
+        "components-organisms-accordion--collapse-controlled",
+        "components-organisms-accordion--collapse-default-open",
+        "components-organisms-accordion--default",
+        "components-organisms-accordion--default-open",
+        "components-organisms-accordion--many-items",
+        "components-organisms-accordion--multiple-default-open",
+        "components-organisms-accordion--single-collapse",
+        "components-organisms-accordion--with-rich-content"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/data-row",
+      "file": "packages/ui/src/components/ui/data-row/DataRow.tsx",
+      "name": "DataRow",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/data-row/DataRow.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-molecules-datarow--custom-class-name",
+        "components-molecules-datarow--default",
+        "components-molecules-datarow--multiple-rows",
+        "components-molecules-datarow--with-custom-value",
+        "components-molecules-datarow--with-number",
+        "components-molecules-datarow--with-value-class-name"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/divider",
+      "file": "packages/ui/src/components/ui/divider/Divider.tsx",
+      "name": "Divider",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/divider/Divider.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-atoms-divider--default",
+        "components-atoms-divider--horizontal",
+        "components-atoms-divider--in-list",
+        "components-atoms-divider--vertical"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "Surface"
+      ],
+      "family": "ui/drawer",
+      "file": "packages/ui/src/components/ui/drawer/Drawer.tsx",
+      "name": "Drawer",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/drawer/Drawer.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-organisms-drawer--all-sizes",
+        "components-organisms-drawer--bottom-placement",
+        "components-organisms-drawer--default",
+        "components-organisms-drawer--left-placement",
+        "components-organisms-drawer--no-close-button",
+        "components-organisms-drawer--with-footer"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [],
+      "family": "ui/empty-state",
+      "file": "packages/ui/src/components/ui/empty-state/EmptyState.tsx",
+      "name": "EmptyState",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/empty-state/EmptyState.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-emptystate--default",
+        "components-molecules-emptystate--title-only",
+        "components-molecules-emptystate--with-action",
+        "components-molecules-emptystate--with-description",
+        "components-molecules-emptystate--with-icon"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "Typography"
+      ],
+      "family": "ui/eyebrow",
+      "file": "packages/ui/src/components/ui/eyebrow/Eyebrow.tsx",
+      "name": "Eyebrow",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/eyebrow/Eyebrow.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-eyebrow--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [],
+      "family": "ui/form-field",
+      "file": "packages/ui/src/components/ui/form-field/FormField.tsx",
+      "name": "FormField",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/form-field/FormField.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-molecules-formfield--complete-form-example",
+        "components-molecules-formfield--default",
+        "components-molecules-formfield--disabled",
+        "components-molecules-formfield--form-row-example",
+        "components-molecules-formfield--form-section-example",
+        "components-molecules-formfield--horizontal-layout",
+        "components-molecules-formfield--label-sizes",
+        "components-molecules-formfield--required",
+        "components-molecules-formfield--validation-states",
+        "components-molecules-formfield--with-error",
+        "components-molecules-formfield--with-helper-text"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "Surface"
+      ],
+      "family": "ui/help-tip",
+      "file": "packages/ui/src/components/ui/help-tip/HelpTip.tsx",
+      "name": "HelpTip",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/help-tip/HelpTip.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-helptip--all-colors",
+        "components-molecules-helptip--all-icons",
+        "components-molecules-helptip--all-placements",
+        "components-molecules-helptip--all-sizes",
+        "components-molecules-helptip--default",
+        "components-molecules-helptip--form-example",
+        "components-molecules-helptip--inline-with-label",
+        "components-molecules-helptip--label-with-help-component",
+        "components-molecules-helptip--no-arrow",
+        "components-molecules-helptip--with-long-content",
+        "components-molecules-helptip--with-rich-content"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [],
+      "family": "ui/icon-box",
+      "file": "packages/ui/src/components/ui/icon-box/IconBox.tsx",
+      "name": "IconBox",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/icon-box/IconBox.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-atoms-iconbox--all-colors",
+        "components-atoms-iconbox--all-sizes",
+        "components-atoms-iconbox--default",
+        "components-atoms-iconbox--different-icons",
+        "components-atoms-iconbox--large",
+        "components-atoms-iconbox--primary",
+        "components-atoms-iconbox--small"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/indicator",
+      "file": "packages/ui/src/components/ui/indicator/Indicator.tsx",
+      "name": "Indicator",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/indicator/Indicator.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-atoms-indicator--all-colors",
+        "components-atoms-indicator--all-sizes",
+        "components-atoms-indicator--custom-color",
+        "components-atoms-indicator--default",
+        "components-atoms-indicator--pulse",
+        "components-atoms-indicator--vivid",
+        "components-atoms-indicator--with-glow",
+        "components-atoms-indicator--with-ring"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/input",
+      "file": "packages/ui/src/components/ui/input/Input.tsx",
+      "name": "Input",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/input/Input.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-molecules-input--all-sizes",
+        "components-molecules-input--all-variants",
+        "components-molecules-input--default",
+        "components-molecules-input--disabled",
+        "components-molecules-input--form-example",
+        "components-molecules-input--multiline",
+        "components-molecules-input--multiline-sizes",
+        "components-molecules-input--password",
+        "components-molecules-input--password-with-error",
+        "components-molecules-input--read-only",
+        "components-molecules-input--required",
+        "components-molecules-input--with-error",
+        "components-molecules-input--with-helper-text",
+        "components-molecules-input--with-label",
+        "components-molecules-input--with-left-element"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/link",
+      "file": "packages/ui/src/components/ui/link/Link.tsx",
+      "name": "Link",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/link/Link.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-atoms-link--all-colors",
+        "components-atoms-link--default",
+        "components-atoms-link--disabled",
+        "components-atoms-link--external",
+        "components-atoms-link--underline-styles"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/list-item",
+      "file": "packages/ui/src/components/ui/list-item/ListItem.tsx",
+      "name": "ListItem",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/list-item/ListItem.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-molecules-listitem--basic",
+        "components-molecules-listitem--full-width-divider",
+        "components-molecules-listitem--settings-list",
+        "components-molecules-listitem--with-icon",
+        "components-molecules-listitem--with-subtitle",
+        "components-molecules-listitem--with-trailing"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "Surface",
+        "TriggerSurface"
+      ],
+      "family": "ui/menu",
+      "file": "packages/ui/src/components/ui/menu/Menu.tsx",
+      "name": "Menu",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/menu/Menu.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "components-molecules-menu--controlled",
+        "components-molecules-menu--default",
+        "components-molecules-menu--destructive-item",
+        "components-molecules-menu--disabled-items",
+        "components-molecules-menu--with-dividers",
+        "components-molecules-menu--with-groups",
+        "components-molecules-menu--with-icons"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Surface"
+      ],
+      "family": "ui/modal",
+      "file": "packages/ui/src/components/ui/modal/Modal.tsx",
+      "name": "Modal",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/modal/Modal.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "components-organisms-modal--backdrop-blur",
+        "components-organisms-modal--default",
+        "components-organisms-modal--delete-confirmation",
+        "components-organisms-modal--large-with-scroll-outside",
+        "components-organisms-modal--no-overlay-close",
+        "components-organisms-modal--scrollable-content",
+        "components-organisms-modal--sizes",
+        "components-organisms-modal--slide-animation",
+        "components-organisms-modal--with-form-content"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [],
+      "family": "ui/pill",
+      "file": "packages/ui/src/components/ui/pill/Pill.tsx",
+      "name": "Pill",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/pill/Pill.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-atoms-pill--all-sizes",
+        "components-atoms-pill--all-tones",
+        "components-atoms-pill--all-variants",
+        "components-atoms-pill--default",
+        "components-atoms-pill--leading-slot",
+        "components-atoms-pill--on-both-planes",
+        "components-atoms-pill--solid-tones",
+        "components-atoms-pill--square-corners"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "Surface",
+        "TriggerSurface"
+      ],
+      "family": "ui/popover",
+      "file": "packages/ui/src/components/ui/popover/Popover.tsx",
+      "name": "Popover",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/popover/Popover.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "components-molecules-popover--controlled",
+        "components-molecules-popover--default",
+        "components-molecules-popover--placement-bottom",
+        "components-molecules-popover--placement-left",
+        "components-molecules-popover--placement-right",
+        "components-molecules-popover--placement-top",
+        "components-molecules-popover--with-close-button",
+        "components-molecules-popover--with-form-content"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [],
+      "family": "ui/progress",
+      "file": "packages/ui/src/components/ui/progress/Progress.tsx",
+      "name": "Progress",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/progress/Progress.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-molecules-progress--all-colors",
+        "components-molecules-progress--all-sizes",
+        "components-molecules-progress--circular",
+        "components-molecules-progress--circular-sizes",
+        "components-molecules-progress--custom-format",
+        "components-molecules-progress--default",
+        "components-molecules-progress--indeterminate",
+        "components-molecules-progress--steps",
+        "components-molecules-progress--usage-examples",
+        "components-molecules-progress--with-label"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/radio",
+      "file": "packages/ui/src/components/ui/radio/Radio.tsx",
+      "name": "Radio",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/radio/Radio.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-molecules-radio--all-colors",
+        "components-molecules-radio--all-sizes",
+        "components-molecules-radio--default",
+        "components-molecules-radio--disabled",
+        "components-molecules-radio--form-example",
+        "components-molecules-radio--horizontal",
+        "components-molecules-radio--with-label"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/section",
+      "file": "packages/ui/src/components/ui/section/Section.tsx",
+      "name": "Section",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/section/Section.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-atoms-section--default",
+        "components-atoms-section--full-example",
+        "components-atoms-section--header-only",
+        "components-atoms-section--multiple-sections",
+        "components-atoms-section--with-subtitle",
+        "components-atoms-section--with-trailing-action"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "Surface"
+      ],
+      "family": "ui/select",
+      "file": "packages/ui/src/components/ui/select/Select.tsx",
+      "name": "Select",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/select/Select.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "components-molecules-select--controlled",
+        "components-molecules-select--default",
+        "components-molecules-select--disabled",
+        "components-molecules-select--in-form-layout",
+        "components-molecules-select--invalid",
+        "components-molecules-select--many-options",
+        "components-molecules-select--multi-select",
+        "components-molecules-select--multi-select-with-preselected",
+        "components-molecules-select--with-disabled-options",
+        "components-molecules-select--with-placeholder",
+        "components-molecules-select--with-preselected-value"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [],
+      "family": "ui/skeleton",
+      "file": "packages/ui/src/components/ui/skeleton/Skeleton.tsx",
+      "name": "Skeleton",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/skeleton/Skeleton.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-atoms-skeleton--avatar",
+        "components-atoms-skeleton--card-skeleton",
+        "components-atoms-skeleton--card-without-image",
+        "components-atoms-skeleton--circle-variant",
+        "components-atoms-skeleton--composed-example",
+        "components-atoms-skeleton--default",
+        "components-atoms-skeleton--list-item-skeleton",
+        "components-atoms-skeleton--list-without-avatar",
+        "components-atoms-skeleton--no-animation",
+        "components-atoms-skeleton--rect-variant",
+        "components-atoms-skeleton--rounded-variant",
+        "components-atoms-skeleton--text-block",
+        "components-atoms-skeleton--text-variant"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/spinner",
+      "file": "packages/ui/src/components/ui/spinner/Spinner.tsx",
+      "name": "Spinner",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/spinner/Spinner.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-atoms-spinner--all-colors",
+        "components-atoms-spinner--all-sizes",
+        "components-atoms-spinner--default",
+        "components-atoms-spinner--with-custom-label"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/stack",
+      "file": "packages/ui/src/components/ui/stack/Stack.tsx",
+      "name": "Stack",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/stack/Stack.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-atoms-stack--default",
+        "components-atoms-stack--gap-scale",
+        "components-atoms-stack--horizontal",
+        "components-atoms-stack--vertical",
+        "components-atoms-stack--with-alignment",
+        "components-atoms-stack--with-wrapping"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "Card",
+        "Typography"
+      ],
+      "family": "ui/stat-card",
+      "file": "packages/ui/src/components/ui/stat-card/StatCard.tsx",
+      "name": "StatCard",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/stat-card/StatCard.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-statcard--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [],
+      "family": "ui/surface",
+      "file": "packages/ui/src/components/ui/surface/Surface.tsx",
+      "name": "Surface",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/surface/Surface.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-atoms-surface--default",
+        "components-atoms-surface--elevation-levels",
+        "components-atoms-surface--light-theme",
+        "components-atoms-surface--named-planes",
+        "components-atoms-surface--nested-planes",
+        "components-atoms-surface--on-surface-text",
+        "components-atoms-surface--pressed-clamp-and-nesting",
+        "components-atoms-surface--pressed-wells",
+        "components-atoms-surface--theme-inheritance",
+        "components-atoms-surface--wall-lockup",
+        "components-atoms-surface--with-glow"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/switch",
+      "file": "packages/ui/src/components/ui/switch/Switch.tsx",
+      "name": "Switch",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/switch/Switch.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-molecules-switch--all-sizes",
+        "components-molecules-switch--default",
+        "components-molecules-switch--disabled",
+        "components-molecules-switch--label-left",
+        "components-molecules-switch--label-right",
+        "components-molecules-switch--off",
+        "components-molecules-switch--on",
+        "components-molecules-switch--without-label"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/tabs",
+      "file": "packages/ui/src/components/ui/tabs/Tabs.tsx",
+      "name": "Tabs",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/tabs/Tabs.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-molecules-tabs--all-variants",
+        "components-molecules-tabs--default",
+        "components-molecules-tabs--enclosed-variant",
+        "components-molecules-tabs--line-variant",
+        "components-molecules-tabs--soft-rounded-variant",
+        "components-molecules-tabs--vertical-orientation",
+        "components-molecules-tabs--with-disabled-tab"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/tile",
+      "file": "packages/ui/src/components/ui/tile/Tile.tsx",
+      "name": "Tile",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/tile/Tile.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-tile--default",
+        "components-atoms-tile--row",
+        "components-atoms-tile--schedule-tiles",
+        "components-atoms-tile--start-aligned",
+        "components-atoms-tile--value-colors"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "Surface"
+      ],
+      "family": "ui/toast",
+      "file": "packages/ui/src/components/ui/toast/Toast.tsx",
+      "name": "Toast",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/toast/Toast.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-molecules-toast--all-statuses",
+        "components-molecules-toast--bottom-position",
+        "components-molecules-toast--default",
+        "components-molecules-toast--error",
+        "components-molecules-toast--info",
+        "components-molecules-toast--interactive",
+        "components-molecules-toast--long-duration",
+        "components-molecules-toast--success",
+        "components-molecules-toast--title-only",
+        "components-molecules-toast--top-position",
+        "components-molecules-toast--warning",
+        "components-molecules-toast--with-close-button",
+        "components-molecules-toast--without-icon"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Surface"
+      ],
+      "family": "ui/toolbar-button",
+      "file": "packages/ui/src/components/ui/toolbar-button/ToolbarButton.tsx",
+      "name": "ToolbarButton",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/toolbar-button/ToolbarButton.stories.tsx"
+      },
+      "status": "stable",
+      "storyIds": [
+        "components-molecules-toolbarbutton--active-vs-inactive",
+        "components-molecules-toolbarbutton--button-group",
+        "components-molecules-toolbarbutton--compact-mode",
+        "components-molecules-toolbarbutton--css-reference",
+        "components-molecules-toolbarbutton--default",
+        "components-molecules-toolbarbutton--disabled",
+        "components-molecules-toolbarbutton--hover-states",
+        "components-molecules-toolbarbutton--icon-only",
+        "components-molecules-toolbarbutton--interactive",
+        "components-molecules-toolbarbutton--toolbar-example",
+        "components-molecules-toolbarbutton--variants",
+        "components-molecules-toolbarbutton--with-menu"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Tooltip"
+      ],
+      "family": "ui/tooltip",
+      "file": "packages/ui/src/components/ui/tooltip/TipTrigger.tsx",
+      "name": "TipTrigger",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Surface",
+        "TriggerSurface"
+      ],
+      "family": "ui/tooltip",
+      "file": "packages/ui/src/components/ui/tooltip/Tooltip.tsx",
+      "name": "Tooltip",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/tooltip/Tooltip.stories.tsx"
+      },
+      "status": "review",
+      "storyIds": [
+        "components-molecules-tooltip--all-placements",
+        "components-molecules-tooltip--default",
+        "components-molecules-tooltip--on-text",
+        "components-molecules-tooltip--with-delay",
+        "components-molecules-tooltip--without-arrow"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [],
+      "family": "ui/trigger",
+      "file": "packages/ui/src/components/ui/trigger/TriggerSurface.tsx",
+      "name": "TriggerSurface",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/typography",
+      "file": "packages/ui/src/components/ui/typography/Typography.tsx",
+      "name": "Typography",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/typography/Typography.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "foundations-typography--all-body",
+        "foundations-typography--all-colors",
+        "foundations-typography--all-headings",
+        "foundations-typography--all-utility",
+        "foundations-typography--default",
+        "foundations-typography--heading-component",
+        "foundations-typography--labels",
+        "foundations-typography--micro-label-in-a-table-header",
+        "foundations-typography--mono",
+        "foundations-typography--paragraph-component",
+        "foundations-typography--utility-components",
+        "foundations-typography--with-truncation"
+      ],
+      "tier": "atom"
+    }
+  ],
+  "excluded": [
+    {
+      "file": "packages/ui/src/components/custom/ActiveWork/Eyebrow.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Chat/coach-cards.tsx",
+      "reason": "not-pascal-case"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Table/TableSelection.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/BodyMapDetailSections.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/GoalLiftCard.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/GoalTrajectoryBand.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/GoalTrajectoryCalibrating.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/goalCarousel-fixture.tsx",
+      "reason": "fixture"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/icons.tsx",
+      "reason": "not-pascal-case"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/metricText.tsx",
+      "reason": "not-pascal-case"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/setHeadingKit.tsx",
+      "reason": "not-pascal-case"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/velocity-story-kit.tsx",
+      "reason": "not-pascal-case"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/wholeBodyCardParts.tsx",
+      "reason": "not-pascal-case"
+    },
+    {
+      "file": "packages/ui/src/components/icons/icons.tsx",
+      "reason": "not-pascal-case"
+    },
+    {
+      "file": "packages/ui/src/components/shell/brands.tsx",
+      "reason": "not-pascal-case"
+    },
+    {
+      "file": "packages/ui/src/components/shell/workout/pinnedLiveStripParts.tsx",
+      "reason": "not-pascal-case"
+    },
+    {
+      "file": "packages/ui/src/components/shell/workout/workoutNavItems.tsx",
+      "reason": "not-pascal-case"
+    }
+  ],
+  "inputsHash": "sha256:b9fa9765df154f4ea1d607d4bb8859b11c65561a9f5f934a5f391f79a314011e",
+  "schema": 1
+}
