@@ -13,11 +13,9 @@ const meta: Meta<StoryArgs> = {
   component: BarList as unknown as Meta<StoryArgs>['component'],
   tags: ['autodocs', 'status:candidate', '!status:review'],
   args: {
-    fixture: defaultFixture,
+    fixture: defaultFixture.name as unknown as BarListFixture,
     accessibilityLabel: 'Tool calls',
     maxRows: 10,
-    sort: 'descending',
-    layout: 'inline',
     size: 'md',
     isLoading: false,
     isDisabled: false,
@@ -27,7 +25,7 @@ const meta: Meta<StoryArgs> = {
       control: 'select',
       options: fixtureOptions,
       mapping: fixtureMapping,
-      description: 'Sample data; drives rows, max and sort. Edit `rows` to override.',
+      description: 'Sample data; drives rows, max, sort and layout until a control sets them.',
     },
     rows: { control: 'object' },
     sort: { control: 'select', options: ['descending', 'none'] },
@@ -62,19 +60,21 @@ const meta: Meta<StoryArgs> = {
           'secondary value, with a top-N cap that folds the rest into one overflow row. Composes ' +
           '[Typography](?path=/docs/foundations-typography--docs), ' +
           '[Skeleton](?path=/docs/components-atoms-skeleton--docs) and ' +
-          '[EmptyState](?path=/docs/components-atoms-emptystate--docs). ' +
+          '[EmptyState](?path=/docs/components-molecules-emptystate--docs). ' +
           'No error state: the consumer renders the failure. Disabled applies only with `onRowPress`.',
       },
     },
   },
-  render: function Render({ fixture, ...args }) {
+  render: function Render({ fixture: selected, ...args }) {
+    // Storybook maps the key to the fixture; composeStories (the smoke test) passes the key through.
+    const fixture = typeof selected === 'string' ? fixtureMapping[selected] : selected
     return (
       <BarList
-        rows={fixture.rows}
-        max={fixture.max}
-        sort={fixture.sort}
-        layout={fixture.layout}
         {...args}
+        rows={args.rows ?? fixture.rows}
+        max={args.max ?? fixture.max}
+        sort={args.sort ?? fixture.sort}
+        layout={args.layout ?? fixture.layout}
       />
     )
   },

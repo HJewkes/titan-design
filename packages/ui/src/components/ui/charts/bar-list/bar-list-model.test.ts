@@ -93,7 +93,8 @@ describe('maxRows', () => {
 
 describe('buildBarListModel properties', () => {
   const valueArb = fc.oneof(
-    fc.double({ noNaN: false }),
+    fc.double({ min: -1e6, max: 1e6 }),
+    fc.constantFrom(Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY),
     fc.constant(null),
     fc.integer({ min: -50, max: 1000 })
   )

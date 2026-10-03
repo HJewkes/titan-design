@@ -36,12 +36,22 @@ missing), `resolveMax` (a finite positive `max`, else the largest finite positiv
 - All-zero rows render with empty bars; they are data, not an empty list.
 - Negative values draw no bar and keep their text. Diverging bars are out of scope.
 - A flag is always colour plus the flag's label as text, and the label is in the row's accessible name.
+- A flag recolours the fill (`status-warning` or `status-error`) and a row's own `color` wins; the
+  track stays `brand-primary-muted` under every fill.
 - Duplicate ids keep both rows, keyed by id and position.
 - `maxRows` below 1 clamps to 1 and a fraction floors; `NaN` uses the default of 10.
 
 **Primitives and tokens.** `Typography`, `Skeleton`, `EmptyState`, `Pressable`, `cn`, `resolveColor`,
 `formatCompact`. Existing tokens only: one bar hue for every row (`brand-primary`), a `brand-primary-muted`
 track, `status-warning` and `status-error` for flagged rows.
+
+## Deviation from the shared disabled rule (S-h)
+
+`isDisabled` should keep reading and focus and report `aria-disabled`. BarList cannot: with `isDisabled`,
+a pressable row leaves the tab order and renders a native `disabled` button. react-native-web 0.19.13's
+`Pressable` overwrites `aria-disabled` with its own `disabled`, does not handle `accessibilityState`, and
+`createDOMProps` adds native `disabled` plus `tabIndex` -1 to any `<button>` carrying `aria-disabled`. The
+row stays readable through its list item name.
 
 ## Taste items awaiting the owner's review round
 
