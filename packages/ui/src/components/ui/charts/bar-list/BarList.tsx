@@ -3,17 +3,19 @@ import { View, type ViewProps } from 'react-native'
 import { cn } from '../../../../utils/cn'
 import type { ColorToken } from '../../../../theme/resolve-color'
 import { EmptyState } from '../../empty-state'
+import { MarkerLegend } from './BarListMarker'
 import { ModelRow, OverflowRow, SkeletonRows } from './BarListParts'
 import {
   buildBarListModel,
   readoutName,
   normalizeMaxRows,
+  type BarListMarker,
   type BarListModel,
   type BarListRow,
   type BarListRowContext,
 } from './bar-list-model'
 
-export type { BarListModel, BarListRow, BarListRowContext } from './bar-list-model'
+export type { BarListMarker, BarListModel, BarListRow, BarListRowContext } from './bar-list-model'
 
 export interface BarListProps extends Omit<ViewProps, 'children'> {
   rows: BarListRow[]
@@ -21,6 +23,8 @@ export interface BarListProps extends Omit<ViewProps, 'children'> {
   accessibilityLabel: string
   /** Value that fills a whole bar. Defaults to the largest value. */
   max?: number
+  /** One labelled line on the value axis (a cutoff, a budget). It never changes the scale. */
+  referenceMarker?: BarListMarker
   /** `descending` ranks by value; `none` keeps input order (a funnel). */
   sort?: 'descending' | 'none'
   /** Rows shown before the rest fold into one overflow row. */
@@ -60,6 +64,7 @@ export function BarList({
   rows,
   accessibilityLabel,
   max,
+  referenceMarker,
   sort = 'descending',
   maxRows,
   layout = 'inline',
@@ -79,8 +84,16 @@ export function BarList({
   ...props
 }: BarListProps) {
   const model = useMemo(
-    () => buildBarListModel(rows, { max, sort, maxRows, formatValue, formatSecondary }),
-    [rows, max, sort, maxRows, formatValue, formatSecondary]
+    () =>
+      buildBarListModel(rows, {
+        max,
+        referenceMarker,
+        sort,
+        maxRows,
+        formatValue,
+        formatSecondary,
+      }),
+    [rows, max, referenceMarker, sort, maxRows, formatValue, formatSecondary]
   )
 
   if (isLoading) {
@@ -119,6 +132,7 @@ export function BarList({
           entry={entry}
           shownCount={model.shownCount}
           valuesChars={model.valuesChars}
+          marker={model.marker}
           layout={layout}
           size={size}
           labelWidth={labelWidth}
@@ -131,6 +145,7 @@ export function BarList({
         />
       ))}
       <OverflowRow model={model} formatOverflow={formatOverflow} />
+      <MarkerLegend marker={model.marker} />
     </View>
   )
 }

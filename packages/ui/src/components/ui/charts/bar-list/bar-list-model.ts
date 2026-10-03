@@ -1,5 +1,17 @@
 import type { ColorToken } from '../../../../theme/resolve-color'
 import { formatCompact } from '../../../../utils/number-format'
+import {
+  buildMarker,
+  cleanMarker,
+  markerFraction,
+  markerSentence,
+  reachesMarker,
+  type BarListMarker,
+  type BarListModelMarker,
+} from './bar-list-marker'
+
+export { buildMarker, cleanMarker, markerFraction, reachesMarker }
+export type { BarListMarker, BarListModelMarker }
 
 export interface BarListRow {
   id: string
@@ -15,6 +27,8 @@ export interface BarListRowContext {
   rank: number
   shownCount: number
   fraction: number
+  reachesMarker: boolean
+  markerLabel: string | null
 }
 
 export interface BarListModelRow {
@@ -23,6 +37,7 @@ export interface BarListModelRow {
   index: number
   rank: number
   fraction: number
+  reachesMarker: boolean
 }
 
 export interface BarListModel {
@@ -36,9 +51,11 @@ export interface BarListModel {
   largest: { label: string; valueText: string } | null
   /** Character width of the widest values cell, so every inline row gives its values the same width. */
   valuesChars: number
+  marker: BarListModelMarker | null
 }
 
 export interface BarListModelOptions {
+  referenceMarker?: BarListMarker
   max?: number
   sort?: 'descending' | 'none'
   maxRows?: number
@@ -110,6 +127,7 @@ export function buildBarListModel(
   rows: BarListRow[],
   {
     max,
+    referenceMarker,
     sort = 'descending',
     maxRows,
     formatValue = formatCompact,
@@ -118,11 +136,13 @@ export function buildBarListModel(
 ): BarListModel {
   const resolved = resolveMax(rows, max)
   const { shown, hidden } = rankRows(rows, sort, maxRows)
+  const marker = buildMarker(referenceMarker, rows, resolved)
   const modelRows = shown.map(({ row, index }, i) => ({
     row,
     index,
     rank: i + 1,
     fraction: barFraction(row.value, resolved),
+    reachesMarker: marker !== null && reachesMarker(row.value, marker.value),
   }))
   const hiddenTotal = hidden.reduce((sum, row) => sum + (cleanValue(row.value) ?? 0), 0)
   const first = modelRows[0]
@@ -141,6 +161,7 @@ export function buildBarListModel(
     sort,
     largest,
     valuesChars: valuesChars(modelRows, { formatValue, formatSecondary }),
+    marker,
   }
 }
 
@@ -168,7 +189,14 @@ export function defaultOverflowLabel(hiddenCount: number, hiddenTotal: number): 
 
 /** The row's accessible name: every visible part, in words, so the bar and colour add nothing. */
 export function rowLabel(
-  { row, rank, shownCount }: { row: BarListRow } & BarListRowContext,
+  {
+    row,
+    rank,
+    shownCount,
+    reachesMarker: reaches = false,
+    markerLabel = null,
+  }: { row: BarListRow } & Omit<BarListRowContext, 'reachesMarker' | 'markerLabel'> &
+    Partial<Pick<BarListRowContext, 'reachesMarker' | 'markerLabel'>>,
   { formatValue, formatSecondary }: RowFormatters
 ): string {
   const value = cleanValue(row.value)
@@ -177,6 +205,7 @@ export function rowLabel(
     `${row.label}: ${value === null ? NO_VALUE_TEXT : formatValue(value, row)}`,
     secondary === null ? null : formatSecondary(secondary, row),
     row.flag?.label ?? null,
+    reaches && markerLabel !== null ? `at or above ${markerLabel}` : null,
     `rank ${rank} of ${shownCount}`,
   ]
   return parts.filter((part): part is string => part !== null).join(', ')
@@ -188,7 +217,7 @@ export function summarizeBarList(model: BarListModel): string {
   if (model.inputCount === 0) return 'No data.'
   if (model.inputCount === 1) {
     const only = model.rows[0].row
-    return `1 item: ${only.label}${model.largest ? `, ${model.largest.valueText}` : ''}.`
+    return `1 item: ${only.label}${model.largest ? `, ${model.largest.valueText}` : ''}.${markerSentence(model.marker, plural(model.inputCount))}`
   }
   const shown =
     model.sort === 'descending'
@@ -201,7 +230,7 @@ export function summarizeBarList(model: BarListModel): string {
     model.hiddenCount > 0
       ? ` ${model.hiddenCount} more not shown, totalling ${formatCompact(model.hiddenTotal)}.`
       : ''
-  return `${shown}${largest}${hidden}`
+  return `${shown}${largest}${hidden}${markerSentence(model.marker, plural(model.inputCount))}`
 }
 
 /** The list's accessible name: the caller's label, then the summary (the caller's or the default). */

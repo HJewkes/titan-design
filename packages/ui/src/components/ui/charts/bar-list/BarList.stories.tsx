@@ -25,7 +25,8 @@ const meta: Meta<StoryArgs> = {
       control: 'select',
       options: fixtureOptions,
       mapping: fixtureMapping,
-      description: 'Sample data; drives rows, max, sort and layout until a control sets them.',
+      description:
+        'Sample data; drives rows, max, sort, layout and referenceMarker until a control sets them.',
     },
     rows: { control: 'object' },
     sort: { control: 'select', options: ['descending', 'none'] },
@@ -34,6 +35,7 @@ const meta: Meta<StoryArgs> = {
     maxRows: { control: 'number' },
     labelWidth: { control: 'number' },
     max: { control: 'number' },
+    referenceMarker: { control: 'object' },
     isLoading: { control: 'boolean' },
     isDisabled: { control: 'boolean' },
     color: { control: 'select', options: ['brand-primary', 'brand-secondary', 'status-info'] },
@@ -61,6 +63,7 @@ const meta: Meta<StoryArgs> = {
           '[Typography](?path=/docs/foundations-typography--docs), ' +
           '[Skeleton](?path=/docs/components-atoms-skeleton--docs) and ' +
           '[EmptyState](?path=/docs/components-molecules-emptystate--docs). ' +
+          'An optional `referenceMarker` draws a labelled line on the value axis and is read out with the list. ' +
           'No error state: the consumer renders the failure. Disabled applies only with `onRowPress`.',
       },
     },
@@ -75,6 +78,7 @@ const meta: Meta<StoryArgs> = {
         max={args.max ?? fixture.max}
         sort={args.sort ?? fixture.sort}
         layout={args.layout ?? fixture.layout}
+        referenceMarker={args.referenceMarker ?? fixture.referenceMarker}
       />
     )
   },

@@ -4,6 +4,8 @@ import { cn } from '../../../../utils/cn'
 import { Skeleton } from '../../skeleton'
 import { Typography } from '../../typography'
 import { resolveColor, type ColorToken } from '../../../../theme/resolve-color'
+import { hiddenFromAssistiveTech } from './assistive'
+import { Bar } from './BarListBar'
 import { formatCompact } from '../../../../utils/number-format'
 import {
   cleanValue,
@@ -11,16 +13,13 @@ import {
   NO_VALUE_TEXT,
   rowLabel,
   type BarListModel,
+  type BarListModelMarker,
   type BarListModelRow,
   type BarListRow,
   type BarListRowContext,
 } from './bar-list-model'
 
-export const hiddenFromAssistiveTech = {
-  'aria-hidden': true,
-  accessibilityElementsHidden: true,
-  importantForAccessibility: 'no-hide-descendants' as const,
-}
+export { hiddenFromAssistiveTech }
 
 export interface RowViewProps {
   entry: BarListModelRow
@@ -32,25 +31,8 @@ export interface RowViewProps {
   secondaryText: string | null
   /** Width of the values cell in characters, the same for every row of a list. */
   valuesChars: number
-}
-
-function Bar({ fraction, fill, size }: { fraction: number; fill: string; size: 'sm' | 'md' }) {
-  return (
-    <View
-      className={cn(
-        'flex-1 overflow-hidden rounded-full bg-brand-primary-muted',
-        size === 'sm' ? 'h-1.5' : 'h-2'
-      )}
-      testID="bar-list-track"
-      {...hiddenFromAssistiveTech}
-    >
-      <View
-        className="h-full rounded-full"
-        style={{ width: `${fraction * 100}%`, backgroundColor: fill }}
-        testID="bar-list-fill"
-      />
-    </View>
-  )
+  /** Where the reference line sits on the track, or null when none is drawn. */
+  markerFraction: number | null
 }
 
 // RN's DimensionValue omits `ch`; react-native-web passes it through to CSS.
@@ -96,7 +78,7 @@ function Label({ entry, size }: { entry: BarListModelRow; size: 'sm' | 'md' }) {
 }
 
 export function RowContent(props: RowViewProps) {
-  const { entry, layout, size, labelWidth, fill } = props
+  const { entry, layout, size, labelWidth, fill, markerFraction } = props
   if (layout === 'stacked') {
     return (
       <View className="gap-1">
@@ -112,7 +94,7 @@ export function RowContent(props: RowViewProps) {
           </Typography>
         ) : null}
         <View className="flex-row">
-          <Bar fraction={entry.fraction} fill={fill} size={size} />
+          <Bar fraction={entry.fraction} fill={fill} size={size} markerFraction={markerFraction} />
         </View>
       </View>
     )
@@ -122,7 +104,7 @@ export function RowContent(props: RowViewProps) {
       <View style={{ width: labelWidth }}>
         <Label entry={entry} size={size} />
       </View>
-      <Bar fraction={entry.fraction} fill={fill} size={size} />
+      <Bar fraction={entry.fraction} fill={fill} size={size} markerFraction={markerFraction} />
       <Values {...props} width={`${props.valuesChars + VALUES_PAD_CHARS}ch`} />
     </View>
   )
@@ -179,6 +161,7 @@ const FLAG_TOKEN = { warning: 'status-warning', error: 'status-error' } as const
 interface ModelRowProps extends Pick<RowViewProps, 'entry' | 'layout' | 'size' | 'labelWidth'> {
   shownCount: number
   valuesChars: number
+  marker: BarListModelMarker | null
   color: ColorToken
   formatValue?: (value: number, row: BarListRow) => string
   formatSecondary?: (value: number, row: BarListRow) => string
@@ -192,6 +175,7 @@ export function ModelRow({
   entry,
   shownCount,
   valuesChars,
+  marker,
   color,
   formatValue = formatCompact,
   formatSecondary = formatCompact,
@@ -203,7 +187,13 @@ export function ModelRow({
   const { row } = entry
   const value = cleanValue(row.value)
   const secondary = cleanValue(row.secondaryValue)
-  const context = { rank: entry.rank, shownCount, fraction: entry.fraction }
+  const context = {
+    rank: entry.rank,
+    shownCount,
+    fraction: entry.fraction,
+    reachesMarker: entry.reachesMarker,
+    markerLabel: marker?.label ?? null,
+  }
   const name = formatRowLabel
     ? formatRowLabel(row, context)
     : rowLabel({ row, ...context }, { formatValue, formatSecondary })
@@ -221,6 +211,7 @@ export function ModelRow({
           valueText={value === null ? NO_VALUE_TEXT : formatValue(value, row)}
           secondaryText={secondary === null ? null : formatSecondary(secondary, row)}
           valuesChars={valuesChars}
+          markerFraction={marker?.fraction ?? null}
           {...layoutProps}
         />
       </View>

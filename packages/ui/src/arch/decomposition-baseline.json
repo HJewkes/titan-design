@@ -313,7 +313,7 @@
     "file-lines": 338
   },
   "components/ui/charts/bar-list/BarList.tsx#BarList": {
-    "props": 19
+    "props": 20
   },
   "components/ui/checkbox/Checkbox.tsx#Checkbox": {
     "complexity": 19

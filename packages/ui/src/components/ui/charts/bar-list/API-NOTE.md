@@ -45,6 +45,22 @@ missing), `resolveMax` (a finite positive `max`, else the largest finite positiv
 `formatCompact`. Existing tokens only: one bar hue for every row (`brand-primary`), a `brand-primary-muted`
 track, `status-warning` and `status-error` for flagged rows.
 
+## Reference marker
+
+`referenceMarker: { value, label, formatValue? }` draws one labelled line on the value axis: a cutoff, a
+budget, a target. Rules:
+
+- The marker never changes the scale. `resolveMax` ignores it. A marker above the resolved maximum draws no
+  line; the legend and the readout still state it. Pass `max` to keep the line visible.
+- The marker never recolours a row and never sets a flag.
+- One marker. An array is a later change.
+- A `value` that is not finite or is at or below zero ignores the marker. A blank `label` becomes "Reference".
+- The line is drawn in each row's bar at `value / max`, on the aligned track, 2 px wide. The legend sits after
+  the overflow row ("Limit 100"). Both are hidden from assistive tech.
+- The list name gains ` <label>: <valueText>. <n> of <N items> at or above.` and a row at or above the
+  marker gains `at or above <label>` after its flag and before its rank. `reachedCount` covers hidden rows.
+- `formatRowLabel` and `summarize` overrides receive `reachesMarker`, `markerLabel` and `model.marker`.
+
 ## Deviation from the shared disabled rule (S-h)
 
 `isDisabled` should keep reading and focus and report `aria-disabled`. BarList cannot: with `isDisabled`,

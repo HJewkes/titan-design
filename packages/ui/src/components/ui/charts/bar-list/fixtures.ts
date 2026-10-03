@@ -1,7 +1,7 @@
 // Synthetic, labelled fixtures for BarList. Every name is invented; tool names such as Bash are
 // product vocabulary. Not exported from any barrel.
 import { seededRandom } from '../kit/seededRandom'
-import type { BarListRow } from './bar-list-model'
+import type { BarListMarker, BarListRow } from './bar-list-model'
 
 export interface BarListFixture {
   name: string
@@ -10,6 +10,7 @@ export interface BarListFixture {
   sort?: 'descending' | 'none'
   maxRows?: number
   layout?: 'inline' | 'stacked'
+  referenceMarker?: BarListMarker
 }
 
 const fromValues = (prefix: string, values: (number | null)[]): BarListRow[] =>
@@ -35,6 +36,13 @@ export const defaultFixture: BarListFixture = {
   name: 'Default',
   maxRows: 10,
   rows: toolNames.map((label, i) => ({ id: label, label, value: toolCounts[i] })),
+}
+
+const withMarker: BarListFixture = {
+  name: 'With marker',
+  maxRows: 10,
+  rows: defaultFixture.rows,
+  referenceMarker: { value: 100, label: 'Limit' },
 }
 
 const spendDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon (prev)']
@@ -158,17 +166,23 @@ export const hostileFixture: BarListFixture = {
 }
 
 /** Option sets that the hostile rows must survive. */
-export const hostileOptionSets: Pick<BarListFixture, 'max' | 'maxRows'>[] = [
+export const hostileOptionSets: Pick<BarListFixture, 'max' | 'maxRows' | 'referenceMarker'>[] = [
   { max: 0 },
   { max: -5 },
   { max: Number.NaN },
   { maxRows: 0 },
   { maxRows: 2.5 },
   { maxRows: -3 },
+  { referenceMarker: { value: Number.NaN, label: 'Limit' } },
+  { referenceMarker: { value: Number.POSITIVE_INFINITY, label: 'Limit' } },
+  { referenceMarker: { value: 0, label: 'Limit' } },
+  { referenceMarker: { value: -5, label: 'Limit' } },
+  { referenceMarker: { value: 10, label: '' } },
 ]
 
 export const barListFixtures: BarListFixture[] = [
   defaultFixture,
+  withMarker,
   withSecondary,
   flagged,
   funnelFixture,

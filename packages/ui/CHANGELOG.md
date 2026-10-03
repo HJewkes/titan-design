@@ -9,6 +9,7 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- `BarList` takes `referenceMarker`, one labelled line on the value axis (a cutoff, a budget) drawn on each bar, with a legend and a readout in the list name and row names (TD-440).
 - `BarList` (`ui/charts/bar-list`), a ranked horizontal bar list with a value, an optional secondary value, a top-N cap with an overflow row, a text readout for assistive tech and a `layout` of `inline` or `stacked`. Also `seededRandom` in the chart kit, and `ColorToken` is now exported from `theme/resolve-color` (TP-848).
 - `FilePathLabel` and `splitPath` moved to `ui/file-path-label` (`Components/Atoms/FilePathLabel`); still exported from the package root. The `custom/ActiveWork/FilePathLabel` path is a deprecated shim removed in 0.23.0 (TD-418).
 - `Popover` and `Menu` take `defaultIsOpen`; `Tooltip` takes `defaultIsOpen` and `onOpenChange`. All three share the new internal `useControllableState` hook (TD-268).
