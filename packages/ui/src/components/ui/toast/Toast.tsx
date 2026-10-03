@@ -190,7 +190,7 @@ const iconColors: Record<ToastStatus, string> = {
 }
 
 function ToastItem({
-  id,
+  id: _id,
   title,
   description,
   status = 'info',
