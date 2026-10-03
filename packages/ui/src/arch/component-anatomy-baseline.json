@@ -9,17 +9,8 @@
     "story",
     "test"
   ],
-  "custom/Gauge/Gauge": [
-    "doc"
-  ],
-  "custom/Scatter/Scatter": [
-    "doc"
-  ],
   "custom/TimerReadout/TimerReadout": [
     "a11y"
-  ],
-  "custom/Treemap/Treemap": [
-    "doc"
   ],
   "custom/Workout/ActiveWorkoutPage": [
     "a11y",

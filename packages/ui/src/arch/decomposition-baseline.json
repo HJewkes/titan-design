@@ -11,12 +11,6 @@
   "components/custom/CircularTimer/CircularTimer.tsx#CircularTimer": {
     "complexity": 21
   },
-  "components/custom/DateTime/DateTime.tsx#formatDate": {
-    "complexity": 17
-  },
-  "components/custom/DateTime/DateTime.tsx#getRelativeTime": {
-    "complexity": 23
-  },
   "components/custom/Fatigue/DualGhostSpark.tsx#DualGhostSpark": {
     "function-lines": 106
   },
@@ -221,19 +215,19 @@
     "file-lines": 335
   },
   "components/custom/charts/SetBarChart.tsx": {
-    "file-lines": 428
+    "file-lines": 406
   },
   "components/custom/charts/SetBarChart.tsx#SetBarChart": {
     "complexity": 32,
-    "component-lines": 197,
-    "function-lines": 197,
+    "component-lines": 194,
+    "function-lines": 194,
     "props": 28
   },
   "components/custom/charts/SetBarChart.tsx#SetBarChart>cells.map": {
     "complexity": 18
   },
   "components/shell/workout/DualPinnedLiveStrip.tsx": {
-    "file-lines": 415
+    "file-lines": 419
   },
   "components/shell/workout/DualPinnedLiveStrip.tsx#DualPinnedLiveStrip": {
     "props": 14
@@ -314,6 +308,12 @@
   },
   "components/ui/checkbox/Checkbox.tsx#Checkbox": {
     "complexity": 19
+  },
+  "components/ui/date-time/DateTime.tsx#formatDate": {
+    "complexity": 17
+  },
+  "components/ui/date-time/DateTime.tsx#getRelativeTime": {
+    "complexity": 23
   },
   "components/ui/form-field/FormField.tsx#FormField": {
     "complexity": 20

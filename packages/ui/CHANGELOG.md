@@ -10,6 +10,11 @@ project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 - `custom/ActiveWork` task-stage vocabulary (`TASK_STAGE_META`, `TASK_STAGE_ORDER`, `toTaskStage`), `TaskStagePill`, and the `task-flow` and `task-pr` modules (`TaskFlowItem`, `compareTaskFlow`, `filterTaskFlow`, `taskKey`, `toTaskPrState`) (TP-860a).
+- `Scatter`, `Treemap` and `Gauge` moved to `ui/charts/scatter`, `ui/charts/treemap` and `ui/charts/gauge` (`Components/Atoms/Scatter`, `Components/Atoms/Treemap`, `Components/Atoms/Gauge`); still exported from the package root, with class names and markup unchanged. The `custom/Scatter`, `custom/Treemap` and `custom/Gauge` paths are deprecated shims removed in 0.23.0 (TD-471).
+- `ui/charts/network-graph` ego and clustered layouts: `egoLayout({ focusId, hops, direction })` places the nodes within N hops on rings around a focus with no random source, and `clusteredLayout({ seed, iterations, groups, ungroupedLabel })` lays each group out alone and packs non-overlapping regions in rows, ungrouped nodes last. Adds `GraphGroup`, `GraphGroupRegion` and the `groups` hint on `GraphLayoutResult`, and grouped, hub, chain and many-group fixtures. Pure `.ts`, not yet exported (TP-1037).
+- `ui/charts/network-graph` force layout: `forceLayout({ seed, iterations })`, a deterministic `d3-force` layout stepped without `forceSimulation` (no timer), plus shared layout geometry, `edgeShape` and `labelMode` hints on `GraphLayoutResult`, and `d3-force` as a dependency. Pure `.ts`, not yet exported (TP-1036).
+- `ui/charts/network-graph` model and layouts: `GraphLayout` (`{ key, compute }`), `layeredLayout`, `suppliedLayout`, graph cleaning, traversal and summary, and seeded fixtures at 5, 30 and 150 nodes. Pure `.ts`, not yet exported; the component follows (TP-1040).
+- `DateTime` and `formatDateTime` moved to `ui/date-time` (`Components/Molecules/DateTime`); still exported from the package root. The `custom/DateTime` path is a deprecated shim removed in 0.23.0. `DateTime` takes `isLive`; `live` is a deprecated alias for it (TD-428).
 - `FilePathLabel` and `splitPath` moved to `ui/file-path-label` (`Components/Atoms/FilePathLabel`); still exported from the package root. The `custom/ActiveWork/FilePathLabel` path is a deprecated shim removed in 0.23.0 (TD-418).
 - `Popover` and `Menu` take `defaultIsOpen`; `Tooltip` takes `defaultIsOpen` and `onOpenChange`. All three share the new internal `useControllableState` hook (TD-268).
 - `text-error` semantic token (`text-text-error`), error-coloured text that clears 4.5:1 on every
@@ -70,6 +75,12 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- `DualPinnedLiveStrip`: a side's missed rep (an empty column where the other side has a rep) is
+  now a hollow stub with a 2px ring in the on-surface secondary tone, 4.75:1 on the light card and
+  4.58:1 on the dark card (was 1.27:1 and 1.41:1). On a light card the bars keep only a 1px
+  contact shadow instead of the paper's drop shadow; dark bars are unchanged. The strip sets both
+  through `SetBarTreatmentContext` (`custom/charts/setBarTones.ts`, internal, not exported), which
+  `SetBarChart` reads. A chart outside the provider is unchanged (VW-877).
 - `Drawer`'s overlay and the non-blur `Modal` backdrop use `bg-scrim`, the scrim scale's DEFAULT class. `bg-scrim-default` compiled to no rule, so web painted no scrim. A test now compiles both backdrop class strings, and `lint:borders` runs in `lint` and `verify` (TD-191).
 - `VelocityStrip`'s loss and default zone colours resolve through the `dataviz-sequential` tokens
   for the surface's theme, like `PinnedLiveStrip`, so a light surface no longer gets the dark hexes.

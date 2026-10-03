@@ -25,7 +25,7 @@ just Stable, or just Needs-Review, at a glance.
 is Stable until it is _formally promoted_. This is deliberate: the burden of
 proof is on promotion, not on flagging.
 
-`status:review` is now the *residue*, not the population. Every story under
+`status:review` is now the _residue_, not the population. Every story under
 `src/components` and `src/lab` carries an explicit status except the ones listed
 under [Not yet tagged](#not-yet-tagged); a story that still reads Needs-Review is
 one nobody has run the rule against.
@@ -129,10 +129,10 @@ See [the review protocol](#formal-review-protocol).
 Two sets were held open by parallel work when the rule was first applied and
 still inherit `status:review`. A later pass finishes them by re-running the rule:
 
-| Files                                                             | Held by      |
-| ----------------------------------------------------------------- | ------------ |
-| `src/components/custom/Workout/**` (56 stories)                   | E3 batch B2  |
-| `ui/{menu,popover,modal,select,tooltip}` stories (5)              | trigger work |
+| Files                                                | Held by      |
+| ---------------------------------------------------- | ------------ |
+| `src/components/custom/Workout/**` (56 stories)      | E3 batch B2  |
+| `ui/{menu,popover,modal,select,tooltip}` stories (5) | trigger work |
 
 ## Formal review protocol
 
@@ -184,7 +184,7 @@ happened by rule, not by session. `typography`, `eyebrow` and `empty-state` are 
 and so became stable-**eligible** on the move, but clause 2's fourth condition holds
 them at `candidate` while the M2 and M3 shim rows sit in `DEPRECATIONS.md`; they are
 promotable once the shims go in 0.23.0. `table` joined them by migration M4 (#367) and is
-held the same way, and so are `spark-bars` (M5, TD-188) and `file-path-label` (M6, TD-418). The other two `candidate` rows are the
+held the same way, and so are `spark-bars` (M5, TD-188),`file-path-label` (M6, TD-418), `date-time` (M7, TD-428) and `scatter`, `treemap` and `gauge` (M8, TD-471). The other two `candidate` rows are the
 deprecated `HelpTip` and `Tile`.
 `TriggerSurface` has no story, so it carries no status tag.
 

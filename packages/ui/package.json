@@ -160,6 +160,7 @@
     "@gluestack-ui/themed": "^1.1.0",
     "@titan-design/chat-protocol": "0.1.0",
     "clsx": "^2.1.0",
+    "d3-force": "^3",
     "d3-scale": "^4",
     "d3-shape": "^3",
     "tailwind-merge": "^2.6.0"
@@ -180,6 +181,7 @@
     "@stryker-mutator/vitest-runner": "^10.0.0",
     "@testing-library/jest-dom": "^6.6.0",
     "@testing-library/react": "^16.1.0",
+    "@types/d3-force": "^3",
     "@types/d3-scale": "^4",
     "@types/d3-shape": "^3",
     "@types/react": "^18.3.0",

@@ -618,34 +618,6 @@
     },
     {
       "composes": [
-        "Typography"
-      ],
-      "family": "custom/DateTime",
-      "file": "packages/ui/src/components/custom/DateTime/DateTime.tsx",
-      "name": "DateTime",
-      "props": [],
-      "purpose": "",
-      "sources": {
-        "status": "packages/ui/src/components/custom/DateTime/DateTime.stories.tsx"
-      },
-      "status": "candidate",
-      "storyIds": [
-        "components-molecules-datetime--all-formats",
-        "components-molecules-datetime--colors",
-        "components-molecules-datetime--default",
-        "components-molecules-datetime--different-input-types",
-        "components-molecules-datetime--hour-cycle",
-        "components-molecules-datetime--live-clock",
-        "components-molecules-datetime--null-value",
-        "components-molecules-datetime--relative-time",
-        "components-molecules-datetime--seconds",
-        "components-molecules-datetime--usage-example",
-        "components-molecules-datetime--utc-time"
-      ],
-      "tier": "molecule"
-    },
-    {
-      "composes": [
         "GhostBand",
         "GhostBloom",
         "GhostSpark"
@@ -846,28 +818,6 @@
     },
     {
       "composes": [],
-      "family": "custom/Gauge",
-      "file": "packages/ui/src/components/custom/Gauge/Gauge.tsx",
-      "name": "Gauge",
-      "props": [],
-      "purpose": "",
-      "sources": {
-        "status": "packages/ui/src/components/custom/Gauge/Gauge.stories.tsx"
-      },
-      "status": "candidate",
-      "storyIds": [
-        "custom-charts-gauge--arbitrary-domain",
-        "custom-charts-gauge--critical",
-        "custom-charts-gauge--healthy",
-        "custom-charts-gauge--over-max",
-        "custom-charts-gauge--override-color",
-        "custom-charts-gauge--warning",
-        "custom-charts-gauge--zero"
-      ],
-      "tier": "atom"
-    },
-    {
-      "composes": [],
       "family": "custom/Metric",
       "file": "packages/ui/src/components/custom/Metric/Metric.tsx",
       "name": "Metric",
@@ -914,28 +864,6 @@
     },
     {
       "composes": [],
-      "family": "custom/Scatter",
-      "file": "packages/ui/src/components/custom/Scatter/Scatter.tsx",
-      "name": "Scatter",
-      "props": [],
-      "purpose": "",
-      "sources": {
-        "status": "packages/ui/src/components/custom/Scatter/Scatter.stories.tsx"
-      },
-      "status": "candidate",
-      "storyIds": [
-        "custom-charts-scatter--default",
-        "custom-charts-scatter--empty",
-        "custom-charts-scatter--light",
-        "custom-charts-scatter--no-diagonal",
-        "custom-charts-scatter--outlier",
-        "custom-charts-scatter--selected",
-        "custom-charts-scatter--single-point"
-      ],
-      "tier": "atom"
-    },
-    {
-      "composes": [],
       "family": "custom/Sidebar",
       "file": "packages/ui/src/components/custom/Sidebar/Sidebar.tsx",
       "name": "Sidebar",
@@ -976,26 +904,6 @@
         "components-molecules-timerreadout--with-total"
       ],
       "tier": "molecule"
-    },
-    {
-      "composes": [],
-      "family": "custom/Treemap",
-      "file": "packages/ui/src/components/custom/Treemap/Treemap.tsx",
-      "name": "Treemap",
-      "props": [],
-      "purpose": "",
-      "sources": {
-        "status": "packages/ui/src/components/custom/Treemap/Treemap.stories.tsx"
-      },
-      "status": "candidate",
-      "storyIds": [
-        "custom-charts-treemap--default",
-        "custom-charts-treemap--light",
-        "custom-charts-treemap--outlier-linear",
-        "custom-charts-treemap--outlier-sqrt",
-        "custom-charts-treemap--truncated"
-      ],
-      "tier": "atom"
     },
     {
       "composes": [
@@ -3182,6 +3090,50 @@
     },
     {
       "composes": [],
+      "family": "ui/charts/gauge",
+      "file": "packages/ui/src/components/ui/charts/gauge/Gauge.tsx",
+      "name": "Gauge",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/charts/gauge/Gauge.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-gauge--arbitrary-domain",
+        "components-atoms-gauge--critical",
+        "components-atoms-gauge--healthy",
+        "components-atoms-gauge--over-max",
+        "components-atoms-gauge--override-color",
+        "components-atoms-gauge--warning",
+        "components-atoms-gauge--zero"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/charts/scatter",
+      "file": "packages/ui/src/components/ui/charts/scatter/Scatter.tsx",
+      "name": "Scatter",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/charts/scatter/Scatter.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-scatter--default",
+        "components-atoms-scatter--empty",
+        "components-atoms-scatter--light",
+        "components-atoms-scatter--no-diagonal",
+        "components-atoms-scatter--outlier",
+        "components-atoms-scatter--selected",
+        "components-atoms-scatter--single-point"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
       "family": "ui/charts/spark-bars",
       "file": "packages/ui/src/components/ui/charts/spark-bars/SparkBars.tsx",
       "name": "SparkBars",
@@ -3198,6 +3150,26 @@
         "components-atoms-sparkbars--empty",
         "components-atoms-sparkbars--tall",
         "components-atoms-sparkbars--truncated"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/charts/treemap",
+      "file": "packages/ui/src/components/ui/charts/treemap/Treemap.tsx",
+      "name": "Treemap",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/charts/treemap/Treemap.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-treemap--default",
+        "components-atoms-treemap--light",
+        "components-atoms-treemap--outlier-linear",
+        "components-atoms-treemap--outlier-sqrt",
+        "components-atoms-treemap--truncated"
       ],
       "tier": "atom"
     },
@@ -3293,6 +3265,34 @@
         "components-molecules-datarow--with-value-class-name"
       ],
       "tier": "atom"
+    },
+    {
+      "composes": [
+        "Typography"
+      ],
+      "family": "ui/date-time",
+      "file": "packages/ui/src/components/ui/date-time/DateTime.tsx",
+      "name": "DateTime",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/date-time/DateTime.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-datetime--all-formats",
+        "components-molecules-datetime--colors",
+        "components-molecules-datetime--default",
+        "components-molecules-datetime--different-input-types",
+        "components-molecules-datetime--hour-cycle",
+        "components-molecules-datetime--live-clock",
+        "components-molecules-datetime--null-value",
+        "components-molecules-datetime--relative-time",
+        "components-molecules-datetime--seconds",
+        "components-molecules-datetime--usage-example",
+        "components-molecules-datetime--utc-time"
+      ],
+      "tier": "molecule"
     },
     {
       "composes": [],
@@ -4211,6 +4211,6 @@
       "reason": "name-not-exported"
     }
   ],
-  "inputsHash": "sha256:17db66b29abcb5babd6a43fba37a8f82e2c7d3be9b190339eeb089642bbf7648",
+  "inputsHash": "sha256:dcda5806dc75aefca1c62f8ca67cbbde70fbf669fdaee6162e512fbc0ddb697b",
   "schema": 1
 }
