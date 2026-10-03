@@ -81,16 +81,16 @@ jobs:
 
       # Layer 1 — REGEN (refresh): regenerate the Layer-1 baselines IN this pinned
       # container and upload them, so a drifted baseline can be refreshed byte-exact.
-      # Runs even when the gate above fails (`if: always()`). Because it renders in
-      # the same container as the gate, UNCHANGED baselines come back byte-identical
-      # (git shows no diff) and only genuinely-changed components differ — no local
+      # Runs only when an earlier step failed (`if: failure()`), so a green run
+      # renders once. Because it renders in the same container as the gate,
+      # UNCHANGED baselines come back byte-identical (git shows no diff) and only genuinely-changed components differ — no local
       # env noise. To refresh: download the `component-visual-baselines` artifact and
       # commit the changed *-chromium-linux.png under packages/ui/specimen/baseline/.
       - name: Layer 1 — regenerate baselines (refresh)
-        if: always()
+        if: failure()
         run: pnpm --filter @titan-design/react-ui test:visual:baseline:update
       - name: Upload regenerated component baselines
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: component-visual-baselines
@@ -98,22 +98,23 @@ jobs:
           retention-days: 7
 
       # Layer 2 — Storybook story baselines (shell + icons + chat; clock-frozen so
-      # live/animated stories are deterministic). Any pixel drift against the
+      # live/animated stories are deterministic). One test per story on 4 workers
+      # (playwright.config.ts). Any pixel drift or blank render against the
       # committed *-chromium-linux.png under
       # packages/ui/tests/visual/reference/stories.spec.ts-snapshots/ fails the build.
       - name: Layer 2 — Storybook story baselines
         run: pnpm --filter @titan-design/react-ui test:visual:stories
 
-      # Layer 2 — REGEN (refresh): same pattern as Layer 1. Runs even when the
-      # gate fails, renders in the same container, so unchanged stories come
+      # Layer 2 — REGEN (refresh): same pattern as Layer 1. Runs only on a failed
+      # run, renders in the same container, so unchanged stories come
       # back byte-identical and only real drift (or a newly in-scope story with
       # no baseline yet) shows up in git. To refresh: download the
       # `storybook-visual-baselines` artifact and commit the changed PNGs.
       - name: Layer 2 — regenerate story baselines (refresh)
-        if: always()
+        if: failure()
         run: pnpm --filter @titan-design/react-ui test:visual:stories:update
       - name: Upload regenerated Storybook baselines
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: storybook-visual-baselines
