@@ -337,6 +337,20 @@ describe('NetworkGraph keyboard', () => {
     expect(activeName()).toBe('lead-01 to worker-01, Spawned, weight unknown')
   })
 
+  it('a press on the canvas gives focus without placing the cursor; the next move key enters', () => {
+    renderGraph()
+    fireEvent.pointerDown(root())
+    focusRoot()
+    fireEvent.pointerUp(root())
+    expect(root()).not.toHaveAttribute('aria-activedescendant')
+    expect(screen.queryByRole('tooltip')).toBeNull()
+    expect(press('ArrowDown')).toBe(true)
+    expect(activeElement()).toBe(nodeButton('lead-01'))
+    act(() => root().blur())
+    focusRoot()
+    expect(activeElement()).toBe(nodeButton('lead-01'))
+  })
+
   it('Down and Up reach every node of No edges', () => {
     renderGraph({}, networkGraphFixtures['No edges'])
     focusRoot()

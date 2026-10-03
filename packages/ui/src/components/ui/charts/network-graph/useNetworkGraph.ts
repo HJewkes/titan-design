@@ -105,8 +105,11 @@ export interface NetworkGraphState {
   deactivate: () => void
   /** Selects an item, or clears the selection when the item is already selected. */
   toggle: (item: GraphItemRef) => void
-  /** The graph took focus: the cursor enters at the selection, else the first node. */
-  enter: () => void
+  /**
+   * The graph took focus. From the keyboard the cursor enters at the selection, else the first
+   * node; a pointer press gives focus without placing the cursor.
+   */
+  enter: (fromPointer?: boolean) => void
   /** The graph lost focus. */
   leave: () => void
   /** Handles one key. Returns `true` when the caller must prevent the default action. */
@@ -180,10 +183,13 @@ export function useNetworkGraph(options: UseNetworkGraphOptions): NetworkGraphSt
     }, [isFocused, move]),
     toggle,
     // Reads the cursor inside the update: a press sets it and focuses the graph in one handler.
-    enter: useCallback(() => {
-      setFocused(true)
-      setCursor((current) => (isDrawn(index, current) ? current : entry()))
-    }, [entry, index]),
+    enter: useCallback(
+      (fromPointer = false) => {
+        setFocused(true)
+        if (!fromPointer) setCursor((current) => (isDrawn(index, current) ? current : entry()))
+      },
+      [entry, index]
+    ),
     leave: useCallback(() => {
       setFocused(false)
       move(null)

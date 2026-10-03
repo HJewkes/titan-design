@@ -95,6 +95,12 @@ describe('useNetworkGraph active item', () => {
     expect(result.current.active).toEqual(WORKER_02)
   })
 
+  it('takes focus from a pointer without placing the cursor', () => {
+    const { result } = setup()
+    act(() => result.current.enter(true))
+    expect([result.current.isFocused, result.current.active]).toEqual([true, null])
+  })
+
   it('drops an active item that the next model no longer draws', () => {
     const { result, rerender } = setup()
     act(() => result.current.activate(SPAWN_EDGE))
