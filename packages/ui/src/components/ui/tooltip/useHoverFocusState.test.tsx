@@ -176,8 +176,9 @@ describe('useHoverFocusState', () => {
   it('opens on a later keyboard focus after a touch tap', () => {
     render(<HoverCard openDelay={300} />)
     const trigger = screen.getByTestId('trigger')
-    fireEvent.touchStart(trigger, { touches: [{ clientX: 0, clientY: 0 }] })
-    fireEvent.touchEnd(trigger, { changedTouches: [{ clientX: 0, clientY: 0 }] })
+    const touch = { identifier: 0, clientX: 0, clientY: 0 }
+    fireEvent.touchStart(trigger, { touches: [touch], changedTouches: [touch] })
+    fireEvent.touchEnd(trigger, { touches: [], changedTouches: [touch] })
     pressWithPointer(trigger)
     fireEvent.blur(trigger)
 
