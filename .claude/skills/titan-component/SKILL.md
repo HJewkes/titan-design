@@ -93,3 +93,5 @@ tested and exported looks like finished work to the next reader.
 - `references/story.md`: ordered checklist for stories, docs lines and the family README.
 - `references/token.md`: ordered checklist for adding or choosing a token.
 - `references/verify.md`: ordered checklist for tests, visual layers and the final gates.
+- `templates/`: starter component, test, story and family README, repaired to match `CLAUDE.md`.
+- `tools/`: `measure-render.mjs` (measure a story against a reference) and `round-capture.mjs` (named screenshots for a review round); each prints usage with `--help`.

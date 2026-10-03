@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native'
-import type { getSemanticColors } from '../../../theme/tokens/semantic'
+import type { getSemanticColors } from '../../../../theme/tokens/semantic'
 import {
   PLOT_LEFT,
   PLOT_TOP,
