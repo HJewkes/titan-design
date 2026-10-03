@@ -104,6 +104,23 @@ describe('network graph fixtures', () => {
     expect(hostileFixture.edges.some((e) => (e.weight ?? 0) < 0)).toBe(true)
   })
 
+  it('Two components holds components of 8 and 5 nodes and 3 isolated nodes', () => {
+    const { nodes, edges } = networkGraphFixtures['Two components']
+    const linked = new Set(edges.flatMap((e) => [e.source, e.target]))
+    expect(nodes).toHaveLength(16)
+    expect(linked.size).toBe(13)
+    expect(nodes.filter((n) => !linked.has(n.id))).toHaveLength(3)
+  })
+
+  it('Mutual pair has an edge each way and a second kind one way', () => {
+    const { nodes, edges } = networkGraphFixtures['Mutual pair']
+    const between = (from: string, to: string) =>
+      edges.filter((e) => e.source === from && e.target === to).map((e) => e.kind)
+    expect(nodes).toHaveLength(2)
+    expect(between('alpha-01', 'alpha-02')).toEqual(['spawn', 'message'])
+    expect(between('alpha-02', 'alpha-01')).toEqual(['message'])
+  })
+
   it('Wide fan-out has 60 children and Deep chain has 12 nodes', () => {
     expect(networkGraphFixtures['Wide fan-out'].nodes).toHaveLength(61)
     expect(networkGraphFixtures['Deep chain'].nodes).toHaveLength(12)
