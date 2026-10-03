@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { execFileSync } from 'node:child_process'
+import { execFileSync, spawnSync } from 'node:child_process'
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { join, resolve } from 'node:path'
 import { collectLiterals, compare, diffLiterals } from './compare-classnames.mjs'
+
+const SCRIPT = resolve('scripts/compare-classnames.mjs')
 
 const BEFORE = `
 import { cn } from '@/utils/cn'
@@ -96,5 +98,90 @@ describe('compare against a git ref', () => {
     } finally {
       rmSync(dir, { recursive: true, force: true })
     }
+  })
+})
+
+describe('failure guards', () => {
+  const run = (cwd, ...args) => execFileSync('git', args, { cwd, encoding: 'utf8' })
+  const withRepo = (files, fn) => {
+    const dir = mkdtempSync(join(tmpdir(), 'compare-classnames-'))
+    try {
+      run(dir, 'init', '-q')
+      run(dir, 'config', 'user.email', 't@example.com')
+      run(dir, 'config', 'user.name', 't')
+      mkdirSync(join(dir, 'Comp'))
+      for (const [name, text] of Object.entries(files)) writeFileSync(join(dir, name), text)
+      run(dir, 'add', '.')
+      run(dir, 'commit', '-qm', 'base')
+      fn(dir)
+    } finally {
+      rmSync(dir, { recursive: true, force: true })
+    }
+  }
+  const cli = (cwd, ...args) => spawnSync('node', [SCRIPT, ...args], { cwd, encoding: 'utf8' })
+  const expectOneLineFailure = (result, message) => {
+    expect(result.status).not.toBe(0)
+    expect(result.status).not.toBe(1)
+    expect(result.stderr).toMatch(message)
+    expect(result.stderr.trim().split('\n')).toHaveLength(1)
+    expect(result.stderr).not.toMatch(/\n\s+at /)
+  }
+  const GOOD = { 'Comp/Comp.tsx': `export const A = () => <View className="p-2" />\n` }
+
+  it('fails with one line when a named path matches no file on either side', () => {
+    withRepo(GOOD, (dir) => {
+      expect(() => compare('HEAD', ['Comp/Typo.tsx'], dir)).toThrow(/no file matches/)
+      expectOneLineFailure(cli(dir, 'HEAD', 'Comp/Typo.tsx'), /no file matches.*Comp\/Typo\.tsx/)
+    })
+  })
+
+  it('accepts a path that exists only in the working tree', () => {
+    withRepo(GOOD, (dir) => {
+      writeFileSync(
+        join(dir, 'Comp', 'New.tsx'),
+        `export const B = () => <View className="p-2" />\n`
+      )
+      expect(() => compare('HEAD', ['Comp/New.tsx'], dir)).not.toThrow()
+    })
+  })
+
+  it('accepts a path that exists only at the base ref', () => {
+    withRepo(GOOD, (dir) => {
+      rmSync(join(dir, 'Comp', 'Comp.tsx'))
+      expect(() => compare('HEAD', ['Comp/Comp.tsx'], dir)).not.toThrow()
+    })
+  })
+
+  it('fails with one line when the base ref does not resolve', () => {
+    withRepo(GOOD, (dir) => {
+      expect(() => compare('no-such-ref', ['Comp'], dir)).toThrow(/does not resolve/)
+      expectOneLineFailure(cli(dir, 'no-such-ref', 'Comp'), /no-such-ref.*does not resolve/)
+    })
+  })
+
+  it('fails with one line when a file has a syntax error', () => {
+    withRepo(GOOD, (dir) => {
+      writeFileSync(join(dir, 'Comp', 'Comp.tsx'), `export const A = () => <View className="p-2"\n`)
+      expect(() => compare('HEAD', ['Comp'], dir)).toThrow(/syntax error/)
+      expectOneLineFailure(cli(dir, 'HEAD', 'Comp'), /syntax error.*Comp\.tsx/)
+    })
+  })
+
+  it('skips test and stories files even when their strings change', () => {
+    withRepo(
+      {
+        ...GOOD,
+        'Comp/Comp.test.tsx': `it('a', () => x('one'))\n`,
+        'Comp/Comp.stories.tsx': `export const S = () => <View className="m-1" />\n`,
+      },
+      (dir) => {
+        writeFileSync(join(dir, 'Comp', 'Comp.test.tsx'), `it('a', () => x('two'))\n`)
+        writeFileSync(
+          join(dir, 'Comp', 'Comp.stories.tsx'),
+          `export const S = () => <View className="m-2" />\n`
+        )
+        expect(compare('HEAD', ['Comp'], dir)).toEqual([])
+      }
+    )
   })
 })
