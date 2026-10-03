@@ -1,7 +1,9 @@
 /**
  * The freshness key for `src/arch/component-catalog.json`: a content hash over every file
- * the generator reads. The generator and the freshness test share this module, so the two
- * cannot disagree about which files count.
+ * the generator reads, plus the generator's own source. The generator and the freshness test
+ * share this module, so the two cannot disagree about which files count.
+ *
+ * Component `.tsx` files are not inputs: names and exports come from arch-graph.json.
  */
 import crypto from 'node:crypto'
 import fs from 'node:fs'
@@ -11,26 +13,28 @@ export const ARCH_GRAPH = 'packages/ui/src/arch/arch-graph.json'
 export const MATURITY = 'packages/ui/MATURITY.md'
 export const PREVIEW = 'packages/ui/.storybook/preview.tsx'
 
+const GENERATOR = 'packages/ui/scripts/catalog.mjs'
+const GENERATOR_MODULES = 'packages/ui/scripts/catalog'
 const STORY_FILE = /\.stories\.tsx$/
+const MODULE_FILE = /\.mjs$/
 
-const toPosix = (p) => p.split(path.sep).join('/')
+function filesIn(repoRoot, dir, pattern) {
+  return fs
+    .readdirSync(path.join(repoRoot, dir))
+    .filter((name) => pattern.test(name))
+    .map((name) => `${dir}/${name}`)
+}
 
 /** Every `*.stories.tsx` directly inside a directory that holds an arch-graph component. */
 export function storyFiles(repoRoot, graph) {
   const dirs = new Set(graph.components.map((component) => path.posix.dirname(component.file)))
-  const files = []
-  for (const dir of dirs) {
-    for (const name of fs.readdirSync(path.join(repoRoot, dir))) {
-      if (STORY_FILE.test(name)) files.push(`${dir}/${name}`)
-    }
-  }
-  return files.sort()
+  return [...dirs].flatMap((dir) => filesIn(repoRoot, dir, STORY_FILE)).sort()
 }
 
-/** Repo-relative POSIX paths of every catalog input, in code-unit order. */
+/** Repo-relative POSIX paths of every catalog input and generator module, in code-unit order. */
 export function inputFiles(repoRoot, graph) {
-  const files = new Set([ARCH_GRAPH, MATURITY, PREVIEW])
-  for (const component of graph.components) files.add(toPosix(component.file))
+  const files = new Set([ARCH_GRAPH, MATURITY, PREVIEW, GENERATOR])
+  for (const module of filesIn(repoRoot, GENERATOR_MODULES, MODULE_FILE)) files.add(module)
   for (const story of storyFiles(repoRoot, graph)) files.add(story)
   return [...files].sort()
 }

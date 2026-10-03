@@ -3,8 +3,14 @@ import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-// @ts-expect-error — plain-ESM build tooling, shared with scripts/catalog.mjs
-import { catalogInputsHash } from '../../scripts/catalog/inputs-hash.mjs'
+// @ts-expect-error — plain-ESM build tooling, run here to record what it reads
+import { buildCatalog } from '../../scripts/catalog.mjs'
+import {
+  catalogInputsHash,
+  inputFiles,
+  readInput,
+  // @ts-expect-error — plain-ESM build tooling, shared with scripts/catalog.mjs
+} from '../../scripts/catalog/inputs-hash.mjs'
 // @ts-expect-error — plain-ESM build tooling, shared with scripts/catalog.mjs
 import { maturityStatuses, resolveStatuses } from '../../scripts/catalog/stories.mjs'
 import graph from './arch-graph.json'
@@ -27,6 +33,31 @@ describe('component-catalog.json freshness', () => {
       catalog.inputsHash,
       'component-catalog.json is stale: an input changed since it was generated. ' + FIX
     ).toBe(catalogInputsHash(REPO_ROOT))
+  })
+
+  it('hashes every file the generator reads', () => {
+    const read = new Set<string>()
+    buildCatalog(REPO_ROOT, (root: string, rel: string): string => {
+      read.add(rel)
+      return readInput(root, rel) as string
+    })
+    const hashed = inputFiles(REPO_ROOT, graph) as string[]
+    expect(
+      [...read].filter((file) => !hashed.includes(file)),
+      'scripts/catalog.mjs reads a file that inputFiles() in scripts/catalog/inputs-hash.mjs ' +
+        'does not hash. Add it there, then run `pnpm catalog`.'
+    ).toEqual([])
+  })
+
+  it('hashes the generator source, so a generator edit stales the catalog', () => {
+    expect(inputFiles(REPO_ROOT, graph)).toEqual(
+      expect.arrayContaining([
+        'packages/ui/scripts/catalog.mjs',
+        'packages/ui/scripts/catalog/entries.mjs',
+        'packages/ui/scripts/catalog/inputs-hash.mjs',
+        'packages/ui/scripts/catalog/stories.mjs',
+      ])
+    )
   })
 
   it('accounts for every arch-graph component exactly once', () => {

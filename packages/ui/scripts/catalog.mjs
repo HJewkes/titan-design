@@ -29,22 +29,22 @@ const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..
 
 const byCodeUnit = (a, b) => (a < b ? -1 : a > b ? 1 : 0)
 
-function readContext(repoRoot, graph) {
+function readContext(repoRoot, graph, read) {
   const stories = new Map()
   for (const file of storyFiles(repoRoot, graph)) {
-    stories.set(file, readStoryFile(file, readInput(repoRoot, file)))
+    stories.set(file, readStoryFile(file, read(repoRoot, file)))
   }
   return {
     stories,
-    projectTags: defaultExportTags(PREVIEW, readInput(repoRoot, PREVIEW)),
-    vocabulary: maturityStatuses(readInput(repoRoot, MATURITY)),
+    projectTags: defaultExportTags(PREVIEW, read(repoRoot, PREVIEW)),
+    vocabulary: maturityStatuses(read(repoRoot, MATURITY)),
   }
 }
 
-/** The catalog object for the checkout at `repoRoot`. */
-export function buildCatalog(repoRoot = REPO_ROOT) {
-  const graph = JSON.parse(readInput(repoRoot, ARCH_GRAPH))
-  const context = readContext(repoRoot, graph)
+/** The catalog object for the checkout at `repoRoot`. Every file it reads goes through `read`. */
+export function buildCatalog(repoRoot = REPO_ROOT, read = readInput) {
+  const graph = JSON.parse(read(repoRoot, ARCH_GRAPH))
+  const context = readContext(repoRoot, graph, read)
   const entries = []
   const excluded = []
   for (const component of graph.components) {

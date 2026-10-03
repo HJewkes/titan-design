@@ -335,7 +335,8 @@ Levels -2 to +5 with calculated surface colors and shadows:
 - **Registering a script CI runs.** Add it to the package's `package.json`, add a
   `turbo run <task>` passthrough to the root `package.json`, and register the task in `turbo.json`.
   Without the `turbo.json` entry, the root script fails. `arch:graph` and `review` are deliberate
-  exceptions: both call `node` directly and CI never runs them.
+  exceptions: both call `node` directly and CI never runs them. So is `catalog`, which filters to
+  the package script.
 - **Coverage thresholds** live in `packages/ui/vitest.config.ts` (80% across the board, scoped to
   `src/components/**`). Set them from measured coverage (`pnpm exec vitest run --coverage` in
   `packages/ui`), not from a target, and raise them as coverage grows.
