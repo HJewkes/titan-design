@@ -49,5 +49,10 @@ export function useTooltipVisibility({
     }
   }
 
-  return { hovered, show, hide }
+  const dismiss = () => {
+    clearTimeouts()
+    setHovered(false)
+  }
+
+  return { hovered, show, hide, dismiss }
 }
