@@ -5,7 +5,13 @@ import { formatCompact } from '../../../utils/number-format'
 import { useControllableState } from '../../../hooks/useControllableState'
 import { Chip, type ChipColor, type ChipSize } from '../chip'
 import { Eyebrow } from '../eyebrow'
-import { selectedSet, toggleMultiple, toggleSingle, uniqueOptions } from './facet-bar-model'
+import {
+  coerceToMode,
+  selectedSet,
+  toggleMultiple,
+  toggleSingle,
+  uniqueOptions,
+} from './facet-bar-model'
 
 export interface FacetOption<T extends string = string> {
   value: T
