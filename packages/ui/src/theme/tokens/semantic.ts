@@ -235,6 +235,7 @@ export const semanticColorsLight = {
   'text-tertiary': greyRamp[400],
   'text-disabled': 'rgba(55, 65, 81, 0.48)',
   'text-inverse': p.white,
+  'text-error': ramp.red[700], // one rung darker than status-error to clear 4.5:1 on every light plane
   'text-link': ramp.blue[600],
   'text-link-hover': ramp.blue[700],
 
@@ -471,6 +472,7 @@ export const semanticColorsDark = {
   'text-tertiary': greyRamp[500],
   'text-disabled': 'rgba(255, 255, 255, 0.38)',
   'text-inverse': greyRamp[950],
+  'text-error': ramp.red[300], // red[400] is 4.35:1 on surface-overlay
   'text-link': semanticPins.focusIndigoDark,
   'text-link-hover': ramp.blue[400],
 

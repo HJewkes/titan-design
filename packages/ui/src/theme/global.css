@@ -262,6 +262,7 @@
     --color-text-tertiary: #888684;
     --color-text-disabled: rgba(255, 255, 255, 0.38);
     --color-text-inverse: #1C1916;
+    --color-text-error: #FF9A9D;
     --color-text-link: #828DF8;
     --color-text-link-hover: #3CA8FF;
 
@@ -521,6 +522,7 @@
     --color-text-tertiary: #A29F9D;
     --color-text-disabled: rgba(55, 65, 81, 0.48);
     --color-text-inverse: #FFFFFF;
+    --color-text-error: #A4221C;
     --color-text-link: #1072CB;
     --color-text-link-hover: #135AA8;
 
