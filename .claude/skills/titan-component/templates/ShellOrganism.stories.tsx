@@ -7,32 +7,32 @@
 //      clicks and the Controls panel stay together. `useArgs` must be called directly in a
 //      named `render` function, never in a child component.
 // For a display-only region, drop `render` and keep the decorator.
-import type { Meta, StoryObj } from "@storybook/react-vite";
-import { useArgs } from "storybook/preview-api";
-import { View } from "react-native";
-import { Organism } from "./Organism";
-import { Typography } from "../ui/typography";
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import { useArgs } from 'storybook/preview-api'
+import { View } from 'react-native'
+import { Organism } from './Organism'
+import { Typography } from '../ui/typography'
 
 const meta: Meta<typeof Organism> = {
-  title: "Shell/Organism",
+  title: 'Shell/Organism',
   component: Organism,
-  tags: ["autodocs", "status:candidate", "!status:review"],
-  args: { activeKey: "first" },
+  tags: ['autodocs', 'status:candidate', '!status:review'],
+  args: { activeKey: 'first' },
   argTypes: {
-    activeKey: { control: "select", options: ["first", "second", "third"] },
-    onActiveKeyChange: { action: "activeKeyChange", control: false },
+    activeKey: { control: 'select', options: ['first', 'second', 'third'] },
+    onActiveKeyChange: { action: 'activeKeyChange', control: false },
   },
   render: function Render(args) {
-    const [, updateArgs] = useArgs();
+    const [, updateArgs] = useArgs()
     return (
       <Organism
         {...args}
         onActiveKeyChange={(key) => {
-          updateArgs({ activeKey: key });
-          args.onActiveKeyChange?.(key);
+          updateArgs({ activeKey: key })
+          args.onActiveKeyChange?.(key)
         }}
       />
-    );
+    )
   },
   decorators: [
     (Story) => (
@@ -47,19 +47,19 @@ const meta: Meta<typeof Organism> = {
     ),
   ],
   parameters: {
-    layout: "fullscreen",
+    layout: 'fullscreen',
     docs: {
       description: {
         component:
-          "**Organism** (shell region). Composes " +
-          "[NavItem](?path=/docs/shell-navitem--docs) and " +
-          "[Typography](?path=/docs/foundations-typography--docs). " +
-          "Drive it with `activeKey`; click an item and the Controls panel follows.",
+          '**Organism** (shell region). Composes ' +
+          '[NavItem](?path=/docs/shell-navitem--docs) and ' +
+          '[Typography](?path=/docs/foundations-typography--docs). ' +
+          'Drive it with `activeKey`; click an item and the Controls panel follows.',
       },
     },
   },
-};
-export default meta;
-type Story = StoryObj<typeof Organism>;
+}
+export default meta
+type Story = StoryObj<typeof Organism>
 
-export const Default: Story = {};
+export const Default: Story = {}
