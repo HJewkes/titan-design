@@ -90,9 +90,9 @@ export function ScatterFrame({
         }}
       />
 
-      {segments.map(({ testID, segment }) => (
+      {segments.map(({ testID, segment }, i) => (
         <LineSegment
-          key={testID}
+          key={`${testID}-${i}`}
           testID={testID}
           color={colors['hairline-strong']}
           x1={segment.x1}

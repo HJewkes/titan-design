@@ -146,6 +146,36 @@ describe('referenceSegments', () => {
     ).toEqual([])
   })
 
+  it.each([
+    ['NaN y', { y: NaN }],
+    ['NaN x', { x: NaN }],
+    ['infinite y', { y: Infinity }],
+    ['infinite slope', { slope: Infinity, intercept: 0 }],
+    ['NaN slope', { slope: NaN, intercept: 0 }],
+    ['NaN intercept', { slope: 1, intercept: NaN }],
+    ['infinite intercept', { slope: 1, intercept: -Infinity }],
+  ])('drops a line with a non-finite value: %s', (_name, line) => {
+    expect(referenceSegments(layout, [line])).toEqual([])
+  })
+
+  it('draws a flat sloped line lying on the domain edge', () => {
+    expect(referenceSegments(layout, [{ slope: 0, intercept: 0 }])[0]).toMatchObject({
+      x1: toX(0),
+      y1: toY(0),
+      x2: toX(1),
+      y2: toY(0),
+    })
+  })
+
+  it('clips a sloped line that enters below the domain at its lower bound', () => {
+    expect(referenceSegments(layout, [{ slope: 1, intercept: -0.5 }])[0]).toMatchObject({
+      x1: toX(0.5),
+      y1: toY(0),
+      x2: toX(1),
+      y2: toY(0.5),
+    })
+  })
+
   it('does not widen the layout domain', () => {
     const l = scatterLayout(
       [

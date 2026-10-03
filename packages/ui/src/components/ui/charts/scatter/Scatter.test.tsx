@@ -72,6 +72,22 @@ describe('Scatter', () => {
     expect(screen.queryByTestId('scatter-reference-out')).not.toBeInTheDocument()
   })
 
+  it('renders reference lines that share an id without duplicate-key warnings', () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+    render(
+      <Scatter
+        {...base}
+        referenceLines={[
+          { y: 0.3, id: 'dup' },
+          { y: 0.6, id: 'dup' },
+        ]}
+      />
+    )
+    expect(screen.getAllByTestId('scatter-reference-dup')).toHaveLength(2)
+    expect(error).not.toHaveBeenCalled()
+    error.mockRestore()
+  })
+
   it('adds a reference line label to the accessible name without painting it', () => {
     render(<Scatter {...base} referenceLines={[{ y: 0.5, label: 'Target' }]} />)
     expect(screen.getByTestId('scatter-canvas').getAttribute('aria-label')).toContain(

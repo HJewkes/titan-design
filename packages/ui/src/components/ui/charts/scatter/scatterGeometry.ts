@@ -144,12 +144,19 @@ export function scatterAriaLabel(
   return labels.length ? `${base}, reference lines: ${labels.join(', ')}` : base
 }
 
+function hasFiniteValues(line: ScatterReferenceLine): boolean {
+  if ('y' in line) return Number.isFinite(line.y)
+  if ('x' in line) return Number.isFinite(line.x)
+  return Number.isFinite(line.slope) && Number.isFinite(line.intercept)
+}
+
 /** Data-space endpoints of a line clipped to the domains, or null when it misses the plot box. */
 function clipLine(
   line: ScatterReferenceLine,
   xd: Domain,
   yd: Domain
 ): [[number, number], [number, number]] | null {
+  if (!hasFiniteValues(line)) return null
   if ('y' in line) {
     if (line.y < yd.min || line.y > yd.max) return null
     return [
