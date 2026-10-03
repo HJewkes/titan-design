@@ -39,6 +39,28 @@ const pathMathCode = [
   'const d = `M${points.join(" L ")}`',
 ]
 
+// Each command fed exactly its arity, so raising any arity by one drops a report.
+const exactArityCode = [
+  'const d = `M${x},${y}S${a},${b} ${c},${e}`',
+  'const d = `M${x},${y}Q${a},${b} ${c},${e}`',
+  'const d = `M${x},${y}T${a},${b}`',
+  'const d = `M${x},${y}V${a}`',
+  'const d = `M${x},${y}H${a}`',
+]
+
+// Each command fed one operand short, so lowering any arity by one adds a report.
+const underFedCode = [
+  'const d = `L${a},${b}M${c}`',
+  'const d = `M${x},${y}L${a}`',
+  'const d = `M${x},${y}T${a}`',
+  'const d = `M${x},${y}H L${a},${b}`',
+  'const d = `M${x},${y}V L${a},${b}`',
+  'const d = `M${x},${y}S${a},${b} ${c}`',
+  'const d = `M${x},${y}Q${a},${b} ${c}`',
+  'const d = `M${x},${y}C${a},${b} ${c},${e} ${f}`',
+  'const d = `M${x},${y}A${r},${r} 0 0 1 ${b}`',
+]
+
 // Near-misses from the repo: static path data, labels, CSS and SVG transforms.
 const notPathMathCode = [
   "const STAR_ICON_PATH = 'M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'",
@@ -60,6 +82,12 @@ const notPathMathCode = [
   'const sum = x + width - r',
   'const version = `v${major}.${minor}`',
   'const color = `#${hex}`',
+  // One command with no comma and no moveto reads as a label, not a path.
+  'const span = `${a} v ${b}`',
+  'const span = `${h} h ${m}`',
+  'const span = `${a} Z ${b}`',
+  // Z closes a path, so a value after it is not path data.
+  'const d = `M${x},${y} Z ${n}`',
 ]
 
 describe('no-raw-composition', () => {
@@ -76,7 +104,7 @@ describe('no-raw-composition', () => {
       { code: "import { scaleLinear } from 'd3-scale'", filename: labFile },
       // Only `d3` and `d3-*` count, not a package that merely starts with d3.
       { code: "import x from 'd3fc'", filename: componentFile },
-      ...notPathMathCode.map((code) => ({ code, filename: componentFile })),
+      ...[...notPathMathCode, ...underFedCode].map((code) => ({ code, filename: componentFile })),
       // Chart primitives, tests, stories and the lab may build paths.
       ...[chartFile, testFile, storyFile, labFile].map((filename) => ({
         code: pathMathCode[0],
@@ -130,7 +158,7 @@ describe('no-raw-composition', () => {
         filename: testFile,
         errors: [{ messageId: 'd3Import' }],
       },
-      ...pathMathCode.map((code) => ({
+      ...[...pathMathCode, ...exactArityCode].map((code) => ({
         code,
         filename: componentFile,
         errors: [{ messageId: 'pathMath' }],

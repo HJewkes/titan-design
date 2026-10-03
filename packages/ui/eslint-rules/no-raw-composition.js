@@ -65,10 +65,15 @@ function pathSegments(tokens) {
   return segments
 }
 
+// Z closes a path and takes nothing; any other command needs at least its arity.
+const isFed = (s) => (s.arity === 0 ? s.operands === 0 : s.operands >= s.arity)
+
 /**
  * Whether a shape reads as SVG path data built from at least one computed value.
  * Each command needs its operands and the whole shape two, unless it opens with
  * `M`, so labels like `h${level}`, `Q${q} ${year}` or `${h}h ${m}m` stay legal.
+ * It must also open with a moveto, use a comma, or chain two commands, which
+ * keeps one-command labels such as `${h} h ${m}` legal.
  */
 function isPathShape(shape) {
   const tokens = tokenizePath(shape)
@@ -76,10 +81,9 @@ function isPathShape(shape) {
   const segments = pathSegments(tokens)
   if (segments.length === 0) return false
   const opensWithMove = tokens[0] === 'M'
-  const fed = segments.every(
-    (s, i) => s.operands >= s.arity || (i === 0 && opensWithMove && s.operands === 1)
-  )
-  return fed && tokens.length - segments.length >= (opensWithMove ? 1 : 2)
+  const fed = segments.every((s, i) => isFed(s) || (i === 0 && opensWithMove && s.operands === 1))
+  const structured = /^m$/i.test(tokens[0]) || shape.includes(',') || segments.length >= 2
+  return fed && structured && tokens.length - segments.length >= (opensWithMove ? 1 : 2)
 }
 
 const templateShape = (node) => node.quasis.map((q) => q.value.cooked ?? '').join('#')
