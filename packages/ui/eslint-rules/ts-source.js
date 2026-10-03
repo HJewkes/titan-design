@@ -24,21 +24,37 @@ function topLevelDeclarations(ast) {
   )
 }
 
-function stringLiteralsOf(typeNode) {
-  if (typeNode.type === 'TSUnionType') return typeNode.types.flatMap(stringLiteralsOf)
+function aliasNamed(ast, typeName) {
+  return topLevelDeclarations(ast).find(
+    (node) => node.type === 'TSTypeAliasDeclaration' && node.id.name === typeName
+  )
+}
+
+/** Literals of a union, following same-file aliases; anything else throws rather than vanish. */
+function stringLiteralsOf(typeNode, ast, file, seen) {
+  const recurse = (node) => stringLiteralsOf(node, ast, file, seen)
+  if (typeNode.type === 'TSUnionType') return typeNode.types.flatMap(recurse)
   if (typeNode.type === 'TSLiteralType' && typeof typeNode.literal.value === 'string') {
     return [typeNode.literal.value]
   }
-  return []
+  if (typeNode.type === 'TSTypeReference' && typeNode.typeName.type === 'Identifier') {
+    const name = typeNode.typeName.name
+    const alias = seen.has(name) ? null : aliasNamed(ast, name)
+    if (!alias) throw new Error(`ts-source: cannot resolve ${name} in a union in ${file}`)
+    seen.add(name)
+    return recurse(alias.typeAnnotation)
+  }
+  throw new Error(`ts-source: unsupported ${typeNode.type} in a union in ${file}`)
 }
 
 /** The string members of `type <typeName> = 'a' | 'b'`, in source order. */
 function readStringUnion(file, typeName, source) {
-  const alias = topLevelDeclarations(parseFile(file, source)).find(
-    (node) => node.type === 'TSTypeAliasDeclaration' && node.id.name === typeName
-  )
+  const ast = parseFile(file, source)
+  const alias = aliasNamed(ast, typeName)
   if (!alias) throw new Error(`ts-source: no type ${typeName} in ${file}`)
-  return stringLiteralsOf(alias.typeAnnotation)
+  const members = stringLiteralsOf(alias.typeAnnotation, ast, file, new Set([typeName]))
+  if (members.length === 0) throw new Error(`ts-source: type ${typeName} in ${file} has no members`)
+  return members
 }
 
 function isFunctionInit(declarator) {
@@ -48,19 +64,37 @@ function isFunctionInit(declarator) {
   )
 }
 
-/** Names of exported functions: `export function f` and `export const f = () => …`. */
+/** Names of the functions a declaration introduces. */
+function functionNamesOf(declaration) {
+  if (declaration?.type === 'FunctionDeclaration' && declaration.id) return [declaration.id.name]
+  if (declaration?.type !== 'VariableDeclaration') return []
+  return declaration.declarations
+    .filter((d) => d.id.type === 'Identifier' && isFunctionInit(d))
+    .map((d) => d.id.name)
+}
+
+/** Names behind `export { a, b as c }`; a re-export `from` another module cannot be resolved here. */
+function specifierNamesOf(node, localFunctions, file) {
+  if (node.source) throw new Error(`ts-source: re-export from ${node.source.value} in ${file}`)
+  return node.specifiers
+    .filter((spec) => localFunctions.has(spec.local.name))
+    .map((spec) => spec.exported.name ?? spec.exported.value)
+}
+
+/** Names of exported functions: `export function f`, `export const f = () => …` and `export { f }`. */
 function readExportedFunctions(file, source) {
-  const names = []
-  for (const node of parseFile(file, source).body) {
-    const declaration = node.type === 'ExportNamedDeclaration' ? node.declaration : null
-    if (declaration?.type === 'FunctionDeclaration' && declaration.id) {
-      names.push(declaration.id.name)
-    } else if (declaration?.type === 'VariableDeclaration') {
-      for (const d of declaration.declarations) {
-        if (d.id.type === 'Identifier' && isFunctionInit(d)) names.push(d.id.name)
-      }
-    }
-  }
+  const body = parseFile(file, source).body
+  const localFunctions = new Set(
+    body.flatMap((node) =>
+      functionNamesOf(node.type === 'ExportNamedDeclaration' ? node.declaration : node)
+    )
+  )
+  const names = body.flatMap((node) => {
+    if (node.type !== 'ExportNamedDeclaration') return []
+    if (node.declaration) return functionNamesOf(node.declaration)
+    return specifierNamesOf(node, localFunctions, file)
+  })
+  if (names.length === 0) throw new Error(`ts-source: no exported functions in ${file}`)
   return names
 }
 

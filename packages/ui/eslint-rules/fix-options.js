@@ -45,12 +45,16 @@ function colorsByRoot(colors) {
   return byRoot
 }
 
-/** `--name: value;` declarations of the first `:root { … }` block. */
+/** `--name: value;` declarations of the first real `:root { … }` block; comments are ignored. */
 function parseRootVars(css) {
-  const block = /:root\s*\{([^}]*)\}/.exec(css)?.[1] ?? ''
-  return Object.fromEntries(
+  const stripped = css.replace(/\/\*[\s\S]*?\*\//g, '')
+  const block = /:root\s*\{([^}]*)\}/.exec(stripped)?.[1]
+  if (block === undefined) throw new Error('fix-options: no :root block in the css')
+  const vars = Object.fromEntries(
     [...block.matchAll(/--([\w-]+)\s*:\s*([^;]+);/g)].map(([, name, value]) => [name, value.trim()])
   )
+  if (Object.keys(vars).length === 0) throw new Error('fix-options: :root block declares no vars')
+  return vars
 }
 
 const pxOf = (value) => {
@@ -89,14 +93,25 @@ function nearestSpacingFrom(steps, semantic) {
   }
 }
 
+const isPlainObject = (value) => Boolean(value) && typeof value === 'object'
+
+/** Tailwind's merge of `theme.x` with `theme.extend.x`: nested objects merge, leaves are replaced. */
+function deepMerge(base, extra) {
+  const out = { ...base }
+  for (const [key, value] of Object.entries(extra)) {
+    out[key] = isPlainObject(value) && isPlainObject(out[key]) ? deepMerge(out[key], value) : value
+  }
+  return out
+}
+
 /** Colour, spacing, font-size and radius options from a Tailwind config (and its `global.css`). */
 function fromConfig(config, css = '') {
   const theme = config.theme ?? {}
   const extend = theme.extend ?? {}
   // Read both: a theme-replace would move colours out of `extend` (TD-23 section 0, item 4).
-  const colors = { ...(theme.colors ?? {}), ...(extend.colors ?? {}) }
+  const colors = deepMerge(theme.colors ?? {}, extend.colors ?? {})
   const spacingSteps = spacingStepsOf(theme.spacing ?? {})
-  const semanticSpacing = semanticSpacingOf(extend.spacing ?? {}, parseRootVars(css))
+  const semanticSpacing = semanticSpacingOf(extend.spacing ?? {}, css ? parseRootVars(css) : {})
   return {
     colors: flattenColors(colors),
     colorsByRoot: colorsByRoot(colors),
