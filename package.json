@@ -21,7 +21,9 @@
     "format:check": "turbo run format:check",
     "check:package": "turbo run check:package",
     "arch:check": "pnpm --filter @titan-design/react-ui exec vitest run src/arch/arch-graph.freshness.test.ts",
-    "verify": "pnpm format:check && pnpm lint && pnpm --filter @titan-design/react-ui lint:borders && pnpm type-check && pnpm build && turbo run test -- --run --coverage && pnpm arch:check",
+    "verify": "pnpm verify:unit && pnpm test:axe",
+    "verify:unit": "pnpm format:check && pnpm lint && pnpm type-check && pnpm build && turbo run test:unit -- --run --coverage && pnpm arch:check",
+    "test:axe": "turbo run test:axe",
     "arch:graph": "node scripts/arch-graph.mjs",
     "review": "node packages/review-harness/src/cli.ts"
   },

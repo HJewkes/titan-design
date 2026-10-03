@@ -79,3 +79,6 @@ scripts/arch.config.local.json
 AGENTS.md
 .codex/
 .agents/
+
+# Lab exporter output (real data; never commit)
+packages/ui/src/lab/active-work/.private-out/

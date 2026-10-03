@@ -15,10 +15,6 @@ function MockIcon({ size = 20 }: { size?: number; className?: string }) {
   return <View testID="mock-icon" style={{ width: size, height: size }} />
 }
 
-function ChevronIcon({ size = 16 }: { size?: number; className?: string }) {
-  return <Text>{'>'}</Text>
-}
-
 describe('ListItem', () => {
   it('renders compound children', () => {
     render(
@@ -50,7 +46,7 @@ describe('ListItem', () => {
   })
 
   it('uses View when onPress is not provided', () => {
-    const { container } = render(
+    render(
       <ListItem testID="list-item">
         <ListItemContent title="Static item" />
       </ListItem>
@@ -94,7 +90,7 @@ describe('ListItemTrailing', () => {
 
 describe('ListItemDivider', () => {
   it('renders with inset by default', () => {
-    const { container } = render(<ListItemDivider testID="divider" />)
+    render(<ListItemDivider testID="divider" />)
     expect(screen.getByTestId('divider')).toBeInTheDocument()
   })
 

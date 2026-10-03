@@ -1,30 +1,14 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react'
-import { View, Text, Platform, type ViewProps } from 'react-native'
+import React, { useState, useRef, useCallback } from 'react'
+import { View, Text, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Surface } from '../surface'
 import { TriggerSurface } from '../trigger'
+import { arrowStyles, tooltipPositionStyles, type TooltipPlacement } from './tooltipPosition'
+import { canPortal, TooltipPortal } from './TooltipParts'
+import { usePortalPosition } from './usePortalPosition'
+import { useTooltipVisibility } from './useTooltipVisibility'
 
-let createPortal: typeof import('react-dom').createPortal | undefined
-if (Platform.OS === 'web') {
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    createPortal = require('react-dom').createPortal
-  } catch {
-    // react-dom unavailable
-  }
-}
-
-type PortalPosition = { top: number; left: number; transform: string }
-
-export type TooltipPlacement =
-  | 'top'
-  | 'top-start'
-  | 'top-end'
-  | 'bottom'
-  | 'bottom-start'
-  | 'bottom-end'
-  | 'left'
-  | 'right'
+export type { TooltipPlacement }
 
 export interface TooltipProps extends ViewProps {
   /** Plain-text tooltip content */
@@ -94,104 +78,12 @@ export function Tooltip({
   isOpen,
   ...props
 }: TooltipProps) {
-  const [hovered, setHovered] = useState(false)
+  const { hovered, show, hide } = useTooltipVisibility({ isDisabled, openDelay, closeDelay })
   const isVisible = isOpen ?? hovered
-  const [portalPos, setPortalPos] = useState<PortalPosition | null>(null)
-  const openTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const triggerRef = useRef<View>(null)
 
-  const isPortalMode = usePortalProp && Platform.OS === 'web' && !!createPortal
-
-  useEffect(() => {
-    if (!isVisible || !isPortalMode || !triggerRef.current) return
-    const node = triggerRef.current as unknown as HTMLElement
-    const id = requestAnimationFrame(() => {
-      const rect = node.getBoundingClientRect()
-      const gap = 8
-      const cardinal = placement.split('-')[0] as 'top' | 'bottom' | 'left' | 'right'
-
-      const positions: Record<string, PortalPosition> = {
-        top: {
-          top: rect.top - gap,
-          left: rect.left + rect.width / 2,
-          transform: 'translate(-50%, -100%)',
-        },
-        bottom: {
-          top: rect.bottom + gap,
-          left: rect.left + rect.width / 2,
-          transform: 'translate(-50%, 0%)',
-        },
-        left: {
-          top: rect.top + rect.height / 2,
-          left: rect.left - gap,
-          transform: 'translate(-100%, -50%)',
-        },
-        right: {
-          top: rect.top + rect.height / 2,
-          left: rect.right + gap,
-          transform: 'translate(0%, -50%)',
-        },
-      }
-
-      setPortalPos(positions[cardinal] ?? positions.top)
-    })
-    return () => cancelAnimationFrame(id)
-  }, [isVisible, isPortalMode, placement])
-
-  const clearTimeouts = () => {
-    if (openTimeoutRef.current) clearTimeout(openTimeoutRef.current)
-    if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current)
-  }
-
-  const show = () => {
-    if (isDisabled) return
-    clearTimeouts()
-    if (openDelay > 0) {
-      openTimeoutRef.current = setTimeout(() => setHovered(true), openDelay)
-    } else {
-      setHovered(true)
-    }
-  }
-
-  const hide = () => {
-    clearTimeouts()
-    if (closeDelay > 0) {
-      closeTimeoutRef.current = setTimeout(() => setHovered(false), closeDelay)
-    } else {
-      setHovered(false)
-    }
-  }
-
-  // Arrow positioning. The arrow is a border triangle, so it takes the same surface token as the box.
-  const arrowStyles = {
-    top: 'bottom-0 left-1/2 -translate-x-1/2 translate-y-full border-l-transparent border-r-transparent border-b-transparent border-t-surface-overlay',
-    'top-start':
-      'bottom-0 left-4 translate-y-full border-l-transparent border-r-transparent border-b-transparent border-t-surface-overlay',
-    'top-end':
-      'bottom-0 right-4 translate-y-full border-l-transparent border-r-transparent border-b-transparent border-t-surface-overlay',
-    bottom:
-      'top-0 left-1/2 -translate-x-1/2 -translate-y-full border-l-transparent border-r-transparent border-t-transparent border-b-surface-overlay',
-    'bottom-start':
-      'top-0 left-4 -translate-y-full border-l-transparent border-r-transparent border-t-transparent border-b-surface-overlay',
-    'bottom-end':
-      'top-0 right-4 -translate-y-full border-l-transparent border-r-transparent border-t-transparent border-b-surface-overlay',
-    left: 'right-0 top-1/2 translate-x-full -translate-y-1/2 border-t-transparent border-b-transparent border-r-transparent border-l-surface-overlay',
-    right:
-      'left-0 top-1/2 -translate-x-full -translate-y-1/2 border-t-transparent border-b-transparent border-l-transparent border-r-surface-overlay',
-  }
-
-  // Tooltip positioning
-  const tooltipPositionStyles = {
-    top: 'bottom-full left-1/2 -translate-x-1/2 mb-2',
-    'top-start': 'bottom-full left-0 mb-2',
-    'top-end': 'bottom-full right-0 mb-2',
-    bottom: 'top-full left-1/2 -translate-x-1/2 mt-2',
-    'bottom-start': 'top-full left-0 mt-2',
-    'bottom-end': 'top-full right-0 mt-2',
-    left: 'right-full top-1/2 -translate-y-1/2 mr-2',
-    right: 'left-full top-1/2 -translate-y-1/2 ml-2',
-  }
+  const isPortalMode = usePortalProp && canPortal
+  const portalPos = usePortalPosition(triggerRef, isVisible && isPortalMode, placement)
 
   // Floating: overlay plane + lift, no ring.
   const tooltipContent = (
@@ -200,27 +92,6 @@ export function Tooltip({
       {hasArrow && <View className={cn('absolute w-0 h-0 border-4', arrowStyles[placement])} />}
     </Surface>
   )
-
-  const renderPortalTooltip = () => {
-    if (!isVisible || !isPortalMode || !createPortal) return null
-    return createPortal(
-      <div
-        style={{
-          position: 'fixed',
-          top: portalPos?.top ?? 0,
-          left: portalPos?.left ?? 0,
-          transform: portalPos?.transform ?? 'translate(-50%, -100%)',
-          zIndex: 10000,
-          pointerEvents: 'none',
-        }}
-        data-testid="tooltip-portal"
-        className={className}
-      >
-        {tooltipContent}
-      </div>,
-      document.body
-    )
-  }
 
   return (
     <View className="relative" ref={triggerRef} {...props}>
@@ -234,20 +105,24 @@ export function Tooltip({
         children
       )}
 
-      {isPortalMode
-        ? renderPortalTooltip()
-        : isVisible && (
-            <View
-              className={cn(
-                'absolute z-50 web:animate-fade-in',
-                tooltipPositionStyles[placement],
-                className
-              )}
-              pointerEvents="none"
-            >
-              {tooltipContent}
-            </View>
-          )}
+      {isPortalMode ? (
+        <TooltipPortal isVisible={isVisible} position={portalPos} className={className}>
+          {tooltipContent}
+        </TooltipPortal>
+      ) : (
+        isVisible && (
+          <View
+            className={cn(
+              'absolute z-50 web:animate-fade-in',
+              tooltipPositionStyles[placement],
+              className
+            )}
+            pointerEvents="none"
+          >
+            {tooltipContent}
+          </View>
+        )
+      )}
     </View>
   )
 }

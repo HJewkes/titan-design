@@ -16,6 +16,8 @@ const LOCAL_TIME_TEST_PATH = fileURLToPath(
 const STORYBOOK_CONFIG_DIR = fileURLToPath(new URL('./.storybook', import.meta.url))
 
 const TEST_GLOB = ['src/**/*.test.{ts,tsx}', 'scripts/**/*.test.mjs']
+// Axe on every story is the slowest suite, so CI runs this project in a job of its own.
+const STORIES_AXE_GLOB = ['src/test/stories-axe.test.tsx', 'src/test/stories-axe.*.test.tsx']
 const TEST_EXCLUDE = ['src/**/*.visual.test.{ts,tsx}', 'node_modules']
 
 export default defineConfig({
@@ -39,7 +41,15 @@ export default defineConfig({
         test: {
           name: 'threads',
           include: TEST_GLOB,
-          exclude: [...TEST_EXCLUDE, LOCAL_TIME_TEST_PATH],
+          exclude: [...TEST_EXCLUDE, LOCAL_TIME_TEST_PATH, ...STORIES_AXE_GLOB],
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: 'stories-axe',
+          include: STORIES_AXE_GLOB,
+          exclude: TEST_EXCLUDE,
         },
       },
       {

@@ -145,7 +145,7 @@ Every leaf now composes a primitive rather than hand-rolling it:
   `tests/visual/reference/stories.spec.ts-snapshots/`; any drift, or an in-scope story with no baseline,
   fails CI. **Baselines must be generated in the pinned container**
   (`mcr.microsoft.com/playwright:v1.58.2-noble`): download the `storybook-visual-baselines` artifact the
-  refresh step uploads on every run and commit the changed PNGs. Widen `SCOPE` to cover more of the library.
+  refresh step uploads on a failed run and commit the changed PNGs. Widen `SCOPE` to cover more of the library.
 - **Lint guardrails** — components may not inline `linear-gradient` (use `surfaceGradient`); shell + icons may
   not use raw hex (use tokens).
 

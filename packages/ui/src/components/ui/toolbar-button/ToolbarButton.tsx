@@ -12,6 +12,14 @@ import { Surface, useSurfaceMode } from '../surface'
 export type ToolbarButtonVariant = 'default' | 'raised'
 export type ToolbarButtonSize = 'sm' | 'md' | 'lg'
 
+interface ToolbarIconProps {
+  size?: number
+  width?: number
+  height?: number
+  color?: string
+  style?: { color?: string; width?: number; height?: number }
+}
+
 interface ToolbarButtonContextType {
   isOpen: boolean
   setIsOpen: (open: boolean) => void
@@ -189,7 +197,7 @@ export function ToolbarButton({
           {icon && (
             <View className="w-5 h-5 items-center justify-center">
               {React.isValidElement(icon)
-                ? React.cloneElement(icon as React.ReactElement<any>, {
+                ? React.cloneElement(icon as React.ReactElement<ToolbarIconProps>, {
                     size: 20,
                     width: 20,
                     height: 20,
@@ -247,7 +255,7 @@ const styles = StyleSheet.create({
   disabledBg: {
     backgroundColor: alpha(primitiveColors.white, 0.12),
     ...Platform.select({
-      web: { boxShadow: 'none' } as any,
+      web: { boxShadow: 'none' },
       default: { shadowOpacity: 0, elevation: 0 },
     }),
   },

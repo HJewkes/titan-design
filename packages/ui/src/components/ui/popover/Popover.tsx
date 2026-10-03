@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback, createContext, useContext } from 'react'
-import { View, Pressable, Modal, type ViewProps } from 'react-native'
+import { View, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Surface } from '../surface'
 import { TriggerSurface } from '../trigger'
@@ -59,7 +59,7 @@ export function Popover({
   placement = 'bottom',
   isOpen: controlledIsOpen,
   onOpenChange,
-  closeOnClickOutside = true,
+  closeOnClickOutside: _closeOnClickOutside = true,
   triggerMode = 'click',
   closeDelay = 150,
   className,

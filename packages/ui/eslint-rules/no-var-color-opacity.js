@@ -23,21 +23,10 @@
  * line at zero instead of documenting a backlog.
  */
 
-const path = require('node:path')
+const { colors } = require('./fix-options')
 
-/** `brand.primary.DEFAULT` -> the `brand-primary` class suffix. */
-function flattenColors(node, prefix = [], out = {}) {
-  for (const [key, value] of Object.entries(node)) {
-    const nextPrefix = key === 'DEFAULT' ? prefix : [...prefix, key]
-    if (value && typeof value === 'object') flattenColors(value, nextPrefix, out)
-    else if (typeof value === 'string') out[nextPrefix.join('-')] = value
-  }
-  return out
-}
-
-const tailwindConfig = require(path.join(__dirname, '..', 'tailwind.config.js'))
 const VAR_BACKED = new Set(
-  Object.entries(flattenColors(tailwindConfig.theme?.extend?.colors ?? {}))
+  Object.entries(colors)
     .filter(([, value]) => /^var\(--color-/.test(value))
     .map(([name]) => name)
 )

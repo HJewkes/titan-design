@@ -1,0 +1,8 @@
+{
+  "src/components/custom/Workout/GoalTrajectoryChartGeometry.test.ts": {
+    "d3Import": 1
+  },
+  "src/components/custom/Workout/GoalTrajectoryChartGeometry.ts": {
+    "d3Import": 2
+  }
+}

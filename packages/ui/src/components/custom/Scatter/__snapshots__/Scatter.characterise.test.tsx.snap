@@ -1,0 +1,3413 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Scatter characterisation > on a dark surface > renders the Default story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 480px; height: 340px;"
+    >
+      <div
+        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 6 points"
+        class="css-view-175oi2r"
+        data-testid="scatter-canvas"
+        role="img"
+        style="position: absolute; top: 0px; left: 0px; width: 480px; height: 340px; overflow-x: hidden; overflow-y: hidden;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 306px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 232.5px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.25
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 159px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.50
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 85.5px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.75
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 12px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            1
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 40px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 147px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.25
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 254px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.50
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 361px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.75
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 468px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            1
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-axis-y"
+          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(255, 255, 255, 0.15);"
+        />
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-axis-x"
+          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(255, 255, 255, 0.15);"
+        />
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-diagonal"
+          style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(255, 255, 255, 0.22); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
+        />
+        <div
+          class="css-text-146c3p1"
+          data-testid="scatter-x-label"
+          dir="auto"
+          style="position: absolute; left: 40px; width: 428px; bottom: 2px; text-align: center;"
+        >
+          Instability (I)
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="scatter-y-label"
+          dir="auto"
+          style="position: absolute; left: -141px; top: 159px; width: 294px; text-align: center; transform-origin: 50% 50%; transform: rotate(-90deg);"
+        >
+          Abstractness (A)
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="scatter-points"
+        style="position: absolute; top: 0px; left: 0px; width: 480px; height: 340px;"
+      >
+        <button
+          aria-label="core"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-core"
+          role="button"
+          style="position: absolute; left: 64.24000000000001px; top: 46.10000000000001px; width: 20px; height: 20px; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; background-color: rgb(25, 101, 176); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+            style="position: absolute; left: 23px; top: 4px; width: 80px;"
+          >
+            core
+          </div>
+        </button>
+        <button
+          aria-label="domain"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-domain"
+          role="button"
+          style="position: absolute; left: 126.16px; top: 92.20000000000002px; width: 16px; height: 16px; border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; background-color: rgb(25, 101, 176); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="services"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-services"
+          role="button"
+          style="position: absolute; left: 220.6px; top: 176.4px; width: 24px; height: 24px; border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px; background-color: rgb(123, 175, 222); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+            style="position: absolute; left: 27px; top: 6px; width: 80px;"
+          >
+            services
+          </div>
+        </button>
+        <button
+          aria-label="api"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-api"
+          role="button"
+          style="position: absolute; left: 289.8px; top: 196.1px; width: 14px; height: 14px; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; background-color: rgb(123, 175, 222); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="cli"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-cli"
+          role="button"
+          style="position: absolute; left: 416.2px; top: 273.48px; width: 18px; height: 18px; border-top-left-radius: 9px; border-top-right-radius: 9px; border-bottom-right-radius: 9px; border-bottom-left-radius: 9px; background-color: rgb(244, 167, 54); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="utils (pain?)"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-utils"
+          role="button"
+          style="position: absolute; left: 397.8px; top: 79.5px; width: 12px; height: 12px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; background-color: rgb(220, 5, 12); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Scatter characterisation > on a dark surface > renders the Empty story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 400px; height: 300px;"
+    >
+      <div
+        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 0 points"
+        class="css-view-175oi2r"
+        data-testid="scatter-canvas"
+        role="img"
+        style="position: absolute; top: 0px; left: 0px; width: 400px; height: 300px; overflow-x: hidden; overflow-y: hidden;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 348px; top: 266px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 348px; top: 202.5px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.25
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 348px; top: 139px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.50
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 348px; top: 75.5px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.75
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 348px; top: 12px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            1
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 254px; left: 40px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
+          >
+            0
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 254px; left: 127px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.25
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 254px; left: 214px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.50
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 254px; left: 301px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.75
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 254px; left: 388px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
+          >
+            1
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-axis-y"
+          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 254px; background-color: rgba(255, 255, 255, 0.15);"
+        />
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-axis-x"
+          style="position: absolute; left: 40px; top: 266px; width: 348px; height: 1px; background-color: rgba(255, 255, 255, 0.15);"
+        />
+        <div
+          class="css-text-146c3p1"
+          data-testid="scatter-x-label"
+          dir="auto"
+          style="position: absolute; left: 40px; width: 348px; bottom: 2px; text-align: center;"
+        >
+          Instability (I)
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="scatter-y-label"
+          dir="auto"
+          style="position: absolute; left: -121px; top: 139px; width: 254px; text-align: center; transform-origin: 50% 50%; transform: rotate(-90deg);"
+        >
+          Abstractness (A)
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="scatter-points"
+        style="position: absolute; top: 0px; left: 0px; width: 400px; height: 300px;"
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Scatter characterisation > on a dark surface > renders the Light story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 480px; height: 340px;"
+    >
+      <div
+        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 6 points"
+        class="css-view-175oi2r"
+        data-testid="scatter-canvas"
+        role="img"
+        style="position: absolute; top: 0px; left: 0px; width: 480px; height: 340px; overflow-x: hidden; overflow-y: hidden;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 306px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 232.5px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.25
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 159px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.50
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 85.5px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.75
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 12px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            1
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 40px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 147px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.25
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 254px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.50
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 361px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.75
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 468px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            1
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-axis-y"
+          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(255, 255, 255, 0.15);"
+        />
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-axis-x"
+          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(255, 255, 255, 0.15);"
+        />
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-diagonal"
+          style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(255, 255, 255, 0.22); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
+        />
+        <div
+          class="css-text-146c3p1"
+          data-testid="scatter-x-label"
+          dir="auto"
+          style="position: absolute; left: 40px; width: 428px; bottom: 2px; text-align: center;"
+        >
+          Instability (I)
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="scatter-y-label"
+          dir="auto"
+          style="position: absolute; left: -141px; top: 159px; width: 294px; text-align: center; transform-origin: 50% 50%; transform: rotate(-90deg);"
+        >
+          Abstractness (A)
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="scatter-points"
+        style="position: absolute; top: 0px; left: 0px; width: 480px; height: 340px;"
+      >
+        <button
+          aria-label="core"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-core"
+          role="button"
+          style="position: absolute; left: 64.24000000000001px; top: 46.10000000000001px; width: 20px; height: 20px; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; background-color: rgb(33, 150, 243); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+            style="position: absolute; left: 23px; top: 4px; width: 80px;"
+          >
+            core
+          </div>
+        </button>
+        <button
+          aria-label="domain"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-domain"
+          role="button"
+          style="position: absolute; left: 126.16px; top: 92.20000000000002px; width: 16px; height: 16px; border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; background-color: rgb(213, 72, 175); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="services"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-services"
+          role="button"
+          style="position: absolute; left: 220.6px; top: 176.4px; width: 24px; height: 24px; border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px; background-color: rgb(224, 82, 84); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+            style="position: absolute; left: 27px; top: 6px; width: 80px;"
+          >
+            services
+          </div>
+        </button>
+        <button
+          aria-label="api"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-api"
+          role="button"
+          style="position: absolute; left: 289.8px; top: 196.1px; width: 14px; height: 14px; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; background-color: rgb(255, 121, 0); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="cli"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-cli"
+          role="button"
+          style="position: absolute; left: 416.2px; top: 273.48px; width: 18px; height: 18px; border-top-left-radius: 9px; border-top-right-radius: 9px; border-bottom-right-radius: 9px; border-bottom-left-radius: 9px; background-color: rgb(46, 213, 115); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="utils (pain?)"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-utils"
+          role="button"
+          style="position: absolute; left: 397.8px; top: 79.5px; width: 12px; height: 12px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; background-color: rgb(34, 211, 238); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Scatter characterisation > on a dark surface > renders the NoDiagonal story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 480px; height: 340px;"
+    >
+      <div
+        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 6 points"
+        class="css-view-175oi2r"
+        data-testid="scatter-canvas"
+        role="img"
+        style="position: absolute; top: 0px; left: 0px; width: 480px; height: 340px; overflow-x: hidden; overflow-y: hidden;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 306px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 232.5px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.25
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 159px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.50
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 85.5px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.75
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 12px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            1
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 40px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 147px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.25
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 254px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.50
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 361px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.75
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 468px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            1
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-axis-y"
+          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(255, 255, 255, 0.15);"
+        />
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-axis-x"
+          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(255, 255, 255, 0.15);"
+        />
+        <div
+          class="css-text-146c3p1"
+          data-testid="scatter-x-label"
+          dir="auto"
+          style="position: absolute; left: 40px; width: 428px; bottom: 2px; text-align: center;"
+        >
+          Instability (I)
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="scatter-y-label"
+          dir="auto"
+          style="position: absolute; left: -141px; top: 159px; width: 294px; text-align: center; transform-origin: 50% 50%; transform: rotate(-90deg);"
+        >
+          Abstractness (A)
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="scatter-points"
+        style="position: absolute; top: 0px; left: 0px; width: 480px; height: 340px;"
+      >
+        <button
+          aria-label="core"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-core"
+          role="button"
+          style="position: absolute; left: 64.24000000000001px; top: 46.10000000000001px; width: 20px; height: 20px; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; background-color: rgb(25, 101, 176); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+            style="position: absolute; left: 23px; top: 4px; width: 80px;"
+          >
+            core
+          </div>
+        </button>
+        <button
+          aria-label="domain"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-domain"
+          role="button"
+          style="position: absolute; left: 126.16px; top: 92.20000000000002px; width: 16px; height: 16px; border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; background-color: rgb(25, 101, 176); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="services"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-services"
+          role="button"
+          style="position: absolute; left: 220.6px; top: 176.4px; width: 24px; height: 24px; border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px; background-color: rgb(123, 175, 222); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+            style="position: absolute; left: 27px; top: 6px; width: 80px;"
+          >
+            services
+          </div>
+        </button>
+        <button
+          aria-label="api"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-api"
+          role="button"
+          style="position: absolute; left: 289.8px; top: 196.1px; width: 14px; height: 14px; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; background-color: rgb(123, 175, 222); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="cli"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-cli"
+          role="button"
+          style="position: absolute; left: 416.2px; top: 273.48px; width: 18px; height: 18px; border-top-left-radius: 9px; border-top-right-radius: 9px; border-bottom-right-radius: 9px; border-bottom-left-radius: 9px; background-color: rgb(244, 167, 54); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="utils (pain?)"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-utils"
+          role="button"
+          style="position: absolute; left: 397.8px; top: 79.5px; width: 12px; height: 12px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; background-color: rgb(220, 5, 12); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Scatter characterisation > on a dark surface > renders the Outlier story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 480px; height: 340px;"
+    >
+      <div
+        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 7 points"
+        class="css-view-175oi2r"
+        data-testid="scatter-canvas"
+        role="img"
+        style="position: absolute; top: 0px; left: 0px; width: 480px; height: 340px; overflow-x: hidden; overflow-y: hidden;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 306px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 232.5px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.25
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 159px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.50
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 85.5px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.75
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 12px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            1
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 40px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 147px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.25
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 254px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.50
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 361px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.75
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 468px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            1
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-axis-y"
+          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(255, 255, 255, 0.15);"
+        />
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-axis-x"
+          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(255, 255, 255, 0.15);"
+        />
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-diagonal"
+          style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(255, 255, 255, 0.22); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
+        />
+        <div
+          class="css-text-146c3p1"
+          data-testid="scatter-x-label"
+          dir="auto"
+          style="position: absolute; left: 40px; width: 428px; bottom: 2px; text-align: center;"
+        >
+          Instability (I)
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="scatter-y-label"
+          dir="auto"
+          style="position: absolute; left: -141px; top: 159px; width: 294px; text-align: center; transform-origin: 50% 50%; transform: rotate(-90deg);"
+        >
+          Abstractness (A)
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="scatter-points"
+        style="position: absolute; top: 0px; left: 0px; width: 480px; height: 340px;"
+      >
+        <button
+          aria-label="core"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-core"
+          role="button"
+          style="position: absolute; left: 64.24000000000001px; top: 46.10000000000001px; width: 20px; height: 20px; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; background-color: rgb(25, 101, 176); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+            style="position: absolute; left: 23px; top: 4px; width: 80px;"
+          >
+            core
+          </div>
+        </button>
+        <button
+          aria-label="domain"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-domain"
+          role="button"
+          style="position: absolute; left: 126.16px; top: 92.20000000000002px; width: 16px; height: 16px; border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; background-color: rgb(25, 101, 176); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="services"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-services"
+          role="button"
+          style="position: absolute; left: 220.6px; top: 176.4px; width: 24px; height: 24px; border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px; background-color: rgb(123, 175, 222); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+            style="position: absolute; left: 27px; top: 6px; width: 80px;"
+          >
+            services
+          </div>
+        </button>
+        <button
+          aria-label="api"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-api"
+          role="button"
+          style="position: absolute; left: 289.8px; top: 196.1px; width: 14px; height: 14px; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; background-color: rgb(123, 175, 222); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="cli"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-cli"
+          role="button"
+          style="position: absolute; left: 416.2px; top: 273.48px; width: 18px; height: 18px; border-top-left-radius: 9px; border-top-right-radius: 9px; border-bottom-right-radius: 9px; border-bottom-left-radius: 9px; background-color: rgb(244, 167, 54); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="utils (pain?)"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-utils"
+          role="button"
+          style="position: absolute; left: 397.8px; top: 79.5px; width: 12px; height: 12px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; background-color: rgb(220, 5, 12); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="legacy.ts"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-legacy"
+          role="button"
+          style="position: absolute; left: 443.44px; top: 1.880000000000006px; width: 32px; height: 32px; border-top-left-radius: 16px; border-top-right-radius: 16px; border-bottom-right-radius: 16px; border-bottom-left-radius: 16px; background-color: rgb(220, 5, 12); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+            style="position: absolute; left: 35px; top: 10px; width: 80px;"
+          >
+            legacy.ts
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Scatter characterisation > on a dark surface > renders the Selected story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 480px; height: 340px;"
+    >
+      <div
+        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 6 points"
+        class="css-view-175oi2r"
+        data-testid="scatter-canvas"
+        role="img"
+        style="position: absolute; top: 0px; left: 0px; width: 480px; height: 340px; overflow-x: hidden; overflow-y: hidden;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 306px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 232.5px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.25
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 159px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.50
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 85.5px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.75
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 12px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            1
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 40px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 147px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.25
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 254px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.50
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 361px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.75
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 468px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            1
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-axis-y"
+          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(255, 255, 255, 0.15);"
+        />
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-axis-x"
+          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(255, 255, 255, 0.15);"
+        />
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-diagonal"
+          style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(255, 255, 255, 0.22); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
+        />
+        <div
+          class="css-text-146c3p1"
+          data-testid="scatter-x-label"
+          dir="auto"
+          style="position: absolute; left: 40px; width: 428px; bottom: 2px; text-align: center;"
+        >
+          Instability (I)
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="scatter-y-label"
+          dir="auto"
+          style="position: absolute; left: -141px; top: 159px; width: 294px; text-align: center; transform-origin: 50% 50%; transform: rotate(-90deg);"
+        >
+          Abstractness (A)
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="scatter-points"
+        style="position: absolute; top: 0px; left: 0px; width: 480px; height: 340px;"
+      >
+        <button
+          aria-label="core"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-core"
+          role="button"
+          style="position: absolute; left: 64.24000000000001px; top: 46.10000000000001px; width: 20px; height: 20px; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; background-color: rgb(25, 101, 176); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+            style="position: absolute; left: 23px; top: 4px; width: 80px;"
+          >
+            core
+          </div>
+        </button>
+        <button
+          aria-label="domain"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-domain"
+          role="button"
+          style="position: absolute; left: 126.16px; top: 92.20000000000002px; width: 16px; height: 16px; border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; background-color: rgb(25, 101, 176); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="services"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-services"
+          role="button"
+          style="position: absolute; left: 220.6px; top: 176.4px; width: 24px; height: 24px; border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px; background-color: rgb(123, 175, 222); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+            style="position: absolute; left: 27px; top: 6px; width: 80px;"
+          >
+            services
+          </div>
+        </button>
+        <button
+          aria-label="api"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-api"
+          role="button"
+          style="position: absolute; left: 289.8px; top: 196.1px; width: 14px; height: 14px; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; background-color: rgb(123, 175, 222); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="cli"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-cli"
+          role="button"
+          style="position: absolute; left: 416.2px; top: 273.48px; width: 18px; height: 18px; border-top-left-radius: 9px; border-top-right-radius: 9px; border-bottom-right-radius: 9px; border-bottom-left-radius: 9px; background-color: rgb(244, 167, 54); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="utils (pain?)"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-utils"
+          role="button"
+          style="position: absolute; left: 397.8px; top: 79.5px; width: 12px; height: 12px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; background-color: rgb(220, 5, 12); opacity: 1; border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+            style="position: absolute; left: 15px; top: 0px; width: 80px;"
+          >
+            utils (pain?)
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Scatter characterisation > on a dark surface > renders the SinglePoint story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 400px; height: 300px;"
+    >
+      <div
+        aria-label="Scatter plot of I versus A, 1 point"
+        class="css-view-175oi2r"
+        data-testid="scatter-canvas"
+        role="img"
+        style="position: absolute; top: 0px; left: 0px; width: 400px; height: 300px; overflow-x: hidden; overflow-y: hidden;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 348px; top: 266px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.45
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 348px; top: 202.49999999999997px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.48
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 348px; top: 139.00000000000006px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.50
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 348px; top: 75.50000000000003px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.53
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 348px; top: 12px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.55
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 254px; left: 40px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.45
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 254px; left: 127.00000000000004px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.48
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 254px; left: 213.99999999999991px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.50
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 254px; left: 300.99999999999994px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.53
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 254px; left: 388px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.55
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-axis-y"
+          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 254px; background-color: rgba(255, 255, 255, 0.15);"
+        />
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-axis-x"
+          style="position: absolute; left: 40px; top: 266px; width: 348px; height: 1px; background-color: rgba(255, 255, 255, 0.15);"
+        />
+        <div
+          class="css-text-146c3p1"
+          data-testid="scatter-x-label"
+          dir="auto"
+          style="position: absolute; left: 40px; width: 348px; bottom: 2px; text-align: center;"
+        >
+          I
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="scatter-y-label"
+          dir="auto"
+          style="position: absolute; left: -121px; top: 139px; width: 254px; text-align: center; transform-origin: 50% 50%; transform: rotate(-90deg);"
+        >
+          A
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="scatter-points"
+        style="position: absolute; top: 0px; left: 0px; width: 400px; height: 300px;"
+      >
+        <button
+          aria-label="only module"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-only"
+          role="button"
+          style="position: absolute; left: 203.99999999999991px; top: 129.00000000000006px; width: 20px; height: 20px; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; background-color: rgb(33, 150, 243); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+            style="position: absolute; left: 23px; top: 4px; width: 80px;"
+          >
+            only module
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Scatter characterisation > on a light surface > renders the Default story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 480px; height: 340px;"
+    >
+      <div
+        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 6 points"
+        class="css-view-175oi2r"
+        data-testid="scatter-canvas"
+        role="img"
+        style="position: absolute; top: 0px; left: 0px; width: 480px; height: 340px; overflow-x: hidden; overflow-y: hidden;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 306px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 232.5px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.25
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 159px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.50
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 85.5px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.75
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 12px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            1
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 40px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 147px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.25
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 254px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.50
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 361px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.75
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 468px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            1
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-axis-y"
+          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(0, 0, 0, 0.09);"
+        />
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-axis-x"
+          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(0, 0, 0, 0.09);"
+        />
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-diagonal"
+          style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(0, 0, 0, 0.14); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
+        />
+        <div
+          class="css-text-146c3p1"
+          data-testid="scatter-x-label"
+          dir="auto"
+          style="position: absolute; left: 40px; width: 428px; bottom: 2px; text-align: center;"
+        >
+          Instability (I)
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="scatter-y-label"
+          dir="auto"
+          style="position: absolute; left: -141px; top: 159px; width: 294px; text-align: center; transform-origin: 50% 50%; transform: rotate(-90deg);"
+        >
+          Abstractness (A)
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="scatter-points"
+        style="position: absolute; top: 0px; left: 0px; width: 480px; height: 340px;"
+      >
+        <button
+          aria-label="core"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-core"
+          role="button"
+          style="position: absolute; left: 64.24000000000001px; top: 46.10000000000001px; width: 20px; height: 20px; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; background-color: rgb(25, 101, 176); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+            style="position: absolute; left: 23px; top: 4px; width: 80px;"
+          >
+            core
+          </div>
+        </button>
+        <button
+          aria-label="domain"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-domain"
+          role="button"
+          style="position: absolute; left: 126.16px; top: 92.20000000000002px; width: 16px; height: 16px; border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; background-color: rgb(25, 101, 176); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="services"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-services"
+          role="button"
+          style="position: absolute; left: 220.6px; top: 176.4px; width: 24px; height: 24px; border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px; background-color: rgb(123, 175, 222); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+            style="position: absolute; left: 27px; top: 6px; width: 80px;"
+          >
+            services
+          </div>
+        </button>
+        <button
+          aria-label="api"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-api"
+          role="button"
+          style="position: absolute; left: 289.8px; top: 196.1px; width: 14px; height: 14px; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; background-color: rgb(123, 175, 222); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="cli"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-cli"
+          role="button"
+          style="position: absolute; left: 416.2px; top: 273.48px; width: 18px; height: 18px; border-top-left-radius: 9px; border-top-right-radius: 9px; border-bottom-right-radius: 9px; border-bottom-left-radius: 9px; background-color: rgb(244, 167, 54); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="utils (pain?)"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-utils"
+          role="button"
+          style="position: absolute; left: 397.8px; top: 79.5px; width: 12px; height: 12px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; background-color: rgb(220, 5, 12); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Scatter characterisation > on a light surface > renders the Empty story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 400px; height: 300px;"
+    >
+      <div
+        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 0 points"
+        class="css-view-175oi2r"
+        data-testid="scatter-canvas"
+        role="img"
+        style="position: absolute; top: 0px; left: 0px; width: 400px; height: 300px; overflow-x: hidden; overflow-y: hidden;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 348px; top: 266px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 348px; top: 202.5px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.25
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 348px; top: 139px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.50
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 348px; top: 75.5px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.75
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 348px; top: 12px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            1
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 254px; left: 40px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
+          >
+            0
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 254px; left: 127px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.25
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 254px; left: 214px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.50
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 254px; left: 301px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.75
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 254px; left: 388px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
+          >
+            1
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-axis-y"
+          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 254px; background-color: rgba(0, 0, 0, 0.09);"
+        />
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-axis-x"
+          style="position: absolute; left: 40px; top: 266px; width: 348px; height: 1px; background-color: rgba(0, 0, 0, 0.09);"
+        />
+        <div
+          class="css-text-146c3p1"
+          data-testid="scatter-x-label"
+          dir="auto"
+          style="position: absolute; left: 40px; width: 348px; bottom: 2px; text-align: center;"
+        >
+          Instability (I)
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="scatter-y-label"
+          dir="auto"
+          style="position: absolute; left: -121px; top: 139px; width: 254px; text-align: center; transform-origin: 50% 50%; transform: rotate(-90deg);"
+        >
+          Abstractness (A)
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="scatter-points"
+        style="position: absolute; top: 0px; left: 0px; width: 400px; height: 300px;"
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Scatter characterisation > on a light surface > renders the Light story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 480px; height: 340px;"
+    >
+      <div
+        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 6 points"
+        class="css-view-175oi2r"
+        data-testid="scatter-canvas"
+        role="img"
+        style="position: absolute; top: 0px; left: 0px; width: 480px; height: 340px; overflow-x: hidden; overflow-y: hidden;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 306px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 232.5px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.25
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 159px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.50
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 85.5px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.75
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 12px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            1
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 40px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 147px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.25
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 254px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.50
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 361px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.75
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 468px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            1
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-axis-y"
+          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(0, 0, 0, 0.09);"
+        />
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-axis-x"
+          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(0, 0, 0, 0.09);"
+        />
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-diagonal"
+          style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(0, 0, 0, 0.14); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
+        />
+        <div
+          class="css-text-146c3p1"
+          data-testid="scatter-x-label"
+          dir="auto"
+          style="position: absolute; left: 40px; width: 428px; bottom: 2px; text-align: center;"
+        >
+          Instability (I)
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="scatter-y-label"
+          dir="auto"
+          style="position: absolute; left: -141px; top: 159px; width: 294px; text-align: center; transform-origin: 50% 50%; transform: rotate(-90deg);"
+        >
+          Abstractness (A)
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="scatter-points"
+        style="position: absolute; top: 0px; left: 0px; width: 480px; height: 340px;"
+      >
+        <button
+          aria-label="core"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-core"
+          role="button"
+          style="position: absolute; left: 64.24000000000001px; top: 46.10000000000001px; width: 20px; height: 20px; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; background-color: rgb(33, 150, 243); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+            style="position: absolute; left: 23px; top: 4px; width: 80px;"
+          >
+            core
+          </div>
+        </button>
+        <button
+          aria-label="domain"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-domain"
+          role="button"
+          style="position: absolute; left: 126.16px; top: 92.20000000000002px; width: 16px; height: 16px; border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; background-color: rgb(186, 41, 150); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="services"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-services"
+          role="button"
+          style="position: absolute; left: 220.6px; top: 176.4px; width: 24px; height: 24px; border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px; background-color: rgb(209, 67, 67); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+            style="position: absolute; left: 27px; top: 6px; width: 80px;"
+          >
+            services
+          </div>
+        </button>
+        <button
+          aria-label="api"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-api"
+          role="button"
+          style="position: absolute; left: 289.8px; top: 196.1px; width: 14px; height: 14px; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; background-color: rgb(255, 121, 0); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="cli"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-cli"
+          role="button"
+          style="position: absolute; left: 416.2px; top: 273.48px; width: 18px; height: 18px; border-top-left-radius: 9px; border-top-right-radius: 9px; border-bottom-right-radius: 9px; border-bottom-left-radius: 9px; background-color: rgb(41, 135, 50); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="utils (pain?)"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-utils"
+          role="button"
+          style="position: absolute; left: 397.8px; top: 79.5px; width: 12px; height: 12px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; background-color: rgb(1, 181, 209); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Scatter characterisation > on a light surface > renders the NoDiagonal story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 480px; height: 340px;"
+    >
+      <div
+        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 6 points"
+        class="css-view-175oi2r"
+        data-testid="scatter-canvas"
+        role="img"
+        style="position: absolute; top: 0px; left: 0px; width: 480px; height: 340px; overflow-x: hidden; overflow-y: hidden;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 306px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 232.5px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.25
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 159px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.50
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 85.5px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.75
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 12px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            1
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 40px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 147px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.25
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 254px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.50
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 361px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.75
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 468px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            1
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-axis-y"
+          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(0, 0, 0, 0.09);"
+        />
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-axis-x"
+          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(0, 0, 0, 0.09);"
+        />
+        <div
+          class="css-text-146c3p1"
+          data-testid="scatter-x-label"
+          dir="auto"
+          style="position: absolute; left: 40px; width: 428px; bottom: 2px; text-align: center;"
+        >
+          Instability (I)
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="scatter-y-label"
+          dir="auto"
+          style="position: absolute; left: -141px; top: 159px; width: 294px; text-align: center; transform-origin: 50% 50%; transform: rotate(-90deg);"
+        >
+          Abstractness (A)
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="scatter-points"
+        style="position: absolute; top: 0px; left: 0px; width: 480px; height: 340px;"
+      >
+        <button
+          aria-label="core"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-core"
+          role="button"
+          style="position: absolute; left: 64.24000000000001px; top: 46.10000000000001px; width: 20px; height: 20px; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; background-color: rgb(25, 101, 176); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+            style="position: absolute; left: 23px; top: 4px; width: 80px;"
+          >
+            core
+          </div>
+        </button>
+        <button
+          aria-label="domain"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-domain"
+          role="button"
+          style="position: absolute; left: 126.16px; top: 92.20000000000002px; width: 16px; height: 16px; border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; background-color: rgb(25, 101, 176); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="services"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-services"
+          role="button"
+          style="position: absolute; left: 220.6px; top: 176.4px; width: 24px; height: 24px; border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px; background-color: rgb(123, 175, 222); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+            style="position: absolute; left: 27px; top: 6px; width: 80px;"
+          >
+            services
+          </div>
+        </button>
+        <button
+          aria-label="api"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-api"
+          role="button"
+          style="position: absolute; left: 289.8px; top: 196.1px; width: 14px; height: 14px; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; background-color: rgb(123, 175, 222); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="cli"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-cli"
+          role="button"
+          style="position: absolute; left: 416.2px; top: 273.48px; width: 18px; height: 18px; border-top-left-radius: 9px; border-top-right-radius: 9px; border-bottom-right-radius: 9px; border-bottom-left-radius: 9px; background-color: rgb(244, 167, 54); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="utils (pain?)"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-utils"
+          role="button"
+          style="position: absolute; left: 397.8px; top: 79.5px; width: 12px; height: 12px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; background-color: rgb(220, 5, 12); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Scatter characterisation > on a light surface > renders the Outlier story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 480px; height: 340px;"
+    >
+      <div
+        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 7 points"
+        class="css-view-175oi2r"
+        data-testid="scatter-canvas"
+        role="img"
+        style="position: absolute; top: 0px; left: 0px; width: 480px; height: 340px; overflow-x: hidden; overflow-y: hidden;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 306px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 232.5px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.25
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 159px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.50
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 85.5px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.75
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 12px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            1
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 40px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 147px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.25
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 254px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.50
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 361px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.75
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 468px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            1
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-axis-y"
+          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(0, 0, 0, 0.09);"
+        />
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-axis-x"
+          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(0, 0, 0, 0.09);"
+        />
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-diagonal"
+          style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(0, 0, 0, 0.14); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
+        />
+        <div
+          class="css-text-146c3p1"
+          data-testid="scatter-x-label"
+          dir="auto"
+          style="position: absolute; left: 40px; width: 428px; bottom: 2px; text-align: center;"
+        >
+          Instability (I)
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="scatter-y-label"
+          dir="auto"
+          style="position: absolute; left: -141px; top: 159px; width: 294px; text-align: center; transform-origin: 50% 50%; transform: rotate(-90deg);"
+        >
+          Abstractness (A)
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="scatter-points"
+        style="position: absolute; top: 0px; left: 0px; width: 480px; height: 340px;"
+      >
+        <button
+          aria-label="core"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-core"
+          role="button"
+          style="position: absolute; left: 64.24000000000001px; top: 46.10000000000001px; width: 20px; height: 20px; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; background-color: rgb(25, 101, 176); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+            style="position: absolute; left: 23px; top: 4px; width: 80px;"
+          >
+            core
+          </div>
+        </button>
+        <button
+          aria-label="domain"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-domain"
+          role="button"
+          style="position: absolute; left: 126.16px; top: 92.20000000000002px; width: 16px; height: 16px; border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; background-color: rgb(25, 101, 176); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="services"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-services"
+          role="button"
+          style="position: absolute; left: 220.6px; top: 176.4px; width: 24px; height: 24px; border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px; background-color: rgb(123, 175, 222); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+            style="position: absolute; left: 27px; top: 6px; width: 80px;"
+          >
+            services
+          </div>
+        </button>
+        <button
+          aria-label="api"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-api"
+          role="button"
+          style="position: absolute; left: 289.8px; top: 196.1px; width: 14px; height: 14px; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; background-color: rgb(123, 175, 222); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="cli"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-cli"
+          role="button"
+          style="position: absolute; left: 416.2px; top: 273.48px; width: 18px; height: 18px; border-top-left-radius: 9px; border-top-right-radius: 9px; border-bottom-right-radius: 9px; border-bottom-left-radius: 9px; background-color: rgb(244, 167, 54); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="utils (pain?)"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-utils"
+          role="button"
+          style="position: absolute; left: 397.8px; top: 79.5px; width: 12px; height: 12px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; background-color: rgb(220, 5, 12); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="legacy.ts"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-legacy"
+          role="button"
+          style="position: absolute; left: 443.44px; top: 1.880000000000006px; width: 32px; height: 32px; border-top-left-radius: 16px; border-top-right-radius: 16px; border-bottom-right-radius: 16px; border-bottom-left-radius: 16px; background-color: rgb(220, 5, 12); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+            style="position: absolute; left: 35px; top: 10px; width: 80px;"
+          >
+            legacy.ts
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Scatter characterisation > on a light surface > renders the Selected story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 480px; height: 340px;"
+    >
+      <div
+        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 6 points"
+        class="css-view-175oi2r"
+        data-testid="scatter-canvas"
+        role="img"
+        style="position: absolute; top: 0px; left: 0px; width: 480px; height: 340px; overflow-x: hidden; overflow-y: hidden;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 306px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 232.5px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.25
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 159px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.50
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 85.5px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.75
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 12px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            1
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 40px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 147px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.25
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 254px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.50
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 361px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.75
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 468px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            1
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-axis-y"
+          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(0, 0, 0, 0.09);"
+        />
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-axis-x"
+          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(0, 0, 0, 0.09);"
+        />
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-diagonal"
+          style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(0, 0, 0, 0.14); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
+        />
+        <div
+          class="css-text-146c3p1"
+          data-testid="scatter-x-label"
+          dir="auto"
+          style="position: absolute; left: 40px; width: 428px; bottom: 2px; text-align: center;"
+        >
+          Instability (I)
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="scatter-y-label"
+          dir="auto"
+          style="position: absolute; left: -141px; top: 159px; width: 294px; text-align: center; transform-origin: 50% 50%; transform: rotate(-90deg);"
+        >
+          Abstractness (A)
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="scatter-points"
+        style="position: absolute; top: 0px; left: 0px; width: 480px; height: 340px;"
+      >
+        <button
+          aria-label="core"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-core"
+          role="button"
+          style="position: absolute; left: 64.24000000000001px; top: 46.10000000000001px; width: 20px; height: 20px; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; background-color: rgb(25, 101, 176); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+            style="position: absolute; left: 23px; top: 4px; width: 80px;"
+          >
+            core
+          </div>
+        </button>
+        <button
+          aria-label="domain"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-domain"
+          role="button"
+          style="position: absolute; left: 126.16px; top: 92.20000000000002px; width: 16px; height: 16px; border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; background-color: rgb(25, 101, 176); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="services"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-services"
+          role="button"
+          style="position: absolute; left: 220.6px; top: 176.4px; width: 24px; height: 24px; border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px; background-color: rgb(123, 175, 222); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+            style="position: absolute; left: 27px; top: 6px; width: 80px;"
+          >
+            services
+          </div>
+        </button>
+        <button
+          aria-label="api"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-api"
+          role="button"
+          style="position: absolute; left: 289.8px; top: 196.1px; width: 14px; height: 14px; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; background-color: rgb(123, 175, 222); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="cli"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-cli"
+          role="button"
+          style="position: absolute; left: 416.2px; top: 273.48px; width: 18px; height: 18px; border-top-left-radius: 9px; border-top-right-radius: 9px; border-bottom-right-radius: 9px; border-bottom-left-radius: 9px; background-color: rgb(244, 167, 54); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        />
+        <button
+          aria-label="utils (pain?)"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-utils"
+          role="button"
+          style="position: absolute; left: 397.8px; top: 79.5px; width: 12px; height: 12px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; background-color: rgb(220, 5, 12); opacity: 1; border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+            style="position: absolute; left: 15px; top: 0px; width: 80px;"
+          >
+            utils (pain?)
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Scatter characterisation > on a light surface > renders the SinglePoint story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 400px; height: 300px;"
+    >
+      <div
+        aria-label="Scatter plot of I versus A, 1 point"
+        class="css-view-175oi2r"
+        data-testid="scatter-canvas"
+        role="img"
+        style="position: absolute; top: 0px; left: 0px; width: 400px; height: 300px; overflow-x: hidden; overflow-y: hidden;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 348px; top: 266px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.45
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 348px; top: 202.49999999999997px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.48
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 348px; top: 139.00000000000006px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.50
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 348px; top: 75.50000000000003px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.53
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 348px; top: 12px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.55
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 254px; left: 40px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.45
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 254px; left: 127.00000000000004px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.48
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 254px; left: 213.99999999999991px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.50
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 254px; left: 300.99999999999994px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.53
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 254px; left: 388px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.55
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-axis-y"
+          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 254px; background-color: rgba(0, 0, 0, 0.09);"
+        />
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-axis-x"
+          style="position: absolute; left: 40px; top: 266px; width: 348px; height: 1px; background-color: rgba(0, 0, 0, 0.09);"
+        />
+        <div
+          class="css-text-146c3p1"
+          data-testid="scatter-x-label"
+          dir="auto"
+          style="position: absolute; left: 40px; width: 348px; bottom: 2px; text-align: center;"
+        >
+          I
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="scatter-y-label"
+          dir="auto"
+          style="position: absolute; left: -121px; top: 139px; width: 254px; text-align: center; transform-origin: 50% 50%; transform: rotate(-90deg);"
+        >
+          A
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="scatter-points"
+        style="position: absolute; top: 0px; left: 0px; width: 400px; height: 300px;"
+      >
+        <button
+          aria-label="only module"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="scatter-point-only"
+          role="button"
+          style="position: absolute; left: 203.99999999999991px; top: 129.00000000000006px; width: 20px; height: 20px; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; background-color: rgb(33, 150, 243); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+            style="position: absolute; left: 23px; top: 4px; width: 80px;"
+          >
+            only module
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

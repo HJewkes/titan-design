@@ -1,5 +1,5 @@
 import type { ComponentType } from 'react'
-import { describe, it, expect } from 'vitest'
+import { afterEach, describe, it, expect } from 'vitest'
 import { render } from '@testing-library/react'
 import { configureAxe } from 'jest-axe'
 import type { ComposedStoryEntry } from './composed-stories'
@@ -26,13 +26,31 @@ const axe = configureAxe({
   },
 })
 
-export async function violatedRules(Story: ComponentType): Promise<string[]> {
+export type AxeRun = (element: Element) => Promise<{ violations: unknown[] }>
+
+// A timed-out test abandons its run without stopping it, so every run queues behind the last.
+let lastRun: Promise<unknown> = Promise.resolve()
+
+export function axeIdle(): Promise<unknown> {
+  return lastRun
+}
+
+export function violatedRules(Story: ComponentType, run: AxeRun = axe): Promise<string[]> {
+  const current = lastRun.then(() => axeOnStory(Story, run))
+  lastRun = current.catch(() => undefined)
+  return current
+}
+
+async function axeOnStory(Story: ComponentType, run: AxeRun): Promise<string[]> {
   const { unmount } = render(<Story />)
-  // document.body, not the container: modal and popover stories render into portals.
-  const { violations } = await axe(document.body)
-  unmount()
-  const ids = (violations as { id: string }[]).map((violation) => violation.id)
-  return [...new Set(ids)].sort()
+  try {
+    // document.body, not the container: modal and popover stories render into portals.
+    const { violations } = await run(document.body)
+    const ids = (violations as { id: string }[]).map((violation) => violation.id)
+    return [...new Set(ids)].sort()
+  } finally {
+    unmount()
+  }
 }
 
 export function baselineProblems(
@@ -63,6 +81,8 @@ export const EXCLUDED_STORY_IDS = new Set(['lab-decisions-volume-status-palette-
 
 // Decision-record stories take 5 s or more under axe, and a timed-out run blocks every later one.
 const AXE_TIMEOUT = 30_000
+// Long enough for an abandoned run to finish, so the next story's own timeout starts after it.
+const AXE_DRAIN_TIMEOUT = 120_000
 
 const isWorkout = (file: string) => file.startsWith('custom/Workout/')
 const workoutInitial = (file: string) => file.charAt('custom/Workout/'.length).toUpperCase()
@@ -83,6 +103,7 @@ export function describeAxeShard(
   stories: ComposedStoryEntry[]
 ): void {
   describe(`axe on every composed story (${shard})`, () => {
+    afterEach(axeIdle, AXE_DRAIN_TIMEOUT)
     for (const { file, name, id, Story } of stories.filter((s) => AXE_SHARDS[shard](s.file))) {
       const test = EXCLUDED_STORY_IDS.has(id) ? it.skip : it
       test(

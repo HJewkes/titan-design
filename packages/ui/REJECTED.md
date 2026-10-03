@@ -24,6 +24,25 @@ that someone can tell whether a future change invalidates the reasoning.
 
 ---
 
+## Tailwind theme-replace for colours, and eslint-plugin-tailwindcss `no-custom-classname` — rejected 2026-10-02
+
+**Tried:** an evaluation (no code kept) of two ways to make Tailwind itself reject off-token classes. One replaces `theme.colors` instead of extending it. The other adds `eslint-plugin-tailwindcss` (3.x, which supports Tailwind v3) with `no-custom-classname`. Both were measured against `main` with the real config, compiled by `tailwindcss@3.4.19`.
+
+**Chosen:** neither. Titan keeps its own rules (`titan/no-raw-color`, `titan/no-var-color-opacity`) and rewrites their messages so each one lists the real options, derived from the config. A new rule, `titan/no-unknown-token-class`, will flag a colour class that compiles to nothing.
+
+**Why:**
+1. Spacing is already replaced. `tailwind.config.js` sets `theme.spacing` to `numericSpacing`, and semantic keys sit in `extend.spacing`. Off-scale classes like `p-13` compile to nothing, and shipping code has 0 of them.
+2. Theme-replace never bans arbitrary values. Tailwind v3 compiles `p-[13px]`, `bg-[#123456]` and `text-[9px]` whatever the theme says, and `no-custom-classname` accepts them as valid. Shipping code has 2 arbitrary spacing values, 26 size and position values, 41 `text-[…]` values and 0 colour values.
+3. A colour replace buys almost nothing. Shipping code has 0 palette or white/black classes. Every hit is a comment, a test fixture or a probe, and `no-raw-color` already errors on them repo-wide. Across 412 className and `cn()` candidates, the replace adds 0 unknown classes in shipping code.
+4. The four-file token chain still works, with two edits. The replace must re-add `transparent`, `current` and `inherit` (53 uses in 11 shipping files). It must decide on `white` and `black`, because `tailwind-var-opacity.test.ts` asserts that `text-white/70` and `bg-black/50` compile. The lint rules would not break: `eslint-rules/fix-options.js` reads colours from both `theme.colors` and `theme.extend.colors`, and `no-var-color-opacity` takes its colours from there.
+5. NativeWind v4 is not a blocker. `nativewind/preset` defines no colours.
+6. Consumers break. voltras mobile spreads `titanConfig.theme.extend.colors`, so a move drops every titan colour there without an error. audiobook, codewatch and titan-platform code-report use titan as a `preset` and would inherit the replace. audiobook has 13 palette classes in 5 files and voltras mobile has 34 in 11. The change would need a major-version note and consumer migrations, all for the zero gain in item 3.
+7. `eslint-plugin-tailwindcss` is not installed, and it checks `className` attributes and configured callees only. Variant maps in plain objects (`Typography.tsx`, `Tabs.tsx` under `src/components/ui/`) go unchecked, while `no-raw-color` scans every literal. On the same 412 candidates it gives about 15 unknowns. Most are noise from variant names and NativeWind-only classes such as `pointer-events-box-none`. Two are real: `bg-scrim-default` in `Drawer.tsx` and `Modal.tsx` compiles to no rule, because the default rung is `bg-scrim`. A titan rule derived from the config finds the same classes without the noise.
+
+**Code:** none. The evaluation ran in a throwaway script outside the repo.
+
+---
+
 ## Dual pinned live strip: each side's name and velocity kept beside the rest countdown — rejected 2026-09-30
 
 **Tried:** R-sides in VW-439 round 3 (`Lab/Decisions/Dual Pinned Live Strip`, 1920, dark): at the wall, the rest strip kept each side's name, load and last-rep velocity in its lane, with the countdown in the rep counts' place. The phone never had it: with the velocities, a 999 s rest after a 12-rep set overflowed the 360 row by 11px.

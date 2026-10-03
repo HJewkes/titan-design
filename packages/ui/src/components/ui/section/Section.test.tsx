@@ -16,7 +16,7 @@ describe('Section', () => {
   })
 
   it('applies custom className', () => {
-    const { container } = render(
+    render(
       <Section className="mt-4" testID="section">
         <Text>Content</Text>
       </Section>
@@ -48,7 +48,7 @@ describe('SectionHeader', () => {
   })
 
   it('does not render trailing when not provided', () => {
-    const { container } = render(<SectionHeader title="Title" />)
+    render(<SectionHeader title="Title" />)
     expect(screen.getByText('Title')).toBeInTheDocument()
   })
 

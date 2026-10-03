@@ -1,22 +1,19 @@
-import React, { useState, useCallback, useMemo } from 'react'
-import {
-  View,
-  Text,
-  TextInput,
-  Pressable,
-  ScrollView,
-  type ViewProps,
-  type TextInputProps,
-} from 'react-native'
+import React from 'react'
+import { View, TextInput, type ViewProps, type TextInputProps } from 'react-native'
 import { cn } from '../../../utils/cn'
-import { Surface } from '../surface'
+import { defaultFilterFn, dropdownContent, type AutocompleteOption } from './autocompleteFilter'
+import {
+  AutocompleteClearButton,
+  AutocompleteDropdown,
+  AutocompleteHelper,
+  AutocompleteLabel,
+  AutocompleteMessage,
+  AutocompleteOptionRow,
+  AutocompleteSpinner,
+} from './AutocompleteParts'
+import { useAutocompleteState } from './useAutocompleteState'
 
-export interface AutocompleteOption<T = string> {
-  value: T
-  label: string
-  description?: string
-  isDisabled?: boolean
-}
+export type { AutocompleteOption }
 
 export interface AutocompleteProps<T = string> extends ViewProps {
   /** Available options */
@@ -59,14 +56,6 @@ export interface AutocompleteProps<T = string> extends ViewProps {
   className?: string
   /** Input props */
   inputProps?: Partial<TextInputProps>
-}
-
-const defaultFilterFn = <T,>(option: AutocompleteOption<T>, inputValue: string) => {
-  const searchLower = inputValue.toLowerCase()
-  return (
-    option.label.toLowerCase().includes(searchLower) ||
-    (option.description?.toLowerCase().includes(searchLower) ?? false)
-  )
 }
 
 /**
@@ -119,80 +108,28 @@ export function Autocomplete<T extends string = string>({
   inputProps,
   ...props
 }: AutocompleteProps<T>) {
-  const [inputValue, setInputValue] = useState('')
-  const [isOpen, setIsOpen] = useState(false)
-  const [highlightedIndex, setHighlightedIndex] = useState(-1)
-
-  // Get the label for the selected value
-  const selectedOption = useMemo(() => options.find((o) => o.value === value), [options, value])
-
-  // Filter options based on input
-  const filteredOptions = useMemo(() => {
-    if (inputValue.length < minChars) return []
-    return options.filter((option) => filterFn(option, inputValue))
-  }, [options, inputValue, minChars, filterFn])
-
-  const handleInputChange = useCallback(
-    (text: string) => {
-      setInputValue(text)
-      setIsOpen(true)
-      setHighlightedIndex(-1)
-      onInputChange?.(text)
-    },
-    [onInputChange]
-  )
-
-  const handleSelectOption = useCallback(
-    (option: AutocompleteOption<T>) => {
-      if (option.isDisabled) return
-      onChange?.(option.value)
-      setInputValue(option.label)
-      setIsOpen(false)
-    },
-    [onChange]
-  )
-
-  const handleClear = useCallback(() => {
-    onChange?.(null)
-    setInputValue('')
-    setIsOpen(false)
-  }, [onChange])
-
-  const handleFocus = useCallback(() => {
-    setIsOpen(true)
-    // If there's a selected value, populate the input
-    if (selectedOption && !inputValue) {
-      setInputValue(selectedOption.label)
-    }
-  }, [selectedOption, inputValue])
-
-  const handleBlur = useCallback(() => {
-    // Delay to allow click on options
-    setTimeout(() => {
-      setIsOpen(false)
-      // Reset input to selected value if nothing new selected
-      if (selectedOption) {
-        setInputValue(selectedOption.label)
-      } else {
-        setInputValue('')
-      }
-    }, 200)
-  }, [selectedOption])
+  const state = useAutocompleteState({
+    options,
+    value,
+    onChange,
+    onInputChange,
+    minChars,
+    filterFn,
+  })
 
   const isInvalid = !!errorMessage
-  const showMinCharsMessage = inputValue.length > 0 && inputValue.length < minChars
-  const showNoResults = !isLoading && inputValue.length >= minChars && filteredOptions.length === 0
-  const showOptions = isOpen && !showMinCharsMessage && filteredOptions.length > 0
+  const { showMinCharsMessage, showNoResults, showOptions } = dropdownContent({
+    inputValue: state.inputValue,
+    minChars,
+    isLoading,
+    isOpen: state.isOpen,
+    matchCount: state.filteredOptions.length,
+  })
 
   return (
     <View className={cn('w-full', className)} {...props}>
       {/* Label */}
-      {label && (
-        <Text className="text-sm font-medium text-text-primary mb-1">
-          {label}
-          {isRequired && <Text className="text-status-error ml-0.5">*</Text>}
-        </Text>
-      )}
+      {label && <AutocompleteLabel label={label} isRequired={isRequired} />}
 
       {/* Input Container */}
       <View className="relative">
@@ -206,10 +143,10 @@ export function Autocomplete<T extends string = string>({
           )}
         >
           <TextInput
-            value={inputValue}
-            onChangeText={handleInputChange}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
+            value={state.inputValue}
+            onChangeText={state.handleInputChange}
+            onFocus={state.handleFocus}
+            onBlur={state.handleBlur}
             placeholder={placeholder}
             editable={!isDisabled}
             className={cn('flex-1 px-3 py-2 text-text-primary', 'placeholder:text-text-tertiary')}
@@ -219,106 +156,41 @@ export function Autocomplete<T extends string = string>({
 
           {/* Clear button */}
           {isClearable && value && !isDisabled && (
-            <Pressable onPress={handleClear} className="p-2" accessibilityLabel="Clear selection">
-              <Text className="text-text-tertiary">×</Text>
-            </Pressable>
+            <AutocompleteClearButton onClear={state.handleClear} />
           )}
 
           {/* Loading indicator */}
-          {isLoading && (
-            <View className="p-2">
-              <Text className="text-text-tertiary animate-spin">⟳</Text>
-            </View>
-          )}
+          {isLoading && <AutocompleteSpinner />}
         </View>
 
         {/* Dropdown */}
-        {isOpen && (
-          <Surface
-            elevation={4}
-            rounded={false}
-            className={cn(
-              'absolute z-50 top-full left-0 right-0 mt-1',
-              'rounded-md max-h-60 overflow-hidden'
+        {state.isOpen && (
+          <AutocompleteDropdown>
+            {showMinCharsMessage && (
+              <AutocompleteMessage>
+                {minCharsText || `Type at least ${minChars} characters`}
+              </AutocompleteMessage>
             )}
-          >
-            <ScrollView className="py-1">
-              {/* Min chars message */}
-              {showMinCharsMessage && (
-                <Text className="px-3 py-2 text-sm text-text-tertiary">
-                  {minCharsText || `Type at least ${minChars} characters`}
-                </Text>
-              )}
-
-              {/* Loading message */}
-              {isLoading && (
-                <Text className="px-3 py-2 text-sm text-text-tertiary">{loadingText}</Text>
-              )}
-
-              {/* No results */}
-              {showNoResults && (
-                <Text className="px-3 py-2 text-sm text-text-tertiary">{noOptionsText}</Text>
-              )}
-
-              {/* Options */}
-              {showOptions &&
-                filteredOptions.map((option, index) => {
-                  const isHighlighted = index === highlightedIndex
-                  const isSelected = option.value === value
-
-                  if (renderOption) {
-                    return (
-                      <Pressable
-                        key={String(option.value)}
-                        onPress={() => handleSelectOption(option)}
-                        disabled={option.isDisabled}
-                      >
-                        {renderOption(option, isHighlighted)}
-                      </Pressable>
-                    )
-                  }
-
-                  return (
-                    <Pressable
-                      key={String(option.value)}
-                      onPress={() => handleSelectOption(option)}
-                      disabled={option.isDisabled}
-                      className={cn(
-                        'px-3 py-2',
-                        isHighlighted && 'bg-interactive-hover',
-                        isSelected && 'bg-interactive-selected',
-                        option.isDisabled && 'opacity-50',
-                        !option.isDisabled && 'web:hover:bg-interactive-hover'
-                      )}
-                    >
-                      <Text
-                        className={cn(
-                          'text-sm',
-                          isSelected ? 'text-brand-primary font-medium' : 'text-text-primary'
-                        )}
-                      >
-                        {option.label}
-                      </Text>
-                      {option.description && (
-                        <Text className="text-xs text-text-tertiary mt-0.5">
-                          {option.description}
-                        </Text>
-                      )}
-                    </Pressable>
-                  )
-                })}
-            </ScrollView>
-          </Surface>
+            {isLoading && <AutocompleteMessage>{loadingText}</AutocompleteMessage>}
+            {showNoResults && <AutocompleteMessage>{noOptionsText}</AutocompleteMessage>}
+            {showOptions &&
+              state.filteredOptions.map((option, index) => (
+                <AutocompleteOptionRow
+                  key={String(option.value)}
+                  option={option}
+                  isHighlighted={index === state.highlightedIndex}
+                  isSelected={option.value === value}
+                  renderOption={renderOption}
+                  onSelect={state.handleSelectOption}
+                />
+              ))}
+          </AutocompleteDropdown>
         )}
       </View>
 
       {/* Helper/Error text */}
       {(helperText || errorMessage) && (
-        <Text
-          className={cn('text-xs mt-1', isInvalid ? 'text-status-error' : 'text-text-tertiary')}
-        >
-          {errorMessage || helperText}
-        </Text>
+        <AutocompleteHelper text={errorMessage || helperText} isInvalid={isInvalid} />
       )}
     </View>
   )
