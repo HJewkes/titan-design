@@ -1,12 +1,5 @@
 {
-  "custom/Fatigue/DualGhostSpark": [
-    "a11y"
-  ],
-  "custom/Fatigue/FatigueLights": [
-    "a11y"
-  ],
   "custom/Fatigue/GhostBand": [
-    "a11y",
     "status",
     "story"
   ],
@@ -15,18 +8,6 @@
     "status",
     "story",
     "test"
-  ],
-  "custom/Fatigue/GhostSpark": [
-    "a11y"
-  ],
-  "custom/Fatigue/LiveFatigueCard": [
-    "a11y"
-  ],
-  "custom/Fatigue/LiveFatiguePanel": [
-    "a11y"
-  ],
-  "custom/Fatigue/VelocityHero": [
-    "a11y"
   ],
   "custom/Gauge/Gauge": [
     "doc"

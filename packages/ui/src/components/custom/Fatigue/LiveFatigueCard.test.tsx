@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { axe } from 'jest-axe'
 import { render, screen } from '@testing-library/react'
 import { LiveFatigueCard } from './LiveFatigueCard'
 import { FATIGUE_STATES, WARMING_UP_MODEL } from './fatigue-mock'
@@ -8,6 +9,11 @@ import { resolveAll, siblingSource, spacingClassesIn } from '../../../test/spaci
 const model = FATIGUE_STATES[3].model
 
 describe('LiveFatigueCard', () => {
+  it('has no accessibility violations', async () => {
+    const { container } = render(<LiveFatigueCard model={model} width={318} height={508} />)
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
   it('composes the verdict hero, lights, ROM chart and ghost spark', () => {
     render(<LiveFatigueCard model={model} width={318} height={508} />)
     expect(screen.getByTestId('live-fatigue-card')).toBeInTheDocument()
