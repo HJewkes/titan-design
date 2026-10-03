@@ -98,6 +98,7 @@
     "lint:borders": "bash scripts/check-border-classes.sh",
     "check:package": "bash scripts/check-package.sh",
     "check:cycles": "node scripts/check-cycles.mjs",
+    "catalog": "node scripts/catalog.mjs",
     "type-check": "tsc --noEmit",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\"",
     "test": "vitest --project threads --project local-time --project types --project stories-axe",

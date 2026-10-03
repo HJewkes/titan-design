@@ -20,6 +20,7 @@
     "type-check": "turbo run type-check",
     "format:check": "turbo run format:check",
     "check:package": "turbo run check:package",
+    "catalog": "pnpm --filter @titan-design/react-ui catalog",
     "arch:check": "pnpm --filter @titan-design/react-ui exec vitest run src/arch/arch-graph.freshness.test.ts",
     "verify": "pnpm verify:unit && pnpm test:axe",
     "verify:unit": "pnpm format:check && pnpm lint && pnpm type-check && pnpm build && turbo run test:unit -- --run --coverage && pnpm arch:check",
