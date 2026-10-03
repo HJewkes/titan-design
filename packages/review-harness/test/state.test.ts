@@ -81,8 +81,8 @@ describe('section paging', () => {
   it('pages each section, then Other frames, then Overall with the general note', () => {
     expect(pagesFor(sectioned())).toEqual([
       { id: 'lead', title: 'Which card leads the page?', first: 0, last: 3 },
-      { id: 'other', title: 'Other frames', first: 4, last: 4 },
-      { id: 'overall', title: 'Overall', first: 5, last: 7 },
+      { id: '#other', title: 'Other frames', first: 4, last: 4 },
+      { id: '#overall', title: 'Overall', first: 5, last: 7 },
     ])
   })
 

@@ -82,6 +82,10 @@ export interface Page {
   last: number
 }
 
+/** Section ids allow only [A-Za-z0-9_-], so these two can never collide with one. */
+export const OTHER_PAGE = '#other'
+export const OVERALL_PAGE = '#overall'
+
 /** Each section is a page, then Other frames, then Overall; an unsectioned round is one page. */
 export function pagesFor(manifest: Manifest): Page[] {
   const layout = roundLayout(manifest)
@@ -94,7 +98,7 @@ export function pagesFor(manifest: Manifest): Page[] {
       title: s.title,
       size: s.questions.length + s.variants.length,
     })),
-    { id: 'other', title: 'Other frames', size: layout.otherVariants.length },
+    { id: OTHER_PAGE, title: 'Other frames', size: layout.otherVariants.length },
   ].filter((p) => p.size > 0)
   const pages: Page[] = []
   for (const { id, title, size } of sized) {
@@ -102,7 +106,7 @@ export function pagesFor(manifest: Manifest): Page[] {
     pages.push({ id, title, first, last: first + size - 1 })
   }
   const first = pages.length ? pages[pages.length - 1].last + 1 : 0
-  return [...pages, { id: 'overall', title: 'Overall', first, last: general }]
+  return [...pages, { id: OVERALL_PAGE, title: 'Overall', first, last: general }]
 }
 
 /** The page that holds a stop, so the active stop decides what is on screen. */

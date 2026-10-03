@@ -15,6 +15,8 @@ import { QuestionBlock } from './QuestionBlock.tsx'
 import { ReviewScreen } from './ReviewScreen.tsx'
 import { browserStorage, clearDraft, saveDraft, type DraftStorage } from './draftStore.ts'
 import {
+  OTHER_PAGE,
+  OVERALL_PAGE,
   createReducer,
   orderedQuestions,
   pageOf,
@@ -337,8 +339,8 @@ export function Form(props: Omit<PartProps, 'indexes'>) {
         .map((s) => (
           <SectionBlock key={s.id} {...parts} section={s} />
         ))}
-      {shows('other') && <OtherFrames {...parts} />}
-      {shows('overall') && <Overall {...parts} />}
+      {shows(OTHER_PAGE) && <OtherFrames {...parts} />}
+      {shows(OVERALL_PAGE) && <Overall {...parts} />}
       <button
         type="button"
         className="primary"

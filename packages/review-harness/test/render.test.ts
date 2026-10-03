@@ -105,13 +105,37 @@ describe('a sectioned round', () => {
   })
 })
 
+describe.each(['other', 'overall'])('a section whose id is %s', (sectionId) => {
+  const build = () => {
+    const input = sectionedInput()
+    input.sections = [
+      { id: sectionId, title: 'Mine', questionIds: ['q1'], variantKeys: ['A'] },
+      { id: 'two', title: 'Two', questionIds: ['q2'], variantKeys: ['B'] },
+    ]
+    return ManifestSchema.parse(input)
+  }
+
+  it('renders once on its own page, and Overall shows only on the last page', () => {
+    const m = build()
+    const pages = pagesFor(m)
+    const first = formAt(m, pages[0].first)
+    expect(first.match(/data-testid="variant-A"/g)).toHaveLength(1)
+    expect(first).toContain(`data-testid="section-${sectionId}"`)
+    expect(first).not.toContain('data-testid="overall"')
+    expect(first).not.toContain('data-testid="other-frames"')
+    const last = formAt(m, pages[pages.length - 1].first)
+    expect(last).toContain('data-testid="overall"')
+    expect(last).not.toContain(`data-testid="section-${sectionId}"`)
+  })
+})
+
 describe('a 60-frame sectioned image round', () => {
   const m = ManifestSchema.parse(pagedImageInput(60))
   const frames = (markup: string) => markup.match(/data-testid="variant-F\d+"/g) ?? []
 
   it('renders one 28-frame section at a time, never all 60 frames', () => {
     const pages = pagesFor(m)
-    expect(pages.map((p) => p.id)).toEqual(['batch-1', 'batch-2', 'batch-3', 'overall'])
+    expect(pages.map((p) => p.id)).toEqual(['batch-1', 'batch-2', 'batch-3', '#overall'])
     expect(pages.map((p) => frames(formAt(m, p.first)).length)).toEqual([28, 28, 4, 0])
   })
 
