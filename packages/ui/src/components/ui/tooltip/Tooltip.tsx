@@ -38,6 +38,10 @@ export interface TooltipProps extends ViewProps {
    * wrapper's hover the moment a nested Pressable claims the pointer.
    */
   isOpen?: boolean
+  /** Initial visibility when uncontrolled */
+  defaultIsOpen?: boolean
+  /** Called with `true` on show and `false` on hide */
+  onOpenChange?: (isOpen: boolean) => void
 }
 
 /** Hover state from pointer enter/leave on any View, for driving a controlled Tooltip. */
@@ -76,9 +80,17 @@ export function Tooltip({
   className,
   usePortal: usePortalProp = false,
   isOpen,
+  defaultIsOpen,
+  onOpenChange,
   ...props
 }: TooltipProps) {
-  const { hovered, show, hide } = useTooltipVisibility({ isDisabled, openDelay, closeDelay })
+  const { hovered, show, hide } = useTooltipVisibility({
+    isDisabled,
+    openDelay,
+    closeDelay,
+    defaultIsOpen,
+    onOpenChange,
+  })
   const isVisible = isOpen ?? hovered
   const triggerRef = useRef<View>(null)
 

@@ -1,6 +1,7 @@
-import React, { useState, createContext, useContext } from 'react'
+import React, { createContext, useContext } from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { useControllableState } from '../../../hooks/useControllableState'
 import { Surface } from '../surface'
 import { TriggerSurface } from '../trigger'
 
@@ -19,6 +20,8 @@ const MenuContext = createContext<MenuContextType>({
 export interface MenuProps extends ViewProps {
   /** Controlled open state */
   isOpen?: boolean
+  /** Initial open state when uncontrolled */
+  defaultIsOpen?: boolean
   /** Callback when open state changes */
   onOpenChange?: (isOpen: boolean) => void
   /** Additional className */
@@ -44,20 +47,17 @@ export interface MenuProps extends ViewProps {
  */
 export function Menu({
   isOpen: controlledIsOpen,
+  defaultIsOpen = false,
   onOpenChange,
   className,
   children,
   ...props
 }: MenuProps) {
-  const [internalIsOpen, setInternalIsOpen] = useState(false)
-  const isOpen = controlledIsOpen ?? internalIsOpen
-
-  const setIsOpen = (open: boolean) => {
-    if (controlledIsOpen === undefined) {
-      setInternalIsOpen(open)
-    }
-    onOpenChange?.(open)
-  }
+  const [isOpen, setIsOpen] = useControllableState({
+    value: controlledIsOpen,
+    defaultValue: defaultIsOpen,
+    onChange: onOpenChange,
+  })
 
   const closeMenu = () => setIsOpen(false)
 

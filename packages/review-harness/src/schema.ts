@@ -81,12 +81,28 @@ const questionBase = {
 /** Which variant each option stands for, so one click answers and picks the variant. */
 const optionVariants = z.record(z.string(), id).optional()
 
+/** Our answer to a question, hidden from the owner until they answer it themselves. */
+export const RecommendationSchema = z
+  .object({
+    answer: z.union([z.string(), z.array(z.string()).min(1), z.number()]),
+    rationale: z.string().min(1),
+    confidence: z.number().min(0).max(1),
+    /** The recommender: an agent name or "design-coord". */
+    by: z.string().min(1),
+  })
+  .strict()
+const recommendation = RecommendationSchema.optional()
+
+/** When the page shows a recommendation: once its question is answered, or from the start. */
+export const RECOMMENDATION_MODES = ['after-answer', 'shown'] as const
+
 const PickOneSchema = z
   .object({
     ...questionBase,
     kind: z.literal('pick-one'),
     options: z.array(z.string()).min(2),
     optionVariants,
+    recommendation,
   })
   .strict()
 const PickManySchema = z
@@ -95,6 +111,7 @@ const PickManySchema = z
     kind: z.literal('pick-many'),
     options: z.array(z.string()).min(1),
     optionVariants,
+    recommendation,
   })
   .strict()
 const ScaleSchema = z
@@ -103,6 +120,7 @@ const ScaleSchema = z
     kind: z.literal('scale'),
     min: z.number().int(),
     max: z.number().int(),
+    recommendation,
   })
   .strict()
   .refine((q) => q.min < q.max, { message: 'scale min must be below max' })
@@ -179,6 +197,29 @@ function optionVariantProblems(m: {
   )
 }
 
+type Recommendable = Exclude<z.output<typeof QuestionSchema>, { kind: 'text' }>
+
+function recommendationProblem(q: Recommendable, answer: Recommendation['answer']) {
+  if (q.kind === 'scale')
+    return Number.isInteger(answer) && Number(answer) >= q.min && Number(answer) <= q.max
+      ? null
+      : 'is not on its scale'
+  const picks = Array.isArray(answer) ? answer : [answer]
+  if (Array.isArray(answer) !== (q.kind === 'pick-many'))
+    return q.kind === 'pick-many' ? 'is not a list of its options' : 'is not one of its options'
+  if (!picks.every((p) => typeof p === 'string' && q.options.includes(p)))
+    return 'is not among its options'
+  return new Set(picks).size === picks.length ? null : 'repeats an option'
+}
+
+function recommendationProblems(m: { questions: z.output<typeof QuestionSchema>[] }): string[] {
+  return m.questions.flatMap((q) => {
+    const problem =
+      q.kind !== 'text' && q.recommendation && recommendationProblem(q, q.recommendation.answer)
+    return problem ? [`question ${q.id}: the recommended answer ${problem}`] : []
+  })
+}
+
 export const ManifestSchema = z
   .object({
     schema: z.literal(MANIFEST_SCHEMA_ID),
@@ -193,6 +234,7 @@ export const ManifestSchema = z
     variants: z.array(VariantSchema).min(1).max(MAX_SECTIONED_VARIANTS),
     questions: z.array(QuestionSchema),
     sections: z.array(SectionSchema).min(1).optional(),
+    recommendations: z.enum(RECOMMENDATION_MODES).default('after-answer'),
   })
   .strict()
   .superRefine((m, ctx) => {
@@ -211,7 +253,7 @@ export const ManifestSchema = z
       })
     for (const message of sectionProblems(m))
       ctx.addIssue({ code: 'custom', path: ['sections'], message })
-    for (const message of optionVariantProblems(m))
+    for (const message of [...optionVariantProblems(m), ...recommendationProblems(m)])
       ctx.addIssue({ code: 'custom', path: ['questions'], message })
   })
 
@@ -227,6 +269,10 @@ const answerSchema = z
     text: z.string().optional(),
     comment: z.string().optional(),
     variantComments: z.array(variantCommentSchema).optional(),
+    /** The manifest's recommendation for this question, echoed so a report needs no manifest. */
+    recommendation: RecommendationSchema.optional(),
+    /** Whether the owner's answer equals the recommendation's (pick-many: the same set). */
+    agreed: z.boolean().optional(),
   })
   .strict()
 
@@ -293,6 +339,7 @@ export type Answer = Feedback['answers'][number]
 export type VariantFeedback = Feedback['variants'][number]
 export type Annotation = z.infer<typeof AnnotationSchema>
 export type Verdict = z.infer<typeof VerdictSchema>
+export type Recommendation = z.infer<typeof RecommendationSchema>
 
 export function isStoryVariant(variant: Variant): variant is StoryVariant {
   return variant.storyId !== undefined

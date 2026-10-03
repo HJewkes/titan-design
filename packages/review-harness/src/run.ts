@@ -1,5 +1,6 @@
 import { dirname, resolve } from 'node:path'
 import { parseArgs } from 'node:util'
+import { calibrationReport, readFeedbackFiles } from './calibration.ts'
 import { exampleManifest, sectionedExampleManifest } from './example.ts'
 import {
   EXIT_INTERRUPTED,
@@ -16,11 +17,15 @@ import {
 
 export const USAGE = `titan-review <round.json> [options]
 titan-review --example [--storybook <url>]
+titan-review calibration <feedback.json...>
 
 Serves one review round (live Storybook iframes or static PNGs, picks, comments, pins) on
 127.0.0.1, blocks until the human submits, writes <out>/feedback.json plus one PNG per story
 variant per width and a copy of each image variant's PNG, prints the feedback JSON on stdout
 and exits 0. Ctrl-C exits 130, writing nothing.
+
+calibration reads feedback files and prints how often the owner's answer matched our
+recommendation: per round, overall, and by confidence band (<0.5, 0.5-0.75, >=0.75).
 
   --storybook <url>  Storybook base url (default: the manifest's storybookUrl)
   --out <dir>        Where feedback.json and PNGs go (default: the manifest's directory)
@@ -100,6 +105,11 @@ async function dispatch(parsed: Parsed, io: CliIo): Promise<number> {
     const sb = parsed.values.storybook ?? 'http://127.0.0.1:6100'
     const build = parsed.values.sections ? sectionedExampleManifest : exampleManifest
     io.stdout(`${JSON.stringify(build(sb), null, 2)}\n`)
+    return EXIT_OK
+  }
+  if (parsed.positionals[0] === 'calibration') {
+    const rounds = await readFeedbackFiles(parsed.positionals.slice(1).map((p) => resolve(p)))
+    io.stdout(`${calibrationReport(rounds)}\n`)
     return EXIT_OK
   }
   if (parsed.positionals.length !== 1) throw new ReviewError(`expected one manifest\n\n${USAGE}`)

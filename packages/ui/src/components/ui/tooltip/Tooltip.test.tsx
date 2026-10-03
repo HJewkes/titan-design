@@ -309,6 +309,29 @@ describe('controlled visibility', () => {
   })
 })
 
+describe('defaultIsOpen and onOpenChange', () => {
+  it('reports hover in and out through onOpenChange', () => {
+    const onOpenChange = vi.fn()
+    render(
+      <Tooltip label="Tip" defaultIsOpen={false} onOpenChange={onOpenChange}>
+        <Text>Trigger</Text>
+      </Tooltip>
+    )
+    hoverTrigger('Trigger')
+    unhoverTrigger('Trigger')
+    expect(onOpenChange.mock.calls).toEqual([[true], [false]])
+  })
+
+  it('starts visible with defaultIsOpen', () => {
+    render(
+      <Tooltip label="Tip" defaultIsOpen>
+        <Text>Trigger</Text>
+      </Tooltip>
+    )
+    expect(screen.getByText('Tip')).toBeInTheDocument()
+  })
+})
+
 /**
  * Tooltip's chrome, pinned (AW-142 wave two). Unchanged in pixels.
  */
