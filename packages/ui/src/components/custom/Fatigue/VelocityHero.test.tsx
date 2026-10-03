@@ -1,9 +1,17 @@
 import { describe, it, expect } from 'vitest'
+import { axe } from 'jest-axe'
 import { render, screen } from '@testing-library/react'
 import { VelocityHero } from './VelocityHero'
 import { MOCK_MEAN_VELOCITIES } from './fatigue-mock'
 
 describe('VelocityHero', () => {
+  it('has no accessibility violations', async () => {
+    const { container } = render(
+      <VelocityHero velocities={MOCK_MEAN_VELOCITIES} targetReps={8} width={800} height={300} />
+    )
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
   it('renders the hero container', () => {
     render(
       <VelocityHero velocities={MOCK_MEAN_VELOCITIES} targetReps={8} width={800} height={300} />

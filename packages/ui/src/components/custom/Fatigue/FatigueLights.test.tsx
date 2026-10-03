@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { axe } from 'jest-axe'
 import { render, screen } from '@testing-library/react'
 import { FatigueLights } from './FatigueLights'
 import type { FatigueVerdict } from './fatigue-model'
@@ -7,6 +8,11 @@ import { resolveAll, siblingSource, spacingClassesIn } from '../../../test/spaci
 const dims: FatigueVerdict['dimensions'] = { velocityLoss: 'alarm', rom: 'warn', tempo: 'ok' }
 
 describe('FatigueLights', () => {
+  it('has no accessibility violations', async () => {
+    const { container } = render(<FatigueLights dimensions={dims} />)
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
   it('renders the three VEL/ROM/TEMPO labels', () => {
     render(<FatigueLights dimensions={dims} />)
     expect(screen.getByText('VEL')).toBeInTheDocument()

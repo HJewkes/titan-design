@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { axe } from 'jest-axe'
 import { render, screen } from '@testing-library/react'
 import { LiveFatiguePanel } from './LiveFatiguePanel'
 import { Surface } from '../../ui/surface'
@@ -13,6 +14,11 @@ const dark = getSemanticColors('dark')
 const light = getSemanticColors('light')
 
 describe('LiveFatiguePanel', () => {
+  it('has no accessibility violations', async () => {
+    const { container } = render(<LiveFatiguePanel model={model} velocity={velocity} />)
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
   it('composes the aura frame, the velocity hero and the fatigue card', () => {
     render(<LiveFatiguePanel model={model} velocity={velocity} />)
     expect(screen.getByTestId('live-fatigue-panel')).toBeInTheDocument()
