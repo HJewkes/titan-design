@@ -60,6 +60,13 @@ describe('Drawer', () => {
       )
     })
 
+    it('names an untitled dialog from accessibilityLabel', () => {
+      renderDrawer({ isOpen: true, title: undefined, accessibilityLabel: 'Filters' })
+      finishOpenAnimation()
+
+      expect(screen.getByRole('dialog', { name: 'Filters' })).toBeInTheDocument()
+    })
+
     it('marks the title as a heading', () => {
       renderDrawer({ isOpen: true, title: 'Settings' })
 

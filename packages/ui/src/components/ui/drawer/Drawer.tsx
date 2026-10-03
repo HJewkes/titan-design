@@ -89,6 +89,8 @@ export function Drawer({
   title,
   className,
   children,
+  accessibilityLabel,
+  'aria-label': ariaLabel,
   ...props
 }: DrawerProps) {
   const titleId = useId()
@@ -107,6 +109,7 @@ export function Drawer({
       transparent
       animationType="fade"
       onRequestClose={onClose}
+      aria-label={ariaLabel ?? accessibilityLabel}
       aria-labelledby={title ? titleId : undefined}
     >
       <View className="flex-1">
