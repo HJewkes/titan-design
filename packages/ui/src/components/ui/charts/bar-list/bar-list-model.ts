@@ -34,6 +34,8 @@ export interface BarListModel {
   max: number
   sort: 'descending' | 'none'
   largest: { label: string; valueText: string } | null
+  /** Character width of the widest values cell, so every inline row gives its values the same width. */
+  valuesChars: number
 }
 
 export interface BarListModelOptions {
@@ -41,6 +43,7 @@ export interface BarListModelOptions {
   sort?: 'descending' | 'none'
   maxRows?: number
   formatValue?: (value: number, row: BarListRow) => string
+  formatSecondary?: (value: number, row: BarListRow) => string
 }
 
 export interface RowFormatters {
@@ -105,7 +108,13 @@ export function rankRows(
 
 export function buildBarListModel(
   rows: BarListRow[],
-  { max, sort = 'descending', maxRows, formatValue = formatCompact }: BarListModelOptions = {}
+  {
+    max,
+    sort = 'descending',
+    maxRows,
+    formatValue = formatCompact,
+    formatSecondary = formatCompact,
+  }: BarListModelOptions = {}
 ): BarListModel {
   const resolved = resolveMax(rows, max)
   const { shown, hidden } = rankRows(rows, sort, maxRows)
@@ -131,7 +140,26 @@ export function buildBarListModel(
     max: resolved,
     sort,
     largest,
+    valuesChars: valuesChars(modelRows, { formatValue, formatSecondary }),
   }
+}
+
+const CELL_GAP_CHARS = 1
+
+/** The widest values cell (flag, secondary and value, with their gaps) among the shown rows. */
+export function valuesChars(rows: BarListModelRow[], formatters: RowFormatters): number {
+  const widths = rows.map(({ row }) => {
+    const value = cleanValue(row.value)
+    const secondary = cleanValue(row.secondaryValue)
+    const parts = [
+      row.flag?.label,
+      secondary === null ? undefined : formatters.formatSecondary(secondary, row),
+      value === null ? NO_VALUE_TEXT : formatters.formatValue(value, row),
+    ].filter((part): part is string => part !== undefined)
+    const text = parts.reduce((sum, part) => sum + part.length, 0)
+    return text + CELL_GAP_CHARS * (parts.length - 1)
+  })
+  return Math.max(0, ...widths)
 }
 
 export function defaultOverflowLabel(hiddenCount: number, hiddenTotal: number): string {

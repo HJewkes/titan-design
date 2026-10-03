@@ -101,6 +101,21 @@ describe('BarList', () => {
     expect(screen.queryByText('No data')).not.toBeInTheDocument()
   })
 
+  it('gives every inline row the same values-column width so the tracks have one length', () => {
+    const rows = [7, 1234, 98765].map((value) => ({ id: `v${value}`, label: `V${value}`, value }))
+    render(
+      <BarList
+        accessibilityLabel="Widths"
+        rows={rows}
+        formatValue={(value) => value.toLocaleString('en-US')}
+      />
+    )
+    const widths = screen.getAllByTestId('bar-list-values').map((el) => el.style.width)
+    expect(widths).toEqual(['7ch', '7ch', '7ch'])
+    const tracks = screen.getAllByTestId('bar-list-track')
+    expect(new Set(tracks.map((el) => el.className)).size).toBe(1)
+  })
+
   describe('pressing', () => {
     it('passes the pressed row to onRowPress', () => {
       const onRowPress = vi.fn()

@@ -79,8 +79,8 @@ export function BarList({
   ...props
 }: BarListProps) {
   const model = useMemo(
-    () => buildBarListModel(rows, { max, sort, maxRows, formatValue }),
-    [rows, max, sort, maxRows, formatValue]
+    () => buildBarListModel(rows, { max, sort, maxRows, formatValue, formatSecondary }),
+    [rows, max, sort, maxRows, formatValue, formatSecondary]
   )
 
   if (isLoading) {
@@ -118,6 +118,7 @@ export function BarList({
           key={`${entry.row.id}:${entry.index}`}
           entry={entry}
           shownCount={model.shownCount}
+          valuesChars={model.valuesChars}
           layout={layout}
           size={size}
           labelWidth={labelWidth}

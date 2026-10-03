@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { Card } from '../../ui/card'
 import { Pill } from '../../ui/pill'
 import { Typography } from '../../ui/typography'
-import { FilePathLabel } from './FilePathLabel'
+import { FilePathLabel } from '../../ui/file-path-label'
 
 export interface CoChangeChipProps {
   /** One side of the pair. */
