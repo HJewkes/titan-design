@@ -22,7 +22,7 @@
   "progress": ["axe", "logic"],
   "radio": ["axe", "keyboard", "logic"],
   "section": ["logic"],
-  "skeleton": ["axe", "logic"],
+  "skeleton": ["logic"],
   "spinner": ["axe", "logic"],
   "stack": ["logic"],
   "surface": ["logic"],
