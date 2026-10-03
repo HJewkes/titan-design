@@ -22,3 +22,16 @@ describe('tailwind.config.js matches the primitives', () => {
     expect(extend.zIndex).toEqual(primitiveZIndex)
   })
 })
+
+describe('borderRadius 2xl', () => {
+  const px = (value: string) => Number(value.replace(/px$/, ''))
+
+  it('is a 24px value, so it renders the same on web and native', () => {
+    expect(extend.borderRadius['2xl']).toMatch(/^\d+px$/)
+    expect(px(extend.borderRadius['2xl'])).toBe(24)
+  })
+
+  it('is larger than xl', () => {
+    expect(px(extend.borderRadius['2xl'])).toBeGreaterThan(px(extend.borderRadius.xl))
+  })
+})
