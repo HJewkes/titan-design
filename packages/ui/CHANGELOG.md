@@ -9,6 +9,7 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- `custom/ActiveWork` task-stage vocabulary (`TASK_STAGE_META`, `TASK_STAGE_ORDER`, `toTaskStage`), `TaskStagePill`, and the `task-flow` and `task-pr` modules (`TaskFlowItem`, `compareTaskFlow`, `filterTaskFlow`, `taskKey`, `toTaskPrState`) (TP-860a).
 - `Scatter`, `Treemap` and `Gauge` moved to `ui/charts/scatter`, `ui/charts/treemap` and `ui/charts/gauge` (`Components/Atoms/Scatter`, `Components/Atoms/Treemap`, `Components/Atoms/Gauge`); still exported from the package root, with class names and markup unchanged. The `custom/Scatter`, `custom/Treemap` and `custom/Gauge` paths are deprecated shims removed in 0.23.0 (TD-471).
 - `ui/charts/network-graph` ego and clustered layouts: `egoLayout({ focusId, hops, direction })` places the nodes within N hops on rings around a focus with no random source, and `clusteredLayout({ seed, iterations, groups, ungroupedLabel })` lays each group out alone and packs non-overlapping regions in rows, ungrouped nodes last. Adds `GraphGroup`, `GraphGroupRegion` and the `groups` hint on `GraphLayoutResult`, and grouped, hub, chain and many-group fixtures. Pure `.ts`, not yet exported (TP-1037).
 - `ui/charts/network-graph` force layout: `forceLayout({ seed, iterations })`, a deterministic `d3-force` layout stepped without `forceSimulation` (no timer), plus shared layout geometry, `edgeShape` and `labelMode` hints on `GraphLayoutResult`, and `d3-force` as a dependency. Pure `.ts`, not yet exported (TP-1036).
