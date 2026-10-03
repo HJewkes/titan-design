@@ -114,12 +114,12 @@ export const Compare: Story = {
     return (
       <View className="flex-row gap-inline-lg p-gutter-md">
         <Frame label="Header scrolls">
-          <Page {...args} isHeaderPinned={false} header={header}>
+          <Page {...args} role="group" isHeaderPinned={false} header={header}>
             {body}
           </Page>
         </Frame>
         <Frame label="Header pinned">
-          <Page {...args} isHeaderPinned header={header}>
+          <Page {...args} role="group" isHeaderPinned header={header}>
             {body}
           </Page>
         </Frame>
