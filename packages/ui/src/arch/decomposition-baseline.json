@@ -1,7 +1,4 @@
 {
-  "components/custom/ActiveWork/FileActivityDetail.tsx#FileActivityDetail": {
-    "function-lines": 113
-  },
   "components/custom/ActiveWork/TaskTable.tsx": {
     "file-lines": 242
   },
@@ -25,13 +22,6 @@
   },
   "components/custom/Fatigue/GhostBand.tsx#GhostBand": {
     "function-lines": 116
-  },
-  "components/custom/Scatter/Scatter.tsx": {
-    "file-lines": 313
-  },
-  "components/custom/Scatter/Scatter.tsx#Scatter": {
-    "component-lines": 220,
-    "function-lines": 220
   },
   "components/custom/Table/Table.tsx#Table": {
     "props": 14
@@ -305,13 +295,8 @@
   "components/ui/alert/Alert.tsx#Alert": {
     "complexity": 19
   },
-  "components/ui/autocomplete/Autocomplete.tsx": {
-    "file-lines": 240
-  },
   "components/ui/autocomplete/Autocomplete.tsx#Autocomplete": {
-    "complexity": 35,
-    "component-lines": 193,
-    "function-lines": 193,
+    "complexity": 28,
     "props": 20
   },
   "components/ui/button/Button.tsx": {
@@ -378,9 +363,5 @@
     "complexity": 17,
     "component-lines": 121,
     "function-lines": 121
-  },
-  "components/ui/tooltip/Tooltip.tsx#Tooltip": {
-    "component-lines": 155,
-    "function-lines": 155
   }
 }
