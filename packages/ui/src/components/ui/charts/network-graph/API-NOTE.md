@@ -13,25 +13,26 @@ no other meaning. Nodes, edges and kinds name no domain concept, so the unit sit
 
 ## Files
 
-| File                               | Holds                                                                                  |
-| ---------------------------------- | -------------------------------------------------------------------------------------- |
-| `types.ts`                         | Data, layout and model types, and `NetworkGraphProps` (type only).                     |
-| `network-graph-model.ts`           | Cleaning, indexing, weight bins, edge path, `buildGraphModel`.                         |
-| `network-graph-focus.ts`           | `nextFocus`, keyboard traversal over the graph.                                        |
-| `network-graph-text.ts`            | `nodeLabel`, `edgeLabel`, `summarizeGraph`.                                            |
-| `layouts/layered-layout-model.ts`  | `layeredLayout(options)`.                                                              |
-| `layouts/supplied-layout-model.ts` | `suppliedLayout(positions)`.                                                           |
-| `layouts/layout-geometry.ts`       | `LAYOUT_DEFAULTS`, `toSeed`, `clampInt`, `frameLayout`, `readingOrder`, `packCircles`. |
-| `layouts/force-layout-model.ts`    | `forceLayout(options)` and `simulateForces`; the only `d3-force` importer.             |
-| `fixtures.ts`                      | Synthetic graphs at 5, 30 and 150 nodes, and the edge-case set.                        |
-| `network-graph-plot-model.ts`      | Edge geometry, parallel-edge offsets, kind colours, emphasis, label truncation.        |
-| `network-graph-items-model.ts`     | Accessible names and DOM ids of the drawn items.                                       |
-| `useNetworkGraph.ts`               | The selection triplet, the active item, the key map and the edge pulses.               |
-| `NetworkGraph.tsx`                 | The exported component: loading, empty, and the legend.                                |
-| `NetworkGraphCanvas.tsx`           | The scroll container that is the graph's one tab stop, and its layers.                 |
-| `NetworkGraphPlot.tsx`             | The painted `<svg>`: edges, arrowheads, pulses and node marks.                         |
-| `NetworkGraphHitLayer.tsx`         | The second `<svg>`: one named, pressable path per edge.                                |
-| `NetworkGraphParts.tsx`            | Node press targets, the tooltip anchor, the weight readout and the legend.             |
+| File                               | Holds                                                                                   |
+| ---------------------------------- | --------------------------------------------------------------------------------------- |
+| `types.ts`                         | Data, layout and model types, and `NetworkGraphProps` (type only).                      |
+| `network-graph-model.ts`           | Cleaning, indexing, weight bins, edge path, `buildGraphModel`.                          |
+| `network-graph-focus.ts`           | `nextFocus`, keyboard traversal over the graph.                                         |
+| `network-graph-text.ts`            | `nodeLabel`, `edgeLabel`, `summarizeGraph`.                                             |
+| `layouts/layered-layout-model.ts`  | `layeredLayout(options)`.                                                               |
+| `layouts/supplied-layout-model.ts` | `suppliedLayout(positions)`.                                                            |
+| `layouts/layout-geometry.ts`       | `LAYOUT_DEFAULTS`, `toSeed`, `clampInt`, `frameLayout`, `readingOrder`, `packCircles`.  |
+| `layouts/force-layout-model.ts`    | `forceLayout(options)` and `simulateForces`; the only `d3-force` importer.              |
+| `fixtures.ts`                      | Synthetic graphs at 5, 30 and 150 nodes, and the edge-case set.                         |
+| `network-graph-plot-model.ts`      | Edge geometry, parallel-edge offsets, kind colours, emphasis, label truncation.         |
+| `network-graph-items-model.ts`     | Accessible names and DOM ids of the drawn items.                                        |
+| `useNetworkGraph.ts`               | The selection triplet, the active item, the key map and the edge pulses.                |
+| `useGraphRoot.ts`                  | The root's role, `aria-activedescendant`, key and focus handlers, and scroll-into-view. |
+| `NetworkGraph.tsx`                 | The exported component: loading, empty, and the legend.                                 |
+| `NetworkGraphCanvas.tsx`           | The scroll container that is the graph's one tab stop, and its layers.                  |
+| `NetworkGraphPlot.tsx`             | The painted `<svg>`: edges, arrowheads, pulses and node marks.                          |
+| `NetworkGraphHitLayer.tsx`         | The second `<svg>`: one named, pressable path per edge.                                 |
+| `NetworkGraphParts.tsx`            | Node press targets, the tooltip anchor, the weight readout and the legend.              |
 
 ## The layout seam
 
@@ -180,9 +181,11 @@ shows its weight. A hover that ends while the graph holds focus leaves the curso
 `aria-roledescription="network graph"`, and `aria-activedescendant` on the active node or edge.
 Every node and every edge target is a `role="button"` with `tabIndex={-1}`, a name and
 `aria-pressed`. A press on one moves DOM focus back to the container. Tab enters at the selection,
-else at the first node in `order`. Arrow keys, Home and End follow the table above. Enter or Space
+else at the first node in `order`. A pointer press on the canvas gives focus without placing the
+cursor; the next move key enters. Arrow keys, Home and End follow the table above. Enter or Space
 selects the active item, and again clears it. Escape clears the selection and closes the tooltip.
-A key that moves the active item scrolls it into view; a hover never scrolls.
+A key that moves the active item scrolls it into view, and so does Tab entering; a hover never
+scrolls.
 
 **Pulse.** An edge pulses when its `activityAt` is greater than the value seen on the previous
 render, or when it arrives after mount with one. Nothing pulses on the first render. The pulse is a
