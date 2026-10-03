@@ -1,7 +1,9 @@
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { describe, it, expect, vi, afterEach } from 'vitest'
+import { render, renderHook, screen, fireEvent, act } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Autocomplete } from './Autocomplete'
+import { useAutocompleteState } from './useAutocompleteState'
+import { defaultFilterFn } from './autocompleteFilter'
 
 const defaultOptions = [
   { value: '1', label: 'Apple' },
@@ -175,6 +177,76 @@ describe('Autocomplete', () => {
     it('does not show clear button when disabled', () => {
       render(<Autocomplete options={defaultOptions} value="1" isDisabled isClearable />)
       expect(screen.queryByLabelText('Clear selection')).not.toBeInTheDocument()
+    })
+  })
+
+  describe('selecting an option', () => {
+    it('shows the selected option label in the input', () => {
+      render(<Autocomplete options={defaultOptions} />)
+      const input = screen.getByPlaceholderText('Search...')
+
+      typeInInput(input, 'App')
+      fireEvent.click(screen.getByText('Apple'))
+
+      expect(input).toHaveValue('Apple')
+    })
+
+    it('does not select a disabled option', () => {
+      const onChange = vi.fn()
+      const options = [{ value: '1', label: 'Apple', isDisabled: true }]
+      render(<Autocomplete options={options} onChange={onChange} />)
+      const input = screen.getByPlaceholderText('Search...')
+
+      typeInInput(input, 'App')
+      fireEvent.click(screen.getByText('Apple'))
+
+      expect(onChange).not.toHaveBeenCalled()
+      expect(input).toHaveValue('App')
+    })
+  })
+
+  describe('selecting a disabled option through the state handler', () => {
+    it('ignores the selection, even when the row does not block it', () => {
+      const onChange = vi.fn()
+      const { result } = renderHook(() =>
+        useAutocompleteState({
+          options: [{ value: '1', label: 'Apple', isDisabled: true }],
+          onChange,
+          minChars: 0,
+          filterFn: defaultFilterFn,
+        })
+      )
+
+      act(() => {
+        result.current.handleSelectOption({ value: '1', label: 'Apple', isDisabled: true })
+      })
+
+      expect(onChange).not.toHaveBeenCalled()
+      expect(result.current.inputValue).toBe('')
+    })
+  })
+
+  describe('blur', () => {
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    it('keeps the list open for 200ms after blur, then closes it', () => {
+      vi.useFakeTimers()
+      render(<Autocomplete options={defaultOptions} />)
+      const input = screen.getByPlaceholderText('Search...')
+      typeInInput(input, 'App')
+
+      fireEvent.blur(input)
+      act(() => {
+        vi.advanceTimersByTime(199)
+      })
+      expect(screen.getByText('Apple')).toBeInTheDocument()
+
+      act(() => {
+        vi.advanceTimersByTime(1)
+      })
+      expect(screen.queryByText('Apple')).not.toBeInTheDocument()
     })
   })
 

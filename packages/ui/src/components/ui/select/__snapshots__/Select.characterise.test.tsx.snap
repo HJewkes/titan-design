@@ -1,0 +1,5965 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Select characterisation > on a dark surface > clears a preselected value 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="false"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Select a fruit...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a dark surface > renders the Controlled story closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px; gap: 12px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="false"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Apple
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Clear selection"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                ×
+              </div>
+            </button>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        style="flex-direction: row; gap: 8px; flex-wrap: wrap;"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="margin-bottom: 4px;"
+        >
+          <div
+            class="css-text-146c3p1 r-cursor-1loqt21"
+            dir="auto"
+          >
+            Set 
+            Apple
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          style="margin-bottom: 4px;"
+        >
+          <div
+            class="css-text-146c3p1 r-cursor-1loqt21"
+            dir="auto"
+          >
+            Set 
+            Banana
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          style="margin-bottom: 4px;"
+        >
+          <div
+            class="css-text-146c3p1 r-cursor-1loqt21"
+            dir="auto"
+          >
+            Set 
+            Cherry
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          style="margin-bottom: 4px;"
+        >
+          <div
+            class="css-text-146c3p1 r-cursor-1loqt21"
+            dir="auto"
+          >
+            Set 
+            Dragon Fruit
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          style="margin-bottom: 4px;"
+        >
+          <div
+            class="css-text-146c3p1 r-cursor-1loqt21"
+            dir="auto"
+          >
+            Set 
+            Elderberry
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1 r-cursor-1loqt21"
+          dir="auto"
+        >
+          Clear
+        </div>
+      </div>
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Current value: 
+        apple
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a dark surface > renders the Controlled story open 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px; gap: 12px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="true"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Apple
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Clear selection"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                ×
+              </div>
+            </button>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          style="position: absolute;"
+          tabindex="0"
+        />
+        <div
+          class="css-view-175oi2r"
+          style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+        >
+          <div
+            class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Apple
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Banana
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Cherry
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Dragon Fruit
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Elderberry
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        style="flex-direction: row; gap: 8px; flex-wrap: wrap;"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="margin-bottom: 4px;"
+        >
+          <div
+            class="css-text-146c3p1 r-cursor-1loqt21"
+            dir="auto"
+          >
+            Set 
+            Apple
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          style="margin-bottom: 4px;"
+        >
+          <div
+            class="css-text-146c3p1 r-cursor-1loqt21"
+            dir="auto"
+          >
+            Set 
+            Banana
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          style="margin-bottom: 4px;"
+        >
+          <div
+            class="css-text-146c3p1 r-cursor-1loqt21"
+            dir="auto"
+          >
+            Set 
+            Cherry
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          style="margin-bottom: 4px;"
+        >
+          <div
+            class="css-text-146c3p1 r-cursor-1loqt21"
+            dir="auto"
+          >
+            Set 
+            Dragon Fruit
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          style="margin-bottom: 4px;"
+        >
+          <div
+            class="css-text-146c3p1 r-cursor-1loqt21"
+            dir="auto"
+          >
+            Set 
+            Elderberry
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1 r-cursor-1loqt21"
+          dir="auto"
+        >
+          Clear
+        </div>
+      </div>
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Current value: 
+        apple
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a dark surface > renders the Default story closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="false"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Select a fruit...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a dark surface > renders the Default story open 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="true"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Select a fruit...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          style="position: absolute;"
+          tabindex="0"
+        />
+        <div
+          class="css-view-175oi2r"
+          style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+        >
+          <div
+            class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Apple
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Banana
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Cherry
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Dragon Fruit
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Elderberry
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a dark surface > renders the Disabled story closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="gap: 12px; width: 300px;"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="gap: 4px;"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Disabled with no value
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            aria-disabled="true"
+            aria-expanded="false"
+            class="css-view-175oi2r r-pointerEvents-12vffkv"
+            role="combobox"
+            tabindex="-1"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Select a fruit...
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                ▼
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        style="gap: 4px;"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Disabled with value
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            aria-disabled="true"
+            aria-expanded="false"
+            class="css-view-175oi2r r-pointerEvents-12vffkv"
+            role="combobox"
+            tabindex="-1"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Banana
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <button
+                aria-label="Clear selection"
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="button"
+                tabindex="0"
+                type="button"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  ×
+                </div>
+              </button>
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                ▼
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a dark surface > renders the InFormLayout story closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px; gap: 16px;"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="gap: 4px;"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Favorite Fruit
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            aria-expanded="false"
+            class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+            role="combobox"
+            tabindex="0"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Select a fruit...
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                ▼
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        style="gap: 4px;"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Favorite Color
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            aria-expanded="false"
+            class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+            role="combobox"
+            tabindex="0"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Select a color...
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                ▼
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a dark surface > renders the InFormLayout story open 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px; gap: 16px;"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="gap: 4px;"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Favorite Fruit
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            aria-expanded="true"
+            class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+            role="combobox"
+            tabindex="0"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Select a fruit...
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                ▼
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+            style="position: absolute;"
+            tabindex="0"
+          />
+          <div
+            class="css-view-175oi2r"
+            style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+          >
+            <div
+              class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                  role="option"
+                  tabindex="0"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                  >
+                    Apple
+                  </div>
+                </div>
+                <div
+                  class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                  role="option"
+                  tabindex="0"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                  >
+                    Banana
+                  </div>
+                </div>
+                <div
+                  class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                  role="option"
+                  tabindex="0"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                  >
+                    Cherry
+                  </div>
+                </div>
+                <div
+                  class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                  role="option"
+                  tabindex="0"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                  >
+                    Dragon Fruit
+                  </div>
+                </div>
+                <div
+                  class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                  role="option"
+                  tabindex="0"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                  >
+                    Elderberry
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        style="gap: 4px;"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Favorite Color
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            aria-expanded="false"
+            class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+            role="combobox"
+            tabindex="0"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Select a color...
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                ▼
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a dark surface > renders the Invalid story closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px; gap: 4px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="false"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Select a fruit...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        This field is required
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a dark surface > renders the Invalid story open 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px; gap: 4px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="true"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Select a fruit...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          style="position: absolute;"
+          tabindex="0"
+        />
+        <div
+          class="css-view-175oi2r"
+          style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+        >
+          <div
+            class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Apple
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Banana
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Cherry
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Dragon Fruit
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Elderberry
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        This field is required
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a dark surface > renders the ManyOptions story closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="false"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Select from many options...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a dark surface > renders the ManyOptions story open 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="true"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Select from many options...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          style="position: absolute;"
+          tabindex="0"
+        />
+        <div
+          class="css-view-175oi2r"
+          style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+        >
+          <div
+            class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 1
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 2
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 3
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 4
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 5
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 6
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 7
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 8
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 9
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 10
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 11
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 12
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 13
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 14
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 15
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 16
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 17
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 18
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 19
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 20
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 21
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 22
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 23
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 24
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 25
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 26
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 27
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 28
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 29
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 30
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 31
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 32
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 33
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 34
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 35
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 36
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 37
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 38
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 39
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 40
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 41
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 42
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 43
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 44
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 45
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 46
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 47
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 48
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 49
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 50
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a dark surface > renders the MultiSelect story closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px; gap: 8px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="false"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Select fruits...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Selected: 
+        none
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a dark surface > renders the MultiSelect story open 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px; gap: 8px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="true"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Select fruits...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          style="position: absolute;"
+          tabindex="0"
+        />
+        <div
+          class="css-view-175oi2r"
+          style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+        >
+          <div
+            class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="checkbox"
+                tabindex="0"
+              >
+                <div
+                  class="css-view-175oi2r"
+                />
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Apple
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="checkbox"
+                tabindex="0"
+              >
+                <div
+                  class="css-view-175oi2r"
+                />
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Banana
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="checkbox"
+                tabindex="0"
+              >
+                <div
+                  class="css-view-175oi2r"
+                />
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Cherry
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="checkbox"
+                tabindex="0"
+              >
+                <div
+                  class="css-view-175oi2r"
+                />
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Dragon Fruit
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="checkbox"
+                tabindex="0"
+              >
+                <div
+                  class="css-view-175oi2r"
+                />
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Elderberry
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Selected: 
+        none
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a dark surface > renders the MultiSelectWithPreselected story closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px; gap: 8px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="false"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            2 selected
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Clear selection"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                ×
+              </div>
+            </button>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Selected: 
+        apple, cherry
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a dark surface > renders the MultiSelectWithPreselected story open 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px; gap: 8px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="true"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            2 selected
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Clear selection"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                ×
+              </div>
+            </button>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          style="position: absolute;"
+          tabindex="0"
+        />
+        <div
+          class="css-view-175oi2r"
+          style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+        >
+          <div
+            class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="checkbox"
+                tabindex="0"
+              >
+                <div
+                  class="css-view-175oi2r"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                  >
+                    ✓
+                  </div>
+                </div>
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Apple
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="checkbox"
+                tabindex="0"
+              >
+                <div
+                  class="css-view-175oi2r"
+                />
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Banana
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="checkbox"
+                tabindex="0"
+              >
+                <div
+                  class="css-view-175oi2r"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                  >
+                    ✓
+                  </div>
+                </div>
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Cherry
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="checkbox"
+                tabindex="0"
+              >
+                <div
+                  class="css-view-175oi2r"
+                />
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Dragon Fruit
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="checkbox"
+                tabindex="0"
+              >
+                <div
+                  class="css-view-175oi2r"
+                />
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Elderberry
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Selected: 
+        apple, cherry
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a dark surface > renders the WithDisabledOptions story closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="false"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Some options are disabled...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a dark surface > renders the WithDisabledOptions story open 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="true"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Some options are disabled...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          style="position: absolute;"
+          tabindex="0"
+        />
+        <div
+          class="css-view-175oi2r"
+          style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+        >
+          <div
+            class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Apple
+                </div>
+              </div>
+              <div
+                aria-disabled="true"
+                class="css-view-175oi2r r-pointerEvents-12vffkv"
+                role="option"
+                tabindex="-1"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Banana
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Cherry
+                </div>
+              </div>
+              <div
+                aria-disabled="true"
+                class="css-view-175oi2r r-pointerEvents-12vffkv"
+                role="option"
+                tabindex="-1"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Dragon Fruit
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Elderberry
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a dark surface > renders the WithPlaceholder story closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="false"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Choose your favorite fruit...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a dark surface > renders the WithPlaceholder story open 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="true"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Choose your favorite fruit...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          style="position: absolute;"
+          tabindex="0"
+        />
+        <div
+          class="css-view-175oi2r"
+          style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+        >
+          <div
+            class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Apple
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Banana
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Cherry
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Dragon Fruit
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Elderberry
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a dark surface > renders the WithPreselectedValue story closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="false"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Cherry
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Clear selection"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                ×
+              </div>
+            </button>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a dark surface > renders the WithPreselectedValue story open 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="true"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Cherry
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Clear selection"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                ×
+              </div>
+            </button>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          style="position: absolute;"
+          tabindex="0"
+        />
+        <div
+          class="css-view-175oi2r"
+          style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+        >
+          <div
+            class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Apple
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Banana
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Cherry
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Dragon Fruit
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Elderberry
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a dark surface > renders the filled variant closed, open and invalid > closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        aria-expanded="false"
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        role="combobox"
+        tabindex="0"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Beta
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <button
+            aria-label="Clear selection"
+            class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+            role="button"
+            tabindex="0"
+            type="button"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ×
+            </div>
+          </button>
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            ▼
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a dark surface > renders the filled variant closed, open and invalid > invalid 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        aria-expanded="true"
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        role="combobox"
+        tabindex="0"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Select...
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            ▼
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        style="position: absolute;"
+        tabindex="0"
+      />
+      <div
+        class="css-view-175oi2r"
+        style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+      >
+        <div
+          class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="option"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Alpha
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="option"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Beta
+              </div>
+            </div>
+            <div
+              aria-disabled="true"
+              class="css-view-175oi2r r-pointerEvents-12vffkv"
+              role="option"
+              tabindex="-1"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Gamma
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a dark surface > renders the filled variant closed, open and invalid > open 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        aria-expanded="true"
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        role="combobox"
+        tabindex="0"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Beta
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <button
+            aria-label="Clear selection"
+            class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+            role="button"
+            tabindex="0"
+            type="button"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ×
+            </div>
+          </button>
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            ▼
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        style="position: absolute;"
+        tabindex="0"
+      />
+      <div
+        class="css-view-175oi2r"
+        style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+      >
+        <div
+          class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="option"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Alpha
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="option"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Beta
+              </div>
+            </div>
+            <div
+              aria-disabled="true"
+              class="css-view-175oi2r r-pointerEvents-12vffkv"
+              role="option"
+              tabindex="-1"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Gamma
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > clears a preselected value 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="false"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Select a fruit...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > renders the Controlled story closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px; gap: 12px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="false"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Apple
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Clear selection"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                ×
+              </div>
+            </button>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        style="flex-direction: row; gap: 8px; flex-wrap: wrap;"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="margin-bottom: 4px;"
+        >
+          <div
+            class="css-text-146c3p1 r-cursor-1loqt21"
+            dir="auto"
+          >
+            Set 
+            Apple
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          style="margin-bottom: 4px;"
+        >
+          <div
+            class="css-text-146c3p1 r-cursor-1loqt21"
+            dir="auto"
+          >
+            Set 
+            Banana
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          style="margin-bottom: 4px;"
+        >
+          <div
+            class="css-text-146c3p1 r-cursor-1loqt21"
+            dir="auto"
+          >
+            Set 
+            Cherry
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          style="margin-bottom: 4px;"
+        >
+          <div
+            class="css-text-146c3p1 r-cursor-1loqt21"
+            dir="auto"
+          >
+            Set 
+            Dragon Fruit
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          style="margin-bottom: 4px;"
+        >
+          <div
+            class="css-text-146c3p1 r-cursor-1loqt21"
+            dir="auto"
+          >
+            Set 
+            Elderberry
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1 r-cursor-1loqt21"
+          dir="auto"
+        >
+          Clear
+        </div>
+      </div>
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Current value: 
+        apple
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > renders the Controlled story open 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px; gap: 12px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="true"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Apple
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Clear selection"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                ×
+              </div>
+            </button>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          style="position: absolute;"
+          tabindex="0"
+        />
+        <div
+          class="css-view-175oi2r"
+          style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 10px 24px rgba(0,0,0,0.12), 0 24px 48px rgba(0,0,0,0.08);"
+        >
+          <div
+            class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Apple
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Banana
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Cherry
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Dragon Fruit
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Elderberry
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        style="flex-direction: row; gap: 8px; flex-wrap: wrap;"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="margin-bottom: 4px;"
+        >
+          <div
+            class="css-text-146c3p1 r-cursor-1loqt21"
+            dir="auto"
+          >
+            Set 
+            Apple
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          style="margin-bottom: 4px;"
+        >
+          <div
+            class="css-text-146c3p1 r-cursor-1loqt21"
+            dir="auto"
+          >
+            Set 
+            Banana
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          style="margin-bottom: 4px;"
+        >
+          <div
+            class="css-text-146c3p1 r-cursor-1loqt21"
+            dir="auto"
+          >
+            Set 
+            Cherry
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          style="margin-bottom: 4px;"
+        >
+          <div
+            class="css-text-146c3p1 r-cursor-1loqt21"
+            dir="auto"
+          >
+            Set 
+            Dragon Fruit
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          style="margin-bottom: 4px;"
+        >
+          <div
+            class="css-text-146c3p1 r-cursor-1loqt21"
+            dir="auto"
+          >
+            Set 
+            Elderberry
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1 r-cursor-1loqt21"
+          dir="auto"
+        >
+          Clear
+        </div>
+      </div>
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Current value: 
+        apple
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > renders the Default story closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="false"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Select a fruit...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > renders the Default story open 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="true"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Select a fruit...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          style="position: absolute;"
+          tabindex="0"
+        />
+        <div
+          class="css-view-175oi2r"
+          style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 10px 24px rgba(0,0,0,0.12), 0 24px 48px rgba(0,0,0,0.08);"
+        >
+          <div
+            class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Apple
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Banana
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Cherry
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Dragon Fruit
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Elderberry
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > renders the Disabled story closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="gap: 12px; width: 300px;"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="gap: 4px;"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Disabled with no value
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            aria-disabled="true"
+            aria-expanded="false"
+            class="css-view-175oi2r r-pointerEvents-12vffkv"
+            role="combobox"
+            tabindex="-1"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Select a fruit...
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                ▼
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        style="gap: 4px;"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Disabled with value
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            aria-disabled="true"
+            aria-expanded="false"
+            class="css-view-175oi2r r-pointerEvents-12vffkv"
+            role="combobox"
+            tabindex="-1"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Banana
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <button
+                aria-label="Clear selection"
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="button"
+                tabindex="0"
+                type="button"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  ×
+                </div>
+              </button>
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                ▼
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > renders the InFormLayout story closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px; gap: 16px;"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="gap: 4px;"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Favorite Fruit
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            aria-expanded="false"
+            class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+            role="combobox"
+            tabindex="0"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Select a fruit...
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                ▼
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        style="gap: 4px;"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Favorite Color
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            aria-expanded="false"
+            class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+            role="combobox"
+            tabindex="0"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Select a color...
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                ▼
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > renders the InFormLayout story open 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px; gap: 16px;"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="gap: 4px;"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Favorite Fruit
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            aria-expanded="true"
+            class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+            role="combobox"
+            tabindex="0"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Select a fruit...
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                ▼
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+            style="position: absolute;"
+            tabindex="0"
+          />
+          <div
+            class="css-view-175oi2r"
+            style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 10px 24px rgba(0,0,0,0.12), 0 24px 48px rgba(0,0,0,0.08);"
+          >
+            <div
+              class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                  role="option"
+                  tabindex="0"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                  >
+                    Apple
+                  </div>
+                </div>
+                <div
+                  class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                  role="option"
+                  tabindex="0"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                  >
+                    Banana
+                  </div>
+                </div>
+                <div
+                  class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                  role="option"
+                  tabindex="0"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                  >
+                    Cherry
+                  </div>
+                </div>
+                <div
+                  class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                  role="option"
+                  tabindex="0"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                  >
+                    Dragon Fruit
+                  </div>
+                </div>
+                <div
+                  class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                  role="option"
+                  tabindex="0"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                  >
+                    Elderberry
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        style="gap: 4px;"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Favorite Color
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            aria-expanded="false"
+            class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+            role="combobox"
+            tabindex="0"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Select a color...
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                ▼
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > renders the Invalid story closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px; gap: 4px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="false"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Select a fruit...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        This field is required
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > renders the Invalid story open 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px; gap: 4px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="true"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Select a fruit...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          style="position: absolute;"
+          tabindex="0"
+        />
+        <div
+          class="css-view-175oi2r"
+          style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 10px 24px rgba(0,0,0,0.12), 0 24px 48px rgba(0,0,0,0.08);"
+        >
+          <div
+            class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Apple
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Banana
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Cherry
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Dragon Fruit
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Elderberry
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        This field is required
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > renders the ManyOptions story closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="false"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Select from many options...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > renders the ManyOptions story open 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="true"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Select from many options...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          style="position: absolute;"
+          tabindex="0"
+        />
+        <div
+          class="css-view-175oi2r"
+          style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 10px 24px rgba(0,0,0,0.12), 0 24px 48px rgba(0,0,0,0.08);"
+        >
+          <div
+            class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 1
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 2
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 3
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 4
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 5
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 6
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 7
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 8
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 9
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 10
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 11
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 12
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 13
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 14
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 15
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 16
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 17
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 18
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 19
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 20
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 21
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 22
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 23
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 24
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 25
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 26
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 27
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 28
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 29
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 30
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 31
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 32
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 33
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 34
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 35
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 36
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 37
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 38
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 39
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 40
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 41
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 42
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 43
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 44
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 45
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 46
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 47
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 48
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 49
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Option 50
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > renders the MultiSelect story closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px; gap: 8px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="false"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Select fruits...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Selected: 
+        none
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > renders the MultiSelect story open 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px; gap: 8px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="true"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Select fruits...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          style="position: absolute;"
+          tabindex="0"
+        />
+        <div
+          class="css-view-175oi2r"
+          style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 10px 24px rgba(0,0,0,0.12), 0 24px 48px rgba(0,0,0,0.08);"
+        >
+          <div
+            class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="checkbox"
+                tabindex="0"
+              >
+                <div
+                  class="css-view-175oi2r"
+                />
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Apple
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="checkbox"
+                tabindex="0"
+              >
+                <div
+                  class="css-view-175oi2r"
+                />
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Banana
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="checkbox"
+                tabindex="0"
+              >
+                <div
+                  class="css-view-175oi2r"
+                />
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Cherry
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="checkbox"
+                tabindex="0"
+              >
+                <div
+                  class="css-view-175oi2r"
+                />
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Dragon Fruit
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="checkbox"
+                tabindex="0"
+              >
+                <div
+                  class="css-view-175oi2r"
+                />
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Elderberry
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Selected: 
+        none
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > renders the MultiSelectWithPreselected story closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px; gap: 8px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="false"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            2 selected
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Clear selection"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                ×
+              </div>
+            </button>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Selected: 
+        apple, cherry
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > renders the MultiSelectWithPreselected story open 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px; gap: 8px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="true"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            2 selected
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Clear selection"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                ×
+              </div>
+            </button>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          style="position: absolute;"
+          tabindex="0"
+        />
+        <div
+          class="css-view-175oi2r"
+          style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 10px 24px rgba(0,0,0,0.12), 0 24px 48px rgba(0,0,0,0.08);"
+        >
+          <div
+            class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="checkbox"
+                tabindex="0"
+              >
+                <div
+                  class="css-view-175oi2r"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                  >
+                    ✓
+                  </div>
+                </div>
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Apple
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="checkbox"
+                tabindex="0"
+              >
+                <div
+                  class="css-view-175oi2r"
+                />
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Banana
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="checkbox"
+                tabindex="0"
+              >
+                <div
+                  class="css-view-175oi2r"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                  >
+                    ✓
+                  </div>
+                </div>
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Cherry
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="checkbox"
+                tabindex="0"
+              >
+                <div
+                  class="css-view-175oi2r"
+                />
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Dragon Fruit
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="checkbox"
+                tabindex="0"
+              >
+                <div
+                  class="css-view-175oi2r"
+                />
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Elderberry
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Selected: 
+        apple, cherry
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > renders the WithDisabledOptions story closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="false"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Some options are disabled...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > renders the WithDisabledOptions story open 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="true"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Some options are disabled...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          style="position: absolute;"
+          tabindex="0"
+        />
+        <div
+          class="css-view-175oi2r"
+          style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 10px 24px rgba(0,0,0,0.12), 0 24px 48px rgba(0,0,0,0.08);"
+        >
+          <div
+            class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Apple
+                </div>
+              </div>
+              <div
+                aria-disabled="true"
+                class="css-view-175oi2r r-pointerEvents-12vffkv"
+                role="option"
+                tabindex="-1"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Banana
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Cherry
+                </div>
+              </div>
+              <div
+                aria-disabled="true"
+                class="css-view-175oi2r r-pointerEvents-12vffkv"
+                role="option"
+                tabindex="-1"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Dragon Fruit
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Elderberry
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > renders the WithPlaceholder story closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="false"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Choose your favorite fruit...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > renders the WithPlaceholder story open 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="true"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Choose your favorite fruit...
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          style="position: absolute;"
+          tabindex="0"
+        />
+        <div
+          class="css-view-175oi2r"
+          style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 10px 24px rgba(0,0,0,0.12), 0 24px 48px rgba(0,0,0,0.08);"
+        >
+          <div
+            class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Apple
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Banana
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Cherry
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Dragon Fruit
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Elderberry
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > renders the WithPreselectedValue story closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="false"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Cherry
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Clear selection"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                ×
+              </div>
+            </button>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > renders the WithPreselectedValue story open 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 300px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          aria-expanded="true"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="combobox"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Cherry
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Clear selection"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                ×
+              </div>
+            </button>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          style="position: absolute;"
+          tabindex="0"
+        />
+        <div
+          class="css-view-175oi2r"
+          style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 10px 24px rgba(0,0,0,0.12), 0 24px 48px rgba(0,0,0,0.08);"
+        >
+          <div
+            class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Apple
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Banana
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Cherry
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Dragon Fruit
+                </div>
+              </div>
+              <div
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="option"
+                tabindex="0"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  Elderberry
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > renders the filled variant closed, open and invalid > closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        aria-expanded="false"
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        role="combobox"
+        tabindex="0"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Beta
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <button
+            aria-label="Clear selection"
+            class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+            role="button"
+            tabindex="0"
+            type="button"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ×
+            </div>
+          </button>
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            ▼
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > renders the filled variant closed, open and invalid > invalid 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        aria-expanded="true"
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        role="combobox"
+        tabindex="0"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Select...
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            ▼
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        style="position: absolute;"
+        tabindex="0"
+      />
+      <div
+        class="css-view-175oi2r"
+        style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 10px 24px rgba(0,0,0,0.12), 0 24px 48px rgba(0,0,0,0.08);"
+      >
+        <div
+          class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="option"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Alpha
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="option"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Beta
+              </div>
+            </div>
+            <div
+              aria-disabled="true"
+              class="css-view-175oi2r r-pointerEvents-12vffkv"
+              role="option"
+              tabindex="-1"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Gamma
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Select characterisation > on a light surface > renders the filled variant closed, open and invalid > open 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        aria-expanded="true"
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        role="combobox"
+        tabindex="0"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Beta
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <button
+            aria-label="Clear selection"
+            class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+            role="button"
+            tabindex="0"
+            type="button"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ×
+            </div>
+          </button>
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            ▼
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        style="position: absolute;"
+        tabindex="0"
+      />
+      <div
+        class="css-view-175oi2r"
+        style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 10px 24px rgba(0,0,0,0.12), 0 24px 48px rgba(0,0,0,0.08);"
+      >
+        <div
+          class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="option"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Alpha
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="option"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Beta
+              </div>
+            </div>
+            <div
+              aria-disabled="true"
+              class="css-view-175oi2r r-pointerEvents-12vffkv"
+              role="option"
+              tabindex="-1"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Gamma
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

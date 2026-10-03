@@ -1,0 +1,3979 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ToolbarButton characterisation > on a dark surface > paints the hover fill when isActive=false 1`] = `
+{
+  "hovered": "rgb(71, 70, 69)",
+  "rest": "rgb(66, 65, 64)",
+}
+`;
+
+exports[`ToolbarButton characterisation > on a dark surface > paints the hover fill when isActive=true 1`] = `
+{
+  "hovered": "rgb(61, 60, 59)",
+  "rest": "rgb(44, 42, 40)",
+}
+`;
+
+exports[`ToolbarButton characterisation > on a dark surface > renders the ActiveVsInactive story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="gap: 16px;"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            isActive=true - sunken/dark look, ORANGE icon, white text
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Active (orange icon)"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-brand-primary);"
+                  >
+                    ⏣
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Active (orange icon)
+              </div>
+            </button>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            isActive=undefined - sunken/dark look, white icon (default state)
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Default (white icon)"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-on-control-active);"
+                  >
+                    ⏣
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Default (white icon)
+              </div>
+            </button>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            isActive=false - elevated/light look, gray icon
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Inactive (gray icon)"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-on-control-idle);"
+                  >
+                    ⏣
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Inactive (gray icon)
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a dark surface > renders the ButtonGroup story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="gap: 16px;"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Click to select (one active at a time):
+        </div>
+        <div
+          class="css-view-175oi2r"
+          role="toolbar"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Filter"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-on-control-idle);"
+                  >
+                    ⏣
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Filter
+              </div>
+            </button>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Settings"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-brand-primary);"
+                  >
+                    ⚙
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Settings
+              </div>
+            </button>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="View"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-on-control-idle);"
+                  >
+                    ◉
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                View
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a dark surface > renders the CSSReference story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="gap: 16px;"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Computed CSS properties (derived from original SettingsButton):
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            /* Button base */
+padding: 6px 16px;
+border-radius: 4px;
+display: flex;
+align-items: center;
+
+/* Active (isActive !== false) - sunken look */
+background-color: #3C3C3C;
+box-shadow: inset -1px -1px 6px #3C3C3C,
+            inset 1px 2px 1px #6E6E6E,
+            1px 1px 1px #6E6E6E;
+color: #FFFFFF;
+
+/* Inactive (isActive === false) - elevated look */
+background-color: #6E6E6E;
+box-shadow: inset 2px 2px 2px #1F1F1F,
+            inset -1px -1px 2px #6E6E6E;
+color: #D1D1D1;
+
+/* Text (Typography subtitle2 + bold) */
+font-size: 14px;
+font-weight: 700;
+font-family: Nunito Sans;
+line-height: 1.57;
+
+/* Icon */
+width: 20px;
+height: 20px;
+margin-right: 8px; /* when label shown */
+color: #FF7900; /* when isActive=true */
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: row; gap: 8px;"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Inactive"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-on-control-idle);"
+                  >
+                    ⚙
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Inactive
+              </div>
+            </button>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Active"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-brand-primary);"
+                  >
+                    ⚙
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Active
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a dark surface > renders the CompactMode story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="gap: 16px;"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: row; align-items: center; gap: 8px;"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Mode: 
+            Full (icon + label)
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Toggle"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-on-control-idle);"
+                  >
+                    ◉
+                  </div>
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        />
+        <div
+          class="css-view-175oi2r"
+          role="toolbar"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Filter"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-brand-primary);"
+                  >
+                    ⏣
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Filter
+              </div>
+            </button>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Settings"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-on-control-idle);"
+                  >
+                    ⚙
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Settings
+              </div>
+            </button>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="View"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-on-control-idle);"
+                  >
+                    ◉
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                View
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a dark surface > renders the Default story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <button
+          aria-label="Settings"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="button"
+          style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="font-size: 16px; color: var(--color-on-control-active);"
+              >
+                ⚙
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+          >
+            Settings
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a dark surface > renders the Disabled story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="gap: 16px;"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Disabled buttons use MUI's default dark theme styling.
+        </div>
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Background: rgba(255,255,255,0.12) | No shadows | Colors preserved with opacity
+        </div>
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Note: Orange icon IS shown when isActive=true (matching original XP behavior)
+        </div>
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: row; gap: 8px;"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-disabled="true"
+              aria-label="Disabled Active"
+              class="css-view-175oi2r r-pointerEvents-12vffkv r-backgroundColor-1fpi9eo r-boxShadow-17b9qp5"
+              disabled=""
+              role="button"
+              tabindex="-1"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-brand-primary);"
+                  >
+                    ⚙
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Disabled Active
+              </div>
+            </button>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-disabled="true"
+              aria-label="Disabled Inactive"
+              class="css-view-175oi2r r-pointerEvents-12vffkv r-backgroundColor-1fpi9eo r-boxShadow-17b9qp5"
+              disabled=""
+              role="button"
+              tabindex="-1"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-on-control-idle);"
+                  >
+                    ⚙
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Disabled Inactive
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a dark surface > renders the HoverStates story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="gap: 16px;"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Hover over buttons to see the hover effect (background lightens, shadows removed)
+        </div>
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Active: #3C3C3C → #4C4C4C | Inactive: #6E6E6E → #5D5D5D | Shadows: removed
+        </div>
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: row; gap: 8px;"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Hover Me (Active)"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-brand-primary);"
+                  >
+                    ⚙
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Hover Me (Active)
+              </div>
+            </button>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Hover Me (Inactive)"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-on-control-idle);"
+                  >
+                    ⚙
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Hover Me (Inactive)
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a dark surface > renders the IconOnly story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="gap: 16px;"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Icon-only buttons. Active button has orange icon:
+        </div>
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: row; gap: 8px;"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Settings"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-on-control-idle);"
+                  >
+                    ⚙
+                  </div>
+                </div>
+              </div>
+            </button>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Filter (active)"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-brand-primary);"
+                  >
+                    ⏣
+                  </div>
+                </div>
+              </div>
+            </button>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="View"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-on-control-idle);"
+                  >
+                    ◉
+                  </div>
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a dark surface > renders the Interactive story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="gap: 16px;"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Click to toggle. When active=true, icon turns orange:
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <button
+            aria-label="Toggle Me"
+            class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+            role="button"
+            style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+            tabindex="0"
+            type="button"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r"
+                style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                  style="font-size: 16px; color: var(--color-on-control-idle);"
+                >
+                  ⚙
+                </div>
+              </div>
+            </div>
+            <div
+              class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+              dir="auto"
+            >
+              Toggle Me
+            </div>
+          </button>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          isActive: 
+          false (elevated, gray icon)
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a dark surface > renders the ToolbarExample story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Typical toolbar usage - filters active, settings inactive:
+        </div>
+        <div
+          class="css-view-175oi2r"
+          role="toolbar"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Filters"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-brand-primary);"
+                  >
+                    ⏣
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Filters
+              </div>
+            </button>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Settings"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-on-control-idle);"
+                  >
+                    ⚙
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Settings
+              </div>
+            </button>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="View"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-on-control-idle);"
+                  >
+                    ◉
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                View
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a dark surface > renders the Variants story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="gap: 24px;"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Neumorphic (with 3D inset shadows)
+          </div>
+          <div
+            class="css-view-175oi2r"
+            style="flex-direction: row; gap: 8px;"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <button
+                aria-label="Inactive"
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="button"
+                style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+                tabindex="0"
+                type="button"
+              >
+                <div
+                  class="css-view-175oi2r"
+                >
+                  <div
+                    class="css-view-175oi2r"
+                    style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                  >
+                    <div
+                      class="css-text-146c3p1"
+                      dir="auto"
+                      style="font-size: 16px; color: var(--color-on-control-idle);"
+                    >
+                      ⚙
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                  dir="auto"
+                >
+                  Inactive
+                </div>
+              </button>
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <button
+                aria-label="Active"
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="button"
+                style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+                tabindex="0"
+                type="button"
+              >
+                <div
+                  class="css-view-175oi2r"
+                >
+                  <div
+                    class="css-view-175oi2r"
+                    style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                  >
+                    <div
+                      class="css-text-146c3p1"
+                      dir="auto"
+                      style="font-size: 16px; color: var(--color-brand-primary);"
+                    >
+                      ⚙
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                  dir="auto"
+                >
+                  Active
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Flat (no shadows)
+          </div>
+          <div
+            class="css-view-175oi2r"
+            style="flex-direction: row; gap: 8px;"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <button
+                aria-label="Inactive"
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="button"
+                style="background-color: rgb(114, 113, 111);"
+                tabindex="0"
+                type="button"
+              >
+                <div
+                  class="css-view-175oi2r"
+                >
+                  <div
+                    class="css-view-175oi2r"
+                    style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                  >
+                    <div
+                      class="css-text-146c3p1"
+                      dir="auto"
+                      style="font-size: 16px; color: var(--color-on-control-idle);"
+                    >
+                      ⚙
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                  dir="auto"
+                >
+                  Inactive
+                </div>
+              </button>
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <button
+                aria-label="Active"
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="button"
+                style="background-color: rgb(66, 65, 64);"
+                tabindex="0"
+                type="button"
+              >
+                <div
+                  class="css-view-175oi2r"
+                >
+                  <div
+                    class="css-view-175oi2r"
+                    style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                  >
+                    <div
+                      class="css-text-146c3p1"
+                      dir="auto"
+                      style="font-size: 16px; color: var(--color-brand-primary);"
+                    >
+                      ⚙
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                  dir="auto"
+                >
+                  Active
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a dark surface > renders the WithMenu story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <button
+          aria-label="View Options"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="button"
+          style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="font-size: 16px; color: var(--color-on-control-idle);"
+              >
+                ◉
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+          >
+            View Options
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a dark surface > renders the open menu unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <button
+          aria-label="View Options"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="button"
+          style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="font-size: 16px; color: var(--color-on-control-idle);"
+              >
+                ◉
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+          >
+            View Options
+          </div>
+        </button>
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73 r-bottom-1p0dtai r-left-1d2f490 r-position-u8s1d r-right-zchlnj r-top-ipm5af"
+          tabindex="0"
+        />
+        <div
+          class="css-view-175oi2r"
+          style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+        >
+          <div
+            class="css-view-175oi2r"
+            style="padding-top: 8px; padding-bottom: 8px;"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="padding: 8px 16px 8px 16px;"
+            >
+              Grid View
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="padding: 8px 16px 8px 16px;"
+            >
+              List View
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="padding: 8px 16px 8px 16px;"
+            >
+              Compact View
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a dark surface > renders variant='default' isActive=false isDisabled=false unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <button
+        aria-label="Matrix"
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        role="button"
+        style="background-color: rgb(114, 113, 111);"
+        tabindex="0"
+        type="button"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+            data-testid="i"
+            style="color: var(--color-on-control-idle); width: 20px; height: 20px;"
+          />
+        </div>
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          dir="auto"
+        >
+          Matrix
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a dark surface > renders variant='default' isActive=false isDisabled=true unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <button
+        aria-disabled="true"
+        aria-label="Matrix"
+        class="css-view-175oi2r r-pointerEvents-12vffkv"
+        disabled=""
+        role="button"
+        style="background-color: rgb(114, 113, 111);"
+        tabindex="-1"
+        type="button"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+            data-testid="i"
+            style="color: var(--color-on-control-idle); width: 20px; height: 20px;"
+          />
+        </div>
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          dir="auto"
+        >
+          Matrix
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a dark surface > renders variant='default' isActive=true isDisabled=false unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <button
+        aria-label="Matrix"
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        role="button"
+        style="background-color: rgb(66, 65, 64);"
+        tabindex="0"
+        type="button"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+            data-testid="i"
+            style="color: var(--color-brand-primary); width: 20px; height: 20px;"
+          />
+        </div>
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          dir="auto"
+        >
+          Matrix
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a dark surface > renders variant='default' isActive=true isDisabled=true unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <button
+        aria-disabled="true"
+        aria-label="Matrix"
+        class="css-view-175oi2r r-pointerEvents-12vffkv"
+        disabled=""
+        role="button"
+        style="background-color: rgb(66, 65, 64);"
+        tabindex="-1"
+        type="button"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+            data-testid="i"
+            style="color: var(--color-brand-primary); width: 20px; height: 20px;"
+          />
+        </div>
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          dir="auto"
+        >
+          Matrix
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a dark surface > renders variant='default' isActive=undefined isDisabled=false unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <button
+        aria-label="Matrix"
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        role="button"
+        style="background-color: rgb(66, 65, 64);"
+        tabindex="0"
+        type="button"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+            data-testid="i"
+            style="color: var(--color-on-control-active); width: 20px; height: 20px;"
+          />
+        </div>
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          dir="auto"
+        >
+          Matrix
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a dark surface > renders variant='default' isActive=undefined isDisabled=true unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <button
+        aria-disabled="true"
+        aria-label="Matrix"
+        class="css-view-175oi2r r-pointerEvents-12vffkv"
+        disabled=""
+        role="button"
+        style="background-color: rgb(66, 65, 64);"
+        tabindex="-1"
+        type="button"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+            data-testid="i"
+            style="color: var(--color-on-control-active); width: 20px; height: 20px;"
+          />
+        </div>
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          dir="auto"
+        >
+          Matrix
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a dark surface > renders variant='raised' isActive=false isDisabled=false unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <button
+        aria-label="Matrix"
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        role="button"
+        style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+        tabindex="0"
+        type="button"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+            data-testid="i"
+            style="color: var(--color-on-control-idle); width: 20px; height: 20px;"
+          />
+        </div>
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          dir="auto"
+        >
+          Matrix
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a dark surface > renders variant='raised' isActive=false isDisabled=true unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <button
+        aria-disabled="true"
+        aria-label="Matrix"
+        class="css-view-175oi2r r-pointerEvents-12vffkv r-backgroundColor-1fpi9eo r-boxShadow-17b9qp5"
+        disabled=""
+        role="button"
+        tabindex="-1"
+        type="button"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+            data-testid="i"
+            style="color: var(--color-on-control-idle); width: 20px; height: 20px;"
+          />
+        </div>
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          dir="auto"
+        >
+          Matrix
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a dark surface > renders variant='raised' isActive=true isDisabled=false unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <button
+        aria-label="Matrix"
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        role="button"
+        style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+        tabindex="0"
+        type="button"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+            data-testid="i"
+            style="color: var(--color-brand-primary); width: 20px; height: 20px;"
+          />
+        </div>
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          dir="auto"
+        >
+          Matrix
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a dark surface > renders variant='raised' isActive=true isDisabled=true unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <button
+        aria-disabled="true"
+        aria-label="Matrix"
+        class="css-view-175oi2r r-pointerEvents-12vffkv r-backgroundColor-1fpi9eo r-boxShadow-17b9qp5"
+        disabled=""
+        role="button"
+        tabindex="-1"
+        type="button"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+            data-testid="i"
+            style="color: var(--color-brand-primary); width: 20px; height: 20px;"
+          />
+        </div>
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          dir="auto"
+        >
+          Matrix
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a dark surface > renders variant='raised' isActive=undefined isDisabled=false unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <button
+        aria-label="Matrix"
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        role="button"
+        style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+        tabindex="0"
+        type="button"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+            data-testid="i"
+            style="color: var(--color-on-control-active); width: 20px; height: 20px;"
+          />
+        </div>
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          dir="auto"
+        >
+          Matrix
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a dark surface > renders variant='raised' isActive=undefined isDisabled=true unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <button
+        aria-disabled="true"
+        aria-label="Matrix"
+        class="css-view-175oi2r r-pointerEvents-12vffkv r-backgroundColor-1fpi9eo r-boxShadow-17b9qp5"
+        disabled=""
+        role="button"
+        tabindex="-1"
+        type="button"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+            data-testid="i"
+            style="color: var(--color-on-control-active); width: 20px; height: 20px;"
+          />
+        </div>
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          dir="auto"
+        >
+          Matrix
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a light surface > paints the hover fill when isActive=false 1`] = `
+{
+  "hovered": "rgb(71, 70, 69)",
+  "rest": "rgb(66, 65, 64)",
+}
+`;
+
+exports[`ToolbarButton characterisation > on a light surface > paints the hover fill when isActive=true 1`] = `
+{
+  "hovered": "rgb(61, 60, 59)",
+  "rest": "rgb(44, 42, 40)",
+}
+`;
+
+exports[`ToolbarButton characterisation > on a light surface > renders the ActiveVsInactive story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="gap: 16px;"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            isActive=true - sunken/dark look, ORANGE icon, white text
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Active (orange icon)"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-brand-primary);"
+                  >
+                    ⏣
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Active (orange icon)
+              </div>
+            </button>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            isActive=undefined - sunken/dark look, white icon (default state)
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Default (white icon)"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-on-control-active);"
+                  >
+                    ⏣
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Default (white icon)
+              </div>
+            </button>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            isActive=false - elevated/light look, gray icon
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Inactive (gray icon)"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-on-control-idle);"
+                  >
+                    ⏣
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Inactive (gray icon)
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a light surface > renders the ButtonGroup story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="gap: 16px;"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Click to select (one active at a time):
+        </div>
+        <div
+          class="css-view-175oi2r"
+          role="toolbar"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Filter"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-on-control-idle);"
+                  >
+                    ⏣
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Filter
+              </div>
+            </button>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Settings"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-brand-primary);"
+                  >
+                    ⚙
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Settings
+              </div>
+            </button>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="View"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-on-control-idle);"
+                  >
+                    ◉
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                View
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a light surface > renders the CSSReference story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="gap: 16px;"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Computed CSS properties (derived from original SettingsButton):
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            /* Button base */
+padding: 6px 16px;
+border-radius: 4px;
+display: flex;
+align-items: center;
+
+/* Active (isActive !== false) - sunken look */
+background-color: #3C3C3C;
+box-shadow: inset -1px -1px 6px #3C3C3C,
+            inset 1px 2px 1px #6E6E6E,
+            1px 1px 1px #6E6E6E;
+color: #FFFFFF;
+
+/* Inactive (isActive === false) - elevated look */
+background-color: #6E6E6E;
+box-shadow: inset 2px 2px 2px #1F1F1F,
+            inset -1px -1px 2px #6E6E6E;
+color: #D1D1D1;
+
+/* Text (Typography subtitle2 + bold) */
+font-size: 14px;
+font-weight: 700;
+font-family: Nunito Sans;
+line-height: 1.57;
+
+/* Icon */
+width: 20px;
+height: 20px;
+margin-right: 8px; /* when label shown */
+color: #FF7900; /* when isActive=true */
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: row; gap: 8px;"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Inactive"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-on-control-idle);"
+                  >
+                    ⚙
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Inactive
+              </div>
+            </button>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Active"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-brand-primary);"
+                  >
+                    ⚙
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Active
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a light surface > renders the CompactMode story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="gap: 16px;"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: row; align-items: center; gap: 8px;"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Mode: 
+            Full (icon + label)
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Toggle"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-on-control-idle);"
+                  >
+                    ◉
+                  </div>
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        />
+        <div
+          class="css-view-175oi2r"
+          role="toolbar"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Filter"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-brand-primary);"
+                  >
+                    ⏣
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Filter
+              </div>
+            </button>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Settings"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-on-control-idle);"
+                  >
+                    ⚙
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Settings
+              </div>
+            </button>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="View"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-on-control-idle);"
+                  >
+                    ◉
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                View
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a light surface > renders the Default story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <button
+          aria-label="Settings"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="button"
+          style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="font-size: 16px; color: var(--color-on-control-active);"
+              >
+                ⚙
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+          >
+            Settings
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a light surface > renders the Disabled story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="gap: 16px;"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Disabled buttons use MUI's default dark theme styling.
+        </div>
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Background: rgba(255,255,255,0.12) | No shadows | Colors preserved with opacity
+        </div>
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Note: Orange icon IS shown when isActive=true (matching original XP behavior)
+        </div>
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: row; gap: 8px;"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-disabled="true"
+              aria-label="Disabled Active"
+              class="css-view-175oi2r r-pointerEvents-12vffkv r-backgroundColor-1fpi9eo r-boxShadow-17b9qp5"
+              disabled=""
+              role="button"
+              tabindex="-1"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-brand-primary);"
+                  >
+                    ⚙
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Disabled Active
+              </div>
+            </button>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-disabled="true"
+              aria-label="Disabled Inactive"
+              class="css-view-175oi2r r-pointerEvents-12vffkv r-backgroundColor-1fpi9eo r-boxShadow-17b9qp5"
+              disabled=""
+              role="button"
+              tabindex="-1"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-on-control-idle);"
+                  >
+                    ⚙
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Disabled Inactive
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a light surface > renders the HoverStates story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="gap: 16px;"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Hover over buttons to see the hover effect (background lightens, shadows removed)
+        </div>
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Active: #3C3C3C → #4C4C4C | Inactive: #6E6E6E → #5D5D5D | Shadows: removed
+        </div>
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: row; gap: 8px;"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Hover Me (Active)"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-brand-primary);"
+                  >
+                    ⚙
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Hover Me (Active)
+              </div>
+            </button>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Hover Me (Inactive)"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-on-control-idle);"
+                  >
+                    ⚙
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Hover Me (Inactive)
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a light surface > renders the IconOnly story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="gap: 16px;"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Icon-only buttons. Active button has orange icon:
+        </div>
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: row; gap: 8px;"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Settings"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-on-control-idle);"
+                  >
+                    ⚙
+                  </div>
+                </div>
+              </div>
+            </button>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Filter (active)"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-brand-primary);"
+                  >
+                    ⏣
+                  </div>
+                </div>
+              </div>
+            </button>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="View"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-on-control-idle);"
+                  >
+                    ◉
+                  </div>
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a light surface > renders the Interactive story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="gap: 16px;"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Click to toggle. When active=true, icon turns orange:
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <button
+            aria-label="Toggle Me"
+            class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+            role="button"
+            style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+            tabindex="0"
+            type="button"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r"
+                style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                  style="font-size: 16px; color: var(--color-on-control-idle);"
+                >
+                  ⚙
+                </div>
+              </div>
+            </div>
+            <div
+              class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+              dir="auto"
+            >
+              Toggle Me
+            </div>
+          </button>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          isActive: 
+          false (elevated, gray icon)
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a light surface > renders the ToolbarExample story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Typical toolbar usage - filters active, settings inactive:
+        </div>
+        <div
+          class="css-view-175oi2r"
+          role="toolbar"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Filters"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-brand-primary);"
+                  >
+                    ⏣
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Filters
+              </div>
+            </button>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Settings"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-on-control-idle);"
+                  >
+                    ⚙
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                Settings
+              </div>
+            </button>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="View"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              role="button"
+              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-view-175oi2r"
+                  style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                >
+                  <div
+                    class="css-text-146c3p1"
+                    dir="auto"
+                    style="font-size: 16px; color: var(--color-on-control-idle);"
+                  >
+                    ◉
+                  </div>
+                </div>
+              </div>
+              <div
+                class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                dir="auto"
+              >
+                View
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a light surface > renders the Variants story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="gap: 24px;"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Neumorphic (with 3D inset shadows)
+          </div>
+          <div
+            class="css-view-175oi2r"
+            style="flex-direction: row; gap: 8px;"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <button
+                aria-label="Inactive"
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="button"
+                style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+                tabindex="0"
+                type="button"
+              >
+                <div
+                  class="css-view-175oi2r"
+                >
+                  <div
+                    class="css-view-175oi2r"
+                    style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                  >
+                    <div
+                      class="css-text-146c3p1"
+                      dir="auto"
+                      style="font-size: 16px; color: var(--color-on-control-idle);"
+                    >
+                      ⚙
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                  dir="auto"
+                >
+                  Inactive
+                </div>
+              </button>
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <button
+                aria-label="Active"
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="button"
+                style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+                tabindex="0"
+                type="button"
+              >
+                <div
+                  class="css-view-175oi2r"
+                >
+                  <div
+                    class="css-view-175oi2r"
+                    style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                  >
+                    <div
+                      class="css-text-146c3p1"
+                      dir="auto"
+                      style="font-size: 16px; color: var(--color-brand-primary);"
+                    >
+                      ⚙
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                  dir="auto"
+                >
+                  Active
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Flat (no shadows)
+          </div>
+          <div
+            class="css-view-175oi2r"
+            style="flex-direction: row; gap: 8px;"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <button
+                aria-label="Inactive"
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="button"
+                style="background-color: rgb(114, 113, 111);"
+                tabindex="0"
+                type="button"
+              >
+                <div
+                  class="css-view-175oi2r"
+                >
+                  <div
+                    class="css-view-175oi2r"
+                    style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                  >
+                    <div
+                      class="css-text-146c3p1"
+                      dir="auto"
+                      style="font-size: 16px; color: var(--color-on-control-idle);"
+                    >
+                      ⚙
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                  dir="auto"
+                >
+                  Inactive
+                </div>
+              </button>
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <button
+                aria-label="Active"
+                class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+                role="button"
+                style="background-color: rgb(66, 65, 64);"
+                tabindex="0"
+                type="button"
+              >
+                <div
+                  class="css-view-175oi2r"
+                >
+                  <div
+                    class="css-view-175oi2r"
+                    style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+                  >
+                    <div
+                      class="css-text-146c3p1"
+                      dir="auto"
+                      style="font-size: 16px; color: var(--color-brand-primary);"
+                    >
+                      ⚙
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                  dir="auto"
+                >
+                  Active
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a light surface > renders the WithMenu story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <button
+          aria-label="View Options"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="button"
+          style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="font-size: 16px; color: var(--color-on-control-idle);"
+              >
+                ◉
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+          >
+            View Options
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a light surface > renders the open menu unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <button
+          aria-label="View Options"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="button"
+          style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="width: 20px; height: 20px; align-items: center; justify-content: center;"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="font-size: 16px; color: var(--color-on-control-idle);"
+              >
+                ◉
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            dir="auto"
+          >
+            View Options
+          </div>
+        </button>
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73 r-bottom-1p0dtai r-left-1d2f490 r-position-u8s1d r-right-zchlnj r-top-ipm5af"
+          tabindex="0"
+        />
+        <div
+          class="css-view-175oi2r"
+          style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 10px 24px rgba(0,0,0,0.12), 0 24px 48px rgba(0,0,0,0.08);"
+        >
+          <div
+            class="css-view-175oi2r"
+            style="padding-top: 8px; padding-bottom: 8px;"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="padding: 8px 16px 8px 16px;"
+            >
+              Grid View
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="padding: 8px 16px 8px 16px;"
+            >
+              List View
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="padding: 8px 16px 8px 16px;"
+            >
+              Compact View
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a light surface > renders variant='default' isActive=false isDisabled=false unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <button
+        aria-label="Matrix"
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        role="button"
+        style="background-color: rgb(114, 113, 111);"
+        tabindex="0"
+        type="button"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+            data-testid="i"
+            style="color: var(--color-on-control-idle); width: 20px; height: 20px;"
+          />
+        </div>
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          dir="auto"
+        >
+          Matrix
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a light surface > renders variant='default' isActive=false isDisabled=true unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <button
+        aria-disabled="true"
+        aria-label="Matrix"
+        class="css-view-175oi2r r-pointerEvents-12vffkv"
+        disabled=""
+        role="button"
+        style="background-color: rgb(114, 113, 111);"
+        tabindex="-1"
+        type="button"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+            data-testid="i"
+            style="color: var(--color-on-control-idle); width: 20px; height: 20px;"
+          />
+        </div>
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          dir="auto"
+        >
+          Matrix
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a light surface > renders variant='default' isActive=true isDisabled=false unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <button
+        aria-label="Matrix"
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        role="button"
+        style="background-color: rgb(66, 65, 64);"
+        tabindex="0"
+        type="button"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+            data-testid="i"
+            style="color: var(--color-brand-primary); width: 20px; height: 20px;"
+          />
+        </div>
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          dir="auto"
+        >
+          Matrix
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a light surface > renders variant='default' isActive=true isDisabled=true unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <button
+        aria-disabled="true"
+        aria-label="Matrix"
+        class="css-view-175oi2r r-pointerEvents-12vffkv"
+        disabled=""
+        role="button"
+        style="background-color: rgb(66, 65, 64);"
+        tabindex="-1"
+        type="button"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+            data-testid="i"
+            style="color: var(--color-brand-primary); width: 20px; height: 20px;"
+          />
+        </div>
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          dir="auto"
+        >
+          Matrix
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a light surface > renders variant='default' isActive=undefined isDisabled=false unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <button
+        aria-label="Matrix"
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        role="button"
+        style="background-color: rgb(66, 65, 64);"
+        tabindex="0"
+        type="button"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+            data-testid="i"
+            style="color: var(--color-on-control-active); width: 20px; height: 20px;"
+          />
+        </div>
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          dir="auto"
+        >
+          Matrix
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a light surface > renders variant='default' isActive=undefined isDisabled=true unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <button
+        aria-disabled="true"
+        aria-label="Matrix"
+        class="css-view-175oi2r r-pointerEvents-12vffkv"
+        disabled=""
+        role="button"
+        style="background-color: rgb(66, 65, 64);"
+        tabindex="-1"
+        type="button"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+            data-testid="i"
+            style="color: var(--color-on-control-active); width: 20px; height: 20px;"
+          />
+        </div>
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          dir="auto"
+        >
+          Matrix
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a light surface > renders variant='raised' isActive=false isDisabled=false unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <button
+        aria-label="Matrix"
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        role="button"
+        style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+        tabindex="0"
+        type="button"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+            data-testid="i"
+            style="color: var(--color-on-control-idle); width: 20px; height: 20px;"
+          />
+        </div>
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          dir="auto"
+        >
+          Matrix
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a light surface > renders variant='raised' isActive=false isDisabled=true unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <button
+        aria-disabled="true"
+        aria-label="Matrix"
+        class="css-view-175oi2r r-pointerEvents-12vffkv r-backgroundColor-1fpi9eo r-boxShadow-17b9qp5"
+        disabled=""
+        role="button"
+        tabindex="-1"
+        type="button"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+            data-testid="i"
+            style="color: var(--color-on-control-idle); width: 20px; height: 20px;"
+          />
+        </div>
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          dir="auto"
+        >
+          Matrix
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a light surface > renders variant='raised' isActive=true isDisabled=false unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <button
+        aria-label="Matrix"
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        role="button"
+        style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+        tabindex="0"
+        type="button"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+            data-testid="i"
+            style="color: var(--color-brand-primary); width: 20px; height: 20px;"
+          />
+        </div>
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          dir="auto"
+        >
+          Matrix
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a light surface > renders variant='raised' isActive=true isDisabled=true unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <button
+        aria-disabled="true"
+        aria-label="Matrix"
+        class="css-view-175oi2r r-pointerEvents-12vffkv r-backgroundColor-1fpi9eo r-boxShadow-17b9qp5"
+        disabled=""
+        role="button"
+        tabindex="-1"
+        type="button"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+            data-testid="i"
+            style="color: var(--color-brand-primary); width: 20px; height: 20px;"
+          />
+        </div>
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          dir="auto"
+        >
+          Matrix
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a light surface > renders variant='raised' isActive=undefined isDisabled=false unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <button
+        aria-label="Matrix"
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        role="button"
+        style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+        tabindex="0"
+        type="button"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+            data-testid="i"
+            style="color: var(--color-on-control-active); width: 20px; height: 20px;"
+          />
+        </div>
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          dir="auto"
+        >
+          Matrix
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToolbarButton characterisation > on a light surface > renders variant='raised' isActive=undefined isDisabled=true unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <button
+        aria-disabled="true"
+        aria-label="Matrix"
+        class="css-view-175oi2r r-pointerEvents-12vffkv r-backgroundColor-1fpi9eo r-boxShadow-17b9qp5"
+        disabled=""
+        role="button"
+        tabindex="-1"
+        type="button"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+            data-testid="i"
+            style="color: var(--color-on-control-active); width: 20px; height: 20px;"
+          />
+        </div>
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          dir="auto"
+        >
+          Matrix
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
