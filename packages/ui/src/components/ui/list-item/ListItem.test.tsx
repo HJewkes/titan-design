@@ -56,6 +56,18 @@ describe('ListItem', () => {
     expect(screen.queryByRole('button')).not.toBeInTheDocument()
     expect(screen.getByText('Static item')).toBeInTheDocument()
   })
+
+  it('forwards extra props to the root View when onPress is not provided', () => {
+    render(
+      <ListItem testID="list-item" accessibilityLabel="Static row">
+        <ListItemContent title="Static item" />
+      </ListItem>
+    )
+
+    const root = screen.getByTestId('list-item')
+    expect(root).toHaveAttribute('aria-label', 'Static row')
+    expect(root).toContainElement(screen.getByText('Static item'))
+  })
 })
 
 describe('ListItemContent', () => {
