@@ -30,8 +30,13 @@ node scripts/storybook-launch.mjs --isolated          # prints its port, e.g. 61
 
 pnpm review --example --storybook http://127.0.0.1:6107 > <round-dir>/round.json   # a starting point
 pnpm review --example --sections --storybook http://127.0.0.1:6107                # the same, grouped
+pnpm review build <round-dir>/draft.json [--storybook <url>]   # contrast gate; writes round.json
 pnpm review <round-dir>/round.json [--storybook <url>] [--out <dir>] [--no-open] [--no-capture]
 ```
+
+Write the manifest as `draft.json` and let `build` produce `round.json` (see _Contrast gate_).
+`pnpm review` warns, without refusing, when `round.json` has no passing `contrast.json` for
+its exact bytes.
 
 The command blocks until the human sends, then:
 
@@ -65,7 +70,8 @@ sha256 of the manifest you wrote.
   in a round with `sections`),
   `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?, recommendation?}]`,
   `sections?[{id, title, context?, questionIds[], variantKeys[], seeAlso?[], height?}]`,
-  `recommendations` (`"after-answer"`, the default, or `"shown"`).
+  `recommendations` (`"after-answer"`, the default, or `"shown"`),
+  `contrast?{knownDefects[], measured[], unmeasured[]}` (also on a section; see _Contrast gate_).
   A question over variant keys is variant-scoped and sits right under the variants; set
   `scope` to override. Args and globals go in the Storybook URL, so keys and values are
   limited to letters, digits, space, `_` and `-` (numbers and booleans are fine); anything
@@ -101,6 +107,72 @@ sha256 of the manifest you wrote.
   and `agreed` says whether the owner's answer equals it (pick-many: the same set); `agreed` is
   absent when the owner only commented. Both appear only when the question has a
   recommendation. Everything else is unchanged and means what it always did.
+
+## Contrast gate (TD-478)
+
+`titan-review build <draft.json>` measures every story variant at every manifest width in
+**light and dark** (the Storybook `theme` global; light is `.light` on `<html>`) in headless
+Chromium, using the same renderer as capture. It writes `contrast.json` beside the draft and
+copies the draft byte for byte to `round.json` only when nothing undeclared failed. Otherwise
+it exits 3 and `round.json` is not written. A frame whose theme did not apply is an error,
+never a pass.
+
+Thresholds (WCAG 2.1 SC 1.4.3 and 1.4.11): text 4.5:1; large text (24px, or 18.66px at
+weight 700 or more) 3:1; non-text 3:1 against the adjacent plane. Each colour is composited
+over its **effective background**: every ancestor's background from the canvas down, each
+faded by its subtree's `opacity`, so an alpha fill over the plane counts.
+
+What it measures:
+
+- **Text**: every element with its own text node, and input values.
+- **Control boundaries**: buttons, inputs and ARIA controls. The border or the fill,
+  whichever contrasts more, against the parent's plane. A control that paints neither is
+  identified by its label and is skipped.
+- **Separators**: `hr`, `role=separator`, one-side or two-opposite-side borders, and fills
+  2px thick or less.
+- **Tracks**: fills 8px thick or less and at least four times as long.
+- **Marks**: elements 24px or smaller with a border or fill, and every SVG shape's fill and
+  stroke.
+
+What it does not measure:
+
+- Large non-control fills and full borders, such as cards, panels and surfaces. These are
+  planes, not marks. TD-486 gates their token pairs.
+- Planes painted by a non-ancestor (an absolutely positioned overlay) or by another SVG
+  shape.
+- Gradients, background images and pattern paints. They are listed as `indeterminate` and
+  never block.
+- Hover, focus and pressed states. A frame is measured as it first renders.
+- Disabled controls, which WCAG exempts. They are counted as `exempt`.
+
+**Declaring a miss.** A section's `contrast` holds the declarations for its own frames. The
+round-level `contrast` holds them for every frame:
+
+```json
+"contrast": {
+  "knownDefects": [
+    { "element": "chip-label", "mode": "light", "route": "TD-490", "reason": "text-muted on the light base" }
+  ],
+  "measured": [
+    { "variant": "Wall", "mode": "dark", "kind": "text", "element": "header", "ratio": 5.1, "source": "picker on the PNG" }
+  ],
+  "unmeasured": [{ "variant": "Phone", "reason": "device capture, no DOM" }]
+}
+```
+
+- `knownDefects` excuse a miss. `variant`, `mode`, `kind` and `element` narrow the match:
+  `element` matches a `data-testid` exactly, or a substring of the selector or text.
+  `route` is required. It is the task id of the primitive or token audit that owns an
+  inherited miss, or `component` for the component's own miss. A declared miss is still
+  printed and written with its route and ratio. Only undeclared misses block. A declaration
+  that matched nothing prints `UNMATCHED` so it does not linger and hide a later miss.
+- An **image variant** has no DOM, so it needs a `measured` ratio, which is judged at the
+  same thresholds, or an `unmeasured` entry with a reason. A story variant takes neither.
+
+`contrast.json` (`titan-review/contrast@1`) records `manifestSha256`, `passed`, the
+thresholds, the coverage lists above, a per-frame summary (checks, failures, known defects,
+exempt, indeterminate), and every failure, known defect, unmeasured frame, indeterminate
+pair and unmatched declaration. Passing checks are counted, not listed.
 
 ## Calibration
 
@@ -251,3 +323,5 @@ own text field keeps its typing, except `Cmd+Enter`.
   `TITAN_REVIEW_STORYBOOK=<url>`), a keyboard pick, a comment, a pin, send, then asserts the
   written JSON and PNGs; it also checks that a round-level height caps fitted frames while a
   variant height stays fixed. Local only; it needs Storybook and Chromium.
+  `e2e/contrast.e2e.ts` needs no Storybook. It serves a synthetic story and proves that a
+  light-mode miss blocks `round.json` and that the same misses, declared with a route, pass.

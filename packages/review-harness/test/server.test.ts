@@ -106,6 +106,7 @@ describe('titan-review CLI', () => {
       },
       openBrowser: () => {},
       capture: async (_round, outDir) => [join(outDir, 'fake.png')],
+      measure: async () => [],
       createPage: async () => stubPage,
       signal,
     }
