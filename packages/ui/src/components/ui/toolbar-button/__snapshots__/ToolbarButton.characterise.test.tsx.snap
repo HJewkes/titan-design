@@ -49,6 +49,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Active
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -94,6 +98,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Active
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -137,6 +145,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Active
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -204,6 +216,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Button
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -239,6 +255,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Button
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -272,6 +292,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Button
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -378,6 +402,10 @@ color: #FF7900; /* when isActive=true */
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -411,6 +439,10 @@ color: #FF7900; /* when isActive=true */
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -479,6 +511,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Compac
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -516,6 +552,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Compac
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -551,6 +591,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Compac
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -584,6 +628,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Compac
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -635,6 +683,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Defaul
           tabindex="0"
           type="button"
         >
+          <div
+            class="css-view-175oi2r"
+            data-testid="hit-target"
+          />
           <div
             class="css-view-175oi2r"
           >
@@ -713,6 +765,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Disabl
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -747,6 +803,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Disabl
               tabindex="-1"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -820,6 +880,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the HoverS
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -853,6 +917,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the HoverS
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -920,6 +988,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the IconOn
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -949,6 +1021,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the IconOn
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -976,6 +1052,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the IconOn
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -1031,6 +1111,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Intera
             tabindex="0"
             type="button"
           >
+            <div
+              class="css-view-175oi2r"
+              data-testid="hit-target"
+            />
             <div
               class="css-view-175oi2r"
             >
@@ -1103,6 +1187,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Toolba
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -1138,6 +1226,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Toolba
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -1171,6 +1263,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Toolba
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -1241,6 +1337,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Varian
               >
                 <div
                   class="css-view-175oi2r"
+                  data-testid="hit-target"
+                />
+                <div
+                  class="css-view-175oi2r"
                 >
                   <div
                     class="css-view-175oi2r"
@@ -1274,6 +1374,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Varian
                 tabindex="0"
                 type="button"
               >
+                <div
+                  class="css-view-175oi2r"
+                  data-testid="hit-target"
+                />
                 <div
                   class="css-view-175oi2r"
                 >
@@ -1326,6 +1430,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Varian
               >
                 <div
                   class="css-view-175oi2r"
+                  data-testid="hit-target"
+                />
+                <div
+                  class="css-view-175oi2r"
                 >
                   <div
                     class="css-view-175oi2r"
@@ -1359,6 +1467,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Varian
                 tabindex="0"
                 type="button"
               >
+                <div
+                  class="css-view-175oi2r"
+                  data-testid="hit-target"
+                />
                 <div
                   class="css-view-175oi2r"
                 >
@@ -1413,6 +1525,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the WithMe
         >
           <div
             class="css-view-175oi2r"
+            data-testid="hit-target"
+          />
+          <div
+            class="css-view-175oi2r"
           >
             <div
               class="css-view-175oi2r"
@@ -1460,6 +1576,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the open m
           tabindex="0"
           type="button"
         >
+          <div
+            class="css-view-175oi2r"
+            data-testid="hit-target"
+          />
           <div
             class="css-view-175oi2r"
           >
@@ -1543,6 +1663,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders variant='d
       >
         <div
           class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
+        <div
+          class="css-view-175oi2r"
         >
           <div
             class="css-view-175oi2r"
@@ -1583,6 +1707,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders variant='d
       >
         <div
           class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
+        <div
+          class="css-view-175oi2r"
         >
           <div
             class="css-view-175oi2r"
@@ -1619,6 +1747,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders variant='d
         tabindex="0"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -1661,6 +1793,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders variant='d
       >
         <div
           class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
+        <div
+          class="css-view-175oi2r"
         >
           <div
             class="css-view-175oi2r"
@@ -1697,6 +1833,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders variant='d
         tabindex="0"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -1739,6 +1879,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders variant='d
       >
         <div
           class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
+        <div
+          class="css-view-175oi2r"
         >
           <div
             class="css-view-175oi2r"
@@ -1775,6 +1919,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders variant='r
         tabindex="0"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -1816,6 +1964,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders variant='r
       >
         <div
           class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
+        <div
+          class="css-view-175oi2r"
         >
           <div
             class="css-view-175oi2r"
@@ -1852,6 +2004,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders variant='r
         tabindex="0"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -1893,6 +2049,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders variant='r
       >
         <div
           class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
+        <div
+          class="css-view-175oi2r"
         >
           <div
             class="css-view-175oi2r"
@@ -1929,6 +2089,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders variant='r
         tabindex="0"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -1968,6 +2132,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders variant='r
         tabindex="-1"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -2038,6 +2206,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Activ
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -2083,6 +2255,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Activ
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -2126,6 +2302,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Activ
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -2193,6 +2373,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Butto
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -2228,6 +2412,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Butto
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -2261,6 +2449,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Butto
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -2367,6 +2559,10 @@ color: #FF7900; /* when isActive=true */
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -2400,6 +2596,10 @@ color: #FF7900; /* when isActive=true */
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -2468,6 +2668,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Compa
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -2505,6 +2709,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Compa
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -2540,6 +2748,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Compa
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -2573,6 +2785,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Compa
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -2624,6 +2840,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Defau
           tabindex="0"
           type="button"
         >
+          <div
+            class="css-view-175oi2r"
+            data-testid="hit-target"
+          />
           <div
             class="css-view-175oi2r"
           >
@@ -2702,6 +2922,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Disab
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -2736,6 +2960,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Disab
               tabindex="-1"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -2809,6 +3037,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Hover
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -2842,6 +3074,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Hover
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -2909,6 +3145,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders the IconO
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -2938,6 +3178,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders the IconO
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -2965,6 +3209,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders the IconO
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -3020,6 +3268,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Inter
             tabindex="0"
             type="button"
           >
+            <div
+              class="css-view-175oi2r"
+              data-testid="hit-target"
+            />
             <div
               class="css-view-175oi2r"
             >
@@ -3092,6 +3344,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Toolb
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -3127,6 +3383,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Toolb
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -3160,6 +3420,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Toolb
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -3230,6 +3494,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Varia
               >
                 <div
                   class="css-view-175oi2r"
+                  data-testid="hit-target"
+                />
+                <div
+                  class="css-view-175oi2r"
                 >
                   <div
                     class="css-view-175oi2r"
@@ -3263,6 +3531,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Varia
                 tabindex="0"
                 type="button"
               >
+                <div
+                  class="css-view-175oi2r"
+                  data-testid="hit-target"
+                />
                 <div
                   class="css-view-175oi2r"
                 >
@@ -3315,6 +3587,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Varia
               >
                 <div
                   class="css-view-175oi2r"
+                  data-testid="hit-target"
+                />
+                <div
+                  class="css-view-175oi2r"
                 >
                   <div
                     class="css-view-175oi2r"
@@ -3348,6 +3624,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Varia
                 tabindex="0"
                 type="button"
               >
+                <div
+                  class="css-view-175oi2r"
+                  data-testid="hit-target"
+                />
                 <div
                   class="css-view-175oi2r"
                 >
@@ -3402,6 +3682,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders the WithM
         >
           <div
             class="css-view-175oi2r"
+            data-testid="hit-target"
+          />
+          <div
+            class="css-view-175oi2r"
           >
             <div
               class="css-view-175oi2r"
@@ -3449,6 +3733,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders the open 
           tabindex="0"
           type="button"
         >
+          <div
+            class="css-view-175oi2r"
+            data-testid="hit-target"
+          />
           <div
             class="css-view-175oi2r"
           >
@@ -3532,6 +3820,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
       >
         <div
           class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
+        <div
+          class="css-view-175oi2r"
         >
           <div
             class="css-view-175oi2r"
@@ -3572,6 +3864,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
       >
         <div
           class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
+        <div
+          class="css-view-175oi2r"
         >
           <div
             class="css-view-175oi2r"
@@ -3608,6 +3904,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
         tabindex="0"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -3650,6 +3950,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
       >
         <div
           class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
+        <div
+          class="css-view-175oi2r"
         >
           <div
             class="css-view-175oi2r"
@@ -3686,6 +3990,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
         tabindex="0"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -3728,6 +4036,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
       >
         <div
           class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
+        <div
+          class="css-view-175oi2r"
         >
           <div
             class="css-view-175oi2r"
@@ -3764,6 +4076,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
         tabindex="0"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -3805,6 +4121,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
       >
         <div
           class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
+        <div
+          class="css-view-175oi2r"
         >
           <div
             class="css-view-175oi2r"
@@ -3841,6 +4161,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
         tabindex="0"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -3882,6 +4206,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
       >
         <div
           class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
+        <div
+          class="css-view-175oi2r"
         >
           <div
             class="css-view-175oi2r"
@@ -3918,6 +4246,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
         tabindex="0"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -3957,6 +4289,10 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
         tabindex="-1"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
