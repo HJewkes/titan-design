@@ -818,28 +818,6 @@
     },
     {
       "composes": [],
-      "family": "custom/Gauge",
-      "file": "packages/ui/src/components/custom/Gauge/Gauge.tsx",
-      "name": "Gauge",
-      "props": [],
-      "purpose": "",
-      "sources": {
-        "status": "packages/ui/src/components/custom/Gauge/Gauge.stories.tsx"
-      },
-      "status": "candidate",
-      "storyIds": [
-        "custom-charts-gauge--arbitrary-domain",
-        "custom-charts-gauge--critical",
-        "custom-charts-gauge--healthy",
-        "custom-charts-gauge--over-max",
-        "custom-charts-gauge--override-color",
-        "custom-charts-gauge--warning",
-        "custom-charts-gauge--zero"
-      ],
-      "tier": "atom"
-    },
-    {
-      "composes": [],
       "family": "custom/Metric",
       "file": "packages/ui/src/components/custom/Metric/Metric.tsx",
       "name": "Metric",
@@ -886,28 +864,6 @@
     },
     {
       "composes": [],
-      "family": "custom/Scatter",
-      "file": "packages/ui/src/components/custom/Scatter/Scatter.tsx",
-      "name": "Scatter",
-      "props": [],
-      "purpose": "",
-      "sources": {
-        "status": "packages/ui/src/components/custom/Scatter/Scatter.stories.tsx"
-      },
-      "status": "candidate",
-      "storyIds": [
-        "custom-charts-scatter--default",
-        "custom-charts-scatter--empty",
-        "custom-charts-scatter--light",
-        "custom-charts-scatter--no-diagonal",
-        "custom-charts-scatter--outlier",
-        "custom-charts-scatter--selected",
-        "custom-charts-scatter--single-point"
-      ],
-      "tier": "atom"
-    },
-    {
-      "composes": [],
       "family": "custom/Sidebar",
       "file": "packages/ui/src/components/custom/Sidebar/Sidebar.tsx",
       "name": "Sidebar",
@@ -948,26 +904,6 @@
         "components-molecules-timerreadout--with-total"
       ],
       "tier": "molecule"
-    },
-    {
-      "composes": [],
-      "family": "custom/Treemap",
-      "file": "packages/ui/src/components/custom/Treemap/Treemap.tsx",
-      "name": "Treemap",
-      "props": [],
-      "purpose": "",
-      "sources": {
-        "status": "packages/ui/src/components/custom/Treemap/Treemap.stories.tsx"
-      },
-      "status": "candidate",
-      "storyIds": [
-        "custom-charts-treemap--default",
-        "custom-charts-treemap--light",
-        "custom-charts-treemap--outlier-linear",
-        "custom-charts-treemap--outlier-sqrt",
-        "custom-charts-treemap--truncated"
-      ],
-      "tier": "atom"
     },
     {
       "composes": [
@@ -3154,6 +3090,50 @@
     },
     {
       "composes": [],
+      "family": "ui/charts/gauge",
+      "file": "packages/ui/src/components/ui/charts/gauge/Gauge.tsx",
+      "name": "Gauge",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/charts/gauge/Gauge.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-gauge--arbitrary-domain",
+        "components-atoms-gauge--critical",
+        "components-atoms-gauge--healthy",
+        "components-atoms-gauge--over-max",
+        "components-atoms-gauge--override-color",
+        "components-atoms-gauge--warning",
+        "components-atoms-gauge--zero"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/charts/scatter",
+      "file": "packages/ui/src/components/ui/charts/scatter/Scatter.tsx",
+      "name": "Scatter",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/charts/scatter/Scatter.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-scatter--default",
+        "components-atoms-scatter--empty",
+        "components-atoms-scatter--light",
+        "components-atoms-scatter--no-diagonal",
+        "components-atoms-scatter--outlier",
+        "components-atoms-scatter--selected",
+        "components-atoms-scatter--single-point"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
       "family": "ui/charts/spark-bars",
       "file": "packages/ui/src/components/ui/charts/spark-bars/SparkBars.tsx",
       "name": "SparkBars",
@@ -3170,6 +3150,26 @@
         "components-atoms-sparkbars--empty",
         "components-atoms-sparkbars--tall",
         "components-atoms-sparkbars--truncated"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/charts/treemap",
+      "file": "packages/ui/src/components/ui/charts/treemap/Treemap.tsx",
+      "name": "Treemap",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/charts/treemap/Treemap.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-treemap--default",
+        "components-atoms-treemap--light",
+        "components-atoms-treemap--outlier-linear",
+        "components-atoms-treemap--outlier-sqrt",
+        "components-atoms-treemap--truncated"
       ],
       "tier": "atom"
     },
@@ -4211,6 +4211,6 @@
       "reason": "name-not-exported"
     }
   ],
-  "inputsHash": "sha256:e73b1cfc3e9b494db6ae2d14b0551e7a8b889ad994deeb9533f6088633042485",
+  "inputsHash": "sha256:7860e970f2a3d72d2e347d419cafb3ef4fb1bdb5f8a307c6a09cb2ae05021187",
   "schema": 1
 }

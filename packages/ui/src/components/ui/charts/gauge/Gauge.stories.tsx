@@ -1,13 +1,23 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Gauge } from './Gauge'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { getSemanticColors } from '../../../../theme/tokens/semantic'
 
 const t = getSemanticColors('dark')
 
 const meta: Meta<typeof Gauge> = {
-  title: 'Custom/Charts/Gauge',
+  title: 'Components/Atoms/Gauge',
   component: Gauge,
   tags: ['autodocs', 'status:candidate', '!status:review'],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          '**Atom.** A domain-free segmented dial: a value read against optional threshold bands, with ' +
+          'a centred readout. Composes no other component: segments are `View`s and the readout is a ' +
+          '`Text`, with theme colours through `useSurfaceMode` and `getSemanticColors`.',
+      },
+    },
+  },
   argTypes: {
     value: { control: { type: 'range', min: 0, max: 100, step: 1 } },
     size: { control: { type: 'range', min: 100, max: 320, step: 10 } },

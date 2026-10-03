@@ -2,9 +2,9 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Treemap, type TreemapDatum } from './Treemap'
-import { Surface } from '../../ui/surface'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { contrast } from '../../../theme/color-story-kit'
+import { Surface } from '../../surface'
+import { getSemanticColors } from '../../../../theme/tokens/semantic'
+import { contrast } from '../../../../theme/color-story-kit'
 
 const roles = Array.from({ length: 7 }, (_, i) => `dataviz-categorical-${i}` as const)
 const uncolored: TreemapDatum[] = roles.map((_, i) => ({ id: `t${i}`, value: 10 - i }))

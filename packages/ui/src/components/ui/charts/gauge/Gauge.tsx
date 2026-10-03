@@ -1,10 +1,10 @@
 import { View, Text, type ViewProps } from 'react-native'
-import { cn } from '../../../utils/cn'
-import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
-import { useSurfaceMode } from '../../ui/surface'
-import { primitiveColors } from '../../../theme/tokens/primitives'
-import { alpha } from '../../../utils/colors'
-import { formatTrimmedDecimal } from '../../../utils/number-format'
+import { cn } from '../../../../utils/cn'
+import { getSemanticColors, type ThemeMode } from '../../../../theme/tokens/semantic'
+import { useSurfaceMode } from '../../surface'
+import { primitiveColors } from '../../../../theme/tokens/primitives'
+import { alpha } from '../../../../utils/colors'
+import { formatTrimmedDecimal } from '../../../../utils/number-format'
 
 export interface GaugeThreshold {
   /** Band start, in the gauge's value units. */

@@ -1,8 +1,8 @@
 import { View, type ViewProps } from 'react-native'
-import { cn } from '../../../utils/cn'
-import { DATAVIZ_CATEGORICAL_ROLES } from '../../../theme/extracted-colors-dataviz'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { useSurfaceMode } from '../../ui/surface'
+import { cn } from '../../../../utils/cn'
+import { DATAVIZ_CATEGORICAL_ROLES } from '../../../../theme/extracted-colors-dataviz'
+import { getSemanticColors } from '../../../../theme/tokens/semantic'
+import { useSurfaceMode } from '../../surface'
 import {
   scatterAriaLabel,
   scatterLayout,

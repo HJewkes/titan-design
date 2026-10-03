@@ -1,4 +1,4 @@
-import { formatTrimmedDecimal } from '../../../utils/number-format'
+import { formatTrimmedDecimal } from '../../../../utils/number-format'
 
 export interface ScatterDatum {
   /** Stable identity — returned by onPress and used as the React key. */
