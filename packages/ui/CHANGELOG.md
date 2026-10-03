@@ -10,6 +10,7 @@ project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 - `FilePathLabel` and `splitPath` moved to `ui/file-path-label` (`Components/Atoms/FilePathLabel`); still exported from the package root. The `custom/ActiveWork/FilePathLabel` path is a deprecated shim removed in 0.23.0 (TD-418).
+- `Page` and `PageHeader` (`ui/page`), a domain-free page container with a gutter, an optional max width, a header slot and a `main` landmark (TD-408).
 - `Popover` and `Menu` take `defaultIsOpen`; `Tooltip` takes `defaultIsOpen` and `onOpenChange`. All three share the new internal `useControllableState` hook (TD-268).
 - `text-error` semantic token (`text-text-error`), error-coloured text that clears 4.5:1 on every
   surface plane in both themes; `status-error` stays for fills and borders (TD-248).

@@ -30,6 +30,8 @@ No second mechanism was introduced.
 | `AppShell.nav`            | `AppShell` | `<SideNav items=…>`     | swap the whole rail                     |
 | `AppShell.children`       | `AppShell` | a placeholder           | mount its page                          |
 
+`AppShell.children` is normally a `Page` (`ui/page`), which owns the gutter, the width cap and the scroll.
+
 `TopBar.trailing` takes an array as well as a node. **The bar interleaves its own vertical dividers
 between the items**, so an app supplies the controls and the shell keeps the divider rhythm from the
 S1 lock — the app never hand-places a `Divider`, and can't drift from it.
