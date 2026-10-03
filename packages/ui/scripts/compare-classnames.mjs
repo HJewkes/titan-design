@@ -1,5 +1,10 @@
 // Fails when a split changes any string literal (so any Tailwind class string) across a file set.
 // Usage: node scripts/compare-classnames.mjs <base-ref> <file-or-dir>...
+// By design, a string that moves between components inside the file set still passes: the
+// comparison is one multiset over the whole set, not per file or per component.
+// By design, *.test.tsx, *.stories.tsx and *.d.ts files are skipped, so their strings are not compared.
+// Exit 1 means the strings differ; exit 2 means the run could not compare (usage, a path that
+// matches no file on either side, a base ref that does not resolve, or a syntax error).
 import { execFileSync } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { join } from 'node:path'
@@ -7,6 +12,8 @@ import ts from 'typescript'
 
 const SOURCE = /\.tsx?$/
 const SKIPPED = /\.(test|stories|characterise\.test)\.tsx?$|\.d\.ts$/
+
+export class CompareError extends Error {}
 
 const normalise = (text) => text.trim().replace(/\s+/g, ' ')
 
@@ -27,6 +34,12 @@ export function collectLiterals(source, fileName = 'file.tsx') {
     true,
     ts.ScriptKind.TSX
   )
+  const [diagnostic] = file.parseDiagnostics
+  if (diagnostic) {
+    const { line } = file.getLineAndCharacterOfPosition(diagnostic.start ?? 0)
+    const message = ts.flattenDiagnosticMessageText(diagnostic.messageText, ' ')
+    throw new CompareError(`syntax error in ${fileName}:${line + 1}: ${message}`)
+  }
   const found = []
   const visit = (node) => {
     if (ts.isLiteralTypeNode(node) || ts.isImportTypeNode(node)) return
@@ -73,21 +86,52 @@ function walk(path) {
 
 const isTracked = (path) => SOURCE.test(path) && !SKIPPED.test(path)
 
-function workingTreeLiterals(paths, cwd) {
-  const files = paths.flatMap((p) => walk(join(cwd, p))).filter(isTracked)
+function workingTreeFiles(paths, cwd) {
+  return paths.map((p) => walk(join(cwd, p)))
+}
+
+function workingTreeLiterals(fileLists) {
+  const files = fileLists.flat().filter(isTracked)
   return files.flatMap((f) => collectLiterals(readFileSync(f, 'utf8'), f))
 }
 
-function baseLiterals(ref, paths, cwd) {
-  const git = (...args) => execFileSync('git', args, { cwd, encoding: 'utf8', maxBuffer: 64 << 20 })
-  const files = paths
-    .flatMap((p) => git('ls-tree', '-r', '--name-only', ref, '--', p).split('\n'))
-    .filter((f) => f && isTracked(f))
+function makeGit(cwd) {
+  return (...args) =>
+    execFileSync('git', args, { cwd, encoding: 'utf8', maxBuffer: 64 << 20, stdio: 'pipe' })
+}
+
+function assertRefResolves(ref, git) {
+  try {
+    git('rev-parse', '--verify', '--quiet', `${ref}^{commit}`)
+  } catch {
+    throw new CompareError(`base ref ${JSON.stringify(ref)} does not resolve to a commit`)
+  }
+}
+
+function baseFiles(ref, paths, git) {
+  return paths.map((p) =>
+    git('ls-tree', '-r', '--name-only', ref, '--', p).split('\n').filter(Boolean)
+  )
+}
+
+function baseLiterals(ref, fileLists, git) {
+  const files = fileLists.flat().filter(isTracked)
   return files.flatMap((f) => collectLiterals(git('show', `${ref}:./${f}`), f))
 }
 
 export function compare(ref, paths, cwd = process.cwd()) {
-  return diffLiterals(baseLiterals(ref, paths, cwd), workingTreeLiterals(paths, cwd))
+  const git = makeGit(cwd)
+  assertRefResolves(ref, git)
+  const current = workingTreeFiles(paths, cwd)
+  const base = baseFiles(ref, paths, git)
+  paths.forEach((p, i) => {
+    if (current[i].length === 0 && base[i].length === 0) {
+      throw new CompareError(
+        `no file matches ${JSON.stringify(p)} in the working tree or at ${ref}`
+      )
+    }
+  })
+  return diffLiterals(baseLiterals(ref, base, git), workingTreeLiterals(current))
 }
 
 export function formatChanges(changes) {
@@ -102,7 +146,14 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     console.error('Usage: node scripts/compare-classnames.mjs <base-ref> <file-or-dir>...')
     process.exit(2)
   }
-  const changes = compare(ref, paths)
+  let changes
+  try {
+    changes = compare(ref, paths)
+  } catch (error) {
+    if (!(error instanceof CompareError)) throw error
+    console.error(`compare-classnames: ${error.message}`)
+    process.exit(2)
+  }
   if (changes.length > 0) {
     console.error(
       `className strings differ from ${ref} (count before -> after):\n${formatChanges(changes)}`
