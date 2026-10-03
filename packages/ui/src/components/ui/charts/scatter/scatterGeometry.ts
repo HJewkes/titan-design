@@ -25,6 +25,30 @@ export interface ScatterAxis {
   yMax?: number
 }
 
+/** A reference line in data space: horizontal, vertical, or `y = slope * x + intercept`. */
+export type ScatterReferenceLine = (
+  | { y: number }
+  | { x: number }
+  | { slope: number; intercept: number }
+) & {
+  /** Stable identity. Falls back to the line's index. */
+  id?: string
+  /** Joins the canvas accessible name; never painted. */
+  label?: string
+}
+
+/** The `diagonal` shorthand: y = 1 − x. */
+export const DIAGONAL_LINE: ScatterReferenceLine = { slope: -1, intercept: 1 }
+
+export interface ScatterSegment {
+  id: string
+  label?: string
+  x1: number
+  y1: number
+  x2: number
+  y2: number
+}
+
 export const DEFAULT_R = 6
 
 export const PLOT_LEFT = 40
@@ -110,6 +134,73 @@ export function scatterLayout(
   return { innerW, innerH, xd, yd, toX, toY, points }
 }
 
-export function scatterAriaLabel(axis: ScatterAxis, count: number): string {
-  return `Scatter plot of ${axis.xLabel ?? 'x'} versus ${axis.yLabel ?? 'y'}, ${count} point${count === 1 ? '' : 's'}`
+export function scatterAriaLabel(
+  axis: ScatterAxis,
+  count: number,
+  segments: ScatterSegment[] = []
+): string {
+  const base = `Scatter plot of ${axis.xLabel ?? 'x'} versus ${axis.yLabel ?? 'y'}, ${count} point${count === 1 ? '' : 's'}`
+  const labels = segments.flatMap((s) => (s.label ? [s.label] : []))
+  return labels.length ? `${base}, reference lines: ${labels.join(', ')}` : base
+}
+
+/** Data-space endpoints of a line clipped to the domains, or null when it misses the plot box. */
+function clipLine(
+  line: ScatterReferenceLine,
+  xd: Domain,
+  yd: Domain
+): [[number, number], [number, number]] | null {
+  if ('y' in line) {
+    if (line.y < yd.min || line.y > yd.max) return null
+    return [
+      [xd.min, line.y],
+      [xd.max, line.y],
+    ]
+  }
+  if ('x' in line) {
+    if (line.x < xd.min || line.x > xd.max) return null
+    return [
+      [line.x, yd.min],
+      [line.x, yd.max],
+    ]
+  }
+  const { slope, intercept } = line
+  let lo = xd.min
+  let hi = xd.max
+  if (slope === 0) {
+    if (intercept < yd.min || intercept > yd.max) return null
+  } else {
+    const a = (yd.min - intercept) / slope
+    const b = (yd.max - intercept) / slope
+    lo = Math.max(lo, Math.min(a, b))
+    hi = Math.min(hi, Math.max(a, b))
+    if (lo > hi) return null
+  }
+  return [
+    [lo, slope * lo + intercept],
+    [hi, slope * hi + intercept],
+  ]
+}
+
+/** Pixel segments for reference lines, clipped to the plot box. Lines outside the domain yield none. */
+export function referenceSegments(
+  layout: Pick<ScatterLayout, 'xd' | 'yd' | 'toX' | 'toY'>,
+  lines: ScatterReferenceLine[]
+): ScatterSegment[] {
+  const { xd, yd, toX, toY } = layout
+  return lines.flatMap((line, i) => {
+    const ends = clipLine(line, xd, yd)
+    if (!ends) return []
+    const [[ax, ay], [bx, by]] = ends
+    return [
+      {
+        id: line.id ?? `reference-${i}`,
+        label: line.label,
+        x1: toX(ax),
+        y1: toY(ay),
+        x2: toX(bx),
+        y2: toY(by),
+      },
+    ]
+  })
 }

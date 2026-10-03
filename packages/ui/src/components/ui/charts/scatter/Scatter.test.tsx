@@ -47,6 +47,39 @@ describe('Scatter', () => {
     expect(screen.getByTestId('scatter-diagonal')).toBeInTheDocument()
   })
 
+  it('draws diagonal and the equivalent referenceLines as the same segment', () => {
+    const style = (el: HTMLElement) => el.getAttribute('style')
+    const { unmount } = render(<Scatter {...base} diagonal />)
+    const fromDiagonal = style(screen.getByTestId('scatter-diagonal'))
+    unmount()
+    render(<Scatter {...base} referenceLines={[{ slope: -1, intercept: 1, id: 'd' }]} />)
+    expect(style(screen.getByTestId('scatter-reference-d'))).toBe(fromDiagonal)
+  })
+
+  it('draws horizontal and vertical reference lines and skips ones outside the domain', () => {
+    render(
+      <Scatter
+        {...base}
+        referenceLines={[
+          { y: 0.5, id: 'h' },
+          { x: 0.5, id: 'v' },
+          { y: 9, id: 'out' },
+        ]}
+      />
+    )
+    expect(screen.getByTestId('scatter-reference-h')).toBeInTheDocument()
+    expect(screen.getByTestId('scatter-reference-v')).toBeInTheDocument()
+    expect(screen.queryByTestId('scatter-reference-out')).not.toBeInTheDocument()
+  })
+
+  it('adds a reference line label to the accessible name without painting it', () => {
+    render(<Scatter {...base} referenceLines={[{ y: 0.5, label: 'Target' }]} />)
+    expect(screen.getByTestId('scatter-canvas').getAttribute('aria-label')).toContain(
+      'reference lines: Target'
+    )
+    expect(screen.queryByText('Target')).not.toBeInTheDocument()
+  })
+
   it('renders axis labels when provided', () => {
     render(<Scatter {...base} axis={{ xLabel: 'Instability', yLabel: 'Abstractness' }} />)
     expect(screen.getByTestId('scatter-x-label')).toHaveTextContent('Instability')
@@ -209,7 +242,12 @@ describe('Scatter', () => {
 
     it('has no accessibility violations', async () => {
       const { container } = render(
-        <Scatter {...base} diagonal axis={{ xLabel: 'I', yLabel: 'A' }} selectedId="b" />
+        <Scatter
+          {...base}
+          referenceLines={[{ slope: -1, intercept: 1, label: 'Main sequence' }]}
+          axis={{ xLabel: 'I', yLabel: 'A' }}
+          selectedId="b"
+        />
       )
       expect(await axe(container)).toHaveNoViolations()
     })
