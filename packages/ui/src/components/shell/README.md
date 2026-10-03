@@ -179,6 +179,3 @@ Workout is unaffected: its accent _is_ `brand-primary`.
   role: changing `status-success` no longer affects live, and vice-versa. Wired the full chain (semantic →
   config → global.css → tailwind); `Indicator` gained a `live` color; the S1 LIVE pill was repointed
   `success`→`live` (value-preserving). This realized a slice of TD-05.09 Fork 1b (wiring ramp steps as tokens).
-- **`aria-selected` on `NavItem`** — RNW does not emit `aria-selected` from `accessibilityState={{selected}}`
-  in the jsdom test env, so active-state is asserted via the accent-bar testID. Confirm the on-device/RNW
-  build exposes selection to AT (may need an explicit `aria-selected` for full tab semantics).

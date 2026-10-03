@@ -12,6 +12,16 @@ describe('NavItem', () => {
     expect(screen.getByRole('tab', { name: 'Live' })).toBeInTheDocument()
   })
 
+  it('exposes aria-selected true when active', () => {
+    render(<NavItem icon={icon} label="Live" active />)
+    expect(screen.getByRole('tab', { name: 'Live' })).toHaveAttribute('aria-selected', 'true')
+  })
+
+  it('exposes aria-selected false when inactive', () => {
+    render(<NavItem icon={icon} label="Live" />)
+    expect(screen.getByRole('tab', { name: 'Live' })).toHaveAttribute('aria-selected', 'false')
+  })
+
   it('shows the accent bar when active', () => {
     render(<NavItem icon={icon} label="Live" active />)
     expect(screen.getByTestId('nav-item-accent')).toBeInTheDocument()
