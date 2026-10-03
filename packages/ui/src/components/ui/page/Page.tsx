@@ -12,11 +12,14 @@ export interface PageProps extends Omit<ViewProps, 'children'> {
   /** The body. */
   children?: React.ReactNode
   gutter?: PageGutter
+  /** Caps the content column, gutters excluded. A capped column centres once the region is wider. */
   maxWidth?: PageMaxWidth
   /** false: the page fills the region and the view owns its own scroll. */
   isScrollable?: boolean
+  /** true: the header sits in a ruled band above the scroller instead of scrolling with the body. */
+  isHeaderPinned?: boolean
   className?: string
-  /** The padded column. */
+  /** The padded outer column. */
   contentClassName?: string
 }
 
@@ -37,27 +40,33 @@ export function Page({
   gutter = 'md',
   maxWidth = 'full',
   isScrollable = true,
+  isHeaderPinned = false,
   className,
   contentClassName,
   ...props
 }: PageProps) {
+  const fill = !isScrollable && 'flex-1'
+  const inner = cn('w-full', maxWidthClasses[maxWidth], maxWidth !== 'full' && 'self-center')
+  const pinned = isHeaderPinned && header != null
   const column = (
-    <View
-      className={cn(
-        'w-full gap-section-sm',
-        gutterClasses[gutter],
-        maxWidthClasses[maxWidth],
-        !isScrollable && 'flex-1',
-        contentClassName
-      )}
-    >
-      {header}
-      <View className={cn(!isScrollable && 'flex-1')}>{children}</View>
+    <View className={cn('w-full', gutterClasses[gutter], fill, contentClassName)}>
+      <View className={cn(inner, 'gap-section-sm', fill)}>
+        {pinned ? null : header}
+        <View className={cn(fill)}>{children}</View>
+      </View>
     </View>
   )
 
   return (
     <View role="main" className={cn('flex-1', className)} {...props}>
+      {pinned ? (
+        <View
+          testID="page-header-band"
+          className={cn('w-full border-b border-hairline-strong', gutterClasses[gutter])}
+        >
+          <View className={inner}>{header}</View>
+        </View>
+      ) : null}
       {isScrollable ? <ScrollView testID="page-scroll">{column}</ScrollView> : column}
     </View>
   )
@@ -74,7 +83,7 @@ export interface PageHeaderProps extends Omit<ViewProps, 'children'> {
 export function PageHeader({ title, description, trailing, className, ...props }: PageHeaderProps) {
   return (
     <View
-      className={cn('flex-row items-start justify-between gap-inline-lg', className)}
+      className={cn('flex-row items-start justify-between gap-inline-lg -mt-1.5', className)}
       {...props}
     >
       <View className="flex-1 gap-stack-sm">

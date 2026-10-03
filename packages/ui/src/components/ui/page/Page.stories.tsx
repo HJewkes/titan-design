@@ -1,3 +1,4 @@
+import type React from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Text, View } from 'react-native'
 import { Surface } from '../surface'
@@ -19,6 +20,7 @@ const meta: Meta<StoryArgs> = {
     gutter: 'md',
     maxWidth: 'full',
     isScrollable: true,
+    isHeaderPinned: false,
     title: 'Overview',
     description: 'Synthetic content for the page frame.',
     showHeader: true,
@@ -29,6 +31,7 @@ const meta: Meta<StoryArgs> = {
     gutter: { control: 'select', options: ['sm', 'md'] },
     maxWidth: { control: 'select', options: ['narrow', 'wide', 'full'] },
     isScrollable: { control: 'boolean' },
+    isHeaderPinned: { control: 'boolean' },
     showHeader: { control: 'boolean' },
     showTrailing: { control: 'boolean' },
     title: { control: 'text' },
@@ -37,13 +40,6 @@ const meta: Meta<StoryArgs> = {
     header: { control: false },
     children: { control: false },
   },
-  decorators: [
-    (Story) => (
-      <Surface className="h-[640px] border border-dashed border-border-default">
-        <Story />
-      </Surface>
-    ),
-  ],
   parameters: {
     layout: 'fullscreen',
     docs: {
@@ -60,6 +56,13 @@ export default meta
 type Story = StoryObj<StoryArgs>
 
 export const Default: Story = {
+  decorators: [
+    (Story) => (
+      <Surface className="h-[640px] border border-dashed border-border-default">
+        <Story />
+      </Surface>
+    ),
+  ],
   render: ({ title, description, showHeader, showTrailing, blocks, ...args }) => (
     <Page
       {...args}
@@ -84,4 +87,43 @@ export const Default: Story = {
       </View>
     </Page>
   ),
+}
+
+function Frame({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <View className="flex-1 gap-stack-sm">
+      <Text className="text-text-secondary">{label}</Text>
+      <Surface className="h-[480px] border border-dashed border-border-default">{children}</Surface>
+    </View>
+  )
+}
+
+/** Header scrolling with the body beside a pinned header, both with the same long body. */
+export const Compare: Story = {
+  render: ({ title, description, blocks, ...args }) => {
+    const header = <PageHeader title={title} description={description} />
+    const body = (
+      <View className="gap-stack-md">
+        {Array.from({ length: Math.max(blocks, 8) }, (_, i) => (
+          <Surface key={i} className="h-40 p-inset-md">
+            <Text className="text-text-secondary">Block {i + 1}</Text>
+          </Surface>
+        ))}
+      </View>
+    )
+    return (
+      <View className="flex-row gap-inline-lg p-gutter-md">
+        <Frame label="Header scrolls">
+          <Page {...args} isHeaderPinned={false} header={header}>
+            {body}
+          </Page>
+        </Frame>
+        <Frame label="Header pinned">
+          <Page {...args} isHeaderPinned header={header}>
+            {body}
+          </Page>
+        </Frame>
+      </View>
+    )
+  },
 }

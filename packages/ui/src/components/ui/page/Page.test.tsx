@@ -29,8 +29,12 @@ const GUTTERS = ['sm', 'md'] as const
 const WIDTHS = ['narrow', 'wide', 'full'] as const
 const CAPS = { narrow: 'max-w-[760px]', wide: 'max-w-[1100px]' } as const
 
-function column() {
+function inner() {
   return screen.getByTestId('body').parentElement?.parentElement as HTMLElement
+}
+
+function outer() {
+  return inner().parentElement as HTMLElement
 }
 
 function body() {
@@ -52,7 +56,7 @@ describe('Page', () => {
   it('omitting header renders no header node and the body still renders', () => {
     render(<Page>{body()}</Page>)
     expect(screen.getByText('Body content')).toBeTruthy()
-    expect(column().children).toHaveLength(1)
+    expect(inner().children).toHaveLength(1)
   })
 
   it.each([
@@ -60,13 +64,13 @@ describe('Page', () => {
     ['sm', 'p-gutter-sm', 'p-gutter-md'],
   ] as const)('gutter %s carries %s and not %s', (gutter, want, notWant) => {
     render(<Page gutter={gutter}>{body()}</Page>)
-    expect(cls(column())).toContain(want)
-    expect(cls(column())).not.toContain(notWant)
+    expect(cls(outer())).toContain(want)
+    expect(cls(outer())).not.toContain(notWant)
   })
 
   it('defaults to p-gutter-md', () => {
     render(<Page>{body()}</Page>)
-    expect(cls(column())).toContain('p-gutter-md')
+    expect(cls(outer())).toContain('p-gutter-md')
   })
 
   it.each([
@@ -75,14 +79,14 @@ describe('Page', () => {
     ['wide', 'max-w-[1100px]'],
   ] as const)('maxWidth %s sets cap %s', (maxWidth, cap) => {
     render(<Page maxWidth={maxWidth}>{body()}</Page>)
-    const classes = cls(column())
+    const classes = cls(inner())
     if (cap) expect(classes).toContain(cap)
     else expect(classes).not.toContain('max-w-')
   })
 
   it('defaults to no cap', () => {
     render(<Page>{body()}</Page>)
-    expect(cls(column())).not.toContain('max-w-')
+    expect(cls(inner())).not.toContain('max-w-')
   })
 
   it.each(GUTTERS.flatMap((g) => WIDTHS.map((w) => [g, w] as const)))(
@@ -93,8 +97,10 @@ describe('Page', () => {
           {body()}
         </Page>
       )
-      const classes = cls(column()).split(/\s+/)
-      expect(classes.filter((c) => c.startsWith('p-gutter-'))).toHaveLength(1)
+      const gutters = cls(outer()).split(/\s+/)
+      const classes = cls(inner()).split(/\s+/)
+      expect(gutters.filter((c) => c.startsWith('p-gutter-'))).toHaveLength(1)
+      expect(classes.filter((c) => c.startsWith('p-gutter-'))).toHaveLength(0)
       expect(classes.filter((c) => c.startsWith('max-w-'))).toHaveLength(
         maxWidth === 'full' ? 0 : 1
       )
@@ -104,7 +110,7 @@ describe('Page', () => {
 
   it('the header and body are separated by gap-section-sm', () => {
     render(<Page header={<Text>Header content</Text>}>{body()}</Page>)
-    expect(cls(column()).split(/\s+/)).toContain('gap-section-sm')
+    expect(cls(inner()).split(/\s+/)).toContain('gap-section-sm')
   })
 
   it('the root is the main landmark', () => {
@@ -121,7 +127,8 @@ describe('Page', () => {
     const { container } = render(<Page isScrollable={false}>{body()}</Page>)
     expect(container.querySelector('[data-testid="page-scroll"]')).toBeNull()
     expect(cls(screen.getByTestId('body').parentElement)).toContain('flex-1')
-    expect(cls(column())).toContain('flex-1')
+    expect(cls(inner())).toContain('flex-1')
+    expect(cls(outer())).toContain('flex-1')
   })
 
   it('className lands on the root and contentClassName on the column, and a consumer class wins through cn()', () => {
@@ -133,9 +140,72 @@ describe('Page', () => {
     const root = screen.getByTestId('root')
     expect(cls(root)).toContain('root-x')
     expect(cls(root)).not.toContain('col-x')
-    expect(cls(column())).toContain('col-x')
-    expect(cls(column())).not.toContain('root-x')
-    expect(cls(column())).not.toContain('p-gutter-md')
+    expect(cls(outer())).toContain('col-x')
+    expect(cls(outer())).not.toContain('root-x')
+    expect(cls(outer())).not.toContain('p-gutter-md')
+  })
+
+  it.each([
+    ['full', false],
+    ['narrow', true],
+    ['wide', true],
+  ] as const)('maxWidth %s centres the inner column: %s', (maxWidth, centred) => {
+    render(<Page maxWidth={maxWidth}>{body()}</Page>)
+    expect(cls(inner()).split(/\s+/).includes('self-center')).toBe(centred)
+    expect(cls(outer())).not.toContain('self-center')
+  })
+
+  it('the inner column fills below its cap with w-full', () => {
+    render(<Page maxWidth="narrow">{body()}</Page>)
+    expect(cls(inner()).split(/\s+/)).toContain('w-full')
+  })
+
+  it('a default header scrolls inside page-scroll and renders no band', () => {
+    const { container } = render(<Page header={<Text>Header content</Text>}>{body()}</Page>)
+    const scroller = container.querySelector('[data-testid="page-scroll"]') as HTMLElement
+    expect(scroller.contains(screen.getByText('Header content'))).toBe(true)
+    expect(screen.queryByTestId('page-header-band')).toBeNull()
+    expect(container.innerHTML).not.toContain('border-hairline-strong')
+  })
+
+  it('a pinned header sits in the band outside page-scroll, with the rule and the gutter', () => {
+    const { container } = render(
+      <Page isHeaderPinned gutter="sm" maxWidth="narrow" header={<Text>Header content</Text>}>
+        {body()}
+      </Page>
+    )
+    const scroller = container.querySelector('[data-testid="page-scroll"]') as HTMLElement
+    const band = screen.getByTestId('page-header-band')
+    expect(scroller.contains(screen.getByText('Header content'))).toBe(false)
+    expect(band.contains(screen.getByText('Header content'))).toBe(true)
+    expect(scroller.contains(screen.getByText('Body content'))).toBe(true)
+    expect(cls(band).split(/\s+/)).toEqual(
+      expect.arrayContaining(['border-b', 'border-hairline-strong', 'p-gutter-sm'])
+    )
+    const bandInner = band.firstElementChild
+    expect(cls(bandInner)).toContain('max-w-[760px]')
+    expect(cls(bandInner)).toContain('self-center')
+  })
+
+  it('a pinned header renders before the scroller in document order', () => {
+    const { container } = render(
+      <Page isHeaderPinned header={<Text>Header content</Text>}>
+        {body()}
+      </Page>
+    )
+    const band = screen.getByTestId('page-header-band')
+    const scroller = container.querySelector('[data-testid="page-scroll"]') as HTMLElement
+    expect(band.compareDocumentPosition(scroller) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  })
+
+  it('isHeaderPinned without a header renders no band', () => {
+    render(<Page isHeaderPinned>{body()}</Page>)
+    expect(screen.queryByTestId('page-header-band')).toBeNull()
+  })
+
+  it('PageHeader pulls its row up by the cap offset', () => {
+    render(<PageHeader title="Overview" testID="hdr" />)
+    expect(cls(screen.getByTestId('hdr'))).toContain('-mt-1.5')
   })
 
   it('ViewProps such as testID reach the root', () => {
@@ -156,6 +226,12 @@ describe('Page', () => {
 
   it.each([
     ['no header', <Page key="a">{body()}</Page>],
+    [
+      'pinned',
+      <Page key="p" isHeaderPinned maxWidth="wide" header={<PageHeader title="Overview" />}>
+        {body()}
+      </Page>,
+    ],
     ['empty body', <Page key="b" header={<PageHeader title="Overview" />} />],
     [
       'fill',
