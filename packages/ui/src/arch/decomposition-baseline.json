@@ -315,9 +315,6 @@
   "components/ui/carousel/Carousel.tsx": {
     "file-lines": 338
   },
-  "components/ui/carousel/useScrollSync.ts#useScrollSync": {
-    "function-lines": 148
-  },
   "components/ui/checkbox/Checkbox.tsx#Checkbox": {
     "complexity": 19
   },
@@ -361,8 +358,6 @@
     "file-lines": 228
   },
   "components/ui/toolbar-button/ToolbarButton.tsx#ToolbarButton": {
-    "complexity": 17,
-    "component-lines": 121,
-    "function-lines": 121
+    "complexity": 16
   }
 }
