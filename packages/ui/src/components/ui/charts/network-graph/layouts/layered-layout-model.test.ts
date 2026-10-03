@@ -1,7 +1,8 @@
 import fc from 'fast-check'
 import { describe, expect, it } from 'vitest'
 import { fcAssert } from '../../../../../test/property'
-import { largeFixture, networkGraphFixtures } from '../fixtures'
+import { seededRandom } from '../../kit/seededRandom'
+import { largeFixture, mediumFixture, networkGraphFixtures } from '../fixtures'
 import { GRAPH_LABEL_ROOM, GRAPH_NODE_PADDING, cleanGraph } from '../network-graph-model'
 import type { GraphEdge, GraphLayoutResult, GraphNode } from '../types'
 import { LAYER_COLUMN_WIDTH, LAYER_ROW_HEIGHT, layeredLayout } from './layered-layout-model'
@@ -90,6 +91,18 @@ describe('layeredLayout', () => {
         expect(run(shuffled.nodes, shuffled.edges)).toEqual(run(direct.nodes, direct.edges))
       })
     )
+  })
+
+  it('compute gives the same result when its nodes arrive shuffled', () => {
+    const { nodes, edges } = cleanGraph(mediumFixture.nodes, mediumFixture.edges)
+    const random = seededRandom(7)
+    const shuffled = nodes
+      .map((node) => ({ node, at: random() }))
+      .sort((a, b) => a.at - b.at)
+      .map(({ node }) => node)
+    expect(shuffled.map((node) => node.id)).not.toEqual(nodes.map((node) => node.id))
+    expect(run(shuffled, edges)).toEqual(run(nodes, edges))
+    expect(run([...nodes].reverse(), edges)).toEqual(run(nodes, edges))
   })
 
   it('gives every input node one finite position and no two nodes share one', () => {
