@@ -2,8 +2,6 @@
  * Form utility functions for consistent form field handling
  */
 
-import React from 'react'
-
 export interface FieldState {
   /** Whether the field has been touched */
   touched: boolean

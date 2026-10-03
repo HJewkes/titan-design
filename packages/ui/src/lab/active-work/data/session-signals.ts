@@ -1,6 +1,5 @@
 // Synthetic session signals for an invented repo, in the shape tools/mine-session-signals.mjs
 // emits. Never commit a real mine here: this package is public.
-/* eslint-disable */
 export const sessionSignals = {
   repo: 'sample-repo',
   repoPath: '/home/example/projects/sample-repo',
