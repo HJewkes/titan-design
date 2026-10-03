@@ -167,7 +167,7 @@ export function ModalHeader({ children, className }: ModalHeaderProps) {
   return (
     <View
       className={cn(
-        'flex-row items-center justify-between px-inset-xl py-inset-lg border-b border-divider',
+        'flex-row items-center justify-between px-inset-xl py-inset-lg border-b border-hairline',
         className
       )}
     >
@@ -268,7 +268,7 @@ export function ModalFooter({ children, className }: ModalFooterProps) {
   return (
     <View
       className={cn(
-        'flex-row items-center justify-end gap-2 px-inset-xl py-inset-lg border-t border-divider',
+        'flex-row items-center justify-end gap-2 px-inset-xl py-inset-lg border-t border-hairline',
         className
       )}
     >
