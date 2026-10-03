@@ -2,7 +2,7 @@
 import { View } from 'react-native'
 import { Pill } from '../../ui/pill'
 import { Tooltip } from '../../ui/tooltip'
-import { formatDateTime } from '../DateTime'
+import { formatDateTime } from '../../ui/date-time'
 import { TableCell, TableRow } from '../../ui/table'
 import { Typography } from '../../ui/typography'
 import { SEVERITY_META, SeverityLabel, type TaskSeverity } from './SeverityLabel'

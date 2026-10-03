@@ -14,7 +14,7 @@ export type DateTimeFormat =
   | 'full' // Monday, January 15, 2024
 
 export interface DateTimeProps extends TextProps {
-  /** Date value (timestamp in ms, Date object, or ISO string). Optional when `live`. */
+  /** Date value (timestamp in ms, Date object, or ISO string). Optional when `isLive`. */
   value?: number | Date | string | null | undefined
   /** Display format */
   format?: DateTimeFormat
@@ -29,8 +29,10 @@ export interface DateTimeProps extends TextProps {
   /** Render through Typography with this variant (e.g. 'mono'); plain inheriting Text when omitted. */
   variant?: TypographyVariant
   /** Track the current time and re-render on an interval (ignores `value`). For clocks / relative time. */
+  isLive?: boolean
+  /** @deprecated Use `isLive`. Removed in 0.23.0; `isLive` wins when both are passed. */
   live?: boolean
-  /** Refresh interval in ms when `live` (default 1000). */
+  /** Refresh interval in ms when `isLive` (default 1000). */
   refreshMs?: number
   /** Fallback text when value is null/undefined */
   fallback?: string
@@ -221,6 +223,7 @@ export function DateTime({
   hour12,
   seconds,
   variant,
+  isLive,
   live = false,
   refreshMs = 1000,
   fallback = '-',
@@ -228,15 +231,16 @@ export function DateTime({
   className,
   ...props
 }: DateTimeProps) {
-  // When live, track "now" and re-render on an interval (the value prop is ignored).
+  // When live (`isLive`), track "now" and re-render on an interval (the value prop is ignored).
+  const tracking = isLive ?? live
   const [now, setNow] = useState(() => Date.now())
   useEffect(() => {
-    if (!live) return
+    if (!tracking) return
     const id = setInterval(() => setNow(Date.now()), refreshMs)
     return () => clearInterval(id)
-  }, [live, refreshMs])
+  }, [tracking, refreshMs])
 
-  const effectiveValue = live ? now : value
+  const effectiveValue = tracking ? now : value
   const text =
     effectiveValue === null || effectiveValue === undefined
       ? fallback

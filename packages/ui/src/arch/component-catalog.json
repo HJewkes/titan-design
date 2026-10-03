@@ -618,34 +618,6 @@
     },
     {
       "composes": [
-        "Typography"
-      ],
-      "family": "custom/DateTime",
-      "file": "packages/ui/src/components/custom/DateTime/DateTime.tsx",
-      "name": "DateTime",
-      "props": [],
-      "purpose": "",
-      "sources": {
-        "status": "packages/ui/src/components/custom/DateTime/DateTime.stories.tsx"
-      },
-      "status": "candidate",
-      "storyIds": [
-        "components-molecules-datetime--all-formats",
-        "components-molecules-datetime--colors",
-        "components-molecules-datetime--default",
-        "components-molecules-datetime--different-input-types",
-        "components-molecules-datetime--hour-cycle",
-        "components-molecules-datetime--live-clock",
-        "components-molecules-datetime--null-value",
-        "components-molecules-datetime--relative-time",
-        "components-molecules-datetime--seconds",
-        "components-molecules-datetime--usage-example",
-        "components-molecules-datetime--utc-time"
-      ],
-      "tier": "molecule"
-    },
-    {
-      "composes": [
         "GhostBand",
         "GhostBloom",
         "GhostSpark"
@@ -3295,6 +3267,34 @@
       "tier": "atom"
     },
     {
+      "composes": [
+        "Typography"
+      ],
+      "family": "ui/date-time",
+      "file": "packages/ui/src/components/ui/date-time/DateTime.tsx",
+      "name": "DateTime",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/date-time/DateTime.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-datetime--all-formats",
+        "components-molecules-datetime--colors",
+        "components-molecules-datetime--default",
+        "components-molecules-datetime--different-input-types",
+        "components-molecules-datetime--hour-cycle",
+        "components-molecules-datetime--live-clock",
+        "components-molecules-datetime--null-value",
+        "components-molecules-datetime--relative-time",
+        "components-molecules-datetime--seconds",
+        "components-molecules-datetime--usage-example",
+        "components-molecules-datetime--utc-time"
+      ],
+      "tier": "molecule"
+    },
+    {
       "composes": [],
       "family": "ui/divider",
       "file": "packages/ui/src/components/ui/divider/Divider.tsx",
@@ -4211,6 +4211,6 @@
       "reason": "name-not-exported"
     }
   ],
-  "inputsHash": "sha256:5b9d809e3b17dd71b8b9aab4dd90910438a91f927dfbf25cf08fc5ba209bc8ca",
+  "inputsHash": "sha256:5fdbb00366a1ecb2f9170937ecd707c3f3bc6f8bd8da123ee8da31fa93476468",
   "schema": 1
 }

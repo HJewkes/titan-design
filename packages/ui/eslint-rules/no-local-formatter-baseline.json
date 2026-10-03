@@ -1,5 +1,5 @@
 {
-  "src/components/custom/DateTime/DateTime.tsx": {
+  "src/components/ui/date-time/DateTime.tsx": {
     "formatDate": 1,
     "formatDateTime": 1
   },
