@@ -41,6 +41,14 @@ describe('Drawer', () => {
     expect(screen.queryByLabelText('Close drawer')).not.toBeInTheDocument()
   })
 
+  it('exposes the open drawer panel as a dialog', () => {
+    renderDrawer({ isOpen: true })
+
+    const dialog = screen.getByRole('dialog')
+
+    expect(dialog).toHaveTextContent('Drawer body content')
+  })
+
   it('renders title', () => {
     renderDrawer({ isOpen: true, title: 'Settings' })
     expect(screen.getByText('Settings')).toBeInTheDocument()
