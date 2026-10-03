@@ -32,9 +32,9 @@ function useCloseOnEscape(isOpen: boolean, close: () => void) {
 
 /**
  * Open state for a hover card or tooltip: hover or keyboard focus opens after
- * `openDelay`, hover out or blur closes after `closeDelay`, Escape closes at once.
- * Long press opens and press release closes, for touch. Spread `triggerProps` on
- * the trigger's own Pressable so it adds no tab stop.
+ * `openDelay`; it closes after `closeDelay` once neither hover nor focus holds
+ * it, and Escape closes at once. Long press opens, for touch. Spread
+ * `triggerProps` on the trigger's own Pressable so it adds no tab stop.
  *
  * @example
  * const { isOpen, triggerProps } = useHoverFocusState({ openDelay: 300 })
@@ -54,16 +54,25 @@ export function useHoverFocusState({
     defaultIsOpen,
     onOpenChange,
   })
+  const holds = useRef({ hover: false, focus: false })
+  const hold = (source: 'hover' | 'focus', isHeld: boolean) => {
+    holds.current[source] = isHeld
+    if (isHeld) show()
+    else if (!holds.current.hover && !holds.current.focus) hide()
+  }
+  const release = () => {
+    if (!holds.current.hover && !holds.current.focus) hide()
+  }
   useCloseOnEscape(hovered, dismiss)
   return {
     isOpen: hovered,
     triggerProps: {
-      onHoverIn: show,
-      onHoverOut: hide,
-      onFocus: show,
-      onBlur: hide,
+      onHoverIn: () => hold('hover', true),
+      onHoverOut: () => hold('hover', false),
+      onFocus: () => hold('focus', true),
+      onBlur: () => hold('focus', false),
       onLongPress: show,
-      onPressOut: hide,
+      onPressOut: release,
     },
   }
 }

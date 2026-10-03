@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useControllableState } from '../../../hooks/useControllableState'
 
 export interface TooltipVisibilityInput {
@@ -53,6 +53,16 @@ export function useTooltipVisibility({
     clearTimeouts()
     setHovered(false)
   }
+
+  const dismissRef = useRef(dismiss)
+  useEffect(() => {
+    dismissRef.current = dismiss
+  })
+  useEffect(() => {
+    if (isDisabled) dismissRef.current()
+  }, [isDisabled])
+  // A pending timer must not report onOpenChange after the trigger is gone.
+  useEffect(() => clearTimeouts, [])
 
   return { hovered, show, hide, dismiss }
 }
