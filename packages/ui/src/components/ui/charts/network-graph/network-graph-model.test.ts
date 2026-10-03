@@ -13,7 +13,7 @@ import {
 } from './network-graph-model'
 import { nextFocus } from './network-graph-focus'
 import { edgeLabel, nodeLabel, summarizeGraph } from './network-graph-text'
-import type { GraphEdge, GraphFocus, GraphFocusKey, GraphNode } from './types'
+import type { GraphEdge, GraphFocus, GraphFocusKey, GraphIndex, GraphNode } from './types'
 
 const n = (id: string, extra: Partial<GraphNode> = {}): GraphNode => ({ id, label: id, ...extra })
 const e = (source: string, target: string, extra: Partial<GraphEdge> = {}): GraphEdge => ({
@@ -27,6 +27,17 @@ const layered = layeredLayout()
 const modelOf = (key: keyof typeof networkGraphFixtures) => {
   const { nodes, edges } = networkGraphFixtures[key]
   return buildGraphModel(nodes, edges, layered, { width: 800, height: 600 })
+}
+
+const walk = (index: GraphIndex, start: GraphFocus, key: GraphFocusKey): GraphFocus[] => {
+  const visited = [start]
+  const cap = index.order.length + index.edgesById.size
+  for (let step = 0; step <= cap; step += 1) {
+    const next = nextFocus(index, visited[visited.length - 1] as GraphFocus, key)
+    if (next === null) return visited
+    visited.push(next)
+  }
+  throw new Error(`${key} never stopped, so it wraps`)
 }
 
 describe('cleanGraph', () => {
@@ -51,7 +62,7 @@ describe('cleanGraph', () => {
       e('a', 'c', { weight: null }),
       e('a', 'c'),
     ])
-    expect(result.edges.map((x) => x.weight)).toEqual([7, 5, null])
+    expect(result.edges.map((x) => x.weight)).toEqual([7, null, 5])
     expect(result.report.mergedEdges).toBe(3)
   })
 
@@ -72,6 +83,45 @@ describe('cleanGraph', () => {
       e('a', 'c', { id: 'same' }),
     ])
     expect(result.edges.map((x) => x.id)).toEqual(['a->b:k', 'same', 'same#2'])
+  })
+})
+
+describe('cleanGraph input order', () => {
+  const abc = ids('a', 'b', 'c')
+  const place = (edges: GraphEdge[]) =>
+    layeredLayout().compute({ ...cleanGraph(abc, edges), width: 800, height: 600 }).positions
+
+  it('merges m1, m9 and m5 to the same edge id and positions in either input order', () => {
+    const m1 = e('a', 'b', { id: 'm1' })
+    const m9 = e('a', 'b', { id: 'm9' })
+    const m5 = e('b', 'a', { id: 'm5' })
+    const forward = cleanGraph(abc, [m1, m9, m5])
+    const reversed = cleanGraph(abc, [m9, m1, m5])
+    expect(forward.edges.map((x) => x.id)).toContain('m1')
+    expect(reversed).toEqual(forward)
+    expect(place([m9, m1, m5])).toEqual(place([m1, m9, m5]))
+  })
+
+  it('numbers edges that share an id the same way in either input order', () => {
+    const ab = e('a', 'b', { id: 'x' })
+    const bc = e('b', 'c', { id: 'x' })
+    expect(cleanGraph(abc, [ab, bc]).edges.map((x) => `${x.source}${x.target}:${x.id}`)).toEqual([
+      'ab:x',
+      'bc:x#2',
+    ])
+    expect(cleanGraph(abc, [bc, ab])).toEqual(cleanGraph(abc, [ab, bc]))
+    expect(place([bc, ab])).toEqual(place([ab, bc]))
+  })
+
+  it('emits nodes and edges in a canonical order and sums weights without order effects', () => {
+    const edges = [0.3, 0.1, 0.2].map((weight) => e('a', 'b', { weight }))
+    const merged = cleanGraph(ids('c', 'b', 'a'), edges)
+    expect(merged.nodes.map((x) => x.id)).toEqual(['a', 'b', 'c'])
+    expect(merged.edges[0]?.weight).toBe(
+      cleanGraph(ids('a'.repeat(1), 'b'), [...edges].reverse()).edges[0]?.weight
+    )
+    const sorted = cleanGraph(abc, [e('c', 'a'), e('b', 'c'), e('a', 'c'), e('a', 'b')]).edges
+    expect(sorted.map((x) => `${x.source}${x.target}`)).toEqual(['ab', 'ac', 'bc', 'ca'])
   })
 })
 
@@ -141,17 +191,9 @@ describe('nextFocus', () => {
 
   it('Down and Up visit every node of No edges in order and stop at the ends', () => {
     const { index } = noEdges
-    const down: string[] = [index.order[0] as string]
-    let focus: GraphFocus = { type: 'node', id: down[0] as string }
-    for (;;) {
-      const next = nextFocus(index, focus, 'Down')
-      if (!next) break
-      focus = next
-      down.push(next.id)
-    }
-    expect(down).toEqual([...index.order])
-    expect(nextFocus(index, focus, 'Down')).toBeNull()
-    expect(nextFocus(index, { type: 'node', id: index.order[0] as string }, 'Up')).toBeNull()
+    const first: GraphFocus = { type: 'node', id: index.order[0] as string }
+    expect(walk(index, first, 'Down').map((f) => f.id)).toEqual([...index.order])
+    expect(nextFocus(index, first, 'Up')).toBeNull()
   })
 
   it('Home and End jump to the first and last node', () => {
@@ -195,15 +237,10 @@ describe('nextFocus', () => {
     const anchored = index.outgoing.get('worker-04') ?? []
     const around = [...anchored, ...(index.incoming.get('worker-04') ?? [])]
     expect(around.length).toBeLessThan(index.edgesById.size)
-    let focus: GraphFocus = { type: 'edge', id: around[0]?.id as string, from: 'worker-04' }
-    const seen = [focus.id]
-    for (;;) {
-      const next = nextFocus(index, focus, 'Down')
-      if (!next) break
-      expect(next).toMatchObject({ type: 'edge', from: 'worker-04' })
-      focus = next
-      seen.push(next.id)
-    }
+    const start: GraphFocus = { type: 'edge', id: around[0]?.id as string, from: 'worker-04' }
+    const visited = walk(index, start, 'Down')
+    expect(visited.every((f) => f.type === 'edge' && f.from === 'worker-04')).toBe(true)
+    const seen = visited.map((f) => f.id)
     expect(seen).toEqual(around.map((x) => x.id))
     expect(
       nextFocus(index, { type: 'edge', id: seen[0] as string, from: 'worker-04' }, 'Up')
@@ -307,13 +344,19 @@ describe('summarizeGraph', () => {
 
   it('gives node and edge counts, counts per kind and the most connected node', () => {
     expect(summary('Small (5)')).toBe(
-      'Network graph with 5 nodes and 7 edges. Nodes: 1 Lead, 4 Worker. Edges: 4 Spawned, 3 Messaged. Most connected: lead-01 with 6 edges.'
+      'Network graph with 5 nodes and 7 edges. Nodes: 1 Lead, 4 Worker. Edges: 3 Messaged, 4 Spawned. Most connected: lead-01 with 6 edges.'
     )
+  })
+
+  it('lists kinds in sorted order whatever the input order', () => {
+    const nodes = ['zeta', 'alpha', 'zeta'].map((kind, i) => n(`n${i}`, { kind }))
+    const model = buildGraphModel(nodes, [], layered, { width: 1, height: 1 })
+    expect(summarizeGraph(model)).toContain('Nodes: 1 alpha, 2 zeta.')
   })
 
   it('counts nodes and edges without a kind under "no kind"', () => {
     expect(summarizeGraph(modelOf('Missing values'))).toContain(
-      'Nodes: 4 no kind. Edges: 2 no kind, 1 message.'
+      'Nodes: 4 no kind. Edges: 1 message, 2 no kind.'
     )
   })
 

@@ -22,13 +22,18 @@ export const edgeId = (edge: GraphEdge): string =>
 export const isValidWeight = (weight: number | null | undefined): weight is number =>
   typeof weight === 'number' && Number.isFinite(weight) && weight >= 0
 
-function mergeEdge(kept: GraphEdge, extra: GraphEdge): GraphEdge {
-  const weights = [kept.weight, extra.weight].filter(isValidWeight)
-  const activity = [kept.activityAt, extra.activityAt].filter(
-    (at): at is number => at !== undefined
-  )
+function mergeGroup(group: readonly GraphEdge[]): GraphEdge {
+  const base = [...group].sort((x, y) => compareText(edgeId(x), edgeId(y)))[0] as GraphEdge
+  const weights = group
+    .map((edge) => edge.weight)
+    .filter(isValidWeight)
+    .sort((x, y) => x - y)
+  const activity = group
+    .map((edge) => edge.activityAt)
+    .filter((at): at is number => at !== undefined)
   return {
-    ...kept,
+    ...base,
+    id: edgeId(base),
     weight: weights.length > 0 ? weights.reduce((sum, w) => sum + w, 0) : null,
     ...(activity.length > 0 ? { activityAt: Math.max(...activity) } : {}),
   }
@@ -45,42 +50,49 @@ function dedupeNodes(nodes: readonly GraphNode[]) {
   return { kept, duplicates: nodes.length - kept.length, ids: seen }
 }
 
+const edgeKey = (edge: GraphEdge) => `${edge.source}\u0000${edge.target}\u0000${edge.kind ?? ''}`
+
+const compareEdges = (a: GraphEdge, b: GraphEdge) =>
+  compareText(a.source, b.source) ||
+  compareText(a.target, b.target) ||
+  compareText(a.kind ?? '', b.kind ?? '')
+
+/** Gives each edge a unique id; the edges arrive sorted, so a repeated id is numbered in that order. */
+function uniqueIds(edges: readonly GraphEdge[]): GraphEdge[] {
+  const used = new Set<string>()
+  return edges.map((edge) => {
+    const base = edgeId(edge)
+    let id = base
+    for (let n = 2; used.has(id); n += 1) id = `${base}#${n}`
+    used.add(id)
+    return { ...edge, id }
+  })
+}
+
+/** Output never depends on input order: nodes sort by id, edges by source, target, kind. */
 export function cleanGraph(
   nodes: readonly GraphNode[],
   edges: readonly GraphEdge[]
 ): { nodes: GraphNode[]; edges: GraphEdge[]; report: GraphCleanReport } {
   const { kept, duplicates, ids } = dedupeNodes(nodes)
-  const merged = new Map<string, GraphEdge>()
+  const groups = new Map<string, GraphEdge[]>()
   let selfEdges = 0
   let unknownEndpointEdges = 0
-  let mergedEdges = 0
-  const usedIds = new Set<string>()
-  const uniqueId = (edge: GraphEdge) => {
-    const base = edgeId(edge)
-    let id = base
-    for (let n = 2; usedIds.has(id); n += 1) id = `${base}#${n}`
-    usedIds.add(id)
-    return id
-  }
   for (const edge of edges) {
     if (edge.source === edge.target) selfEdges += 1
     else if (!ids.has(edge.source) || !ids.has(edge.target)) unknownEndpointEdges += 1
-    else {
-      const key = `${edge.source}\u0000${edge.target}\u0000${edge.kind ?? ''}`
-      const prior = merged.get(key)
-      if (prior) mergedEdges += 1
-      merged.set(
-        key,
-        prior
-          ? mergeEdge(prior, edge)
-          : { ...edge, id: uniqueId(edge), weight: isValidWeight(edge.weight) ? edge.weight : null }
-      )
-    }
+    else groups.set(edgeKey(edge), [...(groups.get(edgeKey(edge)) ?? []), edge])
   }
+  const merged = [...groups.values()].map(mergeGroup).sort(compareEdges)
   return {
-    nodes: kept,
-    edges: [...merged.values()],
-    report: { duplicateNodes: duplicates, selfEdges, unknownEndpointEdges, mergedEdges },
+    nodes: kept.sort((a, b) => compareText(a.id, b.id)),
+    edges: uniqueIds(merged),
+    report: {
+      duplicateNodes: duplicates,
+      selfEdges,
+      unknownEndpointEdges,
+      mergedEdges: [...groups.values()].reduce((sum, group) => sum + group.length - 1, 0),
+    },
   }
 }
 

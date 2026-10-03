@@ -41,7 +41,10 @@ function countByKind(kinds: readonly (string | undefined)[], labels: Map<string,
     const label = kind === undefined ? 'no kind' : (labels.get(kind) ?? kind)
     counts.set(label, (counts.get(label) ?? 0) + 1)
   }
-  return [...counts].map(([label, n]) => `${n} ${label}`).join(', ')
+  return [...counts]
+    .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+    .map(([label, n]) => `${n} ${label}`)
+    .join(', ')
 }
 
 function droppedSentence(model: GraphModel): string[] {

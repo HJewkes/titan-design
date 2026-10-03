@@ -46,11 +46,21 @@ slice adds none of them.
 
 ## Cleaning
 
-`cleanGraph` keeps the first of duplicate node ids. It drops self edges and edges to unknown ids.
-Edges with the same source, target and kind merge: weights sum, `null` plus a number is the number,
-and the newest `activityAt` wins. A weight that is `NaN`, infinite or negative counts as unknown
-(`null`). Every edge gets a unique id, `${source}->${target}:${kind ?? ''}` by default. Every drop is
-counted in `GraphCleanReport` and reported by `summarizeGraph`.
+`cleanGraph` output never depends on input order. The exact order is:
+
+1. Nodes: the first of duplicate node ids is kept, then nodes sort by id (plain code-unit comparison).
+2. Edges: self edges and edges to unknown ids are dropped. Edges with the same source, target and
+   kind form one group. A group merges into one edge: it takes the smallest id among its members,
+   weights sum (ascending, so float sums do not depend on order; `null` plus a number is the
+   number), and the newest `activityAt` wins.
+3. Merged edges sort by source, then target, then kind (a missing kind sorts as `''`). The three form
+   a total order because each group has a distinct triple.
+4. Unique ids are assigned in that sorted order: an edge whose id is already taken becomes
+   `<id>#2`, `<id>#3` and so on. The default id is `${source}->${target}:${kind ?? ''}`.
+
+A weight that is `NaN`, infinite or negative counts as unknown (`null`). Every drop is counted in
+`GraphCleanReport` and reported by `summarizeGraph`, whose per-kind counts list kinds in sorted order
+of their label.
 
 ## The layered layout
 

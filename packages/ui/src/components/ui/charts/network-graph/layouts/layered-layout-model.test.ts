@@ -51,11 +51,43 @@ const graphWithShuffles = (acyclic: boolean) =>
       })
   )
 
+const rawEdge = (ids: string[]) =>
+  fc.record({
+    a: fc.nat(ids.length - 1),
+    b: fc.nat(ids.length - 1),
+    id: fc.constantFrom('e1', 'e2', 'e3', undefined),
+    kind: fc.constantFrom('spawn', 'message', undefined),
+    weight: fc.constantFrom(1, 2.5, null, undefined),
+  })
+
+/** Raw input: duplicate nodes, duplicate edges, explicit and shared ids, shuffled before cleaning. */
+const rawGraphWithShuffles = names.chain((ids) => {
+  const nodes = [...ids, ...ids.slice(0, 2)].map(n)
+  return fc.array(rawEdge(ids), { maxLength: 24 }).chain((raw) => {
+    const edges = raw.map((r) => ({
+      source: ids[r.a] as string,
+      target: ids[r.b] as string,
+      ...(r.id ? { id: r.id } : {}),
+      ...(r.kind ? { kind: r.kind } : {}),
+      ...(r.weight !== undefined ? { weight: r.weight } : {}),
+    }))
+    return fc.record({
+      nodes: fc.constant(nodes),
+      edges: fc.constant(edges),
+      shuffledNodes: fc.shuffledSubarray(nodes, { minLength: nodes.length }),
+      shuffledEdges: fc.shuffledSubarray(edges, { minLength: edges.length }),
+    })
+  })
+})
+
 describe('layeredLayout', () => {
-  it('gives the same result for any permutation of nodes and edges', () => {
+  it('gives the same cleaned graph and layout for any permutation of raw nodes and edges', () => {
     fcAssert(
-      fc.property(graphWithShuffles(false), (g) => {
-        expect(run(g.shuffledNodes, g.shuffledEdges)).toEqual(run(g.nodes, g.edges))
+      fc.property(rawGraphWithShuffles, (g) => {
+        const direct = cleanGraph(g.nodes, g.edges)
+        const shuffled = cleanGraph(g.shuffledNodes, g.shuffledEdges)
+        expect(shuffled).toEqual(direct)
+        expect(run(shuffled.nodes, shuffled.edges)).toEqual(run(direct.nodes, direct.edges))
       })
     )
   })
