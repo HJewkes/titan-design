@@ -1,4 +1,4 @@
-import React, { useId } from 'react'
+import { useId } from 'react'
 import { Text, View, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { formatCompact } from '../../../utils/number-format'
