@@ -2,7 +2,7 @@
  * ESLint rule: no-raw-composition
  *
  * A component should compose titan's primitives rather than reach past them
- * (TD-24 S4). Two shapes are flagged, each with a message naming the fix:
+ * (TD-24 S4, S5). Three shapes are flagged, each with a message naming the fix:
  *
  * - `rawButton`: a lowercase `<button>` JSX element or `createElement('button')`
  *   in `src/components/**`. It skips Pressable's cross-platform press handling
@@ -10,6 +10,9 @@
  * - `d3Import`: an import, re-export, dynamic import or require of `d3` or
  *   `d3-*` outside `src/components/ui/charts/**`, which is where charts and
  *   their shared scales and geometry live (CLAUDE.md placement table).
+ * - `pathMath`: a template literal or `+` concatenation that builds an SVG
+ *   path `d` string from computed values outside `src/components/ui/charts/**`.
+ *   Tests and stories may build one. Static path data (no expressions) is fine.
  *
  * `src/lab/**` is exempt, as it is for the other titan rules.
  *
@@ -35,17 +38,88 @@ function srcRelativeOf(filename) {
         .join('/')
 }
 
+// Each lone `#` stands for one computed value (a template expression or a non-string `+` operand).
+const PATH_TOKEN = /\s+|,|[+-]?#|[MLHVCSQTAZ]|[+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?/iy
+// Operands each command takes. `M` alone may take one `#`, as in `'M' + point`.
+const PATH_ARITY = { M: 2, L: 2, T: 2, H: 1, V: 1, S: 4, Q: 4, C: 6, A: 7, Z: 0 }
+
+function tokenizePath(shape) {
+  const tokens = []
+  PATH_TOKEN.lastIndex = 0
+  while (PATH_TOKEN.lastIndex < shape.length) {
+    const match = PATH_TOKEN.exec(shape)
+    if (!match) return null
+    if (match[0].trim() && match[0] !== ',') tokens.push(match[0])
+  }
+  return tokens
+}
+
+/** Commands with their operand counts; operands before the first command (a path prefix) are dropped. */
+function pathSegments(tokens) {
+  const segments = []
+  for (const token of tokens) {
+    const arity = PATH_ARITY[token.toUpperCase()]
+    if (arity !== undefined) segments.push({ command: token, arity, operands: 0 })
+    else if (segments.length > 0) segments[segments.length - 1].operands += 1
+  }
+  return segments
+}
+
+/**
+ * Whether a shape reads as SVG path data built from at least one computed value.
+ * Each command needs its operands and the whole shape two, unless it opens with
+ * `M`, so labels like `h${level}`, `Q${q} ${year}` or `${h}h ${m}m` stay legal.
+ */
+function isPathShape(shape) {
+  const tokens = tokenizePath(shape)
+  if (!tokens || !tokens.some((t) => t.endsWith('#'))) return false
+  const segments = pathSegments(tokens)
+  if (segments.length === 0) return false
+  const opensWithMove = tokens[0] === 'M'
+  const fed = segments.every(
+    (s, i) => s.operands >= s.arity || (i === 0 && opensWithMove && s.operands === 1)
+  )
+  return fed && tokens.length - segments.length >= (opensWithMove ? 1 : 2)
+}
+
+const templateShape = (node) => node.quasis.map((q) => q.value.cooked ?? '').join('#')
+
+function isConcat(node) {
+  return node?.type === 'BinaryExpression' && node.operator === '+'
+}
+
+/** A `+` chain flattened into one shape; null when no operand is a string. */
+function concatShape(node) {
+  const parts = []
+  let hasString = false
+  const walk = (operand) => {
+    if (isConcat(operand)) {
+      walk(operand.left)
+      walk(operand.right)
+      return
+    }
+    const text = operand.type === 'TemplateLiteral' ? templateShape(operand) : staticString(operand)
+    if (text !== null) hasString = true
+    parts.push(text ?? '#')
+  }
+  walk(node)
+  return hasString ? parts.join('') : null
+}
+
 function isTestOrStory(srcRelative) {
   return /\.(test|stories)\.[jt]sx?$/.test(srcRelative)
 }
 
 /** Which checks apply to a file, by its `src`-relative path. */
 function scopeOf(srcRelative) {
-  if (!srcRelative || srcRelative.startsWith('lab/')) return { button: false, d3: false }
+  if (!srcRelative || srcRelative.startsWith('lab/'))
+    return { button: false, d3: false, path: false }
   const inComponents = srcRelative.startsWith('components/')
+  const inCharts = srcRelative.startsWith('components/ui/charts/')
   return {
     button: inComponents && !isTestOrStory(srcRelative),
-    d3: !srcRelative.startsWith('components/ui/charts/'),
+    d3: !inCharts,
+    path: !inCharts && !isTestOrStory(srcRelative),
   }
 }
 
@@ -120,6 +194,20 @@ function d3Visitors(report) {
   }
 }
 
+function pathVisitors(report) {
+  return {
+    TemplateLiteral(node) {
+      if (isConcat(node.parent)) return
+      if (isPathShape(templateShape(node))) report(node, 'pathMath')
+    },
+    BinaryExpression(node) {
+      if (!isConcat(node) || isConcat(node.parent)) return
+      const shape = concatShape(node)
+      if (shape !== null && isPathShape(shape)) report(node, 'pathMath')
+    },
+  }
+}
+
 /** Build the rule against a given baseline; the module export uses the committed one. */
 function createRule(getBaseline) {
   return {
@@ -127,7 +215,7 @@ function createRule(getBaseline) {
       type: 'problem',
       docs: {
         description:
-          'Disallow raw <button> elements in components and d3 imports outside src/components/ui/charts.',
+          'Disallow raw <button> elements in components, and d3 imports or SVG path math outside src/components/ui/charts.',
       },
       schema: [],
       messages: {
@@ -135,12 +223,14 @@ function createRule(getBaseline) {
           'Raw <button> bypasses titan’s pressable primitives. Use Button (with ButtonText), ToolbarButton for an icon action, TriggerSurface for an overlay trigger, or Pressable.',
         d3Import:
           "'{{specifier}}' is a d3 import outside src/components/ui/charts. Move the scale or geometry into ui/charts/kit/, or compose an existing chart from ui/charts.",
+        pathMath:
+          'SVG path math outside src/components/ui/charts. Build the path with d3-shape inside ui/charts/kit/, or compose an existing chart primitive from ui/charts.',
       },
     },
 
     create(context) {
       const scope = scopeOf(srcRelativeOf(context.filename ?? context.getFilename()))
-      if (!scope.button && !scope.d3) return {}
+      if (!scope.button && !scope.d3 && !scope.path) return {}
 
       // Remaining allowance per messageId; occurrences past it report.
       const remaining = new Map(Object.entries(getBaseline()[baselineKey(context)] ?? {}))
@@ -157,6 +247,7 @@ function createRule(getBaseline) {
       return {
         ...(scope.button ? buttonVisitors(report) : {}),
         ...(scope.d3 ? d3Visitors(report) : {}),
+        ...(scope.path ? pathVisitors(report) : {}),
       }
     },
   }
