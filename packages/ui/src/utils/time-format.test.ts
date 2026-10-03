@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { formatSessionDuration, formatTaskAge } from './format-time'
+import { formatSessionDuration, formatTaskAge } from './time-format'
 
 describe('formatSessionDuration', () => {
   it('reads minutes under an hour and hours plus minutes above it', () => {
