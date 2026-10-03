@@ -184,7 +184,7 @@ happened by rule, not by session. `typography`, `eyebrow` and `empty-state` are 
 and so became stable-**eligible** on the move, but clause 2's fourth condition holds
 them at `candidate` while the M2 and M3 shim rows sit in `DEPRECATIONS.md`; they are
 promotable once the shims go in 0.23.0. `table` joined them by migration M4 (#367) and is
-held the same way, and so are `spark-bars` (M5, TD-188),`file-path-label` (M6, TD-418) and `date-time` (M7, TD-428). The other two `candidate` rows are the
+held the same way, and so are `spark-bars` (M5, TD-188),`file-path-label` (M6, TD-418), `date-time` (M7, TD-428) and `scatter`, `treemap` and `gauge` (M8, TD-471). The other two `candidate` rows are the
 deprecated `HelpTip` and `Tile`.
 `TriggerSurface` has no story, so it carries no status tag.
 

@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { render } from '@testing-library/react'
 import { composeStories } from '@storybook/react'
 import * as stories from './Scatter.stories'
-import { Surface } from '../../ui/surface'
+import { Surface } from '../../surface'
 
 const composed = Object.entries(composeStories(stories))
 
