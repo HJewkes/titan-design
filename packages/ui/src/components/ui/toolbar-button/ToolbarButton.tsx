@@ -1,24 +1,26 @@
 import React, { useState, useCallback, createContext, useContext } from 'react'
-import { View, Text, Pressable, type ViewProps, StyleSheet, Platform } from 'react-native'
+import {
+  View,
+  Text,
+  Pressable,
+  type ViewProps,
+  type ViewStyle,
+  StyleSheet,
+  Platform,
+} from 'react-native'
 import { cn } from '../../../utils/cn'
 import { getHoverColors } from '../../../theme'
 import { greyRamp, primitiveColors } from '../../../theme/tokens/primitives'
+import type { ThemeMode } from '../../../theme/tokens/semantic'
 import { resolveColor } from '../../../theme/resolve-color'
 import { getPressedRecessShadow } from '../../../theme/elevation'
 import { liftStyle } from '../../../theme/lift'
 import { alpha } from '../../../utils/colors'
-import { Surface, useSurfaceMode } from '../surface'
+import { useSurfaceMode } from '../surface'
+import { ToolbarButtonIcon, ToolbarButtonMenu } from './ToolbarButtonParts'
 
 export type ToolbarButtonVariant = 'default' | 'raised'
 export type ToolbarButtonSize = 'sm' | 'md' | 'lg'
-
-interface ToolbarIconProps {
-  size?: number
-  width?: number
-  height?: number
-  color?: string
-  style?: { color?: string; width?: number; height?: number }
-}
 
 interface ToolbarButtonContextType {
   isOpen: boolean
@@ -140,30 +142,7 @@ export function ToolbarButton({
   // Match original logic: active !== false means "active" (sunken) appearance
   const selected = isActive === undefined ? isOpen : isActive
   const showActive = isActive !== false
-
-  // Determine icon color based on state
-  const getIconColor = () => {
-    if (isActive === true) return resolveColor('brand-primary')
-    return showActive ? resolveColor('on-control-active') : resolveColor('on-control-idle')
-  }
-
-  /**
-   * Raised/pressed treatment on the depth model: the raised face is a plane one
-   * step above the toolbar and wears the lift, the active face is pressed into
-   * it and wears the recess. The hairline ring both used to carry is an edge,
-   * not depth, and is gone with the rest of the rings on this pass.
-   */
-  const getRaisedStyle = () => {
-    if (isDisabled) return styles.disabledBg
-    if (showActive) {
-      const fill = isHovered ? hoverColors.pressed : greyRamp[900]
-      return { backgroundColor: fill, ...getPressedRecessShadow(fill, mode) }
-    }
-    return {
-      backgroundColor: isHovered ? hoverColors.raised : BUTTON_BG,
-      ...liftStyle(1, mode),
-    }
-  }
+  const iconTint = iconColor(isActive)
 
   return (
     <ToolbarButtonContext.Provider value={{ isOpen, setIsOpen }}>
@@ -188,29 +167,13 @@ export function ToolbarButton({
             className
           )}
           style={[
-            variant === 'raised' && getRaisedStyle(),
+            variant === 'raised' && raisedStyle({ isDisabled, showActive, isHovered, mode }),
             variant === 'default' && {
               backgroundColor: showActive ? BUTTON_BG : greyRamp[600],
             },
           ]}
         >
-          {icon && (
-            <View className="w-5 h-5 items-center justify-center">
-              {React.isValidElement(icon)
-                ? React.cloneElement(icon as React.ReactElement<ToolbarIconProps>, {
-                    size: 20,
-                    width: 20,
-                    height: 20,
-                    color: getIconColor(),
-                    style: {
-                      color: getIconColor(),
-                      width: 20,
-                      height: 20,
-                    },
-                  })
-                : icon}
-            </View>
-          )}
+          {icon && <ToolbarButtonIcon icon={icon} color={iconTint} />}
           {showLabel && (
             <Text
               className={cn(
@@ -228,25 +191,40 @@ export function ToolbarButton({
 
         {/* Popover Menu */}
         {menuContent && isOpen && (
-          <>
-            {/* Backdrop */}
-            <Pressable onPress={handleClose} style={StyleSheet.absoluteFill} className="z-40" />
-            {/* Menu Content — floating: overlay plane + lift, no ring. */}
-            <Surface
-              elevation={4}
-              rounded={false}
-              className={cn(
-                'absolute z-50 top-full left-0 mt-1',
-                'rounded-lg min-w-[150px] overflow-hidden'
-              )}
-            >
-              {menuContent}
-            </Surface>
-          </>
+          <ToolbarButtonMenu onClose={handleClose}>{menuContent}</ToolbarButtonMenu>
         )}
       </View>
     </ToolbarButtonContext.Provider>
   )
+}
+
+// Determine icon color based on state
+function iconColor(isActive: boolean | undefined): string {
+  if (isActive === true) return resolveColor('brand-primary')
+  return isActive !== false ? resolveColor('on-control-active') : resolveColor('on-control-idle')
+}
+
+/**
+ * Raised/pressed treatment on the depth model: the raised face is a plane one
+ * step above the toolbar and wears the lift, the active face is pressed into
+ * it and wears the recess. The hairline ring both used to carry is an edge,
+ * not depth, and is gone with the rest of the rings on this pass.
+ */
+function raisedStyle(p: {
+  isDisabled: boolean
+  showActive: boolean
+  isHovered: boolean
+  mode: ThemeMode
+}): ViewStyle {
+  if (p.isDisabled) return styles.disabledBg
+  if (p.showActive) {
+    const fill = p.isHovered ? hoverColors.pressed : greyRamp[900]
+    return { backgroundColor: fill, ...getPressedRecessShadow(fill, p.mode) }
+  }
+  return {
+    backgroundColor: p.isHovered ? hoverColors.raised : BUTTON_BG,
+    ...liftStyle(1, p.mode),
+  }
 }
 
 // Styles that can't be easily expressed in Tailwind
