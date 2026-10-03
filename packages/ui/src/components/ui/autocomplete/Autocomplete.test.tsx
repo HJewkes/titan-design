@@ -1,7 +1,9 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { render, screen, fireEvent, act } from '@testing-library/react'
+import { render, renderHook, screen, fireEvent, act } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Autocomplete } from './Autocomplete'
+import { useAutocompleteState } from './useAutocompleteState'
+import { defaultFilterFn } from './autocompleteFilter'
 
 const defaultOptions = [
   { value: '1', label: 'Apple' },
@@ -200,6 +202,27 @@ describe('Autocomplete', () => {
 
       expect(onChange).not.toHaveBeenCalled()
       expect(input).toHaveValue('App')
+    })
+  })
+
+  describe('selecting a disabled option through the state handler', () => {
+    it('ignores the selection, even when the row does not block it', () => {
+      const onChange = vi.fn()
+      const { result } = renderHook(() =>
+        useAutocompleteState({
+          options: [{ value: '1', label: 'Apple', isDisabled: true }],
+          onChange,
+          minChars: 0,
+          filterFn: defaultFilterFn,
+        })
+      )
+
+      act(() => {
+        result.current.handleSelectOption({ value: '1', label: 'Apple', isDisabled: true })
+      })
+
+      expect(onChange).not.toHaveBeenCalled()
+      expect(result.current.inputValue).toBe('')
     })
   })
 
