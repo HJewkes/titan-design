@@ -39,12 +39,12 @@ export const TASK_STAGE_META = {
   },
   'in-progress': {
     label: 'In progress',
-    tone: 'info',
+    tone: 'warning',
     description: 'A branch or worktree carries the task id.',
   },
   review: {
     label: 'Review',
-    tone: 'brand',
+    tone: 'info',
     description: 'An open pull request carries the task id.',
   },
   done: {
