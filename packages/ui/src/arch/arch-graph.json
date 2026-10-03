@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:023c1e4d5e0b1e17944974a672c49ab2c0036a423507d8b12eb82a71780be81c",
+  "componentBarrelHash": "sha256:12af8f77b9129bf3d8a4a3268bf6a5325bb8cdb5390db5aca64d524546852560",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -6106,9 +6106,9 @@
     },
     {
       "name": "SparkBars",
-      "file": "packages/ui/src/components/custom/charts/SparkBars.tsx",
-      "dir": "custom",
-      "family": "custom/charts",
+      "file": "packages/ui/src/components/ui/charts/spark-bars/SparkBars.tsx",
+      "dir": "ui",
+      "family": "ui/charts/spark-bars",
       "exports": [
         "SparkBars",
         "SparkBarsProps"

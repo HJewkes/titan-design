@@ -113,7 +113,7 @@ model.
   so migration M2 moved it to [`ui/eyebrow`](../../ui/eyebrow); its story stays at
   `Components/Molecules/Eyebrow` and its row is now in the [`ui/*` family README](../../ui/README.md).
   Reach for it instead of hand-rolling `Typography` + tracking/uppercase classes again.
-- **`SparkBars`** (`components/custom/charts`, `Custom/Charts/SparkBars`) — a bar-mark sparkline for a
+- **`SparkBars`** (`components/ui/charts/spark-bars`, `Components/Atoms/SparkBars`) — a bar-mark sparkline for a
   signed series, the counterpart to `Sparkline`'s line mark. Domain-neutral and exported top-level, not
   nested under `ActiveWork/`. `custom/charts` gained an `index.ts` that deliberately exports **only**
   `SparkBars`: `SetBarChart` and `live-rep-growth` stay workout-internal and imported by path.
@@ -192,7 +192,7 @@ maps stay separate on purpose — `low` is `status-info` as a dot (it must stay 
 | ------------------ | ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | status dot + label | `StatusDot` (Workout family)                          | the original Lab specimen's hand-rolled `DotLabel` (deleted)                                                          |
 | severity mix bar   | `SegmentedBar` (Workout family)                       | the original Lab specimen's hand-rolled `SeverityBar` (deleted)                                                       |
-| bar sparkline      | `SparkBars` (new, `Custom/Charts`)                    | the specimen's hand-rolled `MiniBars` (deleted); `Sparkline` is a _line_ mark, `SetBar`/`SetStrip` are workout-domain |
+| bar sparkline      | `SparkBars` (new, `Components/Atoms`)                 | the specimen's hand-rolled `MiniBars` (deleted); `Sparkline` is a _line_ mark, `SetBar`/`SetStrip` are workout-domain |
 | KPI stat boxes     | `Tile` (bare on the page; one plane up inside a card) | the specimen's redundant `Card variant="filled"` wrapper around `Tile`                                                |
 | label ↔ value rows | `DataRow` (label widened to `ReactNode`)              | a hand-rolled `flex-row justify-between`                                                                              |
 | short dates        | `DateTime` `format="short"` + `fallback`              | the specimen's hand-rolled `shortDate` (deleted)                                                                      |
