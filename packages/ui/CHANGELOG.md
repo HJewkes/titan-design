@@ -74,6 +74,12 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+- `DualPinnedLiveStrip`: a side's missed rep (an empty column where the other side has a rep) is
+  now a hollow stub with a 2px ring in the on-surface secondary tone, 4.75:1 on the light card and
+  4.58:1 on the dark card (was 1.27:1 and 1.41:1). On a light card the bars keep only a 1px
+  contact shadow instead of the paper's drop shadow; dark bars are unchanged. The strip sets both
+  through `SetBarTreatmentContext` (`custom/charts/setBarTones.ts`, internal, not exported), which
+  `SetBarChart` reads. A chart outside the provider is unchanged (VW-877).
 - `Drawer`'s overlay and the non-blur `Modal` backdrop use `bg-scrim`, the scrim scale's DEFAULT class. `bg-scrim-default` compiled to no rule, so web painted no scrim. A test now compiles both backdrop class strings, and `lint:borders` runs in `lint` and `verify` (TD-191).
 - `VelocityStrip`'s loss and default zone colours resolve through the `dataviz-sequential` tokens
   for the surface's theme, like `PinnedLiveStrip`, so a light surface no longer gets the dark hexes.
