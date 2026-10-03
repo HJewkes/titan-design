@@ -122,7 +122,6 @@ export function Chip({
   ...props
 }: ChipProps) {
   const sizes = sizeStyles[size]
-  const isToggle = Boolean(onPress) && isSelected !== undefined
 
   return (
     <Pill
@@ -133,23 +132,14 @@ export function Chip({
       isDisabled={isDisabled}
       leading={leftElement && <View className="mr-1.5">{leftElement}</View>}
       trailing={
-        (rightElement || onDelete) && (
-          <>
-            {rightElement && <View className="ml-1.5">{rightElement}</View>}
-            {onDelete && (
-              <DeleteButton
-                onDelete={onDelete}
-                isDisabled={isDisabled}
-                className={sizes.deleteButton}
-              />
-            )}
-          </>
-        )
+        <ChipTrailing
+          rightElement={rightElement}
+          onDelete={onDelete}
+          isDisabled={isDisabled}
+          deleteClassName={sizes.deleteButton}
+        />
       }
-      {...(isToggle && {
-        accessibilityState: { selected: isSelected, disabled: isDisabled },
-        'aria-pressed': isSelected,
-      })}
+      {...toggleProps(Boolean(onPress), isSelected, isDisabled)}
       className={cn(
         'self-auto gap-0',
         variant === 'outline' || isSelected !== undefined ? 'border' : 'border-0',
@@ -163,5 +153,35 @@ export function Chip({
     >
       {children}
     </Pill>
+  )
+}
+
+// A plain or non-pressable chip gets no aria-pressed: the attribute would announce it as a toggle, or fail axe on a View.
+function toggleProps(isPressable: boolean, isSelected: boolean | undefined, isDisabled: boolean) {
+  if (!isPressable || isSelected === undefined) return {}
+  return {
+    accessibilityState: { selected: isSelected, disabled: isDisabled },
+    'aria-pressed': isSelected,
+  }
+}
+
+function ChipTrailing({
+  rightElement,
+  onDelete,
+  isDisabled,
+  deleteClassName,
+}: {
+  rightElement: React.ReactNode
+  onDelete: (() => void) | undefined
+  isDisabled: boolean
+  deleteClassName: string
+}) {
+  return (
+    <>
+      {rightElement && <View className="ml-1.5">{rightElement}</View>}
+      {onDelete && (
+        <DeleteButton onDelete={onDelete} isDisabled={isDisabled} className={deleteClassName} />
+      )}
+    </>
   )
 }
