@@ -9,6 +9,7 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- `NetworkGraph` (`ui/charts/network-graph`, `Components/Organisms/NetworkGraph`): a directed node-link graph on a layout the caller passes as a value (`layeredLayout`, `suppliedLayout`, or its own `GraphLayout`). Nodes and edges are pressable, one of them can be selected (`selection`, `defaultSelection`, `onSelectionChange`), the graph is one tab stop whose arrow keys follow the edges, and an edge pulses when its `activityAt` rises, with a still form under reduced motion or `animate={false}`. Web and React Native Web only. Exported with the graph types (TP-1041).
 - `ui/charts/network-graph` force layout: `forceLayout({ seed, iterations })`, a deterministic `d3-force` layout stepped without `forceSimulation` (no timer), plus shared layout geometry, `edgeShape` and `labelMode` hints on `GraphLayoutResult`, and `d3-force` as a dependency. Pure `.ts`, not yet exported (TP-1036).
 - `ui/charts/network-graph` model and layouts: `GraphLayout` (`{ key, compute }`), `layeredLayout`, `suppliedLayout`, graph cleaning, traversal and summary, and seeded fixtures at 5, 30 and 150 nodes. Pure `.ts`, not yet exported; the component follows (TP-1040).
 - `DateTime` and `formatDateTime` moved to `ui/date-time` (`Components/Molecules/DateTime`); still exported from the package root. The `custom/DateTime` path is a deprecated shim removed in 0.23.0. `DateTime` takes `isLive`; `live` is a deprecated alias for it (TD-428).
