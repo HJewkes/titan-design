@@ -7,6 +7,9 @@ import { DUAL_STRIP_SCENARIOS as S } from './dualPinnedLiveStrip-fixture'
 // Stands in for the consumer's navigation, so the stories show the strip as the link it is in the app.
 const goLive = () => undefined
 
+// A forced phone layout shows at a phone's width, not stretched across a desktop canvas.
+const PHONE_FRAME = { width: '100%', maxWidth: 390 } as const
+
 const meta: Meta<DualPinnedLiveStripProps> = {
   title: 'Shell/Workout/DualPinnedLiveStrip',
   component: DualPinnedLiveStrip,
@@ -29,9 +32,9 @@ const meta: Meta<DualPinnedLiveStripProps> = {
     },
   },
   decorators: [
-    (Story) => (
+    (Story, { args }) => (
       <Surface level="base" style={{ minHeight: '100vh' }} className="p-gutter-sm">
-        <View>
+        <View style={args.layout === 'phone' ? PHONE_FRAME : undefined}>
           <Story />
         </View>
       </Surface>

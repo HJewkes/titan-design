@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { barPaper } from '../../../theme/materials'
+import { SurfaceContext } from '../../ui/surface/SurfaceContext'
 import {
   SetBarChart,
   sideLabelText,
@@ -231,6 +233,34 @@ describe('SetBarChart empty columns', () => {
     render(<SetBarChart slots={slots} colorFor={silver} height={200} testIDPrefix="t" />)
     expect(screen.getAllByTestId(/^t-bar-\d+$/)).toHaveLength(2)
     expect(screen.getByTestId('t-slot-empty')).toBeInTheDocument()
+  })
+})
+
+describe('SetBarChart emptyVariant and lightPaper', () => {
+  const slots: SetSlot[] = [{ kind: 'rep', value: 0.9 }, { kind: 'empty' }]
+  const CLEAR = 'rgba(0, 0, 0, 0)'
+  const renderLight = (props: { emptyVariant?: 'outline'; lightPaper?: 'soft' } = {}) =>
+    render(
+      <SurfaceContext.Provider value={{ mode: 'light', level: 'base' }}>
+        <SetBarChart slots={slots} colorFor={silver} height={200} testIDPrefix="t" {...props} />
+      </SurfaceContext.Provider>
+    )
+
+  it('keeps the faint fill and the paper shadow when neither prop is set', () => {
+    renderLight()
+    const empty = getComputedStyle(screen.getByTestId('t-slot-empty'))
+    expect(empty.borderTopWidth).toBe('0px')
+    expect(empty.backgroundColor).not.toBe(CLEAR)
+    const paper = barPaper(silver()) as { boxShadow: string }
+    expect(screen.getByTestId('t-bar-0').style.boxShadow).toBe(paper.boxShadow)
+  })
+
+  it('rings the empty cell and softens the light shadow when opted in', () => {
+    renderLight({ emptyVariant: 'outline', lightPaper: 'soft' })
+    const empty = getComputedStyle(screen.getByTestId('t-slot-empty'))
+    expect(empty.borderTopWidth).toBe('1.5px')
+    expect(empty.backgroundColor).toBe(CLEAR)
+    expect(screen.getByTestId('t-bar-0').style.boxShadow).toBe('0 1px 2px rgba(0,0,0,0.12)')
   })
 })
 

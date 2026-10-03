@@ -305,6 +305,10 @@ const DualBars = memo(function DualBars(props: DualBarsProps) {
         lossThresholds={props.lossThresholds}
         targetReps={targetReps}
         height={height}
+        // Owner Gate 2 (VW-877): the paper's drop shadow smudged on the light card, and a side's
+        // missed rep vanished there; it now holds 3:1 in both modes.
+        emptyVariant="outline"
+        lightPaper="soft"
       />
     </View>
   )

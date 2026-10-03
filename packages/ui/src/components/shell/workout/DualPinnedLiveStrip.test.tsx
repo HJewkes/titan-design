@@ -3,6 +3,9 @@ import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { composeStories } from '@storybook/react-vite'
 import preview from '../../../../.storybook/preview'
+import { contrast } from '../../../theme/color-story-kit'
+import type { ThemeMode } from '../../../theme/tokens/semantic'
+import { SurfaceContext } from '../../ui/surface/SurfaceContext'
 import { DualPinnedLiveStrip } from './DualPinnedLiveStrip'
 import { DUAL_STRIP_SCENARIOS as S } from './dualPinnedLiveStrip-fixture'
 import * as stories from './DualPinnedLiveStrip.stories'
@@ -184,5 +187,46 @@ describe('DualPinnedLiveStrip roles', () => {
       <DualPinnedLiveStrip {...S[key]} layout="phone" onPress={() => {}} />
     )
     expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+const hexOf = (css: string) =>
+  '#' +
+  (css.match(/\d+/g) ?? [])
+    .slice(0, 3)
+    .map((n) => Number(n).toString(16).padStart(2, '0'))
+    .join('')
+
+function renderIn(mode: ThemeMode) {
+  render(
+    <SurfaceContext.Provider value={{ mode, level: 'base' }}>
+      <DualPinnedLiveStrip {...S.set} layout="phone" />
+    </SurfaceContext.Provider>
+  )
+  return getComputedStyle(screen.getByTestId('live-strip-plane')).backgroundColor
+}
+
+// Owner Gate 2 round 1 (VW-877): the right arm's missed fifth rep was a near-white slot on white.
+describe('DualPinnedLiveStrip missed rep', () => {
+  it.each(['light', 'dark'] as const)('rings it at 3:1 against the card (%s)', (mode) => {
+    const card = hexOf(renderIn(mode))
+    const [missed] = screen.getAllByTestId('velocity-slot-empty')
+    const ring = getComputedStyle(missed)
+    expect(parseFloat(ring.borderTopWidth)).toBeGreaterThanOrEqual(1)
+    expect(contrast(hexOf(ring.borderTopColor), card)).toBeGreaterThanOrEqual(3)
+  })
+})
+
+describe('DualPinnedLiveStrip bar shadow', () => {
+  const shadowOf = () => screen.getAllByTestId('velocity-bar-0')[0].style.boxShadow
+
+  it('keeps only a contact shadow on a light card', () => {
+    renderIn('light')
+    expect(shadowOf()).toBe('0 1px 2px rgba(0,0,0,0.12)')
+  })
+
+  it('keeps the paper drop shadow on a dark card', () => {
+    renderIn('dark')
+    expect(shadowOf()).toContain('0 6px 16px rgba(0,0,0,0.45)')
   })
 })

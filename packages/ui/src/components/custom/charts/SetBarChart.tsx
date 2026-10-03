@@ -152,6 +152,18 @@ export interface SetBarChartProps {
    */
   todoVariant?: 'solid' | 'dashed'
   /**
+   * `empty` cell treatment. `faint` (default) — a solid section fainter than a to-do. `outline` — a
+   * hollow stub ringed in the on-surface secondary tone, which holds 3:1 against the plane in both
+   * modes (WCAG 1.4.11), for a strip where a side's missed rep must read at a glance.
+   */
+  emptyVariant?: 'faint' | 'outline'
+  /**
+   * The bar shadow on a LIGHT plane. `raised` (default) — the shared paper material in both modes.
+   * `soft` — a 1px contact shadow in light mode only, where the paper's dark drop shadow smudges
+   * on white. Dark mode keeps the paper either way.
+   */
+  lightPaper?: 'raised' | 'soft'
+  /**
    * Pad the rendered columns to at least this many with placeholder to-do cells. The diverging dual
    * passes the union column count of both wings so bars line up top↔bottom across the centre axis.
    */
@@ -322,6 +334,8 @@ export function SetBarChart({
   formatValue = String,
   flipEdgeLabel = false,
   todoVariant = 'solid',
+  emptyVariant = 'faint',
+  lightPaper = 'raised',
   minColumns,
   renderReference,
   renderBarOverlay,
@@ -362,6 +376,12 @@ export function SetBarChart({
   const solidTodoColor = mixHex(surfaceBg, placeholderColor, 0.55)
   // An `empty` cell (a rep the diverging side didn't log) is fainter than a planned to-do.
   const emptyColor = mixHex(surfaceBg, placeholderColor, 0.28)
+  const emptyRing = useOnSurfaceColor('secondary')
+  const emptyFill: ViewStyle =
+    emptyVariant === 'outline'
+      ? { borderWidth: EMPTY_RING_WIDTH, borderColor: emptyRing }
+      : { backgroundColor: emptyColor }
+  const softPaper = lightPaper === 'soft' && surface.mode === 'light'
   // `all` rounds every corner (the thin flat-bar pill); `top` keeps the bolder hero top-round.
   const barCorners: ViewStyle =
     cornerStyle === 'all'
@@ -479,7 +499,7 @@ export function SetBarChart({
                   testIDPrefix,
                   todoVariant,
                   solidTodoColor,
-                  emptyColor
+                  emptyFill
                 )}
               </View>
             )
@@ -541,7 +561,7 @@ export function SetBarChart({
                 style={[
                   { width: '100%', height: barHeightStyle, backgroundColor: color },
                   barCorners,
-                  barPaper(color, flip),
+                  softPaper ? softLightPaper(color, flip) : barPaper(color, flip),
                 ]}
                 testID={`${testIDPrefix}-bar-${repIndex}`}
               />
@@ -554,6 +574,16 @@ export function SetBarChart({
   )
 }
 
+const EMPTY_RING_WIDTH = 1.5
+
+/** The paper's grain with a 1px contact shadow in place of its drop shadow (`lightPaper="soft"`). */
+function softLightPaper(color: string, flip: boolean): ViewStyle {
+  return {
+    ...barPaper(color, flip),
+    boxShadow: flip ? '0 -1px 2px rgba(0,0,0,0.12)' : '0 1px 2px rgba(0,0,0,0.12)',
+  } as unknown as ViewStyle
+}
+
 /** A window cell (planned / variable / continue / empty) — a fixed-height stub in its set-type tone. */
 function renderStub(
   kind: SetSlot['kind'],
@@ -563,7 +593,7 @@ function renderStub(
   testIDPrefix: string,
   todoVariant: 'dashed' | 'solid',
   solidTodoColor: string,
-  emptyColor: string
+  emptyFill: ViewStyle
 ): ReactNode {
   const base: ViewStyle = {
     width: '100%',
@@ -591,7 +621,7 @@ function renderStub(
     // a planned to-do (it's a hole in this side's data, index-locked to the other side's rep).
     return (
       <View
-        style={{ ...base, backgroundColor: emptyColor }}
+        style={{ ...base, ...emptyFill }}
         testID={`${testIDPrefix}-slot-empty`}
       />
     )
