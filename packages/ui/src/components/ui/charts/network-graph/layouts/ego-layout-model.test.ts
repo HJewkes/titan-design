@@ -19,7 +19,10 @@ const run = (
   const clean = cleanGraph(nodes, edges)
   return egoLayout(options).compute({ nodes: clean.nodes, edges: clean.edges, ...size })
 }
-const fixtureRun = (name: keyof typeof networkGraphFixtures, options: Partial<EgoLayoutOptions>) => {
+const fixtureRun = (
+  name: keyof typeof networkGraphFixtures,
+  options: Partial<EgoLayoutOptions>
+) => {
   const fixture = networkGraphFixtures[name]
   return run(fixture.nodes, fixture.edges, { focusId: fixture.focusId ?? null, ...options })
 }
@@ -27,9 +30,11 @@ const placed = (result: GraphLayoutResult) => Object.keys(result.positions).sort
 const ringOf = (result: GraphLayoutResult, id: string) =>
   result.groups?.findIndex((group) => group.nodeIds.includes(id))
 const allFinite = (result: GraphLayoutResult) =>
-  [result.width, result.height, ...Object.values(result.positions).flatMap((p) => [p.x, p.y])].every(
-    Number.isFinite
-  )
+  [
+    result.width,
+    result.height,
+    ...Object.values(result.positions).flatMap((p) => [p.x, p.y]),
+  ].every(Number.isFinite)
 
 /** The oracle: a plain breadth-first search, written independently of the layout. */
 function within(
@@ -103,8 +108,8 @@ describe('egoLayout placed set', () => {
   })
 
   it('a node reachable in 1 hop and in 3 hops is on ring 1', () => {
-    const edges = [link('f', 'x'), link('x', 'y'), link('y', 't'), link('f', 't')]
-    const result = run(['f', 'x', 'y', 't'].map(n), edges, { focusId: 'f', hops: 3 })
+    const edges = [link('f', 'a'), link('a', 'b'), link('b', 't'), link('f', 't')]
+    const result = run(['f', 'a', 'b', 't'].map(n), edges, { focusId: 'f', hops: 3 })
     expect(ringOf(result, 't')).toBe(1)
   })
 
@@ -154,9 +159,19 @@ describe('egoLayout geometry', () => {
     }
   })
 
-  it('every ring guide fits inside the natural size', () => {
-    const result = fixtureRun('Hub and spokes', {})
-    for (const ring of result.groups ?? []) {
+  it('every ring guide fits inside the natural size, even a ring holding one node', () => {
+    const chain = networkGraphFixtures['Directed chain']
+    const lone = egoLayout({ focusId: 'alpha-05', hops: 1, direction: 'outgoing' }).compute({
+      nodes: chain.nodes,
+      edges: chain.edges,
+      width: 0,
+      height: 0,
+    })
+    const rings = [lone, fixtureRun('Hub and spokes', {})].flatMap((r) =>
+      (r.groups ?? []).map((ring) => ({ ...ring, result: r }))
+    )
+    expect(lone.groups?.[1]?.nodeIds).toEqual(['alpha-06'])
+    for (const { result, ...ring } of rings) {
       expect(ring.cx - ring.radius).toBeGreaterThanOrEqual(0)
       expect(ring.cy - ring.radius).toBeGreaterThanOrEqual(0)
       expect(ring.cx + ring.radius).toBeLessThanOrEqual(result.width)
@@ -205,8 +220,10 @@ describe('egoLayout determinism', () => {
           })
         ),
         ({ g, nodes, edges }) => {
-          const options = { focusId: g.focus, hops: g.hops, direction: g.direction }
-          expect(run(nodes, edges, options)).toEqual(run(g.nodes, g.edges, options))
+          const layout = egoLayout({ focusId: g.focus, hops: g.hops, direction: g.direction })
+          expect(layout.compute({ nodes, edges, ...viewport })).toEqual(
+            layout.compute({ nodes: g.nodes, edges: g.edges, ...viewport })
+          )
         }
       )
     )
@@ -240,14 +257,17 @@ describe('egoLayout determinism', () => {
     expect(() => fixtureRun('Grouped (40)', { hops: 4 })).not.toThrow()
   })
 
-  it('the key differs by focusId, hops and direction, and a focusId holding ":" cannot collide', () => {
+  it('the key differs by focusId, hops and direction, and no focusId string collides with another option', () => {
     const base = egoLayout({ focusId: 'a' }).key
     expect(egoLayout({ focusId: 'a', hops: 2, direction: 'both' }).key).toBe(base)
     expect(egoLayout({ focusId: 'b' }).key).not.toBe(base)
     expect(egoLayout({ focusId: 'a', hops: 3 }).key).not.toBe(base)
     expect(egoLayout({ focusId: 'a', direction: 'incoming' }).key).not.toBe(base)
-    expect(egoLayout({ focusId: 'a:2', hops: 1 }).key).not.toBe(egoLayout({ focusId: 'a', hops: 21 }).key)
+    expect(egoLayout({ focusId: 'a:2', hops: 1 }).key).not.toBe(
+      egoLayout({ focusId: 'a', hops: 21 }).key
+    )
     expect(egoLayout({ focusId: 'a","b' }).key).not.toBe(egoLayout({ focusId: 'a' }).key)
+    expect(egoLayout({ focusId: 'null' }).key).not.toBe(egoLayout({ focusId: null }).key)
   })
 })
 

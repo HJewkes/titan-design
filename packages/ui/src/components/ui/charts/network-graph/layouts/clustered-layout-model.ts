@@ -17,6 +17,7 @@ import {
   readingOrder,
   round2,
   toSeed,
+  type PackedCircle,
 } from './layout-geometry'
 
 export interface ClusteredLayoutOptions {
@@ -120,6 +121,24 @@ function packRegions(clusters: readonly Cluster[], viewportWidth: number) {
   }).circles
 }
 
+function toRegion(
+  cluster: Cluster,
+  { cx, cy, radius }: PackedCircle,
+  framed: ReturnType<typeof frameLayout>
+): GraphGroupRegion {
+  const nodeIds = Object.keys(cluster.members)
+  const inside = Object.fromEntries(nodeIds.map((id) => [id, framed.positions[id] as GraphPoint]))
+  return {
+    id: cluster.id,
+    label: cluster.label,
+    nodeIds: readingOrder(inside),
+    cx: round2(cx + framed.offset.x),
+    cy: round2(cy + framed.offset.y),
+    radius: round2(radius),
+    variant: 'region',
+  }
+}
+
 function computeClustered(input: GraphLayoutInput, options: CleanOptions): GraphLayoutResult {
   const clusters = buildClusters(input, options)
   const packed = packRegions(clusters, input.width)
@@ -132,20 +151,7 @@ function computeClustered(input: GraphLayoutInput, options: CleanOptions): Graph
     bounds.push({ x: cx + radius, y: cy + radius })
   })
   const framed = frameLayout(positions, input, bounds)
-  const groups: GraphGroupRegion[] = packed.map(({ cx, cy, radius }, i) => {
-    const cluster = clusters[i] as Cluster
-    const nodeIds = Object.keys(cluster.members)
-    const inside = Object.fromEntries(nodeIds.map((id) => [id, framed.positions[id] as GraphPoint]))
-    return {
-      id: cluster.id,
-      label: cluster.label,
-      nodeIds: readingOrder(inside),
-      cx: round2(cx + framed.offset.x),
-      cy: round2(cy + framed.offset.y),
-      radius: round2(radius),
-      variant: 'region',
-    }
-  })
+  const groups = packed.map((circle, i) => toRegion(clusters[i] as Cluster, circle, framed))
   return {
     positions: framed.positions,
     order: groups.flatMap((group) => group.nodeIds),

@@ -2,13 +2,19 @@ import fc from 'fast-check'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { fcAssert } from '../../../../../test/property'
 import { seededRandom } from '../../kit/seededRandom'
-import { groupedGroups, hostileLayoutOptions, largeFixture, networkGraphFixtures } from '../fixtures'
+import {
+  groupedGroups,
+  hostileLayoutOptions,
+  largeFixture,
+  networkGraphFixtures,
+} from '../fixtures'
 import { cleanGraph } from '../network-graph-model'
 import type { GraphEdge, GraphGroupRegion, GraphLayoutResult, GraphNode } from '../types'
 import { clusteredLayout, type ClusteredLayoutOptions } from './clustered-layout-model'
+import { forceLayout } from './force-layout-model'
 import { LAYOUT_DEFAULTS } from './layout-geometry'
 
-const { PADDING, LABEL_ROOM, REGION_PADDING, REGION_LABEL_BAND } = LAYOUT_DEFAULTS
+const { PADDING, LABEL_ROOM, REGION_PADDING, REGION_GAP, REGION_LABEL_BAND } = LAYOUT_DEFAULTS
 const n = (id: string, group?: string): GraphNode => ({
   id,
   label: id,
@@ -26,8 +32,10 @@ const run = (
   const clean = cleanGraph(nodes, edges)
   return clusteredLayout(options).compute({ nodes: clean.nodes, edges: clean.edges, ...size })
 }
-const fixtureRun = (name: keyof typeof networkGraphFixtures, options: ClusteredLayoutOptions = {}) =>
-  run(networkGraphFixtures[name].nodes, networkGraphFixtures[name].edges, options)
+const fixtureRun = (
+  name: keyof typeof networkGraphFixtures,
+  options: ClusteredLayoutOptions = {}
+) => run(networkGraphFixtures[name].nodes, networkGraphFixtures[name].edges, options)
 const regions = (result: GraphLayoutResult) => result.groups ?? []
 const regionOf = (result: GraphLayoutResult, id: string) =>
   regions(result).find((region) => region.nodeIds.includes(id)) as GraphGroupRegion
@@ -99,7 +107,11 @@ describe('clusteredLayout regions', () => {
         const result = run(nodes, edges, FAST)
         const ids = nodes.map((node) => node.id).sort()
         expect(Object.keys(result.positions).sort()).toEqual(ids)
-        expect(regions(result).flatMap((r) => r.nodeIds).sort()).toEqual(ids)
+        expect(
+          regions(result)
+            .flatMap((r) => r.nodeIds)
+            .sort()
+        ).toEqual(ids)
         for (const node of nodes) expect(regionOf(result, node.id).id).toBe(node.group ?? '')
         expectMembersInside(result)
         expectRegionsApart(result)
@@ -124,11 +136,13 @@ describe('clusteredLayout regions', () => {
   })
 
   it('region order is the option order, then unlisted ids sorted, then ungrouped', () => {
-    const groups = [
-      { id: 'gamma', label: 'Gamma' },
-      { id: 'alpha', label: 'Alpha' },
-    ]
-    const result = fixtureRun('Grouped (40)', { groups })
+    const { nodes, edges } = networkGraphFixtures['Grouped (40)']
+    const groups = [{ id: 'gamma', label: 'Gamma' }]
+    const result = clusteredLayout({ groups, ...FAST }).compute({
+      nodes: [...nodes].reverse(),
+      edges,
+      ...viewport,
+    })
     expect(regions(result).map((r) => r.id)).toEqual(['gamma', 'alpha', 'beta', 'delta', ''])
   })
 
@@ -157,6 +171,16 @@ describe('clusteredLayout regions', () => {
       expect(r.cx + r.radius).toBeLessThanOrEqual(result.width)
       expect(r.cy + r.radius).toBeLessThanOrEqual(result.height)
     }
+  })
+
+  it('rows of regions keep the region gap plus a label band between them', () => {
+    const all = regions(fixtureRun('Many groups', FAST))
+    const top = (r: GraphGroupRegion) => r.cy - r.radius
+    for (const a of all)
+      for (const b of all.filter((r) => top(r) > top(a) + 0.02 && top(r) > a.cy))
+        expect(top(b) - (a.cy + a.radius)).toBeGreaterThanOrEqual(
+          REGION_GAP + REGION_LABEL_BAND - 0.02
+        )
   })
 
   it('Many groups wraps: the natural width is at most the larger of the viewport and the widest region', () => {
@@ -200,7 +224,10 @@ describe('clusteredLayout determinism', () => {
           })
         ),
         ({ g, nodes, edges }) => {
-          expect(run(nodes, edges, FAST)).toEqual(run(g.nodes, g.edges, FAST))
+          const layout = clusteredLayout(FAST)
+          expect(layout.compute({ nodes, edges, ...viewport })).toEqual(
+            layout.compute({ nodes: g.nodes, edges: g.edges, ...viewport })
+          )
         }
       )
     )
@@ -239,7 +266,9 @@ describe('clusteredLayout determinism', () => {
 
   it('the key is equal for equal sanitised options and differs by each option', () => {
     const base = clusteredLayout().key
-    expect(clusteredLayout({ seed: 1, iterations: 300, groups: [], ungroupedLabel: 'Ungrouped' }).key).toBe(base)
+    expect(
+      clusteredLayout({ seed: 1, iterations: 300, groups: [], ungroupedLabel: 'Ungrouped' }).key
+    ).toBe(base)
     expect(clusteredLayout({ seed: Number.NaN, iterations: Number.NaN }).key).toBe(base)
     const others = [
       { seed: 2 },
@@ -264,8 +293,15 @@ describe('clusteredLayout degenerate input', () => {
       run([n('a', 'g'), n('b', 'h'), n('c', 'h')], [link('b', 'c')]),
       fixtureRun('No edges', FAST),
       ...hostileLayoutOptions.seeds.map((seed) => fixtureRun('Grouped (40)', { seed, ...FAST })),
-      ...hostileLayoutOptions.iterations.map((iterations) => fixtureRun('One group', { iterations })),
-      run([n('a', 'g')], [], { seed: Infinity, iterations: Infinity }, { width: Number.NaN, height: 0 }),
+      ...hostileLayoutOptions.iterations.map((iterations) =>
+        fixtureRun('One group', { iterations })
+      ),
+      run(
+        [n('a', 'g')],
+        [],
+        { seed: Infinity, iterations: Infinity },
+        { width: Number.NaN, height: 0 }
+      ),
     ]
     for (const result of cases) expect(allFinite(result)).toBe(true)
     expect(regions(cases[0] as GraphLayoutResult)).toEqual([])
@@ -273,9 +309,17 @@ describe('clusteredLayout degenerate input', () => {
     expect(regions(cases[3] as GraphLayoutResult)).toHaveLength(1)
   })
 
-  it('Large (150) lays out in under 1 s', () => {
-    const started = performance.now()
-    run(largeFixture.nodes, largeFixture.edges)
-    expect(performance.now() - started).toBeLessThan(1000)
+  it('Large (150) costs less than 3 times the force layout on the same machine', () => {
+    const { nodes, edges } = cleanGraph(largeFixture.nodes, largeFixture.edges)
+    const bestOf5 = (layout: ReturnType<typeof clusteredLayout>) =>
+      Math.min(
+        ...Array.from({ length: 5 }, () => {
+          const started = performance.now()
+          layout.compute({ nodes, edges, ...viewport })
+          return performance.now() - started
+        })
+      )
+    bestOf5(forceLayout())
+    expect(bestOf5(clusteredLayout()) / bestOf5(forceLayout())).toBeLessThan(3)
   })
 })

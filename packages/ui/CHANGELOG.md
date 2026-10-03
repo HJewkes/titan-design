@@ -9,6 +9,7 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- `ui/charts/network-graph` ego and clustered layouts: `egoLayout({ focusId, hops, direction })` places the nodes within N hops on rings around a focus with no random source, and `clusteredLayout({ seed, iterations, groups, ungroupedLabel })` lays each group out alone and packs non-overlapping regions in rows, ungrouped nodes last. Adds `GraphGroup`, `GraphGroupRegion` and the `groups` hint on `GraphLayoutResult`, and grouped, hub, chain and many-group fixtures. Pure `.ts`, not yet exported (TP-1037).
 - `ui/charts/network-graph` force layout: `forceLayout({ seed, iterations })`, a deterministic `d3-force` layout stepped without `forceSimulation` (no timer), plus shared layout geometry, `edgeShape` and `labelMode` hints on `GraphLayoutResult`, and `d3-force` as a dependency. Pure `.ts`, not yet exported (TP-1036).
 - `ui/charts/network-graph` model and layouts: `GraphLayout` (`{ key, compute }`), `layeredLayout`, `suppliedLayout`, graph cleaning, traversal and summary, and seeded fixtures at 5, 30 and 150 nodes. Pure `.ts`, not yet exported; the component follows (TP-1040).
 - `DateTime` and `formatDateTime` moved to `ui/date-time` (`Components/Molecules/DateTime`); still exported from the package root. The `custom/DateTime` path is a deprecated shim removed in 0.23.0. `DateTime` takes `isLive`; `live` is a deprecated alias for it (TD-428).

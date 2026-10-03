@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import {
+  groupedGroups,
   hostileFixture,
   largeFixture,
   mediumFixture,
@@ -119,6 +120,53 @@ describe('network graph fixtures', () => {
     expect(nodes).toHaveLength(2)
     expect(between('alpha-01', 'alpha-02')).toEqual(['spawn', 'message'])
     expect(between('alpha-02', 'alpha-01')).toEqual(['message'])
+  })
+
+  it('Grouped (40) has groups of 12, 10, 8 and 5, five ungrouped nodes, 44 inner and 9 cross edges', () => {
+    const { nodes, edges, groups, focusId } = networkGraphFixtures['Grouped (40)']
+    const sizes = [...groupedGroups.map((g) => g.id), ''].map(
+      (id) => nodes.filter((n) => (n.group || '') === id).length
+    )
+    expect(sizes).toEqual([12, 10, 8, 5, 5])
+    expect(nodes.filter((n) => n.group === '')).toHaveLength(2)
+    const regionOf = new Map(nodes.map((n) => [n.id, n.group || n.id]))
+    const inner = edges.filter((e) => regionOf.get(e.source) === regionOf.get(e.target))
+    expect([inner.length, edges.length - inner.length]).toEqual([44, 9])
+    expect([groups, focusId]).toEqual([groupedGroups, 'alpha-01'])
+  })
+
+  it('Hub and spokes has one hub, 24 spokes and up to 2 leaves per spoke', () => {
+    const { nodes, edges, focusId } = networkGraphFixtures['Hub and spokes']
+    const from = (id: string) => edges.filter((e) => e.source === id).length
+    expect(from('hub-01')).toBe(24)
+    const spokes = nodes.filter((n) => n.id.startsWith('spoke'))
+    expect(spokes.every((n) => from(n.id) <= 2)).toBe(true)
+    expect(nodes).toHaveLength(25 + edges.length - 24)
+    expect(focusId).toBe('hub-01')
+  })
+
+  it('Directed chain points 6 nodes along a line with the focus on the third', () => {
+    const { nodes, edges, focusId } = networkGraphFixtures['Directed chain']
+    expect(nodes).toHaveLength(6)
+    expect(edges.map((e) => `${e.source}>${e.target}`)).toHaveLength(5)
+    expect(focusId).toBe('alpha-03')
+  })
+
+  it('One group holds 10 nodes in one group; Many groups holds 14 groups of 1 to 3', () => {
+    const one = networkGraphFixtures['One group'].nodes
+    expect([one.length, new Set(one.map((n) => n.group)).size]).toEqual([10, 1])
+    const many = networkGraphFixtures['Many groups'].nodes
+    const sizes = [...new Set(many.map((n) => n.group))].map(
+      (g) => many.filter((n) => n.group === g).length
+    )
+    expect(sizes).toHaveLength(14)
+    expect(sizes.every((size) => size >= 1 && size <= 3)).toBe(true)
+  })
+
+  it('Large gives every node the group of its root, five groups in all', () => {
+    const groups = new Set(largeFixture.nodes.map((n) => n.group))
+    expect(groups.size).toBe(5)
+    expect(groups.has(undefined)).toBe(false)
   })
 
   it('Wide fan-out has 60 children and Deep chain has 12 nodes', () => {

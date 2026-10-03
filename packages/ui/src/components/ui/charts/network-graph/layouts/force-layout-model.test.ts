@@ -260,7 +260,12 @@ describe('forceLayout positions', () => {
     const nodes = [n('a'), n('b'), n('c')]
     const edges = [link('a', 'b'), link('b', 'c')]
     const once = layout.compute({ nodes, edges, width: 400, height: 300 })
-    const twice = layout.compute({ nodes: [...nodes, n('b'), n('a')], edges, width: 400, height: 300 })
+    const twice = layout.compute({
+      nodes: [...nodes, n('b'), n('a')],
+      edges,
+      width: 400,
+      height: 300,
+    })
     expect(twice).toEqual(once)
   })
 

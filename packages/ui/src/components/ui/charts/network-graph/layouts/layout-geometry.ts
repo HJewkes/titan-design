@@ -81,7 +81,10 @@ export function frameLayout(
 ): { positions: Record<string, GraphPoint>; offset: GraphPoint } & LayoutSize {
   const { PADDING, LABEL_ROOM } = LAYOUT_DEFAULTS
   const ids = Object.keys(positions).sort(compareText)
-  const { minX, minY, spanX, spanY } = extentOf([...ids.map((id) => positions[id] as GraphPoint), ...bounds])
+  const { minX, minY, spanX, spanY } = extentOf([
+    ...ids.map((id) => positions[id] as GraphPoint),
+    ...bounds,
+  ])
   const naturalWidth = spanX + PADDING * 2 + LABEL_ROOM
   const naturalHeight = spanY + PADDING * 2
   const width = Math.max(naturalWidth, viewportExtent(viewport.width))
