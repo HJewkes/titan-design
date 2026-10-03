@@ -422,3 +422,75 @@ function ownProps(fn, checker, srcDir) {
   }
   return names.size
 }
+
+// ---------------------------------------------------------------------------
+// The shrink-only baseline
+
+const REGEN_COMMAND = 'node packages/ui/scripts/update-decomposition-baseline.mjs'
+
+const FIXES = {
+  props:
+    'Group related props into one object prop, move variant-only props onto a variant component, ' +
+    'or take a ReactNode slot. Do not add props to a baselined component.',
+  'component-lines':
+    'Extract a part component (unexported, so anatomy treats it as a part), move state and effects ' +
+    'into a `useX` hook, and move pure computation into a sibling `.ts` module with its own test.',
+  'file-lines':
+    'Move pure helpers into a sibling `.ts` module and internal parts into a sibling `.tsx` file. ' +
+    'Keep the barrel exports unchanged.',
+  complexity:
+    'Replace branches with a lookup table or early returns, split per variant, or move derived ' +
+    'values into a tested pure function.',
+  'function-lines': 'Split into named helpers.',
+}
+
+const entryOf = (key, metric, value, baseline) => ({
+  key,
+  metric,
+  value,
+  limit: LIMITS[metric],
+  baseline,
+})
+
+/**
+ * Live measurements against the baseline: `added` is over its limit and unlisted, `grown` is above
+ * its baseline, and `stale` is below its baseline or gone. Each is `{ key, metric, value, limit, baseline }`.
+ */
+export function compareToBaseline(live, baseline) {
+  const added = []
+  for (const [key, metrics] of Object.entries(overLimit(live))) {
+    for (const [metric, value] of Object.entries(metrics)) {
+      if (baseline[key]?.[metric] === undefined) added.push(entryOf(key, metric, value, null))
+    }
+  }
+  const grown = []
+  const stale = []
+  for (const [key, metrics] of Object.entries(baseline)) {
+    for (const [metric, allowed] of Object.entries(metrics)) {
+      const value = live[key]?.[metric] ?? null
+      if (value !== null && value > allowed) grown.push(entryOf(key, metric, value, allowed))
+      if (value === null || value < allowed) stale.push(entryOf(key, metric, value, allowed))
+    }
+  }
+  return { added, grown, stale }
+}
+
+/** The baseline rewritten from the live over-limit metrics; `ok` is false when that adds or grows one without `allowIncrease`. */
+export function mergeBaseline(previous, live, { allowIncrease = false } = {}) {
+  const { added, grown } = compareToBaseline(live, previous)
+  if (added.length + grown.length > 0 && !allowIncrease) {
+    return { ok: false, added, grown, baseline: previous }
+  }
+  return { ok: true, added, grown, baseline: sortEntries(overLimit(live)) }
+}
+
+/** One failure line naming the key, metric, value, limit, baseline and the fix. */
+export function describeEntry({ key, metric, value, limit, baseline }, kind) {
+  const measured = value === null ? 'is gone' : `is ${value}`
+  const head = `\`${key}\` ${metric} ${measured} (limit ${limit}, baseline ${baseline ?? 'none'}).`
+  if (kind === 'stale') return `${head} Lock in the progress: run \`${REGEN_COMMAND}\`.`
+  return (
+    `${head} ${FIXES[metric]} Split along a responsibility, not to meet the number. If the ` +
+    `increase is deliberate, run \`${REGEN_COMMAND} --allow-increase\` and say why in the PR.`
+  )
+}

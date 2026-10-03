@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { axe } from 'jest-axe'
 import { render } from '@testing-library/react'
 import { GhostBand, BAND_H, type GhostBandProps } from './GhostBand'
 import { PHASE_AXIS_COLOR, PHASE_AXIS_BASE_COLOR, PACING_TONE } from './fatigue-tokens'
@@ -52,6 +53,11 @@ const onPace: PhaseSegment[] = [
 const TEMPO: [number, number, number, number] = [2.6, 0.4, 0.95, 0.28]
 
 describe('GhostBand', () => {
+  it('has no accessibility violations', async () => {
+    const container = band(segments, { targetTempoSeconds: TEMPO, showLabels: true })
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
   it('draws a contiguous strip — each run butts against the next with no gap', () => {
     const runs = basesOf(band())
     runs.forEach((r, i) => {

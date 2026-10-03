@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { axe } from 'jest-axe'
 import { render, screen } from '@testing-library/react'
 import { GhostSpark, GHOST_GUTTER } from './GhostSpark'
 import { siblingSource } from '../../../test/spacing-resolver'
@@ -7,6 +8,13 @@ import { FATIGUE_STATES } from './fatigue-mock'
 const model = FATIGUE_STATES[3].model // the full 8-rep set
 
 describe('GhostSpark', () => {
+  it('has no accessibility violations', async () => {
+    const { container } = render(
+      <GhostSpark curves={model.velocityCurves} width={360} height={180} />
+    )
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
   it('renders without crashing for a populated set', () => {
     render(<GhostSpark curves={model.velocityCurves} width={360} height={180} />)
     expect(screen.getByTestId('ghost-spark')).toBeInTheDocument()
