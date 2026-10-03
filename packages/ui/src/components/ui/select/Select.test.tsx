@@ -151,15 +151,15 @@ describe('Select', () => {
       expect(screen.getByRole('combobox')).toBeInTheDocument()
     })
 
-    it('fills the trigger with surface-input and no scrim', () => {
+    it('keeps the scrim fill on the filled trigger', () => {
       vi.mocked(cn).mockClear()
       render(<Select options={defaultOptions} variant="filled" />)
       const triggerClass = vi
         .mocked(cn)
         .mock.results.map((result) => String(result.value))
         .find((value) => value.includes('justify-between'))
-      expect(triggerClass).toContain('bg-surface-input')
-      expect(triggerClass).not.toMatch(/bg-scrim-/)
+      expect(triggerClass).toContain('bg-scrim-subtle')
+      expect(triggerClass).not.toContain('bg-surface-input')
     })
 
     it('supports selection in filled variant', () => {

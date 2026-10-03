@@ -63,7 +63,7 @@ const variantStyles: Record<
     error: 'border-border-input-error',
   },
   filled: {
-    base: 'border border-transparent rounded-md bg-surface-input',
+    base: 'border border-transparent rounded-md bg-scrim-subtle',
     hover: 'web:hover:border-border-input-hover',
     focus: 'border-border-input-focus bg-transparent',
     error: 'border-border-input-error',

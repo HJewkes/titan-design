@@ -2,7 +2,13 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Input } from './Input'
+import { cn } from '../../../utils/cn'
 import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
+
+vi.mock('../../../utils/cn', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../../utils/cn')>()
+  return { ...actual, cn: vi.fn(actual.cn) }
+})
 
 describe('Input', () => {
   it('renders correctly', () => {
@@ -53,6 +59,17 @@ describe('Input', () => {
     render(<Input isReadOnly defaultValue="Read only" />)
     const input = screen.getByDisplayValue('Read only')
     expect(input).toHaveAttribute('readonly')
+  })
+
+  it('fills the filled variant with the scrim, not surface-input', () => {
+    vi.mocked(cn).mockClear()
+    render(<Input variant="filled" placeholder="Filled" />)
+    const fieldClass = vi
+      .mocked(cn)
+      .mock.results.map((result) => String(result.value))
+      .find((value) => value.includes('rounded-md'))
+    expect(fieldClass).toContain('bg-scrim-subtle')
+    expect(fieldClass).not.toContain('bg-surface-input')
   })
 
   describe('accessibility', () => {
