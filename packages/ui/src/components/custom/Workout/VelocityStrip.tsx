@@ -10,7 +10,6 @@ import {
   SetBarChart,
   type SetSlot,
   type SetBarGeometry,
-  type SetBarChartProps,
   ChartSideRail,
   SET_BAR_DEFAULT_HEIGHT,
 } from '../charts/SetBarChart'
@@ -169,10 +168,6 @@ export interface VelocityStripProps extends ViewProps {
   showNumbers?: boolean
   /** `expanded` framed chart: the mean/loss info row. Default true. */
   showInfo?: boolean
-  /** Bare `expanded` strip only: {@link SetBarChartProps.emptyVariant}. */
-  emptyVariant?: SetBarChartProps['emptyVariant']
-  /** Bare `expanded` strip only: {@link SetBarChartProps.lightPaper}. */
-  lightPaper?: SetBarChartProps['lightPaper']
   className?: string
 }
 
@@ -853,10 +848,6 @@ export interface DualVelocityStripProps extends ViewProps {
   scale?: 'peak' | 'fixed'
   /** Total plot height (px), split evenly into the up (L) and down (R) wings. */
   height?: number
-  /** `dual-expanded` only: how a side's missed rep draws, {@link SetBarChartProps.emptyVariant}. */
-  emptyVariant?: SetBarChartProps['emptyVariant']
-  /** `dual-expanded` only: the bar shadow on a light plane, {@link SetBarChartProps.lightPaper}. */
-  lightPaper?: SetBarChartProps['lightPaper']
   className?: string
 }
 
@@ -1080,8 +1071,6 @@ function DualVelocityHero({
   )
 }
 
-type RailTreatment = Pick<DualVelocityStripProps, 'emptyVariant' | 'lightPaper'>
-
 /**
  * The `dual-expanded` diverging chart (formerly `rail`) — a lean, compact dedicated renderer.
  * Composing the hero here would drag in its value labels, reference lines, paper, and label
@@ -1105,9 +1094,7 @@ function DualVelocityRail({
   className,
   label,
   viewProps,
-  emptyVariant,
-  lightPaper,
-}: DualChartProps & RailTreatment & { liveRepIndex?: number }) {
+}: DualChartProps & { liveRepIndex?: number }) {
   // The lean dual-EXPANDED. Composed from two bare `expanded` strips exactly as the hero composes
   // two heroes, rather than drawing its own bars: composing is what makes the dual inherit the
   // single's bar widths, gaps, chunk-notch, set-type slot windows, paper and live-rep growth. The
@@ -1140,8 +1127,6 @@ function DualVelocityRail({
       zones={zones}
       liveRepIndex={liveRepIndex}
       height={plotHalf}
-      emptyVariant={emptyVariant}
-      lightPaper={lightPaper}
     />
   )
 
@@ -1269,8 +1254,6 @@ export function DualVelocityStrip({
   variant = 'hero',
   scale = 'peak',
   height,
-  emptyVariant,
-  lightPaper,
   className,
   ...props
 }: DualVelocityStripProps) {
@@ -1314,14 +1297,7 @@ export function DualVelocityStrip({
   // `liveRepIndex` reaches dual-expanded too: its wings are composed strips, so the newest rep
   // grows from the midline on BOTH sides. Compact is flat, so a grow animation has nothing to animate.
   if (resolvedVariant === 'dual-expanded')
-    return (
-      <DualVelocityRail
-        {...shared}
-        liveRepIndex={liveRepIndex}
-        emptyVariant={emptyVariant}
-        lightPaper={lightPaper}
-      />
-    )
+    return <DualVelocityRail {...shared} liveRepIndex={liveRepIndex} />
   if (resolvedVariant === 'compact') return <DualVelocityCompactStrip {...shared} />
   return <DualVelocityHero {...shared} liveRepIndex={liveRepIndex} />
 }
@@ -1348,8 +1324,6 @@ export function VelocityStrip({
   scale = 'peak',
   showNumbers = true,
   showInfo = true,
-  emptyVariant,
-  lightPaper,
   className,
   ...props
 }: VelocityStripProps) {
@@ -1540,8 +1514,6 @@ export function VelocityStrip({
         cornerStyle="top"
         targetReps={set ? undefined : targetReps}
         label={label}
-        emptyVariant={emptyVariant}
-        lightPaper={lightPaper}
         hideBaseline
         testID="velocity-strip-spotlight"
         testIDPrefix="velocity"

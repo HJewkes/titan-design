@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { barPaper } from '../../../theme/materials'
 import { SurfaceContext } from '../../ui/surface/SurfaceContext'
+import { SetBarTreatmentContext, type SetBarTreatment } from './setBarTones'
 import {
   SetBarChart,
   sideLabelText,
@@ -236,17 +237,25 @@ describe('SetBarChart empty columns', () => {
   })
 })
 
-describe('SetBarChart emptyVariant and lightPaper', () => {
+describe('SetBarChart under a SetBarTreatment', () => {
   const slots: SetSlot[] = [{ kind: 'rep', value: 0.9 }, { kind: 'empty' }]
   const CLEAR = 'rgba(0, 0, 0, 0)'
-  const renderLight = (props: { emptyVariant?: 'outline'; lightPaper?: 'soft' } = {}) =>
-    render(
+  const renderLight = (treatment?: SetBarTreatment) => {
+    const chart = <SetBarChart slots={slots} colorFor={silver} height={200} testIDPrefix="t" />
+    return render(
       <SurfaceContext.Provider value={{ mode: 'light', level: 'base' }}>
-        <SetBarChart slots={slots} colorFor={silver} height={200} testIDPrefix="t" {...props} />
+        {treatment ? (
+          <SetBarTreatmentContext.Provider value={treatment}>
+            {chart}
+          </SetBarTreatmentContext.Provider>
+        ) : (
+          chart
+        )}
       </SurfaceContext.Provider>
     )
+  }
 
-  it('keeps the faint fill and the paper shadow when neither prop is set', () => {
+  it('keeps the faint fill and the paper shadow outside a provider', () => {
     renderLight()
     const empty = getComputedStyle(screen.getByTestId('t-slot-empty'))
     expect(empty.borderTopWidth).toBe('0px')

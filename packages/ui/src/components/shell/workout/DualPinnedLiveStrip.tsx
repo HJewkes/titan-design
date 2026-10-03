@@ -11,6 +11,7 @@ import {
   normalizeLossThresholds,
   type VelocityLossThresholds,
 } from '../../custom/Workout/VelocityStrip'
+import { SetBarTreatmentContext, type SetBarTreatment } from '../../custom/charts/setBarTones'
 import {
   liveStripRepToken,
   liveStripRestReadout,
@@ -269,6 +270,9 @@ interface DualBarsProps {
   dimmed?: Side
 }
 
+// The paper's drop shadow smudged on the light card, and a side's missed rep vanished there (VW-877).
+const STRIP_BARS: SetBarTreatment = { emptyVariant: 'outline', lightPaper: 'soft' }
+
 const sameReps = (a: readonly LiveStripRep[], b: readonly LiveStripRep[]) =>
   a === b || (a.length === b.length && a.every((rep, i) => rep.velocity === b[i].velocity))
 
@@ -296,20 +300,18 @@ const DualBars = memo(function DualBars(props: DualBarsProps) {
       aria-hidden
       style={width != null ? { width } : { flex: 1, minWidth }}
     >
-      <DualVelocityStrip
-        left={{ velocities: left.map((r) => r.velocity), isDimmed: dimmed === 'left' }}
-        right={{ velocities: right.map((r) => r.velocity), isDimmed: dimmed === 'right' }}
-        variant="dual-expanded"
-        scale="fixed"
-        barColor={props.barColor}
-        lossThresholds={props.lossThresholds}
-        targetReps={targetReps}
-        height={height}
-        // Owner Gate 2 (VW-877): the paper's drop shadow smudged on the light card, and a side's
-        // missed rep vanished there; it now holds 3:1 in both modes.
-        emptyVariant="outline"
-        lightPaper="soft"
-      />
+      <SetBarTreatmentContext.Provider value={STRIP_BARS}>
+        <DualVelocityStrip
+          left={{ velocities: left.map((r) => r.velocity), isDimmed: dimmed === 'left' }}
+          right={{ velocities: right.map((r) => r.velocity), isDimmed: dimmed === 'right' }}
+          variant="dual-expanded"
+          scale="fixed"
+          barColor={props.barColor}
+          lossThresholds={props.lossThresholds}
+          targetReps={targetReps}
+          height={height}
+        />
+      </SetBarTreatmentContext.Provider>
     </View>
   )
 }, sameBars)

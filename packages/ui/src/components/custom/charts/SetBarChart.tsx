@@ -19,27 +19,10 @@ import {
   type ViewStyle,
   type LayoutChangeEvent,
 } from 'react-native'
-import { primitiveColors, primitiveRamps } from '../../../theme/tokens/primitives'
-import { alpha } from '../../../utils/colors'
-import { barPaper } from '../../../theme/materials'
-import { useOnSurfaceColor, useSurface, surfaceBackground } from '../../ui/surface/SurfaceContext'
+import { primitiveRamps } from '../../../theme/tokens/primitives'
+import { useSetBarTones } from './setBarTones'
 import { useLiveRepGrowth } from './live-rep-growth'
 import { REP_LEVEL_FLAT_BAR } from './flatBarGeometry'
-
-/** Linear-blend two #RRGGBB hexes (`t`=0 → a, 1 → b) — the surface-relative solid to-do tone. */
-function mixHex(a: string, b: string, t: number): string {
-  const parse = (h: string): [number, number, number] => {
-    const s = h.replace('#', '')
-    return [parseInt(s.slice(0, 2), 16), parseInt(s.slice(2, 4), 16), parseInt(s.slice(4, 6), 16)]
-  }
-  const [ar, ag, ab] = parse(a)
-  const [br, bg, bb] = parse(b)
-  const ch = (x: number, y: number): string =>
-    Math.round(x + (y - x) * t)
-      .toString(16)
-      .padStart(2, '0')
-  return `#${ch(ar, br)}${ch(ag, bg)}${ch(ab, bb)}`
-}
 
 /** The cyan variable-window fill — the range set's `floor..max` window (shared with SetStrip). */
 export const VARIABLE_FILL = primitiveRamps.cyan[900]
@@ -152,18 +135,6 @@ export interface SetBarChartProps {
    * its dashed to-do while the hero (and the dual that composes it) take the solid section.
    */
   todoVariant?: 'solid' | 'dashed'
-  /**
-   * `empty` cell treatment. `faint` (default) — a solid section fainter than a to-do. `outline` — a
-   * hollow stub ringed in the on-surface secondary tone, which holds 3:1 against the plane in both
-   * modes (WCAG 1.4.11), for a strip where a side's missed rep must read at a glance.
-   */
-  emptyVariant?: 'faint' | 'outline'
-  /**
-   * The bar shadow on a LIGHT plane. `raised` (default) — the shared paper material in both modes.
-   * `soft` — a 1px contact shadow in light mode only, where the paper's dark drop shadow smudges
-   * on white. Dark mode keeps the paper either way.
-   */
-  lightPaper?: 'raised' | 'soft'
   /**
    * Pad the rendered columns to at least this many with placeholder to-do cells. The diverging dual
    * passes the union column count of both wings so bars line up top↔bottom across the centre axis.
@@ -335,8 +306,6 @@ export function SetBarChart({
   formatValue = String,
   flipEdgeLabel = false,
   todoVariant = 'solid',
-  emptyVariant = 'faint',
-  lightPaper = 'raised',
   minColumns,
   renderReference,
   renderBarOverlay,
@@ -367,22 +336,9 @@ export function SetBarChart({
   const flip = orientation === 'down'
   const flipStyle = flip ? ({ transform: [{ scaleY: -1 as number }] } as const) : null
 
-  // Planned/to-do reps + the baseline draw in a SURFACE-relative neutral (on-surface tertiary)
-  // so they stay legible on every plane instead of a fixed grey.
-  const placeholderColor = useOnSurfaceColor('tertiary')
-  // The expanded strip's solid to-do tone: the surface plane blended toward the neutral (the same
-  // relative model), so a `todoVariant="solid"` section holds ~constant contrast on every plane.
-  const surface = useSurface()
-  const surfaceBg = surfaceBackground(surface.level, surface.mode)
-  const solidTodoColor = mixHex(surfaceBg, placeholderColor, 0.55)
-  // An `empty` cell (a rep the diverging side didn't log) is fainter than a planned to-do.
-  const emptyColor = mixHex(surfaceBg, placeholderColor, 0.28)
-  const emptyRing = useOnSurfaceColor('secondary')
-  const emptyFill: ViewStyle =
-    emptyVariant === 'outline'
-      ? { borderWidth: EMPTY_RING_WIDTH, borderColor: emptyRing }
-      : { backgroundColor: emptyColor }
-  const softPaper = lightPaper === 'soft' && surface.mode === 'light'
+  // Surface-relative placeholder, to-do and empty tones, and the bar paper (setBarTones).
+  const tones = useSetBarTones()
+  const placeholderColor = tones.placeholder
   // `all` rounds every corner (the thin flat-bar pill); `top` keeps the bolder hero top-round.
   const barCorners: ViewStyle =
     cornerStyle === 'all'
@@ -499,8 +455,8 @@ export function SetBarChart({
                   placeholderColor,
                   testIDPrefix,
                   todoVariant,
-                  solidTodoColor,
-                  emptyFill
+                  tones.solidTodo,
+                  tones.emptyFill
                 )}
               </View>
             )
@@ -562,7 +518,7 @@ export function SetBarChart({
                 style={[
                   { width: '100%', height: barHeightStyle, backgroundColor: color },
                   barCorners,
-                  softPaper ? softLightPaper(color, flip) : barPaper(color, flip),
+                  tones.paper(color, flip),
                 ]}
                 testID={`${testIDPrefix}-bar-${repIndex}`}
               />
@@ -573,17 +529,6 @@ export function SetBarChart({
       </View>
     </View>
   )
-}
-
-const EMPTY_RING_WIDTH = 2
-const SOFT_SHADOW = alpha(primitiveColors.black, 0.12)
-
-/** The paper's grain with a 1px contact shadow in place of its drop shadow (`lightPaper="soft"`). */
-function softLightPaper(color: string, flip: boolean): ViewStyle {
-  return {
-    ...barPaper(color, flip),
-    boxShadow: `0 ${flip ? -1 : 1}px 2px ${SOFT_SHADOW}`,
-  } as unknown as ViewStyle
 }
 
 /** A window cell (planned / variable / continue / empty) — a fixed-height stub in its set-type tone. */
@@ -620,7 +565,8 @@ function renderStub(
   }
   if (kind === 'empty') {
     // A rep column the diverging side did NOT log — a faint constant-contrast section, quieter than
-    // a planned to-do (it's a hole in this side's data, index-locked to the other side's rep).
+    // a planned to-do (it's a hole in this side's data, index-locked to the other side's rep), or
+    // a 3:1 ring under the `outline` SetBarTreatment.
     return <View style={{ ...base, ...emptyFill }} testID={`${testIDPrefix}-slot-empty`} />
   }
   // todo — a solid surface-relative section (expanded language) or a dashed outline (hero language).
