@@ -129,6 +129,44 @@ describe.each(['other', 'overall'])('a section whose id is %s', (sectionId) => {
   })
 })
 
+describe('a context-only section between two normal sections', () => {
+  const build = () => {
+    const input = sectionedInput()
+    input.sections = [
+      { id: 'one', title: 'One', questionIds: ['q1'], variantKeys: ['A'] },
+      {
+        id: 'notes',
+        title: 'Read this first',
+        context: 'Background before the next batch.',
+        questionIds: [],
+        variantKeys: [],
+        seeAlso: ['A'],
+      },
+      { id: 'two', title: 'Two', questionIds: ['q2'], variantKeys: ['B'] },
+    ]
+    return ManifestSchema.parse(input)
+  }
+
+  it('renders its title, context and see-also link on a page of its own', () => {
+    const m = build()
+    const pages = pagesFor(m)
+    expect(pages.map((p) => p.id)).toEqual(['one', 'notes', 'two', '#other', '#overall'])
+    const notes = formAt(m, pages[1].first)
+    expect(notes).toContain('Read this first')
+    expect(notes).toContain('Background before the next batch.')
+    expect(notes).toContain('href="#variant-A"')
+    expect(notes).not.toContain('data-testid="variant-B"')
+    expect(notes).not.toContain('data-testid="overall"')
+  })
+
+  it('keeps Overall on the last page only and counts the extra page', () => {
+    const m = build()
+    const pages = pagesFor(m)
+    expect(formAt(m, pages[1].first)).toContain('Section 2 of 5: Read this first')
+    expect(formAt(m, pages[pages.length - 1].first)).toContain('data-testid="overall"')
+  })
+})
+
 describe('a 60-frame sectioned image round', () => {
   const m = ManifestSchema.parse(pagedImageInput(60))
   const frames = (markup: string) => markup.match(/data-testid="variant-F\d+"/g) ?? []
