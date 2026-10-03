@@ -2,6 +2,12 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Select } from './Select'
+import { cn } from '../../../utils/cn'
+
+vi.mock('../../../utils/cn', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../../utils/cn')>()
+  return { ...actual, cn: vi.fn(actual.cn) }
+})
 
 const defaultOptions = [
   { value: '1', label: 'Option 1' },
@@ -143,6 +149,17 @@ describe('Select', () => {
     it('renders with default variant when omitted', () => {
       render(<Select options={defaultOptions} />)
       expect(screen.getByRole('combobox')).toBeInTheDocument()
+    })
+
+    it('fills the trigger with surface-input and no scrim', () => {
+      vi.mocked(cn).mockClear()
+      render(<Select options={defaultOptions} variant="filled" />)
+      const triggerClass = vi
+        .mocked(cn)
+        .mock.results.map((result) => String(result.value))
+        .find((value) => value.includes('justify-between'))
+      expect(triggerClass).toContain('bg-surface-input')
+      expect(triggerClass).not.toMatch(/bg-scrim-/)
     })
 
     it('supports selection in filled variant', () => {

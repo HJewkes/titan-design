@@ -129,7 +129,7 @@ export function Select<T extends string = string>({
           accessibilityState={{ expanded: isOpen, disabled: isDisabled }}
           className={cn(
             'flex-row items-center justify-between px-4 py-2.5 rounded-md border',
-            variant === 'filled' ? 'bg-scrim-subtle' : 'bg-surface-base',
+            variant === 'filled' ? 'bg-surface-input' : 'bg-surface-base',
             isInvalid
               ? 'border-border-input-error'
               : variant === 'filled'
