@@ -571,6 +571,16 @@ describe('placeLabels', () => {
     expect([...placeLabels(model).keys()].sort()).toEqual([...model.order].sort())
   })
 
+  it("'all' keeps every label even where labels and marks meet", () => {
+    const layout = placed(['aa', 10, 10], ['bb', 20, 10], ['cc', 30, 10])
+    const all: GraphLayout = {
+      key: 'all',
+      compute: (input) => ({ ...layout.compute(input), labelMode: 'all' }),
+    }
+    const model = buildGraphModel(ids('aa', 'bb', 'cc'), [], all, viewport)
+    expect([...placeLabels(model).keys()]).toEqual(['aa', 'bb', 'cc'])
+  })
+
   it('under declutter, no two kept label rectangles meet unless both are pinned', () => {
     const point = fc.record({
       x: fc.integer({ min: 0, max: 120 }),
