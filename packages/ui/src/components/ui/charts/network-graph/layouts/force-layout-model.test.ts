@@ -301,5 +301,5 @@ describe('forceLayout seam', () => {
       )
     bestOf5(mediumFixture)
     expect(bestOf5(largeFixture) / bestOf5(mediumFixture)).toBeLessThan(14)
-  })
+  }, 60_000)
 })

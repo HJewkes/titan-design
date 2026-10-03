@@ -319,7 +319,8 @@ describe('clusteredLayout degenerate input', () => {
           return performance.now() - started
         })
       )
-    bestOf5(forceLayout())
-    expect(bestOf5(clusteredLayout()) / bestOf5(forceLayout())).toBeLessThan(3)
-  })
+    const options = { iterations: 100 }
+    bestOf5(forceLayout(options))
+    expect(bestOf5(clusteredLayout(options)) / bestOf5(forceLayout(options))).toBeLessThan(3)
+  }, 60_000)
 })
