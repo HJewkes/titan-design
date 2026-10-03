@@ -42,7 +42,7 @@ describe('component-catalog.json freshness', () => {
       expect(
         allowed,
         `${entry.name} has status "${entry.status}", which MATURITY.md does not define. ` +
-          'Fix the status:* tag on its story meta, then ' +
+          'Fix the status:* tag on its story meta. ' +
           FIX
       ).toContain(entry.status)
     }
