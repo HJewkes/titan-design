@@ -87,11 +87,6 @@ describe('stable-layers (MATURITY clause 5)', () => {
     expect(names).not.toContain('select')
   })
 
-  it('reads the axe layer from the stories-axe baseline', () => {
-    const skeleton = stable.find((dir) => dir.name === 'skeleton')
-    expect(skeleton && missingLayers(skeleton, axeBaseline)).toContain('axe')
-  })
-
   it.each(stable.map((dir) => [dir.name, dir] as const))(
     '%s has every applicable layer or a baselined gap',
     (name, dir) => {
@@ -156,6 +151,18 @@ describe('stable-layers failure paths', () => {
     expect(stableBaselineProblems('fixture', missingLayers(dir, {}))).toEqual([
       expect.stringMatching(/fixture lacks layer\(s\) keyboard/),
     ])
+  })
+
+  it('reads the axe layer from the stories-axe baseline', () => {
+    const dir = fixture({
+      'Fixture.tsx': 'export function Fixture() { return null }',
+      'Fixture.stories.tsx': STABLE_STORY(),
+      'fixtureMath.test.ts': PROPERTY_TEST,
+    })
+    const gapped = { 'components-molecules-fixture--default': ['button-name'] }
+
+    expect(missingLayers(dir, gapped)).toContain('axe')
+    expect(missingLayers(dir, {})).not.toContain('axe')
   })
 
   it('accepts a keyboard layer declared n/a with a reason', () => {
