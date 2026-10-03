@@ -4,11 +4,12 @@ Charts that paint data marks from a scale and know nothing about workouts, sessi
 initiatives. A chart whose prop, type or label names a domain concept lives in its
 `custom/<Family>/` instead (`CLAUDE.md`, Placement).
 
-| Member               | Kind   | Holds                                                                                  |
-| -------------------- | ------ | -------------------------------------------------------------------------------------- |
-| `spark-bars/`        | atom   | `SparkBars`: a signed-series bar sparkline. Moved from `custom/charts` in M5 (TD-188). |
-| `dependency-matrix/` | notes  | API note and fixtures for the planned dependency matrix; no component yet.             |
-| `kit/`               | module | Shared domain scales, tick rules, label thinning and entrance motion. See its README.  |
+| Member               | Kind     | Holds                                                                                  |
+| -------------------- | -------- | -------------------------------------------------------------------------------------- |
+| `bar-list/`          | molecule | `BarList`: a ranked horizontal bar list with a top-N cap.                              |
+| `spark-bars/`        | atom     | `SparkBars`: a signed-series bar sparkline. Moved from `custom/charts` in M5 (TD-188). |
+| `dependency-matrix/` | notes    | API note and fixtures for the planned dependency matrix; no component yet.             |
+| `kit/`               | module   | Shared domain scales, tick rules, label thinning and entrance motion. See its README.  |
 
 ## Rules
 
@@ -26,3 +27,19 @@ initiatives. A chart whose prop, type or label names a domain concept lives in i
 
 Workout bar marks (`SetBarChart`, `live-rep-growth`, `flatBarGeometry`) stay in
 `custom/charts` because they carry workout vocabulary.
+
+## Text readout pattern
+
+Every chart here gives assistive tech a readout in words. The pattern is written once; a chart
+follows it and does not invent its own.
+
+1. Marks are hidden from assistive tech (`aria-hidden`, `accessibilityElementsHidden`).
+2. The chart root carries the name `"<accessibilityLabel>. <summary>"`.
+3. `summary` comes from a pure `summarize<Name>(model)` in `<name>-model.ts`, and a `summarize?`
+   prop overrides it.
+4. Each item's name comes from a pure `format...Label` function, with a prop override.
+5. No hidden data table, same as the line chart.
+6. An interactive chart with an active item uses one tab stop and `aria-activedescendant`, with a
+   polite live region as the fallback if a screen reader ignores it.
+
+`bar-list/` is the reference: `summarizeBarList` and `rowLabel` in `bar-list-model.ts`.
