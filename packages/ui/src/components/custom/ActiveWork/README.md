@@ -126,7 +126,7 @@ model.
   (`taskRefLinker`, `wikiLinkLinker`, `prRefLinker`, bundled as `sessionLinkers`) live in this family's
   `session-linkers.ts`. Second consumer is the initiative reader (M2: brief and handoff prose). Inline refs
   are `Text` with `onPress`, not `Link`: `Link` wraps a `Pressable` view, which cannot sit inline in prose.
-- **`formatTaskAge` / `formatSessionDuration`** (`format-time.ts`) — the compact age label moved out of
+- **`formatTaskAge` / `formatSessionDuration`** (`utils/time-format.ts`, re-exported by `format-time.ts`) — the compact age label moved out of
   `TaskTable` so the session reader shares it (`TaskTable` still re-exports it), plus `1h 4m` / `42m` for a
   session's wall-clock length. `hooks/useTimer`'s `formatDuration` is `mm:ss` for timers, a different job.
 
@@ -201,7 +201,7 @@ maps stay separate on purpose — `low` is `status-info` as a dot (it must stay 
 | card chrome        | `Card` (default; `accent` for focused state)          | ad-hoc bordered `View`; `subtle`/`outline` used to make a box                                                         |
 | colors             | `getSemanticColors` / `greyRamp` tokens               | magic hex                                                                                                             |
 | session prose      | `MarkdownProse` (new, `Custom/Prose`)                 | the specimen's inline `parseBlocks` / `renderInline` / `BlockView` (deleted); no markdown renderer existed            |
-| session durations  | `formatSessionDuration` (new, `format-time.ts`)       | the specimen's inline `duration`; `useTimer.formatDuration` is `mm:ss`                                                |
+| session durations  | `formatSessionDuration` (new, `utils/time-format.ts`) | the specimen's inline `duration`; `useTimer.formatDuration` is `mm:ss`                                                |
 | selectable rows    | `Pressable` + `role="option"` (the F1 pattern)        | the specimen's bordered `Card`-per-row; `ListItem` has no selected state                                              |
 
 ### Colour vocabularies
