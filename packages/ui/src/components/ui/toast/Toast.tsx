@@ -184,7 +184,7 @@ const statusStyles: Record<ToastStatus, { bg: string; border: string; icon: stri
 
 const iconColors: Record<ToastStatus, string> = {
   success: 'text-status-success',
-  error: 'text-status-error',
+  error: 'text-text-error',
   warning: 'text-status-warning',
   info: 'text-status-info',
 }

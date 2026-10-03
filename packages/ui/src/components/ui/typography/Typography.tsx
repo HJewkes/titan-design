@@ -90,7 +90,7 @@ const colorStyles: Record<TypographyColor, string> = {
   disabled: 'text-text-disabled',
   inverse: 'text-text-inverse',
   success: 'text-status-success',
-  error: 'text-status-error',
+  error: 'text-text-error',
   warning: 'text-status-warning',
   info: 'text-status-info',
   inherit: '', // No color class, inherit from parent

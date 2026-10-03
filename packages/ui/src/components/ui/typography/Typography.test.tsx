@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedClassNames } from '../../../test/classname-capture'
 import { Typography, Heading, Paragraph, Caption, Label, Overline } from './Typography'
 
 describe('Typography', () => {
@@ -20,6 +21,18 @@ describe('Typography', () => {
   it('applies color styles', () => {
     render(<Typography color="secondary">Secondary text</Typography>)
     expect(screen.getByText('Secondary text')).toBeInTheDocument()
+  })
+
+  it('paints error text with the dark-safe text-error token, not the status fill', () => {
+    render(
+      <Typography color="error" testID="error-text">
+        Something went wrong
+      </Typography>
+    )
+
+    const classes = capturedClassNames.get('error-text')?.split(' ') ?? []
+    expect(classes).toContain('text-text-error')
+    expect(classes).not.toContain('text-status-error')
   })
 
   it('applies text alignment', () => {
