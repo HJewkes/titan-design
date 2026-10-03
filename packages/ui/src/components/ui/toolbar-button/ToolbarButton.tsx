@@ -1,4 +1,4 @@
-import React, { useState, useCallback, createContext, useContext } from 'react'
+import React, { useState, useCallback, useMemo, createContext, useContext } from 'react'
 import {
   View,
   Text,
@@ -9,6 +9,8 @@ import {
   Platform,
 } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { useHitTarget } from '../../../hooks/useHitTarget'
+import type { HitTargetLimit, HitTargetOutset } from '../../../utils/hit-target'
 import { getHoverColors } from '../../../theme'
 import { greyRamp, primitiveColors } from '../../../theme/tokens/primitives'
 import type { ThemeMode } from '../../../theme/tokens/semantic'
@@ -31,6 +33,9 @@ const ToolbarButtonContext = createContext<ToolbarButtonContextType>({
   isOpen: false,
   setIsOpen: () => {},
 })
+
+// Set by ToolbarButtonGroup so a button's hit box stops at its neighbour's face (TD-10).
+const ToolbarButtonGroupContext = createContext<HitTargetLimit | undefined>(undefined)
 
 export interface ToolbarButtonProps extends ViewProps {
   /** Button label */
@@ -68,7 +73,7 @@ const BUTTON_BG = greyRamp[800]
 // Calculate hover colors using color math
 const hoverColors = getHoverColors(BUTTON_BG, 'medium')
 
-// Size style maps
+// Size style maps. Every face is under the 44pt floor, so each carries a hit box (TD-10).
 const sizeStyles: Record<ToolbarButtonSize, string> = {
   sm: 'px-2 py-1 min-h-[26px]',
   md: 'px-2.5 py-1 min-h-[30px]',
@@ -126,6 +131,7 @@ export function ToolbarButton({
   const [isOpen, setIsOpen] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
   const mode = useSurfaceMode()
+  const hitTarget = useHitTarget({ limit: useContext(ToolbarButtonGroupContext) })
 
   const handlePress = useCallback(() => {
     if (isDisabled) return
@@ -156,6 +162,8 @@ export function ToolbarButton({
           accessibilityState={{ selected, disabled: isDisabled }}
           accessibilityLabel={label}
           accessibilityHint={tooltip}
+          hitSlop={hitTarget.hitSlop}
+          onLayout={hitTarget.onLayout}
           className={cn(
             // Base styles
             'flex-row items-center justify-center rounded',
@@ -173,6 +181,7 @@ export function ToolbarButton({
             },
           ]}
         >
+          {hitTarget.layerProps && <View {...hitTarget.layerProps} />}
           {icon && <ToolbarButtonIcon icon={icon} color={iconTint} />}
           {showLabel && (
             <Text
@@ -255,6 +264,13 @@ const gapStyles: Record<string, string> = {
   md: 'gap-2',
 }
 
+// The px each gap class resolves to: how far a hit box may grow toward a neighbour.
+const gapOutsets: Record<string, HitTargetOutset> = {
+  none: 0,
+  sm: 4,
+  md: 8,
+}
+
 /**
  * Container for grouping toolbar buttons together.
  */
@@ -265,19 +281,24 @@ export function ToolbarButtonGroup({
   children,
   ...props
 }: ToolbarButtonGroupProps) {
+  const outset = gapOutsets[gap]
+  const hitTargetLimit = useMemo(() => ({ axis: orientation, outset }), [orientation, outset])
+
   return (
-    <View
-      className={cn(
-        orientation === 'horizontal' ? 'flex-row' : 'flex-col',
-        gapStyles[gap],
-        'items-center',
-        className
-      )}
-      accessibilityRole="toolbar"
-      {...props}
-    >
-      {children}
-    </View>
+    <ToolbarButtonGroupContext.Provider value={hitTargetLimit}>
+      <View
+        className={cn(
+          orientation === 'horizontal' ? 'flex-row' : 'flex-col',
+          gapStyles[gap],
+          'items-center',
+          className
+        )}
+        accessibilityRole="toolbar"
+        {...props}
+      >
+        {children}
+      </View>
+    </ToolbarButtonGroupContext.Provider>
   )
 }
 
