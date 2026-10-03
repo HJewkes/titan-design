@@ -5,6 +5,8 @@ import { cn } from '../../../utils/cn'
 export type InputSize = 'sm' | 'md' | 'lg'
 export type InputVariant = 'outline' | 'filled' | 'underline'
 
+type TextInputFocusEvent = Parameters<NonNullable<TextInputProps['onFocus']>>[0]
+
 export interface InputProps extends Omit<TextInputProps, 'editable'> {
   /** Input size */
   size?: InputSize
@@ -116,12 +118,12 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
 ) {
   const [isFocused, setIsFocused] = useState(false)
 
-  const handleFocus = (e: any) => {
+  const handleFocus = (e: TextInputFocusEvent) => {
     setIsFocused(true)
     onFocus?.(e)
   }
 
-  const handleBlur = (e: any) => {
+  const handleBlur = (e: TextInputFocusEvent) => {
     setIsFocused(false)
     onBlur?.(e)
   }

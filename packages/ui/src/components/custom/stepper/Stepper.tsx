@@ -64,7 +64,7 @@ export function Stepper({
           if (React.isValidElement(child)) {
             return (
               <>
-                {React.cloneElement(child as React.ReactElement<any>, { index })}
+                {React.cloneElement(child as React.ReactElement<StepProps>, { index })}
                 {index < React.Children.count(children) - 1 && <StepConnector index={index} />}
               </>
             )
@@ -95,6 +95,8 @@ function StepConnector({ index }: StepConnectorProps) {
   )
 }
 
+type StepPartProps = Pick<StepIndicatorProps, 'status' | 'index'>
+
 export interface StepProps {
   /** Step index (injected by Stepper) */
   index?: number
@@ -123,7 +125,7 @@ export function Step({ index = 0, status, className, children }: StepProps) {
     >
       {React.Children.map(children, (child) => {
         if (React.isValidElement(child)) {
-          return React.cloneElement(child as React.ReactElement<any>, {
+          return React.cloneElement(child as React.ReactElement<StepPartProps>, {
             status: derivedStatus,
             index,
           })

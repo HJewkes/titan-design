@@ -152,7 +152,7 @@ export function AvatarGroup({ children, max, size = 'md', className }: AvatarGro
           className={cn('border-2 border-surface-base rounded-full', index > 0 && '-ml-2')}
         >
           {React.isValidElement(child)
-            ? React.cloneElement(child as React.ReactElement<any>, { size })
+            ? React.cloneElement(child as React.ReactElement<Pick<AvatarProps, 'size'>>, { size })
             : child}
         </View>
       ))}
