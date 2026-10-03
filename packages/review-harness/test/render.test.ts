@@ -1,12 +1,24 @@
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
-import { App } from '../page/App.tsx'
+import { App, Form } from '../page/App.tsx'
+import { initialState, pagesFor } from '../page/state.ts'
 import { ManifestSchema, type Manifest } from '../src/schema.ts'
-import { SHA, manifest, sectioned, sectionedInput } from './fixtures.ts'
+import { SHA, manifest, pagedImageInput, sectioned, sectionedInput } from './fixtures.ts'
 
 const html = (m: Manifest) =>
   renderToStaticMarkup(createElement(App, { manifest: m, manifestSha256: SHA }))
+
+/** The form as it stands with `active` as the active stop. */
+const formAt = (m: Manifest, active: number) =>
+  renderToStaticMarkup(
+    createElement(Form, {
+      manifest: m,
+      state: { ...initialState(m), active },
+      dispatch: () => {},
+      onHitTesting: () => {},
+    })
+  )
 
 const orderOf = (markup: string, ...needles: string[]) => needles.map((n) => markup.indexOf(n))
 
@@ -52,31 +64,59 @@ describe('a sectioned round', () => {
     expect(question).toBeLessThan(variant)
   })
 
-  it('gathers unsectioned frames and questions into Other frames and Overall', () => {
-    const [other, c, overall, q3] = orderOf(
-      markup,
-      'data-testid="other-frames"',
-      'data-testid="variant-C"',
+  it('shows only the first section, with the pager, until the human pages on', () => {
+    expect(markup).toContain('Section 1 of 3: Which card leads the page?')
+    expect(markup).not.toContain('data-testid="variant-C"')
+    expect(markup).not.toContain('data-testid="general"')
+  })
+
+  it('pages unsectioned frames into Other frames, then questions into Overall', () => {
+    const m = sectioned()
+    const [, other, overall] = pagesFor(m)
+    const otherPage = formAt(m, other.first)
+    expect(otherPage).toContain('data-testid="other-frames"')
+    expect(otherPage).toContain('data-testid="variant-C"')
+    expect(otherPage).not.toContain('data-testid="variant-A"')
+    const [heading, q3, general] = orderOf(
+      formAt(m, overall.first),
       'data-testid="overall"',
-      'data-testid="question-q3"'
+      'data-testid="question-q3"',
+      'data-testid="general"'
     )
-    expect(other).toBeLessThan(c)
-    expect(c).toBeLessThan(overall)
-    expect(overall).toBeLessThan(q3)
+    expect(heading).toBeGreaterThan(-1)
+    expect(heading).toBeLessThan(q3)
+    expect(q3).toBeLessThan(general)
   })
 
   it('tells each frame which question it belongs to', () => {
     expect(markup).toContain('Answers: Which one leads the page?')
   })
 
-  it('links a see-also frame instead of rendering it twice', () => {
+  it('links a see-also frame on another page instead of rendering it twice', () => {
     const input = sectionedInput()
     input.sections = [
       { id: 'one', title: 'One', questionIds: ['q1'], variantKeys: ['A'] },
       { id: 'two', title: 'Two', questionIds: ['q2'], variantKeys: ['B'], seeAlso: ['A'] },
     ]
-    const linked = html(ManifestSchema.parse(input))
-    expect(linked).toContain('href="#variant-A"')
-    expect(linked.match(/data-testid="variant-A"/g)).toHaveLength(1)
+    const m = ManifestSchema.parse(input)
+    const two = formAt(m, pagesFor(m)[1].first)
+    expect(two).toContain('href="#variant-A"')
+    expect(two).not.toContain('data-testid="variant-A"')
+  })
+})
+
+describe('a 60-frame sectioned image round', () => {
+  const m = ManifestSchema.parse(pagedImageInput(60))
+  const frames = (markup: string) => markup.match(/data-testid="variant-F\d+"/g) ?? []
+
+  it('renders one 28-frame section at a time, never all 60 frames', () => {
+    const pages = pagesFor(m)
+    expect(pages.map((p) => p.id)).toEqual(['batch-1', 'batch-2', 'batch-3', 'overall'])
+    expect(pages.map((p) => frames(formAt(m, p.first)).length)).toEqual([28, 28, 4, 0])
+  })
+
+  it('names the page the human is on and offers the section keys', () => {
+    expect(formAt(m, pagesFor(m)[1].first)).toContain('Section 2 of 4: Batch 2')
+    expect(html(m)).toContain('<kbd>[</kbd> <kbd>]</kbd> section')
   })
 })

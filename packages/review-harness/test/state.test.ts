@@ -1,6 +1,15 @@
 import { describe, expect, it } from 'vitest'
-import { createReducer, initialState, numberKeyAction, stopsFor } from '../page/state.ts'
-import { manifest } from './fixtures.ts'
+import {
+  createReducer,
+  initialState,
+  numberKeyAction,
+  pageOf,
+  pageStepAction,
+  pagesFor,
+  stopsFor,
+} from '../page/state.ts'
+import { ManifestSchema } from '../src/schema.ts'
+import { manifest, pagedImageInput, sectioned } from './fixtures.ts'
 
 const m = manifest()
 const reduce = createReducer(m)
@@ -58,5 +67,40 @@ describe('keyboard model', () => {
     state = reduce(state, { type: 'pick', id: 'q1', option: 'A', many: false })
     expect(state.draft.answers.q2.picks).toEqual(['B'])
     expect(state.draft.answers.q1.pick).toBeUndefined()
+  })
+})
+
+describe('section paging', () => {
+  const paged = ManifestSchema.parse(pagedImageInput(60))
+
+  it('keeps an unsectioned round on one page', () => {
+    expect(pagesFor(m)).toEqual([{ id: 'all', title: m.unit, first: 0, last: 7 }])
+    expect(pageStepAction(m, 3, 1)).toBeNull()
+  })
+
+  it('pages each section, then Other frames, then Overall with the general note', () => {
+    expect(pagesFor(sectioned())).toEqual([
+      { id: 'lead', title: 'Which card leads the page?', first: 0, last: 3 },
+      { id: 'other', title: 'Other frames', first: 4, last: 4 },
+      { id: 'overall', title: 'Overall', first: 5, last: 7 },
+    ])
+  })
+
+  it('steps ] and [ to the first stop of the next or previous section, and stops at the ends', () => {
+    const [one, two] = pagesFor(paged)
+    expect(pageStepAction(paged, one.first + 5, 1)).toEqual({ type: 'jump', index: two.first })
+    expect(pageStepAction(paged, two.last, -1)).toEqual({ type: 'jump', index: one.first })
+    expect(pageStepAction(paged, 0, -1)).toBeNull()
+    expect(pageStepAction(paged, stopsFor(paged).length - 1, 1)).toBeNull()
+  })
+
+  it('follows a jump, and Enter carries the human from one section into the next', () => {
+    const reducePaged = createReducer(paged)
+    const [one, two] = pagesFor(paged)
+    const jumped = reducePaged(initialState(paged), { type: 'jump', index: one.last })
+    expect(jumped).toMatchObject({ active: one.last, follow: true })
+    const next = reducePaged(jumped, { type: 'advance' })
+    expect(pageOf(pagesFor(paged), next.active)).toBe(1)
+    expect(next.active).toBe(two.first)
   })
 })

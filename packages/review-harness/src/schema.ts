@@ -35,6 +35,10 @@ const storybookUrl = z.url({ protocol: /^https?$/ }).check((ctx) => {
 
 export const AUTO_HEIGHT = 'auto'
 
+/** A round shows every frame on one page, so it stays small; sections page through more. */
+export const MAX_VARIANTS = 12
+export const MAX_SECTIONED_VARIANTS = 80
+
 /** A frame height in CSS px, or "auto" to size the frame to its story's content. */
 const frameHeight = z.union([z.number().int().min(120).max(4000), z.literal(AUTO_HEIGHT)])
 
@@ -186,7 +190,7 @@ export const ManifestSchema = z
     height: frameHeight.default(AUTO_HEIGHT),
     /** The ceiling an auto-sized frame stops at; taller stories scroll inside the frame. */
     maxHeight: z.number().int().min(120).max(4000).default(1200),
-    variants: z.array(VariantSchema).min(1).max(12),
+    variants: z.array(VariantSchema).min(1).max(MAX_SECTIONED_VARIANTS),
     questions: z.array(QuestionSchema),
     sections: z.array(SectionSchema).min(1).optional(),
   })
@@ -199,6 +203,12 @@ export const ManifestSchema = z
     report('variants', duplicates(m.variants.map((v) => v.key)))
     report('questions', duplicates(m.questions.map((q) => q.id)))
     report('widths', duplicates(m.widths.map(String)))
+    if (!m.sections && m.variants.length > MAX_VARIANTS)
+      ctx.addIssue({
+        code: 'custom',
+        path: ['variants'],
+        message: `a round without sections holds at most ${MAX_VARIANTS} variants; group more into sections`,
+      })
     for (const message of sectionProblems(m))
       ctx.addIssue({ code: 'custom', path: ['sections'], message })
     for (const message of optionVariantProblems(m))
@@ -304,6 +314,12 @@ const VARIANT_SOURCE = {
   ],
 }
 
+// The manifest superRefine's unsectioned cap, as JSON Schema.
+const UNSECTIONED_CAP = {
+  if: { not: { required: ['sections'] } },
+  then: { properties: { variants: { maxItems: MAX_VARIANTS } } },
+}
+
 export function manifestJsonSchema(): unknown {
   const schema = z.toJSONSchema(ManifestSchema, {
     io: 'input',
@@ -316,7 +332,7 @@ export function manifestJsonSchema(): unknown {
   }
   schema.properties.storybookUrl.pattern = LOOPBACK_URL_PATTERN
   Object.assign(schema.properties.variants.items, VARIANT_SOURCE)
-  return schema
+  return Object.assign(schema, UNSECTIONED_CAP)
 }
 
 export function feedbackJsonSchema(): unknown {

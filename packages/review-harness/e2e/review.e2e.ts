@@ -230,7 +230,7 @@ test('a reload keeps the unsent verdicts, comments, pins and answers', async ({ 
   run.child.kill()
 })
 
-test('a sectioned round scrolls to the end and sends with focus left in a story', async ({
+test('a sectioned round pages section by section and sends with focus left in a story', async ({
   page,
 }) => {
   const dir = await mkdtemp(join(tmpdir(), 'titan-review-e2e-'))
@@ -240,18 +240,13 @@ test('a sectioned round scrolls to the end and sends with focus left in a story'
   cli = run.child
   await page.goto(await run.url)
 
-  for (const id of ['q1', 'q2', 'q3', 'q4'])
+  const ids = ['q1', 'q2', 'q3', 'q4']
+  for (const [i, id] of ids.entries()) {
+    await expect(page.getByTestId('page-position')).toContainText(`Section ${i + 1} of 5`)
     await page.getByTestId(`question-${id}`).getByRole('radio').first().click()
-  const review = page.getByRole('button', { name: /Review answers/ })
-  await page.mouse.move(700, 500)
-  for (
-    let i = 0;
-    i < 40 && !((await review.isVisible()) && (await review.boundingBox())!.y < 1000);
-    i++
-  )
-    await page.mouse.wheel(0, 600)
-  await expect(review).toBeInViewport()
-  expect(await page.locator('[data-width] iframe').count()).toBe(14)
+    if (i < ids.length - 1) await page.keyboard.press(']')
+  }
+  expect(await page.locator('[data-width] iframe').count(), 'only section 4 is on screen').toBe(4)
 
   const story = page.getByTestId('variant-G').locator('iframe').last()
   // A cold Storybook compiles the story on first request, which can outlast the 5 s default.

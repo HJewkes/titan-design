@@ -15,7 +15,9 @@ as JSON on stdout and in `feedback.json`. Private workspace tool, not published.
 6. On a question, `1`-`9` pick its options; the scale takes its value directly.
 7. The last box is for general notes. `l` toggles one column per variant.
    A sectioned round asks each group's question above that group's frames, and every frame
-   carries the question it belongs to in its (sticky) header.
+   carries the question it belongs to in its (sticky) header. It shows one section at a time:
+   `]` pages to the next section, `[` to the previous one, and `Enter` past a section's last
+   stop carries on into the next. The header lists every section as a link.
 8. `Cmd+Enter` opens the final check, which lists every answer and anything missing.
 9. `Cmd+Enter` again sends. The tab says "Sent", and the agent is already iterating.
 10. Nothing leaves the Mac: the page binds 127.0.0.1 and loads no external resources.
@@ -59,7 +61,8 @@ sha256 of the manifest you wrote.
 - Manifest `titan-review/round@1`: `unit`, `round`, `storybookUrl`, `context?`, `widths[]`,
   `height` (a number of px or `"auto"`, default `"auto"`; at round level a number caps every
   frame), `maxHeight` (default 1200, the cap when the round's `height` is `"auto"`),
-  `variants[{key, storyId | image, label, args?, globals?, height?}]`,
+  `variants[{key, storyId | image, label, args?, globals?, height?}]` (at most 12, or at most 80
+  in a round with `sections`),
   `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?}]`,
   `sections?[{id, title, context?, questionIds[], variantKeys[], seeAlso?[], height?}]`.
   A question over variant keys is variant-scoped and sits right under the variants; set
@@ -169,6 +172,11 @@ Rules worth knowing:
   `seeAlso`, which renders a link to it instead of a second iframe. Validation refuses a variant
   or question claimed by two sections, and refuses an unknown key with the id in the message.
 - **Sections are optional.** A round that does not need them should not have them.
+- **Sections page a big round (TD-343).** A round without sections shows every frame on one
+  page and is capped at 12 variants. A round with sections shows one section at a time, so it
+  takes up to 80, for example one Gate 2 batch of main and PR-head frames in light and dark.
+  The page order is the sections, then "Other frames", then "Overall" with the general note.
+  A `seeAlso` link pages to the section that holds that frame. `feedback.json` is unchanged.
 
 ### Heights
 
@@ -217,7 +225,8 @@ own text field keeps its typing, except `Cmd+Enter`.
 
 - `pnpm --filter @titan-design/review-harness test`: schemas, feedback building, the
   keyboard model, the section layout and the pick-to-verdict link, the fitted-height maths,
-  the page's markup for a sectioned and an unsectioned round (`react-dom/server`), and the
+  the page's markup for a sectioned and an unsectioned round (`react-dom/server`), section
+  paging over a 60-frame image round, and the
   server's proxy, submit and exit paths against a fake Storybook. `test/fixtures/rounds/`
   holds four real rounds, copied verbatim, that must keep parsing.
 - `pnpm --filter @titan-design/review-harness test:e2e`: a real isolated Storybook (or

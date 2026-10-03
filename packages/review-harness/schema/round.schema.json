@@ -54,7 +54,7 @@
     },
     "variants": {
       "minItems": 1,
-      "maxItems": 12,
+      "maxItems": 80,
       "type": "array",
       "items": {
         "type": "object",
@@ -419,5 +419,19 @@
     "variants",
     "questions"
   ],
-  "additionalProperties": false
+  "additionalProperties": false,
+  "if": {
+    "not": {
+      "required": [
+        "sections"
+      ]
+    }
+  },
+  "then": {
+    "properties": {
+      "variants": {
+        "maxItems": 12
+      }
+    }
+  }
 }
