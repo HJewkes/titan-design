@@ -258,7 +258,7 @@ describe('SetBarChart emptyVariant and lightPaper', () => {
   it('rings the empty cell and softens the light shadow when opted in', () => {
     renderLight({ emptyVariant: 'outline', lightPaper: 'soft' })
     const empty = getComputedStyle(screen.getByTestId('t-slot-empty'))
-    expect(empty.borderTopWidth).toBe('1.5px')
+    expect(empty.borderTopWidth).toBe('2px')
     expect(empty.backgroundColor).toBe(CLEAR)
     expect(screen.getByTestId('t-bar-0').style.boxShadow).toMatch(
       /^0 1px 2px rgba\(0, ?0, ?0, ?0\.12\)$/

@@ -575,7 +575,7 @@ export function SetBarChart({
   )
 }
 
-const EMPTY_RING_WIDTH = 1.5
+const EMPTY_RING_WIDTH = 2
 const SOFT_SHADOW = alpha(primitiveColors.black, 0.12)
 
 /** The paper's grain with a 1px contact shadow in place of its drop shadow (`lightPaper="soft"`). */
