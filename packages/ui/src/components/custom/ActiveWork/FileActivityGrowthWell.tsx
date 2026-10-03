@@ -5,7 +5,7 @@ import { Typography } from '../../ui/typography'
 import { Eyebrow } from '../../ui/eyebrow'
 import { formatCompact, formatSignedCompact } from '../../../utils/number-format'
 import { resolveColor } from '../../../theme/resolve-color'
-import type { FileActivityDetailData } from './FileActivityDetail'
+import type { FileActivity } from './FileActivityRow'
 
 /**
  * Growth stats are *char deltas* — a measurement moving up or down — so they take
@@ -29,7 +29,14 @@ function GrowthStat({ label, value, color }: { label: string; value: string; col
   )
 }
 
-export function GrowthWell({ file }: { file: FileActivityDetailData }) {
+type GrowthWellFile = Pick<FileActivity, 'path' | 'timeline'> & {
+  sessions: number
+  charsAdded: number
+  charsRemoved: number
+  netGrowth: number
+}
+
+export function GrowthWell({ file }: { file: GrowthWellFile }) {
   const grew = file.netGrowth >= 0
 
   return (
