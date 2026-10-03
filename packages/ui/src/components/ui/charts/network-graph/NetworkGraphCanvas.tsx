@@ -1,5 +1,5 @@
 // The interactive layer stack of NetworkGraph: one scroll container that is the graph's single tab stop.
-import { useEffect, useId, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
 import { ScrollView, type ScrollViewProps, type ViewProps } from 'react-native'
 import { graphItems, kindLabel, labelsById, type GraphItems } from './network-graph-items-model'
 import {
@@ -39,11 +39,12 @@ export interface NetworkGraphCanvasProps {
 }
 
 /** Keeps DOM focus on the graph root, the one tab stop, and reports focus entering and leaving it. */
-function focusHandlers(graph: NetworkGraphState) {
+function focusHandlers(graph: NetworkGraphState, onEntered: () => void) {
   return {
     onFocus: (event: WebFocusEvent) => {
-      if (event.target === event.currentTarget) graph.enter()
-      else event.currentTarget.focus()
+      if (event.target !== event.currentTarget) return event.currentTarget.focus()
+      graph.enter()
+      onEntered()
     },
     onBlur: (event: WebFocusEvent) => {
       if (!event.currentTarget.contains(event.relatedTarget)) graph.leave()
@@ -51,17 +52,22 @@ function focusHandlers(graph: NetworkGraphState) {
   }
 }
 
-/** Scrolls the active item into view after a key moved it. A hover never scrolls. */
+/**
+ * Scrolls the active item into view when asked: after a key and when focus enters. A hover never
+ * asks, so the graph does not move under the pointer.
+ */
 function useScrollToActive(activeDomId: string | undefined) {
-  const isPending = useRef(false)
+  const [requests, setRequests] = useState(0)
+  const latestId = useRef(activeDomId)
   useEffect(() => {
-    if (!isPending.current || activeDomId === undefined || typeof document === 'undefined') return
-    isPending.current = false
-    document.getElementById(activeDomId)?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' })
-  }, [activeDomId])
-  return () => {
-    isPending.current = true
-  }
+    latestId.current = activeDomId
+  })
+  useEffect(() => {
+    if (requests === 0 || latestId.current === undefined || typeof document === 'undefined') return
+    const target = document.getElementById(latestId.current)
+    target?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' })
+  }, [requests])
+  return useCallback(() => setRequests((count) => count + 1), [])
 }
 
 interface NodeLayerProps {
@@ -147,7 +153,7 @@ function rootProps({ name, activeDomId, isDisabled, state, onMoved }: RootOption
       event.preventDefault()
       onMoved()
     },
-    ...focusHandlers(state),
+    ...focusHandlers(state, onMoved),
   } as unknown as ScrollViewProps
 }
 
