@@ -6,14 +6,14 @@ import type { BarListModelMarker } from './bar-list-marker'
 const MARKER_WIDTH = 2
 const MARKER_OVERHANG = 2
 
-/** The reference line, beside the track because the track clips its children. */
+/** The reference line; the margin keeps its right edge inside the track at every fraction. Beside the track because the track clips its children. */
 export function MarkerLine({ fraction }: { fraction: number }) {
   return (
     <View
       className="absolute bg-text-primary"
       style={{
         left: `${fraction * 100}%`,
-        marginLeft: fraction === 1 ? -MARKER_WIDTH : 0,
+        marginLeft: -MARKER_WIDTH * fraction,
         width: MARKER_WIDTH,
         top: -MARKER_OVERHANG,
         bottom: -MARKER_OVERHANG,

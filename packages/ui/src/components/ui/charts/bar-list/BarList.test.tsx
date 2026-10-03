@@ -141,9 +141,44 @@ describe('BarList', () => {
       )
       const lines = screen.getAllByTestId('bar-list-marker')
       expect(new Set(lines.map((el) => el.style.left))).toEqual(new Set(['25%']))
-      // The line shares a wrapper with the aligned track, so one fraction is one x in every row.
+      // The line shares a parent with the aligned track, so one fraction is one x in every row.
       for (const line of lines) {
-        expect(line.parentElement?.querySelector('[data-testid="bar-list-track"]')).not.toBeNull()
+        const track = line.parentElement?.querySelector('[data-testid="bar-list-track"]')
+        expect(line.parentElement).toBe(track?.parentElement)
+        expect(line.parentElement).toHaveAttribute('aria-hidden', 'true')
+      }
+    })
+
+    it('keeps the line inside the track end at fractions near 1', () => {
+      const rows = [{ id: 'a', label: 'A', value: 10 }]
+      for (const value of [9.99, 10]) {
+        const { unmount } = render(
+          <BarList accessibilityLabel="Edge" rows={rows} referenceMarker={{ value, label: 'M' }} />
+        )
+        const line = screen.getByTestId('bar-list-marker')
+        const fraction = value / 10
+        expect(line.style.left).toBe(`${fraction * 100}%`)
+        expect(line.style.marginLeft).toBe(`${-2 * fraction}px`)
+        unmount()
+      }
+    })
+
+    it('renders the pre-marker bar structure without a marker', () => {
+      const depth = (track: Element) => {
+        let steps = 0
+        for (let el = track; el.getAttribute('data-testid') !== 'bar-list-row'; steps++) {
+          el = el.parentElement as Element
+        }
+        return steps
+      }
+      for (const f of barListFixtures.filter((x) => x.rows.length > 0)) {
+        const { unmount } = renderFixture({ ...f, referenceMarker: undefined })
+        const tracks = screen.getAllByTestId('bar-list-track')
+        for (const track of tracks) {
+          expect(track).toHaveAttribute('aria-hidden', 'true')
+          expect(depth(track)).toBe(f.layout === 'stacked' ? 4 : 3)
+        }
+        unmount()
       }
     })
 
