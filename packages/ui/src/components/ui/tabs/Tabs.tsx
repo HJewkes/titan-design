@@ -111,7 +111,7 @@ export function TabList({ children, className }: TabListProps) {
     >
       {React.Children.map(children, (child, index) => {
         if (React.isValidElement(child)) {
-          return React.cloneElement(child as React.ReactElement<any>, { index })
+          return React.cloneElement(child as React.ReactElement<TabProps>, { index })
         }
         return child
       })}
