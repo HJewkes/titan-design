@@ -188,6 +188,24 @@ which is tagged `@deprecated` for one release and **disappears in 0.23.0**.
 While this row exists, `MATURITY.md` clause 2's fourth condition keeps `spark-bars` at
 `status:candidate`; it becomes promotable when the shim is deleted in 0.23.0.
 
+## Migration M6 — `FilePathLabel` moved to `ui/file-path-label`
+
+`FilePathLabel` is domain-free (a file path is not an active-work concept) and the console session
+sidebar and the Codewatch family need it, so by the placement rule (`CLAUDE.md`, Placement) its home
+is `ui/file-path-label`. Component, test and story are unchanged except for the story title, which is
+now `Components/Atoms/FilePathLabel`.
+
+| Export                                                                                           | Replacement                              | Known consumers                                  | Task   |
+| ------------------------------------------------------------------------------------------------ | ---------------------------------------- | ------------------------------------------------ | ------ |
+| `FilePathLabel`, `splitPath`, `FilePathLabelProps`, `FilePathLabelSize` from `custom/ActiveWork` | the same names from `ui/file-path-label` | none in-repo (`ActiveWork` imports the new path) | TD-418 |
+
+**No published API change.** `FilePathLabel` still comes off the package root barrel, now through
+`components/ui`. Only a deep relative import of `custom/ActiveWork/FilePathLabel` hits the shim,
+which is tagged `@deprecated` for one release and **disappears in 0.23.0**.
+
+While this row exists, `MATURITY.md` clause 2's fourth condition keeps `file-path-label` at
+`status:candidate`; it becomes promotable when the shim is deleted in 0.23.0.
+
 ## Fatigue tokens — `TONE_COLOR` replaced by `TONE_TOKEN` (VW-316)
 
 **Breaking, no alias possible.** `TONE_COLOR` held colours resolved at import

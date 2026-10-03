@@ -1,6 +1,5 @@
 export * from './InitiativeCard'
 export * from './PortfolioOverview'
-export * from './FilePathLabel'
 export * from './FileActivityRow'
 export * from './FileActivityDetail'
 export * from './CoChangeChip'

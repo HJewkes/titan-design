@@ -566,7 +566,7 @@ module.exports = tseslint.config(
       'src/**/*.test.{ts,tsx}',
       'src/utils/workout-format.ts',
       'src/utils/number-format.ts',
-      'src/components/custom/ActiveWork/format-time.ts',
+      'src/utils/time-format.ts',
     ],
     rules: {
       'titan/no-local-formatter': 'error',

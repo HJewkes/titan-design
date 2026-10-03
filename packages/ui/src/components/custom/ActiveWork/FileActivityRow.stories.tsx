@@ -17,7 +17,7 @@ const meta: Meta<typeof FileActivityRow> = {
         component:
           '**Row.** One file in the ranked "hottest files" list: path, total touches, the ' +
           'read/write/edit split, and a sparkline of per-session growth. Composes ' +
-          '[FilePathLabel](?path=/docs/custom-activework-filepathlabel--docs) and ' +
+          '[FilePathLabel](?path=/docs/components-atoms-filepathlabel--docs) and ' +
           '[SparkBars](?path=/docs/custom-charts-sparkbars--docs). ' +
           'Used by [FileHistoryExplorer](?path=/docs/custom-activework-filehistoryexplorer--docs).',
       },

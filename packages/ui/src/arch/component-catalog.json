@@ -113,15 +113,10 @@
       "props": [],
       "purpose": "",
       "sources": {
-        "status": "packages/ui/src/components/custom/ActiveWork/FilePathLabel.stories.tsx"
+        "status": null
       },
-      "status": "candidate",
-      "storyIds": [
-        "custom-activework-filepathlabel--base-only",
-        "custom-activework-filepathlabel--default",
-        "custom-activework-filepathlabel--no-directory",
-        "custom-activework-filepathlabel--small"
-      ],
+      "status": "review",
+      "storyIds": [],
       "tier": "molecule"
     },
     {
@@ -4216,6 +4211,6 @@
       "reason": "name-not-exported"
     }
   ],
-  "inputsHash": "sha256:e2601dfd30d73e7e2fbdbccc794a98ac53f8555b68fc50a493299530d300d429",
+  "inputsHash": "sha256:17db66b29abcb5babd6a43fba37a8f82e2c7d3be9b190339eeb089642bbf7648",
   "schema": 1
 }
