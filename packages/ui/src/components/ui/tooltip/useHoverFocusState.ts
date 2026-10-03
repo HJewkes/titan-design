@@ -55,10 +55,16 @@ function useHolds(isDisabled: boolean, { show, hide }: Visibility) {
     onMouseDown: () => {
       holds.current.pointerDown = true
     },
+    // The marker covers only the focus its press causes; RNW sends no press-out for some presses.
     onFocus: () => {
-      if (!holds.current.pointerDown) hold('focus', true)
+      const byPointer = holds.current.pointerDown
+      holds.current.pointerDown = false
+      if (!byPointer) hold('focus', true)
     },
-    onBlur: () => hold('focus', false),
+    onBlur: () => {
+      holds.current.pointerDown = false
+      hold('focus', false)
+    },
     onLongPress: show,
     onPressOut: () => {
       holds.current.pointerDown = false

@@ -30,6 +30,8 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.useRealTimers()
+  // RNW's input modality is module-global; a mouse move ends the touch modality a tap test leaves.
+  fireEvent.mouseMove(document)
 })
 
 describe('useHoverFocusState', () => {
@@ -145,6 +147,44 @@ describe('useHoverFocusState', () => {
     fireEvent.keyDown(document, { key: 'Escape' })
 
     expect(screen.queryByText('Card')).toBeNull()
+  })
+
+  it('opens on a later keyboard focus after a right click that sent no press', () => {
+    render(<HoverCard openDelay={300} />)
+    const trigger = screen.getByTestId('trigger')
+    fireEvent.mouseDown(trigger, { button: 2, detail: 1 })
+    fireEvent.blur(trigger)
+
+    fireEvent.focus(trigger)
+    act(() => vi.advanceTimersByTime(300))
+
+    expect(screen.getByText('Card')).toBeInTheDocument()
+  })
+
+  it('opens on a later keyboard focus after a quick click on a trigger with no onPress', () => {
+    render(<HoverCard openDelay={300} />)
+    const trigger = screen.getByTestId('trigger')
+    pressWithPointer(trigger)
+    fireEvent.blur(trigger)
+
+    fireEvent.focus(trigger)
+    act(() => vi.advanceTimersByTime(300))
+
+    expect(screen.getByText('Card')).toBeInTheDocument()
+  })
+
+  it('opens on a later keyboard focus after a touch tap', () => {
+    render(<HoverCard openDelay={300} />)
+    const trigger = screen.getByTestId('trigger')
+    fireEvent.touchStart(trigger, { touches: [{ clientX: 0, clientY: 0 }] })
+    fireEvent.touchEnd(trigger, { changedTouches: [{ clientX: 0, clientY: 0 }] })
+    pressWithPointer(trigger)
+    fireEvent.blur(trigger)
+
+    fireEvent.focus(trigger)
+    act(() => vi.advanceTimersByTime(300))
+
+    expect(screen.getByText('Card')).toBeInTheDocument()
   })
 
   // A guard, not a regression test: the shared-flag code also passed it.
