@@ -2675,27 +2675,6 @@
     },
     {
       "composes": [],
-      "family": "custom/charts",
-      "file": "packages/ui/src/components/custom/charts/SparkBars.tsx",
-      "name": "SparkBars",
-      "props": [],
-      "purpose": "",
-      "sources": {
-        "status": "packages/ui/src/components/custom/charts/SparkBars.stories.tsx"
-      },
-      "status": "candidate",
-      "storyIds": [
-        "custom-charts-sparkbars--all-negative",
-        "custom-charts-sparkbars--all-positive",
-        "custom-charts-sparkbars--default",
-        "custom-charts-sparkbars--empty",
-        "custom-charts-sparkbars--tall",
-        "custom-charts-sparkbars--truncated"
-      ],
-      "tier": "atom"
-    },
-    {
-      "composes": [],
       "family": "custom/stepper",
       "file": "packages/ui/src/components/custom/stepper/Stepper.tsx",
       "name": "Stepper",
@@ -3205,6 +3184,27 @@
         "components-molecules-carousel--default"
       ],
       "tier": "organism"
+    },
+    {
+      "composes": [],
+      "family": "ui/charts/spark-bars",
+      "file": "packages/ui/src/components/ui/charts/spark-bars/SparkBars.tsx",
+      "name": "SparkBars",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/charts/spark-bars/SparkBars.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-sparkbars--all-negative",
+        "components-atoms-sparkbars--all-positive",
+        "components-atoms-sparkbars--default",
+        "components-atoms-sparkbars--empty",
+        "components-atoms-sparkbars--tall",
+        "components-atoms-sparkbars--truncated"
+      ],
+      "tier": "atom"
     },
     {
       "composes": [],
@@ -4216,6 +4216,6 @@
       "reason": "name-not-exported"
     }
   ],
-  "inputsHash": "sha256:691761c693059bab4769148e5f548797c480573403cf87009038a7b7a02503fb",
+  "inputsHash": "sha256:c5b052f6af5ec9c3219de6faed517ec72cad93e3710e369625b58be43b209ced",
   "schema": 1
 }

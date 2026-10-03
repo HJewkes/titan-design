@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { SparkBars } from './SparkBars'
 
 const meta: Meta<typeof SparkBars> = {
-  title: 'Custom/Charts/SparkBars',
+  title: 'Components/Atoms/SparkBars',
   component: SparkBars,
   tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
@@ -12,7 +12,8 @@ const meta: Meta<typeof SparkBars> = {
           '**Atom.** A tiny bar-mark sparkline for a signed series — the counterpart to ' +
           '[Sparkline](?path=/docs/custom-workout-dataviz-sparkline--docs). Where a line reads a *trajectory*, ' +
           'bars read *discrete per-period magnitude*. Bars scale on absolute value so a negative ' +
-          'period is as tall as an equally large positive one, with the sign carried by fill colour.',
+          'period is as tall as an equally large positive one, with the sign carried by fill colour. Composes no other component: ' +
+          'bars are `View`s coloured through `resolveColor`.',
       },
     },
   },

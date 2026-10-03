@@ -1,7 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps } from 'react-native'
-import { cn } from '../../../utils/cn'
-import { resolveColor } from '../../../theme/resolve-color'
+import { cn } from '../../../../utils/cn'
+import { resolveColor } from '../../../../theme/resolve-color'
 
 /** Shortest bar drawn, so an all-but-empty series still reads as a series. */
 const MIN_BAR_HEIGHT = 2

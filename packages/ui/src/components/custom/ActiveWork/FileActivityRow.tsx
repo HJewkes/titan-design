@@ -1,6 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, Pressable } from 'react-native'
-import { SparkBars } from '../charts'
+import { SparkBars } from '../../ui/charts/spark-bars'
 import { Typography } from '../../ui/typography'
 import { resolveColor } from '../../../theme/resolve-color'
 import { categoricalPalette } from '../../../theme/tokens/primitives'

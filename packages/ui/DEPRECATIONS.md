@@ -90,8 +90,8 @@ components can honour reduced motion without importing `custom/`, which
 `titan/no-upward-tier-import` forbids (roadmap decision of 2026-09-19, M1). The
 body is unchanged; only its home moved.
 
-| Export                                                    | Replacement                                            | Known consumers    | Task |
-| --------------------------------------------------------- | ------------------------------------------------------ | ------------------ | ---- |
+| Export                                                         | Replacement                                          | Known consumers        | Task  |
+| -------------------------------------------------------------- | ---------------------------------------------------- | ---------------------- | ----- |
 | `usePrefersReducedMotion` from `custom/charts/live-rep-growth` | the same name from `@/hooks/usePrefersReducedMotion` | in-repo `custom/` only | TD-37 |
 
 No consumer import path changes: `live-rep-growth` was never on a barrel, so the
@@ -169,6 +169,23 @@ five `custom/Workout` components still deep-import `useMeasuredWidth` from it. T
 repoints them to `hooks/useMeasuredWidth`; the file goes with the shim in 0.23.0.
 
 While this row exists, `MATURITY.md` clause 2's fourth condition keeps `table` at
+`status:candidate`; it becomes promotable when the shim is deleted in 0.23.0.
+
+## Migration M5 — `SparkBars` moved to `ui/charts/`
+
+`SparkBars` is domain-free and paints data marks from values, so by the placement rule
+(`CLAUDE.md`, Placement) its home is `ui/charts/spark-bars`. The component, test and story are
+unchanged except for the story title, which is now `Components/Atoms/SparkBars`.
+
+| Export                                             | Replacement                                | Known consumers                                  | Task   |
+| -------------------------------------------------- | ------------------------------------------ | ------------------------------------------------ | ------ |
+| `SparkBars`, `SparkBarsProps` from `custom/charts` | the same names from `ui/charts/spark-bars` | none in-repo (`ActiveWork` imports the new path) | TD-188 |
+
+**No published API change.** `SparkBars` still comes off the package root barrel, now through
+`components/ui`. Only a deep relative import of `components/custom/charts` hits the shim,
+which is tagged `@deprecated` for one release and **disappears in 0.23.0**.
+
+While this row exists, `MATURITY.md` clause 2's fourth condition keeps `spark-bars` at
 `status:candidate`; it becomes promotable when the shim is deleted in 0.23.0.
 
 ## Fatigue tokens — `TONE_COLOR` replaced by `TONE_TOKEN` (VW-316)
