@@ -176,6 +176,30 @@ function buildLongLabels(): GraphFixture {
   )
 }
 
+function buildTwoComponents(): GraphFixture {
+  const ids = (count: number, from: number) =>
+    Array.from({ length: count }, (_, i) => `alpha-${pad(from + i)}`)
+  const first = ids(8, 1)
+  const second = ids(5, 9)
+  const chain = (members: string[]) =>
+    members.slice(1).map((id, i) => spawn(members[i] as string, id))
+  return fixture(
+    [...first, ...second, ...ids(3, 14)].map((id) => node(id, 'worker')),
+    [...chain(first), spawn(first[0] as string, first[4] as string), ...chain(second)]
+  )
+}
+
+function buildMutualPair(): GraphFixture {
+  return fixture(
+    [node('alpha-01', 'lead'), node('alpha-02', 'worker')],
+    [
+      spawn('alpha-01', 'alpha-02'),
+      message('alpha-02', 'alpha-01', 3),
+      message('alpha-01', 'alpha-02', 8),
+    ]
+  )
+}
+
 const ringPositions = (ids: readonly string[]): Record<string, GraphPoint> =>
   Object.fromEntries(
     ids.map((id, i) => {
@@ -220,6 +244,13 @@ function buildHostile(): GraphFixture {
   }
 }
 
+/** Options for the force layout, not data: each value must clamp or fall back, never throw. */
+export const hostileLayoutOptions = {
+  seeds: [Number.NaN, -1, 1.5, 2 ** 40],
+  iterations: [0, Number.NaN, 1e9],
+  width: 0,
+} as const
+
 export const smallFixture = buildSmall()
 export const mediumFixture = buildMedium()
 export const largeFixture = buildLarge()
@@ -251,4 +282,6 @@ export const networkGraphFixtures = {
   Pulse: buildSmall(),
   'Long label': buildLongLabels(),
   Hostile: hostileFixture,
+  'Two components': buildTwoComponents(),
+  'Mutual pair': buildMutualPair(),
 } satisfies Record<string, GraphFixture>

@@ -62,6 +62,10 @@ export interface GraphLayoutResult {
   /** Natural size; may exceed the viewport. */
   width: number
   height: number
+  /** Default 'horizontal'. */
+  edgeShape?: 'horizontal' | 'arc'
+  /** Default 'all'. */
+  labelMode?: 'all' | 'declutter'
 }
 
 export interface GraphLayout {
