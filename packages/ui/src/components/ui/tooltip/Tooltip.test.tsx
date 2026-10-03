@@ -334,6 +334,10 @@ describe('defaultIsOpen and onOpenChange', () => {
 })
 
 describe('keyboard focus on a focusable trigger', () => {
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
   function renderButtonTip() {
     const result = render(
       <Tooltip label="Saves the draft">
@@ -371,6 +375,27 @@ describe('keyboard focus on a focusable trigger', () => {
     fireEvent.blur(button)
 
     expect(screen.queryByText('Saves the draft')).not.toBeInTheDocument()
+  })
+
+  it('opens on keyboard focus once enabled, after a mousedown on the disabled Button', () => {
+    vi.useFakeTimers()
+    const tip = (isDisabled: boolean) => (
+      <Tooltip label="Saves the draft" openDelay={300}>
+        <Button isDisabled={isDisabled}>
+          <ButtonText>Save</ButtonText>
+        </Button>
+      </Tooltip>
+    )
+    const { rerender } = render(tip(true))
+    const button = screen.getByRole('button', { name: 'Save' })
+    fireEvent.mouseDown(button, { button: 0, detail: 1 })
+    fireEvent.mouseUp(button, { button: 0, detail: 1 })
+    rerender(tip(false))
+
+    fireEvent.focus(button)
+    act(() => vi.advanceTimersByTime(300))
+
+    expect(screen.getByText('Saves the draft')).toBeInTheDocument()
   })
 
   it('closes after a mouse click and stays closed when the pointer leaves', () => {

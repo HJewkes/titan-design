@@ -30,6 +30,29 @@ function useCloseOnEscape(isOpen: boolean, close: () => void) {
   }, [isOpen])
 }
 
+const GESTURE_END_EVENTS = ['mouseup', 'contextmenu'] as const
+
+/**
+ * Calls `onEnd` once, when the pointer gesture under way ends. A mousedown's
+ * focus runs before its mouseup, so a marker cleared here still sees that focus.
+ */
+function useGestureEnd(onEnd: () => void) {
+  const stop = useRef<(() => void) | null>(null)
+  useEffect(() => () => stop.current?.(), [])
+  return () => {
+    if (stop.current || typeof document === 'undefined') return
+    const end = () => {
+      stop.current?.()
+      onEnd()
+    }
+    for (const type of GESTURE_END_EVENTS) document.addEventListener(type, end, true)
+    stop.current = () => {
+      for (const type of GESTURE_END_EVENTS) document.removeEventListener(type, end, true)
+      stop.current = null
+    }
+  }
+}
+
 interface Visibility {
   show: () => void
   hide: () => void
@@ -49,13 +72,17 @@ function useHolds(isDisabled: boolean, { show, hide }: Visibility) {
     if (isHeld) show()
     else if (!holds.current.hover && !holds.current.focus) hide()
   }
+  const watchGestureEnd = useGestureEnd(() => {
+    holds.current.pointerDown = false
+  })
   return {
     onHoverIn: () => hold('hover', true),
     onHoverOut: () => hold('hover', false),
+    // The marker covers only the focus its own gesture causes; RNW sends no press-out for some presses.
     onMouseDown: () => {
       holds.current.pointerDown = true
+      watchGestureEnd()
     },
-    // The marker covers only the focus its press causes; RNW sends no press-out for some presses.
     onFocus: () => {
       const byPointer = holds.current.pointerDown
       holds.current.pointerDown = false

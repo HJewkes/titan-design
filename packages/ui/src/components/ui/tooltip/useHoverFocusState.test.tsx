@@ -161,6 +161,31 @@ describe('useHoverFocusState', () => {
     expect(screen.getByText('Card')).toBeInTheDocument()
   })
 
+  it('opens on a later keyboard focus after a right click that focused nothing (Safari)', () => {
+    render(<HoverCard openDelay={300} />)
+    const trigger = screen.getByTestId('trigger')
+    fireEvent.mouseDown(trigger, { button: 2, detail: 1 })
+    fireEvent.contextMenu(trigger, { button: 2 })
+    fireEvent.mouseUp(trigger, { button: 2, detail: 1 })
+
+    fireEvent.focus(trigger)
+    act(() => vi.advanceTimersByTime(300))
+
+    expect(screen.getByText('Card')).toBeInTheDocument()
+  })
+
+  it('removes its gesture listeners when unmounted mid-press', () => {
+    const remove = vi.spyOn(document, 'removeEventListener')
+    const { unmount } = render(<HoverCard />)
+    fireEvent.mouseDown(screen.getByTestId('trigger'), { button: 0, detail: 1 })
+
+    unmount()
+
+    const removed = remove.mock.calls.map(([type]) => type)
+    expect(removed).toEqual(expect.arrayContaining(['mouseup', 'contextmenu']))
+    remove.mockRestore()
+  })
+
   it('opens on a later keyboard focus after a quick click on a trigger with no onPress', () => {
     render(<HoverCard openDelay={300} />)
     const trigger = screen.getByTestId('trigger')
