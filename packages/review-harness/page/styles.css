@@ -113,6 +113,19 @@ kbd {
   color: var(--color-text-secondary);
 }
 
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-inline-md);
+  margin-bottom: var(--space-stack-md);
+  color: var(--color-text-secondary);
+}
+
+.prompts [aria-current] a {
+  font-weight: 600;
+}
+
 .see-also a,
 .prompts a {
   color: var(--color-brand-primary);

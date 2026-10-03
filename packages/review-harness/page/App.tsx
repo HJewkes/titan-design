@@ -1,4 +1,12 @@
-import { useEffect, useMemo, useReducer, useState, type Dispatch } from 'react'
+import {
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+  type Dispatch,
+  type ReactNode,
+} from 'react'
 import { buildFeedback } from '../src/feedback.ts'
 import { feedbackProblems } from '../src/round.ts'
 import { roundLayout, type ResolvedSection } from '../src/sections.ts'
@@ -9,9 +17,12 @@ import { browserStorage, clearDraft, saveDraft, type DraftStorage } from './draf
 import {
   createReducer,
   orderedQuestions,
+  pageOf,
+  pagesFor,
   restoredState,
   stopIndexes,
   type Action,
+  type Page,
   type ReviewState,
 } from './state.ts'
 import { Stop } from './Stop.tsx'
@@ -36,15 +47,44 @@ async function postFeedback(body: unknown): Promise<string[]> {
   )
 }
 
+/** A link that pages to a stop instead of scrolling, since other sections are not rendered. */
+function JumpLink({
+  href,
+  index,
+  dispatch,
+  children,
+}: {
+  href: string
+  index: number
+  dispatch: Dispatch<Action>
+  children: ReactNode
+}) {
+  return (
+    <a
+      href={href}
+      onClick={(e) => {
+        e.preventDefault()
+        dispatch({ type: 'jump', index })
+      }}
+    >
+      {children}
+    </a>
+  )
+}
+
 function Header({
   manifest,
   state,
+  dispatch,
   hitTesting,
 }: {
   manifest: Manifest
   state: ReviewState
+  dispatch: Dispatch<Action>
   hitTesting: boolean | null
 }) {
+  const pages = pagesFor(manifest)
+  const current = pageOf(pages, state.active)
   return (
     <header className="page-head">
       <h1>
@@ -53,9 +93,11 @@ function Header({
       {manifest.context && <p>{manifest.context}</p>}
       {manifest.sections ? (
         <ol className="prompts">
-          {manifest.sections.map((s) => (
-            <li key={s.id}>
-              <a href={`#section-${s.id}`}>{s.title}</a>
+          {pages.map((p, i) => (
+            <li key={p.id} aria-current={i === current ? 'step' : undefined}>
+              <JumpLink href={`#section-${p.id}`} index={p.first} dispatch={dispatch}>
+                {p.title}
+              </JumpLink>
             </li>
           ))}
         </ol>
@@ -68,8 +110,13 @@ function Header({
       )}
       <p className="keys">
         <kbd>1</kbd>-<kbd>9</kbd> pick · <kbd>Tab</kbd> comment · <kbd>Enter</kbd> next ·{' '}
-        <kbd>a</kbd> pins {state.annotate ? 'ON' : 'off'} · <kbd>l</kbd> layout · <kbd>⌘ Enter</kbd>{' '}
-        review and send
+        <kbd>a</kbd> pins {state.annotate ? 'ON' : 'off'} · <kbd>l</kbd> layout ·{' '}
+        {manifest.sections && (
+          <>
+            <kbd>[</kbd> <kbd>]</kbd> section ·{' '}
+          </>
+        )}
+        <kbd>⌘ Enter</kbd> review and send
         {hitTesting !== null && (
           <span data-testid="hit-testing">
             {' '}
@@ -179,9 +226,14 @@ function SectionBlock({ section, ...props }: PartProps & { section: ResolvedSect
           <p className="see-also">
             See also{' '}
             {section.seeAlso.map((v) => (
-              <a key={v.key} href={`#variant-${v.key}`}>
+              <JumpLink
+                key={v.key}
+                href={`#variant-${v.key}`}
+                index={props.indexes.variant(v.key)}
+                dispatch={props.dispatch}
+              >
                 {v.key} · {v.label}
-              </a>
+              </JumpLink>
             ))}
           </p>
         )}
@@ -192,34 +244,101 @@ function SectionBlock({ section, ...props }: PartProps & { section: ResolvedSect
   )
 }
 
-function Form(props: Omit<PartProps, 'indexes'>) {
-  const { manifest, state, dispatch } = props
-  const layout = roundLayout(manifest)
-  const indexes = stopIndexes(manifest)
-  const parts = { ...props, indexes }
+/** Previous and next section, with where the human is in the round. */
+function Pager({
+  pages,
+  current,
+  dispatch,
+}: {
+  pages: Page[]
+  current: number
+  dispatch: Dispatch<Action>
+}) {
+  const step = (delta: number) => pages[current + delta]
   return (
-    <main>
-      {layout.sections.map((s) => (
-        <SectionBlock key={s.id} {...parts} section={s} />
-      ))}
-      {layout.otherVariants.length > 0 &&
-        (layout.sections.length === 0 ? (
-          <Variants {...parts} variants={layout.otherVariants} />
-        ) : (
-          <section className="round-section" data-testid="other-frames">
-            <header className="section-head">
-              <h2>Other frames</h2>
-            </header>
-            <Variants {...parts} variants={layout.otherVariants} />
-          </section>
-        ))}
+    <nav className="pager" aria-label="Sections" data-testid="pager">
+      <button
+        type="button"
+        disabled={!step(-1)}
+        onClick={() => dispatch({ type: 'jump', index: step(-1).first })}
+      >
+        <kbd>[</kbd> Previous
+      </button>
+      <span data-testid="page-position">
+        Section {current + 1} of {pages.length}: {pages[current].title}
+      </span>
+      <button
+        type="button"
+        disabled={!step(1)}
+        onClick={() => dispatch({ type: 'jump', index: step(1).first })}
+      >
+        Next <kbd>]</kbd>
+      </button>
+    </nav>
+  )
+}
+
+/** A page change mounts new stops, which do not scroll themselves on mount; bring the active one up. */
+function useScrollOnPageChange(pageId: string, isFirstStop: boolean) {
+  const shown = useRef(pageId)
+  useEffect(() => {
+    if (shown.current === pageId) return
+    shown.current = pageId
+    if (isFirstStop) window.scrollTo({ top: 0 })
+    else document.querySelector('.stop[data-active]')?.scrollIntoView({ block: 'start' })
+  }, [pageId, isFirstStop])
+}
+
+type Layout = ReturnType<typeof roundLayout>
+
+function OtherFrames({ layout, ...parts }: PartProps & { layout: Layout }) {
+  if (layout.otherVariants.length === 0) return null
+  if (layout.sections.length === 0) return <Variants {...parts} variants={layout.otherVariants} />
+  return (
+    <section className="round-section" data-testid="other-frames">
+      <header className="section-head">
+        <h2>Other frames</h2>
+      </header>
+      <Variants {...parts} variants={layout.otherVariants} />
+    </section>
+  )
+}
+
+function Overall({ layout, ...parts }: PartProps & { layout: Layout }) {
+  return (
+    <>
       {layout.sections.length > 0 && layout.overallQuestions.length > 0 && (
         <header className="section-head" data-testid="overall">
           <h2>Overall</h2>
         </header>
       )}
       <Questions {...parts} questions={layout.overallQuestions} />
-      <GeneralBlock index={indexes.general} state={state} dispatch={dispatch} />
+      <GeneralBlock index={parts.indexes.general} state={parts.state} dispatch={parts.dispatch} />
+    </>
+  )
+}
+
+/** A sectioned round shows one page (section) at a time; an unsectioned one shows everything. */
+export function Form(props: Omit<PartProps, 'indexes'>) {
+  const { manifest, state, dispatch } = props
+  const layout = roundLayout(manifest)
+  const pages = pagesFor(manifest)
+  const current = pageOf(pages, state.active)
+  const page = pages[current]
+  useScrollOnPageChange(page.id, state.active === page.first)
+  const paged = layout.sections.length > 0
+  const shows = (id: string) => !paged || page.id === id
+  const parts = { ...props, indexes: stopIndexes(manifest), layout }
+  return (
+    <main>
+      {paged && <Pager pages={pages} current={current} dispatch={dispatch} />}
+      {layout.sections
+        .filter((s) => shows(s.id))
+        .map((s) => (
+          <SectionBlock key={s.id} {...parts} section={s} />
+        ))}
+      {shows('other') && <OtherFrames {...parts} />}
+      {shows('overall') && <Overall {...parts} />}
       <button
         type="button"
         className="primary"
@@ -267,7 +386,7 @@ export function App({ manifest, manifestSha256 }: AppProps) {
     )
   return (
     <>
-      <Header manifest={manifest} state={state} hitTesting={hitTesting} />
+      <Header manifest={manifest} state={state} dispatch={dispatch} hitTesting={hitTesting} />
       <div hidden={state.screen !== 'form'}>
         <Form manifest={manifest} state={state} dispatch={dispatch} onHitTesting={setHitTesting} />
       </div>
