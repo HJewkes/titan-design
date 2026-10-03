@@ -1,9 +1,12 @@
-import { useState, useRef } from 'react'
+import { useRef } from 'react'
+import { useControllableState } from '../../../hooks/useControllableState'
 
 export interface TooltipVisibilityInput {
   isDisabled: boolean
   openDelay: number
   closeDelay: number
+  defaultIsOpen?: boolean
+  onOpenChange?: (isOpen: boolean) => void
 }
 
 /** Uncontrolled hover state, opened and closed after their delays. */
@@ -11,8 +14,14 @@ export function useTooltipVisibility({
   isDisabled,
   openDelay,
   closeDelay,
+  defaultIsOpen = false,
+  onOpenChange,
 }: TooltipVisibilityInput) {
-  const [hovered, setHovered] = useState(false)
+  const [hovered, setHovered] = useControllableState({
+    value: undefined,
+    defaultValue: defaultIsOpen,
+    onChange: onOpenChange,
+  })
   const openTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
