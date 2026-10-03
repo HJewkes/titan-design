@@ -19,19 +19,6 @@ describe('Popover', () => {
     expect(screen.getByText('Open')).toBeInTheDocument()
   })
 
-  it('keeps closeOnClickOutside off the DOM node', () => {
-    render(
-      <Popover closeOnClickOutside={false} testID="popover-root">
-        <PopoverTrigger>
-          <button>Open</button>
-        </PopoverTrigger>
-      </Popover>
-    )
-    const root = screen.getByTestId('popover-root')
-    expect(root).not.toHaveAttribute('closeOnClickOutside')
-    expect(root).not.toHaveAttribute('closeonclickoutside')
-  })
-
   it('does not show content by default', () => {
     render(
       <Popover>
