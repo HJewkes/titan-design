@@ -23,9 +23,6 @@
   "components/custom/Fatigue/GhostBand.tsx#GhostBand": {
     "function-lines": 116
   },
-  "components/custom/Table/Table.tsx#Table": {
-    "props": 14
-  },
   "components/custom/Workout/ActiveWorkoutPage.tsx": {
     "file-lines": 348
   },
@@ -351,6 +348,9 @@
   },
   "components/ui/stat-card/StatCard.tsx#StatCard": {
     "props": 20
+  },
+  "components/ui/table/Table.tsx#Table": {
+    "props": 14
   },
   "components/ui/toast/Toast.tsx": {
     "file-lines": 228

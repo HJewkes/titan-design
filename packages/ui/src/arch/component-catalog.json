@@ -961,89 +961,6 @@
       "tier": "atom"
     },
     {
-      "composes": [],
-      "family": "custom/Table",
-      "file": "packages/ui/src/components/custom/Table/Table.tsx",
-      "name": "Table",
-      "props": [],
-      "purpose": "",
-      "sources": {
-        "status": "packages/ui/src/components/custom/Table/Table.stories.tsx"
-      },
-      "status": "candidate",
-      "storyIds": [
-        "components-organisms-table--column-drop-order",
-        "components-organisms-table--default",
-        "components-organisms-table--empty-state",
-        "components-organisms-table--loading",
-        "components-organisms-table--sorting-and-selection",
-        "components-organisms-table--use-table-hook",
-        "components-organisms-table--with-column-widths",
-        "components-organisms-table--with-pagination",
-        "components-organisms-table--with-row-selection",
-        "components-organisms-table--with-sorting"
-      ],
-      "tier": "atom"
-    },
-    {
-      "composes": [],
-      "family": "custom/Table",
-      "file": "packages/ui/src/components/custom/Table/TableCell.tsx",
-      "name": "TableCell",
-      "props": [],
-      "purpose": "",
-      "sources": {
-        "status": null
-      },
-      "status": "review",
-      "storyIds": [],
-      "tier": "atom"
-    },
-    {
-      "composes": [],
-      "family": "custom/Table",
-      "file": "packages/ui/src/components/custom/Table/TableEmptyState.tsx",
-      "name": "TableEmptyState",
-      "props": [],
-      "purpose": "",
-      "sources": {
-        "status": null
-      },
-      "status": "review",
-      "storyIds": [],
-      "tier": "atom"
-    },
-    {
-      "composes": [
-        "Tooltip"
-      ],
-      "family": "custom/Table",
-      "file": "packages/ui/src/components/custom/Table/TableHeaderCell.tsx",
-      "name": "TableHeaderCell",
-      "props": [],
-      "purpose": "",
-      "sources": {
-        "status": null
-      },
-      "status": "review",
-      "storyIds": [],
-      "tier": "organism"
-    },
-    {
-      "composes": [],
-      "family": "custom/Table",
-      "file": "packages/ui/src/components/custom/Table/TablePagination.tsx",
-      "name": "TablePagination",
-      "props": [],
-      "purpose": "",
-      "sources": {
-        "status": null
-      },
-      "status": "review",
-      "storyIds": [],
-      "tier": "atom"
-    },
-    {
       "composes": [
         "Typography"
       ],
@@ -3966,6 +3883,89 @@
     },
     {
       "composes": [],
+      "family": "ui/table",
+      "file": "packages/ui/src/components/ui/table/Table.tsx",
+      "name": "Table",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": "packages/ui/src/components/ui/table/Table.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-organisms-table--column-drop-order",
+        "components-organisms-table--default",
+        "components-organisms-table--empty-state",
+        "components-organisms-table--loading",
+        "components-organisms-table--sorting-and-selection",
+        "components-organisms-table--use-table-hook",
+        "components-organisms-table--with-column-widths",
+        "components-organisms-table--with-pagination",
+        "components-organisms-table--with-row-selection",
+        "components-organisms-table--with-sorting"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/table",
+      "file": "packages/ui/src/components/ui/table/TableCell.tsx",
+      "name": "TableCell",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/table",
+      "file": "packages/ui/src/components/ui/table/TableEmptyState.tsx",
+      "name": "TableEmptyState",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "atom"
+    },
+    {
+      "composes": [
+        "Tooltip"
+      ],
+      "family": "ui/table",
+      "file": "packages/ui/src/components/ui/table/TableHeaderCell.tsx",
+      "name": "TableHeaderCell",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "organism"
+    },
+    {
+      "composes": [],
+      "family": "ui/table",
+      "file": "packages/ui/src/components/ui/table/TablePagination.tsx",
+      "name": "TablePagination",
+      "props": [],
+      "purpose": "",
+      "sources": {
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
       "family": "ui/tabs",
       "file": "packages/ui/src/components/ui/tabs/Tabs.tsx",
       "name": "Tabs",
@@ -4156,10 +4156,6 @@
       "reason": "not-pascal-case"
     },
     {
-      "file": "packages/ui/src/components/custom/Table/TableSelection.tsx",
-      "reason": "name-not-exported"
-    },
-    {
       "file": "packages/ui/src/components/custom/Workout/BodyMapDetailSections.tsx",
       "reason": "name-not-exported"
     },
@@ -4214,8 +4210,12 @@
     {
       "file": "packages/ui/src/components/shell/workout/workoutNavItems.tsx",
       "reason": "not-pascal-case"
+    },
+    {
+      "file": "packages/ui/src/components/ui/table/TableSelection.tsx",
+      "reason": "name-not-exported"
     }
   ],
-  "inputsHash": "sha256:10936ed567e20ffbc49d70397555d27b000179ad92edf0a40ec1484f1a25282b",
+  "inputsHash": "sha256:691761c693059bab4769148e5f548797c480573403cf87009038a7b7a02503fb",
   "schema": 1
 }
