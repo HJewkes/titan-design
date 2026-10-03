@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, act } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { Platform } from 'react-native'
 import { Popover, PopoverTrigger, PopoverContent, PopoverCloseButton } from './Popover'
 import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
 
@@ -336,6 +337,28 @@ describe('Popover', () => {
         vi.advanceTimersByTime(300)
       })
       expect(screen.getByText('Hover content')).toBeInTheDocument()
+    })
+
+    it('renders the hover spacer as a View on iOS, not a raw div', () => {
+      const originalOS = Platform.OS
+      Platform.OS = 'ios'
+      try {
+        const { container } = render(
+          <Popover triggerMode="hover" isOpen>
+            <PopoverTrigger>
+              <button>Hover me</button>
+            </PopoverTrigger>
+            <PopoverContent>
+              <span>Hover content</span>
+            </PopoverContent>
+          </Popover>
+        )
+
+        expect(screen.getByText('Hover content')).toBeInTheDocument()
+        expect(container.querySelector('div:not([class])')).toBeNull()
+      } finally {
+        Platform.OS = originalOS
+      }
     })
 
     it('still closes on click outside in hover mode', () => {
