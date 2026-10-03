@@ -2,7 +2,8 @@ import type { ReactNode } from 'react'
 import type { ViewProps } from 'react-native'
 
 /** A subset of the Pill tones; `brand-secondary` is left out because Indicator has no matching colour. */
-export type BoardTone = 'neutral' | 'brand' | 'success' | 'warning' | 'error' | 'info'
+export const BOARD_TONES = ['neutral', 'brand', 'success', 'warning', 'error', 'info'] as const
+export type BoardTone = (typeof BOARD_TONES)[number]
 
 export interface BoardColumn {
   id: string

@@ -12,7 +12,7 @@ import {
   type BoardModel,
 } from './board-model'
 import { BOARD_FIXTURES, BOARD_HOSTILE, BOARD_LANES, BOARD_MISSING } from './fixtures'
-import type { BoardItem } from './types'
+import { BOARD_TONES, type BoardItem } from './types'
 
 const KEYS: BoardKey[] = [
   'Down',
@@ -350,5 +350,17 @@ describe('nextItem', () => {
   it('keeps the active card reachable when it is past the fold', () => {
     const fold = { maxItemsPerCell: 1, pinnedIds: new Set<string>() }
     expect(nextItem(lanes, id(3), 'Up', fold)).toBe(id(1))
+  })
+})
+
+describe('BOARD_TONES', () => {
+  it('lists the six tones and leaves out brand-secondary', () => {
+    expect([...BOARD_TONES]).toEqual(['neutral', 'brand', 'success', 'warning', 'error', 'info'])
+    expect(BOARD_TONES).not.toContain('brand-secondary')
+  })
+
+  it('types every fixture column tone as a listed tone', () => {
+    const tones = Object.values(BOARD_FIXTURES).flatMap((f) => f.columns.map((c) => c.tone))
+    for (const tone of tones) if (tone) expect(BOARD_TONES).toContain(tone)
   })
 })
