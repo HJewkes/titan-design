@@ -4,11 +4,12 @@ Charts that paint data marks from a scale and know nothing about workouts, sessi
 initiatives. A chart whose prop, type or label names a domain concept lives in its
 `custom/<Family>/` instead (`CLAUDE.md`, Placement).
 
-| Member               | Kind   | Holds                                                                                  |
-| -------------------- | ------ | -------------------------------------------------------------------------------------- |
-| `spark-bars/`        | atom   | `SparkBars`: a signed-series bar sparkline. Moved from `custom/charts` in M5 (TD-188). |
-| `dependency-matrix/` | notes  | API note and fixtures for the planned dependency matrix; no component yet.             |
-| `kit/`               | module | Shared domain scales, tick rules, label thinning and entrance motion. See its README.  |
+| Member               | Kind   | Holds                                                                                                                      |
+| -------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------- |
+| `spark-bars/`        | atom   | `SparkBars`: a signed-series bar sparkline. Moved from `custom/charts` in M5 (TD-188).                                     |
+| `dependency-matrix/` | notes  | API note and fixtures for the planned dependency matrix; no component yet.                                                 |
+| `network-graph/`     | notes  | Pure model and layouts for the planned network graph; `d3-force` is imported by one file, `layouts/force-layout-model.ts`. |
+| `kit/`               | module | Shared domain scales, tick rules, label thinning and entrance motion. See its README.                                      |
 
 ## Rules
 
