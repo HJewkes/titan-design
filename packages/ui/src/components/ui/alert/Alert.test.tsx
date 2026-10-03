@@ -1,8 +1,20 @@
+import type { ReactNode } from 'react'
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { Text } from 'react-native'
 import { Alert, AlertTitle, AlertDescription } from './Alert'
+import { Button, ButtonText } from '../button'
 import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
+
+// NativeWind classes never reach the test DOM, so the stub surfaces the class Alert hands Eyebrow.
+vi.mock('../eyebrow', () => ({
+  Eyebrow: ({ children, className }: { children: ReactNode; className?: string }) => (
+    <Text testID="alert-eyebrow" dataSet={{ tone: className }}>
+      {children}
+    </Text>
+  ),
+}))
 
 describe('Alert', () => {
   it('renders children correctly', () => {
@@ -249,6 +261,110 @@ describe('Alert compact cue (absorbs CueFlag)', () => {
   it('has no accessibility violations as a compact cue', async () => {
     const { container } = render(
       <Alert status="warning" size="compact" message="VL20 · target reps met — end the set." />
+    )
+    expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+const follows = (later: HTMLElement, earlier: HTMLElement) =>
+  Boolean(earlier.compareDocumentPosition(later) & Node.DOCUMENT_POSITION_FOLLOWING)
+
+describe('Alert slots: eyebrow, action, footer', () => {
+  it.each([
+    ['subtle', 'text-on-status-warning-subtle'],
+    ['solid', 'text-on-status-warning'],
+    ['outline', 'text-status-warning'],
+  ] as const)('eyebrow renders above the message in the %s status text class', (variant, tone) => {
+    render(<Alert status="warning" variant={variant} eyebrow="Suggested" message="Add 5 kg" />)
+    const eyebrow = screen.getByTestId('alert-eyebrow')
+    expect(eyebrow).toHaveTextContent('Suggested')
+    expect(eyebrow).toHaveAttribute('data-tone', tone)
+    expect(follows(screen.getByTestId('alert-message'), eyebrow)).toBe(true)
+  })
+
+  it('action renders after the content and its onPress fires', () => {
+    const onPress = vi.fn()
+    render(
+      <Alert
+        status="success"
+        message="Ready to go"
+        action={
+          <Button size="sm" onPress={onPress}>
+            <ButtonText>Start</ButtonText>
+          </Button>
+        }
+      />
+    )
+    const action = screen.getByRole('button', { name: 'Start' })
+    expect(follows(action, screen.getByTestId('alert-message'))).toBe(true)
+    fireEvent.click(action)
+    expect(onPress).toHaveBeenCalledTimes(1)
+  })
+
+  it('footer renders inside the content column after children', () => {
+    render(
+      <Alert footer={<Text>Footer row</Text>}>
+        <AlertDescription>Body copy</AlertDescription>
+      </Alert>
+    )
+    const body = screen.getByText('Body copy')
+    const footer = screen.getByText('Footer row')
+    expect(footer.parentElement).toBe(body.parentElement)
+    expect(follows(footer, body)).toBe(true)
+  })
+})
+
+describe('Alert text dismiss', () => {
+  it('renders a button named by dismissLabel that calls onClose', () => {
+    const onClose = vi.fn()
+    render(<Alert message="Tip" onClose={onClose} dismissLabel="Got it" />)
+    fireEvent.click(screen.getByRole('button', { name: 'Got it' }))
+    expect(onClose).toHaveBeenCalledTimes(1)
+    expect(screen.queryByLabelText('Close alert')).not.toBeInTheDocument()
+  })
+
+  it('keeps the × button when dismissLabel is absent', () => {
+    render(<Alert message="Tip" onClose={() => {}} />)
+    expect(screen.getByLabelText('Close alert')).toHaveTextContent('×')
+  })
+
+  it('renders no dismiss control for dismissLabel without onClose', () => {
+    render(<Alert message="Tip" dismissLabel="Got it" />)
+    expect(screen.queryByRole('button')).not.toBeInTheDocument()
+    expect(screen.queryByText('Got it')).not.toBeInTheDocument()
+  })
+})
+
+describe('Alert role override', () => {
+  it('lets a consumer accessibilityRole replace alert', () => {
+    render(<Alert accessibilityRole="summary" message="A quiet suggestion" />)
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+    expect(screen.getByRole('region')).toHaveTextContent('A quiet suggestion')
+  })
+
+  it('lets role="status" mark a non-urgent alert as a polite live region', () => {
+    render(<Alert role="status" message="A quiet suggestion" />)
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+    expect(screen.getByRole('status')).toHaveTextContent('A quiet suggestion')
+  })
+
+  it('has no accessibility violations with eyebrow, action, footer and text dismiss', async () => {
+    const { container } = render(
+      <Alert
+        role="status"
+        eyebrow="Insight"
+        action={
+          <Button size="sm">
+            <ButtonText>Start</ButtonText>
+          </Button>
+        }
+        footer={<Text>Seen 3 times this week</Text>}
+        onClose={() => {}}
+        dismissLabel="Got it"
+      >
+        <AlertTitle>Rest longer</AlertTitle>
+        <AlertDescription>Your last two sets slowed down.</AlertDescription>
+      </Alert>
     )
     expect(await axe(container)).toHaveNoViolations()
   })
