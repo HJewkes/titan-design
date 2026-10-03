@@ -1,6 +1,7 @@
 import { type resolveColor } from '../../../theme/resolve-color'
 import { greyRamp, primitiveRamps } from '../../../theme/tokens/primitives'
 import type { ThemeMode } from '../../../theme/tokens/semantic'
+import type { SetBarTreatment } from '../../custom/charts/setBarTones'
 import {
   velocityLossBand,
   velocityLossForRep,
@@ -20,6 +21,17 @@ export type LiveStripZone = 'grinding' | 'maximalStrength' | 'strengthSpeed' | '
 export interface LiveStripRep {
   velocity: number
   zone?: LiveStripZone
+}
+
+/** Same reps by velocity: a rest tick re-renders the strip with equal but new arrays. */
+export function sameLiveStripReps(a: readonly LiveStripRep[], b: readonly LiveStripRep[]): boolean {
+  return a === b || (a.length === b.length && a.every((rep, i) => rep.velocity === b[i].velocity))
+}
+
+/** The last rep's velocity, or `null` when there is none or it is not a finite number. */
+export function liveStripLastVelocity(reps: readonly LiveStripRep[]): number | null {
+  const last = reps[reps.length - 1]
+  return last && Number.isFinite(last.velocity) ? last.velocity : null
 }
 
 /** The session phase the strip mirrors. `idle` renders nothing. */
@@ -78,6 +90,20 @@ export function liveStripGap(state: LiveStripState): LiveStripGap {
 export const LIVE_STRIP_GAP_COLOR: Record<LiveStripGap, Readonly<Record<ThemeMode, string>>> = {
   behind: { light: primitiveRamps.blue[600], dark: primitiveRamps.blue[400] },
   missed: { light: greyRamp[600], dark: greyRamp[400] },
+}
+
+/**
+ * The strip's bars per gap. The paper's drop shadow smudged on the light card, and a side's
+ * missed rep vanished there (VW-877); a rep still to come reads apart from one that never came (VW-879).
+ */
+const LIVE_STRIP_GAP_BARS: Record<LiveStripGap, SetBarTreatment> = {
+  behind: { emptyColor: LIVE_STRIP_GAP_COLOR.behind, lightPaper: 'soft' },
+  missed: { emptyColor: LIVE_STRIP_GAP_COLOR.missed, lightPaper: 'soft' },
+}
+
+/** The SetBarTreatment the strip's bars take in `state`; one stable object per gap. */
+export function liveStripBars(state: LiveStripState): SetBarTreatment {
+  return LIVE_STRIP_GAP_BARS[liveStripGap(state)]
 }
 
 /** The longest rest the strip counts; a longer one reads "999s" (over 16 minutes). */
