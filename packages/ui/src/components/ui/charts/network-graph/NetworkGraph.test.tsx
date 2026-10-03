@@ -71,6 +71,7 @@ describe('NetworkGraph rendering', () => {
     ['Small', smallFixture, 5, 7],
     ['Medium', mediumFixture, 30, 44],
     ['Large', largeFixture, 150, 295],
+    ['Hostile', { ...hostileFixture, layout: suppliedLayout(hostilePositions) }, 2, 1],
   ])('renders one node element per placed node and one path per drawn edge for %s', (...args) => {
     const [, fixture, nodes, edges] = args
     const { container } = renderGraph({}, fixture)
@@ -80,11 +81,9 @@ describe('NetworkGraph rendering', () => {
     expect(container.querySelectorAll('path[role="button"]')).toHaveLength(edges)
   })
 
-  it('draws only what survives cleaning and placement for Hostile, and counts the rest', () => {
+  it('renders Hostile at its width of 0 without throwing, and the name counts what was dropped', () => {
     const layout = suppliedLayout(hostilePositions)
-    const { container } = renderGraph({ layout, width: hostileFixture.width }, hostileFixture)
-    expect(screen.getAllByTestId(/^network-graph-node-/)).toHaveLength(2)
-    expect(container.querySelectorAll('path[data-edge]')).toHaveLength(1)
+    renderGraph({ layout, width: hostileFixture.width }, hostileFixture)
     expect(root()).toHaveAccessibleName(/Dropped: 1 duplicate node.*Showing 2 of 5 nodes/)
   })
 
@@ -183,7 +182,8 @@ describe('NetworkGraph rendering', () => {
 describe('NetworkGraph selection', () => {
   it('pressing a node selects it; pressing it again clears; onSelectionChange gets the ref', () => {
     const onSelectionChange = vi.fn()
-    const { container } = renderGraph({ onSelectionChange })
+    const nodes = smallFixture.nodes.map((n) => ({ ...n, label: `Label of ${n.id}` }))
+    const { container } = renderGraph({ nodes, onSelectionChange })
     fireEvent.click(nodeButton('worker-02'))
     expect(onSelectionChange).toHaveBeenLastCalledWith({ type: 'node', id: 'worker-02' })
     expect(nodeButton('worker-02')).toHaveAttribute('aria-pressed', 'true')
