@@ -13,10 +13,10 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: 0,
-  // The story-baseline suite is one test looping over every in-scope story
-  // (goto + networkidle + screenshot each), so its runtime scales with the
-  // story count. Give it well past the 30s default as the shell family grows.
-  timeout: 120_000,
+  // stories.spec.ts declares one test per story from the index this writes.
+  globalSetup: './tests/visual/story-index.global-setup.ts',
+  workers: 4,
+  timeout: 30_000,
   // Same floor as the Layer-1 baseline config: see playwright.baseline.config.ts.
   expect: {
     toHaveScreenshot: {

@@ -15,6 +15,12 @@
     "test": {
       "dependsOn": ["^build"]
     },
+    "test:unit": {
+      "dependsOn": ["^build"]
+    },
+    "test:axe": {
+      "dependsOn": ["^build"]
+    },
     "test:storybook": {
       "dependsOn": ["^build"],
       "cache": false,

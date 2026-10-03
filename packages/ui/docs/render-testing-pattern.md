@@ -111,15 +111,17 @@ into per-component (Layer 1) or per-story-scope (Layer 2), and per hand-written 
 ## How the visual baselines are updated, and what a moved baseline means in review
 
 - **Layer 1** (`test:visual:baseline:update`) regenerates `*-chromium-linux.png` under
-  `specimen/baseline/**/*.screenshot.test.ts-snapshots/`. The `visual` job always runs this
-  step (`if: always()`) in the same pinned container as the gate and uploads the result
+  `specimen/baseline/**/*.screenshot.test.ts-snapshots/`. The `visual` job runs this step
+  on a failed run (`if: failure()`) in the same pinned container as the gate and uploads the result
   as the `component-visual-baselines` artifact, so a genuinely-changed component's
   baseline comes back different while every unchanged one is byte-identical — no local
   rendering noise. Refreshing means: download that artifact, commit the changed PNGs.
 - **Layer 2** (`test:visual:stories:update`) regenerates
   `tests/visual/reference/stories.spec.ts-snapshots/` the same way, uploaded as
-  `storybook-visual-baselines`; per the previous section this currently runs
-  unconditionally (it's the seed step, not a gate).
+  `storybook-visual-baselines`, also only on a failed run. A newly in-scope story with no
+  baseline fails the gate, so its seed PNG comes from that failed run's artifact.
+  `src/test/visual-coverage.test.ts` lists the required story-id prefixes and fails when one
+  of their stories has no committed `-chromium-linux.png`.
 - **Layer 3** has no baseline images to move — it's a computed-style comparison, not a
   screenshot diff.
 

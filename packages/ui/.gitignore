@@ -1,3 +1,5 @@
 tests/visual/results/
 tests/interaction/results/
 .vitest-storybook-report.json
+reports/mutation/
+.stryker-tmp/
