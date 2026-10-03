@@ -260,7 +260,9 @@ describe('SetBarChart emptyVariant and lightPaper', () => {
     const empty = getComputedStyle(screen.getByTestId('t-slot-empty'))
     expect(empty.borderTopWidth).toBe('1.5px')
     expect(empty.backgroundColor).toBe(CLEAR)
-    expect(screen.getByTestId('t-bar-0').style.boxShadow).toBe('0 1px 2px rgba(0,0,0,0.12)')
+    expect(screen.getByTestId('t-bar-0').style.boxShadow).toMatch(
+      /^0 1px 2px rgba\(0, ?0, ?0, ?0\.12\)$/
+    )
   })
 })
 

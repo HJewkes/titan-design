@@ -19,7 +19,8 @@ import {
   type ViewStyle,
   type LayoutChangeEvent,
 } from 'react-native'
-import { primitiveRamps } from '../../../theme/tokens/primitives'
+import { primitiveColors, primitiveRamps } from '../../../theme/tokens/primitives'
+import { alpha } from '../../../utils/colors'
 import { barPaper } from '../../../theme/materials'
 import { useOnSurfaceColor, useSurface, surfaceBackground } from '../../ui/surface/SurfaceContext'
 import { useLiveRepGrowth } from './live-rep-growth'
@@ -575,12 +576,13 @@ export function SetBarChart({
 }
 
 const EMPTY_RING_WIDTH = 1.5
+const SOFT_SHADOW = alpha(primitiveColors.black, 0.12)
 
 /** The paper's grain with a 1px contact shadow in place of its drop shadow (`lightPaper="soft"`). */
 function softLightPaper(color: string, flip: boolean): ViewStyle {
   return {
     ...barPaper(color, flip),
-    boxShadow: flip ? '0 -1px 2px rgba(0,0,0,0.12)' : '0 1px 2px rgba(0,0,0,0.12)',
+    boxShadow: `0 ${flip ? -1 : 1}px 2px ${SOFT_SHADOW}`,
   } as unknown as ViewStyle
 }
 
@@ -619,12 +621,7 @@ function renderStub(
   if (kind === 'empty') {
     // A rep column the diverging side did NOT log — a faint constant-contrast section, quieter than
     // a planned to-do (it's a hole in this side's data, index-locked to the other side's rep).
-    return (
-      <View
-        style={{ ...base, ...emptyFill }}
-        testID={`${testIDPrefix}-slot-empty`}
-      />
-    )
+    return <View style={{ ...base, ...emptyFill }} testID={`${testIDPrefix}-slot-empty`} />
   }
   // todo — a solid surface-relative section (expanded language) or a dashed outline (hero language).
   const todoStyle: ViewStyle =

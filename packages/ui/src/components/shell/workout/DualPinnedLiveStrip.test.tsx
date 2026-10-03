@@ -222,7 +222,7 @@ describe('DualPinnedLiveStrip bar shadow', () => {
 
   it('keeps only a contact shadow on a light card', () => {
     renderIn('light')
-    expect(shadowOf()).toBe('0 1px 2px rgba(0,0,0,0.12)')
+    expect(shadowOf()).toMatch(/^0 1px 2px rgba\(0, ?0, ?0, ?0\.12\)$/)
   })
 
   it('keeps the paper drop shadow on a dark card', () => {
