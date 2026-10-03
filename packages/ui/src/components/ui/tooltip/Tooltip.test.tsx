@@ -5,6 +5,7 @@ import { axe } from 'jest-axe'
 import { Tooltip } from './Tooltip'
 import { PinnedTipContext, TipTrigger } from './TipTrigger'
 import * as tooltipBarrel from './index'
+import { Button, ButtonText } from '../button'
 import { Modal } from '../modal'
 import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
 
@@ -329,6 +330,114 @@ describe('defaultIsOpen and onOpenChange', () => {
       </Tooltip>
     )
     expect(screen.getByText('Tip')).toBeInTheDocument()
+  })
+})
+
+describe('keyboard focus on a focusable trigger', () => {
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  function renderButtonTip() {
+    const result = render(
+      <Tooltip label="Saves the draft">
+        <Button>
+          <ButtonText>Save</ButtonText>
+        </Button>
+      </Tooltip>
+    )
+    return { ...result, button: screen.getByRole('button', { name: 'Save' }) }
+  }
+
+  it('shows the tooltip when the trigger takes focus', () => {
+    const { button } = renderButtonTip()
+
+    fireEvent.focus(button)
+
+    expect(screen.getByText('Saves the draft')).toBeInTheDocument()
+  })
+
+  it('hides the tooltip on Escape while the trigger keeps focus', () => {
+    const { button } = renderButtonTip()
+    fireEvent.focus(button)
+    expect(screen.getByText('Saves the draft')).toBeInTheDocument()
+
+    fireEvent.keyDown(button, { key: 'Escape' })
+
+    expect(screen.queryByText('Saves the draft')).not.toBeInTheDocument()
+  })
+
+  it('hides the tooltip when the trigger loses focus', () => {
+    const { button } = renderButtonTip()
+    fireEvent.focus(button)
+    expect(screen.getByText('Saves the draft')).toBeInTheDocument()
+
+    fireEvent.blur(button)
+
+    expect(screen.queryByText('Saves the draft')).not.toBeInTheDocument()
+  })
+
+  it('opens on keyboard focus once enabled, after a mousedown on the disabled Button', () => {
+    vi.useFakeTimers()
+    const tip = (isDisabled: boolean) => (
+      <Tooltip label="Saves the draft" openDelay={300}>
+        <Button isDisabled={isDisabled}>
+          <ButtonText>Save</ButtonText>
+        </Button>
+      </Tooltip>
+    )
+    const { rerender } = render(tip(true))
+    const button = screen.getByRole('button', { name: 'Save' })
+    fireEvent.mouseDown(button, { button: 0, detail: 1 })
+    fireEvent.mouseUp(button, { button: 0, detail: 1 })
+    rerender(tip(false))
+
+    fireEvent.focus(button)
+    act(() => vi.advanceTimersByTime(300))
+
+    expect(screen.getByText('Saves the draft')).toBeInTheDocument()
+  })
+
+  it('closes after a mouse click and stays closed when the pointer leaves', () => {
+    const { button } = renderButtonTip()
+    fireEvent.mouseEnter(button)
+    expect(screen.getByText('Saves the draft')).toBeInTheDocument()
+
+    fireEvent.mouseDown(button, { button: 0, detail: 1 })
+    fireEvent.focus(button)
+    fireEvent.mouseUp(button, { button: 0, detail: 1 })
+    fireEvent.click(button, { button: 0, detail: 1 })
+    fireEvent.mouseLeave(button)
+
+    expect(screen.queryByText('Saves the draft')).not.toBeInTheDocument()
+  })
+
+  it('adds no tab stop and no second button around the trigger', () => {
+    const { container } = renderButtonTip()
+
+    expect(container.querySelectorAll('[tabindex="0"]')).toHaveLength(1)
+    expect(screen.getAllByRole('button')).toHaveLength(1)
+  })
+
+  it('has no accessibility violations while open from focus', async () => {
+    const { container, button } = renderButtonTip()
+    fireEvent.focus(button)
+
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
+  it('still follows a controlled isOpen over focus', () => {
+    render(
+      <Tooltip label="Controlled" isOpen={false}>
+        <Button>
+          <ButtonText>Save</ButtonText>
+        </Button>
+      </Tooltip>
+    )
+
+    fireEvent.focus(screen.getByRole('button', { name: 'Save' }))
+
+    expect(screen.queryByText('Controlled')).not.toBeInTheDocument()
   })
 })
 

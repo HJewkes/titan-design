@@ -3,7 +3,7 @@ import { View, type LayoutChangeEvent } from 'react-native'
 import { cn } from '../../utils/cn'
 import { surfaceGradient } from '../../theme/gradients'
 import { Divider } from '../ui/divider'
-import { DateTime } from '../custom/DateTime'
+import { DateTime } from '../ui/date-time'
 import { BrandLockup } from './BrandLockup'
 import { type BrandKey } from './brands'
 
@@ -80,7 +80,7 @@ export function TopBar({
   const clock = clockVisible ? (
     <DateTime
       value={time}
-      live={time == null}
+      isLive={time == null}
       format="time"
       hour12={false}
       variant="mono"

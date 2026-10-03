@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Divider } from '../../ui/divider'
 import { Typography } from '../../ui/typography'
-import { DateTime } from '../DateTime'
+import { DateTime } from '../../ui/date-time'
 import { dayKey } from './chatThread'
 
 export interface DateSeparatorProps {
