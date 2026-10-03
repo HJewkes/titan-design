@@ -58,6 +58,27 @@ describe('fix-options: derived from the Tailwind config', () => {
     expect(above).toEqual({ key: '2.5', px: 10, spaceKeys: [] })
   })
 
+  it('picks the exact step as both neighbours when the px sits on the scale', () => {
+    const { below, above } = fixOptions.fromConfig(fixtureConfig).nearestSpacing(8)
+
+    expect(below).toMatchObject({ key: '2', px: 8 })
+    expect(above).toMatchObject({ key: '2', px: 8 })
+  })
+
+  it('keeps a root rung from theme.colors when extend.colors adds another to the same root', () => {
+    const config = {
+      theme: {
+        colors: { brand: { DEFAULT: '#111111', dark: '#000000' } },
+        extend: { colors: { brand: { light: '#eeeeee' } } },
+      },
+    }
+
+    const options = fixOptions.fromConfig(config)
+
+    expect(options.colorsByRoot.brand).toEqual(['brand', 'brand-dark', 'brand-light'])
+    expect(options.rungsByRole.brand).toEqual(['DEFAULT', 'dark', 'light'])
+  })
+
   it('reads every semantic spacing px from global.css equal to semantic.ts space', () => {
     const parsed = Object.fromEntries(fixOptions.semanticSpacing.map((s) => [s.key, s.px]))
 
@@ -72,6 +93,22 @@ describe('fix-options: derived from the Tailwind config', () => {
         .reduce<unknown>((node, key) => (node as SpaceTree)[key], space)
       expect(value, jsKey).toBe(px)
     }
+  })
+})
+
+describe('fix-options: parseRootVars', () => {
+  it('skips a :root { inside a comment and parses the real block', () => {
+    const css = '/* was :root { --x: 1px; } */\n:root {\n  --y: 2px;\n}'
+
+    expect(fixOptions.parseRootVars(css)).toEqual({ y: '2px' })
+  })
+
+  it('throws a named error when there is no :root block', () => {
+    expect(() => fixOptions.parseRootVars('.light { --y: 2px; }')).toThrow(/no :root block/)
+  })
+
+  it('throws a named error when the :root block declares no vars', () => {
+    expect(() => fixOptions.parseRootVars(':root { }')).toThrow(/declares no vars/)
   })
 })
 
@@ -132,5 +169,43 @@ describe('fix-options: derived from TypeScript source', () => {
     const source = "const cfg = { a: { list: ['x', ['y'], 'z'] as const } }"
 
     expect(tsSource.readArrayAt('fixture.ts', 'cfg.a.list', source)).toEqual(['x', ['y'], 'z'])
+  })
+
+  it('resolves a same-file alias inside a union', () => {
+    const source = "type Base = 'a' | 'b'\nexport type T = Base | 'c'"
+
+    expect(tsSource.readStringUnion('fixture.ts', 'T', source)).toEqual(['a', 'b', 'c'])
+  })
+
+  it('throws when a union member is an alias that is not in the file', () => {
+    const source = "export type T = Imported | 'c'"
+
+    expect(() => tsSource.readStringUnion('fixture.ts', 'T', source)).toThrow(
+      /cannot resolve Imported/
+    )
+  })
+
+  it('throws when a union holds a member it cannot read', () => {
+    expect(() => tsSource.readStringUnion('fixture.ts', 'T', 'export type T = string')).toThrow(
+      /unsupported/
+    )
+  })
+
+  it('includes a function exported through an export list, under its exported name', () => {
+    const source = 'const c = () => 1\nfunction d() {}\nexport { c, d as e }'
+
+    expect(tsSource.readExportedFunctions('fixture.ts', source)).toEqual(['c', 'e'])
+  })
+
+  it('throws on a re-export it cannot resolve', () => {
+    const source = "export { c } from './other'"
+
+    expect(() => tsSource.readExportedFunctions('fixture.ts', source)).toThrow(/re-export/)
+  })
+
+  it('throws when a module exports no functions', () => {
+    expect(() => tsSource.readExportedFunctions('fixture.ts', 'export const N = 1')).toThrow(
+      /no exported functions/
+    )
   })
 })
