@@ -205,6 +205,48 @@
                   "type": "string",
                   "pattern": "^[A-Za-z0-9_-]{1,32}$"
                 }
+              },
+              "recommendation": {
+                "type": "object",
+                "properties": {
+                  "answer": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "minItems": 1,
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      {
+                        "type": "number"
+                      }
+                    ]
+                  },
+                  "rationale": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "confidence": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "by": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "answer",
+                  "rationale",
+                  "confidence",
+                  "by"
+                ],
+                "additionalProperties": false
               }
             },
             "required": [
@@ -256,6 +298,48 @@
                   "type": "string",
                   "pattern": "^[A-Za-z0-9_-]{1,32}$"
                 }
+              },
+              "recommendation": {
+                "type": "object",
+                "properties": {
+                  "answer": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "minItems": 1,
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      {
+                        "type": "number"
+                      }
+                    ]
+                  },
+                  "rationale": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "confidence": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "by": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "answer",
+                  "rationale",
+                  "confidence",
+                  "by"
+                ],
+                "additionalProperties": false
               }
             },
             "required": [
@@ -300,6 +384,48 @@
                 "type": "integer",
                 "minimum": -9007199254740991,
                 "maximum": 9007199254740991
+              },
+              "recommendation": {
+                "type": "object",
+                "properties": {
+                  "answer": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "minItems": 1,
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      {
+                        "type": "number"
+                      }
+                    ]
+                  },
+                  "rationale": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "confidence": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "by": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "answer",
+                  "rationale",
+                  "confidence",
+                  "by"
+                ],
+                "additionalProperties": false
               }
             },
             "required": [
@@ -408,6 +534,14 @@
         ],
         "additionalProperties": false
       }
+    },
+    "recommendations": {
+      "default": "after-answer",
+      "type": "string",
+      "enum": [
+        "after-answer",
+        "shown"
+      ]
     }
   },
   "required": [

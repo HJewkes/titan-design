@@ -382,3 +382,19 @@ button.primary kbd {
   display: block;
   height: auto;
 }
+
+.recommendation {
+  margin-top: var(--space-stack-sm);
+  padding: var(--space-inset-sm);
+  border-left: 3px solid var(--color-border-prominent);
+  background: var(--color-surface-raised);
+}
+
+.recommendation p {
+  margin: 0 0 var(--space-stack-sm);
+}
+
+.recommendation-verdict,
+.recommendation-meta {
+  color: var(--color-text-secondary);
+}

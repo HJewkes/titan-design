@@ -63,8 +63,9 @@ sha256 of the manifest you wrote.
   frame), `maxHeight` (default 1200, the cap when the round's `height` is `"auto"`),
   `variants[{key, storyId | image, label, args?, globals?, height?}]` (at most 12, or at most 80
   in a round with `sections`),
-  `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?}]`,
-  `sections?[{id, title, context?, questionIds[], variantKeys[], seeAlso?[], height?}]`.
+  `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?, recommendation?}]`,
+  `sections?[{id, title, context?, questionIds[], variantKeys[], seeAlso?[], height?}]`,
+  `recommendations` (`"after-answer"`, the default, or `"shown"`).
   A question over variant keys is variant-scoped and sits right under the variants; set
   `scope` to override. Args and globals go in the Storybook URL, so keys and values are
   limited to letters, digits, space, `_` and `-` (numbers and booleans are fine); anything
@@ -82,14 +83,31 @@ sha256 of the manifest you wrote.
   instead of shooting it (`<key>-image-2.png` and so on if that name is one of the round's
   source images; capture never writes over a source), and a round whose variants are all images
   needs no Storybook running (`storybookUrl` is still required).
+- Recommendations (TD-351): a pick-one, pick-many or scale question may carry
+  `recommendation {answer, rationale, confidence, by}`, our own answer to it. `answer` is one of
+  the options (pick-one), a list of them (pick-many) or a value on the scale; `confidence` is
+  0 to 1; `by` names the recommender (an agent name or `design-coord`). A text question takes
+  none. The page hides the recommendation until the owner answers the question, so it cannot
+  anchor them, then shows it under their pick with whether the two match. Set the round's
+  `recommendations` to `"shown"` to show every recommendation from the start.
 - Feedback `titan-review/feedback@1`: `manifestSha256`, `submittedAt`,
-  `answers[{questionId, pick | picks | value | text, comment?, variantComments?}]`,
+  `answers[{questionId, pick | picks | value | text, comment?, variantComments?, recommendation?, agreed?}]`,
   `variants[{key, storyId | image, verdict: chosen|rejected|maybe|null, comment, annotations[], relatedQuestionIds?}]`,
   `general`. Each annotation has `width`, `x`/`y` in CSS px of the story frame, `xPct`/`yPct`
   as fractions of it, a `note`, and `target {testId?, role?, text?}` from element hit-testing.
   `variantComments[{key, comment}]` repeats, under the answer, every comment left on a frame
   that question's section showed; `relatedQuestionIds` is the same link from the frame's side.
-  Both appear only in a sectioned round. Everything else is unchanged and means what it always did.
+  Both appear only in a sectioned round. `recommendation` echoes the question's recommendation,
+  and `agreed` says whether the owner's answer equals it (pick-many: the same set); `agreed` is
+  absent when the owner only commented. Both appear only when the question has a
+  recommendation. Everything else is unchanged and means what it always did.
+
+## Calibration
+
+`titan-review calibration <feedback.json...>` reads feedback files and prints how often the
+owner's answer matched the recommendation: one row per round, the overall rate, and the rate
+per confidence band (`<0.5`, `0.5-0.75`, `>=0.75`). An answer counts only when it has both a
+recommendation and an owner's answer.
 
 ## Writing a sectioned round (VW-530)
 
