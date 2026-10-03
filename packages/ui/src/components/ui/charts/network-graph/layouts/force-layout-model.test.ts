@@ -291,15 +291,17 @@ describe('forceLayout seam', () => {
   })
 
   it('Large (150) costs less than 14 times Medium (30), so a quadratic repulsion fails', () => {
-    const bestOf5 = (fixture: typeof smallFixture) =>
-      Math.min(
-        ...Array.from({ length: 5 }, () => {
-          const started = performance.now()
-          runFixture(fixture)
-          return performance.now() - started
-        })
-      )
-    bestOf5(mediumFixture)
-    expect(bestOf5(largeFixture) / bestOf5(mediumFixture)).toBeLessThan(14)
+    const timed = (fixture: typeof smallFixture, runs: number) => {
+      const started = performance.now()
+      for (let run = 0; run < runs; run += 1) runFixture(fixture)
+      return (performance.now() - started) / runs
+    }
+    const large: number[] = []
+    const medium: number[] = []
+    for (let pair = 0; pair < 5; pair += 1) {
+      large.push(timed(largeFixture, 1))
+      medium.push(timed(mediumFixture, 8))
+    }
+    expect(Math.min(...large) / Math.min(...medium)).toBeLessThan(14)
   }, 60_000)
 })

@@ -11,6 +11,7 @@ import {
 import { cleanGraph } from '../network-graph-model'
 import type { GraphEdge, GraphGroupRegion, GraphLayoutResult, GraphNode } from '../types'
 import { clusteredLayout, type ClusteredLayoutOptions } from './clustered-layout-model'
+import { egoLayout } from './ego-layout-model'
 import { forceLayout } from './force-layout-model'
 import { LAYOUT_DEFAULTS } from './layout-geometry'
 
@@ -282,6 +283,21 @@ describe('clusteredLayout determinism', () => {
   it("the result sets edgeShape 'arc' and labelMode 'declutter'", () => {
     const result = fixtureRun('One group', FAST)
     expect([result.edgeShape, result.labelMode]).toEqual(['arc', 'declutter'])
+  })
+})
+
+describe('a node id that names an Object.prototype key', () => {
+  it('force, ego and clustered all place a __proto__ node', () => {
+    const nodes = [n('__proto__', 'g'), n('a', 'g'), n('b')]
+    const edges = [link('a', '__proto__'), link('__proto__', 'b')]
+    const input = { nodes, edges, ...viewport }
+    for (const layout of [forceLayout(FAST), egoLayout({ focusId: 'a' }), clusteredLayout(FAST)]) {
+      const result = layout.compute(input)
+      expect(Object.keys(result.positions).sort()).toEqual(['__proto__', 'a', 'b'])
+      expect(Object.hasOwn(result.positions, '__proto__')).toBe(true)
+      expect([...result.order].sort()).toEqual(['__proto__', 'a', 'b'])
+      expect(allFinite(result)).toBe(true)
+    }
   })
 })
 

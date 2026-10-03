@@ -73,16 +73,20 @@ function ringRadii(rings: readonly (readonly string[])[]): number[] {
   return radii
 }
 
-function ringPositions(rings: readonly (readonly string[])[], radii: readonly number[]) {
-  const positions: Record<string, GraphPoint> = {}
-  rings.forEach((ring, hop) => {
-    const radius = radii[hop] as number
-    ring.forEach((id, i) => {
-      const angle = -Math.PI / 2 + (2 * Math.PI * i) / ring.length
-      positions[id] = { x: radius * Math.cos(angle), y: radius * Math.sin(angle) }
-    })
-  })
-  return positions
+/** Built with `Object.fromEntries`, so an id such as `__proto__` becomes an own key. */
+function ringPositions(
+  rings: readonly (readonly string[])[],
+  radii: readonly number[]
+): Record<string, GraphPoint> {
+  return Object.fromEntries(
+    rings.flatMap((ring, hop) =>
+      ring.map((id, i) => {
+        const radius = radii[hop] as number
+        const angle = -Math.PI / 2 + (2 * Math.PI * i) / ring.length
+        return [id, { x: radius * Math.cos(angle), y: radius * Math.sin(angle) }]
+      })
+    )
+  )
 }
 
 const hopLabel = (hop: number) => (hop === 0 ? 'focus' : hop === 1 ? '1 hop' : `${hop} hops`)

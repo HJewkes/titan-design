@@ -142,14 +142,18 @@ function toRegion(
 function computeClustered(input: GraphLayoutInput, options: CleanOptions): GraphLayoutResult {
   const clusters = buildClusters(input, options)
   const packed = packRegions(clusters, input.width)
-  const positions: Record<string, GraphPoint> = {}
-  const bounds: GraphPoint[] = []
-  packed.forEach(({ cx, cy, radius }, i) => {
-    for (const [id, p] of Object.entries((clusters[i] as Cluster).members))
-      positions[id] = { x: cx + p.x, y: cy + p.y }
-    bounds.push({ x: cx - radius, y: cy - radius - LAYOUT_DEFAULTS.REGION_LABEL_BAND })
-    bounds.push({ x: cx + radius, y: cy + radius })
-  })
+  const positions: Record<string, GraphPoint> = Object.fromEntries(
+    packed.flatMap(({ cx, cy }, i) =>
+      Object.entries((clusters[i] as Cluster).members).map(([id, p]) => [
+        id,
+        { x: cx + p.x, y: cy + p.y },
+      ])
+    )
+  )
+  const bounds = packed.flatMap(({ cx, cy, radius }) => [
+    { x: cx - radius, y: cy - radius - LAYOUT_DEFAULTS.REGION_LABEL_BAND },
+    { x: cx + radius, y: cy + radius },
+  ])
   const framed = frameLayout(positions, input, bounds)
   const groups = packed.map((circle, i) => toRegion(clusters[i] as Cluster, circle, framed))
   return {
