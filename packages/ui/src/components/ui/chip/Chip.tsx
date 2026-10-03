@@ -23,6 +23,10 @@ export interface ChipProps extends ViewProps {
   size?: ChipSize
   /** Left element (icon, avatar) */
   leftElement?: React.ReactNode
+  /** Right element (count, icon). Renders before the delete button. */
+  rightElement?: React.ReactNode
+  /** Pressed state of a toggle chip. Needs `onPress`; leave undefined for a plain chip. */
+  isSelected?: boolean
   /** Whether the chip is dismissible */
   onDelete?: () => void
   /** Whether the chip is clickable */
@@ -108,6 +112,8 @@ export function Chip({
   color = 'default',
   size = 'md',
   leftElement,
+  rightElement,
+  isSelected,
   onDelete,
   onPress,
   isDisabled = false,
@@ -116,27 +122,37 @@ export function Chip({
   ...props
 }: ChipProps) {
   const sizes = sizeStyles[size]
+  const isToggle = Boolean(onPress) && isSelected !== undefined
 
   return (
     <Pill
-      variant={variant as PillVariant}
+      variant={(isSelected ? 'solid' : variant) as PillVariant}
       tone={colorToTone[color]}
       rounded={false}
       onPress={onPress}
       isDisabled={isDisabled}
       leading={leftElement && <View className="mr-1.5">{leftElement}</View>}
       trailing={
-        onDelete && (
-          <DeleteButton
-            onDelete={onDelete}
-            isDisabled={isDisabled}
-            className={sizes.deleteButton}
-          />
+        (rightElement || onDelete) && (
+          <>
+            {rightElement && <View className="ml-1.5">{rightElement}</View>}
+            {onDelete && (
+              <DeleteButton
+                onDelete={onDelete}
+                isDisabled={isDisabled}
+                className={sizes.deleteButton}
+              />
+            )}
+          </>
         )
       }
+      {...(isToggle && {
+        accessibilityState: { selected: isSelected, disabled: isDisabled },
+        'aria-pressed': isSelected,
+      })}
       className={cn(
         'self-auto gap-0',
-        variant === 'outline' ? 'border' : 'border-0',
+        variant === 'outline' || isSelected !== undefined ? 'border' : 'border-0',
         sizes.container,
         onPress && 'web:cursor-pointer web:hover:opacity-80 active:opacity-70',
         isDisabled && 'cursor-not-allowed',
