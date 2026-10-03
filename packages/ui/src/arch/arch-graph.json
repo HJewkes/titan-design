@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:46beec56f0481e9ae72a6a3f92b9a88d3fc3473e33ef615567664c6840187bf0",
+  "componentBarrelHash": "sha256:023c1e4d5e0b1e17944974a672c49ab2c0036a423507d8b12eb82a71780be81c",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -6593,9 +6593,9 @@
     },
     {
       "name": "Table",
-      "file": "packages/ui/src/components/custom/Table/Table.tsx",
-      "dir": "custom",
-      "family": "custom/Table",
+      "file": "packages/ui/src/components/ui/table/Table.tsx",
+      "dir": "ui",
+      "family": "ui/table",
       "exports": [
         "Table",
         "TableHeader",
@@ -6607,7 +6607,7 @@
         "TableRowProps",
         "TableLoadingSkeleton"
       ],
-      "libDependents": 2,
+      "libDependents": 3,
       "storyRefs": 2,
       "xproj": {
         "mobile": 0,
@@ -6633,14 +6633,14 @@
     },
     {
       "name": "TableCell",
-      "file": "packages/ui/src/components/custom/Table/TableCell.tsx",
-      "dir": "custom",
-      "family": "custom/Table",
+      "file": "packages/ui/src/components/ui/table/TableCell.tsx",
+      "dir": "ui",
+      "family": "ui/table",
       "exports": [
         "TableCell",
         "TableCellProps"
       ],
-      "libDependents": 1,
+      "libDependents": 2,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -6666,9 +6666,9 @@
     },
     {
       "name": "TableEmptyState",
-      "file": "packages/ui/src/components/custom/Table/TableEmptyState.tsx",
-      "dir": "custom",
-      "family": "custom/Table",
+      "file": "packages/ui/src/components/ui/table/TableEmptyState.tsx",
+      "dir": "ui",
+      "family": "ui/table",
       "exports": [
         "TableEmptyState",
         "TableEmptyStateProps"
@@ -6699,9 +6699,9 @@
     },
     {
       "name": "TableHeaderCell",
-      "file": "packages/ui/src/components/custom/Table/TableHeaderCell.tsx",
-      "dir": "custom",
-      "family": "custom/Table",
+      "file": "packages/ui/src/components/ui/table/TableHeaderCell.tsx",
+      "dir": "ui",
+      "family": "ui/table",
       "exports": [
         "TableHeaderCell",
         "TableHeaderCellProps",
@@ -6709,7 +6709,7 @@
         "HeaderLabel",
         "HeaderTooltip"
       ],
-      "libDependents": 1,
+      "libDependents": 2,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -6737,16 +6737,16 @@
     },
     {
       "name": "TablePagination",
-      "file": "packages/ui/src/components/custom/Table/TablePagination.tsx",
-      "dir": "custom",
-      "family": "custom/Table",
+      "file": "packages/ui/src/components/ui/table/TablePagination.tsx",
+      "dir": "ui",
+      "family": "ui/table",
       "exports": [
         "TablePagination",
         "TablePaginationProps",
         "PageSizeOption",
         "PageStepButton"
       ],
-      "libDependents": 0,
+      "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -6765,16 +6765,16 @@
         "score": 9
       },
       "tier": "atom",
-      "verdict": "dead",
+      "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
     },
     {
       "name": "TableSelection",
-      "file": "packages/ui/src/components/custom/Table/TableSelection.tsx",
-      "dir": "custom",
-      "family": "custom/Table",
+      "file": "packages/ui/src/components/ui/table/TableSelection.tsx",
+      "dir": "ui",
+      "family": "ui/table",
       "exports": [
         "TableSelectAllCell",
         "TableSelectCell",
@@ -9851,7 +9851,6 @@
       "SessionList",
       "Switch",
       "TableEmptyState",
-      "TablePagination",
       "TableSelection",
       "Tabs",
       "Toast",

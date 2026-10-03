@@ -29,6 +29,12 @@ function renderModal(props: Partial<React.ComponentProps<typeof Modal>> = {}) {
   )
 }
 
+// react-native-web grants its Modal the dialog role once the open animation ends.
+function finishOpenAnimation() {
+  const focusTrap = document.querySelector('[aria-modal="true"]')!.parentElement!
+  fireEvent.animationEnd(focusTrap.parentElement!)
+}
+
 describe('Modal', () => {
   it('renders when isOpen is true', () => {
     renderModal({ isOpen: true })
@@ -79,6 +85,13 @@ describe('Modal', () => {
     it('has header accessibility role', () => {
       renderModal({ isOpen: true })
       expect(screen.getByRole('heading')).toBeInTheDocument()
+    })
+
+    it('names the dialog', () => {
+      renderModal({ isOpen: true })
+      finishOpenAnimation()
+
+      expect(screen.getByRole('dialog', { name: 'Test Modal' })).toBeInTheDocument()
     })
   })
 

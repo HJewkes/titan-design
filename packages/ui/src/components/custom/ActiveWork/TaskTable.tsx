@@ -13,7 +13,7 @@ import {
   useTable,
   type TableColumnFit,
   type TableComparator,
-} from '../Table'
+} from '../../ui/table'
 import { Typography } from '../../ui/typography'
 import { Eyebrow } from '../../ui/eyebrow'
 import { SeverityLabel, SEVERITY_ORDER, severityRank, type TaskSeverity } from './SeverityLabel'

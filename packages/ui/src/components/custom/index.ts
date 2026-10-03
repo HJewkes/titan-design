@@ -1,6 +1,5 @@
 // Custom components
 export * from './Sidebar'
-export * from './Table'
 export * from './stepper'
 export * from './DateTime'
 export * from './TimerReadout'

@@ -282,6 +282,7 @@ module.exports = {
           tertiary: 'var(--color-text-tertiary)',
           disabled: 'var(--color-text-disabled)',
           inverse: 'var(--color-text-inverse)',
+          error: 'var(--color-text-error)',
           link: {
             DEFAULT: 'var(--color-text-link)',
             hover: 'var(--color-text-link-hover)',
