@@ -25,26 +25,17 @@
   "components-molecules-radio--form-example": ["aria-required-attr"],
   "components-molecules-radio--horizontal": ["aria-required-attr"],
   "components-molecules-radio--with-label": ["aria-required-attr"],
-  "components-molecules-select--controlled": ["aria-input-field-name", "aria-required-attr"],
-  "components-molecules-select--default": ["aria-input-field-name", "aria-required-attr"],
-  "components-molecules-select--disabled": ["aria-input-field-name", "aria-required-attr"],
-  "components-molecules-select--in-form-layout": ["aria-input-field-name", "aria-required-attr"],
-  "components-molecules-select--invalid": ["aria-input-field-name", "aria-required-attr"],
-  "components-molecules-select--many-options": ["aria-input-field-name", "aria-required-attr"],
-  "components-molecules-select--multi-select": ["aria-input-field-name", "aria-required-attr"],
-  "components-molecules-select--multi-select-with-preselected": [
-    "aria-input-field-name",
-    "aria-required-attr"
-  ],
-  "components-molecules-select--with-disabled-options": [
-    "aria-input-field-name",
-    "aria-required-attr"
-  ],
-  "components-molecules-select--with-placeholder": ["aria-input-field-name", "aria-required-attr"],
-  "components-molecules-select--with-preselected-value": [
-    "aria-input-field-name",
-    "aria-required-attr"
-  ],
+  "components-molecules-select--controlled": ["aria-input-field-name"],
+  "components-molecules-select--default": ["aria-input-field-name"],
+  "components-molecules-select--disabled": ["aria-input-field-name"],
+  "components-molecules-select--in-form-layout": ["aria-input-field-name"],
+  "components-molecules-select--invalid": ["aria-input-field-name"],
+  "components-molecules-select--many-options": ["aria-input-field-name"],
+  "components-molecules-select--multi-select": ["aria-input-field-name"],
+  "components-molecules-select--multi-select-with-preselected": ["aria-input-field-name"],
+  "components-molecules-select--with-disabled-options": ["aria-input-field-name"],
+  "components-molecules-select--with-placeholder": ["aria-input-field-name"],
+  "components-molecules-select--with-preselected-value": ["aria-input-field-name"],
   "components-molecules-switch--without-label": ["aria-toggle-field-name"],
   "components-molecules-tabs--all-variants": ["aria-required-parent"],
   "components-molecules-tabs--default": ["aria-required-parent"],

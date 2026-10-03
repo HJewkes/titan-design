@@ -80,6 +80,7 @@ export function Select<T extends string = string>({
   onChange,
   onChangeMulti,
   isMulti = false,
+  accessibilityLabel,
   placeholder = 'Select...',
   isDisabled = false,
   isInvalid = false,
@@ -137,6 +138,8 @@ export function Select<T extends string = string>({
           onPress={() => !isDisabled && setIsOpen(!isOpen)}
           disabled={isDisabled}
           accessibilityRole="combobox"
+          accessibilityLabel={accessibilityLabel}
+          aria-expanded={isOpen}
           accessibilityState={{ expanded: isOpen, disabled: isDisabled }}
           className={cn(
             'flex-row items-center justify-between px-4 py-2.5 rounded-md border',
@@ -161,6 +164,10 @@ export function Select<T extends string = string>({
                   e.stopPropagation?.()
                   clearValue()
                 }}
+                accessibilityRole="button"
+                accessibilityLabel={
+                  accessibilityLabel ? `Clear ${accessibilityLabel}` : 'Clear selection'
+                }
                 className="p-1"
               >
                 <Text className="text-text-secondary text-xs">×</Text>
