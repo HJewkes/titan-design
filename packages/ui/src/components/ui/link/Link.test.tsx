@@ -135,20 +135,32 @@ describe('Link', () => {
       expect(onPress).toHaveBeenCalledTimes(1)
     })
 
-    it('renders no href when disabled', () => {
+    it('renders no href when disabled, though the same enabled link does', () => {
       render(
-        <Link href="/docs" isDisabled>
-          Docs
-        </Link>
+        <>
+          <Link href="/docs" isDisabled>
+            Disabled docs
+          </Link>
+          <Link href="/docs">Enabled docs</Link>
+        </>
       )
-      const link = screen.getByRole('link')
-      expect(link.tagName).not.toBe('A')
-      expect(link).not.toHaveAttribute('href')
+      const [disabled, enabled] = screen.getAllByRole('link')
+      expect(disabled.tagName).not.toBe('A')
+      expect(disabled).not.toHaveAttribute('href')
+      expect(enabled.tagName).toBe('A')
+      expect(enabled).toHaveAttribute('href', '/docs')
     })
 
-    it('stays a non-anchor element without href', () => {
-      render(<Link onPress={() => {}}>Docs</Link>)
-      expect(screen.getByRole('link').tagName).not.toBe('A')
+    it('renders an anchor only for the link that has an href', () => {
+      render(
+        <>
+          <Link onPress={() => {}}>Without href</Link>
+          <Link href="/docs">With href</Link>
+        </>
+      )
+      const [withoutHref, withHref] = screen.getAllByRole('link')
+      expect(withoutHref.tagName).not.toBe('A')
+      expect(withHref.tagName).toBe('A')
     })
   })
 

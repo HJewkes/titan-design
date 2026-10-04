@@ -130,7 +130,7 @@ describe('Breadcrumbs', () => {
       expect(anchor).toHaveAttribute('href', '/products')
     })
 
-    it('fires onPress on a plain click of an href item', () => {
+    it('fires onPress and keeps routing in the handler on a plain click of an href item', () => {
       const onPress = vi.fn()
       render(
         <Breadcrumbs>
@@ -140,8 +140,11 @@ describe('Breadcrumbs', () => {
         </Breadcrumbs>
       )
 
-      fireEvent.click(screen.getByRole('link'))
+      const anchor = screen.getByRole('link')
+      const notPrevented = fireEvent.click(anchor)
+      expect(anchor.tagName).toBe('A')
       expect(onPress).toHaveBeenCalledTimes(1)
+      expect(notPrevented).toBe(false)
     })
 
     it.each([{ metaKey: true }, { ctrlKey: true }])(
@@ -162,14 +165,17 @@ describe('Breadcrumbs', () => {
       }
     )
 
-    it('stays a non-anchor element without href', () => {
+    it('renders an anchor only for the item that has an href', () => {
       render(
         <Breadcrumbs>
           <BreadcrumbItem onPress={() => {}}>Home</BreadcrumbItem>
+          <BreadcrumbItem href="/products">Products</BreadcrumbItem>
         </Breadcrumbs>
       )
 
-      expect(screen.getByRole('link').tagName).not.toBe('A')
+      const [withoutHref, withHref] = screen.getAllByRole('link')
+      expect(withoutHref.tagName).not.toBe('A')
+      expect(withHref.tagName).toBe('A')
     })
 
     it('sets aria-current on current page item', () => {
