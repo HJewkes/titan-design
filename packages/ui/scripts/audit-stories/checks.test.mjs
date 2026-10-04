@@ -18,7 +18,7 @@ const contrast = (...nodes) => [{ id: 'color-contrast', nodes }]
 
 // A page double: dispatches on the function the audit sends into the browser.
 const fakePage = ({ violations, tokenMap, dom }) => ({
-  evaluate: async (fn, arg) => {
+  evaluate: async (fn) => {
     if (fn === domChecks) return dom
     if (fn === tokenColours) return tokenMap
     return fn.toString().includes('window.axe.run') ? violations : true
@@ -120,6 +120,27 @@ describe('theme geometry shift', () => {
         detail: 'box 0,0,100,10 in dark vs 0,0,102,10',
       },
     ])
+  })
+
+  it('keeps an unrelated sibling whose selector merely starts with another', () => {
+    const dark = [row('0', 'div', 100), row('1.0', 'div[role="button"]', 50)]
+    const light = [row('0', 'div', 102), row('1.0', 'div[role="button"]', 52)]
+    expect(themeGeometryShift(dark, light, 'dark').map((f) => f.selector)).toEqual([
+      'div',
+      'div[role="button"]',
+    ])
+  })
+
+  it('drops a descendant whose selector starts with a test id', () => {
+    const dark = [row('0', 'div', 100), row('0.0', '[data-testid="x"]', 50)]
+    const light = [row('0', 'div', 102), row('0.0', '[data-testid="x"]', 52)]
+    expect(themeGeometryShift(dark, light, 'dark').map((f) => f.selector)).toEqual(['div'])
+  })
+
+  it('drops a descendant deeper than the selector depth cap', () => {
+    const dark = [row('0', 'a', 100), row('0.0.0.0.0.0', 'x > y > z > w', 50)]
+    const light = [row('0', 'a', 102), row('0.0.0.0.0.0', 'x > y > z > w', 52)]
+    expect(themeGeometryShift(dark, light, 'dark').map((f) => f.selector)).toEqual(['a'])
   })
 
   it('ignores a 1px shift', () => {

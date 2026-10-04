@@ -1,15 +1,9 @@
 // DOM audit for one rendered story: page checks run in the browser, the rest is pure.
-import { createRequire } from 'node:module'
-import { readFileSync } from 'node:fs'
+// domChecks, runAxe and tokenColours are serialised into the page, so they use browser globals.
+/* global document, getComputedStyle, innerWidth, NodeFilter, window */
 import { buildScale, isOnScale } from './spacing-scale.mjs'
 
 const MAX_FINDINGS_PER_KIND = 25
-
-export function loadAxeSource(uiDir) {
-  const req = createRequire(`${uiDir}/x.js`)
-  const fromJestAxe = createRequire(req.resolve('jest-axe'))
-  return readFileSync(fromJestAxe.resolve('axe-core/axe.min.js'), 'utf8')
-}
 
 // Runs in the page. Every check is a named function so a finding can cite it.
 export function domChecks({ touch, spacingVars }) {
@@ -460,7 +454,7 @@ export async function runAxe(page, axeSource) {
 export function tokenColours() {
   const names = new Set()
   for (const sheet of document.styleSheets) {
-    let rules = []
+    let rules
     try {
       rules = [...sheet.cssRules]
     } catch {
@@ -558,13 +552,14 @@ export function themeGeometryShift(baseGeometry, otherGeometry, baseTheme) {
     const delta = [x, y, w, h].map((v, i) => Math.abs(v - b.box[i]))
     if (Math.max(...delta) > 1)
       shifts.push({
+        path,
         kind: 'theme-geometry-shift',
         selector: sel,
         detail: `box ${b.box.join(',')} in ${baseTheme} vs ${[x, y, w, h].join(',')}`,
       })
   }
-  const outermost = shifts.filter(
-    (s, i) => !shifts.slice(0, i).some((p) => s.selector.startsWith(p.selector))
-  )
+  const kept = []
+  for (const s of shifts) if (!kept.some((k) => s.path.startsWith(`${k.path}.`))) kept.push(s)
+  const outermost = kept.map(({ kind, selector, detail }) => ({ kind, selector, detail }))
   return outermost.slice(0, MAX_FINDINGS_PER_KIND)
 }
