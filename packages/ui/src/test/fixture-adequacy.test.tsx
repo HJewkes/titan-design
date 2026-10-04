@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import type { ReactElement } from 'react'
 import { render } from '@testing-library/react'
 import { MuscleGroup } from '../components/custom/Workout/muscleTaxonomy'
 import { BodyweightGoalCard } from '../components/custom/Workout/BodyweightGoalCard'
@@ -34,9 +35,11 @@ import {
   missingValueCases,
   orphanBaselineKeys,
   renderedText,
+  type AdequacyCase,
   type ManifestEntry,
 } from './fixture-adequacy'
 
+const FIRST_USE_SHOWS = 'Best \n—'
 const CHART_WIDTH = 560
 const FIRST_USE_NOTE =
   'N5 first-use: no numeric slot types a first-use marker, so the card cannot be told it.'
@@ -108,6 +111,14 @@ function primaryCard(props: Partial<Parameters<typeof PrimaryGoalCard>[0]>) {
   return <PrimaryGoalCard {...primary} chartWidth={CHART_WIDTH} statusForm="pill" {...props} />
 }
 
+const firstUseMilestone = { ...primary.milestone, latest: undefined, currentWeek: undefined }
+const firstUseTrend = { committed: 185, stretch: 195, actuals: [], goalWeek: 6, unit: 'lb' }
+
+/** No readings yet: the cards fall back from `latest` to the last actual, so only `[]` shows the gap. */
+function firstUseCase(component: string, element: () => ReactElement): AdequacyCase {
+  return { id: `${component} actuals=first-use`, element, shows: FIRST_USE_SHOWS }
+}
+
 function taskRow(item: TaskListItem) {
   return (
     <Table density="dense">
@@ -138,6 +149,9 @@ const MANIFEST: ManifestEntry[] = [
       ...missingValueCases('GoalCard', 'milestone.currentWeek', admitsUndefined, (currentWeek) =>
         goalCard({ milestone: { ...primary.milestone, currentWeek } })
       ),
+      firstUseCase('GoalCard', () =>
+        goalCard({ milestone: firstUseMilestone, trend: firstUseTrend })
+      ),
     ],
     notes: [
       'Rendered at size="compact"; PrimaryGoalCard covers size="full".',
@@ -163,6 +177,9 @@ const MANIFEST: ManifestEntry[] = [
       ...missingValueCases('PrimaryGoalCard', 'goal.currentWeek', admitsUndefined, (currentWeek) =>
         primaryCard({ goal: { ...primary.goal, currentWeek } })
       ),
+      firstUseCase('PrimaryGoalCard', () =>
+        primaryCard({ milestone: firstUseMilestone, goal: { ...primary.goal, actuals: [] } })
+      ),
     ],
     notes: [
       'N5 null: the optional numeric slots are not nullable.',
@@ -181,10 +198,13 @@ const MANIFEST: ManifestEntry[] = [
       ...missingValueCases('GoalLiftCard', 'currentWeek', admitsUndefined, (currentWeek) => (
         <GoalLiftCard {...lift} currentWeek={currentWeek} />
       )),
+      firstUseCase('GoalLiftCard', () => (
+        <GoalLiftCard {...lift} actuals={[]} latest={undefined} currentWeek={undefined} />
+      )),
     ],
     notes: [
       'N5 null: latest and currentWeek are optional, not nullable.',
-      'latest and currentWeek fall back to the last reading, so their N5 cases show that reading.',
+      'latest and currentWeek fall back to the last reading; only actuals=first-use shows the gap.',
       'committed, stretch and milestone numbers are required numbers.',
       FIRST_USE_NOTE,
     ],
@@ -341,11 +361,22 @@ describe('renderedText', () => {
 
 describe('adequacyProblems', () => {
   it('reports a token the baseline does not list', () => {
-    expect(adequacyProblems('Card name=S1', ['NaN'], [])).toHaveLength(1)
+    expect(adequacyProblems('Card name=S1', ['NaN'], undefined)).toHaveLength(1)
   })
 
   it('reports a baselined token that no longer renders', () => {
     expect(adequacyProblems('Card name=S1', [], ['NaN'])).toHaveLength(1)
+  })
+
+  it('reports a baseline entry with an empty list as stale', () => {
+    const problems = adequacyProblems('Card name=S1', [], [])
+
+    expect(problems).toHaveLength(1)
+    expect(problems[0]).toContain('empty')
+  })
+
+  it('accepts a case with no baseline entry and no garbage', () => {
+    expect(adequacyProblems('Card name=S1', [], undefined)).toEqual([])
   })
 
   it('accepts a failure the baseline lists', () => {

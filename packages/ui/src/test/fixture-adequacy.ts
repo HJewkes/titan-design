@@ -104,11 +104,15 @@ export interface ManifestEntry {
 export function adequacyProblems(
   id: string,
   found: GarbageToken[],
-  baselined: string[] = []
+  baselined?: string[]
 ): string[] {
-  const added = found.filter((token) => !baselined.includes(token))
-  const stale = baselined.filter((token) => !(found as string[]).includes(token))
+  const listed = baselined ?? []
+  const added = found.filter((token) => !listed.includes(token))
+  const stale = listed.filter((token) => !(found as string[]).includes(token))
   const problems: string[] = []
+  if (baselined?.length === 0) {
+    problems.push(`${id} has an empty entry in ${BASELINE_FILE}. Delete the entry.`)
+  }
   if (added.length > 0) {
     problems.push(
       `${id} renders ${added.map((token) => `"${token}"`).join(', ')}, which ${BASELINE_FILE} ` +
