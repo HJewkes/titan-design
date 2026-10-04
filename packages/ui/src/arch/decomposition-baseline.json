@@ -42,6 +42,15 @@
     "component-lines": 316,
     "function-lines": 316
   },
+  "components/custom/Workout/DualVelocityCharts.tsx#DualVelocityCompactStrip": {
+    "props": 15
+  },
+  "components/custom/Workout/DualVelocityCharts.tsx#DualVelocityHero": {
+    "props": 16
+  },
+  "components/custom/Workout/DualVelocityCharts.tsx#DualVelocityRail": {
+    "props": 16
+  },
   "components/custom/Workout/ExerciseCard.tsx": {
     "file-lines": 255
   },
@@ -168,16 +177,7 @@
     "file-lines": 252
   },
   "components/custom/Workout/VelocityStrip.tsx": {
-    "file-lines": 719
-  },
-  "components/custom/Workout/VelocityStrip.tsx#DualVelocityCompactStrip": {
-    "props": 15
-  },
-  "components/custom/Workout/VelocityStrip.tsx#DualVelocityHero": {
-    "props": 16
-  },
-  "components/custom/Workout/VelocityStrip.tsx#DualVelocityRail": {
-    "props": 16
+    "file-lines": 368
   },
   "components/custom/Workout/VelocityStrip.tsx#VelocityStrip": {
     "complexity": 59,
@@ -197,7 +197,7 @@
     "function-lines": 211
   },
   "components/custom/Workout/index.ts": {
-    "file-lines": 345
+    "file-lines": 344
   },
   "components/custom/Workout/velocityBandGeometry.ts": {
     "file-lines": 318

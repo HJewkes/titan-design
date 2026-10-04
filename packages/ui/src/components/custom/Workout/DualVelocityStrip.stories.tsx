@@ -15,7 +15,7 @@ const RIGHT = [0.49, 0.47, 0.45, 0.42, 0.4, 0.38]
 const meta: Meta<typeof DualVelocityStrip> = {
   title: 'Custom/Workout/DataViz/DualVelocityStrip',
   component: DualVelocityStrip,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     layout: 'fullscreen',
     docs: {
