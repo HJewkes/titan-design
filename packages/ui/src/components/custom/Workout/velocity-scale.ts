@@ -1,6 +1,28 @@
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
-import type { VelocityZoneBandProp } from './VelocityStrip'
 
+/**
+ * Structural velocity-zone band accepted from an upstream analytics source
+ * (e.g. workout-analytics' `VelocityZones.bands`).
+ *
+ * Deliberately a plain structural shape — titan never imports the analytics
+ * package (the same presentational-only policy the Workout family follows). Any object with
+ * this shape can be passed, so `zones={waVelocityZones.bands}` works directly.
+ * Bands are ordered slow → fast, contiguous, and cover `[0, ∞)` with the top
+ * band's `max === null`. Bands carry NO color — color is a UI concern resolved
+ * here via {@link zoneIdToScaleToken}.
+ */
+export interface VelocityZoneBandProp {
+  /** Stable zone identity (e.g. WA's `VelocityZoneId`). Drives color mapping. */
+  id: string
+  /** Human-readable label shown in the summary row. */
+  label: string
+  /** Inclusive lower bound (m/s mean concentric velocity). */
+  min: number
+  /** Exclusive upper bound (m/s); `null` marks the open top band. */
+  max: number | null
+}
+
+// The 4-color performance scale as the dataviz-sequential tokens PinnedLiveStrip uses; dark mode equals WORKOUT_TOKENS.scale.
 const VEL_SCALE_TOKEN = {
   green: 'dataviz-sequential-0',
   yellow: 'dataviz-sequential-2',
