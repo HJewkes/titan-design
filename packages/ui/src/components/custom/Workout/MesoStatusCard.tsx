@@ -4,7 +4,7 @@ import { View, Text, type ViewProps, type ViewStyle } from 'react-native'
 import { Card } from '../../ui/card'
 import { StatusDot } from './StatusDot'
 import { useOnSurfaceColor, useSurfaceMode } from '../../ui/surface'
-import { resolveColor } from '../../../theme/resolve-color'
+import { surfaceGradient } from '../../../theme/gradients'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import {
@@ -16,13 +16,6 @@ import { alpha } from '../../../utils/colors'
 
 const BRAND_PRIMARY_DARK = MESO_ACCENT_GRADIENT_DARK
 const BRAND_PRIMARY_LIGHT = MESO_ACCENT_GRADIENT_LIGHT
-
-/**
- * Card surface gradient: elevated -> raised at 135deg. Uses resolved dark-theme
- * hexes (a gradient string can't carry a className token, and var() renders
- * black on native).
- */
-const CARD_GRADIENT = `linear-gradient(135deg, ${resolveColor('surface-elevated')} 0%, ${resolveColor('surface-raised')} 100%)`
 
 export type MesoStatusBadgeVariant = 'success' | 'warning' | 'error' | 'info'
 
@@ -41,12 +34,6 @@ function statusColors(mode: ThemeMode) {
 /** Gradient stops for the 3px top accent: dark -> primary -> light (matches MesoCard). */
 function accentStops(mode: ThemeMode): string[] {
   return [BRAND_PRIMARY_DARK, statusColors(mode).primary, BRAND_PRIMARY_LIGHT]
-}
-
-/** Gauge track gradient (teal -> amber -> red) at 0.25 alpha. */
-function gaugeGradient(mode: ThemeMode): string {
-  const { success, warning, error } = statusColors(mode)
-  return `linear-gradient(90deg, ${alpha(success, 0.25)} 0%, ${alpha(warning, 0.25)} 50%, ${alpha(error, 0.25)} 100%)`
 }
 
 function statusVariants(
@@ -271,7 +258,7 @@ function Gauge({ gauge }: { gauge: MesoStatusGauge }) {
             height: 8,
             borderRadius: 4,
             position: 'relative',
-            backgroundImage: gaugeGradient(mode),
+            ...surfaceGradient.statusTrack(mode),
           } as ViewStyle
         }
         accessibilityElementsHidden
@@ -358,7 +345,7 @@ export function MesoStatusCard({
         {
           borderColor: BRAND_PRIMARY_DARK,
           borderWidth: 1,
-          backgroundImage: CARD_GRADIENT,
+          ...surfaceGradient.card(mode),
         } as ViewStyle
       }
       role="article"
