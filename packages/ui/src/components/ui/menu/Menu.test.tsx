@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Menu, MenuTrigger, MenuList, MenuItem, MenuDivider, MenuGroup } from './Menu'
-import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
 describe('Menu', () => {
   it('renders trigger element', () => {
@@ -348,15 +348,28 @@ describe('Menu', () => {
  * Menu's chrome, pinned (AW-142 wave two). Unchanged in pixels.
  */
 describe('Menu geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'Menu.tsx')
-
+  // `mt-1` on the panel is its drop offset from the trigger, not part of its inset.
   it.each([
-    ['the panel', 'rounded-lg py-inset-xs overflow-hidden', ['4px']],
-    ['a menu item', 'flex-row items-center px-inset-lg py-inset-sm', ['16px', '8px']],
-  ] as const)('%s ships `%s`', (_label, classes, pixels) => {
-    expect(source).toContain(classes)
-    const spacing = classes.split(' ').filter((c) => resolveAll([c])[0] !== undefined)
-    expect(resolveAll(spacing)).toEqual([...pixels])
+    ['the panel', () => screen.getByRole('menu'), ['mt-1', 'py-inset-xs'], ['4px', '4px']],
+    [
+      'a menu item',
+      () => screen.getByRole('menuitem'),
+      ['px-inset-lg', 'py-inset-sm'],
+      ['16px', '8px'],
+    ],
+  ] as const)('%s ships its spacing tokens', (_label, find, classes, pixels) => {
+    render(
+      <Menu defaultIsOpen>
+        <MenuTrigger>
+          <button>Options</button>
+        </MenuTrigger>
+        <MenuList>
+          <MenuItem>Edit</MenuItem>
+        </MenuList>
+      </Menu>
+    )
+    expect(spacingClassesAt(find())).toEqual([...classes])
+    expect(resolveAll([...classes])).toEqual([...pixels])
   })
 })
 
