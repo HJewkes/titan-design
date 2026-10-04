@@ -441,6 +441,8 @@ export const FeedbackSchema = z
     answers: z.array(answerSchema),
     variants: z.array(variantFeedbackSchema),
     general: z.string(),
+    /** Present only on a deliberate partial submit: every question it left unanswered. */
+    unansweredQuestionIds: z.array(z.string()).min(1).optional(),
     /** The round's contrast override, so the record of an ungated round outlives the serve. */
     contrastOverride: ContrastOverrideSchema.optional(),
   })

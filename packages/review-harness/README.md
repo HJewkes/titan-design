@@ -17,9 +17,16 @@ as JSON on stdout and in `feedback.json`. Private workspace tool, not published.
    A sectioned round asks each group's question above that group's frames, and every frame
    carries the question it belongs to in its (sticky) header. It shows one section at a time:
    `]` pages to the next section, `[` to the previous one, and `Enter` past a section's last
-   stop carries on into the next. The header lists every section as a link.
+   stop carries on into the next. The header lists every section as a link and says
+   "Section N of M"; the end of every section repeats it between Previous and Next. Next is the
+   primary button and takes focus whenever a section opens, so moving on is the default; on the
+   last page Review answers takes that place.
 8. `Cmd+Enter` opens the final check, which lists every answer and anything missing.
-9. `Cmd+Enter` again sends. The tab says "Sent", and the agent is already iterating.
+9. `Cmd+Enter` again sends once every question has an answer. The tab says "Sent", and the
+   agent is already iterating. If any question is unanswered, the check says how many, Back
+   becomes the primary button, `Cmd+Enter` does nothing, and the send button reads
+   "Send partial: K unanswered". Clicking it is the only way to send a partial review; the
+   feedback then lists what was left out in `unansweredQuestionIds`.
 10. Nothing leaves the Mac: the page binds 127.0.0.1 and loads no external resources.
 
 ## The agent's side
@@ -110,14 +117,18 @@ sha256 of the manifest you wrote.
 - Feedback `titan-review/feedback@1`: `manifestSha256`, `submittedAt`,
   `answers[{questionId, pick | picks | value | text, comment?, variantComments?, recommendation?, agreed?}]`,
   `variants[{key, storyId | image, verdict: chosen|rejected|maybe|null, comment, annotations[], relatedQuestionIds?}]`,
-  `general`, `contrastOverride?` (see _The agent's side_). Each annotation has `width`,
+  `general`, `unansweredQuestionIds?`, `contrastOverride?` (see _The agent's side_). Each annotation has `width`,
   `x`/`y` in CSS px of the story frame, `xPct`/`yPct` as fractions of it, a `note`, and `target {testId?, role?, text?}` from element hit-testing.
   `variantComments[{key, comment}]` repeats, under the answer, every comment left on a frame
   that question's section showed; `relatedQuestionIds` is the same link from the frame's side.
   Both appear only in a sectioned round. `recommendation` echoes the question's recommendation,
   and `agreed` says whether the owner's answer equals it (pick-many: the same set); `agreed` is
   absent when the owner only commented. Both appear only when the question has a
-  recommendation. Everything else is unchanged and means what it always did.
+  recommendation. `unansweredQuestionIds` marks a deliberate partial submit: it lists, in
+  manifest order, every question the owner sent without an answer (a comment alone is not an
+  answer), and a required question it lists is not an error. A full submit omits the field; the
+  page sends one only when every question has an answer. The server rejects a list that
+  disagrees with the answers sent. Everything else is unchanged and means what it always did.
 
 ## Contrast gate (TD-478)
 
