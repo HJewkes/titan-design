@@ -3,7 +3,7 @@ import { axe } from 'jest-axe'
 import { render, screen } from '@testing-library/react'
 import { FatigueLights } from './FatigueLights'
 import type { FatigueVerdict } from './fatigue-model'
-import { resolveAll, siblingSource, spacingClassesIn } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesAt, spacingClassesOf } from '../../../test/spacing-resolver'
 
 const dims: FatigueVerdict['dimensions'] = { velocityLoss: 'alarm', rom: 'warn', tempo: 'ok' }
 
@@ -48,15 +48,20 @@ describe('FatigueLights', () => {
  * `gap-4` — it is horizontal and the inline ramp stops at 12.
  */
 describe('FatigueLights geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'FatigueLights.tsx')
-
   it('spaces a dot from its label by gap-inline-sm', () => {
-    expect(spacingClassesIn(source, 'Light')).toEqual(['gap-inline-sm'])
+    render(<FatigueLights dimensions={dims} />)
+    expect(spacingClassesAt(screen.getByLabelText('Velocity loss, alarm'))).toEqual([
+      'gap-inline-sm',
+    ])
     expect(resolveAll(['gap-inline-sm'])).toEqual(['4px'])
   })
 
-  it('spaces the three lights by gap-4 when not spread', () => {
-    expect(source).toContain("spread ? 'justify-between' : 'justify-start gap-4'")
+  it.each([
+    ['grouped', false, ['gap-4']],
+    ['spread', true, []],
+  ] as const)('spaces the %s lights by their gap', (_label, spread, classes) => {
+    render(<FatigueLights dimensions={dims} spread={spread} />)
+    expect(spacingClassesOf('fatigue-lights')).toEqual([...classes])
     expect(resolveAll(['gap-4'])).toEqual(['16px'])
   })
 })
