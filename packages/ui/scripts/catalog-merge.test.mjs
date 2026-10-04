@@ -10,6 +10,7 @@ import { foldFragments, parseFragment } from './changelog-compile.mjs'
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../../..')
 const GRAPH = 'packages/ui/src/arch/arch-graph.json'
+const TSCONFIG = 'packages/ui/tsconfig.json'
 const CHANGELOG = 'packages/ui/CHANGELOG.md'
 const DIR = 'packages/ui/src/components/ui/widgets'
 const BASE_COMPONENTS = ['Alpha', 'Charlie', 'Echo', 'Golf']
@@ -39,6 +40,13 @@ function writeStory(name) {
   )
 }
 
+function writeComponent(name) {
+  write(
+    `${DIR}/${name}.tsx`,
+    `/** ${name} widget. */\nexport function ${name}({ label }: { label: string }) {\n  return label\n}\n`
+  )
+}
+
 /** The real generator over the working tree, written to the catalog path. */
 function regenerate() {
   write(CATALOG, serializeCatalog(buildCatalog(root)))
@@ -50,6 +58,7 @@ function addComponent(name) {
     a.file < b.file ? -1 : 1
   )
   write(GRAPH, `${JSON.stringify(graph, null, 2)}\n`)
+  writeComponent(name)
   writeStory(name)
   regenerate()
 }
@@ -85,6 +94,7 @@ beforeAll(() => {
     join(root, 'packages/ui/.storybook/preview.tsx'),
     { recursive: true }
   )
+  write(TSCONFIG, `${JSON.stringify({ compilerOptions: { strict: true } }, null, 2)}\n`)
   write(GRAPH, `${JSON.stringify({ components: [] }, null, 2)}\n`)
   for (const name of BASE_COMPONENTS) addComponent(name)
   write(CHANGELOG, '# Changelog\n\n## [Unreleased]\n\n### Added\n\n- shipped earlier\n')
@@ -118,6 +128,7 @@ describe('two PRs that each add a component and a changelog entry', () => {
       'Foxtrot',
       'Golf',
     ])
+    expect(merged.entries.find((entry) => entry.name === 'Foxtrot').purpose).toBe('Foxtrot widget.')
     expect(read(CATALOG)).toBe(serializeCatalog(buildCatalog(root)))
   })
 
