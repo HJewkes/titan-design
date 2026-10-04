@@ -19,9 +19,9 @@ import { STORY_INDEX_ENV } from './story-index.global-setup'
  * Scope: the shell family + the icon foundation story (`Foundations/Icons`,
  * whose Storybook id is `foundations-icons--*`), MesoProgressBar, every
  * VelocityStrip title (`custom-workout-dataviz-velocitystrip*`, including its
- * Expanded, Hero, Dual and Compact sheets), DualVelocityStrip, MesoCard and
- * SegmentedBar, plus the Chat stories named in `CHAT_STORIES`. Widen `SCOPE` to
- * cover more of the library as baselines are seeded.
+ * Expanded, Hero, Dual and Compact sheets), DualVelocityStrip, MesoCard,
+ * SegmentedBar and GoalTrajectoryChart, plus the Chat stories named in
+ * `CHAT_STORIES`. Widen `SCOPE` to cover more of the library as baselines are seeded.
  *
  * Baselines must be generated in the pinned Playwright Linux container
  * (`mcr.microsoft.com/playwright:v1.58.2-noble`) so the committed PNGs are
@@ -32,7 +32,7 @@ import { STORY_INDEX_ENV } from './story-index.global-setup'
  */
 
 const SCOPE =
-  /^(shell-|foundations-icons--|custom-workout-mesoprogressbar--|custom-workout-dataviz-velocitystrip|custom-workout-dataviz-dualvelocitystrip--|custom-workout-mesocard--|custom-workout-segmentedbar--)/
+  /^(shell-|foundations-icons--|custom-workout-mesoprogressbar--|custom-workout-dataviz-velocitystrip|custom-workout-dataviz-dualvelocitystrip--|custom-workout-mesocard--|custom-workout-segmentedbar--|custom-workout-dataviz-goaltrajectorychart--)/
 
 // The owner-locked Chat design (VW-393), listed by id so the interactive stories stay out.
 const CHAT_STORIES = new Set([
@@ -91,12 +91,18 @@ async function expectRendered(page: Page, label: string, timeout = 5000) {
     .toBeNull()
 }
 
+// GoalTrajectoryChart plays an entrance that the paused clock freezes at frame 0, so its
+// baselines would show the band with no actuals; `animate` off renders the settled final frame.
+const SETTLED_ARGS_PREFIX = 'custom-workout-dataviz-goaltrajectorychart--'
+const storyUrl = (id: string) =>
+  `/iframe.html?id=${id}&viewMode=story${id.startsWith(SETTLED_ARGS_PREFIX) ? '&args=animate:!false' : ''}`
+
 async function renderStory(page: Page, id: string) {
   // install() alone keeps ticking from FIXED_TIME in real time, so a story
   // rendered late in the run showed 16:13 instead of 16:12 (#250); it starts early so pauseAt never rewinds.
   await page.clock.install({ time: CLOCK_START })
   await page.clock.pauseAt(FIXED_TIME)
-  await page.goto(`/iframe.html?id=${id}&viewMode=story`)
+  await page.goto(storyUrl(id))
   await page.waitForLoadState('networkidle')
   await page.evaluate(() => document.fonts.ready)
   await expectRendered(page, id)

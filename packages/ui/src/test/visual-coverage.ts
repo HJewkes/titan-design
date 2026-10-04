@@ -14,6 +14,7 @@ export const REQUIRED_PREFIXES = [
   'custom-workout-dataviz-dualvelocitystrip--',
   'custom-workout-mesocard--',
   'custom-workout-segmentedbar--',
+  'custom-workout-dataviz-goaltrajectorychart--',
 ] as const
 
 export const BASELINE_SUFFIX = '-chromium-linux.png'
