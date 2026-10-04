@@ -15,13 +15,15 @@ export const BASELINE_FILE = 'packages/ui/src/test/fixture-adequacy-baseline.jso
 export type AdequacyBaseline = Record<string, string[]>
 
 /** The titan-evals c04 check: what a value slot prints when it formats a missing value. */
+// The words match as case-sensitive substrings, not on word boundaries: a value glued to its
+// unit ("undefinedlb", "1undefined") is the usual shape of the bug.
 export const GARBAGE_TOKENS = {
-  NaN: /\bNaN\b/,
-  undefined: /\bundefined\b/,
-  null: /\bnull\b/,
-  Infinity: /\bInfinity\b/,
+  NaN: /NaN/,
+  undefined: /undefined/,
+  null: /null/,
+  Infinity: /Infinity/,
   '[object Object]': /\[object Object\]/,
-  '0x0': /\b0\s?[x×]\s?0\b/,
+  '0x0': /(?<![\d.])0\s?[x×]\s?0(?![\d.])/,
 } as const satisfies Record<string, RegExp>
 
 export type GarbageToken = keyof typeof GARBAGE_TOKENS
@@ -32,13 +34,20 @@ export function garbageTokens(text: string): GarbageToken[] {
   )
 }
 
-/** Visible text plus the names assistive tech reads, which never reach `textContent`. */
+/**
+ * Every text node on its own line, plus the names assistive tech reads. `textContent` would glue
+ * adjacent cells together ("1" and "0" in two cells reading as one "10").
+ */
 export function renderedText(root: Element): string {
-  const named = [...root.querySelectorAll('[aria-label], [title]')].flatMap((element) => [
-    element.getAttribute('aria-label') ?? '',
-    element.getAttribute('title') ?? '',
-  ])
-  return [root.textContent ?? '', ...named].join('\n')
+  const walker = root.ownerDocument.createTreeWalker(root, NodeFilter.SHOW_TEXT)
+  const lines: string[] = []
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    lines.push(node.textContent ?? '')
+  }
+  for (const element of root.querySelectorAll('[aria-label], [title]')) {
+    lines.push(element.getAttribute('aria-label') ?? '', element.getAttribute('title') ?? '')
+  }
+  return lines.join('\n')
 }
 
 export interface AdequacyCase {

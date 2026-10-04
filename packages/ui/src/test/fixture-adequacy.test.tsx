@@ -184,6 +184,7 @@ const MANIFEST: ManifestEntry[] = [
     ],
     notes: [
       'N5 null: latest and currentWeek are optional, not nullable.',
+      'latest and currentWeek fall back to the last reading, so their N5 cases show that reading.',
       'committed, stretch and milestone numbers are required numbers.',
       FIRST_USE_NOTE,
     ],
@@ -318,10 +319,23 @@ describe('garbageTokens', () => {
     ])
   })
 
+  it('finds a token glued to the value or unit beside it', () => {
+    expect(garbageTokens('1undefinedlb')).toEqual(['undefined'])
+  })
+
   it('leaves the stress strings and ordinary set notation alone', () => {
-    const text = 'synthetic-fixture-id-0f3a9c7e2b5d4a18 · 8 x 100 lb · 10x05 · Nullable · nanny'
+    const text = 'synthetic-fixture-id-0f3a9c7e2b5d4a18 · 8 x 100 lb · 10x05 · 0.0x0.5 · nanny'
 
     expect(garbageTokens(text)).toEqual([])
+  })
+})
+
+describe('renderedText', () => {
+  it('keeps adjacent text nodes apart and reads accessible names', () => {
+    const root = document.createElement('div')
+    root.innerHTML = '<span>1</span><span>0</span><span aria-label="Estimate" title="Tip"></span>'
+
+    expect(renderedText(root).split('\n')).toEqual(['1', '0', 'Estimate', 'Tip'])
   })
 })
 
