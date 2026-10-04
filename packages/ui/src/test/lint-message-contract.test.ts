@@ -215,6 +215,8 @@ describe('lint message contract: every message the config can emit', () => {
       const message = render(entry, FIXTURES[entry.id])
       expect(message, 'the fixture must trigger the message').toBeDefined()
       expect(await contractProblems(message as string)).toEqual([])
-    }
+    },
+    // Linting a fixture parses the whole config; the first one is slow under coverage.
+    30_000
   )
 })
