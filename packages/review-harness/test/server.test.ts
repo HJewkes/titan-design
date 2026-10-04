@@ -179,6 +179,21 @@ describe('titan-review CLI', () => {
     expect(written.manifestSha256).toBe(await sha256(join(dir, 'round.json')))
   })
 
+  it('drops a contrastOverride the page posts when the round carries none', async () => {
+    await writeContrast({ passed: true, failures: [] })
+    const sha = await sha256(join(dir, 'round.json'))
+    const forged = { reason: 'posted by the page', problem: 'not from round.json', failures: [] }
+    const code = await runCli(
+      [join(dir, 'round.json'), '--no-open'],
+      io(new AbortController().signal, (url) => {
+        void post(url, { ...validFeedback(manifest(sb.url), sha), contrastOverride: forged })
+      })
+    )
+    expect(code).toBe(0)
+    const written = JSON.parse(await readFile(join(dir, 'feedback.json'), 'utf8'))
+    expect(written).not.toHaveProperty('contrastOverride')
+  })
+
   it('exits 130 and writes nothing when interrupted before submit', async () => {
     const controller = new AbortController()
     const code = await runCli(
