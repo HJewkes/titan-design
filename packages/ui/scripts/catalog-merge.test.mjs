@@ -5,7 +5,8 @@ import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
-import { CATALOG, buildCatalog, serializeCatalog } from './catalog.mjs'
+import { CATALOG, DIGEST, buildCatalog, serializeCatalog } from './catalog.mjs'
+import { renderDigest } from './catalog/digest.mjs'
 import { foldFragments, parseFragment } from './changelog-compile.mjs'
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../../..')
@@ -49,9 +50,11 @@ function writeComponent(name) {
   )
 }
 
-/** The real generator over the working tree, written to the catalog path. */
+/** The real generator over the working tree, written to the catalog and digest paths. */
 function regenerate() {
-  write(CATALOG, serializeCatalog(buildCatalog(root)))
+  const serialized = serializeCatalog(buildCatalog(root))
+  write(CATALOG, serialized)
+  write(DIGEST, renderDigest(JSON.parse(serialized)))
 }
 
 function addComponent(name) {
@@ -139,6 +142,7 @@ describe('two PRs that each add a component and a changelog entry', () => {
         'Foxtrot widget.'
       )
       expect(read(CATALOG)).toBe(serializeCatalog(buildCatalog(root)))
+      expect(read(DIGEST)).toBe(renderDigest(merged))
     },
     DOCGEN_TIMEOUT
   )

@@ -1,5 +1,6 @@
 /**
- * Generates `src/arch/component-catalog.json` (TD-24) from the committed arch-graph.json,
+ * Generates `src/arch/component-catalog.json` (TD-24), and its markdown digest
+ * `docs/component-catalog.md`, from the committed arch-graph.json,
  * MATURITY.md, the story files and react-docgen-typescript over the entry files. It never calls
  * codewatch, so any checkout can run it.
  *
@@ -7,19 +8,21 @@
  *
  * Output is deterministic: entries and keys in code-unit order. No global hash or timestamp: a change to one component rewrites only that component's block.
  * `src/arch/component-catalog.freshness.test.ts` regenerates in memory and fails until the
- * committed file matches.
+ * committed file matches; `src/arch/component-catalog.digest.test.ts` does the same for the digest.
  */
 import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 
+import { renderDigest } from './catalog/digest.mjs'
 import { buildEntry, exclusionReason } from './catalog/entries.mjs'
 import { ARCH_GRAPH, MATURITY, PREVIEW, readInput, storyFiles } from './catalog/inputs.mjs'
 import { docgen, propsFor } from './catalog/props.mjs'
 import { defaultExportTags, maturityStatuses, readStoryFile } from './catalog/stories.mjs'
 
 export const CATALOG = 'packages/ui/src/arch/component-catalog.json'
+export const DIGEST = 'packages/ui/docs/component-catalog.md'
 const SCHEMA = 1
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..')
 
@@ -78,7 +81,10 @@ export function serializeCatalog(catalog) {
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
   const catalog = buildCatalog()
-  fs.writeFileSync(path.join(REPO_ROOT, CATALOG), serializeCatalog(catalog))
+  const serialized = serializeCatalog(catalog)
+  fs.writeFileSync(path.join(REPO_ROOT, CATALOG), serialized)
+  fs.writeFileSync(path.join(REPO_ROOT, DIGEST), renderDigest(JSON.parse(serialized)))
   const { entries, excluded } = catalog
   process.stdout.write(`${CATALOG}: ${entries.length} entries, ${excluded.length} excluded\n`)
+  process.stdout.write(`${DIGEST}: ${entries.length} rows\n`)
 }
