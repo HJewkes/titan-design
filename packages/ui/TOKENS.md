@@ -333,6 +333,8 @@ Both rules are enrolled per family, extended as each migration wave lands and ne
 
 ## 6. Guardrails
 
+Lint messages follow the four-line contract in `eslint-rules/README.md`, enforced by `src/test/lint-message-contract.test.ts`.
+
 `eslint.config.js` enforces a subset of the above, scoped by directory:
 
 | Scope                                  | Enforced                                                                                    |
