@@ -232,6 +232,20 @@ describe('Card', () => {
       expect(screen.getByRole('heading')).toBeInTheDocument()
     })
 
+    it('CardTitle renders an h3 by default', () => {
+      render(<CardTitle>My Title</CardTitle>)
+      const heading = screen.getByRole('heading')
+      expect(heading.tagName).toBe('H3')
+      expect(heading).toHaveAttribute('aria-level', '3')
+    })
+
+    it('CardTitle renders the heading level it is given', () => {
+      render(<CardTitle level={2}>My Title</CardTitle>)
+      const heading = screen.getByRole('heading')
+      expect(heading.tagName).toBe('H2')
+      expect(heading).toHaveAttribute('aria-level', '2')
+    })
+
     it('accepts custom className on sub-components', () => {
       render(
         <Card className="custom-card">
