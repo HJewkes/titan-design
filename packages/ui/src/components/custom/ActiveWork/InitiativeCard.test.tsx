@@ -4,8 +4,8 @@ import { axe } from 'jest-axe'
 import { InitiativeCard, type InitiativeState } from './InitiativeCard'
 
 const base = {
-  title: 'active-work — durable workspace state',
-  slug: 'active-work',
+  title: 'planner — durable project state',
+  slug: 'planner',
   openCount: 4,
   severityCounts: { critical: 0, high: 1, medium: 2, low: 1 },
 }
@@ -30,10 +30,10 @@ describe('InitiativeCard', () => {
       <InitiativeCard
         {...base}
         state="focused"
-        topTask={{ id: 'AW-6', title: 'Discovery sources' }}
+        topTask={{ id: 'PL-6', title: 'Discovery sources' }}
       />
     )
-    expect(screen.getByText('AW-6')).toBeInTheDocument()
+    expect(screen.getByText('PL-6')).toBeInTheDocument()
     expect(screen.getByText('Discovery sources')).toBeInTheDocument()
   })
 
