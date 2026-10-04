@@ -32,6 +32,9 @@ async function syntheticPng(browser: Browser, file: string, text: string): Promi
   await page.close()
 }
 
+/** A hand-written test round: it bypasses the contrast gate, and the page must say so. */
+const OVERRIDE = ['--contrast-override', 'e2e fixture round, synthetic images']
+
 let cli: ChildProcess | undefined
 test.afterAll(() => cli?.kill())
 
@@ -46,7 +49,7 @@ test('an image variant renders at its width and its feedback comes back', async 
   const manifestPath = join(dir, 'round.json')
   await writeFile(manifestPath, JSON.stringify(ROUND))
 
-  cli = spawn('node', [CLI, manifestPath, '--no-open', '--out', dir])
+  cli = spawn('node', [CLI, manifestPath, '--no-open', '--out', dir, ...OVERRIDE])
   let stdout = ''
   cli.stdout?.on('data', (c: Buffer) => (stdout += c.toString()))
   const exit = new Promise<number | null>((resolve) => cli?.once('exit', resolve))
@@ -58,6 +61,10 @@ test('an image variant renders at its width and its feedback comes back', async 
   )
 
   await page.goto(url)
+  await expect(page.getByTestId('contrast-override')).toHaveText(
+    'Contrast was not gated for this round: e2e fixture round, synthetic images'
+  )
+  await expect(page.getByTestId('contrast-override')).toHaveCSS('position', 'sticky')
   const image = page.getByRole('img', { name: 'A · Wall, dense at 1280px' })
   await expect(image).toBeVisible()
   await expect.poll(() => image.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBe(1280)
@@ -88,6 +95,10 @@ test('an image variant renders at its width and its feedback comes back', async 
     JSON.parse(await readFile(join(dir, 'feedback.json'), 'utf8'))
   )
   expect(JSON.parse(stdout)).toEqual(written)
+  expect(written.contrastOverride).toMatchObject({
+    reason: 'e2e fixture round, synthetic images',
+    problem: 'no contrast.json beside this round',
+  })
   const [a, b] = written.variants
   expect(a).toMatchObject({ key: 'A', image: 'shots/wall-a.png', verdict: 'chosen' })
   expect(a.comment).toBe('Dense reads at distance')

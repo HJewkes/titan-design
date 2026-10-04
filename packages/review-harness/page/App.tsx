@@ -361,6 +361,14 @@ function useDraftBackup(storage: DraftStorage | null, manifestSha256: string, st
   }, [storage, manifestSha256, draft, screen])
 }
 
+function ContrastOverrideBanner({ reason }: { reason: string }) {
+  return (
+    <p className="contrast-override" role="alert" data-testid="contrast-override">
+      Contrast was not gated for this round: {reason}
+    </p>
+  )
+}
+
 export function App({ manifest, manifestSha256 }: AppProps) {
   const reducer = useMemo(() => createReducer(manifest), [manifest])
   const storage = useMemo(() => browserStorage(), [])
@@ -388,6 +396,9 @@ export function App({ manifest, manifestSha256 }: AppProps) {
     )
   return (
     <>
+      {manifest.contrastOverride && (
+        <ContrastOverrideBanner reason={manifest.contrastOverride.reason} />
+      )}
       <Header manifest={manifest} state={state} dispatch={dispatch} hitTesting={hitTesting} />
       <div hidden={state.screen !== 'form'}>
         <Form manifest={manifest} state={state} dispatch={dispatch} onHitTesting={setHitTesting} />
