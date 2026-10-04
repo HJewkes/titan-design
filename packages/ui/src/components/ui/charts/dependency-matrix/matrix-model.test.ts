@@ -8,6 +8,7 @@ import {
   binValue,
   cellKey,
   cellLabel,
+  DEFAULT_MAX_ITEMS,
   FOLD_ITEM_ID,
   foldItems,
   groupBands,
@@ -82,6 +83,13 @@ describe('foldItems', () => {
     ])
   })
 
+  it('folds nothing when maxItems is Infinity, and falls back to the default for NaN', () => {
+    const { items, cells } = byName('Very large')
+
+    expect(foldItems(items, cells, Number.POSITIVE_INFINITY).items).toHaveLength(386)
+    expect(foldItems(items, cells, Number.NaN).items).toHaveLength(DEFAULT_MAX_ITEMS + 1)
+  })
+
   it('leaves a list at the limit untouched', () => {
     const items = itemsOf(3)
     const cells = [{ from: 'item-0', to: 'item-2', value: 1 }]
@@ -122,6 +130,12 @@ describe('foldItems', () => {
 })
 
 describe('binValue', () => {
+  it('holds step 3 across ratios 0.55 to 0.75, between step 2 at 0.5 and step 4 at 0.76', () => {
+    const stepAt = (value: number) => binValue(value, 100, 'linear').step
+
+    expect([50, 55, 60, 65, 70, 75, 76].map(stepAt)).toEqual([2, 3, 3, 3, 3, 3, 4])
+  })
+
   it('puts an unknown weight on step 1 and marks it', () => {
     expect(binValue(null, 10)).toEqual({ step: 1, isUnknown: true })
   })

@@ -1,27 +1,27 @@
 # DependencyMatrix API note
 
-Source: TD-35 Round 0 contract (owner-decided), restated here in our own words. This is a design
-note for a component that does not exist yet (`ui/charts/dependency-matrix/`, story
-`Components/Organisms/DependencyMatrix`). It is not exported from any barrel.
+Source: TD-35 Round 0 contract (owner-decided), restated here in our own words. This is the design
+note for `DependencyMatrix` (`ui/charts/dependency-matrix/`, story
+`Components/Organisms/DependencyMatrix`). It is not exported from any barrel yet.
 
-## Pending owner confirmation
+## Contract amendments (confirmed by the owner, 2026-10-03)
 
-Three amendments to the Round 0 contract. Each carries a recommended answer.
+Three amendments to the Round 0 contract, each confirmed as recommended.
 
 1. **Fill mechanism for the four intensity steps.** The contract says to make the steps with `alpha()`
    washes of a token. `alpha()` handles only hex and `rgb()` and returns anything else unchanged, and
    `resolveColor` returns `var(--color-...)` on web, so that route paints full-opacity fills on web.
-   Recommended: a fill layer under the value text whose `backgroundColor` is `resolveColor(token)` and
+   Confirmed: a fill layer under the value text whose `backgroundColor` is `resolveColor(token)` and
    whose `opacity` is set per step. It works on web and native and keeps the number opaque. No new
    token; open a token proposal only if the four steps fail to separate on both themes.
 2. **Synthetic labelled fixtures until a scope-edges command exists.** No data source serves edges
-   inside a directory or package today. Recommended: build v1 on the synthetic fixtures in
+   inside a directory or package today. Confirmed: v1 is built on the synthetic fixtures in
    `fixtures.ts` (invented names, contract-sized shapes). The component takes edges as data, so a real
    source later changes only the consumer.
 3. **Window function source.** The contract wants one shared fixed-size window function, applied
-   twice here (rows and columns). Recommended: use `computeWindow` from
-   `packages/ui/src/utils/fixed-window.ts`, added by titan-design#308 (open, not yet merged), rather
-   than a local list virtualiser, since a two-axis grid cannot use one.
+   twice here (rows and columns). Confirmed: `computeWindow` from
+   `packages/ui/src/utils/fixed-window.ts`, rather than a local list virtualiser, since a two-axis
+   grid cannot use one.
 
 ## Purpose
 
@@ -88,7 +88,7 @@ Fixed square cells, windowed on both axes by two calls to the shared window func
 headers are sticky and windowed on one axis each. Mounted cell count is bounded by the viewport and
 overscan whatever the item count. At 600 px and dense density that is about 900 cells.
 
-## Internal modules (planned)
+## Internal modules
 
 `matrix-model.ts`, pure: `indexCells` (validate, drop unknown ids, merge duplicates, separate the
 diagonal), `foldItems`, `binValue`, `mutualPairs`, `groupBands`, `nextCell`, `cellLabel`.

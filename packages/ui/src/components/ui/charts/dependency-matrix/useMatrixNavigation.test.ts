@@ -133,10 +133,47 @@ describe('useMatrixNavigation', () => {
     expect(result.current.handleKey('ArrowDown')).toBe(false)
   })
 
-  it('falls back to the first cell when the requested cell is not displayed', () => {
-    const { result } = setup({ activeCell: { from: 'gone', to: 'a' } })
+  it('falls back to the first cell and reports it when the requested cell was never displayed', () => {
+    const onActiveCellChange = vi.fn()
+    const { result } = setup({ activeCell: { from: 'gone', to: 'a' }, onActiveCellChange })
 
     expect(result.current.position).toEqual({ row: 0, col: 0 })
+    expect(onActiveCellChange).toHaveBeenCalledOnce()
+    expect(onActiveCellChange).toHaveBeenCalledWith({ from: 'a', to: 'a' })
+  })
+
+  it('clamps to the nearest cell and reports it when the items shrink under a controlled cell', () => {
+    const onActiveCellChange = vi.fn()
+    const activeCell = { from: 'c', to: 'b' }
+    const { result, rerender } = setup({ activeCell, onActiveCellChange })
+
+    rerender({
+      items: items.slice(0, 2),
+      direction: 'row-depends-on-column',
+      pageRows: 2,
+      activeCell,
+      onActiveCellChange,
+    })
+
+    expect(result.current.position).toEqual({ row: 1, col: 1 })
+    expect(onActiveCellChange).toHaveBeenCalledOnce()
+    expect(onActiveCellChange).toHaveBeenCalledWith({ from: 'b', to: 'b' })
+  })
+
+  it('moves its own state to the nearest cell when the items shrink while uncontrolled', () => {
+    const onActiveCellChange = vi.fn()
+    const { result, rerender } = setup({
+      defaultActiveCell: { from: 'c', to: 'c' },
+      onActiveCellChange,
+    })
+
+    rerender({ items: items.slice(0, 2), direction: 'row-depends-on-column', pageRows: 2, onActiveCellChange })
+    act(() => {
+      result.current.handleKey('ArrowLeft')
+    })
+
+    expect(onActiveCellChange).toHaveBeenNthCalledWith(1, { from: 'b', to: 'b' })
+    expect(onActiveCellChange).toHaveBeenLastCalledWith({ from: 'b', to: 'a' })
   })
 
   it('never reports a cell outside the items for any key sequence', () => {
