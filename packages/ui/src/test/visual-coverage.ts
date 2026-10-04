@@ -10,6 +10,8 @@ export const REQUIRED_PREFIXES = [
   'shell-',
   'foundations-icons--',
   'custom-workout-mesoprogressbar--',
+  'custom-workout-dataviz-velocitystrip',
+  'custom-workout-dataviz-dualvelocitystrip--',
 ] as const
 
 export const BASELINE_SUFFIX = '-chromium-linux.png'
