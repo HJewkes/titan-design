@@ -115,6 +115,32 @@ function MessageMeta({ message, isOwn, showDelivery }: MetaProps) {
   )
 }
 
+interface SpeakerProps {
+  name: string
+  isOwn: boolean
+  isVisible: boolean
+}
+
+/** The author line a group thread shows; otherwise the same name, hidden, for assistive tech. */
+function Speaker({ name, isOwn, isVisible }: SpeakerProps) {
+  if (isVisible) {
+    return (
+      <Typography variant="caption" color="secondary" testID="chat-message-author">
+        {name}
+      </Typography>
+    )
+  }
+  return (
+    <Typography
+      variant="caption"
+      className="absolute h-px w-px overflow-hidden opacity-0"
+      testID="chat-message-speaker"
+    >
+      {`${isOwn ? 'You' : name}: `}
+    </Typography>
+  )
+}
+
 const AVATAR_SLOT = 'w-6'
 
 interface AvatarSlotProps {
@@ -167,19 +193,7 @@ export function MessageBubble({
     >
       {isGroup ? <AvatarSlot author={author} visible={startsGroup} /> : null}
       <View className={cn('max-w-[85%] shrink gap-stack-sm', isOwn && 'items-end')}>
-        {showsAuthor ? (
-          <Typography variant="caption" color="secondary" testID="chat-message-author">
-            {speaker}
-          </Typography>
-        ) : (
-          <Typography
-            variant="caption"
-            className="absolute h-px w-px overflow-hidden opacity-0"
-            testID="chat-message-speaker"
-          >
-            {`${isOwn ? 'You' : speaker}: `}
-          </Typography>
-        )}
+        <Speaker name={speaker} isOwn={isOwn} isVisible={showsAuthor} />
         {body ? (
           <BubbleBody
             body={body}

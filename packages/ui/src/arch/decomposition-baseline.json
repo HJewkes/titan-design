@@ -3,10 +3,10 @@
     "file-lines": 242
   },
   "components/custom/Chat/MessageList.tsx#MessageList": {
-    "props": 14
+    "props": 15
   },
   "components/custom/Chat/MessageList.tsx#ThreadScroll": {
-    "props": 14
+    "props": 15
   },
   "components/custom/CircularTimer/CircularTimer.tsx#CircularTimer": {
     "complexity": 21
