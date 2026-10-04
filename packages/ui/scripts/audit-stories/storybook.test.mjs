@@ -211,6 +211,7 @@ describe('--url', () => {
   it('refuses a non-loopback host before making any request', async () => {
     await expect(attachStorybook('http://192.0.2.1:6006')).rejects.toMatchObject({
       exitCode: EXIT_USAGE,
+      message: expect.stringMatching(/loopback host, not 192\.0\.2\.1:6006/),
     })
   })
 
