@@ -1450,6 +1450,7 @@ export function DualGhostSpark(input: DualGhostSparkProps): react_jsx_runtime.JS
 
 // @public (undocumented)
 export interface DualGhostSparkProps {
+    accessibilityLabel?: string;
     height?: number;
     left: RepVelocityCurve[];
     leftLabel?: string;
@@ -2837,6 +2838,7 @@ export function GhostSpark(input: GhostSparkProps): react_jsx_runtime.JSX.Elemen
 
 // @public (undocumented)
 export interface GhostSparkProps {
+    accessibilityLabel?: string;
     curves: RepVelocityCurve[];
     height?: number;
     targetTempoSeconds?: TempoTuple | null;

@@ -24,6 +24,7 @@ import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../ui/surface'
 import { alpha } from '../../../utils/colors'
 import { FONT_UI, ghostLineColor, clamp01 } from './fatigue-tokens'
+import { ghostSparkA11y } from './ghostSparkSummary'
 import { GhostBand, BAND_H, BAND_GAP } from './GhostBand'
 import type { TempoTuple } from './tempo-pacing'
 import { GhostBloom, type Pt } from './GhostBloom'
@@ -46,6 +47,8 @@ export interface DualGhostSparkProps {
   showDeviceLabels?: boolean
   /** Prescribed tempo — turns on the shared band's phase pacing. */
   targetTempoSeconds?: TempoTuple | null
+  /** Text alternative. Default: a summary of the current rep and each side's peak velocity. */
+  accessibilityLabel?: string
 }
 
 /** The phase covering `ms`, or `null` where the side has no coverage. */
@@ -90,6 +93,21 @@ function lastTMs(curves: RepVelocityCurve[]): number {
   return Math.max(0, ...curves.map((c) => c.samples[c.samples.length - 1]?.tMs ?? 0))
 }
 
+/** One device's current rep, ghost fan and line tint; `fallbackTint` stands in with no rep. */
+function wing(
+  curves: RepVelocityCurve[],
+  toPts: (c: RepVelocityCurve) => Pt[],
+  fallbackTint: string
+) {
+  const cur = curves[curves.length - 1]
+  return {
+    cur,
+    current: cur ? toPts(cur) : [],
+    ghosts: curves.slice(0, -1).map(toPts),
+    tint: cur ? ghostLineColor(cur.tempoDeviation, cur.grindSignature) : fallbackTint,
+  }
+}
+
 export function DualGhostSpark({
   left,
   right,
@@ -99,7 +117,9 @@ export function DualGhostSpark({
   rightLabel = 'RIGHT',
   showDeviceLabels = true,
   targetTempoSeconds = null,
+  accessibilityLabel,
 }: DualGhostSparkProps) {
+  const a11y = ghostSparkA11y(accessibilityLabel, { left, right })
   const t = getSemanticColors(useSurfaceMode())
   const w = width
   const h = height
@@ -109,7 +129,7 @@ export function DualGhostSpark({
   const padBot = 22
 
   if (left.length === 0 && right.length === 0) {
-    return <View testID="dual-ghost-spark" style={{ width: w, height: h }} />
+    return <View testID="dual-ghost-spark" {...a11y} style={{ width: w, height: h }} />
   }
 
   // The band sits on the vertical midline; each bloom's baseline is offset off a band edge
@@ -128,22 +148,13 @@ export function DualGhostSpark({
   const mag = (v: number) => clamp01(v / vmax) * wingH
 
   const toPts = (c: RepVelocityCurve): Pt[] => c.samples.map((s) => [x(s.tMs), mag(s.velocityMps)])
-  const wing = (curves: RepVelocityCurve[]) => {
-    const cur = curves[curves.length - 1]
-    return {
-      cur,
-      current: cur ? toPts(cur) : [],
-      ghosts: curves.slice(0, -1).map(toPts),
-      tint: cur ? ghostLineColor(cur.tempoDeviation, cur.grindSignature) : t['text-tertiary'],
-    }
-  }
-  const up = wing(left)
-  const down = wing(right)
+  const up = wing(left, toPts, t['text-tertiary'])
+  const down = wing(right, toPts, t['text-tertiary'])
   const segments = mergePhaseSegments(up.cur?.phaseSegments ?? [], down.cur?.phaseSegments ?? [])
 
   return (
-    <View testID="dual-ghost-spark" style={{ paddingHorizontal: GHOST_GUTTER }}>
-      <svg width={w} height={h}>
+    <View testID="dual-ghost-spark" {...a11y} style={{ paddingHorizontal: GHOST_GUTTER }}>
+      <svg width={w} height={h} aria-hidden="true">
         {/* Same bloom, one prop flipped: LEFT grows UP, RIGHT grows DOWN. */}
         {up.current.length > 0 && (
           <g data-testid="dual-ghost-bloom-left">

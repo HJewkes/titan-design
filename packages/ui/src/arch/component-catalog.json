@@ -1778,6 +1778,13 @@
       "name": "DualGhostSpark",
       "props": [
         {
+          "default": null,
+          "description": "Text alternative.",
+          "name": "accessibilityLabel",
+          "required": false,
+          "type": "string"
+        },
+        {
           "default": "232",
           "description": "Plot height in px.",
           "name": "height",
@@ -2032,6 +2039,13 @@
       "file": "packages/ui/src/components/custom/Fatigue/GhostSpark.tsx",
       "name": "GhostSpark",
       "props": [
+        {
+          "default": null,
+          "description": "Text alternative.",
+          "name": "accessibilityLabel",
+          "required": false,
+          "type": "string"
+        },
         {
           "default": null,
           "description": "Per-rep velocity-time curves, oldest first (last = current rep).",
