@@ -135,14 +135,22 @@ describe('SupersetWrapper', () => {
 /** SupersetWrapper's geometry, pinned (AW-142); pixels unchanged. */
 describe('SupersetWrapper geometry resolves to the spacing tokens', () => {
   it('keeps the rail inset and the inter-card margin', () => {
-    render(<SupersetWrapper><View /></SupersetWrapper>)
+    render(
+      <SupersetWrapper>
+        <View />
+      </SupersetWrapper>
+    )
     const classes = spacingClassesOf('superset-wrapper')
     expect(classes).toEqual(['pl-inset-sm', 'mx-inset-md', 'mb-stack-md'])
     expect(resolveAll(classes)).toEqual(['8px', '12px', '8px'])
   })
 
   it('keeps the hairline between stacked children', () => {
-    render(<SupersetWrapper><View /></SupersetWrapper>)
+    render(
+      <SupersetWrapper>
+        <View />
+      </SupersetWrapper>
+    )
     expect(spacingClassesOf('superset-children')).toEqual(['gap-0.5'])
     expect(resolveAll(['gap-0.5'])).toEqual(['2px'])
   })
