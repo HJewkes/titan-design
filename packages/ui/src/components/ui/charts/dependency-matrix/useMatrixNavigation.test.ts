@@ -167,7 +167,12 @@ describe('useMatrixNavigation', () => {
       onActiveCellChange,
     })
 
-    rerender({ items: items.slice(0, 2), direction: 'row-depends-on-column', pageRows: 2, onActiveCellChange })
+    rerender({
+      items: items.slice(0, 2),
+      direction: 'row-depends-on-column',
+      pageRows: 2,
+      onActiveCellChange,
+    })
     act(() => {
       result.current.handleKey('ArrowLeft')
     })
