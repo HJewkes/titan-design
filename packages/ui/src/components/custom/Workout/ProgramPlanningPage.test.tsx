@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { siblingSource, resolveAll } from '../../../test/spacing-resolver'
+import { spacingClassesAt, spacingClassesOf, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import {
   ProgramPlanningPage,
@@ -144,14 +144,21 @@ describe('ProgramPlanningPage', () => {
 
 /** ProgramPlanningPage's geometry, pinned (AW-142); pixels unchanged. */
 describe('ProgramPlanningPage geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'ProgramPlanningPage.tsx')
-
   it('keeps the page gutter and its section rhythm', () => {
-    expect(source).toContain('p-gutter-sm gap-3.5')
-    expect(resolveAll(['p-gutter-sm', 'gap-3.5'])).toEqual(['16px', '14px'])
+    render(<ProgramPlanningPage mesos={mesos} />)
+    const classes = spacingClassesOf('program-planning-page-content')
+    expect(classes).toEqual(['p-gutter-sm', 'gap-3.5'])
+    expect(resolveAll(classes)).toEqual(['16px', '14px'])
   })
 
   it('keeps the breadcrumb and level gaps', () => {
+    render(<ProgramPlanningPage mesos={mesos} />)
+    const crumb = screen.getByTestId('program-planning-page-crumb-meso').parentElement
+    expect(spacingClassesOf('program-planning-page-breadcrumbs')).toEqual(['gap-inline-sm'])
+    expect(spacingClassesAt(crumb)).toEqual(['gap-inline-sm'])
+    expect(spacingClassesOf('program-planning-page-meso-level')).toEqual(['gap-3'])
+    fireEvent.click(screen.getAllByTestId('workout-pill-pressable')[0])
+    expect(spacingClassesOf('program-planning-page-week-level')).toEqual(['gap-2.5'])
     expect(resolveAll(['gap-inline-sm', 'gap-3', 'gap-2.5'])).toEqual(['4px', '12px', '10px'])
   })
 })
