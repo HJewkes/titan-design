@@ -34,6 +34,24 @@ describe('gradients', () => {
     expect(surfaceGradient.volumeTrack('light').backgroundImage).toContain('90deg')
   })
 
+  it('surfaceGradient.card is elevated → raised at 135deg', () => {
+    expect(surfaceGradient.card().backgroundImage).toBe(
+      'linear-gradient(135deg, var(--color-surface-elevated) 0%, var(--color-surface-raised) 100%)'
+    )
+  })
+
+  it('surfaceGradient.statusTrack ramps success → warning → error at 25% alpha', () => {
+    expect(surfaceGradient.statusTrack().backgroundImage).toBe(
+      'linear-gradient(90deg, rgba(46, 213, 115, 0.25) 0%, rgba(249, 180, 21, 0.25) 50%, rgba(209, 67, 67, 0.25) 100%)'
+    )
+  })
+
+  it('surfaceGradient.deviationTrack ramps success → neutral → warning', () => {
+    expect(surfaceGradient.deviationTrack().backgroundImage).toBe(
+      'linear-gradient(90deg, rgba(46, 213, 115, 0.25) 0%, rgba(162, 159, 157, 0.15) 50%, rgba(249, 180, 21, 0.25) 100%)'
+    )
+  })
+
   describe('{ token, alpha } stops', () => {
     it('prints rgba for the alpha stop and positions on a mixed list', () => {
       expect(

@@ -74,4 +74,29 @@ export const surfaceGradient = {
   /** Volume track (MEV → MRV): under → on-target → over, left to right. */
   volumeTrack: (mode: ThemeMode = 'dark'): GradientStyle =>
     linearGradientStops(['status-info', 'status-success', 'status-error'], 90, mode),
+  /** Meso card face: elevated → raised, on the diagonal. */
+  card: (mode: ThemeMode = 'dark'): GradientStyle =>
+    linearGradientStops([{ token: 'surface-elevated' }, { token: 'surface-raised' }], 135, mode),
+  /** Deviation track: under (success) → on-target (neutral) → over (warning), tinted. */
+  deviationTrack: (mode: ThemeMode = 'dark'): GradientStyle =>
+    linearGradientStops(
+      [
+        { token: 'status-success', alpha: 0.25 },
+        { token: 'result-neutral', alpha: 0.15 },
+        { token: 'status-warning', alpha: 0.25 },
+      ],
+      90,
+      mode
+    ),
+  /** Status track: success → warning → error, left to right, tinted. */
+  statusTrack: (mode: ThemeMode = 'dark'): GradientStyle =>
+    linearGradientStops(
+      [
+        { token: 'status-success', alpha: 0.25 },
+        { token: 'status-warning', alpha: 0.25 },
+        { token: 'status-error', alpha: 0.25 },
+      ],
+      90,
+      mode
+    ),
 }
