@@ -18,7 +18,7 @@
 // JS-resolved on-surface colours track the same theme as the className tokens.
 import { vars, useColorScheme } from 'nativewind'
 import { View, type ViewProps } from 'react-native'
-import { SurfaceContext } from '../components/ui/surface/SurfaceContext'
+import { SurfaceContext } from './surface-context'
 import { darkThemeCSSVars, lightThemeCSSVars } from './config'
 
 /** `'system'` follows nativewind's `useColorScheme()` (mobile light/dark flip). */
