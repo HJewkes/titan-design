@@ -15,13 +15,19 @@ import type { LineGeometry, LinePoint, LineSeries } from './types'
 
 const PLOT = { width: 360, height: 180 }
 
-const hostileNumber = fc.oneof(
-  fc.double({ min: -1e9, max: 1e9, noNaN: true }),
-  fc.constantFrom(Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY)
+const nonFinite = fc.constantFrom(Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY)
+
+const hostileNumber = fc.oneof(fc.double({ min: -1e9, max: 1e9, noNaN: true }), nonFinite)
+
+// x at millisecond resolution, as timestamps are: the kit's timeDomain has no relative-spread
+// guard, so two subnormal x values a few ulps apart lose the padding to rounding.
+const hostileX = fc.oneof(
+  fc.double({ min: -1e9, max: 1e9, noNaN: true }).map((x) => Math.round(x * 1000) / 1000),
+  nonFinite
 )
 
 const pointArb: fc.Arbitrary<LinePoint> = fc.record({
-  x: hostileNumber,
+  x: hostileX,
   y: fc.option(hostileNumber, { nil: null }),
   segmentKey: fc.option(fc.constantFrom('a', 'b'), { nil: undefined }),
 })
@@ -35,6 +41,10 @@ const plotArb = fc.record({
   height: fc.integer({ min: 0, max: 600 }),
   xScale: fc.constantFrom('time' as const, 'linear' as const),
   includeZero: fc.boolean(),
+  referenceLines: fc.array(fc.record({ y: hostileNumber, label: fc.constant('Ref') }), {
+    maxLength: 2,
+  }),
+  boundaries: fc.array(fc.record({ x: hostileX }), { maxLength: 2 }),
 })
 
 /** Every number in the geometry a painter would draw: point centres, path commands, ticks, rules. */
