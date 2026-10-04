@@ -19,8 +19,9 @@ import { STORY_INDEX_ENV } from './story-index.global-setup'
  * Scope: the shell family + the icon foundation story (`Foundations/Icons`,
  * whose Storybook id is `foundations-icons--*`), MesoProgressBar, every
  * VelocityStrip title (`custom-workout-dataviz-velocitystrip*`, including its
- * Expanded, Hero, Dual and Compact sheets) and DualVelocityStrip, plus the Chat
- * stories named in `CHAT_STORIES`. Widen `SCOPE` to cover more of the library as baselines are seeded.
+ * Expanded, Hero, Dual and Compact sheets), DualVelocityStrip, MesoCard and
+ * SegmentedBar, plus the Chat stories named in `CHAT_STORIES`. Widen `SCOPE` to
+ * cover more of the library as baselines are seeded.
  *
  * Baselines must be generated in the pinned Playwright Linux container
  * (`mcr.microsoft.com/playwright:v1.58.2-noble`) so the committed PNGs are
@@ -31,7 +32,7 @@ import { STORY_INDEX_ENV } from './story-index.global-setup'
  */
 
 const SCOPE =
-  /^(shell-|foundations-icons--|custom-workout-mesoprogressbar--|custom-workout-dataviz-velocitystrip|custom-workout-dataviz-dualvelocitystrip--)/
+  /^(shell-|foundations-icons--|custom-workout-mesoprogressbar--|custom-workout-dataviz-velocitystrip|custom-workout-dataviz-dualvelocitystrip--|custom-workout-mesocard--|custom-workout-segmentedbar--)/
 
 // The owner-locked Chat design (VW-393), listed by id so the interactive stories stay out.
 const CHAT_STORIES = new Set([
