@@ -7,6 +7,7 @@ import {
   type MeasuredFrame,
 } from './contrast-gate.ts'
 import { ReviewError, assertStoriesExist, loadRound, type LoadedRound } from './review.ts'
+import type { ContrastOverride } from './schema.ts'
 
 /** The round was measured and an undeclared miss (or an unmeasured image) blocked it. */
 export const EXIT_REFUSED = 3
@@ -36,6 +37,8 @@ export async function buildRound(
   if (basename(draftPath) === ROUND_FILE)
     throw new ReviewError(`the draft must not be ${ROUND_FILE}; build writes that file`)
   const round = await loadRound(draftPath, storybook)
+  if (round.manifest.contrastOverride)
+    throw new ReviewError('a draft never carries contrastOverride; serving writes it')
   await assertStoriesExist(round)
   const frames = await io.measure(round)
   const report = contrastReport({ ...round, frames })
@@ -57,11 +60,48 @@ export async function contrastProblem(
   roundPath: string,
   manifestSha256: string
 ): Promise<string | null> {
-  const file = join(dirname(roundPath), CONTRAST_FILE)
-  const raw = await readFile(file, 'utf8').catch(() => null)
-  if (raw === null) return `no ${CONTRAST_FILE} beside this round`
-  const report = JSON.parse(raw) as Partial<ContrastReport>
+  const report = await readReport(roundPath)
+  if (report === null) return `no ${CONTRAST_FILE} beside this round`
   if (report.manifestSha256 !== manifestSha256)
     return `${CONTRAST_FILE} measured a different manifest`
   return report.passed ? null : `${CONTRAST_FILE} records undeclared contrast failures`
+}
+
+async function readReport(roundPath: string): Promise<Partial<ContrastReport> | null> {
+  const raw = await readFile(join(dirname(roundPath), CONTRAST_FILE), 'utf8').catch(() => null)
+  return raw === null ? null : (JSON.parse(raw) as Partial<ContrastReport>)
+}
+
+/** The override as recorded: the reason, the gate's objection, and every miss it had found. */
+export async function overrideRecord(
+  roundPath: string,
+  problem: string,
+  reason: string
+): Promise<ContrastOverride> {
+  const failures = ((await readReport(roundPath))?.failures ?? []).map((f) => ({
+    variant: f.variant,
+    element: f.testId ?? f.selector,
+    mode: f.mode,
+    kind: f.kind,
+    ratio: f.ratio,
+    required: f.required,
+  }))
+  return { reason, problem, failures }
+}
+
+/**
+ * Writes the override into round.json before it is served, so the round itself (and its
+ * sha, which feedback echoes) carries the record of having been shown ungated.
+ */
+export async function recordOverride(
+  roundPath: string,
+  override: ContrastOverride,
+  storybook: string | undefined
+): Promise<LoadedRound> {
+  const manifest = JSON.parse(await readFile(roundPath, 'utf8')) as Record<string, unknown>
+  await writeFile(
+    roundPath,
+    `${JSON.stringify({ ...manifest, contrastOverride: override }, null, 2)}\n`
+  )
+  return loadRound(roundPath, storybook)
 }

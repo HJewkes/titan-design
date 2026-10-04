@@ -24,8 +24,6 @@ export interface ReviewServerOptions {
   port?: number
   /** Absolute PNG path by variant key; served at `api/image/<key>`, never by path. Keys need no decoding. */
   images?: Record<string, string>
-  /** Why this round is served without a passing contrast gate; the page shows it as a banner. */
-  contrastOverride?: string
 }
 
 export interface ReviewServer {
@@ -72,7 +70,8 @@ function createSubmitHandler(opts: ReviewServerOptions, accept: Accept) {
     if (Array.isArray(result)) return sendJson(res, result[0], { errors: result[1] })
     done = true
     sendJson(res, 200, { ok: true })
-    accept(result)
+    const { contrastOverride } = opts.manifest
+    accept(contrastOverride ? { ...result, contrastOverride } : result)
   }
 }
 
@@ -97,11 +96,7 @@ function createRouter(opts: ReviewServerOptions, accept: Accept): http.RequestLi
       return res.end()
     }
     if (path === `${API}round` && req.method === 'GET')
-      return sendJson(res, 200, {
-        manifest: opts.manifest,
-        manifestSha256: opts.manifestSha256,
-        ...(opts.contrastOverride ? { contrastOverride: opts.contrastOverride } : {}),
-      })
+      return sendJson(res, 200, { manifest: opts.manifest, manifestSha256: opts.manifestSha256 })
     if (path === `${API}submit` && req.method === 'POST') return void submit(req, res)
     if (path.startsWith(`${API}image/`) && req.method === 'GET')
       return sendImage(opts, path.slice(`${API}image/`.length), res)

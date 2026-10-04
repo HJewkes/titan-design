@@ -186,6 +186,27 @@ export const ContrastDeclarationsSchema = z
   })
   .strict()
 
+/** A miss a round was served with anyway, copied from contrast.json. */
+const OverriddenMissSchema = z
+  .object({
+    variant: z.string(),
+    element: z.string(),
+    mode: themeMode,
+    kind: checkKind,
+    ratio: z.number(),
+    required: z.number(),
+  })
+  .strict()
+
+/** A round served without a passing contrast gate: why, what the gate said, what it missed. */
+export const ContrastOverrideSchema = z
+  .object({
+    reason: z.string().min(1),
+    problem: z.string().min(1),
+    failures: z.array(OverriddenMissSchema).default([]),
+  })
+  .strict()
+
 /** One group of frames with the question(s) those frames answer, in reading order. */
 export const SectionSchema = z
   .object({
@@ -328,6 +349,8 @@ export const ManifestSchema = z
     recommendations: z.enum(RECOMMENDATION_MODES).default('after-answer'),
     /** Declarations that hold for every frame; a section's own hold for its frames. */
     contrast: ContrastDeclarationsSchema.optional(),
+    /** Written by `--contrast-override` when the round is served ungated; never hand-written. */
+    contrastOverride: ContrastOverrideSchema.optional(),
   })
   .strict()
   .superRefine((m, ctx) => {
@@ -418,6 +441,8 @@ export const FeedbackSchema = z
     answers: z.array(answerSchema),
     variants: z.array(variantFeedbackSchema),
     general: z.string(),
+    /** The round's contrast override, so the record of an ungated round outlives the serve. */
+    contrastOverride: ContrastOverrideSchema.optional(),
   })
   .strict()
 
@@ -438,6 +463,7 @@ export type Recommendation = z.infer<typeof RecommendationSchema>
 export type ThemeMode = (typeof THEME_MODES)[number]
 export type KnownDefect = z.infer<typeof KnownDefectSchema>
 export type ContrastDeclarations = z.output<typeof ContrastDeclarationsSchema>
+export type ContrastOverride = z.output<typeof ContrastOverrideSchema>
 
 export function isStoryVariant(variant: Variant): variant is StoryVariant {
   return variant.storyId !== undefined

@@ -252,6 +252,14 @@ describe('buildRound', () => {
     await writeFile(join(dir, 'wall.png'), Buffer.from(bytes))
   }
 
+  it('refuses a draft that already carries a contrast override', async () => {
+    const override = { reason: 'shown ungated', problem: 'no contrast.json', failures: [] }
+    const { dir, path } = await setup({ ...imageOnly(), contrastOverride: override })
+    await png(dir)
+    const build = buildRound(path, undefined, { stderr: () => {}, measure: async () => [] })
+    await expect(build).rejects.toThrow('a draft never carries contrastOverride')
+  })
+
   it('writes contrast.json but no round.json when the gate refuses', async () => {
     const { dir, path } = await setup(imageOnly())
     await png(dir)

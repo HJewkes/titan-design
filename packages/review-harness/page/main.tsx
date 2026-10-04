@@ -7,7 +7,6 @@ import './styles.css'
 interface RoundResponse {
   manifest: Manifest
   manifestSha256: string
-  contrastOverride?: string
 }
 
 const root = createRoot(document.getElementById('root') as HTMLElement)

@@ -37,11 +37,17 @@ pnpm review <round-dir>/round.json [--storybook <url>] [--out <dir>] [--no-open]
 
 Write the manifest as `draft.json` and let `build` produce `round.json` (see _Contrast gate_).
 `pnpm review` **refuses** (exit 2) a `round.json` without a passing `contrast.json` for its
-exact bytes. To serve one anyway, pass `--contrast-override "<reason>"`. The reason is
-required. It goes into the served round, and the page shows it at the top as a banner
-("Contrast was not gated for this round: …"), so the owner sees that the gate was bypassed.
-There is no environment variable and no silent bypass. Hand-written test rounds and the e2es
-pass the flag.
+exact bytes. To serve one anyway, pass `--contrast-override "<reason>"`; the reason is
+required. The override is then recorded where it outlives the serve. `round.json` is
+rewritten with `contrastOverride {reason, problem, failures[{variant, element, mode, kind,
+ratio, required}]}`, where the failures are copied from `contrast.json` when there is one.
+`feedback.json` (and stdout) echo the same record, and `manifestSha256` is the sha of the
+rewritten file. The page shows the reason in a sticky banner ("Contrast was not gated for
+this round: …") that stays above the section and frame heads while the owner scrolls. A
+round whose contrast passed is served unchanged, with no record and no banner, even when
+the flag is given. `build` refuses a draft that already carries `contrastOverride`, so a
+built round can never show the banner. There is no environment variable and no silent
+bypass. Hand-written test rounds and the e2es pass the flag.
 
 The command blocks until the human sends, then:
 
@@ -104,8 +110,8 @@ sha256 of the manifest you wrote.
 - Feedback `titan-review/feedback@1`: `manifestSha256`, `submittedAt`,
   `answers[{questionId, pick | picks | value | text, comment?, variantComments?, recommendation?, agreed?}]`,
   `variants[{key, storyId | image, verdict: chosen|rejected|maybe|null, comment, annotations[], relatedQuestionIds?}]`,
-  `general`. Each annotation has `width`, `x`/`y` in CSS px of the story frame, `xPct`/`yPct`
-  as fractions of it, a `note`, and `target {testId?, role?, text?}` from element hit-testing.
+  `general`, `contrastOverride?` (see _The agent's side_). Each annotation has `width`,
+  `x`/`y` in CSS px of the story frame, `xPct`/`yPct` as fractions of it, a `note`, and `target {testId?, role?, text?}` from element hit-testing.
   `variantComments[{key, comment}]` repeats, under the answer, every comment left on a frame
   that question's section showed; `relatedQuestionIds` is the same link from the frame's side.
   Both appear only in a sectioned round. `recommendation` echoes the question's recommendation,

@@ -115,7 +115,6 @@ export interface ReviewDeps {
   onReady: (url: string) => void
   signal: AbortSignal
   port?: number
-  contrastOverride?: string
 }
 
 /** Serves the page until the human submits (feedback) or the signal aborts (null). */
@@ -124,12 +123,7 @@ export async function collectFeedback(
   deps: ReviewDeps
 ): Promise<Feedback | null> {
   const page = await deps.createPage()
-  const server = await startReviewServer({
-    ...round,
-    page: page.handler,
-    port: deps.port,
-    contrastOverride: deps.contrastOverride,
-  })
+  const server = await startReviewServer({ ...round, page: page.handler, port: deps.port })
   const aborted = new Promise<null>((resolve) => {
     if (deps.signal.aborted) resolve(null)
     deps.signal.addEventListener('abort', () => resolve(null), { once: true })

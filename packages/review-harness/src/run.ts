@@ -1,6 +1,12 @@
 import { dirname, resolve } from 'node:path'
 import { parseArgs } from 'node:util'
-import { buildRound, contrastProblem, type BuildIo } from './build.ts'
+import {
+  buildRound,
+  contrastProblem,
+  overrideRecord,
+  recordOverride,
+  type BuildIo,
+} from './build.ts'
 import { calibrationReport, readFeedbackFiles } from './calibration.ts'
 import { exampleManifest, sectionedExampleManifest } from './example.ts'
 import {
@@ -81,37 +87,37 @@ async function captureQuietly(io: CliIo, round: LoadedRound, outDir: string): Pr
   }
 }
 
-/** Serving refuses a round the gate did not pass, unless an override gives its reason. */
-async function contrastGate(
-  manifestPath: string,
-  manifestSha256: string,
-  parsed: Parsed,
-  io: CliIo
-): Promise<string | undefined> {
-  const problem = await contrastProblem(manifestPath, manifestSha256)
+/**
+ * Serving refuses a round the gate did not pass, unless an override gives its reason; the
+ * override is then written into round.json. A round that passed is served as it is, and an
+ * override given for it is ignored, so it shows no banner.
+ */
+async function gatedRound(manifestPath: string, parsed: Parsed, io: CliIo): Promise<LoadedRound> {
+  const round = await loadRound(manifestPath, parsed.values.storybook)
+  await assertStoriesExist(round)
+  const problem = await contrastProblem(manifestPath, round.manifestSha256)
   const reason = parsed.values['contrast-override']?.trim()
   if (parsed.values['contrast-override'] !== undefined && !reason)
     throw new ReviewError('--contrast-override needs a reason the owner can read')
-  if (!problem) return reason || undefined
+  if (!problem) return round
   if (!reason)
     throw new ReviewError(
       `${problem}. Run titan-review build <draft.json>, or pass --contrast-override "<reason>"`
     )
   io.stderr(`titan-review: contrast not gated (${problem}); serving with override: ${reason}`)
-  return reason
+  const override = await overrideRecord(manifestPath, problem, reason)
+  return recordOverride(manifestPath, override, parsed.values.storybook)
 }
 
 async function review(parsed: Parsed, io: CliIo): Promise<number> {
   const manifestPath = resolve(parsed.positionals[0])
-  const round = await loadRound(manifestPath, parsed.values.storybook)
-  await assertStoriesExist(round)
-  const contrastOverride = await contrastGate(manifestPath, round.manifestSha256, parsed, io)
+  const round = await gatedRound(manifestPath, parsed, io)
   const onReady = (url: string) => {
     io.stderr(`titan-review: ${round.manifest.unit} round ${round.manifest.round} at ${url}`)
     if (!parsed.values['no-open']) io.openBrowser(url)
   }
   const port = parsed.values.port ? Number(parsed.values.port) : io.port
-  const feedback = await collectFeedback(round, { ...io, port, onReady, contrastOverride })
+  const feedback = await collectFeedback(round, { ...io, port, onReady })
   if (!feedback) return EXIT_INTERRUPTED
   const outDir = resolve(parsed.values.out ?? dirname(manifestPath))
   io.stderr(`wrote ${await writeFeedback(outDir, feedback)}`)

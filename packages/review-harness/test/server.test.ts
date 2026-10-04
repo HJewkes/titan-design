@@ -114,11 +114,21 @@ describe('titan-review CLI', () => {
     }
   }
 
+  const sha256 = async (file: string) =>
+    (await import('node:crypto'))
+      .createHash('sha256')
+      .update(await readFile(file))
+      .digest('hex')
+
+  async function writeContrast(report: Record<string, unknown>) {
+    const manifestSha256 = await sha256(join(dir, 'round.json'))
+    await writeFile(join(dir, 'contrast.json'), JSON.stringify({ manifestSha256, ...report }))
+  }
+
   it('blocks until submit, writes feedback.json next to the manifest, prints it, exits 0', async () => {
-    const m = manifest(sb.url)
-    const raw = await readFile(join(dir, 'round.json'))
-    const sha = (await import('node:crypto')).createHash('sha256').update(raw).digest('hex')
-    const feedback = validFeedback(m, sha)
+    await writeContrast({ passed: true, failures: [] })
+    const before = await readFile(join(dir, 'round.json'))
+    const feedback = validFeedback(manifest(sb.url), await sha256(join(dir, 'round.json')))
     const code = await runCli(
       [join(dir, 'round.json'), '--no-open', ...OVERRIDE],
       io(new AbortController().signal, (url) => void post(url, feedback))
@@ -126,6 +136,47 @@ describe('titan-review CLI', () => {
     expect(code).toBe(0)
     expect(JSON.parse(out.stdout)).toEqual(feedback)
     expect(JSON.parse(await readFile(join(dir, 'feedback.json'), 'utf8'))).toEqual(feedback)
+    expect((await readFile(join(dir, 'round.json'))).equals(before)).toBe(true)
+  })
+
+  it('records an override in round.json and feedback.json, with the misses it shipped', async () => {
+    const miss = {
+      variant: 'A',
+      mode: 'light',
+      kind: 'text',
+      testId: 'chip-label',
+      selector: 'div > span',
+      ratio: 1.7,
+      required: 4.5,
+    }
+    await writeContrast({ passed: false, failures: [miss] })
+    const code = await runCli(
+      [join(dir, 'round.json'), '--no-open', ...OVERRIDE],
+      io(new AbortController().signal, async (url) => {
+        const sha = await sha256(join(dir, 'round.json'))
+        await post(url, validFeedback(manifest(sb.url), sha))
+      })
+    )
+    const record = {
+      reason: 'unit-test round',
+      problem: 'contrast.json records undeclared contrast failures',
+      failures: [
+        {
+          variant: 'A',
+          element: 'chip-label',
+          mode: 'light',
+          kind: 'text',
+          ratio: 1.7,
+          required: 4.5,
+        },
+      ],
+    }
+    expect(code).toBe(0)
+    const round = JSON.parse(await readFile(join(dir, 'round.json'), 'utf8'))
+    expect(round.contrastOverride).toEqual(record)
+    const written = JSON.parse(await readFile(join(dir, 'feedback.json'), 'utf8'))
+    expect(written.contrastOverride).toEqual(record)
+    expect(written.manifestSha256).toBe(await sha256(join(dir, 'round.json')))
   })
 
   it('exits 130 and writes nothing when interrupted before submit', async () => {
@@ -160,7 +211,7 @@ describe('titan-review CLI', () => {
     expect(out.stderr.join('\n')).toContain('needs a reason')
   })
 
-  it('serves an overridden round with its reason in the round payload', async () => {
+  it('serves an overridden round with its record in the round payload', async () => {
     const controller = new AbortController()
     let payload: unknown
     const code = await runCli(
@@ -171,7 +222,9 @@ describe('titan-review CLI', () => {
       })
     )
     expect(code).toBe(130)
-    expect(payload).toMatchObject({ contrastOverride: 'unit-test round' })
+    expect(payload).toMatchObject({
+      manifest: { contrastOverride: { reason: 'unit-test round', failures: [] } },
+    })
   })
 
   it('exits 2 before serving when a story id is not on that Storybook', async () => {

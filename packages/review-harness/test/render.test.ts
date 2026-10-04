@@ -186,7 +186,13 @@ describe('a 60-frame sectioned image round', () => {
 describe('a round served without the contrast gate', () => {
   it('shows the override reason as a banner, and none when the gate passed', () => {
     const overridden = renderToStaticMarkup(
-      createElement(App, { manifest: manifest(), manifestSha256: SHA, contrastOverride: 'fixture' })
+      createElement(App, {
+        manifest: {
+          ...manifest(),
+          contrastOverride: { reason: 'fixture', problem: 'p', failures: [] },
+        },
+        manifestSha256: SHA,
+      })
     )
     expect(overridden).toContain('Contrast was not gated for this round: fixture')
     expect(overridden.indexOf('contrast-override')).toBeLessThan(overridden.indexOf('page-head'))
