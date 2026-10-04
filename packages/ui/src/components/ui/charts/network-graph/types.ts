@@ -96,6 +96,8 @@ export interface GraphLayout {
 
 export interface GraphNodeContext {
   kindLabel?: string
+  /** Labels of the groups that hold the node, in group order; a hop for an ego ring. */
+  groupLabels?: readonly string[]
   incoming: number
   outgoing: number
 }
@@ -131,6 +133,10 @@ export interface GraphModel {
   index: GraphIndex
   width: number
   height: number
+  edgeShape: 'horizontal' | 'arc'
+  labelMode: 'all' | 'declutter'
+  /** The layout's regions or rings, limited to placed nodes; empty when the layout gives none. */
+  groups: readonly GraphGroupRegion[]
 }
 
 export type GraphFocusKey = 'Down' | 'Up' | 'Right' | 'Left' | 'Home' | 'End'

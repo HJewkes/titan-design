@@ -1,19 +1,39 @@
 import fc from 'fast-check'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { fcAssert } from '../../../../test/property'
-import { networkGraphFixtures, smallFixture } from './fixtures'
+import { groupedGroups, networkGraphFixtures, smallFixture } from './fixtures'
+import { clusteredLayout } from './layouts/clustered-layout-model'
+import { egoLayout } from './layouts/ego-layout-model'
+import { forceLayout } from './layouts/force-layout-model'
 import { layeredLayout } from './layouts/layered-layout-model'
 import {
   binWeight,
   buildGraphModel,
   cleanGraph,
   edgePath,
+  edgeSlots,
+  GRAPH_NODE_RADIUS,
   indexGraph,
   weightRange,
 } from './network-graph-model'
 import { nextFocus } from './network-graph-focus'
+import {
+  groupLabelsByNode,
+  labelBox,
+  pinnedNodeIds,
+  placeLabels,
+  type LabelBox,
+} from './network-graph-labels'
 import { edgeLabel, nodeLabel, summarizeGraph } from './network-graph-text'
-import type { GraphEdge, GraphFocus, GraphFocusKey, GraphIndex, GraphNode } from './types'
+import type {
+  GraphEdge,
+  GraphLayout,
+  GraphFocus,
+  GraphFocusKey,
+  GraphIndex,
+  GraphNode,
+  GraphPoint,
+} from './types'
 
 const n = (id: string, extra: Partial<GraphNode> = {}): GraphNode => ({ id, label: id, ...extra })
 const e = (source: string, target: string, extra: Partial<GraphEdge> = {}): GraphEdge => ({
@@ -146,7 +166,54 @@ describe('binWeight', () => {
   })
 })
 
+const fnv = (text: string) => {
+  let hash = 2166136261
+  for (let i = 0; i < text.length; i += 1) hash = Math.imul(hash ^ text.charCodeAt(i), 16777619)
+  return (hash >>> 0).toString(16)
+}
+
 describe('edgePath', () => {
+  it("'horizontal' returns the same path as before", () => {
+    const hashes = Object.fromEntries(
+      Object.keys(networkGraphFixtures).map((key) => {
+        const model = modelOf(key as keyof typeof networkGraphFixtures)
+        const paths = model.drawnEdges.map((edge) =>
+          edgePath(
+            model.positions[edge.source] as GraphPoint,
+            model.positions[edge.target] as GraphPoint
+          )
+        )
+        return [key, `${paths.length}:${fnv(paths.join('\n'))}`]
+      })
+    )
+    expect(hashes).toMatchInlineSnapshot(`
+      {
+        "All equal": "8:852e277c",
+        "Deep chain": "11:d86c6b9a",
+        "Directed chain": "5:7eb8c9b7",
+        "Empty": "0:811c9dc5",
+        "Grouped (40)": "53:2b349dfa",
+        "Hostile": "5:f5ce052",
+        "Hub and spokes": "51:f75ff33e",
+        "Large (150)": "295:d2ba57ad",
+        "Long label": "3:a9dc3874",
+        "Many groups": "13:7c0c6890",
+        "Many kinds": "7:324e6001",
+        "Medium (30)": "44:b15f1f6c",
+        "Missing values": "3:2c6ba0e8",
+        "Mutual pair": "3:2116dad2",
+        "No edges": "0:811c9dc5",
+        "One group": "9:9d092f29",
+        "One item": "0:811c9dc5",
+        "Pulse": "7:e77ac5ad",
+        "Small (5)": "7:e77ac5ad",
+        "Supplied": "7:e77ac5ad",
+        "Two components": "12:30a45071",
+        "Wide fan-out": "60:5d4d50d5",
+      }
+    `)
+  })
+
   it('draws a horizontal link from the source point to the target point', () => {
     const path = edgePath({ x: 10, y: 20 }, { x: 110, y: 60 })
     expect(path.startsWith('M10,20')).toBe(true)
@@ -388,5 +455,326 @@ describe('summarizeGraph', () => {
       height: 1,
     })
     expect(summarizeGraph(model)).toContain('Showing 2 of 5 nodes and 2 of 7 edges.')
+  })
+})
+
+const viewport = { width: 800, height: 600 }
+const fixtureModel = (key: keyof typeof networkGraphFixtures, layout: GraphLayout) => {
+  const { nodes, edges } = networkGraphFixtures[key]
+  return buildGraphModel(nodes, edges, layout, viewport)
+}
+const at = (x: number, y: number) => ({ x, y })
+const parseArc = (path: string) => {
+  const [sx, sy, cx, cy, ex, ey] = (path.match(/-?\d+(\.\d+)?/g) ?? []).map(Number) as number[]
+  return { start: at(sx, sy), control: at(cx, cy), end: at(ex, ey) }
+}
+const side = (
+  a: { x: number; y: number },
+  b: { x: number; y: number },
+  p: { x: number; y: number }
+) => Math.sign((b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x))
+const curveMid = (path: string) => {
+  const { start, control, end } = parseArc(path)
+  return at((start.x + 2 * control.x + end.x) / 4, (start.y + 2 * control.y + end.y) / 4)
+}
+
+describe('edgePath arc', () => {
+  const [from, to] = [at(0, 0), at(100, 0)]
+
+  it('starts and ends one mark radius from the node centres', () => {
+    const { start, end } = parseArc(edgePath(from, to, 'arc'))
+    expect(start).toEqual(at(GRAPH_NODE_RADIUS, 0))
+    expect(end).toEqual(at(100 - GRAPH_NODE_RADIUS, 0))
+    const diagonal = parseArc(edgePath(at(0, 0), at(60, 80), 'arc'))
+    expect(Math.hypot(diagonal.start.x, diagonal.start.y)).toBeCloseTo(GRAPH_NODE_RADIUS, 1)
+  })
+
+  it('bows the two directions of a mutual pair to opposite sides, and a second edge the same way bows further', () => {
+    const there = edgePath(from, to, 'arc', 0)
+    const back = edgePath(to, from, 'arc', 0)
+    const second = edgePath(from, to, 'arc', 1)
+    expect(there).not.toBe(back)
+    expect(side(from, to, parseArc(there).control)).toBe(-side(from, to, parseArc(back).control))
+    expect(side(from, to, curveMid(there))).not.toBe(side(from, to, curveMid(back)))
+    expect(Math.abs(parseArc(second).control.y)).toBeGreaterThan(
+      Math.abs(parseArc(there).control.y)
+    )
+    expect(side(from, to, parseArc(second).control)).toBe(side(from, to, parseArc(there).control))
+  })
+
+  it('gives each edge of Mutual pair its own slot and its own path', () => {
+    const model = fixtureModel('Mutual pair', forceLayout())
+    const slots = edgeSlots(model.drawnEdges)
+    const paths = model.drawnEdges.map((edge) =>
+      edgePath(
+        model.positions[edge.source] as GraphPoint,
+        model.positions[edge.target] as GraphPoint,
+        model.edgeShape,
+        slots.get(edge.id as string)
+      )
+    )
+    expect(new Set(paths).size).toBe(paths.length)
+    expect([...slots.values()].sort()).toEqual([0, 0, 1])
+  })
+
+  it('gives no path and no NaN for coincident, overlapping or non-finite ends', () => {
+    for (const [a, b] of [
+      [at(5, 5), at(5, 5)],
+      [at(0, 0), at(2 * GRAPH_NODE_RADIUS, 0)],
+      [at(Number.NaN, 0), at(3, 3)],
+      [at(0, 0), at(Number.POSITIVE_INFINITY, 1)],
+    ] as const) {
+      const path = edgePath(a, b, 'arc', 0)
+      expect(path).toBe('')
+      expect(path).not.toContain('NaN')
+    }
+    expect(edgePath(at(0, 0), at(50, 0), 'arc', Number.NaN)).toMatch(/^M/)
+  })
+})
+
+const placed = (...points: [string, number, number, Partial<GraphNode>?][]) => {
+  const positions = Object.fromEntries(points.map(([id, x, y]) => [id, at(x, y)]))
+  const layout: GraphLayout = {
+    key: 'fixed',
+    compute: () => ({
+      positions,
+      order: points.map(([id]) => id),
+      width: 400,
+      height: 400,
+      labelMode: 'declutter',
+    }),
+  }
+  return layout
+}
+const crowded = (edges: GraphEdge[] = [], row = false) =>
+  buildGraphModel(
+    ids('aa', 'bb', 'cc', 'dd'),
+    edges,
+    row
+      ? placed(['aa', 10, 10], ['bb', 20, 10], ['cc', 30, 10], ['dd', 300, 300])
+      : placed(['aa', 10, 10], ['bb', 10, 22], ['cc', 10, 34], ['dd', 300, 300]),
+    viewport
+  )
+const meets = (a: LabelBox, b: LabelBox) =>
+  a.x < b.x + b.width && b.x < a.x + a.width && a.y < b.y + b.height && b.y < a.y + a.height
+const keptPairs = (kept: Map<string, LabelBox>) => {
+  const entries = [...kept]
+  return entries.flatMap(([ida, a], i) =>
+    entries.slice(i + 1).map(([idb, b]) => ({ ida, idb, hit: meets(a, b) }))
+  )
+}
+
+describe('placeLabels', () => {
+  it("'all' keeps every label", () => {
+    const model = modelOf('Medium (30)')
+    expect(model.labelMode).toBe('all')
+    expect([...placeLabels(model).keys()].sort()).toEqual([...model.order].sort())
+  })
+
+  it("'all' keeps every label even where labels and marks meet", () => {
+    const layout = placed(['aa', 10, 10], ['bb', 20, 10], ['cc', 30, 10])
+    const all: GraphLayout = {
+      key: 'all',
+      compute: (input) => ({ ...layout.compute(input), labelMode: 'all' }),
+    }
+    const model = buildGraphModel(ids('aa', 'bb', 'cc'), [], all, viewport)
+    expect([...placeLabels(model).keys()]).toEqual(['aa', 'bb', 'cc'])
+  })
+
+  it('under declutter, no two kept label rectangles meet unless both are pinned', () => {
+    const point = fc.record({
+      x: fc.integer({ min: 0, max: 120 }),
+      y: fc.integer({ min: 0, max: 60 }),
+    })
+    fcAssert(
+      fc.property(
+        fc.array(point, { minLength: 0, maxLength: 24 }),
+        fc.array(fc.nat(30), { maxLength: 8 }),
+        fc.array(fc.tuple(fc.nat(23), fc.nat(23)), { maxLength: 20 }),
+        (points, pinnedAt, links) => {
+          const names = points.map((_, i) => `n${String(i).padStart(2, '0')}`)
+          const model = buildGraphModel(
+            ids(...names),
+            links.map(([a, b]) =>
+              e(`n${String(a).padStart(2, '0')}`, `n${String(b).padStart(2, '0')}`)
+            ),
+            placed(
+              ...points.map((p, i) => [names[i] as string, p.x, p.y] as [string, number, number])
+            ),
+            viewport
+          )
+          const pinned = new Set(pinnedAt.map((i) => names[i]).filter((id): id is string => !!id))
+          const kept = placeLabels(model, pinned)
+          for (const id of pinned) expect(kept.has(id)).toBe(true)
+          for (const { ida, idb, hit } of keptPairs(kept)) {
+            if (hit) expect(pinned.has(ida) && pinned.has(idb)).toBe(true)
+          }
+        }
+      )
+    )
+  })
+
+  it('returns no two overlapping kept label boxes over Large (150)', () => {
+    const model = fixtureModel('Large (150)', forceLayout())
+    const kept = placeLabels(model)
+    expect(kept.size).toBeGreaterThan(0)
+    expect(kept.size).toBeLessThan(model.order.length)
+    expect(keptPairs(kept).filter((pair) => pair.hit)).toEqual([])
+  })
+
+  it('keeps the selected node, the active node and its neighbours even when they overlap, and a higher-degree node wins a conflict', () => {
+    const model = crowded([e('bb', 'aa'), e('bb', 'cc'), e('cc', 'dd')])
+    const pinned = pinnedNodeIds(model.index, 'aa', 'bb')
+    expect([...pinned].sort()).toEqual(['aa', 'bb', 'cc'])
+    expect([...placeLabels(model, pinned).keys()].sort()).toEqual(['aa', 'bb', 'cc', 'dd'])
+    const unpinned = placeLabels(model)
+    expect(unpinned.has('bb')).toBe(true)
+    expect(unpinned.has('cc')).toBe(false)
+    expect(unpinned.has('aa')).toBe(false)
+    expect(unpinned.has('dd')).toBe(true)
+  })
+
+  it('never drops a pinned label that sits on another node', () => {
+    const model = crowded([], true)
+    expect(placeLabels(model, new Set(['aa'])).has('aa')).toBe(true)
+    expect(placeLabels(model, new Set(['aa'])).has('bb')).toBe(false)
+  })
+
+  it('is independent of the order nodes and edges arrive in', () => {
+    const { nodes, edges } = networkGraphFixtures['Grouped (40)']
+    const layout = forceLayout({ seed: 3 })
+    const forward = buildGraphModel(nodes, edges, layout, viewport)
+    const reversed = buildGraphModel([...nodes].reverse(), [...edges].reverse(), layout, viewport)
+    const pinned = new Set(['alpha-01'])
+    expect([...placeLabels(forward, pinned)]).toEqual([...placeLabels(reversed, pinned)])
+    const shuffled = { ...forward, order: [...forward.order].reverse() }
+    expect([...placeLabels(shuffled, pinned).keys()].sort()).toEqual(
+      [...placeLabels(forward, pinned).keys()].sort()
+    )
+  })
+
+  it('estimates a box from the truncated label length', () => {
+    const model = crowded()
+    const long = {
+      ...model,
+      index: { ...model.index, nodesById: new Map([['aa', n('aa', { label: 'x'.repeat(200) })]]) },
+    }
+    expect(labelBox(long, 'aa')?.width).toBe((labelBox(model, 'aa')?.width ?? 0) * 10)
+    expect(labelBox(model, 'missing')).toBeNull()
+  })
+})
+
+describe('group labels', () => {
+  const clustered = () => fixtureModel('Grouped (40)', clusteredLayout({ groups: groupedGroups }))
+  const ego = () => fixtureModel('Hub and spokes', egoLayout({ focusId: 'hub-01', hops: 2 }))
+
+  it("a node's name holds its group label; with no groups the name is unchanged", () => {
+    const model = clustered()
+    const labels = groupLabelsByNode(model)
+    const node = model.nodes.find((x) => x.group === 'beta') as GraphNode
+    const context = {
+      incoming: 1,
+      outgoing: 2,
+      kindLabel: 'Worker',
+      groupLabels: labels.get(node.id),
+    }
+    expect(nodeLabel(node, context)).toBe(`${node.id}, Worker, Beta, 1 incoming, 2 outgoing`)
+    const bare = { incoming: 1, outgoing: 2, kindLabel: 'Worker' }
+    expect(nodeLabel(node, { ...bare, groupLabels: [] })).toBe(nodeLabel(node, bare))
+    expect(groupLabelsByNode(modelOf('Small (5)')).size).toBe(0)
+  })
+
+  it('names the hop for an ego node', () => {
+    const model = ego()
+    const labels = groupLabelsByNode(model)
+    expect(labels.get('hub-01')).toEqual(['focus'])
+    const hop = model.groups.find((group) => group.label === '1 hop')
+    expect(labels.get(hop?.nodeIds[0] as string)).toEqual(['1 hop'])
+  })
+
+  it('the summary states region counts, or the focus and ring counts, and still states the unplaced count', () => {
+    const regions = summarizeGraph(clustered())
+    expect(regions).toMatch(/5 groups: Alpha \d+, Beta \d+, Gamma \d+, Delta \d+, Ungrouped 5\./)
+    const model = ego()
+    const rings = model.groups.filter((group) => group.variant === 'ring')
+    const text = summarizeGraph(model)
+    expect(text).toContain(
+      `Focus hub-01: ${rings
+        .slice(1)
+        .map((ring) => `${ring.label} ${ring.nodeIds.length}`)
+        .join(', ')}.`
+    )
+    const unplaced = fixtureModel('Two components', egoLayout({ focusId: 'alpha-01', hops: 1 }))
+    expect(unplaced.unplacedNodes).toBeGreaterThan(0)
+    expect(summarizeGraph(unplaced)).toMatch(
+      /Focus alpha-01: 1 hop \d+\..*Showing \d+ of \d+ nodes/
+    )
+    expect(summarizeGraph(modelOf('Small (5)'))).not.toMatch(/group|Focus/)
+  })
+
+  it('counts only placed nodes in each group', () => {
+    const model = fixtureModel('Two components', egoLayout({ focusId: 'alpha-01', hops: 1 }))
+    const members = model.groups.flatMap((group) => group.nodeIds)
+    expect(members.sort()).toEqual([...model.order].sort())
+  })
+})
+
+describe('model hints', () => {
+  it('reads edgeShape, labelMode and groups from the layout, defaulting to horizontal, all and none', () => {
+    const plain = modelOf('Small (5)')
+    expect([plain.edgeShape, plain.labelMode, plain.groups]).toEqual(['horizontal', 'all', []])
+    const free = fixtureModel('Small (5)', forceLayout())
+    expect([free.edgeShape, free.labelMode]).toEqual(['arc', 'declutter'])
+  })
+})
+
+describe('purity and degenerate input', () => {
+  it('calls no random source, clock or timer', () => {
+    const fail = () => {
+      throw new Error('impure call')
+    }
+    const spies = [
+      vi.spyOn(Math, 'random').mockImplementation(fail),
+      vi.spyOn(Date, 'now').mockImplementation(fail),
+      vi.spyOn(globalThis, 'setTimeout').mockImplementation(fail),
+      vi.spyOn(globalThis, 'setInterval').mockImplementation(fail),
+    ]
+    try {
+      const model = fixtureModel('Grouped (40)', egoLayout({ focusId: 'alpha-01' }))
+      const pinned = pinnedNodeIds(model.index, 'alpha-01', 'alpha-02')
+      placeLabels(model, pinned)
+      groupLabelsByNode(model)
+      summarizeGraph(model)
+      edgeSlots(model.drawnEdges)
+      edgePath(at(0, 0), at(50, 50), 'arc', 1)
+    } finally {
+      for (const spy of spies) spy.mockRestore()
+    }
+  })
+
+  it('stays finite and does not throw for 0 nodes, 1 node, a self-loop and NaN coordinates', () => {
+    const nan = placed(['aa', Number.NaN, 1], ['bb', 5, 5])
+    const inputs: [GraphNode[], GraphEdge[], GraphLayout][] = [
+      [[], [], forceLayout()],
+      [ids('aa'), [], forceLayout()],
+      [ids('aa'), [e('aa', 'aa')], egoLayout({ focusId: 'aa' })],
+      [ids('aa', 'bb'), [e('aa', 'bb'), e('bb', 'aa')], nan],
+    ]
+    for (const [nodes, edges, layout] of inputs) {
+      const model = buildGraphModel(nodes, edges, layout, viewport)
+      const kept = placeLabels(model, pinnedNodeIds(model.index, 'aa', 'aa'))
+      const slots = edgeSlots(model.drawnEdges)
+      const paths = model.drawnEdges.map((edge) =>
+        edgePath(
+          model.positions[edge.source] as GraphPoint,
+          model.positions[edge.target] as GraphPoint,
+          'arc',
+          slots.get(edge.id as string)
+        )
+      )
+      expect(JSON.stringify([...kept.values(), paths, summarizeGraph(model)])).not.toMatch(
+        /NaN|Infinity|null/
+      )
+    }
   })
 })

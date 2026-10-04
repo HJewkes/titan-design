@@ -264,13 +264,13 @@ describe('SetBarChart under a SetBarTreatment', () => {
     expect(screen.getByTestId('t-bar-0').style.boxShadow).toBe(paper.boxShadow)
   })
 
-  it('rings the empty cell and softens the light shadow when opted in', () => {
-    renderLight({ emptyVariant: 'outline', lightPaper: 'soft' })
+  it('fills the empty cell in its colour and softens the light shadow when opted in', () => {
+    renderLight({ emptyColor: { light: '#72716F', dark: '#A29F9D' }, lightPaper: 'soft' })
     const empty = getComputedStyle(screen.getByTestId('t-slot-empty'))
-    expect(empty.borderTopWidth).toBe('2px')
-    expect(empty.backgroundColor).toBe(CLEAR)
+    expect(empty.borderTopWidth).toBe('0px')
+    expect(empty.backgroundColor).toBe('rgb(114, 113, 111)')
     expect(screen.getByTestId('t-bar-0').style.boxShadow).toMatch(
-      /^0 1px 2px rgba\(0, ?0, ?0, ?0\.12\)$/
+      /^0 2px 5px rgba\(0, ?0, ?0, ?0\.2\)$/
     )
   })
 })
