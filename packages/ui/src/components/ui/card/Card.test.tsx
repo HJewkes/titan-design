@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { Text } from 'react-native'
 import {
   Card,
   CardHeader,
@@ -12,7 +13,7 @@ import {
   CardInset,
 } from './Card'
 import { greyRamp } from '../../../theme/tokens/primitives'
-import { resolveAll, siblingSource, spacingClassesIn } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
 // Planes by RAMP STEP, never by literal bytes — see Surface.test.tsx.
 const BASE = greyRamp[925]
@@ -390,14 +391,17 @@ describe('Card', () => {
  * only stopped being anonymous.
  */
 describe('Card geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'Card.tsx')
-
   it.each([
-    ['CardHeader', ['p-inset-xl', 'gap-stack-md'], ['24px', '8px']],
-    ['CardContent', ['px-inset-xl', 'py-inset-lg'], ['24px', '16px']],
-    ['CardFooter', ['px-inset-xl', 'py-inset-lg', 'gap-2'], ['24px', '16px', '8px']],
-  ] as const)('%s ships %s', (functionName, classes, pixels) => {
-    expect(spacingClassesIn(source, functionName)).toEqual([...classes])
+    ['CardHeader', CardHeader, ['p-inset-xl', 'gap-stack-md'], ['24px', '8px']],
+    ['CardContent', CardContent, ['px-inset-xl', 'py-inset-lg'], ['24px', '16px']],
+    ['CardFooter', CardFooter, ['px-inset-xl', 'py-inset-lg', 'gap-2'], ['24px', '16px', '8px']],
+  ] as const)('%s ships its spacing tokens', (_name, Band, classes, pixels) => {
+    render(
+      <Band>
+        <Text>band</Text>
+      </Band>
+    )
+    expect(spacingClassesAt(screen.getByText('band').parentElement)).toEqual([...classes])
     expect(resolveAll([...classes])).toEqual([...pixels])
   })
 })
