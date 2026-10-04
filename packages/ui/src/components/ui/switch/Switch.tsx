@@ -66,7 +66,7 @@ export const Switch = forwardRef<View, SwitchProps>(function Switch(
       className={cn(
         'rounded-full p-0.5 transition-colors',
         styles.track,
-        isChecked ? 'bg-brand-primary' : 'bg-hairline-strong'
+        isChecked ? 'bg-brand-primary' : 'bg-border-input'
       )}
     >
       {/* The thumb is a raised control resting in its track: one plane of lift. */}
