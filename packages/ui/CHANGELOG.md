@@ -5,6 +5,9 @@ All notable changes to `@titan-design/react-ui` are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this
 project adheres to [Semantic Versioning](https://semver.org/).
 
+New entries go in `changelog.d/` as one fragment file per PR (see its README); `pnpm
+changelog:compile` folds them into `[Unreleased]` at release.
+
 ## [Unreleased]
 
 ### Added

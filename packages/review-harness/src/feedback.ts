@@ -83,12 +83,22 @@ function toAnswer(
     : null
 }
 
+/** The questions a draft leaves without an answer, in manifest order; a comment alone does not answer. */
+export function unansweredQuestionIds(manifest: Manifest, draft: ReviewDraft): string[] {
+  return manifest.questions
+    .filter((q) => !isAnswered(q, { questionId: q.id, ...draft.answers[q.id] }))
+    .map((q) => q.id)
+}
+
+/** A partial build lists what was left out, which is what lets a required question go unanswered. */
 export function buildFeedback(
   manifest: Manifest,
   manifestSha256: string,
   draft: ReviewDraft,
-  now: Date
+  now: Date,
+  partial = false
 ): Feedback {
+  const unanswered = partial ? unansweredQuestionIds(manifest, draft) : []
   return {
     schema: FEEDBACK_SCHEMA_ID,
     unit: manifest.unit,
@@ -110,5 +120,6 @@ export function buildFeedback(
       }
     }),
     general: draft.general,
+    ...(unanswered.length ? { unansweredQuestionIds: unanswered } : {}),
   }
 }

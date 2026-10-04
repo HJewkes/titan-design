@@ -76,9 +76,31 @@ describe('known defects', () => {
     expect(matchesDefect({ ...exact, variant: 'A' }, finding)).toBe(true)
   })
 
-  it('stop excusing a miss that got worse than their maxRatio', () => {
-    expect(matchesDefect({ ...exact, maxRatio: 1.7 }, finding)).toBe(true)
-    expect(matchesDefect({ ...exact, maxRatio: 1.5 }, finding)).toBe(false)
+  it('excuse a miss at its recorded ratio or better, and block one that got worse', () => {
+    expect(matchesDefect({ ...exact, minRatio: finding.ratio }, finding)).toBe(true)
+    expect(matchesDefect({ ...exact, minRatio: finding.ratio - 0.2 }, finding)).toBe(true)
+    expect(matchesDefect({ ...exact, minRatio: finding.ratio + 0.2 }, finding)).toBe(false)
+  })
+
+  it('are refused at load when they still carry the renamed maxRatio', () => {
+    const old = ManifestSchema.safeParse(
+      draft({
+        contrast: {
+          knownDefects: [
+            {
+              element: 'chip',
+              mode: 'light',
+              kind: 'text',
+              maxRatio: 3,
+              route: 'TD-490',
+              reason: 'muted',
+            },
+          ] as never,
+        },
+      })
+    )
+    expect(old.success).toBe(false)
+    expect(old.error?.issues.map((i) => i.message).join('\n')).toContain('renamed minRatio')
   })
 
   it('are refused at load unless they name element, mode and kind', () => {

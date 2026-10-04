@@ -1,41 +1,28 @@
-import { useState, useMemo } from 'react'
+import { useMemo } from 'react'
+import { useControllableState } from '../../../hooks/useControllableState'
+import { filterRows } from './table-model'
+import type {
+  ColumnDef,
+  SelectionState,
+  SortDirection,
+  TableSort,
+  UseTableOptions,
+  UseTableReturn,
+} from './table-state-types'
+import { useFacetOptions, useFilterSlice, type PipelineInput } from './useTableFilters'
+import {
+  useRangeRequests,
+  useRestartOnChange,
+  useRowAccess,
+  useViewState,
+  type ViewState,
+} from './useTableWindow'
 
-export type SortDirection = 'asc' | 'desc' | null
-
-/**
- * An ascending comparator for one column. Returning 0 lets the caller express a
- * tie-break inside the same function; `useTable` inverts the result for `desc`
- * rather than reversing the array, so ties keep their relative order both ways.
- */
-export type TableComparator<T> = (a: T, b: T) => number
-
-export interface UseTableOptions<T> {
-  data: T[]
-  defaultPageSize?: number
-  defaultSortColumn?: string
-  defaultSortDirection?: SortDirection
-  /**
-   * Per-column ascending comparators, for columns whose order is not their raw
-   * field order — a severity ranked critical→low rather than alphabetically, a
-   * numeric field that should sort blanks last, a date read newest-first.
-   * Columns absent from the map fall back to the default field compare.
-   */
-  comparators?: Partial<Record<keyof T & string, TableComparator<T>>> &
-    Record<string, TableComparator<T> | undefined>
-}
-
-export interface UseTableReturn<T> {
-  sortedData: T[]
-  paginatedData: T[]
-  page: number
-  pageSize: number
-  totalItems: number
-  sortColumn?: string
-  sortDirection: SortDirection
-  setPage: (page: number) => void
-  setPageSize: (size: number) => void
-  handleSort: (column: string) => void
-}
+// The pure filter, facet and range functions live in `table-model.ts` (mutation-tested); this
+// module composes them and re-exports them beside its own.
+export * from './table-model'
+export type * from './table-state-types'
+export { RANGE_DEBOUNCE_MS } from './useTableWindow'
 
 const isBlank = (v: unknown): boolean => v === null || v === undefined
 
@@ -103,8 +90,6 @@ export function pageRange(page: number, pageSize: number, totalItems: number): P
   }
 }
 
-export type SelectionState = 'all' | 'some' | 'none'
-
 /** How much of `rowIds` is selected. An empty table is never `all`. */
 export function selectionState(rowIds: string[], selected: Set<string>): SelectionState {
   if (rowIds.length > 0 && rowIds.every((id) => selected.has(id))) return 'all'
@@ -137,8 +122,101 @@ export function columnSortState(
   }
 }
 
+const NO_ROWS: never[] = []
+const NO_COLUMNS: readonly ColumnDef<never>[] = []
+const NO_IDS: readonly string[] = []
+
+const defaultRowId = (row: Record<string, unknown>): string => String(row.id)
+
+function useSortSlice<T>(options: UseTableOptions<T>) {
+  const { sort, onSortChange, defaultSortColumn, defaultSortDirection = null } = options
+  const [current, setSort] = useControllableState<TableSort>({
+    value: sort,
+    defaultValue: { column: defaultSortColumn, direction: defaultSortDirection },
+    onChange: onSortChange,
+  })
+  const handleSort = (column: string) =>
+    setSort(
+      current.column === column
+        ? { column, direction: nextSortDirection(current.direction) }
+        : { column, direction: 'asc' }
+    )
+  return { sort: current, handleSort }
+}
+
+/** `filterRows` then `sortRows`, each memoised on its own inputs so a scroll or page change re-runs neither. */
+function useSortedRows<T extends Record<string, unknown>>(input: PipelineInput<T>): T[] {
+  const { isManual, data, filters, columns, sort, comparators } = input
+  const filtered = useMemo(
+    // filterRows hands back `data` itself or a fresh array, so the cast exposes nothing shared.
+    () => (isManual ? data : (filterRows(data, filters, columns) as T[])),
+    [isManual, data, filters, columns]
+  )
+  const { column, direction } = sort
+  return useMemo(
+    () => (isManual ? filtered : sortRows(filtered, column, direction, comparators)),
+    [isManual, filtered, column, direction, comparators]
+  )
+}
+
+function useSelectionSlice<T>(
+  options: UseTableOptions<T>,
+  rows: readonly (T | undefined)[],
+  getRowId: (row: T) => string
+) {
+  const [ids, setIds] = useControllableState<readonly string[]>({
+    value: options.selectedIds,
+    defaultValue: options.defaultSelectedIds ?? NO_IDS,
+    onChange: options.onSelectedIdsChange,
+  })
+  const idSet = useMemo(() => new Set(ids), [ids])
+  const rowIds = useMemo(
+    () => rows.flatMap((row) => (row === undefined ? [] : [getRowId(row)])),
+    [rows, getRowId]
+  )
+  const allRowsSelection = selectionState(rowIds, idSet)
+  const toggleRowSelected = (row: T) => {
+    const id = getRowId(row)
+    setIds(idSet.has(id) ? ids.filter((other) => other !== id) : [...ids, id])
+  }
+  const toggleAllRowsSelected = () => {
+    const shown = new Set(rowIds)
+    const others = ids.filter((id) => !shown.has(id))
+    setIds(allRowsSelection === 'all' ? others : [...others, ...rowIds])
+  }
+  const isRowSelected = (row: T) => idSet.has(getRowId(row))
+  const selection = { isRowSelected, toggleRowSelected, toggleAllRowsSelected, allRowsSelection }
+  return { selectedIds: ids, setSelectedIds: setIds, ...selection }
+}
+
+/** Every stage after filter and sort: the page, the window, facets and range requests. */
+function useRowStages<T extends Record<string, unknown>>(
+  options: UseTableOptions<T>,
+  input: PipelineInput<T>,
+  view: ViewState
+) {
+  const sortedData = useSortedRows(input)
+  const facetOptions = useFacetOptions(input)
+  const { page, pageSize, windowRange, requestEpoch } = view
+  const paginatedData = useMemo(
+    () => pageSlice(sortedData, page, pageSize),
+    [sortedData, page, pageSize]
+  )
+  const { isManual } = input
+  const { rowCount, getRow, onRangeNeeded } = options
+  const access = useRowAccess({ isManual, sortedData, rowCount, getRow, windowRange })
+  const { visibleRowCount } = access
+  const requests = { windowRange, rowCount: visibleRowCount, getRow, onRangeNeeded, requestEpoch }
+  useRangeRequests({ ...requests, isEnabled: isManual })
+  return { sortedData, paginatedData, facetOptions, ...access, totalItems: visibleRowCount }
+}
+
 /**
- * Hook for managing table sorting and pagination state. Exported publicly as `useTable`.
+ * Hook for managing table sorting, filtering, selection and pagination state. Exported publicly as
+ * `useTable`. In `client` mode (the default) rows run `filterRows`, `sortRows`, then `pageSlice`, or
+ * `windowSlice` for a windowed body. In `manual` mode the hook only holds state and emits changes;
+ * the consumer refetches and serves rows through `getRow`. A filter or sort change returns to the
+ * first page, scrolls the window to the top and forgets the ranges already requested.
  *
  * @example
  * const {
@@ -151,52 +229,23 @@ export function columnSortState(
  *   defaultPageSize: 10,
  * })
  */
-export function useTableState<T extends Record<string, any>>({
-  data,
-  defaultPageSize = 10,
-  defaultSortColumn,
-  defaultSortDirection = null,
-  comparators,
-}: UseTableOptions<T>): UseTableReturn<T> {
-  const [page, setPage] = useState(0)
-  const [pageSize, setPageSize] = useState(defaultPageSize)
-  const [sortColumn, setSortColumn] = useState<string | undefined>(defaultSortColumn)
-  const [sortDirection, setSortDirection] = useState<SortDirection>(defaultSortDirection)
+export function useTableState<T extends Record<string, any>>(
+  options: UseTableOptions<T>
+): UseTableReturn<T> {
+  const { mode = 'client', data = NO_ROWS, comparators, getRowId = defaultRowId } = options
+  const columns = (options.columns ?? NO_COLUMNS) as readonly ColumnDef<T>[]
+  const isManual = mode === 'manual'
+  const { restart, ...view } = useViewState(options.defaultPageSize ?? 10)
+  const { sort, handleSort } = useSortSlice(options)
+  const filterSlice = useFilterSlice(options, columns)
+  useRestartOnChange(filterSlice.filters, sort, restart)
 
-  const sortedData = useMemo(
-    () => sortRows(data, sortColumn, sortDirection, comparators),
-    [data, sortColumn, sortDirection, comparators]
-  )
-  const paginatedData = useMemo(
-    () => pageSlice(sortedData, page, pageSize),
-    [sortedData, page, pageSize]
-  )
+  const input = { isManual, data, filters: filterSlice.filters, columns, sort, comparators }
+  const rows = useRowStages(options, input, view)
+  const selectable = isManual ? rows.windowRows : rows.sortedData
+  const selection = useSelectionSlice(options, selectable, getRowId)
 
-  const handleSort = (column: string) => {
-    if (sortColumn === column) {
-      setSortDirection(nextSortDirection)
-    } else {
-      setSortColumn(column)
-      setSortDirection('asc')
-    }
-    setPage(0)
-  }
-
-  const handlePageSizeChange = (newSize: number) => {
-    setPageSize(newSize)
-    setPage(0)
-  }
-
-  return {
-    sortedData,
-    paginatedData,
-    page,
-    pageSize,
-    totalItems: data.length,
-    sortColumn,
-    sortDirection,
-    setPage,
-    setPageSize: handlePageSizeChange,
-    handleSort,
-  }
+  const { requestEpoch: _epoch, ...viewFields } = view
+  const sortFields = { sortColumn: sort.column, sortDirection: sort.direction, handleSort }
+  return { ...viewFields, ...sortFields, ...filterSlice, ...rows, ...selection, mode }
 }
