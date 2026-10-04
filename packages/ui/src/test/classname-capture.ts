@@ -56,6 +56,8 @@ export function captureClassName<P extends { className?: string; testID?: string
       },
       [className, ref]
     )
+    // The caller's ref is only forwarded into the callback, never read during render.
+    // eslint-disable-next-line react-hooks/refs
     return createElement(Component, { ...props, ref: captureRef } as P)
   })
   Captured.displayName = `CaptureClassName(${Component.displayName ?? Component.name ?? 'Component'})`

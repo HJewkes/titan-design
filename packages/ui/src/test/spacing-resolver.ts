@@ -184,8 +184,8 @@ export function spacingClassesOf(testId: string): string[] {
  * `getByLabelText`, so rebinding a geometry test adds no `testID` to the DOM.
  */
 export function spacingClassesAt(node: Element | null): string[] {
-  const raw = node && capturedByNode.get(node)
-  if (raw === undefined || raw === null) throw new Error('no captured className for this node')
+  const raw = node ? capturedByNode.get(node) : undefined
+  if (node === null || raw === undefined) throw new Error('no captured className for this node')
   if (animatedNodes.has(node)) throw animatedError('this node')
   return spacingFromRaw(raw)
 }
