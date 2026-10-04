@@ -19,10 +19,13 @@ const FIX = 'Run `pnpm catalog` and commit src/arch/component-catalog.json.'
 const vocabulary = (): string[] =>
   maturityStatuses(readFileSync(path.join(PKG_ROOT, 'MATURITY.md'), 'utf8')) as string[]
 
-type Item = { file: string; name?: string }
+type Prop = { name: string; default: string | null }
+type Item = { file: string; name?: string; props?: Prop[] }
 type Catalog = { entries: Item[]; excluded: Item[] }
 
 const STORY = 'packages/ui/src/components/ui/date-time/DateTime.stories.tsx'
+const ALERT = 'packages/ui/src/components/ui/alert/Alert.tsx'
+const DOCGEN_TIMEOUT = 60_000
 
 /** Names of the entries (or files, for excluded ones) whose block differs between two catalogs. */
 function differingEntries(committed: Catalog, fresh: Catalog): string[] {
@@ -33,8 +36,18 @@ function differingEntries(committed: Catalog, fresh: Catalog): string[] {
   return [...new Set([...a.keys(), ...b.keys()])].filter((key) => a.get(key) !== b.get(key)).sort()
 }
 
-const build = (read?: (repoRoot: string, rel: string) => string): Catalog =>
-  JSON.parse(serializeCatalog(buildCatalog(REPO_ROOT, read)))
+const build = (
+  read?: (repoRoot: string, rel: string) => string,
+  overlay?: Record<string, string>
+): Catalog => JSON.parse(serializeCatalog(buildCatalog(REPO_ROOT, read, overlay)))
+
+/** The catalog built with Alert.tsx read as `edit` returns it; fails if the edit is a no-op. */
+function buildWithAlert(edit: (text: string) => string): Catalog {
+  const source = readInput(REPO_ROOT, ALERT) as string
+  const edited = edit(source)
+  expect(edited, 'the Alert.tsx overlay did not change the source').not.toEqual(source)
+  return build(undefined, { [ALERT]: edited })
+}
 
 const readWith =
   (edit: (text: string) => string) =>
@@ -48,7 +61,7 @@ describe('component-catalog.json freshness', () => {
 
   beforeAll(() => {
     fresh = build()
-  })
+  }, DOCGEN_TIMEOUT)
 
   it('matches a fresh build, entry by entry', () => {
     const differing = differingEntries(catalog as Catalog, fresh)
@@ -58,15 +71,23 @@ describe('component-catalog.json freshness', () => {
     ).toEqual([])
   })
 
-  it('names the entry whose story status tag changed', () => {
-    const changed = build(readWith((t) => t.replace('status:candidate', 'status:stable')))
-    expect(differingEntries(catalog as Catalog, changed)).toEqual(['DateTime'])
-  })
+  it(
+    'names the entry whose story status tag changed',
+    () => {
+      const changed = build(readWith((t) => t.replace('status:candidate', 'status:stable')))
+      expect(differingEntries(catalog as Catalog, changed)).toEqual(['DateTime'])
+    },
+    DOCGEN_TIMEOUT
+  )
 
-  it('ignores a story args change', () => {
-    const changed = build(readWith((t) => t.replace("format: 'datetime'", "format: 'date'")))
-    expect(differingEntries(catalog as Catalog, changed)).toEqual([])
-  })
+  it(
+    'ignores a story args change',
+    () => {
+      const changed = build(readWith((t) => t.replace("format: 'datetime'", "format: 'date'")))
+      expect(differingEntries(catalog as Catalog, changed)).toEqual([])
+    },
+    DOCGEN_TIMEOUT
+  )
 
   it('fails when a committed entry lost its storyIds', () => {
     const emptied: Catalog = {
@@ -76,6 +97,51 @@ describe('component-catalog.json freshness', () => {
       ),
     }
     expect(differingEntries(emptied, fresh)).toEqual(['DateTime'])
+  })
+
+  it(
+    'ignores an edit inside the Alert function body',
+    () => {
+      const changed = buildWithAlert((t) =>
+        t.replace("const isSolid = variant === 'solid'", "const isSolid = 'solid' === variant")
+      )
+      expect(differingEntries(catalog as Catalog, changed)).toEqual([])
+    },
+    DOCGEN_TIMEOUT
+  )
+
+  it(
+    'names Alert when the first sentence of its JSDoc changes',
+    () => {
+      const changed = buildWithAlert((t) =>
+        t.replace(
+          'Alert component for displaying status messages.',
+          'Alert component for status callouts.'
+        )
+      )
+      expect(differingEntries(catalog as Catalog, changed)).toEqual(['Alert'])
+    },
+    DOCGEN_TIMEOUT
+  )
+
+  it(
+    'names Alert when AlertProps gains a prop',
+    () => {
+      const changed = buildWithAlert((t) =>
+        t.replace(
+          '  /** Visual variant */',
+          '  /** Whether the alert is dismissed. */\n  isDismissed?: boolean\n  /** Visual variant */'
+        )
+      )
+      expect(differingEntries(catalog as Catalog, changed)).toEqual(['Alert'])
+    },
+    DOCGEN_TIMEOUT
+  )
+
+  it('records Alert props with their defaults', () => {
+    const alert = (catalog as Catalog).entries.find((entry) => entry.name === 'Alert')
+    expect(alert?.props?.length).toBeGreaterThan(0)
+    expect(alert?.props?.find((prop) => prop.name === 'status')?.default).toBe('info')
   })
 
   it('carries no global hash, so two PRs that touch different components do not conflict', () => {
