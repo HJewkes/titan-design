@@ -2001,9 +2001,6 @@ export function formatCompact(n: number): string;
 export function formatDateTime(value: number | Date | string | null | undefined, format?: DateTimeFormat, isUTC?: boolean, fallback?: string): string;
 
 // @public
-export function formatDuration(ms: number): string;
-
-// @public
 export function formatPrescription(p: PrescriptionInput | null | undefined): string | null;
 
 // @public
