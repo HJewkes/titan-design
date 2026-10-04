@@ -20,8 +20,8 @@ export const SESSION_FIXTURE: SessionSummary[] = [
     ended: '2026-07-12T14:25:30Z',
     track: 'canonical',
     title:
-      'Closed AW-17 + AW-18 + AW-19 + AW-20 in one sitting — folder lookup, shared lists, the remind command and quick notes for the sample planner',
-    body: '# Closed AW-17 + AW-18 + AW-19 + AW-20 in one sitting — folder lookup, shared lists, the remind command and quick notes for the sample planner\n\n## Goal\n\nClose out the four small planner tasks queued behind **AW-17**, so the next session can start on sync.\n\n## What shipped\n\n- **AW-17** (#51): `planner open` now finds the project from the current folder when no slug is given. It walks up from `/home/example/projects/alpha-workspace` until it meets a `planner.yml`.\n- **AW-18** (#52): `planner list add` registers a shared list on an existing project instead of creating a second one.\n- **AW-19** (#53): `planner remind` reprints the current goal and the three oldest open tasks, for a mid-session refresh.\n- **AW-20** (#54): `planner open --quick` frames the prompt as a quick note, not a handoff continuation.\n\n## Decisions\n\n- Lookup stops at the first `planner.yml` it meets; a nested project wins over its parent.\n- `--quick` never writes a handoff file. A quick note that grows into real work gets promoted with `planner promote`.\n\n## Checks run\n\n- `pnpm test` green: 212 passing, 0 skipped.\n- Ran `planner open` from `/home/example/projects/alpha-workspace/docs` and got the right project.\n- `planner remind` output checked against the sample project in `fixtures/sample-home`.\n\n## Follow-ups\n\n- **AW-1** still needs a Linux service file before the Linux build is usable (#55 tracks the draft).\n- **AW-13** (first public release) waits on the release checklist; see #56.\n\n## Notes\n\nThe folder walk reads `stat` once per level, so a deep tree costs a few milliseconds. Fine for a CLI.\n',
+      'Closed PL-17 + PL-18 + PL-19 + PL-20 in one sitting — folder lookup, shared lists, the remind command and quick notes for the sample planner',
+    body: '# Closed PL-17 + PL-18 + PL-19 + PL-20 in one sitting — folder lookup, shared lists, the remind command and quick notes for the sample planner\n\n## Goal\n\nClose out the four small planner tasks queued behind **PL-17**, so the next session can start on sync.\n\n## What shipped\n\n- **PL-17** (#51): `planner open` now finds the project from the current folder when no slug is given. It walks up from `/home/example/projects/alpha-workspace` until it meets a `planner.yml`.\n- **PL-18** (#52): `planner list add` registers a shared list on an existing project instead of creating a second one.\n- **PL-19** (#53): `planner remind` reprints the current goal and the three oldest open tasks, for a mid-session refresh.\n- **PL-20** (#54): `planner open --quick` frames the prompt as a quick note, not a handoff continuation.\n\n## Decisions\n\n- Lookup stops at the first `planner.yml` it meets; a nested project wins over its parent.\n- `--quick` never writes a handoff file. A quick note that grows into real work gets promoted with `planner promote`.\n\n## Checks run\n\n- `pnpm test` green: 212 passing, 0 skipped.\n- Ran `planner open` from `/home/example/projects/alpha-workspace/docs` and got the right project.\n- `planner remind` output checked against the sample project in `fixtures/sample-home`.\n\n## Follow-ups\n\n- **PL-1** still needs a Linux service file before the Linux build is usable (#55 tracks the draft).\n- **PL-13** (first public release) waits on the release checklist; see #56.\n\n## Notes\n\nThe folder walk reads `stat` once per level, so a deep tree costs a few milliseconds. Fine for a CLI.\n',
   },
   {
     id: 'adhoc-d4e5f6a7',
@@ -29,8 +29,8 @@ export const SESSION_FIXTURE: SessionSummary[] = [
     started: '2026-07-09T11:15:00Z',
     ended: '2026-07-09T11:44:00Z',
     track: 'adhoc',
-    title: 'Quick note: help-text pass while AW-17 waited on review',
-    body: '# Quick note: help-text pass while AW-17 waited on review\n\nTightened the install section and pointed it at [[setup-walkthrough]]. No task changed state; AW-17 is still in review.\n\n- `planner setup` copy now names the login-item step\n- Removed an outdated pointer to #42',
+    title: 'Quick note: help-text pass while PL-17 waited on review',
+    body: '# Quick note: help-text pass while PL-17 waited on review\n\nTightened the install section and pointed it at [[setup-walkthrough]]. No task changed state; PL-17 is still in review.\n\n- `planner setup` copy now names the login-item step\n- Removed an outdated pointer to #42',
   },
   {
     id: 'b7c8d9e0',
@@ -38,8 +38,8 @@ export const SESSION_FIXTURE: SessionSummary[] = [
     started: '2026-07-03T06:10:05Z',
     ended: '2026-07-03T21:22:30Z',
     track: 'canonical',
-    title: 'Landed AW-3 + AW-5, matched the sample repo settings, squash-only merges',
-    body: '# Landed AW-3 + AW-5, matched the sample repo settings, squash-only merges\n\n## Summary\n\nA long day. **AW-3** and **AW-5** both landed, and the repo settings now match the sample template.\n\n## AW-3 — live change feed\n\n- The background helper now pushes change events to the web view over a socket (#31).\n- Events carry the task id and the changed field only; the view refetches the row.\n- `planner serve --port 4100` is the new default; `--port 0` picks a free one.\n\n## AW-5 — sync between two laptops\n\n- `planner sync` wraps a plain git remote (#32). Conflicts stop the sync and print both versions.\n- **Decision:** no automatic merge of task notes. A human picks.\n\n## Repo config\n\n- Branch rules: one approving review, required checks `lint`, `test`, `build`.\n- Merge permissions reworked so only squash merges are allowed (#33).\n\n## Touched along the way\n\n- **AW-11**: dropped an unused UI dependency.\n- **AW-13**: release checklist drafted, not run.\n- **AW-1**, **AW-7** and **AW-6** reprioritised; none started.\n\n## Next\n\n- Write the Linux service file for **AW-1**.\n- Run `planner doctor` on a clean machine.\n',
+    title: 'Landed PL-3 + PL-5, matched the sample repo settings, squash-only merges',
+    body: '# Landed PL-3 + PL-5, matched the sample repo settings, squash-only merges\n\n## Summary\n\nA long day. **PL-3** and **PL-5** both landed, and the repo settings now match the sample template.\n\n## PL-3 — live change feed\n\n- The background helper now pushes change events to the web view over a socket (#31).\n- Events carry the task id and the changed field only; the view refetches the row.\n- `planner serve --port 4100` is the new default; `--port 0` picks a free one.\n\n## PL-5 — sync between two laptops\n\n- `planner sync` wraps a plain git remote (#32). Conflicts stop the sync and print both versions.\n- **Decision:** no automatic merge of task notes. A human picks.\n\n## Repo config\n\n- Branch rules: one approving review, required checks `lint`, `test`, `build`.\n- Merge permissions reworked so only squash merges are allowed (#33).\n\n## Touched along the way\n\n- **PL-11**: dropped an unused UI dependency.\n- **PL-13**: release checklist drafted, not run.\n- **PL-1**, **PL-7** and **PL-6** reprioritised; none started.\n\n## Next\n\n- Write the Linux service file for **PL-1**.\n- Run `planner doctor` on a clean machine.\n',
   },
   {
     id: 'f0a1b2c3',
@@ -48,7 +48,7 @@ export const SESSION_FIXTURE: SessionSummary[] = [
     ended: '2026-07-03T03:58:40Z',
     track: 'canonical',
     title: 'Sample sprint — closed ten small tasks, emptied the review queue, readied a release',
-    body: "# Sample sprint — closed ten small tasks, emptied the review queue, readied a release\n\n## Shipped\n\n- **AW-16** (#20): `note add --body-file` no longer fails when `--body` is missing.\n- **AW-15** (#21): `lists.yml` now stores list names only; state is read live.\n- **AW-1** (#22): Linux service file drafted.\n- **AW-9** (#23): tests mock the home folder with `vi.spyOn(os, 'homedir')` only.\n- **AW-2** (#24): the setup wizard installs and removes the macOS login item.\n- **AW-4** (#25): `planner doctor` checks dependencies, the helper and the plugin install.\n- **AW-11** (#26): removed an unused UI dependency.\n- **AW-14** (#27): `gen:reference` wired into `package.json`.\n- **AW-12** (#28): the flaky `cli.test.ts` run traced to a shared temp folder.\n- **AW-8** (#29): done tasks older than 30 days archive during start-up.\n\n## Cleared\n\n- Merged **#14** through **#19**, the open review queue.\n- Closed #12 and #13 as duplicates of **AW-10**.\n\n## Prepped\n\n- **AW-13**: `release.yml` ready; the first publish waits on a clean install check.\n\n## Not started\n\n- **AW-3**, **AW-5**, **AW-6** and **AW-7** stay queued for next session.\n",
+    body: "# Sample sprint — closed ten small tasks, emptied the review queue, readied a release\n\n## Shipped\n\n- **PL-16** (#20): `note add --body-file` no longer fails when `--body` is missing.\n- **PL-15** (#21): `lists.yml` now stores list names only; state is read live.\n- **PL-1** (#22): Linux service file drafted.\n- **PL-9** (#23): tests mock the home folder with `vi.spyOn(os, 'homedir')` only.\n- **PL-2** (#24): the setup wizard installs and removes the macOS login item.\n- **PL-4** (#25): `planner doctor` checks dependencies, the helper and the plugin install.\n- **PL-11** (#26): removed an unused UI dependency.\n- **PL-14** (#27): `gen:reference` wired into `package.json`.\n- **PL-12** (#28): the flaky `cli.test.ts` run traced to a shared temp folder.\n- **PL-8** (#29): done tasks older than 30 days archive during start-up.\n\n## Cleared\n\n- Merged **#14** through **#19**, the open review queue.\n- Closed #12 and #13 as duplicates of **PL-10**.\n\n## Prepped\n\n- **PL-13**: `release.yml` ready; the first publish waits on a clean install check.\n\n## Not started\n\n- **PL-3**, **PL-5**, **PL-6** and **PL-7** stay queued for next session.\n",
   },
   {
     id: 'c4d5e6f7',
@@ -57,7 +57,7 @@ export const SESSION_FIXTURE: SessionSummary[] = [
     ended: '2026-07-02T15:37:05Z',
     track: 'canonical',
     title: 'Fix: a list flag eating the first prompt in planner open',
-    body: '# Fix: a list flag eating the first prompt in planner open\n\n## Symptom\n\nWith `--lists` set, `planner open` started a session but the first prompt never arrived. The session sat idle.\n\n## Cause\n\n- The launcher built its argument list as `[...flags, prompt]`.\n- `--lists` takes a **variadic** value, so it read the prompt as one more channel name.\n\n## Fix\n\n- Put the prompt before the flags: `[prompt, ...flags]` (#18).\n- Added a regression test that runs `planner open --lists a b` and checks the prompt arrives.\n- `--lists` now warns when a value looks like a sentence.\n\n## Related\n\n- **AW-15** touches the same launcher; rebased it on the fix.\n- Opened #19 to document variadic flags in `docs/cli.md`.\n\n## Checked\n\n- `pnpm test` green.\n- Manual run in `/home/example/projects/alpha-workspace` with two channels.\n',
+    body: '# Fix: a list flag eating the first prompt in planner open\n\n## Symptom\n\nWith `--lists` set, `planner open` started a session but the first prompt never arrived. The session sat idle.\n\n## Cause\n\n- The launcher built its argument list as `[...flags, prompt]`.\n- `--lists` takes a **variadic** value, so it read the prompt as one more channel name.\n\n## Fix\n\n- Put the prompt before the flags: `[prompt, ...flags]` (#18).\n- Added a regression test that runs `planner open --lists a b` and checks the prompt arrives.\n- `--lists` now warns when a value looks like a sentence.\n\n## Related\n\n- **PL-15** touches the same launcher; rebased it on the fix.\n- Opened #19 to document variadic flags in `docs/cli.md`.\n\n## Checked\n\n- `pnpm test` green.\n- Manual run in `/home/example/projects/alpha-workspace` with two channels.\n',
   },
   {
     id: 'sample-svc',
@@ -65,8 +65,8 @@ export const SESSION_FIXTURE: SessionSummary[] = [
     started: '2026-05-20T08:10:00Z',
     ended: '2026-05-20T08:16:00Z',
     track: 'canonical',
-    title: 'AW-1 — Linux service file for the sample helper (code done)',
-    body: '# AW-1 — Linux service file for the sample helper (code done)\n\n## Done\n\n- `planner service install` writes a user unit to `~/.config/systemd/user/planner.service`.\n- `planner service remove` stops and deletes it.\n- The unit restarts the helper on failure, with a 5 second back-off.\n\n## Left\n\n- **AW-2** covers the macOS side; nothing shared beyond `service.ts`.\n- Needs a run on a real Linux machine before it closes.\n',
+    title: 'PL-1 — Linux service file for the sample helper (code done)',
+    body: '# PL-1 — Linux service file for the sample helper (code done)\n\n## Done\n\n- `planner service install` writes a user unit to `~/.config/systemd/user/planner.service`.\n- `planner service remove` stops and deletes it.\n- The unit restarts the helper on failure, with a 5 second back-off.\n\n## Left\n\n- **PL-2** covers the macOS side; nothing shared beyond `service.ts`.\n- Needs a run on a real Linux machine before it closes.\n',
   },
 ]
 
@@ -81,7 +81,7 @@ export const SESSION_NOW = new Date('2026-07-14T09:00:00Z').getTime()
 export const SESSION_TASK_FIXTURE: TaskListItem[] = [
   {
     slug: 'alpha-workspace',
-    id: 'AW-1',
+    id: 'PL-1',
     title: 'Linux: a user service file that keeps the sample helper running',
     priority: 1,
     severity: 'medium',
@@ -90,7 +90,7 @@ export const SESSION_TASK_FIXTURE: TaskListItem[] = [
   },
   {
     slug: 'alpha-workspace',
-    id: 'AW-2',
+    id: 'PL-2',
     title: 'macOS: add and remove the login item from the setup wizard',
     priority: 2,
     severity: 'medium',
@@ -99,7 +99,7 @@ export const SESSION_TASK_FIXTURE: TaskListItem[] = [
   },
   {
     slug: 'alpha-workspace',
-    id: 'AW-3',
+    id: 'PL-3',
     title: 'Push live changes from the helper to the web view',
     priority: 3,
     severity: 'low',
@@ -108,7 +108,7 @@ export const SESSION_TASK_FIXTURE: TaskListItem[] = [
   },
   {
     slug: 'alpha-workspace',
-    id: 'AW-4',
+    id: 'PL-4',
     title: 'planner doctor: one command that checks dependencies, the helper and the plugin',
     priority: 4,
     severity: 'medium',
@@ -117,7 +117,7 @@ export const SESSION_TASK_FIXTURE: TaskListItem[] = [
   },
   {
     slug: 'alpha-workspace',
-    id: 'AW-5',
+    id: 'PL-5',
     title: 'Sync two laptops through a plain git remote (planner sync)',
     priority: 5,
     severity: 'low',
@@ -126,7 +126,7 @@ export const SESSION_TASK_FIXTURE: TaskListItem[] = [
   },
   {
     slug: 'alpha-workspace',
-    id: 'AW-6',
+    id: 'PL-6',
     title: 'Calendar / email / notes import sources',
     priority: 6,
     severity: 'low',
@@ -135,7 +135,7 @@ export const SESSION_TASK_FIXTURE: TaskListItem[] = [
   },
   {
     slug: 'alpha-workspace',
-    id: 'AW-7',
+    id: 'PL-7',
     title: 'Editable web view (mark tasks done, reorder via drag)',
     priority: 7,
     severity: 'low',
@@ -144,7 +144,7 @@ export const SESSION_TASK_FIXTURE: TaskListItem[] = [
   },
   {
     slug: 'alpha-workspace',
-    id: 'AW-8',
+    id: 'PL-8',
     title: 'Archive finished tasks after N days when the planner starts',
     priority: 8,
     severity: 'low',
@@ -153,7 +153,7 @@ export const SESSION_TASK_FIXTURE: TaskListItem[] = [
   },
   {
     slug: 'alpha-workspace',
-    id: 'AW-9',
+    id: 'PL-9',
     title: 'Make every test fake the home folder the same way',
     priority: 9,
     severity: 'high',
@@ -162,7 +162,7 @@ export const SESSION_TASK_FIXTURE: TaskListItem[] = [
   },
   {
     slug: 'alpha-workspace',
-    id: 'AW-10',
+    id: 'PL-10',
     title: 'Drop the date workarounds now that the parser handles dates',
     priority: 10,
     severity: 'low',
@@ -171,7 +171,7 @@ export const SESSION_TASK_FIXTURE: TaskListItem[] = [
   },
   {
     slug: 'alpha-workspace',
-    id: 'AW-11',
+    id: 'PL-11',
     title: 'Remove the UI dependency the web view never used',
     priority: 11,
     severity: 'low',
@@ -180,7 +180,7 @@ export const SESSION_TASK_FIXTURE: TaskListItem[] = [
   },
   {
     slug: 'alpha-workspace',
-    id: 'AW-12',
+    id: 'PL-12',
     title:
       'Find why two CLI tests fail now and then on a fresh checkout (a long title that wraps in the task table)',
     priority: 12,
@@ -190,7 +190,7 @@ export const SESSION_TASK_FIXTURE: TaskListItem[] = [
   },
   {
     slug: 'alpha-workspace',
-    id: 'AW-13',
+    id: 'PL-13',
     title:
       'First public release: trigger release.yml; verify example-planner@0.1.0 installs via npm i -g',
     priority: 13,
@@ -200,7 +200,7 @@ export const SESSION_TASK_FIXTURE: TaskListItem[] = [
   },
   {
     slug: 'alpha-workspace',
-    id: 'AW-14',
+    id: 'PL-14',
     title: 'Wire the reference generator into package.json as gen:reference',
     priority: 14,
     severity: 'low',
@@ -209,7 +209,7 @@ export const SESSION_TASK_FIXTURE: TaskListItem[] = [
   },
   {
     slug: 'alpha-workspace',
-    id: 'AW-15',
+    id: 'PL-15',
     title: 'Store list names only in lists.yml and read list state live',
     priority: 1,
     severity: 'medium',
@@ -218,7 +218,7 @@ export const SESSION_TASK_FIXTURE: TaskListItem[] = [
   },
   {
     slug: 'alpha-workspace',
-    id: 'AW-16',
+    id: 'PL-16',
     title: 'note add: accept --body-file without --body',
     priority: 6,
     severity: 'low',
@@ -228,7 +228,7 @@ export const SESSION_TASK_FIXTURE: TaskListItem[] = [
   },
   {
     slug: 'alpha-workspace',
-    id: 'AW-17',
+    id: 'PL-17',
     title: 'planner open: resolve project from the current folder when no slug given',
     priority: 15,
     severity: 'medium',
@@ -237,7 +237,7 @@ export const SESSION_TASK_FIXTURE: TaskListItem[] = [
   },
   {
     slug: 'alpha-workspace',
-    id: 'AW-18',
+    id: 'PL-18',
     title: 'planner list add: register a shared list on an existing project',
     priority: 16,
     severity: 'low',
@@ -246,7 +246,7 @@ export const SESSION_TASK_FIXTURE: TaskListItem[] = [
   },
   {
     slug: 'alpha-workspace',
-    id: 'AW-19',
+    id: 'PL-19',
     title: 'planner remind + /remind slash command for a mid-session refresh',
     priority: 17,
     severity: 'low',
@@ -255,7 +255,7 @@ export const SESSION_TASK_FIXTURE: TaskListItem[] = [
   },
   {
     slug: 'alpha-workspace',
-    id: 'AW-20',
+    id: 'PL-20',
     title: 'planner open --quick: frame the prompt as a quick note, not a handoff continuation',
     priority: 18,
     severity: 'low',

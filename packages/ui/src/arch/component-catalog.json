@@ -390,7 +390,7 @@
         },
         {
           "default": null,
-          "description": "Short slug shown under the title, e.g. \"active-work\".",
+          "description": "Short slug shown under the title, e.g. \"planner\".",
           "name": "slug",
           "required": true,
           "type": "string"
@@ -404,7 +404,7 @@
         },
         {
           "default": null,
-          "description": "Initiative title, e.g. \"active-work — durable workspace state\".",
+          "description": "Initiative title, e.g. \"planner — durable project state\".",
           "name": "title",
           "required": true,
           "type": "string"
@@ -465,7 +465,7 @@
         },
         {
           "default": null,
-          "description": "Short slug shown under the title, e.g. `active-work`.",
+          "description": "Short slug shown under the title, e.g. `planner`.",
           "name": "slug",
           "required": true,
           "type": "string"

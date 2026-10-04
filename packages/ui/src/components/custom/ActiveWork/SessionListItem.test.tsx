@@ -27,7 +27,7 @@ describe('SessionListItem', () => {
   it('lists the task ids when the count is hovered', () => {
     render(<SessionListItem session={session} now={SESSION_NOW} />)
     fireEvent.pointerEnter(screen.getByTestId('session-task-count'))
-    expect(screen.getByText(/^AW-17 AW-18/)).toBeInTheDocument()
+    expect(screen.getByText(/^PL-17 PL-18/)).toBeInTheDocument()
   })
 
   it('exposes selection to assistive tech and shows the accent bar only when selected', () => {
