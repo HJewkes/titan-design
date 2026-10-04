@@ -55,7 +55,7 @@ export default defineConfig({
   webServer: {
     command: 'pnpm storybook --ci',
     port: 6006,
-    reuseExistingServer: true,
+    reuseExistingServer: false,
     timeout: 120000,
   },
 })
