@@ -11,5 +11,4 @@ export * from './theme/barrel'
 export * from './utils'
 
 // Hooks
-export { useTimer } from './hooks'
-export type { UseTimerOptions, TimerState, TimerMode } from './hooks'
+export * from './hooks'
