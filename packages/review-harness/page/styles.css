@@ -54,7 +54,6 @@ kbd {
   top: 0;
   z-index: 3;
   box-sizing: border-box;
-  min-height: var(--contrast-banner-height);
   margin: 0 0 16px;
   padding: 8px 12px;
   border: 2px solid var(--color-status-warning);
@@ -63,6 +62,7 @@ kbd {
   font-weight: 600;
 }
 
+/* Fallback until the page measures the banner; a wrapped reason makes it taller. */
 :root {
   --contrast-banner-height: 40px;
 }

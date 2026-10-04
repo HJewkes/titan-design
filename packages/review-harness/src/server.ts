@@ -70,8 +70,9 @@ function createSubmitHandler(opts: ReviewServerOptions, accept: Accept) {
     if (Array.isArray(result)) return sendJson(res, result[0], { errors: result[1] })
     done = true
     sendJson(res, 200, { ok: true })
+    const { contrastOverride: _posted, ...unoverridden } = result
     const { contrastOverride } = opts.manifest
-    accept(contrastOverride ? { ...result, contrastOverride } : result)
+    accept(contrastOverride ? { ...unoverridden, contrastOverride } : unoverridden)
   }
 }
 

@@ -1,4 +1,5 @@
 import {
+  useLayoutEffect,
   useEffect,
   useMemo,
   useReducer,
@@ -362,8 +363,23 @@ function useDraftBackup(storage: DraftStorage | null, manifestSha256: string, st
 }
 
 function ContrastOverrideBanner({ reason }: { reason: string }) {
+  const ref = useRef<HTMLParagraphElement>(null)
+  useLayoutEffect(() => {
+    const banner = ref.current
+    if (!banner) return
+    const root = document.documentElement
+    const publish = () =>
+      root.style.setProperty('--contrast-banner-height', `${banner.offsetHeight}px`)
+    publish()
+    const observer = new ResizeObserver(publish)
+    observer.observe(banner)
+    return () => {
+      observer.disconnect()
+      root.style.removeProperty('--contrast-banner-height')
+    }
+  }, [])
   return (
-    <p className="contrast-override" role="alert" data-testid="contrast-override">
+    <p ref={ref} className="contrast-override" role="alert" data-testid="contrast-override">
       Contrast was not gated for this round: {reason}
     </p>
   )
