@@ -9,7 +9,7 @@ import {
   ListItemTrailing,
   ListItemDivider,
 } from './ListItem'
-import { resolveAll, siblingSource, spacingClassesIn } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
 function MockIcon({ size = 20 }: { size?: number; className?: string }) {
   return <View testID="mock-icon" style={{ width: size, height: size }} />
@@ -143,13 +143,26 @@ describe('ListItem accessibility', () => {
  * step below. Unchanged in pixels.
  */
 describe('ListItem geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'ListItem.tsx')
+  const renderRow = (onPress?: () => void) =>
+    render(
+      <ListItem onPress={onPress}>
+        <ListItemContent title="Row title" />
+      </ListItem>
+    )
 
   it.each([
-    ['ListItem', ['py-inset-md', 'px-inset-lg'], ['12px', '16px']],
-    ['ListItemContent', ['gap-stack-sm'], ['4px']],
-  ] as const)('%s ships %s', (functionName, classes, pixels) => {
-    expect(spacingClassesIn(source, functionName)).toEqual([...classes])
+    ['ListItem', undefined, ['py-inset-md', 'px-inset-lg'], ['12px', '16px']],
+    ['a pressable ListItem', vi.fn(), ['py-inset-md', 'px-inset-lg'], ['12px', '16px']],
+  ] as const)('%s ships its row inset', (_name, onPress, classes, pixels) => {
+    renderRow(onPress)
+    const row = screen.getByText('Row title').parentElement?.parentElement ?? null
+    expect(spacingClassesAt(row)).toEqual([...classes])
     expect(resolveAll([...classes])).toEqual([...pixels])
+  })
+
+  it('ListItemContent ships its stack gap', () => {
+    renderRow()
+    expect(spacingClassesAt(screen.getByText('Row title').parentElement)).toEqual(['gap-stack-sm'])
+    expect(resolveAll(['gap-stack-sm'])).toEqual(['4px'])
   })
 })
