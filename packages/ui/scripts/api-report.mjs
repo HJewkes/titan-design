@@ -2,7 +2,8 @@
  * Public API reports, one per tsup entry, from the d.ts the build emitted.
  *
  *   node scripts/api-report.mjs           check: fails when a report differs or is missing
- *   node scripts/api-report.mjs --local   update: rewrites api/<entry>.api.md
+ *   node scripts/api-report.mjs --local   update: rewrites api/<entry>.api.md and the
+ *                                         undocumented baseline (growth needs --allow-increase)
  *
  * Reads dist/, so run it after `pnpm build`. The reports in api/ are committed
  * and stay outside package.json `files`, so they never ship.
@@ -12,6 +13,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { Extractor, ExtractorConfig } from '@microsoft/api-extractor'
+import { updateBaseline } from './api-undocumented.mjs'
 
 const pkgRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -39,7 +41,10 @@ function prepareConfig(baseConfigPath, reportName, dtsPath) {
 
 // CI keeps no artifacts of the temp folder, so the log is the only place a reviewer sees the change.
 function printReportDiff(config, report) {
-  const generated = path.relative(pkgRoot, path.join(config.reportTempFolder, path.basename(report)))
+  const generated = path.relative(
+    pkgRoot,
+    path.join(config.reportTempFolder, path.basename(report))
+  )
   if (!fs.existsSync(path.join(pkgRoot, report))) return
   spawnSync('git', ['--no-pager', 'diff', '--no-index', '--', report, generated], {
     cwd: pkgRoot,
@@ -64,6 +69,14 @@ function runEntry(reportName, dtsPath, localBuild) {
 const localBuild = process.argv.includes('--local')
 fs.mkdirSync(path.join(pkgRoot, 'api'), { recursive: true })
 const failed = Object.entries(ENTRIES).filter(
-  ([reportName, dtsPath]) => !runEntry(reportName, dtsPath, localBuild),
+  ([reportName, dtsPath]) => !runEntry(reportName, dtsPath, localBuild)
 )
 if (failed.length > 0) process.exit(1)
+if (localBuild) {
+  try {
+    updateBaseline({ allowIncrease: process.argv.includes('--allow-increase') })
+  } catch (error) {
+    console.error(`api-report: ${error.message}`)
+    process.exit(1)
+  }
+}
