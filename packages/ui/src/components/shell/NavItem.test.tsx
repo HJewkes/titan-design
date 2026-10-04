@@ -1,5 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
+import { axe } from 'jest-axe'
+import { View } from 'react-native'
 import { NavItem } from './NavItem'
 import { ActivityIcon } from '../icons'
 import { siblingSource, spacingClassesAt } from '../../test/spacing-resolver'
@@ -8,6 +10,14 @@ import { capturedByNode } from '../../test/classname-capture'
 const icon = <ActivityIcon size={20} color="currentColor" />
 
 describe('NavItem', () => {
+  it('has no accessibility violations', async () => {
+    const { container } = render(
+      <View accessibilityRole="tablist">
+        <NavItem icon={icon} label="Live" active onPress={vi.fn()} />
+      </View>
+    )
+    expect(await axe(container)).toHaveNoViolations()
+  })
   it('renders the label and is exposed as a tab', () => {
     render(<NavItem icon={icon} label="Live" />)
     expect(screen.getByRole('tab', { name: 'Live' })).toBeInTheDocument()

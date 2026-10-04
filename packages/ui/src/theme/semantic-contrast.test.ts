@@ -11,25 +11,9 @@
  * fails first.
  */
 import { describe, it, expect } from 'vitest'
+import { contrast } from './color-checks'
 import { greyRamp } from './tokens/primitives'
 import { semanticColorsDark } from './tokens/semantic'
-
-const hex2rgb = (h: string): [number, number, number] => {
-  const n = parseInt(h.slice(1), 16)
-  return [(n >> 16) & 255, (n >> 8) & 255, n & 255]
-}
-const srgb2lin = (c: number) => {
-  const s = c / 255
-  return s <= 0.04045 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4
-}
-const relLum = (hex: string) => {
-  const [r, g, b] = hex2rgb(hex).map(srgb2lin)
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b
-}
-const contrast = (a: string, b: string) => {
-  const [hi, lo] = [relLum(a), relLum(b)].sort((x, y) => y - x)
-  return (hi + 0.05) / (lo + 0.05)
-}
 
 /** Every plane text can land on, darkest first. */
 const PLANES = [975, 950, 925, 900, 875, 850] as const

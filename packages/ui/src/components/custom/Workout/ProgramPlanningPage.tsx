@@ -371,6 +371,7 @@ export function ProgramPlanningPage({
           {title}
         </Text>
 
+        {/* optical: bleeds the progress bar through the page's 16px side padding. */}
         <View style={{ marginHorizontal: -16 }}>
           <MesoProgressBar
             mesos={progressMesos}

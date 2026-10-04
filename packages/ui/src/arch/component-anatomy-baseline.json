@@ -217,18 +217,6 @@
   "custom/Workout/ZoneTrack": [
     "status"
   ],
-  "shell/NavItem": [
-    "a11y"
-  ],
-  "shell/workout/DeviceIndicator": [
-    "a11y"
-  ],
-  "shell/workout/DeviceMenu": [
-    "a11y"
-  ],
-  "shell/workout/DeviceRow": [
-    "a11y"
-  ],
   "shell/workout/DualPinnedLiveStrip": [
     "status"
   ],

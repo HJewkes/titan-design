@@ -10,7 +10,8 @@
  *
  * Flags a numeric or shorthand-string literal on `padding*`, `margin*`, `gap`,
  * `rowGap` and `columnGap` inside an object expression. `0` is never flagged:
- * zero is the absence of spacing, not a value off the scale.
+ * zero is the absence of spacing, not a value off the scale (`-0` included).
+ * A negative number (`marginLeft: -7`) is the same value as its positive twin.
  *
  * EXEMPTION — a `// optical: <why>` comment on the same line or the line above:
  *
@@ -38,6 +39,23 @@ function propertyName(node) {
   if (node.computed) return null
   if (node.key.type === 'Identifier') return node.key.name
   if (node.key.type === 'Literal' && typeof node.key.value === 'string') return node.key.value
+  return null
+}
+
+/**
+ * The literal behind a value, seeing through a unary minus: `-7` parses as a
+ * UnaryExpression over the Literal 7, and is the same off-scale value as 7.
+ */
+function spacingLiteral(valueNode) {
+  if (valueNode.type === 'Literal') return { node: valueNode, negative: false }
+  if (
+    valueNode.type === 'UnaryExpression' &&
+    valueNode.operator === '-' &&
+    valueNode.argument.type === 'Literal' &&
+    typeof valueNode.argument.value === 'number'
+  ) {
+    return { node: valueNode.argument, negative: true }
+  }
   return null
 }
 
@@ -80,9 +98,10 @@ module.exports = {
       'ObjectExpression > Property'(node) {
         const property = propertyName(node)
         if (!property || !SPACING_PROPERTY.test(property)) return
-        if (node.value.type !== 'Literal') return
+        const literal = spacingLiteral(node.value)
+        if (!literal) return
 
-        const { value } = node.value
+        const value = literal.negative ? -literal.node.value : literal.node.value
         if (typeof value === 'number' && value !== 0) {
           report(node, property, value)
         } else if (typeof value === 'string' && value !== '0' && LENGTH_SHORTHAND.test(value)) {

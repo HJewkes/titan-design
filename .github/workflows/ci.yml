@@ -40,6 +40,10 @@ jobs:
       - name: Package shape
         run: pnpm check:package
 
+      # Brotli size of each ESM entry plus tokens.css against packages/ui/.size-limit.json; reads the dist/ Verify built.
+      - name: Bundle budget
+        run: pnpm --filter @titan-design/react-ui size
+
       - name: Import cycles
         run: pnpm --filter @titan-design/react-ui check:cycles
 
