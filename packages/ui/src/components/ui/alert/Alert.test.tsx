@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Alert, AlertTitle, AlertDescription } from './Alert'
 import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
+import { capturedClassNames } from '../../../test/classname-capture'
 
 describe('Alert', () => {
   it('renders children correctly', () => {
@@ -90,6 +91,20 @@ describe('Alert', () => {
       )
       expect(screen.getByRole('alert')).toBeInTheDocument()
     })
+
+    it.each(['success', 'info', 'warning', 'error'] as const)(
+      'fills the solid %s alert with its -solid step',
+      (status) => {
+        render(
+          <Alert variant="solid" status={status} testID="solid-alert">
+            <AlertDescription>Solid</AlertDescription>
+          </Alert>
+        )
+        const classes = capturedClassNames.get('solid-alert')?.split(' ')
+        expect(classes).toContain(`bg-status-${status}-solid`)
+        expect(classes).not.toContain(`bg-status-${status}`)
+      }
+    )
   })
 
   describe('icon behavior', () => {

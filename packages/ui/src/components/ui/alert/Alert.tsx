@@ -56,7 +56,7 @@ const statusColors: Record<
   success: {
     subtle: 'bg-status-success-subtle',
     outline: 'border-2 border-status-success bg-transparent',
-    solid: 'bg-status-success',
+    solid: 'bg-status-success-solid',
     onSolid: 'text-on-status-success',
     border: 'border-status-success',
     icon: 'text-status-success',
@@ -66,7 +66,7 @@ const statusColors: Record<
   info: {
     subtle: 'bg-status-info-subtle',
     outline: 'border-2 border-status-info bg-transparent',
-    solid: 'bg-status-info',
+    solid: 'bg-status-info-solid',
     onSolid: 'text-on-status-info',
     border: 'border-status-info',
     icon: 'text-status-info',
@@ -76,7 +76,7 @@ const statusColors: Record<
   warning: {
     subtle: 'bg-status-warning-subtle',
     outline: 'border-2 border-status-warning bg-transparent',
-    solid: 'bg-status-warning',
+    solid: 'bg-status-warning-solid',
     onSolid: 'text-on-status-warning',
     border: 'border-status-warning',
     icon: 'text-status-warning',
@@ -86,7 +86,7 @@ const statusColors: Record<
   error: {
     subtle: 'bg-status-error-subtle',
     outline: 'border-2 border-status-error bg-transparent',
-    solid: 'bg-status-error',
+    solid: 'bg-status-error-solid',
     onSolid: 'text-on-status-error',
     border: 'border-status-error',
     icon: 'text-status-error',
