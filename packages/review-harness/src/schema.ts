@@ -133,6 +133,86 @@ export const QuestionSchema = z.discriminatedUnion('kind', [
   TextSchema,
 ])
 
+export const THEME_MODES = ['light', 'dark'] as const
+const themeMode = z.enum(THEME_MODES)
+const CHECK_KINDS = ['text', 'large-text', 'non-text'] as const
+const checkKind = z.enum(CHECK_KINDS)
+const NAMES_ELEMENT =
+  'a known defect names one element: its data-testid, or the full selector build printed'
+
+/** Where a known miss is fixed: the primitive or token task that owns it, or the component. */
+export const DEFECT_ROUTE = /^([A-Z][A-Z0-9]*-[0-9]+[a-z]?|component)$/
+
+/** A contrast miss the round ships knowingly. It is reported with its route, never hidden. */
+export const KnownDefectSchema = z
+  .object({
+    variant: id.optional(),
+    mode: z.enum(THEME_MODES, { error: 'a known defect names its mode: light or dark' }),
+    kind: z.enum(CHECK_KINDS, {
+      error: 'a known defect names its kind: text, large-text or non-text',
+    }),
+    /** The failing element's own data-testid, or the full selector build printed, exactly. */
+    element: z.string({ error: NAMES_ELEMENT }).min(1, NAMES_ELEMENT),
+    /** The recorded contrast of the miss. When set, a finding at or above it is excused and one below it blocks. */
+    minRatio: z.number().min(1).max(21).optional(),
+    /** Renamed to minRatio: a higher ratio is better, so the old name described the bound backwards. */
+    maxRatio: z
+      .never({
+        error: 'maxRatio was renamed minRatio: it is the recorded ratio, and a lower one blocks',
+      })
+      .optional(),
+    route: z.string().regex(DEFECT_ROUTE, 'a task id such as TD-490, or "component"'),
+    reason: z.string().min(1),
+  })
+  .strict()
+
+/** An image variant's ratio, measured by the round builder because the DOM cannot be. */
+const ImageMeasurementSchema = z
+  .object({
+    variant: id,
+    mode: themeMode,
+    kind: checkKind,
+    element: z.string().min(1),
+    ratio: z.number().min(1).max(21),
+    /** How it was measured (a tool, a colour picker on the PNG); the record of the number. */
+    source: z.string().min(1),
+  })
+  .strict()
+
+const UnmeasuredSchema = z
+  .object({ variant: id, mode: themeMode, reason: z.string().min(1) })
+  .strict()
+
+/** The contrast gate's declarations for the frames of a section, or of the whole round. */
+export const ContrastDeclarationsSchema = z
+  .object({
+    knownDefects: z.array(KnownDefectSchema).default([]),
+    measured: z.array(ImageMeasurementSchema).default([]),
+    unmeasured: z.array(UnmeasuredSchema).default([]),
+  })
+  .strict()
+
+/** A miss a round was served with anyway, copied from contrast.json. */
+const OverriddenMissSchema = z
+  .object({
+    variant: z.string(),
+    element: z.string(),
+    mode: themeMode,
+    kind: checkKind,
+    ratio: z.number(),
+    required: z.number(),
+  })
+  .strict()
+
+/** A round served without a passing contrast gate: why, what the gate said, what it missed. */
+export const ContrastOverrideSchema = z
+  .object({
+    reason: z.string().min(1),
+    problem: z.string().min(1),
+    failures: z.array(OverriddenMissSchema).default([]),
+  })
+  .strict()
+
 /** One group of frames with the question(s) those frames answer, in reading order. */
 export const SectionSchema = z
   .object({
@@ -144,6 +224,7 @@ export const SectionSchema = z
     /** Frames shown elsewhere that also bear on this section; rendered as a link, not a copy. */
     seeAlso: z.array(id).default([]),
     height: frameHeight.optional(),
+    contrast: ContrastDeclarationsSchema.optional(),
   })
   .strict()
 
@@ -197,6 +278,43 @@ function optionVariantProblems(m: {
   )
 }
 
+type Declarations = z.output<typeof ContrastDeclarationsSchema>
+
+function declaredVariants(decl: Declarations): { field: string; variant: string }[] {
+  return [
+    ...decl.knownDefects.flatMap((d) =>
+      d.variant ? [{ field: 'knownDefects', variant: d.variant }] : []
+    ),
+    ...decl.measured.map((d) => ({ field: 'measured', variant: d.variant })),
+    ...decl.unmeasured.map((d) => ({ field: 'unmeasured', variant: d.variant })),
+  ]
+}
+
+/** A declaration names a frame of its own section (or any frame, at round level). */
+function contrastProblems(m: {
+  variants: { key: string; image?: string }[]
+  contrast?: Declarations
+  sections?: { id: string; variantKeys: string[]; contrast?: Declarations }[]
+}): string[] {
+  const images = new Set(m.variants.filter((v) => v.image !== undefined).map((v) => v.key))
+  const scopes = [
+    { where: 'contrast', keys: new Set(m.variants.map((v) => v.key)), decl: m.contrast },
+    ...(m.sections ?? []).map((s) => ({
+      where: `section ${s.id} contrast`,
+      keys: new Set(s.variantKeys),
+      decl: s.contrast,
+    })),
+  ]
+  return scopes.flatMap(({ where, keys, decl }) =>
+    (decl ? declaredVariants(decl) : []).flatMap(({ field, variant }) => {
+      if (!keys.has(variant)) return [`${where}.${field}: ${variant} is not a frame here`]
+      if (field !== 'knownDefects' && !images.has(variant))
+        return [`${where}.${field}: ${variant} is a story; only an image variant is ${field}`]
+      return []
+    })
+  )
+}
+
 type Recommendable = Exclude<z.output<typeof QuestionSchema>, { kind: 'text' }>
 
 function recommendationProblem(q: Recommendable, answer: Recommendation['answer']) {
@@ -235,6 +353,10 @@ export const ManifestSchema = z
     questions: z.array(QuestionSchema),
     sections: z.array(SectionSchema).min(1).optional(),
     recommendations: z.enum(RECOMMENDATION_MODES).default('after-answer'),
+    /** Declarations that hold for every frame; a section's own hold for its frames. */
+    contrast: ContrastDeclarationsSchema.optional(),
+    /** Written by `--contrast-override` when the round is served ungated; never hand-written. */
+    contrastOverride: ContrastOverrideSchema.optional(),
   })
   .strict()
   .superRefine((m, ctx) => {
@@ -255,6 +377,8 @@ export const ManifestSchema = z
       ctx.addIssue({ code: 'custom', path: ['sections'], message })
     for (const message of [...optionVariantProblems(m), ...recommendationProblems(m)])
       ctx.addIssue({ code: 'custom', path: ['questions'], message })
+    for (const message of contrastProblems(m))
+      ctx.addIssue({ code: 'custom', path: ['contrast'], message })
   })
 
 /** A comment the human left on a frame that a section pointed at this question. */
@@ -323,6 +447,10 @@ export const FeedbackSchema = z
     answers: z.array(answerSchema),
     variants: z.array(variantFeedbackSchema),
     general: z.string(),
+    /** Present only on a deliberate partial submit: every question it left unanswered. */
+    unansweredQuestionIds: z.array(z.string()).min(1).optional(),
+    /** The round's contrast override, so the record of an ungated round outlives the serve. */
+    contrastOverride: ContrastOverrideSchema.optional(),
   })
   .strict()
 
@@ -340,6 +468,10 @@ export type VariantFeedback = Feedback['variants'][number]
 export type Annotation = z.infer<typeof AnnotationSchema>
 export type Verdict = z.infer<typeof VerdictSchema>
 export type Recommendation = z.infer<typeof RecommendationSchema>
+export type ThemeMode = (typeof THEME_MODES)[number]
+export type KnownDefect = z.infer<typeof KnownDefectSchema>
+export type ContrastDeclarations = z.output<typeof ContrastDeclarationsSchema>
+export type ContrastOverride = z.output<typeof ContrastOverrideSchema>
 
 export function isStoryVariant(variant: Variant): variant is StoryVariant {
   return variant.storyId !== undefined

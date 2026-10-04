@@ -32,6 +32,9 @@ async function syntheticPng(browser: Browser, file: string, text: string): Promi
   await page.close()
 }
 
+/** A hand-written test round: it bypasses the contrast gate, and the page must say so. */
+const OVERRIDE = ['--contrast-override', 'e2e fixture round, synthetic images']
+
 let cli: ChildProcess | undefined
 test.afterAll(() => cli?.kill())
 
@@ -46,7 +49,7 @@ test('an image variant renders at its width and its feedback comes back', async 
   const manifestPath = join(dir, 'round.json')
   await writeFile(manifestPath, JSON.stringify(ROUND))
 
-  cli = spawn('node', [CLI, manifestPath, '--no-open', '--out', dir])
+  cli = spawn('node', [CLI, manifestPath, '--no-open', '--out', dir, ...OVERRIDE])
   let stdout = ''
   cli.stdout?.on('data', (c: Buffer) => (stdout += c.toString()))
   const exit = new Promise<number | null>((resolve) => cli?.once('exit', resolve))
@@ -58,6 +61,10 @@ test('an image variant renders at its width and its feedback comes back', async 
   )
 
   await page.goto(url)
+  await expect(page.getByTestId('contrast-override')).toHaveText(
+    'Contrast was not gated for this round: e2e fixture round, synthetic images'
+  )
+  await expect(page.getByTestId('contrast-override')).toHaveCSS('position', 'sticky')
   const image = page.getByRole('img', { name: 'A · Wall, dense at 1280px' })
   await expect(image).toBeVisible()
   await expect.poll(() => image.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBe(1280)
@@ -88,6 +95,10 @@ test('an image variant renders at its width and its feedback comes back', async 
     JSON.parse(await readFile(join(dir, 'feedback.json'), 'utf8'))
   )
   expect(JSON.parse(stdout)).toEqual(written)
+  expect(written.contrastOverride).toMatchObject({
+    reason: 'e2e fixture round, synthetic images',
+    problem: 'no contrast.json beside this round',
+  })
   const [a, b] = written.variants
   expect(a).toMatchObject({ key: 'A', image: 'shots/wall-a.png', verdict: 'chosen' })
   expect(a.comment).toBe('Dense reads at distance')
@@ -97,4 +108,51 @@ test('an image variant renders at its width and its feedback comes back', async 
   expect(b).toMatchObject({ key: 'B', image: 'shots/wall-b.png', verdict: 'rejected' })
   expect(existsSync(join(dir, 'A-image.png'))).toBe(true)
   expect(existsSync(join(dir, 'B-image.png'))).toBe(true)
+})
+
+test('sticky heads stay below an override banner whose reason wraps', async ({ page, browser }) => {
+  const dir = await mkdtemp(join(tmpdir(), 'titan-review-banner-e2e-'))
+  await mkdir(join(dir, 'shots'))
+  await syntheticPng(browser, join(dir, 'shots', 'wall-a.png'), 'Dense wall')
+  await syntheticPng(browser, join(dir, 'shots', 'wall-b.png'), 'Sparse wall')
+  const manifestPath = join(dir, 'round.json')
+  const sectioned = {
+    ...ROUND,
+    sections: [{ id: 'wall', title: 'Wall', variantKeys: ['A', 'B'], questionIds: ['q1'] }],
+  }
+  await writeFile(manifestPath, JSON.stringify(sectioned))
+
+  const reason = 'long reason '.repeat(17).slice(0, 200)
+  const server = spawn('node', [
+    CLI,
+    manifestPath,
+    '--no-open',
+    '--out',
+    dir,
+    '--contrast-override',
+    reason,
+  ])
+  try {
+    const url = await new Promise<string>((resolve) =>
+      server.stderr?.on('data', (c: Buffer) => {
+        const found = c.toString().match(/at (http\S+__review\/)/)?.[1]
+        if (found) resolve(found)
+      })
+    )
+    await page.setViewportSize({ width: 1400, height: 400 })
+    await page.goto(url)
+    const banner = page.getByTestId('contrast-override')
+    await expect(banner).toBeVisible()
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(100)
+    const bannerBox = (await banner.boundingBox())!
+    expect(bannerBox.height).toBeGreaterThan(40)
+    const bannerBottom = bannerBox.y + bannerBox.height
+    const sectionHead = (await page.locator('.section-head').first().boundingBox())!
+    const variantHead = (await page.locator('.variant-head').first().boundingBox())!
+    expect(sectionHead.y).toBeGreaterThanOrEqual(bannerBottom - 0.5)
+    expect(variantHead.y).toBeGreaterThanOrEqual(bannerBottom - 0.5)
+  } finally {
+    server.kill()
+  }
 })

@@ -48,6 +48,33 @@ kbd {
   color: var(--color-text-secondary);
 }
 
+/* Sticky above the sticky section and frame heads, which move down to clear it. */
+.contrast-override {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  box-sizing: border-box;
+  margin: 0 0 16px;
+  padding: 8px 12px;
+  border: 2px solid var(--color-status-warning);
+  background: var(--color-status-warning-subtle);
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+/* Fallback until the page measures the banner; a wrapped reason makes it taller. */
+:root {
+  --contrast-banner-height: 40px;
+}
+
+body:has(.contrast-override) .section-head {
+  top: var(--contrast-banner-height);
+}
+
+body:has(.contrast-override) .variant-head {
+  top: calc(var(--space-section-sm) + var(--contrast-banner-height));
+}
+
 .page-head {
   display: grid;
   gap: var(--space-stack-sm);
@@ -352,6 +379,16 @@ input:focus {
 
 .problems {
   color: var(--color-status-error);
+}
+
+.unanswered {
+  margin: 0;
+  padding-left: var(--space-inline-md);
+  border-left: 3px solid var(--color-status-warning);
+}
+
+.pager-end {
+  margin-top: var(--space-stack-lg);
 }
 
 .actions {
