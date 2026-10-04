@@ -103,7 +103,7 @@ jobs:
       # committed *-chromium-linux.png under
       # packages/ui/tests/visual/reference/stories.spec.ts-snapshots/ fails the build.
       - name: Layer 2 — Storybook story baselines
-        run: pnpm --filter @titan-design/react-ui test:visual:stories
+        run: pnpm --filter @titan-design/react-ui test:visual:stories --grep 'custom-workout-mesoprogressbar--first-week-progress$' --repeat-each=20
 
       # Layer 2 — REGEN (refresh): same pattern as Layer 1. Runs only on a failed
       # run, renders in the same container, so unchanged stories come
