@@ -17,6 +17,7 @@ import {
   SELECTED_CHIP,
   SET_LABEL,
   formatMeasurement,
+  isSimulated,
   measure,
   overrideProperties,
   simulates,
@@ -210,6 +211,7 @@ function CellHalf({
         </View>
         <Text className="font-mono text-[10px] text-text-secondary">
           {formatMeasurement(pair, measure(pair, set, mode))}
+          {simulates(set, mode) && isSimulated(pair) ? ' · simulated' : ''}
         </Text>
       </View>
     </Half>

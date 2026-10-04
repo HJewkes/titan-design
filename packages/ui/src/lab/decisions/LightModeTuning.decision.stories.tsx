@@ -199,6 +199,15 @@ function MarksSection({ set }: { set: TokenSet }) {
       <Measured id="progress-fill" set={set} />
       <Measured id="progress-brand-fill" set={set} />
       <Measured id="progress-track" set={set} />
+      <Measured id="tint-brand-muted" set={set} />
+      <View className="flex-row flex-wrap items-center gap-inline-sm">
+        <Pill tone="brand-secondary" variant="subtle" size="sm">
+          brand-secondary subtle
+        </Pill>
+        <View className="h-2 w-24 rounded-full bg-brand-secondary-muted" />
+      </View>
+      <Measured id="pill-subtle-brand-secondary" set={set} />
+      <Measured id="tint-brand-secondary-muted" set={set} />
       <View className="flex-row flex-wrap gap-inline-sm">
         <SelectedChip isProposed={set !== 'main'} />
         <Chip>Unselected</Chip>
@@ -323,7 +332,6 @@ const meta: Meta<Args> = {
   argTypes: {
     tokens: { control: 'inline-radio', options: ['main', 'proposed', 'proposedOrange600'] },
   },
-  globals: { theme: 'light' },
   parameters: {
     layout: 'fullscreen',
     docs: {
@@ -341,4 +349,4 @@ const meta: Meta<Args> = {
 export default meta
 type Story = StoryObj<Args>
 
-export const Representative: Story = {}
+export const Representative: Story = { globals: { theme: 'light' } }

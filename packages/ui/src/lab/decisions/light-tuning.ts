@@ -21,15 +21,17 @@ export const SET_LABEL: Record<TokenSet, string> = {
 
 const { orange, green, amber, blue, red, cyan, magenta } = primitiveRamps
 
+const LIGHT_HAIRLINE_DEFAULT = 'rgba(0, 0, 0, 0.15)'
+
 const PROPOSED_LIGHT: Record<string, string> = {
   // TD-488 control outlines
   'border-input': greyRamp[500],
   'border-input-hover': greyRamp[600],
   // TD-489 separators; divider takes the hairline-default value
   'hairline-subtle': 'rgba(0, 0, 0, 0.10)',
-  'hairline-default': 'rgba(0, 0, 0, 0.15)',
+  'hairline-default': LIGHT_HAIRLINE_DEFAULT,
   'hairline-strong': 'rgba(0, 0, 0, 0.22)',
-  divider: 'rgba(0, 0, 0, 0.15)',
+  divider: LIGHT_HAIRLINE_DEFAULT,
   // TD-490 tone marks; brand-primary stays orange[400] as a printed exception
   'status-success': green[600],
   'status-info': blue[600],
@@ -40,6 +42,8 @@ const PROPOSED_LIGHT: Record<string, string> = {
   'text-link': blue[700],
   'brand-primary-subtle': orange[50],
   'brand-primary-muted': orange[200],
+  'brand-secondary-subtle': cyan[50],
+  'brand-secondary-muted': cyan[200],
 }
 
 const PROPOSED_DARK: Record<string, string> = {
