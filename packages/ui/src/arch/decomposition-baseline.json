@@ -168,7 +168,7 @@
     "file-lines": 252
   },
   "components/custom/Workout/VelocityStrip.tsx": {
-    "file-lines": 1075
+    "file-lines": 719
   },
   "components/custom/Workout/VelocityStrip.tsx#DualVelocityCompactStrip": {
     "props": 15
