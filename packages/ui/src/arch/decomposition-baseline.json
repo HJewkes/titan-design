@@ -306,6 +306,9 @@
   "components/ui/carousel/Carousel.tsx": {
     "file-lines": 338
   },
+  "components/ui/charts/line-chart/LineChart.tsx#LineChart": {
+    "props": 23
+  },
   "components/ui/checkbox/Checkbox.tsx#Checkbox": {
     "complexity": 19
   },
