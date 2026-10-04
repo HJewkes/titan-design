@@ -3,6 +3,7 @@ import { withThemeByClassName } from '@storybook/addon-themes'
 import React from 'react'
 import '../src/theme/global.css'
 import { withSurfaceTheme } from './withSurfaceTheme'
+import { withWidthMatrix } from './withWidthMatrix'
 
 // Sidebar information architecture (TD Storybook reorg).
 //
@@ -74,6 +75,7 @@ const preview: Preview = {
       parentSelector: 'html', // Apply class to html element
     }),
     withSurfaceTheme,
+    withWidthMatrix,
     (Story) => (
       <div
         className="font-sans text-text-primary"
