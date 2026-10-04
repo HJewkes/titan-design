@@ -2,7 +2,8 @@
  * Folds the fragment files in `changelog.d/` into `CHANGELOG.md` under `## [Unreleased]`, then
  * deletes them. Run it in the release PR, before moving `[Unreleased]` under the version heading.
  *
- *   pnpm changelog:compile
+ *   pnpm changelog:compile             # fold and delete the fragments
+ *   pnpm changelog:compile --dry-run   # print the folded [Unreleased] section, write nothing
  *
  * A PR records its entry as `changelog.d/<TASK-ID>-<slug>.md` instead of editing CHANGELOG.md,
  * so two open PRs never edit the same hunk. A fragment is a `section:` front matter line and
@@ -29,6 +30,7 @@ export const SECTIONS = [
 ]
 const PKG_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const FRAGMENTS_DIR = 'changelog.d'
+const EX_USAGE = 64
 const FRONT_MATTER = /^---\n(?:section: *(.+?)\n)?---\n+([\s\S]*?)\s*$/
 
 /** The CHANGELOG bullet for one fragment's text; throws when the fragment is malformed. */
@@ -97,11 +99,58 @@ function readFragments(dir) {
     }))
 }
 
-if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
-  const dir = path.join(PKG_ROOT, FRAGMENTS_DIR)
-  const file = path.join(PKG_ROOT, 'CHANGELOG.md')
+export const USAGE = `Usage: node scripts/changelog-compile.mjs [--dry-run]
+
+Folds changelog.d/*.md into the [Unreleased] section of CHANGELOG.md, then deletes the fragments.
+
+  --dry-run   print the [Unreleased] section that would be written; write and delete nothing
+  -h, --help  print this message and exit 0
+
+An unknown flag or argument prints this message to stderr and exits ${EX_USAGE}.
+`
+
+/** The `[Unreleased]` heading and body of `changelog`, as `--dry-run` prints it. */
+export function unreleasedSection(changelog) {
+  const lines = changelog.split('\n')
+  const [from, to] = unreleasedRange(lines)
+  const section = lines.slice(from - 1, to).join('\n')
+  return `${section.trimEnd()}\n`
+}
+
+/** The mode `argv` asks for: 'compile', 'dry-run', 'help', or 'usage-error'. */
+export function parseArgs(argv) {
+  if (argv.some((arg) => arg === '--help' || arg === '-h')) return 'help'
+  if (argv.some((arg) => arg !== '--dry-run')) return 'usage-error'
+  return argv.length > 0 ? 'dry-run' : 'compile'
+}
+
+function compile(root, dryRun) {
+  const dir = path.join(root, FRAGMENTS_DIR)
+  const file = path.join(root, 'CHANGELOG.md')
   const fragments = readFragments(dir)
-  fs.writeFileSync(file, foldFragments(fs.readFileSync(file, 'utf8'), fragments))
+  const folded = foldFragments(fs.readFileSync(file, 'utf8'), fragments)
+  if (dryRun) {
+    process.stdout.write(unreleasedSection(folded))
+    return
+  }
+  fs.writeFileSync(file, folded)
   for (const { name } of fragments) fs.rmSync(path.join(dir, name))
   process.stdout.write(`CHANGELOG.md: folded ${fragments.length} fragment(s)\n`)
+}
+
+function main(argv) {
+  const mode = parseArgs(argv)
+  if (mode === 'help') {
+    process.stdout.write(USAGE)
+  } else if (mode === 'usage-error') {
+    process.stderr.write(USAGE)
+    process.exitCode = EX_USAGE
+  } else {
+    // Tests point the script at a temp copy; nothing else sets this.
+    compile(process.env.CHANGELOG_COMPILE_ROOT ?? PKG_ROOT, mode === 'dry-run')
+  }
+}
+
+if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
+  main(process.argv.slice(2))
 }
