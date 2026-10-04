@@ -2021,6 +2021,9 @@ export function surfaceBackground(level: SurfaceLevel, mode: ThemeMode): string;
 export const surfaceGradient: {
     chrome: (mode?: ThemeMode) => GradientStyle;
     volumeTrack: (mode?: ThemeMode) => GradientStyle;
+    card: (mode?: ThemeMode) => GradientStyle;
+    deviationTrack: (mode?: ThemeMode) => GradientStyle;
+    statusTrack: (mode?: ThemeMode) => GradientStyle;
 };
 
 // @public
