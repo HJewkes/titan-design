@@ -44,16 +44,15 @@ describe('GoalMilestoneSummary parts', () => {
   })
 
   it('hides the measuring copy so each fact is read once', () => {
-    const { container } = render(<GoalMilestoneSummary {...props} />)
+    render(<GoalMilestoneSummary {...props} />)
 
     const measure = screen.getByTestId('goal-milestone-facts-measure')
     expect(measure).toHaveAttribute('aria-hidden', 'true')
-    for (const fact of ['Week 4 of 6', 'Best 8 x 100 lb', 'Goal 8 x 105 lb']) {
+    for (const fact of ['Week 4 of 6', 'Best', '8 x 100 lb', 'Goal', '8 x 105 lb']) {
       const visible = screen
         .getAllByText(fact)
         .filter((node) => !node.closest('[aria-hidden="true"]'))
       expect(visible).toHaveLength(1)
     }
-    expect(container).toBeTruthy()
   })
 })
