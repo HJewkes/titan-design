@@ -78,6 +78,80 @@ describe('Link', () => {
     expect(screen.getByRole('link')).toHaveAttribute('aria-disabled', 'true')
   })
 
+  describe('with href on web', () => {
+    it('renders an anchor carrying the href', () => {
+      render(<Link href="/docs">Docs</Link>)
+      const anchor = screen.getByRole('link')
+      expect(anchor.tagName).toBe('A')
+      expect(anchor).toHaveAttribute('href', '/docs')
+    })
+
+    it('fires onPress and keeps routing in the handler on a plain click', () => {
+      const onPress = vi.fn()
+      render(
+        <Link href="/docs" onPress={onPress}>
+          Docs
+        </Link>
+      )
+      const notPrevented = fireEvent.click(screen.getByRole('link'))
+      expect(onPress).toHaveBeenCalledTimes(1)
+      expect(notPrevented).toBe(false)
+    })
+
+    it.each([{ metaKey: true }, { ctrlKey: true }])(
+      'leaves a modified click %o to the browser so it opens a new tab',
+      (modifier) => {
+        const onPress = vi.fn()
+        render(
+          <Link href="#docs" onPress={onPress}>
+            Docs
+          </Link>
+        )
+        const notPrevented = fireEvent.click(screen.getByRole('link'), modifier)
+        expect(notPrevented).toBe(true)
+        expect(onPress).not.toHaveBeenCalled()
+      }
+    )
+
+    it('opens an external href in a new tab without an opener', () => {
+      render(
+        <Link href="https://example.com" isExternal>
+          Example
+        </Link>
+      )
+      const anchor = screen.getByRole('link')
+      expect(anchor).toHaveAttribute('target', '_blank')
+      expect(anchor.getAttribute('rel')).toContain('noopener')
+    })
+
+    it('fires onPress on an external link without preventing navigation', () => {
+      const onPress = vi.fn()
+      render(
+        <Link href="#external" isExternal onPress={onPress}>
+          Example
+        </Link>
+      )
+      expect(fireEvent.click(screen.getByRole('link'))).toBe(true)
+      expect(onPress).toHaveBeenCalledTimes(1)
+    })
+
+    it('renders no href when disabled', () => {
+      render(
+        <Link href="/docs" isDisabled>
+          Docs
+        </Link>
+      )
+      const link = screen.getByRole('link')
+      expect(link.tagName).not.toBe('A')
+      expect(link).not.toHaveAttribute('href')
+    })
+
+    it('stays a non-anchor element without href', () => {
+      render(<Link onPress={() => {}}>Docs</Link>)
+      expect(screen.getByRole('link').tagName).not.toBe('A')
+    })
+  })
+
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
       const { container } = render(<Link>Visit site</Link>)
@@ -87,6 +161,16 @@ describe('Link', () => {
 
     it('has no accessibility violations for external link', async () => {
       const { container } = render(<Link isExternal>External site</Link>)
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
+
+    it('has no accessibility violations as an anchor', async () => {
+      const { container } = render(
+        <Link href="https://example.com" isExternal>
+          External site
+        </Link>
+      )
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })

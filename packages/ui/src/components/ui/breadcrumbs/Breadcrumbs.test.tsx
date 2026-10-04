@@ -118,6 +118,60 @@ describe('Breadcrumbs', () => {
       expect(onPress).toHaveBeenCalledTimes(1)
     })
 
+    it('renders an anchor carrying the href on web', () => {
+      render(
+        <Breadcrumbs>
+          <BreadcrumbItem href="/products">Products</BreadcrumbItem>
+        </Breadcrumbs>
+      )
+
+      const anchor = screen.getByRole('link')
+      expect(anchor.tagName).toBe('A')
+      expect(anchor).toHaveAttribute('href', '/products')
+    })
+
+    it('fires onPress on a plain click of an href item', () => {
+      const onPress = vi.fn()
+      render(
+        <Breadcrumbs>
+          <BreadcrumbItem href="/products" onPress={onPress}>
+            Products
+          </BreadcrumbItem>
+        </Breadcrumbs>
+      )
+
+      fireEvent.click(screen.getByRole('link'))
+      expect(onPress).toHaveBeenCalledTimes(1)
+    })
+
+    it.each([{ metaKey: true }, { ctrlKey: true }])(
+      'leaves a modified click %o to the browser so it opens a new tab',
+      (modifier) => {
+        const onPress = vi.fn()
+        render(
+          <Breadcrumbs>
+            <BreadcrumbItem href="#products" onPress={onPress}>
+              Products
+            </BreadcrumbItem>
+          </Breadcrumbs>
+        )
+
+        const notPrevented = fireEvent.click(screen.getByRole('link'), modifier)
+        expect(notPrevented).toBe(true)
+        expect(onPress).not.toHaveBeenCalled()
+      }
+    )
+
+    it('stays a non-anchor element without href', () => {
+      render(
+        <Breadcrumbs>
+          <BreadcrumbItem onPress={() => {}}>Home</BreadcrumbItem>
+        </Breadcrumbs>
+      )
+
+      expect(screen.getByRole('link').tagName).not.toBe('A')
+    })
+
     it('sets aria-current on current page item', () => {
       render(
         <Breadcrumbs>
@@ -146,6 +200,18 @@ describe('Breadcrumbs', () => {
         <Breadcrumbs>
           <BreadcrumbItem onPress={() => {}}>Home</BreadcrumbItem>
           <BreadcrumbItem onPress={() => {}}>Products</BreadcrumbItem>
+          <BreadcrumbItem isCurrentPage>Widget</BreadcrumbItem>
+        </Breadcrumbs>
+      )
+      const results = await axe(container)
+      expect(results).toHaveNoViolations()
+    })
+
+    it('has no accessibility violations with href items', async () => {
+      const { container } = render(
+        <Breadcrumbs>
+          <BreadcrumbItem href="/">Home</BreadcrumbItem>
+          <BreadcrumbItem href="/products">Products</BreadcrumbItem>
           <BreadcrumbItem isCurrentPage>Widget</BreadcrumbItem>
         </Breadcrumbs>
       )

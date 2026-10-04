@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { anchorProps } from '../link/anchorProps'
 
 export interface BreadcrumbsProps extends ViewProps {
   /** Custom separator */
@@ -58,7 +59,7 @@ export function Breadcrumbs({
 }
 
 export interface BreadcrumbItemProps {
-  /** Navigation URL */
+  /** Navigation URL; on web the item renders a real `<a href>` */
   href?: string
   /** Whether this is the current page */
   isCurrentPage?: boolean
@@ -92,7 +93,11 @@ export function BreadcrumbItem({
   }
 
   return (
-    <Pressable onPress={onPress} accessibilityRole="link" accessibilityHint={href}>
+    <Pressable
+      {...anchorProps({ href, onPress })}
+      accessibilityRole="link"
+      accessibilityHint={href}
+    >
       <Text
         className={cn(
           'text-sm text-text-secondary',

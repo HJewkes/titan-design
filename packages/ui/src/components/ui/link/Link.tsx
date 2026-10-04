@@ -1,12 +1,13 @@
 import React from 'react'
 import { Text, Pressable, type TextProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { anchorProps } from './anchorProps'
 
 export type LinkUnderline = 'always' | 'hover' | 'none'
 export type LinkColor = 'default' | 'primary' | 'secondary' | 'inherit'
 
 export interface LinkProps extends Omit<TextProps, 'onPress'> {
-  /** URL to navigate to (for accessibility) */
+  /** URL to navigate to; on web the link renders a real `<a href>` */
   href?: string
   /** Underline behavior */
   underline?: LinkUnderline
@@ -43,6 +44,7 @@ const underlineStyles: Record<LinkUnderline, string> = {
  * <Link href="https://example.com">Visit Site</Link>
  * <Link href="https://example.com" isExternal>External Link ↗</Link>
  * <Link onPress={() => navigate('/page')}>Go to Page</Link>
+ * <Link href="/page" onPress={() => navigate('/page')}>Go to Page</Link>
  */
 export function Link({
   href,
@@ -55,14 +57,9 @@ export function Link({
   children,
   ...props
 }: LinkProps) {
-  const handlePress = () => {
-    if (isDisabled) return
-    onPress?.()
-  }
-
   return (
     <Pressable
-      onPress={handlePress}
+      {...anchorProps({ href, isExternal, isDisabled, onPress })}
       disabled={isDisabled}
       accessibilityRole="link"
       accessibilityHint={isExternal ? 'Opens in new window' : undefined}
