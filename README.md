@@ -161,7 +161,7 @@ Design for dark mode first, add explicit light mode styles.
 
 Complex components follow the Gluestack pattern:
 
-```tsx
+```tsx fragment
 <Button variant="solid" color="primary">
   <ButtonIcon as={PlusIcon} />
   <ButtonText>Add Item</ButtonText>

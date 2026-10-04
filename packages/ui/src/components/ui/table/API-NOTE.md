@@ -143,7 +143,7 @@ Illustrative only; the consumer owns it. `rowCount` is the count after the activ
 what `alignRange`, `missingRanges` and `windowSlice` clip to; a fixture's `total` is the unfiltered
 count and never feeds it. Here `matching` is the page's filtered count.
 
-```ts
+```ts fragment
 const fromFindingsPage = (res: FindingsPage, offset: number) => ({
   rowCount: res.matching,
   facets: res.facets,
