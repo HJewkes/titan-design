@@ -1409,6 +1409,13 @@
       "props": [
         {
           "default": null,
+          "description": "Name of the thread's log region for assistive tech.",
+          "name": "accessibilityLabel",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
           "description": "",
           "name": "className",
           "required": false,
