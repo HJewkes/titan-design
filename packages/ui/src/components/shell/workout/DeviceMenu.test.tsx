@@ -2,7 +2,8 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { DeviceMenu } from './DeviceMenu'
 import { type Device } from './DeviceRow'
-import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
+import { capturedByNode } from '../../../test/classname-capture'
 
 const devices: Device[] = [
   { id: 'Voltra-A3F2', nickname: 'Left Cable', slot: 'L', state: 'connected' },
@@ -49,17 +50,24 @@ describe('DeviceMenu', () => {
  * semantic key, so they are numeric rungs and no pixel moved there.
  */
 describe('DeviceMenu geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'DeviceMenu.tsx')
+  const header = () => screen.getByText(/bound · .* available/)
 
   it.each([
-    ['the panel', ['mt-2.5', 'p-inset-sm'], ['10px', '8px']],
-    ['the header label', ['px-2', 'pt-1.5', 'pb-2'], ['8px', '6px', '8px']],
-  ] as const)('%s ships %s', (_label, classes, pixels) => {
-    classes.forEach((className) => expect(source).toContain(className))
+    ['the panel', () => header().parentElement, ['mt-2.5', 'p-inset-sm'], ['10px', '8px']],
+    ['the header label', header, ['px-2', 'pt-1.5', 'pb-2'], ['8px', '6px', '8px']],
+  ] as const)('%s ships %s', (_label, find, classes, pixels) => {
+    render(<DeviceMenu devices={devices} isOpen />)
+    expect(spacingClassesAt(find())).toEqual([...classes])
     expect(resolveAll([...classes])).toEqual([...pixels])
   })
 
   it('leaves no arbitrary spacing value behind', () => {
-    expect(source).not.toMatch(/\b(p|px|py|pt|pb|m|mt|gap)-\[[0-9.]+px\]/)
+    render(<DeviceMenu devices={devices} isOpen />)
+    const rendered = [header().parentElement, header()].map((node) =>
+      capturedByNode.get(node as Element)
+    )
+    rendered.forEach((classes) =>
+      expect(classes).not.toMatch(/\b(p|px|py|pt|pb|m|mt|gap)-\[[0-9.]+px\]/)
+    )
   })
 })

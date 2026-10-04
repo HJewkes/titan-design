@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { DeviceRow, type Device } from './DeviceRow'
-import { resolveAll, siblingSource, spacingClassesIn } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
 const bound: Device = { id: 'Voltra-A3F2', nickname: 'Left Cable', slot: 'L', state: 'connected' }
 const unbound: Device = { id: 'Voltra-77E0', nickname: 'Spare', slot: null, state: 'available' }
@@ -46,10 +46,12 @@ describe('DeviceRow', () => {
  * the numeric rung `gap-2.5`.
  */
 describe('DeviceRow geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'DeviceRow.tsx')
-
   it('ships gap-2.5 and p-inset-sm', () => {
-    expect(spacingClassesIn(source, 'DeviceRow')).toEqual(['gap-2.5', 'p-inset-sm'])
+    render(<DeviceRow device={bound} />)
+    expect(spacingClassesAt(screen.getByText('Left Cable').parentElement)).toEqual([
+      'gap-2.5',
+      'p-inset-sm',
+    ])
     expect(resolveAll(['gap-2.5', 'p-inset-sm'])).toEqual(['10px', '8px'])
   })
 })
