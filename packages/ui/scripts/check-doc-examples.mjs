@@ -37,6 +37,7 @@ export const DOCS = [
   'packages/ui/src/components/ui/charts/dependency-matrix/API-NOTE.md',
   'packages/ui/src/components/ui/charts/line-chart/API-NOTE.md',
   'packages/ui/src/components/ui/table/API-NOTE.md',
+  'packages/ui/src/components/ui/tree-view/API-NOTE.md',
 ]
 
 /** Public entry points, as the package `exports` map names them, to their src files. */
