@@ -1,40 +1,12 @@
 {
   "v": 5,
   "entries": {
-    "components-atoms-button--default": {
-      "id": "components-atoms-button--default",
-      "type": "story",
-      "importPath": "./src/components/ui/button/Button.stories.tsx"
-    },
-    "components-atoms-button--docs": {
-      "id": "components-atoms-button--docs",
-      "type": "docs",
-      "importPath": "./src/components/ui/button/Button.stories.tsx"
-    },
-    "components-atoms-button--loading": {
-      "id": "components-atoms-button--loading",
-      "type": "story",
-      "importPath": "./src/components/ui/button/Button.stories.tsx"
-    },
-    "components-molecules-toolbar--default": {
-      "id": "components-molecules-toolbar--default",
-      "type": "story",
-      "importPath": "./src/components/ui/toolbar/Toolbar.stories.tsx"
-    },
-    "components-molecules-toolbar--docs": {
-      "id": "components-molecules-toolbar--docs",
-      "type": "docs",
-      "importPath": "./src/components/ui/toolbar/Toolbar.stories.tsx"
-    },
-    "components-organisms-panel--default": {
-      "id": "components-organisms-panel--default",
-      "type": "story",
-      "importPath": "./src/components/ui/panel/Panel.stories.tsx"
-    },
-    "foundations-intro--docs": {
-      "id": "foundations-intro--docs",
-      "type": "docs",
-      "importPath": "./src/docs/Intro.mdx"
-    }
+    "components-atoms-button--default": { "id": "components-atoms-button--default", "type": "story", "importPath": "./src/components/ui/button/Button.stories.tsx" },
+    "components-atoms-button--docs": { "id": "components-atoms-button--docs", "type": "docs", "importPath": "./src/components/ui/button/Button.stories.tsx" },
+    "components-atoms-button--loading": { "id": "components-atoms-button--loading", "type": "story", "importPath": "./src/components/ui/button/Button.stories.tsx" },
+    "components-molecules-toolbar--default": { "id": "components-molecules-toolbar--default", "type": "story", "importPath": "./src/components/ui/toolbar/Toolbar.stories.tsx" },
+    "components-molecules-toolbar--docs": { "id": "components-molecules-toolbar--docs", "type": "docs", "importPath": "./src/components/ui/toolbar/Toolbar.stories.tsx" },
+    "components-organisms-panel--default": { "id": "components-organisms-panel--default", "type": "story", "importPath": "./src/components/ui/panel/Panel.stories.tsx" },
+    "foundations-intro--docs": { "id": "foundations-intro--docs", "type": "docs", "importPath": "./src/docs/Intro.mdx" }
   }
 }
