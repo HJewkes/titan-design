@@ -1,6 +1,3 @@
-import { readFileSync } from 'node:fs'
-import { homedir } from 'node:os'
-import { join } from 'node:path'
 import { describe, it, expect } from 'vitest'
 import {
   CVD_MATRICES,
@@ -13,21 +10,8 @@ import {
   simulateCvd,
   toOklab,
 } from './color-checks'
+import { MACHADO_2009_SEVERITY_1 } from '../test/machado-2009'
 import { categoricalPalette, CATEGORICAL_CVD_SAFE_MAX } from './tokens/primitives'
-
-/** Machado-2009, severity 1.0, as transcribed in the color-system-derivation skill's solver. */
-const SKILL_SOLVER = join(homedir(), '.claude/skills/color-system-derivation/tools/cvd-solve.mjs')
-
-function skillMatrix(name: 'DEUT' | 'PROT'): number[] | null {
-  let source: string
-  try {
-    source = readFileSync(SKILL_SOLVER, 'utf8')
-  } catch {
-    return null
-  }
-  const match = source.match(new RegExp(`const ${name}=\\[([^\\]]+)\\]`))
-  return match ? match[1].split(',').map(Number) : null
-}
 
 describe('contrast', () => {
   it('puts black on white at 21:1', () => {
@@ -61,14 +45,14 @@ describe('deltaE and toOklab', () => {
 })
 
 describe('CVD simulation', () => {
-  it.each([
-    ['deutan', 'DEUT'],
-    ['protan', 'PROT'],
-  ] as const)('keeps the %s matrix equal to the skill solver constants', (kind, name) => {
-    const expected = skillMatrix(name)
-    if (!expected) return // solver not installed on this machine (CI)
-    expect([...CVD_MATRICES[kind]]).toEqual(expected)
-  })
+  it.each(['deutan', 'protan', 'tritan'] as const)(
+    'keeps the %s matrix equal to Machado 2009 severity 1.0, element by element',
+    (kind) => {
+      const expected = MACHADO_2009_SEVERITY_1[kind]
+      expect(CVD_MATRICES[kind]).toHaveLength(expected.length)
+      expected.forEach((value, i) => expect(CVD_MATRICES[kind][i], `${kind}[${i}]`).toBe(value))
+    }
+  )
 
   it.each(['deutan', 'protan', 'tritan'] as const)(
     'keeps every %s matrix row summing to 1, so white stays white',
