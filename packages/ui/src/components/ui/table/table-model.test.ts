@@ -9,6 +9,7 @@ import {
   activeFilterCount,
   alignRange,
   clearFilters,
+  facetCounts,
   facetOptions,
   filterRows,
   missingRanges,
@@ -205,6 +206,23 @@ describe('facetOptions', () => {
     expect(facetOptions(odd).map((o) => o.count)).toEqual([0, 0, 0])
     expect(facetOptions(undefined, ['x'])).toEqual([{ value: 'x', count: 0, isSelected: true }])
     expect(() => facetOptions(hostileFixture.facets.rule, ['rule-not-there'])).not.toThrow()
+  })
+})
+
+describe('facetCounts', () => {
+  it('counts the Default fixture rules as its recorded facet answer', () => {
+    const { facets } = fixtureNamed('Default')
+
+    expect(facetCounts(defaultRows, { key: 'rule' })).toEqual(facets.rule)
+  })
+
+  it('reads through the accessor, skips blank cells and keeps prototype names as values', () => {
+    const rows = [{ v: 'a' }, { v: null }, { v: '__proto__' }, { v: 'a' }, {}]
+
+    const counts = facetCounts(rows, { key: 'v', accessor: (row) => row.v })
+
+    expect(counts).toEqual({ a: 2, ['__proto__']: 1 })
+    expect(Object.keys(counts)).toEqual(['a', '__proto__'])
   })
 })
 

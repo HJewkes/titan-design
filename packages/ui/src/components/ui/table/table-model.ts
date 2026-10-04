@@ -127,6 +127,21 @@ export function facetOptions(
   return [...listed, ...missing.map((value) => ({ value, count: 0, isSelected: true }))]
 }
 
+/** How many rows hold each value of `column`, read as `filterRows` reads it. Blank cells are not counted. */
+export function facetCounts<T>(
+  rows: readonly T[],
+  column: TableFilterColumn<T>
+): Record<string, number> {
+  const counts = new Map<string, number>()
+  for (const row of rows) {
+    const cell = readCell(row, column as TableFilterColumn<never>)
+    if (cell === null || cell === undefined) continue
+    const value = asText(cell)
+    counts.set(value, (counts.get(value) ?? 0) + 1)
+  }
+  return Object.fromEntries(counts)
+}
+
 const toIndex = (value: number): number => toCount(value)
 
 const toBlock = (block: number): number => Math.min(Math.max(toCount(block), 1), MAX_BLOCK_ROWS)
