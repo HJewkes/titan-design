@@ -113,7 +113,8 @@ An unknown flag or argument prints this message to stderr and exits ${EX_USAGE}.
 export function unreleasedSection(changelog) {
   const lines = changelog.split('\n')
   const [from, to] = unreleasedRange(lines)
-  return `${lines.slice(from - 1, to).join('\n').trimEnd()}\n`
+  const section = lines.slice(from - 1, to).join('\n')
+  return `${section.trimEnd()}\n`
 }
 
 /** The mode `argv` asks for: 'compile', 'dry-run', 'help', or 'usage-error'. */

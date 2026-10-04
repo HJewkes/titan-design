@@ -2,6 +2,7 @@ import { spawnSync } from 'node:child_process'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
+import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
@@ -86,18 +87,15 @@ describe('changelog-compile command line', () => {
     return Object.fromEntries(files.map((file) => [file, fs.readFileSync(path.join(root, file))]))
   }
 
-  it.each([['--help'], ['-h'], ['--dry-run', '--help']])(
-    '%s prints usage and writes nothing',
-    (...args) => {
-      const before = snapshot()
-      const result = run(...args)
-      expect(result.status).toBe(0)
-      expect(result.stdout).toMatch(/^Usage: /)
-      expect(snapshot()).toEqual(before)
-    }
-  )
+  it.each(['--help', '-h', '--dry-run --help'])('%s prints usage and writes nothing', (args) => {
+    const before = snapshot()
+    const result = run(...args.split(' '))
+    expect(result.status).toBe(0)
+    expect(result.stdout).toMatch(/^Usage: /)
+    expect(snapshot()).toEqual(before)
+  })
 
-  it.each([['--force'], ['stray-argument']])(
+  it.each(['--force', 'stray-argument'])(
     'unknown argument %s prints usage to stderr, exits 64 and writes nothing',
     (arg) => {
       const before = snapshot()
