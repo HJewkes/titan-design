@@ -1,6 +1,7 @@
 import { greyRamp, primitiveRamps } from '../../theme/tokens/primitives'
 import {
   TONE_TEXT_700,
+  alertSolidFill,
   baseSet,
   chipLabelFix,
   chipRecipe,
@@ -56,6 +57,11 @@ function describe(value: string): Described {
 
 const stepName = ({ hue, step }: RampStep) => `${hue}[${step}]`
 
+/** A colour named by its ramp step, alpha, or as off-ramp. */
+export function rampName(value: string): string {
+  return formatValue(describe(value))
+}
+
 export function formatValue(d: Described): string {
   if (d.kind === 'ramp') return stepName(d.ramp)
   if (d.kind === 'tint') return `${stepName(d.ramp)} @ ${d.alpha}`
@@ -97,12 +103,11 @@ const TASK_OF: Record<string, string> = {
   'brand-secondary-subtle': 'TD-491 snaps and link',
   'brand-secondary-muted': 'TD-491 snaps and link',
   'brand-primary': 'Brand',
-  'status-success-solid': 'TD-624 subtle labels and solids',
-  'on-status-warning': 'TD-624 subtle labels and solids',
-  'status-success-subtle': 'TD-624 subtle labels and solids',
-  'on-status-success-subtle': 'TD-624 subtle labels and solids',
-  'status-warning-subtle': 'TD-624 subtle labels and solids',
-  'on-status-warning-subtle': 'TD-624 subtle labels and solids',
+}
+
+function taskFor(token: string, base: TokenSet): string {
+  if (base === 'accepted') return token.includes('subtle') ? 'TD-624 subtle set' : 'TD-624 solids'
+  return TASK_OF[token] ?? 'Other'
 }
 
 export interface ChangeRow {
@@ -127,7 +132,7 @@ export function changeGroups(set: TokenSet): ChangeGroup[] {
     if (was === now) continue
     const before = describe(was)
     const after = describe(now)
-    const task = TASK_OF[token] ?? 'Other'
+    const task = taskFor(token, base)
     const row = {
       token,
       main: formatValue(before),
@@ -147,9 +152,11 @@ export function simulationLine(set: TokenSet): string {
     .join(', ')
   const fix = chipLabelFix(set)
   const chipLabel = fix ? `; unselected Chip label ${name(fix)}` : ''
+  const alert = alertSolidFill(set, 'warning')
+  const alertLine = alert ? `; warning solid Alert reads the *-solid fill ${name(alert)}` : ''
   return (
     'Simulated in the lab (component recipes, not token changes): neutral Progress track ' +
-    `(hairline-default); selected Chip: ${chipRecipe(set)?.name ?? 'today'}${chipLabel}; ` +
+    `(hairline-default); selected Chip: ${chipRecipe(set)?.name ?? 'today'}${chipLabel}${alertLine}; ` +
     `tone as text at the 700 step (${toneText}).`
   )
 }

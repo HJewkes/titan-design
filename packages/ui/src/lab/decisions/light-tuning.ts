@@ -16,6 +16,8 @@ export type TokenSet =
   | 'r2a'
   | 'r2b'
   | 'r2c'
+  | 'r3'
+  | 'r3Amber600'
 export type Mode = 'light' | 'dark'
 
 export const TOKEN_SETS: TokenSet[] = [
@@ -26,6 +28,8 @@ export const TOKEN_SETS: TokenSet[] = [
   'r2a',
   'r2b',
   'r2c',
+  'r3',
+  'r3Amber600',
 ]
 
 export const SET_LABEL: Record<TokenSet, string> = {
@@ -36,11 +40,15 @@ export const SET_LABEL: Record<TokenSet, string> = {
   r2a: 'r2a',
   r2b: 'r2b',
   r2c: 'r2c',
+  r3: 'r3',
+  r3Amber600: 'r3 (amber 600 warning solid)',
 }
 
 /** Round 2 (TD-624) variants build on the round 1 accepted set and are described against it. */
 export function baseSet(set: TokenSet): TokenSet {
-  return set === 'r2a' || set === 'r2b' || set === 'r2c' ? 'accepted' : 'main'
+  return set === 'main' || set === 'proposed' || set === 'proposedOrange600' || set === 'accepted'
+    ? 'main'
+    : 'accepted'
 }
 
 const { orange, green, amber, blue, red, cyan, magenta } = primitiveRamps
@@ -88,6 +96,31 @@ function round2(fill: 50 | 100 | 200, label: 700 | 800): Record<string, string> 
   }
 }
 
+// TD-624 round 3: the 700 label on the 100 fill for every tone with a subtle pair; warning solid
+// keeps its white label (owner, round 2); success solid stays green[600] with white.
+const SUBTLE_HUES = {
+  'status-success': green,
+  'status-warning': amber,
+  'status-error': red,
+  'status-info': blue,
+  'brand-primary': orange,
+  'brand-secondary': cyan,
+} as const
+
+const ROUND3: Record<string, string> = {
+  ...PROPOSED_LIGHT,
+  'status-success-solid': green[600],
+  ...Object.fromEntries(
+    Object.entries(SUBTLE_HUES).flatMap(([tone, ramp]) => [
+      [`${tone}-subtle`, ramp[100]],
+      [`on-${tone}-subtle`, ramp[700]],
+    ])
+  ),
+}
+
+/** The darker warning solid that carries a white label (5.02); Alert solid follows it in the lab. */
+export const WARNING_SOLID_DARK = amber[600]
+
 const PROPOSED_DARK: Record<string, string> = {
   'border-input': greyRamp[500],
   'border-input-hover': greyRamp[400],
@@ -108,6 +141,8 @@ const OVERRIDES: Record<Mode, Record<TokenSet, Record<string, string>>> = {
     r2a: round2(50, 700),
     r2b: round2(100, 700),
     r2c: round2(200, 800),
+    r3: ROUND3,
+    r3Amber600: { ...ROUND3, 'status-warning-solid': WARNING_SOLID_DARK },
   },
   dark: {
     main: {},
@@ -117,6 +152,8 @@ const OVERRIDES: Record<Mode, Record<TokenSet, Record<string, string>>> = {
     r2a: PROPOSED_DARK,
     r2b: PROPOSED_DARK,
     r2c: PROPOSED_DARK,
+    r3: PROPOSED_DARK,
+    r3Amber600: PROPOSED_DARK,
   },
 }
 
@@ -178,7 +215,16 @@ const ROUND2_CHIPS: Partial<Record<TokenSet, ChipRecipe>> = {
 /** The selected Chip recipe a set simulates; main renders the Chip as it is today. */
 export function chipRecipe(set: TokenSet): ChipRecipe | undefined {
   if (set === 'main') return undefined
+  if (set === 'r3' || set === 'r3Amber600') return ROUND2_CHIPS.r2a
   return ROUND2_CHIPS[set] ?? SELECTED_CHIP
+}
+
+/**
+ * Lab recipe: the warning solid Alert reads the badge's `*-solid` fill (as TD-482 proposes) where
+ * a set darkens that fill, so badge and Alert keep one white-label fill.
+ */
+export function alertSolidFill(set: TokenSet, tone: string): string | undefined {
+  return set === 'r3Amber600' && tone === 'warning' ? WARNING_SOLID_DARK : undefined
 }
 
 /** TD-624 fix for the unselected Chip label under the darker hairline-subtle fill. */

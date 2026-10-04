@@ -23,13 +23,21 @@ import {
   TOKEN_SETS,
   TONE_TEXT_700,
   formatMeasurement,
+  alertSolidFill,
   baseSet,
   isSimulated,
   measure,
   overrideProperties,
   type TokenSet,
 } from './light-tuning'
-import { PAIRS, REPRESENTATIVE_PAIR_IDS, TONES, misses, type Tone } from './light-tuning-pairs'
+import {
+  PAIRS,
+  REPRESENTATIVE_PAIR_IDS,
+  TONES,
+  misses,
+  subtleFillLine,
+  type Tone,
+} from './light-tuning-pairs'
 import {
   changeGroups,
   introducedLine,
@@ -149,6 +157,7 @@ function FormSection({ set }: { set: TokenSet }) {
 function StatusSection({ set }: { set: TokenSet }) {
   return (
     <Section title="Status pills">
+      <Caption>{subtleFillLine(set)}</Caption>
       {TONES.map((tone) => (
         <View key={tone} className="gap-stack-xs">
           <View className="flex-row flex-wrap items-center gap-inline-sm">
@@ -169,13 +178,22 @@ function StatusSection({ set }: { set: TokenSet }) {
   )
 }
 
+/** A solid Alert; where the set darkens the warning solid, the Alert follows it (lab recipe). */
+function SolidAlert({ tone, set }: { tone: (typeof ALERT_TONES)[number]; set: TokenSet }) {
+  const fill = alertSolidFill(set, tone)
+  const alert = (
+    <Alert status={tone} variant="solid" size="compact" message={`${tone}: solid alert`} />
+  )
+  return fill ? <View style={vars({ '--color-status-warning': fill })}>{alert}</View> : alert
+}
+
 function AlertSection({ set }: { set: TokenSet }) {
   return (
     <Section title="Alerts">
       {ALERT_TONES.map((tone) => (
         <View key={tone} className="gap-stack-xs">
           <Alert status={tone} variant="subtle" size="compact" message={`${tone}: subtle alert`} />
-          <Alert status={tone} variant="solid" size="compact" message={`${tone}: solid alert`} />
+          <SolidAlert tone={tone} set={set} />
           <Measured id={`alert-icon-${tone}`} set={set} />
           <Measured id={`alert-solid-${tone}`} set={set} />
         </View>

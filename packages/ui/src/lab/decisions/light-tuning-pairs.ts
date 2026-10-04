@@ -1,5 +1,6 @@
 import {
   TONE_TEXT_700,
+  alertSolidFill,
   chipLabelFix,
   chipRecipe,
   measure,
@@ -82,6 +83,10 @@ function tonePairs(tone: Tone): Record<string, Pair> {
       label: `${tone} alert solid label`,
       fg: t.onSolid,
       bg: t.base,
+      recipe: (set) => {
+        const fill = alertSolidFill(set, tone)
+        return fill ? { bg: { raw: fill } } : undefined
+      },
       plane: CARD,
       floor: 4.5,
     },
@@ -241,6 +246,24 @@ export const REPRESENTATIVE_PAIR_IDS: string[] = [
   'divider',
   ...TONES.map((t) => `tone-text-${t}`),
 ]
+
+const SUBTLE_FILLS: [string, string][] = [
+  ['brand', 'brand-primary-subtle'],
+  ['success', 'status-success-subtle'],
+  ['info', 'status-info-subtle'],
+  ['warning', 'status-warning-subtle'],
+  ['error', 'status-error-subtle'],
+  ['brand-secondary', 'brand-secondary-subtle'],
+]
+
+/** How far each subtle fill stands off a white card: visibility, not a WCAG floor. */
+export function subtleFillLine(set: TokenSet): string {
+  const parts = SUBTLE_FILLS.map(([tone, token]) => {
+    const pair: Pair = { label: tone, fg: token, plane: CARD, floor: 1 }
+    return `${tone} ${measure(pair, set, 'light').value.toFixed(2)}`
+  })
+  return `Subtle fill vs white card: ${parts.join(' · ')}`
+}
 
 export interface Miss {
   id: string

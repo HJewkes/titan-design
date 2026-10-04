@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { vars } from 'nativewind'
 import { Text, View } from 'react-native'
 import { SurfaceContext } from '../../components/ui/surface/SurfaceContext'
+import { greyRamp } from '../../theme/tokens/primitives'
 import {
   LIFT_AMBIENT,
   LIFT_AMBIENT_ALPHA_SCALE,
@@ -9,14 +10,16 @@ import {
   liftShadow,
   type LiftStep,
 } from '../../theme/lift-shadow'
-import { overrideProperties } from './light-tuning'
+import { measure, overrideProperties, resolveToken, type Pair } from './light-tuning'
+import { rampName } from './light-tuning-changes'
 
 /**
  * TD-625: light elevation shadows. Each recipe is a parameter set over the LIFT_AMBIENT
  * geometry in `theme/lift-shadow.ts`; the wrapper declares the resulting box-shadows as
  * `--lab-lift-{n}` properties and every card reads its level's property. No token changes.
  */
-type RecipeKey = 'today' | 'soft' | 'crisp' | 'ambientKey'
+type RecipeKey = 'today' | 'soft' | 'crisp' | 'crispRim' | 'crispRimLow' | 'ambientKey'
+type LadderKey = 'today' | 'ladderA' | 'ladderB'
 
 interface ShadowRecipe {
   name: string
@@ -27,8 +30,8 @@ interface ShadowRecipe {
   rim: number
   /** A 1px black ring that draws the edge without a border token. */
   ring: number
-  /** Keep only the deepest LIFT_AMBIENT layer as the key light. */
-  keyOnly: boolean
+  /** Keep one LIFT_AMBIENT layer (by index, clamped to the step's layers) as the key light. */
+  keyLayer?: number
   /** A zero-offset ambient layer whose blur grows with the step. */
   ambient?: { alpha: number; blurPerStep: number }
 }
@@ -41,7 +44,6 @@ const RECIPES: Record<RecipeKey, ShadowRecipe> = {
     yScale: 1,
     rim: LIFT_RIM_ALPHA.light,
     ring: 0,
-    keyOnly: false,
   },
   soft: {
     name: 'Soft: wide and faint, no rim',
@@ -50,7 +52,6 @@ const RECIPES: Record<RecipeKey, ShadowRecipe> = {
     yScale: 1,
     rim: 0,
     ring: 0,
-    keyOnly: false,
   },
   crisp: {
     name: 'Crisp: tight layers plus a 1px ring, no rim',
@@ -59,17 +60,34 @@ const RECIPES: Record<RecipeKey, ShadowRecipe> = {
     yScale: 0.6,
     rim: 0,
     ring: 0.08,
-    keyOnly: false,
   },
+  crispRim: {
+    name: "Crisp + today's light rim (0.9)",
+    alphaScale: 0.5,
+    blurScale: 0.6,
+    yScale: 0.6,
+    rim: LIFT_RIM_ALPHA.light,
+    ring: 0.08,
+  },
+  crispRimLow: {
+    name: 'Crisp + a lower rim (0.5)',
+    alphaScale: 0.5,
+    blurScale: 0.6,
+    yScale: 0.6,
+    rim: 0.5,
+    ring: 0.08,
+  },
+  // Round 2 keyed from the deepest layer (y 16-32, blur 32-64), which fell below the card and
+  // read as no shadow; the second layer sits under the card at every step.
   ambientKey: {
-    name: 'Ambient + key: one key layer over a zero-offset ambient, faint ring',
-    alphaScale: 0.35,
+    name: 'Ambient + key: the second layer as key over a zero-offset ambient, ring, rim 0.9',
+    alphaScale: 0.5,
     blurScale: 1,
     yScale: 1,
-    rim: 0,
+    rim: LIFT_RIM_ALPHA.light,
     ring: 0.05,
-    keyOnly: true,
-    ambient: { alpha: 0.06, blurPerStep: 4 },
+    keyLayer: 1,
+    ambient: { alpha: 0.08, blurPerStep: 3 },
   },
 }
 
@@ -92,6 +110,64 @@ const LEVEL_CLASS: Record<LiftStep, string> = {
   5: 'bg-surface-overlay',
 }
 
+/**
+ * Plane ladders: the surface tokens a level wears, overridden on the wrapper. The grey ramp has
+ * only grey[50] and grey[100] above L* 90, so an off-white ladder has little room (TD-4).
+ */
+const LADDERS: Record<LadderKey, { name: string; planes: Record<string, string> }> = {
+  today: { name: 'Planes today: 1 grey[50], 2 grey[100], 3-5 white', planes: {} },
+  ladderA: {
+    name: 'Ladder A: 1 grey[200], 2 grey[100], 3-5 grey[50]',
+    planes: {
+      'surface-elevated': greyRamp[200],
+      'surface-raised': greyRamp[100],
+      'surface-overlay': greyRamp[50],
+    },
+  },
+  ladderB: {
+    name: 'Ladder B: 1 grey[50], 2 grey[100], 3-5 grey[50]',
+    planes: { 'surface-overlay': greyRamp[50] },
+  },
+}
+
+const LEVEL_TOKEN: Record<LiftStep, string> = {
+  1: 'surface-elevated',
+  2: 'surface-raised',
+  3: 'surface-overlay',
+  4: 'surface-overlay',
+  5: 'surface-overlay',
+}
+
+function planeHex(ladder: LadderKey, step: LiftStep): string {
+  const token = LEVEL_TOKEN[step]
+  return LADDERS[ladder].planes[token] ?? resolveToken('accepted', 'light', token)
+}
+
+/** The rim's contrast against the plane it lights: 1.00 means the highlight is invisible. */
+function rimContrast(rim: number, plane: string): string {
+  if (rim === 0) return 'no rim'
+  const pair: Pair = {
+    label: 'rim',
+    fg: { raw: `rgba(255, 255, 255, ${rim})` },
+    bg: { raw: plane },
+    plane: 'surface-base',
+    floor: 1,
+  }
+  return `rim ${measure(pair, 'accepted', 'light').value.toFixed(2)}`
+}
+
+/** A plane by its ramp step and hex; white is the one plane off the grey ramp. */
+function planeName(hex: string): string {
+  const name = rampName(hex)
+  if (!name.startsWith('off-ramp')) return `${name} ${hex}`
+  return hex.toUpperCase() === '#FFFFFF' ? `white ${hex}` : name
+}
+
+function ladderVars(ladder: LadderKey) {
+  const entries = Object.entries(LADDERS[ladder].planes).map(([k, v]) => [`--color-${k}`, v])
+  return vars(Object.fromEntries(entries))
+}
+
 const PLANES = [
   { token: 'background-base', className: 'bg-background-base' },
   { token: 'surface-base', className: 'bg-surface-base' },
@@ -99,7 +175,7 @@ const PLANES = [
 
 function shadowFor(step: LiftStep, r: ShadowRecipe): string {
   const all = LIFT_AMBIENT[step]
-  const source = r.keyOnly ? all.slice(-1) : all
+  const source = r.keyLayer === undefined ? all : [all[Math.min(r.keyLayer, all.length - 1)]]
   const layers = source.map(
     ({ y, blur, alpha }) =>
       `0 ${Math.round(y * r.yScale)}px ${Math.round(blur * r.blurScale)}px rgba(0,0,0,${(alpha * r.alphaScale).toFixed(2)})`
@@ -128,31 +204,40 @@ function recipeSummary(r: ShadowRecipe): string {
     `y ×${r.yScale}`,
     `rim ${r.rim}`,
     `ring ${r.ring}`,
-    r.keyOnly ? 'key = deepest layer only' : 'all LIFT_AMBIENT layers',
+    r.keyLayer === undefined ? 'all LIFT_AMBIENT layers' : `key = layer ${r.keyLayer} only`,
   ]
   if (r.ambient) parts.push(`ambient 0 0 ${r.ambient.blurPerStep}px×step @ ${r.ambient.alpha}`)
   return parts.join(' · ')
 }
 
-function LevelCard({ step }: { step: LiftStep }) {
+function LevelCard({ step, ladder, rim }: { step: LiftStep; ladder: LadderKey; rim: number }) {
+  const hex = planeHex(ladder, step)
   return (
     <View
       className={`h-24 min-w-[150px] flex-1 justify-between rounded-lg p-inset-sm ${LEVEL_CLASS[step]}`}
       style={{ boxShadow: `var(--lab-lift-${step})` } as object}
     >
       <Text className="text-sm font-semibold text-text-primary">{LEVEL_NAME[step]}</Text>
-      <Text className="font-mono text-[10px] text-text-secondary">{`level ${step}`}</Text>
+      <Text className="font-mono text-[10px] text-text-secondary">
+        {`level ${step} · ${planeName(hex)} · ${rimContrast(rim, hex)}`}
+      </Text>
     </View>
   )
 }
 
-function PlaneRow({ plane }: { plane: (typeof PLANES)[number] }) {
+interface RowProps {
+  plane: (typeof PLANES)[number]
+  ladder: LadderKey
+  rim: number
+}
+
+function PlaneRow({ plane, ladder, rim }: RowProps) {
   return (
     <View className={`gap-stack-sm rounded-lg p-gutter-sm ${plane.className}`}>
       <Text className="font-mono text-xs text-text-secondary">{`on ${plane.token}`}</Text>
-      <View className="flex-row flex-wrap gap-6 py-2">
+      <View className="flex-row flex-wrap gap-6 pb-6 pt-2">
         {STEPS.map((step) => (
-          <LevelCard key={step} step={step} />
+          <LevelCard key={step} step={step} ladder={ladder} rim={rim} />
         ))}
       </View>
     </View>
@@ -161,22 +246,23 @@ function PlaneRow({ plane }: { plane: (typeof PLANES)[number] }) {
 
 interface Args {
   recipe: RecipeKey
+  ladder: LadderKey
 }
 
-function ShadowPanel({ recipe }: Args) {
+function ShadowPanel({ recipe, ladder }: Args) {
   const r = RECIPES[recipe]
   const check = recipe === 'today' ? ` · matches liftShadow: ${todayMatchesTheme()}` : ''
   return (
     <SurfaceContext.Provider value={{ mode: 'light', level: 'base' }}>
       <View
-        style={[vars(overrideProperties('accepted', 'light')), shadowVars(r)]}
+        style={[vars(overrideProperties('accepted', 'light')), ladderVars(ladder), shadowVars(r)]}
         className="gap-stack-md bg-background-base p-gutter-sm"
         testID="light-elevation-panel"
       >
-        <Text className="text-sm font-semibold text-text-primary">{r.name}</Text>
+        <Text className="text-sm font-semibold text-text-primary">{`${r.name} · ${LADDERS[ladder].name}`}</Text>
         <Text className="font-mono text-xs text-text-secondary">{`${recipeSummary(r)}${check}`}</Text>
         {PLANES.map((plane) => (
-          <PlaneRow key={plane.token} plane={plane} />
+          <PlaneRow key={plane.token} plane={plane} ladder={ladder} rim={r.rim} />
         ))}
       </View>
     </SurfaceContext.Provider>
@@ -186,9 +272,13 @@ function ShadowPanel({ recipe }: Args) {
 const meta: Meta<Args> = {
   title: 'Lab/Decisions/Light Elevation Shadows',
   tags: ['autodocs', 'status:lab', '!status:review'],
-  args: { recipe: 'today' },
+  args: { recipe: 'today', ladder: 'today' },
   argTypes: {
-    recipe: { control: 'inline-radio', options: ['today', 'soft', 'crisp', 'ambientKey'] },
+    recipe: {
+      control: 'inline-radio',
+      options: ['today', 'soft', 'crisp', 'crispRim', 'crispRimLow', 'ambientKey'],
+    },
+    ladder: { control: 'inline-radio', options: ['today', 'ladderA', 'ladderB'] },
   },
   parameters: {
     layout: 'fullscreen',
