@@ -100,6 +100,7 @@
     "check:cycles": "node scripts/check-cycles.mjs",
     "api:check": "node scripts/api-report.mjs",
     "api:update": "node scripts/api-report.mjs --local",
+    "docs:check": "node scripts/check-doc-examples.mjs",
     "size": "size-limit",
     "catalog": "node scripts/catalog.mjs",
     "changelog:compile": "node scripts/changelog-compile.mjs",

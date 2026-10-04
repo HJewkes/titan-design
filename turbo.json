@@ -41,6 +41,9 @@
     "api:check": {
       "dependsOn": ["build"]
     },
+    "docs:check": {
+      "cache": false
+    },
     "format:check": {}
   }
 }
