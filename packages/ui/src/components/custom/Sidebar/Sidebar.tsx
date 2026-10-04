@@ -194,7 +194,7 @@ export function SidebarItem({
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityState={{ selected: isActive }}
+      aria-current={isActive ? 'page' : undefined}
       accessibilityLabel={label}
       onPress={handlePress}
       className={cn(
