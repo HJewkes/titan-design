@@ -13,7 +13,7 @@
 import { describe, it, expect } from 'vitest'
 import { contrast } from './color-checks'
 import { greyRamp } from './tokens/primitives'
-import { semanticColorsDark } from './tokens/semantic'
+import { getSemanticColors, semanticColorsDark } from './tokens/semantic'
 
 /** Every plane text can land on, darkest first. */
 const PLANES = [975, 950, 925, 900, 875, 850] as const
@@ -73,4 +73,26 @@ describe('semantic text on the surface planes (dark)', () => {
   // silently yields black, so such a check passes without measuring anything.
   // Alpha separators are validated by compositing them over each plane in
   // `surface.contract.test.ts` (R3 for the hairlines, R4 for border-prominent).
+})
+
+/**
+ * TD-488: a control outline is the only cue that an outlined input is there, so it
+ * owes WCAG 1.4.11's 3:1 against whichever plane the control sits on.
+ */
+describe('border-input on the content planes (light)', () => {
+  const light = getSemanticColors('light')
+  const CONTENT_PLANES = [
+    'surface-base',
+    'surface-elevated',
+    'surface-raised',
+    'surface-overlay',
+  ] as const
+
+  it.each(CONTENT_PLANES)('clears 3:1 on %s', (plane) => {
+    const ratio = contrast(light['border-input'], light[plane])
+    expect(
+      ratio,
+      `border-input ${light['border-input']} on ${plane} ${light[plane]} is ${ratio.toFixed(2)}:1`
+    ).toBeGreaterThanOrEqual(3)
+  })
 })

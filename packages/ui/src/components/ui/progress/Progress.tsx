@@ -56,17 +56,9 @@ const colorStyles: Record<ProgressColor, string> = {
   info: 'bg-status-info',
 }
 
-// `-muted` rather than `-subtle`: the track is structural — it has to show the
-// bar's full extent behind the fill — and the lightest rung disappears on the
-// dark base. Replaces a `/20` modifier that emitted no rule (VW-308).
-const trackColorStyles: Record<ProgressColor, string> = {
-  primary: 'bg-brand-primary-muted',
-  secondary: 'bg-brand-secondary-muted',
-  success: 'bg-status-success-muted',
-  error: 'bg-status-error-muted',
-  warning: 'bg-status-warning-muted',
-  info: 'bg-status-info-muted',
-}
+// Neutral, not a tone wash: the track has to show the bar's full extent on every
+// plane in both themes, and a `-muted` tone under a same-hue fill does not (TD-490).
+const TRACK_CLASS = 'bg-hairline'
 
 /**
  * Linear progress bar component.
@@ -117,7 +109,7 @@ export function Progress({
         className={cn(
           'rounded-full overflow-hidden',
           trackWidth ? undefined : 'w-full',
-          trackColorStyles[color],
+          TRACK_CLASS,
           sizeStyles[size]
         )}
         style={trackWidth ? { width: trackWidth } : undefined}
