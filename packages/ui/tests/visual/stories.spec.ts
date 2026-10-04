@@ -20,8 +20,10 @@ import { STORY_INDEX_ENV } from './story-index.global-setup'
  * whose Storybook id is `foundations-icons--*`), MesoProgressBar, every
  * VelocityStrip title (`custom-workout-dataviz-velocitystrip*`, including its
  * Expanded, Hero, Dual and Compact sheets), DualVelocityStrip, MesoCard,
- * SegmentedBar and GoalTrajectoryChart, plus the Chat stories named in
- * `CHAT_STORIES`. Widen `SCOPE` to cover more of the library as baselines are seeded.
+ * SegmentedBar, GoalTrajectoryChart, StrengthTrendChart and the Active Workout,
+ * Exercise Detail, Program Planning and Training Status pages, plus the Chat
+ * stories named in `CHAT_STORIES`. Widen `SCOPE` to cover more of the library as
+ * baselines are seeded.
  *
  * Baselines must be generated in the pinned Playwright Linux container
  * (`mcr.microsoft.com/playwright:v1.58.2-noble`) so the committed PNGs are
@@ -32,7 +34,7 @@ import { STORY_INDEX_ENV } from './story-index.global-setup'
  */
 
 const SCOPE =
-  /^(shell-|foundations-icons--|custom-workout-mesoprogressbar--|custom-workout-dataviz-velocitystrip|custom-workout-dataviz-dualvelocitystrip--|custom-workout-mesocard--|custom-workout-segmentedbar--|custom-workout-dataviz-goaltrajectorychart--)/
+  /^(shell-|foundations-icons--|custom-workout-mesoprogressbar--|custom-workout-dataviz-velocitystrip|custom-workout-dataviz-dualvelocitystrip--|custom-workout-mesocard--|custom-workout-segmentedbar--|custom-workout-dataviz-goaltrajectorychart--|custom-workout-dataviz-strengthtrendchart--|pages-active-workout--|pages-exercise-detail--|pages-program-planning--|pages-training-status--)/
 
 // The owner-locked Chat design (VW-393), listed by id so the interactive stories stay out.
 const CHAT_STORIES = new Set([
@@ -97,6 +99,11 @@ const SETTLED_ARGS_PREFIX = 'custom-workout-dataviz-goaltrajectorychart--'
 const storyUrl = (id: string) =>
   `/iframe.html?id=${id}&viewMode=story${id.startsWith(SETTLED_ARGS_PREFIX) ? '&args=animate:!false' : ''}`
 
+// StrengthTrendChart's 600 ms mount draw also freezes at frame 0, and its Interactive story
+// renders without args, so this prefix runs the paused clock past the draw instead.
+const SETTLED_CLOCK_PREFIX = 'custom-workout-dataviz-strengthtrendchart--'
+const SETTLE_MS = 1000
+
 async function renderStory(page: Page, id: string) {
   // install() alone keeps ticking from FIXED_TIME in real time, so a story
   // rendered late in the run showed 16:13 instead of 16:12 (#250); it starts early so pauseAt never rewinds.
@@ -106,6 +113,7 @@ async function renderStory(page: Page, id: string) {
   await page.waitForLoadState('networkidle')
   await page.evaluate(() => document.fonts.ready)
   await expectRendered(page, id)
+  if (id.startsWith(SETTLED_CLOCK_PREFIX)) await page.clock.runFor(SETTLE_MS)
   return page.locator('#storybook-root')
 }
 
