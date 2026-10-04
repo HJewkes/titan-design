@@ -1,7 +1,9 @@
+import type { ReactNode } from 'react'
 import { View, type ViewProps } from 'react-native'
 import { cn } from '../../../../utils/cn'
 import { DATAVIZ_CATEGORICAL_ROLES } from '../../../../theme/extracted-colors-dataviz'
 import { getSemanticColors } from '../../../../theme/tokens/semantic'
+import { EmptyState } from '../../empty-state'
 import { useSurfaceMode } from '../../surface'
 import {
   DIAGONAL_LINE,
@@ -39,6 +41,8 @@ export interface ScatterProps extends Omit<ViewProps, 'children'> {
   onPress?: (id: string) => void
   /** Draws a highlight ring on the matching point. */
   selectedId?: string
+  /** Replaces the default "No data" placeholder drawn when `data` is empty. */
+  emptyState?: ReactNode
   className?: string
 }
 
@@ -57,10 +61,23 @@ export function Scatter({
   diagonal = false,
   onPress,
   selectedId,
+  emptyState,
   className,
   ...props
 }: ScatterProps) {
   const colors = getSemanticColors(useSurfaceMode())
+  if (data.length === 0) {
+    return (
+      <View
+        className={cn('relative items-center justify-center', className)}
+        style={{ width, height }}
+        testID="scatter-empty"
+        {...props}
+      >
+        {emptyState ?? <EmptyState title="No data" className="py-4" />}
+      </View>
+    )
+  }
   const palette = DATAVIZ_CATEGORICAL_ROLES.map((role) => colors[role])
   const layout = scatterLayout(data, width, height, axis, palette)
   const diagonalSegments = diagonal ? referenceSegments(layout, [DIAGONAL_LINE]) : []

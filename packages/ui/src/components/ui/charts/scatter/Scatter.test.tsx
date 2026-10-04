@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
+import { Text } from 'react-native'
 import { axe } from 'jest-axe'
 import { Scatter, type ScatterDatum } from './Scatter'
 import { Surface } from '../../surface'
@@ -112,10 +113,20 @@ describe('Scatter', () => {
     expect(screen.getByTestId('scatter-point-one')).toBeInTheDocument()
   })
 
-  it('renders an empty plot frame with no points', () => {
-    render(<Scatter data={[]} width={200} height={200} />)
-    expect(screen.getByTestId('scatter-canvas')).toBeInTheDocument()
-    expect(screen.queryByTestId('scatter-points')?.childNodes.length ?? 0).toBe(0)
+  describe('empty state', () => {
+    it('shows a "No data" placeholder in place of the plot when there is no data', () => {
+      render(<Scatter data={[]} width={200} height={200} />)
+
+      expect(screen.getByTestId('scatter-empty')).toHaveTextContent('No data')
+      expect(screen.queryByTestId('scatter-canvas')).not.toBeInTheDocument()
+    })
+
+    it('shows the consumer emptyState instead of the default', () => {
+      render(<Scatter data={[]} width={200} height={200} emptyState={<Text>Nothing yet</Text>} />)
+
+      expect(screen.getByTestId('scatter-empty')).toHaveTextContent('Nothing yet')
+      expect(screen.queryByText('No data')).not.toBeInTheDocument()
+    })
   })
 
   it('places an outlier inside the plot when domains are overridden', () => {

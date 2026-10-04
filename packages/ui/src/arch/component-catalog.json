@@ -3102,7 +3102,7 @@
       "storyIds": [
         "components-atoms-gauge--arbitrary-domain",
         "components-atoms-gauge--critical",
-        "components-atoms-gauge--healthy",
+        "components-atoms-gauge--default",
         "components-atoms-gauge--over-max",
         "components-atoms-gauge--override-color",
         "components-atoms-gauge--warning",

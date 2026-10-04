@@ -268,177 +268,19 @@ exports[`Scatter characterisation > on a dark surface > renders the Empty story 
   >
     <div
       class="css-view-175oi2r"
+      data-testid="scatter-empty"
       style="width: 400px; height: 300px;"
     >
       <div
-        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 0 points"
         class="css-view-175oi2r"
-        data-testid="scatter-canvas"
-        role="img"
-        style="position: absolute; top: 0px; left: 0px; width: 400px; height: 300px; overflow-x: hidden; overflow-y: hidden;"
       >
         <div
-          class="css-view-175oi2r"
-          data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 348px; top: 266px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
-        >
-          <div
-            class="css-text-146c3p1"
-            dir="auto"
-            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
-          >
-            0
-          </div>
-        </div>
-        <div
-          class="css-view-175oi2r"
-          data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 348px; top: 202.5px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
-        >
-          <div
-            class="css-text-146c3p1"
-            dir="auto"
-            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
-          >
-            0.25
-          </div>
-        </div>
-        <div
-          class="css-view-175oi2r"
-          data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 348px; top: 139px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
-        >
-          <div
-            class="css-text-146c3p1"
-            dir="auto"
-            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
-          >
-            0.50
-          </div>
-        </div>
-        <div
-          class="css-view-175oi2r"
-          data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 348px; top: 75.5px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
-        >
-          <div
-            class="css-text-146c3p1"
-            dir="auto"
-            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
-          >
-            0.75
-          </div>
-        </div>
-        <div
-          class="css-view-175oi2r"
-          data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 348px; top: 12px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
-        >
-          <div
-            class="css-text-146c3p1"
-            dir="auto"
-            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
-          >
-            1
-          </div>
-        </div>
-        <div
-          class="css-view-175oi2r"
-          data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 254px; left: 40px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
-        >
-          <div
-            class="css-text-146c3p1"
-            dir="auto"
-            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
-          >
-            0
-          </div>
-        </div>
-        <div
-          class="css-view-175oi2r"
-          data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 254px; left: 127px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
-        >
-          <div
-            class="css-text-146c3p1"
-            dir="auto"
-            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
-          >
-            0.25
-          </div>
-        </div>
-        <div
-          class="css-view-175oi2r"
-          data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 254px; left: 214px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
-        >
-          <div
-            class="css-text-146c3p1"
-            dir="auto"
-            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
-          >
-            0.50
-          </div>
-        </div>
-        <div
-          class="css-view-175oi2r"
-          data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 254px; left: 301px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
-        >
-          <div
-            class="css-text-146c3p1"
-            dir="auto"
-            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
-          >
-            0.75
-          </div>
-        </div>
-        <div
-          class="css-view-175oi2r"
-          data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 254px; left: 388px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
-        >
-          <div
-            class="css-text-146c3p1"
-            dir="auto"
-            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
-          >
-            1
-          </div>
-        </div>
-        <div
-          class="css-view-175oi2r"
-          data-testid="scatter-axis-y"
-          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 254px; background-color: rgba(255, 255, 255, 0.15);"
-        />
-        <div
-          class="css-view-175oi2r"
-          data-testid="scatter-axis-x"
-          style="position: absolute; left: 40px; top: 266px; width: 348px; height: 1px; background-color: rgba(255, 255, 255, 0.15);"
-        />
-        <div
           class="css-text-146c3p1"
-          data-testid="scatter-x-label"
           dir="auto"
-          style="position: absolute; left: 40px; width: 348px; bottom: 2px; text-align: center;"
         >
-          Instability (I)
-        </div>
-        <div
-          class="css-text-146c3p1"
-          data-testid="scatter-y-label"
-          dir="auto"
-          style="position: absolute; left: -121px; top: 139px; width: 254px; text-align: center; transform-origin: 50% 50%; transform: rotate(-90deg);"
-        >
-          Abstractness (A)
+          No data
         </div>
       </div>
-      <div
-        class="css-view-175oi2r"
-        data-testid="scatter-points"
-        style="position: absolute; top: 0px; left: 0px; width: 400px; height: 300px;"
-      />
     </div>
   </div>
 </div>
@@ -1974,177 +1816,19 @@ exports[`Scatter characterisation > on a light surface > renders the Empty story
   >
     <div
       class="css-view-175oi2r"
+      data-testid="scatter-empty"
       style="width: 400px; height: 300px;"
     >
       <div
-        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 0 points"
         class="css-view-175oi2r"
-        data-testid="scatter-canvas"
-        role="img"
-        style="position: absolute; top: 0px; left: 0px; width: 400px; height: 300px; overflow-x: hidden; overflow-y: hidden;"
       >
         <div
-          class="css-view-175oi2r"
-          data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 348px; top: 266px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
-        >
-          <div
-            class="css-text-146c3p1"
-            dir="auto"
-            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
-          >
-            0
-          </div>
-        </div>
-        <div
-          class="css-view-175oi2r"
-          data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 348px; top: 202.5px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
-        >
-          <div
-            class="css-text-146c3p1"
-            dir="auto"
-            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
-          >
-            0.25
-          </div>
-        </div>
-        <div
-          class="css-view-175oi2r"
-          data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 348px; top: 139px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
-        >
-          <div
-            class="css-text-146c3p1"
-            dir="auto"
-            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
-          >
-            0.50
-          </div>
-        </div>
-        <div
-          class="css-view-175oi2r"
-          data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 348px; top: 75.5px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
-        >
-          <div
-            class="css-text-146c3p1"
-            dir="auto"
-            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
-          >
-            0.75
-          </div>
-        </div>
-        <div
-          class="css-view-175oi2r"
-          data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 348px; top: 12px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
-        >
-          <div
-            class="css-text-146c3p1"
-            dir="auto"
-            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
-          >
-            1
-          </div>
-        </div>
-        <div
-          class="css-view-175oi2r"
-          data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 254px; left: 40px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
-        >
-          <div
-            class="css-text-146c3p1"
-            dir="auto"
-            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
-          >
-            0
-          </div>
-        </div>
-        <div
-          class="css-view-175oi2r"
-          data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 254px; left: 127px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
-        >
-          <div
-            class="css-text-146c3p1"
-            dir="auto"
-            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
-          >
-            0.25
-          </div>
-        </div>
-        <div
-          class="css-view-175oi2r"
-          data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 254px; left: 214px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
-        >
-          <div
-            class="css-text-146c3p1"
-            dir="auto"
-            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
-          >
-            0.50
-          </div>
-        </div>
-        <div
-          class="css-view-175oi2r"
-          data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 254px; left: 301px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
-        >
-          <div
-            class="css-text-146c3p1"
-            dir="auto"
-            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
-          >
-            0.75
-          </div>
-        </div>
-        <div
-          class="css-view-175oi2r"
-          data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 254px; left: 388px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
-        >
-          <div
-            class="css-text-146c3p1"
-            dir="auto"
-            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
-          >
-            1
-          </div>
-        </div>
-        <div
-          class="css-view-175oi2r"
-          data-testid="scatter-axis-y"
-          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 254px; background-color: rgba(0, 0, 0, 0.09);"
-        />
-        <div
-          class="css-view-175oi2r"
-          data-testid="scatter-axis-x"
-          style="position: absolute; left: 40px; top: 266px; width: 348px; height: 1px; background-color: rgba(0, 0, 0, 0.09);"
-        />
-        <div
           class="css-text-146c3p1"
-          data-testid="scatter-x-label"
           dir="auto"
-          style="position: absolute; left: 40px; width: 348px; bottom: 2px; text-align: center;"
         >
-          Instability (I)
-        </div>
-        <div
-          class="css-text-146c3p1"
-          data-testid="scatter-y-label"
-          dir="auto"
-          style="position: absolute; left: -121px; top: 139px; width: 254px; text-align: center; transform-origin: 50% 50%; transform: rotate(-90deg);"
-        >
-          Abstractness (A)
+          No data
         </div>
       </div>
-      <div
-        class="css-view-175oi2r"
-        data-testid="scatter-points"
-        style="position: absolute; top: 0px; left: 0px; width: 400px; height: 300px;"
-      />
     </div>
   </div>
 </div>

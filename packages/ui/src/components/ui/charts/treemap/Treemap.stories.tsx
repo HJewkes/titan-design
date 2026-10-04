@@ -13,16 +13,23 @@ const meta: Meta<typeof Treemap> = {
       description: {
         component:
           '**Atom.** A domain-free squarified treemap: tiles sized by `value` on a linear, sqrt or log ' +
-          'scale, with ink picked per fill for contrast. Composes no other component: tiles are ' +
-          '`View`s and `Pressable`s, and theme colours come through `useSurfaceMode` and `getSemanticColors`.',
+          'scale, with ink picked per fill for contrast. Composes [EmptyState](?path=/docs/components-molecules-emptystate--docs) as the ' +
+          'default `emptyState`, drawn when no datum has a positive `value` (set the `data` control to `[]`). ' +
+          'Tiles are `View`s and `Pressable`s, and theme colours come through `useSurfaceMode` and ' +
+          '`getSemanticColors`.\n\n' +
+          'No loading state: the consumer passes data that is already loaded. No error state: a chart ' +
+          'cannot fail to get its data; the consumer renders a failure with `Alert`. No disabled state: ' +
+          'the chart is a read-out, and a tile is pressable only when `onPress` is set.',
       },
     },
   },
   argTypes: {
+    data: { control: 'object' },
     width: { control: { type: 'range', min: 200, max: 900, step: 20 } },
     height: { control: { type: 'range', min: 120, max: 600, step: 20 } },
     scale: { control: 'select', options: ['linear', 'sqrt', 'log'] },
     maxTiles: { control: { type: 'range', min: 4, max: 80, step: 1 } },
+    emptyState: { control: false },
   },
 }
 export default meta
