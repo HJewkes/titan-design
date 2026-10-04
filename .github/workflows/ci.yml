@@ -20,7 +20,10 @@ jobs:
         node-version: [20, 22]
 
     steps:
+      # Full history so the release-bump step can read the PR base's API reports.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
 
@@ -35,6 +38,14 @@ jobs:
       # freshness (arch:check): local `pnpm verify` minus stories-axe, which runs in its own job.
       - name: Verify
         run: pnpm verify:unit
+
+      # A PR that changes packages/ui's version must bump at least as far as its API report diff
+      # requires; the script skips when the version matches the base.
+      - name: Release bump
+        if: github.event_name == 'pull_request'
+        run: node packages/ui/scripts/check-release-bump.mjs --base "$BASE_SHA"
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
 
       # publint --strict plus attw on the packed tarball, so an export-map regression fails before a tag exists.
       - name: Package shape
