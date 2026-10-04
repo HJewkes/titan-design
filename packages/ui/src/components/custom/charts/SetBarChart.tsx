@@ -566,7 +566,7 @@ function renderStub(
   if (kind === 'empty') {
     // A rep column the diverging side did NOT log — a faint constant-contrast section, quieter than
     // a planned to-do (it's a hole in this side's data, index-locked to the other side's rep), or
-    // a 3:1 ring under the `outline` SetBarTreatment.
+    // the SetBarTreatment's own colour.
     return <View style={{ ...base, ...emptyFill }} testID={`${testIDPrefix}-slot-empty`} />
   }
   // todo — a solid surface-relative section (expanded language) or a dashed outline (hero language).

@@ -10,6 +10,8 @@ import {
   scatterLayout,
   tickLabel,
   ticksOf,
+  DIAGONAL_LINE,
+  referenceSegments,
 } from './scatterGeometry'
 
 describe('domainOf', () => {
@@ -92,5 +94,112 @@ describe('scatterAriaLabel', () => {
 
   it('falls back to x and y and uses the singular for one point', () => {
     expect(scatterAriaLabel({}, 1)).toBe('Scatter plot of x versus y, 1 point')
+  })
+})
+
+describe('referenceSegments', () => {
+  const layout = scatterLayout([], 100, 100, { xMin: 0, xMax: 1, yMin: 0, yMax: 1 }, ['#000'])
+  const { toX, toY } = layout
+
+  it('spans the plot width for a horizontal line', () => {
+    expect(referenceSegments(layout, [{ y: 0.5 }])).toEqual([
+      { id: 'reference-0', label: undefined, x1: toX(0), y1: toY(0.5), x2: toX(1), y2: toY(0.5) },
+    ])
+  })
+
+  it('spans the plot height for a vertical line, including at the domain edge', () => {
+    const [mid] = referenceSegments(layout, [{ x: 0.25, id: 'v', label: 'cut' }])
+    expect(mid).toEqual({
+      id: 'v',
+      label: 'cut',
+      x1: toX(0.25),
+      y1: toY(0),
+      x2: toX(0.25),
+      y2: toY(1),
+    })
+    const [edge] = referenceSegments(layout, [{ x: 1 }])
+    expect(edge).toMatchObject({ x1: toX(1), x2: toX(1), y1: toY(0), y2: toY(1) })
+  })
+
+  it('draws a sloped line corner to corner when it fits the box', () => {
+    expect(referenceSegments(layout, [DIAGONAL_LINE])[0]).toMatchObject({
+      x1: toX(0),
+      y1: toY(1),
+      x2: toX(1),
+      y2: toY(0),
+    })
+  })
+
+  it('clips a sloped line to the plot box', () => {
+    const [seg] = referenceSegments(layout, [{ slope: 2, intercept: 0 }])
+    expect(seg).toMatchObject({ x1: toX(0), y1: toY(0), x2: toX(0.5), y2: toY(1) })
+  })
+
+  it('yields no segment for a line fully outside the domain', () => {
+    expect(
+      referenceSegments(layout, [
+        { y: 2 },
+        { x: -0.1 },
+        { slope: 1, intercept: 5 },
+        { slope: 0, intercept: -1 },
+      ])
+    ).toEqual([])
+  })
+
+  it.each([
+    ['NaN y', { y: NaN }],
+    ['NaN x', { x: NaN }],
+    ['infinite y', { y: Infinity }],
+    ['infinite slope', { slope: Infinity, intercept: 0 }],
+    ['NaN slope', { slope: NaN, intercept: 0 }],
+    ['NaN intercept', { slope: 1, intercept: NaN }],
+    ['infinite intercept', { slope: 1, intercept: -Infinity }],
+  ])('drops a line with a non-finite value: %s', (_name, line) => {
+    expect(referenceSegments(layout, [line])).toEqual([])
+  })
+
+  it('draws a flat sloped line lying on the domain edge', () => {
+    expect(referenceSegments(layout, [{ slope: 0, intercept: 0 }])[0]).toMatchObject({
+      x1: toX(0),
+      y1: toY(0),
+      x2: toX(1),
+      y2: toY(0),
+    })
+  })
+
+  it('clips a sloped line that enters below the domain at its lower bound', () => {
+    expect(referenceSegments(layout, [{ slope: 1, intercept: -0.5 }])[0]).toMatchObject({
+      x1: toX(0.5),
+      y1: toY(0),
+      x2: toX(1),
+      y2: toY(0.5),
+    })
+  })
+
+  it('does not widen the layout domain', () => {
+    const l = scatterLayout(
+      [
+        { id: 'a', x: 0, y: 0 },
+        { id: 'b', x: 1, y: 1 },
+      ],
+      100,
+      100,
+      {},
+      ['#000']
+    )
+    expect(referenceSegments(l, [{ y: 9 }])).toEqual([])
+    expect(l.yd).toEqual({ min: 0, max: 1 })
+  })
+})
+
+describe('scatterAriaLabel with reference lines', () => {
+  it('appends only the labelled segments', () => {
+    const seg = { x1: 0, y1: 0, x2: 1, y2: 1 }
+    expect(
+      scatterAriaLabel({}, 2, [
+        { id: 'a', label: 'Target', ...seg },
+        { id: 'b', ...seg },
+      ])
+    ).toBe('Scatter plot of x versus y, 2 points, reference lines: Target')
   })
 })

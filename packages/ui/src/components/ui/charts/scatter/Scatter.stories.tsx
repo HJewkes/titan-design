@@ -21,7 +21,8 @@ const meta: Meta<typeof Scatter> = {
   argTypes: {
     width: { control: { type: 'range', min: 240, max: 800, step: 20 } },
     height: { control: { type: 'range', min: 180, max: 600, step: 20 } },
-    diagonal: { control: 'boolean' },
+    referenceLines: { control: 'object' },
+    diagonal: { control: 'boolean', table: { disable: true } },
   },
 }
 export default meta
@@ -42,7 +43,7 @@ export const Default: Story = {
     data: mainSequence,
     width: 480,
     height: 340,
-    diagonal: true,
+    referenceLines: [{ slope: -1, intercept: 1, id: 'main-sequence', label: 'Main sequence' }],
     axis: {
       xLabel: 'Instability (I)',
       yLabel: 'Abstractness (A)',
@@ -75,7 +76,7 @@ export const Selected: Story = {
     data: mainSequence,
     width: 480,
     height: 340,
-    diagonal: true,
+    referenceLines: [{ slope: -1, intercept: 1, id: 'main-sequence', label: 'Main sequence' }],
     selectedId: 'utils',
     axis: {
       xLabel: 'Instability (I)',
@@ -107,7 +108,7 @@ export const Outlier: Story = {
     ],
     width: 480,
     height: 340,
-    diagonal: true,
+    referenceLines: [{ slope: -1, intercept: 1, id: 'main-sequence', label: 'Main sequence' }],
     axis: {
       xLabel: 'Instability (I)',
       yLabel: 'Abstractness (A)',
