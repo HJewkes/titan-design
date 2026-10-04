@@ -299,12 +299,7 @@ describe('FormField geometry resolves to the spacing tokens', () => {
       ['w-full', 'gap-stack-lg'],
       ['100%', '16px'],
     ],
-    [
-      'the title block',
-      () => screen.getByText('Profile').parentElement,
-      ['gap-stack-sm'],
-      ['4px'],
-    ],
+    ['the title block', () => screen.getByText('Profile').parentElement, ['gap-stack-sm'], ['4px']],
     [
       'the actions band',
       () => screen.getByText('Save').parentElement,
