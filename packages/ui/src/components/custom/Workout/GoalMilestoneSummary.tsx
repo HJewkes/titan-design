@@ -340,7 +340,7 @@ export function MilestoneFacts({ tile }: { tile: ResolvedTile }) {
         style={{ position: 'absolute', opacity: 0, flexDirection: 'row', alignSelf: 'flex-start' }}
         className="gap-inline-lg"
         pointerEvents="none"
-        aria-hidden="true"
+        aria-hidden
         testID="goal-milestone-facts-measure"
         onLayout={(e) => setNatural(e.nativeEvent.layout.width)}
       >
