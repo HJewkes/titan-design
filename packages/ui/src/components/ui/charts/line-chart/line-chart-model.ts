@@ -5,7 +5,7 @@ import { scaleLinear, scaleTime } from 'd3-scale'
 import { curveMonotoneX, line } from 'd3-shape'
 
 import { CATEGORICAL_CVD_SAFE_MAX } from '../../../../theme/tokens/primitives'
-import { cappedTicks, linearDomain, timeDomain } from '../kit/scaleMath'
+import { cappedTicks, linearDomain, timeDomain, type Domain } from '../kit/scaleMath'
 import { decimateMinMax } from '../kit/thinMath'
 import type {
   CleanPoint,
@@ -147,6 +147,11 @@ function projectOne(clean: CleanSeries, scales: Scales): ProjectedSeries {
   }
 }
 
+// scaleTime takes Dates, which drop the padded domain's sub-ms fraction, so its ticks can fall
+// outside a domain a few ms wide.
+const withinDomain = (ticks: number[], { min, max }: Domain): number[] =>
+  ticks.filter((value) => value >= min && value <= max)
+
 function ticksFor(domains: LineDomains, scales: Scales, width: number, xScale?: LineXScale) {
   const xSource =
     xScale === 'linear'
@@ -155,15 +160,12 @@ function ticksFor(domains: LineDomains, scales: Scales, width: number, xScale?: 
   const xTicker = { ticks: (count: number) => xSource.ticks(count).map(Number) }
   const yTicker = scaleLinear().domain([domains.y.min, domains.y.max])
   const xTarget = Math.max(Math.floor(width / X_TICK_SPACING_PX), 2)
-  const tick =
+  const project =
     (scale: (v: number) => number) =>
-    (value: number): LineTick => ({
-      value,
-      position: scale(value),
-    })
+    (value: number): LineTick => ({ value, position: scale(value) })
   return {
-    xTicks: cappedTicks(xTicker, xTarget).map(tick(scales.x)),
-    yTicks: cappedTicks(yTicker, Y_TICK_TARGET).map(tick(scales.y)),
+    xTicks: withinDomain(cappedTicks(xTicker, xTarget), domains.x).map(project(scales.x)),
+    yTicks: withinDomain(cappedTicks(yTicker, Y_TICK_TARGET), domains.y).map(project(scales.y)),
   }
 }
 

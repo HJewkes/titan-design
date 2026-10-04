@@ -19,39 +19,55 @@ const nonFinite = fc.constantFrom(Number.NaN, Number.POSITIVE_INFINITY, Number.N
 
 const hostileNumber = fc.oneof(fc.double({ min: -1e9, max: 1e9, noNaN: true }), nonFinite)
 
-// x at millisecond resolution, as timestamps are: the kit's timeDomain has no relative-spread
-// guard, so two subnormal x values a few ulps apart lose the padding to rounding.
-const hostileX = fc.oneof(
-  fc.double({ min: -1e9, max: 1e9, noNaN: true }).map((x) => Math.round(x * 1000) / 1000),
-  nonFinite
-)
+// Integer-ms x in tight clusters around a shared base, as timestamps are: 1 or 2 ms apart, small
+// negative times, and wide spans.
+const baseMs = fc.oneof(fc.constantFrom(0, -5), fc.integer({ min: -2e12, max: 2e12 }))
+const offsetMs = fc.oneof(fc.integer({ min: 0, max: 2 }), fc.integer({ min: -1e7, max: 1e7 }))
+const hostileX = (base: number) =>
+  fc.oneof(
+    offsetMs.map((offset) => base + offset),
+    nonFinite
+  )
 
-const pointArb: fc.Arbitrary<LinePoint> = fc.record({
-  x: hostileX,
-  y: fc.option(hostileNumber, { nil: null }),
-  segmentKey: fc.option(fc.constantFrom('a', 'b'), { nil: undefined }),
-})
+const pointArb = (base: number): fc.Arbitrary<LinePoint> =>
+  fc.record({
+    x: hostileX(base),
+    y: fc.option(hostileNumber, { nil: null }),
+    segmentKey: fc.option(fc.constantFrom('a', 'b'), { nil: undefined }),
+  })
 
-const seriesArb: fc.Arbitrary<LineSeries[]> = fc
-  .array(fc.array(pointArb, { maxLength: 60 }), { maxLength: 4 })
-  .map((all) => all.map((points, i) => ({ id: `s${i}`, label: `S${i}`, points })))
+const seriesFrom = (base: number): fc.Arbitrary<LineSeries[]> =>
+  fc
+    .array(fc.array(pointArb(base), { maxLength: 60 }), { maxLength: 4 })
+    .map((all) => all.map((points, i) => ({ id: `s${i}`, label: `S${i}`, points })))
 
-const plotArb = fc.record({
-  width: fc.integer({ min: 0, max: 1200 }),
-  height: fc.integer({ min: 0, max: 600 }),
-  xScale: fc.constantFrom('time' as const, 'linear' as const),
-  includeZero: fc.boolean(),
-  referenceLines: fc.array(fc.record({ y: hostileNumber, label: fc.constant('Ref') }), {
-    maxLength: 2,
-  }),
-  boundaries: fc.array(fc.record({ x: hostileX }), { maxLength: 2 }),
-})
+const seriesArb = baseMs.chain(seriesFrom)
+
+const plotFrom = (base: number) =>
+  fc.record({
+    width: fc.integer({ min: 0, max: 1200 }),
+    height: fc.integer({ min: 0, max: 600 }),
+    xScale: fc.constantFrom('time' as const, 'linear' as const),
+    includeZero: fc.boolean(),
+    referenceLines: fc.array(fc.record({ y: hostileNumber, label: fc.constant('Ref') }), {
+      maxLength: 2,
+    }),
+    boundaries: fc.array(fc.record({ x: hostileX(base) }), { maxLength: 2 }),
+  })
+
+const chartArb = baseMs.chain((base) => fc.tuple(seriesFrom(base), plotFrom(base)))
+
+/** A path's numbers, one per token between commands; `NaN` or any stray token reads as NaN. */
+function pathNumbers(d: string): number[] {
+  return d
+    .split(/[MLCZ,]/)
+    .filter((token) => token !== '')
+    .map(Number)
+}
 
 /** Every number in the geometry a painter would draw: point centres, path commands, ticks, rules. */
 function coordinates(geometry: LineGeometry): { x: number[]; y: number[] } {
-  const pathPairs = geometry.series.flatMap((s) =>
-    s.paths.flatMap((d) => (d.match(/-?[\d.]+(?:e[-+]?\d+)?/g) ?? []).map(Number))
-  )
+  const pathPairs = geometry.series.flatMap((s) => s.paths.flatMap(pathNumbers))
   const evens = pathPairs.filter((_, i) => i % 2 === 0)
   const odds = pathPairs.filter((_, i) => i % 2 === 1)
   const points = geometry.series.flatMap((s) => s.points)
@@ -146,11 +162,29 @@ describe('cleanSeries', () => {
 describe('projectSeries', () => {
   it('emits only finite coordinates inside the plot for any input', () => {
     fcAssert(
-      fc.property(seriesArb, plotArb, (all, plot) => {
+      fc.property(chartArb, ([all, plot]) => {
         const { x, y } = coordinates(project(all, plot))
         return inside(x, plot.width) && inside(y, plot.height)
       })
     )
+  })
+
+  it('keeps time ticks inside the plot for timestamps a few ms apart, negative ones included', () => {
+    for (const xs of [
+      [1_700_000_000_000, 1_700_000_000_001],
+      [1_700_000_000_000, 1_700_000_000_002],
+      [-5, -4],
+    ]) {
+      const points = xs.map((x, i) => ({ x, y: i }))
+      const geometry = project([{ id: 's', label: 'S', points }])
+      expect(inside(coordinates(geometry).x, PLOT.width), xs.join()).toBe(true)
+    }
+  })
+
+  it('reads a NaN or stray token in a path as non-finite', () => {
+    expect(pathNumbers('M0,180C1,2,3,4,5,6').every(Number.isFinite)).toBe(true)
+    expect(pathNumbers('M0,NaNL1,2').every(Number.isFinite)).toBe(false)
+    expect(pathNumbers('M0,1L2,Infinity').every(Number.isFinite)).toBe(false)
   })
 
   it('keeps every fixture, the Hostile one included, finite and inside the plot', () => {
