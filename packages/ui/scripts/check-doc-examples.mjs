@@ -161,7 +161,8 @@ function tsconfigFor() {
 }
 
 // Consumers import the stylesheets through a bundler; tsc only needs to know they are modules.
-const AMBIENT = "declare module '*.css'\n"
+// The icon library is the consumer's choice and not a titan dependency, so its types are absent.
+const AMBIENT = "declare module '*.css'\ndeclare module 'lucide-react'\n"
 
 function writeProject(dir, fences) {
   fs.symlinkSync(path.join(PKG_ROOT, 'node_modules'), path.join(dir, 'node_modules'), 'dir')

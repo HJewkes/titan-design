@@ -35,6 +35,9 @@
       "outputs": ["storybook-static/**"]
     },
     "type-check": {},
+    "type-check:examples": {
+      "cache": false
+    },
     "check:package": {
       "dependsOn": ["build"]
     },

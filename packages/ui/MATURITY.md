@@ -63,7 +63,7 @@ with it rather than quietly tagging around it.
 Clause 5 is live as of TD-26 slice S6 (TD-93). A `ui/` component is stable only if each
 applicable layer below exists in `<dir>`, or its story `meta` declares the layer not applicable:
 
-```ts
+```ts fragment
 parameters: { layers: { keyboard: 'n/a: focus belongs to the wrapped Button' } },
 ```
 
@@ -110,7 +110,7 @@ Consequences worth stating out loud:
 Promotion is a **one-line edit** on the component's story `meta`, negating the
 inherited default and adding the new status:
 
-```ts
+```ts fragment
 const meta: Meta<typeof Foo> = {
   title: 'Custom/Workout/Foo',
   tags: ['status:stable', '!status:review'], // ! negates the inherited default

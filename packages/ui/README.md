@@ -177,7 +177,7 @@ their heavier runtime dependencies:
 
 ### Button
 
-```tsx
+```tsx fragment
 <Button
   variant="solid" | "outline" | "ghost" | "link"
   color="primary" | "secondary" | "success" | "error" | "warning" | "info"
@@ -193,7 +193,7 @@ their heavier runtime dependencies:
 
 ### Input
 
-```tsx
+```tsx fragment
 <Input
   label="Field Label"
   placeholder="Placeholder text"
@@ -212,7 +212,7 @@ their heavier runtime dependencies:
 
 ### Typography
 
-```tsx
+```tsx fragment
 <Typography
   variant="h1" | "h2" | "h3" | "h4" | "h5" | "h6" |
            "body1" | "body2" | "caption" | "overline"
@@ -224,7 +224,7 @@ their heavier runtime dependencies:
 
 ### Card
 
-```tsx
+```tsx fragment
 <Card variant="default" | "elevated" | "outline" | "filled">
   <CardHeader>
     <CardTitle>Title</CardTitle>
@@ -260,7 +260,7 @@ import '@titan-design/react-ui/theme/global.css'
 
 Add the `light` class to your root element for light mode:
 
-```tsx
+```tsx fragment
 // Dark mode (default)
 <div>
   {/* Your app */}
@@ -299,6 +299,8 @@ The design system uses a two-tier token system following DTCG conventions:
 ### Using Tokens
 
 ```tsx
+import { Text, View } from 'react-native'
+
 // In components
 <View className="bg-surface-elevated rounded-lg" style={{ borderWidth: 1, borderColor: '#1F1F1F' }}>
   <Text className="text-text-primary">Primary text</Text>
@@ -314,7 +316,7 @@ The design system uses a two-tier token system following DTCG conventions:
 
 The bare `border` Tailwind utility sets both `borderWidth: 1` **and** `borderColor: currentColor`. When combined with a `border-border-*` color class, the color assignment order is not guaranteed in NativeWind/React Native, which can produce black borders instead of the intended theme color.
 
-```tsx
+```tsx fragment
 // WRONG — border sets currentColor, may render black on native
 <View className="border border-border-default" />
 
@@ -416,7 +418,7 @@ All components use React Native primitives for cross-platform compatibility:
 
 Use NativeWind platform modifiers when needed:
 
-```tsx
+```tsx fragment
 <View className="p-4 web:hover:bg-gray-100 native:active:opacity-80">
 ```
 
