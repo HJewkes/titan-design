@@ -38,9 +38,9 @@ export {
   normalizeLossThresholds,
   type VelocityLossThresholds,
   type VelocityLossBand,
-  type DualVelocityStream,
 } from './VelocityStrip'
 export { DualVelocityStrip, type DualVelocityStripProps } from './DualVelocityStrip'
+export type { DualVelocityStream } from './dual-velocity-slots'
 export { MuscleGroupChip, type MuscleGroupChipProps, type VolumeStatus } from './MuscleGroupChip'
 export { MuscleStrip, type MuscleStripProps, type MuscleStripMuscleData } from './MuscleStrip'
 export { Sparkline, type SparklineProps } from './Sparkline'

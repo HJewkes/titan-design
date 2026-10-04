@@ -43,11 +43,6 @@ export {
 } from './velocity-scale'
 export type { VelocitySet } from './velocity-slots'
 export { VelocityLossBands } from './VelocityLossBands'
-export {
-  DualVelocityStrip,
-  type DualVelocityStripProps,
-  type DualVelocityStream,
-} from './DualVelocityStrip'
 
 export interface VelocityStripProps extends ViewProps {
   /**

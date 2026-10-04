@@ -1,7 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
-import { DualVelocityStrip } from './VelocityStrip'
+import { DualVelocityStrip } from './DualVelocityStrip'
 import { greyRamp, primitiveColors } from '../../../theme/tokens/primitives'
 
 const PAGE_BG = greyRamp[975]

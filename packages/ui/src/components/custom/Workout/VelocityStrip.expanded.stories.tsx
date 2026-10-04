@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Pressable } from 'react-native'
-import { VelocityStrip, DualVelocityStrip } from './VelocityStrip'
+import { VelocityStrip } from './VelocityStrip'
+import { DualVelocityStrip } from './DualVelocityStrip'
 import {
   Sheet,
   Note,

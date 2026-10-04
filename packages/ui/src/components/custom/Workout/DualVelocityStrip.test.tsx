@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { DualVelocityStrip } from './VelocityStrip'
+import { DualVelocityStrip } from './DualVelocityStrip'
 
 /**
  * The newest-rep entrance is an `Animated` value applied IMPERATIVELY, so jsdom never reflects it:

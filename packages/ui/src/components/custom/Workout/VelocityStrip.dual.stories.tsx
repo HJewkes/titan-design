@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { DualVelocityStrip } from './VelocityStrip'
+import { DualVelocityStrip } from './DualVelocityStrip'
 import {
   LEFT_SLOT,
   RIGHT_SLOT,

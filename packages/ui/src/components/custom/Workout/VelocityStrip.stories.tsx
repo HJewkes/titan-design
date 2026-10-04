@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
-import { VelocityStrip, DualVelocityStrip } from './VelocityStrip'
+import { VelocityStrip } from './VelocityStrip'
+import { DualVelocityStrip } from './DualVelocityStrip'
 import { SessionRail, type SessionRailExercise } from './SessionRail'
 import type { SetRowProps } from './SetRow'
 import {

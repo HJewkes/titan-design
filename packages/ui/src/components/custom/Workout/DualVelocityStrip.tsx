@@ -10,8 +10,6 @@ import {
   type DualChartProps,
 } from './DualVelocityCharts'
 
-export type { DualVelocityStream } from './dual-velocity-slots'
-
 // --- Dual (bilateral) diverging chart ----------------------------------------
 // The two-device (LEFT + RIGHT voltra) treatment. Instead of two stacked single
 // heroes with independent baselines, ONE diverging chart shares a horizontal centre
