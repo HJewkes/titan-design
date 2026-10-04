@@ -1,9 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { space } from '../../../theme/tokens/semantic'
 import {
-  siblingSource,
-  spacingClassesIn,
-  spacingClassesOn,
+  spacingClassesOf,
   resolveAll,
 } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
@@ -170,15 +168,15 @@ describe('WorkoutCard', () => {
  * `contentContainerClassName` for a ScrollView.
  */
 describe('WorkoutCard geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'WorkoutCard.tsx')
-
   it('keeps the card inset', () => {
-    expect(spacingClassesIn(source, 'WorkoutCard')).toEqual(['p-3.5'])
+    render(<WorkoutCard {...baseProps} />)
+    expect(spacingClassesOf('workout-card-body')).toEqual(['p-3.5'])
     expect(resolveAll(['p-3.5'])).toEqual(['14px'])
   })
 
   it('insets the expanded exercise list', () => {
-    const classes = spacingClassesOn(source, 'workout-card-exercises')
+    render(<WorkoutCard {...baseProps} expanded exercises={exercises} />)
+    const classes = spacingClassesOf('workout-card-exercises')
     expect(classes).toEqual(['px-inset-sm', 'pb-inset-sm', 'gap-1.5'])
     expect(resolveAll(classes)).toEqual(['8px', '8px', '6px'])
   })
