@@ -1,8 +1,8 @@
-// Round 0 fixtures for CodeViewer (TD-74). Hand-assembled `SourceExcerpt` values: no code-read
+// Round 0 fixtures for CodeViewer (TD-74). Hand-assembled `SourceExcerpt` values: no producer
 // output was captured. The real ones are slices of titan-design's own public source at commit
 // 83122ef6878350d6803123c21410edae5674cb2e
-// (verify any of them with `git show 83122ef6:packages/ui/src/<path>`). Windows follow code-read's
-// `excerptWindow` arithmetic (5 context lines, 80-line cap), `origin` is 'commit' and `contentHash` is
+// (verify any of them with `git show 83122ef6:packages/ui/src/<path>`). Windows follow the producer's
+// window arithmetic (5 context lines, 80-line cap), `origin` is 'commit' and `contentHash` is
 // the blob's git object id. The findings are illustrative except `tooltipLongFunction`.
 // The scale and degenerate fixtures at the bottom are synthetic.
 

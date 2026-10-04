@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
 import {
   FIXTURE_SHA,
@@ -12,6 +13,19 @@ const EXCERPT_LINE_CAP = 80
 // One trailing terminator adds no line, matching editor numbering (contract section 1).
 const lineCount = (text: string): number =>
   text.replace(/(\r\n|\r|\n)$/, '').split(/\r\n|\r|\n/).length
+const sha256 = (text: string): string => createHash('sha256').update(text).digest('hex')
+
+// Pins each real fixture's text, so an edit to the copied source fails here instead of drifting
+// from the blob at FIXTURE_SHA. Refresh a value only after re-copying with `git show`.
+const REAL_TEXT_SHA256: Record<string, string> = {
+  tooltipLongFunction: '828cf70e29831eece6fcfa64aed12237c016ec31930e88a2b957e5cedcf51137',
+  proseTwoRanges: '360e2e6f266165cf83aaa8204ed696b71071b1959876b31193d266feb3fba4e4',
+  fixedWindowOneLine: '214562cbaefa80ee8bab9d260a26d37a301b602338b9c65b55fe1099ba6b93eb',
+  fixedWindowWholeFile: '5fc1d312c40288827d7b1cee20dcd30bca50335571b441cbf3c8dc7d8fc23040',
+  gutterGrowth: 'b710c70bcd6757304ba32e655a845af87ccb466606ba9c9607a1a05e047d6d42',
+  longLineReal: '58d26c9524e5dadac9b64fb63660b0ecf588d7b86d8d0a704074287ad9ff38a8',
+  unicodeReal: 'c5a39cb5f87f9e815b241e89de91b1db2dfa74d309307d2449f67f48e5f65940',
+}
 const DELIBERATELY_BAD = new Set(['endLineMismatch', 'badNumbers', 'invertedRange'])
 
 describe('CodeViewer fixtures: shape', () => {
@@ -19,7 +33,11 @@ describe('CodeViewer fixtures: shape', () => {
     expect(FIXTURE_SHA).toMatch(/^[0-9a-f]{40}$/)
   })
 
-  describe.each(Object.entries(realFixtures))('real fixture %s', (_name, fx: SourceExcerpt) => {
+  describe.each(Object.entries(realFixtures))('real fixture %s', (name, fx: SourceExcerpt) => {
+    it('matches the text copied from the pinned commit', () => {
+      expect(sha256(fx.text)).toBe(REAL_TEXT_SHA256[name])
+    })
+
     it('carries a git blob id and a commit origin', () => {
       expect(fx.contentHash).toMatch(/^[0-9a-f]{40}$/)
       expect(fx.origin).toBe('commit')
