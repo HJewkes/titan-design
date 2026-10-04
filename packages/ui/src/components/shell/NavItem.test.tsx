@@ -2,7 +2,8 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { NavItem } from './NavItem'
 import { ActivityIcon } from '../icons'
-import { siblingSource } from '../../test/spacing-resolver'
+import { siblingSource, spacingClassesAt } from '../../test/spacing-resolver'
+import { capturedByNode } from '../../test/classname-capture'
 
 const icon = <ActivityIcon size={20} color="currentColor" />
 
@@ -73,12 +74,24 @@ describe('NavItem', () => {
 describe('NavItem keeps its optical 3px gap', () => {
   const source = siblingSource(import.meta.url, 'NavItem.tsx')
 
-  it('ships gap-[3px] with the reason beside it', () => {
-    expect(source).toContain('gap-[3px]')
+  const renderedClasses = (node: Element | null) =>
+    capturedByNode.get(node as Element)?.split(/\s+/) ?? []
+
+  it('renders gap-[3px] on the glyph-and-label stack', () => {
+    render(<NavItem icon={icon} label="Live" />)
+    const stack = screen.getByText('Live').parentElement
+    expect(renderedClasses(stack)).toContain('gap-[3px]')
+    expect(spacingClassesAt(stack)).toEqual([])
+  })
+
+  it('ships the reason beside it', () => {
     expect(source).toMatch(/\/\/ optical: 3px icon-to-micro-label/)
   })
 
   it('keeps the 46px target the specimen locks', () => {
-    expect(source).toContain('h-[46px] w-[46px]')
+    render(<NavItem icon={icon} label="Live" />)
+    expect(renderedClasses(screen.getByText('Live').parentElement)).toEqual(
+      expect.arrayContaining(['h-[46px]', 'w-[46px]'])
+    )
   })
 })
