@@ -55,7 +55,7 @@ describe('DeviceMenu geometry resolves to the spacing tokens', () => {
   it.each([
     ['the panel', () => header().parentElement, ['mt-2.5', 'p-inset-sm'], ['10px', '8px']],
     ['the header label', header, ['px-2', 'pt-1.5', 'pb-2'], ['8px', '6px', '8px']],
-  ] as const)('%s ships %s', (_label, find, classes, pixels) => {
+  ] as const)('%s ships its spacing tokens', (_label, find, classes, pixels) => {
     render(<DeviceMenu devices={devices} isOpen />)
     expect(spacingClassesAt(find())).toEqual([...classes])
     expect(resolveAll([...classes])).toEqual([...pixels])

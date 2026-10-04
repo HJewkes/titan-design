@@ -80,7 +80,7 @@ describe('TopBar geometry resolves to the spacing tokens', () => {
       ['gap-inline-lg'],
       ['12px'],
     ],
-  ] as const)('%s ships %s', (_label, find, classes, pixels) => {
+  ] as const)('%s ships its spacing tokens', (_label, find, classes, pixels) => {
     render(<TopBar showClock={false} trailing={<Text>solo</Text>} />)
     expect(spacingClassesAt(find() ?? null).filter((c) => c !== 'ml-auto')).toEqual([...classes])
     expect(resolveAll([...classes])).toEqual([...pixels])
