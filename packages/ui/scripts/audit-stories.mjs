@@ -9,7 +9,6 @@
  * 70 an unexpected error,
  * 64 usage, targeting refusal or start failure, 130 interrupted.
  */
-/* global process, console */
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { dirname, join, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
