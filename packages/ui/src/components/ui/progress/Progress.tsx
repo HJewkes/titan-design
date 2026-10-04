@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, Text, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { useSurfaceMode } from '../surface'
 
 export type ProgressSize = 'sm' | 'md' | 'lg'
 export type ProgressColor = 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info'
@@ -56,9 +57,17 @@ const colorStyles: Record<ProgressColor, string> = {
   info: 'bg-status-info',
 }
 
-// Neutral, not a tone wash: the track has to show the bar's full extent on every
-// plane in both themes, and a `-muted` tone under a same-hue fill does not (TD-490).
-const TRACK_CLASS = 'bg-hairline'
+// `-muted` rather than `-subtle`: the track is structural — it has to show the
+// bar's full extent behind the fill — and the lightest rung disappears on the
+// dark base. Replaces a `/20` modifier that emitted no rule (VW-308).
+const trackColorStyles: Record<ProgressColor, string> = {
+  primary: 'bg-brand-primary-muted',
+  secondary: 'bg-brand-secondary-muted',
+  success: 'bg-status-success-muted',
+  error: 'bg-status-error-muted',
+  warning: 'bg-status-warning-muted',
+  info: 'bg-status-info-muted',
+}
 
 /**
  * Linear progress bar component.
@@ -91,6 +100,8 @@ export function Progress({
   ...props
 }: ProgressProps) {
   const percentage = Math.min(Math.max((value / max) * 100, 0), 100)
+  // Light draws the track neutral; a tone wash under a same-hue fill hides the extent (TD-490).
+  const trackClass = useSurfaceMode() === 'light' ? 'bg-hairline' : trackColorStyles[color]
 
   return (
     <View className={cn('w-full gap-stack-sm', className)} {...props}>
@@ -109,7 +120,7 @@ export function Progress({
         className={cn(
           'rounded-full overflow-hidden',
           trackWidth ? undefined : 'w-full',
-          TRACK_CLASS,
+          trackClass,
           sizeStyles[size]
         )}
         style={trackWidth ? { width: trackWidth } : undefined}
