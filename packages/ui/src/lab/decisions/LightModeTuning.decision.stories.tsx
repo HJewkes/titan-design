@@ -29,6 +29,12 @@ import {
   type TokenSet,
 } from './light-tuning'
 import { PAIRS, REPRESENTATIVE_PAIR_IDS, TONES, misses, type Tone } from './light-tuning-pairs'
+import {
+  changeGroups,
+  introducedLine,
+  simulationLine,
+  type ChangeRow,
+} from './light-tuning-changes'
 import { ProgressSample, SelectedChip } from './light-tuning-samples'
 
 interface Args {
@@ -67,16 +73,12 @@ function Measured({ id, set }: { id: string; set: TokenSet }) {
   const before = formatMeasurement(pair, measure(pair, 'main', 'light'))
   const after = formatMeasurement(pair, measure(pair, compared(set), 'light'))
   const sim = isSimulated(pair) ? ' · simulated' : ''
-  return (
-    <Caption>
-      {`${pair.label}: main ${before} → ${SET_LABEL[compared(set)]} ${after} (floor ${pair.floor})${sim}`}
-    </Caption>
-  )
+  return <Caption>{`${pair.label}: ${before} → ${after} (floor ${pair.floor})${sim}`}</Caption>
 }
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <View className="min-w-[300px] flex-1 basis-[340px] gap-stack-md rounded-lg border border-hairline bg-surface-base p-inset-md">
+    <View className="gap-stack-md rounded-lg border border-hairline bg-surface-base p-inset-md">
       <Text className="text-xs font-semibold uppercase tracking-wider text-text-secondary">
         {title}
       </Text>
@@ -173,7 +175,6 @@ function AlertSection({ set }: { set: TokenSet }) {
         <View key={tone} className="gap-stack-xs">
           <Alert status={tone} variant="subtle" size="compact" message={`${tone}: subtle alert`} />
           <Alert status={tone} variant="solid" size="compact" message={`${tone}: solid alert`} />
-          <Measured id={`pill-subtle-${tone}`} set={set} />
           <Measured id={`alert-icon-${tone}`} set={set} />
           <Measured id={`alert-solid-${tone}`} set={set} />
         </View>
@@ -292,9 +293,57 @@ function MissesLine({ set }: { set: TokenSet }) {
   )
 }
 
+const CHANGE_CELL = 'font-mono text-xs leading-4'
+
+function ChangeLine({ row, isHeading }: { row: ChangeRow; isHeading?: boolean }) {
+  const tone = isHeading ? 'text-text-primary font-semibold' : 'text-text-secondary'
+  return (
+    <View className="flex-row gap-inline-sm">
+      <Text className={`${CHANGE_CELL} ${tone} w-44`}>{row.token}</Text>
+      <Text className={`${CHANGE_CELL} ${tone} w-36`}>{row.main}</Text>
+      <Text className={`${CHANGE_CELL} ${tone} w-28`}>{row.proposed}</Text>
+      <Text className={`${CHANGE_CELL} ${tone} flex-1`}>{row.change}</Text>
+    </View>
+  )
+}
+
+const CHANGE_HEADING: ChangeRow = {
+  token: 'token',
+  main: 'main',
+  proposed: 'proposed',
+  change: 'change',
+}
+
+/** TD-487 "What changes": the set's light overrides, derived from the override map. */
+function WhatChanges({ set }: { set: TokenSet }) {
+  if (set === 'main') {
+    return <Text className={`${CHANGE_CELL} text-text-primary`}>Main today: no overrides</Text>
+  }
+  return (
+    <View className="gap-stack-xs rounded-md border border-hairline bg-surface-base p-inset-sm">
+      <Text className="text-xs font-semibold text-text-primary">{`What changes: ${SET_LABEL[set]}`}</Text>
+      <ChangeLine row={CHANGE_HEADING} isHeading />
+      {changeGroups(set).map((group) => (
+        <View key={group.task}>
+          <Text className={`${CHANGE_CELL} font-semibold text-text-primary`}>{group.task}</Text>
+          {group.rows.map((row) => (
+            <ChangeLine key={row.token} row={row} />
+          ))}
+        </View>
+      ))}
+      <Text className={`${CHANGE_CELL} text-text-secondary`}>{simulationLine()}</Text>
+      <Text className={`${CHANGE_CELL} text-text-primary`}>{introducedLine(set)}</Text>
+    </View>
+  )
+}
+
 const NOT_FOLLOWING =
   'Not moved by the proposal: Pill and Chip solid read *-solid, Pill and Alert subtle labels read ' +
   'on-*-subtle, so those samples stay as main. Simulated: Progress track, selected Chip, tone as text.'
+
+function Column({ children }: { children: ReactNode }) {
+  return <View className="min-w-[300px] flex-1 basis-[340px] gap-stack-md">{children}</View>
+}
 
 function RepresentativePanel({ tokens }: Args) {
   return (
@@ -303,16 +352,29 @@ function RepresentativePanel({ tokens }: Args) {
       className="gap-stack-lg bg-background-base p-gutter-sm"
       testID="light-tuning-panel"
     >
-      <Header set={tokens} />
-      <MissesLine set={tokens} />
-      <Caption>{NOT_FOLLOWING}</Caption>
       <View className="flex-row flex-wrap gap-stack-md">
-        <FormSection set={tokens} />
-        <StatusSection set={tokens} />
-        <AlertSection set={tokens} />
-        <MarksSection set={tokens} />
-        <ListSection set={tokens} />
-        <ToneTextSection set={tokens} />
+        <View className="min-w-[340px] flex-[3] basis-[680px]">
+          <WhatChanges set={tokens} />
+        </View>
+        <View className="min-w-[300px] flex-[2] basis-[400px] gap-stack-md">
+          <Header set={tokens} />
+          <MissesLine set={tokens} />
+          <Caption>{`Ratios read main → ${SET_LABEL[compared(tokens)]}. ${NOT_FOLLOWING}`}</Caption>
+        </View>
+      </View>
+      <View className="flex-row flex-wrap gap-stack-md">
+        <Column>
+          <FormSection set={tokens} />
+          <MarksSection set={tokens} />
+        </Column>
+        <Column>
+          <StatusSection set={tokens} />
+          <ToneTextSection set={tokens} />
+        </Column>
+        <Column>
+          <AlertSection set={tokens} />
+          <ListSection set={tokens} />
+        </Column>
       </View>
     </View>
   )
