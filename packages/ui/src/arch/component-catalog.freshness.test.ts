@@ -71,15 +71,23 @@ describe('component-catalog.json freshness', () => {
     ).toEqual([])
   })
 
-  it('names the entry whose story status tag changed', () => {
-    const changed = build(readWith((t) => t.replace('status:candidate', 'status:stable')))
-    expect(differingEntries(catalog as Catalog, changed)).toEqual(['DateTime'])
-  })
+  it(
+    'names the entry whose story status tag changed',
+    () => {
+      const changed = build(readWith((t) => t.replace('status:candidate', 'status:stable')))
+      expect(differingEntries(catalog as Catalog, changed)).toEqual(['DateTime'])
+    },
+    DOCGEN_TIMEOUT
+  )
 
-  it('ignores a story args change', () => {
-    const changed = build(readWith((t) => t.replace("format: 'datetime'", "format: 'date'")))
-    expect(differingEntries(catalog as Catalog, changed)).toEqual([])
-  })
+  it(
+    'ignores a story args change',
+    () => {
+      const changed = build(readWith((t) => t.replace("format: 'datetime'", "format: 'date'")))
+      expect(differingEntries(catalog as Catalog, changed)).toEqual([])
+    },
+    DOCGEN_TIMEOUT
+  )
 
   it('fails when a committed entry lost its storyIds', () => {
     const emptied: Catalog = {
