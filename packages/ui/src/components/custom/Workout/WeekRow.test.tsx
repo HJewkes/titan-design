@@ -1,8 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import {
-  spacingClassesOf,
-  resolveAll,
-} from '../../../test/spacing-resolver'
+import { spacingClassesOf, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { WeekRow } from './WeekRow'
