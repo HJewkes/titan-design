@@ -77,6 +77,24 @@ async function countSettleTimers(page: Page) {
 const settleTimers = (page: Page) =>
   page.evaluate(() => (window as unknown as { __settleTimers: number }).__settleTimers)
 
+/**
+ * The count once it has held still for longer than react-native-web's 100 ms scroll-end event plus
+ * one 150 ms settle timer, so a timer that rests-state scrolling still legitimately schedules is
+ * not mistaken for a leak.
+ */
+async function quiescentSettleTimers(page: Page) {
+  let last = await settleTimers(page)
+  for (let stableFor = 0; stableFor < 400; stableFor += 100) {
+    await page.waitForTimeout(100)
+    const now = await settleTimers(page)
+    if (now !== last) {
+      last = now
+      stableFor = -100
+    }
+  }
+  return last
+}
+
 /** The counter's number and the name of the centred real slide agree. */
 async function centredMatchesCounter(page: Page) {
   return page.evaluate(() => {
@@ -254,7 +272,7 @@ test('dropping a card mid-wrap leaves the counter and the centred card agreeing,
   await expect
     .poll(() => centredMatchesCounter(page), { timeout: 10_000 })
     .toMatchObject({ agree: true, counter: '8 of 8' })
-  const before = await settleTimers(page)
+  const before = await quiescentSettleTimers(page)
   await page.waitForTimeout(1000)
   expect(await settleTimers(page)).toBe(before)
 })
