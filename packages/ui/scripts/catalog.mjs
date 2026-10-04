@@ -4,8 +4,9 @@
  *
  *   pnpm catalog        (from the repo root or packages/ui)
  *
- * Output is deterministic: entries and keys in code-unit order, no timestamps.
- * `src/arch/component-catalog.freshness.test.ts` fails until the output is regenerated.
+ * Output is deterministic: entries and keys in code-unit order. No global hash or timestamp: a change to one component rewrites only that component's block.
+ * `src/arch/component-catalog.freshness.test.ts` regenerates in memory and fails until the
+ * committed file matches.
  */
 import fs from 'node:fs'
 import path from 'node:path'
@@ -13,14 +14,7 @@ import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 
 import { buildEntry, exclusionReason } from './catalog/entries.mjs'
-import {
-  ARCH_GRAPH,
-  MATURITY,
-  PREVIEW,
-  catalogInputsHash,
-  readInput,
-  storyFiles,
-} from './catalog/inputs-hash.mjs'
+import { ARCH_GRAPH, MATURITY, PREVIEW, readInput, storyFiles } from './catalog/inputs.mjs'
 import { defaultExportTags, maturityStatuses, readStoryFile } from './catalog/stories.mjs'
 
 export const CATALOG = 'packages/ui/src/arch/component-catalog.json'
@@ -54,7 +48,6 @@ export function buildCatalog(repoRoot = REPO_ROOT, read = readInput) {
   }
   return {
     schema: SCHEMA,
-    inputsHash: catalogInputsHash(repoRoot),
     entries: entries.sort((a, b) => byCodeUnit(a.file, b.file)),
     excluded: excluded.sort((a, b) => byCodeUnit(a.file, b.file)),
   }

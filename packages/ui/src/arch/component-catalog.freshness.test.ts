@@ -3,14 +3,8 @@ import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-// @ts-expect-error — plain-ESM build tooling, run here to record what it reads
-import { buildCatalog } from '../../scripts/catalog.mjs'
-import {
-  catalogInputsHash,
-  inputFiles,
-  readInput,
-  // @ts-expect-error — plain-ESM build tooling, shared with scripts/catalog.mjs
-} from '../../scripts/catalog/inputs-hash.mjs'
+// @ts-expect-error — plain-ESM build tooling, run here to compare against the committed file
+import { buildCatalog, serializeCatalog } from '../../scripts/catalog.mjs'
 // @ts-expect-error — plain-ESM build tooling, shared with scripts/catalog.mjs
 import { maturityStatuses, resolveStatuses } from '../../scripts/catalog/stories.mjs'
 import graph from './arch-graph.json'
@@ -24,40 +18,15 @@ const vocabulary = (): string[] =>
   maturityStatuses(readFileSync(path.join(PKG_ROOT, 'MATURITY.md'), 'utf8')) as string[]
 
 describe('component-catalog.json freshness', () => {
-  it('records the inputs hash it was generated from', () => {
-    expect(catalog.inputsHash).toMatch(/^sha256:[0-9a-f]{64}$/)
-  })
-
-  it('matches the current arch-graph.json, MATURITY.md, entry files and story files', () => {
+  it('is what the generator writes from the current sources', () => {
     expect(
-      catalog.inputsHash,
+      readFileSync(path.join(PKG_ROOT, 'src/arch/component-catalog.json'), 'utf8'),
       'component-catalog.json is stale: an input changed since it was generated. ' + FIX
-    ).toBe(catalogInputsHash(REPO_ROOT))
+    ).toBe(serializeCatalog(buildCatalog(REPO_ROOT)))
   })
 
-  it('hashes every file the generator reads', () => {
-    const read = new Set<string>()
-    buildCatalog(REPO_ROOT, (root: string, rel: string): string => {
-      read.add(rel)
-      return readInput(root, rel) as string
-    })
-    const hashed = inputFiles(REPO_ROOT, graph) as string[]
-    expect(
-      [...read].filter((file) => !hashed.includes(file)),
-      'scripts/catalog.mjs reads a file that inputFiles() in scripts/catalog/inputs-hash.mjs ' +
-        'does not hash. Add it there, then run `pnpm catalog`.'
-    ).toEqual([])
-  })
-
-  it('hashes the generator source, so a generator edit stales the catalog', () => {
-    expect(inputFiles(REPO_ROOT, graph)).toEqual(
-      expect.arrayContaining([
-        'packages/ui/scripts/catalog.mjs',
-        'packages/ui/scripts/catalog/entries.mjs',
-        'packages/ui/scripts/catalog/inputs-hash.mjs',
-        'packages/ui/scripts/catalog/stories.mjs',
-      ])
-    )
+  it('carries no global hash, so two PRs that touch different components do not conflict', () => {
+    expect(Object.keys(catalog).sort()).toEqual(['entries', 'excluded', 'schema'])
   })
 
   it('accounts for every arch-graph component exactly once', () => {
