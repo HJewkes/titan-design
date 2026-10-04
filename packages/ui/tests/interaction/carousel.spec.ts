@@ -78,9 +78,8 @@ const settleTimers = (page: Page) =>
   page.evaluate(() => (window as unknown as { __settleTimers: number }).__settleTimers)
 
 /**
- * The count once it has held still for longer than react-native-web's 100 ms scroll-end event plus
- * one 150 ms settle timer, so a timer that rests-state scrolling still legitimately schedules is
- * not mistaken for a leak.
+ * The settle-timer count once it has held still for 400 ms, long enough for react-native-web's
+ * 100 ms scroll-end event to schedule its last legitimate timer.
  */
 async function quiescentSettleTimers(page: Page) {
   let last = await settleTimers(page)
@@ -287,7 +286,7 @@ test('a width change mid-wrap still lands centred on the card it committed', asy
   const state = await centredMatchesCounter(page)
   expect(state.agree, JSON.stringify(state)).toBe(true)
   expect(state.counter).toBe('9 of 9')
-  const before = await settleTimers(page)
+  const before = await quiescentSettleTimers(page)
   await page.waitForTimeout(1000)
   expect(await settleTimers(page)).toBe(before)
 })
