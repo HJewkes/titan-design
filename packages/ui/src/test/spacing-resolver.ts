@@ -182,6 +182,7 @@ export function spacingClassesOf(testId: string): string[] {
  * The spacing classes the host `node` actually rendered — the handle for an
  * element found with `getByText(...).parentElement`, `getByRole` or
  * `getByLabelText`, so rebinding a geometry test adds no `testID` to the DOM.
+ * A node that recorded no className throws "no captured className for this node".
  */
 export function spacingClassesAt(node: Element | null): string[] {
   const raw = node ? capturedByNode.get(node) : undefined

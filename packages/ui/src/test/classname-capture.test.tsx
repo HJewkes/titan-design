@@ -9,6 +9,8 @@ const ViewC = View as unknown as React.ComponentType<
 >
 const AnimatedViewC = Animated.View as unknown as typeof ViewC
 
+const DEFAULT_GEOMETRY = ['px-squish-x-md', 'gap-inline-md']
+
 function Fixture({ gap = 'gap-inline-md' }: { gap?: string }) {
   return (
     <ViewC className={`flex-row px-squish-x-md ${gap}`}>
@@ -21,7 +23,7 @@ describe('node-keyed className capture', () => {
   it('reads the rendered classes off a node found by text', () => {
     render(<Fixture />)
     const classes = spacingClassesAt(screen.getByText('label').parentElement)
-    expect(classes).toEqual(['px-squish-x-md', 'gap-inline-md'])
+    expect(classes).toEqual(DEFAULT_GEOMETRY)
     expect(resolveAll(classes)).toEqual(['12px', '8px'])
   })
 
@@ -50,9 +52,10 @@ describe('node-keyed className capture', () => {
     expect(() => spacingClassesAt(screen.getByText('inner').parentElement)).toThrow(/Animated/)
   })
 
-  it('fails when a class in the fixture changes', () => {
+  it('fails the default-geometry assertion when a class in the fixture changes', () => {
     render(<Fixture gap="gap-inline-lg" />)
     const classes = spacingClassesAt(screen.getByText('label').parentElement)
-    expect(classes).not.toEqual(['px-squish-x-md', 'gap-inline-md'])
+    expect(classes).toEqual(['px-squish-x-md', 'gap-inline-lg'])
+    expect(() => expect(classes).toEqual(DEFAULT_GEOMETRY)).toThrow()
   })
 })
