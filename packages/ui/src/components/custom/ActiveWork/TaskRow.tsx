@@ -12,7 +12,7 @@ import type { TaskColumnKey } from './task-columns'
 export interface TaskListItem {
   /** Initiative slug the task belongs to. */
   slug: string
-  /** Per-initiative task id, e.g. `AW-22`. */
+  /** Per-initiative task id, e.g. `PL-22`. */
   id: string
   title: string
   severity?: TaskSeverity

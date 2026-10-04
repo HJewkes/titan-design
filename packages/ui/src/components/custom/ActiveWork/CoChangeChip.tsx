@@ -22,7 +22,7 @@ export interface CoChangeChipProps {
  * is a pointer into {@link FileActivityDetail} rather than a full identifier.
  * Used by {@link FileHistoryExplorer}'s repo-wide co-change strip.
  *
- * @deprecated Use `<Pill tone="brand" size="xs">` — removed after AW-127 consumer migration.
+ * @deprecated Use `<Pill tone="brand" size="xs">` — removed after the Pill consumer migration.
  */
 export function CoChangeChip({ a, b, count, className }: CoChangeChipProps) {
   return (

@@ -28,9 +28,9 @@ export interface InitiativeCardTopTask {
 }
 
 export interface InitiativeCardProps extends ViewProps {
-  /** Initiative title, e.g. "active-work — durable workspace state". */
+  /** Initiative title, e.g. "planner — durable project state". */
   title: string
-  /** Short slug shown under the title, e.g. "active-work". */
+  /** Short slug shown under the title, e.g. "planner". */
   slug: string
   /** Lifecycle state — drives the status dot and card accent. */
   state: InitiativeState

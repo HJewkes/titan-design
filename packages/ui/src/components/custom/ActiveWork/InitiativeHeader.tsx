@@ -9,7 +9,7 @@ import { INITIATIVE_STATE_META, type InitiativeState } from './InitiativeCard'
 
 export interface InitiativeHeaderProps {
   title: string
-  /** Short slug shown under the title, e.g. `active-work`. */
+  /** Short slug shown under the title, e.g. `planner`. */
   slug: string
   state: InitiativeState
   /** Focused rank (1-based). Shown as `#N` for a ranked state. */
