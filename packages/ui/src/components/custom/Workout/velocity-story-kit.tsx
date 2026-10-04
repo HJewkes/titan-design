@@ -19,7 +19,8 @@
 import type { ReactNode } from 'react'
 import type { Decorator } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
-import { VelocityStrip, DualVelocityStrip, type VelocitySet } from './VelocityStrip'
+import { VelocityStrip, type VelocitySet } from './VelocityStrip'
+import { DualVelocityStrip } from './DualVelocityStrip'
 import { greyRamp } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 
