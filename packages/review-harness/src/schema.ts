@@ -153,8 +153,14 @@ export const KnownDefectSchema = z
     }),
     /** The failing element's own data-testid, or the full selector build printed, exactly. */
     element: z.string({ error: NAMES_ELEMENT }).min(1, NAMES_ELEMENT),
-    /** When set, the miss is excused only at or below this ratio, so a worse regression blocks. */
-    maxRatio: z.number().min(1).max(21).optional(),
+    /** The recorded contrast of the miss. When set, a finding at or above it is excused and one below it blocks. */
+    minRatio: z.number().min(1).max(21).optional(),
+    /** Renamed to minRatio: a higher ratio is better, so the old name described the bound backwards. */
+    maxRatio: z
+      .never({
+        error: 'maxRatio was renamed minRatio: it is the recorded ratio, and a lower one blocks',
+      })
+      .optional(),
     route: z.string().regex(DEFECT_ROUTE, 'a task id such as TD-490, or "component"'),
     reason: z.string().min(1),
   })

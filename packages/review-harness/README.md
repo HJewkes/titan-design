@@ -177,7 +177,7 @@ round-level `contrast` holds them for every frame:
 ```json
 "contrast": {
   "knownDefects": [
-    { "element": "chip-label", "mode": "light", "kind": "text", "maxRatio": 3.2, "route": "TD-490", "reason": "text-muted on the light base" }
+    { "element": "chip-label", "mode": "light", "kind": "text", "minRatio": 3.2, "route": "TD-490", "reason": "text-muted on the light base" }
   ],
   "measured": [
     { "variant": "Wall", "mode": "dark", "kind": "text", "element": "header", "ratio": 5.1, "source": "picker on the PNG" }
@@ -189,9 +189,9 @@ round-level `contrast` holds them for every frame:
 - A `knownDefects` entry excuses the miss of exactly one element. `element`, `mode` and `kind`
   are required, and loading refuses an entry that omits one. `element` is the failing
   element's own `data-testid`, or the full selector `build` printed for it in brackets. It is
-  compared exactly, never as a substring. `variant` narrows the match further. `maxRatio`,
-  when set, excuses the miss only at or below that ratio, so a regression past it blocks
-  again. `route` is required. It is the task id of the primitive or token audit that owns an
+  compared exactly, never as a substring. `variant` narrows the match further. `minRatio`,
+  the recorded contrast of the miss, excuses it only at or above that ratio, so a regression
+  below it blocks again. The old `maxRatio` is refused at load. `route` is required. It is the task id of the primitive or token audit that owns an
   inherited miss, or `component` for the component's own miss. A declared miss is still
   printed and written with its route and ratio. Only undeclared misses block. A declaration
   that matched nothing prints `UNMATCHED` so it does not linger and hide a later miss.
