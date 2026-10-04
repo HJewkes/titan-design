@@ -70,11 +70,15 @@ describe('CVD simulation', () => {
     expect([...CVD_MATRICES[kind]]).toEqual(expected)
   })
 
-  it('keeps the matrices at their Machado-2009 values', () => {
-    expect(CVD_MATRICES.deutan[0]).toBe(0.367322)
-    expect(CVD_MATRICES.protan[4]).toBe(0.786281)
-    expect(CVD_MATRICES.tritan[0]).toBe(1.255528)
-  })
+  it.each(['deutan', 'protan', 'tritan'] as const)(
+    'keeps every %s matrix row summing to 1, so white stays white',
+    (kind) => {
+      const m = CVD_MATRICES[kind]
+      for (const row of [0, 3, 6]) {
+        expect(m[row] + m[row + 1] + m[row + 2], `row ${row / 3}`).toBeCloseTo(1, 5)
+      }
+    }
+  )
 
   it('leaves greys unchanged under every dichromacy', () => {
     for (const kind of ['deutan', 'protan', 'tritan'] as const) {
