@@ -4,15 +4,15 @@ Charts that paint data marks from a scale and know nothing about workouts, sessi
 initiatives. A chart whose prop, type or label names a domain concept lives in its
 `custom/<Family>/` instead (`CLAUDE.md`, Placement).
 
-| Member               | Kind   | Holds                                                                                                                      |
-| -------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------- |
-| `spark-bars/`        | atom   | `SparkBars`: a signed-series bar sparkline. Moved from `custom/charts` in M5 (TD-188).                                     |
-| `scatter/`           | atom   | `Scatter`: points on two linear axes, sized and coloured per datum. Moved from `custom/Scatter` in M8 (TD-471).            |
-| `treemap/`           | atom   | `Treemap`: squarified tiles sized by value on a linear, sqrt or log scale. Moved from `custom/Treemap` in M8 (TD-471).     |
-| `gauge/`             | atom   | `Gauge`: a segmented dial read against threshold bands. Moved from `custom/Gauge` in M8 (TD-471).                          |
-| `dependency-matrix/` | notes  | API note and fixtures for the planned dependency matrix; no component yet.                                                 |
-| `network-graph/`     | notes  | Pure model and layouts for the planned network graph; `d3-force` is imported by one file, `layouts/force-layout-model.ts`. |
-| `kit/`               | module | Shared domain scales, tick rules, label thinning and entrance motion. See its README.                                      |
+| Member               | Kind     | Holds                                                                                                                      |
+| -------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `spark-bars/`        | atom     | `SparkBars`: a signed-series bar sparkline. Moved from `custom/charts` in M5 (TD-188).                                     |
+| `scatter/`           | atom     | `Scatter`: points on two linear axes, sized and coloured per datum. Moved from `custom/Scatter` in M8 (TD-471).            |
+| `treemap/`           | atom     | `Treemap`: squarified tiles sized by value on a linear, sqrt or log scale. Moved from `custom/Treemap` in M8 (TD-471).     |
+| `gauge/`             | atom     | `Gauge`: a segmented dial read against threshold bands. Moved from `custom/Gauge` in M8 (TD-471).                          |
+| `dependency-matrix/` | organism | `DependencyMatrix`: a windowed square matrix with the APG grid keyboard model. Candidate; not exported until its review.   |
+| `network-graph/`     | notes    | Pure model and layouts for the planned network graph; `d3-force` is imported by one file, `layouts/force-layout-model.ts`. |
+| `kit/`               | module   | Shared domain scales, tick rules, label thinning and entrance motion. See its README.                                      |
 
 ## Rules
 

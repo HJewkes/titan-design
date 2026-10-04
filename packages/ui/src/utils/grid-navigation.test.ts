@@ -10,6 +10,16 @@ const move = (key: string, row: number, col: number, ctrlKey = false, pageRows =
   nextCell({ key, ctrlKey, position: { row, col }, size: SIZE, pageRows })
 
 describe('nextCell', () => {
+  it.each(['__proto__', 'toString', 'constructor', 'hasOwnProperty'])(
+    'leaves %s to the caller, with and without Control, instead of reading an inherited member',
+    (key) => {
+      const input = { key, position: { row: 2, col: 2 }, size: { rows: 5, cols: 5 }, pageRows: 2 }
+
+      expect(nextCell(input)).toBeNull()
+      expect(nextCell({ ...input, ctrlKey: true })).toBeNull()
+    }
+  )
+
   it('stays put on ArrowRight in the last column and ArrowDown in the last row', () => {
     expect(move('ArrowRight', 2, 4)).toEqual({ row: 2, col: 4 })
     expect(move('ArrowDown', 4, 1)).toEqual({ row: 4, col: 1 })
