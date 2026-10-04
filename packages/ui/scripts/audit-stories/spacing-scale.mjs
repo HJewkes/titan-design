@@ -10,7 +10,10 @@ export function loadSpacingConfig(uiDir) {
 
 // Splits theme spacing into literal px steps and the custom properties the page must resolve.
 export function parseSpacingConfig(config) {
-  const values = [...Object.values(config.theme?.spacing ?? {}), ...Object.values(config.theme?.extend?.spacing ?? {})]
+  const values = [
+    ...Object.values(config.theme?.spacing ?? {}),
+    ...Object.values(config.theme?.extend?.spacing ?? {}),
+  ]
   const px = new Set()
   const vars = new Set()
   for (const raw of values.map(String)) {
@@ -22,7 +25,11 @@ export function parseSpacingConfig(config) {
 }
 
 export function buildScale(pxSteps, resolvedVars) {
-  return new Set([...pxSteps, ...Object.values(resolvedVars).filter(Number.isFinite)].map((v) => round(Math.abs(v))))
+  return new Set(
+    [...pxSteps, ...Object.values(resolvedVars).filter(Number.isFinite)].map((v) =>
+      round(Math.abs(v))
+    )
+  )
 }
 
 export function isOnScale(px, scale) {
