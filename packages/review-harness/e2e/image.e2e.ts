@@ -109,3 +109,50 @@ test('an image variant renders at its width and its feedback comes back', async 
   expect(existsSync(join(dir, 'A-image.png'))).toBe(true)
   expect(existsSync(join(dir, 'B-image.png'))).toBe(true)
 })
+
+test('sticky heads stay below an override banner whose reason wraps', async ({ page, browser }) => {
+  const dir = await mkdtemp(join(tmpdir(), 'titan-review-banner-e2e-'))
+  await mkdir(join(dir, 'shots'))
+  await syntheticPng(browser, join(dir, 'shots', 'wall-a.png'), 'Dense wall')
+  await syntheticPng(browser, join(dir, 'shots', 'wall-b.png'), 'Sparse wall')
+  const manifestPath = join(dir, 'round.json')
+  const sectioned = {
+    ...ROUND,
+    sections: [{ id: 'wall', title: 'Wall', variantKeys: ['A', 'B'], questionIds: ['q1'] }],
+  }
+  await writeFile(manifestPath, JSON.stringify(sectioned))
+
+  const reason = 'long reason '.repeat(17).slice(0, 200)
+  const server = spawn('node', [
+    CLI,
+    manifestPath,
+    '--no-open',
+    '--out',
+    dir,
+    '--contrast-override',
+    reason,
+  ])
+  try {
+    const url = await new Promise<string>((resolve) =>
+      server.stderr?.on('data', (c: Buffer) => {
+        const found = c.toString().match(/at (http\S+__review\/)/)?.[1]
+        if (found) resolve(found)
+      })
+    )
+    await page.setViewportSize({ width: 1400, height: 400 })
+    await page.goto(url)
+    const banner = page.getByTestId('contrast-override')
+    await expect(banner).toBeVisible()
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(100)
+    const bannerBox = (await banner.boundingBox())!
+    expect(bannerBox.height).toBeGreaterThan(40)
+    const bannerBottom = bannerBox.y + bannerBox.height
+    const sectionHead = (await page.locator('.section-head').first().boundingBox())!
+    const variantHead = (await page.locator('.variant-head').first().boundingBox())!
+    expect(sectionHead.y).toBeGreaterThanOrEqual(bannerBottom - 0.5)
+    expect(variantHead.y).toBeGreaterThanOrEqual(bannerBottom - 0.5)
+  } finally {
+    server.kill()
+  }
+})
