@@ -36,19 +36,27 @@ pnpm add react react-native lucide-react-native
 import '@titan-design/react-ui/theme/global.css'
 ```
 
-### 2. Configure Tailwind (optional, for custom styling)
+### 2. Configure Tailwind
+
+Titan's components style themselves with token classes such as `bg-surface-elevated`. Tailwind
+only generates those classes when it uses titan's config as a preset and scans titan's dist.
 
 ```javascript
 // tailwind.config.js
+const titanConfig = require('@titan-design/react-ui/tailwind.config.js')
+
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     './src/**/*.{js,jsx,ts,tsx}',
     './node_modules/@titan-design/react-ui/dist/**/*.{js,mjs}',
   ],
-  presets: [require('nativewind/preset')],
-  // Your customizations...
+  presets: [titanConfig],
+  darkMode: 'class',
 }
 ```
+
+The `titanConfig` preset includes `nativewind/preset`, so do not add that preset separately.
 
 ### 3. Web Setup (Vite)
 
@@ -58,9 +66,10 @@ See the full guide: **[Web Consumer Setup](docs/WEB_SETUP.md)**
 
 Quick summary:
 
-1. `npm install react-native-web` and `npm install -D nativewind` (Tailwind preset only)
+1. `npm install react-native-web` and `npm install -D tailwindcss autoprefixer postcss nativewind`
+   (`nativewind` is needed only at build time, by the titan preset)
 2. Add `resolve.alias: { 'react-native': 'react-native-web' }` to your Vite config
-3. Add titan's dist to your Tailwind `content` array and use titan's config as a preset
+3. Configure Tailwind as in step 2: titan's config as a preset and titan's dist in `content`
 
 ## Usage
 
@@ -224,7 +233,9 @@ their heavier runtime dependencies:
     Content here
   </CardContent>
   <CardFooter>
-    <Button>Action</Button>
+    <Button>
+      <ButtonText>Action</ButtonText>
+    </Button>
   </CardFooter>
 </Card>
 ```
