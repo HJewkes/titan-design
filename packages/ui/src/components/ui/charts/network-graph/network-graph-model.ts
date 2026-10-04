@@ -1,4 +1,6 @@
 import { linkHorizontal } from 'd3-shape'
+import { arcPath, GRAPH_NODE_RADIUS } from './network-graph-arc'
+import { placedGroups } from './network-graph-groups'
 import type {
   GraphCleanReport,
   GraphEdge,
@@ -11,10 +13,14 @@ import type {
 
 export const GRAPH_NODE_PADDING = 24
 export const GRAPH_LABEL_ROOM = 160
+export { GRAPH_NODE_RADIUS }
+export { edgeSlots } from './network-graph-arc'
 
 const hasOwn = (record: object, key: string) => Object.prototype.hasOwnProperty.call(record, key)
 
-const compareText = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0)
+export const compareText = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0)
+
+export const displayLabel = (node: GraphNode) => (node.label === '' ? node.id : node.label)
 
 export const edgeId = (edge: GraphEdge): string =>
   edge.id ?? `${edge.source}->${edge.target}:${edge.kind ?? ''}`
@@ -154,8 +160,14 @@ const link = linkHorizontal<{ source: GraphPoint; target: GraphPoint }, GraphPoi
   .x((p) => p.x)
   .y((p) => p.y)
 
-export function edgePath(from: GraphPoint, to: GraphPoint): string {
-  return link({ source: from, target: to }) ?? ''
+/** `slot` is the edge's index among edges with the same source and target; see `edgeSlots`. */
+export function edgePath(
+  from: GraphPoint,
+  to: GraphPoint,
+  shape: 'horizontal' | 'arc' = 'horizontal',
+  slot = 0
+): string {
+  return shape === 'arc' ? arcPath(from, to, slot) : (link({ source: from, target: to }) ?? '')
 }
 
 export const incident = (index: GraphIndex, nodeId: string): GraphEdge[] => [
@@ -204,5 +216,8 @@ export function buildGraphModel(
     index,
     width: finiteOr(result.width, viewport.width),
     height: finiteOr(result.height, viewport.height),
+    edgeShape: result.edgeShape === 'arc' ? 'arc' : 'horizontal',
+    labelMode: result.labelMode === 'declutter' ? 'declutter' : 'all',
+    groups: placedGroups(result.groups, index.order),
   }
 }

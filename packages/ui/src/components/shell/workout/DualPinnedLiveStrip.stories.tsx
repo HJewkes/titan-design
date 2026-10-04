@@ -24,7 +24,8 @@ const meta: Meta<DualPinnedLiveStripProps> = {
           'last-rep velocity and bars in a lane, Left above Right, beside one diverging chart. The wall ' +
           'names each side and its load; below 640px the phone marks the sides by position. Rest is one ' +
           'countdown beside the finished set. A fatigued side (`left`/`right` `isFatigued`) reddens the ' +
-          'strip and its name; a dropped side (`isConnected: false`) stays with its wing faded. Composes ' +
+          'strip and its name; a dropped side (`isConnected: false`) stays with its wing faded. A side ' +
+          'short of the other draws a blue stub mid-set (behind) and a grey one once the set ends (missed). Composes ' +
           "PinnedLiveStrip's plane, title, tag, rest bar and link + " +
           '[DualVelocityStrip](?path=/docs/custom-workout-dataviz-dualvelocitystrip--docs) (`dual-expanded`) + ' +
           '[Typography](?path=/docs/foundations-typography--docs).',
@@ -53,8 +54,14 @@ export default meta
 
 type Story = StoryObj<DualPinnedLiveStripProps>
 
-/** A set in progress, the right side a rep behind. Edit `left` / `right` for fatigue or a drop. */
+/**
+ * A set in progress, the right side a rep behind: its fifth column is a blue stub, a rep still to
+ * come. Edit `left` / `right` for fatigue or a drop.
+ */
 export const Default: Story = {}
 
-/** Resting: one countdown beside the finished set's chart, and a time bar along the bottom. */
+/**
+ * Resting: one countdown beside the finished set's chart, and a time bar along the bottom. The right
+ * side's eighth column is a grey stub: the set has ended, so that rep was missed.
+ */
 export const Rest: Story = { args: { ...S.rest, onPress: goLive } }

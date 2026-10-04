@@ -13,9 +13,12 @@ import {
 } from '../../custom/Workout/VelocityStrip'
 import { SetBarTreatmentContext, type SetBarTreatment } from '../../custom/charts/setBarTones'
 import {
+  liveStripBars,
+  liveStripLastVelocity,
   liveStripRepToken,
   liveStripRestReadout,
   liveStripTarget,
+  sameLiveStripReps,
   type LiveStripBarColor,
   type LiveStripRep,
   type LiveStripState,
@@ -169,14 +172,8 @@ function SlotReps({ slot, parts }: { slot: SlotView; parts: Parts }) {
   )
 }
 
-/** The last rep's velocity, or `null` when there is none or it is not a finite number. */
-function lastVelocity(slot: SlotView): number | null {
-  const last = slot.reps[slot.reps.length - 1]
-  return last && Number.isFinite(last.velocity) ? last.velocity : null
-}
-
 function SlotVelocity({ slot, parts }: { slot: SlotView; parts: Parts }) {
-  const velocity = lastVelocity(slot)
+  const velocity = liveStripLastVelocity(slot.reps)
   if (velocity == null) return <Text className={cn(NUMERAL, parts.sizes.velocity)}> </Text>
   const token = slot.isDropped
     ? 'text-tertiary'
@@ -268,25 +265,21 @@ interface DualBarsProps {
   barColor?: LiveStripBarColor
   lossThresholds: VelocityLossThresholds
   dimmed?: Side
+  bars: SetBarTreatment
 }
-
-// The paper's drop shadow smudged on the light card, and a side's missed rep vanished there (VW-877).
-const STRIP_BARS: SetBarTreatment = { emptyVariant: 'outline', lightPaper: 'soft' }
-
-const sameReps = (a: readonly LiveStripRep[], b: readonly LiveStripRep[]) =>
-  a === b || (a.length === b.length && a.every((rep, i) => rep.velocity === b[i].velocity))
 
 // The rest countdown ticks once a second; the bars depend on none of it.
 function sameBars(a: DualBarsProps, b: DualBarsProps): boolean {
   return (
-    sameReps(a.left, b.left) &&
-    sameReps(a.right, b.right) &&
+    sameLiveStripReps(a.left, b.left) &&
+    sameLiveStripReps(a.right, b.right) &&
     a.targetReps === b.targetReps &&
     a.height === b.height &&
     a.width === b.width &&
     a.minWidth === b.minWidth &&
     a.barColor === b.barColor &&
     a.dimmed === b.dimmed &&
+    a.bars === b.bars &&
     a.lossThresholds.every((t, i) => t === b.lossThresholds[i])
   )
 }
@@ -300,7 +293,7 @@ const DualBars = memo(function DualBars(props: DualBarsProps) {
       aria-hidden
       style={width != null ? { width } : { flex: 1, minWidth }}
     >
-      <SetBarTreatmentContext.Provider value={STRIP_BARS}>
+      <SetBarTreatmentContext.Provider value={props.bars}>
         <DualVelocityStrip
           left={{ velocities: left.map((r) => r.velocity), isDimmed: dimmed === 'left' }}
           right={{ velocities: right.map((r) => r.velocity), isDimmed: dimmed === 'right' }}
@@ -331,6 +324,7 @@ function barsOf(parts: Parts, fill = false): DualBarsProps {
     barColor: parts.barColor,
     lossThresholds: parts.lossThresholds,
     dimmed: parts.slots.find((s) => s.isDropped)?.side,
+    bars: liveStripBars(parts.state),
   }
 }
 
@@ -386,7 +380,7 @@ function PhoneRows(parts: Parts) {
 }
 
 function slotPhrase(slot: SlotView, parts: Parts): string {
-  const velocity = lastVelocity(slot)
+  const velocity = liveStripLastVelocity(slot.reps)
   const count =
     parts.state === 'rest'
       ? null

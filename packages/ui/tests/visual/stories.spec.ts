@@ -45,6 +45,8 @@ const CHAT_STORIES = new Set([
 const inScope = (id: string) => SCOPE.test(id) || CHAT_STORIES.has(id)
 
 const FIXED_TIME = new Date('2024-01-01T16:12:07')
+// Far more than any install-to-pauseAt delay, so pauseAt only ever moves forward.
+const CLOCK_START = new Date(FIXED_TIME.getTime() - 60_000)
 const SHOT_OPTIONS = { animations: 'disabled', caret: 'hide' } as const
 
 interface IndexEntry {
@@ -87,8 +89,8 @@ async function expectRendered(page: Page, label: string, timeout = 5000) {
 
 async function renderStory(page: Page, id: string) {
   // install() alone keeps ticking from FIXED_TIME in real time, so a story
-  // rendered late in the run showed 16:13 instead of 16:12 (#250).
-  await page.clock.install({ time: FIXED_TIME })
+  // rendered late in the run showed 16:13 instead of 16:12 (#250); it starts early so pauseAt never rewinds.
+  await page.clock.install({ time: CLOCK_START })
   await page.clock.pauseAt(FIXED_TIME)
   await page.goto(`/iframe.html?id=${id}&viewMode=story`)
   await page.waitForLoadState('networkidle')
