@@ -202,6 +202,7 @@
     "prettier": "^3.8.1",
     "publint": "0.3.24",
     "react": "^18.3.0",
+    "react-docgen-typescript": "2.4.0",
     "react-dom": "^18.3.0",
     "react-hook-form": "^7.54.2",
     "react-native-body-highlighter": "^3.2.0",

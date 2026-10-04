@@ -1,6 +1,7 @@
 /**
  * Generates `src/arch/component-catalog.json` (TD-24) from the committed arch-graph.json,
- * MATURITY.md and the story files. It never calls codewatch, so any checkout can run it.
+ * MATURITY.md, the story files and react-docgen-typescript over the entry files. It never calls
+ * codewatch, so any checkout can run it.
  *
  *   pnpm catalog        (from the repo root or packages/ui)
  *
@@ -15,6 +16,7 @@ import { fileURLToPath } from 'node:url'
 
 import { buildEntry, exclusionReason } from './catalog/entries.mjs'
 import { ARCH_GRAPH, MATURITY, PREVIEW, readInput, storyFiles } from './catalog/inputs.mjs'
+import { docgen, propsFor } from './catalog/props.mjs'
 import { defaultExportTags, maturityStatuses, readStoryFile } from './catalog/stories.mjs'
 
 export const CATALOG = 'packages/ui/src/arch/component-catalog.json'
@@ -35,17 +37,26 @@ function readContext(repoRoot, graph, read) {
   }
 }
 
-/** The catalog object for the checkout at `repoRoot`. Every file it reads goes through `read`. */
-export function buildCatalog(repoRoot = REPO_ROOT, read = readInput) {
+/**
+ * The catalog object for the checkout at `repoRoot`. Every non-TypeScript file it reads goes
+ * through `read`; docgen reads entry sources through the compiler, with `overlay` (repo-relative
+ * path to source text) served in place of the disk.
+ */
+export function buildCatalog(repoRoot = REPO_ROOT, read = readInput, overlay = {}) {
   const graph = JSON.parse(read(repoRoot, ARCH_GRAPH))
   const context = readContext(repoRoot, graph, read)
-  const entries = []
-  const excluded = []
-  for (const component of graph.components) {
-    const reason = exclusionReason(component)
-    if (reason) excluded.push({ file: component.file, reason })
-    else entries.push(buildEntry(component, context))
-  }
+  const included = graph.components.filter((component) => !exclusionReason(component))
+  const docs = docgen(
+    repoRoot,
+    included.map((component) => component.file),
+    overlay
+  )
+  const entries = included.map((component) =>
+    buildEntry(component, context, propsFor(component, docs))
+  )
+  const excluded = graph.components
+    .filter((component) => exclusionReason(component))
+    .map((component) => ({ file: component.file, reason: exclusionReason(component) }))
   return {
     schema: SCHEMA,
     entries: entries.sort((a, b) => byCodeUnit(a.file, b.file)),
