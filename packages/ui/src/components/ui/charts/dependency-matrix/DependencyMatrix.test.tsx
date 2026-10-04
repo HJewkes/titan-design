@@ -129,14 +129,16 @@ describe.each(DIRECTIONS)('DependencyMatrix keyboard, %s', (direction) => {
     expect(tabStops()).toEqual([before])
   })
 
-  it('mounts and focuses a cell that an arrow or Control+End moves to outside the window', () => {
+  it('mounts and focuses a cell that an arrow, Page Down or Control+End moves to outside the window', () => {
     renderMatrix('Very large', { ...veryLarge, direction })
     const grid = screen.getByRole('grid')
     focusGrid()
-    expect(grid.querySelector('[aria-rowindex="60"]')).toBeNull()
+    expect(grid.querySelector('[aria-rowindex="77"]')).toBeNull()
 
-    for (let step = 0; step < 58; step += 1) pressKey('ArrowDown')
-    expect(gridIndex(document.activeElement)).toEqual([60, 2])
+    // Three pages of 25 rows, then one arrow past the last windowed row.
+    for (let page = 0; page < 3; page += 1) pressKey('PageDown')
+    pressKey('ArrowDown')
+    expect(gridIndex(document.activeElement)).toEqual([78, 2])
     pressKey('End', { ctrlKey: true })
 
     expect(document.activeElement).toHaveAttribute('role', 'gridcell')
@@ -408,17 +410,20 @@ describe('DependencyMatrix states', () => {
 })
 
 describe('DependencyMatrix accessibility', () => {
+  // A small viewport keeps each axe pass to a few dozen cells; the roles and names are the same.
+  const small = { width: 320, height: 240 }
+
   it.each(matrixFixtures.map((fixture) => fixture.name))(
     'has no axe violations on the %s fixture',
     async (name) => {
-      const { container } = renderMatrix(name)
+      const { container } = renderMatrix(name, small)
 
       expect(await axe(container)).toHaveNoViolations()
     }
   )
 
   it.each(DIRECTIONS)('has no axe violations reading %s with values shown', async (direction) => {
-    const { container } = renderMatrix('Default', { direction, showValues: true })
+    const { container } = renderMatrix('Default', { ...small, direction, showValues: true })
 
     expect(await axe(container)).toHaveNoViolations()
   })
@@ -428,7 +433,7 @@ describe('DependencyMatrix accessibility', () => {
     ['disabled', { isDisabled: true }],
     ['folded', { maxItems: 5 }],
   ] as const)('has no axe violations while %s', async (_state, props) => {
-    const { container } = renderMatrix('Default', props)
+    const { container } = renderMatrix('Default', { ...small, ...props })
 
     expect(await axe(container)).toHaveNoViolations()
   })
