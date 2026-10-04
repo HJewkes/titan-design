@@ -85,12 +85,30 @@ follows the active cell and mounts it when it is off-window.
 ## Virtualisation
 
 Fixed square cells, windowed on both axes by two calls to the shared window function. Row and column
-headers are sticky and windowed on one axis each. Mounted cell count is bounded by the viewport and
-overscan whatever the item count. At 600 px and dense density that is about 900 cells.
+headers are windowed on one axis each. Mounted cell count is bounded by the viewport and overscan
+whatever the item count. At 600 px and dense density that is about 900 cells. The active cell's row
+and column stay mounted when scrolled out of the window, so the grid never loses its tab stop.
+
+Headers are held in place by translation, not CSS sticky. react-native-web's `ScrollView` scrolls one
+axis, so two are nested (horizontal outside, vertical inside) and sticky could hold only one axis. The
+header row and the row headers are instead positioned by the scroll offset inside the one content
+plane, which also keeps every header inside its ARIA `row`.
+
+## Decisions taken in the shell (S4), open to the owner review
+
+- A press on a "+M more" cell reaches `onCellPress` with `FOLD_ITEM_ID` unchanged; a press on the
+  "+M more" header does not call `onHeaderPress`.
+- Edges both ways across the "+M more" item are not marked as a cycle, since it sums many items.
+- Headers are pointer targets only. The grid's keyboard model covers the cells, so `onHeaderPress`
+  has no keyboard path yet.
+- A `violation` flag draws a `status-error` ring and a square mark and reads ", violation".
+- The diagonal is focusable and reads "<item>, same item" unless a self-reference carries a weight.
 
 ## Internal modules
 
-`matrix-model.ts`, pure: `indexCells` (validate, drop unknown ids, merge duplicates, separate the
+`matrix-reading.ts` (the displayed model and each cell's name, step and flag), `matrix-layout.ts`
+(sizes and scroll geometry), `useMatrixViewport.ts`, `MatrixRows.tsx`, `MatrixCell.tsx` and
+`MatrixLegend.tsx` make up the shell. `matrix-model.ts`, pure: `indexCells` (validate, drop unknown ids, merge duplicates, separate the
 diagonal), `foldItems`, `binValue`, `mutualPairs`, `groupBands`, `nextCell`, `cellLabel`.
 `useMatrixNavigation` owns the active cell. Properties to test: `nextCell` never leaves the matrix,
 folding preserves total weight, `binValue` is monotonic, hostile input never throws.

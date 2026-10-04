@@ -306,6 +306,12 @@
   "components/ui/carousel/Carousel.tsx": {
     "file-lines": 338
   },
+  "components/ui/charts/dependency-matrix/DependencyMatrix.tsx#DependencyMatrix": {
+    "props": 20
+  },
+  "components/ui/charts/dependency-matrix/DependencyMatrix.tsx#MatrixGrid": {
+    "props": 18
+  },
   "components/ui/checkbox/Checkbox.tsx#Checkbox": {
     "complexity": 19
   },

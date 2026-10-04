@@ -36,6 +36,38 @@ function nearestPosition(last: MatrixPosition | null, count: number): MatrixPosi
   return { row: Math.min(last.row, count - 1), col: Math.min(last.col, count - 1) }
 }
 
+interface ResolvedPosition {
+  position: MatrixPosition | null
+  /** The requested cell is not displayed, so `position` is its nearest replacement. */
+  isStale: boolean
+}
+
+function resolveActive(
+  items: MatrixItem[],
+  requested: MatrixCellRef | null | undefined,
+  direction: MatrixDirection,
+  last: MatrixPosition | null
+): ResolvedPosition {
+  if (items.length === 0) return { position: null, isStale: false }
+  if (!requested) return { position: FIRST_CELL, isStale: false }
+  const found = positionOf(items, requested, direction)
+  if (found) return { position: found, isStale: false }
+  return { position: nearestPosition(last, items.length), isStale: true }
+}
+
+/** Tells the owner which cell replaced a stale one, once per replacement. */
+function useStaleReport(replacement: MatrixCellRef | null, report: (cell: MatrixCellRef) => void) {
+  const latest = useRef(report)
+  useEffect(() => {
+    latest.current = report
+  })
+  const from = replacement?.from
+  const to = replacement?.to
+  useEffect(() => {
+    if (from !== undefined && to !== undefined) latest.current({ from, to })
+  }, [from, to])
+}
+
 /** Owns the active cell of a DependencyMatrix and maps grid keys to moves. */
 export function useMatrixNavigation(options: UseMatrixNavigationOptions): MatrixNavigation {
   const { items, direction, activeCell, defaultActiveCell, onActiveCellChange, pageRows } = options
@@ -43,9 +75,7 @@ export function useMatrixNavigation(options: UseMatrixNavigationOptions): Matrix
   const [internal, setInternal] = useState<MatrixCellRef | null>(defaultActiveCell ?? null)
   const [lastPosition, setLastPosition] = useState<MatrixPosition | null>(null)
   const requested = isControlled ? activeCell : internal
-  const found = requested ? positionOf(items, requested, direction) : null
-  const fallback = requested ? nearestPosition(lastPosition, items.length) : FIRST_CELL
-  const position = items.length === 0 ? null : (found ?? fallback)
+  const { position, isStale } = resolveActive(items, requested, direction, lastPosition)
   const current = position ? refAt(items, position, direction) : null
   const row = position?.row ?? -1
   const col = position?.col ?? -1
@@ -61,17 +91,7 @@ export function useMatrixNavigation(options: UseMatrixNavigationOptions): Matrix
     [isControlled, onActiveCellChange]
   )
 
-  const report = useRef(setActiveCell)
-  useEffect(() => {
-    report.current = setActiveCell
-  })
-  const staleFrom = requested && !found ? current?.from : undefined
-  const staleTo = requested && !found ? current?.to : undefined
-  useEffect(() => {
-    if (staleFrom !== undefined && staleTo !== undefined) {
-      report.current({ from: staleFrom, to: staleTo })
-    }
-  }, [staleFrom, staleTo])
+  useStaleReport(isStale ? current : null, setActiveCell)
 
   const handleKey = useCallback(
     (key: string, ctrlKey = false): boolean => {

@@ -3,13 +3,8 @@ import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { axe, toHaveNoViolations } from 'jest-axe'
 import { Text } from 'react-native'
 
-import {
-  CELL_SIZE,
-  COLUMN_HEADER_HEIGHT,
-  DependencyMatrix,
-  OVERSCAN,
-  ROW_HEADER_WIDTH,
-} from './DependencyMatrix'
+import { DependencyMatrix } from './DependencyMatrix'
+import { CELL_SIZE, COLUMN_HEADER_HEIGHT, OVERSCAN, ROW_HEADER_WIDTH } from './matrix-layout'
 import { matrixFixtures, type MatrixFixture } from './fixtures'
 import type { DependencyMatrixProps, MatrixDirection } from './types'
 

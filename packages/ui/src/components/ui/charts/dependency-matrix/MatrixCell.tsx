@@ -41,18 +41,22 @@ export function MatrixFlagMark({ flag, className }: { flag: MatrixFlag; classNam
   )
 }
 
+/** What one cell says and paints; the fields are compared one by one so a re-read cell can skip a render. */
+export interface MatrixCellContent {
+  label: string
+  /** Intensity step, or `null` for a cell with no dependency. */
+  step: MatrixStep | null
+  flag: MatrixFlag | undefined
+  valueText: string | undefined
+}
+
 export interface MatrixCellViewProps {
   row: number
   col: number
   size: number
   /** Distance from the row's leading edge, past the row header. */
   left: number
-  label: string
-  /** Intensity step, or `null` for a cell with no dependency. */
-  step: MatrixStep | null
-  flag?: MatrixFlag
-  valueText?: string
-  isDiagonal: boolean
+  content: MatrixCellContent
   isActive: boolean
   isDisabled: boolean
   /** A group band starts above or to the left of this cell. */
@@ -65,8 +69,8 @@ export interface MatrixCellViewProps {
 }
 
 function MatrixCellView(props: MatrixCellViewProps) {
-  const { row, col, size, left, label, step, flag, valueText, isActive, onPress, cellRef } = props
-  // Direct aria props: windowing keeps most cells out of the DOM, so each states its own index.
+  const { row, col, size, left, isActive, onPress, cellRef } = props
+  const { label, step, flag, valueText } = props.content
   // Typed as `object` because React Native's `Role` and aria types omit `gridcell` and the indexes.
   const gridProps: object = { role: 'gridcell', 'aria-rowindex': row + 2, 'aria-colindex': col + 2 }
   return (
@@ -81,7 +85,7 @@ function MatrixCellView(props: MatrixCellViewProps) {
       className={cn(
         'absolute items-center justify-center border-hairline-subtle',
         'web:outline-none web:focus-visible:ring-2 web:focus-visible:ring-interactive-focus',
-        props.isDiagonal && 'bg-hairline-subtle',
+        row === col && 'bg-hairline-subtle',
         props.bandTop && 'border-t border-t-hairline-strong',
         props.bandLeft && 'border-l border-l-hairline-strong',
         flag && FLAG_RING[flag]
@@ -100,4 +104,16 @@ function MatrixCellView(props: MatrixCellViewProps) {
   )
 }
 
-export const MatrixCell = memo(MatrixCellView)
+const CONTENT_KEYS = ['label', 'step', 'flag', 'valueText'] as const
+
+function isSameCell(prev: MatrixCellViewProps, next: MatrixCellViewProps): boolean {
+  const { content: before, ...restBefore } = prev
+  const { content: after, ...restAfter } = next
+  const keys = Object.keys(restAfter) as (keyof typeof restAfter)[]
+  return (
+    CONTENT_KEYS.every((key) => before[key] === after[key]) &&
+    keys.every((key) => restBefore[key] === restAfter[key])
+  )
+}
+
+export const MatrixCell = memo(MatrixCellView, isSameCell)
