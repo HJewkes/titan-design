@@ -1,12 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import {
-  TargetError,
-  changedFilesFromGit,
-  gitDiffArgs,
-  selectTargets,
-} from './targets.mjs'
+import { TargetError, changedFilesFromGit, gitDiffArgs, selectTargets } from './targets.mjs'
 
 const index = JSON.parse(readFileSync(resolve('scripts/audit-stories/fixtures/index.json'), 'utf8'))
 

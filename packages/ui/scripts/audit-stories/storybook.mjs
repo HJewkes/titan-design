@@ -57,12 +57,18 @@ export function assertLoopbackUrl(raw) {
   return url
 }
 
-/** The process group of `pid`, or `null` when the process is gone. */
-export function pgidOf(pid) {
+/** Bounds every lsof and ps call, so an ownership or guard check cannot hang the audit. */
+const PROBE_TIMEOUT_MS = 3000
+
+const defaultKill = (target, signal) => process.kill(target, signal)
+
+/** The process group of `pid`, or `null` when the process is gone or ps fails or hangs. */
+export function pgidOf(pid, { ps = 'ps', timeoutMs = PROBE_TIMEOUT_MS } = {}) {
   try {
-    const out = execFileSync('ps', ['-o', 'pgid=', '-p', String(pid)], {
+    const out = execFileSync(ps, ['-o', 'pgid=', '-p', String(pid)], {
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'ignore'],
+      timeout: timeoutMs,
     })
     return Number(out.trim()) || null
   } catch {
@@ -70,34 +76,54 @@ export function pgidOf(pid) {
   }
 }
 
-let ownGroup
-const ownPgid = () => (ownGroup ??= pgidOf(process.pid))
+let cachedOwnGroup = null
+function readOwnGroup() {
+  cachedOwnGroup ??= pgidOf(process.pid)
+  return cachedOwnGroup
+}
 
-/** Throws unless `pgid` names a group we may signal: never 0, 1, ourselves or our own group. */
-export function assertSignallableGroup(pgid) {
-  const valid = Number.isInteger(pgid) && pgid > 1 && pgid !== process.pid
-  if (!valid || pgid === ownPgid()) {
-    throw new StorybookError(`Refusing to signal process group ${pgid}`)
-  }
+/**
+ * Throws unless `pgid` names a group we may signal: never 0, 1, ourselves or our own group.
+ * Fails closed: when our own group cannot be read, nothing may be signalled.
+ */
+export function assertSignallableGroup(pgid, { ownGroup = readOwnGroup } = {}) {
+  const refuse = (why) => new StorybookError(`Refusing to signal process group ${pgid}: ${why}`)
+  if (!Number.isInteger(pgid) || pgid <= 1) throw refuse('not a process group id')
+  if (pgid === process.pid) throw refuse('it is this process')
+  const own = ownGroup()
+  if (own == null) throw refuse('this process group is unknown')
+  if (pgid === own) throw refuse('it is this process group')
+}
+
+/**
+ * The one place a signal reaches a process group. `kill` has the shape of `process.kill` and is
+ * injectable, so tests can prove the guard without signalling anything real.
+ */
+function sendToGroup(pgid, signal, { kill = defaultKill, ownGroup } = {}) {
+  assertSignallableGroup(pgid, { ownGroup })
+  kill(-pgid, signal)
 }
 
 /** True while any process in the group still exists. */
-export function isGroupAlive(pgid) {
-  assertSignallableGroup(pgid)
+export function isGroupAlive(pgid, options) {
   try {
-    process.kill(-pgid, 0)
+    sendToGroup(pgid, 0, options)
     return true
   } catch (err) {
+    if (err instanceof StorybookError) throw err
     return err.code === 'EPERM'
   }
 }
 
-function signalGroup(pgid, signal) {
-  assertSignallableGroup(pgid)
+/**
+ * ESRCH means the group is gone. EPERM is what macOS returns for a group left holding only
+ * unreaped zombies; there is nothing left to signal, and `isGroupAlive` waits out the reaping.
+ */
+function signalGroup(pgid, signal, options) {
   try {
-    process.kill(-pgid, signal)
+    sendToGroup(pgid, signal, options)
   } catch (err) {
-    if (err.code !== 'ESRCH') throw err
+    if (err.code !== 'ESRCH' && err.code !== 'EPERM') throw err
   }
 }
 
@@ -110,43 +136,56 @@ function timer(ms) {
 
 const delay = (ms) => timer(ms).promise
 
-async function waitForGroupExit(pgid, timeoutMs) {
+async function waitForGroupExit(pgid, timeoutMs, options) {
   const deadline = Date.now() + timeoutMs
   while (Date.now() < deadline) {
-    if (!isGroupAlive(pgid)) return true
+    if (!isGroupAlive(pgid, options)) return true
     await delay(50)
   }
-  return !isGroupAlive(pgid)
+  return !isGroupAlive(pgid, options)
 }
 
 /**
  * SIGTERM to the whole group, SIGKILL after `graceMs` if anything in it survives.
- * Resolves `true` once the group is confirmed gone.
+ * Resolves `true` once the group is confirmed gone. `kill` and `ownGroup` are for tests.
  */
-export async function stopGroup(pgid, { graceMs = 5000 } = {}) {
-  signalGroup(pgid, 'SIGTERM')
-  if (await waitForGroupExit(pgid, graceMs)) return true
-  signalGroup(pgid, 'SIGKILL')
-  return waitForGroupExit(pgid, graceMs)
+export async function stopGroup(pgid, { graceMs = 5000, ...options } = {}) {
+  signalGroup(pgid, 'SIGTERM', options)
+  if (await waitForGroupExit(pgid, graceMs, options)) return true
+  signalGroup(pgid, 'SIGKILL', options)
+  return waitForGroupExit(pgid, graceMs, options)
 }
 
 /**
- * An idempotent stop for one group. `stopped` latches once the group is confirmed gone, after
- * which nothing signals the pgid again, since the OS may have reused it.
+ * An idempotent stop for one group. `stopped` latches once the group is seen gone, whether we
+ * stopped it or it died on its own; after that nothing signals the pgid, which the OS may reuse.
  */
-function groupStopper(pgid, graceMs) {
+function groupStopper(pgid, { graceMs, kill }) {
   let stopping = null
   let markStopped
+  const latch = () => {
+    state.stopped = true
+    markStopped()
+  }
+  const goneNow = () => {
+    if (!state.stopped && !isGroupAlive(pgid, { kill })) latch()
+    return state.stopped
+  }
   const state = {
     stopped: false,
     whenStopped: new Promise((done) => (markStopped = done)),
     stop() {
-      stopping ??= stopGroup(pgid, { graceMs }).then((gone) => {
-        if (!gone) throw new StorybookError(`Process group ${pgid} survived SIGKILL`)
-        state.stopped = true
-        markStopped()
-      })
+      stopping ??= goneNow()
+        ? Promise.resolve()
+        : stopGroup(pgid, { graceMs, kill }).then((gone) => {
+            if (!gone) throw new StorybookError(`Process group ${pgid} survived SIGKILL`)
+            latch()
+          })
       return stopping
+    },
+    /** Synchronous SIGKILL for an exit handler; a no-op once the group is gone. */
+    killNow() {
+      if (!goneNow()) signalGroup(pgid, 'SIGKILL', { kill })
     },
   }
   return state
@@ -186,20 +225,20 @@ export function assertIndexLists(index, importPaths) {
 }
 
 /** PIDs listening on a TCP port, from lsof. */
-export function listenerPids(port) {
-  const lsof = resolveLsof()
+export function listenerPids(port, { lsof = resolveLsof(), timeoutMs = PROBE_TIMEOUT_MS } = {}) {
   if (!lsof) throw new StorybookError(`lsof not found, so the owner of port ${port} is unproven`)
   try {
     const out = execFileSync(lsof, ['-nP', `-iTCP:${port}`, '-sTCP:LISTEN', '-Fp'], {
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'ignore'],
+      timeout: timeoutMs,
     })
     return out
       .split('\n')
       .filter((l) => l.startsWith('p'))
       .map((l) => Number(l.slice(1)))
   } catch (err) {
-    if (err.status === 1) return []
+    if (err.status === 1 && !err.signal) return []
     throw new StorybookError(`lsof failed on port ${port}: ${err.message}`)
   }
 }
@@ -304,7 +343,7 @@ async function awaitReady(child, outputTail, readLine, { readyTimeoutMs, pollMs,
 /**
  * Starts an isolated Storybook and resolves once it serves `/index.json`. `onSpawn` receives
  * the launcher PID (the group id) as soon as it exists. On any failure the group is stopped
- * before the error propagates. `ownership` overrides the listener lookup, for tests only.
+ * before the error propagates. `ownership` (the listener lookup) and `kill` are for tests only.
  */
 export async function startStorybook({
   launcher = DEFAULT_LAUNCHER,
@@ -316,11 +355,12 @@ export async function startStorybook({
   graceMs = 5000,
   onSpawn = () => {},
   ownership,
+  kill,
 } = {}) {
   const child = spawnLauncher({ launcher, args, cwd })
   const pgid = child.pid
   onSpawn(pgid)
-  const stopper = groupStopper(pgid, graceMs)
+  const stopper = groupStopper(pgid, { graceMs, kill })
   const listeners = []
   const output = watchOutput(child, (line) => listeners.forEach((fn) => fn(line)))
   const readLine = (fn) => listeners.push(fn)
@@ -360,21 +400,21 @@ export async function attachStorybook(raw, { expectImportPaths = [] } = {}) {
 /**
  * Stops the server on SIGINT, SIGTERM and SIGHUP, then exits 128 + the signal number (130 for
  * SIGINT). A repeated signal joins the stop already running instead of killing us mid-stop. If
- * the process exits any other way before the group is gone, the group gets a synchronous SIGKILL.
- * Every handler is removed once the group is confirmed gone. Returns the remover.
+ * the process exits any other way while the group lives, the group gets a synchronous SIGKILL.
+ * Every handler is removed once the group is gone. Returns the remover.
  */
 export function stopOnSignals(
   server,
-  { proc = process, exit = (code) => process.exit(code), kill = signalGroup } = {}
+  { proc = process, exit = (code) => process.exit(code) } = {}
 ) {
   const onSignal = async (signal) => {
     await server.stop().catch(() => {})
     exit(128 + constants.signals[signal])
   }
   const onExit = () => {
-    if (server.stopped || server.pid == null) return
+    if (server.stopped || !server.killNow) return
     try {
-      kill(server.pid, 'SIGKILL')
+      server.killNow()
     } catch {
       // Exiting anyway; there is no one left to report to.
     }

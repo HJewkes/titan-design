@@ -1,11 +1,12 @@
 // @vitest-environment node
 /* global process, setTimeout */
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import { ESLint } from 'eslint'
 import { spawn } from 'node:child_process'
 import { EventEmitter } from 'node:events'
-import { readFileSync } from 'node:fs'
+import { chmodSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { createServer } from 'node:http'
+import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
@@ -16,6 +17,7 @@ import {
   assertLoopbackUrl,
   attachStorybook,
   isGroupAlive,
+  listenerPids,
   parseLauncherPort,
   pgidOf,
   startStorybook,
@@ -39,7 +41,16 @@ const OWN_FILES = [
 const groups = new Set()
 const pids = new Set()
 
+const OWN_GROUP = pgidOf(process.pid)
+
+// Only a child this file spawned: never 0, ±1, this process, this group or a non-integer.
+const isSpawnedTarget = (target) =>
+  Number.isInteger(target) &&
+  OWN_GROUP != null &&
+  ![0, 1, process.pid, OWN_GROUP].includes(Math.abs(target))
+
 const quietKill = (target) => {
+  if (!isSpawnedTarget(target)) throw new Error(`refusing to kill ${target}`)
   try {
     process.kill(target, 'SIGKILL')
   } catch {
@@ -60,6 +71,20 @@ const isAlive = (pid) => {
     return true
   } catch (err) {
     return err.code === 'EPERM'
+  }
+}
+
+// Only ever wraps fake-launcher groups started by these tests, never a guard case.
+const passThroughKill = (target, signal) => {
+  if (!isSpawnedTarget(target)) throw new Error(`refusing to signal ${target}`)
+  return process.kill(target, signal)
+}
+
+async function waitUntil(condition, timeoutMs = 5000) {
+  const deadline = Date.now() + timeoutMs
+  while (!condition()) {
+    if (Date.now() > deadline) throw new Error('condition not met in time')
+    await new Promise((ok) => setTimeout(ok, 50))
   }
 }
 
@@ -137,7 +162,16 @@ describe('parseLauncherPort', () => {
 })
 
 describe('process group guard', () => {
-  const ownGroup = pgidOf(process.pid)
+  // Every case passes a spy as `kill`: a broken guard must never reach the real process.kill
+  // with 0, 1, -1, this pid or this group; a guard mutation once SIGTERMed a whole shell.
+  const errorOf = (fn) => {
+    try {
+      fn()
+      return null
+    } catch (err) {
+      return err
+    }
+  }
 
   it.each([
     ['0', 0],
@@ -145,11 +179,62 @@ describe('process group guard', () => {
     ['1 (every process)', 1],
     ['-1', -1],
     ['a fraction', 2.5],
+    ['a numeric string', '4242'],
     ['our own pid', process.pid],
-    ['our own group', ownGroup],
+    ['our own group', OWN_GROUP],
   ])('refuses to signal %s', async (_, pgid) => {
-    expect(() => isGroupAlive(pgid)).toThrow(StorybookError)
-    await expect(stopGroup(pgid)).rejects.toThrow(/Refusing to signal process group/)
+    const kill = vi.fn()
+
+    const probe = errorOf(() => isGroupAlive(pgid, { kill }))
+    const stop = await stopGroup(pgid, { kill, graceMs: 0 }).then(
+      () => null,
+      (err) => err
+    )
+
+    expect(kill).not.toHaveBeenCalled()
+    expect(probe).toMatchObject({ exitCode: EXIT_USAGE })
+    expect(stop).toMatchObject({ exitCode: EXIT_USAGE })
+  })
+
+  it('refuses every group when its own process group cannot be read', () => {
+    const kill = vi.fn()
+
+    const probe = errorOf(() => isGroupAlive(4242, { kill, ownGroup: () => null }))
+
+    expect(kill).not.toHaveBeenCalled()
+    expect(probe).toMatchObject({ message: expect.stringMatching(/process group is unknown/) })
+  })
+})
+
+describe('lsof and ps probes', () => {
+  let dir
+  let hanging
+
+  beforeAll(() => {
+    dir = mkdtempSync(join(tmpdir(), 'storybook-probe-'))
+    hanging = join(dir, 'hang')
+    writeFileSync(hanging, '#!/bin/sh\nexec sleep 5\n')
+    chmodSync(hanging, 0o755)
+  })
+
+  afterAll(() => rmSync(dir, { recursive: true, force: true }))
+
+  it('fails closed with a usage exit when lsof hangs', () => {
+    const started = Date.now()
+
+    const run = () => listenerPids(6123, { lsof: hanging, timeoutMs: 200 })
+
+    expect(run).toThrow(expect.objectContaining({ exitCode: EXIT_USAGE }))
+    expect(Date.now() - started).toBeLessThan(2000)
+  })
+
+  it('reports no process group when ps hangs', () => {
+    const started = Date.now()
+
+    const group = pgidOf(process.pid, { ps: hanging, timeoutMs: 200 })
+
+    expect(group).toBeNull()
+    expect(Date.now() - started).toBeLessThan(2000)
   })
 })
 
@@ -264,6 +349,20 @@ describe('stop', () => {
 
     expect(server.stopped).toBe(true)
   })
+
+  it('latches without signalling once the group has died on its own', async () => {
+    const kill = vi.fn(passThroughKill)
+    const server = await startFake([], { kill })
+    quietKill(-server.pid)
+    await waitUntil(() => !isGroupAlive(server.pid))
+    kill.mockClear()
+
+    await server.stop()
+    server.killNow()
+
+    expect(kill.mock.calls.filter(([, signal]) => signal !== 0)).toEqual([])
+    expect(server.stopped).toBe(true)
+  })
 })
 
 describe('stopOnSignals', () => {
@@ -291,13 +390,14 @@ describe('stopOnSignals', () => {
 
   it('removes its handlers after a normal stop and never signals the group again', async () => {
     const proc = new EventEmitter()
-    const kill = vi.fn()
-    const server = await startFake()
-    stopOnSignals(server, { proc, kill, exit: vi.fn() })
+    const kill = vi.fn(passThroughKill)
+    const server = await startFake([], { kill })
+    stopOnSignals(server, { proc, exit: vi.fn() })
     expect(proc.listenerCount('exit')).toBe(1)
 
     await server.stop()
     await server.whenStopped
+    kill.mockClear()
     proc.emit('exit')
 
     expect(kill).not.toHaveBeenCalled()
@@ -307,24 +407,23 @@ describe('stopOnSignals', () => {
 
   it('never signals a latched group on exit, even before its handlers are removed', () => {
     const proc = new EventEmitter()
-    const kill = vi.fn()
-    const latched = { pid: 4242, stopped: true, whenStopped: new Promise(() => {}), stop: vi.fn() }
-    stopOnSignals(latched, { proc, kill, exit: vi.fn() })
+    const latched = { stopped: true, whenStopped: new Promise(() => {}), killNow: vi.fn() }
+    stopOnSignals(latched, { proc, exit: vi.fn() })
 
     proc.emit('exit')
 
-    expect(kill).not.toHaveBeenCalled()
+    expect(latched.killNow).not.toHaveBeenCalled()
   })
 
   it('SIGKILLs the group on exit while it is still running', async () => {
     const proc = new EventEmitter()
-    const kill = vi.fn()
-    const server = await startFake()
-    stopOnSignals(server, { proc, kill, exit: vi.fn() })
+    const kill = vi.fn(passThroughKill)
+    const server = await startFake([], { kill })
+    stopOnSignals(server, { proc, exit: vi.fn() })
 
     proc.emit('exit')
 
-    expect(kill).toHaveBeenCalledWith(server.pid, 'SIGKILL')
+    expect(kill).toHaveBeenCalledWith(-server.pid, 'SIGKILL')
     await server.stop()
   })
 })
