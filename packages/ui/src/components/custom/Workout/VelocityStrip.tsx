@@ -1,6 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useEffect, useState } from 'react'
-import { View, Text, Pressable, Animated, type ViewProps } from 'react-native'
+import { Text, Pressable, Animated, type ViewProps } from 'react-native'
 import { space } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../ui/surface'
 import { formatVelocity } from '../../../utils/workout-format'
