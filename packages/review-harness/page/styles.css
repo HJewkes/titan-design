@@ -48,6 +48,33 @@ kbd {
   color: var(--color-text-secondary);
 }
 
+/* Sticky above the sticky section and frame heads, which move down to clear it. */
+.contrast-override {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  box-sizing: border-box;
+  min-height: var(--contrast-banner-height);
+  margin: 0 0 16px;
+  padding: 8px 12px;
+  border: 2px solid var(--color-status-warning);
+  background: var(--color-status-warning-subtle);
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+:root {
+  --contrast-banner-height: 40px;
+}
+
+body:has(.contrast-override) .section-head {
+  top: var(--contrast-banner-height);
+}
+
+body:has(.contrast-override) .variant-head {
+  top: calc(var(--space-section-sm) + var(--contrast-banner-height));
+}
+
 .page-head {
   display: grid;
   gap: var(--space-stack-sm);

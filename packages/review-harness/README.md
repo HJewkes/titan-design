@@ -30,8 +30,24 @@ node scripts/storybook-launch.mjs --isolated          # prints its port, e.g. 61
 
 pnpm review --example --storybook http://127.0.0.1:6107 > <round-dir>/round.json   # a starting point
 pnpm review --example --sections --storybook http://127.0.0.1:6107                # the same, grouped
+pnpm review build <round-dir>/draft.json [--storybook <url>]   # contrast gate; writes round.json
 pnpm review <round-dir>/round.json [--storybook <url>] [--out <dir>] [--no-open] [--no-capture]
+            [--contrast-override "<reason>"]
 ```
+
+Write the manifest as `draft.json` and let `build` produce `round.json` (see _Contrast gate_).
+`pnpm review` **refuses** (exit 2) a `round.json` without a passing `contrast.json` for its
+exact bytes. To serve one anyway, pass `--contrast-override "<reason>"`; the reason is
+required. The override is then recorded where it outlives the serve. `round.json` is
+rewritten with `contrastOverride {reason, problem, failures[{variant, element, mode, kind,
+ratio, required}]}`, where the failures are copied from `contrast.json` when there is one.
+`feedback.json` (and stdout) echo the same record, and `manifestSha256` is the sha of the
+rewritten file. The page shows the reason in a sticky banner ("Contrast was not gated for
+this round: …") that stays above the section and frame heads while the owner scrolls. A
+round whose contrast passed is served unchanged, with no record and no banner, even when
+the flag is given. `build` refuses a draft that already carries `contrastOverride`, so a
+built round can never show the banner. There is no environment variable and no silent
+bypass. Hand-written test rounds and the e2es pass the flag.
 
 The command blocks until the human sends, then:
 
@@ -65,7 +81,8 @@ sha256 of the manifest you wrote.
   in a round with `sections`),
   `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?, recommendation?}]`,
   `sections?[{id, title, context?, questionIds[], variantKeys[], seeAlso?[], height?}]`,
-  `recommendations` (`"after-answer"`, the default, or `"shown"`).
+  `recommendations` (`"after-answer"`, the default, or `"shown"`),
+  `contrast?{knownDefects[], measured[], unmeasured[]}` (also on a section; see _Contrast gate_).
   A question over variant keys is variant-scoped and sits right under the variants; set
   `scope` to override. Args and globals go in the Storybook URL, so keys and values are
   limited to letters, digits, space, `_` and `-` (numbers and booleans are fine); anything
@@ -93,14 +110,88 @@ sha256 of the manifest you wrote.
 - Feedback `titan-review/feedback@1`: `manifestSha256`, `submittedAt`,
   `answers[{questionId, pick | picks | value | text, comment?, variantComments?, recommendation?, agreed?}]`,
   `variants[{key, storyId | image, verdict: chosen|rejected|maybe|null, comment, annotations[], relatedQuestionIds?}]`,
-  `general`. Each annotation has `width`, `x`/`y` in CSS px of the story frame, `xPct`/`yPct`
-  as fractions of it, a `note`, and `target {testId?, role?, text?}` from element hit-testing.
+  `general`, `contrastOverride?` (see _The agent's side_). Each annotation has `width`,
+  `x`/`y` in CSS px of the story frame, `xPct`/`yPct` as fractions of it, a `note`, and `target {testId?, role?, text?}` from element hit-testing.
   `variantComments[{key, comment}]` repeats, under the answer, every comment left on a frame
   that question's section showed; `relatedQuestionIds` is the same link from the frame's side.
   Both appear only in a sectioned round. `recommendation` echoes the question's recommendation,
   and `agreed` says whether the owner's answer equals it (pick-many: the same set); `agreed` is
   absent when the owner only commented. Both appear only when the question has a
   recommendation. Everything else is unchanged and means what it always did.
+
+## Contrast gate (TD-478)
+
+`titan-review build <draft.json>` measures every story variant at every manifest width in
+**light and dark** (the Storybook `theme` global; light is `.light` on `<html>`) in headless
+Chromium, using the same renderer as capture. It writes `contrast.json` beside the draft and
+copies the draft byte for byte to `round.json` only when nothing undeclared failed. Otherwise
+it exits 3 and `round.json` is not written. A frame whose theme did not apply is an error,
+never a pass.
+
+Thresholds (WCAG 2.1 SC 1.4.3 and 1.4.11): text 4.5:1; large text (24px, or 18.66px at
+weight 700 or more) 3:1; non-text 3:1 against the adjacent plane. Each colour is composited
+over its **effective background**: every ancestor's background from the canvas down, each
+faded by its subtree's `opacity`, so an alpha fill over the plane counts.
+
+What it measures:
+
+- **Text**: every element with its own text node, and input values.
+- **Control boundaries**: buttons, inputs and ARIA controls. The border or the fill,
+  whichever contrasts more, against the parent's plane. A control that paints neither is
+  identified by its label and is skipped.
+- **Separators**: `hr`, `role=separator`, one-side or two-opposite-side borders, and fills
+  2px thick or less.
+- **Tracks**: fills 8px thick or less and at least four times as long.
+- **Marks**: elements 24px or smaller with a border or fill, and every SVG shape's fill and
+  stroke.
+- **Portals**: everything the story renders into `<body>` outside `#storybook-root`, such as
+  popovers, tooltips and modals, when it is open as the frame renders. Storybook's own
+  chrome (`sb-*`, `#storybook-docs`) is skipped. To measure a tip, write a story that renders
+  it open (README > _Open-tip stories are open by STATE_).
+
+What it does not measure:
+
+- Large non-control fills and full borders, such as cards, panels and surfaces. These are
+  planes, not marks. TD-486 gates their token pairs.
+- Planes painted by a non-ancestor (an absolutely positioned overlay) or by another SVG
+  shape.
+- Gradients, background images and pattern paints. They are listed as `indeterminate` and
+  never block.
+- Hover, focus and pressed states. A frame is measured as it first renders.
+- Disabled controls, which WCAG exempts. They are counted as `exempt`.
+
+**Declaring a miss.** A section's `contrast` holds the declarations for its own frames. The
+round-level `contrast` holds them for every frame:
+
+```json
+"contrast": {
+  "knownDefects": [
+    { "element": "chip-label", "mode": "light", "kind": "text", "maxRatio": 3.2, "route": "TD-490", "reason": "text-muted on the light base" }
+  ],
+  "measured": [
+    { "variant": "Wall", "mode": "dark", "kind": "text", "element": "header", "ratio": 5.1, "source": "picker on the PNG" }
+  ],
+  "unmeasured": [{ "variant": "Wall", "mode": "light", "reason": "device capture, no DOM" }]
+}
+```
+
+- A `knownDefects` entry excuses the miss of exactly one element. `element`, `mode` and `kind`
+  are required, and loading refuses an entry that omits one. `element` is the failing
+  element's own `data-testid`, or the full selector `build` printed for it in brackets. It is
+  compared exactly, never as a substring. `variant` narrows the match further. `maxRatio`,
+  when set, excuses the miss only at or below that ratio, so a regression past it blocks
+  again. `route` is required. It is the task id of the primitive or token audit that owns an
+  inherited miss, or `component` for the component's own miss. A declared miss is still
+  printed and written with its route and ratio. Only undeclared misses block. A declaration
+  that matched nothing prints `UNMATCHED` so it does not linger and hide a later miss.
+- An **image variant** has no DOM. **Each mode**, light and dark, needs a `measured` ratio
+  (judged at the same thresholds) or an `unmeasured` entry with a reason. A light measurement
+  does not cover dark. A story variant takes neither.
+
+`contrast.json` (`titan-review/contrast@1`) records `manifestSha256`, `passed`, the
+thresholds, the coverage lists above, a per-frame summary (checks, failures, known defects,
+exempt, indeterminate), and every failure, known defect, unmeasured frame, indeterminate
+pair and unmatched declaration. Passing checks are counted, not listed.
 
 ## Calibration
 
@@ -251,3 +342,7 @@ own text field keeps its typing, except `Cmd+Enter`.
   `TITAN_REVIEW_STORYBOOK=<url>`), a keyboard pick, a comment, a pin, send, then asserts the
   written JSON and PNGs; it also checks that a round-level height caps fitted frames while a
   variant height stays fixed. Local only; it needs Storybook and Chromium.
+  `e2e/contrast.e2e.ts` needs no Storybook. It serves a synthetic story, with a portal and
+  Storybook chrome. It proves three things. Light-mode misses block `round.json`. Declaring
+  one miss excuses only that one. Declaring them all passes. `e2e/image.e2e.ts` checks the
+  override banner.

@@ -25,6 +25,8 @@ async function fakeStorybook(): Promise<{ url: string; close: () => void }> {
   return { url: `http://127.0.0.1:${port}`, close: () => server.close() }
 }
 
+const OVERRIDE = ['--contrast-override', 'unit-test round']
+
 const stubPage = {
   handler: (_req: http.IncomingMessage, res: http.ServerResponse) => res.end('review page'),
   close: async () => {},
@@ -106,34 +108,123 @@ describe('titan-review CLI', () => {
       },
       openBrowser: () => {},
       capture: async (_round, outDir) => [join(outDir, 'fake.png')],
+      measure: async () => [],
       createPage: async () => stubPage,
       signal,
     }
   }
 
+  const sha256 = async (file: string) =>
+    (await import('node:crypto'))
+      .createHash('sha256')
+      .update(await readFile(file))
+      .digest('hex')
+
+  async function writeContrast(report: Record<string, unknown>) {
+    const manifestSha256 = await sha256(join(dir, 'round.json'))
+    await writeFile(join(dir, 'contrast.json'), JSON.stringify({ manifestSha256, ...report }))
+  }
+
   it('blocks until submit, writes feedback.json next to the manifest, prints it, exits 0', async () => {
-    const m = manifest(sb.url)
-    const raw = await readFile(join(dir, 'round.json'))
-    const sha = (await import('node:crypto')).createHash('sha256').update(raw).digest('hex')
-    const feedback = validFeedback(m, sha)
+    await writeContrast({ passed: true, failures: [] })
+    const before = await readFile(join(dir, 'round.json'))
+    const feedback = validFeedback(manifest(sb.url), await sha256(join(dir, 'round.json')))
     const code = await runCli(
-      [join(dir, 'round.json'), '--no-open'],
+      [join(dir, 'round.json'), '--no-open', ...OVERRIDE],
       io(new AbortController().signal, (url) => void post(url, feedback))
     )
     expect(code).toBe(0)
     expect(JSON.parse(out.stdout)).toEqual(feedback)
     expect(JSON.parse(await readFile(join(dir, 'feedback.json'), 'utf8'))).toEqual(feedback)
+    expect((await readFile(join(dir, 'round.json'))).equals(before)).toBe(true)
+  })
+
+  it('records an override in round.json and feedback.json, with the misses it shipped', async () => {
+    const miss = {
+      variant: 'A',
+      mode: 'light',
+      kind: 'text',
+      testId: 'chip-label',
+      selector: 'div > span',
+      ratio: 1.7,
+      required: 4.5,
+    }
+    await writeContrast({ passed: false, failures: [miss] })
+    const code = await runCli(
+      [join(dir, 'round.json'), '--no-open', ...OVERRIDE],
+      io(new AbortController().signal, async (url) => {
+        const sha = await sha256(join(dir, 'round.json'))
+        await post(url, validFeedback(manifest(sb.url), sha))
+      })
+    )
+    const record = {
+      reason: 'unit-test round',
+      problem: 'contrast.json records undeclared contrast failures',
+      failures: [
+        {
+          variant: 'A',
+          element: 'chip-label',
+          mode: 'light',
+          kind: 'text',
+          ratio: 1.7,
+          required: 4.5,
+        },
+      ],
+    }
+    expect(code).toBe(0)
+    const round = JSON.parse(await readFile(join(dir, 'round.json'), 'utf8'))
+    expect(round.contrastOverride).toEqual(record)
+    const written = JSON.parse(await readFile(join(dir, 'feedback.json'), 'utf8'))
+    expect(written.contrastOverride).toEqual(record)
+    expect(written.manifestSha256).toBe(await sha256(join(dir, 'round.json')))
   })
 
   it('exits 130 and writes nothing when interrupted before submit', async () => {
     const controller = new AbortController()
     const code = await runCli(
-      [join(dir, 'round.json')],
+      [join(dir, 'round.json'), ...OVERRIDE],
       io(controller.signal, () => controller.abort())
     )
     expect(code).toBe(130)
     expect(out.stdout).toBe('')
     expect(await readdir(dir)).toEqual(['round.json'])
+  })
+
+  it('refuses to serve a round with no passing contrast.json, naming the way out', async () => {
+    let served = false
+    const code = await runCli(
+      [join(dir, 'round.json'), '--no-open'],
+      io(new AbortController().signal, () => (served = true))
+    )
+    expect(code).toBe(2)
+    expect(served).toBe(false)
+    expect(out.stderr.join('\n')).toContain('no contrast.json beside this round')
+    expect(out.stderr.join('\n')).toContain('--contrast-override "<reason>"')
+  })
+
+  it('refuses an override with no reason', async () => {
+    const code = await runCli(
+      [join(dir, 'round.json'), '--contrast-override', '  '],
+      io(new AbortController().signal, () => {})
+    )
+    expect(code).toBe(2)
+    expect(out.stderr.join('\n')).toContain('needs a reason')
+  })
+
+  it('serves an overridden round with its record in the round payload', async () => {
+    const controller = new AbortController()
+    let payload: unknown
+    const code = await runCli(
+      [join(dir, 'round.json'), '--no-open', ...OVERRIDE],
+      io(controller.signal, async (url) => {
+        payload = await (await fetch(`${url}api/round`)).json()
+        controller.abort()
+      })
+    )
+    expect(code).toBe(130)
+    expect(payload).toMatchObject({
+      manifest: { contrastOverride: { reason: 'unit-test round', failures: [] } },
+    })
   })
 
   it('exits 2 before serving when a story id is not on that Storybook', async () => {
