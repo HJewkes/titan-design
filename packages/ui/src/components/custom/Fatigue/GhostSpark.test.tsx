@@ -3,9 +3,10 @@ import { axe } from 'jest-axe'
 import { render, screen } from '@testing-library/react'
 import { GhostSpark, GHOST_GUTTER } from './GhostSpark'
 import { DualGhostSpark } from './DualGhostSpark'
-import { FATIGUE_STATES, TARGET_TEMPO_SECONDS } from './fatigue-mock'
+import { FATIGUE_STATES, buildMockModel, TARGET_TEMPO_SECONDS } from './fatigue-mock'
 
 const model = FATIGUE_STATES[3].model // the full 8-rep set
+const fiveRep = buildMockModel(4).velocityCurves
 
 describe('GhostSpark', () => {
   it('has no accessibility violations', async () => {
@@ -13,6 +14,18 @@ describe('GhostSpark', () => {
       <GhostSpark curves={model.velocityCurves} width={360} height={180} />
     )
     expect(await axe(container)).toHaveNoViolations()
+  })
+
+  it('exposes a text alternative as an image and hides the svg', () => {
+    const { container } = render(<GhostSpark curves={fiveRep} width={360} height={180} />)
+    expect(screen.getByRole('img', { name: /rep 5/i })).toBeInTheDocument()
+    expect(container.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
+  })
+
+  it('lets accessibilityLabel override the summary', () => {
+    render(<GhostSpark curves={fiveRep} width={360} height={180} accessibilityLabel="Bar speed" />)
+    expect(screen.getByRole('img', { name: 'Bar speed' })).toBeInTheDocument()
+    expect(screen.queryByRole('img', { name: /rep 5/i })).not.toBeInTheDocument()
   })
 
   it('renders without crashing for a populated set', () => {
