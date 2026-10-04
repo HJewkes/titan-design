@@ -12,3 +12,5 @@ export * from './utils'
 
 // Hooks
 export * from './hooks'
+
+export const apiGateProbe = 'td-288'
