@@ -4,7 +4,7 @@ import { axe } from 'jest-axe'
 import { Progress, CircularProgress, ProgressSteps } from './Progress'
 import { Surface } from '../surface'
 import { capturedByNode } from '../../../test/classname-capture'
-import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
 describe('Progress', () => {
   it('renders correctly', () => {
@@ -246,14 +246,17 @@ describe('Progress', () => {
  * own gaps. Unchanged in pixels.
  */
 describe('Progress geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'Progress.tsx')
+  it('the bar root ships its stack gap', () => {
+    render(<Progress value={40} label="Upload" />)
+    const root = screen.getByRole('progressbar').parentElement
+    expect(spacingClassesAt(root)).toEqual(['w-full', 'gap-stack-sm'])
+    expect(resolveAll(['w-full', 'gap-stack-sm'])).toEqual(['100%', '4px'])
+  })
 
-  it.each([
-    ['the bar root', 'w-full gap-stack-sm', ['100%', '4px']],
-    ['the steps root', 'w-full gap-stack-md', ['100%', '8px']],
-  ] as const)('%s ships `%s`', (_label, classes, pixels) => {
-    expect(source).toContain(classes)
-    const spacing = classes.split(' ').filter((c) => resolveAll([c])[0] !== undefined)
-    expect(resolveAll(spacing)).toEqual([...pixels])
+  it('the steps root ships its stack gap', () => {
+    render(<ProgressSteps currentStep={0} totalSteps={2} labels={['Plan', 'Build']} />)
+    const root = screen.getByText('Plan').parentElement?.parentElement ?? null
+    expect(spacingClassesAt(root)).toEqual(['w-full', 'gap-stack-md'])
+    expect(resolveAll(['w-full', 'gap-stack-md'])).toEqual(['100%', '8px'])
   })
 })

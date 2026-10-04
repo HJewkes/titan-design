@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react'
 import { LiveFatigueCard } from './LiveFatigueCard'
 import { FATIGUE_STATES, WARMING_UP_MODEL } from './fatigue-mock'
 import { GHOST_GUTTER } from './GhostSpark'
-import { resolveAll, siblingSource, spacingClassesIn } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
 const model = FATIGUE_STATES[3].model
 
@@ -43,16 +43,18 @@ describe('LiveFatigueCard', () => {
  * number — two MEASURED constants in `panel-layout` count it twice.
  */
 describe('LiveFatigueCard geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'LiveFatigueCard.tsx')
-
   it('spaces the top group by gap-3', () => {
-    expect(spacingClassesIn(source, 'LiveFatigueCard')).toEqual(['gap-3'])
+    render(<LiveFatigueCard model={model} width={318} height={508} />)
+    expect(spacingClassesAt(screen.getByTestId('verdict-hero').parentElement)).toEqual(['gap-3'])
     expect(resolveAll(['gap-3'])).toEqual(['12px'])
   })
 
+  // 318 wide, less the card's 18px padding and the spark's own gutter on each side.
   it('sizes the plot against the spark gutter it actually renders', () => {
+    render(<LiveFatigueCard model={model} width={318} height={508} />)
+    const spark = screen.getByTestId('ghost-spark')
     expect(GHOST_GUTTER).toBe(4)
-    expect(source).toContain('GHOST_GUTTER * 2')
-    expect(source).not.toMatch(/const GHOST_GUTTER/)
+    expect(spark).toHaveStyle({ paddingLeft: '4px', paddingRight: '4px' })
+    expect(spark.querySelector('svg')).toHaveAttribute('width', String(318 - 18 * 2 - 4 * 2))
   })
 })
