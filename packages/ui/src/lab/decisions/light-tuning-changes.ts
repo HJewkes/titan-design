@@ -1,7 +1,9 @@
 import { greyRamp, primitiveRamps } from '../../theme/tokens/primitives'
 import {
-  SELECTED_CHIP,
   TONE_TEXT_700,
+  baseSet,
+  chipLabelFix,
+  chipRecipe,
   overriddenTokens,
   resolveToken,
   type TokenSet,
@@ -95,6 +97,12 @@ const TASK_OF: Record<string, string> = {
   'brand-secondary-subtle': 'TD-491 snaps and link',
   'brand-secondary-muted': 'TD-491 snaps and link',
   'brand-primary': 'Brand',
+  'status-success-solid': 'TD-624 subtle labels and solids',
+  'on-status-warning': 'TD-624 subtle labels and solids',
+  'status-success-subtle': 'TD-624 subtle labels and solids',
+  'on-status-success-subtle': 'TD-624 subtle labels and solids',
+  'status-warning-subtle': 'TD-624 subtle labels and solids',
+  'on-status-warning-subtle': 'TD-624 subtle labels and solids',
 }
 
 export interface ChangeRow {
@@ -109,12 +117,16 @@ export interface ChangeGroup {
   rows: ChangeRow[]
 }
 
-/** The light overrides of a set, grouped by the task that proposes them. */
+/** The light overrides of a set that differ from its base, grouped by the proposing task. */
 export function changeGroups(set: TokenSet): ChangeGroup[] {
+  const base = baseSet(set)
   const groups = new Map<string, ChangeRow[]>()
   for (const token of overriddenTokens(set, 'light')) {
-    const before = describe(resolveToken('main', 'light', token))
-    const after = describe(resolveToken(set, 'light', token))
+    const was = resolveToken(base, 'light', token)
+    const now = resolveToken(set, 'light', token)
+    if (was === now) continue
+    const before = describe(was)
+    const after = describe(now)
     const task = TASK_OF[token] ?? 'Other'
     const row = {
       token,
@@ -127,25 +139,28 @@ export function changeGroups(set: TokenSet): ChangeGroup[] {
   return [...groups].map(([task, rows]) => ({ task, rows }))
 }
 
-/** The lab-only component recipes, named from the constants that paint them. */
-export function simulationLine(): string {
+/** The set's lab-only component recipes, named from the values that paint them. */
+export function simulationLine(set: TokenSet): string {
   const name = (hex: string) => formatValue(describe(hex))
   const toneText = Object.entries(TONE_TEXT_700)
     .map(([tone, hex]) => `${tone} ${name(hex)}`)
     .join(', ')
+  const fix = chipLabelFix(set)
+  const chipLabel = fix ? `; unselected Chip label ${name(fix)}` : ''
   return (
     'Simulated in the lab (component recipes, not token changes): neutral Progress track ' +
-    `(hairline-default); selected Chip border ${name(SELECTED_CHIP.border)} + label ` +
-    `${name(SELECTED_CHIP.label)}; tone as text at the 700 step (${toneText}).`
+    `(hairline-default); selected Chip: ${chipRecipe(set)?.name ?? 'today'}${chipLabel}; ` +
+    `tone as text at the 700 step (${toneText}).`
   )
 }
 
 /** "No new colour" only if every proposed and simulated value is a ramp hex or a black alpha. */
 export function introducedLine(set: TokenSet): string {
+  const chip = chipRecipe(set)
+  const fix = chipLabelFix(set)
   const values = [
     ...overriddenTokens(set, 'light').map((t) => resolveToken(set, 'light', t)),
-    SELECTED_CHIP.border,
-    SELECTED_CHIP.label,
+    ...[chip?.solidFill, chip?.border, chip?.label, fix].filter((v) => v !== undefined),
     ...Object.values(TONE_TEXT_700),
   ]
   const outside = values

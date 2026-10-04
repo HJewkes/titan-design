@@ -4,7 +4,6 @@ import type { ReactNode } from 'react'
 import { Text, View } from 'react-native'
 import { Alert } from '../../components/ui/alert'
 import { Checkbox } from '../../components/ui/checkbox'
-import { Chip } from '../../components/ui/chip'
 import { Divider } from '../../components/ui/divider'
 import { Indicator, type IndicatorColor } from '../../components/ui/indicator'
 import { Input } from '../../components/ui/input'
@@ -21,8 +20,10 @@ import { Select } from '../../components/ui/select'
 import { Switch } from '../../components/ui/switch'
 import {
   SET_LABEL,
+  TOKEN_SETS,
   TONE_TEXT_700,
   formatMeasurement,
+  baseSet,
   isSimulated,
   measure,
   overrideProperties,
@@ -35,7 +36,7 @@ import {
   simulationLine,
   type ChangeRow,
 } from './light-tuning-changes'
-import { ProgressSample, SelectedChip } from './light-tuning-samples'
+import { ProgressSample, SelectedChip, UnselectedChip } from './light-tuning-samples'
 
 interface Args {
   tokens: TokenSet
@@ -72,7 +73,7 @@ function Measured({ id, set }: { id: string; set: TokenSet }) {
   const pair = PAIRS[id]
   const before = formatMeasurement(pair, measure(pair, 'main', 'light'))
   const after = formatMeasurement(pair, measure(pair, compared(set), 'light'))
-  const sim = isSimulated(pair) ? ' · simulated' : ''
+  const sim = set !== 'main' && isSimulated(pair, compared(set)) ? ' · simulated' : ''
   return <Caption>{`${pair.label}: ${before} → ${after} (floor ${pair.floor})${sim}`}</Caption>
 }
 
@@ -210,8 +211,8 @@ function MarksSection({ set }: { set: TokenSet }) {
       <Measured id="pill-subtle-brand-secondary" set={set} />
       <Measured id="tint-brand-secondary-muted" set={set} />
       <View className="flex-row flex-wrap gap-inline-sm">
-        <SelectedChip isProposed={set !== 'main'} />
-        <Chip>Unselected</Chip>
+        <SelectedChip set={set} />
+        <UnselectedChip set={set} />
       </View>
       <Measured id="chip-selected-label" set={set} />
       <Measured id="chip-selected-edge" set={set} />
@@ -321,7 +322,9 @@ function WhatChanges({ set }: { set: TokenSet }) {
   }
   return (
     <View className="gap-stack-xs rounded-md border border-hairline bg-surface-base p-inset-sm">
-      <Text className="text-xs font-semibold text-text-primary">{`What changes: ${SET_LABEL[set]}`}</Text>
+      <Text className="text-xs font-semibold text-text-primary">
+        {`What changes: ${SET_LABEL[set]} against ${SET_LABEL[baseSet(set)]}`}
+      </Text>
       <ChangeLine row={CHANGE_HEADING} isHeading />
       {changeGroups(set).map((group) => (
         <View key={group.task}>
@@ -331,15 +334,15 @@ function WhatChanges({ set }: { set: TokenSet }) {
           ))}
         </View>
       ))}
-      <Text className={`${CHANGE_CELL} text-text-secondary`}>{simulationLine()}</Text>
+      <Text className={`${CHANGE_CELL} text-text-secondary`}>{simulationLine(set)}</Text>
       <Text className={`${CHANGE_CELL} text-text-primary`}>{introducedLine(set)}</Text>
     </View>
   )
 }
 
 const NOT_FOLLOWING =
-  'Not moved by the proposal: Pill and Chip solid read *-solid, Pill and Alert subtle labels read ' +
-  'on-*-subtle, so those samples stay as main. Simulated: Progress track, selected Chip, tone as text.'
+  'Pill and Chip solid read *-solid and Pill and Alert subtle labels read on-*-subtle: only the ' +
+  '*-solid and on-*-subtle rows in the table move them. Simulated: Progress track, Chips, tone as text.'
 
 function Column({ children }: { children: ReactNode }) {
   return <View className="min-w-[300px] flex-1 basis-[340px] gap-stack-md">{children}</View>
@@ -392,7 +395,7 @@ const meta: Meta<Args> = {
   tags: ['autodocs', 'status:lab', '!status:review'],
   args: { tokens: 'main' },
   argTypes: {
-    tokens: { control: 'inline-radio', options: ['main', 'proposed', 'proposedOrange600'] },
+    tokens: { control: 'inline-radio', options: TOKEN_SETS },
   },
   parameters: {
     layout: 'fullscreen',

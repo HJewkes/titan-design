@@ -1,6 +1,7 @@
 import {
-  SELECTED_CHIP,
   TONE_TEXT_700,
+  chipLabelFix,
+  chipRecipe,
   measure,
   type Mode,
   type Pair,
@@ -125,15 +126,23 @@ const CONTROL_PAIRS: Record<string, Pair> = {
     label: 'selected chip label',
     fg: 'on-brand-primary',
     bg: 'brand-primary-solid',
-    proposedFg: { raw: SELECTED_CHIP.label },
-    proposedBg: 'brand-primary-subtle',
+    recipe: (set) => {
+      const r = chipRecipe(set)
+      if (!r) return undefined
+      if (r.solidFill) return { fg: 'on-brand-primary', bg: { raw: r.solidFill } }
+      return { fg: { raw: r.label ?? '' }, bg: 'brand-primary-subtle' }
+    },
     plane: CARD,
     floor: 4.5,
   },
   'chip-selected-edge': {
     label: 'selected chip edge',
     fg: 'brand-primary-solid',
-    proposedFg: { raw: SELECTED_CHIP.border },
+    recipe: (set) => {
+      const r = chipRecipe(set)
+      const edge = r?.solidFill ?? r?.border
+      return edge ? { fg: { raw: edge } } : undefined
+    },
     plane: CARD,
     floor: 3,
   },
@@ -141,6 +150,10 @@ const CONTROL_PAIRS: Record<string, Pair> = {
     label: 'chip label',
     fg: 'text-secondary',
     bg: 'hairline-subtle',
+    recipe: (set) => {
+      const fix = chipLabelFix(set)
+      return fix ? { fg: { raw: fix } } : undefined
+    },
     plane: CARD,
     floor: 4.5,
   },
