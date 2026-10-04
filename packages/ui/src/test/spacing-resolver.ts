@@ -25,7 +25,12 @@ import { createRequire } from 'node:module'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { capturedClassNames } from './classname-capture'
+import {
+  animatedNodes,
+  animatedTestIds,
+  capturedByNode,
+  capturedClassNames,
+} from './classname-capture'
 
 const require = createRequire(import.meta.url)
 const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
@@ -169,6 +174,29 @@ export function spacingClassesIn(source: string, functionName: string): string[]
 export function spacingClassesOf(testId: string): string[] {
   const raw = capturedClassNames.get(testId)
   if (raw === undefined) throw new Error(`no captured className for testID '${testId}'`)
+  if (animatedTestIds.has(testId)) throw animatedError(`testID '${testId}'`)
+  return spacingFromRaw(raw)
+}
+
+/**
+ * The spacing classes the host `node` actually rendered — the handle for an
+ * element found with `getByText(...).parentElement`, `getByRole` or
+ * `getByLabelText`, so rebinding a geometry test adds no `testID` to the DOM.
+ */
+export function spacingClassesAt(node: Element | null): string[] {
+  const raw = node && capturedByNode.get(node)
+  if (raw === undefined || raw === null) throw new Error('no captured className for this node')
+  if (animatedNodes.has(node)) throw animatedError('this node')
+  return spacingFromRaw(raw)
+}
+
+function animatedError(where: string): Error {
+  return new Error(
+    `${where} is an Animated element carrying a className; NativeWind does not apply it. Move the class to an inner View, or use style.`
+  )
+}
+
+function spacingFromRaw(raw: string): string[] {
   return raw
     .split(/\s+/)
     .map((className) => className.replace(/^-/, ''))
