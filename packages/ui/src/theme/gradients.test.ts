@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { linearGradient, surfaceGradient } from './gradients'
+import { linearGradient, linearGradientStops, surfaceGradient } from './gradients'
+import { getSemanticColors } from './tokens/semantic'
 
 describe('gradients', () => {
   it('builds a linear-gradient backgroundImage from two tokens (web CSS vars)', () => {
@@ -32,4 +33,33 @@ describe('gradients', () => {
   it('surfaceGradient.volumeTrack resolves against the requested mode', () => {
     expect(surfaceGradient.volumeTrack('light').backgroundImage).toContain('90deg')
   })
+
+  describe('{ token, alpha } stops', () => {
+    it('prints rgba for the alpha stop and positions on a mixed list', () => {
+      expect(
+        linearGradientStops([{ token: 'status-success', alpha: 0.25 }, 'status-error'], 90)
+          .backgroundImage
+      ).toBe('linear-gradient(90deg, rgba(46, 213, 115, 0.25) 0%, var(--color-status-error) 100%)')
+    })
+
+    it('resolves the alpha stop against the requested mode', () => {
+      const stops = [{ token: 'result-neutral' as const, alpha: 0.15 }, 'status-error' as const]
+      const dark = linearGradientStops(stops, 90, 'dark').backgroundImage
+      const light = linearGradientStops(stops, 90, 'light').backgroundImage
+      const { r, g, b } = hexToRgbOf(getSemanticColors('light')['result-neutral'])
+      expect(light).toContain(`rgba(${r}, ${g}, ${b}, 0.15) 0%`)
+      expect(light).not.toBe(dark)
+    })
+
+    it('clamps alpha to 0..1', () => {
+      expect(
+        linearGradientStops([{ token: 'status-success', alpha: 2 }, 'status-error']).backgroundImage
+      ).toContain(', 1) 0%')
+    })
+  })
 })
+
+function hexToRgbOf(hex: string) {
+  const n = parseInt(hex.replace('#', ''), 16)
+  return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 }
+}

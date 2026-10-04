@@ -1,7 +1,11 @@
 import { resolveColor } from './resolve-color'
+import { hexToRgb } from './color-utils'
 import { getSemanticColors, type ThemeMode } from './tokens/semantic'
 
 type ColorToken = keyof ReturnType<typeof getSemanticColors>
+
+/** A gradient stop: a bare token, or a token with its own alpha. */
+export type GradientStop = ColorToken | { token: ColorToken; alpha?: number }
 
 /** A `backgroundImage` style — web-only (RN ignores it); type it loosely for RN style arrays. */
 export type GradientStyle = { backgroundImage: string }
@@ -23,17 +27,39 @@ export function linearGradient(
   return linearGradientStops([from, to], angle, mode)
 }
 
+function withAlpha(value: string, a: number): string {
+  const rgb = hexToRgb(value)
+  // A var() carries no channels to apply alpha to, so a non-hex value passes through.
+  if (!rgb) return value
+  return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${Math.min(1, Math.max(0, a))})`
+}
+
+function stopPaint(stop: GradientStop, mode: ThemeMode): string {
+  if (typeof stop === 'string') return resolveColor(stop, mode)
+  if (stop.alpha === undefined) return resolveColor(stop.token, mode)
+  return withAlpha(getSemanticColors(mode)[stop.token], stop.alpha)
+}
+
 /**
  * The n-stop form of {@link linearGradient}, for ramps that need a midpoint.
- * Stops are evenly spaced — CSS distributes positionless stops uniformly, so a
- * three-token ramp lands on 0% / 50% / 100%.
+ *
+ * A bare token follows the CSS theme on web (a `var()`); a `{ token, alpha }`
+ * stop resolves to `rgba()` against the `mode` argument instead. A list of only
+ * bare tokens is positionless (CSS spaces the stops evenly); once any stop is an
+ * object, every stop prints its even position.
  */
 export function linearGradientStops(
-  stops: readonly ColorToken[],
+  stops: readonly GradientStop[],
   angle = 180,
   mode: ThemeMode = 'dark'
 ): GradientStyle {
-  const paint = stops.map((token) => resolveColor(token, mode)).join(', ')
+  const positioned = stops.some((stop) => typeof stop !== 'string')
+  const paint = stops
+    .map((stop, i) => {
+      const colour = stopPaint(stop, mode)
+      return positioned ? `${colour} ${(i / (stops.length - 1)) * 100}%` : colour
+    })
+    .join(', ')
   return { backgroundImage: `linear-gradient(${angle}deg, ${paint})` }
 }
 
