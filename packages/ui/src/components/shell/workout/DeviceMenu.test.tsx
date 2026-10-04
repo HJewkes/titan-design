@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
+import { axe } from 'jest-axe'
 import { DeviceMenu } from './DeviceMenu'
 import { type Device } from './DeviceRow'
 import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
@@ -12,6 +13,10 @@ const devices: Device[] = [
 ]
 
 describe('DeviceMenu', () => {
+  it('has no accessibility violations', async () => {
+    const { container } = render(<DeviceMenu devices={devices} isOpen onSelectDevice={vi.fn()} />)
+    expect(await axe(container)).toHaveNoViolations()
+  })
   it('renders the trigger glyph and opens the device list on click', () => {
     render(<DeviceMenu devices={devices} />)
     const trigger = screen.getByRole('button', { name: 'Devices' })
