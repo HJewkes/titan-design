@@ -87,4 +87,28 @@ describe('regenEslintBaseline', () => {
     await expect(regen({}, { lint })).rejects.toThrow('lint crashed')
     expect(readFileSync(baselinePath, 'utf8')).toBe(before)
   })
+
+  it('refuses and leaves the baseline untouched when ESLint hit a fatal error on a file', async () => {
+    writeBaseline({ 'src/a.ts': { red: 1 }, 'src/broken.ts': { red: 1 } })
+    const before = readFileSync(baselinePath, 'utf8')
+    const lint = async () => [
+      { filePath: path.join(pkgDir, 'src/a.ts'), messages: [], fatalErrorCount: 0 },
+      { filePath: path.join(pkgDir, 'src/broken.ts'), messages: [], fatalErrorCount: 1 },
+    ]
+
+    const outcome = await regen({}, { lint })
+
+    expect(outcome.ok).toBe(false)
+    expect(outcome.fatal).toEqual(['src/broken.ts'])
+    expect(readFileSync(baselinePath, 'utf8')).toBe(before)
+  })
+
+  it('treats a constructor key as new rather than reading it off the prototype', async () => {
+    writeBaseline({ 'src/a.ts': { red: 1 } })
+
+    const outcome = await regen({ 'src/a.ts': ['constructor'] })
+
+    expect(outcome.ok).toBe(false)
+    expect(outcome.raised.map(formatRaised)).toEqual(['  src/a.ts constructor: 0 -> 1'])
+  })
 })
