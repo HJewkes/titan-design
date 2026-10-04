@@ -7,7 +7,6 @@
  *   --ignore-term      the fake server ignores SIGTERM, so a stop lasts the whole grace period
  *   --stop-and-return  stops the server and returns, leaving the process to exit on its own
  */
-/* global process, console, setInterval */
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { startStorybook, stopOnSignals } from '../storybook.mjs'

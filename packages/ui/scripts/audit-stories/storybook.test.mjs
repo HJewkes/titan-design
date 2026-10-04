@@ -1,5 +1,4 @@
 // @vitest-environment node
-/* global process, setTimeout */
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import { ESLint } from 'eslint'
 import { spawn } from 'node:child_process'

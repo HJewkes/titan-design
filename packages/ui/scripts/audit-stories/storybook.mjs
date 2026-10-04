@@ -12,7 +12,6 @@
  * `attachStorybook` reuses a server the caller already runs (`--url`). It refuses anything off
  * loopback and stops nothing.
  */
-/* global process, URL, setTimeout, clearTimeout */
 import { execFileSync, spawn } from 'node:child_process'
 import { get } from 'node:http'
 import { dirname, resolve } from 'node:path'

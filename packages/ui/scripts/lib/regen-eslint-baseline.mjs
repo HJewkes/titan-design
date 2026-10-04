@@ -48,22 +48,32 @@ export function countByKey(results, { pkgDir, ruleId, keysOf }) {
     for (const m of result.messages) {
       if (m.ruleId !== ruleId) continue
       for (const key of keysOf(m, readLines)) {
-        counts[file] ??= {}
-        counts[file][key] = (counts[file][key] ?? 0) + 1
+        if (!Object.hasOwn(counts, file)) counts[file] = {}
+        counts[file][key] = (Object.hasOwn(counts[file], key) ? counts[file][key] : 0) + 1
       }
     }
   }
   return counts
 }
 
+/** Own properties only: a key named `constructor` must not read Object.prototype. */
+const allowanceOf = (previous, file, key) =>
+  Object.hasOwn(previous, file) && Object.hasOwn(previous[file], key) ? previous[file][key] : 0
+
 /** Every file and key whose count rose past its previous allowance. */
 export function raisedKeys(previous, counts) {
   return Object.entries(counts).flatMap(([file, entry]) =>
     Object.entries(entry)
-      .filter(([key, n]) => n > (previous[file]?.[key] ?? 0))
-      .map(([key, n]) => ({ file, key, from: previous[file]?.[key] ?? 0, to: n }))
+      .filter(([key, n]) => n > allowanceOf(previous, file, key))
+      .map(([key, n]) => ({ file, key, from: allowanceOf(previous, file, key), to: n }))
   )
 }
+
+/** Files ESLint could not lint (parse errors and the like), whose violations went uncounted. */
+const fatalFiles = (results, pkgDir) =>
+  results
+    .filter((result) => result.fatalErrorCount > 0)
+    .map((result) => path.relative(pkgDir, result.filePath).split(path.sep).join('/'))
 
 /** Files and the keys within each sorted, so a regen diff shows only real changes. */
 export function sortBaseline(counts) {
@@ -89,6 +99,12 @@ export async function regenEslintBaseline(config, { allowIncrease = false, lint 
     results = await runLint(globs)
   } finally {
     if (!results) restore()
+  }
+
+  const fatal = fatalFiles(results, pkgDir)
+  if (fatal.length > 0) {
+    restore()
+    return { ok: false, raised: [], fatal, previous }
   }
 
   const counts = countByKey(results, config)
@@ -129,6 +145,11 @@ export function formatRaised({ file, key, from, to }) {
 export async function runBaselineUpdater(config) {
   const allowIncrease = process.argv.includes('--allow-increase')
   const outcome = await regenEslintBaseline(config, { allowIncrease })
+  if (outcome.fatal?.length) {
+    console.error(`Refusing to rewrite the ${config.label} baseline: ESLint failed on:\n`)
+    for (const file of outcome.fatal) console.error(`  ${file}`)
+    process.exit(1)
+  }
   if (!outcome.ok) {
     console.error(`Refusing to raise the ${config.label} baseline for:\n`)
     for (const raised of outcome.raised) console.error(formatRaised(raised))
