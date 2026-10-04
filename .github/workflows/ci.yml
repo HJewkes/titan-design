@@ -125,7 +125,7 @@ jobs:
       # project of playwright.config.ts. They assert on the DOM and never
       # screenshot.
       - name: Interaction — carousel behaviour
-        run: pnpm --filter @titan-design/react-ui exec playwright test --project=interaction
+        run: pnpm --filter @titan-design/react-ui exec playwright test --project=interaction -g "dropping a card mid-wrap" --repeat-each=20
 
       # No html reporter is configured, so the diagnostics are the per-test
       # -actual/-diff/-expected PNGs: Layer 2 writes to tests/visual/results
