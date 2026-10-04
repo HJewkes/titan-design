@@ -11,7 +11,7 @@ exports[`Scatter characterisation > on a dark surface > renders the Default stor
       style="width: 480px; height: 340px;"
     >
       <div
-        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 6 points"
+        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 6 points, reference lines: Main sequence"
         class="css-view-175oi2r"
         data-testid="scatter-canvas"
         role="img"
@@ -159,7 +159,7 @@ exports[`Scatter characterisation > on a dark surface > renders the Default stor
         />
         <div
           class="css-view-175oi2r"
-          data-testid="scatter-diagonal"
+          data-testid="scatter-reference-main-sequence"
           style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(255, 255, 255, 0.22); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
         />
         <div
@@ -455,7 +455,7 @@ exports[`Scatter characterisation > on a dark surface > renders the Light story 
       style="width: 480px; height: 340px;"
     >
       <div
-        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 6 points"
+        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 6 points, reference lines: Main sequence"
         class="css-view-175oi2r"
         data-testid="scatter-canvas"
         role="img"
@@ -603,7 +603,7 @@ exports[`Scatter characterisation > on a dark surface > renders the Light story 
         />
         <div
           class="css-view-175oi2r"
-          data-testid="scatter-diagonal"
+          data-testid="scatter-reference-main-sequence"
           style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(255, 255, 255, 0.22); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
         />
         <div
@@ -970,7 +970,7 @@ exports[`Scatter characterisation > on a dark surface > renders the Outlier stor
       style="width: 480px; height: 340px;"
     >
       <div
-        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 7 points"
+        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 7 points, reference lines: Main sequence"
         class="css-view-175oi2r"
         data-testid="scatter-canvas"
         role="img"
@@ -1118,7 +1118,7 @@ exports[`Scatter characterisation > on a dark surface > renders the Outlier stor
         />
         <div
           class="css-view-175oi2r"
-          data-testid="scatter-diagonal"
+          data-testid="scatter-reference-main-sequence"
           style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(255, 255, 255, 0.22); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
         />
         <div
@@ -1247,7 +1247,7 @@ exports[`Scatter characterisation > on a dark surface > renders the Selected sto
       style="width: 480px; height: 340px;"
     >
       <div
-        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 6 points"
+        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 6 points, reference lines: Main sequence"
         class="css-view-175oi2r"
         data-testid="scatter-canvas"
         role="img"
@@ -1395,7 +1395,7 @@ exports[`Scatter characterisation > on a dark surface > renders the Selected sto
         />
         <div
           class="css-view-175oi2r"
-          data-testid="scatter-diagonal"
+          data-testid="scatter-reference-main-sequence"
           style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(255, 255, 255, 0.22); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
         />
         <div
@@ -1717,7 +1717,7 @@ exports[`Scatter characterisation > on a light surface > renders the Default sto
       style="width: 480px; height: 340px;"
     >
       <div
-        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 6 points"
+        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 6 points, reference lines: Main sequence"
         class="css-view-175oi2r"
         data-testid="scatter-canvas"
         role="img"
@@ -1865,7 +1865,7 @@ exports[`Scatter characterisation > on a light surface > renders the Default sto
         />
         <div
           class="css-view-175oi2r"
-          data-testid="scatter-diagonal"
+          data-testid="scatter-reference-main-sequence"
           style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(0, 0, 0, 0.14); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
         />
         <div
@@ -2161,7 +2161,7 @@ exports[`Scatter characterisation > on a light surface > renders the Light story
       style="width: 480px; height: 340px;"
     >
       <div
-        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 6 points"
+        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 6 points, reference lines: Main sequence"
         class="css-view-175oi2r"
         data-testid="scatter-canvas"
         role="img"
@@ -2309,7 +2309,7 @@ exports[`Scatter characterisation > on a light surface > renders the Light story
         />
         <div
           class="css-view-175oi2r"
-          data-testid="scatter-diagonal"
+          data-testid="scatter-reference-main-sequence"
           style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(0, 0, 0, 0.14); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
         />
         <div
@@ -2676,7 +2676,7 @@ exports[`Scatter characterisation > on a light surface > renders the Outlier sto
       style="width: 480px; height: 340px;"
     >
       <div
-        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 7 points"
+        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 7 points, reference lines: Main sequence"
         class="css-view-175oi2r"
         data-testid="scatter-canvas"
         role="img"
@@ -2824,7 +2824,7 @@ exports[`Scatter characterisation > on a light surface > renders the Outlier sto
         />
         <div
           class="css-view-175oi2r"
-          data-testid="scatter-diagonal"
+          data-testid="scatter-reference-main-sequence"
           style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(0, 0, 0, 0.14); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
         />
         <div
@@ -2953,7 +2953,7 @@ exports[`Scatter characterisation > on a light surface > renders the Selected st
       style="width: 480px; height: 340px;"
     >
       <div
-        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 6 points"
+        aria-label="Scatter plot of Instability (I) versus Abstractness (A), 6 points, reference lines: Main sequence"
         class="css-view-175oi2r"
         data-testid="scatter-canvas"
         role="img"
@@ -3101,7 +3101,7 @@ exports[`Scatter characterisation > on a light surface > renders the Selected st
         />
         <div
           class="css-view-175oi2r"
-          data-testid="scatter-diagonal"
+          data-testid="scatter-reference-main-sequence"
           style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(0, 0, 0, 0.14); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
         />
         <div

@@ -9,6 +9,7 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- `Scatter` takes `referenceLines` (`{ y }`, `{ x }` or `{ slope, intercept }`, each with optional `id` and `label`), clipped to the plot box and never widening the domain; a `label` joins the canvas accessible name. `diagonal` is a deprecated alias for `[{ slope: -1, intercept: 1 }]` and keeps its `scatter-diagonal` test id, removed in 0.23.0 (TD-472).
 - `ui/charts/network-graph` plot model for free-form layouts: `edgePath` gains the `'arc'` shape and a slot so an edge each way between two nodes separates, `placeLabels` declutters labels while always keeping the selected and active nodes' (and neighbours') labels, and node names and `summarizeGraph` state each node's group or hop. `GraphModel` carries `edgeShape`, `labelMode` and `groups`; `GraphNodeContext` takes `groupLabels`. Pure `.ts`, not yet exported (TP-1038).
 - `custom/ActiveWork` task-stage vocabulary (`TASK_STAGE_META`, `TASK_STAGE_ORDER`, `toTaskStage`), `TaskStagePill`, and the `task-flow` and `task-pr` modules (`TaskFlowItem`, `compareTaskFlow`, `filterTaskFlow`, `taskKey`, `toTaskPrState`) (TP-860a).
 - `Scatter`, `Treemap` and `Gauge` moved to `ui/charts/scatter`, `ui/charts/treemap` and `ui/charts/gauge` (`Components/Atoms/Scatter`, `Components/Atoms/Treemap`, `Components/Atoms/Gauge`); still exported from the package root, with class names and markup unchanged. The `custom/Scatter`, `custom/Treemap` and `custom/Gauge` paths are deprecated shims removed in 0.23.0 (TD-471).

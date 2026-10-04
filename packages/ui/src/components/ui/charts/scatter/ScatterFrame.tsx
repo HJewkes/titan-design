@@ -1,6 +1,12 @@
 import { View, Text } from 'react-native'
 import type { getSemanticColors } from '../../../../theme/tokens/semantic'
-import { PLOT_LEFT, PLOT_TOP, type ScatterAxis, type ScatterLayout } from './scatterGeometry'
+import {
+  PLOT_LEFT,
+  PLOT_TOP,
+  type ScatterAxis,
+  type ScatterLayout,
+  type ScatterSegment,
+} from './scatterGeometry'
 
 type SemanticColors = ReturnType<typeof getSemanticColors>
 
@@ -44,19 +50,19 @@ function LineSegment({
   )
 }
 
-/** Left and bottom axis frame, the optional main-sequence diagonal, and the axis titles. */
+/** Left and bottom axis frame, the reference lines, and the axis titles. */
 export function ScatterFrame({
   layout,
   colors,
   axis,
-  diagonal,
+  segments,
 }: {
   layout: ScatterLayout
   colors: SemanticColors
   axis: ScatterAxis
-  diagonal: boolean
+  segments: { testID: string; segment: ScatterSegment }[]
 }) {
-  const { innerW, innerH, xd, toX, toY } = layout
+  const { innerW, innerH } = layout
   return (
     <>
       <View
@@ -84,16 +90,17 @@ export function ScatterFrame({
         }}
       />
 
-      {diagonal && (
+      {segments.map(({ testID, segment }, i) => (
         <LineSegment
-          testID="scatter-diagonal"
+          key={`${testID}-${i}`}
+          testID={testID}
           color={colors['hairline-strong']}
-          x1={toX(xd.min)}
-          y1={toY(1 - xd.min)}
-          x2={toX(xd.max)}
-          y2={toY(1 - xd.max)}
+          x1={segment.x1}
+          y1={segment.y1}
+          x2={segment.x2}
+          y2={segment.y2}
         />
-      )}
+      ))}
 
       {axis.xLabel && (
         <Text

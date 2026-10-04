@@ -250,6 +250,15 @@ hits a shim, which is tagged `@deprecated` for one release and **disappears in 0
 While these rows exist, `MATURITY.md` clause 2's fourth condition keeps `scatter`, `treemap` and
 `gauge` at `status:candidate`; they become promotable when the shims are deleted in 0.23.0.
 
+| Export               | Replacement                                                                         | Known consumers                                 | Task   |
+| -------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------- | ------ |
+| `<Scatter diagonal>` | `<Scatter referenceLines={[{ slope: -1, intercept: 1 }]}>` (`ScatterReferenceLine`) | none in-repo (the stories use `referenceLines`) | TD-472 |
+
+`diagonal` stays as a `@deprecated` alias that draws the same segment with the same dashed
+`hairline-strong` stroke and keeps its `scatter-diagonal` test id; it is removed in 0.23.0.
+`referenceLines` takes `{ y }`, `{ x }` or `{ slope, intercept }`, each with an optional `id` and
+`label`, clipped to the plot box. They never widen the domain.
+
 ## Fatigue tokens — `TONE_COLOR` replaced by `TONE_TOKEN` (VW-316)
 
 **Breaking, no alias possible.** `TONE_COLOR` held colours resolved at import
