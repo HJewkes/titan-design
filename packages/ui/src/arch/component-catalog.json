@@ -7927,7 +7927,7 @@
         },
         {
           "default": null,
-          "description": "`hero` only: draw the VL20 / VL30 velocity-loss decision bands behind the bars (see {@link VelocityLossBands}).",
+          "description": "`hero` only: draw the VL20 / VL30 velocity-loss decision bands behind the bars (see {@link VelocityLossBands }).",
           "name": "showLossBands",
           "required": false,
           "type": "boolean"
