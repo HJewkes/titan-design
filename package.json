@@ -26,7 +26,8 @@
     "verify:unit": "pnpm format:check && pnpm lint && pnpm type-check && pnpm build && turbo run test:unit -- --run --coverage && pnpm arch:check",
     "test:axe": "turbo run test:axe",
     "arch:graph": "node scripts/arch-graph.mjs",
-    "review": "node packages/review-harness/src/cli.ts"
+    "review": "node packages/review-harness/src/cli.ts",
+    "audit:stories": "node packages/ui/scripts/audit-stories.mjs"
   },
   "devDependencies": {
     "turbo": "^2.3.0"

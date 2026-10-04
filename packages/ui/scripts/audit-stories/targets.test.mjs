@@ -1,10 +1,15 @@
-import { describe, expect, it } from 'vitest'
-import { readFileSync } from 'node:fs'
-import { resolve } from 'node:path'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { execFileSync } from 'node:child_process'
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join, resolve } from 'node:path'
 import {
+  REPO_ROOT,
   TargetError,
   changedFilesFromGit,
+  gitAt,
   gitDiffArgs,
+  gitUntrackedArgs,
   selectTargets,
 } from './targets.mjs'
 
@@ -148,12 +153,45 @@ describe('git wrapper', () => {
     const git = (args) => {
       calls.push(args)
       if (args[0] === 'merge-base') return 'abc123\n'
-      if (args[0] === 'diff') return 'a.ts\nb.ts\n'
-      return 'b.ts\nc.ts\n'
+      if (args[0] === 'diff') return 'a.ts\0b.ts\0'
+      return 'b.ts\0c.ts\0'
     }
     expect(changedFilesFromGit('origin/main', git)).toEqual(['a.ts', 'b.ts', 'c.ts'])
     expect(calls[0]).toEqual(['merge-base', 'origin/main', 'HEAD'])
     expect(calls[1]).toEqual(gitDiffArgs('abc123'))
-    expect(calls[2]).toEqual(['ls-files', '--others', '--exclude-standard'])
+    expect(calls[2]).toEqual(['ls-files', '--others', '--exclude-standard', '-z'])
+  })
+
+  describe('in a real repository', () => {
+    let repo
+    const run = (...args) => execFileSync('git', args, { cwd: repo, encoding: 'utf8' })
+
+    beforeAll(() => {
+      repo = mkdtempSync(join(tmpdir(), 'audit-targets-'))
+      mkdirSync(join(repo, 'sub'))
+      run('init', '-q')
+      writeFileSync(join(repo, 'sub', 'Tracké.tsx'), 'a\n')
+      run('add', '.')
+      run('-c', 'user.name=t', '-c', 'user.email=t@example.test', 'commit', '-qm', 'init')
+      writeFileSync(join(repo, 'sub', 'Tracké.tsx'), 'b\n')
+      writeFileSync(join(repo, 'sub', 'Nöu.stories.tsx'), 'c\n')
+    })
+    afterAll(() => rmSync(repo, { recursive: true, force: true }))
+
+    it('returns non-ASCII paths unquoted, changed and untracked alike', () => {
+      const changed = changedFilesFromGit('HEAD', gitAt(repo)).map((p) => p.normalize('NFC'))
+      expect(changed.sort()).toEqual(['sub/Nöu.stories.tsx', 'sub/Tracké.tsx'])
+    })
+
+    it('lists untracked files from the root it is given, not a subdirectory', () => {
+      const fromSub = gitAt(join(repo, 'sub'))(gitUntrackedArgs())
+      const fromRoot = gitAt(repo)(gitUntrackedArgs())
+      expect(fromSub.normalize('NFC')).toBe('Nöu.stories.tsx\0')
+      expect(fromRoot.normalize('NFC')).toBe('sub/Nöu.stories.tsx\0')
+    })
+
+    it('roots the default runner at the repository, wherever the command is run from', () => {
+      expect(existsSync(join(REPO_ROOT, 'pnpm-workspace.yaml'))).toBe(true)
+    })
   })
 })

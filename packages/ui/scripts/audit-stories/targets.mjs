@@ -1,10 +1,12 @@
 import { execFileSync } from 'node:child_process'
-import { posix } from 'node:path'
+import { dirname, posix, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 export const MAX_TARGETS = 40
 export const EXIT_NO_TARGETS = 1
 export const EXIT_USAGE = 64
 
+export const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../../../..')
 const PACKAGE_PREFIX = 'packages/ui/'
 const SRC_PREFIX = 'src/'
 const STORY_FILE = /\.stories\.tsx$/
@@ -127,20 +129,23 @@ export function selectTargets({
   return capTargets(ids, all)
 }
 
+// -z keeps a non-ASCII path as written; without it git quotes and octal-escapes the name.
 export function gitDiffArgs(mergeBase) {
-  return ['diff', '--name-only', mergeBase]
+  return ['diff', '--name-only', '-z', mergeBase]
 }
 
-export const gitUntrackedArgs = () => ['ls-files', '--others', '--exclude-standard']
+export const gitUntrackedArgs = () => ['ls-files', '--others', '--exclude-standard', '-z']
 export const gitMergeBaseArgs = (base) => ['merge-base', base, 'HEAD']
 
-const lines = (text) => text.split('\n').filter(Boolean)
+const paths = (text) => text.split('\0').filter(Boolean)
 
-export function changedFilesFromGit(base = 'origin/main', git = defaultGit) {
-  const mergeBase = git(gitMergeBaseArgs(base)).trim()
-  return [...new Set([...lines(git(gitDiffArgs(mergeBase))), ...lines(git(gitUntrackedArgs()))])]
+/** A git runner rooted at `cwd`. `ls-files --others` answers relative to its cwd. */
+export function gitAt(cwd) {
+  return (args) => execFileSync('git', args, { cwd, encoding: 'utf8' })
 }
 
-function defaultGit(args) {
-  return execFileSync('git', args, { encoding: 'utf8' })
+/** Repo-relative changed paths: the diff against the merge base plus untracked files. */
+export function changedFilesFromGit(base = 'origin/main', git = gitAt(REPO_ROOT)) {
+  const mergeBase = git(gitMergeBaseArgs(base)).trim()
+  return [...new Set([...paths(git(gitDiffArgs(mergeBase))), ...paths(git(gitUntrackedArgs()))])]
 }

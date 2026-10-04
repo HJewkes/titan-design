@@ -128,7 +128,8 @@
     "storybook:isolated": "node scripts/storybook-launch.mjs --isolated",
     "storybook:ports": "node scripts/storybook-launch.mjs --list",
     "storybook:reap": "node scripts/storybook-launch.mjs --reap --list",
-    "storybook:reap:all": "node scripts/storybook-launch.mjs --reap=all --list"
+    "storybook:reap:all": "node scripts/storybook-launch.mjs --reap=all --list",
+    "audit:stories": "node scripts/audit-stories.mjs"
   },
   "peerDependencies": {
     "nativewind": "^4.2.1",
