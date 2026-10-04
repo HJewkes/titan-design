@@ -38,6 +38,9 @@
     "check:package": {
       "dependsOn": ["build"]
     },
+    "api:check": {
+      "dependsOn": ["build"]
+    },
     "format:check": {}
   }
 }
