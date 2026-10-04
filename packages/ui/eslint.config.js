@@ -2,6 +2,7 @@ const js = require('@eslint/js')
 const tseslint = require('typescript-eslint')
 const react = require('eslint-plugin-react')
 const reactHooks = require('eslint-plugin-react-hooks')
+const globals = require('globals')
 const noDeprecatedImport = require('./eslint-rules/no-deprecated-import')
 const noDeviceInternals = require('./eslint-rules/no-device-internals')
 const noFrozenTheme = require('./eslint-rules/no-frozen-theme')
@@ -580,6 +581,26 @@ module.exports = tseslint.config(
     files: ['src/**/*.stories.{ts,tsx}'],
     rules: {
       'titan/story-title-prefix': 'error',
+    },
+  },
+
+  // Build, audit and baseline scripts run under Node. Page-side functions that are
+  // serialised into a browser declare their own browser globals where they are written.
+  {
+    files: ['scripts/**/*.{mjs,js}'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      globals: globals.node,
+    },
+  },
+
+  // These two scripts hand a callback to page.evaluate. A /* global */ comment would widen to the
+  // whole file anyway, so the browser names are granted here, to the files that need them.
+  {
+    files: ['scripts/design-freeze.mjs', 'scripts/extract-css-properties.mjs'],
+    languageOptions: {
+      globals: { document: 'readonly', getComputedStyle: 'readonly' },
     },
   }
 )

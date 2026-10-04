@@ -13,7 +13,6 @@
  *
  * It prints `fake-server-pid <pid>` so a test can watch the child as well as the launcher.
  */
-/* global process, console, setTimeout, setInterval */
 import { spawn } from 'node:child_process'
 import { createServer as createHttpServer } from 'node:http'
 import { createServer } from 'node:net'

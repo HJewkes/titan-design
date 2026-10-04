@@ -178,8 +178,6 @@ function category(entry) {
   return 'foreign'
 }
 
-const isOrphan = (entry) => category(entry) === 'orphan'
-
 export function printInventory(entries, { lsof = LSOF, log = console.log } = {}) {
   if (!lsof) {
     log('\n  Inventory needs lsof; the port probe is the only check in this run.\n')
