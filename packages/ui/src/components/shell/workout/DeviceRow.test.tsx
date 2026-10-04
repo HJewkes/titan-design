@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import { axe } from 'jest-axe'
 import { DeviceRow, type Device } from './DeviceRow'
 import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
@@ -7,6 +8,10 @@ const bound: Device = { id: 'Voltra-A3F2', nickname: 'Left Cable', slot: 'L', st
 const unbound: Device = { id: 'Voltra-77E0', nickname: 'Spare', slot: null, state: 'available' }
 
 describe('DeviceRow', () => {
+  it('has no accessibility violations', async () => {
+    const { container } = render(<DeviceRow device={bound} onPress={vi.fn()} />)
+    expect(await axe(container)).toHaveNoViolations()
+  })
   it('renders the device name and Bluetooth id', () => {
     render(<DeviceRow device={bound} />)
     expect(screen.getByText('Left Cable')).toBeInTheDocument()

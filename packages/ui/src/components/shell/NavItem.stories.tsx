@@ -17,7 +17,11 @@ const meta: Meta<typeof NavItem> = {
   },
   decorators: [
     (Story) => (
-      <Surface level="background" className="w-[60px] items-center py-2">
+      <Surface
+        level="background"
+        accessibilityRole="tablist"
+        className="w-[60px] items-center py-2"
+      >
         <Story />
       </Surface>
     ),
