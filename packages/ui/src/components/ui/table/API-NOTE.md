@@ -132,18 +132,20 @@ baseline, Baseline, Very large, Sparse window, Long content and Hostile. Rows ar
   recorded facet answer literally.
 - Very large is 10,000 synthetic findings on the real paths, built from a seeded generator so every
   build is identical. Sparse window is its rows 0 to 499 with `total` 10,000 and Very large's facets.
-- Fixtures with synthetic rows or fields say so in `label`. `total` is the unfiltered source count, so
-  every facet sums to it.
+- Fixtures with synthetic rows or fields say so in `label`. `total` is the fixture's unfiltered source
+  count, so every facet sums to it. It is not the table's `rowCount`, which is the filtered count.
 - Hostile is the only fixture with duplicate ids, impossible facets, non-finite values or a shrinking
   row count.
 
 ## Mapping a findings page
 
-Illustrative only; the consumer owns it.
+Illustrative only; the consumer owns it. `rowCount` is the count after the active filters, which is
+what `alignRange`, `missingRanges` and `windowSlice` clip to; a fixture's `total` is the unfiltered
+count and never feeds it. Here `matching` is the page's filtered count.
 
 ```ts
 const fromFindingsPage = (res: FindingsPage, offset: number) => ({
-  rowCount: res.total,
+  rowCount: res.matching,
   facets: res.facets,
   rows: new Map(res.rows.map((row, i) => [offset + i, row])),
 })
