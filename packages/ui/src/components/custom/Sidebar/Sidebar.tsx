@@ -194,6 +194,8 @@ export function SidebarItem({
   return (
     <Pressable
       accessibilityRole="button"
+      // Native reads accessibilityState but not aria-current; web is the reverse.
+      accessibilityState={{ selected: isActive }}
       aria-current={isActive ? 'page' : undefined}
       accessibilityLabel={label}
       onPress={handlePress}
