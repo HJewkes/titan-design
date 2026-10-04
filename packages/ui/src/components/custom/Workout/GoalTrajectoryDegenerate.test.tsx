@@ -225,3 +225,20 @@ describe('GoalTrajectoryChart with committed === stretch (VW-414)', () => {
     })
   })
 })
+
+describe('GoalTrajectoryChart with non-finite readings (TD-527)', () => {
+  it('names the latest finite reading in the summary', () => {
+    const actuals = [
+      { weekIndex: 1, value: 110 },
+      { weekIndex: 2, value: 131 },
+      { weekIndex: 3, value: Number.NaN },
+      { weekIndex: 4, value: null as unknown as number },
+    ]
+    render(<GoalTrajectoryChart {...wall} actuals={actuals} />)
+    const label =
+      screen.getByTestId('goal-trajectory-chart-canvas').getAttribute('aria-label') ?? ''
+
+    expect(label).not.toContain('NaN')
+    expect(label).toContain('Latest 131 lbs at week 2.')
+  })
+})
