@@ -52,11 +52,10 @@ const FIXED_TIME = new Date('2024-01-01T16:12:07')
 const CLOCK_START = new Date(FIXED_TIME.getTime() - 60_000)
 const SHOT_OPTIONS = { animations: 'disabled', caret: 'hide' } as const
 
-// VelocityStrip's live-rep entrance is an RN `Animated` grow driven by requestAnimationFrame,
-// which the paused clock freezes at height 0 (TD-28 R4). Running the clock past the longest
-// entrance (220 ms overshoot then a spring) shoots the bar at rest.
-const SETTLE_CLOCK = /^custom-workout-dataviz-(velocitystrip|dualvelocitystrip--)/
-const SETTLE_MS = 3000
+// VelocityStrip's live-rep entrance is an RN `Animated` grow that the paused clock freezes at
+// height 0 (TD-28 R4), and `clock.runFor` does not advance it. Under reduced motion
+// `useLiveRepGrowth` sets the bar to full height and never starts the animation.
+const AT_REST = /^custom-workout-dataviz-(velocitystrip|dualvelocitystrip--)/
 
 interface IndexEntry {
   id: string
@@ -118,8 +117,8 @@ test('the story index lists every in-scope story', () => {
 test.describe('storybook story baselines', () => {
   for (const id of storyIds) {
     test(id, async ({ page }) => {
+      if (AT_REST.test(id)) await page.emulateMedia({ reducedMotion: 'reduce' })
       const root = await renderStory(page, id)
-      if (SETTLE_CLOCK.test(id)) await page.clock.runFor(SETTLE_MS)
       await expect(root, `visual drift for ${id}`).toHaveScreenshot(`${id}.png`, SHOT_OPTIONS)
     })
   }
