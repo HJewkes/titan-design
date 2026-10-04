@@ -16,12 +16,10 @@ import {
   ListItemTrailing,
 } from '../../components/ui/list-item'
 import { Pill, type PillTone, type PillVariant } from '../../components/ui/pill'
-import { Progress } from '../../components/ui/progress'
 import { Radio, RadioGroup } from '../../components/ui/radio'
 import { Select } from '../../components/ui/select'
 import { Switch } from '../../components/ui/switch'
 import {
-  SELECTED_CHIP,
   SET_LABEL,
   TONE_TEXT_700,
   formatMeasurement,
@@ -31,6 +29,7 @@ import {
   type TokenSet,
 } from './light-tuning'
 import { PAIRS, REPRESENTATIVE_PAIR_IDS, TONES, misses, type Tone } from './light-tuning-pairs'
+import { ProgressSample, SelectedChip } from './light-tuning-samples'
 
 interface Args {
   tokens: TokenSet
@@ -183,55 +182,13 @@ function AlertSection({ set }: { set: TokenSet }) {
   )
 }
 
-/** TD-490 track recipe: a neutral hairline track under the fill (not a token, so simulated). */
-function SimulatedProgress({ fill, label }: { fill: string; label: string }) {
-  return (
-    <View
-      className="h-2 w-full overflow-hidden rounded-full bg-hairline"
-      accessibilityRole="progressbar"
-      accessibilityLabel={label}
-    >
-      <View className={`h-full w-3/5 rounded-full ${fill}`} />
-    </View>
-  )
-}
-
 function ProgressSamples({ set }: { set: TokenSet }) {
-  if (set === 'main') {
-    return (
-      <>
-        <Progress value={60} color="success" accessibilityLabel="Week progress" />
-        <Progress value={60} color="primary" accessibilityLabel="Block progress" />
-      </>
-    )
-  }
+  const isProposed = set !== 'main'
   return (
     <>
-      <SimulatedProgress fill="bg-status-success" label="Week progress" />
-      <SimulatedProgress fill="bg-brand-primary" label="Block progress" />
+      <ProgressSample tone="success" isProposed={isProposed} label="Week progress" />
+      <ProgressSample tone="brand" isProposed={isProposed} label="Block progress" />
     </>
-  )
-}
-
-/** TD-490 selected Chip: subtle fill, 600 border, 700 label. The label rides a local var. */
-function SelectedChip({ set }: { set: TokenSet }) {
-  if (set === 'main') {
-    return (
-      <Chip variant="solid" color="primary">
-        Selected
-      </Chip>
-    )
-  }
-  return (
-    <View style={vars({ '--color-on-brand-primary-subtle': SELECTED_CHIP.label })}>
-      <Chip
-        variant="subtle"
-        color="primary"
-        style={{ borderWidth: 1, borderColor: SELECTED_CHIP.border }}
-      >
-        Selected
-      </Chip>
-    </View>
   )
 }
 
@@ -243,7 +200,7 @@ function MarksSection({ set }: { set: TokenSet }) {
       <Measured id="progress-brand-fill" set={set} />
       <Measured id="progress-track" set={set} />
       <View className="flex-row flex-wrap gap-inline-sm">
-        <SelectedChip set={set} />
+        <SelectedChip isProposed={set !== 'main'} />
         <Chip>Unselected</Chip>
       </View>
       <Measured id="chip-selected-label" set={set} />

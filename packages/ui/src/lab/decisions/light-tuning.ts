@@ -152,7 +152,7 @@ export interface Pair {
   /** 4.5 text, 3 marks and boundaries; ΔL* 7 / 12 / 18 for separators. */
   floor: number
   metric?: Metric
-  /** A recipe the proposal changes in the component, not in a token: simulated in the lab. */
+  /** A light recipe the proposal changes in the component, not in a token: simulated in the lab. */
   proposedFg?: Paint
   proposedBg?: Paint
 }
@@ -166,8 +166,13 @@ function paint(set: TokenSet, mode: Mode, p: Paint): Rgba {
   return parseColor(typeof p === 'string' ? resolveToken(set, mode, p) : p.raw)
 }
 
+/** Whether a set's simulated component recipes apply: they are light-mode proposals only. */
+export function simulates(set: TokenSet, mode: Mode): boolean {
+  return set !== 'main' && mode === 'light'
+}
+
 export function measure(pair: Pair, set: TokenSet, mode: Mode): Measurement {
-  const simulated = set !== 'main'
+  const simulated = simulates(set, mode)
   const plane = over(paint(set, mode, pair.plane), [255, 255, 255, 1])
   const bgPaint = (simulated && pair.proposedBg) || pair.bg
   const under = bgPaint ? over(paint(set, mode, bgPaint), plane) : plane
