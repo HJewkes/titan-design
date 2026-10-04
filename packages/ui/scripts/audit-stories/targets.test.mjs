@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import {
-  MAX_TARGETS,
   TargetError,
   changedFilesFromGit,
   gitDiffArgs,
@@ -113,7 +112,7 @@ describe('refusals', () => {
 describe('the target cap', () => {
   const bigIndex = {
     entries: Object.fromEntries(
-      Array.from({ length: MAX_TARGETS + 1 }, (_, i) => [
+      Array.from({ length: 41 }, (_, i) => [
         `big--s${i}`,
         { id: `big--s${i}`, type: 'story', importPath: './src/components/ui/big/Big.stories.tsx' },
       ])
@@ -139,7 +138,7 @@ describe('the target cap', () => {
 
   it('allows more than 40 with --all', () => {
     const ids = selectTargets({ changed, index: bigIndex, graph, all: true })
-    expect(ids).toHaveLength(MAX_TARGETS + 1)
+    expect(ids).toHaveLength(41)
   })
 })
 
