@@ -207,7 +207,7 @@ function TabBar({ active, onSelect }: TabBarProps) {
             key={key}
             onPress={() => onSelect(key)}
             accessibilityRole="tab"
-            accessibilityState={{ selected: isActive }}
+            aria-selected={isActive}
             className="py-2.5"
             style={{
               flex: 1,

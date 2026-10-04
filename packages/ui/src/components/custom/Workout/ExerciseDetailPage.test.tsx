@@ -116,6 +116,20 @@ describe('ExerciseDetailPage', () => {
     expect(screen.getAllByTestId('exercise-detail-page-vbt-set')).toHaveLength(2)
   })
 
+  it('marks only the active tab as selected in the DOM', () => {
+    render(<ExerciseDetailPage {...baseProps} />)
+    const tab = (key: string) => screen.getByTestId(`exercise-detail-page-tab-${key}`)
+
+    expect(tab('progress')).toHaveAttribute('aria-selected', 'true')
+    expect(tab('history')).toHaveAttribute('aria-selected', 'false')
+    expect(tab('advanced')).toHaveAttribute('aria-selected', 'false')
+
+    fireEvent.click(tab('history'))
+    expect(tab('progress')).toHaveAttribute('aria-selected', 'false')
+    expect(tab('history')).toHaveAttribute('aria-selected', 'true')
+    expect(tab('advanced')).toHaveAttribute('aria-selected', 'false')
+  })
+
   it('formats mean velocity to 2 decimal places in the summary and per-set rows', () => {
     render(<ExerciseDetailPage {...baseProps} />)
     fireEvent.click(screen.getByTestId('exercise-detail-page-tab-advanced'))
