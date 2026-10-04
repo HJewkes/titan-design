@@ -8,7 +8,7 @@ import {
   type Dispatch,
   type ReactNode,
 } from 'react'
-import { buildFeedback } from '../src/feedback.ts'
+import { buildFeedback, unansweredQuestionIds } from '../src/feedback.ts'
 import { feedbackProblems } from '../src/round.ts'
 import { roundLayout, type ResolvedSection } from '../src/sections.ts'
 import type { Manifest, Question, Variant } from '../src/schema.ts'
@@ -94,6 +94,7 @@ function Header({
         {manifest.unit} <span>round {manifest.round}</span>
       </h1>
       {manifest.context && <p>{manifest.context}</p>}
+      {manifest.sections && <Pager pages={pages} current={current} dispatch={dispatch} />}
       {manifest.sections ? (
         <ol className="prompts">
           {pages.map((p, i) => (
@@ -247,19 +248,25 @@ function SectionBlock({ section, ...props }: PartProps & { section: ResolvedSect
   )
 }
 
-/** Previous and next section, with where the human is in the round. */
-function Pager({
-  pages,
-  current,
-  dispatch,
-}: {
+interface PagerProps {
   pages: Page[]
   current: number
   dispatch: Dispatch<Action>
-}) {
+  /** The pager closing a section, whose Next takes focus when the section opens. */
+  end?: boolean
+}
+
+/** Previous and next section, with where the human is in the round. */
+function Pager({ pages, current, dispatch, end = false }: PagerProps) {
   const step = (delta: number) => pages[current + delta]
+  const nextRef = useFocusOnPageEntry(pages[current].id, end)
+  const suffix = end ? '-end' : ''
   return (
-    <nav className="pager" aria-label="Sections" data-testid="pager">
+    <nav
+      className={end ? 'pager pager-end' : 'pager'}
+      aria-label={end ? 'Section end' : 'Sections'}
+      data-testid={`pager${suffix}`}
+    >
       <button
         type="button"
         disabled={!step(-1)}
@@ -267,11 +274,13 @@ function Pager({
       >
         <kbd>[</kbd> Previous
       </button>
-      <span data-testid="page-position">
+      <span data-testid={`page-position${suffix}`}>
         Section {current + 1} of {pages.length}: {pages[current].title}
       </span>
       <button
+        ref={nextRef}
         type="button"
+        className={end && step(1) ? 'primary' : undefined}
         disabled={!step(1)}
         onClick={() => dispatch({ type: 'jump', index: step(1).first })}
       >
@@ -279,6 +288,18 @@ function Pager({
       </button>
     </nav>
   )
+}
+
+/**
+ * Moving on is the default once a page opens: focus goes to its closing Next (or, on the last
+ * page, to Review answers), so finishing a section never looks like finishing the round.
+ */
+function useFocusOnPageEntry(pageId: string, enabled: boolean) {
+  const ref = useRef<HTMLButtonElement>(null)
+  useEffect(() => {
+    if (enabled && !ref.current?.disabled) ref.current?.focus({ preventScroll: true })
+  }, [pageId, enabled])
+  return ref
 }
 
 /** A page change mounts new stops, which do not scroll themselves on mount; bring the active one up. */
@@ -332,9 +353,10 @@ export function Form(props: Omit<PartProps, 'indexes'>) {
   const paged = layout.sections.length > 0
   const shows = (id: string) => !paged || page.id === id
   const parts = { ...props, indexes: stopIndexes(manifest), layout }
+  const last = current === pages.length - 1
+  const reviewRef = useFocusOnPageEntry(page.id, paged && last)
   return (
     <main>
-      {paged && <Pager pages={pages} current={current} dispatch={dispatch} />}
       {layout.sections
         .filter((s) => shows(s.id))
         .map((s) => (
@@ -342,9 +364,11 @@ export function Form(props: Omit<PartProps, 'indexes'>) {
         ))}
       {shows(OTHER_PAGE) && <OtherFrames {...parts} />}
       {shows(OVERALL_PAGE) && <Overall {...parts} />}
+      {paged && <Pager pages={pages} current={current} dispatch={dispatch} end />}
       <button
+        ref={reviewRef}
         type="button"
-        className="primary"
+        className={!paged || last ? 'primary' : undefined}
         onClick={() => dispatch({ type: 'screen', screen: 'review' })}
       >
         Review answers <kbd>⌘ Enter</kbd>
@@ -393,17 +417,21 @@ export function App({ manifest, manifestSha256 }: AppProps) {
   )
   useDraftBackup(storage, manifestSha256, state)
   const [hitTesting, setHitTesting] = useState<boolean | null>(null)
-  const feedback = buildFeedback(manifest, manifestSha256, state.draft, new Date())
+  const unanswered = unansweredQuestionIds(manifest, state.draft)
+  const partial = unanswered.length > 0
+  const feedback = buildFeedback(manifest, manifestSha256, state.draft, new Date(), partial)
   const problems = feedbackProblems(feedback, manifest)
   const submit = async () => {
     if (state.screen !== 'review' || problems.length) return
     dispatch({ type: 'screen', screen: 'sending' })
     const errors = await postFeedback(
-      buildFeedback(manifest, manifestSha256, state.draft, new Date())
+      buildFeedback(manifest, manifestSha256, state.draft, new Date(), partial)
     )
     dispatch({ type: 'screen', screen: errors.length ? 'review' : 'sent', errors })
   }
-  useKeyboard({ manifest, state, dispatch, submit })
+  // Cmd+Enter sends only a complete round; a partial one takes the explicit Send partial click.
+  const submitByKey = () => (partial ? undefined : submit())
+  useKeyboard({ manifest, state, dispatch, submit: submitByKey })
   if (state.screen === 'sent')
     return (
       <p className="sent" data-testid="sent">
@@ -424,6 +452,7 @@ export function App({ manifest, manifestSha256 }: AppProps) {
           manifest={manifest}
           feedback={feedback}
           problems={[...problems, ...state.errors]}
+          unanswered={unanswered}
           sending={state.screen === 'sending'}
           dispatch={dispatch}
           onSubmit={submit}
