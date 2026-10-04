@@ -146,11 +146,7 @@ describe('PrHistoryModal geometry resolves to the spacing tokens', () => {
     render(<PrHistoryModal {...baseProps} />)
     const classes = spacingClassesOf('pr-history-modal-header')
     expect(classes).toEqual(['px-gutter-sm', 'pt-inset-md', 'pb-inset-sm'])
-    expect(resolveAll(classes)).toEqual([
-      '16px',
-      '12px',
-      '8px',
-    ])
+    expect(resolveAll(classes)).toEqual(['16px', '12px', '8px'])
   })
 
   it('keeps the empty state’s breathing room', () => {
