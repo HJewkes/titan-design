@@ -10,6 +10,7 @@ import { loadSpacingConfig } from './spacing-scale.mjs'
 export const EXIT_CLEAN = 0
 export const EXIT_BLOCKERS = 1
 export const EXIT_RENDER_ERROR = 2
+export const EXIT_UNEXPECTED = 70
 
 export const MAX_SUMMARY_LINES = 30
 const VIEWPORT_HEIGHT = 900
@@ -270,7 +271,7 @@ export function exitCodeFor(entries) {
   return EXIT_CLEAN
 }
 
-/** The code an error carries (a refusal or a start failure), and never 0 for an unexpected one. */
+/** The code an error carries (a refusal or a start failure); 70 for an unexpected one, never 0. */
 export function exitCodeForError(err) {
-  return Number.isInteger(err?.exitCode) && err.exitCode > 0 ? err.exitCode : 1
+  return Number.isInteger(err?.exitCode) && err.exitCode > 0 ? err.exitCode : EXIT_UNEXPECTED
 }

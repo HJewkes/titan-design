@@ -6,6 +6,7 @@
  * most 30 lines, and stops the server it started by process group.
  *
  * Exit codes: 0 clean, 1 blockers remain (or no story is touched), 2 a story failed to render,
+ * 70 an unexpected error,
  * 64 usage, targeting refusal or start failure, 130 interrupted.
  */
 /* global process, console */
@@ -43,7 +44,8 @@ export const USAGE = `Usage: pnpm audit:stories [--base <ref>] [--stories <id,..
 
 Audits the stories touched by the diff against --base (default origin/main).
 --touch adds the 320 width and checks 44px hit targets. Output goes under TMPDIR.
-Exit: 0 clean, 1 blockers or no story touched, 2 render error, 64 usage or start failure, 130 interrupted.`
+Exit: 0 clean, 1 blockers or no story touched, 2 render error, 64 usage or start failure,
+      70 unexpected error, 130 interrupted (SIGINT, SIGTERM or SIGHUP).`
 
 /** A bad flag or output location; the command exits 64. */
 export class UsageError extends Error {
@@ -145,12 +147,34 @@ function changedSince(base, git) {
   }
 }
 
-async function openServer(options, changed) {
+/**
+ * Once a stop signal has arrived, its handler owns the exit (130 after the group is gone). The
+ * run it broke must not settle first and exit with a code of its own, so it waits here for good.
+ */
+function yieldToInterrupt(server) {
+  return server?.interrupted ? new Promise(() => {}) : undefined
+}
+
+/**
+ * The stop is armed from `onSpawn`, while Storybook is still starting: a signal during the boot
+ * would otherwise kill this process and leave the detached launcher running. `start` and
+ * `signals` replace the launcher and the process in tests.
+ */
+export async function openServer(options, changed, { start = {}, signals } = {}) {
   const expectImportPaths = changedStoryFiles(changed)
   if (options.url) return attachStorybook(options.url, { expectImportPaths })
-  const server = await startStorybook({ expectImportPaths })
-  stopOnSignals(server)
-  return server
+  let group
+  const arm = (pgid, stopper) => {
+    group = stopper
+    stopOnSignals(stopper, signals)
+    start.onSpawn?.(pgid, stopper)
+  }
+  try {
+    return await startStorybook({ expectImportPaths, ...start, onSpawn: arm })
+  } catch (err) {
+    await yieldToInterrupt(group)
+    throw err
+  }
 }
 
 function targetStories(options, changed, index) {
@@ -181,6 +205,7 @@ async function audit(options, { outDir, changed, started }) {
     return exitCodeFor(entries)
   } finally {
     await server.stop()
+    await yieldToInterrupt(server)
   }
 }
 

@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { UsageError, parseOptions, resolveOutDir } from '../audit-stories.mjs'
+import { USAGE, UsageError, parseOptions, resolveOutDir } from '../audit-stories.mjs'
 import {
   MAX_SUMMARY_LINES,
   exitCodeFor,
@@ -115,6 +115,8 @@ describe('summarise line cap', () => {
 })
 
 describe('exit codes', () => {
+  const blockedFrame = frame({ blockers: [blocker('hit-target', '.a')] })
+
   it('is 0 when every frame rendered without blockers, warnings allowed', () => {
     expect(exitCodeFor([frame({ warnings: [{}], contrast_token: [{}] })])).toBe(0)
   })
@@ -141,10 +143,18 @@ describe('exit codes', () => {
     expect(exitCodeForError(new UsageError('bad flag'))).toBe(64)
   })
 
+  it('is 70 for an unexpected error, apart from the code for blockers', () => {
+    expect(exitCodeForError(new Error('boom'))).toBe(70)
+    expect(exitCodeForError(new TypeError('boom'))).not.toBe(exitCodeFor([blockedFrame]))
+  })
+
   it('never maps an unexpected error to 0', () => {
-    expect(exitCodeForError(new Error('boom'))).toBe(1)
-    expect(exitCodeForError(Object.assign(new Error('boom'), { exitCode: 0 }))).toBe(1)
-    expect(exitCodeForError(undefined)).toBe(1)
+    expect(exitCodeForError(Object.assign(new Error('boom'), { exitCode: 0 }))).toBe(70)
+    expect(exitCodeForError(undefined)).toBe(70)
+  })
+
+  it('names every exit code in the usage text', () => {
+    for (const code of [0, 1, 2, 64, 70, 130]) expect(USAGE).toMatch(new RegExp(`\\b${code} `))
   })
 })
 

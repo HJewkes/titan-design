@@ -171,23 +171,37 @@ describe('git wrapper', () => {
       mkdirSync(join(repo, 'sub'))
       run('init', '-q')
       writeFileSync(join(repo, 'sub', 'Tracké.tsx'), 'a\n')
+      writeFileSync(join(repo, 'sub', 'Two Words.tsx'), 'a\n')
       run('add', '.')
       run('-c', 'user.name=t', '-c', 'user.email=t@example.test', 'commit', '-qm', 'init')
       writeFileSync(join(repo, 'sub', 'Tracké.tsx'), 'b\n')
       writeFileSync(join(repo, 'sub', 'Nöu.stories.tsx'), 'c\n')
+      writeFileSync(join(repo, 'sub', 'Two Words.tsx'), 'b\n')
+      writeFileSync(join(repo, 'sub', 'New File.stories.tsx'), 'c\n')
     })
     afterAll(() => rmSync(repo, { recursive: true, force: true }))
 
     it('returns non-ASCII paths unquoted, changed and untracked alike', () => {
       const changed = changedFilesFromGit('HEAD', gitAt(repo)).map((p) => p.normalize('NFC'))
-      expect(changed.sort()).toEqual(['sub/Nöu.stories.tsx', 'sub/Tracké.tsx'])
+      expect(changed.filter((p) => /[^ -~]/.test(p)).sort()).toEqual([
+        'sub/Nöu.stories.tsx',
+        'sub/Tracké.tsx',
+      ])
+    })
+
+    it('returns paths with spaces whole, changed and untracked alike', () => {
+      const changed = changedFilesFromGit('HEAD', gitAt(repo))
+      expect(changed.filter((p) => p.includes(' ')).sort()).toEqual([
+        'sub/New File.stories.tsx',
+        'sub/Two Words.tsx',
+      ])
     })
 
     it('lists untracked files from the root it is given, not a subdirectory', () => {
       const fromSub = gitAt(join(repo, 'sub'))(gitUntrackedArgs())
       const fromRoot = gitAt(repo)(gitUntrackedArgs())
-      expect(fromSub.normalize('NFC')).toBe('Nöu.stories.tsx\0')
-      expect(fromRoot.normalize('NFC')).toBe('sub/Nöu.stories.tsx\0')
+      expect(fromSub.normalize('NFC').split('\0')).toContain('Nöu.stories.tsx')
+      expect(fromRoot.normalize('NFC').split('\0')).toContain('sub/Nöu.stories.tsx')
     })
 
     it('roots the default runner at the repository, wherever the command is run from', () => {

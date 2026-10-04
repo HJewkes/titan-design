@@ -15,7 +15,6 @@
 /* global process, URL, setTimeout, clearTimeout */
 import { execFileSync, spawn } from 'node:child_process'
 import { get } from 'node:http'
-import { constants } from 'node:os'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { resolveLsof } from '../storybook-launch.mjs'
@@ -342,8 +341,9 @@ async function awaitReady(child, outputTail, readLine, { readyTimeoutMs, pollMs,
 
 /**
  * Starts an isolated Storybook and resolves once it serves `/index.json`. `onSpawn` receives
- * the launcher PID (the group id) as soon as it exists. On any failure the group is stopped
- * before the error propagates. `ownership` (the listener lookup) and `kill` are for tests only.
+ * the launcher PID (the group id) and the group's stopper as soon as they exist, so a caller can
+ * arm `stopOnSignals` before the server is ready. On any failure the group is stopped before the
+ * error propagates. `ownership` (the listener lookup) and `kill` are for tests only.
  */
 export async function startStorybook({
   launcher = DEFAULT_LAUNCHER,
@@ -359,8 +359,8 @@ export async function startStorybook({
 } = {}) {
   const child = spawnLauncher({ launcher, args, cwd })
   const pgid = child.pid
-  onSpawn(pgid)
   const stopper = groupStopper(pgid, { graceMs, kill })
+  onSpawn(pgid, stopper)
   const listeners = []
   const output = watchOutput(child, (line) => listeners.forEach((fn) => fn(line)))
   const readLine = (fn) => listeners.push(fn)
@@ -398,8 +398,10 @@ export async function attachStorybook(raw, { expectImportPaths = [] } = {}) {
 }
 
 /**
- * Stops the server on SIGINT, SIGTERM and SIGHUP, then exits 128 + the signal number (130 for
- * SIGINT). A repeated signal joins the stop already running instead of killing us mid-stop. If
+ * Stops the server on SIGINT, SIGTERM and SIGHUP, then exits 130 whichever signal it was: the
+ * command has one "interrupted" code. `server.interrupted` is set as soon as a signal arrives, so
+ * a caller can tell a run that the stop broke from one that failed on its own. A repeated signal
+ * joins the stop already running instead of killing us mid-stop. If
  * the process exits any other way while the group lives, the group gets a synchronous SIGKILL.
  * Every handler is removed once the group is gone. Returns the remover.
  */
@@ -407,9 +409,10 @@ export function stopOnSignals(
   server,
   { proc = process, exit = (code) => process.exit(code) } = {}
 ) {
-  const onSignal = async (signal) => {
+  const onSignal = async () => {
+    server.interrupted = true
     await server.stop().catch(() => {})
-    exit(128 + constants.signals[signal])
+    exit(EXIT_INTERRUPT)
   }
   const onExit = () => {
     if (server.stopped || !server.killNow) return

@@ -9,6 +9,7 @@ import { createServer } from 'node:http'
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { openServer } from '../audit-stories.mjs'
 import {
   EXIT_INTERRUPT,
   EXIT_USAGE,
@@ -386,6 +387,54 @@ describe('stopOnSignals', () => {
     expect(await exited).toBe(EXIT_INTERRUPT)
     expect(isAlive(launcherPid)).toBe(false)
     expect(isAlive(serverPid)).toBe(false)
+  })
+
+  it.each(['SIGINT', 'SIGTERM', 'SIGHUP'])('exits 130 on %s, after the stop', async (signal) => {
+    const proc = new EventEmitter()
+    const exit = vi.fn()
+    const server = {
+      stopped: false,
+      whenStopped: new Promise(() => {}),
+      stop: vi.fn(async () => {}),
+    }
+    stopOnSignals(server, { proc, exit })
+
+    proc.emit(signal)
+    await waitUntil(() => exit.mock.calls.length > 0)
+
+    expect(server.stop).toHaveBeenCalledTimes(1)
+    expect(server.interrupted).toBe(true)
+    expect(exit.mock.calls).toEqual([[EXIT_INTERRUPT]])
+  })
+
+  it('stops the group when a signal arrives while Storybook is still starting', async () => {
+    const proc = new EventEmitter()
+    const exit = vi.fn()
+    const kill = vi.fn(passThroughKill)
+    let pgid
+    let settled = false
+    const start = {
+      launcher: FAKE_LAUNCHER,
+      args: ['--no-line'],
+      readyTimeoutMs: 10_000,
+      graceMs: 1000,
+      kill,
+      onSpawn: (p) => groups.add((pgid = p)),
+    }
+    openServer({}, [], { start, signals: { proc, exit } }).then(
+      () => (settled = true),
+      () => (settled = true)
+    )
+    await waitUntil(() => pgid != null)
+
+    proc.emit('SIGINT')
+    await waitUntil(() => exit.mock.calls.length > 0)
+
+    expect(kill).toHaveBeenCalledWith(-pgid, 'SIGTERM')
+    expect(isAlive(pgid)).toBe(false)
+    expect(exit.mock.calls).toEqual([[EXIT_INTERRUPT]])
+    await new Promise((ok) => setTimeout(ok, 100))
+    expect(settled).toBe(false)
   })
 
   it('removes its handlers after a normal stop and never signals the group again', async () => {
