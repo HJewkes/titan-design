@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { siblingSource, resolveAll } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesOf } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import {
   ExerciseDetailPage,
@@ -157,21 +157,24 @@ describe('ExerciseDetailPage', () => {
  * panel takes the same 14px section rhythm as the page shell.
  */
 describe('ExerciseDetailPage geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'ExerciseDetailPage.tsx')
-
   it('keeps the page gutter and its section rhythm', () => {
-    expect(source).toContain('p-gutter-sm gap-3.5')
+    render(<ExerciseDetailPage {...baseProps} />)
+    expect(spacingClassesOf('exercise-detail-page-content')).toEqual(['p-gutter-sm', 'gap-3.5'])
     expect(resolveAll(['p-gutter-sm', 'gap-3.5'])).toEqual(['16px', '14px'])
   })
 
-  it('gives all three tab panels one rhythm', () => {
-    for (const tab of ['progress', 'history', 'advanced']) {
-      expect(source).toContain(`className="gap-3.5" testID="exercise-detail-page-panel-${tab}"`)
-    }
+  it.each(['progress', 'history', 'advanced'])('gives the %s tab panel one rhythm', (tab) => {
+    render(<ExerciseDetailPage {...baseProps} />)
+    fireEvent.click(screen.getByTestId(`exercise-detail-page-tab-${tab}`))
+    expect(spacingClassesOf(`exercise-detail-page-panel-${tab}`)).toEqual(['gap-3.5'])
   })
 
   it('keeps the stat and section card insets', () => {
-    expect(source).toContain('p-inset-md')
+    render(<ExerciseDetailPage {...baseProps} />)
+    expect(spacingClassesOf('exercise-detail-page-stats')).toEqual(['gap-inline-md'])
+    expect(spacingClassesOf('exercise-detail-page-stat-sessions')).toEqual(['p-inset-md'])
+    expect(spacingClassesOf('exercise-detail-page-trend')).toEqual(['p-inset-md', 'gap-2.5'])
+    expect(spacingClassesOf('exercise-detail-page-tab-progress')).toEqual(['py-2.5'])
     expect(resolveAll(['p-inset-md', 'gap-inline-md', 'py-2.5'])).toEqual(['12px', '8px', '10px'])
   })
 })

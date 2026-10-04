@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { siblingSource, resolveAll } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesOf } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import {
   ActiveWorkoutPage,
@@ -179,10 +179,9 @@ describe('ActiveWorkoutPage', () => {
  * padding is `gutter-sm`; the 14px between page sections has no semantic rung.
  */
 describe('ActiveWorkoutPage geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'ActiveWorkoutPage.tsx')
-
   it('keeps the page gutter and its section rhythm', () => {
-    expect(source).toContain('p-gutter-sm gap-3.5')
+    render(<ActiveWorkoutPage {...baseProps} />)
+    expect(spacingClassesOf('active-workout-page-content')).toEqual(['p-gutter-sm', 'gap-3.5'])
     expect(resolveAll(['p-gutter-sm', 'gap-3.5'])).toEqual(['16px', '14px'])
   })
 })
