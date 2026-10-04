@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { siblingSource, resolveAll } from '../../../test/spacing-resolver'
+import { spacingClassesAt, spacingClassesOf, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { TempoDisplay } from './TempoDisplay'
@@ -190,16 +190,24 @@ describe('TempoDisplay', () => {
  * spacing that no fixed rung expresses — and is exempt by design.
  */
 describe('TempoDisplay tooltip geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'TempoDisplay.tsx')
+  const openTooltip = () => {
+    render(<TempoDisplay tempo={[3, 1, 1, 0]} />)
+    fireEvent.click(screen.getByTestId('tempo-display'))
+  }
 
   it('keeps the tooltip offset and inset', () => {
-    expect(source).toContain('items-center mb-stack-md')
-    expect(resolveAll(['mb-stack-md'])).toEqual(['8px'])
-    expect(resolveAll(['py-inset-sm', 'px-inset-md'])).toEqual(['8px', '12px'])
+    openTooltip()
+    expect(spacingClassesOf('tempo-tooltip')).toEqual(['mb-stack-md'])
+    expect(resolveAll(spacingClassesOf('tempo-tooltip'))).toEqual(['8px'])
+    const inner = screen.getByTestId('tempo-tooltip').firstElementChild
+    expect(spacingClassesAt(inner)).toEqual(['py-inset-sm', 'px-inset-md'])
+    expect(resolveAll(spacingClassesAt(inner))).toEqual(['8px', '12px'])
   })
 
   it('leaves the chip padding proportional to the digit size', () => {
-    expect(source).toContain('Math.round(fontSize * 0.6)')
-    expect(source).toContain('Math.round(fontSize * 0.3)')
+    render(<TempoDisplay tempo={[3, 1, 1, 0]} fontSize={20} />)
+    const chip = screen.getByTestId('tempo-display').firstElementChild
+    expect(chip).toHaveStyle({ paddingLeft: '12px', paddingRight: '12px' })
+    expect(chip).toHaveStyle({ paddingTop: '6px', paddingBottom: '6px' })
   })
 })
