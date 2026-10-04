@@ -45,6 +45,8 @@ export interface MessageListProps {
   /** Shown instead of the scroll area while the thread has no messages. */
   emptyState?: ReactNode
   linkers?: ProseLinker[]
+  /** Name of the thread's log region for assistive tech. */
+  accessibilityLabel?: string
   className?: string
 }
 
@@ -181,6 +183,8 @@ function ThreadScroll(props: MessageListProps) {
         onScroll={onScroll}
         onContentSizeChange={onContentSizeChange}
         scrollEventThrottle={32}
+        role="log"
+        aria-label={props.accessibilityLabel ?? 'Conversation'}
         testID="chat-message-scroll"
       >
         <RevealProvider offset={offset}>

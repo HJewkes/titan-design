@@ -141,8 +141,8 @@ function DataParts({ message, render }: { message: ChatMessage; render?: DataPar
 
 /**
  * One chat message: markdown prose in a bubble and any `data-*` parts rendered by the
- * caller beneath it. A direct thread carries no per-message identity; a group thread
- * names the author and puts a small avatar beside the first message of a run. Times live in the list, not here. Composes Surface, Avatar, MarkdownProse
+ * caller beneath it. A direct thread shows no per-message identity, only a
+ * visually hidden speaker for assistive tech; a group thread names the author and puts a small avatar beside the first message of a run. Times live in the list, not here. Composes Surface, Avatar, MarkdownProse
  * and Typography.
  */
 export function MessageBubble({
@@ -158,6 +158,8 @@ export function MessageBubble({
 }: MessageBubbleProps) {
   const body = messageBody(message)
   const isGroup = layout === 'group' && !isOwn
+  const showsAuthor = isGroup && startsGroup
+  const speaker = author?.displayName ?? message.authorId
   return (
     <View
       className={cn('flex-row items-start gap-inline-sm', isOwn && 'justify-end', className)}
@@ -165,11 +167,19 @@ export function MessageBubble({
     >
       {isGroup ? <AvatarSlot author={author} visible={startsGroup} /> : null}
       <View className={cn('max-w-[85%] shrink gap-stack-sm', isOwn && 'items-end')}>
-        {isGroup && startsGroup ? (
+        {showsAuthor ? (
           <Typography variant="caption" color="secondary" testID="chat-message-author">
-            {author?.displayName ?? message.authorId}
+            {speaker}
           </Typography>
-        ) : null}
+        ) : (
+          <Typography
+            variant="caption"
+            className="absolute h-px w-px overflow-hidden opacity-0"
+            testID="chat-message-speaker"
+          >
+            {`${isOwn ? 'You' : speaker}: `}
+          </Typography>
+        )}
         {body ? (
           <BubbleBody
             body={body}
