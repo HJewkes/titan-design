@@ -32,11 +32,16 @@ pnpm review --example --storybook http://127.0.0.1:6107 > <round-dir>/round.json
 pnpm review --example --sections --storybook http://127.0.0.1:6107                # the same, grouped
 pnpm review build <round-dir>/draft.json [--storybook <url>]   # contrast gate; writes round.json
 pnpm review <round-dir>/round.json [--storybook <url>] [--out <dir>] [--no-open] [--no-capture]
+            [--contrast-override "<reason>"]
 ```
 
 Write the manifest as `draft.json` and let `build` produce `round.json` (see _Contrast gate_).
-`pnpm review` warns, without refusing, when `round.json` has no passing `contrast.json` for
-its exact bytes.
+`pnpm review` **refuses** (exit 2) a `round.json` without a passing `contrast.json` for its
+exact bytes. To serve one anyway, pass `--contrast-override "<reason>"`. The reason is
+required. It goes into the served round, and the page shows it at the top as a banner
+("Contrast was not gated for this round: …"), so the owner sees that the gate was bypassed.
+There is no environment variable and no silent bypass. Hand-written test rounds and the e2es
+pass the flag.
 
 The command blocks until the human sends, then:
 
@@ -133,6 +138,10 @@ What it measures:
 - **Tracks**: fills 8px thick or less and at least four times as long.
 - **Marks**: elements 24px or smaller with a border or fill, and every SVG shape's fill and
   stroke.
+- **Portals**: everything the story renders into `<body>` outside `#storybook-root`, such as
+  popovers, tooltips and modals, when it is open as the frame renders. Storybook's own
+  chrome (`sb-*`, `#storybook-docs`) is skipped. To measure a tip, write a story that renders
+  it open (README > _Open-tip stories are open by STATE_).
 
 What it does not measure:
 
@@ -151,23 +160,27 @@ round-level `contrast` holds them for every frame:
 ```json
 "contrast": {
   "knownDefects": [
-    { "element": "chip-label", "mode": "light", "route": "TD-490", "reason": "text-muted on the light base" }
+    { "element": "chip-label", "mode": "light", "kind": "text", "maxRatio": 3.2, "route": "TD-490", "reason": "text-muted on the light base" }
   ],
   "measured": [
     { "variant": "Wall", "mode": "dark", "kind": "text", "element": "header", "ratio": 5.1, "source": "picker on the PNG" }
   ],
-  "unmeasured": [{ "variant": "Phone", "reason": "device capture, no DOM" }]
+  "unmeasured": [{ "variant": "Wall", "mode": "light", "reason": "device capture, no DOM" }]
 }
 ```
 
-- `knownDefects` excuse a miss. `variant`, `mode`, `kind` and `element` narrow the match:
-  `element` matches a `data-testid` exactly, or a substring of the selector or text.
-  `route` is required. It is the task id of the primitive or token audit that owns an
+- A `knownDefects` entry excuses the miss of exactly one element. `element`, `mode` and `kind`
+  are required, and loading refuses an entry that omits one. `element` is the failing
+  element's own `data-testid`, or the full selector `build` printed for it in brackets. It is
+  compared exactly, never as a substring. `variant` narrows the match further. `maxRatio`,
+  when set, excuses the miss only at or below that ratio, so a regression past it blocks
+  again. `route` is required. It is the task id of the primitive or token audit that owns an
   inherited miss, or `component` for the component's own miss. A declared miss is still
   printed and written with its route and ratio. Only undeclared misses block. A declaration
   that matched nothing prints `UNMATCHED` so it does not linger and hide a later miss.
-- An **image variant** has no DOM, so it needs a `measured` ratio, which is judged at the
-  same thresholds, or an `unmeasured` entry with a reason. A story variant takes neither.
+- An **image variant** has no DOM. **Each mode**, light and dark, needs a `measured` ratio
+  (judged at the same thresholds) or an `unmeasured` entry with a reason. A light measurement
+  does not cover dark. A story variant takes neither.
 
 `contrast.json` (`titan-review/contrast@1`) records `manifestSha256`, `passed`, the
 thresholds, the coverage lists above, a per-frame summary (checks, failures, known defects,
@@ -323,5 +336,7 @@ own text field keeps its typing, except `Cmd+Enter`.
   `TITAN_REVIEW_STORYBOOK=<url>`), a keyboard pick, a comment, a pin, send, then asserts the
   written JSON and PNGs; it also checks that a round-level height caps fitted frames while a
   variant height stays fixed. Local only; it needs Storybook and Chromium.
-  `e2e/contrast.e2e.ts` needs no Storybook. It serves a synthetic story and proves that a
-  light-mode miss blocks `round.json` and that the same misses, declared with a route, pass.
+  `e2e/contrast.e2e.ts` needs no Storybook. It serves a synthetic story, with a portal and
+  Storybook chrome. It proves three things. Light-mode misses block `round.json`. Declaring
+  one miss excuses only that one. Declaring them all passes. `e2e/image.e2e.ts` checks the
+  override banner.

@@ -135,7 +135,10 @@ export const QuestionSchema = z.discriminatedUnion('kind', [
 
 export const THEME_MODES = ['light', 'dark'] as const
 const themeMode = z.enum(THEME_MODES)
-const checkKind = z.enum(['text', 'large-text', 'non-text'])
+const CHECK_KINDS = ['text', 'large-text', 'non-text'] as const
+const checkKind = z.enum(CHECK_KINDS)
+const NAMES_ELEMENT =
+  'a known defect names one element: its data-testid, or the full selector build printed'
 
 /** Where a known miss is fixed: the primitive or token task that owns it, or the component. */
 export const DEFECT_ROUTE = /^([A-Z][A-Z0-9]*-[0-9]+[a-z]?|component)$/
@@ -144,10 +147,14 @@ export const DEFECT_ROUTE = /^([A-Z][A-Z0-9]*-[0-9]+[a-z]?|component)$/
 export const KnownDefectSchema = z
   .object({
     variant: id.optional(),
-    mode: themeMode.optional(),
-    kind: checkKind.optional(),
-    /** Matches a failing element's data-testid exactly, or a substring of its selector or text. */
-    element: z.string().min(1).optional(),
+    mode: z.enum(THEME_MODES, { error: 'a known defect names its mode: light or dark' }),
+    kind: z.enum(CHECK_KINDS, {
+      error: 'a known defect names its kind: text, large-text or non-text',
+    }),
+    /** The failing element's own data-testid, or the full selector build printed, exactly. */
+    element: z.string({ error: NAMES_ELEMENT }).min(1, NAMES_ELEMENT),
+    /** When set, the miss is excused only at or below this ratio, so a worse regression blocks. */
+    maxRatio: z.number().min(1).max(21).optional(),
     route: z.string().regex(DEFECT_ROUTE, 'a task id such as TD-490, or "component"'),
     reason: z.string().min(1),
   })
@@ -166,7 +173,9 @@ const ImageMeasurementSchema = z
   })
   .strict()
 
-const UnmeasuredSchema = z.object({ variant: id, reason: z.string().min(1) }).strict()
+const UnmeasuredSchema = z
+  .object({ variant: id, mode: themeMode, reason: z.string().min(1) })
+  .strict()
 
 /** The contrast gate's declarations for the frames of a section, or of the whole round. */
 export const ContrastDeclarationsSchema = z

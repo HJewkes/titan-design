@@ -52,16 +52,16 @@ export async function buildRound(
   return 0
 }
 
-/** Why a round about to be served lacks a passing contrast.json for these exact bytes. */
-export async function contrastWarning(
+/** Why a round about to be served has no passing contrast.json for these exact bytes. */
+export async function contrastProblem(
   roundPath: string,
   manifestSha256: string
 ): Promise<string | null> {
   const file = join(dirname(roundPath), CONTRAST_FILE)
   const raw = await readFile(file, 'utf8').catch(() => null)
-  if (raw === null) return `no ${CONTRAST_FILE} beside this round; build it with titan-review build`
+  if (raw === null) return `no ${CONTRAST_FILE} beside this round`
   const report = JSON.parse(raw) as Partial<ContrastReport>
   if (report.manifestSha256 !== manifestSha256)
-    return `${CONTRAST_FILE} measured a different manifest; rebuild the round`
+    return `${CONTRAST_FILE} measured a different manifest`
   return report.passed ? null : `${CONTRAST_FILE} records undeclared contrast failures`
 }

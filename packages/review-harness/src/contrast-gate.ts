@@ -1,6 +1,7 @@
 import { REQUIRED_RATIO, floorRatio, type CheckKind } from './contrast.ts'
 import type { Check, FrameResult, Indeterminate } from './contrast-check.ts'
 import {
+  THEME_MODES,
   isImageVariant,
   type ContrastDeclarations,
   type KnownDefect,
@@ -18,6 +19,7 @@ export const COVERAGE = {
     'separators: hr, role=separator, one-side or two-opposite-side borders, fills 2px thick or less',
     'tracks: fills 8px thick or less and at least four times as long',
     'marks: elements 24px or smaller with a border or fill; every SVG shape fill and stroke',
+    'portals: content rendered outside #storybook-root into <body> (popovers, tooltips, modals) that is open as the frame renders',
   ],
   excludes: [
     'large non-control fills and full borders (cards, panels, surfaces): planes, not marks (TD-486 covers token pairs)',
@@ -61,7 +63,7 @@ export interface ContrastReport {
   frames: FrameSummary[]
   failures: Finding[]
   knownDefects: KnownFinding[]
-  unmeasured: { variant: string; reason: string }[]
+  unmeasured: ContrastDeclarations['unmeasured']
   indeterminate: (Where & Indeterminate)[]
   /** Declared defects that matched nothing this round: stale, and able to hide a future miss. */
   unmatchedDefects: DeclaredDefect[]
@@ -106,13 +108,12 @@ export function declarations(manifest: Manifest): Declared {
   }
 }
 
+/** Exact on every axis: one declaration excuses one element's miss, never a family of them. */
 export function matchesDefect(defect: KnownDefect, finding: Finding): boolean {
   if (defect.variant !== undefined && defect.variant !== finding.variant) return false
-  if (defect.mode !== undefined && defect.mode !== finding.mode) return false
-  if (defect.kind !== undefined && defect.kind !== finding.kind) return false
-  const el = defect.element
-  if (el === undefined) return true
-  return finding.testId === el || finding.selector.includes(el) || !!finding.text?.includes(el)
+  if (defect.mode !== finding.mode || defect.kind !== finding.kind) return false
+  if (defect.maxRatio !== undefined && finding.ratio > defect.maxRatio) return false
+  return finding.testId === defect.element || finding.selector === defect.element
 }
 
 function findingOf(where: Where, check: Check): Finding {
@@ -170,15 +171,18 @@ function imageMisses(declared: Declared): Finding[] {
     }))
 }
 
-/** An image frame has no DOM: it needs a measurement or an explicit "unmeasured" reason. */
+/** An image frame has no DOM: each mode needs a measurement or an explicit "unmeasured" reason. */
 function imageProblems(manifest: Manifest, declared: Declared): string[] {
-  const covered = new Set([...declared.measured, ...declared.unmeasured].map((m) => m.variant))
+  const covered = new Set(
+    [...declared.measured, ...declared.unmeasured].map((m) => `${m.variant}|${m.mode}`)
+  )
   return manifest.variants
     .filter(isImageVariant)
-    .filter((v) => !covered.has(v.key))
-    .map(
-      (v) =>
-        `image variant ${v.key} has no contrast measurement; add contrast.measured, or contrast.unmeasured with a reason`
+    .flatMap((v) =>
+      THEME_MODES.filter((mode) => !covered.has(`${v.key}|${mode}`)).map(
+        (mode) =>
+          `image variant ${v.key} has no ${mode} contrast measurement; add contrast.measured, or contrast.unmeasured with a reason, for ${mode}`
+      )
     )
 }
 
@@ -257,7 +261,7 @@ export function formatContrastReport(report: ContrastReport): string[] {
       `${report.indeterminate.length} indeterminate`,
     ...byElement(report.failures).map((f) => `  FAIL ${describe(f)}`),
     ...byElement(report.knownDefects).map((f) => `  KNOWN ${f.route} ${describe(f)}: ${f.reason}`),
-    ...report.unmeasured.map((u) => `  UNMEASURED ${u.variant}: ${u.reason}`),
+    ...report.unmeasured.map((u) => `  UNMEASURED ${u.variant} ${u.mode}: ${u.reason}`),
     ...report.unmatchedDefects.map(
       (d) =>
         `  UNMATCHED ${d.where} ${d.route}: matched nothing this round; remove it (${d.reason})`

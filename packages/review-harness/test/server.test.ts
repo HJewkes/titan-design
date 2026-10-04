@@ -25,6 +25,8 @@ async function fakeStorybook(): Promise<{ url: string; close: () => void }> {
   return { url: `http://127.0.0.1:${port}`, close: () => server.close() }
 }
 
+const OVERRIDE = ['--contrast-override', 'unit-test round']
+
 const stubPage = {
   handler: (_req: http.IncomingMessage, res: http.ServerResponse) => res.end('review page'),
   close: async () => {},
@@ -118,7 +120,7 @@ describe('titan-review CLI', () => {
     const sha = (await import('node:crypto')).createHash('sha256').update(raw).digest('hex')
     const feedback = validFeedback(m, sha)
     const code = await runCli(
-      [join(dir, 'round.json'), '--no-open'],
+      [join(dir, 'round.json'), '--no-open', ...OVERRIDE],
       io(new AbortController().signal, (url) => void post(url, feedback))
     )
     expect(code).toBe(0)
@@ -129,12 +131,47 @@ describe('titan-review CLI', () => {
   it('exits 130 and writes nothing when interrupted before submit', async () => {
     const controller = new AbortController()
     const code = await runCli(
-      [join(dir, 'round.json')],
+      [join(dir, 'round.json'), ...OVERRIDE],
       io(controller.signal, () => controller.abort())
     )
     expect(code).toBe(130)
     expect(out.stdout).toBe('')
     expect(await readdir(dir)).toEqual(['round.json'])
+  })
+
+  it('refuses to serve a round with no passing contrast.json, naming the way out', async () => {
+    let served = false
+    const code = await runCli(
+      [join(dir, 'round.json'), '--no-open'],
+      io(new AbortController().signal, () => (served = true))
+    )
+    expect(code).toBe(2)
+    expect(served).toBe(false)
+    expect(out.stderr.join('\n')).toContain('no contrast.json beside this round')
+    expect(out.stderr.join('\n')).toContain('--contrast-override "<reason>"')
+  })
+
+  it('refuses an override with no reason', async () => {
+    const code = await runCli(
+      [join(dir, 'round.json'), '--contrast-override', '  '],
+      io(new AbortController().signal, () => {})
+    )
+    expect(code).toBe(2)
+    expect(out.stderr.join('\n')).toContain('needs a reason')
+  })
+
+  it('serves an overridden round with its reason in the round payload', async () => {
+    const controller = new AbortController()
+    let payload: unknown
+    const code = await runCli(
+      [join(dir, 'round.json'), '--no-open', ...OVERRIDE],
+      io(controller.signal, async (url) => {
+        payload = await (await fetch(`${url}api/round`)).json()
+        controller.abort()
+      })
+    )
+    expect(code).toBe(130)
+    expect(payload).toMatchObject({ contrastOverride: 'unit-test round' })
   })
 
   it('exits 2 before serving when a story id is not on that Storybook', async () => {

@@ -14,8 +14,9 @@ const STORY = 'fixture-contrast--default'
 
 /**
  * A synthetic story in the shape the gate reads: `globals=theme:light` puts `.light` on
- * <html>, as the real Storybook does. Light mode has 1.5:1 muted text and a 1.1:1 separator;
- * dark mode passes everywhere.
+ * <html>, as the real Storybook does. Light mode has 1.5:1 muted text, a 1.1:1 separator
+ * and a 1.5:1 tip portalled into <body>; dark mode passes everywhere. Storybook's own
+ * `sb-` chrome fails in both modes and must never be measured.
  */
 function storyHtml(light: boolean): string {
   const plane = light ? '#f3f4f6' : '#111827'
@@ -27,7 +28,10 @@ function storyHtml(light: boolean): string {
   <div data-testid="rule" style="border-top:1px solid ${rule};height:12px"></div>
   <button style="background:#2563eb;color:#fff;border:0;padding:8px">Save</button>
   <svg width="20" height="20"><circle cx="10" cy="10" r="8" fill="none" stroke="#2563eb" stroke-width="2"/></svg>
-</div></body></html>`
+</div>
+<div data-testid="tip" style="position:absolute;top:0;left:200px;color:${muted}">Tip</div>
+<div class="sb-wrapper" style="color:${plane}">Storybook chrome</div>
+</body></html>`
 }
 
 async function fakeStorybook(): Promise<{ url: string; close: () => void }> {
@@ -77,7 +81,7 @@ test.beforeAll(async () => {
 })
 test.afterAll(() => sb.close())
 
-test('a light-mode miss blocks round.json; the same misses declared with a route pass', async () => {
+test('a light-mode miss blocks round.json; each declared miss is excused alone; all declared pass', async () => {
   const blocked = await build(draft(sb.url))
   expect(blocked.code).toBe(3)
   expect(blocked.roundWritten).toBe(false)
@@ -86,16 +90,36 @@ test('a light-mode miss blocks round.json; the same misses declared with a route
   expect(failures).toEqual([
     ['light', 'muted', 'text', 'text'],
     ['light', 'rule', 'separator', 'non-text'],
+    ['light', 'tip', 'text', 'text'],
   ])
   expect(blocked.report.failures[0].ratio).toBeLessThan(2)
   expect(blocked.stderr).toContain('FAIL A light @360 text (text)')
   expect(blocked.stderr).toContain('refused: round.json not written')
 
+  const muted = {
+    element: 'muted',
+    mode: 'light',
+    kind: 'text',
+    route: 'TD-490',
+    reason: 'muted token on light base',
+  } as const
+  const partial = await build(draft(sb.url, { knownDefects: [muted] }))
+  expect(partial.code).toBe(3)
+  expect(partial.report.failures.map((f) => f.testId)).toEqual(['rule', 'tip'])
+  expect(partial.report.knownDefects.map((d) => d.testId)).toEqual(['muted'])
+
   const declared = await build(
     draft(sb.url, {
       knownDefects: [
-        { element: 'muted', mode: 'light', route: 'TD-490', reason: 'muted token on light base' },
-        { element: 'rule', kind: 'non-text', route: 'component', reason: 'own border colour' },
+        muted,
+        { element: 'tip', mode: 'light', kind: 'text', route: 'TD-490', reason: 'same token' },
+        {
+          element: 'rule',
+          mode: 'light',
+          kind: 'non-text',
+          route: 'component',
+          reason: 'own border colour',
+        },
       ],
     })
   )
@@ -105,6 +129,7 @@ test('a light-mode miss blocks round.json; the same misses declared with a route
   expect(declared.report.knownDefects.map((d) => [d.testId, d.route])).toEqual([
     ['muted', 'TD-490'],
     ['rule', 'component'],
+    ['tip', 'TD-490'],
   ])
   expect(declared.stderr).toContain('KNOWN TD-490 A light @360 text')
 })

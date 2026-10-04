@@ -90,7 +90,7 @@ export function collectFrame(rootSelector: string): FrameSamples {
   function selectorOf(el: Element): string {
     const parts: string[] = []
     for (let e: Element | null = el; e && parts.length < 5; e = e.parentElement) {
-      if (e.matches(rootSelector)) break
+      if (e === document.body || e.matches(rootSelector)) break
       const testId = e.getAttribute('data-testid')
       if (testId) {
         parts.unshift(`[data-testid="${testId}"]`)
@@ -126,7 +126,7 @@ export function collectFrame(rootSelector: string): FrameSamples {
   }
 
   function base(el: Element, role: SampleRole, plane: Element, colors: Rgba[]): RawSample {
-    const testId = el.closest('[data-testid]')?.getAttribute('data-testid') ?? undefined
+    const testId = el.getAttribute('data-testid') ?? undefined
     return {
       role,
       node: nodeOf(el),
@@ -221,10 +221,24 @@ export function collectFrame(rootSelector: string): FrameSamples {
     return [textSample(el, style), marks].filter((s): s is RawSample => s !== null)
   }
 
-  const root = document.querySelector(rootSelector)
+  /** What the story rendered: its root's subtree, plus what it portalled into <body>. */
+  function storyElements(): Element[] {
+    const root = document.querySelector(rootSelector)
+    if (!root) return []
+    const portals = [...document.body.children].filter(
+      (el) =>
+        el !== root &&
+        el.id !== 'storybook-docs' &&
+        ![...el.classList].some((c) => c.startsWith('sb-')) &&
+        !['SCRIPT', 'STYLE', 'NOSCRIPT', 'TEMPLATE', 'LINK'].includes(el.tagName)
+    )
+    const subtree = (el: Element) => [...el.querySelectorAll('*')]
+    return [...subtree(root), ...portals.flatMap((p) => [p, ...subtree(p)])]
+  }
+
   const html = document.documentElement
   const dark = getComputedStyle(html).colorScheme.split(' ').includes('dark')
   const light = getComputedStyle(html).colorScheme.split(' ').includes('light')
-  const samples = root ? [...root.querySelectorAll('*')].flatMap(samplesOf) : []
+  const samples = storyElements().flatMap(samplesOf)
   return { base: dark && !light ? [18, 18, 18, 1] : [255, 255, 255, 1], nodes, samples }
 }

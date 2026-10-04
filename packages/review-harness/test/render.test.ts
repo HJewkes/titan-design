@@ -182,3 +182,14 @@ describe('a 60-frame sectioned image round', () => {
     expect(html(m)).toContain('<kbd>[</kbd> <kbd>]</kbd> section')
   })
 })
+
+describe('a round served without the contrast gate', () => {
+  it('shows the override reason as a banner, and none when the gate passed', () => {
+    const overridden = renderToStaticMarkup(
+      createElement(App, { manifest: manifest(), manifestSha256: SHA, contrastOverride: 'fixture' })
+    )
+    expect(overridden).toContain('Contrast was not gated for this round: fixture')
+    expect(overridden.indexOf('contrast-override')).toBeLessThan(overridden.indexOf('page-head'))
+    expect(html(manifest())).not.toContain('contrast-override')
+  })
+})

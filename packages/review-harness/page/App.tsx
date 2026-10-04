@@ -34,6 +34,8 @@ import { VariantCard } from './VariantCard.tsx'
 interface AppProps {
   manifest: Manifest
   manifestSha256: string
+  /** Set when the round is served without a passing contrast gate. */
+  contrastOverride?: string
 }
 
 async function postFeedback(body: unknown): Promise<string[]> {
@@ -361,7 +363,15 @@ function useDraftBackup(storage: DraftStorage | null, manifestSha256: string, st
   }, [storage, manifestSha256, draft, screen])
 }
 
-export function App({ manifest, manifestSha256 }: AppProps) {
+function ContrastOverrideBanner({ reason }: { reason: string }) {
+  return (
+    <p className="contrast-override" role="alert" data-testid="contrast-override">
+      Contrast was not gated for this round: {reason}
+    </p>
+  )
+}
+
+export function App({ manifest, manifestSha256, contrastOverride }: AppProps) {
   const reducer = useMemo(() => createReducer(manifest), [manifest])
   const storage = useMemo(() => browserStorage(), [])
   const [state, dispatch] = useReducer(reducer, manifest, (m) =>
@@ -388,6 +398,7 @@ export function App({ manifest, manifestSha256 }: AppProps) {
     )
   return (
     <>
+      {contrastOverride && <ContrastOverrideBanner reason={contrastOverride} />}
       <Header manifest={manifest} state={state} dispatch={dispatch} hitTesting={hitTesting} />
       <div hidden={state.screen !== 'form'}>
         <Form manifest={manifest} state={state} dispatch={dispatch} onHitTesting={setHitTesting} />

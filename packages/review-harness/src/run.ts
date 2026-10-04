@@ -1,6 +1,6 @@
 import { dirname, resolve } from 'node:path'
 import { parseArgs } from 'node:util'
-import { buildRound, contrastWarning, type BuildIo } from './build.ts'
+import { buildRound, contrastProblem, type BuildIo } from './build.ts'
 import { calibrationReport, readFeedbackFiles } from './calibration.ts'
 import { exampleManifest, sectionedExampleManifest } from './example.ts'
 import {
@@ -39,6 +39,8 @@ recommendation: per round, overall, and by confidence band (<0.5, 0.5-0.75, >=0.
   --port <n>         Review page port (default: a free one)
   --no-open          Print the page url instead of opening the browser
   --no-capture       Skip the post-submit PNGs
+  --contrast-override <reason>
+                     Serve a round with no passing contrast.json; the page shows the reason
   --example          Print a sample manifest built from Lab/Decisions stories
   --sections         With --example, print the question-first sectioned shape
   --help             Print this help`
@@ -60,6 +62,7 @@ function parseCli(argv: string[]) {
       port: { type: 'string' },
       'no-open': { type: 'boolean' },
       'no-capture': { type: 'boolean' },
+      'contrast-override': { type: 'string' },
       example: { type: 'boolean' },
       sections: { type: 'boolean' },
       help: { type: 'boolean' },
@@ -78,18 +81,37 @@ async function captureQuietly(io: CliIo, round: LoadedRound, outDir: string): Pr
   }
 }
 
+/** Serving refuses a round the gate did not pass, unless an override gives its reason. */
+async function contrastGate(
+  manifestPath: string,
+  manifestSha256: string,
+  parsed: Parsed,
+  io: CliIo
+): Promise<string | undefined> {
+  const problem = await contrastProblem(manifestPath, manifestSha256)
+  const reason = parsed.values['contrast-override']?.trim()
+  if (parsed.values['contrast-override'] !== undefined && !reason)
+    throw new ReviewError('--contrast-override needs a reason the owner can read')
+  if (!problem) return reason || undefined
+  if (!reason)
+    throw new ReviewError(
+      `${problem}. Run titan-review build <draft.json>, or pass --contrast-override "<reason>"`
+    )
+  io.stderr(`titan-review: contrast not gated (${problem}); serving with override: ${reason}`)
+  return reason
+}
+
 async function review(parsed: Parsed, io: CliIo): Promise<number> {
   const manifestPath = resolve(parsed.positionals[0])
   const round = await loadRound(manifestPath, parsed.values.storybook)
   await assertStoriesExist(round)
-  const unmeasured = await contrastWarning(manifestPath, round.manifestSha256)
-  if (unmeasured) io.stderr(`titan-review: warning: ${unmeasured}`)
+  const contrastOverride = await contrastGate(manifestPath, round.manifestSha256, parsed, io)
   const onReady = (url: string) => {
     io.stderr(`titan-review: ${round.manifest.unit} round ${round.manifest.round} at ${url}`)
     if (!parsed.values['no-open']) io.openBrowser(url)
   }
   const port = parsed.values.port ? Number(parsed.values.port) : io.port
-  const feedback = await collectFeedback(round, { ...io, port, onReady })
+  const feedback = await collectFeedback(round, { ...io, port, onReady, contrastOverride })
   if (!feedback) return EXIT_INTERRUPTED
   const outDir = resolve(parsed.values.out ?? dirname(manifestPath))
   io.stderr(`wrote ${await writeFeedback(outDir, feedback)}`)

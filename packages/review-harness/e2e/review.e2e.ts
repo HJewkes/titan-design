@@ -73,7 +73,16 @@ function sectionedRound(storybookUrl: string): ManifestInput {
 }
 
 function startCli(manifestPath: string, outDir: string, ...flags: string[]) {
-  const child = spawn('node', [CLI, manifestPath, '--no-open', '--out', outDir, ...flags])
+  const child = spawn('node', [
+    CLI,
+    manifestPath,
+    '--no-open',
+    '--out',
+    outDir,
+    '--contrast-override',
+    'e2e fixture round',
+    ...flags,
+  ])
   let stdout = ''
   child.stdout.on('data', (c: Buffer) => (stdout += c.toString()))
   const url = new Promise<string>((resolve) => {

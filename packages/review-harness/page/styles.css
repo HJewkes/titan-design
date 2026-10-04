@@ -48,6 +48,15 @@ kbd {
   color: var(--color-text-secondary);
 }
 
+.contrast-override {
+  margin: 0 0 16px;
+  padding: 8px 12px;
+  border: 2px solid var(--color-status-warning);
+  background: var(--color-status-warning-subtle);
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
 .page-head {
   display: grid;
   gap: var(--space-stack-sm);
