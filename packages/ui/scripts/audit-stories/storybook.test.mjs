@@ -1,24 +1,39 @@
 // @vitest-environment node
-import { afterEach, describe, expect, it } from 'vitest'
+/* global process, setTimeout */
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { ESLint } from 'eslint'
 import { spawn } from 'node:child_process'
+import { EventEmitter } from 'node:events'
 import { readFileSync } from 'node:fs'
 import { createServer } from 'node:http'
-import { dirname, join } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
   EXIT_INTERRUPT,
   EXIT_USAGE,
   StorybookError,
+  assertListenerInGroup,
   assertLoopbackUrl,
   attachStorybook,
+  isGroupAlive,
   parseLauncherPort,
+  pgidOf,
   startStorybook,
+  stopGroup,
+  stopOnSignals,
 } from './storybook.mjs'
 
 const here = dirname(fileURLToPath(import.meta.url))
+const PKG_ROOT = resolve(here, '../..')
 const FAKE_LAUNCHER = join(here, 'fixtures/fake-launcher.mjs')
 const DRIVER = join(here, 'fixtures/start-and-wait.mjs')
 const FAKE_IMPORT_PATH = './src/components/ui/fake-button/FakeButton.stories.tsx'
+const OWN_FILES = [
+  'scripts/audit-stories/storybook.mjs',
+  'scripts/audit-stories/storybook.test.mjs',
+  'scripts/audit-stories/fixtures/fake-launcher.mjs',
+  'scripts/audit-stories/fixtures/start-and-wait.mjs',
+]
 
 // Every group and PID a test starts, killed in afterEach even when the test failed.
 const groups = new Set()
@@ -85,6 +100,26 @@ const firstLineMatching = (child, pattern) =>
 const exitCodeOf = (child) =>
   new Promise((done) => child.once('exit', (code, signal) => done(code ?? signal)))
 
+async function startDriver(args = []) {
+  const driver = spawnTracked([DRIVER, ...args])
+  const exited = exitCodeOf(driver)
+  const match = await firstLineMatching(driver, /ready (\d+) (\d+)/)
+  const [launcherPid, serverPid] = match.slice(1).map(Number)
+  groups.add(launcherPid)
+  pids.add(serverPid)
+  return { driver, exited, launcherPid, serverPid }
+}
+
+describe('lint', () => {
+  it('lints clean under the package ESLint config', async () => {
+    const results = await new ESLint({ cwd: PKG_ROOT }).lintFiles(OWN_FILES)
+    const problems = results.flatMap((r) =>
+      r.messages.map((m) => `${r.filePath}:${m.line} ${m.message}`)
+    )
+    expect(problems).toEqual([])
+  }, 60_000)
+})
+
 describe('parseLauncherPort', () => {
   it('reads the port from the isolated launcher line', () => {
     expect(parseLauncherPort('  http://127.0.0.1:6123')).toBe(6123)
@@ -98,6 +133,23 @@ describe('parseLauncherPort', () => {
   it('matches the line the real launcher prints for an isolated launch', () => {
     const source = readFileSync(join(here, '../storybook-launch.mjs'), 'utf8')
     expect(source).toContain('console.log(`  http://127.0.0.1:${port}\\n`)')
+  })
+})
+
+describe('process group guard', () => {
+  const ownGroup = pgidOf(process.pid)
+
+  it.each([
+    ['0', 0],
+    ['null', null],
+    ['1 (every process)', 1],
+    ['-1', -1],
+    ['a fraction', 2.5],
+    ['our own pid', process.pid],
+    ['our own group', ownGroup],
+  ])('refuses to signal %s', async (_, pgid) => {
+    expect(() => isGroupAlive(pgid)).toThrow(StorybookError)
+    await expect(stopGroup(pgid)).rejects.toThrow(/Refusing to signal process group/)
   })
 })
 
@@ -140,6 +192,43 @@ describe('startStorybook', () => {
     await expect(start).rejects.toThrow(/does not list: \.\/src\/Missing\.stories\.tsx/)
     expect(isAlive(pgid)).toBe(false)
   })
+
+  it("refuses another launcher's server when two launches print the same port", async () => {
+    const winner = await startFake()
+    let loserPgid
+    const loser = startFake(['--port', String(winner.port), '--idle'], {
+      onSpawn: (p) => groups.add((loserPgid = p)),
+    })
+
+    await expect(loser).rejects.toMatchObject({
+      exitCode: EXIT_USAGE,
+      message: expect.stringMatching(/is served by pid \d+, not by launcher group/),
+    })
+    expect(isAlive(loserPgid)).toBe(false)
+    expect(isGroupAlive(winner.pid)).toBe(true)
+    await winner.stop()
+  })
+
+  it('leaves no timer behind, so a caller exits promptly after stop', async () => {
+    const started = Date.now()
+    const { exited } = await startDriver(['--stop-and-return'])
+
+    expect(await exited).toBe(0)
+    expect(Date.now() - started).toBeLessThan(10_000)
+  }, 20_000)
+})
+
+describe('assertListenerInGroup', () => {
+  it('refuses a port with no listener', () => {
+    expect(() => assertListenerInGroup(6123, 4242, { listenersOn: () => [] })).toThrow(
+      /served by no listener/
+    )
+  })
+
+  it('accepts a port whose every listener is in the group', () => {
+    const ownership = { listenersOn: () => [10, 11], groupOf: () => 4242 }
+    expect(() => assertListenerInGroup(6123, 4242, ownership)).not.toThrow()
+  })
 })
 
 describe('stop', () => {
@@ -165,23 +254,78 @@ describe('stop', () => {
 
     expect(isAlive(serverPid)).toBe(false)
   })
+
+  it('is idempotent and latches once the group is gone', async () => {
+    const server = await startFake()
+
+    const first = server.stop()
+    expect(server.stop()).toBe(first)
+    await first
+
+    expect(server.stopped).toBe(true)
+  })
 })
 
 describe('stopOnSignals', () => {
   it('stops the group on SIGINT before the process exits 130', async () => {
-    const driver = spawnTracked([DRIVER])
-    const [, launcherPid, serverPid] = (await firstLineMatching(driver, /ready (\d+) (\d+)/)).map(
-      Number
-    )
-    groups.add(launcherPid)
-    pids.add(serverPid)
-    const exited = exitCodeOf(driver)
+    const { driver, exited, launcherPid, serverPid } = await startDriver()
 
     driver.kill('SIGINT')
 
     expect(await exited).toBe(EXIT_INTERRUPT)
     expect(isAlive(launcherPid)).toBe(false)
     expect(isAlive(serverPid)).toBe(false)
+  })
+
+  it('a second Ctrl-C during the stop still stops the group before exit', async () => {
+    const { driver, exited, launcherPid, serverPid } = await startDriver(['--ignore-term'])
+
+    driver.kill('SIGINT')
+    await new Promise((ok) => setTimeout(ok, 200))
+    driver.kill('SIGINT')
+
+    expect(await exited).toBe(EXIT_INTERRUPT)
+    expect(isAlive(launcherPid)).toBe(false)
+    expect(isAlive(serverPid)).toBe(false)
+  })
+
+  it('removes its handlers after a normal stop and never signals the group again', async () => {
+    const proc = new EventEmitter()
+    const kill = vi.fn()
+    const server = await startFake()
+    stopOnSignals(server, { proc, kill, exit: vi.fn() })
+    expect(proc.listenerCount('exit')).toBe(1)
+
+    await server.stop()
+    await server.whenStopped
+    proc.emit('exit')
+
+    expect(kill).not.toHaveBeenCalled()
+    expect(proc.listenerCount('exit')).toBe(0)
+    expect(proc.listenerCount('SIGINT')).toBe(0)
+  })
+
+  it('never signals a latched group on exit, even before its handlers are removed', () => {
+    const proc = new EventEmitter()
+    const kill = vi.fn()
+    const latched = { pid: 4242, stopped: true, whenStopped: new Promise(() => {}), stop: vi.fn() }
+    stopOnSignals(latched, { proc, kill, exit: vi.fn() })
+
+    proc.emit('exit')
+
+    expect(kill).not.toHaveBeenCalled()
+  })
+
+  it('SIGKILLs the group on exit while it is still running', async () => {
+    const proc = new EventEmitter()
+    const kill = vi.fn()
+    const server = await startFake()
+    stopOnSignals(server, { proc, kill, exit: vi.fn() })
+
+    proc.emit('exit')
+
+    expect(kill).toHaveBeenCalledWith(server.pid, 'SIGKILL')
+    await server.stop()
   })
 })
 
@@ -190,6 +334,7 @@ describe('--url', () => {
     'http://example.com:6006',
     'http://10.0.0.5:6006',
     'http://0.0.0.0:6006',
+    'https://127.0.0.1:6006',
     'ftp://127.0.0.1:6006',
     'not a url',
   ])('refuses %s as a usage error', (raw) => {
@@ -211,7 +356,13 @@ describe('--url', () => {
   it('refuses a non-loopback host before making any request', async () => {
     await expect(attachStorybook('http://192.0.2.1:6006')).rejects.toMatchObject({
       exitCode: EXIT_USAGE,
-      message: expect.stringMatching(/loopback host, not 192\.0\.2\.1:6006/),
+      message: expect.stringMatching(/loopback host, not http:\/\/192\.0\.2\.1:6006/),
+    })
+  })
+
+  it('refuses https on loopback as a usage error, not a TypeError', async () => {
+    await expect(attachStorybook('https://127.0.0.1:6006')).rejects.toMatchObject({
+      exitCode: EXIT_USAGE,
     })
   })
 

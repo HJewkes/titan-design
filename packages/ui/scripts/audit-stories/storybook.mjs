@@ -3,19 +3,22 @@
  *
  * `startStorybook` spawns `storybook-launch.mjs --isolated` detached, so the launcher and the
  * Storybook it spawns (a non-detached child with inherited stdio) share one process group whose
- * id is the launcher's PID. The port comes from the launcher's own `http://127.0.0.1:P` line, and
- * readiness is our own child answering `/index.json` on that port while it is still alive. That
- * pairing is the provenance check: `importPath`s are relative and identical across worktrees, so
- * an index alone cannot prove which tree is serving.
+ * id is the launcher's PID. The port comes from the launcher's own `http://127.0.0.1:P` line.
+ * Ready means `/index.json` answers on that port, the launcher is alive, and the listener on the
+ * port is in our group. The last check matters: the launcher prints its port before Storybook
+ * binds, so two concurrent launches can print the same port, and the loser would otherwise accept
+ * the winner's index while its own launcher is still alive.
  *
  * `attachStorybook` reuses a server the caller already runs (`--url`). It refuses anything off
  * loopback and stops nothing.
  */
-import { spawn } from 'node:child_process'
+/* global process, URL, setTimeout, clearTimeout */
+import { execFileSync, spawn } from 'node:child_process'
 import { get } from 'node:http'
 import { constants } from 'node:os'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { resolveLsof } from '../storybook-launch.mjs'
 
 export const EXIT_USAGE = 64
 export const EXIT_INTERRUPT = 130
@@ -37,7 +40,7 @@ export function parseLauncherPort(line) {
   return match ? Number(match[1]) : null
 }
 
-/** The parsed URL when it is http(s) on a loopback host; throws a usage error otherwise. */
+/** The parsed URL when it is http on a loopback host; throws a usage error otherwise. */
 export function assertLoopbackUrl(raw) {
   let url
   try {
@@ -46,14 +49,41 @@ export function assertLoopbackUrl(raw) {
     throw new StorybookError(`--url is not a URL: ${raw}`)
   }
   const loopback = LOOPBACK_HOSTS.has(url.hostname) || /^127(\.\d{1,3}){3}$/.test(url.hostname)
-  if (!['http:', 'https:'].includes(url.protocol) || !loopback) {
-    throw new StorybookError(`--url must be http on a loopback host, not ${url.host}`)
+  if (url.protocol !== 'http:' || !loopback) {
+    throw new StorybookError(
+      `--url must be http on a loopback host, not ${url.protocol}//${url.host}`
+    )
   }
   return url
 }
 
+/** The process group of `pid`, or `null` when the process is gone. */
+export function pgidOf(pid) {
+  try {
+    const out = execFileSync('ps', ['-o', 'pgid=', '-p', String(pid)], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    })
+    return Number(out.trim()) || null
+  } catch {
+    return null
+  }
+}
+
+let ownGroup
+const ownPgid = () => (ownGroup ??= pgidOf(process.pid))
+
+/** Throws unless `pgid` names a group we may signal: never 0, 1, ourselves or our own group. */
+export function assertSignallableGroup(pgid) {
+  const valid = Number.isInteger(pgid) && pgid > 1 && pgid !== process.pid
+  if (!valid || pgid === ownPgid()) {
+    throw new StorybookError(`Refusing to signal process group ${pgid}`)
+  }
+}
+
 /** True while any process in the group still exists. */
 export function isGroupAlive(pgid) {
+  assertSignallableGroup(pgid)
   try {
     process.kill(-pgid, 0)
     return true
@@ -63,6 +93,7 @@ export function isGroupAlive(pgid) {
 }
 
 function signalGroup(pgid, signal) {
+  assertSignallableGroup(pgid)
   try {
     process.kill(-pgid, signal)
   } catch (err) {
@@ -70,7 +101,14 @@ function signalGroup(pgid, signal) {
   }
 }
 
-const delay = (ms) => new Promise((done) => setTimeout(done, ms))
+/** A cancellable delay, so a won race leaves no timer holding the event loop open. */
+function timer(ms) {
+  let id
+  const promise = new Promise((done) => (id = setTimeout(done, ms)))
+  return { promise, cancel: () => clearTimeout(id) }
+}
+
+const delay = (ms) => timer(ms).promise
 
 async function waitForGroupExit(pgid, timeoutMs) {
   const deadline = Date.now() + timeoutMs
@@ -81,12 +119,37 @@ async function waitForGroupExit(pgid, timeoutMs) {
   return !isGroupAlive(pgid)
 }
 
-/** SIGTERM to the whole group, SIGKILL after `graceMs` if anything in it survives. */
+/**
+ * SIGTERM to the whole group, SIGKILL after `graceMs` if anything in it survives.
+ * Resolves `true` once the group is confirmed gone.
+ */
 export async function stopGroup(pgid, { graceMs = 5000 } = {}) {
   signalGroup(pgid, 'SIGTERM')
-  if (await waitForGroupExit(pgid, graceMs)) return
+  if (await waitForGroupExit(pgid, graceMs)) return true
   signalGroup(pgid, 'SIGKILL')
-  await waitForGroupExit(pgid, graceMs)
+  return waitForGroupExit(pgid, graceMs)
+}
+
+/**
+ * An idempotent stop for one group. `stopped` latches once the group is confirmed gone, after
+ * which nothing signals the pgid again, since the OS may have reused it.
+ */
+function groupStopper(pgid, graceMs) {
+  let stopping = null
+  let markStopped
+  const state = {
+    stopped: false,
+    whenStopped: new Promise((done) => (markStopped = done)),
+    stop() {
+      stopping ??= stopGroup(pgid, { graceMs }).then((gone) => {
+        if (!gone) throw new StorybookError(`Process group ${pgid} survived SIGKILL`)
+        state.stopped = true
+        markStopped()
+      })
+      return stopping
+    },
+  }
+  return state
 }
 
 /** GET a URL and parse JSON; resolves `null` on any failure so callers can poll. */
@@ -122,7 +185,40 @@ export function assertIndexLists(index, importPaths) {
   }
 }
 
-/** Collects launcher output: the last lines for error messages, and the first printed port. */
+/** PIDs listening on a TCP port, from lsof. */
+export function listenerPids(port) {
+  const lsof = resolveLsof()
+  if (!lsof) throw new StorybookError(`lsof not found, so the owner of port ${port} is unproven`)
+  try {
+    const out = execFileSync(lsof, ['-nP', `-iTCP:${port}`, '-sTCP:LISTEN', '-Fp'], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    })
+    return out
+      .split('\n')
+      .filter((l) => l.startsWith('p'))
+      .map((l) => Number(l.slice(1)))
+  } catch (err) {
+    if (err.status === 1) return []
+    throw new StorybookError(`lsof failed on port ${port}: ${err.message}`)
+  }
+}
+
+/** Throws unless the port has a listener and every listener belongs to process group `pgid`. */
+export function assertListenerInGroup(
+  port,
+  pgid,
+  { listenersOn = listenerPids, groupOf = pgidOf } = {}
+) {
+  const pids = listenersOn(port)
+  const strangers = pids.filter((pid) => groupOf(pid) !== pgid)
+  if (pids.length === 0 || strangers.length > 0) {
+    const who = strangers.length ? `pid ${strangers.join(', ')}` : 'no listener'
+    throw new StorybookError(`Port ${port} is served by ${who}, not by launcher group ${pgid}`)
+  }
+}
+
+/** Collects launcher output: the last lines for error messages, and each line for listeners. */
 function watchOutput(child, onLine) {
   const tail = []
   let pending = ''
@@ -140,9 +236,11 @@ function watchOutput(child, onLine) {
   return () => tail.join('\n')
 }
 
+const hasExited = (child) => child.exitCode !== null || child.signalCode !== null
+
 function launcherExit(child) {
   return new Promise((done) => {
-    if (child.exitCode !== null || child.signalCode !== null) return done(child.exitCode)
+    if (hasExited(child)) return done(child.exitCode ?? child.signalCode)
     child.once('exit', (code, signal) => done(code ?? signal))
   })
 }
@@ -168,6 +266,15 @@ function waitForPort(child, readLine) {
   })
 }
 
+async function waitForPortWithin(child, readLine, timeoutMs) {
+  const limit = timer(timeoutMs)
+  try {
+    return await Promise.race([waitForPort(child, readLine), limit.promise])
+  } finally {
+    limit.cancel()
+  }
+}
+
 function spawnLauncher({ launcher, args, cwd }) {
   const child = spawn(process.execPath, [launcher, ...args], {
     cwd,
@@ -178,25 +285,26 @@ function spawnLauncher({ launcher, args, cwd }) {
   return child
 }
 
-/** Waits for the printed port, then for `/index.json` from the still-living launcher. */
-async function awaitReady(child, outputTail, readLine, { readyTimeoutMs, pollMs }) {
+/** Waits for the printed port, then for `/index.json` served by our own living group. */
+async function awaitReady(child, outputTail, readLine, { readyTimeoutMs, pollMs, ownership }) {
   const deadline = Date.now() + readyTimeoutMs
   const exited = launcherExit(child)
-  const port = await Promise.race([waitForPort(child, readLine), delay(readyTimeoutMs)])
+  const port = await waitForPortWithin(child, readLine, readyTimeoutMs)
   const fail = (why) => new StorybookError(`${why}\n${outputTail()}`)
   if (port == null) throw fail('Launcher printed no http://127.0.0.1:<port> line')
   const result = await pollIndex(port, { exited, deadline, pollMs })
   if (result.timedOut) throw fail(`Storybook on ${port} did not serve /index.json in time`)
-  if ('exited' in result || child.exitCode !== null || child.signalCode !== null) {
+  if ('exited' in result || hasExited(child)) {
     throw fail(`Launcher exited (${result.exited}) before /index.json answered on ${port}`)
   }
+  assertListenerInGroup(port, child.pid, ownership)
   return { port, index: result.index }
 }
 
 /**
  * Starts an isolated Storybook and resolves once it serves `/index.json`. `onSpawn` receives
  * the launcher PID (the group id) as soon as it exists. On any failure the group is stopped
- * before the error propagates.
+ * before the error propagates. `ownership` overrides the listener lookup, for tests only.
  */
 export async function startStorybook({
   launcher = DEFAULT_LAUNCHER,
@@ -207,22 +315,26 @@ export async function startStorybook({
   pollMs = 250,
   graceMs = 5000,
   onSpawn = () => {},
+  ownership,
 } = {}) {
   const child = spawnLauncher({ launcher, args, cwd })
   const pgid = child.pid
   onSpawn(pgid)
+  const stopper = groupStopper(pgid, graceMs)
   const listeners = []
-  const outputTail = watchOutput(child, (line) => listeners.forEach((fn) => fn(line)))
-  const stop = () => stopGroup(pgid, { graceMs })
+  const output = watchOutput(child, (line) => listeners.forEach((fn) => fn(line)))
+  const readLine = (fn) => listeners.push(fn)
   try {
-    const { port, index } = await awaitReady(child, outputTail, (fn) => listeners.push(fn), {
-      readyTimeoutMs,
-      pollMs,
+    const ready = await awaitReady(child, output, readLine, { readyTimeoutMs, pollMs, ownership })
+    assertIndexLists(ready.index, expectImportPaths)
+    return Object.assign(stopper, {
+      ...ready,
+      url: `http://127.0.0.1:${ready.port}`,
+      pid: pgid,
+      output,
     })
-    assertIndexLists(index, expectImportPaths)
-    return { url: `http://127.0.0.1:${port}`, port, pid: pgid, index, output: outputTail, stop }
   } catch (err) {
-    await stop()
+    await stopper.stop()
     throw err
   }
 }
@@ -234,26 +346,45 @@ export async function attachStorybook(raw, { expectImportPaths = [] } = {}) {
   const index = await getJson(`${base}/index.json`)
   if (!index) throw new StorybookError(`No Storybook index at ${base}/index.json`)
   assertIndexLists(index, expectImportPaths)
-  return { url: base, port: Number(url.port), pid: null, index, stop: async () => {} }
+  return {
+    url: base,
+    port: Number(url.port),
+    pid: null,
+    index,
+    stopped: true,
+    whenStopped: Promise.resolve(),
+    stop: async () => {},
+  }
 }
 
 /**
- * Stops the server on SIGINT, SIGTERM and SIGHUP before exiting 128 + the signal number
- * (130 for SIGINT), and SIGKILLs the group synchronously if the process exits any other way.
- * Returns a function that removes the handlers.
+ * Stops the server on SIGINT, SIGTERM and SIGHUP, then exits 128 + the signal number (130 for
+ * SIGINT). A repeated signal joins the stop already running instead of killing us mid-stop. If
+ * the process exits any other way before the group is gone, the group gets a synchronous SIGKILL.
+ * Every handler is removed once the group is confirmed gone. Returns the remover.
  */
-export function stopOnSignals(server, { exit = (code) => process.exit(code) } = {}) {
+export function stopOnSignals(
+  server,
+  { proc = process, exit = (code) => process.exit(code), kill = signalGroup } = {}
+) {
   const onSignal = async (signal) => {
-    await server.stop()
+    await server.stop().catch(() => {})
     exit(128 + constants.signals[signal])
   }
   const onExit = () => {
-    if (server.pid != null) signalGroup(server.pid, 'SIGKILL')
+    if (server.stopped || server.pid == null) return
+    try {
+      kill(server.pid, 'SIGKILL')
+    } catch {
+      // Exiting anyway; there is no one left to report to.
+    }
   }
-  STOP_SIGNALS.forEach((s) => process.once(s, onSignal))
-  process.once('exit', onExit)
-  return () => {
-    STOP_SIGNALS.forEach((s) => process.off(s, onSignal))
-    process.off('exit', onExit)
+  STOP_SIGNALS.forEach((s) => proc.on(s, onSignal))
+  proc.on('exit', onExit)
+  const remove = () => {
+    STOP_SIGNALS.forEach((s) => proc.off(s, onSignal))
+    proc.off('exit', onExit)
   }
+  server.whenStopped.then(remove)
+  return remove
 }
