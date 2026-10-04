@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
 
 import {
+  GoalMilestoneSummary,
   MilestoneFacts,
   MilestoneHero,
   MilestoneWeekStrip,
@@ -40,5 +41,18 @@ describe('GoalMilestoneSummary parts', () => {
     expect(facts).toHaveTextContent('Best 8 x 100 lb')
     expect(facts).toHaveTextContent('Goal 8 x 105 lb')
     expect(screen.getAllByTestId(/^goal-milestone-week-\d+$/)).toHaveLength(6)
+  })
+
+  it('hides the measuring copy so each fact is read once', () => {
+    render(<GoalMilestoneSummary {...props} />)
+
+    const measure = screen.getByTestId('goal-milestone-facts-measure')
+    expect(measure).toHaveAttribute('aria-hidden', 'true')
+    for (const fact of ['Week 4 of 6', 'Best', '8 x 100 lb', 'Goal', '8 x 105 lb']) {
+      const visible = screen
+        .getAllByText(fact)
+        .filter((node) => !node.closest('[aria-hidden="true"]'))
+      expect(visible).toHaveLength(1)
+    }
   })
 })
