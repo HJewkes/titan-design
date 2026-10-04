@@ -31,12 +31,13 @@ export function parseUndocumented(text) {
   const names = new Set()
   let owner = ''
   lines.forEach((line, index) => {
+    // Members belong to the last declaration, documented or not.
+    owner = DECLARATION.exec(line)?.[1] ?? owner
     const marker = MARKER.exec(line)
     if (!marker) return
     const code = nextCodeLine(lines, index + 1)
     if (marker[1] === '') {
-      owner = DECLARATION.exec(code)?.[1] ?? code.trim()
-      names.add(owner)
+      names.add(DECLARATION.exec(code)?.[1] ?? code.trim())
       return
     }
     names.add(`${owner}.${MEMBER.exec(code)?.[1] ?? code.trim()}`)

@@ -37,6 +37,19 @@ describe('parseUndocumented', () => {
   })
 })
 
+describe('parseUndocumented owners', () => {
+  it('attributes an undocumented member to its documented parent', () => {
+    const report = [
+      '// @public',
+      'export interface Card {',
+      '    // (undocumented)',
+      '    title: string;',
+      '}',
+    ].join('\n')
+    expect(parseUndocumented(report)).toEqual(['Card.title'])
+  })
+})
+
 describe('diffBaseline', () => {
   const current = { index: ['A', 'B'], pages: [] }
 
