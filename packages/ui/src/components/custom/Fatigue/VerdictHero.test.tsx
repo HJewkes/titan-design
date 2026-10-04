@@ -3,7 +3,12 @@ import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { VerdictHero } from './VerdictHero'
 import type { FatigueVerdict } from './fatigue-model'
-import { resolveAll, siblingSource, spacingClassesAt, spacingClassesOf } from '../../../test/spacing-resolver'
+import {
+  resolveAll,
+  siblingSource,
+  spacingClassesAt,
+  spacingClassesOf,
+} from '../../../test/spacing-resolver'
 
 const goodVerdict: FatigueVerdict = {
   state: 'good',

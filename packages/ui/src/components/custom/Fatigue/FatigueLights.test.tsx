@@ -59,7 +59,7 @@ describe('FatigueLights geometry resolves to the spacing tokens', () => {
   it.each([
     ['grouped', false, ['gap-4']],
     ['spread', true, []],
-  ] as const)('%s, the three lights carry %j', (_label, spread, classes) => {
+  ] as const)('spaces the %s lights by their gap', (_label, spread, classes) => {
     render(<FatigueLights dimensions={dims} spread={spread} />)
     expect(spacingClassesOf('fatigue-lights')).toEqual([...classes])
     expect(resolveAll(['gap-4'])).toEqual(['16px'])
