@@ -124,7 +124,11 @@ function compileExamples() {
     const found = syntactic.length > 0 ? syntactic : program.getSemanticDiagnostics(source)
     const file = path.relative(PKG_ROOT, source.fileName)
     for (const diagnostic of found) {
-      diagnostics.push({ file, syntactic: syntactic.length > 0, text: formatDiagnostic(diagnostic) })
+      diagnostics.push({
+        file,
+        syntactic: syntactic.length > 0,
+        text: formatDiagnostic(diagnostic),
+      })
     }
   }
   return { global, diagnostics }
@@ -135,7 +139,9 @@ function readBaseline() {
 }
 
 function printFileDiagnostics(diagnostics, file) {
-  const lines = diagnostics.filter((d) => d.file === file).map((d) => `  ${d.text}`)
+  const lines = diagnostics
+    .filter((d) => d.file === file)
+    .map((d) => `  ${d.text.replaceAll('\n', '\n    ')}`)
   process.stderr.write(`${lines.join('\n')}\n`)
 }
 

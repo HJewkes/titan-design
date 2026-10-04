@@ -122,11 +122,15 @@ describe('updatedBaseline', () => {
   })
 
   it('leaves the entry of a file with a syntax error untouched', () => {
-    const next = updatedBaseline({}, { [BROKEN]: 2 }, {
-      allowIncrease: false,
-      syntaxFiles: [BROKEN],
-      exists,
-    })
+    const next = updatedBaseline(
+      {},
+      { [BROKEN]: 2 },
+      {
+        allowIncrease: false,
+        syntaxFiles: [BROKEN],
+        exists,
+      }
+    )
 
     expect(next).toEqual({ [BROKEN]: 2 })
   })
