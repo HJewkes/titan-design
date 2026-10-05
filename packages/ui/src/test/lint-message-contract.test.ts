@@ -10,6 +10,7 @@ import path from 'node:path'
 import { createRequire } from 'node:module'
 import { Linter } from 'eslint'
 import fixOptions from '../../eslint-rules/fix-options'
+import truncationBaseline from '../../eslint-rules/no-truncation-baseline.json'
 import { compileClasses, uiRoot } from './tailwind-compile'
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const config = require('../../eslint.config.js') as Linter.Config[]
@@ -119,6 +120,14 @@ const FIXTURES: Record<string, Fixture> = {
   'titan/no-local-formatter:formatFn': {
     code: 'export const formatFoo = (v: number) => String(v)',
     filename: SHELL_FILE,
+  },
+  'titan/no-truncation:attribute': inShell('export const T = () => <Text numberOfLines={1} />'),
+  'titan/no-truncation:property': inShell('export const p = { maxLines: 1 }'),
+  'titan/no-truncation:className': inShell("export const c = 'truncate'"),
+  // A baselined file with its sites gone: the allowance it no longer spends is stale.
+  'titan/no-truncation:stale': {
+    code: 'export const nothingTruncates = 1',
+    filename: Object.keys(truncationBaseline)[0],
   },
   'titan/no-raw-device-data-in-chat:rawConstructor': {
     code: 'export function useDecoder() { return new Uint8Array(4) }',
