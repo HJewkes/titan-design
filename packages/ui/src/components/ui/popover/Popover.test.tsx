@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, act } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { Platform } from 'react-native'
 import { Popover, PopoverTrigger, PopoverContent, PopoverCloseButton } from './Popover'
 import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
 
@@ -339,12 +338,27 @@ describe('Popover', () => {
       expect(screen.getByText('Hover content')).toBeInTheDocument()
     })
 
-    it('renders the hover spacer as a View on iOS, not a raw div', () => {
-      const originalOS = Platform.OS
-      Platform.OS = 'ios'
-      try {
+    it('renders the hover spacer as a View, not a raw div', () => {
+      const { container } = render(
+        <Popover triggerMode="hover" isOpen>
+          <PopoverTrigger>
+            <button>Hover me</button>
+          </PopoverTrigger>
+          <PopoverContent>
+            <span>Hover content</span>
+          </PopoverContent>
+        </Popover>
+      )
+
+      expect(screen.getByText('Hover content')).toBeInTheDocument()
+      expect(container.querySelector('div:not([class])')).toBeNull()
+    })
+
+    it.each(['top', 'bottom', 'left', 'right'] as const)(
+      'offsets the %s hover spacer in pixels, which every supported React Native accepts',
+      (placement) => {
         const { container } = render(
-          <Popover triggerMode="hover" isOpen>
+          <Popover triggerMode="hover" isOpen placement={placement}>
             <PopoverTrigger>
               <button>Hover me</button>
             </PopoverTrigger>
@@ -354,12 +368,12 @@ describe('Popover', () => {
           </Popover>
         )
 
-        expect(screen.getByText('Hover content')).toBeInTheDocument()
-        expect(container.querySelector('div:not([class])')).toBeNull()
-      } finally {
-        Platform.OS = originalOS
+        const transforms = Array.from(container.querySelectorAll<HTMLElement>('[style]'))
+          .map((el) => el.style.transform)
+          .filter(Boolean)
+        expect(transforms).toEqual([expect.stringMatching(/^translate[XY]\(-?8px\)$/)])
       }
-    })
+    )
 
     it('still closes on click outside in hover mode', () => {
       render(

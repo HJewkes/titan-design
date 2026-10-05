@@ -145,10 +145,10 @@ export interface PopoverContentProps {
 }
 
 const SPACER_STYLES: Record<PopoverPlacement, ViewStyle> = {
-  top: { left: 0, right: 0, bottom: 0, height: 8, transform: [{ translateY: '100%' }] },
-  bottom: { left: 0, right: 0, top: 0, height: 8, transform: [{ translateY: '-100%' }] },
-  left: { top: 0, bottom: 0, right: 0, width: 8, transform: [{ translateX: '100%' }] },
-  right: { top: 0, bottom: 0, left: 0, width: 8, transform: [{ translateX: '-100%' }] },
+  top: { left: 0, right: 0, bottom: 0, height: 8, transform: [{ translateY: 8 }] },
+  bottom: { left: 0, right: 0, top: 0, height: 8, transform: [{ translateY: -8 }] },
+  left: { top: 0, bottom: 0, right: 0, width: 8, transform: [{ translateX: 8 }] },
+  right: { top: 0, bottom: 0, left: 0, width: 8, transform: [{ translateX: -8 }] },
 }
 
 /**
