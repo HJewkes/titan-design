@@ -117,25 +117,44 @@ test('arrowing down past the window keeps focus on screen and one tab stop', asy
   expect((await focused(page)).tabStops).toBe(1)
 })
 
-test('a wheel scroll leaves the focused row behind, and Down moves on from it', async ({
-  page,
-}) => {
-  await open(page, LARGE_STORY)
-  const labels = (await rowLabels(page)).map(String)
-  await page.getByRole('treeitem').first().focus()
+async function wheelAway(page: Page) {
   const scroller = page.getByRole('tree').locator('xpath=../..')
   const scrollTop = () => scroller.evaluate((el) => el.scrollTop)
-
   await scroller.hover()
   await page.mouse.wheel(0, 4_000)
   await expect.poll(scrollTop).toBeGreaterThan(2_000)
   await page.evaluate(
     () => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)))
   )
-
   expect(await scrollTop()).toBeGreaterThan(2_000)
-  await expect(page.getByRole('treeitem', { name: labels[0], exact: true })).toHaveCount(0)
+}
+
+test('after a wheel scroll, Tab out and Shift+Tab back return to the focused row', async ({
+  page,
+}) => {
+  await open(page, LARGE_STORY)
+  const labels = (await rowLabels(page)).map(String)
+  await page.getByRole('treeitem').first().focus()
+
+  await wheelAway(page)
+  await expectFocusOn(page, labels[0])
+  await page.keyboard.press('Tab')
+  await expect.poll(async () => (await focused(page)).label).toBe('After')
+  await page.keyboard.press('Shift+Tab')
+  await expectFocusOn(page, labels[0])
   await page.keyboard.press('ArrowDown')
   await expectFocusOn(page, labels[1])
-  expect(await scrollTop()).toBeLessThan(2_000)
+})
+
+test('a wheel scroll with no prior focus leaves the first row as the tab stop', async ({
+  page,
+}) => {
+  await open(page, LARGE_STORY)
+  const labels = (await rowLabels(page)).map(String)
+
+  await wheelAway(page)
+  await page.getByRole('button', { name: 'Before' }).focus()
+  await page.keyboard.press('Tab')
+
+  await expectFocusOn(page, labels[0])
 })
