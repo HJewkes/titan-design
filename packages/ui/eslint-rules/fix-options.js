@@ -124,7 +124,7 @@ function fromConfig(config, css = '') {
   }
 }
 
-const FORMATTER_MODULES = ['utils/number-format', 'utils/workout-format']
+const FORMATTER_MODULES = ['utils/number-format', 'utils/time-format', 'utils/workout-format']
 
 function loadFormatterExports() {
   return Object.fromEntries(

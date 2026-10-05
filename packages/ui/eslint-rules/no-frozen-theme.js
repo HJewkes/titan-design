@@ -30,6 +30,9 @@
  */
 
 const path = require('node:path')
+const { onSurfaceRoles } = require('./fix-options')
+
+const ROLE_LIST = onSurfaceRoles.map((role) => `\`${role}\``).join(', ')
 
 const FUNCTION_TYPES = new Set([
   'FunctionDeclaration',
@@ -89,10 +92,8 @@ module.exports = {
     },
     schema: [],
     messages: {
-      literalMode:
-        "getSemanticColors('{{mode}}') freezes the component to the {{mode}} palette. Resolve at render time instead: useOnSurfaceColor(role) for text, or getSemanticColors(useSurfaceMode()) for other tokens. See TOKENS.md §3.",
-      moduleScope:
-        'getSemanticColors() at module scope captures one palette at import time, so the component can never follow the theme. Move the call inside the component and read the mode from the nearest Surface (useSurfaceMode / useOnSurfaceColor). See TOKENS.md §3.',
+      literalMode: `getSemanticColors('{{mode}}') freezes the component to the {{mode}} palette. Resolve at render time instead: \`useOnSurfaceColor(role)\` for text (role is one of ${ROLE_LIST}), or getSemanticColors(useSurfaceMode()) for other tokens. See TOKENS.md §3.`,
+      moduleScope: `getSemanticColors() at module scope captures one palette at import time, so the component can never follow the theme. Move the call inside the component and read the mode from the nearest Surface: \`useOnSurfaceColor(role)\` for text (role is one of ${ROLE_LIST}), or getSemanticColors(useSurfaceMode()) for other tokens. See TOKENS.md §3.`,
     },
   },
 
