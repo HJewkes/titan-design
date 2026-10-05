@@ -380,6 +380,14 @@ pnpm build
   (unpublished, see AW-118) and sibling checkouts of every consumer in
   `scripts/arch.config.json`, neither of which a CI runner has; running it there
   would silently score every consumer as zero usage instead of failing loudly.
+  The per-component metrics (`exports`, `dependsOn`, `storyRefs`, `leak`, `tier`,
+  `libDependents`, `xproj`, `verdict`) are advisory for the same reason: they come from
+  the codewatch index and the consumer checkouts, a full regen takes about two minutes,
+  and the freshness test cannot recompute them. They can drift between barrel changes
+  without failing CI; regenerate with `pnpm arch:graph -- --reindex` in a commit of its
+  own so the diff stays reviewable.
+  `src/arch/component-catalog.json` derives from `arch-graph.json`, so run `pnpm catalog`
+  after every arch-graph regen and commit its output too.
 
 ## Storybook Configuration
 
