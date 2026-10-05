@@ -13,6 +13,7 @@ const noRawDeviceDataInChat = require('./eslint-rules/no-raw-device-data-in-chat
 const noRawSpacing = require('./eslint-rules/no-raw-spacing')
 const noUpwardTierImport = require('./eslint-rules/no-upward-tier-import')
 const noVarColorOpacity = require('./eslint-rules/no-var-color-opacity')
+const restrictedSyntax = require('./eslint-rules/restricted-syntax')
 const storyTitlePrefix = require('./eslint-rules/story-title-prefix')
 
 module.exports = tseslint.config(
@@ -202,16 +203,7 @@ module.exports = tseslint.config(
     rules: {
       'no-restricted-syntax': [
         'warn',
-        {
-          selector: 'Literal[value=/linear-gradient/]',
-          message:
-            'Use surfaceGradient / linearGradient from theme/gradients instead of an inline linear-gradient string.',
-        },
-        {
-          selector: 'TemplateElement[value.raw=/linear-gradient/]',
-          message:
-            'Use surfaceGradient / linearGradient from theme/gradients instead of an inline linear-gradient string.',
-        },
+        ...restrictedSyntax.gradient,
       ],
     },
   },
@@ -227,26 +219,8 @@ module.exports = tseslint.config(
       // gradient selectors here alongside the shell/icons-only hex ones.
       'no-restricted-syntax': [
         'warn',
-        {
-          selector: 'Literal[value=/linear-gradient/]',
-          message:
-            'Use surfaceGradient / linearGradient from theme/gradients instead of an inline linear-gradient string.',
-        },
-        {
-          selector: 'TemplateElement[value.raw=/linear-gradient/]',
-          message:
-            'Use surfaceGradient / linearGradient from theme/gradients instead of an inline linear-gradient string.',
-        },
-        {
-          selector: 'Literal[value=/#[0-9a-fA-F]{3,8}\\b/]',
-          message:
-            'Avoid raw hex colors — use a semantic token (className `bg-*`/`text-*`, or `resolveColor(token)` for inline styles).',
-        },
-        {
-          selector: 'TemplateElement[value.raw=/#[0-9a-fA-F]{3,8}\\b/]',
-          message:
-            'Avoid raw hex colors — use a semantic token (className `bg-*`/`text-*`, or `resolveColor(token)` for inline styles).',
-        },
+        ...restrictedSyntax.gradient,
+        ...restrictedSyntax.hex,
       ],
     },
   },
@@ -303,26 +277,8 @@ module.exports = tseslint.config(
       // hex selectors are repeated here rather than inherited.
       'no-restricted-syntax': [
         'error',
-        {
-          selector: 'Literal[value=/linear-gradient/]',
-          message:
-            'Use surfaceGradient / linearGradient from theme/gradients instead of an inline linear-gradient string.',
-        },
-        {
-          selector: 'TemplateElement[value.raw=/linear-gradient/]',
-          message:
-            'Use surfaceGradient / linearGradient from theme/gradients instead of an inline linear-gradient string.',
-        },
-        {
-          selector: 'Literal[value=/#[0-9a-fA-F]{3,8}\\b/]',
-          message:
-            'Avoid raw hex colors — use a semantic token (className `bg-*`/`text-*`, or `resolveColor(token)` for inline styles).',
-        },
-        {
-          selector: 'TemplateElement[value.raw=/#[0-9a-fA-F]{3,8}\\b/]',
-          message:
-            'Avoid raw hex colors — use a semantic token (className `bg-*`/`text-*`, or `resolveColor(token)` for inline styles).',
-        },
+        ...restrictedSyntax.gradient,
+        ...restrictedSyntax.hex,
         // Arbitrary spacing / radius / type values. `w-[420px]` and `min-w-[130px]`
         // are deliberate layout geometry and stay allowed; the scale properties are
         // where a specimen's hand-tuned pixels leak into the library.
@@ -349,16 +305,8 @@ module.exports = tseslint.config(
         },
         // Freezes the value to one palette at import time. Resolve at render
         // time instead — titan/no-frozen-theme below says the same thing for
-        // every component family, ratcheted. The `:not(:has(...))` clause
-        // carves out exactly the render-time form this message recommends
-        // (VW-381): a bare selector on the call name banned that form too,
-        // since it can't see the argument.
-        {
-          selector:
-            'CallExpression[callee.name="getSemanticColors"]:not(:has(> CallExpression[callee.name="useSurfaceMode"]))',
-          message:
-            'getSemanticColors() freezes to one theme — resolve at render time with useOnSurfaceColor(role), or getSemanticColors(useSurfaceMode()) for other tokens. See TOKENS.md §3.',
-        },
+        // every component family, ratcheted.
+        ...restrictedSyntax.frozenTheme,
       ],
     },
   },
