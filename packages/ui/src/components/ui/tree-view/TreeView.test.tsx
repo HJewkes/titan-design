@@ -367,6 +367,41 @@ describe('TreeView, focus after a collapse from outside', () => {
   })
 })
 
+describe('TreeView, focus while the user scrolls', () => {
+  const label = (index: number) => LARGE_ROWS[index].node.label
+
+  function scrollFocusedRowAway(keyFirst?: string) {
+    renderLarge()
+    focusRow(label(0))
+    if (keyFirst !== undefined) press(keyFirst)
+    const scroller = screen.getByRole('tree').parentElement?.parentElement as HTMLElement
+    fireEvent.scroll(scroller, { target: { scrollTop: 200 * ROW_HEIGHT.comfortable } })
+  }
+
+  it('leaves a pointer scroll where it is after the focused row unmounts', () => {
+    scrollFocusedRowAway()
+
+    expect(screen.getByRole('treeitem', { name: label(200) })).toBeInTheDocument()
+    expect(screen.queryByRole('treeitem', { name: label(0) })).toBeNull()
+  })
+
+  it('does not follow a later scroll after a key the tree leaves to the browser', () => {
+    scrollFocusedRowAway('Tab')
+
+    expect(screen.getByRole('treeitem', { name: label(200) })).toBeInTheDocument()
+  })
+
+  it('scrolls back and moves from the focused row on the next Down', () => {
+    scrollFocusedRowAway()
+
+    press('ArrowDown')
+
+    expect(focusedName()).toBe(label(1))
+    expect(screen.queryByRole('treeitem', { name: label(200) })).toBeNull()
+    expect(tabStops()).toHaveLength(1)
+  })
+})
+
 describe('TreeView, accessibility', () => {
   const named: [string, TreeFixture][] = Object.entries(fixtures)
 
