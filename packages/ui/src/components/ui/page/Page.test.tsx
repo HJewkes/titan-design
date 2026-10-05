@@ -5,6 +5,8 @@ import { axe, toHaveNoViolations } from 'jest-axe'
 import fc from 'fast-check'
 import { Text } from 'react-native'
 import { fcAssert } from '../../../test/property'
+import { Surface } from '../surface'
+import { surfaceBackground } from '../../../theme/surface-planes'
 import { Page, PageHeader } from './Page'
 
 expect.extend(toHaveNoViolations)
@@ -19,7 +21,19 @@ vi.mock('react-native', async (importOriginal) => {
   return {
     ...actual,
     View: withCls(actual.View as React.ComponentType<{ className?: string }>),
-    ScrollView: withCls(actual.ScrollView as React.ComponentType<{ className?: string }>),
+    Text: withCls(actual.Text as React.ComponentType<{ className?: string }>),
+    ScrollView: function ScrollViewWithCls(props: {
+      className?: string
+      stickyHeaderIndices?: number[]
+    }) {
+      const Base = actual.ScrollView as React.ComponentType<Record<string, unknown>>
+      return (
+        <Base
+          {...props}
+          dataSet={{ cls: props.className ?? '', sticky: String(props.stickyHeaderIndices ?? '') }}
+        />
+      )
+    },
   }
 })
 
@@ -168,7 +182,7 @@ describe('Page', () => {
     expect(container.innerHTML).not.toContain('border-hairline-strong')
   })
 
-  it('a pinned header sits in a sticky band inside page-scroll, with the rule and the gutter', () => {
+  it('a pinned header sits in a band inside page-scroll, with the rule and the gutter', () => {
     const { container } = render(
       <Page isHeaderPinned gutter="sm" maxWidth="narrow" header={<Text>Header content</Text>}>
         {body()}
@@ -180,11 +194,52 @@ describe('Page', () => {
     expect(band.contains(screen.getByText('Header content'))).toBe(true)
     expect(band.contains(screen.getByText('Body content'))).toBe(false)
     expect(cls(band).split(/\s+/)).toEqual(
-      expect.arrayContaining(['border-b', 'border-hairline-strong', 'p-gutter-sm', 'web:sticky'])
+      expect.arrayContaining(['border-b', 'border-hairline-strong', 'p-gutter-sm'])
     )
     const bandInner = band.firstElementChild
     expect(cls(bandInner)).toContain('max-w-[760px]')
     expect(cls(bandInner)).toContain('self-center')
+  })
+
+  it('a pinned header is the scroller sticky header; an unpinned page has none', () => {
+    const { container, unmount } = render(
+      <Page isHeaderPinned header={<Text>Header content</Text>}>
+        {body()}
+      </Page>
+    )
+    const scroller = () => container.querySelector('[data-testid="page-scroll"]') as HTMLElement
+    expect(scroller().getAttribute('data-sticky')).toBe('0')
+    unmount()
+    const unpinned = render(<Page header={<Text>Header content</Text>}>{body()}</Page>)
+    expect(
+      unpinned.container.querySelector('[data-testid="page-scroll"]')?.getAttribute('data-sticky')
+    ).toBe('')
+  })
+
+  it('the band paints the plane of the enclosing surface', () => {
+    const colour = (value: string) => {
+      const probe = document.createElement('div')
+      probe.style.backgroundColor = value
+      return probe.style.backgroundColor
+    }
+    const bandColour = (ui: React.ReactElement) => {
+      const { unmount } = render(ui)
+      const value = (screen.getByTestId('page-header-band') as HTMLElement).style.backgroundColor
+      unmount()
+      return value
+    }
+    const page = (
+      <Page isHeaderPinned header={<Text>Header content</Text>}>
+        {body()}
+      </Page>
+    )
+    expect(bandColour(<Surface level="overlay">{page}</Surface>)).toBe(
+      colour(surfaceBackground('overlay', 'dark'))
+    )
+    expect(bandColour(<Surface level="base">{page}</Surface>)).toBe(
+      colour(surfaceBackground('base', 'dark'))
+    )
+    expect(surfaceBackground('overlay', 'dark')).not.toBe(surfaceBackground('base', 'dark'))
   })
 
   it('a pinned header renders before the body in document order', () => {
@@ -335,22 +390,20 @@ describe('Page', () => {
 })
 
 describe('PageHeader', () => {
-  it('a trailing action never changes the classes that place the title', () => {
-    const titleChain = (trailing?: React.ReactNode) => {
-      const { unmount } = render(
-        <Page maxWidth="narrow" header={<PageHeader title="Overview" trailing={trailing} />}>
-          {body()}
-        </Page>
-      )
-      const chain: string[] = []
-      for (let el = screen.getByRole('heading').parentElement; el; el = el.parentElement) {
-        chain.push(cls(el))
-        if (el.getAttribute('role') === 'main') break
-      }
+  it('the title column keeps flex-1 min-w-0 and the row never wraps, with or without an action', () => {
+    const titleColumn = (trailing?: React.ReactNode) => {
+      const { unmount } = render(<PageHeader title="Overview" trailing={trailing} testID="hdr" />)
+      const row = screen.getByTestId('hdr')
+      const column = screen.getByRole('heading').parentElement as HTMLElement
+      const result = { column: cls(column).split(/\s+/), row: cls(row).split(/\s+/) }
       unmount()
-      return chain
+      return result
     }
-    expect(titleChain(<Text>Action</Text>)).toEqual(titleChain(undefined))
+    for (const result of [titleColumn(), titleColumn(<Text>Action</Text>)]) {
+      expect(result.column).toEqual(expect.arrayContaining(['flex-1', 'min-w-0']))
+      expect(result.row).toEqual(expect.arrayContaining(['flex-row', 'items-start']))
+      expect(result.row).not.toContain('flex-wrap')
+    }
   })
 
   it('keeps the action in its own corner without shrinking and lets the title shrink', () => {
@@ -364,6 +417,9 @@ describe('PageHeader', () => {
     render(<PageHeader title="Overview" testID="hdr" />)
     expect(cls(screen.getByTestId('hdr'))).toContain('gap-inline-md')
     expect(cls(screen.getByTestId('hdr'))).toContain('sm:gap-inline-lg')
+    expect(cls(screen.getByRole('heading')).split(/\s+/)).toEqual(
+      expect.arrayContaining(['text-lg', 'sm:text-xl', 'leading-tight'])
+    )
   })
 
   it('renders the title as the only level-1 heading', () => {

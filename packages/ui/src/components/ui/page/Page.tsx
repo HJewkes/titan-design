@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import {
+  Platform,
   ScrollView,
   View,
   type NativeScrollEvent,
@@ -10,7 +11,7 @@ import {
 import { getElevationShadow } from '../../../theme/elevation'
 import { cn } from '../../../utils/cn'
 import { Typography } from '../typography'
-import { useSurfaceMode } from '../surface'
+import { surfaceBackground, useSurface } from '../surface'
 
 export type PageGutter = 'sm' | 'md'
 export type PageMaxWidth = 'narrow' | 'wide' | 'full'
@@ -20,6 +21,7 @@ export interface PageProps extends Omit<ViewProps, 'children'> {
   header?: React.ReactNode
   /** The body. */
   children?: React.ReactNode
+  /** `md` widens from 640px and a consumer `p-*` in `contentClassName` loses to it there; pass `sm` for a fixed narrow gutter. */
   gutter?: PageGutter
   /** Caps the content column, gutters excluded. A capped column centres once the region is wider. */
   maxWidth?: PageMaxWidth
@@ -51,7 +53,7 @@ const maxWidthClasses: Record<PageMaxWidth, string> = {
 
 const SCROLL_SHADOW_LEVEL = 2
 // Explicit, so the shadow is replaced rather than left behind when the content scrolls back to the top.
-const NO_SHADOW = { boxShadow: 'none' } as ViewStyle
+const NO_SHADOW = Platform.select<ViewStyle>({ web: { boxShadow: 'none' } as ViewStyle })
 
 function useScrolledUnder(enabled: boolean) {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -62,6 +64,33 @@ function useScrolledUnder(enabled: boolean) {
     [enabled]
   )
   return { isScrolled: enabled && isScrolled, onScroll }
+}
+
+interface PageHeaderBandProps {
+  gutter: PageGutter
+  isElevated: boolean
+  innerClassName: string
+  children: React.ReactNode
+}
+
+function PageHeaderBand({ gutter, isElevated, innerClassName, children }: PageHeaderBandProps) {
+  const { mode, level } = useSurface()
+  return (
+    <View
+      testID="page-header-band"
+      className={cn(
+        'w-full border-b border-hairline-strong relative z-10',
+        gutterClasses[gutter],
+        pinnedBandBottom
+      )}
+      style={[
+        { backgroundColor: surfaceBackground(level, mode) },
+        isElevated ? getElevationShadow(SCROLL_SHADOW_LEVEL, mode) : NO_SHADOW,
+      ]}
+    >
+      <View className={innerClassName}>{children}</View>
+    </View>
+  )
 }
 
 export function Page({
@@ -76,7 +105,6 @@ export function Page({
   contentClassName,
   ...props
 }: PageProps) {
-  const mode = useSurfaceMode()
   const fill = !isScrollable && 'flex-1'
   const inner = cn('w-full', maxWidthClasses[maxWidth], maxWidth !== 'full' && 'self-center')
   const pinned = isHeaderPinned && Boolean(header)
@@ -97,26 +125,23 @@ export function Page({
       </View>
     </View>
   )
-  // The band shares the scroller's box (sticky, not a sibling), so it never needs a reserved
-  // scrollbar gutter and a page that does not scroll shows none.
+  // The band is the scroller's first child and its sticky header (web and native), so it shares
+  // the scroller's box: no reserved scrollbar gutter, and none shown on a page that does not scroll.
   const band = pinned ? (
-    <View
-      testID="page-header-band"
-      className={cn(
-        'w-full border-b border-hairline-strong bg-surface-base relative z-10 web:sticky web:top-0',
-        gutterClasses[gutter],
-        pinnedBandBottom
-      )}
-      style={isScrolled ? getElevationShadow(SCROLL_SHADOW_LEVEL, mode) : NO_SHADOW}
-    >
-      <View className={inner}>{header}</View>
-    </View>
+    <PageHeaderBand gutter={gutter} isElevated={isScrolled} innerClassName={inner}>
+      {header}
+    </PageHeaderBand>
   ) : null
 
   return (
     <View role="main" className={cn('flex-1', className)} {...props}>
       {isScrollable ? (
-        <ScrollView testID="page-scroll" onScroll={onScroll} scrollEventThrottle={16}>
+        <ScrollView
+          testID="page-scroll"
+          onScroll={onScroll}
+          scrollEventThrottle={16}
+          stickyHeaderIndices={band ? [0] : undefined}
+        >
           {band}
           {column}
         </ScrollView>
@@ -148,7 +173,7 @@ export function PageHeader({ title, description, trailing, className, ...props }
       {...props}
     >
       <View className="flex-1 min-w-0 gap-stack-sm">
-        <Typography variant="h5" aria-level={1} className="text-lg sm:text-xl">
+        <Typography variant="h5" aria-level={1} className="text-lg sm:text-xl leading-tight">
           {title}
         </Typography>
         {description ? (
