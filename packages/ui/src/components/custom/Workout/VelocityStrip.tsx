@@ -1,31 +1,24 @@
-// Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useEffect, useState } from 'react'
-import { Text, Pressable, Animated, type ViewProps } from 'react-native'
-import { space } from '../../../theme/tokens/semantic'
+import { Animated, type ViewProps } from 'react-native'
 import { useSurfaceMode } from '../../ui/surface'
-import { formatVelocity } from '../../../utils/workout-format'
-import { SetBarChart, type SetSlot, SET_BAR_DEFAULT_HEIGHT } from '../charts/SetBarChart'
+import { type SetSlot } from '../charts/SetBarChart'
 import { ANIMATION_EASING } from '../charts/live-rep-growth'
 import {
-  classifyBand,
   makeBarColorFor,
-  getLossStyle,
   normalizeLossThresholds,
-  calculateMeanVelocity,
   velocityLossForRep,
-  shownVelocityLoss,
   getVelocityLossColor,
-  getVelocityZoneName,
   type VelocityLossThresholds,
   type VelocityZoneBandProp,
 } from './velocity-scale'
+import { useVelocitySlots, type VelocitySet } from './velocity-slots'
+import { summarizeVelocities } from './velocity-strip-model'
 import {
-  buildSlots,
-  deriveDoneVelocities,
-  setAccessibilityLabel,
-  type VelocitySet,
-} from './velocity-slots'
-import { velocityReferenceOverlay } from './VelocityLossBands'
+  EXPANDED_HEIGHT,
+  VelocityStripCompact,
+  VelocityStripExpanded,
+  VelocityStripHero,
+} from './VelocityStripVariants'
 
 export {
   getVelocityZoneColor,
@@ -178,11 +171,6 @@ export interface VelocityStripProps extends ViewProps {
   className?: string
 }
 
-/** Default framed `expanded` chart height (px). */
-const EXPANDED_HEIGHT = 60
-/** Default `compact` (flat resting strip) height (px) — a THIN radius-2 pill row, the resting glance. */
-const COMPACT_HEIGHT = 8
-
 /** Framed expanded collapse-animation duration (ms). */
 const ANIMATION_DURATION = 400
 
@@ -215,22 +203,13 @@ export function VelocityStrip({
   // off for the absolute zone scale; an explicit prop always wins.
   const lossBandsOn = showLossBands ?? barColor === 'loss'
   const lossThresholds = normalizeLossThresholds(lossThresholdsInput)
-  // A `set` descriptor derives its own done-velocity array; the legacy
-  // `velocities` path stays the source of truth otherwise. Every summary calc
-  // (mean / loss / zone) runs on this one array so the info row works either way.
-  const doneVelocities = set ? deriveDoneVelocities(set) : (velocities ?? [])
-
-  const maxVelocity = Math.max(...doneVelocities, 0)
-  const meanVelocity = calculateMeanVelocity(doneVelocities)
-  // The colour bands the last rep's exact loss, like its bar; the number is that loss rounded down.
-  const lastLoss = velocityLossForRep(doneVelocities[doneVelocities.length - 1] ?? 0, maxVelocity)
-  const loss = shownVelocityLoss(lastLoss)
+  const summary = summarizeVelocities(set, velocities, zones, liveRepIndex)
+  const { doneVelocities, maxVelocity } = summary
 
   // The framed chart (raised box, labels, info) vs the bare spotlight strip is the
   // only fork in the `expanded` variant — keyed by whether any chrome is requested.
   const framed = showNumbers || showInfo
 
-  const hasZones = zones != null && zones.length > 0
   // Single-sourced zone resolver (diverging-hero) wrapped with the loss-relative mode: `barColor="loss"`
   // colors each rep by its velocity loss from the set's own best, else the shared zone scale. Every
   // variant hands this `colorFor` to SetBarChart, so all variants color identically.
@@ -240,19 +219,12 @@ export function VelocityStrip({
     barColor === 'loss'
       ? getVelocityLossColor(velocityLossForRep(v, maxVelocity), lossThresholds, mode)
       : zoneColorFor(v)
-  const meanZone = hasZones
-    ? (classifyBand(meanVelocity, zones)?.label ?? '')
-    : getVelocityZoneName(meanVelocity)
 
   // The framed collapse is now an IN-PLACE bar-height morph: `expandProgress` (0 collapsed → 1 open)
   // drives SetBarChart's bars flat↔value (no reflow), replacing the old collapse-to-3px height anim.
   // `infoOpacity` fades the info row; the per-bar labels fade with `expandProgress` in the overlay.
   const [expandProgress] = useState(() => new Animated.Value(expanded ? 1 : 0))
   const [infoOpacity] = useState(() => new Animated.Value(expanded ? 1 : 0))
-
-  // Newest-rep animation: pop for a normal rep, bounce when it sets a new peak.
-  const liveVelocity = liveRepIndex != null ? doneVelocities[liveRepIndex] : undefined
-  const isNewPeak = liveVelocity != null && maxVelocity > 0 && liveVelocity === maxVelocity
 
   useEffect(() => {
     if (variant !== 'expanded' || !framed) return
@@ -272,278 +244,46 @@ export function VelocityStrip({
     ]).start()
   }, [expanded, variant, framed, expandProgress, infoOpacity])
 
+  const slots = useVelocitySlots(set, doneVelocities)
+
   // Nothing to draw: neither a legacy velocity array nor a set descriptor.
   if (set == null && velocities == null) return null
 
-  const repCount = doneVelocities.length
-  const miniLabel = set ? setAccessibilityLabel(set, repCount) : `Velocity strip, ${repCount} reps`
-
-  if (variant === 'hero') {
-    // Hero's plot is far taller than the expanded chart; apply its own default when the caller left
-    // `height` at the shared 60px default. The diverging dual (which passes `columnSlots`) sets an
-    // explicit per-wing height — exempt it, so a dual whose wing height happens to be 60px (a 120px
-    // dual) isn't mistaken for "unset" and blown up to 220.
-    const heroHeight =
-      height === EXPANDED_HEIGHT && columnSlots == null ? SET_BAR_DEFAULT_HEIGHT : height
-    // `columnSlots` (the diverging dual's shared index-locked structure) wins; else a `set` builds
-    // its own typed slots, and the plain `velocities` path is bare rep slots + a `targetReps` remainder.
-    const heroSlots: SetSlot[] =
-      columnSlots ??
-      (set
-        ? buildSlots(set).map((s) => ({
-            kind: s.kind,
-            value: s.velocity,
-            leadingGap: s.leadingGap,
-          }))
-        : doneVelocities.map((v) => ({ kind: 'rep', value: v })))
-    const total = Math.max(repCount, targetReps ?? repCount)
-    const heroLabel =
-      maxVelocity > 0
-        ? `Velocity chart, ${repCount} of ${total} reps, best ${formatVelocity(maxVelocity)} meters per second`
-        : `Velocity chart, ${repCount} of ${total} reps`
-    return (
-      <SetBarChart
-        slots={heroSlots}
-        colorFor={barColorFor}
-        height={heroHeight}
-        scale={scale}
-        scaleMax={scaleMax}
-        orientation={orientation}
-        liveRepIndex={liveRepIndex}
-        isNewPeak={isNewPeak}
-        targetReps={set || columnSlots ? undefined : targetReps}
-        label={label}
-        showValueLabels
-        formatValue={formatVelocity}
-        // Only the diverging dual's composed wings opt in (TD-07.10) — the standalone single
-        // hero is unchanged, per columnSlots being the dual-only signal (see the comment above).
-        flipEdgeLabel={columnSlots != null}
-        renderReference={(g) => velocityReferenceOverlay(g, lossBandsOn, lossThresholds)}
-        hideBaseline
-        testID="velocity-strip-hero"
-        testIDPrefix="velocity"
-        accessibilityLabel={heroLabel}
-        className={className}
-        viewProps={props}
-      />
-    )
+  const variantProps = {
+    chart: {
+      set,
+      columnSlots,
+      slots,
+      barColorFor,
+      height,
+      scale,
+      scaleMax,
+      orientation,
+      liveRepIndex,
+      targetReps,
+      label,
+      className,
+      props,
+    },
+    summary: { ...summary, lossThresholds, lossBandsOn, mode },
+    chrome: {
+      framed,
+      expanded,
+      onToggle,
+      onRepPress,
+      showNumbers,
+      showInfo,
+      expandProgress,
+      infoOpacity,
+    },
   }
-
-  if (variant === 'compact') {
-    // `compact` = the flat resting form: SetBarChart in FLAT mode (uniform short bars, no value
-    // labels), sharing hero's geometry — same colors, paper, 0.08 spacing, proportional chunk-notch,
-    // todo/variable/continue slots, and gutter — so a compact↔expanded toggle only changes bar HEIGHT.
-    // `columnSlots` (the diverging dual-compact's shared index-locked structure) wins, like the hero.
-    const compactSlots: SetSlot[] =
-      columnSlots ??
-      (set
-        ? buildSlots(set).map((s) => ({
-            kind: s.kind,
-            value: s.velocity,
-            leadingGap: s.leadingGap,
-          }))
-        : doneVelocities.map((v) => ({ kind: 'rep', value: v })))
-    const compactHeight = height === EXPANDED_HEIGHT ? COMPACT_HEIGHT : height
-    return (
-      <SetBarChart
-        slots={compactSlots}
-        colorFor={barColorFor}
-        height={compactHeight}
-        scale={scale}
-        scaleMax={scaleMax}
-        orientation={orientation}
-        flat
-        barRadius={2}
-        cornerStyle="all"
-        targetReps={set || columnSlots ? undefined : targetReps}
-        label={label}
-        hideBaseline
-        testID="velocity-strip-compact"
-        testIDPrefix="velocity"
-        accessibilityLabel={miniLabel}
-        className={className}
-        viewProps={props}
-      />
-    )
-  }
-
-  // Bare `expanded` strip (both chrome flags off): the velocity-HEIGHT spotlight — now
-  // FOLDED onto SetBarChart (value mode, no labels), so its bars share the SAME geometry
-  // (widths / gaps / chunk-notch / slots / paper) as compact + hero. Only the height-mode
-  // (value here, flat in compact) differs, so a compact↔spotlight toggle never reflows.
-  if (!framed) {
-    // `columnSlots` wins, exactly as it does for compact and hero. The diverging dual passes the
-    // index-locked shared structure through here; ignoring it gave the expanded dual its own
-    // per-side columns, so a lagging side rendered FEWER bars instead of an aligned empty cell.
-    const spotlightSlots: SetSlot[] =
-      columnSlots ??
-      (set
-        ? buildSlots(set).map((s) => ({
-            kind: s.kind,
-            value: s.velocity,
-            leadingGap: s.leadingGap,
-          }))
-        : doneVelocities.map((v) => ({ kind: 'rep', value: v })))
-    return (
-      <SetBarChart
-        slots={spotlightSlots}
-        colorFor={barColorFor}
-        height={height}
-        scale={scale}
-        scaleMax={scaleMax}
-        orientation={orientation}
-        liveRepIndex={liveRepIndex}
-        isNewPeak={isNewPeak}
-        barRadius={2}
-        cornerStyle="top"
-        targetReps={set ? undefined : targetReps}
-        label={label}
-        hideBaseline
-        testID="velocity-strip-spotlight"
-        testIDPrefix="velocity"
-        accessibilityLabel={miniLabel}
-        className={className}
-        viewProps={props}
-      />
-    )
-  }
-
-  const stripLabel = set
-    ? `${setAccessibilityLabel(set, repCount)}, tap to ${expanded ? 'collapse' : 'expand'}`
-    : `Velocity chart for set, ${repCount} reps, tap to ${expanded ? 'collapse' : 'expand'}`
-  // When onToggle wraps the strip or individual reps are interactive, the container itself is not a button
-  const hasInteractiveContainer = onToggle != null
-  const hasInteractiveReps = onRepPress != null && expanded
-
-  const framedSlots: SetSlot[] = set
-    ? buildSlots(set).map((sl) => ({
-        kind: sl.kind,
-        value: sl.velocity,
-        leadingGap: sl.leadingGap,
-      }))
-    : doneVelocities.map((v) => ({ kind: 'rep', value: v }))
-
-  // Per-bar overlay handed to SetBarChart so the framed chart keeps its m/s label (fading with the
-  // expand) + its onRepPress hit-target WITHOUT re-rolling bars — one bar-rendering path remains.
-  const needsBarOverlay = showNumbers || onRepPress != null
-  const renderFramedBarOverlay = needsBarOverlay
-    ? (repIndex: number, value: number) => (
-        <>
-          {showNumbers && (
-            <Animated.View
-              style={{
-                opacity: expandProgress,
-                position: 'absolute',
-                top: -13,
-                left: 0,
-                right: 0,
-                alignItems: 'center',
-              }}
-              accessibilityElementsHidden
-              pointerEvents="none"
-            >
-              <Text
-                className="text-text-secondary"
-                style={{ fontSize: 8, fontWeight: '600' }}
-                testID={`velocity-label-${repIndex}`}
-              >
-                {formatVelocity(value)}
-              </Text>
-            </Animated.View>
-          )}
-          {onRepPress && expanded && (
-            <Pressable
-              style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }}
-              onPress={() => onRepPress(repIndex, value)}
-              accessibilityRole="button"
-              accessibilityLabel={`Rep ${repIndex + 1}: ${formatVelocity(value)} meters per second, tap for details`}
-              testID={`velocity-bar-pressable-${repIndex}`}
-            />
-          )}
-        </>
-      )
-    : undefined
-
-  // The framed chrome is a WRAPPER (raised box + info row + tap-to-collapse) around ONE SetBarChart
-  // in value mode; the collapse is the in-place `expandProgress` bar-height morph, not a height strip.
-  const stripContent = (
-    <Animated.View
-      className={[className, 'bg-surface-raised'].filter(Boolean).join(' ')}
-      // NativeWind does not compile className on an `Animated.View` — verified in
-      // Storybook, where the element renders `class="css-view-175oi2r"` and nothing
-      // else — so this chrome reads the inset tokens through the JS export.
-      style={{
-        width: '100%',
-        borderRadius: 6,
-        paddingTop: space.inset.lg,
-        paddingBottom: showInfo ? space.inset.sm : space.inset.xs,
-      }}
-      accessibilityRole={hasInteractiveContainer || hasInteractiveReps ? 'none' : 'button'}
-      accessibilityLabel={hasInteractiveContainer || hasInteractiveReps ? undefined : stripLabel}
-      testID="velocity-strip"
-      {...props}
-    >
-      <SetBarChart
-        slots={framedSlots}
-        colorFor={barColorFor}
-        height={height}
-        scale={scale}
-        scaleMax={scaleMax}
-        expandProgress={expandProgress}
-        renderBarOverlay={renderFramedBarOverlay}
-        targetReps={set ? undefined : targetReps}
-        barRadius={2}
-        cornerStyle="top"
-        hideBaseline
-        testIDPrefix="velocity"
-      />
-      {expanded && showInfo && (
-        <Animated.View
-          // Same `Animated.View` limitation as the strip above: style, not className.
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            opacity: infoOpacity,
-            // eslint-disable-next-line titan/no-raw-spacing -- chart geometry
-            marginTop: 6,
-            // eslint-disable-next-line titan/no-raw-spacing -- chart geometry
-            paddingHorizontal: 6,
-          }}
-          testID="velocity-info-row"
-        >
-          <Text
-            className="text-text-secondary"
-            style={{ fontSize: 10, fontFamily: 'Inter, sans-serif' }}
-          >
-            {meanZone} {'·'} {formatVelocity(meanVelocity)} m/s
-          </Text>
-          <Text
-            className="text-text-secondary"
-            style={{
-              fontSize: 10,
-              fontFamily: 'Inter, sans-serif',
-              ...getLossStyle(lastLoss, lossThresholds, mode),
-            }}
-          >
-            Loss: {loss}%
-          </Text>
-        </Animated.View>
-      )}
-    </Animated.View>
-  )
-
-  if (onToggle) {
-    return (
-      <Pressable
-        onPress={onToggle}
-        accessibilityRole="button"
-        accessibilityLabel={stripLabel}
-        testID="velocity-strip-pressable"
-      >
-        {stripContent}
-      </Pressable>
-    )
-  }
-
-  return stripContent
+  // Called as a function inside an unkeyed fragment, which React unwraps, not mounted as an element:
+  // a live `variant` toggle keeps the same host SetBarChart (and its measured width), as before.
+  const renderVariant =
+    variant === 'hero'
+      ? VelocityStripHero
+      : variant === 'compact'
+        ? VelocityStripCompact
+        : VelocityStripExpanded
+  return <>{renderVariant(variantProps)}</>
 }

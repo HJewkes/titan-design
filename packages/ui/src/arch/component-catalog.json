@@ -7948,7 +7948,7 @@
         },
         {
           "default": "expanded",
-          "description": "`compact` — the flat resting strip: {@link SetBarChart} in FLAT mode (uniform short bars, no value labels), sharing hero's exact geometry (colors, paper, spacing, chunk-notch, slots, gutter).",
+          "description": "`compact` — the flat resting strip: {@link SetBarChart } in FLAT mode (uniform short bars, no value labels), sharing hero's exact geometry (colors, paper, spacing, chunk-notch, slots, gutter).",
           "name": "variant",
           "required": false,
           "type": "\"compact\" | \"hero\" | \"expanded\""
