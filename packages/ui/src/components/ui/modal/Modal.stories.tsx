@@ -15,7 +15,7 @@ import { Button, ButtonText } from '../button/Button'
 const meta: Meta<typeof Modal> = {
   title: 'Components/Organisms/Modal',
   component: Modal,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     isOpen: {
       control: 'boolean',

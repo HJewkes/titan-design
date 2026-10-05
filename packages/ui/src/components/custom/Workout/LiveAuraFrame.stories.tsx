@@ -77,7 +77,7 @@ const PANEL = { width: 360, height: 620, borderRadius: 24, overflow: 'hidden' as
 const meta: Meta<typeof LiveAuraFrame> = {
   title: 'Custom/Workout/LiveAuraFrame',
   component: LiveAuraFrame,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     layout: 'fullscreen',
     docs: {
