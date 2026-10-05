@@ -10,7 +10,7 @@ const t = getSemanticColors('dark')
 const meta: Meta<typeof BaseBadge> = {
   title: 'Custom/Workout/BaseBadge',
   component: BaseBadge,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     variant: { control: 'select', options: ['plain', 'pr'], description: 'Visual variant' },
     size: { control: 'select', options: ['sm', 'md', 'lg'], description: 'Badge size' },
