@@ -12,12 +12,8 @@ import {
   type ZoneTrackTick,
   type ZoneTrackZone,
 } from './zoneTrackGeometry'
-import {
-  ZoneTrackNeedle,
-  ZoneTrackPill,
-  ZoneTrackTickLabels,
-  ZoneTrackTickLines,
-} from './ZoneTrackParts'
+import { ZoneTrackNeedle, ZoneTrackPill } from './ZoneTrackParts'
+import { ZoneTrackTickLabels, ZoneTrackTickLines } from './ZoneTrackTicks'
 
 export type {
   ZoneTrackBand,
