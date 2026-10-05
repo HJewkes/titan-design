@@ -1,16 +1,20 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { Linter, RuleTester } from 'eslint'
-import rule from '../../eslint-rules/no-truncation'
+import { createRequire } from 'node:module'
+import { Linter, RuleTester, type Rule } from 'eslint'
 import baseline from '../../eslint-rules/no-truncation-baseline.json'
 import allowlist from '../../eslint-rules/truncation-allowlist.json'
 import { uiRoot } from './tailwind-compile'
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const config = require('../../eslint.config.js') as Linter.Config[]
 
-const { parseAllowlist } = rule as unknown as {
+// Required rather than imported: the rule is untyped CommonJS, and this gives it a type.
+const rule = createRequire(import.meta.url)(
+  '../../eslint-rules/no-truncation'
+) as Rule.RuleModule & {
   parseAllowlist: (entries: unknown[]) => Record<string, Record<string, number>>
 }
+const { parseAllowlist } = rule
 
 const ruleTester = new RuleTester({
   languageOptions: {
