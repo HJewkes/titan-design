@@ -104,11 +104,6 @@ const storyUrl = (id: string) =>
 const SETTLED_CLOCK_PREFIX = 'custom-workout-dataviz-strengthtrendchart--'
 const SETTLE_MS = 1000
 
-// The first DualVelocityStrip stories of a run hit a cold dev server whose first batch of four
-// takes ~70 s in CI, so their root can sit at 1280x0 past the 5 s guard; they get a longer poll.
-const COLD_START_PREFIX = 'custom-workout-dataviz-dualvelocitystrip--'
-const COLD_START_GUARD_MS = 20_000
-
 // A blank root says nothing about why, so a failed guard reports what the page logged and what its
 // root and body held at that moment (TD-636: a zero-height root with no trace to explain it).
 function recordPageEvents(page: Page): string[] {
@@ -150,11 +145,7 @@ async function renderStory(page: Page, id: string) {
   await page.goto(storyUrl(id))
   await page.waitForLoadState('networkidle')
   await page.evaluate(() => document.fonts.ready)
-  await expectRendered(
-    page,
-    id,
-    id.startsWith(COLD_START_PREFIX) ? COLD_START_GUARD_MS : undefined
-  ).catch(async (e: Error) => {
+  await expectRendered(page, id).catch(async (e: Error) => {
     e.message += `\nblank page state: ${await describeBlankPage(page, events)}`
     throw e
   })

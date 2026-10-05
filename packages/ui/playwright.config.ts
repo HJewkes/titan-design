@@ -57,5 +57,7 @@ export default defineConfig({
     port: 6006,
     reuseExistingServer: false,
     timeout: 120000,
+    // Puts Vite's re-optimization and reload lines in the CI log (TD-636).
+    stdout: 'pipe',
   },
 })

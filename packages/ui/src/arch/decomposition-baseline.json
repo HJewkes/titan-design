@@ -32,13 +32,6 @@
     "function-lines": 374,
     "props": 16
   },
-  "components/custom/Workout/CapacityBandChart.tsx": {
-    "file-lines": 452
-  },
-  "components/custom/Workout/CapacityBandChart.tsx#CapacityBandChart": {
-    "component-lines": 316,
-    "function-lines": 316
-  },
   "components/custom/Workout/DualVelocityCharts.tsx#DualVelocityCompactStrip": {
     "props": 15
   },
