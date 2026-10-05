@@ -1,6 +1,10 @@
-import { RuleTester } from 'eslint'
-import fixOptions from '../../eslint-rules/fix-options'
-import rule from '../../eslint-rules/story-title-prefix'
+import { createRequire } from 'node:module'
+import { RuleTester, type Rule } from 'eslint'
+
+// The rules are CommonJS with no declarations; require keeps the test inside the type check.
+const nativeRequire = createRequire(import.meta.url)
+const rule = nativeRequire('../../eslint-rules/story-title-prefix') as Rule.RuleModule
+const { storyRoots } = nativeRequire('../../eslint-rules/fix-options') as { storyRoots: string[] }
 
 const ruleTester = new RuleTester({
   languageOptions: { ecmaVersion: 2022, sourceType: 'module' },
@@ -13,11 +17,11 @@ const shellStory = '/repo/packages/ui/src/components/shell/Foo.stories.tsx'
 const untieredStory = '/repo/packages/ui/src/docs/Foo.stories.tsx'
 
 // The roots come from preview.tsx through fix-options; fix-options.test.ts pins that parse.
-const rootList = (fixOptions.storyRoots as string[]).map((root) => `\`${root}/\``).join(', ')
+const rootList = storyRoots.map((root) => `\`${root}/\``).join(', ')
 const metaWithTitle = (title: string) => `const meta = { title: '${title}' }\nexport default meta`
 
 describe('story-title-prefix', () => {
-  ruleTester.run('story-title-prefix', rule as never, {
+  ruleTester.run('story-title-prefix', rule, {
     valid: [
       { code: metaWithTitle('Components/Atoms/Foo'), filename: uiStory },
       { code: metaWithTitle('Custom/Workout/Foo'), filename: customStory },
