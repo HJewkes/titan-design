@@ -109,7 +109,40 @@ const SETTLE_MS = 1000
 const COLD_START_PREFIX = 'custom-workout-dataviz-dualvelocitystrip--'
 const COLD_START_GUARD_MS = 20_000
 
+// A blank root says nothing about why, so a failed guard reports what the page logged and what its
+// root and body held at that moment (TD-636: a zero-height root with no trace to explain it).
+function recordPageEvents(page: Page): string[] {
+  const events: string[] = []
+  page.on('console', (m) => {
+    if (m.type() === 'error' || m.type() === 'warning')
+      events.push(`console.${m.type()}: ${m.text()}`)
+  })
+  page.on('pageerror', (e) => events.push(`pageerror: ${e.message}`))
+  page.on('requestfailed', (r) =>
+    events.push(`requestfailed: ${r.url()} ${r.failure()?.errorText}`)
+  )
+  page.on('response', (r) => {
+    if (r.status() >= 400) events.push(`http ${r.status()}: ${r.url()}`)
+  })
+  page.on('framenavigated', (f) => {
+    if (f === page.mainFrame()) events.push(`navigated: ${f.url()}`)
+  })
+  return events
+}
+
+async function describeBlankPage(page: Page, events: string[]): Promise<string> {
+  const state = await page
+    .evaluate(() => ({
+      bodyClass: document.body.className,
+      root: document.querySelector('#storybook-root')?.outerHTML.slice(0, 1500) ?? null,
+      errorDisplay: document.querySelector('#error-message')?.textContent?.slice(0, 500) ?? null,
+    }))
+    .catch((e: Error) => ({ evaluateFailed: e.message }))
+  return JSON.stringify({ state, events }, null, 2)
+}
+
 async function renderStory(page: Page, id: string) {
+  const events = recordPageEvents(page)
   // install() alone keeps ticking from FIXED_TIME in real time, so a story
   // rendered late in the run showed 16:13 instead of 16:12 (#250); it starts early so pauseAt never rewinds.
   await page.clock.install({ time: CLOCK_START })
@@ -117,7 +150,14 @@ async function renderStory(page: Page, id: string) {
   await page.goto(storyUrl(id))
   await page.waitForLoadState('networkidle')
   await page.evaluate(() => document.fonts.ready)
-  await expectRendered(page, id, id.startsWith(COLD_START_PREFIX) ? COLD_START_GUARD_MS : undefined)
+  await expectRendered(
+    page,
+    id,
+    id.startsWith(COLD_START_PREFIX) ? COLD_START_GUARD_MS : undefined
+  ).catch(async (e: Error) => {
+    e.message += `\nblank page state: ${await describeBlankPage(page, events)}`
+    throw e
+  })
   if (id.startsWith(SETTLED_CLOCK_PREFIX)) await page.clock.runFor(SETTLE_MS)
   return page.locator('#storybook-root')
 }
