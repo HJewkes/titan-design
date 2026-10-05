@@ -36,7 +36,10 @@ A status is a **function of the repo**, not a judgment call. Given a story file,
 in this order:
 
 1. Under `src/lab/**` → **`status:lab`**. No exceptions; lab is excluded from
-   publish builds (`package.json` `files` carries `!src/lab`).
+   publish builds (`package.json` `files` carries `!src/lab`). A story titled
+   `Lab/…` elsewhere is also `status:lab`: it records a design decision about
+   the components beside it rather than defining one, and the public Storybook
+   build drops every `Lab/` title (`.storybook/main.ts`).
 2. Under `src/components/ui/<dir>/`, where `<dir>` is the component's own directory (for charts,
    `ui/charts/<dir>/`), and the clauses below hold (all five once clause 5 is live, clauses 1 to 4 until then), it is **`status:stable`**:
    - a test file in `<dir>` whose source contains `axe`;
@@ -128,7 +131,8 @@ See [the review protocol](#formal-review-protocol).
 
 None. The two sets held open when the rule was first applied, `src/components/custom/Workout/**`
 and the `ui/{menu,popover,modal,select,tooltip}` stories, were tagged by TD-8. Workout stories are
-`candidate` (or `lab` for the `*.decision.stories.tsx` explorations and `VolumeStatusPalette`); the
+`candidate`, or `lab` under step 1 for the ten `*.decision.stories.tsx` files and `VolumeStatusPalette`,
+all titled `Lab/Decisions/…`; the
 five `ui/` families are `candidate` because clause 5 fails for them (no `logic` layer), so none of
 them derives `stable` yet.
 
