@@ -225,13 +225,14 @@ describe('section navigation at both ends of a page', () => {
 })
 
 describe('the final check with questions unanswered', () => {
-  const screen = (unanswered: string[]) => {
+  const screen = (unanswered: string[], sendErrors: string[] = []) => {
     const m = manifest()
     return renderToStaticMarkup(
       createElement(ReviewScreen, {
         manifest: m,
         feedback: buildFeedback(m, SHA, emptyDraft(m), new Date(), true),
         problems: [],
+        sendErrors,
         unanswered,
         sending: false,
         dispatch: () => {},
@@ -245,6 +246,12 @@ describe('the final check with questions unanswered', () => {
     expect(markup).toContain('2 of 4 questions are unanswered')
     expect(markup).toMatch(/data-testid="send"[^>]*>Send partial: 2 unanswered<\/button>/)
     expect(markup).toMatch(/<button[^>]*class="primary"[^>]*>Back/)
+  })
+
+  it('shows a failed send as an alert and leaves Send enabled to retry', () => {
+    const markup = screen([], ['HTTP 500'])
+    expect(markup).toMatch(/role="alert"[^>]*><li>HTTP 500<\/li>/)
+    expect(markup).not.toMatch(/<button[^>]*disabled[^>]*data-testid="send"/)
   })
 
   it('keeps the plain send when every question is answered', () => {

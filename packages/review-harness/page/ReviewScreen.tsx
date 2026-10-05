@@ -10,6 +10,8 @@ interface ReviewScreenProps {
   /** Questions with no answer; any at all turns the send into an explicit partial send. */
   unanswered: string[]
   sending: boolean
+  /** The server's answer to a failed send. They never disable Send: the owner can retry. */
+  sendErrors: string[]
   dispatch: Dispatch<Action>
   onSubmit: () => void
 }
@@ -72,7 +74,8 @@ function UnansweredNotice({
 }
 
 export function ReviewScreen(props: ReviewScreenProps) {
-  const { manifest, feedback, problems, unanswered, sending, dispatch } = props
+  const { manifest, feedback, problems, sendErrors, unanswered, sending, dispatch } = props
+  const alerts = [...problems, ...sendErrors]
   const partial = unanswered.length > 0
   const ref = useRef<HTMLElement>(null)
   // Focus left in the now-hidden form (a story iframe above all) would swallow this screen's keys.
@@ -90,9 +93,9 @@ export function ReviewScreen(props: ReviewScreenProps) {
       <Answers manifest={manifest} feedback={feedback} />
       {feedback.general && <p className="quote">{feedback.general}</p>}
       {partial && <UnansweredNotice manifest={manifest} unanswered={unanswered} />}
-      {problems.length > 0 && (
+      {alerts.length > 0 && (
         <ul className="problems" role="alert">
-          {problems.map((p) => (
+          {alerts.map((p) => (
             <li key={p}>{p}</li>
           ))}
         </ul>

@@ -451,7 +451,8 @@ export function App({ manifest, manifestSha256 }: AppProps) {
         <ReviewScreen
           manifest={manifest}
           feedback={feedback}
-          problems={[...problems, ...state.errors]}
+          problems={problems}
+          sendErrors={state.errors}
           unanswered={unanswered}
           sending={state.screen === 'sending'}
           dispatch={dispatch}

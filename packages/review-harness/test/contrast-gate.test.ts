@@ -10,6 +10,7 @@ import {
   matchesDefect,
   type MeasuredFrame,
 } from '../src/contrast-gate.ts'
+import { ReviewError } from '../src/review.ts'
 import { ManifestSchema, MANIFEST_SCHEMA_ID, type ManifestInput } from '../src/schema.ts'
 
 const SHA = 'a'.repeat(64)
@@ -253,6 +254,27 @@ describe('contrastReport', () => {
       draft({ contrast: { unmeasured: [{ variant: 'A', mode: 'light', reason: 'skip it' }] } })
     )
     expect(parsed.success).toBe(false)
+  })
+})
+
+describe('reading contrast.json', () => {
+  async function roundDir(report?: string) {
+    const dir = await mkdtemp(join(tmpdir(), 'titan-contrast-'))
+    if (report !== undefined) await writeFile(join(dir, 'contrast.json'), report)
+    return join(dir, 'round.json')
+  }
+
+  it('treats a missing report as no report', async () => {
+    await expect(contrastProblem(await roundDir(), SHA)).resolves.toBe(
+      'no contrast.json beside this round'
+    )
+  })
+
+  it('names the file when the report is not JSON', async () => {
+    const round = await roundDir('{not json')
+    const problem = contrastProblem(round, SHA)
+    await expect(problem).rejects.toThrow(ReviewError)
+    await expect(problem).rejects.toThrow(/contrast\.json is not JSON/)
   })
 })
 
