@@ -29,6 +29,7 @@
     "verify:unit": "pnpm format:check && pnpm lint && pnpm type-check && pnpm build && pnpm api:check && pnpm docs:check && pnpm type-check:examples && turbo run test:unit -- --run --coverage && pnpm arch:check",
     "test:axe": "turbo run test:axe",
     "arch:graph": "node scripts/arch-graph.mjs",
+    "arch:barrel-hash": "node packages/ui/scripts/barrel-hash.mjs --write",
     "review": "node packages/review-harness/src/cli.ts",
     "audit:stories": "node packages/ui/scripts/audit-stories.mjs"
   },

@@ -12,6 +12,7 @@ const noRawComposition = require('./eslint-rules/no-raw-composition')
 const noRawDeviceDataInChat = require('./eslint-rules/no-raw-device-data-in-chat')
 const noRawSpacing = require('./eslint-rules/no-raw-spacing')
 const noTruncation = require('./eslint-rules/no-truncation')
+const noUnstyledText = require('./eslint-rules/no-unstyled-text')
 const noUpwardTierImport = require('./eslint-rules/no-upward-tier-import')
 const noVarColorOpacity = require('./eslint-rules/no-var-color-opacity')
 const restrictedSyntax = require('./eslint-rules/restricted-syntax')
@@ -107,6 +108,7 @@ module.exports = tseslint.config(
           'no-raw-device-data-in-chat': noRawDeviceDataInChat,
           'no-raw-spacing': noRawSpacing,
           'no-truncation': noTruncation,
+          'no-unstyled-text': noUnstyledText,
           'no-upward-tier-import': noUpwardTierImport,
           'no-var-color-opacity': noVarColorOpacity,
           'story-title-prefix': storyTitlePrefix,
@@ -529,6 +531,19 @@ module.exports = tseslint.config(
     ignores: ['src/**/*.test.{ts,tsx}', 'src/**/*.stories.{ts,tsx}'],
     rules: {
       'titan/no-truncation': 'error',
+    },
+  },
+
+  // TD-659: on React Native Web a Text inherits nothing from the View around it, so a bare
+  // react-native Text renders black 14px System, and jsdom strips the classes that would
+  // show it in a test. RATCHETED: today's sites are in no-unstyled-text-baseline.json, which
+  // must stay exact (an unspent allowance is reported as stale). Stories are in scope, since
+  // they render on web; tests are not, since jsdom never paints.
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    ignores: ['src/**/*.test.{ts,tsx}'],
+    rules: {
+      'titan/no-unstyled-text': 'error',
     },
   },
 

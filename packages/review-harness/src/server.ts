@@ -24,6 +24,7 @@ export interface ReviewServerOptions {
   port?: number
   /** Absolute PNG path by variant key; served at `api/image/<key>`, never by path. Keys need no decoding. */
   images?: Record<string, string>
+  harnessWarning?: string
 }
 
 export interface ReviewServer {
@@ -97,7 +98,11 @@ function createRouter(opts: ReviewServerOptions, accept: Accept): http.RequestLi
       return res.end()
     }
     if (path === `${API}round` && req.method === 'GET')
-      return sendJson(res, 200, { manifest: opts.manifest, manifestSha256: opts.manifestSha256 })
+      return sendJson(res, 200, {
+        manifest: opts.manifest,
+        manifestSha256: opts.manifestSha256,
+        harnessWarning: opts.harnessWarning,
+      })
     if (path === `${API}submit` && req.method === 'POST') return void submit(req, res)
     if (path.startsWith(`${API}image/`) && req.method === 'GET')
       return sendImage(opts, path.slice(`${API}image/`.length), res)

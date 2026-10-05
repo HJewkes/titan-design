@@ -38,8 +38,41 @@ node scripts/storybook-launch.mjs --isolated          # prints its port, e.g. 61
 pnpm review --example --storybook http://127.0.0.1:6107 > <round-dir>/draft.json   # a starting point
 pnpm review build <round-dir>/draft.json [--storybook <url>]   # contrast gate; writes round.json
 pnpm review <round-dir>/round.json [--storybook <url>] [--out <dir>] [--no-open] [--no-capture]
-            [--contrast-override "<reason>"]
+            [--contrast-override "<reason>"] [--allow-stale]
 ```
+
+### Serve main's harness (TD-671)
+
+The Storybook is the round tree's; the harness must be `origin/main`'s, or the owner reviews
+on an old page. Before serving, `pnpm review` runs `git fetch origin main` and compares the
+tree hash of its own `packages/review-harness` (`HEAD:./`) with `origin/main`'s. It compares
+trees, not commits, so a commit on main outside the harness does not trip it.
+
+- **Equal**: it serves.
+- **Different**: it refuses (exit 2) before serving or rewriting anything. It prints the
+  harness commits on main this checkout lacks, then the commands that serve main's harness
+  against this round's Storybook URL and round file, from a detached checkout:
+
+  ```sh
+  git -C <repo> worktree add --detach "${TMPDIR:-/tmp}/titan-review-main" origin/main 2>/dev/null ||
+    git -C "${TMPDIR:-/tmp}/titan-review-main" checkout --quiet --detach origin/main
+  pnpm -C "${TMPDIR:-/tmp}/titan-review-main" install --frozen-lockfile
+  pnpm -C "${TMPDIR:-/tmp}/titan-review-main" review <round-dir>/round.json --storybook <url> [your flags]
+  ```
+
+  The checkout is reused on the next round; check `uptime` before the install. Remove it with
+  `git worktree remove "${TMPDIR:-/tmp}/titan-review-main"` when the review is done.
+  `feedback.json` and the PNGs still land beside the round, because the round path is absolute.
+
+- **`--allow-stale`** serves the different harness anyway. The terminal and a red banner at the
+  top of the page both say it is behind main. Use it to test harness changes on their own
+  branch (the e2es pass it); never for a round the owner reads.
+- **Fetch fails** (offline, no remote) or the harness is not in a git checkout: it serves, and
+  the terminal and the page banner say the harness was not checked against `origin/main`.
+
+The CLI prints these commands rather than running them. The install takes minutes on a
+monorepo, and a worktree is a lasting side effect that counts against the repo's worktree
+budget, so it should be a step the agent sees and chooses.
 
 Write the manifest as `draft.json` and let `build` produce `round.json` (see _Contrast gate_).
 `pnpm review` **refuses** (exit 2) a `round.json` without a passing `contrast.json` for its
@@ -376,7 +409,8 @@ own text field keeps its typing, except `Cmd+Enter`.
 
 ## Tests
 
-- `pnpm --filter @titan-design/review-harness test`: schemas, feedback building, the
+- `pnpm --filter @titan-design/review-harness test`: schemas, feedback building, the harness
+  freshness gate (git mocked; equal, behind and offline), the
   keyboard model, the section layout and the pick-to-verdict link, the fitted-height maths,
   the page's markup for a sectioned and an unsectioned round (`react-dom/server`), section
   paging over a 60-frame image round, each refusal of the review contract
