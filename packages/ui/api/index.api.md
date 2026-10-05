@@ -769,6 +769,9 @@ export const categoricalPalette: {
 export type CategoricalVariant = keyof typeof categoricalPalette;
 
 // @public
+export function ChartIcon(props: IconProps): react_jsx_runtime.JSX.Element;
+
+// @public
 export function ChatCard(input: ChatCardProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -1223,6 +1226,9 @@ export const DashboardShell: typeof WorkoutShell;
 
 // @public @deprecated (undocumented)
 export type DashboardShellProps = WorkoutShellProps;
+
+// @public
+export function DatabaseIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
 export type DataPartRenderer = (part: DataPart, message: ChatMessage) => ReactNode;
@@ -5885,6 +5891,9 @@ export interface ScheduleTilesProps extends ViewProps {
     now?: number;
     when: number | Date;
 }
+
+// @public
+export function SearchIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
 export function Section(input: SectionProps): react_jsx_runtime.JSX.Element;
