@@ -25,9 +25,12 @@ const tokensDoc = fs.readFileSync(path.join(packageRoot, 'TOKENS.md'), 'utf8')
 
 /** Roots that are deliberately undocumented in TOKENS.md, each with the reason. */
 const UNDOCUMENTED_ROOTS: Record<string, string> = {
-  avatar: 'Legacy pair no component consumes (Avatar uses `dataviz-categorical-*`); a row invites use.',
-  'on-result': 'Label on a `result-*` fill, which no component paints; the §1 `on-*` rule covers it.',
-  dataviz: 'Known gap: the VW-371 chart palettes are consumed but §2 omits them; drop this when it lands.',
+  avatar:
+    'Legacy pair no component consumes (Avatar uses `dataviz-categorical-*`); a row invites use.',
+  'on-result':
+    'Label on a `result-*` fill, which no component paints; the §1 `on-*` rule covers it.',
+  dataviz:
+    'Known gap: the VW-371 chart palettes are consumed but §2 omits them; drop this when it lands.',
 }
 
 const COLOUR_UTILITIES = [
@@ -94,9 +97,12 @@ describe('UNDOCUMENTED_ROOTS', () => {
     expect(reason.trim(), `UNDOCUMENTED_ROOTS["${root}"] needs a one-line reason`).not.toBe('')
   })
 
-  it.each(Object.keys(UNDOCUMENTED_ROOTS))('`%s` is a colour root in tailwind.config.js', (root) => {
-    expect(roots, `UNDOCUMENTED_ROOTS["${root}"] names no colour root; remove it`).toContain(root)
-  })
+  it.each(Object.keys(UNDOCUMENTED_ROOTS))(
+    '`%s` is a colour root in tailwind.config.js',
+    (root) => {
+      expect(roots, `UNDOCUMENTED_ROOTS["${root}"] names no colour root; remove it`).toContain(root)
+    }
+  )
 
   it.each(Object.keys(UNDOCUMENTED_ROOTS))('`%s` is still undocumented', (root) => {
     expect(
