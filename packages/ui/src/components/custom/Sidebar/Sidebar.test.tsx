@@ -185,5 +185,57 @@ describe('Sidebar', () => {
       expect(screen.getByLabelText('Home')).toHaveAttribute('aria-current', 'page')
       expect(screen.getByLabelText('Dashboard')).not.toHaveAttribute('aria-current')
     })
+
+    it('wraps a text badge in a Text node rather than a bare child of the item', () => {
+      render(
+        <Sidebar>
+          <SidebarItem id="inbox" label="Inbox" badge="5" />
+        </Sidebar>
+      )
+      const badge = screen.getByText('5')
+      const directText = (el: Element | null) =>
+        Array.from(el?.childNodes ?? []).some((n) => n.nodeType === 3 && n.textContent?.trim())
+      expect(directText(badge)).toBe(true)
+      expect(directText(badge.parentElement)).toBe(false)
+      expect(directText(screen.getByLabelText('Inbox'))).toBe(false)
+    })
+
+    it('renders nothing for a zero badge', () => {
+      render(
+        <Sidebar>
+          <SidebarItem id="inbox" label="Inbox" badge={0} />
+        </Sidebar>
+      )
+      expect(screen.queryByText('0')).not.toBeInTheDocument()
+    })
+
+    it('exposes aria-expanded matching isExpanded on parent items and hides the glyph', () => {
+      const { rerender } = render(
+        <Sidebar>
+          <SidebarItem id="nav" label="Navigation" hasChildren isExpanded={false} />
+          <SidebarItem id="leaf" label="Leaf" />
+        </Sidebar>
+      )
+      expect(screen.getByLabelText('Navigation')).toHaveAttribute('aria-expanded', 'false')
+      expect(screen.getByLabelText('Leaf')).not.toHaveAttribute('aria-expanded')
+      expect(screen.getByText('▶')).toHaveAttribute('aria-hidden', 'true')
+      rerender(
+        <Sidebar>
+          <SidebarItem id="nav" label="Navigation" hasChildren isExpanded />
+        </Sidebar>
+      )
+      expect(screen.getByLabelText('Navigation')).toHaveAttribute('aria-expanded', 'true')
+    })
+
+    it('renders the sidebar as a navigation landmark', () => {
+      renderSidebar()
+      expect(screen.getByRole('navigation')).toBeInTheDocument()
+    })
+
+    it('labels a titled section as a group', () => {
+      renderSidebar()
+      const group = screen.getByRole('group', { name: 'Main' })
+      expect(group).toContainElement(screen.getByLabelText('Dashboard'))
+    })
   })
 })
