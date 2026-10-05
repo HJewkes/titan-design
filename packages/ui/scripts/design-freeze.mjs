@@ -7,11 +7,9 @@
  * prototype is approved, freeze it as ground truth before any React
  * implementation work starts, so agents never build against a moving target.
  *
- * Three steps, run in order:
+ * Four steps, run in order:
  *
- *   1. Tag the HTML file in git — refuse to freeze a prototype with
- *      uncommitted changes, then create an annotated tag at HEAD recording the
- *      freeze point (`design-freeze/<component>-<version>`).
+ *   1. Refuse to freeze a prototype with uncommitted changes.
  *   2. Extract a CSS property manifest — delegates to
  *      extract-css-properties.mjs (TD-06.02) and writes a schema-conforming
  *      (TD-06.01) manifest to packages/ui/src/theme/manifest/<component>.manifest.json.
@@ -19,6 +17,9 @@
  *      (matching packages/ui/specimen/comparison.tsx's convention) with the
  *      frozen HTML inlined and a TODO placeholder for the React side, ready to
  *      paste into the specimen page.
+ *   4. Tag the HTML file in git — create an annotated tag at HEAD recording the
+ *      freeze point (`design-freeze/<component>-<version>`), only once both
+ *      extractions have succeeded.
  *
  * This script never dispatches implementation work itself — see
  * docs/agent-prompts/component-implementation.md (TD-06.03) for the prompt
@@ -40,6 +41,7 @@ import {
   extractCssPropertyManifest,
   parseArgs as parseExtractArgs,
 } from './extract-css-properties.mjs'
+import { isEntryPoint } from './lib/entry.mjs'
 
 /** Default location manifests are frozen to, matching TD-06.01's schema directory. */
 export const DEFAULT_MANIFEST_DIR = 'src/theme/manifest'
@@ -166,16 +168,16 @@ export async function runDesignFreeze({
   skipGitTag = false,
   cwd,
 }) {
-  let tagName = null
-  if (!skipGitTag) {
-    verifyHtmlCommitted(htmlPath, { cwd })
-    tagName = createFreezeTag({ component, version, htmlPath, selector }, { cwd })
-  }
+  if (!skipGitTag) verifyHtmlCommitted(htmlPath, { cwd })
 
   const manifest = await extractCssPropertyManifest({ htmlPath, selector, component, baseVariant })
   const htmlSnippet = await extractOuterHtmlFromHtml(htmlPath, selector)
-
   const skeleton = generateSpecimenSkeleton({ component, htmlSnippet, baseVariant })
+
+  // Tag last: a tag left by a failed extraction would block a same-day re-run.
+  const tagName = skipGitTag
+    ? null
+    : createFreezeTag({ component, version, htmlPath, selector }, { cwd })
 
   return { manifest, tagName, skeleton }
 }
@@ -264,8 +266,7 @@ async function main() {
   }
 }
 
-const invokedDirectly = process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url
-if (invokedDirectly) {
+if (isEntryPoint(import.meta.url, process.argv[1])) {
   main().catch((error) => {
     console.error(error.message ?? error)
     process.exitCode = 1
