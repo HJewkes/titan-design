@@ -230,7 +230,14 @@ export function SidebarItem({
           {hasBadge && (
             <View className="ml-auto">
               {typeof badge === 'string' || typeof badge === 'number' ? (
-                <Text>{badge}</Text>
+                <Text
+                  className={cn(
+                    'font-sans text-base',
+                    isActive ? 'text-brand-primary' : 'text-text-secondary'
+                  )}
+                >
+                  {badge}
+                </Text>
               ) : (
                 badge
               )}
