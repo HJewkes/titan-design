@@ -73,7 +73,8 @@ describe('no-truncation', () => {
   })
 })
 
-describe('no-truncation under the real config', () => {
+// Linting a fixture parses the whole config; the first one is slow under coverage.
+describe('no-truncation under the real config', { timeout: 30_000 }, () => {
   it('fails a new custom/ file that adds numberOfLines', () => {
     const messages = lintAt(
       'src/components/custom/Widget/Widget.tsx',
