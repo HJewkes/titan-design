@@ -1,7 +1,7 @@
 import { afterEach, describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { AccessibilityInfo, Platform } from 'react-native'
+import { AccessibilityInfo, Animated, Platform } from 'react-native'
 
 import { TypingIndicator } from './TypingIndicator'
 import { ATHLETE, COACH } from './coach-thread-fixture'
@@ -55,6 +55,41 @@ describe('TypingIndicator', () => {
       rerender(<TypingIndicator participants={[COACH]} />)
       rerender(<TypingIndicator participants={[]} />)
       expect(announce.mock.calls).toEqual([['Coach is typing']])
+    })
+  })
+
+  describe('pulse and reduced motion', () => {
+    const originalMatchMedia = window.matchMedia
+
+    function stubReducedMotion(matches: boolean) {
+      window.matchMedia = vi.fn().mockReturnValue({
+        matches,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+      }) as unknown as typeof window.matchMedia
+    }
+
+    afterEach(() => {
+      vi.restoreAllMocks()
+      if (originalMatchMedia) window.matchMedia = originalMatchMedia
+      else delete (window as { matchMedia?: unknown }).matchMedia
+    })
+
+    it('holds every dot at opacity 1 and starts no loop under reduced motion', () => {
+      stubReducedMotion(true)
+      const loop = vi.spyOn(Animated, 'loop')
+      render(<TypingIndicator participants={[COACH]} />)
+      const dots = screen.getAllByTestId('chat-typing-dot')
+      expect(dots).toHaveLength(3)
+      for (const dot of dots) expect(dot).toHaveStyle({ opacity: 1 })
+      expect(loop).not.toHaveBeenCalled()
+    })
+
+    it('starts one pulse loop per dot when reduced motion is off', () => {
+      stubReducedMotion(false)
+      const loop = vi.spyOn(Animated, 'loop')
+      render(<TypingIndicator participants={[COACH]} />)
+      expect(loop).toHaveBeenCalledTimes(3)
     })
   })
 
