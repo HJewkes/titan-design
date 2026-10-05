@@ -11,15 +11,23 @@ export interface UnreadBadgeProps {
    */
   onPress?: () => void
   size?: PillSize
+  /** Replaces any of the built-in strings; the rest keep their defaults. */
+  labels?: Partial<UnreadBadgeLabels>
   className?: string
   testID?: string
+}
+
+/** The badge's built-in strings. */
+export interface UnreadBadgeLabels {
+  /** The jump affordance's text and name: `shown` is the capped count, `count` the real one. */
+  newMessages: (shown: string, count: number) => string
 }
 
 export function unreadCountLabel(count: number, max: number): string {
   return count > max ? `${max}+` : String(count)
 }
 
-function jumpLabel(shown: string, count: number): string {
+function defaultNewMessages(shown: string, count: number): string {
   return `${shown} new ${count === 1 ? 'message' : 'messages'}`
 }
 
@@ -29,12 +37,13 @@ export function UnreadBadge({
   max = 99,
   onPress,
   size = 'sm',
+  labels,
   className,
   testID = 'chat-unread-badge',
 }: UnreadBadgeProps) {
   if (count <= 0) return null
   const shown = unreadCountLabel(count, max)
-  const label = jumpLabel(shown, count)
+  const label = (labels?.newMessages ?? defaultNewMessages)(shown, count)
   return (
     <Pill
       variant="solid"
