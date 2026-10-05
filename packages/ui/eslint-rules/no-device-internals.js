@@ -59,10 +59,10 @@ module.exports = {
     },
     schema: [],
     messages: {
-      hex: 'Avoid raw hex identifiers here. Describe what the value means to a lifter (mode, weight, phase) rather than how the device encodes it.',
+      hex: 'Avoid raw hex identifiers here. Describe what the value means to a lifter (mode, weight, phase) rather than how the device encodes it, and render that with `Typography`.',
       frame:
-        'Avoid raw byte sequences here. titan renders interpreted values, not transport payloads.',
-      uuid: 'Avoid device/transport UUIDs here. titan renders interpreted values, not transport identifiers.',
+        'Avoid raw byte sequences here. Render the interpreted value (mode, weight, velocity) with `Typography`, or describe it in lifter terms in a comment, instead of the transport payload.',
+      uuid: 'Avoid device/transport UUIDs here. Render the interpreted value (mode, weight, velocity) with `Typography`, or describe it in lifter terms in a comment, instead of the transport identifier.',
     },
   },
 

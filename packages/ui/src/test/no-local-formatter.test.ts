@@ -1,4 +1,4 @@
-import { RuleTester } from 'eslint'
+import { Linter, RuleTester } from 'eslint'
 import rule from '../../eslint-rules/no-local-formatter'
 
 const ruleTester = new RuleTester({
@@ -11,6 +11,21 @@ const ruleTester = new RuleTester({
 // not inside the rule, so it isn't exercised here — see no-raw-color's
 // src/theme/** exemption for the same split.)
 const componentFile = '/repo/packages/ui/src/components/custom/Widget/Widget.tsx'
+
+function messagesFor(code: string): string[] {
+  const linter = new Linter({ configType: 'flat' })
+  return linter
+    .verify(
+      code,
+      {
+        plugins: { t: { rules: { r: rule as never } } },
+        languageOptions: { ecmaVersion: 2022, sourceType: 'module' },
+        rules: { 't/r': 'error' },
+      },
+      'Widget.js'
+    )
+    .map((m) => m.message)
+}
 
 describe('no-local-formatter', () => {
   ruleTester.run('no-local-formatter', rule as never, {
@@ -44,5 +59,22 @@ describe('no-local-formatter', () => {
         errors: [{ messageId: 'toFixed' }],
       },
     ],
+  })
+})
+
+describe('no-local-formatter messages', () => {
+  it('toFixed(1) lists formatTenths and every formatter module', () => {
+    const [message] = messagesFor('const label = value.toFixed(1)')
+    expect(message).toContain('`formatTenths()`')
+    expect(message).toContain('`utils/number-format`')
+    expect(message).toContain('`utils/time-format`')
+    expect(message).toContain('`utils/workout-format`')
+  })
+
+  it('formatFn lists the exports of both formatter modules, as read from them', () => {
+    const [message] = messagesFor('const formatFoo = (v) => String(v)')
+    expect(message).toContain('`formatVelocity()`')
+    expect(message).toContain('`formatTrimmedDecimal()`')
+    expect(message).toContain('`formatSessionDuration()`')
   })
 })
