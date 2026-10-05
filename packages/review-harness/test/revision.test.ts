@@ -3,10 +3,10 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { Form } from '../page/App.tsx'
 import { createReducer, initialState, numberKeyAction } from '../page/state.ts'
-import { buildFeedback, emptyDraft, unansweredQuestionIds } from '../src/feedback.ts'
-import { feedbackProblems } from '../src/round.ts'
+import { buildFeedback, draftAnswer, emptyDraft, unansweredQuestionIds } from '../src/feedback.ts'
+import { feedbackProblems, normalizeFeedback } from '../src/round.ts'
 import { FeedbackSchema, ManifestSchema, type ManifestInput } from '../src/schema.ts'
-import { SHA, manifest, sectioned, sectionedInput } from './fixtures.ts'
+import { SHA, manifest, sectionedInput } from './fixtures.ts'
 
 const NOW = new Date('2026-10-05T00:00:00Z')
 const base = JSON.parse(JSON.stringify(manifest())) as ManifestInput
@@ -85,7 +85,9 @@ describe('the built-in revision option', () => {
 
 describe('a revision in a round whose options stand for frames', () => {
   it('leaves no linked frame chosen', () => {
-    const sec = sectioned()
+    const input = sectionedInput()
+    delete (input.questions[0] as { revisionOption?: string }).revisionOption
+    const sec = ManifestSchema.parse(input)
     const reduceSec = createReducer(sec)
     let state = reduceSec(initialState(sec), { type: 'pick', id: 'q1', option: 'A', many: false })
     expect(state.draft.variants.A.verdict).toBe('chosen')
@@ -158,5 +160,46 @@ describe('the revision option is offered only where it applies', () => {
     const input = JSON.parse(JSON.stringify(m)) as ManifestInput
     input.questions[0] = { ...input.questions[0], revisionOption: 'zzz' } as never
     expect(() => ManifestSchema.parse(input)).toThrow(/revisionOption.*zzz/)
+  })
+})
+
+describe('every reader agrees on what a revision request is', () => {
+  const own = ManifestSchema.parse(manifest())
+  const ownBuild = (answers: object[]) =>
+    ({ ...buildFeedback(own, SHA, emptyDraft(own), NOW), answers }) as never
+
+  it("refuses the round's own revision option sent as a pick without a comment", () => {
+    const fb = ownBuild([{ questionId: 'q1', pick: 'none' }])
+    expect(feedbackProblems(fb, own)).toContain('q1: a revision request needs a comment')
+  })
+
+  it("stores the round's own revision option sent as a pick as a revision request", () => {
+    const fb = ownBuild([{ questionId: 'q1', pick: 'none', comment: 'redo' }])
+    expect(feedbackProblems(fb, own)).toEqual([])
+    expect(normalizeFeedback(fb, own).answers[0]).toEqual({
+      questionId: 'q1',
+      revisionRequested: true,
+      comment: 'redo',
+    })
+  })
+
+  it('drops a stale built-in revision on a question that now names its own option', () => {
+    expect(draftAnswer(own.questions[0], { revision: true, comment: 'x' })).toEqual({
+      questionId: 'q1',
+    })
+  })
+
+  it('refuses a revision request on a pick-one that offers none', () => {
+    const input = JSON.parse(JSON.stringify(base)) as ManifestInput
+    input.questions[0] = { ...input.questions[0], required: false } as never
+    const optional = ManifestSchema.parse(input)
+    expect(draftAnswer(optional.questions[0], { revision: true, comment: 'x' })).toEqual({
+      questionId: 'q1',
+    })
+    const fb = {
+      ...build(optional),
+      answers: [{ questionId: 'q1', revisionRequested: true as const, comment: 'x' }],
+    }
+    expect(feedbackProblems(fb, optional)).toContain('q1: this question offers no revision request')
   })
 })

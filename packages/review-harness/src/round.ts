@@ -1,4 +1,4 @@
-import type { Feedback, Manifest, Question, StoryVariant } from './schema.ts'
+import type { Answer, Feedback, Manifest, Question, StoryVariant } from './schema.ts'
 
 // Storybook drops URL arg keys and values outside these (docs: writing-stories/args).
 const URL_SAFE_VALUE = /^[A-Za-z0-9 _-]*$/
@@ -56,23 +56,23 @@ export function urlParamProblems(manifest: Manifest): string[] {
   ])
 }
 
-function answerProblems(
-  question: Question,
-  answer: Feedback['answers'][number] | undefined,
-  skipped: boolean
-) {
-  if (!answer) return question.required && !skipped ? [`${question.id}: required`] : []
-  const problems: string[] = []
+function revisionProblems(question: Question, answer: Answer): string[] {
+  if (!answer.revisionRequested) return []
+  if (question.kind !== 'pick-one')
+    return [`${question.id}: only a pick-one can request a revision`]
+  if (!offersBuiltInRevision(question) && question.revisionOption === undefined)
+    return [`${question.id}: this question offers no revision request`]
+  if (answer.pick !== undefined) return [`${question.id}: a revision request is not a pick`]
+  if (!(answer.comment ?? '').trim()) return [`${question.id}: a revision request needs a comment`]
+  return []
+}
+
+function answerProblems(question: Question, given: Answer | undefined, skipped: boolean) {
+  if (!given) return question.required && !skipped ? [`${question.id}: required`] : []
+  const answer = normalizeAnswer(question, given)
+  const problems = revisionProblems(question, answer)
   if (question.kind === 'pick-one' && answer.pick !== undefined) {
     if (!question.options.includes(answer.pick)) problems.push(`${question.id}: unknown option`)
-  }
-  if (answer.revisionRequested) {
-    if (question.kind !== 'pick-one')
-      problems.push(`${question.id}: only a pick-one can request a revision`)
-    else if (answer.pick !== undefined)
-      problems.push(`${question.id}: a revision request is not a pick`)
-    else if (!(answer.comment ?? '').trim())
-      problems.push(`${question.id}: a revision request needs a comment`)
   }
   if (question.kind === 'pick-many') {
     const unknown = (answer.picks ?? []).filter((p) => !question.options.includes(p))
@@ -92,7 +92,32 @@ export function offersBuiltInRevision(question: Question): boolean {
   return question.kind === 'pick-one' && question.required === true && !question.revisionOption
 }
 
-export function isAnswered(question: Question, answer: Feedback['answers'][number]): boolean {
+/**
+ * The one reading of whether a pick-one answer requests a revision: the round's own
+ * `revisionOption` sent as a pick means the same as the built-in request. The page, the
+ * validator and the stored feedback all read answers through here.
+ */
+export function normalizeAnswer(question: Question, answer: Answer): Answer {
+  if (question.kind !== 'pick-one' || question.revisionOption === undefined) return answer
+  if (answer.pick !== question.revisionOption) return answer
+  const { pick: _pick, ...rest } = answer
+  return { ...rest, revisionRequested: true, ...(rest.recommendation ? { agreed: false } : {}) }
+}
+
+/** Feedback as it is stored: every answer read through `normalizeAnswer`. */
+export function normalizeFeedback(feedback: Feedback, manifest: Manifest): Feedback {
+  const questions = new Map(manifest.questions.map((q) => [q.id, q]))
+  return {
+    ...feedback,
+    answers: feedback.answers.map((a) => {
+      const question = questions.get(a.questionId)
+      return question ? normalizeAnswer(question, a) : a
+    }),
+  }
+}
+
+export function isAnswered(question: Question, given: Answer): boolean {
+  const answer = normalizeAnswer(question, given)
   if (question.kind === 'pick-one')
     return answer.pick !== undefined || answer.revisionRequested === true
   if (question.kind === 'pick-many') return (answer.picks ?? []).length > 0

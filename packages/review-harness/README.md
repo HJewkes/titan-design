@@ -139,7 +139,10 @@ sha256 of the manifest you wrote.
   a recommendation, even when the recommended answer is the round's own `revisionOption`. Anything that reads `pick` must check `revisionRequested` first. A round
   that lists its own such option names it in the question's `revisionOption` (one of its
   `options`); the built-in is then not added, and picking that option is recorded the same
-  way. The match is by that field, never by option text. Everything else is unchanged and means what it always did.
+  way: the server rewrites a `pick` of it to `revisionRequested` before validating or storing.
+  The match is by that field, never by option text. Option text is unique across a round's
+  pick-ones, so only one question can list a plain `"none"`; the rest use the built-in. A
+  `revisionRequested` on a pick-one that offers neither is rejected. Everything else is unchanged and means what it always did.
 
 ## Contrast gate (TD-478)
 

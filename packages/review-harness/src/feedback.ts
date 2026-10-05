@@ -8,7 +8,7 @@ import {
   type Recommendation,
   type Verdict,
 } from './schema.ts'
-import { isAnswered } from './round.ts'
+import { isAnswered, normalizeAnswer, offersBuiltInRevision } from './round.ts'
 import { questionsForVariant } from './sections.ts'
 
 export interface VariantDraft {
@@ -69,16 +69,17 @@ function withRecommendation(question: Question, answer: Answer): Answer {
     : { ...answer, recommendation }
 }
 
-/** The draft as an answer; a revision request (built-in or the author's own option) is never a pick. */
+/**
+ * The draft as an answer; a revision request (built-in or the author's own option) is never a
+ * pick. A stale `revision` flag on a question that no longer offers the built-in is dropped.
+ */
 export function draftAnswer(question: Question, draft: AnswerDraft): Answer {
   const answer: Answer = { questionId: question.id }
-  if (question.kind === 'pick-one' && draft.pick !== undefined) {
-    if (draft.pick === question.revisionOption) answer.revisionRequested = true
-    else answer.pick = draft.pick
-  }
-  if (question.kind === 'pick-one' && draft.revision && answer.pick === undefined)
-    answer.revisionRequested = true
-  return answer
+  if (question.kind !== 'pick-one') return answer
+  if (draft.pick !== undefined) return normalizeAnswer(question, { ...answer, pick: draft.pick })
+  return draft.revision && offersBuiltInRevision(question)
+    ? { ...answer, revisionRequested: true }
+    : answer
 }
 
 function toAnswer(

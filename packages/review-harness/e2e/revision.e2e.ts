@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { expect, test, type Page } from '@playwright/test'
 import { FeedbackSchema, MANIFEST_SCHEMA_ID, type ManifestInput } from '../src/schema.ts'
+import { SECTION_TEXTS } from '../test/fixtures.ts'
 
 const CLI = new URL('../src/cli.ts', import.meta.url).pathname
 const PNG = Buffer.from(
@@ -23,7 +24,24 @@ const ROUND: ManifestInput = {
     { key: 'B', image: 'shots/b.png', label: 'Second' },
   ],
   questions: [
-    { id: 'q1', kind: 'pick-one', prompt: 'Which one?', options: ['A', 'B'], required: true },
+    {
+      id: 'q1',
+      kind: 'pick-one',
+      prompt: 'Which one?',
+      options: ['A', 'B'],
+      required: true,
+      signsOff: 'which frame leads',
+    },
+  ],
+  sections: [
+    {
+      id: 'lead',
+      title: 'Lead',
+      ...SECTION_TEXTS,
+      kind: 'CHOICE',
+      variantKeys: ['A', 'B'],
+      questionIds: ['q1'],
+    },
   ],
 }
 
@@ -47,12 +65,16 @@ async function openRound(page: Page) {
     'e2e fixture round, tiny images',
   ])
   const exit = new Promise<number | null>((resolve) => cli?.once('exit', resolve))
-  const url = await new Promise<string>((resolve) =>
+  let stderr = ''
+  // A CLI that exits before printing its URL rejected the round; fail now, not at the timeout.
+  const url = await new Promise<string>((resolve, reject) => {
     cli?.stderr?.on('data', (c: Buffer) => {
-      const found = c.toString().match(/at (http\S+__review\/)/)?.[1]
+      stderr += c.toString()
+      const found = stderr.match(/at (http\S+__review\/)/)?.[1]
       if (found) resolve(found)
     })
-  )
+    void exit.then((code) => reject(new Error(`titan-review exited ${code}:\n${stderr}`)))
+  })
   await page.goto(url)
   return { dir, exit }
 }
