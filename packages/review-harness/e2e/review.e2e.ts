@@ -37,7 +37,8 @@ function sectionedRound(storybookUrl: string): ManifestInput {
   const keys = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
   const pick = (id: string, options: string[]) =>
     ({ id, kind: 'pick-one', prompt: `Pick for ${id}?`, options, required: true }) as const
-  const text = (id: string) => ({ id, kind: 'text', prompt: `Wording for ${id}?` }) as const
+  const text = (id: string, required = false) =>
+    ({ id, kind: 'text', prompt: `Wording for ${id}?`, required }) as const
   return {
     schema: MANIFEST_SCHEMA_ID,
     unit: 'vw-545-e2e',
@@ -51,7 +52,7 @@ function sectionedRound(storybookUrl: string): ManifestInput {
       pick('q2', ['on the chart', 'in the hero eyebrow']),
       pick('q3', ['D', 'E']),
       pick('q4', ['F', 'G']),
-      text('overall'),
+      text('overall', true),
     ],
     sections: [
       { id: 's1', title: 'First', questionIds: ['q1', 'q1-text'], variantKeys: ['A', 'B'] },
@@ -270,7 +271,7 @@ test('a sectioned round pages section by section and sends a partial review', as
 
   await page.keyboard.press('Meta+Enter')
   await expect(page.getByTestId('review-screen'), 'focus leaves the hidden form').toBeFocused()
-  await expect(page.getByTestId('unanswered')).toContainText('2 of 6 questions are unanswered')
+  await expect(page.getByTestId('unanswered')).toContainText('1 of 6 questions are unanswered')
   await page.keyboard.press('Meta+Enter')
   const held = page.waitForTimeout(2_000).then(() => 'held')
   expect(await Promise.race([run.exit.then(() => 'sent'), held]), 'Cmd+Enter sent').toBe('held')

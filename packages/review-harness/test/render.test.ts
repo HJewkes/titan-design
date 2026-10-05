@@ -247,6 +247,15 @@ describe('the final check with questions unanswered', () => {
     expect(markup).toMatch(/<button[^>]*class="primary"[^>]*>Back/)
   })
 
+  it('marks pending rows, and shows an optional blank as skipped', () => {
+    const markup = screen(['q2'])
+    expect(markup).toMatch(/data-testid="answer-q2"[^>]*data-unanswered="true"/)
+    expect(markup).toContain('(skipped)')
+    expect(markup).toContain('Show only unanswered')
+    expect(markup).toContain('Next unanswered')
+    expect(markup).not.toContain('Previous unanswered')
+  })
+
   it('keeps the plain send when every question is answered', () => {
     const markup = screen([])
     expect(markup).not.toContain('unanswered')
