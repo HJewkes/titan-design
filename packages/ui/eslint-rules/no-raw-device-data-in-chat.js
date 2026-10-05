@@ -55,6 +55,15 @@ const RAW_CONSTRUCTORS = new Set(['Uint8Array', 'ArrayBuffer'])
 /** A `data-<name>` key where `<name>` itself contains a hyphen. */
 const DATA_PART_KEY_EXTRA_HYPHEN = /^data-[^-]+-/
 
+/** The whole `data-*` key at the start of a string, which may carry trailing text. */
+const DATA_PART_KEY = /^data-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*/
+
+/** `data-foo-bar` -> `data-fooBar`: the hyphenated tail camel-cased, the prefix kept. */
+function camelCaseDataKey(key) {
+  const [prefix, ...rest] = key.split('-')
+  return [prefix, rest.join('-').replace(/-+([a-z0-9])/gi, (_, c) => c.toUpperCase())].join('-')
+}
+
 /** Heuristic for "this object looks like a chat data part": its own text names `part` or `data`. */
 function looksLikeChatPart(node, sourceCode) {
   return /part|data/i.test(sourceCode.getText(node))
@@ -71,15 +80,15 @@ module.exports = {
     schema: [],
     messages: {
       rawConstructor:
-        '{{name}} has no place in a chat data-* part renderer. Render an interpreted value, never a raw device buffer (see voltras-mcp no-protocol-detail, NF-07).',
+        '{{name}} has no place in a chat data-* part renderer. Render an interpreted value (mode, weight, velocity) with `Typography`, never a raw device buffer (see voltras-mcp no-protocol-detail, NF-07).',
       hexLiteral:
-        'This string reads as a hex literal. Raw device values may not reach a chat data-* part (see voltras-mcp no-protocol-detail, NF-07).',
+        'This string reads as a hex literal. Raw device values may not reach a chat data-* part: render the interpreted value with `Typography` instead (see voltras-mcp no-protocol-detail, NF-07).',
       byteSequence:
-        'This string reads as a raw byte sequence. Raw device values may not reach a chat data-* part (see voltras-mcp no-protocol-detail, NF-07).',
+        'This string reads as a raw byte sequence. Raw device values may not reach a chat data-* part: render the interpreted value with `Typography` instead (see voltras-mcp no-protocol-detail, NF-07).',
       rawFieldAccess:
-        '"{{field}}" reads as a raw-frame field name accessed on a data-* part. Render an interpreted value, never a raw device field (see voltras-mcp no-protocol-detail, NF-07).',
+        '"{{field}}" reads as a raw-frame field name accessed on a data-* part. Render an interpreted value with `Typography`, never a raw device field (see voltras-mcp no-protocol-detail, NF-07).',
       hyphenatedDataKey:
-        'A data-* part key may not contain a hyphen after the "data-" prefix — such a key is silently dropped by the Claude Code channel meta (VW-394).',
+        'The data-* part key "{{key}}" has a hyphen after the "data-" prefix, so the Claude Code channel meta silently drops it (VW-394). Use `{{suggestion}}` instead.',
     },
   },
 
@@ -96,7 +105,12 @@ module.exports = {
         return
       }
       if (DATA_PART_KEY_EXTRA_HYPHEN.test(value)) {
-        context.report({ node, messageId: 'hyphenatedDataKey' })
+        const key = DATA_PART_KEY.exec(value)[0]
+        context.report({
+          node,
+          messageId: 'hyphenatedDataKey',
+          data: { key, suggestion: camelCaseDataKey(key) },
+        })
       }
     }
 

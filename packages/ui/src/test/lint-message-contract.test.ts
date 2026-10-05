@@ -1,3 +1,7 @@
+/* eslint-disable titan/no-device-internals --
+ * The fixtures below are the shapes the device rules reject. Every value is
+ * invented for the test.
+ */
 import fs from 'node:fs'
 import path from 'node:path'
 import { Linter } from 'eslint'
@@ -23,6 +27,7 @@ const FIX_CLAUSE = /\b(use|move|resolve|build|compose|render|describe|add|call|d
 const SYMBOL_OPTION = /^([A-Za-z_$][\w$]*)\(.*\)$/
 const CLASS_OPTION = /^(?:[a-z]+:)*-?[a-z][a-z0-9]*(?:-[a-z0-9.[\]/]+)+$/
 const PATH_OPTION = /^[a-z][\w-]*\/[\w./-]*$/
+const DATA_KEY_OPTION = /^data-[a-z]+[A-Z][A-Za-z0-9]*$/
 const ROOT_OPTION = /^[A-Z][\w ]*\/[\w|/ ]*$/
 const EXPORT_OPTION = /^[A-Z][A-Za-z0-9]*$/
 const STORY_ROOTS = fixOptions.storyRoots as string[]
@@ -41,13 +46,6 @@ const FROZEN_CALL =
   'CallExpression[callee.name="getSemanticColors"]:not(:has(> CallExpression[callee.name="useSurfaceMode"]))'
 
 const PENDING = new Set<string>([
-  'titan/no-device-internals:hex',
-  'titan/no-device-internals:frame',
-  'titan/no-device-internals:uuid',
-  'titan/no-frozen-theme:literalMode',
-  'titan/no-frozen-theme:moduleScope',
-  'titan/no-local-formatter:toFixed',
-  'titan/no-local-formatter:formatFn',
   'titan/no-raw-color:hex',
   'titan/no-raw-color:functional',
   'titan/no-raw-color:twPalette',
@@ -57,11 +55,6 @@ const PENDING = new Set<string>([
   'titan/no-raw-composition:rawButton',
   'titan/no-raw-composition:d3Import',
   'titan/no-raw-composition:pathMath',
-  'titan/no-raw-device-data-in-chat:rawConstructor',
-  'titan/no-raw-device-data-in-chat:hexLiteral',
-  'titan/no-raw-device-data-in-chat:byteSequence',
-  'titan/no-raw-device-data-in-chat:rawFieldAccess',
-  'titan/no-raw-device-data-in-chat:hyphenatedDataKey',
   'titan/no-raw-spacing:rawSpacing',
   'titan/no-var-color-opacity:deadClass',
   `no-restricted-syntax:${GRADIENT_LITERAL}`,
@@ -73,6 +66,7 @@ const PENDING = new Set<string>([
 ])
 
 const SHELL_FILE = 'src/components/shell/ContractFixture.tsx'
+const CHAT_FILE = 'src/components/custom/Chat/ContractFixture.tsx'
 const UI_FILE = 'src/components/ui/contract-fixture/ContractFixture.tsx'
 const FIXTURES: Record<string, Fixture> = {
   'titan/no-deprecated-import:deprecated': {
@@ -82,6 +76,48 @@ const FIXTURES: Record<string, Fixture> = {
   'titan/no-upward-tier-import:upward': {
     code: "import { PrBadge } from '@/components/custom/Workout/PrBadge'",
     filename: UI_FILE,
+  },
+  'titan/no-device-internals:hex': { code: 'export const mode = 0xab', filename: SHELL_FILE },
+  'titan/no-device-internals:frame': { code: '// frame: ab cd ef 01', filename: SHELL_FILE },
+  'titan/no-device-internals:uuid': {
+    code: "export const id = '0000fe59-1234-5678-9abc-def012345678'",
+    filename: SHELL_FILE,
+  },
+  'titan/no-frozen-theme:literalMode': {
+    code: "export const t = getSemanticColors('dark')",
+    filename: SHELL_FILE,
+  },
+  'titan/no-frozen-theme:moduleScope': {
+    code: 'export const t = getSemanticColors(MODE)',
+    filename: SHELL_FILE,
+  },
+  'titan/no-local-formatter:toFixed': {
+    code: 'export const label = value.toFixed(1)',
+    filename: SHELL_FILE,
+  },
+  'titan/no-local-formatter:formatFn': {
+    code: 'export const formatFoo = (v: number) => String(v)',
+    filename: SHELL_FILE,
+  },
+  'titan/no-raw-device-data-in-chat:rawConstructor': {
+    code: 'export function useDecoder() { return new Uint8Array(4) }',
+    filename: CHAT_FILE,
+  },
+  'titan/no-raw-device-data-in-chat:hexLiteral': {
+    code: "export const frame = '0x1a2b3c'",
+    filename: CHAT_FILE,
+  },
+  'titan/no-raw-device-data-in-chat:byteSequence': {
+    code: "export const frame = 'a9:c7:00:04'",
+    filename: CHAT_FILE,
+  },
+  'titan/no-raw-device-data-in-chat:rawFieldAccess': {
+    code: 'export function Bubble({ dataPart }) { return dataPart.raw }',
+    filename: CHAT_FILE,
+  },
+  'titan/no-raw-device-data-in-chat:hyphenatedDataKey': {
+    code: "export const type = 'data-foo-bar'",
+    filename: CHAT_FILE,
   },
   'titan/story-title-prefix:unknownPrefix': {
     code: "const meta = { title: 'Widgets/ContractFixture' }\nexport default meta",
@@ -169,17 +205,23 @@ async function exportProblem(span: string): Promise<string | undefined> {
 export async function contractProblems(message: string): Promise<string[]> {
   const spans = [...message.matchAll(/`([^`]+)`/g)].map((m) => m[1])
   const of = (kind: RegExp) => spans.filter((span) => kind.test(span))
-  const [symbols, classes, paths, roots, components] = [
+  const [symbols, classes, paths, roots, components, dataKeys] = [
     of(SYMBOL_OPTION),
     of(CLASS_OPTION),
     of(PATH_OPTION),
     of(ROOT_OPTION),
     of(EXPORT_OPTION),
+    of(DATA_KEY_OPTION),
   ]
   const problems: string[] = []
   if (!FIX_CLAUSE.test(message)) problems.push('has no fix clause')
   const optionCount =
-    symbols.length + classes.length + paths.length + roots.length + components.length
+    symbols.length +
+    classes.length +
+    paths.length +
+    roots.length +
+    components.length +
+    dataKeys.length
   if (optionCount === 0) problems.push('lists no backticked option')
   const compiled = classes.length ? await compileClasses(classes) : new Set<string>()
   for (const cls of classes)
@@ -230,6 +272,10 @@ describe('lint message contract: the checker', () => {
       'path `ui/no-such-dir` does not exist under src',
       'story root `Widgets` is not in preview.tsx',
     ])
+  })
+
+  it('accepts a camelCase data-* key as an option', async () => {
+    expect(await contractProblems('Use `data-fooBar` instead.')).toEqual([])
   })
 
   it('rejects a symbol missing from the module SYMBOLS names for it', async () => {
