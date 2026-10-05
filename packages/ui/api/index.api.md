@@ -4930,33 +4930,29 @@ export function paceTone(progress: number, target?: number): PaceTone;
 // @public
 export function paceToneColor(tone: PaceTone, mode: ThemeMode): string;
 
-// @public (undocumented)
+// @public
 export function Page(input: PageProps): react_jsx_runtime.JSX.Element;
 
-// @public (undocumented)
+// @public
 export type PageGutter = 'sm' | 'md';
 
-// @public (undocumented)
+// @public
 export function PageHeader(input: PageHeaderProps): react_jsx_runtime.JSX.Element;
 
-// @public (undocumented)
+// @public
 export interface PageHeaderProps extends Omit<ViewProps, 'children'> {
-    // (undocumented)
     className?: string;
-    // (undocumented)
     description?: string;
-    // (undocumented)
     title: string;
     trailing?: React__default.ReactNode;
 }
 
-// @public (undocumented)
+// @public
 export type PageMaxWidth = 'narrow' | 'wide' | 'full';
 
-// @public (undocumented)
+// @public
 export interface PageProps extends Omit<ViewProps, 'children'> {
     children?: React__default.ReactNode;
-    // (undocumented)
     className?: string;
     contentClassName?: string;
     gutter?: PageGutter;

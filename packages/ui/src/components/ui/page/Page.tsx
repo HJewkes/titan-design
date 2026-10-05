@@ -13,9 +13,12 @@ import { cn } from '../../../utils/cn'
 import { Typography } from '../typography'
 import { surfaceBackground, useSurface } from '../surface'
 
+/** Gutter size around the content: `sm` is fixed narrow, `md` widens from 640px. */
 export type PageGutter = 'sm' | 'md'
+/** Cap on the content column: `narrow` 760px, `wide` 1100px, `full` fills the region. */
 export type PageMaxWidth = 'narrow' | 'wide' | 'full'
 
+/** Props for `Page`; other `View` props reach the root `main` element. */
 export interface PageProps extends Omit<ViewProps, 'children'> {
   /** Stacked above the body. Usually a PageHeader. Omitted: no header and no gap. */
   header?: React.ReactNode
@@ -31,6 +34,7 @@ export interface PageProps extends Omit<ViewProps, 'children'> {
   isHeaderPinned?: boolean
   /** true: a pinned header casts an elevation shadow once content has scrolled under it. */
   hasScrollShadow?: boolean
+  /** Tailwind classes merged onto the root. */
   className?: string
   /** The padded outer column. */
   contentClassName?: string
@@ -93,6 +97,7 @@ function PageHeaderBand({ gutter, isElevated, innerClassName, children }: PageHe
   )
 }
 
+/** A page container for a view's content region: a gutter, an optional width cap, a header slot and a scroller. */
 export function Page({
   header,
   children,
@@ -155,14 +160,19 @@ export function Page({
   )
 }
 
+/** Props for `PageHeader`; other `View` props reach its row. */
 export interface PageHeaderProps extends Omit<ViewProps, 'children'> {
+  /** The page's level-1 heading. */
   title: string
+  /** One line of secondary text under the title. */
   description?: string
   /** Actions, right-aligned on the title row. */
   trailing?: React.ReactNode
+  /** Tailwind classes merged onto the header row. */
   className?: string
 }
 
+/** The default `Page` header: a title, an optional description and a trailing action in its own corner. */
 export function PageHeader({ title, description, trailing, className, ...props }: PageHeaderProps) {
   return (
     <View
