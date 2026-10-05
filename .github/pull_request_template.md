@@ -15,4 +15,5 @@ Delete this block if the PR adds or changes no token.
 - [ ] `semantic.ts` (dark and light)
 - [ ] `global.css` (`:root` and `.light`)
 - [ ] `tailwind.config.js`
+- [ ] `theme/config.ts` (`darkThemeCSSVars` and `lightThemeCSSVars`)
 - [ ] `packages/ui/TOKENS.md` row for the new role or category

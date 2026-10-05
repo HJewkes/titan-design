@@ -14,7 +14,9 @@ import { describe, it, expect } from 'vitest'
  * colour utility prefix (`bg-`, `text-`, …) is dropped, starts with `<root>-`: `surface-*`,
  * `bg-surface-raised`, `data-1..10`. A root whose value is a single colour (`divider`) may also
  * appear bare. A bare object root does not count, so prose such as "the `dataviz` skill" is not
- * mistaken for the token family.
+ * mistaken for the token family. A root that shares its name with a colour utility (`text`,
+ * `border`) must be followed by one of its own keys or `*` (`text-primary`, `text-text-tertiary`,
+ * `border-*`), so a utility class such as `text-sm` does not count.
  */
 
 const require = createRequire(import.meta.url)
@@ -25,10 +27,9 @@ const tokensDoc = fs.readFileSync(path.join(packageRoot, 'TOKENS.md'), 'utf8')
 
 /** Roots that are deliberately undocumented in TOKENS.md, each with the reason. */
 const UNDOCUMENTED_ROOTS: Record<string, string> = {
-  avatar:
-    'Legacy pair no component consumes (Avatar uses `dataviz-categorical-*`); a row invites use.',
+  avatar: 'No component uses it, only ListItem stories do (Avatar uses `dataviz-categorical-*`).',
   'on-result':
-    'Label on a `result-*` fill, which no component paints; the §1 `on-*` rule covers it.',
+    'Label on a `result-*` fill; no component sets one (SparkBars fills carry no label). §1 `on-*` covers it.',
   dataviz:
     'Known gap: the VW-371 chart palettes are consumed but §2 omits them; drop this when it lands.',
 }
@@ -65,11 +66,19 @@ function candidates(word: string): string[] {
   return [bare, ...stripped]
 }
 
+/** A root named like a utility (`text`, `border`) needs one of its own keys, so `text-sm` is no mention. */
+function namesRootToken(name: string, root: string): boolean {
+  const value = colors[root]
+  if (typeof value === 'string') return name === root || name.startsWith(`${root}-`)
+  if (!name.startsWith(`${root}-`)) return false
+  if (!COLOUR_UTILITIES.includes(root)) return true
+  const rest = name.slice(root.length + 1)
+  const keys = Object.keys(value as object).filter((key) => key !== 'DEFAULT')
+  return rest === '*' || keys.some((key) => rest === key || rest.startsWith(`${key}-`))
+}
+
 function mentions(words: string[], root: string): boolean {
-  const isLeaf = typeof colors[root] === 'string'
-  return words.some((word) =>
-    candidates(word).some((name) => name.startsWith(`${root}-`) || (isLeaf && name === root))
-  )
+  return words.some((word) => candidates(word).some((name) => namesRootToken(name, root)))
 }
 
 const words = codeWords(tokensDoc)
@@ -109,5 +118,19 @@ describe('UNDOCUMENTED_ROOTS', () => {
       mentions(words, root),
       `TOKENS.md now mentions "${root}"; remove it from UNDOCUMENTED_ROOTS`
     ).toBe(false)
+  })
+})
+
+describe('the mention rule', () => {
+  it('does not count a utility class as a mention of the root it shares a name with', () => {
+    expect(mentions(['text-sm', 'text-white'], 'text')).toBe(false)
+    expect(mentions(['border-2', 'border-default'], 'border')).toBe(false)
+  })
+
+  it('counts a token of a utility-named root, bare or behind its utility', () => {
+    expect(mentions(['text-primary'], 'text')).toBe(true)
+    expect(mentions(['hover:text-text-tertiary'], 'text')).toBe(true)
+    expect(mentions(['border-border-input'], 'border')).toBe(true)
+    expect(mentions(['border-*'], 'border')).toBe(true)
   })
 })
