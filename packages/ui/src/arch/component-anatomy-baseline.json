@@ -9,11 +9,7 @@
     "story",
     "test"
   ],
-  "custom/TimerReadout/TimerReadout": [
-    "a11y"
-  ],
   "custom/Workout/ActiveWorkoutPage": [
-    "a11y",
     "status"
   ],
   "custom/Workout/BaseBadge": [
@@ -41,7 +37,6 @@
     "status"
   ],
   "custom/Workout/ExerciseDetailPage": [
-    "a11y",
     "status"
   ],
   "custom/Workout/ExerciseHeading": [
@@ -62,7 +57,6 @@
     "status"
   ],
   "custom/Workout/GoalMilestoneSummary": [
-    "a11y",
     "status",
     "story"
   ],
@@ -131,7 +125,6 @@
     "status"
   ],
   "custom/Workout/ProgramPlanningPage": [
-    "a11y",
     "status"
   ],
   "custom/Workout/ReadinessCheck": [
@@ -141,7 +134,6 @@
     "status"
   ],
   "custom/Workout/ScheduleTiles": [
-    "a11y",
     "status"
   ],
   "custom/Workout/SegmentedBar": [

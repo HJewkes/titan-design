@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { resolveAll, spacingClassesOf } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
+import { axe } from 'jest-axe'
 import {
   ActiveWorkoutPage,
   countCompletedSets,
@@ -138,6 +139,11 @@ describe('groupExercises', () => {
 })
 
 describe('ActiveWorkoutPage', () => {
+  it('has no accessibility violations', async () => {
+    const { container } = render(<ActiveWorkoutPage {...baseProps} />)
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
   it('renders the header, progress, and the focused active exercise expanded', () => {
     render(<ActiveWorkoutPage {...baseProps} />)
     expect(screen.getByTestId('active-workout-page')).toBeInTheDocument()
