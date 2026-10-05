@@ -176,13 +176,7 @@
   "components/custom/Workout/VelocityBandOverlay.tsx": {
     "file-lines": 252
   },
-  "components/custom/Workout/VelocityStrip.tsx": {
-    "file-lines": 368
-  },
   "components/custom/Workout/VelocityStrip.tsx#VelocityStrip": {
-    "complexity": 59,
-    "component-lines": 298,
-    "function-lines": 298,
     "props": 22
   },
   "components/custom/Workout/WorkoutCard.tsx#WorkoutCard": {
