@@ -1,7 +1,16 @@
-import React from 'react'
-import { ScrollView, View, type ViewProps } from 'react-native'
+import React, { useCallback, useState } from 'react'
+import {
+  ScrollView,
+  View,
+  type NativeScrollEvent,
+  type NativeSyntheticEvent,
+  type ViewProps,
+  type ViewStyle,
+} from 'react-native'
+import { getElevationShadow } from '../../../theme/elevation'
 import { cn } from '../../../utils/cn'
 import { Typography } from '../typography'
+import { useSurfaceMode } from '../surface'
 
 export type PageGutter = 'sm' | 'md'
 export type PageMaxWidth = 'narrow' | 'wide' | 'full'
@@ -16,8 +25,10 @@ export interface PageProps extends Omit<ViewProps, 'children'> {
   maxWidth?: PageMaxWidth
   /** false: the page fills the region and the view owns its own scroll. */
   isScrollable?: boolean
-  /** true: the header sits in a ruled band above the scroller instead of scrolling with the body. */
+  /** true: the header sits in a ruled band that stays put while the body scrolls under it. */
   isHeaderPinned?: boolean
+  /** true: a pinned header casts an elevation shadow once content has scrolled under it. */
+  hasScrollShadow?: boolean
   className?: string
   /** The padded outer column. */
   contentClassName?: string
@@ -25,8 +36,12 @@ export interface PageProps extends Omit<ViewProps, 'children'> {
 
 const gutterClasses: Record<PageGutter, string> = {
   sm: 'p-gutter-sm',
-  md: 'p-gutter-md',
+  md: 'p-gutter-sm sm:p-gutter-md',
 }
+
+// Below the pinned rule: 12. Above it: 24 once the screen is wide enough, 16 before.
+const pinnedBodyTop = 'pt-inset-md sm:pt-inset-md'
+const pinnedBandBottom = 'pb-gutter-sm sm:pb-section-sm'
 
 const maxWidthClasses: Record<PageMaxWidth, string> = {
   narrow: 'max-w-[760px]',
@@ -34,8 +49,20 @@ const maxWidthClasses: Record<PageMaxWidth, string> = {
   full: '',
 }
 
-// Web only: reserves the classic scrollbar's width so the band and the body share one horizontal box.
-const SCROLLBAR_GUTTER = 'web:[scrollbar-gutter:stable]'
+const SCROLL_SHADOW_LEVEL = 2
+// Explicit, so the shadow is replaced rather than left behind when the content scrolls back to the top.
+const NO_SHADOW = { boxShadow: 'none' } as ViewStyle
+
+function useScrolledUnder(enabled: boolean) {
+  const [isScrolled, setIsScrolled] = useState(false)
+  const onScroll = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      if (enabled) setIsScrolled(event.nativeEvent.contentOffset.y > 0)
+    },
+    [enabled]
+  )
+  return { isScrolled: enabled && isScrolled, onScroll }
+}
 
 export function Page({
   header,
@@ -44,43 +71,60 @@ export function Page({
   maxWidth = 'full',
   isScrollable = true,
   isHeaderPinned = false,
+  hasScrollShadow = false,
   className,
   contentClassName,
   ...props
 }: PageProps) {
+  const mode = useSurfaceMode()
   const fill = !isScrollable && 'flex-1'
   const inner = cn('w-full', maxWidthClasses[maxWidth], maxWidth !== 'full' && 'self-center')
   const pinned = isHeaderPinned && Boolean(header)
+  const { isScrolled, onScroll } = useScrolledUnder(pinned && hasScrollShadow)
   const column = (
-    <View className={cn('w-full', gutterClasses[gutter], fill, contentClassName)}>
+    <View
+      className={cn(
+        'w-full',
+        gutterClasses[gutter],
+        pinned && pinnedBodyTop,
+        fill,
+        contentClassName
+      )}
+    >
       <View className={cn(inner, 'gap-section-sm', fill)}>
         {pinned ? null : header}
         <View className={cn(fill)}>{children}</View>
       </View>
     </View>
   )
+  // The band shares the scroller's box (sticky, not a sibling), so it never needs a reserved
+  // scrollbar gutter and a page that does not scroll shows none.
+  const band = pinned ? (
+    <View
+      testID="page-header-band"
+      className={cn(
+        'w-full border-b border-hairline-strong bg-surface-base relative z-10 web:sticky web:top-0',
+        gutterClasses[gutter],
+        pinnedBandBottom
+      )}
+      style={isScrolled ? getElevationShadow(SCROLL_SHADOW_LEVEL, mode) : NO_SHADOW}
+    >
+      <View className={inner}>{header}</View>
+    </View>
+  ) : null
 
   return (
     <View role="main" className={cn('flex-1', className)} {...props}>
-      {pinned ? (
-        <View
-          testID="page-header-band"
-          className={cn(
-            'w-full border-b border-hairline-strong',
-            gutterClasses[gutter],
-            SCROLLBAR_GUTTER,
-            'web:overflow-y-hidden'
-          )}
-        >
-          <View className={inner}>{header}</View>
-        </View>
-      ) : null}
       {isScrollable ? (
-        <ScrollView testID="page-scroll" className={cn(pinned && SCROLLBAR_GUTTER)}>
+        <ScrollView testID="page-scroll" onScroll={onScroll} scrollEventThrottle={16}>
+          {band}
           {column}
         </ScrollView>
       ) : (
-        column
+        <>
+          {band}
+          {column}
+        </>
       )}
     </View>
   )
@@ -97,11 +141,14 @@ export interface PageHeaderProps extends Omit<ViewProps, 'children'> {
 export function PageHeader({ title, description, trailing, className, ...props }: PageHeaderProps) {
   return (
     <View
-      className={cn('flex-row items-start justify-between gap-inline-lg -mt-1.5', className)}
+      className={cn(
+        'flex-row items-start justify-between gap-inline-md sm:gap-inline-lg -mt-1.5',
+        className
+      )}
       {...props}
     >
-      <View className="flex-1 gap-stack-sm">
-        <Typography variant="h5" aria-level={1}>
+      <View className="flex-1 min-w-0 gap-stack-sm">
+        <Typography variant="h5" aria-level={1} className="text-lg sm:text-xl">
           {title}
         </Typography>
         {description ? (
@@ -110,7 +157,7 @@ export function PageHeader({ title, description, trailing, className, ...props }
           </Typography>
         ) : null}
       </View>
-      {trailing ? <View>{trailing}</View> : null}
+      {trailing ? <View className="shrink-0">{trailing}</View> : null}
     </View>
   )
 }

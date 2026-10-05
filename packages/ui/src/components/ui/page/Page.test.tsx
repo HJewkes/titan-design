@@ -1,6 +1,6 @@
 import React from 'react'
 import { vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { axe, toHaveNoViolations } from 'jest-axe'
 import fc from 'fast-check'
 import { Text } from 'react-native'
@@ -60,17 +60,17 @@ describe('Page', () => {
   })
 
   it.each([
-    ['md', 'p-gutter-md', 'p-gutter-sm'],
-    ['sm', 'p-gutter-sm', 'p-gutter-md'],
-  ] as const)('gutter %s carries %s and not %s', (gutter, want, notWant) => {
+    ['md', ['p-gutter-sm', 'sm:p-gutter-md']],
+    ['sm', ['p-gutter-sm']],
+  ] as const)('gutter %s carries %j', (gutter, want) => {
     render(<Page gutter={gutter}>{body()}</Page>)
-    expect(cls(outer())).toContain(want)
-    expect(cls(outer())).not.toContain(notWant)
+    const classes = cls(outer()).split(/\s+/)
+    expect(classes.filter((c) => c.includes('p-gutter-')).sort()).toEqual([...want].sort())
   })
 
   it('defaults to p-gutter-md', () => {
     render(<Page>{body()}</Page>)
-    expect(cls(outer())).toContain('p-gutter-md')
+    expect(cls(outer())).toContain('sm:p-gutter-md')
   })
 
   it.each([
@@ -142,7 +142,7 @@ describe('Page', () => {
     expect(cls(root)).not.toContain('col-x')
     expect(cls(outer())).toContain('col-x')
     expect(cls(outer())).not.toContain('root-x')
-    expect(cls(outer())).not.toContain('p-gutter-md')
+    expect(cls(outer()).split(/\s+/)).not.toContain('p-gutter-md')
   })
 
   it.each([
@@ -168,7 +168,7 @@ describe('Page', () => {
     expect(container.innerHTML).not.toContain('border-hairline-strong')
   })
 
-  it('a pinned header sits in the band outside page-scroll, with the rule and the gutter', () => {
+  it('a pinned header sits in a sticky band inside page-scroll, with the rule and the gutter', () => {
     const { container } = render(
       <Page isHeaderPinned gutter="sm" maxWidth="narrow" header={<Text>Header content</Text>}>
         {body()}
@@ -176,26 +176,47 @@ describe('Page', () => {
     )
     const scroller = container.querySelector('[data-testid="page-scroll"]') as HTMLElement
     const band = screen.getByTestId('page-header-band')
-    expect(scroller.contains(screen.getByText('Header content'))).toBe(false)
+    expect(scroller.contains(band)).toBe(true)
     expect(band.contains(screen.getByText('Header content'))).toBe(true)
-    expect(scroller.contains(screen.getByText('Body content'))).toBe(true)
+    expect(band.contains(screen.getByText('Body content'))).toBe(false)
     expect(cls(band).split(/\s+/)).toEqual(
-      expect.arrayContaining(['border-b', 'border-hairline-strong', 'p-gutter-sm'])
+      expect.arrayContaining(['border-b', 'border-hairline-strong', 'p-gutter-sm', 'web:sticky'])
     )
     const bandInner = band.firstElementChild
     expect(cls(bandInner)).toContain('max-w-[760px]')
     expect(cls(bandInner)).toContain('self-center')
   })
 
-  it('a pinned header renders before the scroller in document order', () => {
-    const { container } = render(
+  it('a pinned header renders before the body in document order', () => {
+    render(
       <Page isHeaderPinned header={<Text>Header content</Text>}>
         {body()}
       </Page>
     )
     const band = screen.getByTestId('page-header-band')
-    const scroller = container.querySelector('[data-testid="page-scroll"]') as HTMLElement
-    expect(band.compareDocumentPosition(scroller) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(
+      band.compareDocumentPosition(screen.getByText('Body content')) &
+        Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy()
+  })
+
+  it('pinned spacing is 24 above the rule and 12 below it', () => {
+    render(
+      <Page isHeaderPinned header={<Text>Header content</Text>}>
+        {body()}
+      </Page>
+    )
+    expect(cls(screen.getByTestId('page-header-band')).split(/\s+/)).toEqual(
+      expect.arrayContaining(['pb-gutter-sm', 'sm:pb-section-sm'])
+    )
+    expect(cls(outer()).split(/\s+/)).toEqual(
+      expect.arrayContaining(['pt-inset-md', 'sm:pt-inset-md'])
+    )
+  })
+
+  it('an unpinned page keeps the full gutter above the body', () => {
+    render(<Page header={<Text>Header content</Text>}>{body()}</Page>)
+    expect(cls(outer())).not.toContain('pt-inset-md')
   })
 
   it.each([[undefined], [null], [false], ['']])(
@@ -210,20 +231,57 @@ describe('Page', () => {
     }
   )
 
-  it('a pinned band and its scroller both reserve the scrollbar gutter on web', () => {
+  it.each([
+    ['pinned', true],
+    ['pinned and not scrollable', true],
+    ['unpinned', false],
+  ])('a %s page reserves no scrollbar gutter', (name, isHeaderPinned) => {
     const { container } = render(
-      <Page isHeaderPinned header={<Text>Header content</Text>}>
+      <Page
+        isHeaderPinned={isHeaderPinned}
+        isScrollable={!name.includes('not scrollable')}
+        header={<Text>Header content</Text>}
+      >
         {body()}
       </Page>
     )
-    const scroller = container.querySelector('[data-testid="page-scroll"]')
-    expect(cls(screen.getByTestId('page-header-band'))).toContain('web:[scrollbar-gutter:stable]')
-    expect(cls(scroller)).toContain('web:[scrollbar-gutter:stable]')
+    expect(container.innerHTML).not.toContain('scrollbar-gutter')
   })
 
-  it('an unpinned page reserves no scrollbar gutter', () => {
-    const { container } = render(<Page header={<Text>Header content</Text>}>{body()}</Page>)
-    expect(container.innerHTML).not.toContain('scrollbar-gutter')
+  describe('scroll shadow', () => {
+    function renderPinned(hasScrollShadow: boolean) {
+      const { container } = render(
+        <Page isHeaderPinned hasScrollShadow={hasScrollShadow} header={<Text>Header content</Text>}>
+          {body()}
+        </Page>
+      )
+      return container.querySelector('[data-testid="page-scroll"]') as HTMLElement
+    }
+    const shadowOf = () => (screen.getByTestId('page-header-band') as HTMLElement).style.boxShadow
+
+    it('casts no shadow until content scrolls under the band', async () => {
+      const scroller = renderPinned(true)
+      expect(shadowOf()).toBe('none')
+      scroller.scrollTop = 40
+      fireEvent.scroll(scroller)
+      expect(shadowOf()).not.toBe('none')
+      await new Promise((resolve) => setTimeout(resolve, 30))
+      scroller.scrollTop = 0
+      fireEvent.scroll(scroller)
+      expect(shadowOf()).toBe('none')
+    })
+
+    it('is off by default', () => {
+      const { container } = render(
+        <Page isHeaderPinned header={<Text>Header content</Text>}>
+          {body()}
+        </Page>
+      )
+      const scroller = container.querySelector('[data-testid="page-scroll"]') as HTMLElement
+      scroller.scrollTop = 40
+      fireEvent.scroll(scroller)
+      expect(shadowOf()).toBe('none')
+    })
   })
 
   it('PageHeader pulls its row up by the cap offset', () => {
@@ -277,6 +335,37 @@ describe('Page', () => {
 })
 
 describe('PageHeader', () => {
+  it('a trailing action never changes the classes that place the title', () => {
+    const titleChain = (trailing?: React.ReactNode) => {
+      const { unmount } = render(
+        <Page maxWidth="narrow" header={<PageHeader title="Overview" trailing={trailing} />}>
+          {body()}
+        </Page>
+      )
+      const chain: string[] = []
+      for (let el = screen.getByRole('heading').parentElement; el; el = el.parentElement) {
+        chain.push(cls(el))
+        if (el.getAttribute('role') === 'main') break
+      }
+      unmount()
+      return chain
+    }
+    expect(titleChain(<Text>Action</Text>)).toEqual(titleChain(undefined))
+  })
+
+  it('keeps the action in its own corner without shrinking and lets the title shrink', () => {
+    render(<PageHeader title="Overview" trailing={<Text>Act</Text>} testID="hdr" />)
+    const [titleColumn, action] = Array.from(screen.getByTestId('hdr').children)
+    expect(cls(titleColumn)).toContain('min-w-0')
+    expect(cls(action)).toContain('shrink-0')
+  })
+
+  it('tightens spacing and type on small screens with breakpoint variants', () => {
+    render(<PageHeader title="Overview" testID="hdr" />)
+    expect(cls(screen.getByTestId('hdr'))).toContain('gap-inline-md')
+    expect(cls(screen.getByTestId('hdr'))).toContain('sm:gap-inline-lg')
+  })
+
   it('renders the title as the only level-1 heading', () => {
     render(<PageHeader title="Overview" description="Some description" />)
     const headings = screen.getAllByRole('heading')
