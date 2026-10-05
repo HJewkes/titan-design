@@ -7,8 +7,7 @@ import {
   type MeasuredFrame,
 } from './contrast-gate.ts'
 import { ReviewError, assertStoriesExist, loadRound, type LoadedRound } from './review.ts'
-import type { ContrastOverride, Manifest } from './schema.ts'
-import { roundLayout } from './sections.ts'
+import type { ContrastOverride } from './schema.ts'
 
 /** The round was measured and an undeclared miss (or an unmeasured image) blocked it. */
 export const EXIT_REFUSED = 3
@@ -41,7 +40,6 @@ export async function buildRound(
   if (round.manifest.contrastOverride)
     throw new ReviewError('a draft never carries contrastOverride; serving writes it')
   await assertStoriesExist(round)
-  unsectionedFrameWarnings(round.manifest).forEach((line) => io.stderr(line))
   const frames = await io.measure(round)
   const report = contrastReport({ ...round, frames })
   const dir = dirname(draftPath)
@@ -55,19 +53,6 @@ export async function buildRound(
   await copyFile(draftPath, join(dir, ROUND_FILE))
   io.stderr(`wrote ${join(dir, ROUND_FILE)}`)
   return 0
-}
-
-/**
- * A frame no section declares is shown under Other frames. In a sectioned round that is
- * usually a placeholder added for a round that needed no frame at all; `variants` may be empty.
- */
-export function unsectionedFrameWarnings(manifest: Manifest): string[] {
-  if (!manifest.sections) return []
-  return roundLayout(manifest).otherVariants.map(
-    (v) =>
-      `warning: variant ${v.key} is in no section, so it shows under Other frames; ` +
-      'a round without frames leaves variants empty'
-  )
 }
 
 /** Why a round about to be served has no passing contrast.json for these exact bytes. */
