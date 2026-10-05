@@ -4,7 +4,7 @@
   "properties": {
     "schema": {
       "type": "string",
-      "const": "titan-review/round@1"
+      "const": "titan-review/round@2"
     },
     "unit": {
       "type": "string",
@@ -53,7 +53,6 @@
       "maximum": 4000
     },
     "variants": {
-      "minItems": 1,
       "maxItems": 80,
       "type": "array",
       "items": {
@@ -247,13 +246,18 @@
                   "by"
                 ],
                 "additionalProperties": false
+              },
+              "signsOff": {
+                "type": "string",
+                "pattern": "\\S"
               }
             },
             "required": [
               "id",
               "prompt",
               "kind",
-              "options"
+              "options",
+              "signsOff"
             ],
             "additionalProperties": false
           },
@@ -487,8 +491,24 @@
             "type": "string",
             "minLength": 1
           },
+          "deciding": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "changed": {
+            "type": "string",
+            "pattern": "\\S"
+          },
           "context": {
-            "type": "string"
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "CHOICE",
+              "STATES"
+            ]
           },
           "questionIds": {
             "default": [],
@@ -672,9 +692,27 @@
         },
         "required": [
           "id",
-          "title"
+          "title",
+          "deciding",
+          "changed",
+          "context"
         ],
-        "additionalProperties": false
+        "additionalProperties": false,
+        "if": {
+          "required": [
+            "variantKeys"
+          ],
+          "properties": {
+            "variantKeys": {
+              "minItems": 1
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "kind"
+          ]
+        }
       }
     },
     "recommendations": {
@@ -898,21 +936,8 @@
     "storybookUrl",
     "widths",
     "variants",
-    "questions"
+    "questions",
+    "sections"
   ],
-  "additionalProperties": false,
-  "if": {
-    "not": {
-      "required": [
-        "sections"
-      ]
-    }
-  },
-  "then": {
-    "properties": {
-      "variants": {
-        "maxItems": 12
-      }
-    }
-  }
+  "additionalProperties": false
 }

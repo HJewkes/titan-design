@@ -1,6 +1,9 @@
 import { z } from 'zod'
+import { contractProblems, duplicates, type Problem } from './contract.ts'
 
-export const MANIFEST_SCHEMA_ID = 'titan-review/round@1'
+export const MANIFEST_SCHEMA_ID = 'titan-review/round@2'
+/** A round written before the review contract: the page still reads it, the CLI refuses it. */
+export const LEGACY_MANIFEST_SCHEMA_ID = 'titan-review/round@1'
 export const FEEDBACK_SCHEMA_ID = 'titan-review/feedback@1'
 
 const id = z.string().regex(/^[A-Za-z0-9_-]{1,32}$/, 'letters, digits, _ and - only')
@@ -103,6 +106,8 @@ const PickOneSchema = z
     options: z.array(z.string()).min(2),
     optionVariants,
     recommendation,
+    /** The changed part an answer signs off, so no answer approves a whole PR at once. */
+    signsOff: z.string().min(1).optional(),
   })
   .strict()
 const PickManySchema = z
@@ -128,6 +133,15 @@ const TextSchema = z.object({ ...questionBase, kind: z.literal('text') }).strict
 
 export const QuestionSchema = z.discriminatedUnion('kind', [
   PickOneSchema,
+  PickManySchema,
+  ScaleSchema,
+  TextSchema,
+])
+
+const SIGNS_OFF = 'a pick-one question names the changed part it signs off (signsOff)'
+
+const ContractQuestionSchema = z.discriminatedUnion('kind', [
+  PickOneSchema.extend({ signsOff: z.string({ error: SIGNS_OFF }).regex(/\S/, SIGNS_OFF) }),
   PickManySchema,
   ScaleSchema,
   TextSchema,
@@ -213,12 +227,24 @@ export const ContrastOverrideSchema = z
   })
   .strict()
 
+/**
+ * What a section's frames are: a CHOICE among variants that differ only in the property
+ * decided, or the STATES of one design, which asks no choice.
+ */
+export const STRIP_KINDS = ['CHOICE', 'STATES'] as const
+
 /** One group of frames with the question(s) those frames answer, in reading order. */
 export const SectionSchema = z
   .object({
     id,
     title: z.string().min(1),
+    /** What this section asks the owner to decide. */
+    deciding: z.string().optional(),
+    /** The diff against the last approved state. */
+    changed: z.string().optional(),
+    /** What is shown for context only and is out of scope. */
     context: z.string().optional(),
+    kind: z.enum(STRIP_KINDS).optional(),
     questionIds: z.array(id).default([]),
     variantKeys: z.array(id).default([]),
     /** Frames shown elsewhere that also bear on this section; rendered as a link, not a copy. */
@@ -228,9 +254,13 @@ export const SectionSchema = z
   })
   .strict()
 
-function duplicates(values: string[]): string[] {
-  return values.filter((v, i) => values.indexOf(v) !== i)
-}
+const sectionText = (message: string) => z.string({ error: message }).regex(/\S/, message)
+
+const ContractSectionSchema = SectionSchema.extend({
+  deciding: sectionText('a section says what it asks the owner to decide (deciding)'),
+  changed: sectionText('a section says what changed since the last approved state (changed)'),
+  context: sectionText('a section says what it shows for context only, out of scope (context)'),
+})
 
 function sectionProblems(m: {
   variants: { key: string }[]
@@ -338,9 +368,9 @@ function recommendationProblems(m: { questions: z.output<typeof QuestionSchema>[
   })
 }
 
-export const ManifestSchema = z
+const ManifestObject = z
   .object({
-    schema: z.literal(MANIFEST_SCHEMA_ID),
+    schema: z.enum([MANIFEST_SCHEMA_ID, LEGACY_MANIFEST_SCHEMA_ID]),
     unit: z.string().min(1),
     round: z.number().int().min(1),
     storybookUrl,
@@ -349,7 +379,8 @@ export const ManifestSchema = z
     height: frameHeight.default(AUTO_HEIGHT),
     /** The ceiling an auto-sized frame stops at; taller stories scroll inside the frame. */
     maxHeight: z.number().int().min(120).max(4000).default(1200),
-    variants: z.array(VariantSchema).min(1).max(MAX_SECTIONED_VARIANTS),
+    /** Empty for a questions-only round; nothing has to stand in for a frame it does not have. */
+    variants: z.array(VariantSchema).max(MAX_SECTIONED_VARIANTS),
     questions: z.array(QuestionSchema),
     sections: z.array(SectionSchema).min(1).optional(),
     recommendations: z.enum(RECOMMENDATION_MODES).default('after-answer'),
@@ -359,27 +390,54 @@ export const ManifestSchema = z
     contrastOverride: ContrastOverrideSchema.optional(),
   })
   .strict()
-  .superRefine((m, ctx) => {
-    const report = (path: string, dupes: (string | number)[]) => {
-      if (dupes.length)
-        ctx.addIssue({ code: 'custom', path: [path], message: `duplicate: ${dupes}` })
-    }
-    report('variants', duplicates(m.variants.map((v) => v.key)))
-    report('questions', duplicates(m.questions.map((q) => q.id)))
-    report('widths', duplicates(m.widths.map(String)))
-    if (!m.sections && m.variants.length > MAX_VARIANTS)
-      ctx.addIssue({
-        code: 'custom',
-        path: ['variants'],
-        message: `a round without sections holds at most ${MAX_VARIANTS} variants; group more into sections`,
-      })
-    for (const message of sectionProblems(m))
-      ctx.addIssue({ code: 'custom', path: ['sections'], message })
-    for (const message of [...optionVariantProblems(m), ...recommendationProblems(m)])
-      ctx.addIssue({ code: 'custom', path: ['questions'], message })
-    for (const message of contrastProblems(m))
-      ctx.addIssue({ code: 'custom', path: ['contrast'], message })
-  })
+
+function manifestProblems(m: z.output<typeof ManifestObject>): Problem[] {
+  const dupes = (path: string, values: string[]) =>
+    duplicates(values).length ? [{ path, message: `duplicate: ${duplicates(values)}` }] : []
+  const at = (path: string, messages: string[]) => messages.map((message) => ({ path, message }))
+  return [
+    ...dupes(
+      'variants',
+      m.variants.map((v) => v.key)
+    ),
+    ...dupes(
+      'questions',
+      m.questions.map((q) => q.id)
+    ),
+    ...dupes('widths', m.widths.map(String)),
+    ...(!m.sections && m.variants.length > MAX_VARIANTS
+      ? at('variants', [
+          `a round without sections holds at most ${MAX_VARIANTS} variants; group more into sections`,
+        ])
+      : []),
+    ...at('sections', sectionProblems(m)),
+    ...at('questions', [...optionVariantProblems(m), ...recommendationProblems(m)]),
+    ...at('contrast', contrastProblems(m)),
+  ]
+}
+
+function addProblems(ctx: z.RefinementCtx, problems: Problem[]): void {
+  for (const { path, message } of problems) ctx.addIssue({ code: 'custom', path: [path], message })
+}
+
+/** Reads any round the page can render, including one written before the review contract. */
+export const ManifestSchema = ManifestObject.superRefine((m, ctx) =>
+  addProblems(ctx, manifestProblems(m))
+)
+
+const LEGACY_REFUSED =
+  `${LEGACY_MANIFEST_SCHEMA_ID} predates the review contract; migrate it to ${MANIFEST_SCHEMA_ID} ` +
+  '(sections with deciding, changed and context; a kind on each strip; signsOff on pick-one)'
+
+/**
+ * The round the CLI serves and builds: every section says what it decides, what changed and
+ * what is context only, every strip is a CHOICE or STATES, every pick-one names what it signs off.
+ */
+export const RoundSchema = ManifestObject.extend({
+  schema: z.literal(MANIFEST_SCHEMA_ID, { error: LEGACY_REFUSED }),
+  questions: z.array(ContractQuestionSchema),
+  sections: z.array(ContractSectionSchema).min(1, 'a round groups its questions into sections'),
+}).superRefine((m, ctx) => addProblems(ctx, [...manifestProblems(m), ...contractProblems(m)]))
 
 /** A comment the human left on a frame that a section pointed at this question. */
 const variantCommentSchema = z.object({ key: z.string(), comment: z.string() }).strict()
@@ -461,6 +519,7 @@ export type StoryVariant = Variant & { storyId: string }
 export type ImageVariant = Variant & { image: string }
 export type Question = Manifest['questions'][number]
 export type Section = z.output<typeof SectionSchema>
+export type StripKind = (typeof STRIP_KINDS)[number]
 export type FrameHeight = number | typeof AUTO_HEIGHT
 export type Feedback = z.infer<typeof FeedbackSchema>
 export type Answer = Feedback['answers'][number]
@@ -493,25 +552,28 @@ const VARIANT_SOURCE = {
   ],
 }
 
-// The manifest superRefine's unsectioned cap, as JSON Schema.
-const UNSECTIONED_CAP = {
-  if: { not: { required: ['sections'] } },
-  then: { properties: { variants: { maxItems: MAX_VARIANTS } } },
+// The contract's "a section with frames names its strip's kind", as JSON Schema.
+const STRIP_NEEDS_KIND = {
+  if: { required: ['variantKeys'], properties: { variantKeys: { minItems: 1 } } },
+  then: { required: ['kind'] },
 }
 
+/** The round@2 contract, which is what an author writes against. */
 export function manifestJsonSchema(): unknown {
-  const schema = z.toJSONSchema(ManifestSchema, {
+  const schema = z.toJSONSchema(RoundSchema, {
     io: 'input',
     unrepresentable: 'any',
   }) as unknown as {
     properties: {
       storybookUrl: Record<string, unknown>
       variants: { items: Record<string, unknown> }
+      sections: { items: Record<string, unknown> }
     }
   }
   schema.properties.storybookUrl.pattern = LOOPBACK_URL_PATTERN
   Object.assign(schema.properties.variants.items, VARIANT_SOURCE)
-  return Object.assign(schema, UNSECTIONED_CAP)
+  Object.assign(schema.properties.sections.items, STRIP_NEEDS_KIND)
+  return schema
 }
 
 export function feedbackJsonSchema(): unknown {

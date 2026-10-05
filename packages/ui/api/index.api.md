@@ -1199,7 +1199,7 @@ export const darkThemeCSSVars: {
     readonly '--color-text-link-hover': "#3CA8FF";
     readonly '--color-surface-overlay': "#373635";
     readonly '--color-surface-input': "#2C2A28";
-    readonly '--color-border-input': "#5A5958";
+    readonly '--color-border-input': "#888684";
     readonly '--color-border-input-hover': "#72716F";
     readonly '--color-border-input-focus': "#828DF8";
     readonly '--color-border-input-error': "#E05254";
@@ -1242,11 +1242,18 @@ export interface DataRowProps extends ViewProps {
 // @public (undocumented)
 export function DateSeparator(input: DateSeparatorProps): react_jsx_runtime.JSX.Element;
 
+// @public
+export interface DateSeparatorLabels {
+    today: string;
+    yesterday: string;
+}
+
 // @public (undocumented)
 export interface DateSeparatorProps {
     // (undocumented)
     className?: string;
     date: string | Date | number;
+    labels?: Partial<DateSeparatorLabels>;
     now?: string | Date | number;
     showDay?: boolean;
     showTime?: boolean;
@@ -2435,7 +2442,7 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'background-frame': "#100D0A";
     readonly 'border-prominent': "#424140";
     readonly 'border-focus': "#828DF8";
-    readonly 'border-input': "#5A5958";
+    readonly 'border-input': "#888684";
     readonly 'border-input-hover': "#72716F";
     readonly 'border-input-focus': "#828DF8";
     readonly 'border-input-error': "#E05254";
@@ -2783,7 +2790,7 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-text-link-hover': "#3CA8FF";
     readonly '--color-surface-overlay': "#373635";
     readonly '--color-surface-input': "#2C2A28";
-    readonly '--color-border-input': "#5A5958";
+    readonly '--color-border-input': "#888684";
     readonly '--color-border-input-hover': "#72716F";
     readonly '--color-border-input-focus': "#828DF8";
     readonly '--color-border-input-error': "#E05254";
@@ -4446,12 +4453,21 @@ export function messageBody(message: ChatMessage): string;
 // @public
 export function MessageBubble(input: MessageBubbleProps): react_jsx_runtime.JSX.Element;
 
+// @public
+export interface MessageBubbleLabels {
+    delivery: Record<DeliveryStatus, string>;
+    endorsed: string;
+    writing: string;
+    you: string;
+}
+
 // @public (undocumented)
 export interface MessageBubbleProps {
     author?: Participant;
     // (undocumented)
     className?: string;
     isOwn?: boolean;
+    labels?: Partial<MessageBubbleLabels>;
     // (undocumented)
     layout?: ThreadLayout;
     // (undocumented)
@@ -4466,6 +4482,12 @@ export interface MessageBubbleProps {
 // @public
 export function MessageList(props: MessageListProps): react_jsx_runtime.JSX.Element;
 
+// @public
+export interface MessageListLabels extends MessageBubbleLabels, DateSeparatorLabels, TypingIndicatorLabels, UnreadBadgeLabels {
+    showEarlier: string;
+    unknownAuthor: string;
+}
+
 // @public (undocumented)
 export interface MessageListProps {
     accessibilityLabel?: string;
@@ -4474,6 +4496,7 @@ export interface MessageListProps {
     composer?: ReactNode;
     emptyState?: ReactNode;
     header?: ReactNode;
+    labels?: Partial<MessageListLabels>;
     layout?: ThreadLayout;
     // (undocumented)
     linkers?: ProseLinker[];
@@ -6106,7 +6129,7 @@ export const semanticColorsDark: {
     readonly 'background-frame': "#100D0A";
     readonly 'border-prominent': "#424140";
     readonly 'border-focus': "#828DF8";
-    readonly 'border-input': "#5A5958";
+    readonly 'border-input': "#888684";
     readonly 'border-input-hover': "#72716F";
     readonly 'border-input-focus': "#828DF8";
     readonly 'border-input-error': "#E05254";
@@ -8272,10 +8295,16 @@ export function TrendingUpIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 // @public
 export function TypingIndicator(input: TypingIndicatorProps): react_jsx_runtime.JSX.Element;
 
+// @public
+export interface TypingIndicatorLabels {
+    typing: (names: readonly string[]) => string;
+}
+
 // @public (undocumented)
 export interface TypingIndicatorProps {
     // (undocumented)
     className?: string;
+    labels?: Partial<TypingIndicatorLabels>;
     participants: readonly Participant[];
 }
 
@@ -8311,11 +8340,17 @@ export type TypographyVariant = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'body1
 // @public
 export function UnreadBadge(input: UnreadBadgeProps): react_jsx_runtime.JSX.Element | null;
 
+// @public
+export interface UnreadBadgeLabels {
+    newMessages: (shown: string, count: number) => string;
+}
+
 // @public (undocumented)
 export interface UnreadBadgeProps {
     // (undocumented)
     className?: string;
     count: number;
+    labels?: Partial<UnreadBadgeLabels>;
     max?: number;
     onPress?: () => void;
     // (undocumented)

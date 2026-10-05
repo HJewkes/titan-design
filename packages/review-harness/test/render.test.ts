@@ -90,8 +90,8 @@ describe('a sectioned round', () => {
     expect(q3).toBeLessThan(general)
   })
 
-  it('tells each frame which question it belongs to', () => {
-    expect(markup).toContain('Answers: Which one leads the page?')
+  it('asks the section question once, not again on every frame', () => {
+    expect(markup).not.toContain('Answers:')
   })
 
   it('links a see-also frame on another page instead of rendering it twice', () => {
@@ -245,6 +245,15 @@ describe('the final check with questions unanswered', () => {
     expect(markup).toContain('2 of 4 questions are unanswered')
     expect(markup).toMatch(/data-testid="send"[^>]*>Send partial: 2 unanswered<\/button>/)
     expect(markup).toMatch(/<button[^>]*class="primary"[^>]*>Back/)
+  })
+
+  it('marks pending rows, and shows an optional blank as skipped', () => {
+    const markup = screen(['q2'])
+    expect(markup).toMatch(/data-testid="answer-q2"[^>]*data-unanswered="true"/)
+    expect(markup).toContain('(skipped)')
+    expect(markup).toContain('Show only unanswered')
+    expect(markup).toContain('Next unanswered')
+    expect(markup).not.toContain('Previous unanswered')
   })
 
   it('keeps the plain send when every question is answered', () => {

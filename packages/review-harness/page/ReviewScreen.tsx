@@ -1,5 +1,6 @@
-import { useEffect, useRef, type Dispatch } from 'react'
+import { useEffect, useRef, useState, type Dispatch } from 'react'
 import type { Feedback, Manifest } from '../src/schema.ts'
+import { Markdown } from './Markdown.tsx'
 import { optionLabel } from './QuestionBlock.tsx'
 import type { Action } from './state.ts'
 
@@ -7,7 +8,7 @@ interface ReviewScreenProps {
   manifest: Manifest
   feedback: Feedback
   problems: string[]
-  /** Questions with no answer; any at all turns the send into an explicit partial send. */
+  /** Required questions with no answer; any at all turns the send into an explicit partial send. */
   unanswered: string[]
   sending: boolean
   dispatch: Dispatch<Action>
@@ -21,16 +22,42 @@ function answerText(manifest: Manifest, a: Feedback['answers'][number]): string 
   return a.text ?? '(no answer)'
 }
 
-function Answers({ manifest, feedback }: Pick<ReviewScreenProps, 'manifest' | 'feedback'>) {
+function Answers({
+  manifest,
+  feedback,
+  unanswered,
+  onlyUnanswered,
+  rowRefs,
+}: Pick<ReviewScreenProps, 'manifest' | 'feedback' | 'unanswered'> & {
+  onlyUnanswered: boolean
+  rowRefs: { current: Map<string, HTMLDivElement> }
+}) {
   const byId = new Map(feedback.answers.map((a) => [a.questionId, a]))
+  const pending = new Set(unanswered)
+  const shown = onlyUnanswered
+    ? manifest.questions.filter((q) => pending.has(q.id))
+    : manifest.questions
   return (
-    <dl className="summary">
-      {manifest.questions.map((q) => {
+    <dl className="summary" data-testid="answers">
+      {shown.map((q) => {
         const a = byId.get(q.id)
+        const open = pending.has(q.id)
         return (
-          <div key={q.id}>
-            <dt>{q.prompt}</dt>
-            <dd>{a ? answerText(manifest, a) : '(no answer)'}</dd>
+          <div
+            key={q.id}
+            ref={(el) => {
+              if (el) rowRefs.current.set(q.id, el)
+              else rowRefs.current.delete(q.id)
+            }}
+            tabIndex={-1}
+            className={open ? 'is-unanswered' : undefined}
+            data-testid={`answer-${q.id}`}
+            data-unanswered={open ? 'true' : undefined}
+          >
+            <dt>
+              <Markdown inline>{q.prompt}</Markdown>
+            </dt>
+            <dd>{a ? answerText(manifest, a) : q.required ? '(no answer)' : '(skipped)'}</dd>
             {a?.comment && <dd className="quote">{a.comment}</dd>}
           </div>
         )
@@ -71,10 +98,51 @@ function UnansweredNotice({
   )
 }
 
+/** Filter, and step through, the unanswered rows; a step button shows only with one in its direction. */
+function UnansweredNav({
+  unanswered,
+  onlyUnanswered,
+  onToggle,
+  rowRefs,
+}: Pick<ReviewScreenProps, 'unanswered'> & {
+  onlyUnanswered: boolean
+  onToggle: () => void
+  rowRefs: { current: Map<string, HTMLDivElement> }
+}) {
+  const [at, setAt] = useState(-1)
+  const step = (delta: number) => {
+    const next = at + delta
+    setAt(next)
+    const row = rowRefs.current.get(unanswered[next])
+    row?.scrollIntoView?.({ block: 'center' })
+    row?.focus({ preventScroll: true })
+  }
+  const current = Math.min(at, unanswered.length - 1)
+  return (
+    <div className="unanswered-nav" role="group" aria-label="Unanswered questions">
+      <button type="button" aria-pressed={onlyUnanswered} onClick={onToggle} data-testid="filter">
+        Show only unanswered
+      </button>
+      {current > 0 && (
+        <button type="button" onClick={() => step(-1)} data-testid="prev-unanswered">
+          Previous unanswered
+        </button>
+      )}
+      {current < unanswered.length - 1 && (
+        <button type="button" onClick={() => step(1)} data-testid="next-unanswered">
+          Next unanswered
+        </button>
+      )}
+    </div>
+  )
+}
+
 export function ReviewScreen(props: ReviewScreenProps) {
   const { manifest, feedback, problems, unanswered, sending, dispatch } = props
   const partial = unanswered.length > 0
   const ref = useRef<HTMLElement>(null)
+  const rowRefs = useRef(new Map<string, HTMLDivElement>())
+  const [onlyUnanswered, setOnlyUnanswered] = useState(false)
   // Focus left in the now-hidden form (a story iframe above all) would swallow this screen's keys.
   useEffect(() => ref.current?.focus({ preventScroll: true }), [])
   return (
@@ -87,7 +155,21 @@ export function ReviewScreen(props: ReviewScreenProps) {
     >
       <h2 id="review-title">Check before sending</h2>
       <Variants manifest={manifest} feedback={feedback} />
-      <Answers manifest={manifest} feedback={feedback} />
+      {partial && (
+        <UnansweredNav
+          unanswered={unanswered}
+          onlyUnanswered={onlyUnanswered}
+          onToggle={() => setOnlyUnanswered((v) => !v)}
+          rowRefs={rowRefs}
+        />
+      )}
+      <Answers
+        manifest={manifest}
+        feedback={feedback}
+        unanswered={unanswered}
+        onlyUnanswered={partial && onlyUnanswered}
+        rowRefs={rowRefs}
+      />
       {feedback.general && <p className="quote">{feedback.general}</p>}
       {partial && <UnansweredNotice manifest={manifest} unanswered={unanswered} />}
       {problems.length > 0 && (
