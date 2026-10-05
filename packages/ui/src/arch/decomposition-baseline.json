@@ -93,36 +93,18 @@
   "components/custom/Workout/GoalTrajectoryPlot.tsx": {
     "file-lines": 539
   },
-  "components/custom/Workout/InputBar.tsx#InputBar": {
-    "component-lines": 117,
-    "function-lines": 117
-  },
   "components/custom/Workout/IntensityBar.tsx#IntensityBar": {
     "component-lines": 131,
     "function-lines": 131
   },
-  "components/custom/Workout/MesoCard.tsx#MesoCard": {
-    "component-lines": 146,
-    "function-lines": 146
-  },
   "components/custom/Workout/MesoStatusCard.tsx": {
-    "file-lines": 402
-  },
-  "components/custom/Workout/MesoStatusCard.tsx#MesoStatusCard": {
-    "component-lines": 152,
-    "function-lines": 152
+    "file-lines": 359
   },
   "components/custom/Workout/ProgramPlanningPage.tsx": {
     "file-lines": 340
   },
   "components/custom/Workout/ReadinessCheck.tsx": {
     "file-lines": 227
-  },
-  "components/custom/Workout/RestTimer.tsx": {
-    "file-lines": 232
-  },
-  "components/custom/Workout/RestTimer.tsx#RestTimer": {
-    "function-lines": 115
   },
   "components/custom/Workout/SegmentedBar.tsx#SegmentedBar>segments.map": {
     "complexity": 17
@@ -135,13 +117,6 @@
     "component-lines": 361,
     "function-lines": 361
   },
-  "components/custom/Workout/TempoDisplay.tsx": {
-    "file-lines": 361
-  },
-  "components/custom/Workout/TempoDisplay.tsx#TempoDisplay": {
-    "component-lines": 166,
-    "function-lines": 166
-  },
   "components/custom/Workout/TrainingStatusPage.tsx": {
     "file-lines": 268
   },
@@ -150,9 +125,6 @@
   },
   "components/custom/Workout/VelocityStrip.tsx#VelocityStrip": {
     "props": 22
-  },
-  "components/custom/Workout/WorkoutCard.tsx#WorkoutCard": {
-    "function-lines": 107
   },
   "components/custom/Workout/index.ts": {
     "file-lines": 344
