@@ -132,9 +132,7 @@ function useTreeState<T>(options: TreeNavigationOptions<T>): TreeState<T> {
   const focusedId = resolveFocus(rows, index, focusState, selectedId)
   // A row hidden from outside the hook (a controlled collapse) hands its focus on for good, so
   // re-expanding later does not pull focus back into the subtree.
-  useEffect(() => {
-    if (focusState !== null && focusState !== focusedId) setFocusedId(focusedId)
-  }, [focusState, focusedId])
+  if (focusState !== null && focusState !== focusedId) setFocusedId(focusedId)
   return {
     options,
     index,
@@ -148,7 +146,8 @@ function useTreeState<T>(options: TreeNavigationOptions<T>): TreeState<T> {
   }
 }
 
-const childless = <T>(index: TreeIndex<T>, id: string) => (index.childrenOf.get(id) ?? []).length === 0
+const childless = <T>(index: TreeIndex<T>, id: string) =>
+  (index.childrenOf.get(id) ?? []).length === 0
 
 /**
  * A row that leaves `loadingIds` with no children collapses one commit later, so its expander can
