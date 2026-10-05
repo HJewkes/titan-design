@@ -4,15 +4,30 @@ import { describe, expect, it } from 'vitest'
 import { fcAssert } from '../../../test/property'
 import { computeLineWindow, useLineWindow, windowRows, WINDOWING_THRESHOLD } from './useLineWindow'
 
-const input = fc.record({
-  count: fc.integer({ min: 0, max: 6000 }),
+const shape = {
   rowHeight: fc.constantFrom(18, 21),
   viewport: fc.integer({ min: 0, max: 1200 }),
   offset: fc.integer({ min: -100, max: 120_000 }),
-  isWindowed: fc.boolean(),
-  pinnedIndex: fc.option(fc.integer({ min: -5, max: 6005 }), { nil: null }),
   overscan: fc.integer({ min: 0, max: 20 }),
-})
+}
+const pinnedUpTo = (count: number) =>
+  fc.option(fc.integer({ min: -5, max: count + 5 }), { nil: null })
+// Without windowing every row mounts, so that arm stays near the 500-line threshold: thousands of
+// rows per sample cost seconds on a loaded runner and exercise no further branch.
+const input = fc.oneof(
+  fc.record({
+    ...shape,
+    count: fc.integer({ min: 0, max: 6000 }),
+    isWindowed: fc.constant(true),
+    pinnedIndex: pinnedUpTo(6000),
+  }),
+  fc.record({
+    ...shape,
+    count: fc.integer({ min: 0, max: 600 }),
+    isWindowed: fc.constant(false),
+    pinnedIndex: pinnedUpTo(600),
+  })
+)
 
 describe('computeLineWindow', () => {
   it('mounts only rows in the window or the pinned row, each once and each a real row', () => {

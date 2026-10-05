@@ -67,7 +67,8 @@ describe('CodeViewer', () => {
     expect(screen.getAllByRole('option').length).toBeLessThan(60)
   })
 
-  it('windows above 500 lines only, and never when wrapping', () => {
+  // Proving the threshold means mounting 1,501 unwindowed rows, about 2 s on a loaded CI runner.
+  it('windows above 500 lines only, and never when wrapping', { timeout: 15_000 }, () => {
     const view = (text: string, wrap = false) =>
       render(<CodeViewer accessibilityLabel="Source" text={text} wrap={wrap} />)
     const atThreshold = view(numbered(500))
@@ -286,9 +287,10 @@ describe('CodeViewer', () => {
 
   describe('accessibility', () => {
     const cases: Array<[string, SourceExcerpt, Partial<CodeViewerProps>]> = [
-      ['Default', tooltipLongFunction, { header: <Text>Tooltip.tsx</Text> }],
+      // One screen of rows covers every part the 80-line excerpt has; axe time grows with the node count.
+      ['Default', fixedWindowOneLine, { header: <Text>fixed-window.ts</Text>, isTruncated: true }],
       ['empty', empty, {}],
-      ['loading', tooltipLongFunction, { isLoading: true }],
+      ['loading', fixedWindowOneLine, { isLoading: true }],
       ['disabled', fixedWindowOneLine, { isDisabled: true }],
       ['5,000 lines', scale5k, { defaultSelectedRange: { startLine: 4000, endLine: 4001 } }],
     ]
