@@ -49,7 +49,9 @@ export function VelocityHero({
       accessibilityLabel={velocityLabel(velocities)}
       style={width != null ? { width, height } : { flex: 1, height }}
     >
+      {/* The hero's own label names every rep; the strip's summary image would nest a second one. */}
       <VelocityStrip
+        aria-hidden
         variant="hero"
         velocities={velocities}
         liveRepIndex={liveRepIndex ?? velocities.length - 1}

@@ -1,5 +1,5 @@
 import { afterEach, describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { act, render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { AccessibilityInfo, Animated, Platform } from 'react-native'
 
@@ -61,12 +61,31 @@ describe('TypingIndicator', () => {
   describe('pulse and reduced motion', () => {
     const originalMatchMedia = window.matchMedia
 
+    /** Returns a switch that flips the preference and fires the media query's change listeners. */
     function stubReducedMotion(matches: boolean) {
-      window.matchMedia = vi.fn().mockReturnValue({
+      const listeners = new Set<() => void>()
+      const query = {
         matches,
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
-      }) as unknown as typeof window.matchMedia
+        addEventListener: vi.fn((_: string, listener: () => void) => listeners.add(listener)),
+        removeEventListener: vi.fn((_: string, listener: () => void) => listeners.delete(listener)),
+      }
+      window.matchMedia = vi.fn().mockReturnValue(query) as unknown as typeof window.matchMedia
+      return (next: boolean) => {
+        query.matches = next
+        act(() => listeners.forEach((listener) => listener()))
+      }
+    }
+
+    function spyOnLoopStops() {
+      const realLoop = Animated.loop
+      const stops: ReturnType<typeof vi.fn>[] = []
+      vi.spyOn(Animated, 'loop').mockImplementation((...args) => {
+        const loop = realLoop(...args)
+        const stop = vi.fn(loop.stop)
+        stops.push(stop)
+        return { ...loop, stop }
+      })
+      return stops
     }
 
     afterEach(() => {
@@ -90,6 +109,21 @@ describe('TypingIndicator', () => {
       const loop = vi.spyOn(Animated, 'loop')
       render(<TypingIndicator participants={[COACH]} />)
       expect(loop).toHaveBeenCalledTimes(3)
+    })
+
+    it('stops the running loops and settles every dot at opacity 1 when reduced motion turns on', () => {
+      const setReducedMotion = stubReducedMotion(false)
+      const stops = spyOnLoopStops()
+      render(<TypingIndicator participants={[COACH]} />)
+      expect(stops).toHaveLength(3)
+
+      setReducedMotion(true)
+
+      for (const stop of stops) expect(stop).toHaveBeenCalledTimes(1)
+      expect(stops).toHaveLength(3)
+      for (const dot of screen.getAllByTestId('chat-typing-dot')) {
+        expect(dot).toHaveStyle({ opacity: 1 })
+      }
     })
   })
 

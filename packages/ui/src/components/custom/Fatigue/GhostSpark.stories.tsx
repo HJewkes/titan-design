@@ -20,7 +20,7 @@ const meta: Meta<typeof GhostSpark> = {
       description: {
         component:
           'The phase band is decorative (`aria-hidden` on `GhostBand`): the chart’s text alternative ' +
-          'carries the phase. ' +
+          'carries the current rep and its peak velocity, not the phase. ' +
           'Per-rep velocity-time sparkline on the band model (coherent with the mirrored dual): a wide ' +
           'phase-coloured band at the bottom (ecc magenta / con cyan, ECC/CON labelled inside, always ' +
           'shown) with the velocity blooming UP from it — current rep solid over faded ghosts, a control-' +
