@@ -251,6 +251,8 @@ module.exports = tseslint.config(
       'src/components/custom/Workout/SupersetWrapper.tsx',
       'src/components/custom/Workout/MesoProgressBar.tsx',
       'src/components/custom/Workout/Sparkline.tsx',
+      'src/components/custom/Workout/SparklineParts.tsx',
+      'src/components/custom/Workout/sparklineGeometry.ts',
       'src/components/custom/Workout/VolumeLandmarkBar.tsx',
       'src/components/custom/Workout/SessionHeader.tsx',
       'src/components/custom/Workout/WeekRow.tsx',
