@@ -3,7 +3,7 @@ import http from 'node:http'
 import type { AddressInfo } from 'node:net'
 import type { Duplex } from 'node:stream'
 import { FeedbackSchema, type Feedback, type Manifest } from './schema.ts'
-import { feedbackProblems } from './round.ts'
+import { feedbackProblems, normalizeFeedback } from './round.ts'
 import { proxyRequest, proxyUpgrade } from './proxy.ts'
 
 export const PAGE_BASE = '/__review/'
@@ -58,7 +58,7 @@ function submissionError(opts: ReviewServerOptions, body: unknown): [number, str
   if (parsed.data.manifestSha256 !== opts.manifestSha256)
     return [409, ['the manifest changed since this page loaded; reload the page']]
   const problems = feedbackProblems(parsed.data, opts.manifest)
-  return problems.length ? [422, problems] : parsed.data
+  return problems.length ? [422, problems] : normalizeFeedback(parsed.data, opts.manifest)
 }
 
 function createSubmitHandler(opts: ReviewServerOptions, accept: Accept) {

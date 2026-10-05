@@ -153,7 +153,7 @@ sha256 of the manifest you wrote.
   anchor them, then shows it under their pick with whether the two match. Set the round's
   `recommendations` to `"shown"` to show every recommendation from the start.
 - Feedback `titan-review/feedback@1`: `manifestSha256`, `submittedAt`,
-  `answers[{questionId, pick | picks | value | text, comment?, variantComments?, recommendation?, agreed?}]`,
+  `answers[{questionId, pick | picks | value | text | revisionRequested, comment?, variantComments?, recommendation?, agreed?}]`,
   `variants[{key, storyId | image, verdict: chosen|rejected|maybe|null, comment, annotations[], relatedQuestionIds?}]`,
   `general`, `unansweredQuestionIds?`, `contrastOverride?` (see _The agent's side_). Each annotation has `width`,
   `x`/`y` in CSS px of the story frame, `xPct`/`yPct` as fractions of it, a `note`, and `target {testId?, role?, text?}` from element hit-testing.
@@ -166,7 +166,16 @@ sha256 of the manifest you wrote.
   manifest order, every question the owner sent without an answer (a comment alone is not an
   answer), and a required question it lists is not an error. A full submit omits the field; the
   page sends one only when every question has an answer. The server rejects a list that
-  disagrees with the answers sent. Everything else is unchanged and means what it always did.
+  disagrees with the answers sent. Every required pick-one also offers a final "None of these, request a revision". Choosing it
+  writes `revisionRequested: true` and no `pick`; the comment is then required, and a send
+  without one is blocked with a message. It counts as answered, and `agreed` is `false` against
+  a recommendation, even when the recommended answer is the round's own `revisionOption`. Anything that reads `pick` must check `revisionRequested` first. A round
+  that lists its own such option names it in the question's `revisionOption` (one of its
+  `options`); the built-in is then not added, and picking that option is recorded the same
+  way: the server rewrites a `pick` of it to `revisionRequested` before validating or storing.
+  The match is by that field, never by option text. Option text is unique across a round's
+  pick-ones, so only one question can list a plain `"none"`; the rest use the built-in. A
+  `revisionRequested` on a pick-one that offers neither is rejected. Everything else is unchanged and means what it always did.
 
 ## Contrast gate (TD-478)
 

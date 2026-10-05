@@ -1,6 +1,6 @@
 import type { Dispatch } from 'react'
-import { agrees, type AnswerDraft } from '../src/feedback.ts'
-import { isAnswered } from '../src/round.ts'
+import { agrees, draftAnswer, type AnswerDraft } from '../src/feedback.ts'
+import { isAnswered, offersBuiltInRevision } from '../src/round.ts'
 import type { Manifest, Question, Recommendation } from '../src/schema.ts'
 import { Markdown } from './Markdown.tsx'
 import { recommendationVisible, type Action } from './state.ts'
@@ -15,6 +15,8 @@ interface QuestionBlockProps {
   follow: boolean
   dispatch: Dispatch<Action>
 }
+
+export const REVISION_LABEL = 'None of these, request a revision'
 
 export function optionLabel(manifest: Manifest, option: string): string {
   const variant = manifest.variants.find((v) => v.key === option)
@@ -41,10 +43,14 @@ function Choices({
           label: optionLabel(manifest, o),
           on: many ? (draft.picks ?? []).includes(o) : draft.pick === o,
         }))
+  if (offersBuiltInRevision(question))
+    items.push({ hotkey: items.length + 1, label: REVISION_LABEL, on: draft.revision === true })
   const act = (i: number): Action =>
     question.kind === 'scale'
       ? { type: 'value', id: question.id, value: scaleValues(question)[i] }
-      : { type: 'pick', id: question.id, option: question.options[i], many }
+      : i === question.options.length
+        ? { type: 'revision', id: question.id }
+        : { type: 'pick', id: question.id, option: question.options[i], many }
   return (
     <div className="choices" role={many ? 'group' : 'radiogroup'} aria-label={question.prompt}>
       {items.map((item, i) => (
@@ -70,8 +76,9 @@ function recommendedText(manifest: Manifest, answer: Recommendation['answer']): 
 }
 
 function verdictText(question: Question, draft: AnswerDraft, recommendation: Recommendation) {
-  const answer = { ...draft, questionId: question.id }
+  const answer = { ...draft, ...draftAnswer(question, draft) }
   if (!isAnswered(question, answer)) return null
+  if (answer.revisionRequested) return 'You asked for a revision'
   return agrees(answer, recommendation) ? 'Matches your pick' : 'Differs from your pick'
 }
 
@@ -94,9 +101,20 @@ function RecommendationNote({ manifest, question, draft }: QuestionBlockProps) {
   )
 }
 
+function RevisionNotice({ question, draft }: Pick<QuestionBlockProps, 'question' | 'draft'>) {
+  const asked = draftAnswer(question, draft).revisionRequested
+  if (!asked || draft.comment.trim()) return null
+  return (
+    <p className="problems" role="alert" data-testid={`revision-needs-comment-${question.id}`}>
+      A revision request needs a comment saying what to change.
+    </p>
+  )
+}
+
 export function QuestionBlock(props: QuestionBlockProps) {
   const { question, draft, index, active, dispatch } = props
   const isText = question.kind === 'text'
+  const revising = draftAnswer(question, draft).revisionRequested === true
   return (
     <Stop
       index={index}
@@ -112,9 +130,12 @@ export function QuestionBlock(props: QuestionBlockProps) {
       </h3>
       <Choices {...props} />
       <RecommendationNote {...props} />
+      <RevisionNotice question={question} draft={draft} />
       <textarea
         aria-label={isText ? question.prompt : `Comment on ${question.id}`}
-        placeholder={isText ? 'Your answer' : 'Comment (optional)'}
+        placeholder={
+          isText ? 'Your answer' : revising ? 'Comment (required)' : 'Comment (optional)'
+        }
         value={isText ? (draft.text ?? '') : draft.comment}
         onChange={(e) =>
           dispatch(

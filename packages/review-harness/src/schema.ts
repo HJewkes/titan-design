@@ -104,6 +104,12 @@ const PickOneSchema = z
     ...questionBase,
     kind: z.literal('pick-one'),
     options: z.array(z.string()).min(2),
+    /**
+     * The option that is this round's own revision request. A required pick-one otherwise gets a
+     * built-in "None of these, request a revision"; naming the author's own option here suppresses
+     * it, and picking that option is recorded as a revision request, not a pick.
+     */
+    revisionOption: z.string().optional(),
     optionVariants,
     recommendation,
     /** The changed part an answer signs off, so no answer approves a whole PR at once. */
@@ -293,19 +299,27 @@ function sectionProblems(m: {
 
 function optionVariantProblems(m: {
   variants: { key: string }[]
-  questions: { id: string; options?: string[]; optionVariants?: Record<string, string> }[]
+  questions: {
+    id: string
+    options?: string[]
+    optionVariants?: Record<string, string>
+    revisionOption?: string
+  }[]
 }): string[] {
   const keys = new Set(m.variants.map((v) => v.key))
-  return m.questions.flatMap((q) =>
-    Object.entries(q.optionVariants ?? {}).flatMap(([option, key]) => [
+  return m.questions.flatMap((q) => [
+    ...(q.revisionOption === undefined || q.options?.includes(q.revisionOption)
+      ? []
+      : [`question ${q.id}: revisionOption "${q.revisionOption}" is not one of its options`]),
+    ...Object.entries(q.optionVariants ?? {}).flatMap(([option, key]) => [
       ...(q.options?.includes(option)
         ? []
         : [`question ${q.id}: "${option}" is not one of its options`]),
       ...(keys.has(key)
         ? []
         : [`question ${q.id}: optionVariants points at unknown variant ${key}`]),
-    ])
-  )
+    ]),
+  ])
 }
 
 type Declarations = z.output<typeof ContrastDeclarationsSchema>
@@ -446,6 +460,8 @@ const answerSchema = z
   .object({
     questionId: z.string(),
     pick: z.string().optional(),
+    /** The owner rejected every option; `comment` then says what to change. Never set with `pick`. */
+    revisionRequested: z.literal(true).optional(),
     picks: z.array(z.string()).optional(),
     value: z.number().optional(),
     text: z.string().optional(),

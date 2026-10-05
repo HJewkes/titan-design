@@ -195,6 +195,9 @@
                   "type": "string"
                 }
               },
+              "revisionOption": {
+                "type": "string"
+              },
               "optionVariants": {
                 "type": "object",
                 "propertyNames": {
