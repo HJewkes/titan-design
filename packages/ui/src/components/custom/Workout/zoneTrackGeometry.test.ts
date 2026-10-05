@@ -62,6 +62,10 @@ describe('tickLabelStep', () => {
   it('keeps every second label when spacing is half a cell', () => {
     expect(tickLabelStep(140, 10, 28)).toBe(2)
   })
+
+  it('rounds the step up so no label overlaps its neighbour', () => {
+    expect(tickLabelStep(100, 10, 28)).toBe(3)
+  })
 })
 
 describe('showsTickLabel', () => {
