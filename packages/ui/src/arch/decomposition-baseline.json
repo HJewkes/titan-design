@@ -11,9 +11,6 @@
   "components/custom/CircularTimer/CircularTimer.tsx#CircularTimer": {
     "complexity": 21
   },
-  "components/custom/Fatigue/GhostBand.tsx#GhostBand": {
-    "function-lines": 116
-  },
   "components/custom/Workout/ActiveWorkoutPage.tsx": {
     "file-lines": 348
   },
