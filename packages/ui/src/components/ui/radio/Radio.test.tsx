@@ -1,7 +1,20 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import type { ViewProps } from 'react-native'
 import { Radio, RadioGroup } from './Radio'
+
+const viewClassNames: string[][] = []
+
+vi.mock('react-native', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('react-native')>()
+  const React = await import('react')
+  const View = React.forwardRef<unknown, ViewProps & { className?: string }>((props, ref) => {
+    viewClassNames.push((props.className ?? '').split(/\s+/))
+    return React.createElement(actual.View, { ...props, ref } as ViewProps)
+  })
+  return { ...actual, View }
+})
 
 describe('Radio', () => {
   it('renders RadioGroup with Radio children', () => {
@@ -166,5 +179,23 @@ describe('Radio', () => {
       )
       expect(screen.getByRole('radio')).toBeInTheDocument()
     })
+  })
+
+  describe('unchecked boundary', () => {
+    it.each(['primary', 'secondary', 'success', 'error'] as const)(
+      'draws the unchecked %s circle with border-input, not a hairline',
+      (color) => {
+        viewClassNames.length = 0
+        render(
+          <RadioGroup value="a" onChange={() => {}} color={color}>
+            <Radio value="a">A</Radio>
+            <Radio value="b">B</Radio>
+          </RadioGroup>
+        )
+        const [, unchecked] = viewClassNames.filter((classes) => classes.includes('border-2'))
+        expect(unchecked).toContain('border-border-input')
+        expect(unchecked.filter((c) => c.startsWith('border-hairline'))).toEqual([])
+      }
+    )
   })
 })

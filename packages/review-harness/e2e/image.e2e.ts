@@ -3,7 +3,8 @@ import { existsSync } from 'node:fs'
 import { mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { expect, test, type Browser } from '@playwright/test'
+import { expect, test, type Browser, type Page } from '@playwright/test'
+import { contrastRatio, type Rgba } from '../src/contrast.ts'
 import { FeedbackSchema, MANIFEST_SCHEMA_ID, type ManifestInput } from '../src/schema.ts'
 import { SECTION_TEXTS } from '../test/fixtures.ts'
 
@@ -51,8 +52,11 @@ async function syntheticPng(browser: Browser, file: string, text: string): Promi
   await page.close()
 }
 
-/** A hand-written test round: it bypasses the contrast gate, and the page must say so. */
-const OVERRIDE = ['--contrast-override', 'e2e fixture round, synthetic images']
+/**
+ * A hand-written test round: it bypasses the contrast gate, and the page must say so.
+ * --allow-stale lets a branch that edits the harness e2e its own page.
+ */
+const OVERRIDE = ['--contrast-override', 'e2e fixture round, synthetic images', '--allow-stale']
 
 let cli: ChildProcess | undefined
 test.afterAll(() => cli?.kill())
@@ -155,6 +159,7 @@ test('sticky heads stay below an override banner whose reason wraps', async ({ p
     dir,
     '--contrast-override',
     reason,
+    '--allow-stale',
   ])
   try {
     const url = await new Promise<string>((resolve) =>
@@ -242,6 +247,75 @@ test('the review stage skips optional questions and steps through unanswered one
     await page.getByRole('button', { name: 'Show only unanswered' }).click()
     await expect(page.getByTestId('answers').locator('[data-unanswered]')).toHaveCount(3)
     await expect(page.getByTestId('answer-extra')).toHaveCount(0)
+  } finally {
+    server.kill()
+  }
+})
+
+/** Contrast of the section list in the active theme: link text, and the current bar. */
+async function sectionListContrast(page: Page) {
+  const colours = await page.locator('.sections').evaluate((list) => {
+    const style = (el: Element) => getComputedStyle(el)
+    const current = list.querySelector('[aria-current] a')!
+    const other = list.querySelector('li:not([aria-current]) a')!
+    return {
+      plane: style(list).backgroundColor,
+      current: style(current).color,
+      bar: style(current).borderBottomColor,
+      other: style(other).color,
+    }
+  })
+  const rgba = (css: string): Rgba => {
+    const [r, g, b, a = 1] = css.match(/[\d.]+/g)!.map(Number)
+    return [r, g, b, a]
+  }
+  const ratio = (fg: string) => contrastRatio(rgba(fg), rgba(colours.plane))
+  return { current: ratio(colours.current), bar: ratio(colours.bar), other: ratio(colours.other) }
+}
+
+test('the section list marks the current section beyond weight, in both themes', async ({
+  page,
+  browser,
+}) => {
+  const dir = await mkdtemp(join(tmpdir(), 'titan-review-sections-e2e-'))
+  await mkdir(join(dir, 'shots'))
+  await syntheticPng(browser, join(dir, 'shots', 'wall-a.png'), 'Dense wall')
+  await syntheticPng(browser, join(dir, 'shots', 'wall-b.png'), 'Sparse wall')
+  const manifestPath = join(dir, 'round.json')
+  const sectioned = {
+    ...ROUND,
+    sections: [
+      { id: 'dense', title: 'Dense', ...SECTION_TEXTS, kind: 'STATES', variantKeys: ['A'] },
+      { id: 'sparse', title: 'Sparse', ...SECTION_TEXTS, kind: 'STATES', variantKeys: ['B'] },
+    ],
+  }
+  await writeFile(manifestPath, JSON.stringify(sectioned))
+  const server = spawn('node', [CLI, manifestPath, '--no-open', '--out', dir, ...OVERRIDE])
+  try {
+    const url = await new Promise<string>((resolve) =>
+      server.stderr?.on('data', (c: Buffer) => {
+        const found = c.toString().match(/at (http\S+__review\/)/)?.[1]
+        if (found) resolve(found)
+      })
+    )
+    await page.goto(url)
+    const current = page.locator('.sections [aria-current="step"]')
+    await expect(current).toHaveText('Dense')
+    await page.locator('body').press(']')
+    await expect(current).toHaveText('Sparse')
+    await expect(page.locator('.sections li')).toHaveCount(3)
+
+    for (const theme of ['dark', 'light']) {
+      await page.evaluate(
+        (light) => document.documentElement.classList.toggle('light', light),
+        theme === 'light'
+      )
+      const ratios = await sectionListContrast(page)
+      expect(ratios.current, `${theme} current text`).toBeGreaterThanOrEqual(4.5)
+      expect(ratios.other, `${theme} other text`).toBeGreaterThanOrEqual(4.5)
+      expect(ratios.bar, `${theme} current bar`).toBeGreaterThanOrEqual(3)
+      expect(ratios.current, `${theme} current is not just bolder`).toBeGreaterThan(ratios.other)
+    }
   } finally {
     server.kill()
   }
