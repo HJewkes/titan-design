@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react'
+
 /** One row of the flat `parentId` list a consumer hands to the tree. */
 export interface TreeNode<T = unknown> {
   id: string
@@ -8,6 +10,9 @@ export interface TreeNode<T = unknown> {
   childCount?: number
   data?: T
 }
+
+/** `renderLeading` and `renderTrailing`: a row's node in, the slot's content out. */
+export type TreeRenderSlot<T = unknown> = (node: TreeNode<T>) => ReactNode
 
 export type TreeProblemKind = 'duplicate-id' | 'orphan' | 'cycle'
 
