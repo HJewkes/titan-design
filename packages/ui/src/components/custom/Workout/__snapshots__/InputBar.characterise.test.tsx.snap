@@ -1,0 +1,1697 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`InputBar characterisation > on a dark surface > renders a typed reps value after a change 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      data-testid="input-bar"
+      role="toolbar"
+      style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="min-width: 80px; flex-direction: column;"
+      >
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          data-testid="input-bar-exercise-name"
+          dir="auto"
+          style="font-size: 12px; font-weight: 700; font-family: "Space Grotesk", sans-serif;"
+        >
+          Bench Press
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="input-bar-set-info"
+          dir="auto"
+          style="font-size: 10px; font-family: Inter, sans-serif;"
+        >
+          Set 2/5
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <input
+          aria-label="Reps"
+          autocapitalize="sentences"
+          autocomplete="on"
+          autocorrect="on"
+          class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+          data-testid="input-bar-reps"
+          dir="auto"
+          inputmode="numeric"
+          rows="1"
+          spellcheck="true"
+          style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 36px;"
+          value="7"
+          virtualkeyboardpolicy="auto"
+        />
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="font-size: 12px; font-family: Inter, sans-serif;"
+        >
+          ×
+        </div>
+        <input
+          aria-label="Weight in lbs"
+          autocapitalize="sentences"
+          autocomplete="on"
+          autocorrect="on"
+          class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+          data-testid="input-bar-weight"
+          dir="auto"
+          inputmode="numeric"
+          rows="1"
+          spellcheck="true"
+          style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 52px;"
+          value=""
+          virtualkeyboardpolicy="auto"
+        />
+        <div
+          class="css-text-146c3p1"
+          data-testid="input-bar-unit"
+          dir="auto"
+          style="font-size: 12px; font-weight: 500; font-family: Inter, sans-serif;"
+        >
+          lbs
+        </div>
+      </div>
+      <button
+        aria-label="Record set"
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        data-testid="input-bar-record"
+        role="button"
+        style="background-color: rgb(255, 121, 0); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; opacity: 1;"
+        tabindex="0"
+        type="button"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="font-size: 13px; font-weight: 700; font-family: Inter, sans-serif; color: rgb(28, 25, 22);"
+        >
+          Record
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`InputBar characterisation > on a dark surface > renders a typed reps value after a change 2`] = `
+{
+  "input-bar": "bg-surface-elevated w-full flex-row items-center pt-2.5 px-gutter-sm pb-inset-md gap-2.5",
+  "input-bar-exercise-name": "text-text-primary",
+  "input-bar-record": "py-control-y-lg px-control-x-sm",
+  "input-bar-reps": "bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5",
+  "input-bar-set-info": "text-text-tertiary",
+  "input-bar-unit": "text-text-tertiary",
+  "input-bar-weight": "bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5",
+}
+`;
+
+exports[`InputBar characterisation > on a dark surface > renders the Default story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="background-color: rgb(37, 35, 33); width: 400px;"
+    >
+      <div
+        class="css-view-175oi2r"
+        data-testid="input-bar"
+        role="toolbar"
+        style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="min-width: 80px; flex-direction: column;"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            data-testid="input-bar-exercise-name"
+            dir="auto"
+            style="font-size: 12px; font-weight: 700; font-family: "Space Grotesk", sans-serif;"
+          >
+            Bench Press
+          </div>
+          <div
+            class="css-text-146c3p1"
+            data-testid="input-bar-set-info"
+            dir="auto"
+            style="font-size: 10px; font-family: Inter, sans-serif;"
+          >
+            Set 2/5
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <input
+            aria-label="Reps"
+            autocapitalize="sentences"
+            autocomplete="on"
+            autocorrect="on"
+            class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+            data-testid="input-bar-reps"
+            dir="auto"
+            inputmode="numeric"
+            rows="1"
+            spellcheck="true"
+            style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 36px;"
+            value=""
+            virtualkeyboardpolicy="auto"
+          />
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 12px; font-family: Inter, sans-serif;"
+          >
+            ×
+          </div>
+          <input
+            aria-label="Weight in lbs"
+            autocapitalize="sentences"
+            autocomplete="on"
+            autocorrect="on"
+            class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+            data-testid="input-bar-weight"
+            dir="auto"
+            inputmode="numeric"
+            rows="1"
+            spellcheck="true"
+            style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 52px;"
+            value=""
+            virtualkeyboardpolicy="auto"
+          />
+          <div
+            class="css-text-146c3p1"
+            data-testid="input-bar-unit"
+            dir="auto"
+            style="font-size: 12px; font-weight: 500; font-family: Inter, sans-serif;"
+          >
+            lbs
+          </div>
+        </div>
+        <button
+          aria-label="Record set"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="input-bar-record"
+          role="button"
+          style="background-color: rgb(255, 121, 0); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; opacity: 1;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 13px; font-weight: 700; font-family: Inter, sans-serif; color: rgb(28, 25, 22);"
+          >
+            Record
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`InputBar characterisation > on a dark surface > renders the Default story unchanged 2`] = `
+{
+  "input-bar": "bg-surface-elevated w-full flex-row items-center pt-2.5 px-gutter-sm pb-inset-md gap-2.5",
+  "input-bar-exercise-name": "text-text-primary",
+  "input-bar-record": "py-control-y-lg px-control-x-sm",
+  "input-bar-reps": "bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5",
+  "input-bar-set-info": "text-text-tertiary",
+  "input-bar-unit": "text-text-tertiary",
+  "input-bar-weight": "bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5",
+}
+`;
+
+exports[`InputBar characterisation > on a dark surface > renders the Disabled story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="background-color: rgb(37, 35, 33); width: 400px;"
+    >
+      <div
+        class="css-view-175oi2r"
+        data-testid="input-bar"
+        role="toolbar"
+        style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="min-width: 80px; flex-direction: column;"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            data-testid="input-bar-exercise-name"
+            dir="auto"
+            style="font-size: 12px; font-weight: 700; font-family: "Space Grotesk", sans-serif;"
+          >
+            Bench Press
+          </div>
+          <div
+            class="css-text-146c3p1"
+            data-testid="input-bar-set-info"
+            dir="auto"
+            style="font-size: 10px; font-family: Inter, sans-serif;"
+          >
+            Set 2/5
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <input
+            aria-label="Reps"
+            autocapitalize="sentences"
+            autocomplete="on"
+            autocorrect="on"
+            class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+            data-testid="input-bar-reps"
+            dir="auto"
+            inputmode="numeric"
+            rows="1"
+            spellcheck="true"
+            style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 36px;"
+            value=""
+            virtualkeyboardpolicy="auto"
+          />
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 12px; font-family: Inter, sans-serif;"
+          >
+            ×
+          </div>
+          <input
+            aria-label="Weight in lbs"
+            autocapitalize="sentences"
+            autocomplete="on"
+            autocorrect="on"
+            class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+            data-testid="input-bar-weight"
+            dir="auto"
+            inputmode="numeric"
+            rows="1"
+            spellcheck="true"
+            style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 52px;"
+            value=""
+            virtualkeyboardpolicy="auto"
+          />
+          <div
+            class="css-text-146c3p1"
+            data-testid="input-bar-unit"
+            dir="auto"
+            style="font-size: 12px; font-weight: 500; font-family: Inter, sans-serif;"
+          >
+            lbs
+          </div>
+        </div>
+        <button
+          aria-disabled="true"
+          aria-label="Record set"
+          class="css-view-175oi2r r-pointerEvents-12vffkv"
+          data-testid="input-bar-record"
+          disabled=""
+          role="button"
+          style="background-color: rgb(255, 121, 0); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; opacity: 0.4;"
+          tabindex="-1"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 13px; font-weight: 700; font-family: Inter, sans-serif; color: rgb(28, 25, 22);"
+          >
+            Record
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`InputBar characterisation > on a dark surface > renders the Disabled story unchanged 2`] = `
+{
+  "input-bar": "bg-surface-elevated w-full flex-row items-center pt-2.5 px-gutter-sm pb-inset-md gap-2.5",
+  "input-bar-exercise-name": "text-text-primary",
+  "input-bar-record": "py-control-y-lg px-control-x-sm",
+  "input-bar-reps": "bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5",
+  "input-bar-set-info": "text-text-tertiary",
+  "input-bar-unit": "text-text-tertiary",
+  "input-bar-weight": "bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5",
+}
+`;
+
+exports[`InputBar characterisation > on a dark surface > renders the Kilograms story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="background-color: rgb(37, 35, 33); width: 400px;"
+    >
+      <div
+        class="css-view-175oi2r"
+        data-testid="input-bar"
+        role="toolbar"
+        style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="min-width: 80px; flex-direction: column;"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            data-testid="input-bar-exercise-name"
+            dir="auto"
+            style="font-size: 12px; font-weight: 700; font-family: "Space Grotesk", sans-serif;"
+          >
+            Bench Press
+          </div>
+          <div
+            class="css-text-146c3p1"
+            data-testid="input-bar-set-info"
+            dir="auto"
+            style="font-size: 10px; font-family: Inter, sans-serif;"
+          >
+            Set 2/5
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <input
+            aria-label="Reps"
+            autocapitalize="sentences"
+            autocomplete="on"
+            autocorrect="on"
+            class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+            data-testid="input-bar-reps"
+            dir="auto"
+            inputmode="numeric"
+            rows="1"
+            spellcheck="true"
+            style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 36px;"
+            value="8"
+            virtualkeyboardpolicy="auto"
+          />
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 12px; font-family: Inter, sans-serif;"
+          >
+            ×
+          </div>
+          <input
+            aria-label="Weight in kg"
+            autocapitalize="sentences"
+            autocomplete="on"
+            autocorrect="on"
+            class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+            data-testid="input-bar-weight"
+            dir="auto"
+            inputmode="numeric"
+            rows="1"
+            spellcheck="true"
+            style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 52px;"
+            value="60"
+            virtualkeyboardpolicy="auto"
+          />
+          <div
+            class="css-text-146c3p1"
+            data-testid="input-bar-unit"
+            dir="auto"
+            style="font-size: 12px; font-weight: 500; font-family: Inter, sans-serif;"
+          >
+            kg
+          </div>
+        </div>
+        <button
+          aria-label="Record set"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="input-bar-record"
+          role="button"
+          style="background-color: rgb(255, 121, 0); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; opacity: 1;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 13px; font-weight: 700; font-family: Inter, sans-serif; color: rgb(28, 25, 22);"
+          >
+            Record
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`InputBar characterisation > on a dark surface > renders the Kilograms story unchanged 2`] = `
+{
+  "input-bar": "bg-surface-elevated w-full flex-row items-center pt-2.5 px-gutter-sm pb-inset-md gap-2.5",
+  "input-bar-exercise-name": "text-text-primary",
+  "input-bar-record": "py-control-y-lg px-control-x-sm",
+  "input-bar-reps": "bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5",
+  "input-bar-set-info": "text-text-tertiary",
+  "input-bar-unit": "text-text-tertiary",
+  "input-bar-weight": "bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5",
+}
+`;
+
+exports[`InputBar characterisation > on a dark surface > renders the WithFilledValues story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="background-color: rgb(37, 35, 33); width: 400px;"
+    >
+      <div
+        class="css-view-175oi2r"
+        data-testid="input-bar"
+        role="toolbar"
+        style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="min-width: 80px; flex-direction: column;"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            data-testid="input-bar-exercise-name"
+            dir="auto"
+            style="font-size: 12px; font-weight: 700; font-family: "Space Grotesk", sans-serif;"
+          >
+            Bench Press
+          </div>
+          <div
+            class="css-text-146c3p1"
+            data-testid="input-bar-set-info"
+            dir="auto"
+            style="font-size: 10px; font-family: Inter, sans-serif;"
+          >
+            Set 2/5
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <input
+            aria-label="Reps"
+            autocapitalize="sentences"
+            autocomplete="on"
+            autocorrect="on"
+            class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+            data-testid="input-bar-reps"
+            dir="auto"
+            inputmode="numeric"
+            rows="1"
+            spellcheck="true"
+            style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 36px;"
+            value="5"
+            virtualkeyboardpolicy="auto"
+          />
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 12px; font-family: Inter, sans-serif;"
+          >
+            ×
+          </div>
+          <input
+            aria-label="Weight in lbs"
+            autocapitalize="sentences"
+            autocomplete="on"
+            autocorrect="on"
+            class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+            data-testid="input-bar-weight"
+            dir="auto"
+            inputmode="numeric"
+            rows="1"
+            spellcheck="true"
+            style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 52px;"
+            value="225"
+            virtualkeyboardpolicy="auto"
+          />
+          <div
+            class="css-text-146c3p1"
+            data-testid="input-bar-unit"
+            dir="auto"
+            style="font-size: 12px; font-weight: 500; font-family: Inter, sans-serif;"
+          >
+            lbs
+          </div>
+        </div>
+        <button
+          aria-label="Record set"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="input-bar-record"
+          role="button"
+          style="background-color: rgb(255, 121, 0); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; opacity: 1;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 13px; font-weight: 700; font-family: Inter, sans-serif; color: rgb(28, 25, 22);"
+          >
+            Record
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`InputBar characterisation > on a dark surface > renders the WithFilledValues story unchanged 2`] = `
+{
+  "input-bar": "bg-surface-elevated w-full flex-row items-center pt-2.5 px-gutter-sm pb-inset-md gap-2.5",
+  "input-bar-exercise-name": "text-text-primary",
+  "input-bar-record": "py-control-y-lg px-control-x-sm",
+  "input-bar-reps": "bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5",
+  "input-bar-set-info": "text-text-tertiary",
+  "input-bar-unit": "text-text-tertiary",
+  "input-bar-weight": "bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5",
+}
+`;
+
+exports[`InputBar characterisation > on a dark surface > renders the cannot record fixture unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      data-testid="input-bar"
+      role="toolbar"
+      style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="min-width: 80px; flex-direction: column;"
+      >
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          data-testid="input-bar-exercise-name"
+          dir="auto"
+          style="font-size: 12px; font-weight: 700; font-family: "Space Grotesk", sans-serif;"
+        >
+          Bench Press
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="input-bar-set-info"
+          dir="auto"
+          style="font-size: 10px; font-family: Inter, sans-serif;"
+        >
+          Set 2/5
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <input
+          aria-label="Reps"
+          autocapitalize="sentences"
+          autocomplete="on"
+          autocorrect="on"
+          class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+          data-testid="input-bar-reps"
+          dir="auto"
+          inputmode="numeric"
+          rows="1"
+          spellcheck="true"
+          style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 36px;"
+          value=""
+          virtualkeyboardpolicy="auto"
+        />
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="font-size: 12px; font-family: Inter, sans-serif;"
+        >
+          ×
+        </div>
+        <input
+          aria-label="Weight in lbs"
+          autocapitalize="sentences"
+          autocomplete="on"
+          autocorrect="on"
+          class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+          data-testid="input-bar-weight"
+          dir="auto"
+          inputmode="numeric"
+          rows="1"
+          spellcheck="true"
+          style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 52px;"
+          value=""
+          virtualkeyboardpolicy="auto"
+        />
+        <div
+          class="css-text-146c3p1"
+          data-testid="input-bar-unit"
+          dir="auto"
+          style="font-size: 12px; font-weight: 500; font-family: Inter, sans-serif;"
+        >
+          lbs
+        </div>
+      </div>
+      <button
+        aria-disabled="true"
+        aria-label="Record set"
+        class="css-view-175oi2r r-pointerEvents-12vffkv"
+        data-testid="input-bar-record"
+        disabled=""
+        role="button"
+        style="background-color: rgb(255, 121, 0); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; opacity: 0.4;"
+        tabindex="-1"
+        type="button"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="font-size: 13px; font-weight: 700; font-family: Inter, sans-serif; color: rgb(28, 25, 22);"
+        >
+          Record
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`InputBar characterisation > on a dark surface > renders the cannot record fixture unchanged 2`] = `
+{
+  "input-bar": "bg-surface-elevated w-full flex-row items-center pt-2.5 px-gutter-sm pb-inset-md gap-2.5",
+  "input-bar-exercise-name": "text-text-primary",
+  "input-bar-record": "py-control-y-lg px-control-x-sm",
+  "input-bar-reps": "bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5",
+  "input-bar-set-info": "text-text-tertiary",
+  "input-bar-unit": "text-text-tertiary",
+  "input-bar-weight": "bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5",
+}
+`;
+
+exports[`InputBar characterisation > on a dark surface > renders the hidden fixture unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  />
+</div>
+`;
+
+exports[`InputBar characterisation > on a dark surface > renders the hidden fixture unchanged 2`] = `{}`;
+
+exports[`InputBar characterisation > on a dark surface > renders the no total sets fixture unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      data-testid="input-bar"
+      role="toolbar"
+      style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="min-width: 80px; flex-direction: column;"
+      >
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          data-testid="input-bar-exercise-name"
+          dir="auto"
+          style="font-size: 12px; font-weight: 700; font-family: "Space Grotesk", sans-serif;"
+        >
+          Bench Press
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="input-bar-set-info"
+          dir="auto"
+          style="font-size: 10px; font-family: Inter, sans-serif;"
+        >
+          Set 3
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <input
+          aria-label="Reps"
+          autocapitalize="sentences"
+          autocomplete="on"
+          autocorrect="on"
+          class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+          data-testid="input-bar-reps"
+          dir="auto"
+          inputmode="numeric"
+          rows="1"
+          spellcheck="true"
+          style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 36px;"
+          value=""
+          virtualkeyboardpolicy="auto"
+        />
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="font-size: 12px; font-family: Inter, sans-serif;"
+        >
+          ×
+        </div>
+        <input
+          aria-label="Weight in lbs"
+          autocapitalize="sentences"
+          autocomplete="on"
+          autocorrect="on"
+          class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+          data-testid="input-bar-weight"
+          dir="auto"
+          inputmode="numeric"
+          rows="1"
+          spellcheck="true"
+          style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 52px;"
+          value=""
+          virtualkeyboardpolicy="auto"
+        />
+        <div
+          class="css-text-146c3p1"
+          data-testid="input-bar-unit"
+          dir="auto"
+          style="font-size: 12px; font-weight: 500; font-family: Inter, sans-serif;"
+        >
+          lbs
+        </div>
+      </div>
+      <button
+        aria-label="Record set"
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        data-testid="input-bar-record"
+        role="button"
+        style="background-color: rgb(255, 121, 0); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; opacity: 1;"
+        tabindex="0"
+        type="button"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="font-size: 13px; font-weight: 700; font-family: Inter, sans-serif; color: rgb(28, 25, 22);"
+        >
+          Record
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`InputBar characterisation > on a dark surface > renders the no total sets fixture unchanged 2`] = `
+{
+  "input-bar": "bg-surface-elevated w-full flex-row items-center pt-2.5 px-gutter-sm pb-inset-md gap-2.5",
+  "input-bar-exercise-name": "text-text-primary",
+  "input-bar-record": "py-control-y-lg px-control-x-sm",
+  "input-bar-reps": "bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5",
+  "input-bar-set-info": "text-text-tertiary",
+  "input-bar-unit": "text-text-tertiary",
+  "input-bar-weight": "bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5",
+}
+`;
+
+exports[`InputBar characterisation > on a light surface > renders a typed reps value after a change 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      data-testid="input-bar"
+      role="toolbar"
+      style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="min-width: 80px; flex-direction: column;"
+      >
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          data-testid="input-bar-exercise-name"
+          dir="auto"
+          style="font-size: 12px; font-weight: 700; font-family: "Space Grotesk", sans-serif;"
+        >
+          Bench Press
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="input-bar-set-info"
+          dir="auto"
+          style="font-size: 10px; font-family: Inter, sans-serif;"
+        >
+          Set 2/5
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <input
+          aria-label="Reps"
+          autocapitalize="sentences"
+          autocomplete="on"
+          autocorrect="on"
+          class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+          data-testid="input-bar-reps"
+          dir="auto"
+          inputmode="numeric"
+          rows="1"
+          spellcheck="true"
+          style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 36px;"
+          value="7"
+          virtualkeyboardpolicy="auto"
+        />
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="font-size: 12px; font-family: Inter, sans-serif;"
+        >
+          ×
+        </div>
+        <input
+          aria-label="Weight in lbs"
+          autocapitalize="sentences"
+          autocomplete="on"
+          autocorrect="on"
+          class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+          data-testid="input-bar-weight"
+          dir="auto"
+          inputmode="numeric"
+          rows="1"
+          spellcheck="true"
+          style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 52px;"
+          value=""
+          virtualkeyboardpolicy="auto"
+        />
+        <div
+          class="css-text-146c3p1"
+          data-testid="input-bar-unit"
+          dir="auto"
+          style="font-size: 12px; font-weight: 500; font-family: Inter, sans-serif;"
+        >
+          lbs
+        </div>
+      </div>
+      <button
+        aria-label="Record set"
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        data-testid="input-bar-record"
+        role="button"
+        style="background-color: rgb(255, 121, 0); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; opacity: 1;"
+        tabindex="0"
+        type="button"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="font-size: 13px; font-weight: 700; font-family: Inter, sans-serif; color: rgb(255, 255, 255);"
+        >
+          Record
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`InputBar characterisation > on a light surface > renders a typed reps value after a change 2`] = `
+{
+  "input-bar": "bg-surface-elevated w-full flex-row items-center pt-2.5 px-gutter-sm pb-inset-md gap-2.5",
+  "input-bar-exercise-name": "text-text-primary",
+  "input-bar-record": "py-control-y-lg px-control-x-sm",
+  "input-bar-reps": "bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5",
+  "input-bar-set-info": "text-text-tertiary",
+  "input-bar-unit": "text-text-tertiary",
+  "input-bar-weight": "bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5",
+}
+`;
+
+exports[`InputBar characterisation > on a light surface > renders the Default story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="background-color: rgb(255, 255, 255); width: 400px;"
+    >
+      <div
+        class="css-view-175oi2r"
+        data-testid="input-bar"
+        role="toolbar"
+        style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="min-width: 80px; flex-direction: column;"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            data-testid="input-bar-exercise-name"
+            dir="auto"
+            style="font-size: 12px; font-weight: 700; font-family: "Space Grotesk", sans-serif;"
+          >
+            Bench Press
+          </div>
+          <div
+            class="css-text-146c3p1"
+            data-testid="input-bar-set-info"
+            dir="auto"
+            style="font-size: 10px; font-family: Inter, sans-serif;"
+          >
+            Set 2/5
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <input
+            aria-label="Reps"
+            autocapitalize="sentences"
+            autocomplete="on"
+            autocorrect="on"
+            class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+            data-testid="input-bar-reps"
+            dir="auto"
+            inputmode="numeric"
+            rows="1"
+            spellcheck="true"
+            style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 36px;"
+            value=""
+            virtualkeyboardpolicy="auto"
+          />
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 12px; font-family: Inter, sans-serif;"
+          >
+            ×
+          </div>
+          <input
+            aria-label="Weight in lbs"
+            autocapitalize="sentences"
+            autocomplete="on"
+            autocorrect="on"
+            class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+            data-testid="input-bar-weight"
+            dir="auto"
+            inputmode="numeric"
+            rows="1"
+            spellcheck="true"
+            style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 52px;"
+            value=""
+            virtualkeyboardpolicy="auto"
+          />
+          <div
+            class="css-text-146c3p1"
+            data-testid="input-bar-unit"
+            dir="auto"
+            style="font-size: 12px; font-weight: 500; font-family: Inter, sans-serif;"
+          >
+            lbs
+          </div>
+        </div>
+        <button
+          aria-label="Record set"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="input-bar-record"
+          role="button"
+          style="background-color: rgb(255, 121, 0); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; opacity: 1;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 13px; font-weight: 700; font-family: Inter, sans-serif; color: rgb(255, 255, 255);"
+          >
+            Record
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`InputBar characterisation > on a light surface > renders the Default story unchanged 2`] = `
+{
+  "input-bar": "bg-surface-elevated w-full flex-row items-center pt-2.5 px-gutter-sm pb-inset-md gap-2.5",
+  "input-bar-exercise-name": "text-text-primary",
+  "input-bar-record": "py-control-y-lg px-control-x-sm",
+  "input-bar-reps": "bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5",
+  "input-bar-set-info": "text-text-tertiary",
+  "input-bar-unit": "text-text-tertiary",
+  "input-bar-weight": "bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5",
+}
+`;
+
+exports[`InputBar characterisation > on a light surface > renders the Disabled story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="background-color: rgb(255, 255, 255); width: 400px;"
+    >
+      <div
+        class="css-view-175oi2r"
+        data-testid="input-bar"
+        role="toolbar"
+        style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="min-width: 80px; flex-direction: column;"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            data-testid="input-bar-exercise-name"
+            dir="auto"
+            style="font-size: 12px; font-weight: 700; font-family: "Space Grotesk", sans-serif;"
+          >
+            Bench Press
+          </div>
+          <div
+            class="css-text-146c3p1"
+            data-testid="input-bar-set-info"
+            dir="auto"
+            style="font-size: 10px; font-family: Inter, sans-serif;"
+          >
+            Set 2/5
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <input
+            aria-label="Reps"
+            autocapitalize="sentences"
+            autocomplete="on"
+            autocorrect="on"
+            class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+            data-testid="input-bar-reps"
+            dir="auto"
+            inputmode="numeric"
+            rows="1"
+            spellcheck="true"
+            style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 36px;"
+            value=""
+            virtualkeyboardpolicy="auto"
+          />
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 12px; font-family: Inter, sans-serif;"
+          >
+            ×
+          </div>
+          <input
+            aria-label="Weight in lbs"
+            autocapitalize="sentences"
+            autocomplete="on"
+            autocorrect="on"
+            class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+            data-testid="input-bar-weight"
+            dir="auto"
+            inputmode="numeric"
+            rows="1"
+            spellcheck="true"
+            style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 52px;"
+            value=""
+            virtualkeyboardpolicy="auto"
+          />
+          <div
+            class="css-text-146c3p1"
+            data-testid="input-bar-unit"
+            dir="auto"
+            style="font-size: 12px; font-weight: 500; font-family: Inter, sans-serif;"
+          >
+            lbs
+          </div>
+        </div>
+        <button
+          aria-disabled="true"
+          aria-label="Record set"
+          class="css-view-175oi2r r-pointerEvents-12vffkv"
+          data-testid="input-bar-record"
+          disabled=""
+          role="button"
+          style="background-color: rgb(255, 121, 0); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; opacity: 0.4;"
+          tabindex="-1"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 13px; font-weight: 700; font-family: Inter, sans-serif; color: rgb(255, 255, 255);"
+          >
+            Record
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`InputBar characterisation > on a light surface > renders the Disabled story unchanged 2`] = `
+{
+  "input-bar": "bg-surface-elevated w-full flex-row items-center pt-2.5 px-gutter-sm pb-inset-md gap-2.5",
+  "input-bar-exercise-name": "text-text-primary",
+  "input-bar-record": "py-control-y-lg px-control-x-sm",
+  "input-bar-reps": "bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5",
+  "input-bar-set-info": "text-text-tertiary",
+  "input-bar-unit": "text-text-tertiary",
+  "input-bar-weight": "bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5",
+}
+`;
+
+exports[`InputBar characterisation > on a light surface > renders the Kilograms story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="background-color: rgb(255, 255, 255); width: 400px;"
+    >
+      <div
+        class="css-view-175oi2r"
+        data-testid="input-bar"
+        role="toolbar"
+        style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="min-width: 80px; flex-direction: column;"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            data-testid="input-bar-exercise-name"
+            dir="auto"
+            style="font-size: 12px; font-weight: 700; font-family: "Space Grotesk", sans-serif;"
+          >
+            Bench Press
+          </div>
+          <div
+            class="css-text-146c3p1"
+            data-testid="input-bar-set-info"
+            dir="auto"
+            style="font-size: 10px; font-family: Inter, sans-serif;"
+          >
+            Set 2/5
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <input
+            aria-label="Reps"
+            autocapitalize="sentences"
+            autocomplete="on"
+            autocorrect="on"
+            class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+            data-testid="input-bar-reps"
+            dir="auto"
+            inputmode="numeric"
+            rows="1"
+            spellcheck="true"
+            style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 36px;"
+            value="8"
+            virtualkeyboardpolicy="auto"
+          />
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 12px; font-family: Inter, sans-serif;"
+          >
+            ×
+          </div>
+          <input
+            aria-label="Weight in kg"
+            autocapitalize="sentences"
+            autocomplete="on"
+            autocorrect="on"
+            class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+            data-testid="input-bar-weight"
+            dir="auto"
+            inputmode="numeric"
+            rows="1"
+            spellcheck="true"
+            style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 52px;"
+            value="60"
+            virtualkeyboardpolicy="auto"
+          />
+          <div
+            class="css-text-146c3p1"
+            data-testid="input-bar-unit"
+            dir="auto"
+            style="font-size: 12px; font-weight: 500; font-family: Inter, sans-serif;"
+          >
+            kg
+          </div>
+        </div>
+        <button
+          aria-label="Record set"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="input-bar-record"
+          role="button"
+          style="background-color: rgb(255, 121, 0); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; opacity: 1;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 13px; font-weight: 700; font-family: Inter, sans-serif; color: rgb(255, 255, 255);"
+          >
+            Record
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`InputBar characterisation > on a light surface > renders the Kilograms story unchanged 2`] = `
+{
+  "input-bar": "bg-surface-elevated w-full flex-row items-center pt-2.5 px-gutter-sm pb-inset-md gap-2.5",
+  "input-bar-exercise-name": "text-text-primary",
+  "input-bar-record": "py-control-y-lg px-control-x-sm",
+  "input-bar-reps": "bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5",
+  "input-bar-set-info": "text-text-tertiary",
+  "input-bar-unit": "text-text-tertiary",
+  "input-bar-weight": "bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5",
+}
+`;
+
+exports[`InputBar characterisation > on a light surface > renders the WithFilledValues story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="background-color: rgb(255, 255, 255); width: 400px;"
+    >
+      <div
+        class="css-view-175oi2r"
+        data-testid="input-bar"
+        role="toolbar"
+        style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="min-width: 80px; flex-direction: column;"
+        >
+          <div
+            class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+            data-testid="input-bar-exercise-name"
+            dir="auto"
+            style="font-size: 12px; font-weight: 700; font-family: "Space Grotesk", sans-serif;"
+          >
+            Bench Press
+          </div>
+          <div
+            class="css-text-146c3p1"
+            data-testid="input-bar-set-info"
+            dir="auto"
+            style="font-size: 10px; font-family: Inter, sans-serif;"
+          >
+            Set 2/5
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <input
+            aria-label="Reps"
+            autocapitalize="sentences"
+            autocomplete="on"
+            autocorrect="on"
+            class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+            data-testid="input-bar-reps"
+            dir="auto"
+            inputmode="numeric"
+            rows="1"
+            spellcheck="true"
+            style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 36px;"
+            value="5"
+            virtualkeyboardpolicy="auto"
+          />
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 12px; font-family: Inter, sans-serif;"
+          >
+            ×
+          </div>
+          <input
+            aria-label="Weight in lbs"
+            autocapitalize="sentences"
+            autocomplete="on"
+            autocorrect="on"
+            class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+            data-testid="input-bar-weight"
+            dir="auto"
+            inputmode="numeric"
+            rows="1"
+            spellcheck="true"
+            style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 52px;"
+            value="225"
+            virtualkeyboardpolicy="auto"
+          />
+          <div
+            class="css-text-146c3p1"
+            data-testid="input-bar-unit"
+            dir="auto"
+            style="font-size: 12px; font-weight: 500; font-family: Inter, sans-serif;"
+          >
+            lbs
+          </div>
+        </div>
+        <button
+          aria-label="Record set"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="input-bar-record"
+          role="button"
+          style="background-color: rgb(255, 121, 0); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; opacity: 1;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 13px; font-weight: 700; font-family: Inter, sans-serif; color: rgb(255, 255, 255);"
+          >
+            Record
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`InputBar characterisation > on a light surface > renders the WithFilledValues story unchanged 2`] = `
+{
+  "input-bar": "bg-surface-elevated w-full flex-row items-center pt-2.5 px-gutter-sm pb-inset-md gap-2.5",
+  "input-bar-exercise-name": "text-text-primary",
+  "input-bar-record": "py-control-y-lg px-control-x-sm",
+  "input-bar-reps": "bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5",
+  "input-bar-set-info": "text-text-tertiary",
+  "input-bar-unit": "text-text-tertiary",
+  "input-bar-weight": "bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5",
+}
+`;
+
+exports[`InputBar characterisation > on a light surface > renders the cannot record fixture unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      data-testid="input-bar"
+      role="toolbar"
+      style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="min-width: 80px; flex-direction: column;"
+      >
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          data-testid="input-bar-exercise-name"
+          dir="auto"
+          style="font-size: 12px; font-weight: 700; font-family: "Space Grotesk", sans-serif;"
+        >
+          Bench Press
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="input-bar-set-info"
+          dir="auto"
+          style="font-size: 10px; font-family: Inter, sans-serif;"
+        >
+          Set 2/5
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <input
+          aria-label="Reps"
+          autocapitalize="sentences"
+          autocomplete="on"
+          autocorrect="on"
+          class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+          data-testid="input-bar-reps"
+          dir="auto"
+          inputmode="numeric"
+          rows="1"
+          spellcheck="true"
+          style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 36px;"
+          value=""
+          virtualkeyboardpolicy="auto"
+        />
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="font-size: 12px; font-family: Inter, sans-serif;"
+        >
+          ×
+        </div>
+        <input
+          aria-label="Weight in lbs"
+          autocapitalize="sentences"
+          autocomplete="on"
+          autocorrect="on"
+          class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+          data-testid="input-bar-weight"
+          dir="auto"
+          inputmode="numeric"
+          rows="1"
+          spellcheck="true"
+          style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 52px;"
+          value=""
+          virtualkeyboardpolicy="auto"
+        />
+        <div
+          class="css-text-146c3p1"
+          data-testid="input-bar-unit"
+          dir="auto"
+          style="font-size: 12px; font-weight: 500; font-family: Inter, sans-serif;"
+        >
+          lbs
+        </div>
+      </div>
+      <button
+        aria-disabled="true"
+        aria-label="Record set"
+        class="css-view-175oi2r r-pointerEvents-12vffkv"
+        data-testid="input-bar-record"
+        disabled=""
+        role="button"
+        style="background-color: rgb(255, 121, 0); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; opacity: 0.4;"
+        tabindex="-1"
+        type="button"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="font-size: 13px; font-weight: 700; font-family: Inter, sans-serif; color: rgb(255, 255, 255);"
+        >
+          Record
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`InputBar characterisation > on a light surface > renders the cannot record fixture unchanged 2`] = `
+{
+  "input-bar": "bg-surface-elevated w-full flex-row items-center pt-2.5 px-gutter-sm pb-inset-md gap-2.5",
+  "input-bar-exercise-name": "text-text-primary",
+  "input-bar-record": "py-control-y-lg px-control-x-sm",
+  "input-bar-reps": "bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5",
+  "input-bar-set-info": "text-text-tertiary",
+  "input-bar-unit": "text-text-tertiary",
+  "input-bar-weight": "bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5",
+}
+`;
+
+exports[`InputBar characterisation > on a light surface > renders the hidden fixture unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  />
+</div>
+`;
+
+exports[`InputBar characterisation > on a light surface > renders the hidden fixture unchanged 2`] = `{}`;
+
+exports[`InputBar characterisation > on a light surface > renders the no total sets fixture unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      data-testid="input-bar"
+      role="toolbar"
+      style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="min-width: 80px; flex-direction: column;"
+      >
+        <div
+          class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+          data-testid="input-bar-exercise-name"
+          dir="auto"
+          style="font-size: 12px; font-weight: 700; font-family: "Space Grotesk", sans-serif;"
+        >
+          Bench Press
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="input-bar-set-info"
+          dir="auto"
+          style="font-size: 10px; font-family: Inter, sans-serif;"
+        >
+          Set 3
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <input
+          aria-label="Reps"
+          autocapitalize="sentences"
+          autocomplete="on"
+          autocorrect="on"
+          class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+          data-testid="input-bar-reps"
+          dir="auto"
+          inputmode="numeric"
+          rows="1"
+          spellcheck="true"
+          style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 36px;"
+          value=""
+          virtualkeyboardpolicy="auto"
+        />
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="font-size: 12px; font-family: Inter, sans-serif;"
+        >
+          ×
+        </div>
+        <input
+          aria-label="Weight in lbs"
+          autocapitalize="sentences"
+          autocomplete="on"
+          autocorrect="on"
+          class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+          data-testid="input-bar-weight"
+          dir="auto"
+          inputmode="numeric"
+          rows="1"
+          spellcheck="true"
+          style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 52px;"
+          value=""
+          virtualkeyboardpolicy="auto"
+        />
+        <div
+          class="css-text-146c3p1"
+          data-testid="input-bar-unit"
+          dir="auto"
+          style="font-size: 12px; font-weight: 500; font-family: Inter, sans-serif;"
+        >
+          lbs
+        </div>
+      </div>
+      <button
+        aria-label="Record set"
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        data-testid="input-bar-record"
+        role="button"
+        style="background-color: rgb(255, 121, 0); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; opacity: 1;"
+        tabindex="0"
+        type="button"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+          style="font-size: 13px; font-weight: 700; font-family: Inter, sans-serif; color: rgb(255, 255, 255);"
+        >
+          Record
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`InputBar characterisation > on a light surface > renders the no total sets fixture unchanged 2`] = `
+{
+  "input-bar": "bg-surface-elevated w-full flex-row items-center pt-2.5 px-gutter-sm pb-inset-md gap-2.5",
+  "input-bar-exercise-name": "text-text-primary",
+  "input-bar-record": "py-control-y-lg px-control-x-sm",
+  "input-bar-reps": "bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5",
+  "input-bar-set-info": "text-text-tertiary",
+  "input-bar-unit": "text-text-tertiary",
+  "input-bar-weight": "bg-surface-raised border-hairline-strong text-text-primary py-control-y-sm px-0.5",
+}
+`;
+
+exports[`InputBar characterisation > renders the Default story the same with and without reduced motion 1`] = `"<div class="css-view-175oi2r" style="background-color: rgb(37, 35, 33); width: 400px;"><div role="toolbar" class="css-view-175oi2r" style="border-top-width: 1px; border-top-color: var(--color-hairline-default);" data-testid="input-bar"><div class="css-view-175oi2r" style="min-width: 80px; flex-direction: column;"><div dir="auto" class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a" style="font-size: 12px; font-weight: 700; font-family: &quot;Space Grotesk&quot;, sans-serif;" data-testid="input-bar-exercise-name">Bench Press</div><div dir="auto" class="css-text-146c3p1" style="font-size: 10px; font-family: Inter, sans-serif;" data-testid="input-bar-set-info">Set 2/5</div></div><div class="css-view-175oi2r"><input autocapitalize="sentences" autocomplete="on" autocorrect="on" dir="auto" inputmode="numeric" rows="1" spellcheck="true" virtualkeyboardpolicy="auto" aria-label="Reps" class="css-textinput-11aywtz r-placeholderTextColor-6taxm2" style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 36px;" data-testid="input-bar-reps" value=""><div dir="auto" class="css-text-146c3p1" style="font-size: 12px; font-family: Inter, sans-serif;">×</div><input autocapitalize="sentences" autocomplete="on" autocorrect="on" dir="auto" inputmode="numeric" rows="1" spellcheck="true" virtualkeyboardpolicy="auto" aria-label="Weight in lbs" class="css-textinput-11aywtz r-placeholderTextColor-6taxm2" style="font-size: 14px; font-weight: 600; font-family: Inter, sans-serif; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; text-align: center; width: 52px;" data-testid="input-bar-weight" value=""><div dir="auto" class="css-text-146c3p1" style="font-size: 12px; font-weight: 500; font-family: Inter, sans-serif;" data-testid="input-bar-unit">lbs</div></div><button aria-label="Record set" role="button" tabindex="0" class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73" style="background-color: rgb(255, 121, 0); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; opacity: 1;" data-testid="input-bar-record" type="button"><div dir="auto" class="css-text-146c3p1" style="font-size: 13px; font-weight: 700; font-family: Inter, sans-serif; color: rgb(28, 25, 22);">Record</div></button></div></div>"`;

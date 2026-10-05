@@ -1,0 +1,4149 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`RestTimer characterisation > on a dark surface > renders a running countdown at two elapsed times 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      aria-label="Rest timer, 120 seconds remaining"
+      class="css-view-175oi2r"
+      data-testid="rest-timer"
+      role="timer"
+      style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: column;"
+        >
+          <div
+            class="css-text-146c3p1"
+            data-testid="rest-timer-label"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;"
+          >
+            REST
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-time"
+          dir="auto"
+          style="font-size: 28px; font-family: "Space Grotesk", sans-serif; font-weight: 700; letter-spacing: -0.5px;"
+        >
+          2:00
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer-progress-track"
+        style="height: 3px; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="rest-timer-progress-fill"
+          style="height: 100%; background-color: rgb(255, 121, 0); border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; width: 20%;"
+        />
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <button
+          aria-label="Add 30 seconds"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-add-time"
+          role="button"
+          style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+          >
+            +30s
+          </div>
+        </button>
+        <button
+          aria-label="Skip rest"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-skip"
+          role="button"
+          style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+          >
+            Skip
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders a running countdown at two elapsed times 2`] = `
+{
+  "rest-timer": "bg-surface-raised w-full py-inset-md px-gutter-sm",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-label": "text-text-secondary",
+  "rest-timer-progress-track": "bg-hairline mb-3",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+  "rest-timer-time": "text-text-primary",
+}
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders a running countdown at two elapsed times 3`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      aria-label="Rest timer, 119 seconds remaining"
+      class="css-view-175oi2r"
+      data-testid="rest-timer"
+      role="timer"
+      style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: column;"
+        >
+          <div
+            class="css-text-146c3p1"
+            data-testid="rest-timer-label"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;"
+          >
+            REST
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-time"
+          dir="auto"
+          style="font-size: 28px; font-family: "Space Grotesk", sans-serif; font-weight: 700; letter-spacing: -0.5px;"
+        >
+          1:59
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer-progress-track"
+        style="height: 3px; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="rest-timer-progress-fill"
+          style="height: 100%; background-color: rgb(255, 121, 0); border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; width: 20.666666666666668%;"
+        />
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <button
+          aria-label="Add 30 seconds"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-add-time"
+          role="button"
+          style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+          >
+            +30s
+          </div>
+        </button>
+        <button
+          aria-label="Skip rest"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-skip"
+          role="button"
+          style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+          >
+            Skip
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders a running countdown at two elapsed times 4`] = `
+{
+  "rest-timer": "bg-surface-raised w-full py-inset-md px-gutter-sm",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-label": "text-text-secondary",
+  "rest-timer-progress-track": "bg-hairline mb-3",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+  "rest-timer-time": "text-text-primary",
+}
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the Default story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      aria-label="Rest timer, 120 seconds remaining"
+      class="css-view-175oi2r"
+      data-testid="rest-timer"
+      role="timer"
+      style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: column;"
+        >
+          <div
+            class="css-text-146c3p1"
+            data-testid="rest-timer-label"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;"
+          >
+            REST
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-time"
+          dir="auto"
+          style="font-size: 28px; font-family: "Space Grotesk", sans-serif; font-weight: 700; letter-spacing: -0.5px;"
+        >
+          2:00
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer-progress-track"
+        style="height: 3px; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="rest-timer-progress-fill"
+          style="height: 100%; background-color: rgb(255, 121, 0); border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; width: 20%;"
+        />
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <button
+          aria-label="Add 30 seconds"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-add-time"
+          role="button"
+          style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+          >
+            +30s
+          </div>
+        </button>
+        <button
+          aria-label="Skip rest"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-skip"
+          role="button"
+          style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+          >
+            Skip
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the Default story unchanged 2`] = `
+{
+  "rest-timer": "bg-surface-raised w-full py-inset-md px-gutter-sm",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-label": "text-text-secondary",
+  "rest-timer-progress-track": "bg-hairline mb-3",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+  "rest-timer-time": "text-text-primary",
+}
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the JustStarted story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      aria-label="Rest timer, 150 seconds remaining"
+      class="css-view-175oi2r"
+      data-testid="rest-timer"
+      role="timer"
+      style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: column;"
+        >
+          <div
+            class="css-text-146c3p1"
+            data-testid="rest-timer-label"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;"
+          >
+            REST
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-time"
+          dir="auto"
+          style="font-size: 28px; font-family: "Space Grotesk", sans-serif; font-weight: 700; letter-spacing: -0.5px;"
+        >
+          2:30
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer-progress-track"
+        style="height: 3px; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="rest-timer-progress-fill"
+          style="height: 100%; background-color: rgb(255, 121, 0); border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; width: 0%;"
+        />
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <button
+          aria-label="Add 30 seconds"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-add-time"
+          role="button"
+          style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+          >
+            +30s
+          </div>
+        </button>
+        <button
+          aria-label="Skip rest"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-skip"
+          role="button"
+          style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+          >
+            Skip
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the JustStarted story unchanged 2`] = `
+{
+  "rest-timer": "bg-surface-raised w-full py-inset-md px-gutter-sm",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-label": "text-text-secondary",
+  "rest-timer-progress-track": "bg-hairline mb-3",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+  "rest-timer-time": "text-text-primary",
+}
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the NearlyComplete story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      aria-label="Rest timer, 5 seconds remaining"
+      class="css-view-175oi2r"
+      data-testid="rest-timer"
+      role="timer"
+      style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: column;"
+        >
+          <div
+            class="css-text-146c3p1"
+            data-testid="rest-timer-label"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;"
+          >
+            REST
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-time"
+          dir="auto"
+          style="font-size: 28px; font-family: "Space Grotesk", sans-serif; font-weight: 700; letter-spacing: -0.5px;"
+        >
+          0:05
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer-progress-track"
+        style="height: 3px; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="rest-timer-progress-fill"
+          style="height: 100%; background-color: rgb(255, 121, 0); border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; width: 96.66666666666667%;"
+        />
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <button
+          aria-label="Add 30 seconds"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-add-time"
+          role="button"
+          style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+          >
+            +30s
+          </div>
+        </button>
+        <button
+          aria-label="Skip rest"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-skip"
+          role="button"
+          style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+          >
+            Skip
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the NearlyComplete story unchanged 2`] = `
+{
+  "rest-timer": "bg-surface-raised w-full py-inset-md px-gutter-sm",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-label": "text-text-secondary",
+  "rest-timer-progress-track": "bg-hairline mb-3",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+  "rest-timer-time": "text-text-primary",
+}
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the RingAlmostDone story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 420px; padding: 32px 32px 32px 32px; align-items: center; background-color: rgb(16, 13, 10);"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(90, 89, 88); font-size: 10px; font-weight: 700; letter-spacing: 1px; margin-bottom: 20px;"
+      >
+        REST · UNTIL NEXT SET · (organism chrome — not the component)
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer"
+      >
+        <div
+          aria-label="Rest timer, 8 seconds remaining"
+          class="css-view-175oi2r"
+          data-testid="rest-timer-ring"
+          role="timer"
+          style="align-items: center; gap: 16px;"
+        >
+          <div
+            aria-label="Timer ring"
+            class="css-view-175oi2r"
+            data-testid="circular-timer-ring"
+            role="progressbar"
+            style="width: 180px; height: 180px;"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="width: 180px; height: 180px;"
+            >
+              <svg
+                height="100%"
+                style="position: absolute;"
+                viewBox="0 0 180 180"
+                width="100%"
+              >
+                <circle
+                  cx="90"
+                  cy="90"
+                  fill="none"
+                  r="86"
+                  stroke="var(--color-hairline-default)"
+                  stroke-width="8"
+                />
+                <circle
+                  cx="90"
+                  cy="90"
+                  fill="none"
+                  r="86"
+                  stroke="var(--color-brand-primary)"
+                  stroke-dasharray="540.3539364174444"
+                  stroke-dashoffset="504.33034065628146"
+                  stroke-linecap="round"
+                  stroke-width="8"
+                  style="transition: stroke-dashoffset 300ms cubic-bezier(0.22, 1, 0.36, 1);"
+                  transform="rotate(-90 90 90)"
+                />
+              </svg>
+            </div>
+            <div
+              class="css-view-175oi2r"
+              style="position: absolute; align-items: center; justify-content: center; pointer-events: none;"
+            >
+              <div
+                class="css-text-146c3p1"
+                data-testid="circular-timer-label"
+                dir="auto"
+                style="font-size: 43px; font-family: "Space Grotesk", sans-serif; font-weight: 800; letter-spacing: -1px;"
+              >
+                0:08
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Add 30 seconds"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              data-testid="rest-timer-add-time"
+              role="button"
+              style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+              >
+                +30s
+              </div>
+            </button>
+            <button
+              aria-label="Skip rest"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              data-testid="rest-timer-skip"
+              role="button"
+              style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+              >
+                Skip
+              </div>
+            </button>
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-next-set"
+          dir="auto"
+          style="font-size: 13px; font-family: Inter, sans-serif;"
+        >
+          Next · Bench Press · set 3 of 4
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the RingAlmostDone story unchanged 2`] = `
+{
+  "circular-timer-label": "text-text-primary",
+  "circular-timer-ring": "items-center justify-center",
+  "rest-timer": "items-center gap-stack-lg",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-next-set": "text-text-tertiary",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+}
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the RingDisplayOnly story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 420px; padding: 32px 32px 32px 32px; align-items: center; background-color: rgb(16, 13, 10);"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(90, 89, 88); font-size: 10px; font-weight: 700; letter-spacing: 1px; margin-bottom: 20px;"
+      >
+        REST · UNTIL NEXT SET · (organism chrome — not the component)
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer"
+      >
+        <div
+          aria-label="Rest timer, 73 seconds remaining"
+          class="css-view-175oi2r"
+          data-testid="rest-timer-ring"
+          role="timer"
+          style="align-items: center; gap: 16px;"
+        >
+          <div
+            aria-label="Timer ring"
+            class="css-view-175oi2r"
+            data-testid="circular-timer-ring"
+            role="progressbar"
+            style="width: 180px; height: 180px;"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="width: 180px; height: 180px;"
+            >
+              <svg
+                height="100%"
+                style="position: absolute;"
+                viewBox="0 0 180 180"
+                width="100%"
+              >
+                <circle
+                  cx="90"
+                  cy="90"
+                  fill="none"
+                  r="86"
+                  stroke="var(--color-hairline-default)"
+                  stroke-width="8"
+                />
+                <circle
+                  cx="90"
+                  cy="90"
+                  fill="none"
+                  r="86"
+                  stroke="var(--color-brand-primary)"
+                  stroke-dasharray="540.3539364174444"
+                  stroke-dashoffset="211.6386250968324"
+                  stroke-linecap="round"
+                  stroke-width="8"
+                  style="transition: stroke-dashoffset 300ms cubic-bezier(0.22, 1, 0.36, 1);"
+                  transform="rotate(-90 90 90)"
+                />
+              </svg>
+            </div>
+            <div
+              class="css-view-175oi2r"
+              style="position: absolute; align-items: center; justify-content: center; pointer-events: none;"
+            >
+              <div
+                class="css-text-146c3p1"
+                data-testid="circular-timer-label"
+                dir="auto"
+                style="font-size: 43px; font-family: "Space Grotesk", sans-serif; font-weight: 800; letter-spacing: -1px;"
+              >
+                1:13
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-next-set"
+          dir="auto"
+          style="font-size: 13px; font-family: Inter, sans-serif;"
+        >
+          Next · Bench Press · set 3 of 4
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the RingDisplayOnly story unchanged 2`] = `
+{
+  "circular-timer-label": "text-text-primary",
+  "circular-timer-ring": "items-center justify-center",
+  "rest-timer": "items-center gap-stack-lg",
+  "rest-timer-next-set": "text-text-tertiary",
+}
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the RingDone story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 420px; padding: 32px 32px 32px 32px; align-items: center; background-color: rgb(16, 13, 10);"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(90, 89, 88); font-size: 10px; font-weight: 700; letter-spacing: 1px; margin-bottom: 20px;"
+      >
+        REST · UNTIL NEXT SET · (organism chrome — not the component)
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer"
+      >
+        <div
+          aria-label="Rest complete, next set ready"
+          class="css-view-175oi2r"
+          data-testid="rest-timer-ring"
+          role="timer"
+          style="align-items: center; gap: 16px;"
+        >
+          <div
+            aria-label="Timer ring"
+            class="css-view-175oi2r"
+            data-testid="circular-timer-ring"
+            role="progressbar"
+            style="width: 180px; height: 180px;"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="width: 180px; height: 180px;"
+            >
+              <svg
+                height="100%"
+                style="position: absolute;"
+                viewBox="0 0 180 180"
+                width="100%"
+              >
+                <circle
+                  cx="90"
+                  cy="90"
+                  fill="none"
+                  r="86"
+                  stroke="var(--color-hairline-default)"
+                  stroke-width="8"
+                />
+                <circle
+                  cx="90"
+                  cy="90"
+                  fill="none"
+                  r="86"
+                  stroke="var(--color-status-success)"
+                  stroke-dasharray="540.3539364174444"
+                  stroke-dashoffset="0"
+                  stroke-linecap="round"
+                  stroke-width="8"
+                  style="transition: stroke-dashoffset 300ms cubic-bezier(0.22, 1, 0.36, 1);"
+                  transform="rotate(-90 90 90)"
+                />
+              </svg>
+            </div>
+            <div
+              class="css-view-175oi2r"
+              style="position: absolute; align-items: center; justify-content: center; pointer-events: none;"
+            >
+              <div
+                class="css-text-146c3p1"
+                data-testid="circular-timer-label"
+                dir="auto"
+                style="font-size: 50px; font-family: "Space Grotesk", sans-serif; font-weight: 800; letter-spacing: 1px; color: var(--color-status-success);"
+              >
+                GO
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Add 30 seconds"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              data-testid="rest-timer-add-time"
+              role="button"
+              style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+              >
+                +30s
+              </div>
+            </button>
+            <button
+              aria-label="Skip rest"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              data-testid="rest-timer-skip"
+              role="button"
+              style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+              >
+                Skip
+              </div>
+            </button>
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-next-set"
+          dir="auto"
+          style="font-size: 13px; font-family: Inter, sans-serif;"
+        >
+          Next · Bench Press · set 3 of 4
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the RingDone story unchanged 2`] = `
+{
+  "circular-timer-ring": "items-center justify-center",
+  "rest-timer": "items-center gap-stack-lg",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-next-set": "text-text-tertiary",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+}
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the RingJustStarted story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 420px; padding: 32px 32px 32px 32px; align-items: center; background-color: rgb(16, 13, 10);"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(90, 89, 88); font-size: 10px; font-weight: 700; letter-spacing: 1px; margin-bottom: 20px;"
+      >
+        REST · UNTIL NEXT SET · (organism chrome — not the component)
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer"
+      >
+        <div
+          aria-label="Rest timer, 112 seconds remaining"
+          class="css-view-175oi2r"
+          data-testid="rest-timer-ring"
+          role="timer"
+          style="align-items: center; gap: 16px;"
+        >
+          <div
+            aria-label="Timer ring"
+            class="css-view-175oi2r"
+            data-testid="circular-timer-ring"
+            role="progressbar"
+            style="width: 180px; height: 180px;"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="width: 180px; height: 180px;"
+            >
+              <svg
+                height="100%"
+                style="position: absolute;"
+                viewBox="0 0 180 180"
+                width="100%"
+              >
+                <circle
+                  cx="90"
+                  cy="90"
+                  fill="none"
+                  r="86"
+                  stroke="var(--color-hairline-default)"
+                  stroke-width="8"
+                />
+                <circle
+                  cx="90"
+                  cy="90"
+                  fill="none"
+                  r="86"
+                  stroke="var(--color-brand-primary)"
+                  stroke-dasharray="540.3539364174444"
+                  stroke-dashoffset="36.023595761162994"
+                  stroke-linecap="round"
+                  stroke-width="8"
+                  style="transition: stroke-dashoffset 300ms cubic-bezier(0.22, 1, 0.36, 1);"
+                  transform="rotate(-90 90 90)"
+                />
+              </svg>
+            </div>
+            <div
+              class="css-view-175oi2r"
+              style="position: absolute; align-items: center; justify-content: center; pointer-events: none;"
+            >
+              <div
+                class="css-text-146c3p1"
+                data-testid="circular-timer-label"
+                dir="auto"
+                style="font-size: 43px; font-family: "Space Grotesk", sans-serif; font-weight: 800; letter-spacing: -1px;"
+              >
+                1:52
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Add 30 seconds"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              data-testid="rest-timer-add-time"
+              role="button"
+              style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+              >
+                +30s
+              </div>
+            </button>
+            <button
+              aria-label="Skip rest"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              data-testid="rest-timer-skip"
+              role="button"
+              style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+              >
+                Skip
+              </div>
+            </button>
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-next-set"
+          dir="auto"
+          style="font-size: 13px; font-family: Inter, sans-serif;"
+        >
+          Next · Bench Press · set 3 of 4
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the RingJustStarted story unchanged 2`] = `
+{
+  "circular-timer-label": "text-text-primary",
+  "circular-timer-ring": "items-center justify-center",
+  "rest-timer": "items-center gap-stack-lg",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-next-set": "text-text-tertiary",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+}
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the RingMidway story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 420px; padding: 32px 32px 32px 32px; align-items: center; background-color: rgb(16, 13, 10);"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(90, 89, 88); font-size: 10px; font-weight: 700; letter-spacing: 1px; margin-bottom: 20px;"
+      >
+        REST · UNTIL NEXT SET · (organism chrome — not the component)
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer"
+      >
+        <div
+          aria-label="Rest timer, 60 seconds remaining"
+          class="css-view-175oi2r"
+          data-testid="rest-timer-ring"
+          role="timer"
+          style="align-items: center; gap: 16px;"
+        >
+          <div
+            aria-label="Timer ring"
+            class="css-view-175oi2r"
+            data-testid="circular-timer-ring"
+            role="progressbar"
+            style="width: 180px; height: 180px;"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="width: 180px; height: 180px;"
+            >
+              <svg
+                height="100%"
+                style="position: absolute;"
+                viewBox="0 0 180 180"
+                width="100%"
+              >
+                <circle
+                  cx="90"
+                  cy="90"
+                  fill="none"
+                  r="86"
+                  stroke="var(--color-hairline-default)"
+                  stroke-width="8"
+                />
+                <circle
+                  cx="90"
+                  cy="90"
+                  fill="none"
+                  r="86"
+                  stroke="var(--color-brand-primary)"
+                  stroke-dasharray="540.3539364174444"
+                  stroke-dashoffset="270.1769682087222"
+                  stroke-linecap="round"
+                  stroke-width="8"
+                  style="transition: stroke-dashoffset 300ms cubic-bezier(0.22, 1, 0.36, 1);"
+                  transform="rotate(-90 90 90)"
+                />
+              </svg>
+            </div>
+            <div
+              class="css-view-175oi2r"
+              style="position: absolute; align-items: center; justify-content: center; pointer-events: none;"
+            >
+              <div
+                class="css-text-146c3p1"
+                data-testid="circular-timer-label"
+                dir="auto"
+                style="font-size: 43px; font-family: "Space Grotesk", sans-serif; font-weight: 800; letter-spacing: -1px;"
+              >
+                1:00
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Add 30 seconds"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              data-testid="rest-timer-add-time"
+              role="button"
+              style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+              >
+                +30s
+              </div>
+            </button>
+            <button
+              aria-label="Skip rest"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              data-testid="rest-timer-skip"
+              role="button"
+              style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+              >
+                Skip
+              </div>
+            </button>
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-next-set"
+          dir="auto"
+          style="font-size: 13px; font-family: Inter, sans-serif;"
+        >
+          Next · Bench Press · set 3 of 4
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the RingMidway story unchanged 2`] = `
+{
+  "circular-timer-label": "text-text-primary",
+  "circular-timer-ring": "items-center justify-center",
+  "rest-timer": "items-center gap-stack-lg",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-next-set": "text-text-tertiary",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+}
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the RingPlayground story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 420px; padding: 32px 32px 32px 32px; align-items: center; background-color: rgb(16, 13, 10);"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(90, 89, 88); font-size: 10px; font-weight: 700; letter-spacing: 1px; margin-bottom: 20px;"
+      >
+        REST · UNTIL NEXT SET · (organism chrome — not the component)
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer"
+      >
+        <div
+          aria-label="Rest timer, 73 seconds remaining"
+          class="css-view-175oi2r"
+          data-testid="rest-timer-ring"
+          role="timer"
+          style="align-items: center; gap: 16px;"
+        >
+          <div
+            aria-label="Timer ring"
+            class="css-view-175oi2r"
+            data-testid="circular-timer-ring"
+            role="progressbar"
+            style="width: 180px; height: 180px;"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="width: 180px; height: 180px;"
+            >
+              <svg
+                height="100%"
+                style="position: absolute;"
+                viewBox="0 0 180 180"
+                width="100%"
+              >
+                <circle
+                  cx="90"
+                  cy="90"
+                  fill="none"
+                  r="86"
+                  stroke="var(--color-hairline-default)"
+                  stroke-width="8"
+                />
+                <circle
+                  cx="90"
+                  cy="90"
+                  fill="none"
+                  r="86"
+                  stroke="var(--color-brand-primary)"
+                  stroke-dasharray="540.3539364174444"
+                  stroke-dashoffset="211.6386250968324"
+                  stroke-linecap="round"
+                  stroke-width="8"
+                  style="transition: stroke-dashoffset 300ms cubic-bezier(0.22, 1, 0.36, 1);"
+                  transform="rotate(-90 90 90)"
+                />
+              </svg>
+            </div>
+            <div
+              class="css-view-175oi2r"
+              style="position: absolute; align-items: center; justify-content: center; pointer-events: none;"
+            >
+              <div
+                class="css-text-146c3p1"
+                data-testid="circular-timer-label"
+                dir="auto"
+                style="font-size: 43px; font-family: "Space Grotesk", sans-serif; font-weight: 800; letter-spacing: -1px;"
+              >
+                1:13
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Add 30 seconds"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              data-testid="rest-timer-add-time"
+              role="button"
+              style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+              >
+                +30s
+              </div>
+            </button>
+            <button
+              aria-label="Skip rest"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              data-testid="rest-timer-skip"
+              role="button"
+              style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+              >
+                Skip
+              </div>
+            </button>
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-next-set"
+          dir="auto"
+          style="font-size: 13px; font-family: Inter, sans-serif;"
+        >
+          Next · Bench Press · set 3 of 4
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the RingPlayground story unchanged 2`] = `
+{
+  "circular-timer-label": "text-text-primary",
+  "circular-timer-ring": "items-center justify-center",
+  "rest-timer": "items-center gap-stack-lg",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-next-set": "text-text-tertiary",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+}
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the WithNextSetInfo story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      aria-label="Rest timer, 120 seconds remaining"
+      class="css-view-175oi2r"
+      data-testid="rest-timer"
+      role="timer"
+      style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: column;"
+        >
+          <div
+            class="css-text-146c3p1"
+            data-testid="rest-timer-label"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;"
+          >
+            REST
+          </div>
+          <div
+            class="css-text-146c3p1"
+            data-testid="rest-timer-next-set"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif;"
+          >
+            Bench Press — Set 3 of 4
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-time"
+          dir="auto"
+          style="font-size: 28px; font-family: "Space Grotesk", sans-serif; font-weight: 700; letter-spacing: -0.5px;"
+        >
+          2:00
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer-progress-track"
+        style="height: 3px; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="rest-timer-progress-fill"
+          style="height: 100%; background-color: rgb(255, 121, 0); border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; width: 20%;"
+        />
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <button
+          aria-label="Add 30 seconds"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-add-time"
+          role="button"
+          style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+          >
+            +30s
+          </div>
+        </button>
+        <button
+          aria-label="Skip rest"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-skip"
+          role="button"
+          style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+          >
+            Skip
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the WithNextSetInfo story unchanged 2`] = `
+{
+  "rest-timer": "bg-surface-raised w-full py-inset-md px-gutter-sm",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-label": "text-text-secondary",
+  "rest-timer-next-set": "text-text-tertiary mt-0.5",
+  "rest-timer-progress-track": "bg-hairline mb-3",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+  "rest-timer-time": "text-text-primary",
+}
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the display only fixture unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      aria-label="Rest timer, 120 seconds remaining"
+      class="css-view-175oi2r"
+      data-testid="rest-timer"
+      role="timer"
+      style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: column;"
+        >
+          <div
+            class="css-text-146c3p1"
+            data-testid="rest-timer-label"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;"
+          >
+            REST
+          </div>
+          <div
+            class="css-text-146c3p1"
+            data-testid="rest-timer-next-set"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif;"
+          >
+            Squat — Set 2 of 5
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-time"
+          dir="auto"
+          style="font-size: 28px; font-family: "Space Grotesk", sans-serif; font-weight: 700; letter-spacing: -0.5px;"
+        >
+          2:00
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer-progress-track"
+        style="height: 3px; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="rest-timer-progress-fill"
+          style="height: 100%; background-color: rgb(255, 121, 0); border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; width: 20%;"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the display only fixture unchanged 2`] = `
+{
+  "rest-timer": "bg-surface-raised w-full py-inset-md px-gutter-sm",
+  "rest-timer-label": "text-text-secondary",
+  "rest-timer-next-set": "text-text-tertiary mt-0.5",
+  "rest-timer-progress-track": "bg-hairline mb-3",
+  "rest-timer-time": "text-text-primary",
+}
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the finished fixture unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      aria-label="Rest timer, 0 seconds remaining"
+      class="css-view-175oi2r"
+      data-testid="rest-timer"
+      role="timer"
+      style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: column;"
+        >
+          <div
+            class="css-text-146c3p1"
+            data-testid="rest-timer-label"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;"
+          >
+            REST
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-time"
+          dir="auto"
+          style="font-size: 28px; font-family: "Space Grotesk", sans-serif; font-weight: 700; letter-spacing: -0.5px;"
+        >
+          0:00
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer-progress-track"
+        style="height: 3px; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="rest-timer-progress-fill"
+          style="height: 100%; background-color: rgb(255, 121, 0); border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; width: 100%;"
+        />
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <button
+          aria-label="Add 30 seconds"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-add-time"
+          role="button"
+          style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+          >
+            +30s
+          </div>
+        </button>
+        <button
+          aria-label="Skip rest"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-skip"
+          role="button"
+          style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+          >
+            Skip
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the finished fixture unchanged 2`] = `
+{
+  "rest-timer": "bg-surface-raised w-full py-inset-md px-gutter-sm",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-label": "text-text-secondary",
+  "rest-timer-progress-track": "bg-hairline mb-3",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+  "rest-timer-time": "text-text-primary",
+}
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the hidden fixture unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  />
+</div>
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the hidden fixture unchanged 2`] = `{}`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the overrun fixture unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      aria-label="Rest timer, 0 seconds remaining"
+      class="css-view-175oi2r"
+      data-testid="rest-timer"
+      role="timer"
+      style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: column;"
+        >
+          <div
+            class="css-text-146c3p1"
+            data-testid="rest-timer-label"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;"
+          >
+            REST
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-time"
+          dir="auto"
+          style="font-size: 28px; font-family: "Space Grotesk", sans-serif; font-weight: 700; letter-spacing: -0.5px;"
+        >
+          0:00
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer-progress-track"
+        style="height: 3px; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="rest-timer-progress-fill"
+          style="height: 100%; background-color: rgb(255, 121, 0); border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; width: 100%;"
+        />
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <button
+          aria-label="Add 30 seconds"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-add-time"
+          role="button"
+          style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+          >
+            +30s
+          </div>
+        </button>
+        <button
+          aria-label="Skip rest"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-skip"
+          role="button"
+          style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+          >
+            Skip
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the overrun fixture unchanged 2`] = `
+{
+  "rest-timer": "bg-surface-raised w-full py-inset-md px-gutter-sm",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-label": "text-text-secondary",
+  "rest-timer-progress-track": "bg-hairline mb-3",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+  "rest-timer-time": "text-text-primary",
+}
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the ring display only with next set fixture unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      data-testid="rest-timer"
+    >
+      <div
+        aria-label="Rest timer, 120 seconds remaining"
+        class="css-view-175oi2r"
+        data-testid="rest-timer-ring"
+        role="timer"
+        style="align-items: center; gap: 16px;"
+      >
+        <div
+          aria-label="Timer ring"
+          class="css-view-175oi2r"
+          data-testid="circular-timer-ring"
+          role="progressbar"
+          style="width: 180px; height: 180px;"
+        >
+          <div
+            class="css-view-175oi2r"
+            style="width: 180px; height: 180px;"
+          >
+            <svg
+              height="100%"
+              style="position: absolute;"
+              viewBox="0 0 180 180"
+              width="100%"
+            >
+              <circle
+                cx="90"
+                cy="90"
+                fill="none"
+                r="86"
+                stroke="var(--color-hairline-default)"
+                stroke-width="8"
+              />
+              <circle
+                cx="90"
+                cy="90"
+                fill="none"
+                r="86"
+                stroke="var(--color-brand-primary)"
+                stroke-dasharray="540.3539364174444"
+                stroke-dashoffset="108.07078728348887"
+                stroke-linecap="round"
+                stroke-width="8"
+                style="transition: stroke-dashoffset 300ms cubic-bezier(0.22, 1, 0.36, 1);"
+                transform="rotate(-90 90 90)"
+              />
+            </svg>
+          </div>
+          <div
+            class="css-view-175oi2r"
+            style="position: absolute; align-items: center; justify-content: center; pointer-events: none;"
+          >
+            <div
+              class="css-text-146c3p1"
+              data-testid="circular-timer-label"
+              dir="auto"
+              style="font-size: 43px; font-family: "Space Grotesk", sans-serif; font-weight: 800; letter-spacing: -1px;"
+            >
+              2:00
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-text-146c3p1"
+        data-testid="rest-timer-next-set"
+        dir="auto"
+        style="font-size: 13px; font-family: Inter, sans-serif;"
+      >
+        Row
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the ring display only with next set fixture unchanged 2`] = `
+{
+  "circular-timer-label": "text-text-primary",
+  "circular-timer-ring": "items-center justify-center",
+  "rest-timer": "items-center gap-stack-lg",
+  "rest-timer-next-set": "text-text-tertiary",
+}
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the ring without next set fixture unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      data-testid="rest-timer"
+    >
+      <div
+        aria-label="Rest timer, 120 seconds remaining"
+        class="css-view-175oi2r"
+        data-testid="rest-timer-ring"
+        role="timer"
+        style="align-items: center; gap: 16px;"
+      >
+        <div
+          aria-label="Timer ring"
+          class="css-view-175oi2r"
+          data-testid="circular-timer-ring"
+          role="progressbar"
+          style="width: 180px; height: 180px;"
+        >
+          <div
+            class="css-view-175oi2r"
+            style="width: 180px; height: 180px;"
+          >
+            <svg
+              height="100%"
+              style="position: absolute;"
+              viewBox="0 0 180 180"
+              width="100%"
+            >
+              <circle
+                cx="90"
+                cy="90"
+                fill="none"
+                r="86"
+                stroke="var(--color-hairline-default)"
+                stroke-width="8"
+              />
+              <circle
+                cx="90"
+                cy="90"
+                fill="none"
+                r="86"
+                stroke="var(--color-brand-primary)"
+                stroke-dasharray="540.3539364174444"
+                stroke-dashoffset="108.07078728348887"
+                stroke-linecap="round"
+                stroke-width="8"
+                style="transition: stroke-dashoffset 300ms cubic-bezier(0.22, 1, 0.36, 1);"
+                transform="rotate(-90 90 90)"
+              />
+            </svg>
+          </div>
+          <div
+            class="css-view-175oi2r"
+            style="position: absolute; align-items: center; justify-content: center; pointer-events: none;"
+          >
+            <div
+              class="css-text-146c3p1"
+              data-testid="circular-timer-label"
+              dir="auto"
+              style="font-size: 43px; font-family: "Space Grotesk", sans-serif; font-weight: 800; letter-spacing: -1px;"
+            >
+              2:00
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <button
+            aria-label="Add 30 seconds"
+            class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+            data-testid="rest-timer-add-time"
+            role="button"
+            style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+            tabindex="0"
+            type="button"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+            >
+              +30s
+            </div>
+          </button>
+          <button
+            aria-label="Skip rest"
+            class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+            data-testid="rest-timer-skip"
+            role="button"
+            style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+            tabindex="0"
+            type="button"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+            >
+              Skip
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the ring without next set fixture unchanged 2`] = `
+{
+  "circular-timer-label": "text-text-primary",
+  "circular-timer-ring": "items-center justify-center",
+  "rest-timer": "items-center gap-stack-lg",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+}
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the zero duration fixture unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      aria-label="Rest timer, 0 seconds remaining"
+      class="css-view-175oi2r"
+      data-testid="rest-timer"
+      role="timer"
+      style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: column;"
+        >
+          <div
+            class="css-text-146c3p1"
+            data-testid="rest-timer-label"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;"
+          >
+            REST
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-time"
+          dir="auto"
+          style="font-size: 28px; font-family: "Space Grotesk", sans-serif; font-weight: 700; letter-spacing: -0.5px;"
+        >
+          0:00
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer-progress-track"
+        style="height: 3px; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="rest-timer-progress-fill"
+          style="height: 100%; background-color: rgb(255, 121, 0); border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; width: 100%;"
+        />
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <button
+          aria-label="Add 30 seconds"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-add-time"
+          role="button"
+          style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+          >
+            +30s
+          </div>
+        </button>
+        <button
+          aria-label="Skip rest"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-skip"
+          role="button"
+          style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+          >
+            Skip
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a dark surface > renders the zero duration fixture unchanged 2`] = `
+{
+  "rest-timer": "bg-surface-raised w-full py-inset-md px-gutter-sm",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-label": "text-text-secondary",
+  "rest-timer-progress-track": "bg-hairline mb-3",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+  "rest-timer-time": "text-text-primary",
+}
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders a running countdown at two elapsed times 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      aria-label="Rest timer, 120 seconds remaining"
+      class="css-view-175oi2r"
+      data-testid="rest-timer"
+      role="timer"
+      style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: column;"
+        >
+          <div
+            class="css-text-146c3p1"
+            data-testid="rest-timer-label"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;"
+          >
+            REST
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-time"
+          dir="auto"
+          style="font-size: 28px; font-family: "Space Grotesk", sans-serif; font-weight: 700; letter-spacing: -0.5px;"
+        >
+          2:00
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer-progress-track"
+        style="height: 3px; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="rest-timer-progress-fill"
+          style="height: 100%; background-color: rgb(255, 121, 0); border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; width: 20%;"
+        />
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <button
+          aria-label="Add 30 seconds"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-add-time"
+          role="button"
+          style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+          >
+            +30s
+          </div>
+        </button>
+        <button
+          aria-label="Skip rest"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-skip"
+          role="button"
+          style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+          >
+            Skip
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders a running countdown at two elapsed times 2`] = `
+{
+  "rest-timer": "bg-surface-raised w-full py-inset-md px-gutter-sm",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-label": "text-text-secondary",
+  "rest-timer-progress-track": "bg-hairline mb-3",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+  "rest-timer-time": "text-text-primary",
+}
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders a running countdown at two elapsed times 3`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      aria-label="Rest timer, 119 seconds remaining"
+      class="css-view-175oi2r"
+      data-testid="rest-timer"
+      role="timer"
+      style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: column;"
+        >
+          <div
+            class="css-text-146c3p1"
+            data-testid="rest-timer-label"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;"
+          >
+            REST
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-time"
+          dir="auto"
+          style="font-size: 28px; font-family: "Space Grotesk", sans-serif; font-weight: 700; letter-spacing: -0.5px;"
+        >
+          1:59
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer-progress-track"
+        style="height: 3px; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="rest-timer-progress-fill"
+          style="height: 100%; background-color: rgb(255, 121, 0); border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; width: 20.666666666666668%;"
+        />
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <button
+          aria-label="Add 30 seconds"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-add-time"
+          role="button"
+          style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+          >
+            +30s
+          </div>
+        </button>
+        <button
+          aria-label="Skip rest"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-skip"
+          role="button"
+          style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+          >
+            Skip
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders a running countdown at two elapsed times 4`] = `
+{
+  "rest-timer": "bg-surface-raised w-full py-inset-md px-gutter-sm",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-label": "text-text-secondary",
+  "rest-timer-progress-track": "bg-hairline mb-3",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+  "rest-timer-time": "text-text-primary",
+}
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the Default story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      aria-label="Rest timer, 120 seconds remaining"
+      class="css-view-175oi2r"
+      data-testid="rest-timer"
+      role="timer"
+      style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: column;"
+        >
+          <div
+            class="css-text-146c3p1"
+            data-testid="rest-timer-label"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;"
+          >
+            REST
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-time"
+          dir="auto"
+          style="font-size: 28px; font-family: "Space Grotesk", sans-serif; font-weight: 700; letter-spacing: -0.5px;"
+        >
+          2:00
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer-progress-track"
+        style="height: 3px; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="rest-timer-progress-fill"
+          style="height: 100%; background-color: rgb(255, 121, 0); border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; width: 20%;"
+        />
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <button
+          aria-label="Add 30 seconds"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-add-time"
+          role="button"
+          style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+          >
+            +30s
+          </div>
+        </button>
+        <button
+          aria-label="Skip rest"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-skip"
+          role="button"
+          style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+          >
+            Skip
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the Default story unchanged 2`] = `
+{
+  "rest-timer": "bg-surface-raised w-full py-inset-md px-gutter-sm",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-label": "text-text-secondary",
+  "rest-timer-progress-track": "bg-hairline mb-3",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+  "rest-timer-time": "text-text-primary",
+}
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the JustStarted story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      aria-label="Rest timer, 150 seconds remaining"
+      class="css-view-175oi2r"
+      data-testid="rest-timer"
+      role="timer"
+      style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: column;"
+        >
+          <div
+            class="css-text-146c3p1"
+            data-testid="rest-timer-label"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;"
+          >
+            REST
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-time"
+          dir="auto"
+          style="font-size: 28px; font-family: "Space Grotesk", sans-serif; font-weight: 700; letter-spacing: -0.5px;"
+        >
+          2:30
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer-progress-track"
+        style="height: 3px; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="rest-timer-progress-fill"
+          style="height: 100%; background-color: rgb(255, 121, 0); border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; width: 0%;"
+        />
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <button
+          aria-label="Add 30 seconds"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-add-time"
+          role="button"
+          style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+          >
+            +30s
+          </div>
+        </button>
+        <button
+          aria-label="Skip rest"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-skip"
+          role="button"
+          style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+          >
+            Skip
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the JustStarted story unchanged 2`] = `
+{
+  "rest-timer": "bg-surface-raised w-full py-inset-md px-gutter-sm",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-label": "text-text-secondary",
+  "rest-timer-progress-track": "bg-hairline mb-3",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+  "rest-timer-time": "text-text-primary",
+}
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the NearlyComplete story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      aria-label="Rest timer, 5 seconds remaining"
+      class="css-view-175oi2r"
+      data-testid="rest-timer"
+      role="timer"
+      style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: column;"
+        >
+          <div
+            class="css-text-146c3p1"
+            data-testid="rest-timer-label"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;"
+          >
+            REST
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-time"
+          dir="auto"
+          style="font-size: 28px; font-family: "Space Grotesk", sans-serif; font-weight: 700; letter-spacing: -0.5px;"
+        >
+          0:05
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer-progress-track"
+        style="height: 3px; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="rest-timer-progress-fill"
+          style="height: 100%; background-color: rgb(255, 121, 0); border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; width: 96.66666666666667%;"
+        />
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <button
+          aria-label="Add 30 seconds"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-add-time"
+          role="button"
+          style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+          >
+            +30s
+          </div>
+        </button>
+        <button
+          aria-label="Skip rest"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-skip"
+          role="button"
+          style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+          >
+            Skip
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the NearlyComplete story unchanged 2`] = `
+{
+  "rest-timer": "bg-surface-raised w-full py-inset-md px-gutter-sm",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-label": "text-text-secondary",
+  "rest-timer-progress-track": "bg-hairline mb-3",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+  "rest-timer-time": "text-text-primary",
+}
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the RingAlmostDone story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 420px; padding: 32px 32px 32px 32px; align-items: center; background-color: rgb(16, 13, 10);"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(90, 89, 88); font-size: 10px; font-weight: 700; letter-spacing: 1px; margin-bottom: 20px;"
+      >
+        REST · UNTIL NEXT SET · (organism chrome — not the component)
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer"
+      >
+        <div
+          aria-label="Rest timer, 8 seconds remaining"
+          class="css-view-175oi2r"
+          data-testid="rest-timer-ring"
+          role="timer"
+          style="align-items: center; gap: 16px;"
+        >
+          <div
+            aria-label="Timer ring"
+            class="css-view-175oi2r"
+            data-testid="circular-timer-ring"
+            role="progressbar"
+            style="width: 180px; height: 180px;"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="width: 180px; height: 180px;"
+            >
+              <svg
+                height="100%"
+                style="position: absolute;"
+                viewBox="0 0 180 180"
+                width="100%"
+              >
+                <circle
+                  cx="90"
+                  cy="90"
+                  fill="none"
+                  r="86"
+                  stroke="var(--color-hairline-default)"
+                  stroke-width="8"
+                />
+                <circle
+                  cx="90"
+                  cy="90"
+                  fill="none"
+                  r="86"
+                  stroke="var(--color-brand-primary)"
+                  stroke-dasharray="540.3539364174444"
+                  stroke-dashoffset="504.33034065628146"
+                  stroke-linecap="round"
+                  stroke-width="8"
+                  style="transition: stroke-dashoffset 300ms cubic-bezier(0.22, 1, 0.36, 1);"
+                  transform="rotate(-90 90 90)"
+                />
+              </svg>
+            </div>
+            <div
+              class="css-view-175oi2r"
+              style="position: absolute; align-items: center; justify-content: center; pointer-events: none;"
+            >
+              <div
+                class="css-text-146c3p1"
+                data-testid="circular-timer-label"
+                dir="auto"
+                style="font-size: 43px; font-family: "Space Grotesk", sans-serif; font-weight: 800; letter-spacing: -1px;"
+              >
+                0:08
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Add 30 seconds"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              data-testid="rest-timer-add-time"
+              role="button"
+              style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+              >
+                +30s
+              </div>
+            </button>
+            <button
+              aria-label="Skip rest"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              data-testid="rest-timer-skip"
+              role="button"
+              style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+              >
+                Skip
+              </div>
+            </button>
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-next-set"
+          dir="auto"
+          style="font-size: 13px; font-family: Inter, sans-serif;"
+        >
+          Next · Bench Press · set 3 of 4
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the RingAlmostDone story unchanged 2`] = `
+{
+  "circular-timer-label": "text-text-primary",
+  "circular-timer-ring": "items-center justify-center",
+  "rest-timer": "items-center gap-stack-lg",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-next-set": "text-text-tertiary",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+}
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the RingDisplayOnly story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 420px; padding: 32px 32px 32px 32px; align-items: center; background-color: rgb(16, 13, 10);"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(90, 89, 88); font-size: 10px; font-weight: 700; letter-spacing: 1px; margin-bottom: 20px;"
+      >
+        REST · UNTIL NEXT SET · (organism chrome — not the component)
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer"
+      >
+        <div
+          aria-label="Rest timer, 73 seconds remaining"
+          class="css-view-175oi2r"
+          data-testid="rest-timer-ring"
+          role="timer"
+          style="align-items: center; gap: 16px;"
+        >
+          <div
+            aria-label="Timer ring"
+            class="css-view-175oi2r"
+            data-testid="circular-timer-ring"
+            role="progressbar"
+            style="width: 180px; height: 180px;"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="width: 180px; height: 180px;"
+            >
+              <svg
+                height="100%"
+                style="position: absolute;"
+                viewBox="0 0 180 180"
+                width="100%"
+              >
+                <circle
+                  cx="90"
+                  cy="90"
+                  fill="none"
+                  r="86"
+                  stroke="var(--color-hairline-default)"
+                  stroke-width="8"
+                />
+                <circle
+                  cx="90"
+                  cy="90"
+                  fill="none"
+                  r="86"
+                  stroke="var(--color-brand-primary)"
+                  stroke-dasharray="540.3539364174444"
+                  stroke-dashoffset="211.6386250968324"
+                  stroke-linecap="round"
+                  stroke-width="8"
+                  style="transition: stroke-dashoffset 300ms cubic-bezier(0.22, 1, 0.36, 1);"
+                  transform="rotate(-90 90 90)"
+                />
+              </svg>
+            </div>
+            <div
+              class="css-view-175oi2r"
+              style="position: absolute; align-items: center; justify-content: center; pointer-events: none;"
+            >
+              <div
+                class="css-text-146c3p1"
+                data-testid="circular-timer-label"
+                dir="auto"
+                style="font-size: 43px; font-family: "Space Grotesk", sans-serif; font-weight: 800; letter-spacing: -1px;"
+              >
+                1:13
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-next-set"
+          dir="auto"
+          style="font-size: 13px; font-family: Inter, sans-serif;"
+        >
+          Next · Bench Press · set 3 of 4
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the RingDisplayOnly story unchanged 2`] = `
+{
+  "circular-timer-label": "text-text-primary",
+  "circular-timer-ring": "items-center justify-center",
+  "rest-timer": "items-center gap-stack-lg",
+  "rest-timer-next-set": "text-text-tertiary",
+}
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the RingDone story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 420px; padding: 32px 32px 32px 32px; align-items: center; background-color: rgb(16, 13, 10);"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(90, 89, 88); font-size: 10px; font-weight: 700; letter-spacing: 1px; margin-bottom: 20px;"
+      >
+        REST · UNTIL NEXT SET · (organism chrome — not the component)
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer"
+      >
+        <div
+          aria-label="Rest complete, next set ready"
+          class="css-view-175oi2r"
+          data-testid="rest-timer-ring"
+          role="timer"
+          style="align-items: center; gap: 16px;"
+        >
+          <div
+            aria-label="Timer ring"
+            class="css-view-175oi2r"
+            data-testid="circular-timer-ring"
+            role="progressbar"
+            style="width: 180px; height: 180px;"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="width: 180px; height: 180px;"
+            >
+              <svg
+                height="100%"
+                style="position: absolute;"
+                viewBox="0 0 180 180"
+                width="100%"
+              >
+                <circle
+                  cx="90"
+                  cy="90"
+                  fill="none"
+                  r="86"
+                  stroke="var(--color-hairline-default)"
+                  stroke-width="8"
+                />
+                <circle
+                  cx="90"
+                  cy="90"
+                  fill="none"
+                  r="86"
+                  stroke="var(--color-status-success)"
+                  stroke-dasharray="540.3539364174444"
+                  stroke-dashoffset="0"
+                  stroke-linecap="round"
+                  stroke-width="8"
+                  style="transition: stroke-dashoffset 300ms cubic-bezier(0.22, 1, 0.36, 1);"
+                  transform="rotate(-90 90 90)"
+                />
+              </svg>
+            </div>
+            <div
+              class="css-view-175oi2r"
+              style="position: absolute; align-items: center; justify-content: center; pointer-events: none;"
+            >
+              <div
+                class="css-text-146c3p1"
+                data-testid="circular-timer-label"
+                dir="auto"
+                style="font-size: 50px; font-family: "Space Grotesk", sans-serif; font-weight: 800; letter-spacing: 1px; color: var(--color-status-success);"
+              >
+                GO
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Add 30 seconds"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              data-testid="rest-timer-add-time"
+              role="button"
+              style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+              >
+                +30s
+              </div>
+            </button>
+            <button
+              aria-label="Skip rest"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              data-testid="rest-timer-skip"
+              role="button"
+              style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+              >
+                Skip
+              </div>
+            </button>
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-next-set"
+          dir="auto"
+          style="font-size: 13px; font-family: Inter, sans-serif;"
+        >
+          Next · Bench Press · set 3 of 4
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the RingDone story unchanged 2`] = `
+{
+  "circular-timer-ring": "items-center justify-center",
+  "rest-timer": "items-center gap-stack-lg",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-next-set": "text-text-tertiary",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+}
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the RingJustStarted story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 420px; padding: 32px 32px 32px 32px; align-items: center; background-color: rgb(16, 13, 10);"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(90, 89, 88); font-size: 10px; font-weight: 700; letter-spacing: 1px; margin-bottom: 20px;"
+      >
+        REST · UNTIL NEXT SET · (organism chrome — not the component)
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer"
+      >
+        <div
+          aria-label="Rest timer, 112 seconds remaining"
+          class="css-view-175oi2r"
+          data-testid="rest-timer-ring"
+          role="timer"
+          style="align-items: center; gap: 16px;"
+        >
+          <div
+            aria-label="Timer ring"
+            class="css-view-175oi2r"
+            data-testid="circular-timer-ring"
+            role="progressbar"
+            style="width: 180px; height: 180px;"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="width: 180px; height: 180px;"
+            >
+              <svg
+                height="100%"
+                style="position: absolute;"
+                viewBox="0 0 180 180"
+                width="100%"
+              >
+                <circle
+                  cx="90"
+                  cy="90"
+                  fill="none"
+                  r="86"
+                  stroke="var(--color-hairline-default)"
+                  stroke-width="8"
+                />
+                <circle
+                  cx="90"
+                  cy="90"
+                  fill="none"
+                  r="86"
+                  stroke="var(--color-brand-primary)"
+                  stroke-dasharray="540.3539364174444"
+                  stroke-dashoffset="36.023595761162994"
+                  stroke-linecap="round"
+                  stroke-width="8"
+                  style="transition: stroke-dashoffset 300ms cubic-bezier(0.22, 1, 0.36, 1);"
+                  transform="rotate(-90 90 90)"
+                />
+              </svg>
+            </div>
+            <div
+              class="css-view-175oi2r"
+              style="position: absolute; align-items: center; justify-content: center; pointer-events: none;"
+            >
+              <div
+                class="css-text-146c3p1"
+                data-testid="circular-timer-label"
+                dir="auto"
+                style="font-size: 43px; font-family: "Space Grotesk", sans-serif; font-weight: 800; letter-spacing: -1px;"
+              >
+                1:52
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Add 30 seconds"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              data-testid="rest-timer-add-time"
+              role="button"
+              style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+              >
+                +30s
+              </div>
+            </button>
+            <button
+              aria-label="Skip rest"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              data-testid="rest-timer-skip"
+              role="button"
+              style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+              >
+                Skip
+              </div>
+            </button>
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-next-set"
+          dir="auto"
+          style="font-size: 13px; font-family: Inter, sans-serif;"
+        >
+          Next · Bench Press · set 3 of 4
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the RingJustStarted story unchanged 2`] = `
+{
+  "circular-timer-label": "text-text-primary",
+  "circular-timer-ring": "items-center justify-center",
+  "rest-timer": "items-center gap-stack-lg",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-next-set": "text-text-tertiary",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+}
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the RingMidway story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 420px; padding: 32px 32px 32px 32px; align-items: center; background-color: rgb(16, 13, 10);"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(90, 89, 88); font-size: 10px; font-weight: 700; letter-spacing: 1px; margin-bottom: 20px;"
+      >
+        REST · UNTIL NEXT SET · (organism chrome — not the component)
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer"
+      >
+        <div
+          aria-label="Rest timer, 60 seconds remaining"
+          class="css-view-175oi2r"
+          data-testid="rest-timer-ring"
+          role="timer"
+          style="align-items: center; gap: 16px;"
+        >
+          <div
+            aria-label="Timer ring"
+            class="css-view-175oi2r"
+            data-testid="circular-timer-ring"
+            role="progressbar"
+            style="width: 180px; height: 180px;"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="width: 180px; height: 180px;"
+            >
+              <svg
+                height="100%"
+                style="position: absolute;"
+                viewBox="0 0 180 180"
+                width="100%"
+              >
+                <circle
+                  cx="90"
+                  cy="90"
+                  fill="none"
+                  r="86"
+                  stroke="var(--color-hairline-default)"
+                  stroke-width="8"
+                />
+                <circle
+                  cx="90"
+                  cy="90"
+                  fill="none"
+                  r="86"
+                  stroke="var(--color-brand-primary)"
+                  stroke-dasharray="540.3539364174444"
+                  stroke-dashoffset="270.1769682087222"
+                  stroke-linecap="round"
+                  stroke-width="8"
+                  style="transition: stroke-dashoffset 300ms cubic-bezier(0.22, 1, 0.36, 1);"
+                  transform="rotate(-90 90 90)"
+                />
+              </svg>
+            </div>
+            <div
+              class="css-view-175oi2r"
+              style="position: absolute; align-items: center; justify-content: center; pointer-events: none;"
+            >
+              <div
+                class="css-text-146c3p1"
+                data-testid="circular-timer-label"
+                dir="auto"
+                style="font-size: 43px; font-family: "Space Grotesk", sans-serif; font-weight: 800; letter-spacing: -1px;"
+              >
+                1:00
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Add 30 seconds"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              data-testid="rest-timer-add-time"
+              role="button"
+              style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+              >
+                +30s
+              </div>
+            </button>
+            <button
+              aria-label="Skip rest"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              data-testid="rest-timer-skip"
+              role="button"
+              style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+              >
+                Skip
+              </div>
+            </button>
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-next-set"
+          dir="auto"
+          style="font-size: 13px; font-family: Inter, sans-serif;"
+        >
+          Next · Bench Press · set 3 of 4
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the RingMidway story unchanged 2`] = `
+{
+  "circular-timer-label": "text-text-primary",
+  "circular-timer-ring": "items-center justify-center",
+  "rest-timer": "items-center gap-stack-lg",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-next-set": "text-text-tertiary",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+}
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the RingPlayground story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="width: 420px; padding: 32px 32px 32px 32px; align-items: center; background-color: rgb(16, 13, 10);"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+        style="color: rgb(90, 89, 88); font-size: 10px; font-weight: 700; letter-spacing: 1px; margin-bottom: 20px;"
+      >
+        REST · UNTIL NEXT SET · (organism chrome — not the component)
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer"
+      >
+        <div
+          aria-label="Rest timer, 73 seconds remaining"
+          class="css-view-175oi2r"
+          data-testid="rest-timer-ring"
+          role="timer"
+          style="align-items: center; gap: 16px;"
+        >
+          <div
+            aria-label="Timer ring"
+            class="css-view-175oi2r"
+            data-testid="circular-timer-ring"
+            role="progressbar"
+            style="width: 180px; height: 180px;"
+          >
+            <div
+              class="css-view-175oi2r"
+              style="width: 180px; height: 180px;"
+            >
+              <svg
+                height="100%"
+                style="position: absolute;"
+                viewBox="0 0 180 180"
+                width="100%"
+              >
+                <circle
+                  cx="90"
+                  cy="90"
+                  fill="none"
+                  r="86"
+                  stroke="var(--color-hairline-default)"
+                  stroke-width="8"
+                />
+                <circle
+                  cx="90"
+                  cy="90"
+                  fill="none"
+                  r="86"
+                  stroke="var(--color-brand-primary)"
+                  stroke-dasharray="540.3539364174444"
+                  stroke-dashoffset="211.6386250968324"
+                  stroke-linecap="round"
+                  stroke-width="8"
+                  style="transition: stroke-dashoffset 300ms cubic-bezier(0.22, 1, 0.36, 1);"
+                  transform="rotate(-90 90 90)"
+                />
+              </svg>
+            </div>
+            <div
+              class="css-view-175oi2r"
+              style="position: absolute; align-items: center; justify-content: center; pointer-events: none;"
+            >
+              <div
+                class="css-text-146c3p1"
+                data-testid="circular-timer-label"
+                dir="auto"
+                style="font-size: 43px; font-family: "Space Grotesk", sans-serif; font-weight: 800; letter-spacing: -1px;"
+              >
+                1:13
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <button
+              aria-label="Add 30 seconds"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              data-testid="rest-timer-add-time"
+              role="button"
+              style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+              >
+                +30s
+              </div>
+            </button>
+            <button
+              aria-label="Skip rest"
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              data-testid="rest-timer-skip"
+              role="button"
+              style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+              tabindex="0"
+              type="button"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+              >
+                Skip
+              </div>
+            </button>
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-next-set"
+          dir="auto"
+          style="font-size: 13px; font-family: Inter, sans-serif;"
+        >
+          Next · Bench Press · set 3 of 4
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the RingPlayground story unchanged 2`] = `
+{
+  "circular-timer-label": "text-text-primary",
+  "circular-timer-ring": "items-center justify-center",
+  "rest-timer": "items-center gap-stack-lg",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-next-set": "text-text-tertiary",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+}
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the WithNextSetInfo story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      aria-label="Rest timer, 120 seconds remaining"
+      class="css-view-175oi2r"
+      data-testid="rest-timer"
+      role="timer"
+      style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: column;"
+        >
+          <div
+            class="css-text-146c3p1"
+            data-testid="rest-timer-label"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;"
+          >
+            REST
+          </div>
+          <div
+            class="css-text-146c3p1"
+            data-testid="rest-timer-next-set"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif;"
+          >
+            Bench Press — Set 3 of 4
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-time"
+          dir="auto"
+          style="font-size: 28px; font-family: "Space Grotesk", sans-serif; font-weight: 700; letter-spacing: -0.5px;"
+        >
+          2:00
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer-progress-track"
+        style="height: 3px; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="rest-timer-progress-fill"
+          style="height: 100%; background-color: rgb(255, 121, 0); border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; width: 20%;"
+        />
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <button
+          aria-label="Add 30 seconds"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-add-time"
+          role="button"
+          style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+          >
+            +30s
+          </div>
+        </button>
+        <button
+          aria-label="Skip rest"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-skip"
+          role="button"
+          style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+          >
+            Skip
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the WithNextSetInfo story unchanged 2`] = `
+{
+  "rest-timer": "bg-surface-raised w-full py-inset-md px-gutter-sm",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-label": "text-text-secondary",
+  "rest-timer-next-set": "text-text-tertiary mt-0.5",
+  "rest-timer-progress-track": "bg-hairline mb-3",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+  "rest-timer-time": "text-text-primary",
+}
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the display only fixture unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      aria-label="Rest timer, 120 seconds remaining"
+      class="css-view-175oi2r"
+      data-testid="rest-timer"
+      role="timer"
+      style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: column;"
+        >
+          <div
+            class="css-text-146c3p1"
+            data-testid="rest-timer-label"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;"
+          >
+            REST
+          </div>
+          <div
+            class="css-text-146c3p1"
+            data-testid="rest-timer-next-set"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif;"
+          >
+            Squat — Set 2 of 5
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-time"
+          dir="auto"
+          style="font-size: 28px; font-family: "Space Grotesk", sans-serif; font-weight: 700; letter-spacing: -0.5px;"
+        >
+          2:00
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer-progress-track"
+        style="height: 3px; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="rest-timer-progress-fill"
+          style="height: 100%; background-color: rgb(255, 121, 0); border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; width: 20%;"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the display only fixture unchanged 2`] = `
+{
+  "rest-timer": "bg-surface-raised w-full py-inset-md px-gutter-sm",
+  "rest-timer-label": "text-text-secondary",
+  "rest-timer-next-set": "text-text-tertiary mt-0.5",
+  "rest-timer-progress-track": "bg-hairline mb-3",
+  "rest-timer-time": "text-text-primary",
+}
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the finished fixture unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      aria-label="Rest timer, 0 seconds remaining"
+      class="css-view-175oi2r"
+      data-testid="rest-timer"
+      role="timer"
+      style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: column;"
+        >
+          <div
+            class="css-text-146c3p1"
+            data-testid="rest-timer-label"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;"
+          >
+            REST
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-time"
+          dir="auto"
+          style="font-size: 28px; font-family: "Space Grotesk", sans-serif; font-weight: 700; letter-spacing: -0.5px;"
+        >
+          0:00
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer-progress-track"
+        style="height: 3px; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="rest-timer-progress-fill"
+          style="height: 100%; background-color: rgb(255, 121, 0); border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; width: 100%;"
+        />
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <button
+          aria-label="Add 30 seconds"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-add-time"
+          role="button"
+          style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+          >
+            +30s
+          </div>
+        </button>
+        <button
+          aria-label="Skip rest"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-skip"
+          role="button"
+          style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+          >
+            Skip
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the finished fixture unchanged 2`] = `
+{
+  "rest-timer": "bg-surface-raised w-full py-inset-md px-gutter-sm",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-label": "text-text-secondary",
+  "rest-timer-progress-track": "bg-hairline mb-3",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+  "rest-timer-time": "text-text-primary",
+}
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the hidden fixture unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  />
+</div>
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the hidden fixture unchanged 2`] = `{}`;
+
+exports[`RestTimer characterisation > on a light surface > renders the overrun fixture unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      aria-label="Rest timer, 0 seconds remaining"
+      class="css-view-175oi2r"
+      data-testid="rest-timer"
+      role="timer"
+      style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: column;"
+        >
+          <div
+            class="css-text-146c3p1"
+            data-testid="rest-timer-label"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;"
+          >
+            REST
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-time"
+          dir="auto"
+          style="font-size: 28px; font-family: "Space Grotesk", sans-serif; font-weight: 700; letter-spacing: -0.5px;"
+        >
+          0:00
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer-progress-track"
+        style="height: 3px; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="rest-timer-progress-fill"
+          style="height: 100%; background-color: rgb(255, 121, 0); border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; width: 100%;"
+        />
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <button
+          aria-label="Add 30 seconds"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-add-time"
+          role="button"
+          style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+          >
+            +30s
+          </div>
+        </button>
+        <button
+          aria-label="Skip rest"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-skip"
+          role="button"
+          style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+          >
+            Skip
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the overrun fixture unchanged 2`] = `
+{
+  "rest-timer": "bg-surface-raised w-full py-inset-md px-gutter-sm",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-label": "text-text-secondary",
+  "rest-timer-progress-track": "bg-hairline mb-3",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+  "rest-timer-time": "text-text-primary",
+}
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the ring display only with next set fixture unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      data-testid="rest-timer"
+    >
+      <div
+        aria-label="Rest timer, 120 seconds remaining"
+        class="css-view-175oi2r"
+        data-testid="rest-timer-ring"
+        role="timer"
+        style="align-items: center; gap: 16px;"
+      >
+        <div
+          aria-label="Timer ring"
+          class="css-view-175oi2r"
+          data-testid="circular-timer-ring"
+          role="progressbar"
+          style="width: 180px; height: 180px;"
+        >
+          <div
+            class="css-view-175oi2r"
+            style="width: 180px; height: 180px;"
+          >
+            <svg
+              height="100%"
+              style="position: absolute;"
+              viewBox="0 0 180 180"
+              width="100%"
+            >
+              <circle
+                cx="90"
+                cy="90"
+                fill="none"
+                r="86"
+                stroke="var(--color-hairline-default)"
+                stroke-width="8"
+              />
+              <circle
+                cx="90"
+                cy="90"
+                fill="none"
+                r="86"
+                stroke="var(--color-brand-primary)"
+                stroke-dasharray="540.3539364174444"
+                stroke-dashoffset="108.07078728348887"
+                stroke-linecap="round"
+                stroke-width="8"
+                style="transition: stroke-dashoffset 300ms cubic-bezier(0.22, 1, 0.36, 1);"
+                transform="rotate(-90 90 90)"
+              />
+            </svg>
+          </div>
+          <div
+            class="css-view-175oi2r"
+            style="position: absolute; align-items: center; justify-content: center; pointer-events: none;"
+          >
+            <div
+              class="css-text-146c3p1"
+              data-testid="circular-timer-label"
+              dir="auto"
+              style="font-size: 43px; font-family: "Space Grotesk", sans-serif; font-weight: 800; letter-spacing: -1px;"
+            >
+              2:00
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-text-146c3p1"
+        data-testid="rest-timer-next-set"
+        dir="auto"
+        style="font-size: 13px; font-family: Inter, sans-serif;"
+      >
+        Row
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the ring display only with next set fixture unchanged 2`] = `
+{
+  "circular-timer-label": "text-text-primary",
+  "circular-timer-ring": "items-center justify-center",
+  "rest-timer": "items-center gap-stack-lg",
+  "rest-timer-next-set": "text-text-tertiary",
+}
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the ring without next set fixture unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      data-testid="rest-timer"
+    >
+      <div
+        aria-label="Rest timer, 120 seconds remaining"
+        class="css-view-175oi2r"
+        data-testid="rest-timer-ring"
+        role="timer"
+        style="align-items: center; gap: 16px;"
+      >
+        <div
+          aria-label="Timer ring"
+          class="css-view-175oi2r"
+          data-testid="circular-timer-ring"
+          role="progressbar"
+          style="width: 180px; height: 180px;"
+        >
+          <div
+            class="css-view-175oi2r"
+            style="width: 180px; height: 180px;"
+          >
+            <svg
+              height="100%"
+              style="position: absolute;"
+              viewBox="0 0 180 180"
+              width="100%"
+            >
+              <circle
+                cx="90"
+                cy="90"
+                fill="none"
+                r="86"
+                stroke="var(--color-hairline-default)"
+                stroke-width="8"
+              />
+              <circle
+                cx="90"
+                cy="90"
+                fill="none"
+                r="86"
+                stroke="var(--color-brand-primary)"
+                stroke-dasharray="540.3539364174444"
+                stroke-dashoffset="108.07078728348887"
+                stroke-linecap="round"
+                stroke-width="8"
+                style="transition: stroke-dashoffset 300ms cubic-bezier(0.22, 1, 0.36, 1);"
+                transform="rotate(-90 90 90)"
+              />
+            </svg>
+          </div>
+          <div
+            class="css-view-175oi2r"
+            style="position: absolute; align-items: center; justify-content: center; pointer-events: none;"
+          >
+            <div
+              class="css-text-146c3p1"
+              data-testid="circular-timer-label"
+              dir="auto"
+              style="font-size: 43px; font-family: "Space Grotesk", sans-serif; font-weight: 800; letter-spacing: -1px;"
+            >
+              2:00
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <button
+            aria-label="Add 30 seconds"
+            class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+            data-testid="rest-timer-add-time"
+            role="button"
+            style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+            tabindex="0"
+            type="button"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+            >
+              +30s
+            </div>
+          </button>
+          <button
+            aria-label="Skip rest"
+            class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+            data-testid="rest-timer-skip"
+            role="button"
+            style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+            tabindex="0"
+            type="button"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+            >
+              Skip
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the ring without next set fixture unchanged 2`] = `
+{
+  "circular-timer-label": "text-text-primary",
+  "circular-timer-ring": "items-center justify-center",
+  "rest-timer": "items-center gap-stack-lg",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+}
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the zero duration fixture unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      aria-label="Rest timer, 0 seconds remaining"
+      class="css-view-175oi2r"
+      data-testid="rest-timer"
+      role="timer"
+      style="border-top-width: 1px; border-top-color: var(--color-hairline-default);"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+          style="flex-direction: column;"
+        >
+          <div
+            class="css-text-146c3p1"
+            data-testid="rest-timer-label"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;"
+          >
+            REST
+          </div>
+        </div>
+        <div
+          class="css-text-146c3p1"
+          data-testid="rest-timer-time"
+          dir="auto"
+          style="font-size: 28px; font-family: "Space Grotesk", sans-serif; font-weight: 700; letter-spacing: -0.5px;"
+        >
+          0:00
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        data-testid="rest-timer-progress-track"
+        style="height: 3px; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px;"
+      >
+        <div
+          class="css-view-175oi2r"
+          data-testid="rest-timer-progress-fill"
+          style="height: 100%; background-color: rgb(255, 121, 0); border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; width: 100%;"
+        />
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <button
+          aria-label="Add 30 seconds"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-add-time"
+          role="button"
+          style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;"
+          >
+            +30s
+          </div>
+        </button>
+        <button
+          aria-label="Skip rest"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          data-testid="rest-timer-skip"
+          role="button"
+          style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);"
+          >
+            Skip
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`RestTimer characterisation > on a light surface > renders the zero duration fixture unchanged 2`] = `
+{
+  "rest-timer": "bg-surface-raised w-full py-inset-md px-gutter-sm",
+  "rest-timer-add-time": "py-control-y-md px-control-x-md",
+  "rest-timer-label": "text-text-secondary",
+  "rest-timer-progress-track": "bg-hairline mb-3",
+  "rest-timer-skip": "py-control-y-md px-control-x-md",
+  "rest-timer-time": "text-text-primary",
+}
+`;
+
+exports[`RestTimer characterisation > renders the Default story the same with and without reduced motion 1`] = `"<div aria-label="Rest timer, 120 seconds remaining" role="timer" class="css-view-175oi2r" style="border-top-width: 1px; border-top-color: var(--color-hairline-default);" data-testid="rest-timer"><div class="css-view-175oi2r"><div class="css-view-175oi2r" style="flex-direction: column;"><div dir="auto" class="css-text-146c3p1" style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;" data-testid="rest-timer-label">REST</div></div><div dir="auto" class="css-text-146c3p1" style="font-size: 28px; font-family: &quot;Space Grotesk&quot;, sans-serif; font-weight: 700; letter-spacing: -0.5px;" data-testid="rest-timer-time">2:00</div></div><div class="css-view-175oi2r" style="height: 3px; border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px;" data-testid="rest-timer-progress-track"><div class="css-view-175oi2r" style="height: 100%; background-color: rgb(255, 121, 0); border-top-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px; border-bottom-left-radius: 2px; width: 20%;" data-testid="rest-timer-progress-fill"></div></div><div class="css-view-175oi2r"><button aria-label="Add 30 seconds" role="button" tabindex="0" class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73" style="background-color: rgba(255, 255, 255, 0.06); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;" data-testid="rest-timer-add-time" type="button"><div dir="auto" class="css-text-146c3p1" style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600;">+30s</div></button><button aria-label="Skip rest" role="button" tabindex="0" class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73" style="background-color: rgba(255, 121, 0, 0.12); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;" data-testid="rest-timer-skip" type="button"><div dir="auto" class="css-text-146c3p1" style="font-size: 11px; font-family: Inter, sans-serif; font-weight: 600; color: rgb(255, 121, 0);">Skip</div></button></div></div>"`;
