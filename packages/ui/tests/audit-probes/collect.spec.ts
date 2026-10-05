@@ -72,9 +72,13 @@ test('text under a CSS scale(2) measures twice its unscaled offsets', async ({ p
 
 test('SVG text under a 2x viewBox puts its baseline on the scaled y', async ({ page }) => {
   const layout = await collect(page)
+  const labelIn = (svg: { id: string }) =>
+    layout.nodes.find((n) => n.tag === 'text' && n.parent === svg.id)!
   const svg = byTestId(layout, 'zoomed')
-  const label = layout.nodes.find((n) => n.tag === 'text' && n.parent === svg.id)
-  expect(label?.text?.first.baseline).toBeCloseTo(svg.box[1] + 60, 0)
+  const zoomed = labelIn(svg)
+  const plain = labelIn(byTestId(layout, 'chart'))
+  expect(zoomed.text!.first.baseline).toBeCloseTo(svg.box[1] + 60, 0)
+  expect(zoomed.ink![3]).toBeCloseTo(2 * plain.ink![3], 0)
 })
 
 test('mixed-size tspans share one line and take ink from the larger run', async ({ page }) => {
