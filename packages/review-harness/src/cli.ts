@@ -2,6 +2,7 @@
 import { spawn } from 'node:child_process'
 import { captureRound } from './capture.ts'
 import { measureRound } from './contrast-measure.ts'
+import { checkHarnessFreshness } from './harness-freshness.ts'
 import { createPageServer } from './page-server.ts'
 import { runCli } from './run.ts'
 
@@ -16,6 +17,7 @@ const code = await runCli(process.argv.slice(2), {
     captureRound(round.manifest, round.storybookUrl, outDir, round.images),
   measure: (round) => measureRound(round.manifest, round.storybookUrl),
   createPage: createPageServer,
+  harnessFreshness: checkHarnessFreshness,
   signal: controller.signal,
 })
 process.exit(code)
