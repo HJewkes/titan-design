@@ -102,7 +102,7 @@ describe('one place decides short, met and beyond', () => {
     'milestoneReach, the tile and the chart agree on $name',
     ({ target, direction, latest, lead, goal, reach }) => {
       const tile = resolveTile(
-        { target, latest, direction, weekCount: 6, currentWeek: 4 },
+        { target, latest, direction, weekCount: 6, currentWeek: 4, status: 'on_track' },
         getSemanticColors('dark')
       )
 
