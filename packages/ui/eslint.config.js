@@ -11,6 +11,7 @@ const noRawColor = require('./eslint-rules/no-raw-color')
 const noRawComposition = require('./eslint-rules/no-raw-composition')
 const noRawDeviceDataInChat = require('./eslint-rules/no-raw-device-data-in-chat')
 const noRawSpacing = require('./eslint-rules/no-raw-spacing')
+const noTruncation = require('./eslint-rules/no-truncation')
 const noUpwardTierImport = require('./eslint-rules/no-upward-tier-import')
 const noVarColorOpacity = require('./eslint-rules/no-var-color-opacity')
 const restrictedSyntax = require('./eslint-rules/restricted-syntax')
@@ -105,6 +106,7 @@ module.exports = tseslint.config(
           'no-raw-composition': noRawComposition,
           'no-raw-device-data-in-chat': noRawDeviceDataInChat,
           'no-raw-spacing': noRawSpacing,
+          'no-truncation': noTruncation,
           'no-upward-tier-import': noUpwardTierImport,
           'no-var-color-opacity': noVarColorOpacity,
           'story-title-prefix': storyTitlePrefix,
@@ -513,6 +515,20 @@ module.exports = tseslint.config(
     ],
     rules: {
       'titan/no-local-formatter': 'error',
+    },
+  },
+
+  // TD-317 row 9: a domain component that clips its own text hides the data the reader came
+  // for, so truncation in custom/ and shell/ is an explicit decision. ui/ is out of scope:
+  // there truncation is a consumer prop. RATCHETED: today's sites are in
+  // no-truncation-baseline.json, which must stay exact (an unspent allowance is reported as
+  // stale); sanctioned sites go in truncation-allowlist.json. Tests and stories are exempt,
+  // since they exercise the props rather than ship them.
+  {
+    files: ['src/components/custom/**/*.{ts,tsx}', 'src/components/shell/**/*.{ts,tsx}'],
+    ignores: ['src/**/*.test.{ts,tsx}', 'src/**/*.stories.{ts,tsx}'],
+    rules: {
+      'titan/no-truncation': 'error',
     },
   },
 
