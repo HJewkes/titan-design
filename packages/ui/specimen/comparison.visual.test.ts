@@ -370,6 +370,38 @@ async function assertSubElementStyles(
   }
 }
 
+/**
+ * Compare computed styles of one HTML element and one React element via
+ * `compareStyles`. Unlike `assertStyleMatch` it checks styles only, for pairs
+ * whose HTML reference differs structurally from the React tree.
+ */
+async function assertContainerStyles(
+  page: Page,
+  testId: string,
+  htmlSelector: string,
+  reactSelector: string,
+  props: readonly string[]
+) {
+  const container = page.locator(`[data-testid="${testId}"]`)
+  await expect(container).toBeAttached()
+  const htmlEl = container.locator(`.html-version ${htmlSelector}`).first()
+  const reactEl = container.locator(`.react-version ${reactSelector}`).first()
+  await expect(htmlEl).toBeAttached({ timeout: 3000 })
+  await expect(reactEl).toBeAttached({ timeout: 3000 })
+
+  const mismatches = compareStyles(
+    await getStyles(htmlEl, props),
+    await getStyles(reactEl, props),
+    props
+  )
+  const report = mismatches
+    .map((m) => `  ${m.prop}: HTML="${m.html}" React="${m.react}"`)
+    .join('\n')
+  expect.soft(mismatches.length, `Style mismatches for ${testId}:\n${report}`).toBe(0)
+}
+
+const CARD_PROPS = ['borderRadius', 'paddingTop', 'paddingLeft'] as const
+
 test.describe('HTML vs React Component Comparison', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/comparison.html')
@@ -1044,30 +1076,31 @@ test.describe('HTML vs React Component Comparison', () => {
 
   // ── Sparkline (dimension-only comparison) ──
 
+  // The HTML ground truth is an empty sized container, so the dots and reference
+  // lines the React side positions inside it have no HTML counterpart to compare.
+  const SPARKLINE_CONTAINER_PROPS = ['width', 'height', 'position'] as const
+
   test('Sparkline ascending -- container dimensions', async ({ page }) => {
-    const container = page.locator('[data-testid="compare-sparkline-ascending"]')
-    await expect(container).toBeAttached()
-
-    const reactEl = container.locator('.react-version [data-testid="sparkline"]').first()
-    await expect(reactEl).toBeAttached({ timeout: 3000 })
-
-    const rect = await reactEl.evaluate((el) => {
-      const r = el.getBoundingClientRect()
-      return { width: Math.round(r.width), height: Math.round(r.height) }
-    })
-
-    expect.soft(rect.width, 'Sparkline width').toBe(80)
-    expect.soft(rect.height, 'Sparkline height').toBe(30)
+    await assertContainerStyles(
+      page,
+      'compare-sparkline-ascending',
+      '.sparkline-container',
+      '[data-testid="sparkline"]',
+      SPARKLINE_CONTAINER_PROPS
+    )
   })
 
   test('Sparkline with reference line -- container dimensions', async ({ page }) => {
-    const container = page.locator('[data-testid="compare-sparkline-with-ref"]')
-    await expect(container).toBeAttached()
-
-    const reactEl = container.locator('.react-version [data-testid="sparkline"]').first()
-    await expect(reactEl).toBeAttached({ timeout: 3000 })
+    await assertContainerStyles(
+      page,
+      'compare-sparkline-with-ref',
+      '.sparkline-container',
+      '[data-testid="sparkline"]',
+      SPARKLINE_CONTAINER_PROPS
+    )
 
     // Verify reference line exists
+    const container = page.locator('[data-testid="compare-sparkline-with-ref"]')
     const refLine = container
       .locator('.react-version [data-testid="sparkline-reference-0"]')
       .first()
@@ -1084,82 +1117,86 @@ test.describe('HTML vs React Component Comparison', () => {
   // ── ExerciseCard ──
 
   test('ExerciseCard collapsed -- renders name and summary', async ({ page }) => {
-    const container = page.locator('[data-testid="compare-exercise-card-collapsed"]')
-    await expect(container).toBeAttached()
-    const reactEl = container.locator('.react-version [data-testid="exercise-card"]').first()
-    await expect(reactEl).toBeAttached({ timeout: 3000 })
+    const id = 'compare-exercise-card-collapsed'
+    await assertContainerStyles(
+      page,
+      id,
+      '.exercise-card-comparison',
+      '[data-testid="exercise-card"]',
+      CARD_PROPS
+    )
+    await assertContainerStyles(
+      page,
+      id,
+      '.ec-name',
+      '[data-testid="exercise-card"] div[dir="auto"]',
+      TEXT_PROPS
+    )
+    const reactEl = page
+      .locator(`[data-testid="${id}"] .react-version [data-testid="exercise-card"]`)
+      .first()
     const text = await reactEl.textContent()
     expect.soft(text, 'Collapsed card text').toContain('Bench Press')
     expect.soft(text, 'Collapsed card summary').toContain('185 lbs')
   })
 
   test('ExerciseCard upcoming -- opacity 0.6', async ({ page }) => {
-    const container = page.locator('[data-testid="compare-exercise-card-upcoming"]')
-    await expect(container).toBeAttached()
-    const reactEl = container.locator('.react-version [data-testid="exercise-card"]').first()
-    await expect(reactEl).toBeAttached({ timeout: 3000 })
-    const opacity = await reactEl.evaluate((el) => window.getComputedStyle(el).opacity)
-    expect.soft(opacity, 'Upcoming card opacity').toBe('0.6')
+    await assertContainerStyles(
+      page,
+      'compare-exercise-card-upcoming',
+      '.exercise-card-upcoming',
+      '[data-testid="exercise-card"]',
+      [...CARD_PROPS, 'opacity']
+    )
   })
+
+  // Known mismatch (TD-532): the HTML reference paints the card on surface-elevated
+  // but the React ExerciseCard renders a transparent root. test.fail flips to a hard
+  // failure once the component or the reference is fixed; follow-up ticket pending.
+  for (const id of ['compare-exercise-card-collapsed', 'compare-exercise-card-upcoming']) {
+    test(`ExerciseCard ${id} -- backgroundColor (known mismatch)`, async ({ page }) => {
+      test.fail()
+      const html = id.endsWith('upcoming') ? '.exercise-card-upcoming' : '.exercise-card-comparison'
+      await assertContainerStyles(page, id, html, '[data-testid="exercise-card"]', [
+        'backgroundColor',
+      ])
+    })
+  }
 
   // ── SupersetWrapper ──
 
   test('SupersetWrapper default -- border and label', async ({ page }) => {
-    const container = page.locator('[data-testid="compare-superset-wrapper-default"]')
-    await expect(container).toBeAttached()
-    const reactEl = container.locator('.react-version [data-testid="superset-wrapper"]').first()
-    await expect(reactEl).toBeAttached({ timeout: 3000 })
-    const styles = await reactEl.evaluate((el) => {
-      const cs = window.getComputedStyle(el)
-      return {
-        borderLeftWidth: cs.borderLeftWidth,
-        paddingLeft: cs.paddingLeft,
-        position: cs.position,
-      }
-    })
-    expect.soft(styles.borderLeftWidth, 'SW borderLeftWidth').toBe('3px')
-    expect.soft(styles.paddingLeft, 'SW paddingLeft').toBe('8px')
-    expect.soft(styles.position, 'SW position').toBe('relative')
+    await assertContainerStyles(
+      page,
+      'compare-superset-wrapper-default',
+      '.superset-wrapper-comparison',
+      '[data-testid="superset-wrapper"]',
+      ['borderLeftWidth', 'borderLeftColor', 'borderLeftStyle', 'paddingLeft', 'position']
+    )
   })
 
   // ── InputBar ──
 
   test('InputBar default -- background and layout', async ({ page }) => {
-    const container = page.locator('[data-testid="compare-input-bar-default"]')
-    await expect(container).toBeAttached()
-    const reactEl = container.locator('.react-version [data-testid="input-bar"]').first()
-    await expect(reactEl).toBeAttached({ timeout: 3000 })
-    const styles = await reactEl.evaluate((el) => {
-      const cs = window.getComputedStyle(el)
-      return {
-        backgroundColor: cs.backgroundColor,
-        flexDirection: cs.flexDirection,
-        alignItems: cs.alignItems,
-      }
-    })
-    expect.soft(styles.backgroundColor, 'InputBar bg').toBe('rgb(44, 42, 40)')
-    expect.soft(styles.flexDirection, 'InputBar flexDirection').toBe('row')
-    expect.soft(styles.alignItems, 'InputBar alignItems').toBe('center')
+    await assertContainerStyles(
+      page,
+      'compare-input-bar-default',
+      '.input-bar-comparison',
+      '[data-testid="input-bar"]',
+      ['backgroundColor', 'flexDirection', 'alignItems', 'display', 'gap']
+    )
   })
 
   // ── RestTimer ──
 
   test('RestTimer default -- background and padding', async ({ page }) => {
-    const container = page.locator('[data-testid="compare-rest-timer-default"]')
-    await expect(container).toBeAttached()
-    const reactEl = container.locator('.react-version [data-testid="rest-timer"]').first()
-    await expect(reactEl).toBeAttached({ timeout: 3000 })
-    const styles = await reactEl.evaluate((el) => {
-      const cs = window.getComputedStyle(el)
-      return {
-        backgroundColor: cs.backgroundColor,
-        paddingLeft: cs.paddingLeft,
-        paddingRight: cs.paddingRight,
-      }
-    })
-    expect.soft(styles.backgroundColor, 'RestTimer bg').toBe('rgb(49, 48, 47)')
-    expect.soft(styles.paddingLeft, 'RestTimer paddingLeft').toBe('16px')
-    expect.soft(styles.paddingRight, 'RestTimer paddingRight').toBe('16px')
+    await assertContainerStyles(
+      page,
+      'compare-rest-timer-default',
+      '.rest-timer-comparison',
+      '[data-testid="rest-timer"]',
+      ['backgroundColor', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft']
+    )
   })
 
   test('Sparkline highlight last -- has highlight dot', async ({ page }) => {
