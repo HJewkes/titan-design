@@ -6,6 +6,7 @@ import { join } from 'node:path'
 import { expect, test, type Browser, type Page } from '@playwright/test'
 import { contrastRatio, type Rgba } from '../src/contrast.ts'
 import { FeedbackSchema, MANIFEST_SCHEMA_ID, type ManifestInput } from '../src/schema.ts'
+import { SECTION_TEXTS } from '../test/fixtures.ts'
 
 const CLI = new URL('../src/cli.ts', import.meta.url).pathname
 
@@ -20,7 +21,25 @@ const ROUND: ManifestInput = {
     { key: 'A', image: 'shots/wall-a.png', label: 'Wall, dense' },
     { key: 'B', image: 'shots/wall-b.png', label: 'Wall, sparse' },
   ],
-  questions: [{ id: 'q1', kind: 'pick-one', prompt: 'Which wall?', options: ['A', 'B'] }],
+  questions: [
+    {
+      id: 'q1',
+      kind: 'pick-one',
+      prompt: 'Which wall?',
+      options: ['A', 'B'],
+      signsOff: 'the wall density',
+    },
+  ],
+  sections: [
+    {
+      id: 'wall',
+      title: 'Wall',
+      ...SECTION_TEXTS,
+      kind: 'CHOICE',
+      variantKeys: ['A', 'B'],
+      questionIds: ['q1'],
+    },
+  ],
 }
 
 /** A synthetic 1280x720 screen, so the e2e never depends on a real app's screenshot. */
@@ -75,12 +94,13 @@ test('an image variant renders at its width and its feedback comes back', async 
   expect(box.height).toBeCloseTo((box.width * 720) / 1280, 0)
   await expect(page.locator('iframe')).toHaveCount(0)
 
+  // The section's question comes first; picking A there also marks frame A chosen.
   await page.keyboard.press('1')
+  await page.keyboard.press('Enter')
   await page.keyboard.press('Tab')
   await page.keyboard.type('Dense reads at distance')
   await page.keyboard.press('Enter')
   await page.keyboard.press('2')
-  await page.getByTestId('question-q1').getByRole('radio').first().click()
 
   await page.keyboard.press('a')
   await page.getByTestId('overlay-A-1280').click({ position: { x: 20, y: 20 } })
@@ -101,7 +121,13 @@ test('an image variant renders at its width and its feedback comes back', async 
     reason: 'e2e fixture round, synthetic images',
     problem: 'no contrast.json beside this round',
   })
-  expect(written.answers).toEqual([{ questionId: 'q1', pick: 'A' }])
+  expect(written.answers).toEqual([
+    {
+      questionId: 'q1',
+      pick: 'A',
+      variantComments: [{ key: 'A', comment: 'Dense reads at distance' }],
+    },
+  ])
   const [a, b] = written.variants
   expect(a).toMatchObject({ key: 'A', image: 'shots/wall-a.png', verdict: 'chosen' })
   expect(a.comment).toBe('Dense reads at distance')
@@ -119,11 +145,7 @@ test('sticky heads stay below an override banner whose reason wraps', async ({ p
   await syntheticPng(browser, join(dir, 'shots', 'wall-a.png'), 'Dense wall')
   await syntheticPng(browser, join(dir, 'shots', 'wall-b.png'), 'Sparse wall')
   const manifestPath = join(dir, 'round.json')
-  const sectioned = {
-    ...ROUND,
-    sections: [{ id: 'wall', title: 'Wall', variantKeys: ['A', 'B'], questionIds: ['q1'] }],
-  }
-  await writeFile(manifestPath, JSON.stringify(sectioned))
+  await writeFile(manifestPath, JSON.stringify(ROUND))
 
   const reason = 'long reason '.repeat(17).slice(0, 200)
   const server = spawn('node', [
@@ -155,6 +177,72 @@ test('sticky heads stay below an override banner whose reason wraps', async ({ p
     const variantHead = (await page.locator('.variant-head').first().boundingBox())!
     expect(sectionHead.y).toBeGreaterThanOrEqual(bannerBottom - 0.5)
     expect(variantHead.y).toBeGreaterThanOrEqual(bannerBottom - 0.5)
+  } finally {
+    server.kill()
+  }
+})
+
+test('the review stage skips optional questions and steps through unanswered ones', async ({
+  page,
+  browser,
+}) => {
+  const dir = await mkdtemp(join(tmpdir(), 'titan-review-unanswered-e2e-'))
+  await mkdir(join(dir, 'shots'))
+  await syntheticPng(browser, join(dir, 'shots', 'wall-a.png'), 'Dense wall')
+  await syntheticPng(browser, join(dir, 'shots', 'wall-b.png'), 'Sparse wall')
+  const manifestPath = join(dir, 'round.json')
+  const pick = (id: string) =>
+    ({
+      id,
+      kind: 'pick-one',
+      prompt: `Pick for ${id}?`,
+      options: ['A', 'B'],
+      required: true,
+      signsOff: `the wall ${id} asks about`,
+    }) as const
+  const questions = [
+    pick('r1'),
+    { id: 'extra', kind: 'text', prompt: 'Anything else?' } as const,
+    pick('r2'),
+    pick('r3'),
+  ]
+  // The questions stay loose, so the strip holds the frames and Overall holds every question.
+  const sections = ROUND.sections!.map((s) => ({ ...s, questionIds: [] }))
+  await writeFile(manifestPath, JSON.stringify({ ...ROUND, questions, sections }))
+
+  const server = spawn('node', [CLI, manifestPath, '--no-open', '--out', dir, ...OVERRIDE])
+  try {
+    const url = await new Promise<string>((resolve) =>
+      server.stderr?.on('data', (c: Buffer) => {
+        const found = c.toString().match(/at (http\S+__review\/)/)?.[1]
+        if (found) resolve(found)
+      })
+    )
+    await page.goto(url)
+    await expect(page.getByRole('img', { name: 'A · Wall, dense at 1280px' })).toBeVisible()
+    await page.keyboard.press('Meta+Enter')
+    await expect(page.getByTestId('unanswered')).toContainText('3 of 4 questions are unanswered')
+    await expect(page.getByTestId('answer-extra')).toContainText('(skipped)')
+    await expect(page.getByTestId('answer-extra')).not.toHaveAttribute('data-unanswered')
+
+    const next = page.getByRole('button', { name: 'Next unanswered' })
+    const prev = page.getByRole('button', { name: 'Previous unanswered' })
+    await expect(prev).toHaveCount(0)
+    await next.focus()
+    await page.keyboard.press('Enter')
+    await expect(page.getByTestId('answer-r1')).toBeFocused()
+    await expect(prev).toHaveCount(0)
+    await next.click()
+    await expect(page.getByTestId('answer-r2')).toBeFocused()
+    await next.click()
+    await expect(page.getByTestId('answer-r3')).toBeFocused()
+    await expect(next).toHaveCount(0)
+    await prev.click()
+    await expect(page.getByTestId('answer-r2')).toBeFocused()
+
+    await page.getByRole('button', { name: 'Show only unanswered' }).click()
+    await expect(page.getByTestId('answers').locator('[data-unanswered]')).toHaveCount(3)
+    await expect(page.getByTestId('answer-extra')).toHaveCount(0)
   } finally {
     server.kill()
   }
@@ -193,8 +281,8 @@ test('the section list marks the current section beyond weight, in both themes',
   const sectioned = {
     ...ROUND,
     sections: [
-      { id: 'dense', title: 'Dense', variantKeys: ['A'], questionIds: ['q1'] },
-      { id: 'sparse', title: 'Sparse', variantKeys: ['B'] },
+      { id: 'dense', title: 'Dense', ...SECTION_TEXTS, kind: 'STATES', variantKeys: ['A'] },
+      { id: 'sparse', title: 'Sparse', ...SECTION_TEXTS, kind: 'STATES', variantKeys: ['B'] },
     ],
   }
   await writeFile(manifestPath, JSON.stringify(sectioned))
