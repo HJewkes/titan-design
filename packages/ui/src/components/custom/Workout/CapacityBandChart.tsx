@@ -13,21 +13,10 @@ import {
   capacityBandScale,
   capacityBandSummary,
   type CapacityBandColors,
-  type CapacityBandDataPoint,
-  type CapacityBandProjection,
-  type WorkoutDot,
-  type WorkoutDotStatus,
 } from './capacityBandGeometry'
 import { useCapacityBandEntrance } from './useCapacityBandEntrance'
 import { CapacityBandPlot } from './CapacityBandPlot'
 import { WorkoutDots, XAxisLabels, YAxisLabel } from './CapacityBandOverlays'
-
-export type {
-  CapacityBandDataPoint,
-  CapacityBandProjection,
-  WorkoutDot,
-  WorkoutDotStatus,
-} from './capacityBandGeometry'
 
 /** The chart's colours in the given theme. */
 function chartColors(mode: ThemeMode): CapacityBandColors {
@@ -48,6 +37,32 @@ function chartColors(mode: ThemeMode): CapacityBandColors {
       below: t['status-info'],
     } satisfies Record<WorkoutDotStatus, string>,
   }
+}
+
+export type WorkoutDotStatus = 'within' | 'above' | 'below'
+
+export interface CapacityBandDataPoint {
+  /** ISO-ish date string (e.g. "2026-06-01"). */
+  date: string
+  /** Lower bound of the capacity band (MEV equivalent). */
+  bandLow: number
+  /** Upper bound of the capacity band (MRV equivalent). */
+  bandHigh: number
+}
+
+export interface WorkoutDot {
+  date: string
+  /** Actual session load score. */
+  load: number
+  /** Position of the session relative to the band. */
+  status: WorkoutDotStatus
+}
+
+export interface CapacityBandProjection {
+  /** Band shape over the next days if training continues (rises). */
+  withTraining: CapacityBandDataPoint[]
+  /** Band shape over the next days if resting (drops). */
+  withRest: CapacityBandDataPoint[]
 }
 
 export interface CapacityBandChartProps extends ViewProps {

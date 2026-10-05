@@ -7,30 +7,25 @@ export const PADDING_BOTTOM = 16
 export const COLUMN_STEP = 4
 export const DOT_SIZE = 8
 
-export type WorkoutDotStatus = 'within' | 'above' | 'below'
+// Structural shapes of the chart's public types, which stay declared in CapacityBandChart.tsx:
+// re-exporting interfaces through this module drops their `type` marker in the bundled dist/index.d.ts.
+export type DotStatus = 'within' | 'above' | 'below'
 
-export interface CapacityBandDataPoint {
-  /** ISO-ish date string (e.g. "2026-06-01"). */
+export interface BandPoint {
   date: string
-  /** Lower bound of the capacity band (MEV equivalent). */
   bandLow: number
-  /** Upper bound of the capacity band (MRV equivalent). */
   bandHigh: number
 }
 
-export interface WorkoutDot {
+export interface LoadDot {
   date: string
-  /** Actual session load score. */
   load: number
-  /** Position of the session relative to the band. */
-  status: WorkoutDotStatus
+  status: DotStatus
 }
 
-export interface CapacityBandProjection {
-  /** Band shape over the next days if training continues (rises). */
-  withTraining: CapacityBandDataPoint[]
-  /** Band shape over the next days if resting (drops). */
-  withRest: CapacityBandDataPoint[]
+export interface BandProjection {
+  withTraining: BandPoint[]
+  withRest: BandPoint[]
 }
 
 export interface CapacityBandColors {
@@ -40,7 +35,7 @@ export interface CapacityBandColors {
   bandFill: string
   bandEdge: string
   projectionFill: string
-  dots: Record<WorkoutDotStatus, string>
+  dots: Record<DotStatus, string>
 }
 
 export interface PixelPoint {
@@ -54,7 +49,7 @@ export interface CapacityBandScale {
   toY: (value: number) => number
 }
 
-export const STATUS_PHRASES: Record<WorkoutDotStatus, string> = {
+export const STATUS_PHRASES: Record<DotStatus, string> = {
   within: 'within range',
   above: 'above range',
   below: 'below range',
@@ -70,7 +65,7 @@ export function parseTime(date: string): number {
 }
 
 export function toPixels(
-  points: CapacityBandDataPoint[],
+  points: BandPoint[],
   toX: (date: string) => number,
   toY: (value: number) => number
 ): PixelPoint[] {
@@ -122,9 +117,9 @@ export function buildEdges(pixels: PixelPoint[], key: 'yHigh' | 'yLow') {
 }
 
 export function collectValues(
-  band: CapacityBandDataPoint[],
-  workouts: WorkoutDot[],
-  projection?: CapacityBandProjection
+  band: BandPoint[],
+  workouts: LoadDot[],
+  projection?: BandProjection
 ): number[] {
   const values: number[] = []
   band.forEach((p) => values.push(p.bandLow, p.bandHigh))
@@ -134,7 +129,7 @@ export function collectValues(
   return values
 }
 
-export function currentStatus(workouts: WorkoutDot[]): string {
+export function currentStatus(workouts: LoadDot[]): string {
   if (workouts.length === 0) return 'no recent sessions'
   const latest = [...workouts].sort((a, b) => parseTime(b.date) - parseTime(a.date))[0]
   return STATUS_PHRASES[latest.status]
@@ -142,9 +137,9 @@ export function currentStatus(workouts: WorkoutDot[]): string {
 
 /** Maps dates and load values into the plot box, padding the value domain by 10%. */
 export function capacityBandScale(
-  band: CapacityBandDataPoint[],
-  workouts: WorkoutDot[],
-  projection: CapacityBandProjection | undefined,
+  band: BandPoint[],
+  workouts: LoadDot[],
+  projection: BandProjection | undefined,
   plotWidth: number,
   plotHeight: number
 ): CapacityBandScale {
@@ -172,8 +167,8 @@ export type CapacityBandLayout = ReturnType<typeof capacityBandLayout>
 
 /** Pixel geometry for a non-empty band: fill columns, edges, projections and x-label stride. */
 export function capacityBandLayout(
-  band: CapacityBandDataPoint[],
-  projection: CapacityBandProjection | undefined,
+  band: BandPoint[],
+  projection: BandProjection | undefined,
   { toX, toY }: CapacityBandScale
 ) {
   const bandPixels = toPixels(band, toX, toY)
@@ -193,14 +188,14 @@ export function capacityBandLayout(
 }
 
 /** The chart image's accessibility label. */
-export function capacityBandSummary(workouts: WorkoutDot[]): string {
+export function capacityBandSummary(workouts: LoadDot[]): string {
   return `Training capacity band chart. Current capacity: ${currentStatus(
     workouts
   )}. ${workouts.length} workout${workouts.length === 1 ? '' : 's'} shown.`
 }
 
 /** A workout dot's accessibility label. */
-export function workoutDotLabel(workout: WorkoutDot): string {
+export function workoutDotLabel(workout: LoadDot): string {
   return `Workout on ${formatChartDate(workout.date)}, load ${workout.load}, ${
     STATUS_PHRASES[workout.status]
   }`

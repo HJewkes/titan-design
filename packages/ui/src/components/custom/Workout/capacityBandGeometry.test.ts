@@ -12,9 +12,9 @@ import {
   parseTime,
   toPixels,
   workoutDotLabel,
-  type CapacityBandDataPoint,
+  type BandPoint,
   type PixelPoint,
-  type WorkoutDot,
+  type LoadDot,
 } from './capacityBandGeometry'
 
 const identityScale = {
@@ -22,7 +22,7 @@ const identityScale = {
   toY: (value: number) => value,
 }
 
-const bandOf = (length: number): CapacityBandDataPoint[] =>
+const bandOf = (length: number): BandPoint[] =>
   Array.from({ length }, (_, i) => ({
     date: `2026-06-${String(i + 1).padStart(2, '0')}`,
     bandLow: 40,
@@ -134,7 +134,7 @@ describe('buildEdges', () => {
 describe('collectValues', () => {
   it('gathers band bounds, loads and both projections', () => {
     const point = { date: '2026-06-01', bandLow: 1, bandHigh: 2 }
-    const workout: WorkoutDot = { date: '2026-06-01', load: 3, status: 'within' }
+    const workout: LoadDot = { date: '2026-06-01', load: 3, status: 'within' }
     const projection = {
       withTraining: [{ ...point, bandLow: 4, bandHigh: 5 }],
       withRest: [{ ...point, bandLow: 6, bandHigh: 7 }],
@@ -207,7 +207,7 @@ describe('capacityBandSummary', () => {
   })
 
   it('reports the latest workout by date, whatever the input order', () => {
-    const workouts: WorkoutDot[] = [
+    const workouts: LoadDot[] = [
       { date: '2026-06-09', load: 90, status: 'above' },
       { date: '2026-06-01', load: 50, status: 'below' },
       { date: '2026-06-05', load: 60, status: 'within' },

@@ -7,9 +7,9 @@ import {
   PADDING_TOP,
   workoutDotLabel,
   type CapacityBandColors,
-  type CapacityBandDataPoint,
+  type BandPoint,
   type CapacityBandScale,
-  type WorkoutDot,
+  type LoadDot,
 } from './capacityBandGeometry'
 
 /** Y axis conceptual label (no numbers). */
@@ -37,7 +37,7 @@ export function YAxisLabel({ plotHeight }: { plotHeight: number }) {
 }
 
 interface XAxisLabelsProps {
-  band: CapacityBandDataPoint[]
+  band: BandPoint[]
   toX: (date: string) => number
   height: number
   labelStride: number
@@ -75,11 +75,11 @@ export function XAxisLabels({ band, toX, height, labelStride }: XAxisLabelsProps
 }
 
 interface WorkoutDotMarkProps {
-  workout: WorkoutDot
+  workout: LoadDot
   anim: Animated.Value | undefined
   scale: CapacityBandScale
   colors: CapacityBandColors
-  onWorkoutPress?: (workout: WorkoutDot) => void
+  onWorkoutPress?: (workout: LoadDot) => void
 }
 
 function WorkoutDotMark({ workout, anim, scale, colors, onWorkoutPress }: WorkoutDotMarkProps) {
@@ -126,11 +126,11 @@ function WorkoutDotMark({ workout, anim, scale, colors, onWorkoutPress }: Workou
 }
 
 interface WorkoutDotsProps {
-  workouts: WorkoutDot[]
+  workouts: LoadDot[]
   dotAnims: Animated.Value[]
   scale: CapacityBandScale
   colors: CapacityBandColors
-  onWorkoutPress?: (workout: WorkoutDot) => void
+  onWorkoutPress?: (workout: LoadDot) => void
 }
 
 /** Workout dots — scale in after the band draws. */
