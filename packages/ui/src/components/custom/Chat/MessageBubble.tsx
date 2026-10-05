@@ -1,6 +1,11 @@
 import type { ReactNode } from 'react'
 import { View } from 'react-native'
-import type { ChatMessage, DataPart, Participant } from '@titan-design/chat-protocol'
+import type {
+  ChatMessage,
+  DataPart,
+  DeliveryStatus,
+  Participant,
+} from '@titan-design/chat-protocol'
 import { cn } from '../../../utils/cn'
 import { Avatar } from '../../ui/avatar'
 import { Surface } from '../../ui/surface'
@@ -20,6 +25,24 @@ export type DataPartRenderer = (part: DataPart, message: ChatMessage) => ReactNo
 /** Direct threads carry no per-message identity. Group threads name the author and show an avatar. */
 export type ThreadLayout = 'direct' | 'group'
 
+export interface MessageBubbleLabels {
+  /** Spoken on a message a human endorsed; the bubble's accent edge carries it visually. */
+  endorsed: string
+  /** Under a reply that is still streaming. */
+  writing: string
+  /** The hidden speaker name on the viewer's own messages. */
+  you: string
+  /** The delivery line, by the least-advanced recipient state. */
+  delivery: Record<DeliveryStatus, string>
+}
+
+const DEFAULT_LABELS: MessageBubbleLabels = {
+  endorsed: 'Endorsed',
+  writing: 'Writing…',
+  you: 'You',
+  delivery: DELIVERY_LABEL,
+}
+
 export interface MessageBubbleProps {
   message: ChatMessage
   /** The author, resolved from the thread's participants. Falls back to the raw `authorId`. */
@@ -34,6 +57,8 @@ export interface MessageBubbleProps {
   /** Titan-specific content. Unrendered `data-*` parts are dropped, never dumped. */
   renderDataPart?: DataPartRenderer
   linkers?: ProseLinker[]
+  /** Replaces any of the built-in strings; the rest keep their defaults. */
+  labels?: Partial<MessageBubbleLabels>
   className?: string
 }
 
@@ -47,9 +72,10 @@ interface BubbleBodyProps {
   isOwn: boolean
   isEndorsed: boolean
   linkers?: ProseLinker[]
+  endorsedLabel: string
 }
 
-function BubbleBody({ body, isOwn, isEndorsed, linkers }: BubbleBodyProps) {
+function BubbleBody({ body, isOwn, isEndorsed, linkers, endorsedLabel }: BubbleBodyProps) {
   const prose = <MarkdownProse body={body} linkers={linkers} size="md" testID="chat-message-body" />
   if (isOwn) {
     return (
@@ -72,7 +98,7 @@ function BubbleBody({ body, isOwn, isEndorsed, linkers }: BubbleBodyProps) {
     >
       {isEndorsed ? (
         <Typography variant="caption" className="absolute h-px w-px overflow-hidden opacity-0">
-          Endorsed
+          {endorsedLabel}
         </Typography>
       ) : null}
       {prose}
@@ -84,10 +110,11 @@ interface MetaProps {
   message: ChatMessage
   isOwn: boolean
   showDelivery: boolean
+  labels: MessageBubbleLabels
 }
 
 // Times live in the thread's time rows and the drag reveal; this line only carries state.
-function MessageMeta({ message, isOwn, showDelivery }: MetaProps) {
+function MessageMeta({ message, isOwn, showDelivery, labels }: MetaProps) {
   const delivery = isOwn ? aggregateDelivery(message) : undefined
   const shownDelivery = delivery === 'undeliverable' || showDelivery ? delivery : undefined
   const writing = isStreaming(message)
@@ -99,7 +126,7 @@ function MessageMeta({ message, isOwn, showDelivery }: MetaProps) {
     >
       {writing ? (
         <Typography variant="caption" color="tertiary">
-          Writing…
+          {labels.writing}
         </Typography>
       ) : null}
       {shownDelivery ? (
@@ -108,7 +135,7 @@ function MessageMeta({ message, isOwn, showDelivery }: MetaProps) {
           color={shownDelivery === 'undeliverable' ? 'error' : 'tertiary'}
           testID="chat-message-delivery"
         >
-          {DELIVERY_LABEL[shownDelivery]}
+          {labels.delivery[shownDelivery]}
         </Typography>
       ) : null}
     </View>
@@ -119,10 +146,11 @@ interface SpeakerProps {
   name: string
   isOwn: boolean
   isVisible: boolean
+  you: string
 }
 
 /** The author line a group thread shows; otherwise the same name, hidden, for assistive tech. */
-function Speaker({ name, isOwn, isVisible }: SpeakerProps) {
+function Speaker({ name, isOwn, isVisible, you }: SpeakerProps) {
   if (isVisible) {
     return (
       <Typography variant="caption" color="secondary" testID="chat-message-author">
@@ -136,7 +164,7 @@ function Speaker({ name, isOwn, isVisible }: SpeakerProps) {
       className="absolute h-px w-px overflow-hidden opacity-0"
       testID="chat-message-speaker"
     >
-      {`${isOwn ? 'You' : name}: `}
+      {`${isOwn ? you : name}: `}
     </Typography>
   )
 }
@@ -180,8 +208,10 @@ export function MessageBubble({
   showDelivery = false,
   renderDataPart,
   linkers,
+  labels,
   className,
 }: MessageBubbleProps) {
+  const text = { ...DEFAULT_LABELS, ...labels }
   const body = messageBody(message)
   const isGroup = layout === 'group' && !isOwn
   const showsAuthor = isGroup && startsGroup
@@ -193,17 +223,18 @@ export function MessageBubble({
     >
       {isGroup ? <AvatarSlot author={author} visible={startsGroup} /> : null}
       <View className={cn('max-w-[85%] shrink gap-stack-sm', isOwn && 'items-end')}>
-        <Speaker name={speaker} isOwn={isOwn} isVisible={showsAuthor} />
+        <Speaker name={speaker} isOwn={isOwn} isVisible={showsAuthor} you={text.you} />
         {body ? (
           <BubbleBody
             body={body}
             isOwn={isOwn}
             isEndorsed={!isOwn && isEndorsed(message)}
             linkers={linkers}
+            endorsedLabel={text.endorsed}
           />
         ) : null}
         <DataParts message={message} render={renderDataPart} />
-        <MessageMeta message={message} isOwn={isOwn} showDelivery={showDelivery} />
+        <MessageMeta message={message} isOwn={isOwn} showDelivery={showDelivery} labels={text} />
       </View>
     </View>
   )
