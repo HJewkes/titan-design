@@ -12,7 +12,7 @@ import { buildFeedback, emptyDraft } from '../src/feedback.ts'
 import { ReviewError, assertStoriesExist, loadRound } from '../src/review.ts'
 import { FeedbackSchema, ManifestSchema, type ManifestInput } from '../src/schema.ts'
 import { startReviewServer, type ReviewServer } from '../src/server.ts'
-import { SHA } from './fixtures.ts'
+import { SHA, underContract } from './fixtures.ts'
 
 // A 1x1 PNG, so the files are real PNGs without shipping a binary fixture.
 const PNG = Buffer.from(
@@ -29,12 +29,13 @@ function imageRound(image = 'shots/wall.png', imageOnly = false): ManifestInput 
   return imageOnly ? { ...m, variants, questions: [q1] } : { ...m, variants }
 }
 
+/** Writes the round under the review contract, which loading it requires. */
 async function roundDir(manifest: ManifestInput): Promise<{ dir: string; path: string }> {
   const dir = await mkdtemp(join(tmpdir(), 'titan-review-image-'))
   await mkdir(join(dir, 'shots'))
   await writeFile(join(dir, 'shots', 'wall.png'), PNG)
   const path = join(dir, 'round.json')
-  await writeFile(path, JSON.stringify(manifest))
+  await writeFile(path, JSON.stringify(underContract(manifest)))
   return { dir, path }
 }
 
