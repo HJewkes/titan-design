@@ -318,27 +318,26 @@ The bare `border` Tailwind utility sets both `borderWidth: 1` **and** `borderCol
 
 ```tsx fragment
 // WRONG — border sets currentColor, may render black on native
-<View className="border border-border-default" />
+<View className="border border-hairline" />
 
 // WRONG — same problem with any border-* color class
 <View className="border border-border-input" />
 ```
 
 ```tsx
-// RIGHT — explicit inline style, no ambiguity
-<View style={{ borderWidth: 1, borderColor: '#1F1F1F' }} />
+import { View } from 'react-native'
+import { resolveColor } from '@titan-design/react-ui/theme'
 
-// RIGHT — use WORKOUT_TOKENS constants for type-safe access
-import { WORKOUT_TOKENS } from '@titan-design/react-ui/theme'
-<View style={{ borderWidth: 1, borderColor: WORKOUT_TOKENS.border.default }} />
+// RIGHT — explicit inline style; resolveColor returns the CSS variable on web and the resolved hex on native
+export const Explicit = () => <View style={{ borderWidth: 1, borderColor: resolveColor('hairline-default') }} />
 
-// RIGHT on web only — border-border (no bare 'border') resolves to the CSS variable
-<View className="border-[1px] border-border" />
+// RIGHT on web only — border-hairline (no bare 'border') resolves to the CSS variable
+export const WebOnly = () => <View className="border-[1px] border-hairline" />
 ```
 
 Run `pnpm lint:borders` to catch any `border border-*` patterns in source components.
 
-For full token reference and additional pitfalls, see [`src/theme/TOKEN_MAPPING.md`](src/theme/TOKEN_MAPPING.md).
+For full token reference and additional pitfalls, see [`TOKENS.md`](TOKENS.md).
 
 ---
 
