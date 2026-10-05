@@ -100,6 +100,7 @@ export default defineConfig({
       reporter: ['text', 'json', 'html'],
       include: ['src/components/**/*.{ts,tsx}'],
       exclude: ['src/**/*.stories.tsx', 'src/**/*.test.tsx', 'src/**/index.ts'],
+      // Set from measured coverage (not a target) and raise as coverage grows; see docs/ci-and-scripts.md.
       thresholds: {
         statements: 80,
         branches: 80,
