@@ -84,6 +84,41 @@ describe('MessageList', () => {
     ])
   })
 
+  it('exposes a named log region for the thread', () => {
+    renderList(COACH_THREAD)
+    expect(screen.getByRole('log', { name: 'Conversation' })).toBeInTheDocument()
+  })
+
+  it('takes the log name from the consumer', () => {
+    renderList(COACH_THREAD, { accessibilityLabel: 'Chat with Coach' })
+    expect(screen.getByRole('log', { name: 'Chat with Coach' })).toBeInTheDocument()
+  })
+
+  it('starts every direct message with its speaker', () => {
+    renderList(COACH_THREAD)
+    const messages = COACH_THREAD.map(({ id }) => screen.getByTestId(`chat-message-${id}`))
+    expect(messages.length).toBeGreaterThan(0)
+    for (const message of messages) {
+      expect(message.textContent).toMatch(/^(You|Coach): /)
+    }
+  })
+
+  it('gives each group message exactly one author string', () => {
+    renderList(GROUP_THREAD, { participants: GROUP_PARTICIPANTS })
+    for (const id of ['g1', 'g2', 'g3', 'g4', 'g5']) {
+      const message = screen.getByTestId(`chat-message-${id}`)
+      const names = message.querySelectorAll(
+        '[data-testid="chat-message-author"], [data-testid="chat-message-speaker"]'
+      )
+      expect(names).toHaveLength(1)
+    }
+  })
+
+  it('has no accessibility violations in a group thread', async () => {
+    const { container } = renderList(GROUP_THREAD, { participants: GROUP_PARTICIPANTS })
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
   it('shows delivery state on the newest own message only', () => {
     renderList(COACH_THREAD)
     expect(screen.getAllByTestId('chat-message-delivery').map((el) => el.textContent)).toEqual([

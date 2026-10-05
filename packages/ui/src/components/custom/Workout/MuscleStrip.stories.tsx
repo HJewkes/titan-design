@@ -38,7 +38,7 @@ const WEEK_DATA = buildData({
 const meta: Meta<typeof MuscleStrip> = {
   title: 'Custom/Workout/MuscleStrip',
   component: MuscleStrip,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     data: { control: false },
     onMusclePress: { action: 'muscle-pressed' },

@@ -26,8 +26,8 @@ is Stable until it is _formally promoted_. This is deliberate: the burden of
 proof is on promotion, not on flagging.
 
 `status:review` is now the _residue_, not the population. Every story under
-`src/components` and `src/lab` carries an explicit status except the ones listed
-under [Not yet tagged](#not-yet-tagged); a story that still reads Needs-Review is
+`src/components` and `src/lab` carries an explicit status
+([Not yet tagged](#not-yet-tagged) is empty); a story that still reads Needs-Review is
 one nobody has run the rule against.
 
 ## The tagging rule — derive it, don't decide it
@@ -36,7 +36,10 @@ A status is a **function of the repo**, not a judgment call. Given a story file,
 in this order:
 
 1. Under `src/lab/**` → **`status:lab`**. No exceptions; lab is excluded from
-   publish builds (`package.json` `files` carries `!src/lab`).
+   publish builds (`package.json` `files` carries `!src/lab`). A story titled
+   `Lab/…` elsewhere is also `status:lab`: it records a design decision about
+   the components beside it rather than defining one, and the public Storybook
+   build drops every `Lab/` title (`.storybook/main.ts`).
 2. Under `src/components/ui/<dir>/`, where `<dir>` is the component's own directory (for charts,
    `ui/charts/<dir>/`), and the clauses below hold (all five once clause 5 is live, clauses 1 to 4 until then), it is **`status:stable`**:
    - a test file in `<dir>` whose source contains `axe`;
@@ -63,7 +66,7 @@ with it rather than quietly tagging around it.
 Clause 5 is live as of TD-26 slice S6 (TD-93). A `ui/` component is stable only if each
 applicable layer below exists in `<dir>`, or its story `meta` declares the layer not applicable:
 
-```ts
+```ts fragment
 parameters: { layers: { keyboard: 'n/a: focus belongs to the wrapped Button' } },
 ```
 
@@ -110,7 +113,7 @@ Consequences worth stating out loud:
 Promotion is a **one-line edit** on the component's story `meta`, negating the
 inherited default and adding the new status:
 
-```ts
+```ts fragment
 const meta: Meta<typeof Foo> = {
   title: 'Custom/Workout/Foo',
   tags: ['status:stable', '!status:review'], // ! negates the inherited default
@@ -126,13 +129,12 @@ See [the review protocol](#formal-review-protocol).
 
 ## Not yet tagged
 
-Two sets were held open by parallel work when the rule was first applied and
-still inherit `status:review`. A later pass finishes them by re-running the rule:
-
-| Files                                                | Held by      |
-| ---------------------------------------------------- | ------------ |
-| `src/components/custom/Workout/**` (56 stories)      | E3 batch B2  |
-| `ui/{menu,popover,modal,select,tooltip}` stories (5) | trigger work |
+None. The two sets held open when the rule was first applied, `src/components/custom/Workout/**`
+and the `ui/{menu,popover,modal,select,tooltip}` stories, were tagged by TD-8. Workout stories are
+`candidate`, or `lab` under step 1 for the ten `*.decision.stories.tsx` files and `VolumeStatusPalette`,
+all titled `Lab/Decisions/…`; the
+five `ui/` families are `candidate` because clause 5 fails for them (no `logic` layer), so none of
+them derives `stable` yet.
 
 ## Formal review protocol
 
@@ -179,7 +181,7 @@ them all too. `empty-state` is the newest, moved in from `custom/` by migration 
 compose. It is not exported from the `ui` barrel and has no story.
 
 The 41 with stories no longer default to `status:review`: the tagging rule
-above resolves them (31 `stable`, 5 `candidate`, 5 held open). Their assessment
+above resolves them (31 `stable`, the rest `candidate`; `menu`, `popover`, `modal`, `select` and `tooltip` joined them in TD-8). Their assessment
 happened by rule, not by session. `typography`, `eyebrow` and `empty-state` are `ui/*`
 and so became stable-**eligible** on the move, but clause 2's fourth condition holds
 them at `candidate` while the M2 and M3 shim rows sit in `DEPRECATIONS.md`; they are

@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Button, ButtonText } from './Button'
-import { resolveAll, siblingSource, sizeClasses } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
 describe('Button', () => {
   it('renders children correctly', () => {
@@ -138,11 +138,17 @@ describe('Button', () => {
  * The pixel numbers below are the ones Button shipped BEFORE it moved onto the
  * control tokens (`px-4 py-1.5 min-h-[32px]` and its md/lg siblings). They are
  * spelled out rather than imported so this fails if a token value moves.
- * `spacing-resolver` explains why the classes come from the source.
+ * The classes are read from the rendered button, so a change to the size map fails here.
  */
 describe('Button geometry resolves to the control tokens', () => {
-  const source = siblingSource(import.meta.url, 'Button.tsx')
-  const classesFor = (level: string) => sizeClasses(source, 'sizeStyles', level)
+  const classesFor = (level: 'sm' | 'md' | 'lg') => {
+    render(
+      <Button size={level}>
+        <ButtonText>Go</ButtonText>
+      </Button>
+    )
+    return spacingClassesAt(screen.getByRole('button'))
+  }
 
   const shipped = [
     ['sm', ['px-control-x-sm', 'py-control-y-sm', 'min-h-control-sm'], ['16px', '6px', '32px']],

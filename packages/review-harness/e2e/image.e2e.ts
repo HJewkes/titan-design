@@ -79,6 +79,7 @@ test('an image variant renders at its width and its feedback comes back', async 
   await page.keyboard.type('Dense reads at distance')
   await page.keyboard.press('Enter')
   await page.keyboard.press('2')
+  await page.getByTestId('question-q1').getByRole('radio').first().click()
 
   await page.keyboard.press('a')
   await page.getByTestId('overlay-A-1280').click({ position: { x: 20, y: 20 } })
@@ -99,6 +100,7 @@ test('an image variant renders at its width and its feedback comes back', async 
     reason: 'e2e fixture round, synthetic images',
     problem: 'no contrast.json beside this round',
   })
+  expect(written.answers).toEqual([{ questionId: 'q1', pick: 'A' }])
   const [a, b] = written.variants
   expect(a).toMatchObject({ key: 'A', image: 'shots/wall-a.png', verdict: 'chosen' })
   expect(a.comment).toBe('Dense reads at distance')

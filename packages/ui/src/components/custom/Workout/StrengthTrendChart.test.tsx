@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { siblingSource, resolveAll } from '../../../test/spacing-resolver'
+import { spacingClassesAt, spacingClassesOf, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { StrengthTrendChart } from './StrengthTrendChart'
@@ -211,16 +211,22 @@ describe('StrengthTrendChart', () => {
  * `inline-sm`; the trend pill takes Pill's `sm` rung.
  */
 describe('StrengthTrendChart chrome resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'StrengthTrendChart.tsx')
-
   it('puts every legend row on the inline ramp', () => {
-    expect(source).not.toContain('gap: 5')
-    expect(source.match(/gap-inline-sm/g)).toHaveLength(3)
+    render(<StrengthTrendChart {...baseProps} />)
+    const rows = Array.from(screen.getByTestId('strength-trend-chart-legend').children)
+    expect(rows).toHaveLength(3)
+    rows.forEach((row) => expect(spacingClassesAt(row)).toEqual(['gap-inline-sm']))
     expect(resolveAll(['gap-inline-sm'])).toEqual(['4px'])
   })
 
   it('puts the trend pill on Pill’s sm rung and keeps the tooltip inset', () => {
-    expect(source).toContain('px-squish-x-sm py-squish-y-sm')
+    render(<StrengthTrendChart {...baseProps} />)
+    expect(spacingClassesOf('strength-trend-chart-trend-pill')).toEqual([
+      'px-squish-x-sm',
+      'py-squish-y-sm',
+    ])
+    fireEvent.click(screen.getAllByTestId('strength-trend-chart-point')[2])
+    expect(spacingClassesOf('strength-trend-chart-tooltip')).toEqual(['py-inset-sm', 'px-2.5'])
     expect(resolveAll(['py-inset-sm', 'px-2.5', 'mt-stack-md'])).toEqual(['8px', '10px', '8px'])
   })
 })

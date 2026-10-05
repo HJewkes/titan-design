@@ -58,10 +58,10 @@
         "DataRow",
         "DateTime",
         "Eyebrow",
+        "FileActivityGrowthWell",
         "FileActivityRow",
         "FilePathLabel",
         "Pill",
-        "SparkBars",
         "Tile",
         "Typography"
       ],
@@ -250,52 +250,6 @@
         "custom-activework-filehistoryexplorer--single-file"
       ],
       "tier": "organism"
-    },
-    {
-      "composes": [
-        "Typography"
-      ],
-      "family": "custom/ActiveWork",
-      "file": "packages/ui/src/components/custom/ActiveWork/FilePathLabel.tsx",
-      "name": "FilePathLabel",
-      "props": [
-        {
-          "default": "false",
-          "description": "Render only the basename, dropping the directory prefix.",
-          "name": "baseOnly",
-          "required": false,
-          "type": "boolean"
-        },
-        {
-          "default": null,
-          "description": "",
-          "name": "className",
-          "required": false,
-          "type": "string"
-        },
-        {
-          "default": null,
-          "description": "A repo-relative path, e.g. `src/commands/open.ts`.",
-          "name": "path",
-          "required": true,
-          "type": "string"
-        },
-        {
-          "default": "md",
-          "description": "`md` for standalone rows, `sm` for dense contexts like chips.",
-          "name": "size",
-          "required": false,
-          "type": "FilePathLabelSize"
-        }
-      ],
-      "purpose": "FilePathLabel — a file path with the directory dimmed and the basename bright.",
-      "sources": {
-        "props": "packages/ui/src/components/custom/ActiveWork/FilePathLabel.tsx",
-        "status": null
-      },
-      "status": "review",
-      "storyIds": [],
-      "tier": "molecule"
     },
     {
       "composes": [
@@ -795,6 +749,13 @@
       "props": [
         {
           "default": null,
+          "description": "Merged over the row's own classes through `cn()`, so a conflicting class wins.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
           "description": "Reference instant for the age label, injected so renders are deterministic.",
           "name": "now",
           "required": true,
@@ -937,6 +898,47 @@
         "custom-activework-taskrow--missing-severity-and-estimate"
       ],
       "tier": "organism"
+    },
+    {
+      "composes": [
+        "Pill"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/TaskStagePill.tsx",
+      "name": "TaskStagePill",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "sm",
+          "description": "",
+          "name": "size",
+          "required": false,
+          "type": "PillSizeLevel"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "stage",
+          "required": true,
+          "type": "TaskStage"
+        }
+      ],
+      "purpose": "The one renderer of a stage outside the board columns; label and tone come from the stage table.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/ActiveWork/TaskStagePill.tsx",
+        "status": "packages/ui/src/components/custom/ActiveWork/TaskStagePill.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-taskstagepill--default"
+      ],
+      "tier": "molecule"
     },
     {
       "composes": [
@@ -1409,6 +1411,13 @@
       "props": [
         {
           "default": null,
+          "description": "Name of the thread's log region for assistive tech.",
+          "name": "accessibilityLabel",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
           "description": "",
           "name": "className",
           "required": false,
@@ -1762,14 +1771,21 @@
     },
     {
       "composes": [
+        "DualGhostSparkParts",
         "GhostBand",
-        "GhostBloom",
         "GhostSpark"
       ],
       "family": "custom/Fatigue",
       "file": "packages/ui/src/components/custom/Fatigue/DualGhostSpark.tsx",
       "name": "DualGhostSpark",
       "props": [
+        {
+          "default": null,
+          "description": "Text alternative.",
+          "name": "accessibilityLabel",
+          "required": false,
+          "type": "string"
+        },
         {
           "default": "232",
           "description": "Plot height in px.",
@@ -1880,7 +1896,9 @@
       "tier": "organism"
     },
     {
-      "composes": [],
+      "composes": [
+        "GhostBandParts"
+      ],
       "family": "custom/Fatigue",
       "file": "packages/ui/src/components/custom/Fatigue/GhostBand.tsx",
       "name": "GhostBand",
@@ -1949,7 +1967,7 @@
       },
       "status": "review",
       "storyIds": [],
-      "tier": "atom"
+      "tier": "molecule"
     },
     {
       "composes": [],
@@ -2027,6 +2045,13 @@
       "props": [
         {
           "default": null,
+          "description": "Text alternative.",
+          "name": "accessibilityLabel",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
           "description": "Per-rep velocity-time curves, oldest first (last = current rep).",
           "name": "curves",
           "required": true,
@@ -2066,7 +2091,7 @@
         "custom-fatigue-ghost-spark--empty-before-first-rep",
         "custom-fatigue-ghost-spark--paused-rep-band"
       ],
-      "tier": "molecule"
+      "tier": "organism"
     },
     {
       "composes": [
@@ -2697,7 +2722,7 @@
         "props": "packages/ui/src/components/custom/Workout/ActiveWorkoutPage.tsx",
         "status": "packages/ui/src/components/custom/Workout/ActiveWorkoutPage.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "pages-active-workout--all-collapsed",
         "pages-active-workout--default",
@@ -2752,7 +2777,7 @@
         "props": "packages/ui/src/components/custom/Workout/BaseBadge.tsx",
         "status": "packages/ui/src/components/custom/Workout/BaseBadge.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-basebadge--all-variants",
         "custom-workout-basebadge--plain",
@@ -2829,7 +2854,7 @@
         "props": "packages/ui/src/components/custom/Workout/BodyMap.tsx",
         "status": "packages/ui/src/components/custom/Workout/BodyMap.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-bodymap--back",
         "custom-workout-dataviz-bodymap--detailed",
@@ -2970,7 +2995,7 @@
         "props": "packages/ui/src/components/custom/Workout/BodyMapDetailPanel.tsx",
         "status": "packages/ui/src/components/custom/Workout/BodyMapDetailPanel.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-bodymapdetailpanel--default",
         "custom-workout-dataviz-bodymapdetailpanel--interactive",
@@ -3053,7 +3078,7 @@
         "props": "packages/ui/src/components/custom/Workout/BodyweightGoalCard.tsx",
         "status": "packages/ui/src/components/custom/Workout/BodyweightGoalCard.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-goals-bodyweightgoalcard--default",
         "custom-workout-goals-bodyweightgoalcard--gain",
@@ -3071,7 +3096,10 @@
       "tier": "organism"
     },
     {
-      "composes": [],
+      "composes": [
+        "CapacityBandOverlays",
+        "CapacityBandPlot"
+      ],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/CapacityBandChart.tsx",
       "name": "CapacityBandChart",
@@ -3131,7 +3159,7 @@
         "props": "packages/ui/src/components/custom/Workout/CapacityBandChart.tsx",
         "status": "packages/ui/src/components/custom/Workout/CapacityBandChart.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-capacitybandchart--compact",
         "custom-workout-dataviz-capacitybandchart--default",
@@ -3140,6 +3168,57 @@
         "custom-workout-dataviz-capacitybandchart--sparse-data",
         "custom-workout-dataviz-capacitybandchart--without-projection"
       ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/CapacityBandPlot.tsx",
+      "name": "CapacityBandPlot",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "colors",
+          "required": true,
+          "type": "CapacityBandColors"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "height",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "layout",
+          "required": true,
+          "type": "{ columns: { x: number; top: number; height: number; }[]; topEdge: { left: number; top: number; length: number; angle: number; }[]; bottomEdge: { left: number; top: number; length: number; angle: number; }[]; trainingPixels: PixelPoint[]; restPixels: PixelPoint[]; labelStride: number; hasProjection: boolean; }"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "revealWidth",
+          "required": true,
+          "type": "AnimatedInterpolation<number>"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "width",
+          "required": true,
+          "type": "number"
+        }
+      ],
+      "purpose": "The band and projection, drawn left to right through an animated clip.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Workout/CapacityBandPlot.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
       "tier": "atom"
     },
     {
@@ -3175,7 +3254,7 @@
         "props": "packages/ui/src/components/custom/Workout/DeviationBar.tsx",
         "status": "packages/ui/src/components/custom/Workout/DeviationBar.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-deviationbar--full-range",
         "custom-workout-dataviz-deviationbar--much-harder",
@@ -3189,12 +3268,118 @@
     },
     {
       "composes": [
+        "DualVelocityCharts",
+        "SetBarChart"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/DualVelocityStrip.tsx",
+      "name": "DualVelocityStrip",
+      "props": [
+        {
+          "default": "loss",
+          "description": "Bar-fill coloring mode, matching {@link VelocityStrip }.",
+          "name": "barColor",
+          "required": false,
+          "type": "\"zone\" | \"loss\""
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Total plot height (px), split evenly into the up (L) and down (R) wings.",
+          "name": "height",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The up-wing stream — drawn growing UP from the centre axis; its edge name comes from `left.label`.",
+          "name": "left",
+          "required": true,
+          "type": "DualVelocityStream"
+        },
+        {
+          "default": null,
+          "description": "Index of the most-recently-completed rep; that mirrored pair animates in (hero only).",
+          "name": "liveRepIndex",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "`loss` only: the thresholds both wings band at, as on {@link VelocityStrip }.",
+          "name": "lossThresholds",
+          "required": false,
+          "type": "VelocityLossThresholds"
+        },
+        {
+          "default": null,
+          "description": "The down-wing stream — drawn growing DOWN from the centre axis; its edge name comes from `right.label`.",
+          "name": "right",
+          "required": true,
+          "type": "DualVelocityStream"
+        },
+        {
+          "default": "peak",
+          "description": "Bar-height scaling, shared across BOTH wings so the L/R asymmetry reads as bar length against one scale.",
+          "name": "scale",
+          "required": false,
+          "type": "\"peak\" | \"fixed\""
+        },
+        {
+          "default": null,
+          "description": "Planned rep count.",
+          "name": "targetReps",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "hero",
+          "description": "`hero` — the across-the-room wall scale: tall wings, per-rep m/s value labels, and a dashed running-best reference line per side.",
+          "name": "variant",
+          "required": false,
+          "type": "\"compact\" | \"hero\" | \"dual-expanded\" | \"rail\""
+        },
+        {
+          "default": null,
+          "description": "Optional velocity-zone bands (shape-compatible with WA's `VelocityZones.bands`), shared with {@link VelocityStrip }.",
+          "name": "zones",
+          "required": false,
+          "type": "readonly VelocityZoneBandProp[]"
+        }
+      ],
+      "purpose": "The dual-voltra (bilateral) DIVERGING per-rep velocity chart.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Workout/DualVelocityStrip.tsx",
+        "status": "packages/ui/src/components/custom/Workout/DualVelocityStrip.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-workout-dataviz-dualvelocitystrip--crowded-right-edge-label",
+        "custom-workout-dataviz-dualvelocitystrip--dual-expanded",
+        "custom-workout-dataviz-dualvelocitystrip--hero",
+        "custom-workout-dataviz-dualvelocitystrip--range-set",
+        "custom-workout-dataviz-velocitystrip-dual--default",
+        "custom-workout-dataviz-velocitystrip-dual--in-progress",
+        "custom-workout-dataviz-velocitystrip-dual--playground",
+        "custom-workout-dataviz-velocitystrip-dual--small-height-labels",
+        "custom-workout-dataviz-velocitystrip-dual--symmetric-empties",
+        "custom-workout-dataviz-velocitystrip-dual--tiny-height"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
         "ExerciseCardHeading",
         "ExerciseIndicator",
         "SetBar",
         "SetRow",
-        "SetTableHeader",
-        "VelocityStrip"
+        "SetTableHeader"
       ],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/ExerciseCard.tsx",
@@ -3360,7 +3545,7 @@
         "props": "packages/ui/src/components/custom/Workout/ExerciseCard.tsx",
         "status": "packages/ui/src/components/custom/Workout/ExerciseCard.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-exercisecard--collapsed-with-pr",
         "custom-workout-exercisecard--collapsed-with-velocity",
@@ -3571,7 +3756,7 @@
         "props": "packages/ui/src/components/custom/Workout/ExerciseCardHeading.tsx",
         "status": "packages/ui/src/components/custom/Workout/ExerciseCardHeading.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-exercisecardheading--compact",
         "custom-workout-exercisecardheading--default",
@@ -3587,6 +3772,7 @@
       "composes": [
         "CapacityBandChart",
         "ExerciseCard",
+        "ExerciseDetailSectionCard",
         "MesoStatusCard",
         "SetRow",
         "StrengthTrendChart",
@@ -3651,7 +3837,7 @@
         "props": "packages/ui/src/components/custom/Workout/ExerciseDetailPage.tsx",
         "status": "packages/ui/src/components/custom/Workout/ExerciseDetailPage.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "pages-exercise-detail--default",
         "pages-exercise-detail--no-vbt-data"
@@ -3808,7 +3994,7 @@
         "props": "packages/ui/src/components/custom/Workout/ExerciseHeading.tsx",
         "status": "packages/ui/src/components/custom/Workout/ExerciseHeading.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-exerciseheading--default",
         "custom-workout-exerciseheading--dimmed",
@@ -3853,7 +4039,7 @@
         "props": "packages/ui/src/components/custom/Workout/ExerciseIndicator.tsx",
         "status": "packages/ui/src/components/custom/Workout/ExerciseIndicator.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-exerciseindicator--all-kinds",
         "custom-workout-exerciseindicator--imbalance",
@@ -3943,7 +4129,7 @@
         "props": "packages/ui/src/components/custom/Workout/FatigueMeter.tsx",
         "status": "packages/ui/src/components/custom/Workout/FatigueMeter.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-fatiguemeter--custom-scale",
         "custom-workout-dataviz-fatiguemeter--fresh",
@@ -4543,7 +4729,7 @@
         "props": "packages/ui/src/components/custom/Workout/GoalMuscleCard.tsx",
         "status": "packages/ui/src/components/custom/Workout/GoalMuscleCard.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-goalmusclecard--default",
         "custom-workout-goalmusclecard--no-week-variance",
@@ -4629,7 +4815,7 @@
         "props": "packages/ui/src/components/custom/Workout/GoalPriorityIndex.tsx",
         "status": "packages/ui/src/components/custom/Workout/GoalPriorityIndex.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-goals-goalpriorityindex--default",
         "custom-workout-goals-goalpriorityindex--small"
@@ -4639,9 +4825,8 @@
     {
       "composes": [
         "GoalTrajectoryBand",
-        "GoalTrajectoryCalibrating",
-        "GoalTrajectoryPlot",
-        "GoalTrajectoryWeekTips"
+        "GoalTrajectoryChartParts",
+        "GoalTrajectoryPlot"
       ],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/GoalTrajectoryChart.tsx",
@@ -4828,7 +5013,7 @@
         "props": "packages/ui/src/components/custom/Workout/GoalTrajectoryChart.tsx",
         "status": "packages/ui/src/components/custom/Workout/GoalTrajectoryChart.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-goaltrajectorychart--ahead",
         "custom-workout-dataviz-goaltrajectorychart--behind",
@@ -4860,7 +5045,6 @@
     },
     {
       "composes": [
-        "GoalTrajectoryChart",
         "GoalTrajectoryPlot"
       ],
       "family": "custom/Workout",
@@ -5019,7 +5203,7 @@
           "description": "",
           "name": "palette",
           "required": true,
-          "type": "{ status: \"#D14343\" | \"#F9B415\" | \"#2ED573\" | \"#2196F3\" | \"#A29F9D\" | \"#72716F\" | \"#9E9A97\"; band: string; bandHue: \"#307B9B\"; lip: string; rule: \"#A29F9D\" | \"#65748B\"; grid: string; gridLabel: string; ... 7 more ...; shadeScale: number; }"
+          "type": "{ status: \"#D14343\" | \"#F9B415\" | \"#C27400\" | \"#2ED573\" | \"#298732\" | \"#2196F3\" | \"#1072CB\" | \"#A29F9D\" | \"#72716F\" | \"#9E9A97\"; band: string; bandHue: \"#307B9B\"; lip: string; rule: \"#A29F9D\" | \"#65748B\"; ... 9 more ...; shadeScale: number; }"
         },
         {
           "default": null,
@@ -5079,7 +5263,6 @@
         "Pill",
         "PrBadge",
         "TipTrigger",
-        "Tooltip",
         "Typography"
       ],
       "family": "custom/Workout",
@@ -5316,7 +5499,7 @@
         "props": "packages/ui/src/components/custom/Workout/InputBar.tsx",
         "status": "packages/ui/src/components/custom/Workout/InputBar.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-inputbar--default",
         "custom-workout-inputbar--disabled",
@@ -5386,7 +5569,7 @@
         "props": "packages/ui/src/components/custom/Workout/IntensityBar.tsx",
         "status": "packages/ui/src/components/custom/Workout/IntensityBar.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-intensitybar--all-zones",
         "custom-workout-dataviz-intensitybar--high",
@@ -5429,7 +5612,7 @@
         "props": "packages/ui/src/components/custom/Workout/LiveAuraFrame.tsx",
         "status": "packages/ui/src/components/custom/Workout/LiveAuraFrame.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-liveauraframe--all-states",
         "custom-workout-liveauraframe--productive",
@@ -5538,7 +5721,7 @@
         "props": "packages/ui/src/components/custom/Workout/MesoCard.tsx",
         "status": "packages/ui/src/components/custom/Workout/MesoCard.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-mesocard--collapsed",
         "custom-workout-mesocard--expanded",
@@ -5588,7 +5771,7 @@
         "props": "packages/ui/src/components/custom/Workout/MesoProgressBar.tsx",
         "status": "packages/ui/src/components/custom/Workout/MesoProgressBar.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-mesoprogressbar--active-current",
         "custom-workout-mesoprogressbar--default",
@@ -5675,7 +5858,7 @@
         "props": "packages/ui/src/components/custom/Workout/MesoStatusCard.tsx",
         "status": "packages/ui/src/components/custom/Workout/MesoStatusCard.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-mesostatuscard--default",
         "custom-workout-mesostatuscard--info-badge",
@@ -5715,7 +5898,7 @@
         "props": "packages/ui/src/components/custom/Workout/MetricTiles.tsx",
         "status": "packages/ui/src/components/custom/Workout/MetricTiles.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-metrictiles--four-tiles",
         "custom-workout-metrictiles--session-stats",
@@ -5816,7 +5999,7 @@
         "props": "packages/ui/src/components/custom/Workout/MuscleGroupChip.tsx",
         "status": "packages/ui/src/components/custom/Workout/MuscleGroupChip.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-musclegroupchip--all-statuses",
         "custom-workout-musclegroupchip--approaching",
@@ -5867,7 +6050,7 @@
         "props": "packages/ui/src/components/custom/Workout/MuscleStrip.tsx",
         "status": "packages/ui/src/components/custom/Workout/MuscleStrip.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-musclestrip--default",
         "custom-workout-musclestrip--empty-untrained",
@@ -5917,7 +6100,7 @@
         "props": "packages/ui/src/components/custom/Workout/PlaceholderStrip.tsx",
         "status": "packages/ui/src/components/custom/Workout/PlaceholderStrip.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-placeholderstrip--default",
         "custom-workout-placeholderstrip--fixed-width",
@@ -5986,7 +6169,7 @@
         "props": "packages/ui/src/components/custom/Workout/PrBadge.tsx",
         "status": "packages/ui/src/components/custom/Workout/PrBadge.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-prbadge--all-types",
         "custom-workout-prbadge--animated",
@@ -6057,7 +6240,7 @@
         "props": "packages/ui/src/components/custom/Workout/PrHistoryModal.tsx",
         "status": "packages/ui/src/components/custom/Workout/PrHistoryModal.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-prhistorymodal--default",
         "custom-workout-prhistorymodal--empty",
@@ -6182,6 +6365,7 @@
         "ExerciseCard",
         "MesoCard",
         "MesoProgressBar",
+        "ProgramPlanningBreadcrumbs",
         "WeekRow",
         "WorkoutCard",
         "WorkoutPill"
@@ -6217,7 +6401,7 @@
         "props": "packages/ui/src/components/custom/Workout/ProgramPlanningPage.tsx",
         "status": "packages/ui/src/components/custom/Workout/ProgramPlanningPage.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "pages-program-planning--default",
         "pages-program-planning--single-meso"
@@ -6281,7 +6465,7 @@
         "props": "packages/ui/src/components/custom/Workout/ReadinessCheck.tsx",
         "status": "packages/ui/src/components/custom/Workout/ReadinessCheck.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-readinesscheck--default",
         "custom-workout-readinesscheck--high-readiness",
@@ -6369,7 +6553,7 @@
         "props": "packages/ui/src/components/custom/Workout/RestTimer.tsx",
         "status": "packages/ui/src/components/custom/Workout/RestTimer.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-resttimer--default",
         "custom-workout-resttimer--just-started",
@@ -6421,7 +6605,7 @@
         "props": "packages/ui/src/components/custom/Workout/ScheduleTiles.tsx",
         "status": "packages/ui/src/components/custom/Workout/ScheduleTiles.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-scheduletiles--soon-under-a-day",
         "custom-workout-scheduletiles--two-days-out"
@@ -6489,7 +6673,7 @@
         "props": "packages/ui/src/components/custom/Workout/SegmentedBar.tsx",
         "status": "packages/ui/src/components/custom/Workout/SegmentedBar.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-segmentedbar--equal-segments",
         "custom-workout-segmentedbar--partial-fills",
@@ -6561,7 +6745,7 @@
         "props": "packages/ui/src/components/custom/Workout/SegmentedProgressBar.tsx",
         "status": "packages/ui/src/components/custom/Workout/SegmentedProgressBar.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-segmentedprogressbar--ahead",
         "custom-workout-segmentedprogressbar--behind",
@@ -6652,7 +6836,7 @@
         "props": "packages/ui/src/components/custom/Workout/SessionHeader.tsx",
         "status": "packages/ui/src/components/custom/Workout/SessionHeader.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "shell-sessionrail-sessionheader--live-behind",
         "shell-sessionrail-sessionheader--live-no-time",
@@ -6772,7 +6956,7 @@
         "props": "packages/ui/src/components/custom/Workout/SessionRail.tsx",
         "status": "packages/ui/src/components/custom/Workout/SessionRail.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "shell-sessionrail--default",
         "shell-sessionrail--no-time-target",
@@ -6826,7 +7010,7 @@
         "props": "packages/ui/src/components/custom/Workout/SessionsGoalCard.tsx",
         "status": "packages/ui/src/components/custom/Workout/SessionsGoalCard.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-goals-sessionsgoalcard--default",
         "custom-workout-goals-sessionsgoalcard--large-commitment",
@@ -6864,7 +7048,7 @@
         "props": "packages/ui/src/components/custom/Workout/SetBar.tsx",
         "status": "packages/ui/src/components/custom/Workout/SetBar.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-setbar--active",
         "custom-workout-setbar--active-range-set",
@@ -6976,7 +7160,7 @@
         "props": "packages/ui/src/components/custom/Workout/SetRow.tsx",
         "status": "packages/ui/src/components/custom/Workout/SetRow.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-setrow--done",
         "custom-workout-setrow--live",
@@ -7021,7 +7205,7 @@
         "props": "packages/ui/src/components/custom/Workout/SetStrip.tsx",
         "status": "packages/ui/src/components/custom/Workout/SetStrip.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-setstrip--active-range-set",
         "custom-workout-setstrip--completed",
@@ -7073,7 +7257,7 @@
         "props": "packages/ui/src/components/custom/Workout/SetTableHeader.tsx",
         "status": "packages/ui/src/components/custom/Workout/SetTableHeader.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-settableheader--kg",
         "custom-workout-settableheader--lbs",
@@ -7144,7 +7328,7 @@
         "props": "packages/ui/src/components/custom/Workout/SetsRepsLoad.tsx",
         "status": "packages/ui/src/components/custom/Workout/SetsRepsLoad.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-setsrepsload--default",
         "custom-workout-setsrepsload--kilograms",
@@ -7154,7 +7338,7 @@
     },
     {
       "composes": [
-        "Typography"
+        "SparklineParts"
       ],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/Sparkline.tsx",
@@ -7250,7 +7434,7 @@
         "props": "packages/ui/src/components/custom/Workout/Sparkline.tsx",
         "status": "packages/ui/src/components/custom/Workout/Sparkline.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-sparkline--all-shapes",
         "custom-workout-dataviz-sparkline--ascending",
@@ -7263,7 +7447,7 @@
         "custom-workout-dataviz-sparkline--u-curve",
         "custom-workout-dataviz-sparkline--with-reference-lines"
       ],
-      "tier": "molecule"
+      "tier": "organism"
     },
     {
       "composes": [
@@ -7321,7 +7505,7 @@
         "props": "packages/ui/src/components/custom/Workout/StatusDot.tsx",
         "status": "packages/ui/src/components/custom/Workout/StatusDot.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-statusdot--all-variants",
         "custom-workout-statusdot--deviation",
@@ -7373,7 +7557,7 @@
         "props": "packages/ui/src/components/custom/Workout/StatusPill.tsx",
         "status": "packages/ui/src/components/custom/Workout/StatusPill.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-statuspill--all-states",
         "custom-workout-statuspill--productive",
@@ -7458,7 +7642,7 @@
         "props": "packages/ui/src/components/custom/Workout/StrengthTrendChart.tsx",
         "status": "packages/ui/src/components/custom/Workout/StrengthTrendChart.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-strengthtrendchart--compact",
         "custom-workout-dataviz-strengthtrendchart--declining",
@@ -7498,7 +7682,7 @@
         "props": "packages/ui/src/components/custom/Workout/SupersetWrapper.tsx",
         "status": "packages/ui/src/components/custom/Workout/SupersetWrapper.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-supersetwrapper--custom-color",
         "custom-workout-supersetwrapper--custom-label",
@@ -7584,7 +7768,7 @@
         "props": "packages/ui/src/components/custom/Workout/TempoDisplay.tsx",
         "status": "packages/ui/src/components/custom/Workout/TempoDisplay.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-tempodisplay--active-tempo-conditions",
         "custom-workout-tempodisplay--live-animated",
@@ -7645,7 +7829,7 @@
         "props": "packages/ui/src/components/custom/Workout/TrainingStatusPage.tsx",
         "status": "packages/ui/src/components/custom/Workout/TrainingStatusPage.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "pages-training-status--default",
         "pages-training-status--needs-attention",
@@ -7789,6 +7973,60 @@
         "SetBarChart"
       ],
       "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/VelocityLossBands.tsx",
+      "name": "VelocityLossBands",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "best",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": "false",
+          "description": "The parent plot is vertically mirrored (a `down` wing) — counter-flip the labels upright.",
+          "name": "flip",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "plotHeight",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "scaleDenom",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": "[10, 20, 30]",
+          "description": "The bar-colour thresholds; the amber band starts at the second, the red at the third.",
+          "name": "thresholds",
+          "required": false,
+          "type": "VelocityLossThresholds"
+        }
+      ],
+      "purpose": "Velocity-LOSS decision bands for the `hero` variant: the VL20 / VL30 coaching cues (off the running best) drawn as absolutely-positioned bands + dashed threshold lines BEHIND the bars, on the hero's own peak scale so a bar dropping into the amber → red band reads as \"these are your last effective reps\".",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Workout/VelocityLossBands.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "SetBarChart",
+        "VelocityStripVariants"
+      ],
+      "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/VelocityStrip.tsx",
       "name": "VelocityStrip",
       "props": [
@@ -7906,7 +8144,7 @@
         },
         {
           "default": null,
-          "description": "`hero` only: draw the VL20 / VL30 velocity-loss decision bands behind the bars (see {@link VelocityLossBands}).",
+          "description": "`hero` only: draw the VL20 / VL30 velocity-loss decision bands behind the bars (see {@link VelocityLossBands }).",
           "name": "showLossBands",
           "required": false,
           "type": "boolean"
@@ -7927,7 +8165,7 @@
         },
         {
           "default": "expanded",
-          "description": "`compact` — the flat resting strip: {@link SetBarChart} in FLAT mode (uniform short bars, no value labels), sharing hero's exact geometry (colors, paper, spacing, chunk-notch, slots, gutter).",
+          "description": "`compact` — the flat resting strip: {@link SetBarChart } in FLAT mode (uniform short bars, no value labels), sharing hero's exact geometry (colors, paper, spacing, chunk-notch, slots, gutter).",
           "name": "variant",
           "required": false,
           "type": "\"compact\" | \"hero\" | \"expanded\""
@@ -7952,7 +8190,7 @@
         "props": "packages/ui/src/components/custom/Workout/VelocityStrip.tsx",
         "status": "packages/ui/src/components/custom/Workout/VelocityStrip.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-velocitystrip--all-views",
         "custom-workout-dataviz-velocitystrip--in-context",
@@ -7985,6 +8223,45 @@
         "custom-workout-dataviz-velocitystrip-hero--responsive",
         "custom-workout-dataviz-velocitystrip-hero--set-types"
       ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "SetBarChart"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/VelocityStripFramed.tsx",
+      "name": "VelocityStripFramed",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "chart",
+          "required": true,
+          "type": "VelocityStripChart"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "chrome",
+          "required": true,
+          "type": "VelocityStripChrome"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "summary",
+          "required": true,
+          "type": "VelocityStripSummary"
+        }
+      ],
+      "purpose": "",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Workout/VelocityStripFramed.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
       "tier": "molecule"
     },
     {
@@ -8052,7 +8329,7 @@
         "props": "packages/ui/src/components/custom/Workout/VolumeLandmarkBar.tsx",
         "status": "packages/ui/src/components/custom/Workout/VolumeLandmarkBar.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-volumelandmarkbar--all-zones",
         "custom-workout-dataviz-volumelandmarkbar--approaching-mrv",
@@ -8135,7 +8412,7 @@
         "props": "packages/ui/src/components/custom/Workout/WeekRow.tsx",
         "status": "packages/ui/src/components/custom/Workout/WeekRow.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-weekrow--current-week",
         "custom-workout-weekrow--default",
@@ -8223,7 +8500,7 @@
         "props": "packages/ui/src/components/custom/Workout/WeightBadge.tsx",
         "status": "packages/ui/src/components/custom/Workout/WeightBadge.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-weightbadge--all-variants",
         "custom-workout-weightbadge--default",
@@ -8337,7 +8614,7 @@
         "props": "packages/ui/src/components/custom/Workout/WorkoutCard.tsx",
         "status": "packages/ui/src/components/custom/Workout/WorkoutCard.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-workoutcard--completed",
         "custom-workout-workoutcard--expanded",
@@ -8403,7 +8680,7 @@
         "props": "packages/ui/src/components/custom/Workout/WorkoutPill.tsx",
         "status": "packages/ui/src/components/custom/Workout/WorkoutPill.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-workoutpill--all-statuses",
         "custom-workout-workoutpill--completed",
@@ -8418,7 +8695,8 @@
     },
     {
       "composes": [
-        "Tooltip"
+        "ZoneTrackParts",
+        "ZoneTrackTicks"
       ],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/ZoneTrack.tsx",
@@ -8507,7 +8785,7 @@
         "props": "packages/ui/src/components/custom/Workout/ZoneTrack.tsx",
         "status": "packages/ui/src/components/custom/Workout/ZoneTrack.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-zonetrack--band-with-marker",
         "custom-workout-dataviz-zonetrack--bare-track",
@@ -9384,8 +9662,8 @@
     },
     {
       "composes": [
+        "DualVelocityStrip",
         "Typography",
-        "VelocityStrip",
         "icons",
         "pinnedLiveStripParts"
       ],
@@ -9507,7 +9785,6 @@
     {
       "composes": [
         "SetBarChart",
-        "VelocityStrip",
         "icons",
         "pinnedLiveStripParts"
       ],
@@ -9948,7 +10225,7 @@
     },
     {
       "composes": [
-        "Surface"
+        "AutocompleteParts"
       ],
       "family": "ui/autocomplete",
       "file": "packages/ui/src/components/ui/autocomplete/Autocomplete.tsx",
@@ -10114,7 +10391,7 @@
         "components-molecules-autocomplete--with-error",
         "components-molecules-autocomplete--with-label"
       ],
-      "tier": "molecule"
+      "tier": "organism"
     },
     {
       "composes": [],
@@ -10594,7 +10871,7 @@
     },
     {
       "composes": [],
-      "family": "ui/charts/gauge",
+      "family": "ui/charts",
       "file": "packages/ui/src/components/ui/charts/gauge/Gauge.tsx",
       "name": "Gauge",
       "props": [
@@ -10680,8 +10957,12 @@
       "tier": "atom"
     },
     {
-      "composes": [],
-      "family": "ui/charts/scatter",
+      "composes": [
+        "ScatterFrame",
+        "ScatterGridlines",
+        "ScatterPointMark"
+      ],
+      "family": "ui/charts",
       "file": "packages/ui/src/components/ui/charts/scatter/Scatter.tsx",
       "name": "Scatter",
       "props": [
@@ -10764,11 +11045,129 @@
         "components-atoms-scatter--selected",
         "components-atoms-scatter--single-point"
       ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [],
+      "family": "ui/charts",
+      "file": "packages/ui/src/components/ui/charts/scatter/ScatterFrame.tsx",
+      "name": "ScatterFrame",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "axis",
+          "required": true,
+          "type": "ScatterAxis"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "colors",
+          "required": true,
+          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 144 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "layout",
+          "required": true,
+          "type": "ScatterLayout"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "segments",
+          "required": true,
+          "type": "{ testID: string; segment: ScatterSegment; }[]"
+        }
+      ],
+      "purpose": "Left and bottom axis frame, the reference lines, and the axis titles.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/charts/scatter/ScatterFrame.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
       "tier": "atom"
     },
     {
       "composes": [],
-      "family": "ui/charts/spark-bars",
+      "family": "ui/charts",
+      "file": "packages/ui/src/components/ui/charts/scatter/ScatterGridlines.tsx",
+      "name": "ScatterGridlines",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "colors",
+          "required": true,
+          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 144 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "layout",
+          "required": true,
+          "type": "ScatterLayout"
+        }
+      ],
+      "purpose": "Horizontal then vertical gridlines, each carrying its tick label.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/charts/scatter/ScatterGridlines.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/charts",
+      "file": "packages/ui/src/components/ui/charts/scatter/ScatterPointMark.tsx",
+      "name": "ScatterPointMark",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "isSelected",
+          "required": true,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "onPress",
+          "required": false,
+          "type": "((id: string) => void)"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "point",
+          "required": true,
+          "type": "ScatterPoint"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "ringColor",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "purpose": "One pressable bubble, ringed when selected, labelled when large or selected.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/charts/scatter/ScatterPointMark.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/charts",
       "file": "packages/ui/src/components/ui/charts/spark-bars/SparkBars.tsx",
       "name": "SparkBars",
       "props": [
@@ -10854,7 +11253,7 @@
     },
     {
       "composes": [],
-      "family": "ui/charts/treemap",
+      "family": "ui/charts",
       "file": "packages/ui/src/components/ui/charts/treemap/Treemap.tsx",
       "name": "Treemap",
       "props": [
@@ -11244,14 +11643,14 @@
         },
         {
           "default": null,
-          "description": "Custom format string (overrides format)",
+          "description": "Custom format string.",
           "name": "customFormat",
           "required": false,
           "type": "string"
         },
         {
           "default": "-",
-          "description": "Fallback text when value is null/undefined",
+          "description": "Text for a null, undefined or unparseable value (default '-').",
           "name": "fallback",
           "required": false,
           "type": "string"
@@ -11272,14 +11671,14 @@
         },
         {
           "default": null,
-          "description": "Track the current time and re-render on an interval (ignores `value`).",
+          "description": "Re-render on an interval.",
           "name": "isLive",
           "required": false,
           "type": "boolean"
         },
         {
           "default": "false",
-          "description": "Whether to show in UTC",
+          "description": "Show in UTC rather than the runtime's zone.",
           "name": "isUTC",
           "required": false,
           "type": "boolean"
@@ -11293,7 +11692,7 @@
         },
         {
           "default": "1000",
-          "description": "Refresh interval in ms when `isLive` (default 1000).",
+          "description": "Refresh interval in ms for a live clock (default 1000).",
           "name": "refreshMs",
           "required": false,
           "type": "number"
@@ -11538,6 +11937,57 @@
       "status": "candidate",
       "storyIds": [
         "components-molecules-eyebrow--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Typography"
+      ],
+      "family": "ui/file-path-label",
+      "file": "packages/ui/src/components/ui/file-path-label/FilePathLabel.tsx",
+      "name": "FilePathLabel",
+      "props": [
+        {
+          "default": "false",
+          "description": "Render only the basename, dropping the directory prefix.",
+          "name": "baseOnly",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "A repo-relative path, e.g. `src/commands/open.ts`.",
+          "name": "path",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": "md",
+          "description": "`md` for standalone rows, `sm` for dense contexts like chips.",
+          "name": "size",
+          "required": false,
+          "type": "FilePathLabelSize"
+        }
+      ],
+      "purpose": "FilePathLabel — a file path with the directory dimmed and the basename bright.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/file-path-label/FilePathLabel.tsx",
+        "status": "packages/ui/src/components/ui/file-path-label/FilePathLabel.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-filepathlabel--base-only",
+        "components-atoms-filepathlabel--default",
+        "components-atoms-filepathlabel--no-directory",
+        "components-atoms-filepathlabel--small"
       ],
       "tier": "molecule"
     },
@@ -12160,7 +12610,7 @@
         "props": "packages/ui/src/components/ui/menu/Menu.tsx",
         "status": "packages/ui/src/components/ui/menu/Menu.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "components-molecules-menu--controlled",
         "components-molecules-menu--default",
@@ -12242,7 +12692,7 @@
         "props": "packages/ui/src/components/ui/modal/Modal.tsx",
         "status": "packages/ui/src/components/ui/modal/Modal.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "components-organisms-modal--backdrop-blur",
         "components-organisms-modal--default",
@@ -12450,7 +12900,7 @@
         "props": "packages/ui/src/components/ui/popover/Popover.tsx",
         "status": "packages/ui/src/components/ui/popover/Popover.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "components-molecules-popover--controlled",
         "components-molecules-popover--default",
@@ -12658,7 +13108,7 @@
     },
     {
       "composes": [
-        "Surface"
+        "SelectPopover"
       ],
       "family": "ui/select",
       "file": "packages/ui/src/components/ui/select/Select.tsx",
@@ -12747,7 +13197,7 @@
         "props": "packages/ui/src/components/ui/select/Select.tsx",
         "status": "packages/ui/src/components/ui/select/Select.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "components-molecules-select--controlled",
         "components-molecules-select--default",
@@ -12761,6 +13211,31 @@
         "components-molecules-select--with-placeholder",
         "components-molecules-select--with-preselected-value"
       ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Surface"
+      ],
+      "family": "ui/select",
+      "file": "packages/ui/src/components/ui/select/SelectPopover.tsx",
+      "name": "SelectPopover",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "onClose",
+          "required": true,
+          "type": "() => void"
+        }
+      ],
+      "purpose": "",
+      "sources": {
+        "props": "packages/ui/src/components/ui/select/SelectPopover.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
       "tier": "molecule"
     },
     {
@@ -13819,7 +14294,7 @@
     },
     {
       "composes": [
-        "Surface"
+        "ToolbarButtonParts"
       ],
       "family": "ui/toolbar-button",
       "file": "packages/ui/src/components/ui/toolbar-button/ToolbarButton.tsx",
@@ -13923,7 +14398,7 @@
         "components-molecules-toolbarbutton--variants",
         "components-molecules-toolbarbutton--with-menu"
       ],
-      "tier": "molecule"
+      "tier": "organism"
     },
     {
       "composes": [
@@ -14009,6 +14484,7 @@
     {
       "composes": [
         "Surface",
+        "TooltipParts",
         "TriggerSurface"
       ],
       "family": "ui/tooltip",
@@ -14112,7 +14588,7 @@
         "props": "packages/ui/src/components/ui/tooltip/Tooltip.tsx",
         "status": "packages/ui/src/components/ui/tooltip/Tooltip.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "components-molecules-tooltip--all-placements",
         "components-molecules-tooltip--default",
@@ -14265,11 +14741,39 @@
       "reason": "name-not-exported"
     },
     {
+      "file": "packages/ui/src/components/custom/ActiveWork/FileActivityGrowthWell.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/ActiveWork/FilePathLabel.tsx",
+      "reason": "name-not-exported"
+    },
+    {
       "file": "packages/ui/src/components/custom/Chat/coach-cards.tsx",
       "reason": "not-pascal-case"
     },
     {
+      "file": "packages/ui/src/components/custom/Fatigue/DualGhostSparkParts.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Fatigue/GhostBandParts.tsx",
+      "reason": "name-not-exported"
+    },
+    {
       "file": "packages/ui/src/components/custom/Workout/BodyMapDetailSections.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/CapacityBandOverlays.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/DualVelocityCharts.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/ExerciseDetailSectionCard.tsx",
       "reason": "name-not-exported"
     },
     {
@@ -14282,6 +14786,30 @@
     },
     {
       "file": "packages/ui/src/components/custom/Workout/GoalTrajectoryCalibrating.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/GoalTrajectoryChartParts.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/ProgramPlanningBreadcrumbs.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/SparklineParts.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/VelocityStripVariants.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/ZoneTrackParts.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/ZoneTrackTicks.tsx",
       "reason": "name-not-exported"
     },
     {
@@ -14325,7 +14853,19 @@
       "reason": "not-pascal-case"
     },
     {
+      "file": "packages/ui/src/components/ui/autocomplete/AutocompleteParts.tsx",
+      "reason": "name-not-exported"
+    },
+    {
       "file": "packages/ui/src/components/ui/table/TableSelection.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/ui/toolbar-button/ToolbarButtonParts.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/ui/tooltip/TooltipParts.tsx",
       "reason": "name-not-exported"
     }
   ],

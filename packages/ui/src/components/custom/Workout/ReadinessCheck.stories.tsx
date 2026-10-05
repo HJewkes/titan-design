@@ -19,7 +19,7 @@ const meta: Meta<typeof ReadinessCheck> = {
   title: 'Custom/Workout/ReadinessCheck',
   component: ReadinessCheck,
   parameters: { docs: { description: { component: 'Composes **Card** · **Badge**.' } } },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     score: {
       control: { type: 'range', min: 0, max: 100, step: 1 },

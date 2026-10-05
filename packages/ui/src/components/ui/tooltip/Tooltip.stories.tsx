@@ -6,7 +6,7 @@ import { Button, ButtonText } from '../button'
 const meta: Meta<typeof Tooltip> = {
   title: 'Components/Molecules/Tooltip',
   component: Tooltip,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     placement: {
       control: 'select',
