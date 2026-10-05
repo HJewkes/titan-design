@@ -80,7 +80,10 @@ export interface CodeViewerProps extends Omit<ViewProps, 'children'> {
   startLine?: number
   /** Flagged lines: evidence, with one neutral treatment and no per-range colour. */
   highlights?: LineRange[]
-  /** One-way command: scrolls this file line into view on mount and on change. It never selects. */
+  /**
+   * One-way command: scrolls this file line into view on mount and on change. It never selects,
+   * and it does nothing when `wrap` is on.
+   */
   focusLine?: number
   /** Controlled selection; `null` is "nothing selected", `undefined` leaves it uncontrolled. */
   selectedRange?: LineRange | null

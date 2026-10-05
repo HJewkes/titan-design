@@ -98,6 +98,7 @@ function CodeViewerContent({
  *
  * There is no error state: render a failed fetch with `Alert`, and pass a missing source as
  * `emptyState`. Above 500 unwrapped lines the rows are windowed over a fixed row height.
+ * `focusLine` does nothing when `wrap` is on: wrapped rows have no known height to scroll by.
  *
  * @example
  * <CodeViewer
