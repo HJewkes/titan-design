@@ -174,17 +174,20 @@ describe('Progress', () => {
       expect(circles.length).toBe(2) // track + progress
     })
 
-    it.each(['dark', 'light'] as const)('strokes the arc and track with hex in %s mode', (theme) => {
-      const colors = getSemanticColors(theme)
-      const { container } = render(
-        <Surface theme={theme}>
-          <CircularProgress value={50} color="success" />
-        </Surface>,
-      )
-      const [track, arc] = container.querySelectorAll('circle')
-      expect(arc?.getAttribute('stroke')).toBe(colors['status-success'])
-      expect(track?.getAttribute('stroke')).toBe(colors['hairline-default'])
-    })
+    it.each(['dark', 'light'] as const)(
+      'strokes the arc and track with hex in %s mode',
+      (theme) => {
+        const colors = getSemanticColors(theme)
+        const { container } = render(
+          <Surface theme={theme}>
+            <CircularProgress value={50} color="success" />
+          </Surface>
+        )
+        const [track, arc] = container.querySelectorAll('circle')
+        expect(arc?.getAttribute('stroke')).toBe(colors['status-success'])
+        expect(track?.getAttribute('stroke')).toBe(colors['hairline-default'])
+      }
+    )
   })
 
   describe('ProgressSteps', () => {

@@ -32,7 +32,7 @@ describe('CircularTimer', () => {
     render(
       <Surface theme={theme}>
         <CircularTimer durationMs={120000} elapsedMs={120000} doneLabel="GO" doneColor="success" />
-      </Surface>,
+      </Surface>
     )
     expect(screen.getByTestId('circular-timer-label')).toHaveStyle({
       color: getSemanticColors(theme)['status-success'],
