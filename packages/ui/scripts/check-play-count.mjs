@@ -1,6 +1,8 @@
 // Fails when the Storybook play run executed too few tests or skipped any inside a play file.
 import { readFileSync } from 'node:fs'
 
+import { isEntryPoint } from './lib/entry.mjs'
+
 export const MIN_PLAY_TESTS = 10
 
 const SKIPPED = new Set(['skipped', 'pending', 'todo'])
@@ -28,7 +30,7 @@ export function check(report, min = MIN_PLAY_TESTS) {
   return null
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (isEntryPoint(import.meta.url, process.argv[1])) {
   const path = process.argv[2] ?? '.vitest-storybook-report.json'
   const failure = check(JSON.parse(readFileSync(path, 'utf8')))
   if (failure) {

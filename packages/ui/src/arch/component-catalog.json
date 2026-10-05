@@ -749,6 +749,13 @@
       "props": [
         {
           "default": null,
+          "description": "Merged over the row's own classes through `cn()`, so a conflicting class wins.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
           "description": "Reference instant for the age label, injected so renders are deterministic.",
           "name": "now",
           "required": true,
@@ -2715,7 +2722,7 @@
         "props": "packages/ui/src/components/custom/Workout/ActiveWorkoutPage.tsx",
         "status": "packages/ui/src/components/custom/Workout/ActiveWorkoutPage.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "pages-active-workout--all-collapsed",
         "pages-active-workout--default",
@@ -2770,7 +2777,7 @@
         "props": "packages/ui/src/components/custom/Workout/BaseBadge.tsx",
         "status": "packages/ui/src/components/custom/Workout/BaseBadge.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-basebadge--all-variants",
         "custom-workout-basebadge--plain",
@@ -2847,7 +2854,7 @@
         "props": "packages/ui/src/components/custom/Workout/BodyMap.tsx",
         "status": "packages/ui/src/components/custom/Workout/BodyMap.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-bodymap--back",
         "custom-workout-dataviz-bodymap--detailed",
@@ -2988,7 +2995,7 @@
         "props": "packages/ui/src/components/custom/Workout/BodyMapDetailPanel.tsx",
         "status": "packages/ui/src/components/custom/Workout/BodyMapDetailPanel.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-bodymapdetailpanel--default",
         "custom-workout-dataviz-bodymapdetailpanel--interactive",
@@ -3071,7 +3078,7 @@
         "props": "packages/ui/src/components/custom/Workout/BodyweightGoalCard.tsx",
         "status": "packages/ui/src/components/custom/Workout/BodyweightGoalCard.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-goals-bodyweightgoalcard--default",
         "custom-workout-goals-bodyweightgoalcard--gain",
@@ -3152,7 +3159,7 @@
         "props": "packages/ui/src/components/custom/Workout/CapacityBandChart.tsx",
         "status": "packages/ui/src/components/custom/Workout/CapacityBandChart.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-capacitybandchart--compact",
         "custom-workout-dataviz-capacitybandchart--default",
@@ -3247,7 +3254,7 @@
         "props": "packages/ui/src/components/custom/Workout/DeviationBar.tsx",
         "status": "packages/ui/src/components/custom/Workout/DeviationBar.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-deviationbar--full-range",
         "custom-workout-dataviz-deviationbar--much-harder",
@@ -3538,7 +3545,7 @@
         "props": "packages/ui/src/components/custom/Workout/ExerciseCard.tsx",
         "status": "packages/ui/src/components/custom/Workout/ExerciseCard.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-exercisecard--collapsed-with-pr",
         "custom-workout-exercisecard--collapsed-with-velocity",
@@ -3749,7 +3756,7 @@
         "props": "packages/ui/src/components/custom/Workout/ExerciseCardHeading.tsx",
         "status": "packages/ui/src/components/custom/Workout/ExerciseCardHeading.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-exercisecardheading--compact",
         "custom-workout-exercisecardheading--default",
@@ -3830,7 +3837,7 @@
         "props": "packages/ui/src/components/custom/Workout/ExerciseDetailPage.tsx",
         "status": "packages/ui/src/components/custom/Workout/ExerciseDetailPage.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "pages-exercise-detail--default",
         "pages-exercise-detail--no-vbt-data"
@@ -3987,7 +3994,7 @@
         "props": "packages/ui/src/components/custom/Workout/ExerciseHeading.tsx",
         "status": "packages/ui/src/components/custom/Workout/ExerciseHeading.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-exerciseheading--default",
         "custom-workout-exerciseheading--dimmed",
@@ -4032,7 +4039,7 @@
         "props": "packages/ui/src/components/custom/Workout/ExerciseIndicator.tsx",
         "status": "packages/ui/src/components/custom/Workout/ExerciseIndicator.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-exerciseindicator--all-kinds",
         "custom-workout-exerciseindicator--imbalance",
@@ -4122,7 +4129,7 @@
         "props": "packages/ui/src/components/custom/Workout/FatigueMeter.tsx",
         "status": "packages/ui/src/components/custom/Workout/FatigueMeter.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-fatiguemeter--custom-scale",
         "custom-workout-dataviz-fatiguemeter--fresh",
@@ -4722,7 +4729,7 @@
         "props": "packages/ui/src/components/custom/Workout/GoalMuscleCard.tsx",
         "status": "packages/ui/src/components/custom/Workout/GoalMuscleCard.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-goalmusclecard--default",
         "custom-workout-goalmusclecard--no-week-variance",
@@ -4808,7 +4815,7 @@
         "props": "packages/ui/src/components/custom/Workout/GoalPriorityIndex.tsx",
         "status": "packages/ui/src/components/custom/Workout/GoalPriorityIndex.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-goals-goalpriorityindex--default",
         "custom-workout-goals-goalpriorityindex--small"
@@ -5006,7 +5013,7 @@
         "props": "packages/ui/src/components/custom/Workout/GoalTrajectoryChart.tsx",
         "status": "packages/ui/src/components/custom/Workout/GoalTrajectoryChart.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-goaltrajectorychart--ahead",
         "custom-workout-dataviz-goaltrajectorychart--behind",
@@ -5492,7 +5499,7 @@
         "props": "packages/ui/src/components/custom/Workout/InputBar.tsx",
         "status": "packages/ui/src/components/custom/Workout/InputBar.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-inputbar--default",
         "custom-workout-inputbar--disabled",
@@ -5562,7 +5569,7 @@
         "props": "packages/ui/src/components/custom/Workout/IntensityBar.tsx",
         "status": "packages/ui/src/components/custom/Workout/IntensityBar.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-intensitybar--all-zones",
         "custom-workout-dataviz-intensitybar--high",
@@ -5605,7 +5612,7 @@
         "props": "packages/ui/src/components/custom/Workout/LiveAuraFrame.tsx",
         "status": "packages/ui/src/components/custom/Workout/LiveAuraFrame.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-liveauraframe--all-states",
         "custom-workout-liveauraframe--productive",
@@ -5714,7 +5721,7 @@
         "props": "packages/ui/src/components/custom/Workout/MesoCard.tsx",
         "status": "packages/ui/src/components/custom/Workout/MesoCard.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-mesocard--collapsed",
         "custom-workout-mesocard--expanded",
@@ -5764,7 +5771,7 @@
         "props": "packages/ui/src/components/custom/Workout/MesoProgressBar.tsx",
         "status": "packages/ui/src/components/custom/Workout/MesoProgressBar.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-mesoprogressbar--active-current",
         "custom-workout-mesoprogressbar--default",
@@ -5851,7 +5858,7 @@
         "props": "packages/ui/src/components/custom/Workout/MesoStatusCard.tsx",
         "status": "packages/ui/src/components/custom/Workout/MesoStatusCard.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-mesostatuscard--default",
         "custom-workout-mesostatuscard--info-badge",
@@ -5891,7 +5898,7 @@
         "props": "packages/ui/src/components/custom/Workout/MetricTiles.tsx",
         "status": "packages/ui/src/components/custom/Workout/MetricTiles.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-metrictiles--four-tiles",
         "custom-workout-metrictiles--session-stats",
@@ -5992,7 +5999,7 @@
         "props": "packages/ui/src/components/custom/Workout/MuscleGroupChip.tsx",
         "status": "packages/ui/src/components/custom/Workout/MuscleGroupChip.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-musclegroupchip--all-statuses",
         "custom-workout-musclegroupchip--approaching",
@@ -6043,7 +6050,7 @@
         "props": "packages/ui/src/components/custom/Workout/MuscleStrip.tsx",
         "status": "packages/ui/src/components/custom/Workout/MuscleStrip.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-musclestrip--default",
         "custom-workout-musclestrip--empty-untrained",
@@ -6093,7 +6100,7 @@
         "props": "packages/ui/src/components/custom/Workout/PlaceholderStrip.tsx",
         "status": "packages/ui/src/components/custom/Workout/PlaceholderStrip.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-placeholderstrip--default",
         "custom-workout-placeholderstrip--fixed-width",
@@ -6162,7 +6169,7 @@
         "props": "packages/ui/src/components/custom/Workout/PrBadge.tsx",
         "status": "packages/ui/src/components/custom/Workout/PrBadge.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-prbadge--all-types",
         "custom-workout-prbadge--animated",
@@ -6233,7 +6240,7 @@
         "props": "packages/ui/src/components/custom/Workout/PrHistoryModal.tsx",
         "status": "packages/ui/src/components/custom/Workout/PrHistoryModal.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-prhistorymodal--default",
         "custom-workout-prhistorymodal--empty",
@@ -6394,7 +6401,7 @@
         "props": "packages/ui/src/components/custom/Workout/ProgramPlanningPage.tsx",
         "status": "packages/ui/src/components/custom/Workout/ProgramPlanningPage.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "pages-program-planning--default",
         "pages-program-planning--single-meso"
@@ -6458,7 +6465,7 @@
         "props": "packages/ui/src/components/custom/Workout/ReadinessCheck.tsx",
         "status": "packages/ui/src/components/custom/Workout/ReadinessCheck.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-readinesscheck--default",
         "custom-workout-readinesscheck--high-readiness",
@@ -6546,7 +6553,7 @@
         "props": "packages/ui/src/components/custom/Workout/RestTimer.tsx",
         "status": "packages/ui/src/components/custom/Workout/RestTimer.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-resttimer--default",
         "custom-workout-resttimer--just-started",
@@ -6598,7 +6605,7 @@
         "props": "packages/ui/src/components/custom/Workout/ScheduleTiles.tsx",
         "status": "packages/ui/src/components/custom/Workout/ScheduleTiles.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-scheduletiles--soon-under-a-day",
         "custom-workout-scheduletiles--two-days-out"
@@ -6666,7 +6673,7 @@
         "props": "packages/ui/src/components/custom/Workout/SegmentedBar.tsx",
         "status": "packages/ui/src/components/custom/Workout/SegmentedBar.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-segmentedbar--equal-segments",
         "custom-workout-segmentedbar--partial-fills",
@@ -6738,7 +6745,7 @@
         "props": "packages/ui/src/components/custom/Workout/SegmentedProgressBar.tsx",
         "status": "packages/ui/src/components/custom/Workout/SegmentedProgressBar.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-segmentedprogressbar--ahead",
         "custom-workout-segmentedprogressbar--behind",
@@ -6829,7 +6836,7 @@
         "props": "packages/ui/src/components/custom/Workout/SessionHeader.tsx",
         "status": "packages/ui/src/components/custom/Workout/SessionHeader.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "shell-sessionrail-sessionheader--live-behind",
         "shell-sessionrail-sessionheader--live-no-time",
@@ -6949,7 +6956,7 @@
         "props": "packages/ui/src/components/custom/Workout/SessionRail.tsx",
         "status": "packages/ui/src/components/custom/Workout/SessionRail.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "shell-sessionrail--default",
         "shell-sessionrail--no-time-target",
@@ -7003,7 +7010,7 @@
         "props": "packages/ui/src/components/custom/Workout/SessionsGoalCard.tsx",
         "status": "packages/ui/src/components/custom/Workout/SessionsGoalCard.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-goals-sessionsgoalcard--default",
         "custom-workout-goals-sessionsgoalcard--large-commitment",
@@ -7041,7 +7048,7 @@
         "props": "packages/ui/src/components/custom/Workout/SetBar.tsx",
         "status": "packages/ui/src/components/custom/Workout/SetBar.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-setbar--active",
         "custom-workout-setbar--active-range-set",
@@ -7153,7 +7160,7 @@
         "props": "packages/ui/src/components/custom/Workout/SetRow.tsx",
         "status": "packages/ui/src/components/custom/Workout/SetRow.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-setrow--done",
         "custom-workout-setrow--live",
@@ -7198,7 +7205,7 @@
         "props": "packages/ui/src/components/custom/Workout/SetStrip.tsx",
         "status": "packages/ui/src/components/custom/Workout/SetStrip.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-setstrip--active-range-set",
         "custom-workout-setstrip--completed",
@@ -7250,7 +7257,7 @@
         "props": "packages/ui/src/components/custom/Workout/SetTableHeader.tsx",
         "status": "packages/ui/src/components/custom/Workout/SetTableHeader.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-settableheader--kg",
         "custom-workout-settableheader--lbs",
@@ -7321,7 +7328,7 @@
         "props": "packages/ui/src/components/custom/Workout/SetsRepsLoad.tsx",
         "status": "packages/ui/src/components/custom/Workout/SetsRepsLoad.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-setsrepsload--default",
         "custom-workout-setsrepsload--kilograms",
@@ -7427,7 +7434,7 @@
         "props": "packages/ui/src/components/custom/Workout/Sparkline.tsx",
         "status": "packages/ui/src/components/custom/Workout/Sparkline.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-sparkline--all-shapes",
         "custom-workout-dataviz-sparkline--ascending",
@@ -7498,7 +7505,7 @@
         "props": "packages/ui/src/components/custom/Workout/StatusDot.tsx",
         "status": "packages/ui/src/components/custom/Workout/StatusDot.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-statusdot--all-variants",
         "custom-workout-statusdot--deviation",
@@ -7550,7 +7557,7 @@
         "props": "packages/ui/src/components/custom/Workout/StatusPill.tsx",
         "status": "packages/ui/src/components/custom/Workout/StatusPill.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-statuspill--all-states",
         "custom-workout-statuspill--productive",
@@ -7635,7 +7642,7 @@
         "props": "packages/ui/src/components/custom/Workout/StrengthTrendChart.tsx",
         "status": "packages/ui/src/components/custom/Workout/StrengthTrendChart.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-strengthtrendchart--compact",
         "custom-workout-dataviz-strengthtrendchart--declining",
@@ -7675,7 +7682,7 @@
         "props": "packages/ui/src/components/custom/Workout/SupersetWrapper.tsx",
         "status": "packages/ui/src/components/custom/Workout/SupersetWrapper.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-supersetwrapper--custom-color",
         "custom-workout-supersetwrapper--custom-label",
@@ -7761,7 +7768,7 @@
         "props": "packages/ui/src/components/custom/Workout/TempoDisplay.tsx",
         "status": "packages/ui/src/components/custom/Workout/TempoDisplay.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-tempodisplay--active-tempo-conditions",
         "custom-workout-tempodisplay--live-animated",
@@ -7822,7 +7829,7 @@
         "props": "packages/ui/src/components/custom/Workout/TrainingStatusPage.tsx",
         "status": "packages/ui/src/components/custom/Workout/TrainingStatusPage.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "pages-training-status--default",
         "pages-training-status--needs-attention",
@@ -8183,7 +8190,7 @@
         "props": "packages/ui/src/components/custom/Workout/VelocityStrip.tsx",
         "status": "packages/ui/src/components/custom/Workout/VelocityStrip.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-velocitystrip--all-views",
         "custom-workout-dataviz-velocitystrip--in-context",
@@ -8322,7 +8329,7 @@
         "props": "packages/ui/src/components/custom/Workout/VolumeLandmarkBar.tsx",
         "status": "packages/ui/src/components/custom/Workout/VolumeLandmarkBar.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-volumelandmarkbar--all-zones",
         "custom-workout-dataviz-volumelandmarkbar--approaching-mrv",
@@ -8405,7 +8412,7 @@
         "props": "packages/ui/src/components/custom/Workout/WeekRow.tsx",
         "status": "packages/ui/src/components/custom/Workout/WeekRow.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-weekrow--current-week",
         "custom-workout-weekrow--default",
@@ -8493,7 +8500,7 @@
         "props": "packages/ui/src/components/custom/Workout/WeightBadge.tsx",
         "status": "packages/ui/src/components/custom/Workout/WeightBadge.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-weightbadge--all-variants",
         "custom-workout-weightbadge--default",
@@ -8607,7 +8614,7 @@
         "props": "packages/ui/src/components/custom/Workout/WorkoutCard.tsx",
         "status": "packages/ui/src/components/custom/Workout/WorkoutCard.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-workoutcard--completed",
         "custom-workout-workoutcard--expanded",
@@ -8673,7 +8680,7 @@
         "props": "packages/ui/src/components/custom/Workout/WorkoutPill.tsx",
         "status": "packages/ui/src/components/custom/Workout/WorkoutPill.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-workoutpill--all-statuses",
         "custom-workout-workoutpill--completed",
@@ -8778,7 +8785,7 @@
         "props": "packages/ui/src/components/custom/Workout/ZoneTrack.tsx",
         "status": "packages/ui/src/components/custom/Workout/ZoneTrack.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-zonetrack--band-with-marker",
         "custom-workout-dataviz-zonetrack--bare-track",
@@ -11636,14 +11643,14 @@
         },
         {
           "default": null,
-          "description": "Custom format string (overrides format)",
+          "description": "Custom format string.",
           "name": "customFormat",
           "required": false,
           "type": "string"
         },
         {
           "default": "-",
-          "description": "Fallback text when value is null/undefined",
+          "description": "Text for a null, undefined or unparseable value (default '-').",
           "name": "fallback",
           "required": false,
           "type": "string"
@@ -11664,14 +11671,14 @@
         },
         {
           "default": null,
-          "description": "Track the current time and re-render on an interval (ignores `value`).",
+          "description": "Re-render on an interval.",
           "name": "isLive",
           "required": false,
           "type": "boolean"
         },
         {
           "default": "false",
-          "description": "Whether to show in UTC",
+          "description": "Show in UTC rather than the runtime's zone.",
           "name": "isUTC",
           "required": false,
           "type": "boolean"
@@ -11685,7 +11692,7 @@
         },
         {
           "default": "1000",
-          "description": "Refresh interval in ms when `isLive` (default 1000).",
+          "description": "Refresh interval in ms for a live clock (default 1000).",
           "name": "refreshMs",
           "required": false,
           "type": "number"
@@ -12603,7 +12610,7 @@
         "props": "packages/ui/src/components/ui/menu/Menu.tsx",
         "status": "packages/ui/src/components/ui/menu/Menu.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "components-molecules-menu--controlled",
         "components-molecules-menu--default",
@@ -12685,7 +12692,7 @@
         "props": "packages/ui/src/components/ui/modal/Modal.tsx",
         "status": "packages/ui/src/components/ui/modal/Modal.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "components-organisms-modal--backdrop-blur",
         "components-organisms-modal--default",
@@ -12893,7 +12900,7 @@
         "props": "packages/ui/src/components/ui/popover/Popover.tsx",
         "status": "packages/ui/src/components/ui/popover/Popover.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "components-molecules-popover--controlled",
         "components-molecules-popover--default",
@@ -13190,7 +13197,7 @@
         "props": "packages/ui/src/components/ui/select/Select.tsx",
         "status": "packages/ui/src/components/ui/select/Select.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "components-molecules-select--controlled",
         "components-molecules-select--default",
@@ -14581,7 +14588,7 @@
         "props": "packages/ui/src/components/ui/tooltip/Tooltip.tsx",
         "status": "packages/ui/src/components/ui/tooltip/Tooltip.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "components-molecules-tooltip--all-placements",
         "components-molecules-tooltip--default",
