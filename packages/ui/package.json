@@ -163,8 +163,6 @@
     }
   },
   "dependencies": {
-    "@gluestack-style/react": "^1.0.0",
-    "@gluestack-ui/themed": "^1.1.0",
     "@titan-design/chat-protocol": "0.1.0",
     "clsx": "^2.1.0",
     "d3-force": "^3",
