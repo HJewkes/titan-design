@@ -114,7 +114,6 @@ const realTuples: readonly RealTuple[] = [
   [L, 'packages/ui/src/components/custom/charts/DatavizLightPalette.candidates.ts', 370, 350],
   [L, 'packages/ui/src/components/ui/surface/Surface.stories.tsx', 370, 350],
   [L, 'packages/ui/src/components/custom/Workout/ZoneTrack.tsx', 369, 350],
-  [L, 'packages/ui/specimen/htmlGroundTruth.tsx', 368, 350],
   [L, 'packages/ui/src/components/custom/Workout/BodyMap.tsx', 360, 350],
   [L, 'packages/ui/src/theme/Depth.stories.tsx', 360, 350],
   [L, 'packages/ui/src/components/custom/Workout/GoalMilestoneSummary.tsx', 358, 350],
