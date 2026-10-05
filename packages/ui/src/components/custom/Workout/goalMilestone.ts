@@ -55,13 +55,19 @@ const LEAD_ORDER = {
   reps_at_load: ['reps', 'load'],
 } as const
 
-/** The metric names what leads: load for top_load_at_reps, reps for reps_at_load. */
-function setGap(latest: GoalMilestoneSet, target: GoalLoadTarget): GoalMilestoneGap {
-  const short = { load: target.load - latest.load, reps: target.reps - latest.reps }
-  for (const kind of LEAD_ORDER[target.metric]) {
-    if (short[kind] > 0) return { kind, amount: short[kind] }
+/** The first lead-unit amount still positive in `diff`, or none. The metric names what leads. */
+function leadDiff(diff: GoalMilestoneSet, metric: GoalLoadMetric): GoalMilestoneGap {
+  for (const kind of LEAD_ORDER[metric]) {
+    if (diff[kind] > 0) return { kind, amount: diff[kind] }
   }
   return { kind: 'none' }
+}
+
+function setGap(latest: GoalMilestoneSet, target: GoalLoadTarget): GoalMilestoneGap {
+  return leadDiff(
+    { load: target.load - latest.load, reps: target.reps - latest.reps },
+    target.metric
+  )
 }
 
 function valueGap(latest: number, target: number, direction: GoalDirection): GoalMilestoneGap {
@@ -92,11 +98,7 @@ export function milestoneSurplus(
   if (isLoadTarget(target)) {
     const set = asSet(latest)
     if (!set) return null
-    const over = { load: set.load - target.load, reps: set.reps - target.reps }
-    for (const kind of LEAD_ORDER[target.metric]) {
-      if (over[kind] > 0) return { kind, amount: over[kind] }
-    }
-    return { kind: 'none' }
+    return leadDiff({ load: set.load - target.load, reps: set.reps - target.reps }, target.metric)
   }
   const value = asValue(latest)
   if (value === null) return null
@@ -131,11 +133,14 @@ export function milestoneReach(
   latest: GoalMilestoneReading,
   direction: GoalDirection = 'up'
 ): GoalReach | null {
-  const gap = milestoneGap(target, latest, direction)
-  if (!gap) return null
-  if (gap.kind !== 'none') return 'short'
-  const surplus = milestoneSurplus(target, latest, direction)
-  return surplus && surplus.kind !== 'none' ? 'beyond' : 'met'
+  if (!isLoadTarget(target)) {
+    const value = asValue(latest)
+    return value === null ? null : valueReach(target.value, value, direction)
+  }
+  const set = asSet(latest)
+  if (!set) return null
+  if (setGap(set, target).kind !== 'none') return 'short'
+  return milestoneSurplus(target, latest, direction)?.kind === 'none' ? 'met' : 'beyond'
 }
 
 export function isMilestoneMet(
