@@ -36,6 +36,7 @@ import { VariantCard } from './VariantCard.tsx'
 interface AppProps {
   manifest: Manifest
   manifestSha256: string
+  harnessWarning?: string
 }
 
 async function postFeedback(body: unknown): Promise<string[]> {
@@ -97,7 +98,7 @@ function Header({
       {manifest.context && <Markdown>{manifest.context}</Markdown>}
       {manifest.sections && <Pager pages={pages} current={current} dispatch={dispatch} />}
       {manifest.sections ? (
-        <ol className="prompts">
+        <ol className="prompts sections">
           {pages.map((p, i) => (
             <li key={p.id} aria-current={i === current ? 'step' : undefined}>
               <JumpLink href={`#section-${p.id}`} index={p.first} dispatch={dispatch}>
@@ -442,7 +443,7 @@ function ContrastOverrideBanner({ reason }: { reason: string }) {
   )
 }
 
-export function App({ manifest, manifestSha256 }: AppProps) {
+export function App({ manifest, manifestSha256, harnessWarning }: AppProps) {
   const reducer = useMemo(() => createReducer(manifest), [manifest])
   const storage = useMemo(() => browserStorage(), [])
   const [state, dispatch] = useReducer(reducer, manifest, (m) =>
@@ -473,6 +474,11 @@ export function App({ manifest, manifestSha256 }: AppProps) {
     )
   return (
     <>
+      {harnessWarning && (
+        <p className="harness-warning" role="alert" data-testid="harness-warning">
+          {harnessWarning}
+        </p>
+      )}
       {manifest.contrastOverride && (
         <ContrastOverrideBanner reason={manifest.contrastOverride.reason} />
       )}
