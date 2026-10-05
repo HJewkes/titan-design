@@ -94,14 +94,18 @@
   "scripts": {
     "build": "tsup && node scripts/generate-tokens-css.mjs",
     "dev": "tsup --watch",
-    "lint": "eslint src/ scripts/ && pnpm lint:borders",
+    "lint": "eslint src/ scripts/ --max-warnings 0 && pnpm lint:borders",
     "lint:borders": "bash scripts/check-border-classes.sh",
     "check:package": "bash scripts/check-package.sh",
     "check:cycles": "node scripts/check-cycles.mjs",
+    "api:check": "node scripts/api-report.mjs",
+    "api:update": "node scripts/api-report.mjs --local",
+    "docs:check": "node scripts/check-doc-examples.mjs",
     "size": "size-limit",
     "catalog": "node scripts/catalog.mjs",
     "changelog:compile": "node scripts/changelog-compile.mjs",
     "type-check": "tsc --noEmit",
+    "type-check:examples": "node scripts/check-examples-types.mjs",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\"",
     "test": "vitest --project threads --project local-time --project types --project stories-axe",
     "test:unit": "vitest --project threads --project local-time --project types",
@@ -159,8 +163,6 @@
     }
   },
   "dependencies": {
-    "@gluestack-style/react": "^1.0.0",
-    "@gluestack-ui/themed": "^1.1.0",
     "@titan-design/chat-protocol": "0.1.0",
     "clsx": "^2.1.0",
     "d3-force": "^3",
@@ -171,6 +173,7 @@
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.5",
     "@eslint/js": "^10.0.1",
+    "@microsoft/api-extractor": "7.59.3",
     "@playwright/test": "^1.58.2",
     "@size-limit/file": "^12.1.0",
     "@storybook/addon-a11y": "^10.2.0",

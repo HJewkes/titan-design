@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
+import { Platform } from 'react-native'
 import { usePrefersReducedMotion } from './usePrefersReducedMotion'
 
 type Listener = () => void
@@ -61,5 +62,17 @@ describe('usePrefersReducedMotion', () => {
     vi.stubGlobal('matchMedia', undefined)
     const { result } = renderHook(() => usePrefersReducedMotion())
     expect(result.current).toBe(false)
+  })
+
+  it('unmounts cleanly on a native platform where react-native-web gives no subscription', () => {
+    vi.stubGlobal('matchMedia', undefined)
+    const originalOS = Platform.OS
+    Platform.OS = 'ios'
+    try {
+      const { unmount } = renderHook(() => usePrefersReducedMotion())
+      expect(() => unmount()).not.toThrow()
+    } finally {
+      Platform.OS = originalOS
+    }
   })
 })

@@ -9,7 +9,7 @@ import { NINE_PRIORITIES, THREE_PRIORITIES } from './goalPriorityIndex-fixture'
 const meta: Meta<typeof GoalPriorityIndex> = {
   title: 'Custom/Workout/Goals/GoalPriorityIndex',
   component: GoalPriorityIndex,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     layout: 'fullscreen',
     docs: {

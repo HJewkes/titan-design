@@ -18,13 +18,13 @@ export interface DateSeparatorProps {
   className?: string
 }
 
-const DAY_MS = 24 * 60 * 60 * 1000
-
 function relativeDayName(date: Date, now: Date): string | null {
   const iso = date.toISOString()
   if (dayKey(iso) === dayKey(now.toISOString())) return 'Today'
-  const yesterday = new Date(now.getTime() - DAY_MS).toISOString()
-  return dayKey(iso) === dayKey(yesterday) ? 'Yesterday' : null
+  // A calendar step, not 24 hours: a DST day is 23 or 25 hours long.
+  const yesterday = new Date(now)
+  yesterday.setDate(yesterday.getDate() - 1)
+  return dayKey(iso) === dayKey(yesterday.toISOString()) ? 'Yesterday' : null
 }
 
 /**

@@ -50,7 +50,7 @@ const PHONE = { width: 360, height: 220 }
 const meta: Meta<typeof GoalTrajectoryChart> = {
   title: 'Custom/Workout/DataViz/GoalTrajectoryChart',
   component: GoalTrajectoryChart,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     width: {
       control: { type: 'range', min: 320, max: 1400, step: 20 },

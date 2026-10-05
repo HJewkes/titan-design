@@ -1,4 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
+import type { ReactNode } from 'react'
 import { View, ScrollView, Pressable, type ViewProps } from 'react-native'
 import { Card } from '../../ui/card'
 import { ExerciseCard, type ExerciseCardProps } from './ExerciseCard'
@@ -55,6 +56,61 @@ const statusAccentToken: Record<
   upcoming: 'hairline-default',
 }
 
+function WorkoutMuscleChips({ muscleGroups }: { muscleGroups: WorkoutMuscleGroup[] }) {
+  return (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      // NativeWind has no `contentContainerClassName`, so the chip gap reads
+      // the same token through the JS export.
+      contentContainerStyle={{ gap: space.inline.sm }}
+      className="mt-stack-md"
+      testID="workout-card-muscle-groups"
+    >
+      {muscleGroups.map((muscle) => (
+        <MuscleGroupChip
+          key={muscle.group}
+          name={muscle.label}
+          volumeStatus={muscle.volumeStatus ? landmarkZoneToStatus(muscle.volumeStatus) : undefined}
+        />
+      ))}
+    </ScrollView>
+  )
+}
+
+/** A button over the summary when the card toggles, a labelled static region otherwise. */
+function WorkoutCardPressRegion({
+  onToggle,
+  expanded,
+  name,
+  date,
+  status,
+  children,
+}: {
+  onToggle?: () => void
+  expanded: boolean
+  name: string
+  date: string
+  status: WorkoutStatus
+  children: ReactNode
+}) {
+  return onToggle != null ? (
+    <Pressable
+      onPress={onToggle}
+      accessibilityRole="button"
+      accessibilityLabel={`${name} workout, ${date}, ${status}`}
+      aria-expanded={expanded}
+      testID="workout-card-toggle"
+    >
+      {children}
+    </Pressable>
+  ) : (
+    <View accessibilityLabel={`${name} workout, ${date}, ${status}`} testID="workout-card-static">
+      {children}
+    </View>
+  )
+}
+
 /**
  * A workout within a week: name, date, duration, muscle-group pills, and a
  * stats summary. When expandable it renders contained ExerciseCards on expand.
@@ -91,7 +147,6 @@ export function WorkoutCard({
   className,
   ...props
 }: WorkoutCardProps) {
-  const isExpandable = onToggle != null
   const isUpcoming = status === 'upcoming'
   const isToday = status === 'today'
 
@@ -129,27 +184,7 @@ export function WorkoutCard({
         {formatWorkoutStats(totalSets, totalVolume, unit, duration)}
       </Typography>
 
-      {muscleGroups.length > 0 && (
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          // NativeWind has no `contentContainerClassName`, so the chip gap reads
-          // the same token through the JS export.
-          contentContainerStyle={{ gap: space.inline.sm }}
-          className="mt-stack-md"
-          testID="workout-card-muscle-groups"
-        >
-          {muscleGroups.map((muscle) => (
-            <MuscleGroupChip
-              key={muscle.group}
-              name={muscle.label}
-              volumeStatus={
-                muscle.volumeStatus ? landmarkZoneToStatus(muscle.volumeStatus) : undefined
-              }
-            />
-          ))}
-        </ScrollView>
-      )}
+      {muscleGroups.length > 0 && <WorkoutMuscleChips muscleGroups={muscleGroups} />}
     </View>
   )
 
@@ -164,24 +199,15 @@ export function WorkoutCard({
       testID="workout-card"
       {...props}
     >
-      {isExpandable ? (
-        <Pressable
-          onPress={onToggle}
-          accessibilityRole="button"
-          accessibilityLabel={`${name} workout, ${date}, ${status}`}
-          aria-expanded={expanded}
-          testID="workout-card-toggle"
-        >
-          {summary}
-        </Pressable>
-      ) : (
-        <View
-          accessibilityLabel={`${name} workout, ${date}, ${status}`}
-          testID="workout-card-static"
-        >
-          {summary}
-        </View>
-      )}
+      <WorkoutCardPressRegion
+        onToggle={onToggle}
+        expanded={expanded}
+        name={name}
+        date={date}
+        status={status}
+      >
+        {summary}
+      </WorkoutCardPressRegion>
 
       {expanded && exercises && exercises.length > 0 && (
         <View className="px-inset-sm pb-inset-sm gap-1.5" testID="workout-card-exercises">

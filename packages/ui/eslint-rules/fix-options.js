@@ -124,7 +124,7 @@ function fromConfig(config, css = '') {
   }
 }
 
-const FORMATTER_MODULES = ['utils/number-format', 'utils/workout-format']
+const FORMATTER_MODULES = ['utils/number-format', 'utils/time-format', 'utils/workout-format']
 
 function loadFormatterExports() {
   return Object.fromEntries(
@@ -141,6 +141,7 @@ function symbolsFor(formatterExports) {
     linearGradient: 'theme/gradients',
     surfaceGradient: 'theme/gradients',
     space: 'theme/tokens/semantic',
+    getSemanticColors: 'theme/tokens/semantic',
   }
   for (const [mod, names] of Object.entries(formatterExports)) {
     for (const name of names) symbols[name] = mod

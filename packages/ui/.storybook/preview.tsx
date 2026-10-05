@@ -49,7 +49,6 @@ const preview: Preview = {
             'Depth',
             'Depth Calibration',
             'Choosing Tokens',
-            'Theme Presets',
           ],
           'Components',
           ['Atoms', 'Molecules', 'Organisms'],

@@ -465,8 +465,10 @@ function valueScale(input: ScaleInput) {
   return scaleLinear().domain([floor, ceiling]).range([input.plot.bottom, input.plot.top])
 }
 
+// A non-finite reading would reach the line path, the dots and the summary as "NaN".
 function placeActuals(input: GoalTrajectoryGeometryInput) {
   return input.actuals
+    .filter((a) => Number.isFinite(a.value))
     .map((actual, index) => ({ actual, index, week: resolveActualWeek(actual, input.weeks) }))
     .filter(
       (a): a is { actual: GoalActualPoint; index: number; week: number } => a.week !== undefined

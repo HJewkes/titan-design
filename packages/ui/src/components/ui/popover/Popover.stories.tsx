@@ -6,7 +6,7 @@ import { Button, ButtonText } from '../button/Button'
 const meta: Meta<typeof Popover> = {
   title: 'Components/Molecules/Popover',
   component: Popover,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     placement: {
       control: 'select',

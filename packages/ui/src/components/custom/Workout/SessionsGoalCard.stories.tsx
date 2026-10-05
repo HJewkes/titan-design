@@ -12,7 +12,7 @@ const CELL_MAX_WIDTH = 920
 const meta: Meta<typeof SessionsGoalCard> = {
   title: 'Custom/Workout/Goals/SessionsGoalCard',
   component: SessionsGoalCard,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     layout: 'fullscreen',
     docs: {
