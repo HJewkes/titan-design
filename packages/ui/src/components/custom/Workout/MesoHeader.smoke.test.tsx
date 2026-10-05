@@ -29,7 +29,7 @@ function renderCase(
   )
 }
 
-describe('MesoHeader specimen (shape A)', () => {
+describe('MesoHeader specimen', () => {
   it('shows the block, its dates, the week and the priorities on the wall', () => {
     renderCase('m3Current')
     expect(screen.getByText('Block 2 of 3 · Foundation')).toBeTruthy()
@@ -125,10 +125,39 @@ describe('MesoHeader specimen (shape A)', () => {
     expect(screen.getByTestId('segmented-bar-marker')).toBeTruthy()
   })
 
-  it('drops the week text and long labels on the phone in shape C', () => {
-    renderCase('m12SixteenWeeks', 'phone', 'spine')
-    expect(screen.queryByTestId('meso-header-position')).toBeNull()
+  it('puts each priority level over its own lifts on the wall in shape C', () => {
+    renderCase('m3Current', 'wall', 'spine')
+    const labels = screen.getAllByTestId('meso-header-priority-label').map((l) => l.textContent)
+    const names = screen.getAllByTestId('meso-header-priority-names').map((n) => n.textContent)
+    expect(labels).toEqual(['Specialize', 'Maintain'])
+    expect(names).toEqual(['Bench press', 'Squat, Strength (no target)'])
+  })
+
+  it('gives the phone title line 1 and moves week and type to line 2 in shape C', () => {
+    renderCase('m3Current', 'phone', 'spine')
+    expect(screen.getByTestId('meso-header-title').textContent).toBe('Block 2 of 3 · Foundation')
+    expect(screen.getByTestId('meso-header-position').textContent).toBe('Wk 2 of 2 · Confirm')
     expect(screen.queryByTestId('meso-header-segment-labels')).toBeNull()
+  })
+
+  it('carries the date range inside the open phone popover in shape C', () => {
+    render(
+      <MesoHeader
+        {...mesoHeaderPropsFrom(MESO_HEADER_FIXTURES.m13NinePriorities)}
+        layout="phone"
+        prioritiesLine={2}
+        isPrioritiesOpen
+      />
+    )
+    expect(screen.getByTestId('meso-header-popover-dates').textContent).toBe(
+      'Mon 21 Sep - Sun 4 Oct'
+    )
+    expect(screen.getByTestId('goal-priority-index')).toBeTruthy()
+  })
+
+  it('keeps a Dates trigger on the phone when no priorities are declared in shape C', () => {
+    renderCase('m15NoPriorities', 'phone', 'spine')
+    expect(screen.getByTestId('meso-header-priorities-trigger').textContent).toBe('Dates')
   })
 
   it('has no accessibility violations in either form', async () => {

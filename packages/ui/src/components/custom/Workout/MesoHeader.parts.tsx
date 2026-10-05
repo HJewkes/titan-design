@@ -63,6 +63,8 @@ export interface MesoHeaderProps extends ViewProps {
   shape?: MesoHeaderShape
   /** Round-only, shape B: the program's blocks in order; `block.index` marks the current one. */
   cycle?: readonly MesoHeaderCycleBlock[]
+  /** Round-only, shape C's phone form: the Priorities trigger on line 1 (P1, default) or line 2 (P2). */
+  prioritiesLine?: 1 | 2
   className?: string
 }
 
@@ -207,10 +209,19 @@ export function WeekBar({ weeks, state, current, width, gap, marker }: WeekBarPr
   )
 }
 
+/** The neutral pill's own label misses 4.5:1 on the header plane, so the label takes primary text. */
+function StateTag({ label }: { label: string }) {
+  return (
+    <Pill size="xs" textClassName="text-text-primary">
+      {label}
+    </Pill>
+  )
+}
+
 export function StatePill({ state, isDeload }: { state: MesoHeaderState; isDeload: boolean }) {
-  if (state === 'upcoming') return <Pill size="xs">Upcoming</Pill>
-  if (state === 'ended') return <Pill size="xs">Ended</Pill>
-  return isDeload ? <Pill size="xs">Deload</Pill> : null
+  if (state === 'upcoming') return <StateTag label="Upcoming" />
+  if (state === 'ended') return <StateTag label="Ended" />
+  return isDeload ? <StateTag label="Deload" /> : null
 }
 
 export function FocusTip({ focus }: { focus: string }) {
@@ -268,7 +279,7 @@ export function SegmentLabels({ labels, gap }: { labels: readonly SegmentLabel[]
     <View style={{ flexDirection: 'row', gap }} testID="meso-header-segment-labels">
       {labels.map((label, i) => (
         <View key={i} style={{ flex: label.weight, minWidth: 0 }}>
-          <Typography variant="caption" color={label.isCurrent ? 'primary' : 'tertiary'} truncate>
+          <Typography variant="caption" color={label.isCurrent ? 'primary' : 'secondary'}>
             {label.text}
           </Typography>
         </View>
@@ -283,9 +294,7 @@ export function PhoneTitleRow(props: BandProps & { showPosition?: boolean }) {
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center' }} className="gap-inline-sm">
       <View style={{ flexShrink: 1, minWidth: 0 }}>
-        <Typography variant="overline" truncate>
-          {blockName}
-        </Typography>
+        <Typography variant="overline">{blockName}</Typography>
       </View>
       {showPosition ? (
         <Typography variant="body2" testID="meso-header-position" style={{ flexShrink: 0 }}>

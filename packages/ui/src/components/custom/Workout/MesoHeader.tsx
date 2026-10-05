@@ -88,7 +88,7 @@ const SHAPES = {
 } as const
 
 function ShapeBody({ band, form }: { band: BandProps; form: 'wall' | 'phone' }) {
-  const Body = SHAPES[band.shape ?? 'band'][form]
+  const Body = SHAPES[band.shape ?? 'spine'][form]
   return <Body {...band} />
 }
 
@@ -113,11 +113,12 @@ function splitProps(
     now,
     shape,
     cycle,
+    prioritiesLine,
     ...rest
   } = props
   const band = {
     ...{ programName, blockName, focus, block, startsOn, endsOn, state, week, weeks, nextBlock },
-    ...{ priorities, isPrioritiesOpen, onPrioritiesOpenChange, now, shape, cycle },
+    ...{ priorities, isPrioritiesOpen, onPrioritiesOpenChange, now, shape, cycle, prioritiesLine },
   }
   return [band, rest]
 }

@@ -1,8 +1,10 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-// VW-466 round 1: shapes B (cycle) and C (spine). Slice 4 deletes whichever loses.
+// VW-466: shapes B (cycle, not chosen in round 1) and C (spine, chosen in round 1). Slice 4 deletes B.
 import { View } from 'react-native'
 
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { Pill } from '../../ui/pill'
+import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover'
 import { useSurfaceMode } from '../../ui/surface'
 import { Typography } from '../../ui/typography'
 import {
@@ -21,6 +23,8 @@ import {
   type MesoHeaderWeek,
   type Palette,
 } from './MesoHeader.parts'
+import { GOAL_PRIORITY_LABEL, GoalPriorityIcon } from './GoalPriorityIcon'
+import { groupPriorities, type GoalPriorityIndexGroup } from './GoalPriorityIndex'
 import { SegmentedBar, type SegmentedBarSegment } from './SegmentedBar'
 
 /** Bars and their label rows share one gap, so every label sits under its own cell. */
@@ -29,10 +33,16 @@ const SPINE_WEEK_WIDTH = 160
 const SPINE_MAX_WIDTH = 960
 const CYCLE_BAR_BASIS = 480
 const CYCLE_BAR_MAX_WIDTH = 960
-const PHONE_LABELLED_WEEKS_MAX = 8
+const SPINE_DATE_ALLOWANCE = 120
+const SPINE_LEFT_MIN_WIDTH = 560
+/** One width per priority column, so a level's label and its lifts share a column across both rows. */
+const PRIORITY_COLUMN = { width: 320, flexShrink: 1, minWidth: 0 } as const
+const POPOVER_MAX_WIDTH = 'max-w-[280px]'
 
 const ROW = { flexDirection: 'row', alignItems: 'center' } as const
 const WRAPPING_ROW = { ...ROW, flexWrap: 'wrap' } as const
+const TOP_ROW = { flexDirection: 'row', alignItems: 'flex-start' } as const
+const FLEX_CELL = { flex: 1, minWidth: 0 } as const
 
 function currentBlockFill({ state, week }: BandProps, weeks: number): number {
   if (state === 'ended') return 1
@@ -155,19 +165,18 @@ export function todayPosition({ state, now, startsOn, endsOn }: BandProps): numb
   return Math.min(Math.max((daysBetween(startsOn, now) + 0.5) / span, 0), 1)
 }
 
-function spineWeekText(week: MesoHeaderWeek, compact: boolean): string {
-  if (compact) return `W${week.index}`
+function spineWeekText(week: MesoHeaderWeek): string {
   const name = week.name ?? (week.isDeload ? 'Deload' : '')
   return name ? `W${week.index} ${name}` : `W${week.index}`
 }
 
-function Spine({ props, compact }: { props: BandProps; compact: boolean }) {
+/** The week cells with a today line; the wall labels every week, the phone's week text says it instead. */
+function Spine({ props, labelled }: { props: BandProps; labelled: boolean }) {
   const t = getSemanticColors(useSurfaceMode())
   const { weeks, state, week } = props
   const today = todayPosition(props)
-  const showLabels = !compact || weeks.length <= PHONE_LABELLED_WEEKS_MAX
   const labels = weeks.map((w) => ({
-    text: spineWeekText(w, compact),
+    text: spineWeekText(w),
     weight: 1,
     isCurrent: w.index === week?.n,
   }))
@@ -180,46 +189,140 @@ function Spine({ props, compact }: { props: BandProps; compact: boolean }) {
         gap={SEGMENT_GAP}
         marker={today === null ? null : { position: today, color: t['text-primary'] }}
       />
-      {showLabels ? <SegmentLabels labels={labels} gap={SEGMENT_GAP} /> : null}
+      {labelled ? <SegmentLabels labels={labels} gap={SEGMENT_GAP} /> : null}
     </View>
   )
 }
 
-/** C on the wall: the labelled weeks are the header, dated at both ends, priorities after. */
-export function SpineWall(props: BandProps) {
-  const width = Math.min(props.weeks.length * SPINE_WEEK_WIDTH, SPINE_MAX_WIDTH)
+function DatedSpine(props: BandProps) {
   return (
-    <View
-      style={WRAPPING_ROW}
-      className="gap-x-section-sm gap-y-stack-sm"
-      testID="meso-header-wall"
-    >
-      <TitleGroup {...props} />
-      <View style={ROW} className="gap-inline-md">
-        <Typography variant="caption" color="secondary">
-          {dayLabel(props.startsOn, false)}
-        </Typography>
-        <View style={{ width }}>
-          <Spine props={props} compact={false} />
-        </View>
-        <Typography variant="caption" color="secondary">
-          {dayLabel(props.endsOn, false)}
-        </Typography>
+    <View style={TOP_ROW} className="gap-inline-md">
+      <Typography variant="caption" color="secondary">
+        {dayLabel(props.startsOn, false)}
+      </Typography>
+      <View style={FLEX_CELL}>
+        <Spine props={props} labelled />
       </View>
-      <StatePill state={props.state} isDeload={props.week?.isDeload ?? false} />
-      <View style={{ flexGrow: 1, flexShrink: 1, minWidth: 0 }}>
+      <Typography variant="caption" color="secondary">
+        {dayLabel(props.endsOn, false)}
+      </Typography>
+    </View>
+  )
+}
+
+/** The left column is wide enough for the spine and its dates, so every priority column lines up. */
+export function spineColumnWidth(weekCount: number): number {
+  const spine = Math.min(weekCount * SPINE_WEEK_WIDTH, SPINE_MAX_WIDTH)
+  return Math.max(SPINE_LEFT_MIN_WIDTH, spine + SPINE_DATE_ALLOWANCE)
+}
+
+function PriorityLabel({ group }: { group: GoalPriorityIndexGroup }) {
+  return (
+    <View style={ROW} className="gap-inline-sm" testID="meso-header-priority-label">
+      <GoalPriorityIcon priority={group.level} size={16} />
+      <Typography variant="overline" color="secondary">
+        {GOAL_PRIORITY_LABEL[group.level]}
+      </Typography>
+    </View>
+  )
+}
+
+/** C on the wall, two rows: title and week over the dated spine; each priority level over its lifts. */
+export function SpineWall(props: BandProps) {
+  const width = spineColumnWidth(props.weeks.length)
+  const groups = groupPriorities(props.priorities)
+  return (
+    <View className="gap-stack-md" testID="meso-header-wall">
+      <View style={ROW} className="gap-x-section-md">
+        <View style={{ ...WRAPPING_ROW, width }} className="gap-x-section-sm gap-y-stack-sm">
+          <TitleGroup {...props} />
+          <PositionGroup {...props} />
+        </View>
+        {groups.length === 0 ? <PrioritiesSlot priorities={props.priorities} /> : null}
+        {groups.map((group) => (
+          <View key={group.level} style={PRIORITY_COLUMN}>
+            <PriorityLabel group={group} />
+          </View>
+        ))}
+      </View>
+      <View style={TOP_ROW} className="gap-x-section-md">
+        <View style={{ width }}>
+          <DatedSpine {...props} />
+        </View>
+        {groups.map((group) => (
+          <View key={group.level} style={PRIORITY_COLUMN} testID="meso-header-priority-names">
+            <Typography variant="body2">{group.names.join(', ')}</Typography>
+          </View>
+        ))}
+      </View>
+    </View>
+  )
+}
+
+/** Week number and type for the phone's second line, e.g. "Wk 2 of 2 · Confirm". */
+export function phoneWeekText(props: BandProps): string {
+  const { state, week } = props
+  if (state !== 'current' || !week?.name) return positionText(props, true)
+  return `${positionText(props, true)} · ${week.name}`
+}
+
+function PrioritiesPill({ count }: { count: number }) {
+  return (
+    <PopoverTrigger>
+      {/* A control, so its outline takes the control-boundary token, not the pill's hairline. */}
+      <Pill
+        size="sm"
+        variant="outline"
+        className="border-border-input"
+        testID="meso-header-priorities-trigger"
+      >
+        {count > 0 ? `Priorities · ${count}` : 'Dates'}
+      </Pill>
+    </PopoverTrigger>
+  )
+}
+
+/** The popover hangs under the whole header, so it never covers the week line; it carries the dates. */
+function PrioritiesPanel(props: BandProps) {
+  return (
+    <PopoverContent className={`left-auto right-0 ${POPOVER_MAX_WIDTH}`}>
+      <View className="gap-stack-md">
+        <Typography variant="body2" color="secondary" testID="meso-header-popover-dates">
+          {`${dayLabel(props.startsOn)} - ${dayLabel(props.endsOn)}`}
+        </Typography>
         <PrioritiesSlot priorities={props.priorities} />
       </View>
-    </View>
+    </PopoverContent>
   )
 }
 
-/** C on a phone: the title row without the week text, then the cells with week numbers. */
+/** C on a phone: the block title alone on line 1 (P1 adds the trigger); week, state and cells on line 2. */
 export function SpinePhone(props: BandProps) {
+  const { blockName, block, state, week, priorities, prioritiesLine = 1 } = props
+  const pill = <PrioritiesPill count={priorities.length} />
   return (
-    <View className="gap-stack-sm" testID="meso-header-phone">
-      <PhoneTitleRow {...props} showPosition={false} />
-      <Spine props={props} compact />
-    </View>
+    <Popover isOpen={props.isPrioritiesOpen} onOpenChange={props.onPrioritiesOpenChange}>
+      <View className="gap-stack-sm" testID="meso-header-phone">
+        <View style={ROW} className="gap-inline-md">
+          <View style={FLEX_CELL}>
+            <Typography variant="overline" testID="meso-header-title">
+              {blockTitle(blockName, block)}
+            </Typography>
+          </View>
+          {prioritiesLine === 1 ? pill : null}
+        </View>
+        <View style={ROW} className="gap-inline-md">
+          <Typography variant="body2" testID="meso-header-position" style={{ flexShrink: 0 }}>
+            {phoneWeekText(props)}
+          </Typography>
+          <StatePill state={state} isDeload={week?.isDeload ?? false} />
+          <View style={FLEX_CELL}>
+            <Spine props={props} labelled={false} />
+          </View>
+          {prioritiesLine === 2 ? pill : null}
+        </View>
+      </View>
+      <PrioritiesPanel {...props} />
+    </Popover>
   )
 }
