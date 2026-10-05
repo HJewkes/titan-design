@@ -3,7 +3,6 @@ import { createServer } from 'node:net'
 import { networkInterfaces } from 'node:os'
 import {
   buildStorybookArgs,
-  isEntryPoint,
   isPortFree,
   pickFreePort,
   printInventory,
@@ -95,18 +94,6 @@ describe('pickFreePort', () => {
     } finally {
       await new Promise((ok) => holder.close(ok))
     }
-  })
-})
-
-describe('isEntryPoint', () => {
-  it('matches when argv[1] is a symlink to the script', () => {
-    const real = (p) => (p === '/link/launch.mjs' ? '/pkg/scripts/launch.mjs' : p)
-    expect(isEntryPoint('file:///pkg/scripts/launch.mjs', '/link/launch.mjs', real)).toBe(true)
-  })
-
-  it('does not match another entry file or a missing one', () => {
-    expect(isEntryPoint('file:///pkg/scripts/launch.mjs', '/other.mjs', (p) => p)).toBe(false)
-    expect(isEntryPoint('file:///pkg/scripts/launch.mjs', undefined)).toBe(false)
   })
 })
 

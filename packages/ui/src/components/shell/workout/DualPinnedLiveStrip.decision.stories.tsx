@@ -63,7 +63,7 @@ function Strips({ frame }: DecisionArgs) {
  */
 const meta: Meta<DecisionArgs> = {
   title: 'Lab/Decisions/Dual Pinned Live Strip',
-  tags: ['status:lab'],
+  tags: ['status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
   args: { frame: 'chosen' },
   argTypes: {
