@@ -75,7 +75,7 @@ export function indexAtOffset(offset: number, count: number, geometry: SlideGeom
   return clampIndex(offset / geometry.step, count)
 }
 
-/** One step back or forward, stopping at the ends: the cards are peers, not a loop. */
+/** One step back or forward, stopping at the ends: the non-looping step; `wrapIndex` is the looping one. */
 export function stepIndex(index: number, delta: number, count: number): number {
   return clampIndex(index + delta, count)
 }
