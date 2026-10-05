@@ -8,8 +8,12 @@ import {
   MilestoneHero,
   MilestoneWeekStrip,
   useResolvedMilestone,
+  resolveTile,
   type GoalMilestoneSummaryProps,
 } from './GoalMilestoneSummary'
+import { milestoneReach, valueReach, type GoalReach } from './goalMilestone'
+import { trajectoryReach } from './goalTrajectoryChartModel'
+import { getSemanticColors } from '../../../theme'
 
 const props: GoalMilestoneSummaryProps = {
   target: { metric: 'top_load_at_reps', reps: 8, load: 105, unit: 'lb' },
@@ -61,4 +65,52 @@ describe('GoalMilestoneSummary parts', () => {
       expect(visible).toHaveLength(1)
     }
   })
+})
+
+describe('one place decides short, met and beyond', () => {
+  const READINGS: GoalReach[] = ['short', 'met', 'beyond']
+  const cut = { metric: 'bodyweight', value: 189, unit: 'lb' } as const
+  const topSet = { metric: 'top_load_at_reps', reps: 8, load: 105, unit: 'lb' } as const
+
+  // Each row: a target, the lead number the chart plots, and a reading for each reach.
+  const valueRows = (['up', 'down'] as const).flatMap((direction) => {
+    const step = direction === 'up' ? 1 : -1
+    return READINGS.map((reach) => ({
+      name: `value ${direction} ${reach}`,
+      target: cut,
+      direction,
+      latest: { value: cut.value + step * { short: -2, met: 0, beyond: 2 }[reach] },
+      lead: cut.value + step * { short: -2, met: 0, beyond: 2 }[reach],
+      goal: cut.value,
+      reach,
+    }))
+  })
+  const loadRows = READINGS.map((reach) => {
+    const load = topSet.load + { short: -5, met: 0, beyond: 5 }[reach]
+    return {
+      name: `load up ${reach}`,
+      target: topSet,
+      direction: 'up' as const,
+      latest: { reps: topSet.reps, load },
+      lead: load,
+      goal: topSet.load,
+      reach,
+    }
+  })
+
+  it.each([...valueRows, ...loadRows])(
+    'milestoneReach, the tile and the chart agree on $name',
+    ({ target, direction, latest, lead, goal, reach }) => {
+      const tile = resolveTile(
+        { target, latest, direction, weekCount: 6, currentWeek: 4 },
+        getSemanticColors('dark')
+      )
+
+      expect(milestoneReach(target, latest, direction)).toBe(reach)
+      expect(valueReach(goal, lead, direction)).toBe(reach)
+      expect(trajectoryReach(goal, [{ value: lead }], direction)).toBe(reach)
+      expect(tile.state).toBe(reach === 'short' ? 'upcoming' : 'hit')
+      expect(tile.beyond).toBe(reach === 'beyond')
+    }
+  )
 })
