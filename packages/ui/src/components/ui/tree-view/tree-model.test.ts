@@ -311,7 +311,7 @@ describe('tree-model properties', () => {
 
   it('inserts exactly the descendants on expand and restores the list on collapse', () => {
     fcAssert(
-      fc.property(nodeListArb, expandedArb, fc.nat(20), (nodes, expanded, pick) => {
+      fc.property(treeArb, treeExpandedArb, fc.nat(20), (nodes, expanded, pick) => {
         const index = indexNodes(nodes)
         const open = new Set(expanded)
         const rows = visibleRows(index, open)
