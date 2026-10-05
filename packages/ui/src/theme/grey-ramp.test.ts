@@ -120,7 +120,7 @@ describe('greyRamp — anchors are load-bearing', () => {
 })
 
 describe('greyRamp — accessibility gate (TD-07.15)', () => {
-  // NOTE: the on-surface TEXT-pairing gate lives in `semantic-contrast.test.ts`,
+  // NOTE: the on-surface TEXT-pairing gate lives in `token-contrast.test.ts`,
   // added with the token repoint. It cannot pass until the text tokens actually
   // move onto this ramp — on the shipped cool `neutral` scale, text-tertiary
   // fails WCAG outright on the three lightest planes (2.96 / 2.72 / 2.49).
