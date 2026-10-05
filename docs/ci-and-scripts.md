@@ -63,22 +63,28 @@ pnpm test -- -- --run --coverage
 | 2    | Add `"<task>": "turbo run <task>"` to the root `package.json` |
 | 3    | Add a `<task>` entry under `tasks` in `turbo.json`            |
 
-A root `turbo run <task>` script without a `turbo.json` task fails.
+A root `turbo run <task>` script without a `turbo.json` task fails. `packages/ui/src/arch/turbo-tasks.test.ts`
+catches it in `pnpm test`: it fails for every task a root script runs through `turbo run` that `turbo.json`
+does not declare.
 
 ### Root scripts that bypass Turbo
 
-| Script          | Calls                                                                     |
-| --------------- | ------------------------------------------------------------------------- |
-| `catalog`       | `pnpm --filter @titan-design/react-ui catalog`                            |
-| `arch:check`    | `pnpm --filter @titan-design/react-ui exec vitest run …freshness.test.ts` |
-| `verify`        | `pnpm verify:unit && pnpm test:axe`                                       |
-| `verify:unit`   | A chain of `pnpm` scripts and one direct `turbo run test:unit`            |
-| `arch:graph`    | `node scripts/arch-graph.mjs`                                             |
-| `review`        | `node packages/review-harness/src/cli.ts`                                 |
-| `audit:stories` | `node packages/ui/scripts/audit-stories.mjs`                              |
+| Script             | Calls                                                                     |
+| ------------------ | ------------------------------------------------------------------------- |
+| `catalog`          | `pnpm --filter @titan-design/react-ui catalog`                            |
+| `arch:check`       | `pnpm --filter @titan-design/react-ui exec vitest run …freshness.test.ts` |
+| `verify`           | `pnpm verify:unit && pnpm test:axe`                                       |
+| `verify:unit`      | A chain of `pnpm` scripts and one direct `turbo run test:unit`            |
+| `arch:graph`       | `node scripts/arch-graph.mjs`                                             |
+| `arch:barrel-hash` | `node packages/ui/scripts/barrel-hash.mjs --write`                        |
+| `review`           | `node packages/review-harness/src/cli.ts`                                 |
+| `audit:stories`    | `node packages/ui/scripts/audit-stories.mjs`                              |
 
-CI runs `arch:check` (inside `verify:unit`). It does not run `catalog`, `arch:graph`, `review`
-or `audit:stories`. `size` and `check:cycles` have no root script or Turbo task; CI calls them with
+`arch:barrel-hash` is the fix the `arch:check` freshness test asks for after a component barrel
+changes. It rewrites only `componentBarrelHash` in `packages/ui/src/arch/arch-graph.json`.
+
+CI runs `arch:check` (inside `verify:unit`). It does not run `catalog`, `arch:graph`, `arch:barrel-hash`,
+`review` or `audit:stories`. `size` and `check:cycles` have no root script or Turbo task; CI calls them with
 `pnpm --filter`.
 
 ## Coverage thresholds
