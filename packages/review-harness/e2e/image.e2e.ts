@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { expect, test, type Browser } from '@playwright/test'
 import { FeedbackSchema, MANIFEST_SCHEMA_ID, type ManifestInput } from '../src/schema.ts'
+import { SECTION_TEXTS } from '../test/fixtures.ts'
 
 const CLI = new URL('../src/cli.ts', import.meta.url).pathname
 
@@ -19,7 +20,25 @@ const ROUND: ManifestInput = {
     { key: 'A', image: 'shots/wall-a.png', label: 'Wall, dense' },
     { key: 'B', image: 'shots/wall-b.png', label: 'Wall, sparse' },
   ],
-  questions: [{ id: 'q1', kind: 'pick-one', prompt: 'Which wall?', options: ['A', 'B'] }],
+  questions: [
+    {
+      id: 'q1',
+      kind: 'pick-one',
+      prompt: 'Which wall?',
+      options: ['A', 'B'],
+      signsOff: 'the wall density',
+    },
+  ],
+  sections: [
+    {
+      id: 'wall',
+      title: 'Wall',
+      ...SECTION_TEXTS,
+      kind: 'CHOICE',
+      variantKeys: ['A', 'B'],
+      questionIds: ['q1'],
+    },
+  ],
 }
 
 /** A synthetic 1280x720 screen, so the e2e never depends on a real app's screenshot. */
@@ -74,12 +93,13 @@ test('an image variant renders at its width and its feedback comes back', async 
   expect(box.height).toBeCloseTo((box.width * 720) / 1280, 0)
   await expect(page.locator('iframe')).toHaveCount(0)
 
+  // The section's question comes first; picking A there also marks frame A chosen.
   await page.keyboard.press('1')
+  await page.keyboard.press('Enter')
   await page.keyboard.press('Tab')
   await page.keyboard.type('Dense reads at distance')
   await page.keyboard.press('Enter')
   await page.keyboard.press('2')
-  await page.getByTestId('question-q1').getByRole('radio').first().click()
 
   await page.keyboard.press('a')
   await page.getByTestId('overlay-A-1280').click({ position: { x: 20, y: 20 } })
@@ -100,7 +120,13 @@ test('an image variant renders at its width and its feedback comes back', async 
     reason: 'e2e fixture round, synthetic images',
     problem: 'no contrast.json beside this round',
   })
-  expect(written.answers).toEqual([{ questionId: 'q1', pick: 'A' }])
+  expect(written.answers).toEqual([
+    {
+      questionId: 'q1',
+      pick: 'A',
+      variantComments: [{ key: 'A', comment: 'Dense reads at distance' }],
+    },
+  ])
   const [a, b] = written.variants
   expect(a).toMatchObject({ key: 'A', image: 'shots/wall-a.png', verdict: 'chosen' })
   expect(a.comment).toBe('Dense reads at distance')
@@ -118,11 +144,7 @@ test('sticky heads stay below an override banner whose reason wraps', async ({ p
   await syntheticPng(browser, join(dir, 'shots', 'wall-a.png'), 'Dense wall')
   await syntheticPng(browser, join(dir, 'shots', 'wall-b.png'), 'Sparse wall')
   const manifestPath = join(dir, 'round.json')
-  const sectioned = {
-    ...ROUND,
-    sections: [{ id: 'wall', title: 'Wall', variantKeys: ['A', 'B'], questionIds: ['q1'] }],
-  }
-  await writeFile(manifestPath, JSON.stringify(sectioned))
+  await writeFile(manifestPath, JSON.stringify(ROUND))
 
   const reason = 'long reason '.repeat(17).slice(0, 200)
   const server = spawn('node', [

@@ -430,9 +430,37 @@ button.primary kbd {
   max-width: 960px;
 }
 
-.round-section > .md {
+/* A section's texts: deciding leads, changed follows, context reads as secondary. */
+.section-text {
   margin-bottom: var(--space-stack-md);
+}
+
+.section-text-label {
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
   color: var(--color-text-secondary);
+}
+
+.section-deciding .md {
+  font-size: 16px;
+  color: var(--color-text-primary);
+}
+
+.section-context {
+  padding-left: var(--space-inset-sm);
+  border-left: 2px solid var(--color-border-subtle);
+}
+
+.section-context .md,
+.strip-kind {
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+}
+
+.strip-kind {
+  margin: 0 0 var(--space-stack-sm);
 }
 
 .md > :first-child {

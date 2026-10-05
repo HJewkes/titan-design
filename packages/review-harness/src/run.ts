@@ -8,7 +8,7 @@ import {
   type BuildIo,
 } from './build.ts'
 import { calibrationReport, readFeedbackFiles } from './calibration.ts'
-import { exampleManifest, sectionedExampleManifest } from './example.ts'
+import { sectionedExampleManifest } from './example.ts'
 import {
   EXIT_INTERRUPTED,
   EXIT_INVALID,
@@ -48,7 +48,6 @@ recommendation: per round, overall, and by confidence band (<0.5, 0.5-0.75, >=0.
   --contrast-override <reason>
                      Serve a round with no passing contrast.json; the page shows the reason
   --example          Print a sample manifest built from Lab/Decisions stories
-  --sections         With --example, print the question-first sectioned shape
   --help             Print this help`
 
 export interface CliIo extends Omit<ReviewDeps, 'onReady'>, Pick<BuildIo, 'measure'> {
@@ -70,7 +69,6 @@ function parseCli(argv: string[]) {
       'no-capture': { type: 'boolean' },
       'contrast-override': { type: 'string' },
       example: { type: 'boolean' },
-      sections: { type: 'boolean' },
       help: { type: 'boolean' },
     },
   })
@@ -140,8 +138,7 @@ async function dispatch(parsed: Parsed, io: CliIo): Promise<number> {
   }
   if (parsed.values.example) {
     const sb = parsed.values.storybook ?? 'http://127.0.0.1:6100'
-    const build = parsed.values.sections ? sectionedExampleManifest : exampleManifest
-    io.stdout(`${JSON.stringify(build(sb), null, 2)}\n`)
+    io.stdout(`${JSON.stringify(sectionedExampleManifest(sb), null, 2)}\n`)
     return EXIT_OK
   }
   if (parsed.positionals[0] === 'build') {

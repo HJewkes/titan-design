@@ -11,7 +11,7 @@ import {
 import { buildFeedback, unansweredQuestionIds } from '../src/feedback.ts'
 import { feedbackProblems } from '../src/round.ts'
 import { roundLayout, type ResolvedSection } from '../src/sections.ts'
-import type { Manifest, Question, Variant } from '../src/schema.ts'
+import type { Manifest, Question, StripKind, Variant } from '../src/schema.ts'
 import { Markdown } from './Markdown.tsx'
 import { QuestionBlock } from './QuestionBlock.tsx'
 import { ReviewScreen } from './ReviewScreen.tsx'
@@ -245,10 +245,39 @@ function SectionBlock({ section, ...props }: PartProps & { section: ResolvedSect
           </p>
         )}
       </header>
-      {section.context && <Markdown>{section.context}</Markdown>}
+      <SectionText part="deciding" label="Deciding" text={section.deciding} />
+      <SectionText part="changed" label="Changed since last approved" text={section.changed} />
+      <SectionText part="context" label="Context only, not under review" text={section.context} />
       <Questions {...props} questions={section.questions} />
+      {section.kind && (
+        <p className="strip-kind" data-testid={`strip-kind-${section.id}`}>
+          {STRIP_KIND_LABEL[section.kind]}
+        </p>
+      )}
       <Variants {...props} variants={section.variants} />
     </section>
+  )
+}
+
+const STRIP_KIND_LABEL: Record<StripKind, string> = {
+  CHOICE: 'Choice: these frames differ only in what is being decided',
+  STATES: 'States: one design in several states; nothing to choose between',
+}
+
+interface SectionTextProps {
+  part: 'deciding' | 'changed' | 'context'
+  label: string
+  text?: string
+}
+
+/** One of a section's three texts, labelled so a decision never reads as background. */
+function SectionText({ part, label, text }: SectionTextProps) {
+  if (!text) return null
+  return (
+    <div className={`section-text section-${part}`} data-testid={`section-${part}`}>
+      <p className="section-text-label">{label}</p>
+      <Markdown>{text}</Markdown>
+    </div>
   )
 }
 
