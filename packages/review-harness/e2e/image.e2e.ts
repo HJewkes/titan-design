@@ -158,3 +158,66 @@ test('sticky heads stay below an override banner whose reason wraps', async ({ p
     server.kill()
   }
 })
+
+test('the review stage skips optional questions and steps through unanswered ones', async ({
+  page,
+  browser,
+}) => {
+  const dir = await mkdtemp(join(tmpdir(), 'titan-review-unanswered-e2e-'))
+  await mkdir(join(dir, 'shots'))
+  await syntheticPng(browser, join(dir, 'shots', 'wall-a.png'), 'Dense wall')
+  await syntheticPng(browser, join(dir, 'shots', 'wall-b.png'), 'Sparse wall')
+  const manifestPath = join(dir, 'round.json')
+  const pick = (id: string) =>
+    ({
+      id,
+      kind: 'pick-one',
+      prompt: `Pick for ${id}?`,
+      options: ['A', 'B'],
+      required: true,
+    }) as const
+  const questions = [
+    pick('r1'),
+    { id: 'extra', kind: 'text', prompt: 'Anything else?' } as const,
+    pick('r2'),
+    pick('r3'),
+  ]
+  await writeFile(manifestPath, JSON.stringify({ ...ROUND, questions }))
+
+  const server = spawn('node', [CLI, manifestPath, '--no-open', '--out', dir, ...OVERRIDE])
+  try {
+    const url = await new Promise<string>((resolve) =>
+      server.stderr?.on('data', (c: Buffer) => {
+        const found = c.toString().match(/at (http\S+__review\/)/)?.[1]
+        if (found) resolve(found)
+      })
+    )
+    await page.goto(url)
+    await expect(page.getByRole('img', { name: 'A · Wall, dense at 1280px' })).toBeVisible()
+    await page.keyboard.press('Meta+Enter')
+    await expect(page.getByTestId('unanswered')).toContainText('3 of 4 questions are unanswered')
+    await expect(page.getByTestId('answer-extra')).toContainText('(skipped)')
+    await expect(page.getByTestId('answer-extra')).not.toHaveAttribute('data-unanswered')
+
+    const next = page.getByRole('button', { name: 'Next unanswered' })
+    const prev = page.getByRole('button', { name: 'Previous unanswered' })
+    await expect(prev).toHaveCount(0)
+    await next.focus()
+    await page.keyboard.press('Enter')
+    await expect(page.getByTestId('answer-r1')).toBeFocused()
+    await expect(prev).toHaveCount(0)
+    await next.click()
+    await expect(page.getByTestId('answer-r2')).toBeFocused()
+    await next.click()
+    await expect(page.getByTestId('answer-r3')).toBeFocused()
+    await expect(next).toHaveCount(0)
+    await prev.click()
+    await expect(page.getByTestId('answer-r2')).toBeFocused()
+
+    await page.getByRole('button', { name: 'Show only unanswered' }).click()
+    await expect(page.getByTestId('answers').locator('[data-unanswered]')).toHaveCount(3)
+    await expect(page.getByTestId('answer-extra')).toHaveCount(0)
+  } finally {
+    server.kill()
+  }
+})
