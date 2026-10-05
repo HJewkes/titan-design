@@ -193,7 +193,7 @@ export function resolveTile(props: GoalMilestoneSummaryProps, t: Palette): Resol
   const met = reach
     ? reach !== 'short'
     : latest
-      ? milestoneGap(target, latest, direction)?.kind === 'none'
+      ? (milestoneReach(target, latest, direction) ?? 'short') !== 'short'
       : false
   const state = deriveMilestoneState({ state: props.state, met, currentWeek, goalWeek: weekCount })
   const gap = state === 'hit' ? null : gapAmountText(props)
