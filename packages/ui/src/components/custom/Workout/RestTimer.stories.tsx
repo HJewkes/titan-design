@@ -9,7 +9,7 @@ const t = getSemanticColors('dark')
 const meta: Meta<typeof RestTimer> = {
   title: 'Custom/Workout/RestTimer',
   component: RestTimer,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {
