@@ -14,7 +14,7 @@ const basicOptions: SelectOption[] = [
 const meta: Meta<typeof Select> = {
   title: 'Components/Molecules/Select',
   component: Select,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     placeholder: {
       control: 'text',

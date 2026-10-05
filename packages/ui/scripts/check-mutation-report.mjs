@@ -1,6 +1,8 @@
 // Fails when Stryker's JSON report holds no mutants, or none in carouselMath; prints the scores.
 import { readFileSync } from 'node:fs'
 
+import { isEntryPoint } from './lib/entry.mjs'
+
 export const SENTINEL_FILE = 'carouselMath.ts'
 
 const DETECTED = new Set(['Killed', 'Timeout'])
@@ -36,7 +38,7 @@ export function check(summary) {
 const format = ({ total, detected, valid, percent }) =>
   `${percent.toFixed(2)}% (${detected}/${valid} detected, ${total} mutants)`
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (isEntryPoint(import.meta.url, process.argv[1])) {
   const path = process.argv[2] ?? 'reports/mutation/mutation.json'
   const summary = summarize(JSON.parse(readFileSync(path, 'utf8')))
   const failure = check(summary)

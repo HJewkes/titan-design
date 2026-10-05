@@ -10,7 +10,7 @@ import { Surface } from '../../ui/surface'
 const meta: Meta<typeof SetsRepsLoad> = {
   title: 'Custom/Workout/SetsRepsLoad',
   component: SetsRepsLoad,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {

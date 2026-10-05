@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        margin: 0;
+        font-family: sans-serif;
+      }
+      .pair {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+      }
+      .numeral {
+        font-size: 48px;
+        line-height: 1;
+      }
+      .wrapper {
+        padding: 12px;
+      }
+      .ragged {
+        width: 200px;
+        font-size: 14px;
+        line-height: 20px;
+      }
+      .shadowed {
+        padding: 12px;
+        box-shadow: 0 1px 4px rgb(0, 0, 0);
+      }
+      .scaled {
+        transform: scale(2);
+        transform-origin: 0 0;
+        height: 40px;
+      }
+      .swatch {
+        width: 40px;
+        height: 20px;
+        background: rgb(80, 120, 200);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="storybook-root">
+      <div class="pair" data-testid="pair">
+        <span data-testid="pair-small" style="font-size: 12px">Label</span>
+        <span data-testid="pair-large" style="font-size: 32px">128</span>
+      </div>
+      <div class="numeral" data-testid="numeral">8</div>
+      <svg width="120" height="40" data-testid="chart">
+        <text x="4" y="30" font-size="16">Axis</text>
+      </svg>
+      <div class="wrapper" data-testid="wrapper">
+        <div class="swatch" data-testid="swatch"></div>
+      </div>
+      <div class="ragged" data-testid="ragged">ab<br />a much longer middle<br />cd</div>
+      <div class="shadowed" data-testid="shadowed"><div class="swatch"></div></div>
+      <div style="font-size: 14px" data-testid="unscaled">Ag</div>
+      <div class="scaled"><div style="font-size: 14px" data-testid="scaled">Ag</div></div>
+      <svg width="240" height="80" viewBox="0 0 120 40" data-testid="zoomed">
+        <text x="4" y="30" font-size="16">Axis</text>
+      </svg>
+      <svg width="120" height="40" data-testid="mixed">
+        <text x="4" y="30" font-size="10">
+          a
+          <tspan font-size="24">B</tspan>
+        </text>
+      </svg>
+      <svg width="120" height="40" data-testid="big">
+        <text x="4" y="30" font-size="24">B</text>
+      </svg>
+      <div style="height: 1px; background: rgb(128, 128, 128)" data-testid="hairline"></div>
+      <div style="opacity: 0"><span data-testid="faded">Hidden</span></div>
+    </div>
+  </body>
+</html>
