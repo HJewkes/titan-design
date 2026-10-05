@@ -7390,7 +7390,7 @@ export interface SvgIconProps extends IconProps {
 }
 
 // @public
-export const Switch: React__default.ForwardRefExoticComponent<SwitchProps & React__default.RefAttributes<View>>;
+export const Switch: React$1.ForwardRefExoticComponent<SwitchProps & React$1.RefAttributes<View>>;
 
 // @public (undocumented)
 export interface SwitchProps extends Omit<PressableProps, 'children'> {
@@ -8389,7 +8389,7 @@ export function useSurface(): SurfaceContextValue;
 export function useSurfaceMode(): ThemeMode;
 
 // @public
-export function useTable<T extends Record<string, any>>(options: UseTableOptions<T>): UseTableReturn<T>;
+export function useTable<T extends object>(options: UseTableOptions<T>): UseTableReturn<T>;
 
 // @public (undocumented)
 export interface UseTableOptions<T> {
