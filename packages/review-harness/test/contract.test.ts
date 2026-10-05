@@ -193,6 +193,7 @@ describe('the CLI under the review contract', () => {
     capture: async () => [],
     measure: async () => [],
     createPage: async () => ({ handler: () => {}, close: async () => {} }),
+    harnessFreshness: async () => ({ state: 'current' }),
     signal: new AbortController().signal,
   })
 
