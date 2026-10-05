@@ -37,6 +37,8 @@ export interface TreeRowViewProps<T> {
   onBlur: (event: NativeSyntheticEvent<TargetedEvent>) => void
   /** Receives the row's host element, for scroll-then-focus. */
   onElement: (element: View | null) => void
+  /** Set on the focused row while it sits outside the window: its offset in the scroll content. */
+  pinnedTop?: number
 }
 
 function Expander<T>({ row }: { row: TreeRowProps<T> }) {
@@ -106,7 +108,7 @@ function RowContent<T>({ row, density, isDisabled, renderLeading }: TreeRowViewP
 /** One `treeitem`: indent, expander, leading slot, label and the trailing description. */
 export function TreeRow<T>(props: TreeRowViewProps<T>) {
   const { row, density, isDisabled, descriptionId, renderTrailing } = props
-  const { onKeyDown, onBlur, onElement } = props
+  const { onKeyDown, onBlur, onElement, pinnedTop } = props
   const trailing = renderTrailing?.(row.node) ?? null
   return (
     <Pressable
@@ -120,7 +122,10 @@ export function TreeRow<T>(props: TreeRowViewProps<T>) {
       }}
       // Pressable owns `aria-disabled`; `tabIndex` above keeps the row focusable while disabled.
       disabled={isDisabled}
-      style={{ paddingLeft: (row.level - 1) * INDENT_STEP }}
+      style={[
+        { paddingLeft: (row.level - 1) * INDENT_STEP },
+        pinnedTop !== undefined && { position: 'absolute', top: pinnedTop, left: 0, right: 0 },
+      ]}
       className={rowClassName(density, row.isSelected)}
     >
       <RowContent {...props} />

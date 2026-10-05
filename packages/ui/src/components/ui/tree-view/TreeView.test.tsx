@@ -22,6 +22,8 @@ const NODES: TreeNode[] = [
 
 const HEIGHT = 400
 const WINDOW_MAX = Math.ceil(HEIGHT / ROW_HEIGHT.comfortable) + 1 + 2 * TREE_OVERSCAN
+// The window plus the focused row, which stays mounted when the window leaves it out.
+const MOUNT_MAX = WINDOW_MAX + 1
 
 const LARGE = fixtures.veryLarge.nodes
 const ALL_LARGE_OPEN = new Set(LARGE.map((node) => node.id))
@@ -194,7 +196,7 @@ describe('TreeView, lazy rows', () => {
 })
 
 describe('TreeView, windowing', () => {
-  it('mounts at most the window plus overscan of 5,000 rows', () => {
+  it('mounts at most the window, overscan and the focused row of 5,000 rows', () => {
     expect(LARGE_ROWS).toHaveLength(5000)
     expectBoundedMount({
       render: () => (
@@ -206,7 +208,7 @@ describe('TreeView, windowing', () => {
         />
       ),
       selector: '[role="treeitem"]',
-      max: WINDOW_MAX,
+      max: MOUNT_MAX,
     })
   })
 
@@ -217,9 +219,9 @@ describe('TreeView, windowing', () => {
     fireEvent.scroll(scroller, { target: { scrollTop: 100 * ROW_HEIGHT.comfortable } })
 
     const mounted = screen.getAllByRole('treeitem')
-    expect(mounted.length).toBeLessThanOrEqual(WINDOW_MAX)
+    expect(mounted.length).toBeLessThanOrEqual(MOUNT_MAX)
     expect(mounted.map((el) => el.getAttribute('aria-label'))).toContain(LARGE_ROWS[100].node.label)
-    expect(screen.queryByRole('treeitem', { name: LARGE_ROWS[0].node.label })).toBeNull()
+    expect(screen.queryByRole('treeitem', { name: LARGE_ROWS[1].node.label })).toBeNull()
   })
 
   it('scrolls an off-window row in on End, then focuses it once it mounts', () => {
@@ -231,7 +233,7 @@ describe('TreeView, windowing', () => {
     const last = LARGE_ROWS[LARGE_ROWS.length - 1]
     expect(document.activeElement).toHaveAttribute('aria-posinset', String(last.posinset))
     expect(focusedName()).toBe(last.node.label)
-    expect(screen.getAllByRole('treeitem').length).toBeLessThanOrEqual(WINDOW_MAX)
+    expect(screen.getAllByRole('treeitem').length).toBeLessThanOrEqual(MOUNT_MAX)
     press('Home')
     expect(focusedName()).toBe(LARGE_ROWS[0].node.label)
   })
@@ -247,7 +249,7 @@ describe('TreeView, windowing', () => {
     expect(document.activeElement).toBe(document.body)
   })
 
-  it('re-renders at most the window plus overscan rows for one Down', () => {
+  it('re-renders at most the window, overscan and the focused row for one Down', () => {
     const renderTrailing = vi.fn(() => null)
     renderLarge({ renderTrailing })
     focusRow(LARGE_ROWS[0].node.label)
@@ -257,7 +259,7 @@ describe('TreeView, windowing', () => {
 
     expect(focusedName()).toBe(LARGE_ROWS[1].node.label)
     expect(renderTrailing.mock.calls.length).toBeGreaterThan(0)
-    expect(renderTrailing.mock.calls.length).toBeLessThanOrEqual(WINDOW_MAX)
+    expect(renderTrailing.mock.calls.length).toBeLessThanOrEqual(MOUNT_MAX)
   })
 
   it('mounts every row at natural height when height is absent (A6)', () => {
@@ -369,20 +371,56 @@ describe('TreeView, focus after a collapse from outside', () => {
 
 describe('TreeView, focus while the user scrolls', () => {
   const label = (index: number) => LARGE_ROWS[index].node.label
+  const allTabStops = () => document.querySelectorAll('[tabindex="0"]')
+
+  function scrollTo(index: number) {
+    const scroller = screen.getByRole('tree').parentElement?.parentElement as HTMLElement
+    fireEvent.scroll(scroller, { target: { scrollTop: index * ROW_HEIGHT.comfortable } })
+  }
 
   function scrollFocusedRowAway(keyFirst?: string) {
     renderLarge()
     focusRow(label(0))
     if (keyFirst !== undefined) press(keyFirst)
-    const scroller = screen.getByRole('tree').parentElement?.parentElement as HTMLElement
-    fireEvent.scroll(scroller, { target: { scrollTop: 200 * ROW_HEIGHT.comfortable } })
+    scrollTo(200)
   }
 
-  it('leaves a pointer scroll where it is after the focused row unmounts', () => {
+  it('leaves a pointer scroll where it is and keeps focus on the focused row', () => {
     scrollFocusedRowAway()
 
     expect(screen.getByRole('treeitem', { name: label(200) })).toBeInTheDocument()
-    expect(screen.queryByRole('treeitem', { name: label(0) })).toBeNull()
+    expect(screen.queryByRole('treeitem', { name: label(1) })).toBeNull()
+    expect(focusedName()).toBe(label(0))
+  })
+
+  it('keeps exactly one tab stop, the focused row, before and after blur', () => {
+    scrollFocusedRowAway()
+    expect(allTabStops()).toHaveLength(1)
+
+    act(() => (document.activeElement as HTMLElement).blur())
+
+    expect(allTabStops()).toHaveLength(1)
+    expect(allTabStops()[0]).toHaveAttribute('aria-label', label(0))
+  })
+
+  it('pins the focused row at its own offset in the scroll content', () => {
+    renderLarge({ defaultSelectedId: LARGE_ROWS[3].id })
+    scrollTo(200)
+
+    expect(row(label(3))).toHaveStyle({ position: 'absolute', top: '120px' })
+    expect(row(label(200))).not.toHaveStyle({ position: 'absolute' })
+  })
+
+  it.each([
+    ['the first row', {}, 0],
+    ['the selected row', { defaultSelectedId: LARGE_ROWS[3].id }, 3],
+  ])('keeps %s as the one tab stop after a scroll with no prior focus', (_, props, index) => {
+    renderLarge(props)
+
+    scrollTo(200)
+
+    expect(allTabStops()).toHaveLength(1)
+    expect(allTabStops()[0]).toHaveAttribute('aria-label', label(index))
   })
 
   it('does not follow a later scroll after a key the tree leaves to the browser', () => {
@@ -391,9 +429,24 @@ describe('TreeView, focus while the user scrolls', () => {
     expect(screen.getByRole('treeitem', { name: label(200) })).toBeInTheDocument()
   })
 
-  it('scrolls back and moves from the focused row on the next Down', () => {
-    scrollFocusedRowAway()
+  it('returns to the focused row from outside and moves from it on the next Down', () => {
+    render(
+      <>
+        <TreeView
+          accessibilityLabel="Code tree"
+          nodes={LARGE}
+          defaultExpandedIds={ALL_LARGE_OPEN}
+          height={HEIGHT}
+        />
+        <Pressable accessibilityRole="button" accessibilityLabel="After" />
+      </>
+    )
+    focusRow(label(0))
+    scrollTo(200)
+    act(() => screen.getByRole('button', { name: 'After' }).focus())
 
+    act(() => (allTabStops()[0] as HTMLElement).focus())
+    expect(focusedName()).toBe(label(0))
     press('ArrowDown')
 
     expect(focusedName()).toBe(label(1))

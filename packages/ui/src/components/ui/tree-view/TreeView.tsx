@@ -108,9 +108,16 @@ interface RowsProps<T> {
   roving: Roving
 }
 
+/** The focused row's index when the window leaves it out, so it can stay mounted (one tab stop). */
+function pinnedIndex<T>(nav: TreeNavigation<T>, range: { start: number; end: number }) {
+  const index = nav.rows.findIndex((row) => row.id === nav.focusedId)
+  return index >= 0 && (index < range.start || index >= range.end) ? index : null
+}
+
 function TreeRows<T>({ props, nav, range, density, roving }: RowsProps<T>) {
   const descriptionBase = `tree-${useId().replace(/[^a-zA-Z0-9]/g, '')}`
-  return nav.rows.slice(range.start, range.end).map((row, i) => {
+  const renderRow = (index: number, pinnedTop?: number) => {
+    const row = nav.rows[index]
     const rowProps = nav.getRowProps(row)
     return (
       <TreeRow
@@ -118,22 +125,29 @@ function TreeRows<T>({ props, nav, range, density, roving }: RowsProps<T>) {
         row={{ ...rowProps, onFocus: roving.focusIn(rowProps.onFocus) }}
         density={density}
         isDisabled={props.isDisabled ?? false}
-        descriptionId={`${descriptionBase}-${range.start + i}`}
+        descriptionId={`${descriptionBase}-${index}`}
         renderLeading={props.renderLeading}
         renderTrailing={props.renderTrailing}
         onKeyDown={roving.keyDown(rowProps.onKeyDown)}
         onBlur={roving.onBlur}
         onElement={roving.elementFor(row.id)}
+        pinnedTop={pinnedTop}
       />
     )
-  })
+  }
+  const end = Math.min(range.end, nav.rows.length)
+  const windowed = Array.from({ length: end - range.start }, (_, i) => renderRow(range.start + i))
+  const pinned = pinnedIndex(nav, range)
+  if (pinned === null) return <>{windowed}</>
+  const pinnedRow = renderRow(pinned, pinned * ROW_HEIGHT[density])
+  return pinned < range.start ? [pinnedRow, ...windowed] : [...windowed, pinnedRow]
 }
 
 type Roving = ReturnType<typeof rovingHandlers>
 
 type KeyHandler = (event: TreeKeyEvent) => void
 
-function rovingHandlers<T>(focus: RovingFocus, nav: TreeNavigation<T>) {
+function rovingHandlers(focus: RovingFocus) {
   // Follow only a key the tree handled, so a stray Tab or Shift never snaps a later scroll back.
   const keyDown = (onKeyDown: KeyHandler) => (event: TreeKeyEvent) => {
     let handled = false
@@ -146,22 +160,14 @@ function rovingHandlers<T>(focus: RovingFocus, nav: TreeNavigation<T>) {
     })
     if (handled) focus.follow()
   }
-  // Only keys pressed on the `tree` itself; a row's keys bubble here after the row handled them.
-  const treeKeyDown = (event: TreeKeyEvent & { target: unknown; currentTarget: unknown }) => {
-    const focused = nav.rows.find((row) => row.id === nav.focusedId)
-    if (focused === undefined || event.target !== event.currentTarget) return
-    keyDown(nav.getRowProps(focused).onKeyDown)(event)
-  }
   return {
     focusIn: (onFocus: () => void) => () => {
       focus.onFocusIn()
       onFocus()
     },
     keyDown,
-    treeKeyDown,
     onBlur: focus.onBlur,
     elementFor: focus.elementFor,
-    treeElement: focus.treeElement,
   }
 }
 
@@ -169,22 +175,17 @@ interface ContentProps<T> extends Omit<RowsProps<T>, 'range'> {
   win: FixedWindow
 }
 
-/** The `tree` and what scrolls with it; the `tree` holds focus while the focused row is away. */
+/** The `tree` and what scrolls with it. */
 function TreeContent<T>({ props, nav, density, roving, win }: ContentProps<T>) {
-  const { treeElement, treeKeyDown } = roving
   const notice = props.isTruncated && win.end > nav.rows.length && (
     <TruncationNotice notice={props.truncatedNotice ?? DEFAULT_NOTICE} density={density} />
   )
   return (
     <>
       <View
-        ref={treeElement}
         role="tree"
-        tabIndex={-1}
-        {...{ onKeyDown: treeKeyDown }}
         aria-label={props.accessibilityLabel}
         aria-disabled={props.isDisabled || undefined}
-        className="web:outline-none"
       >
         <View style={{ height: win.padBefore }} />
         <TreeRows {...{ props, nav, density, roving }} range={win} />
@@ -204,7 +205,7 @@ function TreeBody<T>({ props }: { props: TreeViewProps<T> }) {
     ROW_HEIGHT[density],
     height
   )
-  const roving = rovingHandlers(useRovingFocus(nav.rows, nav.focusedId, reveal), nav)
+  const roving = rovingHandlers(useRovingFocus(nav.rows, nav.focusedId, reveal))
   useScrollToReveal(nav.rows, props.revealId, reveal)
   if (nav.rows.length === 0) return <>{props.emptyState ?? <DefaultEmptyState />}</>
   const body = <TreeContent {...{ props, nav, density, roving, win }} />

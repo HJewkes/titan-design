@@ -7,26 +7,21 @@ export interface RovingFocus {
   follow: () => void
   /** Wraps a row's host element callback. */
   elementFor: (id: string) => (element: View | null) => void
-  /** Receives the `tree` element, which holds focus while the focused row is scrolled away. */
-  treeElement: (element: View | null) => void
   onFocusIn: () => void
   onBlur: (event: NativeSyntheticEvent<TargetedEvent>) => void
 }
 
-type Focusable = { focus?: (options?: { preventScroll?: boolean }) => void }
+type Focusable = { focus?: () => void }
 
-const activeElement = () => (typeof document === 'undefined' ? null : document.activeElement)
-
-const pageHasNoFocus = () => {
-  const active = activeElement()
-  return typeof document !== 'undefined' && (active === null || active === document.body)
-}
+const pageHasNoFocus = () =>
+  typeof document !== 'undefined' &&
+  (document.activeElement === null || document.activeElement === document.body)
 
 /**
  * Keeps DOM focus on the hook's focused row. After a key, or when a collapse from outside moved
  * focus off an unmounted row, it scrolls the row into the window first, then focuses it on the
- * commit that mounts it (R3). A row the user scrolls away is not followed: the `tree` element holds
- * focus until the row mounts again or a key moves on from it.
+ * commit that mounts it (R3). A row the user scrolls away is never followed: the shell keeps the
+ * focused row mounted outside the window, so it keeps DOM focus and the tab stop.
  */
 export function useRovingFocus(
   rows: readonly TreeRow[],
@@ -34,26 +29,20 @@ export function useRovingFocus(
   reveal: (index: number) => void
 ): RovingFocus {
   const elements = useRef(new Map<string, Focusable>())
-  const tree = useRef<Focusable | null>(null)
   const following = useRef(false)
   const within = useRef(false)
   const lastFocusedId = useRef(focusedId)
   useEffect(() => {
     const moved = focusedId !== lastFocusedId.current
     lastFocusedId.current = focusedId
-    if (focusedId === null) return
+    const movedOffUnmountedRow = moved && within.current && pageHasNoFocus()
+    if (focusedId === null || !(following.current || movedOffUnmountedRow)) return
+    reveal(rows.findIndex((row) => row.id === focusedId))
     const element = elements.current.get(focusedId)
-    const lost = within.current && pageHasNoFocus()
-    if (following.current || (lost && moved)) {
-      reveal(rows.findIndex((row) => row.id === focusedId))
-      if (element === undefined) return
-      // No preventScroll: the browser's own scroll corrects for scroll anchoring moving the window.
-      element.focus?.()
-      following.current = false
-    } else if (lost && element === undefined) tree.current?.focus?.({ preventScroll: true })
-    else if (element !== undefined && activeElement() === tree.current) {
-      element.focus?.({ preventScroll: true })
-    }
+    if (element === undefined) return
+    // No preventScroll: the browser's own scroll corrects for scroll anchoring moving the window.
+    element.focus?.()
+    following.current = false
   })
   const isRow = (target: unknown) => [...elements.current.values()].some((el) => el === target)
   return {
@@ -64,18 +53,13 @@ export function useRovingFocus(
       if (element === null) elements.current.delete(id)
       else elements.current.set(id, element as unknown as Focusable)
     },
-    treeElement: (element) => {
-      tree.current = element as unknown as Focusable | null
-    },
     onFocusIn: () => {
       within.current = true
     },
     onBlur: (event) => {
       // On the web `nativeEvent` is the DOM FocusEvent, which names where focus went.
       const { relatedTarget } = event.nativeEvent as { relatedTarget?: unknown }
-      if (relatedTarget != null && !isRow(relatedTarget) && relatedTarget !== tree.current) {
-        within.current = false
-      }
+      if (relatedTarget != null && !isRow(relatedTarget)) within.current = false
     },
   }
 }
