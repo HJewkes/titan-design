@@ -67,6 +67,25 @@ export function contrast(a: string, b: string): number {
   return (hi + 0.05) / (lo + 0.05)
 }
 
+const RGBA = /^rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*(?:,\s*([\d.]+)\s*)?\)$/
+
+/**
+ * The opaque `#RRGGBB` a colour shows over `baseHex`. A hex colour is already
+ * opaque and comes back as it is; an `rgba(…)` one is blended in sRGB, the way
+ * a browser paints it. Contrast needs two opaque colours, so measure this.
+ */
+export function compositeOver(color: string, baseHex: string): string {
+  if (color.startsWith('#')) return color
+  const match = RGBA.exec(color)
+  if (!match) throw new Error(`expected #RRGGBB or rgba(…), got "${color}"`)
+  const alpha = parseFloat(match[4] ?? '1')
+  const base = hexToRgb(baseHex)
+  const mixed = [1, 2, 3].map(
+    (i, c) => (parseFloat(match[i]) / 255) * alpha + base[c] * (1 - alpha)
+  )
+  return '#' + mixed.map(toHex).join('').toUpperCase()
+}
+
 /** OKLab `[L, a, b]` of a colour. */
 export function toOklab(hex: string): Vec3 {
   return oklabFromLinear(linearRgb(hex))

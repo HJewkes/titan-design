@@ -15,7 +15,7 @@ const WEEKS = [
 const meta: Meta<typeof GoalLiftCard> = {
   title: 'Custom/Workout/GoalLiftCard',
   component: GoalLiftCard,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {

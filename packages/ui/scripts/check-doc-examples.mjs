@@ -19,6 +19,8 @@ import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import ts from 'typescript'
 
+import { isEntryPoint } from './lib/entry.mjs'
+
 const PKG_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const REPO_ROOT = path.resolve(PKG_ROOT, '../..')
 const BASELINE_PATH = path.join(PKG_ROOT, 'scripts/doc-examples-baseline.json')
@@ -270,6 +272,6 @@ function main(argv) {
   if (!result.ok) process.exitCode = 1
 }
 
-if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
+if (isEntryPoint(import.meta.url, process.argv[1])) {
   main(process.argv.slice(2))
 }

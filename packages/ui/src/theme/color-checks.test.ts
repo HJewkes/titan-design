@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   CVD_MATRICES,
+  compositeOver,
   contrast,
   cvdDelta,
   deltaE,
@@ -28,6 +29,24 @@ describe('contrast', () => {
 
   it('takes the linear branch of the gamma curve for very dark channels', () => {
     expect(relativeLuminance('#0A0A0A')).toBeCloseTo(10 / 255 / 12.92, 6)
+  })
+})
+
+describe('compositeOver', () => {
+  it('returns an opaque hex colour unchanged', () => {
+    expect(compositeOver('#336699', '#000000')).toBe('#336699')
+  })
+
+  it('blends a translucent colour halfway at alpha 0.5', () => {
+    expect(compositeOver('rgba(255, 255, 255, 0.5)', '#000000')).toBe('#808080')
+  })
+
+  it('treats rgb() without alpha as opaque', () => {
+    expect(compositeOver('rgb(0, 0, 0)', '#FFFFFF')).toBe('#000000')
+  })
+
+  it('refuses a colour it cannot parse rather than measuring black', () => {
+    expect(() => compositeOver('var(--color-x)', '#FFFFFF')).toThrow(/expected/)
   })
 })
 
