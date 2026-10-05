@@ -1,3 +1,6 @@
+import { useMemo } from 'react'
+import type { SetSlot } from '../charts/SetBarChart'
+
 // --- Set-type slot model -----------------------------------------------------
 // The strength-training set vocabulary (operator-approved in the Set Modalities
 // exploration): one strip encoding for every per-rep set type. A set resolves to
@@ -122,6 +125,27 @@ export function buildSlots(set: VelocitySet): VelocitySlot[] {
       })
     }
   }
+}
+
+/**
+ * The strip's own chart slots: a `set` builds its typed slots, else one bare rep slot per done
+ * velocity. Every variant but the framed chart lets a caller's `columnSlots` win over these.
+ */
+export function useVelocitySlots(
+  set: VelocitySet | undefined,
+  doneVelocities: number[]
+): SetSlot[] {
+  return useMemo<SetSlot[]>(
+    () =>
+      set
+        ? buildSlots(set).map((s) => ({
+            kind: s.kind,
+            value: s.velocity,
+            leadingGap: s.leadingGap,
+          }))
+        : doneVelocities.map((v) => ({ kind: 'rep', value: v })),
+    [set, doneVelocities]
+  )
 }
 
 /** A concise, set-type-aware summary for the strip's accessibility label. */

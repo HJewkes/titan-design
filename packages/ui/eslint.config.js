@@ -442,6 +442,7 @@ module.exports = tseslint.config(
       'src/components/custom/Workout/StrengthTrendChart.tsx',
       'src/components/custom/Workout/TrainingStatusPage.tsx',
       'src/components/custom/Workout/VelocityStrip.tsx',
+      'src/components/custom/Workout/VelocityStripFramed.tsx',
       'src/components/custom/Fatigue/**/*.{ts,tsx}',
     ],
     // `color-story-kit` is story chrome that happens not to be named `.stories.tsx`
