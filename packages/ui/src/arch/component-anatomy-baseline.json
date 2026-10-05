@@ -9,12 +9,8 @@
     "story",
     "test"
   ],
-  "custom/Workout/BodyMap": [
-    "status"
-  ],
   "custom/Workout/GoalCard": [
     "a11y",
-    "status",
     "test"
   ],
   "custom/Workout/GoalMilestoneSummary": [
@@ -27,9 +23,6 @@
     "story",
     "test"
   ],
-  "custom/Workout/GoalMuscleCard": [
-    "status"
-  ],
   "custom/Workout/GoalPriorityIcon": [
     "status",
     "story"
@@ -39,12 +32,6 @@
     "status",
     "story",
     "test"
-  ],
-  "custom/Workout/MuscleGroupChip": [
-    "status"
-  ],
-  "custom/Workout/MuscleStrip": [
-    "status"
   ],
   "custom/Workout/PrimaryGoalCard": [
     "status"

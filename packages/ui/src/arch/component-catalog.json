@@ -2854,7 +2854,7 @@
         "props": "packages/ui/src/components/custom/Workout/BodyMap.tsx",
         "status": "packages/ui/src/components/custom/Workout/BodyMap.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-dataviz-bodymap--back",
         "custom-workout-dataviz-bodymap--detailed",
@@ -4729,7 +4729,7 @@
         "props": "packages/ui/src/components/custom/Workout/GoalMuscleCard.tsx",
         "status": "packages/ui/src/components/custom/Workout/GoalMuscleCard.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-goalmusclecard--default",
         "custom-workout-goalmusclecard--no-week-variance",
@@ -5999,7 +5999,7 @@
         "props": "packages/ui/src/components/custom/Workout/MuscleGroupChip.tsx",
         "status": "packages/ui/src/components/custom/Workout/MuscleGroupChip.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-musclegroupchip--all-statuses",
         "custom-workout-musclegroupchip--approaching",
@@ -6050,7 +6050,7 @@
         "props": "packages/ui/src/components/custom/Workout/MuscleStrip.tsx",
         "status": "packages/ui/src/components/custom/Workout/MuscleStrip.stories.tsx"
       },
-      "status": "review",
+      "status": "candidate",
       "storyIds": [
         "custom-workout-musclestrip--default",
         "custom-workout-musclestrip--empty-untrained",
