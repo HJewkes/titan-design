@@ -6,15 +6,7 @@
 // rows the index would hold. Every synthetic row has `synthetic: true` in `data`, and every fixture
 // says in `source` and `label` whether it is real. Not exported from any barrel.
 
-/** The node shape of the Round 0 props sketch. S2 moves it to `types.ts`. */
-export interface TreeNode<T = unknown> {
-  id: string
-  parentId: string | null
-  label: string
-  kind?: string
-  childCount?: number
-  data?: T
-}
+import type { TreeNode } from './types'
 
 export type MissingReason = 'no-rollup' | 'not-measured' | 'not-applicable' | 'not-in-snapshot'
 
