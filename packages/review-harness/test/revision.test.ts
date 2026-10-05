@@ -6,7 +6,7 @@ import { createReducer, initialState, numberKeyAction } from '../page/state.ts'
 import { buildFeedback, emptyDraft, unansweredQuestionIds } from '../src/feedback.ts'
 import { feedbackProblems } from '../src/round.ts'
 import { FeedbackSchema, ManifestSchema, type ManifestInput } from '../src/schema.ts'
-import { SHA, manifest, sectioned } from './fixtures.ts'
+import { SHA, manifest, sectioned, sectionedInput } from './fixtures.ts'
 
 const NOW = new Date('2026-10-05T00:00:00Z')
 const base = JSON.parse(JSON.stringify(manifest())) as ManifestInput
@@ -90,6 +90,21 @@ describe('a revision in a round whose options stand for frames', () => {
     let state = reduceSec(initialState(sec), { type: 'pick', id: 'q1', option: 'A', many: false })
     expect(state.draft.variants.A.verdict).toBe('chosen')
     state = reduceSec(state, { type: 'revision', id: 'q1' })
+    state = reduceSec(state, { type: 'answerComment', id: 'q1', comment: 'redo' })
+    const fb = build(sec, state.draft)
+    expect(fb.answers[0]).toMatchObject({ revisionRequested: true })
+    expect(fb.variants.map((v) => v.verdict)).not.toContain('chosen')
+  })
+})
+
+describe("a round's own revision option in a round whose options stand for frames", () => {
+  it('leaves no linked frame chosen', () => {
+    const input = sectionedInput()
+    input.questions[0] = { ...input.questions[0], revisionOption: 'none' } as never
+    const sec = ManifestSchema.parse(input)
+    const reduceSec = createReducer(sec)
+    let state = reduceSec(initialState(sec), { type: 'pick', id: 'q1', option: 'A', many: false })
+    state = reduceSec(state, { type: 'pick', id: 'q1', option: 'none', many: false })
     state = reduceSec(state, { type: 'answerComment', id: 'q1', comment: 'redo' })
     const fb = build(sec, state.draft)
     expect(fb.answers[0]).toMatchObject({ revisionRequested: true })

@@ -137,7 +137,7 @@ sha256 of the manifest you wrote.
   disagrees with the answers sent. Every required pick-one also offers a final "None of these, request a revision". Choosing it
   writes `revisionRequested: true` and no `pick`; the comment is then required, and a send
   without one is blocked with a message. It counts as answered, and `agreed` is `false` against
-  a recommendation. Anything that reads `pick` must check `revisionRequested` first. A round
+  a recommendation, even when the recommended answer is the round's own `revisionOption`. Anything that reads `pick` must check `revisionRequested` first. A round
   that lists its own such option names it in the question's `revisionOption` (one of its
   `options`); the built-in is then not added, and picking that option is recorded the same
   way. The match is by that field, never by option text. Everything else is unchanged and means what it always did.
