@@ -34,6 +34,7 @@ export function exampleManifest(storybookUrl: string): ManifestInput {
         kind: 'pick-one',
         prompt: 'Which one leads the page?',
         options: ['A', 'B', 'C', 'none'],
+        revisionOption: 'none',
         required: true,
       },
       {

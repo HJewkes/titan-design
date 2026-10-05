@@ -311,11 +311,22 @@ function addPin(state: ReviewState, action: Extract<Action, { type: 'addPin' }>)
   return { ...state, draft, focusPin: pin.id }
 }
 
+/** A revision request picks no frame, so every frame this question's options stand for stops being chosen. */
+function linkRevision(manifest: Manifest, draft: ReviewDraft, id: string): ReviewDraft {
+  const question = manifest.questions.find((q) => q.id === id)
+  if (!question || !draft.answers[id]?.revision) return draft
+  return [...optionVariants(manifest, question).values()].reduce(
+    (d, key) => (d.variants[key]?.verdict === 'chosen' ? setVerdict(d, key, null) : d),
+    draft
+  )
+}
+
 /** Keeps a pick and the verdict of the frame it stands for in step, in one action. */
 function reduceLinked(manifest: Manifest, draft: ReviewDraft, action: Action): ReviewDraft {
   const next = reduceAnswer(draft, action)
   if (action.type === 'pick') return linkPick(manifest, next, action)
   if (action.type === 'verdict') return linkVerdict(manifest, next, action)
+  if (action.type === 'revision') return linkRevision(manifest, next, action.id)
   return next
 }
 

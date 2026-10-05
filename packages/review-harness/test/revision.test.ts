@@ -6,10 +6,13 @@ import { createReducer, initialState, numberKeyAction } from '../page/state.ts'
 import { buildFeedback, emptyDraft, unansweredQuestionIds } from '../src/feedback.ts'
 import { feedbackProblems } from '../src/round.ts'
 import { FeedbackSchema, ManifestSchema, type ManifestInput } from '../src/schema.ts'
-import { SHA, manifest } from './fixtures.ts'
+import { SHA, manifest, sectioned } from './fixtures.ts'
 
 const NOW = new Date('2026-10-05T00:00:00Z')
-const m = manifest()
+const base = JSON.parse(JSON.stringify(manifest())) as ManifestInput
+// The example round names its own revision option; these tests start from one that does not.
+delete (base.questions[0] as { revisionOption?: string }).revisionOption
+const m = ManifestSchema.parse(base)
 const reduce = createReducer(m)
 const build = (m2 = m, draft = emptyDraft(m2)) => buildFeedback(m2, SHA, draft, NOW)
 const q1 = () =>
@@ -77,6 +80,20 @@ describe('the built-in revision option', () => {
       revisionRequested: true,
       agreed: false,
     })
+  })
+})
+
+describe('a revision in a round whose options stand for frames', () => {
+  it('leaves no linked frame chosen', () => {
+    const sec = sectioned()
+    const reduceSec = createReducer(sec)
+    let state = reduceSec(initialState(sec), { type: 'pick', id: 'q1', option: 'A', many: false })
+    expect(state.draft.variants.A.verdict).toBe('chosen')
+    state = reduceSec(state, { type: 'revision', id: 'q1' })
+    state = reduceSec(state, { type: 'answerComment', id: 'q1', comment: 'redo' })
+    const fb = build(sec, state.draft)
+    expect(fb.answers[0]).toMatchObject({ revisionRequested: true })
+    expect(fb.variants.map((v) => v.verdict)).not.toContain('chosen')
   })
 })
 
