@@ -170,6 +170,29 @@ export interface SidebarItemProps extends Omit<PressableProps, 'children'> {
   className?: string
 }
 
+function SidebarItemBadge({ badge, isActive }: { badge: React.ReactNode; isActive: boolean }) {
+  // A zero count is not worth a badge; `badge && …` would print a bare 0.
+  if (!badge || badge === '0') return null
+  const isText = typeof badge === 'string' || typeof badge === 'number'
+
+  return (
+    <View className="ml-auto">
+      {isText ? (
+        <Text
+          className={cn(
+            'font-sans text-base',
+            isActive ? 'text-brand-primary' : 'text-text-secondary'
+          )}
+        >
+          {badge}
+        </Text>
+      ) : (
+        badge
+      )}
+    </View>
+  )
+}
+
 /**
  * Individual navigation item in sidebar.
  */
@@ -186,8 +209,6 @@ export function SidebarItem({
 }: SidebarItemProps) {
   const { isCollapsed, activeItem, onItemSelect } = useContext(SidebarContext)
   const isActive = activeItem === id
-  // A zero count is not worth a badge; `badge && …` would print a bare 0.
-  const hasBadge = Boolean(badge) && badge !== '0'
 
   const handlePress = (e: GestureResponderEvent) => {
     onItemSelect?.(id)
@@ -227,22 +248,7 @@ export function SidebarItem({
           >
             {label}
           </Text>
-          {hasBadge && (
-            <View className="ml-auto">
-              {typeof badge === 'string' || typeof badge === 'number' ? (
-                <Text
-                  className={cn(
-                    'font-sans text-base',
-                    isActive ? 'text-brand-primary' : 'text-text-secondary'
-                  )}
-                >
-                  {badge}
-                </Text>
-              ) : (
-                badge
-              )}
-            </View>
-          )}
+          <SidebarItemBadge badge={badge} isActive={isActive} />
           {hasChildren && (
             <Text aria-hidden className="text-text-tertiary ml-1">
               {isExpanded ? '▼' : '▶'}
