@@ -7242,7 +7242,7 @@
           "description": "",
           "name": "referenceLines",
           "required": false,
-          "type": "SparklineReferenceLine[]"
+          "type": "{ value: number; color: string; dashed?: boolean | undefined; label?: string | undefined; }[]"
         },
         {
           "default": "false",
