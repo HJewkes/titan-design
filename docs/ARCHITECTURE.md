@@ -144,19 +144,24 @@ See `packages/ui/TOKENS.md` for the full token reference.
 Tokens are exposed as CSS custom properties for runtime theming:
 
 ```css
-/* Dark mode (default) */
-:root {
-  --color-brand-primary: #5048E5;
-  --color-text-primary: #F9FAFB;
-  --color-surface-base: #111827;
-}
-
-/* Light mode */
-.light, :root.light {
-  --color-brand-primary: #5048E5;
-  --color-text-primary: #111827;
-  --color-surface-base: #FFFFFF;
-}
+/* packages/ui/src/theme/global.css */
+  :root {
+    --color-brand-primary: #FF7900;
+    --color-brand-primary-light: #FFA063;
+    ...
+    --color-text-primary: #F9F6F3;
+    ...
+    --color-surface-base: #252321;
+    ...
+  }
+  ...
+  .light,
+  :root.light {
+    --color-brand-primary: #FF7900;
+    ...
+    --color-text-primary: #121828;
+    ...
+    --color-surface-base: #FFFFFF;
 ```
 
 ## Storybook Architecture
