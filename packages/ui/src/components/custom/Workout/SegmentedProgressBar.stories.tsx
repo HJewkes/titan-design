@@ -8,7 +8,7 @@ const PLAN = [{ weight: 3 }, { weight: 3 }, { weight: 2 }, { weight: 2 }, { weig
 const meta: Meta<typeof SegmentedProgressBar> = {
   title: 'Custom/Workout/SegmentedProgressBar',
   component: SegmentedProgressBar,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {

@@ -39,7 +39,8 @@ import {
   SegmentedBar,
   type SegmentedBarSegment,
 } from '../../components/custom/Workout/SegmentedBar'
-import { VelocityStrip, DualVelocityStrip } from '../../components/custom/Workout/VelocityStrip'
+import { VelocityStrip } from '../../components/custom/Workout/VelocityStrip'
+import { DualVelocityStrip } from '../../components/custom/Workout/DualVelocityStrip'
 
 const C = getSemanticColors('dark')
 

@@ -72,8 +72,10 @@ Complex components use the compound component pattern for flexibility:
   <ButtonText>Add Item</ButtonText>
 </Button>
 
-// Also supports simple usage
-<Button>Simple Button</Button>
+// Text always goes in ButtonText; a bare string child breaks on native
+<Button>
+  <ButtonText>Save</ButtonText>
+</Button>
 ```
 
 #### Props Conventions

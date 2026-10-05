@@ -2,6 +2,7 @@ import type { Dispatch } from 'react'
 import { agrees, type AnswerDraft } from '../src/feedback.ts'
 import { isAnswered } from '../src/round.ts'
 import type { Manifest, Question, Recommendation } from '../src/schema.ts'
+import { Markdown } from './Markdown.tsx'
 import { recommendationVisible, type Action } from './state.ts'
 import { Stop } from './Stop.tsx'
 
@@ -85,7 +86,7 @@ function RecommendationNote({ manifest, question, draft }: QuestionBlockProps) {
         <strong>Recommended: {recommendedText(manifest, rec.answer)}</strong>
         {verdict && <span className="recommendation-verdict"> · {verdict}</span>}
       </p>
-      <p>{rec.rationale}</p>
+      <Markdown>{rec.rationale}</Markdown>
       <p className="recommendation-meta">
         {Math.round(rec.confidence * 100)}% confident · {rec.by}
       </p>
@@ -106,7 +107,7 @@ export function QuestionBlock(props: QuestionBlockProps) {
       testId={`question-${question.id}`}
     >
       <h3>
-        {question.prompt}
+        <Markdown inline>{question.prompt}</Markdown>
         {question.required && <span className="required"> required</span>}
       </h3>
       <Choices {...props} />

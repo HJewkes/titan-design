@@ -20,9 +20,16 @@
  * `tier-import-baseline.json`, keyed by the literal import specifier so the
  * message lands on the import you just added rather than an old one.
  * Regenerate with `node scripts/update-tier-import-baseline.mjs` after fixing one.
+ *
+ * The fix is always to move the imported code down to the importer's tier,
+ * the lowest home that makes the import legal; CLAUDE.md placement forbids
+ * copying it or replacing it with a slot. When the target is a deprecated shim
+ * whose tag says where the code already moved (`Moved to \`ui/eyebrow\``), the
+ * message names that path instead.
  */
 
 const path = require('node:path')
+const { registryFor, resolveModule } = require('./deprecated-export-registry')
 
 const TIER_ORDER = ['theme', 'icons', 'ui', 'custom', 'shell', 'pages']
 
@@ -78,6 +85,41 @@ function baselineKey(context) {
     .join('/')
 }
 
+/** `src`-relative path as a message names it: `components/` dropped, no extension or `/index`. */
+function displayPath(srcRelative) {
+  return srcRelative
+    .replace(/^components\//, '')
+    .replace(/\.tsx?$/, '')
+    .replace(/\/index$/, '')
+}
+
+/** Tier of a path as a deprecation tag writes it (`ui/eyebrow`, `src/hooks/x.ts`). */
+function tierOfTagPath(tagPath) {
+  const rel = tagPath.replace(/^src\//, '')
+  return tierOf(/^(icons|ui|custom|shell|pages)\//.test(rel) ? `components/${rel}` : rel)
+}
+
+/** The `Moved to \`path\`` of the first imported name whose shim already lives at or below `tier`. */
+function movedHome(node, importedRelative, srcRoot, tier) {
+  const registry = registryFor(srcRoot)
+  for (const specifier of node.specifiers ?? []) {
+    const name =
+      specifier.type === 'ImportSpecifier' ? specifier.imported.name : specifier.local.name
+    const sentence = registry.deprecation(importedRelative, name)
+    const moved = sentence && /^Moved to `([^`]+)`/.exec(sentence)?.[1]
+    const movedTier = moved && tierOfTagPath(moved)
+    if (moved && TIER_ORDER.indexOf(movedTier) <= TIER_ORDER.indexOf(tier)) return moved
+  }
+  return null
+}
+
+function fixFor(node, importedRelative, srcRoot, currentTier) {
+  const moved = movedHome(node, importedRelative, srcRoot, currentTier)
+  if (moved) return `It is a deprecated shim: import it from \`${moved}\`, where it already moved.`
+  const target = displayPath(importedRelative)
+  return `Move \`${target}\` down to \`${currentTier}/\`, the lowest tier that makes this import legal.`
+}
+
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
   meta: {
@@ -89,7 +131,7 @@ module.exports = {
     schema: [],
     messages: {
       upward:
-        "'{{specifier}}' imports from the {{importedTier}} tier, which sits above {{currentTier}}. Tier order is theme -> icons -> ui -> custom -> shell -> pages — move the shared code down a tier, or promote the importing file up.",
+        "'{{specifier}}' imports from the {{importedTier}} tier, which sits above {{currentTier}} (tier order: theme -> icons -> ui -> custom -> shell -> pages). {{fix}} Never copy it, and never replace it with a slot.",
     },
   },
 
@@ -108,7 +150,8 @@ module.exports = {
     // added rather than whichever grandfathered one sits at the boundary.
     const remaining = new Map(Object.entries(loadBaseline()[baselineKey(context)] ?? {}))
 
-    function check(sourceNode) {
+    function check(node) {
+      const sourceNode = node.source
       if (!sourceNode || typeof sourceNode.value !== 'string') return
       const specifier = sourceNode.value
       const importedRelative = resolveToSrcRelative(specifier, filename, srcRoot)
@@ -125,20 +168,19 @@ module.exports = {
       context.report({
         node: sourceNode,
         messageId: 'upward',
-        data: { specifier, importedTier, currentTier },
+        data: {
+          specifier,
+          importedTier,
+          currentTier,
+          fix: fixFor(node, resolveModule(specifier, filename, srcRoot), srcRoot, currentTier),
+        },
       })
     }
 
     return {
-      ImportDeclaration(node) {
-        check(node.source)
-      },
-      ExportNamedDeclaration(node) {
-        check(node.source)
-      },
-      ExportAllDeclaration(node) {
-        check(node.source)
-      },
+      ImportDeclaration: check,
+      ExportNamedDeclaration: check,
+      ExportAllDeclaration: check,
     }
   },
 }

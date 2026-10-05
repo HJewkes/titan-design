@@ -28,10 +28,12 @@
  * Anything not understood is forwarded to `storybook dev`.
  */
 import { execFileSync, spawn } from 'node:child_process'
-import { existsSync, realpathSync } from 'node:fs'
+import { existsSync } from 'node:fs'
 import { connect, createServer } from 'node:net'
 import { resolve, dirname, delimiter, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+
+import { isEntryPoint } from './lib/entry.mjs'
 
 /** THE port. Everything non-isolated uses it, so a stale server is a bug, not a fork. */
 const LOCKED_PORT = 6006
@@ -177,8 +179,6 @@ function category(entry) {
   if (isOurs(entry)) return entry.port === LOCKED_PORT ? 'locked' : 'dupe'
   return 'foreign'
 }
-
-const isOrphan = (entry) => category(entry) === 'orphan'
 
 export function printInventory(entries, { lsof = LSOF, log = console.log } = {}) {
   if (!lsof) {
@@ -334,16 +334,6 @@ export function refuseWithoutLsof(
   exit(1)
 }
 
-/** True when this file is the process entry point, even when invoked through a symlink. */
-export function isEntryPoint(metaUrl, entry, real = realpathSync) {
-  if (!entry) return false
-  try {
-    return real(fileURLToPath(metaUrl)) === real(entry)
-  } catch {
-    return false
-  }
-}
-
 // --- main --------------------------------------------------------------------
 
 async function main() {
@@ -386,11 +376,10 @@ async function main() {
       console.error(`\n  Refusing to kill it. Free the port, or use --isolated.\n`)
       process.exit(1)
     } else if (isOurs(holder) && !has('--restart')) {
-      // Exits 0 WITHOUT holding the foreground. Safe for `playwright.config.ts`, whose
-      // webServer sets `reuseExistingServer: true` and therefore never runs this command
-      // when 6006 is already serving. If that ever flips to false, this branch has to
-      // become a restart instead, or Playwright will wait forever for a server we did
-      // not start.
+      // Exits 0 WITHOUT holding the foreground. `playwright.config.ts` sets
+      // `reuseExistingServer: false`, so Playwright refuses a busy 6006 before it ever runs
+      // this command; it never reaches this branch. Do not flip that to true: Playwright
+      // would then reuse ANY server on 6006, including another worktree's (TD-512).
       console.log(`  Storybook for THIS package is already on ${LOCKED_PORT} (pid ${holder.pid}).`)
       console.log(`  http://127.0.0.1:${LOCKED_PORT}`)
       console.log(`\n  Use --restart to replace it, or --isolated for a second instance.\n`)

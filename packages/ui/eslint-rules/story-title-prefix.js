@@ -2,18 +2,38 @@
  * ESLint rule: story-title-prefix
  *
  * Storybook's sidebar reads as one system only if every story's top-level group
- * is one of the approved roots. The six-group reorg (#170) fixed that set —
- * `Foundations`, `Components`, `Custom`, `Shell`, `Pages`, `Lab`, plus `Docs` —
- * and it is duplicated here from `.storybook/preview.tsx`'s `storySort.order`
- * (the sidebar's own source of truth) because that file is TSX and can't be
- * `require`d from a CommonJS eslint rule. Update both together if the taxonomy
- * changes.
+ * is one of the approved roots. Those roots are the string entries of
+ * `.storybook/preview.tsx`'s `storySort.order` (the sidebar's own source of
+ * truth), read through `fix-options.js` so the list lives in one place.
  *
  * Flags a `meta.title` (or a CSF3 `title` export) whose first path segment
- * isn't in the allowed set, so a new story can't invent an eighth root.
+ * isn't in the allowed set, so a new story can't invent a new root. The message
+ * suggests the root the file's directory implies (`ui/` -> `Components/`,
+ * `custom/<Family>/` -> `Custom/<Family>`) when that root is in the list.
  */
 
-const ALLOWED_PREFIXES = ['Foundations', 'Components', 'Custom', 'Shell', 'Pages', 'Lab', 'Docs']
+const { storyRoots } = require('./fix-options')
+
+/** `src`-relative directory pattern -> the title root it implies. */
+const ROOT_BY_DIR = [
+  [/\/src\/components\/ui\//, () => 'Components/Atoms|Molecules|Organisms'],
+  [/\/src\/components\/custom\/([^/]+)\//, (family) => `Custom/${family}`],
+  [/\/src\/components\/shell\//, () => 'Shell/'],
+  [/\/src\/components\/pages\//, () => 'Pages/'],
+  [/\/src\/lab\/([^/]+)\//, (family) => `Lab/${family}`],
+  [/\/src\/theme\//, () => 'Foundations/'],
+]
+
+function suggestedRoot(filename) {
+  const posix = filename.split('\\').join('/')
+  for (const [pattern, rootOf] of ROOT_BY_DIR) {
+    const match = pattern.exec(posix)
+    if (!match) continue
+    const root = rootOf(match[1])
+    return storyRoots.includes(root.split('/')[0]) ? root : null
+  }
+  return null
+}
 
 const findTitleProperty = (objectExpression) =>
   objectExpression.properties.find(
@@ -33,22 +53,30 @@ module.exports = {
     schema: [],
     messages: {
       unknownPrefix:
-        "Story title root '{{ prefix }}' is not an approved group. Use one of: {{ allowed }}.",
+        "Story title root '{{ prefix }}' is not a sidebar root in .storybook/preview.tsx. {{ suggestion }}The roots are {{ allowed }}.",
     },
   },
 
   create(context) {
+    const filename = context.filename ?? context.getFilename()
+    const root = suggestedRoot(filename)
+    const suggestion = root ? `This file's directory puts it under \`${root}\`; use that. ` : ''
+
     const check = (objectExpression) => {
       const titleProp = findTitleProperty(objectExpression)
       if (!titleProp || titleProp.value.type !== 'Literal') return
       const title = titleProp.value.value
       if (typeof title !== 'string') return
       const prefix = title.split('/')[0]
-      if (!ALLOWED_PREFIXES.includes(prefix)) {
+      if (!storyRoots.includes(prefix)) {
         context.report({
           node: titleProp.value,
           messageId: 'unknownPrefix',
-          data: { prefix, allowed: ALLOWED_PREFIXES.join(', ') },
+          data: {
+            prefix,
+            suggestion,
+            allowed: storyRoots.map((r) => `\`${r}/\``).join(', '),
+          },
         })
       }
     }

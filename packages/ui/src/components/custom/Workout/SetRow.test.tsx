@@ -1,10 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import {
-  siblingSource,
-  spacingClassesIn,
-  constClasses,
-  resolveAll,
-} from '../../../test/spacing-resolver'
+import { spacingClassesOf, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { View } from 'react-native'
@@ -179,18 +174,16 @@ describe('SetRow', () => {
  * already exactly `squish-y-xs`.
  */
 describe('SetRow geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'SetRow.tsx')
-
   it('keeps the row inset', () => {
-    const classes = spacingClassesIn(source, 'SetRow')
+    render(<SetRow {...doneRow} />)
+    const classes = spacingClassesOf('set-row')
     expect(classes).toEqual(['px-inset-sm', 'py-1.5'])
     expect(resolveAll(classes)).toEqual(['8px', '6px'])
   })
 
   it('puts the set-type chip on the squish ramp', () => {
-    const classes = constClasses(source, 'TYPE_BADGE_CLASS')
-    expect(classes).toContain('px-squish-x-xs')
-    expect(classes).toContain('py-squish-y-xs')
+    render(<SetRow {...doneRow} setType="W" />)
+    expect(spacingClassesOf('set-row-type-badge')).toEqual(['px-squish-x-xs', 'py-squish-y-xs'])
     expect(resolveAll(['px-squish-x-xs', 'py-squish-y-xs'])).toEqual(['4px', '1px'])
   })
 })

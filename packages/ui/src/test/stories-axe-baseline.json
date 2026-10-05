@@ -49,12 +49,10 @@
   "components-organisms-table--empty-state": ["aria-required-children"],
   "components-organisms-table--loading": ["aria-required-children"],
   "components-organisms-table--sorting-and-selection": [
-    "aria-required-attr",
     "aria-required-children",
     "aria-toggle-field-name"
   ],
   "components-organisms-table--with-row-selection": [
-    "aria-required-attr",
     "aria-required-children",
     "aria-toggle-field-name"
   ],
@@ -69,8 +67,5 @@
   "custom-workout-prhistorymodal--falls-back-to-exercise-id": ["aria-allowed-attr"],
   "custom-workout-prhistorymodal--recent-prs-highlighted": ["aria-allowed-attr"],
   "custom-workout-prhistorymodal--single-record": ["aria-allowed-attr"],
-  "lab-decisions-dataviz-light-palettes--categorical": ["aria-prohibited-attr"],
-  "shell-navitem--active": ["aria-required-parent"],
-  "shell-navitem--default": ["aria-required-parent"],
-  "shell-navitem--live-elsewhere": ["aria-required-parent"]
+  "lab-decisions-dataviz-light-palettes--categorical": ["aria-prohibited-attr"]
 }

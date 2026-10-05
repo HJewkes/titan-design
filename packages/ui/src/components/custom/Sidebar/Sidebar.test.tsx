@@ -180,10 +180,10 @@ describe('Sidebar', () => {
       expect(screen.getByLabelText('Dashboard')).toBeInTheDocument()
     })
 
-    it('communicates selected state', () => {
+    it('marks only the active item as the current page', () => {
       renderSidebar({ activeItem: 'home' })
-      const homeButton = screen.getByLabelText('Home')
-      expect(homeButton).toBeInTheDocument()
+      expect(screen.getByLabelText('Home')).toHaveAttribute('aria-current', 'page')
+      expect(screen.getByLabelText('Dashboard')).not.toHaveAttribute('aria-current')
     })
   })
 })

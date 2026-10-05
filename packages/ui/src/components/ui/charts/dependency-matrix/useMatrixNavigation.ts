@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react'
 
-import { nextCell, positionOf, refAt } from './matrix-model'
+import { nextCell } from '../../../../utils/grid-navigation'
+import { positionOf, refAt } from './matrix-model'
 import type { MatrixCellRef, MatrixDirection, MatrixItem, MatrixPosition } from './types'
 
 export interface UseMatrixNavigationOptions {

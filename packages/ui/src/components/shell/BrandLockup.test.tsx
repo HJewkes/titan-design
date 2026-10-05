@@ -3,7 +3,8 @@ import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { BrandLockup } from './BrandLockup'
 import { brandKeys, brandPresets } from './brands'
-import { siblingSource } from '../../test/spacing-resolver'
+import { siblingSource, spacingClassesAt } from '../../test/spacing-resolver'
+import { capturedByNode } from '../../test/classname-capture'
 
 describe('BrandLockup', () => {
   it('renders the voltras wordmark by default', () => {
@@ -66,8 +67,14 @@ describe('BrandLockup', () => {
 describe('BrandLockup keeps its optical 7px gap', () => {
   const source = siblingSource(import.meta.url, 'BrandLockup.tsx')
 
-  it('ships gap-[7px] with the reason beside it', () => {
-    expect(source).toContain('gap-[7px]')
+  it('renders gap-[7px] on the lockup root', () => {
+    render(<BrandLockup />)
+    const root = screen.getByText('VOLTRAS').parentElement
+    expect(capturedByNode.get(root as Element)?.split(/\s+/)).toContain('gap-[7px]')
+    expect(spacingClassesAt(root)).toEqual([])
+  })
+
+  it('ships the reason beside it', () => {
     expect(source).toMatch(/\/\/ optical: 7px mark-to-wordmark/)
   })
 })

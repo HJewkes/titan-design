@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
 import {
   columnSortState,
@@ -8,7 +8,10 @@ import {
   selectionState,
   sortRows,
   useTableState,
+  RANGE_DEBOUNCE_MS,
+  type ColumnDef,
   type SortDirection,
+  type TableFilters,
 } from './useTableState'
 
 type Row = { id: number; group?: number }
@@ -196,5 +199,290 @@ describe('useTableState', () => {
     expect(result.current.page).toBe(0)
     expect(result.current.paginatedData).toHaveLength(10)
     expect(result.current.totalItems).toBe(25)
+  })
+})
+
+type Finding = { id: string; severity: string; path: string; score: number }
+
+const SEVERITIES = ['error', 'warning', 'info']
+
+function findings(count: number): Finding[] {
+  return Array.from({ length: count }, (_, i) => ({
+    id: `f${i}`,
+    severity: SEVERITIES[i % 3],
+    path: `src/file-${i % 7}.ts`,
+    score: (i * 37) % 101,
+  }))
+}
+
+const findingColumns: ColumnDef<Finding>[] = [{ key: 'severity' }, { key: 'path' }]
+
+describe('useTableState with no new option', () => {
+  it('passes rows through unfiltered in client mode and keeps every landed field', () => {
+    const data = findings(12)
+
+    const { result } = renderHook(() => useTableState<Finding>({ data, defaultPageSize: 5 }))
+
+    expect(result.current.mode).toBe('client')
+    expect(result.current.sortedData).toBe(data)
+    expect(result.current.paginatedData).toEqual(data.slice(0, 5))
+    expect(result.current.totalItems).toBe(12)
+    expect(result.current.visibleRowCount).toBe(12)
+    expect(result.current.filters).toEqual({})
+    expect(result.current.activeFilterCount).toBe(0)
+  })
+})
+
+describe('useTableState filters', () => {
+  const data = findings(30)
+
+  it('filters, then sorts, then pages in client mode', () => {
+    const { result } = renderHook(() =>
+      useTableState<Finding>({ data, columns: findingColumns, defaultPageSize: 4 })
+    )
+
+    act(() => result.current.toggleFilterValue('severity', 'error'))
+    act(() => result.current.handleSort('score'))
+
+    const expected = data.filter((r) => r.severity === 'error').sort((a, b) => a.score - b.score)
+    expect(result.current.sortedData).toEqual(expected)
+    expect(result.current.paginatedData).toEqual(expected.slice(0, 4))
+    expect(result.current.totalItems).toBe(10)
+    expect(result.current.activeFilterCount).toBe(1)
+  })
+
+  it('updates uncontrolled filters through setFilter, toggleFilterValue and clearFilters', () => {
+    const { result } = renderHook(() => useTableState<Finding>({ data, columns: findingColumns }))
+
+    act(() => result.current.setFilter('path', 'file-3'))
+    act(() => result.current.toggleFilterValue('severity', 'info'))
+    expect(result.current.filters).toEqual({ path: 'file-3', severity: ['info'] })
+
+    act(() => result.current.clearFilters('path'))
+    expect(result.current.filters).toEqual({ severity: ['info'] })
+
+    act(() => result.current.setFilter('severity', undefined))
+    expect(result.current.filters).toEqual({})
+  })
+
+  it('calls onFiltersChange for controlled filters and does not change itself', () => {
+    const onFiltersChange = vi.fn()
+    const filters = { severity: ['error'] }
+    const { result } = renderHook(() =>
+      useTableState<Finding>({ data, columns: findingColumns, filters, onFiltersChange })
+    )
+
+    act(() => result.current.toggleFilterValue('severity', 'info'))
+
+    expect(onFiltersChange).toHaveBeenCalledWith({ severity: ['error', 'info'] })
+    expect(result.current.filters).toBe(filters)
+    expect(result.current.totalItems).toBe(10)
+  })
+
+  it('returns to the first page and the top of the window when the filters change', () => {
+    const { result } = renderHook(() =>
+      useTableState<Finding>({ data, columns: findingColumns, defaultPageSize: 5 })
+    )
+    act(() => result.current.setPage(5))
+    act(() => result.current.setWindowRange({ start: 20, end: 28 }))
+
+    act(() => result.current.toggleFilterValue('severity', 'warning'))
+
+    expect(result.current.page).toBe(0)
+    expect(result.current.windowRange).toEqual({ start: 0, end: 8 })
+    expect(result.current.paginatedData).toHaveLength(5)
+  })
+
+  it('returns to the first page when a parent changes controlled filters, not when it re-renders them equal', () => {
+    const { result, rerender } = renderHook(
+      ({ filters }) => useTableState<Finding>({ data, columns: findingColumns, filters }),
+      { initialProps: { filters: { severity: ['error'] } as TableFilters } }
+    )
+    act(() => result.current.setPage(1))
+
+    rerender({ filters: { severity: ['error'] } })
+    expect(result.current.page).toBe(1)
+
+    rerender({ filters: { severity: ['info'] } })
+    expect(result.current.page).toBe(0)
+  })
+
+  it('counts facets over the unfiltered rows and keeps a selected value the rows lack', () => {
+    const { result } = renderHook(() =>
+      useTableState<Finding>({
+        data: findings(9),
+        columns: findingColumns,
+        defaultFilters: { severity: ['error', 'fatal'] },
+      })
+    )
+
+    expect(result.current.facetOptions('severity')).toEqual([
+      { value: 'error', count: 3, isSelected: true },
+      { value: 'warning', count: 3, isSelected: false },
+      { value: 'info', count: 3, isSelected: false },
+      { value: 'fatal', count: 0, isSelected: true },
+    ])
+    expect(result.current.facetOptions('severity', { error: 40 })[0]).toEqual({
+      value: 'error',
+      count: 40,
+      isSelected: true,
+    })
+  })
+})
+
+describe('useTableState filter work', () => {
+  it('reads each accessor at most once per row per active filter and not again on scroll', () => {
+    const data = findings(200)
+    const severity = vi.fn((row: Finding) => row.severity)
+    const path = vi.fn((row: Finding) => row.path)
+    const columns: ColumnDef<Finding>[] = [
+      { key: 'severity', accessor: severity },
+      { key: 'path', accessor: path },
+    ]
+    const defaultFilters = { severity: ['error', 'info'], path: 'file' }
+    const { result } = renderHook(() => useTableState<Finding>({ data, columns, defaultFilters }))
+
+    const calls = severity.mock.calls.length + path.mock.calls.length
+    expect(calls).toBeGreaterThan(0)
+    expect(calls).toBeLessThanOrEqual(data.length * 2)
+
+    severity.mockClear()
+    path.mockClear()
+    for (let start = 0; start < 100; start += 10) {
+      act(() => result.current.setWindowRange({ start, end: start + 20 }))
+    }
+    act(() => result.current.setPage(2))
+    expect(severity).not.toHaveBeenCalled()
+    expect(path).not.toHaveBeenCalled()
+  })
+})
+
+describe('useTableState controlled sort and selection', () => {
+  const data = findings(6)
+
+  it('calls onSortChange for a controlled sort and does not change itself', () => {
+    const onSortChange = vi.fn()
+    const sort = { column: 'score', direction: 'asc' as const }
+    const { result } = renderHook(() => useTableState<Finding>({ data, sort, onSortChange }))
+
+    act(() => result.current.handleSort('score'))
+
+    expect(onSortChange).toHaveBeenCalledWith({ column: 'score', direction: 'desc' })
+    expect(result.current.sortColumn).toBe('score')
+    expect(result.current.sortDirection).toBe('asc')
+  })
+
+  it('calls onSelectedIdsChange for controlled selection and does not change itself', () => {
+    const onSelectedIdsChange = vi.fn()
+    const selectedIds = ['f1']
+    const { result } = renderHook(() =>
+      useTableState<Finding>({ data, selectedIds, onSelectedIdsChange })
+    )
+
+    act(() => result.current.toggleRowSelected(data[2]))
+
+    expect(onSelectedIdsChange).toHaveBeenCalledWith(['f1', 'f2'])
+    expect(result.current.selectedIds).toBe(selectedIds)
+    expect(result.current.isRowSelected(data[2])).toBe(false)
+  })
+
+  it('toggles every filtered row and leaves selected rows outside the filter alone', () => {
+    const { result } = renderHook(() =>
+      useTableState<Finding>({
+        data,
+        columns: findingColumns,
+        defaultSelectedIds: ['f1'],
+        defaultFilters: { severity: ['error'] },
+        getRowId: (row) => row.id,
+      })
+    )
+    expect(result.current.allRowsSelection).toBe('none')
+
+    act(() => result.current.toggleAllRowsSelected())
+    expect(result.current.selectedIds).toEqual(['f1', 'f0', 'f3'])
+    expect(result.current.allRowsSelection).toBe('all')
+
+    act(() => result.current.toggleAllRowsSelected())
+    expect(result.current.selectedIds).toEqual(['f1'])
+  })
+})
+
+describe('useTableState manual mode', () => {
+  beforeEach(() => vi.useFakeTimers())
+  afterEach(() => vi.useRealTimers())
+
+  const rows = findings(1000)
+  const loadedBelow = (end: number) => (index: number) => (index < end ? rows[index] : undefined)
+
+  function renderManual(onRangeNeeded = vi.fn(), loaded = 100) {
+    const hook = renderHook(() =>
+      useTableState<Finding>({
+        mode: 'manual',
+        rowCount: 1000,
+        getRow: loadedBelow(loaded),
+        columns: findingColumns,
+        onRangeNeeded,
+      })
+    )
+    return { ...hook, onRangeNeeded }
+  }
+
+  it('holds state only and serves the window from getRow with holes for unloaded rows', () => {
+    const { result } = renderManual()
+
+    act(() => result.current.toggleFilterValue('severity', 'error'))
+    act(() => result.current.setWindowRange({ start: 98, end: 102 }))
+
+    expect(result.current.visibleRowCount).toBe(1000)
+    expect(result.current.totalItems).toBe(1000)
+    expect(result.current.sortedData).toEqual([])
+    expect(result.current.rowAt(5)).toBe(rows[5])
+    expect(result.current.windowRows).toEqual([rows[98], rows[99], undefined, undefined])
+  })
+
+  it('asks once per missing block, only after the window holds still for the debounce', () => {
+    const { result, onRangeNeeded } = renderManual()
+
+    act(() => result.current.setWindowRange({ start: 90, end: 160 }))
+    act(() => vi.advanceTimersByTime(RANGE_DEBOUNCE_MS - 1))
+    act(() => result.current.setWindowRange({ start: 150, end: 220 }))
+    act(() => vi.advanceTimersByTime(RANGE_DEBOUNCE_MS - 1))
+    expect(onRangeNeeded).not.toHaveBeenCalled()
+
+    act(() => vi.advanceTimersByTime(1))
+    expect(onRangeNeeded.mock.calls).toEqual([
+      [{ start: 100, end: 200 }],
+      [{ start: 200, end: 300 }],
+    ])
+
+    act(() => result.current.setWindowRange({ start: 120, end: 190 }))
+    act(() => vi.advanceTimersByTime(RANGE_DEBOUNCE_MS))
+    act(() => result.current.setWindowRange({ start: 0, end: 50 }))
+    act(() => vi.advanceTimersByTime(RANGE_DEBOUNCE_MS))
+    expect(onRangeNeeded).toHaveBeenCalledTimes(2)
+  })
+
+  it('asks again for a block after a filter change clears the requested ranges', () => {
+    const { result, onRangeNeeded } = renderManual(vi.fn(), 0)
+    act(() => result.current.setWindowRange({ start: 0, end: 40 }))
+    act(() => vi.advanceTimersByTime(RANGE_DEBOUNCE_MS))
+    expect(onRangeNeeded).toHaveBeenCalledTimes(1)
+
+    act(() => result.current.toggleFilterValue('severity', 'info'))
+    act(() => vi.advanceTimersByTime(RANGE_DEBOUNCE_MS))
+
+    expect(onRangeNeeded).toHaveBeenCalledTimes(2)
+    expect(onRangeNeeded).toHaveBeenLastCalledWith({ start: 0, end: 100 })
+  })
+
+  it('asks again after clearRequestedRanges, for a consumer retrying a failed load', () => {
+    const { result, onRangeNeeded } = renderManual(vi.fn(), 0)
+    act(() => result.current.setWindowRange({ start: 0, end: 40 }))
+    act(() => vi.advanceTimersByTime(RANGE_DEBOUNCE_MS))
+
+    act(() => result.current.clearRequestedRanges())
+    act(() => vi.advanceTimersByTime(RANGE_DEBOUNCE_MS))
+
+    expect(onRangeNeeded).toHaveBeenCalledTimes(2)
   })
 })

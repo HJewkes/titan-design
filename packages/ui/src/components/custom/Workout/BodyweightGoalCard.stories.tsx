@@ -12,7 +12,7 @@ const CELL_MAX_WIDTH = 920
 const meta: Meta<typeof BodyweightGoalCard> = {
   title: 'Custom/Workout/Goals/BodyweightGoalCard',
   component: BodyweightGoalCard,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     layout: 'fullscreen',
     docs: {

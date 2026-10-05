@@ -101,7 +101,7 @@ function Strips({ scenario, restSeconds = 47 }: DecisionArgs) {
  */
 const meta: Meta<DecisionArgs> = {
   title: 'Lab/Decisions/Pinned Live Strip',
-  tags: ['status:lab'],
+  tags: ['status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
   argTypes: {
     scenario: {

@@ -13,17 +13,18 @@ where the choice is actually made.
 
 Pick by **what the colour means**, not by what looks right.
 
-| The colour means…                                         | Use                                                           | Not                                      |
-| --------------------------------------------------------- | ------------------------------------------------------------- | ---------------------------------------- |
-| **A value got better / worse** (delta, trend, growth)     | `result-improve` / `result-degrade` / `result-neutral`        | `status-success` / `status-error`        |
-| **A thing is in a state** (error, warning, live, info)    | `status-*`                                                    | `result-*`, brand colours                |
-| **N peer categories** (chart series, tags, split counts)  | `categoricalPalette` (see §2)                                 | `data-1..10` — **superseded**            |
-| **Brand identity / primary action**                       | `brand-primary`, `brand-secondary`                            | a status token that happens to be orange |
-| **Structural chrome** (page, card, input backgrounds)     | `surface-*`, `background-*`                                   | grey ramp steps directly                 |
-| **Text**                                                  | `text-primary` / `-secondary` / `-tertiary`                   | grey ramp steps directly                 |
-| **Rules and separators**                                  | `hairline-*`, `divider`, `border-*`                           | a hardcoded `border` colour              |
-| **A dimming layer over content** (modal, drawer, press)   | `scrim-*`                                                     | `bg-black/50` — see below                |
-| **A label ON a fill** (solid button, chart tile, toolbar) | `on-brand-*`, `on-status-*`, `on-control-*`, `on-data-strong` | `text-white`, `text-primary`             |
+| The colour means…                                                          | Use                                                                              | Not                                      |
+| -------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------- |
+| **A value got better / worse** (delta, trend, growth)                      | `result-improve` / `result-degrade` / `result-neutral`                           | `status-success` / `status-error`        |
+| **A thing is in a state** (error, warning, live, info)                     | `status-*`                                                                       | `result-*`, brand colours                |
+| **N peer categories** (chart series, tags, split counts)                   | `categoricalPalette` (see §2)                                                    | `data-1..10` — **superseded**            |
+| **A position on an ordered or diverging scale** (effort, volume vs target) | `dataviz-sequential-*` (0 low → 5 high), `dataviz-diverging-*` (2 is the centre) | `status-*`, hand-picked ramp steps       |
+| **Brand identity / primary action**                                        | `brand-primary`, `brand-secondary`                                               | a status token that happens to be orange |
+| **Structural chrome** (page, card, input backgrounds)                      | `surface-*`, `background-*`                                                      | grey ramp steps directly                 |
+| **Text**                                                                   | `text-primary` / `-secondary` / `-tertiary`                                      | grey ramp steps directly                 |
+| **Rules and separators**                                                   | `hairline-*`, `divider`, `border-*`                                              | a hardcoded `border` colour              |
+| **A dimming layer over content** (modal, drawer, press)                    | `scrim-*`                                                                        | `bg-black/50` — see below                |
+| **A label ON a fill** (solid button, chart tile, toolbar)                  | `on-brand-*`, `on-status-*`, `on-control-*`, `on-data-strong`                    | `text-white`, `text-primary`             |
 
 ### `result-*` vs `status-*` — the distinction that gets missed
 
@@ -74,7 +75,7 @@ look like the obvious choice for chart data. Use `categoricalPalette`.
 ## 2. The categorical palette
 
 ```ts
-import { categoricalPalette, CATEGORICAL_CVD_SAFE_MAX } from '../theme/tokens/primitives'
+import { categoricalPalette, CATEGORICAL_CVD_SAFE_MAX } from '@/theme/tokens/primitives'
 
 const [reads, writes, edits] = categoricalPalette.default
 ```
@@ -86,6 +87,14 @@ const [reads, writes, edits] = categoricalPalette.default
   second encoding.
 - **Two variants:** `default` (vivid — neutral/light surfaces, legible under black text) and `dark`
   (deeper — legible under white text on a filled swatch).
+
+**Theme-aware form.** `dataviz-categorical-0..6` is the same seven hues in the same order, resolved
+per theme: dark equals `categoricalPalette.default`, light carries its own steps. Use the role where the
+colour must follow the active theme. `Scatter` and `Treemap` take it through
+`DATAVIZ_CATEGORICAL_ROLES`, and `Avatar` hashes a name onto it.
+`dataviz-diverging-*` paints volume status (`BodyMap`, `MuscleGlyph`, `MuscleGroupChip`,
+`TrainingStatusPage`); `dataviz-sequential-*` paints velocity zones (`VelocityStrip`,
+`PinnedLiveStrip`).
 
 Take colours **in order from the front**. Hand-picking indices to "look nicer" breaks the CVD
 guarantee and the nested-stability property in one move.
@@ -113,7 +122,10 @@ palette size.
 so the component stops responding to the theme. `resolveColor` returns `var(--color-<token>)` on web —
 which is what makes light/dark switching work — and the resolved hex on native, where it is dark-only.
 
-```ts
+```tsx
+import { View } from 'react-native'
+import { getSemanticColors, resolveColor } from '@titan-design/react-ui'
+
 // ✗ frozen to dark, silently breaks light theme
 const t = getSemanticColors('dark')
 ;<View style={{ backgroundColor: t['brand-primary'] }} />
@@ -131,8 +143,10 @@ component whose colours are asserted needs literal hex that still follows the th
 Surface hooks give you: the mode comes from the nearest `<Surface>` on every render.
 
 ```ts
+import { getSemanticColors, useOnSurfaceColor, useSurfaceMode } from '@titan-design/react-ui'
+
 // ✗ frozen at import time — one palette for the process's lifetime
-const t = getSemanticColors('dark')
+const frozen = getSemanticColors('dark')
 
 // ✓ literal hex, re-resolved per render from the enclosing Surface
 const t = getSemanticColors(useSurfaceMode())
@@ -149,7 +163,7 @@ warning, not a fallback — the class is dead CSS, and the element paints nothin
 `tailwind.config.js` is `var(--color-…)`, which is exactly what makes light/dark switching work, so
 this hits every token in the system:
 
-```tsx
+```tsx fragment
 // ✗ dead CSS — no rule is generated, the tint never appears
 <View className="bg-brand-primary/10" />
 
@@ -268,7 +282,7 @@ future density mode remaps custom properties instead of editing components.
 | `section` | sm md lg       | 24 32 48                         | gap between unrelated blocks                |
 | `gutter`  | sm md          | 16 24                            | padding from the container or viewport edge |
 
-```tsx
+```tsx fragment
 <View className="p-inset-md gap-stack-md" />
 <Pressable className="px-control-x-md py-control-y-md min-h-control-md" />
 <View className="px-squish-x-md py-squish-y-md" />
@@ -302,12 +316,14 @@ The bracket form is only one dialect. `titan/no-raw-spacing` covers the other �
 CSS shorthand string on a `padding*`, `margin*`, `gap`, `rowGap` or `columnGap` property inside a
 style object, which is how the specimen-derived families write spacing:
 
-```ts
+```tsx
+import { View } from 'react-native'
+
 // ✗ both flagged
 const s = { paddingVertical: 9, padding: '9px 12px' }
 
 // ✓ the semantic class, or the numeric scale
-<View className="py-squish-y-lg px-inset-md" />
+;<View className="py-squish-y-lg px-inset-md" />
 ```
 
 `0` is never flagged — zero is the absence of spacing, not a value off the scale. A computed value
@@ -316,7 +332,7 @@ const s = { paddingVertical: 9, padding: '9px 12px' }
 **A genuine optical correction survives with a reason.** A `// optical: <why>` comment on the same
 line or the line above exempts the value:
 
-```ts
+```ts fragment
 // optical: the cap sits 1px high at this weight
 paddingTop: 7,
 ```
@@ -332,6 +348,8 @@ Both rules are enrolled per family, extended as each migration wave lands and ne
 ---
 
 ## 6. Guardrails
+
+Lint messages follow the four-line contract in `eslint-rules/README.md`, enforced by `src/test/lint-message-contract.test.ts`.
 
 `eslint.config.js` enforces a subset of the above, scoped by directory:
 
@@ -366,3 +384,16 @@ module-scope call. Resolving at render time is what clears it, NOT switching to 
 component whose colours are asserted needs literal hex, and `getSemanticColors(mode)` gives that
 while still following the theme. Where `getGlowShadow` or `ActivityIndicator` needs a literal
 (`ui/indicator`, `ui/spinner`), the hook form satisfies both.
+
+## 7. Adding to the system
+
+If no existing token serves a component, propose one before adding it. A decision under
+`docs/decisions/` at the repo root, copied from `docs/decisions/0000-template.md` and accepted, comes
+first for:
+
+- a new token category, palette, ramp step or primitive;
+- a new role inside an existing category that introduces a new colour value.
+
+A new role that only aliases an existing primitive value needs no decision: the PR checklist and the
+CI gates cover it. The index and the full rule are in `docs/decisions/README.md`. Once the decision is
+accepted, the token files, this file's entry and their tests land in one PR.

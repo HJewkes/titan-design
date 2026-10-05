@@ -4,6 +4,7 @@ import { axe } from 'jest-axe'
 import { AccessibilityInfo, Platform, Text } from 'react-native'
 import type { ChatMessage } from '@titan-design/chat-protocol'
 
+import { DELIVERY_LABEL } from './chatThread'
 import { MessageList } from './MessageList'
 import {
   ATHLETE,
@@ -14,6 +15,7 @@ import {
   GROUP_THREAD,
   NOW,
   PARTICIPANTS,
+  ENDORSEMENT_THREAD,
   chatMessage,
   localIso,
 } from './coach-thread-fixture'
@@ -82,6 +84,41 @@ describe('MessageList', () => {
       'Coach',
       'Sam Okafor',
     ])
+  })
+
+  it('exposes a named log region for the thread', () => {
+    renderList(COACH_THREAD)
+    expect(screen.getByRole('log', { name: 'Conversation' })).toBeInTheDocument()
+  })
+
+  it('takes the log name from the consumer', () => {
+    renderList(COACH_THREAD, { accessibilityLabel: 'Chat with Coach' })
+    expect(screen.getByRole('log', { name: 'Chat with Coach' })).toBeInTheDocument()
+  })
+
+  it('starts every direct message with its speaker', () => {
+    renderList(COACH_THREAD)
+    const messages = COACH_THREAD.map(({ id }) => screen.getByTestId(`chat-message-${id}`))
+    expect(messages.length).toBeGreaterThan(0)
+    for (const message of messages) {
+      expect(message.textContent).toMatch(/^(You|Coach): /)
+    }
+  })
+
+  it('gives each group message exactly one author string', () => {
+    renderList(GROUP_THREAD, { participants: GROUP_PARTICIPANTS })
+    for (const id of ['g1', 'g2', 'g3', 'g4', 'g5']) {
+      const message = screen.getByTestId(`chat-message-${id}`)
+      const names = message.querySelectorAll(
+        '[data-testid="chat-message-author"], [data-testid="chat-message-speaker"]'
+      )
+      expect(names).toHaveLength(1)
+    }
+  })
+
+  it('has no accessibility violations in a group thread', async () => {
+    const { container } = renderList(GROUP_THREAD, { participants: GROUP_PARTICIPANTS })
+    expect(await axe(container)).toHaveNoViolations()
   })
 
   it('shows delivery state on the newest own message only', () => {
@@ -182,6 +219,40 @@ describe('MessageList', () => {
     scrollAwayFromEnd()
     rerender([...COACH_THREAD, reply('mine', ATHLETE)])
     expect(screen.queryByTestId('chat-unread-badge')).toBeNull()
+  })
+
+  it('takes every built-in string from labels', () => {
+    const labels = {
+      showEarlier: 'Load older',
+      unknownAuthor: 'Someone',
+      endorsed: 'Approved by staff',
+      writing: 'Thinking…',
+      delivery: { ...DELIVERY_LABEL, accepted: 'Out' },
+      today: 'Hoy',
+      yesterday: 'Ayer',
+      typing: (names: readonly string[]) => `${names.join(', ')} escribe`,
+      newMessages: (shown: string) => `${shown} nuevos`,
+    }
+    const older = chatMessage('m0', COACH, localIso(1, 17, 0), [{ type: 'text', text: 'older' }])
+    const thread = [older, ...COACH_THREAD, ENDORSEMENT_THREAD[1], streamed('w', 'Thinking about')]
+    const stranger = { ...COACH, id: 'stranger' }
+    const { rerender } = renderList(thread, {
+      labels,
+      pageSize: thread.length - 1,
+      typing: [COACH],
+    })
+    scrollAwayFromEnd()
+    rerender([...thread, reply('x', stranger)])
+
+    expect(screen.getByRole('button', { name: 'Load older' })).toBeInTheDocument()
+    expect(screen.getByTestId('chat-message-announcer')).toHaveTextContent('Someone: reply x')
+    expect(screen.getByTestId('chat-endorsed-bubble')).toHaveTextContent('Approved by staff')
+    expect(screen.getByText('Thinking…')).toBeInTheDocument()
+    expect(screen.getByTestId('chat-message-delivery')).toHaveTextContent('Out')
+    expect(screen.getByText('Hoy')).toBeInTheDocument()
+    expect(screen.getByText('Ayer')).toBeInTheDocument()
+    expect(screen.getByText('Coach escribe')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '1 nuevos' })).toBeInTheDocument()
   })
 
   it('has no accessibility violations', async () => {
