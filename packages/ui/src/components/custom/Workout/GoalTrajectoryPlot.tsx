@@ -533,6 +533,7 @@ function CurrentWeekMark({ geometry, palette }: LayerProps) {
   return (
     <circle
       data-testid="goal-trajectory-chart-current-week-point"
+      aria-label={CURRENT_WEEK_NO_READING}
       cx={point.x}
       cy={point.y}
       r={DOT_RADIUS}

@@ -92,8 +92,8 @@ differ, so the older chart's choices are not copied by accident.
   ("Calibrating — no band yet") and the label are fixed, not taken from `status`.
 - **The canvas is one accessible image.** Its `accessibilityLabel` is a
   generated summary (metric, latest value, status or trend). Decorative layers
-  are hidden from it: `GoalTrajectoryChart`'s `<svg>` is `aria-hidden`, so
-  nothing inside it carries a label.
+  are hidden from it: `GoalTrajectoryChart`'s `<svg>` is `aria-hidden`, so its
+  marks are not in the accessibility tree.
 - **The line draws left to right on mount**, and a prop turns the entrance off
   (`animate`, `animateOnMount`) so visual baselines capture the final frame.
 - **Mesocycle boundaries and PR stars** are overlays on the same plot.
