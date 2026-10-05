@@ -375,3 +375,16 @@ module-scope call. Resolving at render time is what clears it, NOT switching to 
 component whose colours are asserted needs literal hex, and `getSemanticColors(mode)` gives that
 while still following the theme. Where `getGlowShadow` or `ActivityIndicator` needs a literal
 (`ui/indicator`, `ui/spinner`), the hook form satisfies both.
+
+## 7. Adding to the system
+
+If no existing token serves a component, propose one before adding it. A decision under
+`docs/decisions/` at the repo root, copied from `docs/decisions/0000-template.md` and accepted, comes
+first for:
+
+- a new token category, palette, ramp step or primitive;
+- a new role inside an existing category that introduces a new colour value.
+
+A new role that only aliases an existing primitive value needs no decision: the PR checklist and the
+CI gates cover it. The index and the full rule are in `docs/decisions/README.md`. Once the decision is
+accepted, the token files, this file's entry and their tests land in one PR.

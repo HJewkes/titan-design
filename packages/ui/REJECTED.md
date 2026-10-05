@@ -22,6 +22,10 @@ a `status:` tag, never in the barrel.
 An entry should say what was tried, what was chosen instead, and _why_ — enough
 that someone can tell whether a future change invalidates the reasoning.
 
+Component and chart directions stay here. Token, palette and primitive
+rejections live in the "Rejected alternatives" section of each decision in
+[`docs/decisions/`](../../docs/decisions/README.md), and its index lists them.
+
 ---
 
 ## Runtime theme presets (`applyThemePreset`, `audiobookPreset`) — rejected 2026-09-08
