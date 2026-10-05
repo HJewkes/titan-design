@@ -68,11 +68,7 @@
     "props": 26
   },
   "components/custom/Workout/ExerciseDetailPage.tsx": {
-    "file-lines": 535
-  },
-  "components/custom/Workout/ExerciseDetailPage.tsx#ExerciseDetailPage": {
-    "component-lines": 154,
-    "function-lines": 154
+    "file-lines": 522
   },
   "components/custom/Workout/ExerciseHeading.tsx#ExerciseHeading": {
     "props": 19
@@ -130,10 +126,7 @@
     "function-lines": 152
   },
   "components/custom/Workout/ProgramPlanningPage.tsx": {
-    "file-lines": 354
-  },
-  "components/custom/Workout/ProgramPlanningPage.tsx#ProgramPlanningPage": {
-    "function-lines": 101
+    "file-lines": 340
   },
   "components/custom/Workout/ReadinessCheck.tsx": {
     "file-lines": 227
