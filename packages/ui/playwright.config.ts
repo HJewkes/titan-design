@@ -59,6 +59,8 @@ export default defineConfig({
     reuseExistingServer: false,
     timeout: 120000,
     // Surfaces Vite's "page reload" lines in the CI log, the evidence for TD-636.
+    env: { DEBUG: 'vite:deps' },
     stdout: 'pipe',
+    stderr: 'pipe',
   },
 })
