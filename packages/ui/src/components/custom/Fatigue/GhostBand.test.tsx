@@ -24,6 +24,13 @@ const band = (segs: PhaseSegment[] = segments, props: Partial<GhostBandProps> = 
     </svg>
   ).container
 
+describe('GhostBand assistive-tech exposure', () => {
+  it('hides the decorative band from assistive tech', () => {
+    const c = band(segments, { showLabels: true })
+    expect(c.querySelector('svg > g')).toHaveAttribute('aria-hidden', 'true')
+  })
+})
+
 const geom = (r: Element) => ({
   x: Number(r.getAttribute('x')),
   width: Number(r.getAttribute('width')),

@@ -124,17 +124,6 @@
     "WeightBadge": 1,
     "WorkoutPill": 1
   },
-  "src/stories/PresetShowcase.stories.tsx": {
-    "applyThemePreset": 1,
-    "audiobookPreset": 1,
-    "defaultPreset": 1,
-    "ThemePreset": 1
-  },
-  "src/stories/ThemePresets.stories.tsx": {
-    "applyThemePreset": 1,
-    "audiobookPreset": 1,
-    "defaultPreset": 1
-  },
   "src/theme/presets/apply.ts": {
     "ThemePreset": 1
   },

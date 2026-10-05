@@ -5,6 +5,9 @@
  * ECC / HOLD / CON labels rendered INSIDE it. Extracted from GhostSpark so the single
  * sparkline and a future top/bottom dual compose the SAME band instead of re-rolling it.
  *
+ * It is DECORATIVE for assistive tech (`aria-hidden`): the phase it paints is already carried by
+ * the enclosing chart's text alternative, and ECC / CON repeat what that label says.
+ *
  * It is a pure SVG group: the caller owns the x-scale (`x`) and the band's vertical
  * placement (`top`), so the same band serves a bottom-pinned single or a centred dual.
  *
@@ -164,7 +167,7 @@ export function GhostBand({
   })
 
   return (
-    <g>
+    <g aria-hidden="true">
       <defs>
         <clipPath id={clipId}>
           <rect x={bandLeft} y={top} width={bandW} height={height} rx={2} />
