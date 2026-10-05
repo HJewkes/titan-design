@@ -108,9 +108,10 @@ describe('Drawer', () => {
         renderDrawer({ isOpen: true, placement, testID: 'panel' })
         const classes = panelClasses()
         expect(classes).toEqual(expect.arrayContaining([...edges[placement]]))
-        const others = Object.values(edges)
+        const own: readonly string[] = edges[placement]
+        const others: string[] = Object.values(edges)
           .flat()
-          .filter((c) => !edges[placement].includes(c as never))
+          .filter((c) => !own.includes(c))
         expect(classes.filter((c) => others.includes(c))).toEqual([])
       })
     })
