@@ -48,7 +48,7 @@ const meta: Meta<typeof VelocityStrip> = {
       description: { component: 'Composes **SetBarChart** · **ChartSideRail** · **SessionRail**.' },
     },
   },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     variant: {
       control: 'select',

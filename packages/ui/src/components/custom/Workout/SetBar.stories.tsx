@@ -11,7 +11,7 @@ import { Surface } from '../../ui/surface'
 const meta: Meta<typeof SetBar> = {
   title: 'Custom/Workout/SetBar',
   component: SetBar,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {
