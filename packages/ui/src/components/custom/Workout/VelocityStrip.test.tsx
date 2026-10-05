@@ -821,6 +821,14 @@ describe('VelocityStrip chrome resolves to the spacing tokens', () => {
     })
   })
 
+  // The owner approved the framed strip without a fill (TD-509). Painting one is a visual change
+  // that goes through an owner Gate 2, so this fails if the strip starts rendering a background.
+  it('leaves the framed strip unfilled', () => {
+    render(<VelocityStrip velocities={sampleVelocities} />)
+    const { backgroundColor } = getComputedStyle(screen.getByTestId('velocity-strip'))
+    expect(['', 'transparent', 'rgba(0, 0, 0, 0)']).toContain(backgroundColor)
+  })
+
   it('keeps the band label offset on the numeric scale', () => {
     render(<VelocityStrip velocities={[1.0, 0.95, 0.88, 0.8]} variant="hero" height={300} />)
     const label = screen.getAllByText(/^VL \d+%$/)[0]
