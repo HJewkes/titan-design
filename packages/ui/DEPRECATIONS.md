@@ -66,10 +66,10 @@ existing call sites and for `voltras-mcp`, which imports `Pill` directly.
 exports keep their names on the package barrel, so imports of
 `@titan-design/react-ui` are unchanged; only the props below moved.
 
-| Export                                     | Replacement                                                          | Known consumers     | Task   |
-| ------------------------------------------ | -------------------------------------------------------------------- | ------------------- | ------ |
-| `DashboardShell` (+ `DashboardShellProps`) | `WorkoutShell` (+ `WorkoutShellProps`) — identical props, alias kept | in-repo `lab/` only | AW-132 |
-| `defaultNavItems`                          | `workoutNavItems`                                                    | in-repo shell only  | AW-132 |
+| Export                                     | Replacement                                                          | Known consumers                                                         | Task   |
+| ------------------------------------------ | -------------------------------------------------------------------- | ----------------------------------------------------------------------- | ------ |
+| `DashboardShell` (+ `DashboardShellProps`) | `WorkoutShell` (+ `WorkoutShellProps`) — identical props, alias kept | voltras-mcp (live); removal waits on its migration to `WorkoutShell`    | AW-132 |
+| `defaultNavItems`                          | `workoutNavItems`                                                    | voltras-mcp (live); removal waits on its migration to `workoutNavItems` | AW-132 |
 
 **Two breaking prop changes, no alias possible** (a deprecated shim would put a
 workout import back inside the generic shell, which is the cycle this task
