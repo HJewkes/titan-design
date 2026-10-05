@@ -85,8 +85,8 @@ function MesoHeatmapStrip({
 
 /**
  * A mesocycle card with name, goal, split, week range, an optional volume
- * heatmap strip, and an expandable WeekRow list. Highlighting animates the
- * border toward brand-primary with a subtle glow to stay in sync with the
+ * heatmap strip, and an expandable WeekRow list. Highlighting sets a
+ * brand-primary border with a subtle glow to stay in sync with the
  * MesoProgressBar.
  *
  * @example
