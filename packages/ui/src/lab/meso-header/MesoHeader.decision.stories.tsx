@@ -104,8 +104,10 @@ function StripAboveHeaderFrame(args: FrameArgs) {
               {strip}
             </View>
           )}
-          <ScrollView className="flex-1" contentContainerClassName="p-5">
-            <PageBody />
+          <ScrollView className="flex-1">
+            <View className="p-5">
+              <PageBody />
+            </View>
           </ScrollView>
         </View>
       </WorkoutShell>
