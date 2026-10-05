@@ -1,3 +1,6 @@
+/* eslint-disable titan/no-var-color-opacity --
+ * The fixtures and checker cases below quote dead classes on purpose.
+ */
 /* eslint-disable titan/no-device-internals --
  * The fixtures below are the shapes the device rules reject. Every value is
  * invented for the test.
@@ -51,29 +54,39 @@ const FROZEN_CALL =
   'CallExpression[callee.name="getSemanticColors"]:not(:has(> CallExpression[callee.name="useSurfaceMode"]))'
 
 const PENDING = new Set<string>([
-  'titan/no-raw-color:hex',
-  'titan/no-raw-color:functional',
-  'titan/no-raw-color:twPalette',
-  'titan/no-raw-color:twAchromatic',
-  'titan/no-raw-color:twArbitrary',
-  'titan/no-raw-color:named',
   'titan/no-raw-composition:rawButton',
   'titan/no-raw-composition:d3Import',
   'titan/no-raw-composition:pathMath',
   'titan/no-raw-spacing:rawSpacing',
-  'titan/no-var-color-opacity:deadClass',
-  `no-restricted-syntax:${GRADIENT_LITERAL}`,
-  `no-restricted-syntax:${GRADIENT_TEMPLATE}`,
   `no-restricted-syntax:${ARBITRARY_LITERAL}`,
   `no-restricted-syntax:${ARBITRARY_TEMPLATE}`,
   `no-restricted-syntax:${FONT_SIZE}`,
-  `no-restricted-syntax:${FROZEN_CALL}`,
 ])
 
 const SHELL_FILE = 'src/components/shell/ContractFixture.tsx'
 const CHAT_FILE = 'src/components/custom/Chat/ContractFixture.tsx'
 const UI_FILE = 'src/components/ui/contract-fixture/ContractFixture.tsx'
+const TOKEN_PURE_FILE = 'src/components/custom/ActiveWork/ContractFixture.tsx'
+const inShell = (code: string): Fixture => ({ code, filename: SHELL_FILE })
 const FIXTURES: Record<string, Fixture> = {
+  'titan/no-raw-color:hex': inShell("export const s = { color: '#123456' }"),
+  'titan/no-raw-color:functional': inShell("export const s = { color: 'rgba(0, 0, 0, 0.5)' }"),
+  'titan/no-raw-color:twPalette': inShell("export const c = 'bg-red-500'"),
+  'titan/no-raw-color:twAchromatic': inShell("export const c = 'text-white'"),
+  'titan/no-raw-color:twArbitrary': inShell("export const c = 'border-[#123456]'"),
+  'titan/no-raw-color:named': inShell("export const c = 'white'"),
+  'titan/no-var-color-opacity:deadClass': inShell("export const c = 'bg-hairline/20'"),
+  'titan/no-var-color-opacity:deadClassNoRung': inShell("export const c = 'bg-divider/50'"),
+  [`no-restricted-syntax:${GRADIENT_LITERAL}`]: inShell(
+    "export const g = 'linear-gradient(transparent, transparent)'"
+  ),
+  [`no-restricted-syntax:${GRADIENT_TEMPLATE}`]: inShell(
+    'export const g = `linear-gradient(transparent, transparent)`'
+  ),
+  [`no-restricted-syntax:${FROZEN_CALL}`]: {
+    code: "export const c = getSemanticColors('dark')",
+    filename: TOKEN_PURE_FILE,
+  },
   'titan/no-deprecated-import:deprecated': {
     code: "import { StatusDot } from '@/components/custom/Workout/StatusDot'",
     filename: UI_FILE,
@@ -190,9 +203,12 @@ async function symbolProblem(span: string): Promise<string | undefined> {
   return name in exported ? undefined : `symbol \`${name}\` is not exported from ${mod}`
 }
 
-/** A `src`-relative path, or one under `src/components/`, as a message names it (`ui/`, `custom/X`). */
+/**
+ * A path as a message names it: under `src/components/` (`ui/`, `custom/X`), `src`-relative
+ * (`theme/gradients`), or package-relative from `src/` (`src/hooks/x.ts`).
+ */
 function pathProblem(span: string): string | undefined {
-  const bases = [path.join(SRC, 'components', span), path.join(SRC, span)]
+  const bases = [path.join(SRC, 'components', span), path.join(SRC, span), path.join(uiRoot, span)]
   const exists = bases.some((base) => PATH_SUFFIXES.some((ext) => fs.existsSync(base + ext)))
   return exists ? undefined : `path \`${span}\` does not exist under src`
 }
@@ -221,7 +237,8 @@ export async function contractProblems(message: string): Promise<string[]> {
   const [symbols, classes, paths, roots, components, dataKeys] = [
     of(SYMBOL_OPTION),
     of(CLASS_OPTION),
-    of(PATH_OPTION),
+    // A class with an opacity modifier (`bg-white/50`) is path-shaped too; it goes to the compile check.
+    of(PATH_OPTION).filter((span) => !CLASS_OPTION.test(span)),
     of(ROOT_OPTION),
     of(EXPORT_OPTION),
     of(DATA_KEY_OPTION),
@@ -285,6 +302,26 @@ describe('lint message contract: the checker', () => {
       '`NoSuchThing` is not exported from the package',
       'path `ui/no-such-dir` does not exist under src',
       'story root `Widgets` is not in preview.tsx',
+    ])
+  })
+
+  it('accepts a class with an opacity modifier that compiles, without a path check', async () => {
+    expect(await contractProblems('Use `bg-white/50` instead.')).toEqual([])
+  })
+
+  it('rejects a class with an opacity modifier that compiles to nothing, as a class', async () => {
+    expect(await contractProblems('Use `bg-hairline/20` instead.')).toEqual([
+      'class `bg-hairline/20` does not compile',
+    ])
+  })
+
+  it('accepts a package-relative path under src', async () => {
+    expect(await contractProblems('Move it to `src/hooks/useMeasuredWidth.ts`.')).toEqual([])
+  })
+
+  it('rejects a package-relative path under src that does not exist', async () => {
+    expect(await contractProblems('Move it to `src/hooks/no-such-hook.ts`.')).toEqual([
+      'path `src/hooks/no-such-hook.ts` does not exist under src',
     ])
   })
 
