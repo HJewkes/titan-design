@@ -9,6 +9,7 @@
  * fatigue card can drop in "the velocity hero" without re-specifying the mode.
  */
 import { View } from 'react-native'
+import { formatVelocity } from '../../../utils/workout-format'
 import { VelocityStrip, type VelocityLossThresholds } from '../Workout/VelocityStrip'
 
 export interface VelocityHeroProps {
@@ -26,6 +27,13 @@ export interface VelocityHeroProps {
   lossThresholds?: VelocityLossThresholds
 }
 
+/** The hero's text alternative: every rep's mean velocity, in rep order. */
+function velocityLabel(velocities: number[]): string {
+  if (velocities.length === 0) return 'Bar velocity by rep, no reps yet'
+  const reps = velocities.map(formatVelocity).join(', ')
+  return `Bar velocity by rep, ${velocities.length} reps: ${reps} m/s`
+}
+
 export function VelocityHero({
   velocities,
   targetReps,
@@ -35,7 +43,12 @@ export function VelocityHero({
   lossThresholds,
 }: VelocityHeroProps) {
   return (
-    <View testID="velocity-hero" style={width != null ? { width, height } : { flex: 1, height }}>
+    <View
+      testID="velocity-hero"
+      accessibilityRole="image"
+      accessibilityLabel={velocityLabel(velocities)}
+      style={width != null ? { width, height } : { flex: 1, height }}
+    >
       <VelocityStrip
         variant="hero"
         velocities={velocities}
