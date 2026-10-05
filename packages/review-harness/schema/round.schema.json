@@ -53,7 +53,6 @@
       "maximum": 4000
     },
     "variants": {
-      "minItems": 1,
       "maxItems": 80,
       "type": "array",
       "items": {

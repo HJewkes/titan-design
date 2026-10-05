@@ -14,8 +14,8 @@ as JSON on stdout and in `feedback.json`. Private workspace tool, not published.
 5. `a` turns pins on: click a spot on any frame, type a note. `Esc` turns pins off.
 6. On a question, `1`-`9` pick its options; the scale takes its value directly.
 7. The last box is for general notes. `l` toggles one column per variant.
-   A sectioned round asks each group's question above that group's frames, and every frame
-   carries the question it belongs to in its (sticky) header. It shows one section at a time:
+   A sectioned round asks each group's question above that group's frames. It shows one
+   section at a time:
    `]` pages to the next section, `[` to the previous one, and `Enter` past a section's last
    stop carries on into the next. The header lists every section as a link and says
    "Section N of M"; the end of every section repeats it between Previous and Next. Next is the
@@ -85,11 +85,17 @@ sha256 of the manifest you wrote.
   `height` (a number of px or `"auto"`, default `"auto"`; at round level a number caps every
   frame), `maxHeight` (default 1200, the cap when the round's `height` is `"auto"`),
   `variants[{key, storyId | image, label, args?, globals?, height?}]` (at most 12, or at most 80
-  in a round with `sections`),
+  in a round with `sections`; empty for a round of questions only, which needs no placeholder
+  frame; `build` warns about a frame no section declares),
   `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?, recommendation?}]`,
   `sections?[{id, title, context?, questionIds[], variantKeys[], seeAlso?[], height?}]`,
   `recommendations` (`"after-answer"`, the default, or `"shown"`),
   `contrast?{knownDefects[], measured[], unmeasured[]}` (also on a section; see _Contrast gate_).
+  The round and section `context`, each question `prompt` and each recommendation `rationale`
+  render as GitHub-flavoured markdown (headings, lists, code, links, tables), and a single
+  newline is a line break. A prompt is a heading, so it keeps only inline markup. Raw HTML
+  shows as text; links keep only http, https, mailto and relative URLs; images show their alt
+  text.
   A question over variant keys is variant-scoped and sits right under the variants; set
   `scope` to override. Args and globals go in the Storybook URL, so keys and values are
   limited to letters, digits, space, `_` and `-` (numbers and booleans are fine); anything

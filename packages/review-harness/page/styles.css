@@ -168,12 +168,6 @@ body:has(.contrast-override) .variant-head {
   background: var(--color-surface-elevated);
 }
 
-.variant-question {
-  margin: 0;
-  font-size: 12px;
-  color: var(--color-brand-primary);
-}
-
 .stop:target {
   border-color: var(--color-status-warning);
 }
@@ -429,6 +423,77 @@ button.primary kbd {
 
 .recommendation p {
   margin: 0 0 var(--space-stack-sm);
+}
+
+/* Rendered round text (Markdown.tsx). */
+.md {
+  max-width: 960px;
+}
+
+.round-section > .md {
+  margin-bottom: var(--space-stack-md);
+  color: var(--color-text-secondary);
+}
+
+.md > :first-child {
+  margin-top: 0;
+}
+
+.md > :last-child {
+  margin-bottom: 0;
+}
+
+.md p,
+.md ul,
+.md ol,
+.md pre,
+.md table {
+  margin: 0 0 var(--space-stack-sm);
+}
+
+.md h1,
+.md h2,
+.md h3,
+.md h4,
+.md h5,
+.md h6 {
+  margin: var(--space-stack-md) 0 var(--space-stack-sm);
+  font-size: 15px;
+  color: var(--color-text-primary);
+}
+
+.md ul,
+.md ol {
+  padding-left: var(--space-inset-md);
+}
+
+.md a[href] {
+  color: var(--color-brand-primary);
+}
+
+.md blockquote {
+  margin: 0 0 var(--space-stack-sm);
+  padding-left: var(--space-inset-sm);
+  border-left: 3px solid var(--color-border-prominent);
+}
+
+.md pre {
+  padding: var(--space-inset-sm);
+  overflow-x: auto;
+  background: var(--color-surface-base);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 6px;
+}
+
+.md table {
+  border-collapse: collapse;
+}
+
+.md th,
+.md td {
+  padding: var(--space-squish-y-sm) var(--space-squish-x-sm);
+  border: 1px solid var(--color-border-input);
+  text-align: left;
 }
 
 .recommendation-verdict,

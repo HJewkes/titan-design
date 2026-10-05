@@ -349,7 +349,8 @@ export const ManifestSchema = z
     height: frameHeight.default(AUTO_HEIGHT),
     /** The ceiling an auto-sized frame stops at; taller stories scroll inside the frame. */
     maxHeight: z.number().int().min(120).max(4000).default(1200),
-    variants: z.array(VariantSchema).min(1).max(MAX_SECTIONED_VARIANTS),
+    /** Empty for a questions-only round; nothing has to stand in for a frame it does not have. */
+    variants: z.array(VariantSchema).max(MAX_SECTIONED_VARIANTS),
     questions: z.array(QuestionSchema),
     sections: z.array(SectionSchema).min(1).optional(),
     recommendations: z.enum(RECOMMENDATION_MODES).default('after-answer'),
