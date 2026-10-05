@@ -1,4 +1,11 @@
-import type { DevWarn, HighlightRun, LineModel, LineRange, RangeEdge } from './types'
+import type {
+  DevWarn,
+  HighlightRun,
+  LineModel,
+  LineModelInput,
+  LineRange,
+  RangeEdge,
+} from './types'
 
 // Bundlers replace `process.env.NODE_ENV` literally; the DTS build has no Node types.
 declare const process: { env: { NODE_ENV?: string } }
@@ -105,14 +112,17 @@ export function scrollIndexFor(line: number, startLine: number, lineCount: numbe
 }
 
 export function buildLineModel(
-  text: string,
-  startLine: number,
-  highlights: readonly LineRange[],
+  { text, startLine = 1, endLine, highlights = [] }: LineModelInput,
   warn: DevWarn = devWarn
 ): LineModel {
   const lines = splitLines(text)
   const first = normalizeStartLine(startLine, warn)
   const lastLine = first + lines.length - 1
+  if (endLine !== undefined && lines.length > 0 && endLine !== lastLine) {
+    warn(
+      `endLine ${endLine} disagrees with the text, which ends at line ${lastLine}; using the text`
+    )
+  }
   const runs = normalizeRanges(highlights, first, lastLine, warn)
   return {
     lines,

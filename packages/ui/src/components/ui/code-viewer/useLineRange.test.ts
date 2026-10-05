@@ -66,6 +66,29 @@ describe('useLineRange', () => {
     expect(onSelectedRangeChange).not.toHaveBeenCalled()
   })
 
+  it('selects nothing when the text has no lines', () => {
+    const onSelectedRangeChange = vi.fn()
+    const { result } = renderHook(() => useLineRange({ text: '', onSelectedRangeChange }))
+    act(() => result.current.toggleActive())
+    act(() => result.current.extendSelection(1))
+    expect(result.current.selectedRange).toBeNull()
+    expect(onSelectedRangeChange).not.toHaveBeenCalled()
+  })
+
+  it('extends from the new selection after a parent replaces it', () => {
+    const onSelectedRangeChange = vi.fn()
+    const { result, rerender } = renderHook(
+      (selectedRange: UseLineRangeOptions['selectedRange']) =>
+        useLineRange({ ...base, selectedRange, onSelectedRangeChange }),
+      { initialProps: null as UseLineRangeOptions['selectedRange'] }
+    )
+    act(() => result.current.toggleActive())
+    rerender({ startLine: 122, endLine: 123 })
+    act(() => result.current.moveActiveTo(123))
+    act(() => result.current.extendSelection(1))
+    expect(onSelectedRangeChange).toHaveBeenLastCalledWith({ startLine: 122, endLine: 124 })
+  })
+
   it('keeps the model referentially stable across renders with equal inputs', () => {
     const { result, rerender } = renderHook(
       (options: UseLineRangeOptions) => useLineRange(options),

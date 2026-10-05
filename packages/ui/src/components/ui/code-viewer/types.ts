@@ -30,9 +30,15 @@ export interface LineModel {
   gutterDigits: number
 }
 
-export interface UseLineRangeOptions {
+export interface LineModelInput {
   text: string
   startLine?: number
+  /** Informational (`excerpt.endLine`): the text wins, and a disagreement warns in development. */
+  endLine?: number
+  highlights?: readonly LineRange[]
+}
+
+export interface UseLineRangeOptions extends LineModelInput {
   highlights?: LineRange[]
   /** Controlled selection; `null` is "nothing selected", `undefined` leaves it uncontrolled. */
   selectedRange?: LineRange | null
