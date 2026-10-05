@@ -201,10 +201,7 @@ module.exports = tseslint.config(
     files: ['src/components/**/*.{ts,tsx}'],
     ignores: ['**/*.stories.tsx', '**/*.test.tsx'],
     rules: {
-      'no-restricted-syntax': [
-        'warn',
-        ...restrictedSyntax.gradient,
-      ],
+      'no-restricted-syntax': ['warn', ...restrictedSyntax.gradient],
     },
   },
 
@@ -217,11 +214,7 @@ module.exports = tseslint.config(
     rules: {
       // Flat config replaces (not merges) this rule per file, so repeat the
       // gradient selectors here alongside the shell/icons-only hex ones.
-      'no-restricted-syntax': [
-        'warn',
-        ...restrictedSyntax.gradient,
-        ...restrictedSyntax.hex,
-      ],
+      'no-restricted-syntax': ['warn', ...restrictedSyntax.gradient, ...restrictedSyntax.hex],
     },
   },
 
@@ -279,30 +272,8 @@ module.exports = tseslint.config(
         'error',
         ...restrictedSyntax.gradient,
         ...restrictedSyntax.hex,
-        // Arbitrary spacing / radius / type values. `w-[420px]` and `min-w-[130px]`
-        // are deliberate layout geometry and stay allowed; the scale properties are
-        // where a specimen's hand-tuned pixels leak into the library.
-        {
-          selector:
-            'Literal[value=/\\b(p|px|py|pt|pb|pl|pr|m|mx|my|mt|mb|ml|mr|gap|gap-x|gap-y|text|rounded|space-x|space-y)-\\[[0-9.]+px\\]/]',
-          message:
-            'Arbitrary spacing/radius/type value — use the scale (gap-2, p-3, text-sm, rounded-md). See TOKENS.md §5.',
-        },
-        {
-          selector:
-            'TemplateElement[value.raw=/\\b(p|px|py|pt|pb|pl|pr|m|mx|my|mt|mb|ml|mr|gap|gap-x|gap-y|text|rounded|space-x|space-y)-\\[[0-9.]+px\\]/]',
-          message:
-            'Arbitrary spacing/radius/type value — use the scale (gap-2, p-3, text-sm, rounded-md). See TOKENS.md §5.',
-        },
-        // Hardcoded inline fontSize defeats the type scale and its paired
-        // line-height. Restricted to literals on purpose: a *computed* size
-        // (`fontSize: valueLabelFontSize(height)`) is chart geometry fitting text
-        // to its container, which no scale can express — that stays allowed.
-        {
-          selector: 'Property[key.name="fontSize"][value.type="Literal"]',
-          message:
-            'Hardcoded inline fontSize defeats the type scale — use a Typography variant or a text-* class. See TOKENS.md §4.',
-        },
+        ...restrictedSyntax.arbitrarySpacing,
+        ...restrictedSyntax.fontSize,
         // Freezes the value to one palette at import time. Resolve at render
         // time instead — titan/no-frozen-theme below says the same thing for
         // every component family, ratcheted.

@@ -29,15 +29,25 @@ const { camelCaseDataKey } = createRequire(import.meta.url)(
   '../../eslint-rules/no-raw-device-data-in-chat'
 ) as { camelCaseDataKey: (key: string) => string }
 
+const { readStringUnion } = createRequire(import.meta.url)('../../eslint-rules/ts-source') as {
+  readStringUnion: (file: string, typeName: string) => string[]
+}
+
 const SYMBOLS = fixOptions.SYMBOLS as Record<string, string>
 const SRC = path.join(uiRoot, 'src')
 const FIX_CLAUSE = /\b(use|move|resolve|build|compose|render|describe|add|call|derive|reuse)\b/i
 const SYMBOL_OPTION = /^([A-Za-z_$][\w$]*)\(.*\)$/
 const CLASS_OPTION = /^(?:[a-z]+:)*-?[a-z][a-z0-9]*(?:-[a-z0-9.[\]/]+)+$/
 const PATH_OPTION = /^[a-z][\w-]*\/[\w./-]*$/
+const SPACE_KEY_OPTION = /^space(?:\.[a-z]+)+$/
+const VARIANT_OPTION = /^variant="([^"]*)"$/
 const DATA_KEY_OPTION = /^data-[a-z]+[A-Z][A-Za-z0-9]*$/
 const ROOT_OPTION = /^[A-Z][\w ]*\/[\w|/ ]*$/
 const EXPORT_OPTION = /^[A-Z][A-Za-z0-9]*$/
+const TYPOGRAPHY_VARIANTS = readStringUnion(
+  path.join(SRC, 'components/ui/typography/Typography.tsx'),
+  'TypographyVariant'
+)
 const STORY_ROOTS = fixOptions.storyRoots as string[]
 const PATH_SUFFIXES = ['', '.ts', '.tsx', '/index.ts', '/index.tsx']
 
@@ -57,10 +67,6 @@ const PENDING = new Set<string>([
   'titan/no-raw-composition:rawButton',
   'titan/no-raw-composition:d3Import',
   'titan/no-raw-composition:pathMath',
-  'titan/no-raw-spacing:rawSpacing',
-  `no-restricted-syntax:${ARBITRARY_LITERAL}`,
-  `no-restricted-syntax:${ARBITRARY_TEMPLATE}`,
-  `no-restricted-syntax:${FONT_SIZE}`,
 ])
 
 const SHELL_FILE = 'src/components/shell/ContractFixture.tsx'
@@ -140,6 +146,22 @@ const FIXTURES: Record<string, Fixture> = {
   'titan/story-title-prefix:unknownPrefix': {
     code: "const meta = { title: 'Widgets/ContractFixture' }\nexport default meta",
     filename: 'src/components/ui/contract-fixture/ContractFixture.stories.tsx',
+  },
+  'titan/no-raw-spacing:rawSpacing': {
+    code: 'export const s = { paddingVertical: 9 }',
+    filename: SHELL_FILE,
+  },
+  [`no-restricted-syntax:${ARBITRARY_LITERAL}`]: {
+    code: "export const c = 'gap-[13px]'",
+    filename: TOKEN_PURE_FILE,
+  },
+  [`no-restricted-syntax:${ARBITRARY_TEMPLATE}`]: {
+    code: 'export const c = `gap-[13px]`',
+    filename: TOKEN_PURE_FILE,
+  },
+  [`no-restricted-syntax:${FONT_SIZE}`]: {
+    code: 'export const s = { fontSize: 13 }',
+    filename: TOKEN_PURE_FILE,
   },
   [`no-restricted-syntax:${HEX_RESTRICTED}`]: {
     code: "export const a = '#123456'",
@@ -231,10 +253,28 @@ function dataKeyProblem(span: string, message: string): string | undefined {
   return span === expected ? undefined : `data key \`${span}\` is not \`${expected}\``
 }
 
+/** A `space.*` option must be a number leaf of the real `space` token object. */
+async function spaceKeyProblem(span: string): Promise<string | undefined> {
+  const { space } = await import(/* @vite-ignore */ path.join(SRC, 'theme/tokens/semantic'))
+  const leaf = span
+    .split('.')
+    .slice(1)
+    .reduce((node: unknown, key) => (node as Record<string, unknown> | undefined)?.[key], space)
+  return typeof leaf === 'number' ? undefined : `space key \`${span}\` is not in semantic.ts`
+}
+
+/** A Typography variant option must be a member of the `TypographyVariant` union in its source. */
+function variantProblem(span: string): string | undefined {
+  const name = span.match(VARIANT_OPTION)?.[1] as string
+  return TYPOGRAPHY_VARIANTS.includes(name)
+    ? undefined
+    : `variant \`${name}\` is not a TypographyVariant`
+}
+
 export async function contractProblems(message: string): Promise<string[]> {
   const spans = [...message.matchAll(/`([^`]+)`/g)].map((m) => m[1])
   const of = (kind: RegExp) => spans.filter((span) => kind.test(span))
-  const [symbols, classes, paths, roots, components, dataKeys] = [
+  const [symbols, classes, paths, roots, components, dataKeys, spaceKeys, variants] = [
     of(SYMBOL_OPTION),
     of(CLASS_OPTION),
     // A class with an opacity modifier (`bg-white/50`) is path-shaped too; it goes to the compile check.
@@ -242,6 +282,8 @@ export async function contractProblems(message: string): Promise<string[]> {
     of(ROOT_OPTION),
     of(EXPORT_OPTION),
     of(DATA_KEY_OPTION),
+    of(SPACE_KEY_OPTION),
+    of(VARIANT_OPTION),
   ]
   const problems: string[] = []
   if (!FIX_CLAUSE.test(message)) problems.push('has no fix clause')
@@ -251,7 +293,9 @@ export async function contractProblems(message: string): Promise<string[]> {
     paths.length +
     roots.length +
     components.length +
-    dataKeys.length
+    dataKeys.length +
+    spaceKeys.length +
+    variants.length
   if (optionCount === 0) problems.push('lists no backticked option')
   const compiled = classes.length ? await compileClasses(classes) : new Set<string>()
   for (const cls of classes)
@@ -262,6 +306,8 @@ export async function contractProblems(message: string): Promise<string[]> {
     ...paths.map(pathProblem),
     ...roots.map(rootProblem),
     ...dataKeys.map((span) => dataKeyProblem(span, message)),
+    ...spaceKeys.map(spaceKeyProblem),
+    ...variants.map(variantProblem),
   ])
   return [...problems, ...resolved.filter((p): p is string => Boolean(p))]
 }
@@ -347,6 +393,57 @@ describe('lint message contract: the checker', () => {
     } finally {
       SYMBOLS.alpha = original
     }
+  })
+})
+
+describe('lint message contract: space keys and Typography variants', () => {
+  it('accepts a space key that is a leaf of the space tokens', async () => {
+    expect(await contractProblems('Use `space.stack.md` instead.')).toEqual([])
+  })
+
+  it('rejects a space key that is not a leaf of the space tokens', async () => {
+    expect(await contractProblems('Use `space.stack.huge` or `space.stack` instead.')).toEqual([
+      'space key `space.stack.huge` is not in semantic.ts',
+      'space key `space.stack` is not in semantic.ts',
+    ])
+  })
+
+  it('accepts a Typography variant from the TypographyVariant union', async () => {
+    expect(
+      await contractProblems('Use `variant="body2"` or `variant="monoLabel"` instead.')
+    ).toEqual([])
+  })
+
+  it('rejects a name that is not a Typography variant', async () => {
+    expect(await contractProblems('Use `variant="body9"` or `variant="shouty"` instead.')).toEqual([
+      'variant `body9` is not a TypographyVariant',
+      'variant `shouty` is not a TypographyVariant',
+    ])
+  })
+})
+
+describe('lint message contract: spacing and type messages', () => {
+  const messageOf = (id: string) =>
+    render(ENTRIES.find((entry) => entry.id === id) as Entry, FIXTURES[id]) as string
+  const restricted = (selector: string) => messageOf(`no-restricted-syntax:${selector}`)
+
+  it('names 8, 10 and a space key for paddingVertical: 9', () => {
+    const message = messageOf('titan/no-raw-spacing:rawSpacing')
+    expect(message).toMatch(/use 8 \(.*`space\.stack\.md`.*\) or 10 \(/)
+  })
+
+  it('names gap-3 and gap-3.5 for gap-[13px], in both selectors', () => {
+    for (const selector of [ARBITRARY_LITERAL, ARBITRARY_TEMPLATE]) {
+      expect(restricted(selector)).toContain('`gap-3` or `gap-3.5`')
+    }
+  })
+
+  it('lists every TypographyVariant and every font-size key for fontSize: 13', () => {
+    const message = restricted(FONT_SIZE)
+    for (const variant of TYPOGRAPHY_VARIANTS) expect(message).toContain(`\`variant="${variant}"\``)
+    for (const key of fixOptions.fontSizes as string[]) expect(message).toContain(`\`text-${key}\``)
+    expect(message).toContain('`variant="body2"`')
+    expect(message).toContain('`variant="caption"`')
   })
 })
 

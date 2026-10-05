@@ -10,6 +10,7 @@
  */
 
 const { familyClasses, styleOptions, optionList } = require('./color-options')
+const { nearestClasses, typeOptions } = require('./spacing-options')
 
 const gradientMessage =
   'Inline linear-gradient string: the theme owns gradient stops, so build it with `linearGradient(from, to, angle)` or a surfaceGradient preset from `theme/gradients`.'
@@ -41,4 +42,26 @@ const frozenTheme = [
   },
 ]
 
-module.exports = { gradient, hex, frozenTheme }
+// Arbitrary spacing / radius / type values. `w-[420px]` and `min-w-[130px]` are
+// deliberate layout geometry and stay allowed; the scale properties are where a
+// specimen's hand-tuned pixels leak into the library.
+const SCALE_PROPS =
+  '\\b(p|px|py|pt|pb|pl|pr|m|mx|my|mt|mb|ml|mr|gap|gap-x|gap-y|text|rounded|space-x|space-y)-\\[[0-9.]+px\\]'
+
+const arbitraryMessage = `Arbitrary spacing/radius/type value: the scale owns it, so use the nearest step (\`gap-[13px]\` becomes ${optionList(nearestClasses('gap', 13)).replace(', ', ' or ')}), or a semantic key. See TOKENS.md §5.`
+
+const arbitrarySpacing = [
+  { selector: `Literal[value=/${SCALE_PROPS}/]`, message: arbitraryMessage },
+  { selector: `TemplateElement[value.raw=/${SCALE_PROPS}/]`, message: arbitraryMessage },
+]
+
+const fontSizeMessage = `Hardcoded inline fontSize defeats the type scale: use ${typeOptions}. See TOKENS.md §4.`
+
+// Restricted to literals on purpose: a *computed* size
+// (`fontSize: valueLabelFontSize(height)`) is chart geometry fitting text to its
+// container, which no scale can express — that stays allowed.
+const fontSize = [
+  { selector: 'Property[key.name="fontSize"][value.type="Literal"]', message: fontSizeMessage },
+]
+
+module.exports = { gradient, hex, arbitrarySpacing, fontSize, frozenTheme }
