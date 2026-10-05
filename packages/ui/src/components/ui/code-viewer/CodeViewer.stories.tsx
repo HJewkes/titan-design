@@ -35,7 +35,7 @@ function Excerpt({ fixture, showHeader, ...props }: Args) {
 
 const meta: Meta<Args> = {
   title: 'Components/Molecules/CodeViewer',
-  component: CodeViewer as Meta<Args>['component'],
+  component: CodeViewer as unknown as Meta<Args>['component'],
   tags: ['autodocs', 'status:candidate', '!status:review'],
   args: {
     fixture: 'tooltipLongFunction',

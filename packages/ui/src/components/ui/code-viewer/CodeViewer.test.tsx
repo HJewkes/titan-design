@@ -169,7 +169,7 @@ describe('CodeViewer', () => {
     renderExcerpt(scale5k)
     press('End')
     expect(codeRows().length).toBeLessThan(60)
-    expect(codeRows().at(-1)).toHaveTextContent(scale5k.text.split('\n')[4999].trim())
+    expect(codeRows().slice(-1)[0]).toHaveTextContent(scale5k.text.split('\n')[4999].trim())
     expect(screen.getByRole('option', { name: 'Line 5000' })).toBeInTheDocument()
     expect(screen.queryByRole('option', { name: 'Line 1' })).toBeNull()
   })
