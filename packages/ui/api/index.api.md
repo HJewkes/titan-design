@@ -1259,19 +1259,16 @@ export function DateTime(input: DateTimeProps): react_jsx_runtime.JSX.Element;
 export type DateTimeFormat = 'date' | 'time' | 'datetime' | 'relative' | 'short' | 'medium' | 'long' | 'full';
 
 // @public (undocumented)
-export interface DateTimeProps extends TextProps {
+export interface DateTimeProps extends TextProps, Pick<FormatDateTimeOptions, 'isUTC' | 'hour12' | 'seconds' | 'locale' | 'fallback'> {
     className?: string;
     color?: 'primary' | 'secondary' | 'tertiary' | 'inherit';
+    // @deprecated
     customFormat?: string;
-    fallback?: string;
     format?: DateTimeFormat;
-    hour12?: boolean;
     isLive?: boolean;
-    isUTC?: boolean;
     // @deprecated (undocumented)
     live?: boolean;
     refreshMs?: number;
-    seconds?: boolean;
     value?: number | Date | string | null | undefined;
     variant?: TypographyVariant;
 }
@@ -1999,7 +1996,17 @@ export interface FormActionsProps extends ViewProps {
 export function formatCompact(n: number): string;
 
 // @public
-export function formatDateTime(value: number | Date | string | null | undefined, format?: DateTimeFormat, isUTC?: boolean, fallback?: string): string;
+export function formatDateTime(value: number | Date | string | null | undefined, format?: DateTimeFormat, options?: boolean | FormatDateTimeOptions, fallback?: string): string;
+
+// @public
+export interface FormatDateTimeOptions {
+    fallback?: string;
+    hour12?: boolean;
+    isUTC?: boolean;
+    locale?: string;
+    now?: number;
+    seconds?: boolean;
+}
 
 // @public
 export function formatDuration(ms: number): string;

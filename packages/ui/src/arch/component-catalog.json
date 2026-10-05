@@ -11643,14 +11643,14 @@
         },
         {
           "default": null,
-          "description": "Custom format string (overrides format)",
+          "description": "Custom format string.",
           "name": "customFormat",
           "required": false,
           "type": "string"
         },
         {
           "default": "-",
-          "description": "Fallback text when value is null/undefined",
+          "description": "Text for a null, undefined or unparseable value (default '-').",
           "name": "fallback",
           "required": false,
           "type": "string"
@@ -11671,14 +11671,14 @@
         },
         {
           "default": null,
-          "description": "Track the current time and re-render on an interval (ignores `value`).",
+          "description": "Re-render on an interval.",
           "name": "isLive",
           "required": false,
           "type": "boolean"
         },
         {
           "default": "false",
-          "description": "Whether to show in UTC",
+          "description": "Show in UTC rather than the runtime's zone.",
           "name": "isUTC",
           "required": false,
           "type": "boolean"
@@ -11689,6 +11689,13 @@
           "name": "live",
           "required": false,
           "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "BCP 47 locale, e.g. 'en-US'.",
+          "name": "locale",
+          "required": false,
+          "type": "string"
         },
         {
           "default": "1000",

@@ -25,8 +25,10 @@ export interface DateTimeProps
   /** Display format */
   format?: DateTimeFormat
   /**
-   * @deprecated Never applied. Use `format` with `hour12`, `seconds` and `locale`, or render
-   * the string from `formatDateTime` inside `Typography`. Removed in 0.23.0.
+   * Custom format string. It was never applied.
+   *
+   * @deprecated Use `format` with `hour12`, `seconds` and `locale`, or render the string from
+   * `formatDateTime` inside `Typography`. Removed in 0.23.0.
    */
   customFormat?: string
   /** Render through Typography with this variant (e.g. 'mono'); plain inheriting Text when omitted. */
