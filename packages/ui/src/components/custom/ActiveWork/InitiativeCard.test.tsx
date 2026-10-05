@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedClassNames } from '../../../test/classname-capture'
 import { InitiativeCard, type InitiativeState } from './InitiativeCard'
 
 const base = {
@@ -64,5 +65,14 @@ describe('InitiativeCard', () => {
   it('has no accessibility violations', async () => {
     const { container } = render(<InitiativeCard {...base} state="focused" rank={1} />)
     expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+describe('InitiativeCard className merge', () => {
+  it('lets a caller class replace the root class it conflicts with', () => {
+    render(<InitiativeCard {...base} state="focused" className="p-2" testID="cn-root" />)
+    const classes = capturedClassNames.get('cn-root')?.split(/\s+/)
+    expect(classes).toContain('p-2')
+    expect(classes).not.toContain('p-4')
   })
 })
