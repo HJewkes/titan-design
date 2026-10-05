@@ -1,7 +1,20 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import type { ViewProps } from 'react-native'
 import { Switch } from './Switch'
+
+const viewClassNames: string[][] = []
+
+vi.mock('react-native', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('react-native')>()
+  const React = await import('react')
+  const View = React.forwardRef<unknown, ViewProps & { className?: string }>((props, ref) => {
+    viewClassNames.push((props.className ?? '').split(/\s+/))
+    return React.createElement(actual.View, { ...props, ref } as ViewProps)
+  })
+  return { ...actual, View }
+})
 
 describe('Switch', () => {
   it('renders correctly', () => {
@@ -116,6 +129,16 @@ describe('Switch', () => {
     it('has correct switch role', () => {
       render(<Switch label="Toggle" />)
       expect(screen.getByRole('switch')).toBeInTheDocument()
+    })
+  })
+
+  describe('off track', () => {
+    it('fills the off track with border-input, not a hairline', () => {
+      viewClassNames.length = 0
+      render(<Switch label="Toggle" />)
+      const track = viewClassNames.find((classes) => classes.includes('p-0.5'))
+      expect(track).toContain('bg-border-input')
+      expect(track).not.toContain('bg-hairline-strong')
     })
   })
 })
