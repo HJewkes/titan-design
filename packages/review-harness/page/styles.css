@@ -149,14 +149,43 @@ body:has(.contrast-override) .variant-head {
   color: var(--color-text-secondary);
 }
 
-.prompts [aria-current] a {
-  font-weight: 600;
-}
-
 .see-also a,
 .prompts a {
   color: var(--color-brand-primary);
   margin-right: var(--space-inline-sm);
+}
+
+/*
+ * On surface-base, not the page plane: light text-secondary is 3.96:1 on background-base and
+ * 4.75:1 here. The current section is told apart by colour, weight and an underline bar.
+ */
+.sections {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-stack-sm) var(--space-inline-lg);
+  padding: var(--space-inset-sm) var(--space-inset-md);
+  list-style: none;
+  background: var(--color-surface-base);
+  border-radius: 8px;
+}
+
+.sections a {
+  display: inline-block;
+  margin-right: 0;
+  padding-bottom: 2px;
+  border-bottom: 3px solid transparent;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+.sections a:hover {
+  color: var(--color-text-primary);
+}
+
+.sections [aria-current] a {
+  color: var(--color-text-primary);
+  font-weight: 600;
+  border-bottom-color: var(--color-text-primary);
 }
 
 .variant-head {

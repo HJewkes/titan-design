@@ -97,7 +97,7 @@ function Header({
       {manifest.context && <Markdown>{manifest.context}</Markdown>}
       {manifest.sections && <Pager pages={pages} current={current} dispatch={dispatch} />}
       {manifest.sections ? (
-        <ol className="prompts">
+        <ol className="prompts sections">
           {pages.map((p, i) => (
             <li key={p.id} aria-current={i === current ? 'step' : undefined}>
               <JumpLink href={`#section-${p.id}`} index={p.first} dispatch={dispatch}>
