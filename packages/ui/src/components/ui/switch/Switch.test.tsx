@@ -110,20 +110,12 @@ describe('Switch', () => {
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
       const { container } = render(<Switch label="Enable feature" />)
-      // react-native-web does not output aria-checked for accessibilityState.checked,
-      // so we disable the aria-required-attr rule that checks for it on role="switch"
-      const results = await axe(container, {
-        rules: { 'aria-required-attr': { enabled: false } },
-      })
-      expect(results).toHaveNoViolations()
+      expect(await axe(container)).toHaveNoViolations()
     })
 
     it('has no accessibility violations when checked', async () => {
       const { container } = render(<Switch label="Enabled" isChecked />)
-      const results = await axe(container, {
-        rules: { 'aria-required-attr': { enabled: false } },
-      })
-      expect(results).toHaveNoViolations()
+      expect(await axe(container)).toHaveNoViolations()
     })
 
     it('has correct switch role', () => {

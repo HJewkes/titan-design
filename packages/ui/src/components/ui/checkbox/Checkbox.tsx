@@ -73,10 +73,8 @@ export const Checkbox = forwardRef<View, CheckboxProps>(function Checkbox(
       disabled={isDisabled}
       onPress={handlePress}
       accessibilityRole="checkbox"
-      accessibilityState={{
-        checked: isIndeterminate ? 'mixed' : isChecked,
-        disabled: isDisabled,
-      }}
+      accessibilityState={{ disabled: isDisabled }}
+      aria-checked={isIndeterminate ? 'mixed' : isChecked}
       accessibilityLabel={label}
       className={cn('flex-row items-start gap-2', isDisabled && 'opacity-50', className)}
       {...props}

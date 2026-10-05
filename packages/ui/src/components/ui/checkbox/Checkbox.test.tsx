@@ -58,11 +58,19 @@ describe('Checkbox', () => {
     expect(screen.getByText('\u2713')).toBeInTheDocument()
   })
 
-  it('renders indeterminate state', () => {
+  it('emits aria-checked true when checked', () => {
+    render(<Checkbox isChecked label="Checked" />)
+    expect(screen.getByRole('checkbox')).toHaveAttribute('aria-checked', 'true')
+  })
+
+  it('emits aria-checked false when unchecked', () => {
+    render(<Checkbox label="Unchecked" />)
+    expect(screen.getByRole('checkbox')).toHaveAttribute('aria-checked', 'false')
+  })
+
+  it('emits aria-checked mixed when indeterminate', () => {
     render(<Checkbox isIndeterminate label="Mixed" />)
-    const checkbox = screen.getByRole('checkbox')
-    // react-native-web does not map accessibilityState.checked to aria-checked
-    expect(checkbox).toBeInTheDocument()
+    expect(screen.getByRole('checkbox')).toHaveAttribute('aria-checked', 'mixed')
   })
 
   it('communicates disabled state', () => {
@@ -135,18 +143,12 @@ describe('Checkbox', () => {
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
       const { container } = render(<Checkbox label="Accept terms" />)
-      const results = await axe(container, {
-        rules: { 'aria-required-attr': { enabled: false } },
-      })
-      expect(results).toHaveNoViolations()
+      expect(await axe(container)).toHaveNoViolations()
     })
 
     it('has no accessibility violations when checked', async () => {
       const { container } = render(<Checkbox label="Checked" isChecked />)
-      const results = await axe(container, {
-        rules: { 'aria-required-attr': { enabled: false } },
-      })
-      expect(results).toHaveNoViolations()
+      expect(await axe(container)).toHaveNoViolations()
     })
 
     it('has no accessibility violations for CheckboxGroup', async () => {
@@ -156,10 +158,7 @@ describe('Checkbox', () => {
           <Checkbox label="B" />
         </CheckboxGroup>
       )
-      const results = await axe(container, {
-        rules: { 'aria-required-attr': { enabled: false } },
-      })
-      expect(results).toHaveNoViolations()
+      expect(await axe(container)).toHaveNoViolations()
     })
   })
 
