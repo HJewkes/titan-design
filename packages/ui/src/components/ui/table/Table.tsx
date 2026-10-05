@@ -192,7 +192,7 @@ export function TableRow({
     <View
       role="row"
       className={cn(
-        'flex-row border-b border-divider',
+        'flex-row border-b border-hairline',
         isHoverable && 'web:hover:bg-interactive-hover',
         isSelected && 'bg-interactive-selected',
         className
