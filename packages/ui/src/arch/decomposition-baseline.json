@@ -92,13 +92,7 @@
   "components/custom/Workout/GoalMilestoneTile.tsx#GoalMilestoneTile": {
     "props": 18
   },
-  "components/custom/Workout/GoalTrajectoryChart.tsx": {
-    "file-lines": 321
-  },
   "components/custom/Workout/GoalTrajectoryChart.tsx#GoalTrajectoryChart": {
-    "complexity": 38,
-    "component-lines": 172,
-    "function-lines": 172,
     "props": 25
   },
   "components/custom/Workout/GoalTrajectoryChartGeometry.ts": {
