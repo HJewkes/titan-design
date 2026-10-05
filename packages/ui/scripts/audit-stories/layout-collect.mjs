@@ -110,55 +110,86 @@ export function collectLayout({ spacingVars = [] } = {}) {
     return out
   }
 
-  // One rect per non-space character, so each line knows which glyphs it holds.
+  // A run is one text node in one font. Canvas measures at the declared size; `scale` maps that onto
+  // the screen: the SVG screen matrix, or for HTML the glyph rect's height over the font box. SVG
+  // glyph rects are not one ascent above the baseline, so SVG takes the baseline from the run start.
+  const fontOf = (cs) => [cs.fontStyle, cs.fontWeight, cs.fontSize, cs.fontFamily].join(' ')
+  function runOf(node, firstRect) {
+    const holder = node.parentElement
+    ctx.font = fontOf(getComputedStyle(holder))
+    const m = ctx.measureText('')
+    const fontBox = m.fontBoundingBoxAscent + m.fontBoundingBoxDescent
+    const ctm = holder.getStartPositionOfChar && holder.getScreenCTM()
+    if (!ctm) {
+      const scale = firstRect.height / fontBox
+      return { font: ctx.font, scale, ascent: m.fontBoundingBoxAscent * scale }
+    }
+    const start = holder.getStartPositionOfChar(0).matrixTransform(ctm)
+    return { font: ctx.font, scale: Math.hypot(ctm.b, ctm.d), baseline: start.y }
+  }
+
+  // One rect per non-space character, each tagged with its run and its own baseline.
   function charRects(nodes) {
     const range = document.createRange()
     const out = []
     for (const node of nodes) {
       const s = node.textContent
+      let run = null
       for (let i = 0; i < s.length; i++) {
         if (!s[i].trim()) continue
         range.setStart(node, i)
         range.setEnd(node, i + 1)
         const r = range.getBoundingClientRect()
-        if (r.width || r.height) out.push({ ch: s[i], r })
+        if (!r.width && !r.height) continue
+        run = run ?? runOf(node, r)
+        out.push({ ch: s[i], r, run, baseline: run.baseline ?? r.top + run.ascent })
       }
     }
     return out
   }
 
+  function inkOf(c) {
+    ctx.font = c.run.font
+    const m = ctx.measureText(c.ch)
+    return [
+      c.baseline - m.actualBoundingBoxAscent * c.run.scale,
+      c.baseline + m.actualBoundingBoxDescent * c.run.scale,
+    ]
+  }
+
+  // A line shares one baseline, so runs of different sizes on it still group together.
+  function groupLines(chars) {
+    const lines = []
+    for (const c of chars) {
+      const line = lines.find((l) => Math.abs(l[0].baseline - c.baseline) < 1)
+      if (line) line.push(c)
+      else lines.push([c])
+    }
+    return lines.sort((a, b) => a[0].baseline - b[0].baseline)
+  }
+
   function lineMetrics(chars) {
-    const top = chars[0].r.top
-    const text = chars.map((c) => c.ch).join('')
-    const m = ctx.measureText(text)
-    const baseline = top + ctx.measureText('').fontBoundingBoxAscent
+    const ink = chars.map(inkOf)
     return {
-      baseline: q(baseline),
-      inkTop: q(baseline - m.actualBoundingBoxAscent),
-      inkBottom: q(baseline + m.actualBoundingBoxDescent),
+      baseline: q(chars[0].baseline),
+      inkTop: q(Math.min(...ink.map(([top]) => top))),
+      inkBottom: q(Math.max(...ink.map(([, bottom]) => bottom))),
       left: q(Math.min(...chars.map((c) => c.r.left))),
       right: q(Math.max(...chars.map((c) => c.r.right))),
     }
   }
 
   function textOf(el, cs) {
-    const nodes = ownTextNodes(el)
-    if (!nodes.length) return null
-    const chars = charRects(nodes)
+    const chars = charRects(ownTextNodes(el))
     if (!chars.length) return null
-    ctx.font = [cs.fontStyle, cs.fontWeight, cs.fontSize, cs.fontFamily].join(' ')
-    const lines = []
-    for (const c of chars) {
-      const line = lines.find((l) => Math.abs(l[0].r.top - c.r.top) < 1)
-      if (line) line.push(c)
-      else lines.push([c])
-    }
-    lines.sort((a, b) => a[0].r.top - b[0].r.top)
+    const lines = groupLines(chars)
     return {
       fontSize: px(cs.fontSize),
       lineHeight: cs.lineHeight === 'normal' ? 'normal' : px(cs.lineHeight),
       font: cs.font,
       lineCount: lines.length,
+      left: q(Math.min(...chars.map((c) => c.r.left))),
+      right: q(Math.max(...chars.map((c) => c.r.right))),
       first: lineMetrics(lines[0]),
       last: lineMetrics(lines[lines.length - 1]),
     }
@@ -199,10 +230,10 @@ export function collectLayout({ spacingVars = [] } = {}) {
     const y = Math.min(a[1], b[1])
     return [x, y, Math.max(a[0] + a[2], b[0] + b[2]) - x, Math.max(a[1] + a[3], b[1] + b[3]) - y]
   }
-  const textInk = ({ first, last }) => [
-    Math.min(first.left, last.left),
+  const textInk = ({ left, right, first, last }) => [
+    left,
     first.inkTop,
-    Math.max(first.right, last.right) - Math.min(first.left, last.left),
+    right - left,
     last.inkBottom - first.inkTop,
   ]
 

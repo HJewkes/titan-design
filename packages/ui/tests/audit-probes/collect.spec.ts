@@ -46,3 +46,46 @@ test('the ink of an unpainted padded wrapper equals its child box', async ({ pag
 test('two runs over the same frame give identical output', async ({ page }) => {
   expect(await collect(page)).toEqual(await collect(page))
 })
+
+test('wrapped ragged text spans its widest line and reports each line', async ({ page }) => {
+  const { text, ink } = byTestId(await collect(page), 'ragged')
+  expect(text!.lineCount).toBe(3)
+  expect(text!.last.baseline - text!.first.baseline).toBeCloseTo(40, 1)
+  const widestEnd = Math.max(text!.first.right, text!.last.right)
+  expect(ink![0] + ink![2]).toBeGreaterThan(widestEnd + 20)
+})
+
+test('a box-shadow paints, so its ink is its own box', async ({ page }) => {
+  const shadowed = byTestId(await collect(page), 'shadowed')
+  expect(shadowed.paints).toBe(true)
+  expect(shadowed.ink).toEqual(shadowed.box)
+})
+
+test('text under a CSS scale(2) measures twice its unscaled offsets', async ({ page }) => {
+  const layout = await collect(page)
+  const plain = byTestId(layout, 'unscaled')
+  const scaled = byTestId(layout, 'scaled')
+  const offset = (n: typeof plain) => n.text!.first.baseline - n.box[1]
+  expect(offset(scaled)).toBeCloseTo(2 * offset(plain), 0)
+  expect(scaled.ink![3]).toBeCloseTo(2 * plain.ink![3], 0)
+})
+
+test('SVG text under a 2x viewBox puts its baseline on the scaled y', async ({ page }) => {
+  const layout = await collect(page)
+  const svg = byTestId(layout, 'zoomed')
+  const label = layout.nodes.find((n) => n.tag === 'text' && n.parent === svg.id)
+  expect(label?.text?.first.baseline).toBeCloseTo(svg.box[1] + 60, 0)
+})
+
+test('mixed-size tspans share one line and take ink from the larger run', async ({ page }) => {
+  const layout = await collect(page)
+  const textIn = (id: string) =>
+    layout.nodes.find((n) => n.tag === 'text' && n.parent === byTestId(layout, id).id)!.text!
+  const mixed = textIn('mixed')
+  const big = textIn('big')
+  expect(mixed.lineCount).toBe(1)
+  expect(mixed.first.baseline - mixed.first.inkTop).toBeCloseTo(
+    big.first.baseline - big.first.inkTop,
+    0
+  )
+})

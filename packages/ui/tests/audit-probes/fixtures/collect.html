@@ -19,6 +19,20 @@
       .wrapper {
         padding: 12px;
       }
+      .ragged {
+        width: 200px;
+        font-size: 14px;
+        line-height: 20px;
+      }
+      .shadowed {
+        padding: 12px;
+        box-shadow: 0 1px 4px rgb(0, 0, 0);
+      }
+      .scaled {
+        transform: scale(2);
+        transform-origin: 0 0;
+        height: 40px;
+      }
       .swatch {
         width: 40px;
         height: 20px;
@@ -39,6 +53,22 @@
       <div class="wrapper" data-testid="wrapper">
         <div class="swatch" data-testid="swatch"></div>
       </div>
+      <div class="ragged" data-testid="ragged">ab<br />a much longer middle<br />cd</div>
+      <div class="shadowed" data-testid="shadowed"><div class="swatch"></div></div>
+      <div style="font-size: 14px" data-testid="unscaled">Ag</div>
+      <div class="scaled"><div style="font-size: 14px" data-testid="scaled">Ag</div></div>
+      <svg width="240" height="80" viewBox="0 0 120 40" data-testid="zoomed">
+        <text x="4" y="30" font-size="16">Axis</text>
+      </svg>
+      <svg width="120" height="40" data-testid="mixed">
+        <text x="4" y="30" font-size="10">
+          a
+          <tspan font-size="24">B</tspan>
+        </text>
+      </svg>
+      <svg width="120" height="40" data-testid="big">
+        <text x="4" y="30" font-size="24">B</text>
+      </svg>
     </div>
   </body>
 </html>
