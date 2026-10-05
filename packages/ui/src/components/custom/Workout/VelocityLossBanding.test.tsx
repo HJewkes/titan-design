@@ -7,12 +7,8 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import {
-  DualVelocityStrip,
-  VelocityStrip,
-  shownVelocityLoss,
-  velocityLossForRep,
-} from './VelocityStrip'
+import { DualVelocityStrip } from './DualVelocityStrip'
+import { VelocityStrip, shownVelocityLoss, velocityLossForRep } from './VelocityStrip'
 
 const THRESHOLDS = [6.7, 13.3, 20] as const
 

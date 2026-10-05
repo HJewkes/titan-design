@@ -1,10 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import {
-  siblingSource,
-  spacingClassesIn,
-  spacingClassesOn,
-  resolveAll,
-} from '../../../test/spacing-resolver'
+import { spacingClassesOf, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { MesoCard } from './MesoCard'
@@ -170,15 +165,16 @@ describe('MesoCard', () => {
  * heatmap gap stays inline under an `// optical:` comment.
  */
 describe('MesoCard geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'MesoCard.tsx')
-
   it('keeps the card inset', () => {
-    const classes = spacingClassesIn(source, 'MesoCard')
+    render(<MesoCard {...baseProps} />)
+    const classes = spacingClassesOf('meso-card-body')
     expect(classes).toEqual(['px-3.5', 'pt-inset-md', 'pb-2.5'])
     expect(resolveAll(classes)).toEqual(['14px', '12px', '10px'])
   })
 
   it('puts the header cluster on the inline ramp', () => {
-    expect(resolveAll(spacingClassesOn(source, 'meso-card-header'))).toEqual(['8px'])
+    render(<MesoCard {...baseProps} />)
+    expect(spacingClassesOf('meso-card-header')).toEqual(['gap-inline-md'])
+    expect(resolveAll(spacingClassesOf('meso-card-header'))).toEqual(['8px'])
   })
 })

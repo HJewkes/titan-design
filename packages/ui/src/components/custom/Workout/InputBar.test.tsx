@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { siblingSource, spacingClassesIn, resolveAll } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesOf } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { InputBar, type InputBarProps } from './InputBar'
@@ -122,16 +122,16 @@ describe('InputBar', () => {
  * is the rung a control sits on, so each input gains one pixel top and bottom.
  */
 describe('InputBar geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'InputBar.tsx')
-
   it('keeps the bar inset and its gap', () => {
-    const classes = spacingClassesIn(source, 'InputBar')
+    renderInputBar()
+    const classes = spacingClassesOf('input-bar')
     expect(classes).toEqual(['w-full', 'pt-2.5', 'px-gutter-sm', 'pb-inset-md', 'gap-2.5'])
     expect(resolveAll(classes)).toEqual(['100%', '10px', '16px', '12px', '10px'])
   })
 
-  it('puts the inputs on the control rung', () => {
-    expect(source).toContain('py-control-y-sm')
+  it.each(['input-bar-reps', 'input-bar-weight'])('puts %s on the control rung', (testId) => {
+    renderInputBar()
+    expect(spacingClassesOf(testId)).toEqual(['py-control-y-sm', 'px-0.5'])
     expect(resolveAll(['py-control-y-sm', 'px-0.5'])).toEqual(['6px', '2px'])
   })
 })

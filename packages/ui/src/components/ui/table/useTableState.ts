@@ -26,11 +26,11 @@ export { RANGE_DEBOUNCE_MS } from './useTableWindow'
 
 const isBlank = (v: unknown): boolean => v === null || v === undefined
 
-function compareField<T extends Record<string, unknown>>(column: string, sign: 1 | -1) {
+function compareField<T extends object>(column: string, sign: 1 | -1) {
   return (a: T, b: T): number => {
     // Raw fields compare in JavaScript's relational order, whatever their type.
-    const aVal = a[column] as string | number
-    const bVal = b[column] as string | number
+    const aVal = (a as Record<string, unknown>)[column] as string | number
+    const bVal = (b as Record<string, unknown>)[column] as string | number
 
     // Blanks rank last in BOTH directions — outside the sign, so a missing
     // value never masquerades as the smallest one when the column flips.
@@ -43,7 +43,7 @@ function compareField<T extends Record<string, unknown>>(column: string, sign: 1
 }
 
 /** Rows ordered by one column; `data` itself while unsorted, otherwise a stable sorted copy. */
-export function sortRows<T extends Record<string, unknown>>(
+export function sortRows<T extends object>(
   data: T[],
   column: string | undefined,
   direction: SortDirection,
@@ -126,7 +126,7 @@ const NO_ROWS: never[] = []
 const NO_COLUMNS: readonly ColumnDef<never>[] = []
 const NO_IDS: readonly string[] = []
 
-const defaultRowId = (row: Record<string, unknown>): string => String(row.id)
+const defaultRowId = (row: object): string => String((row as { id?: unknown }).id)
 
 function useSortSlice<T>(options: UseTableOptions<T>) {
   const { sort, onSortChange, defaultSortColumn, defaultSortDirection = null } = options
@@ -145,7 +145,7 @@ function useSortSlice<T>(options: UseTableOptions<T>) {
 }
 
 /** `filterRows` then `sortRows`, each memoised on its own inputs so a scroll or page change re-runs neither. */
-function useSortedRows<T extends Record<string, unknown>>(input: PipelineInput<T>): T[] {
+function useSortedRows<T extends object>(input: PipelineInput<T>): T[] {
   const { isManual, data, filters, columns, sort, comparators } = input
   const filtered = useMemo(
     // filterRows hands back `data` itself or a fresh array, so the cast exposes nothing shared.
@@ -190,7 +190,7 @@ function useSelectionSlice<T>(
 }
 
 /** Every stage after filter and sort: the page, the window, facets and range requests. */
-function useRowStages<T extends Record<string, unknown>>(
+function useRowStages<T extends object>(
   options: UseTableOptions<T>,
   input: PipelineInput<T>,
   view: ViewState
@@ -229,9 +229,7 @@ function useRowStages<T extends Record<string, unknown>>(
  *   defaultPageSize: 10,
  * })
  */
-export function useTableState<T extends Record<string, any>>(
-  options: UseTableOptions<T>
-): UseTableReturn<T> {
+export function useTableState<T extends object>(options: UseTableOptions<T>): UseTableReturn<T> {
   const { mode = 'client', data = NO_ROWS, comparators, getRowId = defaultRowId } = options
   const columns = (options.columns ?? NO_COLUMNS) as readonly ColumnDef<T>[]
   const isManual = mode === 'manual'

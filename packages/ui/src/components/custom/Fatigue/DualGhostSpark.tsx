@@ -23,10 +23,11 @@ import { View } from 'react-native'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../ui/surface'
 import { alpha } from '../../../utils/colors'
-import { FONT_UI, ghostLineColor, clamp01 } from './fatigue-tokens'
-import { GhostBand, BAND_H, BAND_GAP } from './GhostBand'
+import { ghostSparkA11y } from './ghostSparkSummary'
+import { GhostBand } from './GhostBand'
 import type { TempoTuple } from './tempo-pacing'
-import { GhostBloom, type Pt } from './GhostBloom'
+import { dualSparkLayout, sparkWing } from './dualGhostSparkLayout'
+import { DualDeviceLabels, DualWingBloom } from './DualGhostSparkParts'
 import { GHOST_GUTTER } from './GhostSpark'
 import type { PhaseSegment, RepVelocityCurve } from './fatigue-model'
 
@@ -46,6 +47,8 @@ export interface DualGhostSparkProps {
   showDeviceLabels?: boolean
   /** Prescribed tempo — turns on the shared band's phase pacing. */
   targetTempoSeconds?: TempoTuple | null
+  /** Text alternative. Default: a summary of the current rep and each side's peak velocity. */
+  accessibilityLabel?: string
 }
 
 /** The phase covering `ms`, or `null` where the side has no coverage. */
@@ -85,11 +88,6 @@ export function mergePhaseSegments(a: PhaseSegment[], b: PhaseSegment[]): PhaseS
   return out
 }
 
-/** Last sample time across a curve set, 0 when there is nothing to draw. */
-function lastTMs(curves: RepVelocityCurve[]): number {
-  return Math.max(0, ...curves.map((c) => c.samples[c.samples.length - 1]?.tMs ?? 0))
-}
-
 export function DualGhostSpark({
   left,
   right,
@@ -99,109 +97,51 @@ export function DualGhostSpark({
   rightLabel = 'RIGHT',
   showDeviceLabels = true,
   targetTempoSeconds = null,
+  accessibilityLabel,
 }: DualGhostSparkProps) {
+  const a11y = ghostSparkA11y(accessibilityLabel, { left, right })
   const t = getSemanticColors(useSurfaceMode())
-  const w = width
-  const h = height
-  const padL = 14
-  const padR = 14
-  const padTop = 22
-  const padBot = 22
-
   if (left.length === 0 && right.length === 0) {
-    return <View testID="dual-ghost-spark" style={{ width: w, height: h }} />
+    return <View testID="dual-ghost-spark" {...a11y} style={{ width, height }} />
   }
 
-  // The band sits on the vertical midline; each bloom's baseline is offset off a band edge
-  // by BAND_GAP so a zero-velocity moment still sits clear of the band.
-  const mid = padTop + (h - padTop - padBot) / 2
-  const bandTop = mid - BAND_H / 2
-  const baseUp = bandTop - BAND_GAP
-  const baseDown = mid + BAND_H / 2 + BAND_GAP
-  // ONE wing height for both sides — the second half of the shared magnitude scale.
-  const wingH = Math.max(1, Math.min(baseUp - padTop, h - padBot - baseDown))
-
-  const allSamples = [...left, ...right].flatMap((c) => c.samples)
-  const vmax = Math.max(0.01, ...allSamples.map((s) => s.velocityMps)) * 1.06
-  const axisMaxT = Math.max(1, lastTMs(left), lastTMs(right)) * 1.04
-  const x = (ms: number) => padL + (ms / axisMaxT) * (w - padL - padR)
-  const mag = (v: number) => clamp01(v / vmax) * wingH
-
-  const toPts = (c: RepVelocityCurve): Pt[] => c.samples.map((s) => [x(s.tMs), mag(s.velocityMps)])
-  const wing = (curves: RepVelocityCurve[]) => {
-    const cur = curves[curves.length - 1]
-    return {
-      cur,
-      current: cur ? toPts(cur) : [],
-      ghosts: curves.slice(0, -1).map(toPts),
-      tint: cur ? ghostLineColor(cur.tempoDeviation, cur.grindSignature) : t['text-tertiary'],
-    }
-  }
-  const up = wing(left)
-  const down = wing(right)
+  const layout = dualSparkLayout(left, right, width, height)
+  const up = sparkWing(left, layout, t['text-tertiary'])
+  const down = sparkWing(right, layout, t['text-tertiary'])
   const segments = mergePhaseSegments(up.cur?.phaseSegments ?? [], down.cur?.phaseSegments ?? [])
 
   return (
-    <View testID="dual-ghost-spark" style={{ paddingHorizontal: GHOST_GUTTER }}>
-      <svg width={w} height={h}>
-        {/* Same bloom, one prop flipped: LEFT grows UP, RIGHT grows DOWN. */}
-        {up.current.length > 0 && (
-          <g data-testid="dual-ghost-bloom-left">
-            <GhostBloom
-              current={up.current}
-              ghosts={up.ghosts}
-              tint={up.tint}
-              baseline={baseUp}
-              orientation="up"
-            />
-          </g>
-        )}
-        {down.current.length > 0 && (
-          <g data-testid="dual-ghost-bloom-right">
-            <GhostBloom
-              current={down.current}
-              ghosts={down.ghosts}
-              tint={down.tint}
-              baseline={baseDown}
-              orientation="down"
-            />
-          </g>
-        )}
+    <View testID="dual-ghost-spark" {...a11y} style={{ paddingHorizontal: GHOST_GUTTER }}>
+      <svg width={width} height={height} aria-hidden="true">
+        <DualWingBloom
+          wing={up}
+          baseline={layout.baseUp}
+          orientation="up"
+          testID="dual-ghost-bloom-left"
+        />
+        <DualWingBloom
+          wing={down}
+          baseline={layout.baseDown}
+          orientation="down"
+          testID="dual-ghost-bloom-right"
+        />
 
         {/* the ONE shared phase-coloured band, on top — ECC / CON labelled inside. */}
         <GhostBand
           segments={segments}
-          x={x}
-          top={bandTop}
+          x={layout.x}
+          top={layout.bandTop}
           showLabels
           labelColor={alpha(t['text-primary'], 0.92)}
           targetTempoSeconds={targetTempoSeconds}
         />
         {showDeviceLabels && (
-          <>
-            <text
-              x={padL}
-              y={padTop - 9}
-              fontSize={9}
-              fontWeight={800}
-              letterSpacing={1}
-              fontFamily={FONT_UI}
-              fill={t['text-tertiary']}
-            >
-              {leftLabel}
-            </text>
-            <text
-              x={padL}
-              y={h - padBot + 15}
-              fontSize={9}
-              fontWeight={800}
-              letterSpacing={1}
-              fontFamily={FONT_UI}
-              fill={t['text-tertiary']}
-            >
-              {rightLabel}
-            </text>
-          </>
+          <DualDeviceLabels
+            leftLabel={leftLabel}
+            rightLabel={rightLabel}
+            layout={layout}
+            colors={t}
+          />
         )}
       </svg>
     </View>

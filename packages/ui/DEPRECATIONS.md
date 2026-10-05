@@ -273,8 +273,13 @@ would re-enter the frozen-theme baseline.
 Migration is one line at the point of use — hold a live palette and index it:
 
 ```ts
-const t = getSemanticColors(useSurfaceMode())
-const color = t[TONE_TOKEN[tone]] // was TONE_COLOR[tone]
+import { getSemanticColors, TONE_TOKEN, useSurfaceMode } from '@titan-design/react-ui'
+import type { DimensionTone } from '@titan-design/react-ui'
+
+function useToneColor(tone: DimensionTone) {
+  const t = getSemanticColors(useSurfaceMode())
+  return t[TONE_TOKEN[tone]] // was TONE_COLOR[tone]
+}
 ```
 
 The three values are `status-success` / `status-warning` / `status-error`, which

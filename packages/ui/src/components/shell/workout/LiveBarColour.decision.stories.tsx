@@ -59,7 +59,7 @@ function IntentFrame({ set }: { set: IntentSet }) {
  */
 const meta: Meta = {
   title: 'Lab/Decisions/Live Bar Colour',
-  tags: ['status:lab'],
+  tags: ['status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
   render: () => (
     <View className="gap-section-md bg-background-base p-gutter-sm" testID="live-bar-colour">

@@ -342,6 +342,10 @@ Levels -2 to +5 with calculated surface colors and shadows:
 - **Coverage thresholds** live in `packages/ui/vitest.config.ts` (80% across the board, scoped to
   `src/components/**`). Set them from measured coverage (`pnpm exec vitest run --coverage` in
   `packages/ui`), not from a target, and raise them as coverage grows.
+- **Bundle budget** (`pnpm --filter @titan-design/react-ui size`, after a build) checks the brotli size
+  of each ESM entry and `tokens.css` against `packages/ui/.size-limit.json`. Each limit is the measured
+  size plus 5%, rounded up to the next whole kB; a PR that shrinks an entry by more than 10% lowers its
+  limit, and a PR that raises one states why in its body.
 
 ## Key Files
 

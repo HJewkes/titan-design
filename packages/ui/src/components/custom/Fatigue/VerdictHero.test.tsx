@@ -3,7 +3,12 @@ import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { VerdictHero } from './VerdictHero'
 import type { FatigueVerdict } from './fatigue-model'
-import { resolveAll, siblingSource, spacingClassesIn } from '../../../test/spacing-resolver'
+import {
+  resolveAll,
+  siblingSource,
+  spacingClassesAt,
+  spacingClassesOf,
+} from '../../../test/spacing-resolver'
 
 const goodVerdict: FatigueVerdict = {
   state: 'good',
@@ -61,16 +66,29 @@ describe('VerdictHero geometry resolves to the spacing tokens', () => {
   const source = siblingSource(import.meta.url, 'VerdictHero.tsx')
 
   it('spaces the eyebrow from the lockup by gap-1.5', () => {
-    expect(spacingClassesIn(source, 'VerdictHero')).toEqual(['gap-1.5'])
+    render(<VerdictHero rpe={8} verdict={goodVerdict} />)
+    const lockupRow = screen.getByLabelText('RPE 8.0').parentElement
+    expect(spacingClassesOf('verdict-hero')).toEqual(['gap-1.5'])
+    expect(spacingClassesAt(lockupRow?.parentElement ?? null)).toEqual(['gap-0.5'])
     expect(resolveAll(['gap-1.5', 'gap-0.5'])).toEqual(['6px', '2px'])
-    expect(source).toContain('className="gap-0.5"')
   })
 
   it.each([
-    ['gap: 7', /\/\/ optical: 7px between the numeral and its RPE suffix/],
-    ['marginBottom: 9', /\/\/ optical: 9px lifts the suffix onto the numeral's baseline/],
-  ])('keeps %s with its reason beside it', (value, reason) => {
-    expect(source).toContain(value)
+    [
+      'gap: 7',
+      () => screen.getByLabelText('RPE 8.0').parentElement,
+      { gap: '7px' },
+      /\/\/ optical: 7px between the numeral and its RPE suffix/,
+    ],
+    [
+      'marginBottom: 9',
+      () => screen.getByText('RPE'),
+      { marginBottom: '9px' },
+      /\/\/ optical: 9px lifts the suffix onto the numeral's baseline/,
+    ],
+  ])('keeps %s with its reason beside it', (_value, find, style, reason) => {
+    render(<VerdictHero rpe={8} verdict={goodVerdict} />)
+    expect(find()).toHaveStyle(style)
     expect(source).toMatch(reason)
   })
 })

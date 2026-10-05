@@ -206,15 +206,18 @@ export function CardHeader({ children, className }: CardHeaderProps) {
 export interface CardTitleProps {
   children?: React.ReactNode
   className?: string
+  /** Heading level, 1 to 6. Web renders the matching h1..h6. */
+  level?: 1 | 2 | 3 | 4 | 5 | 6
 }
 
 /**
  * Title for CardHeader.
  */
-export function CardTitle({ children, className }: CardTitleProps) {
+export function CardTitle({ children, className, level = 3 }: CardTitleProps) {
   return (
     <Text
       accessibilityRole="header"
+      aria-level={level}
       className={cn('text-lg font-semibold text-text-primary font-heading', className)}
     >
       {children}
