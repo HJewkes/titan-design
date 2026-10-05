@@ -21,13 +21,28 @@ describe('DateTime isLive', () => {
     expect(a.container.textContent).toBe('14:30:05')
   })
 
-  it('isLive ignores value and honours refreshMs', () => {
+  it('isLive without a value is a clock that honours refreshMs', () => {
     const { container } = render(
-      <DateTime isLive value={0} format="time" hour12={false} isUTC seconds refreshMs={2000} />
+      <DateTime isLive format="time" hour12={false} isUTC seconds refreshMs={2000} />
     )
     expect(container.textContent).toBe('14:30:00')
     act(() => vi.advanceTimersByTime(2000))
     expect(container.textContent).toBe('14:30:02')
+  })
+
+  it('isLive keeps a relative value relative to the current time', () => {
+    const fiveMinAgo = Date.now() - 5 * 60_000
+    const { container } = render(
+      <DateTime live value={fiveMinAgo} format="relative" locale="en-US" />
+    )
+    expect(container.textContent).toBe('5 minutes ago')
+    act(() => vi.advanceTimersByTime(60_000))
+    expect(container.textContent).toBe('6 minutes ago')
+  })
+
+  it('isLive renders the fallback for an unparseable value', () => {
+    const { container } = render(<DateTime isLive value="nope" fallback="n/a" />)
+    expect(container.textContent).toBe('n/a')
   })
 
   it('isLive={false} wins over live and renders the value', () => {
@@ -39,7 +54,7 @@ describe('DateTime isLive', () => {
   })
 
   it('isLive wins over live={false}', () => {
-    const { container } = render(<DateTime isLive live={false} value={0} format="date" isUTC />)
+    const { container } = render(<DateTime isLive live={false} format="date" isUTC />)
     expect(container.textContent).toContain('2024')
   })
 })
