@@ -82,7 +82,7 @@ function MarksFrame({ openWeek, currentWeek, readingOnDeload }: MarksArgs) {
  */
 const meta: Meta<MarksArgs> = {
   title: 'Lab/Decisions/Goal Chart Marks',
-  tags: ['status:lab'],
+  tags: ['status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
   argTypes: {
     openWeek: { control: { type: 'number', min: 1, max: 6 } },

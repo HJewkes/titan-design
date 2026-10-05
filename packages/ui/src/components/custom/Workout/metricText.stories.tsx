@@ -12,7 +12,7 @@ import { greyRamp } from '../../../theme/tokens/primitives'
 const meta: Meta<typeof MetricCell> = {
   title: 'Custom/Workout/MetricCell',
   component: MetricCell,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {
