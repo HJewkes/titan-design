@@ -4,6 +4,7 @@ import { createTypeaheadBuffer, isTypeaheadKey } from '../../../utils/listNaviga
 import { indexNodes, nextFocus, typeaheadMatch, visibleRows } from './tree-model'
 import {
   applyExpansion,
+  collapsedAncestor,
   resolveFocus,
   revealIntents,
   toTreeKey,
@@ -169,15 +170,23 @@ interface TreeActions {
   toggle: (row: TreeRow) => void
 }
 
-function useTreeActions<T>(state: TreeState<T>): TreeActions {
-  const { options, rows, applyIntents, setFocusedId } = state
-  const { isDisabled = false, loadingIds = NO_IDS, onLoadChildren, onSelect } = options
-  const typeahead = useTypeahead(rows, setFocusedId)
-  const run = (intents: readonly TreeIntent[]) => {
-    if (isDisabled) return
+/** Applies intents unless disabled; a collapse over the focused row takes focus onto itself. */
+function intentRunner<T>(state: TreeState<T>) {
+  const { options, index, focusedId, applyIntents, setFocusedId } = state
+  return (intents: readonly TreeIntent[]) => {
+    if (options.isDisabled) return
+    const heir = collapsedAncestor(index, focusedId, intents)
+    if (heir !== null) setFocusedId(heir)
     applyIntents(intents)
-    intents.filter((i) => i.type === 'load').forEach((i) => onLoadChildren?.(i.id))
+    intents.filter((i) => i.type === 'load').forEach((i) => options.onLoadChildren?.(i.id))
   }
+}
+
+function useTreeActions<T>(state: TreeState<T>): TreeActions {
+  const { options, rows, setFocusedId } = state
+  const { isDisabled = false, loadingIds = NO_IDS, onSelect } = options
+  const typeahead = useTypeahead(rows, setFocusedId)
+  const run = intentRunner(state)
   const move = (fromId: string, key: TreeKey) => {
     const { focusId, intents } = nextFocus(rows, fromId, key, loadingIds)
     if (focusId !== null) setFocusedId(focusId)

@@ -49,6 +49,21 @@ export function applyExpansion(
   return steps
 }
 
+/**
+ * The row a collapse in `intents` hides `focusedId` under, so focus can move onto it as the APG
+ * asks; `null` when no collapse hides the focused row.
+ */
+export function collapsedAncestor<T>(
+  index: TreeIndex<T>,
+  focusedId: string | null,
+  intents: readonly TreeIntent[]
+): string | null {
+  if (focusedId === null) return null
+  const above = new Set(ancestorsOf(index, focusedId))
+  const hiding = intents.filter((i) => i.type === 'collapse' && above.has(i.id))
+  return hiding.length > 0 ? hiding[0].id : null
+}
+
 /** Expand intents for every ancestor of `id`; the index holds only loaded rows. */
 export function revealIntents<T>(index: TreeIndex<T>, id: string): TreeIntent[] {
   return ancestorsOf(index, id).map((ancestor) => ({ type: 'expand', id: ancestor }))

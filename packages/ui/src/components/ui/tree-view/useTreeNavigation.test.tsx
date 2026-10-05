@@ -68,6 +68,17 @@ describe('useTreeNavigation, selection', () => {
     expect(hook.result.current.selectedId).toBeNull()
   })
 
+  it('never selects when a row takes focus', () => {
+    const onSelect = vi.fn()
+    const hook = setup({ onSelect })
+
+    act(() => rowProps(hook, 'cli').onFocus())
+
+    expect(hook.result.current.focusedId).toBe('cli')
+    expect(onSelect).not.toHaveBeenCalled()
+    expect(hook.result.current.selectedId).toBeNull()
+  })
+
   it('selects once on Space and on press', () => {
     const onSelect = vi.fn()
     const hook = setup({ onSelect })
@@ -193,6 +204,19 @@ describe('useTreeNavigation, row props', () => {
   })
 })
 
+describe('useTreeNavigation, collapsing over focus', () => {
+  it('moves focus onto a row collapsed by its expander and keeps it there on re-expand', () => {
+    const hook = setup({ defaultExpandedIds: new Set(['apps']) })
+    act(() => rowProps(hook, 'apps/auth').onFocus())
+
+    act(() => rowProps(hook, 'apps').onToggle())
+    act(() => rowProps(hook, 'apps').onToggle())
+
+    expect(ids(hook)).toEqual(['apps', 'apps/api', 'apps/auth', 'bin', 'cli'])
+    expect(hook.result.current.focusedId).toBe('apps')
+  })
+})
+
 describe('useTreeNavigation, revealId', () => {
   it('expands the loaded ancestors of revealId and focuses it', () => {
     const { nodes, revealId = '' } = fixtures.deep
@@ -201,6 +225,25 @@ describe('useTreeNavigation, revealId', () => {
 
     expect(ancestors.length).toBeGreaterThan(2)
     expect(hook.result.current.expandedIds).toEqual(new Set(ancestors))
+    expect(hook.result.current.focusedId).toBe(revealId)
+  })
+})
+
+describe('useTreeNavigation, revealId before its rows load', () => {
+  it('waits for the ancestors to arrive, then reveals', () => {
+    const revealId = 'bin/src/main'
+    const hook = setup({ revealId })
+    expect(hook.result.current.expandedIds).toEqual(new Set())
+    expect(hook.result.current.focusedId).toBe('apps')
+
+    const loaded: TreeNode[] = [
+      ...NODES,
+      { id: 'bin/src', parentId: 'bin', label: 'src', childCount: 1 },
+      { id: revealId, parentId: 'bin/src', label: 'main' },
+    ]
+    hook.rerender({ nodes: loaded, revealId })
+
+    expect(hook.result.current.expandedIds).toEqual(new Set(['bin', 'bin/src']))
     expect(hook.result.current.focusedId).toBe(revealId)
   })
 })
@@ -220,6 +263,30 @@ describe('useTreeNavigation, isDisabled', () => {
     expect(onSelect).not.toHaveBeenCalled()
     expect(onLoadChildren).not.toHaveBeenCalled()
     expect(ids(hook)).toEqual(['apps', 'bin', 'cli'])
+  })
+
+  it('does not select on press', () => {
+    const onSelect = vi.fn()
+    const hook = setup({ isDisabled: true, onSelect })
+
+    act(() => rowProps(hook, 'cli').onPress())
+
+    expect(hook.result.current.focusedId).toBe('cli')
+    expect(onSelect).not.toHaveBeenCalled()
+    expect(hook.result.current.selectedId).toBeNull()
+  })
+
+  it('neither expands nor loads from the expander', () => {
+    const onLoadChildren = vi.fn()
+    const onExpandedChange = vi.fn()
+    const hook = setup({ isDisabled: true, onLoadChildren, onExpandedChange })
+
+    act(() => rowProps(hook, 'bin').onToggle())
+    act(() => rowProps(hook, 'apps').onToggle())
+
+    expect(ids(hook)).toEqual(['apps', 'bin', 'cli'])
+    expect(onExpandedChange).not.toHaveBeenCalled()
+    expect(onLoadChildren).not.toHaveBeenCalled()
   })
 
   it('ignores keys it does not handle without preventing their default', () => {
