@@ -52,7 +52,7 @@ export interface SessionHeaderProps extends ViewProps {
  * done, coloured green/amber against the elapsed-vs-budget pace, with a live marker),
  * a mono `n/total sets` label and a ⏱ elapsed readout. Upcoming (`next` set), the tiles
  * become Date/Time/Until, the bar is the empty plan shape, and the readout shows the
- * planned duration. Rendered on the raised grey plane; presentational. Composes
+ * planned duration. Rendered on a `<Surface level="background">` plane; presentational. Composes
  * {@link MetricTiles} / {@link ScheduleTiles} + {@link SegmentedProgressBar} +
  * {@link TimerReadout}.
  */
