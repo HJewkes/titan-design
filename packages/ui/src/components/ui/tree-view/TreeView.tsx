@@ -171,8 +171,14 @@ function TreeBody<T>({ props }: { props: TreeViewProps<T> }) {
   const notice = isTruncated && win.end > nav.rows.length && (
     <TruncationNotice notice={props.truncatedNotice ?? DEFAULT_NOTICE} density={density} />
   )
-  const body = [tree, notice, <View key="after" style={{ height: win.padAfter }} />]
-  if (height === undefined) return <>{body}</>
+  const body = (
+    <>
+      {tree}
+      {notice}
+      <View style={{ height: win.padAfter }} />
+    </>
+  )
+  if (height === undefined) return body
   return (
     <ScrollView ref={scrollRef} style={{ height }} onScroll={onScroll} scrollEventThrottle={16}>
       {body}

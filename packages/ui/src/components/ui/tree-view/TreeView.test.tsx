@@ -321,6 +321,17 @@ describe('TreeView, states', () => {
   })
 })
 
+describe('TreeView, React warnings', () => {
+  it('renders the windowed body with a notice without a missing-key warning', () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+
+    renderTree({ isTruncated: true, height: HEIGHT })
+
+    expect(error).not.toHaveBeenCalled()
+    error.mockRestore()
+  })
+})
+
 describe('TreeView, trailing content (A2)', () => {
   it('reads a null value as its reason in the row description', () => {
     const { nodes, rootId } = fixtures.nullWithReason
