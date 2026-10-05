@@ -1259,7 +1259,7 @@ export function DateTime(input: DateTimeProps): react_jsx_runtime.JSX.Element;
 export type DateTimeFormat = 'date' | 'time' | 'datetime' | 'relative' | 'short' | 'medium' | 'long' | 'full';
 
 // @public (undocumented)
-export interface DateTimeProps extends TextProps, Pick<FormatDateTimeOptions, 'isUTC' | 'hour12' | 'seconds' | 'locale' | 'fallback'> {
+export interface DateTimeProps extends TextProps, Pick<FormatDateTimeOptions, 'isUTC' | 'hour12' | 'seconds' | 'fallback'> {
     className?: string;
     color?: 'primary' | 'secondary' | 'tertiary' | 'inherit';
     // @deprecated
@@ -1996,7 +1996,10 @@ export interface FormActionsProps extends ViewProps {
 export function formatCompact(n: number): string;
 
 // @public
-export function formatDateTime(value: number | Date | string | null | undefined, format?: DateTimeFormat, options?: boolean | FormatDateTimeOptions, fallback?: string): string;
+export function formatDateTime(value: number | Date | string | null | undefined, format?: DateTimeFormat, options?: FormatDateTimeOptions): string;
+
+// @public
+export function formatDateTime(value: number | Date | string | null | undefined, format?: DateTimeFormat, isUTC?: boolean, fallback?: string): string;
 
 // @public
 export interface FormatDateTimeOptions {

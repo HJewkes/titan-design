@@ -236,9 +236,6 @@
   "components/ui/checkbox/Checkbox.tsx#Checkbox": {
     "complexity": 19
   },
-  "components/ui/date-time/DateTime.tsx#DateTime": {
-    "props": 14
-  },
   "components/ui/form-field/FormField.tsx#FormField": {
     "complexity": 20
   },

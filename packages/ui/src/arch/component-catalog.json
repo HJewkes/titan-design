@@ -11691,15 +11691,8 @@
           "type": "boolean"
         },
         {
-          "default": null,
-          "description": "BCP 47 locale, e.g. 'en-US'.",
-          "name": "locale",
-          "required": false,
-          "type": "string"
-        },
-        {
           "default": "1000",
-          "description": "Refresh interval in ms when `isLive` (default 1000).",
+          "description": "Refresh interval in ms for a live clock (default 1000).",
           "name": "refreshMs",
           "required": false,
           "type": "number"
