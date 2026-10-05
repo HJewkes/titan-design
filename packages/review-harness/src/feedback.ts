@@ -19,6 +19,8 @@ export interface VariantDraft {
 
 export interface AnswerDraft {
   pick?: string
+  /** The built-in "None of these, request a revision" is on; excludes `pick`. */
+  revision?: boolean
   picks?: string[]
   value?: number
   text?: string
@@ -51,6 +53,7 @@ function sectionComments(manifest: Manifest, questionId: string, draft: ReviewDr
 
 /** True when the owner's answer equals the recommended one; pick-many compares sets. */
 export function agrees(answer: Answer, recommendation: Recommendation): boolean {
+  if (answer.revisionRequested) return false
   const given = answer.picks ?? answer.pick ?? answer.value
   const wanted = recommendation.answer
   if (!Array.isArray(wanted) || !Array.isArray(given)) return given === wanted
@@ -66,13 +69,24 @@ function withRecommendation(question: Question, answer: Answer): Answer {
     : { ...answer, recommendation }
 }
 
+/** The draft as an answer; a revision request (built-in or the author's own option) is never a pick. */
+export function draftAnswer(question: Question, draft: AnswerDraft): Answer {
+  const answer: Answer = { questionId: question.id }
+  if (question.kind === 'pick-one' && draft.pick !== undefined) {
+    if (draft.pick === question.revisionOption) answer.revisionRequested = true
+    else answer.pick = draft.pick
+  }
+  if (question.kind === 'pick-one' && draft.revision && answer.pick === undefined)
+    answer.revisionRequested = true
+  return answer
+}
+
 function toAnswer(
   question: Question,
   draft: AnswerDraft,
   variantComments: { key: string; comment: string }[]
 ): Answer | null {
-  const answer: Answer = { questionId: question.id }
-  if (question.kind === 'pick-one' && draft.pick !== undefined) answer.pick = draft.pick
+  const answer = draftAnswer(question, draft)
   if (question.kind === 'pick-many' && draft.picks?.length) answer.picks = draft.picks
   if (question.kind === 'scale' && draft.value !== undefined) answer.value = draft.value
   if (question.kind === 'text' && draft.text?.trim()) answer.text = draft.text
@@ -86,7 +100,13 @@ function toAnswer(
 /** The questions a draft leaves without an answer, in manifest order; a comment alone does not answer. */
 export function unansweredQuestionIds(manifest: Manifest, draft: ReviewDraft): string[] {
   return manifest.questions
-    .filter((q) => !isAnswered(q, { questionId: q.id, ...draft.answers[q.id] }))
+    .filter(
+      (q) =>
+        !isAnswered(q, {
+          ...draft.answers[q.id],
+          ...draftAnswer(q, draft.answers[q.id] ?? { comment: '' }),
+        })
+    )
     .map((q) => q.id)
 }
 

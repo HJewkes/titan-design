@@ -1,0 +1,130 @@
+import { createElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+import { describe, expect, it } from 'vitest'
+import { Form } from '../page/App.tsx'
+import { createReducer, initialState, numberKeyAction } from '../page/state.ts'
+import { buildFeedback, emptyDraft, unansweredQuestionIds } from '../src/feedback.ts'
+import { feedbackProblems } from '../src/round.ts'
+import { FeedbackSchema, ManifestSchema, type ManifestInput } from '../src/schema.ts'
+import { SHA, manifest } from './fixtures.ts'
+
+const NOW = new Date('2026-10-05T00:00:00Z')
+const m = manifest()
+const reduce = createReducer(m)
+const build = (m2 = m, draft = emptyDraft(m2)) => buildFeedback(m2, SHA, draft, NOW)
+const q1 = () =>
+  numberKeyAction(
+    m,
+    { kind: 'question', id: 'q1' },
+    String(m.questions[0].kind === 'pick-one' ? m.questions[0].options.length + 1 : 0)
+  )
+
+describe('the built-in revision option', () => {
+  it('records a normal pick as a pick', () => {
+    const state = reduce(initialState(m), { type: 'pick', id: 'q1', option: 'A', many: false })
+    const fb = build(m, state.draft)
+    expect(fb.answers[0]).toEqual({ questionId: 'q1', pick: 'A' })
+    expect(feedbackProblems(fb, m)).not.toContain('q1: a revision request needs a comment')
+  })
+
+  it('records a revision with a comment as revisionRequested, not a pick', () => {
+    const action = q1()
+    expect(action).toEqual({ type: 'revision', id: 'q1' })
+    let state = reduce(initialState(m), { type: 'pick', id: 'q1', option: 'A', many: false })
+    state = reduce(state, action!)
+    state = reduce(state, { type: 'answerComment', id: 'q1', comment: 'Try a calmer header' })
+    const fb = build(m, state.draft)
+    expect(fb.answers[0]).toEqual({
+      questionId: 'q1',
+      revisionRequested: true,
+      comment: 'Try a calmer header',
+    })
+    expect(feedbackProblems(fb, m)).toEqual([])
+    expect(unansweredQuestionIds(m, state.draft)).not.toContain('q1')
+    expect(FeedbackSchema.parse(JSON.parse(JSON.stringify(fb)))).toEqual(fb)
+  })
+
+  it('blocks a revision without a comment', () => {
+    const state = reduce(initialState(m), q1()!)
+    const fb = build(m, state.draft)
+    expect(feedbackProblems(fb, m)).toContain('q1: a revision request needs a comment')
+  })
+
+  it('picking an option afterwards clears the revision', () => {
+    let state = reduce(initialState(m), q1()!)
+    state = reduce(state, { type: 'pick', id: 'q1', option: 'B', many: false })
+    expect(build(m, state.draft).answers[0]).toEqual({ questionId: 'q1', pick: 'B' })
+  })
+
+  it('rejects an answer that is both a pick and a revision', () => {
+    const fb = build()
+    fb.answers = [{ questionId: 'q1', pick: 'A', revisionRequested: true, comment: 'x' }]
+    expect(feedbackProblems(fb, m)).toContain('q1: a revision request is not a pick')
+  })
+
+  it('marks a revision as disagreeing with the recommendation', () => {
+    const input = {
+      ...(JSON.parse(JSON.stringify(m)) as ManifestInput),
+    }
+    input.questions[0] = {
+      ...input.questions[0],
+      recommendation: { answer: 'A', rationale: 'r', confidence: 0.9, by: 'x' },
+    } as never
+    const withRec = ManifestSchema.parse(input)
+    let state = reduce(initialState(withRec), q1()!)
+    state = createReducer(withRec)(state, { type: 'answerComment', id: 'q1', comment: 'no' })
+    expect(build(withRec, state.draft).answers[0]).toMatchObject({
+      revisionRequested: true,
+      agreed: false,
+    })
+  })
+})
+
+describe('the revision option is offered only where it applies', () => {
+  const html = (mm = m) =>
+    renderToStaticMarkup(
+      createElement(Form, {
+        manifest: mm,
+        state: initialState(mm),
+        dispatch: () => {},
+        onHitTesting: () => {},
+      })
+    )
+
+  it('renders as the last choice of a required pick-one', () => {
+    const q = html().split('data-testid="question-q1"')[1].split('data-testid="question-q2"')[0]
+    expect(q).toContain('None of these, request a revision')
+    expect(q.indexOf('None of these')).toBeGreaterThan(q.indexOf('none</button>'))
+  })
+
+  it('is not offered on optional or pick-many questions', () => {
+    const q2 = html().split('data-testid="question-q2"')[1]
+    expect(q2).not.toContain('request a revision')
+  })
+
+  it('is not doubled when the round names its own revision option', () => {
+    const input = JSON.parse(JSON.stringify(m)) as ManifestInput
+    input.questions[0] = { ...input.questions[0], revisionOption: 'none' } as never
+    const own = ManifestSchema.parse(input)
+    expect(html(own)).not.toContain('request a revision')
+    expect(numberKeyAction(own, { kind: 'question', id: 'q1' }, '5')).toBeNull()
+    let state = createReducer(own)(initialState(own), {
+      type: 'pick',
+      id: 'q1',
+      option: 'none',
+      many: false,
+    })
+    state = createReducer(own)(state, { type: 'answerComment', id: 'q1', comment: 'redo' })
+    expect(build(own, state.draft).answers[0]).toEqual({
+      questionId: 'q1',
+      revisionRequested: true,
+      comment: 'redo',
+    })
+  })
+
+  it('refuses a revisionOption that is not one of the options', () => {
+    const input = JSON.parse(JSON.stringify(m)) as ManifestInput
+    input.questions[0] = { ...input.questions[0], revisionOption: 'zzz' } as never
+    expect(() => ManifestSchema.parse(input)).toThrow(/revisionOption.*zzz/)
+  })
+})

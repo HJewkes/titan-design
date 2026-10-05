@@ -1,7 +1,7 @@
 import { useEffect, useRef, type Dispatch } from 'react'
 import type { Feedback, Manifest } from '../src/schema.ts'
 import { Markdown } from './Markdown.tsx'
-import { optionLabel } from './QuestionBlock.tsx'
+import { optionLabel, REVISION_LABEL } from './QuestionBlock.tsx'
 import type { Action } from './state.ts'
 
 interface ReviewScreenProps {
@@ -16,6 +16,7 @@ interface ReviewScreenProps {
 }
 
 function answerText(manifest: Manifest, a: Feedback['answers'][number]): string {
+  if (a.revisionRequested) return `${REVISION_LABEL} (revision request)`
   if (a.pick !== undefined) return optionLabel(manifest, a.pick)
   if (a.picks) return a.picks.map((p) => optionLabel(manifest, p)).join(', ')
   if (a.value !== undefined) return String(a.value)

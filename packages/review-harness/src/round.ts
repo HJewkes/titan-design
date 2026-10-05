@@ -66,6 +66,14 @@ function answerProblems(
   if (question.kind === 'pick-one' && answer.pick !== undefined) {
     if (!question.options.includes(answer.pick)) problems.push(`${question.id}: unknown option`)
   }
+  if (answer.revisionRequested) {
+    if (question.kind !== 'pick-one')
+      problems.push(`${question.id}: only a pick-one can request a revision`)
+    else if (answer.pick !== undefined)
+      problems.push(`${question.id}: a revision request is not a pick`)
+    else if (!(answer.comment ?? '').trim())
+      problems.push(`${question.id}: a revision request needs a comment`)
+  }
   if (question.kind === 'pick-many') {
     const unknown = (answer.picks ?? []).filter((p) => !question.options.includes(p))
     if (unknown.length) problems.push(`${question.id}: unknown options ${unknown}`)
@@ -79,8 +87,14 @@ function answerProblems(
   return problems
 }
 
+/** A required pick-one gets the built-in revision option unless the author listed their own. */
+export function offersBuiltInRevision(question: Question): boolean {
+  return question.kind === 'pick-one' && question.required === true && !question.revisionOption
+}
+
 export function isAnswered(question: Question, answer: Feedback['answers'][number]): boolean {
-  if (question.kind === 'pick-one') return answer.pick !== undefined
+  if (question.kind === 'pick-one')
+    return answer.pick !== undefined || answer.revisionRequested === true
   if (question.kind === 'pick-many') return (answer.picks ?? []).length > 0
   if (question.kind === 'scale') return answer.value !== undefined
   return (answer.text ?? '').trim() !== ''
