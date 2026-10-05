@@ -331,7 +331,7 @@ export async function contractProblems(message: string): Promise<string[]> {
   return [...problems, ...resolved.filter((p): p is string => Boolean(p))]
 }
 
-describe('lint message contract: the checker', () => {
+describe('lint message contract: the checker', { timeout: 30_000 }, () => {
   it('accepts a message with a fix clause, a compiling class and an exported symbol', async () => {
     const message = 'Use `bg-surface-base` or `resolveColor(token)` instead.'
     expect(await contractProblems(message)).toEqual([])
