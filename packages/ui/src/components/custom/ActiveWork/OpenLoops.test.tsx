@@ -16,8 +16,8 @@ describe('OpenLoops', () => {
   it('labels a task loop with its target ref and a PR loop with its kind', () => {
     render(<OpenLoops loops={INITIATIVE_LOOPS_FIXTURE} now={INITIATIVE_NOW} />)
     const rows = screen.getAllByTestId('open-loop')
-    // n4 tracks AW-116; the PR-sweep loop (n3) carries the PR kind.
-    expect(within(rows[2]!).getByText('AW-116')).toBeInTheDocument()
+    // n4 tracks PL-116; the PR-sweep loop (n3) carries the PR kind.
+    expect(within(rows[2]!).getByText('PL-116')).toBeInTheDocument()
     expect(within(rows[1]!).getByText('PR')).toBeInTheDocument()
   })
 
@@ -30,12 +30,12 @@ describe('OpenLoops', () => {
         linkers={sessionLinkers({ onPressTask })}
       />
     )
-    // Row 3's text opens with an AW-22 ref; click the in-prose link, not the kind pill.
+    // Row 3's text opens with an PL-22 ref; click the in-prose link, not the kind pill.
     const proseRef = within(screen.getAllByTestId('open-loop')[3]!).getAllByTestId(
       'prose-ref-task'
     )[0]!
     fireEvent.click(proseRef)
-    expect(onPressTask).toHaveBeenCalledWith('AW-22')
+    expect(onPressTask).toHaveBeenCalledWith('PL-22')
   })
 
   it('singularises the heading and shows the empty state for no loops', () => {

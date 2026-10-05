@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react'
+import { forwardRef } from 'react'
 import { Pressable, View, Text, type PressableProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { liftStyle } from '../../../theme/lift'

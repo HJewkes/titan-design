@@ -2,6 +2,7 @@ const js = require('@eslint/js')
 const tseslint = require('typescript-eslint')
 const react = require('eslint-plugin-react')
 const reactHooks = require('eslint-plugin-react-hooks')
+const globals = require('globals')
 const noDeprecatedImport = require('./eslint-rules/no-deprecated-import')
 const noDeviceInternals = require('./eslint-rules/no-device-internals')
 const noFrozenTheme = require('./eslint-rules/no-frozen-theme')
@@ -10,8 +11,10 @@ const noRawColor = require('./eslint-rules/no-raw-color')
 const noRawComposition = require('./eslint-rules/no-raw-composition')
 const noRawDeviceDataInChat = require('./eslint-rules/no-raw-device-data-in-chat')
 const noRawSpacing = require('./eslint-rules/no-raw-spacing')
+const noTruncation = require('./eslint-rules/no-truncation')
 const noUpwardTierImport = require('./eslint-rules/no-upward-tier-import')
 const noVarColorOpacity = require('./eslint-rules/no-var-color-opacity')
+const restrictedSyntax = require('./eslint-rules/restricted-syntax')
 const storyTitlePrefix = require('./eslint-rules/story-title-prefix')
 
 module.exports = tseslint.config(
@@ -103,6 +106,7 @@ module.exports = tseslint.config(
           'no-raw-composition': noRawComposition,
           'no-raw-device-data-in-chat': noRawDeviceDataInChat,
           'no-raw-spacing': noRawSpacing,
+          'no-truncation': noTruncation,
           'no-upward-tier-import': noUpwardTierImport,
           'no-var-color-opacity': noVarColorOpacity,
           'story-title-prefix': storyTitlePrefix,
@@ -194,24 +198,12 @@ module.exports = tseslint.config(
   },
 
   // Design-system reuse guardrails: components should compose shared primitives,
-  // not hand-roll paints. (Warn — surfaces existing violators without breaking CI.)
+  // not hand-roll paints. (Warn, but any hit still fails `pnpm lint` through --max-warnings 0.)
   {
     files: ['src/components/**/*.{ts,tsx}'],
     ignores: ['**/*.stories.tsx', '**/*.test.tsx'],
     rules: {
-      'no-restricted-syntax': [
-        'warn',
-        {
-          selector: 'Literal[value=/linear-gradient/]',
-          message:
-            'Use surfaceGradient / linearGradient from theme/gradients instead of an inline linear-gradient string.',
-        },
-        {
-          selector: 'TemplateElement[value.raw=/linear-gradient/]',
-          message:
-            'Use surfaceGradient / linearGradient from theme/gradients instead of an inline linear-gradient string.',
-        },
-      ],
+      'no-restricted-syntax': ['warn', ...restrictedSyntax.gradient],
     },
   },
 
@@ -224,29 +216,7 @@ module.exports = tseslint.config(
     rules: {
       // Flat config replaces (not merges) this rule per file, so repeat the
       // gradient selectors here alongside the shell/icons-only hex ones.
-      'no-restricted-syntax': [
-        'warn',
-        {
-          selector: 'Literal[value=/linear-gradient/]',
-          message:
-            'Use surfaceGradient / linearGradient from theme/gradients instead of an inline linear-gradient string.',
-        },
-        {
-          selector: 'TemplateElement[value.raw=/linear-gradient/]',
-          message:
-            'Use surfaceGradient / linearGradient from theme/gradients instead of an inline linear-gradient string.',
-        },
-        {
-          selector: 'Literal[value=/#[0-9a-fA-F]{3,8}\\b/]',
-          message:
-            'Avoid raw hex colors — use a semantic token (className `bg-*`/`text-*`, or `resolveColor(token)` for inline styles).',
-        },
-        {
-          selector: 'TemplateElement[value.raw=/#[0-9a-fA-F]{3,8}\\b/]',
-          message:
-            'Avoid raw hex colors — use a semantic token (className `bg-*`/`text-*`, or `resolveColor(token)` for inline styles).',
-        },
-      ],
+      'no-restricted-syntax': ['warn', ...restrictedSyntax.gradient, ...restrictedSyntax.hex],
     },
   },
 
@@ -260,6 +230,7 @@ module.exports = tseslint.config(
       'src/components/custom/ActiveWork/**/*.{ts,tsx}',
       'src/components/custom/Prose/**/*.{ts,tsx}',
       'src/components/custom/charts/**/*.{ts,tsx}',
+      'src/components/ui/charts/spark-bars/**/*.{ts,tsx}',
       // Workout batch B1 (E3) — hardened file by file, not family-wide yet.
       'src/components/custom/Workout/SetStrip.tsx',
       'src/components/custom/Workout/SetTableHeader.tsx',
@@ -282,6 +253,8 @@ module.exports = tseslint.config(
       'src/components/custom/Workout/SupersetWrapper.tsx',
       'src/components/custom/Workout/MesoProgressBar.tsx',
       'src/components/custom/Workout/Sparkline.tsx',
+      'src/components/custom/Workout/SparklineParts.tsx',
+      'src/components/custom/Workout/sparklineGeometry.ts',
       'src/components/custom/Workout/VolumeLandmarkBar.tsx',
       'src/components/custom/Workout/SessionHeader.tsx',
       'src/components/custom/Workout/WeekRow.tsx',
@@ -301,62 +274,14 @@ module.exports = tseslint.config(
       // hex selectors are repeated here rather than inherited.
       'no-restricted-syntax': [
         'error',
-        {
-          selector: 'Literal[value=/linear-gradient/]',
-          message:
-            'Use surfaceGradient / linearGradient from theme/gradients instead of an inline linear-gradient string.',
-        },
-        {
-          selector: 'TemplateElement[value.raw=/linear-gradient/]',
-          message:
-            'Use surfaceGradient / linearGradient from theme/gradients instead of an inline linear-gradient string.',
-        },
-        {
-          selector: 'Literal[value=/#[0-9a-fA-F]{3,8}\\b/]',
-          message:
-            'Avoid raw hex colors — use a semantic token (className `bg-*`/`text-*`, or `resolveColor(token)` for inline styles).',
-        },
-        {
-          selector: 'TemplateElement[value.raw=/#[0-9a-fA-F]{3,8}\\b/]',
-          message:
-            'Avoid raw hex colors — use a semantic token (className `bg-*`/`text-*`, or `resolveColor(token)` for inline styles).',
-        },
-        // Arbitrary spacing / radius / type values. `w-[420px]` and `min-w-[130px]`
-        // are deliberate layout geometry and stay allowed; the scale properties are
-        // where a specimen's hand-tuned pixels leak into the library.
-        {
-          selector:
-            'Literal[value=/\\b(p|px|py|pt|pb|pl|pr|m|mx|my|mt|mb|ml|mr|gap|gap-x|gap-y|text|rounded|space-x|space-y)-\\[[0-9.]+px\\]/]',
-          message:
-            'Arbitrary spacing/radius/type value — use the scale (gap-2, p-3, text-sm, rounded-md). See TOKENS.md §5.',
-        },
-        {
-          selector:
-            'TemplateElement[value.raw=/\\b(p|px|py|pt|pb|pl|pr|m|mx|my|mt|mb|ml|mr|gap|gap-x|gap-y|text|rounded|space-x|space-y)-\\[[0-9.]+px\\]/]',
-          message:
-            'Arbitrary spacing/radius/type value — use the scale (gap-2, p-3, text-sm, rounded-md). See TOKENS.md §5.',
-        },
-        // Hardcoded inline fontSize defeats the type scale and its paired
-        // line-height. Restricted to literals on purpose: a *computed* size
-        // (`fontSize: valueLabelFontSize(height)`) is chart geometry fitting text
-        // to its container, which no scale can express — that stays allowed.
-        {
-          selector: 'Property[key.name="fontSize"][value.type="Literal"]',
-          message:
-            'Hardcoded inline fontSize defeats the type scale — use a Typography variant or a text-* class. See TOKENS.md §4.',
-        },
+        ...restrictedSyntax.gradient,
+        ...restrictedSyntax.hex,
+        ...restrictedSyntax.arbitrarySpacing,
+        ...restrictedSyntax.fontSize,
         // Freezes the value to one palette at import time. Resolve at render
         // time instead — titan/no-frozen-theme below says the same thing for
-        // every component family, ratcheted. The `:not(:has(...))` clause
-        // carves out exactly the render-time form this message recommends
-        // (VW-381): a bare selector on the call name banned that form too,
-        // since it can't see the argument.
-        {
-          selector:
-            'CallExpression[callee.name="getSemanticColors"]:not(:has(> CallExpression[callee.name="useSurfaceMode"]))',
-          message:
-            'getSemanticColors() freezes to one theme — resolve at render time with useOnSurfaceColor(role), or getSemanticColors(useSurfaceMode()) for other tokens. See TOKENS.md §3.',
-        },
+        // every component family, ratcheted.
+        ...restrictedSyntax.frozenTheme,
       ],
     },
   },
@@ -408,11 +333,13 @@ module.exports = tseslint.config(
       'src/components/custom/Workout/PrHistoryModal.tsx',
       'src/components/custom/Workout/ReadinessCheck.tsx',
       'src/components/custom/Workout/RestTimer.tsx',
+      'src/components/custom/Workout/RestTimerBar.tsx',
       'src/components/custom/Workout/SessionHeader.tsx',
       'src/components/custom/Workout/SetTableHeader.tsx',
       'src/components/custom/Workout/StatusDot.tsx',
       'src/components/custom/Workout/SupersetWrapper.tsx',
       'src/components/custom/Workout/TempoDisplay.tsx',
+      'src/components/custom/Workout/tempoDisplayParts.tsx',
       'src/components/custom/Workout/WeightBadge.tsx',
       'src/components/custom/Workout/WorkoutPill.tsx',
       // Wave three, cards and rows (AW-142).
@@ -440,6 +367,25 @@ module.exports = tseslint.config(
       'src/components/custom/Workout/StrengthTrendChart.tsx',
       'src/components/custom/Workout/TrainingStatusPage.tsx',
       'src/components/custom/Workout/VelocityStrip.tsx',
+      'src/components/custom/Workout/VelocityStripFramed.tsx',
+      // The TD-6 split wave moved code out of enrolled parents above into these
+      // siblings; enrolled with no source change (TD-657).
+      'src/components/custom/Workout/DualVelocityCharts.tsx',
+      'src/components/custom/Workout/DualVelocityStrip.tsx',
+      'src/components/custom/Workout/dual-velocity-slots.ts',
+      'src/components/custom/Workout/ExerciseDetailSectionCard.tsx',
+      'src/components/custom/Workout/GoalTrajectoryChartParts.tsx',
+      'src/components/custom/Workout/goalTrajectoryChartModel.ts',
+      'src/components/custom/Workout/MesoCard.parts.tsx',
+      'src/components/custom/Workout/MesoStatusCard.parts.tsx',
+      'src/components/custom/Workout/ProgramPlanningBreadcrumbs.tsx',
+      'src/components/custom/Workout/tempoDisplayModel.ts',
+      'src/components/custom/Workout/useGoalTrajectoryChart.ts',
+      'src/components/custom/Workout/VelocityLossBands.tsx',
+      'src/components/custom/Workout/velocity-scale.ts',
+      'src/components/custom/Workout/velocity-slots.ts',
+      'src/components/custom/Workout/velocity-strip-model.ts',
+      'src/components/custom/Workout/VelocityStripVariants.tsx',
       'src/components/custom/Fatigue/**/*.{ts,tsx}',
     ],
     // `color-story-kit` is story chrome that happens not to be named `.stories.tsx`
@@ -565,10 +511,24 @@ module.exports = tseslint.config(
       'src/**/*.test.{ts,tsx}',
       'src/utils/workout-format.ts',
       'src/utils/number-format.ts',
-      'src/components/custom/ActiveWork/format-time.ts',
+      'src/utils/time-format.ts',
     ],
     rules: {
       'titan/no-local-formatter': 'error',
+    },
+  },
+
+  // TD-317 row 9: a domain component that clips its own text hides the data the reader came
+  // for, so truncation in custom/ and shell/ is an explicit decision. ui/ is out of scope:
+  // there truncation is a consumer prop. RATCHETED: today's sites are in
+  // no-truncation-baseline.json, which must stay exact (an unspent allowance is reported as
+  // stale); sanctioned sites go in truncation-allowlist.json. Tests and stories are exempt,
+  // since they exercise the props rather than ship them.
+  {
+    files: ['src/components/custom/**/*.{ts,tsx}', 'src/components/shell/**/*.{ts,tsx}'],
+    ignores: ['src/**/*.test.{ts,tsx}', 'src/**/*.stories.{ts,tsx}'],
+    rules: {
+      'titan/no-truncation': 'error',
     },
   },
 
@@ -579,6 +539,26 @@ module.exports = tseslint.config(
     files: ['src/**/*.stories.{ts,tsx}'],
     rules: {
       'titan/story-title-prefix': 'error',
+    },
+  },
+
+  // Build, audit and baseline scripts run under Node. Page-side functions that are
+  // serialised into a browser declare their own browser globals where they are written.
+  {
+    files: ['scripts/**/*.{mjs,js}'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      globals: globals.node,
+    },
+  },
+
+  // These two scripts hand a callback to page.evaluate. A /* global */ comment would widen to the
+  // whole file anyway, so the browser names are granted here, to the files that need them.
+  {
+    files: ['scripts/design-freeze.mjs', 'scripts/extract-css-properties.mjs'],
+    languageOptions: {
+      globals: { document: 'readonly', getComputedStyle: 'readonly' },
     },
   }
 )

@@ -53,7 +53,6 @@
       "maximum": 4000
     },
     "variants": {
-      "minItems": 1,
       "maxItems": 80,
       "type": "array",
       "items": {
@@ -205,6 +204,48 @@
                   "type": "string",
                   "pattern": "^[A-Za-z0-9_-]{1,32}$"
                 }
+              },
+              "recommendation": {
+                "type": "object",
+                "properties": {
+                  "answer": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "minItems": 1,
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      {
+                        "type": "number"
+                      }
+                    ]
+                  },
+                  "rationale": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "confidence": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "by": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "answer",
+                  "rationale",
+                  "confidence",
+                  "by"
+                ],
+                "additionalProperties": false
               }
             },
             "required": [
@@ -256,6 +297,48 @@
                   "type": "string",
                   "pattern": "^[A-Za-z0-9_-]{1,32}$"
                 }
+              },
+              "recommendation": {
+                "type": "object",
+                "properties": {
+                  "answer": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "minItems": 1,
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      {
+                        "type": "number"
+                      }
+                    ]
+                  },
+                  "rationale": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "confidence": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "by": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "answer",
+                  "rationale",
+                  "confidence",
+                  "by"
+                ],
+                "additionalProperties": false
               }
             },
             "required": [
@@ -300,6 +383,48 @@
                 "type": "integer",
                 "minimum": -9007199254740991,
                 "maximum": 9007199254740991
+              },
+              "recommendation": {
+                "type": "object",
+                "properties": {
+                  "answer": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "minItems": 1,
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      {
+                        "type": "number"
+                      }
+                    ]
+                  },
+                  "rationale": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "confidence": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "by": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "answer",
+                  "rationale",
+                  "confidence",
+                  "by"
+                ],
+                "additionalProperties": false
               }
             },
             "required": [
@@ -400,6 +525,148 @@
                 "const": "auto"
               }
             ]
+          },
+          "contrast": {
+            "type": "object",
+            "properties": {
+              "knownDefects": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "variant": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9_-]{1,32}$"
+                    },
+                    "mode": {
+                      "type": "string",
+                      "enum": [
+                        "light",
+                        "dark"
+                      ]
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "text",
+                        "large-text",
+                        "non-text"
+                      ]
+                    },
+                    "element": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "minRatio": {
+                      "type": "number",
+                      "minimum": 1,
+                      "maximum": 21
+                    },
+                    "maxRatio": {
+                      "not": {}
+                    },
+                    "route": {
+                      "type": "string",
+                      "pattern": "^([A-Z][A-Z0-9]*-[0-9]+[a-z]?|component)$"
+                    },
+                    "reason": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "mode",
+                    "kind",
+                    "element",
+                    "route",
+                    "reason"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "measured": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "variant": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9_-]{1,32}$"
+                    },
+                    "mode": {
+                      "type": "string",
+                      "enum": [
+                        "light",
+                        "dark"
+                      ]
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "text",
+                        "large-text",
+                        "non-text"
+                      ]
+                    },
+                    "element": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "ratio": {
+                      "type": "number",
+                      "minimum": 1,
+                      "maximum": 21
+                    },
+                    "source": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "variant",
+                    "mode",
+                    "kind",
+                    "element",
+                    "ratio",
+                    "source"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "unmeasured": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "variant": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9_-]{1,32}$"
+                    },
+                    "mode": {
+                      "type": "string",
+                      "enum": [
+                        "light",
+                        "dark"
+                      ]
+                    },
+                    "reason": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "variant",
+                    "mode",
+                    "reason"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
           }
         },
         "required": [
@@ -408,6 +675,219 @@
         ],
         "additionalProperties": false
       }
+    },
+    "recommendations": {
+      "default": "after-answer",
+      "type": "string",
+      "enum": [
+        "after-answer",
+        "shown"
+      ]
+    },
+    "contrast": {
+      "type": "object",
+      "properties": {
+        "knownDefects": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "variant": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]{1,32}$"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "light",
+                  "dark"
+                ]
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "text",
+                  "large-text",
+                  "non-text"
+                ]
+              },
+              "element": {
+                "type": "string",
+                "minLength": 1
+              },
+              "minRatio": {
+                "type": "number",
+                "minimum": 1,
+                "maximum": 21
+              },
+              "maxRatio": {
+                "not": {}
+              },
+              "route": {
+                "type": "string",
+                "pattern": "^([A-Z][A-Z0-9]*-[0-9]+[a-z]?|component)$"
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "mode",
+              "kind",
+              "element",
+              "route",
+              "reason"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "measured": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "variant": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]{1,32}$"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "light",
+                  "dark"
+                ]
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "text",
+                  "large-text",
+                  "non-text"
+                ]
+              },
+              "element": {
+                "type": "string",
+                "minLength": 1
+              },
+              "ratio": {
+                "type": "number",
+                "minimum": 1,
+                "maximum": 21
+              },
+              "source": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "variant",
+              "mode",
+              "kind",
+              "element",
+              "ratio",
+              "source"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "unmeasured": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "variant": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]{1,32}$"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "light",
+                  "dark"
+                ]
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "variant",
+              "mode",
+              "reason"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "contrastOverride": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "problem": {
+          "type": "string",
+          "minLength": 1
+        },
+        "failures": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "variant": {
+                "type": "string"
+              },
+              "element": {
+                "type": "string"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "light",
+                  "dark"
+                ]
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "text",
+                  "large-text",
+                  "non-text"
+                ]
+              },
+              "ratio": {
+                "type": "number"
+              },
+              "required": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "variant",
+              "element",
+              "mode",
+              "kind",
+              "ratio",
+              "required"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "reason",
+        "problem"
+      ],
+      "additionalProperties": false
     }
   },
   "required": [

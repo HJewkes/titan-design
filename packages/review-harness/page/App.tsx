@@ -1,4 +1,5 @@
 import {
+  useLayoutEffect,
   useEffect,
   useMemo,
   useReducer,
@@ -7,14 +8,17 @@ import {
   type Dispatch,
   type ReactNode,
 } from 'react'
-import { buildFeedback } from '../src/feedback.ts'
+import { buildFeedback, unansweredQuestionIds } from '../src/feedback.ts'
 import { feedbackProblems } from '../src/round.ts'
 import { roundLayout, type ResolvedSection } from '../src/sections.ts'
 import type { Manifest, Question, Variant } from '../src/schema.ts'
+import { Markdown } from './Markdown.tsx'
 import { QuestionBlock } from './QuestionBlock.tsx'
 import { ReviewScreen } from './ReviewScreen.tsx'
 import { browserStorage, clearDraft, saveDraft, type DraftStorage } from './draftStore.ts'
 import {
+  OTHER_PAGE,
+  OVERALL_PAGE,
   createReducer,
   orderedQuestions,
   pageOf,
@@ -90,7 +94,8 @@ function Header({
       <h1>
         {manifest.unit} <span>round {manifest.round}</span>
       </h1>
-      {manifest.context && <p>{manifest.context}</p>}
+      {manifest.context && <Markdown>{manifest.context}</Markdown>}
+      {manifest.sections && <Pager pages={pages} current={current} dispatch={dispatch} />}
       {manifest.sections ? (
         <ol className="prompts">
           {pages.map((p, i) => (
@@ -104,7 +109,9 @@ function Header({
       ) : (
         <ol className="prompts">
           {orderedQuestions(manifest).map((q) => (
-            <li key={q.id}>{q.prompt}</li>
+            <li key={q.id}>
+              <Markdown inline>{q.prompt}</Markdown>
+            </li>
           ))}
         </ol>
       )}
@@ -167,6 +174,7 @@ interface PartProps {
 
 function Variants({ variants, ...props }: PartProps & { variants: Variant[] }) {
   const { manifest, state, dispatch, indexes } = props
+  if (variants.length === 0) return null
   return (
     <div
       className={state.singleColumn ? 'variants single' : 'variants'}
@@ -221,7 +229,6 @@ function SectionBlock({ section, ...props }: PartProps & { section: ResolvedSect
     >
       <header className="section-head">
         <h2>{section.title}</h2>
-        {section.context && <p>{section.context}</p>}
         {section.seeAlso.length > 0 && (
           <p className="see-also">
             See also{' '}
@@ -238,25 +245,32 @@ function SectionBlock({ section, ...props }: PartProps & { section: ResolvedSect
           </p>
         )}
       </header>
+      {section.context && <Markdown>{section.context}</Markdown>}
       <Questions {...props} questions={section.questions} />
       <Variants {...props} variants={section.variants} />
     </section>
   )
 }
 
-/** Previous and next section, with where the human is in the round. */
-function Pager({
-  pages,
-  current,
-  dispatch,
-}: {
+interface PagerProps {
   pages: Page[]
   current: number
   dispatch: Dispatch<Action>
-}) {
+  /** The pager closing a section, whose Next takes focus when the section opens. */
+  end?: boolean
+}
+
+/** Previous and next section, with where the human is in the round. */
+function Pager({ pages, current, dispatch, end = false }: PagerProps) {
   const step = (delta: number) => pages[current + delta]
+  const nextRef = useFocusOnPageEntry(pages[current].id, end)
+  const suffix = end ? '-end' : ''
   return (
-    <nav className="pager" aria-label="Sections" data-testid="pager">
+    <nav
+      className={end ? 'pager pager-end' : 'pager'}
+      aria-label={end ? 'Section end' : 'Sections'}
+      data-testid={`pager${suffix}`}
+    >
       <button
         type="button"
         disabled={!step(-1)}
@@ -264,11 +278,13 @@ function Pager({
       >
         <kbd>[</kbd> Previous
       </button>
-      <span data-testid="page-position">
+      <span data-testid={`page-position${suffix}`}>
         Section {current + 1} of {pages.length}: {pages[current].title}
       </span>
       <button
+        ref={nextRef}
         type="button"
+        className={end && step(1) ? 'primary' : undefined}
         disabled={!step(1)}
         onClick={() => dispatch({ type: 'jump', index: step(1).first })}
       >
@@ -276,6 +292,18 @@ function Pager({
       </button>
     </nav>
   )
+}
+
+/**
+ * Moving on is the default once a page opens: focus goes to its closing Next (or, on the last
+ * page, to Review answers), so finishing a section never looks like finishing the round.
+ */
+function useFocusOnPageEntry(pageId: string, enabled: boolean) {
+  const ref = useRef<HTMLButtonElement>(null)
+  useEffect(() => {
+    if (enabled && !ref.current?.disabled) ref.current?.focus({ preventScroll: true })
+  }, [pageId, enabled])
+  return ref
 }
 
 /** A page change mounts new stops, which do not scroll themselves on mount; bring the active one up. */
@@ -329,19 +357,22 @@ export function Form(props: Omit<PartProps, 'indexes'>) {
   const paged = layout.sections.length > 0
   const shows = (id: string) => !paged || page.id === id
   const parts = { ...props, indexes: stopIndexes(manifest), layout }
+  const last = current === pages.length - 1
+  const reviewRef = useFocusOnPageEntry(page.id, paged && last)
   return (
     <main>
-      {paged && <Pager pages={pages} current={current} dispatch={dispatch} />}
       {layout.sections
         .filter((s) => shows(s.id))
         .map((s) => (
           <SectionBlock key={s.id} {...parts} section={s} />
         ))}
-      {shows('other') && <OtherFrames {...parts} />}
-      {shows('overall') && <Overall {...parts} />}
+      {shows(OTHER_PAGE) && <OtherFrames {...parts} />}
+      {shows(OVERALL_PAGE) && <Overall {...parts} />}
+      {paged && <Pager pages={pages} current={current} dispatch={dispatch} end />}
       <button
+        ref={reviewRef}
         type="button"
-        className="primary"
+        className={!paged || last ? 'primary' : undefined}
         onClick={() => dispatch({ type: 'screen', screen: 'review' })}
       >
         Review answers <kbd>⌘ Enter</kbd>
@@ -359,6 +390,29 @@ function useDraftBackup(storage: DraftStorage | null, manifestSha256: string, st
   }, [storage, manifestSha256, draft, screen])
 }
 
+function ContrastOverrideBanner({ reason }: { reason: string }) {
+  const ref = useRef<HTMLParagraphElement>(null)
+  useLayoutEffect(() => {
+    const banner = ref.current
+    if (!banner) return
+    const root = document.documentElement
+    const publish = () =>
+      root.style.setProperty('--contrast-banner-height', `${banner.offsetHeight}px`)
+    publish()
+    const observer = new ResizeObserver(publish)
+    observer.observe(banner)
+    return () => {
+      observer.disconnect()
+      root.style.removeProperty('--contrast-banner-height')
+    }
+  }, [])
+  return (
+    <p ref={ref} className="contrast-override" role="alert" data-testid="contrast-override">
+      Contrast was not gated for this round: {reason}
+    </p>
+  )
+}
+
 export function App({ manifest, manifestSha256 }: AppProps) {
   const reducer = useMemo(() => createReducer(manifest), [manifest])
   const storage = useMemo(() => browserStorage(), [])
@@ -367,17 +421,21 @@ export function App({ manifest, manifestSha256 }: AppProps) {
   )
   useDraftBackup(storage, manifestSha256, state)
   const [hitTesting, setHitTesting] = useState<boolean | null>(null)
-  const feedback = buildFeedback(manifest, manifestSha256, state.draft, new Date())
+  const unanswered = unansweredQuestionIds(manifest, state.draft)
+  const partial = unanswered.length > 0
+  const feedback = buildFeedback(manifest, manifestSha256, state.draft, new Date(), partial)
   const problems = feedbackProblems(feedback, manifest)
   const submit = async () => {
     if (state.screen !== 'review' || problems.length) return
     dispatch({ type: 'screen', screen: 'sending' })
     const errors = await postFeedback(
-      buildFeedback(manifest, manifestSha256, state.draft, new Date())
+      buildFeedback(manifest, manifestSha256, state.draft, new Date(), partial)
     )
     dispatch({ type: 'screen', screen: errors.length ? 'review' : 'sent', errors })
   }
-  useKeyboard({ manifest, state, dispatch, submit })
+  // Cmd+Enter sends only a complete round; a partial one takes the explicit Send partial click.
+  const submitByKey = () => (partial ? undefined : submit())
+  useKeyboard({ manifest, state, dispatch, submit: submitByKey })
   if (state.screen === 'sent')
     return (
       <p className="sent" data-testid="sent">
@@ -386,6 +444,9 @@ export function App({ manifest, manifestSha256 }: AppProps) {
     )
   return (
     <>
+      {manifest.contrastOverride && (
+        <ContrastOverrideBanner reason={manifest.contrastOverride.reason} />
+      )}
       <Header manifest={manifest} state={state} dispatch={dispatch} hitTesting={hitTesting} />
       <div hidden={state.screen !== 'form'}>
         <Form manifest={manifest} state={state} dispatch={dispatch} onHitTesting={setHitTesting} />
@@ -395,6 +456,7 @@ export function App({ manifest, manifestSha256 }: AppProps) {
           manifest={manifest}
           feedback={feedback}
           problems={[...problems, ...state.errors]}
+          unanswered={unanswered}
           sending={state.screen === 'sending'}
           dispatch={dispatch}
           onSubmit={submit}

@@ -1,10 +1,10 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, Pressable } from 'react-native'
-import { SparkBars } from '../charts'
+import { SparkBars } from '../../ui/charts/spark-bars'
 import { Typography } from '../../ui/typography'
 import { resolveColor } from '../../../theme/resolve-color'
 import { categoricalPalette } from '../../../theme/tokens/primitives'
-import { FilePathLabel } from './FilePathLabel'
+import { FilePathLabel } from '../../ui/file-path-label'
 
 /** Fill per event kind, shared by the row's counts and the detail pane's tiles. */
 export interface FileEventColors {

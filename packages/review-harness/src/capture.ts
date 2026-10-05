@@ -33,7 +33,10 @@ function assertInsideOutDir(file: string, outDir: string): string {
   return resolvedFile
 }
 
-async function shoot(page: Page, url: string, file: string): Promise<void> {
+export const STORY_ROOT = '#storybook-root'
+
+/** Loads a story and lets it settle; a story that threw rejects instead of rendering blank. */
+export async function renderStory(page: Page, url: string): Promise<void> {
   await page.goto(url, { waitUntil: 'networkidle' })
   await page.waitForTimeout(SETTLE_MS)
   const storyError = await page.evaluate(() =>
@@ -42,7 +45,11 @@ async function shoot(page: Page, url: string, file: string): Promise<void> {
       : null
   )
   if (storyError) throw new Error(`story failed to render: ${storyError.slice(0, 300)}`)
-  await page.locator('#storybook-root').first().screenshot({ path: file, animations: 'disabled' })
+}
+
+async function shoot(page: Page, url: string, file: string): Promise<void> {
+  await renderStory(page, url)
+  await page.locator(STORY_ROOT).first().screenshot({ path: file, animations: 'disabled' })
 }
 
 /** The first of `<key>-image.png`, `<key>-image-2.png`, ... that is not one of the round's source PNGs. */

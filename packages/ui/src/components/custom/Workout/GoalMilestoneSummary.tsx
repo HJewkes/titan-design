@@ -193,7 +193,7 @@ export function resolveTile(props: GoalMilestoneSummaryProps, t: Palette): Resol
   const met = reach
     ? reach !== 'short'
     : latest
-      ? milestoneGap(target, latest, direction)?.kind === 'none'
+      ? (milestoneReach(target, latest, direction) ?? 'short') !== 'short'
       : false
   const state = deriveMilestoneState({ state: props.state, met, currentWeek, goalWeek: weekCount })
   const gap = state === 'hit' ? null : gapAmountText(props)
@@ -340,7 +340,8 @@ export function MilestoneFacts({ tile }: { tile: ResolvedTile }) {
         style={{ position: 'absolute', opacity: 0, flexDirection: 'row', alignSelf: 'flex-start' }}
         className="gap-inline-lg"
         pointerEvents="none"
-        accessibilityElementsHidden
+        aria-hidden
+        testID="goal-milestone-facts-measure"
         onLayout={(e) => setNatural(e.nativeEvent.layout.width)}
       >
         <FactItems tile={tile} spread={false} measuring />

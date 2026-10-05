@@ -1,5 +1,6 @@
 // Synthetic, labelled fixtures for DependencyMatrix. Every name is invented; only the numeric shapes
 // (item, edge and weight counts) follow the TD-35 Round 0 contract. Not exported from any barrel.
+import { seededRandom } from '../kit/seededRandom'
 
 export interface FixtureItem {
   id: string
@@ -28,14 +29,6 @@ function makeItems(count: number, prefix: string, group?: string): FixtureItem[]
     label: `${prefix}-${pad(i)}`,
     ...(group ? { group } : {}),
   }))
-}
-
-function seededRandom(seed: number): () => number {
-  let state = seed
-  return () => {
-    state = (state * 1664525 + 1013904223) % 4294967296
-    return state / 4294967296
-  }
 }
 
 const pairKey = (from: string, to: string): string => `${from}\u0000${to}`

@@ -3,6 +3,8 @@
   "components-atoms-spinner--all-sizes": ["aria-progressbar-name"],
   "components-atoms-spinner--default": ["aria-progressbar-name"],
   "components-atoms-spinner--with-custom-label": ["aria-progressbar-name"],
+  "components-atoms-treemap--outlier-linear": ["aria-prohibited-attr"],
+  "components-atoms-treemap--truncated": ["aria-prohibited-attr"],
   "components-molecules-button--icon-button": ["button-name"],
   "components-molecules-button--loading": ["aria-progressbar-name"],
   "components-molecules-checkbox--all-sizes": ["aria-required-attr"],
@@ -47,12 +49,10 @@
   "components-organisms-table--empty-state": ["aria-required-children"],
   "components-organisms-table--loading": ["aria-required-children"],
   "components-organisms-table--sorting-and-selection": [
-    "aria-required-attr",
     "aria-required-children",
     "aria-toggle-field-name"
   ],
   "components-organisms-table--with-row-selection": [
-    "aria-required-attr",
     "aria-required-children",
     "aria-toggle-field-name"
   ],
@@ -62,15 +62,10 @@
   "custom-activework-sessionlistitem--default": ["aria-required-parent"],
   "custom-activework-sessionlistitem--selected": ["aria-required-parent"],
   "custom-activework-sessionlistitem--short": ["aria-required-parent"],
-  "custom-charts-treemap--outlier-linear": ["aria-prohibited-attr"],
-  "custom-charts-treemap--truncated": ["aria-prohibited-attr"],
   "custom-workout-prhistorymodal--default": ["aria-allowed-attr"],
   "custom-workout-prhistorymodal--empty": ["aria-allowed-attr"],
   "custom-workout-prhistorymodal--falls-back-to-exercise-id": ["aria-allowed-attr"],
   "custom-workout-prhistorymodal--recent-prs-highlighted": ["aria-allowed-attr"],
   "custom-workout-prhistorymodal--single-record": ["aria-allowed-attr"],
-  "lab-decisions-dataviz-light-palettes--categorical": ["aria-prohibited-attr"],
-  "shell-navitem--active": ["aria-required-parent"],
-  "shell-navitem--default": ["aria-required-parent"],
-  "shell-navitem--live-elsewhere": ["aria-required-parent"]
+  "lab-decisions-dataviz-light-palettes--categorical": ["aria-prohibited-attr"]
 }

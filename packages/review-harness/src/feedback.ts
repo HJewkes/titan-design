@@ -5,6 +5,7 @@ import {
   type Feedback,
   type Manifest,
   type Question,
+  type Recommendation,
   type Verdict,
 } from './schema.ts'
 import { isAnswered } from './round.ts'
@@ -48,6 +49,23 @@ function sectionComments(manifest: Manifest, questionId: string, draft: ReviewDr
     .filter((v) => v.comment !== '')
 }
 
+/** True when the owner's answer equals the recommended one; pick-many compares sets. */
+export function agrees(answer: Answer, recommendation: Recommendation): boolean {
+  const given = answer.picks ?? answer.pick ?? answer.value
+  const wanted = recommendation.answer
+  if (!Array.isArray(wanted) || !Array.isArray(given)) return given === wanted
+  return given.length === wanted.length && wanted.every((w) => given.includes(w))
+}
+
+/** Echo the question's recommendation; `agreed` only once there is an answer to compare. */
+function withRecommendation(question: Question, answer: Answer): Answer {
+  if (question.kind === 'text' || !question.recommendation) return answer
+  const { recommendation } = question
+  return isAnswered(question, answer)
+    ? { ...answer, recommendation, agreed: agrees(answer, recommendation) }
+    : { ...answer, recommendation }
+}
+
 function toAnswer(
   question: Question,
   draft: AnswerDraft,
@@ -60,15 +78,27 @@ function toAnswer(
   if (question.kind === 'text' && draft.text?.trim()) answer.text = draft.text
   if (draft.comment.trim()) answer.comment = draft.comment
   if (variantComments.length) answer.variantComments = variantComments
-  return isAnswered(question, answer) || answer.comment || variantComments.length ? answer : null
+  return isAnswered(question, answer) || answer.comment || variantComments.length
+    ? withRecommendation(question, answer)
+    : null
 }
 
+/** The questions a draft leaves without an answer, in manifest order; a comment alone does not answer. */
+export function unansweredQuestionIds(manifest: Manifest, draft: ReviewDraft): string[] {
+  return manifest.questions
+    .filter((q) => !isAnswered(q, { questionId: q.id, ...draft.answers[q.id] }))
+    .map((q) => q.id)
+}
+
+/** A partial build lists what was left out, which is what lets a required question go unanswered. */
 export function buildFeedback(
   manifest: Manifest,
   manifestSha256: string,
   draft: ReviewDraft,
-  now: Date
+  now: Date,
+  partial = false
 ): Feedback {
+  const unanswered = partial ? unansweredQuestionIds(manifest, draft) : []
   return {
     schema: FEEDBACK_SCHEMA_ID,
     unit: manifest.unit,
@@ -90,5 +120,6 @@ export function buildFeedback(
       }
     }),
     general: draft.general,
+    ...(unanswered.length ? { unansweredQuestionIds: unanswered } : {}),
   }
 }

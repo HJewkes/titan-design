@@ -98,6 +98,8 @@ const config: StorybookConfig = {
     cfg.optimizeDeps = cfg.optimizeDeps ?? {}
     cfg.optimizeDeps.include = [
       ...(cfg.optimizeDeps.include ?? []),
+      // preview.tsx imports it, so the startup scan misses it and Vite re-optimizes and reloads mid-run (TD-636)
+      '@storybook/addon-themes',
       'react-native-svg',
       'react-native-body-highlighter',
       'react-native-body-highlighter/dist/assets/bodyFront.js',

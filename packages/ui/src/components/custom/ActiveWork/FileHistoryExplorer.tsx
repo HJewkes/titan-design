@@ -1,6 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useState } from 'react'
 import { View, type ViewProps } from 'react-native'
+import { cn } from '../../../utils/cn'
 import { Card } from '../../ui/card'
 import { Divider } from '../../ui/divider'
 import { Tile } from '../../ui/tile'
@@ -88,7 +89,7 @@ export function FileHistoryExplorer({
   }
 
   return (
-    <View className={`gap-3.5 ${className ?? ''}`} testID="file-history-explorer" {...props}>
+    <View className={cn('gap-3.5', className)} testID="file-history-explorer" {...props}>
       <View className="gap-1.5">
         <View className="flex-row flex-wrap gap-2.5">
           {stats.map((s) => (

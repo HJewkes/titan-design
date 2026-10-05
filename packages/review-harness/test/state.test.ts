@@ -9,7 +9,7 @@ import {
   stopsFor,
 } from '../page/state.ts'
 import { ManifestSchema } from '../src/schema.ts'
-import { manifest, pagedImageInput, sectioned } from './fixtures.ts'
+import { manifest, pagedImageInput, sectioned, sectionedInput } from './fixtures.ts'
 
 const m = manifest()
 const reduce = createReducer(m)
@@ -81,8 +81,8 @@ describe('section paging', () => {
   it('pages each section, then Other frames, then Overall with the general note', () => {
     expect(pagesFor(sectioned())).toEqual([
       { id: 'lead', title: 'Which card leads the page?', first: 0, last: 3 },
-      { id: 'other', title: 'Other frames', first: 4, last: 4 },
-      { id: 'overall', title: 'Overall', first: 5, last: 7 },
+      { id: '#other', title: 'Other frames', first: 4, last: 4 },
+      { id: '#overall', title: 'Overall', first: 5, last: 7 },
     ])
   })
 
@@ -92,6 +92,28 @@ describe('section paging', () => {
     expect(pageStepAction(paged, two.last, -1)).toEqual({ type: 'jump', index: one.first })
     expect(pageStepAction(paged, 0, -1)).toBeNull()
     expect(pageStepAction(paged, stopsFor(paged).length - 1, 1)).toBeNull()
+  })
+
+  it('gives a context-only section one stop so ] and [ reach its page', () => {
+    const input = sectionedInput()
+    input.sections = [
+      { id: 'one', title: 'One', questionIds: ['q1'], variantKeys: ['A'] },
+      { id: 'notes', title: 'Notes', questionIds: [], variantKeys: [] },
+      { id: 'two', title: 'Two', questionIds: ['q2'], variantKeys: ['B'] },
+    ]
+    const round = ManifestSchema.parse(input)
+    const pages = pagesFor(round)
+    expect(pages.map((p) => [p.id, p.first, p.last])).toEqual([
+      ['one', 0, 1],
+      ['notes', 2, 2],
+      ['two', 3, 4],
+      ['#other', 5, 5],
+      ['#overall', 6, 8],
+    ])
+    expect(pageStepAction(round, 0, 1)).toEqual({ type: 'jump', index: 2 })
+    expect(pageStepAction(round, 2, 1)).toEqual({ type: 'jump', index: 3 })
+    expect(pageStepAction(round, 3, -1)).toEqual({ type: 'jump', index: 2 })
+    expect(numberKeyAction(round, stopsFor(round)[2], '1')).toBeNull()
   })
 
   it('follows a jump, and Enter carries the human from one section into the next', () => {

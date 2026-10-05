@@ -1,8 +1,9 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { Text } from 'react-native'
 import { Drawer, DrawerBody, DrawerHeader, DrawerFooter } from './Drawer'
-import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
 function renderDrawer(props: Partial<React.ComponentProps<typeof Drawer>> = {}) {
   return render(
@@ -13,6 +14,12 @@ function renderDrawer(props: Partial<React.ComponentProps<typeof Drawer>> = {}) 
       </DrawerFooter>
     </Drawer>
   )
+}
+
+// react-native-web grants its Modal the dialog role once the open animation ends.
+function finishOpenAnimation() {
+  const focusTrap = document.querySelector('[aria-modal="true"]')!.parentElement!
+  fireEvent.animationEnd(focusTrap.parentElement!)
 }
 
 describe('Drawer', () => {
@@ -41,12 +48,37 @@ describe('Drawer', () => {
     expect(screen.queryByLabelText('Close drawer')).not.toBeInTheDocument()
   })
 
-  it('exposes the open drawer panel as a dialog', () => {
-    renderDrawer({ isOpen: true })
+  describe('dialog semantics', () => {
+    it('exposes exactly one dialog, named by the title', () => {
+      renderDrawer({ isOpen: true, title: 'Settings' })
+      finishOpenAnimation()
 
-    const dialog = screen.getByRole('dialog')
+      const dialogs = screen.getAllByRole('dialog')
 
-    expect(dialog).toHaveTextContent('Drawer body content')
+      expect(dialogs).toHaveLength(1)
+      expect(screen.getByRole('dialog', { name: 'Settings' })).toHaveTextContent(
+        'Drawer body content'
+      )
+    })
+
+    it('names an untitled dialog from accessibilityLabel', () => {
+      renderDrawer({ isOpen: true, title: undefined, accessibilityLabel: 'Filters' })
+      finishOpenAnimation()
+
+      expect(screen.getByRole('dialog', { name: 'Filters' })).toBeInTheDocument()
+    })
+
+    it('marks the title as a heading', () => {
+      renderDrawer({ isOpen: true, title: 'Settings' })
+
+      expect(screen.getByRole('heading', { name: 'Settings' })).toBeInTheDocument()
+    })
+
+    it('exposes the close control as a button', () => {
+      renderDrawer({ isOpen: true })
+
+      expect(screen.getByRole('button', { name: 'Close drawer' })).toBeInTheDocument()
+    })
   })
 
   it('renders title', () => {
@@ -157,15 +189,50 @@ describe('Drawer', () => {
  * three are 24/16 now, the band Modal and Card already used.
  */
 describe('Drawer geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'Drawer.tsx')
+  const renderBands = () =>
+    render(
+      <Drawer isOpen onClose={vi.fn()} title="Test Drawer">
+        <DrawerHeader>
+          <Text>header band</Text>
+        </DrawerHeader>
+        <DrawerBody>
+          <Text>body band</Text>
+        </DrawerBody>
+        <DrawerFooter>
+          <Text>footer band</Text>
+        </DrawerFooter>
+      </Drawer>
+    )
 
+  // The body is a ScrollView: the text sits in its content container, the class on the scroller.
   it.each([
-    ['the header', 'px-inset-xl py-inset-lg border-b border-hairline', ['24px', '16px']],
-    ['the body', 'flex-1 px-inset-xl py-inset-lg', ['24px', '16px']],
-    ['the footer', 'px-inset-xl py-inset-lg border-t border-hairline', ['24px', '16px']],
-  ] as const)('%s ships `%s`', (_label, classes, pixels) => {
-    expect(source).toContain(classes)
-    const spacing = classes.split(' ').filter((c) => resolveAll([c])[0] !== undefined)
-    expect(resolveAll(spacing)).toEqual([...pixels])
+    [
+      'the title header',
+      () => screen.getByText('Test Drawer').parentElement,
+      ['px-inset-xl', 'py-inset-lg'],
+      ['24px', '16px'],
+    ],
+    [
+      'DrawerHeader',
+      () => screen.getByText('header band').parentElement,
+      ['px-inset-xl', 'py-inset-lg'],
+      ['24px', '16px'],
+    ],
+    [
+      'the body',
+      () => screen.getByText('body band').parentElement?.parentElement,
+      ['px-inset-xl', 'py-inset-lg'],
+      ['24px', '16px'],
+    ],
+    [
+      'the footer',
+      () => screen.getByText('footer band').parentElement,
+      ['gap-3', 'px-inset-xl', 'py-inset-lg'],
+      ['12px', '24px', '16px'],
+    ],
+  ] as const)('%s ships its spacing tokens', (_label, find, classes, pixels) => {
+    renderBands()
+    expect(spacingClassesAt(find() ?? null)).toEqual([...classes])
+    expect(resolveAll([...classes])).toEqual([...pixels])
   })
 })

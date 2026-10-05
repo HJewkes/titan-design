@@ -452,3 +452,21 @@ describe('Popover geometry resolves to the spacing tokens', () => {
     }
   )
 })
+
+describe('Popover defaultIsOpen', () => {
+  it('shows the content on first render and closes on a trigger press', () => {
+    render(
+      <Popover defaultIsOpen>
+        <PopoverTrigger>
+          <button>Open</button>
+        </PopoverTrigger>
+        <PopoverContent>
+          <span>Body</span>
+        </PopoverContent>
+      </Popover>
+    )
+    expect(screen.getByText('Body')).toBeInTheDocument()
+    fireEvent.click(screen.getByText('Open'))
+    expect(screen.queryByText('Body')).not.toBeInTheDocument()
+  })
+})

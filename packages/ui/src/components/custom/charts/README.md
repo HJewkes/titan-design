@@ -1,6 +1,7 @@
 # `custom/charts`: workout bar marks
 
-Two marks and one hook, extracted so every value-height bar family in the library
+Two marks and one hook (`SparkBars` moved to [`ui/charts/spark-bars`](../../ui/charts/README.md)
+in migration M5; the table row below stays so the dependency map is complete), extracted so every value-height bar family in the library
 draws the same bar rather than each re-rolling geometry and entrance animation.
 `SetBarChart` and `live-rep-growth` carry workout vocabulary (the set-type slot,
 mesocycle framing) and stay in this family for that reason (`CLAUDE.md`,
@@ -15,7 +16,7 @@ come from [`src/arch/arch-graph.json`](../../../arch/arch-graph.json).
 
 | Member            | Kind   | Composes ↓                                      | Used-by ↑                                              | Exported     |
 | ----------------- | ------ | ----------------------------------------------- | ------------------------------------------------------ | ------------ |
-| `SparkBars`       | atom   | `resolveColor`, `cn`                            | FileActivityDetail, FileActivityRow (ActiveWork)       | yes          |
+| `SparkBars`       | atom   | `resolveColor`, `cn`                            | FileActivityGrowthWell, FileActivityRow (ActiveWork)   | moved, shim  |
 | `SetBarChart`     | atom   | `barPaper`, `SurfaceContext`, `live-rep-growth` | RomProgressionChart (Fatigue), VelocityStrip (Workout) | no — by path |
 | `live-rep-growth` | hook   | `Animated`, `Easing`, `usePrefersReducedMotion` | SetBarChart, VelocityStrip                             | no — by path |
 | `flatBarGeometry` | module | —                                               | SegmentedBar (Workout), SetBarChart                    | no — by path |

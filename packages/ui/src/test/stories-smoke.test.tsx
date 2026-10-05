@@ -1,6 +1,11 @@
 import { describe, it, expect } from 'vitest'
 import { render } from '@testing-library/react'
-import { loadComposedStories, storyModuleCount, storyTimeout } from './composed-stories'
+import {
+  loadComposedStories,
+  loadLabDecisionStories,
+  storyModuleCount,
+  storyTimeout,
+} from './composed-stories'
 
 /**
  * Storybook → render-test bridge (TD-04.11 / VW-20).
@@ -18,7 +23,7 @@ import { loadComposedStories, storyModuleCount, storyTimeout } from './composed-
  * them avoids importing global.css / addon-themes into the test env.
  */
 
-const stories = await loadComposedStories()
+const stories = [...(await loadComposedStories()), ...(await loadLabDecisionStories())]
 
 describe('storybook stories render (composeStories smoke)', () => {
   it('discovers a non-trivial number of story modules', () => {

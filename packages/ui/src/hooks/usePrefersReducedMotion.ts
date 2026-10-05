@@ -25,10 +25,14 @@ function subscribeNative(onChange: (reduced: boolean) => void): () => void {
   void AccessibilityInfo.isReduceMotionEnabled().then((reduced) => {
     if (live) onChange(reduced)
   })
-  const subscription = AccessibilityInfo.addEventListener('reduceMotionChanged', onChange)
+  // react-native-web returns no subscription where matchMedia is missing, despite the type.
+  const subscription: { remove(): void } | undefined = AccessibilityInfo.addEventListener(
+    'reduceMotionChanged',
+    onChange
+  )
   return () => {
     live = false
-    subscription.remove()
+    subscription?.remove()
   }
 }
 

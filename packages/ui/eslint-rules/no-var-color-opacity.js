@@ -14,7 +14,7 @@
  * follows it. So a new token is covered the day it is added, and `white`,
  * `black`, `transparent` and the rest of Tailwind's literal palette stay usable.
  *
- * Use instead:
+ * Use instead (the message lists the rungs the token actually publishes):
  *   - a wash rung — `bg-brand-primary-subtle` / `-muted` / `-strong`
  *   - `alpha(resolvedColor, a)` from `src/utils/colors.ts` for an inline style
  *   - a role that already means the state — `text-text-disabled`, `hairline-*`
@@ -24,6 +24,7 @@
  */
 
 const { colors } = require('./fix-options')
+const { washRungs, optionList } = require('./color-options')
 
 const VAR_BACKED = new Set(
   Object.entries(colors)
@@ -41,7 +42,8 @@ const OPACITY_UTILITY =
 function findViolations(text) {
   const found = []
   for (const match of text.matchAll(OPACITY_UTILITY)) {
-    if (VAR_BACKED.has(match[2])) found.push({ className: match[0], token: match[2] })
+    if (VAR_BACKED.has(match[2]))
+      found.push({ className: match[0], prop: match[1], token: match[2] })
   }
   return found
 }
@@ -56,14 +58,18 @@ module.exports = {
     schema: [],
     messages: {
       deadClass:
-        '`{{className}}` compiles to no CSS rule: Tailwind v3 cannot apply an opacity modifier to the var()-backed token `{{token}}`. Use a wash rung (`-subtle`/`-muted`/`-strong`) where the role publishes one, a role that already means the state, or `alpha()` in an inline style. See VW-308.',
+        '"{{className}}" compiles to no CSS rule: Tailwind v3 cannot apply an opacity modifier to the var()-backed token "{{token}}", and the token layer owns its washes. Use a rung it publishes: {{rungs}}; or `alpha(color, a)` from utils/colors in an inline style. See VW-308.',
+      deadClassNoRung:
+        '"{{className}}" compiles to no CSS rule: Tailwind v3 cannot apply an opacity modifier to the var()-backed token "{{token}}", and that token publishes no wash rung. Use `alpha(color, a)` from utils/colors in an inline style, or a role that already means the state. See VW-308.',
     },
   },
 
   create(context) {
     function check(node, text) {
-      for (const { className, token } of findViolations(text)) {
-        context.report({ node, messageId: 'deadClass', data: { className, token } })
+      for (const { className, prop, token } of findViolations(text)) {
+        const rungs = washRungs(prop, token)
+        const messageId = rungs.length > 0 ? 'deadClass' : 'deadClassNoRung'
+        context.report({ node, messageId, data: { className, token, rungs: optionList(rungs) } })
       }
     }
 

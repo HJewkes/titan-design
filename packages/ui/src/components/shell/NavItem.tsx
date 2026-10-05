@@ -54,6 +54,7 @@ export function NavItem({
     <Pressable
       accessibilityRole="tab"
       accessibilityState={{ selected: active }}
+      aria-selected={active}
       accessibilityLabel={label}
       onPress={onPress}
       className={cn('relative h-[46px] w-[60px] items-center justify-center', className)}

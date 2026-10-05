@@ -119,7 +119,7 @@ Building S1 grew the design system — these are now available to every componen
 - **`theme/gradients.ts`** — `linearGradient(from, to, angle)` + named `surfaceGradient.*`, built on
   `resolveColor` (themeable web CSS vars + native hex fallback).
 - **`Indicator`** (titan atom) — `pulse: 'ping'` (expanding ring) + `success` / `error-vivid` colors.
-- **`DateTime`** (titan) — `hour12`, `seconds`, self-ticking `live`, and Typography routing via `variant`.
+- **`DateTime`** (titan) — `hour12`, `seconds`, self-ticking `isLive`, and Typography routing via `variant`.
 - **`Typography`** — `mono` (technical readouts) + `monoLabel` (all-caps mono) variants.
 - **Tokens** — a full **vivid** green/red palette + **`border-prominent`** divider token.
 
@@ -170,15 +170,11 @@ Workout is unaffected: its accent _is_ `brand-primary`.
 
 - **Dot primitive overlap** — titan has both `StatusDot` (Workout, semantic) and `Indicator` (ui, generic).
   The shell standardizes on `Indicator`; a future pass could consolidate.
-- **Other hand-rolled gradients** — `MesoCard`, `DeviationBar`, `MesoStatusCard` still
-  inline `linear-gradient` strings; they should adopt `surfaceGradient` / `linearGradient`.
-  `BodyMapDetailPanel` is done (VW-335): its volume track is `surfaceGradient.volumeTrack`, the
-  three-stop form added alongside `chrome`.
+- **Component gradients** — every component gradient now composes `surfaceGradient` (TD-200).
+  `BodyMapDetailPanel`'s volume track (VW-335) is `surfaceGradient.volumeTrack`, the three-stop form
+  added alongside `chrome`.
 - **`status-live` token family (new, decoupled from success)** — introduced `status-live` (green-300, the
   vivid LIVE-pill green) + `status-live-muted` (green-500 `#22A444`, the quiet nav cue) so "live" has its own
   role: changing `status-success` no longer affects live, and vice-versa. Wired the full chain (semantic →
   config → global.css → tailwind); `Indicator` gained a `live` color; the S1 LIVE pill was repointed
   `success`→`live` (value-preserving). This realized a slice of TD-05.09 Fork 1b (wiring ramp steps as tokens).
-- **`aria-selected` on `NavItem`** — RNW does not emit `aria-selected` from `accessibilityState={{selected}}`
-  in the jsdom test env, so active-state is asserted via the accent-bar testID. Confirm the on-device/RNW
-  build exposes selection to AT (may need an explicit `aria-selected` for full tab semantics).

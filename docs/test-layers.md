@@ -22,7 +22,8 @@ fail for the reason you care about.
 The `check` job aggregates `build`, `stories-axe`, `visual`, `storybook-play` and `audit`. Layer-1 baselines exist only as
 `*-chromium-linux.png`, so run the visual layers only in the pinned Playwright container.
 
-To run the interaction project locally, use `pnpm --filter @titan-design/react-ui exec playwright test --project=interaction`.
+To run the interaction project locally, use
+`pnpm --filter @titan-design/react-ui exec playwright test --project=interaction`.
 `test:visual` and `test:visual:update` run only the `chromium` visual project.
 
 ## Logic in pure hooks so Stryker can reach it

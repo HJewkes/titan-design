@@ -1,8 +1,13 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
+import { axe } from 'jest-axe'
 import { DeviceIndicator } from './DeviceIndicator'
 
 describe('DeviceIndicator', () => {
+  it('has no accessibility violations', async () => {
+    const { container } = render(<DeviceIndicator onPress={vi.fn()} />)
+    expect(await axe(container)).toHaveNoViolations()
+  })
   it('renders each connection state', () => {
     const states = ['connected', 'degraded', 'lost'] as const
     states.forEach((status) => {

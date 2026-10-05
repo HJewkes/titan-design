@@ -100,6 +100,7 @@ export const lightThemeCSSVars = {
   '--color-text-tertiary': semanticColorsLight['text-tertiary'],
   '--color-text-disabled': semanticColorsLight['text-disabled'],
   '--color-text-inverse': semanticColorsLight['text-inverse'],
+  '--color-text-error': semanticColorsLight['text-error'],
   '--color-text-link': semanticColorsLight['text-link'],
 
   '--color-surface-base': semanticColorsLight['surface-base'],
@@ -279,6 +280,7 @@ export const darkThemeCSSVars = {
   '--color-text-tertiary': semanticColorsDark['text-tertiary'],
   '--color-text-disabled': semanticColorsDark['text-disabled'],
   '--color-text-inverse': semanticColorsDark['text-inverse'],
+  '--color-text-error': semanticColorsDark['text-error'],
   '--color-text-link': semanticColorsDark['text-link'],
 
   '--color-surface-base': semanticColorsDark['surface-base'],
