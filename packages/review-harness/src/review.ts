@@ -1,8 +1,9 @@
 import { createHash } from 'node:crypto'
 import { mkdir, open, readFile, realpath, writeFile } from 'node:fs/promises'
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path'
+import { choiceMismatchMessage, settingMismatches } from './contract.ts'
 import {
-  ManifestSchema,
+  RoundSchema,
   isImageVariant,
   isLoopbackUrl,
   isStoryVariant,
@@ -56,6 +57,44 @@ async function resolveImage(roundDir: string, variant: ImageVariant): Promise<st
   return file
 }
 
+/** A PNG's pixel width, from its IHDR chunk, which the signature check has already placed. */
+async function pngWidth(file: string): Promise<number> {
+  const handle = await open(file)
+  try {
+    const { buffer } = await handle.read(Buffer.alloc(4), 0, 4, 16)
+    return buffer.readUInt32BE(0)
+  } finally {
+    await handle.close()
+  }
+}
+
+/** Image frames of one CHOICE strip are captured at one width; the manifest cannot see that. */
+async function choiceWidthProblems(manifest: Manifest, images: Record<string, string>) {
+  const choices = (manifest.sections ?? []).filter((s) => s.kind === 'CHOICE')
+  const problems = await Promise.all(
+    choices.map(async (section) => {
+      const keys = section.variantKeys.filter((k) => images[k] !== undefined)
+      const widths = await Promise.all(keys.map(async (k) => pngWidth(images[k])))
+      const settings = new Map(keys.map((k, i) => [k, { 'captured width': `${widths[i]}px` }]))
+      const mismatches = settingMismatches(settings)
+      return mismatches.length ? [choiceMismatchMessage(section.id, mismatches)] : []
+    })
+  )
+  return problems.flat()
+}
+
+/** Names the section, question or variant an issue is in by its id, not its array index. */
+function issueWhere(json: unknown, path: PropertyKey[]): string {
+  const [list, index, ...rest] = path
+  const noun = { sections: 'section', questions: 'question', variants: 'variant' }[String(list)]
+  const items = (json as Record<string, unknown> | null)?.[String(list)]
+  const item = Array.isArray(items) ? (items[Number(index)] as Record<string, unknown>) : undefined
+  const name = item?.id ?? item?.key
+  if (!noun || typeof index !== 'number' || typeof name !== 'string')
+    return path.map(String).join('.') || '(root)'
+  return [`${noun} ${name}`, rest.map(String).join('.')].join(' ').trimEnd()
+}
+
 async function resolveImages(path: string, manifest: Manifest): Promise<Record<string, string>> {
   const roundDir = await realpath(dirname(resolve(path)))
   const entries = await Promise.all(
@@ -66,22 +105,26 @@ async function resolveImages(path: string, manifest: Manifest): Promise<Record<s
   return Object.fromEntries(entries)
 }
 
-export async function loadRound(path: string, storybookOverride?: string): Promise<LoadedRound> {
-  const raw = await readFile(path).catch(() => {
-    throw new ReviewError(`cannot read ${path}`)
-  })
+/** The round under the review contract, or every way it falls short of it. */
+function parseRound(path: string, raw: Buffer): Manifest {
   let json: unknown
   try {
     json = JSON.parse(raw.toString('utf8'))
   } catch {
     throw new ReviewError(`${path} is not JSON`)
   }
-  const parsed = ManifestSchema.safeParse(json)
-  if (!parsed.success) {
-    const issues = parsed.error.issues.map((i) => `  ${i.path.join('.') || '(root)'}: ${i.message}`)
-    throw new ReviewError(`invalid manifest ${path}:\n${issues.join('\n')}`)
-  }
-  const stripped = urlParamProblems(parsed.data)
+  const parsed = RoundSchema.safeParse(json)
+  if (parsed.success) return parsed.data
+  const issues = parsed.error.issues.map((i) => `  ${issueWhere(json, i.path)}: ${i.message}`)
+  throw new ReviewError(`invalid manifest ${path}:\n${issues.join('\n')}`)
+}
+
+export async function loadRound(path: string, storybookOverride?: string): Promise<LoadedRound> {
+  const raw = await readFile(path).catch(() => {
+    throw new ReviewError(`cannot read ${path}`)
+  })
+  const manifest = parseRound(path, raw)
+  const stripped = urlParamProblems(manifest)
   if (stripped.length)
     throw new ReviewError(
       `Storybook would drop these URL args; give each variant its own story:\n  ${stripped.join('\n  ')}`
@@ -90,10 +133,13 @@ export async function loadRound(path: string, storybookOverride?: string): Promi
     throw new ReviewError(
       `only loopback Storybook hosts (127.0.0.1, localhost, [::1]) are allowed: ${storybookOverride}`
     )
-  const images = await resolveImages(path, parsed.data)
+  const images = await resolveImages(path, manifest)
+  const widthProblems = await choiceWidthProblems(manifest, images)
+  if (widthProblems.length)
+    throw new ReviewError(`invalid manifest ${path}:\n  ${widthProblems.join('\n  ')}`)
   const manifestSha256 = createHash('sha256').update(raw).digest('hex')
-  const storybookUrl = (storybookOverride ?? parsed.data.storybookUrl).replace(/\/$/, '')
-  return { manifest: parsed.data, manifestSha256, storybookUrl, images }
+  const storybookUrl = (storybookOverride ?? manifest.storybookUrl).replace(/\/$/, '')
+  return { manifest, manifestSha256, storybookUrl, images }
 }
 
 /** An image-only round never touches Storybook, so it needs none running. */
