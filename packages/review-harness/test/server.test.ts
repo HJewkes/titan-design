@@ -4,7 +4,7 @@ import { mkdtemp, readFile, readdir, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { exampleManifest } from '../src/example.ts'
+import { exampleManifest, sectionedExampleManifest } from '../src/example.ts'
 import type { HarnessFreshness } from '../src/harness-freshness.ts'
 import { buildFeedback, emptyDraft } from '../src/feedback.ts'
 import { runCli, type CliIo } from '../src/run.ts'
@@ -96,7 +96,7 @@ describe('titan-review CLI', () => {
   beforeEach(async () => {
     sb = await fakeStorybook()
     dir = await mkdtemp(join(tmpdir(), 'titan-review-'))
-    await writeFile(join(dir, 'round.json'), JSON.stringify(exampleManifest(sb.url)))
+    await writeFile(join(dir, 'round.json'), JSON.stringify(sectionedExampleManifest(sb.url)))
     out = { stdout: '', stderr: [] }
     freshness = { state: 'current' }
   })
@@ -309,7 +309,7 @@ describe('titan-review CLI', () => {
   })
 
   it('exits 2 before serving when a story id is not on that Storybook', async () => {
-    const m = exampleManifest(sb.url)
+    const m = sectionedExampleManifest(sb.url)
     m.variants[0].storyId = 'lab-decisions-other-worktree--only'
     await writeFile(join(dir, 'round.json'), JSON.stringify(m))
     const code = await runCli(
