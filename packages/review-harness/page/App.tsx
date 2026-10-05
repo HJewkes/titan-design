@@ -8,7 +8,7 @@ import {
   type Dispatch,
   type ReactNode,
 } from 'react'
-import { buildFeedback, unansweredQuestionIds } from '../src/feedback.ts'
+import { buildFeedback, pendingQuestionIds } from '../src/feedback.ts'
 import { feedbackProblems } from '../src/round.ts'
 import { roundLayout, type ResolvedSection } from '../src/sections.ts'
 import type { Manifest, Question, StripKind, Variant } from '../src/schema.ts'
@@ -450,7 +450,7 @@ export function App({ manifest, manifestSha256 }: AppProps) {
   )
   useDraftBackup(storage, manifestSha256, state)
   const [hitTesting, setHitTesting] = useState<boolean | null>(null)
-  const unanswered = unansweredQuestionIds(manifest, state.draft)
+  const unanswered = pendingQuestionIds(manifest, state.draft)
   const partial = unanswered.length > 0
   const feedback = buildFeedback(manifest, manifestSha256, state.draft, new Date(), partial)
   const problems = feedbackProblems(feedback, manifest)

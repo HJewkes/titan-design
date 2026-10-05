@@ -381,6 +381,17 @@ input:focus {
   border-left: 3px solid var(--color-status-warning);
 }
 
+.unanswered-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-inline-md);
+}
+
+.is-unanswered {
+  padding-left: var(--space-inline-md);
+  border-left: 3px solid var(--color-status-warning);
+}
+
 .pager-end {
   margin-top: var(--space-stack-lg);
 }
