@@ -120,6 +120,20 @@ jobs:
       - name: Layer 2 — Storybook story baselines
         run: pnpm --filter @titan-design/react-ui test:visual:stories
 
+      # The regen step below runs the same suite again and Playwright empties its outputDir on
+      # start, so the failing run's screenshots, error-context and traces must be saved first (TD-636).
+      - name: Upload Layer 2 failure results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: layer2-failure-results
+          path: |
+            packages/ui/tests/visual/results/**/test-failed-*.png
+            packages/ui/tests/visual/results/**/error-context.md
+            packages/ui/tests/visual/results/**/trace.zip
+          if-no-files-found: warn
+          retention-days: 7
+
       # Layer 2 — REGEN (refresh): same pattern as Layer 1. Runs only on a failed
       # run, renders in the same container, so unchanged stories come
       # back byte-identical and only real drift (or a newly in-scope story with
