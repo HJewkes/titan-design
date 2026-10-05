@@ -28,10 +28,12 @@
  * Anything not understood is forwarded to `storybook dev`.
  */
 import { execFileSync, spawn } from 'node:child_process'
-import { existsSync, realpathSync } from 'node:fs'
+import { existsSync } from 'node:fs'
 import { connect, createServer } from 'node:net'
 import { resolve, dirname, delimiter, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+
+import { isEntryPoint } from './lib/entry.mjs'
 
 /** THE port. Everything non-isolated uses it, so a stale server is a bug, not a fork. */
 const LOCKED_PORT = 6006
@@ -330,16 +332,6 @@ export function refuseWithoutLsof(
   error('  --list and --reap need its server inventory, so they refuse to guess.')
   error('  Install lsof or add its directory to PATH.\n')
   exit(1)
-}
-
-/** True when this file is the process entry point, even when invoked through a symlink. */
-export function isEntryPoint(metaUrl, entry, real = realpathSync) {
-  if (!entry) return false
-  try {
-    return real(fileURLToPath(metaUrl)) === real(entry)
-  } catch {
-    return false
-  }
 }
 
 // --- main --------------------------------------------------------------------

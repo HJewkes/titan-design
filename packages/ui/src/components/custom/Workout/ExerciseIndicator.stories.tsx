@@ -19,7 +19,7 @@ import { greyRamp } from '../../../theme/tokens/primitives'
 const meta: Meta<typeof ExerciseIndicator> = {
   title: 'Custom/Workout/ExerciseIndicator',
   component: ExerciseIndicator,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {

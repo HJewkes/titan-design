@@ -28,7 +28,7 @@ import {
   gitAt,
   selectTargets,
 } from './audit-stories/targets.mjs'
-import { isEntryPoint } from './storybook-launch.mjs'
+import { isEntryPoint } from './lib/entry.mjs'
 
 const UI_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const OUT_ROOT = 'titan-audit-stories'
