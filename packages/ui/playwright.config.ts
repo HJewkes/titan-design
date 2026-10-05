@@ -57,5 +57,8 @@ export default defineConfig({
     port: 6006,
     reuseExistingServer: false,
     timeout: 120000,
+    env: { DEBUG: 'vite:deps' },
+    stdout: 'pipe',
+    stderr: 'pipe',
   },
 })
