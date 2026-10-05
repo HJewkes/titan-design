@@ -129,7 +129,7 @@
     "test:visual:stories:update": "playwright test stories.spec.ts --update-snapshots",
     "test:offline-fonts": "playwright test --config playwright.offline-fonts.config.ts",
     "test:audit-probes": "playwright test --config playwright.audit-probes.config.ts",
-    "prepublishOnly": "pnpm build && vitest --run --project threads --project local-time --project types --project stories-axe",
+    "prepublishOnly": "node scripts/ci-only-publish.mjs && pnpm build && vitest --run --project threads --project local-time --project types --project stories-axe",
     "lint:colors:baseline": "node scripts/update-raw-color-baseline.mjs",
     "storybook:isolated": "node scripts/storybook-launch.mjs --isolated",
     "storybook:ports": "node scripts/storybook-launch.mjs --list",
