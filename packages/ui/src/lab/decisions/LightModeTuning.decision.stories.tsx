@@ -45,6 +45,7 @@ import {
   type ChangeRow,
 } from './light-tuning-changes'
 import { ProgressSample, SelectedChip, UnselectedChip } from './light-tuning-samples'
+import { WarningSolidPanel } from './light-tuning-warning'
 
 interface Args {
   tokens: TokenSet
@@ -433,3 +434,9 @@ export default meta
 type Story = StoryObj<Args>
 
 export const Representative: Story = { globals: { theme: 'light' } }
+
+/** TD-666 round 4: the warning solid fill and label, on the round 3 picks. */
+export const WarningSolid: Story = {
+  globals: { theme: 'light' },
+  render: () => <WarningSolidPanel />,
+}

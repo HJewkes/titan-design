@@ -5,6 +5,7 @@ import {
   baseSet,
   chipLabelFix,
   chipRecipe,
+  measure,
   overriddenTokens,
   resolveToken,
   type TokenSet,
@@ -56,6 +57,27 @@ function describe(value: string): Described {
 }
 
 const stepName = ({ hue, step }: RampStep) => `${hue}[${step}]`
+
+const WHITE = '#FFFFFF'
+
+/**
+ * The existing ramp step darker than `fill` that gives a label the most contrast on it, for
+ * fills where a white label falls short (TD-666). Measured, so it moves with the ramps.
+ */
+export function bestDarkLabel(fill: string): { hex: string; ratio: number } {
+  const onFill = (hex: string) => contrastOn(hex, fill)
+  const darker = Object.values(RAMPS)
+    .flatMap((ramp) => Object.values(ramp))
+    .filter((hex) => contrastOn(hex, WHITE) > contrastOn(fill, WHITE))
+  const hex = darker.reduce((best, next) => (onFill(next) > onFill(best) ? next : best))
+  return { hex, ratio: onFill(hex) }
+}
+
+/** WCAG contrast of an opaque label on an opaque fill. */
+export function contrastOn(label: string, fill: string): number {
+  const pair = { label: '', fg: { raw: label }, bg: { raw: fill }, plane: 'surface-base', floor: 0 }
+  return measure(pair, 'main', 'light').value
+}
 
 /** A colour named by its ramp step, alpha, or as off-ramp. */
 export function rampName(value: string): string {
