@@ -43,3 +43,22 @@ When in doubt, write one: a short accepted decision costs less than a token that
   `src/theme/`, which the story smoke test does not cover.
 - Record distilled reasons only: no verbatim owner quotes, no transcript ids and no private paths.
   This repo is public.
+
+## Checks
+
+A decision that proposes colours can be checked against the real inventory with the tools of the
+`color-system-derivation` skill. Both tools read titan's colours from files named by an environment
+variable and fall back to their bundled example data when the variable is unset or the file is wrong,
+so confirm the output names titan's hues and roles, not the example system's.
+
+```sh
+pnpm --filter @titan-design/react-ui build
+node packages/ui/scripts/export-color-inventory.mjs "$TMPDIR/titan-colors"
+
+# then, from the skill's tools/ directory:
+RAMPS="$TMPDIR/titan-colors/ramps.json" node cvd-solve.mjs
+COLORS="$TMPDIR/titan-colors/colors.json" node audit.mjs
+```
+
+The export reads the built `packages/ui/dist/theme/tokens.mjs` and exits non-zero when it is missing.
+It is local tooling: no CI job or Turbo task runs it.
