@@ -200,30 +200,18 @@ function useTreeActions<T>(state: TreeState<T>): TreeActions {
   return { onKey, select, toggle }
 }
 
-/**
- * Headless APG Tree navigation over a flat `parentId` list: expansion and selection (each controlled
- * or not), the focused row, `revealId`, lazy loads and typeahead. Selection never follows focus.
- */
-export function useTreeNavigation<T>(options: TreeNavigationOptions<T>): TreeNavigation<T> {
-  const state = useTreeState(options)
-  const actions = useTreeActions(state)
-  const { rows, index, focusedId, selectedId, expandedIds, setFocusedId, applyIntents } = state
-  const { isDisabled = false, loadingIds = NO_IDS } = options
-  const reveal = (id: string) => {
-    applyIntents(revealIntents(index, id))
-    setFocusedId(id)
-  }
-  useReveal(options.revealId, index, reveal)
-  const getRowProps = (row: TreeRow<T>): TreeRowProps<T> => ({
+function rowProps<T>(row: TreeRow<T>, state: TreeState<T>, actions: TreeActions): TreeRowProps<T> {
+  const { focusedId, setFocusedId } = state
+  return {
     id: row.id,
     node: row.node,
     level: row.level,
     setsize: row.setsize,
     posinset: row.posinset,
     isExpanded: row.hasChildren ? row.isExpanded : undefined,
-    isSelected: row.id === selectedId,
+    isSelected: row.id === state.selectedId,
     isFocused: row.id === focusedId,
-    isLoading: loadingIds.has(row.id),
+    isLoading: (state.options.loadingIds ?? NO_IDS).has(row.id),
     tabIndex: row.id === focusedId ? 0 : -1,
     onKeyDown: (event) => actions.onKey(row.id, event),
     onFocus: () => setFocusedId(row.id),
@@ -232,7 +220,29 @@ export function useTreeNavigation<T>(options: TreeNavigationOptions<T>): TreeNav
       actions.select(row.id)
     },
     onToggle: () => actions.toggle(row),
-  })
-  const getTreeProps = () => ({ isDisabled, focusedId })
-  return { rows, focusedId, selectedId, expandedIds, problems: index.problems, getTreeProps, getRowProps }
+  }
+}
+
+/**
+ * Headless APG Tree navigation over a flat `parentId` list: expansion and selection (each controlled
+ * or not), the focused row, `revealId`, lazy loads and typeahead. Selection never follows focus.
+ */
+export function useTreeNavigation<T>(options: TreeNavigationOptions<T>): TreeNavigation<T> {
+  const state = useTreeState(options)
+  const actions = useTreeActions(state)
+  const { rows, index, focusedId, selectedId, expandedIds, setFocusedId, applyIntents } = state
+  const reveal = (id: string) => {
+    applyIntents(revealIntents(index, id))
+    setFocusedId(id)
+  }
+  useReveal(options.revealId, index, reveal)
+  return {
+    rows,
+    focusedId,
+    selectedId,
+    expandedIds,
+    problems: index.problems,
+    getTreeProps: () => ({ isDisabled: options.isDisabled ?? false, focusedId }),
+    getRowProps: (row) => rowProps(row, state, actions),
+  }
 }

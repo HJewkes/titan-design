@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { describe, expectTypeOf, it } from 'vitest'
 import type { TreeNode, TreeRenderSlot, TreeRow } from './types'
-import { useTreeNavigation, type TreeRowProps } from './useTreeNavigation'
+import { useTreeNavigation, type TreeNavigation, type TreeRowProps } from './useTreeNavigation'
 
 interface Metric {
   loc: number
@@ -16,6 +16,7 @@ type RowNode = ReturnType<Navigation['getRowProps']>['node']
 
 describe('TreeView types', () => {
   it('infers T from nodes into the rows and the row props', () => {
+    expectTypeOf(useMetricTree).returns.toEqualTypeOf<TreeNavigation<Metric>>()
     expectTypeOf<Navigation['rows'][number]>().toEqualTypeOf<TreeRow<Metric>>()
     expectTypeOf<Navigation['getRowProps']>().parameter(0).toEqualTypeOf<TreeRow<Metric>>()
     expectTypeOf<ReturnType<Navigation['getRowProps']>>().toEqualTypeOf<TreeRowProps<Metric>>()

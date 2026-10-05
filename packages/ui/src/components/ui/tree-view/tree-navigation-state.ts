@@ -66,7 +66,8 @@ export function resolveFocus<T>(
 ): string | null {
   const visible = new Set(rows.map((row) => row.id))
   if (focusedId !== null && visible.has(focusedId)) return focusedId
-  const shown = focusedId === null ? [] : ancestorsOf(index, focusedId).filter((id) => visible.has(id))
+  const shown =
+    focusedId === null ? [] : ancestorsOf(index, focusedId).filter((id) => visible.has(id))
   if (shown.length > 0) return shown[shown.length - 1]
   if (selectedId !== null && visible.has(selectedId)) return selectedId
   return rows[0]?.id ?? null
