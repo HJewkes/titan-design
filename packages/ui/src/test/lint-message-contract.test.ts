@@ -422,7 +422,8 @@ describe('lint message contract: space keys and Typography variants', () => {
   })
 })
 
-describe('lint message contract: spacing and type messages', () => {
+// Linting a fixture parses the whole config; the first one is slow under coverage.
+describe('lint message contract: spacing and type messages', { timeout: 30_000 }, () => {
   const messageOf = (id: string) =>
     render(ENTRIES.find((entry) => entry.id === id) as Entry, FIXTURES[id]) as string
   const restricted = (selector: string) => messageOf(`no-restricted-syntax:${selector}`)
