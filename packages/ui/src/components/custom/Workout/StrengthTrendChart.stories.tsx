@@ -35,7 +35,7 @@ const decline: StrengthTrendDataPoint[] = [
 const meta: Meta<typeof StrengthTrendChart> = {
   title: 'Custom/Workout/DataViz/StrengthTrendChart',
   component: StrengthTrendChart,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     width: {
       control: { type: 'range', min: 160, max: 480, step: 10 },

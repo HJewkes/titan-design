@@ -6,7 +6,7 @@ import { SetTableHeader } from './SetTableHeader'
 const meta: Meta<typeof SetRow> = {
   title: 'Custom/Workout/SetRow',
   component: SetRow,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {
