@@ -329,11 +329,13 @@ module.exports = tseslint.config(
       'src/components/custom/Workout/PrHistoryModal.tsx',
       'src/components/custom/Workout/ReadinessCheck.tsx',
       'src/components/custom/Workout/RestTimer.tsx',
+      'src/components/custom/Workout/RestTimerBar.tsx',
       'src/components/custom/Workout/SessionHeader.tsx',
       'src/components/custom/Workout/SetTableHeader.tsx',
       'src/components/custom/Workout/StatusDot.tsx',
       'src/components/custom/Workout/SupersetWrapper.tsx',
       'src/components/custom/Workout/TempoDisplay.tsx',
+      'src/components/custom/Workout/tempoDisplayParts.tsx',
       'src/components/custom/Workout/WeightBadge.tsx',
       'src/components/custom/Workout/WorkoutPill.tsx',
       // Wave three, cards and rows (AW-142).
