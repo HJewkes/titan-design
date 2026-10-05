@@ -1,7 +1,20 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import type { ViewProps } from 'react-native'
 import { Checkbox, CheckboxGroup } from './Checkbox'
+
+const viewClassNames: string[][] = []
+
+vi.mock('react-native', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('react-native')>()
+  const React = await import('react')
+  const View = React.forwardRef<unknown, ViewProps & { className?: string }>((props, ref) => {
+    viewClassNames.push((props.className ?? '').split(/\s+/))
+    return React.createElement(actual.View, { ...props, ref } as ViewProps)
+  })
+  return { ...actual, View }
+})
 
 describe('Checkbox', () => {
   it('renders correctly', () => {
@@ -147,6 +160,16 @@ describe('Checkbox', () => {
         rules: { 'aria-required-attr': { enabled: false } },
       })
       expect(results).toHaveNoViolations()
+    })
+  })
+
+  describe('unchecked boundary', () => {
+    it('draws the unchecked box with border-input, not a hairline', () => {
+      viewClassNames.length = 0
+      render(<Checkbox label="Accept terms" />)
+      const box = viewClassNames.find((classes) => classes.includes('border-2'))
+      expect(box).toContain('border-border-input')
+      expect(box?.filter((c) => c.startsWith('border-hairline'))).toEqual([])
     })
   })
 })
