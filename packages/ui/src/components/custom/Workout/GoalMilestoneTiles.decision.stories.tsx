@@ -89,7 +89,7 @@ interface DecisionArgs {
  */
 const meta: Meta<DecisionArgs> = {
   title: 'Lab/Decisions/Goal Milestone Tiles',
-  tags: ['autodocs', 'status:lab'],
+  tags: ['autodocs', 'status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
   argTypes: { frame: { control: 'inline-radio', options: ['wall', 'phone'] } },
   render: (args) => (
