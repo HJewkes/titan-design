@@ -32,6 +32,13 @@ describe('FatigueLights', () => {
     expect(screen.getByLabelText('Tempo, ok')).toBeInTheDocument()
   })
 
+  it('exposes each light as a named image, so axe has a label to check', () => {
+    render(<FatigueLights dimensions={dims} />)
+    expect(screen.getByRole('img', { name: 'Velocity loss, alarm' })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'ROM depth, watch' })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'Tempo, ok' })).toBeInTheDocument()
+  })
+
   it('renders neutral "warming up" lights when dimensions are null', () => {
     render(<FatigueLights dimensions={null} />)
     expect(screen.getByLabelText('Velocity loss, warming up')).toBeInTheDocument()

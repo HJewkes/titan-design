@@ -12,6 +12,20 @@ describe('VelocityHero', () => {
     expect(await axe(container)).toHaveNoViolations()
   })
 
+  it('names the chart with every rep velocity', () => {
+    render(<VelocityHero velocities={[0.62, 0.58, 0.5]} width={800} height={300} />)
+    expect(
+      screen.getByRole('img', { name: 'Bar velocity by rep, 3 reps: 0.62, 0.58, 0.50 m/s' })
+    ).toBeInTheDocument()
+  })
+
+  it('names the chart when there are no reps', () => {
+    render(<VelocityHero velocities={[]} width={800} height={300} />)
+    expect(
+      screen.getByRole('img', { name: 'Bar velocity by rep, no reps yet' })
+    ).toBeInTheDocument()
+  })
+
   it('renders the hero container', () => {
     render(
       <VelocityHero velocities={MOCK_MEAN_VELOCITIES} targetReps={8} width={800} height={300} />
