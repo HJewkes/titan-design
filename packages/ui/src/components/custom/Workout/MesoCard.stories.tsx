@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 import { View } from 'react-native'
 import { MesoCard } from './MesoCard'
-import type { WeekRowProps } from './WeekRow'
+import type { WeekRowProps, WeekRowWorkout } from './WeekRow'
 
 const weeks: WeekRowProps[] = [
   {
@@ -47,13 +47,30 @@ const weeks: WeekRowProps[] = [
   },
 ]
 
+const strengthWeeks: WeekRowProps[] = weeks.map((w, i) => {
+  const statuses =
+    i === 0
+      ? ['completed', 'completed', 'completed']
+      : i === 1
+        ? ['current', 'upcoming', 'upcoming']
+        : ['upcoming', 'upcoming', 'upcoming']
+  return {
+    ...w,
+    weekNumber: w.weekNumber + 4,
+    workouts: ['Push', 'Pull', 'Legs'].map((name, j) => ({
+      name,
+      status: statuses[j] as WeekRowWorkout['status'],
+    })),
+  }
+})
+
 const meta: Meta<typeof MesoCard> = {
   title: 'Custom/Workout/MesoCard',
   component: MesoCard,
   parameters: {
     docs: { description: { component: 'Composes **Card** · **Badge** · **WeekRow**.' } },
   },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     goal: {
       control: 'select',
@@ -116,7 +133,7 @@ export const StrengthBlock: Story = {
     weekRange: 'Weeks 5-8',
     currentWeek: 6,
     totalWeeks: 4,
-    weeks: weeks.map((w) => ({ ...w, weekNumber: w.weekNumber + 4 })),
+    weeks: strengthWeeks,
     volumeHeatmap: [
       { group: 'chest', percentage: 60 },
       { group: 'back', percentage: 65 },

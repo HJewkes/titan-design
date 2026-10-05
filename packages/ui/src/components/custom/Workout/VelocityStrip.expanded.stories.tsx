@@ -38,7 +38,7 @@ const meta: Meta<typeof VelocityStrip> = {
   parameters: {
     docs: { description: { component: 'Composes **SetBarChart** · **ChartSideRail**.' } },
   },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
 }
 export default meta
 type Story = StoryObj<typeof VelocityStrip>

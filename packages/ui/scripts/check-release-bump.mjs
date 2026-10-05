@@ -13,6 +13,8 @@ import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 
+import { isEntryPoint } from './lib/entry.mjs'
+
 const PKG_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const PKG_PATH_IN_REPO = 'packages/ui'
 const REPORT_DIR = 'api'
@@ -163,6 +165,6 @@ function main(argv) {
   if (result.status === 'fail') process.exitCode = 1
 }
 
-if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
+if (isEntryPoint(import.meta.url, process.argv[1])) {
   main(process.argv.slice(2))
 }

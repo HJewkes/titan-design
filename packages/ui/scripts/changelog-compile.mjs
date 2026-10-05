@@ -19,6 +19,8 @@ import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 
+import { isEntryPoint } from './lib/entry.mjs'
+
 export const SECTIONS = [
   'Added',
   'Changed',
@@ -151,6 +153,6 @@ function main(argv) {
   }
 }
 
-if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
+if (isEntryPoint(import.meta.url, process.argv[1])) {
   main(process.argv.slice(2))
 }
