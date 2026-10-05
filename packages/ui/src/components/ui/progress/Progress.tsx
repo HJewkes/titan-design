@@ -1,29 +1,14 @@
 import React from 'react'
 import { View, Text, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
-import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../surface'
+import { progressColor, type ProgressColor } from './progressColor'
+
+export { progressColor, type ProgressColor }
 
 export type ProgressSize = 'sm' | 'md' | 'lg'
-export type ProgressColor = 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info'
 export type ProgressVariant = 'linear' | 'circular'
-
-const colorTokenMap = {
-  primary: 'brand-primary',
-  secondary: 'brand-secondary',
-  success: 'status-success',
-  error: 'status-error',
-  warning: 'status-warning',
-  info: 'status-info',
-} as const satisfies Record<ProgressColor, keyof ReturnType<typeof getSemanticColors>>
-
-/**
- * Literal-hex colour for a ProgressColor in a theme mode. SVG strokes and inline text
- * cannot rely on CSS variables on the raw-RN wall SPA (VW-316), as Spinner does.
- */
-export function progressColor(color: ProgressColor, mode: ThemeMode): string {
-  return getSemanticColors(mode)[colorTokenMap[color]]
-}
 
 export interface ProgressProps extends ViewProps {
   /** Current value (0-100) */

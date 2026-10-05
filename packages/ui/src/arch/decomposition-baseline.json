@@ -262,7 +262,7 @@
     "props": 14
   },
   "components/ui/progress/Progress.tsx": {
-    "file-lines": 272
+    "file-lines": 267
   },
   "components/ui/progress/Progress.tsx#CircularProgress": {
     "complexity": 17
