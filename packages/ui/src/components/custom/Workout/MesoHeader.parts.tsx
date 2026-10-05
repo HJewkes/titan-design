@@ -1,5 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { View, type ViewProps } from 'react-native'
+// The MesoHeader parts every shape shares: the week bar, the state tag, the focus tip, the priorities.
+import { View } from 'react-native'
 
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { InfoIcon } from '../../icons'
@@ -9,172 +10,23 @@ import { useSurfaceMode } from '../../ui/surface'
 import { TipTrigger } from '../../ui/tooltip'
 import { Typography } from '../../ui/typography'
 import { GoalPriorityIndex, type GoalPriorityIndexEntry } from './GoalPriorityIndex'
-import { SegmentedBar, type SegmentedBarSegment } from './SegmentedBar'
+import { BAR_HEIGHT, blockTitle, positionText, weekCells, weeksLabel } from './MesoHeader.model'
+import type {
+  MesoHeaderModel,
+  MesoHeaderSchedule,
+  MesoHeaderState,
+  MesoHeaderWeek,
+} from './MesoHeader.types'
+import { SegmentedBar } from './SegmentedBar'
 
-export type MesoHeaderState = 'upcoming' | 'current' | 'ended'
+export const ROW = { flexDirection: 'row', alignItems: 'center' } as const
+export const WRAPPING_ROW = { ...ROW, flexWrap: 'wrap' } as const
+export const TOP_ROW = { flexDirection: 'row', alignItems: 'flex-start' } as const
+export const FLEX_CELL = { flex: 1, minWidth: 0 } as const
 
-/**
- * Round-only, deleted in slice 4 of VW-466: `band` is shape A (one band), `cycle` is B (A plus
- * the program's blocks as a bar), `spine` is C (labelled week cells as the header).
- */
-export type MesoHeaderShape = 'band' | 'cycle' | 'spine'
-
-/** Round-only, for shape B: one of the program's blocks. Not on the goals payload today. */
-export interface MesoHeaderCycleBlock {
-  name: string
-  weeks: number
-}
-
-export interface MesoHeaderWeek {
-  index: number
-  isDeload: boolean
-  name?: string
-  /** `hold` kept the calendar and skipped the plan week; `extend` added this week off. */
-  skipped?: 'hold' | 'extend' | null
-}
-
-export interface MesoHeaderCurrentWeek {
-  n: number
-  of: number
-  isDeload: boolean
-  name?: string
-}
-
-export interface MesoHeaderProps extends ViewProps {
-  programName?: string
-  blockName: string
-  focus?: string | null
-  block?: { index: number; count: number }
-  /** ISO date of the block's first day. */
-  startsOn: string
-  /** ISO date of the block's last day, inclusive. */
-  endsOn: string
-  state: MesoHeaderState
-  week?: MesoHeaderCurrentWeek | null
-  weeks: readonly MesoHeaderWeek[]
-  nextBlock?: { name: string; startsOn: string } | null
-  priorities?: readonly GoalPriorityIndexEntry[]
-  isPrioritiesOpen?: boolean
-  onPrioritiesOpenChange?: (open: boolean) => void
-  /** Pins the measured layout, for stories and tests. */
-  layout?: 'wall' | 'phone'
-  /** ISO date standing in for today, so "in 2 days" can be pinned; the header never reads the clock. */
-  now?: string
-  shape?: MesoHeaderShape
-  /** Round-only, shape B: the program's blocks in order; `block.index` marks the current one. */
-  cycle?: readonly MesoHeaderCycleBlock[]
-  /** Round-only, shape C's phone form: the Priorities trigger on line 1 (P1, default) or line 2 (P2). */
-  prioritiesLine?: 1 | 2
-  className?: string
-}
-
-/** Below this container width the header takes its phone form, the same width as the live strip's. */
-export const MESO_HEADER_PHONE_MAX = 640
-
-export const BAR_HEIGHT = 12
-const SHORT_CELL = 0.5
-const QUIET_CELL = 0.7
-const HELD_OPACITY = 0.4
-const MS_PER_DAY = 86_400_000
-const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-
-export type Palette = ReturnType<typeof getSemanticColors>
-
-/** "Mon 21 Sep", or "21 Sep" without the weekday, read in UTC; slice 4 moves it to utils/workout-format.ts. */
-export function dayLabel(iso: string, withWeekday = true): string {
-  const date = new Date(`${iso}T00:00:00Z`)
-  const day = `${date.getUTCDate()} ${MONTHS[date.getUTCMonth()]}`
-  return withWeekday ? `${WEEKDAYS[date.getUTCDay()]} ${day}` : day
-}
-
-export function daysBetween(fromIso: string, toIso: string): number {
-  return Math.round(
-    (Date.parse(`${toIso}T00:00:00Z`) - Date.parse(`${fromIso}T00:00:00Z`)) / MS_PER_DAY
-  )
-}
-
-function inDays(days: number): string {
-  if (days <= 0) return 'today'
-  return days === 1 ? 'tomorrow' : `in ${days} days`
-}
-
-/** The one line that says where the lifter is in the block. */
-export function positionText(
-  props: Pick<MesoHeaderProps, 'state' | 'week' | 'startsOn' | 'endsOn' | 'nextBlock' | 'now'>,
-  compact = false
-): string {
-  const { state, week, startsOn, endsOn, nextBlock, now } = props
-  if (state === 'upcoming') {
-    const starts = `Starts ${dayLabel(startsOn)}`
-    return now === undefined ? starts : `${starts} · ${inDays(daysBetween(now, startsOn))}`
-  }
-  if (state === 'ended') {
-    const next = nextBlock
-      ? `Next: ${nextBlock.name}, ${dayLabel(nextBlock.startsOn)}`
-      : 'next block not planned'
-    return `Ended ${dayLabel(endsOn)} · ${next}`
-  }
-  if (!week) return `${dayLabel(startsOn)} - ${dayLabel(endsOn)}`
-  const position = compact ? `Wk ${week.n} of ${week.of}` : `Week ${week.n} of ${week.of}`
-  return week.name && !compact ? `${position} · ${week.name}` : position
-}
-
-export function blockTitle(blockName: string, block: MesoHeaderProps['block']): string {
-  return block ? `Block ${block.index} of ${block.count} · ${blockName}` : blockName
-}
-
-function cellPhase(
-  week: MesoHeaderWeek,
-  state: MesoHeaderState,
-  current: number | undefined
-): 'past' | 'current' | 'future' {
-  if (state === 'ended') return 'past'
-  if (state === 'upcoming' || current === undefined) return 'future'
-  if (week.index === current) return 'current'
-  return week.index < current ? 'past' : 'future'
-}
-
-/** One cell per week: past weeks filled, the current one ringed and full height; deloads stay short even when current. */
-export function weekCells(
-  weeks: readonly MesoHeaderWeek[],
-  state: MesoHeaderState,
-  current: number | undefined,
-  t: Palette
-): SegmentedBarSegment[] {
-  return weeks.map((week) => {
-    const phase = cellPhase(week, state, current)
-    const base = phase === 'future' ? t['hairline-subtle'] : t['text-tertiary']
-    const color = week.isDeload ? t['status-deload'] : base
-    const short = week.isDeload || week.skipped === 'extend'
-    return {
-      color,
-      outline: week.skipped === 'extend',
-      opacity: week.skipped === 'hold' ? HELD_OPACITY : undefined,
-      ringColor: phase === 'current' ? t['text-primary'] : undefined,
-      heightFraction: short ? SHORT_CELL : phase === 'current' ? 1 : QUIET_CELL,
-    }
-  })
-}
-
-function weekLabel(week: MesoHeaderWeek): string {
-  const parts = [`Week ${week.index}`]
-  if (week.name) parts.push(week.name)
-  if (week.isDeload) parts.push('deload')
-  if (week.skipped === 'hold') parts.push('held')
-  if (week.skipped === 'extend') parts.push('extended, time off')
-  return parts.join(', ')
-}
-
-/** The bar's accessible name: how many weeks, which is current, and every marked week. */
-export function weeksLabel(weeks: readonly MesoHeaderWeek[], current: number | undefined): string {
-  const marked = weeks.filter((w) => w.isDeload || w.skipped || w.index === current)
-  const head = `${weeks.length} ${weeks.length === 1 ? 'week' : 'weeks'}`
-  if (marked.length === 0) return head
-  const notes = marked.map((w) =>
-    w.index === current ? `${weekLabel(w)} (current)` : weekLabel(w)
-  )
-  return `${head}: ${notes.join('; ')}`
+/** Every part reads the one header model. */
+export interface PartProps {
+  model: MesoHeaderModel
 }
 
 interface WeekBarProps {
@@ -218,10 +70,10 @@ function StateTag({ label }: { label: string }) {
   )
 }
 
-export function StatePill({ state, isDeload }: { state: MesoHeaderState; isDeload: boolean }) {
-  if (state === 'upcoming') return <StateTag label="Upcoming" />
-  if (state === 'ended') return <StateTag label="Ended" />
-  return isDeload ? <StateTag label="Deload" /> : null
+export function StatePill({ schedule }: { schedule: MesoHeaderSchedule }) {
+  if (schedule.state === 'upcoming') return <StateTag label="Upcoming" />
+  if (schedule.state === 'ended') return <StateTag label="Ended" />
+  return schedule.week?.isDeload ? <StateTag label="Deload" /> : null
 }
 
 export function FocusTip({ focus }: { focus: string }) {
@@ -248,13 +100,11 @@ export function PrioritiesSlot({ priorities }: { priorities: readonly GoalPriori
   return <GoalPriorityIndex priorities={priorities} />
 }
 
-export type BandProps = MesoHeaderProps & { priorities: readonly GoalPriorityIndexEntry[] }
-
-export function PrioritiesTrigger(props: BandProps) {
-  const { priorities, isPrioritiesOpen, onPrioritiesOpenChange } = props
+export function PrioritiesTrigger({ model }: PartProps) {
+  const { priorities, popover } = model
   if (priorities.length === 0) return null
   return (
-    <Popover isOpen={isPrioritiesOpen} onOpenChange={onPrioritiesOpenChange} placement="bottom">
+    <Popover isOpen={popover.isOpen} onOpenChange={popover.onOpenChange} placement="bottom">
       <PopoverTrigger>
         <Pill size="sm" variant="outline" testID="meso-header-priorities-trigger">
           {`Priorities · ${priorities.length}`}
@@ -288,23 +138,46 @@ export function SegmentLabels({ labels, gap }: { labels: readonly SegmentLabel[]
   )
 }
 
-/** The phone form's first line: block name, the compact position, and the priorities trigger. */
-export function PhoneTitleRow(props: BandProps & { showPosition?: boolean }) {
-  const { blockName, state, week, showPosition = true } = props
+/** The phone form's first line in shapes A and B: block name, the compact position, the trigger. */
+export function PhoneTitleRow({ model }: PartProps) {
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center' }} className="gap-inline-sm">
       <View style={{ flexShrink: 1, minWidth: 0 }}>
-        <Typography variant="overline">{blockName}</Typography>
+        <Typography variant="overline">{model.block.name}</Typography>
       </View>
-      {showPosition ? (
-        <Typography variant="body2" testID="meso-header-position" style={{ flexShrink: 0 }}>
-          {positionText(props, true)}
-        </Typography>
-      ) : null}
-      <StatePill state={state} isDeload={week?.isDeload ?? false} />
+      <Typography variant="body2" testID="meso-header-position" style={{ flexShrink: 0 }}>
+        {positionText(model.schedule, model.now, true)}
+      </Typography>
+      <StatePill schedule={model.schedule} />
       <View style={{ marginLeft: 'auto' }}>
-        <PrioritiesTrigger {...props} />
+        <PrioritiesTrigger model={model} />
       </View>
+    </View>
+  )
+}
+
+/** The week text and its state tag, as shapes B and C show them on the wall. */
+export function PositionGroup({ model }: PartProps) {
+  return (
+    <View style={ROW} className="gap-inline-sm">
+      <Typography variant="body2" testID="meso-header-position">
+        {positionText(model.schedule, model.now)}
+      </Typography>
+      <StatePill schedule={model.schedule} />
+    </View>
+  )
+}
+
+/** The block title with its focus tip; shape B leads it with the program's name. */
+export function TitleGroup({ model, withProgram }: PartProps & { withProgram?: boolean }) {
+  const { programName, focus } = model.block
+  const title = blockTitle(model.block)
+  return (
+    <View style={ROW} className="gap-inline-sm">
+      <Typography variant="overline">
+        {withProgram && programName ? `${programName} › ${title}` : title}
+      </Typography>
+      {focus ? <FocusTip focus={focus} /> : null}
     </View>
   )
 }

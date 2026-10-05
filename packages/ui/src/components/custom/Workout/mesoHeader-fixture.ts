@@ -37,16 +37,20 @@ export interface MesoHeaderFixture {
 export function mesoHeaderPropsFrom(fixture: MesoHeaderFixture): MesoHeaderProps {
   const { mesocycle: m, priorities, now } = fixture
   return {
-    programName: m.programName,
-    blockName: m.blockName,
-    focus: m.focus,
-    block: { index: m.blockIndex, count: m.blockCount },
-    startsOn: m.startsOn,
-    endsOn: m.endsOn,
-    state: m.state,
-    week: m.week,
-    weeks: m.weeks,
-    nextBlock: m.nextBlock,
+    block: {
+      name: m.blockName,
+      programName: m.programName,
+      focus: m.focus,
+      order: { index: m.blockIndex, count: m.blockCount },
+    },
+    schedule: {
+      startsOn: m.startsOn,
+      endsOn: m.endsOn,
+      state: m.state,
+      week: m.week,
+      weeks: m.weeks,
+      nextBlock: m.nextBlock,
+    },
     priorities,
     now,
   }
