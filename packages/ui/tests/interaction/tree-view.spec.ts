@@ -116,3 +116,26 @@ test('arrowing down past the window keeps focus on screen and one tab stop', asy
   expect(state).toEqual({ inView: true, scrolled: true })
   expect((await focused(page)).tabStops).toBe(1)
 })
+
+test('a wheel scroll leaves the focused row behind, and Down moves on from it', async ({
+  page,
+}) => {
+  await open(page, LARGE_STORY)
+  const labels = (await rowLabels(page)).map(String)
+  await page.getByRole('treeitem').first().focus()
+  const scroller = page.getByRole('tree').locator('xpath=../..')
+  const scrollTop = () => scroller.evaluate((el) => el.scrollTop)
+
+  await scroller.hover()
+  await page.mouse.wheel(0, 4_000)
+  await expect.poll(scrollTop).toBeGreaterThan(2_000)
+  await page.evaluate(
+    () => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)))
+  )
+
+  expect(await scrollTop()).toBeGreaterThan(2_000)
+  await expect(page.getByRole('treeitem', { name: labels[0], exact: true })).toHaveCount(0)
+  await page.keyboard.press('ArrowDown')
+  await expectFocusOn(page, labels[1])
+  expect(await scrollTop()).toBeLessThan(2_000)
+})

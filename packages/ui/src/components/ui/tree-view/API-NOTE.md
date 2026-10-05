@@ -133,7 +133,9 @@ that scrolls out and back regains `tabindex="0"`. A key that moves focus to a ro
 scrolls first, then focuses once the row mounts; `revealId` scrolls its row in the same way without
 taking DOM focus. A consumer that collapses an ancestor of the focused row from outside the tree
 (controlled expansion) moves focus to the nearest visible ancestor, and the hook keeps no hidden
-focus to return to on re-expand.
+focus to return to on re-expand. A pointer or wheel scroll that takes the focused row out of the
+window is never undone: DOM focus waits on the `tree` element, which passes the next key to the
+focused row, and returns to the row if it scrolls back in.
 
 ## Where the logic lives
 
