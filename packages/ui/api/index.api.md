@@ -6432,6 +6432,7 @@ export function SessionListItem(input: SessionListItemProps): react_jsx_runtime.
 
 // @public (undocumented)
 export interface SessionListItemProps {
+    className?: string;
     now: number;
     // (undocumented)
     onSelect?: () => void;

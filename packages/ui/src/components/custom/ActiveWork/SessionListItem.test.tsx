@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedClassNames } from '../../../test/classname-capture'
 import { SessionListItem, sessionRowMeta } from './SessionListItem'
 import { SESSION_FIXTURE, SESSION_NOW } from './session-fixture'
 
@@ -58,5 +59,14 @@ describe('SessionListItem', () => {
       </div>
     )
     expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+describe('SessionListItem className merge', () => {
+  it('lets a caller class replace the root class it conflicts with', () => {
+    render(<SessionListItem session={session} now={SESSION_NOW} className="rounded-lg" />)
+    const classes = capturedClassNames.get('session-list-item')?.split(/\s+/)
+    expect(classes).toContain('rounded-lg')
+    expect(classes).not.toContain('rounded-md')
   })
 })
