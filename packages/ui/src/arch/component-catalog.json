@@ -795,6 +795,13 @@
       "props": [
         {
           "default": null,
+          "description": "Merged over the row's own classes through `cn()`, so a conflicting class wins.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
           "description": "Reference instant for the age label, injected so renders are deterministic.",
           "name": "now",
           "required": true,

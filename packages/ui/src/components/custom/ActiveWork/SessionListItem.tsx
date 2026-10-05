@@ -31,6 +31,7 @@ export interface SessionListItemProps {
   /** Renders the selected treatment (raised fill + leading accent bar). */
   selected?: boolean
   onSelect?: () => void
+  /** Merged over the row's own classes through `cn()`, so a conflicting class wins. */
   className?: string
 }
 
@@ -138,7 +139,11 @@ export function SessionListItem({
       aria-selected={selected}
       accessibilityLabel={`${session.title}, ${sessionRowMeta(session, now, refs.length)}`}
       testID="session-list-item"
-      className={cn('relative gap-1 rounded-md px-3 py-2', selected && 'bg-surface-raised', className)}
+      className={cn(
+        'relative gap-1 rounded-md px-3 py-2',
+        selected && 'bg-surface-raised',
+        className
+      )}
     >
       {selected ? (
         <View
