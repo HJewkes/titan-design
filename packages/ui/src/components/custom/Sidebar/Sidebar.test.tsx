@@ -196,8 +196,8 @@ describe('Sidebar', () => {
       const directText = (el: Element | null) =>
         Array.from(el?.childNodes ?? []).some((n) => n.nodeType === 3 && n.textContent?.trim())
       expect(directText(badge)).toBe(true)
+      expect(badge.parentElement).not.toBe(screen.getByLabelText('Inbox'))
       expect(directText(badge.parentElement)).toBe(false)
-      expect(directText(screen.getByLabelText('Inbox'))).toBe(false)
     })
 
     it('renders nothing for a zero badge', () => {
