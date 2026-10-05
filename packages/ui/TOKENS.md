@@ -91,7 +91,7 @@ const [reads, writes, edits] = categoricalPalette.default
 **Theme-aware form.** `dataviz-categorical-0..6` is the same seven hues in the same order, resolved
 per theme: dark equals `categoricalPalette.default`, light carries its own steps. Use the role where the
 colour must follow the active theme. `Scatter` and `Treemap` take it through
-`DATAVIZ_CATEGORICAL_ROLES`, and `Avatar` colours a name from it (`avatar-color.ts`).
+`DATAVIZ_CATEGORICAL_ROLES`, and `Avatar` hashes a name onto it.
 `dataviz-diverging-*` paints volume status (`BodyMap`, `MuscleGlyph`, `MuscleGroupChip`,
 `TrainingStatusPage`); `dataviz-sequential-*` paints velocity zones (`VelocityStrip`,
 `PinnedLiveStrip`).
