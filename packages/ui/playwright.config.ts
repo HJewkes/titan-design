@@ -5,10 +5,11 @@ import { defineConfig } from '@playwright/test'
 
 // Outside Storybook's watched root: trace files written inside it make Vite reload the page mid-test.
 const INTERACTION_OUTPUT_DIR = join(tmpdir(), 'titan-ui-playwright-interaction')
+const STORIES_OUTPUT_DIR = join(tmpdir(), 'titan-ui-playwright-stories')
 
 export default defineConfig({
   testDir: './tests/visual',
-  outputDir: './tests/visual/results',
+  outputDir: STORIES_OUTPUT_DIR,
   snapshotDir: './tests/visual/reference',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
@@ -57,8 +58,7 @@ export default defineConfig({
     port: 6006,
     reuseExistingServer: false,
     timeout: 120000,
-    env: { DEBUG: 'vite:deps' },
+    // Surfaces Vite's "page reload" lines in the CI log, the evidence for TD-636.
     stdout: 'pipe',
-    stderr: 'pipe',
   },
 })
