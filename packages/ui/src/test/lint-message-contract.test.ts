@@ -1,3 +1,6 @@
+/* eslint-disable titan/no-var-color-opacity --
+ * The fixtures and checker cases below quote dead classes on purpose.
+ */
 import fs from 'node:fs'
 import path from 'node:path'
 import { Linter } from 'eslint'

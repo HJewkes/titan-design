@@ -1,4 +1,22 @@
-import colorOptions from '../../eslint-rules/color-options'
+import { createRequire } from 'node:module'
+
+type Options = {
+  rungsByRole: Record<string, string[]>
+  colorsByRoot: Record<string, string[]>
+  onSurfaceRoles: string[]
+}
+type ColorOptions = {
+  classOptions: (id: string, value: string, before?: string) => string[]
+  styleOptions: string
+  washRungs: (prop: string, token: string) => string[]
+  optionList: (options: string[]) => string
+}
+
+const colorOptions = createRequire(import.meta.url)('../../eslint-rules/color-options') as {
+  fromOptions: (options: Options) => ColorOptions
+  optionList: (options: string[]) => string
+  MAX_OPTIONS: number
+}
 
 const fixture = {
   rungsByRole: {
@@ -22,7 +40,10 @@ describe('color-options: derived from fix-options, not hand-kept', () => {
   })
 
   it('maps neutrals to the role the utility paints and other hues to data', () => {
-    expect(classOptions('twPalette', 'bg-slate-800')).toEqual(['bg-surface-base', 'bg-surface-raised'])
+    expect(classOptions('twPalette', 'bg-slate-800')).toEqual([
+      'bg-surface-base',
+      'bg-surface-raised',
+    ])
     expect(classOptions('twPalette', 'bg-purple-500')).toHaveLength(10)
   })
 

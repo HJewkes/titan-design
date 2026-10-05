@@ -62,7 +62,8 @@ function fromOptions({ rungsByRole, colorsByRoot, onSurfaceRoles }) {
   function classOptions(id, value, before = '') {
     const [prop, hue] = value.split('-')
     if (id === 'twPalette') return familyClasses(prop, paletteRole(prop, hue))
-    if (id === 'twAchromatic') return hue === 'white' ? onColorClasses() : familyClasses('bg', 'scrim')
+    if (id === 'twAchromatic')
+      return hue === 'white' ? onColorClasses() : familyClasses('bg', 'scrim')
     const arbitraryProp = COLOR_PROP.exec(before)?.[1] ?? 'bg'
     return familyClasses(arbitraryProp, NEUTRAL_ROLE[arbitraryProp] ?? 'surface')
   }

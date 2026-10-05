@@ -1,9 +1,15 @@
+/* eslint-disable titan/no-var-color-opacity --
+ * The dead classes below are the probes this test feeds the rule.
+ */
+import { createRequire } from 'node:module'
 import type { Rule } from 'eslint'
-import rule from '../../eslint-rules/no-var-color-opacity'
 import { lintMessages } from './lint-rule-messages'
 
-const reportFor = (code: string) =>
-  lintMessages('no-var-color-opacity', rule as Rule.RuleModule, code)[0]
+const rule = createRequire(import.meta.url)(
+  '../../eslint-rules/no-var-color-opacity'
+) as Rule.RuleModule
+
+const reportFor = (code: string) => lintMessages('no-var-color-opacity', rule, code)[0]
 
 describe('no-var-color-opacity messages', () => {
   it('lists the rungs a token publishes', () => {
