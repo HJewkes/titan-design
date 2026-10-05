@@ -182,8 +182,8 @@ const tracks: NonTextPair[] = TRACKS.flatMap(([tone, fill, track]) => {
 })
 
 // ── Separators: held to the repo's ΔL* floors (7 / 12 / 18), not to WCAG ─────
-// TD-480 (#439) moves the `divider` rows below onto hairline tokens. Update this
-// block, and only this block, when it lands.
+// Divider, ListItem, Table, TablePagination, Modal and Metric paint `hairline`
+// since TD-480; nothing paints the `divider` token any more.
 const separators: NonTextPair[] = [
   {
     id: 'separator.hairline-subtle',
@@ -205,6 +205,12 @@ const separators: NonTextPair[] = [
       src('ui/collapse/Collapse.tsx', 'divide-hairline'),
       src('ui/form-field/FormField.tsx', 'border-hairline'),
       src('ui/progress/Progress.tsx', 'var(--color-hairline-default)'),
+      src('ui/divider/Divider.tsx', 'bg-hairline'),
+      src('ui/list-item/ListItem.tsx', 'bg-hairline'),
+      src('ui/table/Table.tsx', 'border-hairline'),
+      src('ui/table/TablePagination.tsx', 'border-hairline'),
+      src('ui/modal/Modal.tsx', 'border-hairline'),
+      src('custom/Metric/Metric.tsx', 'bg-hairline'),
     ],
   },
   {
@@ -212,19 +218,6 @@ const separators: NonTextPair[] = [
     token: 'hairline-strong',
     floor: STRONG,
     sources: [src('ui/card/Card.tsx', 'border-hairline-strong')],
-  },
-  {
-    id: 'separator.divider',
-    token: 'divider',
-    floor: SUBTLE,
-    sources: [
-      src('ui/divider/Divider.tsx', 'bg-divider'),
-      src('ui/list-item/ListItem.tsx', 'bg-divider'),
-      src('ui/table/Table.tsx', 'border-divider'),
-      src('ui/table/TablePagination.tsx', 'border-divider'),
-      src('ui/modal/Modal.tsx', 'border-divider'),
-      src('custom/Metric/Metric.tsx', 'bg-divider'),
-    ],
   },
   {
     id: 'separator.border-prominent',
