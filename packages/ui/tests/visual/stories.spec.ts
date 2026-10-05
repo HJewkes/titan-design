@@ -104,6 +104,11 @@ const storyUrl = (id: string) =>
 const SETTLED_CLOCK_PREFIX = 'custom-workout-dataviz-strengthtrendchart--'
 const SETTLE_MS = 1000
 
+// The first DualVelocityStrip stories of a run hit a cold dev server whose first batch of four
+// takes ~70 s in CI, so their root can sit at 1280x0 past the 5 s guard; they get a longer poll.
+const COLD_START_PREFIX = 'custom-workout-dataviz-dualvelocitystrip--'
+const COLD_START_GUARD_MS = 20_000
+
 async function renderStory(page: Page, id: string) {
   // install() alone keeps ticking from FIXED_TIME in real time, so a story
   // rendered late in the run showed 16:13 instead of 16:12 (#250); it starts early so pauseAt never rewinds.
@@ -112,7 +117,7 @@ async function renderStory(page: Page, id: string) {
   await page.goto(storyUrl(id))
   await page.waitForLoadState('networkidle')
   await page.evaluate(() => document.fonts.ready)
-  await expectRendered(page, id)
+  await expectRendered(page, id, id.startsWith(COLD_START_PREFIX) ? COLD_START_GUARD_MS : undefined)
   if (id.startsWith(SETTLED_CLOCK_PREFIX)) await page.clock.runFor(SETTLE_MS)
   return page.locator('#storybook-root')
 }
