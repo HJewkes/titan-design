@@ -11,6 +11,7 @@ import { createRequire } from 'node:module'
 import { Linter } from 'eslint'
 import fixOptions from '../../eslint-rules/fix-options'
 import truncationBaseline from '../../eslint-rules/no-truncation-baseline.json'
+import unstyledTextBaseline from '../../eslint-rules/no-unstyled-text-baseline.json'
 import { compileClasses, uiRoot } from './tailwind-compile'
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const config = require('../../eslint.config.js') as Linter.Config[]
@@ -128,6 +129,14 @@ const FIXTURES: Record<string, Fixture> = {
   'titan/no-truncation:stale': {
     code: 'export const nothingTruncates = 1',
     filename: Object.keys(truncationBaseline)[0],
+  },
+  'titan/no-unstyled-text:unstyled': inShell(
+    "import { Text } from 'react-native'\nexport const B = () => <Text>{badge}</Text>"
+  ),
+  // A baselined file with its sites gone: the allowance it no longer spends is stale.
+  'titan/no-unstyled-text:stale': {
+    code: 'export const nothingRenders = 1',
+    filename: Object.keys(unstyledTextBaseline)[0],
   },
   'titan/no-raw-device-data-in-chat:rawConstructor': {
     code: 'export function useDecoder() { return new Uint8Array(4) }',

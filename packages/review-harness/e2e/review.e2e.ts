@@ -111,6 +111,7 @@ function startCli(manifestPath: string, outDir: string, ...flags: string[]) {
     outDir,
     '--contrast-override',
     'e2e fixture round',
+    '--allow-stale',
     ...flags,
   ])
   let stdout = ''
