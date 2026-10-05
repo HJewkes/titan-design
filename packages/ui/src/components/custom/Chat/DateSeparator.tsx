@@ -20,8 +20,11 @@ export interface DateSeparatorProps {
   className?: string
 }
 
+/** The separator's built-in strings. */
 export interface DateSeparatorLabels {
+  /** Names the reader's current day. */
   today: string
+  /** Names the calendar day before it. */
   yesterday: string
 }
 

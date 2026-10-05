@@ -17,6 +17,7 @@ export interface UnreadBadgeProps {
   testID?: string
 }
 
+/** The badge's built-in strings. */
 export interface UnreadBadgeLabels {
   /** The jump affordance's text and name: `shown` is the capped count, `count` the real one. */
   newMessages: (shown: string, count: number) => string

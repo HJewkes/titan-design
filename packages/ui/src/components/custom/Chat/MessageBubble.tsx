@@ -25,6 +25,7 @@ export type DataPartRenderer = (part: DataPart, message: ChatMessage) => ReactNo
 /** Direct threads carry no per-message identity. Group threads name the author and show an avatar. */
 export type ThreadLayout = 'direct' | 'group'
 
+/** The bubble's built-in strings. */
 export interface MessageBubbleLabels {
   /** Spoken on a message a human endorsed; the bubble's accent edge carries it visually. */
   endorsed: string

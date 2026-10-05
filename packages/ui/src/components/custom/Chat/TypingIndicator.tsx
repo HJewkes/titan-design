@@ -16,6 +16,7 @@ export interface TypingIndicatorProps {
   className?: string
 }
 
+/** The indicator's built-in strings. */
 export interface TypingIndicatorLabels {
   /** Who is composing, from their display names (never empty). */
   typing: (names: readonly string[]) => string
