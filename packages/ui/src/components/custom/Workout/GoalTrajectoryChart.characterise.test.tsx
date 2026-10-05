@@ -31,7 +31,7 @@ const base = {
 const cases = {
   plotted: {
     ...base,
-    nextTarget: { weekIndex: 4, value: 185, label: 'next week: 185 x 5' },
+    nextTarget: { weekIndex: 5, value: 185, label: 'next week: 185 x 5' },
     currentWeek: 4,
   },
   'rights and axis': { ...base, referenceLabelSide: 'right' as const, yAxisLabels: true },
