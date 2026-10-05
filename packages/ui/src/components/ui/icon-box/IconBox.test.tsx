@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedClassNames } from '../../../test/classname-capture'
 import { IconBox } from './IconBox'
 
 function MockIcon({ size, className }: { size?: number; className?: string }) {
@@ -32,68 +33,49 @@ describe('IconBox', () => {
     expect(screen.getByTestId('icon')).toHaveAttribute('data-size', '24')
   })
 
-  it('renders with size sm without crashing', () => {
-    const { container } = render(<IconBox icon={MockIcon} size="sm" />)
-    expect(container.firstChild).toBeTruthy()
-    expect(screen.getByTestId('icon')).toBeInTheDocument()
+  const boxClasses = () => capturedClassNames.get('box')?.split(/\s+/) ?? []
+
+  it.each([
+    ['sm', ['w-8', 'h-8', 'rounded-lg']],
+    ['md', ['w-10', 'h-10', 'rounded-xl']],
+    ['lg', ['w-12', 'h-12', 'rounded-xl']],
+  ] as const)('sizes the box with %s classes for size %s', (size, expected) => {
+    render(<IconBox icon={MockIcon} size={size} testID="box" />)
+    expect(boxClasses()).toEqual(expect.arrayContaining([...expected]))
   })
 
-  it('renders with size md by default without crashing', () => {
-    const { container } = render(<IconBox icon={MockIcon} />)
-    expect(container.firstChild).toBeTruthy()
-    expect(screen.getByTestId('icon')).toBeInTheDocument()
+  it('sizes the box as md by default', () => {
+    render(<IconBox icon={MockIcon} testID="box" />)
+    expect(boxClasses()).toEqual(expect.arrayContaining(['w-10', 'h-10', 'rounded-xl']))
   })
 
-  it('renders with size lg without crashing', () => {
-    const { container } = render(<IconBox icon={MockIcon} size="lg" />)
-    expect(container.firstChild).toBeTruthy()
-    expect(screen.getByTestId('icon')).toBeInTheDocument()
+  it.each([
+    ['primary', 'bg-brand-primary-subtle', 'text-brand-primary'],
+    ['secondary', 'bg-brand-secondary-subtle', 'text-brand-secondary'],
+    ['success', 'bg-status-success-subtle', 'text-status-success'],
+    ['error', 'bg-status-error-subtle', 'text-status-error'],
+    ['warning', 'bg-status-warning-subtle', 'text-status-warning'],
+    ['info', 'bg-status-info-subtle', 'text-status-info'],
+    ['neutral', 'bg-surface-elevated', 'text-text-secondary'],
+  ] as const)('tints the box and icon for color %s', (color, bg, text) => {
+    render(<IconBox icon={MockIcon} color={color} testID="box" />)
+    expect(boxClasses()).toContain(bg)
+    expect(screen.getByTestId('icon').className.split(/\s+/)).toContain(text)
   })
 
-  it('renders with color primary without crashing', () => {
-    const { container } = render(<IconBox icon={MockIcon} color="primary" />)
-    expect(container.firstChild).toBeTruthy()
+  it('tints with the neutral color by default', () => {
+    render(<IconBox icon={MockIcon} testID="box" />)
+    expect(boxClasses()).toContain('bg-surface-elevated')
   })
 
-  it('renders with neutral color by default', () => {
-    const { container } = render(<IconBox icon={MockIcon} />)
-    expect(container.firstChild).toBeTruthy()
-  })
-
-  it('renders with className prop without crashing', () => {
-    const { container } = render(<IconBox icon={MockIcon} className="mt-4" />)
-    expect(container.firstChild).toBeTruthy()
+  it('appends the className prop to the box classes', () => {
+    render(<IconBox icon={MockIcon} className="mt-4" testID="box" />)
+    expect(boxClasses()).toContain('mt-4')
   })
 
   it('passes through testID prop', () => {
     render(<IconBox icon={MockIcon} testID="my-icon-box" />)
     expect(screen.getByTestId('my-icon-box')).toBeInTheDocument()
-  })
-
-  it('supports all color variants without errors', () => {
-    const colors = [
-      'primary',
-      'secondary',
-      'success',
-      'error',
-      'warning',
-      'info',
-      'neutral',
-    ] as const
-    for (const color of colors) {
-      const { unmount } = render(<IconBox icon={MockIcon} color={color} />)
-      expect(screen.getByTestId('icon')).toBeInTheDocument()
-      unmount()
-    }
-  })
-
-  it('supports all size variants without errors', () => {
-    const sizes = ['sm', 'md', 'lg'] as const
-    for (const size of sizes) {
-      const { unmount } = render(<IconBox icon={MockIcon} size={size} />)
-      expect(screen.getByTestId('icon')).toBeInTheDocument()
-      unmount()
-    }
   })
 
   it('renders with all props combined', () => {
