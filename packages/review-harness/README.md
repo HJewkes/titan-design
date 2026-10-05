@@ -35,8 +35,7 @@ as JSON on stdout and in `feedback.json`. Private workspace tool, not published.
 # Storybook first, from packages/ui (never bare `storybook dev`):
 node scripts/storybook-launch.mjs --isolated          # prints its port, e.g. 6107
 
-pnpm review --example --storybook http://127.0.0.1:6107 > <round-dir>/round.json   # a starting point
-pnpm review --example --sections --storybook http://127.0.0.1:6107                # the same, grouped
+pnpm review --example --storybook http://127.0.0.1:6107 > <round-dir>/draft.json   # a starting point
 pnpm review build <round-dir>/draft.json [--storybook <url>]   # contrast gate; writes round.json
 pnpm review <round-dir>/round.json [--storybook <url>] [--out <dir>] [--no-open] [--no-capture]
             [--contrast-override "<reason>"]
@@ -81,14 +80,14 @@ sha256 of the manifest you wrote.
 `schema/round.schema.json` and `schema/feedback.schema.json` are generated from
 `src/schema.ts` (`pnpm --filter @titan-design/review-harness schema`; a test fails if they drift).
 
-- Manifest `titan-review/round@1`: `unit`, `round`, `storybookUrl`, `context?`, `widths[]`,
+- Manifest `titan-review/round@2`: `unit`, `round`, `storybookUrl`, `context?`, `widths[]`,
   `height` (a number of px or `"auto"`, default `"auto"`; at round level a number caps every
   frame), `maxHeight` (default 1200, the cap when the round's `height` is `"auto"`),
   `variants[{key, storyId | image, label, args?, globals?, height?}]` (at most 12, or at most 80
   in a round with `sections`; empty for a round of questions only, which needs no placeholder
-  frame; `build` warns about a frame no section declares),
-  `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?, recommendation?}]`,
-  `sections?[{id, title, context?, questionIds[], variantKeys[], seeAlso?[], height?}]`,
+  frame; every frame sits in a section),
+  `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?, recommendation?, signsOff (pick-one)}]`,
+  `sections[{id, title, deciding, changed, context, kind?: CHOICE|STATES, questionIds[], variantKeys[], seeAlso?[], height?}]`,
   `recommendations` (`"after-answer"`, the default, or `"shown"`),
   `contrast?{knownDefects[], measured[], unmeasured[]}` (also on a section; see _Contrast gate_).
   The round and section `context`, each question `prompt` and each recommendation `rationale`
@@ -223,15 +222,33 @@ owner's answer matched the recommendation: one row per round, the overall rate, 
 per confidence band (`<0.5`, `0.5-0.75`, `>=0.75`). An answer counts only when it has both a
 recommendation and an owner's answer.
 
+## The review contract (TD-670)
+
+`serve` and `build` refuse a round that does not meet it, naming the section or question and
+the field. The page still renders an older `round@1` file, but the CLI refuses to serve one.
+
+- **Every section says three things.** `deciding`: what this section asks the owner to decide.
+  `changed`: the diff against the last approved state. `context`: what is shown for context
+  only and is out of scope. The page shows deciding first, then changed, with context set back
+  as secondary. A frame that did not change belongs in `context`, not in `changed`.
+- **Every strip has a kind.** A section with frames sets `kind`. `CHOICE`: the frames differ
+  only in the property being decided. The harness refuses a CHOICE strip whose frames differ in
+  a frame setting the manifest records (`height`, `globals`, image or live story) or whose
+  image captures differ in pixel width. `STATES`: one design shown in several states. It asks
+  no choice, so none of its questions picks a frame.
+- **Every pick-one names what it signs off.** `signsOff` names the changed part an answer
+  approves. A prompt, option or `signsOff` that is only a blanket phrase such as "sign off as
+  built" is refused. A question's options are its own: none repeats within it, and no prose
+  option repeats another pick-one's (variant keys excepted).
+
 ## Writing a sectioned round (VW-530)
 
-Without `sections` the page renders exactly as it always has: all frames, then all questions.
-With them, it renders group by group, each group's QUESTION FIRST and then the frames that
+A round renders group by group, each group's QUESTION FIRST and then the frames that
 answer it, so the human knows what he is being asked before he looks.
 
 ```json
 {
-  "schema": "titan-review/round@1",
+  "schema": "titan-review/round@2",
   "unit": "vw-455-whole-body",
   "round": 4,
   "storybookUrl": "http://127.0.0.1:6107",
@@ -253,20 +270,15 @@ answer it, so the human knows what he is being asked before he looks.
       "kind": "pick-one",
       "prompt": "How long is the rate line?",
       "options": ["R-pct", "R-word"],
+      "signsOff": "the rate line's length",
       "required": true
     },
     {
       "id": "alignment",
       "kind": "pick-one",
       "prompt": "Do the two cards end level?",
-      "options": ["Right", "No, see my comments"],
-      "required": true
-    },
-    {
-      "id": "sign-off",
-      "kind": "pick-one",
-      "prompt": "Round outcome",
-      "options": ["Lock it", "Another round"],
+      "options": ["The cards end level", "Not level, see my comments"],
+      "signsOff": "how the two cards align on the page",
       "required": true
     }
   ],
@@ -274,13 +286,20 @@ answer it, so the human knows what he is being asked before he looks.
     {
       "id": "rate",
       "title": "How long is the rate line?",
+      "deciding": "Which rate line the card keeps.",
+      "changed": "The rate line gains a verdict word; R-pct is the approved line.",
       "context": "Same card, two lengths. Your comment on a card lands on this question too.",
+      "kind": "CHOICE",
       "questionIds": ["rate-length"],
       "variantKeys": ["R-pct", "R-word"]
     },
     {
       "id": "page",
       "title": "The two cards on the page",
+      "deciding": "Whether the two cards end level.",
+      "changed": "Nothing in the page layout; the card heights change with the rate line.",
+      "context": "The header and the rest of the page are not under review.",
+      "kind": "STATES",
       "questionIds": ["alignment"],
       "variantKeys": ["Page"],
       "seeAlso": ["R-pct"]
@@ -298,12 +317,11 @@ Rules worth knowing:
 - **A comment on a frame reaches the question.** It is still written on the variant, and it is
   repeated under the section's answers as `variantComments`, so nothing has to be retyped or
   moved. This is why the frames belong under their question rather than in one long wall.
-- **Leftovers have a home.** A variant in no section renders under "Other frames"; a question in
-  no section renders under "Overall", which is where sign-off belongs.
+- **Leftovers have a home.** A question in no section renders under "Overall". A variant in no
+  section is refused: every frame belongs to a strip.
 - **One frame per section.** A frame that also bears on another group goes in that group's
   `seeAlso`, which renders a link to it instead of a second iframe. Validation refuses a variant
   or question claimed by two sections, and refuses an unknown key with the id in the message.
-- **Sections are optional.** A round that does not need them should not have them.
 - **Sections page a big round (TD-343).** A round without sections shows every frame on one
   page and is capped at 12 variants. A round with sections shows one section at a time, so it
   takes up to 80, for example one Gate 2 batch of main and PR-head frames in light and dark.
@@ -358,7 +376,8 @@ own text field keeps its typing, except `Cmd+Enter`.
 - `pnpm --filter @titan-design/review-harness test`: schemas, feedback building, the
   keyboard model, the section layout and the pick-to-verdict link, the fitted-height maths,
   the page's markup for a sectioned and an unsectioned round (`react-dom/server`), section
-  paging over a 60-frame image round, and the
+  paging over a 60-frame image round, each refusal of the review contract
+  (`test/contract.test.ts`), and the
   server's proxy, submit and exit paths against a fake Storybook. `test/fixtures/rounds/`
   holds four real rounds, copied verbatim, that must keep parsing.
 - `pnpm --filter @titan-design/review-harness test:e2e`: a real isolated Storybook (or

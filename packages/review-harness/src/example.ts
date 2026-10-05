@@ -1,6 +1,6 @@
 import { MANIFEST_SCHEMA_ID, type ManifestInput } from './schema.ts'
 
-/** A round over real Lab/Decisions stories, for `titan-review --example`. */
+/** The frames and questions of the example round, before they are grouped into sections. */
 export function exampleManifest(storybookUrl: string): ManifestInput {
   return {
     schema: MANIFEST_SCHEMA_ID,
@@ -50,8 +50,8 @@ export function exampleManifest(storybookUrl: string): ManifestInput {
 }
 
 /**
- * The same round written question-first, for `titan-review --example --sections`: each
- * group asks its question above its frames, and picking an option picks the frame.
+ * The example round under the review contract, for `titan-review --example`: one CHOICE strip
+ * whose frames share every frame setting, and a pick-one that names what it signs off.
  */
 export function sectionedExampleManifest(storybookUrl: string): ManifestInput {
   const base = exampleManifest(storybookUrl)
@@ -59,12 +59,17 @@ export function sectionedExampleManifest(storybookUrl: string): ManifestInput {
     ...base,
     height: 'auto',
     maxHeight: 1200,
-    variants: base.variants.map((v) => (v.key === 'C' ? { ...v, height: 420 } : v)),
+    questions: base.questions.map((q) =>
+      q.kind === 'pick-one' ? { ...q, signsOff: 'which goal card leads the page' } : q
+    ),
     sections: [
       {
         id: 'lead',
         title: 'Which card leads the page?',
-        context: 'Same data in all three; judge weight, not content.',
+        deciding: 'Pick the goal card that leads the page, and flag any that fail at 360px.',
+        changed: 'Three candidate goal cards; none has been approved yet.',
+        context: 'All three show the same data, so judge weight and legibility, not content.',
+        kind: 'CHOICE',
         questionIds: ['q1', 'q2'],
         variantKeys: ['A', 'B', 'C'],
       },

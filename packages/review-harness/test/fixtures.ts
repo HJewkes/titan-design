@@ -75,6 +75,35 @@ export function pagedImageInput(count = 60): ManifestInput {
   }
 }
 
+/** The three section texts the review contract requires, for tests that are not about them. */
+export const SECTION_TEXTS = {
+  deciding: 'Whether these frames are right.',
+  changed: 'New in this round.',
+  context: 'Nothing else is under review.',
+}
+
+/** The same round under the review contract: its frames in one strip, its questions loose. */
+export function underContract(
+  input: ManifestInput,
+  kind: 'CHOICE' | 'STATES' = 'STATES'
+): ManifestInput {
+  return {
+    ...input,
+    questions: input.questions.map((q) =>
+      q.kind === 'pick-one' ? { ...q, signsOff: `the answer to ${q.id}` } : q
+    ),
+    sections: [
+      {
+        id: 'frames',
+        title: 'Frames',
+        ...SECTION_TEXTS,
+        kind,
+        variantKeys: input.variants.map((v) => v.key),
+      },
+    ],
+  }
+}
+
 /** A complete, valid submission: A chosen with one pin, q1 answered. */
 export function validFeedback(m: Manifest = manifest(), sha = SHA): Feedback {
   const draft = emptyDraft(m)
