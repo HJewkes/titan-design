@@ -1,5 +1,6 @@
 import { RuleTester } from 'eslint'
 import rule from '../../eslint-rules/no-raw-spacing'
+import { lintMessages } from './lint-rule-messages'
 
 const ruleTester = new RuleTester({
   languageOptions: { ecmaVersion: 2022, sourceType: 'module' },
@@ -34,10 +35,7 @@ describe('no-raw-spacing', () => {
       { code: 'const s = { margin: -4 }', errors: [{ messageId: 'rawSpacing' }] },
       { code: 'const s = { marginHorizontal: -16 }', errors: [{ messageId: 'rawSpacing' }] },
       { code: 'const s = { marginLeft: -0.5 }', errors: [{ messageId: 'rawSpacing' }] },
-      {
-        code: 'const s = { marginTop: -9 }',
-        errors: [{ messageId: 'rawSpacing', data: { property: 'marginTop', value: '-9' } }],
-      },
+      { code: 'const s = { marginTop: -9 }', errors: [{ messageId: 'rawSpacing' }] },
       // The exact shapes the AW-142 audit found in the inline dialect.
       { code: 'const s = { paddingVertical: 9 }', errors: [{ messageId: 'rawSpacing' }] },
       { code: 'const s = { gap: 3 }', errors: [{ messageId: 'rawSpacing' }] },
@@ -57,5 +55,38 @@ describe('no-raw-spacing', () => {
         errors: [{ messageId: 'rawSpacing' }],
       },
     ],
+  })
+})
+
+describe('no-raw-spacing: the message names the nearest steps', () => {
+  const messageFor = (code: string) =>
+    lintMessages('no-raw-spacing', rule as never, code)[0]?.message ?? ''
+
+  it('names the steps either side of 9 and the space keys of the lower one', () => {
+    const message = messageFor('const s = { paddingVertical: 9 }')
+    expect(message).toContain('use 8 (')
+    expect(message).toContain('`space.stack.md`')
+    expect(message).toContain(' or 10 (`space.control.y.lg`)')
+  })
+
+  it('names the one step a value on the scale sits on', () => {
+    const message = messageFor('const s = { gap: 8 }')
+    expect(message).toMatch(/use 8 \(.*\), or add/)
+    expect(message).not.toContain(' or 10')
+  })
+
+  it('names only the smallest step for a value below it', () => {
+    expect(messageFor('const s = { gap: 0.25 }')).toContain('use 1 (`space.squish.y.xs`), or add')
+  })
+
+  it('names only the largest step for a value above it', () => {
+    expect(messageFor('const s = { gap: 500 }')).toContain('use 384, or add')
+  })
+
+  it('advises on the first length of a shorthand and on a negative number', () => {
+    expect(messageFor("const s = { padding: '9px 12px' }")).toContain('use 8 (')
+    const negative = messageFor('const s = { marginTop: -9 }')
+    expect(negative).toContain("'marginTop: -9'")
+    expect(negative).toContain('use 8 (')
   })
 })
