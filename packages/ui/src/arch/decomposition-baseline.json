@@ -119,11 +119,6 @@
   "components/custom/Workout/SegmentedBar.tsx#SegmentedBar>segments.map": {
     "complexity": 17
   },
-  "components/custom/Workout/Sparkline.tsx#Sparkline": {
-    "complexity": 17,
-    "component-lines": 161,
-    "function-lines": 161
-  },
   "components/custom/Workout/StrengthTrendChart.tsx": {
     "file-lines": 559
   },
@@ -147,14 +142,6 @@
   },
   "components/custom/Workout/VelocityStrip.tsx#VelocityStrip": {
     "props": 22
-  },
-  "components/custom/Workout/ZoneTrack.tsx": {
-    "file-lines": 311
-  },
-  "components/custom/Workout/ZoneTrack.tsx#ZoneTrack": {
-    "complexity": 34,
-    "component-lines": 211,
-    "function-lines": 211
   },
   "components/custom/Workout/index.ts": {
     "file-lines": 344
