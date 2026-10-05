@@ -90,8 +90,8 @@ describe('a sectioned round', () => {
     expect(q3).toBeLessThan(general)
   })
 
-  it('tells each frame which question it belongs to', () => {
-    expect(markup).toContain('Answers: Which one leads the page?')
+  it('asks the section question once, not again on every frame', () => {
+    expect(markup).not.toContain('Answers:')
   })
 
   it('links a see-also frame on another page instead of rendering it twice', () => {

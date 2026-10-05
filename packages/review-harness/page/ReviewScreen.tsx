@@ -1,5 +1,6 @@
 import { useEffect, useRef, type Dispatch } from 'react'
 import type { Feedback, Manifest } from '../src/schema.ts'
+import { Markdown } from './Markdown.tsx'
 import { optionLabel } from './QuestionBlock.tsx'
 import type { Action } from './state.ts'
 
@@ -29,7 +30,9 @@ function Answers({ manifest, feedback }: Pick<ReviewScreenProps, 'manifest' | 'f
         const a = byId.get(q.id)
         return (
           <div key={q.id}>
-            <dt>{q.prompt}</dt>
+            <dt>
+              <Markdown inline>{q.prompt}</Markdown>
+            </dt>
             <dd>{a ? answerText(manifest, a) : '(no answer)'}</dd>
             {a?.comment && <dd className="quote">{a.comment}</dd>}
           </div>

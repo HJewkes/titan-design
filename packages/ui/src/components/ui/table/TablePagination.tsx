@@ -45,7 +45,7 @@ export function TablePagination({
   return (
     <View
       className={cn(
-        'flex-row items-center justify-between px-4 py-3 border-t border-divider',
+        'flex-row items-center justify-between px-4 py-3 border-t border-hairline',
         className
       )}
     >

@@ -12,6 +12,7 @@ import { buildFeedback, unansweredQuestionIds } from '../src/feedback.ts'
 import { feedbackProblems } from '../src/round.ts'
 import { roundLayout, type ResolvedSection } from '../src/sections.ts'
 import type { Manifest, Question, Variant } from '../src/schema.ts'
+import { Markdown } from './Markdown.tsx'
 import { QuestionBlock } from './QuestionBlock.tsx'
 import { ReviewScreen } from './ReviewScreen.tsx'
 import { browserStorage, clearDraft, saveDraft, type DraftStorage } from './draftStore.ts'
@@ -93,7 +94,7 @@ function Header({
       <h1>
         {manifest.unit} <span>round {manifest.round}</span>
       </h1>
-      {manifest.context && <p>{manifest.context}</p>}
+      {manifest.context && <Markdown>{manifest.context}</Markdown>}
       {manifest.sections && <Pager pages={pages} current={current} dispatch={dispatch} />}
       {manifest.sections ? (
         <ol className="prompts">
@@ -108,7 +109,9 @@ function Header({
       ) : (
         <ol className="prompts">
           {orderedQuestions(manifest).map((q) => (
-            <li key={q.id}>{q.prompt}</li>
+            <li key={q.id}>
+              <Markdown inline>{q.prompt}</Markdown>
+            </li>
           ))}
         </ol>
       )}
@@ -171,6 +174,7 @@ interface PartProps {
 
 function Variants({ variants, ...props }: PartProps & { variants: Variant[] }) {
   const { manifest, state, dispatch, indexes } = props
+  if (variants.length === 0) return null
   return (
     <div
       className={state.singleColumn ? 'variants single' : 'variants'}
@@ -225,7 +229,6 @@ function SectionBlock({ section, ...props }: PartProps & { section: ResolvedSect
     >
       <header className="section-head">
         <h2>{section.title}</h2>
-        {section.context && <p>{section.context}</p>}
         {section.seeAlso.length > 0 && (
           <p className="see-also">
             See also{' '}
@@ -242,6 +245,7 @@ function SectionBlock({ section, ...props }: PartProps & { section: ResolvedSect
           </p>
         )}
       </header>
+      {section.context && <Markdown>{section.context}</Markdown>}
       <Questions {...props} questions={section.questions} />
       <Variants {...props} variants={section.variants} />
     </section>
