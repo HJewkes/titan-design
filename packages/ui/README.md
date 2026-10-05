@@ -386,6 +386,8 @@ pnpm build
   and the freshness test cannot recompute them. They can drift between barrel changes
   without failing CI; regenerate with `pnpm arch:graph -- --reindex` in a commit of its
   own so the diff stays reviewable.
+  `src/arch/component-catalog.json` derives from `arch-graph.json`, so run `pnpm catalog`
+  after every arch-graph regen and commit its output too.
 
 ## Storybook Configuration
 
