@@ -183,7 +183,7 @@ export function capacityBandLayout(
   const restPixels = projection ? toPixels([lastBandPoint, ...projection.withRest], toX, toY) : []
 
   const labelStride = Math.max(1, Math.ceil(band.length / 5))
-  const hasProjection = projection !== undefined
+  const hasProjection = Boolean(projection)
   return { columns, topEdge, bottomEdge, trainingPixels, restPixels, labelStride, hasProjection }
 }
 
