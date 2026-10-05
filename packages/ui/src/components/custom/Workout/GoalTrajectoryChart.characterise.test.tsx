@@ -38,16 +38,21 @@ const cases = {
   empty: { ...base, expected: [], actuals: [], status: 'calibrating' as const },
 }
 
+/** What assistive tech can reach: an `aria-hidden` element is listed, its subtree is not. */
 function accessibilityTree(root: HTMLElement): string[] {
-  return [root, ...Array.from(root.querySelectorAll('*'))].map((el) => {
+  const lines: string[] = []
+  const visit = (el: Element) => {
     const attrs = el
       .getAttributeNames()
       .filter(
         (n) => n === 'role' || n.startsWith('aria-') || n === 'data-testid' || n === 'tabindex'
       )
       .map((n) => `${n}=${el.getAttribute(n) ?? ''}`)
-    return `${el.tagName.toLowerCase()} ${attrs.join(' ')}`.trim()
-  })
+    lines.push(`${el.tagName.toLowerCase()} ${attrs.join(' ')}`.trim())
+    if (el.getAttribute('aria-hidden') !== 'true') Array.from(el.children).forEach(visit)
+  }
+  visit(root)
+  return lines
 }
 
 describe('GoalTrajectoryChart characterisation (TD-612)', () => {
