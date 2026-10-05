@@ -4,7 +4,7 @@ import { Pressable, Text } from 'react-native'
 import { describe, expect, it, vi } from 'vitest'
 import { expectBoundedMount } from '../../../test/scale'
 import { renderMetric } from './fixture-slots'
-import { fixtures, type HierarchyNode } from './fixtures'
+import { fixtures, type HierarchyNode, type TreeFixture } from './fixtures'
 import { indexNodes, visibleRows } from './tree-model'
 import { TreeView, type TreeViewProps } from './TreeView'
 import { ROW_HEIGHT } from './TreeRow'
@@ -357,15 +357,17 @@ describe('TreeView, focus after a collapse from outside', () => {
 })
 
 describe('TreeView, accessibility', () => {
-  it.each(Object.entries(fixtures))('has no axe violations on the %s fixture', async (_, f) => {
+  const named: [string, TreeFixture][] = Object.entries(fixtures)
+
+  it.each(named)('has no axe violations on the %s fixture', async (_, f) => {
     const { container } = render(
       <TreeView
         accessibilityLabel={f.name}
         nodes={f.nodes}
         rootId={f.rootId}
-        revealId={'revealId' in f ? f.revealId : undefined}
-        isTruncated={'isTruncated' in f ? f.isTruncated : undefined}
-        density={'density' in f ? f.density : undefined}
+        revealId={f.revealId}
+        isTruncated={f.isTruncated}
+        density={f.density}
         renderTrailing={renderMetric('loc')}
         height={HEIGHT}
       />

@@ -11,7 +11,7 @@ export interface RovingFocus {
   onBlur: (event: NativeSyntheticEvent<TargetedEvent>) => void
 }
 
-type Focusable = { focus?: (options?: { preventScroll?: boolean }) => void }
+type Focusable = { focus?: () => void }
 
 const pageHasNoFocus = () =>
   typeof document !== 'undefined' &&
@@ -35,7 +35,8 @@ export function useRovingFocus(
     reveal(rows.findIndex((row) => row.id === focusedId))
     const element = elements.current.get(focusedId)
     if (element === undefined) return
-    element.focus?.({ preventScroll: true })
+    // No preventScroll: the browser's own scroll corrects for scroll anchoring moving the window.
+    element.focus?.()
     following.current = false
   })
   const isRow = (target: unknown) => [...elements.current.values()].some((el) => el === target)

@@ -2,11 +2,9 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { fn } from 'storybook/test'
 import { TreeViewStory, type TreeViewStoryArgs } from './fixture-slots'
 import { fixtures } from './fixtures'
-import { TreeView } from './TreeView'
 
 const meta: Meta<TreeViewStoryArgs> = {
   title: 'Components/Organisms/TreeView',
-  component: TreeView as Meta<TreeViewStoryArgs>['component'],
   tags: ['autodocs', 'status:candidate', '!status:review'],
   args: {
     fixture: 'default',
