@@ -85,7 +85,7 @@ describe('declared contrast pairs', () => {
   it.each(CONTRAST_MODES)(
     '%s: keeps primary > secondary > tertiary on every text plane',
     (mode) => {
-      const colors = getSemanticColors(mode)
+      const colors: Record<string, string> = getSemanticColors(mode)
       for (const plane of TEXT_PLANES) {
         const [pri, sec, ter] = (['text-primary', 'text-secondary', 'text-tertiary'] as const).map(
           (role) => contrast(colors[role], colors[plane])
