@@ -11,7 +11,7 @@ const meta: Meta<typeof WorkoutCard> = {
       description: { component: 'Composes **Card** · **ExerciseCard** · **MuscleGroupChip**.' },
     },
   },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     status: {
       control: 'select',

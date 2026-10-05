@@ -113,7 +113,7 @@ function InfoTipCard({ note, scene, open }: InfoTipArgs) {
  */
 const meta: Meta<InfoTipArgs> = {
   title: 'Lab/Decisions/Calibrating Info Tip',
-  tags: ['status:lab'],
+  tags: ['status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
   argTypes: {
     note: { control: 'inline-radio', options: Object.keys(NOTES) },

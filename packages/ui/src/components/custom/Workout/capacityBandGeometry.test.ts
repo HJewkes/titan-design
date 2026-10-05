@@ -178,6 +178,12 @@ describe('capacityBandLayout', () => {
     expect(layout).toMatchObject({ hasProjection: false, trainingPixels: [], restPixels: [] })
   })
 
+  it('treats an untyped null projection as absent', () => {
+    const projection = null as unknown as undefined
+    const layout = capacityBandLayout(bandOf(3), projection, identityScale)
+    expect(layout).toMatchObject({ hasProjection: false, trainingPixels: [], restPixels: [] })
+  })
+
   it('starts an empty projection at the last band point', () => {
     const layout = capacityBandLayout(bandOf(3), { withTraining: [], withRest: [] }, identityScale)
     expect(layout.hasProjection).toBe(true)
