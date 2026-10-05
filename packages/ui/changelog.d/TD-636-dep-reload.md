@@ -2,4 +2,4 @@
 section: Internal
 ---
 
-The Layer 2 visual suite now writes Playwright traces and screenshots outside Storybook's watched root, so Vite no longer reloads pages mid-test (TD-636).
+Storybook now pre-bundles `@storybook/addon-themes` at startup, so Vite no longer re-optimizes and reloads the dev server mid-run, which blanked the first DualVelocityStrip visual stories; the 20 s cold-start guard from TD-636 is removed (TD-636).
