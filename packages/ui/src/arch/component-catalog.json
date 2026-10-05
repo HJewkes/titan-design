@@ -58,10 +58,10 @@
         "DataRow",
         "DateTime",
         "Eyebrow",
+        "FileActivityGrowthWell",
         "FileActivityRow",
         "FilePathLabel",
         "Pill",
-        "SparkBars",
         "Tile",
         "Typography"
       ],
@@ -250,52 +250,6 @@
         "custom-activework-filehistoryexplorer--single-file"
       ],
       "tier": "organism"
-    },
-    {
-      "composes": [
-        "Typography"
-      ],
-      "family": "custom/ActiveWork",
-      "file": "packages/ui/src/components/custom/ActiveWork/FilePathLabel.tsx",
-      "name": "FilePathLabel",
-      "props": [
-        {
-          "default": "false",
-          "description": "Render only the basename, dropping the directory prefix.",
-          "name": "baseOnly",
-          "required": false,
-          "type": "boolean"
-        },
-        {
-          "default": null,
-          "description": "",
-          "name": "className",
-          "required": false,
-          "type": "string"
-        },
-        {
-          "default": null,
-          "description": "A repo-relative path, e.g. `src/commands/open.ts`.",
-          "name": "path",
-          "required": true,
-          "type": "string"
-        },
-        {
-          "default": "md",
-          "description": "`md` for standalone rows, `sm` for dense contexts like chips.",
-          "name": "size",
-          "required": false,
-          "type": "FilePathLabelSize"
-        }
-      ],
-      "purpose": "FilePathLabel — a file path with the directory dimmed and the basename bright.",
-      "sources": {
-        "props": "packages/ui/src/components/custom/ActiveWork/FilePathLabel.tsx",
-        "status": null
-      },
-      "status": "review",
-      "storyIds": [],
-      "tier": "molecule"
     },
     {
       "composes": [
@@ -944,6 +898,47 @@
         "custom-activework-taskrow--missing-severity-and-estimate"
       ],
       "tier": "organism"
+    },
+    {
+      "composes": [
+        "Pill"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/TaskStagePill.tsx",
+      "name": "TaskStagePill",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "sm",
+          "description": "",
+          "name": "size",
+          "required": false,
+          "type": "PillSizeLevel"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "stage",
+          "required": true,
+          "type": "TaskStage"
+        }
+      ],
+      "purpose": "The one renderer of a stage outside the board columns; label and tone come from the stage table.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/ActiveWork/TaskStagePill.tsx",
+        "status": "packages/ui/src/components/custom/ActiveWork/TaskStagePill.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-taskstagepill--default"
+      ],
+      "tier": "molecule"
     },
     {
       "composes": [
@@ -1776,8 +1771,8 @@
     },
     {
       "composes": [
+        "DualGhostSparkParts",
         "GhostBand",
-        "GhostBloom",
         "GhostSpark"
       ],
       "family": "custom/Fatigue",
@@ -1901,7 +1896,9 @@
       "tier": "organism"
     },
     {
-      "composes": [],
+      "composes": [
+        "GhostBandParts"
+      ],
       "family": "custom/Fatigue",
       "file": "packages/ui/src/components/custom/Fatigue/GhostBand.tsx",
       "name": "GhostBand",
@@ -1970,7 +1967,7 @@
       },
       "status": "review",
       "storyIds": [],
-      "tier": "atom"
+      "tier": "molecule"
     },
     {
       "composes": [],
@@ -2094,7 +2091,7 @@
         "custom-fatigue-ghost-spark--empty-before-first-rep",
         "custom-fatigue-ghost-spark--paused-rep-band"
       ],
-      "tier": "molecule"
+      "tier": "organism"
     },
     {
       "composes": [
@@ -3099,7 +3096,10 @@
       "tier": "organism"
     },
     {
-      "composes": [],
+      "composes": [
+        "CapacityBandOverlays",
+        "CapacityBandPlot"
+      ],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/CapacityBandChart.tsx",
       "name": "CapacityBandChart",
@@ -3168,6 +3168,57 @@
         "custom-workout-dataviz-capacitybandchart--sparse-data",
         "custom-workout-dataviz-capacitybandchart--without-projection"
       ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/CapacityBandPlot.tsx",
+      "name": "CapacityBandPlot",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "colors",
+          "required": true,
+          "type": "CapacityBandColors"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "height",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "layout",
+          "required": true,
+          "type": "{ columns: { x: number; top: number; height: number; }[]; topEdge: { left: number; top: number; length: number; angle: number; }[]; bottomEdge: { left: number; top: number; length: number; angle: number; }[]; trainingPixels: PixelPoint[]; restPixels: PixelPoint[]; labelStride: number; hasProjection: boolean; }"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "revealWidth",
+          "required": true,
+          "type": "AnimatedInterpolation<number>"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "width",
+          "required": true,
+          "type": "number"
+        }
+      ],
+      "purpose": "The band and projection, drawn left to right through an animated clip.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Workout/CapacityBandPlot.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
       "tier": "atom"
     },
     {
@@ -3217,12 +3268,118 @@
     },
     {
       "composes": [
+        "DualVelocityCharts",
+        "SetBarChart"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/DualVelocityStrip.tsx",
+      "name": "DualVelocityStrip",
+      "props": [
+        {
+          "default": "loss",
+          "description": "Bar-fill coloring mode, matching {@link VelocityStrip }.",
+          "name": "barColor",
+          "required": false,
+          "type": "\"zone\" | \"loss\""
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Total plot height (px), split evenly into the up (L) and down (R) wings.",
+          "name": "height",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The up-wing stream — drawn growing UP from the centre axis; its edge name comes from `left.label`.",
+          "name": "left",
+          "required": true,
+          "type": "DualVelocityStream"
+        },
+        {
+          "default": null,
+          "description": "Index of the most-recently-completed rep; that mirrored pair animates in (hero only).",
+          "name": "liveRepIndex",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "`loss` only: the thresholds both wings band at, as on {@link VelocityStrip }.",
+          "name": "lossThresholds",
+          "required": false,
+          "type": "VelocityLossThresholds"
+        },
+        {
+          "default": null,
+          "description": "The down-wing stream — drawn growing DOWN from the centre axis; its edge name comes from `right.label`.",
+          "name": "right",
+          "required": true,
+          "type": "DualVelocityStream"
+        },
+        {
+          "default": "peak",
+          "description": "Bar-height scaling, shared across BOTH wings so the L/R asymmetry reads as bar length against one scale.",
+          "name": "scale",
+          "required": false,
+          "type": "\"peak\" | \"fixed\""
+        },
+        {
+          "default": null,
+          "description": "Planned rep count.",
+          "name": "targetReps",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "hero",
+          "description": "`hero` — the across-the-room wall scale: tall wings, per-rep m/s value labels, and a dashed running-best reference line per side.",
+          "name": "variant",
+          "required": false,
+          "type": "\"compact\" | \"hero\" | \"dual-expanded\" | \"rail\""
+        },
+        {
+          "default": null,
+          "description": "Optional velocity-zone bands (shape-compatible with WA's `VelocityZones.bands`), shared with {@link VelocityStrip }.",
+          "name": "zones",
+          "required": false,
+          "type": "readonly VelocityZoneBandProp[]"
+        }
+      ],
+      "purpose": "The dual-voltra (bilateral) DIVERGING per-rep velocity chart.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Workout/DualVelocityStrip.tsx",
+        "status": "packages/ui/src/components/custom/Workout/DualVelocityStrip.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-workout-dataviz-dualvelocitystrip--crowded-right-edge-label",
+        "custom-workout-dataviz-dualvelocitystrip--dual-expanded",
+        "custom-workout-dataviz-dualvelocitystrip--hero",
+        "custom-workout-dataviz-dualvelocitystrip--range-set",
+        "custom-workout-dataviz-velocitystrip-dual--default",
+        "custom-workout-dataviz-velocitystrip-dual--in-progress",
+        "custom-workout-dataviz-velocitystrip-dual--playground",
+        "custom-workout-dataviz-velocitystrip-dual--small-height-labels",
+        "custom-workout-dataviz-velocitystrip-dual--symmetric-empties",
+        "custom-workout-dataviz-velocitystrip-dual--tiny-height"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
         "ExerciseCardHeading",
         "ExerciseIndicator",
         "SetBar",
         "SetRow",
-        "SetTableHeader",
-        "VelocityStrip"
+        "SetTableHeader"
       ],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/ExerciseCard.tsx",
@@ -3615,6 +3772,7 @@
       "composes": [
         "CapacityBandChart",
         "ExerciseCard",
+        "ExerciseDetailSectionCard",
         "MesoStatusCard",
         "SetRow",
         "StrengthTrendChart",
@@ -4667,9 +4825,8 @@
     {
       "composes": [
         "GoalTrajectoryBand",
-        "GoalTrajectoryCalibrating",
-        "GoalTrajectoryPlot",
-        "GoalTrajectoryWeekTips"
+        "GoalTrajectoryChartParts",
+        "GoalTrajectoryPlot"
       ],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/GoalTrajectoryChart.tsx",
@@ -4888,7 +5045,6 @@
     },
     {
       "composes": [
-        "GoalTrajectoryChart",
         "GoalTrajectoryPlot"
       ],
       "family": "custom/Workout",
@@ -5107,7 +5263,6 @@
         "Pill",
         "PrBadge",
         "TipTrigger",
-        "Tooltip",
         "Typography"
       ],
       "family": "custom/Workout",
@@ -6210,6 +6365,7 @@
         "ExerciseCard",
         "MesoCard",
         "MesoProgressBar",
+        "ProgramPlanningBreadcrumbs",
         "WeekRow",
         "WorkoutCard",
         "WorkoutPill"
@@ -7182,7 +7338,7 @@
     },
     {
       "composes": [
-        "Typography"
+        "SparklineParts"
       ],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/Sparkline.tsx",
@@ -7291,7 +7447,7 @@
         "custom-workout-dataviz-sparkline--u-curve",
         "custom-workout-dataviz-sparkline--with-reference-lines"
       ],
-      "tier": "molecule"
+      "tier": "organism"
     },
     {
       "composes": [
@@ -7817,6 +7973,60 @@
         "SetBarChart"
       ],
       "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/VelocityLossBands.tsx",
+      "name": "VelocityLossBands",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "best",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": "false",
+          "description": "The parent plot is vertically mirrored (a `down` wing) — counter-flip the labels upright.",
+          "name": "flip",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "plotHeight",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "scaleDenom",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": "[10, 20, 30]",
+          "description": "The bar-colour thresholds; the amber band starts at the second, the red at the third.",
+          "name": "thresholds",
+          "required": false,
+          "type": "VelocityLossThresholds"
+        }
+      ],
+      "purpose": "Velocity-LOSS decision bands for the `hero` variant: the VL20 / VL30 coaching cues (off the running best) drawn as absolutely-positioned bands + dashed threshold lines BEHIND the bars, on the hero's own peak scale so a bar dropping into the amber → red band reads as \"these are your last effective reps\".",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Workout/VelocityLossBands.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "SetBarChart",
+        "VelocityStripVariants"
+      ],
+      "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/VelocityStrip.tsx",
       "name": "VelocityStrip",
       "props": [
@@ -8013,6 +8223,45 @@
         "custom-workout-dataviz-velocitystrip-hero--responsive",
         "custom-workout-dataviz-velocitystrip-hero--set-types"
       ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "SetBarChart"
+      ],
+      "family": "custom/Workout",
+      "file": "packages/ui/src/components/custom/Workout/VelocityStripFramed.tsx",
+      "name": "VelocityStripFramed",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "chart",
+          "required": true,
+          "type": "VelocityStripChart"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "chrome",
+          "required": true,
+          "type": "VelocityStripChrome"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "summary",
+          "required": true,
+          "type": "VelocityStripSummary"
+        }
+      ],
+      "purpose": "",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Workout/VelocityStripFramed.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
       "tier": "molecule"
     },
     {
@@ -8446,7 +8695,8 @@
     },
     {
       "composes": [
-        "Tooltip"
+        "ZoneTrackParts",
+        "ZoneTrackTicks"
       ],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/ZoneTrack.tsx",
@@ -9412,8 +9662,8 @@
     },
     {
       "composes": [
+        "DualVelocityStrip",
         "Typography",
-        "VelocityStrip",
         "icons",
         "pinnedLiveStripParts"
       ],
@@ -9535,7 +9785,6 @@
     {
       "composes": [
         "SetBarChart",
-        "VelocityStrip",
         "icons",
         "pinnedLiveStripParts"
       ],
@@ -9976,7 +10225,7 @@
     },
     {
       "composes": [
-        "Surface"
+        "AutocompleteParts"
       ],
       "family": "ui/autocomplete",
       "file": "packages/ui/src/components/ui/autocomplete/Autocomplete.tsx",
@@ -10142,7 +10391,7 @@
         "components-molecules-autocomplete--with-error",
         "components-molecules-autocomplete--with-label"
       ],
-      "tier": "molecule"
+      "tier": "organism"
     },
     {
       "composes": [],
@@ -10622,7 +10871,7 @@
     },
     {
       "composes": [],
-      "family": "ui/charts/gauge",
+      "family": "ui/charts",
       "file": "packages/ui/src/components/ui/charts/gauge/Gauge.tsx",
       "name": "Gauge",
       "props": [
@@ -10708,8 +10957,12 @@
       "tier": "atom"
     },
     {
-      "composes": [],
-      "family": "ui/charts/scatter",
+      "composes": [
+        "ScatterFrame",
+        "ScatterGridlines",
+        "ScatterPointMark"
+      ],
+      "family": "ui/charts",
       "file": "packages/ui/src/components/ui/charts/scatter/Scatter.tsx",
       "name": "Scatter",
       "props": [
@@ -10792,11 +11045,129 @@
         "components-atoms-scatter--selected",
         "components-atoms-scatter--single-point"
       ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [],
+      "family": "ui/charts",
+      "file": "packages/ui/src/components/ui/charts/scatter/ScatterFrame.tsx",
+      "name": "ScatterFrame",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "axis",
+          "required": true,
+          "type": "ScatterAxis"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "colors",
+          "required": true,
+          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 144 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "layout",
+          "required": true,
+          "type": "ScatterLayout"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "segments",
+          "required": true,
+          "type": "{ testID: string; segment: ScatterSegment; }[]"
+        }
+      ],
+      "purpose": "Left and bottom axis frame, the reference lines, and the axis titles.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/charts/scatter/ScatterFrame.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
       "tier": "atom"
     },
     {
       "composes": [],
-      "family": "ui/charts/spark-bars",
+      "family": "ui/charts",
+      "file": "packages/ui/src/components/ui/charts/scatter/ScatterGridlines.tsx",
+      "name": "ScatterGridlines",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "colors",
+          "required": true,
+          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 144 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "layout",
+          "required": true,
+          "type": "ScatterLayout"
+        }
+      ],
+      "purpose": "Horizontal then vertical gridlines, each carrying its tick label.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/charts/scatter/ScatterGridlines.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/charts",
+      "file": "packages/ui/src/components/ui/charts/scatter/ScatterPointMark.tsx",
+      "name": "ScatterPointMark",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "isSelected",
+          "required": true,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "onPress",
+          "required": false,
+          "type": "((id: string) => void)"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "point",
+          "required": true,
+          "type": "ScatterPoint"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "ringColor",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "purpose": "One pressable bubble, ringed when selected, labelled when large or selected.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/charts/scatter/ScatterPointMark.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/charts",
       "file": "packages/ui/src/components/ui/charts/spark-bars/SparkBars.tsx",
       "name": "SparkBars",
       "props": [
@@ -10882,7 +11253,7 @@
     },
     {
       "composes": [],
-      "family": "ui/charts/treemap",
+      "family": "ui/charts",
       "file": "packages/ui/src/components/ui/charts/treemap/Treemap.tsx",
       "name": "Treemap",
       "props": [
@@ -11566,6 +11937,57 @@
       "status": "candidate",
       "storyIds": [
         "components-molecules-eyebrow--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Typography"
+      ],
+      "family": "ui/file-path-label",
+      "file": "packages/ui/src/components/ui/file-path-label/FilePathLabel.tsx",
+      "name": "FilePathLabel",
+      "props": [
+        {
+          "default": "false",
+          "description": "Render only the basename, dropping the directory prefix.",
+          "name": "baseOnly",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "A repo-relative path, e.g. `src/commands/open.ts`.",
+          "name": "path",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": "md",
+          "description": "`md` for standalone rows, `sm` for dense contexts like chips.",
+          "name": "size",
+          "required": false,
+          "type": "FilePathLabelSize"
+        }
+      ],
+      "purpose": "FilePathLabel — a file path with the directory dimmed and the basename bright.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/file-path-label/FilePathLabel.tsx",
+        "status": "packages/ui/src/components/ui/file-path-label/FilePathLabel.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-filepathlabel--base-only",
+        "components-atoms-filepathlabel--default",
+        "components-atoms-filepathlabel--no-directory",
+        "components-atoms-filepathlabel--small"
       ],
       "tier": "molecule"
     },
@@ -12686,7 +13108,7 @@
     },
     {
       "composes": [
-        "Surface"
+        "SelectPopover"
       ],
       "family": "ui/select",
       "file": "packages/ui/src/components/ui/select/Select.tsx",
@@ -12789,6 +13211,31 @@
         "components-molecules-select--with-placeholder",
         "components-molecules-select--with-preselected-value"
       ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Surface"
+      ],
+      "family": "ui/select",
+      "file": "packages/ui/src/components/ui/select/SelectPopover.tsx",
+      "name": "SelectPopover",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "onClose",
+          "required": true,
+          "type": "() => void"
+        }
+      ],
+      "purpose": "",
+      "sources": {
+        "props": "packages/ui/src/components/ui/select/SelectPopover.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
       "tier": "molecule"
     },
     {
@@ -13847,7 +14294,7 @@
     },
     {
       "composes": [
-        "Surface"
+        "ToolbarButtonParts"
       ],
       "family": "ui/toolbar-button",
       "file": "packages/ui/src/components/ui/toolbar-button/ToolbarButton.tsx",
@@ -13951,7 +14398,7 @@
         "components-molecules-toolbarbutton--variants",
         "components-molecules-toolbarbutton--with-menu"
       ],
-      "tier": "molecule"
+      "tier": "organism"
     },
     {
       "composes": [
@@ -14037,6 +14484,7 @@
     {
       "composes": [
         "Surface",
+        "TooltipParts",
         "TriggerSurface"
       ],
       "family": "ui/tooltip",
@@ -14293,11 +14741,39 @@
       "reason": "name-not-exported"
     },
     {
+      "file": "packages/ui/src/components/custom/ActiveWork/FileActivityGrowthWell.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/ActiveWork/FilePathLabel.tsx",
+      "reason": "name-not-exported"
+    },
+    {
       "file": "packages/ui/src/components/custom/Chat/coach-cards.tsx",
       "reason": "not-pascal-case"
     },
     {
+      "file": "packages/ui/src/components/custom/Fatigue/DualGhostSparkParts.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Fatigue/GhostBandParts.tsx",
+      "reason": "name-not-exported"
+    },
+    {
       "file": "packages/ui/src/components/custom/Workout/BodyMapDetailSections.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/CapacityBandOverlays.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/DualVelocityCharts.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/ExerciseDetailSectionCard.tsx",
       "reason": "name-not-exported"
     },
     {
@@ -14310,6 +14786,30 @@
     },
     {
       "file": "packages/ui/src/components/custom/Workout/GoalTrajectoryCalibrating.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/GoalTrajectoryChartParts.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/ProgramPlanningBreadcrumbs.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/SparklineParts.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/VelocityStripVariants.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/ZoneTrackParts.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/custom/Workout/ZoneTrackTicks.tsx",
       "reason": "name-not-exported"
     },
     {
@@ -14353,7 +14853,19 @@
       "reason": "not-pascal-case"
     },
     {
+      "file": "packages/ui/src/components/ui/autocomplete/AutocompleteParts.tsx",
+      "reason": "name-not-exported"
+    },
+    {
       "file": "packages/ui/src/components/ui/table/TableSelection.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/ui/toolbar-button/ToolbarButtonParts.tsx",
+      "reason": "name-not-exported"
+    },
+    {
+      "file": "packages/ui/src/components/ui/tooltip/TooltipParts.tsx",
       "reason": "name-not-exported"
     }
   ],
