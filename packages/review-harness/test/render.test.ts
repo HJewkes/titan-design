@@ -2,7 +2,9 @@ import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { App, Form } from '../page/App.tsx'
+import { ReviewScreen } from '../page/ReviewScreen.tsx'
 import { initialState, pagesFor } from '../page/state.ts'
+import { buildFeedback, emptyDraft } from '../src/feedback.ts'
 import { ManifestSchema, type Manifest } from '../src/schema.ts'
 import { SHA, manifest, pagedImageInput, sectioned, sectionedInput } from './fixtures.ts'
 
@@ -180,6 +182,75 @@ describe('a 60-frame sectioned image round', () => {
   it('names the page the human is on and offers the section keys', () => {
     expect(formAt(m, pagesFor(m)[1].first)).toContain('Section 2 of 4: Batch 2')
     expect(html(m)).toContain('<kbd>[</kbd> <kbd>]</kbd> section')
+  })
+})
+
+describe('section navigation at both ends of a page', () => {
+  const m = ManifestSchema.parse(pagedImageInput(60))
+  const pages = pagesFor(m)
+  const between = (markup: string, open: string, close: string) =>
+    markup.slice(markup.indexOf(open), markup.indexOf(close, markup.indexOf(open)))
+
+  it('states the position inside the page header', () => {
+    const head = between(html(m), 'class="page-head"', '</header>')
+    expect(head).toContain('Section 1 of 4: Batch 1')
+  })
+
+  it.each(pages.map((p, i) => [i, p.first]))(
+    'closes page %i with previous, next and its position, after the last frame',
+    (i, first) => {
+      const markup = formAt(m, first)
+      const end = between(markup, 'data-testid="pager-end"', '</nav>')
+      expect(end).toContain(`Section ${i + 1} of 4`)
+      expect(end).toContain('Previous')
+      expect(end).toContain('Next')
+      const frames = [...markup.matchAll(/data-testid="variant-F\d+"/g)]
+      const lastFrame = frames.length ? frames[frames.length - 1].index : -1
+      expect(markup.indexOf('data-testid="pager-end"')).toBeGreaterThan(lastFrame)
+    }
+  )
+
+  it('makes Next the primary action until the last page, then Review answers', () => {
+    const next = /<button[^>]*class="primary"[^>]*>Next/
+    const review = /<button[^>]*class="primary"[^>]*>Review answers/
+    expect(formAt(m, pages[0].first)).toMatch(next)
+    expect(formAt(m, pages[0].first)).not.toMatch(review)
+    expect(formAt(m, pages[3].first)).not.toMatch(next)
+    expect(formAt(m, pages[3].first)).toMatch(review)
+  })
+
+  it('adds no pager to a round without sections', () => {
+    expect(html(manifest())).not.toContain('pager')
+  })
+})
+
+describe('the final check with questions unanswered', () => {
+  const screen = (unanswered: string[]) => {
+    const m = manifest()
+    return renderToStaticMarkup(
+      createElement(ReviewScreen, {
+        manifest: m,
+        feedback: buildFeedback(m, SHA, emptyDraft(m), new Date(), true),
+        problems: [],
+        unanswered,
+        sending: false,
+        dispatch: () => {},
+        onSubmit: () => {},
+      })
+    )
+  }
+
+  it('counts them and offers an explicit partial send with no shortcut', () => {
+    const markup = screen(['q2', 'q4'])
+    expect(markup).toContain('2 of 4 questions are unanswered')
+    expect(markup).toMatch(/data-testid="send"[^>]*>Send partial: 2 unanswered<\/button>/)
+    expect(markup).toMatch(/<button[^>]*class="primary"[^>]*>Back/)
+  })
+
+  it('keeps the plain send when every question is answered', () => {
+    const markup = screen([])
+    expect(markup).not.toContain('unanswered')
+    expect(markup).toContain('Send to the agent <kbd>⌘ Enter</kbd>')
   })
 })
 

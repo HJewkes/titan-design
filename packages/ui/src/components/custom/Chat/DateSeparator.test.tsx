@@ -33,6 +33,16 @@ describe('DateSeparator', () => {
     expect(separator).not.toHaveTextContent('Today')
   })
 
+  it('takes its day names from labels', () => {
+    const labels = { today: 'Hoy', yesterday: 'Ayer' }
+    const { rerender } = render(
+      <DateSeparator date={localIso(0, 7, 0)} now={NOW} labels={labels} />
+    )
+    expect(screen.getByText('Hoy')).toBeInTheDocument()
+    rerender(<DateSeparator date={localIso(1, 7, 0)} now={NOW} labels={labels} />)
+    expect(screen.getByText('Ayer')).toBeInTheDocument()
+  })
+
   it('has no accessibility violations', async () => {
     const { container } = render(<DateSeparator date={localIso(0, 7, 0)} now={NOW} />)
     expect(await axe(container)).toHaveNoViolations()

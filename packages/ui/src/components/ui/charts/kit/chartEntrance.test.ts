@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act, renderHook } from '@testing-library/react'
+import { Platform } from 'react-native'
 
 import { CHART_ENTRANCE, drawStyle, fadeStyle, popStyle, useChartEntrance } from './chartEntrance'
 
@@ -103,5 +104,21 @@ describe('entrance styles', () => {
     expect(popStyle(after, { ...CHART_ENTRANCE.points, delay: 0 }).transition).toContain(
       '250ms ease-out 0ms'
     )
+  })
+})
+
+describe.each(['ios', 'android'] as const)('entrance styles on %s', (os) => {
+  const originalOS = Platform.OS
+  beforeEach(() => {
+    Platform.OS = os
+  })
+  afterEach(() => {
+    Platform.OS = originalOS
+  })
+
+  it('returns empty styles, so the final state renders with no entrance', () => {
+    expect(drawStyle(before)).toEqual({})
+    expect(fadeStyle(before)).toEqual({})
+    expect(popStyle(before)).toEqual({})
   })
 })

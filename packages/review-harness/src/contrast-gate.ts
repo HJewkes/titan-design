@@ -112,7 +112,7 @@ export function declarations(manifest: Manifest): Declared {
 export function matchesDefect(defect: KnownDefect, finding: Finding): boolean {
   if (defect.variant !== undefined && defect.variant !== finding.variant) return false
   if (defect.mode !== finding.mode || defect.kind !== finding.kind) return false
-  if (defect.maxRatio !== undefined && finding.ratio > defect.maxRatio) return false
+  if (defect.minRatio !== undefined && finding.ratio < defect.minRatio) return false
   return finding.testId === defect.element || finding.selector === defect.element
 }
 

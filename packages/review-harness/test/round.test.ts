@@ -82,3 +82,44 @@ describe('building feedback from the page draft', () => {
     expect(feedbackProblems(feedback, m)).toEqual(['q1: required', 'q2: unknown options Z'])
   })
 })
+
+describe('a partial submit', () => {
+  const draftWithQ3 = () => {
+    const m = manifest()
+    const draft = emptyDraft(m)
+    draft.answers.q1 = { comment: 'a comment is not an answer' }
+    draft.answers.q3 = { value: 4, comment: '' }
+    return { m, draft }
+  }
+
+  it('lists exactly the unanswered questions, in manifest order, and lifts required', () => {
+    const { m, draft } = draftWithQ3()
+    const feedback = buildFeedback(m, SHA, draft, new Date(), true)
+    expect(feedback.unansweredQuestionIds).toEqual(['q1', 'q2', 'q4'])
+    expect(FeedbackSchema.safeParse(feedback).success).toBe(true)
+    expect(feedbackProblems(feedback, m)).toEqual([])
+  })
+
+  it('omits the list from a full submit, which still needs every required answer', () => {
+    const { m, draft } = draftWithQ3()
+    const feedback = buildFeedback(m, SHA, draft, new Date())
+    expect(feedback).not.toHaveProperty('unansweredQuestionIds')
+    expect(feedbackProblems(feedback, m)).toEqual(['q1: required'])
+    expect(buildFeedback(m, SHA, emptyDraft(m), new Date(), true).unansweredQuestionIds).toEqual([
+      'q1',
+      'q2',
+      'q3',
+      'q4',
+    ])
+  })
+
+  it('rejects a list that disagrees with the answers sent', () => {
+    const { m, draft } = draftWithQ3()
+    const feedback = { ...buildFeedback(m, SHA, draft, new Date(), true) }
+    feedback.unansweredQuestionIds = ['q2', 'q4']
+    expect(feedbackProblems(feedback, m)).toEqual([
+      'q1: required',
+      'unansweredQuestionIds lists q2, q4; unanswered are q1, q2, q4',
+    ])
+  })
+})

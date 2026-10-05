@@ -1,0 +1,45 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
+  "projectFolder": ".",
+  "mainEntryPointFilePath": "<projectFolder>/dist/index.d.ts",
+  "bundledPackages": [],
+  "compiler": {
+    "overrideTsconfig": {
+      "compilerOptions": {
+        "target": "ES2020",
+        "lib": ["ES2020", "DOM", "DOM.Iterable"],
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "jsx": "react-jsx",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "types": ["react", "react-dom"]
+      },
+      "files": ["dist/index.d.ts"]
+    }
+  },
+  "apiReport": {
+    "enabled": true,
+    "reportFileName": "index",
+    "reportFolder": "<projectFolder>/api/",
+    "reportTempFolder": "<projectFolder>/.api-extractor-temp/"
+  },
+  "docModel": { "enabled": false },
+  "dtsRollup": { "enabled": false },
+  "tsdocMetadata": { "enabled": false },
+  "messages": {
+    "compilerMessageReporting": {
+      "default": { "logLevel": "warning" }
+    },
+    "extractorMessageReporting": {
+      "default": { "logLevel": "warning" },
+      "ae-missing-release-tag": { "logLevel": "none", "addToApiReportFile": false },
+      "ae-forgotten-export": { "logLevel": "none", "addToApiReportFile": false },
+      "ae-unresolved-link": { "logLevel": "none", "addToApiReportFile": false }
+    },
+    "tsdocMessageReporting": {
+      "default": { "logLevel": "none", "addToApiReportFile": false }
+    }
+  }
+}

@@ -31,7 +31,18 @@
 
 const path = require('node:path')
 
+const { formatterExports } = require('./fix-options')
+
 const FORMAT_NAME = /^format[A-Z]/
+
+const FORMATTER_MODULE_LIST = Object.keys(formatterExports)
+  .map((mod) => `\`${mod}\``)
+  .join(', ')
+const FORMATTER_EXPORT_LIST = Object.values(formatterExports)
+  .flat()
+  .map((name) => `\`${name}()\``)
+  .join(', ')
+const SHARED_OPTIONS = `Call an existing export of ${FORMATTER_MODULE_LIST}: ${FORMATTER_EXPORT_LIST}.`
 
 let baselineCache = null
 function loadBaseline() {
@@ -63,10 +74,8 @@ module.exports = {
     },
     schema: [],
     messages: {
-      toFixed:
-        "Raw '.toFixed({{arg}})' outside the shared formatter module. Add or reuse a formatter in utils/workout-format.ts or utils/number-format.ts so rounding rules live in one place.",
-      formatFn:
-        "Local formatter '{{name}}' duplicates the shared formatter module. Move it to utils/workout-format.ts or utils/number-format.ts (or call an existing export) so formatting rules don't drift.",
+      toFixed: `Raw '.toFixed({{arg}})' outside the shared formatter module. ${SHARED_OPTIONS} If none fits, add one to the module so rounding rules live in one place.`,
+      formatFn: `Local formatter '{{name}}' duplicates the shared formatter module. ${SHARED_OPTIONS} If none fits, move it into the module so formatting rules don't drift.`,
     },
   },
 

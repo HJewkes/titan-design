@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { exampleManifest } from '../src/example.ts'
+import { buildFeedback, emptyDraft } from '../src/feedback.ts'
 import { runCli, type CliIo } from '../src/run.ts'
 import { startReviewServer, type ReviewServer } from '../src/server.ts'
 import { SHA, manifest, validFeedback } from './fixtures.ts'
@@ -139,6 +140,22 @@ describe('titan-review CLI', () => {
     expect((await readFile(join(dir, 'round.json'))).equals(before)).toBe(true)
   })
 
+  it('writes a partial submit to feedback.json with its unanswered question ids', async () => {
+    await writeContrast({ passed: true, failures: [] })
+    const m = manifest(sb.url)
+    const draft = emptyDraft(m)
+    draft.answers.q2 = { picks: ['B'], comment: '' }
+    const partial = buildFeedback(m, await sha256(join(dir, 'round.json')), draft, new Date(), true)
+    const code = await runCli(
+      [join(dir, 'round.json'), '--no-open'],
+      io(new AbortController().signal, (url) => void post(url, partial))
+    )
+    expect(code).toBe(0)
+    const written = JSON.parse(await readFile(join(dir, 'feedback.json'), 'utf8'))
+    expect(written.answers).toEqual([{ questionId: 'q2', picks: ['B'] }])
+    expect(written.unansweredQuestionIds).toEqual(['q1', 'q3', 'q4'])
+  })
+
   it('records an override in round.json and feedback.json, with the misses it shipped', async () => {
     const miss = {
       variant: 'A',
@@ -177,6 +194,21 @@ describe('titan-review CLI', () => {
     const written = JSON.parse(await readFile(join(dir, 'feedback.json'), 'utf8'))
     expect(written.contrastOverride).toEqual(record)
     expect(written.manifestSha256).toBe(await sha256(join(dir, 'round.json')))
+  })
+
+  it('drops a contrastOverride the page posts when the round carries none', async () => {
+    await writeContrast({ passed: true, failures: [] })
+    const sha = await sha256(join(dir, 'round.json'))
+    const forged = { reason: 'posted by the page', problem: 'not from round.json', failures: [] }
+    const code = await runCli(
+      [join(dir, 'round.json'), '--no-open'],
+      io(new AbortController().signal, (url) => {
+        void post(url, { ...validFeedback(manifest(sb.url), sha), contrastOverride: forged })
+      })
+    )
+    expect(code).toBe(0)
+    const written = JSON.parse(await readFile(join(dir, 'feedback.json'), 'utf8'))
+    expect(written).not.toHaveProperty('contrastOverride')
   })
 
   it('exits 130 and writes nothing when interrupted before submit', async () => {

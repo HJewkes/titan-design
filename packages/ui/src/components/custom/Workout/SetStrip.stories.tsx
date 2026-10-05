@@ -13,7 +13,7 @@ import { greyRamp } from '../../../theme/tokens/primitives'
 const meta: Meta<typeof SetStrip> = {
   title: 'Custom/Workout/SetStrip',
   component: SetStrip,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {

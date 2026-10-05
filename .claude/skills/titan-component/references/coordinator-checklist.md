@@ -44,7 +44,8 @@ harness). A question is for decisions that are not about renders:
 Publishing and the tag order belong to CLAUDE.md > Gotchas (releases). The steps around them:
 
 1. Cut a release worktree from `origin/main`, never from the main checkout.
-2. In `packages/ui/CHANGELOG.md`, move `[Unreleased]` under `## x.y.z` and correct stale
+2. Run `pnpm changelog:compile` in `packages/ui` to fold `changelog.d/` fragments into
+   `[Unreleased]`. In `packages/ui/CHANGELOG.md`, move `[Unreleased]` under `## x.y.z` and correct stale
    sentences in the entries.
 3. Bump `packages/ui/package.json` to `x.y.z`.
 4. Open a PR titled `Release x.y.z` and squash-merge it on green.

@@ -172,10 +172,9 @@ Workout is unaffected: its accent _is_ `brand-primary`.
 
 - **Dot primitive overlap** — titan has both `StatusDot` (Workout, semantic) and `Indicator` (ui, generic).
   The shell standardizes on `Indicator`; a future pass could consolidate.
-- **Other hand-rolled gradients** — `MesoCard`, `DeviationBar`, `MesoStatusCard` still
-  inline `linear-gradient` strings; they should adopt `surfaceGradient` / `linearGradient`.
-  `BodyMapDetailPanel` is done (VW-335): its volume track is `surfaceGradient.volumeTrack`, the
-  three-stop form added alongside `chrome`.
+- **Component gradients** — every component gradient now composes `surfaceGradient` (TD-200).
+  `BodyMapDetailPanel`'s volume track (VW-335) is `surfaceGradient.volumeTrack`, the three-stop form
+  added alongside `chrome`.
 - **`status-live` token family (new, decoupled from success)** — introduced `status-live` (green-300, the
   vivid LIVE-pill green) + `status-live-muted` (green-500 `#22A444`, the quiet nav cue) so "live" has its own
   role: changing `status-success` no longer affects live, and vice-versa. Wired the full chain (semantic →

@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, Text, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { useSurfaceMode } from '../surface'
 
 export type ProgressSize = 'sm' | 'md' | 'lg'
 export type ProgressColor = 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info'
@@ -99,6 +100,8 @@ export function Progress({
   ...props
 }: ProgressProps) {
   const percentage = Math.min(Math.max((value / max) * 100, 0), 100)
+  // Light draws the track neutral; a tone wash under a same-hue fill hides the extent (TD-490).
+  const trackClass = useSurfaceMode() === 'light' ? 'bg-hairline' : trackColorStyles[color]
 
   return (
     <View className={cn('w-full gap-stack-sm', className)} {...props}>
@@ -117,7 +120,7 @@ export function Progress({
         className={cn(
           'rounded-full overflow-hidden',
           trackWidth ? undefined : 'w-full',
-          trackColorStyles[color],
+          trackClass,
           sizeStyles[size]
         )}
         style={trackWidth ? { width: trackWidth } : undefined}

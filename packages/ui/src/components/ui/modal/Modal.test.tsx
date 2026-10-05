@@ -183,11 +183,11 @@ describe('Modal geometry resolves to the spacing tokens', () => {
   const source = siblingSource(import.meta.url, 'Modal.tsx')
 
   it.each([
-    ['the header', 'px-inset-xl py-inset-lg border-b border-divider', ['24px', '16px']],
+    ['the header', 'px-inset-xl py-inset-lg border-b border-hairline', ['24px', '16px']],
     ['the body', 'px-inset-xl py-inset-lg', ['24px', '16px']],
     [
       'the footer',
-      'gap-2 px-inset-xl py-inset-lg border-t border-divider',
+      'gap-2 px-inset-xl py-inset-lg border-t border-hairline',
       ['8px', '24px', '16px'],
     ],
   ] as const)('%s ships `%s`', (_label, classes, pixels) => {

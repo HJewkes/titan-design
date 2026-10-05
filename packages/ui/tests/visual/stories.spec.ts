@@ -17,8 +17,13 @@ import { STORY_INDEX_ENV } from './story-index.global-setup'
  * animated stories snapshot stably.
  *
  * Scope: the shell family + the icon foundation story (`Foundations/Icons`,
- * whose Storybook id is `foundations-icons--*`), plus the Chat stories named in
- * `CHAT_STORIES`. Widen `SCOPE` to cover more of the library as baselines are seeded.
+ * whose Storybook id is `foundations-icons--*`), MesoProgressBar, every
+ * VelocityStrip title (`custom-workout-dataviz-velocitystrip*`, including its
+ * Expanded, Hero, Dual and Compact sheets), DualVelocityStrip, MesoCard,
+ * SegmentedBar, GoalTrajectoryChart, StrengthTrendChart and the Active Workout,
+ * Exercise Detail, Program Planning and Training Status pages, plus the Chat
+ * stories named in `CHAT_STORIES`. Widen `SCOPE` to cover more of the library as
+ * baselines are seeded.
  *
  * Baselines must be generated in the pinned Playwright Linux container
  * (`mcr.microsoft.com/playwright:v1.58.2-noble`) so the committed PNGs are
@@ -28,7 +33,8 @@ import { STORY_INDEX_ENV } from './story-index.global-setup'
  * that are gitignored and never gate.
  */
 
-const SCOPE = /^(shell-|foundations-icons--|custom-workout-mesoprogressbar--)/
+const SCOPE =
+  /^(shell-|foundations-icons--|custom-workout-mesoprogressbar--|custom-workout-dataviz-velocitystrip|custom-workout-dataviz-dualvelocitystrip--|custom-workout-mesocard--|custom-workout-segmentedbar--|custom-workout-dataviz-goaltrajectorychart--|custom-workout-dataviz-strengthtrendchart--|pages-active-workout--|pages-exercise-detail--|pages-program-planning--|pages-training-status--)/
 
 // The owner-locked Chat design (VW-393), listed by id so the interactive stories stay out.
 const CHAT_STORIES = new Set([
@@ -87,15 +93,63 @@ async function expectRendered(page: Page, label: string, timeout = 5000) {
     .toBeNull()
 }
 
+// GoalTrajectoryChart plays an entrance that the paused clock freezes at frame 0, so its
+// baselines would show the band with no actuals; `animate` off renders the settled final frame.
+const SETTLED_ARGS_PREFIX = 'custom-workout-dataviz-goaltrajectorychart--'
+const storyUrl = (id: string) =>
+  `/iframe.html?id=${id}&viewMode=story${id.startsWith(SETTLED_ARGS_PREFIX) ? '&args=animate:!false' : ''}`
+
+// StrengthTrendChart's 600 ms mount draw also freezes at frame 0, and its Interactive story
+// renders without args, so this prefix runs the paused clock past the draw instead.
+const SETTLED_CLOCK_PREFIX = 'custom-workout-dataviz-strengthtrendchart--'
+const SETTLE_MS = 1000
+
+// A blank root says nothing about why, so a failed guard reports what the page logged and what its
+// root and body held at that moment (TD-636: a zero-height root with no trace to explain it).
+function recordPageEvents(page: Page): string[] {
+  const events: string[] = []
+  page.on('console', (m) => {
+    if (m.type() === 'error' || m.type() === 'warning')
+      events.push(`console.${m.type()}: ${m.text()}`)
+  })
+  page.on('pageerror', (e) => events.push(`pageerror: ${e.message}`))
+  page.on('requestfailed', (r) =>
+    events.push(`requestfailed: ${r.url()} ${r.failure()?.errorText}`)
+  )
+  page.on('response', (r) => {
+    if (r.status() >= 400) events.push(`http ${r.status()}: ${r.url()}`)
+  })
+  page.on('framenavigated', (f) => {
+    if (f === page.mainFrame()) events.push(`navigated: ${f.url()}`)
+  })
+  return events
+}
+
+async function describeBlankPage(page: Page, events: string[]): Promise<string> {
+  const state = await page
+    .evaluate(() => ({
+      bodyClass: document.body.className,
+      root: document.querySelector('#storybook-root')?.outerHTML.slice(0, 1500) ?? null,
+      errorDisplay: document.querySelector('#error-message')?.textContent?.slice(0, 500) ?? null,
+    }))
+    .catch((e: Error) => ({ evaluateFailed: e.message }))
+  return JSON.stringify({ state, events }, null, 2)
+}
+
 async function renderStory(page: Page, id: string) {
+  const events = recordPageEvents(page)
   // install() alone keeps ticking from FIXED_TIME in real time, so a story
   // rendered late in the run showed 16:13 instead of 16:12 (#250); it starts early so pauseAt never rewinds.
   await page.clock.install({ time: CLOCK_START })
   await page.clock.pauseAt(FIXED_TIME)
-  await page.goto(`/iframe.html?id=${id}&viewMode=story`)
+  await page.goto(storyUrl(id))
   await page.waitForLoadState('networkidle')
   await page.evaluate(() => document.fonts.ready)
-  await expectRendered(page, id)
+  await expectRendered(page, id).catch(async (e: Error) => {
+    e.message += `\nblank page state: ${await describeBlankPage(page, events)}`
+    throw e
+  })
+  if (id.startsWith(SETTLED_CLOCK_PREFIX)) await page.clock.runFor(SETTLE_MS)
   return page.locator('#storybook-root')
 }
 

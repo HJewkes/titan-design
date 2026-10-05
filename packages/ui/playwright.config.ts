@@ -55,7 +55,9 @@ export default defineConfig({
   webServer: {
     command: 'pnpm storybook --ci',
     port: 6006,
-    reuseExistingServer: true,
+    reuseExistingServer: false,
     timeout: 120000,
+    // Puts Vite's re-optimization and reload lines in the CI log (TD-636).
+    stdout: 'pipe',
   },
 })
