@@ -267,8 +267,31 @@ const nodeListArb = fc
     { maxLength: 14 }
   )
   .map((list) => list.map((n) => ({ ...n })))
+/** Well-formed trees: row `n<i>` hangs off an earlier row or is a root, so none is dropped. */
+const treeArb = fc
+  .array(fc.tuple(fc.nat(), fc.option(fc.nat(3), { nil: undefined })), { maxLength: 24 })
+  .map((specs) =>
+    specs.map(([parent, childCount], i) => ({
+      id: `n${i}`,
+      parentId: i === 0 || parent % (i + 1) === i ? null : `n${parent % i}`,
+      label: `n${i}`,
+      childCount,
+    }))
+  )
+const treeExpandedArb = fc.uniqueArray(fc.nat(24).map((i) => `n${i}`))
 const expandedArb = fc.uniqueArray(fc.constantFrom('a', 'b', 'c', 'd', 'e', 'f', 'g'))
 const fixtureArb = fc.constantFrom(...Object.values(fixtures).filter((f) => f.nodes.length < 600))
+
+/** Independent of `visibleRows`: the ids shown under `id` when `open` is expanded, depth first. */
+const visibleDescendants = (
+  index: ReturnType<typeof indexNodes>,
+  id: string,
+  open: ReadonlySet<string>
+): string[] =>
+  (index.childrenOf.get(id) ?? []).flatMap((child) => [
+    child.id,
+    ...(open.has(child.id) ? visibleDescendants(index, child.id, open) : []),
+  ])
 
 describe('tree-model properties', () => {
   it('never emits a child before its parent or under a collapsed ancestor', () => {
@@ -286,21 +309,32 @@ describe('tree-model properties', () => {
     )
   })
 
-  it('restores the list when a row is expanded and then collapsed', () => {
+  it('inserts exactly the descendants on expand and restores the list on collapse', () => {
     fcAssert(
-      fc.property(
-        nodeListArb,
-        expandedArb,
-        fc.constantFrom('a', 'b', 'c', 'd'),
-        (nodes, expanded, id) => {
-          const index = indexNodes(nodes)
-          const before = new Set(expanded)
-          before.delete(id)
-          const after = new Set(before).add(id)
-          after.delete(id)
-          expect(ids(visibleRows(index, after))).toEqual(ids(visibleRows(index, before)))
-        }
-      )
+      fc.property(nodeListArb, expandedArb, fc.nat(20), (nodes, expanded, pick) => {
+        const index = indexNodes(nodes)
+        const open = new Set(expanded)
+        const rows = visibleRows(index, open)
+        const closed = rows.filter((r) => r.hasChildren && !r.isExpanded)
+        if (closed.length === 0) return
+        const target = closed[pick % closed.length]
+        const at = rows.findIndex((r) => r.id === target.id)
+
+        const opened = new Set(open).add(target.id)
+        const inserted = visibleDescendants(index, target.id, opened)
+        const after = visibleRows(index, opened)
+
+        expect(after.slice(at + 1, at + 1 + inserted.length).map((r) => r.id)).toEqual(inserted)
+        const others = [...after.slice(0, at), ...after.slice(at + 1 + inserted.length)]
+        const before = [...rows.slice(0, at), ...rows.slice(at + 1)]
+        expect(others.slice(0, at)).toEqual(before.slice(0, at))
+        expect(others.slice(at)).toEqual(before.slice(at))
+        expect(after[at]).toEqual({ ...target, isExpanded: true })
+
+        const collapsed = new Set(opened)
+        collapsed.delete(target.id)
+        expect(visibleRows(index, collapsed)).toEqual(rows)
+      })
     )
   })
 
