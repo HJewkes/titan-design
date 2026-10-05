@@ -7,7 +7,6 @@ import {
   type SparklineBand,
   type SparklineDomain,
   type SparklineReferenceLabelPlacement,
-  type SparklineReferenceLine,
 } from './sparklineGeometry'
 import {
   SparklineBandFill,
@@ -37,7 +36,12 @@ export interface SparklineProps extends ViewProps {
   height?: number
   color?: string
   showDots?: boolean
-  referenceLines?: Array<SparklineReferenceLine>
+  referenceLines?: Array<{
+    value: number
+    color: string
+    dashed?: boolean
+    label?: string
+  }>
   /** Where reference labels sit. Defaults to `above`, the original placement. */
   referenceLabelPlacement?: SparklineReferenceLabelPlacement
   highlightLast?: boolean

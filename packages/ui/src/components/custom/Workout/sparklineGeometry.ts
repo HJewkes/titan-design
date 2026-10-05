@@ -24,6 +24,7 @@ export interface SparklineBand {
 /** Where a reference line's label sits. `above` is the pre-VW-386 behaviour. */
 export type SparklineReferenceLabelPlacement = 'above' | 'left'
 
+/** One `SparklineProps.referenceLines` entry. Kept inline in the props so the public API names no unexported type. */
 export interface SparklineReferenceLine {
   value: number
   color: string
