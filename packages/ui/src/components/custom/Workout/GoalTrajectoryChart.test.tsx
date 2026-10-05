@@ -624,3 +624,15 @@ describe('GoalTrajectoryChart current week', () => {
     expect(screen.queryByTestId('goal-trajectory-chart-current-week')).toBeNull()
   })
 })
+
+describe('GoalTrajectoryChart at a width narrower than its week insets (VW-427)', () => {
+  it.each([20, 40, 120])('paints no rect with a negative width at %ipx', (width) => {
+    const { container } = render(
+      <GoalTrajectoryChart {...baseProps} width={width} currentWeek={3} status="on_track" />
+    )
+    const widths = Array.from(container.querySelectorAll('rect')).map((r) =>
+      Number(r.getAttribute('width') ?? 0)
+    )
+    expect(widths.filter((w) => w < 0)).toEqual([])
+  })
+})

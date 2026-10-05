@@ -815,3 +815,38 @@ describe('current-week point', () => {
     expect(deriveTrajectoryGeometry(base).currentWeekPoint).toBeNull()
   })
 })
+
+describe('week scale on a plot narrower than two insets', () => {
+  const narrow = { ...base, width: 20, expected: gainExpected, committed: 185, stretch: 195 }
+
+  it('never gives a column a negative span', () => {
+    const scale = trajectoryWeekScale(narrow)
+    expect(scale.span).toBeGreaterThanOrEqual(0)
+  })
+
+  it('keeps the week columns in ascending x order', () => {
+    const g = deriveTrajectoryGeometry(narrow)
+    expect(g.toX(2) - g.toX(1)).toBeGreaterThanOrEqual(0)
+  })
+
+  it('gives every deload column a non-negative width', () => {
+    const g = deriveTrajectoryGeometry(narrow)
+    g.deloadRects.forEach((rect) => expect(rect.width).toBeGreaterThanOrEqual(0))
+  })
+})
+
+describe('non-finite readings (TD-527)', () => {
+  const actuals = [
+    { weekIndex: 1, value: 176 },
+    { weekIndex: 2, value: Number.NaN },
+    { weekIndex: 3, value: 182 },
+    { weekIndex: 4, value: null as unknown as number },
+  ]
+
+  it('drops NaN and null readings before the line path and the dots', () => {
+    const g = deriveTrajectoryGeometry({ ...base, expected: gainExpected, actuals })
+
+    expect(g.linePath).not.toContain('NaN')
+    expect(g.actuals.map((a) => a.value)).toEqual([176, 182])
+  })
+})

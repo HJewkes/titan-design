@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useId } from 'react'
 import { View, Text, Pressable, Modal, ScrollView, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Surface } from '../surface'
@@ -89,8 +89,12 @@ export function Drawer({
   title,
   className,
   children,
+  accessibilityLabel,
+  'aria-label': ariaLabel,
   ...props
 }: DrawerProps) {
+  const titleId = useId()
+
   if (!isOpen) return null
 
   const handleOverlayPress = () => {
@@ -100,10 +104,17 @@ export function Drawer({
   }
 
   return (
-    <Modal visible={isOpen} transparent animationType="fade" onRequestClose={onClose}>
+    <Modal
+      visible={isOpen}
+      transparent
+      animationType="fade"
+      onRequestClose={onClose}
+      aria-label={ariaLabel ?? accessibilityLabel}
+      aria-labelledby={title ? titleId : undefined}
+    >
       <View className="flex-1">
         {/* Backdrop */}
-        <Pressable onPress={handleOverlayPress} className="absolute inset-0 bg-scrim-default" />
+        <Pressable onPress={handleOverlayPress} className="absolute inset-0 bg-scrim" />
 
         {/* Drawer Panel — floating: overlay plane + lift, no ring. */}
         <Surface
@@ -115,17 +126,25 @@ export function Drawer({
             sizeStyles[placement][size],
             className
           )}
-          accessibilityRole={'dialog' as any}
           {...props}
         >
           {/* Header */}
           {(title || showCloseButton) && (
             <View className="flex-row items-center justify-between px-inset-xl py-inset-lg border-b border-hairline">
-              {title && <Text className="text-lg font-semibold text-text-primary">{title}</Text>}
+              {title && (
+                <Text
+                  id={titleId}
+                  role="heading"
+                  className="text-lg font-semibold text-text-primary"
+                >
+                  {title}
+                </Text>
+              )}
               {showCloseButton && (
                 <Pressable
                   onPress={onClose}
                   className="p-2 -m-2 rounded-full web:hover:bg-interactive-hover"
+                  role="button"
                   accessibilityLabel="Close drawer"
                 >
                   <Text className="text-text-secondary text-xl">×</Text>

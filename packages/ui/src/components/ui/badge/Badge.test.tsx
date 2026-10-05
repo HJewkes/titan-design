@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Badge, BadgeText } from './Badge'
-import { resolveAll, siblingSource, sizeClasses } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
 describe('Badge', () => {
   it('renders string children correctly', () => {
@@ -127,8 +127,11 @@ describe('Badge', () => {
  * out so a token move fails here rather than in a screenshot.
  */
 describe('Badge geometry resolves to the squish tokens', () => {
-  const source = siblingSource(import.meta.url, 'Badge.tsx')
-  const classes = (level: string) => sizeClasses(source, 'sizeStyles', level)
+  // `gap-0` is Badge's reset of Pill's leading-slot gap, not part of the squish ramp.
+  const classes = (level: 'sm' | 'md' | 'lg') => {
+    render(<Badge size={level}>Active</Badge>)
+    return spacingClassesAt(screen.getByText('Active').parentElement).filter((c) => c !== 'gap-0')
+  }
 
   const ramp = [
     ['sm', ['px-squish-x-sm', 'py-squish-y-sm'], ['8px', '2px']],

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { Select, type SelectOption } from './Select'
@@ -14,7 +14,7 @@ const basicOptions: SelectOption[] = [
 const meta: Meta<typeof Select> = {
   title: 'Components/Molecules/Select',
   component: Select,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     placeholder: {
       control: 'text',

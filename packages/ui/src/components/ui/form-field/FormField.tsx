@@ -1,6 +1,14 @@
 import React from 'react'
-import { View, Text, type ViewProps } from 'react-native'
+import { View, Text, type AccessibilityState, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+
+interface FieldControlProps {
+  accessibilityHint?: string
+  accessibilityState?: AccessibilityState & { invalid?: boolean }
+  isDisabled?: boolean
+  isReadOnly?: boolean
+  isInvalid?: boolean
+}
 
 export interface FormFieldProps extends ViewProps {
   /** Label text */
@@ -117,8 +125,8 @@ export function FormField({
         {/* Clone children to pass accessibility props */}
         {React.Children.map(children, (child) => {
           if (React.isValidElement(child)) {
-            const childProps = child.props as Record<string, any>
-            return React.cloneElement(child as React.ReactElement<any>, {
+            const childProps = child.props as FieldControlProps
+            return React.cloneElement(child as React.ReactElement<FieldControlProps>, {
               accessibilityHint: errorMessage || helperText || childProps.accessibilityHint,
               accessibilityState: {
                 ...childProps.accessibilityState,
@@ -180,7 +188,7 @@ export function FormSection({
   return (
     <View
       className={cn('w-full gap-stack-lg', className)}
-      accessibilityRole={'group' as any}
+      role="group"
       accessibilityLabel={title}
       {...props}
     >

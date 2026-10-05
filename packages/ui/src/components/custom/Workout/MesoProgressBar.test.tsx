@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { siblingSource, spacingClassesIn, resolveAll } from '../../../test/spacing-resolver'
+import { spacingClassesOf, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { MesoProgressBar, type Meso } from './MesoProgressBar'
@@ -162,10 +162,9 @@ describe('MesoProgressBar invalid weekCount (flex guard)', () => {
 
 /** MesoProgressBar's geometry, pinned (AW-142); pixels unchanged. */
 describe('MesoProgressBar geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'MesoProgressBar.tsx')
-
   it('keeps the track gutter and its segment hairline', () => {
-    const classes = spacingClassesIn(source, 'MesoProgressBar')
+    render(<MesoProgressBar mesos={mesos} activeMesoId={null} onMesoPress={vi.fn()} />)
+    const classes = spacingClassesOf('meso-progress-bar')
     expect(classes).toEqual(['gap-0.5', 'px-inset-lg'])
     expect(resolveAll(classes)).toEqual(['2px', '16px'])
   })

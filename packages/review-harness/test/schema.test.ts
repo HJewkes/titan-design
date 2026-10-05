@@ -7,7 +7,7 @@ import {
   feedbackJsonSchema,
   manifestJsonSchema,
 } from '../src/schema.ts'
-import { validFeedback } from './fixtures.ts'
+import { pagedImageInput, validFeedback } from './fixtures.ts'
 
 const base = () => exampleManifest('http://127.0.0.1:6100')
 const issues = (input: unknown) => {
@@ -25,6 +25,22 @@ describe('round manifest', () => {
   it('fits frames to their stories when the manifest leaves the height out', () => {
     const { height: _height, ...rest } = base()
     expect(ManifestSchema.parse(rest).height).toBe('auto')
+  })
+
+  it('caps a round without sections at 12 variants', () => {
+    const { sections: _sections, ...unsectioned } = pagedImageInput(13)
+    const result = ManifestSchema.safeParse(unsectioned)
+    expect(result.error?.issues.map((i) => i.message)).toEqual([
+      expect.stringContaining('at most 12 variants'),
+    ])
+    const { sections: _s, ...twelve } = pagedImageInput(12)
+    expect(issues(twelve)).toEqual([])
+  })
+
+  it('takes up to 80 variants when the round pages through sections', () => {
+    expect(ManifestSchema.parse(pagedImageInput(60)).variants).toHaveLength(60)
+    expect(issues(pagedImageInput(80))).toEqual([])
+    expect(issues(pagedImageInput(81))).toEqual(['variants'])
   })
 
   it('rejects duplicate variant keys, question ids and widths', () => {

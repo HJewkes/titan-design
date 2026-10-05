@@ -2,8 +2,6 @@
  * Form utility functions for consistent form field handling
  */
 
-import React from 'react'
-
 export interface FieldState {
   /** Whether the field has been touched */
   touched: boolean
@@ -160,8 +158,8 @@ export const validationRules = {
 /**
  * Compose multiple validation functions
  */
-export function composeValidators(...validators: Array<(value: any) => string | undefined>) {
-  return (value: any): string | undefined => {
+export function composeValidators<T>(...validators: Array<(value: T) => string | undefined>) {
+  return (value: T): string | undefined => {
     for (const validator of validators) {
       const error = validator(value)
       if (error) return error

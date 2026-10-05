@@ -156,14 +156,21 @@ describe('Select', () => {
 
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
-      const { container } = render(<Select options={defaultOptions} value="1" />)
-      const results = await axe(container, {
-        rules: {
-          'aria-input-field-name': { enabled: false },
-          'aria-required-attr': { enabled: false },
-        },
-      })
-      expect(results).toHaveNoViolations()
+      const { container } = render(
+        <Select options={defaultOptions} value="1" accessibilityLabel="Fruit" />
+      )
+      expect(await axe(container)).toHaveNoViolations()
+    })
+
+    it('names the combobox and clear button from accessibilityLabel', () => {
+      render(<Select options={defaultOptions} value="1" accessibilityLabel="Fruit" />)
+      expect(screen.getByRole('combobox', { name: /Fruit/ })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Clear Fruit' })).toBeInTheDocument()
+    })
+
+    it('falls back to a generic clear label', () => {
+      render(<Select options={defaultOptions} value="1" />)
+      expect(screen.getByRole('button', { name: 'Clear selection' })).toBeInTheDocument()
     })
 
     it('has combobox role on trigger', () => {
@@ -174,11 +181,10 @@ describe('Select', () => {
     it('communicates expanded state', () => {
       render(<Select options={defaultOptions} />)
       const trigger = screen.getByRole('combobox')
-      // react-native-web does not map accessibilityState.expanded to aria-expanded
-      expect(trigger).toBeInTheDocument()
+      expect(trigger).toHaveAttribute('aria-expanded', 'false')
 
       fireEvent.click(trigger)
-      // Verify dropdown opened by checking for options
+      expect(trigger).toHaveAttribute('aria-expanded', 'true')
       expect(screen.getByText('Option 1')).toBeInTheDocument()
     })
 
@@ -186,6 +192,20 @@ describe('Select', () => {
       render(<Select options={defaultOptions} isDisabled />)
       const trigger = screen.getByRole('combobox')
       expect(trigger).toHaveAttribute('aria-disabled', 'true')
+    })
+  })
+
+  describe('option roles', () => {
+    it('exposes each single-select option as an option', () => {
+      render(<Select options={defaultOptions} />)
+      fireEvent.click(screen.getByRole('combobox'))
+      expect(screen.getAllByRole('option')).toHaveLength(defaultOptions.length)
+    })
+
+    it('exposes each multi-select option as a checkbox', () => {
+      render(<Select options={defaultOptions} isMulti values={[]} />)
+      fireEvent.click(screen.getByRole('combobox'))
+      expect(screen.getAllByRole('checkbox')).toHaveLength(defaultOptions.length)
     })
   })
 })

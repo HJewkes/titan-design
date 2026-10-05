@@ -25,9 +25,9 @@ just Stable, or just Needs-Review, at a glance.
 is Stable until it is _formally promoted_. This is deliberate: the burden of
 proof is on promotion, not on flagging.
 
-`status:review` is now the *residue*, not the population. Every story under
-`src/components` and `src/lab` carries an explicit status except the ones listed
-under [Not yet tagged](#not-yet-tagged); a story that still reads Needs-Review is
+`status:review` is now the _residue_, not the population. Every story under
+`src/components` and `src/lab` carries an explicit status
+([Not yet tagged](#not-yet-tagged) is empty); a story that still reads Needs-Review is
 one nobody has run the rule against.
 
 ## The tagging rule — derive it, don't decide it
@@ -36,7 +36,10 @@ A status is a **function of the repo**, not a judgment call. Given a story file,
 in this order:
 
 1. Under `src/lab/**` → **`status:lab`**. No exceptions; lab is excluded from
-   publish builds (`package.json` `files` carries `!src/lab`).
+   publish builds (`package.json` `files` carries `!src/lab`). A story titled
+   `Lab/…` elsewhere is also `status:lab`: it records a design decision about
+   the components beside it rather than defining one, and the public Storybook
+   build drops every `Lab/` title (`.storybook/main.ts`).
 2. Under `src/components/ui/<dir>/`, where `<dir>` is the component's own directory (for charts,
    `ui/charts/<dir>/`), and the clauses below hold (all five once clause 5 is live, clauses 1 to 4 until then), it is **`status:stable`**:
    - a test file in `<dir>` whose source contains `axe`;
@@ -58,6 +61,41 @@ have been promoted on the same day they were marked for retirement. It is the
 only clause not derivable from the original taxonomy — flag it if you disagree
 with it rather than quietly tagging around it.
 
+### Clause 5: every applicable test layer
+
+Clause 5 is live as of TD-26 slice S6 (TD-93). A `ui/` component is stable only if each
+applicable layer below exists in `<dir>`, or its story `meta` declares the layer not applicable:
+
+```ts fragment
+parameters: { layers: { keyboard: 'n/a: focus belongs to the wrapped Button' } },
+```
+
+The value must start `n/a: ` and give a non-empty reason. An empty reason, or a key that names no
+layer, fails the detector. So does an n/a for a layer that exists: remove the declaration. Only
+the default-exported `meta` counts, and its `parameters.layers` must be an object literal of string
+entries; a spread or a non-literal value fails closed. The [test-layers doc](../../docs/test-layers.md) says how to write each
+layer.
+
+| Layer      | Applies when                                         | Exists when                                                             |
+| ---------- | ---------------------------------------------------- | ----------------------------------------------------------------------- |
+| `logic`    | always                                               | a `*.test.ts` in `<dir>` imports `fast-check` or calls `fcAssert`       |
+| `keyboard` | the component takes focus (`Pressable`, `TextInput`) | a story file in `<dir>` tagged `play` has a `play` function             |
+| `axe`      | always                                               | no story id of the component is in `src/test/stories-axe-baseline.json` |
+| `visual`   | n/a until TD-46                                      | an entry in TD-46's visual manifest, once it lands on `main`            |
+| `types`    | the component exports a generic                      | a `*.test-d.ts` in `<dir>`                                              |
+| `scale`    | the component windows its items (a `FlatList`)       | a test in `<dir>` calls `expectBoundedMount`                            |
+
+A `play`-tagged story is one the `storybook` Vitest browser project runs. "Takes focus",
+"exports a generic" and "windows" are read from the component's own source; a declaration
+overrides a reading that is wrong for one component.
+
+`src/test/stable-layers.test.ts` derives the layers by reading files, with no Storybook boot.
+`src/test/stable-layers-baseline.json` lists the layers each stable component lacked on the
+day clause 5 started: all 31 stable components, so none lost `stable` that day. It may only
+shrink, and the test pins that day's entries: a new component or a new layer in it fails. A gap it does not list fails the test, and a listed layer that now exists fails as stale
+until someone removes it. A component that lacks a layer and has no baseline entry cannot be
+promoted until it adds the layer or declares it n/a.
+
 Consequences worth stating out loud:
 
 - **Adding a `ui/*` primitive without a row in the family README leaves it
@@ -75,7 +113,7 @@ Consequences worth stating out loud:
 Promotion is a **one-line edit** on the component's story `meta`, negating the
 inherited default and adding the new status:
 
-```ts
+```ts fragment
 const meta: Meta<typeof Foo> = {
   title: 'Custom/Workout/Foo',
   tags: ['status:stable', '!status:review'], // ! negates the inherited default
@@ -91,13 +129,12 @@ See [the review protocol](#formal-review-protocol).
 
 ## Not yet tagged
 
-Two sets were held open by parallel work when the rule was first applied and
-still inherit `status:review`. A later pass finishes them by re-running the rule:
-
-| Files                                                             | Held by      |
-| ----------------------------------------------------------------- | ------------ |
-| `src/components/custom/Workout/**` (56 stories)                   | E3 batch B2  |
-| `ui/{menu,popover,modal,select,tooltip}` stories (5)              | trigger work |
+None. The two sets held open when the rule was first applied, `src/components/custom/Workout/**`
+and the `ui/{menu,popover,modal,select,tooltip}` stories, were tagged by TD-8. Workout stories are
+`candidate`, or `lab` under step 1 for the ten `*.decision.stories.tsx` files and `VolumeStatusPalette`,
+all titled `Lab/Decisions/…`; the
+five `ui/` families are `candidate` because clause 5 fails for them (no `logic` layer), so none of
+them derives `stable` yet.
 
 ## Formal review protocol
 
@@ -144,11 +181,12 @@ them all too. `empty-state` is the newest, moved in from `custom/` by migration 
 compose. It is not exported from the `ui` barrel and has no story.
 
 The 41 with stories no longer default to `status:review`: the tagging rule
-above resolves them (31 `stable`, 5 `candidate`, 5 held open). Their assessment
+above resolves them (31 `stable`, the rest `candidate`; `menu`, `popover`, `modal`, `select` and `tooltip` joined them in TD-8). Their assessment
 happened by rule, not by session. `typography`, `eyebrow` and `empty-state` are `ui/*`
 and so became stable-**eligible** on the move, but clause 2's fourth condition holds
 them at `candidate` while the M2 and M3 shim rows sit in `DEPRECATIONS.md`; they are
-promotable once the shims go in 0.23.0. The other two `candidate` rows are the
+promotable once the shims go in 0.23.0. `table` joined them by migration M4 (#367) and is
+held the same way, and so are `spark-bars` (M5, TD-188),`file-path-label` (M6, TD-418), `date-time` (M7, TD-428) and `scatter`, `treemap` and `gauge` (M8, TD-471). The other two `candidate` rows are the
 deprecated `HelpTip` and `Tile`.
 `TriggerSurface` has no story, so it carries no status tag.
 

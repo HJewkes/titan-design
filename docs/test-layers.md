@@ -3,23 +3,28 @@
 Each layer answers one question and runs in one CI step. Put a test in the cheapest layer that can
 fail for the reason you care about.
 
-| Layer              | Question it answers                                                            | File pattern                                                    | Runs in                                                                    |
-| ------------------ | ------------------------------------------------------------------------------ | --------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| Unit and component | Does the component render and behave, with no axe violation?                   | `packages/ui/src/**/*.test.{ts,tsx}`                            | `build` job, `pnpm verify` (`turbo run test -- --run --coverage`)          |
-| Property (logic)   | Does a pure function hold its invariant for any input?                         | `*Math.test.ts`, `*-model.test.ts`, hook tests using `fcAssert` | same Vitest run                                                            |
-| Scale              | Does a windowed component mount a bounded number of nodes?                     | `*.test.tsx` calling `expectBoundedMount`                       | same Vitest run                                                            |
-| Source guards      | Does the source obey a lint-like rule (raw colour, raw spacing, tier imports)? | `packages/ui/src/test/no-*.test.ts`                             | same Vitest run                                                            |
-| Arch graph         | Is `src/arch/arch-graph.json` fresh?                                           | `src/arch/arch-graph.freshness.test.ts`                         | `pnpm arch:check`, inside `pnpm verify`                                    |
-| Package shape      | Do the export map and packed tarball resolve for ESM and CJS?                  | `packages/ui/scripts/check-package.sh`                          | `build` job, "Package shape" step                                          |
-| Visual, layer 1    | Do specimen components match their screenshot baselines?                       | `packages/ui/specimen/baseline/**/*-chromium-linux.png`         | `visual` job, `test:visual:baseline`                                       |
-| Visual, layer 2    | Do Storybook stories match their screenshot baselines?                         | `packages/ui/tests/visual/stories.spec.ts`                      | `visual` job, `test:visual:stories`                                        |
-| Visual, layer 3    | Does the React render match the HTML specimen's computed styles?               | `packages/ui/tests/visual/validation.spec.ts`                   | `visual` job, `test:visual:compare`                                        |
-| Interaction        | Does keyboard and pointer behaviour work in a real browser?                    | `packages/ui/tests/interaction/*.spec.ts`                       | Not in CI yet; run `pnpm --filter @titan-design/react-ui test:interaction` |
-| Offline fonts      | Does a single-file consumer load every font face with no network?              | `packages/ui/tests/offline-fonts/*.spec.ts`                     | `visual` job, `test:offline-fonts`                                         |
-| Dependency audit   | Does the lockfile carry a known advisory?                                      | `scripts/audit-retry.sh`                                        | `audit` job                                                                |
+| Layer              | Question it answers                                                            | File pattern                                                    | Runs in                                                                     |
+| ------------------ | ------------------------------------------------------------------------------ | --------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Unit and component | Does the component render and behave, with no axe violation?                   | `packages/ui/src/**/*.test.{ts,tsx}`                            | `build` job, `pnpm verify:unit` (`turbo run test:unit -- --run --coverage`) |
+| Stories axe        | Does every composed story pass axe, or match its shrinking baseline?           | `packages/ui/src/test/stories-axe{,.*}.test.tsx`                | `stories-axe` job, `pnpm test:axe`                                          |
+| Property (logic)   | Does a pure function hold its invariant for any input?                         | `*Math.test.ts`, `*-model.test.ts`, hook tests using `fcAssert` | same Vitest run                                                             |
+| Scale              | Does a windowed component mount a bounded number of nodes?                     | `*.test.tsx` calling `expectBoundedMount`                       | same Vitest run                                                             |
+| Source guards      | Does the source obey a lint-like rule (raw colour, raw spacing, tier imports)? | `packages/ui/src/test/no-*.test.ts`                             | same Vitest run                                                             |
+| Arch graph         | Is `src/arch/arch-graph.json` fresh?                                           | `src/arch/arch-graph.freshness.test.ts`                         | `pnpm arch:check`, inside `pnpm verify:unit`                                |
+| Package shape      | Do the export map and packed tarball resolve for ESM and CJS?                  | `packages/ui/scripts/check-package.sh`                          | `build` job, "Package shape" step                                           |
+| Visual, layer 1    | Do specimen components match their screenshot baselines?                       | `packages/ui/specimen/baseline/**/*-chromium-linux.png`         | `visual` job, `test:visual:baseline`                                        |
+| Visual, layer 2    | Do Storybook stories match their screenshot baselines?                         | `packages/ui/tests/visual/stories.spec.ts`                      | `visual` job, `test:visual:stories`                                         |
+| Visual, layer 3    | Does the React render match the HTML specimen's computed styles?               | `packages/ui/tests/visual/validation.spec.ts`                   | `visual` job, `test:visual:compare`                                         |
+| Interaction        | Does keyboard and pointer behaviour work in a real browser?                    | `packages/ui/tests/interaction/*.spec.ts`                       | `visual` job, `interaction` project of `playwright.config.ts`               |
+| Offline fonts      | Does a single-file consumer load every font face with no network?              | `packages/ui/tests/offline-fonts/*.spec.ts`                     | `visual` job, `test:offline-fonts`                                          |
+| Dependency audit   | Does the lockfile carry a known advisory?                                      | `scripts/audit-retry.sh`                                        | `audit` job                                                                 |
 
-The `check` job aggregates `build`, `visual` and `audit`. Layer-1 baselines exist only as
+The `check` job aggregates `build`, `stories-axe`, `visual`, `storybook-play` and `audit`. Layer-1 baselines exist only as
 `*-chromium-linux.png`, so run the visual layers only in the pinned Playwright container.
+
+To run the interaction project locally, use
+`pnpm --filter @titan-design/react-ui exec playwright test --project=interaction`.
+`test:visual` and `test:visual:update` run only the `chromium` visual project.
 
 ## Logic in pure hooks so Stryker can reach it
 

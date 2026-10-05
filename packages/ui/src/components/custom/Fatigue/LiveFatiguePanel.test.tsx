@@ -1,10 +1,11 @@
 import { describe, it, expect } from 'vitest'
+import { axe } from 'jest-axe'
 import { render, screen } from '@testing-library/react'
 import { LiveFatiguePanel } from './LiveFatiguePanel'
 import { Surface } from '../../ui/surface'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { buildMockPanelState } from './fatigue-mock'
-import { resolveAll, siblingSource, spacingClassesIn } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 import { PANEL_BREAKPOINTS, CARD_WIDTH_BASE, panelLayout } from './panel-layout'
 
 const { model, velocity } = buildMockPanelState(3)
@@ -13,6 +14,11 @@ const dark = getSemanticColors('dark')
 const light = getSemanticColors('light')
 
 describe('LiveFatiguePanel', () => {
+  it('has no accessibility violations', async () => {
+    const { container } = render(<LiveFatiguePanel model={model} velocity={velocity} />)
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
   it('composes the aura frame, the velocity hero and the fatigue card', () => {
     render(<LiveFatiguePanel model={model} velocity={velocity} />)
     expect(screen.getByTestId('live-fatigue-panel')).toBeInTheDocument()
@@ -142,15 +148,23 @@ describe('LiveFatiguePanel responsiveness (TD-03.58)', () => {
  * place in the repo where spacing is a function of viewport.
  */
 describe('LiveFatiguePanel geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'LiveFatiguePanel.tsx')
-
   it('spaces the eyebrow from the plot by gap-stack-md', () => {
-    expect(spacingClassesIn(source, 'LiveFatiguePanel')).toEqual(['gap-stack-md'])
+    render(<LiveFatiguePanel model={model} velocity={velocity} />)
+    expect(spacingClassesAt(screen.getByTestId('live-fatigue-eyebrow').parentElement)).toEqual([
+      'gap-stack-md',
+    ])
     expect(resolveAll(['gap-stack-md'])).toEqual(['8px'])
   })
 
-  it('keeps the body inset responsive rather than fixed', () => {
-    expect(source).toContain('padding: layout.padding')
-    expect(source).toContain('gap: layout.gap')
-  })
+  it.each([PANEL_BREAKPOINTS.md - 1, 1440])(
+    'keeps the body inset responsive rather than fixed at %ipx',
+    (width) => {
+      render(<LiveFatiguePanel model={model} velocity={velocity} containerWidth={width} />)
+      const { padding, gap } = panelLayout(width)
+      expect(screen.getByTestId('live-fatigue-body')).toHaveStyle({
+        padding: `${padding}px ${padding}px ${padding}px ${padding}px`,
+        gap: `${gap}px`,
+      })
+    }
+  )
 })

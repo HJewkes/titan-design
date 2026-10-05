@@ -51,22 +51,6 @@ describe('alpha() adoption (VW-78) — swapped literal parity', () => {
       original: 'rgba(255,255,255,0.08)',
       swapped: alpha(primitiveColors.white, 0.08),
     },
-    // Scatter.tsx
-    {
-      label: 'Scatter GRID_LINE',
-      original: 'rgba(255,255,255,0.07)',
-      swapped: alpha(primitiveColors.white, 0.07),
-    },
-    {
-      label: 'Scatter AXIS_LINE',
-      original: 'rgba(255,255,255,0.18)',
-      swapped: alpha(primitiveColors.white, 0.18),
-    },
-    {
-      label: 'Scatter DIAGONAL_LINE',
-      original: 'rgba(255,255,255,0.28)',
-      swapped: alpha(primitiveColors.white, 0.28),
-    },
     // BaseBadge.tsx
     {
       label: 'BaseBadge pr.bg',
@@ -283,8 +267,8 @@ describe('alpha() adoption (VW-78) — swapped literal parity', () => {
     }
   )
 
-  it('covers all 43 static swaps (the 44th, MesoCard, is dynamic and tested below)', () => {
-    expect(staticCases).toHaveLength(43)
+  it('covers all 40 static swaps (the 41st, MesoCard, is dynamic and tested below)', () => {
+    expect(staticCases).toHaveLength(40)
   })
 
   describe('MesoCard heatmapColor (dynamic opacity)', () => {
@@ -315,15 +299,7 @@ function readSource(relativeToSrc: string): string {
 
 describe('touched source files no longer contain the swapped raw literals', () => {
   const fileCases: Array<{ file: string; removedLiterals: string[] }> = [
-    { file: 'components/custom/Gauge/Gauge.tsx', removedLiterals: ['rgba(255,255,255,0.08)'] },
-    {
-      file: 'components/custom/Scatter/Scatter.tsx',
-      removedLiterals: [
-        'rgba(255,255,255,0.07)',
-        'rgba(255,255,255,0.18)',
-        'rgba(255,255,255,0.28)',
-      ],
-    },
+    { file: 'components/ui/charts/gauge/Gauge.tsx', removedLiterals: ['rgba(255,255,255,0.08)'] },
     {
       file: 'components/custom/Workout/BaseBadge.tsx',
       removedLiterals: ['rgba(255, 121, 0, 0.12)', 'rgba(255, 121, 0, 0.3)'],
@@ -339,10 +315,6 @@ describe('touched source files no longer contain the swapped raw literals', () =
     {
       file: 'components/custom/Workout/CapacityBandChart.tsx',
       removedLiterals: ['rgba(46,213,115,0.1)', 'rgba(46,213,115,0.45)', 'rgba(46,213,115,0.05)'],
-    },
-    {
-      file: 'components/custom/Workout/DeviationBar.tsx',
-      removedLiterals: ['rgba(46,213,115,0.25)', 'rgba(249,180,21,0.25)'],
     },
     {
       file: 'components/custom/Workout/ExerciseDetailPage.tsx',

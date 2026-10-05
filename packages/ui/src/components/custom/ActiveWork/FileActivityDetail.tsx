@@ -1,29 +1,16 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View } from 'react-native'
 // Deep import: `CardInset` is not on the card barrel yet (Lab/Depth reaches it the same way).
-import { Card, CardInset } from '../../ui/card/Card'
+import { Card } from '../../ui/card/Card'
 import { Pill } from '../../ui/pill'
 import { Tile } from '../../ui/tile'
 import { DataRow } from '../../ui/data-row'
-import { SparkBars } from '../charts'
-import { DateTime } from '../DateTime'
+import { DateTime } from '../../ui/date-time'
 import { Typography } from '../../ui/typography'
-import { formatCompact, formatSignedCompact } from '../../../utils/number-format'
-import { resolveColor } from '../../../theme/resolve-color'
 import { Eyebrow } from '../../ui/eyebrow'
-import { FilePathLabel, splitPath } from './FilePathLabel'
+import { FilePathLabel, splitPath } from '../../ui/file-path-label'
+import { GrowthWell } from './FileActivityGrowthWell'
 import { FILE_EVENT_COLOR, type FileEventColors, type FileActivity } from './FileActivityRow'
-
-/**
- * Growth stats are *char deltas* — a measurement moving up or down — so they take
- * the `result-*` family, not `status-*` and not {@link FILE_EVENT_COLOR}. A file
- * that net-shrank was refactored, not broken. See TOKENS.md §1.
- */
-const GROWTH_COLOR = {
-  added: resolveColor('result-improve'),
-  removed: resolveColor('result-degrade'),
-  neutral: resolveColor('result-neutral'),
-} as const
 
 /**
  * `Tile` paints `surface-raised` itself, which IS this card's plane. Inside the
@@ -59,17 +46,6 @@ export interface FileActivityDetailProps {
   className?: string
 }
 
-function GrowthStat({ label, value, color }: { label: string; value: string; color: string }) {
-  return (
-    <View className="flex-1 gap-0.5">
-      <Eyebrow>{label}</Eyebrow>
-      <Typography variant="mono" className="text-lg font-bold" style={{ color }}>
-        {value}
-      </Typography>
-    </View>
-  )
-}
-
 /**
  * FileActivityDetail — the right-hand pane of {@link FileHistoryExplorer}: one
  * file's full mined history. Activity split, net char growth over sessions, and
@@ -88,7 +64,6 @@ export function FileActivityDetail({
   className,
 }: FileActivityDetailProps) {
   const { dir, base } = splitPath(file.path)
-  const grew = file.netGrowth >= 0
 
   return (
     <Card className={`flex-1 gap-4 p-4 ${className ?? ''}`} testID="file-activity-detail">
@@ -144,36 +119,7 @@ export function FileActivityDetail({
         <Tile label="Touches" value={String(file.touches)} className={TILE_PLANE} />
       </View>
 
-      <CardInset className="gap-2 rounded-lg p-3" testID="growth-well">
-        <View className="flex-row items-center justify-between">
-          <Eyebrow>Net change over sessions</Eyebrow>
-          <Typography
-            variant="mono"
-            className="text-sm font-bold"
-            style={{ color: grew ? GROWTH_COLOR.added : GROWTH_COLOR.removed }}
-          >
-            {`${formatSignedCompact(file.netGrowth)} ch`}
-          </Typography>
-        </View>
-        <SparkBars
-          values={file.timeline}
-          height={34}
-          label={`Per-session net char change for ${file.path}`}
-        />
-        <View className="flex-row gap-4">
-          <GrowthStat
-            label="Added"
-            value={`+${formatCompact(file.charsAdded)}`}
-            color={GROWTH_COLOR.added}
-          />
-          <GrowthStat
-            label="Removed"
-            value={`-${formatCompact(file.charsRemoved)}`}
-            color={GROWTH_COLOR.removed}
-          />
-          <GrowthStat label="Sessions" value={String(file.sessions)} color={GROWTH_COLOR.neutral} />
-        </View>
-      </CardInset>
+      <GrowthWell file={file} />
 
       <View className="gap-0.5">
         <Eyebrow>Changes together with</Eyebrow>

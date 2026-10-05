@@ -1,4 +1,3 @@
-import React from 'react'
 import { ActivityIndicator, View, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { SPINNER_PRIMARY, SPINNER_SECONDARY } from '../../../theme/extracted-colors-ui'

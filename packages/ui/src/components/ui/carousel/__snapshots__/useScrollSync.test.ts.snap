@@ -1,0 +1,439 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`useScrollSync > aligns without animation once the width is measured 1`] = `
+[
+  {
+    "activeIndex": 0,
+    "scrollTo": [],
+    "step": "mount",
+    "visibleIndex": 0,
+  },
+  {
+    "activeIndex": 0,
+    "scrollTo": [
+      [
+        {
+          "animated": false,
+          "x": 328,
+        },
+      ],
+    ],
+    "step": "measured",
+    "visibleIndex": 0,
+  },
+]
+`;
+
+exports[`useScrollSync > commits the last slide and glides onto its copy on a step back from the first 1`] = `
+[
+  {
+    "activeIndex": 0,
+    "scrollTo": [
+      [
+        {
+          "animated": false,
+          "x": 328,
+        },
+      ],
+    ],
+    "step": "mount",
+    "visibleIndex": 0,
+  },
+  {
+    "activeIndex": 8,
+    "scrollTo": [
+      [
+        {
+          "animated": true,
+          "x": 0,
+        },
+      ],
+    ],
+    "step": "step -1",
+    "visibleIndex": 8,
+  },
+]
+`;
+
+exports[`useScrollSync > drops the wrap when the user takes the scroll mid-wrap 1`] = `
+[
+  {
+    "activeIndex": 0,
+    "scrollTo": [
+      [
+        {
+          "animated": false,
+          "x": 328,
+        },
+      ],
+    ],
+    "step": "mount",
+    "visibleIndex": 0,
+  },
+  {
+    "activeIndex": 8,
+    "scrollTo": [
+      [
+        {
+          "animated": true,
+          "x": 0,
+        },
+      ],
+    ],
+    "step": "step -1",
+    "visibleIndex": 8,
+  },
+  {
+    "activeIndex": 8,
+    "scrollTo": [],
+    "step": "user scroll",
+    "visibleIndex": 8,
+  },
+  {
+    "activeIndex": 8,
+    "scrollTo": [],
+    "step": "scroll",
+    "visibleIndex": 8,
+  },
+  {
+    "activeIndex": 8,
+    "scrollTo": [
+      [
+        {
+          "animated": false,
+          "x": 2952,
+        },
+      ],
+    ],
+    "step": "settle",
+    "visibleIndex": 8,
+  },
+]
+`;
+
+exports[`useScrollSync > follows a user scroll and commits it once the scroll rests 1`] = `
+[
+  {
+    "activeIndex": 0,
+    "scrollTo": [
+      [
+        {
+          "animated": false,
+          "x": 328,
+        },
+      ],
+    ],
+    "step": "mount",
+    "visibleIndex": 0,
+  },
+  {
+    "activeIndex": 0,
+    "scrollTo": [],
+    "step": "scroll",
+    "visibleIndex": 3,
+  },
+  {
+    "activeIndex": 0,
+    "scrollTo": [],
+    "step": "149 ms",
+    "visibleIndex": 3,
+  },
+  {
+    "activeIndex": 3,
+    "scrollTo": [
+      [
+        {
+          "animated": false,
+          "x": 1312,
+        },
+      ],
+    ],
+    "step": "150 ms",
+    "visibleIndex": 3,
+  },
+]
+`;
+
+exports[`useScrollSync > glides one slide forward on an arrow 1`] = `
+[
+  {
+    "activeIndex": 0,
+    "scrollTo": [
+      [
+        {
+          "animated": false,
+          "x": 328,
+        },
+      ],
+    ],
+    "step": "mount",
+    "visibleIndex": 0,
+  },
+  {
+    "activeIndex": 1,
+    "scrollTo": [
+      [
+        {
+          "animated": true,
+          "x": 656,
+        },
+      ],
+    ],
+    "step": "step +1",
+    "visibleIndex": 1,
+  },
+]
+`;
+
+exports[`useScrollSync > holds the counter during its own glide and releases it within 1 px of the target 1`] = `
+[
+  {
+    "activeIndex": 0,
+    "scrollTo": [
+      [
+        {
+          "animated": false,
+          "x": 328,
+        },
+      ],
+    ],
+    "step": "mount",
+    "visibleIndex": 0,
+  },
+  {
+    "activeIndex": 1,
+    "scrollTo": [
+      [
+        {
+          "animated": true,
+          "x": 656,
+        },
+      ],
+    ],
+    "step": "step +1",
+    "visibleIndex": 1,
+  },
+  {
+    "activeIndex": 1,
+    "scrollTo": [],
+    "step": "mid glide",
+    "visibleIndex": 1,
+  },
+  {
+    "activeIndex": 1,
+    "scrollTo": [],
+    "step": "near target",
+    "visibleIndex": 1,
+  },
+  {
+    "activeIndex": 1,
+    "scrollTo": [],
+    "step": "past target",
+    "visibleIndex": 2,
+  },
+]
+`;
+
+exports[`useScrollSync > ignores focus on the current slide and glides to another 1`] = `
+[
+  {
+    "activeIndex": 0,
+    "scrollTo": [
+      [
+        {
+          "animated": false,
+          "x": 328,
+        },
+      ],
+    ],
+    "step": "mount",
+    "visibleIndex": 0,
+  },
+  {
+    "activeIndex": 0,
+    "scrollTo": [],
+    "step": "focus current",
+    "visibleIndex": 0,
+  },
+  {
+    "activeIndex": 3,
+    "scrollTo": [
+      [
+        {
+          "animated": true,
+          "x": 1312,
+        },
+      ],
+    ],
+    "step": "focus 3",
+    "visibleIndex": 3,
+  },
+]
+`;
+
+exports[`useScrollSync > jumps one slide forward under reduced motion 1`] = `
+[
+  {
+    "activeIndex": 0,
+    "scrollTo": [
+      [
+        {
+          "animated": false,
+          "x": 328,
+        },
+      ],
+    ],
+    "step": "mount",
+    "visibleIndex": 0,
+  },
+  {
+    "activeIndex": 1,
+    "scrollTo": [
+      [
+        {
+          "animated": false,
+          "x": 656,
+        },
+      ],
+    ],
+    "step": "step +1",
+    "visibleIndex": 1,
+  },
+]
+`;
+
+exports[`useScrollSync > lands a forward flick and re-aligns a flick back onto the start slide 1`] = `
+[
+  {
+    "activeIndex": 0,
+    "scrollTo": [
+      [
+        {
+          "animated": false,
+          "x": 328,
+        },
+      ],
+    ],
+    "step": "mount",
+    "visibleIndex": 0,
+  },
+  {
+    "activeIndex": 0,
+    "scrollTo": [],
+    "step": "drag start",
+    "visibleIndex": 0,
+  },
+  {
+    "activeIndex": 1,
+    "scrollTo": [
+      [
+        {
+          "animated": true,
+          "x": 656,
+        },
+      ],
+    ],
+    "step": "flick forward",
+    "visibleIndex": 1,
+  },
+  {
+    "activeIndex": 1,
+    "scrollTo": [],
+    "step": "drag start again",
+    "visibleIndex": 1,
+  },
+  {
+    "activeIndex": 1,
+    "scrollTo": [
+      [
+        {
+          "animated": true,
+          "x": 656,
+        },
+      ],
+    ],
+    "step": "flick back",
+    "visibleIndex": 1,
+  },
+]
+`;
+
+exports[`useScrollSync > leaves the copy before a second step back that lands before the settle 1`] = `
+[
+  {
+    "activeIndex": 0,
+    "scrollTo": [
+      [
+        {
+          "animated": false,
+          "x": 328,
+        },
+      ],
+    ],
+    "step": "mount",
+    "visibleIndex": 0,
+  },
+  {
+    "activeIndex": 8,
+    "scrollTo": [
+      [
+        {
+          "animated": true,
+          "x": 0,
+        },
+      ],
+    ],
+    "step": "step -1",
+    "visibleIndex": 8,
+  },
+  {
+    "activeIndex": 7,
+    "scrollTo": [
+      [
+        {
+          "animated": false,
+          "x": 2952,
+        },
+      ],
+      [
+        {
+          "animated": true,
+          "x": 2624,
+        },
+      ],
+    ],
+    "step": "step -1 again",
+    "visibleIndex": 7,
+  },
+]
+`;
+
+exports[`useScrollSync > stops at the last slide without a loop 1`] = `
+[
+  {
+    "activeIndex": 0,
+    "scrollTo": [],
+    "step": "mount",
+    "visibleIndex": 0,
+  },
+  {
+    "activeIndex": 8,
+    "scrollTo": [
+      [
+        {
+          "animated": true,
+          "x": 2624,
+        },
+      ],
+    ],
+    "step": "focus last",
+    "visibleIndex": 8,
+  },
+  {
+    "activeIndex": 8,
+    "scrollTo": [],
+    "step": "step +1",
+    "visibleIndex": 8,
+  },
+]
+`;

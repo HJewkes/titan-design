@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
+import { storybookTest } from '@storybook/addon-vitest/vitest-plugin'
 import {
   reactNativeSvgWebResolver,
   reactNativeBodyHighlighterEsm,
@@ -8,11 +9,16 @@ import {
   webResolveExtensions,
 } from './vite-rn-svg-plugins'
 
-const LOCAL_TIME_TEST_PATH = fileURLToPath(
-  new URL('./src/components/custom/Workout/wholeBody.test.ts', import.meta.url)
-)
+const LOCAL_TIME_TEST_PATHS = [
+  './src/components/custom/Workout/wholeBody.test.ts',
+  './src/components/custom/Chat/DateSeparator.local-time.test.tsx',
+].map((path) => fileURLToPath(new URL(path, import.meta.url)))
 
-const TEST_GLOB = ['src/**/*.test.{ts,tsx}']
+const STORYBOOK_CONFIG_DIR = fileURLToPath(new URL('./.storybook', import.meta.url))
+
+const TEST_GLOB = ['src/**/*.test.{ts,tsx}', 'scripts/**/*.test.mjs']
+// Axe on every story is the slowest suite, so CI runs this project in a job of its own.
+const STORIES_AXE_GLOB = ['src/test/stories-axe.test.tsx', 'src/test/stories-axe.*.test.tsx']
 const TEST_EXCLUDE = ['src/**/*.visual.test.{ts,tsx}', 'node_modules']
 
 export default defineConfig({
@@ -28,7 +34,7 @@ export default defineConfig({
     poolOptions: { threads: { minThreads: 1, maxThreads: 4 } },
     teardownTimeout: 30_000,
     // A worker thread cannot change its zone after start (Node reads TZ once per
-    // process), so the test that pins `process.env.TZ` runs in a fork project of its own.
+    // process), so the tests that pin `process.env.TZ` run in a fork project of its own.
     // An absolute path, because `**` skips dot directories such as `.worktrees/`.
     projects: [
       {
@@ -36,14 +42,22 @@ export default defineConfig({
         test: {
           name: 'threads',
           include: TEST_GLOB,
-          exclude: [...TEST_EXCLUDE, LOCAL_TIME_TEST_PATH],
+          exclude: [...TEST_EXCLUDE, ...LOCAL_TIME_TEST_PATHS, ...STORIES_AXE_GLOB],
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: 'stories-axe',
+          include: STORIES_AXE_GLOB,
+          exclude: TEST_EXCLUDE,
         },
       },
       {
         extends: true,
         test: {
           name: 'local-time',
-          include: [LOCAL_TIME_TEST_PATH],
+          include: LOCAL_TIME_TEST_PATHS,
           exclude: TEST_EXCLUDE,
           pool: 'forks',
         },
@@ -54,6 +68,22 @@ export default defineConfig({
           name: 'types',
           include: [],
           typecheck: { enabled: true, include: ['src/**/*.test-d.ts'], only: true },
+        },
+      },
+      // A real browser, so none of the jsdom aliases above apply; `.storybook/main.ts`
+      // supplies the resolution through its `viteFinal`. Run it with `pnpm test:storybook`.
+      {
+        extends: false,
+        plugins: [storybookTest({ configDir: STORYBOOK_CONFIG_DIR, tags: { include: ['play'] } })],
+        test: {
+          name: 'storybook',
+          browser: {
+            enabled: true,
+            headless: true,
+            provider: 'playwright',
+            instances: [{ browser: 'chromium' }],
+          },
+          setupFiles: ['./.storybook/vitest.setup.ts'],
         },
       },
     ],

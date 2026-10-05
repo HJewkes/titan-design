@@ -1,0 +1,990 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Tooltip characterisation > open in a portal at bottom 1`] = `
+<body>
+  <div>
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Trigger
+      </div>
+    </div>
+  </div>
+  <div
+    class="extra"
+    data-testid="tooltip-portal"
+    style="position: fixed; top: 148px; left: 240px; transform: translate(-50%, 0%); z-index: 10000; pointer-events: none;"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Tip
+      </div>
+      <div
+        class="css-view-175oi2r"
+      />
+    </div>
+  </div>
+</body>
+`;
+
+exports[`Tooltip characterisation > open in a portal at bottom-end 1`] = `
+<body>
+  <div>
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Trigger
+      </div>
+    </div>
+  </div>
+  <div
+    class="extra"
+    data-testid="tooltip-portal"
+    style="position: fixed; top: 148px; left: 240px; transform: translate(-50%, 0%); z-index: 10000; pointer-events: none;"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Tip
+      </div>
+      <div
+        class="css-view-175oi2r"
+      />
+    </div>
+  </div>
+</body>
+`;
+
+exports[`Tooltip characterisation > open in a portal at bottom-start 1`] = `
+<body>
+  <div>
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Trigger
+      </div>
+    </div>
+  </div>
+  <div
+    class="extra"
+    data-testid="tooltip-portal"
+    style="position: fixed; top: 148px; left: 240px; transform: translate(-50%, 0%); z-index: 10000; pointer-events: none;"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Tip
+      </div>
+      <div
+        class="css-view-175oi2r"
+      />
+    </div>
+  </div>
+</body>
+`;
+
+exports[`Tooltip characterisation > open in a portal at left 1`] = `
+<body>
+  <div>
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Trigger
+      </div>
+    </div>
+  </div>
+  <div
+    class="extra"
+    data-testid="tooltip-portal"
+    style="position: fixed; top: 120px; left: 192px; transform: translate(-100%, -50%); z-index: 10000; pointer-events: none;"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Tip
+      </div>
+      <div
+        class="css-view-175oi2r"
+      />
+    </div>
+  </div>
+</body>
+`;
+
+exports[`Tooltip characterisation > open in a portal at right 1`] = `
+<body>
+  <div>
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Trigger
+      </div>
+    </div>
+  </div>
+  <div
+    class="extra"
+    data-testid="tooltip-portal"
+    style="position: fixed; top: 120px; left: 288px; transform: translate(0%, -50%); z-index: 10000; pointer-events: none;"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Tip
+      </div>
+      <div
+        class="css-view-175oi2r"
+      />
+    </div>
+  </div>
+</body>
+`;
+
+exports[`Tooltip characterisation > open in a portal at top 1`] = `
+<body>
+  <div>
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Trigger
+      </div>
+    </div>
+  </div>
+  <div
+    class="extra"
+    data-testid="tooltip-portal"
+    style="position: fixed; top: 92px; left: 240px; transform: translate(-50%, -100%); z-index: 10000; pointer-events: none;"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Tip
+      </div>
+      <div
+        class="css-view-175oi2r"
+      />
+    </div>
+  </div>
+</body>
+`;
+
+exports[`Tooltip characterisation > open in a portal at top-end 1`] = `
+<body>
+  <div>
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Trigger
+      </div>
+    </div>
+  </div>
+  <div
+    class="extra"
+    data-testid="tooltip-portal"
+    style="position: fixed; top: 92px; left: 240px; transform: translate(-50%, -100%); z-index: 10000; pointer-events: none;"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Tip
+      </div>
+      <div
+        class="css-view-175oi2r"
+      />
+    </div>
+  </div>
+</body>
+`;
+
+exports[`Tooltip characterisation > open in a portal at top-start 1`] = `
+<body>
+  <div>
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Trigger
+      </div>
+    </div>
+  </div>
+  <div
+    class="extra"
+    data-testid="tooltip-portal"
+    style="position: fixed; top: 92px; left: 240px; transform: translate(-50%, -100%); z-index: 10000; pointer-events: none;"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Tip
+      </div>
+      <div
+        class="css-view-175oi2r"
+      />
+    </div>
+  </div>
+</body>
+`;
+
+exports[`Tooltip characterisation > open in flow at bottom 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+    >
+      Trigger
+    </div>
+    <div
+      class="css-view-175oi2r r-pointerEvents-633pao"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Tip
+        </div>
+        <div
+          class="css-view-175oi2r"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Tooltip characterisation > open in flow at bottom-end 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+    >
+      Trigger
+    </div>
+    <div
+      class="css-view-175oi2r r-pointerEvents-633pao"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Tip
+        </div>
+        <div
+          class="css-view-175oi2r"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Tooltip characterisation > open in flow at bottom-start 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+    >
+      Trigger
+    </div>
+    <div
+      class="css-view-175oi2r r-pointerEvents-633pao"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Tip
+        </div>
+        <div
+          class="css-view-175oi2r"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Tooltip characterisation > open in flow at left 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+    >
+      Trigger
+    </div>
+    <div
+      class="css-view-175oi2r r-pointerEvents-633pao"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Tip
+        </div>
+        <div
+          class="css-view-175oi2r"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Tooltip characterisation > open in flow at right 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+    >
+      Trigger
+    </div>
+    <div
+      class="css-view-175oi2r r-pointerEvents-633pao"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Tip
+        </div>
+        <div
+          class="css-view-175oi2r"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Tooltip characterisation > open in flow at top 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+    >
+      Trigger
+    </div>
+    <div
+      class="css-view-175oi2r r-pointerEvents-633pao"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Tip
+        </div>
+        <div
+          class="css-view-175oi2r"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Tooltip characterisation > open in flow at top-end 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+    >
+      Trigger
+    </div>
+    <div
+      class="css-view-175oi2r r-pointerEvents-633pao"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Tip
+        </div>
+        <div
+          class="css-view-175oi2r"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Tooltip characterisation > open in flow at top-start 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+    >
+      Trigger
+    </div>
+    <div
+      class="css-view-175oi2r r-pointerEvents-633pao"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Tip
+        </div>
+        <div
+          class="css-view-175oi2r"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Tooltip characterisation > open with rich content and no arrow 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+    >
+      Trigger
+    </div>
+    <div
+      class="css-view-175oi2r r-pointerEvents-633pao"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Rich
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Tooltip characterisation > opens on hover after the open delay and closes after the close delay > closed 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+      tabindex="-1"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Trigger
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Tooltip characterisation > opens on hover after the open delay and closes after the close delay > open 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+      tabindex="-1"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Trigger
+      </div>
+    </div>
+    <div
+      class="css-view-175oi2r r-pointerEvents-633pao"
+    >
+      <div
+        class="css-view-175oi2r"
+        style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+      >
+        <div
+          class="css-text-146c3p1"
+          dir="auto"
+        >
+          Delayed
+        </div>
+        <div
+          class="css-view-175oi2r"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Tooltip characterisation > story AllPlacements 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="padding: 100px 100px 100px 100px; gap: 24px;"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="flex-direction: row; justify-content: center; gap: 16px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          tabindex="-1"
+        >
+          <button
+            class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+            role="button"
+            style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+            tabindex="0"
+            type="button"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Top Start
+            </div>
+          </button>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          tabindex="-1"
+        >
+          <button
+            class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+            role="button"
+            style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+            tabindex="0"
+            type="button"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Top
+            </div>
+          </button>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          tabindex="-1"
+        >
+          <button
+            class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+            role="button"
+            style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+            tabindex="0"
+            type="button"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Top End
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="css-view-175oi2r"
+      style="flex-direction: row; justify-content: space-between;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          tabindex="-1"
+        >
+          <button
+            class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+            role="button"
+            style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+            tabindex="0"
+            type="button"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Left
+            </div>
+          </button>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          tabindex="-1"
+        >
+          <button
+            class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+            role="button"
+            style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+            tabindex="0"
+            type="button"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Right
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="css-view-175oi2r"
+      style="flex-direction: row; justify-content: center; gap: 16px;"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          tabindex="-1"
+        >
+          <button
+            class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+            role="button"
+            style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+            tabindex="0"
+            type="button"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Bottom Start
+            </div>
+          </button>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          tabindex="-1"
+        >
+          <button
+            class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+            role="button"
+            style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+            tabindex="0"
+            type="button"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Bottom
+            </div>
+          </button>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          tabindex="-1"
+        >
+          <button
+            class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+            role="button"
+            style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+            tabindex="0"
+            type="button"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Bottom End
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Tooltip characterisation > story Default 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="padding: 100px 100px 100px 100px;"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        tabindex="-1"
+      >
+        <button
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="button"
+          style="color: rgb(28, 25, 22);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Hover me
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Tooltip characterisation > story OnText 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="padding: 100px 100px 100px 100px;"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+    >
+      Hover over the
+       
+      <div
+        class="css-view-175oi2r r-display-xoduu5"
+      >
+        <div
+          class="css-view-175oi2r r-display-xoduu5 r-cursor-1loqt21 r-touchAction-1otgn73"
+          tabindex="-1"
+        >
+          <span
+            class="css-textHasAncestor-1jxf684"
+          >
+            underlined text
+          </span>
+        </div>
+      </div>
+       
+      to see a tooltip.
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Tooltip characterisation > story WithDelay 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="padding: 100px 100px 100px 100px;"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        tabindex="-1"
+      >
+        <button
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="button"
+          style="color: rgb(28, 25, 22);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Hover (with delay)
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Tooltip characterisation > story WithoutArrow 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="padding: 100px 100px 100px 100px;"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+        tabindex="-1"
+      >
+        <button
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          role="button"
+          style="color: rgb(28, 25, 22);"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Hover me
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

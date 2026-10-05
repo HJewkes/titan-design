@@ -18,7 +18,7 @@ const meta: Meta<typeof MessageBubble> = {
           '[Surface](?path=/docs/components-surface--docs) + ' +
           '[Avatar](?path=/docs/components-avatar--docs) + ' +
           '[MarkdownProse](?path=/docs/custom-prose-markdownprose--docs) + ' +
-          '[DateTime](?path=/docs/custom-datetime--docs) + ' +
+          '[DateTime](?path=/docs/components-molecules-datetime--docs) + ' +
           '[Typography](?path=/docs/foundations-typography--docs).',
       },
     },

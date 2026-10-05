@@ -688,6 +688,7 @@ export const TextAndBorderColors: StoryObj = {
         <ColorSwatch name="text-secondary" value={semanticColorsDark['text-secondary']} />
         <ColorSwatch name="text-tertiary" value={semanticColorsDark['text-tertiary']} />
         <ColorSwatch name="text-disabled" value={semanticColorsDark['text-disabled']} />
+        <ColorSwatch name="text-error" value={semanticColorsDark['text-error']} />
         <ColorSwatch name="text-link" value={semanticColorsDark['text-link']} />
         <ColorSwatch name="text-link-hover" value={semanticColorsDark['text-link-hover']} />
         <ColorSwatch name="text-inverse" value={semanticColorsDark['text-inverse']} />

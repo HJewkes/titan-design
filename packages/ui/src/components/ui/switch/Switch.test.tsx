@@ -35,15 +35,24 @@ describe('Switch', () => {
     expect(onCheckedChange).not.toHaveBeenCalled()
   })
 
-  it('communicates checked state via aria', () => {
+  it('emits aria-checked true when checked', () => {
     render(<Switch label="Toggle" isChecked />)
-    // react-native-web does not map accessibilityState.checked to aria-checked
-    expect(screen.getByRole('switch')).toBeInTheDocument()
+    expect(screen.getByRole('switch')).toHaveAttribute('aria-checked', 'true')
   })
 
-  it('communicates unchecked state via aria', () => {
+  it('emits aria-checked false when unchecked', () => {
     render(<Switch label="Toggle" />)
-    expect(screen.getByRole('switch')).toBeInTheDocument()
+    expect(screen.getByRole('switch')).toHaveAttribute('aria-checked', 'false')
+  })
+
+  it('has no axe violations when checked or unchecked', async () => {
+    const { container } = render(
+      <>
+        <Switch label="On" isChecked />
+        <Switch label="Off" />
+      </>
+    )
+    expect(await axe(container)).toHaveNoViolations()
   })
 
   it('communicates disabled state', () => {

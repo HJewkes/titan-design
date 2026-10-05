@@ -6,6 +6,7 @@ import {
   ScrollView,
   type ViewProps,
   type PressableProps,
+  type GestureResponderEvent,
 } from 'react-native'
 import { cn } from '../../../utils/cn'
 
@@ -185,7 +186,7 @@ export function SidebarItem({
   const { isCollapsed, activeItem, onItemSelect } = useContext(SidebarContext)
   const isActive = activeItem === id
 
-  const handlePress = (e: any) => {
+  const handlePress = (e: GestureResponderEvent) => {
     onItemSelect?.(id)
     onPress?.(e)
   }
@@ -193,7 +194,9 @@ export function SidebarItem({
   return (
     <Pressable
       accessibilityRole="button"
+      // Native reads accessibilityState but not aria-current; web is the reverse.
       accessibilityState={{ selected: isActive }}
+      aria-current={isActive ? 'page' : undefined}
       accessibilityLabel={label}
       onPress={handlePress}
       className={cn(

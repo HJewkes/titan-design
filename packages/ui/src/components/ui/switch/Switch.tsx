@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react'
+import { forwardRef } from 'react'
 import { Pressable, View, Text, type PressableProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { liftStyle } from '../../../theme/lift'
@@ -88,6 +88,7 @@ export const Switch = forwardRef<View, SwitchProps>(function Switch(
       onPress={handlePress}
       accessibilityRole="switch"
       accessibilityState={{ checked: isChecked, disabled: isDisabled }}
+      aria-checked={isChecked}
       accessibilityLabel={label}
       className={cn('flex-row items-center gap-2', isDisabled && 'opacity-50', className)}
       {...props}

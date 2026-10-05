@@ -262,6 +262,7 @@
     --color-text-tertiary: #888684;
     --color-text-disabled: rgba(255, 255, 255, 0.38);
     --color-text-inverse: #1C1916;
+    --color-text-error: #FF9A9D;
     --color-text-link: #828DF8;
     --color-text-link-hover: #3CA8FF;
 
@@ -397,14 +398,14 @@
     --color-brand-primary: #FF7900;
     --color-brand-primary-light: #FFA063;
     --color-brand-primary-dark: #DA5F00;
-    --color-brand-primary-subtle: rgba(255, 121, 0, 0.08);
-    --color-brand-primary-muted: rgba(255, 121, 0, 0.30);
+    --color-brand-primary-subtle: #FFF5ED;
+    --color-brand-primary-muted: #FFC7A2;
     --color-brand-primary-strong: rgba(255, 121, 0, 0.50);
     --color-brand-secondary: #307B9B;
     --color-brand-secondary-light: #2697B7;
     --color-brand-secondary-dark: #2A617F;
-    --color-brand-secondary-subtle: rgba(48, 123, 155, 0.08);
-    --color-brand-secondary-muted: rgba(48, 123, 155, 0.30);
+    --color-brand-secondary-subtle: #E6FBFF;
+    --color-brand-secondary-muted: #62EAFF;
     --color-brand-secondary-strong: rgba(48, 123, 155, 0.50);
     --color-brand-primary-hover: #DA5F00;
     --color-brand-primary-active: #B94A00;
@@ -416,7 +417,7 @@
     --color-on-brand-primary-subtle: #FF7900;
     --color-on-brand-secondary-subtle: #307B9B;
 
-    --color-status-success: #2ED573;
+    --color-status-success: #298732;
     --color-status-success-light: #58F69E;
     --color-status-success-dark: #298732;
     --color-status-success-subtle: #E3FFEE;
@@ -439,13 +440,13 @@
     --color-status-error-vivid-strong: rgba(255, 71, 87, 0.50);
     --color-status-error-vivid-rgb: 255, 71, 87;
     --color-border-prominent: #A29F9D;
-    --color-status-warning: #F9B415;
+    --color-status-warning: #C27400;
     --color-status-warning-light: #FFD352;
     --color-status-warning-dark: #C27400;
     --color-status-warning-subtle: #FFF7DD;
     --color-status-warning-muted: rgba(249, 180, 21, 0.30);
     --color-status-warning-strong: rgba(249, 180, 21, 0.50);
-    --color-status-info: #2196F3;
+    --color-status-info: #1072CB;
     --color-status-info-light: #78C2FF;
     --color-status-info-dark: #1072CB;
     --color-status-info-subtle: #EFF8FF;
@@ -521,7 +522,8 @@
     --color-text-tertiary: #A29F9D;
     --color-text-disabled: rgba(55, 65, 81, 0.48);
     --color-text-inverse: #FFFFFF;
-    --color-text-link: #1072CB;
+    --color-text-error: #A4221C;
+    --color-text-link: #135AA8;
     --color-text-link-hover: #135AA8;
 
     --color-surface-base: #FFFFFF;
@@ -530,23 +532,23 @@
     --color-surface-overlay: #FFFFFF;
     --color-surface-input: #F9F6F3;
 
-    --color-background-base: #EBEBEB;
+    --color-background-base: #EDEAE7;
     --color-background-default: #FFFFFF;
     --color-background-subtle: #F9F6F3;
     /* Placeholder pairing — light mode is deferred. */
     --color-background-frame: #A29F9D;
 
     --color-border-focus: #1072CB;
-    --color-border-input: #D4D1CE;
-    --color-border-input-hover: #A29F9D;
+    --color-border-input: #888684;
+    --color-border-input-hover: #72716F;
     --color-border-input-focus: #1072CB;
     --color-border-input-error: #D14343;
 
     /* Alpha hairline separators — mirrors the dark-mode white-alpha family,
        composited toward black on light surfaces (§4/S-2). */
-    --color-hairline-subtle: rgba(0, 0, 0, 0.06);
-    --color-hairline-default: rgba(0, 0, 0, 0.09);
-    --color-hairline-strong: rgba(0, 0, 0, 0.14);
+    --color-hairline-subtle: rgba(0, 0, 0, 0.10);
+    --color-hairline-default: rgba(0, 0, 0, 0.15);
+    --color-hairline-strong: rgba(0, 0, 0, 0.22);
 
     /* Scrims and control/data labels (VW-82) — identical to the dark block on
        purpose; see tokens/semantic.ts. */
@@ -554,7 +556,7 @@
     --color-scrim-press-strong: rgba(0, 0, 0, 0.20);
     --color-scrim-subtle: rgba(0, 0, 0, 0.30);
     --color-scrim-default: rgba(0, 0, 0, 0.50);
-    --color-on-control-idle: #D1D1D1;
+    --color-on-control-idle: #D4D1CE;
     --color-on-control-active: #FFFFFF;
     --color-on-data-strong: #0B0B0B;
 
@@ -565,7 +567,7 @@
     --color-interactive-disabled: rgba(55, 65, 81, 0.12);
     --color-interactive-disabled-text: rgba(55, 65, 81, 0.26);
 
-    --color-divider: #E8E9EB;
+    --color-divider: rgba(0, 0, 0, 0.15);
 
     --color-avatar-background: #72716F;
     --color-avatar-text: #FFFFFF;

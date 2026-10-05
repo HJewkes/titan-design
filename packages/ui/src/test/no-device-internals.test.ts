@@ -3,7 +3,7 @@
  * the rule rejects. Every value below is invented for the test — none is a real
  * device value.
  */
-import { RuleTester } from 'eslint'
+import { Linter, RuleTester } from 'eslint'
 import rule from '../../eslint-rules/no-device-internals'
 
 const ruleTester = new RuleTester({
@@ -13,6 +13,17 @@ const ruleTester = new RuleTester({
 // `ruleTester.run` must sit directly in the `describe` callback, not nested
 // inside `it()` — nesting it inside `it()` makes RuleTester's internal
 // assertions no-op silently (see no-raw-device-data-in-chat.test.ts).
+function messagesFor(code: string): string[] {
+  const linter = new Linter({ configType: 'flat' })
+  return linter
+    .verify(code, {
+      plugins: { t: { rules: { r: rule as never } } },
+      languageOptions: { ecmaVersion: 2022, sourceType: 'module' },
+      rules: { 't/r': 'error' },
+    })
+    .map((m) => m.message)
+}
+
 describe('no-device-internals', () => {
   ruleTester.run('no-device-internals', rule as never, {
     valid: [
@@ -48,5 +59,15 @@ describe('no-device-internals', () => {
         errors: [{ messageId: 'uuid' }],
       },
     ],
+  })
+})
+
+describe('no-device-internals messages', () => {
+  it.each([
+    ['frame', '// frame: ab cd ef 01'],
+    ['uuid', "const id = '0000fe59-1234-5678-9abc-def012345678'"],
+  ])('%s says what to render instead', (_id, code) => {
+    const [message] = messagesFor(code)
+    expect(message).toMatch(/Render the interpreted value .* with `Typography`/)
   })
 })

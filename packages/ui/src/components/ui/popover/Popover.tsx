@@ -1,6 +1,7 @@
-import React, { useState, useRef, useCallback, createContext, useContext } from 'react'
-import { View, Pressable, Modal, type ViewProps } from 'react-native'
+import React, { useRef, useCallback, createContext, useContext } from 'react'
+import { View, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { useControllableState } from '../../../hooks/useControllableState'
 import { Surface } from '../surface'
 import { TriggerSurface } from '../trigger'
 
@@ -29,6 +30,8 @@ export interface PopoverProps extends ViewProps {
   placement?: PopoverPlacement
   /** Controlled open state */
   isOpen?: boolean
+  /** Initial open state when uncontrolled */
+  defaultIsOpen?: boolean
   /** Callback when open state changes */
   onOpenChange?: (isOpen: boolean) => void
   /** Whether clicking outside closes the popover */
@@ -58,27 +61,21 @@ export interface PopoverProps extends ViewProps {
 export function Popover({
   placement = 'bottom',
   isOpen: controlledIsOpen,
+  defaultIsOpen = false,
   onOpenChange,
-  closeOnClickOutside = true,
+  closeOnClickOutside: _closeOnClickOutside = true,
   triggerMode = 'click',
   closeDelay = 150,
   className,
   children,
   ...props
 }: PopoverProps) {
-  const [internalIsOpen, setInternalIsOpen] = useState(false)
-  const isOpen = controlledIsOpen ?? internalIsOpen
+  const [isOpen, setIsOpen] = useControllableState({
+    value: controlledIsOpen,
+    defaultValue: defaultIsOpen,
+    onChange: onOpenChange,
+  })
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  const setIsOpen = useCallback(
-    (open: boolean) => {
-      if (controlledIsOpen === undefined) {
-        setInternalIsOpen(open)
-      }
-      onOpenChange?.(open)
-    },
-    [controlledIsOpen, onOpenChange]
-  )
 
   const handleHoverIn = useCallback(() => {
     if (triggerMode !== 'hover') return

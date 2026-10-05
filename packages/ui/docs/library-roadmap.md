@@ -27,29 +27,30 @@ deferred to its own pass.
 
 ## Decisions (critique §B)
 
-| # | Question | Decision |
-|---|---|---|
-| 1 | Container | `Card` is the only content container. `Surface` is for shell roots (shell, page, rail). `Tile` becomes a Card stat preset. `Section`/`SectionHeader` become Card presets (voltras mobile uses them), not deleted. |
-| 2 | numeric vs named elevation | Both public: `level` is absolute for shell roots, `raise`/`elevation` are relative. Landed in #166. |
-| 3 | Pills | One `Pill` primitive (tone / size / leading slot). `Badge`, `Chip`, `StatusPill`, `PrBadge`, `MuscleGroupChip` survive as thin presets (external users). `BaseBadge`, `WorkoutPill`, `SessionStatePill`, `WeightBadge`, `SeverityLabel`, `CoChangeChip` fold in or are deleted. |
-| 4 | Divider | Every rule is a `Divider`. `border-hairline*` is legal only on Card `outline`/`subtle`, Table rules, and input borders. |
-| 5 | HelpTip | Delete `HelpTip` and `LabelWithHelp`; a Tooltip story shows the pattern. |
-| 6 | Theme source | `SurfaceContext`/`ThemeProvider` only. `utils/useTheme.ts` is deleted (Card no longer uses it after #166). |
-| 7 | Workout/Fatigue dark-only? | No. Full theme-correct port (E3), in the batches below. |
-| 8 | Colour math | One `theme/color-math.ts` with CIELAB L* as the sanctioned metric; duplicate `hexToRgb` ×4, `mixHex` ×4, luminance ×3, test `lstar` ×3 deleted. |
-| 9 | Typography | `Typography` and `Eyebrow` move into `ui/`; re-export shims stay in `custom/`. Scheduled by the 2026-09-19 decision below (M2). Landed in #277. |
-| 10 | Dot | `Indicator` survives. `StatusDot`'s consumers migrate; its inline glows route through `getGlowShadow`. Fatigue README corrected. |
-| 11 | Metric | One `Metric` with size / align / trend. `MetricTiles` becomes a preset (one external site); `MetricCell` deleted (no consumers). |
-| 12 | paperSheet | Stays hero-only. Cards use the lift (rim 0.12); grain is not on ordinary cards. |
-| 13 | Formatters | `utils/format/{number,time,workout}`. No component-local `formatX` or inline `toFixed`; lint enforces after migration. |
-| 14 | Storybook tree | Six groups: `Foundations/` · `Components/Atoms|Molecules|Organisms/` (ui/* only) · `Custom/<Family>/` · `Shell/` · `Pages/` · `Lab/<Family>/` (src/lab only). |
-| 15 | Lint | One mechanism: the per-family token-purity error block, extended everywhere; baseline retired at zero. |
-| 16 | Light mode | Deferred. Task filed. Not a target for any family until the dark port is done. |
+| #   | Question                   | Decision                                                                                                                                                                                                                                                                        |
+| --- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | -------------------------------------------------------------------------------------------- |
+| 1   | Container                  | `Card` is the only content container. `Surface` is for shell roots (shell, page, rail). `Tile` becomes a Card stat preset. `Section`/`SectionHeader` become Card presets (voltras mobile uses them), not deleted.                                                               |
+| 2   | numeric vs named elevation | Both public: `level` is absolute for shell roots, `raise`/`elevation` are relative. Landed in #166.                                                                                                                                                                             |
+| 3   | Pills                      | One `Pill` primitive (tone / size / leading slot). `Badge`, `Chip`, `StatusPill`, `PrBadge`, `MuscleGroupChip` survive as thin presets (external users). `BaseBadge`, `WorkoutPill`, `SessionStatePill`, `WeightBadge`, `SeverityLabel`, `CoChangeChip` fold in or are deleted. |
+| 4   | Divider                    | Every rule is a `Divider`. `border-hairline*` is legal only on Card `outline`/`subtle`, Table rules, and input borders.                                                                                                                                                         |
+| 5   | HelpTip                    | Delete `HelpTip` and `LabelWithHelp`; a Tooltip story shows the pattern.                                                                                                                                                                                                        |
+| 6   | Theme source               | `SurfaceContext`/`ThemeProvider` only. `utils/useTheme.ts` is deleted (Card no longer uses it after #166).                                                                                                                                                                      |
+| 7   | Workout/Fatigue dark-only? | No. Full theme-correct port (E3), in the batches below.                                                                                                                                                                                                                         |
+| 8   | Colour math                | One `theme/color-math.ts` with CIELAB L\* as the sanctioned metric; duplicate `hexToRgb` ×4, `mixHex` ×4, luminance ×3, test `lstar` ×3 deleted.                                                                                                                                |
+| 9   | Typography                 | `Typography` and `Eyebrow` move into `ui/`; re-export shims stay in `custom/`. Scheduled by the 2026-09-19 decision below (M2). Landed in #277.                                                                                                                                 |
+| 10  | Dot                        | `Indicator` survives. `StatusDot`'s consumers migrate; its inline glows route through `getGlowShadow`. Fatigue README corrected.                                                                                                                                                |
+| 11  | Metric                     | One `Metric` with size / align / trend. `MetricTiles` becomes a preset (one external site); `MetricCell` deleted (no consumers).                                                                                                                                                |
+| 12  | paperSheet                 | Stays hero-only. Cards use the lift (rim 0.12); grain is not on ordinary cards.                                                                                                                                                                                                 |
+| 13  | Formatters                 | `utils/format/{number,time,workout}`. No component-local `formatX` or inline `toFixed`; lint enforces after migration.                                                                                                                                                          |
+| 14  | Storybook tree             | Six groups: `Foundations/` · `Components/Atoms                                                                                                                                                                                                                                  | Molecules | Organisms/`(ui/* only) ·`Custom/<Family>/`·`Shell/`·`Pages/`·`Lab/<Family>/` (src/lab only). |
+| 15  | Lint                       | One mechanism: the per-family token-purity error block, extended everywhere; baseline retired at zero.                                                                                                                                                                          |
+| 16  | Light mode                 | Deferred. Task filed. Not a target for any family until the dark port is done.                                                                                                                                                                                                  |
 
 ## Epics, in order
 
 **E1 · Depth follow-ups** (after #166; starts now)
-- 13 `ui/*` overlays (autocomplete, drawer, help-tip, indicator, menu, modal, popover, select, switch, tabs, toast, toolbar-button, tooltip) move from Tailwind `shadow-*` + hairline ring to the floating lift recipe. Done when `grep -rE "shadow-(sm|md|lg|xl|2xl)" src/components/ui` is empty.
+
+- 13 `ui/*` overlays (autocomplete, drawer, help-tip, indicator, menu, modal, popover, select, switch, tabs, toast, toolbar-button, tooltip) move from Tailwind `shadow-*` + hairline ring to the floating lift recipe. Done when `src/arch/raw-shadow.test.ts` passes: it finds no `shadow-(sm|md|lg|xl|2xl|inner)` or `shadow-[` in `src/components`.
 - Delete `utils/useTheme.ts`.
 - Replace literal-hex pins in `Surface.test.tsx`, `surface.contract.test.ts`, `Card.test.tsx`, `elevation.test.ts` with `greyRamp[...]` references.
 - Purge stale comments: `SessionRail.stories.tsx:40`, `utils/colors.ts:4`, `SessionRail.tsx:16-17`, the skill's `gotchas.md` "Neumorphic depth" section.
@@ -57,6 +58,7 @@ deferred to its own pass.
 - Glow shadows (StatusDot ×7, Indicator, MesoCard, BodyMap, ZoneTrack, IntensityBar, PrHistoryModal) route through `getGlowShadow`.
 
 **E4 · Storybook reorganisation** (can run beside E1 on non-overlapping files)
+
 - Retitle onto the six-group tree; fix `Composes` links.
 - Move the 8 `Lab/`-titled files out of `src/components` (they publish to npm today).
 - Delete duplicate `Lab/ActiveWork/*` (6), `Lab/Components/*` (3), `Lab/Archive/Surface`, each with a REJECTED.md entry.
@@ -65,6 +67,7 @@ deferred to its own pass.
 - Thin per-state stories to Default + controls (Input 15, Card 14, Alert 14, Toast 13).
 
 **E5 · Governance refresh** (after E4 so tags land on final titles)
+
 - Regenerate `arch-graph.json`; CI fails when it is older than the newest `index.ts`.
 - REJECTED.md backfill for the ten archived directions plus retired `inset`, `tonalFill`/`ditherTile`, `data-1..10`.
 - `status:` tags; MATURITY review for `ui/*` (38 primitives, not 52).
@@ -72,12 +75,14 @@ deferred to its own pass.
 - Update the workflow skill's `gotchas.md` and `06-lint-guardrails.md`.
 
 **E2 · Consolidation** (decisions 1, 3, 4, 5, 10, 11)
+
 - Card as sole container; Tile and Section as presets; loose `bg-surface-*` Views (58 sites) onto Card.
 - Pill primitive + presets; `Chip` loses `neutral-*`/`text-white`.
 - Divider everywhere (21 rules). Indicator over StatusDot. Metric absorbs MetricTiles; MetricCell deleted. HelpTip deleted.
 - Each retired export: `@deprecated` first, then a consumer-update task per downstream repo.
 
 **E3 · Port Workout and Fatigue** (decisions 7, 8, 9, 13, 15)
+
 - Typography + Eyebrow into `ui/`; `theme/color-math.ts`; `utils/format/*`.
 - Workout batches from the 2026-09-08 audit, smallest drift and most consumers first:
   - B1 (S): MetricCell, SetStrip, SetTableHeader, SetsRepsLoad, ExerciseHeading, ExerciseIndicator, ExerciseCardHeading, PrBadge.
@@ -91,6 +96,7 @@ deferred to its own pass.
 - Move `velocity-story-kit.tsx` and `setHeadingKit.tsx` out of `components/`.
 
 **E6 · Code-quality floor** (independent)
+
 - Split the 29 functions over 100 lines (four charts >300 lines; VelocityStrip).
 - eslint warnings 81 → 0. `axe` in the 16 test files lacking it. Delete the 18 gitignored `tmp-*.mjs`.
 
@@ -111,20 +117,20 @@ Thirteen `custom/` directories plus `ActiveWork/Eyebrow` are domain-free and mov
 time (`custom/README.md`, "Generic directories awaiting a move to `ui/`"). In-repo importer counts
 are grep counts against `src/` at merge time, excluding the directory's own files.
 
-| #   | Move                                                                                                                | In-repo importers        | When                                      |
-| --- | ------------------------------------------------------------------------------------------------------------------- | ------------------------ | ----------------------------------------- |
-| M1  | `usePrefersReducedMotion` to `src/hooks/usePrefersReducedMotion.ts`                                                 | 3                        | Landed in #276                            |
-| M2  | Typography to `ui/typography`, Eyebrow to `ui/eyebrow`, with a one-release re-export shim in `custom/Typography`; marks decision 9 landed when its PR merges | Typography 68, Eyebrow 8 | Landed in #277                          |
-| M3  | EmptyState to `ui/empty-state`                                                                                      | 1                        | Landed in #279                            |
-| M5  | Create `ui/charts/` with its README; move SparkBars; add a `d3-*`-import lint scoped to `ui/charts/**`              | 2                        | now                                       |
-| M4  | Table (headless `useTableState` plus a styled shell, TD-29, #271) to `ui/table`                                     | 8                        | now that TD-29 has landed                 |
-| M6  | Generic singles: Metric (2), DateTime (8), Prose (5), Sidebar (1), stepper (1), TimerReadout (2), CircularTimer (2) | 21 total                 | behind the shrinking baseline, follows M2 |
-| M7  | Charts that are already generic: Scatter (1), Gauge (1), Treemap (3), into `ui/charts/`                             | 5 total                  | behind the shrinking baseline             |
+| #   | Move                                                                                                                                                                     | In-repo importers        | When                                      |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------ | ----------------------------------------- |
+| M1  | `usePrefersReducedMotion` to `src/hooks/usePrefersReducedMotion.ts`                                                                                                      | 3                        | Landed in #276                            |
+| M2  | Typography to `ui/typography`, Eyebrow to `ui/eyebrow`, with a one-release re-export shim in `custom/Typography`; marks decision 9 landed when its PR merges             | Typography 68, Eyebrow 8 | Landed in #277                            |
+| M3  | EmptyState to `ui/empty-state`                                                                                                                                           | 1                        | Landed in #279                            |
+| M5  | Create `ui/charts/` with its README; move SparkBars; add a `d3-*`-import lint scoped to `ui/charts/**`                                                                   | 2                        | Landed in TD-188                          |
+| M4  | Table (headless `useTableState` plus a styled shell, TD-29, #271) to `ui/table`                                                                                          | 8                        | Landed in #367                            |
+| M6  | Generic singles: Metric (2), DateTime (8, landed in TD-428, migration M7 in `DEPRECATIONS.md`), Prose (5), Sidebar (1), stepper (1), TimerReadout (2), CircularTimer (2) | 21 total                 | behind the shrinking baseline, follows M2 |
+| M8  | Charts that are already generic: Scatter (1), Gauge (1), Treemap (3), into `ui/charts/` (migration M8 in `DEPRECATIONS.md`)                                              | 5 total                  | Landed in TD-471                          |
 
 M1, M2, M3 and M5 land as separate PRs on disjoint files and can run in parallel. M4 was gated on
-TD-29, which has since landed (#271); it is now unblocked. M6 and M7 have no deadline;
-`custom-families.baseline.json` (the placement lint, below) tracks the ten directories so they are
-not forgotten.
+TD-29, which has since landed (#271); it is now unblocked. M8 landed in TD-471. M6 has no deadline;
+`custom-families.baseline.json` (the placement lint, below) tracks the remaining directories so they
+are not forgotten.
 
 **Placement lint (new epic, tracked as a follow-up task, not implemented by this decision's docs
 PR).** A separate tooling PR adds, each ratcheted with a committed baseline in the repo's existing

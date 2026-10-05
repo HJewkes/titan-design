@@ -1,4 +1,10 @@
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+
 import { defineConfig } from '@playwright/test'
+
+// Outside Storybook's watched root: trace files written inside it make Vite reload the page mid-test.
+const INTERACTION_OUTPUT_DIR = join(tmpdir(), 'titan-ui-playwright-interaction')
 
 export default defineConfig({
   testDir: './tests/visual',
@@ -7,10 +13,10 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: 0,
-  // The story-baseline suite is one test looping over every in-scope story
-  // (goto + networkidle + screenshot each), so its runtime scales with the
-  // story count. Give it well past the 30s default as the shell family grows.
-  timeout: 120_000,
+  // stories.spec.ts declares one test per story from the index this writes.
+  globalSetup: './tests/visual/story-index.global-setup.ts',
+  workers: 4,
+  timeout: 30_000,
   // Same floor as the Layer-1 baseline config: see playwright.baseline.config.ts.
   expect: {
     toHaveScreenshot: {
@@ -31,11 +37,27 @@ export default defineConfig({
         viewport: { width: 1280, height: 720 },
       },
     },
+    // Behaviour and keyboard tests for stories tagged `interaction`; they assert, never screenshot.
+    {
+      name: 'interaction',
+      testDir: './tests/interaction',
+      outputDir: INTERACTION_OUTPUT_DIR,
+      // One worker: parallel first loads of the dev server made the scroll timings flaky.
+      fullyParallel: false,
+      workers: 1,
+      timeout: 60_000,
+      use: {
+        browserName: 'chromium',
+        viewport: { width: 390, height: 844 },
+      },
+    },
   ],
   webServer: {
     command: 'pnpm storybook --ci',
     port: 6006,
-    reuseExistingServer: true,
+    reuseExistingServer: false,
     timeout: 120000,
+    // Puts Vite's re-optimization and reload lines in the CI log (TD-636).
+    stdout: 'pipe',
   },
 })

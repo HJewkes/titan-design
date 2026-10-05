@@ -1,0 +1,1985 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`FileActivityDetail characterisation > on a dark surface > renders the Default story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      data-testid="page-surface"
+      style="background-color: rgb(37, 35, 33);"
+    >
+      <div
+        class="css-view-175oi2r"
+        data-testid="file-activity-detail"
+        style="background-color: rgb(49, 48, 47); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden; box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 4px 12px rgba(0,0,0,0.32);"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            src/commands/
+          </div>
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            open.ts
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              23 sessions · last touched 
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Jul 11
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+               · first 
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              May 2
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Reads
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="color: rgb(33, 150, 243);"
+            >
+              84
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Writes
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="color: rgb(213, 72, 175);"
+            >
+              12
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Edits
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="color: rgb(224, 82, 84);"
+            >
+              61
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Touches
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              157
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="growth-well"
+          style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Net change over sessions
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="color: var(--color-result-improve);"
+            >
+              +31.6k ch
+            </div>
+          </div>
+          <div
+            aria-label="Per-session net char change for src/commands/open.ts"
+            class="css-view-175oi2r"
+            data-testid="spark-bars"
+            role="img"
+            style="height: 34px; gap: 2px;"
+          >
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-0"
+              style="height: 3px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-1"
+              style="height: 7px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-2"
+              style="height: 2px; width: 3px; background-color: var(--color-result-degrade);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-3"
+              style="height: 20px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-4"
+              style="height: 9px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-5"
+              style="height: 2px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-6"
+              style="height: 34px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-7"
+              style="height: 6px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-8"
+              style="height: 7px; width: 3px; background-color: var(--color-result-degrade);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-9"
+              style="height: 16px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-10"
+              style="height: 24px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-11"
+              style="height: 2px; width: 3px; background-color: var(--color-result-improve);"
+            />
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Added
+              </div>
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="color: var(--color-result-improve);"
+              >
+                +41.3k
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Removed
+              </div>
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="color: var(--color-result-degrade);"
+              >
+                -9.6k
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Sessions
+              </div>
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="color: var(--color-result-neutral);"
+              >
+                23
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Changes together with
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                  dir="auto"
+                >
+                  src/commands/
+                </div>
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  _open-helpers.ts
+                </div>
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  19×
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                  dir="auto"
+                >
+                  src/registry/
+                </div>
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  index.ts
+                </div>
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  11×
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                  dir="auto"
+                >
+                  __tests__/commands/
+                </div>
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  open.test.ts
+                </div>
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  8×
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`FileActivityDetail characterisation > on a dark surface > renders the NetShrink story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      data-testid="page-surface"
+      style="background-color: rgb(37, 35, 33);"
+    >
+      <div
+        class="css-view-175oi2r"
+        data-testid="file-activity-detail"
+        style="background-color: rgb(49, 48, 47); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden; box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 4px 12px rgba(0,0,0,0.32);"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            src/utils/
+          </div>
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            fs-atomic.ts
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              12 sessions · last touched 
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Jun 28
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+               · first 
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              May 9
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Reads
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="color: rgb(33, 150, 243);"
+            >
+              52
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Writes
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="color: rgb(213, 72, 175);"
+            >
+              4
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Edits
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="color: rgb(224, 82, 84);"
+            >
+              18
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Touches
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              74
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="growth-well"
+          style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Net change over sessions
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="color: var(--color-result-degrade);"
+            >
+              -3.4k ch
+            </div>
+          </div>
+          <div
+            aria-label="Per-session net char change for src/utils/fs-atomic.ts"
+            class="css-view-175oi2r"
+            data-testid="spark-bars"
+            role="img"
+            style="height: 34px; gap: 2px;"
+          >
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-0"
+              style="height: 15px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-1"
+              style="height: 6px; width: 3px; background-color: var(--color-result-degrade);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-2"
+              style="height: 34px; width: 3px; background-color: var(--color-result-degrade);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-3"
+              style="height: 9px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-4"
+              style="height: 18px; width: 3px; background-color: var(--color-result-degrade);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-5"
+              style="height: 5px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-6"
+              style="height: 11px; width: 3px; background-color: var(--color-result-degrade);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-7"
+              style="height: 3px; width: 3px; background-color: var(--color-result-improve);"
+            />
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Added
+              </div>
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="color: var(--color-result-improve);"
+              >
+                +8.1k
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Removed
+              </div>
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="color: var(--color-result-degrade);"
+              >
+                -11.5k
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Sessions
+              </div>
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="color: var(--color-result-neutral);"
+              >
+                12
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Changes together with
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                  dir="auto"
+                >
+                  src/utils/
+                </div>
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  flock.ts
+                </div>
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  7×
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`FileActivityDetail characterisation > on a dark surface > renders the NoCoChanges story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(37, 35, 33);"
+  >
+    <div
+      class="css-view-175oi2r"
+      data-testid="page-surface"
+      style="background-color: rgb(37, 35, 33);"
+    >
+      <div
+        class="css-view-175oi2r"
+        data-testid="file-activity-detail"
+        style="background-color: rgb(49, 48, 47); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden; box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 4px 12px rgba(0,0,0,0.32);"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            ./
+          </div>
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            README.md
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              8 sessions · last touched 
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Jul 2
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+               · first 
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              May 1
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Reads
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="color: rgb(33, 150, 243);"
+            >
+              40
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Writes
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="color: rgb(213, 72, 175);"
+            >
+              6
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Edits
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="color: rgb(224, 82, 84);"
+            >
+              9
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Touches
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              55
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="growth-well"
+          style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Net change over sessions
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="color: var(--color-result-improve);"
+            >
+              +4.8k ch
+            </div>
+          </div>
+          <div
+            aria-label="Per-session net char change for README.md"
+            class="css-view-175oi2r"
+            data-testid="spark-bars"
+            role="img"
+            style="height: 34px; gap: 2px;"
+          >
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-0"
+              style="height: 34px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-1"
+              style="height: 2px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-2"
+              style="height: 10px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-3"
+              style="height: 2px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-4"
+              style="height: 2px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-5"
+              style="height: 25px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-6"
+              style="height: 3px; width: 3px; background-color: var(--color-result-improve);"
+            />
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Added
+              </div>
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="color: var(--color-result-improve);"
+              >
+                +6.2k
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Removed
+              </div>
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="color: var(--color-result-degrade);"
+              >
+                -1.4k
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Sessions
+              </div>
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="color: var(--color-result-neutral);"
+              >
+                8
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Changes together with
+          </div>
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            no co-changes recorded
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`FileActivityDetail characterisation > on a light surface > renders the Default story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      data-testid="page-surface"
+      style="background-color: rgb(255, 255, 255);"
+    >
+      <div
+        class="css-view-175oi2r"
+        data-testid="file-activity-detail"
+        style="background-color: rgb(237, 234, 231); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden; box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 4px 12px rgba(0,0,0,0.13);"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            src/commands/
+          </div>
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            open.ts
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              23 sessions · last touched 
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Jul 11
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+               · first 
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              May 2
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Reads
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="color: rgb(33, 150, 243);"
+            >
+              84
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Writes
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="color: rgb(213, 72, 175);"
+            >
+              12
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Edits
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="color: rgb(224, 82, 84);"
+            >
+              61
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Touches
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              157
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="growth-well"
+          style="background-color: rgb(249, 246, 243); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Net change over sessions
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="color: var(--color-result-improve);"
+            >
+              +31.6k ch
+            </div>
+          </div>
+          <div
+            aria-label="Per-session net char change for src/commands/open.ts"
+            class="css-view-175oi2r"
+            data-testid="spark-bars"
+            role="img"
+            style="height: 34px; gap: 2px;"
+          >
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-0"
+              style="height: 3px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-1"
+              style="height: 7px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-2"
+              style="height: 2px; width: 3px; background-color: var(--color-result-degrade);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-3"
+              style="height: 20px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-4"
+              style="height: 9px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-5"
+              style="height: 2px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-6"
+              style="height: 34px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-7"
+              style="height: 6px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-8"
+              style="height: 7px; width: 3px; background-color: var(--color-result-degrade);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-9"
+              style="height: 16px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-10"
+              style="height: 24px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-11"
+              style="height: 2px; width: 3px; background-color: var(--color-result-improve);"
+            />
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Added
+              </div>
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="color: var(--color-result-improve);"
+              >
+                +41.3k
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Removed
+              </div>
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="color: var(--color-result-degrade);"
+              >
+                -9.6k
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Sessions
+              </div>
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="color: var(--color-result-neutral);"
+              >
+                23
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Changes together with
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                  dir="auto"
+                >
+                  src/commands/
+                </div>
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  _open-helpers.ts
+                </div>
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  19×
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                  dir="auto"
+                >
+                  src/registry/
+                </div>
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  index.ts
+                </div>
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  11×
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                  dir="auto"
+                >
+                  __tests__/commands/
+                </div>
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  open.test.ts
+                </div>
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  8×
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`FileActivityDetail characterisation > on a light surface > renders the NetShrink story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      data-testid="page-surface"
+      style="background-color: rgb(255, 255, 255);"
+    >
+      <div
+        class="css-view-175oi2r"
+        data-testid="file-activity-detail"
+        style="background-color: rgb(237, 234, 231); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden; box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 4px 12px rgba(0,0,0,0.13);"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            src/utils/
+          </div>
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            fs-atomic.ts
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              12 sessions · last touched 
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Jun 28
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+               · first 
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              May 9
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Reads
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="color: rgb(33, 150, 243);"
+            >
+              52
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Writes
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="color: rgb(213, 72, 175);"
+            >
+              4
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Edits
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="color: rgb(224, 82, 84);"
+            >
+              18
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Touches
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              74
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="growth-well"
+          style="background-color: rgb(249, 246, 243); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Net change over sessions
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="color: var(--color-result-degrade);"
+            >
+              -3.4k ch
+            </div>
+          </div>
+          <div
+            aria-label="Per-session net char change for src/utils/fs-atomic.ts"
+            class="css-view-175oi2r"
+            data-testid="spark-bars"
+            role="img"
+            style="height: 34px; gap: 2px;"
+          >
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-0"
+              style="height: 15px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-1"
+              style="height: 6px; width: 3px; background-color: var(--color-result-degrade);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-2"
+              style="height: 34px; width: 3px; background-color: var(--color-result-degrade);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-3"
+              style="height: 9px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-4"
+              style="height: 18px; width: 3px; background-color: var(--color-result-degrade);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-5"
+              style="height: 5px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-6"
+              style="height: 11px; width: 3px; background-color: var(--color-result-degrade);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-7"
+              style="height: 3px; width: 3px; background-color: var(--color-result-improve);"
+            />
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Added
+              </div>
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="color: var(--color-result-improve);"
+              >
+                +8.1k
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Removed
+              </div>
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="color: var(--color-result-degrade);"
+              >
+                -11.5k
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Sessions
+              </div>
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="color: var(--color-result-neutral);"
+              >
+                12
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Changes together with
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1 r-maxWidth-dnmrzs r-overflow-1udh08x r-textOverflow-1udbk01 r-whiteSpace-3s2u2q r-wordWrap-1iln25a"
+                  dir="auto"
+                >
+                  src/utils/
+                </div>
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  flock.ts
+                </div>
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  7×
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`FileActivityDetail characterisation > on a light surface > renders the NoCoChanges story unchanged 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="background-color: rgb(255, 255, 255);"
+  >
+    <div
+      class="css-view-175oi2r"
+      data-testid="page-surface"
+      style="background-color: rgb(255, 255, 255);"
+    >
+      <div
+        class="css-view-175oi2r"
+        data-testid="file-activity-detail"
+        style="background-color: rgb(237, 234, 231); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden; box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 4px 12px rgba(0,0,0,0.13);"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            ./
+          </div>
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            README.md
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              8 sessions · last touched 
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Jul 2
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+               · first 
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              May 1
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Reads
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="color: rgb(33, 150, 243);"
+            >
+              40
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Writes
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="color: rgb(213, 72, 175);"
+            >
+              6
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Edits
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="color: rgb(224, 82, 84);"
+            >
+              9
+            </div>
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Touches
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              55
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="growth-well"
+          style="background-color: rgb(249, 246, 243); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Net change over sessions
+            </div>
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+              style="color: var(--color-result-improve);"
+            >
+              +4.8k ch
+            </div>
+          </div>
+          <div
+            aria-label="Per-session net char change for README.md"
+            class="css-view-175oi2r"
+            data-testid="spark-bars"
+            role="img"
+            style="height: 34px; gap: 2px;"
+          >
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-0"
+              style="height: 34px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-1"
+              style="height: 2px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-2"
+              style="height: 10px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-3"
+              style="height: 2px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-4"
+              style="height: 2px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-5"
+              style="height: 25px; width: 3px; background-color: var(--color-result-improve);"
+            />
+            <div
+              class="css-view-175oi2r"
+              data-testid="spark-bars-bar-6"
+              style="height: 3px; width: 3px; background-color: var(--color-result-improve);"
+            />
+          </div>
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Added
+              </div>
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="color: var(--color-result-improve);"
+              >
+                +6.2k
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Removed
+              </div>
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="color: var(--color-result-degrade);"
+              >
+                -1.4k
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Sessions
+              </div>
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+                style="color: var(--color-result-neutral);"
+              >
+                8
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            Changes together with
+          </div>
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            no co-changes recorded
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -465,8 +465,10 @@ function valueScale(input: ScaleInput) {
   return scaleLinear().domain([floor, ceiling]).range([input.plot.bottom, input.plot.top])
 }
 
+// A non-finite reading would reach the line path, the dots and the summary as "NaN".
 function placeActuals(input: GoalTrajectoryGeometryInput) {
   return input.actuals
+    .filter((a) => Number.isFinite(a.value))
     .map((actual, index) => ({ actual, index, week: resolveActualWeek(actual, input.weeks) }))
     .filter(
       (a): a is { actual: GoalActualPoint; index: number; week: number } => a.week !== undefined
@@ -727,7 +729,8 @@ export function trajectoryWeekScale(input: TrajectoryWeekScaleInput): Trajectory
     ...(input.nextTarget ? [input.nextTarget.weekIndex] : []),
   ])
   const steps = Math.max(1, wks.max - wks.min)
-  const inset = weekInset(plot.right - plot.left, steps + 1)
+  // The WEEK_INSET floor must not exceed half the plot, or the range inverts and spans go negative.
+  const inset = Math.min(weekInset(plot.right - plot.left, steps + 1), (plot.right - plot.left) / 2)
   const xScale = scaleLinear()
     .domain([wks.min, wks.max])
     .range([plot.left + inset, plot.right - inset])

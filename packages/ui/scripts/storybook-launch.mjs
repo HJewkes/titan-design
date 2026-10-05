@@ -29,8 +29,11 @@
  */
 import { execFileSync, spawn } from 'node:child_process'
 import { existsSync } from 'node:fs'
-import { resolve, dirname } from 'node:path'
+import { connect, createServer } from 'node:net'
+import { resolve, dirname, delimiter, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+
+import { isEntryPoint } from './lib/entry.mjs'
 
 /** THE port. Everything non-isolated uses it, so a stale server is a bug, not a fork. */
 const LOCKED_PORT = 6006
@@ -72,15 +75,43 @@ function requestedScopes() {
   return scopes.length ? scopes : ['orphan']
 }
 
+/** Where lsof lives on macOS and Linux; agent sandboxes often leave `/usr/sbin` off PATH. */
+const LSOF_CANDIDATES = ['/usr/sbin/lsof', '/usr/bin/lsof']
+
+/** The absolute path of lsof, or `null` when it is nowhere to be found. */
+export function resolveLsof({
+  exists = existsSync,
+  pathDirs = (process.env.PATH ?? '').split(delimiter).filter(Boolean),
+} = {}) {
+  const found = LSOF_CANDIDATES.find((p) => exists(p))
+  if (found) return found
+  const onPath = pathDirs.map((d) => join(d, 'lsof')).find((p) => exists(p))
+  return onPath ?? null
+}
+
+const LSOF = resolveLsof()
+
 /**
- * Best-effort shell out. Swallowing the error is deliberate: on a runner without `lsof`
- * the inventory simply comes back empty and we fall through to launching normally, which
- * is the safe degradation. A port policy must not be able to block CI.
+ * Best-effort shell out. lsof exits 1 with no output when nothing matches, and that is
+ * tolerated. Any other lsof failure is reported once, so a broken lsof is not mistaken
+ * for an empty inventory. Without lsof at all, `main` falls back to a bind probe.
  */
+let warnedLsofFailure = false
 const sh = (cmd, args) => {
+  const isLsof = cmd === 'lsof'
+  if (isLsof && !LSOF) return ''
   try {
-    return execFileSync(cmd, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] })
-  } catch {
+    return execFileSync(isLsof ? LSOF : cmd, args, {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    })
+  } catch (err) {
+    if (isLsof && err.status !== 1 && !warnedLsofFailure) {
+      warnedLsofFailure = true
+      console.warn(
+        `  Warning: lsof failed (${err.code ?? `exit ${err.status}`}); inventory may be incomplete.`
+      )
+    }
     return ''
   }
 }
@@ -149,11 +180,13 @@ function category(entry) {
   return 'foreign'
 }
 
-const isOrphan = (entry) => category(entry) === 'orphan'
-
-function printInventory(entries) {
+export function printInventory(entries, { lsof = LSOF, log = console.log } = {}) {
+  if (!lsof) {
+    log('\n  Inventory needs lsof; the port probe is the only check in this run.\n')
+    return
+  }
   if (entries.length === 0) {
-    console.log(`\n  Nothing listening in ${SCAN_RANGE[0]}-${SCAN_RANGE[1]}.\n`)
+    log(`\n  Nothing listening in ${SCAN_RANGE[0]}-${SCAN_RANGE[1]}.\n`)
     return
   }
   console.log(`\n  Listening in ${SCAN_RANGE[0]}-${SCAN_RANGE[1]}:\n`)
@@ -211,9 +244,43 @@ function killPid(pid, why) {
   return true
 }
 
-function pickIsolatedPort(entries) {
-  const busy = new Set(entries.map((e) => e.port))
-  for (let p = ISOLATED_RANGE[0]; p <= ISOLATED_RANGE[1]; p++) if (!busy.has(p)) return p
+/** True when a listener answers a connect to the port on this host. */
+function isListening(port, host) {
+  return new Promise((done) => {
+    const socket = connect({ port, host })
+    socket.once('connect', () => (socket.destroy(), done(true)))
+    socket.once('error', () => done(false))
+  })
+}
+
+/** True when a wildcard bind succeeds, which fails if any host already holds the port. */
+function canBindAll(port) {
+  return new Promise((done) => {
+    const server = createServer()
+    server.once('error', () => done(false))
+    server.listen(port, () => server.close(() => done(true)))
+  })
+}
+
+/**
+ * True when nothing holds the port on 127.0.0.1, ::1 or 0.0.0.0. No lsof needed.
+ * A 127.0.0.1-only bind misses ::1 and 0.0.0.0 listeners on macOS, so connect probes back it up.
+ */
+export async function isPortFree(port) {
+  if (await isListening(port, '127.0.0.1')) return false
+  if (await isListening(port, '::1')) return false
+  return canBindAll(port)
+}
+
+/** First port in `range` that is neither listed busy nor failing the bind probe. */
+export async function pickFreePort([lo, hi], { busy = new Set(), isFree = isPortFree } = {}) {
+  for (let p = lo; p <= hi; p++) if (!busy.has(p) && (await isFree(p))) return p
+  return null
+}
+
+async function pickIsolatedPort(entries) {
+  const port = await pickFreePort(ISOLATED_RANGE, { busy: new Set(entries.map((e) => e.port)) })
+  if (port != null) return port
   console.error(`\n  No free port in ${ISOLATED_RANGE.join('-')}. Clean some up.\n`)
   process.exit(1)
 }
@@ -230,9 +297,15 @@ function storybookBin() {
   return existsSync(hoisted) ? hoisted : 'storybook'
 }
 
+/** `--ci` because `storybook dev` exits 255 without a TTY (nohup, background, closed stdin). */
+export function buildStorybookArgs(port, extra = []) {
+  const ci = extra.includes('--ci') ? [] : ['--ci']
+  return ['dev', '-p', String(port), '--exact-port', ...ci, ...extra]
+}
+
 function launch(port) {
   console.log(`  Starting Storybook on ${port} (--exact-port: it fails rather than drifts)\n`)
-  const args = ['dev', '-p', String(port), '--exact-port', ...passthrough]
+  const args = buildStorybookArgs(port, passthrough)
   const child = spawn(storybookBin(), args, { stdio: 'inherit', cwd: PKG_ROOT })
   child.on('error', (err) => {
     console.error(`\n  Could not start Storybook: ${err.message}\n`)
@@ -241,59 +314,88 @@ function launch(port) {
   child.on('exit', (code) => process.exit(code ?? 0))
 }
 
+/** Commands that need lsof's inventory; everything else can run on the bind probe alone. */
+export function needsInventory(argvList) {
+  return argvList.some(
+    (a) => a === '--list' || a === '--reap' || a === '--reap-all' || a.startsWith('--reap=')
+  )
+}
+
+/** Exits with a printed reason when an inventory command runs without lsof. */
+export function refuseWithoutLsof(
+  lsof,
+  argvList,
+  { error = console.error, exit = process.exit } = {}
+) {
+  if (lsof || !needsInventory(argvList)) return
+  error('\n  lsof was not found in /usr/sbin, /usr/bin or on PATH.')
+  error('  --list and --reap need its server inventory, so they refuse to guess.')
+  error('  Install lsof or add its directory to PATH.\n')
+  exit(1)
+}
+
 // --- main --------------------------------------------------------------------
 
-let entries = inventory()
-printInventory(entries)
-
-// Reap BEFORE the --list exit, so `--reap --list` reaps and then shows the result.
-const scopes = requestedScopes()
-if (scopes) {
-  const freed = reap(entries, scopes)
-  if (freed.length > 0) {
-    entries = inventory() // re-read: ports we just freed are now available
-    console.log('  After reaping:')
-    printInventory(entries)
+async function main() {
+  refuseWithoutLsof(LSOF, argv)
+  if (!LSOF) {
+    console.warn(
+      '  Warning: lsof not found, so the server inventory is unavailable. Using a bind probe.'
+    )
   }
-}
+  let entries = inventory()
+  printInventory(entries)
 
-if (has('--list')) process.exit(0)
-
-if (has('--isolated')) {
-  const port = pickIsolatedPort(entries)
-  console.log(`  ISOLATED launch — this port is yours alone.`)
-  console.log(`  http://127.0.0.1:${port}\n`)
-  launch(port)
-} else {
-  const holder = entries.find((e) => e.port === LOCKED_PORT)
-
-  if (!holder) {
-    launch(LOCKED_PORT)
-  } else if (!holder.storybook) {
-    // Never kill something we cannot identify.
-    console.error(`  Port ${LOCKED_PORT} is held by a NON-Storybook process (pid ${holder.pid}):`)
-    console.error(`    ${holder.command}`)
-    console.error(`\n  Refusing to kill it. Free the port, or use --isolated.\n`)
-    process.exit(1)
-  } else if (isOurs(holder) && !has('--restart')) {
-    // Exits 0 WITHOUT holding the foreground. Safe for `playwright.config.ts`, whose
-    // webServer sets `reuseExistingServer: true` and therefore never runs this command
-    // when 6006 is already serving. If that ever flips to false, this branch has to
-    // become a restart instead, or Playwright will wait forever for a server we did
-    // not start.
-    console.log(`  Storybook for THIS package is already on ${LOCKED_PORT} (pid ${holder.pid}).`)
-    console.log(`  http://127.0.0.1:${LOCKED_PORT}`)
-    console.log(`\n  Use --restart to replace it, or --isolated for a second instance.\n`)
-    process.exit(0)
-  } else {
-    const why = isOurs(holder)
-      ? 'ours, --restart requested'
-      : `STALE — serving ${holder.cwd ?? 'an unknown root'}, not this package`
-    if (!isOurs(holder)) {
-      console.log(`  ⚠ The locked port is held by a DIFFERENT tree. This is the failure mode`)
-      console.log(`    that produces plausible screenshots of the wrong code.`)
+  // Reap BEFORE the --list exit, so `--reap --list` reaps and then shows the result.
+  const scopes = requestedScopes()
+  if (scopes) {
+    const freed = reap(entries, scopes)
+    if (freed.length > 0) {
+      entries = inventory() // re-read: ports we just freed are now available
+      console.log('  After reaping:')
+      printInventory(entries)
     }
-    killPid(holder.pid, why)
-    launch(LOCKED_PORT)
+  }
+
+  if (has('--list')) process.exit(0)
+
+  if (has('--isolated')) {
+    const port = await pickIsolatedPort(entries)
+    console.log(`  ISOLATED launch — this port is yours alone.`)
+    console.log(`  http://127.0.0.1:${port}\n`)
+    launch(port)
+  } else {
+    const holder = entries.find((e) => e.port === LOCKED_PORT)
+
+    if (!holder) {
+      launch(LOCKED_PORT)
+    } else if (!holder.storybook) {
+      // Never kill something we cannot identify.
+      console.error(`  Port ${LOCKED_PORT} is held by a NON-Storybook process (pid ${holder.pid}):`)
+      console.error(`    ${holder.command}`)
+      console.error(`\n  Refusing to kill it. Free the port, or use --isolated.\n`)
+      process.exit(1)
+    } else if (isOurs(holder) && !has('--restart')) {
+      // Exits 0 WITHOUT holding the foreground. `playwright.config.ts` sets
+      // `reuseExistingServer: false`, so Playwright refuses a busy 6006 before it ever runs
+      // this command; it never reaches this branch. Do not flip that to true: Playwright
+      // would then reuse ANY server on 6006, including another worktree's (TD-512).
+      console.log(`  Storybook for THIS package is already on ${LOCKED_PORT} (pid ${holder.pid}).`)
+      console.log(`  http://127.0.0.1:${LOCKED_PORT}`)
+      console.log(`\n  Use --restart to replace it, or --isolated for a second instance.\n`)
+      process.exit(0)
+    } else {
+      const why = isOurs(holder)
+        ? 'ours, --restart requested'
+        : `STALE — serving ${holder.cwd ?? 'an unknown root'}, not this package`
+      if (!isOurs(holder)) {
+        console.log(`  ⚠ The locked port is held by a DIFFERENT tree. This is the failure mode`)
+        console.log(`    that produces plausible screenshots of the wrong code.`)
+      }
+      killPid(holder.pid, why)
+      launch(LOCKED_PORT)
+    }
   }
 }
+
+if (isEntryPoint(import.meta.url, process.argv[1])) main()

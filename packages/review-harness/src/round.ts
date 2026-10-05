@@ -56,8 +56,12 @@ export function urlParamProblems(manifest: Manifest): string[] {
   ])
 }
 
-function answerProblems(question: Question, answer: Feedback['answers'][number] | undefined) {
-  if (!answer) return question.required ? [`${question.id}: required`] : []
+function answerProblems(
+  question: Question,
+  answer: Feedback['answers'][number] | undefined,
+  skipped: boolean
+) {
+  if (!answer) return question.required && !skipped ? [`${question.id}: required`] : []
   const problems: string[] = []
   if (question.kind === 'pick-one' && answer.pick !== undefined) {
     if (!question.options.includes(answer.pick)) problems.push(`${question.id}: unknown option`)
@@ -70,7 +74,8 @@ function answerProblems(question: Question, answer: Feedback['answers'][number] 
     if (answer.value < question.min || answer.value > question.max)
       problems.push(`${question.id}: value out of range`)
   }
-  if (question.required && !isAnswered(question, answer)) problems.push(`${question.id}: required`)
+  if (question.required && !skipped && !isAnswered(question, answer))
+    problems.push(`${question.id}: required`)
   return problems
 }
 
@@ -81,9 +86,28 @@ export function isAnswered(question: Question, answer: Feedback['answers'][numbe
   return (answer.text ?? '').trim() !== ''
 }
 
+/** A partial submit must list exactly the questions it left unanswered, in manifest order. */
+function unansweredProblems(feedback: Feedback, manifest: Manifest): string[] {
+  const listed = feedback.unansweredQuestionIds
+  if (!listed) return []
+  const answers = new Map(feedback.answers.map((a) => [a.questionId, a]))
+  const actual = manifest.questions
+    .filter((q) => {
+      const answer = answers.get(q.id)
+      return !answer || !isAnswered(q, answer)
+    })
+    .map((q) => q.id)
+  return listed.join(',') === actual.join(',')
+    ? []
+    : [
+        `unansweredQuestionIds lists ${listed.join(', ')}; unanswered are ${actual.join(', ') || 'none'}`,
+      ]
+}
+
 /** Feedback that parses can still disagree with its manifest; list every disagreement. */
 export function feedbackProblems(feedback: Feedback, manifest: Manifest): string[] {
   const answers = new Map(feedback.answers.map((a) => [a.questionId, a]))
+  const skipped = new Set(feedback.unansweredQuestionIds)
   const questionIds = new Set(manifest.questions.map((q) => q.id))
   const variantKeys = feedback.variants.map((v) => v.key).join(',')
   return [
@@ -96,6 +120,7 @@ export function feedbackProblems(feedback: Feedback, manifest: Manifest): string
     ...feedback.answers
       .filter((a) => !questionIds.has(a.questionId))
       .map((a) => `${a.questionId}: unknown`),
-    ...manifest.questions.flatMap((q) => answerProblems(q, answers.get(q.id))),
+    ...manifest.questions.flatMap((q) => answerProblems(q, answers.get(q.id), skipped.has(q.id))),
+    ...unansweredProblems(feedback, manifest),
   ]
 }

@@ -103,3 +103,14 @@ export const Group: Story = {
     </View>
   ),
 }
+
+export const Light: Story = {
+  globals: { theme: 'light' },
+  render: () => (
+    <View style={{ flexDirection: 'row', gap: 8 }}>
+      <Avatar colorFromName="Henry Ng" alt="Henry Ng, blue slot" />
+      <Avatar colorFromName="Eve Foster" alt="Eve Foster, orange slot" />
+      <Avatar colorFromName="Bob Chen" alt="Bob Chen, cyan slot" />
+    </View>
+  ),
+}

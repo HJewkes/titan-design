@@ -1,10 +1,12 @@
 import { describe, it, expect } from 'vitest'
+import { axe } from 'jest-axe'
 import { render, screen } from '@testing-library/react'
 import { DualGhostSpark, mergePhaseSegments } from './DualGhostSpark'
 import { buildMockModel } from './fatigue-mock'
 import type { PhaseSegment, RepVelocityCurve } from './fatigue-model'
 
 const CURVES = buildMockModel(5).velocityCurves
+const FIVE_REPS = buildMockModel(4).velocityCurves
 
 function scaled(curves: RepVelocityCurve[], factor: number): RepVelocityCurve[] {
   return curves.map((c) => ({
@@ -37,6 +39,30 @@ function renderDual(left: RepVelocityCurve[], right: RepVelocityCurve[]) {
 }
 
 describe('DualGhostSpark', () => {
+  it('has no accessibility violations', async () => {
+    const { container } = renderDual(CURVES, CURVES)
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
+  it('exposes a text alternative as an image and hides the svg', () => {
+    const { container } = renderDual(FIVE_REPS, FIVE_REPS)
+    expect(screen.getByRole('img', { name: /rep 5.*left peak.*right peak/i })).toBeInTheDocument()
+    expect(container.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
+  })
+
+  it('lets accessibilityLabel override the summary', () => {
+    render(
+      <DualGhostSpark
+        left={FIVE_REPS}
+        right={FIVE_REPS}
+        width={360}
+        accessibilityLabel="L/R speed"
+      />
+    )
+    expect(screen.getByRole('img', { name: 'L/R speed' })).toBeInTheDocument()
+    expect(screen.queryByRole('img', { name: /rep 5/i })).not.toBeInTheDocument()
+  })
+
   it('renders both device blooms for a populated dual set', () => {
     const { container } = renderDual(CURVES, CURVES)
     expect(screen.getByTestId('dual-ghost-spark')).toBeInTheDocument()

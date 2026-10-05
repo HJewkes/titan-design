@@ -80,7 +80,7 @@ export function MetricGroup({ className, children, ...props }: MetricGroupProps)
         <React.Fragment key={i}>
           <View className="flex-1 items-center">{child}</View>
           {i < items.length - 1 && (
-            <View className="w-px h-8 bg-divider mx-2" testID="metric-divider" />
+            <View className="w-px h-8 bg-hairline mx-2" testID="metric-divider" />
           )}
         </React.Fragment>
       ))}

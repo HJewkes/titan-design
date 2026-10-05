@@ -10,16 +10,25 @@ export interface ListItemProps extends PressableProps {
 }
 
 export function ListItem({ className, children, onPress, ...props }: ListItemProps) {
-  const Container = onPress ? Pressable : View
-  const containerProps = onPress ? { onPress, ...props } : props
+  if (onPress) {
+    return (
+      <Pressable
+        className={cn('flex-row items-center py-inset-md px-inset-lg min-h-[48px]', className)}
+        onPress={onPress}
+        {...props}
+      >
+        {children}
+      </Pressable>
+    )
+  }
 
   return (
-    <Container
+    <View
       className={cn('flex-row items-center py-inset-md px-inset-lg min-h-[48px]', className)}
-      {...(containerProps as any)}
+      {...(props as ViewProps)}
     >
       {children}
-    </Container>
+    </View>
   )
 }
 
@@ -78,5 +87,5 @@ export interface ListItemDividerProps extends ViewProps {
 }
 
 export function ListItemDivider({ inset = true, className, ...props }: ListItemDividerProps) {
-  return <View className={cn('h-px bg-divider', inset ? 'ml-14' : '', className)} {...props} />
+  return <View className={cn('h-px bg-hairline', inset ? 'ml-14' : '', className)} {...props} />
 }

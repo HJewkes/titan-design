@@ -1,6 +1,13 @@
-import { emptyDraft, type ReviewDraft } from '../src/feedback.ts'
-import { linksForVariant, optionVariants, orderedQuestions, roundLayout } from '../src/sections.ts'
-import type { Annotation, Manifest, Verdict } from '../src/schema.ts'
+import { emptyDraft, type AnswerDraft, type ReviewDraft } from '../src/feedback.ts'
+import { isAnswered } from '../src/round.ts'
+import {
+  linksForVariant,
+  optionVariants,
+  orderedQuestions,
+  roundLayout,
+  type ResolvedSection,
+} from '../src/sections.ts'
+import type { Annotation, Manifest, Question, Verdict } from '../src/schema.ts'
 import { loadDraft, type DraftStorage } from './draftStore.ts'
 
 export { orderedQuestions }
@@ -8,6 +15,7 @@ export { orderedQuestions }
 export type Stop =
   | { kind: 'variant'; key: string }
   | { kind: 'question'; id: string }
+  | { kind: 'section'; id: string }
   | { kind: 'general' }
 
 export type Screen = 'form' | 'review' | 'sending' | 'sent'
@@ -26,6 +34,7 @@ export interface ReviewState {
 
 export type Action =
   | { type: 'activate'; index: number }
+  | { type: 'jump'; index: number }
   | { type: 'advance' }
   | { type: 'verdict'; key: string; verdict: Verdict }
   | { type: 'variantComment'; key: string; comment: string }
@@ -48,14 +57,20 @@ export const VERDICT_KEYS: Record<string, Verdict> = {
   '0': null,
 }
 
+/** A section with nothing to answer still gets one stop, so its page can be reached. */
+function sectionStops(s: ResolvedSection): Stop[] {
+  const stops: Stop[] = [
+    ...s.questions.map((q): Stop => ({ kind: 'question', id: q.id })),
+    ...s.variants.map((v): Stop => ({ kind: 'variant', key: v.key })),
+  ]
+  return stops.length ? stops : [{ kind: 'section', id: s.id }]
+}
+
 /** Every stop in the order the page renders it: per section, its questions then its frames. */
 export function stopsFor(manifest: Manifest): Stop[] {
   const layout = roundLayout(manifest)
   return [
-    ...layout.sections.flatMap((s): Stop[] => [
-      ...s.questions.map((q): Stop => ({ kind: 'question', id: q.id })),
-      ...s.variants.map((v): Stop => ({ kind: 'variant', key: v.key })),
-    ]),
+    ...layout.sections.flatMap(sectionStops),
     ...layout.otherVariants.map((v): Stop => ({ kind: 'variant', key: v.key })),
     ...layout.overallQuestions.map((q): Stop => ({ kind: 'question', id: q.id })),
     { kind: 'general' },
@@ -71,6 +86,69 @@ export function stopIndexes(manifest: Manifest) {
     question: (id: string) => at((s) => s.kind === 'question' && s.id === id),
     general: stops.length - 1,
   }
+}
+
+/** One screenful of a sectioned round: the stops from `first` to `last`, inclusive. */
+export interface Page {
+  id: string
+  title: string
+  first: number
+  last: number
+}
+
+/** Section ids allow only [A-Za-z0-9_-], so these two can never collide with one. */
+export const OTHER_PAGE = '#other'
+export const OVERALL_PAGE = '#overall'
+
+/** Each section is a page, then Other frames, then Overall; an unsectioned round is one page. */
+export function pagesFor(manifest: Manifest): Page[] {
+  const layout = roundLayout(manifest)
+  const general = stopsFor(manifest).length - 1
+  if (layout.sections.length === 0)
+    return [{ id: 'all', title: manifest.unit, first: 0, last: general }]
+  const sized = [
+    ...layout.sections.map((s) => ({
+      id: s.id,
+      title: s.title,
+      size: sectionStops(s).length,
+    })),
+    { id: OTHER_PAGE, title: 'Other frames', size: layout.otherVariants.length },
+  ].filter((p) => p.size > 0)
+  const pages: Page[] = []
+  for (const { id, title, size } of sized) {
+    const first = pages.length ? pages[pages.length - 1].last + 1 : 0
+    pages.push({ id, title, first, last: first + size - 1 })
+  }
+  const first = pages.length ? pages[pages.length - 1].last + 1 : 0
+  return [...pages, { id: OVERALL_PAGE, title: 'Overall', first, last: general }]
+}
+
+/** The page that holds a stop, so the active stop decides what is on screen. */
+export function pageOf(pages: Page[], index: number): number {
+  return Math.max(
+    0,
+    pages.findIndex((p) => index >= p.first && index <= p.last)
+  )
+}
+
+/** The jump to the first stop of the page `delta` pages away, or null at either end. */
+export function pageStepAction(manifest: Manifest, active: number, delta: number): Action | null {
+  const pages = pagesFor(manifest)
+  const target = pages[pageOf(pages, active) + delta]
+  return target ? { type: 'jump', index: target.first } : null
+}
+
+/** A recommendation stays hidden until its question is answered, so it cannot anchor the pick. */
+export function recommendationVisible(
+  manifest: Manifest,
+  question: Question,
+  draft: AnswerDraft
+): boolean {
+  if (question.kind === 'text' || !question.recommendation) return false
+  return (
+    manifest.recommendations === 'shown' ||
+    isAnswered(question, { ...draft, questionId: question.id })
+  )
 }
 
 export function initialState(manifest: Manifest): ReviewState {
@@ -242,6 +320,8 @@ export function createReducer(manifest: Manifest) {
     switch (action.type) {
       case 'activate':
         return { ...state, active: action.index, follow: false, focusPin: null }
+      case 'jump':
+        return { ...state, active: action.index, follow: true, focusPin: null }
       case 'advance':
         return state.active + 1 < stopCount
           ? { ...state, active: state.active + 1, follow: true, focusPin: null }

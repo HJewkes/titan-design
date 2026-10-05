@@ -1,12 +1,5 @@
 {
-  "custom/Fatigue/DualGhostSpark": [
-    "a11y"
-  ],
-  "custom/Fatigue/FatigueLights": [
-    "a11y"
-  ],
   "custom/Fatigue/GhostBand": [
-    "a11y",
     "status",
     "story"
   ],
@@ -16,99 +9,11 @@
     "story",
     "test"
   ],
-  "custom/Fatigue/GhostSpark": [
-    "a11y"
-  ],
-  "custom/Fatigue/LiveFatigueCard": [
-    "a11y"
-  ],
-  "custom/Fatigue/LiveFatiguePanel": [
-    "a11y"
-  ],
-  "custom/Fatigue/VelocityHero": [
-    "a11y"
-  ],
-  "custom/Gauge/Gauge": [
-    "doc"
-  ],
-  "custom/Scatter/Scatter": [
-    "doc"
-  ],
-  "custom/Table/TableCell": [
-    "a11y",
-    "status",
-    "story",
-    "test"
-  ],
-  "custom/Table/TableHeaderCell": [
-    "a11y",
-    "status",
-    "story",
-    "test"
-  ],
-  "custom/Table/TablePagination": [
-    "a11y",
-    "status",
-    "story",
-    "test"
-  ],
-  "custom/TimerReadout/TimerReadout": [
-    "a11y"
-  ],
-  "custom/Treemap/Treemap": [
-    "doc"
-  ],
-  "custom/Workout/ActiveWorkoutPage": [
-    "a11y",
-    "status"
-  ],
-  "custom/Workout/BaseBadge": [
-    "status"
-  ],
-  "custom/Workout/BodyMap": [
-    "status"
-  ],
-  "custom/Workout/BodyMapDetailPanel": [
-    "status"
-  ],
-  "custom/Workout/BodyweightGoalCard": [
-    "status"
-  ],
-  "custom/Workout/CapacityBandChart": [
-    "status"
-  ],
-  "custom/Workout/DeviationBar": [
-    "status"
-  ],
-  "custom/Workout/ExerciseCard": [
-    "status"
-  ],
-  "custom/Workout/ExerciseCardHeading": [
-    "status"
-  ],
-  "custom/Workout/ExerciseDetailPage": [
-    "a11y",
-    "status"
-  ],
-  "custom/Workout/ExerciseHeading": [
-    "status"
-  ],
-  "custom/Workout/ExerciseIndicator": [
-    "status"
-  ],
-  "custom/Workout/FatigueMeter": [
-    "status"
-  ],
   "custom/Workout/GoalCard": [
     "a11y",
-    "status",
     "test"
   ],
-  "custom/Workout/GoalLiftCard": [
-    "status"
-  ],
   "custom/Workout/GoalMilestoneSummary": [
-    "a11y",
     "status",
     "story"
   ],
@@ -118,39 +23,9 @@
     "story",
     "test"
   ],
-  "custom/Workout/GoalMuscleCard": [
-    "status"
-  ],
   "custom/Workout/GoalPriorityIcon": [
     "status",
     "story"
-  ],
-  "custom/Workout/GoalPriorityIndex": [
-    "status"
-  ],
-  "custom/Workout/GoalTrajectoryChart": [
-    "status"
-  ],
-  "custom/Workout/InputBar": [
-    "status"
-  ],
-  "custom/Workout/IntensityBar": [
-    "status"
-  ],
-  "custom/Workout/LiveAuraFrame": [
-    "status"
-  ],
-  "custom/Workout/MesoCard": [
-    "status"
-  ],
-  "custom/Workout/MesoProgressBar": [
-    "status"
-  ],
-  "custom/Workout/MesoStatusCard": [
-    "status"
-  ],
-  "custom/Workout/MetricTiles": [
-    "status"
   ],
   "custom/Workout/MuscleGlyph": [
     "a11y",
@@ -158,143 +33,20 @@
     "story",
     "test"
   ],
-  "custom/Workout/MuscleGroupChip": [
-    "status"
-  ],
-  "custom/Workout/MuscleStrip": [
-    "status"
-  ],
-  "custom/Workout/PlaceholderStrip": [
-    "status"
-  ],
-  "custom/Workout/PrBadge": [
-    "status"
-  ],
-  "custom/Workout/PrHistoryModal": [
-    "status"
-  ],
   "custom/Workout/PrimaryGoalCard": [
     "status"
   ],
-  "custom/Workout/ProgramPlanningPage": [
-    "a11y",
-    "status"
-  ],
-  "custom/Workout/ReadinessCheck": [
-    "status"
-  ],
-  "custom/Workout/RestTimer": [
-    "status"
-  ],
-  "custom/Workout/ScheduleTiles": [
-    "a11y",
-    "status"
-  ],
-  "custom/Workout/SegmentedBar": [
-    "status"
-  ],
-  "custom/Workout/SegmentedProgressBar": [
-    "status"
-  ],
-  "custom/Workout/SessionHeader": [
-    "status"
-  ],
-  "custom/Workout/SessionRail": [
-    "status"
-  ],
-  "custom/Workout/SessionsGoalCard": [
-    "status"
-  ],
-  "custom/Workout/SetBar": [
-    "status"
-  ],
-  "custom/Workout/SetRow": [
-    "status"
-  ],
-  "custom/Workout/SetStrip": [
-    "status"
-  ],
-  "custom/Workout/SetTableHeader": [
-    "status"
-  ],
-  "custom/Workout/SetsRepsLoad": [
-    "status"
-  ],
-  "custom/Workout/Sparkline": [
-    "status"
-  ],
-  "custom/Workout/StatusDot": [
-    "status"
-  ],
-  "custom/Workout/StatusPill": [
-    "status"
-  ],
-  "custom/Workout/StrengthTrendChart": [
-    "status"
-  ],
-  "custom/Workout/SupersetWrapper": [
-    "status"
-  ],
-  "custom/Workout/TempoDisplay": [
-    "status"
-  ],
   "custom/Workout/TrainingStatusPage": [
-    "a11y",
-    "status"
-  ],
-  "custom/Workout/VelocityStrip": [
-    "status"
-  ],
-  "custom/Workout/VolumeLandmarkBar": [
-    "status"
-  ],
-  "custom/Workout/WeekRow": [
-    "status"
-  ],
-  "custom/Workout/WeightBadge": [
-    "status"
-  ],
-  "custom/Workout/WorkoutCard": [
-    "status"
-  ],
-  "custom/Workout/WorkoutPill": [
-    "status"
-  ],
-  "custom/Workout/ZoneTrack": [
-    "status"
-  ],
-  "shell/NavItem": [
     "a11y"
   ],
-  "shell/workout/DeviceIndicator": [
-    "a11y"
-  ],
-  "shell/workout/DeviceMenu": [
-    "a11y"
-  ],
-  "shell/workout/DeviceRow": [
-    "a11y"
+  "shell/workout/DualPinnedLiveStrip": [
+    "status"
   ],
   "shell/workout/PinnedLiveStrip": [
     "status"
   ],
   "shell/workout/WorkoutTopBar": [
     "doc"
-  ],
-  "ui/menu": [
-    "status"
-  ],
-  "ui/modal": [
-    "status"
-  ],
-  "ui/popover": [
-    "status"
-  ],
-  "ui/select": [
-    "status"
-  ],
-  "ui/tooltip": [
-    "status"
   ],
   "ui/trigger": [
     "doc",
