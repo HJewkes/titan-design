@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Animated, Platform, View } from 'react-native'
 import type { Participant } from '@titan-design/chat-protocol'
+import { usePrefersReducedMotion } from '../../../hooks/usePrefersReducedMotion'
 import { cn } from '../../../utils/cn'
 import { Indicator } from '../../ui/indicator'
 import { Surface } from '../../ui/surface'
@@ -24,9 +25,16 @@ export function typingLabel(participants: readonly Participant[]): string {
   return `${names.length} people are typing`
 }
 
+/** Held at full opacity under reduced motion; a runtime flip stops the loop in the cleanup. */
 function useStaggeredPulse(index: number): Animated.Value {
-  const [opacity] = useState(() => new Animated.Value(DIM))
+  const prefersReducedMotion = usePrefersReducedMotion()
+  const [opacity] = useState(() => new Animated.Value(prefersReducedMotion ? 1 : DIM))
   useEffect(() => {
+    if (prefersReducedMotion) {
+      opacity.setValue(1)
+      return
+    }
+    opacity.setValue(DIM)
     const useNativeDriver = Platform.OS !== 'web'
     const loop = Animated.loop(
       Animated.sequence([
@@ -38,7 +46,7 @@ function useStaggeredPulse(index: number): Animated.Value {
     )
     loop.start()
     return () => loop.stop()
-  }, [index, opacity])
+  }, [index, opacity, prefersReducedMotion])
   return opacity
 }
 
@@ -46,7 +54,7 @@ function useStaggeredPulse(index: number): Animated.Value {
 function PulsingDot({ index }: { index: number }) {
   const opacity = useStaggeredPulse(index)
   return (
-    <Animated.View style={{ opacity }}>
+    <Animated.View style={{ opacity }} testID="chat-typing-dot">
       <Indicator size="md" color="default" />
     </Animated.View>
   )
