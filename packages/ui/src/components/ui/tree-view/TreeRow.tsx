@@ -50,7 +50,7 @@ function Expander<T>({ row }: { row: TreeRowProps<T> }) {
 }
 
 /** The `treeitem` attributes, as direct DOM props: react-native-web drops `accessibilityState`. */
-function ariaProps<T>(row: TreeRowProps<T>, isDisabled: boolean, describedBy: string | undefined) {
+function ariaProps<T>(row: TreeRowProps<T>, describedBy: string | undefined) {
   return {
     role: 'treeitem' as const,
     'aria-label': row.node.label,
@@ -69,32 +69,19 @@ function ariaProps<T>(row: TreeRowProps<T>, isDisabled: boolean, describedBy: st
 const isKeyPress = (event: GestureResponderEvent) =>
   (event as unknown as { type?: string }).type?.startsWith('key') === true
 
-/** One `treeitem`: indent, expander, leading slot, label and the trailing description. */
-export function TreeRow<T>(props: TreeRowViewProps<T>) {
-  const { row, density, isDisabled, descriptionId, renderLeading, renderTrailing } = props
-  const { onKeyDown, onBlur, onElement } = props
-  const trailing = renderTrailing?.(row.node) ?? null
-  const describedBy = trailing === null ? undefined : descriptionId
+function rowClassName(density: TreeDensity, isSelected: boolean) {
+  return cn(
+    'flex-row items-center gap-inline-sm pr-2',
+    HEIGHT_CLASS[density],
+    isSelected ? 'bg-surface-raised' : 'web:hover:bg-interactive-hover',
+    'web:outline-none web:focus-visible:ring-2 web:focus-visible:ring-inset web:focus-visible:ring-interactive-focus'
+  )
+}
+
+/** Everything inside the row: expander, leading slot, label and the trailing description. */
+function RowContent<T>({ row, density, isDisabled, renderLeading }: TreeRowViewProps<T>) {
   return (
-    <Pressable
-      ref={onElement}
-      {...ariaProps(row, isDisabled, describedBy)}
-      {...{ onKeyDown }}
-      onBlur={onBlur}
-      onFocus={row.onFocus}
-      onPress={(event) => {
-        if (!isKeyPress(event)) row.onPress()
-      }}
-      // Pressable owns `aria-disabled`; `tabIndex` above keeps the row focusable while disabled.
-      disabled={isDisabled}
-      style={{ paddingLeft: (row.level - 1) * INDENT_STEP }}
-      className={cn(
-        'flex-row items-center gap-inline-sm pr-2',
-        HEIGHT_CLASS[density],
-        row.isSelected ? 'bg-surface-raised' : 'web:hover:bg-interactive-hover',
-        'web:outline-none web:focus-visible:ring-2 web:focus-visible:ring-inset web:focus-visible:ring-interactive-focus'
-      )}
-    >
+    <>
       <Pressable
         aria-hidden
         tabIndex={-1}
@@ -112,6 +99,31 @@ export function TreeRow<T>(props: TreeRowViewProps<T>) {
       >
         {row.node.label}
       </Typography>
+    </>
+  )
+}
+
+/** One `treeitem`: indent, expander, leading slot, label and the trailing description. */
+export function TreeRow<T>(props: TreeRowViewProps<T>) {
+  const { row, density, isDisabled, descriptionId, renderTrailing } = props
+  const { onKeyDown, onBlur, onElement } = props
+  const trailing = renderTrailing?.(row.node) ?? null
+  return (
+    <Pressable
+      ref={onElement}
+      {...ariaProps(row, trailing === null ? undefined : descriptionId)}
+      {...{ onKeyDown }}
+      onBlur={onBlur}
+      onFocus={row.onFocus}
+      onPress={(event) => {
+        if (!isKeyPress(event)) row.onPress()
+      }}
+      // Pressable owns `aria-disabled`; `tabIndex` above keeps the row focusable while disabled.
+      disabled={isDisabled}
+      style={{ paddingLeft: (row.level - 1) * INDENT_STEP }}
+      className={rowClassName(density, row.isSelected)}
+    >
+      <RowContent {...props} />
       {trailing !== null && <View nativeID={descriptionId}>{trailing}</View>}
     </Pressable>
   )
