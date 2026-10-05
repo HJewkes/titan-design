@@ -435,8 +435,10 @@ type Story = StoryObj<Args>
 
 export const Representative: Story = { globals: { theme: 'light' } }
 
-/** TD-666 round 4: the warning solid fill and label, on the round 3 picks. */
+/**
+ * TD-666 round 4: the warning solid fill and label, on the round 3 picks. The panel pins light
+ * itself, so the theme global stays free for the review gate's light and dark passes.
+ */
 export const WarningSolid: Story = {
-  globals: { theme: 'light' },
   render: () => <WarningSolidPanel />,
 }
