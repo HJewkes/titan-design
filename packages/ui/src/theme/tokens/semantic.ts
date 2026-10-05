@@ -517,7 +517,7 @@ export const semanticColorsDark = {
   // plane, so it keeps its job without collision.
   'border-prominent': greyRamp[800], // high-visibility divider
   'border-focus': semanticPins.focusIndigoDark,
-  'border-input': greyRamp[700],
+  'border-input': greyRamp[500], // Input field border, matches light (TD-674)
   'border-input-hover': greyRamp[600],
   'border-input-focus': semanticPins.focusIndigoDark,
   'border-input-error': ramp.red[500],

@@ -1199,7 +1199,7 @@ export const darkThemeCSSVars: {
     readonly '--color-text-link-hover': "#3CA8FF";
     readonly '--color-surface-overlay': "#373635";
     readonly '--color-surface-input': "#2C2A28";
-    readonly '--color-border-input': "#5A5958";
+    readonly '--color-border-input': "#888684";
     readonly '--color-border-input-hover': "#72716F";
     readonly '--color-border-input-focus': "#828DF8";
     readonly '--color-border-input-error': "#E05254";
@@ -2442,7 +2442,7 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'background-frame': "#100D0A";
     readonly 'border-prominent': "#424140";
     readonly 'border-focus': "#828DF8";
-    readonly 'border-input': "#5A5958";
+    readonly 'border-input': "#888684";
     readonly 'border-input-hover': "#72716F";
     readonly 'border-input-focus': "#828DF8";
     readonly 'border-input-error': "#E05254";
@@ -2790,7 +2790,7 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-text-link-hover': "#3CA8FF";
     readonly '--color-surface-overlay': "#373635";
     readonly '--color-surface-input': "#2C2A28";
-    readonly '--color-border-input': "#5A5958";
+    readonly '--color-border-input': "#888684";
     readonly '--color-border-input-hover': "#72716F";
     readonly '--color-border-input-focus': "#828DF8";
     readonly '--color-border-input-error': "#E05254";
@@ -6129,7 +6129,7 @@ export const semanticColorsDark: {
     readonly 'background-frame': "#100D0A";
     readonly 'border-prominent': "#424140";
     readonly 'border-focus': "#828DF8";
-    readonly 'border-input': "#5A5958";
+    readonly 'border-input': "#888684";
     readonly 'border-input-hover': "#72716F";
     readonly 'border-input-focus': "#828DF8";
     readonly 'border-input-error': "#E05254";
