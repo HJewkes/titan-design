@@ -90,6 +90,12 @@ export function unansweredQuestionIds(manifest: Manifest, draft: ReviewDraft): s
     .map((q) => q.id)
 }
 
+/** The unanswered questions that still need an answer: an optional one left blank counts as skipped. */
+export function pendingQuestionIds(manifest: Manifest, draft: ReviewDraft): string[] {
+  const unanswered = new Set(unansweredQuestionIds(manifest, draft))
+  return manifest.questions.filter((q) => q.required && unanswered.has(q.id)).map((q) => q.id)
+}
+
 /** A partial build lists what was left out, which is what lets a required question go unanswered. */
 export function buildFeedback(
   manifest: Manifest,
