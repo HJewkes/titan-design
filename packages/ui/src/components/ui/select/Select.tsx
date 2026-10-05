@@ -1,4 +1,4 @@
-import React, { useState, createContext, useContext } from 'react'
+import { useState, createContext, useContext } from 'react'
 import { View, Text, Pressable, ScrollView, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { SelectPopover } from './SelectPopover'
