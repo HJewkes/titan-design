@@ -39,7 +39,7 @@ describe('IconBox', () => {
     ['sm', ['w-8', 'h-8', 'rounded-lg']],
     ['md', ['w-10', 'h-10', 'rounded-xl']],
     ['lg', ['w-12', 'h-12', 'rounded-xl']],
-  ] as const)('sizes the box with %s classes for size %s', (size, expected) => {
+  ] as const)('sizes the box for size %s', (size, expected) => {
     render(<IconBox icon={MockIcon} size={size} testID="box" />)
     expect(boxClasses()).toEqual(expect.arrayContaining([...expected]))
   })
