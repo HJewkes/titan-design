@@ -1,6 +1,6 @@
-import { mkdtemp, readFile, readdir, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, readdir, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { dirname, join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { EXIT_REFUSED, buildRound, contrastProblem } from '../src/build.ts'
 import type { Check } from '../src/contrast-check.ts'
@@ -268,6 +268,12 @@ describe('reading contrast.json', () => {
     await expect(contrastProblem(await roundDir(), SHA)).resolves.toBe(
       'no contrast.json beside this round'
     )
+  })
+
+  it('does not mistake an unreadable report for a missing one', async () => {
+    const round = await roundDir()
+    await mkdir(join(dirname(round), 'contrast.json'))
+    await expect(contrastProblem(round, SHA)).rejects.toThrow(/EISDIR/)
   })
 
   it('names the file when the report is not JSON', async () => {
