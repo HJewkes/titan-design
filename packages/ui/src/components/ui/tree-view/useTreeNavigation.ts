@@ -130,6 +130,11 @@ function useTreeState<T>(options: TreeNavigationOptions<T>): TreeState<T> {
   })
   const [focusState, setFocusedId] = useState<string | null>(null)
   const focusedId = resolveFocus(rows, index, focusState, selectedId)
+  // A row hidden from outside the hook (a controlled collapse) hands its focus on for good, so
+  // re-expanding later does not pull focus back into the subtree.
+  useEffect(() => {
+    if (focusState !== null && focusState !== focusedId) setFocusedId(focusedId)
+  }, [focusState, focusedId])
   return {
     options,
     index,
@@ -141,6 +146,32 @@ function useTreeState<T>(options: TreeNavigationOptions<T>): TreeState<T> {
     focusedId,
     setFocusedId,
   }
+}
+
+const childless = <T>(index: TreeIndex<T>, id: string) => (index.childrenOf.get(id) ?? []).length === 0
+
+/**
+ * A row that leaves `loadingIds` with no children collapses one commit later, so its expander can
+ * retry the load. Waiting a commit lets nodes that arrive just after the clear keep the row open; a
+ * timer makes sure that commit happens.
+ */
+function useSettledLoads<T>(state: TreeState<T>) {
+  const { index, expandedIds, applyIntents } = state
+  const loadingIds = state.options.loadingIds ?? NO_IDS
+  const previous = useRef(loadingIds)
+  const settling = useRef<string[]>([])
+  const [, tick] = useState(0)
+  useEffect(() => {
+    const failed = settling.current.filter(
+      (id) => expandedIds.has(id) && !loadingIds.has(id) && childless(index, id)
+    )
+    if (failed.length > 0) applyIntents(failed.map((id) => ({ type: 'collapse', id })))
+    settling.current = [...previous.current].filter((id) => !loadingIds.has(id))
+    previous.current = loadingIds
+    if (settling.current.length === 0) return
+    const timer = setTimeout(() => tick((n) => n + 1), 0)
+    return () => clearTimeout(timer)
+  })
 }
 
 interface Typeahead {
@@ -239,6 +270,7 @@ function rowProps<T>(row: TreeRow<T>, state: TreeState<T>, actions: TreeActions)
 export function useTreeNavigation<T>(options: TreeNavigationOptions<T>): TreeNavigation<T> {
   const state = useTreeState(options)
   const actions = useTreeActions(state)
+  useSettledLoads(state)
   const { rows, index, focusedId, selectedId, expandedIds, setFocusedId, applyIntents } = state
   const reveal = (id: string) => {
     applyIntents(revealIntents(index, id))
