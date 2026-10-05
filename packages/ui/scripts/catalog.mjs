@@ -20,6 +20,7 @@ import { buildEntry, exclusionReason } from './catalog/entries.mjs'
 import { ARCH_GRAPH, MATURITY, PREVIEW, readInput, storyFiles } from './catalog/inputs.mjs'
 import { docgen, propsFor } from './catalog/props.mjs'
 import { defaultExportTags, maturityStatuses, readStoryFile } from './catalog/stories.mjs'
+import { isEntryPoint } from './lib/entry.mjs'
 
 export const CATALOG = 'packages/ui/src/arch/component-catalog.json'
 export const DIGEST = 'packages/ui/docs/component-catalog.md'
@@ -79,7 +80,7 @@ export function serializeCatalog(catalog) {
   return `${JSON.stringify(sortKeys(catalog), null, 2)}\n`
 }
 
-if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
+if (isEntryPoint(import.meta.url, process.argv[1])) {
   const catalog = buildCatalog()
   const serialized = serializeCatalog(catalog)
   fs.writeFileSync(path.join(REPO_ROOT, CATALOG), serialized)
