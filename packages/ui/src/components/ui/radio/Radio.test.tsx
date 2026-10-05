@@ -54,9 +54,8 @@ describe('Radio', () => {
       </RadioGroup>
     )
     const radios = screen.getAllByRole('radio')
-    // react-native-web does not map accessibilityState.checked to aria-checked
-    expect(radios[0]).toBeInTheDocument()
-    expect(radios[1]).toBeInTheDocument()
+    expect(radios[0]).toHaveAttribute('aria-checked', 'true')
+    expect(radios[1]).toHaveAttribute('aria-checked', 'false')
   })
 
   it('disables all radios when group isDisabled', () => {
@@ -165,10 +164,7 @@ describe('Radio', () => {
           <Radio value="b">Option B</Radio>
         </RadioGroup>
       )
-      const results = await axe(container, {
-        rules: { 'aria-required-attr': { enabled: false } },
-      })
-      expect(results).toHaveNoViolations()
+      expect(await axe(container)).toHaveNoViolations()
     })
 
     it('has correct radio role on items', () => {

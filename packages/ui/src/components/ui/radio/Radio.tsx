@@ -176,7 +176,8 @@ export function Radio({
       onPress={handlePress}
       disabled={isDisabled}
       accessibilityRole="radio"
-      accessibilityState={{ checked: isChecked, disabled: isDisabled }}
+      accessibilityState={{ disabled: isDisabled }}
+      aria-checked={isChecked}
       className={cn('flex-row items-center', isDisabled && 'opacity-50', className)}
       {...props}
     >
