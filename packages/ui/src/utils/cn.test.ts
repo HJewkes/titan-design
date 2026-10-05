@@ -1,3 +1,4 @@
+// Throwaway probe for TD-645's visual skip; never merged.
 import { describe, it, expect } from 'vitest'
 import { cn } from './cn'
 import { spacingCSSVars } from '../theme/tokens/spacing-vars'
