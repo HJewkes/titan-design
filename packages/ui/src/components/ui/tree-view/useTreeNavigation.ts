@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useControllableState } from '../../../hooks/useControllableState'
 import { createTypeaheadBuffer, isTypeaheadKey } from '../../../utils/listNavigation'
 import { indexNodes, nextFocus, typeaheadMatch, visibleRows } from './tree-model'
+import { useReveal, useSettledLoads } from './useTreeSync'
 import {
   applyExpansion,
   collapsedAncestor,
@@ -93,20 +94,6 @@ function useExpansion<T>(options: TreeNavigationOptions<T>): [ReadonlySet<string
   return [current, apply]
 }
 
-function useReveal<T>(
-  revealId: string | undefined,
-  index: TreeIndex<T>,
-  reveal: (id: string) => void
-) {
-  const revealed = useRef<string | undefined>(undefined)
-  useEffect(() => {
-    if (revealId === undefined || revealId === revealed.current) return
-    if (!index.byId.has(revealId)) return
-    revealed.current = revealId
-    reveal(revealId)
-  }, [revealId, index, reveal])
-}
-
 interface TreeState<T> {
   options: TreeNavigationOptions<T>
   index: TreeIndex<T>
@@ -144,33 +131,6 @@ function useTreeState<T>(options: TreeNavigationOptions<T>): TreeState<T> {
     focusedId,
     setFocusedId,
   }
-}
-
-const childless = <T>(index: TreeIndex<T>, id: string) =>
-  (index.childrenOf.get(id) ?? []).length === 0
-
-/**
- * A row that leaves `loadingIds` with no children collapses one commit later, so its expander can
- * retry the load. Waiting a commit lets nodes that arrive just after the clear keep the row open; a
- * timer makes sure that commit happens.
- */
-function useSettledLoads<T>(state: TreeState<T>) {
-  const { index, expandedIds, applyIntents } = state
-  const loadingIds = state.options.loadingIds ?? NO_IDS
-  const previous = useRef(loadingIds)
-  const settling = useRef<string[]>([])
-  const [, tick] = useState(0)
-  useEffect(() => {
-    const failed = settling.current.filter(
-      (id) => expandedIds.has(id) && !loadingIds.has(id) && childless(index, id)
-    )
-    if (failed.length > 0) applyIntents(failed.map((id) => ({ type: 'collapse', id })))
-    settling.current = [...previous.current].filter((id) => !loadingIds.has(id))
-    previous.current = loadingIds
-    if (settling.current.length === 0) return
-    const timer = setTimeout(() => tick((n) => n + 1), 0)
-    return () => clearTimeout(timer)
-  })
 }
 
 interface Typeahead {
@@ -269,7 +229,7 @@ function rowProps<T>(row: TreeRow<T>, state: TreeState<T>, actions: TreeActions)
 export function useTreeNavigation<T>(options: TreeNavigationOptions<T>): TreeNavigation<T> {
   const state = useTreeState(options)
   const actions = useTreeActions(state)
-  useSettledLoads(state)
+  useSettledLoads(state.index, state.expandedIds, options.loadingIds ?? NO_IDS, state.applyIntents)
   const { rows, index, focusedId, selectedId, expandedIds, setFocusedId, applyIntents } = state
   const reveal = (id: string) => {
     applyIntents(revealIntents(index, id))

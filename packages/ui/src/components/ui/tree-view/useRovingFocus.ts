@@ -57,3 +57,19 @@ export function useRovingFocus(
     },
   }
 }
+
+/** Scrolls `revealId` into the window once per new value, as soon as its row is visible. */
+export function useScrollToReveal(
+  rows: readonly TreeRow[],
+  revealId: string | undefined,
+  reveal: (index: number) => void
+) {
+  const revealed = useRef<string | undefined>(undefined)
+  useEffect(() => {
+    if (revealId === undefined || revealId === revealed.current) return
+    const index = rows.findIndex((row) => row.id === revealId)
+    if (index < 0) return
+    revealed.current = revealId
+    reveal(index)
+  })
+}

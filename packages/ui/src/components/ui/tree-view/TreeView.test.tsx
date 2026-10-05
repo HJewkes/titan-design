@@ -236,6 +236,17 @@ describe('TreeView, windowing', () => {
     expect(focusedName()).toBe(LARGE_ROWS[0].node.label)
   })
 
+  it('scrolls revealId into the window without taking DOM focus', () => {
+    const last = LARGE_ROWS[LARGE_ROWS.length - 1]
+    renderLarge({ revealId: last.id })
+
+    const mounted = screen.getAllByRole('treeitem')
+    expect(mounted[mounted.length - 1]).toHaveAttribute('tabindex', '0')
+    expect(mounted[mounted.length - 1]).toHaveAttribute('aria-label', last.node.label)
+    expect(screen.queryByRole('treeitem', { name: LARGE_ROWS[0].node.label })).toBeNull()
+    expect(document.activeElement).toBe(document.body)
+  })
+
   it('re-renders at most the window plus overscan rows for one Down', () => {
     const renderTrailing = vi.fn(() => null)
     renderLarge({ renderTrailing })

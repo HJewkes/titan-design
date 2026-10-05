@@ -348,5 +348,8 @@
   },
   "components/ui/toolbar-button/ToolbarButton.tsx#ToolbarButton": {
     "complexity": 16
+  },
+  "components/ui/tree-view/TreeView.tsx#TreeView": {
+    "props": 22
   }
 }

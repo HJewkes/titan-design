@@ -6,7 +6,7 @@ import { Skeleton } from '../skeleton'
 import { Typography } from '../typography'
 import { ROW_HEIGHT, TreeRow, type TreeDensity } from './TreeRow'
 import type { TreeRenderSlot } from './types'
-import { useRovingFocus } from './useRovingFocus'
+import { useRovingFocus, useScrollToReveal } from './useRovingFocus'
 import {
   useTreeNavigation,
   type TreeNavigation,
@@ -145,7 +145,8 @@ function rovingHandlers(focus: ReturnType<typeof useRovingFocus>) {
   }
 }
 
-function TreeBody<T>(props: TreeViewProps<T>) {
+/** The populated tree; `TreeView` hands over its props whole, as the one object they are. */
+function TreeBody<T>({ props }: { props: TreeViewProps<T> }) {
   const { height, density = 'comfortable', isTruncated = false } = props
   const nav = useTreeNavigation(navigationOptions(props))
   const notices = isTruncated ? 1 : 0
@@ -155,6 +156,7 @@ function TreeBody<T>(props: TreeViewProps<T>) {
     height
   )
   const roving = rovingHandlers(useRovingFocus(nav.rows, nav.focusedId, reveal))
+  useScrollToReveal(nav.rows, props.revealId, reveal)
   if (nav.rows.length === 0) return <>{props.emptyState ?? <DefaultEmptyState />}</>
   const tree = (
     <View
@@ -189,7 +191,7 @@ export function TreeView<T>(props: TreeViewProps<T>) {
   ) : nodes.length === 0 ? (
     (props.emptyState ?? <DefaultEmptyState />)
   ) : (
-    <TreeBody {...props} />
+    <TreeBody props={props} />
   )
   return (
     <View {...viewProps(props)} className={cn('w-full', className)}>
