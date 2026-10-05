@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        margin: 0;
+        font-family: sans-serif;
+      }
+      .pair {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+      }
+      .numeral {
+        font-size: 48px;
+        line-height: 1;
+      }
+      .wrapper {
+        padding: 12px;
+      }
+      .swatch {
+        width: 40px;
+        height: 20px;
+        background: rgb(80, 120, 200);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="storybook-root">
+      <div class="pair" data-testid="pair">
+        <span data-testid="pair-small" style="font-size: 12px">Label</span>
+        <span data-testid="pair-large" style="font-size: 32px">128</span>
+      </div>
+      <div class="numeral" data-testid="numeral">8</div>
+      <svg width="120" height="40" data-testid="chart">
+        <text x="4" y="30" font-size="16">Axis</text>
+      </svg>
+      <div class="wrapper" data-testid="wrapper">
+        <div class="swatch" data-testid="swatch"></div>
+      </div>
+    </div>
+  </body>
+</html>
