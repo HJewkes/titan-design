@@ -8,7 +8,7 @@ const t = getSemanticColors('dark')
 const meta: Meta<typeof Sparkline> = {
   title: 'Custom/Workout/DataViz/Sparkline',
   component: Sparkline,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     width: {
       control: 'number',

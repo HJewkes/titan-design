@@ -24,7 +24,7 @@ export function VelocityStripFramed({ chart, summary, chrome }: VelocityStripVar
   // in value mode; the collapse is the in-place `expandProgress` bar-height morph, not a height strip.
   const stripContent = (
     <Animated.View
-      className={[className, 'bg-surface-raised'].filter(Boolean).join(' ')}
+      className={className}
       // NativeWind does not compile className on an `Animated.View` — verified in
       // Storybook, where the element renders `class="css-view-175oi2r"` and nothing
       // else — so this chrome reads the inset tokens through the JS export.
