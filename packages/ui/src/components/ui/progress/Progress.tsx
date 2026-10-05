@@ -1,20 +1,28 @@
 import React from 'react'
 import { View, Text, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../surface'
 
 export type ProgressSize = 'sm' | 'md' | 'lg'
 export type ProgressColor = 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info'
 export type ProgressVariant = 'linear' | 'circular'
 
-/** Maps the color prop to a CSS variable reference for inline styles */
-export const colorVarMap: Record<ProgressColor, string> = {
-  primary: 'var(--color-brand-primary)',
-  secondary: 'var(--color-brand-secondary)',
-  success: 'var(--color-status-success)',
-  error: 'var(--color-status-error)',
-  warning: 'var(--color-status-warning)',
-  info: 'var(--color-status-info)',
+const colorTokenMap = {
+  primary: 'brand-primary',
+  secondary: 'brand-secondary',
+  success: 'status-success',
+  error: 'status-error',
+  warning: 'status-warning',
+  info: 'status-info',
+} as const satisfies Record<ProgressColor, keyof ReturnType<typeof getSemanticColors>>
+
+/**
+ * Literal-hex colour for a ProgressColor in a theme mode. SVG strokes and inline text
+ * cannot rely on CSS variables on the raw-RN wall SPA (VW-316), as Spinner does.
+ */
+export function progressColor(color: ProgressColor, mode: ThemeMode): string {
+  return getSemanticColors(mode)[colorTokenMap[color]]
 }
 
 export interface ProgressProps extends ViewProps {
@@ -204,6 +212,7 @@ export function CircularProgress({
   className,
   ...props
 }: CircularProgressProps) {
+  const surfaceMode = useSurfaceMode()
   const percentage = Math.min(Math.max((value / max) * 100, 0), 100)
   const radius = (size - strokeWidth) / 2
   const circumference = 2 * Math.PI * radius
@@ -239,7 +248,7 @@ export function CircularProgress({
             cy={center}
             r={radius}
             fill="none"
-            stroke="var(--color-hairline-default)"
+            stroke={getSemanticColors(surfaceMode)['hairline-default']}
             strokeWidth={strokeWidth}
           />
           {/* Progress arc */}
@@ -248,7 +257,7 @@ export function CircularProgress({
             cy={center}
             r={radius}
             fill="none"
-            stroke={colorVarMap[color]}
+            stroke={progressColor(color, surfaceMode)}
             strokeWidth={strokeWidth}
             strokeLinecap="round"
             strokeDasharray={circumference}

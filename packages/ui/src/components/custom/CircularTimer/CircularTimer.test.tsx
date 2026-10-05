@@ -3,6 +3,8 @@ import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Text } from 'react-native'
 import { CircularTimer } from './CircularTimer'
+import { Surface } from '../../ui/surface'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
 describe('CircularTimer', () => {
   it('renders a timer with a composed progressbar ring', () => {
@@ -24,6 +26,17 @@ describe('CircularTimer', () => {
   it('renders the done label (not a time) when a countdown completes', () => {
     render(<CircularTimer durationMs={120000} elapsedMs={120000} doneLabel="GO" />)
     expect(screen.getByTestId('circular-timer-label')).toHaveTextContent('GO')
+  })
+
+  it.each(['dark', 'light'] as const)('colours the done label with hex in %s mode', (theme) => {
+    render(
+      <Surface theme={theme}>
+        <CircularTimer durationMs={120000} elapsedMs={120000} doneLabel="GO" doneColor="success" />
+      </Surface>,
+    )
+    expect(screen.getByTestId('circular-timer-label')).toHaveStyle({
+      color: getSemanticColors(theme)['status-success'],
+    })
   })
 
   it('keeps showing 0:00 at completion when no doneLabel is given', () => {
