@@ -219,6 +219,13 @@ describe('section navigation at both ends of a page', () => {
     expect(formAt(m, pages[3].first)).toMatch(review)
   })
 
+  it('marks only the current section in the section list as the current step', () => {
+    const list = between(html(m), 'class="prompts sections"', '</ol>')
+    const items = [...list.matchAll(/<li[^>]*>/g)].map(([tag]) => tag)
+    expect(items).toHaveLength(pages.length)
+    expect(items.filter((tag) => tag.includes('aria-current="step"'))).toEqual([items[0]])
+  })
+
   it('adds no pager to a round without sections', () => {
     expect(html(manifest())).not.toContain('pager')
   })
