@@ -455,6 +455,45 @@ describe('TreeView, focus while the user scrolls', () => {
   })
 })
 
+describe('TreeView, focus that follows past the window', () => {
+  const label = (index: number) => LARGE_ROWS[index].node.label
+
+  it('focuses a row after a key only once it is in the window, not while it is pinned', () => {
+    const positions: string[] = []
+    const focus = vi.spyOn(HTMLElement.prototype, 'focus')
+    renderLarge()
+    focusRow(label(0))
+    focus.mockImplementation(function (this: HTMLElement) {
+      positions.push(this.style.position)
+    })
+
+    press('End')
+    focus.mockRestore()
+
+    expect(positions).toEqual([''])
+  })
+
+  it('focuses an ancestor outside the window after a controlled collapse', () => {
+    const deep = LARGE_ROWS.findIndex((r, i) => {
+      const parent = LARGE_ROWS.findIndex((p) => p.id === r.node.parentId)
+      return parent >= 0 && i - parent > 2 * WINDOW_MAX
+    })
+    const parentId = LARGE_ROWS[deep].node.parentId as string
+    const parent = LARGE_ROWS.find((r) => r.id === parentId)?.node.label
+    const open = (ids: Set<string>) => (
+      <TreeView accessibilityLabel="Code tree" nodes={LARGE} expandedIds={ids} height={HEIGHT} />
+    )
+    const { rerender } = render(open(ALL_LARGE_OPEN))
+    const scroller = screen.getByRole('tree').parentElement?.parentElement as HTMLElement
+    fireEvent.scroll(scroller, { target: { scrollTop: deep * ROW_HEIGHT.comfortable } })
+    focusRow(label(deep))
+
+    rerender(open(new Set([...ALL_LARGE_OPEN].filter((id) => id !== parentId))))
+
+    expect(focusedName()).toBe(parent)
+  })
+})
+
 describe('TreeView, accessibility', () => {
   const named: [string, TreeFixture][] = Object.entries(fixtures)
 

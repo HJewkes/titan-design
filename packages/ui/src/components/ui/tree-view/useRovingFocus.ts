@@ -5,13 +5,18 @@ import type { TreeRow } from './types'
 export interface RovingFocus {
   /** A key was handled: move DOM focus to the focused row once it is on screen. */
   follow: () => void
-  /** Wraps a row's host element callback. */
-  elementFor: (id: string) => (element: View | null) => void
+  /** Wraps a row's host element callback; a pinned row sits outside the window. */
+  elementFor: (id: string, isPinned: boolean) => (element: View | null) => void
   onFocusIn: () => void
   onBlur: (event: NativeSyntheticEvent<TargetedEvent>) => void
 }
 
 type Focusable = { focus?: () => void }
+
+interface RowElement {
+  element: Focusable
+  isPinned: boolean
+}
 
 const pageHasNoFocus = () =>
   typeof document !== 'undefined' &&
@@ -20,38 +25,42 @@ const pageHasNoFocus = () =>
 /**
  * Keeps DOM focus on the hook's focused row. After a key, or when a collapse from outside moved
  * focus off an unmounted row, it scrolls the row into the window first, then focuses it on the
- * commit that mounts it (R3). A row the user scrolls away is never followed: the shell keeps the
- * focused row mounted outside the window, so it keeps DOM focus and the tab stop.
+ * commit that brings it into the window (R3), not while it is still pinned outside it. A row the
+ * user scrolls away is never followed: the shell keeps the focused row mounted outside the window,
+ * so it keeps DOM focus and the tab stop.
  */
 export function useRovingFocus(
   rows: readonly TreeRow[],
   focusedId: string | null,
   reveal: (index: number) => void
 ): RovingFocus {
-  const elements = useRef(new Map<string, Focusable>())
+  const elements = useRef(new Map<string, RowElement>())
   const following = useRef(false)
   const within = useRef(false)
   const lastFocusedId = useRef(focusedId)
   useEffect(() => {
     const moved = focusedId !== lastFocusedId.current
     lastFocusedId.current = focusedId
-    const movedOffUnmountedRow = moved && within.current && pageHasNoFocus()
-    if (focusedId === null || !(following.current || movedOffUnmountedRow)) return
+    if (moved && within.current && pageHasNoFocus()) following.current = true
+    if (focusedId === null || !following.current) return
     reveal(rows.findIndex((row) => row.id === focusedId))
-    const element = elements.current.get(focusedId)
-    if (element === undefined) return
+    const row = elements.current.get(focusedId)
+    // A pinned row's position settles once the window reaches it; focusing it earlier leaves
+    // the browser no chance to correct for scroll anchoring moving the window.
+    if (row === undefined || row.isPinned) return
     // No preventScroll: the browser's own scroll corrects for scroll anchoring moving the window.
-    element.focus?.()
+    row.element.focus?.()
     following.current = false
   })
-  const isRow = (target: unknown) => [...elements.current.values()].some((el) => el === target)
+  const isRow = (target: unknown) =>
+    [...elements.current.values()].some((row) => row.element === target)
   return {
     follow: () => {
       following.current = true
     },
-    elementFor: (id) => (element) => {
+    elementFor: (id, isPinned) => (element) => {
       if (element === null) elements.current.delete(id)
-      else elements.current.set(id, element as unknown as Focusable)
+      else elements.current.set(id, { element: element as unknown as Focusable, isPinned })
     },
     onFocusIn: () => {
       within.current = true

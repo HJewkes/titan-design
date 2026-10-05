@@ -130,7 +130,7 @@ function TreeRows<T>({ props, nav, range, density, roving }: RowsProps<T>) {
         renderTrailing={props.renderTrailing}
         onKeyDown={roving.keyDown(rowProps.onKeyDown)}
         onBlur={roving.onBlur}
-        onElement={roving.elementFor(row.id)}
+        onElement={roving.elementFor(row.id, pinnedTop !== undefined)}
         pinnedTop={pinnedTop}
       />
     )
