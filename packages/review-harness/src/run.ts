@@ -9,6 +9,7 @@ import {
 } from './build.ts'
 import { calibrationReport, readFeedbackFiles } from './calibration.ts'
 import { exampleManifest, sectionedExampleManifest } from './example.ts'
+import { harnessVerdict, serveMainCommand, type HarnessFreshness } from './harness-freshness.ts'
 import {
   EXIT_INTERRUPTED,
   EXIT_INVALID,
@@ -47,6 +48,7 @@ recommendation: per round, overall, and by confidence band (<0.5, 0.5-0.75, >=0.
   --no-capture       Skip the post-submit PNGs
   --contrast-override <reason>
                      Serve a round with no passing contrast.json; the page shows the reason
+  --allow-stale      Serve even when this harness differs from origin/main's; the page says so
   --example          Print a sample manifest built from Lab/Decisions stories
   --sections         With --example, print the question-first sectioned shape
   --help             Print this help`
@@ -56,6 +58,7 @@ export interface CliIo extends Omit<ReviewDeps, 'onReady'>, Pick<BuildIo, 'measu
   stderr: (text: string) => void
   openBrowser: (url: string) => void
   capture: (round: LoadedRound, outDir: string) => Promise<string[]>
+  harnessFreshness: () => Promise<HarnessFreshness>
 }
 
 function parseCli(argv: string[]) {
@@ -69,6 +72,7 @@ function parseCli(argv: string[]) {
       'no-open': { type: 'boolean' },
       'no-capture': { type: 'boolean' },
       'contrast-override': { type: 'string' },
+      'allow-stale': { type: 'boolean' },
       example: { type: 'boolean' },
       sections: { type: 'boolean' },
       help: { type: 'boolean' },
@@ -87,26 +91,62 @@ async function captureQuietly(io: CliIo, round: LoadedRound, outDir: string): Pr
   }
 }
 
+/** The same serve, minus --allow-stale, with the Storybook and output pinned to this round's. */
+function roundArgs(manifestPath: string, round: LoadedRound, parsed: Parsed): string[] {
+  const { out, port, 'no-open': noOpen, 'no-capture': noCapture } = parsed.values
+  const override = parsed.values['contrast-override']
+  return [
+    manifestPath,
+    ...['--storybook', round.storybookUrl],
+    ...(out ? ['--out', resolve(out)] : []),
+    ...(port ? ['--port', port] : []),
+    ...(noOpen ? ['--no-open'] : []),
+    ...(noCapture ? ['--no-capture'] : []),
+    ...(override !== undefined ? ['--contrast-override', override] : []),
+  ]
+}
+
+/**
+ * Refuses to serve from a harness whose tree differs from origin/main's, printing how to serve
+ * main's; --allow-stale serves anyway with a banner. A failed fetch only warns.
+ */
+async function harnessGate(manifestPath: string, round: LoadedRound, parsed: Parsed, io: CliIo) {
+  const command = serveMainCommand(roundArgs(manifestPath, round, parsed))
+  const verdict = harnessVerdict(
+    await io.harnessFreshness(),
+    !!parsed.values['allow-stale'],
+    command
+  )
+  if ('refusal' in verdict) throw new ReviewError(verdict.refusal)
+  if (verdict.banner) io.stderr(`titan-review: ${verdict.banner}`)
+  return verdict.banner
+}
+
 /**
  * Serving refuses a round the gate did not pass, unless an override gives its reason; the
  * override is then written into round.json. A round that passed is served as it is, and an
- * override given for it is ignored, so it shows no banner.
+ * override given for it is ignored, so it shows no banner. The harness gate runs first, so a
+ * refusal there never rewrites round.json.
  */
 async function gatedRound(manifestPath: string, parsed: Parsed, io: CliIo): Promise<LoadedRound> {
   const round = await loadRound(manifestPath, parsed.values.storybook)
   await assertStoriesExist(round)
+  const harnessWarning = await harnessGate(manifestPath, round, parsed, io)
   const problem = await contrastProblem(manifestPath, round.manifestSha256)
   const reason = parsed.values['contrast-override']?.trim()
   if (parsed.values['contrast-override'] !== undefined && !reason)
     throw new ReviewError('--contrast-override needs a reason the owner can read')
-  if (!problem) return round
+  if (!problem) return { ...round, harnessWarning }
   if (!reason)
     throw new ReviewError(
       `${problem}. Run titan-review build <draft.json>, or pass --contrast-override "<reason>"`
     )
   io.stderr(`titan-review: contrast not gated (${problem}); serving with override: ${reason}`)
   const override = await overrideRecord(manifestPath, problem, reason)
-  return recordOverride(manifestPath, override, parsed.values.storybook)
+  return {
+    ...(await recordOverride(manifestPath, override, parsed.values.storybook)),
+    harnessWarning,
+  }
 }
 
 async function review(parsed: Parsed, io: CliIo): Promise<number> {

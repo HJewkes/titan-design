@@ -36,6 +36,7 @@ import { VariantCard } from './VariantCard.tsx'
 interface AppProps {
   manifest: Manifest
   manifestSha256: string
+  harnessWarning?: string
 }
 
 async function postFeedback(body: unknown): Promise<string[]> {
@@ -413,7 +414,7 @@ function ContrastOverrideBanner({ reason }: { reason: string }) {
   )
 }
 
-export function App({ manifest, manifestSha256 }: AppProps) {
+export function App({ manifest, manifestSha256, harnessWarning }: AppProps) {
   const reducer = useMemo(() => createReducer(manifest), [manifest])
   const storage = useMemo(() => browserStorage(), [])
   const [state, dispatch] = useReducer(reducer, manifest, (m) =>
@@ -444,6 +445,11 @@ export function App({ manifest, manifestSha256 }: AppProps) {
     )
   return (
     <>
+      {harnessWarning && (
+        <p className="harness-warning" role="alert" data-testid="harness-warning">
+          {harnessWarning}
+        </p>
+      )}
       {manifest.contrastOverride && (
         <ContrastOverrideBanner reason={manifest.contrastOverride.reason} />
       )}

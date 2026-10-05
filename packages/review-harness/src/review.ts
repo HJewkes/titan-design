@@ -28,6 +28,8 @@ export interface LoadedRound {
   storybookUrl: string
   /** Absolute path of each image variant's PNG, by variant key. */
   images: Record<string, string>
+  /** A page banner saying the harness is not origin/main's, or could not be checked. */
+  harnessWarning?: string
 }
 
 const PNG_SIGNATURE = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])

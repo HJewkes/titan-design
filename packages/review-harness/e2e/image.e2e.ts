@@ -32,8 +32,11 @@ async function syntheticPng(browser: Browser, file: string, text: string): Promi
   await page.close()
 }
 
-/** A hand-written test round: it bypasses the contrast gate, and the page must say so. */
-const OVERRIDE = ['--contrast-override', 'e2e fixture round, synthetic images']
+/**
+ * A hand-written test round: it bypasses the contrast gate, and the page must say so.
+ * --allow-stale lets a branch that edits the harness e2e its own page.
+ */
+const OVERRIDE = ['--contrast-override', 'e2e fixture round, synthetic images', '--allow-stale']
 
 let cli: ChildProcess | undefined
 test.afterAll(() => cli?.kill())
@@ -133,6 +136,7 @@ test('sticky heads stay below an override banner whose reason wraps', async ({ p
     dir,
     '--contrast-override',
     reason,
+    '--allow-stale',
   ])
   try {
     const url = await new Promise<string>((resolve) =>

@@ -48,6 +48,16 @@ kbd {
   color: var(--color-text-secondary);
 }
 
+/* Not sticky, so it never collides with the contrast banner's offsets; it opens the page. */
+.harness-warning {
+  margin: 0 0 16px;
+  padding: 8px 12px;
+  border: 2px solid var(--color-status-error);
+  background: var(--color-status-error-subtle);
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
 /* Sticky above the sticky section and frame heads, which move down to clear it. */
 .contrast-override {
   position: sticky;
