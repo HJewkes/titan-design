@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedClassNames } from '../../../test/classname-capture'
 import { CoChangeChip } from './CoChangeChip'
 
 describe('CoChangeChip', () => {
@@ -25,5 +26,14 @@ describe('CoChangeChip', () => {
   it('has no a11y violations', async () => {
     const { container } = render(<CoChangeChip a="a.ts" b="b.ts" count={3} />)
     expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+describe('CoChangeChip className merge', () => {
+  it('lets a caller class replace the root class it conflicts with', () => {
+    render(<CoChangeChip a="a.ts" b="b.ts" count={3} className="p-2" />)
+    const classes = capturedClassNames.get('co-change-chip')?.split(/\s+/)
+    expect(classes).toContain('p-2')
+    expect(classes).not.toContain('p-2.5')
   })
 })
