@@ -468,7 +468,7 @@ export const semanticColorsDark = {
   // and `600` carried that failure forward almost exactly (2.93 / 2.70 / 2.47).
   // `500` clears 3:1 everywhere (3.32–5.34). Contrast beats colour fidelity for
   // text roles; borders and surfaces still use strict L*-nearest. See
-  // semantic-contrast.test.ts, which fails if this is moved back down.
+  // token-contrast.test.ts, which fails if this is moved back down.
   'text-tertiary': greyRamp[500],
   'text-disabled': 'rgba(255, 255, 255, 0.38)',
   'text-inverse': greyRamp[950],
