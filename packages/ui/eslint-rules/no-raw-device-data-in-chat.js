@@ -163,3 +163,5 @@ module.exports = {
     }
   },
 }
+
+module.exports.camelCaseDataKey = camelCaseDataKey

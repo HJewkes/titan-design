@@ -4,6 +4,7 @@
  */
 import fs from 'node:fs'
 import path from 'node:path'
+import { createRequire } from 'node:module'
 import { Linter } from 'eslint'
 import fixOptions from '../../eslint-rules/fix-options'
 import { compileClasses, uiRoot } from './tailwind-compile'
@@ -20,6 +21,10 @@ const config = require('../../eslint.config.js') as Linter.Config[]
  */
 
 type Fixture = { code: string; filename: string }
+
+const { camelCaseDataKey } = createRequire(import.meta.url)(
+  '../../eslint-rules/no-raw-device-data-in-chat'
+) as { camelCaseDataKey: (key: string) => string }
 
 const SYMBOLS = fixOptions.SYMBOLS as Record<string, string>
 const SRC = path.join(uiRoot, 'src')
@@ -202,6 +207,14 @@ async function exportProblem(span: string): Promise<string | undefined> {
   return span in exported ? undefined : `\`${span}\` is not exported from the package`
 }
 
+/** A camelCase `data-*` option must be the rule's own conversion of the hyphenated key the message quotes. */
+function dataKeyProblem(span: string, message: string): string | undefined {
+  const reported = message.match(/"(data-[A-Za-z0-9-]+)"/)?.[1]
+  if (!reported) return `data key \`${span}\` has no quoted hyphenated key to derive from`
+  const expected = camelCaseDataKey(reported)
+  return span === expected ? undefined : `data key \`${span}\` is not \`${expected}\``
+}
+
 export async function contractProblems(message: string): Promise<string[]> {
   const spans = [...message.matchAll(/`([^`]+)`/g)].map((m) => m[1])
   const of = (kind: RegExp) => spans.filter((span) => kind.test(span))
@@ -231,6 +244,7 @@ export async function contractProblems(message: string): Promise<string[]> {
     ...components.map(exportProblem),
     ...paths.map(pathProblem),
     ...roots.map(rootProblem),
+    ...dataKeys.map((span) => dataKeyProblem(span, message)),
   ])
   return [...problems, ...resolved.filter((p): p is string => Boolean(p))]
 }
@@ -274,8 +288,16 @@ describe('lint message contract: the checker', () => {
     ])
   })
 
-  it('accepts a camelCase data-* key as an option', async () => {
-    expect(await contractProblems('Use `data-fooBar` instead.')).toEqual([])
+  it('accepts the camelCase of the data-* key the message quotes', async () => {
+    const message = 'The key "data-foo-bar" is dropped. Use `data-fooBar` instead.'
+    expect(await contractProblems(message)).toEqual([])
+  })
+
+  it('rejects a camelCase data-* key that is not the conversion of the quoted key', async () => {
+    const message = 'The key "data-foo-bar" is dropped. Use `data-totallyBogusKey` instead.'
+    expect(await contractProblems(message)).toEqual([
+      'data key `data-totallyBogusKey` is not `data-fooBar`',
+    ])
   })
 
   it('rejects a symbol missing from the module SYMBOLS names for it', async () => {
