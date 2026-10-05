@@ -195,7 +195,7 @@ module.exports = tseslint.config(
   },
 
   // Design-system reuse guardrails: components should compose shared primitives,
-  // not hand-roll paints. (Warn — surfaces existing violators without breaking CI.)
+  // not hand-roll paints. (Warn, but any hit still fails `pnpm lint` through --max-warnings 0.)
   {
     files: ['src/components/**/*.{ts,tsx}'],
     ignores: ['**/*.stories.tsx', '**/*.test.tsx'],
