@@ -1200,11 +1200,15 @@ test.describe('HTML vs React Component Comparison', () => {
   })
 
   test('Sparkline highlight last -- has highlight dot', async ({ page }) => {
-    const container = page.locator('[data-testid="compare-sparkline-highlight"]')
-    await expect(container).toBeAttached()
+    await assertContainerStyles(
+      page,
+      'compare-sparkline-highlight',
+      '.sparkline-container',
+      '[data-testid="sparkline"]',
+      SPARKLINE_CONTAINER_PROPS
+    )
 
-    const reactEl = container.locator('.react-version [data-testid="sparkline"]').first()
-    await expect(reactEl).toBeAttached({ timeout: 3000 })
+    const container = page.locator('[data-testid="compare-sparkline-highlight"]')
 
     // Last dot should be the highlight dot (larger)
     const lastDot = container.locator('.react-version [data-testid="sparkline-dot-4"]').first()
