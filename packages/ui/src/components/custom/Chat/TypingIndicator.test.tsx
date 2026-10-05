@@ -127,6 +127,16 @@ describe('TypingIndicator', () => {
     })
   })
 
+  it('takes its typing line from labels', () => {
+    render(
+      <TypingIndicator
+        participants={[COACH, ATHLETE]}
+        labels={{ typing: (names) => `${names.join(' + ')} escriben` }}
+      />
+    )
+    expect(screen.getByText('Coach + Alex Rivera escriben')).toBeInTheDocument()
+  })
+
   it('has no accessibility violations', async () => {
     const { container } = render(<TypingIndicator participants={[COACH]} />)
     expect(await axe(container)).toHaveNoViolations()
