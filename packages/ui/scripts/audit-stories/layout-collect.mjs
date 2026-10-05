@@ -48,12 +48,18 @@ export function collectLayout({ spacingVars = [] } = {}) {
   const sides = (cs, fmt) => ['Top', 'Right', 'Bottom', 'Left'].map((s) => px(cs[fmt(s)]))
   const ctx = document.createElement('canvas').getContext('2d')
 
+  // Unlike checks.mjs, a 1px hairline counts: dividers are spacing evidence. Opacity does not
+  // inherit, so every element under a transparent one is marked transparent too.
+  const transparent = new Set()
   const isVisible = (el) => {
     const cs = getComputedStyle(el)
-    if (cs.display === 'none' || cs.visibility === 'hidden' || Number(cs.opacity) === 0)
+    if (Number(cs.opacity) === 0 || transparent.has(el.parentElement)) {
+      transparent.add(el)
       return false
+    }
+    if (cs.display === 'none' || cs.visibility === 'hidden') return false
     const r = el.getBoundingClientRect()
-    return r.width > 1 && r.height > 1
+    return Math.min(r.width, r.height) > 0 && Math.max(r.width, r.height) > 1
   }
   const INTERACTIVE_ROLES = new Set([
     'button',

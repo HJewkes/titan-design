@@ -93,3 +93,14 @@ test('mixed-size tspans share one line and take ink from the larger run', async 
     0
   )
 })
+
+test('a 1px hairline divider is collected and paints', async ({ page }) => {
+  const hairline = byTestId(await collect(page), 'hairline')
+  expect(hairline.box[3]).toBe(1)
+  expect(hairline.paints).toBe(true)
+})
+
+test('children of an opacity:0 ancestor are not collected', async ({ page }) => {
+  const layout = await collect(page)
+  expect(layout.nodes.some((n) => n.selector.includes('faded'))).toBe(false)
+})
