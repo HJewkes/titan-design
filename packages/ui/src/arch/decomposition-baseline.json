@@ -236,6 +236,9 @@
   "components/ui/checkbox/Checkbox.tsx#Checkbox": {
     "complexity": 19
   },
+  "components/ui/code-viewer/CodeViewer.tsx#CodeViewer": {
+    "props": 22
+  },
   "components/ui/date-time/DateTime.tsx#formatDate": {
     "complexity": 17
   },
