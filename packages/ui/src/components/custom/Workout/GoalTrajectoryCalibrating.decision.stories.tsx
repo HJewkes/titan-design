@@ -49,7 +49,7 @@ function CalibratingCards() {
  */
 const meta: Meta = {
   title: 'Lab/Decisions/Calibrating Goal Chart',
-  tags: ['autodocs', 'status:lab'],
+  tags: ['autodocs', 'status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
   render: () => <CalibratingCards />,
 }

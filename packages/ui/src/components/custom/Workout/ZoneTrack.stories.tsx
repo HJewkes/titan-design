@@ -26,7 +26,7 @@ const FATIGUE_TICKS = [
 const meta: Meta<typeof ZoneTrack> = {
   title: 'Custom/Workout/DataViz/ZoneTrack',
   component: ZoneTrack,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {

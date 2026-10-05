@@ -19,7 +19,7 @@ const BRAND_PRIMARY_LIGHT = MESO_ACCENT_GRADIENT_LIGHT
 
 export type MesoStatusBadgeVariant = 'success' | 'warning' | 'error' | 'info'
 
-/** The status hues in the given theme. */
+/** The brand primary plus the success, warning, error and info status hues in the given theme. */
 function statusColors(mode: ThemeMode) {
   const t = getSemanticColors(mode)
   return {
@@ -122,7 +122,7 @@ function getGaugeZoneColor(level: number, mode: ThemeMode): string {
   return success
 }
 
-function StatusPill({ badge }: { badge: MesoStatusBadge }) {
+function MesoStatusPill({ badge }: { badge: MesoStatusBadge }) {
   const colors = statusVariants(useSurfaceMode())[badge.variant]
   return (
     <View
@@ -309,7 +309,7 @@ function MesoStatusHeader({
         >
           {mesoName}
         </Text>
-        <StatusPill badge={statusBadge} />
+        <MesoStatusPill badge={statusBadge} />
       </View>
       <Text
         className="text-text-secondary mt-stack-sm"

@@ -6,7 +6,7 @@ import { Button, ButtonText } from '../button/Button'
 const meta: Meta<typeof Menu> = {
   title: 'Components/Molecules/Menu',
   component: Menu,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     isOpen: {
       control: 'boolean',
