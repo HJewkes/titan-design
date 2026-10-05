@@ -1,3 +1,4 @@
+import fs from 'node:fs'
 import path from 'node:path'
 import { Linter } from 'eslint'
 import fixOptions from '../../eslint-rules/fix-options'
@@ -21,6 +22,11 @@ const SRC = path.join(uiRoot, 'src')
 const FIX_CLAUSE = /\b(use|move|resolve|build|compose|render|describe|add|call|derive|reuse)\b/i
 const SYMBOL_OPTION = /^([A-Za-z_$][\w$]*)\(.*\)$/
 const CLASS_OPTION = /^(?:[a-z]+:)*-?[a-z][a-z0-9]*(?:-[a-z0-9.[\]/]+)+$/
+const PATH_OPTION = /^[a-z][\w-]*\/[\w./-]*$/
+const ROOT_OPTION = /^[A-Z][\w ]*\/[\w|/ ]*$/
+const EXPORT_OPTION = /^[A-Z][A-Za-z0-9]*$/
+const STORY_ROOTS = fixOptions.storyRoots as string[]
+const PATH_SUFFIXES = ['', '.ts', '.tsx', '/index.ts', '/index.tsx']
 
 const HEX_RESTRICTED = 'Literal[value=/#[0-9a-fA-F]{3,8}\\b/]'
 const HEX_TEMPLATE = 'TemplateElement[value.raw=/#[0-9a-fA-F]{3,8}\\b/]'
@@ -35,7 +41,6 @@ const FROZEN_CALL =
   'CallExpression[callee.name="getSemanticColors"]:not(:has(> CallExpression[callee.name="useSurfaceMode"]))'
 
 const PENDING = new Set<string>([
-  'titan/no-deprecated-import:deprecated',
   'titan/no-device-internals:hex',
   'titan/no-device-internals:frame',
   'titan/no-device-internals:uuid',
@@ -58,9 +63,7 @@ const PENDING = new Set<string>([
   'titan/no-raw-device-data-in-chat:rawFieldAccess',
   'titan/no-raw-device-data-in-chat:hyphenatedDataKey',
   'titan/no-raw-spacing:rawSpacing',
-  'titan/no-upward-tier-import:upward',
   'titan/no-var-color-opacity:deadClass',
-  'titan/story-title-prefix:unknownPrefix',
   `no-restricted-syntax:${GRADIENT_LITERAL}`,
   `no-restricted-syntax:${GRADIENT_TEMPLATE}`,
   `no-restricted-syntax:${ARBITRARY_LITERAL}`,
@@ -70,7 +73,20 @@ const PENDING = new Set<string>([
 ])
 
 const SHELL_FILE = 'src/components/shell/ContractFixture.tsx'
+const UI_FILE = 'src/components/ui/contract-fixture/ContractFixture.tsx'
 const FIXTURES: Record<string, Fixture> = {
+  'titan/no-deprecated-import:deprecated': {
+    code: "import { StatusDot } from '@/components/custom/Workout/StatusDot'",
+    filename: UI_FILE,
+  },
+  'titan/no-upward-tier-import:upward': {
+    code: "import { PrBadge } from '@/components/custom/Workout/PrBadge'",
+    filename: UI_FILE,
+  },
+  'titan/story-title-prefix:unknownPrefix': {
+    code: "const meta = { title: 'Widgets/ContractFixture' }\nexport default meta",
+    filename: 'src/components/ui/contract-fixture/ContractFixture.stories.tsx',
+  },
   [`no-restricted-syntax:${HEX_RESTRICTED}`]: {
     code: "export const a = '#123456'",
     filename: SHELL_FILE,
@@ -133,18 +149,48 @@ async function symbolProblem(span: string): Promise<string | undefined> {
   return name in exported ? undefined : `symbol \`${name}\` is not exported from ${mod}`
 }
 
+/** A `src`-relative path, or one under `src/components/`, as a message names it (`ui/`, `custom/X`). */
+function pathProblem(span: string): string | undefined {
+  const bases = [path.join(SRC, 'components', span), path.join(SRC, span)]
+  const exists = bases.some((base) => PATH_SUFFIXES.some((ext) => fs.existsSync(base + ext)))
+  return exists ? undefined : `path \`${span}\` does not exist under src`
+}
+
+function rootProblem(span: string): string | undefined {
+  const root = span.split('/')[0]
+  return STORY_ROOTS.includes(root) ? undefined : `story root \`${root}\` is not in preview.tsx`
+}
+
+async function exportProblem(span: string): Promise<string | undefined> {
+  const exported = await import(/* @vite-ignore */ path.join(SRC, 'index'))
+  return span in exported ? undefined : `\`${span}\` is not exported from the package`
+}
+
 export async function contractProblems(message: string): Promise<string[]> {
   const spans = [...message.matchAll(/`([^`]+)`/g)].map((m) => m[1])
-  const symbols = spans.filter((span) => SYMBOL_OPTION.test(span))
-  const classes = spans.filter((span) => CLASS_OPTION.test(span))
+  const of = (kind: RegExp) => spans.filter((span) => kind.test(span))
+  const [symbols, classes, paths, roots, components] = [
+    of(SYMBOL_OPTION),
+    of(CLASS_OPTION),
+    of(PATH_OPTION),
+    of(ROOT_OPTION),
+    of(EXPORT_OPTION),
+  ]
   const problems: string[] = []
   if (!FIX_CLAUSE.test(message)) problems.push('has no fix clause')
-  if (symbols.length + classes.length === 0) problems.push('lists no backticked option')
+  const optionCount =
+    symbols.length + classes.length + paths.length + roots.length + components.length
+  if (optionCount === 0) problems.push('lists no backticked option')
   const compiled = classes.length ? await compileClasses(classes) : new Set<string>()
   for (const cls of classes)
     if (!compiled.has(cls)) problems.push(`class \`${cls}\` does not compile`)
-  const symbolProblems = await Promise.all(symbols.map(symbolProblem))
-  return [...problems, ...symbolProblems.filter((p): p is string => Boolean(p))]
+  const resolved = await Promise.all([
+    ...symbols.map(symbolProblem),
+    ...components.map(exportProblem),
+    ...paths.map(pathProblem),
+    ...roots.map(rootProblem),
+  ])
+  return [...problems, ...resolved.filter((p): p is string => Boolean(p))]
 }
 
 describe('lint message contract: the checker', () => {
@@ -169,6 +215,20 @@ describe('lint message contract: the checker', () => {
   it('rejects a symbol that its SYMBOLS module does not export', async () => {
     expect(await contractProblems('Use `noSuchHelper()` instead.')).toEqual([
       'symbol `noSuchHelper` is not in SYMBOLS',
+    ])
+  })
+
+  it('accepts a real path, story root and package export as options', async () => {
+    const message = 'Move `custom/Workout` to `ui/`, title it `Components/`, or use `Indicator`.'
+    expect(await contractProblems(message)).toEqual([])
+  })
+
+  it('rejects a path, story root or export that does not exist', async () => {
+    const message = 'Move it to `ui/no-such-dir`, title it `Widgets/`, or use `NoSuchThing`.'
+    expect(await contractProblems(message)).toEqual([
+      '`NoSuchThing` is not exported from the package',
+      'path `ui/no-such-dir` does not exist under src',
+      'story root `Widgets` is not in preview.tsx',
     ])
   })
 
