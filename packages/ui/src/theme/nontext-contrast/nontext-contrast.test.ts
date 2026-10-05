@@ -53,6 +53,14 @@ describe('non-text contrast gate (TD-486)', () => {
     ).toEqual([])
   })
 
+  it('never prints a failing measurement at or above its floor', () => {
+    const misprinted = measurements.filter((m) => {
+      const numbers = (m.detail.match(/[\d.]+/g) ?? []).map(Number)
+      return !m.passes && numbers[0] >= numbers[numbers.length - 1]
+    })
+    expect(misprinted.map((m) => `${m.key} ${m.detail}`)).toEqual([])
+  })
+
   it('keeps the baseline sorted, one unique entry per line', () => {
     const lines = baseline.map((key) => `  ${JSON.stringify(key)}`).join(',\n')
     const canonical = baseline.length ? `[\n${lines}\n]\n` : '[]\n'

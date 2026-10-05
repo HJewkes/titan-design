@@ -1,6 +1,8 @@
 /**
  * TD-486 — ramp fidelity. Every semantic colour value, in both themes, is a
  * primitive ramp step or sits on `ramp-allowlist.json` with a one-line reason.
+ * Entries are keyed `mode:token:value`, so changing an allowlisted value to
+ * another off-ramp one fails until the entry is re-justified.
  * The allowlist is shrink-only: a new off-ramp value fails here, and so does an
  * entry whose token now resolves to a ramp step, so a snapping PR deletes its
  * lines. Alpha values are measured by composition, not by hex, so they are
@@ -27,7 +29,7 @@ const rampSteps = new Set(
 const offRamp = MODES.flatMap((mode) =>
   Object.entries(getSemanticColors(mode) as Record<string, string>)
     .filter(([, value]) => !rampSteps.has(value.toLowerCase()))
-    .map(([token]) => `${mode}:${token}`)
+    .map(([token, value]) => `${mode}:${token}:${value}`)
 )
 
 describe('semantic colour ramp fidelity (TD-486)', () => {
