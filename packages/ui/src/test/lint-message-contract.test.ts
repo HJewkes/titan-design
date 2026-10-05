@@ -18,9 +18,8 @@ const config = require('../../eslint.config.js') as Linter.Config[]
  * The lint message contract (eslint-rules/README.md): every custom lint message
  * names the violation, says what owns the value, lists real options and names
  * the escape hatch. This test enumerates every message the `titan` plugin and
- * `no-restricted-syntax` can emit, and holds each one that has a fixture to the
- * contract. Ids in PENDING predate the contract and are exempt until the slice
- * that rewrites them removes them; PENDING may only shrink.
+ * `no-restricted-syntax` can emit, and holds each one to the
+ * contract. Every id has a fixture; a new id without one fails.
  */
 
 type Fixture = { code: string; filename: string }
@@ -40,6 +39,10 @@ const SYMBOL_OPTION = /^([A-Za-z_$][\w$]*)\(.*\)$/
 const CLASS_OPTION = /^(?:[a-z]+:)*-?[a-z][a-z0-9]*(?:-[a-z0-9.[\]/]+)+$/
 const PATH_OPTION = /^[a-z][\w-]*\/[\w./-]*$/
 const SPACE_KEY_OPTION = /^space(?:\.[a-z]+)+$/
+const PACKAGE_OPTION = /^d3(?:-[a-z]+)*$/
+const PACKAGE_JSON = JSON.parse(fs.readFileSync(path.join(uiRoot, 'package.json'), 'utf8')) as {
+  dependencies: Record<string, string>
+}
 const VARIANT_OPTION = /^variant="([^"]*)"$/
 const DATA_KEY_OPTION = /^data-[a-z]+[A-Z][A-Za-z0-9]*$/
 const ROOT_OPTION = /^[A-Z][\w ]*\/[\w|/ ]*$/
@@ -62,12 +65,6 @@ const ARBITRARY_TEMPLATE = `TemplateElement[value.raw=/${SCALE_PROPS}/]`
 const FONT_SIZE = 'Property[key.name="fontSize"][value.type="Literal"]'
 const FROZEN_CALL =
   'CallExpression[callee.name="getSemanticColors"]:not(:has(> CallExpression[callee.name="useSurfaceMode"]))'
-
-const PENDING = new Set<string>([
-  'titan/no-raw-composition:rawButton',
-  'titan/no-raw-composition:d3Import',
-  'titan/no-raw-composition:pathMath',
-])
 
 const SHELL_FILE = 'src/components/shell/ContractFixture.tsx'
 const CHAT_FILE = 'src/components/custom/Chat/ContractFixture.tsx'
@@ -171,6 +168,18 @@ const FIXTURES: Record<string, Fixture> = {
     code: 'export const a = `#123456`',
     filename: SHELL_FILE,
   },
+  'titan/no-raw-composition:rawButton': {
+    code: 'export const B = () => <button />',
+    filename: UI_FILE,
+  },
+  'titan/no-raw-composition:d3Import': {
+    code: "import { scaleLinear } from 'd3-scale'",
+    filename: SHELL_FILE,
+  },
+  'titan/no-raw-composition:pathMath': {
+    code: 'export const d = (x: number, y: number) => `M ${x} ${y} L ${y} ${x}`',
+    filename: SHELL_FILE,
+  },
 }
 
 type Entry = { id: string; template: string }
@@ -263,6 +272,13 @@ async function spaceKeyProblem(span: string): Promise<string | undefined> {
   return typeof leaf === 'number' ? undefined : `space key \`${span}\` is not in semantic.ts`
 }
 
+/** A d3 package option must be a dependency of the package. */
+function packageProblem(span: string): string | undefined {
+  return span in PACKAGE_JSON.dependencies
+    ? undefined
+    : `package \`${span}\` is not a dependency in package.json`
+}
+
 /** A Typography variant option must be a member of the `TypographyVariant` union in its source. */
 function variantProblem(span: string): string | undefined {
   const name = span.match(VARIANT_OPTION)?.[1] as string
@@ -274,9 +290,9 @@ function variantProblem(span: string): string | undefined {
 export async function contractProblems(message: string): Promise<string[]> {
   const spans = [...message.matchAll(/`([^`]+)`/g)].map((m) => m[1])
   const of = (kind: RegExp) => spans.filter((span) => kind.test(span))
-  const [symbols, classes, paths, roots, components, dataKeys, spaceKeys, variants] = [
+  const [symbols, classes, paths, roots, components, dataKeys, spaceKeys, variants, packages] = [
     of(SYMBOL_OPTION),
-    of(CLASS_OPTION),
+    of(CLASS_OPTION).filter((span) => !PACKAGE_OPTION.test(span)),
     // A class with an opacity modifier (`bg-white/50`) is path-shaped too; it goes to the compile check.
     of(PATH_OPTION).filter((span) => !CLASS_OPTION.test(span)),
     of(ROOT_OPTION),
@@ -284,6 +300,7 @@ export async function contractProblems(message: string): Promise<string[]> {
     of(DATA_KEY_OPTION),
     of(SPACE_KEY_OPTION),
     of(VARIANT_OPTION),
+    of(PACKAGE_OPTION),
   ]
   const problems: string[] = []
   if (!FIX_CLAUSE.test(message)) problems.push('has no fix clause')
@@ -295,7 +312,8 @@ export async function contractProblems(message: string): Promise<string[]> {
     components.length +
     dataKeys.length +
     spaceKeys.length +
-    variants.length
+    variants.length +
+    packages.length
   if (optionCount === 0) problems.push('lists no backticked option')
   const compiled = classes.length ? await compileClasses(classes) : new Set<string>()
   for (const cls of classes)
@@ -308,6 +326,7 @@ export async function contractProblems(message: string): Promise<string[]> {
     ...dataKeys.map((span) => dataKeyProblem(span, message)),
     ...spaceKeys.map(spaceKeyProblem),
     ...variants.map(variantProblem),
+    ...packages.map(packageProblem),
   ])
   return [...problems, ...resolved.filter((p): p is string => Boolean(p))]
 }
@@ -396,6 +415,18 @@ describe('lint message contract: the checker', () => {
   })
 })
 
+describe('lint message contract: d3 packages', () => {
+  it('accepts a d3 package that package.json depends on', async () => {
+    expect(await contractProblems('Use `d3-shape` instead.')).toEqual([])
+  })
+
+  it('rejects a d3 package that package.json does not list', async () => {
+    expect(await contractProblems('Use `d3-nonesuch` instead.')).toEqual([
+      'package `d3-nonesuch` is not a dependency in package.json',
+    ])
+  })
+})
+
 describe('lint message contract: space keys and Typography variants', () => {
   it('accepts a space key that is a leaf of the space tokens', async () => {
     expect(await contractProblems('Use `space.stack.md` instead.')).toEqual([])
@@ -456,23 +487,12 @@ describe('lint message contract: every message the config can emit', () => {
     expect(new Set(ids).size).toBe(ids.length)
   })
 
-  it('has a fixture for every id that is not PENDING', () => {
-    const missing = ENTRIES.map((e) => e.id).filter((id) => !PENDING.has(id) && !FIXTURES[id])
-    expect(
-      missing,
-      'a new message id needs a fixture that meets the contract; PENDING is closed to new ids'
-    ).toEqual([])
+  it('has a fixture for every message id', () => {
+    const missing = ENTRIES.map((e) => e.id).filter((id) => !FIXTURES[id])
+    expect(missing, 'a new message id needs a fixture that meets the contract').toEqual([])
   })
 
-  it('keeps PENDING shrink-only: only ids that exist and have no fixture', () => {
-    const known = new Set(ENTRIES.map((entry) => entry.id))
-    const stale = [...PENDING].filter((id) => !known.has(id))
-    const reAdded = [...PENDING].filter((id) => FIXTURES[id])
-    expect(stale, 'PENDING lists an id the config no longer emits').toEqual([])
-    expect(reAdded, 'a conforming id (it has a fixture) may not be PENDING').toEqual([])
-  })
-
-  it.each(ENTRIES.filter((entry) => FIXTURES[entry.id]))(
+  it.each(ENTRIES)(
     '$id renders a message that meets the contract',
     async (entry) => {
       const message = render(entry, FIXTURES[entry.id])
