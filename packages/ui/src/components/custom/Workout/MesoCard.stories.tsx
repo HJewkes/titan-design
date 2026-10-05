@@ -53,7 +53,7 @@ const meta: Meta<typeof MesoCard> = {
   parameters: {
     docs: { description: { component: 'Composes **Card** · **Badge** · **WeekRow**.' } },
   },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     goal: {
       control: 'select',
