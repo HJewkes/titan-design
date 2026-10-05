@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { spacingClassesAt, spacingClassesOf, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
+import { axe } from 'jest-axe'
 import {
   ProgramPlanningPage,
   deriveNavLevel,
@@ -108,6 +109,16 @@ describe('buildBreadcrumbs', () => {
 })
 
 describe('ProgramPlanningPage', () => {
+  it('has no accessibility violations at the meso and workout levels', async () => {
+    const { container } = render(<ProgramPlanningPage mesos={mesos} />)
+    expect(await axe(container)).toHaveNoViolations()
+
+    fireEvent.click(screen.getAllByTestId('workout-pill-pressable')[0])
+    fireEvent.click(screen.getAllByTestId('workout-card-toggle')[0])
+    expect(screen.getByTestId('program-planning-page-workout-level')).toBeInTheDocument()
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
   it('renders the progress bar and starts at the meso level', () => {
     render(<ProgramPlanningPage mesos={mesos} />)
     expect(screen.getByTestId('program-planning-page')).toBeInTheDocument()

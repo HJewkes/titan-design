@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { resolveAll, spacingClassesOf } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
+import { axe } from 'jest-axe'
 import {
   ExerciseDetailPage,
   deriveExerciseStats,
@@ -94,6 +95,15 @@ describe('summarizeVbt', () => {
 })
 
 describe('ExerciseDetailPage', () => {
+  it('has no accessibility violations on open or on the advanced tab', async () => {
+    const { container } = render(<ExerciseDetailPage {...baseProps} />)
+    expect(await axe(container)).toHaveNoViolations()
+
+    fireEvent.click(screen.getByTestId('exercise-detail-page-tab-advanced'))
+    expect(screen.getByTestId('exercise-detail-page-panel-advanced')).toBeInTheDocument()
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
   it('renders the header and opens on the Progress tab', () => {
     render(<ExerciseDetailPage {...baseProps} />)
     expect(screen.getByTestId('exercise-detail-page')).toBeInTheDocument()

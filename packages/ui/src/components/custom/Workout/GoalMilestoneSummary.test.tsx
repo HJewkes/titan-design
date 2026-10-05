@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
+import { axe } from 'jest-axe'
 
 import {
   GoalMilestoneSummary,
@@ -32,6 +33,11 @@ function Parts() {
 }
 
 describe('GoalMilestoneSummary parts', () => {
+  it('has no accessibility violations', async () => {
+    const { container } = render(<GoalMilestoneSummary {...props} />)
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
   it('renders hero, facts and week cells from one resolved milestone', () => {
     render(<Parts />)
 
