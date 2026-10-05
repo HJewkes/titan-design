@@ -4,7 +4,7 @@
  * Takes the files changed against the merge-base with origin/main (committed, staged, unstaged
  * and untracked), picks the checks CI would fail on for them (`verify-changed-plan.mjs`), and
  * runs them one process at a time, stopping at the first failure. CI does not run it.
- * Run `git fetch origin main` first if the base may have moved; the script never fetches.
+ * `VERIFY_BASE=<ref>` replaces origin/main. Run `git fetch origin main` first if the base may have moved; the script never fetches.
  */
 import { execFileSync, spawnSync } from 'node:child_process'
 import path from 'node:path'
@@ -15,7 +15,7 @@ import { parseNameList, planSteps, splitByPackage } from './verify-changed-plan.
 
 const PKG_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const REPO_ROOT = path.resolve(PKG_ROOT, '../..')
-const BASE_REF = 'origin/main'
+const BASE_REF = process.env.VERIFY_BASE ?? 'origin/main'
 
 const git = (...args) => execFileSync('git', ['-C', REPO_ROOT, ...args], { encoding: 'utf8' })
 
@@ -39,7 +39,9 @@ function main() {
   const started = Date.now()
   const { inUi, outside } = splitByPackage(changedFiles())
   if (inUi.length === 0) {
-    console.log(`verify:changed: nothing changed in packages/ui against ${BASE_REF}${outside ? ` (${outside} file(s) elsewhere are not checked)` : ''}.`)
+    console.log(
+      `verify:changed: nothing changed in packages/ui against ${BASE_REF}${outside ? ` (${outside} file(s) elsewhere are not checked)` : ''}.`
+    )
     return 0
   }
   console.log(`verify:changed: ${inUi.length} changed file(s) in packages/ui against ${BASE_REF}`)

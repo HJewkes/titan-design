@@ -30,7 +30,8 @@
     "test:axe": "turbo run test:axe",
     "arch:graph": "node scripts/arch-graph.mjs",
     "review": "node packages/review-harness/src/cli.ts",
-    "audit:stories": "node packages/ui/scripts/audit-stories.mjs"
+    "audit:stories": "node packages/ui/scripts/audit-stories.mjs",
+    "verify:changed": "node packages/ui/scripts/verify-changed.mjs"
   },
   "devDependencies": {
     "turbo": "^2.3.0"
