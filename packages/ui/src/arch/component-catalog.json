@@ -9333,6 +9333,13 @@
           "type": "boolean"
         },
         {
+          "default": "live",
+          "description": "The words appended to the accessible name while a set runs in this category and it is not active (\"Train, live\").",
+          "name": "liveLabel",
+          "required": false,
+          "type": "string"
+        },
+        {
           "default": null,
           "description": "",
           "name": "onPress",
