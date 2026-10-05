@@ -30,8 +30,6 @@ const UNDOCUMENTED_ROOTS: Record<string, string> = {
   avatar: 'No component uses it, only ListItem stories do (Avatar uses `dataviz-categorical-*`).',
   'on-result':
     'Label on a `result-*` fill; no component sets one (SparkBars fills carry no label). §1 `on-*` covers it.',
-  dataviz:
-    'Known gap: the VW-371 chart palettes are consumed but §2 omits them; drop this when it lands.',
 }
 
 const COLOUR_UTILITIES = [

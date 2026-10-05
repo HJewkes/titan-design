@@ -13,17 +13,18 @@ where the choice is actually made.
 
 Pick by **what the colour means**, not by what looks right.
 
-| The colour means…                                         | Use                                                           | Not                                      |
-| --------------------------------------------------------- | ------------------------------------------------------------- | ---------------------------------------- |
-| **A value got better / worse** (delta, trend, growth)     | `result-improve` / `result-degrade` / `result-neutral`        | `status-success` / `status-error`        |
-| **A thing is in a state** (error, warning, live, info)    | `status-*`                                                    | `result-*`, brand colours                |
-| **N peer categories** (chart series, tags, split counts)  | `categoricalPalette` (see §2)                                 | `data-1..10` — **superseded**            |
-| **Brand identity / primary action**                       | `brand-primary`, `brand-secondary`                            | a status token that happens to be orange |
-| **Structural chrome** (page, card, input backgrounds)     | `surface-*`, `background-*`                                   | grey ramp steps directly                 |
-| **Text**                                                  | `text-primary` / `-secondary` / `-tertiary`                   | grey ramp steps directly                 |
-| **Rules and separators**                                  | `hairline-*`, `divider`, `border-*`                           | a hardcoded `border` colour              |
-| **A dimming layer over content** (modal, drawer, press)   | `scrim-*`                                                     | `bg-black/50` — see below                |
-| **A label ON a fill** (solid button, chart tile, toolbar) | `on-brand-*`, `on-status-*`, `on-control-*`, `on-data-strong` | `text-white`, `text-primary`             |
+| The colour means…                                                          | Use                                                                              | Not                                      |
+| -------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------- |
+| **A value got better / worse** (delta, trend, growth)                      | `result-improve` / `result-degrade` / `result-neutral`                           | `status-success` / `status-error`        |
+| **A thing is in a state** (error, warning, live, info)                     | `status-*`                                                                       | `result-*`, brand colours                |
+| **N peer categories** (chart series, tags, split counts)                   | `categoricalPalette` (see §2)                                                    | `data-1..10` — **superseded**            |
+| **A position on an ordered or diverging scale** (effort, volume vs target) | `dataviz-sequential-*` (0 low → 5 high), `dataviz-diverging-*` (2 is the centre) | `status-*`, hand-picked ramp steps       |
+| **Brand identity / primary action**                                        | `brand-primary`, `brand-secondary`                                               | a status token that happens to be orange |
+| **Structural chrome** (page, card, input backgrounds)                      | `surface-*`, `background-*`                                                      | grey ramp steps directly                 |
+| **Text**                                                                   | `text-primary` / `-secondary` / `-tertiary`                                      | grey ramp steps directly                 |
+| **Rules and separators**                                                   | `hairline-*`, `divider`, `border-*`                                              | a hardcoded `border` colour              |
+| **A dimming layer over content** (modal, drawer, press)                    | `scrim-*`                                                                        | `bg-black/50` — see below                |
+| **A label ON a fill** (solid button, chart tile, toolbar)                  | `on-brand-*`, `on-status-*`, `on-control-*`, `on-data-strong`                    | `text-white`, `text-primary`             |
 
 ### `result-*` vs `status-*` — the distinction that gets missed
 
@@ -86,6 +87,14 @@ const [reads, writes, edits] = categoricalPalette.default
   second encoding.
 - **Two variants:** `default` (vivid — neutral/light surfaces, legible under black text) and `dark`
   (deeper — legible under white text on a filled swatch).
+
+**Theme-aware form.** `dataviz-categorical-0..6` is the same seven hues in the same order, resolved
+per theme: dark equals `categoricalPalette.default`, light carries its own steps. Use the role where the
+colour must follow the active theme. `Scatter` and `Treemap` take it through
+`DATAVIZ_CATEGORICAL_ROLES`, and `Avatar` colours a name from it (`avatar-color.ts`).
+`dataviz-diverging-*` paints volume status (`BodyMap`, `MuscleGlyph`, `MuscleGroupChip`,
+`TrainingStatusPage`); `dataviz-sequential-*` paints velocity zones (`VelocityStrip`,
+`PinnedLiveStrip`).
 
 Take colours **in order from the front**. Hand-picking indices to "look nicer" breaks the CVD
 guarantee and the nested-stability property in one move.
