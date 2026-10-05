@@ -239,12 +239,6 @@
   "components/ui/code-viewer/CodeViewer.tsx#CodeViewer": {
     "props": 22
   },
-  "components/ui/date-time/DateTime.tsx#formatDate": {
-    "complexity": 17
-  },
-  "components/ui/date-time/DateTime.tsx#getRelativeTime": {
-    "complexity": 23
-  },
   "components/ui/form-field/FormField.tsx#FormField": {
     "complexity": 20
   },
