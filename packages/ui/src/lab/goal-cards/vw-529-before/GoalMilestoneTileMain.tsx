@@ -1,21 +1,20 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
+// VW-529 round 1 only: GoalMilestoneTile as it is on main (2c8348a6), so the round page can show the
+// current look beside the StatCard one. Delete with this folder when the round locks.
 import type { ReactNode } from 'react'
 import { View } from 'react-native'
 
+import { cn } from '../../../utils/cn'
 import { alpha } from '../../../utils/colors'
 import { LIFT_RIM_ALPHA } from '../../../theme/lift'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { Indicator } from '../../ui/indicator'
-import { StatCard, StatCardHeader } from '../../ui/stat-card'
-import { Surface, useSurfaceMode } from '../../ui/surface'
-import { useMeasuredWidth } from '../Table/column-fit'
-import { Typography } from '../../ui/typography'
+import { Indicator } from '../../../components/ui/indicator'
+import { Surface, useSurfaceMode } from '../../../components/ui/surface'
+import { useMeasuredWidth } from '../../../components/custom/Table/column-fit'
+import { Typography } from '../../../components/ui/typography'
 import {
   GoalMilestoneSummary,
-  MilestoneFacts,
-  MilestoneHero,
-  MilestoneWeekStrip,
   SCALE,
   WALL_MIN_WIDTH,
   accessibleSummary,
@@ -24,7 +23,7 @@ import {
   type GoalMilestoneSummaryProps,
   type GoalMilestoneTileScale,
   type ResolvedTile,
-} from './GoalMilestoneSummary'
+} from '../../../components/custom/Workout/GoalMilestoneSummary'
 
 export { WALL_MIN_WIDTH, milestoneToneToken }
 export type { GoalMilestoneTileScale }
@@ -58,6 +57,20 @@ function StateMark({ tile }: { tile: ResolvedTile }) {
   )
 }
 
+function Header({ label, tile }: { label: string; tile: ResolvedTile }) {
+  return (
+    <View
+      style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
+      className="gap-inline-md"
+    >
+      <Typography variant="overline" color="tertiary">
+        {label}
+      </Typography>
+      <StateMark tile={tile} />
+    </View>
+  )
+}
+
 /** The plane's bottom lip: the card rim's white, as the chart's inset plane wears it. */
 function Plane({ children, pad }: { children: ReactNode; pad: string }) {
   const mode = useSurfaceMode()
@@ -74,11 +87,9 @@ function Plane({ children, pad }: { children: ReactNode; pad: string }) {
 
 /**
  * The goal's meso target — the block's committed value, due in its last week —
- * in the frame the per-lift slot wants. Framed, it is a `StatCard` like its
- * siblings: the label and state mark as the header, the hero as the figure, the
- * facts under it and the week cells as the body. Unframed, it is
- * {@link GoalMilestoneSummary} on its own inset plane. Both read one resolved
- * milestone, so the maths behind the hero, the facts and the week cells has one home.
+ * on its own inset plane: {@link GoalMilestoneSummary} in the frame the per-lift
+ * slot wants. The folded `PrimaryGoalCard` composes the summary directly instead,
+ * so the maths behind the hero, the facts and the week cells has one home.
  *
  * @example
  * <GoalMilestoneTile
@@ -90,13 +101,15 @@ function Plane({ children, pad }: { children: ReactNode; pad: string }) {
  *   weeks={[{ outcome: 'on_track', reading: { reps: 8, load: 97.5 } }]}
  * />
  */
-export function GoalMilestoneTile(allProps: GoalMilestoneTileProps) {
+export function GoalMilestoneTileMain(allProps: GoalMilestoneTileProps) {
   const { layout = 'full', framed = layout === 'full', label = 'Meso target', className } = allProps
   const t = getSemanticColors(useSurfaceMode())
   const measured = useMeasuredWidth()
   const scale = allProps.scale ?? ((measured.width ?? 0) >= WALL_MIN_WIDTH ? 'wall' : 'phone')
   const tile = resolveTile(allProps, t)
+  const pad = SCALE[scale].pad
   const a11y = { role: 'article' as const, 'aria-label': accessibleSummary(tile) }
+  const body = <GoalMilestoneSummary {...allProps} scale={scale} className={undefined} />
   if (!framed) {
     return (
       <View
@@ -105,32 +118,20 @@ export function GoalMilestoneTile(allProps: GoalMilestoneTileProps) {
         testID="goal-milestone-tile"
         {...a11y}
       >
-        <Plane pad={SCALE[scale].pad}>
-          <GoalMilestoneSummary {...allProps} scale={scale} className={undefined} />
-        </Plane>
+        <Plane pad={pad}>{body}</Plane>
       </View>
     )
   }
   return (
-    <StatCard
-      elevation={1}
-      inset={scale === 'wall' ? 'lg' : 'md'}
-      className={className}
+    <Surface
+      raise={1}
+      className={cn(pad, SCALE[scale].gap, className)}
       onLayout={measured.onLayout}
       testID="goal-milestone-tile"
       {...a11y}
-      header={
-        <StatCardHeader
-          title={label}
-          {...(tile.state === 'upcoming' ? {} : { trailing: <StateMark tile={tile} /> })}
-        />
-      }
-      figure={<MilestoneHero tile={tile} scale={scale} />}
-      caption={<MilestoneFacts tile={tile} />}
-      captionPlacement="below"
-      {...((allProps.showWeeks ?? true)
-        ? { body: <MilestoneWeekStrip tile={tile} scale={scale} /> }
-        : {})}
-    />
+    >
+      <Header label={label} tile={tile} />
+      <Plane pad={pad}>{body}</Plane>
+    </Surface>
   )
 }

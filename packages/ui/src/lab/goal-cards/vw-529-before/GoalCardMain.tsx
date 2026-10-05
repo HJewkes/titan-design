@@ -1,24 +1,24 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
+// VW-529 round 1 only: GoalCard as it is on main (2c8348a6), so the round page can show the
+// current look beside the StatCard one. Delete with this folder when the round locks.
 import { Platform, View, type TextStyle, type ViewProps } from 'react-native'
 
-import { Indicator, type IndicatorColor } from '../../ui/indicator'
-import { Pill, type PillTone } from '../../ui/pill'
-import { StatCard, StatCardHeader, type StatCardInset } from '../../ui/stat-card'
-import { TipTrigger } from '../../ui/tooltip'
-import { useMeasuredWidth as useMeasuredBox } from '../Table/column-fit'
-import { Typography } from '../../ui/typography'
+import { cn } from '../../../utils/cn'
+import { Card } from '../../../components/ui/card'
+import { Indicator, type IndicatorColor } from '../../../components/ui/indicator'
+import { Pill, type PillTone } from '../../../components/ui/pill'
+import { TipTrigger } from '../../../components/ui/tooltip'
+import { useMeasuredWidth as useMeasuredBox } from '../../../components/custom/Table/column-fit'
+import { Typography } from '../../../components/ui/typography'
 import {
-  MilestoneFacts,
-  MilestoneHero,
-  MilestoneWeekStrip,
-  WALL_MIN_WIDTH,
-  useResolvedMilestone,
+  GoalMilestoneSummary,
   type GoalMilestoneSummaryProps,
-  type GoalMilestoneTileScale,
-  type ResolvedTile,
-} from './GoalMilestoneSummary'
-import type { GoalMilestoneWeekAxis } from './GoalMilestoneWeekStrip'
-import { GoalPriorityIcon, type GoalPriority } from './GoalPriorityIcon'
+} from '../../../components/custom/Workout/GoalMilestoneSummary'
+import type { GoalMilestoneWeekAxis } from '../../../components/custom/Workout/GoalMilestoneWeekStrip'
+import {
+  GoalPriorityIcon,
+  type GoalPriority,
+} from '../../../components/custom/Workout/GoalPriorityIcon'
 import {
   GoalTrajectoryChart,
   WALL_BREAKPOINT,
@@ -26,16 +26,19 @@ import {
   trajectoryReach,
   type GoalNextTarget,
   type GoalTrajectoryChartProps,
-} from './GoalTrajectoryChart'
-import { trajectoryInsets, trajectoryWeekScale } from './GoalTrajectoryChartGeometry'
+} from '../../../components/custom/Workout/GoalTrajectoryChart'
+import {
+  trajectoryInsets,
+  trajectoryWeekScale,
+} from '../../../components/custom/Workout/GoalTrajectoryChartGeometry'
 import {
   milestoneReach,
   type GoalMilestoneReading,
   type GoalReach,
   type GoalWeekEntry,
-} from './goalMilestone'
-import { PrBadge } from './PrBadge'
-import { GoalWeekColumnsChart } from './GoalWeekColumnsChart'
+} from '../../../components/custom/Workout/goalMilestone'
+import { PrBadge } from '../../../components/custom/Workout/PrBadge'
+import { GoalWeekColumnsChart } from '../../../components/custom/Workout/GoalWeekColumnsChart'
 
 /**
  * The seven words the goals read model may say about a target. Mirrors
@@ -205,10 +208,11 @@ export const GOAL_STATUS_TONE: Record<GoalLiftStatus, PillTone & IndicatorColor>
  */
 export const STATUS_COLLAPSE_WIDTH = 320
 
-const DENSITY: Record<GoalLiftCardDensity, { inset: StatCardInset; chartHeight: number }> = {
-  comfortable: { inset: 'lg', chartHeight: 56 },
-  compact: { inset: 'md', chartHeight: 42 },
-}
+// The compact card's name and its hero read as one header: stack-md between them, not the full card's stack-lg.
+const DENSITY = {
+  comfortable: { pad: 'p-inset-lg', gap: 'gap-stack-md', chartHeight: 56 },
+  compact: { pad: 'p-inset-md', gap: 'gap-stack-md', chartHeight: 42 },
+} as const
 
 export function goalLiftStatusLabel(status: GoalLiftStatus): string {
   return GOAL_STATUS_LABEL[status]
@@ -414,59 +418,60 @@ function TitleRow({
   isPR: boolean
   markSize: number
 }) {
-  const variant = size === 'full' ? 'h5' : 'overline'
   return (
-    <StatCardHeader
-      title={
-        <View style={{ flexShrink: 1, minWidth: 0 }}>
-          <Typography
-            variant={variant}
-            {...(size === 'full' ? {} : { color: 'tertiary' as const })}
-            testID="goal-card-title"
-            {...TITLE_GUARD}
-          >
+    <View
+      // The row is raised so an open tip paints over the body beneath it: a
+      // later sibling wins on paint order whatever the tip's own z-index says.
+      style={{
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        zIndex: 10,
+      }}
+      className="gap-x-inline-md gap-y-stack-sm"
+      testID="goal-card-title-row"
+    >
+      <View style={{ flexShrink: 1, minWidth: 0 }}>
+        {size === 'full' ? (
+          <Typography variant="h5" testID="goal-card-title" {...TITLE_GUARD}>
             {title}
           </Typography>
-        </View>
-      }
-      trailing={
-        <View
-          style={{ flexDirection: 'row', alignItems: 'center', flexShrink: 0 }}
-          className="gap-inline-sm"
-          testID="goal-card-marks"
-        >
-          {priority && <GoalPriorityIcon priority={priority} size={markSize} />}
-          {isPR && <PrBadge type="weight" compact animate={false} iconSize={markSize} />}
-          <StatusAffordance badge={badge} collapsed={collapsed} basis={basis} citation={citation} />
-        </View>
-      }
-      testID="goal-card-title-row"
-    />
+        ) : (
+          <Typography variant="overline" color="tertiary" testID="goal-card-title" {...TITLE_GUARD}>
+            {title}
+          </Typography>
+        )}
+      </View>
+      <View
+        style={{ flexDirection: 'row', alignItems: 'center', flexShrink: 0 }}
+        className="gap-inline-sm"
+        testID="goal-card-marks"
+      >
+        {priority && <GoalPriorityIcon priority={priority} size={markSize} />}
+        {isPR && <PrBadge type="weight" compact animate={false} iconSize={markSize} />}
+        <StatusAffordance badge={badge} collapsed={collapsed} basis={basis} citation={citation} />
+      </View>
+    </View>
   )
 }
 
 /**
- * The full card's body: the week cells sitting directly on the chart's columns.
- * The gap between the cells and the plane is the tight one on purpose — a cell
- * is the header of its week's column, not a strip that happens to be above a chart.
+ * The summary over the plot: hero, facts, then the week cells sitting directly
+ * on the chart's columns. The gap between the cells and the plane is the tight
+ * one on purpose — a cell is the header of its week's column, not a strip that
+ * happens to be above a chart.
  */
-function FullBody({
-  props,
-  goal,
-  tile,
-  scale,
-  width,
-}: {
-  props: GoalCardProps
-  goal: GoalCardChart
-  tile: ResolvedTile
-  scale: GoalMilestoneTileScale
-  width: number
-}) {
-  const { status, title, chartHeight } = props
+function FullBody({ props, width }: { props: GoalCardProps; width: number }) {
+  const { goal, status, title, chartHeight } = props
+  if (!goal) return null
   return (
     <View className="gap-stack-sm" testID="goal-card-fold">
-      {(tile.props.showWeeks ?? true) && <MilestoneWeekStrip tile={tile} scale={scale} />}
+      <GoalMilestoneSummary
+        heroLeading="tight"
+        {...statedMilestone(props)}
+        axis={weekAxisFor(goal, width)}
+      />
       <GoalTrajectoryChart
         {...goal}
         status={status}
@@ -485,10 +490,10 @@ function FullBody({
 }
 
 /**
- * The grid cell's body: the compact chart, which carries the one cells row
- * itself, standing on its plane's top edge so each cell heads the column its
- * point sits in (D1, VW-385 ideation round 2). Two rows of the same cells is
- * what the fold already refused upstairs.
+ * The grid cell's body: the summary WITHOUT its own week cells, over the compact
+ * chart — which carries that one cells row itself, standing on its plane's top
+ * edge so each cell heads the column its point sits in (D1, VW-385 ideation
+ * round 2). Two rows of the same cells is what the fold already refused upstairs.
  */
 function CompactBody({
   props,
@@ -501,21 +506,29 @@ function CompactBody({
 }) {
   const { trend, milestone, status } = props
   return (
-    <View style={{ minHeight: height }} testID="goal-card-trend">
-      {trend && width !== null && (
-        <GoalWeekColumnsChart
-          actuals={trend.actuals}
-          committed={trend.committed}
-          goalWeek={trend.goalWeek}
-          unit={trend.unit}
-          status={status}
-          width={width}
-          height={height}
-          {...(milestone.currentWeek !== undefined ? { currentWeek: milestone.currentWeek } : {})}
-          {...(milestone.weeks ? { weeks: milestone.weeks } : {})}
-          {...(trend.nextTarget ? { nextTarget: trend.nextTarget } : {})}
-        />
-      )}
+    <View className="gap-stack-md">
+      <GoalMilestoneSummary
+        heroLeading="tight"
+        {...statedMilestone(props)}
+        scale="phone"
+        showWeeks={false}
+      />
+      <View style={{ minHeight: height }} testID="goal-card-trend">
+        {trend && width !== null && (
+          <GoalWeekColumnsChart
+            actuals={trend.actuals}
+            committed={trend.committed}
+            goalWeek={trend.goalWeek}
+            unit={trend.unit}
+            status={status}
+            width={width}
+            height={height}
+            {...(milestone.currentWeek !== undefined ? { currentWeek: milestone.currentWeek } : {})}
+            {...(milestone.weeks ? { weeks: milestone.weeks } : {})}
+            {...(trend.nextTarget ? { nextTarget: trend.nextTarget } : {})}
+          />
+        )}
+      </View>
     </View>
   )
 }
@@ -580,7 +593,7 @@ function hasRecord(props: GoalCardProps): boolean {
  *   milestone={{ target, weekCount: 12, currentWeek: 2, status: 'calibrating' }}
  * />
  */
-export function GoalCard(props: GoalCardProps) {
+export function GoalCardMain(props: GoalCardProps) {
   const {
     title,
     status,
@@ -602,26 +615,29 @@ export function GoalCard(props: GoalCardProps) {
       : size === 'compact' &&
         (density === 'compact' ||
           (measured.width !== null && measured.width < STATUS_COLLAPSE_WIDTH))
-  const { goal, trend, milestone, chartWidth, chartHeight, isPR, testID, ...viewProps } = rest
+  const { goal, trend, milestone, chartWidth, chartHeight, isPR, ...viewProps } = rest
   void goal
   void trend
   void milestone
   void chartWidth
   void chartHeight
   void isPR
-  const slots = useGoalCardSlots(props, size, measured.width, d.chartHeight)
   return (
-    <StatCard
+    <Card
       elevation={1}
-      // The inset lives on the card, so the measured content box is exactly the
+      // The inset lives on the card, so the measured box below it is exactly the
       // width its content has to spend — the chart's width, with nothing to subtract.
-      inset={size === 'full' ? 'lg' : d.inset}
-      className={className}
+      className={cn(size === 'full' ? 'p-inset-lg' : d.pad, className)}
       role="article"
       aria-label={`${title} goal, ${badge.label}`}
-      testID={testID ?? 'goal-card'}
-      onContentLayout={measured.onLayout}
-      header={
+      testID="goal-card"
+      {...viewProps}
+    >
+      <View
+        className={size === 'full' ? 'gap-stack-lg' : d.gap}
+        onLayout={measured.onLayout}
+        testID="goal-card-content"
+      >
         <TitleRow
           title={title}
           size={size}
@@ -633,86 +649,12 @@ export function GoalCard(props: GoalCardProps) {
           isPR={hasRecord(props)}
           markSize={markSizeFor(measured.width)}
         />
-      }
-      {...slots}
-      {...viewProps}
-    />
-  )
-}
-
-/**
- * The milestone's parts in the template's slots: hero as the figure, the facts
- * row under it as the caption, the chart (and, full, its week cells) as the body.
- * The full card draws nothing below the header until it has been measured: its
- * week cells and chart are laid out on the measured width.
- */
-function useGoalCardSlots(
-  props: GoalCardProps,
-  size: GoalCardSize,
-  width: number | null,
-  compactChartHeight: number
-) {
-  const { goal } = props
-  const full = size === 'full' && goal && width !== null ? { goal, width } : null
-  const scale: GoalMilestoneTileScale = full && full.width >= WALL_MIN_WIDTH ? 'wall' : 'phone'
-  const tile = useResolvedMilestone({
-    heroLeading: 'tight',
-    ...statedMilestone(props),
-    ...(full ? { axis: weekAxisFor(full.goal, full.width) } : {}),
-  })
-  if (size === 'full' && !full) return {}
-  return {
-    figure: <MilestoneHero tile={tile} scale={scale} />,
-    caption: <MilestoneFacts tile={tile} />,
-    captionPlacement: 'below' as const,
-    body: full ? (
-      <FullBody props={props} goal={full.goal} tile={tile} scale={scale} width={full.width} />
-    ) : (
-      <CompactBody props={props} height={compactChartHeight} width={width} />
-    ),
-  }
-}
-
-/**
- * `GoalCard size="compact"` under the name the per-lift grid already calls it by
- * (voltras-mcp's `#/goals` imports it). It maps the lift-shaped props onto the
- * merged card and adds nothing of its own; retire it once the SPA moves.
- */
-export function GoalLiftCard({
-  name,
-  status,
-  milestone,
-  committed,
-  stretch,
-  actuals,
-  isPR = false,
-  weeks,
-  currentWeek,
-  latest,
-  density = 'comfortable',
-  statusForm,
-  className,
-  ...props
-}: GoalLiftCardProps) {
-  return (
-    <GoalCard
-      title={name}
-      status={status}
-      size="compact"
-      isPR={isPR}
-      milestone={milestoneBlock({ milestone, actuals, status, weeks, currentWeek, latest })}
-      trend={{
-        committed,
-        stretch,
-        actuals,
-        goalWeek: milestone.goalWeek,
-        unit: milestone.unit,
-      }}
-      density={density}
-      {...(statusForm ? { statusForm } : {})}
-      className={className}
-      testID="goal-lift-card"
-      {...props}
-    />
+        {size === 'compact' ? (
+          <CompactBody props={props} height={d.chartHeight} width={measured.width} />
+        ) : (
+          measured.width !== null && <FullBody props={props} width={measured.width} />
+        )}
+      </View>
+    </Card>
   )
 }

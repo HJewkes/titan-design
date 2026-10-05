@@ -71,16 +71,44 @@ describe.each<GoalCardSize>(['full', 'compact'])('the %s title row at phone widt
   })
 })
 
-describe('the gap under the title row', () => {
-  // className never reaches the DOM under vitest; setup.ts captures it per testID.
-  it('is stack-md (8px) on the compact card, whose name and hero read as one header', () => {
-    render(<GoalCard {...card('compact')} />)
-    expect(resolveAll(spacingClassesOf('goal-card-content'))).toEqual(['8px'])
+describe.each<GoalCardSize>(['full', 'compact'])('the %s card in the StatCard template', (size) => {
+  it('renders the title row as the header, hero and facts as the figure, the chart as the body', () => {
+    render(<GoalCard {...card(size)} />)
+    const header = screen.getByTestId('goal-card-stat-card-header')
+    const figure = screen.getByTestId('goal-card-stat-card-figure')
+    const body = screen.getByTestId('goal-card-stat-card-body')
+    expect(header).toContainElement(screen.getByTestId('goal-card-title-row'))
+    expect(figure).toContainElement(screen.getByTestId('goal-milestone-hero'))
+    expect(figure).toContainElement(screen.getByTestId('goal-milestone-facts'))
+    expect(body).toContainElement(
+      screen.getByTestId(size === 'full' ? 'goal-trajectory-chart-canvas' : 'goal-card-trend')
+    )
   })
 
-  it('stays stack-lg (16px) on the full card', () => {
-    render(<GoalCard {...card('full')} />)
-    expect(resolveAll(spacingClassesOf('goal-card-content'))).toEqual(['16px'])
+  // VW-529 Q1 default: the title row and the hero touch, as on the Whole body cards.
+  it('sets no gap between the title row and the hero', () => {
+    render(<GoalCard {...card(size)} />)
+    const header = screen.getByTestId('goal-card-stat-card-header')
+    expect(header.nextElementSibling).toBe(screen.getByTestId('goal-card-stat-card-figure'))
+  })
+
+  // VW-529 Q2 default: the facts stay under the hero, one stack-sm step down.
+  it('stacks the facts under the hero at stack-sm (4px)', () => {
+    render(<GoalCard {...card(size)} />)
+    expect(resolveAll(spacingClassesOf('goal-card-stat-card-figure'))).toEqual(['4px'])
+  })
+})
+
+describe('the measured content width', () => {
+  it.each([296, 900])("is the full card's chart width (%ipx)", (width) => {
+    render(<GoalCard {...card('full')} chartWidth={width} />)
+    expect(screen.getByTestId('goal-trajectory-chart-canvas')).toHaveStyle({ width: `${width}px` })
+  })
+
+  it("is the compact card's chart width", () => {
+    const trend = { committed: 105, stretch: 110, actuals: [], goalWeek: 6, unit: 'lb' }
+    render(<GoalCard {...card('compact')} trend={trend} chartWidth={240} />)
+    expect(screen.getByTestId('goal-week-columns-chart')).toHaveStyle({ width: '240px' })
   })
 })
 
