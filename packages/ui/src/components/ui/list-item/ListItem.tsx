@@ -87,5 +87,5 @@ export interface ListItemDividerProps extends ViewProps {
 }
 
 export function ListItemDivider({ inset = true, className, ...props }: ListItemDividerProps) {
-  return <View className={cn('h-px bg-divider', inset ? 'ml-14' : '', className)} {...props} />
+  return <View className={cn('h-px bg-hairline', inset ? 'ml-14' : '', className)} {...props} />
 }

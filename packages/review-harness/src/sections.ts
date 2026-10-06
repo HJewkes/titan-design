@@ -3,7 +3,9 @@ import {
   AUTO_HEIGHT,
   type FrameHeight,
   type Manifest,
+  type Part,
   type Question,
+  type StripKind,
   type Variant,
 } from './schema.ts'
 
@@ -13,7 +15,12 @@ export const AUTO_FALLBACK_HEIGHT = 900
 export interface ResolvedSection {
   id: string
   title: string
+  deciding?: string
+  changed?: string
   context?: string
+  /** The changed parts as code, rendered as Current/Proposed panes and a settled FYI list. */
+  parts?: Part[]
+  kind?: StripKind
   questions: Question[]
   variants: Variant[]
   /** Frames shown in another section that this one also bears on. */
@@ -45,7 +52,11 @@ export function roundLayout(manifest: Manifest): RoundLayout {
   const sections = (manifest.sections ?? []).map((s) => ({
     id: s.id,
     title: s.title,
+    ...(s.deciding ? { deciding: s.deciding } : {}),
+    ...(s.changed ? { changed: s.changed } : {}),
     ...(s.context ? { context: s.context } : {}),
+    ...(s.parts ? { parts: s.parts } : {}),
+    ...(s.kind ? { kind: s.kind } : {}),
     questions: pick(manifest.questions, s.questionIds, (q) => q.id),
     variants: pick(manifest.variants, s.variantKeys, (v) => v.key),
     seeAlso: pick(manifest.variants, s.seeAlso, (v) => v.key),

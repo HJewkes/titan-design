@@ -4,7 +4,7 @@
   "properties": {
     "schema": {
       "type": "string",
-      "const": "titan-review/round@1"
+      "const": "titan-review/round@2"
     },
     "unit": {
       "type": "string",
@@ -53,7 +53,6 @@
       "maximum": 4000
     },
     "variants": {
-      "minItems": 1,
       "maxItems": 80,
       "type": "array",
       "items": {
@@ -196,6 +195,9 @@
                   "type": "string"
                 }
               },
+              "revisionOption": {
+                "type": "string"
+              },
               "optionVariants": {
                 "type": "object",
                 "propertyNames": {
@@ -247,13 +249,18 @@
                   "by"
                 ],
                 "additionalProperties": false
+              },
+              "signsOff": {
+                "type": "string",
+                "pattern": "\\S"
               }
             },
             "required": [
               "id",
               "prompt",
               "kind",
-              "options"
+              "options",
+              "signsOff"
             ],
             "additionalProperties": false
           },
@@ -487,8 +494,71 @@
             "type": "string",
             "minLength": 1
           },
+          "deciding": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "changed": {
+            "type": "string",
+            "pattern": "\\S"
+          },
           "context": {
-            "type": "string"
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "parts": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]{1,32}$"
+                },
+                "label": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "current": {
+                  "type": "string"
+                },
+                "proposed": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "lang": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9+#-]{1,20}$"
+                },
+                "settled": {
+                  "type": "object",
+                  "properties": {
+                    "cite": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    }
+                  },
+                  "required": [
+                    "cite"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "id",
+                "label",
+                "proposed"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "CHOICE",
+              "STATES"
+            ]
           },
           "questionIds": {
             "default": [],
@@ -672,9 +742,27 @@
         },
         "required": [
           "id",
-          "title"
+          "title",
+          "deciding",
+          "changed",
+          "context"
         ],
-        "additionalProperties": false
+        "additionalProperties": false,
+        "if": {
+          "required": [
+            "variantKeys"
+          ],
+          "properties": {
+            "variantKeys": {
+              "minItems": 1
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "kind"
+          ]
+        }
       }
     },
     "recommendations": {
@@ -898,21 +986,8 @@
     "storybookUrl",
     "widths",
     "variants",
-    "questions"
+    "questions",
+    "sections"
   ],
-  "additionalProperties": false,
-  "if": {
-    "not": {
-      "required": [
-        "sections"
-      ]
-    }
-  },
-  "then": {
-    "properties": {
-      "variants": {
-        "maxItems": 12
-      }
-    }
-  }
+  "additionalProperties": false
 }
