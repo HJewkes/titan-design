@@ -8705,7 +8705,6 @@ export interface VelocityStripProps extends ViewProps {
     columnSlots?: SetSlot[];
     expanded?: boolean;
     height?: number;
-    hideBaseline?: boolean;
     label?: string;
     liveRepIndex?: number;
     lossThresholds?: VelocityLossThresholds;

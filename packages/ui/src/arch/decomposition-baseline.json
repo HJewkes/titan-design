@@ -61,7 +61,7 @@
     "props": 26
   },
   "components/custom/Workout/ExerciseDetailPage.tsx": {
-    "file-lines": 522
+    "file-lines": 521
   },
   "components/custom/Workout/ExerciseHeading.tsx#ExerciseHeading": {
     "props": 19
@@ -124,7 +124,7 @@
     "file-lines": 252
   },
   "components/custom/Workout/VelocityStrip.tsx#VelocityStrip": {
-    "props": 22
+    "props": 21
   },
   "components/custom/Workout/index.ts": {
     "file-lines": 344
