@@ -3,7 +3,7 @@ import * as root from '../../../index'
 import * as moved from '../../ui/metric'
 import * as legacy from './index'
 
-describe('custom/Metric migration shim (M6)', () => {
+describe('custom/Metric migration shim (M9)', () => {
   it('re-exports Metric and MetricGroup as the ui/metric bindings', () => {
     expect(legacy.Metric).toBeDefined()
     expect(legacy.Metric).toBe(moved.Metric)

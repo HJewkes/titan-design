@@ -47,12 +47,12 @@ describe('no-deprecated-import', () => {
       { code: "import { Card } from '@/components/ui'", filename: newCustomConsumer },
       // The alias regression again, two `export *` hops up where both names are reachable.
       { code: "import { IconProps } from '@/components'", filename: newCustomConsumer },
-      // Migration M6: Metric's new home and the root barrel stay clean.
+      // Migration M9: Metric's new home and the root barrel stay clean.
       { code: "import { Metric } from '../../ui/metric'", filename: newCustomConsumer },
       { code: "import { Metric, MetricGroup } from '@/components'", filename: newCustomConsumer },
     ],
     invalid: [
-      // Migration M6: the old custom/Metric path still resolves through its shim and is flagged.
+      // Migration M9: the old custom/Metric path still resolves through its shim and is flagged.
       {
         code: "import { Metric, MetricGroup } from '../Metric'",
         filename: newCustomConsumer,
