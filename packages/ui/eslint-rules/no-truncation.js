@@ -14,6 +14,8 @@
  *   3. Class tokens `truncate`, `line-clamp-*`, `text-ellipsis` in any string, with or
  *      without variant prefixes (`web:truncate`), as an object key (`cn({ 'line-clamp-2': on })`)
  *      or as a template prefix (`line-clamp-${lines}`, reported as `line-clamp-*`).
+ *      A `numberOfLines` that forwards a function parameter (`lines`, `props.lines`) is not
+ *      reported: the caller made the decision.
  *   4. `line-clamp-none` is the opposite of a clamp, and a string that is only compared to
  *      `'truncate'` or imported from a `truncate` path is not a class.
  *
@@ -121,6 +123,26 @@ function isEllipsisValue(node) {
   return node.type === 'Literal' && node.value === 'ellipsis'
 }
 
+/** The variable `name` resolves to from `scope`, walking outwards. */
+function findVariable(scope, name) {
+  for (let current = scope; current; current = current.upper) {
+    const variable = current.set.get(name)
+    if (variable) return variable
+  }
+  return undefined
+}
+
+/**
+ * `numberOfLines={lines}` or `{props.lines}` where `lines` is a function parameter hands the
+ * caller's decision on; the caller is the site this rule checks.
+ */
+function isForwardedParameter(expression, scope) {
+  const root = expression.type === 'MemberExpression' ? expression.object : expression
+  if (root.type !== 'Identifier') return false
+  const variable = findVariable(scope, root.name)
+  return variable?.defs.some((def) => def.type === 'Parameter') ?? false
+}
+
 const FIX =
   'Let the text wrap, or give the full text a hover or press affordance (`ui/tooltip`) and ' +
   `add the site to ${ALLOWLIST_FILE} with its kind and affordance.`
@@ -166,6 +188,14 @@ module.exports = {
     return {
       JSXAttribute(node) {
         if (node.name.type === 'JSXIdentifier' && JSX_ATTRIBUTES.has(node.name.name)) {
+          const { value } = node
+          if (
+            node.name.name === 'numberOfLines' &&
+            value?.type === 'JSXExpressionContainer' &&
+            isForwardedParameter(value.expression, context.sourceCode.getScope(node))
+          ) {
+            return
+          }
           check(node.name.name, node.name.loc, 'attribute')
         }
       },

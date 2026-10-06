@@ -44,6 +44,18 @@ describe('no-truncation', () => {
       },
       // Destructuring a prop to forward it is not a truncation decision.
       { code: 'function Row({ numberOfLines }) { return numberOfLines }', filename: componentFile },
+      {
+        code: 'function Title({ lines }) { return <Text numberOfLines={lines}>{t}</Text> }',
+        filename: componentFile,
+      },
+      {
+        code: 'function Title(props) { return <Text numberOfLines={props.lines}>{t}</Text> }',
+        filename: componentFile,
+      },
+      {
+        code: 'const Title = (lines) => <Text numberOfLines={lines}>{t}</Text>',
+        filename: componentFile,
+      },
       { code: "const label = 'truncated'", filename: componentFile },
       { code: "const c = cn('flex line-clamp-none')", filename: componentFile },
       { code: "import { truncate } from './truncate'", filename: componentFile },
@@ -62,6 +74,16 @@ describe('no-truncation', () => {
           errors: [{ messageId: 'attribute' }],
         })
       ),
+      {
+        code: 'function Title() { const n = 2; return <Text numberOfLines={n}>{t}</Text> }',
+        filename: componentFile,
+        errors: [{ messageId: 'attribute' }],
+      },
+      {
+        code: 'function Title({ lines }) { return <Text numberOfLines={1}>{lines}</Text> }',
+        filename: componentFile,
+        errors: [{ messageId: 'attribute' }],
+      },
       ...['maxLines', 'numberOfLines'].map((property) => ({
         code: `const titleProps = { ${property}: 2 }`,
         filename: componentFile,
