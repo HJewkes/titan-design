@@ -157,15 +157,23 @@ describe('no-truncation under the real config', { timeout: 30_000 }, () => {
 
   it('spends one baselined allowance per site and reports the remainder as stale', () => {
     const file = 'src/components/shell/workout/pinnedLiveStripParts.tsx'
-    expect(baseline[file as keyof typeof baseline]).toEqual({ numberOfLines: 2 })
-    const both = lintAt(
+    expect(baseline[file as keyof typeof baseline]).toEqual({ numberOfLines: 1 })
+    const forwardedAndLiteral = lintAt(
       file,
       'export const T = ({ lines }) => <><Text numberOfLines={lines} /><Text numberOfLines={1} /></>'
     )
-    expect(both).toEqual([])
-    const one = lintAt(file, 'export const T = () => <Text numberOfLines={1} />')
-    expect(one.map((m) => m.messageId)).toEqual(['stale'])
-    expect(one[0].message).toContain("still allows 1 'numberOfLines'")
+    expect(forwardedAndLiteral).toEqual([])
+    const forwardedOnly = lintAt(
+      file,
+      'export const T = ({ lines }) => <Text numberOfLines={lines} />'
+    )
+    expect(forwardedOnly.map((m) => m.messageId)).toEqual(['stale'])
+    expect(forwardedOnly[0].message).toContain("still allows 1 'numberOfLines'")
+    const twoLiterals = lintAt(
+      file,
+      'export const T = () => <><Text numberOfLines={1} /><Text numberOfLines={2} /></>'
+    )
+    expect(twoLiterals.map((m) => m.messageId)).toEqual(['attribute'])
   })
 
   it('leaves ui/ components, tests and stories alone', () => {
