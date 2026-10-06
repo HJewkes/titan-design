@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react'
 import { View, Text, Pressable, type ViewProps, type ViewStyle } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { liftStyle, type LiftStep } from '../../../theme/lift'
+import { resolveColor } from '../../../theme/resolve-color'
 import { Surface } from '../surface/Surface'
 import { SurfaceContext, type SurfaceContextValue } from '../surface/SurfaceContext'
 import { useResolvedSurface } from '../surface/resolveSurface'
@@ -147,7 +148,7 @@ export function Card({
     }
     if (variant === 'accent') {
       own.borderLeftWidth = accentWidth ?? 3
-      own.borderLeftColor = accentColor ?? 'var(--color-brand-primary)'
+      own.borderLeftColor = accentColor ?? resolveColor('brand-primary', depth.mode)
     }
     if (borderColor) own.borderColor = borderColor
     return style ? [own, style] : own
@@ -327,9 +328,11 @@ export function CardSkeleton({
   )
 }
 
+/** Props for {@link CardInset}, a recessed well one plane down from its card. */
 export interface CardInsetProps extends ViewProps {
   /** Additional className */
   className?: string
+  /** Content of the well. */
   children?: React.ReactNode
 }
 

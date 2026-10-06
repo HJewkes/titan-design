@@ -3,16 +3,21 @@ const tseslint = require('typescript-eslint')
 const react = require('eslint-plugin-react')
 const reactHooks = require('eslint-plugin-react-hooks')
 const globals = require('globals')
+const noClassnameOnAnimated = require('./eslint-rules/no-classname-on-animated')
 const noDeprecatedImport = require('./eslint-rules/no-deprecated-import')
 const noDeviceInternals = require('./eslint-rules/no-device-internals')
 const noFrozenTheme = require('./eslint-rules/no-frozen-theme')
+const noHtmlElement = require('./eslint-rules/no-html-element')
 const noLocalFormatter = require('./eslint-rules/no-local-formatter')
 const noRawColor = require('./eslint-rules/no-raw-color')
 const noRawComposition = require('./eslint-rules/no-raw-composition')
 const noRawDeviceDataInChat = require('./eslint-rules/no-raw-device-data-in-chat')
 const noRawSpacing = require('./eslint-rules/no-raw-spacing')
+const noTruncation = require('./eslint-rules/no-truncation')
+const noUnstyledText = require('./eslint-rules/no-unstyled-text')
 const noUpwardTierImport = require('./eslint-rules/no-upward-tier-import')
 const noVarColorOpacity = require('./eslint-rules/no-var-color-opacity')
+const propsNaming = require('./eslint-rules/props-naming')
 const restrictedSyntax = require('./eslint-rules/restricted-syntax')
 const storyTitlePrefix = require('./eslint-rules/story-title-prefix')
 
@@ -97,16 +102,21 @@ module.exports = tseslint.config(
       // below) are enabled in their own block without re-declaring `plugins`.
       titan: {
         rules: {
+          'no-classname-on-animated': noClassnameOnAnimated,
           'no-deprecated-import': noDeprecatedImport,
           'no-device-internals': noDeviceInternals,
           'no-frozen-theme': noFrozenTheme,
+          'no-html-element': noHtmlElement,
           'no-local-formatter': noLocalFormatter,
           'no-raw-color': noRawColor,
           'no-raw-composition': noRawComposition,
           'no-raw-device-data-in-chat': noRawDeviceDataInChat,
           'no-raw-spacing': noRawSpacing,
+          'no-truncation': noTruncation,
+          'no-unstyled-text': noUnstyledText,
           'no-upward-tier-import': noUpwardTierImport,
           'no-var-color-opacity': noVarColorOpacity,
+          'props-naming': propsNaming,
           'story-title-prefix': storyTitlePrefix,
         },
       },
@@ -513,6 +523,82 @@ module.exports = tseslint.config(
     ],
     rules: {
       'titan/no-local-formatter': 'error',
+    },
+  },
+
+  // TD-317 row 9: a domain component that clips its own text hides the data the reader came
+  // for, so truncation in custom/ and shell/ is an explicit decision. ui/ is out of scope:
+  // there truncation is a consumer prop. RATCHETED: today's sites are in
+  // no-truncation-baseline.json, which must stay exact (an unspent allowance is reported as
+  // stale); sanctioned sites go in truncation-allowlist.json. Tests and stories are exempt,
+  // since they exercise the props rather than ship them.
+  {
+    files: ['src/components/custom/**/*.{ts,tsx}', 'src/components/shell/**/*.{ts,tsx}'],
+    ignores: ['src/**/*.test.{ts,tsx}', 'src/**/*.stories.{ts,tsx}'],
+    rules: {
+      'titan/no-truncation': 'error',
+    },
+  },
+
+  // TD-659: on React Native Web a Text inherits nothing from the View around it, so a bare
+  // react-native Text renders black 14px System, and jsdom strips the classes that would
+  // show it in a test. RATCHETED: today's sites are in no-unstyled-text-baseline.json, which
+  // must stay exact (an unspent allowance is reported as stale). Stories are in scope, since
+  // they render on web; tests are not, since jsdom never paints.
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    ignores: ['src/**/*.test.{ts,tsx}'],
+    rules: {
+      'titan/no-unstyled-text': 'error',
+    },
+  },
+
+  // TD-689: components render on web and native, so a lowercase JSX element (`<div>`,
+  // `<path>`) mounts on web only, and jsdom renders it without complaint. RATCHETED:
+  // today's sites are in no-html-element-baseline.json, keyed by file and element name,
+  // which must stay exact (an unspent allowance is reported as stale). Stories and tests
+  // are exempt, since they are web-only by construction; src/lab is outside the glob.
+  {
+    files: ['src/components/**/*.{ts,tsx}'],
+    ignores: ['src/**/*.test.{ts,tsx}', 'src/**/*.stories.{ts,tsx}'],
+    rules: {
+      'titan/no-html-element': 'error',
+    },
+  },
+
+  // TD-690: every component takes the same prop vocabulary (CLAUDE.md, Props Conventions):
+  // `isDisabled`, `isLoading`, `isSelected` and `onPress`, never `disabled`, `loading`,
+  // `selected` or `onClick`. RATCHETED: today's sites are in props-naming-baseline.json,
+  // keyed by file and property name, which must stay exact (an unspent allowance is reported
+  // as stale). Stories and tests are exempt, since they declare no component API; src/lab is
+  // outside the glob.
+  {
+    files: ['src/components/**/*.{ts,tsx}'],
+    ignores: ['src/**/*.test.{ts,tsx}', 'src/**/*.stories.{ts,tsx}'],
+    rules: {
+      'titan/props-naming': 'error',
+    },
+  },
+
+  // TD-13: NativeWind does not compile className on an Animated.* element, so every class on
+  // one renders nothing on web and jsdom strips it in tests. Every className is flagged, not
+  // only spacing. A className on a plain child inside the animated element is fine.
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    rules: {
+      'titan/no-classname-on-animated': 'error',
+    },
+  },
+
+  // The two sites that carry a className on an Animated.View today. TD-305 (TD-13 S12)
+  // moves their classes onto a plain child or an inline style and deletes this block.
+  {
+    files: [
+      'src/components/custom/Workout/BodyMapDetailPanel.tsx',
+      'src/components/custom/Workout/VelocityStripFramed.tsx',
+    ],
+    rules: {
+      'titan/no-classname-on-animated': 'off',
     },
   },
 

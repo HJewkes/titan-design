@@ -5,6 +5,7 @@ import {
   Text,
   Pressable,
   ScrollView,
+  type ViewProps,
   type ModalProps as RNModalProps,
 } from 'react-native'
 import { cn } from '../../../utils/cn'
@@ -93,8 +94,11 @@ export function Modal({
   }
 
   const backdropContent = (
+    // Not a tab stop. It wraps the dialog content, so it cannot be aria-hidden.
     <Pressable
       onPress={handleBackdropPress}
+      focusable={false}
+      tabIndex={-1}
       className={cn(
         'flex-1 items-center justify-center',
         backdropBlur ? 'bg-scrim-subtle web:backdrop-blur-sm' : 'bg-scrim',
@@ -132,6 +136,13 @@ export interface ModalContentProps {
   className?: string
 }
 
+// Keeps a press inside the content from reaching the backdrop: native claims the
+// responder, web stops the DOM click that react-native-web's Pressable listens for.
+const contentPressGuard = {
+  onStartShouldSetResponder: () => true,
+  onClick: (event: { stopPropagation: () => void }) => event.stopPropagation(),
+} as unknown as ViewProps
+
 /**
  * Container for modal content.
  */
@@ -139,10 +150,7 @@ export function ModalContent({ children, className }: ModalContentProps) {
   const { size } = useContext(ModalContext)
 
   return (
-    <Pressable
-      // Prevent backdrop click from propagating
-      onPress={(e) => e.stopPropagation()}
-    >
+    <View {...contentPressGuard}>
       {/* Floating: overlay plane + the deepest lift, no ring. */}
       <Surface
         elevation={5}
@@ -151,7 +159,7 @@ export function ModalContent({ children, className }: ModalContentProps) {
       >
         {children}
       </Surface>
-    </Pressable>
+    </View>
   )
 }
 
@@ -167,7 +175,7 @@ export function ModalHeader({ children, className }: ModalHeaderProps) {
   return (
     <View
       className={cn(
-        'flex-row items-center justify-between px-inset-xl py-inset-lg border-b border-divider',
+        'flex-row items-center justify-between px-inset-xl py-inset-lg border-b border-hairline',
         className
       )}
     >
@@ -268,7 +276,7 @@ export function ModalFooter({ children, className }: ModalFooterProps) {
   return (
     <View
       className={cn(
-        'flex-row items-center justify-end gap-2 px-inset-xl py-inset-lg border-t border-divider',
+        'flex-row items-center justify-end gap-2 px-inset-xl py-inset-lg border-t border-hairline',
         className
       )}
     >

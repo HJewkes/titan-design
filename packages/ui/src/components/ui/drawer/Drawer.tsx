@@ -114,7 +114,13 @@ export function Drawer({
     >
       <View className="flex-1">
         {/* Backdrop */}
-        <Pressable onPress={handleOverlayPress} className="absolute inset-0 bg-scrim" />
+        <Pressable
+          onPress={handleOverlayPress}
+          focusable={false}
+          tabIndex={-1}
+          aria-hidden
+          className="absolute inset-0 bg-scrim"
+        />
 
         {/* Drawer Panel — floating: overlay plane + lift, no ring. */}
         <Surface
