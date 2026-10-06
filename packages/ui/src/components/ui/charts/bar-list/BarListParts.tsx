@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react'
 import { View } from 'react-native'
-import { cn } from '../../../../utils/cn'
 import { Skeleton } from '../../skeleton'
 import { Typography } from '../../typography'
 import { resolveColor } from '../../../../theme/resolve-color'

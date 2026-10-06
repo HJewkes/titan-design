@@ -290,7 +290,6 @@ describe('rowTip', () => {
   })
 })
 
-
 const LIMIT = { value: 100, label: 'Limit' }
 
 describe('reference marker', () => {
