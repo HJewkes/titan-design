@@ -988,6 +988,12 @@ export const COMPACT_SEVERITY_BELOW = 840;
 export function compareTaskFlow(a: TaskFlowItem, b: TaskFlowItem): number;
 
 // @public
+export function compareTaskSeverity(a: Pick<TaskListItem, 'severity' | 'priority'>, b: Pick<TaskListItem, 'severity' | 'priority'>): number;
+
+// @public
+export function compareTaskUpdated(a: Pick<TaskListItem, 'updated'>, b: Pick<TaskListItem, 'updated'>): number;
+
+// @public
 export function Composer(input: ComposerProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
