@@ -171,6 +171,8 @@ export interface GoalTrajectoryGeometry {
   hasActuals: boolean
   toX: (weekIndex: number) => number
   toY: (value: number) => number
+  /** Width in px of one week's column on the x axis. */
+  weekSpan: number
   /** Value range the plot spans, bottom edge to top edge. */
   domain: { min: number; max: number }
   /** Closed ring: top edge left→right, then bottom edge right→left. */
@@ -837,6 +839,7 @@ export function deriveTrajectoryGeometry(
     hasActuals: actuals.length > 0,
     toX,
     toY,
+    weekSpan,
     domain: { min: domainMin, max: domainMax },
     bandPolygon: hasBand ? ringOf(slices) : [],
     bandPath: hasBand ? bandPathAt(slices, 1, input.bandCurve) : '',

@@ -97,7 +97,7 @@ function SparklineReferenceRule({
       accessibilityElementsHidden
       testID={`sparkline-reference-${i}`}
     >
-      {line.label && (
+      {!!line.label && (
         // `3xs` (9px) is the scale floor; the label was 7px, which is off it
         // entirely (TOKENS.md §4). The line box stays unpinned, as the raw
         // <Text> this replaced was, so the absolute offset still lands.

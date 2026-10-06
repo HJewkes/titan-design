@@ -5,26 +5,30 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { expect, test, type Page } from '@playwright/test'
 import { FeedbackSchema, MANIFEST_SCHEMA_ID, type ManifestInput } from '../src/schema.ts'
+import { SECTION_TEXTS, underContract } from '../test/fixtures.ts'
 import { isolatedStorybook, type RunningStorybook } from './storybook.ts'
 
 const CLI = new URL('../src/cli.ts', import.meta.url).pathname
 
 function round(storybookUrl: string, height = 700): ManifestInput {
-  return {
-    schema: MANIFEST_SCHEMA_ID,
-    unit: 'vw-419-e2e',
-    round: 1,
-    storybookUrl,
-    widths: [360],
-    height,
-    variants: [
-      { key: 'A', storyId: 'lab-decisions-goal-milestone-tiles--phone', label: 'Tiles' },
-      { key: 'B', storyId: 'lab-decisions-compact-goal-chart--phone', label: 'Chart' },
-    ],
-    questions: [
-      { id: 'q1', kind: 'pick-one', prompt: 'Which one?', options: ['A', 'B'], required: true },
-    ],
-  }
+  return underContract(
+    {
+      schema: MANIFEST_SCHEMA_ID,
+      unit: 'vw-419-e2e',
+      round: 1,
+      storybookUrl,
+      widths: [360],
+      height,
+      variants: [
+        { key: 'A', storyId: 'lab-decisions-goal-milestone-tiles--phone', label: 'Tiles' },
+        { key: 'B', storyId: 'lab-decisions-compact-goal-chart--phone', label: 'Chart' },
+      ],
+      questions: [
+        { id: 'q1', kind: 'pick-one', prompt: 'Which one?', options: ['A', 'B'], required: true },
+      ],
+    },
+    'CHOICE'
+  )
 }
 
 const STORIES = [
@@ -36,8 +40,16 @@ const STORIES = [
 function sectionedRound(storybookUrl: string): ManifestInput {
   const keys = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
   const pick = (id: string, options: string[]) =>
-    ({ id, kind: 'pick-one', prompt: `Pick for ${id}?`, options, required: true }) as const
-  const text = (id: string) => ({ id, kind: 'text', prompt: `Wording for ${id}?` }) as const
+    ({
+      id,
+      kind: 'pick-one',
+      prompt: `Pick for ${id}?`,
+      options,
+      required: true,
+      signsOff: `the part ${id} asks about`,
+    }) as const
+  const text = (id: string, required = false) =>
+    ({ id, kind: 'text', prompt: `Wording for ${id}?`, required }) as const
   return {
     schema: MANIFEST_SCHEMA_ID,
     unit: 'vw-545-e2e',
@@ -51,20 +63,38 @@ function sectionedRound(storybookUrl: string): ManifestInput {
       pick('q2', ['on the chart', 'in the hero eyebrow']),
       pick('q3', ['D', 'E']),
       pick('q4', ['F', 'G']),
-      text('overall'),
+      text('overall', true),
     ],
     sections: [
-      { id: 's1', title: 'First', questionIds: ['q1', 'q1-text'], variantKeys: ['A', 'B'] },
-      { id: 's2', title: 'Second', questionIds: ['q2'], variantKeys: ['C'] },
+      {
+        id: 's1',
+        title: 'First',
+        ...SECTION_TEXTS,
+        kind: 'CHOICE',
+        questionIds: ['q1', 'q1-text'],
+        variantKeys: ['A', 'B'],
+      },
+      {
+        id: 's2',
+        title: 'Second',
+        ...SECTION_TEXTS,
+        kind: 'STATES',
+        questionIds: ['q2'],
+        variantKeys: ['C'],
+      },
       {
         id: 's3',
         title: 'Third',
+        ...SECTION_TEXTS,
+        kind: 'CHOICE',
         questionIds: ['q3'],
         variantKeys: ['D', 'E'],
       },
       {
         id: 's4',
         title: 'Fourth',
+        ...SECTION_TEXTS,
+        kind: 'CHOICE',
         questionIds: ['q4'],
         variantKeys: ['F', 'G'],
       },
@@ -81,6 +111,7 @@ function startCli(manifestPath: string, outDir: string, ...flags: string[]) {
     outDir,
     '--contrast-override',
     'e2e fixture round',
+    '--allow-stale',
     ...flags,
   ])
   let stdout = ''
@@ -269,7 +300,7 @@ test('a sectioned round pages section by section and sends a partial review', as
 
   await page.keyboard.press('Meta+Enter')
   await expect(page.getByTestId('review-screen'), 'focus leaves the hidden form').toBeFocused()
-  await expect(page.getByTestId('unanswered')).toContainText('2 of 6 questions are unanswered')
+  await expect(page.getByTestId('unanswered')).toContainText('1 of 6 questions are unanswered')
   await page.keyboard.press('Meta+Enter')
   const held = page.waitForTimeout(2_000).then(() => 'held')
   expect(await Promise.race([run.exit.then(() => 'sent'), held]), 'Cmd+Enter sent').toBe('held')

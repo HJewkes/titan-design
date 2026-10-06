@@ -92,8 +92,8 @@ const [reads, writes, edits] = categoricalPalette.default
 per theme: dark equals `categoricalPalette.default`, light carries its own steps. Use the role where the
 colour must follow the active theme. `Scatter` and `Treemap` take it through
 `DATAVIZ_CATEGORICAL_ROLES`, and `Avatar` hashes a name onto it.
-`dataviz-diverging-*` paints volume status (`BodyMap`, `MuscleGlyph`, `MuscleGroupChip`,
-`TrainingStatusPage`); `dataviz-sequential-*` paints velocity zones (`VelocityStrip`,
+`dataviz-diverging-*` paints volume status (`BodyMap`, `MuscleGroupChip`,
+`TrainingStatusPage`, through `getHeatmapColor` and `volumeStatusDotColor`); `dataviz-sequential-*` paints velocity zones (`VelocityStrip`,
 `PinnedLiveStrip`).
 
 Take colours **in order from the front**. Hand-picking indices to "look nicer" breaks the CVD
@@ -360,12 +360,11 @@ Lint messages follow the four-line contract in `eslint-rules/README.md`, enforce
 | all of `src/components/**`             | no frozen theme — module-scope or literal-mode `getSemanticColors()` (**error**, ratcheted) |
 | `shell/`, `icons/`                     | \+ no raw hex (warn)                                                                        |
 | `custom/ActiveWork/`, `custom/charts/` | \+ no raw hex, no arbitrary px, no inline `fontSize` (**error**)                            |
-| `custom/Workout/` — batch B1 only      | same errors, listed file by file until the family is ported                                 |
+| `custom/Workout/` — listed files       | same errors, enrolled file by file in `eslint.config.js` until the family is ported         |
 
 Workout is being ported in batches (E3), so it is enrolled per file rather than per
-family. Batch B1: `SetStrip`, `SetTableHeader`, `SetsRepsLoad`, `ExerciseHeading`,
-`ExerciseIndicator`, `ExerciseCardHeading`, `PrBadge`. Add each later batch's files to
-the same list as it lands; swap the list for a `Workout/**` glob when the last one is in.
+family; the enrolled files are the list in `eslint.config.js`. Add each later batch's files to
+that list as it lands; swap the list for a `Workout/**` glob when the last one is in.
 
 The scope is deliberately per-family rather than repo-wide: a codebase-wide migration is a separate
 effort, and a rule that fires 140 times on legacy code gets ignored. **When you harden a new family
@@ -374,8 +373,7 @@ new family opts in while it is still clean.
 
 `titan/no-frozen-theme` is the exception that covers every family at once, because it can: its
 offenders are recorded per file in `eslint-rules/frozen-theme-baseline.json`, keyed by frozen value.
-A new frozen call fails immediately anywhere under `src/components/**`; the 38 recorded at the start
-migrated in batches (VW-316) and **7 remain**, all in families another ticket is mid-way through.
+A new frozen call fails immediately anywhere under `src/components/**`; the remainder is whatever the baseline file still lists.
 After migrating a file, run `node scripts/update-frozen-theme-baseline.mjs` to lower its allowance —
 the script refuses to raise one without `--allow-increase`, so the ratchet only shrinks.
 

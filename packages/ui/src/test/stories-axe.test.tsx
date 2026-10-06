@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { composeStory } from '@storybook/react'
+import { composeStory } from '@storybook/react-vite'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Pressable } from 'react-native'
 import baseline from './stories-axe-baseline.json'

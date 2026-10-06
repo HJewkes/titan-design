@@ -37,10 +37,19 @@ describe('TempoDisplay', () => {
     ).toBeInTheDocument()
   })
 
-  it('is always a Pressable for tooltip', () => {
+  it('is a button when it shows the info tooltip', () => {
     render(<TempoDisplay tempo={[3, 1, 1, 0]} />)
-    const display = screen.getByTestId('tempo-display')
-    expect(display).toBeInTheDocument()
+    expect(screen.getByTestId('tempo-display')).toHaveAttribute('role', 'button')
+  })
+
+  it('is a button when it has an onPress handler', () => {
+    render(<TempoDisplay tempo={[3, 1, 1, 0]} showInfo={false} onPress={() => {}} />)
+    expect(screen.getByTestId('tempo-display')).toHaveAttribute('role', 'button')
+  })
+
+  it('has no button role when it is neither pressable nor showing info', () => {
+    render(<TempoDisplay tempo={[3, 1, 1, 0]} showInfo={false} />)
+    expect(screen.getByTestId('tempo-display')).not.toHaveAttribute('role')
   })
 
   it('calls onPress when pressed', () => {

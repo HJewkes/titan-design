@@ -167,8 +167,9 @@ export function darken(hex: string, amount: number = 0.1): string {
 }
 
 /**
- * Get hover colors for a button based on its background color.
- * Automatically adapts intensity based on the color's luminance.
+ * Get the raised and pressed hover fills for a background color: `raised` lightens it and
+ * `pressed` darkens it by the same HSV Value step (0.01 subtle, 0.02 medium, 0.03 strong).
+ * The step does not depend on the color's luminance.
  *
  * @param bgColor - The button's background color (hex)
  * @param intensity - How strong the hover effect should be ('subtle' | 'medium' | 'strong')
