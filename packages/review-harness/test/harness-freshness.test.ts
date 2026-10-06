@@ -6,6 +6,7 @@ import {
   checkHarnessFreshness,
   harnessVerdict,
   serveMainCommand,
+  serveMainTree,
 } from '../src/harness-freshness.ts'
 import { SHA, manifest } from './fixtures.ts'
 
@@ -32,6 +33,7 @@ const FETCH = 'fetch --quiet origin main'
 const OWN = 'rev-parse HEAD:./'
 const MAIN = 'rev-parse origin/main:./'
 const LOG = 'log --oneline HEAD..origin/main -- .'
+const EDITS = 'status --porcelain --untracked-files=no -- .'
 
 describe('checkHarnessFreshness', () => {
   beforeEach(() => {
@@ -66,6 +68,14 @@ describe('checkHarnessFreshness', () => {
   it('is behind with no missing commits when only local harness edits differ', async () => {
     replies.set(OWN, 'aaa111')
     replies.set(MAIN, 'bbb222')
+
+    expect(await checkHarnessFreshness()).toEqual({ state: 'behind', missing: [] })
+  })
+
+  it('is behind when the committed tree equals main but a harness file has uncommitted edits', async () => {
+    replies.set(OWN, 'aaa111')
+    replies.set(MAIN, 'aaa111')
+    replies.set(EDITS, ' M src/run.ts')
 
     expect(await checkHarnessFreshness()).toEqual({ state: 'behind', missing: [] })
   })
@@ -132,14 +142,26 @@ describe('serveMainCommand', () => {
       "owner's call",
     ])
 
-    expect(command).toContain(
-      'worktree add --detach "${TMPDIR:-/tmp}/titan-review-main" origin/main'
-    )
+    const tree = serveMainTree('/rounds/r 1/round.json')
+    expect(tree).toMatch(/^"\$\{TMPDIR:-\/tmp\}\/titan-review-main-[0-9a-f]{12}"$/)
+    expect(command).toContain(`worktree add --detach ${tree} origin/main`)
+    expect(command).toContain(`git -C ${tree} checkout --quiet --detach origin/main`)
+    expect(command).toContain(`pnpm -C ${tree} review`)
     expect(command).toContain('checkout --quiet --detach origin/main')
     expect(command).toContain('install --frozen-lockfile')
     expect(command).toContain(
       `review '/rounds/r 1/round.json' --storybook http://127.0.0.1:6107 --contrast-override 'owner'\\''s call'`
     )
+  })
+})
+
+describe('serveMainTree', () => {
+  it('gives two round directories two checkouts', () => {
+    expect(serveMainTree('/rounds/a/round.json')).not.toBe(serveMainTree('/rounds/b/round.json'))
+  })
+
+  it('gives the same round directory the same checkout on every run', () => {
+    expect(serveMainTree('/rounds/a/round.json')).toBe(serveMainTree('/rounds/a/./round.json'))
   })
 })
 

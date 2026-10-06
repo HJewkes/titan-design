@@ -1,5 +1,6 @@
 import { execFile } from 'node:child_process'
-import { dirname, join } from 'node:path'
+import { createHash } from 'node:crypto'
+import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 export const HARNESS_DIR = join(dirname(fileURLToPath(import.meta.url)), '..')
@@ -8,8 +9,8 @@ const FETCH_TIMEOUT_MS = 20_000
 
 /**
  * `current`: this package's tree equals main's. `behind`: they differ; `missing` lists the
- * commits on main touching the harness that this checkout lacks (empty when only local edits
- * differ). `unchecked`: the fetch or a lookup failed, so nothing is known.
+ * commits on main touching the harness that this checkout lacks (empty when only local edits,
+ * committed or not, differ). `unchecked`: the fetch or a lookup failed, so nothing is known.
  */
 export type HarnessFreshness =
   | { state: 'current' }
@@ -27,7 +28,10 @@ function git(args: string[], timeout = 10_000): Promise<string> {
 
 const firstLine = (err: unknown) => (err as Error).message.split('\n')[0]
 
-/** Compares tree hashes, not commits, so a commit on main outside the harness never trips it. */
+/**
+ * Compares tree hashes, not commits, so a commit on main outside the harness never trips it.
+ * `HEAD:./` ignores the working tree, so uncommitted edits to tracked files count separately.
+ */
 export async function checkHarnessFreshness(): Promise<HarnessFreshness> {
   try {
     await git(['fetch', '--quiet', 'origin', 'main'], FETCH_TIMEOUT_MS)
@@ -35,11 +39,12 @@ export async function checkHarnessFreshness(): Promise<HarnessFreshness> {
     return { state: 'unchecked', reason: `git fetch origin main failed: ${firstLine(err)}` }
   }
   try {
-    const [own, main] = await Promise.all([
+    const [own, main, edits] = await Promise.all([
       git(['rev-parse', 'HEAD:./']),
       git(['rev-parse', `${MAIN_REF}:./`]),
+      git(['status', '--porcelain', '--untracked-files=no', '--', '.']),
     ])
-    if (own === main) return { state: 'current' }
+    if (own === main && !edits) return { state: 'current' }
     const log = await git(['log', '--oneline', `HEAD..${MAIN_REF}`, '--', '.'])
     return { state: 'behind', missing: log ? log.split('\n') : [] }
   } catch (err) {
@@ -50,9 +55,23 @@ export async function checkHarnessFreshness(): Promise<HarnessFreshness> {
 const shellQuote = (value: string) =>
   /^[\w@%+=:,./-]+$/.test(value) ? value : `'${value.replace(/'/g, `'\\''`)}'`
 
-/** The commands that serve origin/main's harness from a detached checkout against this round. */
+/**
+ * One checkout per round directory, so re-checking out main for one round never moves files
+ * under a live server for another.
+ */
+export function serveMainTree(manifestPath: string): string {
+  const round = createHash('sha256')
+    .update(dirname(resolve(manifestPath)))
+    .digest('hex')
+  return `"\${TMPDIR:-/tmp}/titan-review-main-${round.slice(0, 12)}"`
+}
+
+/**
+ * The commands that serve origin/main's harness from a detached checkout against this round.
+ * `roundArgs[0]` is the round's manifest path.
+ */
 export function serveMainCommand(roundArgs: string[]): string {
-  const tree = '"${TMPDIR:-/tmp}/titan-review-main"'
+  const tree = serveMainTree(roundArgs[0])
   return [
     `git -C ${shellQuote(join(HARNESS_DIR, '..', '..'))} worktree add --detach ${tree} ${MAIN_REF} 2>/dev/null ||`,
     `  git -C ${tree} checkout --quiet --detach ${MAIN_REF}`,
@@ -66,7 +85,7 @@ export type HarnessVerdict = { refusal: string } | { banner?: string }
 
 function lacking(missing: string[]): string {
   if (!missing.length)
-    return 'it lacks no commit from origin/main, so the difference is this checkout’s own harness edits'
+    return 'it lacks no commit from origin/main, so the difference is this checkout’s own harness edits, committed or not'
   return `it lacks ${missing.length} commit(s):\n  ${missing.join('\n  ')}`
 }
 
