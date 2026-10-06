@@ -164,15 +164,41 @@ describe('Tabs', () => {
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
       const { container } = renderTabs()
-      // react-native-web does not render role="tablist" on the TabList container
-      // or aria-selected on tabs, so we disable related rules
-      const results = await axe(container, {
-        rules: {
-          'aria-required-parent': { enabled: false },
-          'aria-required-attr': { enabled: false },
-        },
-      })
+      const results = await axe(container)
       expect(results).toHaveNoViolations()
+    })
+
+    it('exposes a tablist with its orientation', () => {
+      renderTabs()
+      expect(screen.getByRole('tablist')).toHaveAttribute('aria-orientation', 'horizontal')
+    })
+
+    it('reports vertical orientation on the tablist', () => {
+      renderTabs({ orientation: 'vertical' })
+      expect(screen.getByRole('tablist')).toHaveAttribute('aria-orientation', 'vertical')
+    })
+
+    it('links each tab to its panel and back', () => {
+      renderTabs({ defaultIndex: 1 })
+      const tab = screen.getAllByRole('tab')[1]
+      const panel = screen.getByRole('tabpanel')
+      expect(tab).toHaveAttribute('id')
+      expect(panel).toHaveAttribute('id')
+      expect(tab.getAttribute('aria-controls')).toBe(panel.getAttribute('id'))
+      expect(panel.getAttribute('aria-labelledby')).toBe(tab.getAttribute('id'))
+    })
+
+    it('moves selection with ArrowRight and wraps at the end', () => {
+      renderTabs({ defaultIndex: 2 })
+      fireEvent.keyDown(screen.getByRole('tablist'), { key: 'ArrowRight' })
+      expect(screen.getAllByRole('tab')[0]).toHaveAttribute('aria-selected', 'true')
+      expect(screen.getByText('Content 1')).toBeInTheDocument()
+    })
+
+    it('moves selection with ArrowLeft and wraps at the start', () => {
+      renderTabs()
+      fireEvent.keyDown(screen.getByRole('tablist'), { key: 'ArrowLeft' })
+      expect(screen.getAllByRole('tab')[2]).toHaveAttribute('aria-selected', 'true')
     })
 
     it('has correct tab role on tabs', () => {

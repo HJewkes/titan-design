@@ -813,6 +813,7 @@ export interface CheckboxGroupProps {
 // @public (undocumented)
 export interface CheckboxProps extends Omit<PressableProps, 'children'> {
     className?: string;
+    defaultIsChecked?: boolean;
     helperText?: string;
     isChecked?: boolean;
     isDisabled?: boolean;
@@ -4518,6 +4519,9 @@ export function Metric(input: MetricProps): react_jsx_runtime.JSX.Element;
 // @public
 export const METRIC_FONT = "Inter, sans-serif";
 
+// @public
+export type MetricAlign = 'start' | 'center' | 'end';
+
 // @public @deprecated (undocumented)
 export function MetricCell(input: MetricCellProps): react_jsx_runtime.JSX.Element;
 
@@ -4544,6 +4548,7 @@ export interface MetricGroupProps extends ViewProps {
 
 // @public (undocumented)
 export interface MetricProps extends ViewProps {
+    align?: MetricAlign;
     // (undocumented)
     className?: string;
     // (undocumented)
@@ -4551,6 +4556,7 @@ export interface MetricProps extends ViewProps {
     labelClassName?: string;
     // (undocumented)
     size?: 'sm' | 'md' | 'lg';
+    tone?: MetricTone;
     // (undocumented)
     trend?: MetricTrend;
     // (undocumented)
@@ -4575,6 +4581,9 @@ export interface MetricTilesProps extends ViewProps {
     gap?: 0 | 1 | 2 | 3 | 4;
     metrics: MetricTileData[];
 }
+
+// @public
+export type MetricTone = Exclude<PillTone, 'brand-secondary'>;
 
 // @public (undocumented)
 export type MetricTrend = 'up' | 'down' | 'neutral';
@@ -7429,6 +7438,7 @@ export const Switch: React$1.ForwardRefExoticComponent<SwitchProps & React$1.Ref
 // @public (undocumented)
 export interface SwitchProps extends Omit<PressableProps, 'children'> {
     className?: string;
+    defaultIsChecked?: boolean;
     isChecked?: boolean;
     isDisabled?: boolean;
     label?: string;
@@ -7572,6 +7582,7 @@ export interface TabPanelProps {
     children?: React__default.ReactNode;
     // (undocumented)
     className?: string;
+    index?: number;
 }
 
 // @public

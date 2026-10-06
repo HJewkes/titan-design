@@ -27,7 +27,7 @@
   "stack": ["logic"],
   "surface": ["logic"],
   "switch": ["axe", "keyboard", "logic"],
-  "tabs": ["axe", "keyboard", "logic"],
+  "tabs": ["keyboard", "logic"],
   "toast": ["keyboard", "logic"],
   "toolbar-button": ["keyboard", "logic"]
 }

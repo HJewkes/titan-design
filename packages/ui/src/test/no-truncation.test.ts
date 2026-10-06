@@ -45,6 +45,14 @@ describe('no-truncation', () => {
       // Destructuring a prop to forward it is not a truncation decision.
       { code: 'function Row({ numberOfLines }) { return numberOfLines }', filename: componentFile },
       { code: "const label = 'truncated'", filename: componentFile },
+      { code: "const c = cn('flex line-clamp-none')", filename: componentFile },
+      { code: "import { truncate } from './truncate'", filename: componentFile },
+      { code: "export { truncate } from './truncate'", filename: componentFile },
+      { code: "const isCut = variant === 'truncate'", filename: componentFile },
+      { code: "const isCut = 'truncate' !== variant", filename: componentFile },
+      { code: "switch (variant) { case 'truncate': break }", filename: componentFile },
+      { code: 'const { truncate } = props', filename: componentFile },
+      { code: "const style = { textOverflow: 'clip' }", filename: componentFile },
     ],
     invalid: [
       ...['truncate', 'noWrap', 'maxLines={1}', 'numberOfLines={1}', "ellipsizeMode='tail'"].map(
@@ -69,6 +77,41 @@ describe('no-truncation', () => {
         filename: componentFile,
         errors: [{ messageId: 'className' }],
       },
+      {
+        code: 'const c = `flex line-clamp-${lines}`',
+        filename: componentFile,
+        errors: [{ messageId: 'className' }],
+      },
+      {
+        code: 'const c = `flex md:line-clamp-${lines} ${tone}`',
+        filename: componentFile,
+        errors: [{ messageId: 'className' }],
+      },
+      ...['truncate', 'noWrap', 'ellipsizeMode', 'maxLines', 'numberOfLines'].map((key) => ({
+        code: `const c = cn({ ${key}: x })`,
+        filename: componentFile,
+        errors: [{ messageId: 'property' }],
+      })),
+      ...['truncate', 'noWrap', 'ellipsizeMode'].map((key) => ({
+        code: `const titleProps = { ${key}: true }`,
+        filename: componentFile,
+        errors: [{ messageId: 'property' }],
+      })),
+      ...['line-clamp-2', 'web:text-ellipsis'].map((key) => ({
+        code: `const c = cn({ '${key}': x })`,
+        filename: componentFile,
+        errors: [{ messageId: 'className' }],
+      })),
+      {
+        code: "const style = { textOverflow: 'ellipsis' }",
+        filename: componentFile,
+        errors: [{ messageId: 'property' }],
+      },
+      {
+        code: "const c = cn('flex', 'line-clamp-none', 'truncate')",
+        filename: componentFile,
+        errors: [{ messageId: 'className' }],
+      },
     ],
   })
 })
@@ -88,6 +131,19 @@ describe('no-truncation under the real config', { timeout: 30_000 }, () => {
     const messages = lintAt(file, 'export const nothingTruncates = 1')
     expect(messages.map((m) => m.messageId)).toEqual(Object.keys(allowances).map(() => 'stale'))
     expect(messages[0].message).toContain('scripts/update-no-truncation-baseline.mjs')
+  })
+
+  it('spends one baselined allowance per site and reports the remainder as stale', () => {
+    const file = 'src/components/shell/workout/pinnedLiveStripParts.tsx'
+    expect(baseline[file as keyof typeof baseline]).toEqual({ numberOfLines: 2 })
+    const both = lintAt(
+      file,
+      'export const T = ({ lines }) => <><Text numberOfLines={lines} /><Text numberOfLines={1} /></>'
+    )
+    expect(both).toEqual([])
+    const one = lintAt(file, 'export const T = () => <Text numberOfLines={1} />')
+    expect(one.map((m) => m.messageId)).toEqual(['stale'])
+    expect(one[0].message).toContain("still allows 1 'numberOfLines'")
   })
 
   it('leaves ui/ components, tests and stories alone', () => {

@@ -1,8 +1,13 @@
 import React from 'react'
 import { View, Text, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import type { PillTone } from '../pill'
 
 export type MetricTrend = 'up' | 'down' | 'neutral'
+/** Cross-axis placement of the figure and its label. */
+export type MetricAlign = 'start' | 'center' | 'end'
+/** The `PillTone`s that read as text on any plane; `brand-secondary` stays a fill accent. */
+export type MetricTone = Exclude<PillTone, 'brand-secondary'>
 
 export interface MetricProps extends ViewProps {
   value: string
@@ -10,6 +15,10 @@ export interface MetricProps extends ViewProps {
   unit?: string
   trend?: MetricTrend
   size?: 'sm' | 'md' | 'lg'
+  /** Aligns the figure and label to the start, centre or end of the column. Defaults to `center`. */
+  align?: MetricAlign
+  /** Colours the value from a semantic token. Omitted, the value keeps `text-text-primary`. */
+  tone?: MetricTone
   className?: string
   /** Merged onto the value text, e.g. `leading-none` to sit the figure tight under a header. */
   valueClassName?: string
@@ -21,6 +30,21 @@ const sizeConfig = {
   sm: { value: 'text-lg font-bold', label: 'text-xs', unit: 'text-xs' },
   md: { value: 'text-2xl font-bold', label: 'text-xs', unit: 'text-sm' },
   lg: { value: 'text-4xl font-bold', label: 'text-sm', unit: 'text-base' },
+}
+
+const alignClasses: Record<MetricAlign, string> = {
+  start: 'items-start',
+  center: 'items-center',
+  end: 'items-end',
+}
+
+const toneClasses: Record<MetricTone, string> = {
+  neutral: 'text-text-primary',
+  brand: 'text-brand-primary',
+  success: 'text-status-success',
+  warning: 'text-status-warning',
+  error: 'text-status-error',
+  info: 'text-status-info',
 }
 
 const trendColors: Record<MetricTrend, string> = {
@@ -41,6 +65,8 @@ export function Metric({
   unit,
   trend,
   size = 'md',
+  align = 'center',
+  tone = 'neutral',
   className,
   valueClassName,
   labelClassName,
@@ -50,9 +76,9 @@ export function Metric({
   const styles = sizeConfig[size]
 
   return (
-    <View className={cn('items-center', className)} testID={testID} {...props}>
+    <View className={cn(alignClasses[align], className)} testID={testID} {...props}>
       <View className="flex-row items-baseline gap-1">
-        <Text className={cn(styles.value, 'text-text-primary', valueClassName)}>{value}</Text>
+        <Text className={cn(styles.value, toneClasses[tone], valueClassName)}>{value}</Text>
         {unit && <Text className={cn(styles.unit, 'text-text-tertiary')}>{unit}</Text>}
         {trend && <Text className={cn(styles.unit, trendColors[trend])}>{trendArrows[trend]}</Text>}
       </View>
