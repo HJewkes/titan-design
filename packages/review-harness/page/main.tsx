@@ -7,6 +7,7 @@ import './styles.css'
 interface RoundResponse {
   manifest: Manifest
   manifestSha256: string
+  harnessWarning?: string
 }
 
 const root = createRoot(document.getElementById('root') as HTMLElement)

@@ -1,7 +1,11 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedByNode } from '../../../test/classname-capture'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { Metric, MetricGroup } from './Metric'
+
+const classesOf = (node: Element | null) => (node ? capturedByNode.get(node) : '')?.split(' ') ?? []
 
 describe('Metric', () => {
   it('renders value and label', () => {
@@ -58,9 +62,42 @@ describe('Metric', () => {
     expect(screen.getByText('10')).toBeInTheDocument()
   })
 
+  it.each([
+    ['start', 'items-start'],
+    ['center', 'items-center'],
+    ['end', 'items-end'],
+  ] as const)('align=%s sets %s on the column', (align, expected) => {
+    const { container } = render(<Metric value="42" label="Reps" align={align} />)
+    const classes = classesOf(container.firstElementChild)
+    expect(classes).toContain(expected)
+    expect(classes.filter((c) => c.startsWith('items-'))).toEqual([expected])
+  })
+
+  it('tone=warning colours the value from the status-warning semantic token', () => {
+    render(<Metric value="76%" label="Volume" tone="warning" />)
+    const classes = classesOf(screen.getByText('76%'))
+    expect(classes).toContain('text-status-warning')
+    expect(classes).not.toContain('text-text-primary')
+    expect(getSemanticColors('dark')['status-warning']).toBeDefined()
+    expect(getSemanticColors('light')['status-warning']).toBeDefined()
+  })
+
+  it('keeps the value on text-primary when no tone is given', () => {
+    render(<Metric value="42" label="Reps" />)
+    expect(classesOf(screen.getByText('42'))).toContain('text-text-primary')
+  })
+
+  it('leaves the label and unit uncoloured by tone', () => {
+    render(<Metric value="76" label="Volume" unit="%" tone="error" />)
+    expect(classesOf(screen.getByText('Volume'))).toContain('text-text-secondary')
+    expect(classesOf(screen.getByText('%'))).toContain('text-text-tertiary')
+  })
+
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
-      const { container } = render(<Metric value="42" label="Reps" unit="reps" trend="up" />)
+      const { container } = render(
+        <Metric value="42" label="Reps" unit="reps" trend="up" align="end" tone="warning" />
+      )
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })

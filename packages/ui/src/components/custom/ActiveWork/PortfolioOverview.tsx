@@ -2,7 +2,7 @@
 import { View, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Card } from '../../ui/card'
-import { Metric } from '../Metric'
+import { Metric } from '../../ui/metric'
 import { Typography } from '../../ui/typography'
 import { Eyebrow } from '../../ui/eyebrow'
 import { InitiativeCard, type InitiativeCardProps } from './InitiativeCard'

@@ -3,10 +3,10 @@
     "file-lines": 242
   },
   "components/custom/Chat/MessageList.tsx#MessageList": {
-    "props": 15
+    "props": 16
   },
   "components/custom/Chat/MessageList.tsx#ThreadScroll": {
-    "props": 15
+    "props": 16
   },
   "components/custom/CircularTimer/CircularTimer.tsx#CircularTimer": {
     "complexity": 21
@@ -61,7 +61,7 @@
     "props": 26
   },
   "components/custom/Workout/ExerciseDetailPage.tsx": {
-    "file-lines": 522
+    "file-lines": 521
   },
   "components/custom/Workout/ExerciseHeading.tsx#ExerciseHeading": {
     "props": 19
@@ -124,7 +124,7 @@
     "file-lines": 252
   },
   "components/custom/Workout/VelocityStrip.tsx#VelocityStrip": {
-    "props": 22
+    "props": 21
   },
   "components/custom/Workout/index.ts": {
     "file-lines": 344
@@ -224,7 +224,7 @@
     "complexity": 18
   },
   "components/ui/card/Card.tsx": {
-    "file-lines": 244
+    "file-lines": 245
   },
   "components/ui/card/Card.tsx#Card": {
     "complexity": 16,

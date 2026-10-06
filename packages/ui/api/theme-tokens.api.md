@@ -312,7 +312,7 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'background-frame': "#100D0A";
     readonly 'border-prominent': "#424140";
     readonly 'border-focus': "#828DF8";
-    readonly 'border-input': "#5A5958";
+    readonly 'border-input': "#888684";
     readonly 'border-input-hover': "#72716F";
     readonly 'border-input-focus': "#828DF8";
     readonly 'border-input-error': "#E05254";
@@ -703,7 +703,7 @@ export const semanticColorsDark: {
     readonly 'background-frame': "#100D0A";
     readonly 'border-prominent': "#424140";
     readonly 'border-focus': "#828DF8";
-    readonly 'border-input': "#5A5958";
+    readonly 'border-input': "#888684";
     readonly 'border-input-hover': "#72716F";
     readonly 'border-input-focus': "#828DF8";
     readonly 'border-input-error': "#E05254";

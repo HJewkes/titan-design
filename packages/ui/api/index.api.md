@@ -670,6 +670,15 @@ export interface CardHeaderProps {
     className?: string;
 }
 
+// @public
+export function CardInset(input: CardInsetProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface CardInsetProps extends ViewProps {
+    children?: React__default.ReactNode;
+    className?: string;
+}
+
 // @public (undocumented)
 export interface CardProps extends ViewProps {
     accentColor?: string;
@@ -813,6 +822,7 @@ export interface CheckboxGroupProps {
 // @public (undocumented)
 export interface CheckboxProps extends Omit<PressableProps, 'children'> {
     className?: string;
+    defaultIsChecked?: boolean;
     helperText?: string;
     isChecked?: boolean;
     isDisabled?: boolean;
@@ -1014,6 +1024,13 @@ export interface ContributingExercise {
 }
 
 // @public
+export interface ControlledProps<T> {
+    defaultValue?: T;
+    onValueChange?: (value: T) => void;
+    value?: T;
+}
+
+// @public
 export function ConversationIdentity(input: ConversationIdentityProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -1199,7 +1216,7 @@ export const darkThemeCSSVars: {
     readonly '--color-text-link-hover': "#3CA8FF";
     readonly '--color-surface-overlay': "#373635";
     readonly '--color-surface-input': "#2C2A28";
-    readonly '--color-border-input': "#5A5958";
+    readonly '--color-border-input': "#888684";
     readonly '--color-border-input-hover': "#72716F";
     readonly '--color-border-input-focus': "#828DF8";
     readonly '--color-border-input-error': "#E05254";
@@ -1242,11 +1259,18 @@ export interface DataRowProps extends ViewProps {
 // @public (undocumented)
 export function DateSeparator(input: DateSeparatorProps): react_jsx_runtime.JSX.Element;
 
+// @public
+export interface DateSeparatorLabels {
+    today: string;
+    yesterday: string;
+}
+
 // @public (undocumented)
 export interface DateSeparatorProps {
     // (undocumented)
     className?: string;
     date: string | Date | number;
+    labels?: Partial<DateSeparatorLabels>;
     now?: string | Date | number;
     showDay?: boolean;
     showTime?: boolean;
@@ -2435,7 +2459,7 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'background-frame': "#100D0A";
     readonly 'border-prominent': "#424140";
     readonly 'border-focus': "#828DF8";
-    readonly 'border-input': "#5A5958";
+    readonly 'border-input': "#888684";
     readonly 'border-input-hover': "#72716F";
     readonly 'border-input-focus': "#828DF8";
     readonly 'border-input-error': "#E05254";
@@ -2783,7 +2807,7 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-text-link-hover': "#3CA8FF";
     readonly '--color-surface-overlay': "#373635";
     readonly '--color-surface-input': "#2C2A28";
-    readonly '--color-border-input': "#5A5958";
+    readonly '--color-border-input': "#888684";
     readonly '--color-border-input-hover': "#72716F";
     readonly '--color-border-input-focus': "#828DF8";
     readonly '--color-border-input-error': "#E05254";
@@ -4446,12 +4470,21 @@ export function messageBody(message: ChatMessage): string;
 // @public
 export function MessageBubble(input: MessageBubbleProps): react_jsx_runtime.JSX.Element;
 
+// @public
+export interface MessageBubbleLabels {
+    delivery: Record<DeliveryStatus, string>;
+    endorsed: string;
+    writing: string;
+    you: string;
+}
+
 // @public (undocumented)
 export interface MessageBubbleProps {
     author?: Participant;
     // (undocumented)
     className?: string;
     isOwn?: boolean;
+    labels?: Partial<MessageBubbleLabels>;
     // (undocumented)
     layout?: ThreadLayout;
     // (undocumented)
@@ -4466,6 +4499,12 @@ export interface MessageBubbleProps {
 // @public
 export function MessageList(props: MessageListProps): react_jsx_runtime.JSX.Element;
 
+// @public
+export interface MessageListLabels extends MessageBubbleLabels, DateSeparatorLabels, TypingIndicatorLabels, UnreadBadgeLabels {
+    showEarlier: string;
+    unknownAuthor: string;
+}
+
 // @public (undocumented)
 export interface MessageListProps {
     accessibilityLabel?: string;
@@ -4474,6 +4513,7 @@ export interface MessageListProps {
     composer?: ReactNode;
     emptyState?: ReactNode;
     header?: ReactNode;
+    labels?: Partial<MessageListLabels>;
     layout?: ThreadLayout;
     // (undocumented)
     linkers?: ProseLinker[];
@@ -4494,6 +4534,9 @@ export function Metric(input: MetricProps): react_jsx_runtime.JSX.Element;
 
 // @public
 export const METRIC_FONT = "Inter, sans-serif";
+
+// @public
+export type MetricAlign = 'start' | 'center' | 'end';
 
 // @public @deprecated (undocumented)
 export function MetricCell(input: MetricCellProps): react_jsx_runtime.JSX.Element;
@@ -4521,6 +4564,7 @@ export interface MetricGroupProps extends ViewProps {
 
 // @public (undocumented)
 export interface MetricProps extends ViewProps {
+    align?: MetricAlign;
     // (undocumented)
     className?: string;
     // (undocumented)
@@ -4528,6 +4572,7 @@ export interface MetricProps extends ViewProps {
     labelClassName?: string;
     // (undocumented)
     size?: 'sm' | 'md' | 'lg';
+    tone?: MetricTone;
     // (undocumented)
     trend?: MetricTrend;
     // (undocumented)
@@ -4552,6 +4597,9 @@ export interface MetricTilesProps extends ViewProps {
     gap?: 0 | 1 | 2 | 3 | 4;
     metrics: MetricTileData[];
 }
+
+// @public
+export type MetricTone = Exclude<PillTone, 'brand-secondary'>;
 
 // @public (undocumented)
 export type MetricTrend = 'up' | 'down' | 'neutral';
@@ -5854,6 +5902,19 @@ export interface ScatterProps extends Omit<ViewProps, 'children'> {
 }
 
 // @public
+export type ScatterReferenceLine = ({
+    y: number;
+} | {
+    x: number;
+} | {
+    slope: number;
+    intercept: number;
+}) & {
+    id?: string;
+    label?: string;
+};
+
+// @public
 export function ScheduleTiles(input: ScheduleTilesProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -6106,7 +6167,7 @@ export const semanticColorsDark: {
     readonly 'background-frame': "#100D0A";
     readonly 'border-prominent': "#424140";
     readonly 'border-focus': "#828DF8";
-    readonly 'border-input': "#5A5958";
+    readonly 'border-input': "#888684";
     readonly 'border-input-hover': "#72716F";
     readonly 'border-input-focus': "#828DF8";
     readonly 'border-input-error': "#E05254";
@@ -7406,6 +7467,7 @@ export const Switch: React$1.ForwardRefExoticComponent<SwitchProps & React$1.Ref
 // @public (undocumented)
 export interface SwitchProps extends Omit<PressableProps, 'children'> {
     className?: string;
+    defaultIsChecked?: boolean;
     isChecked?: boolean;
     isDisabled?: boolean;
     label?: string;
@@ -7549,6 +7611,7 @@ export interface TabPanelProps {
     children?: React__default.ReactNode;
     // (undocumented)
     className?: string;
+    index?: number;
 }
 
 // @public
@@ -7577,13 +7640,16 @@ export function Tabs(input: TabsProps): react_jsx_runtime.JSX.Element;
 // @public (undocumented)
 export type TabsOrientation = 'horizontal' | 'vertical';
 
-// @public (undocumented)
-export interface TabsProps extends ViewProps {
+// @public
+export interface TabsProps extends ViewProps, ControlledProps<number> {
     // (undocumented)
     children?: React__default.ReactNode;
     className?: string;
+    // @deprecated
     defaultIndex?: number;
+    // @deprecated
     index?: number;
+    // @deprecated
     onChange?: (index: number) => void;
     orientation?: TabsOrientation;
     variant?: TabsVariant;
@@ -8272,10 +8338,16 @@ export function TrendingUpIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 // @public
 export function TypingIndicator(input: TypingIndicatorProps): react_jsx_runtime.JSX.Element;
 
+// @public
+export interface TypingIndicatorLabels {
+    typing: (names: readonly string[]) => string;
+}
+
 // @public (undocumented)
 export interface TypingIndicatorProps {
     // (undocumented)
     className?: string;
+    labels?: Partial<TypingIndicatorLabels>;
     participants: readonly Participant[];
 }
 
@@ -8311,11 +8383,17 @@ export type TypographyVariant = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'body1
 // @public
 export function UnreadBadge(input: UnreadBadgeProps): react_jsx_runtime.JSX.Element | null;
 
+// @public
+export interface UnreadBadgeLabels {
+    newMessages: (shown: string, count: number) => string;
+}
+
 // @public (undocumented)
 export interface UnreadBadgeProps {
     // (undocumented)
     className?: string;
     count: number;
+    labels?: Partial<UnreadBadgeLabels>;
     max?: number;
     onPress?: () => void;
     // (undocumented)
@@ -8624,7 +8702,6 @@ export interface VelocityStripProps extends ViewProps {
     columnSlots?: SetSlot[];
     expanded?: boolean;
     height?: number;
-    hideBaseline?: boolean;
     label?: string;
     liveRepIndex?: number;
     lossThresholds?: VelocityLossThresholds;

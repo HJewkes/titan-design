@@ -13,6 +13,9 @@ export function SelectPopover({ onClose, children }: SelectPopoverProps) {
     <>
       <Pressable
         onPress={onClose}
+        focusable={false}
+        tabIndex={-1}
+        aria-hidden
         className="fixed inset-0 z-40"
         style={{ position: 'absolute' }}
       />

@@ -1271,6 +1271,13 @@
         },
         {
           "default": null,
+          "description": "Replaces any of the built-in strings; the rest keep their defaults.",
+          "name": "labels",
+          "required": false,
+          "type": "Partial<DateSeparatorLabels>"
+        },
+        {
+          "default": null,
           "description": "The reader's \"now\", for Today / Yesterday.",
           "name": "now",
           "required": false,
@@ -1335,6 +1342,13 @@
           "name": "isOwn",
           "required": false,
           "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Replaces any of the built-in strings; the rest keep their defaults.",
+          "name": "labels",
+          "required": false,
+          "type": "Partial<MessageBubbleLabels>"
         },
         {
           "default": "direct",
@@ -1443,6 +1457,13 @@
           "name": "header",
           "required": false,
           "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Replaces any of the built-in strings; the rest keep their defaults.",
+          "name": "labels",
+          "required": false,
+          "type": "Partial<MessageListLabels>"
         },
         {
           "default": null,
@@ -1579,6 +1600,13 @@
         },
         {
           "default": null,
+          "description": "Replaces any of the built-in strings; the rest keep their defaults.",
+          "name": "labels",
+          "required": false,
+          "type": "Partial<TypingIndicatorLabels>"
+        },
+        {
+          "default": null,
           "description": "Who is composing.",
           "name": "participants",
           "required": true,
@@ -1618,6 +1646,13 @@
           "name": "count",
           "required": true,
           "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Replaces any of the built-in strings; the rest keep their defaults.",
+          "name": "labels",
+          "required": false,
+          "type": "Partial<UnreadBadgeLabels>"
         },
         {
           "default": "99",
@@ -2366,90 +2401,6 @@
       "status": "candidate",
       "storyIds": [
         "custom-fatigue-verdict-hero--across-states"
-      ],
-      "tier": "atom"
-    },
-    {
-      "composes": [],
-      "family": "custom/Metric",
-      "file": "packages/ui/src/components/custom/Metric/Metric.tsx",
-      "name": "Metric",
-      "props": [
-        {
-          "default": null,
-          "description": "",
-          "name": "className",
-          "required": false,
-          "type": "string"
-        },
-        {
-          "default": null,
-          "description": "",
-          "name": "label",
-          "required": true,
-          "type": "string"
-        },
-        {
-          "default": null,
-          "description": "Merged onto the label text, e.g. to hold it at one size whatever the figure's `size`.",
-          "name": "labelClassName",
-          "required": false,
-          "type": "string"
-        },
-        {
-          "default": "md",
-          "description": "",
-          "name": "size",
-          "required": false,
-          "type": "\"sm\" | \"md\" | \"lg\""
-        },
-        {
-          "default": null,
-          "description": "",
-          "name": "trend",
-          "required": false,
-          "type": "MetricTrend"
-        },
-        {
-          "default": null,
-          "description": "",
-          "name": "unit",
-          "required": false,
-          "type": "string"
-        },
-        {
-          "default": null,
-          "description": "",
-          "name": "value",
-          "required": true,
-          "type": "string"
-        },
-        {
-          "default": null,
-          "description": "Merged onto the value text, e.g. `leading-none` to sit the figure tight under a header.",
-          "name": "valueClassName",
-          "required": false,
-          "type": "string"
-        }
-      ],
-      "purpose": "",
-      "sources": {
-        "props": "packages/ui/src/components/custom/Metric/Metric.tsx",
-        "status": "packages/ui/src/components/custom/Metric/Metric.stories.tsx"
-      },
-      "status": "candidate",
-      "storyIds": [
-        "components-molecules-metric--all-sizes",
-        "components-molecules-metric--default",
-        "components-molecules-metric--full-metric",
-        "components-molecules-metric--group",
-        "components-molecules-metric--group-small",
-        "components-molecules-metric--large",
-        "components-molecules-metric--small",
-        "components-molecules-metric--with-trend-down",
-        "components-molecules-metric--with-trend-neutral",
-        "components-molecules-metric--with-trend-up",
-        "components-molecules-metric--with-unit"
       ],
       "tier": "atom"
     },
@@ -8067,13 +8018,6 @@
         },
         {
           "default": null,
-          "description": "`hero` only (internal): suppress this strip's own 2px baseline border.",
-          "name": "hideBaseline",
-          "required": false,
-          "type": "boolean"
-        },
-        {
-          "default": null,
           "description": "`hero` only: an optional stream / slot NAME (e.g. \"Left Arm\"), rendered as a rotated vertical edge label down the chart's left gutter — the same treatment the diverging dual gives each wing, so a single hero and a dual read consistently.",
           "name": "label",
           "required": false,
@@ -11343,6 +11287,13 @@
           "type": "string"
         },
         {
+          "default": "false",
+          "description": "Initial checked state when `isChecked` is not provided",
+          "name": "defaultIsChecked",
+          "required": false,
+          "type": "boolean"
+        },
+        {
           "default": null,
           "description": "Helper text",
           "name": "helperText",
@@ -11350,7 +11301,7 @@
           "type": "string"
         },
         {
-          "default": "false",
+          "default": null,
           "description": "Whether the checkbox is checked",
           "name": "isChecked",
           "required": false,
@@ -12623,6 +12574,94 @@
       "tier": "molecule"
     },
     {
+      "composes": [],
+      "family": "ui/metric",
+      "file": "packages/ui/src/components/ui/metric/Metric.tsx",
+      "name": "Metric",
+      "props": [
+        {
+          "default": "center",
+          "description": "Aligns the figure and label to the start, centre or end of the column.",
+          "name": "align",
+          "required": false,
+          "type": "MetricAlign"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "label",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Merged onto the label text, e.g. to hold it at one size whatever the figure's `size`.",
+          "name": "labelClassName",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "md",
+          "description": "",
+          "name": "size",
+          "required": false,
+          "type": "\"sm\" | \"md\" | \"lg\""
+        },
+        {
+          "default": "neutral",
+          "description": "Colours the value from a semantic token.",
+          "name": "tone",
+          "required": false,
+          "type": "MetricTone"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "trend",
+          "required": false,
+          "type": "MetricTrend"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "unit",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "value",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Merged onto the value text, e.g. `leading-none` to sit the figure tight under a header.",
+          "name": "valueClassName",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "purpose": "",
+      "sources": {
+        "props": "packages/ui/src/components/ui/metric/Metric.tsx",
+        "status": "packages/ui/src/components/ui/metric/Metric.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-metric--default"
+      ],
+      "tier": "atom"
+    },
+    {
       "composes": [
         "Surface"
       ],
@@ -13705,6 +13744,13 @@
         },
         {
           "default": "false",
+          "description": "Initial checked state when `isChecked` is not provided",
+          "name": "defaultIsChecked",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
           "description": "Whether the switch is on",
           "name": "isChecked",
           "required": false,
@@ -14102,25 +14148,39 @@
           "type": "string"
         },
         {
-          "default": "0",
-          "description": "Currently active tab index",
+          "default": null,
+          "description": "Initial active index when uncontrolled.",
           "name": "defaultIndex",
           "required": false,
           "type": "number"
         },
         {
           "default": null,
-          "description": "Controlled active index",
+          "description": "Initial value when uncontrolled.",
+          "name": "defaultValue",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Controlled active index.",
           "name": "index",
           "required": false,
           "type": "number"
         },
         {
           "default": null,
-          "description": "Callback when tab changes",
+          "description": "Fires with the next active index.",
           "name": "onChange",
           "required": false,
           "type": "((index: number) => void)"
+        },
+        {
+          "default": null,
+          "description": "Fires with the next value on every user-driven change.",
+          "name": "onValueChange",
+          "required": false,
+          "type": "((value: number) => void)"
         },
         {
           "default": "horizontal",
@@ -14128,6 +14188,13 @@
           "name": "orientation",
           "required": false,
           "type": "TabsOrientation"
+        },
+        {
+          "default": null,
+          "description": "Controlled value; leave `undefined` to let the component own the state.",
+          "name": "value",
+          "required": false,
+          "type": "number"
         },
         {
           "default": "line",
