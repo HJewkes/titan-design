@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { BAND_OPACITY } from './GoalTrajectoryBand'
-import { GoalTrajectoryChart } from './GoalTrajectoryChart'
+import { GoalTrajectoryChart, GoalTrajectoryChartExploration } from './GoalTrajectoryChart'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { LIFT_RIM_ALPHA } from '../../../theme/lift'
 import { primitiveColors } from '../../../theme/tokens/primitives'
@@ -58,7 +58,7 @@ describe('GoalTrajectoryChart band (locked: smoothed, 28% centre to 14% edge)', 
   })
 
   it('keeps the NOT CHOSEN flat band reachable at a uniform 28%', () => {
-    render(<GoalTrajectoryChart {...props} bandFade="none" bandCurve="linear" />)
+    render(<GoalTrajectoryChartExploration {...props} bandFade="none" bandCurve="linear" />)
     const band = screen.getByTestId('goal-trajectory-chart-band')
     expect(band.getAttribute('fill')).toBe(getSemanticColors('dark')['brand-secondary'])
     expect(band.getAttribute('fill-opacity')).toBe(String(BAND_OPACITY))
@@ -66,13 +66,13 @@ describe('GoalTrajectoryChart band (locked: smoothed, 28% centre to 14% edge)', 
   })
 
   it('keeps the NOT CHOSEN 20% centre fade on the same continuous gradient', () => {
-    const { container } = render(<GoalTrajectoryChart {...props} bandFade="centre-20" />)
+    const { container } = render(<GoalTrajectoryChartExploration {...props} bandFade="centre-20" />)
     const column = screen.getAllByTestId('goal-trajectory-chart-band-column')[0]
     expect(stopOpacities(gradientOf(container, column))).toEqual(['0.2', '0.28', '0.2'])
   })
 
   it('keeps the NOT CHOSEN across fade from w1 to the last week', () => {
-    const { container } = render(<GoalTrajectoryChart {...props} bandFade="across-20" />)
+    const { container } = render(<GoalTrajectoryChartExploration {...props} bandFade="across-20" />)
     const band = screen.getByTestId('goal-trajectory-chart-band')
     const gradient = gradientOf(container, band)
     expect(gradient.getAttribute('x2')).toBe('1')
@@ -91,7 +91,7 @@ describe('GoalTrajectoryChart baseline (locked: lip)', () => {
   })
 
   it('keeps the NOT CHOSEN inset floor rule clear of the rounded corners', () => {
-    render(<GoalTrajectoryChart {...props} baseline="inset-rule" />)
+    render(<GoalTrajectoryChartExploration {...props} baseline="inset-rule" />)
     const baseline = screen.getByTestId('goal-trajectory-chart-baseline')
     expect(Number(baseline.getAttribute('x1'))).toBe(trajectoryInsets(false).left + 6)
     expect(screen.queryByTestId('goal-trajectory-chart-lip')).not.toBeInTheDocument()

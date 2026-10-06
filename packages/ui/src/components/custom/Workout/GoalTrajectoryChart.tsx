@@ -78,21 +78,10 @@ export interface GoalTrajectoryChartProps extends ViewProps {
   /** Metric name for the accessible summary, e.g. "Bench top load". */
   metricLabel?: string
   /**
-   * Fraction of the plot width the plane's left inner shadow fades over.
-   * Exposed while the human picks between 3% and 4%.
-   */
-  leftShadowSpread?: number
-  /**
    * Play the entrance: the line draws, then its shadow and points arrive. Off
    * renders the final frame at once (visual baselines); reduced motion forces it off.
    */
   animate?: boolean
-  /** What marks the plane's bottom edge. Locked: `lip`; `inset-rule` was not chosen. */
-  baseline?: PlotBaseline
-  /** Band fade. Locked: `centre-14`; the others were not chosen. */
-  bandFade?: BandFade
-  /** Band edge interpolation. Locked: `monotone`; `linear` was not chosen. */
-  bandCurve?: BandCurve
   /**
    * Which plot edge the committed/stretch labels anchor to. Defaults to `left`
    * (VW-385 round 6, human's call): the right edge is where the line ends up on
@@ -123,6 +112,21 @@ export interface GoalTrajectoryChartProps extends ViewProps {
 }
 
 /**
+ * The VW-385 design-exploration knobs, settled and kept off the public props so
+ * only the Explore stories can re-read the rejected treatments. Not in any barrel.
+ */
+export interface GoalTrajectoryChartExplorationProps extends GoalTrajectoryChartProps {
+  /** Fraction of the plot width the plane's left inner shadow fades over. */
+  leftShadowSpread?: number
+  /** What marks the plane's bottom edge. Locked: `lip`; `inset-rule` was not chosen. */
+  baseline?: PlotBaseline
+  /** Band fade. Locked: `centre-14`; the others were not chosen. */
+  bandFade?: BandFade
+  /** Band edge interpolation. Locked: `monotone`; `linear` was not chosen. */
+  bandCurve?: BandCurve
+}
+
+/**
  * Goal trajectory over a block: the coach's expected band as a shaded polygon,
  * the committed and stretch rules, the athlete's actual line with PR stars,
  * meso boundary rules and deload shading.
@@ -149,7 +153,12 @@ export interface GoalTrajectoryChartProps extends ViewProps {
  *   height={340}
  * />
  */
-export function GoalTrajectoryChart({
+export function GoalTrajectoryChart(props: GoalTrajectoryChartProps) {
+  return <GoalTrajectoryChartExploration {...props} />
+}
+
+/** {@link GoalTrajectoryChart} with the exploration knobs open; for the Explore stories only. */
+export function GoalTrajectoryChartExploration({
   expected,
   committed,
   stretch,
@@ -176,7 +185,7 @@ export function GoalTrajectoryChart({
   ruleLabelText = 'numeric',
   className,
   ...props
-}: GoalTrajectoryChartProps) {
+}: GoalTrajectoryChartExplorationProps) {
   const chart = useGoalTrajectoryChart({
     expected,
     committed,

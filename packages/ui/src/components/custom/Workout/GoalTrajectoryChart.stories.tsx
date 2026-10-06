@@ -2,7 +2,11 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
 import { Surface } from '../../ui/surface'
 import { Typography } from '../../ui/typography'
-import { GoalTrajectoryChart } from './GoalTrajectoryChart'
+import {
+  GoalTrajectoryChart,
+  GoalTrajectoryChartExploration,
+  type GoalTrajectoryChartExplorationProps,
+} from './GoalTrajectoryChart'
 import { calibratingGoal } from './goalTrajectoryCalibratingFixture'
 import type { GoalActualPoint, GoalExpectedPoint, GoalTrajectoryWeek } from './GoalTrajectoryChart'
 
@@ -47,7 +51,7 @@ const WALL = { width: 1200, height: 340 }
 /** Phone: 360 px wide, the VW-353 phone layout target. */
 const PHONE = { width: 360, height: 220 }
 
-const meta: Meta<typeof GoalTrajectoryChart> = {
+const meta: Meta<GoalTrajectoryChartExplorationProps> = {
   title: 'Custom/Workout/DataViz/GoalTrajectoryChart',
   component: GoalTrajectoryChart,
   tags: ['autodocs', 'status:candidate', '!status:review'],
@@ -114,6 +118,8 @@ const meta: Meta<typeof GoalTrajectoryChart> = {
   },
   // Controls open on the locked treatment; the Explore stories override one at a time.
   args: { bandCurve: 'monotone', bandFade: 'centre-14', baseline: 'lip' },
+  // The knobs are off the public props; the internal seam reaches them.
+  render: (args) => <GoalTrajectoryChartExploration {...args} />,
   // The plot plane sits one step below the card it is drawn on, as on the page.
   decorators: [
     (Story) => (
@@ -127,7 +133,7 @@ const meta: Meta<typeof GoalTrajectoryChart> = {
 }
 
 export default meta
-type Story = StoryObj<typeof GoalTrajectoryChart>
+type Story = StoryObj<GoalTrajectoryChartExplorationProps>
 
 /** Week 4 is current, lit in the same tint the compact chart uses (VW-423). */
 export const OnTrack: Story = {
@@ -425,7 +431,7 @@ export const ExploreAllTreatments: Story = {
           <Typography variant="caption" color="secondary">
             {treatment.caption}
           </Typography>
-          <GoalTrajectoryChart {...args} {...treatment.args} />
+          <GoalTrajectoryChartExploration {...args} {...treatment.args} />
         </View>
       ))}
     </View>
