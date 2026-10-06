@@ -83,8 +83,13 @@ export function SessionList({
     <View className={cn('gap-2', className)}>
       <Eyebrow>{heading}</Eyebrow>
       <View className="gap-1" role={LISTBOX_ROLE} aria-label={heading}>
-        {periods.map((period) => (
-          <View key={period.label} className="gap-1" role={GROUP_ROLE} aria-label={period.label}>
+        {periods.map((period, index) => (
+          <View
+            key={`${index}-${period.label}`}
+            className="gap-1"
+            role={GROUP_ROLE}
+            aria-label={period.label}
+          >
             {showPeriods ? <PeriodDivider label={period.label} /> : null}
             {period.sessions.map((session) => (
               <SessionListItem

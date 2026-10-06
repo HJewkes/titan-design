@@ -52,6 +52,7 @@ them, and the survivors are marked as presets below.
 | `eyebrow`         | molecule | Typography       | FileActivityDetail, FileHistoryExplorer, InitiativeBrief, OpenLoops, PortfolioOverview, SessionList, TaskTable                                                 | 8       | 0        |
 | `facet-bar`       | molecule | Chip, Eyebrow    | —                                                                                                                                                              | 0       | 0        |
 | `form-field`      | atom     | —                | examples                                                                                                                                                       | 1       | 0        |
+| `gauge`           | atom     | —                | — (app-facing leaf)                                                                                                                                            | 0       | 1        |
 | `help-tip`        | molecule | Surface          | — **deprecated**, use Tooltip                                                                                                                                  | 0       | 0        |
 | `icon-box`        | atom     | —                | —                                                                                                                                                              | 0       | 0        |
 | `indicator`       | atom     | —                | Badge, DeviceRow, SessionStatePill, SeverityLabel                                                                                                              | 6       | 0        |
@@ -64,6 +65,7 @@ them, and the survivors are marked as presets below.
 | `popover`         | molecule | Surface          | DeviceMenu                                                                                                                                                     | 1       | 0        |
 | `progress`        | atom     | —                | CircularTimer                                                                                                                                                  | 1       | 2        |
 | `radio`           | atom     | —                | examples                                                                                                                                                       | 1       | 2        |
+| `scatter`         | atom     | —                | — (app-facing leaf)                                                                                                                                            | 0       | 1        |
 | `section`         | atom     | —                | — (app-facing leaf)                                                                                                                                            | 0       | 10       |
 | `select`          | molecule | Surface          | examples                                                                                                                                                       | 2       | 1        |
 | `skeleton`        | atom     | —                | —                                                                                                                                                              | 0       | 0        |
@@ -79,6 +81,7 @@ them, and the survivors are marked as presets below.
 | `toast`           | molecule | Surface          | —                                                                                                                                                              | 0       | 0        |
 | `toolbar-button`  | molecule | Surface          | —                                                                                                                                                              | 0       | 0        |
 | `tooltip`         | molecule | Surface          | FatigueLights, GoalMilestoneWeekStrip, GoalPriorityIcon, GoalTrajectoryChart, PrimaryGoalCard, SessionDetail, SessionListItem, Table, TaskRow, ZoneTrack       | 8       | 1        |
+| `treemap`         | atom     | —                | — (stories only: DatavizLightPalette, ProposedTokensVW82)                                                                                                      | 0       | 0        |
 | `typography`      | atom     | —                | Every family — 49 in-repo call sites across `custom/`, `shell/` and `lab/`                                                                                     | 49      | 11       |
 
 Two roots carry the family: **`surface`** (15 in-repo consumers — every floating

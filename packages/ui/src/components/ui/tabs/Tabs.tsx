@@ -178,7 +178,8 @@ export function Tab({ index = 0, isDisabled = false, className, children }: TabP
   return (
     <Pressable
       accessibilityRole="tab"
-      accessibilityState={{ selected: isActive, disabled: isDisabled }}
+      accessibilityState={{ disabled: isDisabled }}
+      aria-selected={isActive}
       disabled={isDisabled}
       onPress={() => setActiveIndex(index)}
       className={cn(

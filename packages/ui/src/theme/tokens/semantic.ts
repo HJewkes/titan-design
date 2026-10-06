@@ -65,8 +65,8 @@ export const semanticColorsLight = {
   'brand-primary': ramp.orange[400],
   'brand-primary-light': ramp.orange[300],
   'brand-primary-dark': ramp.orange[500],
-  'brand-primary-subtle': 'rgba(255, 121, 0, 0.08)',
-  'brand-primary-muted': 'rgba(255, 121, 0, 0.30)',
+  'brand-primary-subtle': ramp.orange[50],
+  'brand-primary-muted': ramp.orange[200],
   'brand-primary-strong': 'rgba(255, 121, 0, 0.50)',
   'brand-primary-hover': ramp.orange[500],
   'brand-primary-active': ramp.orange[600],
@@ -74,8 +74,8 @@ export const semanticColorsLight = {
   'brand-secondary': ramp.cyan[600],
   'brand-secondary-light': ramp.cyan[500],
   'brand-secondary-dark': ramp.cyan[700],
-  'brand-secondary-subtle': 'rgba(48, 123, 155, 0.08)',
-  'brand-secondary-muted': 'rgba(48, 123, 155, 0.30)',
+  'brand-secondary-subtle': ramp.cyan[50],
+  'brand-secondary-muted': ramp.cyan[200],
   'brand-secondary-strong': 'rgba(48, 123, 155, 0.50)',
   'brand-secondary-hover': ramp.cyan[700],
   'brand-secondary-active': ramp.cyan[800],
@@ -92,7 +92,7 @@ export const semanticColorsLight = {
   'on-brand-secondary-subtle': ramp.cyan[600],
 
   // Status colors (status-*)
-  'status-success': ramp.green[300],
+  'status-success': ramp.green[600],
   'status-success-light': ramp.green[200],
   'status-success-dark': ramp.green[600],
   'status-success-subtle': ramp.green[50],
@@ -121,14 +121,14 @@ export const semanticColorsLight = {
   'status-error-vivid-muted': 'rgba(255, 71, 87, 0.30)',
   'status-error-vivid-strong': 'rgba(255, 71, 87, 0.50)',
 
-  'status-warning': ramp.amber[300],
+  'status-warning': ramp.amber[500],
   'status-warning-light': ramp.amber[200],
   'status-warning-dark': ramp.amber[500],
   'status-warning-subtle': ramp.amber[50],
   'status-warning-muted': 'rgba(249, 180, 21, 0.30)',
   'status-warning-strong': 'rgba(249, 180, 21, 0.50)',
 
-  'status-info': ramp.blue[500],
+  'status-info': ramp.blue[600],
   'status-info-light': ramp.blue[300],
   'status-info-dark': ramp.blue[600],
   'status-info-subtle': ramp.blue[50],
@@ -236,7 +236,7 @@ export const semanticColorsLight = {
   'text-disabled': 'rgba(55, 65, 81, 0.48)',
   'text-inverse': p.white,
   'text-error': ramp.red[700], // one rung darker than status-error to clear 4.5:1 on every light plane
-  'text-link': ramp.blue[600],
+  'text-link': ramp.blue[700],
   'text-link-hover': ramp.blue[700],
 
   // Surface colors (surface-*) - for elevated containers
@@ -247,7 +247,7 @@ export const semanticColorsLight = {
   'surface-input': greyRamp[50], // Input field background (filled variant)
 
   // Background colors (background-*)
-  'background-base': semanticPins.backgroundBaseLight,
+  'background-base': greyRamp[100],
   'background-default': p.white,
   'background-subtle': greyRamp[50],
   // Frame/bezel chrome — top bar + side nav shell, one step below
@@ -257,16 +257,16 @@ export const semanticColorsLight = {
   // Border colors (border-*)
   'border-prominent': greyRamp[400], // high-visibility divider
   'border-focus': ramp.blue[600],
-  'border-input': greyRamp[200], // Input field border
-  'border-input-hover': greyRamp[400], // Input field border on hover
+  'border-input': greyRamp[500], // Input field border, 3:1 on every content plane (TD-488)
+  'border-input-hover': greyRamp[600], // Input field border on hover
   'border-input-focus': ramp.blue[600], // Input field border on focus
   'border-input-error': ramp.red[600], // Input field border on error
 
   // Alpha hairline separators (surface-independent — composite toward black on
   // light surfaces, mirroring the dark-mode white-alpha family). See §4/S-2.
-  'hairline-subtle': 'rgba(0, 0, 0, 0.06)',
-  'hairline-default': 'rgba(0, 0, 0, 0.09)',
-  'hairline-strong': 'rgba(0, 0, 0, 0.14)',
+  'hairline-subtle': 'rgba(0, 0, 0, 0.10)',
+  'hairline-default': 'rgba(0, 0, 0, 0.15)',
+  'hairline-strong': 'rgba(0, 0, 0, 0.22)',
 
   // Scrims (VW-82) — see the dark map for why these are tokens and not
   // `bg-black/50`, and why they do not flip with the theme.
@@ -277,7 +277,7 @@ export const semanticColorsLight = {
 
   // Control chrome and data labels (VW-82). Mode-independent for the same
   // reason the `on-*` white labels are: the plane underneath them is fixed.
-  'on-control-idle': semanticPins.onControlIdle,
+  'on-control-idle': greyRamp[200],
   'on-control-active': p.white,
   'on-data-strong': semanticPins.onDataStrong,
 
@@ -290,7 +290,7 @@ export const semanticColorsLight = {
   'interactive-disabled-text': 'rgba(55, 65, 81, 0.26)',
 
   // Divider
-  divider: semanticPins.dividerLight,
+  divider: 'rgba(0, 0, 0, 0.15)', // the hairline-default value (TD-489)
 
   // Avatar default
   'avatar-background': greyRamp[600],
@@ -468,7 +468,7 @@ export const semanticColorsDark = {
   // and `600` carried that failure forward almost exactly (2.93 / 2.70 / 2.47).
   // `500` clears 3:1 everywhere (3.32–5.34). Contrast beats colour fidelity for
   // text roles; borders and surfaces still use strict L*-nearest. See
-  // semantic-contrast.test.ts, which fails if this is moved back down.
+  // token-contrast.test.ts, which fails if this is moved back down.
   'text-tertiary': greyRamp[500],
   'text-disabled': 'rgba(255, 255, 255, 0.38)',
   'text-inverse': greyRamp[950],
@@ -517,7 +517,7 @@ export const semanticColorsDark = {
   // plane, so it keeps its job without collision.
   'border-prominent': greyRamp[800], // high-visibility divider
   'border-focus': semanticPins.focusIndigoDark,
-  'border-input': greyRamp[700],
+  'border-input': greyRamp[500], // Input field border, matches light (TD-674)
   'border-input-hover': greyRamp[600],
   'border-input-focus': semanticPins.focusIndigoDark,
   'border-input-error': ramp.red[500],

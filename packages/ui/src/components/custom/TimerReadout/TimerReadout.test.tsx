@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, act } from '@testing-library/react'
+import { axe } from 'jest-axe'
 import { TimerReadout } from './TimerReadout'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { primitiveRamps } from '../../../theme/tokens/primitives'
@@ -14,6 +15,13 @@ afterEach(() => {
 })
 
 describe('TimerReadout', () => {
+  it('has no accessibility violations', async () => {
+    const { container } = render(
+      <TimerReadout mode="up" elapsedMs={42 * 1000} durationMs={60 * 60000} showTotal running />
+    )
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
   it('renders elapsed mm:ss from a controlled up-timer', () => {
     render(<TimerReadout mode="up" elapsedMs={65 * 1000} />)
     expect(screen.getByTestId('timer-readout-current')).toHaveTextContent('1:05')

@@ -21,6 +21,7 @@ import { View } from 'react-native'
 import { ghostLineColor, clamp01 } from './fatigue-tokens'
 import { GhostBand, BAND_H, BAND_GAP } from './GhostBand'
 import { GhostBloom, type Pt } from './GhostBloom'
+import { ghostSparkA11y } from './ghostSparkSummary'
 import { prescribedSegments, type TempoTuple } from './tempo-pacing'
 import type { RepVelocityCurve } from './fatigue-model'
 
@@ -45,6 +46,8 @@ export interface GhostSparkProps {
    * prescribed: the band then paints flat, which is the honest read.
    */
   targetTempoSeconds?: TempoTuple | null
+  /** Text alternative. Default: a summary of the current rep and its peak velocity. */
+  accessibilityLabel?: string
 }
 
 export function GhostSpark({
@@ -52,7 +55,9 @@ export function GhostSpark({
   width,
   height = 172,
   targetTempoSeconds = null,
+  accessibilityLabel,
 }: GhostSparkProps) {
+  const a11y = ghostSparkA11y(accessibilityLabel, { curves })
   const w = width
   const h = height
   const padL = 12
@@ -66,14 +71,14 @@ export function GhostSpark({
   if (curves.length === 0) {
     const prescribed = prescribedSegments(targetTempoSeconds)
     if (prescribed.length === 0) {
-      return <View testID="ghost-spark" style={{ width: w, height: h }} />
+      return <View testID="ghost-spark" {...a11y} style={{ width: w, height: h }} />
     }
     const totalMs = prescribed[prescribed.length - 1].endMs
     const bandTopEmpty = h - padBot - BAND_H
     const xEmpty = (ms: number): number => padL + (ms / (totalMs * 1.04)) * (w - padL - padR)
     return (
-      <View testID="ghost-spark" style={{ paddingHorizontal: GHOST_GUTTER }}>
-        <svg width={w} height={h}>
+      <View testID="ghost-spark" {...a11y} style={{ paddingHorizontal: GHOST_GUTTER }}>
+        <svg width={w} height={h} aria-hidden="true">
           <GhostBand
             segments={prescribed}
             x={xEmpty}
@@ -109,8 +114,8 @@ export function GhostSpark({
     .map((c) => c.samples.map((s): Pt => [x(s.tMs), mag(s.velocityMps)]))
 
   return (
-    <View testID="ghost-spark" style={{ paddingHorizontal: GHOST_GUTTER }}>
-      <svg width={w} height={h}>
+    <View testID="ghost-spark" {...a11y} style={{ paddingHorizontal: GHOST_GUTTER }}>
+      <svg width={w} height={h} aria-hidden="true">
         {/* the ghost fan + paper-treated tinted current line, blooming up from the band. */}
         <GhostBloom
           current={curPts}

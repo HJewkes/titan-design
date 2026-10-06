@@ -58,12 +58,13 @@ describe('LiveAuraFrame', () => {
     expect(liveAuraColor('stop', 'dark')).toBe(t['status-error'])
   })
 
-  // The mode is a real parameter: the component passes useSurfaceMode(). These two
-  // status roles are mode-invariant today, which is why no rendered colour moved.
+  // The mode is a real parameter: the component passes useSurfaceMode(). Light
+  // `status-warning` sits on a darker ramp step than dark's (TD-490).
   it('resolves the flood color through the requested mode', () => {
-    for (const category of ['productive', 'threshold', 'stop'] as const) {
-      expect(liveAuraColor(category, 'light')).toBe(liveAuraColor(category, 'dark'))
-    }
+    const light = getSemanticColors('light')
+    expect(liveAuraColor('productive', 'light')).toBeNull()
+    expect(liveAuraColor('threshold', 'light')).toBe(light['status-warning'])
+    expect(liveAuraColor('stop', 'light')).toBe(light['status-error'])
   })
 
   it('renders the flood for stop when pulse is disabled', () => {

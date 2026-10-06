@@ -20,25 +20,9 @@ import {
   type LayoutChangeEvent,
 } from 'react-native'
 import { primitiveRamps } from '../../../theme/tokens/primitives'
-import { barPaper } from '../../../theme/materials'
-import { useOnSurfaceColor, useSurface, surfaceBackground } from '../../ui/surface/SurfaceContext'
+import { useSetBarTones } from './setBarTones'
 import { useLiveRepGrowth } from './live-rep-growth'
 import { REP_LEVEL_FLAT_BAR } from './flatBarGeometry'
-
-/** Linear-blend two #RRGGBB hexes (`t`=0 → a, 1 → b) — the surface-relative solid to-do tone. */
-function mixHex(a: string, b: string, t: number): string {
-  const parse = (h: string): [number, number, number] => {
-    const s = h.replace('#', '')
-    return [parseInt(s.slice(0, 2), 16), parseInt(s.slice(2, 4), 16), parseInt(s.slice(4, 6), 16)]
-  }
-  const [ar, ag, ab] = parse(a)
-  const [br, bg, bb] = parse(b)
-  const ch = (x: number, y: number): string =>
-    Math.round(x + (y - x) * t)
-      .toString(16)
-      .padStart(2, '0')
-  return `#${ch(ar, br)}${ch(ag, bg)}${ch(ab, bb)}`
-}
 
 /** The cyan variable-window fill — the range set's `floor..max` window (shared with SetStrip). */
 export const VARIABLE_FILL = primitiveRamps.cyan[900]
@@ -352,16 +336,9 @@ export function SetBarChart({
   const flip = orientation === 'down'
   const flipStyle = flip ? ({ transform: [{ scaleY: -1 as number }] } as const) : null
 
-  // Planned/to-do reps + the baseline draw in a SURFACE-relative neutral (on-surface tertiary)
-  // so they stay legible on every plane instead of a fixed grey.
-  const placeholderColor = useOnSurfaceColor('tertiary')
-  // The expanded strip's solid to-do tone: the surface plane blended toward the neutral (the same
-  // relative model), so a `todoVariant="solid"` section holds ~constant contrast on every plane.
-  const surface = useSurface()
-  const surfaceBg = surfaceBackground(surface.level, surface.mode)
-  const solidTodoColor = mixHex(surfaceBg, placeholderColor, 0.55)
-  // An `empty` cell (a rep the diverging side didn't log) is fainter than a planned to-do.
-  const emptyColor = mixHex(surfaceBg, placeholderColor, 0.28)
+  // Surface-relative placeholder, to-do and empty tones, and the bar paper (setBarTones).
+  const tones = useSetBarTones()
+  const placeholderColor = tones.placeholder
   // `all` rounds every corner (the thin flat-bar pill); `top` keeps the bolder hero top-round.
   const barCorners: ViewStyle =
     cornerStyle === 'all'
@@ -478,8 +455,8 @@ export function SetBarChart({
                   placeholderColor,
                   testIDPrefix,
                   todoVariant,
-                  solidTodoColor,
-                  emptyColor
+                  tones.solidTodo,
+                  tones.emptyFill
                 )}
               </View>
             )
@@ -541,7 +518,7 @@ export function SetBarChart({
                 style={[
                   { width: '100%', height: barHeightStyle, backgroundColor: color },
                   barCorners,
-                  barPaper(color, flip),
+                  tones.paper(color, flip),
                 ]}
                 testID={`${testIDPrefix}-bar-${repIndex}`}
               />
@@ -563,7 +540,7 @@ function renderStub(
   testIDPrefix: string,
   todoVariant: 'dashed' | 'solid',
   solidTodoColor: string,
-  emptyColor: string
+  emptyFill: ViewStyle
 ): ReactNode {
   const base: ViewStyle = {
     width: '100%',
@@ -588,13 +565,9 @@ function renderStub(
   }
   if (kind === 'empty') {
     // A rep column the diverging side did NOT log — a faint constant-contrast section, quieter than
-    // a planned to-do (it's a hole in this side's data, index-locked to the other side's rep).
-    return (
-      <View
-        style={{ ...base, backgroundColor: emptyColor }}
-        testID={`${testIDPrefix}-slot-empty`}
-      />
-    )
+    // a planned to-do (it's a hole in this side's data, index-locked to the other side's rep), or
+    // the SetBarTreatment's own colour.
+    return <View style={{ ...base, ...emptyFill }} testID={`${testIDPrefix}-slot-empty`} />
   }
   // todo — a solid surface-relative section (expanded language) or a dashed outline (hero language).
   const todoStyle: ViewStyle =

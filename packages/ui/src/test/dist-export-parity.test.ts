@@ -67,11 +67,14 @@ const KNOWN_TYPE_ONLY_BARE_NAMES = new Set([
   'IndicatorColor', // components/ui/indicator/Indicator.tsx: type alias
   'LiftOptions', // theme/lift.ts: interface
   'PillSize', // components/ui/pill/Pill.tsx: type alias
+  'PillSizeLevel', // components/ui/pill/Pill.tsx: type alias
+  'PillTone', // components/ui/pill/Pill.tsx: type alias
   'SetRowProps', // components/custom/Workout/SetRow.tsx: type alias
   'SetStripSet', // components/custom/Workout/SetBar.tsx: type alias
   'SurfaceLevel', // theme/surface-planes.ts: type alias
   'ThemeMode', // theme/tokens/semantic.ts: type alias
-  'VelocityLossThresholds', // components/custom/Workout/VelocityStrip.tsx: type alias
+  'VelocityLossThresholds', // components/custom/Workout/velocity-scale.ts: type alias
+  'VelocityZoneBandProp', // components/custom/Workout/velocity-scale.ts: interface
   'VolumeLandmarks', // components/custom/Workout/muscleTaxonomy.ts: interface
   'VolumeStatus', // components/custom/Workout/muscleTaxonomy.ts: type alias
 ])

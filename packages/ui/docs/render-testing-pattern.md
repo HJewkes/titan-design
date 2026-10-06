@@ -17,7 +17,7 @@ mount variants, fire events, assert on `screen`, then an `accessibility` block r
 Coverage thresholds are enforced by Vitest, scoped to components only
 (`vitest.config.ts:26-31`):
 
-```ts
+```ts fragment
 coverage: {
   include: ['src/components/**/*.{ts,tsx}'],
   exclude: ['src/**/*.stories.tsx', 'src/**/*.test.tsx', 'src/**/index.ts'],
@@ -85,7 +85,7 @@ visual regression in the shell/icons scope will not fail your PR.
 `custom/<Family>/`), per the file-structure convention in the repo's `CLAUDE.md`.
 Minimal shape, following `Button.test.tsx`:
 
-```tsx
+```tsx fragment
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'

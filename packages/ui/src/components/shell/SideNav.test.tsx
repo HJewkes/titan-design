@@ -2,7 +2,8 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { SideNav, type SideNavItem } from './SideNav'
-import { resolveAll, siblingSource, spacingClassesIn } from '../../test/spacing-resolver'
+import { resolveAll, spacingClassesAt } from '../../test/spacing-resolver'
+import { capturedByNode } from '../../test/classname-capture'
 
 // A generic four-category set — the rail has no built-in categories any more.
 const items: SideNavItem[] = [
@@ -68,14 +69,14 @@ describe('SideNav', () => {
  * spacing, and is asserted here so a spacing edit cannot quietly widen the rail.
  */
 describe('SideNav geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'SideNav.tsx')
-
   it('ships gap-1.5 and py-inset-md', () => {
-    expect(spacingClassesIn(source, 'SideNav')).toEqual(['gap-1.5', 'py-inset-md'])
+    render(<SideNav items={items} activeKey="live" />)
+    expect(spacingClassesAt(screen.getByRole('tablist'))).toEqual(['gap-1.5', 'py-inset-md'])
     expect(resolveAll(['gap-1.5', 'py-inset-md'])).toEqual(['6px', '12px'])
   })
 
   it('keeps the 60px rail the specimen locks', () => {
-    expect(source).toContain('w-[60px]')
+    render(<SideNav items={items} activeKey="live" />)
+    expect(capturedByNode.get(screen.getByRole('tablist'))?.split(/\s+/)).toContain('w-[60px]')
   })
 })

@@ -45,6 +45,7 @@ function Light({
   return (
     <Tooltip label={`${detail} · ${word}`} placement="bottom">
       <View
+        accessibilityRole="image"
         accessibilityLabel={`${detail}, ${word}`}
         className="flex-row items-center gap-inline-sm"
       >

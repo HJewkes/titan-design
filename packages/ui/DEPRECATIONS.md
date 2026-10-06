@@ -227,6 +227,38 @@ is removed in 0.23.0 with the shim.
 While this row exists, `MATURITY.md` clause 2's fourth condition keeps `date-time` at
 `status:candidate`; it becomes promotable when the shim is deleted in 0.23.0.
 
+## Migration M8 — `Scatter`, `Treemap` and `Gauge` moved to `ui/charts/`
+
+The three charts are domain-free and paint data marks from a scale, so by the placement rule
+(`CLAUDE.md`, Placement) their homes are `ui/charts/scatter`, `ui/charts/treemap` and
+`ui/charts/gauge`. Components, tests and the Scatter characterisation snapshot are unchanged; class
+names are byte-identical (`scripts/compare-classnames.mjs`). The story titles are now
+`Components/Atoms/Scatter`, `Components/Atoms/Treemap` and `Components/Atoms/Gauge`, so their story
+ids change from `custom-charts-*` to `components-atoms-*`. The roadmap called this move M7 before
+`DateTime` took that label.
+
+| Export                                                                          | Replacement                             | Known consumers                                 | Task   |
+| ------------------------------------------------------------------------------- | --------------------------------------- | ----------------------------------------------- | ------ |
+| `Scatter`, `ScatterProps`, `ScatterDatum`, `ScatterAxis` from `custom/Scatter`  | the same names from `ui/charts/scatter` | none in-repo                                    | TD-471 |
+| `Treemap`, `TreemapProps`, `TreemapDatum`, `TreemapScale` from `custom/Treemap` | the same names from `ui/charts/treemap` | none in-repo (both stories import the new path) | TD-471 |
+| `Gauge`, `GaugeProps`, `GaugeThreshold` from `custom/Gauge`                     | the same names from `ui/charts/gauge`   | none in-repo                                    | TD-471 |
+
+**No published API change.** The three still come off the package root barrel, now through
+`components/ui`. Only a deep relative import of `custom/Scatter`, `custom/Treemap` or `custom/Gauge`
+hits a shim, which is tagged `@deprecated` for one release and **disappears in 0.23.0**.
+
+While these rows exist, `MATURITY.md` clause 2's fourth condition keeps `scatter`, `treemap` and
+`gauge` at `status:candidate`; they become promotable when the shims are deleted in 0.23.0.
+
+| Export               | Replacement                                                                         | Known consumers                                 | Task   |
+| -------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------- | ------ |
+| `<Scatter diagonal>` | `<Scatter referenceLines={[{ slope: -1, intercept: 1 }]}>` (`ScatterReferenceLine`) | none in-repo (the stories use `referenceLines`) | TD-472 |
+
+`diagonal` stays as a `@deprecated` alias that draws the same segment with the same dashed
+`hairline-strong` stroke and keeps its `scatter-diagonal` test id; it is removed in 0.23.0.
+`referenceLines` takes `{ y }`, `{ x }` or `{ slope, intercept }`, each with an optional `id` and
+`label`, clipped to the plot box. They never widen the domain.
+
 ## Fatigue tokens — `TONE_COLOR` replaced by `TONE_TOKEN` (VW-316)
 
 **Breaking, no alias possible.** `TONE_COLOR` held colours resolved at import
@@ -241,8 +273,13 @@ would re-enter the frozen-theme baseline.
 Migration is one line at the point of use — hold a live palette and index it:
 
 ```ts
-const t = getSemanticColors(useSurfaceMode())
-const color = t[TONE_TOKEN[tone]] // was TONE_COLOR[tone]
+import { getSemanticColors, TONE_TOKEN, useSurfaceMode } from '@titan-design/react-ui'
+import type { DimensionTone } from '@titan-design/react-ui'
+
+function useToneColor(tone: DimensionTone) {
+  const t = getSemanticColors(useSurfaceMode())
+  return t[TONE_TOKEN[tone]] // was TONE_COLOR[tone]
+}
 ```
 
 The three values are `status-success` / `status-warning` / `status-error`, which

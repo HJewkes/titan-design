@@ -34,6 +34,10 @@
           "pick": {
             "type": "string"
           },
+          "revisionRequested": {
+            "type": "boolean",
+            "const": true
+          },
           "picks": {
             "type": "array",
             "items": {
@@ -230,6 +234,77 @@
     },
     "general": {
       "type": "string"
+    },
+    "unansweredQuestionIds": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "contrastOverride": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "problem": {
+          "type": "string",
+          "minLength": 1
+        },
+        "failures": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "variant": {
+                "type": "string"
+              },
+              "element": {
+                "type": "string"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "light",
+                  "dark"
+                ]
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "text",
+                  "large-text",
+                  "non-text"
+                ]
+              },
+              "ratio": {
+                "type": "number"
+              },
+              "required": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "variant",
+              "element",
+              "mode",
+              "kind",
+              "ratio",
+              "required"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "reason",
+        "problem",
+        "failures"
+      ],
+      "additionalProperties": false
     }
   },
   "required": [

@@ -105,7 +105,7 @@ export const SortedByAge: Story = {
 }
 
 /**
- * Sorted by estimate. `TP-16` and `C-6` are estimated; `AW-86` is not, and
+ * Sorted by estimate. `SA-16` and `B-6` are estimated; `LH-86` is not, and
  * unestimated rows sort last in both directions rather than reading as zero.
  */
 export const SortedByEstimate: Story = {
