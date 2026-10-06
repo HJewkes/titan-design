@@ -275,7 +275,7 @@ interface SkeletonBodyProps {
 function SkeletonBody({ hasHeader, hasFooter, contentLines }: SkeletonBodyProps) {
   return (
     <>
-      {hasHeader && (
+      {!!hasHeader && (
         <CardHeader>
           <View className="h-5 w-1/3 bg-interactive-disabled rounded" />
           <View className="h-4 w-2/3 bg-interactive-disabled rounded" />
@@ -292,7 +292,7 @@ function SkeletonBody({ hasHeader, hasFooter, contentLines }: SkeletonBodyProps)
           />
         ))}
       </CardContent>
-      {hasFooter && (
+      {!!hasFooter && (
         <CardFooter>
           <View className="h-9 w-24 bg-interactive-disabled rounded" />
         </CardFooter>
