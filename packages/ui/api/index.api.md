@@ -1011,9 +1011,6 @@ export interface ComposerProps {
 }
 
 // @public
-export function composeValidators<T>(...validators: Array<(value: T) => string | undefined>): (value: T) => string | undefined;
-
-// @public
 export function computeWindow(input: FixedWindowInput): FixedWindow;
 
 // @public (undocumented)
@@ -1040,9 +1037,6 @@ export interface ConversationIdentityProps {
     description?: string;
     participant: Participant;
 }
-
-// @public
-export function createFieldId(label: string): string;
 
 // @public
 export interface CssPropertyEntry {
@@ -1831,24 +1825,6 @@ export interface FatigueVerdict {
 export type FatigueVerdictState = 'good' | 'slowing' | 'grinding' | 'form-breakdown';
 
 // @public
-export interface FieldState {
-    errorMessage?: string;
-    hasError: boolean;
-    isRequired?: boolean;
-    touched: boolean;
-}
-
-// @public (undocumented)
-export interface FieldWrapperProps {
-    errorMessage?: string;
-    helperText?: string;
-    isDisabled?: boolean;
-    isInvalid?: boolean;
-    isRequired?: boolean;
-    label?: string;
-}
-
-// @public
 export const FILE_EVENT_COLOR: FileEventColors;
 
 // @public
@@ -2035,25 +2011,16 @@ export interface FormatDateTimeOptions {
 export function formatDuration(ms: number): string;
 
 // @public
-export function formatPrescription(p: PrescriptionInput | null | undefined): string | null;
-
-// @public
 export function formatSessionDuration(started: string, ended: string): string;
 
 // @public
 export function formatSignedCompact(n: number): string;
 
 // @public
-export function formatSignedPct(ratio: number): string;
-
-// @public
 export function formatTaskAge(iso: string | null | undefined, now: number): string;
 
 // @public
 export function formatVelocity(velocity: number): string;
-
-// @public
-export type FormErrors<T extends FormValues> = Partial<Record<keyof T, string>>;
 
 // @public
 export function FormField(input: FormFieldProps): react_jsx_runtime.JSX.Element;
@@ -2099,12 +2066,6 @@ export interface FormSectionProps extends ViewProps {
 }
 
 // @public
-export type FormTouched<T extends FormValues> = Partial<Record<keyof T, boolean>>;
-
-// @public
-export type FormValues = Record<string, unknown>;
-
-// @public
 export function Gauge(input: GaugeProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -2133,9 +2094,6 @@ export interface GaugeThreshold {
 export function getCategoricalColor(index: number, variant?: CategoricalVariant): string;
 
 // @public
-export function getContrastText(backgroundColor: string): string;
-
-// @public
 export function getDiscreteRainbowColor(index: number, size: number): string;
 
 // @public
@@ -2143,21 +2101,6 @@ export function getElevationShadow(level: ElevationLevel, mode?: ThemeMode, opts
 
 // @public
 export function getElevationSurface(level: ElevationLevel, mode?: ThemeMode): string;
-
-// @public
-export function getFieldAriaProps(props: FieldWrapperProps & {
-    id: string;
-}): {
-    'aria-invalid'?: boolean;
-    'aria-required'?: boolean;
-    'aria-describedby'?: string;
-};
-
-// @public
-export function getFieldValidationProps(state: FieldState): {
-    isInvalid: boolean;
-    errorMessage?: string;
-};
 
 // @public
 export function getGlowShadow(color: string, intensity?: GlowIntensity): ViewStyle;
@@ -2169,13 +2112,7 @@ export function getHoverColors(bgColor: string, intensity?: 'subtle' | 'medium' 
 };
 
 // @public
-export function getLuminance(color: string): 'light' | 'dark';
-
-// @public
 export function getPressedRecessShadow(fillColor: string, _mode?: ThemeMode): ViewStyle;
-
-// @public
-export function getResultColor(result: ResultType): string;
 
 // @public (undocumented)
 export function getSemanticColors(mode: ThemeMode): {
@@ -2479,9 +2416,6 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'avatar-background': "#5A5958";
     readonly 'avatar-text': "#FFFFFF";
 };
-
-// @public
-export function getStatusColor(status: StatusType): string;
 
 // @public (undocumented)
 export function getThemeCSSVars(mode: ThemeMode): {
@@ -3489,12 +3423,6 @@ export function groupByPeriod(sessions: SessionSummary[]): Period[];
 export function groupPriorities(entries: readonly GoalPriorityIndexEntry[]): GoalPriorityIndexGroup[];
 
 // @public
-export function hasMaxLength(value: string, maxLength: number): boolean;
-
-// @public
-export function hasMinLength(value: string, minLength: number): boolean;
-
-// @public
 export function Heading(input: HeadingProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -3798,17 +3726,11 @@ export function isDark(hex: string): boolean;
 // @public
 export function isDoneStage(stage: TaskStage): boolean;
 
-// @public
-export function isEmpty(value: unknown): boolean;
-
 // @public (undocumented)
 export function isLoadTarget(target: GoalMilestoneTarget): target is GoalLoadTarget;
 
 // @public (undocumented)
 export function isMilestoneMet(target: GoalMilestoneTarget, latest: GoalMilestoneReading, direction?: GoalDirection): boolean;
-
-// @public
-export function isValidEmail(email: string): boolean;
 
 // @public
 export function KanbanIcon(input: IconProps): react_jsx_runtime.JSX.Element;
@@ -5290,18 +5212,6 @@ export interface PrBadgeProps extends ViewProps {
 }
 
 // @public
-export interface PrescriptionInput {
-    // (undocumented)
-    repsHigh?: number;
-    // (undocumented)
-    repsLow?: number;
-    // (undocumented)
-    rpe?: number;
-    // (undocumented)
-    weightLbs?: number;
-}
-
-// @public
 export const PRESSED_ELEVATION_LEVEL: ElevationLevel;
 
 // @public
@@ -5812,9 +5722,6 @@ export const resultPaletteColors: {
     readonly degradeDark: "#b30000";
     readonly inconclusive: "#9E9A97";
 };
-
-// @public (undocumented)
-export type ResultType = 'improve' | 'degrade' | 'inconclusive' | 'neutral';
 
 // @public
 export function rgbToHex(r: number, g: number, b: number): string;
@@ -7269,9 +7176,6 @@ export interface StatusPillProps extends ViewProps {
 export type StatusPillStatus = 'productive' | 'threshold' | 'stop';
 
 // @public
-export type StatusType = 'success' | 'error' | 'warning' | 'info';
-
-// @public
 export function StepContent(input: StepContentProps): react_jsx_runtime.JSX.Element | null;
 
 // @public (undocumented)
@@ -8595,16 +8499,6 @@ export function useToolbarButton(): ToolbarButtonContextType;
 
 // @public
 export function validateCssPropertyManifest(candidate: unknown): ManifestValidationResult;
-
-// @public
-export const validationRules: {
-    required: (value: unknown) => "This field is required" | undefined;
-    email: (value: string) => "Please enter a valid email address" | undefined;
-    minLength: (min: number) => (value: string) => string | undefined;
-    maxLength: (max: number) => (value: string) => string | undefined;
-    pattern: (regex: RegExp, message: string) => (value: string) => string | undefined;
-    match: (otherValue: string, fieldName: string) => (value: string) => string | undefined;
-};
 
 // @public
 export function valueReach(target: number, latest: number, direction?: GoalDirection): GoalReach;
