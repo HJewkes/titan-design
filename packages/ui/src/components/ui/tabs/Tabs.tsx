@@ -1,6 +1,8 @@
-import React, { createContext, useContext, useId, useState } from 'react'
+import React, { createContext, useContext, useId } from 'react'
 import { View, Text, Pressable, ScrollView, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import type { ControlledProps } from '../../../utils/controlled-props'
+import { useControllableState } from '../../../hooks/useControllableState'
 
 export type TabsVariant = 'line' | 'enclosed' | 'soft-rounded'
 export type TabsOrientation = 'horizontal' | 'vertical'
@@ -33,12 +35,22 @@ function nextEnabledIndex(enabled: boolean[], from: number, step: 1 | -1): numbe
   return from
 }
 
-export interface TabsProps extends ViewProps {
-  /** Currently active tab index */
+/** The active tab is its index: `value` / `defaultValue` / `onValueChange` from `ControlledProps`. */
+export interface TabsProps extends ViewProps, ControlledProps<number> {
+  /**
+   * Initial active index when uncontrolled.
+   * @deprecated Use `defaultValue`.
+   */
   defaultIndex?: number
-  /** Controlled active index */
+  /**
+   * Controlled active index.
+   * @deprecated Use `value`.
+   */
   index?: number
-  /** Callback when tab changes */
+  /**
+   * Fires with the next active index.
+   * @deprecated Use `onValueChange`; both fire on a change.
+   */
   onChange?: (index: number) => void
   /** Visual variant */
   variant?: TabsVariant
@@ -53,7 +65,7 @@ export interface TabsProps extends ViewProps {
  * Tabs component for tabbed navigation.
  *
  * @example
- * <Tabs defaultIndex={0} onChange={(i) => console.log(i)}>
+ * <Tabs defaultValue={0} onValueChange={(i) => console.log(i)}>
  *   <TabList>
  *     <Tab>Tab 1</Tab>
  *     <Tab>Tab 2</Tab>
@@ -67,7 +79,10 @@ export interface TabsProps extends ViewProps {
  * </Tabs>
  */
 export function Tabs({
-  defaultIndex = 0,
+  value,
+  defaultValue,
+  onValueChange,
+  defaultIndex,
   index,
   onChange,
   variant = 'line',
@@ -77,15 +92,14 @@ export function Tabs({
   ...props
 }: TabsProps) {
   const baseId = useId()
-  const [internalIndex, setInternalIndex] = useState(defaultIndex)
-  const activeIndex = index ?? internalIndex
-
-  const setActiveIndex = (newIndex: number) => {
-    if (index === undefined) {
-      setInternalIndex(newIndex)
-    }
-    onChange?.(newIndex)
-  }
+  const [activeIndex, setActiveIndex] = useControllableState({
+    value: value ?? index,
+    defaultValue: defaultValue ?? defaultIndex ?? 0,
+    onChange: (next: number) => {
+      onValueChange?.(next)
+      onChange?.(next)
+    },
+  })
 
   return (
     <TabsContext.Provider value={{ activeIndex, setActiveIndex, variant, orientation, baseId }}>

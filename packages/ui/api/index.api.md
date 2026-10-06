@@ -1015,6 +1015,13 @@ export interface ContributingExercise {
 }
 
 // @public
+export interface ControlledProps<T> {
+    defaultValue?: T;
+    onValueChange?: (value: T) => void;
+    value?: T;
+}
+
+// @public
 export function ConversationIdentity(input: ConversationIdentityProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -7611,13 +7618,16 @@ export function Tabs(input: TabsProps): react_jsx_runtime.JSX.Element;
 // @public (undocumented)
 export type TabsOrientation = 'horizontal' | 'vertical';
 
-// @public (undocumented)
-export interface TabsProps extends ViewProps {
+// @public
+export interface TabsProps extends ViewProps, ControlledProps<number> {
     // (undocumented)
     children?: React__default.ReactNode;
     className?: string;
+    // @deprecated
     defaultIndex?: number;
+    // @deprecated
     index?: number;
+    // @deprecated
     onChange?: (index: number) => void;
     orientation?: TabsOrientation;
     variant?: TabsVariant;

@@ -14155,25 +14155,39 @@
           "type": "string"
         },
         {
-          "default": "0",
-          "description": "Currently active tab index",
+          "default": null,
+          "description": "Initial active index when uncontrolled.",
           "name": "defaultIndex",
           "required": false,
           "type": "number"
         },
         {
           "default": null,
-          "description": "Controlled active index",
+          "description": "Initial value when uncontrolled.",
+          "name": "defaultValue",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Controlled active index.",
           "name": "index",
           "required": false,
           "type": "number"
         },
         {
           "default": null,
-          "description": "Callback when tab changes",
+          "description": "Fires with the next active index.",
           "name": "onChange",
           "required": false,
           "type": "((index: number) => void)"
+        },
+        {
+          "default": null,
+          "description": "Fires with the next value on every user-driven change.",
+          "name": "onValueChange",
+          "required": false,
+          "type": "((value: number) => void)"
         },
         {
           "default": "horizontal",
@@ -14181,6 +14195,13 @@
           "name": "orientation",
           "required": false,
           "type": "TabsOrientation"
+        },
+        {
+          "default": null,
+          "description": "Controlled value; leave `undefined` to let the component own the state.",
+          "name": "value",
+          "required": false,
+          "type": "number"
         },
         {
           "default": "line",
