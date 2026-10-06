@@ -605,6 +605,105 @@ module.exports = tseslint.config(
     },
   },
 
+  // A '' or 0 on the left of && renders a bare text node, and React Native throws on it
+  // (audit findings D04b-04, D03b-01). Write !!x &&, a ternary or an explicit comparison.
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    rules: {
+      'react/jsx-no-leaked-render': ['error', { validStrategies: ['coerce', 'ternary'] }],
+    },
+  },
+
+  // Files still to fix. Each TD-536 slice deletes its group; the slice that empties the list
+  // deletes this block.
+  {
+    files: [
+      // TD-536 b2
+      'src/lab/north-star/EmptyLiveView.tsx',
+      'src/lab/north-star/HeroTempo.exploration.stories.tsx',
+      'src/lab/north-star/LivePage.tsx',
+      'src/lab/north-star/LiveView.tsx',
+      'src/lab/north-star/VelocityDiverging.exploration.stories.tsx',
+      'src/lab/north-star/fatigue-lab-shared.tsx',
+      // TD-536 b3
+      'src/components/ui/autocomplete/Autocomplete.tsx',
+      'src/components/ui/checkbox/Checkbox.tsx',
+      'src/components/ui/radio/Radio.tsx',
+      'src/components/ui/switch/Switch.tsx',
+      // TD-536 b4
+      'src/components/custom/Fatigue/DualGhostSpark.tsx',
+      'src/components/custom/Fatigue/SilverRedPalette.stories.tsx',
+      'src/components/ui/card/Card.tsx',
+      'src/components/ui/metric/Metric.tsx',
+      'src/components/ui/section/Section.tsx',
+      'src/components/ui/tooltip/Tooltip.tsx',
+      // TD-536 b5
+      'src/components/custom/Workout/ExerciseHeading.tsx',
+      'src/components/custom/Workout/GoalMilestoneSummary.tsx',
+      'src/components/custom/Workout/GoalTrajectoryChartParts.tsx',
+      'src/components/custom/Workout/GoalTrajectoryMini.tsx',
+      'src/components/custom/Workout/GoalTrajectoryWeekTips.tsx',
+      'src/components/custom/Workout/GoalsWholeBody.composition.stories.tsx',
+      // TD-536 b6
+      'src/components/custom/Workout/IntensityBar.tsx',
+      'src/components/custom/Workout/LiveAuraFrame.tsx',
+      'src/components/custom/Workout/SessionHeader.tsx',
+      'src/components/custom/Workout/Sparkline.tsx',
+      'src/components/custom/Workout/SparklineParts.tsx',
+      'src/components/custom/Workout/StatusDot.tsx',
+      'src/components/custom/Workout/VelocityLossBands.tsx',
+      'src/components/custom/Workout/VelocityStripFramed.tsx',
+      'src/components/custom/Workout/WeekRow.tsx',
+      'src/components/custom/Workout/WorkoutCard.tsx',
+      'src/components/custom/Workout/WorkoutPill.tsx',
+      'src/components/custom/Workout/setHeadingKit.tsx',
+      // TD-536 b7
+      'src/components/ui/alert/Alert.tsx',
+      'src/components/ui/button/Button.tsx',
+      'src/components/ui/charts/gauge/Gauge.tsx',
+      'src/components/ui/charts/scatter/ScatterFrame.tsx',
+      'src/components/ui/charts/scatter/ScatterPointMark.tsx',
+      'src/components/ui/charts/treemap/Treemap.tsx',
+      'src/components/ui/drawer/Drawer.tsx',
+      'src/components/ui/empty-state/EmptyState.tsx',
+      'src/components/ui/link/Link.tsx',
+      'src/components/ui/list-item/ListItem.tsx',
+      'src/components/ui/toolbar-button/ToolbarButton.tsx',
+      // TD-536 b8
+      'src/components/ui/chip/Chip.tsx',
+      'src/components/ui/progress/Progress.tsx',
+      'src/components/ui/select/Select.tsx',
+      'src/components/ui/skeleton/Skeleton.tsx',
+      'src/components/ui/table/TableEmptyState.tsx',
+      'src/components/ui/table/TableSelection.tsx',
+      // TD-536 b9
+      'src/components/ui/autocomplete/AutocompleteParts.tsx',
+      'src/components/ui/form-field/FormField.tsx',
+      'src/components/ui/help-tip/HelpTip.tsx',
+      'src/components/ui/input/Input.tsx',
+      'src/components/ui/menu/Menu.tsx',
+      'src/components/ui/toast/Toast.tsx',
+      // TD-536 b10
+      'src/components/custom/Fatigue/GhostBand.tsx',
+      'src/components/custom/Sidebar/Sidebar.tsx',
+      'src/components/custom/Workout/ActiveWorkoutPage.tsx',
+      'src/components/custom/Workout/CapacityBandPlot.tsx',
+      'src/components/custom/Workout/ExerciseCard.tsx',
+      'src/components/custom/Workout/GoalTrajectoryPlot.tsx',
+      'src/components/custom/Workout/MesoCard.tsx',
+      'src/components/custom/Workout/ReadinessCheck.tsx',
+      'src/components/custom/Workout/StrengthTrendChart.tsx',
+      'src/components/custom/Workout/TempoDisplay.tsx',
+      // TD-536 b11
+      'src/components/custom/Workout/BodyMapDetailPanel.tsx',
+      'src/components/custom/Workout/GoalCard.tsx',
+      'src/components/custom/charts/SetBarChart.tsx',
+    ],
+    rules: {
+      'react/jsx-no-leaked-render': 'off',
+    },
+  },
+
   // Every story's top-level Storybook group must be one of the six-group-plus-Docs
   // roots the reorg (#170) settled on, so a new story can't quietly invent an
   // eighth root that the sidebar and storySort don't know about.
