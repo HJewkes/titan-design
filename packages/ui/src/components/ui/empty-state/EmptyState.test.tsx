@@ -22,6 +22,14 @@ describe('EmptyState', () => {
     expect(screen.getByText("You don't have any messages yet.")).toBeInTheDocument()
   })
 
+  it('leaves no empty string among the View children when description and action are empty strings', () => {
+    // React DOM drops '' silently, but React Native throws on a bare string inside a View,
+    // so assert on the element tree rather than the DOM.
+    const tree = EmptyState({ title: 'No data', description: '', action: '' })
+    const children = [tree.props.children].flat()
+    expect(children.filter((child) => typeof child === 'string')).toEqual([])
+  })
+
   it('renders without description', () => {
     render(<EmptyState title="No data" />)
     expect(screen.getByText('No data')).toBeInTheDocument()

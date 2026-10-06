@@ -5,7 +5,7 @@
  *
  * A WIDE phase-coloured AXIS BAND ({@link GhostBand}) sits at the BOTTOM, filled per the
  * current rep's phase runs (eccentric magenta / concentric cyan / hold and idle grey),
- * each sized to its ACTUAL time extent, with the ECC / HOLD / CON labels shown INSIDE it.
+ * each sized to its ACTUAL time extent, with the ECC / CON labels shown INSIDE it.
  * Given `targetTempoSeconds` the runs also PACE — muted base, fill earned against the
  * prescribed phase duration, label toned ahead/on-pace/over. Velocity is
  * drawn as MAGNITUDE blooming UP from just above the band ({@link GhostBloom}) — the current
@@ -126,7 +126,7 @@ export function GhostSpark({
         />
 
         {/* the WIDE phase-colored axis band at the bottom — the sole carrier of phase,
-            filled per the current rep's phase runs, ECC/HOLD/CON labelled INSIDE. */}
+            filled per the current rep's phase runs, ECC/CON labelled INSIDE. */}
         <GhostBand
           segments={cur.phaseSegments}
           x={x}

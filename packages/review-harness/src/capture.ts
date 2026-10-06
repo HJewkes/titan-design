@@ -53,7 +53,7 @@ async function shoot(page: Page, url: string, file: string): Promise<void> {
 }
 
 /** The first of `<key>-image.png`, `<key>-image-2.png`, ... that is not one of the round's source PNGs. */
-export function imageCopyName(variant: ImageVariant, outDir: string, sources: Set<string>): string {
+function imageCopyName(variant: ImageVariant, outDir: string, sources: Set<string>): string {
   for (let n = 1; ; n++) {
     const name = n === 1 ? `${variant.key}-image.png` : `${variant.key}-image-${n}.png`
     if (!sources.has(join(outDir, name))) return name
