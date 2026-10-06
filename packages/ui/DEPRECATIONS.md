@@ -281,6 +281,22 @@ shim until its own follow-up; the other three in-repo importers use the new path
 While this row exists, `MATURITY.md` clause 2's fourth condition keeps `metric` at
 `status:candidate`; it becomes promotable when the shim is deleted in 0.23.0.
 
+## Tabs selection props — `index` / `defaultIndex` / `onChange` renamed
+
+`Tabs` now names its controlled state `value` / `defaultValue` / `onValueChange`, the repo convention
+(`CLAUDE.md`, "Controlled state is named `x`, `defaultX`, `onXChange`"), typed by the new
+`ControlledProps<T>` in `src/utils`. The value is still the tab index.
+
+| Export                | Replacement            | Known consumers                                 | Task   |
+| --------------------- | ---------------------- | ----------------------------------------------- | ------ |
+| `<Tabs index>`        | `<Tabs value>`         | none in-repo                                    | TD-270 |
+| `<Tabs defaultIndex>` | `<Tabs defaultValue>`  | none in-repo (both stories pass `defaultValue`) | TD-270 |
+| `<Tabs onChange>`     | `<Tabs onValueChange>` | none in-repo                                    | TD-270 |
+
+The three stay as `@deprecated` aliases and keep working. The new name wins when both are passed,
+and a change fires both `onValueChange` and `onChange`. Unlike before, pressing the tab that is
+already selected fires neither, since `useControllableState` drops a change to the current value.
+
 ## Fatigue tokens — `TONE_COLOR` replaced by `TONE_TOKEN` (VW-316)
 
 **Breaking, no alias possible.** `TONE_COLOR` held colours resolved at import

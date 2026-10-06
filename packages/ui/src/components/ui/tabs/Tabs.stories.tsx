@@ -23,7 +23,7 @@ type Story = StoryObj<typeof Tabs>
 
 export const Default: Story = {
   render: () => (
-    <Tabs defaultIndex={0}>
+    <Tabs defaultValue={0}>
       <TabList>
         <Tab>Account</Tab>
         <Tab>Security</Tab>
