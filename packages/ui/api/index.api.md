@@ -1636,8 +1636,6 @@ export interface ExerciseCardProps {
     name: string;
     onExpandedChange?: (expanded: boolean) => void;
     // (undocumented)
-    onNavigateDetail?: () => void;
-    // (undocumented)
     prescription?: string;
     // (undocumented)
     previousBest?: string;
@@ -1652,8 +1650,6 @@ export interface ExerciseCardProps {
         weight: number;
         unit: 'lbs' | 'kg';
     };
-    // (undocumented)
-    supersetColor?: string;
     // (undocumented)
     supersetPosition?: 'first' | 'last' | 'middle' | null;
     // (undocumented)

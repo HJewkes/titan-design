@@ -3395,13 +3395,6 @@
         {
           "default": null,
           "description": "",
-          "name": "onNavigateDetail",
-          "required": false,
-          "type": "(() => void)"
-        },
-        {
-          "default": null,
-          "description": "",
           "name": "prescription",
           "required": false,
           "type": "string"
@@ -3447,13 +3440,6 @@
           "name": "summary",
           "required": false,
           "type": "{ sets: number; reps: string | number; weight: number; unit: \"lbs\" | \"kg\"; }"
-        },
-        {
-          "default": null,
-          "description": "",
-          "name": "supersetColor",
-          "required": false,
-          "type": "string"
         },
         {
           "default": null,
@@ -6995,7 +6981,7 @@
       "props": [
         {
           "default": null,
-          "description": "Newest rep index — reserved; the compact spotlight strip is static.",
+          "description": "Rep the spotlight strip grows from the baseline as it lands.",
           "name": "liveRepIndex",
           "required": false,
           "type": "number"
