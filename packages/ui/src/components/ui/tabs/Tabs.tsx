@@ -3,6 +3,7 @@ import { View, Text, Pressable, ScrollView, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import type { ControlledProps } from '../../../utils/controlled-props'
 import { useControllableState } from '../../../hooks/useControllableState'
+import { nextEnabledIndex, panelId, tabId } from './tabs-ids'
 
 export type TabsVariant = 'line' | 'enclosed' | 'soft-rounded'
 export type TabsOrientation = 'horizontal' | 'vertical'
@@ -22,18 +23,6 @@ const TabsContext = createContext<TabsContextType>({
   orientation: 'horizontal',
   baseId: 'tabs',
 })
-
-const tabId = (baseId: string, index: number) => `${baseId}-tab-${index}`
-const panelId = (baseId: string, index: number) => `${baseId}-panel-${index}`
-
-function nextEnabledIndex(enabled: boolean[], from: number, step: 1 | -1): number {
-  const count = enabled.length
-  for (let i = 1; i <= count; i++) {
-    const candidate = (from + step * i + count * i) % count
-    if (enabled[candidate]) return candidate
-  }
-  return from
-}
 
 /** The active tab is its index: `value` / `defaultValue` / `onValueChange` from `ControlledProps`. */
 export interface TabsProps extends ViewProps, ControlledProps<number> {
