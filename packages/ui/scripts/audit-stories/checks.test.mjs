@@ -1,7 +1,11 @@
 import { describe, expect, it } from 'vitest'
+import { readFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
+  BLOCKER_KINDS,
+  CONTRAST_TOKEN_KIND,
+  WARNING_KINDS,
   auditPage,
   domChecks,
   offScaleWarnings,
@@ -145,5 +149,22 @@ describe('theme geometry shift', () => {
 
   it('ignores a 1px shift', () => {
     expect(themeGeometryShift([row('0', 'div', 100)], [row('0', 'div', 101)], 'dark')).toEqual([])
+  })
+})
+
+describe('usage doc', () => {
+  const read = (path) => readFileSync(resolve(uiDir, path), 'utf8')
+  const doc = read('docs/audit-stories.md')
+  const kinds = [...BLOCKER_KINDS, ...WARNING_KINDS, CONTRAST_TOKEN_KIND]
+
+  it.each(kinds)('names the %s kind', (kind) => {
+    expect(doc, `docs/audit-stories.md does not name the \`${kind}\` kind`).toContain(`\`${kind}\``)
+  })
+
+  it('lists every kind the in-page checks emit', () => {
+    const source = read('scripts/audit-stories/checks.mjs')
+    const emitted = [...source.matchAll(/finding\(\s*'([a-z-]+)'/g)].map((m) => m[1])
+    expect(emitted.length).toBeGreaterThan(0)
+    expect(kinds).toEqual(expect.arrayContaining(emitted))
   })
 })
