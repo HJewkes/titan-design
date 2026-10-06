@@ -21,7 +21,11 @@ const ruleTester = new RuleTester({
 // Outside the package, so no baseline entry applies and every site is unallowanced.
 const componentFile = '/repo/packages/ui/src/components/custom/Widget/Widget.jsx'
 
-const KIND = { html: 'is an HTML element', svg: 'is a web SVG element' }
+const KIND = {
+  html: 'is an HTML element',
+  anchor: 'is an HTML element[^]*navigation',
+  svg: 'is a web SVG element',
+}
 
 const valid = (code: string) => ({ code, filename: componentFile })
 // A message regex rather than messageId + data: RuleTester needs every placeholder for data.
@@ -52,7 +56,8 @@ describe('no-html-element', () => {
       invalid('const a = <div />', 'html', 'View'),
       invalid('const a = <span>{label}</span>', 'html', 'Text'),
       invalid('const a = <button onClick={go} />', 'html', 'Pressable'),
-      invalid('const a = <a href={href} />', 'html', 'Pressable'),
+      // titan already wraps the anchor as Link, so that is named rather than a bare Pressable.
+      invalid('const a = <a href={href} />', 'anchor', '`Link`'),
       invalid('const a = <input value={v} />', 'html', 'TextInput'),
       invalid('const a = <img src={src} />', 'html', 'Image'),
       // An element outside the table still gets the full list of primitives.
@@ -100,6 +105,16 @@ describe('no-html-element under the real config', { timeout: 30_000 }, () => {
     expect(lintAt('src/components/ui/widget/Mark.tsx', svg)[1].message).toContain(
       'Use Path from react-native-svg here'
     )
+  })
+
+  it('names the exported Link for an anchor, not a bare Pressable', () => {
+    const [message] = lintAt(
+      'src/components/ui/widget/Widget.tsx',
+      'export const Go = () => <a href={href}>{label}</a>'
+    )
+    expect(message.messageId).toBe('anchor')
+    expect(message.message).toContain('Use `Link` here')
+    expect(message.message).not.toContain('Use Pressable')
   })
 
   it('leaves stories, tests and lab alone', () => {
