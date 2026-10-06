@@ -1,5 +1,8 @@
+/** A matched span of a string; structurally identical to the command palette's `MatchRange`. */
 export interface HighlightRange {
+  /** Index of the first matched character. */
   start: number
+  /** Index after the last matched character (exclusive). */
   end: number
 }
 

@@ -4,6 +4,7 @@ import { toSegments, type HighlightRange } from './highlight-model'
 
 export type { HighlightRange }
 
+/** Props for {@link HighlightText}. */
 export interface HighlightTextProps {
   /** The full string to render. */
   text: string

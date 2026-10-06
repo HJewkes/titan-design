@@ -3548,18 +3548,16 @@ export function hexToRgb(hex: string): {
     b: number;
 } | null;
 
-// @public (undocumented)
+// @public
 export interface HighlightRange {
-    // (undocumented)
     end: number;
-    // (undocumented)
     start: number;
 }
 
 // @public
-export function HighlightText(input: HighlightTextProps): react_jsx_runtime.JSX.Element;
+export function HighlightText(input: HighlightTextProps): react_jsx_runtime.JSX.Element | null;
 
-// @public (undocumented)
+// @public
 export interface HighlightTextProps {
     className?: string;
     color?: TypographyColor;
