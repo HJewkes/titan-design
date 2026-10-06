@@ -51,12 +51,6 @@ export interface E1RMBand {
 /** Which limb a strength row covers. `null` means the sets recorded no side. */
 export type MuscleStrengthSide = 'left' | 'right' | null
 
-/** Grouping key for {@link MuscleStrengthSide}; `'none'` is the side-unknown group. */
-export type MuscleStrengthSideKey = 'left' | 'right' | 'none'
-
-/** How recently a row was trained. Mirrors `MuscleStrengthRecency`. */
-export type MuscleStrengthRecency = 'current' | 'fading' | 'no_current_read'
-
 /** The best e1RM in the window, with the band every e1RM travels with. */
 export interface MuscleStrengthBestE1rm {
   value: number
@@ -84,8 +78,10 @@ export interface MuscleStrengthExerciseRow {
   currentLevel: number | null
   /** `currentLevel` over the best e1RM in these rows, 0 to 100 percent. Never pooled across sides. */
   relativeIndex: number | null
+  /** Days since this row was last trained; `null` without an `asOf` instant or sets. */
   daysSinceTrained: number | null
-  recency: MuscleStrengthRecency | null
+  /** The body map's reading of `daysSinceTrained`: current, faded, or no current read. */
+  recency: 'current' | 'fading' | 'no_current_read' | null
 }
 
 /** Agreement of SIGNS between exercises sharing a primary muscle. */
@@ -110,7 +106,7 @@ export interface MuscleStrengthSection {
   /** True while strength gains are not yet readable as muscle gains. */
   earlyPhase: boolean
   /** Set-weighted mean of the rows' relative indices, one per side group; sides never pool. */
-  relativeIndexBySide: Partial<Record<MuscleStrengthSideKey, number>>
+  relativeIndexBySide: Partial<Record<'left' | 'right' | 'none', number>>
   /** Days since any row of this muscle was trained; `null` without `asOf` or rows. */
   daysSinceTrained: number | null
 }
@@ -121,12 +117,6 @@ export interface MusclePlanRemainingExercise {
   exerciseId: string
   exerciseName: string
   sets: number
-}
-
-/** Training days a muscle is targeted on. Mirrors `MusclePlanFrequency`. */
-export interface MusclePlanFrequency {
-  plannedPerWeek: number
-  observedThisWeek: number
 }
 
 /**
@@ -146,7 +136,8 @@ export interface MusclePlanSection {
   plannedSetsThisWeek: number
   doneSetsThisWeek: number
   exercises: MusclePlanExerciseRow[]
-  frequency: MusclePlanFrequency
+  /** Training days targeted: planned across the active week, observed this calendar week. */
+  frequency: { plannedPerWeek: number; observedThisWeek: number }
 }
 
 /** Labels for {@link MuscleStrengthAgreement}, in the panel's own wording. */

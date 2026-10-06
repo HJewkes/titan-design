@@ -3,7 +3,7 @@ import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import type {
   E1RMBand,
-  MusclePlanFrequency,
+  MusclePlanSection,
   MusclePlanRemainingExercise,
   MuscleStrengthBestE1rm,
   MuscleStrengthExerciseRow,
@@ -72,7 +72,14 @@ const PLAN_REMAINING_FIELDS: Record<keyof MusclePlanRemainingExercise, true> = {
   sets: true,
 }
 
-const PLAN_FREQUENCY_FIELDS: Record<keyof MusclePlanFrequency, true> = {
+const PLAN_SECTION_FIELDS: Record<keyof MusclePlanSection, true> = {
+  plannedSetsThisWeek: true,
+  doneSetsThisWeek: true,
+  exercises: true,
+  frequency: true,
+}
+
+const PLAN_FREQUENCY_FIELDS: Record<keyof MusclePlanSection['frequency'], true> = {
   plannedPerWeek: true,
   observedThisWeek: true,
 }
@@ -121,6 +128,9 @@ describe('muscleReadModels mirror', () => {
     expect(keys(E1RM_BAND_FIELDS)).toHaveLength(11)
     expect(keys(PLAN_REMAINING_FIELDS)).toEqual(
       ['workoutName', 'exerciseId', 'exerciseName', 'sets'].sort()
+    )
+    expect(keys(PLAN_SECTION_FIELDS)).toEqual(
+      ['plannedSetsThisWeek', 'doneSetsThisWeek', 'exercises', 'frequency'].sort()
     )
     expect(keys(PLAN_FREQUENCY_FIELDS)).toEqual(['plannedPerWeek', 'observedThisWeek'].sort())
   })
