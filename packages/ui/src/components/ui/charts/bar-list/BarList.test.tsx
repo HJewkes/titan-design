@@ -1,12 +1,12 @@
-import { describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { axe, toHaveNoViolations } from 'jest-axe'
 import { compositeOver, contrast } from '../../../../theme/color-checks'
 import { getSemanticColors } from '../../../../theme/tokens/semantic'
 import { capturedByNode } from '../../../../test/classname-capture'
 import { Surface } from '../../surface'
 import { silverRed } from '../kit/silverRed'
-import { BarList } from './BarList'
+import { BarList, type BarListReadout } from './BarList'
 import storyMeta from './BarList.stories'
 import { barListFixtures, defaultFixture, veryLargeFixture, type BarListFixture } from './fixtures'
 
@@ -118,19 +118,217 @@ describe('BarList', () => {
     expect(screen.queryByText('No data')).not.toBeInTheDocument()
   })
 
-  it('gives every inline row the same values-column width so the tracks have one length', () => {
-    const rows = [7, 1234, 98765].map((value) => ({ id: `v${value}`, label: `V${value}`, value }))
-    render(
-      <BarList
-        accessibilityLabel="Widths"
-        rows={rows}
-        formatValue={(value) => value.toLocaleString('en-US')}
-      />
-    )
-    const widths = screen.getAllByTestId('bar-list-values').map((el) => el.style.width)
-    expect(widths).toEqual(['7ch', '7ch', '7ch'])
-    const tracks = screen.getAllByTestId('bar-list-track')
-    expect(new Set(tracks.map((el) => el.className)).size).toBe(1)
+  describe('row layout', () => {
+    const flagged = fixture('Flagged')
+    const classOf = (el: Element) => capturedByNode.get(el) ?? ''
+    const testIdsIn = (row: Element) =>
+      [...row.querySelectorAll<HTMLElement>('[data-testid]')].map((el) => el.dataset.testid)
+
+    it('orders an inline row as track, value, flag', () => {
+      renderFixture(flagged)
+      const [first] = screen.getAllByTestId('bar-list-row')
+      expect(testIdsIn(first)).toEqual([
+        'bar-list-track',
+        'bar-list-fill',
+        'bar-list-value',
+        'bar-list-flag',
+      ])
+    })
+
+    it('puts the secondary value between the value and the flag', () => {
+      const row = {
+        id: 'p',
+        label: 'Parser',
+        value: 9.1,
+        secondaryValue: 4,
+        flag: { tone: 'error' as const, label: 'over 5%' },
+      }
+      render(<BarList accessibilityLabel="Errors" rows={[row]} />)
+      expect(testIdsIn(screen.getByTestId('bar-list-row')).slice(2)).toEqual([
+        'bar-list-value',
+        'bar-list-secondary',
+        'bar-list-flag',
+      ])
+    })
+
+    it('puts the same cells in the stacked header, above the track', () => {
+      renderFixture(fixture('With description'))
+      const [first] = screen.getAllByTestId('bar-list-row')
+      const ids = testIdsIn(first)
+      expect(ids.indexOf('bar-list-value')).toBeGreaterThanOrEqual(0)
+      expect(ids.indexOf('bar-list-value')).toBeLessThan(ids.indexOf('bar-list-track'))
+    })
+
+    it('gives every row the same cell widths so the tracks have one length', () => {
+      const rows = [7, 1234, 98765].map((value, i) => ({
+        id: `v${value}`,
+        label: `V${value}`,
+        value,
+        ...(i === 0 ? { secondaryValue: 12 } : {}),
+        ...(i === 1 ? { flag: { tone: 'error' as const, label: 'over' } } : {}),
+      }))
+      render(
+        <BarList
+          accessibilityLabel="Widths"
+          rows={rows}
+          formatValue={(value) => value.toLocaleString('en-US')}
+        />
+      )
+      const widths = (testId: string, property: 'minWidth' | 'width') =>
+        screen.getAllByTestId(testId).map((el) => el.style[property])
+      expect(widths('bar-list-value', 'minWidth')).toEqual(['6ch', '6ch', '6ch'])
+      expect(widths('bar-list-secondary', 'width')).toEqual(['3ch', '3ch', '3ch'])
+      expect(widths('bar-list-flag', 'width')).toEqual(['5ch', '5ch', '5ch'])
+      const tracks = screen.getAllByTestId('bar-list-track')
+      expect(new Set(tracks.map((el) => el.className)).size).toBe(1)
+    })
+
+    it('right-aligns the value in a tabular mono column', () => {
+      renderFixture(defaultFixture)
+      for (const cell of screen.getAllByTestId('bar-list-value')) {
+        expect(classOf(cell).split(' ')).toEqual(
+          expect.arrayContaining(['font-mono', 'text-right'])
+        )
+        expect(cell).toHaveStyle({ fontVariant: 'tabular-nums' })
+      }
+    })
+
+    it('sets the flag cell to the normal line height so every row has one pitch', () => {
+      renderFixture(flagged)
+      const cells = screen.getAllByTestId('bar-list-flag')
+      expect(cells).toHaveLength(flagged.rows.length)
+      for (const cell of cells) {
+        const classes = classOf(cell).split(' ')
+        expect(classes).toContain('leading-normal')
+        expect(classes).not.toContain('leading-loose')
+      }
+    })
+
+    it('renders no flag or secondary cell when no shown row has the part', () => {
+      renderFixture(defaultFixture)
+      expect(screen.queryByTestId('bar-list-flag')).toBeNull()
+      expect(screen.queryByTestId('bar-list-secondary')).toBeNull()
+    })
+  })
+
+  describe('readouts', () => {
+    const flagged = fixture('Flagged')
+    const cases: [BarListReadout[], string[]][] = [
+      [
+        ['value', 'flag'],
+        ['bar-list-value', 'bar-list-flag'],
+      ],
+      [['value'], ['bar-list-value']],
+      [['flag'], ['bar-list-flag']],
+      [[], []],
+    ]
+
+    it.each(cases)('with readouts %j renders the cells %j', (readouts, cells) => {
+      renderFixture(flagged, { readouts })
+      for (const testId of ['bar-list-value', 'bar-list-flag']) {
+        expect(screen.queryAllByTestId(testId).length > 0).toBe(cells.includes(testId))
+      }
+    })
+
+    it('names every row and the list the same whatever readouts shows', () => {
+      const namesFor = (readouts: BarListReadout[]) => {
+        const { unmount } = renderFixture(flagged, { readouts })
+        const names = [screen.getByRole('list'), ...screen.getAllByTestId('bar-list-row')].map(
+          (el) => el.getAttribute('aria-label')
+        )
+        unmount()
+        return names
+      }
+      const shown = namesFor(['value', 'flag'])
+      expect(shown[1]).toBe('Parser: 9.1, over 5%, rank 1 of 5')
+      for (const [readouts] of cases) expect(namesFor(readouts)).toEqual(shown)
+    })
+  })
+
+  describe('tip', () => {
+    const flagged = fixture('Flagged')
+    const renderTipped = (props = {}) => renderFixture(flagged, { readouts: ['flag'], ...props })
+    const tabStops = () =>
+      screen.getAllByTestId('bar-list-row').filter((row) => row.getAttribute('tabindex') === '0')
+
+    afterEach(() => {
+      // RNW's input modality is module-global; a mouse move ends the modality a test leaves.
+      fireEvent.mouseMove(document)
+    })
+
+    it('shows no tip and takes no focus while both readouts are shown', () => {
+      const { container } = renderFixture(flagged)
+      expect(container.querySelector('[tabindex]')).toBeNull()
+      act(() => fireEvent.focus(screen.getAllByTestId('bar-list-row')[0]))
+      expect(screen.queryByTestId('bar-list-tip')).toBeNull()
+    })
+
+    it('makes the list one tab stop and keeps the rows list items, not buttons', () => {
+      renderFixture(defaultFixture, { readouts: ['flag'] })
+      expect(tabStops()).toHaveLength(1)
+      expect(screen.getAllByRole('listitem')).toHaveLength(11)
+      expect(screen.queryByRole('button')).toBeNull()
+      expect(screen.getByTestId('bar-list-overflow')).not.toHaveAttribute('tabindex')
+    })
+
+    it('opens the tip on keyboard focus, moves it with the arrows and closes it on Escape', () => {
+      renderTipped()
+      const rows = screen.getAllByTestId('bar-list-row')
+      act(() => rows[0].focus())
+      expect(screen.getByTestId('bar-list-tip')).toHaveTextContent('Parser')
+
+      fireEvent.keyDown(rows[0], { key: 'ArrowDown' })
+      expect(document.activeElement).toBe(rows[1])
+      expect(tabStops()).toEqual([rows[1]])
+      expect(screen.getByTestId('bar-list-tip')).toHaveTextContent('Formatter')
+
+      fireEvent.keyDown(rows[1], { key: 'End' })
+      expect(document.activeElement).toBe(rows[4])
+      fireEvent.keyDown(rows[4], { key: 'ArrowDown' })
+      expect(document.activeElement).toBe(rows[4])
+
+      fireEvent.keyDown(document, { key: 'Escape' })
+      expect(screen.queryByTestId('bar-list-tip')).toBeNull()
+    })
+
+    it('holds the row label, the formatted value and the flag label', () => {
+      renderTipped({ formatValue: (value: number) => `${value}%` })
+      const rows = screen.getAllByTestId('bar-list-row')
+      act(() => rows[0].focus())
+      const tip = screen.getByTestId('bar-list-tip')
+      expect(tip).toHaveTextContent('Parser')
+      expect(tip).toHaveTextContent('9.1%')
+      const flagLine = within(tip).getByText('over 5%')
+      expect(capturedByNode.get(flagLine)?.split(' ')).toEqual(
+        expect.arrayContaining(['text-text-error', 'leading-normal'])
+      )
+
+      fireEvent.keyDown(rows[0], { key: 'End' })
+      const lastTip = screen.getByTestId('bar-list-tip')
+      expect(lastTip).toHaveTextContent('Importer')
+      expect(within(lastTip).queryByText(/5%/)).toBeNull()
+    })
+
+    it('hides the tip from assistive tech and describes the row with nothing', () => {
+      renderTipped()
+      const row = screen.getAllByTestId('bar-list-row')[0]
+      act(() => fireEvent.focus(row))
+      const tip = screen.getByTestId('bar-list-tip')
+      expect(tip.closest('[aria-hidden="true"]')).not.toBeNull()
+      expect(document.querySelector('[role="tooltip"]')).toBeNull()
+      expect(row).not.toHaveAttribute('aria-describedby')
+      expect(row).toHaveAccessibleName('Parser: 9.1, over 5%, rank 1 of 5')
+    })
+
+    it('has no axe violations with a tip open', async () => {
+      const { container } = renderTipped()
+      act(() => fireEvent.focus(screen.getAllByTestId('bar-list-row')[0]))
+      expect(screen.getByTestId('bar-list-tip')).toBeInTheDocument()
+      expect(await axe(container)).toHaveNoViolations()
+      // The portal puts the tip under body; `region` is a page rule, not the component's.
+      const body = await axe(document.body, { rules: { region: { enabled: false } } })
+      expect(body).toHaveNoViolations()
+    })
   })
 
   describe('colour', () => {
@@ -219,11 +417,12 @@ describe('BarList', () => {
     expect(container.querySelector('[tabindex]')).toBeNull()
   })
 
-  it('gives the story fixture, sort, layout and size controls and no colour control', () => {
+  it('gives the story fixture, sort, layout, size and readouts controls and no colour control', () => {
     const controls = storyMeta.argTypes ?? {}
     for (const name of ['fixture', 'sort', 'layout', 'size'] as const) {
       expect(controls[name]?.control).toBe('select')
     }
+    expect(controls.readouts).toMatchObject({ control: 'check', options: ['value', 'flag'] })
     expect(Object.keys(controls)).not.toContain('color')
   })
 
@@ -250,6 +449,10 @@ describe('BarList', () => {
       ['Default', () => renderFixture(defaultFixture)],
       ['Flagged', () => renderFixture(fixture('Flagged'))],
       ['With description (stacked)', () => renderFixture(fixture('With description'))],
+      [
+        'Flagged with tips (readouts flag)',
+        () => renderFixture(fixture('Flagged'), { readouts: ['flag'] }),
+      ],
       ['loading', () => renderFixture(defaultFixture, { isLoading: true })],
       ['empty', () => renderFixture(fixture('Empty'))],
       [

@@ -32,6 +32,12 @@ const meta: Meta<StoryArgs> = {
     size: { control: 'select', options: ['sm', 'md'] },
     maxRows: { control: 'number' },
     max: { control: 'number' },
+    readouts: {
+      control: 'check',
+      options: ['value', 'flag'],
+      description:
+        'The texts each row prints after its bar. Hide one and every row opens a tip that shows it.',
+    },
     isLoading: { control: 'boolean' },
     formatValue: { control: false },
     formatSecondary: { control: false },
@@ -51,11 +57,13 @@ const meta: Meta<StoryArgs> = {
           '**Molecule.** A ranked horizontal bar list: label, proportional bar, value and an optional ' +
           'secondary value, with a top-N cap that folds the rest into one overflow row. Composes ' +
           '[Typography](?path=/docs/foundations-typography--docs), ' +
-          '[Skeleton](?path=/docs/components-atoms-skeleton--docs) and ' +
-          '[EmptyState](?path=/docs/components-molecules-emptystate--docs). ' +
+          '[Skeleton](?path=/docs/components-atoms-skeleton--docs), ' +
+          '[EmptyState](?path=/docs/components-molecules-emptystate--docs) and, when `readouts` ' +
+          'hides a readout, [Tooltip](?path=/docs/components-atoms-tooltip--docs) on each row. ' +
           'Bars are silver and a flagged row is red, in the silver/red scheme of ' +
           '[Foundations/Color/Silver-Red Scheme](?path=/docs/foundations-color-silver-red-scheme--docs). ' +
-          'No error state: the consumer renders the failure. No disabled state: rows are not interactive.',
+          'No error state: the consumer renders the failure. No disabled state: a row takes focus ' +
+          'only for its tip.',
       },
     },
   },

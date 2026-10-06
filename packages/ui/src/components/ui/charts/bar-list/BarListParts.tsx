@@ -1,26 +1,52 @@
 import type { ReactNode } from 'react'
-import { View, type DimensionValue, type ViewProps } from 'react-native'
+import { View, type DimensionValue } from 'react-native'
 import { cn } from '../../../../utils/cn'
 import { Skeleton } from '../../skeleton'
 import { Typography } from '../../typography'
 import { resolveColor } from '../../../../theme/resolve-color'
 import { formatCompact } from '../../../../utils/number-format'
+import type { ListNavigationItemProps } from '../../../../hooks/useListNavigation'
 import type { SilverRedPair } from '../kit/silverRed'
+import { hiddenFromAssistiveTech, LISTITEM_ROLE, TABULAR } from './shared'
 import {
-  cleanValue,
-  NO_VALUE_TEXT,
   overflowLabel,
   rowLabel,
+  rowTexts,
+  rowTip,
+  type BarListColumnChars,
   type BarListModel,
   type BarListModelRow,
   type BarListRow,
   type BarListValueFormatter,
 } from './bar-list-model'
+import { TipRow } from './BarListTip'
 
-export const hiddenFromAssistiveTech = {
-  'aria-hidden': true,
-  accessibilityElementsHidden: true,
-  importantForAccessibility: 'no-hide-descendants' as const,
+/** A text a row can print after its bar. */
+export type BarListReadout = 'value' | 'flag'
+
+export const ALL_READOUTS: BarListReadout[] = ['value', 'flag']
+
+/** True when `readouts` leaves out a readout, so the rows need a tip to show it. */
+export function hidesReadout(readouts: readonly BarListReadout[]): boolean {
+  return ALL_READOUTS.some((readout) => !readouts.includes(readout))
+}
+
+/** Which trailing cells the rows render: a part some shown row has, and that `readouts` shows. */
+export interface BarListColumns {
+  value: boolean
+  secondary: boolean
+  flag: boolean
+}
+
+export function resolveColumns(
+  chars: BarListColumnChars,
+  readouts: readonly BarListReadout[]
+): BarListColumns {
+  return {
+    value: chars.value > 0 && readouts.includes('value'),
+    secondary: chars.secondary > 0,
+    flag: chars.flag > 0 && readouts.includes('flag'),
+  }
 }
 
 export interface RowViewProps {
@@ -28,10 +54,10 @@ export interface RowViewProps {
   layout: 'inline' | 'stacked'
   size: 'sm' | 'md'
   fill: string
-  valueText: string
-  secondaryText: string | null
-  /** Width of the values cell in characters, the same for every row of a list. */
-  valuesChars: number
+  texts: ReturnType<typeof rowTexts>
+  /** Character width of each trailing cell, the same for every row of a list. */
+  columnChars: BarListColumnChars
+  columns: BarListColumns
 }
 
 function Bar({ fraction, fill, size }: { fraction: number; fill: string; size: 'sm' | 'md' }) {
@@ -53,37 +79,54 @@ function Bar({ fraction, fill, size }: { fraction: number; fill: string; size: '
   )
 }
 
-// RN's DimensionValue omits `ch`; react-native-web passes it through to CSS.
-// Digits of equal width, so the values column does not jitter between rows.
-const TABULAR = { fontVariant: ['tabular-nums' as const] }
+// RN's DimensionValue omits `ch`; react-native-web passes it through to CSS. Set on the Text
+// itself, `ch` is that text's own font, so the mono column is exact.
+const ch = (chars: number) => `${chars}ch` as unknown as DimensionValue
+// The caption cells are not monospace, so each is sized a character wider than its text.
+const CAPTION_PAD_CHARS = 1
 
-function Values({
-  valueText,
-  secondaryText,
-  entry,
-  width,
-}: Pick<RowViewProps, 'valueText' | 'secondaryText' | 'entry'> & { width?: string }) {
-  const { row } = entry
+/** The cells after the bar, in the order value, secondary, flag; an absent part leaves its cell empty. */
+function Cells({
+  texts,
+  columnChars,
+  columns,
+}: Pick<RowViewProps, 'texts' | 'columnChars' | 'columns'>) {
   return (
-    <View
-      className={cn('flex-row items-baseline gap-inline-sm', width && 'shrink-0 justify-end')}
-      style={width ? { width: width as unknown as DimensionValue } : undefined}
-      testID="bar-list-values"
-    >
-      {row.flag ? (
-        <Typography variant="caption" color="inherit" className="text-text-error">
-          {row.flag.label}
+    <>
+      {columns.value ? (
+        <Typography
+          variant="mono"
+          color="primary"
+          align="right"
+          style={[TABULAR, { minWidth: ch(columnChars.value) }]}
+          testID="bar-list-value"
+        >
+          {texts.value}
         </Typography>
       ) : null}
-      {secondaryText ? (
-        <Typography variant="caption" color="secondary">
-          {secondaryText}
+      {columns.secondary ? (
+        <Typography
+          variant="caption"
+          color="secondary"
+          align="right"
+          style={[TABULAR, { width: ch(columnChars.secondary + CAPTION_PAD_CHARS) }]}
+          testID="bar-list-secondary"
+        >
+          {texts.secondary}
         </Typography>
       ) : null}
-      <Typography variant="mono" color="primary" style={TABULAR}>
-        {valueText}
-      </Typography>
-    </View>
+      {columns.flag ? (
+        <Typography
+          variant="caption"
+          color="inherit"
+          className="text-text-error leading-normal"
+          style={{ width: ch(columnChars.flag + CAPTION_PAD_CHARS) }}
+          testID="bar-list-flag"
+        >
+          {texts.flag}
+        </Typography>
+      ) : null}
+    </>
   )
 }
 
@@ -100,11 +143,11 @@ export function RowContent(props: RowViewProps) {
   if (layout === 'stacked') {
     return (
       <View className="gap-1">
-        <View className="flex-row items-baseline justify-between gap-inline-md">
+        <View className="flex-row items-baseline gap-inline-md">
           <View className="flex-1">
             <Label entry={entry} size={size} />
           </View>
-          <Values {...props} />
+          <Cells {...props} />
         </View>
         {entry.row.description ? (
           <Typography variant="caption" color="secondary" truncate>
@@ -123,7 +166,7 @@ export function RowContent(props: RowViewProps) {
         <Label entry={entry} size={size} />
       </View>
       <Bar fraction={entry.fraction} fill={fill} size={size} />
-      <Values {...props} width={`${props.valuesChars + VALUES_PAD_CHARS}ch`} />
+      <Cells {...props} />
     </View>
   )
 }
@@ -138,9 +181,6 @@ export function SkeletonRows({ count, size }: { count: number; size: 'sm' | 'md'
   )
 }
 
-// RN's Role union omits 'listitem'; RNW passes it through to the DOM.
-const LISTITEM_ROLE = 'listitem' as ViewProps['role']
-
 /** One list item, named in words; its painted content is hidden from assistive tech. */
 export function RowItem({ name, children }: { name: string; children: ReactNode }) {
   return (
@@ -150,14 +190,14 @@ export function RowItem({ name, children }: { name: string; children: ReactNode 
   )
 }
 
-// The caption parts are not monospace, so the column is sized a character wider than the text.
-const VALUES_PAD_CHARS = 1
-
 interface ModelRowProps extends Pick<RowViewProps, 'entry' | 'layout' | 'size'> {
   shownCount: number
   sort: 'descending' | 'none'
-  valuesChars: number
+  columnChars: BarListColumnChars
+  columns: BarListColumns
   palette: SilverRedPair
+  /** The row's place in the roving tab stop; null renders a static row with no tip. */
+  tipItem: ListNavigationItemProps | null
   formatValue?: BarListValueFormatter
   formatSecondary?: (value: number, row: BarListRow) => string
 }
@@ -173,33 +213,37 @@ export function ModelRow({
   entry,
   shownCount,
   sort,
-  valuesChars,
+  columnChars,
+  columns,
   palette,
+  tipItem,
   formatValue = formatCompact,
   formatSecondary = formatCompact,
   ...layoutProps
 }: ModelRowProps) {
   const { row } = entry
-  const value = cleanValue(row.value)
-  const secondary = cleanValue(row.secondaryValue)
-  const name = rowLabel(
-    { row, rank: entry.rank, shownCount, sort },
-    { formatValue, formatSecondary }
+  const formatters = { formatValue, formatSecondary }
+  const name = rowLabel({ row, rank: entry.rank, shownCount, sort }, formatters)
+  const content = (
+    <View {...hiddenFromAssistiveTech}>
+      <RowContent
+        entry={entry}
+        fill={rowFill(row, palette)}
+        texts={rowTexts(row, formatters)}
+        columnChars={columnChars}
+        columns={columns}
+        {...layoutProps}
+      />
+    </View>
   )
-  return (
-    <RowItem name={name}>
-      <View {...hiddenFromAssistiveTech}>
-        <RowContent
-          entry={entry}
-          fill={rowFill(row, palette)}
-          valueText={value === null ? NO_VALUE_TEXT : formatValue(value, row)}
-          secondaryText={secondary === null ? null : formatSecondary(secondary, row)}
-          valuesChars={valuesChars}
-          {...layoutProps}
-        />
-      </View>
-    </RowItem>
-  )
+  if (tipItem) {
+    return (
+      <TipRow name={name} tip={rowTip(row, formatValue)} item={tipItem}>
+        {content}
+      </TipRow>
+    )
+  }
+  return <RowItem name={name}>{content}</RowItem>
 }
 
 /** The text-only row that stands for every row past the cap. */

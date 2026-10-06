@@ -4,11 +4,13 @@ import { fcAssert } from '../../../../test/property'
 import {
   barFraction,
   buildBarListModel,
+  columnChars,
   normalizeMaxRows,
   overflowLabel,
   rankRows,
   resolveMax,
   rowLabel,
+  rowTip,
   summarizeBarList,
   type BarListRow,
 } from './bar-list-model'
@@ -207,5 +209,68 @@ describe('rowLabel', () => {
     expect(rowLabel({ row, rank: 2, shownCount: 5, sort: 'none' }, formatters)).toBe(
       'Signed up: 82'
     )
+  })
+})
+
+describe('columnChars', () => {
+  const flaggedRow: BarListRow = {
+    id: 'f',
+    label: 'Flagged',
+    value: 1234,
+    secondaryValue: 7,
+    flag: { tone: 'error', label: 'over 5%' },
+  }
+
+  it('measures each trailing cell by its widest text among the shown rows', () => {
+    const model = buildBarListModel([flaggedRow, ...rowsOf(5, null)], { ...formatters })
+    expect(model.columnChars).toEqual({
+      value: 'No value'.length,
+      secondary: 's7'.length,
+      flag: 'over 5%'.length,
+    })
+  })
+
+  it('gives a part no shown row has a width of 0', () => {
+    expect(columnChars(buildBarListModel(rowsOf(1, 22)).rows, formatters)).toEqual({
+      value: 2,
+      secondary: 0,
+      flag: 0,
+    })
+  })
+
+  it('measures only the shown rows, not the ones past the cap', () => {
+    const model = buildBarListModel([...rowsOf(9, 8), flaggedRow], { maxRows: 2, sort: 'none' })
+    expect(model.columnChars.flag).toBe(0)
+  })
+})
+
+describe('rowTip', () => {
+  it('pairs the label with the formatted value and ends with the flag label', () => {
+    const row: BarListRow = {
+      id: 'p',
+      label: 'Parser',
+      value: 9.1,
+      secondaryValue: 4,
+      flag: { tone: 'error', label: 'over 5%' },
+    }
+    expect(rowTip(row, (v) => `${v}%`)).toEqual({
+      label: 'Parser',
+      valueText: '9.1%',
+      flagLabel: 'over 5%',
+    })
+  })
+
+  it('has no flag line for an unflagged row and names a missing value', () => {
+    expect(rowTip({ id: 'b', label: 'Bare', value: null }, String)).toEqual({
+      label: 'Bare',
+      valueText: 'No value',
+      flagLabel: null,
+    })
+  })
+
+  it('hands the formatter the row, so a per-row format applies in the tip', () => {
+    const row: BarListRow = { id: 'r', label: 'Row', value: 3 }
+    const formatValue = (value: number, forRow?: BarListRow) => `${value} ${forRow?.id ?? 'none'}`
+    expect(rowTip(row, formatValue).valueText).toBe('3 r')
   })
 })

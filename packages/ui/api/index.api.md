@@ -372,10 +372,14 @@ export interface BarListProps extends Omit<ViewProps, 'children'> {
     layout?: 'inline' | 'stacked';
     max?: number;
     maxRows?: number;
+    readouts?: BarListReadout[];
     rows: BarListRow[];
     size?: 'sm' | 'md';
     sort?: 'descending' | 'none';
 }
+
+// @public
+export type BarListReadout = 'value' | 'flag';
 
 // @public
 export interface BarListRow {
