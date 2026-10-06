@@ -39,8 +39,8 @@ const storybookUrl = z.url({ protocol: /^https?$/ }).check((ctx) => {
 export const AUTO_HEIGHT = 'auto'
 
 /** A round shows every frame on one page, so it stays small; sections page through more. */
-export const MAX_VARIANTS = 12
-export const MAX_SECTIONED_VARIANTS = 80
+const MAX_VARIANTS = 12
+const MAX_SECTIONED_VARIANTS = 80
 
 /** A frame height in CSS px, or "auto" to size the frame to its story's content. */
 const frameHeight = z.union([z.number().int().min(120).max(4000), z.literal(AUTO_HEIGHT)])
@@ -97,7 +97,7 @@ export const RecommendationSchema = z
 const recommendation = RecommendationSchema.optional()
 
 /** When the page shows a recommendation: once its question is answered, or from the start. */
-export const RECOMMENDATION_MODES = ['after-answer', 'shown'] as const
+const RECOMMENDATION_MODES = ['after-answer', 'shown'] as const
 
 const PickOneSchema = z
   .object({
@@ -161,7 +161,7 @@ const NAMES_ELEMENT =
   'a known defect names one element: its data-testid, or the full selector build printed'
 
 /** Where a known miss is fixed: the primitive or token task that owns it, or the component. */
-export const DEFECT_ROUTE = /^([A-Z][A-Z0-9]*-[0-9]+[a-z]?|component)$/
+const DEFECT_ROUTE = /^([A-Z][A-Z0-9]*-[0-9]+[a-z]?|component)$/
 
 /** A contrast miss the round ships knowingly. It is reported with its route, never hidden. */
 export const KnownDefectSchema = z
