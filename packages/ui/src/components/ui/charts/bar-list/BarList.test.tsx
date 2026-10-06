@@ -7,6 +7,7 @@ import { capturedByNode } from '../../../../test/classname-capture'
 import { Surface } from '../../surface'
 import { silverRed } from '../kit/silverRed'
 import { BarList } from './BarList'
+import storyMeta from './BarList.stories'
 import { barListFixtures, defaultFixture, veryLargeFixture, type BarListFixture } from './fixtures'
 
 expect.extend(toHaveNoViolations)
@@ -216,6 +217,14 @@ describe('BarList', () => {
     const { container } = renderFixture(defaultFixture)
     expect(screen.queryByRole('button')).not.toBeInTheDocument()
     expect(container.querySelector('[tabindex]')).toBeNull()
+  })
+
+  it('gives the story fixture, sort, layout and size controls and no colour control', () => {
+    const controls = storyMeta.argTypes ?? {}
+    for (const name of ['fixture', 'sort', 'layout', 'size'] as const) {
+      expect(controls[name]?.control).toBe('select')
+    }
+    expect(Object.keys(controls)).not.toContain('color')
   })
 
   describe('states', () => {

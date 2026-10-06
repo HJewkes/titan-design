@@ -1,13 +1,21 @@
 import type { ColorToken } from '../../../../theme/resolve-color'
 import { formatCompact } from '../../../../utils/number-format'
 
+/** One row of a BarList. */
 export interface BarListRow {
+  /** Identifies the row. Duplicates are kept and keyed with their position. */
   id: string
+  /** The row's name, shown before the bar. */
   label: string
+  /** Sizes the bar. A null, NaN or infinite value is missing and draws no bar. */
   value: number | null
+  /** A second number shown beside the value; it does not size the bar. */
   secondaryValue?: number | null
+  /** A line under the label, stacked layout only. */
   description?: string
+  /** Marks the row: its bar turns red and `label` says why, in view and in the accessible name. */
   flag?: { tone: 'warning' | 'error'; label: string }
+  /** Overrides the bar fill for this row, flagged or not. */
   color?: ColorToken
 }
 

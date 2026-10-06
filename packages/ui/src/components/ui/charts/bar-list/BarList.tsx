@@ -15,7 +15,9 @@ import {
 
 export type { BarListRow, BarListValueFormatter } from './bar-list-model'
 
+/** Props of {@link BarList}. */
 export interface BarListProps extends Omit<ViewProps, 'children'> {
+  /** The data, one row per bar. Sorted and capped by `sort` and `maxRows`. */
   rows: BarListRow[]
   /** Names the list; the summary is appended to it for assistive tech. */
   accessibilityLabel: string
@@ -25,13 +27,19 @@ export interface BarListProps extends Omit<ViewProps, 'children'> {
   sort?: 'descending' | 'none'
   /** Rows shown before the rest fold into one overflow row. */
   maxRows?: number
+  /** `inline` puts label, bar and value on one line; `stacked` puts the bar under them. */
   layout?: 'inline' | 'stacked'
+  /** Text size and bar thickness. */
   size?: 'sm' | 'md'
   /** Formats each row's value, and the total of the rows past the cap (called without a row). */
   formatValue?: BarListValueFormatter
+  /** Formats each row's `secondaryValue`. */
   formatSecondary?: (value: number, row: BarListRow) => string
+  /** Shows skeleton rows in place of the data. */
   isLoading?: boolean
+  /** Replaces the default empty state, shown when `rows` is empty. */
   emptyState?: ReactNode
+  /** Tailwind classes merged onto the list root. */
   className?: string
 }
 
