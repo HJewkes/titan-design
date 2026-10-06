@@ -84,7 +84,7 @@ describe('TaskTable', () => {
     const tasks = TASK_LIST_FIXTURE.filter((task) => !tied.includes(task.id))
     render(<TaskTable tasks={tasks} now={TASK_LIST_NOW} defaultSortKey="estimate" />)
     const ascending = renderedIds()
-    expect(ascending.at(-1)).toBe('LH-86')
+    expect(ascending[ascending.length - 1]).toBe('LH-86')
 
     fireEvent.click(screen.getByRole('button', { name: 'Sort by Estimate' }))
 
