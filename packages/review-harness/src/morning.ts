@@ -140,23 +140,28 @@ export function imageKeyNamer(items: MorningItem[]): OptionName {
 
 /** The option's proposal, labelled; an option that is only a heading cannot be decided. */
 function proposed(item: MorningItem, option: MorningItem['options'][number]): string {
-  const text = proposalText(option.proposal).trim()
+  const text = unlabelled(proposalText(option.proposal).trim())
   if (!text)
     throw new ReviewError(
       `item ${item.id}: option "${option.label}" has no proposal text; a bare heading cannot be decided`
     )
-  return `Proposed: ${unlabelled(text)}`
+  return `Proposed: ${text}`
 }
 
 /**
- * The proposal without a leading "Proposed:" label of its own, plain or bold. A bold label
- * that runs on into its text ("**Proposed: yes** because") keeps the bold on the text.
+ * Leading labels, outermost first: a bold label closed after its colon ("**Proposed:**",
+ * "**Proposed: **"), a plain one, and a "Proposed" participle that would read twice after ours.
+ */
+const LEADING_LABELS = [/^\*\*Proposed:\s*\*\*\s*/, /^Proposed:\s*/, /^Proposed\s+(?=\S)/]
+
+/**
+ * The proposal without leading "Proposed" labels of its own, plain or bold, however many. A
+ * bold label that runs on into its text ("**Proposed: yes** because") keeps the bold on the text.
  */
 function unlabelled(text: string): string {
-  return text
-    .replace(/^\*\*Proposed:\*\*\s*/, '')
-    .replace(/^Proposed:\s*/, '')
-    .replace(/^\*\*Proposed:\s*/, '**')
+  const stripped = LEADING_LABELS.reduce((t, label) => t.replace(label, ''), text)
+  const next = stripped.replace(/^\*\*Proposed:\s*(?!\*\*)/, '**')
+  return next === text ? text : unlabelled(next)
 }
 
 function deciding(item: MorningItem, name: OptionName): string {

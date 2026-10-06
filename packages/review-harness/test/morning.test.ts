@@ -239,6 +239,27 @@ describe('a round from Morning items', () => {
     expect(() => roundFromMorning(items([bare]), [], PATHS)).toThrow(/bare heading/)
   })
 
+  it.each(['**Recommend**', 'Recommend:', 'Default:', '**Proposed:**'])(
+    'refuses an option whose proposal is only the label %s',
+    (proposal) => {
+      const bare = item({ options: [{ label: 'A: Teal', proposal }, item().options[1]] })
+      expect(() => roundFromMorning(items([bare]), [], PATHS)).toThrow(/bare heading/)
+    }
+  )
+
+  it.each([
+    ['Recommended changes are below.', '- **A: Teal** Proposed: changes are below.'],
+    ['**Proposed: **yes**', '- **A: Teal** Proposed: yes'],
+    ['Proposed: **Proposed:** x', '- **A: Teal** Proposed: x'],
+  ])('says Proposed once, with no empty bold, for the proposal %s', (proposal, line) => {
+    const labelled = item({ options: [{ label: 'A: Teal', proposal }, item().options[1]] })
+    const { deciding = '' } = section(items([labelled]), 'paint-1')
+    const found = deciding.split('\n').find((l) => l.startsWith('- **A: Teal**'))
+    expect(found).toBe(line)
+    expect(found?.match(/Proposed/g)).toHaveLength(1)
+    expect(found).not.toContain('****')
+  })
+
   it('relabels the body and repairs its markdown in the section text', () => {
     const body = 'Recommended default: teal.\n| teal | 2 |\nCosts: **2 coins'
     const { changed } = section(items([item({ body })]), 'paint-1')
