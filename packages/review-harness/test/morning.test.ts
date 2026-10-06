@@ -163,6 +163,32 @@ describe('seat text as the owner reads it', () => {
     expect(relabelAsProposed('**Proposed:** teal')).toBe('**Proposed:** teal')
   })
 
+  it('leaves link targets, URLs and file paths naming what they named', () => {
+    expect(
+      relabelAsProposed(
+        'See [recommended sizes](https://x.io/recommended-sizes) and docs/recommendations.md'
+      )
+    ).toBe('See [proposed sizes](https://x.io/recommended-sizes) and docs/recommendations.md')
+    expect(relabelAsProposed('Read <https://x.io/recommend> or https://x.io/recommend now')).toBe(
+      'Read <https://x.io/recommend> or https://x.io/recommend now'
+    )
+    expect(relabelAsProposed('Edit recommendations.md and ./recommend/index.ts')).toBe(
+      'Edit recommendations.md and ./recommend/index.ts'
+    )
+  })
+
+  it('drops the default-in-each note before the general rule rewrites it', () => {
+    expect(relabelAsProposed('I recommend (recommended default in each) A.')).toBe('I propose A.')
+    expect(relabelAsProposed('Recommendation: teal (recommended default in bold)')).toBe(
+      'Proposal: teal'
+    )
+  })
+
+  it('reads a mid-sentence "default:" as prose, not a label', () => {
+    expect(relabelAsProposed('Use the default: it works')).toBe('Use the default: it works')
+    expect(relabelAsProposed('Costs two. default: teal')).toBe('Costs two. proposal: teal')
+  })
+
   it('gives a table after a fence its own header', () => {
     const fence = '```\nx\n```'
     expect(repairMarkdown(`| a |\n${fence}\n| b |`)).toBe(
@@ -213,6 +239,27 @@ describe('a round from Morning items', () => {
     expect(() => roundFromMorning(items([bare]), [], PATHS)).toThrow(/bare heading/)
   })
 
+  it.each(['**Recommend**', 'Recommend:', 'Default:', '**Proposed:**'])(
+    'refuses an option whose proposal is only the label %s',
+    (proposal) => {
+      const bare = item({ options: [{ label: 'A: Teal', proposal }, item().options[1]] })
+      expect(() => roundFromMorning(items([bare]), [], PATHS)).toThrow(/bare heading/)
+    }
+  )
+
+  it.each([
+    ['Recommended changes are below.', '- **A: Teal** Proposed: changes are below.'],
+    ['**Proposed: **yes**', '- **A: Teal** Proposed: yes'],
+    ['Proposed: **Proposed:** x', '- **A: Teal** Proposed: x'],
+  ])('says Proposed once, with no empty bold, for the proposal %s', (proposal, line) => {
+    const labelled = item({ options: [{ label: 'A: Teal', proposal }, item().options[1]] })
+    const { deciding = '' } = section(items([labelled]), 'paint-1')
+    const found = deciding.split('\n').find((l) => l.startsWith('- **A: Teal**'))
+    expect(found).toBe(line)
+    expect(found?.match(/Proposed/g)).toHaveLength(1)
+    expect(found).not.toContain('****')
+  })
+
   it('relabels the body and repairs its markdown in the section text', () => {
     const body = 'Recommended default: teal.\n| teal | 2 |\nCosts: **2 coins'
     const { changed } = section(items([item({ body })]), 'paint-1')
@@ -252,6 +299,13 @@ describe('a round from Morning items', () => {
     )
     expect(() => roundFromMorning(items(), [decider({ questionId: 'paint-9' })], PATHS)).toThrow(
       /no item has the id paint-9/
+    )
+  })
+
+  it('refuses two decider entries for one item rather than keep the last', () => {
+    const twice = [decider(), decider({ answer: 'B: Keep beige' })]
+    expect(() => roundFromMorning(items(), twice, PATHS)).toThrow(
+      /more than one entry answers paint-1/
     )
   })
 
@@ -314,6 +368,18 @@ describe('a round from Morning items', () => {
       'after|light',
       'after|dark',
     ])
+  })
+
+  it('names the length when a shared image key outgrows the variant key limit', () => {
+    const long = 'a-fairly-long-item-identifier-'
+    const shot = [{ key: 'before', file: 'before.png', label: 'Before' }]
+    const list = [
+      item({ id: `${long}1`, images: shot }),
+      item({ id: `${long}2`, morning: '2', images: shot }),
+    ]
+    expect(() => roundFromMorning(items(list), [], PATHS)).toThrow(
+      /becomes "before-a-fairly-long-item-identifier-1", 38 characters; a variant key is at most 32/
+    )
   })
 
   it('qualifies an image key two items share with the item id', () => {

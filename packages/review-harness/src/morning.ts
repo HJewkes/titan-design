@@ -21,7 +21,11 @@ const DEFAULT_WIDTHS = [1280]
 const ONE_WAY = 'One-way door: hard to undo once done.'
 const UNMEASURED = 'a capture supplied with the item; no DOM to measure'
 
-const id = z.string().regex(/^[A-Za-z0-9_-]{1,32}$/, 'letters, digits, _ and - only')
+const MAX_ID = 32
+const id = z
+  .string()
+  .max(MAX_ID, `at most ${MAX_ID} characters`)
+  .regex(/^[A-Za-z0-9_-]+$/, 'letters, digits, _ and - only')
 const text = z.string().regex(/\S/, 'must not be blank')
 
 export const DOORS = ['one-way', 'two-way'] as const
@@ -136,23 +140,28 @@ export function imageKeyNamer(items: MorningItem[]): OptionName {
 
 /** The option's proposal, labelled; an option that is only a heading cannot be decided. */
 function proposed(item: MorningItem, option: MorningItem['options'][number]): string {
-  const text = proposalText(option.proposal).trim()
+  const text = unlabelled(proposalText(option.proposal).trim())
   if (!text)
     throw new ReviewError(
       `item ${item.id}: option "${option.label}" has no proposal text; a bare heading cannot be decided`
     )
-  return `Proposed: ${unlabelled(text)}`
+  return `Proposed: ${text}`
 }
 
 /**
- * The proposal without a leading "Proposed:" label of its own, plain or bold. A bold label
- * that runs on into its text ("**Proposed: yes** because") keeps the bold on the text.
+ * Leading labels, outermost first: a bold label closed after its colon ("**Proposed:**",
+ * "**Proposed: **"), a plain one, and a "Proposed" participle that would read twice after ours.
+ */
+const LEADING_LABELS = [/^\*\*Proposed:\s*\*\*\s*/, /^Proposed:\s*/, /^Proposed\s+(?=\S)/]
+
+/**
+ * The proposal without leading "Proposed" labels of its own, plain or bold, however many. A
+ * bold label that runs on into its text ("**Proposed: yes** because") keeps the bold on the text.
  */
 function unlabelled(text: string): string {
-  return text
-    .replace(/^\*\*Proposed:\*\*\s*/, '')
-    .replace(/^Proposed:\s*/, '')
-    .replace(/^\*\*Proposed:\s*/, '**')
+  const stripped = LEADING_LABELS.reduce((t, label) => t.replace(label, ''), text)
+  const next = stripped.replace(/^\*\*Proposed:\s*(?!\*\*)/, '**')
+  return next === text ? text : unlabelled(next)
 }
 
 function deciding(item: MorningItem, name: OptionName): string {
@@ -212,16 +221,28 @@ interface Names {
   imageKey: OptionName
 }
 
+/** A shared key carries its item's id, which can take it past the round's id length. */
+function variantKey(item: MorningItem, key: string, names: Names): string {
+  const named = names.imageKey(item, key)
+  if (named.length > MAX_ID)
+    throw new ReviewError(
+      `item ${item.id}: image key "${key}" is shared, so it becomes "${named}", ` +
+        `${named.length} characters; a variant key is at most ${MAX_ID}. ` +
+        'Shorten the item id or give the image a key of its own'
+    )
+  return named
+}
+
 function variants(item: MorningItem, paths: MorningPaths, names: Names): Variant[] {
   return (item.images ?? []).map((i) => ({
-    key: names.imageKey(item, i.key),
+    key: variantKey(item, i.key, names),
     image: imagePath(item, i.file, paths),
     label: i.label,
   }))
 }
 
 function strip(item: MorningItem, names: Names): Partial<Section> {
-  const keys = (item.images ?? []).map((i) => names.imageKey(item, i.key))
+  const keys = (item.images ?? []).map((i) => variantKey(item, i.key, names))
   if (keys.length === 0) return {}
   const unmeasured = keys.flatMap((variant) =>
     THEME_MODES.map((mode) => ({ variant, mode, reason: UNMEASURED }))
@@ -251,6 +272,10 @@ function deciderByQuestion(items: MorningItem[], entries: DeciderEntry[]) {
   const ids = new Set(items.map((i) => i.id))
   const unknown = entries.filter((e) => !ids.has(e.questionId)).map((e) => e.questionId)
   if (unknown.length) throw new ReviewError(`decider: no item has the id ${unknown.join(', ')}`)
+  const answered = entries.map((e) => e.questionId)
+  const twice = [...new Set(answered.filter((qid, i) => answered.indexOf(qid) !== i))]
+  if (twice.length)
+    throw new ReviewError(`decider: more than one entry answers ${twice.join(', ')}`)
   return new Map(entries.map((e) => [e.questionId, e]))
 }
 

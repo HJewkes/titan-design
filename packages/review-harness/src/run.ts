@@ -52,7 +52,9 @@ writes draft.json beside the items file (or --out); run build on it next.
 
   --storybook <url>  Storybook base url (default: the manifest's storybookUrl)
   --decider <file>   Decider recommendations for round from-morning (questionId, answer, cite)
-  --out <dir>        Where feedback.json and PNGs go (default: the manifest's directory)
+  --out <dir>        Where feedback.json and PNGs go (default: the manifest's directory);
+                     for round from-morning, the draft's file path (default: draft.json
+                     beside the items file)
   --port <n>         Review page port (default: a free one)
   --no-open          Print the page url instead of opening the browser
   --no-capture       Skip the post-submit PNGs
