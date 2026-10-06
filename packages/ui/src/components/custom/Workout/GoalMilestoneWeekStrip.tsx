@@ -24,7 +24,7 @@ export interface GoalMilestoneWeekAxis {
   x: (week: number) => number
   /** Column width in px. */
   span: number
-  /** The plot's edges. The strip sits between them and clips there, as the plot does. */
+  /** The plot's edges. The strip sits between them. */
   left: number
   right: number
 }
@@ -62,10 +62,6 @@ const OUTCOME_PILL_TONE: Record<GoalWeekOutcome, PillTone> = {
   none: 'neutral',
 }
 
-/**
- * Missed is an outlined cell, never red: failure is not scored. No data is the
- * faintest fill, and a week still to come is the neutral track.
- */
 /** Every other week sits at this share of the current week's height. */
 const PAST_WEEK_HEIGHT = 0.7
 
@@ -85,6 +81,10 @@ export function weekSegments(cells: GoalWeekCell[], t: Palette): SegmentedBarSeg
   }))
 }
 
+/**
+ * Missed is an outlined cell, never red: failure is not scored. No data is the
+ * faintest fill, and a week still to come is the neutral track.
+ */
 function paint(cell: GoalWeekCell, t: Palette): SegmentedBarSegment {
   if (cell.phase === 'current') return { color: t['hairline-strong'], ringColor: t['text-primary'] }
   if (cell.outcome === 'ahead') return { color: t[STATUS_TOKEN.ahead] }

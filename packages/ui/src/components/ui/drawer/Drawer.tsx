@@ -137,7 +137,7 @@ export function Drawer({
           {/* Header */}
           {(title || showCloseButton) && (
             <View className="flex-row items-center justify-between px-inset-xl py-inset-lg border-b border-hairline">
-              {title && (
+              {!!title && (
                 <Text
                   id={titleId}
                   role="heading"

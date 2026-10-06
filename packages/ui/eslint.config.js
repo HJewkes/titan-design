@@ -425,8 +425,11 @@ module.exports = tseslint.config(
   // Stories and tests are exempt for the same reason as everywhere else: a
   // concrete value IS the point there (`toHaveStyle` cannot match the `var()`
   // string resolveColor returns under the RNW vitest alias).
+  //
+  // theme/materials.ts joins the scope (TD-521): its default tones once froze
+  // to the dark palette at module scope, so a light caller got dark fills.
   {
-    files: ['src/components/**/*.{ts,tsx}'],
+    files: ['src/components/**/*.{ts,tsx}', 'src/theme/materials.ts'],
     ignores: [
       '**/*.stories.tsx',
       '**/*.test.{ts,tsx}',

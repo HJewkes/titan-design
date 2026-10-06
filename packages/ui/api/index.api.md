@@ -3249,9 +3249,6 @@ export function GoalTrajectoryChart(input: GoalTrajectoryChartProps): react_jsx_
 export interface GoalTrajectoryChartProps extends ViewProps {
     actuals: GoalActualPoint[];
     animate?: boolean;
-    bandCurve?: BandCurve;
-    bandFade?: BandFade;
-    baseline?: PlotBaseline;
     calibratingNote?: string;
     // (undocumented)
     className?: string;
@@ -3260,7 +3257,6 @@ export interface GoalTrajectoryChartProps extends ViewProps {
     direction?: GoalDirection;
     expected: GoalExpectedPoint[];
     height: number;
-    leftShadowSpread?: number;
     mesoBoundaries?: number[];
     metricLabel?: string;
     nextTarget?: GoalNextTarget;
@@ -3312,6 +3308,7 @@ export interface GoalTrajectoryGeometry {
     toX: (weekIndex: number) => number;
     // (undocumented)
     toY: (value: number) => number;
+    weekSpan: number;
     // (undocumented)
     yTicks: YTick[];
 }
@@ -3707,7 +3704,7 @@ export type InputSize = 'sm' | 'md' | 'lg';
 export type InputVariant = 'outline' | 'filled' | 'underline';
 
 // @public
-export function insetWell(tone?: string): ViewStyle;
+export function insetWell(tone?: string, mode?: ThemeMode): ViewStyle;
 
 // @public (undocumented)
 export function IntensityBar(input: IntensityBarProps): react_jsx_runtime.JSX.Element;
@@ -4727,6 +4724,10 @@ export interface MusclePlanSection {
     doneSetsThisWeek: number;
     // (undocumented)
     exercises: MusclePlanExerciseRow[];
+    frequency: {
+        plannedPerWeek: number;
+        observedThisWeek: number;
+    };
     // (undocumented)
     plannedSetsThisWeek: number;
 }
@@ -4749,6 +4750,8 @@ export interface MuscleStrengthBestE1rm {
 export interface MuscleStrengthExerciseRow {
     // (undocumented)
     bestE1rm: MuscleStrengthBestE1rm | null;
+    currentLevel: number | null;
+    daysSinceTrained: number | null;
     // (undocumented)
     exerciseId: string;
     // (undocumented)
@@ -4759,8 +4762,11 @@ export interface MuscleStrengthExerciseRow {
     plateau: 'plateau' | 'tolerated' | 'none' | null;
     // (undocumented)
     priorBest: number | null;
+    recency: 'current' | 'fading' | 'no_current_read' | null;
+    relativeIndex: number | null;
     // (undocumented)
     rSquared: number | null;
+    setCount: number;
     // (undocumented)
     side: MuscleStrengthSide;
     slopePctPerWeek: number | null;
@@ -4770,9 +4776,11 @@ export interface MuscleStrengthExerciseRow {
 export interface MuscleStrengthSection {
     // (undocumented)
     agreement: MuscleStrengthAgreement;
+    daysSinceTrained: number | null;
     earlyPhase: boolean;
     // (undocumented)
     exercises: StrengthExerciseRow[];
+    relativeIndexBySide: Partial<Record<'left' | 'right' | 'none', number>>;
 }
 
 // @public
@@ -4915,7 +4923,7 @@ export type PanelTier = keyof typeof PANEL_BREAKPOINTS;
 export function panelTier(width: number): PanelTier;
 
 // @public
-export function paperSheet(tone?: string): ViewStyle;
+export function paperSheet(tone?: string, mode?: ThemeMode): ViewStyle;
 
 // @public
 export function Paragraph(input: ParagraphProps): react_jsx_runtime.JSX.Element;
@@ -5188,7 +5196,7 @@ export interface PortfolioOverviewStat {
 }
 
 // @public
-export function postIt(tone?: string, deg?: number): ViewStyle;
+export function postIt(tone?: string, deg?: number, mode?: ThemeMode): ViewStyle;
 
 // @public
 export const PR_REF_PATTERN: RegExp;
@@ -5756,6 +5764,9 @@ export function rpeColor(rpe: number): string;
 
 // @public
 export function sameLiveStripReps(a: readonly LiveStripRep[], b: readonly LiveStripRep[]): boolean;
+
+// @public
+export function sameLossThresholds(a?: VelocityLossThresholds, b?: VelocityLossThresholds): boolean;
 
 // @public
 export type SamplePhase = 'concentric' | 'eccentric' | 'hold' | 'idle';
@@ -7438,6 +7449,7 @@ export interface TableHeaderCellProps extends Omit<PressableProps, 'children'> {
     children?: React__default.ReactNode;
     className?: string;
     sortKey?: string;
+    sortLabel?: string;
     tooltip?: string;
     width?: number;
 }
@@ -8596,7 +8608,6 @@ export interface VelocityStripProps extends ViewProps {
     columnSlots?: SetSlot[];
     expanded?: boolean;
     height?: number;
-    hideBaseline?: boolean;
     label?: string;
     liveRepIndex?: number;
     lossThresholds?: VelocityLossThresholds;

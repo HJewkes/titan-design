@@ -34,7 +34,7 @@ Before dispatching, gather:
 3. **HTML ground truth** — the component's entry in
    `packages/ui/specimen/comparison.tsx` (the `htmlContent` string passed to
    its `ComparisonPair`) or `packages/ui/specimen/scaffold.tsx`'s `CompareRow`
-   usage. This is the exact markup/CSS the React output must match.
+   usage. This is the markup the React output must match. Class-styled entries carry no CSS of their own: the CSS is `HTML_CSS` in `packages/ui/specimen/comparison.tsx`; some entries are inline-styled.
 4. **Token mapping reference** — `packages/ui/src/theme/tokens/semantic.ts`
    (token → value) and `packages/ui/src/theme/global.css` (token → CSS
    custom property), plus the "Design Tokens" table in the repo root
@@ -92,7 +92,7 @@ computed value against resolvedValue.
 - Do NOT substitute emoji for SVG icons.
 - Do NOT use the bare `border` Tailwind/NativeWind class without an explicit
   color class — on web it defaults to a 1px black border. Always pair with a
-  color class (`border border-border-default` at minimum) or set
+  color class (a `border-border-*` token class at minimum) or set
   borderWidth/borderColor via inline style when the manifest specifies exact
   values.
 - Do NOT use CSS `ease-out` (or any built-in easing keyword) when the ground
@@ -114,7 +114,7 @@ computed value against resolvedValue.
 - Verify with computed styles, not visual inspection: after building, the
   component's rendered output in packages/ui/specimen/ should match the
   HTML column's getComputedStyle for every property in the manifest.
-- Use `lucide-react-native` for icons (not `lucide-react`).
+- Use the SVG glyphs in `packages/ui/src/components/icons` for icons.
 
 ## Verification (run before returning)
 
@@ -136,6 +136,6 @@ sibling `voltras` repo, "Preventing Known Failure Modes"):
 - `rounded-sm` = 4px in the titan-design theme, not Tailwind's default 2px.
 - `font-body` = Nunito Sans, `font-sans` = Inter — do not swap them; check
   `packages/ui/src/theme/tokens/semantic.ts` and `global.css`, not memory.
-- Use `lucide-react-native`, not `lucide-react`.
+- Use the SVG glyphs in `packages/ui/src/components/icons`, not an icon package.
 - Use the exact easing curve from the manifest/ground truth, never CSS
   `ease-out` as a stand-in.
