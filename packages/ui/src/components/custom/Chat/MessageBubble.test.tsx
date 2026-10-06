@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Text } from 'react-native'
 
+import { DELIVERY_LABEL } from './chatThread'
 import { MessageBubble } from './MessageBubble'
 import {
   ATHLETE,
@@ -134,6 +135,30 @@ describe('MessageBubble', () => {
     ])
     render(<MessageBubble message={streaming} author={COACH} />)
     expect(screen.getByTestId('chat-message-meta')).toHaveTextContent('Writing…')
+  })
+
+  it('takes every built-in string from labels', () => {
+    const labels = {
+      endorsed: 'Approved by staff',
+      writing: 'Thinking…',
+      you: 'Me',
+      delivery: { ...DELIVERY_LABEL, read: 'Seen' },
+    }
+    const [, endorsed] = ENDORSEMENT_THREAD
+    const streaming = chatMessage('s', COACH, localIso(0, 8, 0), [
+      { type: 'text', text: 'Thinking about', state: 'streaming' },
+    ])
+    render(
+      <>
+        <MessageBubble message={endorsed} author={COACH} labels={labels} />
+        <MessageBubble message={streaming} author={COACH} labels={labels} />
+        <MessageBubble message={ownMessage} author={ATHLETE} isOwn showDelivery labels={labels} />
+      </>
+    )
+    expect(screen.getByTestId('chat-endorsed-bubble')).toHaveTextContent('Approved by staff')
+    expect(screen.getByText('Thinking…')).toBeInTheDocument()
+    expect(screen.getByTestId('chat-message-delivery')).toHaveTextContent('Seen')
+    expect(screen.getAllByTestId('chat-message-speaker')[2]).toHaveTextContent('Me:')
   })
 
   it('has no accessibility violations', async () => {

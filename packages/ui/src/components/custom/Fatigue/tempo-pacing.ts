@@ -53,7 +53,8 @@ export function pacingStatus(elapsedMs: number, targetMs: number | null): Pacing
  * past target → over.
  *
  * Takes {@link PACING_TONE} rather than the `status-*` semantic tokens — the label sits on a
- * saturated phase fill, where `status-error` measures 1.88:1. See the token's note.
+ * saturated phase fill, where `status-error` measures 2.18:1 on the concentric fill, its
+ * worst case. See the token's note.
  *
  * `null` when there is no target: pacing has no opinion, so the caller keeps its own label
  * colour. That also keeps this module theme-free — it used to reach for a frozen

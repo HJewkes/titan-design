@@ -1,3 +1,4 @@
+import { compareText } from '../../kit/compareText'
 import type {
   GraphEdge,
   GraphGroup,
@@ -42,14 +43,8 @@ interface Cluster {
   radius: number
 }
 
-const DEFAULT_SEED = 1
-const DEFAULT_ITERATIONS = 300
-const MIN_ITERATIONS = 1
-const MAX_ITERATIONS = 1000
 const DEFAULT_UNGROUPED_LABEL = 'Ungrouped'
 const UNGROUPED = ''
-
-const compareText = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0)
 
 const groupOf = (node: GraphNode) => (typeof node.group === 'string' ? node.group : UNGROUPED)
 
@@ -181,8 +176,13 @@ function cleanGroups(groups: unknown): GraphGroup[] {
 
 function sanitize(options: ClusteredLayoutOptions): CleanOptions {
   return {
-    seed: toSeed(options.seed ?? DEFAULT_SEED),
-    iterations: clampInt(options.iterations, MIN_ITERATIONS, MAX_ITERATIONS, DEFAULT_ITERATIONS),
+    seed: toSeed(options.seed ?? LAYOUT_DEFAULTS.SEED),
+    iterations: clampInt(
+      options.iterations,
+      LAYOUT_DEFAULTS.MIN_ITERATIONS,
+      LAYOUT_DEFAULTS.MAX_ITERATIONS,
+      LAYOUT_DEFAULTS.ITERATIONS
+    ),
     groups: cleanGroups(options.groups),
     ungroupedLabel:
       typeof options.ungroupedLabel === 'string' ? options.ungroupedLabel : DEFAULT_UNGROUPED_LABEL,

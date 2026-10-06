@@ -44,11 +44,11 @@ export function EmptyState({
 
       <Text className="text-lg font-semibold text-text-primary text-center mb-2">{title}</Text>
 
-      {description && (
+      {!!description && (
         <Text className="text-sm text-text-secondary text-center max-w-xs mb-6">{description}</Text>
       )}
 
-      {action && <View className="mt-2">{action}</View>}
+      {!!action && <View className="mt-2">{action}</View>}
     </View>
   )
 }
