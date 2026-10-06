@@ -216,7 +216,7 @@ export function IntensityBar({
         {pct}%
       </Text>
 
-      {showThresholdLabel && threshold != null && (
+      {!!showThresholdLabel && threshold != null && (
         <Text
           className="mt-0.5"
           style={{

@@ -338,6 +338,43 @@ describe('Popover', () => {
       expect(screen.getByText('Hover content')).toBeInTheDocument()
     })
 
+    it('renders the hover spacer as a View, not a raw div', () => {
+      const { container } = render(
+        <Popover triggerMode="hover" isOpen>
+          <PopoverTrigger>
+            <button>Hover me</button>
+          </PopoverTrigger>
+          <PopoverContent>
+            <span>Hover content</span>
+          </PopoverContent>
+        </Popover>
+      )
+
+      expect(screen.getByText('Hover content')).toBeInTheDocument()
+      expect(container.querySelector('div:not([class])')).toBeNull()
+    })
+
+    it.each(['top', 'bottom', 'left', 'right'] as const)(
+      'offsets the %s hover spacer in pixels, which every supported React Native accepts',
+      (placement) => {
+        const { container } = render(
+          <Popover triggerMode="hover" isOpen placement={placement}>
+            <PopoverTrigger>
+              <button>Hover me</button>
+            </PopoverTrigger>
+            <PopoverContent>
+              <span>Hover content</span>
+            </PopoverContent>
+          </Popover>
+        )
+
+        const transforms = Array.from(container.querySelectorAll<HTMLElement>('[style]'))
+          .map((el) => el.style.transform)
+          .filter(Boolean)
+        expect(transforms).toEqual([expect.stringMatching(/^translate[XY]\(-?8px\)$/)])
+      }
+    )
+
     it('still closes on click outside in hover mode', () => {
       render(
         <Popover triggerMode="hover">
