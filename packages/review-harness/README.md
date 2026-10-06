@@ -45,23 +45,27 @@ pnpm review <round-dir>/round.json [--storybook <url>] [--out <dir>] [--no-open]
 
 The Storybook is the round tree's; the harness must be `origin/main`'s, or the owner reviews
 on an old page. Before serving, `pnpm review` runs `git fetch origin main` and compares the
-tree hash of its own `packages/review-harness` (`HEAD:./`) with `origin/main`'s. It compares
-trees, not commits, so a commit on main outside the harness does not trip it.
+tree hash of its own `packages/review-harness` (`HEAD:./`) with `origin/main`'s, and checks
+`git status` for uncommitted edits to tracked files there. It compares trees, not commits, so a
+commit on main outside the harness does not trip it.
 
-- **Equal**: it serves.
-- **Different**: it refuses (exit 2) before serving or rewriting anything. It prints the
-  harness commits on main this checkout lacks, then the commands that serve main's harness
-  against this round's Storybook URL and round file, from a detached checkout:
+- **Equal, no uncommitted edits**: it serves.
+- **Different, or edited but not committed**: it refuses (exit 2) before serving or rewriting
+  anything. It prints the harness commits on main this checkout lacks, then the commands that
+  serve main's harness against this round's Storybook URL and round file, from a detached
+  checkout:
 
   ```sh
-  git -C <repo> worktree add --detach "${TMPDIR:-/tmp}/titan-review-main" origin/main 2>/dev/null ||
-    git -C "${TMPDIR:-/tmp}/titan-review-main" checkout --quiet --detach origin/main
-  pnpm -C "${TMPDIR:-/tmp}/titan-review-main" install --frozen-lockfile
-  pnpm -C "${TMPDIR:-/tmp}/titan-review-main" review <round-dir>/round.json --storybook <url> [your flags]
+  git -C <repo> worktree add --detach "${TMPDIR:-/tmp}/titan-review-main-<hash>" origin/main 2>/dev/null ||
+    git -C "${TMPDIR:-/tmp}/titan-review-main-<hash>" checkout --quiet --detach origin/main
+  pnpm -C "${TMPDIR:-/tmp}/titan-review-main-<hash>" install --frozen-lockfile
+  pnpm -C "${TMPDIR:-/tmp}/titan-review-main-<hash>" review <round-dir>/round.json --storybook <url> [your flags]
   ```
 
-  The checkout is reused on the next round; check `uptime` before the install. Remove it with
-  `git worktree remove "${TMPDIR:-/tmp}/titan-review-main"` when the review is done.
+  `<hash>` is the first 12 hex digits of the SHA-256 of the round directory's absolute path, so
+  each round gets its own checkout and the `checkout` fallback never moves files under a server
+  for another round. Re-serving the same round reuses its checkout; check `uptime` before the
+  install. Remove it with `git worktree remove` on the printed path when the review is done.
   `feedback.json` and the PNGs still land beside the round, because the round path is absolute.
 
 - **`--allow-stale`** serves the different harness anyway. The terminal and a red banner at the
