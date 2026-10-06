@@ -849,9 +849,11 @@ export interface ChipProps extends ViewProps {
     className?: string;
     color?: ChipColor;
     isDisabled?: boolean;
+    isSelected?: boolean;
     leftElement?: React__default.ReactNode;
     onDelete?: () => void;
     onPress?: () => void;
+    rightElement?: React__default.ReactNode;
     size?: ChipSize;
     variant?: ChipVariant;
 }
@@ -1772,6 +1774,23 @@ export interface EyebrowProps {
     children: ReactNode;
     // (undocumented)
     className?: string;
+}
+
+// @public
+export function FacetBar<T extends string = string>(props: FacetBarProps<T>): react_jsx_runtime.JSX.Element | null;
+
+// @public (undocumented)
+export type FacetBarProps<T extends string = string> = FacetBarMultipleProps<T> | FacetBarSingleProps<T>;
+
+// @public (undocumented)
+export interface FacetOption<T extends string = string> {
+    count?: number;
+    // (undocumented)
+    isDisabled?: boolean;
+    // (undocumented)
+    label: string;
+    // (undocumented)
+    value: T;
 }
 
 // @public (undocumented)
@@ -8477,7 +8496,7 @@ export interface UseTableReturn<T> {
     allRowsSelection: SelectionState;
     clearFilters: (field?: string) => void;
     clearRequestedRanges: () => void;
-    facetOptions: (field: string, counts?: Readonly<Record<string, number>>) => FacetOption[];
+    facetOptions: (field: string, counts?: Readonly<Record<string, number>>) => FacetOption$1[];
     // (undocumented)
     filters: TableFilters;
     // (undocumented)
