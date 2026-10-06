@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { captureFileName } from '../src/capture.ts'
-import { buildFeedback, emptyDraft } from '../src/feedback.ts'
+import { buildFeedback, emptyDraft, pendingQuestionIds } from '../src/feedback.ts'
 import { feedbackProblems, questionScope, storyUrl, urlParamProblems } from '../src/round.ts'
 import { FeedbackSchema } from '../src/schema.ts'
 import { SHA, manifest, validFeedback } from './fixtures.ts'
@@ -121,5 +121,15 @@ describe('a partial submit', () => {
       'q1: required',
       'unansweredQuestionIds lists q2, q4; unanswered are q1, q2, q4',
     ])
+  })
+})
+
+describe('pending questions', () => {
+  it('counts only required questions left unanswered, so an optional blank is skipped', () => {
+    const m = manifest()
+    const draft = emptyDraft(m)
+    const required = m.questions.filter((q) => q.required).map((q) => q.id)
+    expect(pendingQuestionIds(m, draft)).toEqual(required)
+    expect(required.length).toBeLessThan(m.questions.length)
   })
 })

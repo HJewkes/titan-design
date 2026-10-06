@@ -1,0 +1,90 @@
+{
+  "src/components/custom/Fatigue/DualGhostSpark.tsx": {
+    "svg": 1
+  },
+  "src/components/custom/Fatigue/DualGhostSparkParts.tsx": {
+    "g": 1,
+    "text": 2
+  },
+  "src/components/custom/Fatigue/GhostBand.tsx": {
+    "g": 2,
+    "rect": 1
+  },
+  "src/components/custom/Fatigue/GhostBandParts.tsx": {
+    "clipPath": 1,
+    "defs": 1,
+    "g": 1,
+    "linearGradient": 1,
+    "rect": 4,
+    "stop": 4,
+    "text": 1
+  },
+  "src/components/custom/Fatigue/GhostBloom.tsx": {
+    "defs": 1,
+    "feGaussianBlur": 1,
+    "filter": 1,
+    "path": 3
+  },
+  "src/components/custom/Fatigue/GhostSpark.tsx": {
+    "svg": 2
+  },
+  "src/components/custom/Workout/GoalTrajectoryBand.tsx": {
+    "clipPath": 1,
+    "defs": 2,
+    "g": 1,
+    "linearGradient": 2,
+    "path": 4,
+    "rect": 1,
+    "stop": 5
+  },
+  "src/components/custom/Workout/GoalTrajectoryCalibrating.tsx": {
+    "defs": 1,
+    "path": 1,
+    "pattern": 1,
+    "rect": 1
+  },
+  "src/components/custom/Workout/GoalTrajectoryMini.tsx": {
+    "circle": 2,
+    "g": 2,
+    "line": 1,
+    "path": 3,
+    "rect": 3,
+    "svg": 1
+  },
+  "src/components/custom/Workout/GoalTrajectoryPlot.tsx": {
+    "circle": 3,
+    "clipPath": 1,
+    "defs": 1,
+    "feDropShadow": 1,
+    "filter": 1,
+    "g": 5,
+    "line": 4,
+    "linearGradient": 2,
+    "path": 5,
+    "rect": 6,
+    "stop": 4,
+    "svg": 1,
+    "text": 3
+  },
+  "src/components/custom/Workout/setHeadingKit.tsx": {
+    "div": 19,
+    "span": 8,
+    "style": 1
+  },
+  "src/components/icons/icons.tsx": {
+    "circle": 7,
+    "path": 56,
+    "rect": 2
+  },
+  "src/components/icons/SvgIcon.tsx": {
+    "svg": 1,
+    "title": 1
+  },
+  "src/components/ui/progress/Progress.tsx": {
+    "circle": 2,
+    "svg": 1
+  },
+  "src/components/ui/tooltip/TooltipParts.tsx": {
+    "div": 1
+  }
+}

@@ -4,6 +4,7 @@ import { axe } from 'jest-axe'
 import { AccessibilityInfo, Platform, Text } from 'react-native'
 import type { ChatMessage } from '@titan-design/chat-protocol'
 
+import { DELIVERY_LABEL } from './chatThread'
 import { MessageList } from './MessageList'
 import {
   ATHLETE,
@@ -14,6 +15,7 @@ import {
   GROUP_THREAD,
   NOW,
   PARTICIPANTS,
+  ENDORSEMENT_THREAD,
   chatMessage,
   localIso,
 } from './coach-thread-fixture'
@@ -217,6 +219,40 @@ describe('MessageList', () => {
     scrollAwayFromEnd()
     rerender([...COACH_THREAD, reply('mine', ATHLETE)])
     expect(screen.queryByTestId('chat-unread-badge')).toBeNull()
+  })
+
+  it('takes every built-in string from labels', () => {
+    const labels = {
+      showEarlier: 'Load older',
+      unknownAuthor: 'Someone',
+      endorsed: 'Approved by staff',
+      writing: 'Thinking…',
+      delivery: { ...DELIVERY_LABEL, accepted: 'Out' },
+      today: 'Hoy',
+      yesterday: 'Ayer',
+      typing: (names: readonly string[]) => `${names.join(', ')} escribe`,
+      newMessages: (shown: string) => `${shown} nuevos`,
+    }
+    const older = chatMessage('m0', COACH, localIso(1, 17, 0), [{ type: 'text', text: 'older' }])
+    const thread = [older, ...COACH_THREAD, ENDORSEMENT_THREAD[1], streamed('w', 'Thinking about')]
+    const stranger = { ...COACH, id: 'stranger' }
+    const { rerender } = renderList(thread, {
+      labels,
+      pageSize: thread.length - 1,
+      typing: [COACH],
+    })
+    scrollAwayFromEnd()
+    rerender([...thread, reply('x', stranger)])
+
+    expect(screen.getByRole('button', { name: 'Load older' })).toBeInTheDocument()
+    expect(screen.getByTestId('chat-message-announcer')).toHaveTextContent('Someone: reply x')
+    expect(screen.getByTestId('chat-endorsed-bubble')).toHaveTextContent('Approved by staff')
+    expect(screen.getByText('Thinking…')).toBeInTheDocument()
+    expect(screen.getByTestId('chat-message-delivery')).toHaveTextContent('Out')
+    expect(screen.getByText('Hoy')).toBeInTheDocument()
+    expect(screen.getByText('Ayer')).toBeInTheDocument()
+    expect(screen.getByText('Coach escribe')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '1 nuevos' })).toBeInTheDocument()
   })
 
   it('has no accessibility violations', async () => {
