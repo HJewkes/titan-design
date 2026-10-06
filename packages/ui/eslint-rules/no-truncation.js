@@ -141,57 +141,107 @@ function isComponentWrapper(callee) {
   return name.type === 'Identifier' && COMPONENT_WRAPPERS.has(name.name)
 }
 
-/**
- * The props parameter: the first parameter of a function that is not a callback argument, or
- * of the function a `forwardRef`/`memo` wraps. A `.map` callback's first parameter is an item.
- */
-function isPropsParameter(fn, param) {
-  if (fn.params[0] !== param) return false
+const PASCAL_CASE = /^[A-Z]/
+
+/** The name a function is declared or assigned under: `function Title`, `const Title = …`. */
+function declaredName(fn) {
+  if (fn.id) return fn.id.name
   const { parent } = fn
-  if (parent.type !== 'CallExpression' && parent.type !== 'NewExpression') return true
-  return parent.arguments[0] === fn && isComponentWrapper(parent.callee)
+  if (
+    parent.type === 'VariableDeclarator' &&
+    parent.init === fn &&
+    parent.id.type === 'Identifier'
+  ) {
+    return parent.id.name
+  }
+  return undefined
 }
 
-/** `function T({ numberOfLines })`: the prop destructured under its own name, no default. */
-function isDestructuredProp(variable) {
-  return variable.defs.some((def) => {
-    if (def.type !== 'Parameter') return false
-    const property = def.name.parent
+/** A function named in PascalCase, or the function a `forwardRef`/`memo` call wraps. */
+function isComponent(fn) {
+  const { parent } = fn
+  if (parent.type === 'CallExpression' && parent.arguments[0] === fn) {
+    return isComponentWrapper(parent.callee)
+  }
+  return PASCAL_CASE.test(declaredName(fn) ?? '')
+}
+
+/** Whether `node` is the target of an assignment, update, `delete` or destructuring write. */
+function isWriteTarget(node) {
+  const { parent } = node
+  switch (parent.type) {
+    case 'AssignmentExpression':
+    case 'AssignmentPattern':
+    case 'ForInStatement':
+    case 'ForOfStatement':
+      return parent.left === node
+    case 'UpdateExpression':
+    case 'ArrayPattern':
+    case 'RestElement':
+      return true
+    case 'UnaryExpression':
+      return parent.operator === 'delete'
+    case 'Property':
+      return parent.value === node && parent.parent.type === 'ObjectPattern'
+    default:
+      return false
+  }
+}
+
+/** Whether any reference to `variable` writes `variable.numberOfLines`. */
+function writesForwardedMember(variable) {
+  return variable.references.some(({ identifier }) => {
+    const member = identifier.parent
     return (
-      property.type === 'Property' &&
-      property.value === def.name &&
-      !property.computed &&
-      property.key.type === 'Identifier' &&
-      property.key.name === FORWARDED_PROP &&
-      isPropsParameter(def.node, property.parent)
+      member.type === 'MemberExpression' &&
+      member.object === identifier &&
+      !member.computed &&
+      member.property.type === 'Identifier' &&
+      member.property.name === FORWARDED_PROP &&
+      isWriteTarget(member)
     )
   })
 }
 
-/** `function T(props)`: the props object itself, so `props.numberOfLines` is the caller's prop. */
-function isPropsObject(variable) {
-  return variable.defs.some(
-    (def) => def.type === 'Parameter' && isPropsParameter(def.node, def.name)
+/** The parameter definition of `variable` if it is declared once, in a component's signature. */
+function componentParameterDef(variable) {
+  if (variable.defs.length !== 1) return undefined
+  const [def] = variable.defs
+  return def.type === 'Parameter' && isComponent(def.node) ? def : undefined
+}
+
+/** `{ numberOfLines }` or `{ numberOfLines: numberOfLines }` in `param`, with no default. */
+function isOwnNameKey(binding, param) {
+  const property = binding.parent
+  return (
+    property.type === 'Property' &&
+    property.parent === param &&
+    property.value === binding &&
+    !property.computed &&
+    property.key.type === 'Identifier' &&
+    property.key.name === FORWARDED_PROP
   )
 }
 
 /**
  * `numberOfLines={numberOfLines}` or `{props.numberOfLines}` hands on the caller's own
  * `numberOfLines` prop, and the caller's `numberOfLines=` attribute is the site this rule checks.
- * Anything else, a renamed prop (`{ lines: numberOfLines }`), a default, a callback item or a
- * `maxLines` prop, has no such site, so it stays reported.
+ * That holds only when the value is the first parameter of a component (PascalCase, or wrapped
+ * in `forwardRef`/`memo`) and nothing writes it. A renamed prop, a default (in the pattern or
+ * assigned later), a callback or helper parameter, or a `maxLines` prop stays reported.
  */
 function isForwardedProp(expression, scope) {
-  if (expression.type === 'Identifier' && expression.name === FORWARDED_PROP) {
-    const variable = findVariable(scope, expression.name)
-    return variable !== undefined && isDestructuredProp(variable)
-  }
-  if (expression.type !== 'MemberExpression' || expression.computed) return false
-  const { object, property } = expression
-  if (object.type !== 'Identifier' || property.type !== 'Identifier') return false
-  if (property.name !== FORWARDED_PROP) return false
-  const variable = findVariable(scope, object.name)
-  return variable !== undefined && isPropsObject(variable)
+  const member = expression.type === 'MemberExpression'
+  const root = member ? expression.object : expression
+  const key = member ? expression.property : expression
+  if (root.type !== 'Identifier' || key.type !== 'Identifier') return false
+  if (expression.computed || key.name !== FORWARDED_PROP) return false
+  const variable = findVariable(scope, root.name)
+  const def = variable && componentParameterDef(variable)
+  if (!def || !variable.references.every((reference) => reference.isReadOnly())) return false
+  const param = def.node.params[0]
+  if (member) return def.name === param && !writesForwardedMember(variable)
+  return isOwnNameKey(def.name, param)
 }
 
 const FIX =

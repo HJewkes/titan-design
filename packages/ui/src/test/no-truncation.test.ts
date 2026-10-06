@@ -57,6 +57,8 @@ describe('no-truncation', () => {
         'const Title = React.forwardRef(({ numberOfLines }, ref) => <Text ref={ref} numberOfLines={numberOfLines}>{t}</Text>)',
         'const Title = memo(function Title({ numberOfLines }) { return <Text numberOfLines={numberOfLines}>{t}</Text> })',
         'const Title = ({ numberOfLines: numberOfLines }) => <Text numberOfLines={numberOfLines}>{t}</Text>',
+        'export function Title({ numberOfLines }) { const tall = numberOfLines > 1; return <Text numberOfLines={numberOfLines}>{tall}</Text> }',
+        'const Title = memo(forwardRef((props, ref) => <Text ref={ref} numberOfLines={props.numberOfLines}>{t}</Text>))',
       ].map((code) => ({ code, filename: componentFile })),
       { code: "const label = 'truncated'", filename: componentFile },
       { code: "const c = cn('flex line-clamp-none')", filename: componentFile },
@@ -103,6 +105,19 @@ describe('no-truncation', () => {
         'function T({ maxLines }) { return <Text numberOfLines={maxLines}>{t}</Text> }',
         'function T(props) { return <Text numberOfLines={props.maxLines}>{t}</Text> }',
         'function T({ a: { numberOfLines } }) { return <Text numberOfLines={numberOfLines}>{t}</Text> }',
+        // Written after the destructure: a default or a hard-coded value, not the caller's.
+        'function T({ numberOfLines }) { numberOfLines ??= 2; return <Text numberOfLines={numberOfLines}>{t}</Text> }',
+        'function T({ numberOfLines }) { numberOfLines = 2; return <Text numberOfLines={numberOfLines}>{t}</Text> }',
+        'function T(props) { props.numberOfLines ??= 2; return <Text numberOfLines={props.numberOfLines}>{t}</Text> }',
+        'function T(props) { props.numberOfLines++; return <Text numberOfLines={props.numberOfLines}>{t}</Text> }',
+        'function T(props) { ({ a: props.numberOfLines } = x); return <Text numberOfLines={props.numberOfLines}>{t}</Text> }',
+        'function T(props) { props = defaults; return <Text numberOfLines={props.numberOfLines}>{t}</Text> }',
+        // Not a component: a render prop, a named helper, an object method, a camelCase function.
+        '<List renderItem={({ numberOfLines }) => <Text numberOfLines={numberOfLines}>{t}</Text>} />',
+        'const row = ({ numberOfLines }) => <Text numberOfLines={numberOfLines}>{t}</Text>; items.map(row)',
+        'const cfg = { render({ numberOfLines }) { return <Text numberOfLines={numberOfLines}>{t}</Text> } }',
+        'function title(props) { return <Text numberOfLines={props.numberOfLines}>{t}</Text> }',
+        'items.map(function Row(props) { return <Text numberOfLines={props.numberOfLines}>{t}</Text> })',
       ].map((code) => ({
         code,
         filename: componentFile,
