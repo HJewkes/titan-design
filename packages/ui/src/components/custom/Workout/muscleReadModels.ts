@@ -8,9 +8,9 @@
  * `src/tools/e1rm-band.ts` for the band those rows carry.
  *
  * Last synced from voltras-mcp origin/main at `5a6fadd`. That sha and the
- * mirrored field lists are pinned in `muscleReadModels.mirror.test.ts`, so a
- * re-sync has to update the header and the test together. The test cannot see
- * voltras-mcp: it catches a half-done re-sync, not a change upstream that
+ * mirrored field lists are pinned in `muscleReadModels.mirror.test.ts` and
+ * `muscleReadModels.mirror.test-d.ts`, so a re-sync has to update the header
+ * and both tests together. The tests cannot see voltras-mcp: it catches a half-done re-sync, not a change upstream that
  * nobody has synced yet. Optionality is copied from the source: a field the
  * server always emits is required here, and a nullable field stays `| null`
  * rather than becoming optional.
