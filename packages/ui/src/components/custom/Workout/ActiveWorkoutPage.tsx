@@ -124,7 +124,7 @@ export interface ActiveWorkoutPageProps extends ViewProps {
   rest?: ActiveWorkoutRest
   /** Start the page in the resting state (timer showing). */
   initialResting?: boolean
-  /** Called when the user records a set, after the page enters rest. */
+  /** Called with each recorded set, after the page enters rest if `rest` is set. */
   onRecord?: (set: ActiveWorkoutRecordedSet) => void
   /** Called when the user skips rest, after the input bar returns. */
   onSkip?: () => void
