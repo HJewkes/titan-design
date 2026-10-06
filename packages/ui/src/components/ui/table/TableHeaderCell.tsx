@@ -61,7 +61,7 @@ export function TableHeaderCell({
         sort={sort}
         tooltip={tooltip}
         cellStyle={cellStyle}
-        accessibilityLabel={name && `Sort by ${name}`}
+        accessibilityLabel={name ? `Sort by ${name}` : undefined}
         onPress={(e) => {
           onSort(sortKey)
           onPress?.(e)
