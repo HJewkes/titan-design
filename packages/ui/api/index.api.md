@@ -4939,6 +4939,38 @@ export function paceTone(progress: number, target?: number): PaceTone;
 export function paceToneColor(tone: PaceTone, mode: ThemeMode): string;
 
 // @public
+export function Page(input: PageProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export type PageGutter = 'sm' | 'md';
+
+// @public
+export function PageHeader(input: PageHeaderProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface PageHeaderProps extends Omit<ViewProps, 'children'> {
+    className?: string;
+    description?: string;
+    title: string;
+    trailing?: React__default.ReactNode;
+}
+
+// @public
+export type PageMaxWidth = 'narrow' | 'wide' | 'full';
+
+// @public
+export interface PageProps extends Omit<ViewProps, 'children'> {
+    children?: React__default.ReactNode;
+    className?: string;
+    contentClassName?: string;
+    gutter?: PageGutter;
+    header?: React__default.ReactNode;
+    isHeaderPinned?: boolean;
+    isScrollable?: boolean;
+    maxWidth?: PageMaxWidth;
+}
+
+// @public
 export const PANEL_BREAKPOINTS: {
     readonly xs: 0;
     readonly sm: 600;

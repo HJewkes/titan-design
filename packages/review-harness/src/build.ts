@@ -68,8 +68,17 @@ export async function contrastProblem(
 }
 
 async function readReport(roundPath: string): Promise<Partial<ContrastReport> | null> {
-  const raw = await readFile(join(dirname(roundPath), CONTRAST_FILE), 'utf8').catch(() => null)
-  return raw === null ? null : (JSON.parse(raw) as Partial<ContrastReport>)
+  const path = join(dirname(roundPath), CONTRAST_FILE)
+  const raw = await readFile(path, 'utf8').catch((err: NodeJS.ErrnoException) => {
+    if (err.code === 'ENOENT') return null
+    throw err
+  })
+  if (raw === null) return null
+  try {
+    return JSON.parse(raw) as Partial<ContrastReport>
+  } catch {
+    throw new ReviewError(`${path} is not JSON`)
+  }
 }
 
 /** The override as recorded: the reason, the gate's objection, and every miss it had found. */
