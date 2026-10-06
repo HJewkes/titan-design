@@ -45,15 +45,15 @@ describe('no-truncation', () => {
       // Destructuring a prop to forward it is not a truncation decision.
       { code: 'function Row({ numberOfLines }) { return numberOfLines }', filename: componentFile },
       {
-        code: 'function Title({ lines }) { return <Text numberOfLines={lines}>{t}</Text> }',
+        code: 'function Title({ numberOfLines }) { return <Text numberOfLines={numberOfLines}>{t}</Text> }',
         filename: componentFile,
       },
       {
-        code: 'function Title(props) { return <Text numberOfLines={props.lines}>{t}</Text> }',
+        code: 'function Title(props) { return <Text numberOfLines={props.numberOfLines}>{t}</Text> }',
         filename: componentFile,
       },
       {
-        code: 'const Title = (lines) => <Text numberOfLines={lines}>{t}</Text>',
+        code: 'const Title = (numberOfLines) => <Text numberOfLines={numberOfLines}>{t}</Text>',
         filename: componentFile,
       },
       { code: "const label = 'truncated'", filename: componentFile },
@@ -84,6 +84,18 @@ describe('no-truncation', () => {
         filename: componentFile,
         errors: [{ messageId: 'attribute' }],
       },
+      ...[
+        'function T({ lines }) { return <Text numberOfLines={lines}>{t}</Text> }',
+        'function T({ numberOfLines = 2 }) { return <Text numberOfLines={numberOfLines}>{t}</Text> }',
+        'function T(numberOfLines = 2) { return <Text numberOfLines={numberOfLines}>{t}</Text> }',
+        'items.map((item) => <Text numberOfLines={item.lines}>{t}</Text>)',
+        'items.map((_, i) => <Text numberOfLines={i}>{t}</Text>)',
+        'items.map((numberOfLines) => <Text numberOfLines={numberOfLines}>{t}</Text>)',
+      ].map((code) => ({
+        code,
+        filename: componentFile,
+        errors: [{ messageId: 'attribute' }],
+      })),
       ...['maxLines', 'numberOfLines'].map((property) => ({
         code: `const titleProps = { ${property}: 2 }`,
         filename: componentFile,
@@ -157,23 +169,15 @@ describe('no-truncation under the real config', { timeout: 30_000 }, () => {
 
   it('spends one baselined allowance per site and reports the remainder as stale', () => {
     const file = 'src/components/shell/workout/pinnedLiveStripParts.tsx'
-    expect(baseline[file as keyof typeof baseline]).toEqual({ numberOfLines: 1 })
-    const forwardedAndLiteral = lintAt(
+    expect(baseline[file as keyof typeof baseline]).toEqual({ numberOfLines: 2 })
+    const both = lintAt(
       file,
       'export const T = ({ lines }) => <><Text numberOfLines={lines} /><Text numberOfLines={1} /></>'
     )
-    expect(forwardedAndLiteral).toEqual([])
-    const forwardedOnly = lintAt(
-      file,
-      'export const T = ({ lines }) => <Text numberOfLines={lines} />'
-    )
-    expect(forwardedOnly.map((m) => m.messageId)).toEqual(['stale'])
-    expect(forwardedOnly[0].message).toContain("still allows 1 'numberOfLines'")
-    const twoLiterals = lintAt(
-      file,
-      'export const T = () => <><Text numberOfLines={1} /><Text numberOfLines={2} /></>'
-    )
-    expect(twoLiterals.map((m) => m.messageId)).toEqual(['attribute'])
+    expect(both).toEqual([])
+    const one = lintAt(file, 'export const T = () => <Text numberOfLines={1} />')
+    expect(one.map((m) => m.messageId)).toEqual(['stale'])
+    expect(one[0].message).toContain("still allows 1 'numberOfLines'")
   })
 
   it('leaves ui/ components, tests and stories alone', () => {
