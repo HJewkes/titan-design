@@ -1636,7 +1636,6 @@ export interface ExerciseCardProps {
     name: string;
     onExpandedChange?: (expanded: boolean) => void;
     // (undocumented)
-    // (undocumented)
     prescription?: string;
     // (undocumented)
     previousBest?: string;
@@ -1651,7 +1650,6 @@ export interface ExerciseCardProps {
         weight: number;
         unit: 'lbs' | 'kg';
     };
-    // (undocumented)
     // (undocumented)
     supersetPosition?: 'first' | 'last' | 'middle' | null;
     // (undocumented)
