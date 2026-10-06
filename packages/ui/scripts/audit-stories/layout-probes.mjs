@@ -9,10 +9,13 @@ const MAX_FINDINGS_PER_KIND = 25
 const MIN_EXCESS = 4 // --space-stack-sm, the smallest stack step
 const EDGE_FLOOR = 4 // --space-inset-xs
 const PADDING_TOLERANCE = 1
+// Two glyph insets in their line boxes; any more empty space is not padding (a narrow label in a wide cell).
+const UNEXPLAINED_LIMIT = 8
 const ASYMMETRY_LIMIT = 2
 const FILL_RATIO = 0.8
 const SIDES = ['top', 'right', 'bottom', 'left']
 const PAD_PROP = ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft']
+const TABULAR_ROLES = new Set(['cell', 'gridcell', 'columnheader', 'rowheader'])
 const REPLACED_TAGS = new Set(['img', 'canvas', 'video', 'svg'])
 
 const px = (n) => `${+n.toFixed(2)}px`
@@ -90,7 +93,7 @@ export function judgeStackedInset({ nodes }) {
   for (const container of nodes) {
     const axis = stackAxis(container)
     const kids = (children.get(container.id) ?? []).filter((c) => inFlow(c) && c.ink)
-    if (!axis || kids.length < 2) continue
+    if (!axis || kids.length < 2 || kids.some((k) => TABULAR_ROLES.has(k.role))) continue
     kids.sort((p, q) => span(p.box, axis)[0] - span(q.box, axis)[0])
     const gaps = []
     for (let i = 1; i < kids.length; i++) {
@@ -101,6 +104,7 @@ export function judgeStackedInset({ nodes }) {
     const floor = gaps.length > 1 ? Math.min(...gaps.map((g) => g.excess)) : 0
     for (const g of gaps) {
       if (g.excess < MIN_EXCESS || g.total < MIN_EXCESS || g.excess - floor < MIN_EXCESS) continue
+      if (g.excess - g.total > UNEXPLAINED_LIMIT) continue
       findings.push({
         kind: STACKED_INSET,
         selector: g.a.selector,

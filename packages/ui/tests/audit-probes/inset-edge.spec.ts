@@ -29,6 +29,7 @@ const negatives = [
   'stacked-interactive',
   'stacked-painted',
   'stacked-rhythm',
+  'stacked-cells',
   'asym-even',
   'label-short',
   'pill',

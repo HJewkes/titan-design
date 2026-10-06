@@ -127,6 +127,30 @@ describe('stacked-inset', () => {
     expect(judgeStackedInset(layout(root, a, text, b))[0].detail).toContain('paddingRight 10px')
   })
 
+  it('ignores a gap that padding does not explain: a narrow label in a wide padded cell', () => {
+    const cell = node('0', 'root', [0, 0, 200, 16], { pad: [0, 16, 0, 0] })
+    const text = node('0.0', '0', [0, 0, 60, 16], { text: textOf([0, 0, 60, 16]) })
+    const next = node('1', 'root', [200, 0, 60, 16], { text: textOf([200, 0, 60, 16]) })
+    const root = node('root', null, [0, 0, 300, 16], { layout: flex('row') })
+    expect(judgeStackedInset(layout(root, cell, text, next))).toEqual([])
+  })
+
+  it('still flags when empty space beyond the padding is at most the glyph slack', () => {
+    const cell = node('0', 'root', [0, 0, 84, 16], { pad: [0, 16, 0, 0] })
+    const text = node('0.0', '0', [0, 0, 60, 16], { text: textOf([0, 0, 60, 16]) })
+    const next = node('1', 'root', [84, 0, 60, 16], { text: textOf([84, 0, 60, 16]) })
+    const root = node('root', null, [0, 0, 300, 16], { layout: flex('row') })
+    expect(judgeStackedInset(layout(root, cell, text, next))).toHaveLength(1)
+  })
+
+  it('exempts table cells, whose padding is the column rhythm', () => {
+    const cell = node('0', 'root', [0, 0, 84, 16], { pad: [0, 16, 0, 0], role: 'cell' })
+    const text = node('0.0', '0', [0, 0, 60, 16], { text: textOf([0, 0, 60, 16]) })
+    const next = node('1', 'root', [84, 0, 60, 16], { text: textOf([84, 0, 60, 16]), role: 'cell' })
+    const root = node('root', null, [0, 0, 300, 16], { layout: flex('row') })
+    expect(judgeStackedInset(layout(root, cell, text, next))).toEqual([])
+  })
+
   it('skips absolute siblings and wrapping containers', () => {
     const abs = stackWith({ padBottom: 12, wrapper: { layout: { ...flow, position: 'absolute' } } })
     expect(judgeStackedInset(abs)).toEqual([])
