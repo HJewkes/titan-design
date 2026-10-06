@@ -13,6 +13,7 @@ const inCase = (findings: Finding[], id: string) =>
 
 const positives: [string, string, string][] = [
   ['stacked-pos', 'stacked-inset', '[data-testid="stacked-pos"] > div:nth-of-type(1)'],
+  ['stacked-heading', 'stacked-inset', '[data-testid="stacked-heading"] > div:nth-of-type(1)'],
   ['edge-pushed', 'edge-clearance', '[data-testid="edge-pushed"] > div'],
   ['edge-unpadded', 'edge-clearance', '[data-testid="edge-unpadded"] > div'],
   ['asym-short', 'inset-asymmetry', '[data-testid="asym-short"]'],
@@ -30,6 +31,7 @@ const negatives = [
   'stacked-painted',
   'stacked-rhythm',
   'stacked-cells',
+  'stacked-narrow',
   'asym-even',
   'label-short',
   'pill',

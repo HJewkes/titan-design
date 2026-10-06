@@ -9,8 +9,6 @@ const MAX_FINDINGS_PER_KIND = 25
 const MIN_EXCESS = 4 // --space-stack-sm, the smallest stack step
 const EDGE_FLOOR = 4 // --space-inset-xs
 const PADDING_TOLERANCE = 1
-// Two glyph insets in their line boxes; any more empty space is not padding (a narrow label in a wide cell).
-const UNEXPLAINED_LIMIT = 8
 const ASYMMETRY_LIMIT = 2
 const FILL_RATIO = 0.8
 const SIDES = ['top', 'right', 'bottom', 'left']
@@ -53,39 +51,39 @@ function stackAxis({ layout }) {
 const inFlow = (n) => n.layout.position !== 'absolute' && n.layout.position !== 'fixed'
 const span = (b, axis) => (axis === 'x' ? [b[0], right(b)] : [b[1], bottom(b)])
 
-// Invisible padding on the side of `node` that faces the gap, walking down the chain of boxes that
-// reach the node's ink edge. A painted box shows its padding and an interactive box needs it as a
-// hit target, so either one ends the walk.
+// Invisible padding on the side of `node` that faces the gap, and the free space that padding does
+// not explain, both measured on layout boxes: a glyph's ink sits inside its line box by an amount
+// that depends on font size and line height, so ink never decides where a box's edge is. The walk
+// goes down the child whose box reaches that edge. A painted box shows its padding and an
+// interactive box needs it as a hit target, so either one ends the walk.
 function hiddenPadding(node, facing, axis, children) {
-  const side = axis === 'x' ? (facing === 'after' ? 1 : 3) : facing === 'after' ? 2 : 0
-  const edge = (b) => span(b, axis)[facing === 'after' ? 1 : 0]
+  const after = facing === 'after'
+  const side = axis === 'x' ? (after ? 1 : 3) : after ? 2 : 0
+  const edge = (b) => span(b, axis)[after ? 1 : 0]
   const found = []
+  let free = 0
   for (let n = node; n && !n.paints && !n.interactive; ) {
     if (n.pad[side] > 0) found.push({ node: n, prop: PAD_PROP[side], value: n.pad[side] })
-    n = (children.get(n.id) ?? []).find((c) => c.ink && Math.abs(edge(c.ink) - edge(n.ink)) < 0.25)
+    const reach = (c) => (after ? edge(c.box) : -edge(c.box))
+    const kids = (children.get(n.id) ?? []).filter((c) => c.ink && inFlow(c))
+    const next = kids.reduce((m, c) => (!m || reach(c) > reach(m) ? c : m), null)
+    if (!next) break
+    const content = edge(n.box) + (after ? -1 : 1) * (n.pad[side] + n.border[side])
+    free += Math.max(0, after ? content - edge(next.box) : edge(next.box) - content)
+    n = next
   }
-  return found
+  return { found, free }
 }
 
 function gapOf(a, b, axis, children) {
   const layoutGap = span(b.box, axis)[0] - span(a.box, axis)[1]
-  const inkGap = span(b.ink, axis)[0] - span(a.ink, axis)[1]
-  const hidden = [
-    ...hiddenPadding(a, 'after', axis, children),
-    ...hiddenPadding(b, 'before', axis, children),
-  ]
+  const hiddenA = hiddenPadding(a, 'after', axis, children)
+  const hiddenB = hiddenPadding(b, 'before', axis, children)
+  const hidden = [...hiddenA.found, ...hiddenB.found]
   const biggest = hidden.reduce((m, h) => (!m || h.value > m.value ? h : m), null)
-  return {
-    a,
-    b,
-    layoutGap,
-    inkGap,
-    excess: inkGap - layoutGap,
-    hidden: biggest,
-    total: sum(hidden),
-  }
+  const total = hidden.reduce((t, h) => t + h.value, 0)
+  return { a, b, layoutGap, hidden: biggest, total, free: hiddenA.free + hiddenB.free }
 }
-const sum = (hidden) => hidden.reduce((t, h) => t + h.value, 0)
 
 export function judgeStackedInset({ nodes }) {
   const { children } = index(nodes)
@@ -100,18 +98,19 @@ export function judgeStackedInset({ nodes }) {
       const gap = gapOf(kids[i - 1], kids[i], axis, children)
       if (gap.layoutGap >= 0) gaps.push(gap)
     }
-    // Equal excess on every gap is the stack's rhythm, not a stray inset.
-    const floor = gaps.length > 1 ? Math.min(...gaps.map((g) => g.excess)) : 0
+    // Equal hidden padding on every gap is the stack's rhythm, not a stray inset.
+    const floor = gaps.length > 1 ? Math.min(...gaps.map((g) => g.total)) : 0
     for (const g of gaps) {
-      if (g.excess < MIN_EXCESS || g.total < MIN_EXCESS || g.excess - floor < MIN_EXCESS) continue
-      if (g.excess - g.total > UNEXPLAINED_LIMIT) continue
+      // Padding only explains the gap when the content sits against it: free space beyond the
+      // padding (a narrow label in a wide cell) is layout, not a stray inset.
+      if (g.total < MIN_EXCESS || g.total - floor < MIN_EXCESS || g.free >= MIN_EXCESS) continue
       findings.push({
         kind: STACKED_INSET,
         selector: g.a.selector,
         detail:
-          `ink gap ${px(g.inkGap)} = layout gap ${px(g.layoutGap)} + ${g.hidden.prop} ` +
-          `${px(g.hidden.value)} on ${g.hidden.node.selector}, which paints nothing ` +
-          `(next sibling ${g.b.selector}; threshold ${MIN_EXCESS}px)`,
+          `visible gap ${px(g.layoutGap + g.total)} = layout gap ${px(g.layoutGap)} + ` +
+          `${g.hidden.prop} ${px(g.hidden.value)} on ${g.hidden.node.selector}, which paints ` +
+          `nothing (next sibling ${g.b.selector}; threshold ${MIN_EXCESS}px)`,
       })
     }
   }

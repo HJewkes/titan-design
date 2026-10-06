@@ -80,7 +80,7 @@ describe('stacked-inset', () => {
     expect(found).toHaveLength(1)
     expect(found[0]).toMatchObject({ kind: 'stacked-inset', selector: '.n0' })
     expect(found[0].detail).toBe(
-      'ink gap 12px = layout gap 8px + paddingBottom 4px on .n0, which paints nothing ' +
+      'visible gap 12px = layout gap 8px + paddingBottom 4px on .n0, which paints nothing ' +
         '(next sibling .n1; threshold 4px)'
     )
   })
@@ -135,12 +135,16 @@ describe('stacked-inset', () => {
     expect(judgeStackedInset(layout(root, cell, text, next))).toEqual([])
   })
 
-  it('still flags when empty space beyond the padding is at most the glyph slack', () => {
-    const cell = node('0', 'root', [0, 0, 84, 16], { pad: [0, 16, 0, 0] })
-    const text = node('0.0', '0', [0, 0, 60, 16], { text: textOf([0, 0, 60, 16]) })
-    const next = node('1', 'root', [84, 0, 60, 16], { text: textOf([84, 0, 60, 16]) })
-    const root = node('root', null, [0, 0, 300, 16], { layout: flex('row') })
-    expect(judgeStackedInset(layout(root, cell, text, next))).toHaveLength(1)
+  it('flags padding over a tall line box whose glyph ink sits well inside it', () => {
+    const wrapper = node('0', 'root', [0, 0, 200, 40], { pad: [0, 0, 12, 0] })
+    const line = node('0.0', '0', [0, 0, 200, 28], {
+      text: { ...textOf([0, 6, 120, 16]), fontSize: 24 },
+    })
+    const body = node('1', 'root', [0, 48, 200, 20], { text: textOf([0, 48, 120, 20]) })
+    const root = node('root', null, [0, 0, 200, 80], { layout: flex() })
+    const found = judgeStackedInset(layout(root, wrapper, line, body))
+    expect(found).toHaveLength(1)
+    expect(found[0].detail).toContain('paddingBottom 12px on .n0')
   })
 
   it('exempts table cells, whose padding is the column rhythm', () => {

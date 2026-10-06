@@ -43,6 +43,13 @@
         <div>Body copy under the heading</div>
       </div>
 
+      <div class="case stack" data-testid="stacked-heading">
+        <div style="padding-bottom: 12px">
+          <div style="font-size: 24px; line-height: 32px">Overview</div>
+        </div>
+        <div style="line-height: 20px">Body copy under the larger heading</div>
+      </div>
+
       <!-- P1 negatives -->
       <div class="case stack" data-testid="stacked-interactive">
         <div role="button" tabindex="0" style="padding: 12px"><div>Press</div></div>
@@ -58,9 +65,13 @@
         <div style="padding-block: 8px"><div>Row three</div></div>
       </div>
 
+      <div class="case" data-testid="stacked-narrow" style="display: flex">
+        <div style="width: 200px; padding-right: 16px"><div style="width: 60px">Name</div></div>
+        <div style="width: 60px">Role</div>
+      </div>
       <div class="case" data-testid="stacked-cells" style="display: flex">
-        <div style="width: 120px; padding-right: 16px"><div>Name</div></div>
-        <div style="width: 120px; padding-right: 16px"><div>Role</div></div>
+        <div role="cell" style="width: 120px; padding-right: 16px"><div>Name</div></div>
+        <div role="cell" style="width: 120px; padding-right: 16px"><div>Role</div></div>
       </div>
 
       <!-- P2 positives -->
