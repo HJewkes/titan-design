@@ -112,10 +112,10 @@ describe('Autocomplete', () => {
     render(
       <Autocomplete
         options={[
-          { value: 0, label: 'Zero' },
-          { value: 1, label: 'One' },
+          { value: '0', label: 'Zero' },
+          { value: '1', label: 'One' },
         ]}
-        value={0}
+        value={0 as unknown as string}
         isClearable
       />
     )
