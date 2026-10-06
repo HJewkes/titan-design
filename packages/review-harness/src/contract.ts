@@ -115,15 +115,46 @@ function optionProblems(m: Manifest): string[] {
   return [...repeated, ...shared]
 }
 
+/** Part ids are unique across the round, so a signsOff names one part wherever it is read. */
+function partIdProblems(m: Manifest): string[] {
+  const ids = (m.sections ?? []).flatMap((s) => (s.parts ?? []).map((p) => p.id))
+  return [...new Set(duplicates(ids))].map((id) => `part ${id} is in two sections`)
+}
+
+/**
+ * In a section with `parts`, a pick-one's signsOff is the id of one of its unsettled parts.
+ * A section without `parts` keeps free-text signsOff, so a round written before parts still loads.
+ */
+function signsOffProblems(section: Section, m: Manifest): string[] {
+  if (!section.parts) return []
+  const parts = new Map(section.parts.map((p) => [p.id, p]))
+  return m.questions
+    .filter((q) => section.questionIds.includes(q.id))
+    .flatMap((q) => {
+      if (q.kind !== 'pick-one' || !q.signsOff) return []
+      const part = parts.get(q.signsOff)
+      if (!part)
+        return [`question ${q.id}: signsOff "${q.signsOff}" names no part in section ${section.id}`]
+      if (part.settled)
+        return [
+          `question ${q.id}: signsOff "${q.signsOff}" names a settled part; a pick-one signs off an unsettled one`,
+        ]
+      return []
+    })
+}
+
 export function contractProblems(m: Manifest): Problem[] {
+  const sections = m.sections ?? []
   return [
-    ...(m.sections ?? []).flatMap((s) =>
-      stripProblems(s, m).map((message) => ({ path: 'sections', message }))
-    ),
-    ...looseFrameProblems(m).map((message) => ({ path: 'variants', message })),
-    ...[...m.questions.flatMap(blanketProblems), ...optionProblems(m)].map((message) => ({
-      path: 'questions',
+    ...[...sections.flatMap((s) => stripProblems(s, m)), ...partIdProblems(m)].map((message) => ({
+      path: 'sections',
       message,
     })),
+    ...looseFrameProblems(m).map((message) => ({ path: 'variants', message })),
+    ...[
+      ...m.questions.flatMap(blanketProblems),
+      ...optionProblems(m),
+      ...sections.flatMap((s) => signsOffProblems(s, m)),
+    ].map((message) => ({ path: 'questions', message })),
   ]
 }

@@ -506,6 +506,53 @@
             "type": "string",
             "pattern": "\\S"
           },
+          "parts": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]{1,32}$"
+                },
+                "label": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "current": {
+                  "type": "string"
+                },
+                "proposed": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "lang": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9+#-]{1,20}$"
+                },
+                "settled": {
+                  "type": "object",
+                  "properties": {
+                    "cite": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    }
+                  },
+                  "required": [
+                    "cite"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "id",
+                "label",
+                "proposed"
+              ],
+              "additionalProperties": false
+            }
+          },
           "kind": {
             "type": "string",
             "enum": [

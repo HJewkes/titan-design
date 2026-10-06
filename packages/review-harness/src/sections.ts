@@ -3,6 +3,7 @@ import {
   AUTO_HEIGHT,
   type FrameHeight,
   type Manifest,
+  type Part,
   type Question,
   type StripKind,
   type Variant,
@@ -17,6 +18,8 @@ export interface ResolvedSection {
   deciding?: string
   changed?: string
   context?: string
+  /** The changed parts as code, rendered as Current/Proposed panes and a settled FYI list. */
+  parts?: Part[]
   kind?: StripKind
   questions: Question[]
   variants: Variant[]
@@ -52,6 +55,7 @@ export function roundLayout(manifest: Manifest): RoundLayout {
     ...(s.deciding ? { deciding: s.deciding } : {}),
     ...(s.changed ? { changed: s.changed } : {}),
     ...(s.context ? { context: s.context } : {}),
+    ...(s.parts ? { parts: s.parts } : {}),
     ...(s.kind ? { kind: s.kind } : {}),
     questions: pick(manifest.questions, s.questionIds, (q) => q.id),
     variants: pick(manifest.variants, s.variantKeys, (v) => v.key),

@@ -239,6 +239,31 @@ export const ContrastOverrideSchema = z
  */
 export const STRIP_KINDS = ['CHOICE', 'STATES'] as const
 
+const SETTLED_CITE =
+  'a settled part names what settles it (cite): a convention, a lint rule, a sibling API or an earlier decision'
+
+/** A code pane's language, as the class on its code element (`language-ts`). */
+const partLang = z.string().regex(/^[a-z0-9+#-]{1,20}$/i, 'a language name such as ts or diff')
+
+/**
+ * One prop, rename, default or meaning a section changes. An unsettled part is what a pick-one
+ * signs off; a settled one is FYI and carries the cite that settles it.
+ */
+export const PartSchema = z
+  .object({
+    id,
+    label: z.string().min(1),
+    /** The code as it is now; absent for something new. */
+    current: z.string().optional(),
+    proposed: z.string().min(1),
+    lang: partLang.optional(),
+    settled: z
+      .object({ cite: z.string({ error: SETTLED_CITE }).regex(/\S/, SETTLED_CITE) })
+      .strict()
+      .optional(),
+  })
+  .strict()
+
 /** One group of frames with the question(s) those frames answer, in reading order. */
 export const SectionSchema = z
   .object({
@@ -250,6 +275,8 @@ export const SectionSchema = z
     changed: z.string().optional(),
     /** What is shown for context only and is out of scope. */
     context: z.string().optional(),
+    /** The changed parts as code: each pick-one's signsOff names one of these by id. */
+    parts: z.array(PartSchema).min(1).optional(),
     kind: z.enum(STRIP_KINDS).optional(),
     questionIds: z.array(id).default([]),
     variantKeys: z.array(id).default([]),
@@ -537,6 +564,7 @@ export type StoryVariant = Variant & { storyId: string }
 export type ImageVariant = Variant & { image: string }
 export type Question = Manifest['questions'][number]
 export type Section = z.output<typeof SectionSchema>
+export type Part = z.output<typeof PartSchema>
 export type StripKind = (typeof STRIP_KINDS)[number]
 export type FrameHeight = number | typeof AUTO_HEIGHT
 export type Feedback = z.infer<typeof FeedbackSchema>

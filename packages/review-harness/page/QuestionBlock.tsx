@@ -63,7 +63,7 @@ function Choices({
           className="choice"
           onClick={() => dispatch(act(i))}
         >
-          {item.hotkey <= 9 && <kbd>{item.hotkey}</kbd>} {item.label}
+          {item.hotkey <= 9 && <kbd>{item.hotkey}</kbd>} <Markdown inline>{item.label}</Markdown>
         </button>
       ))}
     </div>
@@ -90,7 +90,9 @@ function RecommendationNote({ manifest, question, draft }: QuestionBlockProps) {
   return (
     <aside className="recommendation" data-testid={`recommendation-${question.id}`}>
       <p>
-        <strong>Recommended: {recommendedText(manifest, rec.answer)}</strong>
+        <strong>
+          Recommended: <Markdown inline>{recommendedText(manifest, rec.answer)}</Markdown>
+        </strong>
         {verdict && <span className="recommendation-verdict"> · {verdict}</span>}
       </p>
       <Markdown>{rec.rationale}</Markdown>

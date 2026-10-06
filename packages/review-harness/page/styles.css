@@ -503,6 +503,58 @@ button.primary kbd {
   border-left: 2px solid var(--color-border-subtle);
 }
 
+/* A section's parts: Current beside Proposed, stacked on a narrow window; settled ones folded. */
+.section-parts {
+  margin-bottom: var(--space-stack-md);
+}
+
+.section-part {
+  margin-bottom: var(--space-stack-md);
+}
+
+.part-heading,
+.part-cite {
+  margin: 0 0 4px;
+}
+
+.part-panes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-inline-md);
+}
+
+@media (max-width: 899px) {
+  .part-panes {
+    grid-template-columns: 1fr;
+  }
+}
+
+.part-pane pre,
+.settled-parts pre {
+  margin: 0;
+}
+
+.settled-parts summary {
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.settled-parts ul {
+  margin: var(--space-stack-sm) 0 0;
+  padding-left: var(--space-inset-md);
+}
+
+.settled-parts li {
+  margin-bottom: var(--space-stack-sm);
+}
+
+.part-cite {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+}
+
 .section-context .md,
 .strip-kind {
   font-size: 13px;
@@ -555,7 +607,8 @@ button.primary kbd {
   border-left: 3px solid var(--color-border-prominent);
 }
 
-.md pre {
+.md pre,
+.section-parts pre {
   padding: var(--space-inset-sm);
   overflow-x: auto;
   background: var(--color-surface-base);
