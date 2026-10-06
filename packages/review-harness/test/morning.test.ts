@@ -194,13 +194,18 @@ describe('a round from Morning items', () => {
     expect(deciding).not.toContain('Proposed: Proposed')
   })
 
-  it('labels an option whose proposal opens with a bold label once', () => {
-    const bold = item({
-      options: [{ label: 'A: Teal', proposal: '**Recommend** teal.' }, item().options[1]],
-    })
-    const { deciding } = section(items([bold]), 'paint-1')
-    expect(deciding).toContain('- **A: Teal** Proposed: teal.')
-    expect(deciding).not.toContain('Proposed: **Proposed:**')
+  it.each([
+    ['**Recommend** teal.', '- **A: Teal** Proposed: teal.'],
+    ['**Recommend:** teal.', '- **A: Teal** Proposed: teal.'],
+    ['**Recommended:** teal.', '- **A: Teal** Proposed: teal.'],
+    ['**Recommend yes** because gold.', '- **A: Teal** Proposed: **yes** because gold.'],
+  ])('labels an option whose proposal opens with the bold label %s once', (proposal, line) => {
+    const bold = item({ options: [{ label: 'A: Teal', proposal }, item().options[1]] })
+    const { deciding = '' } = section(items([bold]), 'paint-1')
+    const found = deciding.split('\n').find((l) => l.startsWith('- **A: Teal**'))
+    expect(found).toBe(line)
+    expect(found?.match(/Proposed:/g)).toHaveLength(1)
+    expect((found?.split('**').length ?? 1) % 2).toBe(1)
   })
 
   it('refuses an option that is only a heading', () => {

@@ -141,7 +141,18 @@ function proposed(item: MorningItem, option: MorningItem['options'][number]): st
     throw new ReviewError(
       `item ${item.id}: option "${option.label}" has no proposal text; a bare heading cannot be decided`
     )
-  return `Proposed: ${text.replace(/^(\*\*)?Proposed:(\*\*)?\s*/, '')}`
+  return `Proposed: ${unlabelled(text)}`
+}
+
+/**
+ * The proposal without a leading "Proposed:" label of its own, plain or bold. A bold label
+ * that runs on into its text ("**Proposed: yes** because") keeps the bold on the text.
+ */
+function unlabelled(text: string): string {
+  return text
+    .replace(/^\*\*Proposed:\*\*\s*/, '')
+    .replace(/^Proposed:\s*/, '')
+    .replace(/^\*\*Proposed:\s*/, '**')
 }
 
 function deciding(item: MorningItem, name: OptionName): string {
