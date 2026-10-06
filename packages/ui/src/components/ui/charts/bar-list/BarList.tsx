@@ -4,15 +4,8 @@ import { cn } from '../../../../utils/cn'
 import { EmptyState } from '../../empty-state'
 import { useSurfaceMode } from '../../surface'
 import { silverRed } from '../kit/silverRed'
-import {
-  ALL_READOUTS,
-  hidesReadout,
-  ModelRow,
-  OverflowRow,
-  resolveColumns,
-  SkeletonRows,
-  type BarListReadout,
-} from './BarListParts'
+import { ALL_READOUTS, hidesReadout, resolveColumns, type BarListReadout } from './BarListCells'
+import { ModelRow, OverflowRow, SkeletonRows } from './BarListParts'
 import { useRowTips } from './BarListTip'
 import {
   buildBarListModel,
@@ -23,7 +16,7 @@ import {
 } from './bar-list-model'
 
 export type { BarListRow, BarListValueFormatter } from './bar-list-model'
-export type { BarListReadout } from './BarListParts'
+export type { BarListReadout } from './BarListCells'
 
 /** Props of {@link BarList}. */
 export interface BarListProps extends Omit<ViewProps, 'children'> {
