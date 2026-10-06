@@ -63,8 +63,8 @@ function FigureRow(props: {
   }
   return (
     <View
-      style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-end', zIndex: Z.figure }}
-      className="justify-between gap-x-inline-md gap-y-stack-sm"
+      style={{ zIndex: Z.figure }}
+      className="flex-row flex-wrap items-end justify-between gap-x-inline-md gap-y-stack-sm"
       testID={props.testID}
     >
       {props.figure}
@@ -113,7 +113,7 @@ export function StatCard({
       testID={testID}
       {...props}
     >
-      <View className="gap-stack-md" style={{ flex: 1 }} onLayout={onContentLayout}>
+      <View className="flex-1 gap-stack-md" onLayout={onContentLayout}>
         <View style={{ zIndex: Z.top }}>
           <View style={{ zIndex: Z.header }} testID={part('header')}>
             {header}
@@ -126,7 +126,7 @@ export function StatCard({
           />
         </View>
         {body !== undefined && (
-          <View style={{ marginTop: 'auto' }} testID={part('body')}>
+          <View className="mt-auto" testID={part('body')}>
             {body}
           </View>
         )}
@@ -147,8 +147,7 @@ export interface StatCardHeaderProps {
 export function StatCardHeader({ title, trailing, testID }: StatCardHeaderProps) {
   return (
     <View
-      style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}
-      className="justify-between gap-x-inline-md gap-y-stack-sm"
+      className="flex-row flex-wrap items-center justify-between gap-x-inline-md gap-y-stack-sm"
       testID={testID}
     >
       {typeof title === 'string' ? (
@@ -159,7 +158,7 @@ export function StatCardHeader({ title, trailing, testID }: StatCardHeaderProps)
         title
       )}
       {trailing !== undefined && (
-        <View style={{ flexDirection: 'row', alignItems: 'center' }} className="gap-inline-sm">
+        <View className="flex-row items-center gap-inline-sm">
           {trailing}
         </View>
       )}

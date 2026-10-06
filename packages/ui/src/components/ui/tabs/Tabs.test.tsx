@@ -205,6 +205,16 @@ describe('Tabs', () => {
     expect(container.firstChild).toBeInTheDocument()
   })
 
+  describe('label colour', () => {
+    it('colours the label by state for the line variant, leaving colour off the tab itself', () => {
+      renderTabs({ variant: 'line' })
+
+      expect(screen.getByText('Tab 1')).toHaveClass('text-text-primary')
+      expect(screen.getByText('Tab 2')).toHaveClass('text-text-secondary')
+      expect(screen.getAllByRole('tab')[0].className).not.toMatch(/(^|\s)(web:hover:)?text-/)
+    })
+  })
+
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
       const { container } = renderTabs()
