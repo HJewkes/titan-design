@@ -7,17 +7,21 @@ Source: TP-848 Round 0 contract (section 7), restated here. Component: `ui/chart
 
 **Composition.** Rows are `View`s; label, value, secondary and description are `Typography`; the bar is a
 track `View` with a fill `View` whose width is a percentage. No SVG and no d3, so it renders on web and
-native. With `onRowPress` each row is a `Pressable`. Fixed anatomy is imported (Typography, Skeleton,
-EmptyState); the only slot is `emptyState`. Wording that belongs to the consumer arrives through the
-`format*` functions.
+native. Rows are not interactive: there is no `Pressable` and no tab stop. Fixed anatomy is imported
+(Typography, Skeleton, EmptyState); the only slot is `emptyState`. Wording that belongs to the consumer
+arrives through `formatValue` and `formatSecondary`.
+
+**Props (12).** `rows`, `accessibilityLabel`, `max`, `sort`, `maxRows`, `layout`, `size`, `formatValue`,
+`formatSecondary`, `isLoading`, `emptyState`, `className`. `formatValue(value, row?)` formats each row's
+value and, called without a row, the total of the rows past the cap.
 
 **Accessibility pattern.** No composite widget. Native list semantics: root `role="list"` named
-`"<accessibilityLabel>. <summary>"`, each row `role="listitem"` with the name from `formatRowLabel`
-(default: `"<label>: <value>, <secondary>, <flag label>, rank <n> of <shown>"`, omitting absent parts). The
-bar and the visible texts inside a row are hidden from assistive tech so the row is read once. The overflow
-row is a list item named by `formatOverflow`. With `onRowPress`, the row is a `button` inside the list item.
-Keyboard map: Tab and Shift+Tab move between pressable rows in order; Enter or Space presses. No arrow keys,
-no roving focus: the cap bounds the tab stops at `maxRows`. Without `onRowPress` there are no tab stops.
+`"<accessibilityLabel>. <summary>"`, each row `role="listitem"` named by `rowLabel`:
+`"<label>: <value>, <secondary>, <flag label>, rank <n> of <shown>"`, omitting absent parts. With
+`sort: 'none'` the list is not ranked and the name carries no rank. The bar and the visible texts inside a
+row are hidden from assistive tech so the row is read once. The overflow row is a list item reading
+`"<count> more · <hidden total>"`, and the summary and the overflow row both format the hidden total with
+`formatValue`. No keyboard map: nothing in the list takes focus.
 
 **Virtualization.** None. The cap bounds the mounted rows at `maxRows + 1`. Stated scale: 5,000 input rows.
 A list that must show hundreds of rows is a `Table`, not a BarList.
@@ -36,30 +40,35 @@ missing), `resolveMax` (a finite positive `max`, else the largest finite positiv
 - All-zero rows render with empty bars; they are data, not an empty list.
 - Negative values draw no bar and keep their text. Diverging bars are out of scope.
 - A flag is always colour plus the flag's label as text, and the label is in the row's accessible name.
-- A flag recolours the fill (`status-warning` or `status-error`) and a row's own `color` wins; the
-  track stays `brand-primary-muted` under every fill.
+- An unflagged row's fill is `silverRed(mode).neutral` and a flagged row's is `silverRed(mode).flag`, the
+  same red for both tones; the flag label, written in `text-text-error`, carries the tone in words. A row's
+  own `color` wins over both. The track is `bg-hairline` under every fill.
+- The label column of the inline layout is 96 px (`w-24`).
 - Duplicate ids keep both rows, keyed by id and position.
 - `maxRows` below 1 clamps to 1 and a fraction floors; `NaN` uses the default of 10.
 
-**Primitives and tokens.** `Typography`, `Skeleton`, `EmptyState`, `Pressable`, `cn`, `resolveColor`,
-`formatCompact`. Existing tokens only: one bar hue for every row (`brand-primary`), a `brand-primary-muted`
-track, `status-warning` and `status-error` for flagged rows.
+**Primitives and tokens.** `Typography`, `Skeleton`, `EmptyState`, `cn`, `resolveColor`, `formatCompact`,
+`useSurfaceMode` and `silverRed` from `kit/silverRed.ts`. Existing tokens and ramp steps only: the silver/red
+pair (dark `grey[200]` and `red[400]`, light `grey[600]` and `red[600]`), a `hairline` track and
+`text-error` flag labels. No brand token. On the base surface both fills measure at least 3:1 against the
+track in both modes (`BarList.test.tsx`); on the light `background-base` and `surface-raised` planes and the
+dark `surface-raised` and `surface-overlay` planes at least one fill measures between 2.7 and 3.0.
 
-## Deviation from the shared disabled rule (S-h)
+## Props audit (round 3)
 
-`isDisabled` should keep reading and focus and report `aria-disabled`. BarList cannot: with `isDisabled`,
-a pressable row leaves the tab order and renders a native `disabled` button. react-native-web 0.19.13's
-`Pressable` overwrites `aria-disabled` with its own `disabled`, does not handle `accessibilityState`, and
-`createDOMProps` adds native `disabled` plus `tabIndex` -1 to any `<button>` carrying `aria-disabled`. The
-row stays readable through its list item name.
+Cut, with the reason:
 
-## Taste items awaiting the owner's review round
+- `color`: the list has one palette, the silver/red scheme; a single row still takes `row.color`.
+- `labelWidth`: one width (96 px) until a consumer needs another.
+- `formatOverflow`, `formatRowLabel`, `summarize`: wording overrides with no caller. The pure functions
+  (`overflowLabel`, `rowLabel`, `summarizeBarList`) stay as the place to add one.
+- `onRowPress`, `isDisabled`: no consumer presses a row, and the disabled row could not meet the shared
+  disabled rule on react-native-web 0.19 (a `Pressable` button drops out of the tab order). BarList has no
+  disabled state.
 
-Implemented at the contract's recommended default; the alternative is a story control where one exists.
+## Decided in review
 
-- T1 bar hue: `brand-primary` for every row (the `color` prop switches it).
-- T2 track: a visible `brand-primary-muted` track.
-- T3 layout: `inline` and `stacked` both ship, default `inline`; the `layout` control switches them.
-- T4 bar thickness, row height and the default `labelWidth` (96 px): first guesses.
-- T5 overflow wording ("2 more · 3"), no rank numerals.
-- T6 default empty state height: `EmptyState` with `py-4`.
+- Bar hue: silver for every row, red for a flagged row (the silver/red scheme of the workout charts).
+- Track: `hairline`, replacing the brand-tinted track that read as low contrast on white.
+- Layout: `inline` and `stacked` both ship, default `inline`.
+- Overflow wording `"2 more · 3"`, no rank numerals; default empty state is `EmptyState` with `py-4`.

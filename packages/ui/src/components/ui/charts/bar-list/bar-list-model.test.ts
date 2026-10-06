@@ -5,6 +5,7 @@ import {
   barFraction,
   buildBarListModel,
   normalizeMaxRows,
+  overflowLabel,
   rankRows,
   resolveMax,
   rowLabel,
@@ -77,7 +78,9 @@ describe('negative values', () => {
     const negative = model.rows.find((r) => r.row.value === -5)
     expect(negative?.fraction).toBe(0)
     const { row, rank } = negative!
-    expect(rowLabel({ row, rank, shownCount: 2, fraction: 0 }, formatters)).toContain('Row 0: -5')
+    expect(rowLabel({ row, rank, shownCount: 2, sort: 'descending' }, formatters)).toContain(
+      'Row 0: -5'
+    )
   })
 })
 
@@ -155,6 +158,15 @@ describe('summarizeBarList', () => {
     expect(summary).toContain('2 more not shown')
   })
 
+  it("formats the hidden total with the caller's formatValue, called without a row", () => {
+    const formatValue = (value: number, row?: BarListRow) =>
+      row ? `${value} calls` : `${value} calls in all`
+    const model = buildBarListModel(rowsOf(90, 5, 4, 3), { maxRows: 2, formatValue })
+    expect(model.hiddenTotalText).toBe('7 calls in all')
+    expect(overflowLabel(model)).toBe('2 more · 7 calls in all')
+    expect(summarizeBarList(model)).toContain('2 more not shown, totalling 7 calls in all.')
+  })
+
   it('claims no ranking for one row', () => {
     const summary = summarizeBarList(buildBarListModel(rowsOf(58)))
     expect(summary).toBe('1 item: Row 0, 58.')
@@ -181,12 +193,19 @@ describe('rowLabel', () => {
       secondaryValue: 4,
       flag: { tone: 'error', label: 'over 5%' },
     }
-    expect(rowLabel({ row, rank: 1, shownCount: 3, fraction: 1 }, formatters)).toBe(
+    expect(rowLabel({ row, rank: 1, shownCount: 3, sort: 'descending' }, formatters)).toBe(
       'Parser: 9, s4, over 5%, rank 1 of 3'
     )
     const bare: BarListRow = { id: 'y', label: 'Bare', value: null }
-    expect(rowLabel({ row: bare, rank: 2, shownCount: 3, fraction: 0 }, formatters)).toBe(
+    expect(rowLabel({ row: bare, rank: 2, shownCount: 3, sort: 'descending' }, formatters)).toBe(
       'Bare: No value, rank 2 of 3'
+    )
+  })
+
+  it('claims no rank when the list keeps input order', () => {
+    const row: BarListRow = { id: 's', label: 'Signed up', value: 82 }
+    expect(rowLabel({ row, rank: 2, shownCount: 5, sort: 'none' }, formatters)).toBe(
+      'Signed up: 82'
     )
   })
 })

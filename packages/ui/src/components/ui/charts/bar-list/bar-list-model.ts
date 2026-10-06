@@ -11,11 +11,8 @@ export interface BarListRow {
   color?: ColorToken
 }
 
-export interface BarListRowContext {
-  rank: number
-  shownCount: number
-  fraction: number
-}
+/** Formats a row's value, or the total of the rows past the cap when called without a row. */
+export type BarListValueFormatter = (value: number, row?: BarListRow) => string
 
 export interface BarListModelRow {
   row: BarListRow
@@ -31,6 +28,8 @@ export interface BarListModel {
   shownCount: number
   hiddenCount: number
   hiddenTotal: number
+  /** The hidden total in the caller's value format, for the overflow row and the summary. */
+  hiddenTotalText: string
   max: number
   sort: 'descending' | 'none'
   largest: { label: string; valueText: string } | null
@@ -42,12 +41,12 @@ export interface BarListModelOptions {
   max?: number
   sort?: 'descending' | 'none'
   maxRows?: number
-  formatValue?: (value: number, row: BarListRow) => string
+  formatValue?: BarListValueFormatter
   formatSecondary?: (value: number, row: BarListRow) => string
 }
 
 export interface RowFormatters {
-  formatValue: (value: number, row: BarListRow) => string
+  formatValue: BarListValueFormatter
   formatSecondary: (value: number, row: BarListRow) => string
 }
 
@@ -137,6 +136,7 @@ export function buildBarListModel(
     shownCount: modelRows.length,
     hiddenCount: hidden.length,
     hiddenTotal,
+    hiddenTotalText: formatValue(hiddenTotal),
     max: resolved,
     sort,
     largest,
@@ -162,13 +162,23 @@ export function valuesChars(rows: BarListModelRow[], formatters: RowFormatters):
   return Math.max(0, ...widths)
 }
 
-export function defaultOverflowLabel(hiddenCount: number, hiddenTotal: number): string {
-  return `${hiddenCount} more · ${formatCompact(hiddenTotal)}`
+export function overflowLabel(model: BarListModel): string {
+  return `${model.hiddenCount} more · ${model.hiddenTotalText}`
 }
 
-/** The row's accessible name: every visible part, in words, so the bar and colour add nothing. */
+export interface RowLabelContext {
+  row: BarListRow
+  rank: number
+  shownCount: number
+  sort: 'descending' | 'none'
+}
+
+/**
+ * The row's accessible name: every visible part, in words, so the bar and colour add nothing.
+ * A list in input order is not ranked, so its rows carry no rank.
+ */
 export function rowLabel(
-  { row, rank, shownCount }: { row: BarListRow } & BarListRowContext,
+  { row, rank, shownCount, sort }: RowLabelContext,
   { formatValue, formatSecondary }: RowFormatters
 ): string {
   const value = cleanValue(row.value)
@@ -177,7 +187,7 @@ export function rowLabel(
     `${row.label}: ${value === null ? NO_VALUE_TEXT : formatValue(value, row)}`,
     secondary === null ? null : formatSecondary(secondary, row),
     row.flag?.label ?? null,
-    `rank ${rank} of ${shownCount}`,
+    sort === 'descending' ? `rank ${rank} of ${shownCount}` : null,
   ]
   return parts.filter((part): part is string => part !== null).join(', ')
 }
@@ -199,16 +209,12 @@ export function summarizeBarList(model: BarListModel): string {
     : ''
   const hidden =
     model.hiddenCount > 0
-      ? ` ${model.hiddenCount} more not shown, totalling ${formatCompact(model.hiddenTotal)}.`
+      ? ` ${model.hiddenCount} more not shown, totalling ${model.hiddenTotalText}.`
       : ''
   return `${shown}${largest}${hidden}`
 }
 
-/** The list's accessible name: the caller's label, then the summary (the caller's or the default). */
-export function readoutName(
-  label: string,
-  model: BarListModel,
-  summarize: (model: BarListModel) => string = summarizeBarList
-): string {
-  return `${label}. ${summarize(model)}`
+/** The list's accessible name: the caller's label, then the summary. */
+export function readoutName(label: string, model: BarListModel): string {
+  return `${label}. ${summarizeBarList(model)}`
 }

@@ -1,6 +1,11 @@
 import { describe, expect, it, vi } from 'vitest'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { axe, toHaveNoViolations } from 'jest-axe'
+import { compositeOver, contrast } from '../../../../theme/color-checks'
+import { getSemanticColors } from '../../../../theme/tokens/semantic'
+import { capturedByNode } from '../../../../test/classname-capture'
+import { Surface } from '../../surface'
+import { silverRed } from '../kit/silverRed'
 import { BarList } from './BarList'
 import { barListFixtures, defaultFixture, veryLargeFixture, type BarListFixture } from './fixtures'
 
@@ -65,9 +70,20 @@ describe('BarList', () => {
     }
   })
 
-  it('lets summarize override the summary', () => {
-    renderFixture(defaultFixture, { summarize: () => 'Custom summary.' })
-    expect(screen.getByRole('list')).toHaveAttribute('aria-label', 'Tool calls. Custom summary.')
+  it("formats the overflow row and the summary's hidden total with the caller's formatValue", () => {
+    renderFixture(defaultFixture, { formatValue: (value: number) => `$${value.toFixed(2)}` })
+    expect(screen.getByTestId('bar-list-overflow')).toHaveTextContent('2 more · $3.00')
+    expect(screen.getByRole('list')).toHaveAttribute(
+      'aria-label',
+      expect.stringContaining('2 more not shown, totalling $3.00.')
+    )
+  })
+
+  it('names no rank in a row of a list kept in input order', () => {
+    renderFixture(fixture('Funnel'))
+    for (const row of screen.getAllByTestId('bar-list-row')) {
+      expect(row.getAttribute('aria-label')).not.toMatch(/rank/)
+    }
   })
 
   it('renders duplicate ids as two rows without a key warning', () => {
@@ -116,41 +132,90 @@ describe('BarList', () => {
     expect(new Set(tracks.map((el) => el.className)).size).toBe(1)
   })
 
-  describe('pressing', () => {
-    it('passes the pressed row to onRowPress', () => {
-      const onRowPress = vi.fn()
-      renderFixture(defaultFixture, { onRowPress })
-      fireEvent.click(screen.getAllByRole('button')[1])
-      expect(onRowPress).toHaveBeenCalledWith(expect.objectContaining({ id: 'Read' }))
+  describe('colour', () => {
+    const flagged = fixture('Flagged')
+    const classOf = (el: Element) => capturedByNode.get(el) ?? ''
+    const fillOf = (label: string) =>
+      screen
+        .getByLabelText(new RegExp(`^${label}:`))
+        .querySelector<HTMLElement>('[data-testid="bar-list-fill"]')
+
+    it.each(['dark', 'light'] as const)(
+      'paints unflagged rows silver and flagged rows one red in %s mode',
+      (mode) => {
+        const { neutral, flag } = silverRed(mode)
+        render(
+          <Surface theme={mode}>
+            <BarList accessibilityLabel="Errors" rows={flagged.rows} />
+          </Surface>
+        )
+        const tones = new Set(flagged.rows.map((row) => row.flag?.tone))
+        expect(tones).toEqual(new Set(['warning', 'error', undefined]))
+        for (const row of flagged.rows) {
+          expect(fillOf(row.label)).toHaveStyle({ backgroundColor: row.flag ? flag : neutral })
+        }
+      }
+    )
+
+    it.each(['dark', 'light'] as const)(
+      'keeps both fills at 3:1 or more against the track on the %s base surface',
+      (mode) => {
+        const colors = getSemanticColors(mode)
+        const track = compositeOver(colors['hairline-default'], colors['surface-base'])
+        const { neutral, flag } = silverRed(mode)
+        expect(contrast(neutral, track)).toBeGreaterThanOrEqual(3)
+        expect(contrast(flag, track)).toBeGreaterThanOrEqual(3)
+      }
+    )
+
+    it('paints silver outside any Surface, the dark default', () => {
+      renderFixture(defaultFixture)
+      for (const fill of screen.getAllByTestId('bar-list-fill')) {
+        expect(fill).toHaveStyle({ backgroundColor: silverRed('dark').neutral })
+      }
     })
 
-    it('stops onRowPress and sets aria-disabled when disabled', () => {
-      const onRowPress = vi.fn()
-      renderFixture(defaultFixture, { onRowPress, isDisabled: true })
-      const [first] = screen.getAllByRole('button')
-      fireEvent.click(first)
-      expect(onRowPress).not.toHaveBeenCalled()
-      expect(first).toHaveAttribute('aria-disabled', 'true')
+    it("lets a row's own color win over the flag", () => {
+      const row = {
+        id: 'own',
+        label: 'Own',
+        value: 4,
+        color: 'status-info' as const,
+        flag: { tone: 'error' as const, label: 'over' },
+      }
+      render(<BarList accessibilityLabel="Own colour" rows={[row]} />)
+      expect(screen.getByTestId('bar-list-fill').style.backgroundColor).toBe(
+        'var(--color-status-info)'
+      )
     })
 
-    it('renders no button and no focusable row without onRowPress', () => {
-      const { container } = renderFixture(defaultFixture)
-      expect(screen.queryByRole('button')).not.toBeInTheDocument()
-      expect(container.querySelector('[tabindex]')).toBeNull()
+    it('draws the track from the hairline token and no brand class anywhere', () => {
+      const { container } = renderFixture(flagged)
+      for (const track of screen.getAllByTestId('bar-list-track')) {
+        expect(classOf(track).split(' ')).toContain('bg-hairline')
+      }
+      const classes = [...container.querySelectorAll('*')].map(classOf).join(' ')
+      expect(classes).toContain('bg-hairline')
+      expect(classes).not.toMatch(/brand-/)
     })
 
-    it('makes pressable rows tab stops in display order', () => {
-      renderFixture(defaultFixture, { onRowPress: vi.fn() })
-      const buttons = screen.getAllByRole('button')
-      expect(buttons).toHaveLength(10)
-      expect(buttons[0]).toHaveAccessibleName(/^Bash:/)
-      expect(buttons.every((b) => b.getAttribute('tabindex') === '0')).toBe(true)
+    it('writes both flag tones in the error text colour, so the label carries the tone', () => {
+      renderFixture(flagged)
+      const labels = flagged.rows.flatMap((row) => (row.flag ? [row.flag.label] : []))
+      expect(labels.length).toBeGreaterThan(1)
+      for (const label of new Set(labels)) {
+        for (const el of screen.getAllByText(label)) {
+          const colours = classOf(el).match(/\btext-(text|status|brand)-\S+/g)
+          expect(colours).toEqual(['text-text-error'])
+        }
+      }
     })
+  })
 
-    it('renders a native button, which the browser presses on Enter and Space', () => {
-      renderFixture(defaultFixture, { onRowPress: vi.fn() })
-      expect(screen.getAllByRole('button').every((b) => b.tagName === 'BUTTON')).toBe(true)
-    })
+  it('renders no button and no focusable row', () => {
+    const { container } = renderFixture(defaultFixture)
+    expect(screen.queryByRole('button')).not.toBeInTheDocument()
+    expect(container.querySelector('[tabindex]')).toBeNull()
   })
 
   describe('states', () => {
@@ -178,7 +243,15 @@ describe('BarList', () => {
       ['With description (stacked)', () => renderFixture(fixture('With description'))],
       ['loading', () => renderFixture(defaultFixture, { isLoading: true })],
       ['empty', () => renderFixture(fixture('Empty'))],
-      ['disabled', () => renderFixture(defaultFixture, { onRowPress: vi.fn(), isDisabled: true })],
+      [
+        'Flagged (light)',
+        () =>
+          render(
+            <Surface theme="light">
+              <BarList accessibilityLabel="Errors" rows={fixture('Flagged').rows} />
+            </Surface>
+          ),
+      ],
     ]
     it.each(cases)('has no axe violations: %s', async (_name, mount) => {
       const { container } = mount()

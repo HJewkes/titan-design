@@ -47,3 +47,8 @@ follows it and does not invent its own.
    polite live region as the fallback if a screen reader ignores it.
 
 `bar-list/` is the reference: `summarizeBarList` and `rowLabel` in `bar-list-model.ts`.
+
+Two seams of this pattern (S-c) are left open in BarList: the prop overrides of items 3 and 4
+(S-c(3) `summarize`, S-c(4) the item-label override). BarList ships the pure functions and neither
+prop, because its props audit found no caller for them (TP-848). A chart adds the prop when a
+consumer needs its own wording.

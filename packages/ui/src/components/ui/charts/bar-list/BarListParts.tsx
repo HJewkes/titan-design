@@ -1,19 +1,20 @@
 import type { ReactNode } from 'react'
-import { Pressable, View, type DimensionValue, type ViewProps } from 'react-native'
+import { View, type DimensionValue, type ViewProps } from 'react-native'
 import { cn } from '../../../../utils/cn'
 import { Skeleton } from '../../skeleton'
 import { Typography } from '../../typography'
-import { resolveColor, type ColorToken } from '../../../../theme/resolve-color'
+import { resolveColor } from '../../../../theme/resolve-color'
 import { formatCompact } from '../../../../utils/number-format'
+import type { SilverRedPair } from '../kit/silverRed'
 import {
   cleanValue,
-  defaultOverflowLabel,
   NO_VALUE_TEXT,
+  overflowLabel,
   rowLabel,
   type BarListModel,
   type BarListModelRow,
   type BarListRow,
-  type BarListRowContext,
+  type BarListValueFormatter,
 } from './bar-list-model'
 
 export const hiddenFromAssistiveTech = {
@@ -26,7 +27,6 @@ export interface RowViewProps {
   entry: BarListModelRow
   layout: 'inline' | 'stacked'
   size: 'sm' | 'md'
-  labelWidth: number
   fill: string
   valueText: string
   secondaryText: string | null
@@ -38,7 +38,7 @@ function Bar({ fraction, fill, size }: { fraction: number; fill: string; size: '
   return (
     <View
       className={cn(
-        'flex-1 overflow-hidden rounded-full bg-brand-primary-muted',
+        'flex-1 overflow-hidden rounded-full bg-hairline',
         size === 'sm' ? 'h-1.5' : 'h-2'
       )}
       testID="bar-list-track"
@@ -71,7 +71,7 @@ function Values({
       testID="bar-list-values"
     >
       {row.flag ? (
-        <Typography variant="caption" color={row.flag.tone}>
+        <Typography variant="caption" color="inherit" className="text-text-error">
           {row.flag.label}
         </Typography>
       ) : null}
@@ -96,7 +96,7 @@ function Label({ entry, size }: { entry: BarListModelRow; size: 'sm' | 'md' }) {
 }
 
 export function RowContent(props: RowViewProps) {
-  const { entry, layout, size, labelWidth, fill } = props
+  const { entry, layout, size, fill } = props
   if (layout === 'stacked') {
     return (
       <View className="gap-1">
@@ -119,7 +119,7 @@ export function RowContent(props: RowViewProps) {
   }
   return (
     <View className="flex-row items-center gap-inline-md">
-      <View style={{ width: labelWidth }}>
+      <View className="w-24">
         <Label entry={entry} size={size} />
       </View>
       <Bar fraction={entry.fraction} fill={fill} size={size} />
@@ -141,83 +141,57 @@ export function SkeletonRows({ count, size }: { count: number; size: 'sm' | 'md'
 // RN's Role union omits 'listitem'; RNW passes it through to the DOM.
 const LISTITEM_ROLE = 'listitem' as ViewProps['role']
 
-interface RowItemProps {
-  name: string
-  onPress?: () => void
-  isDisabled: boolean
-  children: ReactNode
-}
-
-/** One list item. Pressable rows carry the name on the button; others carry it on the item. */
-export function RowItem({ name, onPress, isDisabled, children }: RowItemProps) {
+/** One list item, named in words; its painted content is hidden from assistive tech. */
+export function RowItem({ name, children }: { name: string; children: ReactNode }) {
   return (
-    <View
-      role={LISTITEM_ROLE}
-      accessibilityLabel={onPress ? undefined : name}
-      testID="bar-list-row"
-    >
-      {onPress ? (
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={name}
-          disabled={isDisabled}
-          onPress={isDisabled ? undefined : onPress}
-        >
-          {children}
-        </Pressable>
-      ) : (
-        children
-      )}
+    <View role={LISTITEM_ROLE} accessibilityLabel={name} testID="bar-list-row">
+      {children}
     </View>
   )
 }
 
 // The caption parts are not monospace, so the column is sized a character wider than the text.
 const VALUES_PAD_CHARS = 1
-const FLAG_TOKEN = { warning: 'status-warning', error: 'status-error' } as const
 
-interface ModelRowProps extends Pick<RowViewProps, 'entry' | 'layout' | 'size' | 'labelWidth'> {
+interface ModelRowProps extends Pick<RowViewProps, 'entry' | 'layout' | 'size'> {
   shownCount: number
+  sort: 'descending' | 'none'
   valuesChars: number
-  color: ColorToken
-  formatValue?: (value: number, row: BarListRow) => string
+  palette: SilverRedPair
+  formatValue?: BarListValueFormatter
   formatSecondary?: (value: number, row: BarListRow) => string
-  formatRowLabel?: (row: BarListRow, context: BarListRowContext) => string
-  onRowPress?: (row: BarListRow) => void
-  isDisabled: boolean
+}
+
+// A row's own `color` wins; otherwise the flag decides, and both flag tones share one red.
+function rowFill(row: BarListRow, palette: SilverRedPair): string {
+  if (row.color) return resolveColor(row.color)
+  return row.flag ? palette.flag : palette.neutral
 }
 
 /** One data row: derives its texts, fill and accessible name, then paints them. */
 export function ModelRow({
   entry,
   shownCount,
+  sort,
   valuesChars,
-  color,
+  palette,
   formatValue = formatCompact,
   formatSecondary = formatCompact,
-  formatRowLabel,
-  onRowPress,
-  isDisabled,
   ...layoutProps
 }: ModelRowProps) {
   const { row } = entry
   const value = cleanValue(row.value)
   const secondary = cleanValue(row.secondaryValue)
-  const context = { rank: entry.rank, shownCount, fraction: entry.fraction }
-  const name = formatRowLabel
-    ? formatRowLabel(row, context)
-    : rowLabel({ row, ...context }, { formatValue, formatSecondary })
-  const fillToken = row.color ?? (row.flag ? FLAG_TOKEN[row.flag.tone] : color)
+  const name = rowLabel(
+    { row, rank: entry.rank, shownCount, sort },
+    { formatValue, formatSecondary }
+  )
   return (
-    <RowItem
-      name={name}
-      onPress={onRowPress ? () => onRowPress(row) : undefined}
-      isDisabled={isDisabled}
-    >
+    <RowItem name={name}>
       <View {...hiddenFromAssistiveTech}>
         <RowContent
           entry={entry}
-          fill={resolveColor(fillToken)}
+          fill={rowFill(row, palette)}
           valueText={value === null ? NO_VALUE_TEXT : formatValue(value, row)}
           secondaryText={secondary === null ? null : formatSecondary(secondary, row)}
           valuesChars={valuesChars}
@@ -228,18 +202,13 @@ export function ModelRow({
   )
 }
 
-interface OverflowRowProps {
-  model: BarListModel
-  formatOverflow?: (hiddenCount: number, hiddenTotal: number) => string
-}
-
 /** The text-only row that stands for every row past the cap. */
-export function OverflowRow({ model, formatOverflow = defaultOverflowLabel }: OverflowRowProps) {
+export function OverflowRow({ model }: { model: BarListModel }) {
   if (model.hiddenCount === 0) return null
   return (
     <View role={LISTITEM_ROLE} testID="bar-list-overflow">
       <Typography variant="caption" color="secondary">
-        {formatOverflow(model.hiddenCount, model.hiddenTotal)}
+        {overflowLabel(model)}
       </Typography>
     </View>
   )
