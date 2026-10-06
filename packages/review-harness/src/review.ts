@@ -63,7 +63,8 @@ async function resolveImage(roundDir: string, variant: ImageVariant): Promise<st
 async function pngWidth(file: string): Promise<number> {
   const handle = await open(file)
   try {
-    const { buffer } = await handle.read(Buffer.alloc(4), 0, 4, 16)
+    const { buffer, bytesRead } = await handle.read(Buffer.alloc(4), 0, 4, 16)
+    if (bytesRead < 4) throw new ReviewError(`cannot read PNG width from ${file}`)
     return buffer.readUInt32BE(0)
   } finally {
     await handle.close()

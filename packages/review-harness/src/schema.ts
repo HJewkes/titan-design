@@ -450,7 +450,9 @@ const LEGACY_REFUSED =
 export const RoundSchema = ManifestObject.extend({
   schema: z.literal(MANIFEST_SCHEMA_ID, { error: LEGACY_REFUSED }),
   questions: z.array(ContractQuestionSchema),
-  sections: z.array(ContractSectionSchema).min(1, 'a round groups its questions into sections'),
+  sections: z
+    .array(ContractSectionSchema, { error: 'a round needs a sections array' })
+    .min(1, 'a round groups its questions into sections'),
 }).superRefine((m, ctx) => addProblems(ctx, [...manifestProblems(m), ...contractProblems(m)]))
 
 /** A comment the human left on a frame that a section pointed at this question. */
