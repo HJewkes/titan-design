@@ -133,6 +133,7 @@ export function ScenarioPair({
   header,
   heroLabel = 'Set',
   dualLabel = 'dual',
+  gap = 10,
   single,
   left,
   right,
@@ -151,6 +152,8 @@ export function ScenarioPair({
   /** The hero strip's label. */
   heroLabel?: string
   dualLabel?: string
+  /** Spacing between the pair's parts. */
+  gap?: number
   single?: number[]
   left?: number[]
   right?: number[]
@@ -169,7 +172,7 @@ export function ScenarioPair({
   const bareExpanded = view === 'expanded' ? { showNumbers: false, showInfo: false } : {}
 
   return (
-    <View style={{ gap: 10, ...(width == null ? null : { width }) }}>
+    <View style={{ gap, ...(width == null ? null : { width }) }}>
       {header ?? (
         <View style={{ gap: 3 }}>
           <ViewLabel text={title ?? ''} />
@@ -267,6 +270,7 @@ export function SetTypeBoard({ view }: { view: StripView }) {
           key={row.type}
           view={view}
           scale="fixed"
+          gap={8}
           heroLabel="This Set"
           dualLabel="dual · symmetric structure, right logs fewer → aligned empties"
           singleSet={row.single}
@@ -406,11 +410,12 @@ export function RepTypeBoard({ view }: { view: StripView }) {
           key={row.key}
           view={view}
           scale="fixed"
+          gap={8}
           singleSet={row.single}
           leftSet={row.left}
           rightSet={row.right}
           header={
-            <View style={{ gap: 8 }}>
+            <>
               <Text
                 style={{
                   color: VIEW_HEADING,
@@ -422,7 +427,7 @@ export function RepTypeBoard({ view }: { view: StripView }) {
                 {row.label}
               </Text>
               <Note>{row.note}</Note>
-            </View>
+            </>
           }
         />
       ))}
