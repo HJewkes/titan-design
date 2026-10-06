@@ -3315,9 +3315,6 @@ export function GoalTrajectoryChart(input: GoalTrajectoryChartProps): react_jsx_
 export interface GoalTrajectoryChartProps extends ViewProps {
     actuals: GoalActualPoint[];
     animate?: boolean;
-    bandCurve?: BandCurve;
-    bandFade?: BandFade;
-    baseline?: PlotBaseline;
     calibratingNote?: string;
     // (undocumented)
     className?: string;
@@ -3326,7 +3323,6 @@ export interface GoalTrajectoryChartProps extends ViewProps {
     direction?: GoalDirection;
     expected: GoalExpectedPoint[];
     height: number;
-    leftShadowSpread?: number;
     mesoBoundaries?: number[];
     metricLabel?: string;
     nextTarget?: GoalNextTarget;

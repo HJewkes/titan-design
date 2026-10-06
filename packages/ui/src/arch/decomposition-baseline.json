@@ -82,7 +82,7 @@
     "props": 18
   },
   "components/custom/Workout/GoalTrajectoryChart.tsx#GoalTrajectoryChart": {
-    "props": 25
+    "props": 21
   },
   "components/custom/Workout/GoalTrajectoryChartGeometry.ts": {
     "file-lines": 599
