@@ -670,6 +670,15 @@ export interface CardHeaderProps {
     className?: string;
 }
 
+// @public
+export function CardInset(input: CardInsetProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface CardInsetProps extends ViewProps {
+    children?: React__default.ReactNode;
+    className?: string;
+}
+
 // @public (undocumented)
 export interface CardProps extends ViewProps {
     accentColor?: string;
@@ -5884,6 +5893,19 @@ export interface ScatterProps extends Omit<ViewProps, 'children'> {
     selectedId?: string;
     width: number;
 }
+
+// @public
+export type ScatterReferenceLine = ({
+    y: number;
+} | {
+    x: number;
+} | {
+    slope: number;
+    intercept: number;
+}) & {
+    id?: string;
+    label?: string;
+};
 
 // @public
 export function ScheduleTiles(input: ScheduleTilesProps): react_jsx_runtime.JSX.Element;
