@@ -11,6 +11,7 @@
  * `DimensionTone` / `FatigueVerdictState` one-for-one so the real WA verdict drops
  * straight in.
  */
+import type { TempoTuple } from './tempo-pacing'
 
 /** Per-dimension status light. Mirrors WA's `DimensionTone`. */
 export type DimensionTone = 'ok' | 'warn' | 'alarm'
@@ -123,7 +124,7 @@ export interface LiveFatigueModel {
   /** Ghost-spark: per-rep velocity-time curves, oldest first (last = current rep). */
   velocityCurves: RepVelocityCurve[]
   /** Current-rep tempo tuple `[ecc, pauseBottom, con, pauseTop]` seconds. `null` when no rep carries timing. */
-  tempoSeconds: [number, number, number, number] | null
+  tempoSeconds: TempoTuple | null
   /** Target tempo tuple, same ordering, from the prescription. `null` when none prescribed. */
-  targetTempoSeconds: [number, number, number, number] | null
+  targetTempoSeconds: TempoTuple | null
 }
