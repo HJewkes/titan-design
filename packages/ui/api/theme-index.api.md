@@ -1036,7 +1036,7 @@ export function hsvToRgb(h: number, s: number, v: number): {
 };
 
 // @public
-export function insetWell(tone?: string): ViewStyle;
+export function insetWell(tone?: string, mode?: ThemeMode): ViewStyle;
 
 // @public
 export function isCssPropertyManifest(candidate: unknown): candidate is CssPropertyManifest;
@@ -1247,13 +1247,13 @@ export interface ManifestValidationResult {
 }
 
 // @public
-export function paperSheet(tone?: string): ViewStyle;
+export function paperSheet(tone?: string, mode?: ThemeMode): ViewStyle;
 
 // @public
 export const PLANE_ORDER: readonly ["frame", "background", "base", "elevated", "raised", "overlay"];
 
 // @public
-export function postIt(tone?: string, deg?: number): ViewStyle;
+export function postIt(tone?: string, deg?: number, mode?: ThemeMode): ViewStyle;
 
 // @public
 export const PRESSED_ELEVATION_LEVEL: ElevationLevel;

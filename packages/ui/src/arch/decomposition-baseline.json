@@ -12,7 +12,7 @@
     "complexity": 21
   },
   "components/custom/Workout/ActiveWorkoutPage.tsx": {
-    "file-lines": 367
+    "file-lines": 364
   },
   "components/custom/Workout/ActiveWorkoutPage.tsx#ActiveWorkoutPage": {
     "complexity": 19
@@ -42,20 +42,20 @@
     "props": 16
   },
   "components/custom/Workout/ExerciseCard.tsx": {
-    "file-lines": 255
+    "file-lines": 250
   },
   "components/custom/Workout/ExerciseCard.tsx#CollapsedCard": {
-    "props": 19
+    "props": 17
   },
   "components/custom/Workout/ExerciseCard.tsx#ExerciseCard": {
-    "props": 22
+    "props": 20
   },
   "components/custom/Workout/ExerciseCard.tsx#ExpandedCard": {
     "complexity": 20,
-    "props": 19
+    "props": 17
   },
   "components/custom/Workout/ExerciseCard.tsx#UpcomingCard": {
-    "props": 19
+    "props": 17
   },
   "components/custom/Workout/ExerciseCardHeading.tsx#ExerciseCardHeading": {
     "props": 26
@@ -82,16 +82,16 @@
     "props": 18
   },
   "components/custom/Workout/GoalTrajectoryChart.tsx#GoalTrajectoryChart": {
-    "props": 25
+    "props": 21
   },
   "components/custom/Workout/GoalTrajectoryChartGeometry.ts": {
-    "file-lines": 597
+    "file-lines": 599
   },
   "components/custom/Workout/GoalTrajectoryMini.tsx": {
     "file-lines": 273
   },
   "components/custom/Workout/GoalTrajectoryPlot.tsx": {
-    "file-lines": 540
+    "file-lines": 539
   },
   "components/custom/Workout/IntensityBar.tsx#IntensityBar": {
     "component-lines": 131,
@@ -181,7 +181,7 @@
     "props": 16
   },
   "components/shell/workout/PinnedLiveStrip.tsx": {
-    "file-lines": 324
+    "file-lines": 323
   },
   "components/shell/workout/PinnedLiveStrip.tsx#HeroNumeral": {
     "props": 19

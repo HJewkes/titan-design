@@ -277,7 +277,7 @@ export interface ProgramSelection {
 export function summarizeVbt(sets: ExerciseVbtSet[]): VbtSummary;
 
 // @public
-export function toActiveCardProps(exercise: ActiveWorkoutExercise, focused: boolean, onToggle: () => void, supersetPosition?: ExerciseCardProps['supersetPosition'], supersetColor?: string): ExerciseCardProps;
+export function toActiveCardProps(exercise: ActiveWorkoutExercise, focused: boolean, onToggle: () => void, supersetPosition?: ExerciseCardProps['supersetPosition']): ExerciseCardProps;
 
 // @public
 export function toExerciseCardProps(entry: ExerciseDetailEntry, expanded: boolean, onToggle: () => void): ExerciseCardProps;

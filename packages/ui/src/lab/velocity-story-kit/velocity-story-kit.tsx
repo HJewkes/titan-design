@@ -19,10 +19,10 @@
 import type { ReactNode } from 'react'
 import type { Decorator } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
-import { VelocityStrip, type VelocitySet } from './VelocityStrip'
-import { DualVelocityStrip } from './DualVelocityStrip'
-import { greyRamp } from '../../../theme/tokens/primitives'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { VelocityStrip, type VelocitySet } from '../../components/custom/Workout/VelocityStrip'
+import { DualVelocityStrip } from '../../components/custom/Workout/DualVelocityStrip'
+import { greyRamp } from '../../theme/tokens/primitives'
+import { getSemanticColors } from '../../theme/tokens/semantic'
 
 const t = getSemanticColors('dark')
 
@@ -130,6 +130,10 @@ export function ScenarioPair({
   view,
   title,
   note,
+  header,
+  heroLabel = 'Set',
+  dualLabel = 'dual',
+  gap = 10,
   single,
   left,
   right,
@@ -141,8 +145,15 @@ export function ScenarioPair({
   ...rest
 }: {
   view: StripView
-  title: string
+  title?: string
   note?: string
+  /** Replaces the title/note block, for boards that head each row in their own style. */
+  header?: ReactNode
+  /** The hero strip's label. */
+  heroLabel?: string
+  dualLabel?: string
+  /** Spacing between the pair's parts. */
+  gap?: number
   single?: number[]
   left?: number[]
   right?: number[]
@@ -157,15 +168,17 @@ export function ScenarioPair({
   barColor?: 'zone' | 'loss'
 }) {
   const h = VIEW_HEIGHT[view]
-  const heroProps = view === 'hero' ? { label: 'Set' } : {}
+  const heroProps = view === 'hero' ? { label: heroLabel } : {}
   const bareExpanded = view === 'expanded' ? { showNumbers: false, showInfo: false } : {}
 
   return (
-    <View style={{ gap: 10, ...(width == null ? null : { width }) }}>
-      <View style={{ gap: 3 }}>
-        <ViewLabel text={title} />
-        {note ? <Note>{note}</Note> : null}
-      </View>
+    <View style={{ gap, ...(width == null ? null : { width }) }}>
+      {header ?? (
+        <View style={{ gap: 3 }}>
+          <ViewLabel text={title ?? ''} />
+          {note ? <Note>{note}</Note> : null}
+        </View>
+      )}
 
       <ViewLabel text="single" />
       <VelocityStrip
@@ -178,7 +191,7 @@ export function ScenarioPair({
         {...rest}
       />
 
-      <ViewLabel text="dual" />
+      <ViewLabel text={dualLabel} />
       <DualVelocityStrip
         left={leftSet ? { set: leftSet, label: LEFT_SLOT } : dualOf(left ?? [], LEFT_SLOT)}
         right={rightSet ? { set: rightSet, label: RIGHT_SLOT } : dualOf(right ?? [], RIGHT_SLOT)}
@@ -197,7 +210,7 @@ export function ScenarioPair({
 // instead of the hero owning a private copy.
 
 export type BoardRow = {
-  type: string
+  type: VelocitySet['type']
   note: string
   single: VelocitySet
   left: VelocitySet
@@ -250,45 +263,38 @@ export const SET_TYPE_BOARD: BoardRow[] = [
 ]
 
 export function SetTypeBoard({ view }: { view: StripView }) {
-  const h = VIEW_HEIGHT[view]
   return (
     <View style={{ gap: 30 }}>
       {SET_TYPE_BOARD.map((row) => (
-        <View key={row.type} style={{ gap: 8 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 10, flexWrap: 'wrap' }}>
-            <Text
-              style={{
-                color: VIEW_HEADING,
-                fontSize: 13,
-                fontWeight: '800',
-                letterSpacing: 1,
-                textTransform: 'uppercase',
-              }}
+        <ScenarioPair
+          key={row.type}
+          view={view}
+          scale="fixed"
+          gap={8}
+          heroLabel="This Set"
+          dualLabel="dual · symmetric structure, right logs fewer → aligned empties"
+          singleSet={row.single}
+          leftSet={row.left}
+          rightSet={row.right}
+          header={
+            <View
+              style={{ flexDirection: 'row', alignItems: 'baseline', gap: 10, flexWrap: 'wrap' }}
             >
-              {row.type}
-            </Text>
-            <Note>{row.note}</Note>
-          </View>
-
-          <ViewLabel text="single" />
-          <VelocityStrip
-            variant={view}
-            set={row.single}
-            height={h.single}
-            scale="fixed"
-            {...(view === 'hero' ? { label: 'This Set' } : {})}
-            {...(view === 'expanded' ? { showNumbers: false, showInfo: false } : {})}
-          />
-
-          <ViewLabel text="dual · symmetric structure, right logs fewer → aligned empties" />
-          <DualVelocityStrip
-            left={{ set: row.left, label: LEFT_SLOT }}
-            right={{ set: row.right, label: RIGHT_SLOT }}
-            variant={dualVariantFor(view)}
-            height={h.dual}
-            scale="fixed"
-          />
-        </View>
+              <Text
+                style={{
+                  color: VIEW_HEADING,
+                  fontSize: 13,
+                  fontWeight: '800',
+                  letterSpacing: 1,
+                  textTransform: 'uppercase',
+                }}
+              >
+                {row.type}
+              </Text>
+              <Note>{row.note}</Note>
+            </View>
+          }
+        />
       ))}
     </View>
   )
@@ -397,42 +403,33 @@ export const REP_TYPE_ROWS: RepTypeRow[] = [
 ]
 
 export function RepTypeBoard({ view }: { view: StripView }) {
-  const h = VIEW_HEIGHT[view]
   return (
     <View style={{ gap: 30 }}>
       {REP_TYPE_ROWS.map((row) => (
-        <View key={row.key} style={{ gap: 8 }}>
-          <Text
-            style={{
-              color: VIEW_HEADING,
-              fontSize: 13,
-              fontWeight: '800',
-              letterSpacing: 0.5,
-            }}
-          >
-            {row.label}
-          </Text>
-          <Note>{row.note}</Note>
-
-          <ViewLabel text="single" />
-          <VelocityStrip
-            variant={view}
-            set={row.single}
-            height={h.single}
-            scale="fixed"
-            {...(view === 'hero' ? { label: 'Set' } : {})}
-            {...(view === 'expanded' ? { showNumbers: false, showInfo: false } : {})}
-          />
-
-          <ViewLabel text="dual" />
-          <DualVelocityStrip
-            left={{ set: row.left, label: LEFT_SLOT }}
-            right={{ set: row.right, label: RIGHT_SLOT }}
-            variant={dualVariantFor(view)}
-            height={h.dual}
-            scale="fixed"
-          />
-        </View>
+        <ScenarioPair
+          key={row.key}
+          view={view}
+          scale="fixed"
+          gap={8}
+          singleSet={row.single}
+          leftSet={row.left}
+          rightSet={row.right}
+          header={
+            <>
+              <Text
+                style={{
+                  color: VIEW_HEADING,
+                  fontSize: 13,
+                  fontWeight: '800',
+                  letterSpacing: 0.5,
+                }}
+              >
+                {row.label}
+              </Text>
+              <Note>{row.note}</Note>
+            </>
+          }
+        />
       ))}
     </View>
   )
