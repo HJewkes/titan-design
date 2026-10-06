@@ -177,6 +177,92 @@ sha256 of the manifest you wrote.
   pick-ones, so only one question can list a plain `"none"`; the rest use the built-in. A
   `revisionRequested` on a pick-one that offers neither is rejected. Everything else is unchanged and means what it always did.
 
+## A round from Morning items (TD-680)
+
+`titan-review round from-morning <items.json> [--decider <file>] [--out <draft.json>]` builds a
+`round@2` draft from a seat's Morning items with no agent in the loop: the same items always
+give the same draft. It writes `draft.json` beside the items file (never `round.json`, which
+`build` owns) and prints the `build` command to run next. A draft that would fail the review
+contract is refused with the field named, so nothing reaches `build` broken.
+
+The items file is `titan-review/morning-items@1`:
+
+```json
+{
+  "schema": "titan-review/morning-items@1",
+  "unit": "widget-shop-morning",
+  "round": 1,
+  "storybookUrl": "http://127.0.0.1:6006",
+  "widths": [1280],
+  "context": "Shown at the top of the round (markdown).",
+  "items": [
+    {
+      "id": "paint-1",
+      "seat": "paint-seat",
+      "morning": "1",
+      "door": "two-way",
+      "title": "Repaint the widget shelf in teal?",
+      "body": "What the item is and why it reaches the owner (markdown).",
+      "options": [
+        { "label": "A: Teal", "proposal": "Repaint in teal this week. Pro: matches the lamps." },
+        { "label": "B: Keep beige", "proposal": "Leave it. Pro: no paint cost." },
+        { "label": "C: Defer", "proposal": "Decide after the lamps arrive." }
+      ],
+      "images": [
+        { "key": "before", "file": "shots/before.png", "label": "Beige, today" },
+        { "key": "after", "file": "shots/after.png", "label": "Teal, proposed" }
+      ],
+      "signsOff": "the shelf colour"
+    }
+  ]
+}
+```
+
+- `unit` and `round` are the round's. `storybookUrl` (default `http://127.0.0.1:6006`), `widths`
+  (default `[1280]`) and `context` are optional.
+- Each item is one question and one section. `id` is the question and section id (letters,
+  digits, `_`, `-`; at most 32). `seat` groups the items: sections follow the seats' order of
+  first appearance, each seat's items together in file order. `morning` is the item's number on
+  the seat's list and is optional. `door` is `one-way` or `two-way` and is said in the section's
+  context. `title` is the question prompt (inline markdown only). `body` is the section's
+  `changed` text.
+- **Every option carries its proposal text.** `label` is the pick as the owner clicks it;
+  `proposal` is what picking it proposes, with its reasoning, and must not be blank. The
+  section's `deciding` lists each option as `**label** Proposed: proposal`, so an option is never
+  a bare heading. A label two items share (seats reuse "C: Defer") is qualified with the item's
+  id in every item, because options are a question's own under the contract.
+- `images` are optional captures of the change, paths relative to the items file. They become a
+  `STATES` strip of image variants, each declared `unmeasured` in light and dark; replace that
+  with `measured` in the draft when a ratio is known. The draft must sit beside, or below, the
+  items file so the paths stay inside its directory. An item with no images has no strip, and a
+  round with no images has no variants at all. Variant keys are the round's, so a `key` two
+  items share (every item's "before") becomes `<key>-<item id>` in each of them.
+- `signsOff` is optional; the default names the seat, the Morning number and the title.
+- Seat text (`body`, each `proposal`, the round `context`) is relabelled and repaired before it
+  is written: a "Recommended default", "Recommend yes" or "Default:" label becomes "Proposed",
+  "recommend" as a verb in a sentence becomes "propose", a table with no header row gets a
+  blank one (a table that has one is left alone), and an orphan `**` on a line is dropped.
+  Running it twice gives the same text. Code spans and fenced blocks are quoted verbatim.
+
+The decider's answers are a separate file so they never sit in the seat's text:
+
+```json
+[
+  {
+    "questionId": "paint-1",
+    "answer": "A: Teal",
+    "rationale": "The lamps are warm and teal reads well under them.",
+    "confidence": 0.7,
+    "cite": "paint-notes section 2"
+  }
+]
+```
+
+`answer` is the item's own option label (before any qualification); `cite` says where the
+reasoning is recorded and is appended to the rationale. Each becomes the question's
+`recommendation` with `by: "decider"`, hidden until the owner answers (`after-answer`). An
+answer that is not one of the options, or a `questionId` no item has, is refused.
+
 ## Contrast gate (TD-478)
 
 `titan-review build <draft.json>` measures every story variant at every manifest width in
