@@ -7,11 +7,17 @@
  * is out of scope: there truncation is a consumer prop (Typography `truncate`), and the
  * consumer is what this rule checks.
  *
- * Flags three shapes:
+ * Flags four shapes:
  *   1. JSX attributes `truncate`, `noWrap`, `maxLines`, `numberOfLines`, `ellipsizeMode`.
- *   2. Object properties `maxLines`, `numberOfLines` (a props object spread onto Text).
+ *      `numberOfLines={numberOfLines}` that forwards a component's own `{ numberOfLines }` prop
+ *      (no rename, no default, never written) is not reported: the caller's attribute is the site.
+ *   2. Object properties with those names (a props object spread onto Text, or a `cn({ truncate: on })`
+ *      key), and `textOverflow: 'ellipsis'` in a style object.
  *   3. Class tokens `truncate`, `line-clamp-*`, `text-ellipsis` in any string, with or
- *      without variant prefixes (`web:truncate`).
+ *      without variant prefixes (`web:truncate`), as an object key (`cn({ 'line-clamp-2': on })`)
+ *      or as a template prefix (`line-clamp-${lines}`, reported as `line-clamp-*`).
+ *   4. `line-clamp-none` is the opposite of a clamp, and a string that is only compared to
+ *      `'truncate'` or imported from a `truncate` path is not a class.
  *
  * RATCHET, same shape as no-local-formatter: today's sites are recorded in
  * `no-truncation-baseline.json`, keyed by file and VALUE (the attribute or property name, or
@@ -28,8 +34,18 @@
 const path = require('node:path')
 
 const JSX_ATTRIBUTES = new Set(['truncate', 'noWrap', 'maxLines', 'numberOfLines', 'ellipsizeMode'])
-const OBJECT_PROPERTIES = new Set(['maxLines', 'numberOfLines'])
-const CLASS_TOKEN = /^(?:[\w-]+:)*!?(?:truncate|text-ellipsis|line-clamp-[\w[\]]+)$/
+const OBJECT_PROPERTIES = new Set(JSX_ATTRIBUTES)
+const CLASS_TOKEN = /^(?:[\w-]+:)*!?(?:truncate|text-ellipsis|line-clamp-(?!none$)[\w[\]]+)$/
+const DYNAMIC_CLAMP_TAIL = /(?:^|\s)(?:[\w-]+:)*!?line-clamp-$/
+const DYNAMIC_CLAMP = 'line-clamp-*'
+const NON_CLASS_PARENTS = new Set([
+  'ImportDeclaration',
+  'ExportNamedDeclaration',
+  'ExportAllDeclaration',
+  'ImportExpression',
+  'SwitchCase',
+])
+const COMPARISONS = new Set(['===', '!==', '==', '!='])
 const AFFORDANCES = new Set(['tooltip', 'press'])
 
 const BASELINE_FILE = 'no-truncation-baseline.json'
@@ -96,6 +112,96 @@ function propertyName(node) {
   return undefined
 }
 
+/** A string compared to, switched on or imported is a name, not a class list. */
+function isNameNotClass(node) {
+  const { parent } = node
+  if (NON_CLASS_PARENTS.has(parent.type)) return true
+  return parent.type === 'BinaryExpression' && COMPARISONS.has(parent.operator)
+}
+
+function isEllipsisValue(node) {
+  return node.type === 'Literal' && node.value === 'ellipsis'
+}
+
+/** The variable `name` resolves to from `scope`, walking outwards. */
+function findVariable(scope, name) {
+  for (let current = scope; current; current = current.upper) {
+    const variable = current.set.get(name)
+    if (variable) return variable
+  }
+  return undefined
+}
+
+const FORWARDED_PROP = 'numberOfLines'
+const COMPONENT_WRAPPERS = new Set(['forwardRef', 'memo'])
+
+/** `forwardRef(…)`, `memo(…)`, `React.forwardRef(…)` or `React.memo(…)`. */
+function isComponentWrapper(callee) {
+  const name = callee.type === 'MemberExpression' ? callee.property : callee
+  return name.type === 'Identifier' && COMPONENT_WRAPPERS.has(name.name)
+}
+
+const PASCAL_CASE = /^[A-Z]/
+
+/**
+ * The name a component is declared under: `function Title` or `const Title = …`. A function
+ * expression's own id (`renderItem={function Row() {}}`) names nothing a caller renders.
+ */
+function declaredName(fn) {
+  if (fn.type === 'FunctionDeclaration') return fn.id?.name
+  const { parent } = fn
+  if (
+    parent.type === 'VariableDeclarator' &&
+    parent.init === fn &&
+    parent.id.type === 'Identifier'
+  ) {
+    return parent.id.name
+  }
+  return undefined
+}
+
+/** A function declared under a PascalCase name, or the function `forwardRef`/`memo` wraps. */
+function isComponent(fn) {
+  const { parent } = fn
+  if (parent.type === 'CallExpression' && parent.arguments[0] === fn) {
+    return isComponentWrapper(parent.callee)
+  }
+  return PASCAL_CASE.test(declaredName(fn) ?? '')
+}
+
+/**
+ * `function Title({ numberOfLines })`: the prop destructured under its own name, with no
+ * default, from the first parameter of a component.
+ */
+function isOwnPropBinding(def) {
+  const property = def.name.parent
+  return (
+    def.type === 'Parameter' &&
+    property.type === 'Property' &&
+    property.value === def.name &&
+    !property.computed &&
+    property.key.type === 'Identifier' &&
+    property.key.name === FORWARDED_PROP &&
+    property.parent === def.node.params[0] &&
+    isComponent(def.node)
+  )
+}
+
+/**
+ * `numberOfLines={numberOfLines}` hands on the caller's own `numberOfLines` prop, and the
+ * caller's `numberOfLines=` attribute is the site this rule checks. The exemption is an
+ * allowlist of one shape: the component's `{ numberOfLines }` destructure, never written. A
+ * primitive binding can only be written through its own name, which scope analysis sees, so
+ * anything else (`props.numberOfLines`, a rename, a default, a callback, a `maxLines` prop)
+ * stays reported.
+ */
+function isForwardedProp(expression, scope) {
+  if (expression.type !== 'Identifier' || expression.name !== FORWARDED_PROP) return false
+  const variable = findVariable(scope, expression.name)
+  if (!variable || variable.defs.length !== 1 || !isOwnPropBinding(variable.defs[0])) return false
+  return variable.references.every((reference) => reference.isReadOnly())
+}
+
 const FIX =
   'Let the text wrap, or give the full text a hover or press affordance (`ui/tooltip`) and ' +
   `add the site to ${ALLOWLIST_FILE} with its kind and affordance.`
@@ -141,6 +247,14 @@ module.exports = {
     return {
       JSXAttribute(node) {
         if (node.name.type === 'JSXIdentifier' && JSX_ATTRIBUTES.has(node.name.name)) {
+          const { value } = node
+          if (
+            node.name.name === 'numberOfLines' &&
+            value?.type === 'JSXExpressionContainer' &&
+            isForwardedProp(value.expression, context.sourceCode.getScope(node))
+          ) {
+            return
+          }
           check(node.name.name, node.name.loc, 'attribute')
         }
       },
@@ -149,16 +263,22 @@ module.exports = {
         if (node.parent.type === 'ObjectPattern') return
         const name = propertyName(node)
         if (OBJECT_PROPERTIES.has(name)) check(name, node.key.loc, 'property')
+        else if (name === 'textOverflow' && isEllipsisValue(node.value)) {
+          check(name, node.key.loc, 'property')
+        } else if (name !== undefined) checkString(node.key, name)
       },
 
       Literal(node) {
         if (typeof node.value !== 'string' || node.parent.type === 'TSLiteralType') return
         if (node.parent.type === 'Property' && node.parent.key === node) return
+        if (isNameNotClass(node)) return
         checkString(node, node.value)
       },
 
       TemplateElement(node) {
-        checkString(node, node.value.cooked ?? node.value.raw)
+        const text = node.value.cooked ?? node.value.raw
+        checkString(node, text)
+        if (!node.tail && DYNAMIC_CLAMP_TAIL.test(text)) check(DYNAMIC_CLAMP, node.loc, 'className')
       },
 
       'Program:exit'() {

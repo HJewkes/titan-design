@@ -48,6 +48,16 @@ kbd {
   color: var(--color-text-secondary);
 }
 
+/* Not sticky, so it never collides with the contrast banner's offsets; it opens the page. */
+.harness-warning {
+  margin: 0 0 16px;
+  padding: 8px 12px;
+  border: 2px solid var(--color-status-error);
+  background: var(--color-status-error-subtle);
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
 /* Sticky above the sticky section and frame heads, which move down to clear it. */
 .contrast-override {
   position: sticky;
@@ -149,14 +159,43 @@ body:has(.contrast-override) .variant-head {
   color: var(--color-text-secondary);
 }
 
-.prompts [aria-current] a {
-  font-weight: 600;
-}
-
 .see-also a,
 .prompts a {
   color: var(--color-brand-primary);
   margin-right: var(--space-inline-sm);
+}
+
+/*
+ * On surface-base, not the page plane: light text-secondary is 3.96:1 on background-base and
+ * 4.75:1 here. The current section is told apart by colour, weight and an underline bar.
+ */
+.sections {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-stack-sm) var(--space-inline-lg);
+  padding: var(--space-inset-sm) var(--space-inset-md);
+  list-style: none;
+  background: var(--color-surface-base);
+  border-radius: 8px;
+}
+
+.sections a {
+  display: inline-block;
+  margin-right: 0;
+  padding-bottom: 2px;
+  border-bottom: 3px solid transparent;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+.sections a:hover {
+  color: var(--color-text-primary);
+}
+
+.sections [aria-current] a {
+  color: var(--color-text-primary);
+  font-weight: 600;
+  border-bottom-color: var(--color-text-primary);
 }
 
 .variant-head {
@@ -381,6 +420,17 @@ input:focus {
   border-left: 3px solid var(--color-status-warning);
 }
 
+.unanswered-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-inline-md);
+}
+
+.is-unanswered {
+  padding-left: var(--space-inline-md);
+  border-left: 3px solid var(--color-status-warning);
+}
+
 .pager-end {
   margin-top: var(--space-stack-lg);
 }
@@ -430,9 +480,89 @@ button.primary kbd {
   max-width: 960px;
 }
 
-.round-section > .md {
+/* A section's texts: deciding leads, changed follows, context reads as secondary. */
+.section-text {
   margin-bottom: var(--space-stack-md);
+}
+
+.section-text-label {
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
   color: var(--color-text-secondary);
+}
+
+.section-deciding .md {
+  font-size: 16px;
+  color: var(--color-text-primary);
+}
+
+.section-context {
+  padding-left: var(--space-inset-sm);
+  border-left: 2px solid var(--color-border-subtle);
+}
+
+/* A section's parts: Current beside Proposed, stacked on a narrow window; settled ones folded. */
+.section-parts {
+  margin-bottom: var(--space-stack-md);
+}
+
+.section-part {
+  margin-bottom: var(--space-stack-md);
+}
+
+.part-heading,
+.part-cite {
+  margin: 0 0 4px;
+}
+
+.part-panes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-inline-md);
+}
+
+@media (max-width: 899px) {
+  .part-panes {
+    grid-template-columns: 1fr;
+  }
+}
+
+.part-pane pre,
+.settled-parts pre {
+  margin: 0;
+}
+
+.settled-parts summary {
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.settled-parts ul {
+  margin: var(--space-stack-sm) 0 0;
+  padding-left: var(--space-inset-md);
+}
+
+.settled-parts li {
+  margin-bottom: var(--space-stack-sm);
+}
+
+.part-cite {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+}
+
+.section-context .md,
+.strip-kind {
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+}
+
+.strip-kind {
+  margin: 0 0 var(--space-stack-sm);
 }
 
 .md > :first-child {
@@ -477,7 +607,8 @@ button.primary kbd {
   border-left: 3px solid var(--color-border-prominent);
 }
 
-.md pre {
+.md pre,
+.section-parts pre {
   padding: var(--space-inset-sm);
   overflow-x: auto;
   background: var(--color-surface-base);

@@ -11,9 +11,9 @@ export const REQUIRED_RATIO: Record<CheckKind, number> = {
 }
 
 /** WCAG large text: 18pt (24px), or 14pt (18.66px) when bold. */
-export const LARGE_TEXT_PX = 24
-export const LARGE_BOLD_TEXT_PX = 18.66
-export const BOLD_WEIGHT = 700
+const LARGE_TEXT_PX = 24
+const LARGE_BOLD_TEXT_PX = 18.66
+const BOLD_WEIGHT = 700
 
 export function isLargeText(fontSizePx: number, fontWeight: number): boolean {
   if (fontSizePx >= LARGE_TEXT_PX) return true

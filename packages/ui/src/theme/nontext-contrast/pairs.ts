@@ -58,6 +58,9 @@ const boundaries: NonTextPair[] = [
       src('ui/input/Input.tsx', 'border-border-input'),
       src('ui/select/Select.tsx', 'border-border-input'),
       src('ui/autocomplete/Autocomplete.tsx', 'border-border-input'),
+      src('ui/checkbox/Checkbox.tsx', 'border-border-input'),
+      src('ui/radio/Radio.tsx', 'border-border-input'),
+      src('ui/switch/Switch.tsx', 'bg-border-input'),
     ],
   },
   {
@@ -79,27 +82,19 @@ const boundaries: NonTextPair[] = [
     ],
   },
   {
-    id: 'boundary.hairline-default',
-    token: 'hairline-default',
-    floor: MARK,
-    sources: [src('ui/checkbox/Checkbox.tsx', 'border-hairline')],
-  },
-  {
     id: 'boundary.hairline-strong',
     token: 'hairline-strong',
     floor: MARK,
     sources: [
-      src('ui/radio/Radio.tsx', 'border-hairline-strong'),
       src('ui/select/Select.tsx', 'border-hairline-strong'),
       src('ui/table/TableSelection.tsx', 'border-hairline-strong'),
-      src('ui/switch/Switch.tsx', 'bg-hairline-strong'),
       src('ui/progress/Progress.tsx', 'bg-hairline-strong'),
     ],
   },
   {
     id: 'boundary.switch-thumb-on-off-track',
     token: 'on-brand-primary',
-    over: 'hairline-strong',
+    over: 'border-input',
     floor: MARK,
     sources: [src('ui/switch/Switch.tsx', 'bg-on-brand-primary')],
   },
@@ -210,7 +205,7 @@ const separators: NonTextPair[] = [
       src('ui/table/Table.tsx', 'border-hairline'),
       src('ui/table/TablePagination.tsx', 'border-hairline'),
       src('ui/modal/Modal.tsx', 'border-hairline'),
-      src('custom/Metric/Metric.tsx', 'bg-hairline'),
+      src('ui/metric/Metric.tsx', 'bg-hairline'),
     ],
   },
   {

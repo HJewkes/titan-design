@@ -219,6 +219,13 @@ describe('section navigation at both ends of a page', () => {
     expect(formAt(m, pages[3].first)).toMatch(review)
   })
 
+  it('marks only the current section in the section list as the current step', () => {
+    const list = between(html(m), 'class="prompts sections"', '</ol>')
+    const items = [...list.matchAll(/<li[^>]*>/g)].map(([tag]) => tag)
+    expect(items).toHaveLength(pages.length)
+    expect(items.filter((tag) => tag.includes('aria-current="step"'))).toEqual([items[0]])
+  })
+
   it('adds no pager to a round without sections', () => {
     expect(html(manifest())).not.toContain('pager')
   })
@@ -245,6 +252,15 @@ describe('the final check with questions unanswered', () => {
     expect(markup).toContain('2 of 4 questions are unanswered')
     expect(markup).toMatch(/data-testid="send"[^>]*>Send partial: 2 unanswered<\/button>/)
     expect(markup).toMatch(/<button[^>]*class="primary"[^>]*>Back/)
+  })
+
+  it('marks pending rows, and shows an optional blank as skipped', () => {
+    const markup = screen(['q2'])
+    expect(markup).toMatch(/data-testid="answer-q2"[^>]*data-unanswered="true"/)
+    expect(markup).toContain('(skipped)')
+    expect(markup).toContain('Show only unanswered')
+    expect(markup).toContain('Next unanswered')
+    expect(markup).not.toContain('Previous unanswered')
   })
 
   it('keeps the plain send when every question is answered', () => {
