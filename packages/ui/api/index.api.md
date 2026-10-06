@@ -3779,7 +3779,7 @@ export type InputSize = 'sm' | 'md' | 'lg';
 export type InputVariant = 'outline' | 'filled' | 'underline';
 
 // @public
-export function insetWell(tone?: string): ViewStyle;
+export function insetWell(tone?: string, mode?: ThemeMode): ViewStyle;
 
 // @public (undocumented)
 export function IntensityBar(input: IntensityBarProps): react_jsx_runtime.JSX.Element;
@@ -4993,7 +4993,7 @@ export type PanelTier = keyof typeof PANEL_BREAKPOINTS;
 export function panelTier(width: number): PanelTier;
 
 // @public
-export function paperSheet(tone?: string): ViewStyle;
+export function paperSheet(tone?: string, mode?: ThemeMode): ViewStyle;
 
 // @public
 export function Paragraph(input: ParagraphProps): react_jsx_runtime.JSX.Element;
@@ -5266,7 +5266,7 @@ export interface PortfolioOverviewStat {
 }
 
 // @public
-export function postIt(tone?: string, deg?: number): ViewStyle;
+export function postIt(tone?: string, deg?: number, mode?: ThemeMode): ViewStyle;
 
 // @public
 export const PR_REF_PATTERN: RegExp;
