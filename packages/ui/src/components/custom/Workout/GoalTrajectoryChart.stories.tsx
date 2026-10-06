@@ -4,7 +4,7 @@ import { Surface } from '../../ui/surface'
 import { Typography } from '../../ui/typography'
 import {
   GoalTrajectoryChart,
-  GoalTrajectoryChartExploration,
+  GoalTrajectoryTreatment,
   type GoalTrajectoryChartExplorationProps,
 } from './GoalTrajectoryChart'
 import { calibratingGoal } from './goalTrajectoryCalibratingFixture'
@@ -50,6 +50,26 @@ const bench = {
 const WALL = { width: 1200, height: 340 }
 /** Phone: 360 px wide, the VW-353 phone layout target. */
 const PHONE = { width: 360, height: 220 }
+
+/** The chart with the exploration knobs applied through the internal treatment seam. */
+function renderWithTreatment({
+  leftShadowSpread,
+  baseline,
+  bandFade,
+  bandCurve,
+  ...chart
+}: GoalTrajectoryChartExplorationProps) {
+  return (
+    <GoalTrajectoryTreatment
+      leftShadowSpread={leftShadowSpread}
+      baseline={baseline}
+      bandFade={bandFade}
+      bandCurve={bandCurve}
+    >
+      <GoalTrajectoryChart {...chart} />
+    </GoalTrajectoryTreatment>
+  )
+}
 
 const meta: Meta<GoalTrajectoryChartExplorationProps> = {
   title: 'Custom/Workout/DataViz/GoalTrajectoryChart',
@@ -119,7 +139,7 @@ const meta: Meta<GoalTrajectoryChartExplorationProps> = {
   // Controls open on the locked treatment; the Explore stories override one at a time.
   args: { bandCurve: 'monotone', bandFade: 'centre-14', baseline: 'lip' },
   // The knobs are off the public props; the internal seam reaches them.
-  render: (args) => <GoalTrajectoryChartExploration {...args} />,
+  render: renderWithTreatment,
   // The plot plane sits one step below the card it is drawn on, as on the page.
   decorators: [
     (Story) => (
@@ -431,7 +451,7 @@ export const ExploreAllTreatments: Story = {
           <Typography variant="caption" color="secondary">
             {treatment.caption}
           </Typography>
-          <GoalTrajectoryChartExploration {...args} {...treatment.args} />
+          {renderWithTreatment({ ...args, ...treatment.args })}
         </View>
       ))}
     </View>

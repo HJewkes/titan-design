@@ -1,5 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { createContext, useContext } from 'react'
+import { createContext, useContext, type ReactNode } from 'react'
 import type { ViewProps } from 'react-native'
 import type {
   BandCurve,
@@ -139,17 +139,22 @@ const LOCKED_TREATMENT: GoalTrajectoryExplorationKnobs = {
 
 const ExplorationKnobs = createContext(LOCKED_TREATMENT)
 
-/** {@link GoalTrajectoryChart} with the exploration knobs open; for the Explore stories only. */
-export function GoalTrajectoryChartExploration({
+export interface GoalTrajectoryTreatmentProps extends Partial<GoalTrajectoryExplorationKnobs> {
+  /** The {@link GoalTrajectoryChart}s to draw with this treatment. */
+  children: ReactNode
+}
+
+/** Draws the charts inside it with the given exploration knobs; for the Explore stories only. */
+export function GoalTrajectoryTreatment({
   leftShadowSpread = LOCKED_TREATMENT.leftShadowSpread,
   baseline = LOCKED_TREATMENT.baseline,
   bandFade = LOCKED_TREATMENT.bandFade,
   bandCurve = LOCKED_TREATMENT.bandCurve,
-  ...chartProps
-}: GoalTrajectoryChartExplorationProps) {
+  children,
+}: GoalTrajectoryTreatmentProps) {
   return (
     <ExplorationKnobs.Provider value={{ leftShadowSpread, baseline, bandFade, bandCurve }}>
-      <GoalTrajectoryChart {...chartProps} />
+      {children}
     </ExplorationKnobs.Provider>
   )
 }
