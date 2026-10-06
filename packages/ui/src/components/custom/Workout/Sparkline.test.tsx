@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Sparkline } from './Sparkline'
@@ -186,6 +186,16 @@ describe('Sparkline', () => {
         />
       )
       expect(screen.getByTestId('sparkline-reference-label-0')).toHaveStyle({ right: '0px' })
+    })
+
+    it('renders an empty reference label without a bare text node in a View', () => {
+      const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+      render(
+        <Sparkline data={sampleData} referenceLines={[{ value: 20, color: '#fff', label: '' }]} />
+      )
+      expect(screen.queryByTestId('sparkline-reference-label-0')).toBeNull()
+      expect(error).not.toHaveBeenCalled()
+      error.mockRestore()
     })
   })
 
