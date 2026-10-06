@@ -27,7 +27,7 @@ function questionsOnly(): ManifestInput {
       {
         id: 'd1',
         kind: 'pick-one',
-        prompt: 'Ship it?',
+        prompt: 'Ship the new header?',
         options: ['Yes', 'No'],
         required: true,
         signsOff: 'the first decision',

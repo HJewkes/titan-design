@@ -11,9 +11,9 @@ export function duplicates(values: string[]): string[] {
   return values.filter((v, i) => values.indexOf(v) !== i)
 }
 
-// "sign off as built", "merge as built", "approve it as built": approval of everything at once.
+// "sign off as built", "approve it as built", "LGTM", "looks good": approval of everything at once.
 const BLANKET_SIGN_OFF =
-  /^(?:(?:sign ?-?off|approve|accept|ship|merge|keep)\s+)?(?:(?:it|all|this|everything)\s+)?as[\s-]built$/
+  /^(?:(?:(?:sign ?-?off|approve|accept|ship|merge|keep)\s+)?(?:(?:it|all|this|everything)\s+)?as[\s-]built|lgtm|looks good(?: to me)?|approve(?: it)?|ship it)$/
 
 export function isBlanketSignOff(text: string): boolean {
   const words = text
@@ -92,14 +92,15 @@ function blanketProblems(q: Question): string[] {
     .map((t) => `question ${q.id}: "${t}" is a blanket sign-off; name the changed part instead`)
 }
 
-/** Options are a question's own: none repeats within it or in another pick-one's options. */
+/** Options are a question's own: none repeats within it or in another pick-one's options.
+ * A question's own `revisionOption` is exempt from the cross-question check: rounds share one wording. */
 function optionProblems(m: Manifest): string[] {
   const frames = new Set(m.variants.map((v) => v.key))
   const pickOnes = m.questions.filter((q) => q.kind === 'pick-one')
   const owner = new Map<string, string>()
   const shared = pickOnes.flatMap((q) =>
     [...new Set(q.options)]
-      .filter((o) => !frames.has(o))
+      .filter((o) => !frames.has(o) && o !== q.revisionOption)
       .flatMap((o) => {
         const first = owner.get(o)
         if (first === undefined) owner.set(o, q.id)
