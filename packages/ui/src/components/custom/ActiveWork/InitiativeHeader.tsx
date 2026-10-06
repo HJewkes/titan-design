@@ -50,7 +50,7 @@ export function InitiativeHeader({
         </Typography>
         <StatusDot variant={meta.dot} size="sm" label={meta.label} />
         {rank ? (
-          <Pill variant="subtle" color="primary" size="xs">
+          <Pill variant="subtle" color="primary" size="sm">
             {`#${rank}`}
           </Pill>
         ) : null}
