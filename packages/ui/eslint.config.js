@@ -16,6 +16,7 @@ const noTruncation = require('./eslint-rules/no-truncation')
 const noUnstyledText = require('./eslint-rules/no-unstyled-text')
 const noUpwardTierImport = require('./eslint-rules/no-upward-tier-import')
 const noVarColorOpacity = require('./eslint-rules/no-var-color-opacity')
+const propsNaming = require('./eslint-rules/props-naming')
 const restrictedSyntax = require('./eslint-rules/restricted-syntax')
 const storyTitlePrefix = require('./eslint-rules/story-title-prefix')
 
@@ -113,6 +114,7 @@ module.exports = tseslint.config(
           'no-unstyled-text': noUnstyledText,
           'no-upward-tier-import': noUpwardTierImport,
           'no-var-color-opacity': noVarColorOpacity,
+          'props-naming': propsNaming,
           'story-title-prefix': storyTitlePrefix,
         },
       },
@@ -559,6 +561,20 @@ module.exports = tseslint.config(
     ignores: ['src/**/*.test.{ts,tsx}', 'src/**/*.stories.{ts,tsx}'],
     rules: {
       'titan/no-html-element': 'error',
+    },
+  },
+
+  // TD-690: every component takes the same prop vocabulary (CLAUDE.md, Props Conventions):
+  // `isDisabled`, `isLoading`, `isSelected` and `onPress`, never `disabled`, `loading`,
+  // `selected` or `onClick`. RATCHETED: today's sites are in props-naming-baseline.json,
+  // keyed by file and property name, which must stay exact (an unspent allowance is reported
+  // as stale). Stories and tests are exempt, since they declare no component API; src/lab is
+  // outside the glob.
+  {
+    files: ['src/components/**/*.{ts,tsx}'],
+    ignores: ['src/**/*.test.{ts,tsx}', 'src/**/*.stories.{ts,tsx}'],
+    rules: {
+      'titan/props-naming': 'error',
     },
   },
 
