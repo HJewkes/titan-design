@@ -259,6 +259,44 @@ While these rows exist, `MATURITY.md` clause 2's fourth condition keeps `scatter
 `referenceLines` takes `{ y }`, `{ x }` or `{ slope, intercept }`, each with an optional `id` and
 `label`, clipped to the plot box. They never widen the domain.
 
+## Migration M9 — `Metric` moved to `ui/metric`
+
+`Metric` is domain-free (a figure, a label, a unit and a trend arrow), and the `ui/` stat presets
+must compose it, which `ui/*` may not do from `custom/*`. By the placement rule (`CLAUDE.md`,
+Placement) its home is `ui/metric`. It gains `align` (`start` | `center` | `end`) and `tone` (the
+`PillTone`s bar `brand-secondary`, coloured from semantic tokens). Both are optional and the
+defaults (`center`, no tone) render byte-identical markup and class names
+(`Metric.characterise.test.tsx`). The story title stays `Components/Molecules/Metric`; the per-state
+stories fold into `Default`'s controls.
+
+| Export                                                                                         | Replacement                     | Known consumers                                      | Task  |
+| ---------------------------------------------------------------------------------------------- | ------------------------------- | ---------------------------------------------------- | ----- |
+| `Metric`, `MetricGroup`, `MetricProps`, `MetricGroupProps`, `MetricTrend` from `custom/Metric` | the same names from `ui/metric` | in-repo `custom/Workout/GoalTrajectoryWeekTips` only | TD-53 |
+
+**No published API change.** `Metric` still comes off the package root barrel, now through
+`components/ui`. Only a deep relative import of `custom/Metric` hits the shim, which is tagged
+`@deprecated` for one release and **disappears in 0.23.0**. `GoalTrajectoryWeekTips` stays on the
+shim until its own follow-up; the other three in-repo importers use the new path.
+
+While this row exists, `MATURITY.md` clause 2's fourth condition keeps `metric` at
+`status:candidate`; it becomes promotable when the shim is deleted in 0.23.0.
+
+## Tabs selection props — `index` / `defaultIndex` / `onChange` renamed
+
+`Tabs` now names its controlled state `value` / `defaultValue` / `onValueChange`, the repo convention
+(`CLAUDE.md`, "Controlled state is named `x`, `defaultX`, `onXChange`"), typed by the new
+`ControlledProps<T>` in `src/utils`. The value is still the tab index.
+
+| Export                | Replacement            | Known consumers                                 | Task   |
+| --------------------- | ---------------------- | ----------------------------------------------- | ------ |
+| `<Tabs index>`        | `<Tabs value>`         | none in-repo                                    | TD-270 |
+| `<Tabs defaultIndex>` | `<Tabs defaultValue>`  | none in-repo (both stories pass `defaultValue`) | TD-270 |
+| `<Tabs onChange>`     | `<Tabs onValueChange>` | none in-repo                                    | TD-270 |
+
+The three stay as `@deprecated` aliases and keep working. The new name wins when both are passed,
+and a change fires both `onValueChange` and `onChange`. Unlike before, pressing the tab that is
+already selected fires neither, since `useControllableState` drops a change to the current value.
+
 ## Fatigue tokens — `TONE_COLOR` replaced by `TONE_TOKEN` (VW-316)
 
 **Breaking, no alias possible.** `TONE_COLOR` held colours resolved at import

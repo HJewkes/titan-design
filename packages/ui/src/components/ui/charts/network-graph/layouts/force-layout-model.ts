@@ -1,3 +1,4 @@
+import { compareText } from '../../kit/compareText'
 import {
   forceCollide,
   forceLink,
@@ -23,10 +24,6 @@ export interface SimulateOptions {
   iterations: number
 }
 
-const DEFAULT_SEED = 1
-const DEFAULT_ITERATIONS = 300
-const MIN_ITERATIONS = 1
-const MAX_ITERATIONS = 1000
 const VELOCITY_DECAY = 0.6
 const FINAL_ALPHA = 0.001
 
@@ -37,8 +34,6 @@ interface Body extends SimulationNodeDatum {
   vx: number
   vy: number
 }
-
-const compareText = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0)
 
 /** Edges between two distinct known nodes, copied as plain ids and sorted by source, target, id. */
 function simulationLinks(
@@ -120,12 +115,12 @@ function computeForce({ nodes, edges, width, height }: GraphLayoutInput, options
 }
 
 export function forceLayout(options: ForceLayoutOptions = {}): GraphLayout {
-  const seed = toSeed(options.seed ?? DEFAULT_SEED)
+  const seed = toSeed(options.seed ?? LAYOUT_DEFAULTS.SEED)
   const iterations = clampInt(
     options.iterations,
-    MIN_ITERATIONS,
-    MAX_ITERATIONS,
-    DEFAULT_ITERATIONS
+    LAYOUT_DEFAULTS.MIN_ITERATIONS,
+    LAYOUT_DEFAULTS.MAX_ITERATIONS,
+    LAYOUT_DEFAULTS.ITERATIONS
   )
   return {
     key: JSON.stringify(['force', seed, iterations]),

@@ -23,10 +23,10 @@ interface SetRowBase {
 /**
  * One row of the unified expanded exercise table (SET · REPS · LBS · RPE + a
  * per-row velocity strip), as a lifecycle discriminated union:
- * - `done` — a logged set: recorded reps / weight / rpe, a flat `mini` strip.
+ * - `done` — a logged set: recorded reps / weight / rpe, a flat `compact` strip.
  * - `live` — performed right now: shows its TARGET (never "reps-done/target"),
- *   stands out by brightness, and a compact velocity-HEIGHT spotlight strip.
- * - `todo` — planned: shows its target, muted, a flat grey `mini` stub strip.
+ *   stands out by brightness, and an `expanded` velocity-HEIGHT spotlight strip.
+ * - `todo` — planned: shows its target, muted, a flat grey `compact` stub strip.
  *
  * `done` + `todo` share ONE muted treatment; only `live` is brightened. There is
  * no PREV column (dropped in the unified design).
@@ -50,7 +50,7 @@ export type SetRowProps =
       rpe?: number | null
       /** Per-rep MEAN concentric velocities logged so far this set. */
       velocities: number[]
-      /** Newest rep index — reserved; the compact spotlight strip is static. */
+      /** Rep the spotlight strip grows from the baseline as it lands. Default: the newest rep. */
       liveRepIndex?: number
     })
   | (SetRowBase & {
@@ -137,8 +137,8 @@ function RowStrip({ set }: { set: SetRowProps }) {
         showInfo={false}
         height={24}
         scale="fixed"
-        // Grow the newest rep from the baseline as it lands (the live-set spotlight).
-        liveRepIndex={set.velocities.length - 1}
+        // Grow the caller's rep (default: the newest) from the baseline as it lands.
+        liveRepIndex={set.liveRepIndex ?? set.velocities.length - 1}
         set={{ type: 'straight', velocities: set.velocities, planned: set.target.reps }}
         zones={zones}
       />
@@ -152,7 +152,6 @@ function RowStrip({ set }: { set: SetRowProps }) {
     <VelocityStrip
       variant="compact"
       height={8}
-      hideBaseline
       set={{ type: 'straight', velocities, planned: plannedReps(set) }}
       zones={zones}
     />
@@ -161,8 +160,8 @@ function RowStrip({ set }: { set: SetRowProps }) {
 
 /**
  * ONE set row of the unified expanded exercise table. SET · REPS · LBS · RPE over
- * a per-row {@link VelocityStrip}; `live` stands out by brightness with a compact
- * velocity-height spotlight, `done`/`todo` are muted with a flat mini strip. Its
+ * a per-row {@link VelocityStrip}; `live` stands out by brightness with an `expanded`
+ * velocity-height spotlight, `done`/`todo` are muted with a flat `compact` strip. Its
  * column widths mirror {@link SetTableHeader}(`showPrevious={false}`).
  */
 export function SetRow(set: SetRowProps) {

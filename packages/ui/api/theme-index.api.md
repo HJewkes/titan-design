@@ -207,7 +207,7 @@ export const darkThemeCSSVars: {
     readonly '--color-text-link-hover': "#3CA8FF";
     readonly '--color-surface-overlay': "#373635";
     readonly '--color-surface-input': "#2C2A28";
-    readonly '--color-border-input': "#5A5958";
+    readonly '--color-border-input': "#888684";
     readonly '--color-border-input-hover': "#72716F";
     readonly '--color-border-input-focus': "#828DF8";
     readonly '--color-border-input-error': "#E05254";
@@ -555,7 +555,7 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'background-frame': "#100D0A";
     readonly 'border-prominent': "#424140";
     readonly 'border-focus': "#828DF8";
-    readonly 'border-input': "#5A5958";
+    readonly 'border-input': "#888684";
     readonly 'border-input-hover': "#72716F";
     readonly 'border-input-focus': "#828DF8";
     readonly 'border-input-error': "#E05254";
@@ -900,7 +900,7 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-text-link-hover': "#3CA8FF";
     readonly '--color-surface-overlay': "#373635";
     readonly '--color-surface-input': "#2C2A28";
-    readonly '--color-border-input': "#5A5958";
+    readonly '--color-border-input': "#888684";
     readonly '--color-border-input-hover': "#72716F";
     readonly '--color-border-input-focus': "#828DF8";
     readonly '--color-border-input-error': "#E05254";
@@ -1036,7 +1036,7 @@ export function hsvToRgb(h: number, s: number, v: number): {
 };
 
 // @public
-export function insetWell(tone?: string): ViewStyle;
+export function insetWell(tone?: string, mode?: ThemeMode): ViewStyle;
 
 // @public
 export function isCssPropertyManifest(candidate: unknown): candidate is CssPropertyManifest;
@@ -1247,13 +1247,13 @@ export interface ManifestValidationResult {
 }
 
 // @public
-export function paperSheet(tone?: string): ViewStyle;
+export function paperSheet(tone?: string, mode?: ThemeMode): ViewStyle;
 
 // @public
 export const PLANE_ORDER: readonly ["frame", "background", "base", "elevated", "raised", "overlay"];
 
 // @public
-export function postIt(tone?: string, deg?: number): ViewStyle;
+export function postIt(tone?: string, deg?: number, mode?: ThemeMode): ViewStyle;
 
 // @public
 export const PRESSED_ELEVATION_LEVEL: ElevationLevel;
@@ -1624,7 +1624,7 @@ export const semanticColorsDark: {
     readonly 'background-frame': "#100D0A";
     readonly 'border-prominent': "#424140";
     readonly 'border-focus': "#828DF8";
-    readonly 'border-input': "#5A5958";
+    readonly 'border-input': "#888684";
     readonly 'border-input-hover': "#72716F";
     readonly 'border-input-focus': "#828DF8";
     readonly 'border-input-error': "#E05254";

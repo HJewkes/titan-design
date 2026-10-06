@@ -1,16 +1,12 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useMemo } from 'react'
-import { View, type ViewProps } from 'react-native'
+import { View } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Divider } from '../../ui/divider'
 import { Typography } from '../../ui/typography'
 import { Eyebrow } from '../../ui/eyebrow'
 import { SessionListItem, type SessionSummary } from './SessionListItem'
-
-// React Native's `Role` union omits `'listbox'` and `'group'`, even though RNW
-// passes both straight through to the DOM.
-const LISTBOX_ROLE = 'listbox' as ViewProps['role']
-const GROUP_ROLE = 'group' as ViewProps['role']
+import { GROUP_ROLE, LISTBOX_ROLE } from './aria-roles'
 
 export interface SessionListProps {
   /** Newest first is the expected order; the list renders what it is given. */
@@ -83,8 +79,13 @@ export function SessionList({
     <View className={cn('gap-2', className)}>
       <Eyebrow>{heading}</Eyebrow>
       <View className="gap-1" role={LISTBOX_ROLE} aria-label={heading}>
-        {periods.map((period) => (
-          <View key={period.label} className="gap-1" role={GROUP_ROLE} aria-label={period.label}>
+        {periods.map((period, index) => (
+          <View
+            key={`${index}-${period.label}`}
+            className="gap-1"
+            role={GROUP_ROLE}
+            aria-label={period.label}
+          >
             {showPeriods ? <PeriodDivider label={period.label} /> : null}
             {period.sessions.map((session) => (
               <SessionListItem

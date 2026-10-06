@@ -354,7 +354,6 @@ function VbtBreakdown({
                 zones={zones}
                 variant="compact"
                 height={8}
-                hideBaseline
               />
             </View>
             <Text

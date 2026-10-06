@@ -6,6 +6,7 @@ export {
   CardContent,
   CardFooter,
   CardSkeleton,
+  CardInset,
 } from './Card'
 export type {
   CardProps,
@@ -15,6 +16,7 @@ export type {
   CardContentProps,
   CardFooterProps,
   CardSkeletonProps,
+  CardInsetProps,
   CardVariant,
   CardElevation,
 } from './Card'

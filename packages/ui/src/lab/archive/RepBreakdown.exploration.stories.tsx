@@ -216,7 +216,7 @@ function CompositeColumn({ r }: { r: Rep }) {
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
       <View style={{ height: 18, justifyContent: 'flex-end' }}>
-        {flag && <FormFlag size="xs" />}
+        {!!flag && <FormFlag size="xs" />}
       </View>
       <Text style={{ color: C['text-primary'], fontSize: 13, fontWeight: '800', marginBottom: 3 }}>
         {formatVelocity(r.v)}

@@ -359,7 +359,7 @@ const resolvedBeforeFixture = {
     'background-frame': '#100D0A',
     'border-prominent': '#424140',
     'border-focus': '#828DF8',
-    'border-input': '#5A5958',
+    'border-input': '#888684',
     'border-input-hover': '#72716F',
     'border-input-focus': '#828DF8',
     'border-input-error': '#E05254',
