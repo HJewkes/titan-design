@@ -159,6 +159,9 @@ export function GoalTrajectoryTreatment({
   )
 }
 
+/** One shared default, so an omitted prop does not hand the geometry memo a fresh array each render. */
+const NO_MESO_BOUNDARIES: number[] = []
+
 /**
  * Goal trajectory over a block: the coach's expected band as a shaded polygon,
  * the committed and stretch rules, the athlete's actual line with PR stars,
@@ -192,7 +195,7 @@ export function GoalTrajectoryChart({
   stretch,
   actuals,
   weeks,
-  mesoBoundaries = [],
+  mesoBoundaries = NO_MESO_BOUNDARIES,
   nextTarget,
   status,
   direction = 'up',
