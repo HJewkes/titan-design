@@ -30,7 +30,9 @@ describe('light subtle faces', () => {
 
 describe('light solid faces', () => {
   it('white clears 4.5:1 on the success solid fill', () => {
-    expect(contrast(light['on-status-success'], light['status-success-solid'])).toBeGreaterThanOrEqual(4.5)
+    expect(
+      contrast(light['on-status-success'], light['status-success-solid'])
+    ).toBeGreaterThanOrEqual(4.5)
   })
 
   it('warning solid is amber[500]', () => {
