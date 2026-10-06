@@ -1,4 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
+import { createContext, useContext } from 'react'
 import type { ViewProps } from 'react-native'
 import type {
   BandCurve,
@@ -115,15 +116,42 @@ export interface GoalTrajectoryChartProps extends ViewProps {
  * The VW-385 design-exploration knobs, settled and kept off the public props so
  * only the Explore stories can re-read the rejected treatments. Not in any barrel.
  */
-export interface GoalTrajectoryChartExplorationProps extends GoalTrajectoryChartProps {
+export interface GoalTrajectoryExplorationKnobs {
   /** Fraction of the plot width the plane's left inner shadow fades over. */
-  leftShadowSpread?: number
+  leftShadowSpread: number
   /** What marks the plane's bottom edge. Locked: `lip`; `inset-rule` was not chosen. */
-  baseline?: PlotBaseline
+  baseline: PlotBaseline
   /** Band fade. Locked: `centre-14`; the others were not chosen. */
-  bandFade?: BandFade
+  bandFade: BandFade
   /** Band edge interpolation. Locked: `monotone`; `linear` was not chosen. */
-  bandCurve?: BandCurve
+  bandCurve: BandCurve
+}
+
+export type GoalTrajectoryChartExplorationProps = GoalTrajectoryChartProps &
+  Partial<GoalTrajectoryExplorationKnobs>
+
+const LOCKED_TREATMENT: GoalTrajectoryExplorationKnobs = {
+  leftShadowSpread: DEFAULT_LEFT_SHADOW_SPREAD,
+  baseline: 'lip',
+  bandFade: 'centre-14',
+  bandCurve: 'monotone',
+}
+
+const ExplorationKnobs = createContext(LOCKED_TREATMENT)
+
+/** {@link GoalTrajectoryChart} with the exploration knobs open; for the Explore stories only. */
+export function GoalTrajectoryChartExploration({
+  leftShadowSpread = LOCKED_TREATMENT.leftShadowSpread,
+  baseline = LOCKED_TREATMENT.baseline,
+  bandFade = LOCKED_TREATMENT.bandFade,
+  bandCurve = LOCKED_TREATMENT.bandCurve,
+  ...chartProps
+}: GoalTrajectoryChartExplorationProps) {
+  return (
+    <ExplorationKnobs.Provider value={{ leftShadowSpread, baseline, bandFade, bandCurve }}>
+      <GoalTrajectoryChart {...chartProps} />
+    </ExplorationKnobs.Provider>
+  )
 }
 
 /**
@@ -153,12 +181,7 @@ export interface GoalTrajectoryChartExplorationProps extends GoalTrajectoryChart
  *   height={340}
  * />
  */
-export function GoalTrajectoryChart(props: GoalTrajectoryChartProps) {
-  return <GoalTrajectoryChartExploration {...props} />
-}
-
-/** {@link GoalTrajectoryChart} with the exploration knobs open; for the Explore stories only. */
-export function GoalTrajectoryChartExploration({
+export function GoalTrajectoryChart({
   expected,
   committed,
   stretch,
@@ -174,18 +197,15 @@ export function GoalTrajectoryChartExploration({
   showWeekLabels = true,
   currentWeek,
   metricLabel = 'Goal',
-  leftShadowSpread = DEFAULT_LEFT_SHADOW_SPREAD,
   animate = true,
-  baseline = 'lip',
-  bandFade = 'centre-14',
-  bandCurve = 'monotone',
   referenceLabelSide = 'left',
   calibratingNote,
   yAxisLabels = false,
   ruleLabelText = 'numeric',
   className,
   ...props
-}: GoalTrajectoryChartExplorationProps) {
+}: GoalTrajectoryChartProps) {
+  const { leftShadowSpread, baseline, bandFade, bandCurve } = useContext(ExplorationKnobs)
   const chart = useGoalTrajectoryChart({
     expected,
     committed,
