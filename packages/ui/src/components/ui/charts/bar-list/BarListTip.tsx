@@ -7,7 +7,7 @@ import {
 } from '../../../../hooks/useListNavigation'
 import { Tooltip, useHoverFocusState } from '../../tooltip'
 import { Typography } from '../../typography'
-import type { BarListTipContent } from './bar-list-model'
+import type { BarListTipContent } from './bar-list-tip'
 import { hiddenFromAssistiveTech, LISTITEM_ROLE, TABULAR } from './shared'
 
 /**

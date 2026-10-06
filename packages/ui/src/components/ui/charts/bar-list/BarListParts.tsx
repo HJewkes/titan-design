@@ -12,7 +12,6 @@ import {
   overflowLabel,
   rowLabel,
   rowTexts,
-  rowTip,
   type BarListColumnChars,
   type BarListModel,
   type BarListModelMarker,
@@ -21,6 +20,7 @@ import {
   type BarListValueFormatter,
 } from './bar-list-model'
 import { Cells, type BarListColumns, type CellsProps } from './BarListCells'
+import { rowTip } from './bar-list-tip'
 import { TipRow } from './BarListTip'
 
 export { hiddenFromAssistiveTech }

@@ -13,10 +13,10 @@ import {
   reachesMarker,
   resolveMax,
   rowLabel,
-  rowTip,
   summarizeBarList,
   type BarListRow,
 } from './bar-list-model'
+import { rowTip } from './bar-list-tip'
 import { defaultFixture, funnelFixture, hostileFixture, hostileOptionSets } from './fixtures'
 
 const rowsOf = (...values: (number | null)[]): BarListRow[] =>
