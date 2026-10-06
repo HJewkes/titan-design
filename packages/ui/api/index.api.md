@@ -3311,9 +3311,6 @@ export function GoalTrajectoryChart(input: GoalTrajectoryChartProps): react_jsx_
 export interface GoalTrajectoryChartProps extends ViewProps {
     actuals: GoalActualPoint[];
     animate?: boolean;
-    bandCurve?: BandCurve;
-    bandFade?: BandFade;
-    baseline?: PlotBaseline;
     calibratingNote?: string;
     // (undocumented)
     className?: string;
@@ -3322,7 +3319,6 @@ export interface GoalTrajectoryChartProps extends ViewProps {
     direction?: GoalDirection;
     expected: GoalExpectedPoint[];
     height: number;
-    leftShadowSpread?: number;
     mesoBoundaries?: number[];
     metricLabel?: string;
     nextTarget?: GoalNextTarget;
@@ -3374,6 +3370,7 @@ export interface GoalTrajectoryGeometry {
     toX: (weekIndex: number) => number;
     // (undocumented)
     toY: (value: number) => number;
+    weekSpan: number;
     // (undocumented)
     yTicks: YTick[];
 }
@@ -5847,6 +5844,9 @@ export function rpeColor(rpe: number): string;
 export function sameLiveStripReps(a: readonly LiveStripRep[], b: readonly LiveStripRep[]): boolean;
 
 // @public
+export function sameLossThresholds(a?: VelocityLossThresholds, b?: VelocityLossThresholds): boolean;
+
+// @public
 export type SamplePhase = 'concentric' | 'eccentric' | 'hold' | 'idle';
 
 // @public
@@ -7530,6 +7530,7 @@ export interface TableHeaderCellProps extends Omit<PressableProps, 'children'> {
     children?: React__default.ReactNode;
     className?: string;
     sortKey?: string;
+    sortLabel?: string;
     tooltip?: string;
     width?: number;
 }

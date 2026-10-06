@@ -146,6 +146,18 @@ describe('ProgramPlanningPage', () => {
     expect(screen.getByTestId('program-planning-page-meso-level')).toBeInTheDocument()
   })
 
+  it('shows the week view again when the week breadcrumb is pressed from an open workout', () => {
+    render(<ProgramPlanningPage mesos={mesos} />)
+    fireEvent.click(screen.getAllByTestId('workout-pill-pressable')[0])
+    fireEvent.click(screen.getAllByTestId('workout-card-toggle')[0])
+    expect(screen.getByTestId('program-planning-page-workout-level')).toBeInTheDocument()
+
+    fireEvent.click(screen.getByTestId('program-planning-page-crumb-week'))
+
+    expect(screen.getByTestId('program-planning-page-week-level')).toBeInTheDocument()
+    expect(screen.queryByTestId('program-planning-page-workout-level')).not.toBeInTheDocument()
+  })
+
   it('switches the active meso when a progress-bar segment is pressed', () => {
     render(<ProgramPlanningPage mesos={mesos} />)
     fireEvent.click(screen.getByTestId('meso-segment-m2'))
