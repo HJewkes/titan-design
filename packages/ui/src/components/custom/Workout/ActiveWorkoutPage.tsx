@@ -155,8 +155,7 @@ export function toActiveCardProps(
   exercise: ActiveWorkoutExercise,
   focused: boolean,
   onToggle: () => void,
-  supersetPosition: ExerciseCardProps['supersetPosition'] = null,
-  supersetColor?: string
+  supersetPosition: ExerciseCardProps['supersetPosition'] = null
 ): ExerciseCardProps {
   const upcoming = isUpcomingExercise(exercise.status)
   return {
@@ -173,7 +172,6 @@ export function toActiveCardProps(
     prescription: exercise.prescription,
     previousBest: exercise.previousBest,
     supersetPosition,
-    supersetColor,
   }
 }
 
@@ -331,8 +329,7 @@ function ExerciseList({ groups, focusedId, onToggle }: ExerciseListProps) {
                   exercise,
                   exercise.id === focusedId,
                   () => onToggle(exercise.id),
-                  supersetPositionAt(index, group.exercises.length),
-                  group.superset.color
+                  supersetPositionAt(index, group.exercises.length)
                 )}
               />
             ))}
