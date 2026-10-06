@@ -16,7 +16,7 @@ import {
   REP_SET,
   REP_SET_LAGGING,
   type StripView,
-} from './velocity-story-kit'
+} from '../../../lab/velocity-story-kit/velocity-story-kit'
 import { Surface } from '../../ui/surface'
 
 /**

@@ -8018,13 +8018,6 @@
         },
         {
           "default": null,
-          "description": "`hero` only (internal): suppress this strip's own 2px baseline border.",
-          "name": "hideBaseline",
-          "required": false,
-          "type": "boolean"
-        },
-        {
-          "default": null,
           "description": "`hero` only: an optional stream / slot NAME (e.g. \"Left Arm\"), rendered as a rotated vertical edge label down the chart's left gutter — the same treatment the diverging dual gives each wing, so a single hero and a dual read consistently.",
           "name": "label",
           "required": false,
@@ -14049,6 +14042,13 @@
           "default": null,
           "description": "Sort key for this column",
           "name": "sortKey",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Accessible sort name; required when `children` is not a string.",
+          "name": "sortLabel",
           "required": false,
           "type": "string"
         },

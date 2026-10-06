@@ -3378,6 +3378,7 @@ export interface GoalTrajectoryGeometry {
     toX: (weekIndex: number) => number;
     // (undocumented)
     toY: (value: number) => number;
+    weekSpan: number;
     // (undocumented)
     yTicks: YTick[];
 }
@@ -5851,6 +5852,9 @@ export function rpeColor(rpe: number): string;
 export function sameLiveStripReps(a: readonly LiveStripRep[], b: readonly LiveStripRep[]): boolean;
 
 // @public
+export function sameLossThresholds(a?: VelocityLossThresholds, b?: VelocityLossThresholds): boolean;
+
+// @public
 export type SamplePhase = 'concentric' | 'eccentric' | 'hold' | 'idle';
 
 // @public
@@ -7534,6 +7538,7 @@ export interface TableHeaderCellProps extends Omit<PressableProps, 'children'> {
     children?: React__default.ReactNode;
     className?: string;
     sortKey?: string;
+    sortLabel?: string;
     tooltip?: string;
     width?: number;
 }
@@ -8702,7 +8707,6 @@ export interface VelocityStripProps extends ViewProps {
     columnSlots?: SetSlot[];
     expanded?: boolean;
     height?: number;
-    hideBaseline?: boolean;
     label?: string;
     liveRepIndex?: number;
     lossThresholds?: VelocityLossThresholds;
