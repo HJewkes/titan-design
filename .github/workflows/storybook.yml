@@ -9,9 +9,11 @@ permissions:
   pages: write
   id-token: write
 
+# A cancelled Pages deployment marks main red; let an in-progress deploy finish
+# and only replace queued runs.
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
