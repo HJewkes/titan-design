@@ -13,6 +13,7 @@ import fixOptions from '../../eslint-rules/fix-options'
 import htmlElementBaseline from '../../eslint-rules/no-html-element-baseline.json'
 import truncationBaseline from '../../eslint-rules/no-truncation-baseline.json'
 import unstyledTextBaseline from '../../eslint-rules/no-unstyled-text-baseline.json'
+import propsNamingBaseline from '../../eslint-rules/props-naming-baseline.json'
 import { compileClasses, uiRoot } from './tailwind-compile'
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const config = require('../../eslint.config.js') as Linter.Config[]
@@ -140,11 +141,20 @@ const FIXTURES: Record<string, Fixture> = {
     filename: Object.keys(unstyledTextBaseline)[0],
   },
   'titan/no-html-element:html': inShell('export const B = () => <div>{children}</div>'),
+  'titan/no-html-element:anchor': inShell('export const G = () => <a href={href}>{label}</a>'),
   'titan/no-html-element:svg': inShell('export const M = () => <path d={d} />'),
   // A baselined file with its sites gone: the allowance it no longer spends is stale.
   'titan/no-html-element:stale': {
     code: 'export const nothingRenders = 1',
     filename: Object.keys(htmlElementBaseline)[0],
+  },
+  'titan/props-naming:offConvention': inShell(
+    'export interface ContractFixtureProps { disabled?: boolean }'
+  ),
+  // A baselined file with its sites gone: the allowance it no longer spends is stale.
+  'titan/props-naming:stale': {
+    code: 'export const nothingRenders = 1',
+    filename: Object.keys(propsNamingBaseline)[0],
   },
   'titan/no-raw-device-data-in-chat:rawConstructor': {
     code: 'export function useDecoder() { return new Uint8Array(4) }',

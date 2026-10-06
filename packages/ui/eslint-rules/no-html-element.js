@@ -7,8 +7,9 @@
  * jsdom renders it fine, so no unit test notices (TD-689).
  *
  * Flags every JSX element whose name is a lowercase identifier, since React treats that as an
- * intrinsic. Two messages, so the fix named is the right one:
+ * intrinsic. Three messages, so the fix named is the right one:
  *   - `html`: a DOM element, with the react-native primitive it maps to;
+ *   - `anchor`: an `<a>`, which titan already wraps as the exported `Link` (TD-690);
  *   - `svg`: an SVG element, with the react-native-svg component of the same name.
  * `<Foo.bar>` is a member expression, not an intrinsic, and is left alone.
  *
@@ -65,7 +66,6 @@ const HTML_PRIMITIVE = {
   blockquote: 'Text',
   time: 'Text',
   button: 'Pressable',
-  a: 'Pressable',
   input: 'TextInput',
   textarea: 'TextInput',
   img: 'Image',
@@ -136,6 +136,7 @@ function intrinsicName(openingElement) {
 }
 
 function reportFor(element) {
+  if (element === 'a') return { messageId: 'anchor', data: { element } }
   if (Object.hasOwn(SVG_COMPONENT, element)) {
     return { messageId: 'svg', data: { element, component: SVG_COMPONENT[element] } }
   }
@@ -161,6 +162,12 @@ module.exports = {
         'Lowercase <{{element}}> is an HTML element, so it mounts on web only and never on native. ' +
         'Components compose the react-native primitives: View, Text, Pressable, TextInput, Image and ScrollView ' +
         '(CLAUDE.md, Cross-Platform First). Use {{primitive}} here, or compose `Typography`, `Button` or `Input`. ' +
+        'A web-only site that must stay keeps `// eslint-disable-next-line titan/no-html-element -- <why>`.',
+      anchor:
+        'Lowercase <{{element}}> is an HTML element, so it mounts on web only and never on native. ' +
+        'Components compose the react-native primitives (CLAUDE.md, Cross-Platform First), and the navigation ' +
+        'link is already one of them: `Link` (`ui/link`) wraps Pressable and Text with href, isExternal and ' +
+        'isDisabled. Use `Link` here. ' +
         'A web-only site that must stay keeps `// eslint-disable-next-line titan/no-html-element -- <why>`.',
       svg:
         'Lowercase <{{element}}> is a web SVG element, so it mounts on web only and never on native. ' +
