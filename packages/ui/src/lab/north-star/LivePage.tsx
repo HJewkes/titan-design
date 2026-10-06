@@ -72,7 +72,7 @@ export function LivePage({ variant = 'live', model = dashboardFixture }: LivePag
           width={272}
         />
         <View className="flex-1" style={{ minWidth: PANEL_MIN_WIDTH }}>
-          {sessionOpen && named && <ExerciseHeader session={model.session} />}
+          {!!sessionOpen && !!named && <ExerciseHeader session={model.session} />}
           <View className="flex-1">
             <EmptyLiveView
               kind={emptyKind}
