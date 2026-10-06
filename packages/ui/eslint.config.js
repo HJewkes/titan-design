@@ -630,13 +630,6 @@ module.exports = tseslint.config(
       'src/components/ui/checkbox/Checkbox.tsx',
       'src/components/ui/radio/Radio.tsx',
       'src/components/ui/switch/Switch.tsx',
-      // TD-536 b4
-      'src/components/custom/Fatigue/DualGhostSpark.tsx',
-      'src/components/custom/Fatigue/SilverRedPalette.stories.tsx',
-      'src/components/ui/card/Card.tsx',
-      'src/components/ui/metric/Metric.tsx',
-      'src/components/ui/section/Section.tsx',
-      'src/components/ui/tooltip/Tooltip.tsx',
       // TD-536 b5
       'src/components/custom/Workout/ExerciseHeading.tsx',
       'src/components/custom/Workout/GoalMilestoneSummary.tsx',
@@ -644,19 +637,6 @@ module.exports = tseslint.config(
       'src/components/custom/Workout/GoalTrajectoryMini.tsx',
       'src/components/custom/Workout/GoalTrajectoryWeekTips.tsx',
       'src/components/custom/Workout/GoalsWholeBody.composition.stories.tsx',
-      // TD-536 b6
-      'src/components/custom/Workout/IntensityBar.tsx',
-      'src/components/custom/Workout/LiveAuraFrame.tsx',
-      'src/components/custom/Workout/SessionHeader.tsx',
-      'src/components/custom/Workout/Sparkline.tsx',
-      'src/components/custom/Workout/SparklineParts.tsx',
-      'src/components/custom/Workout/StatusDot.tsx',
-      'src/components/custom/Workout/VelocityLossBands.tsx',
-      'src/components/custom/Workout/VelocityStripFramed.tsx',
-      'src/components/custom/Workout/WeekRow.tsx',
-      'src/components/custom/Workout/WorkoutCard.tsx',
-      'src/components/custom/Workout/WorkoutPill.tsx',
-      'src/components/custom/Workout/setHeadingKit.tsx',
       // TD-536 b7
       'src/components/ui/alert/Alert.tsx',
       'src/components/ui/button/Button.tsx',
