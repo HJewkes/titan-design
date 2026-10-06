@@ -152,7 +152,6 @@ function RowStrip({ set }: { set: SetRowProps }) {
     <VelocityStrip
       variant="compact"
       height={8}
-      hideBaseline
       set={{ type: 'straight', velocities, planned: plannedReps(set) }}
       zones={zones}
     />
