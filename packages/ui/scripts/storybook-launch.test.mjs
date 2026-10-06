@@ -3,7 +3,7 @@ import { createServer } from 'node:net'
 import { networkInterfaces } from 'node:os'
 import {
   buildStorybookArgs,
-  isEntryPoint,
+  formatPidLine,
   isPortFree,
   pickFreePort,
   printInventory,
@@ -21,6 +21,12 @@ describe('buildStorybookArgs', () => {
     const args = buildStorybookArgs(6006, ['--ci', '--quiet'])
     expect(args.filter((a) => a === '--ci')).toHaveLength(1)
     expect(args).toContain('--quiet')
+  })
+})
+
+describe('formatPidLine', () => {
+  it('names the started server and the command that stops it by that PID', () => {
+    expect(formatPidLine(12345, 6106)).toBe('storybook: pid 12345 on :6106 (stop: kill 12345)')
   })
 })
 
@@ -95,18 +101,6 @@ describe('pickFreePort', () => {
     } finally {
       await new Promise((ok) => holder.close(ok))
     }
-  })
-})
-
-describe('isEntryPoint', () => {
-  it('matches when argv[1] is a symlink to the script', () => {
-    const real = (p) => (p === '/link/launch.mjs' ? '/pkg/scripts/launch.mjs' : p)
-    expect(isEntryPoint('file:///pkg/scripts/launch.mjs', '/link/launch.mjs', real)).toBe(true)
-  })
-
-  it('does not match another entry file or a missing one', () => {
-    expect(isEntryPoint('file:///pkg/scripts/launch.mjs', '/other.mjs', (p) => p)).toBe(false)
-    expect(isEntryPoint('file:///pkg/scripts/launch.mjs', undefined)).toBe(false)
   })
 })
 

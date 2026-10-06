@@ -21,9 +21,9 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'pnpm specimen --port 5200',
+    command: 'pnpm specimen --port 5200 --strictPort',
     port: 5200,
-    reuseExistingServer: true,
+    reuseExistingServer: false,
     timeout: 60000,
   },
 })

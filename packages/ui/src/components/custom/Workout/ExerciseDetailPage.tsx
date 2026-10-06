@@ -21,6 +21,7 @@ import {
   calculateVelocityLoss,
   type VelocityZoneBandProp,
 } from './VelocityStrip'
+import { SectionCard } from './ExerciseDetailSectionCard'
 import { resolveColor } from '../../../theme/resolve-color'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../ui/surface'
@@ -207,7 +208,7 @@ function TabBar({ active, onSelect }: TabBarProps) {
             key={key}
             onPress={() => onSelect(key)}
             accessibilityRole="tab"
-            accessibilityState={{ selected: isActive }}
+            aria-selected={isActive}
             className="py-2.5"
             style={{
               flex: 1,
@@ -282,41 +283,6 @@ function StatStrip({ stats, unit }: { stats: ExerciseDetailStats; unit: 'lbs' | 
           </View>
         )
       })}
-    </View>
-  )
-}
-
-function SectionCard({
-  title,
-  children,
-  testID,
-}: {
-  title: string
-  children: React.ReactNode
-  testID: string
-}) {
-  return (
-    <View
-      className="bg-surface-elevated border-hairline p-inset-md gap-2.5"
-      style={{
-        borderWidth: 1,
-        borderRadius: 12,
-      }}
-      testID={testID}
-    >
-      <Text
-        className="text-text-tertiary"
-        style={{
-          fontSize: 11,
-          fontFamily: 'Inter, sans-serif',
-          fontWeight: '600',
-          letterSpacing: 0.6,
-          textTransform: 'uppercase',
-        }}
-      >
-        {title}
-      </Text>
-      {children}
     </View>
   )
 }
@@ -453,6 +419,124 @@ function VbtSummaryRow({ summary }: { summary: VbtSummary }) {
   )
 }
 
+function useExpandedId(): [string | null, (id: string) => void] {
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+  const toggle = (id: string) => setExpandedId((current) => (current === id ? null : id))
+  return [expandedId, toggle]
+}
+
+function ExerciseDetailPageHeader({ exercise }: { exercise: ExerciseDetailHeader }) {
+  const brandPrimary = getSemanticColors(useSurfaceMode())['brand-primary']
+  return (
+    <View
+      className="flex-row items-start justify-between gap-inline-md"
+      testID="exercise-detail-page-header"
+    >
+      <View style={{ flexShrink: 1 }}>
+        <Text
+          accessibilityRole="header"
+          className="text-text-primary"
+          style={{
+            fontSize: 20,
+            fontFamily: '"Space Grotesk", sans-serif',
+            fontWeight: '700',
+          }}
+          testID="exercise-detail-page-title"
+        >
+          {exercise.name}
+        </Text>
+        <Text
+          className="text-text-secondary mt-0.5"
+          style={{
+            fontSize: 12,
+            fontFamily: 'Inter, sans-serif',
+          }}
+          testID="exercise-detail-page-subtitle"
+        >
+          {exercise.subtitle}
+        </Text>
+      </View>
+      {exercise.currentE1rm != null && (
+        <View
+          className="py-squish-y-md px-2.5"
+          style={{
+            borderRadius: 6,
+            backgroundColor: alpha(brandPrimary, 0.1),
+            borderWidth: 1,
+            borderColor: alpha(brandPrimary, 0.25),
+          }}
+          testID="exercise-detail-page-e1rm"
+        >
+          <Text
+            className="text-text-tertiary"
+            style={{
+              fontSize: 9,
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: '600',
+              letterSpacing: 0.4,
+              textTransform: 'uppercase',
+            }}
+          >
+            e1RM
+          </Text>
+          <Text
+            style={{
+              fontSize: 15,
+              fontFamily: '"Space Grotesk", sans-serif',
+              fontWeight: '700',
+              color: brandPrimary,
+            }}
+          >
+            {`${exercise.currentE1rm} ${exercise.unit}`}
+          </Text>
+        </View>
+      )}
+    </View>
+  )
+}
+
+interface HistoryPanelProps {
+  entries: ExerciseDetailEntry[]
+  expandedId: string | null
+  onToggle: (id: string) => void
+}
+
+function HistoryPanel({ entries, expandedId, onToggle }: HistoryPanelProps) {
+  return (
+    <View className="gap-3.5" testID="exercise-detail-page-panel-history">
+      <SectionCard title="All Sessions" testID="exercise-detail-page-history">
+        <EntryList
+          entries={entries}
+          expandedId={expandedId}
+          onToggle={onToggle}
+          emptyLabel="No sessions logged yet"
+          testID="exercise-detail-page-history-list"
+        />
+      </SectionCard>
+    </View>
+  )
+}
+
+function AdvancedPanel({ vbt, summary }: { vbt: ExerciseVbt; summary: VbtSummary }) {
+  return (
+    <View className="gap-3.5" testID="exercise-detail-page-panel-advanced">
+      <SectionCard title="Capacity Band" testID="exercise-detail-page-capacity">
+        <CapacityBandChart
+          band={vbt.band}
+          workouts={vbt.workouts}
+          projection={vbt.projection}
+          width={CHART_WIDTH}
+          height={CHART_HEIGHT}
+        />
+      </SectionCard>
+      <VbtSummaryRow summary={summary} />
+      <SectionCard title="Velocity Breakdown" testID="exercise-detail-page-velocity">
+        <VbtBreakdown sets={vbt.sets} zones={vbt.zones} />
+      </SectionCard>
+    </View>
+  )
+}
+
 /**
  * ExerciseDetailPage — a tabbed per-exercise view. A shared header (name,
  * context line, current e1RM pill) sits above a Progress / History / Advanced
@@ -483,17 +567,12 @@ export function ExerciseDetailPage({
   className,
   ...props
 }: ExerciseDetailPageProps) {
-  const brandPrimary = getSemanticColors(useSurfaceMode())['brand-primary']
   const [tab, setTab] = useState<ExerciseDetailTab>('progress')
-  const [expandedProgressId, setExpandedProgressId] = useState<string | null>(null)
-  const [expandedHistoryId, setExpandedHistoryId] = useState<string | null>(null)
+  const [expandedProgressId, toggleProgress] = useExpandedId()
+  const [expandedHistoryId, toggleHistory] = useExpandedId()
 
   const stats = useMemo(() => deriveExerciseStats(history), [history])
   const vbtSummary = useMemo(() => summarizeVbt(vbt.sets), [vbt.sets])
-
-  const toggle =
-    (setId: (updater: (current: string | null) => string | null) => void) => (id: string) =>
-      setId((current) => (current === id ? null : id))
 
   return (
     <View
@@ -505,70 +584,7 @@ export function ExerciseDetailPage({
       {...props}
     >
       <View className="p-gutter-sm gap-3.5" testID="exercise-detail-page-content">
-        <View
-          className="flex-row items-start justify-between gap-inline-md"
-          testID="exercise-detail-page-header"
-        >
-          <View style={{ flexShrink: 1 }}>
-            <Text
-              accessibilityRole="header"
-              className="text-text-primary"
-              style={{
-                fontSize: 20,
-                fontFamily: '"Space Grotesk", sans-serif',
-                fontWeight: '700',
-              }}
-              testID="exercise-detail-page-title"
-            >
-              {exercise.name}
-            </Text>
-            <Text
-              className="text-text-secondary mt-0.5"
-              style={{
-                fontSize: 12,
-                fontFamily: 'Inter, sans-serif',
-              }}
-              testID="exercise-detail-page-subtitle"
-            >
-              {exercise.subtitle}
-            </Text>
-          </View>
-          {exercise.currentE1rm != null && (
-            <View
-              className="py-squish-y-md px-2.5"
-              style={{
-                borderRadius: 6,
-                backgroundColor: alpha(brandPrimary, 0.1),
-                borderWidth: 1,
-                borderColor: alpha(brandPrimary, 0.25),
-              }}
-              testID="exercise-detail-page-e1rm"
-            >
-              <Text
-                className="text-text-tertiary"
-                style={{
-                  fontSize: 9,
-                  fontFamily: 'Inter, sans-serif',
-                  fontWeight: '600',
-                  letterSpacing: 0.4,
-                  textTransform: 'uppercase',
-                }}
-              >
-                e1RM
-              </Text>
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontFamily: '"Space Grotesk", sans-serif',
-                  fontWeight: '700',
-                  color: brandPrimary,
-                }}
-              >
-                {`${exercise.currentE1rm} ${exercise.unit}`}
-              </Text>
-            </View>
-          )}
-        </View>
+        <ExerciseDetailPageHeader exercise={exercise} />
 
         <TabBar active={tab} onSelect={setTab} />
 
@@ -591,7 +607,7 @@ export function ExerciseDetailPage({
               <EntryList
                 entries={progression}
                 expandedId={expandedProgressId}
-                onToggle={toggle(setExpandedProgressId)}
+                onToggle={toggleProgress}
                 emptyLabel="No progression logged yet"
                 testID="exercise-detail-page-progression-list"
               />
@@ -600,36 +616,10 @@ export function ExerciseDetailPage({
         )}
 
         {tab === 'history' && (
-          <View className="gap-3.5" testID="exercise-detail-page-panel-history">
-            <SectionCard title="All Sessions" testID="exercise-detail-page-history">
-              <EntryList
-                entries={history}
-                expandedId={expandedHistoryId}
-                onToggle={toggle(setExpandedHistoryId)}
-                emptyLabel="No sessions logged yet"
-                testID="exercise-detail-page-history-list"
-              />
-            </SectionCard>
-          </View>
+          <HistoryPanel entries={history} expandedId={expandedHistoryId} onToggle={toggleHistory} />
         )}
 
-        {tab === 'advanced' && (
-          <View className="gap-3.5" testID="exercise-detail-page-panel-advanced">
-            <SectionCard title="Capacity Band" testID="exercise-detail-page-capacity">
-              <CapacityBandChart
-                band={vbt.band}
-                workouts={vbt.workouts}
-                projection={vbt.projection}
-                width={CHART_WIDTH}
-                height={CHART_HEIGHT}
-              />
-            </SectionCard>
-            <VbtSummaryRow summary={vbtSummary} />
-            <SectionCard title="Velocity Breakdown" testID="exercise-detail-page-velocity">
-              <VbtBreakdown sets={vbt.sets} zones={vbt.zones} />
-            </SectionCard>
-          </View>
-        )}
+        {tab === 'advanced' && <AdvancedPanel vbt={vbt} summary={vbtSummary} />}
       </View>
     </View>
   )

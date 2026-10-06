@@ -127,7 +127,7 @@ function renderSection(args: GoalsPageProps) {
 const meta: Meta<typeof GoalsPage> = {
   title: 'Pages/Goals/Whole Body',
   component: GoalsPage,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     layout: 'fullscreen',
     docs: {

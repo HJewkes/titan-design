@@ -7,14 +7,14 @@ const meta: Meta<typeof InitiativeCard> = {
   component: InitiativeCard,
   tags: ['autodocs', 'status:candidate', '!status:review'],
   args: {
-    title: 'active-work — durable workspace state',
-    slug: 'active-work',
+    title: 'planner — durable project state',
+    slug: 'planner',
     state: 'focused',
     rank: 1,
     shipTarget: '2026-Q3',
     openCount: 4,
     severityCounts: { critical: 0, high: 1, medium: 2, low: 1 },
-    topTask: { id: 'AW-6', title: 'Linear / Jira / Slack discovery sources' },
+    topTask: { id: 'PL-6', title: 'Calendar and email import sources' },
   },
   argTypes: {
     state: { control: 'select', options: ['focused', 'backburner', 'paused', 'done'] },

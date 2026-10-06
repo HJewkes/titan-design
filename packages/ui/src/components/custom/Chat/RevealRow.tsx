@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Animated, PanResponder, View } from 'react-native'
-import { DateTime } from '../DateTime'
+import { DateTime } from '../../ui/date-time'
 
 /** How far a drag slides the thread, which is the width of the time column. */
 export const REVEAL_PX = 64

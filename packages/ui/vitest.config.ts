@@ -9,9 +9,10 @@ import {
   webResolveExtensions,
 } from './vite-rn-svg-plugins'
 
-const LOCAL_TIME_TEST_PATH = fileURLToPath(
-  new URL('./src/components/custom/Workout/wholeBody.test.ts', import.meta.url)
-)
+const LOCAL_TIME_TEST_PATHS = [
+  './src/components/custom/Workout/wholeBody.test.ts',
+  './src/components/custom/Chat/DateSeparator.local-time.test.tsx',
+].map((path) => fileURLToPath(new URL(path, import.meta.url)))
 
 const STORYBOOK_CONFIG_DIR = fileURLToPath(new URL('./.storybook', import.meta.url))
 
@@ -33,7 +34,7 @@ export default defineConfig({
     poolOptions: { threads: { minThreads: 1, maxThreads: 4 } },
     teardownTimeout: 30_000,
     // A worker thread cannot change its zone after start (Node reads TZ once per
-    // process), so the test that pins `process.env.TZ` runs in a fork project of its own.
+    // process), so the tests that pin `process.env.TZ` run in a fork project of its own.
     // An absolute path, because `**` skips dot directories such as `.worktrees/`.
     projects: [
       {
@@ -41,7 +42,7 @@ export default defineConfig({
         test: {
           name: 'threads',
           include: TEST_GLOB,
-          exclude: [...TEST_EXCLUDE, LOCAL_TIME_TEST_PATH, ...STORIES_AXE_GLOB],
+          exclude: [...TEST_EXCLUDE, ...LOCAL_TIME_TEST_PATHS, ...STORIES_AXE_GLOB],
         },
       },
       {
@@ -56,7 +57,7 @@ export default defineConfig({
         extends: true,
         test: {
           name: 'local-time',
-          include: [LOCAL_TIME_TEST_PATH],
+          include: LOCAL_TIME_TEST_PATHS,
           exclude: TEST_EXCLUDE,
           pool: 'forks',
         },
@@ -99,6 +100,7 @@ export default defineConfig({
       reporter: ['text', 'json', 'html'],
       include: ['src/components/**/*.{ts,tsx}'],
       exclude: ['src/**/*.stories.tsx', 'src/**/*.test.tsx', 'src/**/index.ts'],
+      // Set from measured coverage (not a target) and raise as coverage grows; see docs/ci-and-scripts.md.
       thresholds: {
         statements: 80,
         branches: 80,

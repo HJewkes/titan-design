@@ -9,7 +9,7 @@ import { resolveColor } from '../../../theme/resolve-color'
 const meta: Meta<typeof SupersetWrapper> = {
   title: 'Custom/Workout/SupersetWrapper',
   component: SupersetWrapper,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   decorators: [
     (Story) => (
       <Surface level="background" style={{ maxWidth: 400, padding: 16 }}>

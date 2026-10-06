@@ -224,11 +224,11 @@ function createRule(getBaseline) {
       schema: [],
       messages: {
         rawButton:
-          'Raw <button> bypasses titan’s pressable primitives. Use Button (with ButtonText), ToolbarButton for an icon action, TriggerSurface for an overlay trigger, or Pressable.',
+          'Raw <button> bypasses titan’s pressable primitives. Use `Button` (with `ButtonText`), `ToolbarButton` for an icon action, TriggerSurface (internal, not exported) for an overlay trigger, or Pressable from react-native.',
         d3Import:
-          "'{{specifier}}' is a d3 import outside src/components/ui/charts. Move the scale or geometry into ui/charts/kit/, or compose an existing chart from ui/charts.",
+          "'{{specifier}}' is a d3 import outside src/components/ui/charts. Move the scale or geometry into `src/components/ui/charts/kit/`, or compose an existing chart such as `SparkBars`.",
         pathMath:
-          'SVG path math outside src/components/ui/charts. Build the path with d3-shape inside ui/charts/kit/, or compose an existing chart primitive from ui/charts.',
+          'SVG path math outside src/components/ui/charts. Build the path with `d3-shape` inside `src/components/ui/charts/kit/`, or compose an existing chart such as `SparkBars`.',
       },
     },
 

@@ -1,41 +1,23 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { useMemo } from 'react'
-import { View, Text, type ViewProps } from 'react-native'
-import { cn } from '../../../utils/cn'
-import { roundWeight } from '../../../utils/workout-format'
-import { useSurface, useOnSurfaceColor } from '../../ui/surface'
-import { valueReach, type GoalReach } from './goalMilestone'
-import {
-  deriveTrajectoryGeometry,
-  trajectoryInsets,
-  type GoalActualPoint,
-  type GoalNextTarget,
-  type GoalDirection,
-  type GoalExpectedPoint,
-  type GoalTrajectoryGeometry,
-  type GoalTrajectoryStatus,
-  type GoalTrajectoryWeek,
+import type { ViewProps } from 'react-native'
+import type {
+  BandCurve,
+  GoalActualPoint,
+  GoalDirection,
+  GoalExpectedPoint,
+  GoalNextTarget,
+  GoalTrajectoryStatus,
+  GoalTrajectoryWeek,
 } from './GoalTrajectoryChartGeometry'
 import {
-  CURRENT_WEEK_NO_READING,
   DEFAULT_LEFT_SHADOW_SPREAD,
-  GoalTrajectoryPlot,
-  trajectoryPalette,
+  type PlotBaseline,
   type ReferenceLabelSide,
 } from './GoalTrajectoryPlot'
-import { useTrajectoryEntrance } from './goalTrajectoryMotion'
-import {
-  CalibratingInfo,
-  calibratingMarks,
-  resolveCalibratingNote,
-} from './GoalTrajectoryCalibrating'
-import { hitBoxAround, useHitTargetSize, type HitBox } from './goalTrajectoryTargets'
-import { gridLabelSpecs, ruleLabelSpecs, type RuleLabelText } from './goalTrajectoryRuleLabels'
-import { weekTips } from './weekTipModel'
-import { GoalTrajectoryWeekTips } from './GoalTrajectoryWeekTips'
+import type { RuleLabelText } from './goalTrajectoryRuleLabels'
 import type { BandFade } from './GoalTrajectoryBand'
-import type { BandCurve } from './GoalTrajectoryChartGeometry'
-import type { PlotBaseline } from './GoalTrajectoryPlot'
+import { GoalTrajectoryChartEmpty, GoalTrajectoryChartFrame } from './GoalTrajectoryChartParts'
+import { useGoalTrajectoryChart } from './useGoalTrajectoryChart'
 
 export type {
   GoalActualPoint,
@@ -45,73 +27,12 @@ export type {
   GoalTrajectoryStatus,
   GoalTrajectoryWeek,
 } from './GoalTrajectoryChartGeometry'
-
-const STATUS_LABEL: Record<GoalTrajectoryStatus, string> = {
-  on_track: 'On track',
-  ahead: 'Ahead',
-  behind: 'Behind',
-  tolerated: 'Tolerated',
-  deload_week: 'Deload week',
-  calibrating: 'Calibrating',
-  stalled: 'Stalled',
-  goal_met: 'Goal met',
-  beyond_goal: 'Beyond goal',
-}
-
-/**
- * Once a reading reaches the committed target the pill stops reporting pace and
- * reports the result: reaching the goal is success green, going past it is the
- * `ahead` blue. Both tones and both words are shared with `GoalMilestoneTile`,
- * which derives the same verdict from the same helper.
- */
-export const REACH_STATUS = { met: 'on_track', beyond: 'ahead' } as const satisfies Record<
-  Exclude<GoalReach, 'short'>,
-  GoalTrajectoryStatus
->
-
-const REACH_LABEL = { met: 'Goal met', beyond: 'Beyond goal' } as const
-
-/**
- * The read model's own outcome words. When it sends one, the UI prints it rather
- * than re-deriving the same verdict from the numbers — its committed value and
- * ours can differ, and the read model is the one that knows.
- */
-const OUTCOME_REACH = { goal_met: 'met', beyond_goal: 'beyond' } as const
-
-/** The reach a status already states, or null when it only states pace. */
-export function outcomeReach(status: GoalTrajectoryStatus): GoalReach | null {
-  return status === 'goal_met' || status === 'beyond_goal' ? OUTCOME_REACH[status] : null
-}
-
-/** The best reading in the goal's direction, judged against the committed target. */
-export function trajectoryReach(
-  committed: number,
-  actuals: GoalActualPoint[],
-  direction: GoalDirection = 'up'
-): GoalReach {
-  const values = actuals.map((a) => a.value).filter((v) => Number.isFinite(v))
-  if (values.length === 0) return 'short'
-  const best = direction === 'down' ? Math.min(...values) : Math.max(...values)
-  return valueReach(committed, best, direction)
-}
-
-/** Above this width the chart renders at wall density (across-the-room scale). */
-export const WALL_BREAKPOINT = 720
-
-interface Density {
-  stroke: number
-  star: number
-  tickCount: number
-  showYLabels: boolean
-  maxWeekLabels: number
-}
-
-// Phone drops to three gridlines; its y labels stay because the plot has the gutter.
-const DENSITY: Record<'phone' | 'wall', Density> = {
-  // `star` is an icon size, the same the card's PR badge takes at that width (markSizeFor).
-  phone: { stroke: 2, star: 14, tickCount: 3, showYLabels: true, maxWeekLabels: 6 },
-  wall: { stroke: 3, star: 20, tickCount: 5, showYLabels: true, maxWeekLabels: 12 },
-}
+export {
+  REACH_STATUS,
+  WALL_BREAKPOINT,
+  outcomeReach,
+  trajectoryReach,
+} from './goalTrajectoryChartModel'
 
 export interface GoalTrajectoryChartProps extends ViewProps {
   /** Expected band per planned week. `low` is the committed edge, `high` the stretch edge. */
@@ -202,50 +123,6 @@ export interface GoalTrajectoryChartProps extends ViewProps {
 }
 
 /**
- * A calibrating chart (VW-433): readings are plain dots, because a first reading
- * is not an achievement, and the next target is its hollow dot with no dashed run.
- */
-function withoutRecords(actuals: GoalActualPoint[]): GoalActualPoint[] {
-  return actuals.map((actual) => ({ ...actual, isPR: false }))
-}
-
-function withoutLead(geometry: GoalTrajectoryGeometry): GoalTrajectoryGeometry {
-  const next = geometry.nextTarget
-  return next
-    ? { ...geometry, nextTarget: { ...next, leadPath: '' }, currentWeekPoint: null }
-    : geometry
-}
-
-function summarize(
-  statusLabel: string,
-  geometry: GoalTrajectoryGeometry,
-  committed: number,
-  stretch: number,
-  unit: string,
-  metricLabel: string
-): string {
-  const latest = geometry.actuals[geometry.actuals.length - 1]
-  const current = latest
-    ? `Latest ${String(roundWeight(latest.value))} ${unit} at week ${String(Math.round(latest.weekIndex))}.`
-    : 'No measured values yet.'
-  const now = geometry.currentWeekPoint
-    ? ` ${CURRENT_WEEK_NO_READING} (week ${String(geometry.currentWeekPoint.weekIndex)}).`
-    : ''
-  const prs = geometry.prStars.length
-  return (
-    `${metricLabel} trajectory chart. Status: ${statusLabel}. ` +
-    `Committed ${String(roundWeight(committed))} ${unit}, stretch ${String(roundWeight(stretch))} ${unit}. ` +
-    `${current}${now} ${String(prs)} personal record${prs === 1 ? '' : 's'}.`
-  )
-}
-
-/** What the hatch and the dashed ramp say to a sighted reader: the whole note, and what the line is. */
-function calibratingSummary(note: string): string {
-  const sentence = /[.!?]$/.test(note) ? note : `${note}.`
-  return ` ${sentence} The line is the planned ramp from the start lift, not an expected band.`
-}
-
-/**
  * Goal trajectory over a block: the coach's expected band as a shaded polygon,
  * the committed and stretch rules, the athlete's actual line with PR stars,
  * meso boundary rules and deload shading.
@@ -300,151 +177,51 @@ export function GoalTrajectoryChart({
   className,
   ...props
 }: GoalTrajectoryChartProps) {
-  const surface = useSurface()
-  const targetSize = useHitTargetSize()
-  const axisColor = useOnSurfaceColor('tertiary')
-  const reach = outcomeReach(status) ?? trajectoryReach(committed, actuals, direction)
-  const toneStatus = reach === 'short' ? status : REACH_STATUS[reach]
-  const statusLabel = reach === 'short' ? STATUS_LABEL[status] : REACH_LABEL[reach]
-  const palette = trajectoryPalette(surface.mode, surface.level, toneStatus)
-  const density = width >= WALL_BREAKPOINT ? DENSITY.wall : DENSITY.phone
-  const entrance = useTrajectoryEntrance(animate)
-  const calibrating = status === 'calibrating'
-  const plotted = useMemo(
-    () => (calibrating ? withoutRecords(actuals) : actuals),
-    [actuals, calibrating]
-  )
-
-  const derived = useMemo(
-    () =>
-      deriveTrajectoryGeometry({
-        expected,
-        committed,
-        stretch,
-        actuals: plotted,
-        weeks,
-        mesoBoundaries,
-        nextTarget,
-        width,
-        height,
-        tickCount: density.tickCount,
-        bandCurve,
-        insets: trajectoryInsets(yAxisLabels),
-        currentWeek,
-      }),
-    [
-      expected,
-      committed,
-      stretch,
-      plotted,
-      weeks,
-      mesoBoundaries,
-      nextTarget,
-      width,
-      height,
-      density,
-      bandCurve,
-      yAxisLabels,
-      currentWeek,
-    ]
-  )
-  const geometry = calibrating ? withoutLead(derived) : derived
-  const note = resolveCalibratingNote(
-    calibratingNote,
-    calibrating ? STATUS_LABEL.calibrating : undefined
-  )
-  const nextTargetBox =
-    geometry.nextTarget && nextTarget
-      ? hitBoxAround(geometry.nextTarget, targetSize, width, height)
-      : null
-  const marks = calibrating ? calibratingMarks({ geometry, targetSize, nextTargetBox }) : null
-  const ruleLabels = ruleLabelSpecs({
-    geometry,
+  const chart = useGoalTrajectoryChart({
+    expected,
     committed,
     stretch,
-    text: ruleLabelText,
-    side: referenceLabelSide,
-    boxes: [nextTargetBox, marks?.target].filter((b): b is HitBox => b != null),
-  })
-  const gridLabels = yAxisLabels
-    ? []
-    : gridLabelSpecs({
-        geometry,
-        ruleLabels,
-        ruleValues: ruleLabelText === 'none' ? [] : [committed, stretch],
-        boxes: [nextTargetBox, marks?.target].filter((b): b is HitBox => b != null),
-      })
-  // A target hung under the plot may reach past the canvas; the chart grows to hold it.
-  const overhang = marks ? Math.max(0, marks.target.y + marks.target.size - height) : 0
-  const label =
-    summarize(statusLabel, geometry, committed, stretch, unit, metricLabel) +
-    (calibrating ? calibratingSummary(note) : '')
-
-  if (!geometry.hasBand && !geometry.hasActuals) {
-    return (
-      <View
-        style={{ width, height }}
-        className={cn('items-center justify-center', className)}
-        accessibilityRole="image"
-        accessibilityLabel={`${metricLabel} trajectory chart. Calibrating: not enough matched sessions to draw a band yet.`}
-        testID="goal-trajectory-chart-empty"
-        {...props}
-      >
-        <Text style={{ color: axisColor, fontSize: 14, fontFamily: 'Inter, sans-serif' }}>
-          Calibrating — no band yet
-        </Text>
-      </View>
-    )
-  }
-
-  const axisWeeks = weeks.length > 0 ? weeks : expected.map((p) => ({ index: p.weekIndex }))
-  const tips = weekTips({
-    geometry,
-    weeks: axisWeeks,
-    expected,
-    ...(nextTarget ? { nextTarget } : {}),
-    unit,
+    actuals,
+    weeks,
+    mesoBoundaries,
+    nextTarget,
+    status,
+    direction,
     width,
     height,
-    size: targetSize,
+    unit,
+    showWeekLabels,
+    currentWeek,
+    metricLabel,
+    leftShadowSpread,
+    animate,
+    baseline,
+    bandFade,
+    bandCurve,
+    referenceLabelSide,
+    calibratingNote,
+    yAxisLabels,
+    ruleLabelText,
   })
+  if (chart.isEmpty) {
+    return (
+      <GoalTrajectoryChartEmpty
+        width={width}
+        height={height}
+        metricLabel={metricLabel}
+        className={className}
+        viewProps={props}
+      />
+    )
+  }
   return (
-    <View style={{ width }} className={cn(className)} testID="goal-trajectory-chart" {...props}>
-      <View
-        style={{ width, height }}
-        accessibilityRole="image"
-        accessibilityLabel={label}
-        testID="goal-trajectory-chart-canvas"
-      >
-        <GoalTrajectoryPlot
-          geometry={geometry}
-          palette={palette}
-          width={width}
-          height={height}
-          ruleLabels={ruleLabels}
-          gridLabels={gridLabels}
-          weeks={showWeekLabels ? axisWeeks : []}
-          weekStride={Math.max(1, Math.ceil(axisWeeks.length / density.maxWeekLabels))}
-          showYLabels={density.showYLabels && yAxisLabels}
-          style={{
-            stroke: density.stroke,
-            star: density.star,
-            leftShadowSpread,
-            baseline,
-            bandFade,
-            bandCurve,
-            referenceLabelSide,
-          }}
-          entrance={entrance}
-          calibrating={marks}
-          {...(currentWeek !== undefined ? { currentWeek } : {})}
-        />
-      </View>
-      {overhang > 0 && (
-        <View style={{ height: overhang }} testID="goal-trajectory-chart-overhang" />
-      )}
-      {marks && <CalibratingInfo marks={marks} note={note} palette={palette} />}
-      <GoalTrajectoryWeekTips tips={tips} width={width} height={height} />
-    </View>
+    <GoalTrajectoryChartFrame
+      chart={chart}
+      width={width}
+      height={height}
+      currentWeek={currentWeek}
+      className={className}
+      viewProps={props}
+    />
   )
 }

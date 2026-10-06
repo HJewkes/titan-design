@@ -49,7 +49,7 @@ const meta: Meta<typeof BodyMapDetailPanel> = {
       },
     },
   },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   decorators: [
     (Story, context) => {
       const frame = (context.parameters.frame ?? PHONE_FRAME) as typeof PHONE_FRAME
