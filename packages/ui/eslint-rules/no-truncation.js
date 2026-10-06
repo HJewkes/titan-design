@@ -9,8 +9,8 @@
  *
  * Flags four shapes:
  *   1. JSX attributes `truncate`, `noWrap`, `maxLines`, `numberOfLines`, `ellipsizeMode`.
- *      `numberOfLines={numberOfLines}` or `{props.numberOfLines}` that forwards the component's
- *      own prop (no rename, no default) is not reported: the caller's attribute is the site.
+ *      `numberOfLines={numberOfLines}` that forwards a component's own `{ numberOfLines }` prop
+ *      (no rename, no default, never written) is not reported: the caller's attribute is the site.
  *   2. Object properties with those names (a props object spread onto Text, or a `cn({ truncate: on })`
  *      key), and `textOverflow: 'ellipsis'` in a style object.
  *   3. Class tokens `truncate`, `line-clamp-*`, `text-ellipsis` in any string, with or
@@ -143,9 +143,12 @@ function isComponentWrapper(callee) {
 
 const PASCAL_CASE = /^[A-Z]/
 
-/** The name a function is declared or assigned under: `function Title`, `const Title = …`. */
+/**
+ * The name a component is declared under: `function Title` or `const Title = …`. A function
+ * expression's own id (`renderItem={function Row() {}}`) names nothing a caller renders.
+ */
 function declaredName(fn) {
-  if (fn.id) return fn.id.name
+  if (fn.type === 'FunctionDeclaration') return fn.id?.name
   const { parent } = fn
   if (
     parent.type === 'VariableDeclarator' &&
@@ -157,7 +160,7 @@ function declaredName(fn) {
   return undefined
 }
 
-/** A function named in PascalCase, or the function a `forwardRef`/`memo` call wraps. */
+/** A function declared under a PascalCase name, or the function `forwardRef`/`memo` wraps. */
 function isComponent(fn) {
   const { parent } = fn
   if (parent.type === 'CallExpression' && parent.arguments[0] === fn) {
@@ -166,82 +169,37 @@ function isComponent(fn) {
   return PASCAL_CASE.test(declaredName(fn) ?? '')
 }
 
-/** Whether `node` is the target of an assignment, update, `delete` or destructuring write. */
-function isWriteTarget(node) {
-  const { parent } = node
-  switch (parent.type) {
-    case 'AssignmentExpression':
-    case 'AssignmentPattern':
-    case 'ForInStatement':
-    case 'ForOfStatement':
-      return parent.left === node
-    case 'UpdateExpression':
-    case 'ArrayPattern':
-    case 'RestElement':
-      return true
-    case 'UnaryExpression':
-      return parent.operator === 'delete'
-    case 'Property':
-      return parent.value === node && parent.parent.type === 'ObjectPattern'
-    default:
-      return false
-  }
-}
-
-/** Whether any reference to `variable` writes `variable.numberOfLines`. */
-function writesForwardedMember(variable) {
-  return variable.references.some(({ identifier }) => {
-    const member = identifier.parent
-    return (
-      member.type === 'MemberExpression' &&
-      member.object === identifier &&
-      !member.computed &&
-      member.property.type === 'Identifier' &&
-      member.property.name === FORWARDED_PROP &&
-      isWriteTarget(member)
-    )
-  })
-}
-
-/** The parameter definition of `variable` if it is declared once, in a component's signature. */
-function componentParameterDef(variable) {
-  if (variable.defs.length !== 1) return undefined
-  const [def] = variable.defs
-  return def.type === 'Parameter' && isComponent(def.node) ? def : undefined
-}
-
-/** `{ numberOfLines }` or `{ numberOfLines: numberOfLines }` in `param`, with no default. */
-function isOwnNameKey(binding, param) {
-  const property = binding.parent
+/**
+ * `function Title({ numberOfLines })`: the prop destructured under its own name, with no
+ * default, from the first parameter of a component.
+ */
+function isOwnPropBinding(def) {
+  const property = def.name.parent
   return (
+    def.type === 'Parameter' &&
     property.type === 'Property' &&
-    property.parent === param &&
-    property.value === binding &&
+    property.value === def.name &&
     !property.computed &&
     property.key.type === 'Identifier' &&
-    property.key.name === FORWARDED_PROP
+    property.key.name === FORWARDED_PROP &&
+    property.parent === def.node.params[0] &&
+    isComponent(def.node)
   )
 }
 
 /**
- * `numberOfLines={numberOfLines}` or `{props.numberOfLines}` hands on the caller's own
- * `numberOfLines` prop, and the caller's `numberOfLines=` attribute is the site this rule checks.
- * That holds only when the value is the first parameter of a component (PascalCase, or wrapped
- * in `forwardRef`/`memo`) and nothing writes it. A renamed prop, a default (in the pattern or
- * assigned later), a callback or helper parameter, or a `maxLines` prop stays reported.
+ * `numberOfLines={numberOfLines}` hands on the caller's own `numberOfLines` prop, and the
+ * caller's `numberOfLines=` attribute is the site this rule checks. The exemption is an
+ * allowlist of one shape: the component's `{ numberOfLines }` destructure, never written. A
+ * primitive binding can only be written through its own name, which scope analysis sees, so
+ * anything else (`props.numberOfLines`, a rename, a default, a callback, a `maxLines` prop)
+ * stays reported.
  */
 function isForwardedProp(expression, scope) {
-  const member = expression.type === 'MemberExpression'
-  const root = member ? expression.object : expression
-  const key = member ? expression.property : expression
-  if (root.type !== 'Identifier' || key.type !== 'Identifier') return false
-  if (expression.computed || key.name !== FORWARDED_PROP) return false
-  const variable = findVariable(scope, root.name)
-  const def = variable && componentParameterDef(variable)
-  if (!def || !variable.references.every((reference) => reference.isReadOnly())) return false
-  const param = def.node.params[0]
-  if (member) return def.name === param && !writesForwardedMember(variable)
-  return isOwnNameKey(def.name, param)
+  if (expression.type !== 'Identifier' || expression.name !== FORWARDED_PROP) return false
+  const variable = findVariable(scope, expression.name)
+  if (!variable || variable.defs.length !== 1 || !isOwnPropBinding(variable.defs[0])) return false
+  return variable.references.every((reference) => reference.isReadOnly())
 }
 
 const FIX =
