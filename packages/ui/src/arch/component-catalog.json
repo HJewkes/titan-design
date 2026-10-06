@@ -14047,6 +14047,13 @@
         },
         {
           "default": null,
+          "description": "Accessible sort name; required when `children` is not a string.",
+          "name": "sortLabel",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
           "description": "Full column name behind an abbreviated label: shown on hover and used as the accessible sort name.",
           "name": "tooltip",
           "required": false,

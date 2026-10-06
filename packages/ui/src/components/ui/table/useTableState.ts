@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useControllableState } from '../../../hooks/useControllableState'
 import { filterRows } from './table-model'
 import type {
@@ -80,10 +80,15 @@ export interface PageRange {
   canGoNext: boolean
 }
 
+/** The last page that still has rows, so a shrinking `data` never strands the view past the end. */
+export function lastPage(pageSize: number, totalItems: number): number {
+  return Math.max(0, Math.ceil(totalItems / pageSize) - 1)
+}
+
 export function pageRange(page: number, pageSize: number, totalItems: number): PageRange {
   const totalPages = Math.ceil(totalItems / pageSize)
   return {
-    startItem: page * pageSize + 1,
+    startItem: totalItems === 0 ? 0 : page * pageSize + 1,
     endItem: Math.min((page + 1) * pageSize, totalItems),
     canGoPrevious: page > 0,
     canGoNext: page < totalPages - 1,
@@ -189,6 +194,15 @@ function useSelectionSlice<T>(
   return { selectedIds: ids, setSelectedIds: setIds, ...selection }
 }
 
+/** When the row count falls, a page past the new end moves back to the last page that has rows. */
+function useClampPageOnShrink(view: ViewState, totalItems: number) {
+  const { pageSize, limitPage } = view
+  const [seen, setSeen] = useState(totalItems)
+  if (seen === totalItems) return
+  setSeen(totalItems)
+  if (totalItems < seen) limitPage(lastPage(pageSize, totalItems))
+}
+
 /** Every stage after filter and sort: the page, the window, facets and range requests. */
 function useRowStages<T extends object>(
   options: UseTableOptions<T>,
@@ -243,7 +257,9 @@ export function useTableState<T extends object>(options: UseTableOptions<T>): Us
   const selectable = isManual ? rows.windowRows : rows.sortedData
   const selection = useSelectionSlice(options, selectable, getRowId)
 
-  const { requestEpoch: _epoch, ...viewFields } = view
+  useClampPageOnShrink(view, rows.totalItems)
+
+  const { requestEpoch: _epoch, limitPage: _limit, ...viewFields } = view
   const sortFields = { sortColumn: sort.column, sortDirection: sort.direction, handleSort }
   return { ...viewFields, ...sortFields, ...filterSlice, ...rows, ...selection, mode }
 }
