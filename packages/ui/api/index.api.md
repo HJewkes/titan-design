@@ -7580,6 +7580,7 @@ export interface TabPanelProps {
     children?: React__default.ReactNode;
     // (undocumented)
     className?: string;
+    index?: number;
 }
 
 // @public
