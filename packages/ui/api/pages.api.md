@@ -43,10 +43,21 @@ export interface ActiveWorkoutPageProps extends ViewProps {
     exercises: ActiveWorkoutExercise[];
     initialResting?: boolean;
     input?: ActiveWorkoutInput;
+    onAddTime?: () => void;
+    onRecord?: (set: ActiveWorkoutRecordedSet) => void;
+    onSkip?: () => void;
     rest?: ActiveWorkoutRest;
     subtitle?: string;
     supersets?: ActiveWorkoutSuperset[];
     title?: string;
+}
+
+// @public
+export interface ActiveWorkoutRecordedSet {
+    exerciseId: string;
+    reps: string;
+    setNumber: number;
+    weight: string;
 }
 
 // @public

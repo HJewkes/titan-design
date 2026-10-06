@@ -65,6 +65,21 @@ export interface ActiveWorkoutInput {
   weight: string
 }
 
+/**
+ * A set logged from the `InputBar`. `reps` and `weight` are the field strings as
+ * typed; recording is only enabled when both are non-empty.
+ */
+export interface ActiveWorkoutRecordedSet {
+  /** Id of the active exercise the set belongs to. */
+  exerciseId: string
+  /** 1-based number of the set being logged. */
+  setNumber: number
+  /** Reps field value as typed. */
+  reps: string
+  /** Weight field value as typed. */
+  weight: string
+}
+
 /** Rest-timer inputs shown in the bottom `RestTimer`. */
 export interface ActiveWorkoutRest {
   /** Prescribed rest length, seconds. */
@@ -109,6 +124,12 @@ export interface ActiveWorkoutPageProps extends ViewProps {
   rest?: ActiveWorkoutRest
   /** Start the page in the resting state (timer showing). */
   initialResting?: boolean
+  /** Called with each recorded set, after the page enters rest if `rest` is set. */
+  onRecord?: (set: ActiveWorkoutRecordedSet) => void
+  /** Called when the user skips rest, after the input bar returns. */
+  onSkip?: () => void
+  /** Called when the user presses the rest timer's add-time button. */
+  onAddTime?: () => void
   className?: string
 }
 
@@ -347,7 +368,9 @@ function ExerciseList({ groups, focusedId, onToggle }: ExerciseListProps) {
  * expands exactly one focused exercise to its `SetRow` breakdown. Consecutive
  * superset exercises stitch together inside a `SupersetWrapper`. A pinned bottom
  * bar toggles between the live `InputBar` (log the next set) and the `RestTimer`.
- * Focus and rest are page-level state; children keep their own styles.
+ * Focus and rest are page-level state; children keep their own styles. The page
+ * reports each recorded set, rest skip and add-time press through `onRecord`,
+ * `onSkip` and `onAddTime`.
  *
  * @example
  * <ActiveWorkoutPage title="Push Day A" exercises={exercises} />
@@ -360,6 +383,9 @@ export function ActiveWorkoutPage({
   input,
   rest,
   initialResting = false,
+  onRecord,
+  onSkip,
+  onAddTime,
   className,
   ...props
 }: ActiveWorkoutPageProps) {
@@ -378,6 +404,16 @@ export function ActiveWorkoutPage({
   const canRecord = reps.trim() !== '' && weight.trim() !== ''
   const showRest = resting && rest != null
   const showInput = !showRest && active != null
+
+  const recordSet = () => {
+    if (rest != null) setResting(true)
+    if (active != null)
+      onRecord?.({ exerciseId: active.id, setNumber: nextSetNumber, reps, weight })
+  }
+  const skipRest = () => {
+    setResting(false)
+    onSkip?.()
+  }
 
   return (
     <View
@@ -403,8 +439,8 @@ export function ActiveWorkoutPage({
               totalSeconds={rest.totalSeconds}
               elapsedMs={rest.elapsedMs}
               nextSetInfo={rest.nextSetInfo}
-              onSkip={() => setResting(false)}
-              onAddTime={() => undefined}
+              onSkip={skipRest}
+              onAddTime={() => onAddTime?.()}
               visible
             />
           ) : (
@@ -418,9 +454,7 @@ export function ActiveWorkoutPage({
                 unit={active.unit}
                 onRepsChange={setReps}
                 onWeightChange={setWeight}
-                onRecord={() => {
-                  if (rest != null) setResting(true)
-                }}
+                onRecord={recordSet}
                 canRecord={canRecord}
                 visible
               />

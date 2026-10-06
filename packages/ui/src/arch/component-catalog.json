@@ -2641,6 +2641,27 @@
         },
         {
           "default": null,
+          "description": "Called when the user presses the rest timer's add-time button.",
+          "name": "onAddTime",
+          "required": false,
+          "type": "(() => void)"
+        },
+        {
+          "default": null,
+          "description": "Called with each recorded set, after the page enters rest if `rest` is set.",
+          "name": "onRecord",
+          "required": false,
+          "type": "((set: ActiveWorkoutRecordedSet) => void)"
+        },
+        {
+          "default": null,
+          "description": "Called when the user skips rest, after the input bar returns.",
+          "name": "onSkip",
+          "required": false,
+          "type": "(() => void)"
+        },
+        {
+          "default": null,
           "description": "Rest-timer state; when resting, the timer replaces the input bar.",
           "name": "rest",
           "required": false,

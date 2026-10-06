@@ -12,7 +12,7 @@
     "complexity": 21
   },
   "components/custom/Workout/ActiveWorkoutPage.tsx": {
-    "file-lines": 345
+    "file-lines": 364
   },
   "components/custom/Workout/ActiveWorkoutPage.tsx#ActiveWorkoutPage": {
     "complexity": 19
@@ -127,7 +127,7 @@
     "props": 21
   },
   "components/custom/Workout/index.ts": {
-    "file-lines": 344
+    "file-lines": 345
   },
   "components/custom/Workout/velocityBandGeometry.ts": {
     "file-lines": 318
