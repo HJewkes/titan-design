@@ -194,4 +194,13 @@ describe('Radio', () => {
       }
     )
   })
+
+  it('renders a numeric 0 child inside the label text', () => {
+    render(
+      <RadioGroup value="a" onChange={() => {}}>
+        <Radio value="a">{0}</Radio>
+      </RadioGroup>
+    )
+    expect(screen.getByText('0')).not.toBe(screen.getByRole('radio'))
+  })
 })

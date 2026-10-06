@@ -129,7 +129,7 @@ export function Autocomplete<T extends string = string>({
   return (
     <View className={cn('w-full', className)} {...props}>
       {/* Label */}
-      {label && <AutocompleteLabel label={label} isRequired={isRequired} />}
+      {!!label && <AutocompleteLabel label={label} isRequired={isRequired} />}
 
       {/* Input Container */}
       <View className="relative">
@@ -155,25 +155,25 @@ export function Autocomplete<T extends string = string>({
           />
 
           {/* Clear button */}
-          {isClearable && value && !isDisabled && (
+          {!!isClearable && ((value as unknown) === 0 || !!value) && !isDisabled && (
             <AutocompleteClearButton onClear={state.handleClear} />
           )}
 
           {/* Loading indicator */}
-          {isLoading && <AutocompleteSpinner />}
+          {!!isLoading && <AutocompleteSpinner />}
         </View>
 
         {/* Dropdown */}
-        {state.isOpen && (
+        {!!state.isOpen && (
           <AutocompleteDropdown>
-            {showMinCharsMessage && (
+            {!!showMinCharsMessage && (
               <AutocompleteMessage>
                 {minCharsText || `Type at least ${minChars} characters`}
               </AutocompleteMessage>
             )}
-            {isLoading && <AutocompleteMessage>{loadingText}</AutocompleteMessage>}
-            {showNoResults && <AutocompleteMessage>{noOptionsText}</AutocompleteMessage>}
-            {showOptions &&
+            {!!isLoading && <AutocompleteMessage>{loadingText}</AutocompleteMessage>}
+            {!!showNoResults && <AutocompleteMessage>{noOptionsText}</AutocompleteMessage>}
+            {!!showOptions &&
               state.filteredOptions.map((option, index) => (
                 <AutocompleteOptionRow
                   key={String(option.value)}
@@ -189,7 +189,7 @@ export function Autocomplete<T extends string = string>({
       </View>
 
       {/* Helper/Error text */}
-      {(helperText || errorMessage) && (
+      {!!(helperText || errorMessage) && (
         <AutocompleteHelper text={errorMessage || helperText} isInvalid={isInvalid} />
       )}
     </View>
