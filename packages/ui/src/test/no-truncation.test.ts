@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { createRequire } from 'node:module'
 import { Linter, RuleTester, type Rule } from 'eslint'
+import tseslint from 'typescript-eslint'
 import baseline from '../../eslint-rules/no-truncation-baseline.json'
 import allowlist from '../../eslint-rules/truncation-allowlist.json'
 import { uiRoot } from './tailwind-compile'
@@ -44,6 +45,17 @@ describe('no-truncation', () => {
       },
       // Destructuring a prop to forward it is not a truncation decision.
       { code: 'function Row({ numberOfLines }) { return numberOfLines }', filename: componentFile },
+      {
+        code: 'function Title({ numberOfLines }) { return <Text numberOfLines={numberOfLines}>{t}</Text> }',
+        filename: componentFile,
+      },
+      ...[
+        'const Title = React.forwardRef(({ numberOfLines }, ref) => <Text ref={ref} numberOfLines={numberOfLines}>{t}</Text>)',
+        'const Title = memo(function Title({ numberOfLines }) { return <Text numberOfLines={numberOfLines}>{t}</Text> })',
+        'const Title = ({ numberOfLines: numberOfLines }) => <Text numberOfLines={numberOfLines}>{t}</Text>',
+        'export function Title({ numberOfLines }) { const tall = numberOfLines > 1; return <Text numberOfLines={numberOfLines}>{tall}</Text> }',
+        'const Title = memo(forwardRef(({ numberOfLines }, ref) => <Text ref={ref} numberOfLines={numberOfLines}>{t}</Text>))',
+      ].map((code) => ({ code, filename: componentFile })),
       { code: "const label = 'truncated'", filename: componentFile },
       { code: "const c = cn('flex line-clamp-none')", filename: componentFile },
       { code: "import { truncate } from './truncate'", filename: componentFile },
@@ -62,6 +74,58 @@ describe('no-truncation', () => {
           errors: [{ messageId: 'attribute' }],
         })
       ),
+      {
+        code: 'function Title() { const n = 2; return <Text numberOfLines={n}>{t}</Text> }',
+        filename: componentFile,
+        errors: [{ messageId: 'attribute' }],
+      },
+      {
+        code: 'function Title({ lines }) { return <Text numberOfLines={1}>{lines}</Text> }',
+        filename: componentFile,
+        errors: [{ messageId: 'attribute' }],
+      },
+      ...[
+        'function T({ lines }) { return <Text numberOfLines={lines}>{t}</Text> }',
+        'function T({ numberOfLines = 2 }) { return <Text numberOfLines={numberOfLines}>{t}</Text> }',
+        'function T(numberOfLines = 2) { return <Text numberOfLines={numberOfLines}>{t}</Text> }',
+        'items.map((item) => <Text numberOfLines={item.lines}>{t}</Text>)',
+        'items.map((_, i) => <Text numberOfLines={i}>{t}</Text>)',
+        'items.map((numberOfLines) => <Text numberOfLines={numberOfLines}>{t}</Text>)',
+        'items.map((item) => <Text numberOfLines={item.numberOfLines}>{t}</Text>)',
+        'items.map(({ numberOfLines }) => <Text numberOfLines={numberOfLines}>{t}</Text>)',
+        'function T({ lines: numberOfLines }) { return <Text numberOfLines={numberOfLines}>{t}</Text> }',
+        'function T({ numberOfLines: lines }) { return <Text numberOfLines={lines}>{t}</Text> }',
+        'function T({ style }) { return <Text numberOfLines={style.numberOfLines}>{t}</Text> }',
+        'function T(props, numberOfLines) { return <Text numberOfLines={numberOfLines}>{t}</Text> }',
+        'const T = (numberOfLines) => <Text numberOfLines={numberOfLines}>{t}</Text>',
+        'function T({ maxLines }) { return <Text numberOfLines={maxLines}>{t}</Text> }',
+        'function T(props) { return <Text numberOfLines={props.maxLines}>{t}</Text> }',
+        'function T({ a: { numberOfLines } }) { return <Text numberOfLines={numberOfLines}>{t}</Text> }',
+        // Written after the destructure: a default or a hard-coded value, not the caller's.
+        'function T({ numberOfLines }) { numberOfLines ??= 2; return <Text numberOfLines={numberOfLines}>{t}</Text> }',
+        'function T({ numberOfLines }) { numberOfLines = 2; return <Text numberOfLines={numberOfLines}>{t}</Text> }',
+        'function T(props) { props.numberOfLines ??= 2; return <Text numberOfLines={props.numberOfLines}>{t}</Text> }',
+        'function T(props) { props.numberOfLines++; return <Text numberOfLines={props.numberOfLines}>{t}</Text> }',
+        'function T(props) { ({ a: props.numberOfLines } = x); return <Text numberOfLines={props.numberOfLines}>{t}</Text> }',
+        'function T(props) { props = defaults; return <Text numberOfLines={props.numberOfLines}>{t}</Text> }',
+        // Only the destructured binding is exempt: a props object can be written unseen.
+        'function Title(props) { return <Text numberOfLines={props.numberOfLines}>{t}</Text> }',
+        'const Title = forwardRef((props, ref) => <Text ref={ref} numberOfLines={props.numberOfLines}>{t}</Text>)',
+        // Not a component: a render prop, a named helper, an object method, a camelCase function.
+        '<List renderItem={function Row({ numberOfLines }) { return <Text numberOfLines={numberOfLines}>{t}</Text> }} />',
+        'const Title = cond && function Row({ numberOfLines }) { return <Text numberOfLines={numberOfLines}>{t}</Text> }',
+        'function title({ numberOfLines }) { return <Text numberOfLines={numberOfLines}>{t}</Text> }',
+        'export default function ({ numberOfLines }) { return <Text numberOfLines={numberOfLines}>{t}</Text> }',
+        '<List renderItem={({ numberOfLines }) => <Text numberOfLines={numberOfLines}>{t}</Text>} />',
+        'const row = ({ numberOfLines }) => <Text numberOfLines={numberOfLines}>{t}</Text>; items.map(row)',
+        'const cfg = { render({ numberOfLines }) { return <Text numberOfLines={numberOfLines}>{t}</Text> } }',
+        'function title(props) { return <Text numberOfLines={props.numberOfLines}>{t}</Text> }',
+        'items.map(function Row(props) { return <Text numberOfLines={props.numberOfLines}>{t}</Text> })',
+      ].map((code) => ({
+        code,
+        filename: componentFile,
+        errors: [{ messageId: 'attribute' }],
+      })),
       ...['maxLines', 'numberOfLines'].map((property) => ({
         code: `const titleProps = { ${property}: 2 }`,
         filename: componentFile,
@@ -178,5 +242,27 @@ describe('no-truncation baseline and allowlist', () => {
     expect(parseAllowlist([entry, entry])).toEqual({
       'src/components/shell/X.tsx': { numberOfLines: 2 },
     })
+  })
+})
+
+describe('no-truncation under the TypeScript parser', () => {
+  const tsTester = new RuleTester({
+    languageOptions: { parser: tseslint.parser, ecmaVersion: 2022, sourceType: 'module' },
+  })
+  const tsFile = componentFile.replace(/\.jsx$/, '.tsx')
+
+  tsTester.run('no-truncation', rule as never, {
+    valid: [
+      'function Title({ numberOfLines }: { numberOfLines?: number }) { return <Text numberOfLines={numberOfLines}>{t}</Text> }',
+      'const Title: FC<Props> = ({ numberOfLines }) => <Text numberOfLines={numberOfLines}>{t}</Text>',
+    ].map((code) => ({ code, filename: tsFile })),
+    invalid: [
+      'function T(props: P) { (props as any).numberOfLines = 2; return <Text numberOfLines={props.numberOfLines}>{t}</Text> }',
+      "function T(props: P) { props['numberOfLines'] = 2; return <Text numberOfLines={props.numberOfLines}>{t}</Text> }",
+      'function T(props: P) { const p = props; p.numberOfLines = 2; return <Text numberOfLines={props.numberOfLines}>{t}</Text> }',
+      'function T({ numberOfLines }: P) { (numberOfLines as number) = 2; return <Text numberOfLines={numberOfLines}>{t}</Text> }',
+      'function T({ numberOfLines }: P) { numberOfLines! = 2; return <Text numberOfLines={numberOfLines}>{t}</Text> }',
+      '<List renderItem={function Row({ numberOfLines }: P) { return <Text numberOfLines={numberOfLines}>{t}</Text> }} />',
+    ].map((code) => ({ code, filename: tsFile, errors: [{ messageId: 'attribute' }] })),
   })
 })

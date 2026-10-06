@@ -9,6 +9,8 @@
  *
  * Flags four shapes:
  *   1. JSX attributes `truncate`, `noWrap`, `maxLines`, `numberOfLines`, `ellipsizeMode`.
+ *      `numberOfLines={numberOfLines}` that forwards a component's own `{ numberOfLines }` prop
+ *      (no rename, no default, never written) is not reported: the caller's attribute is the site.
  *   2. Object properties with those names (a props object spread onto Text, or a `cn({ truncate: on })`
  *      key), and `textOverflow: 'ellipsis'` in a style object.
  *   3. Class tokens `truncate`, `line-clamp-*`, `text-ellipsis` in any string, with or
@@ -121,6 +123,85 @@ function isEllipsisValue(node) {
   return node.type === 'Literal' && node.value === 'ellipsis'
 }
 
+/** The variable `name` resolves to from `scope`, walking outwards. */
+function findVariable(scope, name) {
+  for (let current = scope; current; current = current.upper) {
+    const variable = current.set.get(name)
+    if (variable) return variable
+  }
+  return undefined
+}
+
+const FORWARDED_PROP = 'numberOfLines'
+const COMPONENT_WRAPPERS = new Set(['forwardRef', 'memo'])
+
+/** `forwardRef(…)`, `memo(…)`, `React.forwardRef(…)` or `React.memo(…)`. */
+function isComponentWrapper(callee) {
+  const name = callee.type === 'MemberExpression' ? callee.property : callee
+  return name.type === 'Identifier' && COMPONENT_WRAPPERS.has(name.name)
+}
+
+const PASCAL_CASE = /^[A-Z]/
+
+/**
+ * The name a component is declared under: `function Title` or `const Title = …`. A function
+ * expression's own id (`renderItem={function Row() {}}`) names nothing a caller renders.
+ */
+function declaredName(fn) {
+  if (fn.type === 'FunctionDeclaration') return fn.id?.name
+  const { parent } = fn
+  if (
+    parent.type === 'VariableDeclarator' &&
+    parent.init === fn &&
+    parent.id.type === 'Identifier'
+  ) {
+    return parent.id.name
+  }
+  return undefined
+}
+
+/** A function declared under a PascalCase name, or the function `forwardRef`/`memo` wraps. */
+function isComponent(fn) {
+  const { parent } = fn
+  if (parent.type === 'CallExpression' && parent.arguments[0] === fn) {
+    return isComponentWrapper(parent.callee)
+  }
+  return PASCAL_CASE.test(declaredName(fn) ?? '')
+}
+
+/**
+ * `function Title({ numberOfLines })`: the prop destructured under its own name, with no
+ * default, from the first parameter of a component.
+ */
+function isOwnPropBinding(def) {
+  const property = def.name.parent
+  return (
+    def.type === 'Parameter' &&
+    property.type === 'Property' &&
+    property.value === def.name &&
+    !property.computed &&
+    property.key.type === 'Identifier' &&
+    property.key.name === FORWARDED_PROP &&
+    property.parent === def.node.params[0] &&
+    isComponent(def.node)
+  )
+}
+
+/**
+ * `numberOfLines={numberOfLines}` hands on the caller's own `numberOfLines` prop, and the
+ * caller's `numberOfLines=` attribute is the site this rule checks. The exemption is an
+ * allowlist of one shape: the component's `{ numberOfLines }` destructure, never written. A
+ * primitive binding can only be written through its own name, which scope analysis sees, so
+ * anything else (`props.numberOfLines`, a rename, a default, a callback, a `maxLines` prop)
+ * stays reported.
+ */
+function isForwardedProp(expression, scope) {
+  if (expression.type !== 'Identifier' || expression.name !== FORWARDED_PROP) return false
+  const variable = findVariable(scope, expression.name)
+  if (!variable || variable.defs.length !== 1 || !isOwnPropBinding(variable.defs[0])) return false
+  return variable.references.every((reference) => reference.isReadOnly())
+}
+
 const FIX =
   'Let the text wrap, or give the full text a hover or press affordance (`ui/tooltip`) and ' +
   `add the site to ${ALLOWLIST_FILE} with its kind and affordance.`
@@ -166,6 +247,14 @@ module.exports = {
     return {
       JSXAttribute(node) {
         if (node.name.type === 'JSXIdentifier' && JSX_ATTRIBUTES.has(node.name.name)) {
+          const { value } = node
+          if (
+            node.name.name === 'numberOfLines' &&
+            value?.type === 'JSXExpressionContainer' &&
+            isForwardedProp(value.expression, context.sourceCode.getScope(node))
+          ) {
+            return
+          }
           check(node.name.name, node.name.loc, 'attribute')
         }
       },
