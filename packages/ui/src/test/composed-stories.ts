@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 import type { ComponentType } from 'react'
-import { composeStories } from '@storybook/react'
+import { composeStories } from '@storybook/react-vite'
 
 type StoryModule = Parameters<typeof composeStories>[0]
 

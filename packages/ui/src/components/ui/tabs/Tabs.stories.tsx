@@ -23,7 +23,7 @@ type Story = StoryObj<typeof Tabs>
 
 export const Default: Story = {
   render: () => (
-    <Tabs defaultIndex={0}>
+    <Tabs defaultValue={0}>
       <TabList>
         <Tab>Account</Tab>
         <Tab>Security</Tab>
@@ -184,6 +184,11 @@ export const AllVariants: Story = {
             <Tab>Tab 2</Tab>
             <Tab>Tab 3</Tab>
           </TabList>
+          <TabPanels>
+            <TabPanel>Content 1</TabPanel>
+            <TabPanel>Content 2</TabPanel>
+            <TabPanel>Content 3</TabPanel>
+          </TabPanels>
         </Tabs>
       </View>
 
@@ -195,6 +200,11 @@ export const AllVariants: Story = {
             <Tab>Tab 2</Tab>
             <Tab>Tab 3</Tab>
           </TabList>
+          <TabPanels>
+            <TabPanel>Content 1</TabPanel>
+            <TabPanel>Content 2</TabPanel>
+            <TabPanel>Content 3</TabPanel>
+          </TabPanels>
         </Tabs>
       </View>
 
@@ -206,6 +216,11 @@ export const AllVariants: Story = {
             <Tab>Tab 2</Tab>
             <Tab>Tab 3</Tab>
           </TabList>
+          <TabPanels>
+            <TabPanel>Content 1</TabPanel>
+            <TabPanel>Content 2</TabPanel>
+            <TabPanel>Content 3</TabPanel>
+          </TabPanels>
         </Tabs>
       </View>
     </View>

@@ -4,6 +4,13 @@ import { axe } from 'jest-axe'
 import { SessionList, groupByPeriod, sessionPeriod } from './SessionList'
 import { SESSION_FIXTURE, SESSION_NOW } from './session-fixture'
 
+const endedIn = (month: number, day: number) =>
+  new Date(Date.UTC(2026, month - 1, day)).toISOString()
+const interleaved = [7, 5, 7].map((month, i) => ({
+  ...SESSION_FIXTURE[i]!,
+  ended: endedIn(month, 10),
+}))
+
 const july = SESSION_FIXTURE.filter((s) => s.ended.startsWith('2026-07'))
 
 describe('SessionList', () => {
@@ -22,6 +29,19 @@ describe('SessionList', () => {
     ])
     rerender(<SessionList sessions={july} now={SESSION_NOW} />)
     expect(screen.queryByTestId('session-period')).not.toBeInTheDocument()
+  })
+
+  it('keys period groups uniquely when months interleave, keeping input order', () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+    render(<SessionList sessions={interleaved} now={SESSION_NOW} />)
+    const messages = error.mock.calls.map((call) => call.join(' '))
+    error.mockRestore()
+    expect(messages.filter((m) => /same key|unique/i.test(m))).toEqual([])
+    expect(screen.getAllByTestId('session-period').map((p) => p.textContent)).toEqual([
+      'July 2026',
+      'May 2026',
+      'July 2026',
+    ])
   })
 
   it('marks only the selected id and reports the pressed session to the host', () => {
@@ -73,6 +93,14 @@ describe('period grouping', () => {
     expect(groups.map((g) => [g.label, g.sessions.length])).toEqual([
       ['July 2026', 5],
       ['May 2026', 1],
+    ])
+  })
+
+  it('keeps non-adjacent months as separate periods in input order', () => {
+    expect(groupByPeriod(interleaved).map((g) => [g.label, g.sessions.length])).toEqual([
+      ['July 2026', 1],
+      ['May 2026', 1],
+      ['July 2026', 1],
     ])
   })
 })

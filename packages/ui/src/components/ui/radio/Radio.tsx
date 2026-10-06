@@ -115,17 +115,17 @@ const sizeConfig: Record<RadioSize, { outer: string; inner: string; text: string
 const colorStyles: Record<RadioColor, { checked: string; unchecked: string }> = {
   primary: {
     checked: 'border-brand-primary bg-brand-primary',
-    unchecked: 'border-hairline-strong',
+    unchecked: 'border-border-input',
   },
   secondary: {
     checked: 'border-brand-secondary bg-brand-secondary',
-    unchecked: 'border-hairline-strong',
+    unchecked: 'border-border-input',
   },
   success: {
     checked: 'border-status-success bg-status-success',
-    unchecked: 'border-hairline-strong',
+    unchecked: 'border-border-input',
   },
-  error: { checked: 'border-status-error bg-status-error', unchecked: 'border-hairline-strong' },
+  error: { checked: 'border-status-error bg-status-error', unchecked: 'border-border-input' },
 }
 
 /**
@@ -176,7 +176,8 @@ export function Radio({
       onPress={handlePress}
       disabled={isDisabled}
       accessibilityRole="radio"
-      accessibilityState={{ checked: isChecked, disabled: isDisabled }}
+      accessibilityState={{ disabled: isDisabled }}
+      aria-checked={isChecked}
       className={cn('flex-row items-center', isDisabled && 'opacity-50', className)}
       {...props}
     >
