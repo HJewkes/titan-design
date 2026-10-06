@@ -13,11 +13,15 @@ import {
   uniqueOptions,
 } from './facet-bar-model'
 
+/** One value of a facet. */
 export interface FacetOption<T extends string = string> {
+  /** The value reported through `onValueChange`. */
   value: T
+  /** Text shown on the chip. */
   label: string
   /** Items matching this value. Omitted when not known. */
   count?: number
+  /** Disables this chip only. */
   isDisabled?: boolean
 }
 
@@ -48,6 +52,7 @@ interface FacetBarSingleProps<T extends string> extends FacetBarBaseProps<T> {
   onValueChange?: (value: T | null) => void
 }
 
+/** Props of {@link FacetBar}; `selectionMode` picks the value shape. */
 export type FacetBarProps<T extends string = string> =
   | FacetBarMultipleProps<T>
   | FacetBarSingleProps<T>

@@ -1779,17 +1779,14 @@ export interface EyebrowProps {
 // @public
 export function FacetBar<T extends string = string>(props: FacetBarProps<T>): react_jsx_runtime.JSX.Element | null;
 
-// @public (undocumented)
+// @public
 export type FacetBarProps<T extends string = string> = FacetBarMultipleProps<T> | FacetBarSingleProps<T>;
 
-// @public (undocumented)
+// @public
 export interface FacetOption<T extends string = string> {
     count?: number;
-    // (undocumented)
     isDisabled?: boolean;
-    // (undocumented)
     label: string;
-    // (undocumented)
     value: T;
 }
 
