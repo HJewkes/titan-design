@@ -273,7 +273,7 @@ function Gauge({ gauge }: { gauge: MesoStatusGauge }) {
             borderWidth: 2,
             backgroundColor: markerColor,
             // A knob resting on the gauge: lift, with the ring as its edge.
-            ...liftStyle(1, 'dark', { rim: 0 }),
+            ...liftStyle(1, mode, { rim: 0 }),
           }}
           testID="meso-status-card-gauge-marker"
         />
