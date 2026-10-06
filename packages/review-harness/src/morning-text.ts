@@ -32,7 +32,11 @@ const RELABELS: [RegExp, Replacement][] = [
   [/\bRecommendation:/g, 'Proposal:'],
   // A bold label keeps its colon inside the bold: "**Recommend** teal" is "**Proposed:** teal".
   [/\*\*Recommend(?:ed)?\b:?\*\*\s*/g, '**Proposed:** '],
-  [new RegExp(`${LABEL_AT}Recommend(?:ed)?\\b:?\\s*`, 'g'), '$1Proposed: '],
+  // Only a colon makes the word a label; "Recommended changes" is a participle.
+  [new RegExp(`${LABEL_AT}Recommend(?:ed)?:\\s*`, 'g'), '$1Proposed: '],
+  // "Recommend Default: buy" is one label, not a verb before one.
+  [/\b[Rr]ecommend(?:ed)?\s+(?=Proposed:)/g, ''],
+  [/\b[Rr]ecommendations:/g, (m) => `${noun(m.slice(0, -1))}:`],
   // Elsewhere the word is a verb, a participle or a noun, and stays one.
   [/\b[Rr]ecommend(s|ed)?\b(?!:)/g, (m) => verb(m)],
   [/\b[Rr]ecommendations?\b(?!:)/g, (m) => noun(m)],
