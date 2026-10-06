@@ -326,9 +326,9 @@ The `@storybook/addon-a11y` addon runs axe-core checks automatically. View resul
 
 ### Visual Testing
 
-Use the background switcher to test dark/light modes:
-1. Click the background tool in the toolbar
-2. Select "dark" or "light"
+Use the theme switcher (from `@storybook/addon-themes`) to test dark/light modes:
+1. Click the theme tool in the toolbar
+2. Select "dark" or "light". "light" adds the `.light` class to `<html>`; "dark" is the default and adds no class
 
 ### Interactive Testing
 
