@@ -410,7 +410,8 @@ export function ActiveWorkoutPage({
 
   const recordSet = () => {
     if (rest != null) setResting(true)
-    if (active != null) onRecord?.({ exerciseId: active.id, setNumber: nextSetNumber, reps, weight })
+    if (active != null)
+      onRecord?.({ exerciseId: active.id, setNumber: nextSetNumber, reps, weight })
   }
   const skipRest = () => {
     setResting(false)
