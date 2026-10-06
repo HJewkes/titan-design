@@ -15,6 +15,7 @@ import type { Manifest, Question, StripKind, Variant } from '../src/schema.ts'
 import { Markdown } from './Markdown.tsx'
 import { QuestionBlock } from './QuestionBlock.tsx'
 import { ReviewScreen } from './ReviewScreen.tsx'
+import { SectionParts } from './SectionParts.tsx'
 import { browserStorage, clearDraft, saveDraft, type DraftStorage } from './draftStore.ts'
 import {
   OTHER_PAGE,
@@ -248,6 +249,7 @@ function SectionBlock({ section, ...props }: PartProps & { section: ResolvedSect
       </header>
       <SectionText part="deciding" label="Deciding" text={section.deciding} />
       <SectionText part="changed" label="Changed since last approved" text={section.changed} />
+      <SectionParts parts={section.parts} />
       <SectionText part="context" label="Context only, not under review" text={section.context} />
       <Questions {...props} questions={section.questions} />
       {section.kind && (
