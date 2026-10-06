@@ -630,13 +630,6 @@ module.exports = tseslint.config(
       'src/components/ui/checkbox/Checkbox.tsx',
       'src/components/ui/radio/Radio.tsx',
       'src/components/ui/switch/Switch.tsx',
-      // TD-536 b4
-      'src/components/custom/Fatigue/DualGhostSpark.tsx',
-      'src/components/custom/Fatigue/SilverRedPalette.stories.tsx',
-      'src/components/ui/card/Card.tsx',
-      'src/components/ui/metric/Metric.tsx',
-      'src/components/ui/section/Section.tsx',
-      'src/components/ui/tooltip/Tooltip.tsx',
       // TD-536 b5
       'src/components/custom/Workout/ExerciseHeading.tsx',
       'src/components/custom/Workout/GoalMilestoneSummary.tsx',
