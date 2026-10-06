@@ -60,7 +60,7 @@ export default config
 The preview file imports global CSS and configures default parameters:
 
 ```tsx
-import type { Preview } from '@storybook/react-vite'
+import type { Preview } from '@storybook/react'
 import React from 'react'
 
 // CRITICAL: Import global CSS to load Tailwind utilities and CSS custom properties
