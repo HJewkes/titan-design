@@ -197,14 +197,8 @@ export function Tab({ index = 0, isDisabled = false, className, children }: TabP
       isActive ? 'border-brand-primary' : 'border-transparent'
     ),
     // The active enclosed tab is an indicator, not a plane: tone alone marks it.
-    enclosed: cn(
-      'px-4 py-2 rounded-md',
-      isActive && 'bg-surface-elevated'
-    ),
-    'soft-rounded': cn(
-      'px-4 py-2 rounded-full',
-      isActive && 'bg-brand-primary'
-    ),
+    enclosed: cn('px-4 py-2 rounded-md', isActive && 'bg-surface-elevated'),
+    'soft-rounded': cn('px-4 py-2 rounded-full', isActive && 'bg-brand-primary'),
   }
 
   return (

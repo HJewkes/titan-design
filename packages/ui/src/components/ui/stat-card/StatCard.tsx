@@ -158,9 +158,7 @@ export function StatCardHeader({ title, trailing, testID }: StatCardHeaderProps)
         title
       )}
       {trailing !== undefined && (
-        <View className="flex-row items-center gap-inline-sm">
-          {trailing}
-        </View>
+        <View className="flex-row items-center gap-inline-sm">{trailing}</View>
       )}
     </View>
   )
