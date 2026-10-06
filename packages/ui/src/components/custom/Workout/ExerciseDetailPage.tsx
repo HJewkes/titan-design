@@ -586,7 +586,7 @@ export function ExerciseDetailPage({
           onValueChange={(index) => setTab(EXERCISE_DETAIL_TABS[index].key)}
           testID="exercise-detail-page-tabs"
         >
-          <TabList>
+          <TabList className="flex-1">
             {EXERCISE_DETAIL_TABS.map(({ key, label }) => (
               <Tab key={key} className="flex-1 items-center">
                 {label}
