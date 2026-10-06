@@ -140,6 +140,9 @@ const FIXTURES: Record<string, Fixture> = {
     code: 'export const nothingRenders = 1',
     filename: Object.keys(unstyledTextBaseline)[0],
   },
+  'titan/no-classname-on-animated:animated': inShell(
+    'export const A = () => <Animated.View className="p-4" />'
+  ),
   'titan/no-html-element:html': inShell('export const B = () => <div>{children}</div>'),
   'titan/no-html-element:anchor': inShell('export const G = () => <a href={href}>{label}</a>'),
   'titan/no-html-element:svg': inShell('export const M = () => <path d={d} />'),

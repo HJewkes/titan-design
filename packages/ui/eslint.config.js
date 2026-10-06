@@ -3,6 +3,7 @@ const tseslint = require('typescript-eslint')
 const react = require('eslint-plugin-react')
 const reactHooks = require('eslint-plugin-react-hooks')
 const globals = require('globals')
+const noClassnameOnAnimated = require('./eslint-rules/no-classname-on-animated')
 const noDeprecatedImport = require('./eslint-rules/no-deprecated-import')
 const noDeviceInternals = require('./eslint-rules/no-device-internals')
 const noFrozenTheme = require('./eslint-rules/no-frozen-theme')
@@ -101,6 +102,7 @@ module.exports = tseslint.config(
       // below) are enabled in their own block without re-declaring `plugins`.
       titan: {
         rules: {
+          'no-classname-on-animated': noClassnameOnAnimated,
           'no-deprecated-import': noDeprecatedImport,
           'no-device-internals': noDeviceInternals,
           'no-frozen-theme': noFrozenTheme,
@@ -575,6 +577,28 @@ module.exports = tseslint.config(
     ignores: ['src/**/*.test.{ts,tsx}', 'src/**/*.stories.{ts,tsx}'],
     rules: {
       'titan/props-naming': 'error',
+    },
+  },
+
+  // TD-13: NativeWind does not compile className on an Animated.* element, so every class on
+  // one renders nothing on web and jsdom strips it in tests. Every className is flagged, not
+  // only spacing. A className on a plain child inside the animated element is fine.
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    rules: {
+      'titan/no-classname-on-animated': 'error',
+    },
+  },
+
+  // The two sites that carry a className on an Animated.View today. TD-305 (TD-13 S12)
+  // moves their classes onto a plain child or an inline style and deletes this block.
+  {
+    files: [
+      'src/components/custom/Workout/BodyMapDetailPanel.tsx',
+      'src/components/custom/Workout/VelocityStripFramed.tsx',
+    ],
+    rules: {
+      'titan/no-classname-on-animated': 'off',
     },
   },
 
