@@ -1,5 +1,5 @@
-import { emptyDraft, type AnswerDraft, type ReviewDraft } from '../src/feedback.ts'
-import { isAnswered } from '../src/round.ts'
+import { draftAnswer, emptyDraft, type AnswerDraft, type ReviewDraft } from '../src/feedback.ts'
+import { isAnswered, offersBuiltInRevision } from '../src/round.ts'
 import {
   linksForVariant,
   optionVariants,
@@ -42,6 +42,7 @@ export type Action =
   | { type: 'pinNote'; key: string; id: string; note: string }
   | { type: 'removePin'; key: string; id: string }
   | { type: 'pick'; id: string; option: string; many: boolean }
+  | { type: 'revision'; id: string }
   | { type: 'value'; id: string; value: number }
   | { type: 'text'; id: string; text: string }
   | { type: 'answerComment'; id: string; comment: string }
@@ -147,7 +148,7 @@ export function recommendationVisible(
   if (question.kind === 'text' || !question.recommendation) return false
   return (
     manifest.recommendations === 'shown' ||
-    isAnswered(question, { ...draft, questionId: question.id })
+    isAnswered(question, { ...draft, ...draftAnswer(question, draft) })
   )
 }
 
@@ -269,7 +270,7 @@ function linkVerdict(
         ? updateAnswer(d, question.id, (a) => ({
             picks: (a.picks ?? []).includes(option) ? a.picks : [...(a.picks ?? []), option],
           }))
-        : updateAnswer(d, question.id, () => ({ pick: option }))
+        : updateAnswer(d, question.id, () => ({ pick: option, revision: undefined }))
     if (many)
       return updateAnswer(d, question.id, (a) => ({
         picks: (a.picks ?? []).filter((p) => p !== option),
@@ -284,7 +285,11 @@ function reduceAnswer(draft: ReviewDraft, action: Action): ReviewDraft {
       return updateAnswer(draft, action.id, (a) =>
         action.many
           ? { picks: togglePick(a.picks, action.option) }
-          : { pick: a.pick === action.option ? undefined : action.option }
+          : { pick: a.pick === action.option ? undefined : action.option, revision: undefined }
+      )
+    case 'revision':
+      return updateAnswer(draft, action.id, (a) =>
+        a.revision ? { revision: undefined } : { revision: true, pick: undefined }
       )
     case 'value':
       return updateAnswer(draft, action.id, () => ({ value: action.value }))
@@ -306,11 +311,24 @@ function addPin(state: ReviewState, action: Extract<Action, { type: 'addPin' }>)
   return { ...state, draft, focusPin: pin.id }
 }
 
+/** A revision request picks no frame, so every frame this question's options stand for stops being chosen. */
+function linkRevision(manifest: Manifest, draft: ReviewDraft, id: string): ReviewDraft {
+  const question = manifest.questions.find((q) => q.id === id)
+  if (!question || !draftAnswer(question, draft.answers[id] ?? { comment: '' }).revisionRequested)
+    return draft
+  return [...optionVariants(manifest, question).values()].reduce(
+    (d, key) => (d.variants[key]?.verdict === 'chosen' ? setVerdict(d, key, null) : d),
+    draft
+  )
+}
+
 /** Keeps a pick and the verdict of the frame it stands for in step, in one action. */
 function reduceLinked(manifest: Manifest, draft: ReviewDraft, action: Action): ReviewDraft {
   const next = reduceAnswer(draft, action)
-  if (action.type === 'pick') return linkPick(manifest, next, action)
+  if (action.type === 'pick')
+    return linkRevision(manifest, linkPick(manifest, next, action), action.id)
   if (action.type === 'verdict') return linkVerdict(manifest, next, action)
+  if (action.type === 'revision') return linkRevision(manifest, next, action.id)
   return next
 }
 
@@ -355,7 +373,9 @@ export function numberKeyAction(manifest: Manifest, stop: Stop, digit: string): 
       : null
   if (question?.kind !== 'pick-one' && question?.kind !== 'pick-many') return null
   const option = question.options[n - 1]
-  return option === undefined
-    ? null
-    : { type: 'pick', id: question.id, option, many: question.kind === 'pick-many' }
+  if (option === undefined)
+    return offersBuiltInRevision(question) && n === question.options.length + 1
+      ? { type: 'revision', id: question.id }
+      : null
+  return { type: 'pick', id: question.id, option, many: question.kind === 'pick-many' }
 }

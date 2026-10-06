@@ -30,10 +30,8 @@ export interface PageProps extends Omit<ViewProps, 'children'> {
   maxWidth?: PageMaxWidth
   /** false: the page fills the region and the view owns its own scroll. */
   isScrollable?: boolean
-  /** true: the header sits in a ruled band that stays put while the body scrolls under it. */
+  /** true: the header sits in a ruled band that stays put while the body scrolls under it, and casts a shadow once content is under it. */
   isHeaderPinned?: boolean
-  /** true: a pinned header casts an elevation shadow once content has scrolled under it. */
-  hasScrollShadow?: boolean
   /** Tailwind classes merged onto the root. */
   className?: string
   /** The padded outer column. */
@@ -105,7 +103,6 @@ export function Page({
   maxWidth = 'full',
   isScrollable = true,
   isHeaderPinned = false,
-  hasScrollShadow = false,
   className,
   contentClassName,
   ...props
@@ -113,7 +110,7 @@ export function Page({
   const fill = !isScrollable && 'flex-1'
   const inner = cn('w-full', maxWidthClasses[maxWidth], maxWidth !== 'full' && 'self-center')
   const pinned = isHeaderPinned && Boolean(header)
-  const { isScrolled, onScroll } = useScrolledUnder(pinned && hasScrollShadow)
+  const { isScrolled, onScroll } = useScrolledUnder(pinned)
   const column = (
     <View
       className={cn(

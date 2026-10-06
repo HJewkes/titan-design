@@ -304,38 +304,50 @@ describe('Page', () => {
   })
 
   describe('scroll shadow', () => {
-    function renderPinned(hasScrollShadow: boolean) {
+    const header = <Text>Header content</Text>
+    const scrollTo = (container: HTMLElement, top: number) => {
+      const scroller = container.querySelector('[data-testid="page-scroll"]') as HTMLElement
+      scroller.scrollTop = top
+      fireEvent.scroll(scroller)
+    }
+    const shadowOf = () => (screen.getByTestId('page-header-band') as HTMLElement).style.boxShadow
+    const shadowed = (container: HTMLElement) =>
+      Array.from(container.querySelectorAll<HTMLElement>('*')).filter(
+        (el) => el.style.boxShadow && el.style.boxShadow !== 'none'
+      )
+
+    it('a pinned header casts a shadow once content scrolls under it, and drops it at the top', async () => {
       const { container } = render(
-        <Page isHeaderPinned hasScrollShadow={hasScrollShadow} header={<Text>Header content</Text>}>
+        <Page isHeaderPinned header={header}>
           {body()}
         </Page>
       )
-      return container.querySelector('[data-testid="page-scroll"]') as HTMLElement
-    }
-    const shadowOf = () => (screen.getByTestId('page-header-band') as HTMLElement).style.boxShadow
-
-    it('casts no shadow until content scrolls under the band', async () => {
-      const scroller = renderPinned(true)
-      expect(shadowOf()).toBe('none')
-      scroller.scrollTop = 40
-      fireEvent.scroll(scroller)
+      scrollTo(container, 40)
       expect(shadowOf()).not.toBe('none')
       await new Promise((resolve) => setTimeout(resolve, 30))
-      scroller.scrollTop = 0
-      fireEvent.scroll(scroller)
+      scrollTo(container, 0)
       expect(shadowOf()).toBe('none')
     })
 
-    it('is off by default', () => {
-      const { container } = render(
-        <Page isHeaderPinned header={<Text>Header content</Text>}>
+    it('a pinned header casts no shadow before it scrolls', () => {
+      render(
+        <Page isHeaderPinned header={header}>
           {body()}
         </Page>
       )
-      const scroller = container.querySelector('[data-testid="page-scroll"]') as HTMLElement
-      scroller.scrollTop = 40
-      fireEvent.scroll(scroller)
       expect(shadowOf()).toBe('none')
+    })
+
+    it('an unpinned page never casts a shadow, scrolled or not', () => {
+      const { container } = render(<Page header={header}>{body()}</Page>)
+      scrollTo(container, 40)
+      expect(shadowed(container)).toHaveLength(0)
+    })
+
+    it('hasScrollShadow is no longer a prop', () => {
+      // @ts-expect-error the prop was removed: a pinned header always casts the shadow
+      const page = <Page isHeaderPinned hasScrollShadow header={header} />
+      expect(page.props.hasScrollShadow).toBe(true)
     })
   })
 

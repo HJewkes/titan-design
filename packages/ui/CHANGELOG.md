@@ -78,6 +78,10 @@ changelog:compile` folds them into `[Unreleased]` at release.
 - `WorkoutPill`'s deload wash, rim and label and `WeekRow`'s deload row wash read the
   `status-deload` token for the surface's mode instead of the `WORKOUT_PILL_DELOAD` ramp pin. Both
   modes resolve to the same magenta, so nothing renders differently today (VW-531).
+- `Checkbox`'s unchecked box, every unchecked `Radio` circle and the `Switch` off track draw
+  their boundary with the `border-input` token instead of a `hairline` separator, so a control
+  reads as a control. `border-input` itself still sits under 3:1 on every plane; its value is a
+  separate token decision (TD-481).
 
 ### Fixed
 

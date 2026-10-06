@@ -20,7 +20,6 @@ const meta: Meta<StoryArgs> = {
     maxWidth: 'full',
     isScrollable: true,
     isHeaderPinned: false,
-    hasScrollShadow: false,
     title: 'Overview',
     description: 'Synthetic content for the page frame.',
     showHeader: true,
@@ -32,7 +31,6 @@ const meta: Meta<StoryArgs> = {
     maxWidth: { control: 'select', options: ['narrow', 'wide', 'full'] },
     isScrollable: { control: 'boolean' },
     isHeaderPinned: { control: 'boolean' },
-    hasScrollShadow: { control: 'boolean' },
     showHeader: { control: 'boolean' },
     showTrailing: { control: 'boolean' },
     title: { control: 'text' },
@@ -47,7 +45,7 @@ const meta: Meta<StoryArgs> = {
       description: {
         component:
           '**Molecule.** Composes [Typography](?path=/docs/foundations-typography--docs). A view puts ' +
-          'Section, Card, EmptyState or Alert in the body. Pin the header with `isHeaderPinned`; add `hasScrollShadow` for a shadow that appears once content scrolls under it. Change one control at a time: flip `maxWidth` and compare against the same frame, not against another frame. No loading, empty, error or disabled state: ' +
+          'Section, Card, EmptyState or Alert in the body. Pin the header with `isHeaderPinned`, which also casts a shadow once content scrolls under it. Change one control at a time: flip `maxWidth` and compare against the same frame, not against another frame. No loading, empty, error or disabled state: ' +
           'the page holds no data, so the view renders those in the body. Do not nest a Page in a Page.',
       },
     },
