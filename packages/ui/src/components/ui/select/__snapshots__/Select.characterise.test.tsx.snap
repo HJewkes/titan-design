@@ -227,9 +227,10 @@ exports[`Select characterisation > on a dark surface > renders the Controlled st
           </div>
         </div>
         <div
+          aria-hidden="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           style="position: absolute;"
-          tabindex="0"
+          tabindex="-1"
         />
         <div
           class="css-view-175oi2r"
@@ -467,9 +468,10 @@ exports[`Select characterisation > on a dark surface > renders the Default story
           </div>
         </div>
         <div
+          aria-hidden="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           style="position: absolute;"
-          tabindex="0"
+          tabindex="-1"
         />
         <div
           class="css-view-175oi2r"
@@ -795,9 +797,10 @@ exports[`Select characterisation > on a dark surface > renders the InFormLayout 
             </div>
           </div>
           <div
+            aria-hidden="true"
             class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
             style="position: absolute;"
-            tabindex="0"
+            tabindex="-1"
           />
           <div
             class="css-view-175oi2r"
@@ -1002,9 +1005,10 @@ exports[`Select characterisation > on a dark surface > renders the Invalid story
           </div>
         </div>
         <div
+          aria-hidden="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           style="position: absolute;"
-          tabindex="0"
+          tabindex="-1"
         />
         <div
           class="css-view-175oi2r"
@@ -1170,9 +1174,10 @@ exports[`Select characterisation > on a dark surface > renders the ManyOptions s
           </div>
         </div>
         <div
+          aria-hidden="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           style="position: absolute;"
-          tabindex="0"
+          tabindex="-1"
         />
         <div
           class="css-view-175oi2r"
@@ -1879,9 +1884,10 @@ exports[`Select characterisation > on a dark surface > renders the MultiSelect s
           </div>
         </div>
         <div
+          aria-hidden="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           style="position: absolute;"
-          tabindex="0"
+          tabindex="-1"
         />
         <div
           class="css-view-175oi2r"
@@ -2098,9 +2104,10 @@ exports[`Select characterisation > on a dark surface > renders the MultiSelectWi
           </div>
         </div>
         <div
+          aria-hidden="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           style="position: absolute;"
-          tabindex="0"
+          tabindex="-1"
         />
         <div
           class="css-view-175oi2r"
@@ -2296,9 +2303,10 @@ exports[`Select characterisation > on a dark surface > renders the WithDisabledO
           </div>
         </div>
         <div
+          aria-hidden="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           style="position: absolute;"
-          tabindex="0"
+          tabindex="-1"
         />
         <div
           class="css-view-175oi2r"
@@ -2460,9 +2468,10 @@ exports[`Select characterisation > on a dark surface > renders the WithPlacehold
           </div>
         </div>
         <div
+          aria-hidden="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           style="position: absolute;"
-          tabindex="0"
+          tabindex="-1"
         />
         <div
           class="css-view-175oi2r"
@@ -2650,9 +2659,10 @@ exports[`Select characterisation > on a dark surface > renders the WithPreselect
           </div>
         </div>
         <div
+          aria-hidden="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           style="position: absolute;"
-          tabindex="0"
+          tabindex="-1"
         />
         <div
           class="css-view-175oi2r"
@@ -2817,9 +2827,10 @@ exports[`Select characterisation > on a dark surface > renders the filled varian
         </div>
       </div>
       <div
+        aria-hidden="true"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         style="position: absolute;"
-        tabindex="0"
+        tabindex="-1"
       />
       <div
         class="css-view-175oi2r"
@@ -2923,9 +2934,10 @@ exports[`Select characterisation > on a dark surface > renders the filled varian
         </div>
       </div>
       <div
+        aria-hidden="true"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         style="position: absolute;"
-        tabindex="0"
+        tabindex="-1"
       />
       <div
         class="css-view-175oi2r"
@@ -3209,9 +3221,10 @@ exports[`Select characterisation > on a light surface > renders the Controlled s
           </div>
         </div>
         <div
+          aria-hidden="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           style="position: absolute;"
-          tabindex="0"
+          tabindex="-1"
         />
         <div
           class="css-view-175oi2r"
@@ -3449,9 +3462,10 @@ exports[`Select characterisation > on a light surface > renders the Default stor
           </div>
         </div>
         <div
+          aria-hidden="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           style="position: absolute;"
-          tabindex="0"
+          tabindex="-1"
         />
         <div
           class="css-view-175oi2r"
@@ -3777,9 +3791,10 @@ exports[`Select characterisation > on a light surface > renders the InFormLayout
             </div>
           </div>
           <div
+            aria-hidden="true"
             class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
             style="position: absolute;"
-            tabindex="0"
+            tabindex="-1"
           />
           <div
             class="css-view-175oi2r"
@@ -3984,9 +3999,10 @@ exports[`Select characterisation > on a light surface > renders the Invalid stor
           </div>
         </div>
         <div
+          aria-hidden="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           style="position: absolute;"
-          tabindex="0"
+          tabindex="-1"
         />
         <div
           class="css-view-175oi2r"
@@ -4152,9 +4168,10 @@ exports[`Select characterisation > on a light surface > renders the ManyOptions 
           </div>
         </div>
         <div
+          aria-hidden="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           style="position: absolute;"
-          tabindex="0"
+          tabindex="-1"
         />
         <div
           class="css-view-175oi2r"
@@ -4861,9 +4878,10 @@ exports[`Select characterisation > on a light surface > renders the MultiSelect 
           </div>
         </div>
         <div
+          aria-hidden="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           style="position: absolute;"
-          tabindex="0"
+          tabindex="-1"
         />
         <div
           class="css-view-175oi2r"
@@ -5080,9 +5098,10 @@ exports[`Select characterisation > on a light surface > renders the MultiSelectW
           </div>
         </div>
         <div
+          aria-hidden="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           style="position: absolute;"
-          tabindex="0"
+          tabindex="-1"
         />
         <div
           class="css-view-175oi2r"
@@ -5278,9 +5297,10 @@ exports[`Select characterisation > on a light surface > renders the WithDisabled
           </div>
         </div>
         <div
+          aria-hidden="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           style="position: absolute;"
-          tabindex="0"
+          tabindex="-1"
         />
         <div
           class="css-view-175oi2r"
@@ -5442,9 +5462,10 @@ exports[`Select characterisation > on a light surface > renders the WithPlacehol
           </div>
         </div>
         <div
+          aria-hidden="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           style="position: absolute;"
-          tabindex="0"
+          tabindex="-1"
         />
         <div
           class="css-view-175oi2r"
@@ -5632,9 +5653,10 @@ exports[`Select characterisation > on a light surface > renders the WithPreselec
           </div>
         </div>
         <div
+          aria-hidden="true"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           style="position: absolute;"
-          tabindex="0"
+          tabindex="-1"
         />
         <div
           class="css-view-175oi2r"
@@ -5799,9 +5821,10 @@ exports[`Select characterisation > on a light surface > renders the filled varia
         </div>
       </div>
       <div
+        aria-hidden="true"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         style="position: absolute;"
-        tabindex="0"
+        tabindex="-1"
       />
       <div
         class="css-view-175oi2r"
@@ -5905,9 +5928,10 @@ exports[`Select characterisation > on a light surface > renders the filled varia
         </div>
       </div>
       <div
+        aria-hidden="true"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         style="position: absolute;"
-        tabindex="0"
+        tabindex="-1"
       />
       <div
         class="css-view-175oi2r"
