@@ -25,7 +25,10 @@ export interface ChipProps extends ViewProps {
   leftElement?: React.ReactNode
   /** Right element (count, icon). Renders before the delete button. */
   rightElement?: React.ReactNode
-  /** Pressed state of a toggle chip. Needs `onPress`; leave undefined for a plain chip. */
+  /**
+   * Pressed state of a toggle chip. Needs `onPress`; leave undefined for a plain chip.
+   * Selected paints the `solid` face; unselected never does, so `variant="solid"` falls back to `subtle`.
+   */
   isSelected?: boolean
   /** Whether the chip is dismissible */
   onDelete?: () => void
@@ -125,7 +128,7 @@ export function Chip({
 
   return (
     <Pill
-      variant={(isSelected ? 'solid' : variant) as PillVariant}
+      variant={chipFace(variant, isSelected)}
       tone={colorToTone[color]}
       rounded={false}
       onPress={onPress}
@@ -154,6 +157,13 @@ export function Chip({
       {children}
     </Pill>
   )
+}
+
+// Solid is the selected cue, so an unselected toggle painting it would show no state change.
+function chipFace(variant: ChipVariant, isSelected: boolean | undefined): PillVariant {
+  if (isSelected) return 'solid'
+  if (isSelected === false && variant === 'solid') return 'subtle'
+  return variant
 }
 
 // A plain or non-pressable chip gets no aria-pressed: the attribute would announce it as a toggle, or fail axe on a View.

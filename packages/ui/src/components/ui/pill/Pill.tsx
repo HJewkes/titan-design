@@ -81,7 +81,7 @@ const toneStyles: Record<PillVariant, Record<PillTone, string>> = {
   // tuned for borders and text, and `brand-secondary` / `status-error` are dark enough
   // there that no label reads on them (AW-141). Every solid tone now clears AA.
   solid: {
-    neutral: 'bg-hairline-strong border-transparent text-text-inverse',
+    neutral: 'bg-text-primary border-transparent text-text-inverse',
     brand: 'bg-brand-primary-solid border-transparent text-on-brand-primary',
     'brand-secondary': 'bg-brand-secondary-solid border-transparent text-on-brand-secondary',
     success: 'bg-status-success-solid border-transparent text-on-status-success',
@@ -97,7 +97,7 @@ const toneStyles: Record<PillVariant, Record<PillTone, string>> = {
     // Label comes from `on-*-subtle`, not the base tone token: the base is tuned to
     // carry a white label as a solid fill, which left error and accent unreadable
     // here (AW-133). The on-subtle tokens level the family at one weight.
-    neutral: 'bg-hairline-subtle border-transparent text-text-secondary',
+    neutral: 'bg-hairline-subtle border-transparent text-text-primary',
     brand: 'bg-brand-primary-subtle border-transparent text-on-brand-primary-subtle',
     'brand-secondary':
       'bg-brand-secondary-subtle border-transparent text-on-brand-secondary-subtle',
