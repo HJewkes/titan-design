@@ -211,6 +211,29 @@ const row = (cells, { pad = [0, 12, 0, 12], width = 300 } = {}) => {
   )
 }
 
+describe('edge-clearance on clipped text and icons', () => {
+  it('clamps ellipsised text to its box so hidden characters are not overflow', () => {
+    const surface = node('s', null, [0, 0, 300, 40], { paints: true, pad: [8, 8, 8, 8] })
+    const label = node('s.0', 's', [8, 8, 100, 16], { text: textOf([8, 8, 400, 16]) })
+    expect(judgeEdgeClearance(layout(surface, label))).toEqual([])
+  })
+
+  it('still flags text whose own box is pushed into the padding', () => {
+    const surface = node('s', null, [0, 0, 300, 40], { paints: true, pad: [8, 8, 8, 8] })
+    const label = node('s.0', 's', [2, 8, 100, 16], { text: textOf([2, 8, 100, 16]) })
+    expect(judgeEdgeClearance(layout(surface, label))).toHaveLength(1)
+  })
+
+  it('leaves an icon centred in an unpadded badge alone, but flags one pushed past padding', () => {
+    const badge = node('b', null, [0, 0, 20, 20], { paints: true, border: [1, 1, 1, 1] })
+    const icon = node('b.0', 'b', [3, 3, 14, 14], { paints: true, tag: 'svg' })
+    expect(judgeEdgeClearance(layout(badge, icon))).toEqual([])
+    const padded = node('b', null, [0, 0, 32, 32], { paints: true, pad: [8, 8, 8, 8] })
+    const pushed = node('b.0', 'b', [4, 8, 16, 16], { paints: true, tag: 'svg' })
+    expect(judgeEdgeClearance(layout(padded, pushed))).toHaveLength(1)
+  })
+})
+
 describe('inset-asymmetry', () => {
   it('flags a full row that stops more than 2px short of the right padding', () => {
     const found = judgeInsetAsymmetry(row([[12, 270]]))
@@ -236,6 +259,12 @@ describe('inset-asymmetry', () => {
   it('applies at 80% fill and not below', () => {
     expect(judgeInsetAsymmetry(row([[12, 220.8]]))).toHaveLength(1)
     expect(judgeInsetAsymmetry(row([[12, 220.5]]))).toEqual([])
+  })
+
+  it('ignores a ragged paragraph: the text block spans the width though its lines stop short', () => {
+    const card = node('c', null, [0, 0, 300, 80], { paints: true, pad: [16, 16, 16, 16] })
+    const text = node('c.0', 'c', [16, 16, 268, 48], { text: textOf([16, 16, 200, 48]) })
+    expect(judgeInsetAsymmetry(layout(card, text))).toEqual([])
   })
 
   it('needs equal padding on the two sides', () => {

@@ -60,7 +60,7 @@
 
       <!-- P2 positives -->
       <div class="case card" data-testid="edge-pushed">
-        <div style="margin-left: -12px">Pushed into the padding</div>
+        <div style="margin: 0 -12px">Pushed into the padding</div>
       </div>
       <div class="case" data-testid="edge-unpadded" style="background: #dde">
         <div>Flush against the edge</div>
@@ -95,6 +95,36 @@
       </div>
       <div class="case card" data-testid="numeral">
         <div style="font-size: 48px; line-height: 1">42</div>
+      </div>
+      <div class="case card" data-testid="ragged">
+        <p style="margin: 0">
+          A paragraph long enough to wrap onto several lines inside this card, leaving a ragged
+          right edge that is ordinary text layout and not an uneven inset.
+        </p>
+      </div>
+      <div class="case card" data-testid="ellipsis" style="padding: 8px">
+        <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
+          A label far too long for its card, so it is cut with an ellipsis and its hidden characters
+          run well past the right edge
+        </div>
+      </div>
+      <div
+        class="case"
+        data-testid="badge"
+        style="
+          width: 20px;
+          height: 20px;
+          background: #99c;
+          border: 1px solid #334;
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        "
+      >
+        <svg width="14" height="14" viewBox="0 0 14 14" style="display: block">
+          <rect width="14" height="14" fill="#334" />
+        </svg>
       </div>
       <div class="case" data-testid="page" style="background: #dde">
         <div style="padding: 24px"><div>Text far from the page edge</div></div>

@@ -34,6 +34,9 @@ const negatives = [
   'pill',
   'numeral',
   'page',
+  'ragged',
+  'ellipsis',
+  'badge',
   'icon-button',
 ]
 

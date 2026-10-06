@@ -147,21 +147,34 @@ function clearances(content, surface) {
   ]
 }
 
-// (a) ink sits inside the declared padding; (b) a side declared with no padding leaves the ink
-// under the floor. A side with declared padding that the ink honours (a pill's 2px) is fine.
-function crowdedSides(dist, surface) {
+// (a) ink sits inside the declared padding; (b) a side declared with no padding leaves text ink
+// under the floor. A side with declared padding that the ink honours (a pill's 2px) is fine, and
+// replaced content (an icon centred in a badge) answers to (a) only: its box is not glyph ink.
+function crowdedSides(dist, surface, floored) {
   return SIDES.flatMap((side, i) => {
     const pad = surface.pad[i]
     const d = dist[i]
     const pushedIn = pad - d >= PADDING_TOLERANCE
-    const unpadded = pad < PADDING_TOLERANCE && d < EDGE_FLOOR
+    const unpadded = floored && pad < PADDING_TOLERANCE && d < EDGE_FLOOR
     return pushedIn || unpadded ? [{ side, d, pad }] : []
   })
 }
 
+// Characters a clip or ellipsis hides still have rects, so text ink is clamped to its own box.
+function clampTo(ink, box) {
+  const x = Math.max(ink[0], box[0])
+  const y = Math.max(ink[1], box[1])
+  const r = Math.max(x, Math.min(right(ink), right(box)))
+  const b = Math.max(y, Math.min(bottom(ink), bottom(box)))
+  return [x, y, r - x, b - y]
+}
+
 function contentOf(n) {
-  if (n.text) return { ink: textInk(n.text), surfaceFrom: n.paints && n.tag !== 'svg' ? n : null }
-  if (REPLACED_TAGS.has(n.tag)) return { ink: n.box, surfaceFrom: null }
+  if (n.text) {
+    const surfaceFrom = n.paints && n.tag !== 'svg' ? n : null
+    return { ink: clampTo(textInk(n.text), n.box), surfaceFrom, floored: true }
+  }
+  if (REPLACED_TAGS.has(n.tag)) return { ink: n.box, surfaceFrom: null, floored: false }
   return null
 }
 
@@ -174,7 +187,7 @@ export function judgeEdgeClearance({ nodes }) {
     if (!content) continue
     const surface = content.surfaceFrom ?? surfaceOf(n.parent)
     if (!surface) continue
-    const crowded = crowdedSides(clearances(content.ink, surface), surface)
+    const crowded = crowdedSides(clearances(content.ink, surface), surface, content.floored)
     if (!crowded.length) continue
     findings.push({
       kind: EDGE_CLEARANCE,
@@ -198,8 +211,8 @@ function unionInk(boxes) {
 }
 
 // Axis 0 is horizontal (left/right), axis 1 vertical (top/bottom). `content` is the union of the
-// children's ink across, and of their layout boxes down: a glyph's ink always sits unevenly in its
-// line box, so vertical ink would flag every card around a line of text.
+// children's layout boxes: glyph ink sits unevenly in its box (a ragged right edge, a line box), so
+// ink would flag every card around a paragraph.
 function asymmetryOn(surface, content, axis) {
   const [before, after] = axis === 0 ? [3, 1] : [0, 2]
   if (surface.pad[before] !== surface.pad[after]) return null
@@ -226,12 +239,8 @@ export function judgeInsetAsymmetry({ nodes }) {
     if (!surface.paints || surface.tag === 'svg') continue
     const kids = (children.get(surface.id) ?? []).filter((c) => c.ink)
     if (!kids.length) continue
-    const across = unionInk(kids.map((c) => c.ink))
-    const down = unionInk(kids.map((c) => c.box))
-    for (const [axis, content] of [
-      [0, across],
-      [1, down],
-    ]) {
+    const content = unionInk(kids.map((c) => c.box))
+    for (const axis of [0, 1]) {
       const detail = asymmetryOn(surface, content, axis)
       if (detail) findings.push({ kind: INSET_ASYMMETRY, selector: surface.selector, detail })
     }
