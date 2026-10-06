@@ -10,6 +10,7 @@ import path from 'node:path'
 import { createRequire } from 'node:module'
 import { Linter } from 'eslint'
 import fixOptions from '../../eslint-rules/fix-options'
+import htmlElementBaseline from '../../eslint-rules/no-html-element-baseline.json'
 import truncationBaseline from '../../eslint-rules/no-truncation-baseline.json'
 import unstyledTextBaseline from '../../eslint-rules/no-unstyled-text-baseline.json'
 import { compileClasses, uiRoot } from './tailwind-compile'
@@ -137,6 +138,13 @@ const FIXTURES: Record<string, Fixture> = {
   'titan/no-unstyled-text:stale': {
     code: 'export const nothingRenders = 1',
     filename: Object.keys(unstyledTextBaseline)[0],
+  },
+  'titan/no-html-element:html': inShell('export const B = () => <div>{children}</div>'),
+  'titan/no-html-element:svg': inShell('export const M = () => <path d={d} />'),
+  // A baselined file with its sites gone: the allowance it no longer spends is stale.
+  'titan/no-html-element:stale': {
+    code: 'export const nothingRenders = 1',
+    filename: Object.keys(htmlElementBaseline)[0],
   },
   'titan/no-raw-device-data-in-chat:rawConstructor': {
     code: 'export function useDecoder() { return new Uint8Array(4) }',
