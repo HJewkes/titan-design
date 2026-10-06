@@ -2,14 +2,18 @@ import { View } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Typography } from '../typography'
 
+/** Keycap size: `sm` sets the glyph at `text-xs`, `md` at `text-sm`. */
 export type KbdSize = 'sm' | 'md'
 
+/** Props for {@link Kbd}. */
 export interface KbdProps {
   /** One keycap per entry, e.g. `['⌘', 'K']`. */
   keys: string[]
+  /** Keycap size. Defaults to `sm`. */
   size?: KbdSize
   /** Overrides the spoken name derived from `keys`. */
   accessibilityLabel?: string
+  /** Tailwind classes merged onto the root through `cn()`. */
   className?: string
 }
 
