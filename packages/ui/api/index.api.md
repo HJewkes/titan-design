@@ -3821,6 +3821,20 @@ export function isValidEmail(email: string): boolean;
 export function KanbanIcon(input: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
+export function Kbd(input: KbdProps): react_jsx_runtime.JSX.Element | null;
+
+// @public
+export interface KbdProps {
+    accessibilityLabel?: string;
+    className?: string;
+    keys: string[];
+    size?: KbdSize;
+}
+
+// @public
+export type KbdSize = 'sm' | 'md';
+
+// @public
 export function Label(props: LabelProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
