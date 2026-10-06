@@ -9,13 +9,13 @@
  *
  * Flags four shapes:
  *   1. JSX attributes `truncate`, `noWrap`, `maxLines`, `numberOfLines`, `ellipsizeMode`.
+ *      `numberOfLines={numberOfLines}` or `{props.numberOfLines}` that forwards the component's
+ *      own prop (no rename, no default) is not reported: the caller's attribute is the site.
  *   2. Object properties with those names (a props object spread onto Text, or a `cn({ truncate: on })`
  *      key), and `textOverflow: 'ellipsis'` in a style object.
  *   3. Class tokens `truncate`, `line-clamp-*`, `text-ellipsis` in any string, with or
  *      without variant prefixes (`web:truncate`), as an object key (`cn({ 'line-clamp-2': on })`)
  *      or as a template prefix (`line-clamp-${lines}`, reported as `line-clamp-*`).
- *      A `numberOfLines` that forwards a function parameter (`numberOfLines`, `props.numberOfLines`, no default) is not
- *      reported: the caller made the decision.
  *   4. `line-clamp-none` is the opposite of a clamp, and a string that is only compared to
  *      `'truncate'` or imported from a `truncate` path is not a class.
  *
@@ -132,30 +132,66 @@ function findVariable(scope, name) {
   return undefined
 }
 
-const FORWARDED_NAMES = new Set(['numberOfLines', 'maxLines'])
+const FORWARDED_PROP = 'numberOfLines'
+const COMPONENT_WRAPPERS = new Set(['forwardRef', 'memo'])
 
-/** A parameter of a named component or function, with no default of its own. */
-function isPlainParameter(variable) {
+/** `forwardRef(…)`, `memo(…)`, `React.forwardRef(…)` or `React.memo(…)`. */
+function isComponentWrapper(callee) {
+  const name = callee.type === 'MemberExpression' ? callee.property : callee
+  return name.type === 'Identifier' && COMPONENT_WRAPPERS.has(name.name)
+}
+
+/**
+ * The props parameter: the first parameter of a function that is not a callback argument, or
+ * of the function a `forwardRef`/`memo` wraps. A `.map` callback's first parameter is an item.
+ */
+function isPropsParameter(fn, param) {
+  if (fn.params[0] !== param) return false
+  const { parent } = fn
+  if (parent.type !== 'CallExpression' && parent.type !== 'NewExpression') return true
+  return parent.arguments[0] === fn && isComponentWrapper(parent.callee)
+}
+
+/** `function T({ numberOfLines })`: the prop destructured under its own name, no default. */
+function isDestructuredProp(variable) {
+  return variable.defs.some((def) => {
+    if (def.type !== 'Parameter') return false
+    const property = def.name.parent
+    return (
+      property.type === 'Property' &&
+      property.value === def.name &&
+      !property.computed &&
+      property.key.type === 'Identifier' &&
+      property.key.name === FORWARDED_PROP &&
+      isPropsParameter(def.node, property.parent)
+    )
+  })
+}
+
+/** `function T(props)`: the props object itself, so `props.numberOfLines` is the caller's prop. */
+function isPropsObject(variable) {
   return variable.defs.some(
-    (def) =>
-      def.type === 'Parameter' &&
-      def.name.parent.type !== 'AssignmentPattern' &&
-      def.node.parent.type !== 'CallExpression'
+    (def) => def.type === 'Parameter' && isPropsParameter(def.node, def.name)
   )
 }
 
 /**
- * `numberOfLines={numberOfLines}` or `{props.numberOfLines}` hands the caller's prop on, and the
- * caller's own `numberOfLines=` attribute is the site this rule checks. A renamed prop, a default
- * value or a callback parameter has no such site, so it stays reported.
+ * `numberOfLines={numberOfLines}` or `{props.numberOfLines}` hands on the caller's own
+ * `numberOfLines` prop, and the caller's `numberOfLines=` attribute is the site this rule checks.
+ * Anything else, a renamed prop (`{ lines: numberOfLines }`), a default, a callback item or a
+ * `maxLines` prop, has no such site, so it stays reported.
  */
-function isForwardedParameter(expression, scope) {
-  const name = expression.type === 'MemberExpression' ? expression.property : expression
-  const root = expression.type === 'MemberExpression' ? expression.object : expression
-  if (root.type !== 'Identifier' || name.type !== 'Identifier') return false
-  if (expression.computed || !FORWARDED_NAMES.has(name.name)) return false
-  const variable = findVariable(scope, root.name)
-  return variable !== undefined && isPlainParameter(variable)
+function isForwardedProp(expression, scope) {
+  if (expression.type === 'Identifier' && expression.name === FORWARDED_PROP) {
+    const variable = findVariable(scope, expression.name)
+    return variable !== undefined && isDestructuredProp(variable)
+  }
+  if (expression.type !== 'MemberExpression' || expression.computed) return false
+  const { object, property } = expression
+  if (object.type !== 'Identifier' || property.type !== 'Identifier') return false
+  if (property.name !== FORWARDED_PROP) return false
+  const variable = findVariable(scope, object.name)
+  return variable !== undefined && isPropsObject(variable)
 }
 
 const FIX =
@@ -207,7 +243,7 @@ module.exports = {
           if (
             node.name.name === 'numberOfLines' &&
             value?.type === 'JSXExpressionContainer' &&
-            isForwardedParameter(value.expression, context.sourceCode.getScope(node))
+            isForwardedProp(value.expression, context.sourceCode.getScope(node))
           ) {
             return
           }
