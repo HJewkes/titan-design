@@ -124,6 +124,70 @@ describe('useTreeNavigation, lazy children', () => {
   })
 })
 
+describe('useTreeNavigation, a load that brings no children', () => {
+  const BIN_CHILD: TreeNode = { id: 'bin/run', parentId: 'bin', label: 'run' }
+  const loading = new Set(['bin'])
+
+  function expandBin() {
+    const onLoadChildren = vi.fn()
+    const hook = setup({ onLoadChildren })
+    act(() => rowProps(hook, 'bin').onToggle())
+    hook.rerender({ nodes: NODES, onLoadChildren, loadingIds: loading })
+    return { hook, onLoadChildren }
+  }
+
+  const nextCommit = () => act(() => new Promise((resolve) => setTimeout(resolve, 0)))
+
+  it('collapses the row one commit after loadingIds clears, so the expander loads again', async () => {
+    const { hook, onLoadChildren } = expandBin()
+
+    hook.rerender({ nodes: NODES, onLoadChildren, loadingIds: new Set() })
+    expect(hook.result.current.expandedIds.has('bin')).toBe(true)
+    await nextCommit()
+
+    expect(hook.result.current.expandedIds.has('bin')).toBe(false)
+    act(() => rowProps(hook, 'bin').onToggle())
+    expect(onLoadChildren).toHaveBeenCalledTimes(2)
+  })
+
+  it('keeps the row open when its nodes arrive in the commit after loadingIds clears', async () => {
+    const { hook, onLoadChildren } = expandBin()
+
+    hook.rerender({ nodes: NODES, onLoadChildren, loadingIds: new Set() })
+    hook.rerender({ nodes: [...NODES, BIN_CHILD], onLoadChildren, loadingIds: new Set() })
+    await nextCommit()
+
+    expect(hook.result.current.expandedIds.has('bin')).toBe(true)
+    expect(ids(hook)).toContain('bin/run')
+  })
+
+  it('keeps the row open when its nodes arrive before loadingIds clears', async () => {
+    const { hook, onLoadChildren } = expandBin()
+
+    hook.rerender({ nodes: [...NODES, BIN_CHILD], onLoadChildren, loadingIds: loading })
+    hook.rerender({ nodes: [...NODES, BIN_CHILD], onLoadChildren, loadingIds: new Set() })
+    await nextCommit()
+
+    expect(hook.result.current.expandedIds.has('bin')).toBe(true)
+    expect(ids(hook)).toContain('bin/run')
+  })
+})
+
+describe('useTreeNavigation, a controlled collapse from outside', () => {
+  it('moves focus to the nearest visible ancestor and keeps no hidden focus', () => {
+    const open = new Set(['apps'])
+    const hook = setup({ expandedIds: open })
+    act(() => rowProps(hook, 'apps/auth').onFocus())
+
+    hook.rerender({ nodes: NODES, expandedIds: new Set() })
+    expect(hook.result.current.focusedId).toBe('apps')
+    hook.rerender({ nodes: NODES, expandedIds: open })
+
+    expect(hook.result.current.focusedId).toBe('apps')
+    expect(rowProps(hook, 'apps/auth').tabIndex).toBe(-1)
+  })
+})
+
 describe('useTreeNavigation, typeahead', () => {
   beforeEach(() => vi.useFakeTimers())
   afterEach(() => vi.useRealTimers())
