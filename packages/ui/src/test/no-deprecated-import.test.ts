@@ -47,8 +47,20 @@ describe('no-deprecated-import', () => {
       { code: "import { Card } from '@/components/ui'", filename: newCustomConsumer },
       // The alias regression again, two `export *` hops up where both names are reachable.
       { code: "import { IconProps } from '@/components'", filename: newCustomConsumer },
+      // Migration M6: Metric's new home and the root barrel stay clean.
+      { code: "import { Metric } from '../../ui/metric'", filename: newCustomConsumer },
+      { code: "import { Metric, MetricGroup } from '@/components'", filename: newCustomConsumer },
     ],
     invalid: [
+      // Migration M6: the old custom/Metric path still resolves through its shim and is flagged.
+      {
+        code: "import { Metric, MetricGroup } from '../Metric'",
+        filename: newCustomConsumer,
+        errors: [
+          { message: /'Metric' is deprecated.*Moved to `ui\/metric`/ },
+          { message: /'MetricGroup' is deprecated.*Moved to `ui\/metric`/ },
+        ],
+      },
       // Positive control: BaseBadge's tag sits on its own declaration —
       // the exact gap VW-88 found (a docblock nobody enforced).
       {
