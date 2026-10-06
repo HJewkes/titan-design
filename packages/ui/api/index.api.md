@@ -1811,7 +1811,7 @@ export interface FatigueMeterProps extends ViewProps {
     max?: number;
     needleColor?: string;
     size?: ZoneTrackSize;
-    thresholds?: [number, number, number];
+    thresholds?: VelocityLossThresholds;
     trackHeight?: number;
     value: number;
     zoneColors?: [string, string, string, string];
@@ -5641,13 +5641,13 @@ export type ProseSize = 'sm' | 'md';
 export interface PrRecord {
     date: string;
     isRecent?: boolean;
-    type: PrRecordType;
+    type: PRType;
     unit?: 'lbs' | 'kg';
     value: string | number;
 }
 
-// @public (undocumented)
-export type PrRecordType = 'e1rm' | 'weight' | 'reps' | 'volume' | 'velocity';
+// @public @deprecated (undocumented)
+export type PrRecordType = PRType;
 
 // @public
 export function prRefLinker(onPress?: (number: number) => void): ProseLinker;
