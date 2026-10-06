@@ -17,6 +17,31 @@ vi.mock('react-native', async (importOriginal) => {
 })
 
 describe('Switch', () => {
+  it('flips its own state on press when uncontrolled and calls onCheckedChange', () => {
+    const onCheckedChange = vi.fn()
+    render(<Switch label="Toggle" defaultIsChecked={false} onCheckedChange={onCheckedChange} />)
+    const control = screen.getByRole('switch')
+    expect(control).toHaveAttribute('aria-checked', 'false')
+    fireEvent.click(control)
+    expect(control).toHaveAttribute('aria-checked', 'true')
+    expect(onCheckedChange).toHaveBeenLastCalledWith(true)
+    fireEvent.click(control)
+    expect(control).toHaveAttribute('aria-checked', 'false')
+    expect(onCheckedChange).toHaveBeenLastCalledWith(false)
+  })
+
+  it('seeds uncontrolled state from defaultIsChecked', () => {
+    render(<Switch label="Toggle" defaultIsChecked />)
+    expect(screen.getByRole('switch')).toHaveAttribute('aria-checked', 'true')
+  })
+
+  it('stays controlled when isChecked is given', () => {
+    render(<Switch label="Toggle" isChecked={false} defaultIsChecked />)
+    const control = screen.getByRole('switch')
+    fireEvent.click(control)
+    expect(control).toHaveAttribute('aria-checked', 'false')
+  })
+
   it('renders correctly', () => {
     render(<Switch label="Toggle" />)
     expect(screen.getByRole('switch')).toBeInTheDocument()

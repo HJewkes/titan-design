@@ -128,7 +128,7 @@ describe('section parts under the review contract', () => {
 
   it('refuses a signsOff that names a settled part', async () => {
     expect(await refusal(withSignsOff('P3'))).toContain(
-      'question size: signsOff "P3" names a settled part'
+      'question size: signsOff "P3" names a settled part in section props;'
     )
   })
 
@@ -151,7 +151,13 @@ describe('section parts under the review contract', () => {
       questionIds: [],
       variantKeys: [],
     })
-    expect(await refusal(input)).toContain('part P1 is in two sections')
+    expect(await refusal(input)).toContain('part P1 is in sections props and again')
+  })
+
+  it('refuses one part id used twice in one section, naming that section', async () => {
+    const message = await refusal(withParts([SIZE_PART, SIZE_PART, TONE_PART, SETTLED_PART]))
+    expect(message).toContain('part P1 repeats in section props')
+    expect(message).not.toContain('is in sections')
   })
 
   it('keeps free-text signsOff in a section without parts', async () => {

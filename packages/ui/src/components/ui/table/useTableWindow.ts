@@ -33,7 +33,9 @@ export function useViewState(defaultPageSize: number) {
     setWindowRangeState((range) => ({ start: 0, end: range.end - range.start }))
     clearRequestedRanges()
   }
-  const view = { page, setPage, pageSize, setPageSize, windowRange, setWindowRange }
+  // An updater, so a clamp in the same render as `restart` cannot undo the return to page 0.
+  const limitPage = (lastPage: number) => setPage((current) => Math.min(current, lastPage))
+  const view = { page, setPage, limitPage, pageSize, setPageSize, windowRange, setWindowRange }
   return { ...view, requestEpoch, clearRequestedRanges, restart }
 }
 

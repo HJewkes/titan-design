@@ -1968,7 +1968,7 @@
         },
         {
           "default": "false",
-          "description": "Reveal the ECC / HOLD / CON labels inside the band.",
+          "description": "Reveal the ECC / CON labels inside the band; hold and idle runs stay unlabelled.",
           "name": "showLabels",
           "required": false,
           "type": "boolean"
@@ -2405,90 +2405,6 @@
       "tier": "atom"
     },
     {
-      "composes": [],
-      "family": "custom/Metric",
-      "file": "packages/ui/src/components/custom/Metric/Metric.tsx",
-      "name": "Metric",
-      "props": [
-        {
-          "default": null,
-          "description": "",
-          "name": "className",
-          "required": false,
-          "type": "string"
-        },
-        {
-          "default": null,
-          "description": "",
-          "name": "label",
-          "required": true,
-          "type": "string"
-        },
-        {
-          "default": null,
-          "description": "Merged onto the label text, e.g. to hold it at one size whatever the figure's `size`.",
-          "name": "labelClassName",
-          "required": false,
-          "type": "string"
-        },
-        {
-          "default": "md",
-          "description": "",
-          "name": "size",
-          "required": false,
-          "type": "\"sm\" | \"md\" | \"lg\""
-        },
-        {
-          "default": null,
-          "description": "",
-          "name": "trend",
-          "required": false,
-          "type": "MetricTrend"
-        },
-        {
-          "default": null,
-          "description": "",
-          "name": "unit",
-          "required": false,
-          "type": "string"
-        },
-        {
-          "default": null,
-          "description": "",
-          "name": "value",
-          "required": true,
-          "type": "string"
-        },
-        {
-          "default": null,
-          "description": "Merged onto the value text, e.g. `leading-none` to sit the figure tight under a header.",
-          "name": "valueClassName",
-          "required": false,
-          "type": "string"
-        }
-      ],
-      "purpose": "",
-      "sources": {
-        "props": "packages/ui/src/components/custom/Metric/Metric.tsx",
-        "status": "packages/ui/src/components/custom/Metric/Metric.stories.tsx"
-      },
-      "status": "candidate",
-      "storyIds": [
-        "components-molecules-metric--all-sizes",
-        "components-molecules-metric--default",
-        "components-molecules-metric--full-metric",
-        "components-molecules-metric--group",
-        "components-molecules-metric--group-small",
-        "components-molecules-metric--large",
-        "components-molecules-metric--small",
-        "components-molecules-metric--with-trend-down",
-        "components-molecules-metric--with-trend-neutral",
-        "components-molecules-metric--with-trend-up",
-        "components-molecules-metric--with-unit"
-      ],
-      "tier": "atom"
-    },
-    {
       "composes": [
         "Typography"
       ],
@@ -2722,6 +2638,27 @@
           "name": "input",
           "required": false,
           "type": "ActiveWorkoutInput"
+        },
+        {
+          "default": null,
+          "description": "Called when the user presses the rest timer's add-time button.",
+          "name": "onAddTime",
+          "required": false,
+          "type": "(() => void)"
+        },
+        {
+          "default": null,
+          "description": "Called with each recorded set, after the page enters rest if `rest` is set.",
+          "name": "onRecord",
+          "required": false,
+          "type": "((set: ActiveWorkoutRecordedSet) => void)"
+        },
+        {
+          "default": null,
+          "description": "Called when the user skips rest, after the input bar returns.",
+          "name": "onSkip",
+          "required": false,
+          "type": "(() => void)"
         },
         {
           "default": null,
@@ -3479,13 +3416,6 @@
         {
           "default": null,
           "description": "",
-          "name": "onNavigateDetail",
-          "required": false,
-          "type": "(() => void)"
-        },
-        {
-          "default": null,
-          "description": "",
           "name": "prescription",
           "required": false,
           "type": "string"
@@ -3531,13 +3461,6 @@
           "name": "summary",
           "required": false,
           "type": "{ sets: number; reps: string | number; weight: number; unit: \"lbs\" | \"kg\"; }"
-        },
-        {
-          "default": null,
-          "description": "",
-          "name": "supersetColor",
-          "required": false,
-          "type": "string"
         },
         {
           "default": null,
@@ -4882,27 +4805,6 @@
           "type": "boolean"
         },
         {
-          "default": "monotone",
-          "description": "Band edge interpolation.",
-          "name": "bandCurve",
-          "required": false,
-          "type": "BandCurve"
-        },
-        {
-          "default": "centre-14",
-          "description": "Band fade.",
-          "name": "bandFade",
-          "required": false,
-          "type": "BandFade"
-        },
-        {
-          "default": "lip",
-          "description": "What marks the plane's bottom edge.",
-          "name": "baseline",
-          "required": false,
-          "type": "PlotBaseline"
-        },
-        {
           "default": null,
           "description": "Calibrating only: the first line of the tip behind the info target in the plot's lower-right corner.",
           "name": "calibratingNote",
@@ -4949,13 +4851,6 @@
           "description": "Chart plot height in px.",
           "name": "height",
           "required": true,
-          "type": "number"
-        },
-        {
-          "default": "0.04",
-          "description": "Fraction of the plot width the plane's left inner shadow fades over.",
-          "name": "leftShadowSpread",
-          "required": false,
           "type": "number"
         },
         {
@@ -7107,7 +7002,7 @@
       "props": [
         {
           "default": null,
-          "description": "Newest rep index — reserved; the compact spotlight strip is static.",
+          "description": "Rep the spotlight strip grows from the baseline as it lands.",
           "name": "liveRepIndex",
           "required": false,
           "type": "number"
@@ -8099,13 +7994,6 @@
           "name": "height",
           "required": false,
           "type": "number"
-        },
-        {
-          "default": null,
-          "description": "`hero` only (internal): suppress this strip's own 2px baseline border.",
-          "name": "hideBaseline",
-          "required": false,
-          "type": "boolean"
         },
         {
           "default": null,
@@ -11378,6 +11266,13 @@
           "type": "string"
         },
         {
+          "default": "false",
+          "description": "Initial checked state when `isChecked` is not provided",
+          "name": "defaultIsChecked",
+          "required": false,
+          "type": "boolean"
+        },
+        {
           "default": null,
           "description": "Helper text",
           "name": "helperText",
@@ -11385,7 +11280,7 @@
           "type": "string"
         },
         {
-          "default": "false",
+          "default": null,
           "description": "Whether the checkbox is checked",
           "name": "isChecked",
           "required": false,
@@ -12658,6 +12553,94 @@
       "tier": "molecule"
     },
     {
+      "composes": [],
+      "family": "ui/metric",
+      "file": "packages/ui/src/components/ui/metric/Metric.tsx",
+      "name": "Metric",
+      "props": [
+        {
+          "default": "center",
+          "description": "Aligns the figure and label to the start, centre or end of the column.",
+          "name": "align",
+          "required": false,
+          "type": "MetricAlign"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "label",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Merged onto the label text, e.g. to hold it at one size whatever the figure's `size`.",
+          "name": "labelClassName",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "md",
+          "description": "",
+          "name": "size",
+          "required": false,
+          "type": "\"sm\" | \"md\" | \"lg\""
+        },
+        {
+          "default": "neutral",
+          "description": "Colours the value from a semantic token.",
+          "name": "tone",
+          "required": false,
+          "type": "MetricTone"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "trend",
+          "required": false,
+          "type": "MetricTrend"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "unit",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "value",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Merged onto the value text, e.g. `leading-none` to sit the figure tight under a header.",
+          "name": "valueClassName",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "purpose": "",
+      "sources": {
+        "props": "packages/ui/src/components/ui/metric/Metric.tsx",
+        "status": "packages/ui/src/components/ui/metric/Metric.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-metric--default"
+      ],
+      "tier": "atom"
+    },
+    {
       "composes": [
         "Surface"
       ],
@@ -13740,6 +13723,13 @@
         },
         {
           "default": "false",
+          "description": "Initial checked state when `isChecked` is not provided",
+          "name": "defaultIsChecked",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
           "description": "Whether the switch is on",
           "name": "isChecked",
           "required": false,
@@ -14036,6 +14026,13 @@
         },
         {
           "default": null,
+          "description": "Accessible sort name; required when `children` is not a string.",
+          "name": "sortLabel",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
           "description": "Full column name behind an abbreviated label: shown on hover and used as the accessible sort name.",
           "name": "tooltip",
           "required": false,
@@ -14137,25 +14134,39 @@
           "type": "string"
         },
         {
-          "default": "0",
-          "description": "Currently active tab index",
+          "default": null,
+          "description": "Initial active index when uncontrolled.",
           "name": "defaultIndex",
           "required": false,
           "type": "number"
         },
         {
           "default": null,
-          "description": "Controlled active index",
+          "description": "Initial value when uncontrolled.",
+          "name": "defaultValue",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Controlled active index.",
           "name": "index",
           "required": false,
           "type": "number"
         },
         {
           "default": null,
-          "description": "Callback when tab changes",
+          "description": "Fires with the next active index.",
           "name": "onChange",
           "required": false,
           "type": "((index: number) => void)"
+        },
+        {
+          "default": null,
+          "description": "Fires with the next value on every user-driven change.",
+          "name": "onValueChange",
+          "required": false,
+          "type": "((value: number) => void)"
         },
         {
           "default": "horizontal",
@@ -14163,6 +14174,13 @@
           "name": "orientation",
           "required": false,
           "type": "TabsOrientation"
+        },
+        {
+          "default": null,
+          "description": "Controlled value; leave `undefined` to let the component own the state.",
+          "name": "value",
+          "required": false,
+          "type": "number"
         },
         {
           "default": "line",
