@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext, useId, useState } from 'react'
 import { View, Text, Pressable, ScrollView, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 
@@ -10,6 +10,7 @@ interface TabsContextType {
   setActiveIndex: (index: number) => void
   variant: TabsVariant
   orientation: TabsOrientation
+  baseId: string
 }
 
 const TabsContext = createContext<TabsContextType>({
@@ -17,7 +18,20 @@ const TabsContext = createContext<TabsContextType>({
   setActiveIndex: () => {},
   variant: 'line',
   orientation: 'horizontal',
+  baseId: 'tabs',
 })
+
+const tabId = (baseId: string, index: number) => `${baseId}-tab-${index}`
+const panelId = (baseId: string, index: number) => `${baseId}-panel-${index}`
+
+function nextEnabledIndex(enabled: boolean[], from: number, step: 1 | -1): number {
+  const count = enabled.length
+  for (let i = 1; i <= count; i++) {
+    const candidate = (from + step * i + count * i) % count
+    if (enabled[candidate]) return candidate
+  }
+  return from
+}
 
 export interface TabsProps extends ViewProps {
   /** Currently active tab index */
@@ -62,6 +76,7 @@ export function Tabs({
   children,
   ...props
 }: TabsProps) {
+  const baseId = useId()
   const [internalIndex, setInternalIndex] = useState(defaultIndex)
   const activeIndex = index ?? internalIndex
 
@@ -73,7 +88,7 @@ export function Tabs({
   }
 
   return (
-    <TabsContext.Provider value={{ activeIndex, setActiveIndex, variant, orientation }}>
+    <TabsContext.Provider value={{ activeIndex, setActiveIndex, variant, orientation, baseId }}>
       <View
         className={cn(orientation === 'vertical' ? 'flex-row' : 'flex-col', className)}
         {...props}
@@ -93,7 +108,24 @@ export interface TabListProps {
  * Container for Tab components.
  */
 export function TabList({ children, className }: TabListProps) {
-  const { variant, orientation } = useContext(TabsContext)
+  const { variant, orientation, activeIndex, setActiveIndex, baseId } = useContext(TabsContext)
+
+  const handleKeyDown = (event: { key: string; preventDefault: () => void }) => {
+    const enabled = React.Children.toArray(children).map(
+      (child) => !(React.isValidElement<TabProps>(child) && child.props.isDisabled)
+    )
+    const forwardKey = orientation === 'horizontal' ? 'ArrowRight' : 'ArrowDown'
+    const backKey = orientation === 'horizontal' ? 'ArrowLeft' : 'ArrowUp'
+    let target: number | undefined
+    if (event.key === forwardKey) target = nextEnabledIndex(enabled, activeIndex, 1)
+    else if (event.key === backKey) target = nextEnabledIndex(enabled, activeIndex, -1)
+    else if (event.key === 'Home') target = enabled.indexOf(true)
+    else if (event.key === 'End') target = enabled.lastIndexOf(true)
+    if (target === undefined || target < 0) return
+    event.preventDefault()
+    setActiveIndex(target)
+    if (typeof document !== 'undefined') document.getElementById(tabId(baseId, target))?.focus()
+  }
 
   const variantStyles = {
     line: orientation === 'horizontal' ? 'border-b border-hairline' : 'border-r border-hairline',
@@ -103,6 +135,9 @@ export function TabList({ children, className }: TabListProps) {
 
   const content = (
     <View
+      accessibilityRole="tablist"
+      aria-orientation={orientation}
+      {...{ onKeyDown: handleKeyDown }}
       className={cn(
         orientation === 'horizontal' ? 'flex-row' : 'flex-col',
         variantStyles[variant],
@@ -147,7 +182,7 @@ export interface TabProps {
  * Individual tab button.
  */
 export function Tab({ index = 0, isDisabled = false, className, children }: TabProps) {
-  const { activeIndex, setActiveIndex, variant, orientation } = useContext(TabsContext)
+  const { activeIndex, setActiveIndex, variant, orientation, baseId } = useContext(TabsContext)
   const isActive = activeIndex === index
 
   const baseStyles = 'font-medium text-sm transition-colors'
@@ -179,7 +214,10 @@ export function Tab({ index = 0, isDisabled = false, className, children }: TabP
     <Pressable
       accessibilityRole="tab"
       accessibilityState={{ disabled: isDisabled }}
+      id={tabId(baseId, index)}
+      aria-controls={panelId(baseId, index)}
       aria-selected={isActive}
+      tabIndex={isActive ? 0 : -1}
       disabled={isDisabled}
       onPress={() => setActiveIndex(index)}
       className={cn(
@@ -220,7 +258,7 @@ export function TabPanels({ children, className }: TabPanelsProps) {
     <View className={cn('flex-1', className)}>
       {React.Children.map(children, (child, index) => {
         if (React.isValidElement(child) && index === activeIndex) {
-          return child
+          return React.cloneElement(child as React.ReactElement<TabPanelProps>, { index })
         }
         return null
       })}
@@ -229,6 +267,8 @@ export function TabPanels({ children, className }: TabPanelsProps) {
 }
 
 export interface TabPanelProps {
+  /** Panel index (injected by TabPanels) */
+  index?: number
   children?: React.ReactNode
   className?: string
 }
@@ -236,6 +276,16 @@ export interface TabPanelProps {
 /**
  * Individual tab panel content.
  */
-export function TabPanel({ children, className }: TabPanelProps) {
-  return <View className={cn('py-4', className)}>{children}</View>
+export function TabPanel({ index = 0, children, className }: TabPanelProps) {
+  const { baseId } = useContext(TabsContext)
+  return (
+    <View
+      role="tabpanel"
+      id={panelId(baseId, index)}
+      aria-labelledby={tabId(baseId, index)}
+      className={cn('py-4', className)}
+    >
+      {children}
+    </View>
+  )
 }
