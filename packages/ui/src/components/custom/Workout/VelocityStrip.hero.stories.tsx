@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
-import { VelocityStrip, DualVelocityStrip } from './VelocityStrip'
+import { VelocityStrip } from './VelocityStrip'
+import { DualVelocityStrip } from './DualVelocityStrip'
 import { FIXED_MAX_VALUE, PEAK_HEADROOM } from '../charts/SetBarChart'
 import {
   Sheet,
@@ -37,7 +38,7 @@ const meta: Meta<typeof VelocityStrip> = {
   parameters: {
     docs: { description: { component: 'Composes **SetBarChart** · **ChartSideRail**.' } },
   },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
 }
 export default meta
 type Story = StoryObj<typeof VelocityStrip>

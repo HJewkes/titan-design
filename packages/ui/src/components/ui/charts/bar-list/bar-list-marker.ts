@@ -1,5 +1,6 @@
 import { formatCompact } from '../../../../utils/number-format'
 
+/** One labelled line on a BarList's value axis: a cutoff, a budget, a target. */
 export interface BarListMarker {
   /** Position on the value axis, in the rows' unit. */
   value: number

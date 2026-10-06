@@ -3,14 +3,18 @@ import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { composeStories } from '@storybook/react-vite'
 import preview from '../../../../.storybook/preview'
+import { contrast } from '../../../theme/color-story-kit'
+import type { ThemeMode } from '../../../theme/tokens/semantic'
+import { SurfaceContext } from '../../ui/surface/SurfaceContext'
 import { DualPinnedLiveStrip } from './DualPinnedLiveStrip'
 import { DUAL_STRIP_SCENARIOS as S } from './dualPinnedLiveStrip-fixture'
+import { LIVE_STRIP_GAP_COLOR } from './liveStripModel'
 import * as stories from './DualPinnedLiveStrip.stories'
 
 const charts = vi.hoisted(() => ({ count: 0 }))
 
-vi.mock('../../custom/Workout/VelocityStrip', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../custom/Workout/VelocityStrip')>()
+vi.mock('../../custom/Workout/DualVelocityStrip', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../custom/Workout/DualVelocityStrip')>()
   return {
     ...actual,
     DualVelocityStrip: (props: Parameters<typeof actual.DualVelocityStrip>[0]) => {
@@ -184,5 +188,60 @@ describe('DualPinnedLiveStrip roles', () => {
       <DualPinnedLiveStrip {...S[key]} layout="phone" onPress={() => {}} />
     )
     expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+const hexOf = (css: string) =>
+  '#' +
+  (css.match(/\d+/g) ?? [])
+    .slice(0, 3)
+    .map((n) => Number(n).toString(16).padStart(2, '0'))
+    .join('')
+
+function renderIn(mode: ThemeMode, scenario: 'set' | 'rest' = 'set') {
+  render(
+    <SurfaceContext.Provider value={{ mode, level: 'base' }}>
+      <DualPinnedLiveStrip {...S[scenario]} layout="phone" />
+    </SurfaceContext.Provider>
+  )
+  return hexOf(getComputedStyle(screen.getByTestId('live-strip-plane')).backgroundColor)
+}
+
+const gapStub = () => getComputedStyle(screen.getAllByTestId('velocity-slot-empty')[0])
+
+// Owner Gate 2 rounds 1 and 2 (VW-877, VW-879): the right arm's missing rep vanished on white, and
+// the ring that fixed it was rejected for a filled stub; behind mid-set and missed at the end differ.
+describe('DualPinnedLiveStrip gap stubs', () => {
+  it.each(['light', 'dark'] as const)('fills a missed rep at 3:1 on the card (%s)', (mode) => {
+    const card = renderIn(mode, 'rest')
+    const stub = gapStub()
+    expect(stub.borderTopWidth).toBe('0px')
+    expect(hexOf(stub.backgroundColor)).toBe(LIVE_STRIP_GAP_COLOR.missed[mode].toLowerCase())
+    expect(contrast(hexOf(stub.backgroundColor), card)).toBeGreaterThanOrEqual(3)
+  })
+
+  it.each(['light', 'dark'] as const)(
+    'fills a rep still to come in its own colour (%s)',
+    (mode) => {
+      const card = renderIn(mode, 'set')
+      const fill = hexOf(gapStub().backgroundColor)
+      expect(fill).toBe(LIVE_STRIP_GAP_COLOR.behind[mode].toLowerCase())
+      expect(fill).not.toBe(LIVE_STRIP_GAP_COLOR.missed[mode].toLowerCase())
+      expect(contrast(fill, card)).toBeGreaterThanOrEqual(3)
+    }
+  )
+})
+
+describe('DualPinnedLiveStrip bar shadow', () => {
+  const shadowOf = () => screen.getAllByTestId('velocity-bar-0')[0].style.boxShadow
+
+  it('keeps a short soft shadow on a light card', () => {
+    renderIn('light')
+    expect(shadowOf()).toMatch(/^0 2px 5px rgba\(0, ?0, ?0, ?0\.2\)$/)
+  })
+
+  it('keeps the paper drop shadow on a dark card', () => {
+    renderIn('dark')
+    expect(shadowOf()).toContain('0 6px 16px rgba(0,0,0,0.45)')
   })
 })

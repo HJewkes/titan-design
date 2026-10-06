@@ -20,7 +20,7 @@ function Track({
     <View
       className={cn(
         grows && 'flex-1',
-        'overflow-hidden rounded-full bg-brand-primary-muted',
+        'overflow-hidden rounded-full bg-hairline',
         size === 'sm' ? 'h-1.5' : 'h-2'
       )}
       testID="bar-list-track"

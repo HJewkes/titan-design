@@ -59,10 +59,13 @@ describe('BarList fixtures', () => {
     }
   })
 
-  it('flags two Flagged rows with words', () => {
-    const flagged = byName('Flagged').rows.filter((r) => r.flag)
-    expect(flagged).toHaveLength(2)
-    expect(flagged.every((r) => r.flag?.label === 'over 5%')).toBe(true)
+  it('flags three Flagged rows with words, one per tone and wording', () => {
+    const flags = byName('Flagged').rows.flatMap((r) => (r.flag ? [r.flag] : []))
+    expect(flags.map((flag) => `${flag.tone}: ${flag.label}`)).toEqual([
+      'error: over 5%',
+      'error: over 5%',
+      'warning: near 5%',
+    ])
   })
 
   it('builds Very large the same way every time', () => {

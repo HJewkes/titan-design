@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Text } from 'react-native'
 import { ThemeProvider } from './ThemeProvider'
-import { useSurfaceMode } from '../components/ui/surface'
+import { useSurfaceMode } from './surface-context'
 
 // Reports the surface mode ThemeProvider seeds into the on-surface context.
 function ModeProbe() {

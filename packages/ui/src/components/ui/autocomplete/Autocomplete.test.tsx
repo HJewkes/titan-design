@@ -248,6 +248,33 @@ describe('Autocomplete', () => {
       })
       expect(screen.queryByText('Apple')).not.toBeInTheDocument()
     })
+
+    it('keeps the label of an option clicked within 200ms of blur', () => {
+      vi.useFakeTimers()
+      render(<Autocomplete options={defaultOptions} />)
+      const input = screen.getByPlaceholderText('Search...')
+      typeInInput(input, 'App')
+
+      fireEvent.blur(input)
+      fireEvent.click(screen.getByText('Apple'))
+      act(() => {
+        vi.advanceTimersByTime(200)
+      })
+
+      expect(input).toHaveValue('Apple')
+    })
+
+    it('leaves no pending timer when unmounted during the blur delay', () => {
+      vi.useFakeTimers()
+      const { unmount } = render(<Autocomplete options={defaultOptions} />)
+      const input = screen.getByPlaceholderText('Search...')
+      typeInInput(input, 'App')
+      fireEvent.blur(input)
+
+      unmount()
+
+      expect(vi.getTimerCount()).toBe(0)
+    })
   })
 
   describe('options with descriptions', () => {

@@ -2,7 +2,7 @@
 import { View } from 'react-native'
 import { Pill } from '../../ui/pill'
 import { Tooltip } from '../../ui/tooltip'
-import { formatDateTime } from '../DateTime'
+import { formatDateTime } from '../../ui/date-time'
 import { TableCell, TableRow } from '../../ui/table'
 import { Typography } from '../../ui/typography'
 import { SEVERITY_META, SeverityLabel, type TaskSeverity } from './SeverityLabel'
@@ -12,7 +12,7 @@ import type { TaskColumnKey } from './task-columns'
 export interface TaskListItem {
   /** Initiative slug the task belongs to. */
   slug: string
-  /** Per-initiative task id, e.g. `AW-22`. */
+  /** Per-initiative task id, e.g. `PL-22`. */
   id: string
   title: string
   severity?: TaskSeverity

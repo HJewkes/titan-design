@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { SessionStatePill } from './SessionStatePill'
-import { resolveAll, siblingSource, spacingClassesIn } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
 describe('SessionStatePill', () => {
   it('labels each state', () => {
@@ -32,10 +32,9 @@ describe('SessionStatePill', () => {
  * which is what `inline` means. No pixel moved.
  */
 describe('SessionStatePill geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'SessionStatePill.tsx')
-
   it('ships gap-inline-md', () => {
-    expect(spacingClassesIn(source, 'SessionStatePill')).toEqual(['gap-inline-md'])
+    render(<SessionStatePill state="live" />)
+    expect(spacingClassesAt(screen.getByText('LIVE').parentElement)).toEqual(['gap-inline-md'])
     expect(resolveAll(['gap-inline-md'])).toEqual(['8px'])
   })
 })

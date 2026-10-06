@@ -1,10 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import {
-  siblingSource,
-  spacingClassesIn,
-  spacingClassesOn,
-  resolveAll,
-} from '../../../test/spacing-resolver'
+import { spacingClassesAt, spacingClassesOf, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { MesoStatusCard, type MesoStatusCardProps } from './MesoStatusCard'
@@ -237,23 +232,28 @@ describe('MesoStatusCard', () => {
  * stay inline under `// optical:` comments.
  */
 describe('MesoStatusCard geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'MesoStatusCard.tsx')
-
   it('keeps the card body inset and its section gap', () => {
-    const classes = spacingClassesOn(source, 'meso-status-card-body')
+    render(<MesoStatusCard {...baseProps} />)
+    const classes = spacingClassesOf('meso-status-card-body')
     expect(classes).toEqual(['p-3.5', 'gap-3.5'])
     expect(resolveAll(classes)).toEqual(['14px', '14px'])
   })
 
   it('puts the status badge on Pill’s sm rung', () => {
-    const classes = spacingClassesIn(source, 'StatusPill')
+    render(<MesoStatusCard {...baseProps} />)
+    const classes = spacingClassesOf('meso-status-card-badge')
     expect(classes).toEqual(['gap-inline-sm', 'px-squish-x-sm', 'py-squish-y-sm'])
     expect(resolveAll(classes)).toEqual(['4px', '8px', '2px'])
   })
 
   it('keeps the gauge and metric stacks', () => {
-    expect(resolveAll(spacingClassesIn(source, 'Gauge'))).toEqual(['6px'])
-    expect(resolveAll(spacingClassesOn(source, 'meso-status-card-metrics'))).toEqual(['8px'])
-    expect(resolveAll(spacingClassesOn(source, 'meso-status-card-gauges'))).toEqual(['12px'])
+    render(<MesoStatusCard {...baseProps} />)
+    const [gauge] = screen.getAllByTestId('meso-status-card-gauge')
+    expect(spacingClassesAt(gauge)).toEqual(['gap-1.5'])
+    expect(resolveAll(spacingClassesAt(gauge))).toEqual(['6px'])
+    expect(spacingClassesOf('meso-status-card-metrics')).toEqual(['gap-inline-md'])
+    expect(resolveAll(spacingClassesOf('meso-status-card-metrics'))).toEqual(['8px'])
+    expect(spacingClassesOf('meso-status-card-gauges')).toEqual(['gap-3'])
+    expect(resolveAll(spacingClassesOf('meso-status-card-gauges'))).toEqual(['12px'])
   })
 })

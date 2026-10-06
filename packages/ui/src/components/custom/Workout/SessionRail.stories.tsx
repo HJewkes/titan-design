@@ -15,7 +15,7 @@ import { Typography } from '../../ui/typography'
 const meta: Meta<typeof SessionRail> = {
   title: 'Shell/SessionRail',
   component: SessionRail,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     stripHeight: { control: { type: 'range', min: 2, max: 16, step: 1 } },
     onExercisePress: { action: 'exercise-press' },

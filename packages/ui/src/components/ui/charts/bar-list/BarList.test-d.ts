@@ -1,6 +1,7 @@
 import { describe, expectTypeOf, it } from 'vitest'
+import type { ViewProps } from 'react-native'
 import type { ColorToken } from '../../../../theme/resolve-color'
-import type { BarListMarker, BarListProps, BarListRow, BarListRowContext } from './BarList'
+import type { BarListMarker, BarListProps, BarListRow } from './BarList'
 
 describe('BarList types', () => {
   it('requires rows and accessibilityLabel', () => {
@@ -15,11 +16,34 @@ describe('BarList types', () => {
     expectTypeOf<NonNullable<BarListProps['formatValue']>>().parameter(0).toEqualTypeOf<number>()
   })
 
-  it('rejects an arbitrary string as color', () => {
-    expectTypeOf<NonNullable<BarListProps['color']>>().toEqualTypeOf<ColorToken>()
-    // @ts-expect-error not a semantic color token
-    const bad: BarListProps['color'] = 'not-a-token'
-    void bad
+  it('hands formatValue an optional row, absent for the hidden total', () => {
+    expectTypeOf<NonNullable<BarListProps['formatValue']>>()
+      .parameter(1)
+      .toEqualTypeOf<BarListRow | undefined>()
+  })
+
+  it('keeps a per-row color and takes no list-wide one', () => {
+    expectTypeOf<BarListRow['color']>().toEqualTypeOf<ColorToken | undefined>()
+    expectTypeOf<BarListProps>().not.toHaveProperty('color')
+  })
+
+  it('declares exactly the twelve audited props and referenceMarker', () => {
+    type Own = Exclude<keyof BarListProps, keyof ViewProps> | 'accessibilityLabel' | 'className'
+    expectTypeOf<Own>().toEqualTypeOf<
+      | 'rows'
+      | 'accessibilityLabel'
+      | 'max'
+      | 'referenceMarker'
+      | 'sort'
+      | 'maxRows'
+      | 'layout'
+      | 'size'
+      | 'formatValue'
+      | 'formatSecondary'
+      | 'isLoading'
+      | 'emptyState'
+      | 'className'
+    >()
   })
 
   it('takes an optional referenceMarker object, never a bare number', () => {
@@ -29,8 +53,7 @@ describe('BarList types', () => {
     void bare
   })
 
-  it('hands the marker formatter a number and the row context a boolean', () => {
+  it('hands the marker formatter a number', () => {
     expectTypeOf<NonNullable<BarListMarker['formatValue']>>().parameter(0).toEqualTypeOf<number>()
-    expectTypeOf<BarListRowContext['reachesMarker']>().toEqualTypeOf<boolean>()
   })
 })

@@ -9,7 +9,7 @@ import { greyRamp } from '../../../theme/tokens/primitives'
 const meta: Meta<typeof TempoDisplay> = {
   title: 'Custom/Workout/TempoDisplay',
   component: TempoDisplay,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {

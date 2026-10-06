@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { LIVE_STRIP_REST_MAX_SECONDS, liveStripRestReadout } from './liveStripModel'
+import { LIVE_STRIP_REST_MAX_SECONDS, liveStripGap, liveStripRestReadout } from './liveStripModel'
 
 describe('liveStripRestReadout', () => {
   it.each([
@@ -30,5 +30,13 @@ describe('liveStripRestReadout', () => {
       seconds: LIVE_STRIP_REST_MAX_SECONDS,
       step: 'reduced',
     })
+  })
+})
+
+describe('liveStripGap', () => {
+  it('reads a missing rep as behind while the set runs and missed once it ends', () => {
+    expect(liveStripGap('set')).toBe('behind')
+    expect(liveStripGap('rest')).toBe('missed')
+    expect(liveStripGap('idle')).toBe('missed')
   })
 })

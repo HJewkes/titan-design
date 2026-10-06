@@ -73,6 +73,7 @@ const flagged: BarListFixture = {
     label,
     value,
     ...(i < 2 ? { flag: { tone: 'error' as const, label: 'over 5%' } } : {}),
+    ...(i === 2 ? { flag: { tone: 'warning' as const, label: 'near 5%' } } : {}),
   })),
 }
 

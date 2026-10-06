@@ -346,6 +346,22 @@ ${extra}  const [open] = useState(() => false)
     ])
   })
 
+  it('keys a destructured initializer callback by its first destructured name', () => {
+    const source = `import { useState } from 'react'
+export function useToggle() {
+  const [a, setA] = useState(() => false)
+  return [a, setA] as const
+}
+`
+    const keys = Object.keys(measureTree({ 'hooks/useToggle.ts': source }))
+
+    expect(keys).toEqual([
+      'hooks/useToggle.ts',
+      'hooks/useToggle.ts#useToggle',
+      'hooks/useToggle.ts#useToggle>a',
+    ])
+  })
+
   it("keys an anonymous default export by its file's basename", () => {
     const entries = measureTree({
       'components/card/Card.tsx': `import { View } from 'react-native'

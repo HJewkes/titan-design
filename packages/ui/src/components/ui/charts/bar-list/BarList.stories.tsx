@@ -18,7 +18,6 @@ const meta: Meta<StoryArgs> = {
     maxRows: 10,
     size: 'md',
     isLoading: false,
-    isDisabled: false,
   },
   argTypes: {
     fixture: {
@@ -33,18 +32,11 @@ const meta: Meta<StoryArgs> = {
     layout: { control: 'select', options: ['inline', 'stacked'] },
     size: { control: 'select', options: ['sm', 'md'] },
     maxRows: { control: 'number' },
-    labelWidth: { control: 'number' },
     max: { control: 'number' },
     referenceMarker: { control: 'object' },
     isLoading: { control: 'boolean' },
-    isDisabled: { control: 'boolean' },
-    color: { control: 'select', options: ['brand-primary', 'brand-secondary', 'status-info'] },
     formatValue: { control: false },
     formatSecondary: { control: false },
-    formatOverflow: { control: false },
-    formatRowLabel: { control: false },
-    summarize: { control: false },
-    onRowPress: { control: false },
     emptyState: { control: false },
   },
   decorators: [
@@ -64,7 +56,9 @@ const meta: Meta<StoryArgs> = {
           '[Skeleton](?path=/docs/components-atoms-skeleton--docs) and ' +
           '[EmptyState](?path=/docs/components-molecules-emptystate--docs). ' +
           'An optional `referenceMarker` draws a labelled line on the value axis and is read out with the list. ' +
-          'No error state: the consumer renders the failure. Disabled applies only with `onRowPress`.',
+          'Bars are silver and a flagged row is red, in the silver/red scheme of ' +
+          '[Foundations/Color/Silver-Red Scheme](?path=/docs/foundations-color-silver-red-scheme--docs). ' +
+          'No error state: the consumer renders the failure. No disabled state: rows are not interactive.',
       },
     },
   },

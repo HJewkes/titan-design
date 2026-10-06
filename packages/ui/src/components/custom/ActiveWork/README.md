@@ -84,6 +84,7 @@ Initiative reader (no organism: the host composes the pieces)
 | `TaskTable`           | organism | Table, useTable, TableHeader/Row/HeaderCell, TaskRow, SeverityLabel, Eyebrow | app root (`Custom/ActiveWork/TaskTable`)                      |
 | `TaskRow`             | row      | TableRow, TableCell, SeverityLabel, Pill, Typography                         | TaskTable                                                     |
 | `SeverityLabel`       | molecule | Indicator, Typography (`caption`)                                            | TaskRow, TaskTable (legend), InitiativeCard (vocabulary)      |
+| `TaskStagePill`       | molecule | Pill (+ `TASK_STAGE_META`)                                                   | not yet composed (TaskBoard and TaskDetail follow, follow-up tasks) |
 | `SessionList`         | list     | Eyebrow, SessionListItem                                                     | host composition (`Custom/ActiveWork/SessionReader` story)    |
 | `SessionListItem`     | row      | DateTime, Pill, Typography                                                   | SessionList                                                   |
 | `SessionDetail`       | card     | Card, Divider, Pill, DateTime, MarkdownProse (+ `sessionLinkers`)            | host composition (`Custom/ActiveWork/SessionReader` story)    |
@@ -185,6 +186,15 @@ model.
 of the type plus private `SEVERITY_ORDER`/`SEVERITY_COLOR` constants; it now imports them. The two colour
 maps stay separate on purpose — `low` is `status-info` as a dot (it must stay legible among four) and
 `text-tertiary` as a bar segment (it should recede) — but the _set_ of severities is defined once.
+
+## Stage vocabulary has one owner
+
+`task-stage.ts` owns `TaskStage`, `TASK_STAGE_ORDER` and `TASK_STAGE_META` (label, tone, description), declared
+`as const satisfies Record<TaskStage, TaskStageMeta>`. There are two readers: the board columns (the board task) and
+`TaskStagePill`, and neither takes a tone prop. `task-stage.single-owner.test.ts` fails if another source file in
+the family names a stage, so a second stage table cannot be written. `task-flow.ts` holds the task view model and
+its pure helpers; `task-pr.ts` holds the pull-request state table. Contract:
+the Round 0 contract for the task board and detail.
 
 ## Reuse audit
 

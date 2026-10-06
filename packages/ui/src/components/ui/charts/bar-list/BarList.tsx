@@ -1,8 +1,9 @@
 import { useMemo, type ReactNode } from 'react'
 import { View, type ViewProps } from 'react-native'
 import { cn } from '../../../../utils/cn'
-import type { ColorToken } from '../../../../theme/resolve-color'
 import { EmptyState } from '../../empty-state'
+import { useSurfaceMode } from '../../surface'
+import { silverRed } from '../kit/silverRed'
 import { MarkerLegend } from './BarListMarker'
 import { ModelRow, OverflowRow, SkeletonRows } from './BarListParts'
 import {
@@ -10,14 +11,15 @@ import {
   readoutName,
   normalizeMaxRows,
   type BarListMarker,
-  type BarListModel,
   type BarListRow,
-  type BarListRowContext,
+  type BarListValueFormatter,
 } from './bar-list-model'
 
-export type { BarListMarker, BarListModel, BarListRow, BarListRowContext } from './bar-list-model'
+export type { BarListMarker, BarListRow, BarListValueFormatter } from './bar-list-model'
 
+/** Props of {@link BarList}. */
 export interface BarListProps extends Omit<ViewProps, 'children'> {
+  /** The data, one row per bar. Sorted and capped by `sort` and `maxRows`. */
   rows: BarListRow[]
   /** Names the list; the summary is appended to it for assistive tech. */
   accessibilityLabel: string
@@ -29,33 +31,30 @@ export interface BarListProps extends Omit<ViewProps, 'children'> {
   sort?: 'descending' | 'none'
   /** Rows shown before the rest fold into one overflow row. */
   maxRows?: number
+  /** `inline` puts label, bar and value on one line; `stacked` puts the bar under them. */
   layout?: 'inline' | 'stacked'
+  /** Text size and bar thickness. */
   size?: 'sm' | 'md'
-  /** Label column width in px, inline layout only. */
-  labelWidth?: number
-  /** Bar fill for every row without its own `color`. Defaults to `brand-primary`. */
-  color?: ColorToken
-  formatValue?: (value: number, row: BarListRow) => string
+  /** Formats each row's value, and the total of the rows past the cap (called without a row). */
+  formatValue?: BarListValueFormatter
+  /** Formats each row's `secondaryValue`. */
   formatSecondary?: (value: number, row: BarListRow) => string
-  formatOverflow?: (hiddenCount: number, hiddenTotal: number) => string
-  formatRowLabel?: (row: BarListRow, context: BarListRowContext) => string
-  summarize?: (model: BarListModel) => string
-  onRowPress?: (row: BarListRow) => void
+  /** Shows skeleton rows in place of the data. */
   isLoading?: boolean
-  isDisabled?: boolean
+  /** Replaces the default empty state, shown when `rows` is empty. */
   emptyState?: ReactNode
+  /** Tailwind classes merged onto the list root. */
   className?: string
 }
 
 // RN's Role union omits 'list'; RNW passes it through to the DOM.
 const LIST_ROLE = 'list' as ViewProps['role']
-const DEFAULT_LABEL_WIDTH = 96
 const SKELETON_ROWS = 5
 
 /**
  * BarList: a ranked horizontal bar list. Each row is a label, a bar sized as a fraction of the
  * largest value (or `max`), a value and an optional secondary value. Rows beyond `maxRows` fold
- * into one overflow row.
+ * into one overflow row. Bars are silver; a flagged row's bar is red.
  *
  * @example
  * <BarList accessibilityLabel="Tool calls" rows={[{ id: 'bash', label: 'Bash', value: 412 }]} />
@@ -69,20 +68,14 @@ export function BarList({
   maxRows,
   layout = 'inline',
   size = 'md',
-  labelWidth = DEFAULT_LABEL_WIDTH,
-  color = 'brand-primary',
   formatValue,
   formatSecondary,
-  formatOverflow,
-  formatRowLabel,
-  summarize,
-  onRowPress,
   isLoading = false,
-  isDisabled = false,
   emptyState,
   className,
   ...props
 }: BarListProps) {
+  const palette = silverRed(useSurfaceMode())
   const model = useMemo(
     () =>
       buildBarListModel(rows, {
@@ -122,7 +115,7 @@ export function BarList({
   return (
     <View
       role={LIST_ROLE}
-      accessibilityLabel={readoutName(accessibilityLabel, model, summarize)}
+      accessibilityLabel={readoutName(accessibilityLabel, model)}
       className={cn('gap-stack-sm', className)}
       {...props}
     >
@@ -131,20 +124,17 @@ export function BarList({
           key={`${entry.row.id}:${entry.index}`}
           entry={entry}
           shownCount={model.shownCount}
+          sort={model.sort}
           valuesChars={model.valuesChars}
           marker={model.marker}
           layout={layout}
           size={size}
-          labelWidth={labelWidth}
-          color={color}
+          palette={palette}
           formatValue={formatValue}
           formatSecondary={formatSecondary}
-          formatRowLabel={formatRowLabel}
-          onRowPress={onRowPress}
-          isDisabled={isDisabled}
         />
       ))}
-      <OverflowRow model={model} formatOverflow={formatOverflow} />
+      <OverflowRow model={model} />
       <MarkerLegend marker={model.marker} />
     </View>
   )
