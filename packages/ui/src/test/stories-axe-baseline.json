@@ -24,13 +24,6 @@
   "components-molecules-select--with-placeholder": ["aria-input-field-name"],
   "components-molecules-select--with-preselected-value": ["aria-input-field-name"],
   "components-molecules-switch--without-label": ["aria-toggle-field-name"],
-  "components-molecules-tabs--all-variants": ["aria-required-parent"],
-  "components-molecules-tabs--default": ["aria-required-parent"],
-  "components-molecules-tabs--enclosed-variant": ["aria-required-parent"],
-  "components-molecules-tabs--line-variant": ["aria-required-parent"],
-  "components-molecules-tabs--soft-rounded-variant": ["aria-required-parent"],
-  "components-molecules-tabs--vertical-orientation": ["aria-required-parent"],
-  "components-molecules-tabs--with-disabled-tab": ["aria-required-parent"],
   "components-organisms-table--empty-state": ["aria-required-children"],
   "components-organisms-table--loading": ["aria-required-children"],
   "components-organisms-table--sorting-and-selection": [
