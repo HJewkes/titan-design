@@ -204,9 +204,19 @@ export function TempoDisplay({
     </View>
   )
 
+  const accessibilityLabel = `Tempo: ${eccentric} second eccentric, ${pauseBottom} second pause, ${concentric} second concentric, ${pauseTop} second pause`
+
+  if (!onPress && !showInfo) {
+    return (
+      <View accessibilityLabel={accessibilityLabel} testID="tempo-display">
+        {content}
+      </View>
+    )
+  }
+
   return (
     <Pressable
-      accessibilityLabel={`Tempo: ${eccentric} second eccentric, ${pauseBottom} second pause, ${concentric} second concentric, ${pauseTop} second pause`}
+      accessibilityLabel={accessibilityLabel}
       accessibilityRole="button"
       onPress={handlePress}
       testID="tempo-display"

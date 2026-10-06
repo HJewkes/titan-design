@@ -1,72 +1,38 @@
 import type { ReactNode } from 'react'
-import { View, type DimensionValue, type ViewProps } from 'react-native'
+import { View } from 'react-native'
 import { cn } from '../../../../utils/cn'
 import { Skeleton } from '../../skeleton'
 import { Typography } from '../../typography'
 import { resolveColor } from '../../../../theme/resolve-color'
 import { formatCompact } from '../../../../utils/number-format'
+import type { ListNavigationItemProps } from '../../../../hooks/useListNavigation'
 import type { SilverRedPair } from '../kit/silverRed'
-import { hiddenFromAssistiveTech } from './assistive'
+import { hiddenFromAssistiveTech, LISTITEM_ROLE } from './shared'
 import { Bar } from './BarListBar'
 import {
-  cleanValue,
-  NO_VALUE_TEXT,
   overflowLabel,
   rowLabel,
+  rowTexts,
+  rowTip,
+  type BarListColumnChars,
   type BarListModel,
   type BarListModelMarker,
   type BarListModelRow,
   type BarListRow,
   type BarListValueFormatter,
 } from './bar-list-model'
+import { Cells, type BarListColumns, type CellsProps } from './BarListCells'
+import { TipRow } from './BarListTip'
 
 export { hiddenFromAssistiveTech }
 
-export interface RowViewProps {
+export interface RowViewProps extends CellsProps {
   entry: BarListModelRow
   layout: 'inline' | 'stacked'
   size: 'sm' | 'md'
   fill: string
-  valueText: string
-  secondaryText: string | null
-  /** Width of the values cell in characters, the same for every row of a list. */
-  valuesChars: number
   /** Where the reference line sits on the track, or null when none is drawn. */
   markerFraction: number | null
-}
-
-// RN's DimensionValue omits `ch`; react-native-web passes it through to CSS.
-// Digits of equal width, so the values column does not jitter between rows.
-const TABULAR = { fontVariant: ['tabular-nums' as const] }
-
-function Values({
-  valueText,
-  secondaryText,
-  entry,
-  width,
-}: Pick<RowViewProps, 'valueText' | 'secondaryText' | 'entry'> & { width?: string }) {
-  const { row } = entry
-  return (
-    <View
-      className={cn('flex-row items-baseline gap-inline-sm', width && 'shrink-0 justify-end')}
-      style={width ? { width: width as unknown as DimensionValue } : undefined}
-      testID="bar-list-values"
-    >
-      {row.flag ? (
-        <Typography variant="caption" color="inherit" className="text-text-error">
-          {row.flag.label}
-        </Typography>
-      ) : null}
-      {secondaryText ? (
-        <Typography variant="caption" color="secondary">
-          {secondaryText}
-        </Typography>
-      ) : null}
-      <Typography variant="mono" color="primary" style={TABULAR}>
-        {valueText}
-      </Typography>
-    </View>
-  )
 }
 
 function Label({ entry, size }: { entry: BarListModelRow; size: 'sm' | 'md' }) {
@@ -82,11 +48,11 @@ export function RowContent(props: RowViewProps) {
   if (layout === 'stacked') {
     return (
       <View className="gap-1">
-        <View className="flex-row items-baseline justify-between gap-inline-md">
+        <View className="flex-row items-baseline gap-inline-md">
           <View className="flex-1">
             <Label entry={entry} size={size} />
           </View>
-          <Values {...props} />
+          <Cells {...props} />
         </View>
         {entry.row.description ? (
           <Typography variant="caption" color="secondary" truncate>
@@ -105,7 +71,7 @@ export function RowContent(props: RowViewProps) {
         <Label entry={entry} size={size} />
       </View>
       <Bar fraction={entry.fraction} fill={fill} size={size} markerFraction={markerFraction} />
-      <Values {...props} width={`${props.valuesChars + VALUES_PAD_CHARS}ch`} />
+      <Cells {...props} />
     </View>
   )
 }
@@ -120,9 +86,6 @@ export function SkeletonRows({ count, size }: { count: number; size: 'sm' | 'md'
   )
 }
 
-// RN's Role union omits 'listitem'; RNW passes it through to the DOM.
-const LISTITEM_ROLE = 'listitem' as ViewProps['role']
-
 /** One list item, named in words; its painted content is hidden from assistive tech. */
 export function RowItem({ name, children }: { name: string; children: ReactNode }) {
   return (
@@ -132,15 +95,15 @@ export function RowItem({ name, children }: { name: string; children: ReactNode 
   )
 }
 
-// The caption parts are not monospace, so the column is sized a character wider than the text.
-const VALUES_PAD_CHARS = 1
-
 interface ModelRowProps extends Pick<RowViewProps, 'entry' | 'layout' | 'size'> {
   shownCount: number
   sort: 'descending' | 'none'
-  valuesChars: number
+  columnChars: BarListColumnChars
+  columns: BarListColumns
   marker: BarListModelMarker | null
   palette: SilverRedPair
+  /** The row's place in the roving tab stop; null renders a static row with no tip. */
+  tipItem: ListNavigationItemProps | null
   formatValue?: BarListValueFormatter
   formatSecondary?: (value: number, row: BarListRow) => string
 }
@@ -156,36 +119,40 @@ export function ModelRow({
   entry,
   shownCount,
   sort,
-  valuesChars,
+  columnChars,
+  columns,
   marker,
   palette,
+  tipItem,
   formatValue = formatCompact,
   formatSecondary = formatCompact,
   ...layoutProps
 }: ModelRowProps) {
   const { row } = entry
-  const value = cleanValue(row.value)
-  const secondary = cleanValue(row.secondaryValue)
+  const formatters = { formatValue, formatSecondary }
   const reachedMarker = marker && entry.reachesMarker ? marker.label : null
-  const name = rowLabel(
-    { row, rank: entry.rank, shownCount, sort, reachedMarker },
-    { formatValue, formatSecondary }
+  const name = rowLabel({ row, rank: entry.rank, shownCount, sort, reachedMarker }, formatters)
+  const content = (
+    <View {...hiddenFromAssistiveTech}>
+      <RowContent
+        entry={entry}
+        fill={rowFill(row, palette)}
+        texts={rowTexts(row, formatters)}
+        columnChars={columnChars}
+        columns={columns}
+        markerFraction={marker?.fraction ?? null}
+        {...layoutProps}
+      />
+    </View>
   )
-  return (
-    <RowItem name={name}>
-      <View {...hiddenFromAssistiveTech}>
-        <RowContent
-          entry={entry}
-          fill={rowFill(row, palette)}
-          valueText={value === null ? NO_VALUE_TEXT : formatValue(value, row)}
-          secondaryText={secondary === null ? null : formatSecondary(secondary, row)}
-          valuesChars={valuesChars}
-          markerFraction={marker?.fraction ?? null}
-          {...layoutProps}
-        />
-      </View>
-    </RowItem>
-  )
+  if (tipItem) {
+    return (
+      <TipRow name={name} tip={rowTip(row, formatValue, marker)} item={tipItem}>
+        {content}
+      </TipRow>
+    )
+  }
+  return <RowItem name={name}>{content}</RowItem>
 }
 
 /** The text-only row that stands for every row past the cap. */

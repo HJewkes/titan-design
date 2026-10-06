@@ -77,6 +77,12 @@ const flagged: BarListFixture = {
   })),
 }
 
+const overLimit: BarListFixture = {
+  name: 'Over limit',
+  rows: flagged.rows,
+  referenceMarker: { value: 5, label: 'Limit' },
+}
+
 export const funnelFixture: BarListFixture = {
   name: 'Funnel',
   sort: 'none',
@@ -186,6 +192,7 @@ export const barListFixtures: BarListFixture[] = [
   withMarker,
   withSecondary,
   flagged,
+  overLimit,
   funnelFixture,
   withDescription,
   empty,

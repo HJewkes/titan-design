@@ -4,9 +4,9 @@ import { formatCompact } from '../../../../utils/number-format'
 export interface BarListMarker {
   /** Position on the value axis, in the rows' unit. */
   value: number
-  /** Names the marker in the legend, the row names and the summary. */
+  /** Names the marker in the row tip, the row names and the summary. */
   label: string
-  /** Formats `value` for the legend and the summary. Default `formatCompact`. */
+  /** Formats `value` for the tip and the summary. Default `formatCompact`. */
   formatValue?: (value: number) => string
 }
 

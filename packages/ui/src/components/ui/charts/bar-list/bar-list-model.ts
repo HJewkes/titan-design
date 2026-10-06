@@ -54,9 +54,16 @@ export interface BarListModel {
   max: number
   sort: 'descending' | 'none'
   largest: { label: string; valueText: string } | null
-  /** Character width of the widest values cell, so every inline row gives its values the same width. */
-  valuesChars: number
+  /** Character width of each trailing column, so every row gives its cells the same width. */
+  columnChars: BarListColumnChars
   marker: BarListModelMarker | null
+}
+
+/** Widest text of each trailing cell among the shown rows; 0 when no shown row has the part. */
+export interface BarListColumnChars {
+  value: number
+  secondary: number
+  flag: number
 }
 
 export interface BarListModelOptions {
@@ -166,27 +173,62 @@ export function buildBarListModel(
     max: resolved,
     sort,
     largest,
-    valuesChars: valuesChars(modelRows, { formatValue, formatSecondary }),
+    columnChars: columnChars(modelRows, { formatValue, formatSecondary }),
     marker,
   }
 }
 
-const CELL_GAP_CHARS = 1
+/** A row's texts after the bar; a part the row lacks is null. */
+export function rowTexts(
+  row: BarListRow,
+  { formatValue, formatSecondary }: RowFormatters
+): { value: string; secondary: string | null; flag: string | null } {
+  const value = cleanValue(row.value)
+  const secondary = cleanValue(row.secondaryValue)
+  return {
+    value: value === null ? NO_VALUE_TEXT : formatValue(value, row),
+    secondary: secondary === null ? null : formatSecondary(secondary, row),
+    flag: row.flag?.label ?? null,
+  }
+}
 
-/** The widest values cell (flag, secondary and value, with their gaps) among the shown rows. */
-export function valuesChars(rows: BarListModelRow[], formatters: RowFormatters): number {
-  const widths = rows.map(({ row }) => {
-    const value = cleanValue(row.value)
-    const secondary = cleanValue(row.secondaryValue)
-    const parts = [
-      row.flag?.label,
-      secondary === null ? undefined : formatters.formatSecondary(secondary, row),
-      value === null ? NO_VALUE_TEXT : formatters.formatValue(value, row),
-    ].filter((part): part is string => part !== undefined)
-    const text = parts.reduce((sum, part) => sum + part.length, 0)
-    return text + CELL_GAP_CHARS * (parts.length - 1)
-  })
-  return Math.max(0, ...widths)
+const widest = (texts: (string | null)[]): number =>
+  Math.max(0, ...texts.map((text) => text?.length ?? 0))
+
+/** The widest text of each trailing cell among the shown rows. */
+export function columnChars(
+  rows: BarListModelRow[],
+  formatters: RowFormatters
+): BarListColumnChars {
+  const texts = rows.map(({ row }) => rowTexts(row, formatters))
+  return {
+    value: widest(texts.map((t) => t.value)),
+    secondary: widest(texts.map((t) => t.secondary)),
+    flag: widest(texts.map((t) => t.flag)),
+  }
+}
+
+/** What a row's tip prints: the label and value, then the limit when a marker is set, then the flag label. */
+export interface BarListTipContent {
+  label: string
+  valueText: string
+  limit: { label: string; valueText: string } | null
+  flagLabel: string | null
+}
+
+/** The tip's text for one row, a pure function of the row and the caller's formatter. */
+export function rowTip(
+  row: BarListRow,
+  formatValue: BarListValueFormatter,
+  marker: BarListModelMarker | null = null
+): BarListTipContent {
+  const value = cleanValue(row.value)
+  return {
+    label: row.label,
+    valueText: value === null ? NO_VALUE_TEXT : formatValue(value, row),
+    limit: marker ? { label: marker.label, valueText: marker.valueText } : null,
+    flagLabel: row.flag?.label ?? null,
+  }
 }
 
 export function overflowLabel(model: BarListModel): string {
@@ -208,14 +250,13 @@ export interface RowLabelContext {
  */
 export function rowLabel(
   { row, rank, shownCount, sort, reachedMarker = null }: RowLabelContext,
-  { formatValue, formatSecondary }: RowFormatters
+  formatters: RowFormatters
 ): string {
-  const value = cleanValue(row.value)
-  const secondary = cleanValue(row.secondaryValue)
+  const texts = rowTexts(row, formatters)
   const parts = [
-    `${row.label}: ${value === null ? NO_VALUE_TEXT : formatValue(value, row)}`,
-    secondary === null ? null : formatSecondary(secondary, row),
-    row.flag?.label ?? null,
+    `${row.label}: ${texts.value}`,
+    texts.secondary,
+    texts.flag,
     reachedMarker === null ? null : `at or above ${reachedMarker}`,
     sort === 'descending' ? `rank ${rank} of ${shownCount}` : null,
   ]

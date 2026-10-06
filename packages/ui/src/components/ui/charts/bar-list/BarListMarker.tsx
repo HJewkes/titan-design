@@ -1,8 +1,5 @@
 import { View } from 'react-native'
 import { cn } from '../../../../utils/cn'
-import { Typography } from '../../typography'
-import { hiddenFromAssistiveTech } from './assistive'
-import type { BarListModelMarker } from './bar-list-marker'
 
 const MARKER_CORE = 2
 const MARKER_KEYLINE = 1
@@ -27,24 +24,5 @@ export function MarkerLine({ fraction }: { fraction: number }) {
       }}
       testID="bar-list-marker"
     />
-  )
-}
-
-/** The legend line: a swatch of the line when it is drawn, then the label and value. */
-export function MarkerLegend({ marker }: { marker: BarListModelMarker | null }) {
-  if (!marker) return null
-  return (
-    <View
-      className="flex-row items-center gap-inline-sm"
-      testID="bar-list-marker-legend"
-      {...hiddenFromAssistiveTech}
-    >
-      {marker.fraction === null ? null : (
-        <View className={cn('h-3 w-1', MARKER_PAINT)} testID="bar-list-marker-swatch" />
-      )}
-      <Typography variant="caption" color="secondary">
-        {`${marker.label} ${marker.valueText}`}
-      </Typography>
-    </View>
   )
 }

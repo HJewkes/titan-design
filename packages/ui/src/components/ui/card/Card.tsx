@@ -328,9 +328,11 @@ export function CardSkeleton({
   )
 }
 
+/** Props for {@link CardInset}, a recessed well one plane down from its card. */
 export interface CardInsetProps extends ViewProps {
   /** Additional className */
   className?: string
+  /** Content of the well. */
   children?: React.ReactNode
 }
 

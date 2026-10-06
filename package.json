@@ -35,14 +35,16 @@
     "arch:graph": "node scripts/arch-graph.mjs",
     "arch:barrel-hash": "node packages/ui/scripts/barrel-hash.mjs --write",
     "review": "node packages/review-harness/src/cli.ts",
-    "audit:stories": "node packages/ui/scripts/audit-stories.mjs"
+    "audit:stories": "node packages/ui/scripts/audit-stories.mjs",
+    "verify:changed": "node packages/ui/scripts/verify-changed.mjs"
   },
   "devDependencies": {
     "turbo": "^2.3.0"
   },
   "pnpm": {
     "overrides": {
-      "shell-quote@<1.8.4": "^1.8.4"
+      "shell-quote@<1.8.4": "^1.8.4",
+      "tinypool@<2.1.2": "^2.1.2"
     }
   }
 }

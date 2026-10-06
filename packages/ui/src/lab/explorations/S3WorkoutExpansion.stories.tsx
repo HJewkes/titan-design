@@ -141,7 +141,7 @@ function EmbedSetRow({ s }: { s: SetRowProps }) {
         )}
         <View style={{ flex: 1 }} />
         {rpe != null && <Text style={dimText}>RPE {rpe}</Text>}
-        {live && <Text style={{ ...capText, color: GREEN, fontWeight: '700' }}>live</Text>}
+        {!!live && <Text style={{ ...capText, color: GREEN, fontWeight: '700' }}>live</Text>}
       </View>
       {vels.length > 0 ? (
         <VelocityStrip velocities={vels} variant="expanded" showInfo={false} />

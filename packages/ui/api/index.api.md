@@ -112,10 +112,21 @@ export interface ActiveWorkoutPageProps extends ViewProps {
     exercises: ActiveWorkoutExercise[];
     initialResting?: boolean;
     input?: ActiveWorkoutInput;
+    onAddTime?: () => void;
+    onRecord?: (set: ActiveWorkoutRecordedSet) => void;
+    onSkip?: () => void;
     rest?: ActiveWorkoutRest;
     subtitle?: string;
     supersets?: ActiveWorkoutSuperset[];
     title?: string;
+}
+
+// @public
+export interface ActiveWorkoutRecordedSet {
+    exerciseId: string;
+    reps: string;
+    setNumber: number;
+    weight: string;
 }
 
 // @public
@@ -368,11 +379,15 @@ export interface BarListProps extends Omit<ViewProps, 'children'> {
     layout?: 'inline' | 'stacked';
     max?: number;
     maxRows?: number;
+    readouts?: BarListReadout[];
     referenceMarker?: BarListMarker;
     rows: BarListRow[];
     size?: 'sm' | 'md';
     sort?: 'descending' | 'none';
 }
+
+// @public
+export type BarListReadout = 'value' | 'flag';
 
 // @public
 export interface BarListRow {
@@ -714,6 +729,15 @@ export interface CardHeaderProps {
     className?: string;
 }
 
+// @public
+export function CardInset(input: CardInsetProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface CardInsetProps extends ViewProps {
+    children?: React__default.ReactNode;
+    className?: string;
+}
+
 // @public (undocumented)
 export interface CardProps extends ViewProps {
     accentColor?: string;
@@ -857,6 +881,7 @@ export interface CheckboxGroupProps {
 // @public (undocumented)
 export interface CheckboxProps extends Omit<PressableProps, 'children'> {
     className?: string;
+    defaultIsChecked?: boolean;
     helperText?: string;
     isChecked?: boolean;
     isDisabled?: boolean;
@@ -1022,6 +1047,12 @@ export const COMPACT_SEVERITY_BELOW = 840;
 export function compareTaskFlow(a: TaskFlowItem, b: TaskFlowItem): number;
 
 // @public
+export function compareTaskSeverity(a: Pick<TaskListItem, 'severity' | 'priority'>, b: Pick<TaskListItem, 'severity' | 'priority'>): number;
+
+// @public
+export function compareTaskUpdated(a: Pick<TaskListItem, 'updated'>, b: Pick<TaskListItem, 'updated'>): number;
+
+// @public
 export function Composer(input: ComposerProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -1045,9 +1076,6 @@ export interface ComposerProps {
 }
 
 // @public
-export function composeValidators<T>(...validators: Array<(value: T) => string | undefined>): (value: T) => string | undefined;
-
-// @public
 export function computeWindow(input: FixedWindowInput): FixedWindow;
 
 // @public (undocumented)
@@ -1055,6 +1083,13 @@ export interface ContributingExercise {
     contributionWeight: number;
     name: string;
     sets: number;
+}
+
+// @public
+export interface ControlledProps<T> {
+    defaultValue?: T;
+    onValueChange?: (value: T) => void;
+    value?: T;
 }
 
 // @public
@@ -1067,9 +1102,6 @@ export interface ConversationIdentityProps {
     description?: string;
     participant: Participant;
 }
-
-// @public
-export function createFieldId(label: string): string;
 
 // @public
 export interface CssPropertyEntry {
@@ -1663,8 +1695,6 @@ export interface ExerciseCardProps {
     name: string;
     onExpandedChange?: (expanded: boolean) => void;
     // (undocumented)
-    onNavigateDetail?: () => void;
-    // (undocumented)
     prescription?: string;
     // (undocumented)
     previousBest?: string;
@@ -1679,8 +1709,6 @@ export interface ExerciseCardProps {
         weight: number;
         unit: 'lbs' | 'kg';
     };
-    // (undocumented)
-    supersetColor?: string;
     // (undocumented)
     supersetPosition?: 'first' | 'last' | 'middle' | null;
     // (undocumented)
@@ -1860,24 +1888,6 @@ export interface FatigueVerdict {
 
 // @public
 export type FatigueVerdictState = 'good' | 'slowing' | 'grinding' | 'form-breakdown';
-
-// @public
-export interface FieldState {
-    errorMessage?: string;
-    hasError: boolean;
-    isRequired?: boolean;
-    touched: boolean;
-}
-
-// @public (undocumented)
-export interface FieldWrapperProps {
-    errorMessage?: string;
-    helperText?: string;
-    isDisabled?: boolean;
-    isInvalid?: boolean;
-    isRequired?: boolean;
-    label?: string;
-}
 
 // @public
 export const FILE_EVENT_COLOR: FileEventColors;
@@ -2066,25 +2076,16 @@ export interface FormatDateTimeOptions {
 export function formatDuration(ms: number): string;
 
 // @public
-export function formatPrescription(p: PrescriptionInput | null | undefined): string | null;
-
-// @public
 export function formatSessionDuration(started: string, ended: string): string;
 
 // @public
 export function formatSignedCompact(n: number): string;
 
 // @public
-export function formatSignedPct(ratio: number): string;
-
-// @public
 export function formatTaskAge(iso: string | null | undefined, now: number): string;
 
 // @public
 export function formatVelocity(velocity: number): string;
-
-// @public
-export type FormErrors<T extends FormValues> = Partial<Record<keyof T, string>>;
 
 // @public
 export function FormField(input: FormFieldProps): react_jsx_runtime.JSX.Element;
@@ -2130,12 +2131,6 @@ export interface FormSectionProps extends ViewProps {
 }
 
 // @public
-export type FormTouched<T extends FormValues> = Partial<Record<keyof T, boolean>>;
-
-// @public
-export type FormValues = Record<string, unknown>;
-
-// @public
 export function Gauge(input: GaugeProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -2164,9 +2159,6 @@ export interface GaugeThreshold {
 export function getCategoricalColor(index: number, variant?: CategoricalVariant): string;
 
 // @public
-export function getContrastText(backgroundColor: string): string;
-
-// @public
 export function getDiscreteRainbowColor(index: number, size: number): string;
 
 // @public
@@ -2174,21 +2166,6 @@ export function getElevationShadow(level: ElevationLevel, mode?: ThemeMode, opts
 
 // @public
 export function getElevationSurface(level: ElevationLevel, mode?: ThemeMode): string;
-
-// @public
-export function getFieldAriaProps(props: FieldWrapperProps & {
-    id: string;
-}): {
-    'aria-invalid'?: boolean;
-    'aria-required'?: boolean;
-    'aria-describedby'?: string;
-};
-
-// @public
-export function getFieldValidationProps(state: FieldState): {
-    isInvalid: boolean;
-    errorMessage?: string;
-};
 
 // @public
 export function getGlowShadow(color: string, intensity?: GlowIntensity): ViewStyle;
@@ -2200,13 +2177,7 @@ export function getHoverColors(bgColor: string, intensity?: 'subtle' | 'medium' 
 };
 
 // @public
-export function getLuminance(color: string): 'light' | 'dark';
-
-// @public
 export function getPressedRecessShadow(fillColor: string, _mode?: ThemeMode): ViewStyle;
-
-// @public
-export function getResultColor(result: ResultType): string;
 
 // @public (undocumented)
 export function getSemanticColors(mode: ThemeMode): {
@@ -2510,9 +2481,6 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'avatar-background': "#5A5958";
     readonly 'avatar-text': "#FFFFFF";
 };
-
-// @public
-export function getStatusColor(status: StatusType): string;
 
 // @public (undocumented)
 export function getThemeCSSVars(mode: ThemeMode): {
@@ -3342,9 +3310,6 @@ export function GoalTrajectoryChart(input: GoalTrajectoryChartProps): react_jsx_
 export interface GoalTrajectoryChartProps extends ViewProps {
     actuals: GoalActualPoint[];
     animate?: boolean;
-    bandCurve?: BandCurve;
-    bandFade?: BandFade;
-    baseline?: PlotBaseline;
     calibratingNote?: string;
     // (undocumented)
     className?: string;
@@ -3353,7 +3318,6 @@ export interface GoalTrajectoryChartProps extends ViewProps {
     direction?: GoalDirection;
     expected: GoalExpectedPoint[];
     height: number;
-    leftShadowSpread?: number;
     mesoBoundaries?: number[];
     metricLabel?: string;
     nextTarget?: GoalNextTarget;
@@ -3405,6 +3369,7 @@ export interface GoalTrajectoryGeometry {
     toX: (weekIndex: number) => number;
     // (undocumented)
     toY: (value: number) => number;
+    weekSpan: number;
     // (undocumented)
     yTicks: YTick[];
 }
@@ -3521,12 +3486,6 @@ export function groupByPeriod(sessions: SessionSummary[]): Period[];
 
 // @public
 export function groupPriorities(entries: readonly GoalPriorityIndexEntry[]): GoalPriorityIndexGroup[];
-
-// @public
-export function hasMaxLength(value: string, maxLength: number): boolean;
-
-// @public
-export function hasMinLength(value: string, minLength: number): boolean;
 
 // @public
 export function Heading(input: HeadingProps): react_jsx_runtime.JSX.Element;
@@ -3806,7 +3765,7 @@ export type InputSize = 'sm' | 'md' | 'lg';
 export type InputVariant = 'outline' | 'filled' | 'underline';
 
 // @public
-export function insetWell(tone?: string): ViewStyle;
+export function insetWell(tone?: string, mode?: ThemeMode): ViewStyle;
 
 // @public (undocumented)
 export function IntensityBar(input: IntensityBarProps): react_jsx_runtime.JSX.Element;
@@ -3832,17 +3791,11 @@ export function isDark(hex: string): boolean;
 // @public
 export function isDoneStage(stage: TaskStage): boolean;
 
-// @public
-export function isEmpty(value: unknown): boolean;
-
 // @public (undocumented)
 export function isLoadTarget(target: GoalMilestoneTarget): target is GoalLoadTarget;
 
 // @public (undocumented)
 export function isMilestoneMet(target: GoalMilestoneTarget, latest: GoalMilestoneReading, direction?: GoalDirection): boolean;
-
-// @public
-export function isValidEmail(email: string): boolean;
 
 // @public
 export function KanbanIcon(input: IconProps): react_jsx_runtime.JSX.Element;
@@ -4562,6 +4515,9 @@ export function Metric(input: MetricProps): react_jsx_runtime.JSX.Element;
 // @public
 export const METRIC_FONT = "Inter, sans-serif";
 
+// @public
+export type MetricAlign = 'start' | 'center' | 'end';
+
 // @public @deprecated (undocumented)
 export function MetricCell(input: MetricCellProps): react_jsx_runtime.JSX.Element;
 
@@ -4588,6 +4544,7 @@ export interface MetricGroupProps extends ViewProps {
 
 // @public (undocumented)
 export interface MetricProps extends ViewProps {
+    align?: MetricAlign;
     // (undocumented)
     className?: string;
     // (undocumented)
@@ -4595,6 +4552,7 @@ export interface MetricProps extends ViewProps {
     labelClassName?: string;
     // (undocumented)
     size?: 'sm' | 'md' | 'lg';
+    tone?: MetricTone;
     // (undocumented)
     trend?: MetricTrend;
     // (undocumented)
@@ -4619,6 +4577,9 @@ export interface MetricTilesProps extends ViewProps {
     gap?: 0 | 1 | 2 | 3 | 4;
     metrics: MetricTileData[];
 }
+
+// @public
+export type MetricTone = Exclude<PillTone, 'brand-secondary'>;
 
 // @public (undocumented)
 export type MetricTrend = 'up' | 'down' | 'neutral';
@@ -4824,6 +4785,10 @@ export interface MusclePlanSection {
     doneSetsThisWeek: number;
     // (undocumented)
     exercises: MusclePlanExerciseRow[];
+    frequency: {
+        plannedPerWeek: number;
+        observedThisWeek: number;
+    };
     // (undocumented)
     plannedSetsThisWeek: number;
 }
@@ -4846,6 +4811,8 @@ export interface MuscleStrengthBestE1rm {
 export interface MuscleStrengthExerciseRow {
     // (undocumented)
     bestE1rm: MuscleStrengthBestE1rm | null;
+    currentLevel: number | null;
+    daysSinceTrained: number | null;
     // (undocumented)
     exerciseId: string;
     // (undocumented)
@@ -4856,8 +4823,11 @@ export interface MuscleStrengthExerciseRow {
     plateau: 'plateau' | 'tolerated' | 'none' | null;
     // (undocumented)
     priorBest: number | null;
+    recency: 'current' | 'fading' | 'no_current_read' | null;
+    relativeIndex: number | null;
     // (undocumented)
     rSquared: number | null;
+    setCount: number;
     // (undocumented)
     side: MuscleStrengthSide;
     slopePctPerWeek: number | null;
@@ -4867,9 +4837,11 @@ export interface MuscleStrengthExerciseRow {
 export interface MuscleStrengthSection {
     // (undocumented)
     agreement: MuscleStrengthAgreement;
+    daysSinceTrained: number | null;
     earlyPhase: boolean;
     // (undocumented)
     exercises: StrengthExerciseRow[];
+    relativeIndexBySide: Partial<Record<'left' | 'right' | 'none', number>>;
 }
 
 // @public
@@ -4975,6 +4947,38 @@ export function paceTone(progress: number, target?: number): PaceTone;
 export function paceToneColor(tone: PaceTone, mode: ThemeMode): string;
 
 // @public
+export function Page(input: PageProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export type PageGutter = 'sm' | 'md';
+
+// @public
+export function PageHeader(input: PageHeaderProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface PageHeaderProps extends Omit<ViewProps, 'children'> {
+    className?: string;
+    description?: string;
+    title: string;
+    trailing?: React__default.ReactNode;
+}
+
+// @public
+export type PageMaxWidth = 'narrow' | 'wide' | 'full';
+
+// @public
+export interface PageProps extends Omit<ViewProps, 'children'> {
+    children?: React__default.ReactNode;
+    className?: string;
+    contentClassName?: string;
+    gutter?: PageGutter;
+    header?: React__default.ReactNode;
+    isHeaderPinned?: boolean;
+    isScrollable?: boolean;
+    maxWidth?: PageMaxWidth;
+}
+
+// @public
 export const PANEL_BREAKPOINTS: {
     readonly xs: 0;
     readonly sm: 600;
@@ -5012,7 +5016,7 @@ export type PanelTier = keyof typeof PANEL_BREAKPOINTS;
 export function panelTier(width: number): PanelTier;
 
 // @public
-export function paperSheet(tone?: string): ViewStyle;
+export function paperSheet(tone?: string, mode?: ThemeMode): ViewStyle;
 
 // @public
 export function Paragraph(input: ParagraphProps): react_jsx_runtime.JSX.Element;
@@ -5285,7 +5289,7 @@ export interface PortfolioOverviewStat {
 }
 
 // @public
-export function postIt(tone?: string, deg?: number): ViewStyle;
+export function postIt(tone?: string, deg?: number, mode?: ThemeMode): ViewStyle;
 
 // @public
 export const PR_REF_PATTERN: RegExp;
@@ -5302,18 +5306,6 @@ export interface PrBadgeProps extends ViewProps {
     iconSize?: number;
     label?: string;
     type?: PRType;
-}
-
-// @public
-export interface PrescriptionInput {
-    // (undocumented)
-    repsHigh?: number;
-    // (undocumented)
-    repsLow?: number;
-    // (undocumented)
-    rpe?: number;
-    // (undocumented)
-    weightLbs?: number;
 }
 
 // @public
@@ -5828,9 +5820,6 @@ export const resultPaletteColors: {
     readonly inconclusive: "#9E9A97";
 };
 
-// @public (undocumented)
-export type ResultType = 'improve' | 'degrade' | 'inconclusive' | 'neutral';
-
 // @public
 export function rgbToHex(r: number, g: number, b: number): string;
 
@@ -5868,6 +5857,9 @@ export function rpeColor(rpe: number): string;
 
 // @public
 export function sameLiveStripReps(a: readonly LiveStripRep[], b: readonly LiveStripRep[]): boolean;
+
+// @public
+export function sameLossThresholds(a?: VelocityLossThresholds, b?: VelocityLossThresholds): boolean;
 
 // @public
 export type SamplePhase = 'concentric' | 'eccentric' | 'hold' | 'idle';
@@ -5919,6 +5911,19 @@ export interface ScatterProps extends Omit<ViewProps, 'children'> {
     selectedId?: string;
     width: number;
 }
+
+// @public
+export type ScatterReferenceLine = ({
+    y: number;
+} | {
+    x: number;
+} | {
+    slope: number;
+    intercept: number;
+}) & {
+    id?: string;
+    label?: string;
+};
 
 // @public
 export function ScheduleTiles(input: ScheduleTilesProps): react_jsx_runtime.JSX.Element;
@@ -7268,9 +7273,6 @@ export interface StatusPillProps extends ViewProps {
 export type StatusPillStatus = 'productive' | 'threshold' | 'stop';
 
 // @public
-export type StatusType = 'success' | 'error' | 'warning' | 'info';
-
-// @public
 export function StepContent(input: StepContentProps): react_jsx_runtime.JSX.Element | null;
 
 // @public (undocumented)
@@ -7473,6 +7475,7 @@ export const Switch: React$1.ForwardRefExoticComponent<SwitchProps & React$1.Ref
 // @public (undocumented)
 export interface SwitchProps extends Omit<PressableProps, 'children'> {
     className?: string;
+    defaultIsChecked?: boolean;
     isChecked?: boolean;
     isDisabled?: boolean;
     label?: string;
@@ -7539,6 +7542,7 @@ export interface TableHeaderCellProps extends Omit<PressableProps, 'children'> {
     children?: React__default.ReactNode;
     className?: string;
     sortKey?: string;
+    sortLabel?: string;
     tooltip?: string;
     width?: number;
 }
@@ -7616,6 +7620,7 @@ export interface TabPanelProps {
     children?: React__default.ReactNode;
     // (undocumented)
     className?: string;
+    index?: number;
 }
 
 // @public
@@ -7644,13 +7649,16 @@ export function Tabs(input: TabsProps): react_jsx_runtime.JSX.Element;
 // @public (undocumented)
 export type TabsOrientation = 'horizontal' | 'vertical';
 
-// @public (undocumented)
-export interface TabsProps extends ViewProps {
+// @public
+export interface TabsProps extends ViewProps, ControlledProps<number> {
     // (undocumented)
     children?: React__default.ReactNode;
     className?: string;
+    // @deprecated
     defaultIndex?: number;
+    // @deprecated
     index?: number;
+    // @deprecated
     onChange?: (index: number) => void;
     orientation?: TabsOrientation;
     variant?: TabsVariant;
@@ -8590,16 +8598,6 @@ export function useToolbarButton(): ToolbarButtonContextType;
 export function validateCssPropertyManifest(candidate: unknown): ManifestValidationResult;
 
 // @public
-export const validationRules: {
-    required: (value: unknown) => "This field is required" | undefined;
-    email: (value: string) => "Please enter a valid email address" | undefined;
-    minLength: (min: number) => (value: string) => string | undefined;
-    maxLength: (max: number) => (value: string) => string | undefined;
-    pattern: (regex: RegExp, message: string) => (value: string) => string | undefined;
-    match: (otherValue: string, fieldName: string) => (value: string) => string | undefined;
-};
-
-// @public
 export function valueReach(target: number, latest: number, direction?: GoalDirection): GoalReach;
 
 // @public
@@ -8703,7 +8701,6 @@ export interface VelocityStripProps extends ViewProps {
     columnSlots?: SetSlot[];
     expanded?: boolean;
     height?: number;
-    hideBaseline?: boolean;
     label?: string;
     liveRepIndex?: number;
     lossThresholds?: VelocityLossThresholds;

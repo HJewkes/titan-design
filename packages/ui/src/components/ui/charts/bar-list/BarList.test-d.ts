@@ -1,7 +1,7 @@
 import { describe, expectTypeOf, it } from 'vitest'
 import type { ViewProps } from 'react-native'
 import type { ColorToken } from '../../../../theme/resolve-color'
-import type { BarListMarker, BarListProps, BarListRow } from './BarList'
+import type { BarListMarker, BarListProps, BarListReadout, BarListRow } from './BarList'
 
 describe('BarList types', () => {
   it('requires rows and accessibilityLabel', () => {
@@ -27,7 +27,12 @@ describe('BarList types', () => {
     expectTypeOf<BarListProps>().not.toHaveProperty('color')
   })
 
-  it('declares exactly the twelve audited props and referenceMarker', () => {
+  it('takes readouts as a list of the two readout names', () => {
+    expectTypeOf<BarListReadout>().toEqualTypeOf<'value' | 'flag'>()
+    expectTypeOf<BarListProps['readouts']>().toEqualTypeOf<BarListReadout[] | undefined>()
+  })
+
+  it('declares exactly the fourteen audited props', () => {
     type Own = Exclude<keyof BarListProps, keyof ViewProps> | 'accessibilityLabel' | 'className'
     expectTypeOf<Own>().toEqualTypeOf<
       | 'rows'
@@ -40,6 +45,7 @@ describe('BarList types', () => {
       | 'size'
       | 'formatValue'
       | 'formatSecondary'
+      | 'readouts'
       | 'isLoading'
       | 'emptyState'
       | 'className'

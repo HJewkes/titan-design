@@ -209,7 +209,7 @@ function Diagram({
                 strokeWidth={isSel ? 2 : c.verdict === 'dead' ? 1.6 : 1}
               />
               <rect width={4} height={NODE_H} rx={2} fill={verdictColor(c.verdict)} />
-              {c.deadByAssociation && (
+              {!!c.deadByAssociation && (
                 <rect
                   width={NODE_W}
                   height={NODE_H}
@@ -345,7 +345,7 @@ function DetailPanel({
         <span style={{ fontFamily: 'monospace', fontSize: 12, color: C['text-tertiary'] }}>
           lib {comp.libDependents} · story {comp.storyRefs} · app {comp.xproj.total}
         </span>
-        {comp.standard && <Chip color={C['brand-secondary']}>standard</Chip>}
+        {!!comp.standard && <Chip color={C['brand-secondary']}>standard</Chip>}
         <Chip color={comp.audited === 'audited' ? C['status-success'] : C['text-tertiary']}>
           {comp.audited === 'audited'
             ? 'audited'
@@ -353,7 +353,7 @@ function DetailPanel({
               ? 'reviewing'
               : 'unaudited'}
         </Chip>
-        {comp.deadByAssociation && <Chip color={C['status-warning']}>⚠ only dead consumers</Chip>}
+        {!!comp.deadByAssociation && <Chip color={C['status-warning']}>⚠ only dead consumers</Chip>}
         <div style={{ flex: 1 }} />
         <button
           onClick={() => onOpenRender(comp.name)}
@@ -430,7 +430,7 @@ function RenderModal({
           <span style={{ fontSize: 15, fontWeight: 700, color: C['text-primary'] }}>{name}</span>
           <span style={{ fontSize: 12, color: C['text-tertiary'] }}>live Storybook render</span>
           <div style={{ flex: 1 }} />
-          {storyId && (
+          {!!storyId && (
             <a
               href={`?path=/story/${storyId}`}
               target="_blank"
@@ -817,7 +817,7 @@ function ArchitecturePage() {
             </Chip>
           ))}
         </div>
-        {sel && (
+        {!!sel && (
           <DetailPanel comp={sel} onOpenRender={setModalFor} onClose={() => setSelected(null)} />
         )}
         <Diagram selected={selected} onSelect={setSelected} onOpenRender={setModalFor} />
@@ -851,7 +851,7 @@ function ArchitecturePage() {
         <ExtractionTable />
       </Section>
 
-      {modalFor && (
+      {!!modalFor && (
         <RenderModal
           name={modalFor}
           storyId={storyIndex[modalFor]}

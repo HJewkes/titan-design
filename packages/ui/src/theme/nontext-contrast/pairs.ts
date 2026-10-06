@@ -205,7 +205,7 @@ const separators: NonTextPair[] = [
       src('ui/table/Table.tsx', 'border-hairline'),
       src('ui/table/TablePagination.tsx', 'border-hairline'),
       src('ui/modal/Modal.tsx', 'border-hairline'),
-      src('custom/Metric/Metric.tsx', 'bg-hairline'),
+      src('ui/metric/Metric.tsx', 'bg-hairline'),
     ],
   },
   {

@@ -182,6 +182,9 @@ export function PopoverContent({ children, className }: PopoverContentProps) {
       {/* Backdrop */}
       <Pressable
         onPress={() => setIsOpen(false)}
+        focusable={false}
+        tabIndex={-1}
+        aria-hidden
         className="fixed inset-0 z-40"
         style={{ position: 'absolute' }}
       />

@@ -4,8 +4,9 @@ import { cn } from '../../../../utils/cn'
 import { EmptyState } from '../../empty-state'
 import { useSurfaceMode } from '../../surface'
 import { silverRed } from '../kit/silverRed'
-import { MarkerLegend } from './BarListMarker'
+import { ALL_READOUTS, hidesReadout, resolveColumns, type BarListReadout } from './BarListCells'
 import { ModelRow, OverflowRow, SkeletonRows } from './BarListParts'
+import { useRowTips } from './BarListTip'
 import {
   buildBarListModel,
   readoutName,
@@ -16,6 +17,7 @@ import {
 } from './bar-list-model'
 
 export type { BarListMarker, BarListRow, BarListValueFormatter } from './bar-list-model'
+export type { BarListReadout } from './BarListCells'
 
 /** Props of {@link BarList}. */
 export interface BarListProps extends Omit<ViewProps, 'children'> {
@@ -39,6 +41,11 @@ export interface BarListProps extends Omit<ViewProps, 'children'> {
   formatValue?: BarListValueFormatter
   /** Formats each row's `secondaryValue`. */
   formatSecondary?: (value: number, row: BarListRow) => string
+  /**
+   * Which readouts each row prints after its bar. A hidden one stays in the row's accessible name
+   * and in a tip that hover, keyboard focus or a long press on the row opens. Default both.
+   */
+  readouts?: BarListReadout[]
   /** Shows skeleton rows in place of the data. */
   isLoading?: boolean
   /** Replaces the default empty state, shown when `rows` is empty. */
@@ -54,7 +61,8 @@ const SKELETON_ROWS = 5
 /**
  * BarList: a ranked horizontal bar list. Each row is a label, a bar sized as a fraction of the
  * largest value (or `max`), a value and an optional secondary value. Rows beyond `maxRows` fold
- * into one overflow row. Bars are silver; a flagged row's bar is red.
+ * into one overflow row. Bars are silver; a flagged row's bar is red. When `readouts` hides a
+ * readout, each row opens a tip that shows it, and the list is one tab stop.
  *
  * @example
  * <BarList accessibilityLabel="Tool calls" rows={[{ id: 'bash', label: 'Bash', value: 412 }]} />
@@ -70,6 +78,7 @@ export function BarList({
   size = 'md',
   formatValue,
   formatSecondary,
+  readouts = ALL_READOUTS,
   isLoading = false,
   emptyState,
   className,
@@ -88,6 +97,8 @@ export function BarList({
       }),
     [rows, max, referenceMarker, sort, maxRows, formatValue, formatSecondary]
   )
+  const tips = useRowTips(model.shownCount, hidesReadout(readouts) || model.marker !== null)
+  const columns = resolveColumns(model.columnChars, readouts)
 
   if (isLoading) {
     const count = Math.min(normalizeMaxRows(maxRows), SKELETON_ROWS)
@@ -117,16 +128,20 @@ export function BarList({
       role={LIST_ROLE}
       accessibilityLabel={readoutName(accessibilityLabel, model)}
       className={cn('gap-stack-sm', className)}
+      // RN's ViewProps has no key handler; RNW delivers the DOM event, bubbled from the focused row.
+      {...(tips ? { onKeyDown: tips.onKeyDown } : {})}
       {...props}
     >
-      {model.rows.map((entry) => (
+      {model.rows.map((entry, index) => (
         <ModelRow
           key={`${entry.row.id}:${entry.index}`}
           entry={entry}
           shownCount={model.shownCount}
           sort={model.sort}
-          valuesChars={model.valuesChars}
+          columnChars={model.columnChars}
+          columns={columns}
           marker={model.marker}
+          tipItem={tips ? tips.getItemProps(index) : null}
           layout={layout}
           size={size}
           palette={palette}
@@ -135,7 +150,6 @@ export function BarList({
         />
       ))}
       <OverflowRow model={model} />
-      <MarkerLegend marker={model.marker} />
     </View>
   )
 }

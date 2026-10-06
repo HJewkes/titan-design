@@ -1,6 +1,6 @@
 import { View } from 'react-native'
 import { cn } from '../../../../utils/cn'
-import { hiddenFromAssistiveTech } from './assistive'
+import { hiddenFromAssistiveTech } from './shared'
 import { MarkerLine } from './BarListMarker'
 
 interface BarProps {

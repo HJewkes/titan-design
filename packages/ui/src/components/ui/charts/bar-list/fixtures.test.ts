@@ -21,6 +21,7 @@ describe('BarList fixtures', () => {
         'Long label',
         'Missing values',
         'One item',
+        'Over limit',
         'Very large',
         'With description',
         'With marker',
@@ -41,6 +42,12 @@ describe('BarList fixtures', () => {
     expect(fixture.rows).toEqual(defaultFixture.rows)
     expect(fixture.referenceMarker).toEqual({ value: 100, label: 'Limit' })
     expect(fixture.rows.filter((r) => (r.value ?? 0) >= 100)).toHaveLength(3)
+  })
+
+  it('gives Over limit the Flagged rows and a Limit of 5', () => {
+    const fixture = byName('Over limit')
+    expect(fixture.rows).toEqual(byName('Flagged').rows)
+    expect(fixture.referenceMarker).toEqual({ value: 5, label: 'Limit' })
   })
 
   it('keeps Funnel in a fixed order with a caller maximum', () => {

@@ -1,5 +1,6 @@
 import React, { forwardRef } from 'react'
 import { Pressable, View, Text, type PressableProps } from 'react-native'
+import { useControllableState } from '../../../hooks/useControllableState'
 import { cn } from '../../../utils/cn'
 
 export type CheckboxSize = 'sm' | 'md' | 'lg'
@@ -23,6 +24,8 @@ export interface CheckboxProps extends Omit<PressableProps, 'children'> {
   value?: string
   /** Callback when checked state changes */
   onCheckedChange?: (checked: boolean) => void
+  /** Initial checked state when `isChecked` is not provided */
+  defaultIsChecked?: boolean
   /** Additional className */
   className?: string
 }
@@ -45,7 +48,8 @@ const sizeStyles: Record<CheckboxSize, { box: string; icon: string; label: strin
  */
 export const Checkbox = forwardRef<View, CheckboxProps>(function Checkbox(
   {
-    isChecked = false,
+    isChecked: isCheckedProp,
+    defaultIsChecked = false,
     isIndeterminate = false,
     isDisabled = false,
     isInvalid = false,
@@ -60,10 +64,15 @@ export const Checkbox = forwardRef<View, CheckboxProps>(function Checkbox(
   ref
 ) {
   const styles = sizeStyles[size]
+  const [isChecked, setIsChecked] = useControllableState({
+    value: isCheckedProp,
+    defaultValue: defaultIsChecked,
+    onChange: onCheckedChange,
+  })
 
   const handlePress = () => {
     if (!isDisabled) {
-      onCheckedChange?.(!isChecked)
+      setIsChecked(!isChecked)
     }
   }
 
