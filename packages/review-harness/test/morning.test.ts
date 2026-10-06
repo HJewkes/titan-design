@@ -1,0 +1,322 @@
+import { mkdtemp, readFile, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { describe, expect, it } from 'vitest'
+import { ROUND_FILE } from '../src/build.ts'
+import {
+  DECIDER_BY,
+  MORNING_ITEMS_SCHEMA_ID,
+  roundFromMorning,
+  type DeciderEntry,
+  type MorningItem,
+  type MorningItems,
+} from '../src/morning.ts'
+import { proposalText, relabelAsProposed, repairMarkdown } from '../src/morning-text.ts'
+import { loadRound } from '../src/review.ts'
+import { runCli, type CliIo } from '../src/run.ts'
+import { RoundSchema } from '../src/schema.ts'
+
+// Every item here is invented: a widget shop's seats deciding on paint and a price list.
+
+const PATHS = { itemsDir: '/rounds/r1', draftDir: '/rounds/r1' }
+
+function item(patch: Partial<MorningItem> = {}): MorningItem {
+  return {
+    id: 'paint-1',
+    seat: 'paint-seat',
+    morning: '1',
+    door: 'two-way',
+    title: 'Repaint the widget shelf in teal?',
+    body: 'The shelf is beige. Recommended default: teal, because the lamps are warm.',
+    options: [
+      { label: 'A: Teal', proposal: 'Repaint in teal this week. Pro: matches the lamps.' },
+      { label: 'B: Keep beige', proposal: 'Leave it. Pro: no paint cost.' },
+      { label: 'C: Defer', proposal: 'Decide after the lamps arrive.' },
+    ],
+    ...patch,
+  }
+}
+
+function items(list: MorningItem[] = [item()], patch: Partial<MorningItems> = {}): MorningItems {
+  return {
+    schema: MORNING_ITEMS_SCHEMA_ID,
+    unit: 'widget-shop-morning',
+    round: 1,
+    items: list,
+    ...patch,
+  }
+}
+
+function decider(patch: Partial<DeciderEntry> = {}): DeciderEntry {
+  return {
+    questionId: 'paint-1',
+    answer: 'A: Teal',
+    rationale: 'The lamps are warm and teal reads well under them.',
+    confidence: 0.7,
+    cite: 'paint-notes section 2',
+    ...patch,
+  }
+}
+
+function section(input: MorningItems, id: string, entries: DeciderEntry[] = []) {
+  const draft = roundFromMorning(input, entries, PATHS)
+  const found = draft.sections?.find((s) => s.id === id)
+  if (!found) throw new Error(`no section ${id}`)
+  return found
+}
+
+describe('seat text as the owner reads it', () => {
+  it('relabels every seat recommendation as a proposal', () => {
+    expect(relabelAsProposed('Recommended default: teal')).toBe('Proposed: teal')
+    expect(relabelAsProposed('**Recommended default:** teal')).toBe('**Proposed:** teal')
+    expect(relabelAsProposed('**Recommend yes**')).toBe('**Proposed: yes**')
+    expect(relabelAsProposed('Recommendation: teal. Recommend it.')).toBe(
+      'Proposal: teal. Proposed: it.'
+    )
+    expect(relabelAsProposed('Default: teal; the seat recommends it')).toBe(
+      'Proposed: teal; the plan proposes it'
+    )
+    expect(relabelAsProposed('Silence goes to the decider. Fine.')).toBe('Fine.')
+  })
+
+  it('gives a headerless table the header row GitHub markdown needs', () => {
+    expect(repairMarkdown('| teal | 2 |\n| beige | 0 |')).toBe(
+      '| | |\n|---|---|\n| teal | 2 |\n| beige | 0 |'
+    )
+  })
+
+  it('keeps a table that already has a header, inside a quote too', () => {
+    const headed = '> | shade | cost |\n> |---|---|\n> | teal | 2 |'
+    expect(repairMarkdown(headed)).toBe('> | | |\n> |---|---|\n' + headed)
+    expect(repairMarkdown('> |---|---|\n> | teal | 2 |')).toBe(
+      '> | | |\n> |---|---|\n> | teal | 2 |'
+    )
+  })
+
+  it('drops an orphan ** so the rest of the line is not bold', () => {
+    expect(repairMarkdown('Teal is **warm and cheap')).toBe('Teal is warm and cheap')
+    expect(repairMarkdown('**Teal** is **warm')).toBe('**Teal** is warm')
+    expect(repairMarkdown('**Teal** stays')).toBe('**Teal** stays')
+  })
+
+  it('relabels, then repairs', () => {
+    expect(proposalText('Recommended default: **teal\n| a |')).toBe(
+      'Proposed: teal\n| |\n|---|\n| a |'
+    )
+  })
+})
+
+describe('a round from Morning items', () => {
+  it('shows every option with its proposal text labelled Proposed', () => {
+    const { deciding } = section(items(), 'paint-1')
+    expect(deciding).toContain('- **A: Teal** Proposed: Repaint in teal this week.')
+    expect(deciding).toContain('- **B: Keep beige** Proposed: Leave it.')
+    expect(deciding).toContain('- **C: Defer** Proposed: Decide after the lamps arrive.')
+  })
+
+  it('refuses an option that is only a heading', () => {
+    const bare = item({ options: [{ label: 'A: Thresholds', proposal: ' ' }, item().options[1]] })
+    expect(() => roundFromMorning(items([bare]), [], PATHS)).toThrow(/bare heading/)
+  })
+
+  it('relabels the body and repairs its markdown in the section text', () => {
+    const body = 'Recommended default: teal.\n| teal | 2 |\nCosts: **2 coins'
+    const { changed } = section(items([item({ body })]), 'paint-1')
+    expect(changed).toBe('Proposed: teal.\n| | |\n|---|---|\n| teal | 2 |\nCosts: 2 coins')
+  })
+
+  it('has no variant strip and no index image when no item has images', () => {
+    const draft = roundFromMorning(items(), [], PATHS)
+    expect(draft.variants).toEqual([])
+    expect(draft.sections?.map((s) => s.variantKeys ?? [])).toEqual([[]])
+    expect(draft.sections?.[0].kind).toBeUndefined()
+    expect(draft.sections?.[0].contrast).toBeUndefined()
+    expect(JSON.stringify(draft)).not.toMatch(/index/i)
+  })
+
+  it('attaches the decider recommendation from its own file, with the cite', () => {
+    const draft = roundFromMorning(items(), [decider()], PATHS)
+    const [q] = draft.questions
+    expect(q.kind === 'pick-one' && q.recommendation).toEqual({
+      answer: 'A: Teal',
+      rationale:
+        'The lamps are warm and teal reads well under them.\n\nCite: paint-notes section 2',
+      confidence: 0.7,
+      by: DECIDER_BY,
+    })
+    expect(draft.recommendations).toBe('after-answer')
+  })
+
+  it('leaves a question without a decider entry unrecommended', () => {
+    const [q] = roundFromMorning(items(), [], PATHS).questions
+    expect(q.kind === 'pick-one' && q.recommendation).toBeUndefined()
+  })
+
+  it('refuses a decider answer that is not one of the options, or an unknown item', () => {
+    expect(() => roundFromMorning(items(), [decider({ answer: 'D: Pink' })], PATHS)).toThrow(
+      /"D: Pink" is not one of its options/
+    )
+    expect(() => roundFromMorning(items(), [decider({ questionId: 'paint-9' })], PATHS)).toThrow(
+      /no item has the id paint-9/
+    )
+  })
+
+  function threeItems(): MorningItem[] {
+    const door = [
+      { label: 'A: Paint it', proposal: 'Teal, same tin.' },
+      { label: 'B: Leave it', proposal: 'The door stays white.' },
+      { label: 'C: Defer', proposal: 'Decide with the shelf.' },
+    ]
+    const price = [
+      { label: 'A: Whole coins', proposal: 'Round every price up.' },
+      { label: 'B: Keep halves', proposal: 'Prices stay as they are.' },
+    ]
+    return [
+      item({ id: 'paint-1', seat: 'paint-seat' }),
+      item({ id: 'price-1', seat: 'price-seat', title: 'Whole coins?', options: price }),
+      item({
+        id: 'paint-2',
+        seat: 'paint-seat',
+        title: 'The door too?',
+        morning: '2',
+        options: door,
+      }),
+    ]
+  }
+
+  it('groups items by seat in order of first appearance and sets signsOff', () => {
+    const draft = roundFromMorning(items(threeItems()), [], PATHS)
+    expect(draft.sections?.map((s) => s.id)).toEqual(['paint-1', 'paint-2', 'price-1'])
+    expect(draft.questions.map((q) => q.id)).toEqual(['paint-1', 'paint-2', 'price-1'])
+    expect(draft.sections?.[1].title).toBe('paint-seat Morning 2: The door too?')
+    const [q] = draft.questions
+    expect(q.kind === 'pick-one' && q.signsOff).toBe(
+      'the answer to paint-seat Morning 1: Repaint the widget shelf in teal?'
+    )
+    expect(q.required).toBe(true)
+  })
+
+  it('keeps an author-given signsOff and says which door the item is', () => {
+    const one = item({ door: 'one-way', signsOff: 'the shelf colour' })
+    const draft = roundFromMorning(items([one]), [], PATHS)
+    const [q] = draft.questions
+    expect(q.kind === 'pick-one' && q.signsOff).toBe('the shelf colour')
+    expect(draft.sections?.[0].context).toContain('One-way door')
+  })
+
+  it('puts item captures in a STATES strip with both modes declared unmeasured', () => {
+    const images = [
+      { key: 'before', file: 'shots/before.png', label: 'Beige, today' },
+      { key: 'after', file: 'shots/after.png', label: 'Teal, proposed' },
+    ]
+    const draft = roundFromMorning(items([item({ images })]), [], PATHS)
+    expect(draft.variants.map((v) => v.image)).toEqual(['shots/before.png', 'shots/after.png'])
+    const [s] = draft.sections!
+    expect(s.kind).toBe('STATES')
+    expect(s.variantKeys).toEqual(['before', 'after'])
+    expect(s.contrast?.unmeasured?.map((u) => `${u.variant}|${u.mode}`)).toEqual([
+      'before|light',
+      'before|dark',
+      'after|light',
+      'after|dark',
+    ])
+  })
+
+  it('refuses a draft whose images would sit outside its directory', () => {
+    const images = [{ key: 'before', file: 'shots/before.png', label: 'Beige, today' }]
+    const paths = { itemsDir: '/rounds/r1', draftDir: '/rounds/r1/out' }
+    expect(() => roundFromMorning(items([item({ images })]), [], paths)).toThrow(
+      /item paint-1: image shots\/before.png is outside the draft's directory/
+    )
+  })
+
+  it('passes the round@2 contract', () => {
+    const draft = roundFromMorning(items(threeItems()), [decider()], PATHS)
+    expect(RoundSchema.safeParse(draft).success).toBe(true)
+  })
+
+  it('qualifies an option label two items share with the item id, decider answer included', () => {
+    const list = [item(), item({ id: 'paint-2', morning: '2', title: 'The door too?' })]
+    const draft = roundFromMorning(items(list), [decider({ questionId: 'paint-2' })], PATHS)
+    const [first, second] = draft.questions
+    expect(first.kind === 'pick-one' && first.options).toEqual([
+      'A: Teal (paint-1)',
+      'B: Keep beige (paint-1)',
+      'C: Defer (paint-1)',
+    ])
+    expect(second.kind === 'pick-one' && second.recommendation?.answer).toBe('A: Teal (paint-2)')
+    expect(draft.sections?.[1].deciding).toContain('- **C: Defer (paint-2)** Proposed:')
+    expect(RoundSchema.safeParse(draft).success).toBe(true)
+  })
+
+  it('leaves an option label only one item uses as it is', () => {
+    const draft = roundFromMorning(items(threeItems()), [], PATHS)
+    const price = draft.questions[2]
+    expect(price.kind === 'pick-one' && price.options).toEqual(['A: Whole coins', 'B: Keep halves'])
+    expect(draft.questions[0].kind === 'pick-one' && draft.questions[0].options[2]).toBe(
+      'C: Defer (paint-1)'
+    )
+  })
+})
+
+describe('titan-review round from-morning', () => {
+  const io = (stderr: string[]): CliIo => ({
+    stdout: () => {},
+    stderr: (t) => stderr.push(t),
+    openBrowser: () => {},
+    capture: async () => [],
+    measure: async () => [],
+    createPage: async () => ({ handler: () => {}, close: async () => {} }),
+    harnessFreshness: async () => ({ state: 'current' }),
+    signal: new AbortController().signal,
+  })
+
+  async function writeInputs(input: MorningItems, entries?: DeciderEntry[]) {
+    const dir = await mkdtemp(join(tmpdir(), 'titan-morning-'))
+    const itemsPath = join(dir, 'items.json')
+    await writeFile(itemsPath, JSON.stringify(input))
+    const deciderPath = join(dir, 'decider.json')
+    if (entries) await writeFile(deciderPath, JSON.stringify(entries))
+    return { dir, itemsPath, deciderPath: entries ? deciderPath : undefined }
+  }
+
+  it('writes draft.json beside the items file and build accepts it', async () => {
+    const { dir, itemsPath, deciderPath } = await writeInputs(items(), [decider()])
+    const stderr: string[] = []
+    const args = ['round', 'from-morning', itemsPath, '--decider', deciderPath!]
+    expect(await runCli(args, io(stderr))).toBe(0)
+    const draftPath = join(dir, 'draft.json')
+    expect(stderr.join('\n')).toContain(`wrote ${draftPath}`)
+    const draft = JSON.parse(await readFile(draftPath, 'utf8'))
+    expect(draft.schema).toBe('titan-review/round@2')
+    expect(draft.questions[0].recommendation.by).toBe(DECIDER_BY)
+
+    expect(await runCli(['build', draftPath], io(stderr))).toBe(0)
+    const round = await loadRound(join(dir, ROUND_FILE))
+    expect(round.manifest.sections?.[0].deciding).toContain('Proposed: Repaint in teal')
+  })
+
+  it('refuses to write round.json, which build owns', async () => {
+    const { dir, itemsPath } = await writeInputs(items())
+    const stderr: string[] = []
+    const args = ['round', 'from-morning', itemsPath, '--out', join(dir, ROUND_FILE)]
+    expect(await runCli(args, io(stderr))).toBe(2)
+    expect(stderr.join('\n')).toContain('build writes that file')
+  })
+
+  it('names the item field an invalid items file is missing', async () => {
+    const { itemsPath } = await writeInputs({
+      ...items(),
+      items: [{ ...item(), options: [{ label: 'A: Thresholds' }] }],
+    } as unknown as MorningItems)
+    const stderr: string[] = []
+    expect(await runCli(['round', 'from-morning', itemsPath], io(stderr))).toBe(2)
+    expect(stderr.join('\n')).toContain('items.0.options.0.proposal: every option carries')
+  })
+
+  it('rejects a misspelt subcommand with the usage', async () => {
+    const stderr: string[] = []
+    expect(await runCli(['round', 'from-evening', 'x.json'], io(stderr))).toBe(2)
+    expect(stderr.join('\n')).toContain('round from-morning <items.json>')
+  })
+})

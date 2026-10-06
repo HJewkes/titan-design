@@ -1,6 +1,8 @@
-import { dirname, resolve } from 'node:path'
+import { writeFile } from 'node:fs/promises'
+import { basename, dirname, join, resolve } from 'node:path'
 import { parseArgs } from 'node:util'
 import {
+  ROUND_FILE,
   buildRound,
   contrastProblem,
   overrideRecord,
@@ -9,6 +11,7 @@ import {
 } from './build.ts'
 import { calibrationReport, readFeedbackFiles } from './calibration.ts'
 import { sectionedExampleManifest } from './example.ts'
+import { buildMorningDraft } from './morning.ts'
 import { harnessVerdict, serveMainCommand, type HarnessFreshness } from './harness-freshness.ts'
 import {
   EXIT_INTERRUPTED,
@@ -27,6 +30,7 @@ export const USAGE = `titan-review <round.json> [options]
 titan-review --example [--storybook <url>]
 titan-review build <draft.json> [--storybook <url>]
 titan-review calibration <feedback.json...>
+titan-review round from-morning <items.json> [--decider <file>] [--out <draft.json>]
 
 Serves one review round (live Storybook iframes or static PNGs, picks, comments, pins) on
 127.0.0.1, blocks until the human submits, writes <out>/feedback.json plus one PNG per story
@@ -41,7 +45,13 @@ only if every miss is declared in contrast.knownDefects with its route; otherwis
 calibration reads feedback files and prints how often the owner's answer matched our
 recommendation: per round, overall, and by confidence band (<0.5, 0.5-0.75, >=0.75).
 
+round from-morning builds a draft round from seat Morning items (titan-review/morning-items@1)
+with no agent in the loop: one section per item grouped by seat, every option with its
+proposal text labelled Proposed, and the decider's recommendations from a separate file. It
+writes draft.json beside the items file (or --out); run build on it next.
+
   --storybook <url>  Storybook base url (default: the manifest's storybookUrl)
+  --decider <file>   Decider recommendations for round from-morning (questionId, answer, cite)
   --out <dir>        Where feedback.json and PNGs go (default: the manifest's directory)
   --port <n>         Review page port (default: a free one)
   --no-open          Print the page url instead of opening the browser
@@ -51,6 +61,8 @@ recommendation: per round, overall, and by confidence band (<0.5, 0.5-0.75, >=0.
   --allow-stale      Serve even when this harness differs from origin/main's; the page says so
   --example          Print a sample manifest built from Lab/Decisions stories
   --help             Print this help`
+
+const DRAFT_FILE = 'draft.json'
 
 export interface CliIo extends Omit<ReviewDeps, 'onReady'>, Pick<BuildIo, 'measure'> {
   stdout: (text: string) => void
@@ -72,6 +84,7 @@ function parseCli(argv: string[]) {
       'no-capture': { type: 'boolean' },
       'contrast-override': { type: 'string' },
       'allow-stale': { type: 'boolean' },
+      decider: { type: 'string' },
       example: { type: 'boolean' },
       help: { type: 'boolean' },
     },
@@ -164,6 +177,21 @@ async function review(parsed: Parsed, io: CliIo): Promise<number> {
   return EXIT_OK
 }
 
+/** Writes the draft beside the items file unless --out says where; never over round.json. */
+async function fromMorning(parsed: Parsed, io: CliIo): Promise<number> {
+  const [, kind, itemsArg] = parsed.positionals
+  if (kind !== 'from-morning' || itemsArg === undefined || parsed.positionals.length !== 3)
+    throw new ReviewError(`expected: round from-morning <items.json>\n\n${USAGE}`)
+  const itemsPath = resolve(itemsArg)
+  const draftPath = resolve(parsed.values.out ?? join(dirname(itemsPath), DRAFT_FILE))
+  if (basename(draftPath) === ROUND_FILE)
+    throw new ReviewError(`the draft must not be ${ROUND_FILE}; build writes that file`)
+  const draft = await buildMorningDraft(itemsPath, parsed.values.decider, draftPath)
+  await writeFile(draftPath, `${JSON.stringify(draft, null, 2)}\n`)
+  io.stderr(`wrote ${draftPath}; next: titan-review build ${draftPath}`)
+  return EXIT_OK
+}
+
 function isUsageError(err: unknown): err is Error {
   const code = (err as { code?: unknown }).code
   return (
@@ -185,6 +213,7 @@ async function dispatch(parsed: Parsed, io: CliIo): Promise<number> {
     if (parsed.positionals.length !== 2) throw new ReviewError(`expected one draft\n\n${USAGE}`)
     return buildRound(resolve(parsed.positionals[1]), parsed.values.storybook, io)
   }
+  if (parsed.positionals[0] === 'round') return fromMorning(parsed, io)
   if (parsed.positionals[0] === 'calibration') {
     const rounds = await readFeedbackFiles(parsed.positionals.slice(1).map((p) => resolve(p)))
     io.stdout(`${calibrationReport(rounds)}\n`)
