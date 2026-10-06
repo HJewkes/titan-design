@@ -130,13 +130,13 @@ function App() {
 
 ### Custom Components
 
-| Component          | Description                                                                                    |
-| ------------------ | ------------------------------------------------------------------------------------------------ |
-| **Typography**     | Consistent text styling (h1-h6, body, caption, etc.)                                            |
-| **Sidebar**        | Navigation sidebar with collapsible support                                                     |
-| **Table**          | Data table with sorting and pagination                                                          |
-| **EmptyState**     | Placeholder for empty data states                                                                |
-| **GoalLiftCard**   | One lift's goal state — next milestone, status pill, committed/stretch progress (root barrel)   |
+| Component          | Description                                                                                             |
+| ------------------ | ------------------------------------------------------------------------------------------------------- |
+| **Typography**     | Consistent text styling (h1-h6, body, caption, etc.)                                                    |
+| **Sidebar**        | Navigation sidebar with collapsible support                                                             |
+| **Table**          | Data table with sorting and pagination                                                                  |
+| **EmptyState**     | Placeholder for empty data states                                                                       |
+| **GoalLiftCard**   | One lift's goal state — next milestone, status pill, committed/stretch progress (root barrel)           |
 | **GoalMuscleCard** | A muscle priority's rollup card, built on `MuscleGlyph` (`bodymap` subpath — see [Subpaths](#subpaths)) |
 
 ## Subpaths
@@ -302,7 +302,10 @@ The design system uses a two-tier token system following DTCG conventions:
 import { Text, View } from 'react-native'
 
 // In components
-<View className="bg-surface-elevated rounded-lg" style={{ borderWidth: 1, borderColor: '#1F1F1F' }}>
+;<View
+  className="bg-surface-elevated rounded-lg"
+  style={{ borderWidth: 1, borderColor: '#1F1F1F' }}
+>
   <Text className="text-text-primary">Primary text</Text>
   <Text className="text-text-secondary">Secondary text</Text>
 </View>
@@ -329,7 +332,9 @@ import { View } from 'react-native'
 import { resolveColor } from '@titan-design/react-ui/theme'
 
 // RIGHT — explicit inline style; resolveColor returns the CSS variable on web and the resolved hex on native
-export const Explicit = () => <View style={{ borderWidth: 1, borderColor: resolveColor('hairline-default') }} />
+export const Explicit = () => (
+  <View style={{ borderWidth: 1, borderColor: resolveColor('hairline-default') }} />
+)
 
 // RIGHT on web only — border-hairline (no bare 'border') resolves to the CSS variable
 export const WebOnly = () => <View className="border-[1px] border-hairline" />
@@ -360,6 +365,14 @@ pnpm test
 # Run tests with coverage
 pnpm test:coverage
 ```
+
+### Story audit
+
+```bash
+pnpm audit:stories
+```
+
+Audits the stories your diff touches for overflow, clipping and contrast; see [`docs/audit-stories.md`](docs/audit-stories.md).
 
 ### Build
 

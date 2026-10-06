@@ -2,7 +2,7 @@
 /**
  * GhostBand — the wide phase-coloured AXIS BAND that carries movement phase for the
  * ghost family (eccentric magenta / concentric cyan / hold and idle grey), with the
- * ECC / HOLD / CON labels rendered INSIDE it. Extracted from GhostSpark so the single
+ * ECC / CON labels rendered INSIDE it. Extracted from GhostSpark so the single
  * sparkline and a future top/bottom dual compose the SAME band instead of re-rolling it.
  *
  * It is DECORATIVE for assistive tech (`aria-hidden`): the phase it paints is already carried by
@@ -49,7 +49,7 @@ export interface GhostBandProps {
   top: number
   /** Band height, px. Default {@link BAND_H}. */
   height?: number
-  /** Reveal the ECC / HOLD / CON labels inside the band. */
+  /** Reveal the ECC / CON labels inside the band; hold and idle runs stay unlabelled. */
   showLabels?: boolean
   /**
    * Label colour when there is no pacing tone to apply. Defaults to the primary on-surface

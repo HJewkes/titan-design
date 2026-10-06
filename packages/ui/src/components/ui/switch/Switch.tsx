@@ -1,5 +1,6 @@
 import { forwardRef } from 'react'
 import { Pressable, View, Text, type PressableProps } from 'react-native'
+import { useControllableState } from '../../../hooks/useControllableState'
 import { cn } from '../../../utils/cn'
 import { liftStyle } from '../../../theme/lift'
 import { useSurfaceMode } from '../surface'
@@ -19,6 +20,8 @@ export interface SwitchProps extends Omit<PressableProps, 'children'> {
   labelPosition?: 'left' | 'right'
   /** Callback when switch state changes */
   onCheckedChange?: (checked: boolean) => void
+  /** Initial checked state when `isChecked` is not provided */
+  defaultIsChecked?: boolean
   /** Additional className */
   className?: string
 }
@@ -41,7 +44,8 @@ const sizeStyles: Record<SwitchSize, { track: string; thumb: string; translate: 
  */
 export const Switch = forwardRef<View, SwitchProps>(function Switch(
   {
-    isChecked = false,
+    isChecked: isCheckedProp,
+    defaultIsChecked = false,
     isDisabled = false,
     size = 'md',
     label,
@@ -53,11 +57,16 @@ export const Switch = forwardRef<View, SwitchProps>(function Switch(
   ref
 ) {
   const styles = sizeStyles[size]
+  const [isChecked, setIsChecked] = useControllableState({
+    value: isCheckedProp,
+    defaultValue: defaultIsChecked,
+    onChange: onCheckedChange,
+  })
   const mode = useSurfaceMode()
 
   const handlePress = () => {
     if (!isDisabled) {
-      onCheckedChange?.(!isChecked)
+      setIsChecked(!isChecked)
     }
   }
 

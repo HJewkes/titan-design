@@ -1,3 +1,4 @@
+import { compareText } from '../../kit/compareText'
 import type {
   GraphEdge,
   GraphGroupRegion,
@@ -21,8 +22,6 @@ export interface EgoLayoutOptions {
 
 const DEFAULT_HOPS = 2
 const DIRECTIONS: readonly EgoDirection[] = ['both', 'outgoing', 'incoming']
-
-const compareText = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0)
 
 /** Neighbour lists in id order; an edge with an unknown or repeated endpoint is ignored. */
 function adjacency(

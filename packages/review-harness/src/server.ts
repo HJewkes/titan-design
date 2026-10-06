@@ -10,6 +10,12 @@ export const PAGE_BASE = '/__review/'
 const API = `${PAGE_BASE}api/`
 const MAX_BODY_BYTES = 5_000_000
 
+class BodyTooLarge extends Error {
+  constructor() {
+    super(`the submission is larger than ${MAX_BODY_BYTES} bytes`)
+  }
+}
+
 export type PageHandler = (
   req: http.IncomingMessage,
   res: http.ServerResponse,
@@ -45,7 +51,7 @@ async function readJson(req: http.IncomingMessage): Promise<unknown> {
   let size = 0
   for await (const chunk of req) {
     size += (chunk as Buffer).length
-    if (size > MAX_BODY_BYTES) throw new Error('body too large')
+    if (size > MAX_BODY_BYTES) throw new BodyTooLarge()
     chunks.push(chunk as Buffer)
   }
   return JSON.parse(Buffer.concat(chunks).toString('utf8'))
@@ -65,7 +71,9 @@ function createSubmitHandler(opts: ReviewServerOptions, accept: Accept) {
   let done = false
   return async (req: http.IncomingMessage, res: http.ServerResponse) => {
     if (done) return sendJson(res, 409, { errors: ['this round was already submitted'] })
-    const body = await readJson(req).catch(() => undefined)
+    const body = await readJson(req).catch((err: unknown) => err)
+    if (body instanceof BodyTooLarge) return sendJson(res, 413, { errors: [body.message] })
+    if (body instanceof Error) return sendJson(res, 400, { errors: ['body is not JSON'] })
     if (body === undefined) return sendJson(res, 400, { errors: ['body is not JSON'] })
     const result = submissionError(opts, body)
     if (Array.isArray(result)) return sendJson(res, result[0], { errors: result[1] })
