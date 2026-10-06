@@ -1968,7 +1968,7 @@
         },
         {
           "default": "false",
-          "description": "Reveal the ECC / HOLD / CON labels inside the band.",
+          "description": "Reveal the ECC / CON labels inside the band; hold and idle runs stay unlabelled.",
           "name": "showLabels",
           "required": false,
           "type": "boolean"
