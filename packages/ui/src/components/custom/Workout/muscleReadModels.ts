@@ -3,12 +3,17 @@
  * can be typed against the payload it will actually be handed.
  *
  * MIRRORED, NOT IMPORTED. titan does not depend on voltras-mcp, so these are
- * hand-copied from `src/dashboard/read-models/muscle-strength.ts` (plan row B3,
- * VW-330) and `muscle-plan.ts` (B4, VW-329/VW-331) at voltras-mcp `395bafd`,
- * plus `src/tools/e1rm-band.ts` for the band those rows carry. Optionality is
- * copied EXACTLY: a field the server always emits is required here, and a
- * nullable field stays `| null` rather than becoming optional — the two read
- * very differently at a call site and the drift is silent.
+ * hand-copied type shapes from `src/dashboard/read-models/muscle-strength.ts`
+ * (plan row B3, VW-330) and `muscle-plan.ts` (B4, VW-329/VW-331), plus
+ * `src/tools/e1rm-band.ts` for the band those rows carry.
+ *
+ * Last synced from voltras-mcp origin/main at `5a6fadd`. That sha and the
+ * mirrored field lists are pinned in `muscleReadModels.mirror.test.ts`, so a
+ * re-sync has to update the header and the test together. The test cannot see
+ * voltras-mcp: it catches a half-done re-sync, not a change upstream that
+ * nobody has synced yet. Optionality is copied from the source: a field the
+ * server always emits is required here, and a nullable field stays `| null`
+ * rather than becoming optional.
  *
  * Where titan needs something the server does not emit, the extra field lives
  * on a separate interface that extends the mirror, never inside it.
@@ -46,6 +51,12 @@ export interface E1RMBand {
 /** Which limb a strength row covers. `null` means the sets recorded no side. */
 export type MuscleStrengthSide = 'left' | 'right' | null
 
+/** Grouping key for {@link MuscleStrengthSide}; `'none'` is the side-unknown group. */
+export type MuscleStrengthSideKey = 'left' | 'right' | 'none'
+
+/** How recently a row was trained. Mirrors `MuscleStrengthRecency`. */
+export type MuscleStrengthRecency = 'current' | 'fading' | 'no_current_read'
+
 /** The best e1RM in the window, with the band every e1RM travels with. */
 export interface MuscleStrengthBestE1rm {
   value: number
@@ -67,6 +78,14 @@ export interface MuscleStrengthExerciseRow {
   isPR: boolean
   priorBest: number | null
   plateau: 'plateau' | 'tolerated' | 'none' | null
+  /** Sets in this row: the weight its relative index carries in the muscle's mean. */
+  setCount: number
+  /** Recency-weighted mean of the last sessions' best e1RMs; `null` with no e1RM. */
+  currentLevel: number | null
+  /** `currentLevel` over the best e1RM in these rows, 0 to 100 percent. Never pooled across sides. */
+  relativeIndex: number | null
+  daysSinceTrained: number | null
+  recency: MuscleStrengthRecency | null
 }
 
 /** Agreement of SIGNS between exercises sharing a primary muscle. */
@@ -90,6 +109,10 @@ export interface MuscleStrengthSection {
   agreement: MuscleStrengthAgreement
   /** True while strength gains are not yet readable as muscle gains. */
   earlyPhase: boolean
+  /** Set-weighted mean of the rows' relative indices, one per side group; sides never pool. */
+  relativeIndexBySide: Partial<Record<MuscleStrengthSideKey, number>>
+  /** Days since any row of this muscle was trained; `null` without `asOf` or rows. */
+  daysSinceTrained: number | null
 }
 
 /** One planned exercise for a muscle. Mirrors `MusclePlanRemainingExercise`. */
@@ -98,6 +121,12 @@ export interface MusclePlanRemainingExercise {
   exerciseId: string
   exerciseName: string
   sets: number
+}
+
+/** Training days a muscle is targeted on. Mirrors `MusclePlanFrequency`. */
+export interface MusclePlanFrequency {
+  plannedPerWeek: number
+  observedThisWeek: number
 }
 
 /**
@@ -117,6 +146,7 @@ export interface MusclePlanSection {
   plannedSetsThisWeek: number
   doneSetsThisWeek: number
   exercises: MusclePlanExerciseRow[]
+  frequency: MusclePlanFrequency
 }
 
 /** Labels for {@link MuscleStrengthAgreement}, in the panel's own wording. */
