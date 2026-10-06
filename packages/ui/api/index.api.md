@@ -5711,6 +5711,7 @@ export interface ReadinessCheckProps {
     // (undocumented)
     className?: string;
     factors: ReadinessFactor[];
+    isConfirmDisabled?: boolean;
     onConfirm: () => void;
     score: number;
     warmUpCompleted: boolean;

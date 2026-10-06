@@ -534,7 +534,7 @@ function AdvancedPanel({ vbt, summary }: { vbt: ExerciseVbt; summary: VbtSummary
 /**
  * ExerciseDetailPage — a tabbed per-exercise view. A shared header (name,
  * context line, current e1RM pill) sits above a Progress / History / Advanced
- * tab bar. Progress composes the `MesoStatusCard` context banner, a stats
+ * `line` `Tabs` bar. Progress composes the `MesoStatusCard` context banner, a stats
  * strip, a `StrengthTrendChart`, and a week-by-week progression list with
  * inline `ExerciseCard` expansion. History lists every logged session with the
  * same inline expansion. Advanced surfaces VBT data via a `CapacityBandChart`,
