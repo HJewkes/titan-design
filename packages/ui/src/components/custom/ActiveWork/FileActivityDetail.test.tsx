@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedClassNames } from '../../../test/classname-capture'
 import { FileActivityDetail } from './FileActivityDetail'
 import { FILE_HISTORY_FILES } from './file-history-fixture'
 
@@ -62,5 +63,14 @@ describe('FileActivityDetail', () => {
   it('has no a11y violations', async () => {
     const { container } = render(<FileActivityDetail file={grew} />)
     expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+describe('FileActivityDetail className merge', () => {
+  it('lets a caller class replace the root class it conflicts with', () => {
+    render(<FileActivityDetail file={grew} className="p-2" />)
+    const classes = capturedClassNames.get('file-activity-detail')?.split(/\s+/)
+    expect(classes).toContain('p-2')
+    expect(classes).not.toContain('p-4')
   })
 })
