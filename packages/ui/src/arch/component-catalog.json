@@ -11378,6 +11378,13 @@
           "type": "string"
         },
         {
+          "default": "false",
+          "description": "Initial checked state when `isChecked` is not provided",
+          "name": "defaultIsChecked",
+          "required": false,
+          "type": "boolean"
+        },
+        {
           "default": null,
           "description": "Helper text",
           "name": "helperText",
@@ -11385,7 +11392,7 @@
           "type": "string"
         },
         {
-          "default": "false",
+          "default": null,
           "description": "Whether the checkbox is checked",
           "name": "isChecked",
           "required": false,
@@ -13740,6 +13747,13 @@
         },
         {
           "default": "false",
+          "description": "Initial checked state when `isChecked` is not provided",
+          "name": "defaultIsChecked",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
           "description": "Whether the switch is on",
           "name": "isChecked",
           "required": false,

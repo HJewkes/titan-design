@@ -813,6 +813,7 @@ export interface CheckboxGroupProps {
 // @public (undocumented)
 export interface CheckboxProps extends Omit<PressableProps, 'children'> {
     className?: string;
+    defaultIsChecked?: boolean;
     helperText?: string;
     isChecked?: boolean;
     isDisabled?: boolean;
@@ -7429,6 +7430,7 @@ export const Switch: React$1.ForwardRefExoticComponent<SwitchProps & React$1.Ref
 // @public (undocumented)
 export interface SwitchProps extends Omit<PressableProps, 'children'> {
     className?: string;
+    defaultIsChecked?: boolean;
     isChecked?: boolean;
     isDisabled?: boolean;
     label?: string;
