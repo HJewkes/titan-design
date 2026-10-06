@@ -1,6 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useMemo, useState } from 'react'
-import { View, Text, Pressable, type ViewProps } from 'react-native'
+import { View, Text, type ViewProps } from 'react-native'
 import { MesoStatusCard, type MesoStatusCardProps } from './MesoStatusCard'
 import {
   StrengthTrendChart,
@@ -22,9 +22,9 @@ import {
   type VelocityZoneBandProp,
 } from './VelocityStrip'
 import { SectionCard } from './ExerciseDetailSectionCard'
-import { resolveColor } from '../../../theme/resolve-color'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../ui/surface'
+import { Tabs, TabList, Tab, TabPanels, TabPanel } from '../../ui/tabs'
 import { cn } from '../../../utils/cn'
 import { alpha } from '../../../utils/colors'
 import { formatVelocity } from '../../../utils/workout-format'
@@ -32,6 +32,8 @@ import { formatVelocity } from '../../../utils/workout-format'
 /** Inner plot width: page width 390 − 16 page padding − 12 card padding on each side. */
 const CHART_WIDTH = 326
 const CHART_HEIGHT = 150
+/** The panel sits one section rhythm (14px) under the tab bar, as the bar's siblings do. */
+const PANEL_SPACING = 'pt-3.5 pb-0'
 
 /** Which tab of the exercise detail view is showing. */
 export type ExerciseDetailTab = 'progress' | 'history' | 'advanced'
@@ -182,57 +184,6 @@ export function summarizeVbt(sets: ExerciseVbtSet[]): VbtSummary {
     velocityLoss = Math.max(velocityLoss, calculateVelocityLoss(set.velocities))
   }
   return { meanVelocity, velocityLoss }
-}
-
-interface TabBarProps {
-  active: ExerciseDetailTab
-  onSelect: (tab: ExerciseDetailTab) => void
-}
-
-function TabBar({ active, onSelect }: TabBarProps) {
-  const brandPrimary = getSemanticColors(useSurfaceMode())['brand-primary']
-  return (
-    <View
-      className="flex-row"
-      style={{
-        borderBottomWidth: 1,
-        borderBottomColor: resolveColor('hairline-default'),
-      }}
-      accessibilityRole={'tablist' as ViewProps['accessibilityRole']}
-      testID="exercise-detail-page-tabs"
-    >
-      {EXERCISE_DETAIL_TABS.map(({ key, label }) => {
-        const isActive = key === active
-        return (
-          <Pressable
-            key={key}
-            onPress={() => onSelect(key)}
-            accessibilityRole="tab"
-            aria-selected={isActive}
-            className="py-2.5"
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              borderBottomWidth: 2,
-              borderBottomColor: isActive ? brandPrimary : 'transparent',
-            }}
-            testID={`exercise-detail-page-tab-${key}`}
-          >
-            <Text
-              className={isActive ? 'text-text-primary' : 'text-text-tertiary'}
-              style={{
-                fontSize: 13,
-                fontFamily: 'Inter, sans-serif',
-                fontWeight: isActive ? '700' : '500',
-              }}
-            >
-              {label}
-            </Text>
-          </Pressable>
-        )
-      })}
-    </View>
-  )
 }
 
 const STAT_CARDS: Array<{ key: keyof ExerciseDetailStats; label: string }> = [
@@ -516,6 +467,50 @@ function HistoryPanel({ entries, expandedId, onToggle }: HistoryPanelProps) {
   )
 }
 
+interface ProgressPanelProps extends HistoryPanelProps {
+  meso: MesoStatusCardProps
+  stats: ExerciseDetailStats
+  trend: ExerciseTrend
+  unit: 'lbs' | 'kg'
+}
+
+function ProgressPanel({
+  meso,
+  stats,
+  trend,
+  unit,
+  entries,
+  expandedId,
+  onToggle,
+}: ProgressPanelProps) {
+  return (
+    <View className="gap-3.5" testID="exercise-detail-page-panel-progress">
+      <MesoStatusCard {...meso} />
+      <StatStrip stats={stats} unit={unit} />
+      <SectionCard title="Strength Trend" testID="exercise-detail-page-trend">
+        <StrengthTrendChart
+          data={trend.data}
+          projection={trend.projection}
+          mesoBoundaries={trend.mesoBoundaries}
+          width={CHART_WIDTH}
+          height={CHART_HEIGHT}
+          unit={unit}
+          animateOnMount={false}
+        />
+      </SectionCard>
+      <SectionCard title="Week-by-Week" testID="exercise-detail-page-progression">
+        <EntryList
+          entries={entries}
+          expandedId={expandedId}
+          onToggle={onToggle}
+          emptyLabel="No progression logged yet"
+          testID="exercise-detail-page-progression-list"
+        />
+      </SectionCard>
+    </View>
+  )
+}
+
 function AdvancedPanel({ vbt, summary }: { vbt: ExerciseVbt; summary: VbtSummary }) {
   return (
     <View className="gap-3.5" testID="exercise-detail-page-panel-advanced">
@@ -585,40 +580,43 @@ export function ExerciseDetailPage({
       <View className="p-gutter-sm gap-3.5" testID="exercise-detail-page-content">
         <ExerciseDetailPageHeader exercise={exercise} />
 
-        <TabBar active={tab} onSelect={setTab} />
-
-        {tab === 'progress' && (
-          <View className="gap-3.5" testID="exercise-detail-page-panel-progress">
-            <MesoStatusCard {...meso} />
-            <StatStrip stats={stats} unit={exercise.unit} />
-            <SectionCard title="Strength Trend" testID="exercise-detail-page-trend">
-              <StrengthTrendChart
-                data={trend.data}
-                projection={trend.projection}
-                mesoBoundaries={trend.mesoBoundaries}
-                width={CHART_WIDTH}
-                height={CHART_HEIGHT}
+        <Tabs
+          variant="line"
+          value={EXERCISE_DETAIL_TABS.findIndex(({ key }) => key === tab)}
+          onValueChange={(index) => setTab(EXERCISE_DETAIL_TABS[index].key)}
+          testID="exercise-detail-page-tabs"
+        >
+          <TabList>
+            {EXERCISE_DETAIL_TABS.map(({ key, label }) => (
+              <Tab key={key} className="flex-1 items-center">
+                {label}
+              </Tab>
+            ))}
+          </TabList>
+          <TabPanels>
+            <TabPanel className={PANEL_SPACING}>
+              <ProgressPanel
+                meso={meso}
+                stats={stats}
+                trend={trend}
                 unit={exercise.unit}
-                animateOnMount={false}
-              />
-            </SectionCard>
-            <SectionCard title="Week-by-Week" testID="exercise-detail-page-progression">
-              <EntryList
                 entries={progression}
                 expandedId={expandedProgressId}
                 onToggle={toggleProgress}
-                emptyLabel="No progression logged yet"
-                testID="exercise-detail-page-progression-list"
               />
-            </SectionCard>
-          </View>
-        )}
-
-        {tab === 'history' && (
-          <HistoryPanel entries={history} expandedId={expandedHistoryId} onToggle={toggleHistory} />
-        )}
-
-        {tab === 'advanced' && <AdvancedPanel vbt={vbt} summary={vbtSummary} />}
+            </TabPanel>
+            <TabPanel className={PANEL_SPACING}>
+              <HistoryPanel
+                entries={history}
+                expandedId={expandedHistoryId}
+                onToggle={toggleHistory}
+              />
+            </TabPanel>
+            <TabPanel className={PANEL_SPACING}>
+              <AdvancedPanel vbt={vbt} summary={vbtSummary} />
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
       </View>
     </View>
   )
