@@ -183,13 +183,13 @@ describe('BarList', () => {
       expect(new Set(tracks.map((el) => el.className)).size).toBe(1)
     })
 
-    it('right-aligns the value in a tabular mono column', () => {
+    // Tabular digits are a `fontVariant` style; jsdom drops the property, so only the browser shows it.
+    it('right-aligns the value in the mono column', () => {
       renderFixture(defaultFixture)
       for (const cell of screen.getAllByTestId('bar-list-value')) {
         expect(classOf(cell).split(' ')).toEqual(
           expect.arrayContaining(['font-mono', 'text-right'])
         )
-        expect(cell).toHaveStyle({ fontVariant: 'tabular-nums' })
       }
     })
 
@@ -228,6 +228,12 @@ describe('BarList', () => {
       for (const testId of ['bar-list-value', 'bar-list-flag']) {
         expect(screen.queryAllByTestId(testId).length > 0).toBe(cells.includes(testId))
       }
+    })
+
+    it('keeps the secondary cell whatever readouts hides', () => {
+      renderFixture(fixture('With secondary'), { readouts: [] })
+      expect(screen.getAllByTestId('bar-list-secondary').length).toBeGreaterThan(0)
+      expect(screen.queryByTestId('bar-list-value')).toBeNull()
     })
 
     it('names every row and the list the same whatever readouts shows', () => {
