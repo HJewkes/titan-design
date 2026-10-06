@@ -236,7 +236,7 @@ const meta: Meta<typeof ProgramPlanningPage> = {
       description: { component: 'Composes **MesoProgressBar** · **MesoCard** · **WorkoutCard**.' },
     },
   },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   args: { title: 'Program Plan', mesos },
 }
 

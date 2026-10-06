@@ -184,9 +184,8 @@ describe('Tabs', () => {
     it('marks active tab as selected', () => {
       renderTabs()
       const tabs = screen.getAllByRole('tab')
-      // react-native-web does not output aria-selected for accessibilityState.selected on tabs
-      expect(tabs[0]).toBeInTheDocument()
-      expect(tabs[1]).toBeInTheDocument()
+      expect(tabs[0]).toHaveAttribute('aria-selected', 'true')
+      expect(tabs[1]).toHaveAttribute('aria-selected', 'false')
     })
   })
 })

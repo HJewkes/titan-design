@@ -194,4 +194,18 @@ describe('Select', () => {
       expect(trigger).toHaveAttribute('aria-disabled', 'true')
     })
   })
+
+  describe('option roles', () => {
+    it('exposes each single-select option as an option', () => {
+      render(<Select options={defaultOptions} />)
+      fireEvent.click(screen.getByRole('combobox'))
+      expect(screen.getAllByRole('option')).toHaveLength(defaultOptions.length)
+    })
+
+    it('exposes each multi-select option as a checkbox', () => {
+      render(<Select options={defaultOptions} isMulti values={[]} />)
+      fireEvent.click(screen.getByRole('combobox'))
+      expect(screen.getAllByRole('checkbox')).toHaveLength(defaultOptions.length)
+    })
+  })
 })

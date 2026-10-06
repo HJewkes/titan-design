@@ -3,7 +3,7 @@ import http from 'node:http'
 import type { AddressInfo } from 'node:net'
 import type { Duplex } from 'node:stream'
 import { FeedbackSchema, type Feedback, type Manifest } from './schema.ts'
-import { feedbackProblems } from './round.ts'
+import { feedbackProblems, normalizeFeedback } from './round.ts'
 import { proxyRequest, proxyUpgrade } from './proxy.ts'
 
 export const PAGE_BASE = '/__review/'
@@ -24,6 +24,7 @@ export interface ReviewServerOptions {
   port?: number
   /** Absolute PNG path by variant key; served at `api/image/<key>`, never by path. Keys need no decoding. */
   images?: Record<string, string>
+  harnessWarning?: string
 }
 
 export interface ReviewServer {
@@ -57,7 +58,7 @@ function submissionError(opts: ReviewServerOptions, body: unknown): [number, str
   if (parsed.data.manifestSha256 !== opts.manifestSha256)
     return [409, ['the manifest changed since this page loaded; reload the page']]
   const problems = feedbackProblems(parsed.data, opts.manifest)
-  return problems.length ? [422, problems] : parsed.data
+  return problems.length ? [422, problems] : normalizeFeedback(parsed.data, opts.manifest)
 }
 
 function createSubmitHandler(opts: ReviewServerOptions, accept: Accept) {
@@ -70,7 +71,9 @@ function createSubmitHandler(opts: ReviewServerOptions, accept: Accept) {
     if (Array.isArray(result)) return sendJson(res, result[0], { errors: result[1] })
     done = true
     sendJson(res, 200, { ok: true })
-    accept(result)
+    const { contrastOverride: _posted, ...unoverridden } = result
+    const { contrastOverride } = opts.manifest
+    accept(contrastOverride ? { ...unoverridden, contrastOverride } : unoverridden)
   }
 }
 
@@ -95,7 +98,11 @@ function createRouter(opts: ReviewServerOptions, accept: Accept): http.RequestLi
       return res.end()
     }
     if (path === `${API}round` && req.method === 'GET')
-      return sendJson(res, 200, { manifest: opts.manifest, manifestSha256: opts.manifestSha256 })
+      return sendJson(res, 200, {
+        manifest: opts.manifest,
+        manifestSha256: opts.manifestSha256,
+        harnessWarning: opts.harnessWarning,
+      })
     if (path === `${API}submit` && req.method === 'POST') return void submit(req, res)
     if (path.startsWith(`${API}image/`) && req.method === 'GET')
       return sendImage(opts, path.slice(`${API}image/`.length), res)

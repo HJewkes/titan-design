@@ -72,8 +72,10 @@ Complex components use the compound component pattern for flexibility:
   <ButtonText>Add Item</ButtonText>
 </Button>
 
-// Also supports simple usage
-<Button>Simple Button</Button>
+// Text always goes in ButtonText; a bare string child breaks on native
+<Button>
+  <ButtonText>Save</ButtonText>
+</Button>
 ```
 
 #### Props Conventions
@@ -86,6 +88,47 @@ Complex components use the compound component pattern for flexibility:
 | `isDisabled` | `boolean` | Disabled state |
 | `isLoading` | `boolean` | Loading state |
 | `onPress` | `() => void` | Press handler (RN convention) |
+
+#### Placement: Which Directory a Component Belongs In
+
+A tier is decided by what the component knows, not by how much it composes. Paths are under `packages/ui/src/`.
+
+| Directory | Holds |
+|-----------|-------|
+| `components/ui/<name>/` | Domain-free components of any size. Any product could render one without knowing another product's vocabulary. |
+| `components/ui/charts/<name>/` | Domain-free charts. `d3-*` imports are legal only here (`titan/no-raw-composition`). Shared scales, geometry and motion live in `ui/charts/kit/`. |
+| `components/custom/<Family>/` | A domain family (`Workout`, `Fatigue`, `ActiveWork`). A prop, type or label names a domain concept. |
+| `components/shell/` | The domain-free application frame. `shell/<app>/` is one app's chrome and composes it. |
+| `lab/` | Unpublished exploration. Excluded from the published package. |
+| `hooks/`, `utils/` | Hooks and pure functions with no JSX. They never import `components/`. |
+
+To decide a new component's home, take the first match, top to bottom:
+
+| Question | Home |
+|----------|------|
+| Is it an exploration that must not publish? | `lab/<family>/` |
+| Does any prop, type or label name a domain concept (set, rep, mesocycle, initiative, fatigue)? | `components/custom/<Family>/` of that domain |
+| Does it know the app's own chrome (its routes, its brand, its page regions)? | `components/shell/`, or `shell/<app>/` if it names an app. A generic sidebar, rail, or band that takes its content as props (e.g. `Sidebar`) is `ui/`. |
+| Does it paint data marks from a scale? | `components/ui/charts/<name>/` |
+| Is it a hook or pure function with no JSX? | `hooks/` or `utils/` |
+| Otherwise | `components/ui/<name>/` |
+
+If the component you want to compose sits in a higher tier, run the table on that component. If it lands lower, move it first.
+
+##### Tier import order
+
+The order is theme, icons, ui, custom, shell, pages. A lower tier never imports a higher one; the `titan/no-upward-tier-import` rule (`eslint-rules/no-upward-tier-import.js`) errors on it. The rule classifies by path only: `theme/` and `components/{icons,ui,custom,shell,pages}/`. It does not yet cover `hooks/` or `utils/`, so their "never import `components/`" rule is not machine-checked, and `lab/` is exempt in both directions. Existing offenders are ratcheted in `eslint-rules/tier-import-baseline.json`, which only shrinks.
+
+`ui/` components may compose `ui/` siblings. If the component you need sits in a higher tier and is domain-free, move it down first; do not copy it and do not replace it with a slot. Generic directories still in `components/custom/` are listed in `src/arch/custom-families.baseline.json`, which only shrinks (`src/arch/custom-families.test.ts`).
+
+##### Slots and controlled state
+
+- Import what is fixed anatomy (Typography, Skeleton, Tooltip, Surface).
+- Take a named `ReactNode` slot for consumer vocabulary (wording, headers, actions).
+- Give every state slot (`emptyState`, ...) a default built from `ui/`.
+- Controlled state is named `x`, `defaultX`, `onXChange`.
+
+Add the export to the family barrel (`components/ui/index.ts` or `components/custom/index.ts`) and, for `ui/`, a row in `components/ui/README.md`; without the row the component stays `status:candidate`.
 
 ## Design Token Architecture
 

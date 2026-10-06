@@ -7,7 +7,7 @@ it complete. Every box must be checked and every gate green.
 > **Scope.** This checklist applies only when you port a **frozen HTML
 > prototype** that has pixel-parity requirements: a manifest extracted from the
 > prototype, and computed-style parity against it. Every other component follows
-> Gate 2 of the `titan-component-workflow` skill instead: the operator validates
+> Gate 2 of the `titan-component` skill (`.claude/skills/titan-component`) instead: the operator validates
 > the final rendered Storybook state before merge. That includes exploratory and
 > greenfield components and anything without an HTML prototype. If there is no
 > frozen prototype to extract a manifest from, this checklist does not apply.

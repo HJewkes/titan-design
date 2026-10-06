@@ -22,6 +22,8 @@ import { writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 
+import { isEntryPoint } from './lib/entry.mjs'
+
 /**
  * Visual CSS properties captured for each component. camelCase and letters-only
  * so every emitted property name satisfies the schema's `^[a-zA-Z]+$` pattern.
@@ -178,8 +180,7 @@ async function main() {
   }
 }
 
-const invokedDirectly = process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url
-if (invokedDirectly) {
+if (isEntryPoint(import.meta.url, process.argv[1])) {
   main().catch((error) => {
     console.error(error)
     process.exitCode = 1

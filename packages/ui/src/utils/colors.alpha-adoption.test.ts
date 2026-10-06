@@ -299,7 +299,7 @@ function readSource(relativeToSrc: string): string {
 
 describe('touched source files no longer contain the swapped raw literals', () => {
   const fileCases: Array<{ file: string; removedLiterals: string[] }> = [
-    { file: 'components/custom/Gauge/Gauge.tsx', removedLiterals: ['rgba(255,255,255,0.08)'] },
+    { file: 'components/ui/charts/gauge/Gauge.tsx', removedLiterals: ['rgba(255,255,255,0.08)'] },
     {
       file: 'components/custom/Workout/BaseBadge.tsx',
       removedLiterals: ['rgba(255, 121, 0, 0.12)', 'rgba(255, 121, 0, 0.3)'],
@@ -315,10 +315,6 @@ describe('touched source files no longer contain the swapped raw literals', () =
     {
       file: 'components/custom/Workout/CapacityBandChart.tsx',
       removedLiterals: ['rgba(46,213,115,0.1)', 'rgba(46,213,115,0.45)', 'rgba(46,213,115,0.05)'],
-    },
-    {
-      file: 'components/custom/Workout/DeviationBar.tsx',
-      removedLiterals: ['rgba(46,213,115,0.25)', 'rgba(249,180,21,0.25)'],
     },
     {
       file: 'components/custom/Workout/ExerciseDetailPage.tsx',

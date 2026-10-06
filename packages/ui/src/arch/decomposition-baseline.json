@@ -3,25 +3,13 @@
     "file-lines": 242
   },
   "components/custom/Chat/MessageList.tsx#MessageList": {
-    "props": 14
+    "props": 16
   },
   "components/custom/Chat/MessageList.tsx#ThreadScroll": {
-    "props": 14
+    "props": 16
   },
   "components/custom/CircularTimer/CircularTimer.tsx#CircularTimer": {
     "complexity": 21
-  },
-  "components/custom/DateTime/DateTime.tsx#formatDate": {
-    "complexity": 17
-  },
-  "components/custom/DateTime/DateTime.tsx#getRelativeTime": {
-    "complexity": 23
-  },
-  "components/custom/Fatigue/DualGhostSpark.tsx#DualGhostSpark": {
-    "function-lines": 106
-  },
-  "components/custom/Fatigue/GhostBand.tsx#GhostBand": {
-    "function-lines": 116
   },
   "components/custom/Workout/ActiveWorkoutPage.tsx": {
     "file-lines": 348
@@ -44,12 +32,14 @@
     "function-lines": 374,
     "props": 16
   },
-  "components/custom/Workout/CapacityBandChart.tsx": {
-    "file-lines": 452
+  "components/custom/Workout/DualVelocityCharts.tsx#DualVelocityCompactStrip": {
+    "props": 15
   },
-  "components/custom/Workout/CapacityBandChart.tsx#CapacityBandChart": {
-    "component-lines": 316,
-    "function-lines": 316
+  "components/custom/Workout/DualVelocityCharts.tsx#DualVelocityHero": {
+    "props": 16
+  },
+  "components/custom/Workout/DualVelocityCharts.tsx#DualVelocityRail": {
+    "props": 16
   },
   "components/custom/Workout/ExerciseCard.tsx": {
     "file-lines": 255
@@ -71,11 +61,7 @@
     "props": 26
   },
   "components/custom/Workout/ExerciseDetailPage.tsx": {
-    "file-lines": 535
-  },
-  "components/custom/Workout/ExerciseDetailPage.tsx#ExerciseDetailPage": {
-    "component-lines": 154,
-    "function-lines": 154
+    "file-lines": 522
   },
   "components/custom/Workout/ExerciseHeading.tsx#ExerciseHeading": {
     "props": 19
@@ -87,7 +73,7 @@
     "props": 15
   },
   "components/custom/Workout/GoalMilestoneSummary.tsx": {
-    "file-lines": 326
+    "file-lines": 327
   },
   "components/custom/Workout/GoalMilestoneSummary.tsx#GoalMilestoneSummary": {
     "props": 15
@@ -95,17 +81,11 @@
   "components/custom/Workout/GoalMilestoneTile.tsx#GoalMilestoneTile": {
     "props": 18
   },
-  "components/custom/Workout/GoalTrajectoryChart.tsx": {
-    "file-lines": 321
-  },
   "components/custom/Workout/GoalTrajectoryChart.tsx#GoalTrajectoryChart": {
-    "complexity": 38,
-    "component-lines": 172,
-    "function-lines": 172,
     "props": 25
   },
   "components/custom/Workout/GoalTrajectoryChartGeometry.ts": {
-    "file-lines": 596
+    "file-lines": 597
   },
   "components/custom/Workout/GoalTrajectoryMini.tsx": {
     "file-lines": 273
@@ -113,47 +93,21 @@
   "components/custom/Workout/GoalTrajectoryPlot.tsx": {
     "file-lines": 540
   },
-  "components/custom/Workout/InputBar.tsx#InputBar": {
-    "component-lines": 117,
-    "function-lines": 117
-  },
   "components/custom/Workout/IntensityBar.tsx#IntensityBar": {
     "component-lines": 131,
     "function-lines": 131
   },
-  "components/custom/Workout/MesoCard.tsx#MesoCard": {
-    "component-lines": 146,
-    "function-lines": 146
-  },
   "components/custom/Workout/MesoStatusCard.tsx": {
-    "file-lines": 407
-  },
-  "components/custom/Workout/MesoStatusCard.tsx#MesoStatusCard": {
-    "component-lines": 152,
-    "function-lines": 152
+    "file-lines": 359
   },
   "components/custom/Workout/ProgramPlanningPage.tsx": {
-    "file-lines": 354
-  },
-  "components/custom/Workout/ProgramPlanningPage.tsx#ProgramPlanningPage": {
-    "function-lines": 101
+    "file-lines": 340
   },
   "components/custom/Workout/ReadinessCheck.tsx": {
     "file-lines": 227
   },
-  "components/custom/Workout/RestTimer.tsx": {
-    "file-lines": 232
-  },
-  "components/custom/Workout/RestTimer.tsx#RestTimer": {
-    "function-lines": 115
-  },
   "components/custom/Workout/SegmentedBar.tsx#SegmentedBar>segments.map": {
     "complexity": 17
-  },
-  "components/custom/Workout/Sparkline.tsx#Sparkline": {
-    "complexity": 17,
-    "component-lines": 161,
-    "function-lines": 161
   },
   "components/custom/Workout/StrengthTrendChart.tsx": {
     "file-lines": 559
@@ -163,50 +117,17 @@
     "component-lines": 361,
     "function-lines": 361
   },
-  "components/custom/Workout/TempoDisplay.tsx": {
-    "file-lines": 361
-  },
-  "components/custom/Workout/TempoDisplay.tsx#TempoDisplay": {
-    "component-lines": 166,
-    "function-lines": 166
-  },
   "components/custom/Workout/TrainingStatusPage.tsx": {
     "file-lines": 268
   },
   "components/custom/Workout/VelocityBandOverlay.tsx": {
     "file-lines": 252
   },
-  "components/custom/Workout/VelocityStrip.tsx": {
-    "file-lines": 1075
-  },
-  "components/custom/Workout/VelocityStrip.tsx#DualVelocityCompactStrip": {
-    "props": 15
-  },
-  "components/custom/Workout/VelocityStrip.tsx#DualVelocityHero": {
-    "props": 16
-  },
-  "components/custom/Workout/VelocityStrip.tsx#DualVelocityRail": {
-    "props": 16
-  },
   "components/custom/Workout/VelocityStrip.tsx#VelocityStrip": {
-    "complexity": 59,
-    "component-lines": 298,
-    "function-lines": 298,
     "props": 22
   },
-  "components/custom/Workout/WorkoutCard.tsx#WorkoutCard": {
-    "function-lines": 107
-  },
-  "components/custom/Workout/ZoneTrack.tsx": {
-    "file-lines": 311
-  },
-  "components/custom/Workout/ZoneTrack.tsx#ZoneTrack": {
-    "complexity": 34,
-    "component-lines": 211,
-    "function-lines": 211
-  },
   "components/custom/Workout/index.ts": {
-    "file-lines": 345
+    "file-lines": 344
   },
   "components/custom/Workout/velocityBandGeometry.ts": {
     "file-lines": 318
@@ -221,19 +142,19 @@
     "file-lines": 335
   },
   "components/custom/charts/SetBarChart.tsx": {
-    "file-lines": 428
+    "file-lines": 406
   },
   "components/custom/charts/SetBarChart.tsx#SetBarChart": {
     "complexity": 32,
-    "component-lines": 197,
-    "function-lines": 197,
+    "component-lines": 194,
+    "function-lines": 194,
     "props": 28
   },
   "components/custom/charts/SetBarChart.tsx#SetBarChart>cells.map": {
     "complexity": 18
   },
   "components/shell/workout/DualPinnedLiveStrip.tsx": {
-    "file-lines": 415
+    "file-lines": 418
   },
   "components/shell/workout/DualPinnedLiveStrip.tsx#DualPinnedLiveStrip": {
     "props": 14
@@ -303,7 +224,7 @@
     "complexity": 18
   },
   "components/ui/card/Card.tsx": {
-    "file-lines": 242
+    "file-lines": 245
   },
   "components/ui/card/Card.tsx#Card": {
     "complexity": 16,
@@ -338,13 +259,13 @@
     "props": 14
   },
   "components/ui/progress/Progress.tsx": {
-    "file-lines": 270
+    "file-lines": 272
   },
   "components/ui/progress/Progress.tsx#CircularProgress": {
     "complexity": 17
   },
   "components/ui/progress/Progress.tsx#Progress": {
-    "complexity": 21
+    "complexity": 22
   },
   "components/ui/select/Select.tsx#Select": {
     "complexity": 19

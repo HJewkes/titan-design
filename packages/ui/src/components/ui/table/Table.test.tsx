@@ -256,6 +256,41 @@ describe('Table', () => {
       const checkbox = screen.getByRole('checkbox')
       expect(checkbox).toBeInTheDocument()
     })
+
+    it.each([
+      [new Set(['1']), 'true'],
+      [new Set<string>(), 'false'],
+    ])('row checkbox with selection %o has aria-checked=%s', (selectedRows, expected) => {
+      render(
+        <Table selectable selectedRows={selectedRows}>
+          <TableBody>
+            <TableRow>
+              <TableSelectCell rowId="1" />
+            </TableRow>
+          </TableBody>
+        </Table>
+      )
+
+      expect(screen.getByRole('checkbox')).toHaveAttribute('aria-checked', expected)
+    })
+
+    it.each([
+      [new Set(['1', '2']), 'true'],
+      [new Set(['1']), 'mixed'],
+      [new Set<string>(), 'false'],
+    ])('select-all checkbox with selection %o has aria-checked=%s', (selectedRows, expected) => {
+      render(
+        <Table selectable selectedRows={selectedRows} rowIds={['1', '2']}>
+          <TableHeader>
+            <TableRow>
+              <TableSelectAllCell />
+            </TableRow>
+          </TableHeader>
+        </Table>
+      )
+
+      expect(screen.getByRole('checkbox')).toHaveAttribute('aria-checked', expected)
+    })
   })
 
   describe('TableRow', () => {

@@ -1,6 +1,7 @@
 // The shared chart entrance, generalised from the GoalTrajectoryChart one (VW-385): static
 // layers are there from the first frame, a line draws left to right, then marks arrive.
 import { useEffect, useState, type CSSProperties } from 'react'
+import { Platform } from 'react-native'
 import { usePrefersReducedMotion } from '../../../../hooks/usePrefersReducedMotion'
 
 export const CHART_EASE_OUT = 'cubic-bezier(0.22, 1, 0.36, 1)'
@@ -46,12 +47,18 @@ export function useChartEntrance(animate: boolean): EntranceState {
   return { enabled, played: !enabled || started }
 }
 
+/** CSS transitions and `transformBox` are web-only; native renders the final state. */
+function entranceOff({ enabled }: EntranceState): boolean {
+  return !enabled || Platform.OS !== 'web'
+}
+
 /** Stroke-dashoffset draw over a `pathLength={1}` path. */
 export function drawStyle(
-  { enabled, played }: EntranceState,
+  entrance: EntranceState,
   { duration, delay }: EntranceTiming = CHART_ENTRANCE.draw
 ): CSSProperties {
-  if (!enabled) return {}
+  if (entranceOff(entrance)) return {}
+  const { played } = entrance
   return {
     strokeDasharray: 1,
     strokeDashoffset: played ? 0 : 1,
@@ -60,10 +67,11 @@ export function drawStyle(
 }
 
 export function fadeStyle(
-  { enabled, played }: EntranceState,
+  entrance: EntranceState,
   { duration, delay }: EntranceTiming = CHART_ENTRANCE.fade
 ): CSSProperties {
-  if (!enabled) return {}
+  if (entranceOff(entrance)) return {}
+  const { played } = entrance
   return {
     opacity: played ? 1 : 0,
     transition: `opacity ${String(duration)}ms ease-out ${String(delay)}ms`,
@@ -75,7 +83,7 @@ export function popStyle(
   entrance: EntranceState,
   timing: EntranceTiming = CHART_ENTRANCE.points
 ): CSSProperties {
-  if (!entrance.enabled) return {}
+  if (entranceOff(entrance)) return {}
   const duration = `${String(timing.duration)}ms`
   const delay = `${String(timing.delay)}ms`
   return {

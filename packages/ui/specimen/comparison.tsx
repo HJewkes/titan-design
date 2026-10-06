@@ -81,9 +81,6 @@ const HTML_CSS = `
     --brand-primary-strong: rgba(255, 121, 0, 0.50);
     --result-improve: #4caf50;
     --result-degrade: #ef5350;
-    --vel-red: #d14343;
-    --vel-orange: #ff7900;
-    --vel-yellow: #f9b415;
     --vel-green: #2ed573;
     --font-heading: 'Space Grotesk', sans-serif;
     --font-ui: 'Nunito Sans', sans-serif;
@@ -230,19 +227,8 @@ const HTML_CSS = `
     min-width: 4px;
   }
 
-  /* 5. VelocityStrip (collapsed mini only for static comparison) */
-  .html-scope .velocity-mini {
-    display: flex;
-    gap: 2px;
-    height: 3px;
-    border-radius: 2px;
-    width: 100%;
-  }
-  .html-scope .velocity-mini .vel-bar { flex: 1; border-radius: 1px; min-width: 4px; }
+  /* 5. VelocityStrip */
   .html-scope .vel-bar.green { background: var(--vel-green); }
-  .html-scope .vel-bar.yellow { background: var(--vel-yellow); }
-  .html-scope .vel-bar.orange { background: var(--vel-orange); }
-  .html-scope .vel-bar.red { background: var(--vel-red); }
 
   /* 6. TempoDisplay */
   .html-scope .tempo-display {

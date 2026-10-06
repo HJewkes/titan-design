@@ -9,6 +9,7 @@
 import { describe, it, expect } from 'vitest'
 import { execFileSync } from 'node:child_process'
 import { join } from 'node:path'
+import { simulateCvd } from './color-checks'
 import { greyRamp, SURFACE_PLANE_STEPS, primitiveRamps } from './tokens/primitives'
 
 // ── colour math (CIELAB D65 + WCAG relative luminance) ──────────────────────
@@ -39,37 +40,7 @@ const warmth = (hex: string) => {
   return r - b
 }
 
-/** Machado-2009 dichromacy, severity 1.0. */
-const CVD = {
-  deuteranopia: [
-    0.367322, 0.860646, -0.227968, 0.280085, 0.672501, 0.047413, -0.01182, 0.04294, 0.968881,
-  ],
-  protanopia: [
-    0.152286, 1.052583, -0.204868, 0.114503, 0.786281, 0.099216, -0.003882, -0.048116, 1.051998,
-  ],
-  tritanopia: [
-    1.255528, -0.076749, -0.178779, -0.078411, 0.930809, 0.147602, 0.004733, 0.691367, 0.3039,
-  ],
-} as const
-function simulateCvd(m: readonly number[], hex: string): string {
-  const [r, g, b] = hex2rgb(hex)
-  const out = [
-    m[0] * r + m[1] * g + m[2] * b,
-    m[3] * r + m[4] * g + m[5] * b,
-    m[6] * r + m[7] * g + m[8] * b,
-  ]
-  return (
-    '#' +
-    out
-      .map((v) =>
-        Math.round(Math.max(0, Math.min(255, v)))
-          .toString(16)
-          .padStart(2, '0')
-      )
-      .join('')
-      .toUpperCase()
-  )
-}
+const CVD_KINDS = ['deutan', 'protan', 'tritan'] as const
 
 const STEPS = Object.keys(greyRamp)
   .map(Number)
@@ -149,24 +120,21 @@ describe('greyRamp — anchors are load-bearing', () => {
 })
 
 describe('greyRamp — accessibility gate (TD-07.15)', () => {
-  // NOTE: the on-surface TEXT-pairing gate lives in `semantic-contrast.test.ts`,
+  // NOTE: the on-surface TEXT-pairing gate lives in `token-contrast.test.ts`,
   // added with the token repoint. It cannot pass until the text tokens actually
   // move onto this ramp — on the shipped cool `neutral` scale, text-tertiary
   // fails WCAG outright on the three lightest planes (2.96 / 2.72 / 2.49).
 
   it('stays legible under all three dichromacies', () => {
-    for (const [mode, matrix] of Object.entries(CVD)) {
+    for (const mode of CVD_KINDS) {
       for (const s of STEPS) {
-        const shift = dE76(hexAt(s), simulateCvd(matrix, hexAt(s)))
+        const shift = dE76(hexAt(s), simulateCvd(hexAt(s), mode))
         expect(shift, `${mode} shifts grey-${s} by ΔE ${shift.toFixed(2)}`).toBeLessThan(3)
       }
       // Adjacent steps must stay separable AFTER simulation, or the depth
       // ordering of the surface stack stops reading for those viewers.
       for (let i = 1; i < STEPS.length; i++) {
-        const d = dE76(
-          simulateCvd(matrix, hexAt(STEPS[i - 1])),
-          simulateCvd(matrix, hexAt(STEPS[i]))
-        )
+        const d = dE76(simulateCvd(hexAt(STEPS[i - 1]), mode), simulateCvd(hexAt(STEPS[i]), mode))
         expect(d, `${mode}: grey-${STEPS[i - 1]}/${STEPS[i]} merge`).toBeGreaterThan(1.5)
       }
     }
