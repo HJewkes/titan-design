@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
 import { FacetBar } from './FacetBar'
-import { facetBarFixtures } from './fixtures'
+import { facetBarFixtures, type FacetBarFixture } from './fixtures'
 
 const fixtureNames = Object.keys(facetBarFixtures) as Array<keyof typeof facetBarFixtures>
 
@@ -61,9 +61,13 @@ export default meta
 type Story = StoryObj<typeof FacetBar>
 
 export const Default: Story = {
-  render: function Render({ fixture, ...args }: Record<string, unknown>) {
-    const picked = fixture as (typeof facetBarFixtures)[keyof typeof facetBarFixtures] | undefined
-    const props = { ...args, ...picked } as React.ComponentProps<typeof FacetBar>
+  render: function Render(args) {
+    const { fixture, ...rest } = args as unknown as { fixture?: FacetBarFixture } & Record<
+      string,
+      unknown
+    >
+    const picked = fixture
+    const props = { ...rest, ...picked } as unknown as React.ComponentProps<typeof FacetBar>
     return <FacetBar key={String(picked?.label)} {...props} />
   },
 }
