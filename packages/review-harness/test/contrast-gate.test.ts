@@ -12,6 +12,7 @@ import {
 } from '../src/contrast-gate.ts'
 import { ReviewError } from '../src/review.ts'
 import { ManifestSchema, MANIFEST_SCHEMA_ID, type ManifestInput } from '../src/schema.ts'
+import { underContract } from './fixtures.ts'
 
 const SHA = 'a'.repeat(64)
 
@@ -288,7 +289,7 @@ describe('buildRound', () => {
   async function setup(input: Partial<ManifestInput>) {
     const dir = await mkdtemp(join(tmpdir(), 'titan-contrast-'))
     const path = join(dir, 'draft.json')
-    await writeFile(path, JSON.stringify(draft(input)))
+    await writeFile(path, JSON.stringify(underContract(draft(input))))
     return { dir, path }
   }
 

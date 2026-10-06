@@ -75,6 +75,7 @@ export function ZoneTrack({
   className,
   style,
   accessibilityLabel,
+  onLayout,
   ...props
 }: ZoneTrackProps) {
   const t = getSemanticColors(useSurfaceMode())
@@ -85,7 +86,10 @@ export function ZoneTrack({
   // Thin the tick labels on a narrow track so they never overlap (each occupies a fixed
   // `tickCellWidth` cell). Width 0 (unmeasured) → show all, so test/server renders match.
   const [trackW, setTrackW] = useState(0)
-  const onTrackLayout = (e: LayoutChangeEvent) => setTrackW(e.nativeEvent.layout.width)
+  const onTrackLayout = (e: LayoutChangeEvent) => {
+    setTrackW(e.nativeEvent.layout.width)
+    onLayout?.(e)
+  }
 
   return (
     <View

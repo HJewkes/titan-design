@@ -8,12 +8,14 @@ import {
   type Dispatch,
   type ReactNode,
 } from 'react'
-import { buildFeedback, unansweredQuestionIds } from '../src/feedback.ts'
+import { buildFeedback, pendingQuestionIds } from '../src/feedback.ts'
 import { feedbackProblems } from '../src/round.ts'
 import { roundLayout, type ResolvedSection } from '../src/sections.ts'
-import type { Manifest, Question, Variant } from '../src/schema.ts'
+import type { Manifest, Question, StripKind, Variant } from '../src/schema.ts'
+import { Markdown } from './Markdown.tsx'
 import { QuestionBlock } from './QuestionBlock.tsx'
 import { ReviewScreen } from './ReviewScreen.tsx'
+import { SectionParts } from './SectionParts.tsx'
 import { browserStorage, clearDraft, saveDraft, type DraftStorage } from './draftStore.ts'
 import {
   OTHER_PAGE,
@@ -35,6 +37,7 @@ import { VariantCard } from './VariantCard.tsx'
 interface AppProps {
   manifest: Manifest
   manifestSha256: string
+  harnessWarning?: string
 }
 
 async function postFeedback(body: unknown): Promise<string[]> {
@@ -93,10 +96,10 @@ function Header({
       <h1>
         {manifest.unit} <span>round {manifest.round}</span>
       </h1>
-      {manifest.context && <p>{manifest.context}</p>}
+      {manifest.context && <Markdown>{manifest.context}</Markdown>}
       {manifest.sections && <Pager pages={pages} current={current} dispatch={dispatch} />}
       {manifest.sections ? (
-        <ol className="prompts">
+        <ol className="prompts sections">
           {pages.map((p, i) => (
             <li key={p.id} aria-current={i === current ? 'step' : undefined}>
               <JumpLink href={`#section-${p.id}`} index={p.first} dispatch={dispatch}>
@@ -108,7 +111,9 @@ function Header({
       ) : (
         <ol className="prompts">
           {orderedQuestions(manifest).map((q) => (
-            <li key={q.id}>{q.prompt}</li>
+            <li key={q.id}>
+              <Markdown inline>{q.prompt}</Markdown>
+            </li>
           ))}
         </ol>
       )}
@@ -171,6 +176,7 @@ interface PartProps {
 
 function Variants({ variants, ...props }: PartProps & { variants: Variant[] }) {
   const { manifest, state, dispatch, indexes } = props
+  if (variants.length === 0) return null
   return (
     <div
       className={state.singleColumn ? 'variants single' : 'variants'}
@@ -225,7 +231,6 @@ function SectionBlock({ section, ...props }: PartProps & { section: ResolvedSect
     >
       <header className="section-head">
         <h2>{section.title}</h2>
-        {section.context && <p>{section.context}</p>}
         {section.seeAlso.length > 0 && (
           <p className="see-also">
             See also{' '}
@@ -242,9 +247,40 @@ function SectionBlock({ section, ...props }: PartProps & { section: ResolvedSect
           </p>
         )}
       </header>
+      <SectionText part="deciding" label="Deciding" text={section.deciding} />
+      <SectionText part="changed" label="Changed since last approved" text={section.changed} />
+      <SectionParts parts={section.parts} />
+      <SectionText part="context" label="Context only, not under review" text={section.context} />
       <Questions {...props} questions={section.questions} />
+      {section.kind && (
+        <p className="strip-kind" data-testid={`strip-kind-${section.id}`}>
+          {STRIP_KIND_LABEL[section.kind]}
+        </p>
+      )}
       <Variants {...props} variants={section.variants} />
     </section>
+  )
+}
+
+const STRIP_KIND_LABEL: Record<StripKind, string> = {
+  CHOICE: 'Choice: these frames differ only in what is being decided',
+  STATES: 'States: one design in several states; nothing to choose between',
+}
+
+interface SectionTextProps {
+  part: 'deciding' | 'changed' | 'context'
+  label: string
+  text?: string
+}
+
+/** One of a section's three texts, labelled so a decision never reads as background. */
+function SectionText({ part, label, text }: SectionTextProps) {
+  if (!text) return null
+  return (
+    <div className={`section-text section-${part}`} data-testid={`section-${part}`}>
+      <p className="section-text-label">{label}</p>
+      <Markdown>{text}</Markdown>
+    </div>
   )
 }
 
@@ -409,7 +445,7 @@ function ContrastOverrideBanner({ reason }: { reason: string }) {
   )
 }
 
-export function App({ manifest, manifestSha256 }: AppProps) {
+export function App({ manifest, manifestSha256, harnessWarning }: AppProps) {
   const reducer = useMemo(() => createReducer(manifest), [manifest])
   const storage = useMemo(() => browserStorage(), [])
   const [state, dispatch] = useReducer(reducer, manifest, (m) =>
@@ -417,7 +453,7 @@ export function App({ manifest, manifestSha256 }: AppProps) {
   )
   useDraftBackup(storage, manifestSha256, state)
   const [hitTesting, setHitTesting] = useState<boolean | null>(null)
-  const unanswered = unansweredQuestionIds(manifest, state.draft)
+  const unanswered = pendingQuestionIds(manifest, state.draft)
   const partial = unanswered.length > 0
   const feedback = buildFeedback(manifest, manifestSha256, state.draft, new Date(), partial)
   const problems = feedbackProblems(feedback, manifest)
@@ -440,6 +476,11 @@ export function App({ manifest, manifestSha256 }: AppProps) {
     )
   return (
     <>
+      {harnessWarning && (
+        <p className="harness-warning" role="alert" data-testid="harness-warning">
+          {harnessWarning}
+        </p>
+      )}
       {manifest.contrastOverride && (
         <ContrastOverrideBanner reason={manifest.contrastOverride.reason} />
       )}

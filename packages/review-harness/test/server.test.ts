@@ -4,7 +4,8 @@ import { mkdtemp, readFile, readdir, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { exampleManifest } from '../src/example.ts'
+import { exampleManifest, sectionedExampleManifest } from '../src/example.ts'
+import type { HarnessFreshness } from '../src/harness-freshness.ts'
 import { buildFeedback, emptyDraft } from '../src/feedback.ts'
 import { runCli, type CliIo } from '../src/run.ts'
 import { startReviewServer, type ReviewServer } from '../src/server.ts'
@@ -99,12 +100,14 @@ describe('titan-review CLI', () => {
   let sb: Awaited<ReturnType<typeof fakeStorybook>>
   let dir: string
   let out: { stdout: string; stderr: string[] }
+  let freshness: HarnessFreshness
 
   beforeEach(async () => {
     sb = await fakeStorybook()
     dir = await mkdtemp(join(tmpdir(), 'titan-review-'))
-    await writeFile(join(dir, 'round.json'), JSON.stringify(exampleManifest(sb.url)))
+    await writeFile(join(dir, 'round.json'), JSON.stringify(sectionedExampleManifest(sb.url)))
     out = { stdout: '', stderr: [] }
+    freshness = { state: 'current' }
   })
   afterEach(() => sb.close())
 
@@ -120,6 +123,7 @@ describe('titan-review CLI', () => {
       capture: async (_round, outDir) => [join(outDir, 'fake.png')],
       measure: async () => [],
       createPage: async () => stubPage,
+      harnessFreshness: async () => freshness,
       signal,
     }
   }
@@ -268,8 +272,53 @@ describe('titan-review CLI', () => {
     })
   })
 
+  it('refuses a stale harness before serving, printing the command that serves main', async () => {
+    await writeContrast({ passed: true, failures: [] })
+    freshness = { state: 'behind', missing: ['c0ffee1 Add the pager (#453)'] }
+    let served = false
+    const code = await runCli(
+      [join(dir, 'round.json'), '--no-open'],
+      io(new AbortController().signal, () => (served = true))
+    )
+    expect(code).toBe(2)
+    expect(served).toBe(false)
+    const stderr = out.stderr.join('\n')
+    expect(stderr).toContain('c0ffee1 Add the pager (#453)')
+    expect(stderr).toContain(`review ${join(dir, 'round.json')} --storybook ${sb.url} --no-open`)
+    expect(stderr).toContain('--allow-stale')
+  })
+
+  async function servedWarning(args: string[]): Promise<unknown> {
+    await writeContrast({ passed: true, failures: [] })
+    const controller = new AbortController()
+    let payload: { harnessWarning?: unknown } = {}
+    const code = await runCli(
+      [join(dir, 'round.json'), '--no-open', ...args],
+      io(controller.signal, async (url) => {
+        payload = await (await fetch(`${url}api/round`)).json()
+        controller.abort()
+      })
+    )
+    expect(code).toBe(130)
+    return payload.harnessWarning
+  }
+
+  it('serves a stale harness under --allow-stale with the banner in the round payload', async () => {
+    freshness = { state: 'behind', missing: ['c0ffee1 Add the pager (#453)'] }
+    expect(await servedWarning(['--allow-stale'])).toContain('--allow-stale')
+  })
+
+  it('serves with a warning banner when origin/main could not be fetched', async () => {
+    freshness = { state: 'unchecked', reason: 'git fetch origin main failed: offline' }
+    expect(await servedWarning([])).toContain('git fetch origin main failed: offline')
+  })
+
+  it('serves a current harness with no banner', async () => {
+    expect(await servedWarning([])).toBeUndefined()
+  })
+
   it('exits 2 before serving when a story id is not on that Storybook', async () => {
-    const m = exampleManifest(sb.url)
+    const m = sectionedExampleManifest(sb.url)
     m.variants[0].storyId = 'lab-decisions-other-worktree--only'
     await writeFile(join(dir, 'round.json'), JSON.stringify(m))
     const code = await runCli(

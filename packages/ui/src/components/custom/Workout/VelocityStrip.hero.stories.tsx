@@ -17,7 +17,7 @@ import {
   IN_PROGRESS_SET,
   IN_PROGRESS_LAGGING,
   wallDecorator,
-} from './velocity-story-kit'
+} from '../../../lab/velocity-story-kit/velocity-story-kit'
 
 /**
  * `hero` — the across-the-room wall treatment. Tall bars, per-bar value labels,

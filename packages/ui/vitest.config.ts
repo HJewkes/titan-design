@@ -9,6 +9,7 @@ import {
   webResolveExtensions,
 } from './vite-rn-svg-plugins'
 
+// Absolute paths, because `**` skips dot directories such as `.worktrees/`.
 const LOCAL_TIME_TEST_PATHS = [
   './src/components/custom/Workout/wholeBody.test.ts',
   './src/components/custom/Chat/DateSeparator.local-time.test.tsx',
@@ -35,7 +36,6 @@ export default defineConfig({
     teardownTimeout: 30_000,
     // A worker thread cannot change its zone after start (Node reads TZ once per
     // process), so the tests that pin `process.env.TZ` run in a fork project of its own.
-    // An absolute path, because `**` skips dot directories such as `.worktrees/`.
     projects: [
       {
         extends: true,
@@ -100,6 +100,7 @@ export default defineConfig({
       reporter: ['text', 'json', 'html'],
       include: ['src/components/**/*.{ts,tsx}'],
       exclude: ['src/**/*.stories.tsx', 'src/**/*.test.tsx', 'src/**/index.ts'],
+      // Set from measured coverage (not a target) and raise as coverage grows; see docs/ci-and-scripts.md.
       thresholds: {
         statements: 80,
         branches: 80,

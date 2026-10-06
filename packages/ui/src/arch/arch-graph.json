@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:7f5d7d54f91228224f7846cc23bd91e2f303ecf08030f882d0b2f68080c1b481",
+  "componentBarrelHash": "sha256:d8cc64a9b4907be52362e0120da9ca2bba83dbb0087885ca85c63149831d048f",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -4440,9 +4440,9 @@
     },
     {
       "name": "Metric",
-      "file": "packages/ui/src/components/custom/Metric/Metric.tsx",
-      "dir": "custom",
-      "family": "custom/Metric",
+      "file": "packages/ui/src/components/ui/metric/Metric.tsx",
+      "dir": "ui",
+      "family": "ui/metric",
       "exports": [
         "Metric",
         "MetricGroup",
