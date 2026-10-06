@@ -131,7 +131,6 @@ export function FacetBar<T extends string = string>(props: FacetBarProps<T>) {
           key={option.value}
           size={size}
           color={color}
-          variant="outline"
           className="max-w-full"
           isSelected={selected.has(option.value)}
           isDisabled={isDisabled || option.isDisabled}
@@ -139,9 +138,7 @@ export function FacetBar<T extends string = string>(props: FacetBarProps<T>) {
           accessibilityLabel={accessibleName(option)}
           rightElement={
             hasCount(option.count) ? (
-              <Text className="text-xs text-inherit opacity-70 tabular-nums">
-                {formatCount(option.count)}
-              </Text>
+              <Text className="text-xs text-inherit tabular-nums">{formatCount(option.count)}</Text>
             ) : undefined
           }
         >
