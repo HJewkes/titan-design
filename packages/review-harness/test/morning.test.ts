@@ -163,6 +163,32 @@ describe('seat text as the owner reads it', () => {
     expect(relabelAsProposed('**Proposed:** teal')).toBe('**Proposed:** teal')
   })
 
+  it('leaves link targets, URLs and file paths naming what they named', () => {
+    expect(
+      relabelAsProposed(
+        'See [recommended sizes](https://x.io/recommended-sizes) and docs/recommendations.md'
+      )
+    ).toBe('See [proposed sizes](https://x.io/recommended-sizes) and docs/recommendations.md')
+    expect(relabelAsProposed('Read <https://x.io/recommend> or https://x.io/recommend now')).toBe(
+      'Read <https://x.io/recommend> or https://x.io/recommend now'
+    )
+    expect(relabelAsProposed('Edit recommendations.md and ./recommend/index.ts')).toBe(
+      'Edit recommendations.md and ./recommend/index.ts'
+    )
+  })
+
+  it('drops the default-in-each note before the general rule rewrites it', () => {
+    expect(relabelAsProposed('I recommend (recommended default in each) A.')).toBe('I propose A.')
+    expect(relabelAsProposed('Recommendation: teal (recommended default in bold)')).toBe(
+      'Proposal: teal'
+    )
+  })
+
+  it('reads a mid-sentence "default:" as prose, not a label', () => {
+    expect(relabelAsProposed('Use the default: it works')).toBe('Use the default: it works')
+    expect(relabelAsProposed('Costs two. default: teal')).toBe('Costs two. proposal: teal')
+  })
+
   it('gives a table after a fence its own header', () => {
     const fence = '```\nx\n```'
     expect(repairMarkdown(`| a |\n${fence}\n| b |`)).toBe(

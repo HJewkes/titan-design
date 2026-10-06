@@ -1,7 +1,8 @@
 // Text repairs for seat-written Morning items, ported from the operator's generator. A seat
 // writes "Recommended default" and "Recommend yes"; the owner reads every such line as
-// "Proposed", with its reasoning, so the seat's lean never reads as a verdict. Code spans and
-// fenced blocks are quoted verbatim: a `default:` in a config sample is not a seat's lean.
+// "Proposed", with its reasoning, so the seat's lean never reads as a verdict. Code spans,
+// fenced blocks, link targets, URLs and file paths are quoted verbatim: a `default:` in a config
+// sample is not a seat's lean, and docs/recommendations.md must still name its file.
 
 /** A label opens a line, a bold run, a list item or a sentence; elsewhere the word is a verb. */
 const LABEL_AT = String.raw`(^|\*\*|[-*] |[.;:] )`
@@ -15,19 +16,20 @@ const verb = (word: string) =>
 /** recommendation(s): proposal(s), case kept. */
 const noun = (word: string) => `${initial(word)}roposal${word.endsWith('s') ? 's' : ''}`
 
+// Specific rules run before the general ones that would otherwise rewrite their text first.
 const RELABELS: [RegExp, Replacement][] = [
+  [/ ?\(recommended default in (?:each|bold)\)/g, ''],
   [/\*\*Recommend(?:ed)? (yes|no)\*\*/g, '**Proposed: $1**'],
   [/\bRecommended default:\*\*\s*/g, 'Proposed:** '],
   [/\bRecommended default:\s*/g, 'Proposed: '],
   [/\bthe seat recommends\b/gi, 'the plan proposes'],
   [/\brecommended defaults?\b/g, 'proposals'],
-  [/\(recommended default in each\)/g, ''],
   [/\bRecommended default\b/g, 'Proposal'],
   [/Plan's default/g, "Plan's proposal"],
   [/Plan default/g, 'Plan proposal'],
   [/\bDefault:\s*/g, 'Proposed: '],
-  [/\bdefault: /g, 'proposal: '],
-  [/\(recommended default in bold\)/g, ''],
+  // Mid-sentence, "the default: it works" is prose; only a label position makes it a lean.
+  [new RegExp(`${LABEL_AT}default: `, 'g'), '$1proposal: '],
   [/Silence goes to the decider\.\s*/g, ''],
   [/\bRecommendation:/g, 'Proposal:'],
   // A bold label keeps its colon inside the bold: "**Recommend** teal" is "**Proposed:** teal".
@@ -44,6 +46,7 @@ const RELABELS: [RegExp, Replacement][] = [
 ]
 
 function relabelProse(text: string): string {
+  // Two calls that read alike: TypeScript resolves neither `replace` overload for the union.
   return RELABELS.reduce(
     (t, [pattern, replacement]) =>
       typeof replacement === 'string'
@@ -55,12 +58,28 @@ function relabelProse(text: string): string {
 
 const FENCE = /^\s*(```|~~~)/
 const CODE_SPAN = /(`+)[^`][\s\S]*?\1/g
+/** Text a relabel must not touch: code, a link's target, a URL, a path or a file name. */
+const VERBATIM = new RegExp(
+  [
+    CODE_SPAN.source,
+    String.raw`\]\([^)]*\)`,
+    String.raw`<[A-Za-z][\w+.-]*:[^>\s]*>`,
+    String.raw`\b[A-Za-z][\w+.-]*://[^\s)\]>]+`,
+    String.raw`(?<![\w./-])[\w.-]*(?:/[\w.-]+)+/?`,
+    String.raw`\b[\w-]+(?:\.[\w-]+)*\.[a-z][a-z0-9]{0,5}\b`,
+  ].join('|'),
+  'g'
+)
 
-/** `fn` over the prose of one line: every part outside a code span, in place. */
-function mapProseOfLine(line: string, fn: (prose: string) => string): string {
+/** `fn` over the prose of one line: every part outside a `verbatim` match, in place. */
+function mapProseOfLine(
+  line: string,
+  fn: (prose: string) => string,
+  verbatim: RegExp = CODE_SPAN
+): string {
   let out = ''
   let at = 0
-  for (const span of line.matchAll(CODE_SPAN)) {
+  for (const span of line.matchAll(verbatim)) {
     out += fn(line.slice(at, span.index)) + span[0]
     at = span.index + span[0].length
   }
@@ -87,7 +106,7 @@ function mapLines(text: string, fn: LineFn, onFence: () => void = () => {}) {
 
 /** Every "Recommended default" and "Recommend" in seat prose, relabelled as a proposal. */
 export function relabelAsProposed(text: string): string {
-  return mapLines(text, (line) => mapProseOfLine(line, relabelProse))
+  return mapLines(text, (line) => mapProseOfLine(line, relabelProse, VERBATIM))
 }
 
 const QUOTE_PREFIX = /^((?:>\s?)+)/
