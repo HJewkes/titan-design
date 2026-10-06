@@ -1,8 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View } from 'react-native'
 import { cn } from '../../../utils/cn'
-// Deep import: `CardInset` is not on the card barrel yet (Lab/Depth reaches it the same way).
-import { Card } from '../../ui/card/Card'
+import { Card } from '../../ui/card'
 import { Pill } from '../../ui/pill'
 import { Tile } from '../../ui/tile'
 import { DataRow } from '../../ui/data-row'
