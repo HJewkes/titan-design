@@ -281,6 +281,13 @@ describe('a round from Morning items', () => {
     )
   })
 
+  it('refuses two decider entries for one item rather than keep the last', () => {
+    const twice = [decider(), decider({ answer: 'B: Keep beige' })]
+    expect(() => roundFromMorning(items(), twice, PATHS)).toThrow(
+      /more than one entry answers paint-1/
+    )
+  })
+
   function threeItems(): MorningItem[] {
     const door = [
       { label: 'A: Paint it', proposal: 'Teal, same tin.' },
@@ -340,6 +347,18 @@ describe('a round from Morning items', () => {
       'after|light',
       'after|dark',
     ])
+  })
+
+  it('names the length when a shared image key outgrows the variant key limit', () => {
+    const long = 'a-fairly-long-item-identifier-'
+    const shot = [{ key: 'before', file: 'before.png', label: 'Before' }]
+    const list = [
+      item({ id: `${long}1`, images: shot }),
+      item({ id: `${long}2`, morning: '2', images: shot }),
+    ]
+    expect(() => roundFromMorning(items(list), [], PATHS)).toThrow(
+      /becomes "before-a-fairly-long-item-identifier-1", 38 characters; a variant key is at most 32/
+    )
   })
 
   it('qualifies an image key two items share with the item id', () => {
