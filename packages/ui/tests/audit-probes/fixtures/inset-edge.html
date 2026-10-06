@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        margin: 0;
+        font-family: sans-serif;
+        font-size: 14px;
+      }
+      .case {
+        margin-bottom: 24px;
+        width: 300px;
+        box-sizing: border-box;
+      }
+      .stack {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .card {
+        background: #dde;
+        padding: 16px;
+      }
+      .row {
+        display: flex;
+        background: #dde;
+        padding: 0 12px;
+      }
+      .cell {
+        flex: none;
+        background: #99c;
+        padding: 8px;
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="storybook-root">
+      <!-- P1 positives -->
+      <div class="case stack" data-testid="stacked-pos">
+        <div style="padding-bottom: 12px"><div>Heading</div></div>
+        <div>Body copy under the heading</div>
+      </div>
+
+      <!-- P1 negatives -->
+      <div class="case stack" data-testid="stacked-interactive">
+        <div role="button" tabindex="0" style="padding: 12px"><div>Press</div></div>
+        <div>Label beside the target</div>
+      </div>
+      <div class="case stack" data-testid="stacked-painted">
+        <div style="background: #dde; padding: 8px 8px 16px"><div>Card</div></div>
+        <div>Caption</div>
+      </div>
+      <div class="case stack" data-testid="stacked-rhythm" style="gap: 0">
+        <div style="padding-block: 8px"><div>Row one</div></div>
+        <div style="padding-block: 8px"><div>Row two</div></div>
+        <div style="padding-block: 8px"><div>Row three</div></div>
+      </div>
+
+      <!-- P2 positives -->
+      <div class="case card" data-testid="edge-pushed">
+        <div style="margin-left: -12px">Pushed into the padding</div>
+      </div>
+      <div class="case" data-testid="edge-unpadded" style="background: #dde">
+        <div>Flush against the edge</div>
+      </div>
+      <div class="case row" data-testid="asym-short">
+        <div class="cell" style="width: 90px">One</div>
+        <div class="cell" style="width: 90px">Two</div>
+        <div class="cell" style="width: 90px">Three</div>
+      </div>
+
+      <!-- P2 negatives -->
+      <div class="case row" data-testid="asym-even">
+        <div class="cell" style="width: 92px">One</div>
+        <div class="cell" style="width: 92px">Two</div>
+        <div class="cell" style="width: 92px">Three</div>
+      </div>
+      <div class="case card" data-testid="label-short">
+        <div>Short</div>
+      </div>
+      <div class="case">
+        <span
+          data-testid="pill"
+          style="
+            display: inline-block;
+            background: #99c;
+            padding: 2px 8px;
+            font-size: 12px;
+            line-height: 1;
+          "
+          >Chip</span
+        >
+      </div>
+      <div class="case card" data-testid="numeral">
+        <div style="font-size: 48px; line-height: 1">42</div>
+      </div>
+      <div class="case" data-testid="page" style="background: #dde">
+        <div style="padding: 24px"><div>Text far from the page edge</div></div>
+      </div>
+      <div class="case">
+        <button
+          data-testid="icon-button"
+          aria-label="Close"
+          style="background: #99c; border: 0; padding: 8px; display: block"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" style="display: block">
+            <rect width="16" height="16" fill="#334" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </body>
+</html>
