@@ -12,5 +12,6 @@ export const workoutNavItems: SideNavItem[] = [
 /**
  * @deprecated Use `workoutNavItems` — these are the workout app's categories,
  * not a generic shell default. `SideNav.items` is required now (AW-132).
+ * voltras-mcp still imports it; removal waits on its migration to `workoutNavItems`.
  */
 export const defaultNavItems = workoutNavItems
