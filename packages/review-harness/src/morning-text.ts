@@ -8,6 +8,13 @@ const LABEL_AT = String.raw`(^|\*\*|[-*] |[.;:] )`
 
 type Replacement = string | ((match: string) => string)
 
+const initial = (word: string) => (word[0] === 'R' ? 'P' : 'p')
+/** recommend, recommends, recommended: the same form of propose, case kept. */
+const verb = (word: string) =>
+  `${initial(word)}ropose${word.endsWith('ed') ? 'd' : word.endsWith('s') ? 's' : ''}`
+/** recommendation(s): proposal(s), case kept. */
+const noun = (word: string) => `${initial(word)}roposal${word.endsWith('s') ? 's' : ''}`
+
 const RELABELS: [RegExp, Replacement][] = [
   [/\*\*Recommend(?:ed)? (yes|no)\*\*/g, '**Proposed: $1**'],
   [/\bRecommended default:\*\*\s*/g, 'Proposed:** '],
@@ -23,9 +30,12 @@ const RELABELS: [RegExp, Replacement][] = [
   [/\(recommended default in bold\)/g, ''],
   [/Silence goes to the decider\.\s*/g, ''],
   [/\bRecommendation:/g, 'Proposal:'],
-  [new RegExp(`${LABEL_AT}Recommend:?\\s*`, 'g'), '$1Proposed: '],
-  [/\bRecommends?\b(?!:)/g, (m) => m.replace('Recommend', 'Propose')],
-  [/\brecommends?\b(?!:)/g, (m) => m.replace('recommend', 'propose')],
+  // A bold label keeps its colon inside the bold: "**Recommend** teal" is "**Proposed:** teal".
+  [/\*\*Recommend(?:ed)?\b:?\*\*\s*/g, '**Proposed:** '],
+  [new RegExp(`${LABEL_AT}Recommend(?:ed)?\\b:?\\s*`, 'g'), '$1Proposed: '],
+  // Elsewhere the word is a verb, a participle or a noun, and stays one.
+  [/\b[Rr]ecommend(s|ed)?\b(?!:)/g, (m) => verb(m)],
+  [/\b[Rr]ecommendations?\b(?!:)/g, (m) => noun(m)],
   [/\b(?:Proposed: )+(Proposed:)/g, '$1'],
 ]
 
@@ -53,14 +63,17 @@ function mapProseOfLine(line: string, fn: (prose: string) => string): string {
   return out + fn(line.slice(at))
 }
 
+type LineFn = (line: string, index: number, lines: string[]) => string
+
 /** `fn` over every prose line, skipping fenced code; a fence line itself is kept as it is. */
-function mapLines(text: string, fn: (line: string, index: number, lines: string[]) => string) {
+function mapLines(text: string, fn: LineFn, onFence: () => void = () => {}) {
   let fenced = false
   const lines = text.split('\n')
   return lines
     .map((line, i) => {
       if (FENCE.test(line)) {
         fenced = !fenced
+        onFence()
         return line
       }
       return fenced ? line : fn(line, i, lines)
@@ -122,13 +135,14 @@ function missingHeader(line: string, next: string | undefined): string[] {
 /** Markdown the page can render: no orphan `**`, and every table opens with a header row. */
 export function repairMarkdown(text: string): string {
   let inTable = false
-  return mapLines(text, (raw, i, lines) => {
+  const repairLine: LineFn = (raw, i, lines) => {
     const line = dropOrphanBold(raw)
     const isTable = isTableRow(line)
     const header = isTable && !inTable ? missingHeader(line, lines[i + 1]) : []
     inTable = isTable
     return [...header, line].join('\n')
-  })
+  }
+  return mapLines(text, repairLine, () => (inTable = false))
 }
 
 /** Seat text as the owner reads it: relabelled, then repaired. */

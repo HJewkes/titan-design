@@ -141,7 +141,7 @@ function proposed(item: MorningItem, option: MorningItem['options'][number]): st
     throw new ReviewError(
       `item ${item.id}: option "${option.label}" has no proposal text; a bare heading cannot be decided`
     )
-  return `Proposed: ${text}`
+  return `Proposed: ${text.replace(/^Proposed:\s*/, '')}`
 }
 
 function deciding(item: MorningItem, name: OptionName): string {

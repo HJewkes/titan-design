@@ -139,7 +139,31 @@ describe('seat text as the owner reads it', () => {
       'We Propose teal and we propose it now'
     )
     expect(relabelAsProposed('- Recommend teal\n**Recommend:** teal. Recommend buying.')).toBe(
-      '- Proposed: teal\n**Proposed: ** teal. Proposed: buying.'
+      '- Proposed: teal\n**Proposed:** teal. Proposed: buying.'
+    )
+  })
+
+  it('relabels only whole words, each form to its own', () => {
+    expect(relabelAsProposed('Recommendation engine')).toBe('Proposal engine')
+    expect(relabelAsProposed('Recommended: A')).toBe('Proposed: A')
+    expect(relabelAsProposed('Recommends teal')).toBe('Proposes teal')
+    expect(relabelAsProposed('It was recommended; my recommendations stand.')).toBe(
+      'It was proposed; my proposals stand.'
+    )
+    for (const text of ['Recommendation engine', 'Recommended: A', 'Recommends teal'])
+      expect(relabelAsProposed(relabelAsProposed(text))).toBe(relabelAsProposed(text))
+  })
+
+  it('keeps a bold label inside its bold', () => {
+    expect(relabelAsProposed('**Recommend** teal')).toBe('**Proposed:** teal')
+    expect(relabelAsProposed('**Recommended:** teal')).toBe('**Proposed:** teal')
+    expect(relabelAsProposed('**Proposed:** teal')).toBe('**Proposed:** teal')
+  })
+
+  it('gives a table after a fence its own header', () => {
+    const fence = '```\nx\n```'
+    expect(repairMarkdown(`| a |\n${fence}\n| b |`)).toBe(
+      `| |\n|---|\n| a |\n${fence}\n| |\n|---|\n| b |`
     )
   })
 
@@ -156,6 +180,15 @@ describe('a round from Morning items', () => {
     expect(deciding).toContain('- **A: Teal** Proposed: Repaint in teal this week.')
     expect(deciding).toContain('- **B: Keep beige** Proposed: Leave it.')
     expect(deciding).toContain('- **C: Defer** Proposed: Decide after the lamps arrive.')
+  })
+
+  it('labels an option whose proposal already opens with a label once', () => {
+    const labelled = item({
+      options: [{ label: 'A: Buy', proposal: 'Default: buy two.' }, item().options[1]],
+    })
+    const { deciding } = section(items([labelled]), 'paint-1')
+    expect(deciding).toContain('- **A: Buy** Proposed: buy two.')
+    expect(deciding).not.toContain('Proposed: Proposed')
   })
 
   it('refuses an option that is only a heading', () => {
