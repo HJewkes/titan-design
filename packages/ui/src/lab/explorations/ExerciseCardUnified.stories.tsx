@@ -21,7 +21,7 @@ import {
   T_SECONDARY,
   Page,
   monoTag,
-} from '../../components/custom/Workout/setHeadingKit'
+} from './setHeadingKit'
 
 const INTER = 'Inter, sans-serif'
 

@@ -13,7 +13,7 @@ import {
   monoTag,
   reps,
   type Exercise,
-} from '../../components/custom/Workout/setHeadingKit'
+} from './setHeadingKit'
 
 const DONE: Exercise = {
   name: 'Seated Cable Row',
