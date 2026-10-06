@@ -21,6 +21,7 @@ export type {
   SortDirection,
   TableDensity,
   TableComparator,
+  TableBlankPredicate,
 } from './Table'
 export { fitColumns, useColumnFit, useMeasuredWidth } from './column-fit'
 export type {

@@ -78,6 +78,30 @@ describe('TaskTable', () => {
     expect(renderedIds().at(-1)).toBe('LH-86')
   })
 
+  it('keeps an unset severity last after the severity column flips to descending', () => {
+    // SA-16 is the only fixture task without a severity.
+    render(<TaskTable tasks={TASK_LIST_FIXTURE} now={TASK_LIST_NOW} defaultSortKey="severity" />)
+    expect(renderedIds().at(-1)).toBe('SA-16')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Sort by Severity' }))
+
+    expect(renderedIds()[0]).not.toBe('AP-14')
+    expect(renderedIds().at(-1)).toBe('SA-16')
+  })
+
+  it('keeps an unparseable updated date last after the age column flips to descending', () => {
+    const tasks = TASK_LIST_FIXTURE.map((task) =>
+      task.id === 'LH-22' ? { ...task, updated: 'not a date' } : task
+    )
+    render(<TaskTable tasks={tasks} now={TASK_LIST_NOW} defaultSortKey="updated" />)
+    expect(renderedIds().at(-1)).toBe('LH-22')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Sort by Age' }))
+
+    expect(renderedIds()[0]).not.toBe('AP-14')
+    expect(renderedIds().at(-1)).toBe('LH-22')
+  })
+
   it('reverses order when a sorted column header is pressed', () => {
     // Distinct estimates, so a stable sort's tie order cannot pass for a reversal; LH-86 has none.
     const tied = ['OR-3', 'ML-41']

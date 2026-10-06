@@ -18,6 +18,7 @@ export { TableEmptyState, type TableEmptyStateProps } from './TableEmptyState'
 export {
   useTableState as useTable,
   type SortDirection,
+  type TableBlankPredicate,
   type TableComparator,
   type UseTableOptions,
   type UseTableReturn,

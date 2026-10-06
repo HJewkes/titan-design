@@ -7414,6 +7414,9 @@ export function Tab(input: TabProps): react_jsx_runtime.JSX.Element;
 export function Table(input: TableProps): react_jsx_runtime.JSX.Element;
 
 // @public
+export type TableBlankPredicate<T> = (row: T) => boolean;
+
+// @public
 export function TableBody(input: TableBodyProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -8428,6 +8431,7 @@ export interface UseTableOptions<T> {
     filters?: TableFilters;
     getRow?: (index: number) => T | undefined;
     getRowId?: (row: T) => string;
+    isBlank?: Partial<Record<keyof T & string, TableBlankPredicate<T>>> & Record<string, TableBlankPredicate<T> | undefined>;
     mode?: TableMode;
     // (undocumented)
     onFiltersChange?: (filters: TableFilters) => void;
