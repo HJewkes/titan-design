@@ -68,6 +68,12 @@ describe('no-html-element', () => {
       invalid('const a = <title>{label}</title>', 'svg', 'an accessibilityLabel on Svg'),
     ],
   })
+})
+
+// Linting a fixture parses the whole config; the first one is slow under coverage.
+describe('no-html-element under the real config', { timeout: 30_000 }, () => {
+  const html = 'export const Box = () => <div>{children}</div>'
+  const svg = 'export const Mark = () => <svg><path d={d} /></svg>'
 
   it('reports on the element name, so the baseline key reads straight off the range', () => {
     const [message] = lintAt(
@@ -76,12 +82,6 @@ describe('no-html-element', () => {
     )
     expect([message.column, message.endColumn]).toEqual([12, 15])
   })
-})
-
-// Linting a fixture parses the whole config; the first one is slow under coverage.
-describe('no-html-element under the real config', { timeout: 30_000 }, () => {
-  const html = 'export const Box = () => <div>{children}</div>'
-  const svg = 'export const Mark = () => <svg><path d={d} /></svg>'
 
   it('fails a new component file that adds an HTML or SVG intrinsic', () => {
     expect(lintAt('src/components/ui/widget/Widget.tsx', html).map((m) => m.messageId)).toEqual([
