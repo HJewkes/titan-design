@@ -3378,6 +3378,7 @@ export interface GoalTrajectoryGeometry {
     toX: (weekIndex: number) => number;
     // (undocumented)
     toY: (value: number) => number;
+    weekSpan: number;
     // (undocumented)
     yTicks: YTick[];
 }
