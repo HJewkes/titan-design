@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedByNode } from '../../../test/classname-capture'
 import { Tabs, TabList, Tab, TabPanels, TabPanel, type TabsProps } from './Tabs'
 
 function renderTabs(props: TabsProps = {}) {
@@ -206,12 +207,16 @@ describe('Tabs', () => {
   })
 
   describe('label colour', () => {
+    const classesOf = (node: HTMLElement) => (capturedByNode.get(node) ?? '').split(/\s+/)
+
     it('colours the label by state for the line variant, leaving colour off the tab itself', () => {
       renderTabs({ variant: 'line' })
 
-      expect(screen.getByText('Tab 1')).toHaveClass('text-text-primary')
-      expect(screen.getByText('Tab 2')).toHaveClass('text-text-secondary')
-      expect(screen.getAllByRole('tab')[0].className).not.toMatch(/(^|\s)(web:hover:)?text-/)
+      expect(classesOf(screen.getByText('Tab 1'))).toContain('text-text-primary')
+      expect(classesOf(screen.getByText('Tab 2'))).toContain('text-text-secondary')
+      for (const tab of screen.getAllByRole('tab')) {
+        expect(classesOf(tab).filter((c) => /(^|:)text-(text|brand|on-brand)-/.test(c))).toEqual([])
+      }
     })
   })
 
