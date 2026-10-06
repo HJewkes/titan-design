@@ -103,18 +103,18 @@ describe('default tones follow the caller mode (TD-521)', () => {
 
   it('gives a light caller the light paper fill, not the dark one', () => {
     expect(light['surface-raised']).not.toBe(dark['surface-raised'])
-    expect(styleOf(paperSheet(undefined, 'light')).backgroundColor).toBe(light['surface-raised'])
+    expect(paperSheet(undefined, 'light').backgroundColor).toBe(light['surface-raised'])
   })
 
   it('gives a light caller the light well and post-it fills', () => {
-    expect(styleOf(insetWell(undefined, 'light')).backgroundColor).toBe(light['surface-input'])
-    expect(styleOf(postIt(undefined, -1.5, 'light')).backgroundColor).toBe(light['surface-raised'])
+    expect(insetWell(undefined, 'light').backgroundColor).toBe(light['surface-input'])
+    expect(postIt(undefined, -1.5, 'light').backgroundColor).toBe(light['surface-raised'])
   })
 
   it('keeps the dark defaults for callers that pass no mode', () => {
-    expect(styleOf(paperSheet()).backgroundColor).toBe(dark['surface-raised'])
-    expect(styleOf(insetWell()).backgroundColor).toBe(dark['surface-input'])
-    expect(styleOf(postIt()).backgroundColor).toBe(dark['surface-raised'])
+    expect(paperSheet().backgroundColor).toBe(dark['surface-raised'])
+    expect(insetWell().backgroundColor).toBe(dark['surface-input'])
+    expect(postIt().backgroundColor).toBe(dark['surface-raised'])
   })
 })
 
