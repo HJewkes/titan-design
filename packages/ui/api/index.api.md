@@ -5851,6 +5851,9 @@ export function rpeColor(rpe: number): string;
 export function sameLiveStripReps(a: readonly LiveStripRep[], b: readonly LiveStripRep[]): boolean;
 
 // @public
+export function sameLossThresholds(a?: VelocityLossThresholds, b?: VelocityLossThresholds): boolean;
+
+// @public
 export type SamplePhase = 'concentric' | 'eccentric' | 'hold' | 'idle';
 
 // @public
