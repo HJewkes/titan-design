@@ -4843,10 +4843,10 @@ export interface MuscleStrengthExerciseRow {
     plateau: 'plateau' | 'tolerated' | 'none' | null;
     // (undocumented)
     priorBest: number | null;
-    // (undocumented)
-    rSquared: number | null;
     recency: 'current' | 'fading' | 'no_current_read' | null;
     relativeIndex: number | null;
+    // (undocumented)
+    rSquared: number | null;
     setCount: number;
     // (undocumented)
     side: MuscleStrengthSide;
