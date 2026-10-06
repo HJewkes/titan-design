@@ -34,8 +34,6 @@
     "aria-required-children",
     "aria-toggle-field-name"
   ],
-  "custom-activework-initiativereader--default": ["aria-required-parent"],
-  "custom-activework-initiativereader--no-open-loops": ["aria-required-parent"],
   "custom-activework-sessionlistitem--ad-hoc": ["aria-required-parent"],
   "custom-activework-sessionlistitem--default": ["aria-required-parent"],
   "custom-activework-sessionlistitem--selected": ["aria-required-parent"],
