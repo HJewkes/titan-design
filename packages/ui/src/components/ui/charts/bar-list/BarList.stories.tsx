@@ -33,7 +33,13 @@ const meta: Meta<StoryArgs> = {
     size: { control: 'select', options: ['sm', 'md'] },
     maxRows: { control: 'number' },
     max: { control: 'number' },
-    referenceMarker: { control: 'object' },
+    referenceMarker: {
+      control: 'object',
+      // Typed so a URL can set the fields: `args=referenceMarker.value:150;referenceMarker.label:Cutoff`.
+      type: { name: 'object', value: { value: { name: 'number' }, label: { name: 'string' } } },
+      description:
+        'One labelled line on the value axis. The `With marker` fixture sets a cutoff of 100.',
+    },
     isLoading: { control: 'boolean' },
     formatValue: { control: false },
     formatSecondary: { control: false },

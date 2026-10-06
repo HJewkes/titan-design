@@ -143,8 +143,59 @@ describe('BarList', () => {
       renderFixture(fixture('Funnel'), { referenceMarker: { value: 50, label: 'Target' } })
       const lines = screen.getAllByTestId('bar-list-marker')
       expect(lines).toHaveLength(5)
-      for (const line of lines) expect(line).toHaveStyle({ left: '50%', width: '2px' })
+      for (const line of lines) expect(line).toHaveStyle({ left: '50%', width: '4px' })
     })
+
+    it('paints the line and its legend swatch as a text-primary core with a text-inverse keyline each side', () => {
+      renderFixture(fixture('With marker'))
+      const painted = [
+        ...screen.getAllByTestId('bar-list-marker'),
+        screen.getByTestId('bar-list-marker-swatch'),
+      ]
+      expect(painted).toHaveLength(11)
+      for (const el of painted) {
+        expect(classesOf(el)).toEqual(
+          expect.arrayContaining(['bg-text-primary', 'border-x', 'border-text-inverse'])
+        )
+      }
+      expect(classesOf(screen.getByTestId('bar-list-marker-swatch'))).toContain('w-1')
+    })
+
+    it.each(
+      (['dark', 'light'] as const).flatMap((mode) =>
+        (['surface-base', 'surface-elevated'] as const).map((plane) => [mode, plane] as const)
+      )
+    )(
+      'keeps the line at 3:1 or more against both fills, the track and the plane: %s %s',
+      (mode, plane) => {
+        render(
+          <Surface theme={mode}>
+            <BarList
+              accessibilityLabel="Tool calls"
+              rows={defaultFixture.rows}
+              max={500}
+              referenceMarker={{ value: 100, label: 'Limit' }}
+            />
+          </Surface>
+        )
+        const classes = classesOf(screen.getAllByTestId('bar-list-marker')[0])
+        const tokenOf = (prefix: string) => {
+          const found = classes.find((name) => name.startsWith(`${prefix}-text-`))
+          if (!found) throw new Error(`no ${prefix} colour class on the marker`)
+          return found.slice(prefix.length + 1) as 'text-primary' | 'text-inverse'
+        }
+        const colors = getSemanticColors(mode)
+        const core = colors[tokenOf('bg')]
+        const keyline = colors[tokenOf('border')]
+        const { neutral, flag } = silverRed(mode)
+        expect(contrast(keyline, neutral)).toBeGreaterThanOrEqual(3)
+        expect(contrast(keyline, flag)).toBeGreaterThanOrEqual(3)
+        expect(contrast(core, colors[plane])).toBeGreaterThanOrEqual(3)
+        expect(
+          contrast(core, compositeOver(colors['hairline-default'], colors[plane]))
+        ).toBeGreaterThanOrEqual(3)
+      }
+    )
 
     it('puts the line at the same x in every row, whatever the values column holds', () => {
       const rows = [7, 1234, 98765].map((value) => ({ id: `v${value}`, label: `V${value}`, value }))
@@ -167,7 +218,7 @@ describe('BarList', () => {
       }
     })
 
-    it('keeps the line inside the track end at fractions near 1', () => {
+    it('keeps the line, keylines included, inside the track end at fractions near 1', () => {
       const rows = [{ id: 'a', label: 'A', value: 10 }]
       for (const value of [9.99, 10]) {
         const { unmount } = render(
@@ -176,7 +227,7 @@ describe('BarList', () => {
         const line = screen.getByTestId('bar-list-marker')
         const fraction = value / 10
         expect(line.style.left).toBe(`${fraction * 100}%`)
-        expect(line.style.marginLeft).toBe(`${-2 * fraction}px`)
+        expect(line.style.marginLeft).toBe(`${-4 * fraction}px`)
         unmount()
       }
     })
@@ -249,6 +300,16 @@ describe('BarList', () => {
       rerender(<BarList accessibilityLabel="Tool calls" rows={[]} referenceMarker={marker} />)
       expect(screen.queryByTestId('bar-list-marker-legend')).not.toBeInTheDocument()
       expect(screen.queryByTestId('bar-list-marker')).not.toBeInTheDocument()
+    })
+
+    it('gives the story a referenceMarker object control typed so a URL can set its fields', () => {
+      const control = storyMeta.argTypes?.referenceMarker
+      expect(control?.control).toBe('object')
+      expect(control?.type).toEqual({
+        name: 'object',
+        value: { value: { name: 'number' }, label: { name: 'string' } },
+      })
+      expect(fixture('With marker').referenceMarker).toEqual({ value: 100, label: 'Limit' })
     })
   })
 

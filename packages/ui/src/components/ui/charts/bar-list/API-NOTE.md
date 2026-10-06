@@ -70,6 +70,21 @@ a budget, a target. It is the thirteenth prop, added after the round 3 audit bel
   marker gains `at or above <label>` after its flag and before its rank. `reachedCount` covers hidden rows.
 - Without a marker the bar is the bare track; the wrapper that positions the line exists only with one.
 
+**The line's paint.** A 2 px `text-primary` core with a 1 px `text-inverse` keyline each side, 4 px in all
+(`BarListMarker.tsx`), and the legend swatch is the same paint. The core alone falls under 3:1 on a silver
+fill in dark mode (1.41), so the keyline separates the line from a fill and the core separates it from the
+track and the plane. Measured with `theme/color-checks` and asserted in `BarList.test.tsx` on `surface-base`
+and `surface-elevated`:
+
+| Pair                                  | Dark, base | Dark, elevated | Light, base | Light, elevated |
+| ------------------------------------- | ---------- | -------------- | ----------- | --------------- |
+| Keyline on the silver fill            | 11.51      | 11.51          | 4.88        | 4.88            |
+| Keyline on the red fill               | 6.31       | 6.31           | 4.57        | 4.57            |
+| Core on the track (hairline on plane) | 9.01       | 8.19           | 12.53       | 11.64           |
+| Core on the plane                     | 14.54      | 13.28          | 17.69       | 16.43           |
+
+A row's own `color` is outside these pairs: the consumer who sets it owns its contrast with the line.
+
 ## Props audit (round 3)
 
 Cut, with the reason:
