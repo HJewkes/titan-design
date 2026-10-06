@@ -6,6 +6,7 @@ const globals = require('globals')
 const noDeprecatedImport = require('./eslint-rules/no-deprecated-import')
 const noDeviceInternals = require('./eslint-rules/no-device-internals')
 const noFrozenTheme = require('./eslint-rules/no-frozen-theme')
+const noHtmlElement = require('./eslint-rules/no-html-element')
 const noLocalFormatter = require('./eslint-rules/no-local-formatter')
 const noRawColor = require('./eslint-rules/no-raw-color')
 const noRawComposition = require('./eslint-rules/no-raw-composition')
@@ -102,6 +103,7 @@ module.exports = tseslint.config(
           'no-deprecated-import': noDeprecatedImport,
           'no-device-internals': noDeviceInternals,
           'no-frozen-theme': noFrozenTheme,
+          'no-html-element': noHtmlElement,
           'no-local-formatter': noLocalFormatter,
           'no-raw-color': noRawColor,
           'no-raw-composition': noRawComposition,
@@ -544,6 +546,19 @@ module.exports = tseslint.config(
     ignores: ['src/**/*.test.{ts,tsx}'],
     rules: {
       'titan/no-unstyled-text': 'error',
+    },
+  },
+
+  // TD-689: components render on web and native, so a lowercase JSX element (`<div>`,
+  // `<path>`) mounts on web only, and jsdom renders it without complaint. RATCHETED:
+  // today's sites are in no-html-element-baseline.json, keyed by file and element name,
+  // which must stay exact (an unspent allowance is reported as stale). Stories and tests
+  // are exempt, since they are web-only by construction; src/lab is outside the glob.
+  {
+    files: ['src/components/**/*.{ts,tsx}'],
+    ignores: ['src/**/*.test.{ts,tsx}', 'src/**/*.stories.{ts,tsx}'],
+    rules: {
+      'titan/no-html-element': 'error',
     },
   },
 
