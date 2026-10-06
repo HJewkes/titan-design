@@ -235,11 +235,14 @@ The items file is `titan-review/morning-items@1`:
   `STATES` strip of image variants, each declared `unmeasured` in light and dark; replace that
   with `measured` in the draft when a ratio is known. The draft must sit beside, or below, the
   items file so the paths stay inside its directory. An item with no images has no strip, and a
-  round with no images has no variants at all.
+  round with no images has no variants at all. Variant keys are the round's, so a `key` two
+  items share (every item's "before") becomes `<key>-<item id>` in each of them.
 - `signsOff` is optional; the default names the seat, the Morning number and the title.
 - Seat text (`body`, each `proposal`, the round `context`) is relabelled and repaired before it
-  is written: "Recommended default", "Recommend yes" and "Default:" become "Proposed", a table
-  with no header row gets a blank one, and an orphan `**` on a line is dropped.
+  is written: a "Recommended default", "Recommend yes" or "Default:" label becomes "Proposed",
+  "recommend" as a verb in a sentence becomes "propose", a table with no header row gets a
+  blank one (a table that has one is left alone), and an orphan `**` on a line is dropped.
+  Running it twice gives the same text. Code spans and fenced blocks are quoted verbatim.
 
 The decider's answers are a separate file so they never sit in the seat's text:
 

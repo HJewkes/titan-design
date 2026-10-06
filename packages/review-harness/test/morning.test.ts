@@ -85,18 +85,62 @@ describe('seat text as the owner reads it', () => {
     )
   })
 
-  it('keeps a table that already has a header, inside a quote too', () => {
-    const headed = '> | shade | cost |\n> |---|---|\n> | teal | 2 |'
-    expect(repairMarkdown(headed)).toBe('> | | |\n> |---|---|\n' + headed)
+  it('leaves a table that already has a header row unchanged, inside a quote too', () => {
+    const headed = '| shade | cost |\n|---|---|\n| teal | 2 |'
+    expect(repairMarkdown(headed)).toBe(headed)
+    const quoted = '> | shade | cost |\n> |:---|---:|\n> | teal | 2 |'
+    expect(repairMarkdown(quoted)).toBe(quoted)
     expect(repairMarkdown('> |---|---|\n> | teal | 2 |')).toBe(
       '> | | |\n> |---|---|\n> | teal | 2 |'
     )
+  })
+
+  it('repairs a quoted table with no space after the >', () => {
+    expect(repairMarkdown('>| teal | 2 |\n>| beige | 0 |')).toBe(
+      '>| | |\n>|---|---|\n>| teal | 2 |\n>| beige | 0 |'
+    )
+    const headed = '>| shade | cost |\n>|---|---|\n>| teal | 2 |'
+    expect(repairMarkdown(headed)).toBe(headed)
   })
 
   it('drops an orphan ** so the rest of the line is not bold', () => {
     expect(repairMarkdown('Teal is **warm and cheap')).toBe('Teal is warm and cheap')
     expect(repairMarkdown('**Teal** is **warm')).toBe('**Teal** is warm')
     expect(repairMarkdown('**Teal** stays')).toBe('**Teal** stays')
+  })
+
+  it('quotes code spans and fenced blocks verbatim', () => {
+    expect(relabelAsProposed('Set `default: 1` and Recommend `Recommend`')).toBe(
+      'Set `default: 1` and Propose `Recommend`'
+    )
+    expect(repairMarkdown('Glob `a**b` is **bold')).toBe('Glob `a**b` is bold')
+    expect(repairMarkdown('Code `a**b` and **bold** text')).toBe('Code `a**b` and **bold** text')
+    const fence = '```yaml\ndefault: teal\n| not | a table |\na**b\n```'
+    expect(proposalText(`Recommended default: teal\n${fence}\n| teal | 2 |`)).toBe(
+      `Proposed: teal\n${fence}\n| | |\n|---|---|\n| teal | 2 |`
+    )
+  })
+
+  it('relabels the same way on a second pass and keeps a verb a verb', () => {
+    for (const text of [
+      'Default: buy',
+      'Recommend Default: buy',
+      'We Recommend teal; the seat recommends it.',
+      '- Recommend teal\n**Recommend:** teal. Recommend buying.',
+      'Recommendation: teal (recommended default in bold)',
+    ]) {
+      const once = relabelAsProposed(text)
+      expect(relabelAsProposed(once)).toBe(once)
+      expect(once).not.toMatch(/Proposed: Proposed/)
+    }
+    expect(relabelAsProposed('Default: buy')).toBe('Proposed: buy')
+    expect(relabelAsProposed('Recommend Default: buy')).toBe('Proposed: buy')
+    expect(relabelAsProposed('We Recommend teal and we recommend it now')).toBe(
+      'We Propose teal and we propose it now'
+    )
+    expect(relabelAsProposed('- Recommend teal\n**Recommend:** teal. Recommend buying.')).toBe(
+      '- Proposed: teal\n**Proposed: ** teal. Proposed: buying.'
+    )
   })
 
   it('relabels, then repairs', () => {
@@ -220,6 +264,43 @@ describe('a round from Morning items', () => {
       'after|light',
       'after|dark',
     ])
+  })
+
+  it('qualifies an image key two items share with the item id', () => {
+    const shots = (dir: string) => [
+      { key: 'before', file: `${dir}/before.png`, label: 'Before' },
+      { key: 'after', file: `${dir}/after.png`, label: 'After' },
+    ]
+    const list = [
+      item({ images: shots('shelf') }),
+      item({ id: 'paint-2', morning: '2', title: 'The door too?', images: shots('door') }),
+      item({
+        id: 'price-1',
+        seat: 'price-seat',
+        title: 'Whole coins?',
+        options: [
+          { label: 'A: Whole', proposal: 'Round up.' },
+          { label: 'B: Halves', proposal: 'Keep.' },
+        ],
+        images: [{ key: 'till', file: 'till.png', label: 'The till' }],
+      }),
+    ]
+    const draft = roundFromMorning(items(list), [], PATHS)
+    expect(draft.variants.map((v) => v.key)).toEqual([
+      'before-paint-1',
+      'after-paint-1',
+      'before-paint-2',
+      'after-paint-2',
+      'till',
+    ])
+    expect(draft.sections?.[1].variantKeys).toEqual(['before-paint-2', 'after-paint-2'])
+    expect(draft.sections?.[1].contrast?.unmeasured?.map((u) => u.variant)).toEqual([
+      'before-paint-2',
+      'before-paint-2',
+      'after-paint-2',
+      'after-paint-2',
+    ])
+    expect(RoundSchema.safeParse(draft).success).toBe(true)
   })
 
   it('refuses a draft whose images would sit outside its directory', () => {

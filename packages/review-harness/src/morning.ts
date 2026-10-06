@@ -101,19 +101,37 @@ function itemHeading(item: MorningItem): string {
   return item.morning === undefined ? item.seat : `${item.seat} Morning ${item.morning}`
 }
 
-/** The option text in the round: an item's own label, or the label and the item's id. */
-type OptionName = (item: MorningItem, label: string) => string
+/** A name in the round: an item's own value, or that value qualified by the item's id. */
+type OptionName = (item: MorningItem, value: string) => string
 
-/**
- * Options are a question's own under the contract, but seats reuse "C: Defer" across items,
- * so a label that appears in more than one item carries its item's id in every item.
- */
-export function optionNamer(items: MorningItem[]): OptionName {
+/** A value that appears in more than one item carries its item's id in every item. */
+function qualifier(
+  items: MorningItem[],
+  values: (item: MorningItem) => string[],
+  qualify: (value: string, id: string) => string
+): OptionName {
   const seen = new Map<string, number>()
   for (const item of items)
-    for (const label of new Set(item.options.map((o) => o.label)))
-      seen.set(label, (seen.get(label) ?? 0) + 1)
-  return (item, label) => ((seen.get(label) ?? 0) > 1 ? `${label} (${item.id})` : label)
+    for (const value of new Set(values(item))) seen.set(value, (seen.get(value) ?? 0) + 1)
+  return (item, value) => ((seen.get(value) ?? 0) > 1 ? qualify(value, item.id) : value)
+}
+
+/** Options are a question's own under the contract, but seats reuse "C: Defer" across items. */
+export function optionNamer(items: MorningItem[]): OptionName {
+  return qualifier(
+    items,
+    (item) => item.options.map((o) => o.label),
+    (label, id) => `${label} (${id})`
+  )
+}
+
+/** Variant keys are the round's, but every item's captures are "before" and "after". */
+export function imageKeyNamer(items: MorningItem[]): OptionName {
+  return qualifier(
+    items,
+    (item) => (item.images ?? []).map((i) => i.key),
+    (key, id) => `${key}-${id}`
+  )
 }
 
 /** The option's proposal, labelled; an option that is only a heading cannot be decided. */
@@ -178,16 +196,21 @@ function imagePath(item: MorningItem, file: string, paths: MorningPaths): string
   return path
 }
 
-function variants(item: MorningItem, paths: MorningPaths): Variant[] {
+interface Names {
+  option: OptionName
+  imageKey: OptionName
+}
+
+function variants(item: MorningItem, paths: MorningPaths, names: Names): Variant[] {
   return (item.images ?? []).map((i) => ({
-    key: i.key,
+    key: names.imageKey(item, i.key),
     image: imagePath(item, i.file, paths),
     label: i.label,
   }))
 }
 
-function strip(item: MorningItem): Partial<Section> {
-  const keys = (item.images ?? []).map((i) => i.key)
+function strip(item: MorningItem, names: Names): Partial<Section> {
+  const keys = (item.images ?? []).map((i) => names.imageKey(item, i.key))
   if (keys.length === 0) return {}
   const unmeasured = keys.flatMap((variant) =>
     THEME_MODES.map((mode) => ({ variant, mode, reason: UNMEASURED }))
@@ -195,15 +218,15 @@ function strip(item: MorningItem): Partial<Section> {
   return { kind: 'STATES', variantKeys: keys, contrast: { unmeasured } }
 }
 
-function section(item: MorningItem, name: OptionName): Section {
+function section(item: MorningItem, names: Names): Section {
   return {
     id: item.id,
     title: `${itemHeading(item)}: ${item.title}`,
-    deciding: deciding(item, name),
+    deciding: deciding(item, names.option),
     changed: proposalText(item.body),
     context: context(item),
     questionIds: [item.id],
-    ...strip(item),
+    ...strip(item, names),
   }
 }
 
@@ -235,7 +258,7 @@ export function roundFromMorning(
 ): ManifestInput {
   const items = groupBySeat(input.items)
   const entries = deciderByQuestion(items, decider)
-  const name = optionNamer(items)
+  const names = { option: optionNamer(items), imageKey: imageKeyNamer(items) }
   const draft: ManifestInput = {
     schema: MANIFEST_SCHEMA_ID,
     unit: input.unit,
@@ -243,9 +266,9 @@ export function roundFromMorning(
     storybookUrl: input.storybookUrl ?? DEFAULT_STORYBOOK,
     ...(input.context === undefined ? {} : { context: proposalText(input.context) }),
     widths: input.widths ?? DEFAULT_WIDTHS,
-    variants: items.flatMap((i) => variants(i, paths)),
-    questions: items.map((i) => question(i, entries.get(i.id), name)),
-    sections: items.map((i) => section(i, name)),
+    variants: items.flatMap((i) => variants(i, paths, names)),
+    questions: items.map((i) => question(i, entries.get(i.id), names.option)),
+    sections: items.map((i) => section(i, names)),
     recommendations: 'after-answer',
   }
   const parsed = RoundSchema.safeParse(draft)
