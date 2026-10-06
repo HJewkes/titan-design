@@ -278,20 +278,10 @@ function ExerciseTablePanel() {
       <View>
         {/* resting done sets — thin flat compact */}
         <TableRow setNo="1" load="185 lb">
-          <VelocityStrip
-            variant="compact"
-            height={12}
-            hideBaseline
-            velocities={SQUAT_SETS[0].velocities}
-          />
+          <VelocityStrip variant="compact" height={12} velocities={SQUAT_SETS[0].velocities} />
         </TableRow>
         <TableRow setNo="2" load="185 lb">
-          <VelocityStrip
-            variant="compact"
-            height={12}
-            hideBaseline
-            velocities={SQUAT_SETS[1].velocities}
-          />
+          <VelocityStrip variant="compact" height={12} velocities={SQUAT_SETS[1].velocities} />
         </TableRow>
         {/* LIVE set — value-height spotlight (bare expanded), slightly taller */}
         <TableRow setNo="3" load="185 lb">
@@ -300,7 +290,6 @@ function ExerciseTablePanel() {
             showNumbers={false}
             showInfo={false}
             height={30}
-            hideBaseline
             velocities={SQUAT_SETS[2].velocities}
             liveRepIndex={SQUAT_SETS[2].live}
             targetReps={SQUAT_SETS[2].planned}
@@ -308,22 +297,10 @@ function ExerciseTablePanel() {
         </TableRow>
         {/* todo sets — thin dashed stubs */}
         <TableRow setNo="4" load="185 lb">
-          <VelocityStrip
-            variant="compact"
-            height={12}
-            hideBaseline
-            velocities={[]}
-            targetReps={5}
-          />
+          <VelocityStrip variant="compact" height={12} velocities={[]} targetReps={5} />
         </TableRow>
         <TableRow setNo="5" load="185 lb">
-          <VelocityStrip
-            variant="compact"
-            height={12}
-            hideBaseline
-            velocities={[]}
-            targetReps={5}
-          />
+          <VelocityStrip variant="compact" height={12} velocities={[]} targetReps={5} />
         </TableRow>
       </View>
     </Panel>
