@@ -14,14 +14,7 @@ import { ExerciseCardHeading } from '../../components/custom/Workout/ExerciseCar
 import { VelocityStrip } from '../../components/custom/Workout/VelocityStrip'
 import { type SetRowProps } from '../../components/custom/Workout/SetRow'
 import { type SetStripSet } from '../../components/custom/Workout/SetStrip'
-import {
-  INSET,
-  BORDER_SUBTLE,
-  T_PRIMARY,
-  T_SECONDARY,
-  Page,
-  monoTag,
-} from './setHeadingKit'
+import { INSET, BORDER_SUBTLE, T_PRIMARY, T_SECONDARY, Page, monoTag } from './setHeadingKit'
 
 const INTER = 'Inter, sans-serif'
 
