@@ -21,6 +21,9 @@ import {
   ChevronsDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  SearchIcon,
+  DatabaseIcon,
+  ChartIcon,
 } from './icons'
 import { SvgIcon } from './SvgIcon'
 
@@ -46,11 +49,37 @@ describe('icon primitives', () => {
       ChevronsDownIcon,
       ChevronLeftIcon,
       ChevronRightIcon,
+      SearchIcon,
+      DatabaseIcon,
+      ChartIcon,
     ].forEach((Icon) => {
       const { container, unmount } = render(<Icon />)
       expect(container.querySelector('svg')).toBeInTheDocument()
       unmount()
     })
+  })
+
+  it.each([
+    ['SearchIcon', SearchIcon],
+    ['DatabaseIcon', DatabaseIcon],
+    ['ChartIcon', ChartIcon],
+  ])('%s renders its glyph at the requested size', (_name, Icon) => {
+    const { container } = render(<Icon size={16} />)
+    const svg = container.querySelector('svg')!
+    expect(svg.getAttribute('width')).toBe('16')
+    expect(svg.getAttribute('stroke')).toBe('currentColor')
+    expect(svg.querySelectorAll('path, circle, ellipse').length).toBeGreaterThan(1)
+  })
+
+  it('the console glyphs have no accessibility violations', async () => {
+    const { container } = render(
+      <>
+        <SearchIcon title="Search" />
+        <DatabaseIcon />
+        <ChartIcon />
+      </>
+    )
+    expect(await axe(container)).toHaveNoViolations()
   })
 
   it('a titled icon is exposed as an accessible image', () => {

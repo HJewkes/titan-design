@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Pill } from './Pill'
+import { capturedClassNames } from '../../../test/classname-capture'
 import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
 describe('Pill', () => {
@@ -223,5 +224,21 @@ describe('Pill deprecated size alias', () => {
     render(<Pill size="xl">Legacy</Pill>)
     expect(warn).not.toHaveBeenCalled()
     warn.mockRestore()
+  })
+})
+
+describe('Pill neutral faces', () => {
+  const classesOf = (testID: string) => (capturedClassNames.get(testID) ?? '').split(/\s+/)
+
+  it.each([
+    ['solid', ['bg-text-primary', 'text-text-inverse']],
+    ['subtle', ['bg-hairline-subtle', 'text-text-primary']],
+  ] as const)('the neutral %s row paints its fill and label', (variant, expected) => {
+    render(
+      <Pill testID="pill" variant={variant} tone="neutral">
+        Active
+      </Pill>
+    )
+    expect(classesOf('pill')).toEqual(expect.arrayContaining([...expected]))
   })
 })

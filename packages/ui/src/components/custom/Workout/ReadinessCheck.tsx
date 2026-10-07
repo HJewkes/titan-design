@@ -2,6 +2,7 @@
 import { View, Text, Pressable } from 'react-native'
 import { Card } from '../../ui/card'
 import { Badge, type BadgeColor } from '../../ui/badge'
+import { Button, ButtonText } from '../../ui/button'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../ui/surface'
 import { alpha } from '../../../utils/colors'
@@ -49,6 +50,8 @@ export interface ReadinessCheckProps {
   warmUpCompleted: boolean
   /** Called when the assessment is confirmed and the workout can begin. */
   onConfirm: () => void
+  /** Disables the start button so `onConfirm` cannot fire. Defaults to false. */
+  isConfirmDisabled?: boolean
   className?: string
 }
 
@@ -225,9 +228,9 @@ export function ReadinessCheck({
   warmUpValidation,
   warmUpCompleted,
   onConfirm,
+  isConfirmDisabled = false,
   className,
 }: ReadinessCheckProps) {
-  const t = getSemanticColors(useSurfaceMode())
   return (
     <Card variant="outline" elevation={2} className={className} testID="readiness-check">
       <View className="p-inset-lg">
@@ -248,29 +251,18 @@ export function ReadinessCheck({
 
         {warmUpCompleted && warmUpValidation && <WarmUpCard validation={warmUpValidation} />}
 
-        <Pressable
+        <Button
+          variant="solid"
+          color="primary"
+          isDisabled={isConfirmDisabled}
           onPress={onConfirm}
-          accessibilityRole="button"
           accessibilityLabel="Confirm readiness and start workout"
           testID="readiness-check-confirm"
-          className="mt-stack-lg w-full items-center py-inset-md"
-          style={({ pressed }) => ({
-            backgroundColor: t['brand-primary'],
-            borderRadius: 8,
-            opacity: pressed ? 0.8 : 1,
-          })}
+          fullWidth
+          className="mt-stack-lg"
         >
-          <Text
-            style={{
-              fontSize: 13,
-              fontWeight: '700',
-              fontFamily: 'Inter, sans-serif',
-              color: t['on-brand-primary'],
-            }}
-          >
-            Start Workout
-          </Text>
-        </Pressable>
+          <ButtonText>Start Workout</ButtonText>
+        </Button>
       </View>
     </Card>
   )

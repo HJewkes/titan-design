@@ -1,7 +1,7 @@
+import type { CheckKind } from './schema.ts'
+
 /** sRGB channels 0-255 and alpha 0-1, as the browser computes them. */
 export type Rgba = [number, number, number, number]
-
-export type CheckKind = 'text' | 'large-text' | 'non-text'
 
 /** WCAG 2.1 SC 1.4.3 (text, large text) and SC 1.4.11 (non-text). */
 export const REQUIRED_RATIO: Record<CheckKind, number> = {
