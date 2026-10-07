@@ -13,9 +13,12 @@ import {
   type VelocityLossThresholds,
 } from '../../custom/Workout/VelocityStrip'
 import {
+  liveStripLastVelocity,
   liveStripRepToken,
   liveStripRestReadout,
   liveStripTarget,
+  sameLiveStripReps,
+  sameLossThresholds,
   type LiveStripBarColor,
   type LiveStripRep,
   type LiveStripState,
@@ -166,6 +169,8 @@ function Velocity({
 }: Parts & { showUnit: boolean }) {
   const last = reps[reps.length - 1]
   if (!last) return null
+  const velocity = liveStripLastVelocity(reps)
+  if (velocity == null) return <Text className={cn(NUMERAL, scale.velocity)}> </Text>
   const color = resolveColor(liveStripRepToken(reps, reps.length - 1, barColor, lossThresholds))
   return (
     <Text
@@ -173,7 +178,7 @@ function Velocity({
       className={cn(NUMERAL, scale.velocity, scale.leading)}
       style={[TABULAR, { color }]}
     >
-      {formatVelocity(last.velocity)}
+      {formatVelocity(velocity)}
       {showUnit ? <Text className={cn(UNIT, scale.heroUnit, scale.leading)}> m/s</Text> : null}
     </Text>
   )
@@ -183,24 +188,15 @@ type RepBarsProps = Pick<Parts, 'reps' | 'targetReps' | 'scale' | 'barColor' | '
   fill?: boolean
 }
 
-const sameThresholds = (a?: VelocityLossThresholds, b?: VelocityLossThresholds) =>
-  a === b || (a != null && b != null && a.every((t, i) => t === b[i]))
-
-// By value: a consumer rebuilds the reps array every render, and a set is 30 reps at most.
-const sameReps = (a: readonly LiveStripRep[], b: readonly LiveStripRep[]) =>
-  a === b ||
-  (a.length === b.length &&
-    a.every((rep, i) => rep.velocity === b[i].velocity && rep.zone === b[i].zone))
-
 // The plot depends only on these, so a consumer ticking the rest countdown never redraws it.
 function sameBars(a: RepBarsProps, b: RepBarsProps): boolean {
   return (
-    sameReps(a.reps, b.reps) &&
+    sameLiveStripReps(a.reps, b.reps) &&
     a.targetReps === b.targetReps &&
     a.scale === b.scale &&
     a.barColor === b.barColor &&
     a.fill === b.fill &&
-    sameThresholds(a.lossThresholds, b.lossThresholds)
+    sameLossThresholds(a.lossThresholds, b.lossThresholds)
   )
 }
 
@@ -308,11 +304,11 @@ function progressPhrase({ state, reps, targetReps, restRemainingMs }: Parts): st
 
 /** The last rep as the numeral and bars show it: velocity, and its loss from the set's best. */
 function lastRepPhrase(reps: readonly LiveStripRep[]): string | null {
-  const last = reps[reps.length - 1]
-  if (!last) return null
+  const velocity = liveStripLastVelocity(reps)
+  if (velocity == null) return null
   const best = Math.max(...reps.map((r) => r.velocity))
-  const loss = shownVelocityLoss(velocityLossForRep(last.velocity, best))
-  return `last rep ${formatVelocity(last.velocity)} m/s, ${loss}% loss from best`
+  const loss = shownVelocityLoss(velocityLossForRep(velocity, best))
+  return `last rep ${formatVelocity(velocity)} m/s, ${loss}% loss from best`
 }
 
 /** What a sighted lifter reads off the strip, colour included: fatigue is said, not only shown. */

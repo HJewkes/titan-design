@@ -184,8 +184,8 @@ export function TempoDisplay({
             fontFamily: INTER,
             fontSize: labelFont,
             fontWeight: '500',
-            // Live-muted green while a rep is running, tertiary at rest.
-            color: live ? c.liveLabel : c.neutral,
+            // Live-muted green while a rep is running, secondary text at rest.
+            color: live ? c.liveLabel : c.label,
             letterSpacing: 0.5,
             textTransform: 'uppercase',
             marginRight: Math.round(fontSize * 0.5),
@@ -204,9 +204,19 @@ export function TempoDisplay({
     </View>
   )
 
+  const accessibilityLabel = `Tempo: ${eccentric} second eccentric, ${pauseBottom} second pause, ${concentric} second concentric, ${pauseTop} second pause`
+
+  if (!onPress && !showInfo) {
+    return (
+      <View accessibilityLabel={accessibilityLabel} testID="tempo-display">
+        {content}
+      </View>
+    )
+  }
+
   return (
     <Pressable
-      accessibilityLabel={`Tempo: ${eccentric} second eccentric, ${pauseBottom} second pause, ${concentric} second concentric, ${pauseTop} second pause`}
+      accessibilityLabel={accessibilityLabel}
       accessibilityRole="button"
       onPress={handlePress}
       testID="tempo-display"

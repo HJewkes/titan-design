@@ -79,10 +79,16 @@ describe('TaskTable', () => {
   })
 
   it('reverses order when a sorted column header is pressed', () => {
-    render(<TaskTable tasks={TASK_LIST_FIXTURE} now={TASK_LIST_NOW} />)
-    const first = renderedIds()[0]
-    fireEvent.click(screen.getByRole('button', { name: 'Sort by Priority' }))
-    expect(renderedIds()[0]).not.toBe(first)
+    // Distinct estimates, so a stable sort's tie order cannot pass for a reversal; LH-86 has none.
+    const tied = ['OR-3', 'ML-41']
+    const tasks = TASK_LIST_FIXTURE.filter((task) => !tied.includes(task.id))
+    render(<TaskTable tasks={tasks} now={TASK_LIST_NOW} defaultSortKey="estimate" />)
+    const ascending = renderedIds()
+    expect(ascending[ascending.length - 1]).toBe('LH-86')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Sort by Estimate' }))
+
+    expect(renderedIds()).toEqual([...ascending.slice(0, -1).reverse(), 'LH-86'])
   })
 
   it('sorts age newest-first when ascending', () => {

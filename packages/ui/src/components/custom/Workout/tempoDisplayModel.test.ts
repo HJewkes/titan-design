@@ -11,6 +11,18 @@ describe('tempoDisplayModel', () => {
     expect(phase.concentric).toBe(primitiveRamps.cyan[300])
   })
 
+  it.each(['light', 'dark'] as const)('reads text-secondary for the label in %s mode', (mode) => {
+    expect(tempoColors(mode).label).toBe(getSemanticColors(mode)['text-secondary'])
+  })
+
+  it('keeps the pause and dash marks on result-neutral', () => {
+    const neutral = getSemanticColors('light')['result-neutral']
+    const { label, phase } = tempoColors('light')
+
+    expect([phase.pauseBottom, phase.pauseTop, phase.dash]).toEqual([neutral, neutral, neutral])
+    expect(label).not.toBe(neutral)
+  })
+
   it('follows the theme mode for the chip surface', () => {
     const dark = tempoColors('dark').surface
     const light = tempoColors('light').surface

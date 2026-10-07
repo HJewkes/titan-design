@@ -356,7 +356,7 @@ split.
   the advanced types as a short mini-style encoding. Every modality is documented
   with a copy-paste `set` config in **`Workout/DataViz/VelocityStrip/Set
 Modalities`** (each card carries a `Collapse` accordion; promoted from the
-  now-deleted `S3SetModalities` Lab specimen).
+  `S3SetModalities` Lab specimen).
 - **VelocityStrip `hero` variant** — the across-the-room, single-set **wall**
   treatment (the north-star live page's velocity hero). Tall bars (default 220px
   plot) with a per-bar velocity value label, a dashed **running-best reference
@@ -511,15 +511,16 @@ Superseded by the target Shell/SessionRail scaffold; flagged now, removed only w
 responsive level views land (removal is out of scope for this scaffold ticket):
 
 - **`setHeadingKit.tsx`** — the throwaway CSS R&D kit (raw HTML `<div>`s at the rail
-  width). Its own header says it moves into real components "when these decisions
-  harden" — which has now happened (`SessionRail` / `SessionHeader` /
-  `ExerciseCardHeading` / `ExerciseHeading` / `SetStrip` / `SetBar` /
-  `SetTableHeader`).
-- **The five `Lab/Explorations` specimens that import it** — `S3FullRail`
-  (Full Rail), `S3SessionRailHeading` (Session Rail Heading), `S3WorkoutExpansion`
-  (Workout Expansion), `S3SetTypes` (Set Types), `S3SessionPace` (Session Pace).
-  Each is superseded by a real Shell/SessionRail component + its Storybook stories;
-  `S3SessionPace` in particular is superseded by the `SessionHeader` pace glance.
+  width), now in `src/lab/explorations/` and outside the published package. Its own
+  header says it moves into real components "when these decisions harden" — which
+  has now happened (`SessionRail` / `SessionHeader` / `ExerciseCardHeading` /
+  `ExerciseHeading` / `SetStrip` / `SetBar` / `SetTableHeader`).
+- **The seven `Lab/Explorations` specimens that import it** — `ExerciseCardUnified`,
+  `S3FullRail` (Full Rail), `S3SessionPace` (Session Pace), `S3SessionRailHeading`
+  (Session Rail Heading), `S3SetModalities` (Set Modalities), `S3SetTypes` (Set
+  Types) and `S3WorkoutExpansion` (Workout Expansion). Each is superseded by a real
+  Shell/SessionRail component + its Storybook stories; `S3SessionPace` in particular
+  is superseded by the `SessionHeader` pace glance.
 - **`ExerciseCard`'s `collapsed` / `upcoming` state representations** — DONE
   (TD-03.56). Both hand-rolled sub-cards are deleted; `ExerciseCard` now delegates
   all three representations to `ExerciseCardHeading` and its `density` prop. What

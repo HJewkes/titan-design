@@ -143,7 +143,6 @@ export interface PlotStyle {
   baseline: PlotBaseline
   bandFade: BandFade
   bandCurve: BandCurve
-  referenceLabelSide: ReferenceLabelSide
 }
 
 export interface LayerProps {

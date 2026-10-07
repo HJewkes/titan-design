@@ -138,42 +138,35 @@ Following Design Tokens Community Group (DTCG) and Material Design 3 conventions
 
 #### 1. Primitive Tokens (Raw Values)
 
+Raw ramps with no semantic meaning. Chromatic ramps live in `primitiveRamps` and the warm greys in `greyRamp`:
+
 ```typescript
 // packages/ui/src/theme/tokens/primitives.ts
-export const primitiveColors = {
-  indigo: {
-    50: '#EEF2FF',
-    500: '#5048E5',  // Brand primary
-    900: '#312E81',
-  },
-  // ... other color scales
-}
+export const greyRamp = {
+  50: '#F9F6F3', //  L*97.0  W6
+  100: '#EDEAE7', // L*92.8  W6
+  ...
+export const primitiveRamps = {
+  red: {
+    50: '#FFF4F4',
+    100: '#FFE3E5',
+    ...
 ```
 
 #### 2. Semantic Tokens (Meaningful Roles)
 
+Semantic tokens are a flat map of `{category}-{name}` keys per mode (`semanticColorsDark`, `semanticColorsLight`), each pointing at a primitive step or a literal:
+
 ```typescript
 // packages/ui/src/theme/tokens/semantic.ts
-export const semanticTokens = {
-  dark: {
-    brand: {
-      primary: primitiveColors.indigo[500],
-      secondary: primitiveColors.emerald[500],
-    },
-    text: {
-      primary: primitiveColors.gray[50],
-      secondary: primitiveColors.gray[400],
-    },
-    surface: {
-      base: primitiveColors.gray[900],
-      elevated: primitiveColors.gray[800],
-    },
-  },
-  light: {
-    // Light mode equivalents...
-  },
-}
+export const semanticColorsDark = {
+  // Brand colors stay the same in dark mode
+  'brand-primary': ramp.orange[400],
+  'brand-primary-light': ramp.orange[300],
+  ...
 ```
+
+See `packages/ui/TOKENS.md` for the full token reference.
 
 ### Token Naming Conventions
 
@@ -192,19 +185,24 @@ export const semanticTokens = {
 Tokens are exposed as CSS custom properties for runtime theming:
 
 ```css
-/* Dark mode (default) */
-:root {
-  --color-brand-primary: #5048E5;
-  --color-text-primary: #F9FAFB;
-  --color-surface-base: #111827;
-}
-
-/* Light mode */
-.light, :root.light {
-  --color-brand-primary: #5048E5;
-  --color-text-primary: #111827;
-  --color-surface-base: #FFFFFF;
-}
+/* packages/ui/src/theme/global.css */
+  :root {
+    --color-brand-primary: #FF7900;
+    --color-brand-primary-light: #FFA063;
+    ...
+    --color-text-primary: #F9F6F3;
+    ...
+    --color-surface-base: #252321;
+    ...
+  }
+  ...
+  .light,
+  :root.light {
+    --color-brand-primary: #FF7900;
+    ...
+    --color-text-primary: #121828;
+    ...
+    --color-surface-base: #FFFFFF;
 ```
 
 ## Storybook Architecture
