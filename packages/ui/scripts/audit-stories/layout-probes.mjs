@@ -1,4 +1,4 @@
-// Pure judges over collectLayout output (TD-650 P1-P4). Each is linear per container and reads
+// Pure judges over collectLayout output (TD-650 P1-P5). Each is linear per container and reads
 // only the collected nodes, so a synthetic tree tests it without a browser.
 
 export const STACKED_INSET = 'stacked-inset'
@@ -7,6 +7,7 @@ export const INSET_ASYMMETRY = 'inset-asymmetry'
 export const ALIGNMENT_NEAR_MISS = 'alignment-near-miss'
 export const GAP_OUTLIER = 'gap-outlier'
 export const PROXIMITY_INVERSION = 'proximity-inversion'
+export const FONT_SIZE_NEAR_MISS = 'font-size-near-miss'
 
 const MAX_FINDINGS_PER_KIND = 25
 const MIN_EXCESS = 4 // --space-stack-sm, the smallest stack step
@@ -504,6 +505,44 @@ export function judgeProximityInversion({ nodes }) {
   return findings
 }
 
+// --- P5 font-size-near-miss ------------------------------------------------------------------------
+
+const FONT_SIZE_NEAR_MISS_MAX = 2 // a larger step reads as deliberate contrast (a hero and its unit)
+
+// Text elements grouped by their nearest flex-row ancestor; text outside any flex row is skipped.
+function textByRow(nodes, byId) {
+  const rows = new Map()
+  for (const n of nodes) {
+    if (!n.text) continue
+    let row = byId.get(n.parent)
+    while (row && !isFlexRow(row)) row = byId.get(row.parent)
+    if (!row) continue
+    if (!rows.has(row.id)) rows.set(row.id, [])
+    rows.get(row.id).push(n)
+  }
+  return [...rows.values()]
+}
+
+export function judgeFontSizeNearMiss({ nodes }) {
+  const { byId } = index(nodes)
+  const pairs = textByRow(nodes, byId).flatMap((texts) =>
+    visualLines(texts).flatMap((line) => line.slice(1).map((b, i) => [line[i], b]))
+  )
+  return pairs.flatMap(([a, b]) => {
+    const d = q(Math.abs(a.text.fontSize - b.text.fontSize))
+    if (d === 0 || d > FONT_SIZE_NEAR_MISS_MAX) return []
+    return [
+      {
+        kind: FONT_SIZE_NEAR_MISS,
+        selector: a.selector,
+        detail:
+          `${a.selector} ${px(a.text.fontSize)} vs ${b.selector} ${px(b.text.fontSize)} ` +
+          `on one line: Δ${d} (limit ${FONT_SIZE_NEAR_MISS_MAX}px)`,
+      },
+    ]
+  })
+}
+
 const capPerKind = (findings, limit) => {
   const seen = {}
   return findings.filter((f) => (seen[f.kind] = (seen[f.kind] ?? 0) + 1) <= limit)
@@ -518,6 +557,7 @@ export function judgeLayout(layout, { limit = MAX_FINDINGS_PER_KIND } = {}) {
       ...judgeAlignmentNearMiss(layout),
       ...judgeGapOutlier(layout),
       ...judgeProximityInversion(layout),
+      ...judgeFontSizeNearMiss(layout),
     ],
     limit
   )

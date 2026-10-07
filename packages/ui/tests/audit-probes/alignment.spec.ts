@@ -1,7 +1,10 @@
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { test, expect, type Page } from '@playwright/test'
-import { judgeAlignmentNearMiss } from '../../scripts/audit-stories/layout-probes.mjs'
+import {
+  judgeAlignmentNearMiss,
+  judgeFontSizeNearMiss,
+} from '../../scripts/audit-stories/layout-probes.mjs'
 import { collect, loadFixture } from './load-fixture'
 
 type Finding = { kind: string; selector: string; detail: string }
@@ -25,7 +28,14 @@ async function loadWithFont(page: Page, width: number) {
 const inCase = (findings: Finding[], id: string) =>
   findings.filter((f) => f.selector.startsWith(`[data-testid="${id}"]`))
 
-const negatives = ['icon-text', 'top-labels', 'tag-row', 'baseline-hit', 'matched-cards']
+const negatives = [
+  'icon-text',
+  'top-labels',
+  'tag-row',
+  'baseline-hit',
+  'matched-cards',
+  'hero-unit',
+]
 
 const positives: [string, RegExp][] = [
   [
@@ -34,6 +44,7 @@ const positives: [string, RegExp][] = [
   ],
   ['baseline-miss', /: baseline Δ[\d.]+ \(align-items: baseline\)$/],
   ['uneven-cards', /: height Δ8 \(both paint; limit 16px\)$/],
+  ['one-line-two-sizes', / 14px vs .* 13px on one line: Δ1 \(limit 2px\)$/],
 ]
 
 for (const width of WIDTHS) {
@@ -41,7 +52,8 @@ for (const width of WIDTHS) {
     let findings: Finding[]
     test.beforeEach(async ({ page }) => {
       await loadWithFont(page, width)
-      findings = judgeAlignmentNearMiss(await collect(page))
+      const layout = await collect(page)
+      findings = [...judgeAlignmentNearMiss(layout), ...judgeFontSizeNearMiss(layout)]
     })
 
     for (const id of negatives) {
