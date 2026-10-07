@@ -11399,6 +11399,13 @@
         },
         {
           "default": null,
+          "description": "Pressed state of a toggle chip.",
+          "name": "isSelected",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
           "description": "Left element (icon, avatar)",
           "name": "leftElement",
           "required": false,
@@ -11417,6 +11424,13 @@
           "name": "onPress",
           "required": false,
           "type": "(() => void)"
+        },
+        {
+          "default": null,
+          "description": "Right element (count, icon).",
+          "name": "rightElement",
+          "required": false,
+          "type": "ReactNode"
         },
         {
           "default": "md",
