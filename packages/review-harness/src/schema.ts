@@ -155,7 +155,9 @@ const ContractQuestionSchema = z.discriminatedUnion('kind', [
 
 export const THEME_MODES = ['light', 'dark'] as const
 const themeMode = z.enum(THEME_MODES)
-const CHECK_KINDS = ['text', 'large-text', 'non-text'] as const
+/** WCAG check kinds; `REQUIRED_RATIO` in contrast.ts must name a threshold for each. */
+export const CHECK_KINDS = ['text', 'large-text', 'non-text'] as const
+export type CheckKind = (typeof CHECK_KINDS)[number]
 const checkKind = z.enum(CHECK_KINDS)
 const NAMES_ELEMENT =
   'a known defect names one element: its data-testid, or the full selector build printed'
