@@ -7,7 +7,7 @@ interface Tally {
   total: number
 }
 
-export const CONFIDENCE_BANDS = [
+const CONFIDENCE_BANDS = [
   { label: '<0.5', holds: (c: number) => c < 0.5 },
   { label: '0.5-0.75', holds: (c: number) => c >= 0.5 && c < 0.75 },
   { label: '>=0.75', holds: (c: number) => c >= 0.75 },

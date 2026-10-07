@@ -135,7 +135,7 @@ export function DualGhostSpark({
           labelColor={alpha(t['text-primary'], 0.92)}
           targetTempoSeconds={targetTempoSeconds}
         />
-        {showDeviceLabels && (
+        {!!showDeviceLabels && (
           <DualDeviceLabels
             leftLabel={leftLabel}
             rightLabel={rightLabel}

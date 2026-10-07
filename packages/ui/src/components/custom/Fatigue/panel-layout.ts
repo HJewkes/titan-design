@@ -156,7 +156,7 @@ export const CARD_MIN_HEIGHT_STACKED = CARD_CHROME_HEIGHT + CARD_MIN_CHART_HEIGH
  * padding, matching the family each already reasons in. The panel gap is a COLUMN gap at
  * `md` and up and a ROW gap below it, so no single situational key covers it honestly —
  * `inline` would name the stacked case wrong and `stack` the side-by-side case wrong;
- * `stack` was picked for consistency with {@link CARD_SECTION_GAP_MIN} below. `TIER_GAP_XS`
+ * `stack` was picked for consistency with {@link CARD_SECTION_GAP_MIN} above. `TIER_GAP_XS`
  * stays a literal — see the comment on it.
  *
  * Rounding `TIER_GAP_MD` (was 18) down to 16 does NOT touch the card: `LiveFatigueCard`'s
