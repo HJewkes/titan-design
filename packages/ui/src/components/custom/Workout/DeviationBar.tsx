@@ -46,7 +46,7 @@ export function DeviationBar({ deviation, width, className, ...props }: Deviatio
         height: containerHeight,
         width: resolvedWidth,
       }}
-      accessibilityRole="adjustable"
+      accessibilityRole="progressbar"
       accessibilityValue={{ min: -100, max: 100, now: valueNow }}
       accessibilityLabel={`Session deviation: ${getDeviationDescription(clamped)}`}
       testID="deviation-bar"
@@ -76,7 +76,7 @@ export function DeviationBar({ deviation, width, className, ...props }: Deviatio
           borderColor: greyRamp[50],
           // The dot is a knob resting on the track: one plane of lift. Its light
           // ring is already the edge, so the lift contributes the shadow alone.
-          ...liftStyle(1, 'dark', { rim: 0 }),
+          ...liftStyle(1, mode, { rim: 0 }),
           backgroundColor: getDotColor(clamped, mode),
           left: Math.max(0, Math.min(dotPosition - dotSize / 2, resolvedWidth - dotSize)),
           top: (containerHeight - dotSize) / 2,

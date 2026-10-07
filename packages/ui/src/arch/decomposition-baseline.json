@@ -18,7 +18,7 @@
     "complexity": 19
   },
   "components/custom/Workout/BodyMap.tsx": {
-    "file-lines": 310
+    "file-lines": 306
   },
   "components/custom/Workout/BodyMap.tsx#BodyMap": {
     "function-lines": 105
@@ -102,9 +102,6 @@
   },
   "components/custom/Workout/ProgramPlanningPage.tsx": {
     "file-lines": 340
-  },
-  "components/custom/Workout/ReadinessCheck.tsx": {
-    "file-lines": 227
   },
   "components/custom/Workout/SegmentedBar.tsx#SegmentedBar>segments.map": {
     "complexity": 17
@@ -259,7 +256,7 @@
     "props": 14
   },
   "components/ui/progress/Progress.tsx": {
-    "file-lines": 272
+    "file-lines": 267
   },
   "components/ui/progress/Progress.tsx#CircularProgress": {
     "complexity": 17

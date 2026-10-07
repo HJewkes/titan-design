@@ -329,7 +329,7 @@ Levels -2 to +5 with calculated surface colors and shadows:
 
 ## CI and scripts
 
-`.github/workflows/ci.yml` runs one job on Node 20 and 22: install, `pnpm lint`, `pnpm type-check`,
+`.github/workflows/ci.yml` runs one job on Node 22: install, `pnpm lint`, `pnpm type-check`,
 `pnpm format:check`, the arch-graph freshness test, `pnpm build`, then
 `pnpm test -- -- --run --coverage`. Every step blocks; none is `continue-on-error`.
 

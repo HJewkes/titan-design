@@ -18,7 +18,8 @@
  * shadow), not a hard outline.
  */
 import { View } from 'react-native'
-import { ghostLineColor, clamp01 } from './fatigue-tokens'
+import { ghostLineColor } from './fatigue-tokens'
+import { ghostScales } from './ghostScales'
 import { GhostBand, BAND_H, BAND_GAP } from './GhostBand'
 import { GhostBloom, type Pt } from './GhostBloom'
 import { ghostSparkA11y } from './ghostSparkSummary'
@@ -93,19 +94,13 @@ export function GhostSpark({
   }
 
   const cur = curves[curves.length - 1]
-  const allSamples = curves.flatMap((c) => c.samples)
-  const vmax = Math.max(0.01, ...allSamples.map((s) => s.velocityMps)) * 1.06
-  const axisMaxT =
-    Math.max(1, ...curves.map((c) => c.samples[c.samples.length - 1]?.tMs ?? 0)) * 1.04
-
   // Band pinned to the bottom; the bloom baseline sits a small gap above its top edge,
   // and magnitude blooms UP toward padTop.
   const bandBottom = h - padBot
   const bandTop = bandBottom - BAND_H
   const baseline = bandTop - BAND_GAP
   const plotH = Math.max(1, baseline - padTop)
-  const x = (ms: number) => padL + (ms / axisMaxT) * (w - padL - padR)
-  const mag = (v: number) => clamp01(v / vmax) * plotH
+  const { x, mag } = ghostScales(curves, w, plotH, { left: padL, right: padR })
 
   const lineTint = ghostLineColor(cur.tempoDeviation, cur.grindSignature)
   const curPts: Pt[] = cur.samples.map((s) => [x(s.tMs), mag(s.velocityMps)])

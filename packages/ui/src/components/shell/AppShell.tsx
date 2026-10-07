@@ -26,6 +26,11 @@ export interface AppShellProps {
   nav?: ReactNode
   /** Main content region. A placeholder renders when omitted. */
   children?: ReactNode
+  /**
+   * Render the content region as the `main` landmark. Off by default: `Page` supplies
+   * `main`, and a tree holds one. Turn it on when the children are not a `Page`.
+   */
+  isMainLandmark?: boolean
   className?: string
 }
 
@@ -60,6 +65,7 @@ export function AppShell({
   onNavigate,
   nav,
   children,
+  isMainLandmark = false,
   className,
 }: AppShellProps) {
   const { accentClassName, accentBarClassName } = brandPresets[brand]
@@ -83,7 +89,9 @@ export function AppShell({
             onNavigate={onNavigate}
           />
         )}
-        <View className="flex-1">{children ?? <ContentPlaceholder />}</View>
+        <View role={isMainLandmark ? 'main' : undefined} className="flex-1">
+          {children ?? <ContentPlaceholder />}
+        </View>
       </View>
     </Surface>
   )
