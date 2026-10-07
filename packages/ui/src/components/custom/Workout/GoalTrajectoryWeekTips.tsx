@@ -37,12 +37,12 @@ function TipHeader({ tip }: { tip: WeekTip }) {
         {`Week ${String(tip.week)}`}
       </Typography>
       <View className="flex-row items-center gap-inline-sm">
-        {isDeload && (
+        {!!isDeload && (
           <Pill tone="neutral" variant="subtle" size="sm" {...deloadBadge}>
             Deload
           </Pill>
         )}
-        {isPR && <PrBadge type="weight" compact animate={false} iconSize={12} />}
+        {!!isPR && <PrBadge type="weight" compact animate={false} iconSize={12} />}
       </View>
     </View>
   )
