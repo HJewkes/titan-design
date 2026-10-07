@@ -123,8 +123,9 @@ sha256 of the manifest you wrote.
   `variants[{key, storyId | image, label, args?, globals?, height?}]` (at most 12, or at most 80
   in a round with `sections`; empty for a round of questions only, which needs no placeholder
   frame; every frame sits in a section),
-  `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?, recommendation?, signsOff (pick-one)}]`,
+  `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?, recommendation?, signsOff (pick-one), page?, merge? (pick-one)}]`,
   `sections[{id, title, deciding, changed, context, kind?: CHOICE|STATES, questionIds[], variantKeys[], seeAlso?[], height?}]`,
+  `build?{mainSha, mergeSha}` (written by the build; nothing writes it yet),
   `recommendations` (`"after-answer"`, the default, or `"shown"`),
   `contrast?{knownDefects[], measured[], unmeasured[]}` (also on a section; see _Contrast gate_).
   The round and section `context`, each question `prompt` and each recommendation `rationale`
@@ -180,6 +181,46 @@ sha256 of the manifest you wrote.
   The match is by that field, never by option text. Option text is unique across a round's
   pick-ones, so only one question can list a plain `"none"`; the rest use the built-in. A
   `revisionRequested` on a pick-one that offers neither is rejected. Everything else is unchanged and means what it always did.
+
+- **A PR gets one page and one ship/no-ship question.** Any question may carry `page`, a PR key
+  `owner/name#pr`; a question with no `page` sits on the general page. Each PR page carries exactly
+  one required pick-one, "Ship owner/name#pr at <head12>?", with options exactly
+  `["Ship", "Don't ship"]`, and only that question carries
+  `merge: {repo, pr, headSha, ship: ["Ship"]}` (`headSha` is 40 lower-case hex). The design
+  questions on the page carry no `merge`: they are feedback, not the merge decision. The schema
+  refuses a bound question that is not required, has other options or another ship set, or whose
+  `page` is not its own `repo#pr`; a PR bound by two questions (at one head or two); and a `page`
+  naming a PR that has no ship/no-ship question. A ship option can never be the question's
+  `revisionOption`: an option that requests a revision can never also approve a merge. A round
+  without `merge`, `page` or `build` parses as before.
+
+  ```json
+  [
+    {
+      "id": "tb-icon",
+      "kind": "pick-one",
+      "prompt": "Where does the icon sit?",
+      "signsOff": "the toolbar icon",
+      "options": ["In the well, as built", "Bare above the title"],
+      "page": "owner/name#123"
+    },
+    {
+      "id": "tb-ship",
+      "kind": "pick-one",
+      "prompt": "Ship owner/name#123 at 0123456789ab?",
+      "signsOff": "merging the toolbar",
+      "options": ["Ship", "Don't ship"],
+      "required": true,
+      "page": "owner/name#123",
+      "merge": {
+        "repo": "owner/name",
+        "pr": 123,
+        "headSha": "0123456789abcdef0123456789abcdef01234567",
+        "ship": ["Ship"]
+      }
+    }
+  ]
+  ```
 
 ## A round from Morning items (TD-680)
 
