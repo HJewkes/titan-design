@@ -12,9 +12,6 @@ describe('ratchetProblems', () => {
   })
 
   it('reports growth before staleness, each as one problem', () => {
-    expect(ratchetProblems(['a', 'c', 'd'], ['a', 'b'], messages)).toEqual([
-      'added c,d',
-      'stale b',
-    ])
+    expect(ratchetProblems(['a', 'c', 'd'], ['a', 'b'], messages)).toEqual(['added c,d', 'stale b'])
   })
 })
