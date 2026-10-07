@@ -10,7 +10,7 @@ import {
   REP_SET_LAGGING,
   FATIGUE_SET,
   FATIGUE_SET_LAGGING,
-} from './velocity-story-kit'
+} from '../../../lab/velocity-story-kit/velocity-story-kit'
 
 /**
  * `compact` — the flat resting strip. SetBarChart in flat mode: uniform short

@@ -26,7 +26,7 @@ import {
   type ReviewDeps,
 } from './review.ts'
 
-export const USAGE = `titan-review <round.json> [options]
+const USAGE = `titan-review <round.json> [options]
 titan-review --example [--storybook <url>]
 titan-review build <draft.json> [--storybook <url>]
 titan-review calibration <feedback.json...>

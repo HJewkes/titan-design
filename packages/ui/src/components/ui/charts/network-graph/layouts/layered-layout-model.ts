@@ -1,3 +1,4 @@
+import { compareText } from '../../kit/compareText'
 import { GRAPH_LABEL_ROOM, GRAPH_NODE_PADDING, edgeId } from '../network-graph-model'
 import type { GraphEdge, GraphLayout, GraphLayoutInput, GraphLayoutResult } from '../types'
 
@@ -8,8 +9,6 @@ export interface LayeredLayoutOptions {
   /** Edge kinds that rank the layers; every edge ranks when unset. */
   rankEdgeKinds?: readonly string[]
 }
-
-const compareText = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0)
 
 function reaches(successors: Map<string, string[]>, from: string, to: string): boolean {
   const seen = new Set<string>()

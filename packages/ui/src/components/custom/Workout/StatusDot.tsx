@@ -149,7 +149,7 @@ export function StatusDot({
       accessibilityLabel={`${variant} status`}
       testID="status-dot"
     >
-      {config.showIcon && icon && (
+      {!!config.showIcon && !!icon && (
         // The glyph was 11px/900, off the type scale (TOKENS.md §4); `boldLabel` is
         // the 12px sans label step and `font-black` keeps the original weight.
         <Typography

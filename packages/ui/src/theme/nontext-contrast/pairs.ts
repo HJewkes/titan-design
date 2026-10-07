@@ -199,7 +199,7 @@ const separators: NonTextPair[] = [
       src('ui/menu/Menu.tsx', 'bg-hairline'),
       src('ui/collapse/Collapse.tsx', 'divide-hairline'),
       src('ui/form-field/FormField.tsx', 'border-hairline'),
-      src('ui/progress/Progress.tsx', 'var(--color-hairline-default)'),
+      src('ui/progress/Progress.tsx', "['hairline-default']"),
       src('ui/divider/Divider.tsx', 'bg-hairline'),
       src('ui/list-item/ListItem.tsx', 'bg-hairline'),
       src('ui/table/Table.tsx', 'border-hairline'),

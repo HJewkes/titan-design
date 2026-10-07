@@ -1,10 +1,27 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { spacingClassesOf, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { View } from 'react-native'
 import { SetRow, type SetRowProps } from './SetRow'
 import { resolveColor } from '../../../theme/resolve-color'
+
+// The newest-rep entrance is applied imperatively, so jsdom never shows it; the shared hook is the
+// only seam that reveals which rep the strip armed. The spy passes through to the real hook.
+const liveEntranceIndices = vi.hoisted(() => [] as Array<number | undefined>)
+
+vi.mock('../charts/live-rep-growth', async () => {
+  const actual = await vi.importActual<typeof import('../charts/live-rep-growth')>(
+    '../charts/live-rep-growth'
+  )
+  return {
+    ...actual,
+    useLiveRepGrowth: (...args: Parameters<typeof actual.useLiveRepGrowth>) => {
+      liveEntranceIndices.push(args[1])
+      return actual.useLiveRepGrowth(...args)
+    },
+  }
+})
 
 // Text treatments, read from the tokens rather than pinned as hexes. These
 // used to be hand-copied literals and silently desynced when the greys moved
@@ -89,6 +106,22 @@ describe('SetRow', () => {
       // 2 performed reps + grey stubs to the target (10).
       expect(screen.getAllByTestId(/^velocity-bar-\d+$/)).toHaveLength(2)
       expect(screen.getAllByTestId('velocity-slot-todo')).toHaveLength(8)
+    })
+
+    describe('spotlight entrance', () => {
+      beforeEach(() => {
+        liveEntranceIndices.length = 0
+      })
+
+      it('grows the newest rep when the caller names none', () => {
+        render(<SetRow {...liveRow} />)
+        expect(liveEntranceIndices).toEqual([1])
+      })
+
+      it("grows the caller's liveRepIndex instead of the newest rep", () => {
+        render(<SetRow {...liveRow} velocities={[0.95, 0.9, 0.85]} liveRepIndex={0} />)
+        expect(liveEntranceIndices).toEqual([0])
+      })
     })
   })
 
