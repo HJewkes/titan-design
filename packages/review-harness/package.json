@@ -19,6 +19,7 @@
     "format:check": "prettier --check \"{src,page,test,e2e}/**/*.{ts,tsx,css,html}\" \"*.{json,md}\"",
     "test": "vitest",
     "test:unit": "vitest",
+    "test:unit:ci": "vitest run --coverage",
     "test:e2e": "playwright test",
     "schema": "node src/write-json-schema.ts"
   },
