@@ -15,7 +15,7 @@ import {
   RoundSchema,
   type ManifestInput,
 } from '../src/schema.ts'
-import { SECTION_TEXTS, SHA } from './fixtures.ts'
+import { SECTION_TEXTS, SHA, noTreeGit } from './fixtures.ts'
 
 type Section = NonNullable<ManifestInput['sections']>[number]
 type PickOne = Extract<ManifestInput['questions'][number], { kind: 'pick-one' }>
@@ -70,6 +70,42 @@ function withSection(patch: Partial<Section>, input = choiceRound()): ManifestIn
 
 function withQuestion(patch: Partial<PickOne>, input = choiceRound()): ManifestInput {
   return { ...input, questions: [{ ...(input.questions[0] as PickOne), ...patch }] }
+}
+
+/** A required Ship/Don't ship question bound to one PR head, on that PR's page. */
+function shipQuestion(pr: number): PickOne {
+  const page = `owner/name#${pr}`
+  return {
+    id: `ship-${pr}`,
+    kind: 'pick-one',
+    prompt: `Ship ${page}?`,
+    options: ['Ship', "Don't ship"],
+    required: true,
+    signsOff: `the change in ${page}`,
+    page,
+    merge: { repo: 'owner/name', pr, headSha: String(pr).repeat(40), ship: ['Ship'] },
+  }
+}
+
+/** The same question bound to no PR, offering Ship beside an option of its own. */
+function unboundQuestion(pr: number): PickOne {
+  const { merge: _merge, page: _page, ...question } = shipQuestion(pr)
+  return { ...question, options: ['Ship', `Hold ${pr}`] }
+}
+
+/** A questions-only round, one section per question. */
+function shipRound(questions: PickOne[]): ManifestInput {
+  return {
+    ...choiceRound(),
+    variants: [],
+    questions,
+    sections: questions.map((q) => ({
+      id: `pr-${q.id}`,
+      title: q.prompt,
+      ...SECTION_TEXTS,
+      questionIds: [q.id],
+    })),
+  }
 }
 
 async function writeRound(input: unknown, widths = { keep: 1280, tight: 1280 }) {
@@ -167,6 +203,35 @@ describe('the review contract', () => {
     expect(await refusal(input)).toContain('question rule: option "Rework it" is also in spacing')
   })
 
+  it("accepts a round binding two PRs, each asked Ship or Don't ship", async () => {
+    const input = shipRound([shipQuestion(7), shipQuestion(8)])
+    expect(ManifestSchema.safeParse(input).success).toBe(true)
+    expect(await refusal(input)).toBe('')
+  })
+
+  it('refuses Ship shared with a question that binds no PR', async () => {
+    const unbound = unboundQuestion(8)
+    expect(await refusal(shipRound([unbound, shipQuestion(7)]))).toContain(
+      'question ship-7: option "Ship" is also in ship-8'
+    )
+    expect(await refusal(shipRound([shipQuestion(7), unbound]))).toContain(
+      'question ship-8: option "Ship" is also in ship-7'
+    )
+  })
+
+  it('refuses Ship shared between two questions that bind no PR', async () => {
+    expect(await refusal(shipRound([unboundQuestion(7), unboundQuestion(8)]))).toContain(
+      'question ship-8: option "Ship" is also in ship-7'
+    )
+  })
+
+  it('refuses Ship twice within one merge-bound question', async () => {
+    const twice = { ...shipQuestion(7), options: ['Ship', 'Ship', "Don't ship"] }
+    expect(await refusal(shipRound([twice, shipQuestion(8)]))).toContain(
+      'question ship-7: option "Ship" repeats'
+    )
+  })
+
   it('refuses a frame that no section holds, and a round written before the contract', async () => {
     const loose = withSection({ variantKeys: ['keep'], kind: 'STATES', questionIds: [] })
     expect(await refusal(loose)).toContain('variant tight is in no section')
@@ -192,6 +257,7 @@ describe('the CLI under the review contract', () => {
     openBrowser: () => {},
     capture: async () => [],
     measure: async () => [],
+    git: noTreeGit,
     createPage: async () => ({ handler: () => {}, close: async () => {} }),
     harnessFreshness: async () => ({ state: 'current' }),
     signal: new AbortController().signal,
