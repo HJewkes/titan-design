@@ -16,7 +16,7 @@ import {
   FATIGUE_SET_LAGGING,
   IN_PROGRESS_SET,
   IN_PROGRESS_LAGGING,
-} from './velocity-story-kit'
+} from '../../../lab/velocity-story-kit/velocity-story-kit'
 
 /**
  * `expanded` — the velocity-HEIGHT bar chart. Bars are scaled to their value,

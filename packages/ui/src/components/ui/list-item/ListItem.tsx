@@ -59,7 +59,7 @@ export function ListItemContent({ title, subtitle, className, ...props }: ListIt
   return (
     <View className={cn('flex-1 justify-center gap-stack-sm', className)} {...props}>
       <Text className="text-sm font-medium text-text-primary">{title}</Text>
-      {subtitle && <Text className="text-xs text-text-secondary">{subtitle}</Text>}
+      {!!subtitle && <Text className="text-xs text-text-secondary">{subtitle}</Text>}
     </View>
   )
 }

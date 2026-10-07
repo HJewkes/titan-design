@@ -18,7 +18,7 @@ export const EXIT_OK = 0
 export const EXIT_INVALID = 2
 export const EXIT_INTERRUPTED = 130
 
-export const LAUNCH_HINT =
+const LAUNCH_HINT =
   'start one from titan-design/packages/ui: node scripts/storybook-launch.mjs --isolated'
 
 export class ReviewError extends Error {}
