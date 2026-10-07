@@ -1,11 +1,12 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedClassNames } from '../../../test/classname-capture'
 import { InitiativeCard, type InitiativeState } from './InitiativeCard'
 
 const base = {
-  title: 'active-work — durable workspace state',
-  slug: 'active-work',
+  title: 'planner — durable project state',
+  slug: 'planner',
   openCount: 4,
   severityCounts: { critical: 0, high: 1, medium: 2, low: 1 },
 }
@@ -30,10 +31,10 @@ describe('InitiativeCard', () => {
       <InitiativeCard
         {...base}
         state="focused"
-        topTask={{ id: 'AW-6', title: 'Discovery sources' }}
+        topTask={{ id: 'PL-6', title: 'Discovery sources' }}
       />
     )
-    expect(screen.getByText('AW-6')).toBeInTheDocument()
+    expect(screen.getByText('PL-6')).toBeInTheDocument()
     expect(screen.getByText('Discovery sources')).toBeInTheDocument()
   })
 
@@ -64,5 +65,14 @@ describe('InitiativeCard', () => {
   it('has no accessibility violations', async () => {
     const { container } = render(<InitiativeCard {...base} state="focused" rank={1} />)
     expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+describe('InitiativeCard className merge', () => {
+  it('lets a caller class replace the root class it conflicts with', () => {
+    render(<InitiativeCard {...base} state="focused" className="p-2" testID="cn-root" />)
+    const classes = capturedClassNames.get('cn-root')?.split(/\s+/)
+    expect(classes).toContain('p-2')
+    expect(classes).not.toContain('p-4')
   })
 })

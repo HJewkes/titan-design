@@ -28,6 +28,7 @@ describe('clampInt', () => {
     expect(clampInt(Number.NaN, 1, 1000, 300)).toBe(300)
     expect(clampInt(2.9, 1, 1000, 300)).toBe(2)
     expect(clampInt(undefined, 1, 1000, 300)).toBe(300)
+    expect([Infinity, -Infinity].map((v) => clampInt(v, 1, 1000, 300))).toEqual([1, 1000].reverse())
   })
 })
 
@@ -66,6 +67,21 @@ describe('frameLayout', () => {
     const empty = frameLayout({}, { width: 0, height: 0 })
     expect(empty.positions).toEqual({})
     expect(empty.width).toBe(PADDING * 2 + LABEL_ROOM)
+  })
+})
+
+describe('frameLayout bounds', () => {
+  it('holds every bounds point inside the padded box and reports the translation as offset', () => {
+    const framed = frameLayout({ a: { x: 0, y: 0 } }, { width: 0, height: 0 }, [
+      { x: -100, y: -40 },
+      { x: 100, y: 40 },
+    ])
+    expect(framed.offset).toEqual({ x: PADDING + 100, y: PADDING + 40 })
+    expect(framed.positions.a).toEqual(framed.offset)
+    expect([framed.width, framed.height]).toEqual([
+      200 + PADDING * 2 + LABEL_ROOM,
+      80 + PADDING * 2,
+    ])
   })
 })
 
@@ -122,6 +138,18 @@ describe('packCircles', () => {
       [10, 35],
     ])
     expect([packed.width, packed.height]).toEqual([45, 45])
+  })
+
+  it('keeps the headroom empty above every row', () => {
+    const packed = packCircles(
+      [
+        { id: 'a', radius: 10 },
+        { id: 'b', radius: 10 },
+      ],
+      { width: 20, gap: 5, headroom: 8 }
+    )
+    expect(packed.circles.map((c) => c.cy - c.radius)).toEqual([8, 41])
+    expect(packed.height).toBe(61)
   })
 
   it('places a circle wider than the width on its own row', () => {

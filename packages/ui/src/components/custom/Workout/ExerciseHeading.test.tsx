@@ -1,8 +1,9 @@
 import { describe, it, expect, vi } from 'vitest'
-import { siblingSource, spacingClassesIn, resolveAll } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesOf } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { ExerciseHeading } from './ExerciseHeading'
+import { primitiveOpacity } from '../../../theme/tokens/primitives'
 
 const baseProps = {
   name: 'Seated Cable Row',
@@ -35,6 +36,11 @@ describe('ExerciseHeading', () => {
     expect(screen.getByLabelText('Personal record')).toBeInTheDocument()
   })
 
+  it('renders no previous-best text for an empty string', () => {
+    render(<ExerciseHeading {...baseProps} layout="inline" previousBest="" />)
+    expect(screen.queryByTestId('exercise-card-previous-best')).not.toBeInTheDocument()
+  })
+
   it('omits the indicator chip when absent', () => {
     render(<ExerciseHeading {...baseProps} indicator={undefined} />)
     expect(screen.queryByTestId('exercise-indicator')).not.toBeInTheDocument()
@@ -60,7 +66,7 @@ describe('ExerciseHeading', () => {
 
   it('dims the block when marked dimmed', () => {
     render(<ExerciseHeading {...baseProps} dimmed />)
-    expect(screen.getByTestId('exercise-heading')).toHaveStyle({ opacity: 0.55 })
+    expect(screen.getByTestId('exercise-heading')).toHaveStyle({ opacity: primitiveOpacity.dim })
   })
 
   it('is full opacity by default', () => {
@@ -79,10 +85,14 @@ describe('ExerciseHeading', () => {
 
 /** Both heading layouts share one inline gap (AW-142); pixels unchanged. */
 describe('ExerciseHeading geometry resolves to the inline ramp', () => {
-  const source = siblingSource(import.meta.url, 'ExerciseHeading.tsx')
-
-  it.each(['StackedHeading', 'InlineHeading'])('%s clusters on inline-md', (layout) => {
-    expect(spacingClassesIn(source, layout)).toEqual(['gap-inline-md'])
+  it.each(['stacked', 'inline'] as const)('the %s header clusters on inline-md', (layout) => {
+    render(<ExerciseHeading {...baseProps} layout={layout} />)
+    expect(spacingClassesOf('exercise-card-header')).toEqual(['gap-inline-md'])
     expect(resolveAll(['gap-inline-md'])).toEqual(['8px'])
+  })
+
+  it('the stacked summary clusters on inline-md', () => {
+    render(<ExerciseHeading {...baseProps} layout="stacked" />)
+    expect(spacingClassesOf('exercise-card-summary')).toEqual(['gap-inline-md'])
   })
 })

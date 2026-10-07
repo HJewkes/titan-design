@@ -18,8 +18,10 @@ const staticFactors: ReadinessFactor[] = FACTOR_SEED.map((f) => ({
 const meta: Meta<typeof ReadinessCheck> = {
   title: 'Custom/Workout/ReadinessCheck',
   component: ReadinessCheck,
-  parameters: { docs: { description: { component: 'Composes **Card** · **Badge**.' } } },
-  tags: ['autodocs'],
+  parameters: {
+    docs: { description: { component: 'Composes **Card** · **Badge** · **Button**.' } },
+  },
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     score: {
       control: { type: 'range', min: 0, max: 100, step: 1 },
@@ -31,6 +33,10 @@ const meta: Meta<typeof ReadinessCheck> = {
     },
     onConfirm: {
       description: 'Called when the assessment is confirmed and the workout begins',
+    },
+    isConfirmDisabled: {
+      control: 'boolean',
+      description: 'Disables the start button so onConfirm cannot fire',
     },
   },
 }

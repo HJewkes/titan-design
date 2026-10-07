@@ -9,15 +9,20 @@ Storybook's `Components/Organisms/Table` autodocs repeats the Composes line.
 
 ## The split
 
-| Layer        | File                              | Owns                                                                                                                                                                                                                                                                                                 |
-| ------------ | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Headless     | `useTableState.ts`                | Sort order (`sortRows`, stable, blanks last both ways), the sort cycle (`nextSortDirection`), paging (`pageSlice`, `pageRange`), the selection tri-state (`selectionState`), a header's sort display (`columnSortState`), and the `useTableState` hook. The hook is exported publicly as `useTable`. |
-| Context      | `TableContext.ts`                 | What the shell hands its cells: sort, selection and density, plus the shared cell padding.                                                                                                                                                                                                           |
-| Styled shell | `Table.tsx` and one file per cell | Rendering only. Every decision comes from the headless module or the context.                                                                                                                                                                                                                        |
+| Layer        | File                              | Owns                                                                                                                                                                                                                                                                                                                               |
+| ------------ | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Headless     | `useTableState.ts`                | The `useTableState` hook (exported publicly as `useTable`) that wires the pieces below together, plus sort order (`sortRows`, stable, blanks last both ways), the sort cycle (`nextSortDirection`), paging (`pageSlice`, `pageRange`), the selection tri-state (`selectionState`) and a header's sort display (`columnSortState`). |
+| Model        | `table-model.ts`                  | Pure filter, facet and range functions: `filterRows`, `toggleSetFilter`, `clearFilters`, `activeFilterCount`, `facetOptions`, `facetCounts`, and the window maths (`alignRange`, `missingRanges`, `windowSlice`). Re-exported by `useTableState.ts`.                                                                               |
+| Filters      | `useTableFilters.ts`              | The hooks that own filtering: controlled filter state (`useFilterSlice`) and facet options (`useFacetOptions`).                                                                                                                                                                                                                    |
+| Window       | `useTableWindow.ts`               | Page, page size and the row window (`useViewState`), restarting on a filter or sort change, and the debounced `onRangeNeeded` requests and row access for manual mode.                                                                                                                                                             |
+| Types        | `table-state-types.ts`            | `ColumnDef`, `TableSort`, `UseTableOptions` and the other shared types.                                                                                                                                                                                                                                                            |
+| Context      | `TableContext.ts`                 | What the shell hands its cells: sort, selection and density, plus the shared cell padding.                                                                                                                                                                                                                                         |
+| Styled shell | `Table.tsx` and one file per cell | Rendering only. Every decision comes from the headless module or the context.                                                                                                                                                                                                                                                      |
 
-Everything here is pure except `useTableState`'s `useState` calls and the header's hover flag, which is view
-state. Put new state logic (filtering, windowing) in `useTableState.ts` as a pure function first, then wire it
-into the hook. Unit-test it there without rendering.
+Everything here is pure except the hooks' `useState` calls and the header's hover flag, which is view
+state. Put new filter or facet logic in `table-model.ts` as a pure function first, then wire it into
+`useTableFilters.ts`; windowing state belongs in `useTableWindow.ts`. `useTableState.ts` only composes them.
+Unit-test the pure part in `table-model.test.ts` without rendering.
 
 ## Composition tree
 
@@ -53,4 +58,4 @@ useColumnFit / fitColumns .... headless (column-fit.ts)
 - Sort, paging and checkbox glyphs are unicode characters, not `components/icons`.
 - `TableProps` has 14 own props, one over the Q9 seed of 13. Changing that is an API change, not a refactor.
 - `tests/visual/stories.spec.ts` does not cover this family (TD-3).
-- No virtualization or filtering yet (TD-33). Both belong in `useTableState.ts`.
+- Filtering and windowing live in `table-model.ts`, `useTableFilters.ts` and `useTableWindow.ts` (TD-33); new work on either goes there, not in `useTableState.ts`.

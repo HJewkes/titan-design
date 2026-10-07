@@ -8,8 +8,11 @@ import { Typography } from '../../ui/typography'
 export type ProseLinkTone = 'brand' | 'link' | 'muted'
 
 /**
- * A pattern the prose auto-links. Patterns must not carry the `g` flag or
- * capture groups: the renderer combines them into one tokenizer.
+ * A pattern the prose auto-links. Patterns must not carry flags (`g`, `i`, `u`,
+ * …) or capture groups: the renderer combines every pattern's source into one
+ * tokenizer, so flags cannot be kept per linker. A flagged pattern is matched
+ * as if it had none, and warns once in development. Spell case-insensitivity
+ * out in the pattern, e.g. `/[Tt][Dd]-\d+/`.
  */
 export interface ProseLinker {
   /** Stable id, used in keys and test ids. */
@@ -104,8 +107,24 @@ function anchored(pattern: RegExp): RegExp {
   return new RegExp(`^(?:${pattern.source})$`)
 }
 
+// Bundlers replace `process.env.NODE_ENV` literally; the DTS build has no Node types.
+declare const process: { env: { NODE_ENV?: string } }
+const warned = new Set<string>()
+
+/** Warn once per linker in development; the tokenizer is rebuilt on every render. */
+function warnDroppedFlags(linker: ProseLinker) {
+  if (typeof process === 'undefined' || process.env.NODE_ENV === 'production') return
+  const key = `${linker.id}/${linker.pattern.flags}`
+  if (warned.has(key)) return
+  warned.add(key)
+  console.warn(
+    `titan: MarkdownProse linker "${linker.id}" has flags "${linker.pattern.flags}", which the combined tokenizer drops. Write the pattern without flags.`
+  )
+}
+
 /** One tokenizer for bold, code and every linker, so a span is classified exactly once. */
 function buildTokenizer(linkers: ProseLinker[]): RegExp {
+  linkers.filter((l) => l.pattern.flags).forEach(warnDroppedFlags)
   const parts = [BOLD.source, CODE.source, ...linkers.map((l) => l.pattern.source)]
   return new RegExp(`(${parts.join('|')})`, 'g')
 }

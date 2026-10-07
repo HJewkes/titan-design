@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Animated, Platform, View } from 'react-native'
 import type { Participant } from '@titan-design/chat-protocol'
+import { usePrefersReducedMotion } from '../../../hooks/usePrefersReducedMotion'
 import { cn } from '../../../utils/cn'
 import { Indicator } from '../../ui/indicator'
 import { Surface } from '../../ui/surface'
@@ -10,23 +11,45 @@ import { announceOnIOS } from './announceOnIOS'
 export interface TypingIndicatorProps {
   /** Who is composing. Renders nothing when empty. */
   participants: readonly Participant[]
+  /** Replaces any of the built-in strings; the rest keep their defaults. */
+  labels?: Partial<TypingIndicatorLabels>
   className?: string
+}
+
+/** The indicator's built-in strings. */
+export interface TypingIndicatorLabels {
+  /** Who is composing, from their display names (never empty). */
+  typing: (names: readonly string[]) => string
 }
 
 const DOT_COUNT = 3
 const STEP_MS = 180
 const DIM = 0.3
 
-export function typingLabel(participants: readonly Participant[]): string {
-  const names = participants.map((participant) => participant.displayName)
+function defaultTypingLabel(names: readonly string[]): string {
   if (names.length === 1) return `${names[0]} is typing`
   if (names.length === 2) return `${names[0]} and ${names[1]} are typing`
   return `${names.length} people are typing`
 }
 
+export function typingLabel(
+  participants: readonly Participant[],
+  labels?: Partial<TypingIndicatorLabels>
+): string {
+  const typing = labels?.typing ?? defaultTypingLabel
+  return typing(participants.map((participant) => participant.displayName))
+}
+
+/** Held at full opacity under reduced motion; a runtime flip stops the loop in the cleanup. */
 function useStaggeredPulse(index: number): Animated.Value {
-  const [opacity] = useState(() => new Animated.Value(DIM))
+  const prefersReducedMotion = usePrefersReducedMotion()
+  const [opacity] = useState(() => new Animated.Value(prefersReducedMotion ? 1 : DIM))
   useEffect(() => {
+    if (prefersReducedMotion) {
+      opacity.setValue(1)
+      return
+    }
+    opacity.setValue(DIM)
     const useNativeDriver = Platform.OS !== 'web'
     const loop = Animated.loop(
       Animated.sequence([
@@ -38,7 +61,7 @@ function useStaggeredPulse(index: number): Animated.Value {
     )
     loop.start()
     return () => loop.stop()
-  }, [index, opacity])
+  }, [index, opacity, prefersReducedMotion])
   return opacity
 }
 
@@ -46,7 +69,7 @@ function useStaggeredPulse(index: number): Animated.Value {
 function PulsingDot({ index }: { index: number }) {
   const opacity = useStaggeredPulse(index)
   return (
-    <Animated.View style={{ opacity }}>
+    <Animated.View style={{ opacity }} testID="chat-typing-dot">
       <Indicator size="md" color="default" />
     </Animated.View>
   )
@@ -62,18 +85,17 @@ function useTypingAnnouncement(label: string) {
 }
 
 /** Three staggered dots in a small bubble, plus who is composing. Composes Surface + Indicator + Typography. */
-export function TypingIndicator({ participants, className }: TypingIndicatorProps) {
-  useTypingAnnouncement(participants.length === 0 ? '' : typingLabel(participants))
+export function TypingIndicator({ participants, labels, className }: TypingIndicatorProps) {
+  const label = participants.length === 0 ? '' : typingLabel(participants, labels)
+  useTypingAnnouncement(label)
   return (
     <View accessibilityLiveRegion="polite" testID="chat-typing-region">
-      {participants.length === 0 ? null : (
-        <TypingContent participants={participants} className={className} />
-      )}
+      {participants.length === 0 ? null : <TypingContent label={label} className={className} />}
     </View>
   )
 }
 
-function TypingContent({ participants, className }: TypingIndicatorProps) {
+function TypingContent({ label, className }: { label: string; className?: string }) {
   return (
     <View
       className={cn('flex-row items-center gap-inline-md', className)}
@@ -85,7 +107,7 @@ function TypingContent({ participants, className }: TypingIndicatorProps) {
         ))}
       </Surface>
       <Typography variant="caption" color="tertiary">
-        {typingLabel(participants)}
+        {label}
       </Typography>
     </View>
   )

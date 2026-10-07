@@ -26,8 +26,8 @@ is Stable until it is _formally promoted_. This is deliberate: the burden of
 proof is on promotion, not on flagging.
 
 `status:review` is now the _residue_, not the population. Every story under
-`src/components` and `src/lab` carries an explicit status except the ones listed
-under [Not yet tagged](#not-yet-tagged); a story that still reads Needs-Review is
+`src/components` and `src/lab` carries an explicit status
+([Not yet tagged](#not-yet-tagged) is empty); a story that still reads Needs-Review is
 one nobody has run the rule against.
 
 ## The tagging rule — derive it, don't decide it
@@ -36,19 +36,22 @@ A status is a **function of the repo**, not a judgment call. Given a story file,
 in this order:
 
 1. Under `src/lab/**` → **`status:lab`**. No exceptions; lab is excluded from
-   publish builds (`package.json` `files` carries `!src/lab`).
+   publish builds (`package.json` `files` carries `!src/lab`). A story titled
+   `Lab/…` elsewhere is also `status:lab`: it records a design decision about
+   the components beside it rather than defining one, and the public Storybook
+   build drops every `Lab/` title (`.storybook/main.ts`).
 2. Under `src/components/ui/<dir>/`, where `<dir>` is the component's own directory (for charts,
-   `ui/charts/<dir>/`), and the clauses below hold (all five once clause 5 is live, clauses 1 to 4 until then), it is **`status:stable`**:
+   `ui/charts/<dir>/`), and all five conditions below hold, it is **`status:stable`**:
    - a test file in `<dir>` whose source contains `axe`;
    - `<dir>` has its own `README.md`, **or** its story carries a `Composes:`
      line, **or** it has a row in the
      [`ui/*` family README](src/components/ui/README.md) dependency map;
    - no heading in [`REJECTED.md`](REJECTED.md) names one of its exports;
    - no row in [`DEPRECATIONS.md`](DEPRECATIONS.md) names one of its exports;
-   - Clause 5 takes effect when TD-26 lands; TD-26 creates `stable-layers-baseline.json` from the
-     components that are stable on that day, so no component loses stable on the day the rule
-     starts. Until then clauses 1 to 4 alone derive the list (31 stable, 2 candidate as of this
-     revision).
+   - every applicable test layer exists, or its story declares the layer n/a
+     ([clause 5](#clause-5-every-applicable-test-layer)). Clause 5 took effect with TD-26 slice
+     S6 (TD-93). `stable-layers-baseline.json` holds the gaps of the components that were stable
+     that day, so no component lost stable when the rule started.
 3. Anything else under `src/components` → **`status:candidate`**.
 
 Clause 2's fourth condition is an addition made when this rule was written
@@ -63,7 +66,7 @@ with it rather than quietly tagging around it.
 Clause 5 is live as of TD-26 slice S6 (TD-93). A `ui/` component is stable only if each
 applicable layer below exists in `<dir>`, or its story `meta` declares the layer not applicable:
 
-```ts
+```ts fragment
 parameters: { layers: { keyboard: 'n/a: focus belongs to the wrapped Button' } },
 ```
 
@@ -88,7 +91,8 @@ overrides a reading that is wrong for one component.
 
 `src/test/stable-layers.test.ts` derives the layers by reading files, with no Storybook boot.
 `src/test/stable-layers-baseline.json` lists the layers each stable component lacked on the
-day clause 5 started: all 31 stable components, so none lost `stable` that day. It may only
+day clause 5 started: every component stable that day (`ORIGINAL_BASELINE` in the test), so none
+lost `stable` that day. It may only
 shrink, and the test pins that day's entries: a new component or a new layer in it fails. A gap it does not list fails the test, and a listed layer that now exists fails as stale
 until someone removes it. A component that lacks a layer and has no baseline entry cannot be
 promoted until it adds the layer or declares it n/a.
@@ -110,7 +114,7 @@ Consequences worth stating out loud:
 Promotion is a **one-line edit** on the component's story `meta`, negating the
 inherited default and adding the new status:
 
-```ts
+```ts fragment
 const meta: Meta<typeof Foo> = {
   title: 'Custom/Workout/Foo',
   tags: ['status:stable', '!status:review'], // ! negates the inherited default
@@ -126,13 +130,12 @@ See [the review protocol](#formal-review-protocol).
 
 ## Not yet tagged
 
-Two sets were held open by parallel work when the rule was first applied and
-still inherit `status:review`. A later pass finishes them by re-running the rule:
-
-| Files                                                | Held by      |
-| ---------------------------------------------------- | ------------ |
-| `src/components/custom/Workout/**` (56 stories)      | E3 batch B2  |
-| `ui/{menu,popover,modal,select,tooltip}` stories (5) | trigger work |
+None. The two sets held open when the rule was first applied, `src/components/custom/Workout/**`
+and the `ui/{menu,popover,modal,select,tooltip}` stories, were tagged by TD-8. Workout stories are
+`candidate`, or `lab` under step 1 for the `*.decision.stories.tsx` files and `VolumeStatusPalette`,
+all titled `Lab/Decisions/…`; the
+five `ui/` families are `candidate` because clause 5 fails for them (no `logic` layer), so none of
+them derives `stable` yet.
 
 ## Formal review protocol
 
@@ -168,25 +171,43 @@ Rank highest confidence first, then walk the list as the protocol above says.
 
 ## Generic primitives (`Components/Atoms|Molecules|Organisms`)
 
-The **42** generic primitives (Button, Card, Input, Modal, Table, …) are a
-separate foundation tier and are out of scope for the Voltras-workout review
-pass. This file used to say "~52": that number predated the `ui/` reorganisation
-and was never recounted. The count is `ls -d src/components/ui/*/ src/components/ui/charts/*/`, less
-`charts` and `kit`: 42 directories today, one per primitive, and `src/arch/arch-graph.json` lists
-them all too. `empty-state` is the newest, moved in from `custom/` by migration M3 (#279);
-`typography` and `eyebrow` came in by migration M2 (#277). One of the 42 is `trigger`
-(`TriggerSurface`, added in #176), an internal helper that `Menu`, `Popover` and `Tooltip`
-compose. It is not exported from the `ui` barrel and has no story.
+The generic primitives (Button, Card, Input, Modal, Table, …) are a separate foundation tier and
+are out of scope for the Voltras-workout review pass. Each has its own directory under
+`src/components/ui/` or `src/components/ui/charts/`, and `src/arch/arch-graph.json` lists them too.
+`charts/` and `charts/kit/` hold no component. Count the directories from `packages/ui`:
 
-The 41 with stories no longer default to `status:review`: the tagging rule
-above resolves them (31 `stable`, 5 `candidate`, 5 held open). Their assessment
-happened by rule, not by session. `typography`, `eyebrow` and `empty-state` are `ui/*`
-and so became stable-**eligible** on the move, but clause 2's fourth condition holds
-them at `candidate` while the M2 and M3 shim rows sit in `DEPRECATIONS.md`; they are
-promotable once the shims go in 0.23.0. `table` joined them by migration M4 (#367) and is
-held the same way, and so are `spark-bars` (M5, TD-188),`file-path-label` (M6, TD-418) and `date-time` (M7, TD-428). The other two `candidate` rows are the
-deprecated `HelpTip` and `Tile`.
-`TriggerSurface` has no story, so it carries no status tag.
+```sh
+ls -d src/components/ui/*/ src/components/ui/charts/*/ | grep -vcE '/charts/$|/kit/$'
+```
+
+A directory without a story file carries no status tag. One is `trigger` (`TriggerSurface`, added
+in #176), an internal helper that `Menu`, `Popover` and `Tooltip` compose. It is not exported from
+the `ui` barrel. The others hold a model, fixtures and an `API-NOTE.md` ahead of their component.
+List them:
+
+```sh
+for d in src/components/ui/*/ src/components/ui/charts/*/; do ls "$d"*.stories.tsx >/dev/null 2>&1 || echo "$d"; done | grep -vE '/charts/$|/kit/$'
+```
+
+The directories with stories no longer default to `status:review`. The tagging rule resolves
+them, by rule and not by session. Count each status:
+
+```sh
+for d in src/components/ui/*/ src/components/ui/charts/*/; do grep -ho "'status:[a-z]*'" "$d"*.stories.tsx 2>/dev/null | sort -u; done | sort | uniq -c
+```
+
+Each `candidate` is held by a named clause:
+
+- **Clause 2's fourth condition** (a `DEPRECATIONS.md` row). `typography`, `eyebrow` and
+  `empty-state` became stable-eligible when they moved into `ui/`, but the M2 and M3 shim rows name
+  their exports. They are promotable once the shims go in 0.23.0. `table` (M4, #367), `spark-bars` (M5, TD-188),
+  `file-path-label` (M6, TD-418), `date-time` (M7, TD-428), `scatter`, `treemap` and `gauge` (M8,
+  TD-471) and `metric` (M9, TD-53) are held the same way. `help-tip` and `tile` are deprecated.
+- **Clause 5** (a missing test layer). `menu`, `popover`, `modal`, `select` and `tooltip` have no
+  `logic` layer (see [Not yet tagged](#not-yet-tagged)). `stat-card` has no `logic` layer either.
+  It was not stable when clause 5 started, so it has no baseline entry to cover the gap.
+- **No clause holds `carousel`.** All five conditions of clause 2 pass for it, so the rule derives
+  `stable`. Its story still carries the `status:candidate` tag it shipped with in #274.
 
 ## Related
 

@@ -12,27 +12,28 @@ the tier map below is a documentation contract, not a directory layout.
 ```
 LiveFatiguePanel              ← the composition (Live panel v2)
 ├─ LiveAuraFrame              (Workout/ — coaching flood, category tracks the verdict)
-├─ VelocityHero               ← primary read
-│  └─ VelocityStrip           (Workout/ — reused as-is; VL bands overlaid on its peak scale)
+├─ VelocityHero               ← primary read; an alias of VelocityStrip with defaults
+│  └─ VelocityStrip           (Workout/ — variant="hero", scale="peak", height 300, last rep live)
 └─ LiveFatigueCard            ← secondary read (consumes LiveFatigueModel)
+   ├─ Surface                 (ui/surface — the base-plane, paper-accented card ground)
    ├─ VerdictHero             (RPE number + verdict word, tone-flooded)
    ├─ FatigueLights           (VEL/ROM/TEMPO "why" dots)
-   │  ├─ Indicator           (ui/indicator — the dot primitive, glow)
+   │  ├─ StatusDot            (Workout/ — deprecated, migrates to ui/indicator under AW-127)
    │  └─ Tooltip              (ui/tooltip — hover detail)
    ├─ RomProgressionChart     (per-rep silver/red depth bars + reference lines)
-   ├─ GhostSpark              (per-rep velocity-time sparkline; tempo EMBEDDED)
-   │  ├─ GhostBand            (the phase-coloured axis band — ECC/CON labelled inside)
-   │  └─ GhostBloom           (the ghost fan + silver→red current line; orientation up/down)
-   ├─ DualGhostSpark          (dual-Voltra: ONE GhostBand + TWO mirrored GhostBlooms)
-   │  ├─ GhostBand            (the SAME band, centred, shared by both devices)
-   │  └─ GhostBloom ×2        (left up / right down — a one-prop flip, one shared scale)
-   └─ Surface                 (ui/surface — the base-plane, paper-accented card ground)
+   └─ GhostSpark              (per-rep velocity-time sparkline; tempo EMBEDDED)
+      ├─ GhostBand            (the phase-coloured axis band — ECC/CON labelled inside)
+      └─ GhostBloom           (the ghost fan + silver→red current line; orientation up/down)
+
+DualGhostSpark                ← sibling root: dual-Voltra, not rendered by the card or panel
+├─ GhostBand                  (the SAME band, centred, shared by both devices)
+└─ GhostBloom ×2              (left up / right down — a one-prop flip, one shared scale)
 ```
 
 ## Tier map
 
 **Atoms** — `VerdictHero` · `FatigueLights` · `RomProgressionChart` · `GhostBand` · `GhostBloom`
-**Molecules** — `VelocityHero` (VelocityStrip + VL bands) · `GhostSpark` (band + one bloom) ·
+**Molecules** — `VelocityHero` (alias of VelocityStrip with defaults) · `GhostSpark` (band + one bloom) ·
 `DualGhostSpark` (one band + two mirrored blooms)
 **Organisms** — `LiveFatigueCard` (the card, one data contract) · `LiveFatiguePanel` (hero + card + aura)
 
@@ -44,8 +45,9 @@ LiveFatiguePanel              ← the composition (Live panel v2)
   `FatigueLights.tsx:12` still imports the deprecated `StatusDot`; that call site migrates
   under AW-127 (`DEPRECATIONS.md`). Compose `Indicator` in anything new here.
 - **`Tooltip`** (ui/tooltip/) — the per-dimension hover detail.
-- **`VelocityStrip`** (Workout/) — the hero reuses it verbatim; `VelocityHero` only adds
-  the loss-relative VL20/VL30 band overlay on the strip's own peak scale.
+- **`VelocityStrip`** (Workout/) — `VelocityHero` is an alias of it with defaults
+  (`variant="hero"`, `scale="peak"`, `height` 300, the last rep live). The loss bar fill and
+  the VL20/VL30 bands are VelocityStrip's own defaults; the hero adds nothing on top.
 - **`LiveAuraFrame`** (Workout/) — the coaching flood.
 - **`Surface`** (ui/surface/) — the card ground (`level="base"`, one step above the
   `background` shell), separated by the alpha `hairline-default` edge and finished with
@@ -53,8 +55,8 @@ LiveFatiguePanel              ← the composition (Live panel v2)
 - **`GhostBand` / `GhostBloom`** — the single `GhostSpark` and the dual `DualGhostSpark`
   compose the SAME band + bloom; the dual is the bloom with `orientation="down"`, not a
   second renderer. No forked path / band / tint code, so a bloom improvement reaches both.
-- **Tokens** — colours come from `getSemanticColors` / `primitiveRamps`; formatting from
-  `roundTempo`. No literal surface/status hex constants.
+- **Tokens** — colours come from `getSemanticColors` / `primitiveRamps`. No literal
+  surface/status hex constants.
 
 **No new top-level primitives promoted.** Every genuinely-new leaf here (verdict hero,
 lights, ROM chart, ghost-spark) is fatigue-specific with a single consumer (the card),
@@ -90,15 +92,15 @@ measurement for tests and for a consumer that already knows the width.
 | tier | width     | layout  | padding · gap | card width                         |
 | ---- | --------- | ------- | ------------- | ---------------------------------- |
 | `xs` | < 600     | stacked | 16 · 12       | full content width                 |
-| `sm` | 600–999   | stacked | 20 · 14       | full content width                 |
-| `md` | 1000–1199 | row     | 24 · 18       | 318                                |
-| `lg` | 1200–1919 | row     | 24 · 18       | 318                                |
-| `xl` | ≥ 1920    | row     | 24 · 18       | `0.22 × width`, clamped to 318–460 |
+| `sm` | 600–999   | stacked | 16 · 16       | full content width                 |
+| `md` | 1000–1199 | row     | 24 · 16       | 318                                |
+| `lg` | 1200–1919 | row     | 24 · 16       | 318                                |
+| `xl` | ≥ 1920    | row     | 24 · 16       | `0.22 × width`, clamped to 318–460 |
 
 The edges are titan's own `primitiveBreakpoints`, asserted by identity in
 `panel-layout.test.ts` so nobody can quietly swap in a hand-picked set. Padding and gap
-are deliberately frozen from `md` up: voltras-mcp's `panel-geometry.ts` derives its stage
-chrome from them, and moving them would overflow the wall stage.
+are not frozen: voltras-mcp must import `panelLayout` rather than copy these numbers, or
+its stage chrome drifts from the panel whenever they move.
 
 `panelBodySplit` is the one-height rule: side by side, the hero and the card both take the
 whole `bodyHeight`; stacked, they share it (card 0.55, gap taken out first). Both numbers
@@ -115,7 +117,7 @@ read from across a room mid-set, and the visual baselines need a deterministic r
   are NOT on the model (they come from the live-view velocity path) — passed as the
   panel's separate `velocity` prop.
 - **Open — voltras-mcp duplicates the panel geometry:** `panel-geometry.ts` hardcodes
-  `FATIGUE_CARD_WIDTH = 318`, `PANEL_PAD = 24` and `HERO_EYEBROW_ALLOWANCE = 26` so the
+  `FATIGUE_CARD_WIDTH = 318` (the value of this family's `CARD_WIDTH_BASE`, which `LiveFatigueCard` now defaults to), `PANEL_PAD = 24` and `HERO_EYEBROW_ALLOWANCE = 26` so the
   idle stage can prefigure the panel. Those are now derivable — `panelLayout` /
   `panelBodySplit` / `HERO_EYEBROW_ALLOWANCE` are exported from this family's barrel. Until
   the SPA imports them, its idle stage will draw a 318 card placeholder where the live panel

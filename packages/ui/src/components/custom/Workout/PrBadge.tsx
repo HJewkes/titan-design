@@ -22,12 +22,13 @@ export interface PrBadgeProps extends ViewProps {
   className?: string
 }
 
-const typeLabels: Record<PRType, string> = {
-  e1rm: 'PR e1RM',
-  weight: 'PR Weight',
-  reps: 'PR Reps',
-  volume: 'PR Volume',
-  velocity: 'PR Velocity',
+/** Base name of each PR type; `PrBadge` prefixes it with "PR", `PrHistoryModal` shows it bare. */
+export const PR_TYPE_LABELS: Record<PRType, string> = {
+  e1rm: 'e1RM',
+  weight: 'Weight',
+  reps: 'Reps',
+  volume: 'Volume',
+  velocity: 'Velocity',
 }
 
 export function PrBadge({
@@ -39,7 +40,7 @@ export function PrBadge({
   className,
   ...props
 }: PrBadgeProps) {
-  const resolvedLabel = labelProp ?? typeLabels[type]
+  const resolvedLabel = labelProp ?? `PR ${PR_TYPE_LABELS[type]}`
   const brandPrimary = resolveColor('brand-primary')
   const [scale] = useState(() => new Animated.Value(animate ? 0.8 : 1))
   const [opacity] = useState(() => new Animated.Value(animate ? 0 : 1))

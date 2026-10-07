@@ -2,7 +2,10 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Progress, CircularProgress, ProgressSteps } from './Progress'
-import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
+import { Surface } from '../surface'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { capturedByNode } from '../../../test/classname-capture'
+import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
 describe('Progress', () => {
   it('renders correctly', () => {
@@ -91,6 +94,26 @@ describe('Progress', () => {
     expect(container.firstChild).toBeInTheDocument()
   })
 
+  describe('track colour', () => {
+    it('draws a neutral hairline track under a light Surface', () => {
+      render(
+        <Surface theme="light">
+          <Progress value={50} color="success" />
+        </Surface>
+      )
+      const classes = capturedByNode.get(screen.getByRole('progressbar'))?.split(' ')
+      expect(classes).toContain('bg-hairline')
+      expect(classes).not.toContain('bg-status-success-muted')
+    })
+
+    it('keeps the tone wash track in dark', () => {
+      render(<Progress value={50} color="success" />)
+      const classes = capturedByNode.get(screen.getByRole('progressbar'))?.split(' ')
+      expect(classes).toContain('bg-status-success-muted')
+      expect(classes).not.toContain('bg-hairline')
+    })
+  })
+
   describe('trackWidth and customColor', () => {
     it('supports fixed trackWidth', () => {
       const { container } = render(<Progress value={50} trackWidth={60} />)
@@ -151,11 +174,20 @@ describe('Progress', () => {
       expect(circles.length).toBe(2) // track + progress
     })
 
-    it('applies custom color to SVG progress circle', () => {
-      const { container } = render(<CircularProgress value={50} color="success" />)
-      const progressCircle = container.querySelectorAll('circle')[1]
-      expect(progressCircle?.getAttribute('stroke')).toBe('var(--color-status-success)')
-    })
+    it.each(['dark', 'light'] as const)(
+      'strokes the arc and track with hex in %s mode',
+      (theme) => {
+        const colors = getSemanticColors(theme)
+        const { container } = render(
+          <Surface theme={theme}>
+            <CircularProgress value={50} color="success" />
+          </Surface>
+        )
+        const [track, arc] = container.querySelectorAll('circle')
+        expect(arc?.getAttribute('stroke')).toBe(colors['status-success'])
+        expect(track?.getAttribute('stroke')).toBe(colors['hairline-default'])
+      }
+    )
   })
 
   describe('ProgressSteps', () => {
@@ -224,14 +256,17 @@ describe('Progress', () => {
  * own gaps. Unchanged in pixels.
  */
 describe('Progress geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'Progress.tsx')
+  it('the bar root ships its stack gap', () => {
+    render(<Progress value={40} label="Upload" />)
+    const root = screen.getByRole('progressbar').parentElement
+    expect(spacingClassesAt(root)).toEqual(['w-full', 'gap-stack-sm'])
+    expect(resolveAll(['w-full', 'gap-stack-sm'])).toEqual(['100%', '4px'])
+  })
 
-  it.each([
-    ['the bar root', 'w-full gap-stack-sm', ['100%', '4px']],
-    ['the steps root', 'w-full gap-stack-md', ['100%', '8px']],
-  ] as const)('%s ships `%s`', (_label, classes, pixels) => {
-    expect(source).toContain(classes)
-    const spacing = classes.split(' ').filter((c) => resolveAll([c])[0] !== undefined)
-    expect(resolveAll(spacing)).toEqual([...pixels])
+  it('the steps root ships its stack gap', () => {
+    render(<ProgressSteps currentStep={0} totalSteps={2} labels={['Plan', 'Build']} />)
+    const root = screen.getByText('Plan').parentElement?.parentElement ?? null
+    expect(spacingClassesAt(root)).toEqual(['w-full', 'gap-stack-md'])
+    expect(resolveAll(['w-full', 'gap-stack-md'])).toEqual(['100%', '8px'])
   })
 })

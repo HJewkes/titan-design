@@ -24,7 +24,7 @@ export function TableSelectAllCell({ className }: TableSelectAllCellProps) {
     <View className={cn('w-12 px-4 py-3 items-center justify-center', className)}>
       <Pressable
         accessibilityRole="checkbox"
-        accessibilityState={{ checked: allSelected ? true : someSelected ? 'mixed' : false }}
+        aria-checked={allSelected ? true : someSelected ? 'mixed' : false}
         onPress={() => onSelectAll?.(!allSelected)}
         className={cn(
           'w-5 h-5 rounded border-2 items-center justify-center',
@@ -63,7 +63,7 @@ export function TableSelectCell({ rowId, className }: TableSelectCellProps) {
     <View className={cn('w-12 px-4 py-3.5 items-center justify-center', className)}>
       <Pressable
         accessibilityRole="checkbox"
-        accessibilityState={{ checked: isSelected }}
+        aria-checked={isSelected}
         onPress={() => onSelectRow?.(rowId, !isSelected)}
         className={cn(
           'w-5 h-5 rounded border-2 items-center justify-center',

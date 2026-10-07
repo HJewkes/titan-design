@@ -20,6 +20,7 @@ const meta: Meta<typeof Chip> = {
       options: ['sm', 'md', 'lg'],
     },
     isDisabled: { control: 'boolean' },
+    isSelected: { control: 'boolean' },
   },
 }
 

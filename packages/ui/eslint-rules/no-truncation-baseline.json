@@ -1,0 +1,56 @@
+{
+  "src/components/custom/ActiveWork/InitiativeCard.tsx": {
+    "numberOfLines": 1
+  },
+  "src/components/custom/ActiveWork/SessionDetail.tsx": {
+    "numberOfLines": 1
+  },
+  "src/components/custom/ActiveWork/SessionListItem.tsx": {
+    "numberOfLines": 1
+  },
+  "src/components/custom/ActiveWork/TaskRow.tsx": {
+    "numberOfLines": 2
+  },
+  "src/components/custom/charts/SetBarChart.tsx": {
+    "numberOfLines": 1
+  },
+  "src/components/custom/Chat/Composer.tsx": {
+    "numberOfLines": 1
+  },
+  "src/components/custom/Sidebar/Sidebar.tsx": {
+    "numberOfLines": 1
+  },
+  "src/components/custom/Workout/ExerciseHeading.tsx": {
+    "maxLines": 2
+  },
+  "src/components/custom/Workout/GoalCard.tsx": {
+    "maxLines": 1
+  },
+  "src/components/custom/Workout/GoalMilestoneSummary.tsx": {
+    "maxLines": 3
+  },
+  "src/components/custom/Workout/GoalMuscleCard.tsx": {
+    "maxLines": 1
+  },
+  "src/components/custom/Workout/InputBar.tsx": {
+    "numberOfLines": 1
+  },
+  "src/components/custom/Workout/SetStrip.tsx": {
+    "numberOfLines": 2
+  },
+  "src/components/custom/Workout/VelocityBandOverlay.tsx": {
+    "numberOfLines": 1
+  },
+  "src/components/custom/Workout/wholeBodyCardParts.tsx": {
+    "maxLines": 1
+  },
+  "src/components/shell/workout/DualPinnedLiveStrip.tsx": {
+    "numberOfLines": 1
+  },
+  "src/components/shell/workout/PinnedLiveStrip.tsx": {
+    "numberOfLines": 1
+  },
+  "src/components/shell/workout/pinnedLiveStripParts.tsx": {
+    "numberOfLines": 2
+  }
+}
