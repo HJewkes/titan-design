@@ -219,6 +219,7 @@ export interface AppShellProps {
     children?: ReactNode;
     // (undocumented)
     className?: string;
+    isMainLandmark?: boolean;
     liveKey?: string | null;
     nav?: ReactNode;
     navItems?: SideNavItem[];
@@ -1834,7 +1835,7 @@ export interface FatigueMeterProps extends ViewProps {
     max?: number;
     needleColor?: string;
     size?: ZoneTrackSize;
-    thresholds?: [number, number, number];
+    thresholds?: VelocityLossThresholds;
     trackHeight?: number;
     value: number;
     zoneColors?: [string, string, string, string];
@@ -3503,6 +3504,25 @@ export function hexToRgb(hex: string): {
 } | null;
 
 // @public
+export interface HighlightRange {
+    end: number;
+    start: number;
+}
+
+// @public
+export function HighlightText(input: HighlightTextProps): react_jsx_runtime.JSX.Element | null;
+
+// @public
+export interface HighlightTextProps {
+    className?: string;
+    color?: TypographyColor;
+    maxLines?: number;
+    ranges: readonly HighlightRange[];
+    text: string;
+    variant?: TypographyVariant;
+}
+
+// @public
 export function HistoryIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -3767,6 +3787,20 @@ export function isMilestoneMet(target: GoalMilestoneTarget, latest: GoalMileston
 
 // @public
 export function KanbanIcon(input: IconProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export function Kbd(input: KbdProps): react_jsx_runtime.JSX.Element | null;
+
+// @public
+export interface KbdProps {
+    accessibilityLabel?: string;
+    className?: string;
+    keys: string[];
+    size?: KbdSize;
+}
+
+// @public
+export type KbdSize = 'sm' | 'md';
 
 // @public
 export function Label(props: LabelProps): react_jsx_runtime.JSX.Element;
@@ -5621,13 +5655,13 @@ export type ProseSize = 'sm' | 'md';
 export interface PrRecord {
     date: string;
     isRecent?: boolean;
-    type: PrRecordType;
+    type: PRType;
     unit?: 'lbs' | 'kg';
     value: string | number;
 }
 
-// @public (undocumented)
-export type PrRecordType = 'e1rm' | 'weight' | 'reps' | 'volume' | 'velocity';
+// @public @deprecated (undocumented)
+export type PrRecordType = PRType;
 
 // @public
 export function prRefLinker(onPress?: (number: number) => void): ProseLinker;
@@ -5691,6 +5725,7 @@ export interface ReadinessCheckProps {
     // (undocumented)
     className?: string;
     factors: ReadinessFactor[];
+    isConfirmDisabled?: boolean;
     onConfirm: () => void;
     score: number;
     warmUpCompleted: boolean;
@@ -6859,6 +6894,7 @@ export interface SideNavItem {
 export interface SideNavProps {
     accentBarClassName?: string;
     accentClassName?: string;
+    accessibilityLabel?: string;
     activeKey: string;
     // (undocumented)
     className?: string;

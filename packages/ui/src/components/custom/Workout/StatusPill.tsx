@@ -8,8 +8,11 @@ import { StatusDot, type StatusDotVariant } from './StatusDot'
  * Auto-regulation verdict — the human-readable read-once summary of a set's
  * velocity-loss state.
  * - `productive` — in the band, keep going (success)
- * - `threshold`  — VL20 reached, approaching fatigue (warning)
- * - `stop`       — VL28+, terminate the set (error)
+ * - `threshold`  — the middle velocity-loss cut point reached, approaching fatigue (warning)
+ * - `stop`       — the top cut point reached, terminate the set (error)
+ *
+ * The cut points are {@link VL_LOSS_THRESHOLDS} (`velocity-scale.ts`); the caller decides the
+ * status from them.
  */
 export type StatusPillStatus = 'productive' | 'threshold' | 'stop'
 

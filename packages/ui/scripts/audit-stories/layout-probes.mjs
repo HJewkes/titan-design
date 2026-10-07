@@ -1,9 +1,13 @@
-// Pure judges over collectLayout output (TD-650 P1, P2). Each is linear per container and reads
+// Pure judges over collectLayout output (TD-650 P1-P5). Each is linear per container and reads
 // only the collected nodes, so a synthetic tree tests it without a browser.
 
 export const STACKED_INSET = 'stacked-inset'
 export const EDGE_CLEARANCE = 'edge-clearance'
 export const INSET_ASYMMETRY = 'inset-asymmetry'
+export const ALIGNMENT_NEAR_MISS = 'alignment-near-miss'
+export const GAP_OUTLIER = 'gap-outlier'
+export const PROXIMITY_INVERSION = 'proximity-inversion'
+export const FONT_SIZE_NEAR_MISS = 'font-size-near-miss'
 
 const MAX_FINDINGS_PER_KIND = 25
 const MIN_EXCESS = 4 // --space-stack-sm, the smallest stack step
@@ -273,6 +277,272 @@ export function judgeInsetAsymmetry({ nodes }) {
   return findings
 }
 
+// --- P3 alignment-near-miss -------------------------------------------------------------------
+
+const ALIGN_TOLERANCE = 1 // the Vercel optical-alignment rule
+const MAX_BAND = 6
+const HEIGHT_LIMIT = 16
+const LINE_OVERLAP = 0.5
+const q = (v) => Math.round(v * 4) / 4 + 0
+const isFlexRow = ({ layout }) =>
+  (layout.display === 'flex' || layout.display === 'inline-flex') &&
+  layout.flexDirection.startsWith('row')
+
+// The first text a child carries, in document order, when it sits on the child's first line (a
+// label beside an icon does; a caption under an avatar does not).
+function firstText(node, children) {
+  const stack = [node]
+  while (stack.length) {
+    const n = stack.shift()
+    if (n.text) return n.text.first.inkTop < node.ink[1] + node.ink[3] / 2 ? n.text : null
+    stack.unshift(...(children.get(n.id) ?? []))
+  }
+  return null
+}
+
+// Flex-wrap puts children on several rows: a child joins the first line whose vertical range its
+// box overlaps by half the smaller height, so only neighbours on one row are compared.
+function visualLines(kids) {
+  const lines = []
+  for (const kid of [...kids].sort((a, b) => a.box[1] - b.box[1])) {
+    const [top, h] = [kid.box[1], kid.box[3]]
+    const line = lines.find((l) => {
+      const overlap = Math.min(l.bottom, top + h) - Math.max(l.top, top)
+      return overlap >= LINE_OVERLAP * Math.min(h, l.bottom - l.top)
+    })
+    if (!line) lines.push({ top, bottom: top + h, kids: [kid] })
+    else {
+      line.kids.push(kid)
+      line.top = Math.min(line.top, top)
+      line.bottom = Math.max(line.bottom, top + h)
+    }
+  }
+  return lines.map((l) => l.kids.sort((a, b) => a.box[0] - b.box[0]))
+}
+
+function alignmentLines(n, text) {
+  const [, y, , h] = n.ink
+  const lines = { top: y, centre: y + h / 2, bottom: y + h }
+  return text ? { baseline: text.first.baseline, ...lines } : lines
+}
+
+const deltasOf = (a, b) =>
+  Object.keys(a)
+    .filter((k) => k in b)
+    .map((line) => ({ line, d: q(Math.abs(a[line] - b[line])) }))
+
+const describeDeltas = (deltas) => deltas.map(({ line, d }) => `${line} Δ${d}`).join(', ')
+
+const alignsOnBaseline = (container, kid) =>
+  kid.layout.alignSelf.includes('baseline') ||
+  (['auto', 'normal'].includes(kid.layout.alignSelf) &&
+    container.layout.alignItems.includes('baseline'))
+
+// Both children are in a flex row with ink; returns the finding's detail, or null.
+function nearMiss(container, [a, b], children) {
+  const [ta, tb] = [firstText(a, children), firstText(b, children)]
+  const deltas = deltasOf(alignmentLines(a, ta), alignmentLines(b, tb))
+  const baseline = deltas.find((x) => x.line === 'baseline')
+  if (baseline && alignsOnBaseline(container, a) && alignsOnBaseline(container, b))
+    return baseline.d > ALIGN_TOLERANCE ? `baseline Δ${baseline.d} (align-items: baseline)` : null
+  const smallest = Math.min(...deltas.map((x) => x.d))
+  const sizes = [ta, tb].filter(Boolean).map((t) => t.fontSize)
+  const band = Math.min(MAX_BAND, ...sizes.map((s) => s / 2))
+  if (smallest <= ALIGN_TOLERANCE || smallest > band) return null
+  return `${describeDeltas(deltas)} (band ≤ ${+band.toFixed(2)}px)`
+}
+
+function heightMiss([a, b]) {
+  if (!a.paints || !b.paints) return null
+  const d = q(Math.abs(a.box[3] - b.box[3]))
+  return d > ALIGN_TOLERANCE && d <= HEIGHT_LIMIT
+    ? `height Δ${d} (both paint; limit ${HEIGHT_LIMIT}px)`
+    : null
+}
+
+// Neighbouring in-flow children on each visual line of a flex row.
+function rowPairs(container, children) {
+  if (!isFlexRow(container)) return []
+  const kids = (children.get(container.id) ?? []).filter((c) => inFlow(c) && c.ink)
+  if (kids.length < 2) return []
+  const lines =
+    container.layout.flexWrap === 'nowrap'
+      ? [[...kids].sort((a, b) => a.box[0] - b.box[0])]
+      : visualLines(kids)
+  return lines.flatMap((line) => line.slice(1).map((b, i) => [line[i], b]))
+}
+
+export function judgeAlignmentNearMiss({ nodes }) {
+  const { children } = index(nodes)
+  return nodes.flatMap((container) =>
+    rowPairs(container, children).flatMap((pair) =>
+      [nearMiss(container, pair, children), heightMiss(pair)].filter(Boolean).map((detail) => ({
+        kind: ALIGNMENT_NEAR_MISS,
+        selector: pair[0].selector,
+        detail: `${pair[0].selector} vs ${pair[1].selector}: ${detail}`,
+      }))
+    )
+  )
+}
+
+// --- P4 gap-outlier and proximity-inversion --------------------------------------------------------
+
+const OUTLIER_RATIO = 2
+const OUTLIER_EXCESS = 8 // --space-stack-md, one stack step
+const DIVIDER_MAX = 2
+const DECLARED_TOLERANCE = 0.25
+const SECTION_PREFIX = '--space-section-'
+const isDivider = (n, axis) => n.paints && n.box[axis === 'x' ? 2 : 3] <= DIVIDER_MAX
+const inkSpan = (n, axis) => span(n.ink, axis)
+const ratio = (g, m) => (m ? `${+(g / m).toFixed(1)}×` : '∞×')
+
+// Inked in-flow children of a stack, cut into runs at each divider, each run in main-axis order.
+// Inline children share a line, so a block's gaps are read between its block-level children only.
+function stackRuns(container, children) {
+  const axis = stackAxis(container)
+  if (!axis) return { axis, runs: [] }
+  const blockFlow = !container.layout.display.includes('flex')
+  const kids = (children.get(container.id) ?? [])
+    .filter((c) => inFlow(c) && c.ink && !(blockFlow && c.layout.display === 'inline'))
+    .sort((p, q) => inkSpan(p, axis)[0] - inkSpan(q, axis)[0])
+  const runs = [[]]
+  for (const kid of kids) {
+    if (isDivider(kid, axis)) runs.push([])
+    else runs[runs.length - 1].push(kid)
+  }
+  return { axis, runs: runs.filter((r) => r.length) }
+}
+
+// Ink gaps between consecutive children of a run; an overlap is a deliberate layering, not a gap.
+const runGaps = (run, axis) =>
+  run.slice(1).flatMap((b, i) => {
+    const a = run[i]
+    const g = inkSpan(b, axis)[0] - inkSpan(a, axis)[1]
+    return g >= 0 ? [{ a, b, g }] : []
+  })
+
+const cssPx = (v) => parseFloat(v) || 0
+
+// What the author declared between two siblings: facing margins plus the flex gap. Block margins
+// between siblings collapse to the larger one, so that reading counts too.
+function declaredSpacing(container, { a, b }, axis) {
+  const [after, before] = axis === 'x' ? [1, 3] : [2, 0]
+  const [ma, mb] = [a.margin[after], b.margin[before]]
+  const flexed = container.layout.display.includes('flex')
+  const gap = flexed
+    ? cssPx(axis === 'x' ? container.layout.columnGap : container.layout.rowGap)
+    : 0
+  return flexed ? [ma + mb + gap] : [ma + mb, Math.max(ma, mb)]
+}
+
+const isSectionBreak = (container, gap, axis, declared) => {
+  const sections = Object.entries(declared)
+    .filter(([name]) => name.startsWith(SECTION_PREFIX))
+    .map(([, value]) => value)
+  return declaredSpacing(container, gap, axis).some((d) =>
+    sections.some((s) => Math.abs(d - s) <= DECLARED_TOLERANCE)
+  )
+}
+
+export function judgeGapOutlier({ nodes, declared = {} }) {
+  const { children } = index(nodes)
+  const findings = []
+  for (const container of nodes) {
+    const { axis, runs } = stackRuns(container, children)
+    for (const run of runs.filter((r) => r.length >= 3)) {
+      const gaps = runGaps(run, axis)
+      if (gaps.length < 2) continue
+      const m = Math.min(...gaps.map((x) => x.g))
+      for (const gap of gaps) {
+        if (gap.g < OUTLIER_RATIO * m || gap.g - m < OUTLIER_EXCESS) continue
+        if (isSectionBreak(container, gap, axis, declared)) continue
+        findings.push({
+          kind: GAP_OUTLIER,
+          selector: gap.a.selector,
+          detail:
+            `gap ${px(gap.g)} between ${gap.a.selector} and ${gap.b.selector} is ` +
+            `${ratio(gap.g, m)} the ${px(m)} gaps beside it`,
+        })
+      }
+    }
+  }
+  return findings
+}
+
+// A child that is itself a stack of two or more inked children: its largest internal gap, or null.
+function innerGap(group, children) {
+  const { axis, runs } = stackRuns(group, children)
+  const members = runs.flat()
+  if (members.length < 2) return null
+  const gaps = runs.flatMap((run) => runGaps(run, axis).map((x) => x.g))
+  return gaps.length ? Math.max(...gaps) : null
+}
+
+export function judgeProximityInversion({ nodes }) {
+  const { children } = index(nodes)
+  const findings = []
+  for (const parent of nodes) {
+    const { axis, runs } = stackRuns(parent, children)
+    for (const run of runs.filter((r) => r.length >= 2)) {
+      const gaps = runGaps(run, axis)
+      run.forEach((group, i) => {
+        const inner = innerGap(group, children)
+        const beside = [gaps[i - 1], gaps[i]].filter(Boolean)
+        if (!inner || !beside.length) return
+        const outer = beside.reduce((lo, x) => (x.g < lo.g ? x : lo))
+        if (inner < outer.g) return
+        const neighbour = outer.a === group ? outer.b : outer.a
+        findings.push({
+          kind: PROXIMITY_INVERSION,
+          selector: group.selector,
+          detail:
+            `${group.selector}: items ${px(inner)} apart inside, ` +
+            `${px(outer.g)} from ${neighbour.selector} outside`,
+        })
+      })
+    }
+  }
+  return findings
+}
+
+// --- P5 font-size-near-miss ------------------------------------------------------------------------
+
+const FONT_SIZE_NEAR_MISS_MAX = 2 // a larger step reads as deliberate contrast (a hero and its unit)
+
+// Text elements grouped by their nearest flex-row ancestor; text outside any flex row is skipped.
+function textByRow(nodes, byId) {
+  const rows = new Map()
+  for (const n of nodes) {
+    if (!n.text) continue
+    let row = byId.get(n.parent)
+    while (row && !isFlexRow(row)) row = byId.get(row.parent)
+    if (!row) continue
+    if (!rows.has(row.id)) rows.set(row.id, [])
+    rows.get(row.id).push(n)
+  }
+  return [...rows.values()]
+}
+
+export function judgeFontSizeNearMiss({ nodes }) {
+  const { byId } = index(nodes)
+  const pairs = textByRow(nodes, byId).flatMap((texts) =>
+    visualLines(texts).flatMap((line) => line.slice(1).map((b, i) => [line[i], b]))
+  )
+  return pairs.flatMap(([a, b]) => {
+    const d = q(Math.abs(a.text.fontSize - b.text.fontSize))
+    if (d === 0 || d > FONT_SIZE_NEAR_MISS_MAX) return []
+    return [
+      {
+        kind: FONT_SIZE_NEAR_MISS,
+        selector: a.selector,
+        detail:
+          `${a.selector} ${px(a.text.fontSize)} vs ${b.selector} ${px(b.text.fontSize)} ` +
+          `on one line: Δ${d} (limit ${FONT_SIZE_NEAR_MISS_MAX}px)`,
+      },
+    ]
+  })
+}
+
 const capPerKind = (findings, limit) => {
   const seen = {}
   return findings.filter((f) => (seen[f.kind] = (seen[f.kind] ?? 0) + 1) <= limit)
@@ -280,7 +550,15 @@ const capPerKind = (findings, limit) => {
 
 export function judgeLayout(layout, { limit = MAX_FINDINGS_PER_KIND } = {}) {
   return capPerKind(
-    [...judgeStackedInset(layout), ...judgeEdgeClearance(layout), ...judgeInsetAsymmetry(layout)],
+    [
+      ...judgeStackedInset(layout),
+      ...judgeEdgeClearance(layout),
+      ...judgeInsetAsymmetry(layout),
+      ...judgeAlignmentNearMiss(layout),
+      ...judgeGapOutlier(layout),
+      ...judgeProximityInversion(layout),
+      ...judgeFontSizeNearMiss(layout),
+    ],
     limit
   )
 }

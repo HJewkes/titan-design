@@ -18,6 +18,12 @@ import { compileClasses, uiRoot } from './tailwind-compile'
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const config = require('../../eslint.config.js') as Linter.Config[]
 
+// One Linter per file: building it per fixture re-resolves the whole config each time (TD-732).
+let linter: Linter | undefined
+function sharedLinter(): Linter {
+  return (linter ??= new Linter({ configType: 'flat' }))
+}
+
 /**
  * The lint message contract (eslint-rules/README.md): every custom lint message
  * names the violation, says what owns the value, lists real options and names
@@ -256,7 +262,7 @@ function render(entry: Entry, fixture: Fixture): string | undefined {
   const [ruleId, messageId] = entry.id.startsWith('titan/')
     ? [entry.id.split(':')[0], entry.id.split(':')[1]]
     : ['no-restricted-syntax', undefined]
-  const messages = new Linter({ configType: 'flat' }).verify(fixture.code, config, {
+  const messages = sharedLinter().verify(fixture.code, config, {
     filename: path.join(uiRoot, fixture.filename),
   })
   return messages.find(

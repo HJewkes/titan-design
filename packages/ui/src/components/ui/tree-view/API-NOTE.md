@@ -43,7 +43,7 @@ that now holds.
   Storybook play functions. The jsdom APG tests (every key below moves `document.activeElement` and
   holds one `tabindex="0"`) satisfy the task's done-when on their own. The real-browser check also
   runs: an interaction story tagged `play`, in the `storybook` Vitest project that CI's
-  `storybook-play` job runs.
+  `check` job runs.
 
 ## Placement
 
