@@ -53,6 +53,10 @@ const axeSource = fs.readFileSync(
   createRequire(fromUi.resolve('jest-axe')).resolve('axe-core/axe.min.js'),
   'utf8'
 )
+// The preview bundles addon-a11y's own axe-core, which also assigns `window.axe` and runs on each
+// story; sharing that instance hit its "Axe is already running" guard, so this copy moves aside.
+const AXE_GLOBAL = '__titanContrastAxe'
+const axeInitScript = `${axeSource}\n;window.${AXE_GLOBAL} = window.axe; delete window.axe;`
 
 type ReportRow = { key: string; id: string; theme: ContrastTheme } & (
   | { counts: Record<string, number> }
@@ -71,21 +75,22 @@ interface AxeCheckNode {
   any?: { data?: ContrastNode }[]
 }
 
+interface AxeInstance {
+  run(
+    context: string,
+    options: object
+  ): Promise<{ violations: { id: string; nodes: AxeCheckNode[] }[] }>
+}
+
 interface AxeWindow {
-  axe: {
-    run(
-      context: string,
-      options: object
-    ): Promise<{ violations: { id: string; nodes: AxeCheckNode[] }[] }>
-  }
   setTimeout: (handler: () => void, ...rest: unknown[]) => number
   requestAnimationFrame: (callback: (time: number) => void) => number
 }
 
 /** axe at the paused instant: its timer yields run as microtasks, so no page time passes. */
 async function contrastNodes(page: Page): Promise<ContrastNode[]> {
-  return page.evaluate(async () => {
-    const win = window as unknown as AxeWindow
+  return page.evaluate(async (axeGlobal) => {
+    const win = window as unknown as AxeWindow & Record<string, AxeInstance>
     const { setTimeout: realSetTimeout, requestAnimationFrame: realRaf } = win
     win.setTimeout = (handler) => {
       void Promise.resolve().then(handler)
@@ -96,7 +101,7 @@ async function contrastNodes(page: Page): Promise<ContrastNode[]> {
       return 0
     }
     try {
-      const result = await win.axe.run('#storybook-root', {
+      const result = await win[axeGlobal].run('#storybook-root', {
         runOnly: ['color-contrast'],
         resultTypes: ['violations'],
       })
@@ -109,7 +114,7 @@ async function contrastNodes(page: Page): Promise<ContrastNode[]> {
       win.setTimeout = realSetTimeout
       win.requestAnimationFrame = realRaf
     }
-  })
+  }, AXE_GLOBAL)
 }
 
 // Four times Layer 2's guard: the Lab decision records that mount every variant at once took over
@@ -120,7 +125,7 @@ const RENDER_TIMEOUT = 20_000
 /** Renders the story under the paused clock, or returns the blank reason; axe is ready either way. */
 async function renderForAxe(page: Page, id: string, theme: ContrastTheme) {
   await installPausedClock(page)
-  await page.addInitScript({ content: axeSource })
+  await page.addInitScript({ content: axeInitScript })
   const blank = await loadStory(page, id, theme, RENDER_TIMEOUT)
   if (blank) return blank
   if (theme === 'light') await page.evaluate(() => document.documentElement.classList.add('light'))
