@@ -4,9 +4,9 @@
  * When these decisions harden they move into the real `ExerciseCard` + a titan `SessionRail` organism.
  */
 import type { ReactNode } from 'react'
-import { TempoDisplay } from './TempoDisplay'
-import { greyRamp, primitiveRamps } from '../../../theme/tokens/primitives'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { TempoDisplay } from '../../components/custom/Workout/TempoDisplay'
+import { greyRamp, primitiveRamps } from '../../theme/tokens/primitives'
+import { getSemanticColors } from '../../theme/tokens/semantic'
 
 // ---- geometry
 export const RAIL_W = 232
