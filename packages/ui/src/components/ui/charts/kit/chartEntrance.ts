@@ -4,7 +4,7 @@ import { useEffect, useState, type CSSProperties } from 'react'
 import { Platform } from 'react-native'
 import { usePrefersReducedMotion } from '../../../../hooks/usePrefersReducedMotion'
 
-export const CHART_EASE_OUT = 'cubic-bezier(0.22, 1, 0.36, 1)'
+export const CHART_EASE_OUT = 'var(--ease-out)'
 
 export interface EntranceTiming {
   duration: number

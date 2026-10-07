@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest'
-import { LIVE_STRIP_REST_MAX_SECONDS, liveStripGap, liveStripRestReadout } from './liveStripModel'
+import {
+  LIVE_STRIP_REST_MAX_SECONDS,
+  liveStripGap,
+  liveStripRestReadout,
+  sameLiveStripReps,
+  sameLossThresholds,
+} from './liveStripModel'
 
 describe('liveStripRestReadout', () => {
   it.each([
@@ -38,5 +44,28 @@ describe('liveStripGap', () => {
     expect(liveStripGap('set')).toBe('behind')
     expect(liveStripGap('rest')).toBe('missed')
     expect(liveStripGap('idle')).toBe('missed')
+  })
+})
+
+describe('sameLiveStripReps', () => {
+  it('treats equal velocities and zones in new arrays as the same', () => {
+    expect(
+      sameLiveStripReps([{ velocity: 1, zone: 'power' }], [{ velocity: 1, zone: 'power' }])
+    ).toBe(true)
+  })
+
+  it('treats the same velocities with a different zone as not the same', () => {
+    expect(
+      sameLiveStripReps([{ velocity: 1, zone: 'power' }], [{ velocity: 1, zone: 'speed' }])
+    ).toBe(false)
+  })
+})
+
+describe('sameLossThresholds', () => {
+  it('compares thresholds by value, and a missing one only equals a missing one', () => {
+    expect(sameLossThresholds([10, 20, 30], [10, 20, 30])).toBe(true)
+    expect(sameLossThresholds([10, 20, 30], [10, 20, 31])).toBe(false)
+    expect(sameLossThresholds(undefined, undefined)).toBe(true)
+    expect(sameLossThresholds([10, 20, 30], undefined)).toBe(false)
   })
 })

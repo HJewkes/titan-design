@@ -1,7 +1,12 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen, within, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { GoalTrajectoryChart, outcomeReach, trajectoryReach } from './GoalTrajectoryChart'
+import {
+  GoalTrajectoryChart,
+  GoalTrajectoryTreatment,
+  outcomeReach,
+  trajectoryReach,
+} from './GoalTrajectoryChart'
 import type {
   GoalActualPoint,
   GoalExpectedPoint,
@@ -351,7 +356,9 @@ describe('GoalTrajectoryChart', () => {
 
     it('fades the left inner shadow from 16% over the given spread', () => {
       const { container } = render(
-        <GoalTrajectoryChart {...baseProps} leftShadowSpread={0.03} status="on_track" />
+        <GoalTrajectoryTreatment leftShadowSpread={0.03}>
+          <GoalTrajectoryChart {...baseProps} status="on_track" />
+        </GoalTrajectoryTreatment>
       )
       const left = [...container.querySelectorAll('linearGradient')][1]
       const stops = left.querySelectorAll('stop')

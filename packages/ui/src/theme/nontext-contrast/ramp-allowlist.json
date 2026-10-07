@@ -107,6 +107,5 @@
   "light:status-warning-muted:rgba(249, 180, 21, 0.30)": "Tint alpha: composites over the plane so it reads on every elevation.",
   "light:status-warning-strong:rgba(249, 180, 21, 0.50)": "Alpha value: composites over the plane it sits on.",
   "light:text-disabled:rgba(55, 65, 81, 0.48)": "Alpha value: composites over the plane it sits on.",
-  "light:text-primary:#121828": "Named pin semanticPins.textPrimaryLight: no ramp step matches it (primitive contrast audit, 2026-10-03; TD-491 snaps it).",
-  "light:text-secondary:#65748B": "Named pin semanticPins.textSecondaryLight: no ramp step matches it (primitive contrast audit, 2026-10-03; TD-491 snaps it)."
+  "light:text-primary:#121828": "Named pin semanticPins.textPrimaryLight: no ramp step matches it (primitive contrast audit, 2026-10-03; TD-491 snaps it)."
 }

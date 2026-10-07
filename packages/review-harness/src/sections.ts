@@ -71,7 +71,7 @@ export function roundLayout(manifest: Manifest): RoundLayout {
 }
 
 /** The section a frame is shown in, or undefined when it is not in one. */
-export function sectionOf(manifest: Manifest, variantKey: string) {
+function sectionOf(manifest: Manifest, variantKey: string) {
   return manifest.sections?.find((s) => s.variantKeys.includes(variantKey))
 }
 

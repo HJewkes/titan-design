@@ -4,12 +4,14 @@ import {
   Text,
   Pressable,
   type PressableProps,
+  type ViewProps,
   type StyleProp,
   type ViewStyle,
 } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Tooltip } from '../tooltip'
 import { CELL_PADDING, FLEX_CELL, TableContext } from './TableContext'
+import { sortName } from './sort-name'
 import { columnSortState, type ColumnSortState } from './useTableState'
 
 export interface TableHeaderCellProps extends Omit<PressableProps, 'children'> {
@@ -17,6 +19,8 @@ export interface TableHeaderCellProps extends Omit<PressableProps, 'children'> {
   sortKey?: string
   /** Full column name behind an abbreviated label: shown on hover and used as the accessible sort name. */
   tooltip?: string
+  /** Accessible sort name; required when `children` is not a string. Wins over `tooltip`. */
+  sortLabel?: string
   /** Text alignment */
   align?: 'left' | 'center' | 'right'
   /** Cell width in pixels */
@@ -38,6 +42,7 @@ const HEADER_ALIGN = {
 export function TableHeaderCell({
   sortKey,
   tooltip,
+  sortLabel,
   align = 'left',
   width,
   className,
@@ -50,12 +55,13 @@ export function TableHeaderCell({
   const cellStyle = width ? { width } : FLEX_CELL
 
   if (sort.isSortable && sortKey && onSort) {
+    const name = sortName(sortLabel, tooltip, children)
     return (
       <SortableHeaderCell
         sort={sort}
         tooltip={tooltip}
         cellStyle={cellStyle}
-        accessibilityLabel={`Sort by ${tooltip ?? children}`}
+        accessibilityLabel={name ? `Sort by ${name}` : undefined}
         onPress={(e) => {
           onSort(sortKey)
           onPress?.(e)
@@ -84,6 +90,7 @@ export function TableHeaderCell({
         HEADER_ALIGN[align],
         className
       )}
+      {...(props as ViewProps)}
     >
       <HeaderTooltip label={tooltip}>
         <HeaderLabel isSorted={sort.isSorted}>{children}</HeaderLabel>
