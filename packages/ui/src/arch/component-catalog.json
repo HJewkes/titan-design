@@ -6362,6 +6362,13 @@
           "type": "ReadinessFactor[]"
         },
         {
+          "default": "false",
+          "description": "Disables the start button so `onConfirm` cannot fire.",
+          "name": "isConfirmDisabled",
+          "required": false,
+          "type": "boolean"
+        },
+        {
           "default": null,
           "description": "Called when the assessment is confirmed and the workout can begin.",
           "name": "onConfirm",

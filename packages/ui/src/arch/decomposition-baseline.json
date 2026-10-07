@@ -103,9 +103,6 @@
   "components/custom/Workout/ProgramPlanningPage.tsx": {
     "file-lines": 340
   },
-  "components/custom/Workout/ReadinessCheck.tsx": {
-    "file-lines": 227
-  },
   "components/custom/Workout/SegmentedBar.tsx#SegmentedBar>segments.map": {
     "complexity": 17
   },
