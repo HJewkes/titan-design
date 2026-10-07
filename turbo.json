@@ -26,6 +26,9 @@
         "$TURBO_ROOT$/scripts/**"
       ]
     },
+    "test:unit:ci": {
+      "dependsOn": ["^build"]
+    },
     "test:axe": {
       "dependsOn": ["^build"]
     },
