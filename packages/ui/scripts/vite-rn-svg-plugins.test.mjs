@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { createRequire } from 'node:module'
 import { describe, expect, it } from 'vitest'
 import { reactNativeBodyHighlighterEsm } from '../vite-rn-svg-plugins'
