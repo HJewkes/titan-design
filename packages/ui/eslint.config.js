@@ -665,10 +665,6 @@ module.exports = tseslint.config(
       'src/components/custom/Workout/ReadinessCheck.tsx',
       'src/components/custom/Workout/StrengthTrendChart.tsx',
       'src/components/custom/Workout/TempoDisplay.tsx',
-      // TD-536 b11
-      'src/components/custom/Workout/BodyMapDetailPanel.tsx',
-      'src/components/custom/Workout/GoalCard.tsx',
-      'src/components/custom/charts/SetBarChart.tsx',
     ],
     rules: {
       'react/jsx-no-leaked-render': 'off',
