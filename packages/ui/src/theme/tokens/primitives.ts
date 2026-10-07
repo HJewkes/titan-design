@@ -53,8 +53,6 @@ export const resultPaletteColors = {
 export const semanticPins = {
   // Cool navy-black; darker and more blue-shifted than any warm greyRamp step.
   textPrimaryLight: '#121828',
-  // Cool blue-grey; outside greyRamp's warm (R>=G>=B) scale.
-  textSecondaryLight: '#65748B',
   // Pure neutral grey (R=G=B); no warm greyRamp step lands on it exactly.
   backgroundBaseLight: '#EBEBEB',
   // Near-neutral grey, kept one step off backgroundBaseLight by design.
