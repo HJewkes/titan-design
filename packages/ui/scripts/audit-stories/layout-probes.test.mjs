@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   judgeAlignmentNearMiss,
   judgeEdgeClearance,
+  judgeFontSizeNearMiss,
   judgeGapOutlier,
   judgeInsetAsymmetry,
   judgeLayout,
@@ -664,6 +665,58 @@ describe('proximity-inversion', () => {
     const found = groups([12, 4], 12)
     found.nodes.find((n) => n.id === 'g0').layout = { ...flex(), display: 'grid' }
     expect(judgeProximityInversion(found)).toEqual([])
+  })
+})
+
+describe('font-size-near-miss', () => {
+  const row = (wrap = 'nowrap') =>
+    node('r', null, [0, 0, 400, 100], { layout: { ...flex('row'), flexWrap: wrap } })
+  const sized = (id, parent, box, fontSize) =>
+    node(id, parent, box, { selector: `.${id}`, text: { ...textOf(box), fontSize } })
+  const pairAt = (other) =>
+    layout(row(), sized('a', 'r', [0, 0, 40, 16], 14), sized('b', 'r', [50, 0, 40, 16], other))
+
+  it.each([
+    [0, 0],
+    [1, 1],
+    [2, 1],
+    [2.5, 0],
+  ])('two sizes %spx apart on one line give %i findings', (d, count) => {
+    expect(judgeFontSizeNearMiss(pairAt(14 + d))).toHaveLength(count)
+  })
+
+  it('names both sizes, the delta and the limit', () => {
+    expect(judgeFontSizeNearMiss(pairAt(13))).toEqual([
+      {
+        kind: 'font-size-near-miss',
+        selector: '.a',
+        detail: '.a 14px vs .b 13px on one line: Δ1 (limit 2px)',
+      },
+    ])
+  })
+
+  it('leaves a hero number and its unit alone', () => {
+    const hero = sized('a', 'r', [0, 0, 60, 40], 32)
+    const unit = sized('b', 'r', [64, 20, 20, 16], 14)
+    expect(judgeFontSizeNearMiss(layout(row(), hero, unit))).toEqual([])
+  })
+
+  it('compares text nested under one flex row, but only on one visual line', () => {
+    const col = node('c', 'r', [50, 0, 100, 40], { layout: flex('column') })
+    const name = sized('c.0', 'c', [50, 0, 100, 16], 14)
+    const caption = sized('c.1', 'c', [50, 20, 100, 16], 13)
+    const label = sized('a', 'r', [0, 0, 40, 16], 15)
+    expect(
+      judgeFontSizeNearMiss(layout(row(), label, col, name, caption)).map((f) => f.selector)
+    ).toEqual(['.a'])
+  })
+
+  it('skips text with no flex-row ancestor', () => {
+    const block = node('r', null, [0, 0, 400, 100])
+    const a = sized('a', 'r', [0, 0, 40, 16], 14)
+    expect(judgeFontSizeNearMiss(layout(block, a, sized('b', 'r', [50, 0, 40, 16], 13)))).toEqual(
+      []
+    )
   })
 })
 
