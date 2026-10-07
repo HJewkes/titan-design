@@ -5757,7 +5757,7 @@ export interface RepVelocityCurve {
 export function resolveActualWeek(actual: GoalActualPoint, weeks: GoalTrajectoryWeek[]): number | undefined;
 
 // @public
-export function resolveColor(token: ColorToken$1, mode?: ThemeMode): string;
+export function resolveColor(token: ColorToken, mode?: ThemeMode): string;
 
 // @public (undocumented)
 export interface ResolvedSurface {

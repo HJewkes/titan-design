@@ -9,8 +9,8 @@
  * clamps at. It replaced a separate `inset` level in TD-07.14: at ΔE 1.10 from
  * the frame that level was an imperceptible duplicate.
  */
-import type { ColorToken } from './resolve-color'
 import { getSemanticColors, type ThemeMode } from './tokens/semantic'
+import type { ColorToken } from './resolve-color'
 
 export type SurfaceLevel = 'frame' | 'background' | 'base' | 'elevated' | 'raised' | 'overlay'
 
