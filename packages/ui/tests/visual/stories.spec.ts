@@ -167,7 +167,7 @@ async function openClockedPage(browser: Browser) {
 
 // One context and page per worker: a story is a navigation inside it, so the preview loads once a
 // worker instead of once a story (TD-730). The clock cannot rewind, so a story that advances it
-// (SETTLED_CLOCK_PREFIX) takes a page of its own via `isolatedPage` and never reaches this one.
+// (SETTLED_CLOCK_PREFIX, COLD_PAGE_PREFIXES) takes a page of its own via `isolatedPage`.
 const test = base.extend<{ isolatedPage: () => Promise<Page> }, { storyPage: Page }>({
   storyPage: [
     async ({ browser }, use) => {
@@ -189,6 +189,16 @@ const test = base.extend<{ isolatedPage: () => Promise<Page> }, { storyPage: Pag
 })
 
 const advancesClock = (id: string) => id.startsWith(SETTLED_CLOCK_PREFIX)
+
+// The VelocityStrip family draws its SVG labels differently on a page that already loaded another
+// story (13 baselines drifted by a few hundred pixels, same Chromium, same machine), so each takes a
+// cold page like the pre-TD-730 runs did. The cause is retained browser state; it is not pinned down.
+const COLD_PAGE_PREFIXES = [
+  'custom-workout-dataviz-velocitystrip',
+  'custom-workout-dataviz-dualvelocitystrip--',
+]
+const needsOwnPage = (id: string) =>
+  advancesClock(id) || COLD_PAGE_PREFIXES.some((prefix) => id.startsWith(prefix))
 
 async function renderStory(page: Page, id: string) {
   const events = pageEvents.get(page) ?? []
@@ -215,7 +225,7 @@ test('the story index lists every in-scope story', () => {
 test.describe('storybook story baselines', () => {
   for (const id of storyIds) {
     test(id, async ({ storyPage, isolatedPage }) => {
-      const page = advancesClock(id) ? await isolatedPage() : storyPage
+      const page = needsOwnPage(id) ? await isolatedPage() : storyPage
       const root = await renderStory(page, id)
       await expect(root, `visual drift for ${id}`).toHaveScreenshot(`${id}.png`, SHOT_OPTIONS)
     })
@@ -272,7 +282,9 @@ async function renderSensitivityStory(page: Page, testInfo: TestInfo) {
   return renderStory(page, SENSITIVITY_STORY)
 }
 
-test('sensitivity: unmutated MesoProgressBar matches its baseline', async ({ storyPage }, testInfo) => {
+test('sensitivity: unmutated MesoProgressBar matches its baseline', async ({
+  storyPage,
+}, testInfo) => {
   const root = await renderSensitivityStory(storyPage, testInfo)
   await expect(root).toHaveScreenshot(SENSITIVITY_BASELINE, SHOT_OPTIONS)
   console.log('[sensitivity] unmutated 0.10: matches baseline')
