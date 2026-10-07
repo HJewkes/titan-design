@@ -9,6 +9,9 @@
     "url": "https://github.com/HJewkes/titan-design.git"
   },
   "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
@@ -30,7 +33,8 @@
     "catalog": "pnpm --filter @titan-design/react-ui catalog",
     "arch:check": "pnpm --filter @titan-design/react-ui exec vitest run src/arch/arch-graph.freshness.test.ts",
     "verify": "pnpm verify:unit && pnpm test:axe",
-    "verify:unit": "pnpm format:check && pnpm lint && pnpm type-check && pnpm build && pnpm api:check && pnpm docs:check && pnpm type-check:examples && turbo run test:unit -- --run --coverage && pnpm arch:check",
+    "verify:unit": "pnpm format:check && pnpm lint && pnpm type-check && pnpm build && pnpm api:check && pnpm docs:check && pnpm type-check:examples && pnpm test:unit:ci && pnpm arch:check",
+    "test:unit:ci": "turbo run test:unit:ci",
     "test:axe": "turbo run test:axe",
     "arch:graph": "node scripts/arch-graph.mjs",
     "arch:barrel-hash": "node packages/ui/scripts/barrel-hash.mjs --write",

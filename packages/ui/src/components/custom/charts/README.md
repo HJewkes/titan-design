@@ -25,6 +25,17 @@ come from [`src/arch/arch-graph.json`](../../../arch/arch-graph.json).
 are workout-internal and imported by path, so the public barrel stays one mark
 wide. Adding them to the barrel is a decision, not a tidy-up.
 
+## Token decision record
+
+| File                                | Kind            | Records                                                                                      | Pinned by                                 |
+| ----------------------------------- | --------------- | -------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| `DatavizLightPalette.candidates.ts` | decision record | Every light `dataviz-*` candidate set weighed in VW-371 phase 2, and why the chosen one won. | `DatavizLightPalette.candidates.test.tsx` |
+
+It is not a mark or a hook, and no component renders from it. Its story,
+`DatavizLightPalette.stories.tsx` (`Lab/Decisions/Dataviz Light Palettes`), renders
+each candidate on the light planes. The test fails when the light tokens drift
+from the set marked `chosen`.
+
 ## What each owns
 
 **`SetBarChart`** owns the chart _geometry_ — value→height scaling, the shared

@@ -78,8 +78,7 @@ src/components/{ui|custom}/{ComponentName}/
 
 - [ ] `ComponentName.test.tsx` asserts the component's own computed/inline
       styles against the manifest's `resolvedValue`s for the pinned
-      properties (e.g. border style/width, box-shadow, colors — as in
-      `src/components/ui/card/Card.test.tsx`).
+      properties (e.g. border style/width, box-shadow, colors).
 - [ ] Rendering, props, and each variant are covered (Arrange-Act-Assert).
 
 ## 5. Layer 3 — HTML vs React parity test
@@ -104,7 +103,8 @@ src/components/{ui|custom}/{ComponentName}/
       `packages/ui/MATURITY.md` derives, plus `!status:review` to negate the
       inherited default.
 - [ ] The models are `src/components/shell/workout/SessionStatePill.stories.tsx`
-      (args and `select` controls) and
+      (args and `select` controls; the component is deprecated in favour of
+      `<Pill tone="…" leading="dot">`, the story shape still stands) and
       `src/components/shell/workout/DeviceMenu.stories.tsx` (a data fixture as
       an `object` control, `control: false` for handlers).
 - [ ] Storybook compiles: `pnpm build-storybook`.

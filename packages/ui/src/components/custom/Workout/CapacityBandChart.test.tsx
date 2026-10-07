@@ -1,6 +1,8 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { Animated } from 'react-native'
+import { capturedByNode } from '../../../test/classname-capture'
 import { CapacityBandChart } from './CapacityBandChart'
 import { Surface } from '../../ui/surface'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
@@ -65,6 +67,69 @@ describe('CapacityBandChart', () => {
       render(<CapacityBandChart band={[]} workouts={[]} width={320} height={200} />)
       expect(screen.getByTestId('capacity-band-chart-empty')).toBeInTheDocument()
       expect(screen.queryByTestId('capacity-band-chart-band')).not.toBeInTheDocument()
+    })
+  })
+
+  describe('labels', () => {
+    const classesOf = (node: HTMLElement) => capturedByNode.get(node)?.split(' ') ?? []
+
+    it('renders the axis labels through Typography in the tertiary text colour', () => {
+      render(<CapacityBandChart {...baseProps} />)
+      const labels = [
+        screen.getByTestId('capacity-band-chart-y-axis-label'),
+        ...screen.getAllByTestId('capacity-band-chart-x-label'),
+      ]
+      labels.forEach((label) => {
+        expect(classesOf(label)).toEqual(
+          expect.arrayContaining(['font-normal', 'text-text-tertiary'])
+        )
+      })
+    })
+
+    it('renders the projection labels through Typography in their status colours', () => {
+      render(<CapacityBandChart {...baseProps} projection={projection} />)
+      expect(
+        classesOf(screen.getByTestId('capacity-band-chart-projection-training-label'))
+      ).toEqual(expect.arrayContaining(['font-normal', 'text-status-success']))
+      expect(classesOf(screen.getByTestId('capacity-band-chart-projection-rest-label'))).toEqual(
+        expect.arrayContaining(['font-normal', 'text-status-info'])
+      )
+    })
+  })
+
+  describe('reduced motion', () => {
+    const originalMatchMedia = window.matchMedia
+
+    function stubReducedMotion(matches: boolean) {
+      window.matchMedia = vi.fn().mockReturnValue({
+        matches,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+      }) as unknown as typeof window.matchMedia
+    }
+
+    afterEach(() => {
+      vi.restoreAllMocks()
+      if (originalMatchMedia) window.matchMedia = originalMatchMedia
+      else delete (window as { matchMedia?: unknown }).matchMedia
+    })
+
+    it('renders the final frame with no reveal or dot pops', () => {
+      stubReducedMotion(true)
+      const timing = vi.spyOn(Animated, 'timing')
+      render(<CapacityBandChart {...baseProps} />)
+      expect(screen.getByTestId('capacity-band-chart-reveal')).toHaveStyle({ width: '320px' })
+      screen.getAllByTestId('capacity-band-chart-dot-wrapper').forEach((dot) => {
+        expect(dot).toHaveStyle({ transform: 'scale(1)' })
+      })
+      expect(timing).not.toHaveBeenCalled()
+    })
+
+    it('draws the band and pops each dot when motion is allowed', () => {
+      stubReducedMotion(false)
+      const timing = vi.spyOn(Animated, 'timing')
+      render(<CapacityBandChart {...baseProps} />)
+      expect(timing).toHaveBeenCalledTimes(1 + workouts.length)
     })
   })
 

@@ -8,6 +8,12 @@ import { uiRoot } from './tailwind-compile'
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const config = require('../../eslint.config.js') as Linter.Config[]
 
+// One Linter per file: building it per fixture re-resolves the whole config each time (TD-732).
+let linter: Linter | undefined
+function sharedLinter(): Linter {
+  return (linter ??= new Linter({ configType: 'flat' }))
+}
+
 // Required rather than imported: the rule is untyped CommonJS, and this gives it a type.
 const rule = createRequire(import.meta.url)('../../eslint-rules/props-naming') as Rule.RuleModule
 
@@ -34,7 +40,7 @@ const invalid = (code: string, ...fixes: string[]) => ({
 
 /** The props-naming messages the real config reports for `code` at a package-relative path. */
 function lintAt(file: string, code: string): Linter.LintMessage[] {
-  return new Linter({ configType: 'flat' })
+  return sharedLinter()
     .verify(code, config, { filename: path.join(uiRoot, file) })
     .filter((m) => m.ruleId === 'titan/props-naming')
 }

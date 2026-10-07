@@ -15,6 +15,7 @@ import { proposalText, relabelAsProposed, repairMarkdown } from '../src/morning-
 import { loadRound } from '../src/review.ts'
 import { runCli, type CliIo } from '../src/run.ts'
 import { RoundSchema } from '../src/schema.ts'
+import { noTreeGit } from './fixtures.ts'
 
 // Every item here is invented: a widget shop's seats deciding on paint and a price list.
 
@@ -463,6 +464,7 @@ describe('titan-review round from-morning', () => {
     openBrowser: () => {},
     capture: async () => [],
     measure: async () => [],
+    git: noTreeGit,
     createPage: async () => ({ handler: () => {}, close: async () => {} }),
     harnessFreshness: async () => ({ state: 'current' }),
     signal: new AbortController().signal,

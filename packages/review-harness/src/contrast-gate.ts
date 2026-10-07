@@ -1,8 +1,9 @@
-import { REQUIRED_RATIO, floorRatio, type CheckKind } from './contrast.ts'
+import { REQUIRED_RATIO, floorRatio } from './contrast.ts'
 import type { Check, FrameResult, Indeterminate } from './contrast-check.ts'
 import {
   THEME_MODES,
   isImageVariant,
+  type CheckKind,
   type ContrastDeclarations,
   type KnownDefect,
   type Manifest,
