@@ -33,7 +33,10 @@ const sessionStateConfig: Record<
   idle: { label: 'IDLE', color: 'default', pulse: false, text: 'secondary' },
 }
 
-/** The session-state readout as a neutral Pill; the dot carries the state, the label stays quiet. */
+/**
+ * The session-state readout as a neutral Pill; the dot carries the state, the label stays quiet.
+ * `self-auto` keeps it centred in the bar instead of Pill's `self-start`.
+ */
 function SessionStateReadout({ state }: { state: SessionState }) {
   const cfg = sessionStateConfig[state]
   return (
@@ -41,7 +44,7 @@ function SessionStateReadout({ state }: { state: SessionState }) {
       tone="neutral"
       variant="subtle"
       size="sm"
-      className="gap-inline-md"
+      className="self-auto gap-inline-md"
       leading={<Indicator size="md" color={cfg.color} pulse={cfg.pulse} />}
       testID="session-state-pill"
     >
