@@ -3,15 +3,13 @@ import type { ReactNode } from 'react'
 import { View, Pressable } from 'react-native'
 import { Typography } from '../../ui/typography'
 import { cn } from '../../../utils/cn'
+import { primitiveOpacity } from '../../../theme/tokens/primitives'
 import { roundWeight } from '../../../utils/workout-format'
 import { useSurfaceMode } from '../../ui/surface/SurfaceContext'
 import { SetsRepsLoad } from './SetsRepsLoad'
 import { TempoDisplay } from './TempoDisplay'
 import { ExerciseIndicator, type ExerciseIndicatorKind } from './ExerciseIndicator'
 import { exerciseLiveColor } from './exerciseRowState'
-
-/** Dim depth for a not-yet-reached exercise, when the block dims itself. */
-const DIMMED_OPACITY = 0.55
 
 /** `stacked` puts the prescription on its own line under the name; `inline` keeps one row. */
 export type ExerciseHeadingLayout = 'stacked' | 'inline'
@@ -223,7 +221,7 @@ export function ExerciseHeading(props: ExerciseHeadingProps) {
   const nameStyle = props.isLive ? { color: exerciseLiveColor(mode) } : undefined
 
   return (
-    <View style={{ opacity: props.dimmed ? DIMMED_OPACITY : 1 }} testID="exercise-heading">
+    <View style={{ opacity: props.dimmed ? primitiveOpacity.dim : 1 }} testID="exercise-heading">
       {props.layout === 'inline' ? (
         <InlineHeading heading={props} nameStyle={nameStyle} />
       ) : (
