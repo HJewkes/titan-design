@@ -27,7 +27,7 @@ import {
   Page,
   sectionTitle,
   monoTag,
-} from '../../components/custom/Workout/setHeadingKit'
+} from './setHeadingKit'
 
 // Per-rep mean velocity that DECAYS across a set (fast → slow) so bar height/color carries shape.
 const decay = (n: number, start: number, span = 0.5) =>

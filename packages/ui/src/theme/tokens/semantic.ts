@@ -231,8 +231,8 @@ export const semanticColorsLight = {
 
   // Text colors (text-*)
   'text-primary': semanticPins.textPrimaryLight,
-  'text-secondary': semanticPins.textSecondaryLight,
-  'text-tertiary': greyRamp[400],
+  'text-secondary': greyRamp[700],
+  'text-tertiary': greyRamp[600],
   'text-disabled': 'rgba(55, 65, 81, 0.48)',
   'text-inverse': p.white,
   'text-error': ramp.red[700], // one rung darker than status-error to clear 4.5:1 on every light plane
