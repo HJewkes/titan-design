@@ -5,6 +5,8 @@ import { cn } from '../../../utils/cn'
 export interface EmptyStateProps extends ViewProps {
   /** Icon component to display */
   icon?: React.ComponentType<{ size?: number; className?: string }>
+  /** Draw the icon bare above the title, without the rounded well behind it */
+  isIconBare?: boolean
   /** Title text */
   title: string
   /** Description text */
@@ -28,6 +30,7 @@ export interface EmptyStateProps extends ViewProps {
  */
 export function EmptyState({
   icon: Icon,
+  isIconBare = false,
   title,
   description,
   action,
@@ -37,7 +40,7 @@ export function EmptyState({
   return (
     <View className={cn('items-center justify-center py-12 px-6', className)} {...props}>
       {Icon && (
-        <View className="mb-4 p-4 rounded-full bg-background-subtle">
+        <View className={cn('mb-4', !isIconBare && 'p-4 rounded-full bg-background-subtle')}>
           <Icon size={32} className="text-text-tertiary" />
         </View>
       )}

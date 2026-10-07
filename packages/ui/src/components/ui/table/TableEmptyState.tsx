@@ -29,6 +29,7 @@ export function TableEmptyState({
   return (
     <EmptyState
       icon={Icon}
+      isIconBare
       title={title}
       description={description}
       action={action}

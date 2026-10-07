@@ -1606,6 +1606,7 @@ export interface EmptyStateProps extends ViewProps {
         size?: number;
         className?: string;
     }>;
+    isIconBare?: boolean;
     title: string;
 }
 
