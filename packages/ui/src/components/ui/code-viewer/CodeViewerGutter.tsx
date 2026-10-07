@@ -121,7 +121,7 @@ export function CodeViewerGutter({
         height={heightOf(index)}
         isFlagged={model.runByLine.has(line)}
         isSelected={isSelected}
-        hasFocusMark={isFocused && line === activeLine}
+        hasFocusMark={!!isFocused && line === activeLine}
         isDisabled={isDisabled}
         press={press}
         style={style}
