@@ -492,7 +492,7 @@ describe('GoalTrajectoryChart current week without a reading', () => {
     return screen.getByTestId('goal-trajectory-chart-canvas').getAttribute('aria-label') ?? ''
   }
 
-  it('marks the current week with a labelled hollow point on the dashed lead', () => {
+  it('marks the current week with a hollow point on the dashed lead, said in the summary', () => {
     render(
       <GoalTrajectoryChart
         {...baseProps}
