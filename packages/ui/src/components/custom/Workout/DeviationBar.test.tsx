@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { DeviationBar } from './DeviationBar'
+import { Surface } from '../../ui/surface'
 import { greyRamp } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { alpha } from '../../../utils/colors'
@@ -57,10 +58,15 @@ describe('DeviationBar', () => {
     expect(dot).toBeInTheDocument()
   })
 
-  it('has adjustable accessibility role', () => {
-    render(<DeviationBar deviation={0} />)
-    const bar = screen.getByTestId('deviation-bar')
-    expect(bar).toHaveAttribute('role', 'slider')
+  // A read-only meter: announcing a slider promises a control the user cannot move.
+  it('is announced as a progressbar, never a slider', () => {
+    render(<DeviationBar deviation={0.5} />)
+    const bar = screen.getByRole('progressbar', { name: 'Session deviation: harder than planned' })
+    expect(bar).toHaveAttribute('aria-valuenow', '50')
+    expect(bar).toHaveAttribute('aria-valuemin', '-100')
+    expect(bar).toHaveAttribute('aria-valuemax', '100')
+    expect(screen.queryByRole('slider')).not.toBeInTheDocument()
+    expect(screen.queryByRole('adjustable')).not.toBeInTheDocument()
   })
 
   it('renders an 8px dot with a text-primary border and a lift', () => {
@@ -72,6 +78,18 @@ describe('DeviationBar', () => {
     // already its edge) and never an inset.
     expect(dot.style.boxShadow).toContain('rgba(0,0,0')
     expect(dot.style.boxShadow).not.toContain('inset')
+  })
+
+  it('lifts the dot for the surface mode it sits on', () => {
+    const { unmount } = render(<DeviationBar deviation={0} />)
+    const darkShadow = screen.getByTestId('deviation-dot').style.boxShadow
+    unmount()
+    render(
+      <Surface theme="light">
+        <DeviationBar deviation={0} />
+      </Surface>
+    )
+    expect(screen.getByTestId('deviation-dot').style.boxShadow).not.toBe(darkShadow)
   })
 
   it('renders the track with the deviation gradient background', () => {
