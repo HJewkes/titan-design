@@ -4,8 +4,10 @@ import path from 'node:path'
 import { test, expect, type Page, type TestInfo } from '@playwright/test'
 import {
   BASELINE_FILE,
+  BLANK_LIST_FILE,
   CONTRAST_THEMES,
   baselineKey,
+  blankProblems,
   contrastProblems,
   interleaveForShards,
   pairCounts,
@@ -32,8 +34,9 @@ import { STORY_INDEX_ENV } from './story-index.global-setup'
  * `contrast-stories-baseline.json`, which may only shrink: a pair or count above it fails, and a
  * pair or count that no longer occurs fails as stale until `pnpm contrast:baseline` regenerates it.
  *
- * A story that renders blank is recorded and skipped, not failed: Layer 2's guard owns that. A story
- * tagged `play` is left out: its play function scrolls and presses in real time before the clock
+ * A story that renders blank is recorded and skipped only if `contrast-blank-stories.json` lists it;
+ * that list may only shrink (an unlisted blank story fails, a listed story that renders fails until
+ * removed), so a new blank story cannot slip past the gate. A story tagged `play` is left out: its play function scrolls and presses in real time before the clock
  * settles, so the frame axe sees is not the same twice (the carousel interaction stories moved by a
  * card between CI runs); the interaction project owns them, and their static render is the same
  * carousel as the non-play stories.
@@ -49,6 +52,8 @@ import { STORY_INDEX_ENV } from './story-index.global-setup'
 
 const baselineFile = path.join(__dirname, 'contrast-stories-baseline.json')
 const baseline = JSON.parse(fs.readFileSync(baselineFile, 'utf8')) as ContrastBaseline
+const blankListFile = path.join(__dirname, 'contrast-blank-stories.json')
+const blankStories = new Set(JSON.parse(fs.readFileSync(blankListFile, 'utf8')) as string[])
 const PLAY_TAG = 'play'
 const storyIds = interleaveForShards(
   readStories()
@@ -67,7 +72,8 @@ const axeSource = fs.readFileSync(
 const AXE_GLOBAL = '__titanContrastAxe'
 const axeInitScript = `${axeSource}\n;window.${AXE_GLOBAL} = window.axe; delete window.axe;`
 
-type ReportRow = { key: string; id: string; theme: ContrastTheme } & (
+// `retry` tells the regeneration script which row of a retried test is the last attempt.
+type ReportRow = { key: string; id: string; theme: ContrastTheme; retry: number } & (
   | { counts: Record<string, number> }
   | { blank: string }
 )
@@ -183,19 +189,30 @@ test('every baseline entry names an indexed story-theme with positive counts', (
   expect(empty, `${BASELINE_FILE} entries must list at least one pair with a count`).toEqual([])
 })
 
+test('every listed blank story is still in the index', () => {
+  const indexed = new Set(storyIds)
+  const orphans = [...blankStories].filter((id) => !indexed.has(id))
+  expect(orphans, `${BLANK_LIST_FILE} lists stories the index no longer has; remove them`).toEqual(
+    []
+  )
+})
+
 test.describe('axe color-contrast on every story', () => {
   for (const id of storyIds) {
     for (const theme of CONTRAST_THEMES) {
       const key = baselineKey(id, theme)
       test(key, async ({ page }, testInfo) => {
         const blank = await renderForAxe(page, id, theme)
+        const listedBlank = blankStories.has(id)
         if (blank) {
-          record(testInfo, { key, id, theme, blank })
-          test.skip(true, `blank render, left to Layer 2's guard: ${blank}`)
+          record(testInfo, { key, id, theme, blank, retry: testInfo.retry })
+          expect(blankProblems(id, blank, listedBlank), `blank guard for ${key}`).toEqual([])
+          test.skip(true, `listed blank story, skipped: ${blank}`)
           return
         }
+        expect(blankProblems(id, null, listedBlank), `blank guard for ${key}`).toEqual([])
         const counts = await measure(page)
-        record(testInfo, { key, id, theme, counts })
+        record(testInfo, { key, id, theme, counts, retry: testInfo.retry })
         expect(contrastProblems(key, counts, baseline[key]), `contrast gate for ${key}`).toEqual([])
       })
     }
@@ -216,7 +233,8 @@ for (const theme of CONTRAST_THEMES) {
   test(`sensitivity: 1.1:1 text in ${SENSITIVITY_STORY} (${theme}) fails the gate`, async ({
     page,
   }) => {
-    test.skip(!storyIds.includes(SENSITIVITY_STORY), `${SENSITIVITY_STORY} is not in the index`)
+    // A missing proof story fails rather than skips: a vacuous gate must not look green.
+    expect(storyIds, `${SENSITIVITY_STORY} must be in the index`).toContain(SENSITIVITY_STORY)
     const key = baselineKey(SENSITIVITY_STORY, theme)
     expect(
       baseline[key],

@@ -73,8 +73,8 @@ script refuses to add an entry or raise a count.
 
 ### `check` steps
 
-The ruleset requires `check`. Its first step fails the job when `build` or `visual` failed, was
-cancelled or is missing from `needs`, and every later step then skips.
+The ruleset requires `check`. Its first step fails the job when `build`, `visual` or `contrast`
+failed, was cancelled or is missing from `needs`, and every later step then skips.
 
 | Step                 | Command                                     | Notes                                  |
 | -------------------- | ------------------------------------------- | -------------------------------------- |
@@ -86,9 +86,9 @@ cancelled or is missing from `needs`, and every later step then skips.
 
 ### Path gate
 
-On a pull request, `visual` and `check` each run `packages/ui/scripts/visual-paths.mjs`. When none of
-the PR's changed paths matches `RENDERED_UI_PATTERNS`, `visual` skips its layers and `check` skips
-stories axe and play; both still report green. If the changed paths cannot be listed, everything runs.
+On a pull request, `visual`, `contrast` and `check` each run `packages/ui/scripts/visual-paths.mjs`.
+When none of the PR's changed paths matches `RENDERED_UI_PATTERNS`, `visual` skips its layers, the
+`contrast` shards skip the suite and `check` skips stories axe and play; all still report green. If the changed paths cannot be listed, everything runs.
 A push to `main` always runs everything. A new input to any gated step needs a pattern there.
 
 ## Argument passthrough

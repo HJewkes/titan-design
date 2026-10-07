@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   baselineKey,
+  blankProblems,
   contrastProblems,
   interleaveForShards,
   pairCounts,
@@ -89,6 +90,33 @@ describe('contrastProblems', () => {
   it('reports growth and staleness of different pairs as two problems', () => {
     const problems = contrastProblems(key, { a: 1 }, { b: 1 })
     expect(problems).toHaveLength(2)
+  })
+})
+
+describe('blankProblems', () => {
+  const id = 'lab-design-archive-fable-directions--index'
+  const reason = '#storybook-root has a zero-size box (1280x0, 1 children)'
+
+  it('passes a listed story that renders blank', () => {
+    expect(blankProblems(id, reason, true)).toEqual([])
+  })
+
+  it('passes an unlisted story that renders', () => {
+    expect(blankProblems(id, null, false)).toEqual([])
+  })
+
+  it('fails an unlisted blank story, so a new blank story cannot skip the gate', () => {
+    const problems = blankProblems(id, reason, false)
+    expect(problems).toHaveLength(1)
+    expect(problems[0]).toContain('renders blank')
+    expect(problems[0]).toContain('contrast-blank-stories.json does not list it')
+  })
+
+  it('fails a listed story that now renders, until it is removed', () => {
+    const problems = blankProblems(id, null, true)
+    expect(problems).toHaveLength(1)
+    expect(problems[0]).toContain('now renders')
+    expect(problems[0]).toContain('Remove it')
   })
 })
 

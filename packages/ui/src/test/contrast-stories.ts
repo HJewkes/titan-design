@@ -99,3 +99,24 @@ export function contrastProblems(
   }
   return problems
 }
+
+export const BLANK_LIST_FILE = 'packages/ui/tests/visual/contrast-blank-stories.json'
+
+/**
+ * Why a story's blank or rendered state disagrees with `contrast-blank-stories.json`, the
+ * shrink-only list of stories that render blank by Layer 2's guard and are skipped rather than
+ * measured. An unlisted blank story fails, so a new blank story cannot skip the gate silently; a
+ * listed story that now renders fails until it is removed, so the list can only shrink.
+ */
+export function blankProblems(storyId: string, blank: string | null, listed: boolean): string[] {
+  if (blank && !listed) {
+    return [
+      `${storyId} renders blank (${blank}) and ${BLANK_LIST_FILE} does not list it. ` +
+        'Fix the story; the list may only shrink, so do not add it.',
+    ]
+  }
+  if (!blank && listed) {
+    return [`${storyId} now renders. Remove it from ${BLANK_LIST_FILE} so the gate measures it.`]
+  }
+  return []
+}
