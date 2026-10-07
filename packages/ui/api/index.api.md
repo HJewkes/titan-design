@@ -219,6 +219,7 @@ export interface AppShellProps {
     children?: ReactNode;
     // (undocumented)
     className?: string;
+    isMainLandmark?: boolean;
     liveKey?: string | null;
     nav?: ReactNode;
     navItems?: SideNavItem[];
@@ -6843,6 +6844,7 @@ export interface SideNavItem {
 export interface SideNavProps {
     accentBarClassName?: string;
     accentClassName?: string;
+    accessibilityLabel?: string;
     activeKey: string;
     // (undocumented)
     className?: string;
