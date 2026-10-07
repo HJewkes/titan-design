@@ -1,0 +1,29 @@
+{
+  "dark": [
+    "avatar-text | text-primary",
+    "border-input-error | result-degrade",
+    "data-2 | result-improve",
+    "dataviz-categorical-2 | result-degrade",
+    "on-control-active | text-primary",
+    "on-result-degrade | text-primary",
+    "on-result-improve | text-primary",
+    "on-result-inconclusive | text-primary",
+    "result-degrade | status-error-light",
+    "result-degrade | status-error-solid",
+    "result-degrade | status-error-vivid-light",
+    "result-improve-dark | status-success-dark",
+    "result-inconclusive | result-neutral",
+    "result-inconclusive | text-secondary"
+  ],
+  "light": [
+    "border-prominent | result-inconclusive",
+    "brand-primary-subtle | status-error-subtle",
+    "data-2 | result-improve",
+    "dataviz-categorical-4 | result-improve-dark",
+    "result-degrade | status-error-light",
+    "result-degrade | status-error-vivid-light",
+    "result-improve-dark | status-success",
+    "result-improve-dark | status-success-dark",
+    "result-improve-dark | status-success-solid"
+  ]
+}

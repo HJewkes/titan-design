@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { siblingSource, resolveAll } from '../../../test/spacing-resolver'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { resolveAll, spacingClassesOf } from '../../../test/spacing-resolver'
+import { render, screen, fireEvent, within } from '@testing-library/react'
+import { axe } from 'jest-axe'
 import {
   ExerciseDetailPage,
   deriveExerciseStats,
@@ -27,6 +28,13 @@ const history: ExerciseDetailEntry[] = [
   entry('b', 185, 235),
   entry('c', 175, 222),
 ]
+
+const TAB_NAMES: Record<string, string> = {
+  progress: 'Progress',
+  history: 'History',
+  advanced: 'Advanced',
+}
+const tab = (key: string) => screen.getByRole('tab', { name: TAB_NAMES[key] })
 
 const baseProps: ExerciseDetailPageProps = {
   exercise: { name: 'Bench Press', subtitle: 'Chest · Barbell', unit: 'lbs', currentE1rm: 248 },
@@ -94,6 +102,15 @@ describe('summarizeVbt', () => {
 })
 
 describe('ExerciseDetailPage', () => {
+  it('has no accessibility violations on open or on the advanced tab', async () => {
+    const { container } = render(<ExerciseDetailPage {...baseProps} />)
+    expect(await axe(container)).toHaveNoViolations()
+
+    fireEvent.click(tab('advanced'))
+    expect(screen.getByTestId('exercise-detail-page-panel-advanced')).toBeInTheDocument()
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
   it('renders the header and opens on the Progress tab', () => {
     render(<ExerciseDetailPage {...baseProps} />)
     expect(screen.getByTestId('exercise-detail-page')).toBeInTheDocument()
@@ -106,19 +123,48 @@ describe('ExerciseDetailPage', () => {
   it('switches tabs to reveal history and advanced panels', () => {
     render(<ExerciseDetailPage {...baseProps} />)
 
-    fireEvent.click(screen.getByTestId('exercise-detail-page-tab-history'))
+    fireEvent.click(tab('history'))
     expect(screen.getByTestId('exercise-detail-page-panel-history')).toBeInTheDocument()
     expect(screen.queryByTestId('exercise-detail-page-panel-progress')).not.toBeInTheDocument()
 
-    fireEvent.click(screen.getByTestId('exercise-detail-page-tab-advanced'))
+    fireEvent.click(tab('advanced'))
     expect(screen.getByTestId('exercise-detail-page-panel-advanced')).toBeInTheDocument()
     expect(screen.getByTestId('exercise-detail-page-vbt-summary')).toBeInTheDocument()
     expect(screen.getAllByTestId('exercise-detail-page-vbt-set')).toHaveLength(2)
   })
 
+  it('marks only the active tab as selected in the DOM', () => {
+    render(<ExerciseDetailPage {...baseProps} />)
+    expect(tab('progress')).toHaveAttribute('aria-selected', 'true')
+    expect(tab('history')).toHaveAttribute('aria-selected', 'false')
+    expect(tab('advanced')).toHaveAttribute('aria-selected', 'false')
+
+    fireEvent.click(tab('history'))
+    expect(tab('progress')).toHaveAttribute('aria-selected', 'false')
+    expect(tab('history')).toHaveAttribute('aria-selected', 'true')
+    expect(tab('advanced')).toHaveAttribute('aria-selected', 'false')
+  })
+
+  it('exposes the selected tab in a tablist and shows only its panel', () => {
+    render(<ExerciseDetailPage {...baseProps} />)
+    const tablist = screen.getByRole('tablist')
+    const panel = () => screen.getByRole('tabpanel')
+
+    expect(within(tablist).getAllByRole('tab')).toHaveLength(3)
+    expect(tab('progress')).toHaveAttribute('aria-selected', 'true')
+    expect(panel()).toHaveAttribute('aria-labelledby', tab('progress').id)
+    expect(within(panel()).getByTestId('exercise-detail-page-panel-progress')).toBeInTheDocument()
+
+    fireEvent.click(tab('advanced'))
+    expect(tab('advanced')).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getAllByRole('tabpanel')).toHaveLength(1)
+    expect(panel()).toHaveAttribute('aria-labelledby', tab('advanced').id)
+    expect(within(panel()).getByTestId('exercise-detail-page-panel-advanced')).toBeInTheDocument()
+  })
+
   it('formats mean velocity to 2 decimal places in the summary and per-set rows', () => {
     render(<ExerciseDetailPage {...baseProps} />)
-    fireEvent.click(screen.getByTestId('exercise-detail-page-tab-advanced'))
+    fireEvent.click(tab('advanced'))
 
     expect(screen.getByTestId('exercise-detail-page-vbt-summary')).toHaveTextContent('0.55 m/s')
     const rows = screen.getAllByTestId('exercise-detail-page-vbt-set')
@@ -143,21 +189,23 @@ describe('ExerciseDetailPage', () => {
  * panel takes the same 14px section rhythm as the page shell.
  */
 describe('ExerciseDetailPage geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'ExerciseDetailPage.tsx')
-
   it('keeps the page gutter and its section rhythm', () => {
-    expect(source).toContain('p-gutter-sm gap-3.5')
+    render(<ExerciseDetailPage {...baseProps} />)
+    expect(spacingClassesOf('exercise-detail-page-content')).toEqual(['p-gutter-sm', 'gap-3.5'])
     expect(resolveAll(['p-gutter-sm', 'gap-3.5'])).toEqual(['16px', '14px'])
   })
 
-  it('gives all three tab panels one rhythm', () => {
-    for (const tab of ['progress', 'history', 'advanced']) {
-      expect(source).toContain(`className="gap-3.5" testID="exercise-detail-page-panel-${tab}"`)
-    }
+  it.each(['progress', 'history', 'advanced'])('gives the %s tab panel one rhythm', (key) => {
+    render(<ExerciseDetailPage {...baseProps} />)
+    fireEvent.click(tab(key))
+    expect(spacingClassesOf(`exercise-detail-page-panel-${key}`)).toEqual(['gap-3.5'])
   })
 
   it('keeps the stat and section card insets', () => {
-    expect(source).toContain('p-inset-md')
-    expect(resolveAll(['p-inset-md', 'gap-inline-md', 'py-2.5'])).toEqual(['12px', '8px', '10px'])
+    render(<ExerciseDetailPage {...baseProps} />)
+    expect(spacingClassesOf('exercise-detail-page-stats')).toEqual(['gap-inline-md'])
+    expect(spacingClassesOf('exercise-detail-page-stat-sessions')).toEqual(['p-inset-md'])
+    expect(spacingClassesOf('exercise-detail-page-trend')).toEqual(['p-inset-md', 'gap-2.5'])
+    expect(resolveAll(['p-inset-md', 'gap-inline-md'])).toEqual(['12px', '8px'])
   })
 })

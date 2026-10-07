@@ -1,5 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps } from 'react-native'
+import { cn } from '../../../utils/cn'
 import { Card } from '../../ui/card'
 import { Pill } from '../../ui/pill'
 import { StatusDot, type StatusDotVariant } from '../Workout/StatusDot'
@@ -28,9 +29,9 @@ export interface InitiativeCardTopTask {
 }
 
 export interface InitiativeCardProps extends ViewProps {
-  /** Initiative title, e.g. "active-work — durable workspace state". */
+  /** Initiative title, e.g. "planner — durable project state". */
   title: string
-  /** Short slug shown under the title, e.g. "active-work". */
+  /** Short slug shown under the title, e.g. "planner". */
   slug: string
   /** Lifecycle state — drives the status dot and card accent. */
   state: InitiativeState
@@ -77,7 +78,7 @@ export function InitiativeCard({
     <Card
       variant={state === 'focused' ? 'accent' : 'elevated'}
       accentColor={state === 'focused' ? 'var(--color-brand-primary)' : undefined}
-      className={`w-[326px] gap-2.5 p-4 ${className ?? ''}`}
+      className={cn('w-[326px] gap-2.5 p-4', className)}
       testID="initiative-card"
       {...props}
     >

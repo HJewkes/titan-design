@@ -9,7 +9,7 @@ export function splitPath(path: string): { dir: string; base: string } {
   return i === -1 ? { dir: '', base: path } : { dir: path.slice(0, i + 1), base: path.slice(i + 1) }
 }
 
-/** Basename size on the type scale, with the directory one step quieter. */
+/** Basename size on the type scale. The directory is `text-xs` at both sizes, so only `md` steps it down. */
 export type FilePathLabelSize = 'sm' | 'md'
 
 const SIZE_CLASS: Record<FilePathLabelSize, { base: string; dir: string }> = {
@@ -20,7 +20,7 @@ const SIZE_CLASS: Record<FilePathLabelSize, { base: string; dir: string }> = {
 export interface FilePathLabelProps extends ViewProps {
   /** A repo-relative path, e.g. `src/commands/open.ts`. */
   path: string
-  /** `md` for standalone rows, `sm` for dense contexts like chips. */
+  /** `md` for standalone rows; `sm` for dense contexts like chips, where basename and directory share `text-xs`. */
   size?: FilePathLabelSize
   /** Render only the basename, dropping the directory prefix. */
   baseOnly?: boolean

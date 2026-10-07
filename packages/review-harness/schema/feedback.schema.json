@@ -34,6 +34,10 @@
           "pick": {
             "type": "string"
           },
+          "revisionRequested": {
+            "type": "boolean",
+            "const": true
+          },
           "picks": {
             "type": "array",
             "items": {
@@ -230,6 +234,13 @@
     },
     "general": {
       "type": "string"
+    },
+    "unansweredQuestionIds": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     },
     "contrastOverride": {
       "type": "object",

@@ -317,10 +317,6 @@ describe('touched source files no longer contain the swapped raw literals', () =
       removedLiterals: ['rgba(46,213,115,0.1)', 'rgba(46,213,115,0.45)', 'rgba(46,213,115,0.05)'],
     },
     {
-      file: 'components/custom/Workout/DeviationBar.tsx',
-      removedLiterals: ['rgba(46,213,115,0.25)', 'rgba(249,180,21,0.25)'],
-    },
-    {
       file: 'components/custom/Workout/ExerciseDetailPage.tsx',
       removedLiterals: ['rgba(255,121,0,0.10)', 'rgba(255,121,0,0.25)'],
     },

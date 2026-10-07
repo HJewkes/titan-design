@@ -9,7 +9,7 @@ import { PRIMARY_GOAL_SCENARIOS as S } from './primaryGoal-fixture'
 const meta: Meta<typeof GoalCard> = {
   title: 'Custom/Workout/Goals/GoalCard',
   component: GoalCard,
-  tags: ['autodocs', 'status:candidate'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     layout: 'fullscreen',
     docs: {

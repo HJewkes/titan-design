@@ -2,7 +2,8 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Pill } from './Pill'
-import { resolveAll, siblingSource, sizeClasses } from '../../../test/spacing-resolver'
+import { capturedClassNames } from '../../../test/classname-capture'
+import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
 describe('Pill', () => {
   it('renders string children', () => {
@@ -178,8 +179,11 @@ describe('Pill', () => {
  * ramp is FOR, so a token move has to fail here.
  */
 describe('Pill geometry resolves to the squish tokens', () => {
-  const source = siblingSource(import.meta.url, 'Pill.tsx')
-  const classes = (level: string) => sizeClasses(source, 'sizeStyles', level, 'container')
+  // `gap-1` spaces the leading slot from the label; it is not part of the squish ramp.
+  const classes = (level: 'xs' | 'sm' | 'md' | 'lg' | 'xl') => {
+    render(<Pill size={level}>Active</Pill>)
+    return spacingClassesAt(screen.getByText('Active').parentElement).filter((c) => c !== 'gap-1')
+  }
 
   const ramp = [
     ['xs', ['px-squish-x-xs', 'py-squish-y-xs'], ['4px', '1px']],
@@ -197,14 +201,22 @@ describe('Pill geometry resolves to the squish tokens', () => {
   })
 
   it('has no rung above lg', () => {
-    expect(source.match(/^\s{2}xl:/m)).toBeNull()
+    expect(classes('xl')).toEqual(['px-squish-x-lg', 'py-squish-y-lg'])
   })
 })
 
 describe('Pill deprecated size alias', () => {
   it('maps xl onto lg, and aliases nothing else', () => {
-    const source = siblingSource(import.meta.url, 'Pill.tsx')
-    expect(source).toMatch(/sizeAliases[^=]*= \{ xl: 'lg' \}/)
+    const rendered = (['xs', 'sm', 'md', 'lg', 'xl'] as const).map((level) => {
+      const { unmount } = render(<Pill size={level}>{level}</Pill>)
+      const pill = screen.getByText(level).parentElement
+      const label = screen.getByText(level).className
+      const spacing = spacingClassesAt(pill).join(' ')
+      unmount()
+      return `${spacing}|${label}`
+    })
+    expect(rendered[4]).toBe(rendered[3])
+    expect(new Set(rendered.slice(0, 4)).size).toBe(4)
   })
 
   it('does not warn at runtime — the deprecation is a type, not a console line', () => {
@@ -212,5 +224,21 @@ describe('Pill deprecated size alias', () => {
     render(<Pill size="xl">Legacy</Pill>)
     expect(warn).not.toHaveBeenCalled()
     warn.mockRestore()
+  })
+})
+
+describe('Pill neutral faces', () => {
+  const classesOf = (testID: string) => (capturedClassNames.get(testID) ?? '').split(/\s+/)
+
+  it.each([
+    ['solid', ['bg-text-primary', 'text-text-inverse']],
+    ['subtle', ['bg-hairline-subtle', 'text-text-primary']],
+  ] as const)('the neutral %s row paints its fill and label', (variant, expected) => {
+    render(
+      <Pill testID="pill" variant={variant} tone="neutral">
+        Active
+      </Pill>
+    )
+    expect(classesOf('pill')).toEqual(expect.arrayContaining([...expected]))
   })
 })

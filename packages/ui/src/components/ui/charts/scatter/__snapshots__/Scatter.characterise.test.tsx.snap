@@ -33,40 +33,53 @@ exports[`Scatter characterisation > on a dark surface > renders the Default stor
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 232.5px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; left: 40px; width: 428px; top: 247.20000000000002px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.25
+            0.20
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 159px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; left: 40px; width: 428px; top: 188.4px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.50
+            0.40
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 85.5px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; left: 40px; width: 428px; top: 129.60000000000002px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.75
+            0.60
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 70.79999999999998px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.80
           </div>
         </div>
         <div
@@ -98,40 +111,53 @@ exports[`Scatter characterisation > on a dark surface > renders the Default stor
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 147px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; top: 12px; height: 294px; left: 125.60000000000001px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.25
+            0.20
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 254px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; top: 12px; height: 294px; left: 211.20000000000002px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.50
+            0.40
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 361px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; top: 12px; height: 294px; left: 296.8px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.75
+            0.60
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 382.40000000000003px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.80
           </div>
         </div>
         <div
@@ -319,40 +345,53 @@ exports[`Scatter characterisation > on a dark surface > renders the Light story 
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 232.5px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; left: 40px; width: 428px; top: 247.20000000000002px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.25
+            0.20
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 159px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; left: 40px; width: 428px; top: 188.4px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.50
+            0.40
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 85.5px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; left: 40px; width: 428px; top: 129.60000000000002px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.75
+            0.60
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 70.79999999999998px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.80
           </div>
         </div>
         <div
@@ -384,40 +423,53 @@ exports[`Scatter characterisation > on a dark surface > renders the Light story 
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 147px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; top: 12px; height: 294px; left: 125.60000000000001px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.25
+            0.20
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 254px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; top: 12px; height: 294px; left: 211.20000000000002px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.50
+            0.40
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 361px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; top: 12px; height: 294px; left: 296.8px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.75
+            0.60
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 382.40000000000003px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.80
           </div>
         </div>
         <div
@@ -579,40 +631,53 @@ exports[`Scatter characterisation > on a dark surface > renders the NoDiagonal s
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 232.5px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; left: 40px; width: 428px; top: 247.20000000000002px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.25
+            0.20
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 159px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; left: 40px; width: 428px; top: 188.4px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.50
+            0.40
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 85.5px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; left: 40px; width: 428px; top: 129.60000000000002px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.75
+            0.60
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 70.79999999999998px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.80
           </div>
         </div>
         <div
@@ -644,40 +709,53 @@ exports[`Scatter characterisation > on a dark surface > renders the NoDiagonal s
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 147px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; top: 12px; height: 294px; left: 125.60000000000001px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.25
+            0.20
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 254px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; top: 12px; height: 294px; left: 211.20000000000002px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.50
+            0.40
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 361px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; top: 12px; height: 294px; left: 296.8px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.75
+            0.60
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 382.40000000000003px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.80
           </div>
         </div>
         <div
@@ -834,40 +912,53 @@ exports[`Scatter characterisation > on a dark surface > renders the Outlier stor
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 232.5px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; left: 40px; width: 428px; top: 247.20000000000002px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.25
+            0.20
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 159px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; left: 40px; width: 428px; top: 188.4px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.50
+            0.40
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 85.5px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; left: 40px; width: 428px; top: 129.60000000000002px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.75
+            0.60
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 70.79999999999998px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.80
           </div>
         </div>
         <div
@@ -899,40 +990,53 @@ exports[`Scatter characterisation > on a dark surface > renders the Outlier stor
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 147px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; top: 12px; height: 294px; left: 125.60000000000001px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.25
+            0.20
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 254px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; top: 12px; height: 294px; left: 211.20000000000002px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.50
+            0.40
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 361px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; top: 12px; height: 294px; left: 296.8px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.75
+            0.60
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 382.40000000000003px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.80
           </div>
         </div>
         <div
@@ -1111,40 +1215,53 @@ exports[`Scatter characterisation > on a dark surface > renders the Selected sto
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 232.5px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; left: 40px; width: 428px; top: 247.20000000000002px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.25
+            0.20
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 159px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; left: 40px; width: 428px; top: 188.4px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.50
+            0.40
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 85.5px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; left: 40px; width: 428px; top: 129.60000000000002px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.75
+            0.60
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 70.79999999999998px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.80
           </div>
         </div>
         <div
@@ -1176,40 +1293,53 @@ exports[`Scatter characterisation > on a dark surface > renders the Selected sto
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 147px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; top: 12px; height: 294px; left: 125.60000000000001px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.25
+            0.20
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 254px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; top: 12px; height: 294px; left: 211.20000000000002px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.50
+            0.40
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 361px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; top: 12px; height: 294px; left: 296.8px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.75
+            0.60
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 382.40000000000003px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.80
           </div>
         </div>
         <div
@@ -1366,131 +1496,157 @@ exports[`Scatter characterisation > on a dark surface > renders the SinglePoint 
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 348px; top: 266px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; left: 40px; width: 348px; top: 258px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.45
+            0
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 348px; top: 202.49999999999997px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; left: 40px; width: 348px; top: 210.4px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.48
+            0.20
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 348px; top: 139.00000000000006px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; left: 40px; width: 348px; top: 162.80000000000004px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.50
+            0.40
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 348px; top: 75.50000000000003px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; left: 40px; width: 348px; top: 115.20000000000005px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.53
+            0.60
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 348px; top: 12px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; left: 40px; width: 348px; top: 67.60000000000002px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.55
+            0.80
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 348px; top: 20.000000000000014px; height: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            1
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 254px; left: 40px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; top: 12px; height: 254px; left: 48px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
           >
-            0.45
+            0
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 254px; left: 127.00000000000004px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; top: 12px; height: 254px; left: 114.39999999999999px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
           >
-            0.48
+            0.20
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 254px; left: 213.99999999999991px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; top: 12px; height: 254px; left: 180.8px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
           >
-            0.50
+            0.40
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 254px; left: 300.99999999999994px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; top: 12px; height: 254px; left: 247.19999999999996px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
           >
-            0.53
+            0.60
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 254px; left: 388px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+          style="position: absolute; top: 12px; height: 254px; left: 313.59999999999997px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
           >
-            0.55
+            0.80
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 254px; left: 379.99999999999994px; width: 1px; background-color: rgba(255, 255, 255, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
+          >
+            1
           </div>
         </div>
         <div
@@ -1530,7 +1686,7 @@ exports[`Scatter characterisation > on a dark surface > renders the SinglePoint 
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           data-testid="scatter-point-only"
           role="button"
-          style="position: absolute; left: 203.99999999999991px; top: 129.00000000000006px; width: 20px; height: 20px; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; background-color: rgb(33, 150, 243); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
+          style="position: absolute; left: 203.99999999999997px; top: 129.00000000000003px; width: 20px; height: 20px; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; background-color: rgb(33, 150, 243); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(249, 246, 243); border-right-color: rgb(249, 246, 243); border-bottom-color: rgb(249, 246, 243); border-left-color: rgb(249, 246, 243);"
           tabindex="0"
           type="button"
         >
@@ -1568,7 +1724,7 @@ exports[`Scatter characterisation > on a light surface > renders the Default sto
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 306px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 428px; top: 306px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
@@ -1581,46 +1737,59 @@ exports[`Scatter characterisation > on a light surface > renders the Default sto
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 232.5px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 428px; top: 247.20000000000002px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.25
+            0.20
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 159px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 428px; top: 188.4px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.50
+            0.40
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 85.5px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 428px; top: 129.60000000000002px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.75
+            0.60
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 12px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 428px; top: 70.79999999999998px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.80
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 12px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
@@ -1633,7 +1802,7 @@ exports[`Scatter characterisation > on a light surface > renders the Default sto
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 40px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 294px; left: 40px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
@@ -1646,46 +1815,59 @@ exports[`Scatter characterisation > on a light surface > renders the Default sto
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 147px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 294px; left: 125.60000000000001px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.25
+            0.20
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 254px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 294px; left: 211.20000000000002px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.50
+            0.40
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 361px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 294px; left: 296.8px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.75
+            0.60
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 468px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 294px; left: 382.40000000000003px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.80
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 468px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
@@ -1698,17 +1880,17 @@ exports[`Scatter characterisation > on a light surface > renders the Default sto
         <div
           class="css-view-175oi2r"
           data-testid="scatter-axis-y"
-          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(0, 0, 0, 0.09);"
+          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(0, 0, 0, 0.15);"
         />
         <div
           class="css-view-175oi2r"
           data-testid="scatter-axis-x"
-          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(0, 0, 0, 0.09);"
+          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(0, 0, 0, 0.15);"
         />
         <div
           class="css-view-175oi2r"
           data-testid="scatter-reference-main-sequence"
-          style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(0, 0, 0, 0.14); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
+          style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(0, 0, 0, 0.22); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
         />
         <div
           class="css-text-146c3p1"
@@ -1854,7 +2036,7 @@ exports[`Scatter characterisation > on a light surface > renders the Light story
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 306px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 428px; top: 306px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
@@ -1867,46 +2049,59 @@ exports[`Scatter characterisation > on a light surface > renders the Light story
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 232.5px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 428px; top: 247.20000000000002px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.25
+            0.20
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 159px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 428px; top: 188.4px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.50
+            0.40
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 85.5px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 428px; top: 129.60000000000002px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.75
+            0.60
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 12px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 428px; top: 70.79999999999998px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.80
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 12px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
@@ -1919,7 +2114,7 @@ exports[`Scatter characterisation > on a light surface > renders the Light story
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 40px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 294px; left: 40px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
@@ -1932,46 +2127,59 @@ exports[`Scatter characterisation > on a light surface > renders the Light story
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 147px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 294px; left: 125.60000000000001px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.25
+            0.20
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 254px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 294px; left: 211.20000000000002px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.50
+            0.40
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 361px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 294px; left: 296.8px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.75
+            0.60
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 468px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 294px; left: 382.40000000000003px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.80
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 468px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
@@ -1984,17 +2192,17 @@ exports[`Scatter characterisation > on a light surface > renders the Light story
         <div
           class="css-view-175oi2r"
           data-testid="scatter-axis-y"
-          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(0, 0, 0, 0.09);"
+          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(0, 0, 0, 0.15);"
         />
         <div
           class="css-view-175oi2r"
           data-testid="scatter-axis-x"
-          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(0, 0, 0, 0.09);"
+          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(0, 0, 0, 0.15);"
         />
         <div
           class="css-view-175oi2r"
           data-testid="scatter-reference-main-sequence"
-          style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(0, 0, 0, 0.14); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
+          style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(0, 0, 0, 0.22); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
         />
         <div
           class="css-text-146c3p1"
@@ -2114,7 +2322,7 @@ exports[`Scatter characterisation > on a light surface > renders the NoDiagonal 
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 306px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 428px; top: 306px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
@@ -2127,46 +2335,59 @@ exports[`Scatter characterisation > on a light surface > renders the NoDiagonal 
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 232.5px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 428px; top: 247.20000000000002px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.25
+            0.20
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 159px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 428px; top: 188.4px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.50
+            0.40
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 85.5px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 428px; top: 129.60000000000002px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.75
+            0.60
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 12px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 428px; top: 70.79999999999998px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.80
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 12px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
@@ -2179,7 +2400,7 @@ exports[`Scatter characterisation > on a light surface > renders the NoDiagonal 
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 40px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 294px; left: 40px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
@@ -2192,46 +2413,59 @@ exports[`Scatter characterisation > on a light surface > renders the NoDiagonal 
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 147px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 294px; left: 125.60000000000001px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.25
+            0.20
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 254px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 294px; left: 211.20000000000002px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.50
+            0.40
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 361px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 294px; left: 296.8px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.75
+            0.60
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 468px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 294px; left: 382.40000000000003px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.80
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 468px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
@@ -2244,12 +2478,12 @@ exports[`Scatter characterisation > on a light surface > renders the NoDiagonal 
         <div
           class="css-view-175oi2r"
           data-testid="scatter-axis-y"
-          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(0, 0, 0, 0.09);"
+          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(0, 0, 0, 0.15);"
         />
         <div
           class="css-view-175oi2r"
           data-testid="scatter-axis-x"
-          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(0, 0, 0, 0.09);"
+          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(0, 0, 0, 0.15);"
         />
         <div
           class="css-text-146c3p1"
@@ -2369,7 +2603,7 @@ exports[`Scatter characterisation > on a light surface > renders the Outlier sto
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 306px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 428px; top: 306px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
@@ -2382,46 +2616,59 @@ exports[`Scatter characterisation > on a light surface > renders the Outlier sto
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 232.5px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 428px; top: 247.20000000000002px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.25
+            0.20
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 159px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 428px; top: 188.4px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.50
+            0.40
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 85.5px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 428px; top: 129.60000000000002px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.75
+            0.60
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 12px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 428px; top: 70.79999999999998px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.80
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 12px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
@@ -2434,7 +2681,7 @@ exports[`Scatter characterisation > on a light surface > renders the Outlier sto
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 40px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 294px; left: 40px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
@@ -2447,46 +2694,59 @@ exports[`Scatter characterisation > on a light surface > renders the Outlier sto
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 147px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 294px; left: 125.60000000000001px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.25
+            0.20
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 254px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 294px; left: 211.20000000000002px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.50
+            0.40
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 361px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 294px; left: 296.8px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.75
+            0.60
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 468px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 294px; left: 382.40000000000003px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.80
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 468px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
@@ -2499,17 +2759,17 @@ exports[`Scatter characterisation > on a light surface > renders the Outlier sto
         <div
           class="css-view-175oi2r"
           data-testid="scatter-axis-y"
-          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(0, 0, 0, 0.09);"
+          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(0, 0, 0, 0.15);"
         />
         <div
           class="css-view-175oi2r"
           data-testid="scatter-axis-x"
-          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(0, 0, 0, 0.09);"
+          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(0, 0, 0, 0.15);"
         />
         <div
           class="css-view-175oi2r"
           data-testid="scatter-reference-main-sequence"
-          style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(0, 0, 0, 0.14); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
+          style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(0, 0, 0, 0.22); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
         />
         <div
           class="css-text-146c3p1"
@@ -2646,7 +2906,7 @@ exports[`Scatter characterisation > on a light surface > renders the Selected st
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 306px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 428px; top: 306px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
@@ -2659,46 +2919,59 @@ exports[`Scatter characterisation > on a light surface > renders the Selected st
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 232.5px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 428px; top: 247.20000000000002px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.25
+            0.20
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 159px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 428px; top: 188.4px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.50
+            0.40
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 85.5px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 428px; top: 129.60000000000002px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.75
+            0.60
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 428px; top: 12px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 428px; top: 70.79999999999998px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            0.80
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 428px; top: 12px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
@@ -2711,7 +2984,7 @@ exports[`Scatter characterisation > on a light surface > renders the Selected st
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 40px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 294px; left: 40px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
@@ -2724,46 +2997,59 @@ exports[`Scatter characterisation > on a light surface > renders the Selected st
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 147px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 294px; left: 125.60000000000001px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.25
+            0.20
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 254px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 294px; left: 211.20000000000002px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.50
+            0.40
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 361px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 294px; left: 296.8px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
           >
-            0.75
+            0.60
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 294px; left: 468px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 294px; left: 382.40000000000003px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 298px; left: -16px; width: 32px; text-align: center;"
+          >
+            0.80
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 294px; left: 468px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
@@ -2776,17 +3062,17 @@ exports[`Scatter characterisation > on a light surface > renders the Selected st
         <div
           class="css-view-175oi2r"
           data-testid="scatter-axis-y"
-          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(0, 0, 0, 0.09);"
+          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(0, 0, 0, 0.15);"
         />
         <div
           class="css-view-175oi2r"
           data-testid="scatter-axis-x"
-          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(0, 0, 0, 0.09);"
+          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(0, 0, 0, 0.15);"
         />
         <div
           class="css-view-175oi2r"
           data-testid="scatter-reference-main-sequence"
-          style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(0, 0, 0, 0.14); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
+          style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(0, 0, 0, 0.22); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
         />
         <div
           class="css-text-146c3p1"
@@ -2914,142 +3200,168 @@ exports[`Scatter characterisation > on a light surface > renders the SinglePoint
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 348px; top: 266px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 348px; top: 258px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.45
+            0
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 348px; top: 202.49999999999997px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 348px; top: 210.4px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.48
+            0.20
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 348px; top: 139.00000000000006px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 348px; top: 162.80000000000004px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.50
+            0.40
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 348px; top: 75.50000000000003px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 348px; top: 115.20000000000005px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.53
+            0.60
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-y"
-          style="position: absolute; left: 40px; width: 348px; top: 12px; height: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; left: 40px; width: 348px; top: 67.60000000000002px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
           >
-            0.55
+            0.80
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-y"
+          style="position: absolute; left: 40px; width: 348px; top: 20.000000000000014px; height: 1px; background-color: rgba(0, 0, 0, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; left: -40px; top: -6px; width: 34px; text-align: right;"
+          >
+            1
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 254px; left: 40px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 254px; left: 48px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
           >
-            0.45
+            0
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 254px; left: 127.00000000000004px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 254px; left: 114.39999999999999px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
           >
-            0.48
+            0.20
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 254px; left: 213.99999999999991px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 254px; left: 180.8px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
           >
-            0.50
+            0.40
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 254px; left: 300.99999999999994px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 254px; left: 247.19999999999996px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
           >
-            0.53
+            0.60
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-gridline-x"
-          style="position: absolute; top: 12px; height: 254px; left: 388px; width: 1px; background-color: rgba(0, 0, 0, 0.06);"
+          style="position: absolute; top: 12px; height: 254px; left: 313.59999999999997px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
         >
           <div
             class="css-text-146c3p1"
             dir="auto"
             style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
           >
-            0.55
+            0.80
+          </div>
+        </div>
+        <div
+          class="css-view-175oi2r"
+          data-testid="scatter-gridline-x"
+          style="position: absolute; top: 12px; height: 254px; left: 379.99999999999994px; width: 1px; background-color: rgba(0, 0, 0, 0.1);"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+            style="position: absolute; top: 258px; left: -16px; width: 32px; text-align: center;"
+          >
+            1
           </div>
         </div>
         <div
           class="css-view-175oi2r"
           data-testid="scatter-axis-y"
-          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 254px; background-color: rgba(0, 0, 0, 0.09);"
+          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 254px; background-color: rgba(0, 0, 0, 0.15);"
         />
         <div
           class="css-view-175oi2r"
           data-testid="scatter-axis-x"
-          style="position: absolute; left: 40px; top: 266px; width: 348px; height: 1px; background-color: rgba(0, 0, 0, 0.09);"
+          style="position: absolute; left: 40px; top: 266px; width: 348px; height: 1px; background-color: rgba(0, 0, 0, 0.15);"
         />
         <div
           class="css-text-146c3p1"
@@ -3078,7 +3390,7 @@ exports[`Scatter characterisation > on a light surface > renders the SinglePoint
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           data-testid="scatter-point-only"
           role="button"
-          style="position: absolute; left: 203.99999999999991px; top: 129.00000000000006px; width: 20px; height: 20px; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; background-color: rgb(33, 150, 243); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          style="position: absolute; left: 203.99999999999997px; top: 129.00000000000003px; width: 20px; height: 20px; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; background-color: rgb(33, 150, 243); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
           tabindex="0"
           type="button"
         >

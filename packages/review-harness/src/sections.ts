@@ -3,7 +3,9 @@ import {
   AUTO_HEIGHT,
   type FrameHeight,
   type Manifest,
+  type Part,
   type Question,
+  type StripKind,
   type Variant,
 } from './schema.ts'
 
@@ -13,7 +15,12 @@ export const AUTO_FALLBACK_HEIGHT = 900
 export interface ResolvedSection {
   id: string
   title: string
+  deciding?: string
+  changed?: string
   context?: string
+  /** The changed parts as code, rendered as Current/Proposed panes and a settled FYI list. */
+  parts?: Part[]
+  kind?: StripKind
   questions: Question[]
   variants: Variant[]
   /** Frames shown in another section that this one also bears on. */
@@ -45,7 +52,11 @@ export function roundLayout(manifest: Manifest): RoundLayout {
   const sections = (manifest.sections ?? []).map((s) => ({
     id: s.id,
     title: s.title,
+    ...(s.deciding ? { deciding: s.deciding } : {}),
+    ...(s.changed ? { changed: s.changed } : {}),
     ...(s.context ? { context: s.context } : {}),
+    ...(s.parts ? { parts: s.parts } : {}),
+    ...(s.kind ? { kind: s.kind } : {}),
     questions: pick(manifest.questions, s.questionIds, (q) => q.id),
     variants: pick(manifest.variants, s.variantKeys, (v) => v.key),
     seeAlso: pick(manifest.variants, s.seeAlso, (v) => v.key),
@@ -60,8 +71,13 @@ export function roundLayout(manifest: Manifest): RoundLayout {
 }
 
 /** The section a frame is shown in, or undefined when it is not in one. */
-export function sectionOf(manifest: Manifest, variantKey: string) {
+function sectionOf(manifest: Manifest, variantKey: string) {
   return manifest.sections?.find((s) => s.variantKeys.includes(variantKey))
+}
+
+/** The section that asks a question, or undefined when it is not in one. */
+export function sectionOfQuestion(manifest: Manifest, questionId: string) {
+  return manifest.sections?.find((s) => s.questionIds.includes(questionId))
 }
 
 /** Variant height beats section height beats the round's, which defaults to "auto". */
@@ -95,7 +111,7 @@ export function questionsForVariant(manifest: Manifest, variantKey: string): str
 export function optionVariants(manifest: Manifest, question: Question): Map<string, string> {
   if (question.kind !== 'pick-one' && question.kind !== 'pick-many') return new Map()
   if (question.optionVariants) return new Map(Object.entries(question.optionVariants))
-  const section = manifest.sections?.find((s) => s.questionIds.includes(question.id))
+  const section = sectionOfQuestion(manifest, question.id)
   if (!section) return new Map()
   const shown = new Set(section.variantKeys)
   return new Map(question.options.filter((o) => shown.has(o)).map((o) => [o, o]))

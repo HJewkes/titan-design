@@ -17,23 +17,35 @@
     "test:storybook": "turbo run test:storybook",
     "storybook": "turbo run storybook",
     "build-storybook": "turbo run build-storybook",
+    "storybook:isolated": "pnpm --filter @titan-design/react-ui storybook:isolated",
+    "storybook:ports": "pnpm --filter @titan-design/react-ui storybook:ports",
+    "storybook:reap": "pnpm --filter @titan-design/react-ui storybook:reap",
+    "storybook:reap:all": "pnpm --filter @titan-design/react-ui storybook:reap:all",
     "type-check": "turbo run type-check",
+    "type-check:examples": "turbo run type-check:examples",
     "format:check": "turbo run format:check",
     "check:package": "turbo run check:package",
+    "api:check": "turbo run api:check",
+    "docs:check": "turbo run docs:check",
     "catalog": "pnpm --filter @titan-design/react-ui catalog",
     "arch:check": "pnpm --filter @titan-design/react-ui exec vitest run src/arch/arch-graph.freshness.test.ts",
     "verify": "pnpm verify:unit && pnpm test:axe",
-    "verify:unit": "pnpm format:check && pnpm lint && pnpm type-check && pnpm build && turbo run test:unit -- --run --coverage && pnpm arch:check",
+    "verify:unit": "pnpm format:check && pnpm lint && pnpm type-check && pnpm build && pnpm api:check && pnpm docs:check && pnpm type-check:examples && pnpm test:unit:ci && pnpm arch:check",
+    "test:unit:ci": "turbo run test:unit:ci",
     "test:axe": "turbo run test:axe",
     "arch:graph": "node scripts/arch-graph.mjs",
-    "review": "node packages/review-harness/src/cli.ts"
+    "arch:barrel-hash": "node packages/ui/scripts/barrel-hash.mjs --write",
+    "review": "node packages/review-harness/src/cli.ts",
+    "audit:stories": "node packages/ui/scripts/audit-stories.mjs",
+    "verify:changed": "node packages/ui/scripts/verify-changed.mjs"
   },
   "devDependencies": {
     "turbo": "^2.3.0"
   },
   "pnpm": {
     "overrides": {
-      "shell-quote@<1.8.4": "^1.8.4"
+      "shell-quote@<1.8.4": "^1.8.4",
+      "tinypool@<2.1.2": "^2.1.2"
     }
   }
 }

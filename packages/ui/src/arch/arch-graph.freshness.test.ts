@@ -18,7 +18,7 @@ describe('arch-graph.json freshness', () => {
     expect(
       graph.componentBarrelHash,
       'arch-graph.json is stale: a component barrel changed since it was generated. ' +
-        'Run `pnpm arch:graph -- --reindex` from the repo root and commit the result.'
+        'Run `pnpm arch:barrel-hash` from the repo root and commit the result.'
     ).toBe(componentBarrelHash(PKG_ROOT))
   })
 

@@ -8,7 +8,7 @@ const meta: Meta<typeof WeekRow> = {
   parameters: {
     docs: { description: { component: 'Composes **WorkoutPill** · **IntensityBar**.' } },
   },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     weekNumber: { control: 'number', description: 'Week index (1-based)' },
     totalWeeks: { control: 'number', description: 'Weeks in the mesocycle' },
