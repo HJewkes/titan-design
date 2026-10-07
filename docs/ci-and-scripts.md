@@ -57,9 +57,12 @@ baselines from those artifacts. See `docs/test-layers.md`.
 `contrast` runs `packages/ui/tests/visual/contrast.spec.ts` through `playwright.contrast.config.ts`
 in three Playwright shards, each on its own static Storybook build: one test per story and theme, axe
 `color-contrast` in Chromium, compared with `packages/ui/tests/visual/contrast-stories-baseline.json`.
-The baseline may only shrink: a pair or count above it fails, and a pair or count that no longer
-occurs fails as stale. It is path-gated like `visual`, and `check` needs it (all-green requires every
-job in the workflow to be in `check.needs`), so it gates merges through `check`.
+Each story renders under the paused clock, the clock runs forward 5 s so animations and the theme
+switch settle, and axe samples at that frozen instant. Stories tagged `play` are left out (their play
+function drives the render in real time); a blank render is recorded and skipped. The baseline may
+only shrink: a pair or count above it fails, and a pair or count that no longer occurs fails as stale.
+It is path-gated like `visual`, and `check` needs it (all-green requires every job in the workflow to
+be in `check.needs`), so it gates merges through `check`.
 
 Each shard uploads its report (`contrast-report-<i>`, one JSON line per story-theme) whether it
 passed or failed. Local Chromium can disagree with the container's, so regenerate the committed
