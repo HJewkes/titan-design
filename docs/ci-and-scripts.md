@@ -25,7 +25,7 @@ root `package.json`, `turbo.json`, `packages/ui/package.json`, `packages/ui/vite
 | Import cycles | `pnpm --filter @titan-design/react-ui check:cycles`        |                                                                                                                                         |
 
 `verify:unit` (root `package.json`) runs in order: `format:check`, `lint`, `type-check`, `build`,
-`api:check`, `docs:check`, `type-check:examples`, `turbo run test:unit -- --run --coverage`, `arch:check`.
+`api:check`, `docs:check`, `type-check:examples`, `test:unit:ci`, `arch:check`.
 `pnpm verify` is `verify:unit` plus `test:axe`.
 
 ### `visual` steps
@@ -91,7 +91,7 @@ does not declare.
 | `catalog`          | `pnpm --filter @titan-design/react-ui catalog`                            |
 | `arch:check`       | `pnpm --filter @titan-design/react-ui exec vitest run …freshness.test.ts` |
 | `verify`           | `pnpm verify:unit && pnpm test:axe`                                       |
-| `verify:unit`      | A chain of `pnpm` scripts and one direct `turbo run test:unit`            |
+| `verify:unit`      | A chain of `pnpm` scripts; `test:unit:ci` is the root `turbo run test:unit:ci` passthrough            |
 | `arch:graph`       | `node scripts/arch-graph.mjs`                                             |
 | `arch:barrel-hash` | `node packages/ui/scripts/barrel-hash.mjs --write`                        |
 | `review`           | `node packages/review-harness/src/cli.ts`                                 |

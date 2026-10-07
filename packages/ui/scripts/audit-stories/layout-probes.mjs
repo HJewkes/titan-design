@@ -1,9 +1,10 @@
-// Pure judges over collectLayout output (TD-650 P1, P2). Each is linear per container and reads
+// Pure judges over collectLayout output (TD-650 P1, P2, P3). Each is linear per container and reads
 // only the collected nodes, so a synthetic tree tests it without a browser.
 
 export const STACKED_INSET = 'stacked-inset'
 export const EDGE_CLEARANCE = 'edge-clearance'
 export const INSET_ASYMMETRY = 'inset-asymmetry'
+export const ALIGNMENT_NEAR_MISS = 'alignment-near-miss'
 
 const MAX_FINDINGS_PER_KIND = 25
 const MIN_EXCESS = 4 // --space-stack-sm, the smallest stack step
@@ -273,6 +274,114 @@ export function judgeInsetAsymmetry({ nodes }) {
   return findings
 }
 
+// --- P3 alignment-near-miss -------------------------------------------------------------------
+
+const ALIGN_TOLERANCE = 1 // the Vercel optical-alignment rule
+const MAX_BAND = 6
+const HEIGHT_LIMIT = 16
+const LINE_OVERLAP = 0.5
+const q = (v) => Math.round(v * 4) / 4 + 0
+const isFlexRow = ({ layout }) =>
+  (layout.display === 'flex' || layout.display === 'inline-flex') &&
+  layout.flexDirection.startsWith('row')
+
+// The first text a child carries, in document order, when it sits on the child's first line (a
+// label beside an icon does; a caption under an avatar does not).
+function firstText(node, children) {
+  const stack = [node]
+  while (stack.length) {
+    const n = stack.shift()
+    if (n.text) return n.text.first.inkTop < node.ink[1] + node.ink[3] / 2 ? n.text : null
+    stack.unshift(...(children.get(n.id) ?? []))
+  }
+  return null
+}
+
+// Flex-wrap puts children on several rows: a child joins the first line whose vertical range its
+// box overlaps by half the smaller height, so only neighbours on one row are compared.
+function visualLines(kids) {
+  const lines = []
+  for (const kid of [...kids].sort((a, b) => a.box[1] - b.box[1])) {
+    const [top, h] = [kid.box[1], kid.box[3]]
+    const line = lines.find((l) => {
+      const overlap = Math.min(l.bottom, top + h) - Math.max(l.top, top)
+      return overlap >= LINE_OVERLAP * Math.min(h, l.bottom - l.top)
+    })
+    if (!line) lines.push({ top, bottom: top + h, kids: [kid] })
+    else {
+      line.kids.push(kid)
+      line.top = Math.min(line.top, top)
+      line.bottom = Math.max(line.bottom, top + h)
+    }
+  }
+  return lines.map((l) => l.kids.sort((a, b) => a.box[0] - b.box[0]))
+}
+
+function alignmentLines(n, text) {
+  const [, y, , h] = n.ink
+  const lines = { top: y, centre: y + h / 2, bottom: y + h }
+  return text ? { baseline: text.first.baseline, ...lines } : lines
+}
+
+const deltasOf = (a, b) =>
+  Object.keys(a)
+    .filter((k) => k in b)
+    .map((line) => ({ line, d: q(Math.abs(a[line] - b[line])) }))
+
+const describeDeltas = (deltas) => deltas.map(({ line, d }) => `${line} Δ${d}`).join(', ')
+
+const alignsOnBaseline = (container, kid) =>
+  kid.layout.alignSelf.includes('baseline') ||
+  (['auto', 'normal'].includes(kid.layout.alignSelf) &&
+    container.layout.alignItems.includes('baseline'))
+
+// Both children are in a flex row with ink; returns the finding's detail, or null.
+function nearMiss(container, [a, b], children) {
+  const [ta, tb] = [firstText(a, children), firstText(b, children)]
+  const deltas = deltasOf(alignmentLines(a, ta), alignmentLines(b, tb))
+  const baseline = deltas.find((x) => x.line === 'baseline')
+  if (baseline && alignsOnBaseline(container, a) && alignsOnBaseline(container, b))
+    return baseline.d > ALIGN_TOLERANCE ? `baseline Δ${baseline.d} (align-items: baseline)` : null
+  const smallest = Math.min(...deltas.map((x) => x.d))
+  const sizes = [ta, tb].filter(Boolean).map((t) => t.fontSize)
+  const band = Math.min(MAX_BAND, ...sizes.map((s) => s / 2))
+  if (smallest <= ALIGN_TOLERANCE || smallest > band) return null
+  return `${describeDeltas(deltas)} (band ≤ ${+band.toFixed(2)}px)`
+}
+
+function heightMiss([a, b]) {
+  if (!a.paints || !b.paints) return null
+  const d = q(Math.abs(a.box[3] - b.box[3]))
+  return d > ALIGN_TOLERANCE && d <= HEIGHT_LIMIT
+    ? `height Δ${d} (both paint; limit ${HEIGHT_LIMIT}px)`
+    : null
+}
+
+// Neighbouring in-flow children on each visual line of a flex row.
+function rowPairs(container, children) {
+  if (!isFlexRow(container)) return []
+  const kids = (children.get(container.id) ?? []).filter((c) => inFlow(c) && c.ink)
+  if (kids.length < 2) return []
+  const lines =
+    container.layout.flexWrap === 'nowrap'
+      ? [[...kids].sort((a, b) => a.box[0] - b.box[0])]
+      : visualLines(kids)
+  return lines.flatMap((line) => line.slice(1).map((b, i) => [line[i], b]))
+}
+
+export function judgeAlignmentNearMiss({ nodes }) {
+  const { children } = index(nodes)
+  return nodes.flatMap((container) =>
+    rowPairs(container, children).flatMap((pair) =>
+      [nearMiss(container, pair, children), heightMiss(pair)].filter(Boolean).map((detail) => ({
+        kind: ALIGNMENT_NEAR_MISS,
+        selector: pair[0].selector,
+        detail: `${pair[0].selector} vs ${pair[1].selector}: ${detail}`,
+      }))
+    )
+  )
+}
+
 const capPerKind = (findings, limit) => {
   const seen = {}
   return findings.filter((f) => (seen[f.kind] = (seen[f.kind] ?? 0) + 1) <= limit)
@@ -280,7 +389,12 @@ const capPerKind = (findings, limit) => {
 
 export function judgeLayout(layout, { limit = MAX_FINDINGS_PER_KIND } = {}) {
   return capPerKind(
-    [...judgeStackedInset(layout), ...judgeEdgeClearance(layout), ...judgeInsetAsymmetry(layout)],
+    [
+      ...judgeStackedInset(layout),
+      ...judgeEdgeClearance(layout),
+      ...judgeInsetAsymmetry(layout),
+      ...judgeAlignmentNearMiss(layout),
+    ],
     limit
   )
 }

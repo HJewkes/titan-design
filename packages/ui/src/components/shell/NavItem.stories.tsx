@@ -19,7 +19,8 @@ const meta: Meta<typeof NavItem> = {
     (Story) => (
       <Surface
         level="background"
-        accessibilityRole="tablist"
+        role="navigation"
+        accessibilityLabel="Primary"
         className="w-[60px] items-center py-2"
       >
         <Story />
