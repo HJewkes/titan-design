@@ -492,7 +492,7 @@ export function SetBarChart({
             )
           return (
             <View key={i} accessibilityElementsHidden={renderBarOverlay == null} style={column}>
-              {ownLabel && (
+              {!!ownLabel && (
                 // All labels pin to one aligned row JUST ABOVE THE PEAK BAR (not the container top),
                 // in the muted on-surface-secondary tone — so the row hugs the bars, no floating void.
                 <Animated.View

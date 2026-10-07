@@ -138,12 +138,25 @@ async function describeBlankPage(page: Page, events: string[]): Promise<string> 
   return JSON.stringify({ state, events }, null, 2)
 }
 
+interface InjectedClock {
+  __pwClock?: { controller: { pauseAt(time: number): Promise<number> } }
+}
+
+// Playwright 1.58 arms a one-shot real-time timer when it injects the clock into a new document,
+// and replaying `pauseAt` there does not cancel it. About 100 ms after load it fires every timer
+// already queued, so a fast load ran react-native-web's onLayout measurement and a slow one did not
+// (TD-729). Pausing again at document start cancels it, so no timer fires before the screenshot.
+function repauseClock(time: number) {
+  void (globalThis as InjectedClock).__pwClock?.controller.pauseAt(time)
+}
+
 async function renderStory(page: Page, id: string) {
   const events = recordPageEvents(page)
   // install() alone keeps ticking from FIXED_TIME in real time, so a story
   // rendered late in the run showed 16:13 instead of 16:12 (#250); it starts early so pauseAt never rewinds.
   await page.clock.install({ time: CLOCK_START })
   await page.clock.pauseAt(FIXED_TIME)
+  await page.addInitScript(repauseClock, FIXED_TIME.getTime())
   await page.goto(storyUrl(id))
   await page.waitForLoadState('networkidle')
   await page.evaluate(() => document.fonts.ready)

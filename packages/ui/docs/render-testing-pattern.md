@@ -50,7 +50,7 @@ ones gate; `playwright.tokens.config.ts` is a local-only dev harness (see below)
 | Layer                              | Config                               | Script                 | What it actually checks                                                                                                                                                                                                                                                                                                                                                |
 | ---------------------------------- | ------------------------------------ | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1 — component screenshot baselines | `playwright.baseline.config.ts`      | `test:visual:baseline` | Boots the specimen dev server (`pnpm specimen`, port 5200) and runs `specimen/baseline/**/*.screenshot.test.ts` against committed `*-chromium-linux.png` baselines, the tolerance set in the config's `expect.toHaveScreenshot`. Baselines are generated from the pinned `mcr.microsoft.com/playwright:v1.58.2-noble` container so they're byte-comparable to CI.      |
-| 2 — Storybook story baselines      | `playwright.config.ts` (the default) | `test:visual:stories`  | Boots Storybook (`pnpm storybook --ci`, port 6006) and runs `tests/visual/stories.spec.ts`, which enumerates `index.json` and screenshots every story matching the `SCOPE` pattern and `CHAT_STORIES` set declared in that file, not the whole library. The clock is frozen and CSS animations disabled so control-driven/animated stories snapshot deterministically. |
+| 2 — Storybook story baselines      | `playwright.config.ts` (the default) | `test:visual:stories`  | Builds Storybook (`storybook build`, reused within one CI job), serves it with `vite preview` on port 6006 and runs `tests/visual/stories.spec.ts`, which enumerates `index.json` and screenshots every story matching the `SCOPE` pattern and `CHAT_STORIES` set declared in that file, not the whole library. The clock is frozen and CSS animations disabled so control-driven/animated stories snapshot deterministically. |
 | 3 — HTML-vs-React parity           | `playwright.comparison.config.ts`    | `test:visual:compare`  | Boots the specimen dev server and runs `specimen/**/*.visual.test.ts`: a computed-style comparison between a hand-written HTML reference and the React/NativeWind render of the same component, to catch NativeWind/RNW output drifting from the intended CSS.                                                                                                         |
 | — token-resolution harness         | `playwright.tokens.config.ts`        | `test:visual:tokens`   | Runs `specimen/token-resolution.spec.ts` against the specimen server. Not referenced anywhere in `.github/workflows/`, so it is a **local-only dev tool** — it does not gate anything today.                                                                                                                                                                           |
 
@@ -71,6 +71,13 @@ specimen harness.
 **Yes.** The `visual` job in `.github/workflows/ci.yml` runs on every pull request. Read the
 job's steps for which layer runs which script and which steps only regenerate baselines on
 failure; a pixel or computed-style mismatch in a gating step fails the PR.
+
+A pull request that changes no rendered UI skips every layer (TD-645): the job's first step,
+`scripts/visual-paths.mjs`, lists the PR's files and, when none matches its rendered-UI set (all
+of `src/` except test files, stories, Storybook and Tailwind config, the specimen, the visual,
+interaction and offline-fonts specs, Playwright configs, manifests, the lockfile and `ci.yml`),
+logs `visual-paths: none of N changed paths is rendered UI` and ends green. A push to `main`
+always runs every layer. If a layer starts reading a new path, add it to `RENDERED_UI_PATTERNS`.
 
 ## Where a new component's test goes, and its minimal shape
 

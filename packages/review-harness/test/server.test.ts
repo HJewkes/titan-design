@@ -9,7 +9,7 @@ import type { HarnessFreshness } from '../src/harness-freshness.ts'
 import { buildFeedback, emptyDraft } from '../src/feedback.ts'
 import { runCli, type CliIo } from '../src/run.ts'
 import { startReviewServer, type ReviewServer } from '../src/server.ts'
-import { SHA, manifest, validFeedback } from './fixtures.ts'
+import { SHA, manifest, noTreeGit, validFeedback } from './fixtures.ts'
 
 /** Stands in for Storybook: an index listing the example's stories, and a canvas page. */
 async function fakeStorybook(): Promise<{ url: string; close: () => void }> {
@@ -79,6 +79,15 @@ describe('review server', () => {
     expect((await res.json()).errors).toEqual(['q1: required'])
   })
 
+  it('answers an oversize submission with 413 and the real reason', async () => {
+    const res = await fetch(`${server.url}api/submit`, {
+      method: 'POST',
+      body: 'x'.repeat(5_000_001),
+    })
+    expect(res.status).toBe(413)
+    expect((await res.json()).errors).toEqual(['the submission is larger than 5000000 bytes'])
+  })
+
   it('resolves with the first valid submission and refuses a second', async () => {
     const feedback = validFeedback(manifest(sb.url))
     expect((await post(server.url, feedback)).status).toBe(200)
@@ -113,6 +122,7 @@ describe('titan-review CLI', () => {
       openBrowser: () => {},
       capture: async (_round, outDir) => [join(outDir, 'fake.png')],
       measure: async () => [],
+      git: noTreeGit,
       createPage: async () => stubPage,
       harnessFreshness: async () => freshness,
       signal,

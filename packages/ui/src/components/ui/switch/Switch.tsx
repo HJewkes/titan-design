@@ -102,11 +102,11 @@ export const Switch = forwardRef<View, SwitchProps>(function Switch(
       className={cn('flex-row items-center gap-2', isDisabled && 'opacity-50', className)}
       {...props}
     >
-      {label && labelPosition === 'left' && (
+      {!!label && labelPosition === 'left' && (
         <Text className="text-text-primary font-medium">{label}</Text>
       )}
       {switchElement}
-      {label && labelPosition === 'right' && (
+      {!!label && labelPosition === 'right' && (
         <Text className="text-text-primary font-medium">{label}</Text>
       )}
     </Pressable>

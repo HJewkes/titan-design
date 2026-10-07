@@ -1,0 +1,111 @@
+<!doctype html>
+<html style="--space-section-sm: 40px">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        margin: 0;
+      }
+      /* Cases sit 64px apart, wider than any gap inside one, so the page's own stack is quiet. */
+      .case {
+        display: flex;
+        flex-direction: column;
+        width: 200px;
+        margin-bottom: 64px;
+      }
+      .bar {
+        height: 20px;
+        background: #dde;
+      }
+      .group {
+        display: flex;
+        flex-direction: column;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="storybook-root">
+      <!-- Negatives -->
+      <div class="case" data-testid="section-token">
+        <div class="bar" style="margin-bottom: 8px"></div>
+        <div class="bar" style="margin-bottom: var(--space-section-sm)"></div>
+        <div class="bar"></div>
+      </div>
+
+      <div class="case" data-testid="uniform-rhythm" style="gap: 12px">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+      </div>
+
+      <div class="case" data-testid="wrapper-chains" style="gap: 12px">
+        <div>
+          <div><div class="bar"></div></div>
+        </div>
+        <div>
+          <div><div class="bar"></div></div>
+        </div>
+        <div>
+          <div><div class="bar"></div></div>
+        </div>
+      </div>
+
+      <div
+        class="case"
+        data-testid="grid-2x2"
+        style="display: grid; grid-template-columns: 1fr 1fr; row-gap: 8px; column-gap: 40px"
+      >
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+      </div>
+
+      <div class="case" data-testid="divider-split" style="gap: 8px">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div style="height: 1px; background: #889; margin: 22px 0"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+      </div>
+
+      <div class="case" data-testid="grouped-tight" style="gap: 24px">
+        <div class="group" style="gap: 8px">
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+        <div class="group" style="gap: 8px">
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+      </div>
+
+      <!-- Positives -->
+      <div class="case" data-testid="outlier-literal">
+        <div class="bar" style="margin-bottom: 8px"></div>
+        <div class="bar" style="margin-bottom: 32px"></div>
+        <div class="bar"></div>
+      </div>
+
+      <div class="case" data-testid="outlier-padding">
+        <div class="bar" style="margin-bottom: 8px"></div>
+        <div style="padding-bottom: 32px; margin-bottom: 8px"><div class="bar"></div></div>
+        <div class="bar"></div>
+      </div>
+
+      <div class="case" data-testid="inverted-groups" style="gap: 16px">
+        <div class="group" style="gap: 16px">
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+        <div class="group" style="gap: 4px">
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

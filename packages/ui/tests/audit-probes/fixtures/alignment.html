@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      /* alignment.spec.ts installs the bundled Inter face as "Fixture" before measuring. */
+      body {
+        margin: 0;
+        font-family: Fixture;
+        font-size: 14px;
+      }
+      .case {
+        display: flex;
+        margin-bottom: 24px;
+        width: 90%;
+        max-width: 320px;
+        gap: 8px;
+      }
+      .tight {
+        line-height: 1;
+      }
+      .tag {
+        background: #dde;
+        padding: 2px 8px;
+        line-height: 20px;
+      }
+      .card {
+        width: 120px;
+        background: #dde;
+        padding: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="storybook-root">
+      <!-- Negatives -->
+      <div class="case" data-testid="icon-text" style="align-items: center">
+        <svg width="16" height="16" viewBox="0 0 16 16"><rect width="16" height="16" /></svg>
+        <span>Profile</span>
+      </div>
+
+      <div class="case" data-testid="top-labels" style="align-items: flex-start; line-height: 14px">
+        <span style="font-size: 12px">SETS</span>
+        <span style="font-size: 16px; line-height: 16px">REPS</span>
+      </div>
+
+      <div class="case" data-testid="tag-row" style="flex-wrap: wrap; width: 200px">
+        <span class="tag">Strength</span>
+        <span class="tag">Mobility</span>
+        <span class="tag">Endurance</span>
+        <span class="tag">Power</span>
+        <span class="tag">Balance</span>
+      </div>
+
+      <div class="case" data-testid="baseline-hit" style="align-items: baseline">
+        <span style="font-size: 12px">Total</span>
+        <span style="font-size: 24px">128</span>
+      </div>
+
+      <div class="case" data-testid="matched-cards" style="align-items: stretch">
+        <div class="card">Short</div>
+        <div class="card">A longer card body that wraps</div>
+      </div>
+
+      <!-- Positives -->
+      <div class="case tight" data-testid="centre-drift" style="align-items: center">
+        <span style="font-size: 12px">SETS</span>
+        <span style="font-size: 15px">reps</span>
+      </div>
+
+      <div class="case" data-testid="baseline-miss" style="align-items: baseline">
+        <span>Total</span>
+        <span style="position: relative; top: 8px">128</span>
+      </div>
+
+      <div class="case" data-testid="uneven-cards" style="align-items: flex-start">
+        <div class="card" style="height: 80px">Plan</div>
+        <div class="card" style="height: 88px">Log</div>
+      </div>
+    </div>
+  </body>
+</html>

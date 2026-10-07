@@ -12,8 +12,12 @@ const configs = {
 }
 
 const webServers = Object.entries(configs).flatMap(([file, config]) =>
-  [config.webServer ?? []].flat().map((server) => ({ file, server }))
+  [config.webServer ?? []].flat().map((server) => ({ file, server, port: serverPort(server) }))
 )
+
+function serverPort(server) {
+  return server.port ?? Number(new URL(server.url).port)
+}
 
 describe('Playwright webServer configs (TD-512)', () => {
   it('covers every config that starts a server', () => {
@@ -22,13 +26,13 @@ describe('Playwright webServer configs (TD-512)', () => {
 
   it.each(webServers)(
     'never reuses an existing server on a shared port in $file',
-    ({ server }) => {
-      expect([5200, 6006]).toContain(server.port)
+    ({ server, port }) => {
+      expect([5200, 6006]).toContain(port)
       expect(server.reuseExistingServer).not.toBe(true)
     }
   )
 
-  it.each(webServers.filter((w) => w.server.port === 5200))(
+  it.each(webServers.filter((w) => w.port === 5200))(
     'starts the specimen server with --strictPort in $file',
     ({ server }) => {
       expect(server.command).toContain('pnpm specimen')
@@ -36,10 +40,20 @@ describe('Playwright webServer configs (TD-512)', () => {
     }
   )
 
-  it.each(webServers.filter((w) => w.server.port === 6006))(
-    'starts Storybook through the launcher script in $file',
+  it.each(webServers.filter((w) => w.port === 6006))(
+    'serves the static Storybook build with --strictPort in $file',
     ({ server }) => {
-      expect(server.command).toMatch(/^pnpm storybook\b/)
+      expect(server.command).toContain('vite preview --outDir storybook-static')
+      expect(server.command).toContain('--strictPort')
+    }
+  )
+
+  // The launcher's bind probe holds the port for an instant; a port wait took it for readiness (TD-735).
+  it.each(webServers.filter((w) => w.port === 6006))(
+    'waits for Storybook to serve its index, not for the port, in $file',
+    ({ server }) => {
+      expect(server.port).toBeUndefined()
+      expect(new URL(server.url).pathname).toBe('/index.json')
     }
   )
 })
