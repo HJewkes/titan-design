@@ -3,6 +3,7 @@ import { spacingClassesOf, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { SetTableHeader } from './SetTableHeader'
+import { SetRow } from './SetRow'
 
 describe('SetTableHeader', () => {
   it('renders the five column labels with the lbs weight column by default', () => {
@@ -54,5 +55,28 @@ describe('SetTableHeader geometry resolves to the inset tokens', () => {
     const classes = spacingClassesOf('table-header')
     expect(classes).toEqual(['p-inset-sm', 'pb-inset-xs'])
     expect(resolveAll(classes)).toEqual(['8px', '4px'])
+  })
+})
+
+describe('SetTableHeader column widths match SetRow cells', () => {
+  const headerWidths = () =>
+    Array.from(screen.getByTestId('table-header').children)
+      .map((column) => (column as HTMLElement).style.width)
+      .filter(Boolean)
+
+  const rowWidths = () =>
+    ['set-row-set-number', 'set-row-reps', 'set-row-weight', 'set-row-rpe'].map(
+      (id) => screen.getByTestId(id).style.width
+    )
+
+  it.each([false, true])('aligns the fixed columns when showPrevious is %s', (showPrevious) => {
+    render(
+      <>
+        <SetTableHeader showPrevious={showPrevious} />
+        <SetRow state="todo" setNumber={1} unit="lbs" target={{ reps: 5, weight: 100 }} />
+      </>
+    )
+    expect(headerWidths()).toEqual(rowWidths())
+    expect(rowWidths()).toEqual(['36px', '44px', '56px', '36px'])
   })
 })

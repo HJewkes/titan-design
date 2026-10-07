@@ -84,7 +84,6 @@ export function GhostBloom({
   const toAbs = (pts: Pt[]): Pt[] => pts.map(([px, mag]) => [px, toY(mag)])
   const curD = smoothPath(toAbs(current))
   const ghostDs = ghosts.map((g) => smoothPath(toAbs(g)))
-  // Rim-light sits on the side the line grows toward (its "top"); shadow falls the other way.
 
   return (
     <>

@@ -29,9 +29,9 @@ export function SectionHeader({ title, subtitle, trailing, className }: SectionH
         <Text className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
           {title}
         </Text>
-        {subtitle && <Text className="text-xs text-text-tertiary">{subtitle}</Text>}
+        {!!subtitle && <Text className="text-xs text-text-tertiary">{subtitle}</Text>}
       </View>
-      {trailing && <View>{trailing}</View>}
+      {!!trailing && <View>{trailing}</View>}
     </View>
   )
 }

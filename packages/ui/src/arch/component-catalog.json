@@ -1968,7 +1968,7 @@
         },
         {
           "default": "false",
-          "description": "Reveal the ECC / HOLD / CON labels inside the band.",
+          "description": "Reveal the ECC / CON labels inside the band; hold and idle runs stay unlabelled.",
           "name": "showLabels",
           "required": false,
           "type": "boolean"
@@ -2638,6 +2638,27 @@
           "name": "input",
           "required": false,
           "type": "ActiveWorkoutInput"
+        },
+        {
+          "default": null,
+          "description": "Called when the user presses the rest timer's add-time button.",
+          "name": "onAddTime",
+          "required": false,
+          "type": "(() => void)"
+        },
+        {
+          "default": null,
+          "description": "Called with each recorded set, after the page enters rest if `rest` is set.",
+          "name": "onRecord",
+          "required": false,
+          "type": "((set: ActiveWorkoutRecordedSet) => void)"
+        },
+        {
+          "default": null,
+          "description": "Called when the user skips rest, after the input bar returns.",
+          "name": "onSkip",
+          "required": false,
+          "type": "(() => void)"
         },
         {
           "default": null,
@@ -3395,13 +3416,6 @@
         {
           "default": null,
           "description": "",
-          "name": "onNavigateDetail",
-          "required": false,
-          "type": "(() => void)"
-        },
-        {
-          "default": null,
-          "description": "",
           "name": "prescription",
           "required": false,
           "type": "string"
@@ -3447,13 +3461,6 @@
           "name": "summary",
           "required": false,
           "type": "{ sets: number; reps: string | number; weight: number; unit: \"lbs\" | \"kg\"; }"
-        },
-        {
-          "default": null,
-          "description": "",
-          "name": "supersetColor",
-          "required": false,
-          "type": "string"
         },
         {
           "default": null,
@@ -4051,7 +4058,7 @@
           "description": "Zone boundary thresholds (loss %): green→gold, gold→orange, orange→red.",
           "name": "thresholds",
           "required": false,
-          "type": "[number, number, number]"
+          "type": "VelocityLossThresholds"
         },
         {
           "default": null,
@@ -4798,27 +4805,6 @@
           "type": "boolean"
         },
         {
-          "default": "monotone",
-          "description": "Band edge interpolation.",
-          "name": "bandCurve",
-          "required": false,
-          "type": "BandCurve"
-        },
-        {
-          "default": "centre-14",
-          "description": "Band fade.",
-          "name": "bandFade",
-          "required": false,
-          "type": "BandFade"
-        },
-        {
-          "default": "lip",
-          "description": "What marks the plane's bottom edge.",
-          "name": "baseline",
-          "required": false,
-          "type": "PlotBaseline"
-        },
-        {
           "default": null,
           "description": "Calibrating only: the first line of the tip behind the info target in the plot's lower-right corner.",
           "name": "calibratingNote",
@@ -4865,13 +4851,6 @@
           "description": "Chart plot height in px.",
           "name": "height",
           "required": true,
-          "type": "number"
-        },
-        {
-          "default": "0.04",
-          "description": "Fraction of the plot width the plane's left inner shadow fades over.",
-          "name": "leftShadowSpread",
-          "required": false,
           "type": "number"
         },
         {
@@ -5154,7 +5133,7 @@
           "description": "",
           "name": "palette",
           "required": true,
-          "type": "{ status: \"#D14343\" | \"#F9B415\" | \"#C27400\" | \"#2ED573\" | \"#298732\" | \"#2196F3\" | \"#1072CB\" | \"#A29F9D\" | \"#72716F\" | \"#9E9A97\"; band: string; bandHue: \"#307B9B\"; lip: string; rule: \"#A29F9D\" | \"#65748B\"; ... 9 more ...; shadeScale: number; }"
+          "type": "{ status: \"#D14343\" | \"#F9B415\" | \"#C27400\" | \"#2ED573\" | \"#298732\" | \"#2196F3\" | \"#1072CB\" | \"#A29F9D\" | \"#72716F\" | \"#9E9A97\"; band: string; bandHue: \"#307B9B\"; lip: string; rule: \"#A29F9D\" | \"#5A5958\"; ... 9 more ...; shadeScale: number; }"
         },
         {
           "default": null,
@@ -7023,7 +7002,7 @@
       "props": [
         {
           "default": null,
-          "description": "Newest rep index — reserved; the compact spotlight strip is static.",
+          "description": "Rep the spotlight strip grows from the baseline as it lands.",
           "name": "liveRepIndex",
           "required": false,
           "type": "number"
@@ -8015,13 +7994,6 @@
           "name": "height",
           "required": false,
           "type": "number"
-        },
-        {
-          "default": null,
-          "description": "`hero` only (internal): suppress this strip's own 2px baseline border.",
-          "name": "hideBaseline",
-          "required": false,
-          "type": "boolean"
         },
         {
           "default": null,
@@ -9289,6 +9261,13 @@
           "name": "live",
           "required": false,
           "type": "boolean"
+        },
+        {
+          "default": "live",
+          "description": "The words appended to the accessible name while a set runs in this category and it is not active (\"Train, live\").",
+          "name": "liveLabel",
+          "required": false,
+          "type": "string"
         },
         {
           "default": null,
@@ -14049,6 +14028,13 @@
           "default": null,
           "description": "Sort key for this column",
           "name": "sortKey",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Accessible sort name; required when `children` is not a string.",
+          "name": "sortLabel",
           "required": false,
           "type": "string"
         },

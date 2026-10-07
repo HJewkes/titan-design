@@ -12,6 +12,10 @@ const meta: Meta<typeof Menu> = {
       control: 'boolean',
       description: 'Controlled open state',
     },
+    defaultIsOpen: {
+      control: 'boolean',
+      description: 'Initial open state when uncontrolled',
+    },
   },
   decorators: [
     (Story) => (
@@ -26,8 +30,8 @@ export default meta
 type Story = StoryObj<typeof Menu>
 
 export const Default: Story = {
-  render: () => (
-    <Menu>
+  render: (args) => (
+    <Menu {...args}>
       <MenuTrigger>
         <Button variant="outline" color="primary">
           <ButtonText>Options</ButtonText>
@@ -104,8 +108,9 @@ export const WithIcons: Story = {
 }
 
 export const DestructiveItem: Story = {
-  render: () => (
-    <Menu>
+  args: { defaultIsOpen: true },
+  render: (args) => (
+    <Menu {...args}>
       <MenuTrigger>
         <Button variant="outline" color="primary">
           <ButtonText>Manage</ButtonText>
