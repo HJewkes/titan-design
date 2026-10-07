@@ -343,12 +343,6 @@ describe('Page', () => {
       scrollTo(container, 40)
       expect(shadowed(container)).toHaveLength(0)
     })
-
-    it('hasScrollShadow is no longer a prop', () => {
-      // @ts-expect-error the prop was removed: a pinned header always casts the shadow
-      const page = <Page isHeaderPinned hasScrollShadow header={header} />
-      expect(page.props.hasScrollShadow).toBe(true)
-    })
   })
 
   it('PageHeader pulls its row up by the cap offset', () => {

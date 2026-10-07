@@ -870,9 +870,11 @@ export interface ChipProps extends ViewProps {
     className?: string;
     color?: ChipColor;
     isDisabled?: boolean;
+    isSelected?: boolean;
     leftElement?: React__default.ReactNode;
     onDelete?: () => void;
     onPress?: () => void;
+    rightElement?: React__default.ReactNode;
     size?: ChipSize;
     variant?: ChipVariant;
 }
@@ -5675,6 +5677,7 @@ export interface ReadinessCheckProps {
     // (undocumented)
     className?: string;
     factors: ReadinessFactor[];
+    isConfirmDisabled?: boolean;
     onConfirm: () => void;
     score: number;
     warmUpCompleted: boolean;
