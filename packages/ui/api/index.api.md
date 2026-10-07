@@ -8813,7 +8813,7 @@ export interface WeekRowWorkout {
     // (undocumented)
     onPress?: () => void;
     // (undocumented)
-    status: WorkoutPillStatus;
+    status: 'completed' | 'current' | 'upcoming' | 'deload' | 'next' | 'missed';
 }
 
 // @public (undocumented)
