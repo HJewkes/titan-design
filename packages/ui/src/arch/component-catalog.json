@@ -4058,7 +4058,7 @@
           "description": "Zone boundary thresholds (loss %): green→gold, gold→orange, orange→red.",
           "name": "thresholds",
           "required": false,
-          "type": "[number, number, number]"
+          "type": "VelocityLossThresholds"
         },
         {
           "default": null,
