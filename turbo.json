@@ -27,7 +27,14 @@
       ]
     },
     "test:unit:ci": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/*",
+        "$TURBO_ROOT$/.github/**",
+        "$TURBO_ROOT$/docs/**",
+        "$TURBO_ROOT$/scripts/**"
+      ]
     },
     "test:axe": {
       "dependsOn": ["^build"]
