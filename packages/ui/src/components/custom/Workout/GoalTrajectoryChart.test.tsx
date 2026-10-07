@@ -17,6 +17,7 @@ import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { pressedLevel, surfaceBackground } from '../../../theme/surface-planes'
 import { alpha } from '../../../utils/colors'
 import { PLOT_LEFT } from './GoalTrajectoryChartGeometry'
+import { STATUS_LABEL } from './goalTrajectoryChartModel'
 import { GoalWeekColumnsChart } from './GoalWeekColumnsChart'
 
 const dark = getSemanticColors('dark')
@@ -135,6 +136,39 @@ describe('GoalTrajectoryChart', () => {
       )
       expect(screen.getByTestId('goal-trajectory-chart-empty')).toBeInTheDocument()
       expect(screen.queryByTestId('goal-trajectory-chart-canvas')).not.toBeInTheDocument()
+    })
+
+    it.each(Object.entries(STATUS_LABEL))(
+      'words the empty state from status %s',
+      (status, label) => {
+        render(
+          <GoalTrajectoryChart
+            {...baseProps}
+            expected={[]}
+            actuals={[]}
+            weeks={[]}
+            status={status as GoalTrajectoryStatus}
+          />
+        )
+        const empty = screen.getByTestId('goal-trajectory-chart-empty')
+        expect(empty).toHaveTextContent(`${label} — no band yet`)
+        expect(empty.getAttribute('aria-label')).toContain(`${label}: no band yet.`)
+      }
+    )
+
+    it('puts no aria-label on any element inside the aria-hidden plot', () => {
+      render(
+        <GoalTrajectoryChart
+          {...baseProps}
+          actuals={actuals.slice(0, 3)}
+          status="on_track"
+          nextTarget={{ weekIndex: 5, value: 186, label: 'next week: 186 x 8' }}
+          currentWeek={4}
+        />
+      )
+      const plot = screen.getByTestId('goal-trajectory-chart-canvas').querySelector('svg')
+      expect(plot).toHaveAttribute('aria-hidden', 'true')
+      expect(plot?.querySelectorAll('[aria-label]')).toHaveLength(0)
     })
   })
 
@@ -471,7 +505,7 @@ describe('GoalTrajectoryChart current week without a reading', () => {
     const point = screen.getByTestId('goal-trajectory-chart-current-week-point')
     expect(point.getAttribute('fill')).toBe('none')
     expect(point.getAttribute('stroke')).toBe(dark['status-success'])
-    expect(point.getAttribute('aria-label')).toBe('Current week, no reading yet')
+    expect(point).not.toHaveAttribute('aria-label')
     expect(screen.getByTestId('goal-trajectory-chart-next-target-lead')).toBeInTheDocument()
     expect(summary()).toContain('Current week, no reading yet (week 4).')
   })

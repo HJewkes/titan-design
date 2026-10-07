@@ -4,6 +4,8 @@ import { useOnSurfaceColor } from '../../ui/surface'
 import { GoalTrajectoryPlot } from './GoalTrajectoryPlot'
 import { CalibratingInfo } from './GoalTrajectoryCalibrating'
 import { GoalTrajectoryWeekTips } from './GoalTrajectoryWeekTips'
+import { STATUS_LABEL } from './goalTrajectoryChartModel'
+import type { GoalTrajectoryStatus } from './GoalTrajectoryChartGeometry'
 import type { TrajectoryChartPlot } from './useGoalTrajectoryChart'
 
 interface PartProps {
@@ -17,21 +19,23 @@ export function GoalTrajectoryChartEmpty({
   width,
   height,
   metricLabel,
+  status,
   className,
   viewProps,
-}: PartProps & { metricLabel: string }) {
+}: PartProps & { metricLabel: string; status: GoalTrajectoryStatus }) {
+  const statusLabel = STATUS_LABEL[status]
   const axisColor = useOnSurfaceColor('tertiary')
   return (
     <View
       style={{ width, height }}
       className={cn('items-center justify-center', className)}
       accessibilityRole="image"
-      accessibilityLabel={`${metricLabel} trajectory chart. Calibrating: not enough matched sessions to draw a band yet.`}
+      accessibilityLabel={`${metricLabel} trajectory chart. ${statusLabel}: no band yet.`}
       testID="goal-trajectory-chart-empty"
       {...viewProps}
     >
       <Text style={{ color: axisColor, fontSize: 14, fontFamily: 'Inter, sans-serif' }}>
-        Calibrating — no band yet
+        {statusLabel} — no band yet
       </Text>
     </View>
   )
