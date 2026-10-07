@@ -4097,8 +4097,8 @@ export interface LiveFatigueModel {
     romShortThresholdM: number | null;
     romWorkingStandardM: number | null;
     rpe: number | null;
-    targetTempoSeconds: [number, number, number, number] | null;
-    tempoSeconds: [number, number, number, number] | null;
+    targetTempoSeconds: TempoTuple | null;
+    tempoSeconds: TempoTuple | null;
     velocityCurves: RepVelocityCurve[];
     verdict: FatigueVerdict | null;
 }
@@ -4831,6 +4831,7 @@ export interface NavItemProps {
     icon: ReactNode;
     label: string;
     live?: boolean;
+    liveLabel?: string;
     // (undocumented)
     onPress?: () => void;
 }
