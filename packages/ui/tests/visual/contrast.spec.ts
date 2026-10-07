@@ -21,11 +21,16 @@ import { STORY_INDEX_ENV } from './story-index.global-setup'
  * axe `color-contrast` in real Chromium on every Storybook story, dark and light (TD-738).
  *
  * One test per story and theme, on the static build `playwright.contrast.config.ts` serves. Each
- * story renders under the Layer 2 paused clock, then the clock resumes (axe schedules its run with
- * `setTimeout`, so it never returns while the clock is paused) and axe reports the violating nodes.
- * Their foreground|background pairs are counted and compared with `contrast-stories-baseline.json`,
- * which may only shrink: a pair or count above it fails, and a pair or count that no longer occurs
- * fails as stale until `pnpm contrast:baseline` regenerates the file.
+ * story renders under the Layer 2 paused clock, the clock runs forward a fixed `SETTLE_MS` so
+ * entrance animations and the theme switch reach their final frame, CSS animations are finished or
+ * cancelled as Playwright's screenshots do, and axe samples at that frozen instant. axe yields with
+ * `setTimeout`, which never fires under the paused clock, so its timers are shimmed to microtasks
+ * for the run: resuming the clock instead let real time pass while axe walked the tree, and the
+ * counts of mid-transition colours varied from one CI run to the next (TD-738, PR #726).
+ *
+ * The violating nodes' foreground|background pairs are counted and compared with
+ * `contrast-stories-baseline.json`, which may only shrink: a pair or count above it fails, and a
+ * pair or count that no longer occurs fails as stale until `pnpm contrast:baseline` regenerates it.
  *
  * A story that renders blank is recorded and skipped, not failed: Layer 2's guard owns that.
  *
@@ -66,27 +71,44 @@ interface AxeCheckNode {
   any?: { data?: ContrastNode }[]
 }
 
+interface AxeWindow {
+  axe: {
+    run(
+      context: string,
+      options: object
+    ): Promise<{ violations: { id: string; nodes: AxeCheckNode[] }[] }>
+  }
+  setTimeout: (handler: () => void, ...rest: unknown[]) => number
+  requestAnimationFrame: (callback: (time: number) => void) => number
+}
+
+/** axe at the paused instant: its timer yields run as microtasks, so no page time passes. */
 async function contrastNodes(page: Page): Promise<ContrastNode[]> {
   return page.evaluate(async () => {
-    const axe = (
-      window as unknown as {
-        axe: {
-          run(
-            context: string,
-            options: object
-          ): Promise<{ violations: { id: string; nodes: AxeCheckNode[] }[] }>
-        }
-      }
-    ).axe
-    const result = await axe.run('#storybook-root', {
-      runOnly: ['color-contrast'],
-      resultTypes: ['violations'],
-    })
-    const rule = result.violations.find((violation) => violation.id === 'color-contrast')
-    return (rule?.nodes ?? []).map((node) => ({
-      fgColor: node.any?.[0]?.data?.fgColor,
-      bgColor: node.any?.[0]?.data?.bgColor,
-    }))
+    const win = window as unknown as AxeWindow
+    const { setTimeout: realSetTimeout, requestAnimationFrame: realRaf } = win
+    win.setTimeout = (handler) => {
+      void Promise.resolve().then(handler)
+      return 0
+    }
+    win.requestAnimationFrame = (callback) => {
+      void Promise.resolve().then(() => callback(0))
+      return 0
+    }
+    try {
+      const result = await win.axe.run('#storybook-root', {
+        runOnly: ['color-contrast'],
+        resultTypes: ['violations'],
+      })
+      const rule = result.violations.find((violation) => violation.id === 'color-contrast')
+      return (rule?.nodes ?? []).map((node) => ({
+        fgColor: node.any?.[0]?.data?.fgColor,
+        bgColor: node.any?.[0]?.data?.bgColor,
+      }))
+    } finally {
+      win.setTimeout = realSetTimeout
+      win.requestAnimationFrame = realRaf
+    }
   })
 }
 
@@ -105,8 +127,25 @@ async function renderForAxe(page: Page, id: string, theme: ContrastTheme) {
   return null
 }
 
+// Past every entrance animation and the light-mode switch (a 600 ms draw, 150 ms theme
+// transitions), so axe sees the final frame; the clock stays paused once it has run this far.
+const SETTLE_MS = 5000
+
+// Finite CSS animations and transitions jump to their end, infinite ones (pulse, ping) are
+// cancelled: the same rule as Playwright's `animations: 'disabled'`, since they run on real time.
+async function settleCssAnimations(page: Page) {
+  await page.evaluate(() => {
+    for (const animation of document.getAnimations()) {
+      const timing = animation.effect?.getComputedTiming()
+      if (timing && timing.iterations === Infinity) animation.cancel()
+      else animation.finish()
+    }
+  })
+}
+
 async function measure(page: Page) {
-  await page.clock.resume()
+  await page.clock.runFor(SETTLE_MS)
+  await settleCssAnimations(page)
   return pairCounts(await contrastNodes(page))
 }
 
