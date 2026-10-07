@@ -1,10 +1,12 @@
-// Pure judges over collectLayout output (TD-650 P1, P2, P3). Each is linear per container and reads
+// Pure judges over collectLayout output (TD-650 P1-P4). Each is linear per container and reads
 // only the collected nodes, so a synthetic tree tests it without a browser.
 
 export const STACKED_INSET = 'stacked-inset'
 export const EDGE_CLEARANCE = 'edge-clearance'
 export const INSET_ASYMMETRY = 'inset-asymmetry'
 export const ALIGNMENT_NEAR_MISS = 'alignment-near-miss'
+export const GAP_OUTLIER = 'gap-outlier'
+export const PROXIMITY_INVERSION = 'proximity-inversion'
 
 const MAX_FINDINGS_PER_KIND = 25
 const MIN_EXCESS = 4 // --space-stack-sm, the smallest stack step
@@ -382,6 +384,126 @@ export function judgeAlignmentNearMiss({ nodes }) {
   )
 }
 
+// --- P4 gap-outlier and proximity-inversion --------------------------------------------------------
+
+const OUTLIER_RATIO = 2
+const OUTLIER_EXCESS = 8 // --space-stack-md, one stack step
+const DIVIDER_MAX = 2
+const DECLARED_TOLERANCE = 0.25
+const SECTION_PREFIX = '--space-section-'
+const isDivider = (n, axis) => n.paints && n.box[axis === 'x' ? 2 : 3] <= DIVIDER_MAX
+const inkSpan = (n, axis) => span(n.ink, axis)
+const ratio = (g, m) => (m ? `${+(g / m).toFixed(1)}×` : '∞×')
+
+// Inked in-flow children of a stack, cut into runs at each divider, each run in main-axis order.
+// Inline children share a line, so a block's gaps are read between its block-level children only.
+function stackRuns(container, children) {
+  const axis = stackAxis(container)
+  if (!axis) return { axis, runs: [] }
+  const blockFlow = !container.layout.display.includes('flex')
+  const kids = (children.get(container.id) ?? [])
+    .filter((c) => inFlow(c) && c.ink && !(blockFlow && c.layout.display === 'inline'))
+    .sort((p, q) => inkSpan(p, axis)[0] - inkSpan(q, axis)[0])
+  const runs = [[]]
+  for (const kid of kids) {
+    if (isDivider(kid, axis)) runs.push([])
+    else runs[runs.length - 1].push(kid)
+  }
+  return { axis, runs: runs.filter((r) => r.length) }
+}
+
+// Ink gaps between consecutive children of a run; an overlap is a deliberate layering, not a gap.
+const runGaps = (run, axis) =>
+  run.slice(1).flatMap((b, i) => {
+    const a = run[i]
+    const g = inkSpan(b, axis)[0] - inkSpan(a, axis)[1]
+    return g >= 0 ? [{ a, b, g }] : []
+  })
+
+const cssPx = (v) => parseFloat(v) || 0
+
+// What the author declared between two siblings: facing margins plus the flex gap. Block margins
+// between siblings collapse to the larger one, so that reading counts too.
+function declaredSpacing(container, { a, b }, axis) {
+  const [after, before] = axis === 'x' ? [1, 3] : [2, 0]
+  const [ma, mb] = [a.margin[after], b.margin[before]]
+  const flexed = container.layout.display.includes('flex')
+  const gap = flexed
+    ? cssPx(axis === 'x' ? container.layout.columnGap : container.layout.rowGap)
+    : 0
+  return flexed ? [ma + mb + gap] : [ma + mb, Math.max(ma, mb)]
+}
+
+const isSectionBreak = (container, gap, axis, declared) => {
+  const sections = Object.entries(declared)
+    .filter(([name]) => name.startsWith(SECTION_PREFIX))
+    .map(([, value]) => value)
+  return declaredSpacing(container, gap, axis).some((d) =>
+    sections.some((s) => Math.abs(d - s) <= DECLARED_TOLERANCE)
+  )
+}
+
+export function judgeGapOutlier({ nodes, declared = {} }) {
+  const { children } = index(nodes)
+  const findings = []
+  for (const container of nodes) {
+    const { axis, runs } = stackRuns(container, children)
+    for (const run of runs.filter((r) => r.length >= 3)) {
+      const gaps = runGaps(run, axis)
+      if (gaps.length < 2) continue
+      const m = Math.min(...gaps.map((x) => x.g))
+      for (const gap of gaps) {
+        if (gap.g < OUTLIER_RATIO * m || gap.g - m < OUTLIER_EXCESS) continue
+        if (isSectionBreak(container, gap, axis, declared)) continue
+        findings.push({
+          kind: GAP_OUTLIER,
+          selector: gap.a.selector,
+          detail:
+            `gap ${px(gap.g)} between ${gap.a.selector} and ${gap.b.selector} is ` +
+            `${ratio(gap.g, m)} the ${px(m)} gaps beside it`,
+        })
+      }
+    }
+  }
+  return findings
+}
+
+// A child that is itself a stack of two or more inked children: its largest internal gap, or null.
+function innerGap(group, children) {
+  const { axis, runs } = stackRuns(group, children)
+  const members = runs.flat()
+  if (members.length < 2) return null
+  const gaps = runs.flatMap((run) => runGaps(run, axis).map((x) => x.g))
+  return gaps.length ? Math.max(...gaps) : null
+}
+
+export function judgeProximityInversion({ nodes }) {
+  const { children } = index(nodes)
+  const findings = []
+  for (const parent of nodes) {
+    const { axis, runs } = stackRuns(parent, children)
+    for (const run of runs.filter((r) => r.length >= 2)) {
+      const gaps = runGaps(run, axis)
+      run.forEach((group, i) => {
+        const inner = innerGap(group, children)
+        const beside = [gaps[i - 1], gaps[i]].filter(Boolean)
+        if (!inner || !beside.length) return
+        const outer = beside.reduce((lo, x) => (x.g < lo.g ? x : lo))
+        if (inner < outer.g) return
+        const neighbour = outer.a === group ? outer.b : outer.a
+        findings.push({
+          kind: PROXIMITY_INVERSION,
+          selector: group.selector,
+          detail:
+            `${group.selector}: items ${px(inner)} apart inside, ` +
+            `${px(outer.g)} from ${neighbour.selector} outside`,
+        })
+      })
+    }
+  }
+  return findings
+}
+
 const capPerKind = (findings, limit) => {
   const seen = {}
   return findings.filter((f) => (seen[f.kind] = (seen[f.kind] ?? 0) + 1) <= limit)
@@ -394,6 +516,8 @@ export function judgeLayout(layout, { limit = MAX_FINDINGS_PER_KIND } = {}) {
       ...judgeEdgeClearance(layout),
       ...judgeInsetAsymmetry(layout),
       ...judgeAlignmentNearMiss(layout),
+      ...judgeGapOutlier(layout),
+      ...judgeProximityInversion(layout),
     ],
     limit
   )

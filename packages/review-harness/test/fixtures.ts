@@ -1,3 +1,4 @@
+import type { TreeGit } from '../src/build.ts'
 import { exampleManifest } from '../src/example.ts'
 import { buildFeedback, emptyDraft } from '../src/feedback.ts'
 import {
@@ -116,4 +117,14 @@ export function validFeedback(m: Manifest = manifest(), sha = SHA): Feedback {
   }
   draft.answers.q1 = { pick: 'A', comment: '' }
   return buildFeedback(m, sha, draft, new Date('2026-09-18T23:41:07Z'))
+}
+
+/** The git port for a build that is given no tree; a read means the build reached for one. */
+export const noTreeGit: TreeGit = {
+  revParse: async () => {
+    throw new Error('this build has no tree')
+  },
+  isAncestor: async () => {
+    throw new Error('this build has no tree')
+  },
 }
