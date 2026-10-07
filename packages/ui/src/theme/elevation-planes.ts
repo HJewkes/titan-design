@@ -31,3 +31,12 @@ export const GLOW_CONFIG: Record<GlowIntensity, { blur: number; spread: number; 
     medium: { blur: 20, spread: 2, opacity: 0.4 },
     strong: { blur: 30, spread: 4, opacity: 0.55 },
   }
+
+/**
+ * The CSS glow at `intensity`. `rgb` is a channel triple, literal (`255, 121, 0`) or a
+ * custom property that holds one, so the inline style and `tokens.css` paint one glow.
+ */
+export function glowShadow(rgb: string, intensity: GlowIntensity): string {
+  const { blur, spread, opacity } = GLOW_CONFIG[intensity]
+  return `0 0 ${blur}px ${spread}px rgba(${rgb}, ${opacity})`
+}

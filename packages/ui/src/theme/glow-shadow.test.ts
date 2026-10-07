@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { depthCSSVars } from './depth-css-vars'
 import { getGlowShadow } from './elevation'
-import type { GlowIntensity } from './elevation-planes'
+import { type GlowIntensity, glowShadow } from './elevation-planes'
 
 // Recorded from both glow writers before they shared one function (TD-561). A change here
 // changes every glow on screen and in tokens.css.
@@ -27,5 +27,13 @@ describe('glow shadows match the recorded strings', () => {
     const expected = `${geometry} rgba(${TOKEN_RGB}, ${opacity})`
     expect(depthCSSVars('dark')[`--glow-${intensity}`]).toBe(expected)
     expect(depthCSSVars('light')[`--glow-${intensity}`]).toBe(expected)
+  })
+})
+
+describe('glowShadow, the one writer behind both', () => {
+  it.each(INTENSITIES)('reproduces the recorded %s strings', (intensity) => {
+    const [geometry, opacity] = RECORDED[intensity]
+    expect(glowShadow('255, 121, 0', intensity)).toBe(`${geometry} rgba(255, 121, 0, ${opacity})`)
+    expect(glowShadow(TOKEN_RGB, intensity)).toBe(`${geometry} rgba(${TOKEN_RGB}, ${opacity})`)
   })
 })
