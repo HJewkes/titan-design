@@ -759,26 +759,37 @@ describe('proximity-inversion', () => {
       node(id, parent, [0, y, 200, 10], { selector: `.${id}`, paints: true, interactive: true })
     const controls = (inner, outer) => groups([inner, 4], outer, { itemOf: button })
 
-    it('exempts a row of controls that sits nearer its content than its items are apart', () => {
+    it('exempts a row of controls that sits clearly nearer its content than its items are apart', () => {
       expect(judgeProximityInversion(controls(20, 4))).toEqual([])
-      expect(judgeProximityInversion(controls(20, 16))).toEqual([])
+      expect(judgeProximityInversion(controls(20, 12))).toEqual([])
     })
 
-    it('still flags a row of controls no nearer its content than its items are apart', () => {
+    it('still flags a row of controls that is hardly nearer its content than its items are apart', () => {
       expect(judgeProximityInversion(controls(20, 20))).toHaveLength(1)
+      expect(judgeProximityInversion(controls(20, 16))).toHaveLength(1)
+    })
+
+    it('never flags a row of controls that sits farther from its content than its items', () => {
+      expect(judgeProximityInversion(controls(4, 20))).toEqual([])
     })
 
     it('treats a button nested in a wrapper as a control', () => {
       const found = groups([20, 4], 4)
       const wrappers = found.nodes.filter((x) => x.id.startsWith('g0i'))
       for (const n of wrappers)
-        found.nodes.push(node(`${n.id}b`, n.id, n.box, { selector: `.${n.id}b`, interactive: true }))
+        found.nodes.push(
+          node(`${n.id}b`, n.id, n.box, { selector: `.${n.id}b`, interactive: true })
+        )
       expect(judgeProximityInversion(found)).toEqual([])
     })
 
     it('does not exempt a group with a single button among plain items', () => {
       const one = (id, parent, y) =>
-        node(id, parent, [0, y, 200, 10], { selector: `.${id}`, paints: true, interactive: id.endsWith('i0') })
+        node(id, parent, [0, y, 200, 10], {
+          selector: `.${id}`,
+          paints: true,
+          interactive: id.endsWith('i0'),
+        })
       expect(judgeProximityInversion(groups([20, 4], 4, { itemOf: one }))).toHaveLength(1)
     })
   })

@@ -509,8 +509,11 @@ function innerGap(group, children) {
 // the near-ties (14px against 12px) are the ones this drops.
 const INVERSION_RATIO = 1.5
 
-// A row of controls (arrows, a pager) is coupled to what it controls on purpose. It is read only
-// when it sits no closer to its neighbour than its own items sit to each other.
+// A row of controls (arrows, a pager) is coupled to what it controls on purpose, so sitting clearly
+// nearer its neighbour than its own items are apart (the inversion ratio) is the intended layout.
+// Such a row is still flagged when it is no nearer than its items (a tie, or less than the ratio
+// nearer): the coupling the author wanted did not happen. A row farther from its neighbour than its
+// items are apart is never an inversion.
 function isControlRow(group, children) {
   const kids = runsOf(group, children).flat()
   const controls = kids.filter((k) => k.interactive || hasInteractive(k, children))
@@ -525,7 +528,7 @@ function hasInteractive(node, children) {
 
 function isInverted(group, inner, outer, children) {
   if (group.paints) return false
-  if (isControlRow(group, children)) return outer >= inner
+  if (isControlRow(group, children)) return inner >= outer && inner < INVERSION_RATIO * outer
   return inner >= INVERSION_RATIO * outer
 }
 
