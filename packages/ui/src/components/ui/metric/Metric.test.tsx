@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { capturedByNode } from '../../../test/classname-capture'
@@ -22,6 +22,13 @@ describe('Metric', () => {
   it('does not render unit when omitted', () => {
     render(<Metric value="10" label="Sets" />)
     expect(screen.queryByText('m/s')).not.toBeInTheDocument()
+  })
+
+  it('renders no bare text node for an empty unit', () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+    render(<Metric value="10" label="Sets" unit="" />)
+    expect(error).not.toHaveBeenCalled()
+    error.mockRestore()
   })
 
   it('renders trend arrow when provided', () => {

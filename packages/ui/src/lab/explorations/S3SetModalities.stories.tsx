@@ -19,7 +19,7 @@ import {
   BORDER_SUBTLE,
   Page,
   monoTag,
-} from '../../components/custom/Workout/setHeadingKit'
+} from './setHeadingKit'
 
 const INTER = 'Inter, sans-serif'
 const VAR_EDGE = '#22465F' // cyan-800 — the continue-slot outline
