@@ -5,15 +5,7 @@
  * · rep-range treatment · set-types (drop/myo). See DECISIONS-ExerciseRow doc.
  */
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import {
-  Heading,
-  INSET,
-  INSET_SHADOW,
-  Page,
-  monoTag,
-  reps,
-  type Exercise,
-} from '../../components/custom/Workout/setHeadingKit'
+import { Heading, INSET, INSET_SHADOW, Page, monoTag, reps, type Exercise } from './setHeadingKit'
 
 const DONE: Exercise = {
   name: 'Seated Cable Row',

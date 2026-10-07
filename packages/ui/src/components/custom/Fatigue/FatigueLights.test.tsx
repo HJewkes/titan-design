@@ -72,3 +72,24 @@ describe('FatigueLights geometry resolves to the spacing tokens', () => {
     expect(resolveAll(['gap-4'])).toEqual(['16px'])
   })
 })
+
+describe('FatigueLights dot variant per tone', () => {
+  it.each([
+    ['velocityLoss', 'alarm', 'error'],
+    ['rom', 'warn', 'warning'],
+    ['tempo', 'ok', 'success'],
+  ] as const)('%s at tone %s renders the %s StatusDot', (dimension, tone, variant) => {
+    const only = { velocityLoss: 'ok', rom: 'ok', tempo: 'ok', [dimension]: tone } as const
+    render(<FatigueLights dimensions={only} />)
+    const dots = screen.getAllByTestId('status-dot').map((d) => d.getAttribute('aria-label'))
+    const index = ['velocityLoss', 'rom', 'tempo'].indexOf(dimension)
+    expect(dots[index]).toBe(`${variant} status`)
+  })
+
+  it('renders a neutral dot while warming up', () => {
+    render(<FatigueLights dimensions={null} />)
+    for (const dot of screen.getAllByTestId('status-dot')) {
+      expect(dot).toHaveAttribute('aria-label', 'neutral status')
+    }
+  })
+})

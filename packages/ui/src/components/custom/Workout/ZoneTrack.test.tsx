@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { describe, it, expect, vi, afterEach } from 'vitest'
+import { render, screen, waitFor } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { ZoneTrack, type ZoneTrackZone } from './ZoneTrack'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
@@ -230,5 +230,36 @@ describe('ZoneTrack size="wall"', () => {
   it('still lets an explicit trackHeight override the size default', () => {
     render(<ZoneTrack zones={ZONES} max={40} size="wall" trackHeight={30} />)
     expect(screen.getByTestId('zone-track-track')).toHaveStyle({ height: '30px' })
+  })
+})
+
+describe('ZoneTrack onLayout', () => {
+  afterEach(() => vi.unstubAllGlobals())
+
+  function stubMeasuredWidth(width: number) {
+    vi.stubGlobal(
+      'ResizeObserver',
+      class {
+        constructor(private readonly cb: (entries: { target: Element }[]) => void) {}
+        observe(target: Element) {
+          Object.defineProperty(target, 'offsetWidth', { configurable: true, value: width })
+          this.cb([{ target }])
+        }
+        unobserve() {}
+        disconnect() {}
+      }
+    )
+  }
+
+  const MANY_TICKS = Array.from({ length: 12 }, (_, i) => ({ value: i * 3, label: `t${i}` }))
+
+  it('calls the consumer onLayout and still thins tick labels from the measured width', async () => {
+    stubMeasuredWidth(100)
+    const onLayout = vi.fn()
+    render(<ZoneTrack zones={ZONES} max={40} ticks={MANY_TICKS} onLayout={onLayout} />)
+    await waitFor(() => expect(onLayout).toHaveBeenCalledOnce())
+    await waitFor(() =>
+      expect(screen.getAllByTestId('zone-track-tick-label').length).toBeLessThan(MANY_TICKS.length)
+    )
   })
 })

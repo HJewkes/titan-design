@@ -34,6 +34,10 @@
           "pick": {
             "type": "string"
           },
+          "revisionRequested": {
+            "type": "boolean",
+            "const": true
+          },
           "picks": {
             "type": "array",
             "items": {

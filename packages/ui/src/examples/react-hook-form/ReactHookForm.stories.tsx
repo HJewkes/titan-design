@@ -35,7 +35,7 @@ export const ContactForm: Story = {
     return (
       <View style={{ gap: 16 }}>
         <RhfContactForm onSubmit={setSubmitted} />
-        {submitted && (
+        {!!submitted && (
           <Text className="text-sm text-text-secondary">
             Submitted: {JSON.stringify(submitted)}
           </Text>

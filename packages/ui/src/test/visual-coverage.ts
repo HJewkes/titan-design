@@ -20,6 +20,7 @@ export const REQUIRED_PREFIXES = [
   'pages-exercise-detail--',
   'pages-program-planning--',
   'pages-training-status--',
+  'custom-activework-',
 ] as const
 
 export const BASELINE_SUFFIX = '-chromium-linux.png'
