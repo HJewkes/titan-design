@@ -139,6 +139,20 @@ function fixture(files: Record<string, string>): ComponentDir {
 }
 
 describe('stable-layers failure paths', () => {
+  it('ignores a commented-out status:stable tags line', () => {
+    const dir = fixture({
+      'Fixture.stories.tsx': `const meta = {
+  title: 'Components/Molecules/Fixture',
+  // tags: ['autodocs', 'status:stable'],
+  tags: ['autodocs', 'status:candidate'],
+}
+export default meta
+`,
+    })
+
+    expect(isStable(dir)).toBe(false)
+  })
+
   it('fails a stable component that takes focus and has no keyboard story', () => {
     const dir = fixture({
       'Fixture.tsx': FOCUSABLE_SOURCE,

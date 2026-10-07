@@ -31,7 +31,6 @@ export type StableLayersBaseline = Record<string, string[]>
 
 export const STABLE_BASELINE_FILE = 'packages/ui/src/test/stable-layers-baseline.json'
 
-const STABLE_TAG = /tags:\s*\[[^\]]*['"]status:stable['"]/
 const PROPERTY_IMPORT = /from\s+['"]fast-check['"]|\bfcAssert\b/
 const FOCUS_NAMES = ['Pressable', 'TextInput', 'focusable', 'tabIndex']
 const WINDOWS = /\b(FlatList|SectionList|VirtualizedList)\b|fixed-window/
@@ -51,7 +50,7 @@ function sources(dir: ComponentDir, keep: (file: string) => boolean): string[] {
 }
 
 export function isStable(dir: ComponentDir): boolean {
-  return sources(dir, isStory).some((source) => STABLE_TAG.test(source))
+  return sources(dir, isStory).some((source) => metaTags(parse(source)).includes('status:stable'))
 }
 
 function storyIdPrefixes(dir: ComponentDir): string[] {
