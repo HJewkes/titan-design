@@ -1,0 +1,152 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Metric characterisation > renders the Default case unchanged 1`] = `
+"<div class="css-view-175oi2r"><div class="css-view-175oi2r"><div dir="auto" class="css-text-146c3p1">42</div></div><div dir="auto" class="css-text-146c3p1">Total Reps</div></div>
+0: items-center
+1: flex-row items-baseline gap-1
+2: text-2xl font-bold text-text-primary
+3: text-xs text-text-secondary mt-1"
+`;
+
+exports[`Metric characterisation > renders the FullMetric case unchanged 1`] = `
+"<div class="css-view-175oi2r"><div class="css-view-175oi2r"><div dir="auto" class="css-text-146c3p1">0.98</div><div dir="auto" class="css-text-146c3p1">m/s</div><div dir="auto" class="css-text-146c3p1">↑</div></div><div dir="auto" class="css-text-146c3p1">Mean Velocity</div></div>
+0: items-center
+1: flex-row items-baseline gap-1
+2: text-4xl font-bold text-text-primary
+3: text-base text-text-tertiary
+4: text-base text-result-improve
+5: text-sm text-text-secondary mt-1"
+`;
+
+exports[`Metric characterisation > renders the Large case unchanged 1`] = `
+"<div class="css-view-175oi2r"><div class="css-view-175oi2r"><div dir="auto" class="css-text-146c3p1">315</div><div dir="auto" class="css-text-146c3p1">lbs</div></div><div dir="auto" class="css-text-146c3p1">Max Load</div></div>
+0: items-center
+1: flex-row items-baseline gap-1
+2: text-4xl font-bold text-text-primary
+3: text-base text-text-tertiary
+4: text-sm text-text-secondary mt-1"
+`;
+
+exports[`Metric characterisation > renders the Small case unchanged 1`] = `
+"<div class="css-view-175oi2r"><div class="css-view-175oi2r"><div dir="auto" class="css-text-146c3p1">12</div></div><div dir="auto" class="css-text-146c3p1">Sets</div></div>
+0: items-center
+1: flex-row items-baseline gap-1
+2: text-lg font-bold text-text-primary
+3: text-xs text-text-secondary mt-1"
+`;
+
+exports[`Metric characterisation > renders the WithTrendDown case unchanged 1`] = `
+"<div class="css-view-175oi2r"><div class="css-view-175oi2r"><div dir="auto" class="css-text-146c3p1">62</div><div dir="auto" class="css-text-146c3p1">↓</div></div><div dir="auto" class="css-text-146c3p1">Fatigue Index</div></div>
+0: items-center
+1: flex-row items-baseline gap-1
+2: text-2xl font-bold text-text-primary
+3: text-sm text-result-degrade
+4: text-xs text-text-secondary mt-1"
+`;
+
+exports[`Metric characterisation > renders the WithTrendNeutral case unchanged 1`] = `
+"<div class="css-view-175oi2r"><div class="css-view-175oi2r"><div dir="auto" class="css-text-146c3p1">70</div><div dir="auto" class="css-text-146c3p1">→</div></div><div dir="auto" class="css-text-146c3p1">Consistency</div></div>
+0: items-center
+1: flex-row items-baseline gap-1
+2: text-2xl font-bold text-text-primary
+3: text-sm text-result-inconclusive
+4: text-xs text-text-secondary mt-1"
+`;
+
+exports[`Metric characterisation > renders the WithTrendUp case unchanged 1`] = `
+"<div class="css-view-175oi2r"><div class="css-view-175oi2r"><div dir="auto" class="css-text-146c3p1">85</div><div dir="auto" class="css-text-146c3p1">↑</div></div><div dir="auto" class="css-text-146c3p1">Performance</div></div>
+0: items-center
+1: flex-row items-baseline gap-1
+2: text-2xl font-bold text-text-primary
+3: text-sm text-result-improve
+4: text-xs text-text-secondary mt-1"
+`;
+
+exports[`Metric characterisation > renders the WithUnit case unchanged 1`] = `
+"<div class="css-view-175oi2r"><div class="css-view-175oi2r"><div dir="auto" class="css-text-146c3p1">1.24</div><div dir="auto" class="css-text-146c3p1">m/s</div></div><div dir="auto" class="css-text-146c3p1">Peak Velocity</div></div>
+0: items-center
+1: flex-row items-baseline gap-1
+2: text-2xl font-bold text-text-primary
+3: text-sm text-text-tertiary
+4: text-xs text-text-secondary mt-1"
+`;
+
+exports[`Metric characterisation > renders the a test id case unchanged 1`] = `
+"<div class="css-view-175oi2r" data-testid="metric"><div class="css-view-175oi2r"><div dir="auto" class="css-text-146c3p1">42</div></div><div dir="auto" class="css-text-146c3p1" data-testid="metric-label">Reps</div></div>
+0: items-center
+1: flex-row items-baseline gap-1
+2: text-2xl font-bold text-text-primary
+3: text-xs text-text-secondary mt-1"
+`;
+
+exports[`Metric characterisation > renders the class overrides case unchanged 1`] = `
+"<div class="css-view-175oi2r"><div class="css-view-175oi2r"><div dir="auto" class="css-text-146c3p1">42</div></div><div dir="auto" class="css-text-146c3p1">Reps</div></div>
+0: items-start
+1: flex-row items-baseline gap-1
+2: text-2xl font-bold text-text-primary leading-none
+3: text-text-secondary mt-1 text-sm"
+`;
+
+exports[`Metric characterisation > renders the default-size group unchanged 1`] = `
+"<div class="css-view-175oi2r"><div class="css-view-175oi2r"><div class="css-view-175oi2r"><div class="css-view-175oi2r"><div dir="auto" class="css-text-146c3p1">12</div></div><div dir="auto" class="css-text-146c3p1">Sets</div></div></div><div class="css-view-175oi2r" data-testid="metric-divider"></div><div class="css-view-175oi2r"><div class="css-view-175oi2r"><div class="css-view-175oi2r"><div dir="auto" class="css-text-146c3p1">42</div></div><div dir="auto" class="css-text-146c3p1">Reps</div></div></div><div class="css-view-175oi2r" data-testid="metric-divider"></div><div class="css-view-175oi2r"><div class="css-view-175oi2r"><div class="css-view-175oi2r"><div dir="auto" class="css-text-146c3p1">1.24</div><div dir="auto" class="css-text-146c3p1">m/s</div><div dir="auto" class="css-text-146c3p1">↑</div></div><div dir="auto" class="css-text-146c3p1">Avg Velocity</div></div></div></div>
+0: flex-row items-center
+1: flex-1 items-center
+2: items-center
+3: flex-row items-baseline gap-1
+4: text-2xl font-bold text-text-primary
+5: text-xs text-text-secondary mt-1
+6: w-px h-8 bg-hairline mx-2
+7: flex-1 items-center
+8: items-center
+9: flex-row items-baseline gap-1
+10: text-2xl font-bold text-text-primary
+11: text-xs text-text-secondary mt-1
+12: w-px h-8 bg-hairline mx-2
+13: flex-1 items-center
+14: items-center
+15: flex-row items-baseline gap-1
+16: text-2xl font-bold text-text-primary
+17: text-sm text-text-tertiary
+18: text-sm text-result-improve
+19: text-xs text-text-secondary mt-1"
+`;
+
+exports[`Metric characterisation > renders the md case unchanged 1`] = `
+"<div class="css-view-175oi2r"><div class="css-view-175oi2r"><div dir="auto" class="css-text-146c3p1">42</div></div><div dir="auto" class="css-text-146c3p1">Reps</div></div>
+0: items-center
+1: flex-row items-baseline gap-1
+2: text-2xl font-bold text-text-primary
+3: text-xs text-text-secondary mt-1"
+`;
+
+exports[`Metric characterisation > renders the small group unchanged 1`] = `
+"<div class="css-view-175oi2r"><div class="css-view-175oi2r"><div class="css-view-175oi2r"><div class="css-view-175oi2r"><div dir="auto" class="css-text-146c3p1">8</div></div><div dir="auto" class="css-text-146c3p1">Sets</div></div></div><div class="css-view-175oi2r" data-testid="metric-divider"></div><div class="css-view-175oi2r"><div class="css-view-175oi2r"><div class="css-view-175oi2r"><div dir="auto" class="css-text-146c3p1">315</div><div dir="auto" class="css-text-146c3p1">lbs</div></div><div dir="auto" class="css-text-146c3p1">Load</div></div></div><div class="css-view-175oi2r" data-testid="metric-divider"></div><div class="css-view-175oi2r"><div class="css-view-175oi2r"><div class="css-view-175oi2r"><div dir="auto" class="css-text-146c3p1">0.82</div><div dir="auto" class="css-text-146c3p1">m/s</div><div dir="auto" class="css-text-146c3p1">↓</div></div><div dir="auto" class="css-text-146c3p1">Velocity</div></div></div><div class="css-view-175oi2r" data-testid="metric-divider"></div><div class="css-view-175oi2r"><div class="css-view-175oi2r"><div class="css-view-175oi2r"><div dir="auto" class="css-text-146c3p1">92</div><div dir="auto" class="css-text-146c3p1">↑</div></div><div dir="auto" class="css-text-146c3p1">Score</div></div></div></div>
+0: flex-row items-center
+1: flex-1 items-center
+2: items-center
+3: flex-row items-baseline gap-1
+4: text-lg font-bold text-text-primary
+5: text-xs text-text-secondary mt-1
+6: w-px h-8 bg-hairline mx-2
+7: flex-1 items-center
+8: items-center
+9: flex-row items-baseline gap-1
+10: text-lg font-bold text-text-primary
+11: text-xs text-text-tertiary
+12: text-xs text-text-secondary mt-1
+13: w-px h-8 bg-hairline mx-2
+14: flex-1 items-center
+15: items-center
+16: flex-row items-baseline gap-1
+17: text-lg font-bold text-text-primary
+18: text-xs text-text-tertiary
+19: text-xs text-result-degrade
+20: text-xs text-text-secondary mt-1
+21: w-px h-8 bg-hairline mx-2
+22: flex-1 items-center
+23: items-center
+24: flex-row items-baseline gap-1
+25: text-lg font-bold text-text-primary
+26: text-xs text-result-improve
+27: text-xs text-text-secondary mt-1"
+`;

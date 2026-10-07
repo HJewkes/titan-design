@@ -117,8 +117,13 @@ function optionProblems(m: Manifest): string[] {
 
 /** Part ids are unique across the round, so a signsOff names one part wherever it is read. */
 function partIdProblems(m: Manifest): string[] {
-  const ids = (m.sections ?? []).flatMap((s) => (s.parts ?? []).map((p) => p.id))
-  return [...new Set(duplicates(ids))].map((id) => `part ${id} is in two sections`)
+  const sections = m.sections ?? []
+  const ids = sections.flatMap((s) => (s.parts ?? []).map((p) => p.id))
+  return [...new Set(duplicates(ids))].map((id) => {
+    const holders = sections.filter((s) => s.parts?.some((p) => p.id === id)).map((s) => s.id)
+    if (holders.length === 1) return `part ${id} repeats in section ${holders[0]}`
+    return `part ${id} is in sections ${holders.slice(0, -1).join(', ')} and ${holders.at(-1)}`
+  })
 }
 
 /**
@@ -137,7 +142,7 @@ function signsOffProblems(section: Section, m: Manifest): string[] {
         return [`question ${q.id}: signsOff "${q.signsOff}" names no part in section ${section.id}`]
       if (part.settled)
         return [
-          `question ${q.id}: signsOff "${q.signsOff}" names a settled part; a pick-one signs off an unsettled one`,
+          `question ${q.id}: signsOff "${q.signsOff}" names a settled part in section ${section.id}; a pick-one signs off an unsettled one`,
         ]
       return []
     })

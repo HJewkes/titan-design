@@ -1,5 +1,5 @@
 import * as a11yAddonAnnotations from '@storybook/addon-a11y/preview'
-import { setProjectAnnotations } from '@storybook/react'
+import { setProjectAnnotations } from '@storybook/react-vite'
 import * as previewAnnotations from './preview'
 
 // jest-axe stays the a11y gate; the browser project only runs play functions (VW-481 Q2).

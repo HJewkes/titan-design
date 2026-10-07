@@ -41,6 +41,9 @@
   "src/components/custom/Workout/BaseBadge.test.tsx": {
     "BaseBadge": 1
   },
+  "src/components/custom/Workout/GoalTrajectoryWeekTips.tsx": {
+    "Metric": 1
+  },
   "src/components/custom/Workout/MesoStatusCard.tsx": {
     "StatusDot": 1
   },

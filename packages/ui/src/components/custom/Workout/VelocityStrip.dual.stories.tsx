@@ -9,7 +9,7 @@ import {
   IN_PROGRESS_LAGGING,
   dualOf,
   wallDecorator,
-} from './velocity-story-kit'
+} from '../../../lab/velocity-story-kit/velocity-story-kit'
 
 /**
  * `DualVelocityStrip` — the strip when the exercise used TWO Voltras.
