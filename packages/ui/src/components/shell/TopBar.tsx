@@ -91,7 +91,7 @@ export function TopBar({
 
   return (
     <View
-      accessibilityRole="banner"
+      role="banner"
       onLayout={onLayout}
       // shared chrome gradient (web); solid bg-surface-elevated is the native fallback
       style={surfaceGradient.chrome() as object}

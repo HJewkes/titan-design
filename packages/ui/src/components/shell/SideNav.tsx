@@ -54,7 +54,7 @@ export function SideNav({
 }: SideNavProps) {
   return (
     <View
-      accessibilityRole="navigation"
+      role="navigation"
       accessibilityLabel={accessibilityLabel}
       className={cn(
         'w-[60px] items-center gap-1.5 border-r border-hairline bg-background-base py-inset-md',

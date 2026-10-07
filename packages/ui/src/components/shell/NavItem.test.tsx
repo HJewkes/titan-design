@@ -12,7 +12,7 @@ const icon = <ActivityIcon size={20} color="currentColor" />
 describe('NavItem', () => {
   it('has no accessibility violations', async () => {
     const { container } = render(
-      <View accessibilityRole="navigation" accessibilityLabel="Primary">
+      <View role="navigation" accessibilityLabel="Primary">
         <NavItem icon={icon} label="Live" active onPress={vi.fn()} />
       </View>
     )

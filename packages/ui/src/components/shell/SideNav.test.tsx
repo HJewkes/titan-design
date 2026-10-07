@@ -86,12 +86,17 @@ describe('SideNav', () => {
 describe('SideNav geometry resolves to the spacing tokens', () => {
   it('ships gap-1.5 and py-inset-md', () => {
     render(<SideNav items={items} activeKey="live" />)
-    expect(spacingClassesAt(screen.getByRole('navigation', { name: 'Primary' }))).toEqual(['gap-1.5', 'py-inset-md'])
+    expect(spacingClassesAt(screen.getByRole('navigation', { name: 'Primary' }))).toEqual([
+      'gap-1.5',
+      'py-inset-md',
+    ])
     expect(resolveAll(['gap-1.5', 'py-inset-md'])).toEqual(['6px', '12px'])
   })
 
   it('keeps the 60px rail the specimen locks', () => {
     render(<SideNav items={items} activeKey="live" />)
-    expect(capturedByNode.get(screen.getByRole('navigation', { name: 'Primary' }))?.split(/\s+/)).toContain('w-[60px]')
+    expect(
+      capturedByNode.get(screen.getByRole('navigation', { name: 'Primary' }))?.split(/\s+/)
+    ).toContain('w-[60px]')
   })
 })
