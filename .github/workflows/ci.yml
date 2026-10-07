@@ -9,9 +9,9 @@ on:
 permissions:
   contents: read
 
-# Main pushes never cancel: Shepherd and the seats read the CI run of every merge commit.
+# PR runs share a per-ref group and cancel; each main push gets its own per-sha group, so no main run is replaced or cancelled.
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 # Rename stage (a) of the HJewkes/ci standard: the ruleset still requires build (20) and
