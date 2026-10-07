@@ -6,7 +6,7 @@ fail for the reason you care about.
 | Layer              | Question it answers                                                            | File pattern                                                    | Runs in                                                                     |
 | ------------------ | ------------------------------------------------------------------------------ | --------------------------------------------------------------- | --------------------------------------------------------------------------- |
 | Unit and component | Does the component render and behave, with no axe violation?                   | `packages/ui/src/**/*.test.{ts,tsx}`                            | `build` job, `pnpm verify:unit` (`pnpm test:unit:ci`) |
-| Stories axe        | Does every composed story pass axe, or match its shrinking baseline?           | `packages/ui/src/test/stories-axe{,.*}.test.tsx`                | `stories-axe` job, `pnpm test:axe`                                          |
+| Stories axe        | Does every composed story pass axe, or match its shrinking baseline?           | `packages/ui/src/test/stories-axe{,.*}.test.tsx`                | `check` job, `pnpm test:axe` (path-gated)                                   |
 | Property (logic)   | Does a pure function hold its invariant for any input?                         | `*Math.test.ts`, `*-model.test.ts`, hook tests using `fcAssert` | same Vitest run                                                             |
 | Scale              | Does a windowed component mount a bounded number of nodes?                     | `*.test.tsx` calling `expectBoundedMount`                       | same Vitest run                                                             |
 | Source guards      | Does the source obey a lint-like rule (raw colour, raw spacing, tier imports)? | `packages/ui/src/test/no-*.test.ts`                             | same Vitest run                                                             |
@@ -17,9 +17,11 @@ fail for the reason you care about.
 | Visual, layer 3    | Does the React render match the HTML specimen's computed styles?               | `packages/ui/specimen/comparison.visual.test.ts`                | `visual` job, `test:visual:compare`                                         |
 | Interaction        | Does keyboard and pointer behaviour work in a real browser?                    | `packages/ui/tests/interaction/*.spec.ts`                       | `visual` job, `interaction` project of `playwright.config.ts`               |
 | Offline fonts      | Does a single-file consumer load every font face with no network?              | `packages/ui/tests/offline-fonts/*.spec.ts`                     | `visual` job, `test:offline-fonts`                                          |
-| Dependency audit   | Does the lockfile carry a known advisory?                                      | `scripts/audit-retry.sh`                                        | `audit` job                                                                 |
+| Dependency audit   | Does the lockfile carry a known advisory?                                      | `scripts/audit-retry.sh`                                        | `check` job, "Audit" step                                                   |
 
-The `check` job aggregates `build`, `stories-axe`, `visual`, `storybook-play` and `audit`. Layer-1 baselines exist only as
+The `check` job first fails unless `build` and `visual` passed, then runs audit, stories axe and the
+Storybook play functions. On a pull request, `packages/ui/scripts/visual-paths.mjs` skips stories axe,
+play and the `visual` layers when no changed path is rendered UI. Layer-1 baselines exist only as
 `*-chromium-linux.png`, so run the visual layers only in the pinned Playwright container.
 
 To run the interaction project locally, use
