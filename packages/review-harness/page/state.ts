@@ -9,6 +9,7 @@ import {
 } from '../src/sections.ts'
 import type { Annotation, Manifest, Question, Verdict } from '../src/schema.ts'
 import { loadDraft, type DraftStorage } from './draftStore.ts'
+import { pinId, pinNumber } from './pins.ts'
 
 export { orderedQuestions }
 
@@ -51,11 +52,19 @@ export type Action =
   | { type: 'toggleColumns' }
   | { type: 'screen'; screen: Screen; errors?: string[] }
 
+/** Each verdict, its hotkey and its button label; the card and the keyboard both read this. */
+export const VERDICTS: { key: string; verdict: Exclude<Verdict, null>; label: string }[] = [
+  { key: '1', verdict: 'chosen', label: 'Chosen' },
+  { key: '2', verdict: 'rejected', label: 'Rejected' },
+  { key: '3', verdict: 'maybe', label: 'Maybe' },
+]
+
+/** The hotkey that clears a frame's verdict. */
+export const CLEAR_VERDICT_KEY = '0'
+
 export const VERDICT_KEYS: Record<string, Verdict> = {
-  '1': 'chosen',
-  '2': 'rejected',
-  '3': 'maybe',
-  '0': null,
+  ...Object.fromEntries(VERDICTS.map(({ key, verdict }) => [key, verdict])),
+  [CLEAR_VERDICT_KEY]: null,
 }
 
 /** A section with nothing to answer still gets one stop, so its page can be reached. */
@@ -177,8 +186,7 @@ export function restoredState(
 }
 
 function nextPinId(key: string, pins: Annotation[]): string {
-  const taken = pins.map((p) => Number(p.id.split('-').pop()) || 0)
-  return `${key}-${Math.max(0, ...taken) + 1}`
+  return pinId(key, Math.max(0, ...pins.map((p) => pinNumber(p.id))) + 1)
 }
 
 function updateVariant(

@@ -13,7 +13,7 @@ export interface SkeletonProps extends ViewProps {
   width?: number | string
   /** Height (number for pixels, string for percentages/other) */
   height?: number | string
-  /** Border radius (only for 'rect' variant) */
+  /** Border radius in pixels; applies to every variant and overrides the variant's radius class */
   borderRadius?: number
   /** Additional className */
   className?: string

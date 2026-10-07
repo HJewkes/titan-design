@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Text } from 'react-native'
 
+import { capturedClassNames } from '../../../test/classname-capture'
 import { resolveAll, spacingClassesOf } from '../../../test/spacing-resolver'
 import { StatCard, StatCardHeader, type StatCardProps } from './StatCard'
 
@@ -47,7 +48,7 @@ describe('StatCard', () => {
 
   it('pins the body to the bottom of the card', () => {
     renderCard()
-    expect(screen.getByTestId('card-stat-card-body')).toHaveStyle({ marginTop: 'auto' })
+    expect(capturedClassNames.get('card-stat-card-body')?.split(' ')).toContain('mt-auto')
   })
 
   it('lets a tip escape the card', () => {
@@ -60,7 +61,9 @@ describe('StatCard', () => {
       renderCard()
       const row = screen.getByTestId('card-stat-card-figure')
       expect(row).toHaveTextContent('Rate: -0.6%/wk')
-      expect(row).toHaveStyle({ flexDirection: 'row', flexWrap: 'wrap' })
+      expect(capturedClassNames.get('card-stat-card-figure')?.split(' ')).toEqual(
+        expect.arrayContaining(['flex-row', 'flex-wrap'])
+      )
     })
 
     it('stacks the caption under the figure when placed below', () => {
