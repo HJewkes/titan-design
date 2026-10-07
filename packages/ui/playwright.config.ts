@@ -18,6 +18,8 @@ const serveCommand = `pnpm exec vite preview --outDir ${STATIC_DIR} --host 127.0
 
 export default defineConfig({
   testDir: './tests/visual',
+  // Every story in both themes is about 14 minutes; playwright.contrast.config.ts runs it alone (TD-738).
+  testIgnore: '**/contrast.spec.ts',
   outputDir: STORIES_OUTPUT_DIR,
   snapshotDir: './tests/visual/reference',
   fullyParallel: true,

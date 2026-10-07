@@ -37,6 +37,7 @@
     "arch:barrel-hash": "node packages/ui/scripts/barrel-hash.mjs --write",
     "review": "node packages/review-harness/src/cli.ts",
     "audit:stories": "node packages/ui/scripts/audit-stories.mjs",
+    "contrast:baseline": "pnpm --filter @titan-design/react-ui test:visual:contrast:update",
     "verify:changed": "node packages/ui/scripts/verify-changed.mjs"
   },
   "devDependencies": {

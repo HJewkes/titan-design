@@ -8,11 +8,12 @@ root `package.json`, `turbo.json`, `packages/ui/package.json`, `packages/ui/vite
 
 `ci.yml` runs on every pull request and on pushes to `main`.
 
-| Job      | Runs on                                                                | What it runs                                                                   |
-| -------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| `build`  | Node 22 (single-entry matrix)                                          | Install, then the steps below                                                  |
-| `visual` | Playwright container, Node 22                                          | Layer 3 parity, offline fonts, Layer 1 and 2 baselines, interaction            |
-| `check`  | Playwright container, Node 22; always runs; needs `build` and `visual` | all-green over `needs`, then audit, stories axe and play functions (see below) |
+| Job        | Runs on                                                                                 | What it runs                                                                                                                                              |
+| ---------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `build`    | Node 22 (single-entry matrix)                                                           | Install, then the steps below                                                                                                                             |
+| `visual`   | Playwright container, Node 22                                                           | Layer 3 parity, offline fonts, Layer 1 and 2 baselines, interaction                                                                                       |
+| `contrast` | Playwright container, Node 22; three `contrast-shard` jobs plus an all-green aggregator | axe `color-contrast` on every story in both themes (`test:visual:contrast --shard=i/3`), path-gated; each shard uploads `contrast-report-<i>` (see below) |
+| `check`    | Playwright container, Node 22; always runs; needs `build` and `visual`                  | all-green over `needs`, then audit, stories axe and play functions (see below)                                                                            |
 
 ### `build` steps
 
@@ -50,6 +51,22 @@ On failure the job regenerates the Layer 1 and Layer 2 baselines and uploads the
 `component-visual-baselines` and `storybook-visual-baselines` artifacts, plus
 `layer2-failure-results` and `playwright-failure-diagnostics`. Refresh committed `*-chromium-linux.png`
 baselines from those artifacts. See `docs/test-layers.md`.
+
+### `contrast` job
+
+`contrast-shard` runs `packages/ui/tests/visual/contrast.spec.ts` through `playwright.contrast.config.ts`
+in three Playwright shards, each on its own static Storybook build: one test per story and theme, axe
+`color-contrast` in Chromium, compared with `packages/ui/tests/visual/contrast-stories-baseline.json`.
+The baseline may only shrink: a pair or count above it fails, and a pair or count that no longer
+occurs fails as stale. `contrast` is the all-green aggregator over the shards, so a ruleset can require
+it by that one name. It is path-gated like `visual`.
+
+Each shard uploads its report (`contrast-report-<i>`, one JSON line per story-theme) whether it
+passed or failed. Local Chromium can disagree with the container's, so regenerate the committed
+baseline from those artifacts: download the three files and run
+`node packages/ui/scripts/update-contrast-stories-baseline.mjs <files> --allow-increase`.
+`pnpm contrast:baseline` with no files runs the suite locally first. Without `--allow-increase` the
+script refuses to add an entry or raise a count.
 
 ### `check` steps
 
@@ -94,22 +111,23 @@ does not declare.
 
 ### Root scripts that bypass Turbo
 
-| Script             | Calls                                                                     |
-| ------------------ | ------------------------------------------------------------------------- |
-| `catalog`          | `pnpm --filter @titan-design/react-ui catalog`                            |
-| `arch:check`       | `pnpm --filter @titan-design/react-ui exec vitest run …freshness.test.ts` |
-| `verify`           | `pnpm verify:unit && pnpm test:axe`                                       |
-| `verify:unit`      | A chain of `pnpm` scripts; `test:unit:ci` is the root `turbo run test:unit:ci` passthrough            |
-| `arch:graph`       | `node scripts/arch-graph.mjs`                                             |
-| `arch:barrel-hash` | `node packages/ui/scripts/barrel-hash.mjs --write`                        |
-| `review`           | `node packages/review-harness/src/cli.ts`                                 |
-| `audit:stories`    | `node packages/ui/scripts/audit-stories.mjs`                              |
+| Script              | Calls                                                                                      |
+| ------------------- | ------------------------------------------------------------------------------------------ |
+| `catalog`           | `pnpm --filter @titan-design/react-ui catalog`                                             |
+| `arch:check`        | `pnpm --filter @titan-design/react-ui exec vitest run …freshness.test.ts`                  |
+| `verify`            | `pnpm verify:unit && pnpm test:axe`                                                        |
+| `verify:unit`       | A chain of `pnpm` scripts; `test:unit:ci` is the root `turbo run test:unit:ci` passthrough |
+| `arch:graph`        | `node scripts/arch-graph.mjs`                                                              |
+| `arch:barrel-hash`  | `node packages/ui/scripts/barrel-hash.mjs --write`                                         |
+| `review`            | `node packages/review-harness/src/cli.ts`                                                  |
+| `audit:stories`     | `node packages/ui/scripts/audit-stories.mjs`                                               |
+| `contrast:baseline` | `pnpm --filter @titan-design/react-ui test:visual:contrast:update`                         |
 
 `arch:barrel-hash` is the fix the `arch:check` freshness test asks for after a component barrel
 changes. It rewrites only `componentBarrelHash` in `packages/ui/src/arch/arch-graph.json`.
 
 CI runs `arch:check` (inside `verify:unit`). It does not run `catalog`, `arch:graph`, `arch:barrel-hash`,
-`review` or `audit:stories`. `size` and `check:cycles` have no root script or Turbo task; CI calls them with
+`review`, `audit:stories` or `contrast:baseline`. `size` and `check:cycles` have no root script or Turbo task; CI calls them with
 `pnpm --filter`.
 
 ## Coverage thresholds
