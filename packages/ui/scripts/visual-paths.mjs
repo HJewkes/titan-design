@@ -26,7 +26,8 @@ export const RENDERED_UI_PATTERNS = [
   // test:storybook ends with the play-count check.
   /^packages\/ui\/scripts\/(storybook-launch\.mjs|check-play-count\.mjs$|lib\/|visual-paths\.mjs$)/,
   /^packages\/ui\/package\.json$/,
-  /^(package\.json|pnpm-lock\.yaml|pnpm-workspace\.yaml)$/,
+  // test:axe and test:storybook run through Turbo.
+  /^(package\.json|pnpm-lock\.yaml|pnpm-workspace\.yaml|turbo\.json)$/,
   /^\.github\/workflows\/ci\.yml$/,
 ]
 

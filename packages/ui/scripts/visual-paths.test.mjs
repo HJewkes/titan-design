@@ -36,6 +36,7 @@ describe('rendered-UI path classifier (TD-645, TD-725)', () => {
     ['this classifier', 'packages/ui/scripts/visual-paths.mjs'],
     ['the package manifest', 'packages/ui/package.json'],
     ['the lockfile', 'pnpm-lock.yaml'],
+    ['the Turbo pipeline the axe and play scripts run through', 'turbo.json'],
     ['ci.yml', '.github/workflows/ci.yml'],
     ['the stories-axe suite', 'packages/ui/src/test/stories-axe.test.tsx'],
     ['a stories-axe shard', 'packages/ui/src/test/stories-axe.charts.test.tsx'],
