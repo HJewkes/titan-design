@@ -222,8 +222,7 @@ jobs:
       - name: Storybook play functions
         run: pnpm test:storybook
 
-  # Axe on every story under jsdom, parallel to build. One Node version: jsdom and axe-core
-  # are plain JS, and build still runs every other test on Node 20 and 22.
+  # Axe on every story under jsdom, parallel to build.
   stories-axe:
     runs-on: ubuntu-latest
     steps:
