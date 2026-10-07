@@ -2,7 +2,7 @@ import { vars } from 'nativewind'
 import { View } from 'react-native'
 import { Chip } from '../../components/ui/chip'
 import { Progress, type ProgressColor } from '../../components/ui/progress'
-import { SELECTED_CHIP } from './light-tuning'
+import { chipLabelFix, chipRecipe, type TokenSet } from './light-tuning'
 import type { Tone } from './light-tuning-pairs'
 
 export const PROGRESS_COLOR: Record<Tone, ProgressColor> = {
@@ -45,24 +45,37 @@ export function ProgressSample({
   )
 }
 
-/** Selected Chip today (solid), or TD-490's subtle fill, 600 border and 700 label (simulated). */
-export function SelectedChip({ isProposed }: { isProposed: boolean }) {
-  if (!isProposed) {
+/** Selected Chip today (solid), or the set's simulated recipe (TD-490, TD-624). */
+export function SelectedChip({ set }: { set: TokenSet }) {
+  const recipe = chipRecipe(set)
+  if (!recipe) {
     return (
       <Chip variant="solid" color="primary">
         Selected
       </Chip>
     )
   }
+  if (recipe.solidFill) {
+    return (
+      <View style={vars({ '--color-brand-primary-solid': recipe.solidFill })}>
+        <Chip variant="solid" color="primary">
+          Selected
+        </Chip>
+      </View>
+    )
+  }
   return (
-    <View style={vars({ '--color-on-brand-primary-subtle': SELECTED_CHIP.label })}>
-      <Chip
-        variant="subtle"
-        color="primary"
-        style={{ borderWidth: 1, borderColor: SELECTED_CHIP.border }}
-      >
+    <View style={vars({ '--color-on-brand-primary-subtle': recipe.label ?? '' })}>
+      <Chip variant="subtle" color="primary" style={{ borderWidth: 1, borderColor: recipe.border }}>
         Selected
       </Chip>
     </View>
   )
+}
+
+/** Unselected Chip, with the set's label fix (TD-624) riding a local text-secondary. */
+export function UnselectedChip({ set }: { set: TokenSet }) {
+  const fix = chipLabelFix(set)
+  const chip = <Chip>Unselected</Chip>
+  return fix ? <View style={vars({ '--color-text-secondary': fix })}>{chip}</View> : chip
 }

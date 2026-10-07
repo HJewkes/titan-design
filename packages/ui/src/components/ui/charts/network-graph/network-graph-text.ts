@@ -1,3 +1,4 @@
+import { compareText } from '../kit/compareText'
 import { displayLabel, incident, isValidWeight } from './network-graph-model'
 import type {
   GraphEdge,
@@ -43,7 +44,7 @@ function countByKind(kinds: readonly (string | undefined)[], labels: Map<string,
     counts.set(label, (counts.get(label) ?? 0) + 1)
   }
   return [...counts]
-    .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+    .sort(([a], [b]) => compareText(a, b))
     .map(([label, n]) => `${n} ${label}`)
     .join(', ')
 }

@@ -9,32 +9,34 @@ import { STORY_INDEX_ENV } from './story-index.global-setup'
  * Declares one test per in-scope story from the Storybook index that
  * `story-index.global-setup.ts` fetches, and screenshots each story's rendered
  * root against a committed baseline (`toHaveScreenshot`). Every story first
- * passes a blank-render guard. `src/test/visual-coverage.test.ts` fails when a
+ * passes a blank-render guard. CI runs it as `test:visual:stories` in the `visual`
+ * job (`.github/workflows/ci.yml`). `src/test/visual-coverage.test.ts` fails when a
  * story under a required prefix has no committed baseline.
  *
  * Determinism: the clock is installed AND paused at a fixed instant (so
- * `DateTime live` clocks render a fixed time however long the run takes) and CSS animations are disabled (pulse / ping), so control-driven,
- * animated stories snapshot stably.
+ * `DateTime live` clocks render a fixed time however long the run takes) and CSS
+ * animations are disabled (pulse / ping), so control-driven, animated stories
+ * snapshot stably.
  *
  * Scope: the shell family + the icon foundation story (`Foundations/Icons`,
  * whose Storybook id is `foundations-icons--*`), MesoProgressBar, every
  * VelocityStrip title (`custom-workout-dataviz-velocitystrip*`, including its
  * Expanded, Hero, Dual and Compact sheets), DualVelocityStrip, MesoCard,
  * SegmentedBar, GoalTrajectoryChart, StrengthTrendChart and the Active Workout,
- * Exercise Detail, Program Planning and Training Status pages, plus the Chat
- * stories named in `CHAT_STORIES`. Widen `SCOPE` to cover more of the library as
- * baselines are seeded.
+ * Exercise Detail, Program Planning and Training Status pages, every
+ * `Custom/ActiveWork` story, plus the Chat stories named in `CHAT_STORIES`.
+ * Widen `SCOPE` to cover more of the library as baselines are seeded.
  *
  * Baselines must be generated in the pinned Playwright Linux container
  * (`mcr.microsoft.com/playwright:v1.58.2-noble`) so the committed PNGs are
  * byte-identical to CI: download the `storybook-visual-baselines` artifact
- * that the visual workflow's refresh step uploads on a failed run and commit the
+ * that the `visual` job's refresh step uploads on a failed run and commit the
  * changed PNGs. A local `pnpm test:visual:stories:update` writes darwin PNGs
  * that are gitignored and never gate.
  */
 
 const SCOPE =
-  /^(shell-|foundations-icons--|custom-workout-mesoprogressbar--|custom-workout-dataviz-velocitystrip|custom-workout-dataviz-dualvelocitystrip--|custom-workout-mesocard--|custom-workout-segmentedbar--|custom-workout-dataviz-goaltrajectorychart--|custom-workout-dataviz-strengthtrendchart--|pages-active-workout--|pages-exercise-detail--|pages-program-planning--|pages-training-status--)/
+  /^(shell-|foundations-icons--|custom-workout-mesoprogressbar--|custom-workout-dataviz-velocitystrip|custom-workout-dataviz-dualvelocitystrip--|custom-workout-mesocard--|custom-workout-segmentedbar--|custom-workout-dataviz-goaltrajectorychart--|custom-workout-dataviz-strengthtrendchart--|pages-active-workout--|pages-exercise-detail--|pages-program-planning--|pages-training-status--|custom-activework-)/
 
 // The owner-locked Chat design (VW-393), listed by id so the interactive stories stay out.
 const CHAT_STORIES = new Set([

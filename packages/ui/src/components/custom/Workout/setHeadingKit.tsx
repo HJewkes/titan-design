@@ -184,7 +184,7 @@ export function Heading({ ex, stripH }: { ex: Exercise; stripH: number }) {
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         <span style={labelStyle}>{ex.name}</span>
         <div style={{ flex: 1 }} />
-        {ex.indicator && <Indicator kind={ex.indicator} />}
+        {!!ex.indicator && <Indicator kind={ex.indicator} />}
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 1 }}>
         <SetsRepsLoad sets={ex.sets} reps={ex.reps} load={ex.load} />
