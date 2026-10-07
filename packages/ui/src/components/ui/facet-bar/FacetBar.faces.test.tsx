@@ -4,7 +4,7 @@ import { capturedByNode } from '../../../test/classname-capture'
 import { compositeOver, contrast } from '../../../theme/color-checks'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 import type { ChipColor } from '../chip'
-import { chipLightContrastExceptions } from '../chip/Chip.test'
+import { chipLightContrastExceptions } from '../../../test/chip-contrast'
 import { FacetBar } from './FacetBar'
 import { facetBarFixtures } from './fixtures'
 
@@ -75,9 +75,7 @@ describe('FacetBar face contrast', () => {
   )
   // Chip.test.tsx asserts each declared light miss as a miss; FacetBar inherits that exception list.
   const isException = (row: (typeof rows)[number]) =>
-    row.mode === 'light' &&
-    row.isSelected &&
-    (chipLightContrastExceptions as readonly string[]).includes(row.color)
+    row.mode === 'light' && row.isSelected && chipLightContrastExceptions.includes(row.color)
 
   const labelOnFill = (mode: ThemeMode, fillClass: string, labelClass: string) => {
     const colors: Record<string, string> = getSemanticColors(mode)

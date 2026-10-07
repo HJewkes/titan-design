@@ -5,6 +5,7 @@ import { Chip, type ChipColor, type ChipVariant } from './Chip'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 import { contrast, compositeOver } from '../../../theme/color-checks'
 import { capturedClassNames } from '../../../test/classname-capture'
+import { chipLightContrastExceptions } from '../../../test/chip-contrast'
 import { resolveAll, siblingSource, sizeClasses } from '../../../test/spacing-resolver'
 
 describe('Chip', () => {
@@ -271,12 +272,6 @@ const chipColors = ['default', ...(Object.keys(toneRoots) as ToneColor[])] as co
 const modes = ['dark', 'light'] as const
 const planes = ['surface-base', 'surface-elevated'] as const
 
-/**
- * Selected faces whose label misses 4.5 in light mode. Each is asserted as a
- * miss below, so a token fix fails the suite until its entry is removed.
- */
-export const chipLightContrastExceptions: readonly ToneColor[] = ['primary', 'warning', 'info']
-
 // The face the chip actually renders, read back from its tone classes, so a Pill row revert fails here too.
 function renderedFace(color: ChipColor, isSelected: boolean): Face {
   const { unmount } = render(
@@ -343,9 +338,7 @@ describe('Chip faces', () => {
     )
   )
   const isException = (row: (typeof contrastRows)[number]) =>
-    row.mode === 'light' &&
-    row.isSelected &&
-    (chipLightContrastExceptions as readonly string[]).includes(row.color)
+    row.mode === 'light' && row.isSelected && chipLightContrastExceptions.includes(row.color)
 
   it.each(contrastRows.filter((row) => !isException(row)))(
     '$mode $color selected=$isSelected label reads >= 4.5 on $plane',
