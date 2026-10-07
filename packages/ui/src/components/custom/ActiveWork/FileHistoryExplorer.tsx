@@ -10,13 +10,7 @@ import { Eyebrow } from '../../ui/eyebrow'
 import { CoChangeChip } from './CoChangeChip'
 import { FileActivityRow } from './FileActivityRow'
 import { FileActivityDetail, type FileActivityDetailData } from './FileActivityDetail'
-
-/**
- * React Native's `Role` union has `'option'` but omits `'listbox'`, even though
- * RNW passes it straight through to the DOM. Cast once here rather than drop
- * the ARIA parent that makes the option rows valid.
- */
-const LISTBOX_ROLE = 'listbox' as ViewProps['role']
+import { LISTBOX_ROLE } from './aria-roles'
 
 /** A KPI shown in the strip above the explorer. */
 export interface FileHistoryStat {
