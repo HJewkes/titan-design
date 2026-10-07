@@ -18,6 +18,9 @@ jobs:
     strategy:
       matrix:
         node-version: [22]
+    # In turbo.json globalEnv, so a Node version bump never replays another version's turbo cache.
+    env:
+      NODE_VERSION: ${{ matrix.node-version }}
 
     steps:
       # Full history so the release-bump step can read the PR base's API reports.
@@ -33,6 +36,17 @@ jobs:
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
+
+      # TD-733: a PR replays main's newest turbo entry, so a package it leaves untouched skips lint,
+      # type-check and test:unit. Only a push to main saves: a PR's cache scope is unreadable from main.
+      # Main never restores, so every merged tree runs in full and each saved entry holds one run.
+      - name: Restore turbo cache
+        if: github.event_name == 'pull_request'
+        uses: actions/cache/restore@v4
+        with:
+          path: .turbo/cache
+          key: turbo-${{ runner.os }}-node${{ matrix.node-version }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: turbo-${{ runner.os }}-node${{ matrix.node-version }}-${{ hashFiles('pnpm-lock.yaml') }}-
 
       # verify:unit is format, lint, type-check, build, tests with coverage, then arch-graph
       # freshness (arch:check): local `pnpm verify` minus stories-axe, which runs in its own job.
@@ -57,6 +71,13 @@ jobs:
 
       - name: Import cycles
         run: pnpm --filter @titan-design/react-ui check:cycles
+
+      - name: Save turbo cache
+        if: github.event_name == 'push'
+        uses: actions/cache/save@v4
+        with:
+          path: .turbo/cache
+          key: turbo-${{ runner.os }}-node${{ matrix.node-version }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
 
   # Job id stays `visual`: the ruleset requires a status of exactly that name.
   visual:
