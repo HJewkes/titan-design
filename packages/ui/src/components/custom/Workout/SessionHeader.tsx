@@ -129,7 +129,7 @@ export function SessionHeader({
             mode="up"
             elapsedMs={upcoming ? budgetMs : elapsedMs}
             durationMs={budgetMs}
-            running={running && !upcoming}
+            running={!!running && !upcoming}
             showTotal={budgetMs != null && !upcoming}
           />
         </View>

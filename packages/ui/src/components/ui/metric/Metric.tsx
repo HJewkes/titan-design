@@ -79,8 +79,10 @@ export function Metric({
     <View className={cn(alignClasses[align], className)} testID={testID} {...props}>
       <View className="flex-row items-baseline gap-1">
         <Text className={cn(styles.value, toneClasses[tone], valueClassName)}>{value}</Text>
-        {unit && <Text className={cn(styles.unit, 'text-text-tertiary')}>{unit}</Text>}
-        {trend && <Text className={cn(styles.unit, trendColors[trend])}>{trendArrows[trend]}</Text>}
+        {!!unit && <Text className={cn(styles.unit, 'text-text-tertiary')}>{unit}</Text>}
+        {!!trend && (
+          <Text className={cn(styles.unit, trendColors[trend])}>{trendArrows[trend]}</Text>
+        )}
       </View>
       <Text
         className={cn(styles.label, 'text-text-secondary mt-1', labelClassName)}

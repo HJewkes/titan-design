@@ -23,7 +23,6 @@ export interface ExerciseCardProps {
   defaultExpanded?: boolean
   /** Notified when the user toggles the card between collapsed and expanded. */
   onExpandedChange?: (expanded: boolean) => void
-  onNavigateDetail?: () => void
   summary?: {
     sets: number
     reps: number | string
@@ -50,7 +49,6 @@ export interface ExerciseCardProps {
   prescription?: string
   previousBest?: string
   supersetPosition?: 'first' | 'last' | 'middle' | null
-  supersetColor?: string
   /**
    * Per-set strip override for the collapsed and expanded rows; derived from
    * `setVelocities` (collapsed) or `sets` (expanded) when omitted.
@@ -108,11 +106,6 @@ function supersetGap(position: ExerciseCardProps['supersetPosition']): string | 
   return position === 'first' || position === 'middle' ? 'mb-0.5' : undefined
 }
 
-/** The chrome a card wraps its row in: superset corner radii. */
-function supersetChrome(position: ExerciseCardProps['supersetPosition']): Record<string, number> {
-  return getSupersetBorderRadius(position)
-}
-
 /** Project the collapsed glance's velocities + planned total onto the strip's per-set states. */
 function deriveCollapsedSetStates(
   setVelocities: number[][] | undefined,
@@ -156,7 +149,7 @@ function CollapsedCard({
     isSelected,
     isLive,
     onPress: onToggle,
-    style: supersetChrome(supersetPosition),
+    style: getSupersetBorderRadius(supersetPosition),
     className: supersetGap(supersetPosition),
   }
 
@@ -220,7 +213,7 @@ function ExpandedCard({
   return (
     <View
       className={cn('bg-surface-elevated border-hairline', supersetGap(supersetPosition))}
-      style={{ borderWidth: 1, ...supersetChrome(supersetPosition) }}
+      style={{ borderWidth: 1, ...getSupersetBorderRadius(supersetPosition) }}
       testID="exercise-card"
     >
       <ExerciseCardHeading
@@ -277,7 +270,7 @@ function UpcomingCard({
     indicator,
     isSelected,
     onPress: onToggle,
-    style: supersetChrome(supersetPosition),
+    style: getSupersetBorderRadius(supersetPosition),
     className: supersetGap(supersetPosition),
   }
 
