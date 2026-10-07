@@ -9,6 +9,9 @@
     "url": "https://github.com/HJewkes/titan-design.git"
   },
   "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
