@@ -1,12 +1,11 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useEffect, useMemo, useState } from 'react'
 import { View, Text, Pressable, Animated, Easing, type ViewProps } from 'react-native'
-import BodyHighlighter, { type ExtendedBodyPart, type Slug } from 'react-native-body-highlighter'
+import { type ExtendedBodyPart, type Slug } from 'react-native-body-highlighter'
 import { cn } from '../../../utils/cn'
 import { resolveColor } from '../../../theme/resolve-color'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../ui/surface/SurfaceContext'
-import { primitiveColors } from '../../../theme/tokens/primitives'
 import { alpha } from '../../../utils/colors'
 import { getGlowShadow } from '../../../theme/elevation'
 import {
@@ -22,18 +21,9 @@ import {
   isMoreSevere,
   type VolumeStatus,
 } from './muscleTaxonomy'
-
-/**
- * react-native-body-highlighter is published as a CommonJS default export; the
- * interop keeps it working whether the bundler unwraps the default or not.
- */
-const Body = ((BodyHighlighter as unknown as { default?: typeof BodyHighlighter }).default ??
-  BodyHighlighter) as typeof BodyHighlighter
+import { Body, UNLIT_BORDER, UNLIT_FILL_DARK } from './bodyHighlighter'
 
 const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
-
-const OUTLINE_FILL = alpha(primitiveColors.white, 0.08)
-const OUTLINE_BORDER = alpha(primitiveColors.white, 0.12)
 
 /** Presentation size for BodyMap and TrainingStatusPage: 'phone' (default) keeps
  * today's compact geometry; 'wall' scales up for large-display dashboards. */
@@ -242,8 +232,8 @@ export function BodyMap({
           data={slugParts}
           scale={bodyScale}
           gender="male"
-          defaultFill={OUTLINE_FILL}
-          border={OUTLINE_BORDER}
+          defaultFill={UNLIT_FILL_DARK}
+          border={UNLIT_BORDER}
           onBodyPartPress={handleBodyPress}
         />
       </Animated.View>

@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Animated } from 'react-native'
+import { View, Pressable, Animated } from 'react-native'
 import { formatChartDate } from '../../../utils/workout-format'
 import {
   DOT_SIZE,
@@ -11,12 +11,15 @@ import {
   type CapacityBandScale,
   type LoadDot,
 } from './capacityBandGeometry'
+import { Typography } from '../../ui/typography'
 
 /** Y axis conceptual label (no numbers). */
 export function YAxisLabel({ plotHeight }: { plotHeight: number }) {
   return (
-    <Text
-      className="text-text-tertiary"
+    <Typography
+      variant="caption"
+      color="tertiary"
+      className="leading-tight"
       style={{
         position: 'absolute',
         left: PADDING_LEFT / 2 - 14,
@@ -32,7 +35,7 @@ export function YAxisLabel({ plotHeight }: { plotHeight: number }) {
       testID="capacity-band-chart-y-axis-label"
     >
       Load
-    </Text>
+    </Typography>
   )
 }
 
@@ -50,9 +53,11 @@ export function XAxisLabels({ band, toX, height, labelStride }: XAxisLabelsProps
       {band.map((point, i) => {
         if (i % labelStride !== 0 && i !== band.length - 1) return null
         return (
-          <Text
+          <Typography
             key={`x-${point.date}`}
-            className="text-text-tertiary"
+            variant="caption"
+            color="tertiary"
+            className="leading-tight"
             style={{
               position: 'absolute',
               left: toX(point.date) - 14,
@@ -67,7 +72,7 @@ export function XAxisLabels({ band, toX, height, labelStride }: XAxisLabelsProps
             testID="capacity-band-chart-x-label"
           >
             {formatChartDate(point.date)}
-          </Text>
+          </Typography>
         )
       })}
     </>

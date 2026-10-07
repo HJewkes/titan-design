@@ -7,16 +7,18 @@ import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../ui/surface'
 import { getGlowShadow } from '../../../theme/elevation'
 import { alpha } from '../../../utils/colors'
+import { PR_TYPE_LABELS, type PRType } from './PrBadge'
 
 // Native-safe fallback for the conditional row border (recent uses a computed
 // rgba, so className can't express both branches).
 const BORDER_DEFAULT = resolveColor('hairline-default')
 
-export type PrRecordType = 'e1rm' | 'weight' | 'reps' | 'volume' | 'velocity'
+/** @deprecated Use PRType. */
+export type PrRecordType = PRType
 
 export interface PrRecord {
   /** PR category, drives the row label and ordering grouping. */
-  type: PrRecordType
+  type: PRType
   /** Numeric magnitude (paired with `unit`) or a pre-formatted display string. */
   value: string | number
   /** Unit suffix appended to numeric values, e.g. "lbs" or "kg". */
@@ -42,16 +44,8 @@ export interface PrHistoryModalProps extends ViewProps {
   onClose: () => void
 }
 
-const TYPE_LABELS: Record<PrRecordType, string> = {
-  e1rm: 'e1RM',
-  weight: 'Weight',
-  reps: 'Reps',
-  volume: 'Volume',
-  velocity: 'Velocity',
-}
-
-function recordLabel(type: PrRecordType): string {
-  return TYPE_LABELS[type] ?? type
+function recordLabel(type: PRType): string {
+  return PR_TYPE_LABELS[type] ?? type
 }
 
 function recordValueText({ value, unit }: PrRecord): string {

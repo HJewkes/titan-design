@@ -72,6 +72,13 @@ specimen harness.
 job's steps for which layer runs which script and which steps only regenerate baselines on
 failure; a pixel or computed-style mismatch in a gating step fails the PR.
 
+A pull request that changes no rendered UI skips every layer (TD-645): the job's first step,
+`scripts/visual-paths.mjs`, lists the PR's files and, when none matches its rendered-UI set (all
+of `src/` except test files, stories, Storybook and Tailwind config, the specimen, the visual,
+interaction and offline-fonts specs, Playwright configs, manifests, the lockfile and `ci.yml`),
+logs `visual-paths: none of N changed paths is rendered UI` and ends green. A push to `main`
+always runs every layer. If a layer starts reading a new path, add it to `RENDERED_UI_PATTERNS`.
+
 ## Where a new component's test goes, and its minimal shape
 
 `Component.test.tsx` sits beside `Component.tsx` in `src/components/ui/<name>/` (or

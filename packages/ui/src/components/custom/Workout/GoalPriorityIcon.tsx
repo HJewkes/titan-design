@@ -97,7 +97,7 @@ export function GoalPriorityIcon({
       </View>
     )
   }
-  return (
+  const trigger = (
     <TipTrigger
       label={label}
       content={<Tip priority={priority} />}
@@ -109,4 +109,6 @@ export function GoalPriorityIcon({
       {glyph}
     </TipTrigger>
   )
+  // TipTrigger takes no className; an unstyled trigger keeps its markup unchanged.
+  return className ? <View className={className}>{trigger}</View> : trigger
 }

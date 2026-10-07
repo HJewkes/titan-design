@@ -418,3 +418,51 @@ describe('gridline numbers inside the plot', () => {
     expect(screen.queryAllByTestId(/^goal-trajectory-chart-grid-label-/)).toHaveLength(0)
   })
 })
+
+// A narrow chart is where a grid number is pushed to the far side of the plot, into the reach of a wide label.
+const NARROW = [
+  { width: 130, height: 120 },
+  { width: 150, height: 120 },
+]
+const CASES: number[][] = []
+for (let c = 150; c <= 230; c++) CASES.push([c, c + 10])
+
+describe('gridline numbers beside named rule labels', () => {
+  // Inter's capital C, lower-case letters and digits average about 0.6em, so
+  // "Committed 185" is wider than a string of digits and points of the same length.
+  const widthOf = (text: string) => text.length * 0.6 * CHART_FONT * 0.9
+
+  it('never overprint a named rule label box', () => {
+    let checked = 0
+    for (const size of NARROW) {
+      for (const [committed, stretch] of CASES) {
+        const g = geometryFor({ committed, stretch }, size)
+        const rules = ruleLabelSpecs({
+          geometry: g,
+          committed,
+          stretch,
+          text: 'named',
+          side: 'left',
+        })
+        const grid = gridLabelSpecs({
+          geometry: g,
+          ruleLabels: rules,
+          ruleValues: [committed, stretch],
+        })
+        for (const label of rules) {
+          const left = label.anchor === 'start' ? label.x : label.x - widthOf(label.text)
+          const right = left + widthOf(label.text)
+          const top = label.y - CHART_FONT * LABEL_ASCENT
+          const bottom = label.y + CHART_FONT * LABEL_DESCENT
+          for (const n of grid) {
+            const r = rectOf(n)
+            checked++
+            const overlap = r.left < right && left < r.right && r.top < bottom && top < r.bottom
+            expect(overlap, `${n.text} on ${label.text} at ${size.width}`).toBe(false)
+          }
+        }
+      }
+    }
+    expect(checked).toBeGreaterThan(0)
+  })
+})
