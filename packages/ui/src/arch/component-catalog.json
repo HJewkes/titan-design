@@ -4058,7 +4058,7 @@
           "description": "Zone boundary thresholds (loss %): green→gold, gold→orange, orange→red.",
           "name": "thresholds",
           "required": false,
-          "type": "[number, number, number]"
+          "type": "VelocityLossThresholds"
         },
         {
           "default": null,
@@ -13285,7 +13285,7 @@
         },
         {
           "default": null,
-          "description": "Border radius (only for 'rect' variant)",
+          "description": "Border radius in pixels; applies to every variant and overrides the variant's radius class",
           "name": "borderRadius",
           "required": false,
           "type": "number"
