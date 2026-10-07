@@ -1,24 +1,12 @@
 import type { Dispatch } from 'react'
 import type { VariantDraft } from '../src/feedback.ts'
 import { frameSizing } from '../src/sections.ts'
-import {
-  isImageVariant,
-  isStoryVariant,
-  type Manifest,
-  type Variant,
-  type Verdict,
-} from '../src/schema.ts'
+import { isImageVariant, isStoryVariant, type Manifest, type Variant } from '../src/schema.ts'
 import { Frame, type PinInput } from './Frame.tsx'
 import { ImageFrame } from './ImageFrame.tsx'
 import { PinList } from './PinList.tsx'
-import type { Action } from './state.ts'
+import { VERDICTS, type Action } from './state.ts'
 import { Stop } from './Stop.tsx'
-
-const VERDICTS: { key: string; verdict: Exclude<Verdict, null>; label: string }[] = [
-  { key: '1', verdict: 'chosen', label: 'Chosen' },
-  { key: '2', verdict: 'rejected', label: 'Rejected' },
-  { key: '3', verdict: 'maybe', label: 'Maybe' },
-]
 
 interface VariantCardProps {
   manifest: Manifest

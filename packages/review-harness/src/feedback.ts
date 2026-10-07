@@ -9,7 +9,7 @@ import {
   type Verdict,
 } from './schema.ts'
 import { isAnswered, normalizeAnswer, offersBuiltInRevision } from './round.ts'
-import { questionsForVariant } from './sections.ts'
+import { questionsForVariant, sectionOfQuestion } from './sections.ts'
 
 export interface VariantDraft {
   verdict: Verdict
@@ -45,8 +45,7 @@ export function emptyDraft(manifest: Manifest): ReviewDraft {
 
 /** Comments left on the frames this question's section showed, so he never repeats one. */
 function sectionComments(manifest: Manifest, questionId: string, draft: ReviewDraft) {
-  const section = manifest.sections?.find((s) => s.questionIds.includes(questionId))
-  return (section?.variantKeys ?? [])
+  return (sectionOfQuestion(manifest, questionId)?.variantKeys ?? [])
     .map((key) => ({ key, comment: draft.variants[key]?.comment.trim() ?? '' }))
     .filter((v) => v.comment !== '')
 }

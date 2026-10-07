@@ -9,7 +9,7 @@ import type { HarnessFreshness } from '../src/harness-freshness.ts'
 import { buildFeedback, emptyDraft } from '../src/feedback.ts'
 import { runCli, type CliIo } from '../src/run.ts'
 import { startReviewServer, type ReviewServer } from '../src/server.ts'
-import { SHA, manifest, validFeedback } from './fixtures.ts'
+import { SHA, manifest, noTreeGit, validFeedback } from './fixtures.ts'
 
 /** Stands in for Storybook: an index listing the example's stories, and a canvas page. */
 async function fakeStorybook(): Promise<{ url: string; close: () => void }> {
@@ -122,6 +122,7 @@ describe('titan-review CLI', () => {
       openBrowser: () => {},
       capture: async (_round, outDir) => [join(outDir, 'fake.png')],
       measure: async () => [],
+      git: noTreeGit,
       createPage: async () => stubPage,
       harnessFreshness: async () => freshness,
       signal,

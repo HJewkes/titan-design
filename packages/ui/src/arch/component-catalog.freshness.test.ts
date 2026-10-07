@@ -25,6 +25,9 @@ type Catalog = { entries: Item[]; excluded: Item[] }
 
 const STORY = 'packages/ui/src/components/ui/date-time/DateTime.stories.tsx'
 const ALERT = 'packages/ui/src/components/ui/alert/Alert.tsx'
+const DATE_TIME = 'packages/ui/src/components/ui/date-time/DateTime.tsx'
+/** The components the sensitivity cases edit; their rebuilds run docgen over these alone. */
+const SWEEP = new Set([ALERT, DATE_TIME])
 const DOCGEN_TIMEOUT = 60_000
 
 /** Names of the entries (or files, for excluded ones) whose block differs between two catalogs. */
@@ -36,22 +39,39 @@ function differingEntries(committed: Catalog, fresh: Catalog): string[] {
   return [...new Set([...a.keys(), ...b.keys()])].filter((key) => a.get(key) !== b.get(key)).sort()
 }
 
-const build = (
-  read?: (repoRoot: string, rel: string) => string,
-  overlay?: Record<string, string>
-): Catalog => JSON.parse(serializeCatalog(buildCatalog(REPO_ROOT, read, overlay)))
+type Read = (repoRoot: string, rel: string) => string
 
-/** The catalog built with Alert.tsx read as `edit` returns it; fails if the edit is a no-op. */
-function buildWithAlert(edit: (text: string) => string): Catalog {
+const build = (
+  read?: Read,
+  overlay?: Record<string, string>,
+  include?: (component: Item) => boolean
+): Catalog => JSON.parse(serializeCatalog(buildCatalog(REPO_ROOT, read, overlay, include)))
+
+/** `full` with the SWEEP components rebuilt from the edited sources; every other block is kept. */
+function rebuild(full: Catalog, read?: Read, overlay?: Record<string, string>): Catalog {
+  const swept = build(read, overlay, (component) => SWEEP.has(component.file))
+  const kept = (items: Item[]) => items.filter((item) => !SWEEP.has(item.file))
+  expect(
+    swept.entries.map((entry) => entry.file).sort(),
+    'the sweep rebuilt the wrong set'
+  ).toEqual([...SWEEP].sort())
+  return {
+    entries: [...kept(full.entries), ...swept.entries],
+    excluded: [...kept(full.excluded), ...swept.excluded],
+  }
+}
+
+/** `full` rebuilt with Alert.tsx read as `edit` returns it; fails if the edit is a no-op. */
+function buildWithAlert(full: Catalog, edit: (text: string) => string): Catalog {
   const source = readInput(REPO_ROOT, ALERT) as string
   const edited = edit(source)
   expect(edited, 'the Alert.tsx overlay did not change the source').not.toEqual(source)
-  return build(undefined, { [ALERT]: edited })
+  return rebuild(full, undefined, { [ALERT]: edited })
 }
 
 const readWith =
-  (edit: (text: string) => string) =>
-  (repoRoot: string, rel: string): string => {
+  (edit: (text: string) => string): Read =>
+  (repoRoot, rel) => {
     const text = readInput(repoRoot, rel) as string
     return rel === STORY ? edit(text) : text
   }
@@ -74,7 +94,10 @@ describe('component-catalog.json freshness', () => {
   it(
     'names the entry whose story status tag changed',
     () => {
-      const changed = build(readWith((t) => t.replace('status:candidate', 'status:stable')))
+      const changed = rebuild(
+        fresh,
+        readWith((t) => t.replace('status:candidate', 'status:stable'))
+      )
       expect(differingEntries(catalog as Catalog, changed)).toEqual(['DateTime'])
     },
     DOCGEN_TIMEOUT
@@ -83,7 +106,10 @@ describe('component-catalog.json freshness', () => {
   it(
     'ignores a story args change',
     () => {
-      const changed = build(readWith((t) => t.replace("format: 'datetime'", "format: 'date'")))
+      const changed = rebuild(
+        fresh,
+        readWith((t) => t.replace("format: 'datetime'", "format: 'date'"))
+      )
       expect(differingEntries(catalog as Catalog, changed)).toEqual([])
     },
     DOCGEN_TIMEOUT
@@ -102,7 +128,7 @@ describe('component-catalog.json freshness', () => {
   it(
     'ignores an edit inside the Alert function body',
     () => {
-      const changed = buildWithAlert((t) =>
+      const changed = buildWithAlert(fresh, (t) =>
         t.replace("const isSolid = variant === 'solid'", "const isSolid = 'solid' === variant")
       )
       expect(differingEntries(catalog as Catalog, changed)).toEqual([])
@@ -113,7 +139,7 @@ describe('component-catalog.json freshness', () => {
   it(
     'names Alert when the first sentence of its JSDoc changes',
     () => {
-      const changed = buildWithAlert((t) =>
+      const changed = buildWithAlert(fresh, (t) =>
         t.replace(
           'Alert component for displaying status messages.',
           'Alert component for status callouts.'
@@ -127,7 +153,7 @@ describe('component-catalog.json freshness', () => {
   it(
     'names Alert when AlertProps gains a prop',
     () => {
-      const changed = buildWithAlert((t) =>
+      const changed = buildWithAlert(fresh, (t) =>
         t.replace(
           '  /** Visual variant */',
           '  /** Whether the alert is dismissed. */\n  isDismissed?: boolean\n  /** Visual variant */'

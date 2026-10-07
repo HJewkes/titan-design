@@ -127,6 +127,18 @@ describe('LiveFatiguePanel responsiveness (TD-03.58)', () => {
     expect(screen.getByTestId('live-fatigue-card')).toHaveStyle({ width: '280px' })
   })
 
+  // TD-545: the prop doc says a pinned width is ignored once the panel stacks.
+  it('ignores a pinned cardWidth when stacked and fills the content width', () => {
+    const width = 720
+    render(
+      <LiveFatiguePanel model={model} velocity={velocity} containerWidth={width} cardWidth={280} />
+    )
+    const { padding } = panelLayout(width)
+    expect(screen.getByTestId('live-fatigue-card')).toHaveStyle({
+      width: `${width - padding * 2}px`,
+    })
+  })
+
   // TD-03.60 through the rendered tree, not just the pure split.
   it('moves the rendered card height when bodyHeight changes', () => {
     const { rerender } = render(

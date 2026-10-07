@@ -18,6 +18,9 @@
     "test:unit": {
       "dependsOn": ["^build"]
     },
+    "test:unit:ci": {
+      "dependsOn": ["^build"]
+    },
     "test:axe": {
       "dependsOn": ["^build"]
     },

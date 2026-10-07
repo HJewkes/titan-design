@@ -5,7 +5,7 @@ fail for the reason you care about.
 
 | Layer              | Question it answers                                                            | File pattern                                                    | Runs in                                                                     |
 | ------------------ | ------------------------------------------------------------------------------ | --------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| Unit and component | Does the component render and behave, with no axe violation?                   | `packages/ui/src/**/*.test.{ts,tsx}`                            | `build` job, `pnpm verify:unit` (`turbo run test:unit -- --run --coverage`) |
+| Unit and component | Does the component render and behave, with no axe violation?                   | `packages/ui/src/**/*.test.{ts,tsx}`                            | `build` job, `pnpm verify:unit` (`pnpm test:unit:ci`) |
 | Stories axe        | Does every composed story pass axe, or match its shrinking baseline?           | `packages/ui/src/test/stories-axe{,.*}.test.tsx`                | `stories-axe` job, `pnpm test:axe`                                          |
 | Property (logic)   | Does a pure function hold its invariant for any input?                         | `*Math.test.ts`, `*-model.test.ts`, hook tests using `fcAssert` | same Vitest run                                                             |
 | Scale              | Does a windowed component mount a bounded number of nodes?                     | `*.test.tsx` calling `expectBoundedMount`                       | same Vitest run                                                             |

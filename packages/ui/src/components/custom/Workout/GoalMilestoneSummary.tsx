@@ -240,7 +240,7 @@ export function MilestoneHero({
       testID="goal-milestone-hero"
     >
       {tile.hero}
-      {suffix && (
+      {!!suffix && (
         <Typography variant="caption" color="tertiary" className="font-body font-normal">
           {`  ${suffix}`}
         </Typography>
@@ -393,7 +393,7 @@ function SummaryBody({ tile, scale }: { tile: ResolvedTile; scale: GoalMilestone
     <>
       <MilestoneHero tile={tile} scale={scale} />
       <MilestoneFacts tile={tile} />
-      {(tile.props.showWeeks ?? true) && <MilestoneWeekStrip tile={tile} scale={scale} />}
+      {!!(tile.props.showWeeks ?? true) && <MilestoneWeekStrip tile={tile} scale={scale} />}
     </>
   )
 }

@@ -14,29 +14,44 @@ const items: SideNavItem[] = [
 ]
 
 describe('SideNav', () => {
-  it('renders the supplied categories as tabs in a tablist', () => {
+  it('renders the supplied categories as buttons in a navigation landmark', () => {
     render(<SideNav items={items} activeKey="live" />)
-    expect(screen.getByRole('tablist')).toBeInTheDocument()
+    expect(screen.getByRole('navigation', { name: 'Primary' })).toBeInTheDocument()
     ;['Live', 'Review', 'Plan', 'Body'].forEach((name) => {
-      expect(screen.getByRole('tab', { name })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name })).toBeInTheDocument()
     })
+  })
+
+  it('marks only the active category with aria-current=page and uses no tab roles', () => {
+    render(<SideNav items={items} activeKey="program" />)
+    expect(screen.getByRole('button', { name: 'Plan' })).toHaveAttribute('aria-current', 'page')
+    ;['Live', 'Review', 'Body'].forEach((name) => {
+      expect(screen.getByRole('button', { name })).not.toHaveAttribute('aria-current')
+    })
+    expect(screen.queryByRole('tab')).toBeNull()
+    expect(screen.queryByRole('tablist')).toBeNull()
+  })
+
+  it('names the landmark from accessibilityLabel', () => {
+    render(<SideNav items={items} activeKey="live" accessibilityLabel="Workspace" />)
+    expect(screen.getByRole('navigation', { name: 'Workspace' })).toBeInTheDocument()
   })
 
   it('shows the accent bar only on the active category', () => {
     render(<SideNav items={items} activeKey="program" />)
     expect(screen.getAllByTestId('nav-item-accent')).toHaveLength(1)
     expect(
-      within(screen.getByRole('tab', { name: 'Plan' })).getByTestId('nav-item-accent')
+      within(screen.getByRole('button', { name: 'Plan' })).getByTestId('nav-item-accent')
     ).toBeInTheDocument()
     expect(
-      within(screen.getByRole('tab', { name: 'Live' })).queryByTestId('nav-item-accent')
+      within(screen.getByRole('button', { name: 'Live' })).queryByTestId('nav-item-accent')
     ).toBeNull()
   })
 
   it('reports the tapped key via onNavigate', () => {
     const onNavigate = vi.fn()
     render(<SideNav items={items} activeKey="live" onNavigate={onNavigate} />)
-    fireEvent.click(screen.getByRole('tab', { name: 'Body' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Body' }))
     expect(onNavigate).toHaveBeenCalledWith('body')
   })
 
@@ -45,13 +60,13 @@ describe('SideNav', () => {
     // active wins: exactly one accent bar, on Live (the live cue never applies to the active view)
     expect(screen.getAllByTestId('nav-item-accent')).toHaveLength(1)
     expect(
-      within(screen.getByRole('tab', { name: 'Live' })).getByTestId('nav-item-accent')
+      within(screen.getByRole('button', { name: 'Live' })).getByTestId('nav-item-accent')
     ).toBeInTheDocument()
   })
 
   it('accepts an app-specific item set', () => {
     render(<SideNav activeKey="a" items={[{ key: 'a', label: 'Alpha', icon: null }]} />)
-    expect(screen.getByRole('tab', { name: 'Alpha' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Alpha' })).toBeInTheDocument()
   })
 
   it('has no accessibility violations', async () => {
@@ -71,12 +86,17 @@ describe('SideNav', () => {
 describe('SideNav geometry resolves to the spacing tokens', () => {
   it('ships gap-1.5 and py-inset-md', () => {
     render(<SideNav items={items} activeKey="live" />)
-    expect(spacingClassesAt(screen.getByRole('tablist'))).toEqual(['gap-1.5', 'py-inset-md'])
+    expect(spacingClassesAt(screen.getByRole('navigation', { name: 'Primary' }))).toEqual([
+      'gap-1.5',
+      'py-inset-md',
+    ])
     expect(resolveAll(['gap-1.5', 'py-inset-md'])).toEqual(['6px', '12px'])
   })
 
   it('keeps the 60px rail the specimen locks', () => {
     render(<SideNav items={items} activeKey="live" />)
-    expect(capturedByNode.get(screen.getByRole('tablist'))?.split(/\s+/)).toContain('w-[60px]')
+    expect(
+      capturedByNode.get(screen.getByRole('navigation', { name: 'Primary' }))?.split(/\s+/)
+    ).toContain('w-[60px]')
   })
 })

@@ -431,8 +431,6 @@ module.exports = tseslint.config(
       '**/*.stories.tsx',
       '**/*.test.{ts,tsx}',
       '**/*-fixture.ts',
-      // Story-only fixtures, resolved colours are demo data; VW-316.
-      'src/components/custom/Workout/velocity-story-kit.tsx',
     ],
     rules: {
       'titan/no-frozen-theme': 'error',
@@ -621,13 +619,6 @@ module.exports = tseslint.config(
       'src/lab/north-star/LiveView.tsx',
       'src/lab/north-star/VelocityDiverging.exploration.stories.tsx',
       'src/lab/north-star/fatigue-lab-shared.tsx',
-      // TD-536 b5
-      'src/components/custom/Workout/ExerciseHeading.tsx',
-      'src/components/custom/Workout/GoalMilestoneSummary.tsx',
-      'src/components/custom/Workout/GoalTrajectoryChartParts.tsx',
-      'src/components/custom/Workout/GoalTrajectoryMini.tsx',
-      'src/components/custom/Workout/GoalTrajectoryWeekTips.tsx',
-      'src/components/custom/Workout/GoalsWholeBody.composition.stories.tsx',
       // TD-536 b7
       'src/components/ui/alert/Alert.tsx',
       'src/components/ui/button/Button.tsx',

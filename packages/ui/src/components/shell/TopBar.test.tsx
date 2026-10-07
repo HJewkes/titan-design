@@ -14,6 +14,11 @@ describe('TopBar', () => {
     expect(screen.getByText('16:12')).toBeInTheDocument()
   })
 
+  it('is exposed as the banner landmark', () => {
+    render(<TopBar />)
+    expect(screen.getByRole('banner')).toBeInTheDocument()
+  })
+
   it('renders another app brand without knowing anything about it', () => {
     render(<TopBar brand="brain" showClock={false} />)
     expect(screen.getByText('BRAIN')).toBeInTheDocument()

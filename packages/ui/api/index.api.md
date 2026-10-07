@@ -219,6 +219,7 @@ export interface AppShellProps {
     children?: ReactNode;
     // (undocumented)
     className?: string;
+    isMainLandmark?: boolean;
     liveKey?: string | null;
     nav?: ReactNode;
     navItems?: SideNavItem[];
@@ -870,9 +871,11 @@ export interface ChipProps extends ViewProps {
     className?: string;
     color?: ChipColor;
     isDisabled?: boolean;
+    isSelected?: boolean;
     leftElement?: React__default.ReactNode;
     onDelete?: () => void;
     onPress?: () => void;
+    rightElement?: React__default.ReactNode;
     size?: ChipSize;
     variant?: ChipVariant;
 }
@@ -5694,6 +5697,7 @@ export interface ReadinessCheckProps {
     // (undocumented)
     className?: string;
     factors: ReadinessFactor[];
+    isConfirmDisabled?: boolean;
     onConfirm: () => void;
     score: number;
     warmUpCompleted: boolean;
@@ -6862,6 +6866,7 @@ export interface SideNavItem {
 export interface SideNavProps {
     accentBarClassName?: string;
     accentClassName?: string;
+    accessibilityLabel?: string;
     activeKey: string;
     // (undocumented)
     className?: string;
