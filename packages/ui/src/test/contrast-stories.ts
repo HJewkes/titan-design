@@ -29,6 +29,32 @@ export function baselineKey(storyId: string, theme: ContrastTheme): string {
   return `${storyId} ${theme}`
 }
 
+// FNV-1a (offset and prime in decimal: the lint forbids hex literals) with murmur3's finaliser:
+// ids share long prefixes, and without the avalanche step the order would still group by prefix.
+const FNV_OFFSET = 2166136261
+const FNV_PRIME = 16777619
+const MIX_1 = 2246822507
+const MIX_2 = 3266489909
+
+function stableHash(text: string): number {
+  let hash = FNV_OFFSET
+  for (let i = 0; i < text.length; i++) hash = Math.imul(hash ^ text.charCodeAt(i), FNV_PRIME)
+  hash ^= hash >>> 16
+  hash = Math.imul(hash, MIX_1)
+  hash ^= hash >>> 13
+  hash = Math.imul(hash, MIX_2)
+  return (hash ^ (hash >>> 16)) >>> 0
+}
+
+/**
+ * The story ids in a fixed order that spreads every title prefix across the file, so Playwright's
+ * `--shard` (which splits the declared order into runs) gives each shard a like mix. The index is
+ * alphabetical, and its last third is every Lab story: the heaviest renders and every blank wait.
+ */
+export function interleaveForShards(storyIds: string[]): string[] {
+  return [...storyIds].sort((a, b) => stableHash(a) - stableHash(b) || a.localeCompare(b))
+}
+
 export function pairCounts(nodes: ContrastNode[]): PairCounts {
   const counts: PairCounts = {}
   for (const node of nodes) {

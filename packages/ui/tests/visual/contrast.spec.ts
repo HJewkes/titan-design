@@ -7,6 +7,7 @@ import {
   CONTRAST_THEMES,
   baselineKey,
   contrastProblems,
+  interleaveForShards,
   pairCounts,
   type ContrastBaseline,
   type ContrastNode,
@@ -39,7 +40,7 @@ import { STORY_INDEX_ENV } from './story-index.global-setup'
 
 const baselineFile = path.join(__dirname, 'contrast-stories-baseline.json')
 const baseline = JSON.parse(fs.readFileSync(baselineFile, 'utf8')) as ContrastBaseline
-const storyIds = readStoryIds()
+const storyIds = interleaveForShards(readStoryIds())
 
 // axe-core is jest-axe's dependency, so it resolves from there (as scripts/audit-stories does).
 const fromUi = createRequire(path.join(__dirname, '..', '..', 'package.json'))

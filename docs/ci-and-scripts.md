@@ -8,12 +8,12 @@ root `package.json`, `turbo.json`, `packages/ui/package.json`, `packages/ui/vite
 
 `ci.yml` runs on every pull request and on pushes to `main`.
 
-| Job        | Runs on                                                                                 | What it runs                                                                                                                                              |
-| ---------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `build`    | Node 22 (single-entry matrix)                                                           | Install, then the steps below                                                                                                                             |
-| `visual`   | Playwright container, Node 22                                                           | Layer 3 parity, offline fonts, Layer 1 and 2 baselines, interaction                                                                                       |
-| `contrast` | Playwright container, Node 22; three `contrast-shard` jobs plus an all-green aggregator | axe `color-contrast` on every story in both themes (`test:visual:contrast --shard=i/3`), path-gated; each shard uploads `contrast-report-<i>` (see below) |
-| `check`    | Playwright container, Node 22; always runs; needs `build` and `visual`                  | all-green over `needs`, then audit, stories axe and play functions (see below)                                                                            |
+| Job        | Runs on                                                                            | What it runs                                                                                                                                              |
+| ---------- | ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `build`    | Node 22 (single-entry matrix)                                                      | Install, then the steps below                                                                                                                             |
+| `visual`   | Playwright container, Node 22                                                      | Layer 3 parity, offline fonts, Layer 1 and 2 baselines, interaction                                                                                       |
+| `contrast` | Playwright container, Node 22; a three-shard matrix (`contrast 1/3` to `3/3`)      | axe `color-contrast` on every story in both themes (`test:visual:contrast --shard=i/3`), path-gated; each shard uploads `contrast-report-<i>` (see below) |
+| `check`    | Playwright container, Node 22; always runs; needs `build`, `visual` and `contrast` | all-green over `needs`, then audit, stories axe and play functions (see below)                                                                            |
 
 ### `build` steps
 
@@ -54,12 +54,12 @@ baselines from those artifacts. See `docs/test-layers.md`.
 
 ### `contrast` job
 
-`contrast-shard` runs `packages/ui/tests/visual/contrast.spec.ts` through `playwright.contrast.config.ts`
+`contrast` runs `packages/ui/tests/visual/contrast.spec.ts` through `playwright.contrast.config.ts`
 in three Playwright shards, each on its own static Storybook build: one test per story and theme, axe
 `color-contrast` in Chromium, compared with `packages/ui/tests/visual/contrast-stories-baseline.json`.
 The baseline may only shrink: a pair or count above it fails, and a pair or count that no longer
-occurs fails as stale. `contrast` is the all-green aggregator over the shards, so a ruleset can require
-it by that one name. It is path-gated like `visual`.
+occurs fails as stale. It is path-gated like `visual`, and `check` needs it (all-green requires every
+job in the workflow to be in `check.needs`), so it gates merges through `check`.
 
 Each shard uploads its report (`contrast-report-<i>`, one JSON line per story-theme) whether it
 passed or failed. Local Chromium can disagree with the container's, so regenerate the committed

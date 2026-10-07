@@ -1,5 +1,33 @@
 import { describe, expect, it } from 'vitest'
-import { baselineKey, contrastProblems, pairCounts, sortedPairs } from './contrast-stories'
+import {
+  baselineKey,
+  contrastProblems,
+  interleaveForShards,
+  pairCounts,
+  sortedPairs,
+} from './contrast-stories'
+
+describe('interleaveForShards', () => {
+  const ids = [
+    ...Array.from({ length: 30 }, (_, i) => `components-atoms-a--story-${i}`),
+    ...Array.from({ length: 30 }, (_, i) => `lab-decisions-b--story-${i}`),
+  ]
+
+  it('keeps every id once, in an order that does not depend on the input order', () => {
+    const ordered = interleaveForShards(ids)
+    expect([...ordered].sort()).toEqual([...ids].sort())
+    expect(interleaveForShards([...ids].reverse())).toEqual(ordered)
+  })
+
+  it('spreads a prefix that the alphabetical index would put in one shard', () => {
+    const ordered = interleaveForShards(ids)
+    const thirds = [ordered.slice(0, 20), ordered.slice(20, 40), ordered.slice(40)]
+    for (const third of thirds) {
+      expect(third.some((id) => id.startsWith('lab-'))).toBe(true)
+      expect(third.some((id) => id.startsWith('components-'))).toBe(true)
+    }
+  })
+})
 
 describe('pairCounts', () => {
   it('counts violating nodes by foreground|background pair, sorted by pair', () => {

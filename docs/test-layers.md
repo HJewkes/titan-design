@@ -20,9 +20,9 @@ fail for the reason you care about.
 | Offline fonts      | Does a single-file consumer load every font face with no network?                                                                            | `packages/ui/tests/offline-fonts/*.spec.ts`                     | `visual` job, `test:offline-fonts`                                                                       |
 | Dependency audit   | Does the lockfile carry a known advisory?                                                                                                    | `scripts/audit-retry.sh`                                        | `check` job, "Audit" step                                                                                |
 
-The `check` job first fails unless `build` and `visual` passed, then runs audit, stories axe and the
-Storybook play functions. On a pull request, `packages/ui/scripts/visual-paths.mjs` skips stories axe,
-play and the `visual` layers when no changed path is rendered UI. Layer-1 baselines exist only as
+The `check` job first fails unless `build`, `visual` and `contrast` passed, then runs audit, stories
+axe and the Storybook play functions. On a pull request, `packages/ui/scripts/visual-paths.mjs` skips
+stories axe, play, the `visual` layers and the `contrast` shards when no changed path is rendered UI. Layer-1 baselines exist only as
 `*-chromium-linux.png`, so run the visual layers only in the pinned Playwright container.
 
 To run the interaction project locally, use

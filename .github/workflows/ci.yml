@@ -230,7 +230,8 @@ jobs:
   # full index is about 14 minutes on one runner, so three shards run beside visual and add nothing
   # to its critical path. Each shard builds the static Storybook itself (about 30 s): a build
   # artifact from visual would wait on visual's install and build and cost about as much to move.
-  contrast-shard:
+  # `check` needs it, as all-green requires of every job, so it gates through `check` by that route.
+  contrast:
     name: contrast ${{ matrix.shard }}/3
     runs-on: ubuntu-latest
     container:
@@ -298,25 +299,14 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
-  # One status for the three shards, so the ruleset can require `contrast` by name. It is not
-  # required until the owner adds it; `check` does not wait on it.
-  contrast:
-    if: always()
-    needs: [contrast-shard]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: HJewkes/ci/actions/all-green@v1
-        with:
-          needs: ${{ toJSON(needs) }}
-
   # The job the ruleset requires (TD-725). Its first step is the all-green aggregator, so it
-  # fails when build or visual fails, is cancelled or goes missing, and every later step then
-  # skips. The audit, stories-axe and play steps run here rather than in jobs of their own,
+  # fails when build, visual or contrast fails, is cancelled or goes missing, and every later step
+  # then skips. The audit, stories-axe and play steps run here rather than in jobs of their own,
   # each of which paid its own queue wait. The image is visual's: the play functions need its
   # Chromium.
   check:
     if: always()
-    needs: [build, visual]
+    needs: [build, visual, contrast]
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.58.2-noble
