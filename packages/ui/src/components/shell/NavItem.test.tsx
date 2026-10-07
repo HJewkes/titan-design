@@ -31,6 +31,14 @@ describe('NavItem', () => {
     expect(screen.queryByRole('tab')).toBeNull()
   })
 
+  // jsdom renders react-native-web, which drops accessibilityState, so read the element NavItem returns.
+  it('hands native screen readers the selected state', () => {
+    expect(NavItem({ icon, label: 'Live', active: true }).props.accessibilityState).toEqual({
+      selected: true,
+    })
+    expect(NavItem({ icon, label: 'Live' }).props.accessibilityState).toEqual({ selected: false })
+  })
+
   it('carries no aria-current attribute when inactive', () => {
     render(<NavItem icon={icon} label="Live" />)
     expect(screen.getByRole('button', { name: 'Live' })).not.toHaveAttribute('aria-current')

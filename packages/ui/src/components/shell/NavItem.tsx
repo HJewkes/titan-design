@@ -61,6 +61,8 @@ export function NavItem({
   return (
     <Pressable
       accessibilityRole="button"
+      // Native reads accessibilityState but not aria-current; web is the reverse.
+      accessibilityState={{ selected: active }}
       aria-current={active ? 'page' : undefined}
       accessibilityLabel={accessibleName}
       onPress={onPress}
