@@ -6,7 +6,7 @@ const meta: Meta<typeof WeekRow> = {
   title: 'Custom/Workout/WeekRow',
   component: WeekRow,
   parameters: {
-    docs: { description: { component: 'Composes **WorkoutPill** · **IntensityBar**.' } },
+    docs: { description: { component: 'Composes **Pill** · **IntensityBar**.' } },
   },
   tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
