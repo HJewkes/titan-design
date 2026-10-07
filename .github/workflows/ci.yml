@@ -9,15 +9,15 @@ on:
 permissions:
   contents: read
 
-# Rename stage (a) of the HJewkes/ci standard: the ruleset still requires build (20) and
-# build (22), so the matrix keeps its name until the ruleset requires only `check`.
+# Rename stage (a) of the HJewkes/ci standard: the required checks are `build (22)` and `check`,
+# so the single-entry matrix keeps the job named `build (22)` until the ruleset requires only `check`.
 # A later PR replaces it with node.yml.
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [20, 22]
+        node-version: [22]
 
     steps:
       # Full history so the release-bump step can read the PR base's API reports.

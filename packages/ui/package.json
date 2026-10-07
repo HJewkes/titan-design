@@ -89,7 +89,7 @@
     "./tailwind.config.js": "./tailwind.config.js"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.0.0"
   },
   "scripts": {
     "build": "tsup && node scripts/generate-tokens-css.mjs",
