@@ -78,7 +78,7 @@
       <div class="case card" data-testid="edge-pushed">
         <div style="margin: 0 -12px">Pushed into the padding</div>
       </div>
-      <div class="case" data-testid="edge-unpadded" style="background: #dde">
+      <div class="case" data-testid="edge-unpadded" style="background: #dde; padding-right: 16px">
         <div>Flush against the edge</div>
       </div>
       <div class="case row" data-testid="asym-short">
@@ -141,6 +141,28 @@
         <svg width="14" height="14" viewBox="0 0 14 14" style="display: block">
           <rect width="14" height="14" fill="#334" />
         </svg>
+      </div>
+      <div class="case row" data-testid="accent-bar" style="position: relative; height: 40px">
+        <div
+          style="position: absolute; left: 0; top: 0; width: 4px; height: 40px; background: #334"
+        ></div>
+        <div class="cell" style="width: 276px; height: 40px"></div>
+      </div>
+      <div
+        class="case card"
+        data-testid="ticks"
+        style="position: relative; height: 40px; padding: 8px 20px"
+      >
+        <div style="position: absolute; left: 5px; top: 12px">Tick</div>
+      </div>
+      <div class="case" data-testid="meter-fill">
+        <div
+          role="progressbar"
+          aria-label="4 of 5"
+          style="background: #dde; height: 8px; padding: 0 8px"
+        >
+          <div style="width: 80%; height: 8px; background: #334"></div>
+        </div>
       </div>
       <div class="case" data-testid="page" style="background: #dde">
         <div style="padding: 24px"><div>Text far from the page edge</div></div>

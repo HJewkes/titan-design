@@ -14,6 +14,7 @@ const FILL_RATIO = 0.8
 const SIDES = ['top', 'right', 'bottom', 'left']
 const PAD_PROP = ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft']
 const TABULAR_ROLES = new Set(['cell', 'gridcell', 'columnheader', 'rowheader'])
+const DATA_FILL_ROLES = new Set(['progressbar', 'meter', 'slider'])
 const REPLACED_TAGS = new Set(['img', 'canvas', 'video', 'svg'])
 
 const px = (n) => `${+n.toFixed(2)}px`
@@ -48,6 +49,20 @@ function stackAxis({ layout }) {
   return layout.display === 'block' || layout.display === 'flow-root' ? 'y' : null
 }
 
+// The one question every judge asks before it blames padding: did the surface's padding place this
+// content? It did not when the content, or a box between it and the surface, is out of flow (an
+// accent bar, a tick label), when the surface declares no padding on that axis (nothing positioned
+// the content), or when the surface is a data fill whose size is the value (a progress bar).
+// `axis` is 'x' or 'y'.
+function paddingPlaces(surface, node, axis, byId) {
+  if (DATA_FILL_ROLES.has(surface.role)) return false
+  const [before, after] = axis === 'x' ? [3, 1] : [0, 2]
+  if (surface.pad[before] < PADDING_TOLERANCE && surface.pad[after] < PADDING_TOLERANCE)
+    return false
+  for (let n = node; n && n !== surface; n = byId.get(n.parent)) if (!inFlow(n)) return false
+  return true
+}
+
 const inFlow = (n) => n.layout.position !== 'absolute' && n.layout.position !== 'fixed'
 const span = (b, axis) => (axis === 'x' ? [b[0], right(b)] : [b[1], bottom(b)])
 
@@ -80,9 +95,8 @@ function gapOf(a, b, axis, children) {
   const hiddenA = hiddenPadding(a, 'after', axis, children)
   const hiddenB = hiddenPadding(b, 'before', axis, children)
   const hidden = [...hiddenA.found, ...hiddenB.found]
-  const biggest = hidden.reduce((m, h) => (!m || h.value > m.value ? h : m), null)
   const total = hidden.reduce((t, h) => t + h.value, 0)
-  return { a, b, layoutGap, hidden: biggest, total, free: hiddenA.free + hiddenB.free }
+  return { a, b, layoutGap, hidden, total, free: hiddenA.free + hiddenB.free }
 }
 
 export function judgeStackedInset({ nodes }) {
@@ -91,7 +105,13 @@ export function judgeStackedInset({ nodes }) {
   for (const container of nodes) {
     const axis = stackAxis(container)
     const kids = (children.get(container.id) ?? []).filter((c) => inFlow(c) && c.ink)
-    if (!axis || kids.length < 2 || kids.some((k) => TABULAR_ROLES.has(k.role))) continue
+    if (
+      !axis ||
+      DATA_FILL_ROLES.has(container.role) ||
+      kids.length < 2 ||
+      kids.some((k) => TABULAR_ROLES.has(k.role))
+    )
+      continue
     kids.sort((p, q) => span(p.box, axis)[0] - span(q.box, axis)[0])
     const gaps = []
     for (let i = 1; i < kids.length; i++) {
@@ -109,8 +129,8 @@ export function judgeStackedInset({ nodes }) {
         selector: g.a.selector,
         detail:
           `visible gap ${px(g.layoutGap + g.total)} = layout gap ${px(g.layoutGap)} + ` +
-          `${g.hidden.prop} ${px(g.hidden.value)} on ${g.hidden.node.selector}, which paints ` +
-          `nothing (next sibling ${g.b.selector}; threshold ${MIN_EXCESS}px)`,
+          `${g.hidden.map((h) => `${h.prop} ${px(h.value)} on ${h.node.selector}`).join(' + ')}, ` +
+          `which paint nothing (next sibling ${g.b.selector}; threshold ${MIN_EXCESS}px)`,
       })
     }
   }
@@ -190,7 +210,9 @@ export function judgeEdgeClearance({ nodes }) {
     if (!content) continue
     const surface = content.surfaceFrom ?? surfaceOf(n.parent)
     if (!surface) continue
-    const crowded = crowdedSides(clearances(content.ink, surface), surface, content.floored)
+    const crowded = crowdedSides(clearances(content.ink, surface), surface, content.floored).filter(
+      (c) => paddingPlaces(surface, n, c.side === 'top' || c.side === 'bottom' ? 'y' : 'x', byId)
+    )
     if (!crowded.length) continue
     findings.push({
       kind: EDGE_CLEARANCE,
@@ -236,15 +258,15 @@ function asymmetryOn(surface, content, axis) {
 }
 
 export function judgeInsetAsymmetry({ nodes }) {
-  const { children } = index(nodes)
+  const { byId, children } = index(nodes)
   const findings = []
   for (const surface of nodes) {
     if (!surface.paints || surface.tag === 'svg') continue
     const kids = (children.get(surface.id) ?? []).filter((c) => c.ink)
-    if (!kids.length) continue
-    const content = unionInk(kids.map((c) => c.box))
     for (const axis of [0, 1]) {
-      const detail = asymmetryOn(surface, content, axis)
+      const placed = kids.filter((c) => paddingPlaces(surface, c, axis ? 'y' : 'x', byId))
+      if (!placed.length) continue
+      const detail = asymmetryOn(surface, unionInk(placed.map((c) => c.box)), axis)
       if (detail) findings.push({ kind: INSET_ASYMMETRY, selector: surface.selector, detail })
     }
   }

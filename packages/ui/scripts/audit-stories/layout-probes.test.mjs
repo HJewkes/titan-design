@@ -80,7 +80,7 @@ describe('stacked-inset', () => {
     expect(found).toHaveLength(1)
     expect(found[0]).toMatchObject({ kind: 'stacked-inset', selector: '.n0' })
     expect(found[0].detail).toBe(
-      'visible gap 12px = layout gap 8px + paddingBottom 4px on .n0, which paints nothing ' +
+      'visible gap 12px = layout gap 8px + paddingBottom 4px on .n0, which paint nothing ' +
         '(next sibling .n1; threshold 4px)'
     )
   })
@@ -189,12 +189,12 @@ describe('edge-clearance', () => {
   })
 
   it('flags ink under 4px from an edge declared with no padding (b)', () => {
-    const found = judgeEdgeClearance(surfaceWith({ pad: [0, 0, 0, 0], ink: [3.75, 30, 100, 16] }))
+    const found = judgeEdgeClearance(surfaceWith({ pad: [0, 16, 0, 0], ink: [3.75, 30, 100, 16] }))
     expect(found[0].detail).toContain('ink 3.75px from the left edge')
   })
 
   it('stays quiet at the 4px floor on an unpadded edge', () => {
-    expect(judgeEdgeClearance(surfaceWith({ pad: [0, 0, 0, 0], ink: [4, 30, 100, 16] }))).toEqual(
+    expect(judgeEdgeClearance(surfaceWith({ pad: [0, 16, 0, 0], ink: [4, 30, 100, 16] }))).toEqual(
       []
     )
   })
@@ -306,14 +306,66 @@ describe('inset-asymmetry', () => {
   })
 })
 
+describe('what the surface padding places', () => {
+  const card = (extra = {}) =>
+    node('c', null, [0, 0, 300, 40], { paints: true, pad: [0, 12, 0, 12], ...extra })
+
+  it('ignores an absolutely positioned accent bar beside symmetric content', () => {
+    const bar = node('c.0', 'c', [0, 0, 4, 40], {
+      paints: true,
+      layout: { ...flow, position: 'absolute' },
+    })
+    const body = node('c.1', 'c', [12, 0, 276, 40], { paints: true })
+    expect(judgeInsetAsymmetry(layout(card(), bar, body))).toEqual([])
+  })
+
+  it('ignores a child whose own ancestor below the surface is out of flow', () => {
+    const wrap = node('c.0', 'c', [0, 0, 100, 40], { layout: { ...flow, position: 'absolute' } })
+    const label = node('c.0.0', 'c.0', [2, 10, 60, 16], { text: textOf([2, 10, 60, 16]) })
+    expect(judgeEdgeClearance(layout(card(), wrap, label))).toEqual([])
+  })
+
+  it('ignores absolutely positioned tick labels against the surface padding', () => {
+    const tick = node('c.0', 'c', [5, 10, 40, 16], {
+      text: textOf([5, 10, 40, 16]),
+      layout: { ...flow, position: 'absolute' },
+    })
+    expect(judgeEdgeClearance(layout(card({ pad: [0, 20, 0, 20] }), tick))).toEqual([])
+  })
+
+  it.each(['progressbar', 'meter', 'slider'])('skips a %s, whose fill is the value', (role) => {
+    const fill = node('c.0', 'c', [12, 0, 200, 40], { paints: true })
+    expect(judgeInsetAsymmetry(layout(card({ role }), fill))).toEqual([])
+  })
+
+  it('skips an axis on which the surface declares no padding', () => {
+    const surface = node('c', null, [0, 0, 300, 40], { paints: true })
+    const fill = node('c.0', 'c', [0, 0, 230, 40], { paints: true })
+    expect(judgeInsetAsymmetry(layout(surface, fill))).toEqual([])
+    const flush = node('c.1', 'c', [0, 10, 60, 16], { text: textOf([0, 10, 60, 16]) })
+    expect(judgeEdgeClearance(layout(surface, flush))).toEqual([])
+  })
+})
+
 describe('judgeLayout', () => {
   it('keeps at most `limit` findings per kind', () => {
     const many = Array.from({ length: 3 }, (_, i) =>
       node(`${i}`, null, [0, 0, 10, 10], { text: textOf([0, 0, 10, 10]) })
     )
-    const surface = node('s', null, [0, 0, 300, 100], { paints: true })
+    const surface = node('s', null, [0, 0, 300, 100], { paints: true, pad: [0, 16, 0, 0] })
     const kids = many.map((n) => ({ ...n, id: `s.${n.id}`, parent: 's', selector: `.k${n.id}` }))
     expect(judgeLayout(layout(surface, ...kids), { limit: 2 })).toHaveLength(2)
+  })
+
+  it('names every hidden padding in the gap it adds up', () => {
+    const wrapper = node('0', 'root', [0, 0, 200, 28], { pad: [0, 0, 6, 0] })
+    const text = node('0.0', '0', [0, 0, 200, 22], { text: textOf([0, 0, 120, 22]) })
+    const next = node('1', 'root', [0, 28, 200, 26], { pad: [6, 0, 0, 0] })
+    const nextText = node('1.0', '1', [0, 34, 200, 20], { text: textOf([0, 34, 120, 20]) })
+    const root = node('root', null, [0, 0, 200, 60], { layout: flex() })
+    const [found] = judgeStackedInset(layout(root, wrapper, text, next, nextText))
+    expect(found.detail).toContain('visible gap 12px = layout gap 0px + paddingBottom 6px on .n0')
+    expect(found.detail).toContain('+ paddingTop 6px on .n1')
   })
 
   it('judges an empty layout without findings', () => {
