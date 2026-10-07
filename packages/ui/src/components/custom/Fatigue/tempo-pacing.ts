@@ -13,13 +13,12 @@
  */
 import { formatTenths } from '../../../utils/number-format'
 import { PACING_TONE } from './fatigue-tokens'
-import type { SamplePhase, PhaseSegment } from './fatigue-model'
+import type { SamplePhase, PhaseSegment, TempoTuple } from './fatigue-model'
 
 /** ± this window (ms) around the target still counts as on pace. Matches TempoDisplay. */
 export const ON_TARGET_MS = 100
 
-/** The canonical tempo tuple order: `[ecc, pauseBottom, con, pauseTop]`, seconds. */
-export type TempoTuple = [number, number, number, number]
+export type { TempoTuple }
 
 /**
  * How far a phase has run toward its prescribed duration, 0..1, CAPPED at 1.

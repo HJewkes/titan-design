@@ -95,7 +95,7 @@ export function LiveAuraFrame({
       ]}
       {...props}
     >
-      {color && (
+      {!!color && (
         <View
           testID="live-aura-flood"
           accessibilityElementsHidden

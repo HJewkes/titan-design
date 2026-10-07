@@ -1,9 +1,37 @@
 // DOM audit for one rendered story: page checks run in the browser, the rest is pure.
 // domChecks, runAxe and tokenColours are serialised into the page, so they use browser globals.
 /* global document, getComputedStyle, innerWidth, NodeFilter, window */
+import { layoutCollectorSource } from './layout-collect.mjs'
+import { EDGE_CLEARANCE, INSET_ASYMMETRY, STACKED_INSET, judgeLayout } from './layout-probes.mjs'
 import { buildScale, isOnScale } from './spacing-scale.mjs'
 
 const MAX_FINDINGS_PER_KIND = 25
+
+const CONTRAST = 'contrast'
+const CONTRAST_TOKEN = 'contrast-token'
+const OFF_SCALE_SPACING = 'off-scale-spacing'
+const THEME_GEOMETRY_SHIFT = 'theme-geometry-shift'
+
+// Kinds that fail the run. `render-error` also blocks but comes from capture.mjs, not these checks.
+export const BLOCKER_KINDS = Object.freeze([
+  'overflow',
+  'clipped-text',
+  'truncated-text',
+  'text-overlap',
+  'hit-target',
+  CONTRAST,
+])
+// Reported, never failing. Token-on-token contrast pairs sit in their own `contrast_token` field.
+export const WARNING_KINDS = Object.freeze([
+  'story-frame-overflow',
+  'small-text',
+  OFF_SCALE_SPACING,
+  THEME_GEOMETRY_SHIFT,
+  STACKED_INSET,
+  EDGE_CLEARANCE,
+  INSET_ASYMMETRY,
+])
+export const CONTRAST_TOKEN_KIND = CONTRAST_TOKEN
 
 // Runs in the page. Every check is a named function so a finding can cite it.
 export function domChecks({ touch, spacingVars }) {
@@ -492,18 +520,18 @@ export function splitContrast(violations, tokens) {
     kind,
     selector: n.target,
     detail: n.summary,
-    ...(kind === 'contrast-token'
+    ...(kind === CONTRAST_TOKEN
       ? { tokens: [tokens[n.fg.toLowerCase()][0], tokens[n.bg.toLowerCase()][0]] }
       : {}),
   })
   return {
     blockers: nodes
       .filter((n) => !fromTokens(n))
-      .map(toFinding('contrast'))
+      .map(toFinding(CONTRAST))
       .slice(0, MAX_FINDINGS_PER_KIND),
     contrastToken: nodes
       .filter(fromTokens)
-      .map(toFinding('contrast-token'))
+      .map(toFinding(CONTRAST_TOKEN))
       .slice(0, MAX_FINDINGS_PER_KIND),
   }
 }
@@ -516,11 +544,22 @@ export function offScaleWarnings(spacing, scale) {
     }))
     .filter(({ off }) => off.length)
     .map(({ selector, off }) => ({
-      kind: 'off-scale-spacing',
+      kind: OFF_SCALE_SPACING,
       selector,
       detail: off.map(([p, v]) => `${p} ${+v.toFixed(2)}px`).join(', '),
     }))
     .slice(0, MAX_FINDINGS_PER_KIND)
+}
+
+// Installs the layout collector once per page, then judges what it measured.
+async function layoutWarnings(page, spacingVars) {
+  if (!(await page.evaluate(() => Boolean(window.collectLayout))))
+    await page.addScriptTag({ content: layoutCollectorSource })
+  const layout = await page.evaluate(
+    (vars) => window.collectLayout({ spacingVars: vars }),
+    spacingVars
+  )
+  return judgeLayout(layout, { limit: MAX_FINDINGS_PER_KIND })
 }
 
 export async function auditPage(page, { axeSource, spacingConfig, touch = false }) {
@@ -529,7 +568,11 @@ export async function auditPage(page, { axeSource, spacingConfig, touch = false 
   const contrast = splitContrast(violations, await page.evaluate(tokenColours))
   const blockers = [...dom.blockers, ...contrast.blockers]
   const scale = buildScale(spacingConfig.px, dom.spacingVars)
-  const warnings = [...offScaleWarnings(dom.spacing, scale), ...dom.warnings]
+  const warnings = [
+    ...offScaleWarnings(dom.spacing, scale),
+    ...dom.warnings,
+    ...(await layoutWarnings(page, spacingConfig.vars)),
+  ]
   return {
     blockers,
     contrast_token: contrast.contrastToken,
@@ -553,7 +596,7 @@ export function themeGeometryShift(baseGeometry, otherGeometry, baseTheme) {
     if (Math.max(...delta) > 1)
       shifts.push({
         path,
-        kind: 'theme-geometry-shift',
+        kind: THEME_GEOMETRY_SHIFT,
         selector: sel,
         detail: `box ${b.box.join(',')} in ${baseTheme} vs ${[x, y, w, h].join(',')}`,
       })
