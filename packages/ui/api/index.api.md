@@ -2243,8 +2243,8 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'dataviz-categorical-5': "#01B5D1";
     readonly 'dataviz-categorical-6': "#A45E00";
     readonly 'text-primary': "#121828";
-    readonly 'text-secondary': "#65748B";
-    readonly 'text-tertiary': "#A29F9D";
+    readonly 'text-secondary': "#5A5958";
+    readonly 'text-tertiary': "#72716F";
     readonly 'text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly 'text-inverse': "#FFFFFF";
     readonly 'text-error': "#A4221C";
@@ -2504,8 +2504,8 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-status-error-vivid-muted': "rgba(255, 71, 87, 0.30)";
     readonly '--color-status-error-vivid-strong': "rgba(255, 71, 87, 0.50)";
     readonly '--color-text-primary': "#121828";
-    readonly '--color-text-secondary': "#65748B";
-    readonly '--color-text-tertiary': "#A29F9D";
+    readonly '--color-text-secondary': "#5A5958";
+    readonly '--color-text-tertiary': "#72716F";
     readonly '--color-text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly '--color-text-inverse': "#FFFFFF";
     readonly '--color-text-error': "#A4221C";
@@ -3864,8 +3864,8 @@ export const lightThemeCSSVars: {
     readonly '--color-status-error-vivid-muted': "rgba(255, 71, 87, 0.30)";
     readonly '--color-status-error-vivid-strong': "rgba(255, 71, 87, 0.50)";
     readonly '--color-text-primary': "#121828";
-    readonly '--color-text-secondary': "#65748B";
-    readonly '--color-text-tertiary': "#A29F9D";
+    readonly '--color-text-secondary': "#5A5958";
+    readonly '--color-text-tertiary': "#72716F";
     readonly '--color-text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly '--color-text-inverse': "#FFFFFF";
     readonly '--color-text-error': "#A4221C";
@@ -4099,8 +4099,8 @@ export interface LiveFatigueModel {
     romShortThresholdM: number | null;
     romWorkingStandardM: number | null;
     rpe: number | null;
-    targetTempoSeconds: [number, number, number, number] | null;
-    tempoSeconds: [number, number, number, number] | null;
+    targetTempoSeconds: TempoTuple | null;
+    tempoSeconds: TempoTuple | null;
     velocityCurves: RepVelocityCurve[];
     verdict: FatigueVerdict | null;
 }
@@ -4833,6 +4833,7 @@ export interface NavItemProps {
     icon: ReactNode;
     label: string;
     live?: boolean;
+    liveLabel?: string;
     // (undocumented)
     onPress?: () => void;
 }
@@ -6267,8 +6268,8 @@ export const semanticColorsLight: {
     readonly 'dataviz-categorical-5': "#01B5D1";
     readonly 'dataviz-categorical-6': "#A45E00";
     readonly 'text-primary': "#121828";
-    readonly 'text-secondary': "#65748B";
-    readonly 'text-tertiary': "#A29F9D";
+    readonly 'text-secondary': "#5A5958";
+    readonly 'text-tertiary': "#72716F";
     readonly 'text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly 'text-inverse': "#FFFFFF";
     readonly 'text-error': "#A4221C";
@@ -6313,7 +6314,6 @@ export const semanticColorsLight: {
 // @public
 export const semanticPins: {
     readonly textPrimaryLight: "#121828";
-    readonly textSecondaryLight: "#65748B";
     readonly backgroundBaseLight: "#EBEBEB";
     readonly dividerLight: "#E8E9EB";
     readonly focusIndigoDark: "#828DF8";

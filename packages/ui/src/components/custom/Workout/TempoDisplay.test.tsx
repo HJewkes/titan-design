@@ -3,6 +3,16 @@ import { spacingClassesAt, spacingClassesOf, resolveAll } from '../../../test/sp
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { TempoDisplay } from './TempoDisplay'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
+import { SurfaceContext } from '../../ui/surface/SurfaceContext'
+
+function renderInMode(mode: ThemeMode) {
+  return render(
+    <SurfaceContext.Provider value={{ mode, level: 'base' }}>
+      <TempoDisplay tempo={[3, 1, 1, 0]} />
+    </SurfaceContext.Provider>
+  )
+}
 
 // tempo = [eccentric, pauseBottom, concentric, pauseTop]
 describe('TempoDisplay', () => {
@@ -10,6 +20,23 @@ describe('TempoDisplay', () => {
     render(<TempoDisplay tempo={[3, 1, 1, 0]} />)
     expect(screen.getByTestId('tempo-value')).toBeInTheDocument()
     expect(screen.getByText('3')).toBeInTheDocument()
+  })
+
+  it.each<ThemeMode>(['light', 'dark'])(
+    'colours the resting TEMPO label text-secondary in %s mode',
+    (mode) => {
+      renderInMode(mode)
+      expect(screen.getByText('TEMPO')).toHaveStyle({
+        color: getSemanticColors(mode)['text-secondary'],
+      })
+    }
+  )
+
+  it('keeps the resting TEMPO label off result-neutral in light mode', () => {
+    renderInMode('light')
+    expect(screen.getByText('TEMPO')).not.toHaveStyle({
+      color: getSemanticColors('light')['result-neutral'],
+    })
   })
 
   it('renders the TEMPO label prefix', () => {

@@ -1,6 +1,8 @@
 // DOM audit for one rendered story: page checks run in the browser, the rest is pure.
 // domChecks, runAxe and tokenColours are serialised into the page, so they use browser globals.
 /* global document, getComputedStyle, innerWidth, NodeFilter, window */
+import { layoutCollectorSource } from './layout-collect.mjs'
+import { EDGE_CLEARANCE, INSET_ASYMMETRY, STACKED_INSET, judgeLayout } from './layout-probes.mjs'
 import { buildScale, isOnScale } from './spacing-scale.mjs'
 
 const MAX_FINDINGS_PER_KIND = 25
@@ -25,6 +27,9 @@ export const WARNING_KINDS = Object.freeze([
   'small-text',
   OFF_SCALE_SPACING,
   THEME_GEOMETRY_SHIFT,
+  STACKED_INSET,
+  EDGE_CLEARANCE,
+  INSET_ASYMMETRY,
 ])
 export const CONTRAST_TOKEN_KIND = CONTRAST_TOKEN
 
@@ -546,13 +551,28 @@ export function offScaleWarnings(spacing, scale) {
     .slice(0, MAX_FINDINGS_PER_KIND)
 }
 
+// Installs the layout collector once per page, then judges what it measured.
+async function layoutWarnings(page, spacingVars) {
+  if (!(await page.evaluate(() => Boolean(window.collectLayout))))
+    await page.addScriptTag({ content: layoutCollectorSource })
+  const layout = await page.evaluate(
+    (vars) => window.collectLayout({ spacingVars: vars }),
+    spacingVars
+  )
+  return judgeLayout(layout, { limit: MAX_FINDINGS_PER_KIND })
+}
+
 export async function auditPage(page, { axeSource, spacingConfig, touch = false }) {
   const dom = await page.evaluate(domChecks, { touch, spacingVars: spacingConfig.vars })
   const violations = await runAxe(page, axeSource)
   const contrast = splitContrast(violations, await page.evaluate(tokenColours))
   const blockers = [...dom.blockers, ...contrast.blockers]
   const scale = buildScale(spacingConfig.px, dom.spacingVars)
-  const warnings = [...offScaleWarnings(dom.spacing, scale), ...dom.warnings]
+  const warnings = [
+    ...offScaleWarnings(dom.spacing, scale),
+    ...dom.warnings,
+    ...(await layoutWarnings(page, spacingConfig.vars)),
+  ]
   return {
     blockers,
     contrast_token: contrast.contrastToken,

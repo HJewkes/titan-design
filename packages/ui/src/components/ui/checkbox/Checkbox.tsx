@@ -99,21 +99,21 @@ export const Checkbox = forwardRef<View, CheckboxProps>(function Checkbox(
           !isDisabled && 'web:hover:border-brand-primary'
         )}
       >
-        {isChecked && !isIndeterminate && (
+        {!!isChecked && !isIndeterminate && (
           <View className={cn('bg-on-brand-primary rounded-sm', styles.icon)}>
             {/* Checkmark icon - using a simple view as placeholder */}
             <Text className="text-brand-primary font-bold text-center leading-none">✓</Text>
           </View>
         )}
-        {isIndeterminate && <View className={cn('bg-on-brand-primary h-0.5 w-2/3 rounded')} />}
+        {!!isIndeterminate && <View className={cn('bg-on-brand-primary h-0.5 w-2/3 rounded')} />}
       </View>
 
-      {(label || helperText) && (
+      {!!(label || helperText) && (
         <View className="flex-1">
-          {label && (
+          {!!label && (
             <Text className={cn('text-text-primary font-medium', styles.label)}>{label}</Text>
           )}
-          {helperText && <Text className="text-xs text-text-secondary mt-0.5">{helperText}</Text>}
+          {!!helperText && <Text className="text-xs text-text-secondary mt-0.5">{helperText}</Text>}
         </View>
       )}
     </Pressable>
@@ -141,7 +141,7 @@ export function CheckboxGroup({
 }: CheckboxGroupProps) {
   return (
     <View className={cn('gap-1', className)}>
-      {label && <Text className="text-sm font-medium text-text-primary mb-2">{label}</Text>}
+      {!!label && <Text className="text-sm font-medium text-text-primary mb-2">{label}</Text>}
       <View className={cn(orientation === 'vertical' ? 'flex-col gap-2' : 'flex-row gap-4')}>
         {children}
       </View>

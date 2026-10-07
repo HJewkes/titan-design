@@ -144,8 +144,8 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'dataviz-categorical-5': "#01B5D1";
     readonly 'dataviz-categorical-6': "#A45E00";
     readonly 'text-primary': "#121828";
-    readonly 'text-secondary': "#65748B";
-    readonly 'text-tertiary': "#A29F9D";
+    readonly 'text-secondary': "#5A5958";
+    readonly 'text-tertiary': "#72716F";
     readonly 'text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly 'text-inverse': "#FFFFFF";
     readonly 'text-error': "#A4221C";
@@ -838,8 +838,8 @@ export const semanticColorsLight: {
     readonly 'dataviz-categorical-5': "#01B5D1";
     readonly 'dataviz-categorical-6': "#A45E00";
     readonly 'text-primary': "#121828";
-    readonly 'text-secondary': "#65748B";
-    readonly 'text-tertiary': "#A29F9D";
+    readonly 'text-secondary': "#5A5958";
+    readonly 'text-tertiary': "#72716F";
     readonly 'text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly 'text-inverse': "#FFFFFF";
     readonly 'text-error': "#A4221C";
@@ -884,7 +884,6 @@ export const semanticColorsLight: {
 // @public
 export const semanticPins: {
     readonly textPrimaryLight: "#121828";
-    readonly textSecondaryLight: "#65748B";
     readonly backgroundBaseLight: "#EBEBEB";
     readonly dividerLight: "#E8E9EB";
     readonly focusIndigoDark: "#828DF8";

@@ -4,9 +4,9 @@
  * When these decisions harden they move into the real `ExerciseCard` + a titan `SessionRail` organism.
  */
 import type { ReactNode } from 'react'
-import { TempoDisplay } from './TempoDisplay'
-import { greyRamp, primitiveRamps } from '../../../theme/tokens/primitives'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { TempoDisplay } from '../../components/custom/Workout/TempoDisplay'
+import { greyRamp, primitiveRamps } from '../../theme/tokens/primitives'
+import { getSemanticColors } from '../../theme/tokens/semantic'
 
 // ---- geometry
 export const RAIL_W = 232
@@ -58,7 +58,7 @@ export const pulseAnim = (c: string): string | undefined => {
 
 // ---- sets/reps/load in the TempoDisplay visual language (Inter · 600 · letter-spacing 1 · gray separators)
 const INTER = 'Inter, sans-serif'
-const SRL_SEP = T['result-neutral']
+const SRL_SEP = T['text-secondary']
 function SRLCell({ children, color = T_PRIMARY }: { children: ReactNode; color?: string }) {
   return (
     <span style={{ fontFamily: INTER, fontSize: 11, fontWeight: 600, letterSpacing: 1, color }}>

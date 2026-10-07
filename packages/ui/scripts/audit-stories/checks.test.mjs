@@ -25,6 +25,8 @@ const fakePage = ({ violations, tokenMap, dom }) => ({
   evaluate: async (fn) => {
     if (fn === domChecks) return dom
     if (fn === tokenColours) return tokenMap
+    if (fn.toString().includes('collectLayout'))
+      return { nodes: [], truncated: false, declared: {} }
     return fn.toString().includes('window.axe.run') ? violations : true
   },
 })

@@ -398,13 +398,10 @@ module.exports = tseslint.config(
     ],
     // `color-story-kit` is story chrome that happens not to be named `.stories.tsx`
     // — exempt on the same grounds as the stories themselves, not as a backlog.
-    // `setHeadingKit` is the same category: throwaway S3 rail R&D on raw `<div>`s
-    // whose every importer is a story under `lab/explorations`.
     ignores: [
       '**/*.stories.tsx',
       '**/*.test.{ts,tsx}',
       'src/theme/color-story-kit.tsx',
-      'src/components/custom/Workout/setHeadingKit.tsx',
     ],
     rules: {
       'titan/no-raw-spacing': 'error',
@@ -435,7 +432,6 @@ module.exports = tseslint.config(
       '**/*.test.{ts,tsx}',
       '**/*-fixture.ts',
       // Story-only fixtures, resolved colours are demo data; VW-316.
-      'src/components/custom/Workout/setHeadingKit.tsx',
       'src/components/custom/Workout/velocity-story-kit.tsx',
     ],
     rules: {
@@ -625,11 +621,6 @@ module.exports = tseslint.config(
       'src/lab/north-star/LiveView.tsx',
       'src/lab/north-star/VelocityDiverging.exploration.stories.tsx',
       'src/lab/north-star/fatigue-lab-shared.tsx',
-      // TD-536 b3
-      'src/components/ui/autocomplete/Autocomplete.tsx',
-      'src/components/ui/checkbox/Checkbox.tsx',
-      'src/components/ui/radio/Radio.tsx',
-      'src/components/ui/switch/Switch.tsx',
       // TD-536 b5
       'src/components/custom/Workout/ExerciseHeading.tsx',
       'src/components/custom/Workout/GoalMilestoneSummary.tsx',

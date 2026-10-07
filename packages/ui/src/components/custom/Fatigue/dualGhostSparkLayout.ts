@@ -1,4 +1,5 @@
-import { ghostLineColor, clamp01 } from './fatigue-tokens'
+import { ghostLineColor } from './fatigue-tokens'
+import { ghostScales } from './ghostScales'
 import { BAND_H, BAND_GAP } from './GhostBand'
 import type { Pt } from './GhostBloom'
 import type { RepVelocityCurve } from './fatigue-model'
@@ -21,11 +22,6 @@ export interface SparkWing {
   current: Pt[]
   ghosts: Pt[][]
   tint: string
-}
-
-/** Last sample time across a curve set, 0 when there is nothing to draw. */
-export function lastTMs(curves: RepVelocityCurve[]): number {
-  return Math.max(0, ...curves.map((c) => c.samples[c.samples.length - 1]?.tMs ?? 0))
 }
 
 /** Plot geometry plus the ONE time scale and ONE magnitude scale both wings share. */
@@ -51,11 +47,7 @@ export function dualSparkLayout(
   // ONE wing height for both sides — the second half of the shared magnitude scale.
   const wingH = Math.max(1, Math.min(baseUp - padTop, h - padBot - baseDown))
 
-  const allSamples = [...left, ...right].flatMap((c) => c.samples)
-  const vmax = Math.max(0.01, ...allSamples.map((s) => s.velocityMps)) * 1.06
-  const axisMaxT = Math.max(1, lastTMs(left), lastTMs(right)) * 1.04
-  const x = (ms: number) => padL + (ms / axisMaxT) * (w - padL - padR)
-  const mag = (v: number) => clamp01(v / vmax) * wingH
+  const { x, mag } = ghostScales([...left, ...right], w, wingH, { left: padL, right: padR })
   return { w, h, padL, padTop, padBot, bandTop, baseUp, baseDown, x, mag }
 }
 
