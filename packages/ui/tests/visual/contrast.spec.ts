@@ -13,7 +13,7 @@ import {
   type ContrastNode,
   type ContrastTheme,
 } from '../../src/test/contrast-stories'
-import { installPausedClock, loadStory, readStoryIds } from './render-story'
+import { installPausedClock, loadStory, readStories } from './render-story'
 import { CONTRAST_REPORT_ENV } from './contrast.global-setup'
 import { STORY_INDEX_ENV } from './story-index.global-setup'
 
@@ -32,7 +32,11 @@ import { STORY_INDEX_ENV } from './story-index.global-setup'
  * `contrast-stories-baseline.json`, which may only shrink: a pair or count above it fails, and a
  * pair or count that no longer occurs fails as stale until `pnpm contrast:baseline` regenerates it.
  *
- * A story that renders blank is recorded and skipped, not failed: Layer 2's guard owns that.
+ * A story that renders blank is recorded and skipped, not failed: Layer 2's guard owns that. A story
+ * tagged `play` is left out: its play function scrolls and presses in real time before the clock
+ * settles, so the frame axe sees is not the same twice (the carousel interaction stories moved by a
+ * card between CI runs); the interaction project owns them, and their static render is the same
+ * carousel as the non-play stories.
  *
  * Light mode: `addon-themes` applies `globals=theme:light` from an effect the paused clock never
  * runs, so the class is also set on `<html>` directly. jsdom cannot compute contrast at all
@@ -45,7 +49,12 @@ import { STORY_INDEX_ENV } from './story-index.global-setup'
 
 const baselineFile = path.join(__dirname, 'contrast-stories-baseline.json')
 const baseline = JSON.parse(fs.readFileSync(baselineFile, 'utf8')) as ContrastBaseline
-const storyIds = interleaveForShards(readStoryIds())
+const PLAY_TAG = 'play'
+const storyIds = interleaveForShards(
+  readStories()
+    .filter((entry) => !entry.tags?.includes(PLAY_TAG))
+    .map((entry) => entry.id)
+)
 
 // axe-core is jest-axe's dependency, so it resolves from there (as scripts/audit-stories does).
 const fromUi = createRequire(path.join(__dirname, '..', '..', 'package.json'))

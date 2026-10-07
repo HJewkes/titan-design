@@ -17,21 +17,24 @@ export const CLOCK_START = new Date(FIXED_TIME.getTime() - 60_000)
 
 export type StoryTheme = 'dark' | 'light'
 
-interface IndexEntry {
+export interface IndexEntry {
   id: string
   type: string
+  tags?: string[]
 }
 
-/** Every story id in the index `story-index.global-setup.ts` wrote; empty when it did not run. */
-export function readStoryIds(): string[] {
+/** Every story in the index `story-index.global-setup.ts` wrote; empty when it did not run. */
+export function readStories(): IndexEntry[] {
   const file = process.env[STORY_INDEX_ENV]
   if (!file) return []
   const index = JSON.parse(fs.readFileSync(file, 'utf8')) as {
     entries: Record<string, IndexEntry>
   }
-  return Object.values(index.entries)
-    .filter((entry) => entry.type === 'story')
-    .map((entry) => entry.id)
+  return Object.values(index.entries).filter((entry) => entry.type === 'story')
+}
+
+export function readStoryIds(): string[] {
+  return readStories().map((entry) => entry.id)
 }
 
 // GoalTrajectoryChart plays an entrance that the paused clock freezes at frame 0, so its

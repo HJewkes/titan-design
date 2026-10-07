@@ -20,6 +20,10 @@ export default defineConfig({
   outputDir: join(tmpdir(), 'titan-ui-playwright-contrast'),
   // Room for the spec's 20 s render wait plus axe (longest measured call 1.8 s).
   timeout: 60_000,
+  // A retry re-renders from a fresh page. Sampling is frozen, but a story whose render depends on
+  // real time before the clock settles (a scroll that is still moving) can still differ by a node
+  // or two; Playwright reports the pass as flaky, which the run summary shows.
+  retries: 1,
   globalSetup: './tests/visual/contrast.global-setup.ts',
   projects: base.projects?.filter((project) => project.name === 'chromium'),
 })
