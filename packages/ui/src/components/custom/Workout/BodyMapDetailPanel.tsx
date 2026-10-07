@@ -517,7 +517,7 @@ export function BodyMapDetailPanel({
           {plan != null && <PlanSection section={plan} />}
           {strength != null && <PrSection section={strength} />}
 
-          {hasContributing && (
+          {!!hasContributing && (
             <View className="mt-stack-lg" testID="body-map-detail-panel-contributing">
               <Text
                 className="mb-stack-md text-text-tertiary"
@@ -561,7 +561,7 @@ export function BodyMapDetailPanel({
             </View>
           )}
 
-          {hasUpcoming && (
+          {!!hasUpcoming && (
             <View className="mt-stack-lg" testID="body-map-detail-panel-upcoming">
               <Text
                 className="mb-stack-md text-text-tertiary"

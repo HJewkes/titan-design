@@ -85,3 +85,21 @@ describe('MarkdownProse', () => {
     expect(await axe(container)).toHaveNoViolations()
   })
 })
+
+describe('MarkdownProse linker flags', () => {
+  it('warns that a flagged linker pattern loses its flags', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const linker: ProseLinker = { id: 'flagged-td', pattern: /td-\d+/i }
+    render(<MarkdownProse body="see TD-12 and td-13" linkers={[linker]} />)
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('"flagged-td" has flags "i"'))
+    expect(screen.getAllByTestId('prose-ref-flagged-td')).toHaveLength(1)
+    warn.mockRestore()
+  })
+
+  it('stays quiet for a linker without flags', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    render(<MarkdownProse body="see AW-1" linkers={[taskLinker]} />)
+    expect(warn).not.toHaveBeenCalled()
+    warn.mockRestore()
+  })
+})

@@ -398,13 +398,10 @@ module.exports = tseslint.config(
     ],
     // `color-story-kit` is story chrome that happens not to be named `.stories.tsx`
     // — exempt on the same grounds as the stories themselves, not as a backlog.
-    // `setHeadingKit` is the same category: throwaway S3 rail R&D on raw `<div>`s
-    // whose every importer is a story under `lab/explorations`.
     ignores: [
       '**/*.stories.tsx',
       '**/*.test.{ts,tsx}',
       'src/theme/color-story-kit.tsx',
-      'src/components/custom/Workout/setHeadingKit.tsx',
     ],
     rules: {
       'titan/no-raw-spacing': 'error',
@@ -425,14 +422,16 @@ module.exports = tseslint.config(
   // Stories and tests are exempt for the same reason as everywhere else: a
   // concrete value IS the point there (`toHaveStyle` cannot match the `var()`
   // string resolveColor returns under the RNW vitest alias).
+  //
+  // theme/materials.ts joins the scope (TD-521): its default tones once froze
+  // to the dark palette at module scope, so a light caller got dark fills.
   {
-    files: ['src/components/**/*.{ts,tsx}'],
+    files: ['src/components/**/*.{ts,tsx}', 'src/theme/materials.ts'],
     ignores: [
       '**/*.stories.tsx',
       '**/*.test.{ts,tsx}',
       '**/*-fixture.ts',
       // Story-only fixtures, resolved colours are demo data; VW-316.
-      'src/components/custom/Workout/setHeadingKit.tsx',
       'src/components/custom/Workout/velocity-story-kit.tsx',
     ],
     rules: {
@@ -599,6 +598,76 @@ module.exports = tseslint.config(
     ],
     rules: {
       'titan/no-classname-on-animated': 'off',
+    },
+  },
+
+  // A '' or 0 on the left of && renders a bare text node, and React Native throws on it
+  // (audit findings D04b-04, D03b-01). Write !!x &&, a ternary or an explicit comparison.
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    rules: {
+      'react/jsx-no-leaked-render': ['error', { validStrategies: ['coerce', 'ternary'] }],
+    },
+  },
+
+  // Files still to fix. Each TD-536 slice deletes its group; the slice that empties the list
+  // deletes this block.
+  {
+    files: [
+      // TD-536 b2
+      'src/lab/north-star/EmptyLiveView.tsx',
+      'src/lab/north-star/HeroTempo.exploration.stories.tsx',
+      'src/lab/north-star/LivePage.tsx',
+      'src/lab/north-star/LiveView.tsx',
+      'src/lab/north-star/VelocityDiverging.exploration.stories.tsx',
+      'src/lab/north-star/fatigue-lab-shared.tsx',
+      // TD-536 b5
+      'src/components/custom/Workout/ExerciseHeading.tsx',
+      'src/components/custom/Workout/GoalMilestoneSummary.tsx',
+      'src/components/custom/Workout/GoalTrajectoryChartParts.tsx',
+      'src/components/custom/Workout/GoalTrajectoryMini.tsx',
+      'src/components/custom/Workout/GoalTrajectoryWeekTips.tsx',
+      'src/components/custom/Workout/GoalsWholeBody.composition.stories.tsx',
+      // TD-536 b7
+      'src/components/ui/alert/Alert.tsx',
+      'src/components/ui/button/Button.tsx',
+      'src/components/ui/charts/gauge/Gauge.tsx',
+      'src/components/ui/charts/scatter/ScatterFrame.tsx',
+      'src/components/ui/charts/scatter/ScatterPointMark.tsx',
+      'src/components/ui/charts/treemap/Treemap.tsx',
+      'src/components/ui/drawer/Drawer.tsx',
+      'src/components/ui/empty-state/EmptyState.tsx',
+      'src/components/ui/link/Link.tsx',
+      'src/components/ui/list-item/ListItem.tsx',
+      'src/components/ui/toolbar-button/ToolbarButton.tsx',
+      // TD-536 b8
+      'src/components/ui/chip/Chip.tsx',
+      'src/components/ui/progress/Progress.tsx',
+      'src/components/ui/select/Select.tsx',
+      'src/components/ui/skeleton/Skeleton.tsx',
+      'src/components/ui/table/TableEmptyState.tsx',
+      'src/components/ui/table/TableSelection.tsx',
+      // TD-536 b9
+      'src/components/ui/autocomplete/AutocompleteParts.tsx',
+      'src/components/ui/form-field/FormField.tsx',
+      'src/components/ui/help-tip/HelpTip.tsx',
+      'src/components/ui/input/Input.tsx',
+      'src/components/ui/menu/Menu.tsx',
+      'src/components/ui/toast/Toast.tsx',
+      // TD-536 b10
+      'src/components/custom/Fatigue/GhostBand.tsx',
+      'src/components/custom/Sidebar/Sidebar.tsx',
+      'src/components/custom/Workout/ActiveWorkoutPage.tsx',
+      'src/components/custom/Workout/CapacityBandPlot.tsx',
+      'src/components/custom/Workout/ExerciseCard.tsx',
+      'src/components/custom/Workout/GoalTrajectoryPlot.tsx',
+      'src/components/custom/Workout/MesoCard.tsx',
+      'src/components/custom/Workout/ReadinessCheck.tsx',
+      'src/components/custom/Workout/StrengthTrendChart.tsx',
+      'src/components/custom/Workout/TempoDisplay.tsx',
+    ],
+    rules: {
+      'react/jsx-no-leaked-render': 'off',
     },
   },
 

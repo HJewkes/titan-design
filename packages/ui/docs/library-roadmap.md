@@ -93,7 +93,7 @@ deferred to its own pass.
 - Fatigue: 9 module constants, local colour math.
 - `ui/*`: 81 raw `Text` onto Typography; Button `#ffffff`, Alert `bg-black`, Tooltip `bg-neutral-800`, Spinner hex.
 - Lint: every family in the error block; delete `raw-color-baseline.json` at zero.
-- Move `velocity-story-kit.tsx` and `setHeadingKit.tsx` out of `components/`.
+- Move `velocity-story-kit.tsx` and `setHeadingKit.tsx` out of `components/`. Done: both live in `src/lab/` (`lab/velocity-story-kit/`, `lab/explorations/setHeadingKit.tsx`).
 
 **E6 · Code-quality floor** (independent)
 

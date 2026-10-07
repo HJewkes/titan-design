@@ -86,7 +86,8 @@ interface LayerRule {
 const any = (dir: ComponentDir, keep: (file: string) => boolean, pattern: RegExp) =>
   sources(dir, keep).some((source) => pattern.test(source))
 
-// `visual` is absent until TD-46's manifest lands on main; clause 5 reads it as n/a until then.
+// `visual` has no rule: `missingLayers` skips a layer without one, so clause 5 never requires it and
+// never flags a `visual` n/a declaration as stale. Visual coverage is checked by `visual-coverage.test.ts`.
 const RULES: Partial<Record<Layer, LayerRule>> = {
   logic: {
     applies: () => true,

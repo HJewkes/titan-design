@@ -32,7 +32,7 @@ export function tempoColors(mode: ThemeMode) {
   const t = getSemanticColors(mode)
   const neutral = t['result-neutral']
   return {
-    neutral,
+    label: t['text-secondary'],
     surface: t['surface-raised'],
     liveLabel: t['status-live-muted'],
     textPrimary: t['text-primary'],

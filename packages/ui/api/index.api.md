@@ -112,10 +112,21 @@ export interface ActiveWorkoutPageProps extends ViewProps {
     exercises: ActiveWorkoutExercise[];
     initialResting?: boolean;
     input?: ActiveWorkoutInput;
+    onAddTime?: () => void;
+    onRecord?: (set: ActiveWorkoutRecordedSet) => void;
+    onSkip?: () => void;
     rest?: ActiveWorkoutRest;
     subtitle?: string;
     supersets?: ActiveWorkoutSuperset[];
     title?: string;
+}
+
+// @public
+export interface ActiveWorkoutRecordedSet {
+    exerciseId: string;
+    reps: string;
+    setNumber: number;
+    weight: string;
 }
 
 // @public
@@ -988,6 +999,12 @@ export const COMPACT_SEVERITY_BELOW = 840;
 export function compareTaskFlow(a: TaskFlowItem, b: TaskFlowItem): number;
 
 // @public
+export function compareTaskSeverity(a: Pick<TaskListItem, 'severity' | 'priority'>, b: Pick<TaskListItem, 'severity' | 'priority'>): number;
+
+// @public
+export function compareTaskUpdated(a: Pick<TaskListItem, 'updated'>, b: Pick<TaskListItem, 'updated'>): number;
+
+// @public
 export function Composer(input: ComposerProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -1009,9 +1026,6 @@ export interface ComposerProps {
     sendLabel?: string;
     value?: string;
 }
-
-// @public
-export function composeValidators<T>(...validators: Array<(value: T) => string | undefined>): (value: T) => string | undefined;
 
 // @public
 export function computeWindow(input: FixedWindowInput): FixedWindow;
@@ -1040,9 +1054,6 @@ export interface ConversationIdentityProps {
     description?: string;
     participant: Participant;
 }
-
-// @public
-export function createFieldId(label: string): string;
 
 // @public
 export interface CssPropertyEntry {
@@ -1636,8 +1647,6 @@ export interface ExerciseCardProps {
     name: string;
     onExpandedChange?: (expanded: boolean) => void;
     // (undocumented)
-    onNavigateDetail?: () => void;
-    // (undocumented)
     prescription?: string;
     // (undocumented)
     previousBest?: string;
@@ -1652,8 +1661,6 @@ export interface ExerciseCardProps {
         weight: number;
         unit: 'lbs' | 'kg';
     };
-    // (undocumented)
-    supersetColor?: string;
     // (undocumented)
     supersetPosition?: 'first' | 'last' | 'middle' | null;
     // (undocumented)
@@ -1833,24 +1840,6 @@ export interface FatigueVerdict {
 
 // @public
 export type FatigueVerdictState = 'good' | 'slowing' | 'grinding' | 'form-breakdown';
-
-// @public
-export interface FieldState {
-    errorMessage?: string;
-    hasError: boolean;
-    isRequired?: boolean;
-    touched: boolean;
-}
-
-// @public (undocumented)
-export interface FieldWrapperProps {
-    errorMessage?: string;
-    helperText?: string;
-    isDisabled?: boolean;
-    isInvalid?: boolean;
-    isRequired?: boolean;
-    label?: string;
-}
 
 // @public
 export const FILE_EVENT_COLOR: FileEventColors;
@@ -2039,25 +2028,16 @@ export interface FormatDateTimeOptions {
 export function formatDuration(ms: number): string;
 
 // @public
-export function formatPrescription(p: PrescriptionInput | null | undefined): string | null;
-
-// @public
 export function formatSessionDuration(started: string, ended: string): string;
 
 // @public
 export function formatSignedCompact(n: number): string;
 
 // @public
-export function formatSignedPct(ratio: number): string;
-
-// @public
 export function formatTaskAge(iso: string | null | undefined, now: number): string;
 
 // @public
 export function formatVelocity(velocity: number): string;
-
-// @public
-export type FormErrors<T extends FormValues> = Partial<Record<keyof T, string>>;
 
 // @public
 export function FormField(input: FormFieldProps): react_jsx_runtime.JSX.Element;
@@ -2103,12 +2083,6 @@ export interface FormSectionProps extends ViewProps {
 }
 
 // @public
-export type FormTouched<T extends FormValues> = Partial<Record<keyof T, boolean>>;
-
-// @public
-export type FormValues = Record<string, unknown>;
-
-// @public
 export function Gauge(input: GaugeProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -2137,9 +2111,6 @@ export interface GaugeThreshold {
 export function getCategoricalColor(index: number, variant?: CategoricalVariant): string;
 
 // @public
-export function getContrastText(backgroundColor: string): string;
-
-// @public
 export function getDiscreteRainbowColor(index: number, size: number): string;
 
 // @public
@@ -2147,21 +2118,6 @@ export function getElevationShadow(level: ElevationLevel, mode?: ThemeMode, opts
 
 // @public
 export function getElevationSurface(level: ElevationLevel, mode?: ThemeMode): string;
-
-// @public
-export function getFieldAriaProps(props: FieldWrapperProps & {
-    id: string;
-}): {
-    'aria-invalid'?: boolean;
-    'aria-required'?: boolean;
-    'aria-describedby'?: string;
-};
-
-// @public
-export function getFieldValidationProps(state: FieldState): {
-    isInvalid: boolean;
-    errorMessage?: string;
-};
 
 // @public
 export function getGlowShadow(color: string, intensity?: GlowIntensity): ViewStyle;
@@ -2173,20 +2129,14 @@ export function getHoverColors(bgColor: string, intensity?: 'subtle' | 'medium' 
 };
 
 // @public
-export function getLuminance(color: string): 'light' | 'dark';
-
-// @public
 export function getPressedRecessShadow(fillColor: string, _mode?: ThemeMode): ViewStyle;
-
-// @public
-export function getResultColor(result: ResultType): string;
 
 // @public (undocumented)
 export function getSemanticColors(mode: ThemeMode): {
     readonly 'brand-primary': "#FF7900";
     readonly 'brand-primary-light': "#FFA063";
     readonly 'brand-primary-dark': "#DA5F00";
-    readonly 'brand-primary-subtle': "#FFF5ED";
+    readonly 'brand-primary-subtle': "#FFE6D4";
     readonly 'brand-primary-muted': "#FFC7A2";
     readonly 'brand-primary-strong': "rgba(255, 121, 0, 0.50)";
     readonly 'brand-primary-hover': "#DA5F00";
@@ -2194,19 +2144,19 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'brand-secondary': "#307B9B";
     readonly 'brand-secondary-light': "#2697B7";
     readonly 'brand-secondary-dark': "#2A617F";
-    readonly 'brand-secondary-subtle': "#E6FBFF";
+    readonly 'brand-secondary-subtle': "#C2F6FF";
     readonly 'brand-secondary-muted': "#62EAFF";
     readonly 'brand-secondary-strong': "rgba(48, 123, 155, 0.50)";
     readonly 'brand-secondary-hover': "#2A617F";
     readonly 'brand-secondary-active': "#22465F";
     readonly 'on-brand-primary': "#FFFFFF";
     readonly 'on-brand-secondary': "#FFFFFF";
-    readonly 'on-brand-primary-subtle': "#FF7900";
-    readonly 'on-brand-secondary-subtle': "#307B9B";
+    readonly 'on-brand-primary-subtle': "#983804";
+    readonly 'on-brand-secondary-subtle': "#2A617F";
     readonly 'status-success': "#298732";
     readonly 'status-success-light': "#58F69E";
     readonly 'status-success-dark': "#298732";
-    readonly 'status-success-subtle': "#E3FFEE";
+    readonly 'status-success-subtle': "#B5FFD2";
     readonly 'status-success-muted': "rgba(46, 213, 115, 0.30)";
     readonly 'status-success-strong': "rgba(46, 213, 115, 0.50)";
     readonly 'status-live': "#2ED573";
@@ -2215,7 +2165,7 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'status-error': "#D14343";
     readonly 'status-error-light': "#E05254";
     readonly 'status-error-dark': "#A4221C";
-    readonly 'status-error-subtle': "#FFF4F4";
+    readonly 'status-error-subtle': "#FFE3E5";
     readonly 'status-error-muted': "rgba(209, 67, 67, 0.30)";
     readonly 'status-error-strong': "rgba(209, 67, 67, 0.50)";
     readonly 'status-error-vivid': "#FF4757";
@@ -2227,25 +2177,25 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'status-warning': "#C27400";
     readonly 'status-warning-light': "#FFD352";
     readonly 'status-warning-dark': "#C27400";
-    readonly 'status-warning-subtle': "#FFF7DD";
+    readonly 'status-warning-subtle': "#FFEAA9";
     readonly 'status-warning-muted': "rgba(249, 180, 21, 0.30)";
     readonly 'status-warning-strong': "rgba(249, 180, 21, 0.50)";
     readonly 'status-info': "#1072CB";
     readonly 'status-info-light': "#78C2FF";
     readonly 'status-info-dark': "#1072CB";
-    readonly 'status-info-subtle': "#EFF8FF";
+    readonly 'status-info-subtle': "#D9EFFF";
     readonly 'status-info-muted': "rgba(33, 150, 243, 0.30)";
     readonly 'status-info-strong': "rgba(33, 150, 243, 0.50)";
     readonly 'brand-primary-solid': "#FF7900";
     readonly 'brand-secondary-solid': "#307B9B";
-    readonly 'status-success-solid': "#2ED573";
+    readonly 'status-success-solid': "#298732";
     readonly 'status-error-solid': "#D14343";
-    readonly 'status-warning-solid': "#F9B415";
+    readonly 'status-warning-solid': "#C27400";
     readonly 'status-info-solid': "#2196F3";
-    readonly 'on-status-success-subtle': "#2ED573";
-    readonly 'on-status-error-subtle': "#D14343";
-    readonly 'on-status-warning-subtle': "#F9B415";
-    readonly 'on-status-info-subtle': "#2196F3";
+    readonly 'on-status-success-subtle': "#2B6B25";
+    readonly 'on-status-error-subtle': "#A4221C";
+    readonly 'on-status-warning-subtle': "#814D14";
+    readonly 'on-status-info-subtle': "#135AA8";
     readonly 'on-status-success': "#FFFFFF";
     readonly 'on-status-error': "#FFFFFF";
     readonly 'on-status-warning': "#FFFFFF";
@@ -2291,8 +2241,8 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'dataviz-categorical-5': "#01B5D1";
     readonly 'dataviz-categorical-6': "#A45E00";
     readonly 'text-primary': "#121828";
-    readonly 'text-secondary': "#65748B";
-    readonly 'text-tertiary': "#A29F9D";
+    readonly 'text-secondary': "#5A5958";
+    readonly 'text-tertiary': "#72716F";
     readonly 'text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly 'text-inverse': "#FFFFFF";
     readonly 'text-error': "#A4221C";
@@ -2484,9 +2434,6 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'avatar-text': "#FFFFFF";
 };
 
-// @public
-export function getStatusColor(status: StatusType): string;
-
 // @public (undocumented)
 export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-brand-primary-rgb': "255, 121, 0";
@@ -2510,43 +2457,43 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-brand-primary': "#FF7900";
     readonly '--color-brand-primary-light': "#FFA063";
     readonly '--color-brand-primary-dark': "#DA5F00";
-    readonly '--color-brand-primary-subtle': "#FFF5ED";
+    readonly '--color-brand-primary-subtle': "#FFE6D4";
     readonly '--color-brand-primary-muted': "#FFC7A2";
     readonly '--color-brand-primary-strong': "rgba(255, 121, 0, 0.50)";
     readonly '--color-brand-secondary': "#307B9B";
     readonly '--color-brand-secondary-light': "#2697B7";
     readonly '--color-brand-secondary-dark': "#2A617F";
-    readonly '--color-brand-secondary-subtle': "#E6FBFF";
+    readonly '--color-brand-secondary-subtle': "#C2F6FF";
     readonly '--color-brand-secondary-muted': "#62EAFF";
     readonly '--color-brand-secondary-strong': "rgba(48, 123, 155, 0.50)";
     readonly '--color-on-brand-primary': "#FFFFFF";
     readonly '--color-on-brand-secondary': "#FFFFFF";
-    readonly '--color-on-brand-primary-subtle': "#FF7900";
-    readonly '--color-on-brand-secondary-subtle': "#307B9B";
+    readonly '--color-on-brand-primary-subtle': "#983804";
+    readonly '--color-on-brand-secondary-subtle': "#2A617F";
     readonly '--color-status-success': "#298732";
-    readonly '--color-status-success-subtle': "#E3FFEE";
+    readonly '--color-status-success-subtle': "#B5FFD2";
     readonly '--color-status-success-muted': "rgba(46, 213, 115, 0.30)";
     readonly '--color-status-success-strong': "rgba(46, 213, 115, 0.50)";
     readonly '--color-status-live': "#2ED573";
     readonly '--color-status-deload': "#BA2996";
     readonly '--color-status-live-muted': "#22A444";
     readonly '--color-status-error': "#D14343";
-    readonly '--color-status-error-subtle': "#FFF4F4";
+    readonly '--color-status-error-subtle': "#FFE3E5";
     readonly '--color-status-error-muted': "rgba(209, 67, 67, 0.30)";
     readonly '--color-status-error-strong': "rgba(209, 67, 67, 0.50)";
     readonly '--color-status-warning': "#C27400";
-    readonly '--color-status-warning-subtle': "#FFF7DD";
+    readonly '--color-status-warning-subtle': "#FFEAA9";
     readonly '--color-status-warning-muted': "rgba(249, 180, 21, 0.30)";
     readonly '--color-status-warning-strong': "rgba(249, 180, 21, 0.50)";
     readonly '--color-status-info': "#1072CB";
-    readonly '--color-status-info-subtle': "#EFF8FF";
+    readonly '--color-status-info-subtle': "#D9EFFF";
     readonly '--color-status-info-muted': "rgba(33, 150, 243, 0.30)";
     readonly '--color-status-info-strong': "rgba(33, 150, 243, 0.50)";
     readonly '--color-brand-primary-solid': "#FF7900";
     readonly '--color-brand-secondary-solid': "#307B9B";
-    readonly '--color-status-success-solid': "#2ED573";
+    readonly '--color-status-success-solid': "#298732";
     readonly '--color-status-error-solid': "#D14343";
-    readonly '--color-status-warning-solid': "#F9B415";
+    readonly '--color-status-warning-solid': "#C27400";
     readonly '--color-status-info-solid': "#2196F3";
     readonly '--color-status-error-vivid': "#FF4757";
     readonly '--color-status-error-vivid-light': "#E05254";
@@ -2555,8 +2502,8 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-status-error-vivid-muted': "rgba(255, 71, 87, 0.30)";
     readonly '--color-status-error-vivid-strong': "rgba(255, 71, 87, 0.50)";
     readonly '--color-text-primary': "#121828";
-    readonly '--color-text-secondary': "#65748B";
-    readonly '--color-text-tertiary': "#A29F9D";
+    readonly '--color-text-secondary': "#5A5958";
+    readonly '--color-text-tertiary': "#72716F";
     readonly '--color-text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly '--color-text-inverse': "#FFFFFF";
     readonly '--color-text-error': "#A4221C";
@@ -2592,10 +2539,10 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-on-status-error': "#FFFFFF";
     readonly '--color-on-status-warning': "#FFFFFF";
     readonly '--color-on-status-info': "#FFFFFF";
-    readonly '--color-on-status-success-subtle': "#2ED573";
-    readonly '--color-on-status-error-subtle': "#D14343";
-    readonly '--color-on-status-warning-subtle': "#F9B415";
-    readonly '--color-on-status-info-subtle': "#2196F3";
+    readonly '--color-on-status-success-subtle': "#2B6B25";
+    readonly '--color-on-status-error-subtle': "#A4221C";
+    readonly '--color-on-status-warning-subtle': "#814D14";
+    readonly '--color-on-status-info-subtle': "#135AA8";
     readonly '--color-result-improve': "#4caf50";
     readonly '--color-result-improve-light': "rgba(76, 175, 80, 0.12)";
     readonly '--color-result-improve-dark': "#248a24";
@@ -3315,9 +3262,6 @@ export function GoalTrajectoryChart(input: GoalTrajectoryChartProps): react_jsx_
 export interface GoalTrajectoryChartProps extends ViewProps {
     actuals: GoalActualPoint[];
     animate?: boolean;
-    bandCurve?: BandCurve;
-    bandFade?: BandFade;
-    baseline?: PlotBaseline;
     calibratingNote?: string;
     // (undocumented)
     className?: string;
@@ -3326,7 +3270,6 @@ export interface GoalTrajectoryChartProps extends ViewProps {
     direction?: GoalDirection;
     expected: GoalExpectedPoint[];
     height: number;
-    leftShadowSpread?: number;
     mesoBoundaries?: number[];
     metricLabel?: string;
     nextTarget?: GoalNextTarget;
@@ -3378,6 +3321,7 @@ export interface GoalTrajectoryGeometry {
     toX: (weekIndex: number) => number;
     // (undocumented)
     toY: (value: number) => number;
+    weekSpan: number;
     // (undocumented)
     yTicks: YTick[];
 }
@@ -3494,12 +3438,6 @@ export function groupByPeriod(sessions: SessionSummary[]): Period[];
 
 // @public
 export function groupPriorities(entries: readonly GoalPriorityIndexEntry[]): GoalPriorityIndexGroup[];
-
-// @public
-export function hasMaxLength(value: string, maxLength: number): boolean;
-
-// @public
-export function hasMinLength(value: string, minLength: number): boolean;
 
 // @public
 export function Heading(input: HeadingProps): react_jsx_runtime.JSX.Element;
@@ -3779,7 +3717,7 @@ export type InputSize = 'sm' | 'md' | 'lg';
 export type InputVariant = 'outline' | 'filled' | 'underline';
 
 // @public
-export function insetWell(tone?: string): ViewStyle;
+export function insetWell(tone?: string, mode?: ThemeMode): ViewStyle;
 
 // @public (undocumented)
 export function IntensityBar(input: IntensityBarProps): react_jsx_runtime.JSX.Element;
@@ -3805,17 +3743,11 @@ export function isDark(hex: string): boolean;
 // @public
 export function isDoneStage(stage: TaskStage): boolean;
 
-// @public
-export function isEmpty(value: unknown): boolean;
-
 // @public (undocumented)
 export function isLoadTarget(target: GoalMilestoneTarget): target is GoalLoadTarget;
 
 // @public (undocumented)
 export function isMilestoneMet(target: GoalMilestoneTarget, latest: GoalMilestoneReading, direction?: GoalDirection): boolean;
-
-// @public
-export function isValidEmail(email: string): boolean;
 
 // @public
 export function KanbanIcon(input: IconProps): react_jsx_runtime.JSX.Element;
@@ -3885,43 +3817,43 @@ export const lightThemeCSSVars: {
     readonly '--color-brand-primary': "#FF7900";
     readonly '--color-brand-primary-light': "#FFA063";
     readonly '--color-brand-primary-dark': "#DA5F00";
-    readonly '--color-brand-primary-subtle': "#FFF5ED";
+    readonly '--color-brand-primary-subtle': "#FFE6D4";
     readonly '--color-brand-primary-muted': "#FFC7A2";
     readonly '--color-brand-primary-strong': "rgba(255, 121, 0, 0.50)";
     readonly '--color-brand-secondary': "#307B9B";
     readonly '--color-brand-secondary-light': "#2697B7";
     readonly '--color-brand-secondary-dark': "#2A617F";
-    readonly '--color-brand-secondary-subtle': "#E6FBFF";
+    readonly '--color-brand-secondary-subtle': "#C2F6FF";
     readonly '--color-brand-secondary-muted': "#62EAFF";
     readonly '--color-brand-secondary-strong': "rgba(48, 123, 155, 0.50)";
     readonly '--color-on-brand-primary': "#FFFFFF";
     readonly '--color-on-brand-secondary': "#FFFFFF";
-    readonly '--color-on-brand-primary-subtle': "#FF7900";
-    readonly '--color-on-brand-secondary-subtle': "#307B9B";
+    readonly '--color-on-brand-primary-subtle': "#983804";
+    readonly '--color-on-brand-secondary-subtle': "#2A617F";
     readonly '--color-status-success': "#298732";
-    readonly '--color-status-success-subtle': "#E3FFEE";
+    readonly '--color-status-success-subtle': "#B5FFD2";
     readonly '--color-status-success-muted': "rgba(46, 213, 115, 0.30)";
     readonly '--color-status-success-strong': "rgba(46, 213, 115, 0.50)";
     readonly '--color-status-live': "#2ED573";
     readonly '--color-status-deload': "#BA2996";
     readonly '--color-status-live-muted': "#22A444";
     readonly '--color-status-error': "#D14343";
-    readonly '--color-status-error-subtle': "#FFF4F4";
+    readonly '--color-status-error-subtle': "#FFE3E5";
     readonly '--color-status-error-muted': "rgba(209, 67, 67, 0.30)";
     readonly '--color-status-error-strong': "rgba(209, 67, 67, 0.50)";
     readonly '--color-status-warning': "#C27400";
-    readonly '--color-status-warning-subtle': "#FFF7DD";
+    readonly '--color-status-warning-subtle': "#FFEAA9";
     readonly '--color-status-warning-muted': "rgba(249, 180, 21, 0.30)";
     readonly '--color-status-warning-strong': "rgba(249, 180, 21, 0.50)";
     readonly '--color-status-info': "#1072CB";
-    readonly '--color-status-info-subtle': "#EFF8FF";
+    readonly '--color-status-info-subtle': "#D9EFFF";
     readonly '--color-status-info-muted': "rgba(33, 150, 243, 0.30)";
     readonly '--color-status-info-strong': "rgba(33, 150, 243, 0.50)";
     readonly '--color-brand-primary-solid': "#FF7900";
     readonly '--color-brand-secondary-solid': "#307B9B";
-    readonly '--color-status-success-solid': "#2ED573";
+    readonly '--color-status-success-solid': "#298732";
     readonly '--color-status-error-solid': "#D14343";
-    readonly '--color-status-warning-solid': "#F9B415";
+    readonly '--color-status-warning-solid': "#C27400";
     readonly '--color-status-info-solid': "#2196F3";
     readonly '--color-status-error-vivid': "#FF4757";
     readonly '--color-status-error-vivid-light': "#E05254";
@@ -3930,8 +3862,8 @@ export const lightThemeCSSVars: {
     readonly '--color-status-error-vivid-muted': "rgba(255, 71, 87, 0.30)";
     readonly '--color-status-error-vivid-strong': "rgba(255, 71, 87, 0.50)";
     readonly '--color-text-primary': "#121828";
-    readonly '--color-text-secondary': "#65748B";
-    readonly '--color-text-tertiary': "#A29F9D";
+    readonly '--color-text-secondary': "#5A5958";
+    readonly '--color-text-tertiary': "#72716F";
     readonly '--color-text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly '--color-text-inverse': "#FFFFFF";
     readonly '--color-text-error': "#A4221C";
@@ -3967,10 +3899,10 @@ export const lightThemeCSSVars: {
     readonly '--color-on-status-error': "#FFFFFF";
     readonly '--color-on-status-warning': "#FFFFFF";
     readonly '--color-on-status-info': "#FFFFFF";
-    readonly '--color-on-status-success-subtle': "#2ED573";
-    readonly '--color-on-status-error-subtle': "#D14343";
-    readonly '--color-on-status-warning-subtle': "#F9B415";
-    readonly '--color-on-status-info-subtle': "#2196F3";
+    readonly '--color-on-status-success-subtle': "#2B6B25";
+    readonly '--color-on-status-error-subtle': "#A4221C";
+    readonly '--color-on-status-warning-subtle': "#814D14";
+    readonly '--color-on-status-info-subtle': "#135AA8";
     readonly '--color-result-improve': "#4caf50";
     readonly '--color-result-improve-light': "rgba(76, 175, 80, 0.12)";
     readonly '--color-result-improve-dark': "#248a24";
@@ -4165,8 +4097,8 @@ export interface LiveFatigueModel {
     romShortThresholdM: number | null;
     romWorkingStandardM: number | null;
     rpe: number | null;
-    targetTempoSeconds: [number, number, number, number] | null;
-    tempoSeconds: [number, number, number, number] | null;
+    targetTempoSeconds: TempoTuple | null;
+    tempoSeconds: TempoTuple | null;
     velocityCurves: RepVelocityCurve[];
     verdict: FatigueVerdict | null;
 }
@@ -4805,6 +4737,10 @@ export interface MusclePlanSection {
     doneSetsThisWeek: number;
     // (undocumented)
     exercises: MusclePlanExerciseRow[];
+    frequency: {
+        plannedPerWeek: number;
+        observedThisWeek: number;
+    };
     // (undocumented)
     plannedSetsThisWeek: number;
 }
@@ -4827,6 +4763,8 @@ export interface MuscleStrengthBestE1rm {
 export interface MuscleStrengthExerciseRow {
     // (undocumented)
     bestE1rm: MuscleStrengthBestE1rm | null;
+    currentLevel: number | null;
+    daysSinceTrained: number | null;
     // (undocumented)
     exerciseId: string;
     // (undocumented)
@@ -4837,8 +4775,11 @@ export interface MuscleStrengthExerciseRow {
     plateau: 'plateau' | 'tolerated' | 'none' | null;
     // (undocumented)
     priorBest: number | null;
+    recency: 'current' | 'fading' | 'no_current_read' | null;
+    relativeIndex: number | null;
     // (undocumented)
     rSquared: number | null;
+    setCount: number;
     // (undocumented)
     side: MuscleStrengthSide;
     slopePctPerWeek: number | null;
@@ -4848,9 +4789,11 @@ export interface MuscleStrengthExerciseRow {
 export interface MuscleStrengthSection {
     // (undocumented)
     agreement: MuscleStrengthAgreement;
+    daysSinceTrained: number | null;
     earlyPhase: boolean;
     // (undocumented)
     exercises: StrengthExerciseRow[];
+    relativeIndexBySide: Partial<Record<'left' | 'right' | 'none', number>>;
 }
 
 // @public
@@ -4888,6 +4831,7 @@ export interface NavItemProps {
     icon: ReactNode;
     label: string;
     live?: boolean;
+    liveLabel?: string;
     // (undocumented)
     onPress?: () => void;
 }
@@ -4956,6 +4900,38 @@ export function paceTone(progress: number, target?: number): PaceTone;
 export function paceToneColor(tone: PaceTone, mode: ThemeMode): string;
 
 // @public
+export function Page(input: PageProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export type PageGutter = 'sm' | 'md';
+
+// @public
+export function PageHeader(input: PageHeaderProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface PageHeaderProps extends Omit<ViewProps, 'children'> {
+    className?: string;
+    description?: string;
+    title: string;
+    trailing?: React__default.ReactNode;
+}
+
+// @public
+export type PageMaxWidth = 'narrow' | 'wide' | 'full';
+
+// @public
+export interface PageProps extends Omit<ViewProps, 'children'> {
+    children?: React__default.ReactNode;
+    className?: string;
+    contentClassName?: string;
+    gutter?: PageGutter;
+    header?: React__default.ReactNode;
+    isHeaderPinned?: boolean;
+    isScrollable?: boolean;
+    maxWidth?: PageMaxWidth;
+}
+
+// @public
 export const PANEL_BREAKPOINTS: {
     readonly xs: 0;
     readonly sm: 600;
@@ -4993,7 +4969,7 @@ export type PanelTier = keyof typeof PANEL_BREAKPOINTS;
 export function panelTier(width: number): PanelTier;
 
 // @public
-export function paperSheet(tone?: string): ViewStyle;
+export function paperSheet(tone?: string, mode?: ThemeMode): ViewStyle;
 
 // @public
 export function Paragraph(input: ParagraphProps): react_jsx_runtime.JSX.Element;
@@ -5266,7 +5242,7 @@ export interface PortfolioOverviewStat {
 }
 
 // @public
-export function postIt(tone?: string, deg?: number): ViewStyle;
+export function postIt(tone?: string, deg?: number, mode?: ThemeMode): ViewStyle;
 
 // @public
 export const PR_REF_PATTERN: RegExp;
@@ -5283,18 +5259,6 @@ export interface PrBadgeProps extends ViewProps {
     iconSize?: number;
     label?: string;
     type?: PRType;
-}
-
-// @public
-export interface PrescriptionInput {
-    // (undocumented)
-    repsHigh?: number;
-    // (undocumented)
-    repsLow?: number;
-    // (undocumented)
-    rpe?: number;
-    // (undocumented)
-    weightLbs?: number;
 }
 
 // @public
@@ -5809,9 +5773,6 @@ export const resultPaletteColors: {
     readonly inconclusive: "#9E9A97";
 };
 
-// @public (undocumented)
-export type ResultType = 'improve' | 'degrade' | 'inconclusive' | 'neutral';
-
 // @public
 export function rgbToHex(r: number, g: number, b: number): string;
 
@@ -6200,7 +6161,7 @@ export const semanticColorsLight: {
     readonly 'brand-primary': "#FF7900";
     readonly 'brand-primary-light': "#FFA063";
     readonly 'brand-primary-dark': "#DA5F00";
-    readonly 'brand-primary-subtle': "#FFF5ED";
+    readonly 'brand-primary-subtle': "#FFE6D4";
     readonly 'brand-primary-muted': "#FFC7A2";
     readonly 'brand-primary-strong': "rgba(255, 121, 0, 0.50)";
     readonly 'brand-primary-hover': "#DA5F00";
@@ -6208,19 +6169,19 @@ export const semanticColorsLight: {
     readonly 'brand-secondary': "#307B9B";
     readonly 'brand-secondary-light': "#2697B7";
     readonly 'brand-secondary-dark': "#2A617F";
-    readonly 'brand-secondary-subtle': "#E6FBFF";
+    readonly 'brand-secondary-subtle': "#C2F6FF";
     readonly 'brand-secondary-muted': "#62EAFF";
     readonly 'brand-secondary-strong': "rgba(48, 123, 155, 0.50)";
     readonly 'brand-secondary-hover': "#2A617F";
     readonly 'brand-secondary-active': "#22465F";
     readonly 'on-brand-primary': "#FFFFFF";
     readonly 'on-brand-secondary': "#FFFFFF";
-    readonly 'on-brand-primary-subtle': "#FF7900";
-    readonly 'on-brand-secondary-subtle': "#307B9B";
+    readonly 'on-brand-primary-subtle': "#983804";
+    readonly 'on-brand-secondary-subtle': "#2A617F";
     readonly 'status-success': "#298732";
     readonly 'status-success-light': "#58F69E";
     readonly 'status-success-dark': "#298732";
-    readonly 'status-success-subtle': "#E3FFEE";
+    readonly 'status-success-subtle': "#B5FFD2";
     readonly 'status-success-muted': "rgba(46, 213, 115, 0.30)";
     readonly 'status-success-strong': "rgba(46, 213, 115, 0.50)";
     readonly 'status-live': "#2ED573";
@@ -6229,7 +6190,7 @@ export const semanticColorsLight: {
     readonly 'status-error': "#D14343";
     readonly 'status-error-light': "#E05254";
     readonly 'status-error-dark': "#A4221C";
-    readonly 'status-error-subtle': "#FFF4F4";
+    readonly 'status-error-subtle': "#FFE3E5";
     readonly 'status-error-muted': "rgba(209, 67, 67, 0.30)";
     readonly 'status-error-strong': "rgba(209, 67, 67, 0.50)";
     readonly 'status-error-vivid': "#FF4757";
@@ -6241,25 +6202,25 @@ export const semanticColorsLight: {
     readonly 'status-warning': "#C27400";
     readonly 'status-warning-light': "#FFD352";
     readonly 'status-warning-dark': "#C27400";
-    readonly 'status-warning-subtle': "#FFF7DD";
+    readonly 'status-warning-subtle': "#FFEAA9";
     readonly 'status-warning-muted': "rgba(249, 180, 21, 0.30)";
     readonly 'status-warning-strong': "rgba(249, 180, 21, 0.50)";
     readonly 'status-info': "#1072CB";
     readonly 'status-info-light': "#78C2FF";
     readonly 'status-info-dark': "#1072CB";
-    readonly 'status-info-subtle': "#EFF8FF";
+    readonly 'status-info-subtle': "#D9EFFF";
     readonly 'status-info-muted': "rgba(33, 150, 243, 0.30)";
     readonly 'status-info-strong': "rgba(33, 150, 243, 0.50)";
     readonly 'brand-primary-solid': "#FF7900";
     readonly 'brand-secondary-solid': "#307B9B";
-    readonly 'status-success-solid': "#2ED573";
+    readonly 'status-success-solid': "#298732";
     readonly 'status-error-solid': "#D14343";
-    readonly 'status-warning-solid': "#F9B415";
+    readonly 'status-warning-solid': "#C27400";
     readonly 'status-info-solid': "#2196F3";
-    readonly 'on-status-success-subtle': "#2ED573";
-    readonly 'on-status-error-subtle': "#D14343";
-    readonly 'on-status-warning-subtle': "#F9B415";
-    readonly 'on-status-info-subtle': "#2196F3";
+    readonly 'on-status-success-subtle': "#2B6B25";
+    readonly 'on-status-error-subtle': "#A4221C";
+    readonly 'on-status-warning-subtle': "#814D14";
+    readonly 'on-status-info-subtle': "#135AA8";
     readonly 'on-status-success': "#FFFFFF";
     readonly 'on-status-error': "#FFFFFF";
     readonly 'on-status-warning': "#FFFFFF";
@@ -6305,8 +6266,8 @@ export const semanticColorsLight: {
     readonly 'dataviz-categorical-5': "#01B5D1";
     readonly 'dataviz-categorical-6': "#A45E00";
     readonly 'text-primary': "#121828";
-    readonly 'text-secondary': "#65748B";
-    readonly 'text-tertiary': "#A29F9D";
+    readonly 'text-secondary': "#5A5958";
+    readonly 'text-tertiary': "#72716F";
     readonly 'text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly 'text-inverse': "#FFFFFF";
     readonly 'text-error': "#A4221C";
@@ -6351,7 +6312,6 @@ export const semanticColorsLight: {
 // @public
 export const semanticPins: {
     readonly textPrimaryLight: "#121828";
-    readonly textSecondaryLight: "#65748B";
     readonly backgroundBaseLight: "#EBEBEB";
     readonly dividerLight: "#E8E9EB";
     readonly focusIndigoDark: "#828DF8";
@@ -7265,9 +7225,6 @@ export interface StatusPillProps extends ViewProps {
 export type StatusPillStatus = 'productive' | 'threshold' | 'stop';
 
 // @public
-export type StatusType = 'success' | 'error' | 'warning' | 'info';
-
-// @public
 export function StepContent(input: StepContentProps): react_jsx_runtime.JSX.Element | null;
 
 // @public (undocumented)
@@ -7537,6 +7494,7 @@ export interface TableHeaderCellProps extends Omit<PressableProps, 'children'> {
     children?: React__default.ReactNode;
     className?: string;
     sortKey?: string;
+    sortLabel?: string;
     tooltip?: string;
     width?: number;
 }
@@ -8590,16 +8548,6 @@ export function useToolbarButton(): ToolbarButtonContextType;
 
 // @public
 export function validateCssPropertyManifest(candidate: unknown): ManifestValidationResult;
-
-// @public
-export const validationRules: {
-    required: (value: unknown) => "This field is required" | undefined;
-    email: (value: string) => "Please enter a valid email address" | undefined;
-    minLength: (min: number) => (value: string) => string | undefined;
-    maxLength: (max: number) => (value: string) => string | undefined;
-    pattern: (regex: RegExp, message: string) => (value: string) => string | undefined;
-    match: (otherValue: string, fieldName: string) => (value: string) => string | undefined;
-};
 
 // @public
 export function valueReach(target: number, latest: number, direction?: GoalDirection): GoalReach;

@@ -108,6 +108,21 @@ describe('Autocomplete', () => {
     expect(screen.getByLabelText('Clear selection')).toBeInTheDocument()
   })
 
+  it('shows the clear button and leaks no bare 0 when the selected value is 0', () => {
+    render(
+      <Autocomplete
+        options={[
+          { value: '0', label: 'Zero' },
+          { value: '1', label: 'One' },
+        ]}
+        value={0 as unknown as string}
+        isClearable
+      />
+    )
+    expect(screen.getByLabelText('Clear selection')).toBeInTheDocument()
+    expect(screen.queryByText('0')).not.toBeInTheDocument()
+  })
+
   it('calls onChange with null when clear is pressed', () => {
     const onChange = vi.fn()
     render(<Autocomplete options={defaultOptions} value="1" onChange={onChange} isClearable />)

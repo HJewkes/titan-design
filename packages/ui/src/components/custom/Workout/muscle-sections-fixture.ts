@@ -69,6 +69,11 @@ const cableRow: StrengthExerciseRow = {
   isPR: true,
   priorBest: 198,
   plateau: 'none',
+  setCount: 15,
+  currentLevel: 201,
+  relativeIndex: 98,
+  daysSinceTrained: 2,
+  recency: 'current',
   history: series([182, 188, 191, 199, 205], 4),
 }
 
@@ -82,6 +87,11 @@ const latPulldownLeft: StrengthExerciseRow = {
   isPR: false,
   priorBest: 151,
   plateau: 'tolerated',
+  setCount: 12,
+  currentLevel: 146,
+  relativeIndex: 99,
+  daysSinceTrained: 9,
+  recency: 'current',
   history: series([140, 143, 145, 148]),
 }
 
@@ -95,6 +105,11 @@ const latPulldownRight: StrengthExerciseRow = {
   isPR: true,
   priorBest: 160,
   plateau: 'plateau',
+  setCount: 12,
+  currentLevel: 160,
+  relativeIndex: 99,
+  daysSinceTrained: 9,
+  recency: 'current',
   history: series([158, 161, 159, 162], 3),
 }
 
@@ -103,6 +118,8 @@ export const emptyStrength: MuscleStrengthSection = {
   exercises: [],
   agreement: 'insufficient',
   earlyPhase: false,
+  relativeIndexBySide: {},
+  daysSinceTrained: null,
 }
 
 /** One exercise, side-unknown — the single-exercise case that cannot agree with itself. */
@@ -110,6 +127,8 @@ export const singleExerciseStrength: MuscleStrengthSection = {
   exercises: [cableRow],
   agreement: 'insufficient',
   earlyPhase: false,
+  relativeIndexBySide: { none: 98 },
+  daysSinceTrained: 2,
 }
 
 /** A bilateral exercise: one row per side, never a merged average. */
@@ -117,6 +136,8 @@ export const bilateralStrength: MuscleStrengthSection = {
   exercises: [cableRow, latPulldownLeft, latPulldownRight],
   agreement: 'mixed',
   earlyPhase: true,
+  relativeIndexBySide: { none: 98, left: 99, right: 99 },
+  daysSinceTrained: 2,
 }
 
 /** Nothing planned and nothing done — the panel still states the zero. */
@@ -124,6 +145,7 @@ export const emptyPlan: MusclePlanSection = {
   plannedSetsThisWeek: 0,
   doneSetsThisWeek: 0,
   exercises: [],
+  frequency: { plannedPerWeek: 0, observedThisWeek: 0 },
 }
 
 export const singleExercisePlan: MusclePlanSection = {
@@ -152,4 +174,5 @@ export const singleExercisePlan: MusclePlanSection = {
       done: false,
     },
   ],
+  frequency: { plannedPerWeek: 2, observedThisWeek: 1 },
 }

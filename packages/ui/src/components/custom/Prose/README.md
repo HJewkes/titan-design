@@ -11,11 +11,11 @@ navigates both ways. Counts come from
 
 ## Dependency map
 
-| Member                          | Kind     | Composes ↓         | Used-by ↑                                                  |
-| ------------------------------- | -------- | ------------------ | ---------------------------------------------------------- |
-| `MarkdownProse`                 | molecule | `Typography`, `cn` | InitiativeBrief, OpenLoops, SessionDetail (all ActiveWork) |
-| `parseProseBlocks`              | pure fn  | —                  | `MarkdownProse`, and its own tests                         |
-| `ProseLinker` / `ProseLinkTone` | types    | —                  | every consumer that supplies reference patterns            |
+| Member                          | Kind     | Composes ↓         | Used-by ↑                                                   |
+| ------------------------------- | -------- | ------------------ | ----------------------------------------------------------- |
+| `MarkdownProse`                 | molecule | `Typography`, `cn` | InitiativeBrief, OpenLoops, SessionDetail (all ActiveWork)  |
+| `parseProseBlocks`              | pure fn  | —                  | `MarkdownProse`, `custom/Chat/chatThread.ts`, its own tests |
+| `ProseLinker` / `ProseLinkTone` | types    | —                  | every consumer that supplies reference patterns             |
 
 Four in-repo consumers, zero external — `keep-internal` in the arch graph. The
 parser is exported separately on purpose: block-splitting is the part worth

@@ -1,14 +1,13 @@
 import { defineConfig } from 'vitest/config'
 import baseConfig from './vitest.config'
+import strykerConfig from './stryker.config.mjs'
 
 // Stryker's vitest runner does not support `projects`, so this config runs the jsdom
 // logic tests that cover stryker.config.mjs's `mutate` globs in one flat project.
-const STRYKER_TEST_GLOB = [
-  'src/utils/**/*.test.ts',
-  'src/hooks/**/*.test.ts',
-  'src/**/*Math.test.ts',
-  'src/**/*-model.test.ts',
-]
+// Derived from `mutate` so a new mutate glob brings its tests along.
+const STRYKER_TEST_GLOB = strykerConfig.mutate
+  .filter((glob) => !glob.startsWith('!'))
+  .map((glob) => glob.replace(/\.ts$/, '.test.ts'))
 
 export default defineConfig({
   plugins: baseConfig.plugins,
