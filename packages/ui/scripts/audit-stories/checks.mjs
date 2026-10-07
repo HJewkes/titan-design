@@ -1,6 +1,17 @@
 // DOM audit for one rendered story: page checks run in the browser, the rest is pure.
 // domChecks, runAxe and tokenColours are serialised into the page, so they use browser globals.
 /* global document, getComputedStyle, innerWidth, NodeFilter, window */
+import { layoutCollectorSource } from './layout-collect.mjs'
+import {
+  ALIGNMENT_NEAR_MISS,
+  EDGE_CLEARANCE,
+  FONT_SIZE_NEAR_MISS,
+  GAP_OUTLIER,
+  INSET_ASYMMETRY,
+  PROXIMITY_INVERSION,
+  STACKED_INSET,
+  judgeLayout,
+} from './layout-probes.mjs'
 import { buildScale, isOnScale } from './spacing-scale.mjs'
 
 const MAX_FINDINGS_PER_KIND = 25
@@ -9,6 +20,7 @@ const CONTRAST = 'contrast'
 const CONTRAST_TOKEN = 'contrast-token'
 const OFF_SCALE_SPACING = 'off-scale-spacing'
 const THEME_GEOMETRY_SHIFT = 'theme-geometry-shift'
+const FONT_SIZE_DRIFT = 'font-size-drift'
 
 // Kinds that fail the run. `render-error` also blocks but comes from capture.mjs, not these checks.
 export const BLOCKER_KINDS = Object.freeze([
@@ -25,6 +37,14 @@ export const WARNING_KINDS = Object.freeze([
   'small-text',
   OFF_SCALE_SPACING,
   THEME_GEOMETRY_SHIFT,
+  STACKED_INSET,
+  EDGE_CLEARANCE,
+  INSET_ASYMMETRY,
+  ALIGNMENT_NEAR_MISS,
+  GAP_OUTLIER,
+  PROXIMITY_INVERSION,
+  FONT_SIZE_NEAR_MISS,
+  FONT_SIZE_DRIFT,
 ])
 export const CONTRAST_TOKEN_KIND = CONTRAST_TOKEN
 
@@ -413,13 +433,14 @@ export function domChecks({ touch, spacingVars }) {
     }
   }
 
+  function pathOf(el) {
+    const idx = []
+    for (let n = el; n && n !== root; n = n.parentElement)
+      idx.unshift([...n.parentElement.children].indexOf(n))
+    return idx.join('.')
+  }
+
   function geometry() {
-    const pathOf = (el) => {
-      const idx = []
-      for (let n = el; n && n !== root; n = n.parentElement)
-        idx.unshift([...n.parentElement.children].indexOf(n))
-      return idx.join('.')
-    }
     return visible.map((el) => {
       const r = el.getBoundingClientRect()
       return [
@@ -431,6 +452,16 @@ export function domChecks({ touch, spacingVars }) {
         Math.round(r.height),
       ]
     })
+  }
+
+  // Own text and computed size per text element, for the cross-width font-size comparison.
+  function textSizes() {
+    return textEls.map((el) => [
+      pathOf(el),
+      selectorOf(el),
+      ownText(el).slice(0, 40),
+      parseFloat(getComputedStyle(el).fontSize),
+    ])
   }
 
   const cap = (list) => list.slice(0, 25)
@@ -448,6 +479,7 @@ export function domChecks({ touch, spacingVars }) {
     spacingVars: resolveSpacingVars(),
     metrics: collectMetrics(),
     geometry: geometry(),
+    texts: textSizes(),
   }
 }
 
@@ -546,13 +578,28 @@ export function offScaleWarnings(spacing, scale) {
     .slice(0, MAX_FINDINGS_PER_KIND)
 }
 
+// Installs the layout collector once per page, then judges what it measured.
+async function layoutWarnings(page, spacingVars) {
+  if (!(await page.evaluate(() => Boolean(window.collectLayout))))
+    await page.addScriptTag({ content: layoutCollectorSource })
+  const layout = await page.evaluate(
+    (vars) => window.collectLayout({ spacingVars: vars }),
+    spacingVars
+  )
+  return judgeLayout(layout, { limit: MAX_FINDINGS_PER_KIND })
+}
+
 export async function auditPage(page, { axeSource, spacingConfig, touch = false }) {
   const dom = await page.evaluate(domChecks, { touch, spacingVars: spacingConfig.vars })
   const violations = await runAxe(page, axeSource)
   const contrast = splitContrast(violations, await page.evaluate(tokenColours))
   const blockers = [...dom.blockers, ...contrast.blockers]
   const scale = buildScale(spacingConfig.px, dom.spacingVars)
-  const warnings = [...offScaleWarnings(dom.spacing, scale), ...dom.warnings]
+  const warnings = [
+    ...offScaleWarnings(dom.spacing, scale),
+    ...dom.warnings,
+    ...(await layoutWarnings(page, spacingConfig.vars)),
+  ]
   return {
     blockers,
     contrast_token: contrast.contrastToken,
@@ -560,6 +607,7 @@ export async function auditPage(page, { axeSource, spacingConfig, touch = false 
     metrics: dom.metrics,
     axe: { violations },
     geometry: dom.geometry,
+    texts: dom.texts,
   }
 }
 
@@ -581,8 +629,43 @@ export function themeGeometryShift(baseGeometry, otherGeometry, baseTheme) {
         detail: `box ${b.box.join(',')} in ${baseTheme} vs ${[x, y, w, h].join(',')}`,
       })
   }
+  return outermost(shifts)
+    .map(({ kind, selector, detail }) => ({ kind, selector, detail }))
+    .slice(0, MAX_FINDINGS_PER_KIND)
+}
+
+// Findings in document order; a finding nested under one already kept is the same change.
+function outermost(found) {
   const kept = []
-  for (const s of shifts) if (!kept.some((k) => s.path.startsWith(`${k.path}.`))) kept.push(s)
-  const outermost = kept.map(({ kind, selector, detail }) => ({ kind, selector, detail }))
-  return outermost.slice(0, MAX_FINDINGS_PER_KIND)
+  for (const f of found) if (!kept.some((k) => f.path.startsWith(`${k.path}.`))) kept.push(f)
+  return kept
+}
+
+// One story's text sizes at each width it rendered (`frames`: [{ width, texts }], widths in run
+// order). Text matches across widths by element path and own text; text whose path changes has no
+// match and is not compared. Each finding names the first width whose size differs from the first.
+export function fontSizeDrift(frames) {
+  const [base, ...rest] = frames
+  if (!base) return []
+  const key = (path, text) => `${path}\u0000${text}`
+  const drifts = base.texts.map(([path, selector, text, size]) => ({
+    path,
+    selector,
+    text,
+    sizes: [[base.width, size]],
+  }))
+  const byKey = new Map(drifts.map((d) => [key(d.path, d.text), d]))
+  for (const { width, texts } of rest)
+    for (const [path, , text, size] of texts) byKey.get(key(path, text))?.sizes.push([width, size])
+  const changed = drifts
+    .map((d) => ({ ...d, at: d.sizes.find(([, size]) => size !== d.sizes[0][1])?.[0] }))
+    .filter((d) => d.at !== undefined)
+  return outermost(changed)
+    .slice(0, MAX_FINDINGS_PER_KIND)
+    .map(({ selector, text, sizes, at }) => ({
+      width: at,
+      kind: FONT_SIZE_DRIFT,
+      selector,
+      detail: `"${text}" is ${sizes.map(([w, size]) => `${size}px at ${w}`).join(', ')}`,
+    }))
 }

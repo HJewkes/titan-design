@@ -4,6 +4,7 @@ import { axe } from 'jest-axe'
 
 import { GoalPriorityIcon, GOAL_PRIORITY_MEANING, type GoalPriority } from './GoalPriorityIcon'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { capturedByNode } from '../../../test/classname-capture'
 
 const dark = getSemanticColors('dark')
 const PRIORITIES: GoalPriority[] = ['specialize', 'maintain', 'deprioritize']
@@ -63,6 +64,14 @@ describe('GoalPriorityIcon', () => {
     render(<GoalPriorityIcon priority="deprioritize" withTip={false} />)
     expect(screen.getByRole('img', { name: 'Priority: Deprioritize' })).toBeInTheDocument()
     expect(screen.queryByRole('button')).toBeNull()
+  })
+
+  it.each([true, false])('applies className with withTip=%s', (withTip) => {
+    const { container } = render(
+      <GoalPriorityIcon priority="maintain" withTip={withTip} className="self-start" />
+    )
+    const classes = Array.from(container.querySelectorAll('*'), (node) => capturedByNode.get(node))
+    expect(classes).toContain('self-start')
   })
 
   it('has no accessibility violations', async () => {

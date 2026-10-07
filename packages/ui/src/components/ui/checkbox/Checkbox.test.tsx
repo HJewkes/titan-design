@@ -196,4 +196,10 @@ describe('Checkbox', () => {
       expect(box?.filter((c) => c.startsWith('border-hairline'))).toEqual([])
     })
   })
+
+  it('renders no empty text node for an empty label', () => {
+    render(<Checkbox label="" helperText="Help" />)
+    const helper = screen.getByText('Help')
+    expect(helper.parentElement?.childNodes).toHaveLength(1)
+  })
 })

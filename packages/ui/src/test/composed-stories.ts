@@ -30,6 +30,11 @@ export function storyModuleCount(): number {
   return Object.keys(storyModules).length
 }
 
+/** Story files under `src/components/`, relative to it, for checking that a split covers them all. */
+export function storyFiles(): string[] {
+  return Object.keys(storyModules).map(toFile)
+}
+
 /** Stories under `src/components/` whose file passes `include`, composed without project annotations. */
 export async function loadComposedStories(
   include: (file: string) => boolean = () => true
