@@ -35,7 +35,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       # verify:unit is format, lint, type-check, build, tests with coverage, then arch-graph
-      # freshness (arch:check): local `pnpm verify` minus stories-axe, which runs in its own job.
+      # freshness (arch:check): local `pnpm verify` minus stories-axe, which runs in check.
       - name: Verify
         run: pnpm verify:unit
 
@@ -200,67 +200,61 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
-  # Runs the Storybook play functions in the `storybook` vitest browser project; the image
-  # ships Chromium, and addon-vitest compiles stories itself, so nothing builds or serves Storybook.
-  storybook-play:
+  # The job the ruleset requires (TD-725). Its first step is the all-green aggregator, so it
+  # fails when build or visual fails, is cancelled or goes missing, and every later step then
+  # skips. The audit, stories-axe and play steps run here rather than in jobs of their own,
+  # each of which paid its own queue wait. The image is visual's: the play functions need its
+  # Chromium.
+  check:
+    if: always()
+    needs: [build, visual]
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.58.2-noble
+    # pull-requests: read lets the path classifier list the PR's files.
+    permissions:
+      contents: read
+      pull-requests: read
 
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-
-      - run: pnpm install --frozen-lockfile
-
-      - name: Storybook play functions
-        run: pnpm test:storybook
-
-  # Axe on every story under jsdom, parallel to build. One Node version: jsdom and axe-core
-  # are plain JS, and build still runs every other test on Node 20 and 22.
-  stories-axe:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-
-      - run: pnpm install --frozen-lockfile
-
-      - name: Stories axe
-        run: pnpm test:axe
-
-  # pnpm audit reads the lockfile only, so the job needs no install.
-  audit:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - run: scripts/audit-retry.sh
-
-  # The aggregator the ruleset will require; all-green also fails if a job here is missing from needs.
-  check:
-    if: always()
-    needs: [build, stories-axe, visual, storybook-play, audit]
-    runs-on: ubuntu-latest
     steps:
       - uses: HJewkes/ci/actions/all-green@v1
         with:
           needs: ${{ toJSON(needs) }}
+
+      - uses: actions/checkout@v4
+
+      # Same classifier, env and fail-open rule as visual's step (TD-645). A PR that changes no
+      # rendered UI skips stories-axe and the play functions; audit and a push to main always run.
+      - name: Rendered UI changed?
+        id: paths
+        if: github.event_name == 'pull_request'
+        run: node packages/ui/scripts/visual-paths.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+
+      - uses: pnpm/action-setup@v4
+
+      # No cache when nothing installs: the post-step would save an empty store.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: ${{ steps.paths.outputs.run != 'false' && 'pnpm' || '' }}
+
+      # pnpm audit reads the lockfile only, so it runs before the install.
+      - name: Audit
+        run: scripts/audit-retry.sh
+
+      - run: pnpm install --frozen-lockfile
+        if: steps.paths.outputs.run != 'false'
+
+      # Axe on every story under jsdom. One Node version: jsdom and axe-core are plain JS.
+      - name: Stories axe
+        if: steps.paths.outputs.run != 'false'
+        run: pnpm test:axe
+
+      # The `storybook` vitest browser project; addon-vitest compiles stories itself, so
+      # nothing builds or serves Storybook.
+      - name: Storybook play functions
+        if: steps.paths.outputs.run != 'false'
+        run: pnpm test:storybook
