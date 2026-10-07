@@ -92,19 +92,29 @@ function blanketProblems(q: Question): string[] {
     .map((t) => `question ${q.id}: "${t}" is a blanket sign-off; name the changed part instead`)
 }
 
+/** The only options a merge-bound question may offer; schema.ts holds it to them. */
+export const SHIP_OPTIONS = ['Ship', "Don't ship"]
+
+type PickOne = Extract<Question, { kind: 'pick-one' }>
+
+const isShipWording = (q: PickOne, option: string) =>
+  q.merge !== undefined && SHIP_OPTIONS.includes(option)
+
 /** Options are a question's own: none repeats within it or in another pick-one's options.
- * A question's own `revisionOption` is exempt from the cross-question check: rounds share one wording. */
+ * A question's own `revisionOption` is exempt from the cross-question check: rounds share one wording.
+ * So are the fixed Ship options, between two merge-bound questions: a round binds one PR per question. */
 function optionProblems(m: Manifest): string[] {
   const frames = new Set(m.variants.map((v) => v.key))
   const pickOnes = m.questions.filter((q) => q.kind === 'pick-one')
-  const owner = new Map<string, string>()
+  const owner = new Map<string, PickOne>()
   const shared = pickOnes.flatMap((q) =>
     [...new Set(q.options)]
       .filter((o) => !frames.has(o) && o !== q.revisionOption)
       .flatMap((o) => {
         const first = owner.get(o)
-        if (first === undefined) owner.set(o, q.id)
-        return first === undefined ? [] : [`question ${q.id}: option "${o}" is also in ${first}`]
+        if (first === undefined) owner.set(o, q)
+        if (first === undefined || (isShipWording(first, o) && isShipWording(q, o))) return []
+        return [`question ${q.id}: option "${o}" is also in ${first.id}`]
       })
   )
   const repeated = m.questions.flatMap((q) =>

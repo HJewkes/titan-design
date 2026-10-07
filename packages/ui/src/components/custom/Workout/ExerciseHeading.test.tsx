@@ -36,6 +36,11 @@ describe('ExerciseHeading', () => {
     expect(screen.getByLabelText('Personal record')).toBeInTheDocument()
   })
 
+  it('renders no previous-best text for an empty string', () => {
+    render(<ExerciseHeading {...baseProps} layout="inline" previousBest="" />)
+    expect(screen.queryByTestId('exercise-card-previous-best')).not.toBeInTheDocument()
+  })
+
   it('omits the indicator chip when absent', () => {
     render(<ExerciseHeading {...baseProps} indicator={undefined} />)
     expect(screen.queryByTestId('exercise-indicator')).not.toBeInTheDocument()

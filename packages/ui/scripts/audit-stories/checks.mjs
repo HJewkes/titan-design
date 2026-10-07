@@ -5,7 +5,9 @@ import { layoutCollectorSource } from './layout-collect.mjs'
 import {
   ALIGNMENT_NEAR_MISS,
   EDGE_CLEARANCE,
+  GAP_OUTLIER,
   INSET_ASYMMETRY,
+  PROXIMITY_INVERSION,
   STACKED_INSET,
   judgeLayout,
 } from './layout-probes.mjs'
@@ -37,6 +39,8 @@ export const WARNING_KINDS = Object.freeze([
   EDGE_CLEARANCE,
   INSET_ASYMMETRY,
   ALIGNMENT_NEAR_MISS,
+  GAP_OUTLIER,
+  PROXIMITY_INVERSION,
 ])
 export const CONTRAST_TOKEN_KIND = CONTRAST_TOKEN
 
