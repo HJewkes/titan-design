@@ -1818,7 +1818,7 @@ export interface FatigueMeterProps extends ViewProps {
     max?: number;
     needleColor?: string;
     size?: ZoneTrackSize;
-    thresholds?: [number, number, number];
+    thresholds?: VelocityLossThresholds;
     trackHeight?: number;
     value: number;
     zoneColors?: [string, string, string, string];
@@ -2136,7 +2136,7 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'brand-primary': "#FF7900";
     readonly 'brand-primary-light': "#FFA063";
     readonly 'brand-primary-dark': "#DA5F00";
-    readonly 'brand-primary-subtle': "#FFF5ED";
+    readonly 'brand-primary-subtle': "#FFE6D4";
     readonly 'brand-primary-muted': "#FFC7A2";
     readonly 'brand-primary-strong': "rgba(255, 121, 0, 0.50)";
     readonly 'brand-primary-hover': "#DA5F00";
@@ -2144,19 +2144,19 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'brand-secondary': "#307B9B";
     readonly 'brand-secondary-light': "#2697B7";
     readonly 'brand-secondary-dark': "#2A617F";
-    readonly 'brand-secondary-subtle': "#E6FBFF";
+    readonly 'brand-secondary-subtle': "#C2F6FF";
     readonly 'brand-secondary-muted': "#62EAFF";
     readonly 'brand-secondary-strong': "rgba(48, 123, 155, 0.50)";
     readonly 'brand-secondary-hover': "#2A617F";
     readonly 'brand-secondary-active': "#22465F";
     readonly 'on-brand-primary': "#FFFFFF";
     readonly 'on-brand-secondary': "#FFFFFF";
-    readonly 'on-brand-primary-subtle': "#FF7900";
-    readonly 'on-brand-secondary-subtle': "#307B9B";
+    readonly 'on-brand-primary-subtle': "#983804";
+    readonly 'on-brand-secondary-subtle': "#2A617F";
     readonly 'status-success': "#298732";
     readonly 'status-success-light': "#58F69E";
     readonly 'status-success-dark': "#298732";
-    readonly 'status-success-subtle': "#E3FFEE";
+    readonly 'status-success-subtle': "#B5FFD2";
     readonly 'status-success-muted': "rgba(46, 213, 115, 0.30)";
     readonly 'status-success-strong': "rgba(46, 213, 115, 0.50)";
     readonly 'status-live': "#2ED573";
@@ -2165,7 +2165,7 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'status-error': "#D14343";
     readonly 'status-error-light': "#E05254";
     readonly 'status-error-dark': "#A4221C";
-    readonly 'status-error-subtle': "#FFF4F4";
+    readonly 'status-error-subtle': "#FFE3E5";
     readonly 'status-error-muted': "rgba(209, 67, 67, 0.30)";
     readonly 'status-error-strong': "rgba(209, 67, 67, 0.50)";
     readonly 'status-error-vivid': "#FF4757";
@@ -2177,25 +2177,25 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'status-warning': "#C27400";
     readonly 'status-warning-light': "#FFD352";
     readonly 'status-warning-dark': "#C27400";
-    readonly 'status-warning-subtle': "#FFF7DD";
+    readonly 'status-warning-subtle': "#FFEAA9";
     readonly 'status-warning-muted': "rgba(249, 180, 21, 0.30)";
     readonly 'status-warning-strong': "rgba(249, 180, 21, 0.50)";
     readonly 'status-info': "#1072CB";
     readonly 'status-info-light': "#78C2FF";
     readonly 'status-info-dark': "#1072CB";
-    readonly 'status-info-subtle': "#EFF8FF";
+    readonly 'status-info-subtle': "#D9EFFF";
     readonly 'status-info-muted': "rgba(33, 150, 243, 0.30)";
     readonly 'status-info-strong': "rgba(33, 150, 243, 0.50)";
     readonly 'brand-primary-solid': "#FF7900";
     readonly 'brand-secondary-solid': "#307B9B";
-    readonly 'status-success-solid': "#2ED573";
+    readonly 'status-success-solid': "#298732";
     readonly 'status-error-solid': "#D14343";
-    readonly 'status-warning-solid': "#F9B415";
+    readonly 'status-warning-solid': "#C27400";
     readonly 'status-info-solid': "#2196F3";
-    readonly 'on-status-success-subtle': "#2ED573";
-    readonly 'on-status-error-subtle': "#D14343";
-    readonly 'on-status-warning-subtle': "#F9B415";
-    readonly 'on-status-info-subtle': "#2196F3";
+    readonly 'on-status-success-subtle': "#2B6B25";
+    readonly 'on-status-error-subtle': "#A4221C";
+    readonly 'on-status-warning-subtle': "#814D14";
+    readonly 'on-status-info-subtle': "#135AA8";
     readonly 'on-status-success': "#FFFFFF";
     readonly 'on-status-error': "#FFFFFF";
     readonly 'on-status-warning': "#FFFFFF";
@@ -2241,8 +2241,8 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'dataviz-categorical-5': "#01B5D1";
     readonly 'dataviz-categorical-6': "#A45E00";
     readonly 'text-primary': "#121828";
-    readonly 'text-secondary': "#65748B";
-    readonly 'text-tertiary': "#A29F9D";
+    readonly 'text-secondary': "#5A5958";
+    readonly 'text-tertiary': "#72716F";
     readonly 'text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly 'text-inverse': "#FFFFFF";
     readonly 'text-error': "#A4221C";
@@ -2457,43 +2457,43 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-brand-primary': "#FF7900";
     readonly '--color-brand-primary-light': "#FFA063";
     readonly '--color-brand-primary-dark': "#DA5F00";
-    readonly '--color-brand-primary-subtle': "#FFF5ED";
+    readonly '--color-brand-primary-subtle': "#FFE6D4";
     readonly '--color-brand-primary-muted': "#FFC7A2";
     readonly '--color-brand-primary-strong': "rgba(255, 121, 0, 0.50)";
     readonly '--color-brand-secondary': "#307B9B";
     readonly '--color-brand-secondary-light': "#2697B7";
     readonly '--color-brand-secondary-dark': "#2A617F";
-    readonly '--color-brand-secondary-subtle': "#E6FBFF";
+    readonly '--color-brand-secondary-subtle': "#C2F6FF";
     readonly '--color-brand-secondary-muted': "#62EAFF";
     readonly '--color-brand-secondary-strong': "rgba(48, 123, 155, 0.50)";
     readonly '--color-on-brand-primary': "#FFFFFF";
     readonly '--color-on-brand-secondary': "#FFFFFF";
-    readonly '--color-on-brand-primary-subtle': "#FF7900";
-    readonly '--color-on-brand-secondary-subtle': "#307B9B";
+    readonly '--color-on-brand-primary-subtle': "#983804";
+    readonly '--color-on-brand-secondary-subtle': "#2A617F";
     readonly '--color-status-success': "#298732";
-    readonly '--color-status-success-subtle': "#E3FFEE";
+    readonly '--color-status-success-subtle': "#B5FFD2";
     readonly '--color-status-success-muted': "rgba(46, 213, 115, 0.30)";
     readonly '--color-status-success-strong': "rgba(46, 213, 115, 0.50)";
     readonly '--color-status-live': "#2ED573";
     readonly '--color-status-deload': "#BA2996";
     readonly '--color-status-live-muted': "#22A444";
     readonly '--color-status-error': "#D14343";
-    readonly '--color-status-error-subtle': "#FFF4F4";
+    readonly '--color-status-error-subtle': "#FFE3E5";
     readonly '--color-status-error-muted': "rgba(209, 67, 67, 0.30)";
     readonly '--color-status-error-strong': "rgba(209, 67, 67, 0.50)";
     readonly '--color-status-warning': "#C27400";
-    readonly '--color-status-warning-subtle': "#FFF7DD";
+    readonly '--color-status-warning-subtle': "#FFEAA9";
     readonly '--color-status-warning-muted': "rgba(249, 180, 21, 0.30)";
     readonly '--color-status-warning-strong': "rgba(249, 180, 21, 0.50)";
     readonly '--color-status-info': "#1072CB";
-    readonly '--color-status-info-subtle': "#EFF8FF";
+    readonly '--color-status-info-subtle': "#D9EFFF";
     readonly '--color-status-info-muted': "rgba(33, 150, 243, 0.30)";
     readonly '--color-status-info-strong': "rgba(33, 150, 243, 0.50)";
     readonly '--color-brand-primary-solid': "#FF7900";
     readonly '--color-brand-secondary-solid': "#307B9B";
-    readonly '--color-status-success-solid': "#2ED573";
+    readonly '--color-status-success-solid': "#298732";
     readonly '--color-status-error-solid': "#D14343";
-    readonly '--color-status-warning-solid': "#F9B415";
+    readonly '--color-status-warning-solid': "#C27400";
     readonly '--color-status-info-solid': "#2196F3";
     readonly '--color-status-error-vivid': "#FF4757";
     readonly '--color-status-error-vivid-light': "#E05254";
@@ -2502,8 +2502,8 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-status-error-vivid-muted': "rgba(255, 71, 87, 0.30)";
     readonly '--color-status-error-vivid-strong': "rgba(255, 71, 87, 0.50)";
     readonly '--color-text-primary': "#121828";
-    readonly '--color-text-secondary': "#65748B";
-    readonly '--color-text-tertiary': "#A29F9D";
+    readonly '--color-text-secondary': "#5A5958";
+    readonly '--color-text-tertiary': "#72716F";
     readonly '--color-text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly '--color-text-inverse': "#FFFFFF";
     readonly '--color-text-error': "#A4221C";
@@ -2539,10 +2539,10 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-on-status-error': "#FFFFFF";
     readonly '--color-on-status-warning': "#FFFFFF";
     readonly '--color-on-status-info': "#FFFFFF";
-    readonly '--color-on-status-success-subtle': "#2ED573";
-    readonly '--color-on-status-error-subtle': "#D14343";
-    readonly '--color-on-status-warning-subtle': "#F9B415";
-    readonly '--color-on-status-info-subtle': "#2196F3";
+    readonly '--color-on-status-success-subtle': "#2B6B25";
+    readonly '--color-on-status-error-subtle': "#A4221C";
+    readonly '--color-on-status-warning-subtle': "#814D14";
+    readonly '--color-on-status-info-subtle': "#135AA8";
     readonly '--color-result-improve': "#4caf50";
     readonly '--color-result-improve-light': "rgba(76, 175, 80, 0.12)";
     readonly '--color-result-improve-dark': "#248a24";
@@ -3817,43 +3817,43 @@ export const lightThemeCSSVars: {
     readonly '--color-brand-primary': "#FF7900";
     readonly '--color-brand-primary-light': "#FFA063";
     readonly '--color-brand-primary-dark': "#DA5F00";
-    readonly '--color-brand-primary-subtle': "#FFF5ED";
+    readonly '--color-brand-primary-subtle': "#FFE6D4";
     readonly '--color-brand-primary-muted': "#FFC7A2";
     readonly '--color-brand-primary-strong': "rgba(255, 121, 0, 0.50)";
     readonly '--color-brand-secondary': "#307B9B";
     readonly '--color-brand-secondary-light': "#2697B7";
     readonly '--color-brand-secondary-dark': "#2A617F";
-    readonly '--color-brand-secondary-subtle': "#E6FBFF";
+    readonly '--color-brand-secondary-subtle': "#C2F6FF";
     readonly '--color-brand-secondary-muted': "#62EAFF";
     readonly '--color-brand-secondary-strong': "rgba(48, 123, 155, 0.50)";
     readonly '--color-on-brand-primary': "#FFFFFF";
     readonly '--color-on-brand-secondary': "#FFFFFF";
-    readonly '--color-on-brand-primary-subtle': "#FF7900";
-    readonly '--color-on-brand-secondary-subtle': "#307B9B";
+    readonly '--color-on-brand-primary-subtle': "#983804";
+    readonly '--color-on-brand-secondary-subtle': "#2A617F";
     readonly '--color-status-success': "#298732";
-    readonly '--color-status-success-subtle': "#E3FFEE";
+    readonly '--color-status-success-subtle': "#B5FFD2";
     readonly '--color-status-success-muted': "rgba(46, 213, 115, 0.30)";
     readonly '--color-status-success-strong': "rgba(46, 213, 115, 0.50)";
     readonly '--color-status-live': "#2ED573";
     readonly '--color-status-deload': "#BA2996";
     readonly '--color-status-live-muted': "#22A444";
     readonly '--color-status-error': "#D14343";
-    readonly '--color-status-error-subtle': "#FFF4F4";
+    readonly '--color-status-error-subtle': "#FFE3E5";
     readonly '--color-status-error-muted': "rgba(209, 67, 67, 0.30)";
     readonly '--color-status-error-strong': "rgba(209, 67, 67, 0.50)";
     readonly '--color-status-warning': "#C27400";
-    readonly '--color-status-warning-subtle': "#FFF7DD";
+    readonly '--color-status-warning-subtle': "#FFEAA9";
     readonly '--color-status-warning-muted': "rgba(249, 180, 21, 0.30)";
     readonly '--color-status-warning-strong': "rgba(249, 180, 21, 0.50)";
     readonly '--color-status-info': "#1072CB";
-    readonly '--color-status-info-subtle': "#EFF8FF";
+    readonly '--color-status-info-subtle': "#D9EFFF";
     readonly '--color-status-info-muted': "rgba(33, 150, 243, 0.30)";
     readonly '--color-status-info-strong': "rgba(33, 150, 243, 0.50)";
     readonly '--color-brand-primary-solid': "#FF7900";
     readonly '--color-brand-secondary-solid': "#307B9B";
-    readonly '--color-status-success-solid': "#2ED573";
+    readonly '--color-status-success-solid': "#298732";
     readonly '--color-status-error-solid': "#D14343";
-    readonly '--color-status-warning-solid': "#F9B415";
+    readonly '--color-status-warning-solid': "#C27400";
     readonly '--color-status-info-solid': "#2196F3";
     readonly '--color-status-error-vivid': "#FF4757";
     readonly '--color-status-error-vivid-light': "#E05254";
@@ -3862,8 +3862,8 @@ export const lightThemeCSSVars: {
     readonly '--color-status-error-vivid-muted': "rgba(255, 71, 87, 0.30)";
     readonly '--color-status-error-vivid-strong': "rgba(255, 71, 87, 0.50)";
     readonly '--color-text-primary': "#121828";
-    readonly '--color-text-secondary': "#65748B";
-    readonly '--color-text-tertiary': "#A29F9D";
+    readonly '--color-text-secondary': "#5A5958";
+    readonly '--color-text-tertiary': "#72716F";
     readonly '--color-text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly '--color-text-inverse': "#FFFFFF";
     readonly '--color-text-error': "#A4221C";
@@ -3899,10 +3899,10 @@ export const lightThemeCSSVars: {
     readonly '--color-on-status-error': "#FFFFFF";
     readonly '--color-on-status-warning': "#FFFFFF";
     readonly '--color-on-status-info': "#FFFFFF";
-    readonly '--color-on-status-success-subtle': "#2ED573";
-    readonly '--color-on-status-error-subtle': "#D14343";
-    readonly '--color-on-status-warning-subtle': "#F9B415";
-    readonly '--color-on-status-info-subtle': "#2196F3";
+    readonly '--color-on-status-success-subtle': "#2B6B25";
+    readonly '--color-on-status-error-subtle': "#A4221C";
+    readonly '--color-on-status-warning-subtle': "#814D14";
+    readonly '--color-on-status-info-subtle': "#135AA8";
     readonly '--color-result-improve': "#4caf50";
     readonly '--color-result-improve-light': "rgba(76, 175, 80, 0.12)";
     readonly '--color-result-improve-dark': "#248a24";
@@ -4097,8 +4097,8 @@ export interface LiveFatigueModel {
     romShortThresholdM: number | null;
     romWorkingStandardM: number | null;
     rpe: number | null;
-    targetTempoSeconds: [number, number, number, number] | null;
-    tempoSeconds: [number, number, number, number] | null;
+    targetTempoSeconds: TempoTuple | null;
+    tempoSeconds: TempoTuple | null;
     velocityCurves: RepVelocityCurve[];
     verdict: FatigueVerdict | null;
 }
@@ -4831,6 +4831,7 @@ export interface NavItemProps {
     icon: ReactNode;
     label: string;
     live?: boolean;
+    liveLabel?: string;
     // (undocumented)
     onPress?: () => void;
 }
@@ -4897,6 +4898,38 @@ export function paceTone(progress: number, target?: number): PaceTone;
 
 // @public
 export function paceToneColor(tone: PaceTone, mode: ThemeMode): string;
+
+// @public
+export function Page(input: PageProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export type PageGutter = 'sm' | 'md';
+
+// @public
+export function PageHeader(input: PageHeaderProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface PageHeaderProps extends Omit<ViewProps, 'children'> {
+    className?: string;
+    description?: string;
+    title: string;
+    trailing?: React__default.ReactNode;
+}
+
+// @public
+export type PageMaxWidth = 'narrow' | 'wide' | 'full';
+
+// @public
+export interface PageProps extends Omit<ViewProps, 'children'> {
+    children?: React__default.ReactNode;
+    className?: string;
+    contentClassName?: string;
+    gutter?: PageGutter;
+    header?: React__default.ReactNode;
+    isHeaderPinned?: boolean;
+    isScrollable?: boolean;
+    maxWidth?: PageMaxWidth;
+}
 
 // @public
 export const PANEL_BREAKPOINTS: {
@@ -5572,13 +5605,13 @@ export type ProseSize = 'sm' | 'md';
 export interface PrRecord {
     date: string;
     isRecent?: boolean;
-    type: PrRecordType;
+    type: PRType;
     unit?: 'lbs' | 'kg';
     value: string | number;
 }
 
-// @public (undocumented)
-export type PrRecordType = 'e1rm' | 'weight' | 'reps' | 'volume' | 'velocity';
+// @public @deprecated (undocumented)
+export type PrRecordType = PRType;
 
 // @public
 export function prRefLinker(onPress?: (number: number) => void): ProseLinker;
@@ -6128,7 +6161,7 @@ export const semanticColorsLight: {
     readonly 'brand-primary': "#FF7900";
     readonly 'brand-primary-light': "#FFA063";
     readonly 'brand-primary-dark': "#DA5F00";
-    readonly 'brand-primary-subtle': "#FFF5ED";
+    readonly 'brand-primary-subtle': "#FFE6D4";
     readonly 'brand-primary-muted': "#FFC7A2";
     readonly 'brand-primary-strong': "rgba(255, 121, 0, 0.50)";
     readonly 'brand-primary-hover': "#DA5F00";
@@ -6136,19 +6169,19 @@ export const semanticColorsLight: {
     readonly 'brand-secondary': "#307B9B";
     readonly 'brand-secondary-light': "#2697B7";
     readonly 'brand-secondary-dark': "#2A617F";
-    readonly 'brand-secondary-subtle': "#E6FBFF";
+    readonly 'brand-secondary-subtle': "#C2F6FF";
     readonly 'brand-secondary-muted': "#62EAFF";
     readonly 'brand-secondary-strong': "rgba(48, 123, 155, 0.50)";
     readonly 'brand-secondary-hover': "#2A617F";
     readonly 'brand-secondary-active': "#22465F";
     readonly 'on-brand-primary': "#FFFFFF";
     readonly 'on-brand-secondary': "#FFFFFF";
-    readonly 'on-brand-primary-subtle': "#FF7900";
-    readonly 'on-brand-secondary-subtle': "#307B9B";
+    readonly 'on-brand-primary-subtle': "#983804";
+    readonly 'on-brand-secondary-subtle': "#2A617F";
     readonly 'status-success': "#298732";
     readonly 'status-success-light': "#58F69E";
     readonly 'status-success-dark': "#298732";
-    readonly 'status-success-subtle': "#E3FFEE";
+    readonly 'status-success-subtle': "#B5FFD2";
     readonly 'status-success-muted': "rgba(46, 213, 115, 0.30)";
     readonly 'status-success-strong': "rgba(46, 213, 115, 0.50)";
     readonly 'status-live': "#2ED573";
@@ -6157,7 +6190,7 @@ export const semanticColorsLight: {
     readonly 'status-error': "#D14343";
     readonly 'status-error-light': "#E05254";
     readonly 'status-error-dark': "#A4221C";
-    readonly 'status-error-subtle': "#FFF4F4";
+    readonly 'status-error-subtle': "#FFE3E5";
     readonly 'status-error-muted': "rgba(209, 67, 67, 0.30)";
     readonly 'status-error-strong': "rgba(209, 67, 67, 0.50)";
     readonly 'status-error-vivid': "#FF4757";
@@ -6169,25 +6202,25 @@ export const semanticColorsLight: {
     readonly 'status-warning': "#C27400";
     readonly 'status-warning-light': "#FFD352";
     readonly 'status-warning-dark': "#C27400";
-    readonly 'status-warning-subtle': "#FFF7DD";
+    readonly 'status-warning-subtle': "#FFEAA9";
     readonly 'status-warning-muted': "rgba(249, 180, 21, 0.30)";
     readonly 'status-warning-strong': "rgba(249, 180, 21, 0.50)";
     readonly 'status-info': "#1072CB";
     readonly 'status-info-light': "#78C2FF";
     readonly 'status-info-dark': "#1072CB";
-    readonly 'status-info-subtle': "#EFF8FF";
+    readonly 'status-info-subtle': "#D9EFFF";
     readonly 'status-info-muted': "rgba(33, 150, 243, 0.30)";
     readonly 'status-info-strong': "rgba(33, 150, 243, 0.50)";
     readonly 'brand-primary-solid': "#FF7900";
     readonly 'brand-secondary-solid': "#307B9B";
-    readonly 'status-success-solid': "#2ED573";
+    readonly 'status-success-solid': "#298732";
     readonly 'status-error-solid': "#D14343";
-    readonly 'status-warning-solid': "#F9B415";
+    readonly 'status-warning-solid': "#C27400";
     readonly 'status-info-solid': "#2196F3";
-    readonly 'on-status-success-subtle': "#2ED573";
-    readonly 'on-status-error-subtle': "#D14343";
-    readonly 'on-status-warning-subtle': "#F9B415";
-    readonly 'on-status-info-subtle': "#2196F3";
+    readonly 'on-status-success-subtle': "#2B6B25";
+    readonly 'on-status-error-subtle': "#A4221C";
+    readonly 'on-status-warning-subtle': "#814D14";
+    readonly 'on-status-info-subtle': "#135AA8";
     readonly 'on-status-success': "#FFFFFF";
     readonly 'on-status-error': "#FFFFFF";
     readonly 'on-status-warning': "#FFFFFF";
@@ -6233,8 +6266,8 @@ export const semanticColorsLight: {
     readonly 'dataviz-categorical-5': "#01B5D1";
     readonly 'dataviz-categorical-6': "#A45E00";
     readonly 'text-primary': "#121828";
-    readonly 'text-secondary': "#65748B";
-    readonly 'text-tertiary': "#A29F9D";
+    readonly 'text-secondary': "#5A5958";
+    readonly 'text-tertiary': "#72716F";
     readonly 'text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly 'text-inverse': "#FFFFFF";
     readonly 'text-error': "#A4221C";
@@ -6279,7 +6312,6 @@ export const semanticColorsLight: {
 // @public
 export const semanticPins: {
     readonly textPrimaryLight: "#121828";
-    readonly textSecondaryLight: "#65748B";
     readonly backgroundBaseLight: "#EBEBEB";
     readonly dividerLight: "#E8E9EB";
     readonly focusIndigoDark: "#828DF8";

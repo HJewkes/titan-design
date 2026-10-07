@@ -4058,7 +4058,7 @@
           "description": "Zone boundary thresholds (loss %): green→gold, gold→orange, orange→red.",
           "name": "thresholds",
           "required": false,
-          "type": "[number, number, number]"
+          "type": "VelocityLossThresholds"
         },
         {
           "default": null,
@@ -5133,7 +5133,7 @@
           "description": "",
           "name": "palette",
           "required": true,
-          "type": "{ status: \"#D14343\" | \"#F9B415\" | \"#C27400\" | \"#2ED573\" | \"#298732\" | \"#2196F3\" | \"#1072CB\" | \"#A29F9D\" | \"#72716F\" | \"#9E9A97\"; band: string; bandHue: \"#307B9B\"; lip: string; rule: \"#A29F9D\" | \"#65748B\"; ... 9 more ...; shadeScale: number; }"
+          "type": "{ status: \"#D14343\" | \"#F9B415\" | \"#C27400\" | \"#2ED573\" | \"#298732\" | \"#2196F3\" | \"#1072CB\" | \"#A29F9D\" | \"#72716F\" | \"#9E9A97\"; band: string; bandHue: \"#307B9B\"; lip: string; rule: \"#A29F9D\" | \"#5A5958\"; ... 9 more ...; shadeScale: number; }"
         },
         {
           "default": null,
@@ -9261,6 +9261,13 @@
           "name": "live",
           "required": false,
           "type": "boolean"
+        },
+        {
+          "default": "live",
+          "description": "The words appended to the accessible name while a set runs in this category and it is not active (\"Train, live\").",
+          "name": "liveLabel",
+          "required": false,
+          "type": "string"
         },
         {
           "default": null,

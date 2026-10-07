@@ -17,6 +17,10 @@ const meta: Meta<typeof Popover> = {
       control: 'boolean',
       description: 'Controlled open state',
     },
+    defaultIsOpen: {
+      control: 'boolean',
+      description: 'Initial open state when uncontrolled',
+    },
     closeOnClickOutside: {
       control: 'boolean',
       description: 'Whether clicking outside closes the popover',

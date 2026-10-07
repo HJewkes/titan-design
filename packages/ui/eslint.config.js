@@ -398,13 +398,10 @@ module.exports = tseslint.config(
     ],
     // `color-story-kit` is story chrome that happens not to be named `.stories.tsx`
     // — exempt on the same grounds as the stories themselves, not as a backlog.
-    // `setHeadingKit` is the same category: throwaway S3 rail R&D on raw `<div>`s
-    // whose every importer is a story under `lab/explorations`.
     ignores: [
       '**/*.stories.tsx',
       '**/*.test.{ts,tsx}',
       'src/theme/color-story-kit.tsx',
-      'src/components/custom/Workout/setHeadingKit.tsx',
     ],
     rules: {
       'titan/no-raw-spacing': 'error',
@@ -435,7 +432,6 @@ module.exports = tseslint.config(
       '**/*.test.{ts,tsx}',
       '**/*-fixture.ts',
       // Story-only fixtures, resolved colours are demo data; VW-316.
-      'src/components/custom/Workout/setHeadingKit.tsx',
       'src/components/custom/Workout/velocity-story-kit.tsx',
     ],
     rules: {
@@ -618,18 +614,6 @@ module.exports = tseslint.config(
   // deletes this block.
   {
     files: [
-      // TD-536 b3
-      'src/components/ui/autocomplete/Autocomplete.tsx',
-      'src/components/ui/checkbox/Checkbox.tsx',
-      'src/components/ui/radio/Radio.tsx',
-      'src/components/ui/switch/Switch.tsx',
-      // TD-536 b4
-      'src/components/custom/Fatigue/DualGhostSpark.tsx',
-      'src/components/custom/Fatigue/SilverRedPalette.stories.tsx',
-      'src/components/ui/card/Card.tsx',
-      'src/components/ui/metric/Metric.tsx',
-      'src/components/ui/section/Section.tsx',
-      'src/components/ui/tooltip/Tooltip.tsx',
       // TD-536 b5
       'src/components/custom/Workout/ExerciseHeading.tsx',
       'src/components/custom/Workout/GoalMilestoneSummary.tsx',
@@ -637,19 +621,6 @@ module.exports = tseslint.config(
       'src/components/custom/Workout/GoalTrajectoryMini.tsx',
       'src/components/custom/Workout/GoalTrajectoryWeekTips.tsx',
       'src/components/custom/Workout/GoalsWholeBody.composition.stories.tsx',
-      // TD-536 b6
-      'src/components/custom/Workout/IntensityBar.tsx',
-      'src/components/custom/Workout/LiveAuraFrame.tsx',
-      'src/components/custom/Workout/SessionHeader.tsx',
-      'src/components/custom/Workout/Sparkline.tsx',
-      'src/components/custom/Workout/SparklineParts.tsx',
-      'src/components/custom/Workout/StatusDot.tsx',
-      'src/components/custom/Workout/VelocityLossBands.tsx',
-      'src/components/custom/Workout/VelocityStripFramed.tsx',
-      'src/components/custom/Workout/WeekRow.tsx',
-      'src/components/custom/Workout/WorkoutCard.tsx',
-      'src/components/custom/Workout/WorkoutPill.tsx',
-      'src/components/custom/Workout/setHeadingKit.tsx',
       // TD-536 b7
       'src/components/ui/alert/Alert.tsx',
       'src/components/ui/button/Button.tsx',
@@ -687,10 +658,6 @@ module.exports = tseslint.config(
       'src/components/custom/Workout/ReadinessCheck.tsx',
       'src/components/custom/Workout/StrengthTrendChart.tsx',
       'src/components/custom/Workout/TempoDisplay.tsx',
-      // TD-536 b11
-      'src/components/custom/Workout/BodyMapDetailPanel.tsx',
-      'src/components/custom/Workout/GoalCard.tsx',
-      'src/components/custom/charts/SetBarChart.tsx',
     ],
     rules: {
       'react/jsx-no-leaked-render': 'off',
