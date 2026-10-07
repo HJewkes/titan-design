@@ -9,6 +9,7 @@ import {
   type MeasurableDoc,
 } from './autoHeight.ts'
 import { forwardFrameKeys } from './frameKeys.ts'
+import { pinNumber } from './pins.ts'
 
 export type PinInput = Omit<Annotation, 'id' | 'note'>
 
@@ -193,7 +194,7 @@ export function PinOverlay({ variantKey, width, scale, annotate, pins, onClick }
         .filter((p) => p.width === width)
         .map((p) => (
           <span key={p.id} className="pin" style={{ left: p.x * scale, top: p.y * scale }}>
-            {p.id.split('-').pop()}
+            {pinNumber(p.id)}
           </span>
         ))}
     </div>

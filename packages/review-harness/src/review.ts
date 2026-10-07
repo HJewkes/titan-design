@@ -108,14 +108,20 @@ async function resolveImages(path: string, manifest: Manifest): Promise<Record<s
   return Object.fromEntries(entries)
 }
 
-/** The round under the review contract, or every way it falls short of it. */
-function parseRound(path: string, raw: Buffer): Manifest {
-  let json: unknown
+/** A JSON file and its bytes; the error names the path when it cannot be read or parsed. */
+export async function readJsonFile(path: string): Promise<{ json: unknown; raw: Buffer }> {
+  const raw = await readFile(path).catch(() => {
+    throw new ReviewError(`cannot read ${path}`)
+  })
   try {
-    json = JSON.parse(raw.toString('utf8'))
+    return { json: JSON.parse(raw.toString('utf8')), raw }
   } catch {
     throw new ReviewError(`${path} is not JSON`)
   }
+}
+
+/** The round under the review contract, or every way it falls short of it. */
+function parseRound(path: string, json: unknown): Manifest {
   const parsed = RoundSchema.safeParse(json)
   if (parsed.success) return parsed.data
   const issues = parsed.error.issues.map((i) => `  ${issueWhere(json, i.path)}: ${i.message}`)
@@ -123,10 +129,8 @@ function parseRound(path: string, raw: Buffer): Manifest {
 }
 
 export async function loadRound(path: string, storybookOverride?: string): Promise<LoadedRound> {
-  const raw = await readFile(path).catch(() => {
-    throw new ReviewError(`cannot read ${path}`)
-  })
-  const manifest = parseRound(path, raw)
+  const { json, raw } = await readJsonFile(path)
+  const manifest = parseRound(path, json)
   const stripped = urlParamProblems(manifest)
   if (stripped.length)
     throw new ReviewError(

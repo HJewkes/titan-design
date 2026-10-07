@@ -6,9 +6,9 @@ import {
   textKind,
   toHex,
   withAlpha,
-  type CheckKind,
   type Rgba,
 } from './contrast.ts'
+import type { CheckKind } from './schema.ts'
 import type { FrameSamples, RawSample, SampleRole } from './contrast-collect.ts'
 
 /** One measured pair, in the shape contrast.json reports it. */

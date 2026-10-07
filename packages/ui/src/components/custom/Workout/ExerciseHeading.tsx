@@ -157,7 +157,7 @@ function StackedHeading({ heading, nameStyle }: LayoutProps) {
       >
         <HeadingName name={heading.name} nameStyle={nameStyle} />
         <View className="flex-1" />
-        {indicator && <ExerciseIndicator kind={indicator} />}
+        {!!indicator && <ExerciseIndicator kind={indicator} />}
       </Pressable>
 
       <View
@@ -168,7 +168,7 @@ function StackedHeading({ heading, nameStyle }: LayoutProps) {
       >
         {prescriptionNode(heading, unit)}
         <View className="flex-1" />
-        {tempo && <TempoDisplay tempo={tempo} size="sm" showLabel={false} showInfo={false} />}
+        {!!tempo && <TempoDisplay tempo={tempo} size="sm" showLabel={false} showInfo={false} />}
       </View>
     </>
   )
@@ -189,8 +189,8 @@ function InlineHeading({ heading, nameStyle }: LayoutProps) {
         {prescriptionNode(heading, unit)}
       </View>
       <View className="flex-1" style={{ minWidth: 8 }} />
-      {indicator && <ExerciseIndicator kind={indicator} />}
-      {previousBest && (
+      {!!indicator && <ExerciseIndicator kind={indicator} />}
+      {!!previousBest && (
         <Typography
           variant="caption"
           color="tertiary"
