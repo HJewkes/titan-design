@@ -31,6 +31,14 @@ root `package.json`, `turbo.json`, `packages/ui/package.json`, `packages/ui/vite
 `api:check`, `docs:check`, `type-check:examples`, `turbo run test:unit -- --run --coverage`, `arch:check`.
 `pnpm verify` is `verify:unit` plus `test:axe`.
 
+### Turbo cache
+
+A pull request restores `.turbo/cache` from the newest entry a push to `main` saved for the same
+lockfile and Node version, so a task whose inputs match replays instead of running. Only a push to
+`main` saves, and it never restores, so every merged tree runs in full. A replay is as strong as a run
+only while turbo hashes every file a task reads: a task that reads files outside its package lists
+them in `inputs` with `$TURBO_ROOT$` (as `test:unit` does in `turbo.json`).
+
 ### `visual` steps
 
 | Step                         | Script (package `@titan-design/react-ui`) |
