@@ -78,7 +78,7 @@ export function RadioGroup({
         accessibilityLabel={label}
         {...props}
       >
-        {label && <Text className="text-sm font-medium text-text-primary mb-2">{label}</Text>}
+        {!!label && <Text className="text-sm font-medium text-text-primary mb-2">{label}</Text>}
         <View
           className={cn(
             orientation === 'horizontal' ? 'flex-row flex-wrap' : 'flex-col',
@@ -192,11 +192,13 @@ export function Radio({
         )}
       >
         {/* Inner dot */}
-        {isChecked && <View className={cn('rounded-full bg-on-brand-primary', inner)} />}
+        {!!isChecked && <View className={cn('rounded-full bg-on-brand-primary', inner)} />}
       </View>
 
       {/* Label */}
-      {children && <Text className={cn('ml-2 text-text-primary', text)}>{children}</Text>}
+      {(children === 0 || !!children) && (
+        <Text className={cn('ml-2 text-text-primary', text)}>{children}</Text>
+      )}
     </Pressable>
   )
 }

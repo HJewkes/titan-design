@@ -621,11 +621,6 @@ module.exports = tseslint.config(
       'src/lab/north-star/LiveView.tsx',
       'src/lab/north-star/VelocityDiverging.exploration.stories.tsx',
       'src/lab/north-star/fatigue-lab-shared.tsx',
-      // TD-536 b3
-      'src/components/ui/autocomplete/Autocomplete.tsx',
-      'src/components/ui/checkbox/Checkbox.tsx',
-      'src/components/ui/radio/Radio.tsx',
-      'src/components/ui/switch/Switch.tsx',
       // TD-536 b5
       'src/components/custom/Workout/ExerciseHeading.tsx',
       'src/components/custom/Workout/GoalMilestoneSummary.tsx',
