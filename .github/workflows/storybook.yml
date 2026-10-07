@@ -3,6 +3,10 @@ name: Deploy Storybook
 on:
   push:
     branches: [main]
+    paths:
+      - 'packages/ui/**'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/storybook.yml'
 
 permissions:
   contents: read

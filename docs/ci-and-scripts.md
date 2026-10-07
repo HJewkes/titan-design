@@ -8,14 +8,11 @@ root `package.json`, `turbo.json`, `packages/ui/package.json`, `packages/ui/vite
 
 `ci.yml` runs on every pull request and on pushes to `main`.
 
-| Job              | Runs on                                  | What it runs                                                        |
-| ---------------- | ---------------------------------------- | ------------------------------------------------------------------- |
-| `build`          | Node 22 (single-entry matrix)            | Install, then the steps below                                       |
-| `visual`         | Playwright container, Node 22            | Layer 3 parity, offline fonts, Layer 1 and 2 baselines, interaction |
-| `storybook-play` | Playwright container, Node 22            | `pnpm test:storybook` (play functions in the `storybook` project)   |
-| `stories-axe`    | Node 22                                  | `pnpm test:axe` (axe on every story under jsdom)                    |
-| `audit`          | Node 22, no install                      | `scripts/audit-retry.sh` (`pnpm audit --audit-level=critical`)      |
-| `check`          | Always runs; needs all of the jobs above | `HJewkes/ci/actions/all-green`; fails if any needed job failed      |
+| Job      | Runs on                                                                | What it runs                                                                   |
+| -------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `build`  | Node 22 (single-entry matrix)                                          | Install, then the steps below                                                  |
+| `visual` | Playwright container, Node 22                                          | Layer 3 parity, offline fonts, Layer 1 and 2 baselines, interaction            |
+| `check`  | Playwright container, Node 22; always runs; needs `build` and `visual` | all-green over `needs`, then audit, stories axe and play functions (see below) |
 
 ### `build` steps
 
@@ -53,6 +50,26 @@ On failure the job regenerates the Layer 1 and Layer 2 baselines and uploads the
 `component-visual-baselines` and `storybook-visual-baselines` artifacts, plus
 `layer2-failure-results` and `playwright-failure-diagnostics`. Refresh committed `*-chromium-linux.png`
 baselines from those artifacts. See `docs/test-layers.md`.
+
+### `check` steps
+
+The ruleset requires `check`. Its first step fails the job when `build` or `visual` failed, was
+cancelled or is missing from `needs`, and every later step then skips.
+
+| Step                 | Command                                     | Notes                                  |
+| -------------------- | ------------------------------------------- | -------------------------------------- |
+| all-green            | `HJewkes/ci/actions/all-green`              | Over `needs`                           |
+| Rendered UI changed? | `node packages/ui/scripts/visual-paths.mjs` | Pull requests only                     |
+| Audit                | `scripts/audit-retry.sh`                    | Always; reads the lockfile, no install |
+| Stories axe          | `pnpm test:axe`                             | Skipped when the classifier says no    |
+| Storybook play       | `pnpm test:storybook`                       | Skipped when the classifier says no    |
+
+### Path gate
+
+On a pull request, `visual` and `check` each run `packages/ui/scripts/visual-paths.mjs`. When none of
+the PR's changed paths matches `RENDERED_UI_PATTERNS`, `visual` skips its layers and `check` skips
+stories axe and play; both still report green. If the changed paths cannot be listed, everything runs.
+A push to `main` always runs everything. A new input to any gated step needs a pattern there.
 
 ## Argument passthrough
 
