@@ -303,6 +303,29 @@ export function buildStorybookArgs(port, extra = []) {
   return ['dev', '-p', String(port), '--exact-port', ...ci, ...extra]
 }
 
+/** The line that lets whoever started a server stop exactly that server, by PID. */
+export function formatPidLine(pid, port) {
+  return `storybook: pid ${pid} on :${port} (stop: kill ${pid})`
+}
+
+/** Startup under load can take minutes; past this, the PID line is not worth waiting for. */
+const PID_WAIT_MS = 300_000
+
+/**
+ * The PID listening on `port` once it is up, or `null` if `child` exits or the wait runs out.
+ * The listener is reported rather than the child because the bin shim may not be the server.
+ */
+async function awaitListenerPid(port, child, { timeoutMs = PID_WAIT_MS } = {}) {
+  const deadline = Date.now() + timeoutMs
+  while (Date.now() < deadline && child.exitCode == null) {
+    const holder = listeners().find((l) => l.port === port)
+    if (holder) return holder.pid
+    if (!LSOF && (await isListening(port, '127.0.0.1'))) return child.pid
+    await new Promise((ok) => setTimeout(ok, 500))
+  }
+  return null
+}
+
 function launch(port) {
   console.log(`  Starting Storybook on ${port} (--exact-port: it fails rather than drifts)\n`)
   const args = buildStorybookArgs(port, passthrough)
@@ -312,6 +335,9 @@ function launch(port) {
     process.exit(1)
   })
   child.on('exit', (code) => process.exit(code ?? 0))
+  awaitListenerPid(port, child).then((pid) => {
+    if (pid != null) console.log(`\n  ${formatPidLine(pid, port)}\n`)
+  })
 }
 
 /** Commands that need lsof's inventory; everything else can run on the bind probe alone. */

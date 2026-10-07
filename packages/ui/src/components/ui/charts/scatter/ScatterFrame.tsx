@@ -102,7 +102,7 @@ export function ScatterFrame({
         />
       ))}
 
-      {axis.xLabel && (
+      {!!axis.xLabel && (
         <Text
           testID="scatter-x-label"
           className="text-[10px] font-semibold text-text-secondary"
@@ -117,7 +117,7 @@ export function ScatterFrame({
           {axis.xLabel}
         </Text>
       )}
-      {axis.yLabel && (
+      {!!axis.yLabel && (
         <Text
           testID="scatter-y-label"
           className="text-[10px] font-semibold text-text-secondary"
