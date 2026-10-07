@@ -14,16 +14,16 @@ concurrency:
   group: ci-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
-# Rename stage (a) of the HJewkes/ci standard: the ruleset still requires build (20) and
-# build (22), so the matrix keeps its name until the ruleset requires only `check`.
+# Rename stage (a) of the HJewkes/ci standard: the ruleset still requires build (22), so the
+# single-entry matrix keeps its name until the ruleset requires only `check`.
 # A later PR replaces it with node.yml.
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [20, 22]
-    # In turbo.json globalEnv, so the two legs never share a turbo cache entry.
+        node-version: [22]
+    # In turbo.json globalEnv, so a Node version bump never replays another version's turbo cache.
     env:
       NODE_VERSION: ${{ matrix.node-version }}
 

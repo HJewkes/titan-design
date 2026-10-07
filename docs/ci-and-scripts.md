@@ -10,7 +10,7 @@ root `package.json`, `turbo.json`, `packages/ui/package.json`, `packages/ui/vite
 
 | Job      | Runs on                                                                | What it runs                                                                   |
 | -------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| `build`  | Node 20 and 22 matrix                                                  | Install, then the steps below                                                  |
+| `build`  | Node 22 (single-entry matrix)                                          | Install, then the steps below                                                  |
 | `visual` | Playwright container, Node 22                                          | Layer 3 parity, offline fonts, Layer 1 and 2 baselines, interaction            |
 | `check`  | Playwright container, Node 22; always runs; needs `build` and `visual` | all-green over `needs`, then audit, stories axe and play functions (see below) |
 
