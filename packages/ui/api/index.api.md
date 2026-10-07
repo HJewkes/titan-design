@@ -4831,6 +4831,7 @@ export interface NavItemProps {
     icon: ReactNode;
     label: string;
     live?: boolean;
+    liveLabel?: string;
     // (undocumented)
     onPress?: () => void;
 }
