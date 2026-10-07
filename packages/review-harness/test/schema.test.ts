@@ -150,6 +150,103 @@ describe('feedback', () => {
   })
 })
 
+describe('a pick-one bound to a PR head (round@2 merge)', () => {
+  const HEAD = 'a'.repeat(40)
+  const merge = { repo: 'owner/name', pr: 7, headSha: HEAD, ship: ['Ship it'] }
+  const bound = (patch: object, extra: object[] = [], top: object = {}) => {
+    const input = JSON.parse(JSON.stringify(base()))
+    const [first] = input.questions
+    input.questions = [
+      {
+        ...first,
+        options: ['Ship it', 'Rework it', 'none'],
+        revisionOption: 'none',
+        merge,
+        ...patch,
+      },
+      ...extra,
+    ]
+    return { ...input, ...top }
+  }
+  const second = (id: string, patch: object) => ({
+    id,
+    kind: 'pick-one',
+    prompt: 'Another part?',
+    signsOff: 'the other part',
+    options: ['Ship that', 'Not that'],
+    merge: { ...merge, ship: ['Ship that'] },
+    ...patch,
+  })
+  const messages = (input: unknown) => {
+    const result = ManifestSchema.safeParse(input)
+    return result.success ? [] : result.error.issues.map((i) => i.message)
+  }
+
+  it('a pick-one bound to a PR head with a ship option parses', () => {
+    const parsed = ManifestSchema.parse(bound({}))
+    expect(parsed.questions[0]).toMatchObject({ merge })
+  })
+
+  it('a short or non-hex headSha is refused', () => {
+    for (const headSha of ['abc123', 'A'.repeat(40), 'g'.repeat(40)])
+      expect(issues(bound({ merge: { ...merge, headSha } }))).toContain('questions.0.merge.headSha')
+  })
+
+  it('a ship set naming the revision option is refused', () => {
+    expect(messages(bound({ merge: { ...merge, ship: ['Ship it', 'none'] } }))).toEqual([
+      expect.stringMatching(/question q1: ship option "none" is its revisionOption/),
+    ])
+  })
+
+  it('a ship option not among the options is refused', () => {
+    expect(messages(bound({ merge: { ...merge, ship: ['Ship it', 'Elsewhere'] } }))).toEqual([
+      expect.stringMatching(/question q1: ship option "Elsewhere" is not one of its options/),
+    ])
+  })
+
+  it('an empty ship set or a stray merge field is refused', () => {
+    expect(issues(bound({ merge: { ...merge, ship: [] } }))).toContain('questions.0.merge.ship')
+    expect(issues(bound({ merge: { ...merge, extra: 1 } }))).toContain('questions.0.merge')
+  })
+
+  it('two questions binding one PR at different heads are refused', () => {
+    const other = second('q9', { merge: { ...merge, headSha: 'b'.repeat(40), ship: ['Ship that'] } })
+    expect(messages(bound({}, [other]))).toEqual([
+      expect.stringMatching(/owner\/name#7 is bound at different heads/),
+    ])
+  })
+
+  it('two questions binding one PR at the same head parse', () => {
+    expect(() => ManifestSchema.parse(bound({}, [second('q9', {})]))).not.toThrow()
+  })
+
+  it('the same PR number in another repo may sit at another head', () => {
+    const other = second('q9', {
+      merge: { repo: 'owner/other', pr: 7, headSha: 'b'.repeat(40), ship: ['Ship that'] },
+    })
+    expect(() => ManifestSchema.parse(bound({}, [other]))).not.toThrow()
+  })
+
+  it('a build record parses, and a malformed one is refused', () => {
+    const build = { mainSha: HEAD, mergeSha: 'c'.repeat(40) }
+    expect(ManifestSchema.parse(bound({}, [], { build })).build).toEqual(build)
+    expect(issues(bound({}, [], { build: { mainSha: 'abc', mergeSha: build.mergeSha } }))).toContain(
+      'build.mainSha'
+    )
+  })
+
+  it('a round with no bindings parses exactly as today', () => {
+    const parsed = ManifestSchema.parse(base())
+    expect(parsed).not.toHaveProperty('build')
+    for (const q of parsed.questions) expect(q).not.toHaveProperty('merge')
+    expect(ManifestSchema.parse(JSON.parse(JSON.stringify(parsed)))).toEqual(parsed)
+  })
+
+  it('leaves the feedback schema untouched', () => {
+    expect(JSON.stringify(feedbackJsonSchema())).not.toMatch(/headSha|"merge"|mergeSha/)
+  })
+})
+
 describe('exported JSON Schema files', () => {
   const onDisk = (name: string) =>
     JSON.parse(readFileSync(new URL(`../schema/${name}`, import.meta.url), 'utf8'))

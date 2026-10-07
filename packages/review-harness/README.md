@@ -123,8 +123,9 @@ sha256 of the manifest you wrote.
   `variants[{key, storyId | image, label, args?, globals?, height?}]` (at most 12, or at most 80
   in a round with `sections`; empty for a round of questions only, which needs no placeholder
   frame; every frame sits in a section),
-  `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?, recommendation?, signsOff (pick-one)}]`,
+  `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?, recommendation?, signsOff (pick-one), merge? (pick-one)}]`,
   `sections[{id, title, deciding, changed, context, kind?: CHOICE|STATES, questionIds[], variantKeys[], seeAlso?[], height?}]`,
+  `build?{mainSha, mergeSha}` (written by the build; nothing writes it yet),
   `recommendations` (`"after-answer"`, the default, or `"shown"`),
   `contrast?{knownDefects[], measured[], unmeasured[]}` (also on a section; see _Contrast gate_).
   The round and section `context`, each question `prompt` and each recommendation `rationale`
@@ -180,6 +181,30 @@ sha256 of the manifest you wrote.
   The match is by that field, never by option text. Option text is unique across a round's
   pick-ones, so only one question can list a plain `"none"`; the rest use the built-in. A
   `revisionRequested` on a pick-one that offers neither is rejected. Everything else is unchanged and means what it always did.
+
+- **A pick-one can bind itself to a PR head.** `merge: {repo, pr, headSha, ship[]}` names the PR
+  (`owner/name`, a positive `pr`) and the 40-character lower-case `headSha` the round showed;
+  `ship` lists the options that agree with merging it at that head. Every `ship` option is one of
+  the question's `options`, and none is its `revisionOption`: an option that requests a revision
+  can never also approve a merge. Several questions may bind one PR, but every one that does
+  names the same `headSha`. A round without `merge` or `build` parses as before.
+
+  ```json
+  {
+    "id": "tb-ship",
+    "kind": "pick-one",
+    "prompt": "Ship the toolbar as built?",
+    "signsOff": "the toolbar layout",
+    "options": ["Ship the toolbar", "Change the toolbar", "Request a revision"],
+    "revisionOption": "Request a revision",
+    "merge": {
+      "repo": "owner/name",
+      "pr": 123,
+      "headSha": "0123456789abcdef0123456789abcdef01234567",
+      "ship": ["Ship the toolbar"]
+    }
+  }
+  ```
 
 ## A round from Morning items (TD-680)
 

@@ -99,6 +99,18 @@ const recommendation = RecommendationSchema.optional()
 /** When the page shows a recommendation: once its question is answered, or from the start. */
 const RECOMMENDATION_MODES = ['after-answer', 'shown'] as const
 
+const sha40 = z.string().regex(/^[0-9a-f]{40}$/, 'must be 40 lower-case hex characters')
+
+/** The PR head a pick-one is about, and the options that agree with merging it at that head. */
+const MergeBindingSchema = z
+  .object({
+    repo: z.string().regex(/^[^/\s]+\/[^/\s]+$/, 'must be owner/name'),
+    pr: z.number().int().positive(),
+    headSha: sha40,
+    ship: z.array(z.string()).min(1),
+  })
+  .strict()
+
 const PickOneSchema = z
   .object({
     ...questionBase,
@@ -114,6 +126,7 @@ const PickOneSchema = z
     recommendation,
     /** The changed part an answer signs off, so no answer approves a whole PR at once. */
     signsOff: z.string().min(1).optional(),
+    merge: MergeBindingSchema.optional(),
   })
   .strict()
 const PickManySchema = z
@@ -331,6 +344,7 @@ function optionVariantProblems(m: {
     options?: string[]
     optionVariants?: Record<string, string>
     revisionOption?: string
+    merge?: { ship: string[] }
   }[]
 }): string[] {
   const keys = new Set(m.variants.map((v) => v.key))
@@ -338,6 +352,14 @@ function optionVariantProblems(m: {
     ...(q.revisionOption === undefined || q.options?.includes(q.revisionOption)
       ? []
       : [`question ${q.id}: revisionOption "${q.revisionOption}" is not one of its options`]),
+    ...(q.merge?.ship ?? []).flatMap((option) => [
+      ...(q.options?.includes(option)
+        ? []
+        : [`question ${q.id}: ship option "${option}" is not one of its options`]),
+      ...(option === q.revisionOption
+        ? [`question ${q.id}: ship option "${option}" is its revisionOption`]
+        : []),
+    ]),
     ...Object.entries(q.optionVariants ?? {}).flatMap(([option, key]) => [
       ...(q.options?.includes(option)
         ? []
@@ -409,6 +431,28 @@ function recommendationProblems(m: { questions: z.output<typeof QuestionSchema>[
   })
 }
 
+/** What the Storybook was built from; written by the build, never by hand. */
+const BuildProvenanceSchema = z.object({ mainSha: sha40, mergeSha: sha40 }).strict()
+
+function mergeBindingProblems(m: { questions: z.output<typeof QuestionSchema>[] }): string[] {
+  const heads = new Map<string, Map<string, string[]>>()
+  for (const q of m.questions) {
+    if (q.kind !== 'pick-one' || !q.merge) continue
+    const pr = `${q.merge.repo}#${q.merge.pr}`
+    const byHead = heads.get(pr) ?? new Map<string, string[]>()
+    byHead.set(q.merge.headSha, [...(byHead.get(q.merge.headSha) ?? []), q.id])
+    heads.set(pr, byHead)
+  }
+  return [...heads].flatMap(([pr, byHead]) =>
+    byHead.size > 1
+      ? [
+          `${pr} is bound at different heads: ` +
+            [...byHead].map(([head, ids]) => `${head} (${ids.join(', ')})`).join('; '),
+        ]
+      : []
+  )
+}
+
 const ManifestObject = z
   .object({
     schema: z.enum([MANIFEST_SCHEMA_ID, LEGACY_MANIFEST_SCHEMA_ID]),
@@ -429,6 +473,7 @@ const ManifestObject = z
     contrast: ContrastDeclarationsSchema.optional(),
     /** Written by `--contrast-override` when the round is served ungated; never hand-written. */
     contrastOverride: ContrastOverrideSchema.optional(),
+    build: BuildProvenanceSchema.optional(),
   })
   .strict()
 
@@ -452,7 +497,11 @@ function manifestProblems(m: z.output<typeof ManifestObject>): Problem[] {
         ])
       : []),
     ...at('sections', sectionProblems(m)),
-    ...at('questions', [...optionVariantProblems(m), ...recommendationProblems(m)]),
+    ...at('questions', [
+      ...optionVariantProblems(m),
+      ...recommendationProblems(m),
+      ...mergeBindingProblems(m),
+    ]),
     ...at('contrast', contrastProblems(m)),
   ]
 }

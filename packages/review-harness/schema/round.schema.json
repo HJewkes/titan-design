@@ -253,6 +253,38 @@
               "signsOff": {
                 "type": "string",
                 "pattern": "\\S"
+              },
+              "merge": {
+                "type": "object",
+                "properties": {
+                  "repo": {
+                    "type": "string",
+                    "pattern": "^[^/\\s]+\\/[^/\\s]+$"
+                  },
+                  "pr": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "headSha": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{40}$"
+                  },
+                  "ship": {
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "repo",
+                  "pr",
+                  "headSha",
+                  "ship"
+                ],
+                "additionalProperties": false
               }
             },
             "required": [
@@ -975,6 +1007,24 @@
       "required": [
         "reason",
         "problem"
+      ],
+      "additionalProperties": false
+    },
+    "build": {
+      "type": "object",
+      "properties": {
+        "mainSha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "mergeSha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      },
+      "required": [
+        "mainSha",
+        "mergeSha"
       ],
       "additionalProperties": false
     }
