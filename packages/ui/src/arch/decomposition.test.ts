@@ -444,7 +444,7 @@ describe('decomposition detector on the package', () => {
     () => {
       const entries = measure(programFor()) as Entries
 
-      expect(entries['components/custom/Workout/VelocityStrip.tsx#VelocityStrip'].props).toBe(22)
+      expect(entries['components/custom/Workout/VelocityStrip.tsx#VelocityStrip'].props).toBe(21)
     }
   )
 })

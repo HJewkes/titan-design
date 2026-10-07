@@ -17,7 +17,7 @@ import {
   ORANGE,
   Page,
   monoTag,
-} from '../../components/custom/Workout/setHeadingKit'
+} from './setHeadingKit'
 
 type PaceState = 'behind' | 'ahead' | 'idle'
 

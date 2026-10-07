@@ -93,7 +93,7 @@ deferred to its own pass.
 - Fatigue: 9 module constants, local colour math.
 - `ui/*`: 81 raw `Text` onto Typography; Button `#ffffff`, Alert `bg-black`, Tooltip `bg-neutral-800`, Spinner hex.
 - Lint: every family in the error block; delete `raw-color-baseline.json` at zero.
-- Move `velocity-story-kit.tsx` and `setHeadingKit.tsx` out of `components/`.
+- Move `velocity-story-kit.tsx` and `setHeadingKit.tsx` out of `components/`. Done: both live in `src/lab/` (`lab/velocity-story-kit/`, `lab/explorations/setHeadingKit.tsx`).
 
 **E6 · Code-quality floor** (independent)
 
@@ -117,15 +117,15 @@ Thirteen `custom/` directories plus `ActiveWork/Eyebrow` are domain-free and mov
 time (`custom/README.md`, "Generic directories awaiting a move to `ui/`"). In-repo importer counts
 are grep counts against `src/` at merge time, excluding the directory's own files.
 
-| #   | Move                                                                                                                                                                     | In-repo importers        | When                                      |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------ | ----------------------------------------- |
-| M1  | `usePrefersReducedMotion` to `src/hooks/usePrefersReducedMotion.ts`                                                                                                      | 3                        | Landed in #276                            |
-| M2  | Typography to `ui/typography`, Eyebrow to `ui/eyebrow`, with a one-release re-export shim in `custom/Typography`; marks decision 9 landed when its PR merges             | Typography 68, Eyebrow 8 | Landed in #277                            |
-| M3  | EmptyState to `ui/empty-state`                                                                                                                                           | 1                        | Landed in #279                            |
-| M5  | Create `ui/charts/` with its README; move SparkBars; add a `d3-*`-import lint scoped to `ui/charts/**`                                                                   | 2                        | Landed in TD-188                          |
-| M4  | Table (headless `useTableState` plus a styled shell, TD-29, #271) to `ui/table`                                                                                          | 8                        | Landed in #367                            |
-| M6  | Generic singles: Metric (2), DateTime (8, landed in TD-428, migration M7 in `DEPRECATIONS.md`), Prose (5), Sidebar (1), stepper (1), TimerReadout (2), CircularTimer (2) | 21 total                 | behind the shrinking baseline, follows M2 |
-| M8  | Charts that are already generic: Scatter (1), Gauge (1), Treemap (3), into `ui/charts/` (migration M8 in `DEPRECATIONS.md`)                                              | 5 total                  | Landed in TD-471                          |
+| #   | Move                                                                                                                                                                                                                         | In-repo importers        | When                                      |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ | ----------------------------------------- |
+| M1  | `usePrefersReducedMotion` to `src/hooks/usePrefersReducedMotion.ts`                                                                                                                                                          | 3                        | Landed in #276                            |
+| M2  | Typography to `ui/typography`, Eyebrow to `ui/eyebrow`, with a one-release re-export shim in `custom/Typography`; marks decision 9 landed when its PR merges                                                                 | Typography 68, Eyebrow 8 | Landed in #277                            |
+| M3  | EmptyState to `ui/empty-state`                                                                                                                                                                                               | 1                        | Landed in #279                            |
+| M5  | Create `ui/charts/` with its README; move SparkBars; add a `d3-*`-import lint scoped to `ui/charts/**`                                                                                                                       | 2                        | Landed in TD-188                          |
+| M4  | Table (headless `useTableState` plus a styled shell, TD-29, #271) to `ui/table`                                                                                                                                              | 8                        | Landed in #367                            |
+| M6  | Generic singles: Metric (2, landed in TD-53, migration M9 in `DEPRECATIONS.md`), DateTime (8, landed in TD-428, migration M7 in `DEPRECATIONS.md`), Prose (5), Sidebar (1), stepper (1), TimerReadout (2), CircularTimer (2) | 21 total                 | behind the shrinking baseline, follows M2 |
+| M8  | Charts that are already generic: Scatter (1), Gauge (1), Treemap (3), into `ui/charts/` (migration M8 in `DEPRECATIONS.md`)                                                                                                  | 5 total                  | Landed in TD-471                          |
 
 M1, M2, M3 and M5 land as separate PRs on disjoint files and can run in parallel. M4 was gated on
 TD-29, which has since landed (#271); it is now unblocked. M8 landed in TD-471. M6 has no deadline;
