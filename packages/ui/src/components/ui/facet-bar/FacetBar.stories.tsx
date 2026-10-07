@@ -52,7 +52,8 @@ const meta: Meta<typeof FacetBar> = {
           '**Molecule.** Composes [Chip](?path=/docs/components-atoms-chip--docs) and [Eyebrow](?path=/docs/components-molecules-eyebrow--docs). ' +
           'A labelled group of toggle buttons (`aria-pressed`). No loading or error state: the consumer ' +
           'passes loaded options and renders its own failure. Empty options render nothing. Use the ' +
-          '`fixture` control for the degenerate cases.',
+          '`fixture` control for the degenerate cases. The selected face is the Chip solid face and the ' +
+          'unselected face is the Chip subtle face, the same table Badge reads.',
       },
     },
   },
