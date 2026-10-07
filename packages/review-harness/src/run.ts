@@ -28,7 +28,7 @@ import {
 
 const USAGE = `titan-review <round.json> [options]
 titan-review --example [--storybook <url>]
-titan-review build <draft.json> [--storybook <url>]
+titan-review build <draft.json> [--storybook <url>] [--tree <path>]
 titan-review calibration <feedback.json...>
 titan-review round from-morning <items.json> [--decider <file>] [--out <draft.json>]
 
@@ -41,6 +41,9 @@ build measures every story frame of a draft round at every width, light and dark
 headless Chromium: text at 4.5:1 (3:1 when large), control boundaries, separators, tracks and
 marks at 3:1. It writes contrast.json beside the draft and copies the draft to round.json
 only if every miss is declared in contrast.knownDefects with its route; otherwise it exits 3.
+A round that binds a question to a PR head needs --tree, the checkout the Storybook ran from:
+build exits 3 unless every bound head is an ancestor of that tree's HEAD, and with --tree it
+records build {mainSha (the tree's origin/main), mergeSha (its HEAD)} in round.json.
 
 calibration reads feedback files and prints how often the owner's answer matched our
 recommendation: per round, overall, and by confidence band (<0.5, 0.5-0.75, >=0.75).
@@ -51,6 +54,7 @@ proposal text labelled Proposed, and the decider's recommendations from a separa
 writes draft.json beside the items file (or --out); run build on it next.
 
   --storybook <url>  Storybook base url (default: the manifest's storybookUrl)
+  --tree <path>      The checkout the Storybook ran from, for build (see above)
   --decider <file>   Decider recommendations for round from-morning (questionId, answer, cite)
   --out <dir>        Where feedback.json and PNGs go (default: the manifest's directory);
                      for round from-morning, the draft's file path (default: draft.json
@@ -66,7 +70,7 @@ writes draft.json beside the items file (or --out); run build on it next.
 
 const DRAFT_FILE = 'draft.json'
 
-export interface CliIo extends Omit<ReviewDeps, 'onReady'>, Pick<BuildIo, 'measure'> {
+export interface CliIo extends Omit<ReviewDeps, 'onReady'>, Pick<BuildIo, 'measure' | 'git'> {
   stdout: (text: string) => void
   stderr: (text: string) => void
   openBrowser: (url: string) => void
@@ -87,6 +91,7 @@ function parseCli(argv: string[]) {
       'contrast-override': { type: 'string' },
       'allow-stale': { type: 'boolean' },
       decider: { type: 'string' },
+      tree: { type: 'string' },
       example: { type: 'boolean' },
       help: { type: 'boolean' },
     },
@@ -213,7 +218,8 @@ async function dispatch(parsed: Parsed, io: CliIo): Promise<number> {
   }
   if (parsed.positionals[0] === 'build') {
     if (parsed.positionals.length !== 2) throw new ReviewError(`expected one draft\n\n${USAGE}`)
-    return buildRound(resolve(parsed.positionals[1]), parsed.values.storybook, io)
+    const tree = parsed.values.tree && resolve(parsed.values.tree)
+    return buildRound(resolve(parsed.positionals[1]), parsed.values.storybook, io, tree)
   }
   if (parsed.positionals[0] === 'round') return fromMorning(parsed, io)
   if (parsed.positionals[0] === 'calibration') {

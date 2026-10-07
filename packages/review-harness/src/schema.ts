@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { contractProblems, duplicates, type Problem } from './contract.ts'
+import { SHIP_OPTIONS, contractProblems, duplicates, type Problem } from './contract.ts'
 
 export const MANIFEST_SCHEMA_ID = 'titan-review/round@2'
 /** A round written before the review contract: the page still reads it, the CLI refuses it. */
@@ -441,7 +441,6 @@ function recommendationProblems(m: { questions: z.output<typeof QuestionSchema>[
 /** What the Storybook was built from; written by the build, never by hand. */
 const BuildProvenanceSchema = z.object({ mainSha: sha40, mergeSha: sha40 }).strict()
 
-const SHIP_OPTIONS = ['Ship', "Don't ship"]
 const sameList = (a: string[] | undefined, b: string[]) =>
   a?.length === b.length && a.every((v, i) => v === b[i])
 

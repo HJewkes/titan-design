@@ -37,6 +37,7 @@ node scripts/storybook-launch.mjs --isolated          # prints its port, e.g. 61
 
 pnpm review --example --storybook http://127.0.0.1:6107 > <round-dir>/draft.json   # a starting point
 pnpm review build <round-dir>/draft.json [--storybook <url>]   # contrast gate; writes round.json
+            [--tree <path>]                                   # required when a question binds a PR head
 pnpm review <round-dir>/round.json [--storybook <url>] [--out <dir>] [--no-open] [--no-capture]
             [--contrast-override "<reason>"] [--allow-stale]
 ```
@@ -125,7 +126,7 @@ sha256 of the manifest you wrote.
   frame; every frame sits in a section),
   `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?, recommendation?, signsOff (pick-one), page?, merge? (pick-one)}]`,
   `sections[{id, title, deciding, changed, context, kind?: CHOICE|STATES, questionIds[], variantKeys[], seeAlso?[], height?}]`,
-  `build?{mainSha, mergeSha}` (written by the build; nothing writes it yet),
+  `build?{mainSha, mergeSha}` (written by `build --tree`; a draft that carries it is refused),
   `recommendations` (`"after-answer"`, the default, or `"shown"`),
   `contrast?{knownDefects[], measured[], unmeasured[]}` (also on a section; see _Contrast gate_).
   The round and section `context`, each question `prompt` and each recommendation `rationale`
@@ -316,6 +317,15 @@ Chromium, using the same renderer as capture. It writes `contrast.json` beside t
 copies the draft byte for byte to `round.json` only when nothing undeclared failed. Otherwise
 it exits 3 and `round.json` is not written. A frame whose theme did not apply is an error,
 never a pass.
+
+`--tree <path>` names the checkout the Storybook was built from. A round in which any pick-one
+carries `merge` needs it: without it, `build` exits 3 naming the bound questions. With it,
+`build` reads the tree's `HEAD` and exits 3, naming each `repo#pr` and head, unless every bound
+`headSha` is an ancestor of that `HEAD` (`git merge-base --is-ancestor`), so a ship pick never
+names a head the Storybook did not render. On success `round.json` is the draft plus
+`build: {mainSha, mergeSha}`: `mergeSha` is the tree's `HEAD`, `mainSha` its `origin/main`.
+`contrast.json` records the sha of those bytes, so the round still serves. A rebuild at the same
+heads rewrites `build` only. A round without bindings needs no tree.
 
 Thresholds (WCAG 2.1 SC 1.4.3 and 1.4.11): text 4.5:1; large text (24px, or 18.66px at
 weight 700 or more) 3:1; non-text 3:1 against the adjacent plane. Each colour is composited
