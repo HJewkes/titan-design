@@ -7,6 +7,7 @@
  * only shrink, the same ratchet as the stories-axe baseline.
  */
 
+import { ratchetProblems } from './ratchet'
 import {
   UnreadableMeta,
   hasGenericExport,
@@ -202,21 +203,13 @@ export function stableBaselineProblems(
   missing: string[],
   baselined: string[] = []
 ): string[] {
-  const added = missing.filter((layer) => !baselined.includes(layer))
-  const stale = baselined.filter((layer) => !missing.includes(layer))
-  const problems: string[] = []
-  if (added.length > 0) {
-    problems.push(
+  return ratchetProblems(missing, baselined, {
+    added: (added) =>
       `${name} lacks layer(s) ${added.join(', ')}, which ${STABLE_BASELINE_FILE} does not list. ` +
-        "Add the layer or declare it 'n/a: <reason>' in the story's parameters.layers; " +
-        'the baseline may only shrink.'
-    )
-  }
-  if (stale.length > 0) {
-    problems.push(
+      "Add the layer or declare it 'n/a: <reason>' in the story's parameters.layers; " +
+      'the baseline may only shrink.',
+    stale: (stale) =>
       `${name} now has layer(s) ${stale.join(', ')}. Remove them from ${STABLE_BASELINE_FILE}, ` +
-        'and delete the entry once its list is empty.'
-    )
-  }
-  return problems
+      'and delete the entry once its list is empty.',
+  })
 }
