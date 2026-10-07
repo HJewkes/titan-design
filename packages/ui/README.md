@@ -115,27 +115,27 @@ function App() {
 
 ### Core UI Components
 
-| Component    | Description                                                         |
-| ------------ | ------------------------------------------------------------------- |
-| **Button**   | Primary action component with variants: solid, outline, ghost, link |
-| **Input**    | Text input with label, helper text, and error states                |
-| **Card**     | Container component with header, content, footer                    |
-| **Badge**    | Status indicator labels                                             |
-| **Spinner**  | Loading indicator                                                   |
-| **Avatar**   | User/entity representation                                          |
-| **Divider**  | Visual separator                                                    |
-| **Checkbox** | Boolean input with group support                                    |
-| **Switch**   | Toggle input                                                        |
-| **Modal**    | Dialog/overlay component                                            |
+| Component      | Description                                                         |
+| -------------- | ------------------------------------------------------------------- |
+| **Button**     | Primary action component with variants: solid, outline, ghost, link |
+| **Input**      | Text input with label, helper text, and error states                |
+| **Card**       | Container component with header, content, footer                    |
+| **Badge**      | Status indicator labels                                             |
+| **Spinner**    | Loading indicator                                                   |
+| **Avatar**     | User/entity representation                                          |
+| **Divider**    | Visual separator                                                    |
+| **Checkbox**   | Boolean input with group support                                    |
+| **Switch**     | Toggle input                                                        |
+| **Modal**      | Dialog/overlay component                                            |
+| **Typography** | Consistent text styling (h1-h6, body, caption, etc.)                |
+| **Table**      | Data table with sorting and pagination                              |
+| **EmptyState** | Placeholder for empty data states                                   |
 
 ### Custom Components
 
 | Component          | Description                                                                                             |
 | ------------------ | ------------------------------------------------------------------------------------------------------- |
-| **Typography**     | Consistent text styling (h1-h6, body, caption, etc.)                                                    |
 | **Sidebar**        | Navigation sidebar with collapsible support                                                             |
-| **Table**          | Data table with sorting and pagination                                                                  |
-| **EmptyState**     | Placeholder for empty data states                                                                       |
 | **GoalLiftCard**   | One lift's goal state — next milestone, status pill, committed/stretch progress (root barrel)           |
 | **GoalMuscleCard** | A muscle priority's rollup card, built on `MuscleGlyph` (`bodymap` subpath — see [Subpaths](#subpaths)) |
 
@@ -199,7 +199,7 @@ their heavier runtime dependencies:
   placeholder="Placeholder text"
   helperText="Helper text"
   errorMessage="Error message"
-  variant="outline" | "filled" | "underlined"
+  variant="outline" | "filled" | "underline"
   size="sm" | "md" | "lg"
   isDisabled={false}
   isInvalid={false}
@@ -215,8 +215,10 @@ their heavier runtime dependencies:
 ```tsx fragment
 <Typography
   variant="h1" | "h2" | "h3" | "h4" | "h5" | "h6" |
-           "body1" | "body2" | "caption" | "overline"
-  color="primary" | "secondary" | "tertiary" | "disabled"
+           "body1" | "body2" | "subtitle1" | "subtitle2" | "caption" | "overline" |
+           "button" | "mono" | "monoLabel" | "microLabel" | "boldLabel"
+  color="primary" | "secondary" | "tertiary" | "disabled" | "inverse" |
+         "success" | "error" | "warning" | "info" | "inherit"
 >
   Text content
 </Typography>
@@ -225,7 +227,7 @@ their heavier runtime dependencies:
 ### Card
 
 ```tsx fragment
-<Card variant="default" | "elevated" | "outline" | "filled">
+<Card variant="elevated" | "outline" | "filled" | "accent" | "subtle">
   <CardHeader>
     <CardTitle>Title</CardTitle>
   </CardHeader>
