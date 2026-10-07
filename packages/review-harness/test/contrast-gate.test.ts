@@ -12,7 +12,7 @@ import {
 } from '../src/contrast-gate.ts'
 import { ReviewError } from '../src/review.ts'
 import { ManifestSchema, MANIFEST_SCHEMA_ID, type ManifestInput } from '../src/schema.ts'
-import { underContract } from './fixtures.ts'
+import { noTreeGit, underContract } from './fixtures.ts'
 
 const SHA = 'a'.repeat(64)
 
@@ -307,7 +307,11 @@ describe('buildRound', () => {
     const override = { reason: 'shown ungated', problem: 'no contrast.json', failures: [] }
     const { dir, path } = await setup({ ...imageOnly(), contrastOverride: override })
     await png(dir)
-    const build = buildRound(path, undefined, { stderr: () => {}, measure: async () => [] })
+    const build = buildRound(path, undefined, {
+      stderr: () => {},
+      measure: async () => [],
+      git: noTreeGit,
+    })
     await expect(build).rejects.toThrow('a draft never carries contrastOverride')
   })
 
@@ -318,6 +322,7 @@ describe('buildRound', () => {
     const code = await buildRound(path, undefined, {
       stderr: (t) => lines.push(t),
       measure: async () => [],
+      git: noTreeGit,
     })
     expect(code).toBe(EXIT_REFUSED)
     expect((await readdir(dir)).sort()).toEqual(['contrast.json', 'draft.json', 'wall.png'])
@@ -334,7 +339,11 @@ describe('buildRound', () => {
       })
     )
     await png(dir)
-    const code = await buildRound(path, undefined, { stderr: () => {}, measure: async () => [] })
+    const code = await buildRound(path, undefined, {
+      stderr: () => {},
+      measure: async () => [],
+      git: noTreeGit,
+    })
     expect(code).toBe(0)
     const round = await readFile(join(dir, 'round.json'))
     expect(round.equals(await readFile(path))).toBe(true)

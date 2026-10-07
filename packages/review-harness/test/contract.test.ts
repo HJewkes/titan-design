@@ -15,7 +15,7 @@ import {
   RoundSchema,
   type ManifestInput,
 } from '../src/schema.ts'
-import { SECTION_TEXTS, SHA } from './fixtures.ts'
+import { SECTION_TEXTS, SHA, noTreeGit } from './fixtures.ts'
 
 type Section = NonNullable<ManifestInput['sections']>[number]
 type PickOne = Extract<ManifestInput['questions'][number], { kind: 'pick-one' }>
@@ -192,6 +192,7 @@ describe('the CLI under the review contract', () => {
     openBrowser: () => {},
     capture: async () => [],
     measure: async () => [],
+    git: noTreeGit,
     createPage: async () => ({ handler: () => {}, close: async () => {} }),
     harnessFreshness: async () => ({ state: 'current' }),
     signal: new AbortController().signal,
