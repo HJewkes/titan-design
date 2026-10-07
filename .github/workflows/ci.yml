@@ -9,6 +9,11 @@ on:
 permissions:
   contents: read
 
+# PR runs share a per-ref group and cancel; each main push gets its own per-sha group, so no main run is replaced or cancelled.
+concurrency:
+  group: ci-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 # Rename stage (a) of the HJewkes/ci standard: the ruleset still requires build (20) and
 # build (22), so the matrix keeps its name until the ruleset requires only `check`.
 # A later PR replaces it with node.yml.

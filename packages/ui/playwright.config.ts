@@ -65,7 +65,9 @@ export default defineConfig({
   ],
   webServer: {
     command: reuseBuild ? serveCommand : `${buildCommand} && ${serveCommand}`,
-    port: 6006,
+    // A url wait, not `port`: a port wait takes any brief listener on 6006 for readiness (TD-735).
+    // The host matches serveCommand's --host, which localhost may not resolve to.
+    url: 'http://127.0.0.1:6006/index.json',
     reuseExistingServer: false,
     timeout: 300_000,
     stdout: 'pipe',
