@@ -2093,6 +2093,7 @@ export interface GaugeProps extends Omit<ViewProps, 'children'> {
     // (undocumented)
     className?: string;
     color?: string;
+    emptyState?: ReactNode;
     label?: string;
     // (undocumented)
     max?: number;
@@ -2101,7 +2102,7 @@ export interface GaugeProps extends Omit<ViewProps, 'children'> {
     size?: number;
     thresholds?: GaugeThreshold[];
     unit?: string;
-    value: number;
+    value: number | null;
 }
 
 // @public (undocumented)
@@ -5894,6 +5895,7 @@ export interface ScatterProps extends Omit<ViewProps, 'children'> {
     data: ScatterDatum[];
     // @deprecated
     diagonal?: boolean;
+    emptyState?: ReactNode;
     // (undocumented)
     height: number;
     onPress?: (id: string) => void;
@@ -8316,6 +8318,7 @@ export interface TreemapProps extends Omit<ViewProps, 'children'> {
     className?: string;
     // (undocumented)
     data: TreemapDatum[];
+    emptyState?: ReactNode;
     // (undocumented)
     height: number;
     maxTiles?: number;
