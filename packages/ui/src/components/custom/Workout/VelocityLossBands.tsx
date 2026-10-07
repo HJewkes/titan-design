@@ -163,8 +163,8 @@ export function VelocityLossBands({
       testID="velocity-loss-bands"
     >
       {band(0, vl30, alpha(vl['status-error'], 0.09))}
-      {hasAmber && band(vl30, vl20, alpha(vl['status-warning'], 0.08))}
-      {hasAmber &&
+      {!!hasAmber && band(vl30, vl20, alpha(vl['status-warning'], 0.08))}
+      {!!hasAmber &&
         threshold(
           vl20,
           alpha(vl['status-warning'], 0.75),
@@ -190,7 +190,7 @@ export function velocityReferenceOverlay(
   const referencePx = g.best > 0 && g.scaleDenom > 0 ? Math.min(g.plotHeight, g.yOf(g.best)) : 0
   return (
     <>
-      {showLossBands && (
+      {!!showLossBands && (
         <VelocityLossBands
           best={g.best}
           scaleDenom={g.scaleDenom}

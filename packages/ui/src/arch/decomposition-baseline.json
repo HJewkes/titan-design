@@ -12,7 +12,7 @@
     "complexity": 21
   },
   "components/custom/Workout/ActiveWorkoutPage.tsx": {
-    "file-lines": 348
+    "file-lines": 364
   },
   "components/custom/Workout/ActiveWorkoutPage.tsx#ActiveWorkoutPage": {
     "complexity": 19
@@ -42,20 +42,20 @@
     "props": 16
   },
   "components/custom/Workout/ExerciseCard.tsx": {
-    "file-lines": 255
+    "file-lines": 250
   },
   "components/custom/Workout/ExerciseCard.tsx#CollapsedCard": {
-    "props": 19
+    "props": 17
   },
   "components/custom/Workout/ExerciseCard.tsx#ExerciseCard": {
-    "props": 22
+    "props": 20
   },
   "components/custom/Workout/ExerciseCard.tsx#ExpandedCard": {
     "complexity": 20,
-    "props": 19
+    "props": 17
   },
   "components/custom/Workout/ExerciseCard.tsx#UpcomingCard": {
-    "props": 19
+    "props": 17
   },
   "components/custom/Workout/ExerciseCardHeading.tsx#ExerciseCardHeading": {
     "props": 26
@@ -127,7 +127,7 @@
     "props": 21
   },
   "components/custom/Workout/index.ts": {
-    "file-lines": 344
+    "file-lines": 345
   },
   "components/custom/Workout/velocityBandGeometry.ts": {
     "file-lines": 318
@@ -256,7 +256,7 @@
     "props": 14
   },
   "components/ui/progress/Progress.tsx": {
-    "file-lines": 272
+    "file-lines": 267
   },
   "components/ui/progress/Progress.tsx#CircularProgress": {
     "complexity": 17

@@ -5,6 +5,7 @@ import { VelocityStrip, type VelocityZoneBandProp } from './VelocityStrip'
 import { Typography } from '../../ui/typography'
 import { roundWeight, roundRpe } from '../../../utils/workout-format'
 import { resolveColor } from '../../../theme/resolve-color'
+import { SET_TABLE_COLUMN_WIDTH } from './SetTableHeader'
 
 export type SetRowUnit = 'lbs' | 'kg'
 
@@ -23,10 +24,10 @@ interface SetRowBase {
 /**
  * One row of the unified expanded exercise table (SET · REPS · LBS · RPE + a
  * per-row velocity strip), as a lifecycle discriminated union:
- * - `done` — a logged set: recorded reps / weight / rpe, a flat `mini` strip.
+ * - `done` — a logged set: recorded reps / weight / rpe, a flat `compact` strip.
  * - `live` — performed right now: shows its TARGET (never "reps-done/target"),
- *   stands out by brightness, and a compact velocity-HEIGHT spotlight strip.
- * - `todo` — planned: shows its target, muted, a flat grey `mini` stub strip.
+ *   stands out by brightness, and an `expanded` velocity-HEIGHT spotlight strip.
+ * - `todo` — planned: shows its target, muted, a flat grey `compact` stub strip.
  *
  * `done` + `todo` share ONE muted treatment; only `live` is brightened. There is
  * no PREV column (dropped in the unified design).
@@ -50,7 +51,7 @@ export type SetRowProps =
       rpe?: number | null
       /** Per-rep MEAN concentric velocities logged so far this set. */
       velocities: number[]
-      /** Newest rep index — reserved; the compact spotlight strip is static. */
+      /** Rep the spotlight strip grows from the baseline as it lands. Default: the newest rep. */
       liveRepIndex?: number
     })
   | (SetRowBase & {
@@ -64,9 +65,6 @@ export type SetRowProps =
 /** Live set — brightest. Done + upcoming share the muted role. */
 const TEXT_ACTIVE = 'text-primary'
 const TEXT_MUTED = 'text-secondary'
-
-/** Column widths mirror SetTableHeader(showPrevious=false) so cells align under it. */
-const COL = { set: 36, reps: 44, load: 56, rpe: 36 } as const
 
 // 13px is off the type scale (TOKENS.md §4); `boldLabel` is the 12px font-sans step
 // and `font-semibold` holds the original 600 — Inter is `font-sans` here, per B1.
@@ -137,8 +135,8 @@ function RowStrip({ set }: { set: SetRowProps }) {
         showInfo={false}
         height={24}
         scale="fixed"
-        // Grow the newest rep from the baseline as it lands (the live-set spotlight).
-        liveRepIndex={set.velocities.length - 1}
+        // Grow the caller's rep (default: the newest) from the baseline as it lands.
+        liveRepIndex={set.liveRepIndex ?? set.velocities.length - 1}
         set={{ type: 'straight', velocities: set.velocities, planned: set.target.reps }}
         zones={zones}
       />
@@ -160,9 +158,8 @@ function RowStrip({ set }: { set: SetRowProps }) {
 
 /**
  * ONE set row of the unified expanded exercise table. SET · REPS · LBS · RPE over
- * a per-row {@link VelocityStrip}; `live` stands out by brightness with a compact
- * velocity-height spotlight, `done`/`todo` are muted with a flat mini strip. Its
- * column widths mirror {@link SetTableHeader}(`showPrevious={false}`).
+ * a per-row {@link VelocityStrip}; `live` stands out by brightness with an `expanded`
+ * velocity-height spotlight, `done`/`todo` are muted with a flat `compact` strip.
  */
 export function SetRow(set: SetRowProps) {
   const live = set.state === 'live'
@@ -177,7 +174,7 @@ export function SetRow(set: SetRowProps) {
       testID="set-row"
     >
       <View className="flex-row items-center" style={{ justifyContent: 'space-between' }}>
-        <Cell width={COL.set} testID="set-row-set-number">
+        <Cell width={SET_TABLE_COLUMN_WIDTH.set} testID="set-row-set-number">
           {set.setType ? (
             <Typography
               variant="boldLabel"
@@ -203,7 +200,7 @@ export function SetRow(set: SetRowProps) {
             </Typography>
           )}
         </Cell>
-        <Cell width={COL.reps} testID="set-row-reps">
+        <Cell width={SET_TABLE_COLUMN_WIDTH.reps} testID="set-row-reps">
           <Typography
             variant="boldLabel"
             color="inherit"
@@ -213,7 +210,7 @@ export function SetRow(set: SetRowProps) {
             {displayReps(set)}
           </Typography>
         </Cell>
-        <Cell width={COL.load} testID="set-row-weight">
+        <Cell width={SET_TABLE_COLUMN_WIDTH.load} testID="set-row-weight">
           <Typography
             variant="boldLabel"
             color="inherit"
@@ -223,7 +220,7 @@ export function SetRow(set: SetRowProps) {
             {roundWeight(displayWeight(set))}
           </Typography>
         </Cell>
-        <Cell width={COL.rpe} testID="set-row-rpe">
+        <Cell width={SET_TABLE_COLUMN_WIDTH.rpe} testID="set-row-rpe">
           <Typography
             variant="boldLabel"
             color="inherit"

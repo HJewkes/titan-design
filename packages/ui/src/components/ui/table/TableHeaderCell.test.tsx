@@ -38,6 +38,23 @@ describe('TableHeaderCell sort label', () => {
     warn.mockRestore()
   })
 
+  it('sets no accessibility label on a sort button whose name is empty', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    renderHeader(
+      <TableHeaderCell sortKey="name" sortLabel="">
+        Name
+      </TableHeaderCell>,
+      vi.fn()
+    )
+    expect(screen.getByRole('button')).not.toHaveAttribute('aria-label')
+    warn.mockRestore()
+  })
+
+  it('keeps the sort label on a named sort button', () => {
+    renderHeader(<TableHeaderCell sortKey="name">Name</TableHeaderCell>, vi.fn())
+    expect(screen.getByRole('button')).toHaveAttribute('aria-label', 'Sort by Name')
+  })
+
   it('passes rest props through on a non-sortable header', () => {
     renderHeader(
       <TableHeaderCell testID="plain-header" accessibilityLabel="Plain column">
