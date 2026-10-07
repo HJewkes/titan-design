@@ -58,6 +58,11 @@ export interface AutocompleteProps<T = string> extends ViewProps {
   inputProps?: Partial<TextInputProps>
 }
 
+/** A selected value of 0 is still a selection, so `!!value` alone would hide the clear button. */
+function hasSelection(value: unknown): boolean {
+  return value === 0 || !!value
+}
+
 /**
  * Autocomplete component for searchable dropdown selection.
  *
@@ -155,7 +160,7 @@ export function Autocomplete<T extends string = string>({
           />
 
           {/* Clear button */}
-          {!!isClearable && ((value as unknown) === 0 || !!value) && !isDisabled && (
+          {!!isClearable && hasSelection(value) && !isDisabled && (
             <AutocompleteClearButton onClear={state.handleClear} />
           )}
 
