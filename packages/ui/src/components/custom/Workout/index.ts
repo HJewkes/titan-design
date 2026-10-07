@@ -348,6 +348,7 @@ export type {
   ActiveWorkoutExercise,
   ActiveWorkoutSuperset,
   ActiveWorkoutInput,
+  ActiveWorkoutRecordedSet,
   ActiveWorkoutRest,
   ActiveExerciseStatus,
   WorkoutProgress,

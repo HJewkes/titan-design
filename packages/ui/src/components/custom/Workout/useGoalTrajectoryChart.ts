@@ -204,7 +204,6 @@ export function useGoalTrajectoryChart(input: TrajectoryChartInput): TrajectoryC
       baseline: input.baseline,
       bandFade: input.bandFade,
       bandCurve: input.bandCurve,
-      referenceLabelSide: input.referenceLabelSide,
     },
   }
 }

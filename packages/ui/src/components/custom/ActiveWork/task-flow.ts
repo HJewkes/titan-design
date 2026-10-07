@@ -67,9 +67,28 @@ function rankOrUnset(severity: TaskSeverity | undefined): number {
   return finiteOr(severityRank(severity), severityRank(undefined))
 }
 
-function updatedTime(task: TaskFlowItem): number {
+function updatedTime(task: Pick<TaskListItem, 'updated'>): number {
   const time = Date.parse(task.updated)
   return Number.isNaN(time) ? -Infinity : time
+}
+
+/** Newest `updated` first; an unparseable one sorts after every date. */
+export function compareTaskUpdated(
+  a: Pick<TaskListItem, 'updated'>,
+  b: Pick<TaskListItem, 'updated'>
+): number {
+  return compareNumbers(updatedTime(b), updatedTime(a))
+}
+
+/** Severity rank, critical first and unset last, then priority with a non-finite one last. */
+export function compareTaskSeverity(
+  a: Pick<TaskListItem, 'severity' | 'priority'>,
+  b: Pick<TaskListItem, 'severity' | 'priority'>
+): number {
+  return (
+    compareNumbers(rankOrUnset(a.severity), rankOrUnset(b.severity)) ||
+    compareNumbers(finiteOr(a.priority, Infinity), finiteOr(b.priority, Infinity))
+  )
 }
 
 /**
@@ -84,15 +103,10 @@ export function compareTaskFlow(a: TaskFlowItem, b: TaskFlowItem): number {
   )
   if (byStage) return byStage
   if (isDoneStage(a.stage)) {
-    const byUpdated = compareNumbers(updatedTime(b), updatedTime(a))
+    const byUpdated = compareTaskUpdated(a, b)
     if (byUpdated) return byUpdated
   }
-  return (
-    compareNumbers(rankOrUnset(a.severity), rankOrUnset(b.severity)) ||
-    compareNumbers(finiteOr(a.priority, Infinity), finiteOr(b.priority, Infinity)) ||
-    compareText(a.slug, b.slug) ||
-    compareText(a.id, b.id)
-  )
+  return compareTaskSeverity(a, b) || compareText(a.slug, b.slug) || compareText(a.id, b.id)
 }
 
 function matchesQuery(task: TaskFlowItem, query: string): boolean {

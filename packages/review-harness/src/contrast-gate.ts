@@ -1,18 +1,19 @@
-import { REQUIRED_RATIO, floorRatio, type CheckKind } from './contrast.ts'
+import { REQUIRED_RATIO, floorRatio } from './contrast.ts'
 import type { Check, FrameResult, Indeterminate } from './contrast-check.ts'
 import {
   THEME_MODES,
   isImageVariant,
+  type CheckKind,
   type ContrastDeclarations,
   type KnownDefect,
   type Manifest,
   type ThemeMode,
 } from './schema.ts'
 
-export const CONTRAST_SCHEMA_ID = 'titan-review/contrast@1'
+const CONTRAST_SCHEMA_ID = 'titan-review/contrast@1'
 
 /** What the DOM measurement covers, written into every report so nobody assumes more. */
-export const COVERAGE = {
+const COVERAGE = {
   measures: [
     'text: every element with its own text node or an input value, at 4.5:1, or 3:1 when large (24px, or 18.66px bold)',
     'control boundaries: buttons, inputs and ARIA controls; the border or the fill, whichever contrasts more, against the parent plane',

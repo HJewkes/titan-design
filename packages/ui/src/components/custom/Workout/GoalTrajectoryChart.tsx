@@ -1,4 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
+import { createContext, useContext, type ReactNode } from 'react'
 import type { ViewProps } from 'react-native'
 import type {
   BandCurve,
@@ -78,21 +79,10 @@ export interface GoalTrajectoryChartProps extends ViewProps {
   /** Metric name for the accessible summary, e.g. "Bench top load". */
   metricLabel?: string
   /**
-   * Fraction of the plot width the plane's left inner shadow fades over.
-   * Exposed while the human picks between 3% and 4%.
-   */
-  leftShadowSpread?: number
-  /**
    * Play the entrance: the line draws, then its shadow and points arrive. Off
    * renders the final frame at once (visual baselines); reduced motion forces it off.
    */
   animate?: boolean
-  /** What marks the plane's bottom edge. Locked: `lip`; `inset-rule` was not chosen. */
-  baseline?: PlotBaseline
-  /** Band fade. Locked: `centre-14`; the others were not chosen. */
-  bandFade?: BandFade
-  /** Band edge interpolation. Locked: `monotone`; `linear` was not chosen. */
-  bandCurve?: BandCurve
   /**
    * Which plot edge the committed/stretch labels anchor to. Defaults to `left`
    * (VW-385 round 6, human's call): the right edge is where the line ends up on
@@ -121,6 +111,56 @@ export interface GoalTrajectoryChartProps extends ViewProps {
   ruleLabelText?: RuleLabelText
   className?: string
 }
+
+/**
+ * The VW-385 design-exploration knobs, settled and kept off the public props so
+ * only the Explore stories can re-read the rejected treatments. Not in any barrel.
+ */
+export interface GoalTrajectoryExplorationKnobs {
+  /** Fraction of the plot width the plane's left inner shadow fades over. */
+  leftShadowSpread: number
+  /** What marks the plane's bottom edge. Locked: `lip`; `inset-rule` was not chosen. */
+  baseline: PlotBaseline
+  /** Band fade. Locked: `centre-14`; the others were not chosen. */
+  bandFade: BandFade
+  /** Band edge interpolation. Locked: `monotone`; `linear` was not chosen. */
+  bandCurve: BandCurve
+}
+
+export type GoalTrajectoryChartExplorationProps = GoalTrajectoryChartProps &
+  Partial<GoalTrajectoryExplorationKnobs>
+
+const LOCKED_TREATMENT: GoalTrajectoryExplorationKnobs = {
+  leftShadowSpread: DEFAULT_LEFT_SHADOW_SPREAD,
+  baseline: 'lip',
+  bandFade: 'centre-14',
+  bandCurve: 'monotone',
+}
+
+const ExplorationKnobs = createContext(LOCKED_TREATMENT)
+
+export interface GoalTrajectoryTreatmentProps extends Partial<GoalTrajectoryExplorationKnobs> {
+  /** The {@link GoalTrajectoryChart}s to draw with this treatment. */
+  children: ReactNode
+}
+
+/** Draws the charts inside it with the given exploration knobs; for the Explore stories only. */
+export function GoalTrajectoryTreatment({
+  leftShadowSpread = LOCKED_TREATMENT.leftShadowSpread,
+  baseline = LOCKED_TREATMENT.baseline,
+  bandFade = LOCKED_TREATMENT.bandFade,
+  bandCurve = LOCKED_TREATMENT.bandCurve,
+  children,
+}: GoalTrajectoryTreatmentProps) {
+  return (
+    <ExplorationKnobs.Provider value={{ leftShadowSpread, baseline, bandFade, bandCurve }}>
+      {children}
+    </ExplorationKnobs.Provider>
+  )
+}
+
+/** One shared default, so an omitted prop does not hand the geometry memo a fresh array each render. */
+const NO_MESO_BOUNDARIES: number[] = []
 
 /**
  * Goal trajectory over a block: the coach's expected band as a shaded polygon,
@@ -155,7 +195,7 @@ export function GoalTrajectoryChart({
   stretch,
   actuals,
   weeks,
-  mesoBoundaries = [],
+  mesoBoundaries = NO_MESO_BOUNDARIES,
   nextTarget,
   status,
   direction = 'up',
@@ -165,11 +205,7 @@ export function GoalTrajectoryChart({
   showWeekLabels = true,
   currentWeek,
   metricLabel = 'Goal',
-  leftShadowSpread = DEFAULT_LEFT_SHADOW_SPREAD,
   animate = true,
-  baseline = 'lip',
-  bandFade = 'centre-14',
-  bandCurve = 'monotone',
   referenceLabelSide = 'left',
   calibratingNote,
   yAxisLabels = false,
@@ -177,6 +213,7 @@ export function GoalTrajectoryChart({
   className,
   ...props
 }: GoalTrajectoryChartProps) {
+  const { leftShadowSpread, baseline, bandFade, bandCurve } = useContext(ExplorationKnobs)
   const chart = useGoalTrajectoryChart({
     expected,
     committed,

@@ -16,7 +16,7 @@ import {
 const THEME_GLOBAL = 'theme'
 
 /** The same story in the other theme: the variant's own globals, with the theme overridden. */
-export function themedVariant(variant: StoryVariant, mode: ThemeMode): StoryVariant {
+function themedVariant(variant: StoryVariant, mode: ThemeMode): StoryVariant {
   return { ...variant, globals: { ...variant.globals, [THEME_GLOBAL]: mode } }
 }
 

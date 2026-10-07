@@ -109,6 +109,7 @@
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\"",
     "test": "vitest --project threads --project local-time --project types --project stories-axe",
     "test:unit": "vitest --project threads --project local-time --project types",
+    "test:unit:ci": "vitest run --coverage --project threads --project local-time --project types",
     "test:axe": "vitest run --project stories-axe",
     "test:storybook": "vitest run --project storybook --reporter=default --reporter=json --outputFile.json=.vitest-storybook-report.json && node scripts/check-play-count.mjs .vitest-storybook-report.json",
     "test:coverage": "vitest --project threads --project local-time --project types --project stories-axe --coverage",
@@ -182,7 +183,6 @@
     "@storybook/addon-react-native-web": "^0.0.29",
     "@storybook/addon-themes": "^10.2.0",
     "@storybook/addon-vitest": "10.2.0",
-    "@storybook/react": "^10.2.0",
     "@storybook/react-native-web-vite": "^10.2.0",
     "@storybook/react-vite": "^10.2.0",
     "@stryker-mutator/core": "^10.0.0",
@@ -231,6 +231,7 @@
     "src",
     "!src/lab",
     "!src/**/ROUND-*.md",
+    "!src/**/*.png",
     "docs",
     "tailwind.config.js",
     "CHANGELOG.md"

@@ -1968,7 +1968,7 @@
         },
         {
           "default": "false",
-          "description": "Reveal the ECC / HOLD / CON labels inside the band.",
+          "description": "Reveal the ECC / CON labels inside the band; hold and idle runs stay unlabelled.",
           "name": "showLabels",
           "required": false,
           "type": "boolean"
@@ -2638,6 +2638,27 @@
           "name": "input",
           "required": false,
           "type": "ActiveWorkoutInput"
+        },
+        {
+          "default": null,
+          "description": "Called when the user presses the rest timer's add-time button.",
+          "name": "onAddTime",
+          "required": false,
+          "type": "(() => void)"
+        },
+        {
+          "default": null,
+          "description": "Called with each recorded set, after the page enters rest if `rest` is set.",
+          "name": "onRecord",
+          "required": false,
+          "type": "((set: ActiveWorkoutRecordedSet) => void)"
+        },
+        {
+          "default": null,
+          "description": "Called when the user skips rest, after the input bar returns.",
+          "name": "onSkip",
+          "required": false,
+          "type": "(() => void)"
         },
         {
           "default": null,
@@ -3395,13 +3416,6 @@
         {
           "default": null,
           "description": "",
-          "name": "onNavigateDetail",
-          "required": false,
-          "type": "(() => void)"
-        },
-        {
-          "default": null,
-          "description": "",
           "name": "prescription",
           "required": false,
           "type": "string"
@@ -3447,13 +3461,6 @@
           "name": "summary",
           "required": false,
           "type": "{ sets: number; reps: string | number; weight: number; unit: \"lbs\" | \"kg\"; }"
-        },
-        {
-          "default": null,
-          "description": "",
-          "name": "supersetColor",
-          "required": false,
-          "type": "string"
         },
         {
           "default": null,
@@ -4051,7 +4058,7 @@
           "description": "Zone boundary thresholds (loss %): green→gold, gold→orange, orange→red.",
           "name": "thresholds",
           "required": false,
-          "type": "[number, number, number]"
+          "type": "VelocityLossThresholds"
         },
         {
           "default": null,
@@ -4798,27 +4805,6 @@
           "type": "boolean"
         },
         {
-          "default": "monotone",
-          "description": "Band edge interpolation.",
-          "name": "bandCurve",
-          "required": false,
-          "type": "BandCurve"
-        },
-        {
-          "default": "centre-14",
-          "description": "Band fade.",
-          "name": "bandFade",
-          "required": false,
-          "type": "BandFade"
-        },
-        {
-          "default": "lip",
-          "description": "What marks the plane's bottom edge.",
-          "name": "baseline",
-          "required": false,
-          "type": "PlotBaseline"
-        },
-        {
           "default": null,
           "description": "Calibrating only: the first line of the tip behind the info target in the plot's lower-right corner.",
           "name": "calibratingNote",
@@ -4865,13 +4851,6 @@
           "description": "Chart plot height in px.",
           "name": "height",
           "required": true,
-          "type": "number"
-        },
-        {
-          "default": "0.04",
-          "description": "Fraction of the plot width the plane's left inner shadow fades over.",
-          "name": "leftShadowSpread",
-          "required": false,
           "type": "number"
         },
         {
@@ -5154,7 +5133,7 @@
           "description": "",
           "name": "palette",
           "required": true,
-          "type": "{ status: \"#D14343\" | \"#F9B415\" | \"#C27400\" | \"#2ED573\" | \"#298732\" | \"#2196F3\" | \"#1072CB\" | \"#A29F9D\" | \"#72716F\" | \"#9E9A97\"; band: string; bandHue: \"#307B9B\"; lip: string; rule: \"#A29F9D\" | \"#65748B\"; ... 9 more ...; shadeScale: number; }"
+          "type": "{ status: \"#D14343\" | \"#F9B415\" | \"#C27400\" | \"#2ED573\" | \"#298732\" | \"#2196F3\" | \"#1072CB\" | \"#A29F9D\" | \"#72716F\" | \"#9E9A97\"; band: string; bandHue: \"#307B9B\"; lip: string; rule: \"#A29F9D\" | \"#5A5958\"; ... 9 more ...; shadeScale: number; }"
         },
         {
           "default": null,
@@ -6383,6 +6362,13 @@
           "type": "ReadinessFactor[]"
         },
         {
+          "default": "false",
+          "description": "Disables the start button so `onConfirm` cannot fire.",
+          "name": "isConfirmDisabled",
+          "required": false,
+          "type": "boolean"
+        },
+        {
           "default": null,
           "description": "Called when the assessment is confirmed and the workout can begin.",
           "name": "onConfirm",
@@ -7023,7 +7009,7 @@
       "props": [
         {
           "default": null,
-          "description": "Newest rep index — reserved; the compact spotlight strip is static.",
+          "description": "Rep the spotlight strip grows from the baseline as it lands.",
           "name": "liveRepIndex",
           "required": false,
           "type": "number"
@@ -9090,6 +9076,13 @@
           "type": "string"
         },
         {
+          "default": "false",
+          "description": "Render the content region as the `main` landmark.",
+          "name": "isMainLandmark",
+          "required": false,
+          "type": "boolean"
+        },
+        {
           "default": "null",
           "description": "A category with off-view live activity → a quiet cue on that item.",
           "name": "liveKey",
@@ -9284,6 +9277,13 @@
           "type": "boolean"
         },
         {
+          "default": "live",
+          "description": "The words appended to the accessible name while a set runs in this category and it is not active (\"Train, live\").",
+          "name": "liveLabel",
+          "required": false,
+          "type": "string"
+        },
+        {
           "default": null,
           "description": "",
           "name": "onPress",
@@ -9323,6 +9323,13 @@
           "default": null,
           "description": "Semantic `text-*` token for the active item.",
           "name": "accentClassName",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "Primary",
+          "description": "Accessible name of the navigation landmark.",
+          "name": "accessibilityLabel",
           "required": false,
           "type": "string"
         },
@@ -11406,6 +11413,13 @@
         },
         {
           "default": null,
+          "description": "Pressed state of a toggle chip.",
+          "name": "isSelected",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
           "description": "Left element (icon, avatar)",
           "name": "leftElement",
           "required": false,
@@ -11424,6 +11438,13 @@
           "name": "onPress",
           "required": false,
           "type": "(() => void)"
+        },
+        {
+          "default": null,
+          "description": "Right element (count, icon).",
+          "name": "rightElement",
+          "required": false,
+          "type": "ReactNode"
         },
         {
           "default": "md",
@@ -11922,7 +11943,7 @@
         },
         {
           "default": "md",
-          "description": "`md` for standalone rows, `sm` for dense contexts like chips.",
+          "description": "`md` for standalone rows; `sm` for dense contexts like chips, where basename and directory share `text-xs`.",
           "name": "size",
           "required": false,
           "type": "FilePathLabelSize"
@@ -13299,7 +13320,7 @@
         },
         {
           "default": null,
-          "description": "Border radius (only for 'rect' variant)",
+          "description": "Border radius in pixels; applies to every variant and overrides the variant's radius class",
           "name": "borderRadius",
           "required": false,
           "type": "number"
@@ -14042,6 +14063,13 @@
           "default": null,
           "description": "Sort key for this column",
           "name": "sortKey",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Accessible sort name; required when `children` is not a string.",
+          "name": "sortLabel",
           "required": false,
           "type": "string"
         },
