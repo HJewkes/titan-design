@@ -52,6 +52,7 @@ describe('FacetBar faces, real Chip', () => {
     renderBar()
     const classes = countClasses(count)
     expect(classes).toContain('text-inherit')
+    expect(classes.filter((c) => /opacity/.test(c))).toEqual([])
     expect(classes.filter((c) => TEXT_COLOUR.test(c) && c !== 'text-inherit')).toEqual([])
   })
 
