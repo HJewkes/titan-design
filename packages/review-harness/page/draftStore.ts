@@ -21,6 +21,7 @@ const DraftSchema = z.object({
     z.string(),
     z.object({
       pick: z.string().optional(),
+      revision: z.boolean().optional(),
       picks: z.array(z.string()).optional(),
       value: z.number().optional(),
       text: z.string().optional(),

@@ -39,7 +39,7 @@ src/components/{ui|custom}/{ComponentName}/
 - [ ] A manifest exists for the component under
       `packages/ui/src/theme/manifest/`, or is generated from the frozen HTML
       prototype:
-      `pnpm extract-css <html> <selector> <ComponentName> --out src/theme/manifest/<component>.json`
+      `pnpm extract-css <html> <selector> <ComponentName> --out src/theme/manifest/<component>.manifest.json`
       (wraps `node scripts/extract-css-properties.mjs`; repeat `--variant axis=value`
       per variant axis).
 - [ ] The manifest is **schema-valid**: it conforms to
@@ -79,7 +79,7 @@ src/components/{ui|custom}/{ComponentName}/
 - [ ] `ComponentName.test.tsx` asserts the component's own computed/inline
       styles against the manifest's `resolvedValue`s for the pinned
       properties (e.g. border style/width, box-shadow, colors — as in
-      `src/components/custom/Workout/StatusDot.test.tsx`).
+      `src/components/ui/card/Card.test.tsx`).
 - [ ] Rendering, props, and each variant are covered (Arrange-Act-Assert).
 
 ## 5. Layer 3 — HTML vs React parity test
@@ -93,13 +93,20 @@ src/components/{ui|custom}/{ComponentName}/
       (Playwright, `playwright.comparison.config.ts`; boots the specimen
       server automatically).
 
-## 6. Storybook story — all variants
+## 6. Storybook story: one `Default` story
 
 - [ ] `ComponentName.stories.tsx` uses `Meta`/`StoryObj` from
-      `@storybook/react-vite`, `tags: ['autodocs']`, and `argTypes` controls
-      for every prop.
-- [ ] One named story per variant **plus** an `AllVariants` story covering the
-      full matrix (see `StatusDot.stories.tsx`).
+      `@storybook/react-vite`.
+- [ ] It exports one `Default` story, driven by `args` and `argTypes`.
+      Variants, colours, sizes and states are controls on that story. Do not
+      add one story per variant or an `AllVariants` story.
+- [ ] `tags` holds `autodocs` and the status tag that the rule in
+      `packages/ui/MATURITY.md` derives, plus `!status:review` to negate the
+      inherited default.
+- [ ] The models are `src/components/shell/workout/SessionStatePill.stories.tsx`
+      (args and `select` controls) and
+      `src/components/shell/workout/DeviceMenu.stories.tsx` (a data fixture as
+      an `object` control, `control: false` for handlers).
 - [ ] Storybook compiles: `pnpm build-storybook`.
 
 ## 7. Accessibility

@@ -3,16 +3,21 @@ const tseslint = require('typescript-eslint')
 const react = require('eslint-plugin-react')
 const reactHooks = require('eslint-plugin-react-hooks')
 const globals = require('globals')
+const noClassnameOnAnimated = require('./eslint-rules/no-classname-on-animated')
 const noDeprecatedImport = require('./eslint-rules/no-deprecated-import')
 const noDeviceInternals = require('./eslint-rules/no-device-internals')
 const noFrozenTheme = require('./eslint-rules/no-frozen-theme')
+const noHtmlElement = require('./eslint-rules/no-html-element')
 const noLocalFormatter = require('./eslint-rules/no-local-formatter')
 const noRawColor = require('./eslint-rules/no-raw-color')
 const noRawComposition = require('./eslint-rules/no-raw-composition')
 const noRawDeviceDataInChat = require('./eslint-rules/no-raw-device-data-in-chat')
 const noRawSpacing = require('./eslint-rules/no-raw-spacing')
+const noTruncation = require('./eslint-rules/no-truncation')
+const noUnstyledText = require('./eslint-rules/no-unstyled-text')
 const noUpwardTierImport = require('./eslint-rules/no-upward-tier-import')
 const noVarColorOpacity = require('./eslint-rules/no-var-color-opacity')
+const propsNaming = require('./eslint-rules/props-naming')
 const restrictedSyntax = require('./eslint-rules/restricted-syntax')
 const storyTitlePrefix = require('./eslint-rules/story-title-prefix')
 
@@ -97,16 +102,21 @@ module.exports = tseslint.config(
       // below) are enabled in their own block without re-declaring `plugins`.
       titan: {
         rules: {
+          'no-classname-on-animated': noClassnameOnAnimated,
           'no-deprecated-import': noDeprecatedImport,
           'no-device-internals': noDeviceInternals,
           'no-frozen-theme': noFrozenTheme,
+          'no-html-element': noHtmlElement,
           'no-local-formatter': noLocalFormatter,
           'no-raw-color': noRawColor,
           'no-raw-composition': noRawComposition,
           'no-raw-device-data-in-chat': noRawDeviceDataInChat,
           'no-raw-spacing': noRawSpacing,
+          'no-truncation': noTruncation,
+          'no-unstyled-text': noUnstyledText,
           'no-upward-tier-import': noUpwardTierImport,
           'no-var-color-opacity': noVarColorOpacity,
+          'props-naming': propsNaming,
           'story-title-prefix': storyTitlePrefix,
         },
       },
@@ -388,13 +398,10 @@ module.exports = tseslint.config(
     ],
     // `color-story-kit` is story chrome that happens not to be named `.stories.tsx`
     // — exempt on the same grounds as the stories themselves, not as a backlog.
-    // `setHeadingKit` is the same category: throwaway S3 rail R&D on raw `<div>`s
-    // whose every importer is a story under `lab/explorations`.
     ignores: [
       '**/*.stories.tsx',
       '**/*.test.{ts,tsx}',
       'src/theme/color-story-kit.tsx',
-      'src/components/custom/Workout/setHeadingKit.tsx',
     ],
     rules: {
       'titan/no-raw-spacing': 'error',
@@ -415,14 +422,16 @@ module.exports = tseslint.config(
   // Stories and tests are exempt for the same reason as everywhere else: a
   // concrete value IS the point there (`toHaveStyle` cannot match the `var()`
   // string resolveColor returns under the RNW vitest alias).
+  //
+  // theme/materials.ts joins the scope (TD-521): its default tones once froze
+  // to the dark palette at module scope, so a light caller got dark fills.
   {
-    files: ['src/components/**/*.{ts,tsx}'],
+    files: ['src/components/**/*.{ts,tsx}', 'src/theme/materials.ts'],
     ignores: [
       '**/*.stories.tsx',
       '**/*.test.{ts,tsx}',
       '**/*-fixture.ts',
       // Story-only fixtures, resolved colours are demo data; VW-316.
-      'src/components/custom/Workout/setHeadingKit.tsx',
       'src/components/custom/Workout/velocity-story-kit.tsx',
     ],
     rules: {
@@ -513,6 +522,161 @@ module.exports = tseslint.config(
     ],
     rules: {
       'titan/no-local-formatter': 'error',
+    },
+  },
+
+  // TD-317 row 9: a domain component that clips its own text hides the data the reader came
+  // for, so truncation in custom/ and shell/ is an explicit decision. ui/ is out of scope:
+  // there truncation is a consumer prop. RATCHETED: today's sites are in
+  // no-truncation-baseline.json, which must stay exact (an unspent allowance is reported as
+  // stale); sanctioned sites go in truncation-allowlist.json. Tests and stories are exempt,
+  // since they exercise the props rather than ship them.
+  {
+    files: ['src/components/custom/**/*.{ts,tsx}', 'src/components/shell/**/*.{ts,tsx}'],
+    ignores: ['src/**/*.test.{ts,tsx}', 'src/**/*.stories.{ts,tsx}'],
+    rules: {
+      'titan/no-truncation': 'error',
+    },
+  },
+
+  // TD-659: on React Native Web a Text inherits nothing from the View around it, so a bare
+  // react-native Text renders black 14px System, and jsdom strips the classes that would
+  // show it in a test. RATCHETED: today's sites are in no-unstyled-text-baseline.json, which
+  // must stay exact (an unspent allowance is reported as stale). Stories are in scope, since
+  // they render on web; tests are not, since jsdom never paints.
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    ignores: ['src/**/*.test.{ts,tsx}'],
+    rules: {
+      'titan/no-unstyled-text': 'error',
+    },
+  },
+
+  // TD-689: components render on web and native, so a lowercase JSX element (`<div>`,
+  // `<path>`) mounts on web only, and jsdom renders it without complaint. RATCHETED:
+  // today's sites are in no-html-element-baseline.json, keyed by file and element name,
+  // which must stay exact (an unspent allowance is reported as stale). Stories and tests
+  // are exempt, since they are web-only by construction; src/lab is outside the glob.
+  {
+    files: ['src/components/**/*.{ts,tsx}'],
+    ignores: ['src/**/*.test.{ts,tsx}', 'src/**/*.stories.{ts,tsx}'],
+    rules: {
+      'titan/no-html-element': 'error',
+    },
+  },
+
+  // TD-690: every component takes the same prop vocabulary (CLAUDE.md, Props Conventions):
+  // `isDisabled`, `isLoading`, `isSelected` and `onPress`, never `disabled`, `loading`,
+  // `selected` or `onClick`. RATCHETED: today's sites are in props-naming-baseline.json,
+  // keyed by file and property name, which must stay exact (an unspent allowance is reported
+  // as stale). Stories and tests are exempt, since they declare no component API; src/lab is
+  // outside the glob.
+  {
+    files: ['src/components/**/*.{ts,tsx}'],
+    ignores: ['src/**/*.test.{ts,tsx}', 'src/**/*.stories.{ts,tsx}'],
+    rules: {
+      'titan/props-naming': 'error',
+    },
+  },
+
+  // TD-13: NativeWind does not compile className on an Animated.* element, so every class on
+  // one renders nothing on web and jsdom strips it in tests. Every className is flagged, not
+  // only spacing. A className on a plain child inside the animated element is fine.
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    rules: {
+      'titan/no-classname-on-animated': 'error',
+    },
+  },
+
+  // The two sites that carry a className on an Animated.View today. TD-305 (TD-13 S12)
+  // moves their classes onto a plain child or an inline style and deletes this block.
+  {
+    files: [
+      'src/components/custom/Workout/BodyMapDetailPanel.tsx',
+      'src/components/custom/Workout/VelocityStripFramed.tsx',
+    ],
+    rules: {
+      'titan/no-classname-on-animated': 'off',
+    },
+  },
+
+  // A '' or 0 on the left of && renders a bare text node, and React Native throws on it
+  // (audit findings D04b-04, D03b-01). Write !!x &&, a ternary or an explicit comparison.
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    rules: {
+      'react/jsx-no-leaked-render': ['error', { validStrategies: ['coerce', 'ternary'] }],
+    },
+  },
+
+  // Files still to fix. Each TD-536 slice deletes its group; the slice that empties the list
+  // deletes this block.
+  {
+    files: [
+      // TD-536 b2
+      'src/lab/north-star/EmptyLiveView.tsx',
+      'src/lab/north-star/HeroTempo.exploration.stories.tsx',
+      'src/lab/north-star/LivePage.tsx',
+      'src/lab/north-star/LiveView.tsx',
+      'src/lab/north-star/VelocityDiverging.exploration.stories.tsx',
+      'src/lab/north-star/fatigue-lab-shared.tsx',
+      // TD-536 b3
+      'src/components/ui/autocomplete/Autocomplete.tsx',
+      'src/components/ui/checkbox/Checkbox.tsx',
+      'src/components/ui/radio/Radio.tsx',
+      'src/components/ui/switch/Switch.tsx',
+      // TD-536 b5
+      'src/components/custom/Workout/ExerciseHeading.tsx',
+      'src/components/custom/Workout/GoalMilestoneSummary.tsx',
+      'src/components/custom/Workout/GoalTrajectoryChartParts.tsx',
+      'src/components/custom/Workout/GoalTrajectoryMini.tsx',
+      'src/components/custom/Workout/GoalTrajectoryWeekTips.tsx',
+      'src/components/custom/Workout/GoalsWholeBody.composition.stories.tsx',
+      // TD-536 b7
+      'src/components/ui/alert/Alert.tsx',
+      'src/components/ui/button/Button.tsx',
+      'src/components/ui/charts/gauge/Gauge.tsx',
+      'src/components/ui/charts/scatter/ScatterFrame.tsx',
+      'src/components/ui/charts/scatter/ScatterPointMark.tsx',
+      'src/components/ui/charts/treemap/Treemap.tsx',
+      'src/components/ui/drawer/Drawer.tsx',
+      'src/components/ui/empty-state/EmptyState.tsx',
+      'src/components/ui/link/Link.tsx',
+      'src/components/ui/list-item/ListItem.tsx',
+      'src/components/ui/toolbar-button/ToolbarButton.tsx',
+      // TD-536 b8
+      'src/components/ui/chip/Chip.tsx',
+      'src/components/ui/progress/Progress.tsx',
+      'src/components/ui/select/Select.tsx',
+      'src/components/ui/skeleton/Skeleton.tsx',
+      'src/components/ui/table/TableEmptyState.tsx',
+      'src/components/ui/table/TableSelection.tsx',
+      // TD-536 b9
+      'src/components/ui/autocomplete/AutocompleteParts.tsx',
+      'src/components/ui/form-field/FormField.tsx',
+      'src/components/ui/help-tip/HelpTip.tsx',
+      'src/components/ui/input/Input.tsx',
+      'src/components/ui/menu/Menu.tsx',
+      'src/components/ui/toast/Toast.tsx',
+      // TD-536 b10
+      'src/components/custom/Fatigue/GhostBand.tsx',
+      'src/components/custom/Sidebar/Sidebar.tsx',
+      'src/components/custom/Workout/ActiveWorkoutPage.tsx',
+      'src/components/custom/Workout/CapacityBandPlot.tsx',
+      'src/components/custom/Workout/ExerciseCard.tsx',
+      'src/components/custom/Workout/GoalTrajectoryPlot.tsx',
+      'src/components/custom/Workout/MesoCard.tsx',
+      'src/components/custom/Workout/ReadinessCheck.tsx',
+      'src/components/custom/Workout/StrengthTrendChart.tsx',
+      'src/components/custom/Workout/TempoDisplay.tsx',
+      // TD-536 b11
+      'src/components/custom/Workout/BodyMapDetailPanel.tsx',
+      'src/components/custom/Workout/GoalCard.tsx',
+      'src/components/custom/charts/SetBarChart.tsx',
+    ],
+    rules: {
+      'react/jsx-no-leaked-render': 'off',
     },
   },
 

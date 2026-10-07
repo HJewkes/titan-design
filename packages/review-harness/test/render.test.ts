@@ -90,8 +90,8 @@ describe('a sectioned round', () => {
     expect(q3).toBeLessThan(general)
   })
 
-  it('tells each frame which question it belongs to', () => {
-    expect(markup).toContain('Answers: Which one leads the page?')
+  it('asks the section question once, not again on every frame', () => {
+    expect(markup).not.toContain('Answers:')
   })
 
   it('links a see-also frame on another page instead of rendering it twice', () => {
@@ -219,19 +219,27 @@ describe('section navigation at both ends of a page', () => {
     expect(formAt(m, pages[3].first)).toMatch(review)
   })
 
+  it('marks only the current section in the section list as the current step', () => {
+    const list = between(html(m), 'class="prompts sections"', '</ol>')
+    const items = [...list.matchAll(/<li[^>]*>/g)].map(([tag]) => tag)
+    expect(items).toHaveLength(pages.length)
+    expect(items.filter((tag) => tag.includes('aria-current="step"'))).toEqual([items[0]])
+  })
+
   it('adds no pager to a round without sections', () => {
     expect(html(manifest())).not.toContain('pager')
   })
 })
 
 describe('the final check with questions unanswered', () => {
-  const screen = (unanswered: string[]) => {
+  const screen = (unanswered: string[], sendErrors: string[] = []) => {
     const m = manifest()
     return renderToStaticMarkup(
       createElement(ReviewScreen, {
         manifest: m,
         feedback: buildFeedback(m, SHA, emptyDraft(m), new Date(), true),
         problems: [],
+        sendErrors,
         unanswered,
         sending: false,
         dispatch: () => {},
@@ -245,6 +253,21 @@ describe('the final check with questions unanswered', () => {
     expect(markup).toContain('2 of 4 questions are unanswered')
     expect(markup).toMatch(/data-testid="send"[^>]*>Send partial: 2 unanswered<\/button>/)
     expect(markup).toMatch(/<button[^>]*class="primary"[^>]*>Back/)
+  })
+
+  it('shows a failed send as an alert and leaves Send enabled to retry', () => {
+    const markup = screen([], ['HTTP 500'])
+    expect(markup).toMatch(/role="alert"[^>]*><li>HTTP 500<\/li>/)
+    expect(markup).not.toMatch(/<button[^>]*disabled[^>]*data-testid="send"/)
+  })
+
+  it('marks pending rows, and shows an optional blank as skipped', () => {
+    const markup = screen(['q2'])
+    expect(markup).toMatch(/data-testid="answer-q2"[^>]*data-unanswered="true"/)
+    expect(markup).toContain('(skipped)')
+    expect(markup).toContain('Show only unanswered')
+    expect(markup).toContain('Next unanswered')
+    expect(markup).not.toContain('Previous unanswered')
   })
 
   it('keeps the plain send when every question is answered', () => {

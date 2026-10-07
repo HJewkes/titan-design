@@ -14,7 +14,7 @@ interface ImageFrameProps {
 }
 
 /** The server serves each image by variant key, never by path. */
-export function imageUrl(variant: ImageVariant): string {
+function imageUrl(variant: ImageVariant): string {
   return `api/image/${encodeURIComponent(variant.key)}`
 }
 
