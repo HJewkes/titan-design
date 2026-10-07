@@ -9,6 +9,11 @@ on:
 permissions:
   contents: read
 
+# Main pushes never cancel: Shepherd and the seats read the CI run of every merge commit.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 # Rename stage (a) of the HJewkes/ci standard: the ruleset still requires build (20) and
 # build (22), so the matrix keeps its name until the ruleset requires only `check`.
 # A later PR replaces it with node.yml.
