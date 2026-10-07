@@ -55,6 +55,28 @@ describe('NavItem', () => {
     expect(container.firstChild).toBeInTheDocument()
   })
 
+  it('names a live inactive item with the live words', () => {
+    render(<NavItem icon={icon} label="Train" live />)
+    expect(screen.getByRole('tab', { name: 'Train, live' })).toBeInTheDocument()
+  })
+
+  it('uses a custom liveLabel in the accessible name', () => {
+    render(<NavItem icon={icon} label="Train" live liveLabel="set running" />)
+    expect(screen.getByRole('tab', { name: 'Train, set running' })).toBeInTheDocument()
+  })
+
+  it("keeps the active item's name free of the live words", () => {
+    render(<NavItem icon={icon} label="Train" live active />)
+    expect(screen.getByRole('tab', { name: 'Train' })).toBeInTheDocument()
+    expect(screen.queryByRole('tab', { name: /live/ })).toBeNull()
+  })
+
+  it("keeps the idle item's name free of the live words", () => {
+    render(<NavItem icon={icon} label="Train" />)
+    expect(screen.getByRole('tab', { name: 'Train' })).toBeInTheDocument()
+    expect(screen.queryByRole('tab', { name: /live/ })).toBeNull()
+  })
+
   // nativewind compiles className to style, so jsdom cannot see the accent colour.
   // Assert an app-supplied accent leaves the rest of the active state intact; the
   // colour itself is guarded by the paired-token test in BrandLockup.test.

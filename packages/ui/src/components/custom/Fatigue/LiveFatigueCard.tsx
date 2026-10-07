@@ -30,7 +30,7 @@ import { View } from 'react-native'
 import { Surface, useSurfaceMode } from '../../ui/surface'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { barPaper } from '../../../theme/materials'
-import { cardChartHeight, cardSectionGap } from './panel-layout'
+import { CARD_WIDTH_BASE, cardChartHeight, cardSectionGap } from './panel-layout'
 import { VerdictHero } from './VerdictHero'
 import { FatigueLights } from './FatigueLights'
 import { RomProgressionChart } from './RomProgressionChart'
@@ -40,7 +40,7 @@ import type { LiveFatigueModel } from './fatigue-model'
 export interface LiveFatigueCardProps {
   /** The live fatigue read-model for the current set. */
   model: LiveFatigueModel
-  /** Card width in px. Default 318. */
+  /** Card width in px. Default `CARD_WIDTH_BASE`. */
   width?: number
   /** Card height in px — when set, the sections spread through the leftover height. */
   height?: number
@@ -50,7 +50,7 @@ export interface LiveFatigueCardProps {
 // CARD_FIXED_CONTENT_HEIGHT and CARD_CHROME_HEIGHT count PAD twice; re-measure in AW-121.
 const PAD = 18
 
-export function LiveFatigueCard({ model, width = 318, height }: LiveFatigueCardProps) {
+export function LiveFatigueCard({ model, width = CARD_WIDTH_BASE, height }: LiveFatigueCardProps) {
   const t = getSemanticColors(useSurfaceMode())
   const chartW = width - PAD * 2 - GHOST_GUTTER * 2
   const chartH = cardChartHeight(height)

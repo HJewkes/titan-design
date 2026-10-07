@@ -9,12 +9,14 @@ import { STORY_INDEX_ENV } from './story-index.global-setup'
  * Declares one test per in-scope story from the Storybook index that
  * `story-index.global-setup.ts` fetches, and screenshots each story's rendered
  * root against a committed baseline (`toHaveScreenshot`). Every story first
- * passes a blank-render guard. `src/test/visual-coverage.test.ts` fails when a
+ * passes a blank-render guard. CI runs it as `test:visual:stories` in the `visual`
+ * job (`.github/workflows/ci.yml`). `src/test/visual-coverage.test.ts` fails when a
  * story under a required prefix has no committed baseline.
  *
  * Determinism: the clock is installed AND paused at a fixed instant (so
- * `DateTime live` clocks render a fixed time however long the run takes) and CSS animations are disabled (pulse / ping), so control-driven,
- * animated stories snapshot stably.
+ * `DateTime live` clocks render a fixed time however long the run takes) and CSS
+ * animations are disabled (pulse / ping), so control-driven, animated stories
+ * snapshot stably.
  *
  * Scope: the shell family + the icon foundation story (`Foundations/Icons`,
  * whose Storybook id is `foundations-icons--*`), MesoProgressBar, every
@@ -28,7 +30,7 @@ import { STORY_INDEX_ENV } from './story-index.global-setup'
  * Baselines must be generated in the pinned Playwright Linux container
  * (`mcr.microsoft.com/playwright:v1.58.2-noble`) so the committed PNGs are
  * byte-identical to CI: download the `storybook-visual-baselines` artifact
- * that the visual workflow's refresh step uploads on a failed run and commit the
+ * that the `visual` job's refresh step uploads on a failed run and commit the
  * changed PNGs. A local `pnpm test:visual:stories:update` writes darwin PNGs
  * that are gitignored and never gate.
  */

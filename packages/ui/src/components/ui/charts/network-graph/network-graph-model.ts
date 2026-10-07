@@ -1,4 +1,5 @@
 import { linkHorizontal } from 'd3-shape'
+import { compareText } from '../kit/compareText'
 import { arcPath, GRAPH_NODE_RADIUS } from './network-graph-arc'
 import { placedGroups } from './network-graph-groups'
 import type {
@@ -18,7 +19,7 @@ export { edgeSlots } from './network-graph-arc'
 
 const hasOwn = (record: object, key: string) => Object.prototype.hasOwnProperty.call(record, key)
 
-export const compareText = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0)
+export { compareText }
 
 export const displayLabel = (node: GraphNode) => (node.label === '' ? node.id : node.label)
 
