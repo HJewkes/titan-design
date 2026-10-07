@@ -11,7 +11,9 @@
  * `DimensionTone` / `FatigueVerdictState` one-for-one so the real WA verdict drops
  * straight in.
  */
-import type { TempoTuple } from './tempo-pacing'
+
+/** The canonical tempo tuple order: `[ecc, pauseBottom, con, pauseTop]`, seconds. */
+export type TempoTuple = [number, number, number, number]
 
 /** Per-dimension status light. Mirrors WA's `DimensionTone`. */
 export type DimensionTone = 'ok' | 'warn' | 'alarm'
