@@ -441,6 +441,44 @@ describe('alignment-near-miss', () => {
     })
   })
 
+  describe('baseline of a child that opens with an icon', () => {
+    // CSS aligns such a child by the icon's bottom edge, not by the label that follows it.
+    const iconLabel = (iconBottom) => {
+      const icon = node('i', 'w', [50, iconBottom - 20, 20, 20], {
+        selector: '.i',
+        tag: 'svg',
+        paints: true,
+      })
+      const text = label('t', [74, 2, 40, 28], { baseline: 24, fontSize: 24 })
+      text.parent = 'w'
+      const wrap = node('w', 'r', [50, 0, 64, 30], { selector: '.w' })
+      return [wrap, icon, text]
+    }
+    const row = rowOf({ alignItems: 'baseline' })
+    const plain = label('a', [0, 0, 40, 12], { baseline: 20, fontSize: 12 })
+
+    it('gives no finding when the icon bottom is where the row put the baseline', () => {
+      expect(judgeAlignmentNearMiss(layout(row, plain, ...iconLabel(20)))).toEqual([])
+    })
+
+    it('flags the child when its icon bottom is off the shared baseline', () => {
+      const [found] = judgeAlignmentNearMiss(layout(row, plain, ...iconLabel(30)))
+      expect(found.detail).toBe('.a vs .w: baseline Δ10 (align-items: baseline)')
+    })
+
+    it('reads text in the first in-flow item and ignores an absolute badge before it', () => {
+      const badge = node('b', 'w', [50, 0, 10, 10], {
+        selector: '.b',
+        layout: { ...flow, position: 'absolute' },
+        text: textOf([50, 0, 10, 10]),
+      })
+      const text = label('t', [50, 6, 40, 14], { baseline: 20, fontSize: 24 })
+      text.parent = 'w'
+      const wrap = node('w', 'r', [50, 0, 64, 20], { selector: '.w' })
+      expect(judgeAlignmentNearMiss(layout(row, plain, wrap, badge, text))).toEqual([])
+    })
+  })
+
   it('reads the baseline from a label on a child’s first line', () => {
     const wrap = node('w', 'r', [50, 0, 60, 14], { selector: '.w' })
     const inner = label('w.0', [70, 0, 40, 12], { baseline: 10 })
@@ -592,6 +630,39 @@ describe('gap-outlier', () => {
     const grid = column({ layout: { ...flex(), display: 'grid' } })
     expect(judgeGapOutlier(stack([8, 8, 40], { root: grid }))).toEqual([])
   })
+
+  describe('rows that spread their children', () => {
+    const kids = [8, 8, 40]
+    const spread = (justifyContent) =>
+      column({ layout: { ...flex(), justifyContent }, margin: [0, 0, 0, 0] })
+
+    it('exempts space-between, space-around and space-evenly', () => {
+      for (const j of ['space-between', 'space-around', 'space-evenly'])
+        expect(judgeGapOutlier(stack(kids, { root: spread(j) }))).toEqual([])
+    })
+
+    it('still flags the same gaps under justify-content: flex-start', () => {
+      expect(judgeGapOutlier(stack(kids, { root: spread('flex-start') }))).toHaveLength(1)
+    })
+
+    it('exempts a run with a child that has an auto margin on the main axis', () => {
+      const found = stack(kids)
+      found.nodes.find((n) => n.id === 'k3').marginAuto = [true, false, false, false]
+      expect(judgeGapOutlier(found)).toEqual([])
+    })
+
+    it('ignores an auto margin on the cross axis', () => {
+      const found = stack(kids)
+      found.nodes.find((n) => n.id === 'k3').marginAuto = [false, true, false, true]
+      expect(judgeGapOutlier(found)).toHaveLength(1)
+    })
+
+    it('needs three children in plain flow: an absolute child does not count', () => {
+      const found = stack([8, 40])
+      found.nodes.find((n) => n.id === 'k2').layout = { ...flow, position: 'absolute' }
+      expect(judgeGapOutlier(found)).toEqual([])
+    })
+  })
 })
 
 describe('proximity-inversion', () => {
@@ -599,19 +670,22 @@ describe('proximity-inversion', () => {
     node(id, parent, [0, y, 200, 10], { selector: `.${id}`, paints: true })
   // A column of groups; group `i` is a flex column of `sizes[i]` items `inners[i]` apart, and
   // groups sit `outer` apart.
-  const groups = (inners, outer, { sizes = [], dividerAfter = [] } = {}) => {
+  const groups = (inners, outer, { sizes = [], dividerAfter = [], group = {}, itemOf } = {}) => {
     const nodes = [node('r', null, [0, 0, 200, 600], { layout: flex() })]
     let y = 0
     inners.forEach((inner, g) => {
       const start = y
       const kids = Array.from({ length: sizes[g] ?? 2 }, (_, i) => {
-        const kid = item(`g${g}i${i}`, `g${g}`, y)
+        const kid = (g === 0 && itemOf ? itemOf : item)(`g${g}i${i}`, `g${g}`, y)
         y += 10 + inner
         return kid
       })
       y -= inner
       const box = [0, start, 200, y - start]
-      nodes.push(node(`g${g}`, 'r', box, { selector: `.g${g}`, layout: flex() }), ...kids)
+      nodes.push(
+        node(`g${g}`, 'r', box, { selector: `.g${g}`, layout: flex(), ...(g === 0 ? group : {}) }),
+        ...kids
+      )
       if (dividerAfter.includes(g)) {
         nodes.push(
           node(`d${g}`, 'r', [0, y + outer / 2, 200, 1], { paints: true, selector: `.d${g}` })
@@ -623,9 +697,11 @@ describe('proximity-inversion', () => {
   }
 
   it.each([
-    [12, 12, 1], // inner = outer
-    [12.25, 12, 1],
-    [11.75, 12, 0],
+    [18, 12, 1], // inner = 1.5 × outer
+    [17.75, 12, 0],
+    [12, 12, 0], // a tie reads as ambiguous, not inverted
+    [17, 4, 1], // 4.25×: a goal-summary block 4px above its chart
+    [14, 4, 1],
   ])(
     'items %spx apart inside a group %spx from its neighbour give %i findings',
     (inner, outer, n) => {
@@ -634,37 +710,77 @@ describe('proximity-inversion', () => {
   )
 
   it('names the group, both distances and the nearer neighbour', () => {
-    expect(judgeProximityInversion(groups([12, 4], 12))).toEqual([
+    expect(judgeProximityInversion(groups([18, 4], 12))).toEqual([
       {
         kind: 'proximity-inversion',
         selector: '.g0',
-        detail: '.g0: items 12px apart inside, 12px from .g1 outside',
+        detail: '.g0: items 18px apart inside, 12px from .g1 outside',
       },
     ])
   })
 
   it('compares against the nearer of the two neighbours', () => {
-    const found = judgeProximityInversion(groups([4, 10, 4], 12))
+    const found = judgeProximityInversion(groups([4, 17, 4], 12))
     expect(found).toEqual([])
-    expect(judgeProximityInversion(groups([4, 13, 4], 12))).toHaveLength(1)
+    expect(judgeProximityInversion(groups([4, 18, 4], 12))).toHaveLength(1)
   })
 
   it('ignores a single-child wrapper, which is not a visual group', () => {
-    expect(judgeProximityInversion(groups([12, 12, 12], 12, { sizes: [1, 1, 1] }))).toEqual([])
+    expect(judgeProximityInversion(groups([18, 18, 18], 12, { sizes: [1, 1, 1] }))).toEqual([])
   })
 
   it('does not compare across a divider', () => {
-    expect(judgeProximityInversion(groups([12, 4], 12, { dividerAfter: [0] }))).toEqual([])
+    expect(judgeProximityInversion(groups([18, 4], 12, { dividerAfter: [0] }))).toEqual([])
   })
 
   it('skips a group with no neighbour', () => {
-    expect(judgeProximityInversion(groups([12], 12))).toEqual([])
+    expect(judgeProximityInversion(groups([18], 12))).toEqual([])
   })
 
   it('skips a grid group, which is out of scope', () => {
-    const found = groups([12, 4], 12)
+    const found = groups([18, 4], 12)
     found.nodes.find((n) => n.id === 'g0').layout = { ...flex(), display: 'grid' }
     expect(judgeProximityInversion(found)).toEqual([])
+  })
+
+  describe('painted groups', () => {
+    // A tile with its own background shows its extent: loose items inside it are not a grouping bug.
+    it('exempts a group with its own background', () => {
+      expect(judgeProximityInversion(groups([18, 4], 4, { group: { paints: true } }))).toEqual([])
+    })
+
+    it('still flags the same layout when the group paints nothing', () => {
+      expect(judgeProximityInversion(groups([18, 4], 4))).toHaveLength(1)
+    })
+  })
+
+  describe('control rows', () => {
+    const button = (id, parent, y) =>
+      node(id, parent, [0, y, 200, 10], { selector: `.${id}`, paints: true, interactive: true })
+    const controls = (inner, outer) => groups([inner, 4], outer, { itemOf: button })
+
+    it('exempts a row of controls that sits nearer its content than its items are apart', () => {
+      expect(judgeProximityInversion(controls(20, 4))).toEqual([])
+      expect(judgeProximityInversion(controls(20, 16))).toEqual([])
+    })
+
+    it('still flags a row of controls no nearer its content than its items are apart', () => {
+      expect(judgeProximityInversion(controls(20, 20))).toHaveLength(1)
+    })
+
+    it('treats a button nested in a wrapper as a control', () => {
+      const found = groups([20, 4], 4)
+      const wrappers = found.nodes.filter((x) => x.id.startsWith('g0i'))
+      for (const n of wrappers)
+        found.nodes.push(node(`${n.id}b`, n.id, n.box, { selector: `.${n.id}b`, interactive: true }))
+      expect(judgeProximityInversion(found)).toEqual([])
+    })
+
+    it('does not exempt a group with a single button among plain items', () => {
+      const one = (id, parent, y) =>
+        node(id, parent, [0, y, 200, 10], { selector: `.${id}`, paints: true, interactive: id.endsWith('i0') })
+      expect(judgeProximityInversion(groups([20, 4], 4, { itemOf: one }))).toHaveLength(1)
+    })
   })
 })
 

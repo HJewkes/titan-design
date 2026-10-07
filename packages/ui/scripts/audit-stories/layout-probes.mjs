@@ -338,13 +338,28 @@ const alignsOnBaseline = (container, kid) =>
   (['auto', 'normal'].includes(kid.layout.alignSelf) &&
     container.layout.alignItems.includes('baseline'))
 
+// The baseline a flex row aligns a child by: that of its first in-flow item, descending until text
+// is reached. An item with no baseline of its own (an icon, an image, an empty box) lends its
+// border-box bottom edge instead, as CSS synthesises it, so a child that opens with an icon is
+// aligned by the icon's bottom and not by the label beside it.
+function cssBaseline(node, children) {
+  for (let n = node; n; ) {
+    if (n.text) return n.text.first.baseline
+    const first = (children.get(n.id) ?? []).find(inFlow)
+    if (!first || REPLACED_TAGS.has(n.tag)) return n.box[1] + n.box[3]
+    n = first
+  }
+  return null
+}
+
 // Both children are in a flex row with ink; returns the finding's detail, or null.
 function nearMiss(container, [a, b], children) {
   const [ta, tb] = [firstText(a, children), firstText(b, children)]
   const deltas = deltasOf(alignmentLines(a, ta), alignmentLines(b, tb))
-  const baseline = deltas.find((x) => x.line === 'baseline')
-  if (baseline && alignsOnBaseline(container, a) && alignsOnBaseline(container, b))
-    return baseline.d > ALIGN_TOLERANCE ? `baseline Δ${baseline.d} (align-items: baseline)` : null
+  if (alignsOnBaseline(container, a) && alignsOnBaseline(container, b)) {
+    const d = q(Math.abs(cssBaseline(a, children) - cssBaseline(b, children)))
+    return d > ALIGN_TOLERANCE ? `baseline Δ${d} (align-items: baseline)` : null
+  }
   const smallest = Math.min(...deltas.map((x) => x.d))
   const sizes = [ta, tb].filter(Boolean).map((t) => t.fontSize)
   const band = Math.min(MAX_BAND, ...sizes.map((s) => s / 2))
@@ -444,12 +459,23 @@ const isSectionBreak = (container, gap, axis, declared) => {
   )
 }
 
+const SPREAD_JUSTIFY = new Set(['space-between', 'space-around', 'space-evenly'])
+// A row that spreads its children (justify-content, auto margins) sets its gaps from the free
+// space, so they say nothing about the author's spacing.
+function spreadsChildren(container, run, axis) {
+  const [before, after] = axis === 'x' ? [3, 1] : [0, 2]
+  return (
+    SPREAD_JUSTIFY.has(container.layout.justifyContent) ||
+    run.some((n) => n.marginAuto?.[before] || n.marginAuto?.[after])
+  )
+}
+
 export function judgeGapOutlier({ nodes, declared = {} }) {
   const { children } = index(nodes)
   const findings = []
   for (const container of nodes) {
     const { axis, runs } = stackRuns(container, children)
-    for (const run of runs.filter((r) => r.length >= 3)) {
+    for (const run of runs.filter((r) => r.length >= 3 && !spreadsChildren(container, r, axis))) {
       const gaps = runGaps(run, axis)
       if (gaps.length < 2) continue
       const m = Math.min(...gaps.map((x) => x.g))
@@ -478,6 +504,31 @@ function innerGap(group, children) {
   return gaps.length ? Math.max(...gaps) : null
 }
 
+// inner must be this many times outer: a group whose items sit about as far apart as it sits from
+// its neighbour is ambiguous, not inverted. S6 inversions the owner raised read 3.5 to 4.25 times;
+// the near-ties (14px against 12px) are the ones this drops.
+const INVERSION_RATIO = 1.5
+
+// A row of controls (arrows, a pager) is coupled to what it controls on purpose. It is read only
+// when it sits no closer to its neighbour than its own items sit to each other.
+function isControlRow(group, children) {
+  const kids = runsOf(group, children).flat()
+  const controls = kids.filter((k) => k.interactive || hasInteractive(k, children))
+  return controls.length >= 2 && controls.length * 2 >= kids.length
+}
+
+const runsOf = (group, children) => stackRuns(group, children).runs
+
+function hasInteractive(node, children) {
+  return (children.get(node.id) ?? []).some((c) => c.interactive || hasInteractive(c, children))
+}
+
+function isInverted(group, inner, outer, children) {
+  if (group.paints) return false
+  if (isControlRow(group, children)) return outer >= inner
+  return inner >= INVERSION_RATIO * outer
+}
+
 export function judgeProximityInversion({ nodes }) {
   const { children } = index(nodes)
   const findings = []
@@ -490,7 +541,7 @@ export function judgeProximityInversion({ nodes }) {
         const beside = [gaps[i - 1], gaps[i]].filter(Boolean)
         if (!inner || !beside.length) return
         const outer = beside.reduce((lo, x) => (x.g < lo.g ? x : lo))
-        if (inner < outer.g) return
+        if (!isInverted(group, inner, outer.g, children)) return
         const neighbour = outer.a === group ? outer.b : outer.a
         findings.push({
           kind: PROXIMITY_INVERSION,
