@@ -258,6 +258,7 @@
     "#ff7900|#edeae7": 1
   },
   "components-molecules-carousel-interactions--arrows-step-one-slide light": {
+    "#ff7900|#edeae7": 9,
     "#ff7900|#ffffff": 1
   },
   "components-molecules-carousel-interactions--controlled-ignoring-changes light": {
@@ -276,6 +277,7 @@
     "#ff7900|#ffffff": 1
   },
   "components-molecules-carousel-interactions--enter-and-space-activate-the-arrows light": {
+    "#ff7900|#edeae7": 9,
     "#ff7900|#ffffff": 1
   },
   "components-molecules-carousel-interactions--loop-back-from-the-first-card light": {
@@ -291,15 +293,19 @@
     "#ff7900|#ffffff": 1
   },
   "components-molecules-carousel-interactions--refresh-keeps-the-same-card light": {
+    "#ff7900|#edeae7": 9,
     "#ff7900|#ffffff": 1
   },
   "components-molecules-carousel-interactions--stops-at-both-ends light": {
+    "#ff7900|#edeae7": 9,
     "#ff7900|#ffffff": 1
   },
   "components-molecules-carousel-interactions--swipe-commits-when-the-scroll-rests light": {
+    "#ff7900|#edeae7": 9,
     "#ff7900|#ffffff": 1
   },
   "components-molecules-carousel-interactions--tab-brings-the-focused-slide-into-view light": {
+    "#ff7900|#edeae7": 9,
     "#ff7900|#ffffff": 1
   },
   "components-molecules-datarow--with-value-class-name light": {
@@ -532,7 +538,7 @@
     "#ff7900|#ffffff": 1
   },
   "components-organisms-sidebar--default light": {
-    "#121828|#252321": 4
+    "#ff7900|#dfc9b7": 1
   },
   "components-organisms-sidebar--with-active-item light": {
     "#121828|#252321": 4
@@ -1154,20 +1160,24 @@
     "#888684|#edeae7": 4
   },
   "custom-fatigue-live-fatigue-panel--live-states light": {
-    "#72716f|#edeae7": 1
+    "#72716f|#edeae7": 1,
+    "#cd923a|#edeae7": 1
   },
   "custom-fatigue-live-fatigue-panel--on-light-surface dark": {
     "#72716f|#edeae7": 1,
-    "#a29f9d|#edeae7": 2
+    "#a29f9d|#edeae7": 2,
+    "#cd923a|#edeae7": 1
   },
   "custom-fatigue-live-fatigue-panel--on-light-surface light": {
-    "#72716f|#edeae7": 1
+    "#72716f|#edeae7": 1,
+    "#cd923a|#edeae7": 1
   },
   "custom-fatigue-velocity-hero--default light": {
     "#5a5958|#1c1916": 8
   },
   "custom-fatigue-velocity-hero--mid-set light": {
-    "#5a5958|#1c1916": 4
+    "#5a5958|#1c1916": 4,
+    "#995d06|#1c1916": 1
   },
   "custom-fatigue-verdict-hero--across-states dark": {
     "#d14343|#100d0a": 2
@@ -1311,7 +1321,8 @@
     "#ff7900|#ffefe0": 1
   },
   "custom-workout-dataviz-bodymapdetailpanel--without-upcoming dark": {
-    "#888684|#252321": 4
+    "#888684|#23211f": 2,
+    "#888684|#252321": 2
   },
   "custom-workout-dataviz-bodymapdetailpanel--without-upcoming light": {
     "#ff7900|#ffefe0": 1
@@ -1320,7 +1331,7 @@
     "#888684|#252321": 5
   },
   "custom-workout-dataviz-capacitybandchart--default dark": {
-    "#888684|#252321": 5
+    "#888684|#252321": 3
   },
   "custom-workout-dataviz-capacitybandchart--interactive dark": {
     "#888684|#252321": 5
@@ -1335,10 +1346,11 @@
     "#888684|#252321": 5
   },
   "custom-workout-dataviz-dualvelocitystrip--crowded-right-edge-label light": {
-    "#5a5958|#1c1916": 15
+    "#5a5958|#1c1916": 2
   },
   "custom-workout-dataviz-dualvelocitystrip--hero light": {
-    "#5a5958|#1c1916": 12
+    "#5a5958|#1c1916": 12,
+    "#995d06|#1c1916": 1
   },
   "custom-workout-dataviz-dualvelocitystrip--range-set light": {
     "#5a5958|#1c1916": 10
@@ -1356,7 +1368,7 @@
     "#888684|#252321": 5
   },
   "custom-workout-dataviz-fatiguemeter--wall-density dark": {
-    "#888684|#252321": 4
+    "#888684|#252321": 5
   },
   "custom-workout-dataviz-goaltrajectorychart--empty-calibrating dark": {
     "#888684|#2c2a28": 1
@@ -1464,7 +1476,7 @@
   "custom-workout-dataviz-velocitystrip-hero--rep-types light": {
     "#5a5958|#1c1916": 76,
     "#72716f|#1c1916": 21,
-    "#995d06|#1c1916": 1
+    "#995d06|#1c1916": 3
   },
   "custom-workout-dataviz-velocitystrip-hero--responsive light": {
     "#5a5958|#1c1916": 101,
@@ -1472,7 +1484,8 @@
   },
   "custom-workout-dataviz-velocitystrip-hero--set-types light": {
     "#5a5958|#1c1916": 46,
-    "#72716f|#1c1916": 12
+    "#72716f|#1c1916": 12,
+    "#995d06|#1c1916": 1
   },
   "custom-workout-dataviz-volumelandmarkbar--all-zones light": {
     "#72716f|#edeae7": 10,
@@ -1515,7 +1528,7 @@
     "#888684|#252321": 5
   },
   "custom-workout-dataviz-zonetrack--wall-density dark": {
-    "#888684|#252321": 4
+    "#888684|#252321": 5
   },
   "custom-workout-exercisecard--expanded-with-sets dark": {
     "#888684|#2c2a28": 5
@@ -2029,7 +2042,7 @@
     "#22d3ee|#edeae7": 9,
     "#72716f|#edeae7": 3,
     "#a29f9d|#ffffff": 14,
-    "#c27400|#edeae7": 1,
+    "#c27400|#edeae7": 2,
     "#ed69c3|#edeae7": 1,
     "#edeae7|#ffffff": 5
   },
@@ -2454,10 +2467,10 @@
   },
   "lab-decisions-calibrating-goal-chart--chosen dark": {
     "#888684|#252321": 4,
-    "#888684|#2c2a28": 4
+    "#888684|#2c2a28": 8
   },
   "lab-decisions-calibrating-goal-chart--chosen light": {
-    "#9e9a97|#f9f6f3": 1
+    "#9e9a97|#f9f6f3": 2
   },
   "lab-decisions-calibrating-info-tip--empty-open dark": {
     "#888684|#2c2a28": 4
@@ -2622,19 +2635,19 @@
   },
   "lab-decisions-goal-chart-labels--axis-numeric dark": {
     "#888684|#252321": 3,
-    "#888684|#2c2a28": 4
+    "#888684|#2c2a28": 8
   },
   "lab-decisions-goal-chart-labels--no-axis-no-labels dark": {
     "#888684|#252321": 3,
-    "#888684|#2c2a28": 4
+    "#888684|#2c2a28": 8
   },
   "lab-decisions-goal-chart-labels--no-axis-numeric dark": {
     "#888684|#252321": 3,
-    "#888684|#2c2a28": 4
+    "#888684|#2c2a28": 8
   },
   "lab-decisions-goal-chart-labels--today dark": {
     "#888684|#252321": 3,
-    "#888684|#2c2a28": 4
+    "#888684|#2c2a28": 8
   },
   "lab-decisions-goal-chart-marks--deload-column dark": {
     "#888684|#2c2a28": 4
@@ -2825,35 +2838,35 @@
   },
   "lab-decisions-primary-goal-card--laptop dark": {
     "#888684|#252321": 9,
-    "#888684|#2c2a28": 4
+    "#888684|#2c2a28": 8
   },
   "lab-decisions-primary-goal-card--laptop light": {
     "#9e9a97|#f9f6f3": 1
   },
   "lab-decisions-primary-goal-card--narrow dark": {
     "#888684|#252321": 9,
-    "#888684|#2c2a28": 4
+    "#888684|#2c2a28": 8
   },
   "lab-decisions-primary-goal-card--narrow light": {
     "#9e9a97|#f9f6f3": 1
   },
   "lab-decisions-primary-goal-card--phone dark": {
     "#888684|#252321": 9,
-    "#888684|#2c2a28": 4
+    "#888684|#2c2a28": 8
   },
   "lab-decisions-primary-goal-card--phone light": {
     "#9e9a97|#f9f6f3": 1
   },
   "lab-decisions-primary-goal-card--responsive dark": {
     "#888684|#252321": 9,
-    "#888684|#2c2a28": 4
+    "#888684|#2c2a28": 8
   },
   "lab-decisions-primary-goal-card--responsive light": {
     "#9e9a97|#f9f6f3": 1
   },
   "lab-decisions-primary-goal-card--wall dark": {
     "#888684|#252321": 9,
-    "#888684|#2c2a28": 4
+    "#888684|#2c2a28": 8
   },
   "lab-decisions-primary-goal-card--wall light": {
     "#9e9a97|#f9f6f3": 1
@@ -2936,6 +2949,7 @@
   "lab-north-star-4-fatigue-system--live-states light": {
     "#888684|#edeae7": 2,
     "#a29f9d|#edeae7": 1,
+    "#cd923a|#edeae7": 1,
     "#f9f6f3|#edeae7": 1
   },
   "lab-north-star-live-wall-dashboard--live dark": {
@@ -3171,7 +3185,12 @@
     "#ff7900|#efdfd0": 1
   },
   "pages-goals-carousel--default dark": {
-    "#888684|#2c2a28": 4
+    "#888684|#2c2a28": 58,
+    "#888684|#31302f": 3
+  },
+  "pages-goals-carousel--default light": {
+    "#72716f|#edeae7": 3,
+    "#9e9a97|#f9f6f3": 1
   },
   "pages-goals-whole-body--default dark": {
     "#888684|#2c2a28": 28
