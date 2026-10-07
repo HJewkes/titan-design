@@ -210,7 +210,9 @@ describe('a pick-one bound to a PR head (round@2 merge)', () => {
   })
 
   it('two questions binding one PR at different heads are refused', () => {
-    const other = second('q9', { merge: { ...merge, headSha: 'b'.repeat(40), ship: ['Ship that'] } })
+    const other = second('q9', {
+      merge: { ...merge, headSha: 'b'.repeat(40), ship: ['Ship that'] },
+    })
     expect(messages(bound({}, [other]))).toEqual([
       expect.stringMatching(/owner\/name#7 is bound at different heads/),
     ])
@@ -230,9 +232,9 @@ describe('a pick-one bound to a PR head (round@2 merge)', () => {
   it('a build record parses, and a malformed one is refused', () => {
     const build = { mainSha: HEAD, mergeSha: 'c'.repeat(40) }
     expect(ManifestSchema.parse(bound({}, [], { build })).build).toEqual(build)
-    expect(issues(bound({}, [], { build: { mainSha: 'abc', mergeSha: build.mergeSha } }))).toContain(
-      'build.mainSha'
-    )
+    expect(
+      issues(bound({}, [], { build: { mainSha: 'abc', mergeSha: build.mergeSha } }))
+    ).toContain('build.mainSha')
   })
 
   it('a round with no bindings parses exactly as today', () => {
