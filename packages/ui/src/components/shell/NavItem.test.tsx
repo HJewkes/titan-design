@@ -12,25 +12,28 @@ const icon = <ActivityIcon size={20} color="currentColor" />
 describe('NavItem', () => {
   it('has no accessibility violations', async () => {
     const { container } = render(
-      <View accessibilityRole="tablist">
+      <View accessibilityRole="navigation" accessibilityLabel="Primary">
         <NavItem icon={icon} label="Live" active onPress={vi.fn()} />
       </View>
     )
     expect(await axe(container)).toHaveNoViolations()
   })
-  it('renders the label and is exposed as a tab', () => {
+  it('renders the label and is exposed as a button', () => {
     render(<NavItem icon={icon} label="Live" />)
-    expect(screen.getByRole('tab', { name: 'Live' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Live' })).toBeInTheDocument()
   })
 
-  it('exposes aria-selected true when active', () => {
+  it('exposes aria-current=page when active and no tab semantics', () => {
     render(<NavItem icon={icon} label="Live" active />)
-    expect(screen.getByRole('tab', { name: 'Live' })).toHaveAttribute('aria-selected', 'true')
+    const item = screen.getByRole('button', { name: 'Live' })
+    expect(item).toHaveAttribute('aria-current', 'page')
+    expect(item).not.toHaveAttribute('aria-selected')
+    expect(screen.queryByRole('tab')).toBeNull()
   })
 
-  it('exposes aria-selected false when inactive', () => {
+  it('carries no aria-current attribute when inactive', () => {
     render(<NavItem icon={icon} label="Live" />)
-    expect(screen.getByRole('tab', { name: 'Live' })).toHaveAttribute('aria-selected', 'false')
+    expect(screen.getByRole('button', { name: 'Live' })).not.toHaveAttribute('aria-current')
   })
 
   it('shows the accent bar when active', () => {
@@ -46,7 +49,7 @@ describe('NavItem', () => {
   it('fires onPress when tapped', () => {
     const onPress = vi.fn()
     render(<NavItem icon={icon} label="Live" onPress={onPress} />)
-    fireEvent.click(screen.getByRole('tab', { name: 'Live' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Live' }))
     expect(onPress).toHaveBeenCalledTimes(1)
   })
 
@@ -57,24 +60,24 @@ describe('NavItem', () => {
 
   it('names a live inactive item with the live words', () => {
     render(<NavItem icon={icon} label="Train" live />)
-    expect(screen.getByRole('tab', { name: 'Train, live' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Train, live' })).toBeInTheDocument()
   })
 
   it('uses a custom liveLabel in the accessible name', () => {
     render(<NavItem icon={icon} label="Train" live liveLabel="set running" />)
-    expect(screen.getByRole('tab', { name: 'Train, set running' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Train, set running' })).toBeInTheDocument()
   })
 
   it("keeps the active item's name free of the live words", () => {
     render(<NavItem icon={icon} label="Train" live active />)
-    expect(screen.getByRole('tab', { name: 'Train' })).toBeInTheDocument()
-    expect(screen.queryByRole('tab', { name: /live/ })).toBeNull()
+    expect(screen.getByRole('button', { name: 'Train' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /live/ })).toBeNull()
   })
 
   it("keeps the idle item's name free of the live words", () => {
     render(<NavItem icon={icon} label="Train" />)
-    expect(screen.getByRole('tab', { name: 'Train' })).toBeInTheDocument()
-    expect(screen.queryByRole('tab', { name: /live/ })).toBeNull()
+    expect(screen.getByRole('button', { name: 'Train' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /live/ })).toBeNull()
   })
 
   // nativewind compiles className to style, so jsdom cannot see the accent colour.
@@ -91,7 +94,7 @@ describe('NavItem', () => {
       />
     )
     expect(screen.getByTestId('nav-item-accent')).toBeInTheDocument()
-    expect(screen.getByRole('tab', { name: 'Graph' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Graph' })).toBeInTheDocument()
   })
 })
 

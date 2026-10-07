@@ -28,6 +28,8 @@ export interface SideNavProps {
   accentClassName?: string
   /** Semantic `bg-*` token for the active bar. Pair it with `accentClassName`. */
   accentBarClassName?: string
+  /** Accessible name of the navigation landmark. Defaults to `'Primary'`. */
+  accessibilityLabel?: string
   className?: string
 }
 
@@ -47,11 +49,13 @@ export function SideNav({
   liveKey = null,
   accentClassName,
   accentBarClassName,
+  accessibilityLabel = 'Primary',
   className,
 }: SideNavProps) {
   return (
     <View
-      accessibilityRole="tablist"
+      accessibilityRole="navigation"
+      accessibilityLabel={accessibilityLabel}
       className={cn(
         'w-[60px] items-center gap-1.5 border-r border-hairline bg-background-base py-inset-md',
         className

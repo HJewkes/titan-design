@@ -9069,6 +9069,13 @@
           "type": "string"
         },
         {
+          "default": "false",
+          "description": "Render the content region as the `main` landmark.",
+          "name": "isMainLandmark",
+          "required": false,
+          "type": "boolean"
+        },
+        {
           "default": "null",
           "description": "A category with off-view live activity → a quiet cue on that item.",
           "name": "liveKey",
@@ -9309,6 +9316,13 @@
           "default": null,
           "description": "Semantic `text-*` token for the active item.",
           "name": "accentClassName",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "Primary",
+          "description": "Accessible name of the navigation landmark.",
+          "name": "accessibilityLabel",
           "required": false,
           "type": "string"
         },
