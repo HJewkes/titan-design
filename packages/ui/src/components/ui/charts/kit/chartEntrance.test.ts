@@ -78,14 +78,12 @@ describe('entrance styles', () => {
   it('draws from a full dash offset to none with the house ease-out', () => {
     expect(drawStyle(before)).toMatchObject({ strokeDasharray: 1, strokeDashoffset: 1 })
     expect(drawStyle(after)).toMatchObject({ strokeDashoffset: 0 })
-    expect(drawStyle(after).transition).toBe(
-      'stroke-dashoffset 1000ms cubic-bezier(0.22, 1, 0.36, 1) 0ms'
-    )
+    expect(drawStyle(after).transition).toBe('stroke-dashoffset 1000ms var(--ease-out) 0ms')
   })
 
   it('takes a caller timing for the draw', () => {
     expect(drawStyle(after, { duration: 600, delay: 200 }).transition).toBe(
-      'stroke-dashoffset 600ms cubic-bezier(0.22, 1, 0.36, 1) 200ms'
+      'stroke-dashoffset 600ms var(--ease-out) 200ms'
     )
   })
 

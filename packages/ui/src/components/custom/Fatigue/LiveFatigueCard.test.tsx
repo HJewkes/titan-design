@@ -4,6 +4,7 @@ import { render, screen } from '@testing-library/react'
 import { LiveFatigueCard } from './LiveFatigueCard'
 import { FATIGUE_STATES, WARMING_UP_MODEL } from './fatigue-mock'
 import { GHOST_GUTTER } from './GhostSpark'
+import { CARD_WIDTH_BASE } from './panel-layout'
 import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
 const model = FATIGUE_STATES[3].model
@@ -56,5 +57,12 @@ describe('LiveFatigueCard geometry resolves to the spacing tokens', () => {
     expect(GHOST_GUTTER).toBe(4)
     expect(spark).toHaveStyle({ paddingLeft: '4px', paddingRight: '4px' })
     expect(spark.querySelector('svg')).toHaveAttribute('width', String(318 - 18 * 2 - 4 * 2))
+  })
+})
+
+describe('LiveFatigueCard default width', () => {
+  it('defaults to the panel layout card width base', () => {
+    render(<LiveFatigueCard model={model} />)
+    expect(screen.getByTestId('live-fatigue-card')).toHaveStyle({ width: `${CARD_WIDTH_BASE}px` })
   })
 })

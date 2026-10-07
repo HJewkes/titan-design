@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Progress, CircularProgress, ProgressSteps } from './Progress'
 import { Surface } from '../surface'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { capturedByNode } from '../../../test/classname-capture'
 import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
@@ -173,11 +174,20 @@ describe('Progress', () => {
       expect(circles.length).toBe(2) // track + progress
     })
 
-    it('applies custom color to SVG progress circle', () => {
-      const { container } = render(<CircularProgress value={50} color="success" />)
-      const progressCircle = container.querySelectorAll('circle')[1]
-      expect(progressCircle?.getAttribute('stroke')).toBe('var(--color-status-success)')
-    })
+    it.each(['dark', 'light'] as const)(
+      'strokes the arc and track with hex in %s mode',
+      (theme) => {
+        const colors = getSemanticColors(theme)
+        const { container } = render(
+          <Surface theme={theme}>
+            <CircularProgress value={50} color="success" />
+          </Surface>
+        )
+        const [track, arc] = container.querySelectorAll('circle')
+        expect(arc?.getAttribute('stroke')).toBe(colors['status-success'])
+        expect(track?.getAttribute('stroke')).toBe(colors['hairline-default'])
+      }
+    )
   })
 
   describe('ProgressSteps', () => {

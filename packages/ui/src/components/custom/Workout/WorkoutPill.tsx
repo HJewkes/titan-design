@@ -153,7 +153,7 @@ export function WorkoutPill({
         accessibilityLabel={onPress ? undefined : `${name} workout, ${status}`}
         {...props}
       >
-        {isCompleted && (
+        {!!isCompleted && (
           <Typography
             variant="caption"
             color="inherit"
@@ -165,7 +165,7 @@ export function WorkoutPill({
             {'\u2713'}
           </Typography>
         )}
-        {isMissed && (
+        {!!isMissed && (
           <Typography
             variant="caption"
             color="inherit"

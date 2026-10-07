@@ -13,7 +13,7 @@ export function ScatterPointMark({
   ringColor: string
   onPress?: (id: string) => void
 }) {
-  const showLabel = p.datum.label && (isSelected || p.radius >= 10)
+  const showLabel = !!p.datum.label && (isSelected || p.radius >= 10)
   return (
     <Pressable
       testID={`scatter-point-${p.datum.id}`}

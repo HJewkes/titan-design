@@ -65,7 +65,7 @@ export const semanticColorsLight = {
   'brand-primary': ramp.orange[400],
   'brand-primary-light': ramp.orange[300],
   'brand-primary-dark': ramp.orange[500],
-  'brand-primary-subtle': ramp.orange[50],
+  'brand-primary-subtle': ramp.orange[100],
   'brand-primary-muted': ramp.orange[200],
   'brand-primary-strong': 'rgba(255, 121, 0, 0.50)',
   'brand-primary-hover': ramp.orange[500],
@@ -74,7 +74,7 @@ export const semanticColorsLight = {
   'brand-secondary': ramp.cyan[600],
   'brand-secondary-light': ramp.cyan[500],
   'brand-secondary-dark': ramp.cyan[700],
-  'brand-secondary-subtle': ramp.cyan[50],
+  'brand-secondary-subtle': ramp.cyan[100],
   'brand-secondary-muted': ramp.cyan[200],
   'brand-secondary-strong': 'rgba(48, 123, 155, 0.50)',
   'brand-secondary-hover': ramp.cyan[700],
@@ -84,18 +84,17 @@ export const semanticColorsLight = {
   'on-brand-primary': p.white,
   'on-brand-secondary': p.white,
 
-  // Text ON a `-subtle` fill. Light mode keeps today's pairing (the base token) so
-  // nothing moves here: light has the same disease mirrored — a light rung on a
-  // near-white ramp[50] fill — but correcting it belongs with the light-mode pass
-  // in AW-121, not this one.
-  'on-brand-primary-subtle': ramp.orange[400],
-  'on-brand-secondary-subtle': ramp.cyan[600],
+  // Text ON a `-subtle` fill. Light pairs a ramp[700] label with a ramp[100] fill:
+  // the base rung on a near-white ramp[50] fill read 1.7 to 4.4:1. Every tone now
+  // clears 4.5:1 (subtle-label.light.test.ts).
+  'on-brand-primary-subtle': ramp.orange[700],
+  'on-brand-secondary-subtle': ramp.cyan[700],
 
   // Status colors (status-*)
   'status-success': ramp.green[600],
   'status-success-light': ramp.green[200],
   'status-success-dark': ramp.green[600],
-  'status-success-subtle': ramp.green[50],
+  'status-success-subtle': ramp.green[100],
   'status-success-muted': 'rgba(46, 213, 115, 0.30)',
   'status-success-strong': 'rgba(46, 213, 115, 0.50)',
 
@@ -110,7 +109,7 @@ export const semanticColorsLight = {
   'status-error': ramp.red[600],
   'status-error-light': ramp.red[500],
   'status-error-dark': ramp.red[700],
-  'status-error-subtle': ramp.red[50],
+  'status-error-subtle': ramp.red[100],
   'status-error-muted': 'rgba(209, 67, 67, 0.30)',
   'status-error-strong': 'rgba(209, 67, 67, 0.50)',
 
@@ -124,32 +123,33 @@ export const semanticColorsLight = {
   'status-warning': ramp.amber[500],
   'status-warning-light': ramp.amber[200],
   'status-warning-dark': ramp.amber[500],
-  'status-warning-subtle': ramp.amber[50],
+  'status-warning-subtle': ramp.amber[100],
   'status-warning-muted': 'rgba(249, 180, 21, 0.30)',
   'status-warning-strong': 'rgba(249, 180, 21, 0.50)',
 
   'status-info': ramp.blue[600],
   'status-info-light': ramp.blue[300],
   'status-info-dark': ramp.blue[600],
-  'status-info-subtle': ramp.blue[50],
+  'status-info-subtle': ramp.blue[100],
   'status-info-muted': 'rgba(33, 150, 243, 0.30)',
   'status-info-strong': 'rgba(33, 150, 243, 0.50)',
 
-  // Solid-variant fill. Light mode aliases the base tone unchanged: the dark-mode
-  // lift and label flip (AW-141) were measured against dark planes only, and light
-  // needs its own pass with AW-121. Defined here so no token is mode-incomplete.
+  // Solid-variant fill. Success and warning carry the light-tuning values: white
+  // on green[600] clears 4.5:1; amber[500] keeps the white label at 3.6:1, a
+  // declared exception in contrast-baseline.json. Primary and info keep their
+  // earlier values until their own light values are decided.
   'brand-primary-solid': ramp.orange[400],
   'brand-secondary-solid': ramp.cyan[600],
-  'status-success-solid': ramp.green[300],
+  'status-success-solid': ramp.green[600],
   'status-error-solid': ramp.red[600],
-  'status-warning-solid': ramp.amber[300],
+  'status-warning-solid': ramp.amber[500],
   'status-info-solid': ramp.blue[500],
 
   // Text ON a `-subtle` fill — see the on-brand-*-subtle note above.
-  'on-status-success-subtle': ramp.green[300],
-  'on-status-error-subtle': ramp.red[600],
-  'on-status-warning-subtle': ramp.amber[300],
-  'on-status-info-subtle': ramp.blue[500],
+  'on-status-success-subtle': ramp.green[700],
+  'on-status-error-subtle': ramp.red[700],
+  'on-status-warning-subtle': ramp.amber[700],
+  'on-status-info-subtle': ramp.blue[700],
 
   // Text on status backgrounds (on-status-*)
   'on-status-success': p.white,
@@ -231,8 +231,8 @@ export const semanticColorsLight = {
 
   // Text colors (text-*)
   'text-primary': semanticPins.textPrimaryLight,
-  'text-secondary': semanticPins.textSecondaryLight,
-  'text-tertiary': greyRamp[400],
+  'text-secondary': greyRamp[700],
+  'text-tertiary': greyRamp[600],
   'text-disabled': 'rgba(55, 65, 81, 0.48)',
   'text-inverse': p.white,
   'text-error': ramp.red[700], // one rung darker than status-error to clear 4.5:1 on every light plane
@@ -517,7 +517,7 @@ export const semanticColorsDark = {
   // plane, so it keeps its job without collision.
   'border-prominent': greyRamp[800], // high-visibility divider
   'border-focus': semanticPins.focusIndigoDark,
-  'border-input': greyRamp[700],
+  'border-input': greyRamp[500], // Input field border, matches light (TD-674)
   'border-input-hover': greyRamp[600],
   'border-input-focus': semanticPins.focusIndigoDark,
   'border-input-error': ramp.red[500],

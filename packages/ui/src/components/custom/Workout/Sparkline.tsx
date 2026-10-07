@@ -97,7 +97,7 @@ export function Sparkline({
         />
       )}
       <SparklineSegments points={points} color={resolvedColor} />
-      {(showDots || highlightLast) && (
+      {!!(showDots || highlightLast) && (
         <SparklineDots
           points={points}
           color={resolvedColor}
