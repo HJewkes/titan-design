@@ -22,7 +22,7 @@ export const RENDERED_UI_PATTERNS = [
   /^packages\/ui\/specimen\//,
   /^packages\/ui\/tests\/(visual|interaction|offline-fonts)\//,
   /^packages\/ui\/playwright[^/]*\.config\.[^/]+$/,
-  // Playwright starts Storybook through the launcher (pnpm storybook --ci).
+  // The Storybook launcher and its helpers.
   // test:storybook ends with the play-count check.
   /^packages\/ui\/scripts\/(storybook-launch\.mjs|check-play-count\.mjs$|lib\/|visual-paths\.mjs$)/,
   /^packages\/ui\/package\.json$/,

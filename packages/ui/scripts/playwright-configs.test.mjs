@@ -41,9 +41,10 @@ describe('Playwright webServer configs (TD-512)', () => {
   )
 
   it.each(webServers.filter((w) => w.port === 6006))(
-    'starts Storybook through the launcher script in $file',
+    'serves the static Storybook build with --strictPort in $file',
     ({ server }) => {
-      expect(server.command).toMatch(/^pnpm storybook\b/)
+      expect(server.command).toContain('vite preview --outDir storybook-static')
+      expect(server.command).toContain('--strictPort')
     }
   )
 
