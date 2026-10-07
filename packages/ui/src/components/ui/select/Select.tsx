@@ -30,6 +30,12 @@ const SelectContext = createContext<SelectContextType<unknown>>({
   isSelected: () => false,
 })
 
+// The provider is a `Select<T>` and the consumer a `SelectOption<T>` of the same `T`; the shared
+// context object cannot carry that, so the cast lives here, once.
+function useSelectContext<T>() {
+  return useContext(SelectContext) as SelectContextType<T>
+}
+
 export interface SelectProps<T = string> extends ViewProps {
   /** Selected value (single mode) */
   value?: T | null
@@ -185,7 +191,7 @@ interface SelectOptionComponentProps<T> {
 }
 
 function SelectOption<T>({ option }: SelectOptionComponentProps<T>) {
-  const { selectValue, isSelected, isMulti } = useContext(SelectContext)
+  const { selectValue, isSelected, isMulti } = useSelectContext<T>()
   const selected = isSelected(option.value)
 
   return (

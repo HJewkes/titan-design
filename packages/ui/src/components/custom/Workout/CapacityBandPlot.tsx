@@ -1,4 +1,4 @@
-import { View, Text, Animated } from 'react-native'
+import { View, Animated } from 'react-native'
 import {
   COLUMN_STEP,
   buildColumns,
@@ -7,6 +7,7 @@ import {
   type CapacityBandLayout,
   type PixelPoint,
 } from './capacityBandGeometry'
+import { Typography } from '../../ui/typography'
 
 interface BandColumnsProps {
   columns: ReturnType<typeof buildColumns>
@@ -79,35 +80,42 @@ interface ProjectionProps {
   colors: CapacityBandColors
 }
 
-function ProjectionLabels({ trainingPixels, restPixels, colors }: ProjectionProps) {
+function ProjectionLabels({
+  trainingPixels,
+  restPixels,
+}: Pick<ProjectionProps, 'trainingPixels' | 'restPixels'>) {
   return (
     <>
-      <Text
+      <Typography
+        variant="caption"
+        color="success"
+        className="leading-tight"
         style={{
           position: 'absolute',
           left: trainingPixels[trainingPixels.length - 1]?.x + 2,
           top: trainingPixels[trainingPixels.length - 1]?.yHigh - 12,
           fontSize: 9,
           fontFamily: 'Inter, sans-serif',
-          color: colors.success,
         }}
         testID="capacity-band-chart-projection-training-label"
       >
         Training
-      </Text>
-      <Text
+      </Typography>
+      <Typography
+        variant="caption"
+        color="info"
+        className="leading-tight"
         style={{
           position: 'absolute',
           left: restPixels[restPixels.length - 1]?.x + 2,
           top: restPixels[restPixels.length - 1]?.yLow + 2,
           fontSize: 9,
           fontFamily: 'Inter, sans-serif',
-          color: colors.info,
         }}
         testID="capacity-band-chart-projection-rest-label"
       >
         Rest
-      </Text>
+      </Typography>
     </>
   )
 }
@@ -149,7 +157,7 @@ function ProjectionLayer({ trainingPixels, restPixels, colors }: ProjectionProps
         dashed
         testID="capacity-band-chart-projection-rest"
       />
-      <ProjectionLabels trainingPixels={trainingPixels} restPixels={restPixels} colors={colors} />
+      <ProjectionLabels trainingPixels={trainingPixels} restPixels={restPixels} />
     </View>
   )
 }

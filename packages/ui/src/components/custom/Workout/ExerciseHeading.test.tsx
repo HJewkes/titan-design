@@ -3,6 +3,7 @@ import { resolveAll, spacingClassesOf } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { ExerciseHeading } from './ExerciseHeading'
+import { primitiveOpacity } from '../../../theme/tokens/primitives'
 
 const baseProps = {
   name: 'Seated Cable Row',
@@ -60,7 +61,7 @@ describe('ExerciseHeading', () => {
 
   it('dims the block when marked dimmed', () => {
     render(<ExerciseHeading {...baseProps} dimmed />)
-    expect(screen.getByTestId('exercise-heading')).toHaveStyle({ opacity: 0.55 })
+    expect(screen.getByTestId('exercise-heading')).toHaveStyle({ opacity: primitiveOpacity.dim })
   })
 
   it('is full opacity by default', () => {
