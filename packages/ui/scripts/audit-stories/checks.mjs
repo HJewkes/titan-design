@@ -2,7 +2,15 @@
 // domChecks, runAxe and tokenColours are serialised into the page, so they use browser globals.
 /* global document, getComputedStyle, innerWidth, NodeFilter, window */
 import { layoutCollectorSource } from './layout-collect.mjs'
-import { EDGE_CLEARANCE, INSET_ASYMMETRY, STACKED_INSET, judgeLayout } from './layout-probes.mjs'
+import {
+  ALIGNMENT_NEAR_MISS,
+  EDGE_CLEARANCE,
+  GAP_OUTLIER,
+  INSET_ASYMMETRY,
+  PROXIMITY_INVERSION,
+  STACKED_INSET,
+  judgeLayout,
+} from './layout-probes.mjs'
 import { buildScale, isOnScale } from './spacing-scale.mjs'
 
 const MAX_FINDINGS_PER_KIND = 25
@@ -30,6 +38,9 @@ export const WARNING_KINDS = Object.freeze([
   STACKED_INSET,
   EDGE_CLEARANCE,
   INSET_ASYMMETRY,
+  ALIGNMENT_NEAR_MISS,
+  GAP_OUTLIER,
+  PROXIMITY_INVERSION,
 ])
 export const CONTRAST_TOKEN_KIND = CONTRAST_TOKEN
 

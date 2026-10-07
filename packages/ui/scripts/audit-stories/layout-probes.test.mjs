@@ -1,8 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import {
+  judgeAlignmentNearMiss,
   judgeEdgeClearance,
+  judgeGapOutlier,
   judgeInsetAsymmetry,
   judgeLayout,
+  judgeProximityInversion,
   judgeStackedInset,
 } from './layout-probes.mjs'
 
@@ -10,9 +13,18 @@ const flex = (flexDirection = 'column') => ({
   display: 'flex',
   flexDirection,
   flexWrap: 'nowrap',
+  alignItems: 'normal',
+  alignSelf: 'auto',
   position: 'static',
 })
-const flow = { display: 'block', flexDirection: 'row', flexWrap: 'nowrap', position: 'static' }
+const flow = {
+  display: 'block',
+  flexDirection: 'row',
+  flexWrap: 'nowrap',
+  alignItems: 'normal',
+  alignSelf: 'auto',
+  position: 'static',
+}
 const textOf = (box) => {
   const [x, y, w, h] = box
   const line = { baseline: y + h, inkTop: y, inkBottom: y + h, left: x, right: x + w }
@@ -344,6 +356,314 @@ describe('what the surface padding places', () => {
     expect(judgeInsetAsymmetry(layout(surface, fill))).toEqual([])
     const flush = node('c.1', 'c', [0, 10, 60, 16], { text: textOf([0, 10, 60, 16]) })
     expect(judgeEdgeClearance(layout(surface, flush))).toEqual([])
+  })
+})
+
+describe('alignment-near-miss', () => {
+  const rowOf = (layoutExtra = {}) =>
+    node('r', null, [0, 0, 400, 100], { layout: { ...flex('row'), ...layoutExtra } })
+  // A one-line text child whose box is its ink; `baseline` defaults to the ink bottom.
+  const label = (id, ink, { baseline = ink[1] + ink[3], fontSize = 16, self = 'auto' } = {}) => {
+    const [x, y, w, h] = ink
+    const line = { baseline, inkTop: y, inkBottom: y + h, left: x, right: x + w }
+    return node(id, 'r', ink, {
+      selector: `.${id}`,
+      layout: { ...flow, alignSelf: self },
+      text: { fontSize, lineCount: 1, left: x, right: x + w, first: line, last: line },
+      ink,
+    })
+  }
+  const card = (id, box) => node(id, 'r', box, { selector: `.${id}`, paints: true })
+  const shiftedPair = (d, fontSize = 16) =>
+    layout(
+      rowOf(),
+      label('a', [0, 0, 40, 12], { fontSize }),
+      label('b', [50, d, 40, 12], { fontSize })
+    )
+
+  it.each([
+    [1, 0],
+    [1.25, 1],
+    [6, 1],
+    [6.25, 0],
+  ])('at 16px text, a %spx offset on every line gives %i findings', (d, count) => {
+    expect(judgeAlignmentNearMiss(shiftedPair(d))).toHaveLength(count)
+  })
+
+  it('caps the band at half the smaller font size', () => {
+    expect(judgeAlignmentNearMiss(shiftedPair(4, 8))).toHaveLength(1)
+    expect(judgeAlignmentNearMiss(shiftedPair(4.25, 8))).toEqual([])
+  })
+
+  it('names every line it measured and the band', () => {
+    const a = label('a', [0, 0, 40, 12])
+    const b = label('b', [50, 4, 40, 9.5], { baseline: 14.5 })
+    expect(judgeAlignmentNearMiss(layout(rowOf(), a, b))).toEqual([
+      {
+        kind: 'alignment-near-miss',
+        selector: '.a',
+        detail: '.a vs .b: baseline Δ2.5, top Δ4, centre Δ2.75, bottom Δ1.5 (band ≤ 6px)',
+      },
+    ])
+  })
+
+  it('stays quiet when any one line aligns, as with an icon centred beside text', () => {
+    const icon = node('i', 'r', [0, 0, 16, 16], { selector: '.i', tag: 'svg', paints: true })
+    const text = label('t', [20, 3, 40, 10])
+    expect(judgeAlignmentNearMiss(layout(rowOf(), icon, text))).toEqual([])
+  })
+
+  describe('align-items: baseline', () => {
+    // Tops align, so only a baseline request makes the 10px baseline delta a finding.
+    const pair = (row, self) =>
+      layout(
+        row,
+        label('a', [0, 0, 40, 12], { self }),
+        label('b', [50, 0, 40, 40], { baseline: 22, self })
+      )
+
+    it('flags a baseline delta beyond the near-miss band', () => {
+      expect(judgeAlignmentNearMiss(pair(rowOf()))).toEqual([])
+      const [found] = judgeAlignmentNearMiss(pair(rowOf({ alignItems: 'baseline' })))
+      expect(found.detail).toBe('.a vs .b: baseline Δ10 (align-items: baseline)')
+    })
+
+    it('honours align-self: baseline on both children', () => {
+      expect(judgeAlignmentNearMiss(pair(rowOf(), 'baseline'))).toHaveLength(1)
+    })
+
+    it('accepts baselines within 1px', () => {
+      const row = rowOf({ alignItems: 'baseline' })
+      const a = label('a', [0, 4, 40, 12])
+      const b = label('b', [50, 0, 40, 17], { baseline: 17 })
+      expect(judgeAlignmentNearMiss(layout(row, a, b))).toEqual([])
+    })
+  })
+
+  it('reads the baseline from a label on a child’s first line', () => {
+    const wrap = node('w', 'r', [50, 0, 60, 14], { selector: '.w' })
+    const inner = label('w.0', [70, 0, 40, 12], { baseline: 10 })
+    inner.parent = 'w'
+    const row = rowOf({ alignItems: 'baseline' })
+    expect(judgeAlignmentNearMiss(layout(row, label('a', [0, 0, 40, 12]), wrap, inner))).toEqual([
+      expect.objectContaining({ detail: '.a vs .w: baseline Δ2 (align-items: baseline)' }),
+    ])
+  })
+
+  it('compares neighbours within each wrapped line, never across lines', () => {
+    const row = rowOf({ flexWrap: 'wrap' })
+    const tags = [
+      card('t0', [0, 0, 50, 24]),
+      card('t1', [60, 0, 50, 24]),
+      card('t2', [120, 0, 50, 24]),
+      card('t3', [0, 32, 50, 24]),
+      card('t4', [60, 32, 50, 28]),
+    ]
+    expect(judgeAlignmentNearMiss(layout(row, ...tags)).map((f) => f.detail)).toEqual([
+      '.t3 vs .t4: height Δ4 (both paint; limit 16px)',
+    ])
+  })
+
+  it('keeps a nowrap row on one line however far its children are offset', () => {
+    const row = layout(rowOf(), card('a', [0, 0, 50, 24]), card('b', [60, 20, 50, 28]))
+    expect(judgeAlignmentNearMiss(row)).toHaveLength(1)
+  })
+
+  it('joins a child to a line it overlaps by half the smaller height', () => {
+    const row = rowOf({ flexWrap: 'wrap' })
+    const first = card('a', [0, 0, 50, 24])
+    expect(judgeAlignmentNearMiss(layout(row, first, card('b', [60, 12, 50, 28])))).toHaveLength(1)
+    expect(judgeAlignmentNearMiss(layout(row, first, card('b', [60, 12.25, 50, 28])))).toEqual([])
+  })
+
+  it.each([
+    [1, 0],
+    [1.25, 1],
+    [16, 1],
+    [16.25, 0],
+  ])('two painted siblings %spx apart in height give %i findings', (d, count) => {
+    const row = layout(rowOf(), card('a', [0, 0, 100, 60]), card('b', [110, 0, 100, 60 + d]))
+    expect(judgeAlignmentNearMiss(row)).toHaveLength(count)
+  })
+
+  it('skips column flex, out-of-flow children and a lone child', () => {
+    const col = node('r', null, [0, 0, 400, 100], { layout: flex('column') })
+    expect(
+      judgeAlignmentNearMiss(layout(col, label('a', [0, 0, 40, 12]), label('b', [0, 2, 40, 12])))
+    ).toEqual([])
+    const abs = label('b', [50, 2, 40, 12])
+    abs.layout = { ...abs.layout, position: 'absolute' }
+    expect(judgeAlignmentNearMiss(layout(rowOf(), label('a', [0, 0, 40, 12]), abs))).toEqual([])
+  })
+})
+
+describe('gap-outlier', () => {
+  const SECTION = { '--space-section-sm': 24 }
+  const column = (extra = {}) => node('r', null, [0, 0, 200, 400], { layout: flex(), ...extra })
+  // Painted 10px children (1px for those in `thin`, a divider) whose ink gaps are `gaps`.
+  const stack = (gaps, { root = column(), declared = {}, thin = [], margins = {} } = {}) => {
+    let y = 0
+    const kids = [0, ...gaps].map((g, i) => {
+      y += g
+      const h = thin.includes(i) ? 1 : 10
+      const box = [0, y, 200, h]
+      y += h
+      const margin = margins[i] ?? [0, 0, 0, 0]
+      return node(`k${i}`, 'r', box, { selector: `.k${i}`, paints: true, margin })
+    })
+    return { ...layout(root, ...kids), declared }
+  }
+
+  it.each([
+    [8, 16, 1], // g = 2m and g - m = 8 together
+    [8, 15.75, 0],
+    [10, 20, 1], // g = 2m, g - m = 10
+    [10, 19.75, 0],
+    [2, 10, 1], // g - m = 8, g = 5m
+    [2, 9.75, 0],
+    [12, 12, 0], // uniform rhythm
+  ])('gaps of %spx then %spx give %i findings', (m, g, count) => {
+    expect(judgeGapOutlier(stack([m, g]))).toHaveLength(count)
+  })
+
+  it('names both neighbours and the multiple', () => {
+    expect(judgeGapOutlier(stack([8, 8, 24]))).toEqual([
+      {
+        kind: 'gap-outlier',
+        selector: '.k2',
+        detail: 'gap 24px between .k2 and .k3 is 3× the 8px gaps beside it',
+      },
+    ])
+  })
+
+  it('needs two gaps to compare', () => {
+    expect(judgeGapOutlier(stack([40]))).toEqual([])
+  })
+
+  describe('--space-section-* exemption', () => {
+    const margins = { 1: [0, 0, 24, 0] }
+
+    it('exempts a gap whose facing margin is a section value', () => {
+      expect(judgeGapOutlier(stack([8, 24], { declared: SECTION, margins }))).toEqual([])
+    })
+
+    it('flags the same gap when the margin matches no section value', () => {
+      const declared = { '--space-section-sm': 32 }
+      expect(judgeGapOutlier(stack([8, 24], { declared, margins }))).toHaveLength(1)
+    })
+
+    it('flags the same gap when padding, not a declared margin, makes it', () => {
+      expect(judgeGapOutlier(stack([8, 24], { declared: SECTION }))).toHaveLength(1)
+    })
+
+    it('adds the flex gap to the facing margins', () => {
+      const root = column({ layout: { ...flex(), rowGap: '8px' } })
+      const m = { 1: [0, 0, 16, 0] }
+      expect(judgeGapOutlier(stack([8, 24], { root, declared: SECTION, margins: m }))).toEqual([])
+    })
+
+    it('ignores a declared value that is not a section token', () => {
+      const declared = { '--space-stack-md': 24 }
+      expect(judgeGapOutlier(stack([8, 24], { declared, margins }))).toHaveLength(1)
+    })
+  })
+
+  describe('divider split', () => {
+    it('does not compare a gap that touches the divider with the run beside it', () => {
+      expect(judgeGapOutlier(stack([8, 8, 30, 8, 8], { thin: [3] }))).toEqual([])
+    })
+
+    it('still flags an outlier inside a run', () => {
+      expect(judgeGapOutlier(stack([8, 8, 30, 8, 8], { thin: [5] }))).toHaveLength(1)
+    })
+  })
+
+  it('reads a flex row along x', () => {
+    const row = node('r', null, [0, 0, 400, 20], { layout: flex('row') })
+    const box = (id, x) => node(id, 'r', [x, 0, 10, 10], { selector: `.${id}`, paints: true })
+    const kids = [box('a', 0), box('b', 18), box('c', 36), box('d', 70)]
+    expect(judgeGapOutlier(layout(row, ...kids)).map((f) => f.detail)).toEqual([
+      'gap 24px between .c and .d is 3× the 8px gaps beside it',
+    ])
+  })
+
+  it('skips a grid, which is out of scope', () => {
+    const grid = column({ layout: { ...flex(), display: 'grid' } })
+    expect(judgeGapOutlier(stack([8, 8, 40], { root: grid }))).toEqual([])
+  })
+})
+
+describe('proximity-inversion', () => {
+  const item = (id, parent, y) =>
+    node(id, parent, [0, y, 200, 10], { selector: `.${id}`, paints: true })
+  // A column of groups; group `i` is a flex column of `sizes[i]` items `inners[i]` apart, and
+  // groups sit `outer` apart.
+  const groups = (inners, outer, { sizes = [], dividerAfter = [] } = {}) => {
+    const nodes = [node('r', null, [0, 0, 200, 600], { layout: flex() })]
+    let y = 0
+    inners.forEach((inner, g) => {
+      const start = y
+      const kids = Array.from({ length: sizes[g] ?? 2 }, (_, i) => {
+        const kid = item(`g${g}i${i}`, `g${g}`, y)
+        y += 10 + inner
+        return kid
+      })
+      y -= inner
+      const box = [0, start, 200, y - start]
+      nodes.push(node(`g${g}`, 'r', box, { selector: `.g${g}`, layout: flex() }), ...kids)
+      if (dividerAfter.includes(g)) {
+        nodes.push(
+          node(`d${g}`, 'r', [0, y + outer / 2, 200, 1], { paints: true, selector: `.d${g}` })
+        )
+        y += outer + 1
+      } else y += outer
+    })
+    return layout(...nodes)
+  }
+
+  it.each([
+    [12, 12, 1], // inner = outer
+    [12.25, 12, 1],
+    [11.75, 12, 0],
+  ])(
+    'items %spx apart inside a group %spx from its neighbour give %i findings',
+    (inner, outer, n) => {
+      expect(judgeProximityInversion(groups([inner, 4], outer))).toHaveLength(n)
+    }
+  )
+
+  it('names the group, both distances and the nearer neighbour', () => {
+    expect(judgeProximityInversion(groups([12, 4], 12))).toEqual([
+      {
+        kind: 'proximity-inversion',
+        selector: '.g0',
+        detail: '.g0: items 12px apart inside, 12px from .g1 outside',
+      },
+    ])
+  })
+
+  it('compares against the nearer of the two neighbours', () => {
+    const found = judgeProximityInversion(groups([4, 10, 4], 12))
+    expect(found).toEqual([])
+    expect(judgeProximityInversion(groups([4, 13, 4], 12))).toHaveLength(1)
+  })
+
+  it('ignores a single-child wrapper, which is not a visual group', () => {
+    expect(judgeProximityInversion(groups([12, 12, 12], 12, { sizes: [1, 1, 1] }))).toEqual([])
+  })
+
+  it('does not compare across a divider', () => {
+    expect(judgeProximityInversion(groups([12, 4], 12, { dividerAfter: [0] }))).toEqual([])
+  })
+
+  it('skips a group with no neighbour', () => {
+    expect(judgeProximityInversion(groups([12], 12))).toEqual([])
+  })
+
+  it('skips a grid group, which is out of scope', () => {
+    const found = groups([12, 4], 12)
+    found.nodes.find((n) => n.id === 'g0').layout = { ...flex(), display: 'grid' }
+    expect(judgeProximityInversion(found)).toEqual([])
   })
 })
 

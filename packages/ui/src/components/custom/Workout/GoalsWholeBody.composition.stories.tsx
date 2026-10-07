@@ -82,15 +82,15 @@ function GoalsPage({ bodyweight, sessions }: GoalsPageProps) {
           ))}
         </CardGrid>
       </PageSection>
-      {(bodyweight || sessions) && (
+      {!!(bodyweight || sessions) && (
         <PageSection title="Whole body">
           <CardGrid>
-            {bodyweight && (
+            {!!bodyweight && (
               <GridCell>
                 <BodyweightGoalCard goal={bodyweight} style={{ height: '100%' }} />
               </GridCell>
             )}
-            {sessions && (
+            {!!sessions && (
               <GridCell>
                 <SessionsGoalCard goal={sessions} style={{ height: '100%' }} />
               </GridCell>
@@ -108,12 +108,12 @@ function renderSection(args: GoalsPageProps) {
     <Surface level="base" style={{ minHeight: '100%' }} className="p-gutter-md">
       <PageSection title="Whole body">
         <CardGrid>
-          {args.bodyweight && (
+          {!!args.bodyweight && (
             <GridCell>
               <BodyweightGoalCard goal={args.bodyweight} style={{ height: '100%' }} />
             </GridCell>
           )}
-          {args.sessions && (
+          {!!args.sessions && (
             <GridCell>
               <SessionsGoalCard goal={args.sessions} style={{ height: '100%' }} />
             </GridCell>
