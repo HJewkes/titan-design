@@ -14,7 +14,7 @@ const INTERACTION_OUTPUT_DIR = join(tmpdir(), 'titan-ui-playwright-interaction')
 const STATIC_DIR = 'storybook-static'
 const reuseBuild = !!process.env.CI && existsSync(join(__dirname, STATIC_DIR, 'index.json'))
 const buildCommand = `pnpm exec storybook build --quiet --output-dir ${STATIC_DIR}`
-const serveCommand = `pnpm exec vite preview --outDir ${STATIC_DIR} --port 6006 --strictPort`
+const serveCommand = `pnpm exec vite preview --outDir ${STATIC_DIR} --host 127.0.0.1 --port 6006 --strictPort`
 
 export default defineConfig({
   testDir: './tests/visual',
