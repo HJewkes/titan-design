@@ -209,7 +209,7 @@ export function WorkoutCard({
         {summary}
       </WorkoutCardPressRegion>
 
-      {expanded && exercises && exercises.length > 0 && (
+      {!!expanded && !!exercises && exercises.length > 0 && (
         <View className="px-inset-sm pb-inset-sm gap-1.5" testID="workout-card-exercises">
           {exercises.map((exercise, i) => (
             <ExerciseCard key={i} {...exercise} />

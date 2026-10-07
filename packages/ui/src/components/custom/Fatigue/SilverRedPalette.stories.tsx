@@ -83,7 +83,7 @@ function Swatch({ def }: { def: SwatchDef }) {
         <Text style={{ fontSize: 11, fontFamily: FONT_MONO, color: t['text-secondary'] }}>
           {def.value.toUpperCase()}
         </Text>
-        {def.note && (
+        {!!def.note && (
           <Text
             style={{ fontSize: 10, fontFamily: FONT_UI, color: t['text-tertiary'], lineHeight: 13 }}
           >

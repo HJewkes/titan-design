@@ -5,6 +5,7 @@ import { VelocityStrip, type VelocityZoneBandProp } from './VelocityStrip'
 import { Typography } from '../../ui/typography'
 import { roundWeight, roundRpe } from '../../../utils/workout-format'
 import { resolveColor } from '../../../theme/resolve-color'
+import { SET_TABLE_COLUMN_WIDTH } from './SetTableHeader'
 
 export type SetRowUnit = 'lbs' | 'kg'
 
@@ -64,9 +65,6 @@ export type SetRowProps =
 /** Live set — brightest. Done + upcoming share the muted role. */
 const TEXT_ACTIVE = 'text-primary'
 const TEXT_MUTED = 'text-secondary'
-
-/** Column widths mirror SetTableHeader(showPrevious=false) so cells align under it. */
-const COL = { set: 36, reps: 44, load: 56, rpe: 36 } as const
 
 // 13px is off the type scale (TOKENS.md §4); `boldLabel` is the 12px font-sans step
 // and `font-semibold` holds the original 600 — Inter is `font-sans` here, per B1.
@@ -161,8 +159,7 @@ function RowStrip({ set }: { set: SetRowProps }) {
 /**
  * ONE set row of the unified expanded exercise table. SET · REPS · LBS · RPE over
  * a per-row {@link VelocityStrip}; `live` stands out by brightness with an `expanded`
- * velocity-height spotlight, `done`/`todo` are muted with a flat `compact` strip. Its
- * column widths mirror {@link SetTableHeader}(`showPrevious={false}`).
+ * velocity-height spotlight, `done`/`todo` are muted with a flat `compact` strip.
  */
 export function SetRow(set: SetRowProps) {
   const live = set.state === 'live'
@@ -177,7 +174,7 @@ export function SetRow(set: SetRowProps) {
       testID="set-row"
     >
       <View className="flex-row items-center" style={{ justifyContent: 'space-between' }}>
-        <Cell width={COL.set} testID="set-row-set-number">
+        <Cell width={SET_TABLE_COLUMN_WIDTH.set} testID="set-row-set-number">
           {set.setType ? (
             <Typography
               variant="boldLabel"
@@ -203,7 +200,7 @@ export function SetRow(set: SetRowProps) {
             </Typography>
           )}
         </Cell>
-        <Cell width={COL.reps} testID="set-row-reps">
+        <Cell width={SET_TABLE_COLUMN_WIDTH.reps} testID="set-row-reps">
           <Typography
             variant="boldLabel"
             color="inherit"
@@ -213,7 +210,7 @@ export function SetRow(set: SetRowProps) {
             {displayReps(set)}
           </Typography>
         </Cell>
-        <Cell width={COL.load} testID="set-row-weight">
+        <Cell width={SET_TABLE_COLUMN_WIDTH.load} testID="set-row-weight">
           <Typography
             variant="boldLabel"
             color="inherit"
@@ -223,7 +220,7 @@ export function SetRow(set: SetRowProps) {
             {roundWeight(displayWeight(set))}
           </Typography>
         </Cell>
-        <Cell width={COL.rpe} testID="set-row-rpe">
+        <Cell width={SET_TABLE_COLUMN_WIDTH.rpe} testID="set-row-rpe">
           <Typography
             variant="boldLabel"
             color="inherit"

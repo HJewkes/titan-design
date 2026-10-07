@@ -117,7 +117,7 @@ read from across a room mid-set, and the visual baselines need a deterministic r
   are NOT on the model (they come from the live-view velocity path) — passed as the
   panel's separate `velocity` prop.
 - **Open — voltras-mcp duplicates the panel geometry:** `panel-geometry.ts` hardcodes
-  `FATIGUE_CARD_WIDTH = 318`, `PANEL_PAD = 24` and `HERO_EYEBROW_ALLOWANCE = 26` so the
+  `FATIGUE_CARD_WIDTH = 318` (the value of this family's `CARD_WIDTH_BASE`, which `LiveFatigueCard` now defaults to), `PANEL_PAD = 24` and `HERO_EYEBROW_ALLOWANCE = 26` so the
   idle stage can prefigure the panel. Those are now derivable — `panelLayout` /
   `panelBodySplit` / `HERO_EYEBROW_ALLOWANCE` are exported from this family's barrel. Until
   the SPA imports them, its idle stage will draw a 318 card placeholder where the live panel
