@@ -3490,6 +3490,25 @@ export function hexToRgb(hex: string): {
 } | null;
 
 // @public
+export interface HighlightRange {
+    end: number;
+    start: number;
+}
+
+// @public
+export function HighlightText(input: HighlightTextProps): react_jsx_runtime.JSX.Element | null;
+
+// @public
+export interface HighlightTextProps {
+    className?: string;
+    color?: TypographyColor;
+    maxLines?: number;
+    ranges: readonly HighlightRange[];
+    text: string;
+    variant?: TypographyVariant;
+}
+
+// @public
 export function HistoryIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
