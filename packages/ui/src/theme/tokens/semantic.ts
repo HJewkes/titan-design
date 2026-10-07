@@ -472,7 +472,7 @@ export const semanticColorsDark = {
   'text-tertiary': greyRamp[500],
   'text-disabled': 'rgba(255, 255, 255, 0.38)',
   'text-inverse': greyRamp[950],
-  'text-error': ramp.red[600], // matches dark status-error on main, by owner decision at Gate 2
+  'text-error': ramp.red[500], // owner chose red 500 below 4.5:1 knowingly, round q4b-red-conflict r1 (a)
   'text-link': semanticPins.focusIndigoDark,
   'text-link-hover': ramp.blue[400],
 

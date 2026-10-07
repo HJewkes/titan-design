@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { primitiveRamps } from './primitives'
 import { getSemanticColors } from './semantic'
 
 /** WCAG 2.1 relative luminance / contrast ratio. */
@@ -28,11 +29,10 @@ describe('text-error contrast', () => {
     })
   })
 
-  // Dark misses 4.5:1 on every plane; the primitive audit (TD-490) owns the fix.
+  // Dark sits below 4.5:1 by owner decision (q4b-red-conflict r1 (a)); contrast-baseline.json records it.
   describe('dark theme', () => {
-    it('keeps the status-error red, as decided at Gate 2', () => {
-      const colors = getSemanticColors('dark')
-      expect(colors['text-error']).toBe(colors['status-error'])
+    it('uses red 500, as chosen at Gate 2', () => {
+      expect(getSemanticColors('dark')['text-error']).toBe(primitiveRamps.red[500])
     })
   })
 })
