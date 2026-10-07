@@ -3,9 +3,11 @@ import { render } from '@testing-library/react'
 import {
   loadComposedStories,
   loadLabDecisionStories,
+  storyFiles,
   storyModuleCount,
   storyTimeout,
 } from './composed-stories'
+import { includeFamily, storyFamily } from './stories-smoke-families'
 
 /**
  * Storybook → render-test bridge (TD-04.11 / VW-20).
@@ -21,13 +23,26 @@ import {
  * Project annotations (the preview's theme decorator) are intentionally NOT
  * applied: a smoke test only needs to prove each story renders, and skipping
  * them avoids importing global.css / addon-themes into the test env.
+ *
+ * This file holds the ui, shell and lab decision stories; `stories-smoke-workout` and
+ * `stories-smoke-custom` hold the rest (see `stories-smoke-families.ts`).
  */
 
-const stories = [...(await loadComposedStories()), ...(await loadLabDecisionStories())]
+const stories = [
+  ...(await loadComposedStories(includeFamily('ui'))),
+  ...(await loadLabDecisionStories()),
+]
 
 describe('storybook stories render (composeStories smoke)', () => {
   it('discovers a non-trivial number of story modules', () => {
     expect(storyModuleCount()).toBeGreaterThan(10)
+  })
+
+  it('assigns every story file to exactly one smoke family', () => {
+    const families = ['ui', 'workout', 'custom'] as const
+    const covered = families.flatMap((family) => storyFiles().filter(includeFamily(family)))
+    expect([...covered].sort()).toEqual([...storyFiles()].sort())
+    expect(storyFiles().every((file) => families.includes(storyFamily(file)))).toBe(true)
   })
 
   for (const { file, name, id, Story } of stories) {

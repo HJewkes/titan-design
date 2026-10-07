@@ -12,7 +12,7 @@ import {
   RoundSchema,
   type ManifestInput,
 } from '../src/schema.ts'
-import { SECTION_TEXTS, SHA } from './fixtures.ts'
+import { SECTION_TEXTS, SHA, noTreeGit } from './fixtures.ts'
 
 /** A decisions round: sections of questions and context, and not one frame to look at. */
 function questionsOnly(): ManifestInput {
@@ -64,6 +64,7 @@ describe('a round that declares no frames', () => {
     const code = await buildRound(path, undefined, {
       stderr: (t) => lines.push(t),
       measure: async () => [],
+      git: noTreeGit,
     })
     expect(code).toBe(0)
     expect(lines.join('\n')).not.toContain('warning')

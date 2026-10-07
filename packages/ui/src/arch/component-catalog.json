@@ -4058,7 +4058,7 @@
           "description": "Zone boundary thresholds (loss %): green→gold, gold→orange, orange→red.",
           "name": "thresholds",
           "required": false,
-          "type": "[number, number, number]"
+          "type": "VelocityLossThresholds"
         },
         {
           "default": null,
@@ -6360,6 +6360,13 @@
           "name": "factors",
           "required": true,
           "type": "ReadinessFactor[]"
+        },
+        {
+          "default": "false",
+          "description": "Disables the start button so `onConfirm` cannot fire.",
+          "name": "isConfirmDisabled",
+          "required": false,
+          "type": "boolean"
         },
         {
           "default": null,
@@ -9069,6 +9076,13 @@
           "type": "string"
         },
         {
+          "default": "false",
+          "description": "Render the content region as the `main` landmark.",
+          "name": "isMainLandmark",
+          "required": false,
+          "type": "boolean"
+        },
+        {
           "default": "null",
           "description": "A category with off-view live activity → a quiet cue on that item.",
           "name": "liveKey",
@@ -9309,6 +9323,13 @@
           "default": null,
           "description": "Semantic `text-*` token for the active item.",
           "name": "accentClassName",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "Primary",
+          "description": "Accessible name of the navigation landmark.",
+          "name": "accessibilityLabel",
           "required": false,
           "type": "string"
         },
@@ -11392,6 +11413,13 @@
         },
         {
           "default": null,
+          "description": "Pressed state of a toggle chip.",
+          "name": "isSelected",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
           "description": "Left element (icon, avatar)",
           "name": "leftElement",
           "required": false,
@@ -11410,6 +11438,13 @@
           "name": "onPress",
           "required": false,
           "type": "(() => void)"
+        },
+        {
+          "default": null,
+          "description": "Right element (count, icon).",
+          "name": "rightElement",
+          "required": false,
+          "type": "ReactNode"
         },
         {
           "default": "md",
@@ -11908,7 +11943,7 @@
         },
         {
           "default": "md",
-          "description": "`md` for standalone rows, `sm` for dense contexts like chips.",
+          "description": "`md` for standalone rows; `sm` for dense contexts like chips, where basename and directory share `text-xs`.",
           "name": "size",
           "required": false,
           "type": "FilePathLabelSize"
@@ -13285,7 +13320,7 @@
         },
         {
           "default": null,
-          "description": "Border radius (only for 'rect' variant)",
+          "description": "Border radius in pixels; applies to every variant and overrides the variant's radius class",
           "name": "borderRadius",
           "required": false,
           "type": "number"

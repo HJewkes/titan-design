@@ -68,6 +68,30 @@ describe('ReadinessCheck', () => {
       fireEvent.click(screen.getByTestId('readiness-check-confirm'))
       expect(onConfirm).toHaveBeenCalledOnce()
     })
+
+    it('exposes the disabled start button and does not confirm from it', () => {
+      const onConfirm = vi.fn()
+      render(
+        <ReadinessCheck
+          {...baseProps}
+          factors={makeFactors()}
+          onConfirm={onConfirm}
+          isConfirmDisabled
+        />
+      )
+      const start = screen.getByRole('button', { name: 'Confirm readiness and start workout' })
+      expect(start).toHaveAttribute('aria-disabled', 'true')
+      fireEvent.click(start)
+      expect(onConfirm).not.toHaveBeenCalled()
+    })
+
+    it('leaves the start button enabled by default', () => {
+      render(<ReadinessCheck {...baseProps} factors={makeFactors()} />)
+      expect(screen.getByTestId('readiness-check-confirm')).not.toHaveAttribute(
+        'aria-disabled',
+        'true'
+      )
+    })
   })
 
   describe('warm-up validation', () => {

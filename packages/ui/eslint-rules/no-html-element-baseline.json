@@ -66,6 +66,11 @@
     "svg": 1,
     "text": 3
   },
+  "src/components/icons/consoleIcons.tsx": {
+    "circle": 1,
+    "ellipse": 1,
+    "path": 7
+  },
   "src/components/icons/icons.tsx": {
     "circle": 7,
     "path": 56,

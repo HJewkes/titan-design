@@ -1,11 +1,11 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import BodyHighlighter, { type ExtendedBodyPart, type Slug } from 'react-native-body-highlighter'
+import { type ExtendedBodyPart, type Slug } from 'react-native-body-highlighter'
 import { View, type ViewProps } from 'react-native'
 
 import { useSurfaceMode } from '../../ui/surface'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { primitiveColors } from '../../../theme/tokens/primitives'
 import { alpha } from '../../../utils/colors'
+import { Body, UNLIT_BORDER, UNLIT_FILL_DARK } from './bodyHighlighter'
 import { MUSCLE_DISPLAY_NAMES, MUSCLE_TO_SVG_SLUGS, type MuscleGroup } from './muscleTaxonomy'
 
 /**
@@ -42,20 +42,12 @@ export interface MuscleGlyphProps extends Omit<ViewProps, 'children'> {
   className?: string
 }
 
-/** Same CJS interop `BodyMap` uses — the package ships a default export. */
-const Body = ((BodyHighlighter as unknown as { default?: typeof BodyHighlighter }).default ??
-  BodyHighlighter) as typeof BodyHighlighter
-
 /**
  * 0.22 of the 200x400 intrinsic svg, so ~44x88. 0.17 was the first try and the
  * lit muscle was too small to identify on the render — the figure read as
  * decoration rather than as information.
  */
 const GLYPH_SCALE = 0.22
-
-/** Matches `BodyMap`'s unlit treatment so the two read as one family. */
-const UNLIT_FILL_DARK = alpha(primitiveColors.white, 0.08)
-const UNLIT_BORDER = alpha(primitiveColors.white, 0.12)
 
 export function MuscleGlyph({
   muscle,

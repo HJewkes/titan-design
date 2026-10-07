@@ -44,10 +44,17 @@ function readContext(repoRoot, graph, read) {
 /**
  * The catalog object for the checkout at `repoRoot`. Every non-TypeScript file it reads goes
  * through `read`; docgen reads entry sources through the compiler, with `overlay` (repo-relative
- * path to source text) served in place of the disk.
+ * path to source text) served in place of the disk. `include` narrows the arch-graph components
+ * to a subset, so a test can rebuild a few entries without a full docgen pass.
  */
-export function buildCatalog(repoRoot = REPO_ROOT, read = readInput, overlay = {}) {
-  const graph = JSON.parse(read(repoRoot, ARCH_GRAPH))
+export function buildCatalog(
+  repoRoot = REPO_ROOT,
+  read = readInput,
+  overlay = {},
+  include = () => true
+) {
+  const fullGraph = JSON.parse(read(repoRoot, ARCH_GRAPH))
+  const graph = { ...fullGraph, components: fullGraph.components.filter(include) }
   const context = readContext(repoRoot, graph, read)
   const included = graph.components.filter((component) => !exclusionReason(component))
   const docs = docgen(

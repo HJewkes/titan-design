@@ -10,7 +10,7 @@ import { loadRound } from '../src/review.ts'
 import { runCli, type CliIo } from '../src/run.ts'
 import { roundLayout } from '../src/sections.ts'
 import { ManifestSchema, manifestJsonSchema, type ManifestInput } from '../src/schema.ts'
-import { SHA } from './fixtures.ts'
+import { SHA, noTreeGit } from './fixtures.ts'
 
 type Section = NonNullable<ManifestInput['sections']>[number]
 type Part = NonNullable<Section['parts']>[number]
@@ -174,6 +174,7 @@ describe('section parts under the review contract', () => {
       openBrowser: () => {},
       capture: async () => [],
       measure: async () => [],
+      git: noTreeGit,
       createPage: async () => ({ handler: () => {}, close: async () => {} }),
       harnessFreshness: async () => ({ state: 'current' }),
       signal: new AbortController().signal,
