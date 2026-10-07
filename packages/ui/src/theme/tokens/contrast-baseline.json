@@ -43,20 +43,7 @@
     "text-link on background-frame",
     "text-link-hover on background-frame",
     "text-primary on background-frame",
-    "text-secondary on background-base",
     "text-secondary on background-frame",
-    "text-secondary on background-subtle",
-    "text-secondary on surface-elevated",
-    "text-secondary on surface-input",
-    "text-secondary on surface-raised",
-    "text-tertiary on background-base",
-    "text-tertiary on background-default",
-    "text-tertiary on background-frame",
-    "text-tertiary on background-subtle",
-    "text-tertiary on surface-base",
-    "text-tertiary on surface-elevated",
-    "text-tertiary on surface-input",
-    "text-tertiary on surface-overlay",
-    "text-tertiary on surface-raised"
+    "text-tertiary on background-frame"
   ]
 }

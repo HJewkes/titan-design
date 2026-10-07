@@ -24,7 +24,6 @@
     "result-degrade | status-error-vivid-light",
     "result-improve-dark | status-success",
     "result-improve-dark | status-success-dark",
-    "result-improve-dark | status-success-solid",
-    "result-inconclusive | text-tertiary"
+    "result-improve-dark | status-success-solid"
   ]
 }
