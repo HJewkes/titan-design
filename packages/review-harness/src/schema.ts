@@ -74,11 +74,16 @@ export const VariantSchema = z
         ctx.addIssue({ code: 'custom', path: [field], message: `${field} need a storyId variant` })
   })
 
+const repoShape = z.string().regex(/^[^/\s]+\/[^/\s]+$/, 'must be owner/name')
+const prPage = z.string().regex(/^[^/\s#]+\/[^/\s#]+#[1-9][0-9]*$/, 'must be owner/name#pr')
+
 const questionBase = {
   id,
   prompt: z.string().min(1),
   required: z.boolean().optional(),
   scope: scope.optional(),
+  /** The PR this question is about, as `owner/name#pr`; a question with no page is on the general page. */
+  page: prPage.optional(),
 }
 
 /** Which variant each option stands for, so one click answers and picks the variant. */
@@ -104,7 +109,7 @@ const sha40 = z.string().regex(/^[0-9a-f]{40}$/, 'must be 40 lower-case hex char
 /** The PR head a pick-one is about, and the options that agree with merging it at that head. */
 const MergeBindingSchema = z
   .object({
-    repo: z.string().regex(/^[^/\s]+\/[^/\s]+$/, 'must be owner/name'),
+    repo: repoShape,
     pr: z.number().int().positive(),
     headSha: sha40,
     ship: z.array(z.string()).min(1),
@@ -434,23 +439,45 @@ function recommendationProblems(m: { questions: z.output<typeof QuestionSchema>[
 /** What the Storybook was built from; written by the build, never by hand. */
 const BuildProvenanceSchema = z.object({ mainSha: sha40, mergeSha: sha40 }).strict()
 
+const SHIP_OPTIONS = ['Ship', "Don't ship"]
+const sameList = (a: string[] | undefined, b: string[]) =>
+  a?.length === b.length && a.every((v, i) => v === b[i])
+
+function shipQuestionProblems(q: z.output<typeof QuestionSchema>): string[] {
+  if (q.kind !== 'pick-one' || !q.merge) return []
+  const key = `${q.merge.repo}#${q.merge.pr}`
+  return [
+    ...(q.required === true ? [] : [`question ${q.id}: a merge-bound question must be required`]),
+    ...(sameList(q.options, SHIP_OPTIONS)
+      ? []
+      : [
+          `question ${q.id}: a merge-bound question's options must be exactly ${JSON.stringify(SHIP_OPTIONS)}`,
+        ]),
+    ...(sameList(q.merge.ship, ['Ship'])
+      ? []
+      : [`question ${q.id}: a merge-bound question's ship set must be exactly ["Ship"]`]),
+    ...(q.page === key ? [] : [`question ${q.id}: a merge-bound question's page must be "${key}"`]),
+  ]
+}
+
 function mergeBindingProblems(m: { questions: z.output<typeof QuestionSchema>[] }): string[] {
-  const heads = new Map<string, Map<string, string[]>>()
+  const bound = new Map<string, string[]>()
   for (const q of m.questions) {
     if (q.kind !== 'pick-one' || !q.merge) continue
-    const pr = `${q.merge.repo}#${q.merge.pr}`
-    const byHead = heads.get(pr) ?? new Map<string, string[]>()
-    byHead.set(q.merge.headSha, [...(byHead.get(q.merge.headSha) ?? []), q.id])
-    heads.set(pr, byHead)
+    const key = `${q.merge.repo}#${q.merge.pr}`
+    bound.set(key, [...(bound.get(key) ?? []), q.id])
   }
-  return [...heads].flatMap(([pr, byHead]) =>
-    byHead.size > 1
-      ? [
-          `${pr} is bound at different heads: ` +
-            [...byHead].map(([head, ids]) => `${head} (${ids.join(', ')})`).join('; '),
-        ]
-      : []
-  )
+  return [
+    ...m.questions.flatMap(shipQuestionProblems),
+    ...[...bound]
+      .filter(([, ids]) => ids.length > 1)
+      .map(([key, ids]) => `${key} is bound by more than one question: ${ids.join(', ')}`),
+    ...m.questions.flatMap((q) =>
+      q.page && !bound.has(q.page)
+        ? [`question ${q.id}: page "${q.page}" has no ship/no-ship question`]
+        : []
+    ),
+  ]
 }
 
 const ManifestObject = z

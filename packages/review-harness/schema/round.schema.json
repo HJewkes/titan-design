@@ -184,6 +184,10 @@
                   "round"
                 ]
               },
+              "page": {
+                "type": "string",
+                "pattern": "^[^/\\s#]+\\/[^/\\s#]+#[1-9][0-9]*$"
+              },
               "kind": {
                 "type": "string",
                 "const": "pick-one"
@@ -317,6 +321,10 @@
                   "round"
                 ]
               },
+              "page": {
+                "type": "string",
+                "pattern": "^[^/\\s#]+\\/[^/\\s#]+#[1-9][0-9]*$"
+              },
               "kind": {
                 "type": "string",
                 "const": "pick-many"
@@ -410,6 +418,10 @@
                   "round"
                 ]
               },
+              "page": {
+                "type": "string",
+                "pattern": "^[^/\\s#]+\\/[^/\\s#]+#[1-9][0-9]*$"
+              },
               "kind": {
                 "type": "string",
                 "const": "scale"
@@ -496,6 +508,10 @@
                   "variant",
                   "round"
                 ]
+              },
+              "page": {
+                "type": "string",
+                "pattern": "^[^/\\s#]+\\/[^/\\s#]+#[1-9][0-9]*$"
               },
               "kind": {
                 "type": "string",
