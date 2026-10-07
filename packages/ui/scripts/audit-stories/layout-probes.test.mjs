@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  judgeAlignmentNearMiss,
   judgeEdgeClearance,
   judgeInsetAsymmetry,
   judgeLayout,
@@ -10,9 +11,18 @@ const flex = (flexDirection = 'column') => ({
   display: 'flex',
   flexDirection,
   flexWrap: 'nowrap',
+  alignItems: 'normal',
+  alignSelf: 'auto',
   position: 'static',
 })
-const flow = { display: 'block', flexDirection: 'row', flexWrap: 'nowrap', position: 'static' }
+const flow = {
+  display: 'block',
+  flexDirection: 'row',
+  flexWrap: 'nowrap',
+  alignItems: 'normal',
+  alignSelf: 'auto',
+  position: 'static',
+}
 const textOf = (box) => {
   const [x, y, w, h] = box
   const line = { baseline: y + h, inkTop: y, inkBottom: y + h, left: x, right: x + w }
@@ -344,6 +354,144 @@ describe('what the surface padding places', () => {
     expect(judgeInsetAsymmetry(layout(surface, fill))).toEqual([])
     const flush = node('c.1', 'c', [0, 10, 60, 16], { text: textOf([0, 10, 60, 16]) })
     expect(judgeEdgeClearance(layout(surface, flush))).toEqual([])
+  })
+})
+
+describe('alignment-near-miss', () => {
+  const rowOf = (layoutExtra = {}) =>
+    node('r', null, [0, 0, 400, 100], { layout: { ...flex('row'), ...layoutExtra } })
+  // A one-line text child whose box is its ink; `baseline` defaults to the ink bottom.
+  const label = (id, ink, { baseline = ink[1] + ink[3], fontSize = 16, self = 'auto' } = {}) => {
+    const [x, y, w, h] = ink
+    const line = { baseline, inkTop: y, inkBottom: y + h, left: x, right: x + w }
+    return node(id, 'r', ink, {
+      selector: `.${id}`,
+      layout: { ...flow, alignSelf: self },
+      text: { fontSize, lineCount: 1, left: x, right: x + w, first: line, last: line },
+      ink,
+    })
+  }
+  const card = (id, box) => node(id, 'r', box, { selector: `.${id}`, paints: true })
+  const shiftedPair = (d, fontSize = 16) =>
+    layout(
+      rowOf(),
+      label('a', [0, 0, 40, 12], { fontSize }),
+      label('b', [50, d, 40, 12], { fontSize })
+    )
+
+  it.each([
+    [1, 0],
+    [1.25, 1],
+    [6, 1],
+    [6.25, 0],
+  ])('at 16px text, a %spx offset on every line gives %i findings', (d, count) => {
+    expect(judgeAlignmentNearMiss(shiftedPair(d))).toHaveLength(count)
+  })
+
+  it('caps the band at half the smaller font size', () => {
+    expect(judgeAlignmentNearMiss(shiftedPair(4, 8))).toHaveLength(1)
+    expect(judgeAlignmentNearMiss(shiftedPair(4.25, 8))).toEqual([])
+  })
+
+  it('names every line it measured and the band', () => {
+    const a = label('a', [0, 0, 40, 12])
+    const b = label('b', [50, 4, 40, 9.5], { baseline: 14.5 })
+    expect(judgeAlignmentNearMiss(layout(rowOf(), a, b))).toEqual([
+      {
+        kind: 'alignment-near-miss',
+        selector: '.a',
+        detail: '.a vs .b: baseline Δ2.5, top Δ4, centre Δ2.75, bottom Δ1.5 (band ≤ 6px)',
+      },
+    ])
+  })
+
+  it('stays quiet when any one line aligns, as with an icon centred beside text', () => {
+    const icon = node('i', 'r', [0, 0, 16, 16], { selector: '.i', tag: 'svg', paints: true })
+    const text = label('t', [20, 3, 40, 10])
+    expect(judgeAlignmentNearMiss(layout(rowOf(), icon, text))).toEqual([])
+  })
+
+  describe('align-items: baseline', () => {
+    // Tops align, so only a baseline request makes the 10px baseline delta a finding.
+    const pair = (row, self) =>
+      layout(
+        row,
+        label('a', [0, 0, 40, 12], { self }),
+        label('b', [50, 0, 40, 40], { baseline: 22, self })
+      )
+
+    it('flags a baseline delta beyond the near-miss band', () => {
+      expect(judgeAlignmentNearMiss(pair(rowOf()))).toEqual([])
+      const [found] = judgeAlignmentNearMiss(pair(rowOf({ alignItems: 'baseline' })))
+      expect(found.detail).toBe('.a vs .b: baseline Δ10 (align-items: baseline)')
+    })
+
+    it('honours align-self: baseline on both children', () => {
+      expect(judgeAlignmentNearMiss(pair(rowOf(), 'baseline'))).toHaveLength(1)
+    })
+
+    it('accepts baselines within 1px', () => {
+      const row = rowOf({ alignItems: 'baseline' })
+      const a = label('a', [0, 4, 40, 12])
+      const b = label('b', [50, 0, 40, 17], { baseline: 17 })
+      expect(judgeAlignmentNearMiss(layout(row, a, b))).toEqual([])
+    })
+  })
+
+  it('reads the baseline from a label on a child’s first line', () => {
+    const wrap = node('w', 'r', [50, 0, 60, 14], { selector: '.w' })
+    const inner = label('w.0', [70, 0, 40, 12], { baseline: 10 })
+    inner.parent = 'w'
+    const row = rowOf({ alignItems: 'baseline' })
+    expect(judgeAlignmentNearMiss(layout(row, label('a', [0, 0, 40, 12]), wrap, inner))).toEqual([
+      expect.objectContaining({ detail: '.a vs .w: baseline Δ2 (align-items: baseline)' }),
+    ])
+  })
+
+  it('compares neighbours within each wrapped line, never across lines', () => {
+    const row = rowOf({ flexWrap: 'wrap' })
+    const tags = [
+      card('t0', [0, 0, 50, 24]),
+      card('t1', [60, 0, 50, 24]),
+      card('t2', [120, 0, 50, 24]),
+      card('t3', [0, 32, 50, 24]),
+      card('t4', [60, 32, 50, 28]),
+    ]
+    expect(judgeAlignmentNearMiss(layout(row, ...tags)).map((f) => f.detail)).toEqual([
+      '.t3 vs .t4: height Δ4 (both paint; limit 16px)',
+    ])
+  })
+
+  it('keeps a nowrap row on one line however far its children are offset', () => {
+    const row = layout(rowOf(), card('a', [0, 0, 50, 24]), card('b', [60, 20, 50, 28]))
+    expect(judgeAlignmentNearMiss(row)).toHaveLength(1)
+  })
+
+  it('joins a child to a line it overlaps by half the smaller height', () => {
+    const row = rowOf({ flexWrap: 'wrap' })
+    const first = card('a', [0, 0, 50, 24])
+    expect(judgeAlignmentNearMiss(layout(row, first, card('b', [60, 12, 50, 28])))).toHaveLength(1)
+    expect(judgeAlignmentNearMiss(layout(row, first, card('b', [60, 12.25, 50, 28])))).toEqual([])
+  })
+
+  it.each([
+    [1, 0],
+    [1.25, 1],
+    [16, 1],
+    [16.25, 0],
+  ])('two painted siblings %spx apart in height give %i findings', (d, count) => {
+    const row = layout(rowOf(), card('a', [0, 0, 100, 60]), card('b', [110, 0, 100, 60 + d]))
+    expect(judgeAlignmentNearMiss(row)).toHaveLength(count)
+  })
+
+  it('skips column flex, out-of-flow children and a lone child', () => {
+    const col = node('r', null, [0, 0, 400, 100], { layout: flex('column') })
+    expect(
+      judgeAlignmentNearMiss(layout(col, label('a', [0, 0, 40, 12]), label('b', [0, 2, 40, 12])))
+    ).toEqual([])
+    const abs = label('b', [50, 2, 40, 12])
+    abs.layout = { ...abs.layout, position: 'absolute' }
+    expect(judgeAlignmentNearMiss(layout(rowOf(), label('a', [0, 0, 40, 12]), abs))).toEqual([])
   })
 })
 
