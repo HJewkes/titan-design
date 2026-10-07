@@ -1,7 +1,8 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import type { ReactNode } from 'react'
 import { View, Text } from 'react-native'
-import { CircularProgress, colorVarMap, type ProgressColor } from '../../ui/progress/Progress'
+import { CircularProgress, progressColor, type ProgressColor } from '../../ui/progress/Progress'
+import { useSurfaceMode } from '../../ui/surface'
 import { useTimer, type TimerMode } from '../../../hooks/useTimer'
 
 export interface CircularTimerProps {
@@ -59,6 +60,7 @@ export function CircularTimer({
 }: CircularTimerProps) {
   const { remainingMs, progress, label, done } = useTimer({ mode, durationMs, elapsedMs })
 
+  const surfaceMode = useSurfaceMode()
   const isDone = done && mode === 'down'
   const showDone = isDone && doneLabel != null
   // Down → the remaining fraction (ring drains); up → elapsed progress (ring fills).
@@ -99,7 +101,7 @@ export function CircularTimer({
             fontWeight: '800',
             fontVariant: ['tabular-nums'],
             letterSpacing: showDone ? 1 : -1,
-            ...(showDone ? { color: colorVarMap[doneColor] } : null),
+            ...(showDone ? { color: progressColor(doneColor, surfaceMode) } : null),
           }}
           testID="circular-timer-label"
         >
