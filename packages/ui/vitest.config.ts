@@ -22,6 +22,10 @@ const TEST_GLOB = ['src/**/*.test.{ts,tsx}', 'scripts/**/*.test.mjs']
 const STORIES_AXE_GLOB = ['src/test/stories-axe.test.tsx', 'src/test/stories-axe.*.test.tsx']
 const TEST_EXCLUDE = ['src/**/*.visual.test.{ts,tsx}', 'node_modules']
 
+// `threads` shares one jsdom and module graph per worker (`isolate: false`). A file that
+// leaks state into the next one under sharing runs here instead, with the reason beside it.
+const ISOLATED_TEST_PATHS: string[] = []
+
 export default defineConfig({
   plugins: [reactNativeSvgWebResolver(), reactNativeBodyHighlighterEsm(), react()],
   test: {
@@ -42,7 +46,22 @@ export default defineConfig({
         test: {
           name: 'threads',
           include: TEST_GLOB,
-          exclude: [...TEST_EXCLUDE, ...LOCAL_TIME_TEST_PATHS, ...STORIES_AXE_GLOB],
+          exclude: [
+            ...TEST_EXCLUDE,
+            ...LOCAL_TIME_TEST_PATHS,
+            ...STORIES_AXE_GLOB,
+            ...ISOLATED_TEST_PATHS,
+          ],
+          isolate: false,
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: 'isolated',
+          include: ISOLATED_TEST_PATHS,
+          exclude: TEST_EXCLUDE,
+          isolate: true,
         },
       },
       {
