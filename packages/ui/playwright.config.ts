@@ -52,10 +52,10 @@ export default defineConfig({
       name: 'interaction',
       testDir: './tests/interaction',
       outputDir: INTERACTION_OUTPUT_DIR,
-      // One worker: parallel first loads made the scroll timings flaky on the dev server; not yet
-      // re-measured against the static build.
-      fullyParallel: false,
-      workers: 1,
+      // One worker was the rule while parallel first loads of the dev server made the scroll timings
+      // flaky; a static build loads in one bundle, so two workers share the 4-vCPU runner (TD-729).
+      fullyParallel: true,
+      workers: 2,
       timeout: 60_000,
       use: {
         browserName: 'chromium',
