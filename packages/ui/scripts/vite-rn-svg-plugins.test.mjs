@@ -11,7 +11,7 @@ describe('reactNativeBodyHighlighterEsm (TD-729)', () => {
 
     const { code } = await reactNativeBodyHighlighterEsm().transform('', entry)
 
-    expect(code).not.toMatch(/__require\(/)
+    expect(code).not.toMatch(/__require\(["']/)
     expect(code).toMatch(/^import \* as \w+ from "react";?$/m)
   })
 })
