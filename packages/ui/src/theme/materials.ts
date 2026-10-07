@@ -60,9 +60,7 @@
  * titan-design has no `sources/` directory, so they do not resolve from here.
  */
 import type { TextStyle, ViewStyle } from 'react-native'
-import { getSemanticColors } from './tokens/semantic'
-
-const c = getSemanticColors('dark')
+import { getSemanticColors, type ThemeMode } from './tokens/semantic'
 
 // ── colour math ─────────────────────────────────────────────────────────────
 
@@ -142,8 +140,9 @@ export function grainForTone(baseColor: string): string {
  * surface: it is large, soft, and describes a sheet lying on a plane rather than
  * trying to encode hierarchy. Inline depth is the hairline's job.
  *
- * Defaults to `surface-raised` so a same-toned card laid inside reads as one
- * continuous sheet rather than a seam.
+ * Defaults to `surface-raised` in `mode` (dark unless the caller says otherwise)
+ * so a same-toned card laid inside reads as one continuous sheet rather than a
+ * seam.
  *
  * THE RIM-LIGHT IS A HAIRLINE. Run 2 of VW-99 called it "weak at distance" on
  * both the card and the hero sheet, and the reason is visible in the number: it
@@ -160,7 +159,8 @@ export function grainForTone(baseColor: string): string {
  *
  * HERO SURFACES ONLY, MUTED TONES ONLY — see the module header.
  */
-export function paperSheet(tone: string = c['surface-raised']): ViewStyle {
+export function paperSheet(tone?: string, mode: ThemeMode = 'dark'): ViewStyle {
+  tone ??= getSemanticColors(mode)['surface-raised']
   return {
     backgroundColor: tone,
     // Grain alone. The dither went with the gradient it protected — see header.
@@ -186,9 +186,10 @@ export function paperSheet(tone: string = c['surface-raised']): ViewStyle {
  *
  * Note this is a MATERIAL, and independent of the surface LEVEL named `inset`
  * that was retired in TD-07.14. A well is something you apply; a level is
- * somewhere you sit.
+ * somewhere you sit. Defaults to `surface-input` in `mode`.
  */
-export function insetWell(tone: string = c['surface-input']): ViewStyle {
+export function insetWell(tone?: string, mode: ThemeMode = 'dark'): ViewStyle {
+  tone ??= getSemanticColors(mode)['surface-input']
   return {
     backgroundColor: tone,
     boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12)',
@@ -223,8 +224,10 @@ export function barPaper(color: string, flip = false): ViewStyle {
  * shadow, and a deliberate CANT (`deg`) so it reads as a stuck note — where a
  * small unit of data wants to feel pinned to the surface (alerts, next-set). A
  * degree or two, not a fraction, so the tilt is intentional rather than a bug.
+ * Defaults to `surface-raised` in `mode`.
  */
-export function postIt(tone: string = c['surface-raised'], deg = -1.5): ViewStyle {
+export function postIt(tone?: string, deg = -1.5, mode: ThemeMode = 'dark'): ViewStyle {
+  tone ??= getSemanticColors(mode)['surface-raised']
   return {
     backgroundColor: tone,
     backgroundImage: grainForTone(tone),

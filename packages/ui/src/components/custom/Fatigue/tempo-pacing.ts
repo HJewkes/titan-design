@@ -13,13 +13,12 @@
  */
 import { formatTenths } from '../../../utils/number-format'
 import { PACING_TONE } from './fatigue-tokens'
-import type { SamplePhase, PhaseSegment } from './fatigue-model'
+import type { SamplePhase, PhaseSegment, TempoTuple } from './fatigue-model'
 
 /** ± this window (ms) around the target still counts as on pace. Matches TempoDisplay. */
 export const ON_TARGET_MS = 100
 
-/** The canonical tempo tuple order: `[ecc, pauseBottom, con, pauseTop]`, seconds. */
-export type TempoTuple = [number, number, number, number]
+export type { TempoTuple }
 
 /**
  * How far a phase has run toward its prescribed duration, 0..1, CAPPED at 1.
@@ -53,7 +52,8 @@ export function pacingStatus(elapsedMs: number, targetMs: number | null): Pacing
  * past target → over.
  *
  * Takes {@link PACING_TONE} rather than the `status-*` semantic tokens — the label sits on a
- * saturated phase fill, where `status-error` measures 1.88:1. See the token's note.
+ * saturated phase fill, where `status-error` measures 2.18:1 on the concentric fill, its
+ * worst case. See the token's note.
  *
  * `null` when there is no target: pacing has no opinion, so the caller keeps its own label
  * colour. That also keeps this module theme-free — it used to reach for a frozen
