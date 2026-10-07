@@ -54,7 +54,9 @@ export default defineConfig({
   ],
   webServer: {
     command: 'pnpm storybook --ci',
-    port: 6006,
+    // A url wait, not `port`: the launcher's bind probe and Storybook's own port check each
+    // listen on 6006 for an instant, and a port wait took that for readiness (TD-735).
+    url: 'http://localhost:6006/index.json',
     reuseExistingServer: false,
     timeout: 120000,
     // Puts Vite's re-optimization and reload lines in the CI log (TD-636).
