@@ -1,14 +1,24 @@
+import { existsSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
 import { defineConfig } from '@playwright/test'
 
 // Outside Storybook's watched root: trace files written inside it make Vite reload the page mid-test.
+const STORIES_OUTPUT_DIR = join(tmpdir(), 'titan-ui-playwright-stories')
 const INTERACTION_OUTPUT_DIR = join(tmpdir(), 'titan-ui-playwright-interaction')
+
+// Both projects load a production `storybook build`: a fresh context on the dev server re-fetched
+// every unbundled module, about 7.7 s a story (TD-726). CI builds once per checkout and reuses the
+// build in later steps; a local run always rebuilds so it never screenshots a stale tree.
+const STATIC_DIR = 'storybook-static'
+const reuseBuild = !!process.env.CI && existsSync(join(__dirname, STATIC_DIR, 'index.json'))
+const buildCommand = `pnpm exec storybook build --quiet --output-dir ${STATIC_DIR}`
+const serveCommand = `pnpm exec vite preview --outDir ${STATIC_DIR} --port 6006 --strictPort`
 
 export default defineConfig({
   testDir: './tests/visual',
-  outputDir: './tests/visual/results',
+  outputDir: STORIES_OUTPUT_DIR,
   snapshotDir: './tests/visual/reference',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
@@ -42,7 +52,8 @@ export default defineConfig({
       name: 'interaction',
       testDir: './tests/interaction',
       outputDir: INTERACTION_OUTPUT_DIR,
-      // One worker: parallel first loads of the dev server made the scroll timings flaky.
+      // One worker: parallel first loads made the scroll timings flaky on the dev server; not yet
+      // re-measured against the static build.
       fullyParallel: false,
       workers: 1,
       timeout: 60_000,
@@ -53,11 +64,10 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'pnpm storybook --ci',
+    command: reuseBuild ? serveCommand : `${buildCommand} && ${serveCommand}`,
     port: 6006,
     reuseExistingServer: false,
-    timeout: 120000,
-    // Puts Vite's re-optimization and reload lines in the CI log (TD-636).
+    timeout: 300_000,
     stdout: 'pipe',
   },
 })
