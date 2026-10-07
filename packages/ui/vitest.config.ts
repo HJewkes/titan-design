@@ -36,7 +36,13 @@ export default defineConfig({
     // react-native-web (about 4.5 GB each, 13 on a 14-core Mac, orphaned if the
     // parent dies). Threads share the process and die with it. Same fix as brain #97.
     pool: 'threads',
-    poolOptions: { threads: { minThreads: 1, maxThreads: 4 } },
+    // Vitest builds one threads pool for every project and reads `isolate` from the root
+    // only, so `isolate: false` lives here. Projects that keep a fresh worker per file run
+    // in forks, which stay isolated; the cap keeps them to the threads' footprint.
+    poolOptions: {
+      threads: { minThreads: 1, maxThreads: 4, isolate: false },
+      forks: { minForks: 1, maxForks: 4 },
+    },
     teardownTimeout: 30_000,
     // A worker thread cannot change its zone after start (Node reads TZ once per
     // process), so the tests that pin `process.env.TZ` run in a fork project of its own.
@@ -52,7 +58,6 @@ export default defineConfig({
             ...STORIES_AXE_GLOB,
             ...ISOLATED_TEST_PATHS,
           ],
-          isolate: false,
         },
       },
       {
@@ -61,7 +66,7 @@ export default defineConfig({
           name: 'isolated',
           include: ISOLATED_TEST_PATHS,
           exclude: TEST_EXCLUDE,
-          isolate: true,
+          pool: 'forks',
         },
       },
       {
@@ -70,6 +75,7 @@ export default defineConfig({
           name: 'stories-axe',
           include: STORIES_AXE_GLOB,
           exclude: TEST_EXCLUDE,
+          pool: 'forks',
         },
       },
       {
