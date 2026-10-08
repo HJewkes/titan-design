@@ -1,8 +1,8 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ZoneTrack, type ZoneTrackZone } from './ZoneTrack'
-import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
-import { Surface } from '../../ui/surface'
+import { WORKOUT_TOKENS, heatmapColors } from '../../../theme/workout-tokens'
+import { Surface, useSurfaceMode } from '../../ui/surface'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 
 const { green, yellow, orange, red } = WORKOUT_TOKENS.scale
@@ -36,7 +36,7 @@ const meta: Meta<typeof ZoneTrack> = {
           'or a left-anchored `fill` (clip-reveal gradient, or solid trend colour). Used-by ↓ ' +
           '[FatigueMeter](?path=/docs/custom-workout-dataviz-fatiguemeter--docs); the target base for ' +
           'TrainingLoadGauge (ACWR) + RpeCalibration (band + marker). Zone colours are literal ' +
-          'ramp-token hex.' +
+          'palette hex: the effort scale (`WORKOUT_TOKENS.scale`) for fatigue, `heatmapColors` (dataviz-diverging) for volume.' +
           ' Composes **Tooltip**.',
       },
     },
@@ -76,6 +76,33 @@ export const GradientFill: Story = {
 /** Fill marker with a colour paints a solid trend-coloured bar (FatigueGauge lineage). */
 export const SolidTrendFill: Story = {
   args: { zones: FATIGUE_ZONES, max: 40, marker: { type: 'fill', value: 24, color: orange } },
+}
+
+/**
+ * The fill the volume bars paint: dataviz-diverging zones, the productive step as the fill,
+ * and the default `border-prominent` track token on the un-reached region. Theme-aware, so
+ * switch the Surface theme to compare dark and light.
+ */
+export const LandmarkFill: Story = {
+  args: { max: 40, marker: { type: 'fill', value: 24 } },
+  render: function Render(args) {
+    const mode = useSurfaceMode()
+    const heat = heatmapColors(mode)
+    const zones: ZoneTrackZone[] = [
+      { upTo: 8, color: heat.under },
+      { upTo: 16, color: heat.maintenance },
+      { upTo: 24, color: heat.productive },
+      { upTo: 32, color: heat.approaching },
+      { upTo: 40, color: heat.over },
+    ]
+    return (
+      <ZoneTrack
+        {...args}
+        zones={zones}
+        marker={{ type: 'fill', value: 24, color: heat.productive }}
+      />
+    )
+  },
 }
 
 /** A range highlight + needle — the RpeCalibration "predicted CI band vs actual" idiom. */

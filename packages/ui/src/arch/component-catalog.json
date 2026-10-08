@@ -8722,6 +8722,7 @@
         "custom-workout-dataviz-zonetrack--colored-tooltip-ticks",
         "custom-workout-dataviz-zonetrack--glow",
         "custom-workout-dataviz-zonetrack--gradient-fill",
+        "custom-workout-dataviz-zonetrack--landmark-fill",
         "custom-workout-dataviz-zonetrack--needle",
         "custom-workout-dataviz-zonetrack--solid-trend-fill",
         "custom-workout-dataviz-zonetrack--wall-density"
