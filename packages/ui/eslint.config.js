@@ -613,13 +613,6 @@ module.exports = tseslint.config(
   // deletes this block.
   {
     files: [
-      // TD-536 b2
-      'src/lab/north-star/EmptyLiveView.tsx',
-      'src/lab/north-star/HeroTempo.exploration.stories.tsx',
-      'src/lab/north-star/LivePage.tsx',
-      'src/lab/north-star/LiveView.tsx',
-      'src/lab/north-star/VelocityDiverging.exploration.stories.tsx',
-      'src/lab/north-star/fatigue-lab-shared.tsx',
       // TD-536 b7
       'src/components/ui/alert/Alert.tsx',
       'src/components/ui/button/Button.tsx',
