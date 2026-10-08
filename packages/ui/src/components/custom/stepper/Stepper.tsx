@@ -211,7 +211,7 @@ export function StepLabel({ status = 'upcoming', className, children }: StepLabe
           : status === 'completed'
             ? 'text-brand-primary'
             : status === 'error'
-              ? 'text-status-error'
+              ? 'text-text-error'
               : 'text-text-secondary',
         className
       )}

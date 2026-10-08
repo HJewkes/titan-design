@@ -8,7 +8,7 @@ export function AutocompleteLabel({ label, isRequired }: { label: string; isRequ
   return (
     <Text className="text-sm font-medium text-text-primary mb-1">
       {label}
-      {isRequired && <Text className="text-status-error ml-0.5">*</Text>}
+      {isRequired && <Text className="text-text-error ml-0.5">*</Text>}
     </Text>
   )
 }
@@ -100,7 +100,7 @@ export function AutocompleteOptionRow<T>({
 
 export function AutocompleteHelper({ text, isInvalid }: { text?: string; isInvalid: boolean }) {
   return (
-    <Text className={cn('text-xs mt-1', isInvalid ? 'text-status-error' : 'text-text-tertiary')}>
+    <Text className={cn('text-xs mt-1', isInvalid ? 'text-text-error' : 'text-text-tertiary')}>
       {text}
     </Text>
   )

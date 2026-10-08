@@ -21,6 +21,21 @@ const propsNaming = require('./eslint-rules/props-naming')
 const restrictedSyntax = require('./eslint-rules/restricted-syntax')
 const storyTitlePrefix = require('./eslint-rules/story-title-prefix')
 
+// Flat config replaces (not merges) `no-restricted-syntax` per file, so each
+// stricter tier carries the one below it in full. Naming the tiers keeps the
+// shared entries listed once.
+const componentSelectors = [...restrictedSyntax.gradient]
+const tokenSelectors = [...componentSelectors, ...restrictedSyntax.hex]
+const tokenPureSelectors = [
+  ...tokenSelectors,
+  ...restrictedSyntax.arbitrarySpacing,
+  ...restrictedSyntax.fontSize,
+  // Freezes the value to one palette at import time. Resolve at render time
+  // instead — titan/no-frozen-theme below says the same thing for every
+  // component family, ratcheted.
+  ...restrictedSyntax.frozenTheme,
+]
+
 module.exports = tseslint.config(
   // Global ignores
   {
@@ -211,7 +226,7 @@ module.exports = tseslint.config(
     files: ['src/components/**/*.{ts,tsx}'],
     ignores: ['**/*.stories.tsx', '**/*.test.tsx'],
     rules: {
-      'no-restricted-syntax': ['warn', ...restrictedSyntax.gradient],
+      'no-restricted-syntax': ['warn', ...componentSelectors],
     },
   },
 
@@ -222,9 +237,7 @@ module.exports = tseslint.config(
     files: ['src/components/shell/**/*.{ts,tsx}', 'src/components/icons/**/*.{ts,tsx}'],
     ignores: ['**/*.stories.tsx', '**/*.test.tsx'],
     rules: {
-      // Flat config replaces (not merges) this rule per file, so repeat the
-      // gradient selectors here alongside the shell/icons-only hex ones.
-      'no-restricted-syntax': ['warn', ...restrictedSyntax.gradient, ...restrictedSyntax.hex],
+      'no-restricted-syntax': ['warn', ...tokenSelectors],
     },
   },
 
@@ -278,19 +291,7 @@ module.exports = tseslint.config(
     // Fixtures hold real prose (PR refs like `#102` read as hex); stories/tests exempt as elsewhere.
     ignores: ['**/*.stories.tsx', '**/*.test.tsx', '**/*-fixture.ts'],
     rules: {
-      // Flat config replaces (not merges) this rule per file, so the gradient and
-      // hex selectors are repeated here rather than inherited.
-      'no-restricted-syntax': [
-        'error',
-        ...restrictedSyntax.gradient,
-        ...restrictedSyntax.hex,
-        ...restrictedSyntax.arbitrarySpacing,
-        ...restrictedSyntax.fontSize,
-        // Freezes the value to one palette at import time. Resolve at render
-        // time instead — titan/no-frozen-theme below says the same thing for
-        // every component family, ratcheted.
-        ...restrictedSyntax.frozenTheme,
-      ],
+      'no-restricted-syntax': ['error', ...tokenPureSelectors],
     },
   },
 
@@ -612,13 +613,6 @@ module.exports = tseslint.config(
   // deletes this block.
   {
     files: [
-      // TD-536 b2
-      'src/lab/north-star/EmptyLiveView.tsx',
-      'src/lab/north-star/HeroTempo.exploration.stories.tsx',
-      'src/lab/north-star/LivePage.tsx',
-      'src/lab/north-star/LiveView.tsx',
-      'src/lab/north-star/VelocityDiverging.exploration.stories.tsx',
-      'src/lab/north-star/fatigue-lab-shared.tsx',
       // TD-536 b7
       'src/components/ui/alert/Alert.tsx',
       'src/components/ui/button/Button.tsx',
