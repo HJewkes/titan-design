@@ -15,6 +15,7 @@ import type {
 // literal next to a status word. A status is never colour alone: the word is visible, or the
 // accessible name carries it.
 
+/** The label, accessible name and pill tone of each change kind. */
 export const CODE_CHANGE_META: Record<
   CodeChangeKind,
   { label: string; name: string; tone: PillTone }
@@ -27,6 +28,7 @@ export const CODE_CHANGE_META: Record<
   resolved: { label: 'Resolved', name: 'Resolved', tone: 'success' },
 }
 
+/** The order change kinds are listed in, most severe first. */
 export const CODE_CHANGE_ORDER: CodeChangeKind[] = [
   'crossed-cutoff',
   'entered',
@@ -84,6 +86,7 @@ export function scoreBand(
   return hasElevated && score >= elevated.value ? 'elevated' : 'watch'
 }
 
+/** The text colour token and indicator colour of each score band. */
 export const SCORE_BAND_META: Record<
   CodeScoreBand,
   { color: ColorToken; indicator: IndicatorColor }
@@ -105,6 +108,7 @@ export function budgetBand(
   return value >= budget * nearRatio ? 'near' : 'within'
 }
 
+/** The text colour, spoken word, bar fill and flag tone of each budget band. */
 export const BUDGET_BAND_META: Record<
   CodeBudgetBand,
   {
@@ -120,6 +124,7 @@ export const BUDGET_BAND_META: Record<
   unbudgeted: { color: 'primary', word: null, fill: 'text-tertiary', flagTone: null },
 }
 
+/** The label and pill tone of each co-change pair class. */
 export const CODE_COUPLING_CLASS_META: Record<
   CodeCouplingClass,
   { label: string; tone: PillTone }

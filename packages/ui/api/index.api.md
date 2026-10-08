@@ -519,7 +519,7 @@ export interface BriefSection {
     heading: string;
 }
 
-// @public (undocumented)
+// @public
 export const BUDGET_BAND_META: Record<CodeBudgetBand, {
     color: TypographyColor;
     word: string | null;
@@ -975,17 +975,17 @@ export interface CoChangeEdge {
     count: number;
 }
 
-// @public (undocumented)
+// @public
 export const CODE_CHANGE_META: Record<CodeChangeKind, {
     label: string;
     name: string;
     tone: PillTone;
 }>;
 
-// @public (undocumented)
+// @public
 export const CODE_CHANGE_ORDER: CodeChangeKind[];
 
-// @public (undocumented)
+// @public
 export const CODE_COUPLING_CLASS_META: Record<CodeCouplingClass, {
     label: string;
     tone: PillTone;
@@ -993,9 +993,7 @@ export const CODE_COUPLING_CLASS_META: Record<CodeCouplingClass, {
 
 // @public
 export interface CodeBaselineRef {
-    // (undocumented)
     ref: string;
-    // (undocumented)
     snapshotId?: number;
 }
 
@@ -1010,34 +1008,24 @@ export type CodeCouplingClass = 'hidden' | 'expected' | 'unverifiable';
 
 // @public
 export interface CodeCouplingPair {
-    // (undocumented)
     a: CodeNodeRef;
-    // (undocumented)
     b: CodeNodeRef;
-    // (undocumented)
     coEdits: number;
-    // (undocumented)
     couplingClass: CodeCouplingClass;
 }
 
 // @public
 export interface CodeCutoff {
     label: string;
-    // (undocumented)
     value: number;
 }
 
-// @public (undocumented)
+// @public
 export interface CodeFinding {
-    // (undocumented)
     detail: string;
-    // (undocumented)
     id: string;
-    // (undocumented)
     rule: string;
-    // (undocumented)
     severity: CodeSeverity;
-    // (undocumented)
     status: CodeFindingStatus;
 }
 
@@ -1046,14 +1034,10 @@ export type CodeFindingStatus = 'new' | 'carryover' | 'resolved' | 'worsened' | 
 
 // @public
 export interface CodeMetricReading {
-    // (undocumented)
     budget?: number;
     key: string;
-    // (undocumented)
     label: string;
-    // (undocumented)
     unit?: string;
-    // (undocumented)
     value: number | null;
 }
 
@@ -1062,7 +1046,6 @@ export type CodeNodeKind = 'file' | 'symbol' | 'package' | 'directory';
 
 // @public
 export interface CodeNodeRef {
-    // (undocumented)
     id: string;
     kind?: CodeNodeKind;
     name?: string;
@@ -1073,7 +1056,7 @@ export interface CodeNodeRef {
 // @public
 export type CodeScoreBand = 'over' | 'elevated' | 'watch';
 
-// @public (undocumented)
+// @public
 export type CodeSeverity = 'error' | 'warning';
 
 // @public
@@ -6055,7 +6038,7 @@ export interface ScheduleTilesProps extends ViewProps {
     when: number | Date;
 }
 
-// @public (undocumented)
+// @public
 export const SCORE_BAND_META: Record<CodeScoreBand, {
     color: ColorToken$1;
     indicator: IndicatorColor;
@@ -7389,13 +7372,11 @@ export type StatusDotVariant = 'success' | 'warning' | 'error' | 'neutral' | 'on
 // @public
 export function StatusMark(input: StatusMarkProps): react_jsx_runtime.JSX.Element;
 
-// @public (undocumented)
+// @public
 export interface StatusMarkProps extends Omit<ViewProps, 'children'> {
-    // (undocumented)
     className?: string;
     delta?: number;
     isOverCutoff?: boolean;
-    // (undocumented)
     kind: CodeChangeKind;
     size?: Exclude<PillSizeLevel, 'lg'>;
 }

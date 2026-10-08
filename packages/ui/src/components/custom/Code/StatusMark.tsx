@@ -3,7 +3,9 @@ import { Pill, type PillSizeLevel } from '../../ui/pill'
 import { changeLabel, changeName, changeTone } from './code-status'
 import type { CodeChangeKind } from './types'
 
+/** Props of {@link StatusMark}. */
 export interface StatusMarkProps extends Omit<ViewProps, 'children'> {
+  /** Which change the mark names. */
   kind: CodeChangeKind
   /** Score change, after minus before. Shown for worsened and improved; ignored for the other kinds. */
   delta?: number
@@ -11,6 +13,7 @@ export interface StatusMarkProps extends Omit<ViewProps, 'children'> {
   isOverCutoff?: boolean
   /** Pill size; default `sm`. */
   size?: Exclude<PillSizeLevel, 'lg'>
+  /** Tailwind overrides, merged by the Pill. */
   className?: string
 }
 
