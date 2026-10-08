@@ -1,28 +1,4 @@
 {
-  "components-atoms-avatar--all-sizes dark": {
-    "#1c1916|#555352": 6
-  },
-  "components-atoms-avatar--all-sizes light": {
-    "#ffffff|#c7c7c7": 6
-  },
-  "components-atoms-avatar--default dark": {
-    "#1c1916|#555352": 1
-  },
-  "components-atoms-avatar--default light": {
-    "#ffffff|#c7c7c7": 1
-  },
-  "components-atoms-avatar--fallback-initials dark": {
-    "#1c1916|#555352": 3
-  },
-  "components-atoms-avatar--fallback-initials light": {
-    "#ffffff|#c7c7c7": 3
-  },
-  "components-atoms-avatar--with-badge dark": {
-    "#1c1916|#555352": 3
-  },
-  "components-atoms-avatar--with-badge light": {
-    "#ffffff|#c7c7c7": 3
-  },
   "components-atoms-badge--all-colors dark": {
     "#307b9b|#252321": 1,
     "#d14343|#252321": 1
