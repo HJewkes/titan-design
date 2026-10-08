@@ -2,6 +2,9 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { Text } from 'react-native'
 import { axe } from 'jest-axe'
+import { contrast, compositeOver } from '../../../../theme/color-checks'
+import { getSemanticColors, type ThemeMode } from '../../../../theme/tokens/semantic'
+import { SurfaceContext } from '../../surface'
 import { Gauge } from './Gauge'
 
 describe('Gauge', () => {
@@ -59,6 +62,32 @@ describe('Gauge', () => {
       />
     )
     expect(screen.getByTestId('gauge-value')).toHaveStyle({ color: '#14B8A6' })
+  })
+
+  describe.each<ThemeMode>(['light', 'dark'])('unfilled ticks in %s mode', (mode) => {
+    const sem = getSemanticColors(mode)
+    const renderIn = () =>
+      render(
+        <SurfaceContext.Provider value={{ mode, level: 'base' }}>
+          <Gauge value={null} />
+        </SurfaceContext.Provider>
+      )
+
+    it('paints every unfilled tick with the border-prominent track token', () => {
+      renderIn()
+
+      for (const segment of screen.getAllByTestId('gauge-segment')) {
+        expect(segment).toHaveStyle({ backgroundColor: sem['border-prominent'] })
+      }
+    })
+
+    it('keeps the unfilled ticks visible against the base surface', () => {
+      renderIn()
+
+      const painted = screen.getAllByTestId('gauge-segment')[0].style.backgroundColor
+      const base = sem['surface-base']
+      expect(contrast(compositeOver(painted, base), base)).toBeGreaterThan(2.5)
+    })
   })
 
   describe('no value', () => {

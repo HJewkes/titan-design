@@ -4,8 +4,6 @@ import { cn } from '../../../../utils/cn'
 import { getSemanticColors, type ThemeMode } from '../../../../theme/tokens/semantic'
 import { EmptyState } from '../../empty-state'
 import { useSurfaceMode } from '../../surface'
-import { primitiveColors } from '../../../../theme/tokens/primitives'
-import { alpha } from '../../../../utils/colors'
 import { formatTrimmedDecimal } from '../../../../utils/number-format'
 
 export interface GaugeThreshold {
@@ -42,7 +40,8 @@ export interface GaugeProps extends Omit<ViewProps, 'children'> {
   className?: string
 }
 
-const TRACK = alpha(primitiveColors.white, 0.08)
+/** Unfilled-segment token — ZoneTrack's un-reached track, resolved per theme so it reads in light and dark. */
+const TRACK_TOKEN = 'border-prominent'
 
 /** Titan status-token bands for a 0–100 score, in the given theme. */
 function defaultThresholds(mode: ThemeMode): GaugeThreshold[] {
@@ -87,7 +86,11 @@ interface Tick {
 }
 
 /** Position + color each radial segment of the arc. */
-function buildTicks(fill: number, size: number, activeColor: (f: number) => string): Tick[] {
+function buildTicks(
+  fill: number,
+  size: number,
+  colors: { active: (f: number) => string; track: string }
+): Tick[] {
   const center = size / 2
   const radius = center - size * 0.08
   return Array.from({ length: SEGMENTS }, (_, i) => {
@@ -99,7 +102,7 @@ function buildTicks(fill: number, size: number, activeColor: (f: number) => stri
       left: center + radius * Math.cos(rad),
       top: center + radius * Math.sin(rad),
       rotate: `${deg - 90}deg`,
-      color: fraction <= fill ? activeColor(fraction) : TRACK,
+      color: fraction <= fill ? colors.active(fraction) : colors.track,
     }
   })
 }
@@ -155,13 +158,14 @@ export function Gauge({
   ...props
 }: GaugeProps) {
   const mode = useSurfaceMode()
+  const sem = getSemanticColors(mode)
   const bands = thresholds ?? defaultThresholds(mode)
-  const range = { min, max, fallback: getSemanticColors(mode)['status-success'] }
+  const range = { min, max, fallback: sem['status-success'] }
   const span = max - min || 1
   const reading = value !== null && Number.isFinite(value) ? value : null
   const fill = reading === null ? 0 : clamp01((reading - min) / span)
   const activeColor = (f: number) => color ?? bandColor(f, bands, range)
-  const ticks = buildTicks(fill, size, activeColor)
+  const ticks = buildTicks(fill, size, { active: activeColor, track: sem[TRACK_TOKEN] })
   const displayColor = activeColor(fill)
   const tickLength = size * 0.11
   const tickThickness = Math.max(2, (size * 0.9) / SEGMENTS)
