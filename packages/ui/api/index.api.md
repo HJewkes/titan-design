@@ -7631,6 +7631,7 @@ export interface TabPanelsProps {
     children?: React__default.ReactNode;
     // (undocumented)
     className?: string;
+    fill?: boolean;
 }
 
 // @public (undocumented)
