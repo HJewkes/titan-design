@@ -76,7 +76,7 @@ missing), `resolveMax` (a finite positive `max`, else the largest finite positiv
 - A flag is colour on the bar plus its label in the row's accessible name and tip. The label is never
   printed in the row (round 5: it cost space the colour and the tip already cover).
 - An unflagged row's fill is `silverRed(mode).neutral`; a `warning` flag paints `.near` and an `error` flag
-  `.over`, two steps apart on the red ramp (dark red[300] / red[400], light red[600] / red[800]). A row's
+  `.over`, two steps apart on the red ramp (dark red[300] / red[400], light red[500] / red[700]). A row's
   own `color` wins over all three. The track is `bg-hairline` under every fill.
 - The flag label is text the consuming app writes; BarList computes nothing from a limit.
 - The label column of the inline layout is 96 px (`w-24`).
@@ -86,10 +86,10 @@ missing), `resolveMax` (a finite positive `max`, else the largest finite positiv
 **Primitives and tokens.** `Typography`, `Skeleton`, `EmptyState`, `Tooltip`, `useHoverFocusState`,
 `useListNavigation`, `cn`, `resolveColor`, `formatCompact`, `useSurfaceMode` and `silverRed` from
 `kit/silverRed.ts`. Existing tokens and ramp steps only: the silver/red tones (dark `grey[200]`, `red[300]`
-and `red[400]`; light `grey[600]`, `red[600]` and `red[800]`), a `hairline` track and `text-error` for the
+and `red[400]`; light `grey[600]`, `red[500]` and `red[700]`), a `hairline` track and `text-error` for the
 flag label in the tip. No brand token. On the base surface every fill measures at least 3:1 against the
-track in both modes (`BarList.test.tsx`); on the light `background-base` and `surface-raised` planes the
-light near red measures 2.85 against the track. The focus ring is the stylesheet's `*:focus-visible` outline
+track in both modes except the light near red, which measures 2.70 there (3.81 against the plane): the
+owner's console round 6 pick, declared in `BarList.test.tsx`. The focus ring is the stylesheet's `*:focus-visible` outline
 (`global.css`); no class set is added.
 
 ## Props audit (round 3)
