@@ -58,3 +58,59 @@ describe('ratchet isAtModuleScope', () => {
     expect(isAtModuleScope({ type: 'CallExpression', parent: fn })).toBe(false)
   })
 })
+
+describe('ratchet adoption', () => {
+  const rulesDir = path.resolve(import.meta.dirname, '../../eslint-rules')
+  const sources = fs
+    .readdirSync(rulesDir)
+    .filter((name) => name.endsWith('.js') && name !== 'ratchet.js')
+    .map((name) => ({ name, text: fs.readFileSync(path.join(rulesDir, name), 'utf8') }))
+
+  it('scans the rule files', () => {
+    expect(sources.length).toBeGreaterThan(10)
+  })
+
+  it.each(['loadBaseline', 'baselineKey', 'srcRootOf', 'isAtModuleScope'])(
+    'no rule outside ratchet.js defines %s',
+    (helper) => {
+      const definition = new RegExp(`(function\\s+${helper}\\b|(const|let|var)\\s+${helper}\\s*=)`)
+      expect(sources.filter(({ text }) => definition.test(text)).map(({ name }) => name)).toEqual(
+        []
+      )
+    }
+  )
+
+  it('no rule wraps a require of a baseline file in try/catch', () => {
+    const swallowed = /try\s*\{[^}]*require\([^)]*baseline[^)]*\)[^}]*\}\s*catch/
+    const readJsonHelper = /function\s+readJson\b/
+    expect(
+      sources
+        .filter(({ text }) => swallowed.test(text) || readJsonHelper.test(text))
+        .map(({ name }) => name)
+    ).toEqual([])
+  })
+
+  it('a moved rule fails the lint run on a malformed baseline', () => {
+    const nodeRequire = createRequire(import.meta.url)
+    const ratchetPath = nodeRequire.resolve('../../eslint-rules/ratchet')
+    const rulePath = nodeRequire.resolve('../../eslint-rules/props-naming')
+    const real = fs.readFileSync
+    const spy = vi
+      .spyOn(fs, 'readFileSync')
+      .mockImplementation(((file: string, ...rest: []) =>
+        String(file).endsWith('props-naming-baseline.json')
+          ? '{"src/a.tsx": '
+          : real(file, ...rest)) as typeof fs.readFileSync)
+    delete nodeRequire.cache[ratchetPath]
+    delete nodeRequire.cache[rulePath]
+    try {
+      const rule = nodeRequire(rulePath)
+      const context = { filename: path.resolve('src/a.tsx'), cwd: process.cwd(), sourceCode: {} }
+      expect(() => rule.create(context)).toThrow(/props-naming-baseline\.json/)
+    } finally {
+      spy.mockRestore()
+      delete nodeRequire.cache[ratchetPath]
+      delete nodeRequire.cache[rulePath]
+    }
+  })
+})

@@ -31,7 +31,7 @@
  * allowlist is sanctioned use, so the two never share a file.
  */
 
-const path = require('node:path')
+const { loadBaseline, baselineKey } = require('./ratchet')
 
 const JSX_ATTRIBUTES = new Set(['truncate', 'noWrap', 'maxLines', 'numberOfLines', 'ellipsizeMode'])
 const OBJECT_PROPERTIES = new Set(JSX_ATTRIBUTES)
@@ -52,20 +52,6 @@ const EVIDENCE = /^\S+:\d+$/
 
 const BASELINE_FILE = 'no-truncation-baseline.json'
 const ALLOWLIST_FILE = 'truncation-allowlist.json'
-
-function readJson(file, fallback) {
-  try {
-    return require(`./${file}`)
-  } catch {
-    return fallback
-  }
-}
-
-let baselineCache = null
-function loadBaseline() {
-  baselineCache ??= readJson(BASELINE_FILE, {})
-  return baselineCache
-}
 
 /**
  * Allowlist entries are `{ file, value, kind, affordance, evidence }`, one per sanctioned site.
@@ -95,19 +81,15 @@ function parseAllowlist(entries) {
   return byFile
 }
 
-let allowlistCache = null
-function loadAllowlist() {
-  allowlistCache ??= parseAllowlist(readJson(ALLOWLIST_FILE, []))
-  return allowlistCache
+function allowlistEntries() {
+  const entries = loadBaseline(ALLOWLIST_FILE)
+  return Array.isArray(entries) ? entries : []
 }
 
-/** Baseline keys are package-relative POSIX paths, so they're stable across machines. */
-function baselineKey(context) {
-  const cwd = context.getCwd?.() ?? process.cwd()
-  return path
-    .relative(cwd, context.filename ?? context.getFilename())
-    .split(path.sep)
-    .join('/')
+let allowlistCache = null
+function loadAllowlist() {
+  allowlistCache ??= parseAllowlist(allowlistEntries())
+  return allowlistCache
 }
 
 function classTokens(text) {
@@ -235,7 +217,7 @@ module.exports = {
   create(context) {
     const key = baselineKey(context)
     const allowed = new Map(Object.entries(loadAllowlist()[key] ?? {}))
-    const baselined = new Map(Object.entries(loadBaseline()[key] ?? {}))
+    const baselined = new Map(Object.entries(loadBaseline(BASELINE_FILE)[key] ?? {}))
 
     function spend(allowances, value) {
       const left = allowances.get(value) ?? 0
