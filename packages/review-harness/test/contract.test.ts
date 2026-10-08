@@ -5,16 +5,16 @@ import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { App } from '../page/App.tsx'
-import { isBlanketSignOff } from '../src/contract.ts'
 import { sectionedExampleManifest } from '../src/example.ts'
 import { loadRound } from '../src/review.ts'
 import { runCli, type CliIo } from '../src/run.ts'
 import {
   LEGACY_MANIFEST_SCHEMA_ID,
+  isBlanketSignOff,
   ManifestSchema,
   RoundSchema,
   type ManifestInput,
-} from '../src/schema.ts'
+} from '@titan-design/review-schema'
 import { SECTION_TEXTS, SHA, noTreeGit } from './fixtures.ts'
 
 type Section = NonNullable<ManifestInput['sections']>[number]

@@ -407,6 +407,14 @@ pnpm build
   own so the diff stays reviewable.
   `src/arch/component-catalog.json` derives from `arch-graph.json`, so run `pnpm catalog`
   after every arch-graph regen and commit its output too.
+- `src/arch/arch-graph.coverage.test.ts` fails when a `.tsx` file the `ui`, `custom` or
+  `shell` barrels re-export has no arch-graph node, because the catalog never lists a
+  component without one. A feature PR adds the node without a full regen:
+  `pnpm arch:graph -- --add packages/ui/src/components/ui/kbd/Kbd.tsx` (repeat `--add`
+  for more files) indexes fresh, then writes only those nodes, their outgoing edges, their
+  `summary` membership and `componentBarrelHash`; every other node keeps its committed
+  bytes. Then run `pnpm catalog`. It needs the same codewatch CLI as a full regen
+  (`CODEWATCH_CLI=node <codewatch>/packages/cli/dist/index.js`).
 
 ## Storybook Configuration
 
