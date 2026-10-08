@@ -1031,8 +1031,7 @@
         "custom-activework-tasktable--no-legend",
         "custom-activework-tasktable--sorted-by-age",
         "custom-activework-tasktable--sorted-by-estimate",
-        "custom-activework-tasktable--sorted-by-severity",
-        "custom-activework-tasktable--widths"
+        "custom-activework-tasktable--sorted-by-severity"
       ],
       "tier": "organism"
     },
