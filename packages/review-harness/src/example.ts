@@ -1,4 +1,4 @@
-import { MANIFEST_SCHEMA_ID, type ManifestInput } from './schema.ts'
+import { MANIFEST_SCHEMA_ID, type ManifestInput } from '@titan-design/review-schema'
 
 /** The frames and questions of the example round, before they are grouped into sections. */
 export function exampleManifest(storybookUrl: string): ManifestInput {

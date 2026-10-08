@@ -115,8 +115,9 @@ sha256 of the manifest you wrote.
 
 ## Schemas
 
-`schema/round.schema.json` and `schema/feedback.schema.json` are generated from
-`src/schema.ts` (`pnpm --filter @titan-design/review-harness schema`; a test fails if they drift).
+The schemas live in [`@titan-design/review-schema`](../review-schema/README.md), which the harness
+imports. Its `schema/round.schema.json` and `schema/feedback.schema.json` are generated from its
+`src/schema.ts` (`pnpm --filter @titan-design/review-schema schema`; a test fails if they drift).
 
 - Manifest `titan-review/round@2`: `unit`, `round`, `storybookUrl`, `context?`, `widths[]`,
   `height` (a number of px or `"auto"`, default `"auto"`; at round level a number caps every
