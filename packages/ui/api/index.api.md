@@ -3459,32 +3459,6 @@ export interface HeadingProps extends Omit<TypographyProps, 'variant'> {
 // @public
 export function HeadphonesIcon(input: IconProps): react_jsx_runtime.JSX.Element;
 
-// @public @deprecated
-export function HelpTip(input: HelpTipProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export type HelpTipIcon = 'help' | 'info' | 'warning';
-
-// @public (undocumented)
-export type HelpTipPlacement = 'top' | 'bottom' | 'left' | 'right';
-
-// @public (undocumented)
-export interface HelpTipProps extends ViewProps {
-    color?: 'default' | 'primary' | 'secondary' | 'muted';
-    content: React__default.ReactNode;
-    hasArrow?: boolean;
-    icon?: HelpTipIcon;
-    iconClassName?: string;
-    isOpen?: boolean;
-    maxWidth?: number;
-    placement?: HelpTipPlacement;
-    size?: HelpTipSize;
-    tooltipClassName?: string;
-}
-
-// @public (undocumented)
-export type HelpTipSize = 'sm' | 'md' | 'lg';
-
 // @public
 export const HERO_EYEBROW_ALLOWANCE = 26;
 
@@ -3799,18 +3773,6 @@ export function Label(props: LabelProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
 export interface LabelProps extends Omit<TypographyProps, 'variant'> {
-}
-
-// @public @deprecated
-export function LabelWithHelp(input: LabelWithHelpProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface LabelWithHelpProps extends ViewProps {
-    className?: string;
-    helpContent: React__default.ReactNode;
-    helpSize?: HelpTipSize;
-    isRequired?: boolean;
-    label: string;
 }
 
 // @public

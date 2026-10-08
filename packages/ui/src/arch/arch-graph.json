@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:32232e363efe0ffaa43b6701194b3954b4a2734d122ae45483319ce5d564bcb9",
+  "componentBarrelHash": "sha256:2c778aa70caac672f71d99136c96be1607e30d896a7436de7fd978e280d50437",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -3482,49 +3482,6 @@
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
-    },
-    {
-      "name": "HelpTip",
-      "file": "packages/ui/src/components/ui/help-tip/HelpTip.tsx",
-      "dir": "ui",
-      "family": "ui/help-tip",
-      "exports": [
-        "HelpTip",
-        "LabelWithHelp",
-        "HelpTipSize",
-        "HelpTipPlacement",
-        "HelpTipIcon",
-        "HelpTipProps",
-        "LabelWithHelpProps",
-        "HelpTip.handlePress",
-        "HelpTip.handleHoverIn",
-        "HelpTip.handleHoverOut"
-      ],
-      "libDependents": 0,
-      "storyRefs": 1,
-      "xproj": {
-        "mobile": 0,
-        "mcp": 0,
-        "dash": 0,
-        "audiobook": 0,
-        "total": 0
-      },
-      "dependsOn": [
-        "Surface"
-      ],
-      "leak": {
-        "rawView": 4,
-        "rawText": 5,
-        "inlineStyle": 1,
-        "rawHex": 0,
-        "loc": 229,
-        "score": 11
-      },
-      "tier": "molecule",
-      "verdict": "dead",
-      "deadByAssociation": false,
-      "audited": "unaudited",
-      "standard": true
     },
     {
       "name": "IconBox",
@@ -10688,10 +10645,6 @@
       "Typography"
     ],
     [
-      "HelpTip",
-      "Surface"
-    ],
-    [
       "Menu",
       "Surface"
     ],
@@ -10769,7 +10722,6 @@
       "Eyebrow",
       "FilePathLabel",
       "GoalLiftCard",
-      "HelpTip",
       "IconBox",
       "InitiativeHeader",
       "Menu",
@@ -11116,11 +11068,11 @@
         ]
       },
       {
-        "name": "Tooltip / HelpTip",
+        "name": "Tooltip",
         "category": "Data display",
-        "status": "present-dead",
+        "status": "present",
         "have": [
-          "HelpTip"
+          "Tooltip"
         ]
       },
       {

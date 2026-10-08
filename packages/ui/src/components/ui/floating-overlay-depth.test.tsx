@@ -12,7 +12,6 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { greyRamp } from '../../theme/tokens/primitives'
 import { Autocomplete } from './autocomplete'
 import { Drawer, DrawerBody } from './drawer'
-import { HelpTip } from './help-tip'
 import { Menu, MenuTrigger, MenuList, MenuItem } from './menu'
 import { Modal, ModalContent, ModalBody } from './modal'
 import { Popover, PopoverTrigger, PopoverContent } from './popover'
@@ -94,12 +93,6 @@ describe('floating overlay depth', () => {
     )
     fireEvent.mouseEnter(screen.getByText('Hover me').closest('[tabindex]')!)
     expectFloatingPanelAround('Tooltip text')
-  })
-
-  it('HelpTip bubble floats on the overlay plane with no ring', () => {
-    render(<HelpTip content="Help text" />)
-    fireEvent.click(screen.getByRole('button', { name: 'Show help information' }))
-    expectFloatingPanelAround('Help text')
   })
 
   it('Select dropdown floats on the overlay plane with no ring', () => {

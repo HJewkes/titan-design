@@ -113,7 +113,7 @@ export function FormField({
 
           {helpContent && (
             <View className="ml-1">
-              {/* Inline help indicator - could use HelpTip here */}
+              {/* Inline help indicator - could use Tooltip here */}
               <Text className="text-text-tertiary text-xs">ℹ</Text>
             </View>
           )}

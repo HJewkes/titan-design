@@ -71,7 +71,6 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | GoalTrajectoryPlot | review | custom/Workout | — | GoalTrajectoryBand, GoalTrajectoryCalibrating, SvgIcon, icons | — |
 | GoalTrajectoryWeekTips | review | custom/Workout | The week targets over the plot, absolute against the chart's own box. | Metric, Pill, PrBadge, TipTrigger, Typography | — |
 | GoalWeekColumnsChart | review | custom/Workout | — | GoalMilestoneWeekStrip, GoalTrajectoryMini | — |
-| HelpTip | candidate | ui/help-tip | HelpTip component for displaying contextual help information. | Surface | components-molecules-helptip--all-colors |
 | IconBox | stable | ui/icon-box | — | — | components-atoms-iconbox--all-colors |
 | Indicator | stable | ui/indicator | — | — | components-atoms-indicator--all-colors |
 | InitiativeBrief | candidate | custom/ActiveWork | InitiativeBrief — an initiative's brief prose as a single-open accordion of its `##` sections: click any heading to open it, or step through them with the prev/next controls in the header, which close the current section and open the next. | Eyebrow, MarkdownProse, Typography | custom-activework-initiativebrief--default |
