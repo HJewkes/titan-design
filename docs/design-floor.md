@@ -21,17 +21,17 @@ Search `packages/ui/src/components/ui/` and the nearest `custom/<Family>/` befor
 
 Check: at the narrowest width, with the longest fixture name, the whole text is readable.
 
-### F2 Status is never dropped, never carried by colour alone, and keeps a spoken name.
+### F2 Status is never dropped, never carried by colour alone, and keeps a spoken name. When the row runs short, the status word collapses to its glyph; the glyph opens a tip with the full word and carries it as its accessible name (M-16).
 
-Check: the status is visible at every width and has an accessible name.
+Check: at 320, 360 and 560, in both forms, the status is visible; the collapsed glyph's tip and accessible name both equal the expanded word.
 
 ### F3 Each fact appears once per surface; if the title or chart says it, nothing repeats it.
 
 Check: list every rendered string and number; none appears twice.
 
-### F4 Labels are one to three words, and no sentence explaining the UI sits on the surface.
+### F4 Labels are one to three words, and no sentence explaining the UI sits on the surface. A reason or explanation lives in a glyph's tip and in its spoken label, never as visible text; at narrow width a label that will not fit collapses to the same glyph-plus-tip form.
 
-Check: every rendered text traces to the brief or the fixture.
+Check: every rendered text traces to the brief or the fixture; at 320 no visible sentence remains, and each glyph has a tip and an accessible name in full words.
 
 ### F5 Label data directly: lines, bars and reference lines carry their own label in the mark's colour; with four or fewer series, no legend.
 
