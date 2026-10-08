@@ -57,6 +57,19 @@ describe('declared contrast pairs', () => {
       ).toEqual([])
     })
 
+    it(`${mode}: measures the disabled, hover and pressed, and error state pairs`, () => {
+      const ids = measureContrastPairs(mode).map(({ id }) => id)
+
+      expect(ids).toEqual(
+        expect.arrayContaining([
+          'on-brand-primary on brand-primary-solid over surface-base at 40%',
+          'on-brand-primary on brand-primary-dark',
+          'text-primary on interactive-hover over surface-overlay',
+          'text-error on interactive-hover over surface-overlay',
+        ])
+      )
+    })
+
     it(`${mode}: no pair falls below its floor unless baselined`, () => {
       const { added } = diffAgainstBaseline(failingContrastPairs(mode), baseline[mode])
 
@@ -142,6 +155,22 @@ describe('the contrast gate catches', () => {
 
     expect(measured.id).toBe('text-a on fill-a over surface-a')
     expect(measured.ratio).toBeCloseTo(contrast('#FFFFFF', '#808080'), 5)
+  })
+
+  it('a disabled control, label and fill faded together over the plane beneath', () => {
+    const disabled: ContrastPair = {
+      fg: 'text-a',
+      bg: 'surface-a',
+      floor: 3,
+      modes: ['dark'],
+      over: ['surface-a'],
+      opacity: 0.5,
+    }
+
+    const [measured] = measureContrastPairs('dark', [disabled], colors)
+
+    expect(measured.id).toBe('text-a on surface-a over surface-a at 50%')
+    expect(measured.ratio).toBeCloseTo(contrast('#808080', '#000000'), 5)
   })
 
   it('a pair that names a colour the theme does not have', () => {
