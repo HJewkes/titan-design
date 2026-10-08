@@ -37,14 +37,14 @@ function Harness({ initialIndex = 0, onActiveIndexChange, ...options }: HarnessP
 }
 
 function HostDriven({ activeIndex }: { activeIndex: number }) {
-  const { getItemProps } = useListNavigation({
+  const { onKeyDown, getItemProps } = useListNavigation({
     focusMode: 'roving',
     count: LABELS.length,
     activeIndex,
     onActiveIndexChange: () => {},
   })
   return (
-    <View role="menu">
+    <View role="menu" {...{ onKeyDown }}>
       {LABELS.map((label, index) => (
         <Pressable key={label} role="menuitem" {...getItemProps(index)}>
           <Text>{label}</Text>
@@ -102,6 +102,24 @@ describe('useListNavigation, roving', () => {
     expect(outside).toHaveFocus()
   })
 
+  it('leaves focus outside the list when the host later applies a key it ignored', () => {
+    const list = (activeIndex: number) => (
+      <>
+        <Pressable testID="outside" />
+        <HostDriven activeIndex={activeIndex} />
+      </>
+    )
+    const { rerender } = render(list(0))
+    act(() => items()[0].focus())
+    fireEvent.keyDown(items()[0], { key: 'ArrowDown' })
+    const outside = screen.getByTestId('outside')
+    act(() => outside.focus())
+
+    rerender(list(1))
+
+    expect(outside).toHaveFocus()
+  })
+
   it('follows a host change of the active index while focus is on an item', () => {
     const { rerender } = render(<HostDriven activeIndex={0} />)
     act(() => items()[0].focus())
@@ -113,6 +131,7 @@ describe('useListNavigation, roving', () => {
 
   it('wraps from the last item to the first', () => {
     render(<Harness initialIndex={2} />)
+    act(() => items()[2].focus())
 
     fireEvent.keyDown(items()[2], { key: 'ArrowDown' })
 
@@ -173,6 +192,7 @@ describe('useListNavigation, keys', () => {
     vi.useFakeTimers()
     render(<Harness getLabel={(index) => LABELS[index]} />)
     const list = screen.getByTestId('list')
+    act(() => items()[0].focus())
 
     fireEvent.keyDown(list, { key: 'd' })
     fireEvent.keyDown(list, { key: 'u' })
