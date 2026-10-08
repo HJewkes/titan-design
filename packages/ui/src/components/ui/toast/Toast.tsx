@@ -1,9 +1,11 @@
-import React, { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react'
+import React, { createContext, useContext, useState, useCallback } from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Surface } from '../surface'
+import { statusStyles, iconColors, toastRole, type ToastStatus } from './toastStatus'
+import { useAutoDismiss } from './useAutoDismiss'
 
-export type ToastStatus = 'success' | 'error' | 'warning' | 'info'
+export type { ToastStatus }
 export type ToastPosition =
   | 'top'
   | 'top-right'
@@ -155,59 +157,6 @@ export function useToast() {
 
 interface ToastItemProps extends ToastConfig {
   onClose: () => void
-}
-
-// `-subtle` is the wash ladder's lightest rung. It replaces a `/10` opacity
-// modifier, which emitted no rule at all against a var()-backed token (VW-308).
-const statusStyles: Record<ToastStatus, { bg: string; border: string; icon: string }> = {
-  success: {
-    bg: 'bg-status-success-subtle',
-    border: 'border-status-success',
-    icon: '✓',
-  },
-  error: {
-    bg: 'bg-status-error-subtle',
-    border: 'border-status-error',
-    icon: '✕',
-  },
-  warning: {
-    bg: 'bg-status-warning-subtle',
-    border: 'border-status-warning',
-    icon: '⚠',
-  },
-  info: {
-    bg: 'bg-status-info-subtle',
-    border: 'border-status-info',
-    icon: 'ℹ',
-  },
-}
-
-const iconColors: Record<ToastStatus, string> = {
-  success: 'text-status-success',
-  error: 'text-text-error',
-  warning: 'text-status-warning',
-  info: 'text-status-info',
-}
-
-const toastRole = (status: ToastStatus) => (status === 'error' ? 'alert' : 'status')
-
-/** Auto-dismiss countdown that holds while `paused` and resumes with the time left. */
-function useAutoDismiss(duration: number, paused: boolean, onClose: () => void) {
-  const remaining = useRef(duration)
-
-  useEffect(() => {
-    remaining.current = duration
-  }, [duration])
-
-  useEffect(() => {
-    if (duration <= 0 || paused) return
-    const startedAt = Date.now()
-    const timer = setTimeout(onClose, remaining.current)
-    return () => {
-      clearTimeout(timer)
-      remaining.current = Math.max(0, remaining.current - (Date.now() - startedAt))
-    }
-  }, [duration, paused, onClose])
 }
 
 function ToastItem({
