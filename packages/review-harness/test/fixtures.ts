@@ -7,7 +7,7 @@ import {
   type Feedback,
   type Manifest,
   type ManifestInput,
-} from '../src/schema.ts'
+} from '@titan-design/review-schema'
 
 export const SHA = 'a'.repeat(64)
 

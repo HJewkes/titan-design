@@ -10,18 +10,6 @@
     "path:ComponentName.test.tsx"
   ],
   "docs/design-freeze-workflow.md": ["path:docs/improved-workflow.md"],
-  "packages/ui/CHANGELOG.md": [
-    "path:.storybook/preview-head.html",
-    "path:colors.json",
-    "path:dom.json",
-    "path:htmlGroundTruth.tsx",
-    "path:ramps.json",
-    "path:semantic-contrast.test.ts",
-    "path:tokens.css",
-    "path:utils/form.ts",
-    "retired:Gluestack",
-    "retired:WORKOUT_TOKENS"
-  ],
   "packages/ui/DEPRECATIONS.md": [
     "path:src/dashboard/spa/planner/SessionSummaryPage.tsx",
     "retired:WORKOUT_TOKENS"
