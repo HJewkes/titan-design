@@ -10,7 +10,7 @@ component is pure import churn with no file moves.
 **Atoms** — single-purpose, no cross-component state:
 BaseBadge · WeightBadge · PrBadge · StatusDot · PlaceholderStrip ·
 DeviationBar · IntensityBar · WorkoutPill · MuscleGroupChip · Sparkline · MuscleGlyph ·
-SupersetWrapper · InputBar · MetricCell · SetsRepsLoad · ExerciseIndicator · SetBar
+SupersetWrapper · InputBar · SetsRepsLoad · ExerciseIndicator · SetBar
 
 **Molecules** — compose atoms, own a little local state:
 VelocityStrip · DualVelocityStrip · SetRow · TempoDisplay · RestTimer · MesoProgressBar ·
@@ -205,10 +205,9 @@ split.
 - **BaseBadge is an internal composition primitive** — the shared shell that
   WeightBadge and PrBadge build on. It is exempt from orphan accounting; it is not
   meant to be consumed directly even though it is exported for composition.
-- **MetricCell is an internal composition primitive** — the shared Inter · 600 ·
-  letter-spacing-1 value/separator cell. `TempoDisplay` (tempo digits) and
-  `SetsRepsLoad` (sets × reps @ load) both compose it so the two read as one
-  visual language. Exported for composition, not for direct app use.
+- **Segmented metric text is Typography `mono`** — `TempoDisplay` (tempo digits) and
+  `SetsRepsLoad` (sets × reps @ load) render their value and separator segments through
+  `Typography variant="mono"`, so the two read as one visual language with no private cell.
 - **TempoDisplay is deliberately NOT decomposed further** — it is the single tempo
   component (the standalone `TempoBar` was retired into it). It renders two modes from
   one chip: the static phase-coloured **prescription** and, with the `live` prop, the
@@ -217,7 +216,6 @@ split.
   `LiveTempoRow`, `LiveTempoCell` and `CellFill` (the fill behind a number) — are
   **TempoDisplay-private with no second consumer**. Its pacing logic (fill percent, number
   tone, readout text) lives in `Fatigue/tempo-pacing`, shared with `GhostBand` (VW-678). Per the ≥2-consumer rule they stay internal rather than becoming top-level primitives.
-  The only already-shared primitive is `MetricCell`.
 
   **If reuse emerges, decompose along these seams** (in likely order):
   1. **`CellFill` → a shared `ProgressCell`/`FillBehind` primitive** — the moment a
@@ -239,8 +237,8 @@ split.
   └─ ExerciseCardHeading            (complete standalone heading)
      ├─ ExerciseHeading             (name/indicator + metrics, no strip)
      │  ├─ ExerciseIndicator
-     │  ├─ SetsRepsLoad → MetricCell
-     │  └─ TempoDisplay  (showLabel={false}) → MetricCell
+     │  ├─ SetsRepsLoad → Typography
+     │  └─ TempoDisplay  (showLabel={false}) → Typography
      └─ SetStrip
         └─ SetBar × N               (one set's per-rep colour bar)
 
@@ -322,7 +320,7 @@ split.
   exploration specimens live under `Custom/Workout/Explorations/*` (do not repoint yet).
   In Storybook the family nests by composition under **`Shell/SessionRail/…`**
   (organism → `ExerciseCardHeading` → `ExerciseHeading` → its atoms/molecules →
-  `MetricCell`, and `SetStrip` → `SetBar`; `ExerciseCard` sits as a leaf whose
+  `Typography`, and `SetStrip` → `SetBar`; `ExerciseCard` sits as a leaf whose
   Composes link points at `ExerciseCardHeading`), each node's autodocs carrying a
   **Composes** link down the tree — matching the S1/S2 shell families. (The component
   files stay flat on disk in `custom/Workout/`; only the story `title`s build the tree.)

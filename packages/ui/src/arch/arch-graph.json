@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:32232e363efe0ffaa43b6701194b3954b4a2734d122ae45483319ce5d564bcb9",
+  "componentBarrelHash": "sha256:08379f8c980ad54119ec67142cc2761837f0f198ecc9a97853f38294008edef4",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -4310,7 +4310,6 @@
         "getGaugeZoneColor",
         "renderCoachingText",
         "StatusPill",
-        "MetricCell",
         "Gauge"
       ],
       "libDependents": 2,
@@ -4474,40 +4473,7 @@
       "audited": "unaudited",
       "standard": false
     },
-    {
-      "name": "metricText",
-      "file": "packages/ui/src/components/custom/Workout/metricText.tsx",
-      "dir": "workout",
-      "family": "custom/Workout",
-      "exports": [
-        "MetricCell",
-        "METRIC_FONT",
-        "MetricCellProps"
-      ],
-      "libDependents": 2,
-      "storyRefs": 1,
-      "xproj": {
-        "mobile": 0,
-        "mcp": 0,
-        "dash": 0,
-        "audiobook": 0,
-        "total": 0
-      },
-      "dependsOn": [],
-      "leak": {
-        "rawView": 0,
-        "rawText": 1,
-        "inlineStyle": 1,
-        "rawHex": 0,
-        "loc": 41,
-        "score": 3
-      },
-      "tier": "atom",
-      "verdict": "keep-internal",
-      "deadByAssociation": false,
-      "audited": "unaudited",
-      "standard": false
-    },
+
     {
       "name": "MetricTiles",
       "file": "packages/ui/src/components/custom/Workout/MetricTiles.tsx",
