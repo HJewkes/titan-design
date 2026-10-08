@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { describe, it, expect, vi } from 'vitest'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 
 import { DateSeparator } from './DateSeparator'
@@ -46,5 +46,39 @@ describe('DateSeparator', () => {
   it('has no accessibility violations', async () => {
     const { container } = render(<DateSeparator date={localIso(0, 7, 0)} now={NOW} />)
     expect(await axe(container)).toHaveNoViolations()
+  })
+
+  describe('as a times toggle', () => {
+    it('is a named button that presses through to the handler', () => {
+      const onPress = vi.fn()
+      render(<DateSeparator date={localIso(0, 7, 0)} now={NOW} onPress={onPress} />)
+
+      fireEvent.click(screen.getByRole('button', { name: 'Show message times' }))
+
+      expect(onPress).toHaveBeenCalledTimes(1)
+    })
+
+    it('names the hide action and reports expanded while times show', () => {
+      render(<DateSeparator date={localIso(0, 7, 0)} now={NOW} onPress={() => {}} timesShown />)
+
+      expect(screen.getByRole('button', { name: 'Hide message times' })).toHaveAttribute(
+        'aria-expanded',
+        'true'
+      )
+    })
+
+    it('stays plain text when nothing is wired to it', () => {
+      render(<DateSeparator date={localIso(0, 7, 0)} now={NOW} />)
+
+      expect(screen.queryByRole('button')).not.toBeInTheDocument()
+    })
+
+    it('has no accessibility violations as a button', async () => {
+      const { container } = render(
+        <DateSeparator date={localIso(0, 7, 0)} now={NOW} onPress={() => {}} />
+      )
+
+      expect(await axe(container)).toHaveNoViolations()
+    })
   })
 })

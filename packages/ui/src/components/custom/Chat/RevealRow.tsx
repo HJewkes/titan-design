@@ -1,4 +1,12 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react'
 import { Animated, PanResponder, View } from 'react-native'
 import { DateTime } from '../../ui/date-time'
 
@@ -16,25 +24,35 @@ export function revealOffset(dx: number): number {
 
 /**
  * Drag left to slide the thread and show each message's time, and let go to spring
- * back, the way Messages does. `open` holds it revealed, for stories and tests.
+ * back, the way Messages does. `open` starts it revealed, for stories and tests; `toggle` reveals or hides the times
+without a drag, for taps and the keyboard.
  */
 export function useRevealGesture(open: boolean) {
   const [offset] = useState(() => new Animated.Value(open ? REVEAL_PX : 0))
-  useEffect(() => offset.setValue(open ? REVEAL_PX : 0), [offset, open])
+  const [revealed, setRevealed] = useState(open)
+  const [seenOpen, setSeenOpen] = useState(open)
+  if (seenOpen !== open) {
+    setSeenOpen(open)
+    setRevealed(open)
+  }
+  useEffect(() => {
+    Animated.spring(offset, { toValue: revealed ? REVEAL_PX : 0, useNativeDriver: false }).start()
+  }, [offset, revealed])
+  const toggle = useCallback(() => setRevealed((shown) => !shown), [])
   const panHandlers = useMemo(
     () =>
       PanResponder.create({
         onMoveShouldSetPanResponder: (_event, { dx, dy }) =>
-          !open && dx < -HORIZONTAL_SLOP_PX && Math.abs(dx) > Math.abs(dy) * 2,
+          !revealed && dx < -HORIZONTAL_SLOP_PX && Math.abs(dx) > Math.abs(dy) * 2,
         onPanResponderMove: (_event, { dx }) => offset.setValue(revealOffset(dx)),
         onPanResponderRelease: () =>
           Animated.spring(offset, { toValue: 0, useNativeDriver: false }).start(),
         onPanResponderTerminate: () =>
           Animated.spring(offset, { toValue: 0, useNativeDriver: false }).start(),
       }).panHandlers,
-    [offset, open]
+    [offset, revealed]
   )
-  return { offset, panHandlers }
+  return { offset, panHandlers, revealed, toggle }
 }
 
 export function RevealProvider({
