@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { createContext, useContext } from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { useSurfaceMode } from '../surface'
 
 export type AlertStatus = 'success' | 'info' | 'warning' | 'error'
 export type AlertVariant = 'subtle' | 'outline' | 'solid'
@@ -20,8 +21,8 @@ export interface AlertProps extends ViewProps {
    */
   size?: AlertSize
   /**
-   * Convenience single-line content: renders as **status-colored, bold** text (white on
-   * `solid`) — the batteries-included cue message, so a `compact` cue is just
+   * Convenience single-line content: renders as **status-colored, bold** text (the
+   * on-colour on `solid`) — the batteries-included cue message, so a `compact` cue is just
    * `<Alert status="warning" size="compact" message="VL20 · …" />` with no need to
    * hand-color the text (RN doesn't cascade color). Renders before {@link children},
    * which stay available for richer content.
@@ -46,6 +47,13 @@ const statusColors: Record<
     solid: string
     /** Text/glyph colour on the `solid` fill — the status's on-colour. */
     onSolid: string
+    /**
+     * Light-mode on-colour where the light `on-status-*` token (white) misses AA on the
+     * `-solid` fill: amber 500 (3.64:1) and blue 500 (3.12:1). `text-primary` clears both
+     * (4.83:1, 5.60:1); white stays on success and error (4.56:1, 4.57:1). TD-412 owns the
+     * token values; this is the pairing that reads until it sets them.
+     */
+    onSolidLight?: string
     border: string
     icon: string
     text: string
@@ -68,6 +76,7 @@ const statusColors: Record<
     outline: 'border-2 border-status-info bg-transparent',
     solid: 'bg-status-info-solid',
     onSolid: 'text-on-status-info',
+    onSolidLight: 'text-text-primary',
     border: 'border-status-info',
     icon: 'text-status-info',
     text: 'text-status-info',
@@ -78,6 +87,7 @@ const statusColors: Record<
     outline: 'border-2 border-status-warning bg-transparent',
     solid: 'bg-status-warning-solid',
     onSolid: 'text-on-status-warning',
+    onSolidLight: 'text-text-primary',
     border: 'border-status-warning',
     icon: 'text-status-warning',
     text: 'text-status-warning',
@@ -101,6 +111,25 @@ const defaultIcons: Record<AlertStatus, string> = {
   info: 'ℹ',
   warning: '⚠',
   error: '✕',
+}
+
+/** The on-colour class of the enclosing `solid` Alert, or `null` outside one. */
+const AlertSolidContext = createContext<string | null>(null)
+
+type StatusClasses = (typeof statusColors)[AlertStatus]
+
+/**
+ * The classes the message, title, description and glyph read: the fill's on-colour on
+ * `solid` (per theme), the subtle on-colour on `subtle`, the status colour on `outline`.
+ */
+function labelClasses(colors: StatusClasses, variant: AlertVariant, mode: 'dark' | 'light') {
+  if (variant === 'solid') {
+    const onSolid = (mode === 'light' && colors.onSolidLight) || colors.onSolid
+    return { onSolid, label: onSolid, glyph: onSolid }
+  }
+  if (variant === 'subtle')
+    return { onSolid: null, label: colors.subtleText, glyph: colors.subtleText }
+  return { onSolid: null, label: colors.text, glyph: colors.icon }
 }
 
 /**
@@ -129,7 +158,7 @@ export function Alert({
   ...props
 }: AlertProps) {
   const colors = statusColors[status]
-  const isSolid = variant === 'solid'
+  const { onSolid, label, glyph } = labelClasses(colors, variant, useSurfaceMode())
   const isCompact = size === 'compact'
 
   return (
@@ -148,13 +177,15 @@ export function Alert({
       {...props}
     >
       {showIcon && (
-        <View className={isCompact ? 'mr-2' : 'mr-3 mt-0.5'}>
+        <View className={isCompact ? 'mr-2' : 'mr-3'}>
           {icon || (
             <Text
               className={cn(
                 'font-bold',
-                isCompact ? 'text-base' : 'text-lg',
-                isSolid ? colors.onSolid : variant === 'subtle' ? colors.subtleText : colors.icon
+                // The default glyph's line box equals the first text line's (20px), so the
+                // two centre together; compact centres the row instead.
+                isCompact ? 'text-base' : 'text-lg leading-5',
+                glyph
               )}
             >
               {defaultIcons[status]}
@@ -163,20 +194,16 @@ export function Alert({
         </View>
       )}
 
-      <View className="flex-1 gap-stack-sm">
-        {message != null && (
-          <Text
-            className={cn(
-              'text-sm font-semibold',
-              isSolid ? colors.onSolid : variant === 'subtle' ? colors.subtleText : colors.text
-            )}
-            testID="alert-message"
-          >
-            {message}
-          </Text>
-        )}
-        {children}
-      </View>
+      <AlertSolidContext.Provider value={onSolid}>
+        <View className="flex-1 gap-stack-sm">
+          {message != null && (
+            <Text className={cn('text-sm font-semibold', label)} testID="alert-message">
+              {message}
+            </Text>
+          )}
+          {children}
+        </View>
+      </AlertSolidContext.Provider>
 
       {onClose && (
         <Pressable
@@ -186,10 +213,7 @@ export function Alert({
           className="ml-2 p-1 rounded web:hover:bg-scrim-press active:bg-scrim-press-strong"
         >
           <Text
-            className={cn(
-              'text-lg',
-              isSolid ? cn(colors.onSolid, 'opacity-70') : 'text-text-secondary'
-            )}
+            className={cn('text-lg', onSolid ? cn(onSolid, 'opacity-70') : 'text-text-secondary')}
           >
             ×
           </Text>
@@ -205,10 +229,15 @@ export interface AlertTitleProps {
 }
 
 /**
- * Title for Alert component.
+ * Title for Alert component. Reads the on-colour inside a `solid` Alert.
  */
 export function AlertTitle({ children, className }: AlertTitleProps) {
-  return <Text className={cn('font-semibold text-text-primary', className)}>{children}</Text>
+  const onSolid = useContext(AlertSolidContext)
+  return (
+    <Text className={cn('font-semibold leading-5', onSolid ?? 'text-text-primary', className)}>
+      {children}
+    </Text>
+  )
 }
 
 export interface AlertDescriptionProps {
@@ -217,8 +246,11 @@ export interface AlertDescriptionProps {
 }
 
 /**
- * Description for Alert component.
+ * Description for Alert component. Reads the on-colour inside a `solid` Alert.
  */
 export function AlertDescription({ children, className }: AlertDescriptionProps) {
-  return <Text className={cn('text-sm text-text-secondary', className)}>{children}</Text>
+  const onSolid = useContext(AlertSolidContext)
+  return (
+    <Text className={cn('text-sm', onSolid ?? 'text-text-secondary', className)}>{children}</Text>
+  )
 }

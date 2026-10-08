@@ -33,6 +33,31 @@ describe('Alert solid label (dark)', () => {
   })
 })
 
+describe('Alert solid label (light)', () => {
+  // The light `on-status-*` tokens are white, which misses on amber 500 and blue 500, so the
+  // Alert reads `text-primary` there (Alert.tsx `onSolidLight`); TD-412 owns the token values.
+  it.each([
+    ['success', 'on-status-success'],
+    ['error', 'on-status-error'],
+    ['warning', 'text-primary'],
+    ['info', 'text-primary'],
+  ] as const)('%s label on %s clears AA on its -solid fill', (tone, label) => {
+    const ratio = contrast(semanticColorsLight[label], semanticColorsLight[`status-${tone}-solid`])
+    expect(ratio).toBeGreaterThanOrEqual(4.5)
+  })
+
+  it.each(['warning', 'info'] as const)(
+    'documents why: white misses AA on the light %s -solid fill',
+    (tone) => {
+      const ratio = contrast(
+        semanticColorsLight[`on-status-${tone}`],
+        semanticColorsLight[`status-${tone}-solid`]
+      )
+      expect(ratio).toBeLessThan(4.5)
+    }
+  )
+})
+
 describe('Avatar fallback label', () => {
   it.each([
     ['dark', semanticColorsDark],

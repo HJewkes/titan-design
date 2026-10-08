@@ -66,7 +66,7 @@ changelog:compile` folds them into `[Unreleased]` at release.
 
 ### Changed
 
-- `Alert` solid fills use `bg-status-<tone>-solid` for all four tones, so the dark error label clears 4.5:1 (3.83 to 4.59). The `Avatar` fallback (and the default `AvatarBadge`) uses `bg-avatar-background` and `text-avatar-text` in place of `bg-hairline-strong` and `text-text-inverse`, lifting the label from 1.38-2.88 to 4.88 (light) and 6.99 (dark) (TD-482a).
+- `Alert` solid fills use `bg-status-<tone>-solid` for all four tones, so the dark error label clears 4.5:1 (3.83 to 4.59). The `Avatar` fallback (and the default `AvatarBadge`) uses `bg-avatar-background` and `text-avatar-text` in place of `bg-hairline-strong` and `text-text-inverse`, lifting the label from 1.38-2.88 to 4.88 (light) and 6.99 (dark). On a `solid` Alert the title, description, message, glyph and close mark read the fill's on-colour (`on-status-<tone>`; in light `text-primary` on warning and info, where the white token misses AA), and the default glyph shares the first text line's 20px line box so it centres on it (TD-482a).
 - `global.css` self-hosts Inter, Nunito Sans and Space Grotesk instead of importing them from
   Google Fonts, so a single-file build opened from disk renders with no network. The woff2
   files are the ones Google Fonts served, with the same subsets and weights, and ship with their

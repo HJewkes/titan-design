@@ -198,31 +198,11 @@
     "#191919|#d65656": 5,
     "#ffffff|#ad6e19": 4
   },
-  "components-molecules-alert--all-variants dark": {
-    "#a29f9d|#2196f3": 1,
-    "#f9f6f3|#2196f3": 1
-  },
-  "components-molecules-alert--all-variants light": {
-    "#121828|#1072cb": 1,
-    "#5a5958|#1072cb": 1
-  },
   "components-molecules-alert--default-vs-compact dark": {
     "#5a5958|#100d0a": 2
   },
   "components-molecules-alert--default-vs-compact light": {
     "#5a5958|#a29f9d": 2
-  },
-  "components-molecules-alert--solid-variants dark": {
-    "#a29f9d|#2196f3": 1,
-    "#a29f9d|#2ed573": 1,
-    "#a29f9d|#d14343": 1,
-    "#a29f9d|#f9b415": 1
-  },
-  "components-molecules-alert--solid-variants light": {
-    "#5a5958|#1072cb": 1,
-    "#5a5958|#298732": 1,
-    "#5a5958|#c27400": 1,
-    "#5a5958|#d14343": 1
   },
   "components-molecules-autocomplete--disabled dark": {
     "#8f8d8a|#292725": 1

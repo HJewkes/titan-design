@@ -207,9 +207,6 @@
   "components/shell/workout/PinnedLiveStrip.tsx#WallValues": {
     "props": 19
   },
-  "components/ui/alert/Alert.tsx#Alert": {
-    "complexity": 19
-  },
   "components/ui/autocomplete/Autocomplete.tsx#Autocomplete": {
     "complexity": 28,
     "props": 20

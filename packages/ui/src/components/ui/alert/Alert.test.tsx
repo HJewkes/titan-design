@@ -2,8 +2,11 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Alert, AlertTitle, AlertDescription } from './Alert'
+import { Surface } from '../surface'
 import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
-import { capturedClassNames } from '../../../test/classname-capture'
+import { capturedByNode, capturedClassNames } from '../../../test/classname-capture'
+
+const defaultGlyph = { success: '✓', info: 'ℹ', warning: '⚠', error: '✕' } as const
 
 describe('Alert', () => {
   it('renders children correctly', () => {
@@ -105,6 +108,77 @@ describe('Alert', () => {
         expect(classes).not.toContain(`bg-status-${status}`)
       }
     )
+
+    it.each(['success', 'info', 'warning', 'error'] as const)(
+      'reads the %s on-colour for the title, description, glyph and message on the dark solid fill',
+      (status) => {
+        render(
+          <Alert variant="solid" status={status} message="Cue">
+            <AlertTitle>Title</AlertTitle>
+            <AlertDescription>Body</AlertDescription>
+          </Alert>
+        )
+        for (const text of ['Title', 'Body', 'Cue']) {
+          const classes = capturedByNode.get(screen.getByText(text))?.split(' ')
+          expect(classes).toContain(`text-on-status-${status}`)
+          expect(classes).not.toContain('text-text-primary')
+          expect(classes).not.toContain('text-text-secondary')
+        }
+        expect(capturedByNode.get(screen.getByText(defaultGlyph[status]))?.split(' ')).toContain(
+          `text-on-status-${status}`
+        )
+      }
+    )
+
+    it.each([
+      ['success', 'text-on-status-success'],
+      ['error', 'text-on-status-error'],
+      ['warning', 'text-text-primary'],
+      ['info', 'text-text-primary'],
+    ] as const)('reads %s for the light solid %s label and glyph', (status, expected) => {
+      render(
+        <Surface theme="light">
+          <Alert variant="solid" status={status}>
+            <AlertDescription>Body</AlertDescription>
+          </Alert>
+        </Surface>
+      )
+      expect(capturedByNode.get(screen.getByText('Body'))?.split(' ')).toContain(expected)
+      expect(capturedByNode.get(screen.getByText(defaultGlyph[status]))?.split(' ')).toContain(
+        expected
+      )
+    })
+
+    it('keeps the subtle and outline labels on their own tokens', () => {
+      render(
+        <Alert variant="outline" status="info">
+          <AlertTitle>Title</AlertTitle>
+          <AlertDescription>Body</AlertDescription>
+        </Alert>
+      )
+      expect(capturedByNode.get(screen.getByText('Title'))?.split(' ')).toContain(
+        'text-text-primary'
+      )
+      expect(capturedByNode.get(screen.getByText('Body'))?.split(' ')).toContain(
+        'text-text-secondary'
+      )
+    })
+  })
+
+  describe('icon centring', () => {
+    it('gives the default glyph the 20px line box of the first text line, with no top nudge', () => {
+      render(
+        <Alert status="info" testID="alert">
+          <AlertTitle>Title</AlertTitle>
+          <AlertDescription>Body</AlertDescription>
+        </Alert>
+      )
+      const glyph = capturedByNode.get(screen.getByText(defaultGlyph.info))?.split(' ')
+      expect(glyph).toEqual(expect.arrayContaining(['text-lg', 'leading-5']))
+      const wrapper = capturedByNode.get(screen.getByText(defaultGlyph.info).parentElement!)
+      expect(wrapper).toBe('mr-3')
+      expect(capturedByNode.get(screen.getByText('Title'))?.split(' ')).toContain('leading-5')
+    })
   })
 
   describe('icon behavior', () => {
