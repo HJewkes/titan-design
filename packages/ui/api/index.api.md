@@ -5011,6 +5011,9 @@ export type PanelTier = keyof typeof PANEL_BREAKPOINTS;
 export function panelTier(width: number): PanelTier;
 
 // @public
+export function paperFill(tone: string): ViewStyle;
+
+// @public
 export function paperSheet(tone?: string, mode?: ThemeMode): ViewStyle;
 
 // @public

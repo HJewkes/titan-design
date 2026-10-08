@@ -1,6 +1,8 @@
 import React, { createContext, useContext } from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { paperFill } from '../../../theme/materials'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../surface'
 
 export type AlertStatus = 'success' | 'info' | 'warning' | 'error'
@@ -45,15 +47,13 @@ const statusColors: Record<
     subtle: string
     outline: string
     solid: string
-    /** Text/glyph colour on the `solid` fill — the status's on-colour. */
-    onSolid: string
     /**
-     * Light-mode on-colour where the light `on-status-*` token (white) misses AA on the
-     * `-solid` fill: amber 500 (3.64:1) and blue 500 (3.12:1). `text-primary` clears both
-     * (4.83:1, 5.60:1); white stays on success and error (4.56:1, 4.57:1). TD-412 owns the
-     * token values; this is the pairing that reads until it sets them.
+     * Text/glyph colour on the `solid` fill — the status's on-colour in both themes
+     * (owner pick, Gate 2 batch 5 round 2). In light the white token sits at 3.63:1 on
+     * amber 500 and 3.12:1 on blue 500, large-text AA for the 20px glyph only; TD-412 owns
+     * the token values.
      */
-    onSolidLight?: string
+    onSolid: string
     border: string
     icon: string
     text: string
@@ -76,7 +76,6 @@ const statusColors: Record<
     outline: 'border-2 border-status-info bg-transparent',
     solid: 'bg-status-info-solid',
     onSolid: 'text-on-status-info',
-    onSolidLight: 'text-text-primary',
     border: 'border-status-info',
     icon: 'text-status-info',
     text: 'text-status-info',
@@ -87,7 +86,6 @@ const statusColors: Record<
     outline: 'border-2 border-status-warning bg-transparent',
     solid: 'bg-status-warning-solid',
     onSolid: 'text-on-status-warning',
-    onSolidLight: 'text-text-primary',
     border: 'border-status-warning',
     icon: 'text-status-warning',
     text: 'text-status-warning',
@@ -120,16 +118,24 @@ type StatusClasses = (typeof statusColors)[AlertStatus]
 
 /**
  * The classes the message, title, description and glyph read: the fill's on-colour on
- * `solid` (per theme), the subtle on-colour on `subtle`, the status colour on `outline`.
+ * `solid`, the subtle on-colour on `subtle`, the status colour on `outline`.
  */
-function labelClasses(colors: StatusClasses, variant: AlertVariant, mode: 'dark' | 'light') {
-  if (variant === 'solid') {
-    const onSolid = (mode === 'light' && colors.onSolidLight) || colors.onSolid
-    return { onSolid, label: onSolid, glyph: onSolid }
-  }
+function labelClasses(colors: StatusClasses, variant: AlertVariant) {
+  if (variant === 'solid')
+    return { onSolid: colors.onSolid, label: colors.onSolid, glyph: colors.onSolid }
   if (variant === 'subtle')
     return { onSolid: null, label: colors.subtleText, glyph: colors.subtleText }
   return { onSolid: null, label: colors.text, glyph: colors.icon }
+}
+
+/**
+ * The `solid` fill carries the paper grain (owner pick, Gate 2 batch 5 round 2; the
+ * exception is recorded in `theme/materials.ts`). The class fill stays load-bearing:
+ * native ignores the grain and shows the flat `-solid` step.
+ */
+function solidPaper(variant: AlertVariant, status: AlertStatus, mode: 'dark' | 'light') {
+  if (variant !== 'solid') return undefined
+  return paperFill(getSemanticColors(mode)[`status-${status}-solid`])
 }
 
 /**
@@ -154,11 +160,13 @@ export function Alert({
   showIcon = true,
   onClose,
   className,
+  style,
   children,
   ...props
 }: AlertProps) {
   const colors = statusColors[status]
-  const { onSolid, label, glyph } = labelClasses(colors, variant, useSurfaceMode())
+  const { onSolid, label, glyph } = labelClasses(colors, variant)
+  const paper = solidPaper(variant, status, useSurfaceMode())
   const isCompact = size === 'compact'
 
   return (
@@ -174,6 +182,7 @@ export function Alert({
         isCompact && variant === 'subtle' && cn('border', colors.border),
         className
       )}
+      style={[paper, style]}
       {...props}
     >
       {showIcon && (
@@ -182,9 +191,10 @@ export function Alert({
             <Text
               className={cn(
                 'font-bold',
-                // The default glyph's line box equals the first text line's (20px), so the
-                // two centre together; compact centres the row instead.
-                isCompact ? 'text-base' : 'text-lg leading-5',
+                // The default glyph is 20px bold (large text, AA at 3:1) in the 20px line
+                // box of the first text line, so the two centre together; compact centres
+                // the row instead.
+                isCompact ? 'text-base' : 'text-xl leading-5',
                 glyph
               )}
             >

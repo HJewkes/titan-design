@@ -34,28 +34,26 @@ describe('Alert solid label (dark)', () => {
 })
 
 describe('Alert solid label (light)', () => {
-  // The light `on-status-*` tokens are white, which misses on amber 500 and blue 500, so the
-  // Alert reads `text-primary` there (Alert.tsx `onSolidLight`); TD-412 owns the token values.
-  it.each([
-    ['success', 'on-status-success'],
-    ['error', 'on-status-error'],
-    ['warning', 'text-primary'],
-    ['info', 'text-primary'],
-  ] as const)('%s label on %s clears AA on its -solid fill', (tone, label) => {
-    const ratio = contrast(semanticColorsLight[label], semanticColorsLight[`status-${tone}-solid`])
-    expect(ratio).toBeGreaterThanOrEqual(4.5)
+  // The Alert reads the white `on-status-*` token on all four light tones (owner pick, Gate 2
+  // batch 5 round 2). It clears AA on success and error and the 3:1 large-text floor on all
+  // four, which is what the 20px bold glyph needs; TD-412 owns the token values.
+  const lightRatio = (tone: (typeof TONES)[number]) =>
+    contrast(semanticColorsLight[`on-status-${tone}`], semanticColorsLight[`status-${tone}-solid`])
+
+  it.each(['success', 'error'] as const)('%s label clears AA on its -solid fill', (tone) => {
+    expect(lightRatio(tone)).toBeGreaterThanOrEqual(4.5)
   })
 
-  it.each(['warning', 'info'] as const)(
-    'documents why: white misses AA on the light %s -solid fill',
-    (tone) => {
-      const ratio = contrast(
-        semanticColorsLight[`on-status-${tone}`],
-        semanticColorsLight[`status-${tone}-solid`]
-      )
-      expect(ratio).toBeLessThan(4.5)
-    }
-  )
+  it.each(TONES)('%s glyph clears large-text AA on its -solid fill', (tone) => {
+    expect(lightRatio(tone)).toBeGreaterThanOrEqual(3)
+  })
+
+  it.each([
+    ['warning', 3.63],
+    ['info', 3.12],
+  ] as const)('records that the %s label sits at %s:1, under AA, by owner pick', (tone, ratio) => {
+    expect(lightRatio(tone)).toBeCloseTo(ratio, 2)
+  })
 })
 
 describe('Avatar fallback label', () => {

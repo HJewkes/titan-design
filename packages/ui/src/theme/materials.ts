@@ -15,6 +15,11 @@
  * categorical `dark` variant). Vivid and neon colours are ink ON paper — never
  * the paper itself.
  *
+ * One owner-granted exception (Gate 2 batch 5 round 2, TD-482): the `solid`
+ * Alert carries {@link paperFill} on its status fill. It is the callout that
+ * interrupts the plane, so it takes the hero material; nothing else on a status
+ * fill does.
+ *
  * PLATFORM: `backgroundImage` and multi-layer `boxShadow` are web/RNW only. On
  * native these are ignored and the surface falls back to its flat fill, which is
  * why every material here keeps `backgroundColor` load-bearing on its own. A
@@ -216,6 +221,19 @@ export function barPaper(color: string, flip = false): ViewStyle {
     boxShadow: flip
       ? '0 -6px 16px rgba(0,0,0,0.45)'
       : 'inset 0 1.5px 0 rgba(255,255,255,0.22), 0 6px 16px rgba(0,0,0,0.45)',
+  } as unknown as ViewStyle
+}
+
+/**
+ * Paper on a FLAT FILL that already sits in the plane: the grain and the top
+ * rim-light of {@link paperSheet}, with no contact shadow, because the element is
+ * not lifted off anything. The `solid` Alert is its one caller (see the header);
+ * the class fill stays load-bearing and this is layered over it by `style`.
+ */
+export function paperFill(tone: string): ViewStyle {
+  return {
+    backgroundImage: grainForTone(tone),
+    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.20)',
   } as unknown as ViewStyle
 }
 

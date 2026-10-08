@@ -3,6 +3,8 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Alert, AlertTitle, AlertDescription } from './Alert'
 import { Surface } from '../surface'
+import { paperFill } from '../../../theme/materials'
+import { semanticColorsDark, semanticColorsLight } from '../../../theme/tokens/semantic'
 import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
 import { capturedByNode, capturedClassNames } from '../../../test/classname-capture'
 
@@ -130,23 +132,53 @@ describe('Alert', () => {
       }
     )
 
+    // Owner pick (Gate 2 batch 5 round 2): the on-colour on all four light tones too.
+    it.each(['success', 'info', 'warning', 'error'] as const)(
+      'reads the %s on-colour for the light solid label and glyph',
+      (status) => {
+        render(
+          <Surface theme="light">
+            <Alert variant="solid" status={status}>
+              <AlertDescription>Body</AlertDescription>
+            </Alert>
+          </Surface>
+        )
+        const expected = `text-on-status-${status}`
+        expect(capturedByNode.get(screen.getByText('Body'))?.split(' ')).toContain(expected)
+        expect(capturedByNode.get(screen.getByText('Body'))?.split(' ')).not.toContain(
+          'text-text-primary'
+        )
+        expect(capturedByNode.get(screen.getByText(defaultGlyph[status]))?.split(' ')).toContain(
+          expected
+        )
+      }
+    )
+
     it.each([
-      ['success', 'text-on-status-success'],
-      ['error', 'text-on-status-error'],
-      ['warning', 'text-text-primary'],
-      ['info', 'text-text-primary'],
-    ] as const)('reads %s for the light solid %s label and glyph', (status, expected) => {
+      ['dark', semanticColorsDark],
+      ['light', semanticColorsLight],
+    ] as const)('lays the paper grain over the solid fill (%s)', (theme, colors) => {
       render(
-        <Surface theme="light">
-          <Alert variant="solid" status={status}>
+        <Surface theme={theme}>
+          <Alert variant="solid" status="warning" style={{ opacity: 0.9 }}>
             <AlertDescription>Body</AlertDescription>
           </Alert>
         </Surface>
       )
-      expect(capturedByNode.get(screen.getByText('Body'))?.split(' ')).toContain(expected)
-      expect(capturedByNode.get(screen.getByText(defaultGlyph[status]))?.split(' ')).toContain(
-        expected
+      const paper = paperFill(colors['status-warning-solid']) as { boxShadow: string }
+      // jsdom drops the grain's data-URL `backgroundImage`; the rim-light is the part it keeps.
+      const { style } = screen.getByRole('alert')
+      expect(style.boxShadow).toBe(paper.boxShadow)
+      expect(style.opacity).toBe('0.9')
+    })
+
+    it.each(['subtle', 'outline'] as const)('keeps the %s fill flat', (variant) => {
+      render(
+        <Alert variant={variant} status="warning">
+          <AlertDescription>Body</AlertDescription>
+        </Alert>
       )
+      expect(screen.getByRole('alert').style.boxShadow).toBe('')
     })
 
     it('keeps the subtle and outline labels on their own tokens', () => {
@@ -166,7 +198,7 @@ describe('Alert', () => {
   })
 
   describe('icon centring', () => {
-    it('gives the default glyph the 20px line box of the first text line, with no top nudge', () => {
+    it('gives the 20px default glyph the 20px line box of the first text line, with no top nudge', () => {
       render(
         <Alert status="info" testID="alert">
           <AlertTitle>Title</AlertTitle>
@@ -174,7 +206,8 @@ describe('Alert', () => {
         </Alert>
       )
       const glyph = capturedByNode.get(screen.getByText(defaultGlyph.info))?.split(' ')
-      expect(glyph).toEqual(expect.arrayContaining(['text-lg', 'leading-5']))
+      expect(glyph).toEqual(expect.arrayContaining(['text-xl', 'leading-5']))
+      expect(glyph).not.toContain('text-lg')
       const wrapper = capturedByNode.get(screen.getByText(defaultGlyph.info).parentElement!)
       expect(wrapper).toBe('mr-3')
       expect(capturedByNode.get(screen.getByText('Title'))?.split(' ')).toContain('leading-5')
