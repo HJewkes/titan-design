@@ -108,7 +108,7 @@ const resolvedBeforeFixture = {
     'brand-secondary-strong': 'rgba(48, 123, 155, 0.50)',
     'brand-secondary-hover': '#2A617F',
     'brand-secondary-active': '#22465F',
-    'on-brand-primary': '#FFFFFF',
+    'on-brand-primary': '#1C1916',
     'on-brand-secondary': '#FFFFFF',
     'on-brand-primary-subtle': '#983804',
     'on-brand-secondary-subtle': '#2A617F',
@@ -240,7 +240,7 @@ const resolvedBeforeFixture = {
     'status-success-solid': '#298732',
     'status-error-solid': '#D14343',
     'status-warning-solid': '#C27400',
-    'status-info-solid': '#2196F3',
+    'status-info-solid': '#1072CB',
   },
   dark: {
     'brand-primary': '#FF7900',

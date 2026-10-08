@@ -3,4 +3,4 @@
  * as a miss, so a token fix fails the suite until its entry is removed; FacetBar's
  * contrast rows skip the same entries.
  */
-export const chipLightContrastExceptions: readonly string[] = ['primary', 'warning', 'info']
+export const chipLightContrastExceptions: readonly string[] = ['warning']

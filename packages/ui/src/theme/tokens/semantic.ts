@@ -80,8 +80,10 @@ export const semanticColorsLight = {
   'brand-secondary-hover': ramp.cyan[700],
   'brand-secondary-active': ramp.cyan[800],
 
-  // Text on brand backgrounds (on-*)
-  'on-brand-primary': p.white,
+  // Text on brand backgrounds (on-*). The brand label is grey[950] on orange[400]
+  // (6.65): white read 2.63 there (console round 4, fb-brand), and the dark theme
+  // already carries the same label on the same fill.
+  'on-brand-primary': greyRamp[950],
   'on-brand-secondary': p.white,
 
   // Text ON a `-subtle` fill. Light pairs a ramp[700] label with a ramp[100] fill:
@@ -136,14 +138,15 @@ export const semanticColorsLight = {
 
   // Solid-variant fill. Success and warning carry the light-tuning values: white
   // on green[600] clears 4.5:1; amber[500] keeps the white label at 3.6:1, a
-  // declared exception in contrast-baseline.json. Primary and info keep their
-  // earlier values until their own light values are decided.
+  // declared exception in contrast-baseline.json. Info is blue[600], the fill the
+  // info Alert and `status-info` already paint: white clears 4.5:1 on it (4.89)
+  // and read 3.12 on blue[500] (console round 4, fb-info).
   'brand-primary-solid': ramp.orange[400],
   'brand-secondary-solid': ramp.cyan[600],
   'status-success-solid': ramp.green[600],
   'status-error-solid': ramp.red[600],
   'status-warning-solid': ramp.amber[500],
-  'status-info-solid': ramp.blue[500],
+  'status-info-solid': ramp.blue[600],
 
   // Text ON a `-subtle` fill — see the on-brand-*-subtle note above.
   'on-status-success-subtle': ramp.green[700],
