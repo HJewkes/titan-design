@@ -12630,6 +12630,13 @@
           "type": "string"
         },
         {
+          "default": "below",
+          "description": "Puts the label above or below the figure.",
+          "name": "labelPosition",
+          "required": false,
+          "type": "MetricLabelPosition"
+        },
+        {
           "default": "md",
           "description": "",
           "name": "size",
@@ -14272,14 +14279,14 @@
         },
         {
           "default": null,
-          "description": "Additional className",
+          "description": "Additional className.",
           "name": "className",
           "required": false,
           "type": "string"
         },
         {
           "default": null,
-          "description": "Uppercase micro-label shown with the value",
+          "description": "Uppercase micro-label shown above the value",
           "name": "label",
           "required": true,
           "type": "string"
@@ -14299,7 +14306,7 @@
           "type": "string"
         }
       ],
-      "purpose": "Tile — a compact label-and-value stat, now a wrapper over the `CardStat` preset.",
+      "purpose": "Tile — a compact label-over-value stat, now a wrapper over the `CardStat` preset.",
       "sources": {
         "props": "packages/ui/src/components/ui/tile/Tile.tsx",
         "status": "packages/ui/src/components/ui/tile/Tile.stories.tsx"

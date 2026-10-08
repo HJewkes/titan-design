@@ -6,6 +6,8 @@ import type { PillTone } from '../pill'
 export type MetricTrend = 'up' | 'down' | 'neutral'
 /** Cross-axis placement of the figure and its label. */
 export type MetricAlign = 'start' | 'center' | 'end'
+/** Whether the label reads above or below the figure. */
+export type MetricLabelPosition = 'above' | 'below'
 /** The `PillTone`s that read as text on any plane; `brand-secondary` stays a fill accent. */
 export type MetricTone = Exclude<PillTone, 'brand-secondary'>
 
@@ -26,6 +28,8 @@ export interface MetricProps extends ViewProps {
   valueStyle?: StyleProp<TextStyle>
   /** Merged onto the label text, e.g. to hold it at one size whatever the figure's `size`. */
   labelClassName?: string
+  /** Puts the label above or below the figure. Defaults to `below`. */
+  labelPosition?: MetricLabelPosition
 }
 
 const sizeConfig = {
@@ -73,13 +77,29 @@ export function Metric({
   valueClassName,
   valueStyle,
   labelClassName,
+  labelPosition = 'below',
   testID,
   ...props
 }: MetricProps) {
   const styles = sizeConfig[size]
+  const isLabelAbove = labelPosition === 'above'
+  const labelNode = (
+    <Text
+      className={cn(
+        styles.label,
+        'text-text-secondary',
+        isLabelAbove ? 'mb-1' : 'mt-1',
+        labelClassName
+      )}
+      testID={testID ? `${testID}-label` : undefined}
+    >
+      {label}
+    </Text>
+  )
 
   return (
     <View className={cn(alignClasses[align], className)} testID={testID} {...props}>
+      {isLabelAbove ? labelNode : null}
       <View className="flex-row items-baseline gap-1">
         <Text className={cn(styles.value, toneClasses[tone], valueClassName)} style={valueStyle}>
           {value}
@@ -89,12 +109,7 @@ export function Metric({
           <Text className={cn(styles.unit, trendColors[trend])}>{trendArrows[trend]}</Text>
         )}
       </View>
-      <Text
-        className={cn(styles.label, 'text-text-secondary mt-1', labelClassName)}
-        testID={testID ? `${testID}-label` : undefined}
-      >
-        {label}
-      </Text>
+      {isLabelAbove ? null : labelNode}
     </View>
   )
 }

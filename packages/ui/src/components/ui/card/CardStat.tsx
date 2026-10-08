@@ -3,23 +3,20 @@ import { Metric, type MetricProps } from '../metric'
 import { cn } from '../../../utils/cn'
 import { Card, type CardProps } from './Card'
 
+/** The Metric's own escape hatches, grouped so the preset's surface stays small. */
+export type CardStatMetricProps = Pick<
+  MetricProps,
+  'valueClassName' | 'valueStyle' | 'labelClassName' | 'labelPosition'
+>
+
 /** Props for {@link CardStat}: the Metric's figure and label on a Card plane. */
 export interface CardStatProps
   extends
     ViewProps,
-    Pick<
-      MetricProps,
-      | 'label'
-      | 'value'
-      | 'unit'
-      | 'size'
-      | 'align'
-      | 'tone'
-      | 'valueClassName'
-      | 'valueStyle'
-      | 'labelClassName'
-    >,
-    Pick<CardProps, 'variant' | 'elevation'> {
+    Pick<MetricProps, 'label' | 'value' | 'unit' | 'size' | 'align' | 'tone'>,
+    Pick<CardProps, 'variant' | 'elevation' | 'bgColor'> {
+  /** Passed to the inner Metric. Prefer `tone` to `valueStyle` for colour. */
+  metricProps?: CardStatMetricProps
   /** Merged onto the card. */
   className?: string
 }
@@ -42,9 +39,7 @@ export function CardStat({
   size = 'sm',
   align = 'center',
   tone,
-  valueClassName,
-  valueStyle,
-  labelClassName,
+  metricProps,
   variant = 'filled',
   elevation = 1,
   ...cardProps
@@ -58,9 +53,11 @@ export function CardStat({
         size={size}
         align={align}
         tone={tone}
-        valueStyle={valueStyle}
-        valueClassName={valueClassName}
-        labelClassName={cn('mt-0 uppercase tracking-wider text-text-tertiary', labelClassName)}
+        {...metricProps}
+        labelClassName={cn(
+          'my-0 uppercase tracking-wider text-text-tertiary',
+          metricProps?.labelClassName
+        )}
         className="p-inset-sm gap-stack-sm"
       />
     </Card>

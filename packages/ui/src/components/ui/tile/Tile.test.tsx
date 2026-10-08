@@ -23,6 +23,23 @@ describe('Tile', () => {
     expect(value.style.color).toBe('')
   })
 
+  it('reads its label above its value, as before the CardStat wrapper', () => {
+    render(<Tile label="Volume" value="76%" />)
+    const label = screen.getByText('Volume')
+    const value = screen.getByText('76%')
+    expect(label.compareDocumentPosition(value) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  })
+
+  it('paints the raised plane by default', () => {
+    render(<Tile label="Volume" value="76%" testID="tile" />)
+    expect(screen.getByTestId('tile').style.backgroundColor).toBe('var(--color-surface-raised)')
+  })
+
+  it('takes its plane from a bg class the caller passes', () => {
+    render(<Tile label="Reads" value="3" className="bg-surface-overlay" testID="tile" />)
+    expect(screen.getByTestId('tile').style.backgroundColor).toBe('var(--color-surface-overlay)')
+  })
+
   it('renders with start alignment', () => {
     render(<Tile label="Program" value="Pull A" align="start" />)
     expect(screen.getByText('Program')).toBeInTheDocument()

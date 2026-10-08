@@ -1,9 +1,10 @@
 import type { ViewProps } from 'react-native'
-import { cn } from '../../../utils/cn'
+import { resolveColor, type ColorToken } from '../../../theme/resolve-color'
+import { semanticColorsDark } from '../../../theme/tokens/semantic'
 import { CardStat } from '../card/CardStat'
 
 export interface TileProps extends ViewProps {
-  /** Uppercase micro-label shown with the value */
+  /** Uppercase micro-label shown above the value */
   label: string
   /** Primary value, rendered in a bold mono face */
   value: string
@@ -15,12 +16,30 @@ export interface TileProps extends ViewProps {
   valueColor?: string
   /** Content alignment within the tile (default: 'center') */
   align?: 'center' | 'start'
-  /** Additional className */
+  /** Additional className. A `bg-<token>` class sets the tile's plane. */
   className?: string
 }
 
+const DEFAULT_PLANE: ColorToken = 'surface-raised'
+const PLANE_TOKENS = new Set<string>(Object.keys(semanticColorsDark))
+
 /**
- * Tile — a compact label-and-value stat, now a wrapper over the `CardStat` preset.
+ * Card writes its plane into `style`, which outranks a `bg-*` class, so the
+ * caller's plane class is lifted out of `className` and handed over as `bgColor`.
+ */
+function splitPlane(className = '') {
+  let plane = DEFAULT_PLANE
+  const rest = className.split(/\s+/).filter((cls) => {
+    const token = cls.startsWith('bg-') ? cls.slice(3) : ''
+    if (!PLANE_TOKENS.has(token)) return true
+    plane = token as ColorToken
+    return false
+  })
+  return { bgColor: resolveColor(plane), className: ['flex-1', ...rest].join(' ').trim() }
+}
+
+/**
+ * Tile — a compact label-over-value stat, now a wrapper over the `CardStat` preset.
  *
  * Fills its flex slot so a row of Tiles reads as an even HStack.
  *
@@ -43,10 +62,13 @@ export function Tile({
       label={label}
       value={value}
       align={align}
-      valueClassName="font-mono text-sm"
-      labelClassName="text-[10px] font-bold"
-      valueStyle={valueColor ? { color: valueColor } : undefined}
-      className={cn('flex-1', className)}
+      metricProps={{
+        labelPosition: 'above',
+        valueClassName: 'font-mono text-sm',
+        labelClassName: 'text-[10px] font-bold',
+        valueStyle: valueColor ? { color: valueColor } : undefined,
+      }}
+      {...splitPlane(className)}
       {...props}
     />
   )

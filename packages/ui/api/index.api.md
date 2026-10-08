@@ -725,8 +725,9 @@ export interface CardSkeletonProps {
 export function CardStat(input: CardStatProps): react_jsx_runtime.JSX.Element;
 
 // @public
-export interface CardStatProps extends ViewProps, Pick<MetricProps, 'label' | 'value' | 'unit' | 'size' | 'align' | 'tone' | 'valueClassName' | 'valueStyle' | 'labelClassName'>, Pick<CardProps, 'variant' | 'elevation'> {
+export interface CardStatProps extends ViewProps, Pick<MetricProps, 'label' | 'value' | 'unit' | 'size' | 'align' | 'tone'>, Pick<CardProps, 'variant' | 'elevation' | 'bgColor'> {
     className?: string;
+    metricProps?: CardStatMetricProps;
 }
 
 // @public
@@ -4544,6 +4545,9 @@ export interface MetricGroupProps extends ViewProps {
     className?: string;
 }
 
+// @public
+export type MetricLabelPosition = 'above' | 'below';
+
 // @public (undocumented)
 export interface MetricProps extends ViewProps {
     align?: MetricAlign;
@@ -4552,6 +4556,7 @@ export interface MetricProps extends ViewProps {
     // (undocumented)
     label: string;
     labelClassName?: string;
+    labelPosition?: MetricLabelPosition;
     // (undocumented)
     size?: 'sm' | 'md' | 'lg';
     tone?: MetricTone;
