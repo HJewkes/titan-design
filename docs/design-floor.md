@@ -84,3 +84,5 @@ Check: with reduced motion on, the first frame is the final frame.
 ## Conflict register
 
 This floor wins where craft advice disagrees: generous white space loses to F6; a space before units loses to F12; "always show a legend" and "tooltips last" lose to F5 and F4; "truncate with an ellipsis" loses to F1.
+
+Copy rules for the words on a surface: [Microcopy](microcopy.md).

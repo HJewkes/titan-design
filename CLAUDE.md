@@ -331,7 +331,10 @@ Levels -2 to +5 with calculated surface colors and shadows:
 
 `.github/workflows/ci.yml` runs one job on Node 22: install, `pnpm lint`, `pnpm type-check`,
 `pnpm format:check`, the arch-graph freshness test, `pnpm build`, then
-`pnpm test -- -- --run --coverage`. Every step blocks; none is `continue-on-error`.
+`pnpm test -- -- --run --coverage`. Every step blocks; none is `continue-on-error`. The `contrast`
+job (three shards) runs axe `color-contrast` in Chromium on every story in both themes against the
+shrink-only `packages/ui/tests/visual/contrast-stories-baseline.json`; `pnpm contrast:baseline`
+regenerates it, preferably from the job's `contrast-report-*` artifacts (`docs/ci-and-scripts.md`).
 
 - **Argument passthrough.** Root scripts are `turbo run <task>`, so arguments need a second `--`:
   the first passes through pnpm, the second through Turbo (`pnpm test -- -- --run --coverage`).
