@@ -722,6 +722,14 @@ export interface CardSkeletonProps {
 }
 
 // @public
+export function CardStat(input: CardStatProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface CardStatProps extends ViewProps, Pick<MetricProps, 'label' | 'value' | 'unit' | 'size' | 'align' | 'tone' | 'valueClassName' | 'valueStyle' | 'labelClassName'>, Pick<CardProps, 'variant' | 'elevation'> {
+    className?: string;
+}
+
+// @public
 export function CardTitle(input: CardTitleProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -4554,6 +4562,7 @@ export interface MetricProps extends ViewProps {
     // (undocumented)
     value: string;
     valueClassName?: string;
+    valueStyle?: StyleProp<TextStyle>;
 }
 
 // @public (undocumented)
@@ -8071,6 +8080,7 @@ export interface TileProps extends ViewProps {
     className?: string;
     label: string;
     value: string;
+    // @deprecated
     valueColor?: string;
 }
 

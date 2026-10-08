@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, type ViewProps } from 'react-native'
+import { View, Text, type StyleProp, type TextStyle, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import type { PillTone } from '../pill'
 
@@ -22,6 +22,8 @@ export interface MetricProps extends ViewProps {
   className?: string
   /** Merged onto the value text, e.g. `leading-none` to sit the figure tight under a header. */
   valueClassName?: string
+  /** Inline style on the value text, for a value a token class cannot express. Prefer `tone`. */
+  valueStyle?: StyleProp<TextStyle>
   /** Merged onto the label text, e.g. to hold it at one size whatever the figure's `size`. */
   labelClassName?: string
 }
@@ -69,6 +71,7 @@ export function Metric({
   tone = 'neutral',
   className,
   valueClassName,
+  valueStyle,
   labelClassName,
   testID,
   ...props
@@ -78,7 +81,9 @@ export function Metric({
   return (
     <View className={cn(alignClasses[align], className)} testID={testID} {...props}>
       <View className="flex-row items-baseline gap-1">
-        <Text className={cn(styles.value, toneClasses[tone], valueClassName)}>{value}</Text>
+        <Text className={cn(styles.value, toneClasses[tone], valueClassName)} style={valueStyle}>
+          {value}
+        </Text>
         {!!unit && <Text className={cn(styles.unit, 'text-text-tertiary')}>{unit}</Text>}
         {!!trend && (
           <Text className={cn(styles.unit, trendColors[trend])}>{trendArrows[trend]}</Text>

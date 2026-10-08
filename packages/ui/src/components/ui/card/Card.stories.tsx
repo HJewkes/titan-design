@@ -10,13 +10,20 @@ import {
   CardSkeleton,
   CardInset,
 } from './Card'
+import { CardStat } from './CardStat'
 import { Button, ButtonText } from '../button'
 
 const meta: Meta<typeof Card> = {
   title: 'Components/Molecules/Card',
   component: Card,
   parameters: {
-    docs: { description: { component: 'Composes **Surface**.' } },
+    docs: {
+      description: {
+        component:
+          'Composes **Surface**. The stat preset `CardStat` (the `Stat` story) composes Card and ' +
+          '[Metric](?path=/docs/components-molecules-metric--docs).',
+      },
+    },
   },
   tags: ['autodocs', 'status:stable', '!status:review'],
   argTypes: {
@@ -62,6 +69,39 @@ export const Default: Story = {
         </Button>
       </CardFooter>
     </Card>
+  ),
+}
+
+export const Stat: StoryObj<typeof CardStat> = {
+  args: { label: 'Fatigue', value: 'MOD', align: 'center', size: 'sm', tone: 'warning' },
+  argTypes: {
+    label: { control: 'text', description: 'Uppercase micro-label' },
+    value: { control: 'text', description: 'The figure' },
+    unit: { control: 'text', description: 'Optional unit suffix' },
+    size: { control: 'select', options: ['sm', 'md', 'lg'], description: 'Metric size' },
+    align: { control: 'inline-radio', options: ['start', 'center', 'end'] },
+    tone: {
+      control: 'select',
+      options: [undefined, 'neutral', 'brand', 'success', 'warning', 'error', 'info'],
+      description: 'Semantic colour of the value',
+    },
+    variant: { control: 'select', options: ['filled', 'elevated', 'outline', 'subtle'] },
+    elevation: { control: 'select', options: [1, 2, 3] },
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          '`CardStat`: a `filled` Card one plane up holding a Metric. Loading, empty, error and ' +
+          'disabled do not apply: the preset shows one figure the caller already has, and is not ' +
+          'interactive.',
+      },
+    },
+  },
+  render: (args) => (
+    <View style={{ width: 120 }}>
+      <CardStat {...args} />
+    </View>
   ),
 }
 

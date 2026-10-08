@@ -10738,6 +10738,7 @@
         "components-molecules-card--outline",
         "components-molecules-card--simple-card",
         "components-molecules-card--skeleton",
+        "components-molecules-card--stat",
         "components-molecules-card--status-filled-cards",
         "components-molecules-card--status-outline-cards"
       ],
@@ -12669,6 +12670,13 @@
           "name": "valueClassName",
           "required": false,
           "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Inline style on the value text, for a value a token class cannot express.",
+          "name": "valueStyle",
+          "required": false,
+          "type": "StyleProp<TextStyle>"
         }
       ],
       "purpose": "",
@@ -14271,7 +14279,7 @@
         },
         {
           "default": null,
-          "description": "Uppercase micro-label shown above the value",
+          "description": "Uppercase micro-label shown with the value",
           "name": "label",
           "required": true,
           "type": "string"
@@ -14285,13 +14293,13 @@
         },
         {
           "default": null,
-          "description": "Tints the value (status/accent hex or CSS color); defaults to primary text",
+          "description": "Tints the value (status/accent hex or CSS color); defaults to primary text.",
           "name": "valueColor",
           "required": false,
           "type": "string"
         }
       ],
-      "purpose": "Tile — a compact label-over-value stat card.",
+      "purpose": "Tile — a compact label-and-value stat, now a wrapper over the `CardStat` preset.",
       "sources": {
         "props": "packages/ui/src/components/ui/tile/Tile.tsx",
         "status": "packages/ui/src/components/ui/tile/Tile.stories.tsx"
