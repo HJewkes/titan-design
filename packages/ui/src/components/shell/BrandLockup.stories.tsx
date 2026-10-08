@@ -85,8 +85,8 @@ export const CustomBrand: Story = {
       mark: <StarIcon size={14} color="currentColor" />,
       wordmark: 'HYPERFRAMES',
       subtitle: 'renders',
-      accentClassName: 'text-data-6',
-      accentBarClassName: 'bg-data-6',
+      accentClassName: 'text-dataviz-categorical-2',
+      accentBarClassName: 'bg-dataviz-categorical-2',
     },
   },
 }

@@ -21,9 +21,11 @@ export interface BrandPreset {
   subtitle: string
 }
 
-// Accents come from `data-*` rather than `status-*`: `data-*` is the library's
-// palette of N distinct, CVD-checked hues with no semantic load, which is exactly
-// what a per-app identity accent needs. Voltras keeps the real brand token.
+// Accents come from `dataviz-categorical-*` rather than `status-*`: distinct,
+// CVD-checked hues with no semantic load and a value per mode, which is what a
+// per-app identity accent needs. They paint only non-text marks (the glyph and
+// the nav bar), so they answer to 3:1, not 4.5; labels stay on `text-primary`.
+// Voltras keeps the real brand token.
 export const brandPresets: Record<BrandKey, BrandPreset> = {
   voltras: {
     mark: <VoltrasMark size={14} color="currentColor" />,
@@ -35,29 +37,29 @@ export const brandPresets: Record<BrandKey, BrandPreset> = {
   audiobook: {
     mark: <HeadphonesIcon size={14} color="currentColor" />,
     wordmark: 'AUDIOBOOK',
-    accentClassName: 'text-data-5',
-    accentBarClassName: 'bg-data-5',
+    accentClassName: 'text-dataviz-categorical-1',
+    accentBarClassName: 'bg-dataviz-categorical-1',
     subtitle: 'library',
   },
   'active-work': {
     mark: <KanbanIcon size={14} color="currentColor" />,
     wordmark: 'ACTIVE WORK',
-    accentClassName: 'text-data-1',
-    accentBarClassName: 'bg-data-1',
+    accentClassName: 'text-dataviz-categorical-0',
+    accentBarClassName: 'bg-dataviz-categorical-0',
     subtitle: 'initiatives',
   },
   agents: {
     mark: <BotIcon size={14} color="currentColor" />,
     wordmark: 'AGENTS',
-    accentClassName: 'text-data-2',
-    accentBarClassName: 'bg-data-2',
+    accentClassName: 'text-dataviz-categorical-4',
+    accentBarClassName: 'bg-dataviz-categorical-4',
     subtitle: 'fleet',
   },
   brain: {
     mark: <BrainIcon size={14} color="currentColor" />,
     wordmark: 'BRAIN',
-    accentClassName: 'text-data-3',
-    accentBarClassName: 'bg-data-3',
+    accentClassName: 'text-dataviz-categorical-6',
+    accentBarClassName: 'bg-dataviz-categorical-6',
     subtitle: 'knowledge',
   },
 }
