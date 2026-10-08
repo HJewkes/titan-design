@@ -238,7 +238,10 @@ describe('columnChars', () => {
       secondary: 0,
     })
     expect(
-      columnChars([{ row: flaggedRow, index: 0, rank: 1, fraction: 1 }], formatters)
+      columnChars(
+        [{ row: flaggedRow, index: 0, rank: 1, fraction: 1, reachesMarker: false }],
+        formatters
+      )
     ).not.toHaveProperty('flag')
   })
 

@@ -6,7 +6,7 @@ import { getSemanticColors } from '../../../../theme/tokens/semantic'
 import { capturedByNode } from '../../../../test/classname-capture'
 import { Surface } from '../../surface'
 import { silverRed } from '../kit/silverRed'
-import { BarList } from './BarList'
+import { BarList, type BarListValueFormatter } from './BarList'
 import storyMeta from './BarList.stories'
 import { barListFixtures, defaultFixture, veryLargeFixture, type BarListFixture } from './fixtures'
 
@@ -558,7 +558,7 @@ describe('BarList', () => {
       )
 
       it('keeps the model while a new marker literal carries the same values', () => {
-        const formatValue = vi.fn((value: number) => String(value))
+        const formatValue = vi.fn<BarListValueFormatter>((value) => String(value))
         // Only the model formats the hidden total, with no row; the rows format on every render.
         const builds = () => formatValue.mock.calls.filter((call) => call[1] === undefined).length
         const { rerender } = render(
