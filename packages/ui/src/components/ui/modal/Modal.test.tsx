@@ -11,7 +11,7 @@ import {
   ModalBody,
   ModalFooter,
 } from './Modal'
-import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
 function renderModal(props: Partial<React.ComponentProps<typeof Modal>> = {}) {
   return render(
@@ -201,19 +201,12 @@ describe('Modal', () => {
  * Drawer moved to meet it.
  */
 describe('Modal geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'Modal.tsx')
-
   it.each([
-    ['the header', 'px-inset-xl py-inset-lg border-b border-hairline', ['24px', '16px']],
-    ['the body', 'px-inset-xl py-inset-lg', ['24px', '16px']],
-    [
-      'the footer',
-      'gap-2 px-inset-xl py-inset-lg border-t border-hairline',
-      ['8px', '24px', '16px'],
-    ],
-  ] as const)('%s ships `%s`', (_label, classes, pixels) => {
-    expect(source).toContain(classes)
-    const spacing = classes.split(' ').filter((c) => resolveAll([c])[0] !== undefined)
-    expect(resolveAll(spacing)).toEqual([...pixels])
+    ['the header', () => screen.getByText('Test Modal').parentElement, ['24px', '16px']],
+    ['the body', () => screen.getByText('Modal body content'), ['24px', '16px']],
+    ['the footer', () => screen.getByText('Cancel').parentElement, ['8px', '24px', '16px']],
+  ] as const)('%s renders its band inset', (_label, getBand, pixels) => {
+    renderModal({ isOpen: true })
+    expect(resolveAll(spacingClassesAt(getBand()))).toEqual([...pixels])
   })
 })
