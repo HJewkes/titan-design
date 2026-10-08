@@ -4,6 +4,7 @@ import { axe } from 'jest-axe'
 import { VolumeLandmarkBar, type VolumeLandmarks } from './VolumeLandmarkBar'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 import { Surface } from '../../ui/surface'
+import { capturedClassNames } from '../../../test/classname-capture'
 
 // Clean-number geometry: fraction(v) = v / scaleMax.
 const LANDMARKS: VolumeLandmarks = { mev: 5, mav: 15, mrv: 20 }
@@ -44,6 +45,20 @@ describe('VolumeLandmarkBar', () => {
     expect(screen.getByText('Hamstrings')).toBeInTheDocument()
     // 15 sets / 15 MAV = 100%
     expect(screen.getByTestId('volume-landmark-pct')).toHaveTextContent('100%')
+  })
+
+  it('sets the name and % on one body2 line, the name muted and the % bold', () => {
+    renderBar(10)
+    const classes = (id: string) => capturedClassNames.get(id)?.split(' ') ?? []
+    const name = classes('volume-landmark-muscle')
+    const pct = classes('volume-landmark-pct')
+    for (const shared of ['font-body', 'text-sm']) {
+      expect(name).toContain(shared)
+      expect(pct).toContain(shared)
+    }
+    expect(name).toContain('text-text-secondary')
+    expect(pct).toEqual(expect.arrayContaining(['text-text-primary', 'font-bold']))
+    expect(pct).not.toContain('font-mono')
   })
 
   it('has the progressbar accessibility role', () => {

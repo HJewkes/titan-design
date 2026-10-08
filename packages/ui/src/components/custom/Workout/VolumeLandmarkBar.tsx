@@ -105,14 +105,20 @@ export function VolumeLandmarkBar({
       {...props}
     >
       <DataRow
-        label={muscle}
+        // The labeled-bar lockup the library already uses (Progress's label and
+        // value, wholeBodyCardParts' FactCaption): one `body2` line, the name muted
+        // and the figure bold in text ink. Text ink, not the zone fill: a pale fill
+        // is unreadable as text (VW-371).
+        label={
+          <Typography variant="body2" color="secondary" testID="volume-landmark-muscle">
+            {muscle}
+          </Typography>
+        }
         value={
-          // `mono` at `sm` matches DataRow's own 14px label, so the header lockup
-          // stays at one type height. Text ink, not the zone fill: a pale fill is unreadable as text (VW-371).
           <Typography
-            variant="mono"
+            variant="body2"
             color="primary"
-            className="text-sm font-bold"
+            className="font-bold"
             testID="volume-landmark-pct"
           >
             {pct}%
