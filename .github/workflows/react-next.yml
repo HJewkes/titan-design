@@ -1,0 +1,45 @@
+name: React next
+
+# Advisory leg (TD-314): packages/ui unit tests against React 19 and react-native-web 0.21, the
+# versions most consumers run. Its own workflow so it is never in ci.yml's `check.needs` and never a
+# required check; a failure here does not block a merge.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: react-next-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  react-19-rnw-021:
+    name: unit tests (React 19, react-native-web 0.21)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Overrides the pinned versions in this job's checkout only; the lockfile change is never committed.
+      - name: Override React and react-native-web
+        run: >
+          pnpm --filter @titan-design/react-ui add -D
+          react@19 react-dom@19 @types/react@19 @types/react-dom@19 react-native-web@0.21
+
+      - name: Show resolved versions
+        run: pnpm --filter @titan-design/react-ui list react react-dom react-native-web
+
+      - name: Unit tests
+        run: pnpm --filter @titan-design/react-ui exec vitest run --project threads --project local-time --project types
