@@ -3,8 +3,9 @@ import { useMemo, type ReactNode } from 'react'
 import { Text, View } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Typography } from '../../ui/typography'
-import { isFenceOpen, readFence, readTable, type TableAlign } from './proseFenceTable'
+import { isFenceOpen, readFence, readTable } from './proseFenceTable'
 import { CodeBlock, ProseTable } from './ProseBlocks'
+import type { ProseBlock, ProseBlockType } from './proseTypes'
 
 /** How a linked reference reads: brand for the domain's own ids, link for cross-references, muted for asides. */
 export type ProseLinkTone = 'brand' | 'link' | 'muted'
@@ -27,21 +28,7 @@ export interface ProseLinker {
   onPress?: (ref: string) => void
 }
 
-export type ProseBlockType = 'h1' | 'h2' | 'h3' | 'li' | 'p' | 'code' | 'table'
-
-export interface ProseBlock {
-  type: ProseBlockType
-  /** Plain text of the block; for a code block the code, for a table its cells in reading order. */
-  text: string
-  /** Code blocks: the fence's language label, empty when absent. */
-  lang?: string
-  /** Tables: the header cells. */
-  header?: string[]
-  /** Tables: one alignment per column, from the delimiter row. */
-  align?: TableAlign[]
-  /** Tables: body rows, each padded or truncated to the header count. */
-  rows?: string[][]
-}
+export type { ProseBlock, ProseBlockType } from './proseTypes'
 
 export interface MarkdownProseProps {
   /** Markdown source. Headings, bullet lists, paragraphs, bold, code, fenced code blocks and pipe tables are understood. */

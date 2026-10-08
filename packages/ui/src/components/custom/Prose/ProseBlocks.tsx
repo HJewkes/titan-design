@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { ScrollView, Text, View } from 'react-native'
 import { Typography } from '../../ui/typography'
 import { Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow } from '../../ui/table'
-import type { ProseBlock } from './MarkdownProse'
+import type { ProseBlock } from './proseTypes'
 
 /** A fenced block: the language label above mono code that scrolls sideways rather than wrapping. */
 export function CodeBlock({ code, lang }: { code: string; lang: string }) {
@@ -14,7 +14,7 @@ export function CodeBlock({ code, lang }: { code: string; lang: string }) {
       {lang ? (
         <Typography
           variant="monoLabel"
-          className="border-b border-border-subtle px-3 py-1 text-text-tertiary"
+          className="border-b border-border-subtle px-3 py-1 text-text-secondary"
           testID="prose-code-lang"
         >
           {lang}
