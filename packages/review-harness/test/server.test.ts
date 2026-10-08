@@ -4,11 +4,12 @@ import { mkdtemp, readFile, readdir, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { exampleManifest } from '../src/example.ts'
+import { exampleManifest, sectionedExampleManifest } from '../src/example.ts'
+import type { HarnessFreshness } from '../src/harness-freshness.ts'
 import { buildFeedback, emptyDraft } from '../src/feedback.ts'
 import { runCli, type CliIo } from '../src/run.ts'
 import { startReviewServer, type ReviewServer } from '../src/server.ts'
-import { SHA, manifest, validFeedback } from './fixtures.ts'
+import { SHA, manifest, noTreeGit, validFeedback } from './fixtures.ts'
 
 /** Stands in for Storybook: an index listing the example's stories, and a canvas page. */
 async function fakeStorybook(): Promise<{ url: string; close: () => void }> {
@@ -78,6 +79,15 @@ describe('review server', () => {
     expect((await res.json()).errors).toEqual(['q1: required'])
   })
 
+  it('answers an oversize submission with 413 and the real reason', async () => {
+    const res = await fetch(`${server.url}api/submit`, {
+      method: 'POST',
+      body: 'x'.repeat(5_000_001),
+    })
+    expect(res.status).toBe(413)
+    expect((await res.json()).errors).toEqual(['the submission is larger than 5000000 bytes'])
+  })
+
   it('resolves with the first valid submission and refuses a second', async () => {
     const feedback = validFeedback(manifest(sb.url))
     expect((await post(server.url, feedback)).status).toBe(200)
@@ -90,12 +100,14 @@ describe('titan-review CLI', () => {
   let sb: Awaited<ReturnType<typeof fakeStorybook>>
   let dir: string
   let out: { stdout: string; stderr: string[] }
+  let freshness: HarnessFreshness
 
   beforeEach(async () => {
     sb = await fakeStorybook()
     dir = await mkdtemp(join(tmpdir(), 'titan-review-'))
-    await writeFile(join(dir, 'round.json'), JSON.stringify(exampleManifest(sb.url)))
+    await writeFile(join(dir, 'round.json'), JSON.stringify(sectionedExampleManifest(sb.url)))
     out = { stdout: '', stderr: [] }
+    freshness = { state: 'current' }
   })
   afterEach(() => sb.close())
 
@@ -110,7 +122,9 @@ describe('titan-review CLI', () => {
       openBrowser: () => {},
       capture: async (_round, outDir) => [join(outDir, 'fake.png')],
       measure: async () => [],
+      git: noTreeGit,
       createPage: async () => stubPage,
+      harnessFreshness: async () => freshness,
       signal,
     }
   }
@@ -259,8 +273,53 @@ describe('titan-review CLI', () => {
     })
   })
 
+  it('refuses a stale harness before serving, printing the command that serves main', async () => {
+    await writeContrast({ passed: true, failures: [] })
+    freshness = { state: 'behind', missing: ['c0ffee1 Add the pager (#453)'] }
+    let served = false
+    const code = await runCli(
+      [join(dir, 'round.json'), '--no-open'],
+      io(new AbortController().signal, () => (served = true))
+    )
+    expect(code).toBe(2)
+    expect(served).toBe(false)
+    const stderr = out.stderr.join('\n')
+    expect(stderr).toContain('c0ffee1 Add the pager (#453)')
+    expect(stderr).toContain(`review ${join(dir, 'round.json')} --storybook ${sb.url} --no-open`)
+    expect(stderr).toContain('--allow-stale')
+  })
+
+  async function servedWarning(args: string[]): Promise<unknown> {
+    await writeContrast({ passed: true, failures: [] })
+    const controller = new AbortController()
+    let payload: { harnessWarning?: unknown } = {}
+    const code = await runCli(
+      [join(dir, 'round.json'), '--no-open', ...args],
+      io(controller.signal, async (url) => {
+        payload = await (await fetch(`${url}api/round`)).json()
+        controller.abort()
+      })
+    )
+    expect(code).toBe(130)
+    return payload.harnessWarning
+  }
+
+  it('serves a stale harness under --allow-stale with the banner in the round payload', async () => {
+    freshness = { state: 'behind', missing: ['c0ffee1 Add the pager (#453)'] }
+    expect(await servedWarning(['--allow-stale'])).toContain('--allow-stale')
+  })
+
+  it('serves with a warning banner when origin/main could not be fetched', async () => {
+    freshness = { state: 'unchecked', reason: 'git fetch origin main failed: offline' }
+    expect(await servedWarning([])).toContain('git fetch origin main failed: offline')
+  })
+
+  it('serves a current harness with no banner', async () => {
+    expect(await servedWarning([])).toBeUndefined()
+  })
+
   it('exits 2 before serving when a story id is not on that Storybook', async () => {
-    const m = exampleManifest(sb.url)
+    const m = sectionedExampleManifest(sb.url)
     m.variants[0].storyId = 'lab-decisions-other-worktree--only'
     await writeFile(join(dir, 'round.json'), JSON.stringify(m))
     const code = await runCli(

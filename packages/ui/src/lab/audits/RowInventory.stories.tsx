@@ -99,7 +99,7 @@ function Section({ title, note, children }: { title: string; note?: string; chil
         >
           {title}
         </span>
-        {note && <span style={{ fontSize: 11, color: '#8D95A3' }}>{note}</span>}
+        {!!note && <span style={{ fontSize: 11, color: '#8D95A3' }}>{note}</span>}
       </div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 14, alignItems: 'flex-start' }}>
         {children}

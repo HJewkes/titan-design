@@ -1,13 +1,12 @@
-import { readFile } from 'node:fs/promises'
 import { FeedbackSchema, type Feedback } from './schema.ts'
-import { ReviewError } from './review.ts'
+import { ReviewError, readJsonFile } from './review.ts'
 
 interface Tally {
   agreed: number
   total: number
 }
 
-export const CONFIDENCE_BANDS = [
+const CONFIDENCE_BANDS = [
   { label: '<0.5', holds: (c: number) => c < 0.5 },
   { label: '0.5-0.75', holds: (c: number) => c >= 0.5 && c < 0.75 },
   { label: '>=0.75', holds: (c: number) => c >= 0.75 },
@@ -44,22 +43,12 @@ export function calibrationReport(rounds: Feedback[]): string {
   ].join('\n')
 }
 
-function parseJson(path: string, text: string): unknown {
-  try {
-    return JSON.parse(text)
-  } catch {
-    throw new ReviewError(`${path} is not JSON`)
-  }
-}
-
 export async function readFeedbackFiles(paths: string[]): Promise<Feedback[]> {
   if (paths.length === 0) throw new ReviewError('calibration needs at least one feedback.json')
   return Promise.all(
     paths.map(async (path) => {
-      const text = await readFile(path, 'utf8').catch(() => {
-        throw new ReviewError(`cannot read ${path}`)
-      })
-      const result = FeedbackSchema.safeParse(parseJson(path, text))
+      const { json } = await readJsonFile(path)
+      const result = FeedbackSchema.safeParse(json)
       if (!result.success) throw new ReviewError(`${path} is not feedback: ${result.error.message}`)
       return result.data
     })

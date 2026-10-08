@@ -1,9 +1,8 @@
+import { compareText } from '../../kit/compareText'
 import { GRAPH_LABEL_ROOM, GRAPH_NODE_PADDING } from '../network-graph-model'
 import type { GraphLayout, GraphPoint } from '../types'
 
 const hasOwn = (record: object, key: string) => Object.prototype.hasOwnProperty.call(record, key)
-
-const compareText = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0)
 
 const isFinitePoint = (p: unknown): p is GraphPoint =>
   typeof p === 'object' &&

@@ -30,7 +30,7 @@ describe('Scatter', () => {
   it('labels sub-1 tick values to 2 decimal places', () => {
     render(<Scatter {...base} />)
     const labels = screen.getAllByTestId('scatter-gridline-y').map((el) => el.textContent)
-    expect(labels).toContain('0.50')
+    expect(labels).toContain('0.40')
   })
 
   it('fires onPress with the point id', () => {

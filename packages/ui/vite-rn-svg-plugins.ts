@@ -20,6 +20,15 @@ export const svgModuleEntry = (() => {
   }
 })()
 
+/** The `.web.js` sibling of a relative import, when the package ships one. */
+function resolveWebSibling(importer: string, source: string): string | null {
+  const base = resolvePath(dirname(importer), source)
+  for (const candidate of [`${base}.web.js`, `${base}/index.web.js`]) {
+    if (existsSync(candidate)) return candidate
+  }
+  return null
+}
+
 /**
  * react-native-svg ships web implementations as `.web.js` siblings of its
  * native (Flow) Fabric sources and relies on a bundler's React Native
@@ -41,11 +50,7 @@ export function reactNativeSvgWebResolver(): Plugin {
       if (!importer || !importer.includes('/react-native-svg/') || !source.startsWith('.')) {
         return null
       }
-      const base = resolvePath(dirname(importer), source)
-      for (const candidate of [`${base}.web.js`, `${base}/index.web.js`]) {
-        if (existsSync(candidate)) return candidate
-      }
-      return null
+      return resolveWebSibling(importer, source)
     },
   }
 }
@@ -57,6 +62,31 @@ export function reactNativeSvgWebResolver(): Plugin {
  * self-contained ESM module with esbuild — JSX compiled via the automatic
  * runtime, react-native-svg's WEB build inlined, react/react-native external.
  */
+const BODY_HIGHLIGHTER_EXTERNALS = ['react', 'react/jsx-runtime', 'react-native']
+
+/**
+ * esbuild turns a CommonJS `require()` of an external into a `__require()` shim
+ * that throws "Dynamic require of ... is not supported" in the browser. Serve
+ * each required external from a CommonJS stub that re-exports a static ESM
+ * import instead, which Rollup then resolves to the app's single copy.
+ */
+function requiredExternalsAsImports(): EsbuildPlugin {
+  const filter = new RegExp(`^(${BODY_HIGHLIGHTER_EXTERNALS.join('|')})$`)
+  return {
+    name: 'required-externals-as-imports',
+    setup(build) {
+      build.onResolve({ filter }, (args) =>
+        args.kind === 'require-call'
+          ? { path: args.path, namespace: 'required-external' }
+          : { path: args.path, external: true }
+      )
+      build.onLoad({ filter: /.*/, namespace: 'required-external' }, (args) => ({
+        contents: `import * as external from ${JSON.stringify(args.path)}\nmodule.exports = external`,
+      }))
+    },
+  }
+}
+
 export function reactNativeBodyHighlighterEsm(): Plugin {
   let entry: string | null = null
   try {
@@ -89,7 +119,7 @@ export function reactNativeBodyHighlighterEsm(): Plugin {
           '.json',
         ],
         mainFields: ['module', 'main'],
-        external: ['react', 'react/jsx-runtime', 'react-native'],
+        plugins: [requiredExternalsAsImports()],
         write: false,
         logLevel: 'silent',
       })
@@ -115,11 +145,8 @@ export function reactNativeSvgWebResolverEsbuild(): EsbuildPlugin {
       build.onResolve({ filter: /^react-native-svg$/ }, () => ({ path: svgModuleEntry }))
       build.onResolve({ filter: /^\./ }, (args) => {
         if (!args.importer.includes('/react-native-svg/')) return null
-        const base = resolvePath(dirname(args.importer), args.path)
-        for (const candidate of [`${base}.web.js`, `${base}/index.web.js`]) {
-          if (existsSync(candidate)) return { path: candidate }
-        }
-        return null
+        const sibling = resolveWebSibling(args.importer, args.path)
+        return sibling ? { path: sibling } : null
       })
     },
   }

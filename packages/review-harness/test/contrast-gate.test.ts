@@ -1,6 +1,6 @@
-import { mkdtemp, readFile, readdir, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, readdir, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { dirname, join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { EXIT_REFUSED, buildRound, contrastProblem } from '../src/build.ts'
 import type { Check } from '../src/contrast-check.ts'
@@ -10,7 +10,9 @@ import {
   matchesDefect,
   type MeasuredFrame,
 } from '../src/contrast-gate.ts'
+import { ReviewError } from '../src/review.ts'
 import { ManifestSchema, MANIFEST_SCHEMA_ID, type ManifestInput } from '../src/schema.ts'
+import { noTreeGit, underContract } from './fixtures.ts'
 
 const SHA = 'a'.repeat(64)
 
@@ -256,11 +258,38 @@ describe('contrastReport', () => {
   })
 })
 
+describe('reading contrast.json', () => {
+  async function roundDir(report?: string) {
+    const dir = await mkdtemp(join(tmpdir(), 'titan-contrast-'))
+    if (report !== undefined) await writeFile(join(dir, 'contrast.json'), report)
+    return join(dir, 'round.json')
+  }
+
+  it('treats a missing report as no report', async () => {
+    await expect(contrastProblem(await roundDir(), SHA)).resolves.toBe(
+      'no contrast.json beside this round'
+    )
+  })
+
+  it('does not mistake an unreadable report for a missing one', async () => {
+    const round = await roundDir()
+    await mkdir(join(dirname(round), 'contrast.json'))
+    await expect(contrastProblem(round, SHA)).rejects.toThrow(/EISDIR/)
+  })
+
+  it('names the file when the report is not JSON', async () => {
+    const round = await roundDir('{not json')
+    const problem = contrastProblem(round, SHA)
+    await expect(problem).rejects.toThrow(ReviewError)
+    await expect(problem).rejects.toThrow(/contrast\.json is not JSON/)
+  })
+})
+
 describe('buildRound', () => {
   async function setup(input: Partial<ManifestInput>) {
     const dir = await mkdtemp(join(tmpdir(), 'titan-contrast-'))
     const path = join(dir, 'draft.json')
-    await writeFile(path, JSON.stringify(draft(input)))
+    await writeFile(path, JSON.stringify(underContract(draft(input))))
     return { dir, path }
   }
 
@@ -278,7 +307,11 @@ describe('buildRound', () => {
     const override = { reason: 'shown ungated', problem: 'no contrast.json', failures: [] }
     const { dir, path } = await setup({ ...imageOnly(), contrastOverride: override })
     await png(dir)
-    const build = buildRound(path, undefined, { stderr: () => {}, measure: async () => [] })
+    const build = buildRound(path, undefined, {
+      stderr: () => {},
+      measure: async () => [],
+      git: noTreeGit,
+    })
     await expect(build).rejects.toThrow('a draft never carries contrastOverride')
   })
 
@@ -289,6 +322,7 @@ describe('buildRound', () => {
     const code = await buildRound(path, undefined, {
       stderr: (t) => lines.push(t),
       measure: async () => [],
+      git: noTreeGit,
     })
     expect(code).toBe(EXIT_REFUSED)
     expect((await readdir(dir)).sort()).toEqual(['contrast.json', 'draft.json', 'wall.png'])
@@ -305,7 +339,11 @@ describe('buildRound', () => {
       })
     )
     await png(dir)
-    const code = await buildRound(path, undefined, { stderr: () => {}, measure: async () => [] })
+    const code = await buildRound(path, undefined, {
+      stderr: () => {},
+      measure: async () => [],
+      git: noTreeGit,
+    })
     expect(code).toBe(0)
     const round = await readFile(join(dir, 'round.json'))
     expect(round.equals(await readFile(path))).toBe(true)

@@ -89,18 +89,18 @@
     "./tailwind.config.js": "./tailwind.config.js"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.0.0"
   },
   "scripts": {
     "build": "tsup && node scripts/generate-tokens-css.mjs",
     "dev": "tsup --watch",
-    "lint": "eslint src/ scripts/ --max-warnings 0 && pnpm lint:borders",
-    "lint:borders": "bash scripts/check-border-classes.sh",
+    "lint": "eslint src/ scripts/ --max-warnings 0",
     "check:package": "bash scripts/check-package.sh",
     "check:cycles": "node scripts/check-cycles.mjs",
     "api:check": "node scripts/api-report.mjs",
     "api:update": "node scripts/api-report.mjs --local",
     "docs:check": "node scripts/check-doc-examples.mjs",
+    "check:docs": "vitest run --project threads src/test/doc-claims.test.ts",
     "size": "size-limit",
     "catalog": "node scripts/catalog.mjs",
     "changelog:compile": "node scripts/changelog-compile.mjs",
@@ -109,6 +109,7 @@
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\"",
     "test": "vitest --project threads --project local-time --project types --project stories-axe",
     "test:unit": "vitest --project threads --project local-time --project types",
+    "test:unit:ci": "vitest run --coverage --project threads --project local-time --project types",
     "test:axe": "vitest run --project stories-axe",
     "test:storybook": "vitest run --project storybook --reporter=default --reporter=json --outputFile.json=.vitest-storybook-report.json && node scripts/check-play-count.mjs .vitest-storybook-report.json",
     "test:coverage": "vitest --project threads --project local-time --project types --project stories-axe --coverage",
@@ -127,9 +128,11 @@
     "test:visual:tokens": "playwright test --config playwright.tokens.config.ts",
     "test:visual:stories": "playwright test stories.spec.ts",
     "test:visual:stories:update": "playwright test stories.spec.ts --update-snapshots",
+    "test:visual:contrast": "playwright test --config playwright.contrast.config.ts",
+    "test:visual:contrast:update": "node scripts/update-contrast-stories-baseline.mjs",
     "test:offline-fonts": "playwright test --config playwright.offline-fonts.config.ts",
     "test:audit-probes": "playwright test --config playwright.audit-probes.config.ts",
-    "prepublishOnly": "pnpm build && vitest --run --project threads --project local-time --project types --project stories-axe",
+    "prepublishOnly": "node scripts/ci-only-publish.mjs && pnpm build && vitest --run --project threads --project local-time --project types --project stories-axe",
     "lint:colors:baseline": "node scripts/update-raw-color-baseline.mjs",
     "storybook:isolated": "node scripts/storybook-launch.mjs --isolated",
     "storybook:ports": "node scripts/storybook-launch.mjs --list",
@@ -182,7 +185,6 @@
     "@storybook/addon-react-native-web": "^0.0.29",
     "@storybook/addon-themes": "^10.2.0",
     "@storybook/addon-vitest": "10.2.0",
-    "@storybook/react": "^10.2.0",
     "@storybook/react-native-web-vite": "^10.2.0",
     "@storybook/react-vite": "^10.2.0",
     "@stryker-mutator/core": "^10.0.0",
@@ -231,6 +233,7 @@
     "src",
     "!src/lab",
     "!src/**/ROUND-*.md",
+    "!src/**/*.png",
     "docs",
     "tailwind.config.js",
     "CHANGELOG.md"

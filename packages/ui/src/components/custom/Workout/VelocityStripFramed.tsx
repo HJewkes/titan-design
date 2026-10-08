@@ -53,7 +53,7 @@ export function VelocityStripFramed({ chart, summary, chrome }: VelocityStripVar
         hideBaseline
         testIDPrefix="velocity"
       />
-      {expanded && showInfo && (
+      {!!expanded && !!showInfo && (
         <Animated.View
           // Same `Animated.View` limitation as the strip above: style, not className.
           style={{
@@ -112,7 +112,7 @@ function framedBarOverlay(chrome: VelocityStripChrome) {
   return needsBarOverlay
     ? (repIndex: number, value: number) => (
         <>
-          {showNumbers && (
+          {!!showNumbers && (
             <Animated.View
               style={{
                 opacity: expandProgress,
@@ -134,7 +134,7 @@ function framedBarOverlay(chrome: VelocityStripChrome) {
               </Text>
             </Animated.View>
           )}
-          {onRepPress && expanded && (
+          {!!onRepPress && !!expanded && (
             <Pressable
               style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }}
               onPress={() => onRepPress(repIndex, value)}

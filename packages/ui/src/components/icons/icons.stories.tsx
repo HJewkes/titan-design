@@ -21,6 +21,9 @@ import {
   ChevronsDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  SearchIcon,
+  DatabaseIcon,
+  ChartIcon,
 } from './icons'
 
 const meta: Meta = {
@@ -145,6 +148,21 @@ export const All: Story = {
       <Swatch label="ChevronRightIcon">
         <View className="text-text-primary">
           <ChevronRightIcon size={28} />
+        </View>
+      </Swatch>
+      <Swatch label="SearchIcon">
+        <View className="text-text-primary">
+          <SearchIcon size={28} />
+        </View>
+      </Swatch>
+      <Swatch label="DatabaseIcon">
+        <View className="text-text-primary">
+          <DatabaseIcon size={28} />
+        </View>
+      </Swatch>
+      <Swatch label="ChartIcon">
+        <View className="text-text-primary">
+          <ChartIcon size={28} />
         </View>
       </Swatch>
     </View>

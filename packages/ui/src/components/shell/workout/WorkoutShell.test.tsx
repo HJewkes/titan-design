@@ -7,9 +7,9 @@ import { WorkoutShell, DashboardShell } from './WorkoutShell'
 describe('WorkoutShell', () => {
   it('composes the SideNav rail and its categories', () => {
     render(<WorkoutShell activeKey="live" />)
-    expect(screen.getByRole('tablist')).toBeInTheDocument()
+    expect(screen.getByRole('navigation', { name: 'Primary' })).toBeInTheDocument()
     ;['Live', 'Review', 'Plan', 'Body'].forEach((name) => {
-      expect(screen.getByRole('tab', { name })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name })).toBeInTheDocument()
     })
   })
 
@@ -31,7 +31,7 @@ describe('WorkoutShell', () => {
   it('forwards nav taps through onNavigate', () => {
     const onNavigate = vi.fn()
     render(<WorkoutShell activeKey="live" onNavigate={onNavigate} />)
-    fireEvent.click(screen.getByRole('tab', { name: 'Body' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Body' }))
     expect(onNavigate).toHaveBeenCalledWith('body')
   })
 

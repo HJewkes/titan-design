@@ -108,7 +108,7 @@ export function FormField({
         >
           <Text className={cn('font-medium text-text-primary', labelSizeStyles[labelSize])}>
             {label}
-            {isRequired && <Text className="text-status-error ml-0.5">*</Text>}
+            {isRequired && <Text className="text-text-error ml-0.5">*</Text>}
           </Text>
 
           {helpContent && (
@@ -145,7 +145,7 @@ export function FormField({
         {(helperText || errorMessage) && (
           <Text
             id={isInvalid ? errorId : helperId}
-            className={cn('text-xs', isInvalid ? 'text-status-error' : 'text-text-tertiary')}
+            className={cn('text-xs', isInvalid ? 'text-text-error' : 'text-text-tertiary')}
           >
             {errorMessage || helperText}
           </Text>

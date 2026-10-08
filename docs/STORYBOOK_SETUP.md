@@ -19,6 +19,7 @@ The design system uses **Storybook 10** with the `@storybook/react-native-web-vi
     "@storybook/react-native-web-vite": "^10.2.0",
     "@storybook/addon-a11y": "^10.2.0",
     "@storybook/addon-docs": "^10.2.0",
+    "@storybook/addon-themes": "^10.2.0",
     "react-native-web": "^0.19.0",
     "autoprefixer": "^10.4.0"
   }
@@ -29,26 +30,40 @@ The design system uses **Storybook 10** with the `@storybook/react-native-web-vi
 
 ### `.storybook/main.ts`
 
-The main configuration file must use `@storybook/react-native-web-vite` and configure the NativeWind JSX import source:
+The main configuration file must use `@storybook/react-native-web-vite` and set `jsxImportSource: 'nativewind'`. Without the NativeWind JSX transform, `className` props on React Native components are not styled. It also registers `@storybook/addon-themes`, which `preview.tsx` needs, and a `viteFinal` hook that resolves `react-native-svg` and `react-native-body-highlighter` for the browser (the BodyMap stories depend on it).
+
+Excerpt of `packages/ui/.storybook/main.ts` (read the file for the full `viteFinal` body and the Lab build exclusion):
 
 ```typescript
 import type { StorybookConfig } from '@storybook/react-native-web-vite'
+// ...
+
+const stories: StorybookConfig['stories'] = publishOnly
+  ? collectStoryFiles(SRC_DIR).filter((file) => !isLabStory(file))
+  : ['../src/**/*.stories.@(ts|tsx)']
 
 const config: StorybookConfig = {
-  stories: ['../src/**/*.stories.@(ts|tsx)'],
-  addons: [
-    '@storybook/addon-a11y',
-    '@storybook/addon-docs',
-  ],
+  stories,
+  // ...
+  staticDirs: publishOnly ? [] : [{ from: './lab-archive', to: '/lab-archive' }],
+  addons: ['@storybook/addon-a11y', '@storybook/addon-docs', '@storybook/addon-themes'],
   framework: {
     name: '@storybook/react-native-web-vite',
     options: {
       pluginReactOptions: {
-        // CRITICAL: This tells the build system to use NativeWind's JSX transform
-        // Without this, className props on React Native components won't be styled
         jsxImportSource: 'nativewind',
       },
     },
+  },
+  // ...
+  viteFinal: async (cfg, options) => {
+    // ...
+    cfg.plugins = [reactNativeSvgWebResolver(), ...buildOnlyPlugins, ...(cfg.plugins ?? [])]
+    // ...
+    cfg.resolve.alias = [...svgWebAliases, ...existingAliasArray]
+    cfg.resolve.extensions = [...webResolveExtensions, ...(cfg.resolve.extensions ?? [])]
+    // ...
+    return cfg
   },
 }
 
@@ -57,16 +72,21 @@ export default config
 
 ### `.storybook/preview.tsx`
 
-The preview file imports global CSS and configures default parameters:
+The preview file imports the global CSS, which loads the Tailwind utilities and CSS custom properties. Its decorators supply the light/dark toolbar (`withThemeByClassName` toggles the `.light` class on `<html>`), seed the surface context from that toolbar theme (`withSurfaceTheme`) and add the width matrix (`withWidthMatrix`). There is no `backgrounds` parameter: the story background comes from the theme tokens.
+
+Excerpt of `packages/ui/.storybook/preview.tsx` (read the file for the full `storySort` order):
 
 ```tsx
 import type { Preview } from '@storybook/react'
+import { withThemeByClassName } from '@storybook/addon-themes'
 import React from 'react'
-
-// CRITICAL: Import global CSS to load Tailwind utilities and CSS custom properties
 import '../src/theme/global.css'
+import { withSurfaceTheme } from './withSurfaceTheme'
+import { withWidthMatrix } from './withWidthMatrix'
 
+// ...
 const preview: Preview = {
+  tags: ['status:review'],
   parameters: {
     controls: {
       matchers: {
@@ -74,27 +94,31 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
-    backgrounds: {
-      default: 'dark',
-      values: [
-        {
-          name: 'dark',
-          value: '#111827',  // matches --color-background-base dark
-        },
-        {
-          name: 'light',
-          value: '#FFFFFF',
-        },
-      ],
-    },
     layout: 'centered',
+    options: {
+      storySort: {
+        // ...
+      },
+    },
   },
   decorators: [
+    withThemeByClassName({
+      themes: {
+        light: 'light',
+        dark: '',
+      },
+      defaultTheme: 'dark',
+      parentSelector: 'html',
+    }),
+    withSurfaceTheme,
+    withWidthMatrix,
     (Story) => (
-      <div style={{
-        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
-        color: '#F3F4F6',
-      }}>
+      <div
+        className="font-sans text-text-primary"
+        style={{
+          fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+        }}
+      >
         <Story />
       </div>
     ),
@@ -302,9 +326,9 @@ The `@storybook/addon-a11y` addon runs axe-core checks automatically. View resul
 
 ### Visual Testing
 
-Use the background switcher to test dark/light modes:
-1. Click the background tool in the toolbar
-2. Select "dark" or "light"
+Use the theme switcher (from `@storybook/addon-themes`) to test dark/light modes:
+1. Click the theme tool in the toolbar
+2. Select "dark" or "light". "light" adds the `.light` class to `<html>`; "dark" is the default and adds no class
 
 ### Interactive Testing
 

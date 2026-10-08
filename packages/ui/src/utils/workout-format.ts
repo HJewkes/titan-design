@@ -53,12 +53,6 @@ export function roundTempo(
   return tempo.map((v) => Math.round(v * 10) / 10) as [number, number, number, number]
 }
 
-/** Signed percentage label for a deviation ratio, e.g. `+9%` / `-5%` / `0%`. */
-export function formatSignedPct(ratio: number): string {
-  const pct = Math.round(ratio * 100)
-  return `${pct > 0 ? '+' : ''}${pct}%`
-}
-
 /** A bodyweight to one decimal, always shown: `196.8`, `200.0`. */
 export function formatBodyweight(value: number): string {
   return (Math.round(value * 10) / 10).toFixed(1)
@@ -75,8 +69,8 @@ export function formatSignedRate(pctPerWeek: number): string {
 
 /**
  * Rep-range label, e.g. `"8–10"`. `"8"` when the bounds are equal or only one is
- * given; `null` when neither is set. Shared by {@link formatPrescription} and the
- * set strip's per-set prescribed-range label so the two never drift apart.
+ * given; `null` when neither is set. Shared by the set strip's per-set prescribed-range
+ * label and {@link formatExpectedRange} so the two never drift apart.
  */
 export function formatRepsRange(repsLow?: number, repsHigh?: number): string | null {
   if (repsLow != null && repsHigh != null) {
@@ -96,31 +90,6 @@ export function formatRepsRange(repsLow?: number, repsHigh?: number): string | n
 export function formatExpectedRange(low?: number, high?: number): string | null {
   const bounds = formatRepsRange(low, high)
   return bounds == null ? null : `~${bounds} expected`
-}
-
-/** Structured prescription for the active exercise (from the plan). */
-export interface PrescriptionInput {
-  repsLow?: number
-  repsHigh?: number
-  weightLbs?: number
-  rpe?: number
-}
-
-/**
- * Human prescription string, e.g. `"8–10 @ 62 lb · RPE 8"`. `null` when there is
- * nothing to show. Presentation-only: the plan supplies the numbers, this shapes
- * the label.
- */
-export function formatPrescription(p: PrescriptionInput | null | undefined): string | null {
-  if (p == null) return null
-  const reps = formatRepsRange(p.repsLow, p.repsHigh)
-  const weight = p.weightLbs != null ? `${p.weightLbs} lb` : null
-  const head = [reps, weight].filter((s): s is string => s != null).join(' @ ')
-  const rpe = p.rpe != null ? `RPE ${p.rpe}` : null
-  const full = [head.length > 0 ? head : null, rpe]
-    .filter((s): s is string => s != null)
-    .join(' · ')
-  return full.length > 0 ? full : null
 }
 
 /**

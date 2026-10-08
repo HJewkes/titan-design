@@ -43,22 +43,21 @@ DOM/behavior contract holds.
 
 ## The three visual layers, and when to reach for each
 
-Titan runs `@playwright/test` `^1.58.2` (`packages/ui/package.json`) against four
-configs. Three are wired into the `visual` job in `.github/workflows/ci.yml`; the fourth is a local-only
-dev harness (see below).
+Titan runs `@playwright/test` (version in `packages/ui/package.json`) against the
+`packages/ui/playwright*.config.ts` files. The `visual` job in `.github/workflows/ci.yml` lists which
+ones gate; `playwright.tokens.config.ts` is a local-only dev harness (see below).
 
-| Layer                              | Config                               | Script                 | What it actually checks                                                                                                                                                                                                                                                                                                                                                                              |
-| ---------------------------------- | ------------------------------------ | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1 — component screenshot baselines | `playwright.baseline.config.ts`      | `test:visual:baseline` | Boots the specimen dev server (`pnpm specimen`, port 5200) and runs `specimen/baseline/**/*.screenshot.test.ts` against committed `*-chromium-linux.png` baselines, `maxDiffPixelRatio: 0.01`. 68 baselines exist today, generated from the pinned `mcr.microsoft.com/playwright:v1.58.2-noble` container so they're byte-comparable to CI.                                                          |
-| 2 — Storybook story baselines      | `playwright.config.ts` (the default) | `test:visual:stories`  | Boots Storybook (`pnpm storybook --ci`, port 6006) and runs `tests/visual/stories.spec.ts`, which enumerates `index.json` and screenshots every story matching `SCOPE = /^(shell-\|icons-\|icons--)/` — today that's the shell family plus the icon primitive, not the whole library. The clock is frozen and CSS animations disabled so control-driven/animated stories snapshot deterministically. |
-| 3 — HTML-vs-React parity           | `playwright.comparison.config.ts`    | `test:visual:compare`  | Boots the specimen dev server and runs `specimen/**/*.visual.test.ts`: a computed-style comparison between a hand-written HTML reference and the React/NativeWind render of the same component, to catch NativeWind/RNW output drifting from the intended CSS.                                                                                                                                       |
-| — token-resolution harness         | `playwright.tokens.config.ts`        | `test:visual:tokens`   | Runs `specimen/token-resolution.spec.ts` against the specimen server. Not referenced anywhere in `.github/workflows/`, so it is a **local-only dev tool** — it does not gate anything today.                                                                                                                                                                                                         |
+| Layer                              | Config                               | Script                 | What it actually checks                                                                                                                                                                                                                                                                                                                                                |
+| ---------------------------------- | ------------------------------------ | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 — component screenshot baselines | `playwright.baseline.config.ts`      | `test:visual:baseline` | Boots the specimen dev server (`pnpm specimen`, port 5200) and runs `specimen/baseline/**/*.screenshot.test.ts` against committed `*-chromium-linux.png` baselines, the tolerance set in the config's `expect.toHaveScreenshot`. Baselines are generated from the pinned `mcr.microsoft.com/playwright:v1.58.2-noble` container so they're byte-comparable to CI.      |
+| 2 — Storybook story baselines      | `playwright.config.ts` (the default) | `test:visual:stories`  | Builds Storybook (`storybook build`, reused within one CI job), serves it with `vite preview` on port 6006 and runs `tests/visual/stories.spec.ts`, which enumerates `index.json` and screenshots every story matching the `SCOPE` pattern and `CHAT_STORIES` set declared in that file, not the whole library. The clock is frozen and CSS animations disabled so control-driven/animated stories snapshot deterministically. |
+| 3 — HTML-vs-React parity           | `playwright.comparison.config.ts`    | `test:visual:compare`  | Boots the specimen dev server and runs `specimen/**/*.visual.test.ts`: a computed-style comparison between a hand-written HTML reference and the React/NativeWind render of the same component, to catch NativeWind/RNW output drifting from the intended CSS.                                                                                                         |
+| — token-resolution harness         | `playwright.tokens.config.ts`        | `test:visual:tokens`   | Runs `specimen/token-resolution.spec.ts` against the specimen server. Not referenced anywhere in `.github/workflows/`, so it is a **local-only dev tool** — it does not gate anything today.                                                                                                                                                                           |
 
 Two files under `tests/visual/` — `visual.spec.ts` (a bare "storybook loads" smoke check)
-and `validation.spec.ts` (ad hoc, assertion-free screenshot capture to
-`tests/visual/validation/`) — exist but aren't targeted by any `package.json` script or
-CI step. They're leftover/manual tooling, not part of the gated pattern; don't treat them
-as covering anything.
+and the ad hoc screenshot-capture spec beside it — exist but aren't targeted by any
+`package.json` script or CI step. They're leftover/manual tooling, not part of the gated
+pattern; don't treat them as covering anything.
 
 **When to reach for which:** a render test for behavior/a11y on every component, always.
 Layer 3 when you're worried NativeWind's web output has drifted from what the class names
@@ -69,15 +68,16 @@ specimen harness.
 
 ## Do the visual layers actually run on pull requests?
 
-**Partially.** The `visual` job in `.github/workflows/ci.yml` triggers on `push`/`pull_request` to
-`main`, and Layers 1 and 3 run their real gating scripts (`test:visual:baseline`,
-`test:visual:compare`) — a pixel or computed-style mismatch fails the PR. **Layer 2 does
-not currently gate anything**: the CI step runs `test:visual:stories:update` (the
-`--update-snapshots` seed variant), not the gate, because baselines for it aren't
-committed yet — the workflow's own comment calls this out as a bootstrap step and
-documents the two-line change (commit the seeded PNGs, swap the script to
-`test:visual:stories`) that would turn it into a real gate. Until that happens, a story
-visual regression in the shell/icons scope will not fail your PR.
+**Yes.** The `visual` job in `.github/workflows/ci.yml` runs on every pull request. Read the
+job's steps for which layer runs which script and which steps only regenerate baselines on
+failure; a pixel or computed-style mismatch in a gating step fails the PR.
+
+A pull request that changes no rendered UI skips every layer (TD-645): the job's first step,
+`scripts/visual-paths.mjs`, lists the PR's files and, when none matches its rendered-UI set (all
+of `src/` except test files, stories, Storybook and Tailwind config, the specimen, the visual,
+interaction and offline-fonts specs, Playwright configs, manifests, the lockfile and `ci.yml`),
+logs `visual-paths: none of N changed paths is rendered UI` and ends green. A push to `main`
+always runs every layer. If a layer starts reading a new path, add it to `RENDERED_UI_PATTERNS`.
 
 ## Where a new component's test goes, and its minimal shape
 
