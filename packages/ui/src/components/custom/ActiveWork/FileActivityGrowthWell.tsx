@@ -1,6 +1,6 @@
 import { View } from 'react-native'
-import { CardInset } from '../../ui/card/Card'
-import { SparkBars } from '../charts'
+import { CardInset } from '../../ui/card'
+import { SparkBars } from '../../ui/charts/spark-bars'
 import { Typography } from '../../ui/typography'
 import { Eyebrow } from '../../ui/eyebrow'
 import { formatCompact, formatSignedCompact } from '../../../utils/number-format'

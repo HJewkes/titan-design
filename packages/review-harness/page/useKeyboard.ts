@@ -21,7 +21,7 @@ interface KeyContext {
   submit: () => void
 }
 
-function onFormKey(e: KeyboardEvent, { manifest, state, dispatch }: KeyContext): void {
+export function onFormKey(e: KeyboardEvent, { manifest, state, dispatch }: KeyContext): void {
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault()
     ;(document.activeElement as HTMLElement | null)?.blur()

@@ -15,8 +15,8 @@ describe('TaskTable', () => {
   it('renders a row per task with its id and title', () => {
     render(<TaskTable tasks={TASK_LIST_FIXTURE} now={TASK_LIST_NOW} />)
     expect(screen.getAllByTestId('task-row')).toHaveLength(TASK_LIST_FIXTURE.length)
-    expect(screen.getByText('AW-22')).toBeInTheDocument()
-    expect(screen.getByText('npm publish the packaged distribution')).toBeInTheDocument()
+    expect(screen.getByText('LH-22')).toBeInTheDocument()
+    expect(screen.getByText('Varnish the dinghy oars for launch day')).toBeInTheDocument()
   })
 
   it('collapses severity to its dot when told to, keeping the full name for hover and a11y', () => {
@@ -53,8 +53,8 @@ describe('TaskTable', () => {
 
   it('sorts by priority ascending by default', () => {
     render(<TaskTable tasks={TASK_LIST_FIXTURE} now={TASK_LIST_NOW} />)
-    // RL-14 is priority 3, the lowest number in the fixture.
-    expect(renderedIds()[0]).toBe('RL-14')
+    // AP-14 is priority 3, the lowest number in the fixture.
+    expect(renderedIds()[0]).toBe('AP-14')
   })
 
   it('ranks severity by meaning rather than alphabetically', () => {
@@ -62,33 +62,39 @@ describe('TaskTable', () => {
     const ids = renderedIds()
     // critical first; `low` must land after `medium`, which an alphabetical
     // string sort would get wrong.
-    expect(ids[0]).toBe('RL-14')
-    expect(ids.indexOf('AW-22')).toBeGreaterThan(ids.indexOf('HA-3'))
+    expect(ids[0]).toBe('AP-14')
+    expect(ids.indexOf('LH-22')).toBeGreaterThan(ids.indexOf('OR-3'))
   })
 
   it('sorts unestimated tasks last, not as zero', () => {
     render(<TaskTable tasks={TASK_LIST_FIXTURE} now={TASK_LIST_NOW} defaultSortKey="estimate" />)
-    // AW-86 is the only fixture task without an estimate, so it must land last.
-    expect(renderedIds().at(-1)).toBe('AW-86')
+    // LH-86 is the only fixture task without an estimate, so it must land last.
+    expect(renderedIds().at(-1)).toBe('LH-86')
   })
 
   it('keeps blanks last after flipping direction', () => {
     render(<TaskTable tasks={TASK_LIST_FIXTURE} now={TASK_LIST_NOW} defaultSortKey="estimate" />)
     fireEvent.click(screen.getByRole('button', { name: 'Sort by Estimate' }))
-    expect(renderedIds().at(-1)).toBe('AW-86')
+    expect(renderedIds().at(-1)).toBe('LH-86')
   })
 
   it('reverses order when a sorted column header is pressed', () => {
-    render(<TaskTable tasks={TASK_LIST_FIXTURE} now={TASK_LIST_NOW} />)
-    const first = renderedIds()[0]
-    fireEvent.click(screen.getByRole('button', { name: 'Sort by Priority' }))
-    expect(renderedIds()[0]).not.toBe(first)
+    // Distinct estimates, so a stable sort's tie order cannot pass for a reversal; LH-86 has none.
+    const tied = ['OR-3', 'ML-41']
+    const tasks = TASK_LIST_FIXTURE.filter((task) => !tied.includes(task.id))
+    render(<TaskTable tasks={tasks} now={TASK_LIST_NOW} defaultSortKey="estimate" />)
+    const ascending = renderedIds()
+    expect(ascending[ascending.length - 1]).toBe('LH-86')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Sort by Estimate' }))
+
+    expect(renderedIds()).toEqual([...ascending.slice(0, -1).reverse(), 'LH-86'])
   })
 
   it('sorts age newest-first when ascending', () => {
     render(<TaskTable tasks={TASK_LIST_FIXTURE} now={TASK_LIST_NOW} defaultSortKey="updated" />)
-    // RL-14 was updated 2026-08-30, the most recent in the fixture.
-    expect(renderedIds()[0]).toBe('RL-14')
+    // AP-14 was updated 2026-08-30, the most recent in the fixture.
+    expect(renderedIds()[0]).toBe('AP-14')
   })
 
   it('exposes sort state to assistive tech on the column header', () => {

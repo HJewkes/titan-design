@@ -6,7 +6,7 @@ import { TriggerSurface } from '../trigger'
 import { arrowStyles, tooltipPositionStyles, type TooltipPlacement } from './tooltipPosition'
 import { canPortal, TooltipPortal } from './TooltipParts'
 import { usePortalPosition } from './usePortalPosition'
-import { useTooltipVisibility } from './useTooltipVisibility'
+import { useHoverFocusState } from './useHoverFocusState'
 
 export type { TooltipPlacement }
 
@@ -38,6 +38,10 @@ export interface TooltipProps extends ViewProps {
    * wrapper's hover the moment a nested Pressable claims the pointer.
    */
   isOpen?: boolean
+  /** Initial visibility when uncontrolled */
+  defaultIsOpen?: boolean
+  /** Called with `true` on show and `false` on hide */
+  onOpenChange?: (isOpen: boolean) => void
 }
 
 /** Hover state from pointer enter/leave on any View, for driving a controlled Tooltip. */
@@ -51,7 +55,8 @@ export function useHoverState() {
 /**
  * Tooltip component for showing additional information on hover/press.
  *
- * Note: On native, tooltips appear on long press. On web, they appear on hover.
+ * Note: On native, tooltips appear on long press. On web, they appear on hover
+ * and on keyboard focus of a focusable trigger, and Escape closes them.
  *
  * @example
  * // String-only tooltip
@@ -76,9 +81,17 @@ export function Tooltip({
   className,
   usePortal: usePortalProp = false,
   isOpen,
+  defaultIsOpen,
+  onOpenChange,
   ...props
 }: TooltipProps) {
-  const { hovered, show, hide } = useTooltipVisibility({ isDisabled, openDelay, closeDelay })
+  const { isOpen: hovered, triggerProps } = useHoverFocusState({
+    isDisabled,
+    openDelay,
+    closeDelay,
+    defaultIsOpen,
+    onOpenChange,
+  })
   const isVisible = isOpen ?? hovered
   const triggerRef = useRef<View>(null)
 
@@ -89,18 +102,14 @@ export function Tooltip({
   const tooltipContent = (
     <Surface elevation={4} rounded={false} className="px-inset-md py-inset-sm rounded-md max-w-xs">
       {content ?? <Text className="text-text-primary text-sm">{label}</Text>}
-      {hasArrow && <View className={cn('absolute w-0 h-0 border-4', arrowStyles[placement])} />}
+      {!!hasArrow && <View className={cn('absolute w-0 h-0 border-4', arrowStyles[placement])} />}
     </Surface>
   )
 
   return (
     <View className="relative" ref={triggerRef} {...props}>
       {isOpen === undefined ? (
-        <TriggerSurface
-          handlers={{ onHoverIn: show, onHoverOut: hide, onLongPress: show, onPressOut: hide }}
-        >
-          {children}
-        </TriggerSurface>
+        <TriggerSurface handlers={triggerProps}>{children}</TriggerSurface>
       ) : (
         children
       )}

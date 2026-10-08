@@ -8,9 +8,12 @@ Cross-platform React + React Native design system built on Gluestack UI, NativeW
 - **Monorepo**: pnpm workspaces + Turborepo
 - **Node**: Use `pnpm` (v9.15.0) for all package management
 - **Build**: `pnpm build` (tsup, outputs ESM + CJS + DTS to `dist/`)
-- **Test**: `pnpm test` (Vitest + Testing Library + jest-axe). Inside `packages/ui` the script is
-  bare `vitest`, which watches; for one run use `pnpm exec vitest run [path]` there, or
-  `pnpm test -- -- --run` from the root (see _CI and scripts_)
+- **Test**: `pnpm test` (Vitest + Testing Library + jest-axe, jsdom only). Inside `packages/ui` the script is
+  `vitest --project threads --project local-time --project types --project stories-axe`, which watches; for one
+  run use `pnpm exec vitest run --project threads [path]` there, or `pnpm test -- -- --run` from the root (see
+  _CI and scripts_). `pnpm test:unit` skips `stories-axe`; `pnpm test:axe` runs only it. Bare `vitest` also starts
+  the `storybook` browser project. `pnpm test:storybook` runs the Storybook play functions (stories tagged `play`)
+  in headless Chromium, then checks the play count.
 - **Storybook**: `pnpm storybook` (Storybook 10, locked to port 6006 — see below)
 - **Lint**: `pnpm lint` (ESLint 9)
 
@@ -326,9 +329,12 @@ Levels -2 to +5 with calculated surface colors and shadows:
 
 ## CI and scripts
 
-`.github/workflows/ci.yml` runs one job on Node 20 and 22: install, `pnpm lint`, `pnpm type-check`,
+`.github/workflows/ci.yml` runs one job on Node 22: install, `pnpm lint`, `pnpm type-check`,
 `pnpm format:check`, the arch-graph freshness test, `pnpm build`, then
-`pnpm test -- -- --run --coverage`. Every step blocks; none is `continue-on-error`.
+`pnpm test -- -- --run --coverage`. Every step blocks; none is `continue-on-error`. The `contrast`
+job (three shards) runs axe `color-contrast` in Chromium on every story in both themes against the
+shrink-only `packages/ui/tests/visual/contrast-stories-baseline.json`; `pnpm contrast:baseline`
+regenerates it, preferably from the job's `contrast-report-*` artifacts (`docs/ci-and-scripts.md`).
 
 - **Argument passthrough.** Root scripts are `turbo run <task>`, so arguments need a second `--`:
   the first passes through pnpm, the second through Turbo (`pnpm test -- -- --run --coverage`).
@@ -339,6 +345,11 @@ Levels -2 to +5 with calculated surface colors and shadows:
 - **Coverage thresholds** live in `packages/ui/vitest.config.ts` (80% across the board, scoped to
   `src/components/**`). Set them from measured coverage (`pnpm exec vitest run --coverage` in
   `packages/ui`), not from a target, and raise them as coverage grows.
+- **API reports.** `pnpm api:check` (in `verify:unit`, after the build) runs API Extractor on each built entry's d.ts and fails when `packages/ui/api/<entry>.api.md` differs or is missing; after changing an export, run `pnpm --filter @titan-design/react-ui api:update` and commit the reports.
+- **Bundle budget** (`pnpm --filter @titan-design/react-ui size`, after a build) checks the brotli size
+  of each ESM entry and `tokens.css` against `packages/ui/.size-limit.json`. Each limit is the measured
+  size plus 5%, rounded up to the next whole kB; a PR that shrinks an entry by more than 10% lowers its
+  limit, and a PR that raises one states why in its body.
 
 ## Key Files
 

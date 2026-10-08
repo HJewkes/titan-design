@@ -4,6 +4,7 @@ import { Text } from 'react-native'
 import { axe } from 'jest-axe'
 import { AppShell } from './AppShell'
 import { type SideNavItem } from './SideNav'
+import { Page } from '../ui/page'
 
 const navItems: SideNavItem[] = [
   { key: 'notes', label: 'Notes', icon: null },
@@ -13,10 +14,37 @@ const navItems: SideNavItem[] = [
 describe('AppShell', () => {
   it('composes the SideNav rail from the supplied categories', () => {
     render(<AppShell navItems={navItems} activeKey="notes" />)
-    expect(screen.getByRole('tablist')).toBeInTheDocument()
+    expect(screen.getByRole('navigation', { name: 'Primary' })).toBeInTheDocument()
     ;['Notes', 'Graph'].forEach((name) => {
-      expect(screen.getByRole('tab', { name })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name })).toBeInTheDocument()
     })
+  })
+
+  it('exposes navigation, banner and exactly one main landmark around a Page', () => {
+    render(
+      <AppShell navItems={navItems} activeKey="notes">
+        <Page>
+          <Text>page body</Text>
+        </Page>
+      </AppShell>
+    )
+    expect(screen.getByRole('navigation', { name: 'Primary' })).toBeInTheDocument()
+    expect(screen.getByRole('banner')).toBeInTheDocument()
+    expect(screen.getAllByRole('main')).toHaveLength(1)
+  })
+
+  it('renders no main landmark unless the shell is told to', () => {
+    render(<AppShell navItems={navItems} activeKey="notes" />)
+    expect(screen.queryByRole('main')).toBeNull()
+  })
+
+  it('renders the content region as main when isMainLandmark is set', () => {
+    render(
+      <AppShell navItems={navItems} activeKey="notes" isMainLandmark>
+        <Text>plain body</Text>
+      </AppShell>
+    )
+    expect(screen.getAllByRole('main')).toHaveLength(1)
   })
 
   it('renders the content-slot placeholder when no children are given', () => {
@@ -37,7 +65,7 @@ describe('AppShell', () => {
   it('forwards nav taps through onNavigate', () => {
     const onNavigate = vi.fn()
     render(<AppShell navItems={navItems} activeKey="notes" onNavigate={onNavigate} />)
-    fireEvent.click(screen.getByRole('tab', { name: 'Graph' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Graph' }))
     expect(onNavigate).toHaveBeenCalledWith('graph')
   })
 
@@ -55,7 +83,7 @@ describe('AppShell', () => {
     expect(screen.getByText('my own bar')).toBeInTheDocument()
     expect(screen.getByText('my own rail')).toBeInTheDocument()
     expect(screen.queryByText('VOLTRAS')).not.toBeInTheDocument()
-    expect(screen.queryByRole('tablist')).not.toBeInTheDocument()
+    expect(screen.queryByRole('navigation')).not.toBeInTheDocument()
   })
 
   it('carries the brand through to the top bar', () => {

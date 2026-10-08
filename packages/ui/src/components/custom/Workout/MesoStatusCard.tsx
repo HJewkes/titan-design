@@ -1,10 +1,9 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { Fragment, type ReactNode } from 'react'
 import { View, Text, type ViewProps, type ViewStyle } from 'react-native'
 import { Card } from '../../ui/card'
 import { StatusDot } from './StatusDot'
 import { useOnSurfaceColor, useSurfaceMode } from '../../ui/surface'
-import { resolveColor } from '../../../theme/resolve-color'
+import { surfaceGradient } from '../../../theme/gradients'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 import { primitiveColors } from '../../../theme/tokens/primitives'
 import {
@@ -13,20 +12,14 @@ import {
 } from '../../../theme/extracted-colors-dataviz'
 import { liftStyle } from '../../../theme/lift'
 import { alpha } from '../../../utils/colors'
+import { CoachingCallout, NextTargetCallout } from './MesoStatusCard.parts'
 
 const BRAND_PRIMARY_DARK = MESO_ACCENT_GRADIENT_DARK
 const BRAND_PRIMARY_LIGHT = MESO_ACCENT_GRADIENT_LIGHT
 
-/**
- * Card surface gradient: elevated -> raised at 135deg. Uses resolved dark-theme
- * hexes (a gradient string can't carry a className token, and var() renders
- * black on native).
- */
-const CARD_GRADIENT = `linear-gradient(135deg, ${resolveColor('surface-elevated')} 0%, ${resolveColor('surface-raised')} 100%)`
-
 export type MesoStatusBadgeVariant = 'success' | 'warning' | 'error' | 'info'
 
-/** The status hues in the given theme. */
+/** The brand primary plus the success, warning, error and info status hues in the given theme. */
 function statusColors(mode: ThemeMode) {
   const t = getSemanticColors(mode)
   return {
@@ -41,12 +34,6 @@ function statusColors(mode: ThemeMode) {
 /** Gradient stops for the 3px top accent: dark -> primary -> light (matches MesoCard). */
 function accentStops(mode: ThemeMode): string[] {
   return [BRAND_PRIMARY_DARK, statusColors(mode).primary, BRAND_PRIMARY_LIGHT]
-}
-
-/** Gauge track gradient (teal -> amber -> red) at 0.25 alpha. */
-function gaugeGradient(mode: ThemeMode): string {
-  const { success, warning, error } = statusColors(mode)
-  return `linear-gradient(90deg, ${alpha(success, 0.25)} 0%, ${alpha(warning, 0.25)} 50%, ${alpha(error, 0.25)} 100%)`
 }
 
 function statusVariants(
@@ -135,24 +122,7 @@ function getGaugeZoneColor(level: number, mode: ThemeMode): string {
   return success
 }
 
-/** Splits `text` into nodes, bolding any segment that exactly matches a highlight. */
-function renderCoachingText(text: string, highlights?: string[]): ReactNode {
-  if (!highlights || highlights.length === 0) return text
-  const escaped = highlights.filter(Boolean).map((h) => h.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-  if (escaped.length === 0) return text
-  const regex = new RegExp(`(${escaped.join('|')})`, 'g')
-  return text.split(regex).map((part, index) =>
-    highlights.includes(part) ? (
-      <Text key={`${part}-${index}`} className="text-text-primary" style={{ fontWeight: '700' }}>
-        {part}
-      </Text>
-    ) : (
-      <Fragment key={`t-${index}`}>{part}</Fragment>
-    )
-  )
-}
-
-function StatusPill({ badge }: { badge: MesoStatusBadge }) {
+function MesoStatusPill({ badge }: { badge: MesoStatusBadge }) {
   const colors = statusVariants(useSurfaceMode())[badge.variant]
   return (
     <View
@@ -271,7 +241,7 @@ function Gauge({ gauge }: { gauge: MesoStatusGauge }) {
             height: 8,
             borderRadius: 4,
             position: 'relative',
-            backgroundImage: gaugeGradient(mode),
+            ...surfaceGradient.statusTrack(mode),
           } as ViewStyle
         }
         accessibilityElementsHidden
@@ -303,11 +273,67 @@ function Gauge({ gauge }: { gauge: MesoStatusGauge }) {
             borderWidth: 2,
             backgroundColor: markerColor,
             // A knob resting on the gauge: lift, with the ring as its edge.
-            ...liftStyle(1, 'dark', { rim: 0 }),
+            ...liftStyle(1, mode, { rim: 0 }),
           }}
           testID="meso-status-card-gauge-marker"
         />
       </View>
+    </View>
+  )
+}
+
+function MesoStatusHeader({
+  mesoName,
+  mesoSubtitle,
+  basis,
+  statusBadge,
+}: {
+  mesoName: string
+  mesoSubtitle: string
+  basis?: string
+  statusBadge: MesoStatusBadge
+}) {
+  const basisColor = useOnSurfaceColor('secondary')
+  return (
+    <View testID="meso-status-card-header">
+      <View className="flex-row items-center justify-between gap-inline-md">
+        <Text
+          className="text-text-primary"
+          style={{
+            flexShrink: 1,
+            fontSize: 15,
+            fontFamily: '"Space Grotesk", sans-serif',
+            fontWeight: '700',
+          }}
+          testID="meso-status-card-name"
+        >
+          {mesoName}
+        </Text>
+        <MesoStatusPill badge={statusBadge} />
+      </View>
+      <Text
+        className="text-text-secondary mt-stack-sm"
+        style={{
+          fontSize: 12,
+          fontFamily: 'Inter, sans-serif',
+        }}
+        testID="meso-status-card-subtitle"
+      >
+        {mesoSubtitle}
+      </Text>
+      {basis != null && (
+        <Text
+          className="mt-0.5"
+          style={{
+            fontSize: 11,
+            fontFamily: 'Inter, sans-serif',
+            color: basisColor,
+          }}
+          testID="meso-status-card-basis"
+        >
+          {basis}
+        </Text>
+      )}
     </View>
   )
 }
@@ -345,7 +371,6 @@ export function MesoStatusCard({
   className,
   ...props
 }: MesoStatusCardProps) {
-  const basisColor = useOnSurfaceColor('secondary')
   const mode = useSurfaceMode()
   const { success, warning } = statusColors(mode)
   return (
@@ -358,7 +383,7 @@ export function MesoStatusCard({
         {
           borderColor: BRAND_PRIMARY_DARK,
           borderWidth: 1,
-          backgroundImage: CARD_GRADIENT,
+          ...surfaceGradient.card(mode),
         } as ViewStyle
       }
       role="article"
@@ -378,46 +403,12 @@ export function MesoStatusCard({
       </View>
 
       <View className="p-3.5 gap-3.5" testID="meso-status-card-body">
-        <View testID="meso-status-card-header">
-          <View className="flex-row items-center justify-between gap-inline-md">
-            <Text
-              className="text-text-primary"
-              style={{
-                flexShrink: 1,
-                fontSize: 15,
-                fontFamily: '"Space Grotesk", sans-serif',
-                fontWeight: '700',
-              }}
-              testID="meso-status-card-name"
-            >
-              {mesoName}
-            </Text>
-            <StatusPill badge={statusBadge} />
-          </View>
-          <Text
-            className="text-text-secondary mt-stack-sm"
-            style={{
-              fontSize: 12,
-              fontFamily: 'Inter, sans-serif',
-            }}
-            testID="meso-status-card-subtitle"
-          >
-            {mesoSubtitle}
-          </Text>
-          {basis != null && (
-            <Text
-              className="mt-0.5"
-              style={{
-                fontSize: 11,
-                fontFamily: 'Inter, sans-serif',
-                color: basisColor,
-              }}
-              testID="meso-status-card-basis"
-            >
-              {basis}
-            </Text>
-          )}
-        </View>
+        <MesoStatusHeader
+          mesoName={mesoName}
+          mesoSubtitle={mesoSubtitle}
+          basis={basis}
+          statusBadge={statusBadge}
+        />
 
         {metrics.length > 0 && (
           <View className="flex-row flex-wrap gap-inline-md" testID="meso-status-card-metrics">
@@ -435,57 +426,9 @@ export function MesoStatusCard({
           </View>
         )}
 
-        {coaching != null && (
-          <View
-            className="py-2.5 px-inset-md"
-            style={{
-              backgroundColor: alpha(warning, 0.06),
-              borderWidth: 1,
-              borderColor: alpha(warning, 0.15),
-              borderRadius: 8,
-            }}
-            testID="meso-status-card-coaching"
-          >
-            <Text
-              className="text-text-secondary"
-              style={{
-                fontSize: 12,
-                lineHeight: 17,
-                fontFamily: 'Inter, sans-serif',
-              }}
-            >
-              {renderCoachingText(coaching.text, coaching.highlights)}
-            </Text>
-          </View>
-        )}
+        {coaching != null && <CoachingCallout coaching={coaching} warning={warning} />}
 
-        {nextTarget != null && (
-          <View
-            className="flex-row items-center gap-inline-md py-2.5 px-inset-md"
-            style={{
-              backgroundColor: alpha(success, 0.06),
-              borderWidth: 1,
-              borderColor: alpha(success, 0.2),
-              borderRadius: 8,
-            }}
-            testID="meso-status-card-next-target"
-          >
-            <Text style={{ fontSize: 14, color: success }} accessibilityElementsHidden>
-              {nextTarget.icon}
-            </Text>
-            <Text
-              style={{
-                flexShrink: 1,
-                fontSize: 12,
-                fontFamily: 'Inter, sans-serif',
-                fontWeight: '600',
-                color: success,
-              }}
-            >
-              {nextTarget.text}
-            </Text>
-          </View>
-        )}
+        {nextTarget != null && <NextTargetCallout nextTarget={nextTarget} success={success} />}
       </View>
     </Card>
   )

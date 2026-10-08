@@ -3,7 +3,7 @@ import { axe } from 'jest-axe'
 import { render, screen } from '@testing-library/react'
 import { FatigueLights } from './FatigueLights'
 import type { FatigueVerdict } from './fatigue-model'
-import { resolveAll, siblingSource, spacingClassesIn } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesAt, spacingClassesOf } from '../../../test/spacing-resolver'
 
 const dims: FatigueVerdict['dimensions'] = { velocityLoss: 'alarm', rom: 'warn', tempo: 'ok' }
 
@@ -32,6 +32,13 @@ describe('FatigueLights', () => {
     expect(screen.getByLabelText('Tempo, ok')).toBeInTheDocument()
   })
 
+  it('exposes each light as a named image, so axe has a label to check', () => {
+    render(<FatigueLights dimensions={dims} />)
+    expect(screen.getByRole('img', { name: 'Velocity loss, alarm' })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'ROM depth, watch' })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'Tempo, ok' })).toBeInTheDocument()
+  })
+
   it('renders neutral "warming up" lights when dimensions are null', () => {
     render(<FatigueLights dimensions={null} />)
     expect(screen.getByLabelText('Velocity loss, warming up')).toBeInTheDocument()
@@ -48,15 +55,41 @@ describe('FatigueLights', () => {
  * `gap-4` — it is horizontal and the inline ramp stops at 12.
  */
 describe('FatigueLights geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'FatigueLights.tsx')
-
   it('spaces a dot from its label by gap-inline-sm', () => {
-    expect(spacingClassesIn(source, 'Light')).toEqual(['gap-inline-sm'])
+    render(<FatigueLights dimensions={dims} />)
+    expect(spacingClassesAt(screen.getByLabelText('Velocity loss, alarm'))).toEqual([
+      'gap-inline-sm',
+    ])
     expect(resolveAll(['gap-inline-sm'])).toEqual(['4px'])
   })
 
-  it('spaces the three lights by gap-4 when not spread', () => {
-    expect(source).toContain("spread ? 'justify-between' : 'justify-start gap-4'")
+  it.each([
+    ['grouped', false, ['gap-4']],
+    ['spread', true, []],
+  ] as const)('spaces the %s lights by their gap', (_label, spread, classes) => {
+    render(<FatigueLights dimensions={dims} spread={spread} />)
+    expect(spacingClassesOf('fatigue-lights')).toEqual([...classes])
     expect(resolveAll(['gap-4'])).toEqual(['16px'])
+  })
+})
+
+describe('FatigueLights dot variant per tone', () => {
+  it.each([
+    ['velocityLoss', 'alarm', 'error'],
+    ['rom', 'warn', 'warning'],
+    ['tempo', 'ok', 'success'],
+  ] as const)('%s at tone %s renders the %s StatusDot', (dimension, tone, variant) => {
+    const only = { velocityLoss: 'ok', rom: 'ok', tempo: 'ok', [dimension]: tone } as const
+    render(<FatigueLights dimensions={only} />)
+    const dots = screen.getAllByTestId('status-dot').map((d) => d.getAttribute('aria-label'))
+    const index = ['velocityLoss', 'rom', 'tempo'].indexOf(dimension)
+    expect(dots[index]).toBe(`${variant} status`)
+  })
+
+  it('renders a neutral dot while warming up', () => {
+    render(<FatigueLights dimensions={null} />)
+    for (const dot of screen.getAllByTestId('status-dot')) {
+      expect(dot).toHaveAttribute('aria-label', 'neutral status')
+    }
   })
 })

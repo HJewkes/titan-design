@@ -1,0 +1,183 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        margin: 0;
+        font-family: sans-serif;
+        font-size: 14px;
+      }
+      .case {
+        margin-bottom: 24px;
+        width: 300px;
+        box-sizing: border-box;
+      }
+      .stack {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .card {
+        background: #dde;
+        padding: 16px;
+      }
+      .row {
+        display: flex;
+        background: #dde;
+        padding: 0 12px;
+      }
+      .cell {
+        flex: none;
+        background: #99c;
+        padding: 8px;
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="storybook-root">
+      <!-- P1 positives -->
+      <div class="case stack" data-testid="stacked-pos">
+        <div style="padding-bottom: 12px"><div>Heading</div></div>
+        <div>Body copy under the heading</div>
+      </div>
+
+      <div class="case stack" data-testid="stacked-heading">
+        <div style="padding-bottom: 12px">
+          <div style="font-size: 24px; line-height: 32px">Overview</div>
+        </div>
+        <div style="line-height: 20px">Body copy under the larger heading</div>
+      </div>
+
+      <!-- P1 negatives -->
+      <div class="case stack" data-testid="stacked-interactive">
+        <div role="button" tabindex="0" style="padding: 12px"><div>Press</div></div>
+        <div>Label beside the target</div>
+      </div>
+      <div class="case stack" data-testid="stacked-painted">
+        <div style="background: #dde; padding: 8px 8px 16px"><div>Card</div></div>
+        <div>Caption</div>
+      </div>
+      <div class="case stack" data-testid="stacked-rhythm" style="gap: 0">
+        <div style="padding-block: 8px"><div>Row one</div></div>
+        <div style="padding-block: 8px"><div>Row two</div></div>
+        <div style="padding-block: 8px"><div>Row three</div></div>
+      </div>
+
+      <div class="case" data-testid="stacked-narrow" style="display: flex">
+        <div style="width: 200px; padding-right: 16px"><div style="width: 60px">Name</div></div>
+        <div style="width: 60px">Role</div>
+      </div>
+      <div class="case" data-testid="stacked-cells" style="display: flex">
+        <div role="cell" style="width: 120px; padding-right: 16px"><div>Name</div></div>
+        <div role="cell" style="width: 120px; padding-right: 16px"><div>Role</div></div>
+      </div>
+
+      <!-- P2 positives -->
+      <div class="case card" data-testid="edge-pushed">
+        <div style="margin: 0 -12px">Pushed into the padding</div>
+      </div>
+      <div class="case" data-testid="edge-unpadded" style="background: #dde; padding-right: 16px">
+        <div>Flush against the edge</div>
+      </div>
+      <div class="case row" data-testid="asym-short">
+        <div class="cell" style="width: 90px">One</div>
+        <div class="cell" style="width: 90px">Two</div>
+        <div class="cell" style="width: 90px">Three</div>
+      </div>
+
+      <!-- P2 negatives -->
+      <div class="case row" data-testid="asym-even">
+        <div class="cell" style="width: 92px">One</div>
+        <div class="cell" style="width: 92px">Two</div>
+        <div class="cell" style="width: 92px">Three</div>
+      </div>
+      <div class="case card" data-testid="label-short">
+        <div>Short</div>
+      </div>
+      <div class="case">
+        <span
+          data-testid="pill"
+          style="
+            display: inline-block;
+            background: #99c;
+            padding: 2px 8px;
+            font-size: 12px;
+            line-height: 1;
+          "
+          >Chip</span
+        >
+      </div>
+      <div class="case card" data-testid="numeral">
+        <div style="font-size: 48px; line-height: 1">42</div>
+      </div>
+      <div class="case card" data-testid="ragged">
+        <p style="margin: 0">
+          A paragraph long enough to wrap onto several lines inside this card, leaving a ragged
+          right edge that is ordinary text layout and not an uneven inset.
+        </p>
+      </div>
+      <div class="case card" data-testid="ellipsis" style="padding: 8px">
+        <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
+          A label far too long for its card, so it is cut with an ellipsis and its hidden characters
+          run well past the right edge
+        </div>
+      </div>
+      <div
+        class="case"
+        data-testid="badge"
+        style="
+          width: 20px;
+          height: 20px;
+          background: #99c;
+          border: 1px solid #334;
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        "
+      >
+        <svg width="14" height="14" viewBox="0 0 14 14" style="display: block">
+          <rect width="14" height="14" fill="#334" />
+        </svg>
+      </div>
+      <div class="case row" data-testid="accent-bar" style="position: relative; height: 40px">
+        <div
+          style="position: absolute; left: 0; top: 0; width: 4px; height: 40px; background: #334"
+        ></div>
+        <div class="cell" style="width: 276px; height: 40px"></div>
+      </div>
+      <div
+        class="case card"
+        data-testid="ticks"
+        style="position: relative; height: 40px; padding: 8px 20px"
+      >
+        <div style="position: absolute; left: 5px; top: 12px">Tick</div>
+      </div>
+      <div class="case" data-testid="meter-fill">
+        <div
+          role="progressbar"
+          aria-label="4 of 5"
+          style="background: #dde; height: 8px; padding: 0 8px"
+        >
+          <div style="width: 80%; height: 8px; background: #334"></div>
+        </div>
+      </div>
+      <div class="case" data-testid="page" style="background: #dde">
+        <div style="padding: 24px"><div>Text far from the page edge</div></div>
+      </div>
+      <div class="case">
+        <button
+          data-testid="icon-button"
+          aria-label="Close"
+          style="background: #99c; border: 0; padding: 8px; display: block"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" style="display: block">
+            <rect width="16" height="16" fill="#334" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </body>
+</html>

@@ -12,15 +12,13 @@ import { cn } from '../../../utils/cn'
 import { StatusDot, type StatusDotVariant } from '../Workout/StatusDot'
 import { Tooltip } from '../../ui/tooltip/Tooltip'
 import { useOnSurfaceColor } from '../../ui/surface'
-import { FONT_MONO } from './fatigue-tokens'
+import { FONT_MONO, TONE_TOKEN } from './fatigue-tokens'
 import type { DimensionTone, FatigueVerdict } from './fatigue-model'
 
-/** Tone → the StatusDot variant (ok=success, warn=warning, alarm=error). */
-const TONE_VARIANT: Record<DimensionTone, StatusDotVariant> = {
-  ok: 'success',
-  warn: 'warning',
-  alarm: 'error',
-}
+/** Tone → the StatusDot variant, read off the status token `TONE_TOKEN` names for it. */
+const TONE_VARIANT = Object.fromEntries(
+  Object.entries(TONE_TOKEN).map(([tone, token]) => [tone, token.slice('status-'.length)])
+) as Record<DimensionTone, StatusDotVariant>
 const TONE_WORD: Record<DimensionTone, string> = { ok: 'ok', warn: 'watch', alarm: 'alarm' }
 
 export interface FatigueLightsProps {
@@ -45,6 +43,7 @@ function Light({
   return (
     <Tooltip label={`${detail} · ${word}`} placement="bottom">
       <View
+        accessibilityRole="image"
         accessibilityLabel={`${detail}, ${word}`}
         className="flex-row items-center gap-inline-sm"
       >

@@ -5,10 +5,11 @@ import {
   type Feedback,
   type Manifest,
   type Question,
+  type Recommendation,
   type Verdict,
 } from './schema.ts'
-import { isAnswered } from './round.ts'
-import { questionsForVariant } from './sections.ts'
+import { isAnswered, normalizeAnswer, offersBuiltInRevision } from './round.ts'
+import { questionsForVariant, sectionOfQuestion } from './sections.ts'
 
 export interface VariantDraft {
   verdict: Verdict
@@ -18,6 +19,8 @@ export interface VariantDraft {
 
 export interface AnswerDraft {
   pick?: string
+  /** The built-in "None of these, request a revision" is on; excludes `pick`. */
+  revision?: boolean
   picks?: string[]
   value?: number
   text?: string
@@ -42,10 +45,40 @@ export function emptyDraft(manifest: Manifest): ReviewDraft {
 
 /** Comments left on the frames this question's section showed, so he never repeats one. */
 function sectionComments(manifest: Manifest, questionId: string, draft: ReviewDraft) {
-  const section = manifest.sections?.find((s) => s.questionIds.includes(questionId))
-  return (section?.variantKeys ?? [])
+  return (sectionOfQuestion(manifest, questionId)?.variantKeys ?? [])
     .map((key) => ({ key, comment: draft.variants[key]?.comment.trim() ?? '' }))
     .filter((v) => v.comment !== '')
+}
+
+/** True when the owner's answer equals the recommended one; pick-many compares sets. */
+export function agrees(answer: Answer, recommendation: Recommendation): boolean {
+  if (answer.revisionRequested) return false
+  const given = answer.picks ?? answer.pick ?? answer.value
+  const wanted = recommendation.answer
+  if (!Array.isArray(wanted) || !Array.isArray(given)) return given === wanted
+  return given.length === wanted.length && wanted.every((w) => given.includes(w))
+}
+
+/** Echo the question's recommendation; `agreed` only once there is an answer to compare. */
+function withRecommendation(question: Question, answer: Answer): Answer {
+  if (question.kind === 'text' || !question.recommendation) return answer
+  const { recommendation } = question
+  return isAnswered(question, answer)
+    ? { ...answer, recommendation, agreed: agrees(answer, recommendation) }
+    : { ...answer, recommendation }
+}
+
+/**
+ * The draft as an answer; a revision request (built-in or the author's own option) is never a
+ * pick. A stale `revision` flag on a question that no longer offers the built-in is dropped.
+ */
+export function draftAnswer(question: Question, draft: AnswerDraft): Answer {
+  const answer: Answer = { questionId: question.id }
+  if (question.kind !== 'pick-one') return answer
+  if (draft.pick !== undefined) return normalizeAnswer(question, { ...answer, pick: draft.pick })
+  return draft.revision && offersBuiltInRevision(question)
+    ? { ...answer, revisionRequested: true }
+    : answer
 }
 
 function toAnswer(
@@ -53,22 +86,45 @@ function toAnswer(
   draft: AnswerDraft,
   variantComments: { key: string; comment: string }[]
 ): Answer | null {
-  const answer: Answer = { questionId: question.id }
-  if (question.kind === 'pick-one' && draft.pick !== undefined) answer.pick = draft.pick
+  const answer = draftAnswer(question, draft)
   if (question.kind === 'pick-many' && draft.picks?.length) answer.picks = draft.picks
   if (question.kind === 'scale' && draft.value !== undefined) answer.value = draft.value
   if (question.kind === 'text' && draft.text?.trim()) answer.text = draft.text
   if (draft.comment.trim()) answer.comment = draft.comment
   if (variantComments.length) answer.variantComments = variantComments
-  return isAnswered(question, answer) || answer.comment || variantComments.length ? answer : null
+  return isAnswered(question, answer) || answer.comment || variantComments.length
+    ? withRecommendation(question, answer)
+    : null
 }
 
+/** The questions a draft leaves without an answer, in manifest order; a comment alone does not answer. */
+export function unansweredQuestionIds(manifest: Manifest, draft: ReviewDraft): string[] {
+  return manifest.questions
+    .filter(
+      (q) =>
+        !isAnswered(q, {
+          ...draft.answers[q.id],
+          ...draftAnswer(q, draft.answers[q.id] ?? { comment: '' }),
+        })
+    )
+    .map((q) => q.id)
+}
+
+/** The unanswered questions that still need an answer: an optional one left blank counts as skipped. */
+export function pendingQuestionIds(manifest: Manifest, draft: ReviewDraft): string[] {
+  const unanswered = new Set(unansweredQuestionIds(manifest, draft))
+  return manifest.questions.filter((q) => q.required && unanswered.has(q.id)).map((q) => q.id)
+}
+
+/** A partial build lists what was left out, which is what lets a required question go unanswered. */
 export function buildFeedback(
   manifest: Manifest,
   manifestSha256: string,
   draft: ReviewDraft,
-  now: Date
+  now: Date,
+  partial = false
 ): Feedback {
+  const unanswered = partial ? unansweredQuestionIds(manifest, draft) : []
   return {
     schema: FEEDBACK_SCHEMA_ID,
     unit: manifest.unit,
@@ -90,5 +146,6 @@ export function buildFeedback(
       }
     }),
     general: draft.general,
+    ...(unanswered.length ? { unansweredQuestionIds: unanswered } : {}),
   }
 }

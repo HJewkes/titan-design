@@ -1,0 +1,44 @@
+[
+  {
+    "name": "index",
+    "path": "dist/index.mjs",
+    "brotli": true,
+    "limit": "161 kB"
+  },
+  {
+    "name": "bodymap",
+    "path": "dist/bodymap.mjs",
+    "brotli": true,
+    "limit": "34 kB"
+  },
+  {
+    "name": "pages",
+    "path": "dist/pages.mjs",
+    "brotli": true,
+    "limit": "59 kB"
+  },
+  {
+    "name": "theme",
+    "path": "dist/theme/index.mjs",
+    "brotli": true,
+    "limit": "19 kB"
+  },
+  {
+    "name": "theme/tokens",
+    "path": "dist/theme/tokens.mjs",
+    "brotli": true,
+    "limit": "11 kB"
+  },
+  {
+    "name": "theme/tokens-css",
+    "path": "dist/theme/tokens-css.mjs",
+    "brotli": true,
+    "limit": "12 kB"
+  },
+  {
+    "name": "tokens.css",
+    "path": "dist/tokens.css",
+    "brotli": true,
+    "limit": "3 kB"
+  }
+]

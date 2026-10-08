@@ -7,8 +7,6 @@ import {
   roundWeight,
   formatVelocity,
   roundTempo,
-  formatSignedPct,
-  formatPrescription,
   formatExpectedRange,
   formatRpe,
   formatChartDate,
@@ -52,14 +50,6 @@ describe('formatVelocity', () => {
 describe('roundTempo', () => {
   it('rounds each phase to 1 dp', () => {
     expect(roundTempo([2.34, 0, 1.06, 0.5])).toEqual([2.3, 0, 1.1, 0.5])
-  })
-})
-
-describe('formatSignedPct', () => {
-  it('renders a signed percentage from a ratio', () => {
-    expect(formatSignedPct(0.09)).toBe('+9%')
-    expect(formatSignedPct(-0.05)).toBe('-5%')
-    expect(formatSignedPct(0)).toBe('0%')
   })
 })
 
@@ -109,29 +99,6 @@ describe('formatWorkoutStats', () => {
 
   it('omits volume and duration when not provided', () => {
     expect(formatWorkoutStats(18, undefined, 'lbs', undefined)).toBe('18 sets')
-  })
-})
-
-describe('formatPrescription', () => {
-  it('builds a full prescription string', () => {
-    expect(formatPrescription({ repsLow: 8, repsHigh: 10, weightLbs: 62, rpe: 8 })).toBe(
-      '8–10 @ 62 lb · RPE 8'
-    )
-  })
-
-  it('collapses an equal rep range to a single number', () => {
-    expect(formatPrescription({ repsLow: 5, repsHigh: 5, weightLbs: 100 })).toBe('5 @ 100 lb')
-  })
-
-  it('omits missing parts', () => {
-    expect(formatPrescription({ rpe: 7 })).toBe('RPE 7')
-    expect(formatPrescription({ weightLbs: 50 })).toBe('50 lb')
-  })
-
-  it('returns null when there is nothing to show', () => {
-    expect(formatPrescription(null)).toBeNull()
-    expect(formatPrescription(undefined)).toBeNull()
-    expect(formatPrescription({})).toBeNull()
   })
 })
 

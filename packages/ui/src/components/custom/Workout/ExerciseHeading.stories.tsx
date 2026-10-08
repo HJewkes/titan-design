@@ -11,7 +11,7 @@ import { Surface } from '../../ui/surface'
 const meta: Meta<typeof ExerciseHeading> = {
   title: 'Custom/Workout/ExerciseHeading',
   component: ExerciseHeading,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {

@@ -89,7 +89,7 @@ export function WeekRow({
         style={{ width: 32 }}
         testID="week-row-number"
       >
-        {isCurrent && (
+        {!!isCurrent && (
           <View
             style={{
               width: 6,

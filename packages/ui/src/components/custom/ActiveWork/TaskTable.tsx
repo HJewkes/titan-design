@@ -16,11 +16,12 @@ import {
 } from '../../ui/table'
 import { Typography } from '../../ui/typography'
 import { Eyebrow } from '../../ui/eyebrow'
-import { SeverityLabel, SEVERITY_ORDER, severityRank, type TaskSeverity } from './SeverityLabel'
+import { SeverityLabel, SEVERITY_ORDER, type TaskSeverity } from './SeverityLabel'
 import { TaskRow, TASK_COLUMN_WIDTHS, type TaskListItem } from './TaskRow'
 
 import { formatTaskAge } from './format-time'
 import type { TaskColumnKey, TaskSortKey } from './task-columns'
+import { compareTaskSeverity, compareTaskUpdated, taskKey } from './task-flow'
 
 // Kept on this module's surface: the session reader shares the helper now, but callers imported it from here first.
 export { formatTaskAge }
@@ -154,10 +155,9 @@ const allTaskColumns = (dotOnly: boolean): TaskColumn[] => [
  */
 const TASK_COMPARATORS: Record<string, TableComparator<TaskListItem>> = {
   // Rank, not alphabet: "critical" < "high" < "low" as strings buries low in the middle.
-  severity: (a, b) =>
-    severityRank(a.severity) - severityRank(b.severity) || a.priority - b.priority,
+  severity: compareTaskSeverity,
   // Newest first when ascending: for an age column, "most recent" is the useful top.
-  updated: (a, b) => (a.updated < b.updated ? 1 : a.updated > b.updated ? -1 : 0),
+  updated: compareTaskUpdated,
   id: (a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }),
   slug: (a, b) => a.slug.localeCompare(b.slug) || a.priority - b.priority,
 }
@@ -304,7 +304,7 @@ export function TaskTable({
           <TableBody>
             {sortedData.map((task) => (
               <TaskRow
-                key={`${task.slug}:${task.id}`}
+                key={taskKey(task)}
                 task={task}
                 ageLabel={formatTaskAge(task.updated, now)}
                 severityDotOnly={dotOnly}

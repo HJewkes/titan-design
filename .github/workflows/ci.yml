@@ -9,18 +9,29 @@ on:
 permissions:
   contents: read
 
-# Rename stage (a) of the HJewkes/ci standard: the ruleset still requires build (20) and
-# build (22), so the matrix keeps its name until the ruleset requires only `check`.
+# PR runs share a per-ref group and cancel; each main push gets its own per-sha group, so no main run is replaced or cancelled.
+concurrency:
+  group: ci-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+# Rename stage (a) of the HJewkes/ci standard: the ruleset still requires build (22), so the
+# single-entry matrix keeps its name until the ruleset requires only `check`.
 # A later PR replaces it with node.yml.
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [20, 22]
+        node-version: [22]
+    # In turbo.json globalEnv, so a Node version bump never replays another version's turbo cache.
+    env:
+      NODE_VERSION: ${{ matrix.node-version }}
 
     steps:
+      # Full history so the release-bump step can read the PR base's API reports.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
 
@@ -31,17 +42,47 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      # TD-733: a PR replays main's newest turbo entry, so a package it leaves untouched skips lint,
+      # type-check and test:unit. Only a push to main saves: a PR's cache scope is unreadable from main.
+      # Main never restores, so every merged tree runs in full and each saved entry holds one run.
+      - name: Restore turbo cache
+        if: github.event_name == 'pull_request'
+        uses: actions/cache/restore@v4
+        with:
+          path: .turbo/cache
+          key: turbo-${{ runner.os }}-node${{ matrix.node-version }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: turbo-${{ runner.os }}-node${{ matrix.node-version }}-${{ hashFiles('pnpm-lock.yaml') }}-
+
       # verify:unit is format, lint, type-check, build, tests with coverage, then arch-graph
-      # freshness (arch:check): local `pnpm verify` minus stories-axe, which runs in its own job.
+      # freshness (arch:check): local `pnpm verify` minus stories-axe, which runs in check.
       - name: Verify
         run: pnpm verify:unit
+
+      # A PR that changes packages/ui's version must bump at least as far as its API report diff
+      # requires; the script skips when the version matches the base.
+      - name: Release bump
+        if: github.event_name == 'pull_request'
+        run: node packages/ui/scripts/check-release-bump.mjs --base "$BASE_SHA"
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
 
       # publint --strict plus attw on the packed tarball, so an export-map regression fails before a tag exists.
       - name: Package shape
         run: pnpm check:package
 
+      # Brotli size of each ESM entry plus tokens.css against packages/ui/.size-limit.json; reads the dist/ Verify built.
+      - name: Bundle budget
+        run: pnpm --filter @titan-design/react-ui size
+
       - name: Import cycles
         run: pnpm --filter @titan-design/react-ui check:cycles
+
+      - name: Save turbo cache
+        if: github.event_name == 'push'
+        uses: actions/cache/save@v4
+        with:
+          path: .turbo/cache
+          key: turbo-${{ runner.os }}-node${{ matrix.node-version }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
 
   # Job id stays `visual`: the ruleset requires a status of exactly that name.
   visual:
@@ -51,32 +92,55 @@ jobs:
     # Layer-1 baselines byte-for-byte. Browsers ship preinstalled in this image.
     container:
       image: mcr.microsoft.com/playwright:v1.58.2-noble
+    # pull-requests: read lets the path classifier list the PR's files.
+    permissions:
+      contents: read
+      pull-requests: read
 
     steps:
       - uses: actions/checkout@v4
 
+      # TD-645: a PR that changes no rendered UI skips every later step and ends green, since a
+      # workflow `paths` filter would leave this required check pending. The PR files API is one
+      # request per 100 files and needs neither git history nor gh in the container; on any API
+      # error the script runs everything. A push to main always runs everything. The rendered-UI
+      # set lives in packages/ui/scripts/visual-paths.mjs.
+      - name: Rendered UI changed?
+        id: paths
+        if: github.event_name == 'pull_request'
+        run: node packages/ui/scripts/visual-paths.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+
       - uses: pnpm/action-setup@v4
+        if: steps.paths.outputs.run != 'false'
 
       - uses: actions/setup-node@v4
+        if: steps.paths.outputs.run != 'false'
         with:
           node-version: 22
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
+        if: steps.paths.outputs.run != 'false'
 
       # Layer 3 — HTML-vs-React parity (computed-style compare). Boots the
       # specimen dev server; a computed-style mismatch fails the run.
       - name: Layer 3 — HTML vs React parity
+        if: steps.paths.outputs.run != 'false'
         run: pnpm --filter @titan-design/react-ui test:visual:compare
 
       # A single-file consumer of global.css, opened over file:// with the network
       # blocked, must still load every titan font face (TD-36).
       - name: Offline fonts — single-file consumer
+        if: steps.paths.outputs.run != 'false'
         run: pnpm --filter @titan-design/react-ui test:offline-fonts
 
       # Layer 1 — component screenshot baselines. Any pixel diff against the
       # committed baselines exits non-zero and fails the build.
       - name: Layer 1 — component screenshot baselines
+        if: steps.paths.outputs.run != 'false'
         run: pnpm --filter @titan-design/react-ui test:visual:baseline
 
       # Layer 1 — REGEN (refresh): regenerate the Layer-1 baselines IN this pinned
@@ -87,10 +151,10 @@ jobs:
       # env noise. To refresh: download the `component-visual-baselines` artifact and
       # commit the changed *-chromium-linux.png under packages/ui/specimen/baseline/.
       - name: Layer 1 — regenerate baselines (refresh)
-        if: failure()
+        if: failure() && steps.paths.outputs.run != 'false'
         run: pnpm --filter @titan-design/react-ui test:visual:baseline:update
       - name: Upload regenerated component baselines
-        if: failure()
+        if: failure() && steps.paths.outputs.run != 'false'
         uses: actions/upload-artifact@v4
         with:
           name: component-visual-baselines
@@ -103,7 +167,22 @@ jobs:
       # committed *-chromium-linux.png under
       # packages/ui/tests/visual/reference/stories.spec.ts-snapshots/ fails the build.
       - name: Layer 2 — Storybook story baselines
+        if: steps.paths.outputs.run != 'false'
         run: pnpm --filter @titan-design/react-ui test:visual:stories
+
+      # The regen step below runs the same suite again and Playwright empties its outputDir on
+      # start, so the failing run's screenshots, error-context and traces must be saved first (TD-636).
+      - name: Upload Layer 2 failure results
+        if: failure() && steps.paths.outputs.run != 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: layer2-failure-results
+          path: |
+            /tmp/titan-ui-playwright-stories/**/test-failed-*.png
+            /tmp/titan-ui-playwright-stories/**/error-context.md
+            /tmp/titan-ui-playwright-stories/**/trace.zip
+          if-no-files-found: warn
+          retention-days: 7
 
       # Layer 2 — REGEN (refresh): same pattern as Layer 1. Runs only on a failed
       # run, renders in the same container, so unchanged stories come
@@ -111,10 +190,10 @@ jobs:
       # no baseline yet) shows up in git. To refresh: download the
       # `storybook-visual-baselines` artifact and commit the changed PNGs.
       - name: Layer 2 — regenerate story baselines (refresh)
-        if: failure()
+        if: failure() && steps.paths.outputs.run != 'false'
         run: pnpm --filter @titan-design/react-ui test:visual:stories:update
       - name: Upload regenerated Storybook baselines
-        if: failure()
+        if: failure() && steps.paths.outputs.run != 'false'
         uses: actions/upload-artifact@v4
         with:
           name: storybook-visual-baselines
@@ -125,87 +204,156 @@ jobs:
       # project of playwright.config.ts. They assert on the DOM and never
       # screenshot.
       - name: Interaction — carousel behaviour
+        if: steps.paths.outputs.run != 'false'
         run: pnpm --filter @titan-design/react-ui exec playwright test --project=interaction
 
       # No html reporter is configured, so the diagnostics are the per-test
-      # -actual/-diff/-expected PNGs: Layer 2 writes to tests/visual/results
-      # (playwright.config.ts outputDir), Layers 1 and 3 to Playwright's default
-      # test-results, the interaction project to /tmp (it must stay outside Storybook's
-      # watched root, or Vite reloads the page mid-test). Uploading a directory that never exists made every failed
-      # gate undiagnosable from CI (titan PR #245 was the first casualty).
+      # -actual/-diff/-expected PNGs: Layer 2 and the interaction project write
+      # to /tmp (playwright.config.ts outputDir), Layers 1 and 3 to Playwright's
+      # default test-results. Uploading a
+      # directory that never exists made every failed gate undiagnosable from CI
+      # (titan PR #245 was the first casualty).
       - name: Upload Playwright failure diagnostics
-        if: failure()
+        if: failure() && steps.paths.outputs.run != 'false'
         uses: actions/upload-artifact@v4
         with:
           name: playwright-failure-diagnostics
           path: |
-            packages/ui/tests/visual/results/
+            /tmp/titan-ui-playwright-stories/
             /tmp/titan-ui-playwright-interaction/
             packages/ui/test-results/
           if-no-files-found: warn
           retention-days: 7
 
-  # Runs the Storybook play functions in the `storybook` vitest browser project; the image
-  # ships Chromium, and addon-vitest compiles stories itself, so nothing builds or serves Storybook.
-  storybook-play:
+  # TD-738: axe color-contrast in Chromium on every story in both themes, against the shrink-only
+  # packages/ui/tests/visual/contrast-stories-baseline.json. Its own job, not a visual step: the
+  # full index is about 14 minutes on one runner, so three shards run beside visual and add nothing
+  # to its critical path. Each shard builds the static Storybook itself (about 30 s): a build
+  # artifact from visual would wait on visual's install and build and cost about as much to move.
+  # `check` needs it, as all-green requires of every job, so it gates through `check` by that route.
+  contrast:
+    name: contrast ${{ matrix.shard }}/3
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.58.2-noble
+    # pull-requests: read lets the path classifier list the PR's files.
+    permissions:
+      contents: read
+      pull-requests: read
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
 
     steps:
       - uses: actions/checkout@v4
 
+      # Same classifier, env and fail-open rule as visual's step (TD-645).
+      - name: Rendered UI changed?
+        id: paths
+        if: github.event_name == 'pull_request'
+        run: node packages/ui/scripts/visual-paths.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+
       - uses: pnpm/action-setup@v4
+        if: steps.paths.outputs.run != 'false'
 
       - uses: actions/setup-node@v4
+        if: steps.paths.outputs.run != 'false'
         with:
           node-version: 22
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
+        if: steps.paths.outputs.run != 'false'
 
-      - name: Storybook play functions
-        run: pnpm test:storybook
+      # One test per story and theme (playwright.contrast.config.ts); a pair or count outside the
+      # baseline fails. The report is every story-theme's counts, uploaded so the baseline can be
+      # regenerated from CI's Chromium: download the three contrast-report-* artifacts and run
+      # node packages/ui/scripts/update-contrast-stories-baseline.mjs <files> --allow-increase.
+      # No `--` before the flag: pnpm 9 forwards it literally and Playwright then reads the shard
+      # as a file filter, so every shard would run the whole index.
+      - name: Story contrast (axe color-contrast)
+        if: steps.paths.outputs.run != 'false'
+        run: pnpm --filter @titan-design/react-ui test:visual:contrast --shard=${{ matrix.shard }}/3
+        env:
+          TITAN_CONTRAST_REPORT: /tmp/contrast-report-${{ matrix.shard }}.jsonl
 
-  # Axe on every story under jsdom, parallel to build. One Node version: jsdom and axe-core
-  # are plain JS, and build still runs every other test on Node 20 and 22.
-  stories-axe:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v4
+      - name: Upload contrast report
+        if: always() && steps.paths.outputs.run != 'false'
+        uses: actions/upload-artifact@v4
         with:
-          node-version: 22
-          cache: pnpm
+          name: contrast-report-${{ matrix.shard }}
+          path: /tmp/contrast-report-${{ matrix.shard }}.jsonl
+          if-no-files-found: warn
+          retention-days: 7
 
-      - run: pnpm install --frozen-lockfile
-
-      - name: Stories axe
-        run: pnpm test:axe
-
-  # pnpm audit reads the lockfile only, so the job needs no install.
-  audit:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v4
+      - name: Upload contrast failure diagnostics
+        if: failure() && steps.paths.outputs.run != 'false'
+        uses: actions/upload-artifact@v4
         with:
-          node-version: 22
+          name: contrast-failure-diagnostics-${{ matrix.shard }}
+          path: /tmp/titan-ui-playwright-contrast/
+          if-no-files-found: warn
+          retention-days: 7
 
-      - run: scripts/audit-retry.sh
-
-  # The aggregator the ruleset will require; all-green also fails if a job here is missing from needs.
+  # The job the ruleset requires (TD-725). Its first step is the all-green aggregator, so it
+  # fails when build, visual or contrast fails, is cancelled or goes missing, and every later step
+  # then skips. The audit, stories-axe and play steps run here rather than in jobs of their own,
+  # each of which paid its own queue wait. The image is visual's: the play functions need its
+  # Chromium.
   check:
     if: always()
-    needs: [build, stories-axe, visual, storybook-play, audit]
+    needs: [build, visual, contrast]
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.58.2-noble
+    # pull-requests: read lets the path classifier list the PR's files.
+    permissions:
+      contents: read
+      pull-requests: read
+
     steps:
       - uses: HJewkes/ci/actions/all-green@v1
         with:
           needs: ${{ toJSON(needs) }}
+
+      - uses: actions/checkout@v4
+
+      # Same classifier, env and fail-open rule as visual's step (TD-645). A PR that changes no
+      # rendered UI skips stories-axe and the play functions; audit and a push to main always run.
+      - name: Rendered UI changed?
+        id: paths
+        if: github.event_name == 'pull_request'
+        run: node packages/ui/scripts/visual-paths.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+
+      - uses: pnpm/action-setup@v4
+
+      # No cache when nothing installs: the post-step would save an empty store.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: ${{ steps.paths.outputs.run != 'false' && 'pnpm' || '' }}
+
+      # pnpm audit reads the lockfile only, so it runs before the install.
+      - name: Audit
+        run: scripts/audit-retry.sh
+
+      - run: pnpm install --frozen-lockfile
+        if: steps.paths.outputs.run != 'false'
+
+      # Axe on every story under jsdom. One Node version: jsdom and axe-core are plain JS.
+      - name: Stories axe
+        if: steps.paths.outputs.run != 'false'
+        run: pnpm test:axe
+
+      # The `storybook` vitest browser project; addon-vitest compiles stories itself, so
+      # nothing builds or serves Storybook.
+      - name: Storybook play functions
+        if: steps.paths.outputs.run != 'false'
+        run: pnpm test:storybook

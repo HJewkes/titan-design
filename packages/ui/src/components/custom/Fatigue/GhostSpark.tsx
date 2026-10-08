@@ -5,7 +5,7 @@
  *
  * A WIDE phase-coloured AXIS BAND ({@link GhostBand}) sits at the BOTTOM, filled per the
  * current rep's phase runs (eccentric magenta / concentric cyan / hold and idle grey),
- * each sized to its ACTUAL time extent, with the ECC / HOLD / CON labels shown INSIDE it.
+ * each sized to its ACTUAL time extent, with the ECC / CON labels shown INSIDE it.
  * Given `targetTempoSeconds` the runs also PACE — muted base, fill earned against the
  * prescribed phase duration, label toned ahead/on-pace/over. Velocity is
  * drawn as MAGNITUDE blooming UP from just above the band ({@link GhostBloom}) — the current
@@ -18,9 +18,11 @@
  * shadow), not a hard outline.
  */
 import { View } from 'react-native'
-import { ghostLineColor, clamp01 } from './fatigue-tokens'
+import { ghostLineColor } from './fatigue-tokens'
+import { ghostScales } from './ghostScales'
 import { GhostBand, BAND_H, BAND_GAP } from './GhostBand'
 import { GhostBloom, type Pt } from './GhostBloom'
+import { ghostSparkA11y } from './ghostSparkSummary'
 import { prescribedSegments, type TempoTuple } from './tempo-pacing'
 import type { RepVelocityCurve } from './fatigue-model'
 
@@ -45,6 +47,8 @@ export interface GhostSparkProps {
    * prescribed: the band then paints flat, which is the honest read.
    */
   targetTempoSeconds?: TempoTuple | null
+  /** Text alternative. Default: a summary of the current rep and its peak velocity. */
+  accessibilityLabel?: string
 }
 
 export function GhostSpark({
@@ -52,7 +56,9 @@ export function GhostSpark({
   width,
   height = 172,
   targetTempoSeconds = null,
+  accessibilityLabel,
 }: GhostSparkProps) {
+  const a11y = ghostSparkA11y(accessibilityLabel, { curves })
   const w = width
   const h = height
   const padL = 12
@@ -66,14 +72,14 @@ export function GhostSpark({
   if (curves.length === 0) {
     const prescribed = prescribedSegments(targetTempoSeconds)
     if (prescribed.length === 0) {
-      return <View testID="ghost-spark" style={{ width: w, height: h }} />
+      return <View testID="ghost-spark" {...a11y} style={{ width: w, height: h }} />
     }
     const totalMs = prescribed[prescribed.length - 1].endMs
     const bandTopEmpty = h - padBot - BAND_H
     const xEmpty = (ms: number): number => padL + (ms / (totalMs * 1.04)) * (w - padL - padR)
     return (
-      <View testID="ghost-spark" style={{ paddingHorizontal: GHOST_GUTTER }}>
-        <svg width={w} height={h}>
+      <View testID="ghost-spark" {...a11y} style={{ paddingHorizontal: GHOST_GUTTER }}>
+        <svg width={w} height={h} aria-hidden="true">
           <GhostBand
             segments={prescribed}
             x={xEmpty}
@@ -88,19 +94,13 @@ export function GhostSpark({
   }
 
   const cur = curves[curves.length - 1]
-  const allSamples = curves.flatMap((c) => c.samples)
-  const vmax = Math.max(0.01, ...allSamples.map((s) => s.velocityMps)) * 1.06
-  const axisMaxT =
-    Math.max(1, ...curves.map((c) => c.samples[c.samples.length - 1]?.tMs ?? 0)) * 1.04
-
   // Band pinned to the bottom; the bloom baseline sits a small gap above its top edge,
   // and magnitude blooms UP toward padTop.
   const bandBottom = h - padBot
   const bandTop = bandBottom - BAND_H
   const baseline = bandTop - BAND_GAP
   const plotH = Math.max(1, baseline - padTop)
-  const x = (ms: number) => padL + (ms / axisMaxT) * (w - padL - padR)
-  const mag = (v: number) => clamp01(v / vmax) * plotH
+  const { x, mag } = ghostScales(curves, w, plotH, { left: padL, right: padR })
 
   const lineTint = ghostLineColor(cur.tempoDeviation, cur.grindSignature)
   const curPts: Pt[] = cur.samples.map((s) => [x(s.tMs), mag(s.velocityMps)])
@@ -109,8 +109,8 @@ export function GhostSpark({
     .map((c) => c.samples.map((s): Pt => [x(s.tMs), mag(s.velocityMps)]))
 
   return (
-    <View testID="ghost-spark" style={{ paddingHorizontal: GHOST_GUTTER }}>
-      <svg width={w} height={h}>
+    <View testID="ghost-spark" {...a11y} style={{ paddingHorizontal: GHOST_GUTTER }}>
+      <svg width={w} height={h} aria-hidden="true">
         {/* the ghost fan + paper-treated tinted current line, blooming up from the band. */}
         <GhostBloom
           current={curPts}
@@ -121,7 +121,7 @@ export function GhostSpark({
         />
 
         {/* the WIDE phase-colored axis band at the bottom — the sole carrier of phase,
-            filled per the current rep's phase runs, ECC/HOLD/CON labelled INSIDE. */}
+            filled per the current rep's phase runs, ECC/CON labelled INSIDE. */}
         <GhostBand
           segments={cur.phaseSegments}
           x={x}

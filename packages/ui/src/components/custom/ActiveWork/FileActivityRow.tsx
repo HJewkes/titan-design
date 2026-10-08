@@ -1,10 +1,11 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, Pressable } from 'react-native'
-import { SparkBars } from '../charts'
+import { cn } from '../../../utils/cn'
+import { SparkBars } from '../../ui/charts/spark-bars'
 import { Typography } from '../../ui/typography'
 import { resolveColor } from '../../../theme/resolve-color'
 import { categoricalPalette } from '../../../theme/tokens/primitives'
-import { FilePathLabel } from './FilePathLabel'
+import { FilePathLabel } from '../../ui/file-path-label'
 
 /** Fill per event kind, shared by the row's counts and the detail pane's tiles. */
 export interface FileEventColors {
@@ -95,7 +96,7 @@ export function FileActivityRow({
       testID="file-activity-row"
       // The row lives inside the lifted list pane (surface-raised), so the selected
       // fill steps one tone above it. Tone as a state cue; no lift.
-      className={`relative gap-1.5 rounded-md px-3 py-2 ${selected ? 'bg-surface-overlay' : ''}`}
+      className={cn('relative gap-1.5 rounded-md px-3 py-2', selected && 'bg-surface-overlay')}
     >
       {selected ? (
         <View

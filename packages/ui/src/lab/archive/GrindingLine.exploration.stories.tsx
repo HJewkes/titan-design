@@ -379,7 +379,7 @@ function GhostSpark({ arch, rule, w, h }: { arch: Arch; rule: RuleKey; w: number
               rx={1.5}
               fill={AXIS_TONE[p.phase]}
             />
-            {label && x(p.t1) - x(p.t0) > 16 && (
+            {!!label && x(p.t1) - x(p.t0) > 16 && (
               // Label sits on the OPPOSITE side of the axis from its line, so it stays clear
               // of the curve: ECC (line runs below) labels ABOVE; CON (line runs above) BELOW.
               <text
@@ -537,7 +537,7 @@ function RepCell({ arch, rule, caption }: { arch: Arch; rule: RuleKey; caption?:
       <View style={[{ borderRadius: 10, padding: 8 }, insetWell(greyRamp[975])]}>
         <GhostSpark arch={arch} rule={rule} w={CHART_W - 16} h={CHART_H} />
       </View>
-      {caption && (
+      {!!caption && (
         <Text
           style={{
             fontSize: 10,

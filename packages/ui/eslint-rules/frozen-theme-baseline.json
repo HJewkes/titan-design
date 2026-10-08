@@ -1,8 +1,5 @@
 {
   "src/components/custom/Workout/BodyMap.tsx": {
     "dark": 1
-  },
-  "src/components/custom/Workout/BodyMapDetailPanel.tsx": {
-    "dark": 1
   }
 }

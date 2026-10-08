@@ -1,0 +1,23 @@
+{
+  "skillOverrides": {
+    "frontend-design": "off",
+    "tailwind": "off"
+  },
+  "permissions": {
+    "deny": ["Skill(frontend-design)", "Skill(tailwind)"]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/post-edit-eslint.mjs",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

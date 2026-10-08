@@ -11,12 +11,12 @@ const NOW = Date.now()
 const meta: Meta<typeof ScheduleTiles> = {
   title: 'Custom/Workout/ScheduleTiles',
   component: ScheduleTiles,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {
         component:
-          '**Molecule.** An HStack of [Tile](?path=/docs/components-atoms-tile--docs); Until reuses [DateTime](?path=/docs/custom-datetime--docs) relative. Used-by ↑ SessionHeader.' +
+          '**Molecule.** An HStack of [Tile](?path=/docs/components-atoms-tile--docs); Until reuses [DateTime](?path=/docs/components-molecules-datetime--docs) relative. Used-by ↑ SessionHeader.' +
           ' Composes **HStack** · **Tile**.',
       },
     },

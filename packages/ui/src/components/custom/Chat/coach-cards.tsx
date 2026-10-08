@@ -2,7 +2,7 @@
 import type { DataPart } from '@titan-design/chat-protocol'
 import { Pill } from '../../ui/pill'
 import { Typography } from '../../ui/typography'
-import { DateTime } from '../DateTime'
+import { DateTime } from '../../ui/date-time'
 import { ChatCard } from './ChatCard'
 import { CHECKIN_PART_TYPE, type CheckinData } from './coach-thread-fixture'
 

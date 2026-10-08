@@ -1,14 +1,14 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View } from 'react-native'
-// Deep import: `CardInset` is not on the card barrel yet (Lab/Depth reaches it the same way).
-import { Card } from '../../ui/card/Card'
+import { cn } from '../../../utils/cn'
+import { Card } from '../../ui/card'
 import { Pill } from '../../ui/pill'
 import { Tile } from '../../ui/tile'
 import { DataRow } from '../../ui/data-row'
-import { DateTime } from '../DateTime'
+import { DateTime } from '../../ui/date-time'
 import { Typography } from '../../ui/typography'
 import { Eyebrow } from '../../ui/eyebrow'
-import { FilePathLabel, splitPath } from './FilePathLabel'
+import { FilePathLabel, splitPath } from '../../ui/file-path-label'
 import { GrowthWell } from './FileActivityGrowthWell'
 import { FILE_EVENT_COLOR, type FileEventColors, type FileActivity } from './FileActivityRow'
 
@@ -66,7 +66,7 @@ export function FileActivityDetail({
   const { dir, base } = splitPath(file.path)
 
   return (
-    <Card className={`flex-1 gap-4 p-4 ${className ?? ''}`} testID="file-activity-detail">
+    <Card className={cn('flex-1 gap-4 p-4', className)} testID="file-activity-detail">
       <View className="gap-1">
         <Typography variant="mono" className="text-xs text-text-tertiary">
           {dir || './'}

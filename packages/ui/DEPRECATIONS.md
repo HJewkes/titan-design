@@ -66,10 +66,10 @@ existing call sites and for `voltras-mcp`, which imports `Pill` directly.
 exports keep their names on the package barrel, so imports of
 `@titan-design/react-ui` are unchanged; only the props below moved.
 
-| Export                                     | Replacement                                                          | Known consumers     | Task   |
-| ------------------------------------------ | -------------------------------------------------------------------- | ------------------- | ------ |
-| `DashboardShell` (+ `DashboardShellProps`) | `WorkoutShell` (+ `WorkoutShellProps`) — identical props, alias kept | in-repo `lab/` only | AW-132 |
-| `defaultNavItems`                          | `workoutNavItems`                                                    | in-repo shell only  | AW-132 |
+| Export                                     | Replacement                                                          | Known consumers                                                         | Task   |
+| ------------------------------------------ | -------------------------------------------------------------------- | ----------------------------------------------------------------------- | ------ |
+| `DashboardShell` (+ `DashboardShellProps`) | `WorkoutShell` (+ `WorkoutShellProps`) — identical props, alias kept | voltras-mcp (live); removal waits on its migration to `WorkoutShell`    | AW-132 |
+| `defaultNavItems`                          | `workoutNavItems`                                                    | voltras-mcp (live); removal waits on its migration to `workoutNavItems` | AW-132 |
 
 **Two breaking prop changes, no alias possible** (a deprecated shim would put a
 workout import back inside the generic shell, which is the cycle this task
@@ -90,8 +90,8 @@ components can honour reduced motion without importing `custom/`, which
 `titan/no-upward-tier-import` forbids (roadmap decision of 2026-09-19, M1). The
 body is unchanged; only its home moved.
 
-| Export                                                    | Replacement                                            | Known consumers    | Task |
-| --------------------------------------------------------- | ------------------------------------------------------ | ------------------ | ---- |
+| Export                                                         | Replacement                                          | Known consumers        | Task  |
+| -------------------------------------------------------------- | ---------------------------------------------------- | ---------------------- | ----- |
 | `usePrefersReducedMotion` from `custom/charts/live-rep-growth` | the same name from `@/hooks/usePrefersReducedMotion` | in-repo `custom/` only | TD-37 |
 
 No consumer import path changes: `live-rep-growth` was never on a barrel, so the
@@ -171,6 +171,132 @@ repoints them to `hooks/useMeasuredWidth`; the file goes with the shim in 0.23.0
 While this row exists, `MATURITY.md` clause 2's fourth condition keeps `table` at
 `status:candidate`; it becomes promotable when the shim is deleted in 0.23.0.
 
+## Migration M5 — `SparkBars` moved to `ui/charts/`
+
+`SparkBars` is domain-free and paints data marks from values, so by the placement rule
+(`CLAUDE.md`, Placement) its home is `ui/charts/spark-bars`. The component, test and story are
+unchanged except for the story title, which is now `Components/Atoms/SparkBars`.
+
+| Export                                             | Replacement                                | Known consumers                                  | Task   |
+| -------------------------------------------------- | ------------------------------------------ | ------------------------------------------------ | ------ |
+| `SparkBars`, `SparkBarsProps` from `custom/charts` | the same names from `ui/charts/spark-bars` | none in-repo (`ActiveWork` imports the new path) | TD-188 |
+
+**No published API change.** `SparkBars` still comes off the package root barrel, now through
+`components/ui`. Only a deep relative import of `components/custom/charts` hits the shim,
+which is tagged `@deprecated` for one release and **disappears in 0.23.0**.
+
+While this row exists, `MATURITY.md` clause 2's fourth condition keeps `spark-bars` at
+`status:candidate`; it becomes promotable when the shim is deleted in 0.23.0.
+
+## Migration M6 — `FilePathLabel` moved to `ui/file-path-label`
+
+`FilePathLabel` is domain-free (a file path is not an active-work concept) and the console session
+sidebar and the Codewatch family need it, so by the placement rule (`CLAUDE.md`, Placement) its home
+is `ui/file-path-label`. Component, test and story are unchanged except for the story title, which is
+now `Components/Atoms/FilePathLabel`.
+
+| Export                                                                                           | Replacement                              | Known consumers                                  | Task   |
+| ------------------------------------------------------------------------------------------------ | ---------------------------------------- | ------------------------------------------------ | ------ |
+| `FilePathLabel`, `splitPath`, `FilePathLabelProps`, `FilePathLabelSize` from `custom/ActiveWork` | the same names from `ui/file-path-label` | none in-repo (`ActiveWork` imports the new path) | TD-418 |
+
+**No published API change.** `FilePathLabel` still comes off the package root barrel, now through
+`components/ui`. Only a deep relative import of `custom/ActiveWork/FilePathLabel` hits the shim,
+which is tagged `@deprecated` for one release and **disappears in 0.23.0**.
+
+While this row exists, `MATURITY.md` clause 2's fourth condition keeps `file-path-label` at
+`status:candidate`; it becomes promotable when the shim is deleted in 0.23.0.
+
+## Migration M7 — `DateTime` moved to `ui/date-time`, `live` renamed `isLive`
+
+`DateTime` is domain-free (a formatted date or clock is not an active-work, chat or workout
+concept) and ten files across `ActiveWork`, `Chat`, `Workout` and `shell` use it, so by the placement
+rule (`CLAUDE.md`, Placement) its home is `ui/date-time`. Markup and class names are unchanged. The
+story title was already `Components/Molecules/DateTime`, so story ids do not change.
+
+| Export                                                                                 | Replacement                        | Known consumers                                   | Task   |
+| -------------------------------------------------------------------------------------- | ---------------------------------- | ------------------------------------------------- | ------ |
+| `DateTime`, `formatDateTime`, `DateTimeProps`, `DateTimeFormat` from `custom/DateTime` | the same names from `ui/date-time` | none in-repo (all ten importers use the new path) | TD-428 |
+| `<DateTime live>`                                                                      | `<DateTime isLive>`                | none in-repo (`TopBar` passes `isLive`)           | TD-428 |
+
+**No published API change.** `DateTime` still comes off the package root barrel, now through
+`components/ui`. Only a deep relative import of `custom/DateTime` hits the shim, which is tagged
+`@deprecated` for one release and **disappears in 0.23.0**. `live` stays as a `@deprecated` alias
+that maps to `isLive`; the two render identically, and `isLive` wins when both are passed. The alias
+is removed in 0.23.0 with the shim.
+
+While this row exists, `MATURITY.md` clause 2's fourth condition keeps `date-time` at
+`status:candidate`; it becomes promotable when the shim is deleted in 0.23.0.
+
+## Migration M8 — `Scatter`, `Treemap` and `Gauge` moved to `ui/charts/`
+
+The three charts are domain-free and paint data marks from a scale, so by the placement rule
+(`CLAUDE.md`, Placement) their homes are `ui/charts/scatter`, `ui/charts/treemap` and
+`ui/charts/gauge`. Components, tests and the Scatter characterisation snapshot are unchanged; class
+names are byte-identical (`scripts/compare-classnames.mjs`). The story titles are now
+`Components/Atoms/Scatter`, `Components/Atoms/Treemap` and `Components/Atoms/Gauge`, so their story
+ids change from `custom-charts-*` to `components-atoms-*`. The roadmap called this move M7 before
+`DateTime` took that label.
+
+| Export                                                                          | Replacement                             | Known consumers                                 | Task   |
+| ------------------------------------------------------------------------------- | --------------------------------------- | ----------------------------------------------- | ------ |
+| `Scatter`, `ScatterProps`, `ScatterDatum`, `ScatterAxis` from `custom/Scatter`  | the same names from `ui/charts/scatter` | none in-repo                                    | TD-471 |
+| `Treemap`, `TreemapProps`, `TreemapDatum`, `TreemapScale` from `custom/Treemap` | the same names from `ui/charts/treemap` | none in-repo (both stories import the new path) | TD-471 |
+| `Gauge`, `GaugeProps`, `GaugeThreshold` from `custom/Gauge`                     | the same names from `ui/charts/gauge`   | none in-repo                                    | TD-471 |
+
+**No published API change.** The three still come off the package root barrel, now through
+`components/ui`. Only a deep relative import of `custom/Scatter`, `custom/Treemap` or `custom/Gauge`
+hits a shim, which is tagged `@deprecated` for one release and **disappears in 0.23.0**.
+
+While these rows exist, `MATURITY.md` clause 2's fourth condition keeps `scatter`, `treemap` and
+`gauge` at `status:candidate`; they become promotable when the shims are deleted in 0.23.0.
+
+| Export               | Replacement                                                                         | Known consumers                                 | Task   |
+| -------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------- | ------ |
+| `<Scatter diagonal>` | `<Scatter referenceLines={[{ slope: -1, intercept: 1 }]}>` (`ScatterReferenceLine`) | none in-repo (the stories use `referenceLines`) | TD-472 |
+
+`diagonal` stays as a `@deprecated` alias that draws the same segment with the same dashed
+`hairline-strong` stroke and keeps its `scatter-diagonal` test id; it is removed in 0.23.0.
+`referenceLines` takes `{ y }`, `{ x }` or `{ slope, intercept }`, each with an optional `id` and
+`label`, clipped to the plot box. They never widen the domain.
+
+## Migration M9 — `Metric` moved to `ui/metric`
+
+`Metric` is domain-free (a figure, a label, a unit and a trend arrow), and the `ui/` stat presets
+must compose it, which `ui/*` may not do from `custom/*`. By the placement rule (`CLAUDE.md`,
+Placement) its home is `ui/metric`. It gains `align` (`start` | `center` | `end`) and `tone` (the
+`PillTone`s bar `brand-secondary`, coloured from semantic tokens). Both are optional and the
+defaults (`center`, no tone) render byte-identical markup and class names
+(`Metric.characterise.test.tsx`). The story title stays `Components/Molecules/Metric`; the per-state
+stories fold into `Default`'s controls.
+
+| Export                                                                                         | Replacement                     | Known consumers                                      | Task  |
+| ---------------------------------------------------------------------------------------------- | ------------------------------- | ---------------------------------------------------- | ----- |
+| `Metric`, `MetricGroup`, `MetricProps`, `MetricGroupProps`, `MetricTrend` from `custom/Metric` | the same names from `ui/metric` | in-repo `custom/Workout/GoalTrajectoryWeekTips` only | TD-53 |
+
+**No published API change.** `Metric` still comes off the package root barrel, now through
+`components/ui`. Only a deep relative import of `custom/Metric` hits the shim, which is tagged
+`@deprecated` for one release and **disappears in 0.23.0**. `GoalTrajectoryWeekTips` stays on the
+shim until its own follow-up; the other three in-repo importers use the new path.
+
+While this row exists, `MATURITY.md` clause 2's fourth condition keeps `metric` at
+`status:candidate`; it becomes promotable when the shim is deleted in 0.23.0.
+
+## Tabs selection props — `index` / `defaultIndex` / `onChange` renamed
+
+`Tabs` now names its controlled state `value` / `defaultValue` / `onValueChange`, the repo convention
+(`CLAUDE.md`, "Controlled state is named `x`, `defaultX`, `onXChange`"), typed by the new
+`ControlledProps<T>` in `src/utils`. The value is still the tab index.
+
+| Export                | Replacement            | Known consumers                                 | Task   |
+| --------------------- | ---------------------- | ----------------------------------------------- | ------ |
+| `<Tabs index>`        | `<Tabs value>`         | none in-repo                                    | TD-270 |
+| `<Tabs defaultIndex>` | `<Tabs defaultValue>`  | none in-repo (both stories pass `defaultValue`) | TD-270 |
+| `<Tabs onChange>`     | `<Tabs onValueChange>` | none in-repo                                    | TD-270 |
+
+The three stay as `@deprecated` aliases and keep working. The new name wins when both are passed,
+and a change fires both `onValueChange` and `onChange`. Unlike before, pressing the tab that is
+already selected fires neither, since `useControllableState` drops a change to the current value.
+
 ## Fatigue tokens — `TONE_COLOR` replaced by `TONE_TOKEN` (VW-316)
 
 **Breaking, no alias possible.** `TONE_COLOR` held colours resolved at import
@@ -185,8 +311,13 @@ would re-enter the frozen-theme baseline.
 Migration is one line at the point of use — hold a live palette and index it:
 
 ```ts
-const t = getSemanticColors(useSurfaceMode())
-const color = t[TONE_TOKEN[tone]] // was TONE_COLOR[tone]
+import { getSemanticColors, TONE_TOKEN, useSurfaceMode } from '@titan-design/react-ui'
+import type { DimensionTone } from '@titan-design/react-ui'
+
+function useToneColor(tone: DimensionTone) {
+  const t = getSemanticColors(useSurfaceMode())
+  return t[TONE_TOKEN[tone]] // was TONE_COLOR[tone]
+}
 ```
 
 The three values are `status-success` / `status-warning` / `status-error`, which

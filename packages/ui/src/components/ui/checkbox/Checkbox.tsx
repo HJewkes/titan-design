@@ -1,5 +1,6 @@
 import React, { forwardRef } from 'react'
 import { Pressable, View, Text, type PressableProps } from 'react-native'
+import { useControllableState } from '../../../hooks/useControllableState'
 import { cn } from '../../../utils/cn'
 
 export type CheckboxSize = 'sm' | 'md' | 'lg'
@@ -23,6 +24,8 @@ export interface CheckboxProps extends Omit<PressableProps, 'children'> {
   value?: string
   /** Callback when checked state changes */
   onCheckedChange?: (checked: boolean) => void
+  /** Initial checked state when `isChecked` is not provided */
+  defaultIsChecked?: boolean
   /** Additional className */
   className?: string
 }
@@ -45,7 +48,8 @@ const sizeStyles: Record<CheckboxSize, { box: string; icon: string; label: strin
  */
 export const Checkbox = forwardRef<View, CheckboxProps>(function Checkbox(
   {
-    isChecked = false,
+    isChecked: isCheckedProp,
+    defaultIsChecked = false,
     isIndeterminate = false,
     isDisabled = false,
     isInvalid = false,
@@ -60,10 +64,15 @@ export const Checkbox = forwardRef<View, CheckboxProps>(function Checkbox(
   ref
 ) {
   const styles = sizeStyles[size]
+  const [isChecked, setIsChecked] = useControllableState({
+    value: isCheckedProp,
+    defaultValue: defaultIsChecked,
+    onChange: onCheckedChange,
+  })
 
   const handlePress = () => {
     if (!isDisabled) {
-      onCheckedChange?.(!isChecked)
+      setIsChecked(!isChecked)
     }
   }
 
@@ -73,10 +82,8 @@ export const Checkbox = forwardRef<View, CheckboxProps>(function Checkbox(
       disabled={isDisabled}
       onPress={handlePress}
       accessibilityRole="checkbox"
-      accessibilityState={{
-        checked: isIndeterminate ? 'mixed' : isChecked,
-        disabled: isDisabled,
-      }}
+      accessibilityState={{ disabled: isDisabled }}
+      aria-checked={isIndeterminate ? 'mixed' : isChecked}
       accessibilityLabel={label}
       className={cn('flex-row items-start gap-2', isDisabled && 'opacity-50', className)}
       {...props}
@@ -87,26 +94,26 @@ export const Checkbox = forwardRef<View, CheckboxProps>(function Checkbox(
           styles.box,
           isChecked || isIndeterminate
             ? 'bg-brand-primary border-brand-primary'
-            : 'bg-transparent border-hairline',
+            : 'bg-transparent border-border-input',
           isInvalid && 'border-status-error',
           !isDisabled && 'web:hover:border-brand-primary'
         )}
       >
-        {isChecked && !isIndeterminate && (
+        {!!isChecked && !isIndeterminate && (
           <View className={cn('bg-on-brand-primary rounded-sm', styles.icon)}>
             {/* Checkmark icon - using a simple view as placeholder */}
             <Text className="text-brand-primary font-bold text-center leading-none">✓</Text>
           </View>
         )}
-        {isIndeterminate && <View className={cn('bg-on-brand-primary h-0.5 w-2/3 rounded')} />}
+        {!!isIndeterminate && <View className={cn('bg-on-brand-primary h-0.5 w-2/3 rounded')} />}
       </View>
 
-      {(label || helperText) && (
+      {!!(label || helperText) && (
         <View className="flex-1">
-          {label && (
+          {!!label && (
             <Text className={cn('text-text-primary font-medium', styles.label)}>{label}</Text>
           )}
-          {helperText && <Text className="text-xs text-text-secondary mt-0.5">{helperText}</Text>}
+          {!!helperText && <Text className="text-xs text-text-secondary mt-0.5">{helperText}</Text>}
         </View>
       )}
     </Pressable>
@@ -134,7 +141,7 @@ export function CheckboxGroup({
 }: CheckboxGroupProps) {
   return (
     <View className={cn('gap-1', className)}>
-      {label && <Text className="text-sm font-medium text-text-primary mb-2">{label}</Text>}
+      {!!label && <Text className="text-sm font-medium text-text-primary mb-2">{label}</Text>}
       <View className={cn(orientation === 'vertical' ? 'flex-col gap-2' : 'flex-row gap-4')}>
         {children}
       </View>

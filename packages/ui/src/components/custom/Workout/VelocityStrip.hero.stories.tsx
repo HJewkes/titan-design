@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
-import { VelocityStrip, DualVelocityStrip } from './VelocityStrip'
+import { VelocityStrip } from './VelocityStrip'
+import { DualVelocityStrip } from './DualVelocityStrip'
 import { FIXED_MAX_VALUE, PEAK_HEADROOM } from '../charts/SetBarChart'
 import {
   Sheet,
@@ -16,7 +17,7 @@ import {
   IN_PROGRESS_SET,
   IN_PROGRESS_LAGGING,
   wallDecorator,
-} from './velocity-story-kit'
+} from '../../../lab/velocity-story-kit/velocity-story-kit'
 
 /**
  * `hero` — the across-the-room wall treatment. Tall bars, per-bar value labels,
@@ -37,7 +38,7 @@ const meta: Meta<typeof VelocityStrip> = {
   parameters: {
     docs: { description: { component: 'Composes **SetBarChart** · **ChartSideRail**.' } },
   },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
 }
 export default meta
 type Story = StoryObj<typeof VelocityStrip>

@@ -1,4 +1,5 @@
-import { emptyDraft, type ReviewDraft } from '../src/feedback.ts'
+import { draftAnswer, emptyDraft, type AnswerDraft, type ReviewDraft } from '../src/feedback.ts'
+import { isAnswered, offersBuiltInRevision } from '../src/round.ts'
 import {
   linksForVariant,
   optionVariants,
@@ -6,8 +7,9 @@ import {
   roundLayout,
   type ResolvedSection,
 } from '../src/sections.ts'
-import type { Annotation, Manifest, Verdict } from '../src/schema.ts'
+import type { Annotation, Manifest, Question, Verdict } from '../src/schema.ts'
 import { loadDraft, type DraftStorage } from './draftStore.ts'
+import { pinId, pinNumber } from './pins.ts'
 
 export { orderedQuestions }
 
@@ -41,6 +43,7 @@ export type Action =
   | { type: 'pinNote'; key: string; id: string; note: string }
   | { type: 'removePin'; key: string; id: string }
   | { type: 'pick'; id: string; option: string; many: boolean }
+  | { type: 'revision'; id: string }
   | { type: 'value'; id: string; value: number }
   | { type: 'text'; id: string; text: string }
   | { type: 'answerComment'; id: string; comment: string }
@@ -49,11 +52,19 @@ export type Action =
   | { type: 'toggleColumns' }
   | { type: 'screen'; screen: Screen; errors?: string[] }
 
+/** Each verdict, its hotkey and its button label; the card and the keyboard both read this. */
+export const VERDICTS: { key: string; verdict: Exclude<Verdict, null>; label: string }[] = [
+  { key: '1', verdict: 'chosen', label: 'Chosen' },
+  { key: '2', verdict: 'rejected', label: 'Rejected' },
+  { key: '3', verdict: 'maybe', label: 'Maybe' },
+]
+
+/** The hotkey that clears a frame's verdict. */
+export const CLEAR_VERDICT_KEY = '0'
+
 export const VERDICT_KEYS: Record<string, Verdict> = {
-  '1': 'chosen',
-  '2': 'rejected',
-  '3': 'maybe',
-  '0': null,
+  ...Object.fromEntries(VERDICTS.map(({ key, verdict }) => [key, verdict])),
+  [CLEAR_VERDICT_KEY]: null,
 }
 
 /** A section with nothing to answer still gets one stop, so its page can be reached. */
@@ -137,6 +148,19 @@ export function pageStepAction(manifest: Manifest, active: number, delta: number
   return target ? { type: 'jump', index: target.first } : null
 }
 
+/** A recommendation stays hidden until its question is answered, so it cannot anchor the pick. */
+export function recommendationVisible(
+  manifest: Manifest,
+  question: Question,
+  draft: AnswerDraft
+): boolean {
+  if (question.kind === 'text' || !question.recommendation) return false
+  return (
+    manifest.recommendations === 'shown' ||
+    isAnswered(question, { ...draft, ...draftAnswer(question, draft) })
+  )
+}
+
 export function initialState(manifest: Manifest): ReviewState {
   return {
     draft: emptyDraft(manifest),
@@ -162,8 +186,7 @@ export function restoredState(
 }
 
 function nextPinId(key: string, pins: Annotation[]): string {
-  const taken = pins.map((p) => Number(p.id.split('-').pop()) || 0)
-  return `${key}-${Math.max(0, ...taken) + 1}`
+  return pinId(key, Math.max(0, ...pins.map((p) => pinNumber(p.id))) + 1)
 }
 
 function updateVariant(
@@ -255,7 +278,7 @@ function linkVerdict(
         ? updateAnswer(d, question.id, (a) => ({
             picks: (a.picks ?? []).includes(option) ? a.picks : [...(a.picks ?? []), option],
           }))
-        : updateAnswer(d, question.id, () => ({ pick: option }))
+        : updateAnswer(d, question.id, () => ({ pick: option, revision: undefined }))
     if (many)
       return updateAnswer(d, question.id, (a) => ({
         picks: (a.picks ?? []).filter((p) => p !== option),
@@ -270,7 +293,11 @@ function reduceAnswer(draft: ReviewDraft, action: Action): ReviewDraft {
       return updateAnswer(draft, action.id, (a) =>
         action.many
           ? { picks: togglePick(a.picks, action.option) }
-          : { pick: a.pick === action.option ? undefined : action.option }
+          : { pick: a.pick === action.option ? undefined : action.option, revision: undefined }
+      )
+    case 'revision':
+      return updateAnswer(draft, action.id, (a) =>
+        a.revision ? { revision: undefined } : { revision: true, pick: undefined }
       )
     case 'value':
       return updateAnswer(draft, action.id, () => ({ value: action.value }))
@@ -292,11 +319,24 @@ function addPin(state: ReviewState, action: Extract<Action, { type: 'addPin' }>)
   return { ...state, draft, focusPin: pin.id }
 }
 
+/** A revision request picks no frame, so every frame this question's options stand for stops being chosen. */
+function linkRevision(manifest: Manifest, draft: ReviewDraft, id: string): ReviewDraft {
+  const question = manifest.questions.find((q) => q.id === id)
+  if (!question || !draftAnswer(question, draft.answers[id] ?? { comment: '' }).revisionRequested)
+    return draft
+  return [...optionVariants(manifest, question).values()].reduce(
+    (d, key) => (d.variants[key]?.verdict === 'chosen' ? setVerdict(d, key, null) : d),
+    draft
+  )
+}
+
 /** Keeps a pick and the verdict of the frame it stands for in step, in one action. */
 function reduceLinked(manifest: Manifest, draft: ReviewDraft, action: Action): ReviewDraft {
   const next = reduceAnswer(draft, action)
-  if (action.type === 'pick') return linkPick(manifest, next, action)
+  if (action.type === 'pick')
+    return linkRevision(manifest, linkPick(manifest, next, action), action.id)
   if (action.type === 'verdict') return linkVerdict(manifest, next, action)
+  if (action.type === 'revision') return linkRevision(manifest, next, action.id)
   return next
 }
 
@@ -341,7 +381,9 @@ export function numberKeyAction(manifest: Manifest, stop: Stop, digit: string): 
       : null
   if (question?.kind !== 'pick-one' && question?.kind !== 'pick-many') return null
   const option = question.options[n - 1]
-  return option === undefined
-    ? null
-    : { type: 'pick', id: question.id, option, many: question.kind === 'pick-many' }
+  if (option === undefined)
+    return offersBuiltInRevision(question) && n === question.options.length + 1
+      ? { type: 'revision', id: question.id }
+      : null
+  return { type: 'pick', id: question.id, option, many: question.kind === 'pick-many' }
 }
