@@ -7,14 +7,15 @@ import { EmptyState } from '../../empty-state'
 import { useSurfaceMode } from '../../surface'
 import {
   DIAGONAL_LINE,
+  PLOT_BOTTOM,
   PLOT_LEFT,
+  PLOT_RIGHT,
   PLOT_TOP,
   referenceSegments,
   scatterAriaLabel,
   scatterLayout,
   type ScatterAxis,
   type ScatterDatum,
-  type ScatterLayout,
   type ScatterReferenceLine,
 } from './scatterGeometry'
 import { ScatterFrame } from './ScatterFrame'
@@ -97,7 +98,9 @@ export function Scatter({
       </View>
 
       {data.length === 0 ? (
-        <ScatterEmptyOverlay layout={layout}>{emptyState}</ScatterEmptyOverlay>
+        <ScatterEmptyOverlay width={width} height={height}>
+          {emptyState}
+        </ScatterEmptyOverlay>
       ) : (
         /* Interactive point overlay (kept out of the image-role canvas). */
         <View
@@ -119,12 +122,17 @@ export function Scatter({
   )
 }
 
-/** The "No data" placeholder (or the consumer's), centred inside the axes over the plot box. */
+/**
+ * The "No data" placeholder (or the consumer's), centred inside the axes. The layer spans the
+ * chart like the point overlay does; the plot margins pad it so the content centres on the plot box.
+ */
 function ScatterEmptyOverlay({
-  layout,
+  width,
+  height,
   children,
 }: {
-  layout: ScatterLayout
+  width: number
+  height: number
   children?: ReactNode
 }) {
   return (
@@ -132,10 +140,14 @@ function ScatterEmptyOverlay({
       className="items-center justify-center"
       style={{
         position: 'absolute',
-        left: PLOT_LEFT,
-        top: PLOT_TOP,
-        width: layout.innerW,
-        height: layout.innerH,
+        top: 0,
+        left: 0,
+        width,
+        height,
+        paddingLeft: PLOT_LEFT,
+        paddingTop: PLOT_TOP,
+        paddingRight: PLOT_RIGHT,
+        paddingBottom: PLOT_BOTTOM,
       }}
       testID="scatter-empty"
     >

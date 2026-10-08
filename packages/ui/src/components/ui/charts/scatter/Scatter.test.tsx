@@ -127,7 +127,14 @@ describe('Scatter', () => {
       render(<Scatter data={[]} width={200} height={200} />)
 
       const overlay = screen.getByTestId('scatter-empty')
-      expect(overlay).toHaveStyle({ left: '40px', top: '12px', width: '148px', height: '154px' })
+      expect(overlay).toHaveStyle({
+        width: '200px',
+        height: '200px',
+        paddingLeft: '40px',
+        paddingTop: '12px',
+        paddingRight: '12px',
+        paddingBottom: '34px',
+      })
     })
 
     it('shows the consumer emptyState instead of the default', () => {

@@ -489,7 +489,7 @@ exports[`Scatter characterisation > on a dark surface > renders the Empty story 
       <div
         class="css-view-175oi2r"
         data-testid="scatter-empty"
-        style="position: absolute; left: 40px; top: 12px; width: 348px; height: 254px;"
+        style="position: absolute; top: 0px; left: 0px; width: 400px; height: 300px; padding: 12px 12px 34px 40px;"
       >
         <div
           class="css-view-175oi2r"
@@ -2388,7 +2388,7 @@ exports[`Scatter characterisation > on a light surface > renders the Empty story
       <div
         class="css-view-175oi2r"
         data-testid="scatter-empty"
-        style="position: absolute; left: 40px; top: 12px; width: 348px; height: 254px;"
+        style="position: absolute; top: 0px; left: 0px; width: 400px; height: 300px; padding: 12px 12px 34px 40px;"
       >
         <div
           class="css-view-175oi2r"
