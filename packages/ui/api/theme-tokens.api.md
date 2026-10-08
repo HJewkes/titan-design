@@ -52,7 +52,7 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'brand-secondary-strong': "rgba(48, 123, 155, 0.50)";
     readonly 'brand-secondary-hover': "#2A617F";
     readonly 'brand-secondary-active': "#22465F";
-    readonly 'on-brand-primary': "#FFFFFF";
+    readonly 'on-brand-primary': "#1C1916";
     readonly 'on-brand-secondary': "#FFFFFF";
     readonly 'on-brand-primary-subtle': "#983804";
     readonly 'on-brand-secondary-subtle': "#2A617F";
@@ -94,7 +94,7 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'status-success-solid': "#298732";
     readonly 'status-error-solid': "#D14343";
     readonly 'status-warning-solid': "#C27400";
-    readonly 'status-info-solid': "#2196F3";
+    readonly 'status-info-solid': "#1072CB";
     readonly 'on-status-success-subtle': "#2B6B25";
     readonly 'on-status-error-subtle': "#A4221C";
     readonly 'on-status-warning-subtle': "#814D14";
@@ -746,7 +746,7 @@ export const semanticColorsLight: {
     readonly 'brand-secondary-strong': "rgba(48, 123, 155, 0.50)";
     readonly 'brand-secondary-hover': "#2A617F";
     readonly 'brand-secondary-active': "#22465F";
-    readonly 'on-brand-primary': "#FFFFFF";
+    readonly 'on-brand-primary': "#1C1916";
     readonly 'on-brand-secondary': "#FFFFFF";
     readonly 'on-brand-primary-subtle': "#983804";
     readonly 'on-brand-secondary-subtle': "#2A617F";
@@ -788,7 +788,7 @@ export const semanticColorsLight: {
     readonly 'status-success-solid': "#298732";
     readonly 'status-error-solid': "#D14343";
     readonly 'status-warning-solid': "#C27400";
-    readonly 'status-info-solid': "#2196F3";
+    readonly 'status-info-solid': "#1072CB";
     readonly 'on-status-success-subtle': "#2B6B25";
     readonly 'on-status-error-subtle': "#A4221C";
     readonly 'on-status-warning-subtle': "#814D14";
