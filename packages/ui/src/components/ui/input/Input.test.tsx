@@ -2,15 +2,9 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Input } from './Input'
-import { cn } from '../../../utils/cn'
 import { Surface } from '../surface'
 import { insetFieldStyle } from '../surface/insetField'
 import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
-
-vi.mock('../../../utils/cn', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../../utils/cn')>()
-  return { ...actual, cn: vi.fn(actual.cn) }
-})
 
 function normalisedColor(color: string) {
   const probe = document.createElement('div')
@@ -86,7 +80,10 @@ describe('Input', () => {
           </Surface>
         )
         const row = screen.getByPlaceholderText('Filled').parentElement as HTMLElement
-        const expected = insetFieldStyle(level, mode) as { backgroundColor: string; boxShadow: string }
+        const expected = insetFieldStyle(level, mode) as {
+          backgroundColor: string
+          boxShadow: string
+        }
         expect(expected.boxShadow).toContain('inset')
         expect(row.style.boxShadow).toBe(expected.boxShadow)
         expect(row.style.backgroundColor).toBe(normalisedColor(expected.backgroundColor))

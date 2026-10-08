@@ -3,13 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Select } from './Select'
 import { Surface } from '../surface'
-import { cn } from '../../../utils/cn'
 import { insetFieldStyle } from '../surface/insetField'
-
-vi.mock('../../../utils/cn', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../../utils/cn')>()
-  return { ...actual, cn: vi.fn(actual.cn) }
-})
 
 const defaultOptions = [
   { value: '1', label: 'Option 1' },
@@ -166,7 +160,10 @@ describe('Select', () => {
             <Select options={defaultOptions} variant="filled" />
           </Surface>
         )
-        const expected = insetFieldStyle(level, mode) as { backgroundColor: string; boxShadow: string }
+        const expected = insetFieldStyle(level, mode) as {
+          backgroundColor: string
+          boxShadow: string
+        }
         const trigger = screen.getByRole('combobox')
         const probe = document.createElement('div')
         probe.style.backgroundColor = expected.backgroundColor

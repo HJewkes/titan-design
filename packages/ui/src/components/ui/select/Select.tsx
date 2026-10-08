@@ -1,8 +1,7 @@
 import { useState, createContext, useContext } from 'react'
 import { View, Text, Pressable, ScrollView, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
-import { useSurface } from '../surface'
-import { insetFieldStyle } from '../surface/insetField'
+import { useInsetFieldStyle } from '../surface/insetField'
 import { SelectPopover } from './SelectPopover'
 import { hasSelection, isValueSelected, selectDisplayLabel, toggleValue } from './selectModel'
 
@@ -101,8 +100,7 @@ export function Select<T extends string = string>({
   ...props
 }: SelectProps<T>) {
   const [isOpen, setIsOpen] = useState(false)
-  const surface = useSurface()
-  const well = variant === 'filled' ? insetFieldStyle(surface.level, surface.mode) : undefined
+  const well = useInsetFieldStyle(variant === 'filled')
 
   const selection = { isMulti, value, values }
 
