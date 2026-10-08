@@ -1,5 +1,5 @@
-import { useEffect, useState, type ReactNode } from 'react'
-import { View, Pressable, Animated, Easing } from 'react-native'
+import type { ReactNode } from 'react'
+import { View, Pressable } from 'react-native'
 import { WeekRow, type WeekRowProps } from './WeekRow'
 import {
   MESO_ACCENT_GRADIENT_DARK,
@@ -12,27 +12,6 @@ const BRAND_PRIMARY_LIGHT = MESO_ACCENT_GRADIENT_LIGHT
 /** Gradient stops for the 3px top accent: dark -> primary -> light. */
 function accentStops(brandPrimary: string): string[] {
   return [BRAND_PRIMARY_DARK, brandPrimary, BRAND_PRIMARY_LIGHT]
-}
-
-/** Border colour easing from `from` to `to` over 250 ms as `highlighted` flips. */
-export function useHighlightBorder(highlighted: boolean, from: string, to: string) {
-  const [highlight] = useState(() => new Animated.Value(highlighted ? 1 : 0))
-
-  useEffect(() => {
-    const animation = Animated.timing(highlight, {
-      toValue: highlighted ? 1 : 0,
-      duration: 250,
-      easing: Easing.out(Easing.ease),
-      useNativeDriver: false,
-    })
-    animation.start()
-    return () => animation.stop()
-  }, [highlighted, highlight])
-
-  return highlight.interpolate({
-    inputRange: [0, 1],
-    outputRange: [from, to],
-  })
 }
 
 export function MesoAccentStrip({ brandPrimary }: { brandPrimary: string }) {
