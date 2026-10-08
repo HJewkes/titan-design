@@ -15,6 +15,12 @@ import {
   type TempoLiveState,
 } from './tempoDisplayModel'
 
+// The explicit line height keeps the line box the old Inter cell had; mono's `leading-normal`
+// is taller and nudged the live cells' vertical position against their phase fills.
+function segmentStyle(color: string, fontSize: number) {
+  return { color, fontSize, fontWeight: '600' as const, lineHeight: fontSize * 1.2 }
+}
+
 export function TempoValue({
   value,
   color,
@@ -25,7 +31,7 @@ export function TempoValue({
   fontSize: number
 }) {
   return (
-    <Typography variant="mono" color="inherit" style={{ color, fontSize, fontWeight: '600' }}>
+    <Typography variant="mono" color="inherit" style={segmentStyle(color, fontSize)}>
       {value}
     </Typography>
   )
@@ -33,7 +39,7 @@ export function TempoValue({
 
 export function TempoSeparator({ color, fontSize }: { color: string; fontSize: number }) {
   return (
-    <Typography variant="mono" color="inherit" style={{ color, fontSize, fontWeight: '600' }}>
+    <Typography variant="mono" color="inherit" style={segmentStyle(color, fontSize)}>
       -
     </Typography>
   )
