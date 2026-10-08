@@ -237,7 +237,7 @@
     "#898c94|#fcfbf9": 1
   },
   "components-molecules-autocomplete--with-error dark": {
-    "#d14343|#252321": 1
+    "#e05254|#252321": 1
   },
   "components-molecules-autocomplete--with-label dark": {
     "#888684|#252321": 1
@@ -315,13 +315,13 @@
   "components-molecules-formfield--validation-states dark": {
     "#575553|#292725": 1,
     "#888684|#252321": 1,
-    "#d14343|#252321": 1
+    "#e05254|#252321": 1
   },
   "components-molecules-formfield--validation-states light": {
     "#b9b8b7|#fcfbf9": 1
   },
   "components-molecules-formfield--with-error dark": {
-    "#d14343|#252321": 1
+    "#e05254|#252321": 1
   },
   "components-molecules-formfield--with-helper-text dark": {
     "#888684|#252321": 1
@@ -336,16 +336,16 @@
     "#a0a3a9|#ffffff": 1
   },
   "components-molecules-input--password-with-error dark": {
-    "#d14343|#252321": 1
+    "#e05254|#252321": 1
   },
   "components-molecules-input--with-error dark": {
-    "#d14343|#252321": 1
+    "#e05254|#252321": 1
   },
   "components-molecules-menu--default light": {
     "#ff7900|#ffffff": 1
   },
   "components-molecules-menu--destructive-item dark": {
-    "#d14343|#373635": 1
+    "#e05254|#373635": 1
   },
   "components-molecules-menu--disabled-items light": {
     "#ff7900|#ffffff": 1
@@ -427,7 +427,7 @@
     "#ff7900|#ffffff": 1
   },
   "components-molecules-stepper--with-error-state dark": {
-    "#d14343|#252321": 1
+    "#e05254|#252321": 1
   },
   "components-molecules-stepper--with-error-state light": {
     "#ff7900|#ffffff": 1
@@ -1090,7 +1090,7 @@
     "#888684|#252321": 1
   },
   "custom-chat-messagelist-messagebubble--undeliverable dark": {
-    "#d14343|#252321": 1
+    "#e05254|#252321": 1
   },
   "custom-chat-messagelist-messagebubble--with-data-part dark": {
     "#888684|#31302f": 1,
@@ -2301,7 +2301,7 @@
   "foundations-typography--all-colors dark": {
     "#787775|#252321": 1,
     "#888684|#252321": 1,
-    "#d14343|#252321": 1
+    "#e05254|#252321": 1
   },
   "foundations-typography--all-colors light": {
     "#9fa4ab|#ffffff": 1,
