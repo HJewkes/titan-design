@@ -2,7 +2,8 @@ name: React next
 
 # Advisory leg (TD-314): packages/ui unit tests against React 19 and react-native-web 0.21, the
 # versions most consumers run. Its own workflow so it is never in ci.yml's `check.needs` and never a
-# required check; a failure here does not block a merge.
+# required check. The test step is continue-on-error so the check concludes success (Shepherd treats any
+# red check as ci-failed); the result is in the step summary and a warning annotation.
 on:
   push:
     branches: [main]
@@ -19,7 +20,6 @@ jobs:
   react-19-rnw-021:
     name: unit tests (React 19, react-native-web 0.21)
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
 
@@ -42,4 +42,35 @@ jobs:
         run: pnpm --filter @titan-design/react-ui list react react-dom react-native-web
 
       - name: Unit tests
-        run: pnpm --filter @titan-design/react-ui exec vitest run --project threads --project local-time --project types
+        id: unit
+        continue-on-error: true
+        run: >
+          pnpm --filter @titan-design/react-ui exec vitest run
+          --project threads --project local-time --project types
+          --reporter=default --reporter=json --outputFile.json="$RUNNER_TEMP/vitest.json"
+
+      - name: Publish result
+        if: always()
+        run: |
+          node --input-type=module -e '
+            import { existsSync, readFileSync, appendFileSync } from "node:fs";
+            const path = process.env.RUNNER_TEMP + "/vitest.json";
+            if (!existsSync(path)) {
+              console.log("::warning::React 19 leg: vitest wrote no report (advisory)");
+              process.exit(0);
+            }
+            const r = JSON.parse(readFileSync(path, "utf8"));
+            const files = r.testResults.length;
+            const failedFiles = r.testResults.filter((f) => f.status === "failed").length;
+            const rows = [
+              ["Tests passed", r.numPassedTests],
+              ["Tests failed", r.numFailedTests],
+              ["Test files", files],
+              ["Test files failed", failedFiles],
+            ];
+            const table = "| Metric | Count |\n| --- | --- |\n" + rows.map(([k, v]) => `| ${k} | ${v} |`).join("\n");
+            appendFileSync(process.env.GITHUB_STEP_SUMMARY, `## React 19 + react-native-web 0.21 (advisory)\n\n${table}\n`);
+            if (r.numFailedTests > 0) {
+              console.log(`::warning::React 19 leg: ${r.numFailedTests} tests failed in ${failedFiles} files (advisory)`);
+            }
+          '

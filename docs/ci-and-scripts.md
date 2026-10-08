@@ -16,7 +16,7 @@ root `package.json`, `turbo.json`, `packages/ui/package.json`, `packages/ui/vite
 | `check`    | Playwright container, Node 22; always runs; needs `build`, `visual` and `contrast` | all-green over `needs`, then audit, stories axe and play functions (see below)                                                                            |
 
 `react-next.yml` is a separate, advisory workflow on the same triggers. It is not in `check.needs` and
-is never a required check, so a failure shows on the PR without blocking it.
+is never a required check, so it never blocks a merge. Advisory: green check, result in the summary and a warning annotation (the test step is `continue-on-error`, then a summary table of passed/failed tests and files, plus a `::warning::` naming the failed count).
 
 | Job                | Runs on | What it runs                                                                                                                                                                                          |
 | ------------------ | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
