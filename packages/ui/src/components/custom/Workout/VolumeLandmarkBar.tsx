@@ -1,19 +1,16 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps } from 'react-native'
 import { heatmapColors } from '../../../theme/workout-tokens'
-import { greyRamp } from '../../../theme/tokens/primitives'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../ui/surface/SurfaceContext'
 import { ZoneTrack } from './ZoneTrack'
 import { DataRow } from '../../ui/data-row/DataRow'
 import { Typography } from '../../ui/typography'
 import type { VolumeLandmarks } from './muscleTaxonomy'
 
-// The muted, un-reached track colour — the same grey step ZoneTrack defaults
-// to, so the bar sits on the shared gauge-track surface. Kept as a ramp step
-// rather than `resolveColor('border-prominent')`: ZoneTrack takes literal hex
-// only, never a `var()` ref. FINDING for E3: the gauge-track grey has no
-// semantic token, and ZoneTrack (B5) cannot consume one until it can.
-const NEUTRAL_TRACK = greyRamp[800]
+// ZoneTrack's own default track token, so the single zone band and the
+// un-reached track read as one surface in either mode.
+const TRACK_TOKEN = 'border-prominent'
 
 export type VolumeZone = 'under' | 'maintenance' | 'productive' | 'approaching' | 'over'
 
@@ -95,6 +92,7 @@ export function VolumeLandmarkBar({
   // ZoneTrack takes literal hex only, so this reads the diverging roles through
   // `heatmapColors` rather than `resolveColor`, which returns `var()` on web.
   const fillColor = heatmapColors(useSurfaceMode())[zone]
+  const trackColor = getSemanticColors(useSurfaceMode())[TRACK_TOKEN]
   const pct = mav > 0 ? Math.round((currentSets / mav) * 100) : 0
 
   return (
@@ -125,7 +123,7 @@ export function VolumeLandmarkBar({
       />
 
       <ZoneTrack
-        zones={[{ upTo: max, color: NEUTRAL_TRACK }]}
+        zones={[{ upTo: max, color: trackColor }]}
         max={max}
         marker={{
           type: 'fill',
@@ -134,7 +132,6 @@ export function VolumeLandmarkBar({
           // Glow when in the optimal productive band — the "sweet spot" cue.
           glow: zone === 'productive',
         }}
-        trackColor={NEUTRAL_TRACK}
         trackHeight={trackHeight}
         ticks={[
           { value: mev, label: 'MEV', tooltip: `${LANDMARK_NAME.MEV} · ${mev} sets/wk` },

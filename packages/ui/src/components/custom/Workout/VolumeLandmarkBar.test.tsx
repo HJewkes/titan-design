@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { VolumeLandmarkBar, type VolumeLandmarks } from './VolumeLandmarkBar'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
+import { Surface } from '../../ui/surface'
 
 // Clean-number geometry: fraction(v) = v / scaleMax.
 const LANDMARKS: VolumeLandmarks = { mev: 5, mav: 15, mrv: 20 }
@@ -93,6 +95,26 @@ describe('VolumeLandmarkBar', () => {
     renderBar(10) // 10 / 25 = 40% of the track
     expect(screen.getByTestId('zone-track-fill')).toHaveStyle({ width: '40%' })
   })
+
+  it.each(['dark', 'light'] as ThemeMode[])(
+    'paints the band and un-reached track with the %s border-prominent token',
+    (mode) => {
+      render(
+        <Surface theme={mode}>
+          <VolumeLandmarkBar
+            muscle="Quads"
+            currentSets={10}
+            landmarks={LANDMARKS}
+            width={WIDTH}
+            scaleMax={SCALE_MAX}
+          />
+        </Surface>
+      )
+      const track = getSemanticColors(mode)['border-prominent']
+      expect(screen.getByTestId('zone-track-band')).toHaveStyle({ backgroundColor: track })
+      expect(screen.getByTestId('zone-track-unfilled')).toHaveStyle({ backgroundColor: track })
+    }
+  )
 
   describe('productive-zone glow', () => {
     it('glows the track in the productive zone', () => {
