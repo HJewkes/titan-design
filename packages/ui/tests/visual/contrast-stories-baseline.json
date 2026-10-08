@@ -25,7 +25,7 @@
   },
   "components-atoms-badge--all-colors dark": {
     "#307b9b|#252321": 1,
-    "#d14343|#252321": 1
+    "#e05254|#252321": 1
   },
   "components-atoms-badge--all-colors light": {
     "#c27400|#ffffff": 1,
@@ -378,7 +378,7 @@
     "#888684|#2c2a28": 1
   },
   "components-molecules-select--controlled dark": {
-    "#d14343|#252321": 1
+    "#e05254|#252321": 1
   },
   "components-molecules-select--controlled light": {
     "#ff7900|#ffffff": 5
@@ -391,7 +391,7 @@
   },
   "components-molecules-select--invalid dark": {
     "#888684|#252321": 1,
-    "#d14343|#252321": 1
+    "#e05254|#252321": 1
   },
   "components-molecules-select--many-options dark": {
     "#888684|#252321": 1
@@ -2277,11 +2277,11 @@
   },
   "foundations-spacing--anti-patterns dark": {
     "#888684|#252321": 5,
-    "#d14343|#252321": 5
+    "#e05254|#252321": 5
   },
   "foundations-spacing--do-and-dont dark": {
     "#888684|#252321": 4,
-    "#d14343|#252321": 4
+    "#e05254|#252321": 4
   },
   "foundations-spacing--pill-ramps dark": {
     "#a29f9d|#3b3937": 11
