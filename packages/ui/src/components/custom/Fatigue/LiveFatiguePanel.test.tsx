@@ -6,7 +6,13 @@ import { Surface } from '../../ui/surface'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { buildMockPanelState } from './fatigue-mock'
 import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
-import { PANEL_BREAKPOINTS, CARD_WIDTH_BASE, panelLayout } from './panel-layout'
+import {
+  PANEL_BREAKPOINTS,
+  CARD_WIDTH_BASE,
+  CARD_COMPACT_HEIGHT,
+  cardSections,
+  panelLayout,
+} from './panel-layout'
 
 const { model, velocity } = buildMockPanelState(3)
 
@@ -137,6 +143,56 @@ describe('LiveFatiguePanel responsiveness (TD-03.58)', () => {
     expect(screen.getByTestId('live-fatigue-card')).toHaveStyle({
       width: `${width - padding * 2}px`,
     })
+  })
+
+  // TD-326: wrapped, the card is a compact band — charts side by side, hero on top of it.
+  it.each([PANEL_BREAKPOINTS.sm - 1, PANEL_BREAKPOINTS.md - 1])(
+    'wraps at %ipx into the compact card with the two charts side by side',
+    (width) => {
+      render(
+        <LiveFatiguePanel
+          model={model}
+          velocity={velocity}
+          containerWidth={width}
+          bodyHeight={640}
+        />
+      )
+      expect(screen.getByTestId('live-fatigue-card-charts')).toHaveStyle({ flexDirection: 'row' })
+      expect(screen.getByTestId('live-fatigue-card')).toHaveStyle({
+        minHeight: `${CARD_COMPACT_HEIGHT}px`,
+      })
+      const heroHeight = Number(screen.getByTestId('velocity-hero').style.height.replace('px', ''))
+      expect(heroHeight).toBeGreaterThan(CARD_COMPACT_HEIGHT)
+    }
+  )
+
+  it('keeps the row tiers on the column card', () => {
+    for (const width of [1000, 1440, 1920]) {
+      const { unmount } = render(
+        <LiveFatiguePanel model={model} velocity={velocity} containerWidth={width} />
+      )
+      expect(screen.queryByTestId('live-fatigue-card-charts')).not.toBeInTheDocument()
+      unmount()
+    }
+  })
+
+  // TD-326: at the wall the card's leftover height goes to the charts, not under them.
+  it('fills the wall card height with taller charts than the lg card', () => {
+    const sparkHeightAt = (width: number) => {
+      const { unmount } = render(
+        <LiveFatiguePanel
+          model={model}
+          velocity={velocity}
+          containerWidth={width}
+          bodyHeight={820}
+        />
+      )
+      const height = screen.getByTestId('ghost-spark').querySelector('svg')?.getAttribute('height')
+      unmount()
+      return Number(height)
+    }
+    expect(sparkHeightAt(1920)).toBe(cardSections('fill', 820).sparkHeight)
+    expect(sparkHeightAt(1920)).toBeGreaterThan(sparkHeightAt(1919))
   })
 
   // TD-03.60 through the rendered tree, not just the pure split.

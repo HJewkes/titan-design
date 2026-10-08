@@ -62,9 +62,12 @@ function useFrameWidth() {
   return { ref, width }
 }
 
-/** Body height per tier: stacked, side by side, and the wall where the card expands. */
+/**
+ * Body height per tier: wrapped (the hero over the compact card band), side by side, and the
+ * wall where the card expands and fills its height.
+ */
 function bodyHeightFor(width: number): number {
-  if (width < PANEL_BREAKPOINTS.md) return 560
+  if (width < PANEL_BREAKPOINTS.md) return 640
   return width >= PANEL_BREAKPOINTS.xl ? 620 : 508
 }
 

@@ -2148,6 +2148,13 @@
           "type": "number"
         },
         {
+          "default": "column",
+          "description": "How the sections are arranged — the panel passes its tier's.",
+          "name": "layout",
+          "required": false,
+          "type": "CardLayout"
+        },
+        {
           "default": null,
           "description": "The live fatigue read-model for the current set.",
           "name": "model",
