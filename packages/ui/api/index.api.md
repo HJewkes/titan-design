@@ -519,6 +519,17 @@ export interface BriefSection {
     heading: string;
 }
 
+// @public (undocumented)
+export const BUDGET_BAND_META: Record<CodeBudgetBand, {
+    color: TypographyColor;
+    word: string | null;
+    fill: ColorToken$1;
+    flagTone: 'error' | 'warning' | null;
+}>;
+
+// @public
+export function budgetBand(value: number | null | undefined, budget?: number, nearRatio?: number): CodeBudgetBand;
+
 // @public
 export const Button: React__default.ForwardRefExoticComponent<ButtonProps & React__default.RefAttributes<View>>;
 
@@ -790,6 +801,15 @@ export const categoricalPalette: {
 export type CategoricalVariant = keyof typeof categoricalPalette;
 
 // @public
+export function changeLabel(kind: CodeChangeKind, delta?: number): string;
+
+// @public
+export function changeName(kind: CodeChangeKind, delta?: number): string;
+
+// @public
+export function changeTone(kind: CodeChangeKind, isOverCutoff?: boolean): PillTone;
+
+// @public
 export function ChartIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -954,6 +974,107 @@ export interface CoChangeEdge {
     // (undocumented)
     count: number;
 }
+
+// @public (undocumented)
+export const CODE_CHANGE_META: Record<CodeChangeKind, {
+    label: string;
+    name: string;
+    tone: PillTone;
+}>;
+
+// @public (undocumented)
+export const CODE_CHANGE_ORDER: CodeChangeKind[];
+
+// @public (undocumented)
+export const CODE_COUPLING_CLASS_META: Record<CodeCouplingClass, {
+    label: string;
+    tone: PillTone;
+}>;
+
+// @public
+export interface CodeBaselineRef {
+    // (undocumented)
+    ref: string;
+    // (undocumented)
+    snapshotId?: number;
+}
+
+// @public
+export type CodeBudgetBand = 'over' | 'near' | 'within' | 'unbudgeted';
+
+// @public
+export type CodeChangeKind = 'crossed-cutoff' | 'entered' | 'new-file' | 'worsened' | 'improved' | 'resolved';
+
+// @public
+export type CodeCouplingClass = 'hidden' | 'expected' | 'unverifiable';
+
+// @public
+export interface CodeCouplingPair {
+    // (undocumented)
+    a: CodeNodeRef;
+    // (undocumented)
+    b: CodeNodeRef;
+    // (undocumented)
+    coEdits: number;
+    // (undocumented)
+    couplingClass: CodeCouplingClass;
+}
+
+// @public
+export interface CodeCutoff {
+    label: string;
+    // (undocumented)
+    value: number;
+}
+
+// @public (undocumented)
+export interface CodeFinding {
+    // (undocumented)
+    detail: string;
+    // (undocumented)
+    id: string;
+    // (undocumented)
+    rule: string;
+    // (undocumented)
+    severity: CodeSeverity;
+    // (undocumented)
+    status: CodeFindingStatus;
+}
+
+// @public
+export type CodeFindingStatus = 'new' | 'carryover' | 'resolved' | 'worsened' | 'improved';
+
+// @public
+export interface CodeMetricReading {
+    // (undocumented)
+    budget?: number;
+    key: string;
+    // (undocumented)
+    label: string;
+    // (undocumented)
+    unit?: string;
+    // (undocumented)
+    value: number | null;
+}
+
+// @public
+export type CodeNodeKind = 'file' | 'symbol' | 'package' | 'directory';
+
+// @public
+export interface CodeNodeRef {
+    // (undocumented)
+    id: string;
+    kind?: CodeNodeKind;
+    name?: string;
+    path: string;
+    role?: string;
+}
+
+// @public
+export type CodeScoreBand = 'over' | 'elevated' | 'watch';
+
+// @public (undocumented)
+export type CodeSeverity = 'error' | 'warning';
 
 // @public
 export function Collapse(input: CollapseProps): react_jsx_runtime.JSX.Element;
@@ -5201,6 +5322,9 @@ export interface PlanWorkout {
 }
 
 // @public
+export function pluralize(count: number, one: string, many: string): string;
+
+// @public
 export function Popover(input: PopoverProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -5930,6 +6054,15 @@ export interface ScheduleTilesProps extends ViewProps {
     now?: number;
     when: number | Date;
 }
+
+// @public (undocumented)
+export const SCORE_BAND_META: Record<CodeScoreBand, {
+    color: ColorToken$1;
+    indicator: IndicatorColor;
+}>;
+
+// @public
+export function scoreBand(score: number | null | undefined, cutoff?: CodeCutoff | null, elevated?: CodeCutoff | null): CodeScoreBand | null;
 
 // @public
 export function SearchIcon(props: IconProps): react_jsx_runtime.JSX.Element;
@@ -7252,6 +7385,20 @@ export interface StatusDotProps extends ViewProps {
 
 // @public (undocumented)
 export type StatusDotVariant = 'success' | 'warning' | 'error' | 'neutral' | 'on-track' | 'deviation' | 'future';
+
+// @public
+export function StatusMark(input: StatusMarkProps): react_jsx_runtime.JSX.Element;
+
+// @public (undocumented)
+export interface StatusMarkProps extends Omit<ViewProps, 'children'> {
+    // (undocumented)
+    className?: string;
+    delta?: number;
+    isOverCutoff?: boolean;
+    // (undocumented)
+    kind: CodeChangeKind;
+    size?: Exclude<PillSizeLevel, 'lg'>;
+}
 
 // @public
 export function StatusPill(input: StatusPillProps): react_jsx_runtime.JSX.Element;

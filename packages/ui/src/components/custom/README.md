@@ -10,6 +10,7 @@ labels belongs in `ui/` (`CLAUDE.md`, Placement). Status here is `candidate` by 
 | `Fatigue`    | velocity loss, ROM, readiness                                                                    | voltras-mcp dashboard                   | `Fatigue/README.md`    |
 | `ActiveWork` | initiatives, tasks, task stages, file activity                                                   | active-work dashboard                   | `ActiveWork/README.md` |
 | `Chat`       | chat messages and participants (`ChatMessage`, `Participant` from `@titan-design/chat-protocol`) | coach chat preset (`CoachPreset` story) | `Chat/README.md`       |
+| `Code`       | hotspots, findings, coupling, snapshots                                                          | codewatch app                           | `Code/README.md`       |
 | `charts`     | workout bar marks (`SetBarChart`, `live-rep-growth`, `flatBarGeometry`)                          | Workout, Fatigue                        | `charts/README.md`     |
 
 ## Generic directories awaiting a move to `ui/`
