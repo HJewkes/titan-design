@@ -124,7 +124,6 @@ async function contrastNodes(page: Page): Promise<ContrastNode[]> {
       return (rule?.nodes ?? []).map((node) => ({
         fgColor: node.any?.[0]?.data?.fgColor,
         bgColor: node.any?.[0]?.data?.bgColor,
-        dbg: JSON.stringify([(node as any).html, (node as any).target, (node as any).any?.[0]?.data?.messageKey]),
       }))
     } finally {
       win.setTimeout = realSetTimeout
@@ -167,9 +166,7 @@ async function settleCssAnimations(page: Page) {
 async function measure(page: Page) {
   await page.clock.runFor(SETTLE_MS)
   await settleCssAnimations(page)
-  const nodes = await contrastNodes(page)
-  ;(globalThis as any).DBG = nodes.map((n: any) => n.dbg).join('\n')
-  return pairCounts(nodes)
+  return pairCounts(await contrastNodes(page))
 }
 
 test('the story index lists every story', () => {
@@ -216,7 +213,7 @@ test.describe('axe color-contrast on every story', () => {
         expect(blankProblems(id, null, listedBlank), `blank guard for ${key}`).toEqual([])
         const counts = await measure(page)
         record(testInfo, { key, id, theme, counts, retry: testInfo.retry })
-        expect(contrastProblems(key, counts, baseline[key]), `contrast gate for ${key}\n${(globalThis as any).DBG}`).toEqual([])
+        expect(contrastProblems(key, counts, baseline[key]), `contrast gate for ${key}`).toEqual([])
       })
     }
   }
