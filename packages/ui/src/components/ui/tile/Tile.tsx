@@ -57,6 +57,7 @@ export function Tile({
   className,
   ...props
 }: TileProps) {
+  const textAlign = align === 'center' ? 'text-center' : 'text-left'
   return (
     <CardStat
       label={label}
@@ -64,8 +65,8 @@ export function Tile({
       align={align}
       metricProps={{
         labelPosition: 'above',
-        valueClassName: 'font-mono text-sm',
-        labelClassName: 'text-[10px] font-bold',
+        valueClassName: `font-mono text-sm ${textAlign}`,
+        labelClassName: `text-[10px] font-bold ${textAlign}`,
         valueStyle: valueColor ? { color: valueColor } : undefined,
       }}
       {...splitPlane(className)}

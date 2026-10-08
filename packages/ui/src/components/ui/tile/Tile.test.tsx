@@ -3,6 +3,9 @@ import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Tile } from './Tile'
 import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
+import { capturedByNode } from '../../../test/classname-capture'
+
+const classesOf = (node: Element) => (capturedByNode.get(node) ?? '').split(' ')
 
 describe('Tile', () => {
   it('renders label and value', () => {
@@ -38,6 +41,14 @@ describe('Tile', () => {
   it('takes its plane from a bg class the caller passes', () => {
     render(<Tile label="Reads" value="3" className="bg-surface-overlay" testID="tile" />)
     expect(screen.getByTestId('tile').style.backgroundColor).toBe('var(--color-surface-overlay)')
+  })
+
+  it('centres wrapped label and value text by default, and starts it when start-aligned', () => {
+    const { rerender } = render(<Tile label="Time" value="3:37 PM" />)
+    expect(classesOf(screen.getByText('3:37 PM'))).toContain('text-center')
+    expect(classesOf(screen.getByText('Time'))).toContain('text-center')
+    rerender(<Tile label="Time" value="3:37 PM" align="start" />)
+    expect(classesOf(screen.getByText('3:37 PM'))).toContain('text-left')
   })
 
   it('renders with start alignment', () => {
