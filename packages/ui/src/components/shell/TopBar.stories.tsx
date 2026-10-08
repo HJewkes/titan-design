@@ -1,6 +1,8 @@
+import { useCallback, useState } from 'react'
+import { View } from 'react-native'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Pill } from '../ui/pill'
-import { TopBar, SUBTITLE_MIN, CLOCK_MIN } from './TopBar'
+import { TopBar, TOPBAR_SUBTITLE_MIN, TOPBAR_CLOCK_MIN } from './TopBar'
 import { brandKeys } from './brands'
 
 const meta: Meta<typeof TopBar> = {
@@ -73,8 +75,44 @@ export const SingleTrailingItem: Story = {
   },
 }
 
-/** The container-responsive collapse on the width matrix: subtitle and clock drop at their thresholds. */
+/**
+ * The width of the frame a story renders in, read once at layout. Layer 2 pauses the clock, and
+ * react-native-web's `onLayout` waits on a timer that never fires there (TD-729), so this reads the
+ * DOM node synchronously, at commit, instead. jsdom has no layout and reports 0, which leaves `null`.
+ */
+function useFrameWidth() {
+  const [width, setWidth] = useState<number | null>(null)
+  const ref = useCallback((node: View | null) => {
+    const measured = (node as unknown as HTMLElement | null)?.getBoundingClientRect?.().width
+    if (measured) setWidth(Math.round(measured))
+  }, [])
+  return { ref, width }
+}
+
+/**
+ * The container-responsive collapse on the width matrix: subtitle and clock drop at their
+ * thresholds. The bar's own `onLayout` never fires under the paused clock, so the frame width is
+ * read at commit and drives `showSubtitle` / `showClock`; jsdom measures nothing and keeps the
+ * bar's own default.
+ */
 export const Widths: Story = {
   tags: ['width-matrix'],
-  parameters: { layout: 'fullscreen', widthMatrix: { thresholds: [CLOCK_MIN, SUBTITLE_MIN] } },
+  argTypes: { showSubtitle: { control: false }, showClock: { control: false } },
+  parameters: {
+    layout: 'fullscreen',
+    widthMatrix: { thresholds: [TOPBAR_CLOCK_MIN, TOPBAR_SUBTITLE_MIN] },
+  },
+  render: function Render(args) {
+    const frame = useFrameWidth()
+    const width = frame.width
+    return (
+      <View ref={frame.ref} className="w-full">
+        <TopBar
+          {...args}
+          showSubtitle={width === null ? undefined : width >= TOPBAR_SUBTITLE_MIN}
+          showClock={width === null ? undefined : width >= TOPBAR_CLOCK_MIN}
+        />
+      </View>
+    )
+  },
 }

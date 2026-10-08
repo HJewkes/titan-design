@@ -2239,8 +2239,7 @@
       "status": "candidate",
       "storyIds": [
         "custom-fatigue-live-fatigue-panel--live-panel-v-2",
-        "custom-fatigue-live-fatigue-panel--live-states",
-        "custom-fatigue-live-fatigue-panel--on-light-surface",
+        "custom-fatigue-live-fatigue-panel--wall-width",
         "custom-fatigue-live-fatigue-panel--widths"
       ],
       "tier": "organism"

@@ -34,9 +34,9 @@ export interface TopBarProps {
 
 // SIZE-D01: responsiveness is container-driven (measured width), not a fixed size prop.
 /** Container width at which the brand subtitle appears. */
-export const SUBTITLE_MIN = 1024
+export const TOPBAR_SUBTITLE_MIN = 1024
 /** Container width at which the clock appears. */
-export const CLOCK_MIN = 720
+export const TOPBAR_CLOCK_MIN = 720
 
 function ClusterDivider() {
   return <Divider orientation="vertical" className="h-4 bg-border-prominent" />
@@ -73,11 +73,11 @@ export function TopBar({
   showClock,
   className,
 }: TopBarProps) {
-  const [width, setWidth] = useState(SUBTITLE_MIN)
+  const [width, setWidth] = useState(TOPBAR_SUBTITLE_MIN)
   const onLayout = (e: LayoutChangeEvent) => setWidth(e.nativeEvent.layout.width)
 
-  const subtitleVisible = showSubtitle ?? width >= SUBTITLE_MIN
-  const clockVisible = showClock ?? width >= CLOCK_MIN
+  const subtitleVisible = showSubtitle ?? width >= TOPBAR_SUBTITLE_MIN
+  const clockVisible = showClock ?? width >= TOPBAR_CLOCK_MIN
 
   const clock = clockVisible ? (
     <DateTime
