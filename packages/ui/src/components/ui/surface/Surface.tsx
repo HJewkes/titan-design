@@ -62,7 +62,7 @@ export function Surface({
   return (
     <SurfaceContext.Provider value={value}>
       <View
-        className={cn(applyRounded && 'rounded-2xl', className)}
+        className={cn(applyRounded && 'rounded-xl', className)}
         // backgroundColor first so a caller `style` can still override it.
         style={[
           { backgroundColor: resolved.backgroundColor },

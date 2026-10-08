@@ -1107,7 +1107,7 @@ export const darkThemeCSSVars: {
     readonly '--color-brand-primary-subtle': "rgba(255, 121, 0, 0.12)";
     readonly '--color-brand-primary-muted': "rgba(255, 121, 0, 0.30)";
     readonly '--color-brand-primary-strong': "rgba(255, 121, 0, 0.50)";
-    readonly '--color-brand-secondary': "#307B9B";
+    readonly '--color-brand-secondary': "#2697B7";
     readonly '--color-brand-secondary-light': "#2697B7";
     readonly '--color-brand-secondary-dark': "#2A617F";
     readonly '--color-brand-secondary-subtle': "rgba(34, 211, 238, 0.12)";
@@ -1124,7 +1124,7 @@ export const darkThemeCSSVars: {
     readonly '--color-status-live': "#2ED573";
     readonly '--color-status-deload': "#BA2996";
     readonly '--color-status-live-muted': "#22A444";
-    readonly '--color-status-error': "#D14343";
+    readonly '--color-status-error': "#E05254";
     readonly '--color-status-error-subtle': "rgba(247, 113, 117, 0.08)";
     readonly '--color-status-error-muted': "rgba(209, 67, 67, 0.30)";
     readonly '--color-status-error-strong': "rgba(209, 67, 67, 0.50)";
@@ -1154,7 +1154,7 @@ export const darkThemeCSSVars: {
     readonly '--color-text-disabled': "rgba(255, 255, 255, 0.38)";
     readonly '--color-text-inverse': "#1C1916";
     readonly '--color-text-error': "#E05254";
-    readonly '--color-text-link': "#828DF8";
+    readonly '--color-text-link': "#78C2FF";
     readonly '--color-surface-base': "#252321";
     readonly '--color-surface-elevated': "#2C2A28";
     readonly '--color-surface-raised': "#31302F";
@@ -1162,7 +1162,7 @@ export const darkThemeCSSVars: {
     readonly '--color-background-default': "#252321";
     readonly '--color-background-subtle': "#2C2A28";
     readonly '--color-background-frame': "#100D0A";
-    readonly '--color-border-prominent': "#424140";
+    readonly '--color-border-prominent': "rgba(255, 255, 255, 0.30)";
     readonly '--color-border-focus': "#828DF8";
     readonly '--color-interactive-hover': "rgba(255, 255, 255, 0.04)";
     readonly '--color-interactive-focus': "rgba(255, 255, 255, 0.12)";
@@ -1234,7 +1234,7 @@ export const darkThemeCSSVars: {
     readonly '--color-surface-overlay': "#373635";
     readonly '--color-surface-input': "#2C2A28";
     readonly '--color-border-input': "#888684";
-    readonly '--color-border-input-hover': "#72716F";
+    readonly '--color-border-input-hover': "#A29F9D";
     readonly '--color-border-input-focus': "#828DF8";
     readonly '--color-border-input-error': "#E05254";
     readonly '--color-hairline-subtle': "rgba(255, 255, 255, 0.10)";
@@ -2304,7 +2304,7 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'brand-primary-strong': "rgba(255, 121, 0, 0.50)";
     readonly 'brand-primary-hover': "#FFA063";
     readonly 'brand-primary-active': "#FFC7A2";
-    readonly 'brand-secondary': "#307B9B";
+    readonly 'brand-secondary': "#2697B7";
     readonly 'brand-secondary-light': "#2697B7";
     readonly 'brand-secondary-dark': "#2A617F";
     readonly 'brand-secondary-subtle': "rgba(34, 211, 238, 0.12)";
@@ -2325,7 +2325,7 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'status-live': "#2ED573";
     readonly 'status-live-muted': "#22A444";
     readonly 'status-deload': "#BA2996";
-    readonly 'status-error': "#D14343";
+    readonly 'status-error': "#E05254";
     readonly 'status-error-light': "#E05254";
     readonly 'status-error-dark': "#A4221C";
     readonly 'status-error-subtle': "rgba(247, 113, 117, 0.08)";
@@ -2409,7 +2409,7 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'text-disabled': "rgba(255, 255, 255, 0.38)";
     readonly 'text-inverse': "#1C1916";
     readonly 'text-error': "#E05254";
-    readonly 'text-link': "#828DF8";
+    readonly 'text-link': "#78C2FF";
     readonly 'text-link-hover': "#3CA8FF";
     readonly 'surface-base': "#252321";
     readonly 'surface-elevated': "#2C2A28";
@@ -2420,10 +2420,10 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'background-default': "#252321";
     readonly 'background-subtle': "#2C2A28";
     readonly 'background-frame': "#100D0A";
-    readonly 'border-prominent': "#424140";
+    readonly 'border-prominent': "rgba(255, 255, 255, 0.30)";
     readonly 'border-focus': "#828DF8";
     readonly 'border-input': "#888684";
-    readonly 'border-input-hover': "#72716F";
+    readonly 'border-input-hover': "#A29F9D";
     readonly 'border-input-focus': "#828DF8";
     readonly 'border-input-error': "#E05254";
     readonly 'hairline-subtle': "rgba(255, 255, 255, 0.10)";
@@ -2641,7 +2641,7 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-brand-primary-subtle': "rgba(255, 121, 0, 0.12)";
     readonly '--color-brand-primary-muted': "rgba(255, 121, 0, 0.30)";
     readonly '--color-brand-primary-strong': "rgba(255, 121, 0, 0.50)";
-    readonly '--color-brand-secondary': "#307B9B";
+    readonly '--color-brand-secondary': "#2697B7";
     readonly '--color-brand-secondary-light': "#2697B7";
     readonly '--color-brand-secondary-dark': "#2A617F";
     readonly '--color-brand-secondary-subtle': "rgba(34, 211, 238, 0.12)";
@@ -2658,7 +2658,7 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-status-live': "#2ED573";
     readonly '--color-status-deload': "#BA2996";
     readonly '--color-status-live-muted': "#22A444";
-    readonly '--color-status-error': "#D14343";
+    readonly '--color-status-error': "#E05254";
     readonly '--color-status-error-subtle': "rgba(247, 113, 117, 0.08)";
     readonly '--color-status-error-muted': "rgba(209, 67, 67, 0.30)";
     readonly '--color-status-error-strong': "rgba(209, 67, 67, 0.50)";
@@ -2688,7 +2688,7 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-text-disabled': "rgba(255, 255, 255, 0.38)";
     readonly '--color-text-inverse': "#1C1916";
     readonly '--color-text-error': "#E05254";
-    readonly '--color-text-link': "#828DF8";
+    readonly '--color-text-link': "#78C2FF";
     readonly '--color-surface-base': "#252321";
     readonly '--color-surface-elevated': "#2C2A28";
     readonly '--color-surface-raised': "#31302F";
@@ -2696,7 +2696,7 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-background-default': "#252321";
     readonly '--color-background-subtle': "#2C2A28";
     readonly '--color-background-frame': "#100D0A";
-    readonly '--color-border-prominent': "#424140";
+    readonly '--color-border-prominent': "rgba(255, 255, 255, 0.30)";
     readonly '--color-border-focus': "#828DF8";
     readonly '--color-interactive-hover': "rgba(255, 255, 255, 0.04)";
     readonly '--color-interactive-focus': "rgba(255, 255, 255, 0.12)";
@@ -2768,7 +2768,7 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-surface-overlay': "#373635";
     readonly '--color-surface-input': "#2C2A28";
     readonly '--color-border-input': "#888684";
-    readonly '--color-border-input-hover': "#72716F";
+    readonly '--color-border-input-hover': "#A29F9D";
     readonly '--color-border-input-focus': "#828DF8";
     readonly '--color-border-input-error': "#E05254";
     readonly '--color-hairline-subtle': "rgba(255, 255, 255, 0.10)";
@@ -5348,7 +5348,7 @@ export const primitiveBorderRadius: {
     readonly md: "8px";
     readonly lg: "12px";
     readonly xl: "16px";
-    readonly '2xl': "1rem";
+    readonly '2xl': "24px";
     readonly full: "9999px";
 };
 
@@ -6063,7 +6063,7 @@ export const semanticColorsDark: {
     readonly 'brand-primary-strong': "rgba(255, 121, 0, 0.50)";
     readonly 'brand-primary-hover': "#FFA063";
     readonly 'brand-primary-active': "#FFC7A2";
-    readonly 'brand-secondary': "#307B9B";
+    readonly 'brand-secondary': "#2697B7";
     readonly 'brand-secondary-light': "#2697B7";
     readonly 'brand-secondary-dark': "#2A617F";
     readonly 'brand-secondary-subtle': "rgba(34, 211, 238, 0.12)";
@@ -6084,7 +6084,7 @@ export const semanticColorsDark: {
     readonly 'status-live': "#2ED573";
     readonly 'status-live-muted': "#22A444";
     readonly 'status-deload': "#BA2996";
-    readonly 'status-error': "#D14343";
+    readonly 'status-error': "#E05254";
     readonly 'status-error-light': "#E05254";
     readonly 'status-error-dark': "#A4221C";
     readonly 'status-error-subtle': "rgba(247, 113, 117, 0.08)";
@@ -6168,7 +6168,7 @@ export const semanticColorsDark: {
     readonly 'text-disabled': "rgba(255, 255, 255, 0.38)";
     readonly 'text-inverse': "#1C1916";
     readonly 'text-error': "#E05254";
-    readonly 'text-link': "#828DF8";
+    readonly 'text-link': "#78C2FF";
     readonly 'text-link-hover': "#3CA8FF";
     readonly 'surface-base': "#252321";
     readonly 'surface-elevated': "#2C2A28";
@@ -6179,10 +6179,10 @@ export const semanticColorsDark: {
     readonly 'background-default': "#252321";
     readonly 'background-subtle': "#2C2A28";
     readonly 'background-frame': "#100D0A";
-    readonly 'border-prominent': "#424140";
+    readonly 'border-prominent': "rgba(255, 255, 255, 0.30)";
     readonly 'border-focus': "#828DF8";
     readonly 'border-input': "#888684";
-    readonly 'border-input-hover': "#72716F";
+    readonly 'border-input-hover': "#A29F9D";
     readonly 'border-input-focus': "#828DF8";
     readonly 'border-input-error': "#E05254";
     readonly 'hairline-subtle': "rgba(255, 255, 255, 0.10)";
