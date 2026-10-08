@@ -21,6 +21,9 @@
  * `*Text`, `*Label` or `error*`. Identifiers, class names and other props are never read, and
  * eslint.config.js leaves tests, stories and src/lab out of scope.
  *
+ * Messages quote the fragment in double quotes, not backticks: the message contract reads a
+ * backticked span as an option it must resolve.
+ *
  * RATCHET, same shape as no-truncation: today's sites are recorded in
  * `no-copy-pitfalls-baseline.json`, keyed by file and VALUE (the offending fragment). The
  * baseline only shrinks, and it must stay exact: an allowance a file no longer spends is
@@ -179,11 +182,15 @@ function copyText(node) {
   return node.value
 }
 
+// Plain, not backticked: the message contract reads `eslint-rules/...` as a class name.
+const GLOSSARY_FILE = 'eslint-rules/copy-glossary.json'
+const CASES = 'the cases in `src/test/no-copy-pitfalls.test.ts` show each fix'
+
 const FIXES = {
-  times: 'Write the multiplication without spaces (`8×5`), like a number beside its unit.',
-  caps: 'Use sentence case and a Typography variant for emphasis, or add a term that is written in capitals to `eslint-rules/copy-glossary.json`.',
-  ampersand: 'Write "and".',
-  bang: 'Say what happened and what to do next, without an exclamation mark.',
+  times: `Use the sign with no spaces (8×5), like a number beside its unit; ${CASES}.`,
+  caps: `Write sentence case and use \`variant="overline"\` or \`variant="monoLabel"\` where the design wants capitals, or add a term that is written in capitals to ${GLOSSARY_FILE}.`,
+  ampersand: `Use "and"; ${CASES}.`,
+  bang: 'Describe what happened and what to do next, without an exclamation mark; `Alert` with status="error" already carries the tone.',
 }
 
 /** @type {import('eslint').Rule.RuleModule} */
@@ -196,11 +203,11 @@ module.exports = {
     },
     schema: [],
     messages: {
-      times: `Copy \`{{value}}\` has a spaced multiplication sign. ${FIXES.times}`,
-      caps: `Copy \`{{value}}\` is an all-caps word outside the copy glossary. ${FIXES.caps}`,
-      ampersand: `Copy \`{{value}}\` stands in for "and". ${FIXES.ampersand}`,
-      bang: `Copy \`{{value}}\` puts an exclamation mark in an error. ${FIXES.bang}`,
-      stale: `${BASELINE_FILE} still allows {{count}} \`{{value}}\` this file no longer has. Use \`scripts/update-no-copy-pitfalls-baseline.mjs\` to shrink the baseline so the site can't come back unnoticed.`,
+      times: `Copy "{{value}}" has a spaced multiplication sign. ${FIXES.times}`,
+      caps: `Copy "{{value}}" is an all-caps word outside the copy glossary. ${FIXES.caps}`,
+      ampersand: `Copy "{{value}}" stands in for "and". ${FIXES.ampersand}`,
+      bang: `Copy "{{value}}" puts an exclamation mark in an error. ${FIXES.bang}`,
+      stale: `${BASELINE_FILE} still allows {{count}} "{{value}}" this file no longer has. Use \`scripts/update-no-copy-pitfalls-baseline.mjs\` to shrink the baseline so the site can't come back unnoticed.`,
     },
   },
 
