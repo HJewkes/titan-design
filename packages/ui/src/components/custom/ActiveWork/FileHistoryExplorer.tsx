@@ -29,7 +29,9 @@ export interface CoChangeEdge {
 /**
  * One symmetric "these two files change together" pair as a neutral Pill, with the
  * session count as a brand Pill in its trailing slot. Basenames only: at chip size
- * the directory is noise.
+ * the directory is noise. The count's label is `text-primary`, not `on-brand-primary-subtle`:
+ * nested on the neutral fill, orange on orange-tint falls under AA in dark mode, and no
+ * brand-hued text token clears it in both themes. The tinted fill still carries brand.
  */
 function CoChangePill({ a, b, count }: CoChangeEdge) {
   return (
@@ -40,7 +42,7 @@ function CoChangePill({ a, b, count }: CoChangeEdge) {
       rounded={false}
       className="gap-2"
       trailing={
-        <Pill variant="subtle" tone="brand" size="xs">
+        <Pill variant="subtle" tone="brand" size="xs" textClassName="text-text-primary">
           {`${count}×`}
         </Pill>
       }

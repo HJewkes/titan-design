@@ -76,8 +76,9 @@ export interface TaskRowProps {
 }
 
 /**
- * A task's severity as a neutral Pill: the {@link Indicator} carries the level, the
- * label stays quiet. Unset renders the em-dash placeholder so the column stays aligned.
+ * A task's severity as a neutral Pill: the {@link Indicator} carries the level. The
+ * label is `text-primary` because `text-secondary` misses AA on the pill's fill in dark
+ * mode. Unset renders the em-dash placeholder so the column stays aligned.
  */
 function SeverityPill({
   severity,
@@ -103,7 +104,7 @@ function SeverityPill({
       leading={<Indicator size="sm" color={dot} testID={`severity-dot-${severity}`} />}
     >
       {dotOnly ? null : (
-        <Typography variant="caption" color="inherit" className="text-text-secondary">
+        <Typography variant="caption" color="inherit" className="text-text-primary">
           {label}
         </Typography>
       )}
