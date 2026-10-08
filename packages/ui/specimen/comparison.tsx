@@ -252,7 +252,7 @@ const HTML_CSS = `
   }
   /* Typography mono face (TD-60): the digits no longer carry the old MetricCell 1px tracking. */
   .html-scope .tempo-value {
-    font-family: var(--font-mono, ui-monospace, monospace);
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
     font-weight: 600;
     letter-spacing: 0;
   }

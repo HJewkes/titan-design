@@ -1742,15 +1742,6 @@
     "#ba2996|#f3daed": 3,
     "#ff7900|#ffe6d4": 2
   },
-  "custom-workout-metriccell--in-context dark": {
-    "#72716f|#252321": 1
-  },
-  "custom-workout-metriccell--in-context light": {
-    "#f9f6f3|#ffffff": 1
-  },
-  "custom-workout-metriccell--value-cell light": {
-    "#f9f6f3|#ffffff": 1
-  },
   "custom-workout-metrictiles--four-tiles dark": {
     "#888684|#31302f": 4
   },
