@@ -57,6 +57,7 @@ const TEXT_FLOORS = {
   'text-tertiary': 3, // de-emphasised, AA large
   // WCAG 1.4.3 exempts disabled text; 3:1 keeps it discernible as text.
   'text-disabled': 3,
+  // Dark pairs baselined: owner q4b-red-conflict r1 (a), 2026-10-07, below AA by decision; TD-416.
   'text-error': AA,
   'text-link': AA,
   'text-link-hover': AA,

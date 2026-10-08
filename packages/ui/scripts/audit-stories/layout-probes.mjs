@@ -1,4 +1,4 @@
-// Pure judges over collectLayout output (TD-650 P1-P4). Each is linear per container and reads
+// Pure judges over collectLayout output (TD-650 P1-P5). Each is linear per container and reads
 // only the collected nodes, so a synthetic tree tests it without a browser.
 
 export const STACKED_INSET = 'stacked-inset'
@@ -7,6 +7,7 @@ export const INSET_ASYMMETRY = 'inset-asymmetry'
 export const ALIGNMENT_NEAR_MISS = 'alignment-near-miss'
 export const GAP_OUTLIER = 'gap-outlier'
 export const PROXIMITY_INVERSION = 'proximity-inversion'
+export const FONT_SIZE_NEAR_MISS = 'font-size-near-miss'
 
 const MAX_FINDINGS_PER_KIND = 25
 const MIN_EXCESS = 4 // --space-stack-sm, the smallest stack step
@@ -337,13 +338,28 @@ const alignsOnBaseline = (container, kid) =>
   (['auto', 'normal'].includes(kid.layout.alignSelf) &&
     container.layout.alignItems.includes('baseline'))
 
+// The baseline a flex row aligns a child by: that of its first in-flow item, descending until text
+// is reached. An item with no baseline of its own (an icon, an image, an empty box) lends its
+// border-box bottom edge instead, as CSS synthesises it, so a child that opens with an icon is
+// aligned by the icon's bottom and not by the label beside it.
+function cssBaseline(node, children) {
+  for (let n = node; n; ) {
+    if (n.text) return n.text.first.baseline
+    const first = (children.get(n.id) ?? []).find(inFlow)
+    if (!first || REPLACED_TAGS.has(n.tag)) return n.box[1] + n.box[3]
+    n = first
+  }
+  return null
+}
+
 // Both children are in a flex row with ink; returns the finding's detail, or null.
 function nearMiss(container, [a, b], children) {
   const [ta, tb] = [firstText(a, children), firstText(b, children)]
   const deltas = deltasOf(alignmentLines(a, ta), alignmentLines(b, tb))
-  const baseline = deltas.find((x) => x.line === 'baseline')
-  if (baseline && alignsOnBaseline(container, a) && alignsOnBaseline(container, b))
-    return baseline.d > ALIGN_TOLERANCE ? `baseline Δ${baseline.d} (align-items: baseline)` : null
+  if (alignsOnBaseline(container, a) && alignsOnBaseline(container, b)) {
+    const d = q(Math.abs(cssBaseline(a, children) - cssBaseline(b, children)))
+    return d > ALIGN_TOLERANCE ? `baseline Δ${d} (align-items: baseline)` : null
+  }
   const smallest = Math.min(...deltas.map((x) => x.d))
   const sizes = [ta, tb].filter(Boolean).map((t) => t.fontSize)
   const band = Math.min(MAX_BAND, ...sizes.map((s) => s / 2))
@@ -443,12 +459,23 @@ const isSectionBreak = (container, gap, axis, declared) => {
   )
 }
 
+const SPREAD_JUSTIFY = new Set(['space-between', 'space-around', 'space-evenly'])
+// A row that spreads its children (justify-content, auto margins) sets its gaps from the free
+// space, so they say nothing about the author's spacing.
+function spreadsChildren(container, run, axis) {
+  const [before, after] = axis === 'x' ? [3, 1] : [0, 2]
+  return (
+    SPREAD_JUSTIFY.has(container.layout.justifyContent) ||
+    run.some((n) => n.marginAuto?.[before] || n.marginAuto?.[after])
+  )
+}
+
 export function judgeGapOutlier({ nodes, declared = {} }) {
   const { children } = index(nodes)
   const findings = []
   for (const container of nodes) {
     const { axis, runs } = stackRuns(container, children)
-    for (const run of runs.filter((r) => r.length >= 3)) {
+    for (const run of runs.filter((r) => r.length >= 3 && !spreadsChildren(container, r, axis))) {
       const gaps = runGaps(run, axis)
       if (gaps.length < 2) continue
       const m = Math.min(...gaps.map((x) => x.g))
@@ -477,6 +504,34 @@ function innerGap(group, children) {
   return gaps.length ? Math.max(...gaps) : null
 }
 
+// inner must be this many times outer: a group whose items sit about as far apart as it sits from
+// its neighbour is ambiguous, not inverted. S6 inversions the owner raised read 3.5 to 4.25 times;
+// the near-ties (14px against 12px) are the ones this drops.
+const INVERSION_RATIO = 1.5
+
+// A row of controls (arrows, a pager) is coupled to what it controls on purpose, so sitting clearly
+// nearer its neighbour than its own items are apart (the inversion ratio) is the intended layout.
+// Such a row is still flagged when it is no nearer than its items (a tie, or less than the ratio
+// nearer): the coupling the author wanted did not happen. A row farther from its neighbour than its
+// items are apart is never an inversion.
+function isControlRow(group, children) {
+  const kids = runsOf(group, children).flat()
+  const controls = kids.filter((k) => k.interactive || hasInteractive(k, children))
+  return controls.length >= 2 && controls.length * 2 >= kids.length
+}
+
+const runsOf = (group, children) => stackRuns(group, children).runs
+
+function hasInteractive(node, children) {
+  return (children.get(node.id) ?? []).some((c) => c.interactive || hasInteractive(c, children))
+}
+
+function isInverted(group, inner, outer, children) {
+  if (group.paints) return false
+  if (isControlRow(group, children)) return inner >= outer && inner < INVERSION_RATIO * outer
+  return inner >= INVERSION_RATIO * outer
+}
+
 export function judgeProximityInversion({ nodes }) {
   const { children } = index(nodes)
   const findings = []
@@ -489,7 +544,7 @@ export function judgeProximityInversion({ nodes }) {
         const beside = [gaps[i - 1], gaps[i]].filter(Boolean)
         if (!inner || !beside.length) return
         const outer = beside.reduce((lo, x) => (x.g < lo.g ? x : lo))
-        if (inner < outer.g) return
+        if (!isInverted(group, inner, outer.g, children)) return
         const neighbour = outer.a === group ? outer.b : outer.a
         findings.push({
           kind: PROXIMITY_INVERSION,
@@ -502,6 +557,44 @@ export function judgeProximityInversion({ nodes }) {
     }
   }
   return findings
+}
+
+// --- P5 font-size-near-miss ------------------------------------------------------------------------
+
+const FONT_SIZE_NEAR_MISS_MAX = 2 // a larger step reads as deliberate contrast (a hero and its unit)
+
+// Text elements grouped by their nearest flex-row ancestor; text outside any flex row is skipped.
+function textByRow(nodes, byId) {
+  const rows = new Map()
+  for (const n of nodes) {
+    if (!n.text) continue
+    let row = byId.get(n.parent)
+    while (row && !isFlexRow(row)) row = byId.get(row.parent)
+    if (!row) continue
+    if (!rows.has(row.id)) rows.set(row.id, [])
+    rows.get(row.id).push(n)
+  }
+  return [...rows.values()]
+}
+
+export function judgeFontSizeNearMiss({ nodes }) {
+  const { byId } = index(nodes)
+  const pairs = textByRow(nodes, byId).flatMap((texts) =>
+    visualLines(texts).flatMap((line) => line.slice(1).map((b, i) => [line[i], b]))
+  )
+  return pairs.flatMap(([a, b]) => {
+    const d = q(Math.abs(a.text.fontSize - b.text.fontSize))
+    if (d === 0 || d > FONT_SIZE_NEAR_MISS_MAX) return []
+    return [
+      {
+        kind: FONT_SIZE_NEAR_MISS,
+        selector: a.selector,
+        detail:
+          `${a.selector} ${px(a.text.fontSize)} vs ${b.selector} ${px(b.text.fontSize)} ` +
+          `on one line: Δ${d} (limit ${FONT_SIZE_NEAR_MISS_MAX}px)`,
+      },
+    ]
+  })
 }
 
 const capPerKind = (findings, limit) => {
@@ -518,6 +611,7 @@ export function judgeLayout(layout, { limit = MAX_FINDINGS_PER_KIND } = {}) {
       ...judgeAlignmentNearMiss(layout),
       ...judgeGapOutlier(layout),
       ...judgeProximityInversion(layout),
+      ...judgeFontSizeNearMiss(layout),
     ],
     limit
   )

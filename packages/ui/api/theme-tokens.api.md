@@ -298,7 +298,7 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'text-tertiary': "#888684";
     readonly 'text-disabled': "rgba(255, 255, 255, 0.38)";
     readonly 'text-inverse': "#1C1916";
-    readonly 'text-error': "#FF9A9D";
+    readonly 'text-error': "#E05254";
     readonly 'text-link': "#828DF8";
     readonly 'text-link-hover': "#3CA8FF";
     readonly 'surface-base': "#252321";
@@ -689,7 +689,7 @@ export const semanticColorsDark: {
     readonly 'text-tertiary': "#888684";
     readonly 'text-disabled': "rgba(255, 255, 255, 0.38)";
     readonly 'text-inverse': "#1C1916";
-    readonly 'text-error': "#FF9A9D";
+    readonly 'text-error': "#E05254";
     readonly 'text-link': "#828DF8";
     readonly 'text-link-hover': "#3CA8FF";
     readonly 'surface-base': "#252321";

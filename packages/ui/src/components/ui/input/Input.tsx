@@ -136,7 +136,7 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
       {label && (
         <Text className="text-sm font-medium text-text-primary">
           {label}
-          {isRequired && <Text className="text-status-error ml-0.5">*</Text>}
+          {isRequired && <Text className="text-text-error ml-0.5">*</Text>}
         </Text>
       )}
 
@@ -183,7 +183,7 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
 
       {showHelper && <Text className="text-xs text-text-secondary">{helperText}</Text>}
 
-      {showError && <Text className="text-xs text-status-error">{errorMessage}</Text>}
+      {showError && <Text className="text-xs text-text-error">{errorMessage}</Text>}
     </View>
   )
 })
