@@ -342,7 +342,11 @@ export const Explicit = () => (
 export const WebOnly = () => <View className="border-[1px] border-hairline" />
 ```
 
-Run `pnpm lint:borders` to catch any `border border-*` patterns in source components.
+The arch test `src/arch/default-suffix-class.test.ts` fails on a `*-default` token class such as
+`border-border-default` in source components; Tailwind never generates one, so the element falls back
+to currentColor. Use the suffix-less DEFAULT class (`border-border`). Run it alone with
+`pnpm exec vitest run --project threads src/arch/default-suffix-class.test.ts` in `packages/ui`. It does
+not flag a bare `border`; review those by hand.
 
 For full token reference and additional pitfalls, see [`TOKENS.md`](TOKENS.md).
 

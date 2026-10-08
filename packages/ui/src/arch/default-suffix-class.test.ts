@@ -41,11 +41,12 @@ function findDefaultSuffixClasses(tree: Tree): string[] {
       const hit = `${file}:${index + 1}: ${text.trim()}`
       const isExempt = EXEMPT_MARKERS.some((marker) => `${file}:${text}`.includes(marker))
       return DEFAULT_SUFFIX_CLASS.test(text) && !isExempt ? [hit] : []
-    }),
+    })
   )
 }
 
-const scan = (source: string, file = 'ui/box/Box.tsx') => findDefaultSuffixClasses({ [file]: source })
+const scan = (source: string, file = 'ui/box/Box.tsx') =>
+  findDefaultSuffixClasses({ [file]: source })
 
 describe('DEFAULT-suffix token classes', () => {
   it('finds none in the component tree', () => {
@@ -55,7 +56,9 @@ describe('DEFAULT-suffix token classes', () => {
   it('reports file, line and text of a border-border-default class', () => {
     const source = 'const a = 1\n<View className="border border-border-default" />'
 
-    expect(scan(source)).toEqual(['ui/box/Box.tsx:2: <View className="border border-border-default" />'])
+    expect(scan(source)).toEqual([
+      'ui/box/Box.tsx:2: <View className="border border-border-default" />',
+    ])
   })
 
   it('finds a multi-segment token on another utility', () => {
