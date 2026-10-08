@@ -3,12 +3,14 @@ import storybookConfig from '../playwright.config'
 import baselineConfig from '../playwright.baseline.config'
 import comparisonConfig from '../playwright.comparison.config'
 import tokensConfig from '../playwright.tokens.config'
+import contrastConfig from '../playwright.contrast.config'
 
 const configs = {
   'playwright.config.ts': storybookConfig,
   'playwright.baseline.config.ts': baselineConfig,
   'playwright.comparison.config.ts': comparisonConfig,
   'playwright.tokens.config.ts': tokensConfig,
+  'playwright.contrast.config.ts': contrastConfig,
 }
 
 const webServers = Object.entries(configs).flatMap(([file, config]) =>
