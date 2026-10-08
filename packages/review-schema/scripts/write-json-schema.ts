@@ -1,5 +1,5 @@
 import { writeFile } from 'node:fs/promises'
-import { feedbackJsonSchema, manifestJsonSchema } from './schema.ts'
+import { feedbackJsonSchema, manifestJsonSchema } from '../src/schema.ts'
 
 const dir = new URL('../schema/', import.meta.url)
 const write = (name: string, schema: unknown) =>
