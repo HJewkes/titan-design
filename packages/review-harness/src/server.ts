@@ -2,7 +2,7 @@ import { createReadStream } from 'node:fs'
 import http from 'node:http'
 import type { AddressInfo } from 'node:net'
 import type { Duplex } from 'node:stream'
-import { FeedbackSchema, type Feedback, type Manifest } from './schema.ts'
+import { FeedbackSchema, type Feedback, type Manifest } from '@titan-design/review-schema'
 import { feedbackProblems, normalizeFeedback } from './round.ts'
 import { proxyRequest, proxyUpgrade } from './proxy.ts'
 

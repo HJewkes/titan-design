@@ -207,7 +207,7 @@ Each `candidate` is held by a named clause:
   `logic` layer (see [Not yet tagged](#not-yet-tagged)). `stat-card` has no `logic` layer either.
   It was not stable when clause 5 started, so it has no baseline entry to cover the gap.
 - **No clause holds `carousel`.** All five conditions of clause 2 pass for it, so the rule derives
-  `stable`. Its story still carries the `status:candidate` tag it shipped with in #274.
+  `stable`, and its story carries `status:stable` (TD-704).
 
 ## Related
 

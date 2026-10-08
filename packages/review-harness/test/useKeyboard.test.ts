@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { initialState, pagesFor, type Action } from '../page/state.ts'
 import { onFormKey } from '../page/useKeyboard.ts'
-import { ManifestSchema } from '../src/schema.ts'
+import { ManifestSchema } from '@titan-design/review-schema'
 import { pagedImageInput } from './fixtures.ts'
 
 class FakeTextArea {}

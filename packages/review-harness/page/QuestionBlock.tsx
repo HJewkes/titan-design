@@ -1,7 +1,7 @@
 import type { Dispatch } from 'react'
 import { agrees, draftAnswer, type AnswerDraft } from '../src/feedback.ts'
 import { isAnswered, offersBuiltInRevision } from '../src/round.ts'
-import type { Manifest, Question, Recommendation } from '../src/schema.ts'
+import type { Manifest, Question, Recommendation } from '@titan-design/review-schema'
 import { Markdown } from './Markdown.tsx'
 import { recommendationVisible, type Action } from './state.ts'
 import { Stop } from './Stop.tsx'
