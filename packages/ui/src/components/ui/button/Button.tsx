@@ -1,59 +1,11 @@
 import React, { forwardRef } from 'react'
 import { Pressable, Text, View, ActivityIndicator, type PressableProps } from 'react-native'
 import { cn } from '../../../utils/cn'
-import { semanticColorsDark } from '../../../theme/tokens/semantic'
+import { useSurfaceMode } from '../../../theme/surface-context'
+import { labelColor, toneColor, type ButtonColor, type ButtonVariant } from './button-colors'
+import type { ButtonSize } from './button-colors'
 
-export type ButtonVariant = 'solid' | 'outline' | 'ghost' | 'link'
-export type ButtonSize = 'sm' | 'md' | 'lg'
-export type ButtonColor = 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info'
-
-/** Inline color map for RNW where Tailwind text classes get dropped */
-const textColorMap: Record<ButtonVariant, Record<ButtonColor, string>> = {
-  // Was '#FFFFFF' on every tone, which failed AA on four of the six solid fills
-  // (warning measured 1.82). Reads the same on-* tokens as the className path (AW-141).
-  solid: {
-    primary: semanticColorsDark['on-brand-primary'],
-    secondary: semanticColorsDark['on-brand-secondary'],
-    success: semanticColorsDark['on-status-success'],
-    error: semanticColorsDark['on-status-error'],
-    warning: semanticColorsDark['on-status-warning'],
-    info: semanticColorsDark['on-status-info'],
-  },
-  outline: {
-    primary: semanticColorsDark['brand-primary'],
-    secondary: semanticColorsDark['brand-secondary'],
-    success: semanticColorsDark['status-success'],
-    error: semanticColorsDark['status-error'],
-    warning: semanticColorsDark['status-warning'],
-    info: semanticColorsDark['status-info'],
-  },
-  ghost: {
-    primary: semanticColorsDark['brand-primary'],
-    secondary: semanticColorsDark['brand-secondary'],
-    success: semanticColorsDark['status-success'],
-    error: semanticColorsDark['status-error'],
-    warning: semanticColorsDark['status-warning'],
-    info: semanticColorsDark['status-info'],
-  },
-  link: {
-    primary: semanticColorsDark['brand-primary'],
-    secondary: semanticColorsDark['brand-secondary'],
-    success: semanticColorsDark['status-success'],
-    error: semanticColorsDark['status-error'],
-    warning: semanticColorsDark['status-warning'],
-    info: semanticColorsDark['status-info'],
-  },
-}
-
-/** Inline border color map for outline variant */
-const borderColorMap: Record<ButtonColor, string> = {
-  primary: semanticColorsDark['brand-primary'],
-  secondary: semanticColorsDark['brand-secondary'],
-  success: semanticColorsDark['status-success'],
-  error: semanticColorsDark['status-error'],
-  warning: semanticColorsDark['status-warning'],
-  info: semanticColorsDark['status-info'],
-}
+export type { ButtonColor, ButtonSize, ButtonVariant } from './button-colors'
 
 export interface ButtonProps extends Omit<PressableProps, 'children'> {
   /** Visual style variant */
@@ -220,12 +172,11 @@ export const Button = forwardRef<View, ButtonProps>(function Button(
   ref
 ) {
   const disabled = isDisabled || isLoading
+  const label = labelColor(useSurfaceMode(), variant, color)
 
-  const inlineStyle: Record<string, string> = {
-    color: textColorMap[variant][color],
-  }
+  const inlineStyle: Record<string, string> = { color: label }
   if (variant === 'outline') {
-    inlineStyle.borderColor = borderColorMap[color]
+    inlineStyle.borderColor = toneColor(color)
   }
 
   return (
@@ -259,14 +210,14 @@ export const Button = forwardRef<View, ButtonProps>(function Button(
       {isLoading && (
         <ActivityIndicator
           size="small"
-          color={variant === 'solid' ? textColorMap.solid[color] : undefined}
+          color={variant === 'solid' ? label : undefined}
           className="mr-2"
         />
       )}
       {isLoading && loadingText ? (
         <Text
           className={cn('font-semibold', textSizeStyles[size], textStyles[variant][color])}
-          style={{ color: textColorMap[variant][color] }}
+          style={{ color: label }}
         >
           {loadingText}
         </Text>

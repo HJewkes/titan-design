@@ -214,9 +214,6 @@
     "complexity": 28,
     "props": 20
   },
-  "components/ui/button/Button.tsx": {
-    "file-lines": 242
-  },
   "components/ui/button/Button.tsx#Button": {
     "complexity": 18
   },

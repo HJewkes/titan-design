@@ -2,6 +2,10 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Button, ButtonText } from './Button'
+import { solidLabelColor } from './button-colors'
+import { Surface } from '../surface'
+import { contrast } from '../../../theme/color-checks'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
 describe('Button', () => {
@@ -162,5 +166,59 @@ describe('Button geometry resolves to the control tokens', () => {
 
   it.each(shipped)('%s still measures what it measured before the tokens', (level, _, pixels) => {
     expect(resolveAll(classesFor(level))).toEqual([...pixels])
+  })
+})
+
+describe('Button solid label follows the surface mode', () => {
+  const colors = ['primary', 'secondary', 'success', 'error', 'warning', 'info'] as const
+  const fillToken = {
+    primary: 'brand-primary-solid',
+    secondary: 'brand-secondary-solid',
+    success: 'status-success-solid',
+    error: 'status-error-solid',
+    warning: 'status-warning-solid',
+    info: 'status-info-solid',
+  } as const
+
+  it.each(['dark', 'light'] as const)(
+    '%s: every solid label reads 4.5 or more on its fill',
+    (mode) => {
+      const tokens = getSemanticColors(mode)
+      for (const color of colors) {
+        expect(
+          contrast(solidLabelColor(mode, color), tokens[fillToken[color]])
+        ).toBeGreaterThanOrEqual(4.5)
+      }
+    }
+  )
+
+  it('keeps the dark label on the light warning fill only while the light token still misses', () => {
+    const light = getSemanticColors('light')
+    expect(contrast(light['on-status-warning'], light['status-warning-solid'])).toBeLessThan(4.5)
+    expect(solidLabelColor('light', 'warning')).toBe(getSemanticColors('dark')['on-status-warning'])
+  })
+
+  it('paints the light info label white on the info fill inside a light Surface', () => {
+    render(
+      <Surface theme="light">
+        <Button color="info" testID="info-button">
+          <ButtonText>Info</ButtonText>
+        </Button>
+      </Surface>
+    )
+    expect(screen.getByTestId('info-button')).toHaveStyle({
+      color: getSemanticColors('light')['on-status-info'],
+    })
+  })
+
+  it('paints the dark label outside any Surface, the dark default', () => {
+    render(
+      <Button color="info" testID="info-button">
+        <ButtonText>Info</ButtonText>
+      </Button>
+    )
+    expect(screen.getByTestId('info-button')).toHaveStyle({
+      color: getSemanticColors('dark')['on-status-info'],
+    })
   })
 })
