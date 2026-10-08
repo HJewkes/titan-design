@@ -931,6 +931,9 @@ export interface CircularTimerProps {
 }
 
 // @public
+export const CLOCK_MIN = 720;
+
+// @public
 export function cn(...inputs: ClassValue[]): string;
 
 // @public @deprecated
@@ -7375,6 +7378,9 @@ export interface StrengthTrendDataPoint {
 
 // @public
 export function stripLeadingHeading(body: string): string;
+
+// @public
+export const SUBTITLE_MIN = 1024;
 
 // @public (undocumented)
 export function SupersetWrapper(input: SupersetWrapperProps): react_jsx_runtime.JSX.Element;

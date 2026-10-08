@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Pill } from '../ui/pill'
-import { TopBar } from './TopBar'
+import { TopBar, SUBTITLE_MIN, CLOCK_MIN } from './TopBar'
 import { brandKeys } from './brands'
 
 const meta: Meta<typeof TopBar> = {
@@ -71,4 +71,10 @@ export const SingleTrailingItem: Story = {
       </Pill>
     ),
   },
+}
+
+/** The container-responsive collapse on the width matrix: subtitle and clock drop at their thresholds. */
+export const Widths: Story = {
+  tags: ['width-matrix'],
+  parameters: { layout: 'fullscreen', widthMatrix: { thresholds: [CLOCK_MIN, SUBTITLE_MIN] } },
 }

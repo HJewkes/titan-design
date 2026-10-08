@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
 import { Surface } from '../../ui/surface'
-import { TaskTable } from './TaskTable'
+import { TaskTable, COMPACT_SEVERITY_BELOW } from './TaskTable'
 import { TASK_LIST_FIXTURE, TASK_LIST_NOW } from './task-list-fixture'
 
 /**
@@ -120,4 +120,17 @@ export const NoLegend: Story = {
 /** Empty backlog — the grid keeps its header so the columns stay readable. */
 export const Empty: Story = {
   args: { tasks: [] },
+}
+
+/** Severity collapses to its dot, then whole columns drop, across the width matrix. */
+export const Widths: Story = {
+  tags: ['width-matrix'],
+  parameters: { layout: 'fullscreen', widthMatrix: { thresholds: [COMPACT_SEVERITY_BELOW] } },
+  decorators: [
+    (Story) => (
+      <View className="w-full">
+        <Story />
+      </View>
+    ),
+  ],
 }

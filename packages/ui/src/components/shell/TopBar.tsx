@@ -33,8 +33,10 @@ export interface TopBarProps {
 }
 
 // SIZE-D01: responsiveness is container-driven (measured width), not a fixed size prop.
-const SUBTITLE_MIN = 1024
-const CLOCK_MIN = 720
+/** Container width at which the brand subtitle appears. */
+export const SUBTITLE_MIN = 1024
+/** Container width at which the clock appears. */
+export const CLOCK_MIN = 720
 
 function ClusterDivider() {
   return <Divider orientation="vertical" className="h-4 bg-border-prominent" />

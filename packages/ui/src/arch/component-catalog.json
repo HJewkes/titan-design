@@ -1031,7 +1031,8 @@
         "custom-activework-tasktable--no-legend",
         "custom-activework-tasktable--sorted-by-age",
         "custom-activework-tasktable--sorted-by-estimate",
-        "custom-activework-tasktable--sorted-by-severity"
+        "custom-activework-tasktable--sorted-by-severity",
+        "custom-activework-tasktable--widths"
       ],
       "tier": "organism"
     },
@@ -2241,8 +2242,7 @@
         "custom-fatigue-live-fatigue-panel--live-panel-v-2",
         "custom-fatigue-live-fatigue-panel--live-states",
         "custom-fatigue-live-fatigue-panel--on-light-surface",
-        "custom-fatigue-live-fatigue-panel--responsive-tiers",
-        "custom-fatigue-live-fatigue-panel--wall-width"
+        "custom-fatigue-live-fatigue-panel--widths"
       ],
       "tier": "organism"
     },
@@ -9459,6 +9459,7 @@
       "storyIds": [
         "shell-topbar--default",
         "shell-topbar--single-trailing-item",
+        "shell-topbar--widths",
         "shell-topbar--with-app-chrome"
       ],
       "tier": "organism"
