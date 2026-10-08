@@ -19,7 +19,7 @@ export const BASELINE_FILE = 'packages/ui/src/test/stories-axe-baseline.json'
 
 const axe = configureAxe({
   rules: {
-    // jsdom has no layout, so contrast cannot be computed; the browser run of TD-26 S7 covers it.
+    // jsdom has no layout, so contrast cannot be computed; tests/visual/contrast.spec.ts (the CI `contrast` job) covers it.
     'color-contrast': { enabled: false },
     // A story is a component, not a page; landmark containment belongs to the consuming page.
     region: { enabled: false },
