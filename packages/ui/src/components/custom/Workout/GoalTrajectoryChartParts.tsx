@@ -77,7 +77,7 @@ export function GoalTrajectoryChartFrame({
       {overhang > 0 && (
         <View style={{ height: overhang }} testID="goal-trajectory-chart-overhang" />
       )}
-      {marks && <CalibratingInfo marks={marks} note={chart.note} palette={chart.palette} />}
+      {!!marks && <CalibratingInfo marks={marks} note={chart.note} palette={chart.palette} />}
       <GoalTrajectoryWeekTips tips={chart.tips} width={width} height={height} />
     </View>
   )

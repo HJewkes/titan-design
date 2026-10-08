@@ -62,6 +62,31 @@ export function reactNativeSvgWebResolver(): Plugin {
  * self-contained ESM module with esbuild — JSX compiled via the automatic
  * runtime, react-native-svg's WEB build inlined, react/react-native external.
  */
+const BODY_HIGHLIGHTER_EXTERNALS = ['react', 'react/jsx-runtime', 'react-native']
+
+/**
+ * esbuild turns a CommonJS `require()` of an external into a `__require()` shim
+ * that throws "Dynamic require of ... is not supported" in the browser. Serve
+ * each required external from a CommonJS stub that re-exports a static ESM
+ * import instead, which Rollup then resolves to the app's single copy.
+ */
+function requiredExternalsAsImports(): EsbuildPlugin {
+  const filter = new RegExp(`^(${BODY_HIGHLIGHTER_EXTERNALS.join('|')})$`)
+  return {
+    name: 'required-externals-as-imports',
+    setup(build) {
+      build.onResolve({ filter }, (args) =>
+        args.kind === 'require-call'
+          ? { path: args.path, namespace: 'required-external' }
+          : { path: args.path, external: true }
+      )
+      build.onLoad({ filter: /.*/, namespace: 'required-external' }, (args) => ({
+        contents: `import * as external from ${JSON.stringify(args.path)}\nmodule.exports = external`,
+      }))
+    },
+  }
+}
+
 export function reactNativeBodyHighlighterEsm(): Plugin {
   let entry: string | null = null
   try {
@@ -94,7 +119,7 @@ export function reactNativeBodyHighlighterEsm(): Plugin {
           '.json',
         ],
         mainFields: ['module', 'main'],
-        external: ['react', 'react/jsx-runtime', 'react-native'],
+        plugins: [requiredExternalsAsImports()],
         write: false,
         logLevel: 'silent',
       })

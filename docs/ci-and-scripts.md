@@ -8,14 +8,12 @@ root `package.json`, `turbo.json`, `packages/ui/package.json`, `packages/ui/vite
 
 `ci.yml` runs on every pull request and on pushes to `main`.
 
-| Job              | Runs on                                  | What it runs                                                        |
-| ---------------- | ---------------------------------------- | ------------------------------------------------------------------- |
-| `build`          | Node 20 and 22 matrix                    | Install, then the steps below                                       |
-| `visual`         | Playwright container, Node 22            | Layer 3 parity, offline fonts, Layer 1 and 2 baselines, interaction |
-| `storybook-play` | Playwright container, Node 22            | `pnpm test:storybook` (play functions in the `storybook` project)   |
-| `stories-axe`    | Node 22                                  | `pnpm test:axe` (axe on every story under jsdom)                    |
-| `audit`          | Node 22, no install                      | `scripts/audit-retry.sh` (`pnpm audit --audit-level=critical`)      |
-| `check`          | Always runs; needs all of the jobs above | `HJewkes/ci/actions/all-green`; fails if any needed job failed      |
+| Job        | Runs on                                                                            | What it runs                                                                                                                                              |
+| ---------- | ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `build`    | Node 22 (single-entry matrix)                                                      | Install, then the steps below                                                                                                                             |
+| `visual`   | Playwright container, Node 22                                                      | Layer 3 parity, offline fonts, Layer 1 and 2 baselines, interaction                                                                                       |
+| `contrast` | Playwright container, Node 22; a three-shard matrix (`contrast 1/3` to `3/3`)      | axe `color-contrast` on every story in both themes (`test:visual:contrast --shard=i/3`), path-gated; each shard uploads `contrast-report-<i>` (see below) |
+| `check`    | Playwright container, Node 22; always runs; needs `build`, `visual` and `contrast` | all-green over `needs`, then audit, stories axe and play functions (see below)                                                                            |
 
 ### `build` steps
 
@@ -31,6 +29,14 @@ root `package.json`, `turbo.json`, `packages/ui/package.json`, `packages/ui/vite
 `api:check`, `docs:check`, `type-check:examples`, `test:unit:ci`, `arch:check`.
 `pnpm verify` is `verify:unit` plus `test:axe`.
 
+### Turbo cache
+
+A pull request restores `.turbo/cache` from the newest entry a push to `main` saved for the same
+lockfile and Node version, so a task whose inputs match replays instead of running. Only a push to
+`main` saves, and it never restores, so every merged tree runs in full. A replay is as strong as a run
+only while turbo hashes every file a task reads: a task that reads files outside its package lists
+them in `inputs` with `$TURBO_ROOT$` (as `test:unit` and `test:unit:ci` do in `turbo.json`).
+
 ### `visual` steps
 
 | Step                         | Script (package `@titan-design/react-ui`) |
@@ -45,6 +51,45 @@ On failure the job regenerates the Layer 1 and Layer 2 baselines and uploads the
 `component-visual-baselines` and `storybook-visual-baselines` artifacts, plus
 `layer2-failure-results` and `playwright-failure-diagnostics`. Refresh committed `*-chromium-linux.png`
 baselines from those artifacts. See `docs/test-layers.md`.
+
+### `contrast` job
+
+`contrast` runs `packages/ui/tests/visual/contrast.spec.ts` through `playwright.contrast.config.ts`
+in three Playwright shards, each on its own static Storybook build: one test per story and theme, axe
+`color-contrast` in Chromium, compared with `packages/ui/tests/visual/contrast-stories-baseline.json`.
+Each story renders under the paused clock, the clock runs forward 5 s so animations and the theme
+switch settle, and axe samples at that frozen instant. Stories tagged `play` are left out (their play
+function drives the render in real time); a blank render is recorded and skipped. The baseline may
+only shrink: a pair or count above it fails, and a pair or count that no longer occurs fails as stale.
+It is path-gated like `visual`, and `check` needs it (all-green requires every job in the workflow to
+be in `check.needs`), so it gates merges through `check`.
+
+Each shard uploads its report (`contrast-report-<i>`, one JSON line per story-theme) whether it
+passed or failed. Local Chromium can disagree with the container's, so regenerate the committed
+baseline from those artifacts: download the three files and run
+`node packages/ui/scripts/update-contrast-stories-baseline.mjs <files> --allow-increase`.
+`pnpm contrast:baseline` with no files runs the suite locally first. Without `--allow-increase` the
+script refuses to add an entry or raise a count.
+
+### `check` steps
+
+The ruleset requires `check`. Its first step fails the job when `build`, `visual` or `contrast`
+failed, was cancelled or is missing from `needs`, and every later step then skips.
+
+| Step                 | Command                                     | Notes                                  |
+| -------------------- | ------------------------------------------- | -------------------------------------- |
+| all-green            | `HJewkes/ci/actions/all-green`              | Over `needs`                           |
+| Rendered UI changed? | `node packages/ui/scripts/visual-paths.mjs` | Pull requests only                     |
+| Audit                | `scripts/audit-retry.sh`                    | Always; reads the lockfile, no install |
+| Stories axe          | `pnpm test:axe`                             | Skipped when the classifier says no    |
+| Storybook play       | `pnpm test:storybook`                       | Skipped when the classifier says no    |
+
+### Path gate
+
+On a pull request, `visual`, `contrast` and `check` each run `packages/ui/scripts/visual-paths.mjs`.
+When none of the PR's changed paths matches `RENDERED_UI_PATTERNS`, `visual` skips its layers, the
+`contrast` shards skip the suite and `check` skips stories axe and play; all still report green. If the changed paths cannot be listed, everything runs.
+A push to `main` always runs everything. A new input to any gated step needs a pattern there.
 
 ## Argument passthrough
 
@@ -69,22 +114,23 @@ does not declare.
 
 ### Root scripts that bypass Turbo
 
-| Script             | Calls                                                                     |
-| ------------------ | ------------------------------------------------------------------------- |
-| `catalog`          | `pnpm --filter @titan-design/react-ui catalog`                            |
-| `arch:check`       | `pnpm --filter @titan-design/react-ui exec vitest run …freshness.test.ts` |
-| `verify`           | `pnpm verify:unit && pnpm test:axe`                                       |
-| `verify:unit`      | A chain of `pnpm` scripts; `test:unit:ci` is the root `turbo run test:unit:ci` passthrough            |
-| `arch:graph`       | `node scripts/arch-graph.mjs`                                             |
-| `arch:barrel-hash` | `node packages/ui/scripts/barrel-hash.mjs --write`                        |
-| `review`           | `node packages/review-harness/src/cli.ts`                                 |
-| `audit:stories`    | `node packages/ui/scripts/audit-stories.mjs`                              |
+| Script              | Calls                                                                                      |
+| ------------------- | ------------------------------------------------------------------------------------------ |
+| `catalog`           | `pnpm --filter @titan-design/react-ui catalog`                                             |
+| `arch:check`        | `pnpm --filter @titan-design/react-ui exec vitest run …freshness.test.ts`                  |
+| `verify`            | `pnpm verify:unit && pnpm test:axe`                                                        |
+| `verify:unit`       | A chain of `pnpm` scripts; `test:unit:ci` is the root `turbo run test:unit:ci` passthrough |
+| `arch:graph`        | `node scripts/arch-graph.mjs`                                                              |
+| `arch:barrel-hash`  | `node packages/ui/scripts/barrel-hash.mjs --write`                                         |
+| `review`            | `node packages/review-harness/src/cli.ts`                                                  |
+| `audit:stories`     | `node packages/ui/scripts/audit-stories.mjs`                                               |
+| `contrast:baseline` | `pnpm --filter @titan-design/react-ui test:visual:contrast:update`                         |
 
 `arch:barrel-hash` is the fix the `arch:check` freshness test asks for after a component barrel
 changes. It rewrites only `componentBarrelHash` in `packages/ui/src/arch/arch-graph.json`.
 
 CI runs `arch:check` (inside `verify:unit`). It does not run `catalog`, `arch:graph`, `arch:barrel-hash`,
-`review` or `audit:stories`. `size` and `check:cycles` have no root script or Turbo task; CI calls them with
+`review`, `audit:stories` or `contrast:baseline`. `size` and `check:cycles` have no root script or Turbo task; CI calls them with
 `pnpm --filter`.
 
 ## Coverage thresholds

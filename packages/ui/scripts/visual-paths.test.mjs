@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { decide, fetchChangedPaths } from './visual-paths.mjs'
 
-describe('visual job path classifier (TD-645)', () => {
+describe('rendered-UI path classifier (TD-645, TD-725)', () => {
   it.each([
     ['a pure-TS utils test change', ['packages/ui/src/utils/cn.test.ts']],
     ['a hook type test change', ['packages/ui/src/hooks/useTimer.test-d.ts']],
@@ -9,6 +9,7 @@ describe('visual job path classifier (TD-645)', () => {
     ['a script change', ['packages/ui/scripts/check-cycles.mjs']],
     ['a changelog fragment', ['packages/ui/changelog.d/TD-1-thing.md']],
     ['another workflow', ['.github/workflows/mutation.yml']],
+    ['a component test change', ['packages/ui/src/components/ui/button/Button.test.tsx']],
     ['no changed paths', []],
   ])('skips %s', (_scenario, paths) => {
     expect(decide(paths).run).toBe(false)
@@ -35,7 +36,12 @@ describe('visual job path classifier (TD-645)', () => {
     ['this classifier', 'packages/ui/scripts/visual-paths.mjs'],
     ['the package manifest', 'packages/ui/package.json'],
     ['the lockfile', 'pnpm-lock.yaml'],
+    ['the Turbo pipeline the axe and play scripts run through', 'turbo.json'],
     ['ci.yml', '.github/workflows/ci.yml'],
+    ['the stories-axe suite', 'packages/ui/src/test/stories-axe.test.tsx'],
+    ['a stories-axe shard', 'packages/ui/src/test/stories-axe.charts.test.tsx'],
+    ['the vitest config the axe and play projects live in', 'packages/ui/vitest.config.ts'],
+    ['the play-count check', 'packages/ui/scripts/check-play-count.mjs'],
   ])('runs every layer for %s', (_scenario, path) => {
     const decision = decide(['packages/ui/docs/notes.md', path])
     expect(decision).toEqual({ run: true, reason: `${path} is rendered UI; running every layer` })

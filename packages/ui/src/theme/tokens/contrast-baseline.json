@@ -13,6 +13,13 @@
     "status-error on surface-elevated",
     "status-error on surface-overlay",
     "status-error on surface-raised",
+    "text-error on background-default",
+    "text-error on background-subtle",
+    "text-error on surface-base",
+    "text-error on surface-elevated",
+    "text-error on surface-input",
+    "text-error on surface-overlay",
+    "text-error on surface-raised",
     "text-link on surface-overlay",
     "text-link on surface-raised"
   ],

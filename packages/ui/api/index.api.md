@@ -790,6 +790,9 @@ export const categoricalPalette: {
 export type CategoricalVariant = keyof typeof categoricalPalette;
 
 // @public
+export function ChartIcon(props: IconProps): react_jsx_runtime.JSX.Element;
+
+// @public
 export function ChatCard(input: ChatCardProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -1150,7 +1153,7 @@ export const darkThemeCSSVars: {
     readonly '--color-text-tertiary': "#888684";
     readonly '--color-text-disabled': "rgba(255, 255, 255, 0.38)";
     readonly '--color-text-inverse': "#1C1916";
-    readonly '--color-text-error': "#FF9A9D";
+    readonly '--color-text-error': "#E05254";
     readonly '--color-text-link': "#828DF8";
     readonly '--color-surface-base': "#252321";
     readonly '--color-surface-elevated': "#2C2A28";
@@ -1254,6 +1257,9 @@ export const DashboardShell: typeof WorkoutShell;
 
 // @public @deprecated (undocumented)
 export type DashboardShellProps = WorkoutShellProps;
+
+// @public
+export function DatabaseIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
 export type DataPartRenderer = (part: DataPart, message: ChatMessage) => ReactNode;
@@ -2398,7 +2404,7 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'text-tertiary': "#888684";
     readonly 'text-disabled': "rgba(255, 255, 255, 0.38)";
     readonly 'text-inverse': "#1C1916";
-    readonly 'text-error': "#FF9A9D";
+    readonly 'text-error': "#E05254";
     readonly 'text-link': "#828DF8";
     readonly 'text-link-hover': "#3CA8FF";
     readonly 'surface-base': "#252321";
@@ -2677,7 +2683,7 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-text-tertiary': "#888684";
     readonly '--color-text-disabled': "rgba(255, 255, 255, 0.38)";
     readonly '--color-text-inverse': "#1C1916";
-    readonly '--color-text-error': "#FF9A9D";
+    readonly '--color-text-error': "#E05254";
     readonly '--color-text-link': "#828DF8";
     readonly '--color-surface-base': "#252321";
     readonly '--color-surface-elevated': "#2C2A28";
@@ -3490,6 +3496,25 @@ export function hexToRgb(hex: string): {
 } | null;
 
 // @public
+export interface HighlightRange {
+    end: number;
+    start: number;
+}
+
+// @public
+export function HighlightText(input: HighlightTextProps): react_jsx_runtime.JSX.Element | null;
+
+// @public
+export interface HighlightTextProps {
+    className?: string;
+    color?: TypographyColor;
+    maxLines?: number;
+    ranges: readonly HighlightRange[];
+    text: string;
+    variant?: TypographyVariant;
+}
+
+// @public
 export function HistoryIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -3754,6 +3779,20 @@ export function isMilestoneMet(target: GoalMilestoneTarget, latest: GoalMileston
 
 // @public
 export function KanbanIcon(input: IconProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export function Kbd(input: KbdProps): react_jsx_runtime.JSX.Element | null;
+
+// @public
+export interface KbdProps {
+    accessibilityLabel?: string;
+    className?: string;
+    keys: string[];
+    size?: KbdSize;
+}
+
+// @public
+export type KbdSize = 'sm' | 'md';
 
 // @public
 export function Label(props: LabelProps): react_jsx_runtime.JSX.Element;
@@ -5892,6 +5931,9 @@ export interface ScheduleTilesProps extends ViewProps {
     when: number | Date;
 }
 
+// @public
+export function SearchIcon(props: IconProps): react_jsx_runtime.JSX.Element;
+
 // @public (undocumented)
 export function Section(input: SectionProps): react_jsx_runtime.JSX.Element;
 
@@ -6121,7 +6163,7 @@ export const semanticColorsDark: {
     readonly 'text-tertiary': "#888684";
     readonly 'text-disabled': "rgba(255, 255, 255, 0.38)";
     readonly 'text-inverse': "#1C1916";
-    readonly 'text-error': "#FF9A9D";
+    readonly 'text-error': "#E05254";
     readonly 'text-link': "#828DF8";
     readonly 'text-link-hover': "#3CA8FF";
     readonly 'surface-base': "#252321";

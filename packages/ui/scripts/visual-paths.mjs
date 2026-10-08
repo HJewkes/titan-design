@@ -3,27 +3,31 @@ import { appendFileSync } from 'node:fs'
 import { isEntryPoint } from './lib/entry.mjs'
 
 /**
- * Decides whether a pull request needs the `visual` job's layers (TD-645). The job always
- * reports, because the ruleset requires a `visual` status; on a PR whose changed paths miss
- * every pattern below, its layers are skipped and it ends green in seconds.
+ * Decides whether a pull request needs the `visual` job's layers (TD-645) and the `check`
+ * job's stories-axe and play steps (TD-725). Both jobs always report, because the ruleset
+ * requires them; on a PR whose changed paths miss every pattern below, those steps are skipped.
  *
- * A false skip lets a pixel regression merge, a false run only costs minutes, so a path is
- * listed here whenever a visual layer could read it.
+ * A false skip lets a regression merge, a false run only costs minutes, so a path is listed
+ * here whenever a visual layer, the stories-axe suite or a play function could read it.
  */
 export const RENDERED_UI_PATTERNS = [
   // Storybook's stories glob is ../src/**, and stories import across all of src (lab, utils,
   // hooks, theme fonts and tokens, test/blank-render.ts); only test files never render.
   /^packages\/ui\/src\/(?!.*\.test(-d)?\.tsx?$)/,
+  // The stories-axe suite is itself a test file.
+  /^packages\/ui\/src\/test\/stories-axe[^/]*\.test\.tsx$/,
   /\.stories\.(ts|tsx|mdx)$/,
   /^packages\/ui\/\.storybook\//,
-  /^packages\/ui\/(tailwind\.config\.js|postcss\.config\.js|vite-rn-svg-plugins\.ts|tsconfig\.json)$/,
+  /^packages\/ui\/(tailwind\.config\.js|postcss\.config\.js|vite-rn-svg-plugins\.ts|tsconfig\.json|vitest\.config\.ts)$/,
   /^packages\/ui\/specimen\//,
   /^packages\/ui\/tests\/(visual|interaction|offline-fonts)\//,
   /^packages\/ui\/playwright[^/]*\.config\.[^/]+$/,
-  // Playwright starts Storybook through the launcher (pnpm storybook --ci).
-  /^packages\/ui\/scripts\/(storybook-launch\.mjs|lib\/|visual-paths\.mjs$)/,
+  // The Storybook launcher and its helpers.
+  // test:storybook ends with the play-count check.
+  /^packages\/ui\/scripts\/(storybook-launch\.mjs|check-play-count\.mjs$|lib\/|visual-paths\.mjs$)/,
   /^packages\/ui\/package\.json$/,
-  /^(package\.json|pnpm-lock\.yaml|pnpm-workspace\.yaml)$/,
+  // test:axe and test:storybook run through Turbo.
+  /^(package\.json|pnpm-lock\.yaml|pnpm-workspace\.yaml|turbo\.json)$/,
   /^\.github\/workflows\/ci\.yml$/,
 ]
 

@@ -21,6 +21,24 @@
         display: flex;
         flex-direction: column;
       }
+      .tile {
+        background: #eef;
+      }
+      .row {
+        flex-direction: row;
+        width: 200px;
+      }
+      .chip {
+        width: 20px;
+        height: 20px;
+        background: #dde;
+      }
+      .btn {
+        height: 20px;
+        border: 0;
+        padding: 0;
+        background: #dde;
+      }
     </style>
   </head>
   <body>
@@ -83,7 +101,50 @@
         </div>
       </div>
 
+      <div class="case" data-testid="painted-group" style="gap: 4px">
+        <div class="bar"></div>
+        <div class="group tile" style="gap: 16px">
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+      </div>
+
+      <div class="case" data-testid="controls-row" style="gap: 4px">
+        <div class="bar"></div>
+        <div class="group" style="gap: 16px">
+          <button class="btn"></button>
+          <button class="btn"></button>
+        </div>
+      </div>
+
+      <div class="case row" data-testid="space-between-row" style="justify-content: space-between">
+        <div class="chip"></div>
+        <div class="chip" style="margin-right: 30px"></div>
+        <div class="chip"></div>
+        <div class="chip"></div>
+      </div>
+
+      <div class="case row" data-testid="auto-margin-row" style="gap: 4px">
+        <div class="chip"></div>
+        <div class="chip"></div>
+        <div class="chip" style="margin-left: auto"></div>
+      </div>
+
       <!-- Positives -->
+      <div class="case row" data-testid="outlier-row" style="gap: 8px">
+        <div class="chip"></div>
+        <div class="chip" style="margin-right: 28px"></div>
+        <div class="chip"></div>
+      </div>
+
+      <div class="case" data-testid="loose-controls" style="gap: 16px">
+        <div class="bar"></div>
+        <div class="group" style="gap: 16px">
+          <button class="btn"></button>
+          <button class="btn"></button>
+        </div>
+      </div>
+
       <div class="case" data-testid="outlier-literal">
         <div class="bar" style="margin-bottom: 8px"></div>
         <div class="bar" style="margin-bottom: 32px"></div>
@@ -96,7 +157,7 @@
         <div class="bar"></div>
       </div>
 
-      <div class="case" data-testid="inverted-groups" style="gap: 16px">
+      <div class="case" data-testid="inverted-groups" style="gap: 4px">
         <div class="group" style="gap: 16px">
           <div class="bar"></div>
           <div class="bar"></div>

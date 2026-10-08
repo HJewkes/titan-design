@@ -11,6 +11,7 @@
     "result-degrade | status-error-light",
     "result-degrade | status-error-solid",
     "result-degrade | status-error-vivid-light",
+    "result-degrade | text-error",
     "result-improve-dark | status-success-dark",
     "result-inconclusive | result-neutral",
     "result-inconclusive | text-secondary"

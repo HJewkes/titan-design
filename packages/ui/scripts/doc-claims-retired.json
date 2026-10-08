@@ -1,0 +1,7 @@
+[
+  { "term": "Gluestack", "why": "declared in package.json but never imported (TD-312 removes it)" },
+  { "term": "useTheme()", "why": "no such hook; theme mode is the .light class on <html>" },
+  { "term": "WORKOUT_TOKENS", "why": "internal to src/theme, not a public export" },
+  { "term": "TOKEN_MAPPING", "why": "removed; tokens live in src/theme/tokens" },
+  { "term": "lucide-react", "why": "icons are the package's own src/components/icons" }
+]
