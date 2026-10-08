@@ -9480,7 +9480,7 @@
         },
         {
           "default": "Devices",
-          "description": "Accessible label (names the glyph / the wrapping trigger button).",
+          "description": "Accessible label (names the glyph / the wrapping trigger button); the state word is appended.",
           "name": "label",
           "required": false,
           "type": "string"
