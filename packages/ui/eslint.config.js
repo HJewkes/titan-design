@@ -4,6 +4,7 @@ const react = require('eslint-plugin-react')
 const reactHooks = require('eslint-plugin-react-hooks')
 const globals = require('globals')
 const noClassnameOnAnimated = require('./eslint-rules/no-classname-on-animated')
+const noCopyPitfalls = require('./eslint-rules/no-copy-pitfalls')
 const noDeprecatedImport = require('./eslint-rules/no-deprecated-import')
 const noDeviceInternals = require('./eslint-rules/no-device-internals')
 const noFrozenTheme = require('./eslint-rules/no-frozen-theme')
@@ -118,6 +119,7 @@ module.exports = tseslint.config(
       titan: {
         rules: {
           'no-classname-on-animated': noClassnameOnAnimated,
+          'no-copy-pitfalls': noCopyPitfalls,
           'no-deprecated-import': noDeprecatedImport,
           'no-device-internals': noDeviceInternals,
           'no-frozen-theme': noFrozenTheme,
@@ -578,6 +580,19 @@ module.exports = tseslint.config(
     },
   },
 
+  // TD-340: display copy avoids a spaced × between digits, all-caps words outside
+  // copy-glossary.json, " & " and ! in error strings. JSX text and display props only.
+  // RATCHETED: today's sites are in no-copy-pitfalls-baseline.json, keyed by file and
+  // fragment, which must stay exact (an unspent allowance is reported as stale). Stories and
+  // tests are exempt; src/lab is outside the glob.
+  {
+    files: ['src/components/{ui,custom,shell}/**/*.{ts,tsx}'],
+    ignores: ['src/**/*.test.{ts,tsx}', 'src/**/*.stories.{ts,tsx}'],
+    rules: {
+      'titan/no-copy-pitfalls': 'error',
+    },
+  },
+
   // TD-13: NativeWind does not compile className on an Animated.* element, so every class on
   // one renders nothing on web and jsdom strips it in tests. Every className is flagged, not
   // only spacing. A className on a plain child inside the animated element is fine.
@@ -613,13 +628,6 @@ module.exports = tseslint.config(
   // deletes this block.
   {
     files: [
-      // TD-536 b2
-      'src/lab/north-star/EmptyLiveView.tsx',
-      'src/lab/north-star/HeroTempo.exploration.stories.tsx',
-      'src/lab/north-star/LivePage.tsx',
-      'src/lab/north-star/LiveView.tsx',
-      'src/lab/north-star/VelocityDiverging.exploration.stories.tsx',
-      'src/lab/north-star/fatigue-lab-shared.tsx',
       // TD-536 b7
       'src/components/ui/alert/Alert.tsx',
       'src/components/ui/button/Button.tsx',
