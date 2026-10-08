@@ -10,7 +10,7 @@ import { captureRound } from '../src/capture.ts'
 import { exampleManifest } from '../src/example.ts'
 import { buildFeedback, emptyDraft } from '../src/feedback.ts'
 import { ReviewError, assertStoriesExist, loadRound } from '../src/review.ts'
-import { FeedbackSchema, ManifestSchema, type ManifestInput } from '../src/schema.ts'
+import { FeedbackSchema, ManifestSchema, type ManifestInput } from '@titan-design/review-schema'
 import { startReviewServer, type ReviewServer } from '../src/server.ts'
 import { SHA, underContract } from './fixtures.ts'
 

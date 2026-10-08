@@ -1,4 +1,10 @@
-import type { Answer, Feedback, Manifest, Question, StoryVariant } from './schema.ts'
+import type {
+  Answer,
+  Feedback,
+  Manifest,
+  Question,
+  StoryVariant,
+} from '@titan-design/review-schema'
 
 // Storybook drops URL arg keys and values outside these (docs: writing-stories/args).
 const URL_SAFE_VALUE = /^[A-Za-z0-9 _-]*$/

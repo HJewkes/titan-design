@@ -1,5 +1,5 @@
 import { useState, type MouseEvent } from 'react'
-import type { Annotation, FrameHeight, ImageVariant } from '../src/schema.ts'
+import type { Annotation, FrameHeight, ImageVariant } from '@titan-design/review-schema'
 import { isAuto } from '../src/sections.ts'
 import { PinOverlay, pointerPin, useFitScale, type PinInput } from './Frame.tsx'
 

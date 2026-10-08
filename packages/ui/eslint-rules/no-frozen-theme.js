@@ -29,27 +29,13 @@
  * migrating a file.
  */
 
-const path = require('node:path')
+const { loadBaseline, baselineKey, isAtModuleScope } = require('./ratchet')
 const { onSurfaceRoles } = require('./fix-options')
 
 const ROLE_LIST = onSurfaceRoles.map((role) => `\`${role}\``).join(', ')
 
-const FUNCTION_TYPES = new Set([
-  'FunctionDeclaration',
-  'FunctionExpression',
-  'ArrowFunctionExpression',
-])
-
 /** The frozen-value key for a non-literal module-scope call. */
 const MODULE_SCOPE_KEY = 'module-scope'
-
-/** True when no enclosing function stands between the call and the module body. */
-function isAtModuleScope(node) {
-  for (let current = node.parent; current; current = current.parent) {
-    if (FUNCTION_TYPES.has(current.type)) return false
-  }
-  return true
-}
 
 /** `getSemanticColors(...)` as a bare identifier or a namespace member. */
 function isGetSemanticColorsCall(node) {
@@ -60,26 +46,6 @@ function isGetSemanticColorsCall(node) {
     callee.property.type === 'Identifier' &&
     callee.property.name === 'getSemanticColors'
   )
-}
-
-let baselineCache = null
-function loadBaseline() {
-  if (baselineCache) return baselineCache
-  try {
-    baselineCache = require('./frozen-theme-baseline.json')
-  } catch {
-    baselineCache = {}
-  }
-  return baselineCache
-}
-
-/** Baseline keys are package-relative POSIX paths, so they're stable across machines. */
-function baselineKey(context) {
-  const cwd = context.getCwd?.() ?? process.cwd()
-  return path
-    .relative(cwd, context.filename ?? context.getFilename())
-    .split(path.sep)
-    .join('/')
 }
 
 /** @type {import('eslint').Rule.RuleModule} */
@@ -101,7 +67,9 @@ module.exports = {
     // Remaining allowance per frozen VALUE, not a plain count — same reasoning
     // as no-raw-color: the message lands on the call you just added rather than
     // whichever grandfathered one sits at the boundary.
-    const remaining = new Map(Object.entries(loadBaseline()[baselineKey(context)] ?? {}))
+    const remaining = new Map(
+      Object.entries(loadBaseline('frozen-theme-baseline.json')[baselineKey(context)] ?? {})
+    )
 
     return {
       CallExpression(node) {

@@ -8,7 +8,7 @@ import {
   type KnownDefect,
   type Manifest,
   type ThemeMode,
-} from './schema.ts'
+} from '@titan-design/review-schema'
 
 const CONTRAST_SCHEMA_ID = 'titan-review/contrast@1'
 
