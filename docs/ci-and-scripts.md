@@ -160,3 +160,18 @@ after a build. Each entry is a brotli size limit for one built file: the ESM ent
 | A limit is the measured size plus 5%, rounded up to the next whole kB |
 | A PR that shrinks an entry by more than 10% lowers its limit          |
 | A PR that raises a limit states why in its body                       |
+
+## Releases
+
+Each package publishes from CI on its own tag, with npm OIDC provenance. Never run `npm publish`
+locally once a package has a Trusted Publisher, and push the release commit to `main` before the tag.
+
+| Tag                | Workflow                    | Publishes                     | Version check                                                            |
+| ------------------ | --------------------------- | ----------------------------- | ------------------------------------------------------------------------ |
+| `v*`               | `publish.yml`               | `@titan-design/react-ui`      | tag minus `v` equals `packages/ui/package.json`                          |
+| `review-schema-v*` | `publish-review-schema.yml` | `@titan-design/review-schema` | tag minus `review-schema-v` equals `packages/review-schema/package.json` |
+
+A tag filter matches the whole tag name, so `v*` never matches `review-schema-v0.1.0` and
+`review-schema-v*` never matches `v1.2.3`: one tag publishes one package. Release a new
+review-schema version by bumping `packages/review-schema/package.json` on `main`, then
+`git tag review-schema-v<version> <sha> && git push origin review-schema-v<version>`.
