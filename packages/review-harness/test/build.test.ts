@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { EXIT_REFUSED, buildRound, contrastProblem, type TreeGit } from '../src/build.ts'
 import { ReviewError, loadRound } from '../src/review.ts'
-import { MANIFEST_SCHEMA_ID, type ManifestInput } from '../src/schema.ts'
+import { MANIFEST_SCHEMA_ID, type ManifestInput } from '@titan-design/review-schema'
 import { SECTION_TEXTS, noTreeGit } from './fixtures.ts'
 
 const TREE = '/checkouts/storybook-tree'

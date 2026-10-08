@@ -9,7 +9,7 @@ import {
   THEME_MODES,
   type ManifestInput,
   type Recommendation,
-} from './schema.ts'
+} from '@titan-design/review-schema'
 
 // A deterministic round from seat Morning items: no agent decides what the owner sees.
 

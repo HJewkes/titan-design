@@ -10,7 +10,7 @@ import {
   type Manifest,
   type StoryVariant,
   type ThemeMode,
-} from './schema.ts'
+} from '@titan-design/review-schema'
 
 /** The Storybook global `withThemeByClassName` reads; light puts `.light` on <html>. */
 const THEME_GLOBAL = 'theme'

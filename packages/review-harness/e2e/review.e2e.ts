@@ -4,7 +4,7 @@ import { mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { expect, test, type Page } from '@playwright/test'
-import { FeedbackSchema, MANIFEST_SCHEMA_ID, type ManifestInput } from '../src/schema.ts'
+import { FeedbackSchema, MANIFEST_SCHEMA_ID, type ManifestInput } from '@titan-design/review-schema'
 import { SECTION_TEXTS, underContract } from '../test/fixtures.ts'
 import { isolatedStorybook, type RunningStorybook } from './storybook.ts'
 

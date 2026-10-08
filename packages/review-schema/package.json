@@ -1,0 +1,80 @@
+{
+  "name": "@titan-design/review-schema",
+  "version": "0.1.0",
+  "description": "Zod schemas for titan-review rounds (titan-review/round@2) and their feedback (titan-review/feedback@1)",
+  "author": "Henry Jewkes",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.cts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./schema/round.schema.json": "./schema/round.schema.json",
+    "./schema/feedback.schema.json": "./schema/feedback.schema.json"
+  },
+  "files": [
+    "dist",
+    "src",
+    "schema",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HJewkes/titan-design.git",
+    "directory": "packages/review-schema"
+  },
+  "homepage": "https://github.com/HJewkes/titan-design/tree/main/packages/review-schema",
+  "bugs": {
+    "url": "https://github.com/HJewkes/titan-design/issues"
+  },
+  "keywords": [
+    "titan-review",
+    "zod",
+    "schema",
+    "design-review"
+  ],
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "build": "tsup",
+    "prepare": "tsup",
+    "lint": "eslint src scripts test --max-warnings 0",
+    "type-check": "tsc --noEmit",
+    "format:check": "prettier --check \"{src,scripts,test}/**/*.ts\" \"*.{json,md}\"",
+    "test": "vitest",
+    "test:unit": "vitest",
+    "test:unit:ci": "vitest run --coverage",
+    "schema": "node scripts/write-json-schema.ts"
+  },
+  "peerDependencies": {
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^25.0.10",
+    "@vitest/coverage-v8": "^3.2.6",
+    "eslint": "^9.17.0",
+    "prettier": "^3.8.1",
+    "tsup": "^8.3.0",
+    "typescript": "^5.7.0",
+    "typescript-eslint": "^8.55.0",
+    "vitest": "^3.2.6",
+    "zod": "^4.3.6"
+  }
+}
