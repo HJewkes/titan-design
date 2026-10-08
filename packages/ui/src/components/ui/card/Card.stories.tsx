@@ -73,7 +73,7 @@ export const Default: Story = {
 }
 
 export const Stat: StoryObj<typeof CardStat> = {
-  args: { label: 'Fatigue', value: 'MOD', align: 'center', size: 'sm', tone: 'warning' },
+  args: { label: 'Volume', value: '76%', align: 'center', size: 'sm' },
   argTypes: {
     label: { control: 'text', description: 'Uppercase micro-label' },
     value: { control: 'text', description: 'The figure' },

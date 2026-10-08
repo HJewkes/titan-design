@@ -66,7 +66,7 @@ export function Tile({
       metricProps={{
         labelPosition: 'above',
         valueClassName: `font-mono text-sm ${textAlign}`,
-        labelClassName: `text-[10px] font-bold ${textAlign}`,
+        labelClassName: `text-[10px] font-bold text-text-tertiary ${textAlign}`,
         valueStyle: valueColor ? { color: valueColor } : undefined,
       }}
       {...splitPlane(className)}

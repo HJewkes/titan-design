@@ -54,10 +54,7 @@ export function CardStat({
         align={align}
         tone={tone}
         {...metricProps}
-        labelClassName={cn(
-          'my-0 uppercase tracking-wider text-text-tertiary',
-          metricProps?.labelClassName
-        )}
+        labelClassName={cn('my-0 uppercase tracking-wider', metricProps?.labelClassName)}
         className="p-inset-sm gap-stack-sm"
       />
     </Card>
