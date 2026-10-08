@@ -12,6 +12,8 @@ import {
 /** Default needle / fill-marker colour. */
 const DEFAULT_MARKER_COLOR = primitiveColors.white
 
+const sameColor = (a: string, b: string) => a.toLowerCase() === b.toLowerCase()
+
 export function ZoneTrackPill({
   layout,
   bands,
@@ -26,6 +28,10 @@ export function ZoneTrackPill({
   trackColor: string
 }) {
   const { min, max, markerHeight, trackHeight } = layout
+  // A fill marker's un-reached overlay paints the track over the bands, so the pill stays
+  // clear there: translucent track tokens would otherwise stack a second layer.
+  const bandsPaintTrack = bands.length > 0 && bands.every((b) => sameColor(b.color, trackColor))
+  const pillColor = marker?.type === 'fill' && bands.length > 0 ? 'transparent' : trackColor
   return (
     <View
       testID="zone-track-track"
@@ -37,7 +43,7 @@ export function ZoneTrackPill({
         right: 0,
         height: trackHeight,
         borderRadius: trackHeight / 2,
-        backgroundColor: trackColor,
+        backgroundColor: pillColor,
         overflow: 'hidden',
         flexDirection: 'row',
         // The pill's own box-shadow renders outside its overflow:hidden, so
@@ -74,7 +80,11 @@ export function ZoneTrackPill({
         />
       )}
 
-      <ZoneTrackFill markerFrac={layout.markerFrac} marker={marker} trackColor={trackColor} />
+      <ZoneTrackFill
+        markerFrac={layout.markerFrac}
+        marker={marker}
+        trackColor={bandsPaintTrack ? 'transparent' : trackColor}
+      />
     </View>
   )
 }
