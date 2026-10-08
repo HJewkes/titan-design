@@ -12,13 +12,11 @@ export function CodeBlock({ code, lang }: { code: string; lang: string }) {
       testID="prose-code"
     >
       {lang ? (
-        <Typography
-          variant="monoLabel"
-          className="border-b border-border-subtle px-3 py-1 text-text-secondary"
-          testID="prose-code-lang"
-        >
-          {lang}
-        </Typography>
+        <View className="border-b border-border-subtle px-3 py-1" testID="prose-code-header">
+          <Typography variant="monoLabel" className="text-text-secondary" testID="prose-code-lang">
+            {lang}
+          </Typography>
+        </View>
       ) : null}
       <ScrollView horizontal showsHorizontalScrollIndicator>
         <Text selectable className="px-3 py-2 font-mono text-xs leading-5 text-text-primary">

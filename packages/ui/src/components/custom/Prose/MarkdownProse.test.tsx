@@ -1,6 +1,8 @@
 import { describe, it, expect, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { Children, type ReactElement, type ReactNode } from 'react'
+import { CodeBlock } from './ProseBlocks'
 import { MarkdownProse, parseProseBlocks, type ProseLinker } from './MarkdownProse'
 
 const taskLinker: ProseLinker = { id: 'task', pattern: /\b[A-Z]{2,}-\d+\b/, tone: 'brand' }
@@ -9,6 +11,12 @@ const wikiLinker: ProseLinker = {
   pattern: /\[\[[^\]]+\]\]/,
   tone: 'link',
   label: (ref) => ref.slice(2, -2),
+}
+
+interface ElementProps {
+  testID?: string
+  className?: string
+  children?: ReactNode
 }
 
 describe('parseProseBlocks', () => {
@@ -41,6 +49,16 @@ describe('parseProseBlocks', () => {
 })
 
 describe('MarkdownProse', () => {
+  it('puts the language label rule on a wrapping View, not on the Text', () => {
+    const root = CodeBlock({ code: 'const a = 1', lang: 'ts' })
+    const [header] = Children.toArray(root.props.children) as ReactElement<ElementProps>[]
+    const [label] = Children.toArray(header.props.children) as ReactElement<ElementProps>[]
+    expect(header.props.testID).toBe('prose-code-header')
+    expect(header.props.className).toContain('border-border-subtle')
+    expect(label.props.testID).toBe('prose-code-lang')
+    expect(label.props.className).not.toMatch(/\bborder/)
+  })
+
   it('renders bold and code spans without their markers', () => {
     render(<MarkdownProse body="a **bold** and `code` span" />)
     expect(screen.getByText('bold')).toBeInTheDocument()
