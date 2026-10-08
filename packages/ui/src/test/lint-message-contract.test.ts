@@ -10,6 +10,7 @@ import path from 'node:path'
 import { createRequire } from 'node:module'
 import { Linter } from 'eslint'
 import fixOptions from '../../eslint-rules/fix-options'
+import copyPitfallsBaseline from '../../eslint-rules/no-copy-pitfalls-baseline.json'
 import htmlElementBaseline from '../../eslint-rules/no-html-element-baseline.json'
 import truncationBaseline from '../../eslint-rules/no-truncation-baseline.json'
 import unstyledTextBaseline from '../../eslint-rules/no-unstyled-text-baseline.json'
@@ -129,6 +130,27 @@ const FIXTURES: Record<string, Fixture> = {
   'titan/no-local-formatter:formatFn': {
     code: 'export const formatFoo = (v: number) => String(v)',
     filename: SHELL_FILE,
+  },
+  'titan/no-copy-pitfalls:times': {
+    code: 'export const T = () => <Text>8 × 5</Text>',
+    filename: UI_FILE,
+  },
+  'titan/no-copy-pitfalls:caps': {
+    code: 'export const T = () => <Text>TODAY</Text>',
+    filename: UI_FILE,
+  },
+  'titan/no-copy-pitfalls:ampersand': {
+    code: 'export const T = () => <Text>Sets &amp; reps</Text>',
+    filename: UI_FILE,
+  },
+  'titan/no-copy-pitfalls:bang': {
+    code: "export const T = () => <Field errorMessage='Invalid weight!' />",
+    filename: UI_FILE,
+  },
+  // A baselined file with its sites gone: the allowance it no longer spends is stale.
+  'titan/no-copy-pitfalls:stale': {
+    code: 'export const nothingShouts = 1',
+    filename: Object.keys(copyPitfallsBaseline)[0],
   },
   'titan/no-truncation:attribute': inShell('export const T = () => <Text numberOfLines={1} />'),
   'titan/no-truncation:property': inShell('export const p = { maxLines: 1 }'),
