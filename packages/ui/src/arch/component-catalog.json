@@ -1284,6 +1284,13 @@
           "type": "string | number | Date"
         },
         {
+          "default": null,
+          "description": "Makes the separator a button that toggles message times; the keyboard and tap route to them.",
+          "name": "onPress",
+          "required": false,
+          "type": "(() => void)"
+        },
+        {
           "default": "true",
           "description": "Name the day.",
           "name": "showDay",
@@ -1294,6 +1301,13 @@
           "default": "false",
           "description": "Add the clock time, as Messages does when it opens a day or follows a long pause.",
           "name": "showTime",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "false",
+          "description": "Whether message times are showing, which names the button's action and its state.",
+          "name": "timesShown",
           "required": false,
           "type": "boolean"
         }
