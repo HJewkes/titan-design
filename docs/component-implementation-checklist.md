@@ -61,8 +61,13 @@ src/components/{ui|custom}/{ComponentName}/
 - [ ] Every manifest property is styled from its semantic **token**
       (`src/theme/tokens/semantic.ts` → `src/theme/global.css`), falling back
       to a literal only where the manifest has `token: null`.
-- [ ] No bare `border` class (defaults to 1px black on web). Verify with
-      `pnpm lint:borders` (`scripts/check-border-classes.sh`).
+- [ ] No bare `border` class (defaults to 1px black on web), checked by hand,
+      and no `*-default` token class such as `border-border-default`, which
+      Tailwind never generates. The arch test
+      `packages/ui/src/arch/default-suffix-class.test.ts` checks the second; run
+      it alone with
+      `pnpm exec vitest run --project threads src/arch/default-suffix-class.test.ts`
+      in `packages/ui`.
 - [ ] Barrel `index.ts` exports the component and its public types.
 
 ## 3. Layer 1 — specimen entry (HTML ground truth + React)
@@ -118,7 +123,7 @@ src/components/{ui|custom}/{ComponentName}/
 
 ## 8. Quality gates — all green, zero new warnings
 
-- [ ] `pnpm lint` (ESLint) clean, including `pnpm lint:borders`.
+- [ ] `pnpm lint` (ESLint) clean.
 - [ ] `pnpm type-check` (`tsc --noEmit`) clean.
 - [ ] `pnpm format:check` (Prettier) clean on touched files.
 - [ ] `pnpm test` — all Vitest suites pass (Layer 2 + manifest + a11y).
