@@ -30,17 +30,13 @@
   "components-atoms-badge--all-colors light": {
     "#c27400|#ffffff": 1,
     "#ff7900|#ffffff": 1,
-    "#ffffff|#2196f3": 1,
-    "#ffffff|#c27400": 1,
-    "#ffffff|#ff7900": 1
+    "#ffffff|#c27400": 1
   },
   "components-atoms-badge--all-variants light": {
-    "#ff7900|#ffffff": 1,
-    "#ffffff|#ff7900": 1
+    "#ff7900|#ffffff": 1
   },
   "components-atoms-chip--all-variants light": {
-    "#ff7900|#ffffff": 1,
-    "#ffffff|#ff7900": 1
+    "#ff7900|#ffffff": 1
   },
   "components-atoms-chip--disabled dark": {
     "#8f8d8a|#302e2c": 2
@@ -64,8 +60,7 @@
     "#ff7900|#ffffff": 1
   },
   "components-atoms-pill--all-variants light": {
-    "#ff7900|#ffffff": 1,
-    "#ffffff|#ff7900": 1
+    "#ff7900|#ffffff": 1
   },
   "components-atoms-pill--on-both-planes dark": {
     "#888684|#252321": 1,
@@ -77,9 +72,7 @@
     "#72716f|#edeae7": 1
   },
   "components-atoms-pill--solid-tones light": {
-    "#ffffff|#2196f3": 1,
-    "#ffffff|#c27400": 1,
-    "#ffffff|#ff7900": 1
+    "#ffffff|#c27400": 1
   },
   "components-atoms-section--full-example dark": {
     "#888684|#252321": 1
@@ -89,21 +82,6 @@
   },
   "components-atoms-section--with-subtitle dark": {
     "#888684|#252321": 1
-  },
-  "components-atoms-stack--default light": {
-    "#ffffff|#ff7900": 3
-  },
-  "components-atoms-stack--horizontal light": {
-    "#ffffff|#ff7900": 3
-  },
-  "components-atoms-stack--vertical light": {
-    "#ffffff|#ff7900": 3
-  },
-  "components-atoms-stack--with-alignment light": {
-    "#ffffff|#ff7900": 3
-  },
-  "components-atoms-stack--with-wrapping light": {
-    "#ffffff|#ff7900": 8
   },
   "components-atoms-surface--default light": {
     "#121828|#31302f": 1
@@ -242,11 +220,6 @@
   "components-molecules-autocomplete--with-label dark": {
     "#888684|#252321": 1
   },
-  "components-molecules-button--all-colors light": {
-    "#1c1916|#298732": 1,
-    "#1c1916|#307b9b": 1,
-    "#1c1916|#d14343": 1
-  },
   "components-molecules-button--all-variants light": {
     "#ff7900|#ffffff": 3
   },
@@ -258,9 +231,6 @@
   },
   "components-molecules-button--outline light": {
     "#ff7900|#ffffff": 1
-  },
-  "components-molecules-button--secondary light": {
-    "#1c1916|#307b9b": 1
   },
   "components-molecules-card--default light": {
     "#ff7900|#edeae7": 1
@@ -287,9 +257,6 @@
   },
   "components-molecules-datetime--live-clock dark": {
     "#888684|#2c2a28": 1
-  },
-  "components-molecules-emptystate--with-action light": {
-    "#ffffff|#ff7900": 1
   },
   "components-molecules-eyebrow--default dark": {
     "#888684|#252321": 1
@@ -432,12 +399,6 @@
   "components-molecules-stepper--with-error-state light": {
     "#ff7900|#ffffff": 1
   },
-  "components-molecules-tabs--all-variants light": {
-    "#ffffff|#ff7900": 1
-  },
-  "components-molecules-tabs--soft-rounded-variant light": {
-    "#ffffff|#ff7900": 1
-  },
   "components-molecules-timerreadout--countdown-running light": {
     "#22a444|#ffffff": 1
   },
@@ -469,8 +430,6 @@
     "#a29f9d|#3f474d": 1
   },
   "components-molecules-toast--interactive light": {
-    "#1c1916|#298732": 1,
-    "#1c1916|#d14343": 1,
     "#ff7900|#ffffff": 1
   },
   "components-molecules-toast--long-duration light": {
@@ -1105,12 +1064,6 @@
   },
   "custom-chat-messagelist-typingindicator--two-typists dark": {
     "#888684|#252321": 1
-  },
-  "custom-chat-messagelist-unreadbadge--capped light": {
-    "#ffffff|#ff7900": 1
-  },
-  "custom-chat-messagelist-unreadbadge--jump-to-newest light": {
-    "#ffffff|#ff7900": 1
   },
   "custom-fatigue-fatigue-lights--across-states light": {
     "#5a5958|#100d0a": 15

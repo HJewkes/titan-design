@@ -95,3 +95,17 @@ describe('FacetBar face contrast', () => {
     }
   )
 })
+
+describe('FacetBar label contrast', () => {
+  it('reads the label from text-secondary', () => {
+    render(<FacetBar label="Record" options={facetBarFixtures.default.options} />)
+    const label = screen.getByText('Record')
+    expect(classesOf(label)).toContain('text-text-secondary')
+    expect(classesOf(label)).not.toContain('text-text-tertiary')
+  })
+
+  it.each(['dark', 'light'] as const)('%s: the label reads 4.5 or more on surface-base', (mode) => {
+    const colors = getSemanticColors(mode)
+    expect(contrast(colors['text-secondary'], colors['surface-base'])).toBeGreaterThanOrEqual(4.5)
+  })
+})

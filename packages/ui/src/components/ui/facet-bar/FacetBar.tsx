@@ -128,7 +128,8 @@ export function FacetBar<T extends string = string>(props: FacetBarProps<T>) {
     >
       {!isLabelHidden && (
         <View nativeID={labelId}>
-          <Eyebrow>{label}</Eyebrow>
+          {/* text-secondary, not the Eyebrow's tertiary: dark grey[500] reads 4.31 on surface-base. */}
+          <Eyebrow className="text-text-secondary">{label}</Eyebrow>
         </View>
       )}
       {unique.map((option) => (
