@@ -11,7 +11,7 @@ import base from './playwright.config'
  *
  * A config of its own, not a third project: the full index is about 14 minutes on one runner, so
  * `test:visual` must not pick it up, and CI runs it as the `contrast` job in three shards beside
- * `visual` (`--shard=i/3`), each shard building the static Storybook itself.
+ * `visual` (`--shard=i/3`), on the build the `contrast-build` job uploads.
  */
 export default defineConfig({
   ...base,

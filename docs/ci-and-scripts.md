@@ -8,12 +8,13 @@ root `package.json`, `turbo.json`, `packages/ui/package.json`, `packages/ui/vite
 
 `ci.yml` runs on every pull request and on pushes to `main`.
 
-| Job        | Runs on                                                                            | What it runs                                                                                                                                              |
-| ---------- | ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `build`    | Node 22 (single-entry matrix)                                                      | Install, then the steps below                                                                                                                             |
-| `visual`   | Playwright container, Node 22                                                      | Layer 3 parity, offline fonts, Layer 1 and 2 baselines, interaction                                                                                       |
-| `contrast` | Playwright container, Node 22; a three-shard matrix (`contrast 1/3` to `3/3`)      | axe `color-contrast` on every story in both themes (`test:visual:contrast --shard=i/3`), path-gated; each shard uploads `contrast-report-<i>` (see below) |
-| `check`    | Playwright container, Node 22; always runs; needs `build`, `visual` and `contrast` | all-green over `needs`, then audit, stories axe and play functions (see below)                                                                            |
+| Job              | Runs on                                                                                              | What it runs                                                                                                                                              |
+| ---------------- | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `build`          | Node 22 (single-entry matrix)                                                                        | Install, then the steps below                                                                                                                             |
+| `visual`         | Playwright container, Node 22                                                                        | Layer 3 parity, offline fonts, Layer 1 and 2 baselines, interaction                                                                                       |
+| `contrast-build` | Playwright container, Node 22                                                                        | builds the static Storybook once and uploads it as `contrast-storybook-static` for the `contrast` shards; path-gated                                      |
+| `contrast`       | Playwright container, Node 22; a three-shard matrix (`contrast 1/3` to `3/3`)                        | axe `color-contrast` on every story in both themes (`test:visual:contrast --shard=i/3`), path-gated; each shard uploads `contrast-report-<i>` (see below) |
+| `check`          | Playwright container, Node 22; always runs; needs `build`, `visual`, `contrast-build` and `contrast` | all-green over `needs`, then audit, stories axe and play functions (see below)                                                                            |
 
 ### `build` steps
 
@@ -55,7 +56,7 @@ baselines from those artifacts. See `docs/test-layers.md`.
 ### `contrast` job
 
 `contrast` runs `packages/ui/tests/visual/contrast.spec.ts` through `playwright.contrast.config.ts`
-in three Playwright shards, each on its own static Storybook build: one test per story and theme, axe
+in three Playwright shards on one static Storybook that the `contrast-build` job builds once and the shards download: one test per story and theme, axe
 `color-contrast` in Chromium, compared with `packages/ui/tests/visual/contrast-stories-baseline.json`.
 Each story renders under the paused clock, the clock runs forward 5 s so animations and the theme
 switch settle, and axe samples at that frozen instant. Stories tagged `play` are left out (their play
@@ -73,7 +74,7 @@ script refuses to add an entry or raise a count.
 
 ### `check` steps
 
-The ruleset requires `check`. Its first step fails the job when `build`, `visual` or `contrast`
+The ruleset requires `check`. Its first step fails the job when `build`, `visual`, `contrast-build` or `contrast`
 failed, was cancelled or is missing from `needs`, and every later step then skips.
 
 | Step                 | Command                                     | Notes                                  |
