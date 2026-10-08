@@ -1,12 +1,15 @@
 import { useCallback, useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View } from 'react-native'
+import { View, Text } from 'react-native'
 import { LiveFatiguePanel } from './LiveFatiguePanel'
+import { Surface } from '../../ui/surface'
 import { greyRamp } from '../../../theme/tokens/primitives'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { FATIGUE_STATES, buildMockPanelState } from './fatigue-mock'
 import { PANEL_BREAKPOINTS } from './panel-layout'
 
 const PAGE_BG = greyRamp[975]
+const t = getSemanticColors('dark')
 
 const meta: Meta<typeof LiveFatiguePanel> = {
   title: 'Custom/Fatigue/Live Fatigue Panel',
@@ -127,4 +130,74 @@ export const WallWidth: Story = {
       </View>
     )
   },
+}
+
+/**
+ * The same panel on a LIGHT surface (TD-03.59). Nothing about the panel changes — the
+ * `<Surface theme="light">` publishes the mode and the panel's eyebrow and the card's
+ * edge/paper resolve against it. Before the Surface adoption both were pinned to dark
+ * and this story rendered dark-on-light.
+ */
+export const OnLightSurface: Story = {
+  name: 'On a light surface',
+  render: () => {
+    const { model, velocity } = buildMockPanelState(FATIGUE_STATES[0].current, {
+      rpe: FATIGUE_STATES[0].model.rpe,
+      verdict: FATIGUE_STATES[0].model.verdict,
+    })
+    return (
+      <Surface level="background" theme="light" rounded={false} style={{ padding: 24 }}>
+        <LiveFatiguePanel model={model} velocity={velocity} />
+      </Surface>
+    )
+  },
+}
+
+/** The whole system across the verdict spectrum — GOOD → SLOWING → GRINDING → FORM BREAKING DOWN. */
+export const LiveStates: Story = {
+  name: 'Live states (Good → Breaking down)',
+  render: () => (
+    <View style={{ backgroundColor: PAGE_BG }}>
+      <View style={{ padding: 28, paddingBottom: 8, gap: 4 }}>
+        <Text
+          style={{
+            fontSize: 16,
+            fontWeight: '800',
+            fontFamily: '"Space Grotesk", sans-serif',
+            color: t['text-primary'],
+          }}
+        >
+          Live-view states — the system across the fatigue spectrum
+        </Text>
+        <Text style={{ fontSize: 12, color: t['text-secondary'], maxWidth: 860, lineHeight: 18 }}>
+          The live panel rendered per verdict state, each driven by a full plausible model — RPE,
+          the three status dots, the control-aware ghost line, and the ROM progression all respond
+          together. The aura flood tracks the state. Every panel is built from ONE truncation point,
+          so the ROM chart&apos;s upcoming reps and the velocity strip&apos;s beside it always agree
+          on the rep count.
+        </Text>
+      </View>
+      {FATIGUE_STATES.map((s) => {
+        const { model, velocity } = buildMockPanelState(s.current, {
+          rpe: s.model.rpe,
+          verdict: s.model.verdict,
+        })
+        return (
+          <View key={s.name} style={{ gap: 6, paddingHorizontal: 28, paddingBottom: 22 }}>
+            <Text
+              style={{
+                fontSize: 9,
+                letterSpacing: 1,
+                fontFamily: 'monospace',
+                color: t['text-tertiary'],
+              }}
+            >
+              {s.name}
+            </Text>
+            <LiveFatiguePanel model={model} velocity={velocity} />
+          </View>
+        )
+      })}
+    </View>
+  ),
 }
