@@ -1,6 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useState } from 'react'
 import { View, type ViewProps } from 'react-native'
+import { cn } from '../../../utils/cn'
 import { Card } from '../../ui/card'
 import { Divider } from '../../ui/divider'
 import { Tile } from '../../ui/tile'
@@ -9,13 +10,7 @@ import { Eyebrow } from '../../ui/eyebrow'
 import { CoChangeChip } from './CoChangeChip'
 import { FileActivityRow } from './FileActivityRow'
 import { FileActivityDetail, type FileActivityDetailData } from './FileActivityDetail'
-
-/**
- * React Native's `Role` union has `'option'` but omits `'listbox'`, even though
- * RNW passes it straight through to the DOM. Cast once here rather than drop
- * the ARIA parent that makes the option rows valid.
- */
-const LISTBOX_ROLE = 'listbox' as ViewProps['role']
+import { LISTBOX_ROLE } from './aria-roles'
 
 /** A KPI shown in the strip above the explorer. */
 export interface FileHistoryStat {
@@ -88,7 +83,7 @@ export function FileHistoryExplorer({
   }
 
   return (
-    <View className={`gap-3.5 ${className ?? ''}`} testID="file-history-explorer" {...props}>
+    <View className={cn('gap-3.5', className)} testID="file-history-explorer" {...props}>
       <View className="gap-1.5">
         <View className="flex-row flex-wrap gap-2.5">
           {stats.map((s) => (

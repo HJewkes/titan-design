@@ -19,7 +19,7 @@ import {
   BORDER_SUBTLE,
   Page,
   monoTag,
-} from '../../components/custom/Workout/setHeadingKit'
+} from './setHeadingKit'
 
 const INTER = 'Inter, sans-serif'
 const VAR_EDGE = '#22465F' // cyan-800 — the continue-slot outline
@@ -255,7 +255,7 @@ function Principle({ k, title, body }: { k: string; title: string; body: string 
       >
         {k}
       </Text>
-      <Text style={{ fontFamily: INTER, fontSize: 14, fontWeight: '650', color: T_PRIMARY }}>
+      <Text style={{ fontFamily: INTER, fontSize: 14, fontWeight: '600', color: T_PRIMARY }}>
         {title}
       </Text>
       <Text style={{ fontFamily: INTER, fontSize: 12.5, color: T_SECONDARY, lineHeight: 18 }}>

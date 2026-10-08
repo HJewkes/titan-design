@@ -9,7 +9,7 @@ import { resolveColor } from '../../../theme/resolve-color'
 const meta: Meta<typeof SupersetWrapper> = {
   title: 'Custom/Workout/SupersetWrapper',
   component: SupersetWrapper,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   decorators: [
     (Story) => (
       <Surface level="background" style={{ maxWidth: 400, padding: 16 }}>
@@ -66,15 +66,12 @@ export const CustomColor: Story = {
   },
 }
 
-const supersetColor = resolveColor('brand-primary')
-
 const exerciseA = {
   name: 'Bench Press',
   state: 'collapsed' as const,
   onToggle: () => {},
   summary: { sets: 3, reps: 8, weight: 185, unit: 'lbs' as const },
   supersetPosition: 'first' as const,
-  supersetColor,
 }
 
 const exerciseB = {
@@ -83,7 +80,6 @@ const exerciseB = {
   onToggle: () => {},
   summary: { sets: 3, reps: 8, weight: 155, unit: 'lbs' as const },
   supersetPosition: 'last' as const,
-  supersetColor,
 }
 
 export const WithExerciseCards: Story = {

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { siblingSource, spacingClassesIn, resolveAll } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesOf } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { InputBar, type InputBarProps } from './InputBar'
@@ -66,10 +66,13 @@ describe('InputBar', () => {
     expect(onRecord).toHaveBeenCalledOnce()
   })
 
-  it('applies reduced opacity when canRecord is false', () => {
-    renderInputBar({ canRecord: false })
+  it('disables the record button and ignores presses when canRecord is false', () => {
+    const onRecord = vi.fn()
+    renderInputBar({ canRecord: false, onRecord })
     const button = screen.getByTestId('input-bar-record')
-    expect(button).toHaveStyle({ opacity: '0.4' })
+    expect(button).toHaveAttribute('aria-disabled', 'true')
+    fireEvent.click(button)
+    expect(onRecord).not.toHaveBeenCalled()
   })
 
   it('returns null when visible is false', () => {
@@ -117,21 +120,20 @@ describe('InputBar', () => {
 })
 
 /**
- * InputBar's geometry, pinned (AW-142). The bar and the record button keep their
- * pixels. The numeric inputs were 5px vertical, off the 4px grain; `control-y-sm`
- * is the rung a control sits on, so each input gains one pixel top and bottom.
+ * InputBar's geometry, pinned (AW-142). The bar keeps its pixels. The numeric
+ * inputs take their height from the ui Input `sm` rung (TD-580) instead of
+ * their own vertical padding.
  */
 describe('InputBar geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'InputBar.tsx')
-
   it('keeps the bar inset and its gap', () => {
-    const classes = spacingClassesIn(source, 'InputBar')
+    renderInputBar()
+    const classes = spacingClassesOf('input-bar')
     expect(classes).toEqual(['w-full', 'pt-2.5', 'px-gutter-sm', 'pb-inset-md', 'gap-2.5'])
     expect(resolveAll(classes)).toEqual(['100%', '10px', '16px', '12px', '10px'])
   })
 
-  it('puts the inputs on the control rung', () => {
-    expect(source).toContain('py-control-y-sm')
-    expect(resolveAll(['py-control-y-sm', 'px-0.5'])).toEqual(['6px', '2px'])
+  it.each(['input-bar-reps', 'input-bar-weight'])('puts %s on the Input sm rung', (testId) => {
+    renderInputBar()
+    expect(spacingClassesOf(testId)).toEqual(['h-8', 'px-0.5'])
   })
 })

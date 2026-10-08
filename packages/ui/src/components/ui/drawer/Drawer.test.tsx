@@ -1,8 +1,10 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { Text } from 'react-native'
 import { Drawer, DrawerBody, DrawerHeader, DrawerFooter } from './Drawer'
-import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
+import { capturedClassNames } from '../../../test/classname-capture'
+import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
 function renderDrawer(props: Partial<React.ComponentProps<typeof Drawer>> = {}) {
   return render(
@@ -13,6 +15,10 @@ function renderDrawer(props: Partial<React.ComponentProps<typeof Drawer>> = {}) 
       </DrawerFooter>
     </Drawer>
   )
+}
+
+function panelClasses() {
+  return capturedClassNames.get('panel')?.split(/\s+/) ?? []
 }
 
 // react-native-web grants its Modal the dialog role once the open animation ends.
@@ -91,21 +97,46 @@ describe('Drawer', () => {
   })
 
   describe('placements', () => {
-    const placements = ['left', 'right', 'top', 'bottom'] as const
-    placements.forEach((placement) => {
-      it(`renders with placement ${placement}`, () => {
-        renderDrawer({ isOpen: true, placement })
-        expect(screen.getByText('Test Drawer')).toBeInTheDocument()
+    const edges = {
+      left: ['left-0', 'top-0', 'bottom-0', 'h-full'],
+      right: ['right-0', 'top-0', 'bottom-0', 'h-full'],
+      top: ['top-0', 'left-0', 'right-0', 'w-full'],
+      bottom: ['bottom-0', 'left-0', 'right-0', 'w-full'],
+    } as const
+    ;(Object.keys(edges) as (keyof typeof edges)[]).forEach((placement) => {
+      it(`anchors the panel with ${edges[placement].join(' ')} for placement ${placement}`, () => {
+        renderDrawer({ isOpen: true, placement, testID: 'panel' })
+        const classes = panelClasses()
+        expect(classes).toEqual(expect.arrayContaining([...edges[placement]]))
+        const own: readonly string[] = edges[placement]
+        const others: string[] = Object.values(edges)
+          .flat()
+          .filter((c) => !own.includes(c))
+        expect(classes.filter((c) => others.includes(c))).toEqual([])
       })
     })
   })
 
   describe('sizes', () => {
+    const along = {
+      left: 'w',
+      right: 'w',
+      top: 'h',
+      bottom: 'h',
+    } as const
+    const sizeToken = {
+      w: { sm: 'w-64', md: 'w-80', lg: 'w-96', xl: 'w-[480px]', full: 'w-full' },
+      h: { sm: 'h-32', md: 'h-48', lg: 'h-64', xl: 'h-96', full: 'h-full' },
+    } as const
+    const placements = ['left', 'right', 'top', 'bottom'] as const
     const sizes = ['sm', 'md', 'lg', 'xl', 'full'] as const
-    sizes.forEach((size) => {
-      it(`renders with size ${size}`, () => {
-        renderDrawer({ isOpen: true, size })
-        expect(screen.getByText('Test Drawer')).toBeInTheDocument()
+    placements.forEach((placement) => {
+      sizes.forEach((size) => {
+        const token = sizeToken[along[placement]][size]
+        it(`sizes the ${placement} panel with ${token} for size ${size}`, () => {
+          renderDrawer({ isOpen: true, placement, size, testID: 'panel' })
+          expect(panelClasses()).toContain(token)
+        })
       })
     })
   })
@@ -188,15 +219,50 @@ describe('Drawer', () => {
  * three are 24/16 now, the band Modal and Card already used.
  */
 describe('Drawer geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'Drawer.tsx')
+  const renderBands = () =>
+    render(
+      <Drawer isOpen onClose={vi.fn()} title="Test Drawer">
+        <DrawerHeader>
+          <Text>header band</Text>
+        </DrawerHeader>
+        <DrawerBody>
+          <Text>body band</Text>
+        </DrawerBody>
+        <DrawerFooter>
+          <Text>footer band</Text>
+        </DrawerFooter>
+      </Drawer>
+    )
 
+  // The body is a ScrollView: the text sits in its content container, the class on the scroller.
   it.each([
-    ['the header', 'px-inset-xl py-inset-lg border-b border-hairline', ['24px', '16px']],
-    ['the body', 'flex-1 px-inset-xl py-inset-lg', ['24px', '16px']],
-    ['the footer', 'px-inset-xl py-inset-lg border-t border-hairline', ['24px', '16px']],
-  ] as const)('%s ships `%s`', (_label, classes, pixels) => {
-    expect(source).toContain(classes)
-    const spacing = classes.split(' ').filter((c) => resolveAll([c])[0] !== undefined)
-    expect(resolveAll(spacing)).toEqual([...pixels])
+    [
+      'the title header',
+      () => screen.getByText('Test Drawer').parentElement,
+      ['px-inset-xl', 'py-inset-lg'],
+      ['24px', '16px'],
+    ],
+    [
+      'DrawerHeader',
+      () => screen.getByText('header band').parentElement,
+      ['px-inset-xl', 'py-inset-lg'],
+      ['24px', '16px'],
+    ],
+    [
+      'the body',
+      () => screen.getByText('body band').parentElement?.parentElement,
+      ['px-inset-xl', 'py-inset-lg'],
+      ['24px', '16px'],
+    ],
+    [
+      'the footer',
+      () => screen.getByText('footer band').parentElement,
+      ['gap-3', 'px-inset-xl', 'py-inset-lg'],
+      ['12px', '24px', '16px'],
+    ],
+  ] as const)('%s ships its spacing tokens', (_label, find, classes, pixels) => {
+    renderBands()
+    expect(spacingClassesAt(find() ?? null)).toEqual([...classes])
+    expect(resolveAll([...classes])).toEqual([...pixels])
   })
 })

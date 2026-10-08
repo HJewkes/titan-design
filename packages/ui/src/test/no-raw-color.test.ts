@@ -1,5 +1,9 @@
-import { RuleTester } from 'eslint'
+import { RuleTester, type Rule } from 'eslint'
 import rule from '../../eslint-rules/no-raw-color'
+import { lintMessages } from './lint-rule-messages'
+
+const messageFor = (code: string) =>
+  lintMessages('no-raw-color', rule as Rule.RuleModule, code)[0]?.message ?? ''
 
 const ruleTester = new RuleTester({
   languageOptions: {
@@ -33,5 +37,31 @@ describe('no-raw-color', () => {
       // Positive control: a bare colour word outside any exempt shape is still named.
       { code: "const bg = 'white'", errors: [{ messageId: 'named' }] },
     ],
+  })
+})
+
+describe('no-raw-color messages name derived options', () => {
+  it('maps a red palette class to the status-error role', () => {
+    expect(messageFor("const c = 'bg-red-500'")).toContain('`bg-status-error`')
+  })
+
+  it('points a hex in a style at useOnSurfaceColor, never at a bare getSemanticColors(', () => {
+    const message = messageFor("<View style={{ color: '#fff' }} />")
+    expect(message).toContain("`useOnSurfaceColor('primary'|'secondary'|'tertiary')`")
+    expect(message).toContain('`resolveColor(token)`')
+    expect(message).not.toContain('getSemanticColors(')
+  })
+
+  it('maps white to the on-colour classes and black to the scrim rungs', () => {
+    expect(messageFor("const c = 'text-white'")).toContain('`text-on-brand-primary`')
+    expect(messageFor("const c = 'bg-black'")).toContain('`bg-scrim-subtle`')
+  })
+
+  it('names alpha() for a functional colour', () => {
+    expect(messageFor("const c = 'rgba(0, 0, 0, 0.5)'")).toContain('`alpha(color, a)`')
+  })
+
+  it('lists the class for the utility an arbitrary colour sits on', () => {
+    expect(messageFor("const c = 'border-[#123456]'")).toContain('`border-hairline`')
   })
 })

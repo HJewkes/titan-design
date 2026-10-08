@@ -5,6 +5,9 @@ All notable changes to `@titan-design/react-ui` are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this
 project adheres to [Semantic Versioning](https://semver.org/).
 
+New entries go in `changelog.d/` as one fragment file per PR (see its README); `pnpm
+changelog:compile` folds them into `[Unreleased]` at release.
+
 ## [Unreleased]
 
 ### Added
@@ -18,6 +21,7 @@ project adheres to [Semantic Versioning](https://semver.org/).
 - `ui/charts/network-graph` model and layouts: `GraphLayout` (`{ key, compute }`), `layeredLayout`, `suppliedLayout`, graph cleaning, traversal and summary, and seeded fixtures at 5, 30 and 150 nodes. Pure `.ts`, not yet exported; the component follows (TP-1040).
 - `DateTime` and `formatDateTime` moved to `ui/date-time` (`Components/Molecules/DateTime`); still exported from the package root. The `custom/DateTime` path is a deprecated shim removed in 0.23.0. `DateTime` takes `isLive`; `live` is a deprecated alias for it (TD-428).
 - `FilePathLabel` and `splitPath` moved to `ui/file-path-label` (`Components/Atoms/FilePathLabel`); still exported from the package root. The `custom/ActiveWork/FilePathLabel` path is a deprecated shim removed in 0.23.0 (TD-418).
+- `Page` and `PageHeader` (`ui/page`), a domain-free page container with a gutter, an optional centred max width, a header slot (optionally pinned in a sticky ruled band whose shadow shows whenever content scrolls under it) and a `main` landmark; the header and gutter tighten on small screens and a trailing action never moves the title (TD-408).
 - `Popover` and `Menu` take `defaultIsOpen`; `Tooltip` takes `defaultIsOpen` and `onOpenChange`. All three share the new internal `useControllableState` hook (TD-268).
 - `text-error` semantic token (`text-text-error`), error-coloured text that clears 4.5:1 on every
   surface plane in both themes; `status-error` stays for fills and borders (TD-248).
@@ -75,6 +79,10 @@ project adheres to [Semantic Versioning](https://semver.org/).
 - `WorkoutPill`'s deload wash, rim and label and `WeekRow`'s deload row wash read the
   `status-deload` token for the surface's mode instead of the `WORKOUT_PILL_DELOAD` ramp pin. Both
   modes resolve to the same magenta, so nothing renders differently today (VW-531).
+- `Checkbox`'s unchecked box, every unchecked `Radio` circle and the `Switch` off track draw
+  their boundary with the `border-input` token instead of a `hairline` separator, so a control
+  reads as a control. `border-input` itself still sits under 3:1 on every plane; its value is a
+  separate token decision (TD-481).
 
 ### Fixed
 

@@ -32,6 +32,10 @@ type Comparison = Record<Kind, Entry[]>
 
 const measureTree = (tree: Tree): Entries => measure(programFromTree(tree))
 
+let packageProgram: unknown
+/** The real package program, built once: both package-wide suites measure the same tree. */
+const sharedProgram = () => (packageProgram ??= programFor())
+
 const NATIVEWIND_TYPES = fileURLToPath(new URL('../types/nativewind.d.ts', import.meta.url))
 
 const propsOf = (entries: Entries) =>
@@ -346,6 +350,22 @@ ${extra}  const [open] = useState(() => false)
     ])
   })
 
+  it('keys a destructured initializer callback by its first destructured name', () => {
+    const source = `import { useState } from 'react'
+export function useToggle() {
+  const [a, setA] = useState(() => false)
+  return [a, setA] as const
+}
+`
+    const keys = Object.keys(measureTree({ 'hooks/useToggle.ts': source }))
+
+    expect(keys).toEqual([
+      'hooks/useToggle.ts',
+      'hooks/useToggle.ts#useToggle',
+      'hooks/useToggle.ts#useToggle>a',
+    ])
+  })
+
   it("keys an anonymous default export by its file's basename", () => {
     const entries = measureTree({
       'components/card/Card.tsx': `import { View } from 'react-native'
@@ -426,9 +446,9 @@ describe('decomposition detector on the package', () => {
     'measures every shipping file and counts own props through the real tsconfig',
     { timeout: 60_000 },
     () => {
-      const entries = measure(programFor()) as Entries
+      const entries = measure(sharedProgram()) as Entries
 
-      expect(entries['components/custom/Workout/VelocityStrip.tsx#VelocityStrip'].props).toBe(22)
+      expect(entries['components/custom/Workout/VelocityStrip.tsx#VelocityStrip'].props).toBe(21)
     }
   )
 })
@@ -440,7 +460,7 @@ describe('decomposition ratchet', () => {
   let comparison: Comparison
 
   beforeAll(() => {
-    comparison = compareToBaseline(measure(programFor()), baseline)
+    comparison = compareToBaseline(measure(sharedProgram()), baseline)
   }, 60_000)
 
   it('finds no over-limit metric that the baseline does not list', () => {

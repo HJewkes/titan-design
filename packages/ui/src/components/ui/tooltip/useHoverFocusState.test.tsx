@@ -11,7 +11,7 @@ function HoverCard({ onPress, ...options }: HoverFocusStateOptions & { onPress?:
       <Pressable accessibilityRole="button" testID="trigger" onPress={onPress} {...triggerProps}>
         <Text>Agent</Text>
       </Pressable>
-      {isOpen && <Text>Card</Text>}
+      {!!isOpen && <Text>Card</Text>}
     </>
   )
 }

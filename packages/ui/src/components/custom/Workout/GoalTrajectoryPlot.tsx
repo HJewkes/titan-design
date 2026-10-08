@@ -143,7 +143,6 @@ export interface PlotStyle {
   baseline: PlotBaseline
   bandFade: BandFade
   bandCurve: BandCurve
-  referenceLabelSide: ReferenceLabelSide
 }
 
 export interface LayerProps {
@@ -521,7 +520,7 @@ function NextTargetMark({ geometry, palette, stroke }: LayerProps & { stroke: nu
   )
 }
 
-/** The hollow current-week point's accessible words, also said in the chart's summary. */
+/** The hollow current-week point's words, said in the chart's summary: the plot is aria-hidden. */
 export const CURRENT_WEEK_NO_READING = 'Current week, no reading yet'
 
 /**
@@ -534,7 +533,6 @@ function CurrentWeekMark({ geometry, palette }: LayerProps) {
   return (
     <circle
       data-testid="goal-trajectory-chart-current-week-point"
-      aria-label={CURRENT_WEEK_NO_READING}
       cx={point.x}
       cy={point.y}
       r={DOT_RADIUS}

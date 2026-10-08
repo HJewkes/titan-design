@@ -5,7 +5,7 @@ import { Surface } from '../../ui/surface'
 const meta: Meta<typeof InputBar> = {
   title: 'Custom/Workout/InputBar',
   component: InputBar,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     canRecord: {
       control: 'boolean',

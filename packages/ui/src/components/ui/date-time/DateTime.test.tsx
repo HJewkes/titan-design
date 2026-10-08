@@ -1,9 +1,13 @@
-import { describe, it, expect } from 'vitest'
+import { afterAll, beforeAll, describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { pinDefaultLocale } from '../../../test/pin-locale'
 import { DateTime, formatDateTime } from './DateTime'
 
 describe('DateTime', () => {
+  beforeAll(() => pinDefaultLocale('en-US'))
+  afterAll(() => vi.unstubAllGlobals())
+
   const testDate = new Date('2024-06-15T14:30:00Z')
   const testTimestamp = testDate.getTime()
   const testISOString = '2024-06-15T14:30:00Z'
@@ -69,9 +73,14 @@ describe('DateTime', () => {
     expect(screen.getByText('16:12')).toBeInTheDocument()
   })
 
-  it('renders Invalid Date for bad input', () => {
+  it('renders the default fallback for unparseable input', () => {
     render(<DateTime value="not-a-date" />)
-    expect(screen.getByText('Invalid Date')).toBeInTheDocument()
+    expect(screen.getByText('-')).toBeInTheDocument()
+  })
+
+  it('renders a custom fallback for unparseable input', () => {
+    render(<DateTime value="nope" fallback="n/a" />)
+    expect(screen.getByText('n/a')).toBeInTheDocument()
   })
 
   describe('formats', () => {
@@ -143,8 +152,33 @@ describe('DateTime', () => {
 
   describe('formatDateTime utility', () => {
     it('formats a date value', () => {
-      const result = formatDateTime(testDate, 'short', true)
-      expect(result).toContain('Jun')
+      expect(formatDateTime(testDate, 'short', { isUTC: true, locale: 'en-US' })).toBe('Jun 15')
+    })
+
+    it('keeps the positional isUTC argument for existing callers', () => {
+      expect(formatDateTime(testDate, 'time', true)).toBe(
+        formatDateTime(testDate, 'time', { isUTC: true })
+      )
+    })
+
+    it('formats with the locale it is given, not the runtime default', () => {
+      expect(formatDateTime(testDate, 'long', { isUTC: true, locale: 'de-DE' })).toBe(
+        '15. Juni 2024'
+      )
+    })
+
+    it('rounds relative time the same way into the past and the future', () => {
+      const now = testTimestamp
+      const ninetyMin = 90 * 60_000
+      expect(formatDateTime(now - ninetyMin, 'relative', { now })).toBe('2 hours ago')
+      expect(formatDateTime(now + ninetyMin, 'relative', { now })).toBe('in 2 hours')
+    })
+
+    it('honours hour12 and seconds', () => {
+      const at = new Date(2024, 0, 1, 16, 12, 7)
+      const opts = { locale: 'en-US', seconds: true }
+      expect(formatDateTime(at, 'time', { ...opts, hour12: false })).toBe('16:12:07')
+      expect(formatDateTime(at, 'time', { ...opts, hour12: true })).toBe('04:12:07 PM')
     })
 
     it('returns fallback for null', () => {
@@ -157,10 +191,12 @@ describe('DateTime', () => {
 
     it('returns custom fallback', () => {
       expect(formatDateTime(null, 'date', false, 'N/A')).toBe('N/A')
+      expect(formatDateTime(null, 'date', { fallback: 'N/A' })).toBe('N/A')
     })
 
-    it('returns Invalid Date for bad input', () => {
-      expect(formatDateTime('not-a-date')).toBe('Invalid Date')
+    it('returns the fallback for bad input', () => {
+      expect(formatDateTime('not-a-date')).toBe('-')
+      expect(formatDateTime('not-a-date', 'date', { fallback: 'n/a' })).toBe('n/a')
     })
   })
 

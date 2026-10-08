@@ -70,9 +70,10 @@ export function Sidebar({
   return (
     <SidebarContext.Provider value={{ isCollapsed, activeItem, onItemSelect }}>
       <View
+        role="navigation"
         style={{ width: currentWidth }}
         className={cn(
-          'h-full flex-col bg-surface-base border-r border-hairline transition-all duration-200',
+          'h-full flex-col bg-surface-base border-r border-hairline web:transition-all web:duration-200',
           className
         )}
         {...props}
@@ -141,7 +142,7 @@ export function SidebarSection({ title, children, className }: SidebarSectionPro
   const { isCollapsed } = useContext(SidebarContext)
 
   return (
-    <View className={cn('px-2 py-2', className)}>
+    <View role="group" aria-label={title} className={cn('px-2 py-2', className)}>
       {title && !isCollapsed && (
         <Text className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-text-tertiary">
           {title}
@@ -169,6 +170,29 @@ export interface SidebarItemProps extends Omit<PressableProps, 'children'> {
   className?: string
 }
 
+function SidebarItemBadge({ badge, isActive }: { badge: React.ReactNode; isActive: boolean }) {
+  // A zero count is not worth a badge; `badge && …` would print a bare 0.
+  if (!badge || badge === '0') return null
+  const isText = typeof badge === 'string' || typeof badge === 'number'
+
+  return (
+    <View className="ml-auto">
+      {isText ? (
+        <Text
+          className={cn(
+            'font-sans text-base',
+            isActive ? 'text-brand-primary' : 'text-text-secondary'
+          )}
+        >
+          {badge}
+        </Text>
+      ) : (
+        badge
+      )}
+    </View>
+  )
+}
+
 /**
  * Individual navigation item in sidebar.
  */
@@ -194,11 +218,14 @@ export function SidebarItem({
   return (
     <Pressable
       accessibilityRole="button"
+      // Native reads accessibilityState but not aria-current; web is the reverse.
       accessibilityState={{ selected: isActive }}
+      aria-current={isActive ? 'page' : undefined}
+      aria-expanded={hasChildren ? !!isExpanded : undefined}
       accessibilityLabel={label}
       onPress={handlePress}
       className={cn(
-        'flex-row items-center gap-3 px-3 py-2.5 rounded-md transition-colors',
+        'flex-row items-center gap-3 px-3 py-2.5 rounded-md web:transition-colors',
         isActive
           ? 'bg-brand-primary-subtle text-brand-primary'
           : 'text-text-secondary web:hover:bg-interactive-hover active:bg-interactive-active',
@@ -221,8 +248,12 @@ export function SidebarItem({
           >
             {label}
           </Text>
-          {badge && <View className="ml-auto">{badge}</View>}
-          {hasChildren && <Text className="text-text-tertiary ml-1">{isExpanded ? '▼' : '▶'}</Text>}
+          <SidebarItemBadge badge={badge} isActive={isActive} />
+          {hasChildren && (
+            <Text aria-hidden className="text-text-tertiary ml-1">
+              {isExpanded ? '▼' : '▶'}
+            </Text>
+          )}
         </>
       )}
     </Pressable>

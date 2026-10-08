@@ -56,7 +56,7 @@ const meta: Meta<typeof BodyMap> = {
   parameters: {
     docs: { description: { component: 'Composes **MuscleGroup** · **SimpleMuscleGroup**.' } },
   },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     view: { control: 'inline-radio', options: ['front', 'back'] },
     mode: { control: 'inline-radio', options: ['simple', 'detailed'] },
