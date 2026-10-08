@@ -690,7 +690,10 @@ export const TextAndBorderColors: StoryObj = {
         <ColorSwatch name="text-disabled" value={semanticColorsDark['text-disabled']} />
         <ColorSwatch name="text-error" value={semanticColorsDark['text-error']} />
         <ColorSwatch name="text-brand" value={semanticColorsDark['text-brand']} />
-        <ColorSwatch name="text-brand-secondary" value={semanticColorsDark['text-brand-secondary']} />
+        <ColorSwatch
+          name="text-brand-secondary"
+          value={semanticColorsDark['text-brand-secondary']}
+        />
         <ColorSwatch name="text-success" value={semanticColorsDark['text-success']} />
         <ColorSwatch name="text-warning" value={semanticColorsDark['text-warning']} />
         <ColorSwatch name="text-info" value={semanticColorsDark['text-info']} />

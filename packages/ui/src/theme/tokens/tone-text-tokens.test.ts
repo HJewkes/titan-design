@@ -15,14 +15,14 @@ function contrastRatio(a: string, b: string): number {
   return (hi + 0.05) / (lo + 0.05)
 }
 
-const LIGHT = {
+const LIGHT: Record<string, string> = {
   'text-brand': ramp.orange[700],
   'text-brand-secondary': ramp.cyan[700],
   'text-success': ramp.green[700],
   'text-warning': ramp.amber[700],
   'text-info': ramp.blue[700],
 }
-const DARK = {
+const DARK: Record<string, string> = {
   'text-brand': ramp.orange[400],
   'text-brand-secondary': ramp.cyan[300],
   'text-success': ramp.green[400],
@@ -35,7 +35,7 @@ describe.each([
   ['light', LIGHT],
   ['dark', DARK],
 ] as const)('tone text tokens, %s', (mode, expected) => {
-  const colors = getSemanticColors(mode)
+  const colors: Record<string, string> = getSemanticColors(mode)
 
   it.each(Object.entries(expected))('%s takes its chosen ramp step', (key, hex) => {
     expect(colors[key]).toBe(hex)
