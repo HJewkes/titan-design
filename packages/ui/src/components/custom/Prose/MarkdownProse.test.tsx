@@ -17,6 +17,8 @@ interface ElementProps {
   testID?: string
   className?: string
   children?: ReactNode
+  raise?: number
+  pressed?: boolean
 }
 
 describe('parseProseBlocks', () => {
@@ -49,14 +51,22 @@ describe('parseProseBlocks', () => {
 })
 
 describe('MarkdownProse', () => {
-  it('puts the language label rule on a wrapping View, not on the Text', () => {
+  it('puts the rule on a raised header View and the code in an inset body', () => {
     const root = CodeBlock({ code: 'const a = 1', lang: 'ts' })
-    const [header] = Children.toArray(root.props.children) as ReactElement<ElementProps>[]
+    const [header, body] = Children.toArray(root.props.children) as ReactElement<ElementProps>[]
     const [label] = Children.toArray(header.props.children) as ReactElement<ElementProps>[]
     expect(header.props.testID).toBe('prose-code-header')
+    expect(header.props.raise).toBe(1)
     expect(header.props.className).toContain('border-border-subtle')
-    expect(label.props.testID).toBe('prose-code-lang')
     expect(label.props.className).not.toMatch(/\bborder/)
+    expect(body.props.testID).toBe('prose-code-body')
+    expect(body.props.pressed).toBe(true)
+  })
+
+  it('insets the code even when the fence has no language', () => {
+    const root = CodeBlock({ code: 'x', lang: '' })
+    const [body] = Children.toArray(root.props.children) as ReactElement<ElementProps>[]
+    expect(body.props.pressed).toBe(true)
   })
 
   it('renders bold and code spans without their markers', () => {

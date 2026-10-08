@@ -1,28 +1,36 @@
 import type { ReactNode } from 'react'
 import { ScrollView, Text, View } from 'react-native'
+import { Surface } from '../../ui/surface'
 import { Typography } from '../../ui/typography'
 import { Table, TableBody, TableCell, TableHeader, TableHeaderCell, TableRow } from '../../ui/table'
 import type { ProseBlock } from './proseTypes'
 
-/** A fenced block: the language label above mono code that scrolls sideways rather than wrapping. */
+/**
+ * A fenced block: the language label on a raised header over mono code in an
+ * inset well. The code scrolls sideways rather than wrapping.
+ */
 export function CodeBlock({ code, lang }: { code: string; lang: string }) {
   return (
-    <View
-      className="overflow-hidden rounded-md border border-border-subtle bg-surface-base"
-      testID="prose-code"
-    >
+    <View className="overflow-hidden rounded-md border border-border-subtle" testID="prose-code">
       {lang ? (
-        <View className="border-b border-border-subtle px-3 py-1" testID="prose-code-header">
+        <Surface
+          raise={1}
+          rounded={false}
+          className="border-b border-border-subtle px-3 py-1"
+          testID="prose-code-header"
+        >
           <Typography variant="monoLabel" className="text-text-secondary" testID="prose-code-lang">
             {lang}
           </Typography>
-        </View>
+        </Surface>
       ) : null}
-      <ScrollView horizontal showsHorizontalScrollIndicator>
-        <Text selectable className="px-3 py-2 font-mono text-xs leading-5 text-text-primary">
-          {code}
-        </Text>
-      </ScrollView>
+      <Surface pressed rounded={false} testID="prose-code-body">
+        <ScrollView horizontal showsHorizontalScrollIndicator>
+          <Text selectable className="px-3 py-2 font-mono text-xs leading-5 text-text-primary">
+            {code}
+          </Text>
+        </ScrollView>
+      </Surface>
     </View>
   )
 }
