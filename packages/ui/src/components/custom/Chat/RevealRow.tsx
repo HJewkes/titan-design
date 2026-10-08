@@ -24,8 +24,8 @@ export function revealOffset(dx: number): number {
 
 /**
  * Drag left to slide the thread and show each message's time, and let go to spring
- * back, the way Messages does. `open` starts it revealed, for stories and tests; `toggle` reveals or hides the times
-without a drag, for taps and the keyboard.
+ * back, the way Messages does. `open` starts it revealed, for stories and tests; `toggle` reveals
+ * or hides the times without a drag, for taps and the keyboard.
  */
 export function useRevealGesture(open: boolean) {
   const [offset] = useState(() => new Animated.Value(open ? REVEAL_PX : 0))

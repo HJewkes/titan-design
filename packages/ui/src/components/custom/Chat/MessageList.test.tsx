@@ -382,9 +382,12 @@ describe('MessageList', () => {
   it('reveals message times when a date separator is pressed, and hides them on a second press', () => {
     renderList(COACH_THREAD)
 
-    fireEvent.click(screen.getAllByRole('button', { name: 'Show message times' })[0])
+    const show = /, show message times$/
+    fireEvent.click(screen.getAllByRole('button', { name: show })[0])
 
-    expect(screen.getAllByRole('button', { name: 'Hide message times' }).length).toBeGreaterThan(0)
-    expect(screen.queryByRole('button', { name: 'Show message times' })).not.toBeInTheDocument()
+    expect(screen.getAllByRole('button', { name: /, hide message times$/ }).length).toBeGreaterThan(
+      0
+    )
+    expect(screen.queryByRole('button', { name: show })).not.toBeInTheDocument()
   })
 })

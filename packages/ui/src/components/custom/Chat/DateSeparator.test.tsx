@@ -53,7 +53,7 @@ describe('DateSeparator', () => {
       const onPress = vi.fn()
       render(<DateSeparator date={localIso(0, 7, 0)} now={NOW} onPress={onPress} />)
 
-      fireEvent.click(screen.getByRole('button', { name: 'Show message times' }))
+      fireEvent.click(screen.getByRole('button', { name: 'Today, show message times' }))
 
       expect(onPress).toHaveBeenCalledTimes(1)
     })
@@ -61,10 +61,23 @@ describe('DateSeparator', () => {
     it('names the hide action and reports expanded while times show', () => {
       render(<DateSeparator date={localIso(0, 7, 0)} now={NOW} onPress={() => {}} timesShown />)
 
-      expect(screen.getByRole('button', { name: 'Hide message times' })).toHaveAttribute(
+      expect(screen.getByRole('button', { name: 'Today, hide message times' })).toHaveAttribute(
         'aria-expanded',
         'true'
       )
+    })
+
+    it('starts its name with the visible date and differs per day', () => {
+      render(
+        <>
+          <DateSeparator date={localIso(0, 7, 0)} now={NOW} showTime onPress={() => {}} />
+          <DateSeparator date={localIso(1, 7, 0)} now={NOW} onPress={() => {}} />
+        </>
+      )
+
+      const names = screen.getAllByRole('button').map((b) => b.getAttribute('aria-label'))
+      expect(names[0]).toMatch(/^Today \S+.*, show message times$/)
+      expect(names[1]).toBe('Yesterday, show message times')
     })
 
     it('stays plain text when nothing is wired to it', () => {

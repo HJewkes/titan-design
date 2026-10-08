@@ -3,7 +3,7 @@ import { Pressable, View } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Divider } from '../../ui/divider'
 import { Typography } from '../../ui/typography'
-import { DateTime } from '../../ui/date-time'
+import { DateTime, formatDateTime } from '../../ui/date-time'
 import { dayKey } from './chatThread'
 
 export interface DateSeparatorProps {
@@ -69,6 +69,19 @@ function DayLabel({ at, now, labels }: { at: Date; now: Date; labels: DateSepara
   return <DateTime value={at} format="medium" variant="caption" color="tertiary" />
 }
 
+/** The visible text, in one string, so a button's name can start with it (WCAG 2.5.3). */
+function visibleText(
+  at: Date,
+  now: Date,
+  showDay: boolean,
+  showTime: boolean,
+  labels: DateSeparatorLabels
+) {
+  const day = showDay ? (relativeDayName(at, now, labels) ?? formatDateTime(at, 'medium')) : null
+  const time = showTime ? formatDateTime(at, 'time') : null
+  return [day, time].filter(Boolean).join(' ')
+}
+
 export function DateSeparator({
   date,
   now,
@@ -82,10 +95,11 @@ export function DateSeparator({
   const [renderedAt] = useState(() => Date.now())
   const at = new Date(date)
   const text = { ...DEFAULT_LABELS, ...labels }
+  const nowDate = new Date(now ?? renderedAt)
   const content = (
     <>
       <Divider className="flex-1" />
-      {showDay ? <DayLabel at={at} now={new Date(now ?? renderedAt)} labels={text} /> : null}
+      {showDay ? <DayLabel at={at} now={nowDate} labels={text} /> : null}
       {showTime ? <DateTime value={at} format="time" variant="caption" color="tertiary" /> : null}
       <Divider className="flex-1" />
     </>
@@ -104,7 +118,12 @@ export function DateSeparator({
       testID="chat-date-separator"
       onPress={onPress}
       accessibilityRole="button"
-      accessibilityLabel={timesShown ? text.hideTimes : text.showTimes}
+      accessibilityLabel={[
+        visibleText(at, nowDate, showDay, showTime, text),
+        (timesShown ? text.hideTimes : text.showTimes).toLowerCase(),
+      ]
+        .filter(Boolean)
+        .join(', ')}
       aria-expanded={timesShown}
     >
       {content}
