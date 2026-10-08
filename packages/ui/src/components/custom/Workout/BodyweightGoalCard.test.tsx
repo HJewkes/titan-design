@@ -162,6 +162,6 @@ describe('the weight track in its stories', () => {
 
   it('keeps the dark track under the dark theme', () => {
     render(<Default />)
-    expect(screen.getByTestId('zone-track-track')).toHaveStyle({ backgroundColor: greyRamp[800] })
+    expect(screen.getByTestId('zone-track-track')).toHaveStyle({ backgroundColor: 'rgba(255, 255, 255, 0.30)' })
   })
 })

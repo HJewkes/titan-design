@@ -92,7 +92,7 @@ describe('IntensityBar', () => {
 
     it('renders over-1 red just past target (110%)', () => {
       render(<IntensityBar level={1.1} />)
-      expect(screen.getByTestId('intensity-fill')).toHaveStyle({ backgroundColor: '#D14343' })
+      expect(screen.getByTestId('intensity-fill')).toHaveStyle({ backgroundColor: '#E05254' })
     })
 
     it('renders over-2 deep red at 120%', () => {
