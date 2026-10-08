@@ -8,9 +8,11 @@ import { DataRow } from '../../ui/data-row/DataRow'
 import { Typography } from '../../ui/typography'
 import type { VolumeLandmarks } from './muscleTaxonomy'
 
-// ZoneTrack's own default track token, so the single zone band and the
-// un-reached track read as one surface in either mode.
+// ZoneTrack's own default track token. Only the zone band paints it: the pill
+// and its un-reached overlay stay clear, because dark border-prominent is
+// translucent and each stacked layer would lighten the track (TD-101).
 const TRACK_TOKEN = 'border-prominent'
+const CLEAR = 'transparent'
 
 export type VolumeZone = 'under' | 'maintenance' | 'productive' | 'approaching' | 'over'
 
@@ -132,6 +134,7 @@ export function VolumeLandmarkBar({
           // Glow when in the optimal productive band — the "sweet spot" cue.
           glow: zone === 'productive',
         }}
+        trackColor={CLEAR}
         trackHeight={trackHeight}
         ticks={[
           { value: mev, label: 'MEV', tooltip: `${LANDMARK_NAME.MEV} · ${mev} sets/wk` },

@@ -96,8 +96,18 @@ describe('VolumeLandmarkBar', () => {
     expect(screen.getByTestId('zone-track-fill')).toHaveStyle({ width: '40%' })
   })
 
+  // Normalise through the DOM so hex, rgb() and rgba() compare as one form.
+  function cssColor(color: string) {
+    const probe = document.createElement('div')
+    probe.style.backgroundColor = color
+    return probe.style.backgroundColor
+  }
+
+  // react-native-web writes `transparent` as rgba(0, 0, 0, 0).
+  const isPainted = (color: string) => color !== '' && !/^rgba\(.*,\s*0\)$/.test(color)
+
   it.each(['dark', 'light'] as ThemeMode[])(
-    'paints the band and un-reached track with the %s border-prominent token',
+    'paints the un-reached track with exactly one %s border-prominent layer',
     (mode) => {
       render(
         <Surface theme={mode}>
@@ -110,9 +120,10 @@ describe('VolumeLandmarkBar', () => {
           />
         </Surface>
       )
-      const track = getSemanticColors(mode)['border-prominent']
-      expect(screen.getByTestId('zone-track-band')).toHaveStyle({ backgroundColor: track })
-      expect(screen.getByTestId('zone-track-unfilled')).toHaveStyle({ backgroundColor: track })
+      const layersUnderUnfilled = ['zone-track-track', 'zone-track-band', 'zone-track-unfilled']
+        .map((id) => (screen.getByTestId(id) as HTMLElement).style.backgroundColor)
+        .filter(isPainted)
+      expect(layersUnderUnfilled).toEqual([cssColor(getSemanticColors(mode)['border-prominent'])])
     }
   )
 
