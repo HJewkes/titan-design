@@ -10738,6 +10738,7 @@
         "components-molecules-card--outline",
         "components-molecules-card--simple-card",
         "components-molecules-card--skeleton",
+        "components-molecules-card--stat",
         "components-molecules-card--status-filled-cards",
         "components-molecules-card--status-outline-cards"
       ],
@@ -12169,6 +12170,68 @@
       "tier": "molecule"
     },
     {
+      "composes": [
+        "Typography"
+      ],
+      "family": "ui/highlight-text",
+      "file": "packages/ui/src/components/ui/highlight-text/HighlightText.tsx",
+      "name": "HighlightText",
+      "props": [
+        {
+          "default": null,
+          "description": "Additional className for the root.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "primary",
+          "description": "Text colour; matched segments inherit it.",
+          "name": "color",
+          "required": false,
+          "type": "TypographyColor"
+        },
+        {
+          "default": null,
+          "description": "Maximum number of lines before truncating.",
+          "name": "maxLines",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Matched ranges, end exclusive.",
+          "name": "ranges",
+          "required": true,
+          "type": "readonly HighlightRange[]"
+        },
+        {
+          "default": null,
+          "description": "The full string to render.",
+          "name": "text",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": "body2",
+          "description": "Typography variant of the whole string.",
+          "name": "variant",
+          "required": false,
+          "type": "TypographyVariant"
+        }
+      ],
+      "purpose": "A string with matched ranges emphasised by weight only, so no colour pair is added.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/highlight-text/HighlightText.tsx",
+        "status": "packages/ui/src/components/ui/highlight-text/HighlightText.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-highlighttext--default"
+      ],
+      "tier": "molecule"
+    },
+    {
       "composes": [],
       "family": "ui/icon-box",
       "file": "packages/ui/src/components/ui/icon-box/IconBox.tsx",
@@ -12432,6 +12495,54 @@
       "tier": "atom"
     },
     {
+      "composes": [
+        "Typography"
+      ],
+      "family": "ui/kbd",
+      "file": "packages/ui/src/components/ui/kbd/Kbd.tsx",
+      "name": "Kbd",
+      "props": [
+        {
+          "default": null,
+          "description": "Overrides the spoken name derived from `keys`.",
+          "name": "accessibilityLabel",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Tailwind classes merged onto the root through `cn()`.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "One keycap per entry, e.g. `['⌘', 'K']`.",
+          "name": "keys",
+          "required": true,
+          "type": "string[]"
+        },
+        {
+          "default": "sm",
+          "description": "Keycap size.",
+          "name": "size",
+          "required": false,
+          "type": "KbdSize"
+        }
+      ],
+      "purpose": "Kbd — a display-only keyboard shortcut hint, one keycap per key.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/kbd/Kbd.tsx",
+        "status": "packages/ui/src/components/ui/kbd/Kbd.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-kbd--default"
+      ],
+      "tier": "molecule"
+    },
+    {
       "composes": [],
       "family": "ui/link",
       "file": "packages/ui/src/components/ui/link/Link.tsx",
@@ -12629,6 +12740,13 @@
           "type": "string"
         },
         {
+          "default": "below",
+          "description": "Puts the label above or below the figure.",
+          "name": "labelPosition",
+          "required": false,
+          "type": "MetricLabelPosition"
+        },
+        {
           "default": "md",
           "description": "",
           "name": "size",
@@ -12669,6 +12787,13 @@
           "name": "valueClassName",
           "required": false,
           "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Inline style on the value text, for a value a token class cannot express.",
+          "name": "valueStyle",
+          "required": false,
+          "type": "StyleProp<TextStyle>"
         }
       ],
       "purpose": "",
@@ -12765,6 +12890,82 @@
         "components-organisms-modal--with-form-content"
       ],
       "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Typography"
+      ],
+      "family": "ui/page",
+      "file": "packages/ui/src/components/ui/page/Page.tsx",
+      "name": "Page",
+      "props": [
+        {
+          "default": null,
+          "description": "The body.",
+          "name": "children",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Tailwind classes merged onto the root.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The padded outer column.",
+          "name": "contentClassName",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "md",
+          "description": "`md` widens from 640px and a consumer `p-*` in `contentClassName` loses to it there; pass `sm` for a fixed narrow gutter.",
+          "name": "gutter",
+          "required": false,
+          "type": "PageGutter"
+        },
+        {
+          "default": null,
+          "description": "Stacked above the body.",
+          "name": "header",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": "false",
+          "description": "true: the header sits in a ruled band that stays put while the body scrolls under it, and casts a shadow once content is under it.",
+          "name": "isHeaderPinned",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "true",
+          "description": "false: the page fills the region and the view owns its own scroll.",
+          "name": "isScrollable",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "full",
+          "description": "Caps the content column, gutters excluded.",
+          "name": "maxWidth",
+          "required": false,
+          "type": "PageMaxWidth"
+        }
+      ],
+      "purpose": "A page container for a view's content region: a gutter, an optional width cap, a header slot and a scroller.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/page/Page.tsx",
+        "status": "packages/ui/src/components/ui/page/Page.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-page--default"
+      ],
+      "tier": "page"
     },
     {
       "composes": [],
@@ -14264,7 +14465,7 @@
         },
         {
           "default": null,
-          "description": "Additional className",
+          "description": "Additional className.",
           "name": "className",
           "required": false,
           "type": "string"
@@ -14285,13 +14486,13 @@
         },
         {
           "default": null,
-          "description": "Tints the value (status/accent hex or CSS color); defaults to primary text",
+          "description": "Tints the value (status/accent hex or CSS color); defaults to primary text.",
           "name": "valueColor",
           "required": false,
           "type": "string"
         }
       ],
-      "purpose": "Tile — a compact label-over-value stat card.",
+      "purpose": "Tile — a compact label-over-value stat, now a wrapper over the `CardStat` preset.",
       "sources": {
         "props": "packages/ui/src/components/ui/tile/Tile.tsx",
         "status": "packages/ui/src/components/ui/tile/Tile.stories.tsx"

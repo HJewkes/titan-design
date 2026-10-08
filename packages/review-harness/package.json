@@ -20,12 +20,12 @@
     "test": "vitest",
     "test:unit": "vitest",
     "test:unit:ci": "vitest run --coverage",
-    "test:e2e": "playwright test",
-    "schema": "node src/write-json-schema.ts"
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@playwright/test": "^1.58.2",
     "@titan-design/react-ui": "workspace:*",
+    "@titan-design/review-schema": "workspace:*",
     "@vitejs/plugin-react": "^4.3.0",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",

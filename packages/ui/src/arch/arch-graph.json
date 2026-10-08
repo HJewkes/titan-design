@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:fbbe91a273b5880c9f78eb9dd7b76683e67b121e8d64b423b42575cf5ce11c71",
+  "componentBarrelHash": "sha256:74012d5e32300ad062ac7d6a163653a8f65298435551f73a2af2bb96da951999",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -3527,6 +3527,41 @@
       "standard": true
     },
     {
+      "name": "HighlightText",
+      "file": "packages/ui/src/components/ui/highlight-text/HighlightText.tsx",
+      "dir": "ui",
+      "family": "ui/highlight-text",
+      "exports": [
+        "HighlightText",
+        "HighlightTextProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 0,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 52,
+        "score": 0
+      },
+      "tier": "molecule",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "IconBox",
       "file": "packages/ui/src/components/ui/icon-box/IconBox.tsx",
       "dir": "ui",
@@ -3922,6 +3957,43 @@
       "tier": "atom",
       "verdict": "keep-internal",
       "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Kbd",
+      "file": "packages/ui/src/components/ui/kbd/Kbd.tsx",
+      "dir": "ui",
+      "family": "ui/kbd",
+      "exports": [
+        "Kbd",
+        "KbdSize",
+        "KbdProps",
+        "spokenName"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 2,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 86,
+        "score": 2
+      },
+      "tier": "molecule",
+      "verdict": "dead",
+      "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
     },
@@ -4772,6 +4844,47 @@
       },
       "tier": "organism",
       "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Page",
+      "file": "packages/ui/src/components/ui/page/Page.tsx",
+      "dir": "ui",
+      "family": "ui/page",
+      "exports": [
+        "Page",
+        "PageHeader",
+        "PageGutter",
+        "PageMaxWidth",
+        "PageProps",
+        "PageHeaderProps",
+        "useScrolledUnder",
+        "PageHeaderBand"
+      ],
+      "libDependents": 1,
+      "storyRefs": 2,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 9,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 196,
+        "score": 9
+      },
+      "tier": "page",
+      "verdict": "demo-only",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -10758,10 +10871,22 @@
     [
       "Tooltip",
       "TriggerSurface"
+    ],
+    [
+      "HighlightText",
+      "Typography"
+    ],
+    [
+      "Kbd",
+      "Typography"
+    ],
+    [
+      "Page",
+      "Typography"
     ]
   ],
   "summary": {
-    "total": 222,
+    "total": 225,
     "dead": [
       "Autocomplete",
       "Breadcrumbs",
@@ -10770,8 +10895,10 @@
       "FilePathLabel",
       "GoalLiftCard",
       "HelpTip",
+      "HighlightText",
       "IconBox",
       "InitiativeHeader",
+      "Kbd",
       "Menu",
       "MessageList",
       "PortfolioOverview",

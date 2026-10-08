@@ -733,6 +733,15 @@ export interface CardSkeletonProps {
 }
 
 // @public
+export function CardStat(input: CardStatProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface CardStatProps extends ViewProps, Pick<MetricProps, 'label' | 'value' | 'unit' | 'size' | 'align' | 'tone'>, Pick<CardProps, 'variant' | 'elevation' | 'bgColor'> {
+    className?: string;
+    metricProps?: CardStatMetricProps;
+}
+
+// @public
 export function CardTitle(input: CardTitleProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -4640,6 +4649,9 @@ export interface MetricGroupProps extends ViewProps {
     className?: string;
 }
 
+// @public
+export type MetricLabelPosition = 'above' | 'below';
+
 // @public (undocumented)
 export interface MetricProps extends ViewProps {
     align?: MetricAlign;
@@ -4648,6 +4660,7 @@ export interface MetricProps extends ViewProps {
     // (undocumented)
     label: string;
     labelClassName?: string;
+    labelPosition?: MetricLabelPosition;
     // (undocumented)
     size?: 'sm' | 'md' | 'lg';
     tone?: MetricTone;
@@ -4658,6 +4671,7 @@ export interface MetricProps extends ViewProps {
     // (undocumented)
     value: string;
     valueClassName?: string;
+    valueStyle?: StyleProp<TextStyle>;
 }
 
 // @public (undocumented)
@@ -7759,6 +7773,7 @@ export interface TabPanelsProps {
     children?: React__default.ReactNode;
     // (undocumented)
     className?: string;
+    fill?: boolean;
 }
 
 // @public (undocumented)
@@ -8199,6 +8214,7 @@ export interface TileProps extends ViewProps {
     className?: string;
     label: string;
     value: string;
+    // @deprecated
     valueColor?: string;
 }
 

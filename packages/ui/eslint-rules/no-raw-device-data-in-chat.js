@@ -26,19 +26,7 @@
  *     functional bug as much as a confidentiality one.
  */
 
-const FUNCTION_TYPES = new Set([
-  'FunctionDeclaration',
-  'FunctionExpression',
-  'ArrowFunctionExpression',
-])
-
-/** True when no enclosing function stands between `node` and the module body. */
-function isAtModuleScope(node) {
-  for (let current = node.parent; current; current = current.parent) {
-    if (FUNCTION_TYPES.has(current.type)) return false
-  }
-  return true
-}
+const { isAtModuleScope } = require('./ratchet')
 
 const HEX_LITERAL = /(?<!\d)0x[0-9a-f]+/i
 const BYTE_SEQUENCE = /(?<![\w#])[0-9a-f]{2}(?:[ ,:.-][0-9a-f]{2}){2,}(?![\w-])/i

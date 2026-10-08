@@ -1,4 +1,4 @@
-import { FeedbackSchema, type Feedback } from './schema.ts'
+import { FeedbackSchema, type Feedback } from '@titan-design/review-schema'
 import { ReviewError, readJsonFile } from './review.ts'
 
 interface Tally {
