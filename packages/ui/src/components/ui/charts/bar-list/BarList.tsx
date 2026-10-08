@@ -1,12 +1,13 @@
 import { useMemo, type ReactNode } from 'react'
 import { View, type ViewProps } from 'react-native'
 import { cn } from '../../../../utils/cn'
+import type { ListNavigationKeyEvent } from '../../../../hooks/useListNavigation'
 import { EmptyState } from '../../empty-state'
 import { useSurfaceMode } from '../../surface'
 import { silverRed } from '../kit/silverRed'
-import { ALL_READOUTS, hidesReadout, resolveColumns, type BarListReadout } from './BarListCells'
+import { resolveColumns } from './BarListCells'
 import { ModelRow, OverflowRow, SkeletonRows } from './BarListParts'
-import { useRowTips } from './BarListTip'
+import { useRowTips, type RowTips } from './BarListTip'
 import {
   buildBarListModel,
   readoutName,
@@ -16,7 +17,6 @@ import {
 } from './bar-list-model'
 
 export type { BarListRow, BarListValueFormatter } from './bar-list-model'
-export type { BarListReadout } from './BarListCells'
 
 /** Props of {@link BarList}. */
 export interface BarListProps extends Omit<ViewProps, 'children'> {
@@ -39,10 +39,10 @@ export interface BarListProps extends Omit<ViewProps, 'children'> {
   /** Formats each row's `secondaryValue`. */
   formatSecondary?: (value: number, row: BarListRow) => string
   /**
-   * Which readouts each row prints after its bar. A hidden one stays in the row's accessible name
-   * and in a tip that hover, keyboard focus or a long press on the row opens. Default both.
+   * Hides each row's value after its bar. The value stays in the row's accessible name and in the
+   * tip that hover, keyboard focus or a long press on the row opens.
    */
-  readouts?: BarListReadout[]
+  isValueHidden?: boolean
   /** Shows skeleton rows in place of the data. */
   isLoading?: boolean
   /** Replaces the default empty state, shown when `rows` is empty. */
@@ -55,11 +55,29 @@ export interface BarListProps extends Omit<ViewProps, 'children'> {
 const LIST_ROLE = 'list' as ViewProps['role']
 const SKELETON_ROWS = 5
 
+// RN's ViewProps has no key handler; RNW delivers the DOM event, bubbled from the focused row.
+interface KeyDownProps {
+  onKeyDown?: (event: ListNavigationKeyEvent) => void
+}
+
+/** The list's key handler: the arrow keys first, then whatever the caller passed. */
+function keyDownProps(tips: RowTips | null, caller: KeyDownProps['onKeyDown']): KeyDownProps {
+  if (!tips) return caller ? { onKeyDown: caller } : {}
+  return {
+    onKeyDown: (event) => {
+      tips.onKeyDown(event)
+      caller?.(event)
+    },
+  }
+}
+
 /**
  * BarList: a ranked horizontal bar list. Each row is a label, a bar sized as a fraction of the
  * largest value (or `max`), a value and an optional secondary value. Rows beyond `maxRows` fold
- * into one overflow row. Bars are silver; a flagged row's bar is red. When `readouts` hides a
- * readout, each row opens a tip that shows it, and the list is one tab stop.
+ * into one overflow row. Bars are silver; a flagged row's bar is red, a quieter red for `warning`
+ * (near a limit) and the full red for `error` (over it). The flag's label is not printed in the
+ * row: it lives in the row's tip and its accessible name. A list with a flagged row, or with
+ * `isValueHidden`, opens a tip on each row and is one tab stop.
  *
  * @example
  * <BarList accessibilityLabel="Tool calls" rows={[{ id: 'bash', label: 'Bash', value: 412 }]} />
@@ -74,7 +92,7 @@ export function BarList({
   size = 'md',
   formatValue,
   formatSecondary,
-  readouts = ALL_READOUTS,
+  isValueHidden = false,
   isLoading = false,
   emptyState,
   className,
@@ -85,8 +103,9 @@ export function BarList({
     () => buildBarListModel(rows, { max, sort, maxRows, formatValue, formatSecondary }),
     [rows, max, sort, maxRows, formatValue, formatSecondary]
   )
-  const tips = useRowTips(model.shownCount, hidesReadout(readouts))
-  const columns = resolveColumns(model.columnChars, readouts)
+  const tips = useRowTips(model.shownCount, isValueHidden || model.flaggedCount > 0)
+  const columns = resolveColumns(model.columnChars, isValueHidden)
+  const { onKeyDown: callerKeyDown, ...viewProps } = props as typeof props & KeyDownProps
 
   if (isLoading) {
     const count = Math.min(normalizeMaxRows(maxRows), SKELETON_ROWS)
@@ -96,7 +115,7 @@ export function BarList({
         accessibilityLabel={accessibilityLabel}
         aria-busy
         className={className}
-        {...props}
+        {...viewProps}
       >
         <SkeletonRows count={count} size={size} />
       </View>
@@ -105,7 +124,12 @@ export function BarList({
 
   if (model.inputCount === 0) {
     return (
-      <View className={className} {...props}>
+      <View
+        role="group"
+        accessibilityLabel={accessibilityLabel}
+        className={className}
+        {...viewProps}
+      >
         {emptyState ?? <EmptyState title="No data" className="py-4" />}
       </View>
     )
@@ -116,9 +140,8 @@ export function BarList({
       role={LIST_ROLE}
       accessibilityLabel={readoutName(accessibilityLabel, model)}
       className={cn('gap-stack-sm', className)}
-      // RN's ViewProps has no key handler; RNW delivers the DOM event, bubbled from the focused row.
-      {...(tips ? { onKeyDown: tips.onKeyDown } : {})}
-      {...props}
+      {...keyDownProps(tips, callerKeyDown)}
+      {...viewProps}
     >
       {model.rows.map((entry, index) => (
         <ModelRow

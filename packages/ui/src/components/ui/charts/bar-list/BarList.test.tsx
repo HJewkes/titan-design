@@ -6,7 +6,7 @@ import { getSemanticColors } from '../../../../theme/tokens/semantic'
 import { capturedByNode } from '../../../../test/classname-capture'
 import { Surface } from '../../surface'
 import { silverRed } from '../kit/silverRed'
-import { BarList, type BarListReadout } from './BarList'
+import { BarList } from './BarList'
 import storyMeta from './BarList.stories'
 import { barListFixtures, defaultFixture, veryLargeFixture, type BarListFixture } from './fixtures'
 
@@ -30,6 +30,8 @@ const renderFixture = (f: BarListFixture, props = {}) =>
       {...props}
     />
   )
+
+const classOf = (el: Element) => capturedByNode.get(el) ?? ''
 
 describe('BarList', () => {
   it('renders one list item per shown row and one overflow item', () => {
@@ -120,22 +122,17 @@ describe('BarList', () => {
 
   describe('row layout', () => {
     const flagged = fixture('Flagged')
-    const classOf = (el: Element) => capturedByNode.get(el) ?? ''
     const testIdsIn = (row: Element) =>
       [...row.querySelectorAll<HTMLElement>('[data-testid]')].map((el) => el.dataset.testid)
 
-    it('orders an inline row as track, value, flag', () => {
+    it('orders an inline row as track, value, and prints no flag label', () => {
       renderFixture(flagged)
       const [first] = screen.getAllByTestId('bar-list-row')
-      expect(testIdsIn(first)).toEqual([
-        'bar-list-track',
-        'bar-list-fill',
-        'bar-list-value',
-        'bar-list-flag',
-      ])
+      expect(testIdsIn(first)).toEqual(['bar-list-track', 'bar-list-fill', 'bar-list-value'])
+      expect(within(first).queryByText('over 5%')).toBeNull()
     })
 
-    it('puts the secondary value between the value and the flag', () => {
+    it('puts the secondary value after the value', () => {
       const row = {
         id: 'p',
         label: 'Parser',
@@ -147,7 +144,6 @@ describe('BarList', () => {
       expect(testIdsIn(screen.getByTestId('bar-list-row')).slice(2)).toEqual([
         'bar-list-value',
         'bar-list-secondary',
-        'bar-list-flag',
       ])
     })
 
@@ -178,7 +174,6 @@ describe('BarList', () => {
         screen.getAllByTestId(testId).map((el) => el.style[property])
       expect(widths('bar-list-value', 'minWidth')).toEqual(['6ch', '6ch', '6ch'])
       expect(widths('bar-list-secondary', 'width')).toEqual(['3ch', '3ch', '3ch'])
-      expect(widths('bar-list-flag', 'width')).toEqual(['5ch', '5ch', '5ch'])
       const tracks = screen.getAllByTestId('bar-list-track')
       expect(new Set(tracks.map((el) => el.className)).size).toBe(1)
     })
@@ -193,67 +188,45 @@ describe('BarList', () => {
       }
     })
 
-    it('sets the flag cell to the normal line height so every row has one pitch', () => {
-      renderFixture(flagged)
-      const cells = screen.getAllByTestId('bar-list-flag')
-      expect(cells).toHaveLength(flagged.rows.length)
-      for (const cell of cells) {
-        const classes = classOf(cell).split(' ')
-        expect(classes).toContain('leading-normal')
-        expect(classes).not.toContain('leading-loose')
-      }
+    it('renders no secondary cell when no shown row has the part', () => {
+      renderFixture(defaultFixture)
+      expect(screen.queryByTestId('bar-list-secondary')).toBeNull()
     })
 
-    it('renders no flag or secondary cell when no shown row has the part', () => {
-      renderFixture(defaultFixture)
-      expect(screen.queryByTestId('bar-list-flag')).toBeNull()
-      expect(screen.queryByTestId('bar-list-secondary')).toBeNull()
+    it('paints no flag label anywhere in a flagged list until a tip opens', () => {
+      const { container } = renderFixture(flagged)
+      for (const row of flagged.rows) {
+        if (row.flag) expect(within(container).queryByText(row.flag.label)).toBeNull()
+      }
     })
   })
 
-  describe('readouts', () => {
+  describe('isValueHidden', () => {
     const flagged = fixture('Flagged')
-    const cases: [BarListReadout[], string[]][] = [
-      [
-        ['value', 'flag'],
-        ['bar-list-value', 'bar-list-flag'],
-      ],
-      [['value'], ['bar-list-value']],
-      [['flag'], ['bar-list-flag']],
-      [[], []],
-    ]
 
-    it.each(cases)('with readouts %j renders the cells %j', (readouts, cells) => {
-      renderFixture(flagged, { readouts })
-      for (const testId of ['bar-list-value', 'bar-list-flag']) {
-        expect(screen.queryAllByTestId(testId).length > 0).toBe(cells.includes(testId))
-      }
-    })
-
-    it('keeps the secondary cell whatever readouts hides', () => {
-      renderFixture(fixture('With secondary'), { readouts: [] })
-      expect(screen.getAllByTestId('bar-list-secondary').length).toBeGreaterThan(0)
+    it('takes the value cell out of every row and keeps the secondary cell', () => {
+      renderFixture(fixture('With secondary'), { isValueHidden: true })
       expect(screen.queryByTestId('bar-list-value')).toBeNull()
+      expect(screen.getAllByTestId('bar-list-secondary').length).toBeGreaterThan(0)
     })
 
-    it('names every row and the list the same whatever readouts shows', () => {
-      const namesFor = (readouts: BarListReadout[]) => {
-        const { unmount } = renderFixture(flagged, { readouts })
+    it('names every row and the list the same whether the value is shown or hidden', () => {
+      const namesFor = (isValueHidden: boolean) => {
+        const { unmount } = renderFixture(flagged, { isValueHidden })
         const names = [screen.getByRole('list'), ...screen.getAllByTestId('bar-list-row')].map(
           (el) => el.getAttribute('aria-label')
         )
         unmount()
         return names
       }
-      const shown = namesFor(['value', 'flag'])
+      const shown = namesFor(false)
       expect(shown[1]).toBe('Parser: 9.1, over 5%, rank 1 of 5')
-      for (const [readouts] of cases) expect(namesFor(readouts)).toEqual(shown)
+      expect(namesFor(true)).toEqual(shown)
     })
   })
 
   describe('tip', () => {
     const flagged = fixture('Flagged')
-    const renderTipped = (props = {}) => renderFixture(flagged, { readouts: ['flag'], ...props })
     const tabStops = () =>
       screen.getAllByTestId('bar-list-row').filter((row) => row.getAttribute('tabindex') === '0')
 
@@ -262,23 +235,34 @@ describe('BarList', () => {
       fireEvent.mouseMove(document)
     })
 
-    it('shows no tip and takes no focus while both readouts are shown', () => {
-      const { container } = renderFixture(flagged)
+    it('shows no tip and takes no focus for a plain list with its value shown', () => {
+      const { container } = renderFixture(defaultFixture)
       expect(container.querySelector('[tabindex]')).toBeNull()
       act(() => fireEvent.focus(screen.getAllByTestId('bar-list-row')[0]))
       expect(screen.queryByTestId('bar-list-tip')).toBeNull()
     })
 
-    it('makes the list one tab stop and keeps the rows list items, not buttons', () => {
-      renderFixture(defaultFixture, { readouts: ['flag'] })
-      expect(tabStops()).toHaveLength(1)
-      expect(screen.getAllByRole('listitem')).toHaveLength(11)
-      expect(screen.queryByRole('button')).toBeNull()
-      expect(screen.getByTestId('bar-list-overflow')).not.toHaveAttribute('tabindex')
-    })
+    it.each([
+      ['a flagged row', () => renderFixture(flagged)],
+      ['a hidden value', () => renderFixture(defaultFixture, { isValueHidden: true })],
+    ])(
+      'turns the tips on for %s: one tab stop, rows stay list items, not buttons',
+      (_name, mount) => {
+        mount()
+        expect(tabStops()).toHaveLength(1)
+        expect(screen.queryByRole('button')).toBeNull()
+        for (const row of screen.getAllByTestId('bar-list-row')) {
+          expect(row).toHaveAttribute('role', 'listitem')
+        }
+        // The Flagged fixture has no overflow row; the Default fixture's never takes the stop.
+        expect(
+          screen.queryByTestId('bar-list-overflow')?.getAttribute('tabindex') ?? null
+        ).toBeNull()
+      }
+    )
 
     it('opens the tip on keyboard focus, moves it with the arrows and closes it on Escape', () => {
-      renderTipped()
+      renderFixture(flagged)
       const rows = screen.getAllByTestId('bar-list-row')
       act(() => rows[0].focus())
       expect(screen.getByTestId('bar-list-tip')).toHaveTextContent('Parser')
@@ -297,26 +281,51 @@ describe('BarList', () => {
       expect(screen.queryByTestId('bar-list-tip')).toBeNull()
     })
 
-    it('holds the row label, the formatted value and the flag label', () => {
-      renderTipped({ formatValue: (value: number) => `${value}%` })
+    it('moves the tab stop to a clicked row', () => {
+      renderFixture(flagged)
+      const rows = screen.getAllByTestId('bar-list-row')
+      expect(tabStops()).toEqual([rows[0]])
+      fireEvent.click(rows[2])
+      expect(tabStops()).toEqual([rows[2]])
+    })
+
+    it("runs the caller's onKeyDown after the arrow keys, not instead of them", () => {
+      const onKeyDown = vi.fn()
+      renderFixture(flagged, { onKeyDown })
+      const rows = screen.getAllByTestId('bar-list-row')
+      act(() => rows[0].focus())
+      fireEvent.keyDown(rows[0], { key: 'ArrowDown' })
+      expect(document.activeElement).toBe(rows[1])
+      expect(onKeyDown).toHaveBeenCalledTimes(1)
+      expect(onKeyDown.mock.calls[0][0]).toMatchObject({ key: 'ArrowDown' })
+    })
+
+    it('holds the row label, the formatted value and the flag label in the error text colour', () => {
+      renderFixture(flagged, { formatValue: (value: number) => `${value}%` })
       const rows = screen.getAllByTestId('bar-list-row')
       act(() => rows[0].focus())
       const tip = screen.getByTestId('bar-list-tip')
       expect(tip).toHaveTextContent('Parser')
       expect(tip).toHaveTextContent('9.1%')
       const flagLine = within(tip).getByText('over 5%')
-      expect(capturedByNode.get(flagLine)?.split(' ')).toEqual(
+      expect(classOf(flagLine).split(' ')).toEqual(
         expect.arrayContaining(['text-text-error', 'leading-normal'])
       )
 
-      fireEvent.keyDown(rows[0], { key: 'End' })
+      fireEvent.keyDown(rows[0], { key: 'ArrowDown' })
+      fireEvent.keyDown(rows[1], { key: 'ArrowDown' })
+      const nearTip = screen.getByTestId('bar-list-tip')
+      expect(within(nearTip).getByText('near 5%')).toBeInTheDocument()
+      expect(classOf(within(nearTip).getByText('near 5%')).split(' ')).toContain('text-text-error')
+
+      fireEvent.keyDown(rows[2], { key: 'End' })
       const lastTip = screen.getByTestId('bar-list-tip')
       expect(lastTip).toHaveTextContent('Importer')
       expect(within(lastTip).queryByText(/5%/)).toBeNull()
     })
 
     it('hides the tip from assistive tech and describes the row with nothing', () => {
-      renderTipped()
+      renderFixture(flagged)
       const row = screen.getAllByTestId('bar-list-row')[0]
       act(() => fireEvent.focus(row))
       const tip = screen.getByTestId('bar-list-tip')
@@ -327,8 +336,10 @@ describe('BarList', () => {
     })
 
     it('has no axe violations with a tip open', async () => {
-      const { container } = renderTipped()
+      const { container } = renderFixture(flagged)
+      // The focus's effect queues a frame that positions the portal; let it fire inside act.
       act(() => fireEvent.focus(screen.getAllByTestId('bar-list-row')[0]))
+      await act(() => new Promise<void>((resolve) => requestAnimationFrame(() => resolve())))
       expect(screen.getByTestId('bar-list-tip')).toBeInTheDocument()
       expect(await axe(container)).toHaveNoViolations()
       // The portal puts the tip under body; `region` is a page rule, not the component's.
@@ -339,16 +350,15 @@ describe('BarList', () => {
 
   describe('colour', () => {
     const flagged = fixture('Flagged')
-    const classOf = (el: Element) => capturedByNode.get(el) ?? ''
     const fillOf = (label: string) =>
       screen
         .getByLabelText(new RegExp(`^${label}:`))
         .querySelector<HTMLElement>('[data-testid="bar-list-fill"]')
 
     it.each(['dark', 'light'] as const)(
-      'paints unflagged rows silver and flagged rows one red in %s mode',
+      'paints unflagged rows silver, warning rows the near red and error rows the over red in %s mode',
       (mode) => {
-        const { neutral, flag } = silverRed(mode)
+        const { neutral, near, over } = silverRed(mode)
         render(
           <Surface theme={mode}>
             <BarList accessibilityLabel="Errors" rows={flagged.rows} />
@@ -356,20 +366,23 @@ describe('BarList', () => {
         )
         const tones = new Set(flagged.rows.map((row) => row.flag?.tone))
         expect(tones).toEqual(new Set(['warning', 'error', undefined]))
+        const expected = { warning: near, error: over }
         for (const row of flagged.rows) {
-          expect(fillOf(row.label)).toHaveStyle({ backgroundColor: row.flag ? flag : neutral })
+          const fill = row.flag ? expected[row.flag.tone] : neutral
+          expect(fillOf(row.label)).toHaveStyle({ backgroundColor: fill })
         }
+        expect(near).not.toBe(over)
       }
     )
 
     it.each(['dark', 'light'] as const)(
-      'keeps both fills at 3:1 or more against the track on the %s base surface',
+      'keeps every fill at 3:1 or more against the track on the %s base surface',
       (mode) => {
         const colors = getSemanticColors(mode)
         const track = compositeOver(colors['hairline-default'], colors['surface-base'])
-        const { neutral, flag } = silverRed(mode)
-        expect(contrast(neutral, track)).toBeGreaterThanOrEqual(3)
-        expect(contrast(flag, track)).toBeGreaterThanOrEqual(3)
+        for (const fill of Object.values(silverRed(mode))) {
+          expect(contrast(fill, track)).toBeGreaterThanOrEqual(3)
+        }
       }
     )
 
@@ -403,33 +416,22 @@ describe('BarList', () => {
       expect(classes).toContain('bg-hairline')
       expect(classes).not.toMatch(/brand-/)
     })
-
-    it('writes both flag tones in the error text colour, so the label carries the tone', () => {
-      renderFixture(flagged)
-      const labels = flagged.rows.flatMap((row) => (row.flag ? [row.flag.label] : []))
-      expect(labels.length).toBeGreaterThan(1)
-      for (const label of new Set(labels)) {
-        for (const el of screen.getAllByText(label)) {
-          const colours = classOf(el).match(/\btext-(text|status|brand)-\S+/g)
-          expect(colours).toEqual(['text-text-error'])
-        }
-      }
-    })
   })
 
-  it('renders no button and no focusable row', () => {
+  it('renders no button and no focusable row in a plain list', () => {
     const { container } = renderFixture(defaultFixture)
     expect(screen.queryByRole('button')).not.toBeInTheDocument()
     expect(container.querySelector('[tabindex]')).toBeNull()
   })
 
-  it('gives the story fixture, sort, layout, size and readouts controls and no colour control', () => {
+  it('gives the story fixture, sort, layout, size and value controls and no colour control', () => {
     const controls = storyMeta.argTypes ?? {}
     for (const name of ['fixture', 'sort', 'layout', 'size'] as const) {
       expect(controls[name]?.control).toBe('select')
     }
-    expect(controls.readouts).toMatchObject({ control: 'check', options: ['value', 'flag'] })
+    expect(controls.isValueHidden).toMatchObject({ control: 'boolean' })
     expect(Object.keys(controls)).not.toContain('color')
+    expect(Object.keys(controls)).not.toContain('readouts')
   })
 
   describe('states', () => {
@@ -439,9 +441,10 @@ describe('BarList', () => {
       expect(screen.getByLabelText('Tool calls')).toHaveAttribute('aria-busy', 'true')
     })
 
-    it('renders the default empty state, and a custom one replaces it', () => {
+    it('renders the default empty state under the list name, and a custom one replaces it', () => {
       const { rerender } = renderFixture(fixture('Empty'))
-      expect(screen.getByText('No data')).toBeInTheDocument()
+      const empty = screen.getByRole('group', { name: 'Tool calls' })
+      expect(within(empty).getByText('No data')).toBeInTheDocument()
       rerender(
         <BarList accessibilityLabel="Tool calls" rows={[]} emptyState={<span>Nothing yet</span>} />
       )
@@ -453,11 +456,11 @@ describe('BarList', () => {
   describe('accessibility', () => {
     const cases: [string, () => ReturnType<typeof renderFixture>][] = [
       ['Default', () => renderFixture(defaultFixture)],
-      ['Flagged', () => renderFixture(fixture('Flagged'))],
+      ['Flagged (tips on)', () => renderFixture(fixture('Flagged'))],
       ['With description (stacked)', () => renderFixture(fixture('With description'))],
       [
-        'Flagged with tips (readouts flag)',
-        () => renderFixture(fixture('Flagged'), { readouts: ['flag'] }),
+        'Default with the value hidden',
+        () => renderFixture(defaultFixture, { isValueHidden: true }),
       ],
       ['loading', () => renderFixture(defaultFixture, { isLoading: true })],
       ['empty', () => renderFixture(fixture('Empty'))],

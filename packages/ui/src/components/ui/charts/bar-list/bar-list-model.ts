@@ -13,7 +13,11 @@ export interface BarListRow {
   secondaryValue?: number | null
   /** A line under the label, stacked layout only. */
   description?: string
-  /** Marks the row: its bar turns red and `label` says why, in view and in the accessible name. */
+  /**
+   * Marks the row: its bar turns red, the quieter red for `warning` (near a limit) and the full
+   * red for `error` (over it). `label` says why, in the row's tip and its accessible name; it is
+   * not printed in the row.
+   */
   flag?: { tone: 'warning' | 'error'; label: string }
   /** Overrides the bar fill for this row, flagged or not. */
   color?: ColorToken
@@ -43,13 +47,14 @@ export interface BarListModel {
   largest: { label: string; valueText: string } | null
   /** Character width of each trailing column, so every row gives its cells the same width. */
   columnChars: BarListColumnChars
+  /** Shown rows that carry a flag; any turns the row tips on, since the flag's label lives there. */
+  flaggedCount: number
 }
 
 /** Widest text of each trailing cell among the shown rows; 0 when no shown row has the part. */
 export interface BarListColumnChars {
   value: number
   secondary: number
-  flag: number
 }
 
 export interface BarListModelOptions {
@@ -156,10 +161,11 @@ export function buildBarListModel(
     sort,
     largest,
     columnChars: columnChars(modelRows, { formatValue, formatSecondary }),
+    flaggedCount: modelRows.filter(({ row }) => row.flag !== undefined).length,
   }
 }
 
-/** A row's texts after the bar; a part the row lacks is null. */
+/** A row's texts: the cells after the bar and the flag label (tip and name only); an absent part is null. */
 export function rowTexts(
   row: BarListRow,
   { formatValue, formatSecondary }: RowFormatters
@@ -185,7 +191,6 @@ export function columnChars(
   return {
     value: widest(texts.map((t) => t.value)),
     secondary: widest(texts.map((t) => t.secondary)),
-    flag: widest(texts.map((t) => t.flag)),
   }
 }
 
