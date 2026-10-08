@@ -3,6 +3,9 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Input } from './Input'
 import { cn } from '../../../utils/cn'
+import { Surface } from '../surface'
+import { getPressedRecessShadow } from '../../../theme/elevation'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
 
 vi.mock('../../../utils/cn', async (importOriginal) => {
@@ -61,15 +64,52 @@ describe('Input', () => {
     expect(input).toHaveAttribute('readonly')
   })
 
-  it('fills the filled variant with the scrim, not surface-input', () => {
-    vi.mocked(cn).mockClear()
-    render(<Input variant="filled" placeholder="Filled" />)
-    const fieldClass = vi
-      .mocked(cn)
-      .mock.results.map((result) => String(result.value))
-      .find((value) => value.includes('rounded-md'))
-    expect(fieldClass).toContain('bg-scrim-subtle')
-    expect(fieldClass).not.toContain('bg-surface-input')
+  describe('filled variant', () => {
+    it('fills the field with background-base on every plane, not the scrim or surface-input', () => {
+      vi.mocked(cn).mockClear()
+      render(<Input variant="filled" placeholder="Filled" />)
+      const fieldClass = vi
+        .mocked(cn)
+        .mock.results.map((result) => String(result.value))
+        .find((value) => value.includes('rounded-md'))
+      expect(fieldClass).toContain('bg-background-base')
+      expect(fieldClass).not.toContain('bg-scrim-subtle')
+      expect(fieldClass).not.toContain('bg-surface-input')
+    })
+
+    it.each(['dark', 'light'] as const)(
+      'cuts the field in with the inset-well recess (%s)',
+      (mode) => {
+        render(
+          <Surface theme={mode}>
+            <Input variant="filled" placeholder="Filled" />
+          </Surface>
+        )
+        const row = screen.getByPlaceholderText('Filled').parentElement as HTMLElement
+        const { boxShadow } = getPressedRecessShadow(
+          getSemanticColors(mode)['background-base'],
+          mode
+        ) as { boxShadow: string }
+        expect(boxShadow).toContain('inset')
+        expect(row.style.boxShadow).toBe(boxShadow)
+      }
+    )
+
+    it('drops the recess while focused, so the focus border reads alone', () => {
+      render(<Input variant="filled" placeholder="Filled" />)
+      const input = screen.getByPlaceholderText('Filled')
+      fireEvent.focus(input)
+      expect((input.parentElement as HTMLElement).style.boxShadow).toBe('')
+      fireEvent.blur(input)
+      expect((input.parentElement as HTMLElement).style.boxShadow).toContain('inset')
+    })
+
+    it('leaves the outline variant flat', () => {
+      render(<Input placeholder="Outline" />)
+      expect(
+        (screen.getByPlaceholderText('Outline').parentElement as HTMLElement).style.boxShadow
+      ).toBe('')
+    })
   })
 
   describe('accessibility', () => {

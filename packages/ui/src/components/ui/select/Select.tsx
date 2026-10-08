@@ -1,6 +1,9 @@
 import { useState, createContext, useContext } from 'react'
 import { View, Text, Pressable, ScrollView, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { getPressedRecessShadow } from '../../../theme/elevation'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
+import { useSurfaceMode } from '../surface'
 import { SelectPopover } from './SelectPopover'
 import { hasSelection, isValueSelected, selectDisplayLabel, toggleValue } from './selectModel'
 
@@ -62,6 +65,15 @@ export interface SelectProps<T = string> extends ViewProps {
 }
 
 /**
+ * The inset-well recess of the filled trigger, matching the filled Input: one fill on every
+ * plane in the well. Web only: native keeps the flat `background-base` fill.
+ */
+function triggerWell(variant: 'default' | 'filled', mode: ThemeMode) {
+  if (variant !== 'filled') return undefined
+  return getPressedRecessShadow(getSemanticColors(mode)['background-base'], mode)
+}
+
+/**
  * Select component for single or multi-selection.
  *
  * @example
@@ -99,6 +111,7 @@ export function Select<T extends string = string>({
   ...props
 }: SelectProps<T>) {
   const [isOpen, setIsOpen] = useState(false)
+  const well = triggerWell(variant, useSurfaceMode())
 
   const selection = { isMulti, value, values }
 
@@ -135,9 +148,10 @@ export function Select<T extends string = string>({
           accessibilityLabel={accessibilityLabel}
           aria-expanded={isOpen}
           accessibilityState={{ expanded: isOpen, disabled: isDisabled }}
+          style={well}
           className={cn(
             'flex-row items-center justify-between px-4 py-2.5 rounded-md border',
-            variant === 'filled' ? 'bg-scrim-subtle' : 'bg-surface-base',
+            variant === 'filled' ? 'bg-background-base' : 'bg-surface-base',
             isInvalid
               ? 'border-border-input-error'
               : variant === 'filled'

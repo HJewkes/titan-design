@@ -1,6 +1,9 @@
 import React, { forwardRef, useState } from 'react'
 import { TextInput, View, Text, Pressable, type TextInputProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { getPressedRecessShadow } from '../../../theme/elevation'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
+import { useSurfaceMode } from '../surface'
 
 export type InputSize = 'sm' | 'md' | 'lg'
 export type InputVariant = 'outline' | 'filled' | 'underline'
@@ -62,8 +65,10 @@ const variantStyles: Record<
     focus: 'border-border-input-focus',
     error: 'border-border-input-error',
   },
+  // One fill on every plane (`background-base`, the plane below `surface-base`), cut in by the
+  // inset-well recess on web; the focus ring replaces the well while the field is focused.
   filled: {
-    base: 'border border-transparent rounded-md bg-scrim-subtle',
+    base: 'border border-transparent rounded-md bg-background-base',
     hover: 'web:hover:border-border-input-hover',
     focus: 'border-border-input-focus bg-transparent',
     error: 'border-border-input-error',
@@ -74,6 +79,15 @@ const variantStyles: Record<
     focus: 'border-border-input-focus',
     error: 'border-border-input-error',
   },
+}
+
+/**
+ * The inset-well recess of the filled field, dropped while focused so the focus border reads
+ * alone. Web only: native keeps the flat `background-base` fill.
+ */
+function fieldWell(variant: InputVariant, isFocused: boolean, mode: ThemeMode) {
+  if (variant !== 'filled' || isFocused) return undefined
+  return getPressedRecessShadow(getSemanticColors(mode)['background-base'], mode)
 }
 
 /**
@@ -117,6 +131,7 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
   ref
 ) {
   const [isFocused, setIsFocused] = useState(false)
+  const well = fieldWell(variant, isFocused, useSurfaceMode())
 
   const handleFocus = (e: TextInputFocusEvent) => {
     setIsFocused(true)
@@ -141,6 +156,7 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
       )}
 
       <View
+        style={well}
         className={cn(
           'flex-row transition-colors duration-150',
           multiline ? 'items-start' : 'items-center',

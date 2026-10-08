@@ -3,6 +3,8 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Select } from './Select'
 import { cn } from '../../../utils/cn'
+import { getPressedRecessShadow } from '../../../theme/elevation'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
 vi.mock('../../../utils/cn', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../../../utils/cn')>()
@@ -151,15 +153,26 @@ describe('Select', () => {
       expect(screen.getByRole('combobox')).toBeInTheDocument()
     })
 
-    it('keeps the scrim fill on the filled trigger', () => {
+    it('fills the filled trigger with background-base in the inset well, like the filled Input', () => {
       vi.mocked(cn).mockClear()
       render(<Select options={defaultOptions} variant="filled" />)
       const triggerClass = vi
         .mocked(cn)
         .mock.results.map((result) => String(result.value))
         .find((value) => value.includes('justify-between'))
-      expect(triggerClass).toContain('bg-scrim-subtle')
+      expect(triggerClass).toContain('bg-background-base')
+      expect(triggerClass).not.toContain('bg-scrim-subtle')
       expect(triggerClass).not.toContain('bg-surface-input')
+      const { boxShadow } = getPressedRecessShadow(
+        getSemanticColors('dark')['background-base'],
+        'dark'
+      ) as { boxShadow: string }
+      expect(screen.getByRole('combobox').style.boxShadow).toBe(boxShadow)
+    })
+
+    it('keeps the default trigger flat', () => {
+      render(<Select options={defaultOptions} />)
+      expect(screen.getByRole('combobox').style.boxShadow).toBe('')
     })
 
     it('supports selection in filled variant', () => {
