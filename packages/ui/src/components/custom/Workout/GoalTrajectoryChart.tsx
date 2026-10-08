@@ -246,6 +246,7 @@ export function GoalTrajectoryChart({
         width={width}
         height={height}
         metricLabel={metricLabel}
+        status={status}
         className={className}
         viewProps={props}
       />
