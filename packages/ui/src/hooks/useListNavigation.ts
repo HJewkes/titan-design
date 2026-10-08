@@ -41,13 +41,29 @@ function focusNode(node: unknown) {
   ;(node as { focus?: () => void } | undefined)?.focus?.()
 }
 
+function containsFocus(node: unknown): boolean {
+  if (typeof document === 'undefined') return false
+  const contains = (node as { contains?: (other: unknown) => boolean } | undefined)?.contains
+  return contains?.call(node, document.activeElement) ?? false
+}
+
+/**
+ * Follows `activeIndex` with DOM focus only when the list's own key handler asked for
+ * that index or focus is already on an item, so a host that changes the selection or
+ * reorders the list never pulls focus from elsewhere. Returns the key handler's marker.
+ */
 function useRovingFocus(isRoving: boolean, activeIndex: number, nodes: Map<number, unknown>) {
   const previous = useRef(activeIndex)
+  const keyedIndexRef = useRef<number | null>(null)
   useEffect(() => {
     if (previous.current === activeIndex) return
     previous.current = activeIndex
-    if (isRoving) focusNode(nodes.get(activeIndex))
+    const isKeyed = keyedIndexRef.current === activeIndex
+    keyedIndexRef.current = null
+    if (!isRoving) return
+    if (isKeyed || [...nodes.values()].some(containsFocus)) focusNode(nodes.get(activeIndex))
   }, [isRoving, activeIndex, nodes])
+  return keyedIndexRef
 }
 
 function useTypeahead(getLabel: ListNavigationOptions['getLabel']) {
@@ -73,7 +89,7 @@ export function useListNavigation(options: ListNavigationOptions): ListNavigatio
   const loop = options.loop ?? true
   const [nodes] = useState(() => new Map<number, unknown>())
   const pushTypeahead = useTypeahead(getLabel)
-  useRovingFocus(focusMode === 'roving', activeIndex, nodes)
+  const keyedIndexRef = useRovingFocus(focusMode === 'roving', activeIndex, nodes)
 
   const onKeyDown = useCallback(
     (event: ListNavigationKeyEvent) => {
@@ -96,9 +112,20 @@ export function useListNavigation(options: ListNavigationOptions): ListNavigatio
               isDisabled,
             })
           : step
-      if (target !== null && target !== activeIndex) onActiveIndexChange(target)
+      if (target === null || target === activeIndex) return
+      keyedIndexRef.current = target
+      onActiveIndexChange(target)
     },
-    [activeIndex, count, isDisabled, loop, getLabel, pushTypeahead, onActiveIndexChange]
+    [
+      activeIndex,
+      count,
+      isDisabled,
+      loop,
+      getLabel,
+      pushTypeahead,
+      onActiveIndexChange,
+      keyedIndexRef,
+    ]
   )
 
   const tabStop =

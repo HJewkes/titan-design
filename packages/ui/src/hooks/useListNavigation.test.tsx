@@ -36,6 +36,24 @@ function Harness({ initialIndex = 0, onActiveIndexChange, ...options }: HarnessP
   )
 }
 
+function HostDriven({ activeIndex }: { activeIndex: number }) {
+  const { getItemProps } = useListNavigation({
+    focusMode: 'roving',
+    count: LABELS.length,
+    activeIndex,
+    onActiveIndexChange: () => {},
+  })
+  return (
+    <View role="menu">
+      {LABELS.map((label, index) => (
+        <Pressable key={label} role="menuitem" {...getItemProps(index)}>
+          <Text>{label}</Text>
+        </Pressable>
+      ))}
+    </View>
+  )
+}
+
 const items = () => screen.getAllByRole('menuitem')
 const tabStops = () => items().filter((item) => item.getAttribute('tabindex') === '0')
 
@@ -66,6 +84,31 @@ describe('useListNavigation, roving', () => {
     render(<Harness initialIndex={1} />)
 
     expect(document.body).toHaveFocus()
+  })
+
+  it('leaves focus outside the list when the host changes the active index', () => {
+    const list = (activeIndex: number) => (
+      <>
+        <Pressable testID="outside" />
+        <HostDriven activeIndex={activeIndex} />
+      </>
+    )
+    const { rerender } = render(list(0))
+    const outside = screen.getByTestId('outside')
+    act(() => outside.focus())
+
+    rerender(list(2))
+
+    expect(outside).toHaveFocus()
+  })
+
+  it('follows a host change of the active index while focus is on an item', () => {
+    const { rerender } = render(<HostDriven activeIndex={0} />)
+    act(() => items()[0].focus())
+
+    rerender(<HostDriven activeIndex={2} />)
+
+    expect(items()[2]).toHaveFocus()
   })
 
   it('wraps from the last item to the first', () => {

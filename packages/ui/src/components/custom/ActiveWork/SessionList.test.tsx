@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { TextInput } from 'react-native'
 import { describe, it, expect, vi } from 'vitest'
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
@@ -177,6 +178,25 @@ describe('SessionList keyboard', () => {
     pressOnFocused('ArrowUp')
     expect(onSelect).not.toHaveBeenCalled()
     expect(options()[0]).toHaveFocus()
+  })
+
+  it('leaves focus outside the list when the host changes the selection or order', () => {
+    const [first, second, ...rest] = SESSION_FIXTURE
+    const listWith = (sessions: typeof SESSION_FIXTURE, selectedId: string) => (
+      <>
+        <TextInput accessibilityLabel="Notes" />
+        <SessionList sessions={sessions} now={SESSION_NOW} selectedId={selectedId} />
+      </>
+    )
+    const { rerender } = render(listWith([second!, ...rest], second!.id))
+    const notes = screen.getByLabelText('Notes')
+    act(() => notes.focus())
+
+    rerender(listWith([second!, ...rest], rest[0]!.id))
+    expect(notes).toHaveFocus()
+
+    rerender(listWith([first!, second!, ...rest], rest[0]!.id))
+    expect(notes).toHaveFocus()
   })
 
   it('has no a11y violations after keyboard selection', async () => {
