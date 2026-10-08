@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
 
+import { STRESS_STRINGS } from '../../../test/fixtures/stress'
+import { STATUS_COLLAPSE_WIDTH } from './GoalCard'
 import { GoalLiftCard } from './GoalLiftCard'
 import { Surface } from '../../ui/surface'
 
@@ -76,13 +78,17 @@ const meta: Meta<typeof GoalLiftCard> = {
     stretch: { control: 'number' },
   },
   decorators: [
-    (Story) => (
-      <Surface level="base" className="p-gutter-md">
-        <View style={{ width: 459 }}>
-          <Story />
-        </View>
-      </Surface>
-    ),
+    // The width matrix sets each frame's width; a cage here would pin every frame to 459px.
+    (Story, { parameters }) =>
+      parameters.widthMatrix ? (
+        <Story />
+      ) : (
+        <Surface level="base" className="p-gutter-md">
+          <View style={{ width: 459 }}>
+            <Story />
+          </View>
+        </Surface>
+      ),
   ],
 }
 export default meta
@@ -93,19 +99,8 @@ type Story = StoryObj<typeof GoalLiftCard>
 export const Default: Story = {}
 
 /**
- * A name long enough to actually wrap in the narrow cell.
- *
- * "ROMANIAN DEADLIFT" was here first and did NOT wrap: it measures ~147.6px
- * against a ~152px content width, so it rendered on one line while the caption
- * claimed otherwise. Measured in the browser, not estimated — this one renders
- * 156px wide and 39px tall against a 19.5px line-height, i.e. exactly two
- * lines. If you swap it, measure the replacement the same way.
- */
-const WRAPPING_NAME = 'SINGLE-ARM DUMBBELL ROW'
-
-/**
- * The widths that decide it. 459px is a 4-up cell at 1920, 200px is where the
- * title wraps and the status keeps its light.
+ * The card in every width-matrix frame, one pixel either side of
+ * `STATUS_COLLAPSE_WIDTH`, with the S-3 stress name so the title wrap shows.
  *
  * The wrap is verified HERE, in the browser, not in a unit test: jsdom has no
  * layout engine, so every `getBoundingClientRect` is zero and a rendered line
@@ -113,23 +108,17 @@ const WRAPPING_NAME = 'SINGLE-ARM DUMBBELL ROW'
  * the name carries no line clamp — and this story is what shows the result.
  */
 export const Widths: Story = {
-  parameters: { layout: 'fullscreen' },
+  tags: ['width-matrix'],
+  args: { name: STRESS_STRINGS.S3 },
+  argTypes: { statusForm: { control: false } },
+  parameters: { layout: 'fullscreen', widthMatrix: { thresholds: [STATUS_COLLAPSE_WIDTH] } },
   decorators: [
     (Story) => (
-      <Surface level="base" style={{ minHeight: '100%' }} className="p-gutter-md">
+      <Surface level="base">
         <Story />
       </Surface>
     ),
   ],
-  render: (args) => (
-    <View style={{ flexDirection: 'row', alignItems: 'flex-start' }} className="gap-section-sm">
-      {[459, 616, 200].map((width) => (
-        <View key={width} style={{ width }}>
-          <GoalLiftCard {...args} name={width === 200 ? WRAPPING_NAME : args.name} />
-        </View>
-      ))}
-    </View>
-  ),
 }
 
 /** Four lifts at the wall's 4-up cell width, each with its own history and gap. */

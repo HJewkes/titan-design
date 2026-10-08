@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
+import { useMeasuredWidth } from '../../../hooks/useMeasuredWidth'
 import { Surface } from '../../ui/surface'
 import { Typography } from '../../ui/typography'
 import {
@@ -8,6 +9,7 @@ import {
   type GoalTrajectoryChartExplorationProps,
 } from './GoalTrajectoryChart'
 import { calibratingGoal } from './goalTrajectoryCalibratingFixture'
+import { WALL_BREAKPOINT } from './goalTrajectoryChartModel'
 import type { GoalActualPoint, GoalExpectedPoint, GoalTrajectoryWeek } from './GoalTrajectoryChart'
 
 /** Six-week bench block: +5 lb/wk committed edge, the RP ramp as the stretch edge. */
@@ -142,13 +144,17 @@ const meta: Meta<GoalTrajectoryChartExplorationProps> = {
   render: renderWithTreatment,
   // The plot plane sits one step below the card it is drawn on, as on the page.
   decorators: [
-    (Story) => (
-      <Surface level="base" className="p-gutter-md">
-        <Surface raise={1} className="p-inset-md self-start">
-          <Story />
+    // The width matrix sets each frame's width; padding here would shift every frame off its threshold.
+    (Story, { parameters }) =>
+      parameters.widthMatrix ? (
+        <Story />
+      ) : (
+        <Surface level="base" className="p-gutter-md">
+          <Surface raise={1} className="p-inset-md self-start">
+            <Story />
+          </Surface>
         </Surface>
-      </Surface>
-    ),
+      ),
   ],
 }
 
@@ -376,6 +382,33 @@ export const WallMotion: Story = {
 /** The same noisy block at phone width: 2px line, three gridlines. */
 export const PhoneMotion: Story = {
   args: { ...WallMotion.args, ...PHONE } as Story['args'],
+}
+
+/**
+ * The final frame in every width-matrix frame, one pixel either side of
+ * `WALL_BREAKPOINT`. The chart takes its width from the frame, so the `width`
+ * and `height` controls are off; jsdom measures nothing and falls back to `args.width`.
+ */
+export const Widths: Story = {
+  tags: ['width-matrix'],
+  args: { ...NoMotion.args },
+  argTypes: { width: { control: false }, height: { control: false } },
+  parameters: { layout: 'fullscreen', widthMatrix: { thresholds: [WALL_BREAKPOINT] } },
+  decorators: [
+    (Story) => (
+      <Surface raise={1}>
+        <Story />
+      </Surface>
+    ),
+  ],
+  render: function Render(args) {
+    const measured = useMeasuredWidth()
+    const width = measured.width ?? args.width
+    const height = width >= WALL_BREAKPOINT ? WALL.height : PHONE.height
+    return (
+      <View onLayout={measured.onLayout}>{renderWithTreatment({ ...args, width, height })}</View>
+    )
+  },
 }
 
 /*

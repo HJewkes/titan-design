@@ -10,7 +10,11 @@ import { BodyweightGoalCard } from './BodyweightGoalCard'
 import { SessionsGoalCard } from './SessionsGoalCard'
 import { PRIMARY_GOAL_SCENARIOS as P } from './primaryGoal-fixture'
 import { WHOLE_BODY_SESSIONS as S, WHOLE_BODY_WEIGHT as W } from './wholeBody-fixture'
-import type { WholeBodySessionsRow, WholeBodyWeightRow } from './wholeBody'
+import {
+  WHOLE_BODY_WALL_MIN_WIDTH,
+  type WholeBodySessionsRow,
+  type WholeBodyWeightRow,
+} from './wholeBody'
 
 /** The compact grid cell's chart data, shared by the three per-lift cards. */
 const TREND: GoalCardProps['trend'] = {
@@ -174,3 +178,13 @@ export const HoldAndNewWindow: Story = {
 
 /** Only a sessions goal: one card, no empty half. */
 export const SessionsOnly: Story = { args: { bodyweight: null } }
+
+/**
+ * The WHOLE BODY section in every width-matrix frame, one pixel either side of
+ * `WHOLE_BODY_WALL_MIN_WIDTH`, where each card moves from its phone to its wall scale.
+ */
+export const Widths: Story = {
+  tags: ['width-matrix'],
+  render: renderSection,
+  parameters: { layout: 'fullscreen', widthMatrix: { thresholds: [WHOLE_BODY_WALL_MIN_WIDTH] } },
+}
