@@ -220,7 +220,7 @@ export function LabelWithHelp({
     <View className={cn('flex-row items-center gap-1', className)} {...props}>
       <Text className="text-sm font-medium text-text-primary">
         {label}
-        {isRequired && <Text className="text-status-error ml-0.5">*</Text>}
+        {isRequired && <Text className="text-text-error ml-0.5">*</Text>}
       </Text>
       <HelpTip content={helpContent} size={helpSize} />
     </View>

@@ -22,11 +22,11 @@ describe('silver/red scheme', () => {
     })
   })
 
-  it('gives light the mirrored steps: a darker grey, the mid red for near, the deep red for over', () => {
+  it('gives light the mirrored steps: a darker grey, red[500] for near, red[700] for over', () => {
     expect(silverRed('light')).toEqual({
       neutral: greyRamp[600],
-      near: primitiveRamps.red[600],
-      over: primitiveRamps.red[800],
+      near: primitiveRamps.red[500],
+      over: primitiveRamps.red[700],
     })
   })
 

@@ -5,7 +5,7 @@ import { compositeOver, contrast } from '../../../../theme/color-checks'
 import { getSemanticColors } from '../../../../theme/tokens/semantic'
 import { capturedByNode } from '../../../../test/classname-capture'
 import { Surface } from '../../surface'
-import { silverRed } from '../kit/silverRed'
+import { silverRed, type SilverRedScheme } from '../kit/silverRed'
 import { BarList, type BarListValueFormatter } from './BarList'
 import storyMeta from './BarList.stories'
 import { barListFixtures, defaultFixture, veryLargeFixture, type BarListFixture } from './fixtures'
@@ -672,16 +672,36 @@ describe('BarList', () => {
       }
     )
 
+    // The light near red (red[500], the owner's console round 6 pick) is the one fill under 3:1
+    // against the track; it still clears 3:1 against the plane. Removing it from this list fails
+    // the suite until the measurement actually passes.
+    const trackFloorExceptions: Record<'dark' | 'light', readonly (keyof SilverRedScheme)[]> = {
+      dark: [],
+      light: ['near'],
+    }
+
     it.each(['dark', 'light'] as const)(
       'keeps every fill at 3:1 or more against the track on the %s base surface',
       (mode) => {
         const colors = getSemanticColors(mode)
         const track = compositeOver(colors['hairline-default'], colors['surface-base'])
-        for (const fill of Object.values(silverRed(mode))) {
-          expect(contrast(fill, track)).toBeGreaterThanOrEqual(3)
+        const scheme = silverRed(mode)
+        for (const tone of Object.keys(scheme) as (keyof SilverRedScheme)[]) {
+          const against = trackFloorExceptions[mode].includes(tone) ? colors['surface-base'] : track
+          expect(contrast(scheme[tone], against)).toBeGreaterThanOrEqual(3)
         }
       }
     )
+
+    it('lists a track-floor exception only while the fill still misses 3:1', () => {
+      for (const mode of ['dark', 'light'] as const) {
+        const colors = getSemanticColors(mode)
+        const track = compositeOver(colors['hairline-default'], colors['surface-base'])
+        for (const tone of trackFloorExceptions[mode]) {
+          expect(contrast(silverRed(mode)[tone], track)).toBeLessThan(3)
+        }
+      }
+    })
 
     it('paints silver outside any Surface, the dark default', () => {
       renderFixture(defaultFixture)
