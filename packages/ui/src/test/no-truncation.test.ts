@@ -224,6 +224,14 @@ describe('no-truncation under the real config', { timeout: 30_000 }, () => {
 })
 
 describe('no-truncation baseline and allowlist', () => {
+  const goodEntry = {
+    file: 'src/components/shell/X.tsx',
+    value: 'numberOfLines',
+    kind: 'path',
+    affordance: 'tooltip',
+    evidence: 'src/components/shell/X.tsx:12',
+  }
+
   it('names only files that exist', () => {
     const missing = Object.keys(baseline).filter((file) => !fs.existsSync(path.join(uiRoot, file)))
     expect(missing, 'regenerate the baseline after deleting a file').toEqual([])
@@ -234,17 +242,26 @@ describe('no-truncation baseline and allowlist', () => {
   })
 
   it('rejects an allowlist entry with no affordance', () => {
-    const entry = { file: 'src/components/shell/X.tsx', value: 'numberOfLines', kind: 'path' }
+    const entry = { ...goodEntry, affordance: undefined }
     expect(() => parseAllowlist([entry])).toThrow(/affordance/)
   })
 
+  it('rejects an allowlist entry with no kind', () => {
+    const entry = { ...goodEntry, kind: undefined }
+    expect(() => parseAllowlist([entry])).toThrow(/kind/)
+  })
+
+  it('rejects an allowlist entry whose kind is not sanctioned', () => {
+    expect(() => parseAllowlist([{ ...goodEntry, kind: 'title' }])).toThrow(/kind/)
+  })
+
+  it('rejects an allowlist entry with no file:line evidence', () => {
+    expect(() => parseAllowlist([{ ...goodEntry, evidence: undefined }])).toThrow(/evidence/)
+    expect(() => parseAllowlist([{ ...goodEntry, evidence: 'X.tsx' }])).toThrow(/evidence/)
+  })
+
   it('counts allowlist entries per file and value', () => {
-    const entry = {
-      file: 'src/components/shell/X.tsx',
-      value: 'numberOfLines',
-      kind: 'path',
-      affordance: 'tooltip',
-    }
+    const entry = goodEntry
     expect(parseAllowlist([entry, entry])).toEqual({
       'src/components/shell/X.tsx': { numberOfLines: 2 },
     })
