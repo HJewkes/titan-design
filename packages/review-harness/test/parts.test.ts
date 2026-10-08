@@ -9,7 +9,7 @@ import { NO_CURRENT } from '../page/SectionParts.tsx'
 import { loadRound } from '../src/review.ts'
 import { runCli, type CliIo } from '../src/run.ts'
 import { roundLayout } from '../src/sections.ts'
-import { ManifestSchema, manifestJsonSchema, type ManifestInput } from '../src/schema.ts'
+import { ManifestSchema, manifestJsonSchema, type ManifestInput } from '@titan-design/review-schema'
 import { SHA, noTreeGit } from './fixtures.ts'
 
 type Section = NonNullable<ManifestInput['sections']>[number]

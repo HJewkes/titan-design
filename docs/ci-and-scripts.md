@@ -15,6 +15,13 @@ root `package.json`, `turbo.json`, `packages/ui/package.json`, `packages/ui/vite
 | `contrast` | Playwright container, Node 22; a three-shard matrix (`contrast 1/3` to `3/3`)      | axe `color-contrast` on every story in both themes (`test:visual:contrast --shard=i/3`), path-gated; each shard uploads `contrast-report-<i>` (see below) |
 | `check`    | Playwright container, Node 22; always runs; needs `build`, `visual` and `contrast` | all-green over `needs`, then audit, stories axe and play functions (see below)                                                                            |
 
+`react-next.yml` is a separate, advisory workflow on the same triggers. It is not in `check.needs` and
+is never a required check, so it never blocks a merge. Advisory: green check, result in the summary and a warning annotation (the test step is `continue-on-error`, then a summary table of passed/failed tests and files plus the step outcome. The `::warning::` fires whenever the unit step failed, keyed on its outcome rather than the JSON counts, so type-check errors and files that fail to load are never silent).
+
+| Job                | Runs on | What it runs                                                                                                                                                                                          |
+| ------------------ | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `react-19-rnw-021` | Node 22 | Installs, then overrides `react`, `react-dom` and `react-native-web` to 19 / 19 / 0.21 in the job's checkout (nothing committed), and runs the `threads`, `local-time` and `types` unit projects once |
+
 ### `build` steps
 
 | Step          | Command                                                    | Notes                                                                                                                                   |
@@ -128,6 +135,8 @@ does not declare.
 
 `arch:barrel-hash` is the fix the `arch:check` freshness test asks for after a component barrel
 changes. It rewrites only `componentBarrelHash` in `packages/ui/src/arch/arch-graph.json`.
+`arch:graph -- --add <file>` is the fix the `arch-graph.coverage.test.ts` test asks for when a barrel
+exports a component with no graph node: it writes that node and leaves the others as committed.
 
 CI runs `arch:check` (inside `verify:unit`). It does not run `catalog`, `arch:graph`, `arch:barrel-hash`,
 `review`, `audit:stories` or `contrast:baseline`. `size` and `check:cycles` have no root script or Turbo task; CI calls them with
@@ -151,3 +160,18 @@ after a build. Each entry is a brotli size limit for one built file: the ESM ent
 | A limit is the measured size plus 5%, rounded up to the next whole kB |
 | A PR that shrinks an entry by more than 10% lowers its limit          |
 | A PR that raises a limit states why in its body                       |
+
+## Releases
+
+Each package publishes from CI on its own tag, with npm OIDC provenance. Never run `npm publish`
+locally once a package has a Trusted Publisher, and push the release commit to `main` before the tag.
+
+| Tag                | Workflow                    | Publishes                     | Version check                                                            |
+| ------------------ | --------------------------- | ----------------------------- | ------------------------------------------------------------------------ |
+| `v*`               | `publish.yml`               | `@titan-design/react-ui`      | tag minus `v` equals `packages/ui/package.json`                          |
+| `review-schema-v*` | `publish-review-schema.yml` | `@titan-design/review-schema` | tag minus `review-schema-v` equals `packages/review-schema/package.json` |
+
+A tag filter matches the whole tag name, so `v*` never matches `review-schema-v0.1.0` and
+`review-schema-v*` never matches `v1.2.3`: one tag publishes one package. Release a new
+review-schema version by bumping `packages/review-schema/package.json` on `main`, then
+`git tag review-schema-v<version> <sha> && git push origin review-schema-v<version>`.
