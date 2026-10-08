@@ -12,6 +12,7 @@ import {
   ModalFooter,
 } from './Modal'
 import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
+import { dividerClasses } from '../../../test/divider-rule'
 
 function renderModal(props: Partial<React.ComponentProps<typeof Modal>> = {}) {
   return render(
@@ -204,16 +205,27 @@ describe('Modal geometry resolves to the spacing tokens', () => {
   const source = siblingSource(import.meta.url, 'Modal.tsx')
 
   it.each([
-    ['the header', 'px-inset-xl py-inset-lg border-b border-hairline', ['24px', '16px']],
+    ['the header', 'justify-between px-inset-xl py-inset-lg', ['24px', '16px']],
     ['the body', 'px-inset-xl py-inset-lg', ['24px', '16px']],
-    [
-      'the footer',
-      'gap-2 px-inset-xl py-inset-lg border-t border-hairline',
-      ['8px', '24px', '16px'],
-    ],
+    ['the footer', 'gap-2 px-inset-xl py-inset-lg', ['8px', '24px', '16px']],
   ] as const)('%s ships `%s`', (_label, classes, pixels) => {
     expect(source).toContain(classes)
     const spacing = classes.split(' ').filter((c) => resolveAll([c])[0] !== undefined)
     expect(resolveAll(spacing)).toEqual([...pixels])
+  })
+})
+
+describe('Modal rules', () => {
+  it('draws a Divider under the header and over the footer', () => {
+    renderModal({ isOpen: true })
+    const header = screen.getByText('Test Modal').parentElement
+    const footer = screen.getByText('Cancel').parentElement
+
+    expect(dividerClasses(header?.nextElementSibling)).toEqual(['bg-hairline', 'h-px', 'w-full'])
+    expect(dividerClasses(footer?.previousElementSibling)).toEqual([
+      'bg-hairline',
+      'h-px',
+      'w-full',
+    ])
   })
 })

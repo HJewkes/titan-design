@@ -1,6 +1,7 @@
 import React, { useId } from 'react'
 import { View, Text, Pressable, Modal, ScrollView, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { Divider } from '../divider'
 import { Surface } from '../surface'
 
 export type DrawerPlacement = 'left' | 'right' | 'top' | 'bottom'
@@ -136,7 +137,7 @@ export function Drawer({
         >
           {/* Header */}
           {(title || showCloseButton) && (
-            <View className="flex-row items-center justify-between px-inset-xl py-inset-lg border-b border-hairline">
+            <View className="flex-row items-center justify-between px-inset-xl py-inset-lg">
               {!!title && (
                 <Text
                   id={titleId}
@@ -158,6 +159,7 @@ export function Drawer({
               )}
             </View>
           )}
+          {(title || showCloseButton) && <Divider />}
 
           {/* Content */}
           <View className="flex-1">{children}</View>
@@ -178,9 +180,12 @@ export interface DrawerHeaderProps extends ViewProps {
  */
 export function DrawerHeader({ className, children, ...props }: DrawerHeaderProps) {
   return (
-    <View className={cn('px-inset-xl py-inset-lg border-b border-hairline', className)} {...props}>
-      {children}
-    </View>
+    <>
+      <View className={cn('px-inset-xl py-inset-lg', className)} {...props}>
+        {children}
+      </View>
+      <Divider />
+    </>
   )
 }
 
@@ -222,15 +227,14 @@ export interface DrawerFooterProps extends ViewProps {
  */
 export function DrawerFooter({ className, children, ...props }: DrawerFooterProps) {
   return (
-    <View
-      className={cn(
-        'flex-row items-center justify-end gap-3',
-        'px-inset-xl py-inset-lg border-t border-hairline',
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </View>
+    <>
+      <Divider />
+      <View
+        className={cn('flex-row items-center justify-end gap-3 px-inset-xl py-inset-lg', className)}
+        {...props}
+      >
+        {children}
+      </View>
+    </>
   )
 }
