@@ -5344,7 +5344,7 @@ export const primitiveBorderRadius: {
     readonly md: "8px";
     readonly lg: "12px";
     readonly xl: "16px";
-    readonly '2xl': "1rem";
+    readonly '2xl': "24px";
     readonly full: "9999px";
 };
 
