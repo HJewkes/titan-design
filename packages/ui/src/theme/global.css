@@ -309,7 +309,10 @@
     --color-scrim-subtle: rgba(0, 0, 0, 0.30);
     --color-scrim-default: rgba(0, 0, 0, 0.50);
 
-    /* Control-face and data-fill labels (VW-82). */
+    /* Control faces (TD-264), control-face and data-fill labels (VW-82). */
+    --color-control-face: #424140;
+    --color-control-face-active: #2C2A28;
+    --color-control-face-disabled: rgba(255, 255, 255, 0.12);
     --color-on-control-idle: #D1D1D1;
     --color-on-control-active: #FFFFFF;
     --color-on-data-strong: #0B0B0B;
@@ -550,14 +553,18 @@
     --color-hairline-default: rgba(0, 0, 0, 0.15);
     --color-hairline-strong: rgba(0, 0, 0, 0.22);
 
-    /* Scrims and control/data labels (VW-82) — identical to the dark block on
+    /* Scrims and the data label (VW-82) — identical to the dark block on
        purpose; see tokens/semantic.ts. */
     --color-scrim-press: rgba(0, 0, 0, 0.10);
     --color-scrim-press-strong: rgba(0, 0, 0, 0.20);
     --color-scrim-subtle: rgba(0, 0, 0, 0.30);
     --color-scrim-default: rgba(0, 0, 0, 0.50);
-    --color-on-control-idle: #D4D1CE;
-    --color-on-control-active: #FFFFFF;
+    /* Control faces and their labels flip with the theme (TD-264). */
+    --color-control-face: #FFFFFF;
+    --color-control-face-active: #D4D1CE;
+    --color-control-face-disabled: rgba(0, 0, 0, 0.06);
+    --color-on-control-idle: #5A5958;
+    --color-on-control-active: #1C1916;
     --color-on-data-strong: #0B0B0B;
 
     --color-interactive-hover: rgba(55, 65, 81, 0.04);

@@ -2,6 +2,22 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { ToolbarButton, ToolbarButtonGroup } from './ToolbarButton'
+import { Surface } from '../surface'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+
+function faceColor(theme: 'dark' | 'light', isActive?: boolean): string {
+  render(
+    <Surface theme={theme}>
+      <ToolbarButton label="Face" isActive={isActive} />
+    </Surface>
+  )
+  return getComputedStyle(screen.getByRole('button', { name: 'Face' })).backgroundColor
+}
+
+function hexToRgb(hex: string): string {
+  const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16))
+  return `rgb(${r}, ${g}, ${b})`
+}
 
 describe('ToolbarButton', () => {
   it('renders with label', () => {
@@ -98,6 +114,31 @@ describe('ToolbarButton', () => {
     it('renders with default variant', () => {
       render(<ToolbarButton label="Default" variant="default" />)
       expect(screen.getByRole('button', { name: 'Default' })).toBeInTheDocument()
+    })
+  })
+
+  describe('control faces (TD-265)', () => {
+    it('paints the light control-face on a light surface', () => {
+      const light = getSemanticColors('light')['control-face']
+
+      const face = faceColor('light', false)
+
+      expect(face).toBe(hexToRgb(light))
+      expect(light).not.toBe(getSemanticColors('dark')['control-face'])
+    })
+
+    it('paints the light control-face-active when pressed on a light surface', () => {
+      expect(faceColor('light', true)).toBe(
+        hexToRgb(getSemanticColors('light')['control-face-active'])
+      )
+    })
+
+    it('keeps the dark faces it painted before the tokens', () => {
+      expect(faceColor('dark', false)).toBe(hexToRgb('#424140'))
+    })
+
+    it('keeps the dark pressed face it painted before the tokens', () => {
+      expect(faceColor('dark', true)).toBe(hexToRgb('#2C2A28'))
     })
   })
 

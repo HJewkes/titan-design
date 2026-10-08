@@ -97,9 +97,9 @@ const labelsOnOtherFills: ContrastPair[] = [
     floor: AA,
     modes: BOTH,
   })),
-  // ToolbarButton paints its face from the grey ramp in both modes.
-  { fg: 'on-control-idle', bg: 'grey-600', floor: AA, modes: BOTH },
-  { fg: 'on-control-active', bg: 'grey-800', floor: AA, modes: BOTH },
+  // ToolbarButton paints its faces from the control-face tokens (TD-265).
+  { fg: 'on-control-idle', bg: 'control-face', floor: AA, modes: BOTH },
+  { fg: 'on-control-active', bg: 'control-face-active', floor: AA, modes: BOTH },
   // The inverted plane is the primary ink: a tooltip, a neutral pill.
   { fg: 'text-inverse', bg: 'text-primary', floor: AA, modes: BOTH },
   // Treemap falls back to on-data-strong on its categorical tiles.

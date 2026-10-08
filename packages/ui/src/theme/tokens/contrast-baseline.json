@@ -2,7 +2,6 @@
   "dark": [
     "on-brand-primary-subtle on brand-primary-subtle over surface-overlay",
     "on-brand-primary-subtle on brand-primary-subtle over surface-raised",
-    "on-control-idle on grey-600",
     "on-data-strong on dataviz-categorical-6",
     "on-result-degrade on result-degrade",
     "on-result-improve on result-improve",
@@ -25,7 +24,6 @@
   ],
   "light": [
     "on-brand-primary on brand-primary-solid",
-    "on-control-idle on grey-600",
     "on-data-strong on dataviz-categorical-1",
     "on-data-strong on dataviz-categorical-2",
     "on-data-strong on dataviz-categorical-4",

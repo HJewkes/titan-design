@@ -274,6 +274,6 @@
     "file-lines": 228
   },
   "components/ui/toolbar-button/ToolbarButton.tsx#ToolbarButton": {
-    "complexity": 17
+    "complexity": 16
   }
 }

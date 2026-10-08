@@ -12,12 +12,10 @@ import { cn } from '../../../utils/cn'
 import { useHitTarget } from '../../../hooks/useHitTarget'
 import type { HitTargetLimit, HitTargetOutset } from '../../../utils/hit-target'
 import { getHoverColors } from '../../../theme'
-import { greyRamp, primitiveColors } from '../../../theme/tokens/primitives'
-import type { ThemeMode } from '../../../theme/tokens/semantic'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 import { resolveColor } from '../../../theme/resolve-color'
 import { getPressedRecessShadow } from '../../../theme/elevation'
 import { liftStyle } from '../../../theme/lift'
-import { alpha } from '../../../utils/colors'
 import { useSurfaceMode } from '../surface'
 import { ToolbarButtonIcon, ToolbarButtonMenu } from './ToolbarButtonParts'
 
@@ -66,12 +64,6 @@ export interface ToolbarButtonProps extends ViewProps {
   /** Additional className */
   className?: string
 }
-
-// Base button colours.
-const BUTTON_BG = greyRamp[800]
-
-// Calculate hover colors using color math
-const hoverColors = getHoverColors(BUTTON_BG, 'medium')
 
 // Size style maps. Every face is under the 44pt floor, so each carries a hit box (TD-10).
 const sizeStyles: Record<ToolbarButtonSize, string> = {
@@ -176,9 +168,7 @@ export function ToolbarButton({
           )}
           style={[
             variant === 'raised' && raisedStyle({ isDisabled, showActive, isHovered, mode }),
-            variant === 'default' && {
-              backgroundColor: showActive ? BUTTON_BG : greyRamp[600],
-            },
+            variant === 'default' && flatStyle(showActive, mode),
           ]}
         >
           {hitTarget.layerProps && <View {...hitTarget.layerProps} />}
@@ -225,27 +215,41 @@ function raisedStyle(p: {
   isHovered: boolean
   mode: ThemeMode
 }): ViewStyle {
-  if (p.isDisabled) return styles.disabledBg
+  if (p.isDisabled) return disabledStyles[p.mode]
+  const colors = getSemanticColors(p.mode)
+  const hoverColors = getHoverColors(colors['control-face'], 'medium')
   if (p.showActive) {
-    const fill = p.isHovered ? hoverColors.pressed : greyRamp[900]
+    const fill = p.isHovered ? hoverColors.pressed : colors['control-face-active']
     return { backgroundColor: fill, ...getPressedRecessShadow(fill, p.mode) }
   }
+  // The light face is white, which cannot lighten, so its hover darkens instead.
+  const raisedHover = p.mode === 'light' ? hoverColors.pressed : hoverColors.raised
   return {
-    backgroundColor: p.isHovered ? hoverColors.raised : BUTTON_BG,
+    backgroundColor: p.isHovered ? raisedHover : colors['control-face'],
     ...liftStyle(1, p.mode),
   }
 }
 
-// Styles that can't be easily expressed in Tailwind
-const styles = StyleSheet.create({
-  // Disabled - flat gray background, no shadows
-  disabledBg: {
-    backgroundColor: alpha(primitiveColors.white, 0.12),
+// The default variant is flat: the same faces with no lift or recess.
+function flatStyle(showActive: boolean, mode: ThemeMode): ViewStyle {
+  const colors = getSemanticColors(mode)
+  return { backgroundColor: showActive ? colors['control-face-active'] : colors['control-face'] }
+}
+
+// Disabled - flat face per theme, no lift or recess
+function disabledFace(mode: ThemeMode): ViewStyle {
+  return {
+    backgroundColor: getSemanticColors(mode)['control-face-disabled'],
     ...Platform.select({
       web: { boxShadow: 'none' },
       default: { shadowOpacity: 0, elevation: 0 },
     }),
-  },
+  }
+}
+
+const disabledStyles = StyleSheet.create({
+  dark: disabledFace('dark'),
+  light: disabledFace('light'),
 })
 
 export interface ToolbarButtonGroupProps extends ViewProps {

@@ -488,12 +488,6 @@
   "components-molecules-toast--without-icon dark": {
     "#a29f9d|#3f474d": 1
   },
-  "components-molecules-toolbarbutton--variants dark": {
-    "#d1d1d1|#72716f": 1
-  },
-  "components-molecules-toolbarbutton--variants light": {
-    "#d4d1ce|#72716f": 1
-  },
   "components-molecules-tooltip--all-placements light": {
     "#ff7900|#ffffff": 8
   },

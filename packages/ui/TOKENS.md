@@ -59,8 +59,10 @@ and that is as true on a light page as a dark one.
 The `on-*` family is "the label that sits ON this fill". Two members are not fills at all:
 
 - **`on-control-*`** — a toolbar control face is a grey plane, not a brand or status fill. Use
-  `on-control-active` / `on-control-idle` rather than `on-brand-primary`, even though the active
-  value is the same white; the role is what makes it survive a retune.
+  `on-control-active` / `on-control-idle` rather than `on-brand-primary`, even though the dark active
+  value is the same white; the role is what makes it survive a retune. The face itself is
+  `control-face` (idle), `control-face-active` (pressed) and `control-face-disabled`; faces and labels
+  flip together in light mode (TD-264).
 - **`on-data-strong`** — a label on a light categorical data tile. Every `text-*` role is far too
   light to read there.
 
