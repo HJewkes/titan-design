@@ -6513,12 +6513,14 @@ export function SessionListItem(input: SessionListItemProps): react_jsx_runtime.
 // @public (undocumented)
 export interface SessionListItemProps {
     className?: string;
+    focusRef?: (node: unknown) => void;
     now: number;
     // (undocumented)
     onSelect?: () => void;
     selected?: boolean;
     // (undocumented)
     session: SessionSummary;
+    tabIndex?: 0 | -1;
 }
 
 // @public (undocumented)
