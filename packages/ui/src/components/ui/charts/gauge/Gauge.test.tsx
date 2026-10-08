@@ -19,7 +19,7 @@ describe('Gauge', () => {
 
   it('colors the value by the active status band', () => {
     const { rerender } = render(<Gauge value={30} />)
-    expect(screen.getByTestId('gauge-value')).toHaveStyle({ color: '#D14343' })
+    expect(screen.getByTestId('gauge-value')).toHaveStyle({ color: '#E05254' })
     rerender(<Gauge value={70} />)
     expect(screen.getByTestId('gauge-value')).toHaveStyle({ color: '#F9B415' })
     rerender(<Gauge value={90} />)

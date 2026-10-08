@@ -17,7 +17,7 @@ import {
   type Feedback,
   type ManifestInput,
   type Recommendation,
-} from '../src/schema.ts'
+} from '@titan-design/review-schema'
 import { SHA, manifest, validFeedback } from './fixtures.ts'
 
 const rec = (answer: Recommendation['answer'], confidence = 0.8): Recommendation => ({
