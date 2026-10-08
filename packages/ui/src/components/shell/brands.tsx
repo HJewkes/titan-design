@@ -64,3 +64,12 @@ export const brandPresets: Record<BrandKey, BrandPreset> = {
 
 /** Every brand key, in the order the stories present them. */
 export const brandKeys = Object.keys(brandPresets) as BrandKey[]
+
+/**
+ * A registry key or an app's own preset → the preset to render. Every shell
+ * component that takes `brand` resolves it here, so an app with no registry
+ * entry passes its {@link BrandPreset} and gets the same lockup and nav accent.
+ */
+export function resolveBrand(brand: BrandKey | BrandPreset): BrandPreset {
+  return typeof brand === 'string' ? brandPresets[brand] : brand
+}
