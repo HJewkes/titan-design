@@ -135,6 +135,8 @@ does not declare.
 
 `arch:barrel-hash` is the fix the `arch:check` freshness test asks for after a component barrel
 changes. It rewrites only `componentBarrelHash` in `packages/ui/src/arch/arch-graph.json`.
+`arch:graph -- --add <file>` is the fix the `arch-graph.coverage.test.ts` test asks for when a barrel
+exports a component with no graph node: it writes that node and leaves the others as committed.
 
 CI runs `arch:check` (inside `verify:unit`). It does not run `catalog`, `arch:graph`, `arch:barrel-hash`,
 `review`, `audit:stories` or `contrast:baseline`. `size` and `check:cycles` have no root script or Turbo task; CI calls them with

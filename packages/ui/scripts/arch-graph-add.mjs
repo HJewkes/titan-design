@@ -37,7 +37,11 @@ function spliceOne(graph, fresh, file) {
   ]
   const named = graph.components.filter((c) => c.name === node.name)
   const { summary } = graph
-  summary.dead = setMembership(summary.dead, node.name, named.some((c) => c.verdict === 'dead'))
+  summary.dead = setMembership(
+    summary.dead,
+    node.name,
+    named.some((c) => c.verdict === 'dead')
+  )
   summary.deadByAssociation = setMembership(
     summary.deadByAssociation,
     node.name,

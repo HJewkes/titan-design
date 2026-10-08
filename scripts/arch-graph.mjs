@@ -455,7 +455,7 @@ if (ADD.length) {
   fs.writeFileSync(OUT, JSON.stringify(payload, null, 2));
 }
 console.error(
-  `✓ ${comps.length} components, ${edges.length} edges → ${path.relative(ROOT, OUT)}`,
+  `✓ ${comps.length} components, ${edges.length} edges ${ADD.length ? "computed" : `→ ${path.relative(ROOT, OUT)}`}`,
 );
 console.error(
   `  dead-everywhere: ${summary.dead.length}  ·  consumers present: ${
