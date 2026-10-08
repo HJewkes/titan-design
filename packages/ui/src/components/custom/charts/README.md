@@ -100,7 +100,8 @@ differ, so the older chart's choices are not copied by accident.
   width and height with `accessibilityRole="image"`, a sentence
   `accessibilityLabel`, and a `*-empty` testID. `GoalTrajectoryChart` shows it
   when there is neither a band nor an actual, whatever its `status`; the words
-  ("Calibrating — no band yet") and the label are fixed, not taken from `status`.
+  (`<STATUS_LABEL[status]> — no band yet`) and the label
+  (`<STATUS_LABEL[status]>: no band yet.`) are taken from `status`.
 - **The canvas is one accessible image.** Its `accessibilityLabel` is a
   generated summary (metric, latest value, status or trend). Decorative layers
   are hidden from it: `GoalTrajectoryChart`'s `<svg>` is `aria-hidden`, so its

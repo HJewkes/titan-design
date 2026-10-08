@@ -1,5 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { View, Text, Animated, type ViewProps } from 'react-native'
+import { View, Text, type ViewProps } from 'react-native'
 import { Card } from '../../ui/card'
 import { Badge } from '../../ui/badge'
 import type { WeekRowProps } from './WeekRow'
@@ -7,12 +7,7 @@ import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../ui/surface'
 import { getGlowShadow } from '../../../theme/elevation'
 import { alpha } from '../../../utils/colors'
-import {
-  MesoAccentStrip,
-  MesoCardPressRegion,
-  MesoWeekList,
-  useHighlightBorder,
-} from './MesoCard.parts'
+import { MesoAccentStrip, MesoCardPressRegion, MesoWeekList } from './MesoCard.parts'
 
 export interface MesoVolumeHeatmapEntry {
   /** Muscle group identifier (free-form to match plan data). */
@@ -90,8 +85,8 @@ function MesoHeatmapStrip({
 
 /**
  * A mesocycle card with name, goal, split, week range, an optional volume
- * heatmap strip, and an expandable WeekRow list. Highlighting animates the
- * border toward brand-primary with a subtle glow to stay in sync with the
+ * heatmap strip, and an expandable WeekRow list. Highlighting sets a
+ * brand-primary border with a subtle glow to stay in sync with the
  * MesoProgressBar.
  *
  * @example
@@ -127,7 +122,6 @@ export function MesoCard({
   const t = getSemanticColors(useSurfaceMode())
   const brandPrimary = t['brand-primary']
   const borderDefault = t['hairline-default']
-  const borderColor = useHighlightBorder(highlighted, borderDefault, brandPrimary)
 
   const header = (
     <View className="px-3.5 pt-inset-md pb-2.5" testID="meso-card-body">
@@ -166,44 +160,36 @@ export function MesoCard({
   )
 
   return (
-    <Animated.View
-      style={highlighted ? { transform: [{ scale: 1.0 }] } : undefined}
-      testID="meso-card-wrapper"
+    <Card
+      variant="outline"
+      elevation={2}
+      borderColor={highlighted ? brandPrimary : borderDefault}
+      className={className}
+      // Highlight is emphasis, not depth: a brand glow through the shared builder.
+      style={highlighted ? getGlowShadow(brandPrimary, 'subtle') : undefined}
+      testID="meso-card"
+      {...props}
     >
-      <Card
-        variant="outline"
-        elevation={2}
-        borderColor={highlighted ? brandPrimary : borderDefault}
-        className={className}
-        style={[
-          { borderColor: borderColor as unknown as string },
-          // Highlight is emphasis, not depth: a brand glow through the shared builder.
-          highlighted ? getGlowShadow(brandPrimary, 'subtle') : undefined,
-        ]}
-        testID="meso-card"
-        {...props}
+      <MesoAccentStrip brandPrimary={brandPrimary} />
+
+      <MesoCardPressRegion
+        onToggle={onToggle}
+        expanded={expanded}
+        name={name}
+        goal={goal}
+        weekRange={weekRange}
       >
-        <MesoAccentStrip brandPrimary={brandPrimary} />
+        {header}
+      </MesoCardPressRegion>
 
-        <MesoCardPressRegion
-          onToggle={onToggle}
-          expanded={expanded}
-          name={name}
-          goal={goal}
-          weekRange={weekRange}
-        >
-          {header}
-        </MesoCardPressRegion>
-
-        {expanded && weeks.length > 0 && (
-          <MesoWeekList
-            weeks={weeks}
-            totalWeeks={totalWeeks}
-            currentWeek={currentWeek}
-            borderColor={borderDefault}
-          />
-        )}
-      </Card>
-    </Animated.View>
+      {expanded && weeks.length > 0 && (
+        <MesoWeekList
+          weeks={weeks}
+          totalWeeks={totalWeeks}
+          currentWeek={currentWeek}
+          borderColor={borderDefault}
+        />
+      )}
+    </Card>
   )
 }

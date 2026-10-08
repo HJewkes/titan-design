@@ -225,14 +225,88 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
+  # TD-738: axe color-contrast in Chromium on every story in both themes, against the shrink-only
+  # packages/ui/tests/visual/contrast-stories-baseline.json. Its own job, not a visual step: the
+  # full index is about 14 minutes on one runner, so three shards run beside visual and add nothing
+  # to its critical path. Each shard builds the static Storybook itself (about 30 s): a build
+  # artifact from visual would wait on visual's install and build and cost about as much to move.
+  # `check` needs it, as all-green requires of every job, so it gates through `check` by that route.
+  contrast:
+    name: contrast ${{ matrix.shard }}/3
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.58.2-noble
+    # pull-requests: read lets the path classifier list the PR's files.
+    permissions:
+      contents: read
+      pull-requests: read
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Same classifier, env and fail-open rule as visual's step (TD-645).
+      - name: Rendered UI changed?
+        id: paths
+        if: github.event_name == 'pull_request'
+        run: node packages/ui/scripts/visual-paths.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+
+      - uses: pnpm/action-setup@v4
+        if: steps.paths.outputs.run != 'false'
+
+      - uses: actions/setup-node@v4
+        if: steps.paths.outputs.run != 'false'
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+        if: steps.paths.outputs.run != 'false'
+
+      # One test per story and theme (playwright.contrast.config.ts); a pair or count outside the
+      # baseline fails. The report is every story-theme's counts, uploaded so the baseline can be
+      # regenerated from CI's Chromium: download the three contrast-report-* artifacts and run
+      # node packages/ui/scripts/update-contrast-stories-baseline.mjs <files> --allow-increase.
+      # No `--` before the flag: pnpm 9 forwards it literally and Playwright then reads the shard
+      # as a file filter, so every shard would run the whole index.
+      - name: Story contrast (axe color-contrast)
+        if: steps.paths.outputs.run != 'false'
+        run: pnpm --filter @titan-design/react-ui test:visual:contrast --shard=${{ matrix.shard }}/3
+        env:
+          TITAN_CONTRAST_REPORT: /tmp/contrast-report-${{ matrix.shard }}.jsonl
+
+      - name: Upload contrast report
+        if: always() && steps.paths.outputs.run != 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: contrast-report-${{ matrix.shard }}
+          path: /tmp/contrast-report-${{ matrix.shard }}.jsonl
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Upload contrast failure diagnostics
+        if: failure() && steps.paths.outputs.run != 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: contrast-failure-diagnostics-${{ matrix.shard }}
+          path: /tmp/titan-ui-playwright-contrast/
+          if-no-files-found: warn
+          retention-days: 7
+
   # The job the ruleset requires (TD-725). Its first step is the all-green aggregator, so it
-  # fails when build or visual fails, is cancelled or goes missing, and every later step then
-  # skips. The audit, stories-axe and play steps run here rather than in jobs of their own,
+  # fails when build, visual or contrast fails, is cancelled or goes missing, and every later step
+  # then skips. The audit, stories-axe and play steps run here rather than in jobs of their own,
   # each of which paid its own queue wait. The image is visual's: the play functions need its
   # Chromium.
   check:
     if: always()
-    needs: [build, visual]
+    needs: [build, visual, contrast]
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.58.2-noble
