@@ -52,7 +52,7 @@ Check: a formatter test covers a positive, zero and negative delta; each rendere
 
 Sources: [Material data visualization](https://m3.material.io/foundations/designing/structure), [Carbon data visualization](https://carbondesignsystem.com/data-visualization/getting-started/).
 
-### M-11 A missing value is one short token (`N/A`), never a fake `0` and never a sentence in a value slot.
+### M-11 A missing value is one short token ("N/A"), never a fake `0` and never a sentence in a value slot.
 
 Check: a story fixture with the value absent renders the token; no zero and no sentence appears in the slot.
 
