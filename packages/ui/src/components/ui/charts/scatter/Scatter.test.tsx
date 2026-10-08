@@ -30,7 +30,7 @@ describe('Scatter', () => {
   it('labels sub-1 tick values to 2 decimal places', () => {
     render(<Scatter {...base} />)
     const labels = screen.getAllByTestId('scatter-gridline-y').map((el) => el.textContent)
-    expect(labels).toContain('0.50')
+    expect(labels).toContain('0.40')
   })
 
   it('fires onPress with the point id', () => {
@@ -45,6 +45,55 @@ describe('Scatter', () => {
     expect(screen.queryByTestId('scatter-diagonal')).not.toBeInTheDocument()
     rerender(<Scatter {...base} diagonal />)
     expect(screen.getByTestId('scatter-diagonal')).toBeInTheDocument()
+  })
+
+  it('draws diagonal and the equivalent referenceLines as the same segment', () => {
+    const style = (el: HTMLElement) => el.getAttribute('style')
+    const { unmount } = render(<Scatter {...base} diagonal />)
+    const fromDiagonal = style(screen.getByTestId('scatter-diagonal'))
+    unmount()
+    render(<Scatter {...base} referenceLines={[{ slope: -1, intercept: 1, id: 'd' }]} />)
+    expect(style(screen.getByTestId('scatter-reference-d'))).toBe(fromDiagonal)
+  })
+
+  it('draws horizontal and vertical reference lines and skips ones outside the domain', () => {
+    render(
+      <Scatter
+        {...base}
+        referenceLines={[
+          { y: 0.5, id: 'h' },
+          { x: 0.5, id: 'v' },
+          { y: 9, id: 'out' },
+        ]}
+      />
+    )
+    expect(screen.getByTestId('scatter-reference-h')).toBeInTheDocument()
+    expect(screen.getByTestId('scatter-reference-v')).toBeInTheDocument()
+    expect(screen.queryByTestId('scatter-reference-out')).not.toBeInTheDocument()
+  })
+
+  it('renders reference lines that share an id without duplicate-key warnings', () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+    render(
+      <Scatter
+        {...base}
+        referenceLines={[
+          { y: 0.3, id: 'dup' },
+          { y: 0.6, id: 'dup' },
+        ]}
+      />
+    )
+    expect(screen.getAllByTestId('scatter-reference-dup')).toHaveLength(2)
+    expect(error).not.toHaveBeenCalled()
+    error.mockRestore()
+  })
+
+  it('adds a reference line label to the accessible name without painting it', () => {
+    render(<Scatter {...base} referenceLines={[{ y: 0.5, label: 'Target' }]} />)
+    expect(screen.getByTestId('scatter-canvas').getAttribute('aria-label')).toContain(
+      'reference lines: Target'
+    )
+    expect(screen.queryByText('Target')).not.toBeInTheDocument()
   })
 
   it('renders axis labels when provided', () => {
@@ -209,7 +258,12 @@ describe('Scatter', () => {
 
     it('has no accessibility violations', async () => {
       const { container } = render(
-        <Scatter {...base} diagonal axis={{ xLabel: 'I', yLabel: 'A' }} selectedId="b" />
+        <Scatter
+          {...base}
+          referenceLines={[{ slope: -1, intercept: 1, label: 'Main sequence' }]}
+          axis={{ xLabel: 'I', yLabel: 'A' }}
+          selectedId="b"
+        />
       )
       expect(await axe(container)).toHaveNoViolations()
     })

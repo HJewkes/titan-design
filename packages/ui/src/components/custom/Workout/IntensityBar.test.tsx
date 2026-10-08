@@ -1,10 +1,11 @@
 import { describe, it, expect } from 'vitest'
-import { siblingSource, spacingClassesIn, resolveAll } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesOf } from '../../../test/spacing-resolver'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { IntensityBar } from './IntensityBar'
 import { getGlowShadow } from '../../../theme/elevation'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
+import { SurfaceContext } from '../../ui/surface/SurfaceContext'
 
 const AT_TARGET_GLOW = (
   getGlowShadow(getSemanticColors('dark')['status-info'], 'subtle') as { boxShadow: string }
@@ -45,6 +46,26 @@ describe('IntensityBar', () => {
     it('floors a negative level to 0%', () => {
       render(<IntensityBar level={-0.5} />)
       expect(screen.getByTestId('intensity-label')).toHaveTextContent('0%')
+    })
+
+    it.each<ThemeMode>(['light', 'dark'])('reads text-secondary in %s mode', (mode) => {
+      const t = getSemanticColors(mode)
+      render(
+        <SurfaceContext.Provider value={{ mode, level: 'base' }}>
+          <IntensityBar level={0.5} />
+        </SurfaceContext.Provider>
+      )
+      expect(screen.getByTestId('intensity-label')).toHaveStyle({ color: t['text-secondary'] })
+    })
+
+    it('differs from result-neutral in light mode', () => {
+      const t = getSemanticColors('light')
+      render(
+        <SurfaceContext.Provider value={{ mode: 'light', level: 'base' }}>
+          <IntensityBar level={0.5} />
+        </SurfaceContext.Provider>
+      )
+      expect(screen.getByTestId('intensity-label')).not.toHaveStyle({ color: t['result-neutral'] })
     })
   })
 
@@ -171,10 +192,10 @@ describe('IntensityBar', () => {
 
 /** IntensityBar's label offsets, pinned (AW-142); pixels unchanged. */
 describe('IntensityBar geometry resolves to the numeric scale', () => {
-  const source = siblingSource(import.meta.url, 'IntensityBar.tsx')
-
   it('keeps both label offsets', () => {
-    expect(spacingClassesIn(source, 'IntensityBar')).toEqual(['mt-1.5'])
+    render(<IntensityBar level={0.5} threshold={0.85} showThresholdLabel />)
+    expect(spacingClassesOf('intensity-label')).toEqual(['mt-1.5'])
+    expect(spacingClassesOf('intensity-threshold-label')).toEqual(['mt-0.5'])
     expect(resolveAll(['mt-1.5', 'mt-0.5'])).toEqual(['6px', '2px'])
   })
 })

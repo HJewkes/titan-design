@@ -8,11 +8,5 @@
   "src/theme/ProposedTokensVW82.stories.tsx": {
     "../components/ui/charts/treemap": 1,
     "../components/ui/toolbar-button": 1
-  },
-  "src/theme/ThemeProvider.test.tsx": {
-    "../components/ui/surface": 1
-  },
-  "src/theme/ThemeProvider.tsx": {
-    "../components/ui/surface/SurfaceContext": 1
   }
 }

@@ -136,7 +136,7 @@ function HeroNumeralsTempo({ side }: { side: 'L' | 'R' }) {
                 overflow: 'hidden',
               }}
             >
-              {active && (
+              {!!active && (
                 <View
                   style={{
                     position: 'absolute',
@@ -191,7 +191,7 @@ function CadenceBarTempo({ side }: { side: 'L' | 'R' }) {
                 backgroundColor: alpha(WARM_TRACK, 0.16),
               }}
             >
-              {active && (
+              {!!active && (
                 <View
                   style={{
                     position: 'absolute',

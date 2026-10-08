@@ -6,7 +6,7 @@ import { Surface } from '../../ui/surface'
 const meta: Meta<typeof VolumeLandmarkBar> = {
   title: 'Custom/Workout/DataViz/VolumeLandmarkBar',
   component: VolumeLandmarkBar,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {

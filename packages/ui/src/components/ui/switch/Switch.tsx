@@ -1,5 +1,6 @@
-import React, { forwardRef } from 'react'
+import { forwardRef } from 'react'
 import { Pressable, View, Text, type PressableProps } from 'react-native'
+import { useControllableState } from '../../../hooks/useControllableState'
 import { cn } from '../../../utils/cn'
 import { liftStyle } from '../../../theme/lift'
 import { useSurfaceMode } from '../surface'
@@ -19,6 +20,8 @@ export interface SwitchProps extends Omit<PressableProps, 'children'> {
   labelPosition?: 'left' | 'right'
   /** Callback when switch state changes */
   onCheckedChange?: (checked: boolean) => void
+  /** Initial checked state when `isChecked` is not provided */
+  defaultIsChecked?: boolean
   /** Additional className */
   className?: string
 }
@@ -41,7 +44,8 @@ const sizeStyles: Record<SwitchSize, { track: string; thumb: string; translate: 
  */
 export const Switch = forwardRef<View, SwitchProps>(function Switch(
   {
-    isChecked = false,
+    isChecked: isCheckedProp,
+    defaultIsChecked = false,
     isDisabled = false,
     size = 'md',
     label,
@@ -53,11 +57,16 @@ export const Switch = forwardRef<View, SwitchProps>(function Switch(
   ref
 ) {
   const styles = sizeStyles[size]
+  const [isChecked, setIsChecked] = useControllableState({
+    value: isCheckedProp,
+    defaultValue: defaultIsChecked,
+    onChange: onCheckedChange,
+  })
   const mode = useSurfaceMode()
 
   const handlePress = () => {
     if (!isDisabled) {
-      onCheckedChange?.(!isChecked)
+      setIsChecked(!isChecked)
     }
   }
 
@@ -66,7 +75,7 @@ export const Switch = forwardRef<View, SwitchProps>(function Switch(
       className={cn(
         'rounded-full p-0.5 transition-colors',
         styles.track,
-        isChecked ? 'bg-brand-primary' : 'bg-hairline-strong'
+        isChecked ? 'bg-brand-primary' : 'bg-border-input'
       )}
     >
       {/* The thumb is a raised control resting in its track: one plane of lift. */}
@@ -87,17 +96,17 @@ export const Switch = forwardRef<View, SwitchProps>(function Switch(
       disabled={isDisabled}
       onPress={handlePress}
       accessibilityRole="switch"
-      accessibilityState={{ checked: isChecked, disabled: isDisabled }}
+      accessibilityState={{ disabled: isDisabled }}
       aria-checked={isChecked}
       accessibilityLabel={label}
       className={cn('flex-row items-center gap-2', isDisabled && 'opacity-50', className)}
       {...props}
     >
-      {label && labelPosition === 'left' && (
+      {!!label && labelPosition === 'left' && (
         <Text className="text-text-primary font-medium">{label}</Text>
       )}
       {switchElement}
-      {label && labelPosition === 'right' && (
+      {!!label && labelPosition === 'right' && (
         <Text className="text-text-primary font-medium">{label}</Text>
       )}
     </Pressable>

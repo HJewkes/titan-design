@@ -127,3 +127,45 @@ export function findParticipant(
 ): Participant | undefined {
   return participants.find((participant) => participant.id === id)
 }
+
+/**
+ * The newest incoming message after `lastSeenId`. Nothing when the newest message is
+ * unchanged (older history was prepended) or `lastSeenId` left the thread (it was replaced).
+ */
+function newestIncomingSince(
+  messages: readonly ChatMessage[],
+  lastSeenId: string | undefined,
+  viewerId: string
+): ChatMessage | undefined {
+  const start = lastSeenId === undefined ? 0 : messages.findIndex(({ id }) => id === lastSeenId) + 1
+  if (start === 0 && lastSeenId !== undefined) return undefined
+  return messages
+    .slice(start)
+    .filter((message) => message.authorId !== viewerId)
+    .pop()
+}
+
+export function newestId(messages: readonly ChatMessage[]): string | undefined {
+  return messages[messages.length - 1]?.id
+}
+
+export interface SeenState {
+  lastSeenId: string | undefined
+  /** An incoming reply still streaming; it is announced once, with its final text. */
+  streamingId?: string
+}
+
+/** The message to announce now, if any, and what has been seen after it. */
+export function nextAnnouncement(
+  messages: readonly ChatMessage[],
+  seen: SeenState,
+  viewerId: string
+): { seen: SeenState; message?: ChatMessage } {
+  const lastSeenId = newestId(messages)
+  const candidate =
+    newestIncomingSince(messages, seen.lastSeenId, viewerId) ??
+    messages.find(({ id }) => id === seen.streamingId)
+  if (candidate === undefined) return { seen: { lastSeenId } }
+  if (isStreaming(candidate)) return { seen: { lastSeenId, streamingId: candidate.id } }
+  return { seen: { lastSeenId }, message: candidate }
+}

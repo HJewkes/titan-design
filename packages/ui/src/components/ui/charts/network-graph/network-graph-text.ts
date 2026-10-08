@@ -1,4 +1,5 @@
-import { incident, isValidWeight } from './network-graph-model'
+import { compareText } from '../kit/compareText'
+import { displayLabel, incident, isValidWeight } from './network-graph-model'
 import type {
   GraphEdge,
   GraphEdgeKind,
@@ -8,12 +9,13 @@ import type {
   GraphNodeContext,
 } from './types'
 
-export const displayLabel = (node: GraphNode) => (node.label === '' ? node.id : node.label)
+export { displayLabel }
 
 export function nodeLabel(node: GraphNode, context: GraphNodeContext): string {
   return [
     displayLabel(node),
     context.kindLabel,
+    ...(context.groupLabels ?? []),
     `${context.incoming} incoming`,
     `${context.outgoing} outgoing`,
   ]
@@ -42,7 +44,7 @@ function countByKind(kinds: readonly (string | undefined)[], labels: Map<string,
     counts.set(label, (counts.get(label) ?? 0) + 1)
   }
   return [...counts]
-    .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+    .sort(([a], [b]) => compareText(a, b))
     .map(([label, n]) => `${n} ${label}`)
     .join(', ')
 }
@@ -69,6 +71,20 @@ function unplacedSentence(model: GraphModel): string[] {
   return [`${parts.join(' and ')}.`]
 }
 
+/** Regions: "4 groups: Alpha 12, Beta 10." Rings: "Focus alpha-01: 1 hop 4, 2 hops 9." */
+function groupSentence(model: GraphModel): string[] {
+  const [focus, ...hops] = model.groups.filter((group) => group.variant === 'ring')
+  if (focus) {
+    const node = model.index.nodesById.get(focus.nodeIds[0] ?? '')
+    const counts = hops.map((ring) => `${ring.label} ${ring.nodeIds.length}`)
+    const detail = counts.length > 0 ? `: ${counts.join(', ')}` : ''
+    return node ? [`Focus ${displayLabel(node)}${detail}.`] : []
+  }
+  if (model.groups.length === 0) return []
+  const counts = model.groups.map((group) => `${group.label} ${group.nodeIds.length}`)
+  return [`${plural(model.groups.length, 'group')}: ${counts.join(', ')}.`]
+}
+
 function mostConnected(model: GraphModel): string | null {
   let best: { id: string; degree: number } | null = null
   for (const id of model.index.order) {
@@ -85,7 +101,7 @@ export function summarizeGraph(
   model: GraphModel,
   kinds: { nodeKinds?: readonly GraphKind[]; edgeKinds?: readonly GraphEdgeKind[] } = {}
 ): string {
-  const tail = [...droppedSentence(model), ...unplacedSentence(model)]
+  const tail = [...groupSentence(model), ...droppedSentence(model), ...unplacedSentence(model)]
   if (model.nodes.length === 0) return ['Network graph with no nodes.', ...tail].join(' ')
   const nodeLabels = new Map((kinds.nodeKinds ?? []).map((k) => [k.id, k.label]))
   const edgeLabels = new Map((kinds.edgeKinds ?? []).map((k) => [k.id, k.label]))

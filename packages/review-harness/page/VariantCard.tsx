@@ -1,24 +1,12 @@
 import type { Dispatch } from 'react'
 import type { VariantDraft } from '../src/feedback.ts'
-import { frameSizing, questionsForVariant } from '../src/sections.ts'
-import {
-  isImageVariant,
-  isStoryVariant,
-  type Manifest,
-  type Variant,
-  type Verdict,
-} from '../src/schema.ts'
+import { frameSizing } from '../src/sections.ts'
+import { isImageVariant, isStoryVariant, type Manifest, type Variant } from '../src/schema.ts'
 import { Frame, type PinInput } from './Frame.tsx'
 import { ImageFrame } from './ImageFrame.tsx'
 import { PinList } from './PinList.tsx'
-import type { Action } from './state.ts'
+import { VERDICTS, type Action } from './state.ts'
 import { Stop } from './Stop.tsx'
-
-const VERDICTS: { key: string; verdict: Exclude<Verdict, null>; label: string }[] = [
-  { key: '1', verdict: 'chosen', label: 'Chosen' },
-  { key: '2', verdict: 'rejected', label: 'Rejected' },
-  { key: '3', verdict: 'maybe', label: 'Maybe' },
-]
 
 interface VariantCardProps {
   manifest: Manifest
@@ -59,18 +47,8 @@ function VerdictControl({ variant, draft, dispatch }: Omit<VariantCardProps, 'ma
   )
 }
 
-/** What this frame is being asked about, kept on screen while the frame is. */
-function answersLine(manifest: Manifest, variantKey: string): string {
-  const ids = questionsForVariant(manifest, variantKey)
-  const prompts = ids
-    .map((id) => manifest.questions.find((q) => q.id === id)?.prompt)
-    .filter((p): p is string => !!p)
-  return prompts.length ? `Answers: ${prompts.join(' · ')}` : ''
-}
-
 export function VariantCard(props: VariantCardProps) {
   const { manifest, variant, draft, index, active, dispatch } = props
-  const answers = answersLine(manifest, variant.key)
   const sizing = frameSizing(manifest, variant)
   const onPin = (pin: PinInput) => {
     dispatch({ type: 'activate', index })
@@ -91,7 +69,6 @@ export function VariantCard(props: VariantCardProps) {
           <span className="key">{variant.key}</span> {variant.label}
         </h3>
         <code>{variant.storyId ?? variant.image}</code>
-        {answers && <p className="variant-question">{answers}</p>}
       </header>
       <div className="frames">
         {manifest.widths.map((width) => {

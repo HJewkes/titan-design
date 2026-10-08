@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import { axe } from 'jest-axe'
 import { ScheduleTiles, compactUntil } from './ScheduleTiles'
 import { resolveColor } from '../../../theme/resolve-color'
 
@@ -10,6 +11,11 @@ const DAY = 24 * HOUR
 const NOW = Date.now()
 
 describe('ScheduleTiles', () => {
+  it('has no accessibility violations', async () => {
+    const { container } = render(<ScheduleTiles now={NOW} when={NOW + 5 * HOUR} />)
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
   it('renders Date, Time, and Until tiles', () => {
     render(<ScheduleTiles now={NOW} when={NOW + 2 * DAY} />)
     expect(screen.getByText('Date')).toBeInTheDocument()

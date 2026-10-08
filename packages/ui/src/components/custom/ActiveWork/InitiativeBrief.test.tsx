@@ -36,6 +36,14 @@ describe('InitiativeBrief', () => {
     expect(screen.queryByText(/Projects span weeks/)).not.toBeInTheDocument()
   })
 
+  it('exposes each section heading as expanded or collapsed', () => {
+    render(<InitiativeBrief brief={INITIATIVE_BRIEF_FIXTURE} />)
+    const people = screen.getByRole('button', { name: /People/ })
+    expect(people).toHaveAttribute('aria-expanded', 'false')
+    fireEvent.click(people)
+    expect(people).toHaveAttribute('aria-expanded', 'true')
+  })
+
   it('steps through the sections with the prev/next controls', () => {
     render(<InitiativeBrief brief={INITIATIVE_BRIEF_FIXTURE} />)
     expect(screen.getByText(/1 \//)).toBeInTheDocument()

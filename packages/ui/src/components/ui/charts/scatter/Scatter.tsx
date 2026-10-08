@@ -4,16 +4,19 @@ import { DATAVIZ_CATEGORICAL_ROLES } from '../../../../theme/extracted-colors-da
 import { getSemanticColors } from '../../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../surface'
 import {
+  DIAGONAL_LINE,
+  referenceSegments,
   scatterAriaLabel,
   scatterLayout,
   type ScatterAxis,
   type ScatterDatum,
+  type ScatterReferenceLine,
 } from './scatterGeometry'
 import { ScatterFrame } from './ScatterFrame'
 import { ScatterGridlines } from './ScatterGridlines'
 import { ScatterPointMark } from './ScatterPointMark'
 
-export type { ScatterAxis, ScatterDatum } from './scatterGeometry'
+export type { ScatterAxis, ScatterDatum, ScatterReferenceLine } from './scatterGeometry'
 
 export interface ScatterProps extends Omit<ViewProps, 'children'> {
   data: ScatterDatum[]
@@ -23,8 +26,13 @@ export interface ScatterProps extends Omit<ViewProps, 'children'> {
   /** Axis labels and optional domain overrides. */
   axis?: ScatterAxis
   /**
-   * Draw the y = 1 − x "main sequence" reference line (NDepend idiom, where
-   * distance from the diagonal measures the zone of pain / zone of uselessness).
+   * Dashed reference lines in data space, clipped to the plot box. They do not widen the
+   * domain. A `label` joins the canvas accessible name and is not painted.
+   */
+  referenceLines?: ScatterReferenceLine[]
+  /**
+   * Draw the y = 1 − x "main sequence" reference line.
+   * @deprecated Use `referenceLines={[{ slope: -1, intercept: 1 }]}`.
    */
   diagonal?: boolean
   /** Fires with a point's id on press. */
@@ -37,8 +45,7 @@ export interface ScatterProps extends Omit<ViewProps, 'children'> {
 /**
  * SVG-free scatter / bubble plot (absolutely-positioned Views), matching the
  * codebase's chart convention so it renders identically on web and native. Used
- * for "main-sequence" plots (instability × abstractness) via the `diagonal`
- * reference line, or any two metrics. Positions and bubble sizes are computed
+ * for "main-sequence" plots (instability × abstractness) via `referenceLines`, or any two metrics. Positions and bubble sizes are computed
  * from the data; color and labels are caller-supplied.
  */
 export function Scatter({
@@ -46,6 +53,7 @@ export function Scatter({
   width,
   height,
   axis = {},
+  referenceLines = [],
   diagonal = false,
   onPress,
   selectedId,
@@ -55,11 +63,21 @@ export function Scatter({
   const colors = getSemanticColors(useSurfaceMode())
   const palette = DATAVIZ_CATEGORICAL_ROLES.map((role) => colors[role])
   const layout = scatterLayout(data, width, height, axis, palette)
-  const ariaLabel = scatterAriaLabel(axis, data.length)
+  const diagonalSegments = diagonal ? referenceSegments(layout, [DIAGONAL_LINE]) : []
+  const lineSegments = referenceSegments(layout, referenceLines)
+  const segments = [
+    ...diagonalSegments.map((segment) => ({ testID: 'scatter-diagonal', segment })),
+    ...lineSegments.map((segment) => ({ testID: `scatter-reference-${segment.id}`, segment })),
+  ]
+  const ariaLabel = scatterAriaLabel(
+    axis,
+    data.length,
+    segments.map((s) => s.segment)
+  )
 
   return (
     <View className={cn('relative', className)} style={{ width, height }} {...props}>
-      {/* Non-interactive labelled canvas: grid, axes, ticks, diagonal. */}
+      {/* Non-interactive labelled canvas: grid, axes, ticks, reference lines. */}
       <View
         accessibilityRole="image"
         accessibilityLabel={ariaLabel}
@@ -67,7 +85,7 @@ export function Scatter({
         style={{ position: 'absolute', top: 0, left: 0, width, height, overflow: 'hidden' }}
       >
         <ScatterGridlines layout={layout} colors={colors} />
-        <ScatterFrame layout={layout} colors={colors} axis={axis} diagonal={diagonal} />
+        <ScatterFrame layout={layout} colors={colors} axis={axis} segments={segments} />
       </View>
 
       {/* Interactive point overlay (kept out of the image-role canvas). */}

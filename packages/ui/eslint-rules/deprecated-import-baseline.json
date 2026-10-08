@@ -41,6 +41,9 @@
   "src/components/custom/Workout/BaseBadge.test.tsx": {
     "BaseBadge": 1
   },
+  "src/components/custom/Workout/GoalTrajectoryWeekTips.tsx": {
+    "Metric": 1
+  },
   "src/components/custom/Workout/MesoStatusCard.tsx": {
     "StatusDot": 1
   },
@@ -69,7 +72,7 @@
     "StatusDot": 1,
     "StatusDotVariant": 1
   },
-  "src/components/custom/Workout/TempoDisplay.tsx": {
+  "src/components/custom/Workout/tempoDisplayParts.tsx": {
     "MetricCell": 1
   },
   "src/components/custom/Workout/WeekRow.tsx": {
@@ -123,17 +126,6 @@
     "StatusDot": 1,
     "WeightBadge": 1,
     "WorkoutPill": 1
-  },
-  "src/stories/PresetShowcase.stories.tsx": {
-    "applyThemePreset": 1,
-    "audiobookPreset": 1,
-    "defaultPreset": 1,
-    "ThemePreset": 1
-  },
-  "src/stories/ThemePresets.stories.tsx": {
-    "applyThemePreset": 1,
-    "audiobookPreset": 1,
-    "defaultPreset": 1
   },
   "src/theme/presets/apply.ts": {
     "ThemePreset": 1

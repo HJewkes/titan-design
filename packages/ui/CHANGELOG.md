@@ -5,10 +5,15 @@ All notable changes to `@titan-design/react-ui` are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this
 project adheres to [Semantic Versioning](https://semver.org/).
 
+New entries go in `changelog.d/` as one fragment file per PR (see its README); `pnpm
+changelog:compile` folds them into `[Unreleased]` at release.
+
 ## [Unreleased]
 
 ### Added
 
+- `Scatter` takes `referenceLines` (`{ y }`, `{ x }` or `{ slope, intercept }`, each with optional `id` and `label`), clipped to the plot box and never widening the domain; a `label` joins the canvas accessible name. `diagonal` is a deprecated alias for `[{ slope: -1, intercept: 1 }]` and keeps its `scatter-diagonal` test id, removed in 0.23.0 (TD-472).
+- `ui/charts/network-graph` plot model for free-form layouts: `edgePath` gains the `'arc'` shape and a slot so an edge each way between two nodes separates, `placeLabels` declutters labels while always keeping the selected and active nodes' (and neighbours') labels, and node names and `summarizeGraph` state each node's group or hop. `GraphModel` carries `edgeShape`, `labelMode` and `groups`; `GraphNodeContext` takes `groupLabels`. Pure `.ts`, not yet exported (TP-1038).
 - `custom/ActiveWork` task-stage vocabulary (`TASK_STAGE_META`, `TASK_STAGE_ORDER`, `toTaskStage`), `TaskStagePill`, and the `task-flow` and `task-pr` modules (`TaskFlowItem`, `compareTaskFlow`, `filterTaskFlow`, `taskKey`, `toTaskPrState`) (TP-860a).
 - `Scatter`, `Treemap` and `Gauge` moved to `ui/charts/scatter`, `ui/charts/treemap` and `ui/charts/gauge` (`Components/Atoms/Scatter`, `Components/Atoms/Treemap`, `Components/Atoms/Gauge`); still exported from the package root, with class names and markup unchanged. The `custom/Scatter`, `custom/Treemap` and `custom/Gauge` paths are deprecated shims removed in 0.23.0 (TD-471).
 - `ui/charts/network-graph` ego and clustered layouts: `egoLayout({ focusId, hops, direction })` places the nodes within N hops on rings around a focus with no random source, and `clusteredLayout({ seed, iterations, groups, ungroupedLabel })` lays each group out alone and packs non-overlapping regions in rows, ungrouped nodes last. Adds `GraphGroup`, `GraphGroupRegion` and the `groups` hint on `GraphLayoutResult`, and grouped, hub, chain and many-group fixtures. Pure `.ts`, not yet exported (TP-1037).
@@ -16,6 +21,7 @@ project adheres to [Semantic Versioning](https://semver.org/).
 - `ui/charts/network-graph` model and layouts: `GraphLayout` (`{ key, compute }`), `layeredLayout`, `suppliedLayout`, graph cleaning, traversal and summary, and seeded fixtures at 5, 30 and 150 nodes. Pure `.ts`, not yet exported; the component follows (TP-1040).
 - `DateTime` and `formatDateTime` moved to `ui/date-time` (`Components/Molecules/DateTime`); still exported from the package root. The `custom/DateTime` path is a deprecated shim removed in 0.23.0. `DateTime` takes `isLive`; `live` is a deprecated alias for it (TD-428).
 - `FilePathLabel` and `splitPath` moved to `ui/file-path-label` (`Components/Atoms/FilePathLabel`); still exported from the package root. The `custom/ActiveWork/FilePathLabel` path is a deprecated shim removed in 0.23.0 (TD-418).
+- `Page` and `PageHeader` (`ui/page`), a domain-free page container with a gutter, an optional centred max width, a header slot (optionally pinned in a sticky ruled band whose shadow shows whenever content scrolls under it) and a `main` landmark; the header and gutter tighten on small screens and a trailing action never moves the title (TD-408).
 - `Popover` and `Menu` take `defaultIsOpen`; `Tooltip` takes `defaultIsOpen` and `onOpenChange`. All three share the new internal `useControllableState` hook (TD-268).
 - `text-error` semantic token (`text-text-error`), error-coloured text that clears 4.5:1 on every
   surface plane in both themes; `status-error` stays for fills and borders (TD-248).
@@ -72,6 +78,10 @@ project adheres to [Semantic Versioning](https://semver.org/).
 - `WorkoutPill`'s deload wash, rim and label and `WeekRow`'s deload row wash read the
   `status-deload` token for the surface's mode instead of the `WORKOUT_PILL_DELOAD` ramp pin. Both
   modes resolve to the same magenta, so nothing renders differently today (VW-531).
+- `Checkbox`'s unchecked box, every unchecked `Radio` circle and the `Switch` off track draw
+  their boundary with the `border-input` token instead of a `hairline` separator, so a control
+  reads as a control. `border-input` itself still sits under 3:1 on every plane; its value is a
+  separate token decision (TD-481).
 
 ### Fixed
 
@@ -81,6 +91,12 @@ project adheres to [Semantic Versioning](https://semver.org/).
   contact shadow instead of the paper's drop shadow; dark bars are unchanged. The strip sets both
   through `SetBarTreatmentContext` (`custom/charts/setBarTones.ts`, internal, not exported), which
   `SetBarChart` reads. A chart outside the provider is unchanged (VW-877).
+- `DualPinnedLiveStrip`: a side's missing rep is a filled stub again, no ring. Once the set ends it
+  is missed, grey (`greyRamp` 600 light, 400 dark: 4.88:1 and 4.58:1 on the card); mid-set it is
+  behind, blue (`blue` 600 light, 400 dark: 4.89:1 and 4.73:1). `liveStripGap` and
+  `LIVE_STRIP_GAP_COLOR` in `liveStripModel` decide it from the strip's state. The light bars'
+  shadow is `0 2px 5px` at 0.2 alpha, between the paper's drop shadow and the 1px contact shadow.
+  `SetBarTreatment`'s `emptyVariant` is replaced by `emptyColor` (VW-879).
 - `Drawer`'s overlay and the non-blur `Modal` backdrop use `bg-scrim`, the scrim scale's DEFAULT class. `bg-scrim-default` compiled to no rule, so web painted no scrim. A test now compiles both backdrop class strings, and `lint:borders` runs in `lint` and `verify` (TD-191).
 - `VelocityStrip`'s loss and default zone colours resolve through the `dataviz-sequential` tokens
   for the surface's theme, like `PinnedLiveStrip`, so a light surface no longer gets the dark hexes.

@@ -18,6 +18,9 @@ no other meaning. Nodes, edges and kinds name no domain concept, so the unit sit
 | ----------------------------------- | -------------------------------------------------------------------------------------- |
 | `types.ts`                          | Data, layout and model types, and `NetworkGraphProps` (type only).                     |
 | `network-graph-model.ts`            | Cleaning, indexing, weight bins, edge path, `buildGraphModel`.                         |
+| `network-graph-arc.ts`              | `arcPath`, `edgeSlots`, `GRAPH_NODE_RADIUS`: arc geometry.                             |
+| `network-graph-groups.ts`           | `placedGroups`: the layout's groups limited to placed nodes.                           |
+| `network-graph-labels.ts`           | `placeLabels`, `labelBox`, `pinnedNodeIds`, `groupLabelsByNode`.                       |
 | `network-graph-focus.ts`            | `nextFocus`, keyboard traversal over the graph.                                        |
 | `network-graph-text.ts`             | `nodeLabel`, `edgeLabel`, `summarizeGraph`.                                            |
 | `layouts/layered-layout-model.ts`   | `layeredLayout(options)`.                                                              |
@@ -162,6 +165,38 @@ has no `seed`, because it draws no random number.
 
 `key` is `JSON.stringify(['clustered', seed, iterations, groups, ungroupedLabel])` after sanitising.
 
+## Plot model for free-form layouts
+
+`GraphModel` carries three more fields, read from the layout result: `edgeShape` (`'horizontal'` or
+`'arc'`, default horizontal), `labelMode` (`'all'` or `'declutter'`, default all) and `groups`
+(the layout's `GraphGroupRegion`s, limited to placed nodes, with a non-finite circle set to 0). The
+painting reads them; nothing here paints.
+
+**Edge paths.** `edgePath(from, to, shape = 'horizontal', slot = 0)`. `'horizontal'` is the
+`linkHorizontal` path, unchanged byte for byte. `'arc'` is one quadratic curve whose ends stop
+`GRAPH_NODE_RADIUS` (6 px, half the 12 px mark) short of the node centres. The control point is the
+chord midpoint pushed to the left of the direction of travel by `0.15 * length * (slot + 1)`. An edge
+each way between two nodes therefore bows to opposite sides, and a second edge the same way bows
+further. `edgeSlots(edges)` gives each cleaned edge its index among edges with the same source and
+target, in id order. Coincident, closer-than-two-radii or non-finite ends give `''`, never `NaN`.
+Painted paths and hit paths read the same string.
+
+**Labels.** `placeLabels(model, pinned)` returns the labels to show as a map of node id to box. With
+`labelMode: 'all'` every label is kept. With `'declutter'` it walks nodes in priority order (pinned
+first, then degree descending, then id) and keeps a label whose box meets no kept label and no other
+node mark. A pinned label is always kept, so two pinned labels may meet. `pinnedNodeIds(index,
+selectedId, activeId)` gives the selected node, the active node and the active node's neighbours.
+The box sits right of the mark, 16 px tall; its width is 8 px per character, at most 20 characters,
+an estimate that leans wide. The order of `model.order` never changes the result. A hidden label
+changes nothing for assistive tech: the node keeps its `Pressable`, its name and its tooltip.
+
+**Names and summary.** `groupLabelsByNode(model)` lists, per node, the labels of the groups that hold
+it, in group order (a region name, or `focus`, `1 hop`, `2 hops` for an ego ring). `nodeLabel` adds
+`context.groupLabels` after the kind: `"<label>, <kind>, <group>, <n> incoming, <m> outgoing"`; with
+none the name is unchanged. `summarizeGraph` adds one sentence when the layout returns groups,
+before the dropped and unplaced sentences, which stay. Regions: `"5 groups: Alpha 12, Beta 10,
+Ungrouped 5."`. Rings: `"Focus hub-01: 1 hop 4, 2 hops 9."`; counts are of placed nodes.
+
 ## Keyboard traversal
 
 `nextFocus(index, focus, key)` follows the graph, not the geometry, so it is the same for every layout.
@@ -179,7 +214,7 @@ An edge focus carries `from`, the node it was entered from, so Down and Up keep 
 
 ## Accessibility
 
-Names come from `nodeLabel` (`"<label>, <kind>, <n> incoming, <m> outgoing"`, the id when the label is
+Names come from `nodeLabel` (`"<label>, <kind>, <group>, <n> incoming, <m> outgoing"`, the id when the label is
 empty) and `edgeLabel` (`"<source> to <target>, <kind>, weight <w>"` or `weight unknown`).
 `summarizeGraph` gives node and edge counts, counts per kind, the most connected node, and every
 dropped or unplaced count. A graph with one node and no edges claims no structure. The pure modules
