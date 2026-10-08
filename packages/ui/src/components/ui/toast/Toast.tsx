@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback, useEffect } from 'react'
+import React, { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Surface } from '../surface'
@@ -189,6 +189,27 @@ const iconColors: Record<ToastStatus, string> = {
   info: 'text-status-info',
 }
 
+const toastRole = (status: ToastStatus) => (status === 'error' ? 'alert' : 'status')
+
+/** Auto-dismiss countdown that holds while `paused` and resumes with the time left. */
+function useAutoDismiss(duration: number, paused: boolean, onClose: () => void) {
+  const remaining = useRef(duration)
+
+  useEffect(() => {
+    remaining.current = duration
+  }, [duration])
+
+  useEffect(() => {
+    if (duration <= 0 || paused) return
+    const startedAt = Date.now()
+    const timer = setTimeout(onClose, remaining.current)
+    return () => {
+      clearTimeout(timer)
+      remaining.current = Math.max(0, remaining.current - (Date.now() - startedAt))
+    }
+  }, [duration, paused, onClose])
+}
+
 function ToastItem({
   id: _id,
   title,
@@ -200,25 +221,27 @@ function ToastItem({
 }: ToastItemProps) {
   const { bg, border, icon } = statusStyles[status]
 
-  // Auto-dismiss
-  useEffect(() => {
-    if (duration > 0) {
-      const timer = setTimeout(onClose, duration)
-      return () => clearTimeout(timer)
-    }
-  }, [duration, onClose])
+  const [isHovered, setIsHovered] = useState(false)
+  const [isFocused, setIsFocused] = useState(false)
+  useAutoDismiss(duration, isHovered || isFocused, onClose)
 
   return (
     <Surface
       elevation={5}
       rounded={false}
       className={cn('min-w-[280px] max-w-[400px] rounded-lg border-l-4', border)}
-      accessibilityRole="alert"
+      role={toastRole(status)}
+      onPointerEnter={() => setIsHovered(true)}
+      onPointerLeave={() => setIsHovered(false)}
+      onFocus={() => setIsFocused(true)}
+      onBlur={() => setIsFocused(false)}
     >
       <View className={cn('flex-row items-start p-inset-md', bg)}>
         {/* Icon */}
         <View className={cn('w-6 h-6 items-center justify-center mr-3')}>
-          <Text className={cn('text-lg', iconColors[status])}>{icon}</Text>
+          <Text aria-hidden className={cn('text-lg', iconColors[status])}>
+            {icon}
+          </Text>
         </View>
 
         {/* Content */}
@@ -232,9 +255,12 @@ function ToastItem({
           <Pressable
             onPress={onClose}
             className="p-1 -m-1 rounded web:hover:bg-interactive-hover"
+            accessibilityRole="button"
             accessibilityLabel="Close toast"
           >
-            <Text className="text-text-tertiary text-lg">×</Text>
+            <Text aria-hidden className="text-text-tertiary text-lg">
+              ×
+            </Text>
           </Pressable>
         )}
       </View>
@@ -286,14 +312,16 @@ export function Toast({
       elevation={5}
       rounded={false}
       className={cn('min-w-[280px] max-w-[400px] rounded-lg border-l-4', border, className)}
-      accessibilityRole="alert"
+      role={toastRole(status)}
       {...props}
     >
       <View className={cn('flex-row items-start p-inset-md', bg)}>
         {/* Icon */}
         {showIcon && (
           <View className="w-6 h-6 items-center justify-center mr-3">
-            <Text className={cn('text-lg', iconColors[status])}>{icon}</Text>
+            <Text aria-hidden className={cn('text-lg', iconColors[status])}>
+              {icon}
+            </Text>
           </View>
         )}
 
@@ -308,9 +336,12 @@ export function Toast({
           <Pressable
             onPress={onClose}
             className="p-1 -m-1 rounded web:hover:bg-interactive-hover"
+            accessibilityRole="button"
             accessibilityLabel="Close toast"
           >
-            <Text className="text-text-tertiary text-lg">×</Text>
+            <Text aria-hidden className="text-text-tertiary text-lg">
+              ×
+            </Text>
           </Pressable>
         )}
       </View>
