@@ -3,6 +3,8 @@ import { useMemo, type ReactNode } from 'react'
 import { Text, View } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Typography } from '../../ui/typography'
+import { isFenceOpen, readFence, readTable, type TableAlign } from './proseFenceTable'
+import { CodeBlock, ProseTable } from './ProseBlocks'
 
 /** How a linked reference reads: brand for the domain's own ids, link for cross-references, muted for asides. */
 export type ProseLinkTone = 'brand' | 'link' | 'muted'
@@ -25,15 +27,24 @@ export interface ProseLinker {
   onPress?: (ref: string) => void
 }
 
-export type ProseBlockType = 'h1' | 'h2' | 'h3' | 'li' | 'p'
+export type ProseBlockType = 'h1' | 'h2' | 'h3' | 'li' | 'p' | 'code' | 'table'
 
 export interface ProseBlock {
   type: ProseBlockType
+  /** Plain text of the block; for a code block the code, for a table its cells in reading order. */
   text: string
+  /** Code blocks: the fence's language label, empty when absent. */
+  lang?: string
+  /** Tables: the header cells. */
+  header?: string[]
+  /** Tables: one alignment per column, from the delimiter row. */
+  align?: TableAlign[]
+  /** Tables: body rows, each padded or truncated to the header count. */
+  rows?: string[][]
 }
 
 export interface MarkdownProseProps {
-  /** Markdown source. Headings, bullet lists, paragraphs, bold and code are understood. */
+  /** Markdown source. Headings, bullet lists, paragraphs, bold, code, fenced code blocks and pipe tables are understood. */
   body: string
   /** Reference patterns to auto-link, tried in order. */
   linkers?: ProseLinker[]
@@ -61,10 +72,33 @@ export function parseProseBlocks(body: string): ProseBlock[] {
     if (paragraph.length) blocks.push({ type: 'p', text: paragraph.join(' ') })
     paragraph = []
   }
-  for (const raw of body.split('\n')) {
+  const lines = body.split('\n')
+  for (let i = 0; i < lines.length; i++) {
+    const raw = lines[i]!
     const line = raw.trim()
     if (!line) {
       flush()
+      continue
+    }
+    if (isFenceOpen(raw)) {
+      flush()
+      const fence = readFence(lines, i)
+      blocks.push({ type: 'code', text: fence.code, lang: fence.lang })
+      i = fence.next - 1
+      continue
+    }
+    const table = readTable(lines, i)
+    if (table) {
+      flush()
+      const { header, align, rows } = table
+      blocks.push({
+        type: 'table',
+        text: [...header, ...rows.flat()].join(' '),
+        header,
+        align,
+        rows,
+      })
+      i = table.next - 1
       continue
     }
     const heading = line.match(/^(#{1,6})\s+(.*)/)
@@ -178,6 +212,8 @@ interface BlockProps {
 
 function Block({ block, inline, size }: BlockProps) {
   const body = BODY_TEXT[size]
+  if (block.type === 'code') return <CodeBlock code={block.text} lang={block.lang ?? ''} />
+  if (block.type === 'table') return <ProseTable block={block} inline={inline} />
   if (block.type === 'h1' || block.type === 'h2') {
     return (
       <Typography variant={block.type === 'h1' ? 'h5' : 'h6'} className="mt-1.5 text-text-primary">
@@ -214,9 +250,9 @@ function Block({ block, inline, size }: BlockProps) {
  * and auto-links references the caller describes.
  *
  * It is deliberately not a full markdown engine: headings, bullet lists,
- * paragraphs, bold and code cover the notes, briefs and session logs this
+ * paragraphs, bold, code, fenced code blocks and pipe tables cover the notes, briefs and session logs this
  * system reads, and anything richer would need a design pass of its own.
- * Composes {@link Typography}. Used by `SessionDetail` (session logs) and the
+ * Composes {@link Typography} and, for tables, `Table`. Used by `SessionDetail` (session logs) and the
  * initiative reader (brief and handoff prose).
  */
 export function MarkdownProse({

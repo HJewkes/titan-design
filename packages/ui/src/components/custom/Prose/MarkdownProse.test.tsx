@@ -103,3 +103,73 @@ describe('MarkdownProse linker flags', () => {
     warn.mockRestore()
   })
 })
+
+describe('MarkdownProse fenced code', () => {
+  const FENCED = 'before\n\n```ts\nconst a = 1\n  const b = 2\n```\n\nafter'
+
+  it('renders the code verbatim in a scrollable block with the language label', () => {
+    render(<MarkdownProse body={FENCED} />)
+    expect(screen.getByTestId('prose-code-lang').textContent).toBe('ts')
+    expect(screen.getByTestId('prose-code').textContent).toContain('const a = 1\n  const b = 2')
+    expect(screen.getByText('after')).toBeTruthy()
+  })
+
+  it('omits the label when the fence names no language', () => {
+    render(<MarkdownProse body={'```\nplain\n```'} />)
+    expect(screen.queryByTestId('prose-code-lang')).toBeNull()
+    expect(screen.getByTestId('prose-code').textContent).toBe('plain')
+  })
+
+  it('renders the rest of the body as code when the fence never closes', () => {
+    const blocks = parseProseBlocks('```sh\nls\n\n- not a bullet')
+    expect(blocks).toEqual([{ type: 'code', text: 'ls\n\n- not a bullet', lang: 'sh' }])
+    expect(() => render(<MarkdownProse body={'```sh\nls\n\n- not a bullet'} />)).not.toThrow()
+  })
+
+  it('has no accessibility violations', async () => {
+    const { container } = render(<MarkdownProse body={FENCED} />)
+    expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+describe('MarkdownProse pipe tables', () => {
+  const TABLE =
+    '| Name | Qty | Note |\n| :--- | ---: | :---: |\n| bolt | 4 | `m6` |\n| nut | 12 | ok |'
+
+  it('parses header, rows and alignment from the delimiter row', () => {
+    const [block] = parseProseBlocks(TABLE)
+    expect(block).toMatchObject({
+      type: 'table',
+      header: ['Name', 'Qty', 'Note'],
+      align: ['left', 'right', 'center'],
+      rows: [
+        ['bolt', '4', '`m6`'],
+        ['nut', '12', 'ok'],
+      ],
+    })
+  })
+
+  it('renders a header row and one row per body line', () => {
+    render(<MarkdownProse body={TABLE} />)
+    expect(screen.getAllByRole('columnheader')).toHaveLength(3)
+    expect(screen.getAllByRole('row')).toHaveLength(3)
+    expect(screen.getByText('m6')).toBeTruthy()
+  })
+
+  it('pads short rows and truncates long ones to the header count', () => {
+    const [block] = parseProseBlocks('| a | b |\n|---|---|\n| 1 |\n| 1 | 2 | 3 |')
+    expect(block!.rows).toEqual([
+      ['1', ''],
+      ['1', '2'],
+    ])
+  })
+
+  it('leaves a pipe line with no delimiter row as a paragraph', () => {
+    expect(parseProseBlocks('a | b\nc | d').map((b) => b.type)).toEqual(['p'])
+  })
+
+  it('has no accessibility violations', async () => {
+    const { container } = render(<MarkdownProse body={TABLE} />)
+    expect(await axe(container)).toHaveNoViolations()
+  })
+})

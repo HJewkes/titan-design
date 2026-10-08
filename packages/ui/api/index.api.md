@@ -5617,14 +5617,17 @@ export type ProgressVariant = 'linear' | 'circular';
 
 // @public (undocumented)
 export interface ProseBlock {
-    // (undocumented)
+    align?: TableAlign[];
+    header?: string[];
+    lang?: string;
+    rows?: string[][];
     text: string;
     // (undocumented)
     type: ProseBlockType;
 }
 
 // @public (undocumented)
-export type ProseBlockType = 'h1' | 'h2' | 'h3' | 'li' | 'p';
+export type ProseBlockType = 'h1' | 'h2' | 'h3' | 'li' | 'p' | 'code' | 'table';
 
 // @public
 export interface ProseLinker {
