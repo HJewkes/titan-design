@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { useCallback, useState } from 'react'
 import { View } from 'react-native'
-import { useMeasuredWidth } from '../../../hooks/useMeasuredWidth'
 import { Surface } from '../../ui/surface'
 import { Typography } from '../../ui/typography'
 import {
@@ -385,6 +385,20 @@ export const PhoneMotion: Story = {
 }
 
 /**
+ * The width of the frame a story renders in, read once at layout. Layer 2 pauses the clock, and
+ * react-native-web's `onLayout` waits on a timer that never fires there (TD-729), so this reads the
+ * DOM node synchronously, at commit, instead. jsdom has no layout and reports 0, which leaves `null`.
+ */
+function useFrameWidth() {
+  const [width, setWidth] = useState<number | null>(null)
+  const ref = useCallback((node: View | null) => {
+    const measured = (node as unknown as HTMLElement | null)?.getBoundingClientRect?.().width
+    if (measured) setWidth(Math.round(measured))
+  }, [])
+  return { ref, width }
+}
+
+/**
  * The final frame in every width-matrix frame, one pixel either side of
  * `WALL_BREAKPOINT`. The chart takes its width from the frame, so the `width`
  * and `height` controls are off; jsdom measures nothing and falls back to `args.width`.
@@ -402,12 +416,12 @@ export const Widths: Story = {
     ),
   ],
   render: function Render(args) {
-    const measured = useMeasuredWidth()
-    const width = measured.width ?? args.width
+    const frame = useFrameWidth()
+    const width = frame.width ?? args.width
     const height = width >= WALL_BREAKPOINT ? WALL.height : PHONE.height
     return (
       // `w-full` so the frame sets the measured width, not the chart's first-paint fallback.
-      <View className="w-full" onLayout={measured.onLayout}>
+      <View ref={frame.ref} className="w-full">
         {renderWithTreatment({ ...args, width, height })}
       </View>
     )
