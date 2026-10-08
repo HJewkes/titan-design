@@ -20,6 +20,10 @@ const negatives = [
   'grid-2x2',
   'divider-split',
   'grouped-tight',
+  'painted-group',
+  'controls-row',
+  'space-between-row',
+  'auto-margin-row',
 ]
 
 const positives: [string, string, RegExp][] = [
@@ -33,7 +37,13 @@ const positives: [string, string, RegExp][] = [
     'gap-outlier',
     /^gap [\d.]+px between .+ and .+ is [\d.]+× the [\d.]+px gaps beside it$/,
   ],
-  ['inverted-groups', 'proximity-inversion', /: items 16px apart inside, 16px from .+ outside$/],
+  [
+    'outlier-row',
+    'gap-outlier',
+    /^gap [\d.]+px between .+ and .+ is [\d.]+× the [\d.]+px gaps beside it$/,
+  ],
+  ['inverted-groups', 'proximity-inversion', /: items 16px apart inside, 4px from .+ outside$/],
+  ['loose-controls', 'proximity-inversion', /: items 16px apart inside, 16px from .+ outside$/],
 ]
 
 for (const width of WIDTHS) {

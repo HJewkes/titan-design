@@ -128,6 +128,8 @@
     "test:visual:tokens": "playwright test --config playwright.tokens.config.ts",
     "test:visual:stories": "playwright test stories.spec.ts",
     "test:visual:stories:update": "playwright test stories.spec.ts --update-snapshots",
+    "test:visual:contrast": "playwright test --config playwright.contrast.config.ts",
+    "test:visual:contrast:update": "node scripts/update-contrast-stories-baseline.mjs",
     "test:offline-fonts": "playwright test --config playwright.offline-fonts.config.ts",
     "test:audit-probes": "playwright test --config playwright.audit-probes.config.ts",
     "prepublishOnly": "node scripts/ci-only-publish.mjs && pnpm build && vitest --run --project threads --project local-time --project types --project stories-axe",
