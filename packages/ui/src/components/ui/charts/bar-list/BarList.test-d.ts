@@ -1,7 +1,7 @@
 import { describe, expectTypeOf, it } from 'vitest'
 import type { ViewProps } from 'react-native'
 import type { ColorToken } from '../../../../theme/resolve-color'
-import type { BarListMarker, BarListProps, BarListReadout, BarListRow } from './BarList'
+import type { BarListMarker, BarListProps, BarListRow } from './BarList'
 
 describe('BarList types', () => {
   it('requires rows and accessibilityLabel', () => {
@@ -27,9 +27,10 @@ describe('BarList types', () => {
     expectTypeOf<BarListProps>().not.toHaveProperty('color')
   })
 
-  it('takes readouts as a list of the two readout names', () => {
-    expectTypeOf<BarListReadout>().toEqualTypeOf<'value' | 'flag'>()
-    expectTypeOf<BarListProps['readouts']>().toEqualTypeOf<BarListReadout[] | undefined>()
+  it('says near or over through the flag tone, and takes the value toggle as a boolean', () => {
+    expectTypeOf<NonNullable<BarListRow['flag']>['tone']>().toEqualTypeOf<'warning' | 'error'>()
+    expectTypeOf<BarListProps['isValueHidden']>().toEqualTypeOf<boolean | undefined>()
+    expectTypeOf<BarListProps>().not.toHaveProperty('readouts')
   })
 
   it('declares exactly the fourteen audited props', () => {
@@ -45,7 +46,7 @@ describe('BarList types', () => {
       | 'size'
       | 'formatValue'
       | 'formatSecondary'
-      | 'readouts'
+      | 'isValueHidden'
       | 'isLoading'
       | 'emptyState'
       | 'className'

@@ -17,6 +17,7 @@ const meta: Meta<StoryArgs> = {
     accessibilityLabel: 'Tool calls',
     maxRows: 10,
     size: 'md',
+    isValueHidden: false,
     isLoading: false,
   },
   argTypes: {
@@ -40,11 +41,10 @@ const meta: Meta<StoryArgs> = {
       description:
         'One labelled line on the value axis. Setting it also gives every row a tip that names the limit. The `With marker` fixture sets a cutoff of 100.',
     },
-    readouts: {
-      control: 'check',
-      options: ['value', 'flag'],
+    isValueHidden: {
+      control: 'boolean',
       description:
-        'The texts each row prints after its bar. Hide one and every row opens a tip that shows it.',
+        'Hides the value after each bar. It stays in the row name and in the tip every row then opens.',
     },
     isLoading: { control: 'boolean' },
     formatValue: { control: false },
@@ -66,12 +66,14 @@ const meta: Meta<StoryArgs> = {
           'secondary value, with a top-N cap that folds the rest into one overflow row. Composes ' +
           '[Typography](?path=/docs/foundations-typography--docs), ' +
           '[Skeleton](?path=/docs/components-atoms-skeleton--docs), ' +
-          '[EmptyState](?path=/docs/components-molecules-emptystate--docs) and, when `readouts` ' +
-          'hides a readout or a `referenceMarker` is set, ' +
-          '[Tooltip](?path=/docs/components-atoms-tooltip--docs) on each row. ' +
+          '[EmptyState](?path=/docs/components-molecules-emptystate--docs) and, when a row is ' +
+          'flagged, `isValueHidden` is set or a `referenceMarker` is set, ' +
+          '[Tooltip](?path=/docs/components-molecules-tooltip--docs) on each row. ' +
           'An optional `referenceMarker` draws a labelled line on the value axis, with no legend: the tip names the line, and the marker is read out with the list. ' +
-          'Bars are silver and a flagged row is red, in the silver/red scheme of ' +
+          'Bars are silver and a flagged row is red, a quieter red for a `warning` flag ' +
+          '(near a limit) and the full red for `error` (over it), in the silver/red scheme of ' +
           '[Foundations/Color/Silver-Red Scheme](?path=/docs/foundations-color-silver-red-scheme--docs). ' +
+          "The flag's label is never printed in the row: it is in the tip and the row's accessible name. " +
           'No error state: the consumer renders the failure. No disabled state: a row takes focus ' +
           'only for its tip.',
       },

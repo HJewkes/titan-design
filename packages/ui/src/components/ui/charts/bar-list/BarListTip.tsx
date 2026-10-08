@@ -10,11 +10,22 @@ import { Typography } from '../../typography'
 import type { BarListTipContent } from './bar-list-tip'
 import { hiddenFromAssistiveTech, LISTITEM_ROLE, TABULAR } from './shared'
 
+/** A row's place in the roving tab stop; a press settles the stop on that row. */
+export interface BarListTipItem extends ListNavigationItemProps {
+  onPress: () => void
+}
+
+export interface RowTips {
+  onKeyDown: ListNavigation['onKeyDown']
+  getItemProps: (index: number) => BarListTipItem
+}
+
 /**
- * The roving tab stop over the data rows: one stop for the list, Up, Down, Home and End move it,
- * and the row it rests on takes focus. Null when the rows carry no tip, so the list stays static.
+ * The roving tab stop over the data rows: one stop for the list; Up, Down, Home, End and a press
+ * move it, and the row it rests on takes focus. Null when the rows carry no tip, so the list
+ * stays static.
  */
-export function useRowTips(count: number, isOn: boolean): ListNavigation | null {
+export function useRowTips(count: number, isOn: boolean): RowTips | null {
   const [active, setActive] = useState(0)
   const navigation = useListNavigation({
     count,
@@ -24,7 +35,14 @@ export function useRowTips(count: number, isOn: boolean): ListNavigation | null 
     focusMode: 'roving',
     loop: false,
   })
-  return isOn ? navigation : null
+  if (!isOn) return null
+  return {
+    onKeyDown: navigation.onKeyDown,
+    getItemProps: (index) => ({
+      ...navigation.getItemProps(index),
+      onPress: () => setActive(index),
+    }),
+  }
 }
 
 /**
@@ -64,7 +82,7 @@ function TipBody({ tip }: { tip: BarListTipContent }) {
 interface TipRowProps {
   name: string
   tip: BarListTipContent
-  item: ListNavigationItemProps
+  item: BarListTipItem
   children: ReactNode
 }
 

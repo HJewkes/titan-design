@@ -229,21 +229,41 @@ describe('columnChars', () => {
     expect(model.columnChars).toEqual({
       value: 'No value'.length,
       secondary: 's7'.length,
-      flag: 'over 5%'.length,
     })
   })
 
-  it('gives a part no shown row has a width of 0', () => {
+  it('gives a part no shown row has a width of 0, and the flag label no cell at all', () => {
     expect(columnChars(buildBarListModel(rowsOf(1, 22)).rows, formatters)).toEqual({
       value: 2,
       secondary: 0,
-      flag: 0,
     })
+    expect(
+      columnChars([{ row: flaggedRow, index: 0, rank: 1, fraction: 1 }], formatters)
+    ).not.toHaveProperty('flag')
   })
 
   it('measures only the shown rows, not the ones past the cap', () => {
     const model = buildBarListModel([...rowsOf(9, 8), flaggedRow], { maxRows: 2, sort: 'none' })
-    expect(model.columnChars.flag).toBe(0)
+    expect(model.columnChars.secondary).toBe(0)
+  })
+})
+
+describe('flaggedCount', () => {
+  const flagged: BarListRow = {
+    id: 'f',
+    label: 'Flagged',
+    value: 1,
+    flag: { tone: 'warning', label: 'near' },
+  }
+
+  it('counts the shown rows that carry a flag', () => {
+    expect(buildBarListModel([flagged, ...rowsOf(5, 4)]).flaggedCount).toBe(1)
+    expect(buildBarListModel(rowsOf(5, 4)).flaggedCount).toBe(0)
+  })
+
+  it('does not count a flagged row past the cap', () => {
+    const model = buildBarListModel([...rowsOf(9, 8), flagged], { maxRows: 2, sort: 'none' })
+    expect(model.flaggedCount).toBe(0)
   })
 })
 

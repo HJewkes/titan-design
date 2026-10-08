@@ -4,8 +4,7 @@ import { Skeleton } from '../../skeleton'
 import { Typography } from '../../typography'
 import { resolveColor } from '../../../../theme/resolve-color'
 import { formatCompact } from '../../../../utils/number-format'
-import type { ListNavigationItemProps } from '../../../../hooks/useListNavigation'
-import type { SilverRedPair } from '../kit/silverRed'
+import type { SilverRedScheme } from '../kit/silverRed'
 import { hiddenFromAssistiveTech, LISTITEM_ROLE } from './shared'
 import { Bar } from './BarListBar'
 import {
@@ -21,7 +20,7 @@ import {
 } from './bar-list-model'
 import { Cells, type BarListColumns, type CellsProps } from './BarListCells'
 import { rowTip } from './bar-list-tip'
-import { TipRow } from './BarListTip'
+import { TipRow, type BarListTipItem } from './BarListTip'
 
 export { hiddenFromAssistiveTech }
 
@@ -100,17 +99,18 @@ interface ModelRowProps extends Pick<RowViewProps, 'entry' | 'layout' | 'size'> 
   columnChars: BarListColumnChars
   columns: BarListColumns
   marker: BarListModelMarker | null
-  palette: SilverRedPair
+  palette: SilverRedScheme
   /** The row's place in the roving tab stop; null renders a static row with no tip. */
-  tipItem: ListNavigationItemProps | null
+  tipItem: BarListTipItem | null
   formatValue?: BarListValueFormatter
   formatSecondary?: (value: number, row: BarListRow) => string
 }
 
-// A row's own `color` wins; otherwise the flag decides, and both flag tones share one red.
-function rowFill(row: BarListRow, palette: SilverRedPair): string {
+// A row's own `color` wins; otherwise the flag's tone decides: `warning` is near, `error` is over.
+function rowFill(row: BarListRow, palette: SilverRedScheme): string {
   if (row.color) return resolveColor(row.color)
-  return row.flag ? palette.flag : palette.neutral
+  if (!row.flag) return palette.neutral
+  return row.flag.tone === 'warning' ? palette.near : palette.over
 }
 
 /** One data row: derives its texts, fill and accessible name, then paints them. */
