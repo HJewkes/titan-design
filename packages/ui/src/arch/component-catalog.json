@@ -10842,7 +10842,7 @@
         },
         {
           "default": null,
-          "description": "Replaces the dash readout in the centre when `value` is `null` or not finite.",
+          "description": "Replaces the \"No data\" placeholder in the centre when `value` is `null` or not finite.",
           "name": "emptyState",
           "required": false,
           "type": "ReactNode"
@@ -10954,7 +10954,7 @@
         },
         {
           "default": null,
-          "description": "Replaces the default \"No data\" placeholder drawn when `data` is empty.",
+          "description": "Replaces the default \"No data\" placeholder drawn over the plot box when `data` is empty.",
           "name": "emptyState",
           "required": false,
           "type": "ReactNode"

@@ -63,7 +63,7 @@ describe('Gauge', () => {
 
   describe('no value', () => {
     it.each([null, Number.NaN, Number.POSITIVE_INFINITY])(
-      'draws the unfilled track and a dash readout for %s',
+      'draws the unfilled track and the "No data" placeholder for %s',
       (value) => {
         render(<Gauge value={value} unit="%" label="Health" />)
 
@@ -71,7 +71,9 @@ describe('Gauge', () => {
           .getAllByTestId('gauge-segment')
           .map((segment) => segment.style.backgroundColor)
         expect(new Set(filled).size).toBe(1)
-        expect(screen.getByTestId('gauge-value')).toHaveTextContent('—')
+        expect(screen.getByTestId('gauge-empty')).toHaveTextContent('No data')
+        expect(screen.queryByTestId('gauge-value')).not.toBeInTheDocument()
+        expect(screen.queryByText('—')).not.toBeInTheDocument()
         expect(screen.queryByText('%')).not.toBeInTheDocument()
         expect(screen.getByTestId('gauge').getAttribute('aria-label')).toBe('Health: no value')
       }
@@ -81,7 +83,8 @@ describe('Gauge', () => {
       render(<Gauge value={null} label="Health" emptyState={<Text>Not scored</Text>} />)
 
       expect(screen.getByText('Not scored')).toBeInTheDocument()
-      expect(screen.queryByTestId('gauge-value')).not.toBeInTheDocument()
+      expect(screen.queryByTestId('gauge-empty')).not.toBeInTheDocument()
+      expect(screen.queryByText('No data')).not.toBeInTheDocument()
       expect(screen.getByTestId('gauge-label')).toHaveTextContent('Health')
     })
 

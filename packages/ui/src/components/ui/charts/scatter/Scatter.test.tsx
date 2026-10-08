@@ -114,11 +114,20 @@ describe('Scatter', () => {
   })
 
   describe('empty state', () => {
-    it('shows a "No data" placeholder in place of the plot when there is no data', () => {
+    it('keeps the axes and draws a "No data" placeholder over the plot box when there is no data', () => {
       render(<Scatter data={[]} width={200} height={200} />)
 
       expect(screen.getByTestId('scatter-empty')).toHaveTextContent('No data')
-      expect(screen.queryByTestId('scatter-canvas')).not.toBeInTheDocument()
+      expect(screen.getByTestId('scatter-axis-x')).toBeInTheDocument()
+      expect(screen.getByTestId('scatter-axis-y')).toBeInTheDocument()
+      expect(screen.queryByTestId('scatter-points')).not.toBeInTheDocument()
+    })
+
+    it('centres the placeholder inside the axes, not the chart box', () => {
+      render(<Scatter data={[]} width={200} height={200} />)
+
+      const overlay = screen.getByTestId('scatter-empty')
+      expect(overlay).toHaveStyle({ left: '40px', top: '12px', width: '148px', height: '154px' })
     })
 
     it('shows the consumer emptyState instead of the default', () => {

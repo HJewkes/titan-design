@@ -13,10 +13,11 @@ const meta: Meta<typeof Gauge> = {
       description: {
         component:
           '**Atom.** A domain-free segmented dial: a value read against optional threshold bands, with ' +
-          'a centred readout. Composes no other component: segments are `View`s and the readout is a ' +
-          '`Text`, with theme colours through `useSurfaceMode` and `getSemanticColors`.\n\n' +
-          'Empty: a `null` or non-finite `value` draws the unfilled track and a dash readout (pick ' +
-          '`null` in the `value` control); `emptyState` replaces the dash. No loading state: the ' +
+          'a centred readout. Composes [EmptyState](?path=/docs/components-molecules-emptystate--docs) as the ' +
+          'default `emptyState`; segments are `View`s and the readout is a `Text`, with theme colours ' +
+          'through `useSurfaceMode` and `getSemanticColors`.\n\n' +
+          'Empty: a `null` or non-finite `value` draws the unfilled track with "No data" in the centre (pick ' +
+          '`null` in the `value` control); `emptyState` replaces it. No loading state: the ' +
           'consumer passes a value that is already loaded. No error state: the consumer renders a ' +
           'failure with `Alert`. No disabled state: the gauge is a read-out with nothing to press.',
       },

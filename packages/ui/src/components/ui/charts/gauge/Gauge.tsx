@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { View, Text, type ViewProps } from 'react-native'
 import { cn } from '../../../../utils/cn'
 import { getSemanticColors, type ThemeMode } from '../../../../theme/tokens/semantic'
+import { EmptyState } from '../../empty-state'
 import { useSurfaceMode } from '../../surface'
 import { primitiveColors } from '../../../../theme/tokens/primitives'
 import { alpha } from '../../../../utils/colors'
@@ -17,7 +18,7 @@ export interface GaugeThreshold {
 export interface GaugeProps extends Omit<ViewProps, 'children'> {
   /**
    * Current value. Clamped to [min, max] for the fill. `null` or a non-finite number draws the
-   * unfilled track with a dash readout.
+   * unfilled track with the "No data" `EmptyState` in the centre.
    */
   value: number | null
   min?: number
@@ -36,7 +37,7 @@ export interface GaugeProps extends Omit<ViewProps, 'children'> {
   thresholds?: GaugeThreshold[]
   /** Single-color override for filled segments (ignores `thresholds`). */
   color?: string
-  /** Replaces the dash readout in the centre when `value` is `null` or not finite. */
+  /** Replaces the "No data" placeholder in the centre when `value` is `null` or not finite. */
   emptyState?: ReactNode
   className?: string
 }
@@ -118,16 +119,10 @@ interface ReadoutProps {
   emptyState?: ReactNode
 }
 
-/** The big number and unit, or the no-value dash (or the consumer's `emptyState`). */
+/** The big number and unit, or the no-value placeholder (the consumer's `emptyState`, else "No data"). */
 function GaugeReadout({ value, color, unit, emptyState }: ReadoutProps) {
   if (value === null) {
-    return (
-      emptyState ?? (
-        <Text testID="gauge-value" className="text-3xl font-bold text-text-tertiary">
-          —
-        </Text>
-      )
-    )
+    return emptyState ?? <EmptyState title="No data" className="py-4" testID="gauge-empty" />
   }
   return (
     <View className="flex-row items-baseline gap-0.5">

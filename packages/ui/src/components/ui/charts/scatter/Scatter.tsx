@@ -7,11 +7,14 @@ import { EmptyState } from '../../empty-state'
 import { useSurfaceMode } from '../../surface'
 import {
   DIAGONAL_LINE,
+  PLOT_LEFT,
+  PLOT_TOP,
   referenceSegments,
   scatterAriaLabel,
   scatterLayout,
   type ScatterAxis,
   type ScatterDatum,
+  type ScatterLayout,
   type ScatterReferenceLine,
 } from './scatterGeometry'
 import { ScatterFrame } from './ScatterFrame'
@@ -41,7 +44,7 @@ export interface ScatterProps extends Omit<ViewProps, 'children'> {
   onPress?: (id: string) => void
   /** Draws a highlight ring on the matching point. */
   selectedId?: string
-  /** Replaces the default "No data" placeholder drawn when `data` is empty. */
+  /** Replaces the default "No data" placeholder drawn over the plot box when `data` is empty. */
   emptyState?: ReactNode
   className?: string
 }
@@ -66,18 +69,6 @@ export function Scatter({
   ...props
 }: ScatterProps) {
   const colors = getSemanticColors(useSurfaceMode())
-  if (data.length === 0) {
-    return (
-      <View
-        className={cn('relative items-center justify-center', className)}
-        style={{ width, height }}
-        testID="scatter-empty"
-        {...props}
-      >
-        {emptyState ?? <EmptyState title="No data" className="py-4" />}
-      </View>
-    )
-  }
   const palette = DATAVIZ_CATEGORICAL_ROLES.map((role) => colors[role])
   const layout = scatterLayout(data, width, height, axis, palette)
   const diagonalSegments = diagonal ? referenceSegments(layout, [DIAGONAL_LINE]) : []
@@ -105,21 +96,50 @@ export function Scatter({
         <ScatterFrame layout={layout} colors={colors} axis={axis} segments={segments} />
       </View>
 
-      {/* Interactive point overlay (kept out of the image-role canvas). */}
-      <View
-        style={{ position: 'absolute', top: 0, left: 0, width, height }}
-        testID="scatter-points"
-      >
-        {layout.points.map((p) => (
-          <ScatterPointMark
-            key={p.datum.id}
-            point={p}
-            isSelected={p.datum.id === selectedId}
-            ringColor={colors['text-primary']}
-            onPress={onPress}
-          />
-        ))}
-      </View>
+      {data.length === 0 ? (
+        <ScatterEmptyOverlay layout={layout}>{emptyState}</ScatterEmptyOverlay>
+      ) : (
+        /* Interactive point overlay (kept out of the image-role canvas). */
+        <View
+          style={{ position: 'absolute', top: 0, left: 0, width, height }}
+          testID="scatter-points"
+        >
+          {layout.points.map((p) => (
+            <ScatterPointMark
+              key={p.datum.id}
+              point={p}
+              isSelected={p.datum.id === selectedId}
+              ringColor={colors['text-primary']}
+              onPress={onPress}
+            />
+          ))}
+        </View>
+      )}
+    </View>
+  )
+}
+
+/** The "No data" placeholder (or the consumer's), centred inside the axes over the plot box. */
+function ScatterEmptyOverlay({
+  layout,
+  children,
+}: {
+  layout: ScatterLayout
+  children?: ReactNode
+}) {
+  return (
+    <View
+      className="items-center justify-center"
+      style={{
+        position: 'absolute',
+        left: PLOT_LEFT,
+        top: PLOT_TOP,
+        width: layout.innerW,
+        height: layout.innerH,
+      }}
+      testID="scatter-empty"
+    >
+      {children ?? <EmptyState title="No data" className="py-4" />}
     </View>
   )
 }
