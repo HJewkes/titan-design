@@ -32,7 +32,7 @@
  *   Regenerate after fixing some:  node scripts/update-no-copy-pitfalls-baseline.mjs
  */
 
-const path = require('node:path')
+const { loadBaseline, baselineKey } = require('./ratchet')
 
 const BASELINE_FILE = 'no-copy-pitfalls-baseline.json'
 
@@ -62,38 +62,18 @@ const MIN_CAPS_LETTERS = 4
 const AMPERSAND = / & /
 const BANG_TOKEN = /\S*!\S*/
 
-let baselineCache = null
 let glossaryCache = null
 
-function readJson(file, fallback) {
-  try {
-    return require(`./${file}`)
-  } catch {
-    return fallback
-  }
-}
-
 function loadGlossary() {
-  glossaryCache ??= new Set(Object.keys(readJson('copy-glossary.json', { terms: {} }).terms))
+  glossaryCache ??= new Set(Object.keys(loadBaseline('copy-glossary.json').terms ?? {}))
   return glossaryCache
-}
-
-/** Baseline keys are package-relative POSIX paths, so they're stable across machines. */
-function baselineKey(context) {
-  const cwd = context.getCwd?.() ?? process.cwd()
-  return path
-    .relative(cwd, context.filename ?? context.getFilename())
-    .split(path.sep)
-    .join('/')
 }
 
 /**
  * The file's allowances: `spend(value)` uses one up, `unspent()` lists what is left at the end.
- * Kept to this one function so the shared ratchet helper (PR #573) can replace it whole.
  */
 function fileBaseline(context) {
-  baselineCache ??= readJson(BASELINE_FILE, {})
-  const left = new Map(Object.entries(baselineCache[baselineKey(context)] ?? {}))
+  const left = new Map(Object.entries(loadBaseline(BASELINE_FILE)[baselineKey(context)] ?? {}))
   return {
     spend(value) {
       const count = left.get(value) ?? 0
