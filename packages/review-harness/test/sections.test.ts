@@ -8,7 +8,7 @@ import {
   questionsForVariant,
   roundLayout,
 } from '../src/sections.ts'
-import { ManifestSchema, type Manifest, type ManifestInput } from '../src/schema.ts'
+import { ManifestSchema, type Manifest, type ManifestInput } from '@titan-design/review-schema'
 import { createReducer, initialState, stopsFor } from '../page/state.ts'
 import { SHA, manifest, sectioned, sectionedInput } from './fixtures.ts'
 

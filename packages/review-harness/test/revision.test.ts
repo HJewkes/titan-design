@@ -5,7 +5,7 @@ import { Form } from '../page/App.tsx'
 import { createReducer, initialState, numberKeyAction } from '../page/state.ts'
 import { buildFeedback, draftAnswer, emptyDraft, unansweredQuestionIds } from '../src/feedback.ts'
 import { feedbackProblems, normalizeFeedback } from '../src/round.ts'
-import { FeedbackSchema, ManifestSchema, type ManifestInput } from '../src/schema.ts'
+import { FeedbackSchema, ManifestSchema, type ManifestInput } from '@titan-design/review-schema'
 import { SHA, manifest, sectionedInput } from './fixtures.ts'
 
 const NOW = new Date('2026-10-05T00:00:00Z')
