@@ -7,6 +7,8 @@
  *
  *   node scripts/arch-graph.mjs            # use existing .codewatch/graph.db (or build it)
  *   node scripts/arch-graph.mjs --reindex  # force a fresh codewatch index first
+ *   node scripts/arch-graph.mjs --add <file> [--add <file>]
+ *       # fresh index, then write ONLY the named components' nodes (see packages/ui/scripts/arch-graph-add.mjs)
  *
  * codewatch CLI: `@codewatch/cli` is NOT published to npm (AW-118), so `npx` 404s.
  * Resolution order is CODEWATCH_CLI → `codewatchCli` in scripts/arch.config.json →
@@ -21,6 +23,7 @@ import path from "node:path";
 import { execSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { componentBarrelHash } from "../packages/ui/scripts/barrel-hash.mjs";
+import { spliceComponents } from "../packages/ui/scripts/arch-graph-add.mjs";
 
 const ROOT = path.resolve(fileURLToPath(import.meta.url), "../.."); // repo root (titan-design)
 const DB = path.join(ROOT, ".codewatch", "graph.db");
@@ -75,10 +78,20 @@ function resolveCodewatch() {
 }
 const CW = resolveCodewatch();
 
+// ---- --add: which components to splice (none = full write) ------------------
+// Paths may be repo-relative or absolute; stored repo-relative, as node `file`s are.
+const ADD = process.argv
+  .flatMap((arg, i, argv) => (arg === "--add" ? [argv[i + 1]] : []))
+  .map((file) => {
+    if (!file) throw new Error("--add needs a component file path");
+    return path.relative(ROOT, path.resolve(ROOT, file));
+  });
+
 // ---- codewatch index -------------------------------------------------------
 // codewatch indexes incrementally and appends a snapshot; nodes for files deleted
 // since a prior index linger. Build into a FRESH db so there is exactly one snapshot.
-if (process.argv.includes("--reindex") || !fs.existsSync(DB)) {
+// --add always reindexes: a node from a stale db would be committed as current.
+if (process.argv.includes("--reindex") || ADD.length || !fs.existsSync(DB)) {
   console.error("· indexing packages/ui with codewatch (fresh) …");
   fs.rmSync(path.dirname(DB), { recursive: true, force: true });
   sh(
@@ -429,8 +442,18 @@ const payload = {
   edges,
   summary,
 };
-fs.mkdirSync(path.dirname(OUT), { recursive: true });
-fs.writeFileSync(OUT, JSON.stringify(payload, null, 2));
+if (ADD.length) {
+  fs.writeFileSync(
+    OUT,
+    spliceComponents(fs.readFileSync(OUT, "utf8"), payload, ADD),
+  );
+  console.error(
+    `✓ spliced ${ADD.join(", ")} → ${path.relative(ROOT, OUT)}; other nodes as committed`,
+  );
+} else {
+  fs.mkdirSync(path.dirname(OUT), { recursive: true });
+  fs.writeFileSync(OUT, JSON.stringify(payload, null, 2));
+}
 console.error(
   `✓ ${comps.length} components, ${edges.length} edges → ${path.relative(ROOT, OUT)}`,
 );
