@@ -10,8 +10,22 @@ changelog:compile` folds them into `[Unreleased]` at release.
 
 ## [Unreleased]
 
+## 0.22.0
+
 ### Added
 
+- `useTable` filters, holds controlled state and serves a window. New options: `columns`, `getRowId`, `mode` (`client` default, or `manual` with `rowCount`, `getRow` and a debounced `onRangeNeeded` that asks once per aligned block), and controlled pairs `filters`/`defaultFilters`/`onFiltersChange`, `selectedIds`/`defaultSelectedIds`/`onSelectedIdsChange` and `sort`/`onSortChange`. New return fields: `filters`, `setFilter`, `toggleFilterValue`, `clearFilters`, `activeFilterCount`, `facetOptions`, `visibleRowCount`, `rowAt`, `windowRange`, `setWindowRange`, `windowRows`, `clearRequestedRanges` and selection helpers. A filter or sort change returns to the first page, the top of the window and forgets requested ranges. With no new option the hook behaves as before. `table-model.ts` gains `facetCounts` (TD-163).
+- `surfaceGradient.card`, `.deviationTrack` and `.statusTrack`, and an optional `{ token, alpha }` gradient stop; `MesoStatusCard` and `DeviationBar` paint from them, unchanged on screen (TD-200).
+- `pnpm catalog` also writes `docs/component-catalog.md`, a markdown digest of `component-catalog.json` with one row per entry (name, status, family, purpose, composes, first story id), sorted by name and free of global counts so a change to one entry touches only its row. It ships in the package under `docs/`. `src/arch/component-catalog.digest.test.ts` renders the committed JSON and fails when the markdown differs, naming the stale rows (TD-353).
+- `MessageList`, `MessageBubble`, `DateSeparator`, `TypingIndicator` and `UnreadBadge` take an optional
+  `labels` prop that replaces their built-in strings, so a consumer can localise or reword them. Text that
+  depends on names or counts is a function (`typing`, `newMessages`). Defaults are unchanged (TD-371).
+- `SearchIcon`, `DatabaseIcon` and `ChartIcon` join the shared icon set (TD-407).
+- Non-text contrast gate (`theme/nontext-contrast`): declared control-boundary, mark, fill, track and separator pairs are composited over the five planes in light and dark and held to 3:1 or ΔL\* 7 / 12 / 18; a source test fails when a primitive stops painting its declared token class, and a ramp-fidelity test fails on a semantic colour that is neither a ramp step nor allowlisted by mode, token and value. Both baselines are shrink-only (TD-486).
+- `Kbd`, a display-only keyboard shortcut hint that renders one keycap per key and announces the shortcut once by its spoken name, e.g. "Command K" (TD-503).
+- `HighlightText` renders a string with matched ranges emphasised by weight (TD-504).
+- `Metric` moves to `ui/metric` and takes `align` (`start`, `center` or `end`, default `center`) and `tone` (the value colour from a semantic token). Existing callers render unchanged. The `custom/Metric` path is a `@deprecated` shim, removed in 0.23.0 (migration M9 in `DEPRECATIONS.md`) (TD-53).
+- `ActiveWorkoutPage` takes `onRecord(set)`, `onSkip` and `onAddTime`, and exports `ActiveWorkoutRecordedSet` for the recorded-set payload; the rest timer's add-time button no longer does nothing (TD-549).
 - `Scatter` takes `referenceLines` (`{ y }`, `{ x }` or `{ slope, intercept }`, each with optional `id` and `label`), clipped to the plot box and never widening the domain; a `label` joins the canvas accessible name. `diagonal` is a deprecated alias for `[{ slope: -1, intercept: 1 }]` and keeps its `scatter-diagonal` test id, removed in 0.23.0 (TD-472).
 - `ui/charts/network-graph` plot model for free-form layouts: `edgePath` gains the `'arc'` shape and a slot so an edge each way between two nodes separates, `placeLabels` declutters labels while always keeping the selected and active nodes' (and neighbours') labels, and node names and `summarizeGraph` state each node's group or hop. `GraphModel` carries `edgeShape`, `labelMode` and `groups`; `GraphNodeContext` takes `groupLabels`. Pure `.ts`, not yet exported (TP-1038).
 - `custom/ActiveWork` task-stage vocabulary (`TASK_STAGE_META`, `TASK_STAGE_ORDER`, `toTaskStage`), `TaskStagePill`, and the `task-flow` and `task-pr` modules (`TaskFlowItem`, `compareTaskFlow`, `filterTaskFlow`, `taskKey`, `toTaskPrState`) (TP-860a).
@@ -66,6 +80,32 @@ changelog:compile` folds them into `[Unreleased]` at release.
 
 ### Changed
 
+- `useTable`'s row type parameter is constrained to `object` instead of `Record<string, any>` (type-only). `pnpm lint` fails on any eslint warning (TD-201).
+- The theme tests and `color-story-kit` share one colour-check module, `theme/color-checks.ts`, instead of each carrying its own contrast, OKLab and Machado-2009 maths (TD-230).
+- The shell exposes page landmarks. `SideNav` is now a `navigation` landmark (named by a new `accessibilityLabel` prop, default `'Primary'`) instead of a `tablist`, and each `NavItem` is a `button` with `aria-current="page"` when active instead of a `tab` with `aria-selected`; native screen readers still get `accessibilityState.selected`. `TopBar` is a `banner` landmark. `AppShell` takes `isMainLandmark` to render its content region as `main` when the children are not a `Page` (off by default, since `Page` supplies `main`). Tests or automation that query the shell nav by `tab` or `tablist` must query `button` and `navigation` instead (TD-354).
+- `DateTime` with `isLive` and a `value` now re-renders that value relative to the current time
+  ("5 minutes ago" advances), ticking once per displayed unit (at most hourly) rather than every
+  `refreshMs`; without a `value` it is still a clock. An unparseable `value` renders `fallback` ('-'
+  by default) instead of the string "Invalid Date", in both `DateTime` and `formatDateTime`.
+  `formatDateTime` gains an options overload `{ isUTC, hour12, seconds, locale, fallback, now }`;
+  the positional `isUTC` and `fallback` still work. Relative time now rounds the magnitude, so past
+  and future agree at half-unit edges: 89.5 minutes reads "1 hour", where it used to read "2 hours".
+  `customFormat`, which was never applied, is `@deprecated` (TD-365).
+- Light mode takes the round-A token values: `border-input` and `border-input-hover` reach 3:1 on
+  every content plane, the `hairline-*` alphas rise to 0.10 / 0.15 / 0.22 with `divider` at the
+  `hairline-default` value, `status-success`, `status-info` and `status-warning` move to darker ramp
+  steps, `text-link` moves to blue 700, and `background-base`, `on-control-idle` and the brand
+  `-subtle` / `-muted` fills snap to ramp steps. Under a light surface the `Progress`
+  track is the neutral `hairline`. Dark is unchanged apart from `border-input` (TD-674) (TD-488, TD-489, TD-490, TD-491).
+- The surface context (`SurfaceContext`, `useSurface`, `useSurfaceMode`) now lives in `src/theme/`, so `ThemeProvider` no longer imports from `components/`; `ui/surface` re-exports it unchanged (TD-511).
+- Breaking for code that builds these shapes: `muscleReadModels` is re-synced with voltras-mcp and its mirrored types gain required fields. `MuscleStrengthExerciseRow` (and so `StrengthExerciseRow`) adds `setCount`, `currentLevel`, `relativeIndex`, `daysSinceTrained` and `recency`; `MuscleStrengthSection` adds `relativeIndexBySide` and `daysSinceTrained`; `MusclePlanSection` adds `frequency` (`plannedPerWeek`, `observedThisWeek`). A pinned sha and field-list type test now fail CI when the mirror drifts (TD-530).
+- `SetRow`'s live `liveRepIndex` now picks the rep its spotlight strip grows from the baseline; it was ignored before. Without it the strip still grows the newest rep, as it did (TD-595).
+- Dark `border-input` moves from grey 700 `#5A5958` to grey 500 `#888684`, matching light, so input
+  borders reach 3:1 on every content plane. Dark `border-input-hover` stays at grey 600 and now sits
+  darker than the resting border (TD-674).
+- `src/arch/component-catalog.json` now fills each entry's `purpose` (the first JSDoc sentence on the entry export) and `props` (from react-docgen-typescript, inherited `node_modules` props dropped, sorted by name: `name`, `type`, `required`, `default` and `description`), and records `sources.props`. The freshness test regenerates through one docgen program and proves with a source overlay on `Alert.tsx` that a function-body edit passes while a changed purpose sentence or an added prop fails (TD-69).
+- The package now declares Node 22 or later in `engines.node`, and CI runs on Node 22 only (TD-724).
+- `pnpm audit:stories` retunes four DOM probes from a catch report (TD-740): `proximity-inversion` needs the inner gap to be 1.5 times the outer one and skips painted groups and control rows clearly nearer their content than their items are apart; `gap-outlier` skips `space-between` and auto-margin rows; `alignment-near-miss` reads the baseline a browser aligns a child by (an icon-first child at the icon's bottom). Every kind stays a warning.
 - `global.css` self-hosts Inter, Nunito Sans and Space Grotesk instead of importing them from
   Google Fonts, so a single-file build opened from disk renders with no network. The woff2
   files are the ones Google Fonts served, with the same subsets and weights, and ship with their
@@ -83,8 +123,63 @@ changelog:compile` folds them into `[Unreleased]` at release.
   reads as a control. `border-input` itself still sits under 3:1 on every plane; its value is a
   separate token decision (TD-481).
 
+### Deprecated
+
+- `PrRecordType` is now a deprecated alias of `PRType`; use `PRType`. `FatigueMeter`'s `thresholds` prop
+  accepts the readonly `VelocityLossThresholds`, and its default is `VL_LOSS_THRESHOLDS` (TD-584).
+
+### Removed
+
+- `@gluestack-style/react` and `@gluestack-ui/themed` are no longer installed with titan; nothing in the package imported them. A consumer that imports either directly must declare it in its own `package.json` (TD-312).
+- `GoalTrajectoryChart` no longer takes `leftShadowSpread`, `baseline`, `bandFade` or `bandCurve`. These were design-exploration settings that have now been decided. The chart always draws the chosen treatment: a 4% left shadow, the `lip` baseline, the `centre-14` band fade and `monotone` band edges. The rendered output is unchanged. This is a breaking change to the props type, so it needs a minor bump. Before removing the props, the consumers were searched with `grep -rn "leftShadowSpread\|bandFade\|bandCurve\|baseline=" ~/projects/voltras-mcp/src ~/projects/titan-platform --include=*.tsx --include=*.ts`. voltras-mcp returned two comment hits and titan-platform returned only installed copies of this package, so nothing uses the props (TD-573).
+- Removed unused utility exports (TD-588). Minor release, breaking for 0.x consumers of these names:
+
+  - `utils/form.ts`: `getFieldValidationProps`, `createFieldId`, `getFieldAriaProps`, `isValidEmail`,
+    `hasMinLength`, `hasMaxLength`, `isEmpty`, `validationRules`, `composeValidators`, and the types
+    `FieldState`, `FieldWrapperProps`, `FormValues`, `FormErrors`, `FormTouched`.
+  - `utils/colors.ts`: `getStatusColor`, `getResultColor`, `getLuminance`, `getContrastText`, and the types
+    `StatusType`, `ResultType`. `alpha`, `lighten` and `darken` stay.
+  - `utils/workout-format.ts`: `formatSignedPct`, `formatPrescription`, and the type `PrescriptionInput`.
+
+  Consumer check, `git grep -n -w <symbol> -- packages/` at origin/main (`src/` has no other root):
+  every form.ts and colors.ts symbol above hits only its defining file, `utils/index.ts` and
+  `api/index.api.md` (`isEmpty` also matches unrelated local variables and `isEmpty` fields in chart hooks,
+  none of which import it). `formatSignedPct` and `formatPrescription` hit only their defining file, the
+  barrel, the API report and `workout-format.test.ts`. `StatusType`, `ResultType` and `PrescriptionInput`
+  hit no other file in `src/`. `formatRepsRange` keeps its callers: `SetStrip.tsx` and `formatExpectedRange`.
+- `ExerciseCard` no longer takes `onNavigateDetail` or `supersetColor`; no card variant read either, so passing them did nothing. The audit's `git grep -E "onNavigateDetail|supersetColor"` found 0 hits in all 5 consumers. Superset colour belongs to `SupersetWrapper`'s `color` (TD-595).
+
 ### Fixed
 
+- `GhostSpark` and `DualGhostSpark` now expose a text alternative: the wrapper is an image with a label such as "Rep 5 of 8, peak 0.62 m/s" (the dual adds left and right peaks), an `accessibilityLabel` prop overrides it, and the `<svg>` is hidden from the accessibility tree so the band labels stop leaking (TD-240).
+- Checked and selected state now reach the DOM under react-native-web, which drops `accessibilityState`. `Checkbox` emits `aria-checked` (`"mixed"` when indeterminate), `Radio` emits `aria-checked`, `Tabs` emits `aria-selected` on each `Tab`, and `Switch` drops its duplicate `accessibilityState.checked`. The checkbox and radio `aria-required-attr` stories-axe baseline entries are gone (TD-241).
+- Selection, expansion and current-page state now reach the DOM under react-native-web, which drops `accessibilityState`. Table select cells emit `aria-checked` (`"mixed"` on a partially selected select-all), InitiativeBrief section headings emit `aria-expanded`, the active SidebarItem carries `aria-current="page"`, and the lab AwShell nav tabs emit `aria-selected`. The table `aria-required-attr` stories-axe baseline entries are gone (TD-243).
+- `FatigueLights` lights and `VelocityHero` now expose a named `role="img"` text alternative, and `GhostBand` is `aria-hidden` as decorative, so their axe tests can fail on a missing label (TD-350).
+- `MessageList` exposes the thread as a named `role="log"` region (`accessibilityLabel`, default "Conversation"), and every message without a visible author line carries a visually hidden speaker ("You" or the author's name) for screen readers (TD-356).
+- `Sidebar` is a navigation landmark, titled sections are labelled groups, parent items expose `aria-expanded`, text badges render inside `Text` (a zero badge renders nothing), and transition classes carry `web:` (TD-358).
+- `TypingIndicator` holds its dots at full opacity and starts no pulse loop when the user prefers reduced
+  motion, and stops a running loop if the preference turns on mid-session (TD-367).
+  `usePrefersReducedMotion` no longer throws on unmount on a native platform where react-native-web
+  returns no listener subscription.
+- `NavItem` now names its live state for screen readers: while a set runs in a category that is not active, the accessible name is "Train, live" (new `liveLabel` prop sets the words). Nothing changes visually (TD-368).
+- `CoChangeChip`, `FileHistoryExplorer`, `InitiativeCard`, `PortfolioOverview` and `SessionListItem` merge the caller's `className` through `cn()`, so a conflicting class replaces the root's own instead of sitting beside it; `SessionListItem` gains the `className` prop (TD-376).
+- `chartEntrance` styles (`drawStyle`, `fadeStyle`, `popStyle`) are empty off web, so native gets no CSS transition strings or `transformBox`; the kit README names the limit (TD-380).
+- `CardTitle` takes `level` (1 to 6, default 3) and renders that heading on web instead of an `h1` (TD-510).
+- Playwright no longer reuses a server already on port 6006 or 5200, so a suite cannot screenshot another worktree's tree; the specimen server starts with `--strictPort` (TD-512).
+- The six ESLint baseline updaters share one regen helper (`scripts/lib/regen-eslint-baseline.mjs`) that compares each file's keys, not its total, so swapping a grandfathered violation for a new one of another key is refused instead of absorbed silently (TD-513).
+- The README Tailwind setup uses the titan preset, and the docs no longer show a bare-string `Button` child (TD-514, TD-517).
+- `Autocomplete` keeps the label of an option clicked just after the input blurs; the 200 ms blur reset no longer overwrites it with the previous selection, and the timer is cleared on unmount (TD-523).
+- `GoalTrajectoryChart` and `GoalTrajectoryMini` drop a NaN, null or infinite reading instead of drawing `NaN` into the line, the dots and the summary (TD-527).
+- `TableHeaderCell` names its sort button from a new `sortLabel` prop instead of stringifying element children, and a non-sortable header now passes `testID` and `accessibilityLabel` through. `useTable` moves back to the last page with rows when `data` shrinks, and an empty table's range starts at 0 (TD-538).
+- `MarkdownProse` now warns in development when a `ProseLinker` pattern carries regex flags such as `i` or `u`, which the combined tokenizer has always dropped; the `ProseLinker` docs state the rule (TD-542).
+- `DateSeparator` steps back one local calendar day for "Yesterday" instead of 24 hours, so the day after a
+  daylight-saving change no longer labels the day before yesterday "Yesterday" (TD-543).
+- `SessionList` no longer reuses a React key for two period groups when sessions arrive unsorted and a month repeats; each group is keyed by position and label, and grouping order is unchanged (TD-544).
+- `TempoDisplay` no longer renders an inert button (no role, tabindex or press styles) when neither `onPress` nor `showInfo` is set, and `ZoneTrack` now calls the consumer's `onLayout` as well as its own width handler (TD-548).
+- `MesoCard`: the highlighted border now renders the brand-primary colour. An Animated interpolation passed through `style` overrode it with a value a plain `View` cannot use, so the card kept its default border. The unused `useHighlightBorder` hook and the no-op `Animated.View` wrapper are removed (TD-550).
+- The custom ESLint ratchet rules now share one baseline helper: a checkout under a directory named `src` no longer lets `titan/no-upward-tier-import` pass everything, and a malformed baseline file now fails the lint run instead of being ignored (TD-552).
+- The `scripts/` CLIs detect direct invocation through one shared `isEntryPoint`, so `check-play-count` and the other gates no longer exit 0 without running from a checkout path holding a space, `%` or non-ASCII. `design-freeze` creates its git tag only after the manifest and outerHTML extraction succeed (TD-553).
+- `CircularProgress` and `CircularTimer` rings render on the native wall: the arc, track and done-label colours resolve to literal hex through `getSemanticColors` instead of CSS variables (TD-558).
 - `DualPinnedLiveStrip`: a side's missed rep (an empty column where the other side has a rep) is
   now a hollow stub with a 2px ring in the on-surface secondary tone, 4.75:1 on the light card and
   4.58:1 on the dark card (was 1.27:1 and 1.41:1). On a light card the bars keep only a 1px
@@ -134,6 +229,106 @@ changelog:compile` folds them into `[Unreleased]` at release.
 
 ### Internal
 
+- `titan/no-raw-spacing` now flags negative numeric literals such as `marginLeft: -7` (TD-12).
+- `ui/table` API note and fixtures: the Table filtering and virtualization contract restated with amendments A1 to A5, and 11 fixtures including the real 60-finding titan-design list and a 10,000-row synthetic set. Pure `.ts` and `.md`, not yet exported (TD-161).
+- `ui/table/table-model.ts`: pure `filterRows`, `toggleSetFilter`, `clearFilters`, `activeFilterCount`, `facetOptions`, `alignRange`, `missingRanges` and `windowSlice` for the Table filtering slice, with unit and property tests. `nextCell` moves from the DependencyMatrix model to `utils/grid-navigation.ts` so the Table grid mode can share it. Not yet exported (TD-162).
+- `VelocityStrip.tsx` moves its pure scale code, slot model and loss-band overlay into `velocity-scale.ts`, `velocity-slots.ts` and `VelocityLossBands.tsx`; the public exports are unchanged (TD-174).
+- `DualVelocityStrip` moves out of `VelocityStrip.tsx` into `DualVelocityStrip.tsx`, with its charts in `DualVelocityCharts.tsx` and its slot alignment in `dual-velocity-slots.ts`; the hero and dual-expanded charts share one wing builder. The public exports are unchanged (TD-175).
+- `VelocityStrip` now builds its slots once with `useVelocitySlots` and renders each variant from `VelocityStripVariants.tsx` and `VelocityStripFramed.tsx`, with its summary math in `velocity-strip-model.ts`. Its props, exports and rendered output are unchanged (TD-176).
+- Regenerated `arch-graph.json` so per-component metrics match main, and documented that those metrics are advisory because the freshness test cannot recompute them (TD-178).
+- `ui/charts/line-chart` API note and fixtures: the LineChart contract restated with amendments A1 to A8, and 15 fixtures including a real 17-snapshot history with relabelled nodes. Pure `.ts` and `.md`, not yet exported (TD-179).
+- `ui/charts/line-chart/`: the LineChart types, `line-chart-model.ts` (`cleanSeries`, `lineDomains`, `projectSeries`, `facetSeries`, `nearestPoint`, `nextPoint`), `summary-model.ts` (the image sentence per chart and per facet) and the `useLineChart` hook with the controlled active point, with unit, property and type tests. Not yet exported (TD-181).
+- Lint message contract: `eslint-rules/README.md` states it, and `lint-message-contract.test.ts` enumerates every `titan` and `no-restricted-syntax` message, requiring a fixture per new id and a shrink-only `PENDING` list for older ones. The Tailwind compile helper moves to `src/test/tailwind-compile.ts` (TD-192).
+- Colour lint messages now list derived token options (TD-193). `titan/no-raw-color` maps a palette hue to its status role and lists that role's classes, and points a style colour at `useOnSurfaceColor` or `resolveColor`. `titan/no-var-color-opacity` lists the rungs the token publishes, or says it has none and names `alpha()`. The colour `no-restricted-syntax` entries live in `eslint-rules/restricted-syntax.js`. Detection is unchanged.
+- Spacing and type lint messages now name the nearest scale steps with their `space.*` keys, the nearest classes for an arbitrary value, and the Typography variants and `text-*` keys, all derived from `fix-options.js`. The restricted-syntax message text moved into `restricted-syntax.js` (TD-194).
+- `titan/no-upward-tier-import` names the tier to move the imported code down to (or the path a deprecated shim already moved to), `titan/no-deprecated-import` quotes the first sentence of the `@deprecated` tag and suggests the new name for a pure rename, and `titan/story-title-prefix` reads its roots from `.storybook/preview.tsx` and suggests one from the file's directory (TD-195).
+- `titan/no-local-formatter` lists the exports of the formatter modules (now including `utils/time-format`), `titan/no-frozen-theme` lists the on-surface roles, and the device rules say what to render instead; `hyphenatedDataKey` computes the camelCase key. The five chat and three device ids leave the contract's `PENDING` set (TD-196).
+- `ActiveWorkoutPage`, `ExerciseDetailPage`, `ProgramPlanningPage`, `ScheduleTiles`, `GoalMilestoneSummary` and `TimerReadout` tests now assert no axe violations; `ExerciseDetailPage` is also checked on its advanced tab and `ProgramPlanningPage` at its workout level. Their `a11y` entries leave the component anatomy baseline (TD-203).
+- `CapacityBandChart` is split into smaller functions with unexported geometry, entrance-hook and part modules; rendered output is unchanged (TD-209).
+- `ZoneTrack` and `Sparkline` are split into smaller functions with unexported helper modules; rendered output is unchanged (TD-210).
+- `GoalTrajectoryChart` is split into a pure model, a hook and two parts, so the component body is 76 lines; props, exports and rendered output are unchanged (TD-212).
+- `GhostBand` and `DualGhostSpark` are split into smaller functions with unexported helper modules; rendered output is unchanged (TD-214).
+- `ExerciseDetailPage` and `ProgramPlanningPage` are split under 100 lines per function, with two unexported siblings (`ExerciseDetailSectionCard`, `ProgramPlanningBreadcrumbs`). `ProgramNavLevel` and `ProgramBreadcrumb` are now declared in the breadcrumb sibling and re-exported unchanged from `@titan-design/react-ui/pages`. No rendered, prop or className change (TD-215).
+- `MesoCard`, `MesoStatusCard` and `WorkoutCard` are split under 100 lines per function. `MesoCard` and `MesoStatusCard` each gain an unexported `.parts.tsx` sibling (highlight animation, accent strip, press region and week list; coaching and next-target callouts), and `MesoStatusCard` and `WorkoutCard` gain in-file parts for the header, muscle chips and press region. No rendered, prop, export or className change (TD-216).
+- `InputBar`, `RestTimer` and `TempoDisplay` are split into smaller functions, with unexported `RestTimerBar`, `tempoDisplayModel` and `tempoDisplayParts` siblings; rendered output is unchanged (TD-217).
+- New token categories, palettes, ramp steps and primitives are recorded as numbered decisions in `docs/decisions/`, with a template, an index, ADR-0001 and a structure test (`src/test/decisions.test.ts`). `REJECTED.md` and `TOKENS.md` point at it (TD-229, TD-30 S1).
+- Contrast is gated over declared foreground/background pairs in both modes, with a shrink-only baseline of the pairs that fail today; `token-contrast.test.ts` replaces `semantic-contrast.test.ts` (TD-231).
+- Token tests now gate colour-vision deficiency and near-duplicate colours: `token-cvd.test.ts` holds the categorical all-pairs and `dataviz-diverging-*` / `dataviz-sequential-*` adjacent-step deutan/protan floors in both modes, and `token-near-dupes.test.ts` fails a new semantic colour within ΔE 3 of another, against a shrink-only `near-dupe-baseline.json` (TD-232).
+- `tokens-doc-coverage.test.ts` fails when a colour root in `tailwind.config.js` has no backticked
+  mention in `TOKENS.md` and no allowlist entry with a reason, and a pull request template carries the
+  token-change checklist (TD-233).
+- `scripts/export-color-inventory.mjs` writes the built primitive ramps and semantic colours as `ramps.json` and `colors.json` for the colour skill tools, with the commands in `docs/decisions/README.md` (TD-234).
+- Drawer and IconBox variant tests now assert the rendered placement, size and colour classes instead of only that text renders (TD-282, slice A).
+- CI's "Bundle budget" step runs `size-limit` against the brotli size of each ESM entry and `tokens.css`, with limits in `.size-limit.json` (TD-287).
+- API Extractor reports for the six package entries live in `packages/ui/api/`; `pnpm api:check` fails CI when an export changes without `pnpm api:update` (TD-288).
+- CI fails a PR or a `v*` tag whose `packages/ui` version bump is smaller than its API report diff requires: in 0.x a breaking diff needs a minor bump and an additive one a patch (TD-289).
+- `pnpm docs:check` type-checks the `ts` and `tsx` fences in the markdown docs against the `src` entries and runs in CI. Fences that fail today are listed in a shrink-only baseline; a fence that is not standalone code opts out with the info string `tsx fragment` (TD-290).
+- The doc examples in `README.md`, `TOKENS.md`, `DEPRECATIONS.md` and the root README compile against the real exports, and the illustrative snippets are marked `tsx fragment`. The `docs:check` baseline drops from 29 fences to the 4 in `CLAUDE.md` and one stale `README.md` fence (TD-291).
+- `api-undocumented.test.ts` ratchets `(undocumented)` exports in the API reports against `api/undocumented-baseline.json`; the baseline only shrinks, and `pnpm api:update` refuses growth without `--allow-increase` (TD-292).
+- `pnpm type-check:examples` type-checks the stories and tests, which `tsconfig.json` excludes, and runs in CI. Today's errors are counted per file in a shrink-only baseline: a new error fails, and so does a fixed one until its entry is lowered with `--update` (TD-293).
+- Test capture now records each host node's `className` in a WeakMap, so `spacingClassesAt(node)` reads the rendered classes of an element found by text, role or label. `spacingClassesOf` and `spacingClassesAt` throw on an `Animated.*` element carrying a `className`, which NativeWind never applies (TD-294).
+- The Menu `DestructiveItem` story now renders open through `defaultIsOpen`, and the Menu and Popover
+  stories expose `isOpen` / `defaultIsOpen` controls on `Default` (TD-315).
+- Port the story DOM checks and spacing-scale helpers into `scripts/audit-stories/` (TD-318).
+- `scripts/audit-stories/targets.mjs` maps a diff to the stories it touches (TD-320, parent TD-316).
+- `docs/audit-stories.md` documents `pnpm audit:stories`: its checks and finding kinds, `dom.json`, targeting, exit codes and the port rules; a test fails when a kind is missing from it (TD-322).
+- `src/test/fixtures/stress.ts` holds the shared synthetic stress fixtures: label strings S-1 to S-5, number sets N-1 to N-6 and the W-1 matrix widths, with a test pinning each set's invariants (TD-323).
+- New `titan/no-truncation` lint for `custom/` and `shell/`: truncation props, properties and classes are blocked outside a shrink-only baseline (24 sites in 18 files) and an owner allowlist. An unspent baseline allowance is reported as stale until `node scripts/update-no-truncation-baseline.mjs` regenerates it (TD-327).
+- Fix drifted facts in the test-layer, render-testing, TOKENS and component-implementation prompt docs (TD-338).
+- The `Theme Presets` and `PresetShowcase` stories, their visual validation screenshots and `.storybook/preview-head.html` are removed, and the deprecated-import baseline drops from 59 to 52 occurrences. `applyThemePreset` and `audiobookPreset` stay exported until audiobook migrates (TD-346, TD-2 S3).
+- The catalog freshness test builds the catalog once and compares it with the committed file per entry, naming each entry that differs. Mutation tests through the generator's `read` injection prove a story status change fails, a story args change passes, and an emptied `storyIds` fails (TD-352).
+- Add `custom-families.test.ts` and its shrink-only baseline for the generic and shim directories under `custom/`, and declare `Chat` as a domain family in `custom/README.md` (TD-366).
+- Changelog entries are per-PR fragments in `changelog.d/` (`pnpm changelog:compile` folds them into `[Unreleased]` at release), and `component-catalog.json` drops its global `inputsHash`; the freshness test regenerates the catalog and compares it byte for byte. Neither file now conflicts between open PRs (TD-492).
+- The framed `VelocityStrip` no longer passes the `bg-surface-raised` class, which NativeWind never applied to its `Animated.View`. Nothing rendered changes, and a test now fails if the strip starts painting a background (TD-509).
+- The deprecation ledger now names voltras-mcp as a live consumer of `DashboardShell` and `defaultNavItems`; removal waits on its migration (TD-516).
+- The `docs/ARCHITECTURE.md` token section shows verbatim excerpts of the real `greyRamp`,
+  `primitiveRamps`, `semanticColorsDark` and `global.css` values, replacing samples that named
+  symbols that do not exist and an indigo brand colour (TD-520).
+- `milestoneReach` and `resolveTile` now route value targets through `valueReach`, and the surplus and gap share one lead-order helper, so one function decides short, met or beyond (TD-528).
+- The specimen comparison suite now compares computed styles for the Sparkline, ExerciseCard, SupersetWrapper, InputBar and RestTimer pairs instead of asserting hard-coded React values (TD-532).
+- Two fixtures import `seededRandom` from the chart kit instead of carrying their own copy of the generator (TD-566).
+- `VelocityStripProps.hideBaseline` is removed. The prop was destructured and never read, so no variant honoured it and rendering is unchanged; `DualVelocityHero` no longer passes it to its wings (TD-594).
+- Delete the unused specimen `htmlGroundTruth.tsx`, its dead velocity-mini CSS rules and three orphan baselines (TD-596).
+- Corrected comments in the theme utilities and test helpers that stated false invariants (TD-598).
+- The GhostBand hold-versus-idle test now asserts the luminance order (unfilled hold, idle, filled hold) instead of mere inequality (TD-602).
+- Workout: the private status pills in `wholeBodyCardParts` and `MesoStatusCard` are renamed `GoalStatusPill` and `MesoStatusPill` so only the exported `StatusPill` keeps that name (TD-604); the `SessionHeader` and `MesoStatusCard` JSDoc now state what the code does (TD-616). No rendered change.
+- The table README names `table-model.ts`, `useTableFilters.ts` and `useTableWindow.ts` as the owners of filtering and windowing, and the `carouselMath` comment on `stepIndex` points at `wrapIndex` (TD-606).
+- The dataviz light-palette decision record names the test that pins it, `DatavizLightPalette.candidates.test.tsx`, and the `custom/charts` README indexes it as a token decision record (TD-609).
+- The ActiveWork README composition trees and dependency map now match the imports, and the `task-stage` comment names its real consumer, `TaskStagePill` (TD-610).
+- `GoalTrajectoryChart` docs and dead props: the charts README now describes its empty state, hidden `<svg>` and week-tip interaction as the code has them. Drops the unused `PlotStyle.referenceLabelSide`; `weekSpan` is now on the geometry. Nothing renders differently (TD-612).
+- Rewrite stale comments in the Storybook preview, the story visual spec and the vitest config to match the code they describe (TD-618).
+- `changelog:compile` takes `--help` and `--dry-run`, and refuses an unknown argument with exit 64 instead of folding the fragments (TD-623).
+- MesoCard `StrengthBlock` story now uses its own Push/Pull/Legs week fixture instead of the Upper/Lower one (TD-634).
+- The last non-`CLAUDE.md` fence leaves the `docs:check` baseline: the `README.md` Common Pitfalls border example now uses `resolveColor('hairline-default')` instead of a raw hex and the removed `WORKOUT_TOKENS.border`, so the baseline holds only the 4 `CLAUDE.md` fences (TD-635).
+- Storybook now pre-bundles `@storybook/addon-themes` at startup, so Vite no longer re-optimizes and reloads the dev server mid-run, which blanked the first DualVelocityStrip visual stories; the 20 s cold-start guard from TD-636 is removed (TD-636).
+- The DualVelocityStrip visual stories wait up to 20 s for their first render, so a cold dev server no longer trips the blank-render guard (TD-636).
+- A blank Layer 2 story now fails with the page's console errors, failed requests and root markup, and the visual job uploads the failing run's screenshots and traces before the regen step empties them (TD-636).
+- `VelocityHero` exposes one image instead of nesting the strip's own image inside it; the GhostSpark docs say what its text alternative carries; a TypingIndicator test turns reduced motion on mid-session (TD-637).
+- The `titan/no-raw-composition` messages name backticked options the lint message contract validates, and every lint message id now has a fixture (TD-638).
+- `TOKENS.md` documents the `dataviz-*` colour roles and the components that use them, and the
+  colour-root coverage test no longer allowlists `dataviz` (TD-639).
+- ProgramPlanningPage now has a test that selecting a week clears the open workout (TD-640).
+- The `lint message contract: the checker` tests get a 30 s timeout like the spacing block, since the first case cold-imports the whole package barrel and hit vitest's 5 s default on a loaded CI runner (TD-642).
+- The `visual` CI job skips its layers and ends green when a pull request changes no rendered UI (TD-645).
+- `pnpm verify:changed` runs the checks CI fails on for the files changed against `origin/main`: prettier, eslint, type-check with the examples, catalog freshness, the decomposition ratchet, `arch:check` and the related tests, one process at a time (TD-646).
+- `docs/design-freeze-workflow.md` lists the design-freeze steps in the order `design-freeze.mjs` runs them: commit check, both extractions, then the annotated tag (TD-647).
+- Three script CLIs (`check-doc-examples`, `check-examples-types`, `check-release-bump`) use the shared `isEntryPoint` guard, so they still run when invoked through a symlink (TD-648).
+- Storybook status tags: step 1 of the maturity rule in `MATURITY.md` now also covers stories titled `Lab/…` outside `src/lab`. These stories record design decisions, and the public Storybook build leaves them out. The ten `custom/Workout` `*.decision` stories and `VolumeStatusPalette` keep `status:lab`. Each now also carries `!status:review`, so it no longer inherits the review default as well (TD-649).
+- `scripts/audit-stories/layout-collect.mjs` collects per-element layout, text baselines and ink for the
+  D-35 DOM probes, with a real-browser fixture suite in `pnpm test:audit-probes` (TD-651).
+- `pnpm audit:stories` warns on `stacked-inset`, `edge-clearance` and `inset-asymmetry`, judged from the layout collector (TD-652).
+- `pnpm audit:stories` warns on `alignment-near-miss`: flex-row siblings whose top, centre, bottom and baseline all miss by a small amount, a baseline row that misses its baseline, and painted siblings a few pixels apart in height (TD-653).
+- `pnpm audit:stories` warns on `gap-outlier` (one gap in a stack at least twice the smallest and 8px larger, unless a `--space-section-*` margin declares it) and `proximity-inversion` (a group whose items sit as far apart as the group sits from its neighbours) (TD-654).
+- `pnpm audit:stories` warns on `font-size-near-miss` (two text sizes 2px or less apart on one visual line) and `font-size-drift` (one element's font size changes between widths of a story, reported once at the outermost element) (TD-655).
+- Three review nits (TD-657). The three `shell/workout` `*.decision` stories and `DatavizLightPalette` keep `status:lab` and now also carry `!status:review`. `CapacityBandChart` treats a `null` projection as absent, as it already did for the projection pixels, so it no longer draws an empty projection layer. `titan/no-raw-spacing` now covers the 16 `custom/Workout` files that the TD-6 split wave created from enrolled parents.
+- New `titan/no-unstyled-text` lint across `src/` (tests exempt): a react-native `Text` with no `className`, no `style`, no spread and no Text ancestor renders black 14px System on web, so it is blocked outside a shrink-only baseline (3 sites in 3 files). An unspent baseline allowance is reported as stale until `node scripts/update-no-unstyled-text-baseline.mjs` regenerates it (TD-659).
+- New `titan/no-html-element` lint across `src/components/` (stories and tests exempt): a lowercase JSX element such as `<div>` or `<path>` mounts on web only, so it is blocked outside a shrink-only baseline keyed by file and element name. The message names the react-native primitive for an HTML element and the react-native-svg component for an SVG one. An unspent baseline allowance is reported as stale until `node scripts/update-no-html-element-baseline.mjs` regenerates it, and the script refuses an increase without `--allow-increase` (TD-689).
+- New `titan/props-naming` lint across `src/components/` (stories and tests exempt): a `disabled`, `loading`, `selected` or `onClick` member declared on a type alias or interface named `*Props` is blocked outside a shrink-only baseline keyed by file and property name, and the message names the convention prop (`isDisabled`, `isLoading`, `isSelected`, `onPress`). Members inherited through `extends` or a type reference are not inspected, and a `selected` whose annotation is not boolean-shaped is read as a controlled value and left alone. An unspent baseline allowance is reported as stale until `node scripts/update-props-naming-baseline.mjs` regenerates it, and the script refuses an increase without `--allow-increase`. `titan/no-html-element` now names the exported `Link` for a lowercase `<a>` instead of Pressable (TD-690).
+- `ui/code-viewer/lineModel.ts`: pure `splitLines`, `normalizeStartLine`, `normalizeRanges`, `rangesByLine`, `gutterDigits`, `rangeEdges`, `scrollIndexFor` and `buildLineModel`, plus the `useLineRange` headless hook (memoized model and the controlled or uncontrolled gutter selection), with unit, property and type-level tests. Not yet exported (TD-75).
+- Tag the remaining `custom/Workout` stories and the `ui/{menu,popover,modal,select,tooltip}` stories with the status the MATURITY.md rule derives (TD-8).
+- `ui/tree-view` API note and fixtures: the TreeView contract restated with amendments A1 to A5, and 11 fixtures including real titan-platform paths and a generated 5,000-row truncated set. Pure `.ts` and `.md`, not yet exported (TD-95).
+- `ui/tree-view/tree-model.ts`: pure `indexNodes`, `visibleRows`, `ancestorsOf`, `nextFocus` and `typeaheadMatch` for the TreeView slice, with unit and property tests. `TreeNode` moves to `tree-view/types.ts`. Not yet exported (TD-96).
+- `ui/tree-view/useTreeNavigation.ts`: the headless TreeView hook over the tree model. Expansion and selection each controlled or uncontrolled, a focused row with a roving tab stop, `revealId`, one `onLoadChildren` per unloaded expand, and a 500 ms typeahead buffer; selection never follows focus. `TreeRenderSlot<T>` joins `tree-view/types.ts`, and `TreeView.test-d.ts` checks `T` reaches both render slots. Not yet exported (TD-97).
 - The `Lab/North Star/Live Wall Dashboard` story composes `WorkoutShell` instead of the deprecated
   `DashboardShell`; the deprecated-import baseline drops from 60 to 59 (VW-752).
 - `titan/no-deprecated-import` follows `export * from` re-exports, so a deprecated export
