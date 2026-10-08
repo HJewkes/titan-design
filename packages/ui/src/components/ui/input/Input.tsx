@@ -1,9 +1,8 @@
 import React, { forwardRef, useState } from 'react'
 import { TextInput, View, Text, Pressable, type TextInputProps } from 'react-native'
 import { cn } from '../../../utils/cn'
-import { getPressedRecessShadow } from '../../../theme/elevation'
-import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
-import { useSurfaceMode } from '../surface'
+import { useSurface, type SurfaceContextValue } from '../surface'
+import { insetFieldStyle } from '../surface/insetField'
 
 export type InputSize = 'sm' | 'md' | 'lg'
 export type InputVariant = 'outline' | 'filled' | 'underline'
@@ -65,10 +64,10 @@ const variantStyles: Record<
     focus: 'border-border-input-focus',
     error: 'border-border-input-error',
   },
-  // One fill on every plane (`background-base`, the plane below `surface-base`), cut in by the
-  // inset-well recess on web; the focus ring replaces the well while the field is focused.
+  // The fill is the inset elevation (one plane down from the enclosing plane, see `fieldWell`);
+  // the focus ring replaces the well while the field is focused.
   filled: {
-    base: 'border border-transparent rounded-md bg-background-base',
+    base: 'border border-transparent rounded-md',
     hover: 'web:hover:border-border-input-hover',
     focus: 'border-border-input-focus bg-transparent',
     error: 'border-border-input-error',
@@ -82,12 +81,12 @@ const variantStyles: Record<
 }
 
 /**
- * The inset-well recess of the filled field, dropped while focused so the focus border reads
- * alone. Web only: native keeps the flat `background-base` fill.
+ * The inset elevation of the filled field: one plane down from the enclosing plane, with the
+ * inset-well recess. Dropped while focused so the focus border reads alone.
  */
-function fieldWell(variant: InputVariant, isFocused: boolean, mode: ThemeMode) {
+function fieldWell(variant: InputVariant, isFocused: boolean, surface: SurfaceContextValue) {
   if (variant !== 'filled' || isFocused) return undefined
-  return getPressedRecessShadow(getSemanticColors(mode)['background-base'], mode)
+  return insetFieldStyle(surface.level, surface.mode)
 }
 
 /**
@@ -131,7 +130,7 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
   ref
 ) {
   const [isFocused, setIsFocused] = useState(false)
-  const well = fieldWell(variant, isFocused, useSurfaceMode())
+  const well = fieldWell(variant, isFocused, useSurface())
 
   const handleFocus = (e: TextInputFocusEvent) => {
     setIsFocused(true)

@@ -4,14 +4,19 @@ import { axe } from 'jest-axe'
 import { Input } from './Input'
 import { cn } from '../../../utils/cn'
 import { Surface } from '../surface'
-import { getPressedRecessShadow } from '../../../theme/elevation'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { insetFieldStyle } from '../surface/insetField'
 import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
 
 vi.mock('../../../utils/cn', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../../../utils/cn')>()
   return { ...actual, cn: vi.fn(actual.cn) }
 })
+
+function normalisedColor(color: string) {
+  const probe = document.createElement('div')
+  probe.style.backgroundColor = color
+  return probe.style.backgroundColor
+}
 
 describe('Input', () => {
   it('renders correctly', () => {
@@ -65,33 +70,26 @@ describe('Input', () => {
   })
 
   describe('filled variant', () => {
-    it('fills the field with background-base on every plane, not the scrim or surface-input', () => {
-      vi.mocked(cn).mockClear()
-      render(<Input variant="filled" placeholder="Filled" />)
-      const fieldClass = vi
-        .mocked(cn)
-        .mock.results.map((result) => String(result.value))
-        .find((value) => value.includes('rounded-md'))
-      expect(fieldClass).toContain('bg-background-base')
-      expect(fieldClass).not.toContain('bg-scrim-subtle')
-      expect(fieldClass).not.toContain('bg-surface-input')
-    })
-
-    it.each(['dark', 'light'] as const)(
-      'cuts the field in with the inset-well recess (%s)',
-      (mode) => {
+    it.each([
+      ['dark', 'base'],
+      ['dark', 'elevated'],
+      ['dark', 'raised'],
+      ['light', 'base'],
+      ['light', 'elevated'],
+      ['light', 'raised'],
+    ] as const)(
+      'fills the field one plane down from the enclosing plane with the inset-well recess (%s %s)',
+      (mode, level) => {
         render(
-          <Surface theme={mode}>
+          <Surface theme={mode} level={level}>
             <Input variant="filled" placeholder="Filled" />
           </Surface>
         )
         const row = screen.getByPlaceholderText('Filled').parentElement as HTMLElement
-        const { boxShadow } = getPressedRecessShadow(
-          getSemanticColors(mode)['background-base'],
-          mode
-        ) as { boxShadow: string }
-        expect(boxShadow).toContain('inset')
-        expect(row.style.boxShadow).toBe(boxShadow)
+        const expected = insetFieldStyle(level, mode) as { backgroundColor: string; boxShadow: string }
+        expect(expected.boxShadow).toContain('inset')
+        expect(row.style.boxShadow).toBe(expected.boxShadow)
+        expect(row.style.backgroundColor).toBe(normalisedColor(expected.backgroundColor))
       }
     )
 

@@ -2,9 +2,9 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Select } from './Select'
+import { Surface } from '../surface'
 import { cn } from '../../../utils/cn'
-import { getPressedRecessShadow } from '../../../theme/elevation'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { insetFieldStyle } from '../surface/insetField'
 
 vi.mock('../../../utils/cn', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../../../utils/cn')>()
@@ -153,22 +153,27 @@ describe('Select', () => {
       expect(screen.getByRole('combobox')).toBeInTheDocument()
     })
 
-    it('fills the filled trigger with background-base in the inset well, like the filled Input', () => {
-      vi.mocked(cn).mockClear()
-      render(<Select options={defaultOptions} variant="filled" />)
-      const triggerClass = vi
-        .mocked(cn)
-        .mock.results.map((result) => String(result.value))
-        .find((value) => value.includes('justify-between'))
-      expect(triggerClass).toContain('bg-background-base')
-      expect(triggerClass).not.toContain('bg-scrim-subtle')
-      expect(triggerClass).not.toContain('bg-surface-input')
-      const { boxShadow } = getPressedRecessShadow(
-        getSemanticColors('dark')['background-base'],
-        'dark'
-      ) as { boxShadow: string }
-      expect(screen.getByRole('combobox').style.boxShadow).toBe(boxShadow)
-    })
+    it.each([
+      ['dark', 'base'],
+      ['dark', 'raised'],
+      ['light', 'base'],
+      ['light', 'elevated'],
+    ] as const)(
+      'fills the filled trigger one plane down from the enclosing plane in the inset well (%s %s)',
+      (mode, level) => {
+        render(
+          <Surface theme={mode} level={level}>
+            <Select options={defaultOptions} variant="filled" />
+          </Surface>
+        )
+        const expected = insetFieldStyle(level, mode) as { backgroundColor: string; boxShadow: string }
+        const trigger = screen.getByRole('combobox')
+        const probe = document.createElement('div')
+        probe.style.backgroundColor = expected.backgroundColor
+        expect(trigger.style.boxShadow).toBe(expected.boxShadow)
+        expect(trigger.style.backgroundColor).toBe(probe.style.backgroundColor)
+      }
+    )
 
     it('keeps the default trigger flat', () => {
       render(<Select options={defaultOptions} />)
