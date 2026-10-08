@@ -101,6 +101,7 @@
     "api:check": "node scripts/api-report.mjs",
     "api:update": "node scripts/api-report.mjs --local",
     "docs:check": "node scripts/check-doc-examples.mjs",
+    "check:docs": "vitest run --project threads src/test/doc-claims.test.ts",
     "size": "size-limit",
     "catalog": "node scripts/catalog.mjs",
     "changelog:compile": "node scripts/changelog-compile.mjs",
