@@ -10814,7 +10814,7 @@
         "props": "packages/ui/src/components/ui/carousel/Carousel.tsx",
         "status": "packages/ui/src/components/ui/carousel/Carousel.stories.tsx"
       },
-      "status": "candidate",
+      "status": "stable",
       "storyIds": [
         "components-molecules-carousel--default"
       ],
