@@ -406,7 +406,10 @@ export const Widths: Story = {
     const width = measured.width ?? args.width
     const height = width >= WALL_BREAKPOINT ? WALL.height : PHONE.height
     return (
-      <View onLayout={measured.onLayout}>{renderWithTreatment({ ...args, width, height })}</View>
+      // `w-full` so the frame sets the measured width, not the chart's first-paint fallback.
+      <View className="w-full" onLayout={measured.onLayout}>
+        {renderWithTreatment({ ...args, width, height })}
+      </View>
     )
   },
 }
