@@ -2,7 +2,8 @@
 
 Status: `status:candidate`. Built in slices of TP-858 (console S17). TP-858a holds the state and
 metrics modules, the fixtures, `AgentStateLabel` and `AgentCard`. TP-858b adds `AgentRoster`,
-`AgentRosterRow`, `AgentHoverCard` and the `AgentsView` composition story.
+`AgentRosterRow`, `AgentHoverCard` (with `AgentHoverCardContent`), `agent-roster.ts` and the
+`AgentsView` composition story.
 
 One record per agent session, joined by the host from two sources: presence and lifecycle from the
 agent-chat broker's roster, and metrics from the session's transcript. A session can have presence
@@ -13,16 +14,21 @@ This README is the **index**: **composes ↓** and **used-by ↑**.
 
 ## Dependency map
 
-| Member                  | Kind     | Composes ↓                                                                              | Used-by ↑                               |
-| ----------------------- | -------- | --------------------------------------------------------------------------------------- | --------------------------------------- |
-| `AgentCard`             | organism | `Card`, the two parts files below                                                       | console agents view (TP-864)            |
-| `AgentCardIdentity.tsx` | parts    | `AgentStateLabel`, `Avatar`, `Pill`, `Typography` (header, task, branch, recency, tags) | `AgentCard`                             |
-| `AgentCardMetrics.tsx`  | parts    | `CardInset`, `SparkBars`, `Progress`, `Typography` (metric cells, no-transcript notice) | `AgentCard`                             |
-| `AgentStateLabel`       | molecule | `Indicator`, `Typography`, `Pill`                                                       | `AgentCard`, `AgentRosterRow` (TP-858b) |
-| `agent-state.ts`        | pure fns | `IndicatorColor`                                                                        | every member                            |
-| `agent-metrics.ts`      | pure fns | `formatCompact`, `formatUsd`, `formatTaskAge`, `formatSessionDuration` (`utils/`)       | every member                            |
-| `agent-types.ts`        | types    | —                                                                                       | every member                            |
-| `agent-fixture.ts`      | fixtures | `seededRandom` (`ui/charts/kit`)                                                        | tests and stories only                  |
+| Member                  | Kind     | Composes ↓                                                                              | Used-by ↑                           |
+| ----------------------- | -------- | --------------------------------------------------------------------------------------- | ----------------------------------- |
+| `AgentCard`             | organism | `Card`, the two parts files below                                                       | console agents view (TP-864)        |
+| `AgentCardIdentity.tsx` | parts    | `AgentStateLabel`, `Avatar`, `Pill`, `Typography` (header, task, branch, recency, tags) | `AgentCard`                         |
+| `AgentCardMetrics.tsx`  | parts    | `CardInset`, `SparkBars`, `Progress`, `Typography` (metric cells, no-transcript notice) | `AgentCard`                         |
+| `AgentStateLabel`       | molecule | `Indicator`, `Typography`, `Pill`                                                       | `AgentCard`, `AgentRosterRow`       |
+| `AgentRoster`           | organism | `AgentRosterRow`, `Eyebrow`, `SkeletonListItem`, `EmptyState`, `useListNavigation`      | console agents view (TP-864)        |
+| `AgentRosterRow`        | molecule | `Avatar`, `AgentStateLabel`, `Typography`                                               | `AgentRoster`                       |
+| `AgentHoverCard`        | molecule | `Tooltip` (controlled, portalled), `useHoverFocusState`, `TriggerSurface`               | board assignee, topology (TP-865)   |
+| `AgentHoverCardContent` | molecule | the `AgentCardIdentity.tsx` parts, `Typography`                                         | `AgentHoverCard`, graph node detail |
+| `agent-roster.ts`       | pure fns | `agent-state.ts`, `agent-metrics.ts`                                                    | `AgentRoster`, `AgentRosterRow`     |
+| `agent-state.ts`        | pure fns | `IndicatorColor`                                                                        | every member                        |
+| `agent-metrics.ts`      | pure fns | `formatCompact`, `formatUsd`, `formatTaskAge`, `formatSessionDuration` (`utils/`)       | every member                        |
+| `agent-types.ts`        | types    | —                                                                                       | every member                        |
+| `agent-fixture.ts`      | fixtures | `seededRandom` (`ui/charts/kit`)                                                        | tests and stories only              |
 
 No new primitive and no new token.
 
@@ -68,6 +74,13 @@ lift) instead of the `historical` state the contract first proposed.
 | Error    | Does not apply: no fetch. The host renders a failed roster read with `Alert`.                                        | Does not apply.   |
 | Disabled | Does not apply: the card is not a control.                                                                           | Does not apply.   |
 
+| State    | `AgentRoster` and `AgentRosterRow`                                                                                                                | `AgentHoverCard`                                        |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| Loading  | `isLoading` renders skeleton rows, never the empty state. The host maps the broker's reconnect grace here.                                        | Does not apply: it shows an agent the host holds.       |
+| Empty    | `agents: []` renders `emptyState` (default `EmptyState`, "No agents"). A row skips a field the agent lacks; no transcript prints no metric field. | No transcript shows the notice, as the card does.       |
+| Error    | Does not apply: no fetch.                                                                                                                         | Does not apply: no fetch.                               |
+| Disabled | Does not apply: a row with no `onSelect` is inert text and takes no option role.                                                                  | `isDisabled` never opens, even when `isOpen` is `true`. |
+
 Non-finite and negative numbers render the `—` placeholder, never `NaN`. An error rate above
 `ERROR_RATE_FLAG_ABOVE` (5 percent) prints its share beside the count, so the flag is not colour
 alone.
@@ -80,6 +93,17 @@ alone.
 - The state dot and the avatar are hidden from assistive tech; the state word and the name carry
   them.
 - The activity spark is an image named by its interval count.
+- `AgentRoster` is a WAI-ARIA single-select listbox with `Live` and `Past` groups. One tab stop, on the
+  selected row or the first; Up, Down, Home and End move focus through TD-383's
+  `useListNavigation` and stop at the ends; Enter, Space or a press selects; selection never
+  follows focus. RNW presses an option on Enter but not on Space, so the list handles Space.
+  Rows register a guarded focus target: a host re-sort while focus is elsewhere never pulls focus
+  into the list.
+- `AgentHoverCard` is a WAI-ARIA tooltip on TD-401's `useHoverFocusState`: hover or keyboard focus
+  opens it, hover out or blur close it, Escape closes it at once, a long press opens it on touch.
+  The open card's id is the trigger's `aria-describedby`. The trigger must be an element that
+  forwards press, focus and hover props (a `Pressable`, a link); a string is wrapped in a
+  focusable `Pressable`. The card holds no focusable element.
 
 ## Fixtures
 
@@ -89,6 +113,8 @@ transcript, bare, zero calls, huge, non-finite, hostile and provisional, and the
 exported from a barrel.
 
 ## Known gaps
+
+- The roster's state tones are 858a's, pending the owner's TASTE item T1.
 
 - `formatDurationMs` lands in `utils/time-format.ts` with TP-855a. Until then the recency label
   composes `formatSessionDuration` and `formatTaskAge`.
