@@ -213,6 +213,9 @@ and the line-height that comes with it.
 `overline` and `microLabel` are the same idea at two sizes and in two faces: `overline` is
 12px `font-body`, `microLabel` is 10px `font-sans` for dense tabular headers.
 
+Which variant, face, weight, case and colour each text role takes (headings, titles, labels, lockups,
+controls, chart text) is `docs/typography-rules.md`, rendered live in Storybook `Lab/Typography/Rules`.
+
 Raw sizes, when a variant genuinely does not fit:
 
 | Class       | Size |

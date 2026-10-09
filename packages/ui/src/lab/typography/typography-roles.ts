@@ -345,11 +345,31 @@ export interface ColorMeasure {
   ratio: number
 }
 
-/** The text token's ramp step and its WCAG ratio on `surface-base` in one mode. */
-export function measureColor(color: MeasurableColor, mode: ThemeMode): ColorMeasure {
+export type PlaneToken = 'background-base' | 'surface-base' | 'surface-raised'
+
+/**
+ * The plane the review frames sit on: background-base in dark and surface-base in light, the
+ * planes #764's lockup frames used. text-tertiary clears 4.5:1 on both; on surface-base in dark
+ * it is 4.32, so a frame there could not show today's tertiary labels as live text.
+ */
+export const REVIEW_PLANE: Record<ThemeMode, PlaneToken> = {
+  dark: 'background-base',
+  light: 'surface-base',
+}
+
+export function reviewPlaneHex(mode: ThemeMode): string {
+  return getSemanticColors(mode)[REVIEW_PLANE[mode]]
+}
+
+/** The text token's ramp step and its WCAG ratio on a plane (the review plane by default). */
+export function measureColor(
+  color: MeasurableColor,
+  mode: ThemeMode,
+  plane: PlaneToken = REVIEW_PLANE[mode]
+): ColorMeasure {
   const colors = getSemanticColors(mode)
   const hex = colors[color]
-  return { mode, step: rampStepOf(hex), ratio: contrast(hex, colors['surface-base']) }
+  return { mode, step: rampStepOf(hex), ratio: contrast(hex, colors[plane]) }
 }
 
 export function isMeasurable(color: RoleColor): color is MeasurableColor {
@@ -395,8 +415,9 @@ const COLOR_CLASS: Record<RoleColor, string> = {
   'text-primary': 'text-text-primary',
   'text-secondary': 'text-text-secondary',
   'text-tertiary': 'text-text-tertiary',
-  tone: 'text-brand-primary',
-  result: 'text-result-improve',
+  // Tone and result colours belong to the component; the specimen keeps them on text-primary.
+  tone: 'text-text-primary',
+  result: 'text-text-primary',
 }
 
 /** Tailwind classes that paint a rule on a `Text`; the size is an inline style in the story. */

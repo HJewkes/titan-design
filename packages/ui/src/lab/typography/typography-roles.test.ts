@@ -19,9 +19,11 @@ describe('typography roles (TD-781 lab data)', () => {
     expect(measureColor('text-primary', 'light').step).toBe('pin textPrimaryLight')
   })
 
-  it('measures each text token on surface-base in both themes', () => {
+  it('measures each text token on the review plane, where tertiary clears AA in both themes', () => {
     expect(measureColor('text-secondary', 'dark').ratio).toBeGreaterThan(4.5)
-    expect(measureColor('text-tertiary', 'dark').ratio).toBeLessThan(4.5)
+    expect(measureColor('text-tertiary', 'dark').ratio).toBeGreaterThan(4.5)
+    expect(measureColor('text-tertiary', 'light').ratio).toBeGreaterThan(4.5)
+    expect(measureColor('text-tertiary', 'dark', 'surface-base').ratio).toBeLessThan(4.5)
     expect(colorLine('text-secondary')).toMatch(
       /^grey \d+ \d+\.\d\d \(dark\) · grey \d+ \d+\.\d\d \(light\)$/
     )

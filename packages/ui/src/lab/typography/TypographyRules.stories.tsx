@@ -10,12 +10,13 @@ import { Tab, TabList, Tabs } from '../../components/ui/tabs'
 import { Typography } from '../../components/ui/typography'
 import { Gauge } from '../../components/ui/charts/gauge'
 import { Scatter, type ScatterDatum } from '../../components/ui/charts/scatter'
-import { VolumeLandmarkBar } from '../../components/custom/Workout'
+import { useSurfaceMode } from '../../theme/surface-context'
 import { getSemanticColors } from '../../theme/tokens/semantic'
 import {
   OPEN_DECISIONS,
   TEXT_ROLES,
   colorLine,
+  reviewPlaneHex,
   ruleClasses,
   ruleLine,
   type RoleRule,
@@ -72,8 +73,17 @@ function Options({ children }: { children: ReactNode }) {
   return <View className="flex-row flex-wrap gap-4">{children}</View>
 }
 
+/**
+ * The review plane: background-base in dark, surface-base in light (the planes #764's frames
+ * used). text-tertiary clears 4.5:1 on both, so the "today" samples can be shown as text.
+ */
 function Frame({ children }: { children: ReactNode }) {
-  return <View className="gap-5 bg-surface-base p-6">{children}</View>
+  const mode = useSurfaceMode()
+  return (
+    <View className="min-h-screen gap-5 p-6" style={{ backgroundColor: reviewPlaneHex(mode) }}>
+      {children}
+    </View>
+  )
 }
 
 /* ---------- Default: the unified role page ---------- */
@@ -93,9 +103,7 @@ function RoleRow({ role }: { role: TextRole }) {
         {role.proposed ? <Sample rule={role.proposed}>{role.sample}</Sample> : null}
       </View>
       <View className="flex-1 gap-0.5">
-        <Mono className={role.decision ? 'text-status-warning' : 'text-status-success'}>
-          {open}
-        </Mono>
+        <Mono className="text-text-primary">{open}</Mono>
         <Mono>{`today: ${ruleLine(role.rule)}`}</Mono>
         <Mono>{`colour: ${colorLine(role.rule.color)}`}</Mono>
         {role.proposed ? <Mono>{`default: ${ruleLine(role.proposed)}`}</Mono> : null}
@@ -115,7 +123,7 @@ function RolePage() {
     <Frame>
       <FrameHeader
         title="Typography rules: every text role"
-        lede="Left sample is the rule as built today; right sample is the recommended default where a decision is OPEN. Colours are named by ramp step with the WCAG ratio on surface-base in each theme."
+        lede="Left sample is the rule as built today; right sample is the recommended default where a decision is OPEN. Colours are named by ramp step with the WCAG ratio on the review plane: background-base in dark, surface-base in light. Tone and result samples render in text-primary here; their colour is the component's."
       />
       <View className="flex-row gap-4">
         <Mono className="w-60">role · used by</Mono>
@@ -316,11 +324,6 @@ function ChartsAsBuilt() {
   return (
     <View className="flex-row flex-wrap items-start gap-6">
       <TickChart />
-      <VolumeLandmarkBar
-        muscle="Calves"
-        currentSets={12}
-        landmarks={{ mev: 8, mav: 16, mrv: 22 }}
-      />
       <Gauge value={88} unit="%" label="Health" size={140} />
     </View>
   )
@@ -331,7 +334,7 @@ function D4Frame() {
     <Frame>
       <FrameHeader
         title="D4 · One chart text spec: tick numerals, axis category, axis title, legend"
-        lede="Above: the charts as built (Scatter 9px tertiary ticks and 10px semibold titles, ZoneTrack inline monospace ticks, Gauge 12px label). Below: the spec, where only the axis title and legend face changes between options; ticks (mono regular tertiary) and categories (microLabel secondary) are the same in both."
+        lede="Above: the charts as built (Scatter 9px tertiary ticks and 10px semibold titles, Gauge 12px label; ZoneTrack's inline monospace ticks are in custom-workout-dataviz-zonetrack--default, whose brand tick already misses on white). Below: the spec, where only the axis title and legend face changes between options; ticks (mono regular tertiary) and categories (microLabel secondary) are the same in both. Space Grotesk is loaded at 600-700 only, so A's medium legend renders at the nearest loaded weight."
       />
       <ChartsAsBuilt />
       <Options>
@@ -401,11 +404,11 @@ function D5Frame() {
     <Frame>
       <FrameHeader
         title="D5 · Control labels: which face?"
-        lede="Only the font family changes. Weights are held as built: Button semibold, Pill semibold, Chip / Badge / Tab medium. Colours are on tone, per component."
+        lede="Only the font family changes. Weights are held as built: Button semibold, Pill semibold, Chip / Badge / Tab medium. Colours are on tone, per component. Space Grotesk is loaded at 600-700 only, so a medium heading-face label renders at the nearest loaded weight; the owner's call if B lands."
       />
       <Options>
         <Option
-          label="A · today: Pill heading; Button, Chip, Badge, Tab sans"
+          label="A · today: Pill heading, the rest sans"
           note="Pill Space Grotesk; the rest Inter"
         >
           <ControlRow face="today" />
@@ -516,7 +519,7 @@ function D7Frame() {
     <Frame>
       <FrameHeader
         title="D7 · Sentence-case labels (form label, DataRow label, Metric label): body face or heading face?"
-        lede="Only the font family changes; weight, case, size and colour are held as built."
+        lede="Only the font family changes; weight, case, size and colour are held as built. Space Grotesk is loaded at 600-700 only, so the regular and medium labels in B render at the nearest loaded weight; the owner's call if B lands."
       />
       <Options>
         <Option
