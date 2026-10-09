@@ -216,7 +216,6 @@ const OUTLINE_TONES = [
   ['brand-secondary', 'brand-secondary'],
   ['success', 'status-success'],
   ['warning', 'status-warning'],
-  ['error', 'status-error'],
   ['info', 'status-info'],
 ] as const
 const PLANES = ['base', 'elevated', 'raised', 'overlay'] as const
@@ -256,7 +255,7 @@ function OutlineFrame() {
   return (
     <View className="gap-2">
       <Typography variant="caption" color="secondary">
-        {mode}
+        {mode} · error tone omitted, see OnBothPlanes
       </Typography>
       {PLANES.map((plane) => (
         <Surface key={plane} level={plane} className="gap-2 rounded-xl p-4">
@@ -284,7 +283,8 @@ function OutlineFrame() {
 
 /**
  * Every outline tone on every elevation plane, with the ring-vs-plane contrast ratio
- * printed under each pill. Switch the toolbar theme to see the other mode. The neutral
+ * printed under each pill. The error tone is left out: its `text-error` label is a known
+ * miss on the dark planes (owner decision, #753), and `OnBothPlanes` already shows it live. Switch the toolbar theme to see the other mode. The neutral
  * ring reads `hairline-strong`, one step above the shared `hairline-default` (lighter in
  * dark, darker in light).
  */
