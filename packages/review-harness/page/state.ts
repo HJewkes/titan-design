@@ -1,4 +1,10 @@
-import { draftAnswer, emptyDraft, type AnswerDraft, type ReviewDraft } from '../src/feedback.ts'
+import {
+  blockedShipGroup,
+  draftAnswer,
+  emptyDraft,
+  type AnswerDraft,
+  type ReviewDraft,
+} from '../src/feedback.ts'
 import { isAnswered, offersBuiltInRevision } from '../src/round.ts'
 import {
   linksForVariant,
@@ -355,6 +361,18 @@ function reduceLinked(manifest: Manifest, draft: ReviewDraft, action: Action): R
   return next
 }
 
+/** A pick of a blocked PR group's Ship option is refused, whichever input made it. */
+function shipIsBlocked(
+  manifest: Manifest,
+  draft: ReviewDraft,
+  action: Extract<Action, { type: 'pick' }>
+): boolean {
+  const question = manifest.questions.find((q) => q.id === action.id)
+  return (
+    question !== undefined && blockedShipGroup(manifest, draft, question, action.option) !== null
+  )
+}
+
 export function createReducer(manifest: Manifest) {
   const stopCount = stopsFor(manifest).length
   return function reduce(state: ReviewState, action: Action): ReviewState {
@@ -375,6 +393,10 @@ export function createReducer(manifest: Manifest) {
         return { ...state, singleColumn: !state.singleColumn }
       case 'screen':
         return { ...state, screen: action.screen, errors: action.errors ?? [] }
+      case 'pick':
+        return shipIsBlocked(manifest, state.draft, action)
+          ? state
+          : { ...state, draft: reduceLinked(manifest, state.draft, action) }
       default:
         return { ...state, draft: reduceLinked(manifest, state.draft, action) }
     }

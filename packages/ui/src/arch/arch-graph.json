@@ -138,12 +138,12 @@
         "Typography"
       ],
       "leak": {
-        "rawView": 4,
+        "rawView": 5,
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 173,
-        "score": 4
+        "loc": 174,
+        "score": 5
       },
       "tier": "organism",
       "verdict": "dead",
@@ -181,7 +181,6 @@
       "dependsOn": [
         "AgentRosterRow",
         "EmptyState",
-        "Eyebrow",
         "Skeleton",
         "Typography"
       ],
@@ -190,7 +189,7 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 183,
+        "loc": 184,
         "score": 5
       },
       "tier": "organism",
@@ -11273,58 +11272,6 @@
       "Typography"
     ],
     [
-      "AgentRoster",
-      "AgentRosterRow"
-    ],
-    [
-      "AgentRoster",
-      "EmptyState"
-    ],
-    [
-      "AgentRoster",
-      "Eyebrow"
-    ],
-    [
-      "AgentRoster",
-      "Skeleton"
-    ],
-    [
-      "AgentRoster",
-      "Typography"
-    ],
-    [
-      "AgentRosterRow",
-      "AgentStateLabel"
-    ],
-    [
-      "AgentRosterRow",
-      "Avatar"
-    ],
-    [
-      "AgentRosterRow",
-      "Typography"
-    ],
-    [
-      "AgentHoverCard",
-      "AgentCardIdentity"
-    ],
-    [
-      "AgentHoverCard",
-      "AgentCardMetrics"
-    ],
-    [
-      "AgentHoverCard",
-      "Tooltip"
-    ],
-    [
-      "AgentHoverCard",
-      "TriggerSurface"
-    ],
-    [
-      "AgentHoverCard",
-      "Typography"
-    ],
-    [
       "RefChip",
       "Link"
     ],
@@ -11363,10 +11310,58 @@
     [
       "MesoStatusCard",
       "Card"
+    ],
+    [
+      "AgentHoverCard",
+      "AgentCardIdentity"
+    ],
+    [
+      "AgentHoverCard",
+      "AgentCardMetrics"
+    ],
+    [
+      "AgentHoverCard",
+      "Tooltip"
+    ],
+    [
+      "AgentHoverCard",
+      "TriggerSurface"
+    ],
+    [
+      "AgentHoverCard",
+      "Typography"
+    ],
+    [
+      "AgentRoster",
+      "AgentRosterRow"
+    ],
+    [
+      "AgentRoster",
+      "EmptyState"
+    ],
+    [
+      "AgentRoster",
+      "Skeleton"
+    ],
+    [
+      "AgentRoster",
+      "Typography"
+    ],
+    [
+      "AgentRosterRow",
+      "AgentStateLabel"
+    ],
+    [
+      "AgentRosterRow",
+      "Avatar"
+    ],
+    [
+      "AgentRosterRow",
+      "Typography"
     ]
   ],
   "summary": {
-    "total": 232,
+    "total": 233,
     "dead": [
       "AgentCard",
       "AgentHoverCard",
