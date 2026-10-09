@@ -4673,10 +4673,10 @@
         "statusVariants",
         "clamp01",
         "getGaugeZoneColor",
-        "renderCoachingText",
-        "StatusPill",
-        "MetricCell",
-        "Gauge"
+        "MesoStatusPill",
+        "MesoMetricItem",
+        "Gauge",
+        "MesoStatusHeader"
       ],
       "libDependents": 2,
       "storyRefs": 3,
@@ -4684,20 +4684,21 @@
         "mobile": 0,
         "mcp": 0,
         "dash": 1,
-        "audiobook": 1,
-        "total": 2
+        "audiobook": 0,
+        "total": 1
       },
       "dependsOn": [
         "Card",
+        "MesoStatusCard.parts",
         "StatusDot"
       ],
       "leak": {
-        "rawView": 18,
-        "rawText": 12,
-        "inlineStyle": 21,
+        "rawView": 16,
+        "rawText": 8,
+        "inlineStyle": 15,
         "rawHex": 0,
-        "loc": 480,
-        "score": 72
+        "loc": 436,
+        "score": 54
       },
       "tier": "organism",
       "verdict": "keep-core",
@@ -4835,40 +4836,6 @@
       },
       "tier": "atom",
       "verdict": "keep-core",
-      "deadByAssociation": false,
-      "audited": "unaudited",
-      "standard": false
-    },
-    {
-      "name": "metricText",
-      "file": "packages/ui/src/components/custom/Workout/metricText.tsx",
-      "dir": "workout",
-      "family": "custom/Workout",
-      "exports": [
-        "MetricCell",
-        "METRIC_FONT",
-        "MetricCellProps"
-      ],
-      "libDependents": 2,
-      "storyRefs": 1,
-      "xproj": {
-        "mobile": 0,
-        "mcp": 0,
-        "dash": 0,
-        "audiobook": 0,
-        "total": 0
-      },
-      "dependsOn": [],
-      "leak": {
-        "rawView": 0,
-        "rawText": 1,
-        "inlineStyle": 1,
-        "rawHex": 0,
-        "loc": 41,
-        "score": 3
-      },
-      "tier": "atom",
-      "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -10494,14 +10461,6 @@
       "Card"
     ],
     [
-      "MesoStatusCard",
-      "StatusDot"
-    ],
-    [
-      "MesoStatusCard",
-      "Card"
-    ],
-    [
       "MetricTiles",
       "Stack"
     ],
@@ -10694,10 +10653,6 @@
       "Typography"
     ],
     [
-      "SetsRepsLoad",
-      "metricText"
-    ],
-    [
       "Sparkline",
       "SparklineParts"
     ],
@@ -10720,10 +10675,6 @@
     [
       "SupersetWrapper",
       "Typography"
-    ],
-    [
-      "TempoDisplay",
-      "metricText"
     ],
     [
       "TrainingStatusPage",
@@ -11400,6 +11351,18 @@
     [
       "RelatedList",
       "Typography"
+    ],
+    [
+      "MesoStatusCard",
+      "MesoStatusCard.parts"
+    ],
+    [
+      "MesoStatusCard",
+      "StatusDot"
+    ],
+    [
+      "MesoStatusCard",
+      "Card"
     ]
   ],
   "summary": {
