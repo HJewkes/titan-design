@@ -37,14 +37,14 @@ function RowBody({ call, isUTC }: { call: TimelineToolCall; isUTC?: boolean }) {
           seconds
           isUTC={isUTC}
           variant="mono"
-          color="tertiary"
+          color="secondary"
         />
       ) : null}
       <View aria-hidden accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
         <Indicator size="sm" color={outcome.indicator} pulse={outcome.pulse} />
       </View>
       <ToolBadge family={call.family} size="sm" />
-      <Typography variant="body2" color={call.name ? 'primary' : 'tertiary'}>
+      <Typography variant="body2" color={call.name ? 'primary' : 'secondary'}>
         {call.name || UNNAMED_TOOL_LABEL}
       </Typography>
       {call.inputSummary.trim() ? (
@@ -53,15 +53,15 @@ function RowBody({ call, isUTC }: { call: TimelineToolCall; isUTC?: boolean }) {
         </Typography>
       ) : null}
       {call.sidechain ? (
-        <Typography variant="caption" color="tertiary">
+        <Typography variant="caption" color="secondary">
           {SIDECHAIN_LABEL}
         </Typography>
       ) : null}
-      <Typography variant="caption" color={call.outcome === 'error' ? 'error' : 'tertiary'}>
+      <Typography variant="caption" color={call.outcome === 'error' ? 'error' : 'secondary'}>
         {outcome.label}
       </Typography>
       {duration === null ? null : (
-        <Typography variant="mono" color="tertiary">
+        <Typography variant="mono" color="secondary">
           {duration}
         </Typography>
       )}

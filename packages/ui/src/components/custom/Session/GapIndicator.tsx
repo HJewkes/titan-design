@@ -39,7 +39,7 @@ export function GapIndicator({
       className={cn('flex-row items-center gap-inline-md py-stack-sm', className)}
     >
       <Divider className="flex-1" />
-      <Typography variant="caption" color="tertiary">
+      <Typography variant="caption" color="secondary">
         {idle}
       </Typography>
       {resumed === null ? null : (
@@ -48,7 +48,7 @@ export function GapIndicator({
           format="medium"
           isUTC={isUTC}
           variant="caption"
-          color="tertiary"
+          color="secondary"
         />
       )}
       <Divider className="flex-1" />
