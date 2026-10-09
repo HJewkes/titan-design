@@ -631,12 +631,10 @@
       "composes": [
         "Alert",
         "Card",
-        "DateTime",
         "Divider",
         "EmptyState",
-        "Link",
+        "KnowledgeReaderMeta",
         "MarkdownProse",
-        "Pill",
         "SessionDetail",
         "Skeleton",
         "Typography"
@@ -740,6 +738,57 @@
         "custom-activework-knowledgereader--default",
         "custom-activework-knowledgereader--split-metadata"
       ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "DateTime",
+        "Link",
+        "Pill",
+        "SvgIcon",
+        "Typography",
+        "icons"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/KnowledgeReaderMeta.tsx",
+      "name": "KnowledgeReaderMeta",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "item",
+          "required": true,
+          "type": "KnowledgeItem"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "layout",
+          "required": true,
+          "type": "KnowledgeMetaLayout"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "onPressInitiative",
+          "required": false,
+          "type": "((initiative: string) => void)"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "onPressTag",
+          "required": false,
+          "type": "((tag: string) => void)"
+        }
+      ],
+      "purpose": "The header's two metadata lines under the title: the eyebrow, then date and tags.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/ActiveWork/KnowledgeReaderMeta.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
       "tier": "organism"
     },
     {
@@ -6162,6 +6211,7 @@
     {
       "composes": [
         "Card",
+        "MesoStatusCard.parts",
         "StatusDot"
       ],
       "family": "custom/Workout",
@@ -7667,7 +7717,7 @@
           "type": "string"
         },
         {
-          "default": null,
+          "default": "11",
           "description": "Cell font size (px).",
           "name": "fontSize",
           "required": false,
@@ -7709,7 +7759,7 @@
           "type": "string"
         }
       ],
-      "purpose": "The `sets × reps @ load` prescription line, in the TempoDisplay visual language (Inter · letter-spacing 1 · value cells with muted `×` / `@` separators).",
+      "purpose": "The `sets × reps @ load` prescription line, in the TempoDisplay visual language (Typography `mono` · value cells with muted `×` / `@` separators).",
       "sources": {
         "props": "packages/ui/src/components/custom/Workout/SetsRepsLoad.tsx",
         "status": "packages/ui/src/components/custom/Workout/SetsRepsLoad.stories.tsx"
@@ -14049,6 +14099,13 @@
           "type": "string"
         },
         {
+          "default": "true",
+          "description": "Whether a selected value shows a clear button.",
+          "name": "isClearable",
+          "required": false,
+          "type": "boolean"
+        },
+        {
           "default": "false",
           "description": "Whether the select is disabled",
           "name": "isDisabled",
@@ -14099,6 +14156,13 @@
         },
         {
           "default": null,
+          "description": "Control height, matching Input's sizes.",
+          "name": "size",
+          "required": false,
+          "type": "SelectSize"
+        },
+        {
+          "default": null,
           "description": "Selected value (single mode)",
           "name": "value",
           "required": false,
@@ -14129,6 +14193,7 @@
         "components-molecules-select--controlled",
         "components-molecules-select--default",
         "components-molecules-select--disabled",
+        "components-molecules-select--filled",
         "components-molecules-select--in-form-layout",
         "components-molecules-select--invalid",
         "components-molecules-select--many-options",
@@ -15780,10 +15845,6 @@
     },
     {
       "file": "packages/ui/src/components/custom/Workout/icons.tsx",
-      "reason": "not-pascal-case"
-    },
-    {
-      "file": "packages/ui/src/components/custom/Workout/metricText.tsx",
       "reason": "not-pascal-case"
     },
     {

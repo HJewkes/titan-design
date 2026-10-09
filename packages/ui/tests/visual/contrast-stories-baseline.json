@@ -379,27 +379,8 @@
   "components-molecules-select--controlled light": {
     "#ff7900|#ffffff": 5
   },
-  "components-molecules-select--default dark": {
-    "#888684|#252321": 1
-  },
-  "components-molecules-select--in-form-layout dark": {
-    "#888684|#252321": 2
-  },
   "components-molecules-select--invalid dark": {
-    "#888684|#252321": 1,
     "#e05254|#252321": 1
-  },
-  "components-molecules-select--many-options dark": {
-    "#888684|#252321": 1
-  },
-  "components-molecules-select--multi-select dark": {
-    "#888684|#252321": 1
-  },
-  "components-molecules-select--with-disabled-options dark": {
-    "#888684|#252321": 1
-  },
-  "components-molecules-select--with-placeholder dark": {
-    "#888684|#252321": 1
   },
   "components-molecules-statcard--default dark": {
     "#888684|#2c2a28": 1
@@ -1734,15 +1715,6 @@
     "#ba2996|#f3daed": 3,
     "#ff7900|#ffe6d4": 2
   },
-  "custom-workout-metriccell--in-context dark": {
-    "#72716f|#252321": 1
-  },
-  "custom-workout-metriccell--in-context light": {
-    "#f9f6f3|#ffffff": 1
-  },
-  "custom-workout-metriccell--value-cell light": {
-    "#f9f6f3|#ffffff": 1
-  },
   "custom-workout-metrictiles--four-tiles dark": {
     "#888684|#31302f": 4
   },
@@ -1985,13 +1957,11 @@
     "#22d3ee|#edeae7": 8,
     "#72716f|#edeae7": 2,
     "#a29f9d|#ffffff": 14,
-    "#c27400|#edeae7": 2,
     "#ed69c3|#edeae7": 1,
     "#edeae7|#ffffff": 5
   },
   "custom-workout-tempodisplay--live-animated light": {
-    "#72716f|#edeae7": 1,
-    "#c27400|#edeae7": 1
+    "#72716f|#edeae7": 1
   },
   "custom-workout-tempodisplay--live-playground dark": {
     "#22a444|#31302f": 1
@@ -2005,8 +1975,7 @@
   "custom-workout-tempodisplay--static-vs-live light": {
     "#22a444|#edeae7": 1,
     "#22d3ee|#edeae7": 1,
-    "#72716f|#edeae7": 2,
-    "#c27400|#edeae7": 1
+    "#72716f|#edeae7": 2
   },
   "custom-workout-velocitybandoverlay--default light": {
     "#ff7900|#ffffff": 1

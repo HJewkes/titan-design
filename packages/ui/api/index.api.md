@@ -4783,23 +4783,7 @@ export interface MessageListProps {
 export function Metric(input: MetricProps): react_jsx_runtime.JSX.Element;
 
 // @public
-export const METRIC_FONT = "Inter, sans-serif";
-
-// @public
 export type MetricAlign = 'start' | 'center' | 'end';
-
-// @public @deprecated (undocumented)
-export function MetricCell(input: MetricCellProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface MetricCellProps {
-    // (undocumented)
-    children: ReactNode;
-    color: string;
-    // (undocumented)
-    fontSize?: number;
-    weight?: 400 | 600;
-}
 
 // @public (undocumented)
 export function MetricGroup(input: MetricGroupProps): react_jsx_runtime.JSX.Element;
@@ -6442,6 +6426,7 @@ export interface SelectOption<T = string> {
 // @public (undocumented)
 export interface SelectProps<T = string> extends ViewProps {
     className?: string;
+    isClearable?: boolean;
     isDisabled?: boolean;
     isInvalid?: boolean;
     isMulti?: boolean;
@@ -6449,10 +6434,14 @@ export interface SelectProps<T = string> extends ViewProps {
     onChangeMulti?: (values: T[]) => void;
     options: SelectOption<T>[];
     placeholder?: string;
+    size?: SelectSize;
     value?: T | null;
     values?: T[];
     variant?: 'default' | 'filled';
 }
+
+// @public
+export type SelectSize = 'sm' | 'md' | 'lg';
 
 // @public (undocumented)
 export const semanticColorsDark: {

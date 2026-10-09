@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:cb2a2d0fb927154c712e6abf3715d03f4446b9e3f5e5a0e31d03342d6ea17705",
+  "componentBarrelHash": "sha256:5634d39d516eb1f23bb8905e46e360b2ec29a9b129030b498c7493473691f99e",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -4166,11 +4166,6 @@
       "exports": [
         "KnowledgeReader",
         "KnowledgeReaderProps",
-        "recordLabel",
-        "kindLabel",
-        "InitiativeName",
-        "KnowledgeMeta",
-        "KnowledgeTags",
         "TruncatedNotice",
         "readerLinkers",
         "ReaderBody",
@@ -4188,27 +4183,72 @@
       "dependsOn": [
         "Alert",
         "Card",
-        "DateTime",
         "Divider",
         "EmptyState",
-        "Link",
+        "KnowledgeReaderMeta",
         "MarkdownProse",
-        "Pill",
         "SessionDetail",
         "Skeleton",
         "Typography"
       ],
       "leak": {
-        "rawView": 4,
+        "rawView": 2,
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 260,
-        "score": 4
+        "loc": 183,
+        "score": 2
       },
       "tier": "organism",
       "verdict": "dead",
       "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "KnowledgeReaderMeta",
+      "file": "packages/ui/src/components/custom/ActiveWork/KnowledgeReaderMeta.tsx",
+      "dir": "custom",
+      "family": "custom/ActiveWork",
+      "exports": [
+        "KnowledgeReaderMeta",
+        "KnowledgeMetaLayout",
+        "recordLabel",
+        "InitiativeName",
+        "KindLabel",
+        "RecordAndKind",
+        "KnowledgeEyebrow",
+        "KnowledgeTags",
+        "KnowledgeDateTags"
+      ],
+      "libDependents": 1,
+      "storyRefs": 0,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "DateTime",
+        "Link",
+        "Pill",
+        "SvgIcon",
+        "Typography",
+        "icons"
+      ],
+      "leak": {
+        "rawView": 5,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 193,
+        "score": 5
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
       "audited": "unaudited",
       "standard": false
     },
@@ -4595,10 +4635,10 @@
         "statusVariants",
         "clamp01",
         "getGaugeZoneColor",
-        "renderCoachingText",
-        "StatusPill",
-        "MetricCell",
-        "Gauge"
+        "MesoStatusPill",
+        "MesoMetricItem",
+        "Gauge",
+        "MesoStatusHeader"
       ],
       "libDependents": 2,
       "storyRefs": 3,
@@ -4606,20 +4646,21 @@
         "mobile": 0,
         "mcp": 0,
         "dash": 1,
-        "audiobook": 1,
-        "total": 2
+        "audiobook": 0,
+        "total": 1
       },
       "dependsOn": [
         "Card",
+        "MesoStatusCard.parts",
         "StatusDot"
       ],
       "leak": {
-        "rawView": 18,
-        "rawText": 12,
-        "inlineStyle": 21,
+        "rawView": 16,
+        "rawText": 8,
+        "inlineStyle": 15,
         "rawHex": 0,
-        "loc": 480,
-        "score": 72
+        "loc": 436,
+        "score": 54
       },
       "tier": "organism",
       "verdict": "keep-core",
@@ -4757,40 +4798,6 @@
       },
       "tier": "atom",
       "verdict": "keep-core",
-      "deadByAssociation": false,
-      "audited": "unaudited",
-      "standard": false
-    },
-    {
-      "name": "metricText",
-      "file": "packages/ui/src/components/custom/Workout/metricText.tsx",
-      "dir": "workout",
-      "family": "custom/Workout",
-      "exports": [
-        "MetricCell",
-        "METRIC_FONT",
-        "MetricCellProps"
-      ],
-      "libDependents": 2,
-      "storyRefs": 1,
-      "xproj": {
-        "mobile": 0,
-        "mcp": 0,
-        "dash": 0,
-        "audiobook": 0,
-        "total": 0
-      },
-      "dependsOn": [],
-      "leak": {
-        "rawView": 0,
-        "rawText": 1,
-        "inlineStyle": 1,
-        "rawHex": 0,
-        "loc": 41,
-        "score": 3
-      },
-      "tier": "atom",
-      "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -10416,14 +10423,6 @@
       "Card"
     ],
     [
-      "MesoStatusCard",
-      "StatusDot"
-    ],
-    [
-      "MesoStatusCard",
-      "Card"
-    ],
-    [
       "MetricTiles",
       "Stack"
     ],
@@ -10616,10 +10615,6 @@
       "Typography"
     ],
     [
-      "SetsRepsLoad",
-      "metricText"
-    ],
-    [
       "Sparkline",
       "SparklineParts"
     ],
@@ -10642,10 +10637,6 @@
     [
       "SupersetWrapper",
       "Typography"
-    ],
-    [
-      "TempoDisplay",
-      "metricText"
     ],
     [
       "TrainingStatusPage",
@@ -11268,6 +11259,22 @@
       "Eyebrow"
     ],
     [
+      "MesoStatusCard",
+      "MesoStatusCard.parts"
+    ],
+    [
+      "MesoStatusCard",
+      "StatusDot"
+    ],
+    [
+      "MesoStatusCard",
+      "Card"
+    ],
+    [
+      "KnowledgeReader",
+      "KnowledgeReaderMeta"
+    ],
+    [
       "KnowledgeReader",
       "SessionDetail"
     ],
@@ -11285,10 +11292,6 @@
     ],
     [
       "KnowledgeReader",
-      "DateTime"
-    ],
-    [
-      "KnowledgeReader",
       "Divider"
     ],
     [
@@ -11297,18 +11300,34 @@
     ],
     [
       "KnowledgeReader",
-      "Link"
-    ],
-    [
-      "KnowledgeReader",
-      "Pill"
-    ],
-    [
-      "KnowledgeReader",
       "Skeleton"
     ],
     [
       "KnowledgeReader",
+      "Typography"
+    ],
+    [
+      "KnowledgeReaderMeta",
+      "SvgIcon"
+    ],
+    [
+      "KnowledgeReaderMeta",
+      "icons"
+    ],
+    [
+      "KnowledgeReaderMeta",
+      "DateTime"
+    ],
+    [
+      "KnowledgeReaderMeta",
+      "Link"
+    ],
+    [
+      "KnowledgeReaderMeta",
+      "Pill"
+    ],
+    [
+      "KnowledgeReaderMeta",
       "Typography"
     ]
   ],
@@ -11366,6 +11385,7 @@
       "InitiativeCard",
       "InputBar",
       "IntensityBar",
+      "KnowledgeReaderMeta",
       "MesoCard",
       "MesoProgressBar",
       "MessageBubble",
