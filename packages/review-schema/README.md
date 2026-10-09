@@ -24,6 +24,17 @@ reads a round imports them from here instead of copying them.
 - `TOPIC_PREFIXES`, the prefixes a question's optional `topics` keys take (`ask:`, `component:`,
   `token:`, `topic:`), and `StackedOnSchema`, the optional manifest `stackedOn` naming the base PR
   `{ repo, pr, headSha }` a stacked round renders beneath its own.
+- A question's optional `frames`: the variant keys it asks about, all in its own section. A
+  renderer places those frames directly above the question; a frame sits above one question.
+- The review kinds (all optional): a question's `decision` (`iterate`, `ship` or `decide`,
+  `DECISION_KINDS`) and `outcomes` (option text to `accept`, `changes` or `neutral`,
+  `OPTION_OUTCOMES`); the manifest's `prGroups` (`[{ pr, headSha, sectionIds }]`,
+  `PrGroupSchema`); and a variant's `variantUnit` (shared by every view of one variant),
+  `alternate` (the column it is compared in) and `change` (`changed`, `new`, `removed` or
+  `unchanged`, `FRAME_CHANGES`).
+- `lintRound(round)`, a pure check of a parsed round against the review-layout rules. It returns
+  `{ rule, message }[]` (empty when the round passes; `LINT_RULES` lists the rules) and every
+  round builder refuses a round with any problem.
 - `isLoopbackUrl(url)`, true only for an http(s) URL on `127.0.0.1`, `localhost` or `[::1]`.
 - `manifestJsonSchema()` and `feedbackJsonSchema()`, the JSON Schema an author writes against.
 - The inferred types: `ManifestInput`, `Manifest`, `Feedback`, `Recommendation`, `Question`,
