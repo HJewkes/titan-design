@@ -89,6 +89,15 @@ describe('Metric', () => {
     expect(getSemanticColors('light')['status-warning']).toBeDefined()
   })
 
+  it('labelPosition=above puts the label before the figure', () => {
+    render(<Metric value="76%" label="Volume" labelPosition="above" />)
+    const label = screen.getByText('Volume')
+    expect(
+      label.compareDocumentPosition(screen.getByText('76%')) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy()
+    expect(classesOf(label)).toContain('mb-1')
+  })
+
   it('keeps the value on text-primary when no tone is given', () => {
     render(<Metric value="42" label="Reps" />)
     expect(classesOf(screen.getByText('42'))).toContain('text-text-primary')

@@ -33,7 +33,7 @@ pin old versions, so "no consumer" can also mean "nobody upgraded yet".
 | `HelpTip` (+ `HelpTipProps`, `HelpTipSize`, `HelpTipPlacement`, `HelpTipIcon`) | `Tooltip` (roadmap decision 5)              | in-repo `ui/` only   | AW-127 |
 | `LabelWithHelp` (+ `LabelWithHelpProps`)                                       | `Tooltip` beside your own label             | in-repo `ui/` only   | AW-127 |
 | `MetricCell` (+ `MetricCellProps`)                                             | `<Metric size="…" align="…">` (decision 11) | in-repo Workout only | AW-127 |
-| `Tile` (+ `TileProps`)                                                         | `Card` stat preset (decision 1)             | in-repo `ui/` only   | AW-127 |
+| `Tile` (+ `TileProps`)                                                         | `CardStat`, Card stat preset (decision 1)   | in-repo `ui/` only   | AW-127 |
 
 ## Theme presets — replaced by `ThemeProvider` + semantic tokens
 

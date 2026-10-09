@@ -7,7 +7,7 @@ import {
   type Question,
   type StripKind,
   type Variant,
-} from './schema.ts'
+} from '@titan-design/review-schema'
 
 /** What an auto-sized frame shows until (or unless) a measurement arrives. */
 export const AUTO_FALLBACK_HEIGHT = 900
