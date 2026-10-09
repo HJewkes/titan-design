@@ -1867,8 +1867,8 @@
     "#5a5958|#100d0a": 1
   },
   "custom-workout-resttimer--ring-almost-done light": {
+    "#5a5958|#0f0c09": 1,
     "#5a5958|#100d0a": 1,
-    "#5a5958|#1e1c19": 1,
     "#72716f|#100d0a": 1
   },
   "custom-workout-resttimer--ring-display-only dark": {
@@ -1882,32 +1882,32 @@
     "#5a5958|#100d0a": 1
   },
   "custom-workout-resttimer--ring-done light": {
+    "#5a5958|#0f0c09": 1,
     "#5a5958|#100d0a": 1,
-    "#5a5958|#1e1c19": 1,
     "#72716f|#100d0a": 1
   },
   "custom-workout-resttimer--ring-just-started dark": {
     "#5a5958|#100d0a": 1
   },
   "custom-workout-resttimer--ring-just-started light": {
+    "#5a5958|#0f0c09": 1,
     "#5a5958|#100d0a": 1,
-    "#5a5958|#1e1c19": 1,
     "#72716f|#100d0a": 1
   },
   "custom-workout-resttimer--ring-midway dark": {
     "#5a5958|#100d0a": 1
   },
   "custom-workout-resttimer--ring-midway light": {
+    "#5a5958|#0f0c09": 1,
     "#5a5958|#100d0a": 1,
-    "#5a5958|#1e1c19": 1,
     "#72716f|#100d0a": 1
   },
   "custom-workout-resttimer--ring-playground dark": {
     "#5a5958|#100d0a": 1
   },
   "custom-workout-resttimer--ring-playground light": {
+    "#5a5958|#0f0c09": 1,
     "#5a5958|#100d0a": 1,
-    "#5a5958|#1e1c19": 1,
     "#72716f|#100d0a": 1
   },
   "custom-workout-resttimer--with-next-set-info dark": {

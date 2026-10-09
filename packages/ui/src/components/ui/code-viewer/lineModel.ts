@@ -28,45 +28,6 @@ export function splitLines(text: string): string[] {
   return body.replace(/(\r\n|\r|\n)$/, '').split(/\r\n|\r|\n/)
 }
 
-const DEFAULT_TAB_SIZE = 4
-const tabStop = (tabSize: number) =>
-  Number.isInteger(tabSize) && tabSize >= 1 ? tabSize : DEFAULT_TAB_SIZE
-
-/** Replaces each tab with spaces up to the next multiple of `tabSize`; a code point is one column. */
-export function expandTabs(line: string, tabSize: number = DEFAULT_TAB_SIZE): string {
-  if (!line.includes('\t')) return line
-  const size = tabStop(tabSize)
-  let column = 0
-  let expanded = ''
-  for (const char of line) {
-    const width = char === '\t' ? size - (column % size) : 1
-    expanded += char === '\t' ? ' '.repeat(width) : char
-    column += width
-  }
-  return expanded
-}
-
-function columnCount(line: string, tabSize: number): number {
-  let column = 0
-  for (const char of line) column += char === '\t' ? tabSize - (column % tabSize) : 1
-  return column
-}
-
-/**
- * The width of the longest line: its column count, tabs expanded, times the mono `advance`. Known
- * before any row mounts, so the horizontal scrollbar does not jump as windowed rows come and go.
- */
-export function contentWidth(
-  lines: readonly string[],
-  advance: number,
-  tabSize: number = DEFAULT_TAB_SIZE
-): number {
-  const size = tabStop(tabSize)
-  let columns = 0
-  for (const line of lines) columns = Math.max(columns, columnCount(line, size))
-  return columns * advance
-}
-
 /** A start line that is not an integer of 1 or more becomes 1. */
 export function normalizeStartLine(startLine: number, warn: DevWarn = devWarn): number {
   if (Number.isInteger(startLine) && startLine >= 1) return startLine
@@ -143,17 +104,6 @@ export function rangeEdges(line: number, runs: readonly HighlightRun[]): RangeEd
   if (run.startLine === run.endLine) return 'single'
   if (line === run.startLine) return 'first'
   return line === run.endLine ? 'last' : 'middle'
-}
-
-const describeRun = ({ startLine, endLine, labels }: HighlightRun): string => {
-  const span = startLine === endLine ? `line ${startLine}` : `lines ${startLine} to ${endLine}`
-  return labels.length > 0 ? `${span} (${labels.join(', ')})` : span
-}
-
-/** One sentence naming every flagged run and its labels, or `null` when nothing is flagged. */
-export function highlightSummary(runs: readonly HighlightRun[]): string | null {
-  if (runs.length === 0) return null
-  return `Flagged: ${runs.map(describeRun).join(', ')}`
 }
 
 /** The row index of a file line, clamped to the rows that exist. */
