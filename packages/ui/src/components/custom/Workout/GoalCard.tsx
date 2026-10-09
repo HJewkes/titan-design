@@ -427,7 +427,12 @@ function TitleRow({
             {title}
           </Typography>
         ) : (
-          <Typography variant="overline" color="secondary" testID="goal-card-title" {...TITLE_GUARD}>
+          <Typography
+            variant="overline"
+            color="secondary"
+            testID="goal-card-title"
+            {...TITLE_GUARD}
+          >
             {title}
           </Typography>
         )}
