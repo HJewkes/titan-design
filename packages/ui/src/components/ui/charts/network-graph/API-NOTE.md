@@ -244,7 +244,7 @@ DOM `<svg>`.
 | `selection`, `defaultSelection`, `onSelectionChange` | `GraphItemRef \| null`           | uncontrolled                      | One node or one edge. A ref to an item that is not drawn reads as `null` and is not reported back. |
 | `nodeTooltip`                                        | `(node) => ReactNode`            | label, kind, description          | Content of the active node's tooltip.                                                              |
 | `formatNodeLabel`, `formatEdgeLabel`, `summarize`    | functions                        | built-in text                     | Slots for the accessible names and the summary.                                                    |
-| `animate`                                            | `boolean`                        | `true`                            | `false` gives the still pulse, as reduced motion does.                                             |
+| `animate`                                            | `boolean`                        | `true`                            | `false` paints no pulse at all; reduced motion keeps the still form.                               |
 | `isLoading`                                          | `boolean`                        | `false`                           | A `Skeleton` of `width` by `height`; no partial graph.                                             |
 | `isDisabled`                                         | `boolean`                        | `false`                           | Keeps focus, traversal, hover and reading; stops selection changes; sets `aria-disabled`.          |
 | `emptyState`                                         | `ReactNode`                      | `<EmptyState title="No nodes" />` | Shown when no node is drawn.                                                                       |
@@ -280,9 +280,9 @@ scrolls.
 **Pulse.** An edge pulses when its `activityAt` is greater than the value seen on the previous
 render, or when it arrives after mount with one. Nothing pulses on the first render. The pulse is a
 `brand-primary` dash that travels source to target as one CSS transition of `PULSE_MS` (1000 ms).
-With reduced motion or `animate={false}` it is a still `brand-primary` stroke over the whole edge
-with no transition. Either form is removed after `PULSE_MS`. A pulse never moves focus and is not
-announced.
+With reduced motion it is a still `brand-primary` stroke over the whole edge with no transition.
+Either form is removed after `PULSE_MS`. With `animate={false}` nothing is painted. A pulse never
+moves focus and is not announced. Alt, Ctrl and Cmd chords are left to the browser.
 
 ## Fixtures
 

@@ -162,7 +162,7 @@ export interface NetworkGraphProps extends Omit<ViewProps, 'children'> {
   formatNodeLabel?: (node: GraphNode, context: GraphNodeContext) => string
   formatEdgeLabel?: (edge: GraphEdge, source: GraphNode, target: GraphNode) => string
   summarize?: (model: GraphModel) => string
-  /** Default true; false stops the pulse. */
+  /** Default true. False renders no edge pulse; reduced motion keeps a still one. */
   animate?: boolean
   isLoading?: boolean
   isDisabled?: boolean

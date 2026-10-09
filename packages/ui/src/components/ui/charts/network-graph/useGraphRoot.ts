@@ -8,6 +8,18 @@ interface WebFocusEvent {
   currentTarget: { focus: () => void; contains: (node: unknown) => boolean }
 }
 
+interface WebKeyEvent {
+  key: string
+  altKey?: boolean
+  ctrlKey?: boolean
+  metaKey?: boolean
+  preventDefault: () => void
+}
+
+/** Alt, Ctrl and Cmd chords (browser Back, word jumps) are the browser's, not the graph's. */
+const hasModifier = (event: WebKeyEvent) =>
+  event.altKey === true || event.ctrlKey === true || event.metaKey === true
+
 /**
  * Scrolls the active item into view when asked: after a key and when focus enters. A hover never
  * asks, so the graph does not move under the pointer.
@@ -71,8 +83,8 @@ export function useGraphRoot({ name, activeDomId, isDisabled, state }: GraphRoot
     'aria-activedescendant': activeDomId,
     'aria-disabled': isDisabled || undefined,
     tabIndex: 0,
-    onKeyDown: (event: { key: string; preventDefault: () => void }) => {
-      if (!state.handleKey(event.key)) return
+    onKeyDown: (event: WebKeyEvent) => {
+      if (hasModifier(event) || !state.handleKey(event.key)) return
       event.preventDefault()
       requestScroll()
     },

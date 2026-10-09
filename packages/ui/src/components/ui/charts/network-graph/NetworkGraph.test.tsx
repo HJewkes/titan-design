@@ -316,6 +316,20 @@ describe('NetworkGraph keyboard', () => {
     expect(onSelectionChange).toHaveBeenCalledTimes(4)
   })
 
+  it.each([
+    ['Alt', { altKey: true }],
+    ['Ctrl', { ctrlKey: true }],
+    ['Meta', { metaKey: true }],
+  ])('leaves an arrow key with %s held to the browser', (_, modifier) => {
+    renderGraph()
+    focusRoot()
+    const taken = !fireEvent.keyDown(root(), { key: 'ArrowLeft', ...modifier })
+    expect(taken).toBe(false)
+    expect(activeElement()).toBe(nodeButton('lead-01'))
+    expect(press('ArrowDown')).toBe(true)
+    expect(activeElement()).toBe(nodeButton('worker-01'))
+  })
+
   it('Tab enters at the selected item, and one more Tab leaves', () => {
     const { container } = renderGraph({ defaultSelection: { type: 'node', id: 'worker-04' } })
     expect(root()).not.toHaveAttribute('aria-activedescendant')
@@ -511,8 +525,9 @@ describe('NetworkGraph edge pulse', () => {
   it('animate={false} renders no pulse', () => {
     const { container, update } = renderGraph({ edges: withActivity(100), animate: false })
     update({ edges: withActivity(200), animate: false })
-    expect(pulses(container)).toEqual(['still'])
-    expect(container.querySelector<SVGPathElement>('[data-pulse]')?.style.transition).toBe('')
+    expect(pulses(container)).toEqual([])
+    update({ edges: withActivity(300), animate: true })
+    expect(pulses(container)).toEqual(['travel'])
   })
 })
 

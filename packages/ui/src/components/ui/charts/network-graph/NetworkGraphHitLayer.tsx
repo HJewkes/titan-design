@@ -20,8 +20,10 @@ export interface NetworkGraphHitLayerProps {
 export function NetworkGraphHitLayer(props: NetworkGraphHitLayerProps) {
   const { model, geometries, domIds, names, selection, onPress, onHoverIn, onHoverOut } = props
   return (
+    // eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (contract C9)
     <svg role="presentation" width={model.width} height={model.height} style={LAYER_STYLE}>
       {geometries.map(({ id, path }) => (
+        // eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (contract C9)
         <path
           key={id}
           id={domIds.get(id)}

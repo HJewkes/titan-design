@@ -69,7 +69,7 @@ const meta: Meta<StoryArgs> = {
           '`layeredLayout()` or `suppliedLayout(positions)`. No error state: the consumer renders ' +
           'the failure. The `fixture` control replaces `nodes`, `edges` and the kinds; it holds the ' +
           '5, 30 and 150 node graphs and the edge cases. Toggle `pulse` to send traffic down one ' +
-          'edge, and turn `animate` off to see the still form that reduced motion also gets. The ' +
+          'edge; `animate` off paints no pulse, and reduced motion gets a still one. The ' +
           'graph is one tab stop: arrow keys follow the edges, Enter selects, Escape clears.',
       },
     },

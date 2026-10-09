@@ -1,5 +1,5 @@
 // The interactive layer stack of NetworkGraph: one scroll container that is the graph's single tab stop.
-import { useId, useMemo, useRef } from 'react'
+import { useCallback, useId, useMemo, useRef } from 'react'
 import { ScrollView, type ViewProps } from 'react-native'
 import { graphItems, kindLabel, labelsById, type GraphItems } from './network-graph-items-model'
 import {
@@ -82,7 +82,7 @@ function ActiveReadout({ graph, model, tipNode, tipId, activeEdge }: ActiveReado
   const point = tipNode && model.positions[tipNode.id]
   return (
     <>
-      {tipNode && point && (
+      {tipNode && point ? (
         <NodeTip key={tipNode.id} id={tipId} point={point}>
           {graph.nodeTooltip?.(tipNode) ?? (
             <DefaultNodeTip
@@ -91,8 +91,8 @@ function ActiveReadout({ graph, model, tipNode, tipId, activeEdge }: ActiveReado
             />
           )}
         </NodeTip>
-      )}
-      {activeEdge && <EdgeWeight geometry={activeEdge} />}
+      ) : null}
+      {activeEdge ? <EdgeWeight geometry={activeEdge} /> : null}
     </>
   )
 }
@@ -125,11 +125,18 @@ export function NetworkGraphCanvas({ graph, model, summary }: NetworkGraphCanvas
   const tipNode = hasTip ? model.index.nodesById.get(active.id) : undefined
   const activeEdge = geometries.find((g) => isItem(active, 'edge', g.id))
 
-  const press = (item: GraphItemRef) => {
-    state.activate(item)
-    state.toggle(item)
-    ;(scrollRef.current?.getScrollableNode() as { focus?: () => void } | undefined)?.focus?.()
-  }
+  // Stable across renders, so a memoised NodeButton re-renders only when its own props change.
+  const { activate, toggle } = state
+  const press = useCallback(
+    (item: GraphItemRef) => {
+      activate(item)
+      toggle(item)
+      ;(scrollRef.current?.getScrollableNode() as { focus?: () => void } | undefined)?.focus?.()
+    },
+    [activate, toggle]
+  )
+  const pressEdge = useCallback((id: string) => press({ type: 'edge', id }), [press])
+  const hoverEdge = useCallback((id: string) => activate({ type: 'edge', id }), [activate])
   const name = `${accessibilityLabel}. ${summary}`
   const rootProps = useGraphRoot({ name, activeDomId, isDisabled, state })
 
@@ -158,8 +165,8 @@ export function NetworkGraphCanvas({ graph, model, summary }: NetworkGraphCanvas
         domIds={items.edgeDomIds}
         names={items.edgeNames}
         selection={selection}
-        onPress={(id) => press({ type: 'edge', id })}
-        onHoverIn={(id) => state.activate({ type: 'edge', id })}
+        onPress={pressEdge}
+        onHoverIn={hoverEdge}
         onHoverOut={state.deactivate}
       />
       <NodeLayer

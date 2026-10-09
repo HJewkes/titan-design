@@ -35,6 +35,7 @@ export const LAYER_STYLE: CSSProperties = {
 function ArrowMarker({ id, color }: { id: string; color: ColorToken }) {
   const half = ARROW_LENGTH / 2
   return (
+    // eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (contract C9)
     <marker
       id={id}
       markerUnits="userSpaceOnUse"
@@ -44,6 +45,7 @@ function ArrowMarker({ id, color }: { id: string; color: ColorToken }) {
       refY={half}
       orient="auto"
     >
+      {/* eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (contract C9) */}
       <path
         d={`M0,0L${ARROW_LENGTH},${half}L0,${ARROW_LENGTH}Z`}
         style={{ fill: resolveColor(color) }}
@@ -61,6 +63,7 @@ interface EdgeMarkProps {
 
 function EdgeMark({ geometry, markerPrefix, isStrong, isDimmed }: EdgeMarkProps) {
   return (
+    // eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (contract C9)
     <path
       d={geometry.path}
       fill="none"
@@ -76,14 +79,15 @@ function EdgeMark({ geometry, markerPrefix, isStrong, isDimmed }: EdgeMarkProps)
 }
 
 /**
- * Traffic on an edge: a dash that travels source to target, as one CSS transition. With motion
- * off or reduced it is a still stroke over the whole edge, which the owner removes after `PULSE_MS`.
+ * Traffic on an edge: a dash that travels source to target, as one CSS transition. With reduced
+ * motion it is a still stroke over the whole edge, which the owner removes after `PULSE_MS`.
  */
-function PulseMark({ path, animate }: { path: string; animate: boolean }) {
-  const { enabled, played } = useChartEntrance(animate)
+function PulseMark({ path }: { path: string }) {
+  const { enabled, played } = useChartEntrance(true)
   const stroke = resolveColor('brand-primary')
   if (!enabled) {
     return (
+      // eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (contract C9)
       <path
         d={path}
         fill="none"
@@ -94,6 +98,7 @@ function PulseMark({ path, animate }: { path: string; animate: boolean }) {
     )
   }
   return (
+    // eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (contract C9)
     <path
       d={path}
       pathLength={1}
@@ -124,17 +129,21 @@ interface NodeMarkProps {
 function NodeMark({ node, x, y, color, isActive, isSelected, isDimmed }: NodeMarkProps) {
   const opacity = isDimmed ? DIM_OPACITY : node.isMuted ? MUTED_OPACITY : 1
   return (
+    // eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (contract C9)
     <g opacity={opacity} data-node={node.id}>
-      {isActive && (
+      {isActive ? (
+        // eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (contract C9)
         <circle
           cx={x}
           cy={y}
           r={NODE_RADIUS + ACTIVE_HALO_GAP}
           style={{ fill: resolveColor('interactive-focus') }}
         />
-      )}
+      ) : null}
+      {/* eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (contract C9) */}
       <circle cx={x} cy={y} r={NODE_RADIUS} style={{ fill: resolveColor(color) }} />
-      {isSelected && (
+      {isSelected ? (
+        // eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (contract C9)
         <circle
           cx={x}
           cy={y}
@@ -144,7 +153,7 @@ function NodeMark({ node, x, y, color, isActive, isSelected, isDimmed }: NodeMar
           style={{ stroke: resolveColor('text-primary') }}
           data-ring="selected"
         />
-      )}
+      ) : null}
     </g>
   )
 }
@@ -157,6 +166,7 @@ export interface NetworkGraphPlotProps {
   active: GraphFocus | null
   selection: GraphItemRef | null
   pulsing: ReadonlyMap<string, number>
+  /** False paints no pulse at all; reduced motion still gets the still form. */
   animate: boolean
   /** Prefix for the arrowhead marker ids, unique per graph. */
   markerPrefix: string
@@ -167,6 +177,7 @@ export function NetworkGraphPlot(props: NetworkGraphPlotProps) {
   const { model, geometries, nodeColors, emphasis, active, selection, pulsing, animate } = props
   const { markerPrefix } = props
   return (
+    // eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (contract C9)
     <svg
       aria-hidden="true"
       width={model.width}
@@ -174,6 +185,7 @@ export function NetworkGraphPlot(props: NetworkGraphPlotProps) {
       style={LAYER_STYLE}
       data-testid="network-graph-plot"
     >
+      {/* eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (contract C9) */}
       <defs>
         <ArrowMarker id={`${markerPrefix}-rest`} color="text-secondary" />
         <ArrowMarker id={`${markerPrefix}-strong`} color="text-primary" />
@@ -189,11 +201,13 @@ export function NetworkGraphPlot(props: NetworkGraphPlotProps) {
           isDimmed={emphasis !== null && !emphasis.edges.has(geometry.id)}
         />
       ))}
-      {geometries.flatMap(({ id, path }) =>
-        pulsing.has(id)
-          ? [<PulseMark key={`${id}:${String(pulsing.get(id))}`} path={path} animate={animate} />]
-          : []
-      )}
+      {animate
+        ? geometries.flatMap(({ id, path }) =>
+            pulsing.has(id)
+              ? [<PulseMark key={`${id}:${String(pulsing.get(id))}`} path={path} />]
+              : []
+          )
+        : null}
       {model.order.map((id) => {
         const node = model.index.nodesById.get(id)
         const point = model.positions[id]

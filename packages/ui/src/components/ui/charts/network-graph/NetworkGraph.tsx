@@ -46,9 +46,9 @@ function LoadedGraph({ graph }: { graph: GraphContentProps }) {
   return (
     <>
       <NetworkGraphCanvas graph={graph} model={model} summary={summary} />
-      {showLegend && (
+      {showLegend ? (
         <GraphLegend nodeKinds={nodeKinds ?? []} edgeKinds={edgeKinds ?? []} colors={colors} />
-      )}
+      ) : null}
     </>
   )
 }
