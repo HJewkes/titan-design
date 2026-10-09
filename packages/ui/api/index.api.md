@@ -4787,23 +4787,7 @@ export interface MessageListProps {
 export function Metric(input: MetricProps): react_jsx_runtime.JSX.Element;
 
 // @public
-export const METRIC_FONT = "Inter, sans-serif";
-
-// @public
 export type MetricAlign = 'start' | 'center' | 'end';
-
-// @public @deprecated (undocumented)
-export function MetricCell(input: MetricCellProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface MetricCellProps {
-    // (undocumented)
-    children: ReactNode;
-    color: string;
-    // (undocumented)
-    fontSize?: number;
-    weight?: 400 | 600;
-}
 
 // @public (undocumented)
 export function MetricGroup(input: MetricGroupProps): react_jsx_runtime.JSX.Element;
