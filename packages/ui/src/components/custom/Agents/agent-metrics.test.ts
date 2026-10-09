@@ -4,6 +4,7 @@ import {
   ERROR_RATE_FLAG_ABOVE,
   agentCostLabel,
   agentCountLabel,
+  agentErrorsLabel,
   agentLastEventLabel,
   clampedContextFraction,
   errorRate,
@@ -50,6 +51,12 @@ describe('labels', () => {
     expect(agentCountLabel(1_240_000)).toBe('1.2M')
     expect(agentCountLabel(Number.POSITIVE_INFINITY)).toBe('—')
     expect(agentCountLabel(-3)).toBe('—')
+  })
+
+  it('adds the share of calls to the error count only when it is flagged', () => {
+    expect(agentErrorsLabel({ toolCalls: 120, errors: 11 })).toBe('11 · 9%')
+    expect(agentErrorsLabel({ toolCalls: 100, errors: 5 })).toBe('5')
+    expect(agentErrorsLabel({ toolCalls: 0, errors: 0 })).toBe('0')
   })
 
   it('renders cost to the cent and a missing or invalid cost as the placeholder', () => {

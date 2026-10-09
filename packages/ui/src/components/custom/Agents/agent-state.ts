@@ -94,7 +94,8 @@ export function uniqueAgents(agents: AgentSummary[]): AgentSummary[] {
 export function agentAccessibleSummary(agent: AgentSummary, now: number): string {
   const parts = [agent.name, agentStateMeta(agent.state).label]
   if (agent.isDnd) parts.push('do not disturb')
-  if (agent.lastEventAt != null) parts.push(`last event ${agentLastEventLabel(agent.lastEventAt, now)}`)
+  if (agent.lastEventAt != null)
+    parts.push(`last event ${agentLastEventLabel(agent.lastEventAt, now)}`)
   if (agent.costUsd != null) parts.push(`cost ${agentCostLabel(agent.costUsd)}`)
   return parts.join(', ')
 }

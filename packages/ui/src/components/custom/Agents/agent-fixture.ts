@@ -13,7 +13,9 @@ export const AGENTS_NOW = Date.UTC(2026, 6, 1, 12, 0, 0)
 const MINUTE = 60_000
 const HOUR = 60 * MINUTE
 
-const RISING = [1, 2, 2, 3, 5, 4, 6, 8, 7, 9, 12, 10, 11, 14, 13, 15, 18, 16, 17, 20, 19, 22, 21, 24]
+const RISING = [
+  1, 2, 2, 3, 5, 4, 6, 8, 7, 9, 12, 10, 11, 14, 13, 15, 18, 16, 17, 20, 19, 22, 21, 24,
+]
 
 const FULL_METRICS: AgentMetrics = {
   tokensIn: 1_240_000,
@@ -59,7 +61,13 @@ export const AGENT_AVAILABLE: AgentSummary = {
   lastEventAt: AGENTS_NOW - 42 * MINUTE,
   costUsd: 1.2,
   costSource: 'session-analytics',
-  metrics: { tokensIn: 98_000, tokensOut: 6_100, toolCalls: 40, errors: 0, activity: Array(24).fill(3) },
+  metrics: {
+    tokensIn: 98_000,
+    tokensOut: 6_100,
+    toolCalls: 40,
+    errors: 0,
+    activity: Array(24).fill(3),
+  },
 }
 
 export const AGENT_BLOCKED: AgentSummary = {
@@ -77,7 +85,13 @@ export const AGENT_BLOCKED: AgentSummary = {
   lastEventAt: AGENTS_NOW - 9 * MINUTE,
   costUsd: 2.05,
   costSource: 'session-analytics',
-  metrics: { tokensIn: 410_000, tokensOut: 22_000, toolCalls: 120, errors: 11, activity: RISING.slice(0, 12) },
+  metrics: {
+    tokensIn: 410_000,
+    tokensOut: 22_000,
+    toolCalls: 120,
+    errors: 11,
+    activity: RISING.slice(0, 12),
+  },
 }
 
 export const AGENT_SPAWNING: AgentSummary = {
@@ -115,7 +129,13 @@ export const AGENT_EXITED: AgentSummary = {
   lastEventAt: AGENTS_NOW - 5 * HOUR,
   costUsd: 3.4,
   costSource: 'exit-report',
-  metrics: { tokensIn: 720_000, tokensOut: 41_000, toolCalls: 210, errors: 3, activity: [...RISING, 0, 0, 0] },
+  metrics: {
+    tokensIn: 720_000,
+    tokensOut: 41_000,
+    toolCalls: 210,
+    errors: 3,
+    activity: [...RISING, 0, 0, 0],
+  },
 }
 
 export const AGENT_FAILED: AgentSummary = {
@@ -244,7 +264,12 @@ export const AGENTS_DUPLICATE_IDS: AgentSummary[] = [
   AGENT_WORKING,
   { ...AGENT_WORKING, task: 'A stale copy of the same session' },
   AGENT_RETIRED,
-  { ...AGENT_RETIRED, id: 'name:grove-pruner@1782950000000', state: 'working', stateSource: 'presence' },
+  {
+    ...AGENT_RETIRED,
+    id: 'name:grove-pruner@1782950000000',
+    state: 'working',
+    stateSource: 'presence',
+  },
 ]
 
 const PAST_STATES: AgentSummaryState[] = ['exited', 'failed', 'retired']

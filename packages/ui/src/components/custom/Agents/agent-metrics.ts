@@ -79,6 +79,13 @@ export function agentCountLabel(n: number): string {
   return isCount(n) ? formatCompact(n) : PLACEHOLDER
 }
 
+/** The error count, followed by its share of calls when that share is flagged, so the flag is never colour alone. */
+export function agentErrorsLabel(metrics: Pick<AgentMetrics, 'toolCalls' | 'errors'>): string {
+  const count = agentCountLabel(metrics.errors)
+  const rate = errorRate(metrics)
+  return rate !== null && isErrorRateFlagged(rate) ? `${count} · ${Math.round(rate * 100)}%` : count
+}
+
 /** A cost, or the placeholder when it is missing, negative or non-finite. */
 export function agentCostLabel(costUsd: number | null | undefined): string {
   return costUsd != null && isCount(costUsd) ? formatUsd(costUsd) : PLACEHOLDER
