@@ -316,6 +316,27 @@
         },
         {
           "default": null,
+          "description": "Makes the whole card one link to this URL.",
+          "name": "href",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Consumer vocabulary under the top task: counts, newest activity, a badge.",
+          "name": "meta",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Makes the whole card one link.",
+          "name": "onPress",
+          "required": false,
+          "type": "(() => void)"
+        },
+        {
+          "default": null,
           "description": "Count of open tasks for this initiative.",
           "name": "openCount",
           "required": true,
