@@ -111,15 +111,23 @@ export function roundLayout(manifest: Manifest): RoundLayout {
 
 const TITLE_PR = /^(?:([^\s#]+\/[^\s#]+))?#(\d+)\b/
 
+/** Each grouped section's PR, from the round's explicit `prGroups`. */
+export function explicitPrs(groups: { pr: string; sectionIds: string[] }[] = []) {
+  return new Map(groups.flatMap((g) => g.sectionIds.map((id): [string, string] => [id, g.pr])))
+}
+
 /**
- * The PR a section is about: its questions' `page`, else the `#n` its title opens with,
- * resolved against the pages the round's questions name.
+ * The PR a section is about: its explicit PR group, else its questions' `page`, else the `#n`
+ * its title opens with, resolved against the pages the round's questions name.
  */
 export function sectionPr(
-  section: { title: string; questionIds?: string[] },
+  section: { id?: string; title: string; questionIds?: string[] },
   questions: Map<string, { page?: string }>,
-  known: string[]
+  known: string[],
+  explicit: Map<string, string> = new Map()
 ): string | undefined {
+  const grouped = section.id === undefined ? undefined : explicit.get(section.id)
+  if (grouped) return grouped
   const pages = (section.questionIds ?? []).flatMap((id) => questions.get(id)?.page ?? [])
   if (pages[0]) return pages[0]
   const match = TITLE_PR.exec(section.title)
@@ -128,13 +136,17 @@ export function sectionPr(
   return repo ? `${repo}#${pr}` : (known.find((k) => k.endsWith(`#${pr}`)) ?? `#${pr}`)
 }
 
-/** Section ids grouped so that consecutive sections about one PR share a page. */
+/**
+ * Section ids grouped so that consecutive sections about one PR share a page, and a page never
+ * splits a PR group. `prGroups` names a group outright; `lintRound` keeps its sections together.
+ */
 export function prGroups(manifest: Manifest): string[][] {
   const byId = new Map(manifest.questions.map((q) => [q.id, q]))
   const known = manifest.questions.flatMap((q) => q.page ?? [])
+  const explicit = explicitPrs(manifest.prGroups)
   const groups: { pr?: string; ids: string[] }[] = []
   for (const section of manifest.sections ?? []) {
-    const pr = sectionPr(section, byId, known)
+    const pr = sectionPr(section, byId, known, explicit)
     const last = groups.at(-1)
     if (pr && last?.pr === pr) last.ids.push(section.id)
     else groups.push({ pr, ids: [section.id] })

@@ -105,7 +105,10 @@ function unitProblems(m: Manifest): LintProblem[] {
 
 /** A frame's mode: the globals it renders under (theme, density), so alternates show the same set. */
 const modeOf = (v: Variant) =>
-  JSON.stringify(Object.entries(v.globals ?? {}).sort(([a], [b]) => a.localeCompare(b)))
+  Object.entries(v.globals ?? {})
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([name, value]) => `${name}=${String(value)}`)
+    .join(' ') || 'default'
 
 function alternateProblems(m: Manifest): LintProblem[] {
   return m.questions.flatMap((q) => {
@@ -113,13 +116,16 @@ function alternateProblems(m: Manifest): LintProblem[] {
     const columns = new Map<string, string[]>()
     for (const v of views)
       columns.set(v.alternate!, [...(columns.get(v.alternate!) ?? []), modeOf(v)])
-    const [first, ...rest] = [...columns].map(([col, modes]) => ({ col, modes: modes.sort() }))
-    const differs = rest.find((c) => JSON.stringify(c.modes) !== JSON.stringify(first?.modes))
+    const [first, ...rest] = [...columns].map(([col, modes]) => ({
+      col,
+      modes: modes.sort().join(', '),
+    }))
+    const differs = rest.find((c) => c.modes !== first?.modes)
     if (!first || !differs) return []
     return [
       lint('unequal-alternates')(
-        `question ${q.id}: alternate ${first.col} shows ${first.modes.length} view(s) and ` +
-          `${differs.col} shows ${differs.modes.length}, or in other modes; compare whole units`
+        `question ${q.id}: alternate ${first.col} shows ${first.modes} but ${differs.col} shows ` +
+          `${differs.modes}; compare whole units over the same modes`
       ),
     ]
   })

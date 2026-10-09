@@ -180,7 +180,7 @@ describe('lintRound', () => {
     )
     question(draft, 'format').frames = ['subtle-dark', 'subtle-light', 'outline-dark']
     expect(only(draft, 'unequal-alternates')).toEqual([
-      'question format: alternate A shows 2 view(s) and B shows 1, or in other modes; compare whole units',
+      'question format: alternate A shows theme=dark, theme=light but B shows theme=dark; compare whole units over the same modes',
     ])
   })
 

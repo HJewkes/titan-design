@@ -3,13 +3,14 @@
   "unit": "question-frames-example",
   "round": 1,
   "storybookUrl": "http://127.0.0.1:6100",
-  "context": "Two PR groups. Each page shows its PR's frames, each pick right under the frames it asks about, then its Ship.",
+  "context": "Two PR groups. Each page shows its PR's frames, each pick right under the frames it asks about (alternates as whole units, dark and light together), then its Ship.",
   "widths": [1280],
   "variants": [
     {
       "key": "pill-built",
       "storyId": "components-atoms-pill--default",
-      "label": "Pill as built"
+      "label": "Pill as built",
+      "change": "unchanged"
     },
     {
       "key": "pill-subtle",
@@ -17,7 +18,27 @@
       "label": "Pill, subtle",
       "args": {
         "variant": "subtle"
-      }
+      },
+      "variantUnit": "pill-subtle",
+      "alternate": "subtle",
+      "globals": {
+        "theme": "dark"
+      },
+      "change": "new"
+    },
+    {
+      "key": "pill-subtle-light",
+      "storyId": "components-atoms-pill--default",
+      "label": "Pill, subtle, light",
+      "args": {
+        "variant": "subtle"
+      },
+      "variantUnit": "pill-subtle",
+      "alternate": "subtle",
+      "globals": {
+        "theme": "light"
+      },
+      "change": "new"
     },
     {
       "key": "pill-outline",
@@ -25,7 +46,27 @@
       "label": "Pill, outline",
       "args": {
         "variant": "outline"
-      }
+      },
+      "variantUnit": "pill-outline",
+      "alternate": "outline",
+      "globals": {
+        "theme": "dark"
+      },
+      "change": "new"
+    },
+    {
+      "key": "pill-outline-light",
+      "storyId": "components-atoms-pill--default",
+      "label": "Pill, outline, light",
+      "args": {
+        "variant": "outline"
+      },
+      "variantUnit": "pill-outline",
+      "alternate": "outline",
+      "globals": {
+        "theme": "light"
+      },
+      "change": "new"
     },
     {
       "key": "pill-sm",
@@ -66,13 +107,15 @@
     {
       "key": "button-loading",
       "storyId": "components-molecules-button--loading",
-      "label": "Button, loading"
+      "label": "Button, loading",
+      "change": "changed"
     }
   ],
   "questions": [
     {
       "id": "ship-102",
       "kind": "pick-one",
+      "decision": "ship",
       "prompt": "Ship owner/name#102 at this head?",
       "options": ["Ship", "Don't ship"],
       "required": true,
@@ -83,21 +126,27 @@
         "pr": 102,
         "headSha": "2222222222222222222222222222222222222222",
         "ship": ["Ship"]
+      },
+      "outcomes": {
+        "Ship": "accept",
+        "Don't ship": "changes"
       }
     },
     {
       "id": "pill-format",
       "kind": "pick-one",
+      "decision": "iterate",
       "prompt": "Which Pill format?",
       "options": ["pill-subtle", "pill-outline"],
       "required": true,
       "signsOff": "pill-format",
       "page": "owner/name#101",
-      "frames": ["pill-subtle", "pill-outline"]
+      "frames": ["pill-subtle", "pill-subtle-light", "pill-outline", "pill-outline-light"]
     },
     {
       "id": "pill-size",
       "kind": "pick-one",
+      "decision": "iterate",
       "prompt": "Which Pill size?",
       "options": ["pill-sm", "pill-md"],
       "required": true,
@@ -108,6 +157,7 @@
     {
       "id": "ship-101",
       "kind": "pick-one",
+      "decision": "ship",
       "prompt": "Ship owner/name#101 at this head?",
       "options": ["Ship", "Don't ship"],
       "required": true,
@@ -118,21 +168,31 @@
         "pr": 101,
         "headSha": "1111111111111111111111111111111111111111",
         "ship": ["Ship"]
+      },
+      "outcomes": {
+        "Ship": "accept",
+        "Don't ship": "changes"
       }
     },
     {
       "id": "button-weight",
       "kind": "pick-one",
+      "decision": "iterate",
       "prompt": "Which Button weight leads a form?",
       "options": ["button-primary", "button-secondary"],
       "required": true,
       "signsOff": "button-weight",
       "page": "owner/name#102",
-      "frames": ["button-primary", "button-secondary"]
+      "frames": ["button-primary", "button-secondary"],
+      "outcomes": {
+        "button-primary": "accept",
+        "button-secondary": "changes"
+      }
     },
     {
       "id": "button-quiet",
       "kind": "pick-one",
+      "decision": "iterate",
       "prompt": "Which quiet Button style?",
       "options": ["button-outline", "button-ghost"],
       "required": true,
@@ -150,7 +210,15 @@
       "context": "The as-built Pill is context.",
       "kind": "STATES",
       "questionIds": ["ship-101", "pill-format", "pill-size"],
-      "variantKeys": ["pill-built", "pill-subtle", "pill-outline", "pill-sm", "pill-md"]
+      "variantKeys": [
+        "pill-built",
+        "pill-subtle",
+        "pill-subtle-light",
+        "pill-outline",
+        "pill-outline-light",
+        "pill-sm",
+        "pill-md"
+      ]
     },
     {
       "id": "pr-102-ship",
@@ -171,6 +239,18 @@
       "kind": "STATES",
       "questionIds": ["button-weight", "button-quiet"],
       "variantKeys": ["button-primary", "button-secondary", "button-outline", "button-ghost"]
+    }
+  ],
+  "prGroups": [
+    {
+      "pr": "owner/name#101",
+      "headSha": "1111111111111111111111111111111111111111",
+      "sectionIds": ["pr-101"]
+    },
+    {
+      "pr": "owner/name#102",
+      "headSha": "2222222222222222222222222222222222222222",
+      "sectionIds": ["pr-102-ship", "pr-102-picks"]
     }
   ]
 }
