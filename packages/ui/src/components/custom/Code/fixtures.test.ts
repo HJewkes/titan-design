@@ -90,4 +90,9 @@ describe('statusMarkFixtures', () => {
   it('gives every fixture a known kind', () => {
     for (const f of statusMarkFixtures) expect(CODE_CHANGE_ORDER).toContain(f.kind)
   })
+
+  it('keeps every delta finite except the Hostile fixture', () => {
+    for (const f of statusMarkFixtures.filter((x) => x.name !== 'Hostile' && x.delta !== undefined))
+      expect(Number.isFinite(f.delta)).toBe(true)
+  })
 })

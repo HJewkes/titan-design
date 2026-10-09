@@ -1806,6 +1806,61 @@
     },
     {
       "composes": [
+        "Pill"
+      ],
+      "family": "custom/Code",
+      "file": "packages/ui/src/components/custom/Code/StatusMark.tsx",
+      "name": "StatusMark",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides, merged by the Pill.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Score change, after minus before.",
+          "name": "delta",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Raises worsened from warning to error.",
+          "name": "isOverCutoff",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Which change the mark names.",
+          "name": "kind",
+          "required": true,
+          "type": "CodeChangeKind"
+        },
+        {
+          "default": "sm",
+          "description": "Pill size; default `sm`.",
+          "name": "size",
+          "required": false,
+          "type": "\"xs\" | \"sm\" | \"md\""
+        }
+      ],
+      "purpose": "The change vocabulary of the Code family: one Pill, named in words for assistive tech.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Code/StatusMark.tsx",
+        "status": "packages/ui/src/components/custom/Code/StatusMark.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-code-statusmark--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
         "DualGhostSparkParts",
         "GhostBand",
         "GhostSpark"

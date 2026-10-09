@@ -16,10 +16,10 @@ Each slice appends its tree here.
 
 ## Tier map
 
-| Tier | Members                                        | Imports               |
-| ---- | ---------------------------------------------- | --------------------- |
-| atom | `StatusMark`                                   | `ui/pill`             |
-| seam | `types.ts`, `code-status.ts`, `code-format.ts` | `ui/*` types, `utils` |
+| Tier | Members                                        | Imports                                      |
+| ---- | ---------------------------------------------- | -------------------------------------------- |
+| atom | `StatusMark`                                   | `ui/pill`                                    |
+| seam | `types.ts`, `code-status.ts`, `code-format.ts` | `ui/*` types, `utils`, `theme/resolve-color` |
 
 `fixtures.ts` is never exported from the barrel; every path, symbol, package and ref in it is invented.
 
