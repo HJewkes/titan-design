@@ -2479,6 +2479,132 @@
     },
     {
       "composes": [
+        "Button",
+        "Card",
+        "Collapse",
+        "DateTime",
+        "Indicator",
+        "MarkdownProse",
+        "Pill",
+        "ToolCallRow",
+        "Typography"
+      ],
+      "family": "custom/Session",
+      "file": "packages/ui/src/components/custom/Session/ConversationTurn.tsx",
+      "name": "ConversationTurn",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides on the article.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "false",
+          "description": "Uncontrolled: whether the tool group starts open.",
+          "name": "defaultExpanded",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Controlled: whether the tool group is open.",
+          "name": "expanded",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "false",
+          "description": "Search did not match this turn.",
+          "name": "isDimmed",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Shows times in UTC rather than the runtime's zone.",
+          "name": "isUTC",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Reference patterns to link in assistant text.",
+          "name": "linkers",
+          "required": false,
+          "type": "ProseLinker[]"
+        },
+        {
+          "default": "100",
+          "description": "Tool rows mounted at once in an open group; a \"Show N more calls\" row pages the rest.",
+          "name": "maxToolRows",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Called with the tool group's next open state.",
+          "name": "onExpandedChange",
+          "required": false,
+          "type": "((expanded: boolean) => void)"
+        },
+        {
+          "default": null,
+          "description": "Shown as an action on a message the read model cut at its cap.",
+          "name": "onRequestFullText",
+          "required": false,
+          "type": "((message: TimelineMessage) => void)"
+        },
+        {
+          "default": null,
+          "description": "Makes each tool row a button.",
+          "name": "onToolCallPress",
+          "required": false,
+          "type": "((call: TimelineToolCall) => void)"
+        },
+        {
+          "default": "500",
+          "description": "Characters of each message shown before \"Show more\".",
+          "name": "previewChars",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Replaces the speaker labels (\"User\", \"Assistant\", \"Injected\", ...).",
+          "name": "roleLabels",
+          "required": false,
+          "type": "Partial<Record<\"user\" | \"assistant\" | \"injected\" | \"channel\" | \"compaction\", string>>"
+        },
+        {
+          "default": "false",
+          "description": "Shows the date beside the time stamp; set on the first turn after a day change.",
+          "name": "showDate",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "The turn to draw: its opener, the assistant's messages and one tool group.",
+          "name": "turn",
+          "required": true,
+          "type": "TimelineTurn"
+        }
+      ],
+      "purpose": "One turn of an agent session: its opener, the assistant's messages in `seq` order, and every tool call of the turn in one disclosure under the text.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Session/ConversationTurn.tsx",
+        "status": "packages/ui/src/components/custom/Session/ConversationTurn.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-session-conversationturn--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
         "DateTime",
         "Divider",
         "Typography"
@@ -2531,6 +2657,143 @@
       "status": "candidate",
       "storyIds": [
         "custom-session-gapindicator--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "ConversationTurn",
+        "EmptyState",
+        "GapIndicator",
+        "MarkdownProse",
+        "Skeleton",
+        "Typography"
+      ],
+      "family": "custom/Session",
+      "file": "packages/ui/src/components/custom/Session/SessionConversation.tsx",
+      "name": "SessionConversation",
+      "props": [
+        {
+          "default": null,
+          "description": "Names the list for assistive tech.",
+          "name": "accessibilityLabel",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Tailwind overrides on the root.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Uncontrolled: the turn indexes whose tool groups start open.",
+          "name": "defaultExpandedTurns",
+          "required": false,
+          "type": "number[]"
+        },
+        {
+          "default": null,
+          "description": "Replaces the default empty state when `turns` is empty.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Controlled: the `turn.index` of every turn whose tool group is open.",
+          "name": "expandedTurns",
+          "required": false,
+          "type": "number[]"
+        },
+        {
+          "default": null,
+          "description": "Renders three skeleton turns and marks the region busy.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Shows times in UTC rather than the runtime's zone; day changes follow the same zone.",
+          "name": "isUTC",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Reference patterns to link in assistant text.",
+          "name": "linkers",
+          "required": false,
+          "type": "ProseLinker[]"
+        },
+        {
+          "default": null,
+          "description": "Tool rows mounted at once in an open group.",
+          "name": "maxToolRows",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Called with the next set of open turn indexes.",
+          "name": "onExpandedTurnsChange",
+          "required": false,
+          "type": "((turnIndexes: number[]) => void)"
+        },
+        {
+          "default": null,
+          "description": "Shown as an action on a message the read model cut at its cap.",
+          "name": "onRequestFullText",
+          "required": false,
+          "type": "((message: TimelineMessage) => void)"
+        },
+        {
+          "default": null,
+          "description": "Makes each tool row a button.",
+          "name": "onToolCallPress",
+          "required": false,
+          "type": "((call: TimelineToolCall) => void)"
+        },
+        {
+          "default": null,
+          "description": "Characters of each message shown before \"Show more\".",
+          "name": "previewChars",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Replaces the speaker labels.",
+          "name": "roleLabels",
+          "required": false,
+          "type": "Partial<Record<\"user\" | \"assistant\" | \"injected\" | \"channel\" | \"compaction\", string>>"
+        },
+        {
+          "default": null,
+          "description": "Plain text, matched case-insensitively against user and assistant text, tool names, input summaries, file paths and error messages.",
+          "name": "searchQuery",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The session's turns, in order.",
+          "name": "turns",
+          "required": true,
+          "type": "TimelineTurn[]"
+        }
+      ],
+      "purpose": "An agent session read back as a conversation: each turn's opener, the assistant's text and one tool group per turn, with the idle gaps the read model marked.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Session/SessionConversation.tsx",
+        "status": "packages/ui/src/components/custom/Session/SessionConversation.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-session-sessionconversation--default"
       ],
       "tier": "organism"
     },

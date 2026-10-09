@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:6b91f4c1c2d32a4c146f0ba150482a9c5c44cac60c465b4b1198c7d5be22cced",
+  "componentBarrelHash": "sha256:49356d8072ec0659199b023c6f070b30af0b5d06482b5cd04317894c08134b75",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -1288,6 +1288,59 @@
         "score": 1
       },
       "tier": "molecule",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "ConversationTurn",
+      "file": "packages/ui/src/components/custom/Session/ConversationTurn.tsx",
+      "dir": "custom",
+      "family": "custom/Session",
+      "exports": [
+        "ConversationTurn",
+        "SessionRoleLabels",
+        "ConversationTurnProps",
+        "CutNotice",
+        "MessageText",
+        "openerLabel",
+        "Opener",
+        "AssistantMessages",
+        "SummaryLine",
+        "ToolRows",
+        "ToolGroup",
+        "TurnHeader"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Button",
+        "Card",
+        "Collapse",
+        "DateTime",
+        "Indicator",
+        "MarkdownProse",
+        "Pill",
+        "ToolCallRow",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 11,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 355,
+        "score": 11
+      },
+      "tier": "organism",
       "verdict": "keep-internal",
       "deadByAssociation": true,
       "audited": "unaudited",
@@ -6073,6 +6126,50 @@
       },
       "tier": "molecule",
       "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "SessionConversation",
+      "file": "packages/ui/src/components/custom/Session/SessionConversation.tsx",
+      "dir": "custom",
+      "family": "custom/Session",
+      "exports": [
+        "SessionConversation",
+        "SessionConversationProps",
+        "LoadingTurns",
+        "useExpandedTurns",
+        "SearchStatus",
+        "ConversationList"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "ConversationTurn",
+        "EmptyState",
+        "GapIndicator",
+        "MarkdownProse",
+        "Skeleton",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 6,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 256,
+        "score": 6
+      },
+      "tier": "organism",
+      "verdict": "dead",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -11132,10 +11229,70 @@
     [
       "ToolCallRow",
       "Typography"
+    ],
+    [
+      "ConversationTurn",
+      "MarkdownProse"
+    ],
+    [
+      "ConversationTurn",
+      "ToolCallRow"
+    ],
+    [
+      "ConversationTurn",
+      "Button"
+    ],
+    [
+      "ConversationTurn",
+      "Card"
+    ],
+    [
+      "ConversationTurn",
+      "Collapse"
+    ],
+    [
+      "ConversationTurn",
+      "DateTime"
+    ],
+    [
+      "ConversationTurn",
+      "Indicator"
+    ],
+    [
+      "ConversationTurn",
+      "Pill"
+    ],
+    [
+      "ConversationTurn",
+      "Typography"
+    ],
+    [
+      "SessionConversation",
+      "MarkdownProse"
+    ],
+    [
+      "SessionConversation",
+      "ConversationTurn"
+    ],
+    [
+      "SessionConversation",
+      "GapIndicator"
+    ],
+    [
+      "SessionConversation",
+      "EmptyState"
+    ],
+    [
+      "SessionConversation",
+      "Skeleton"
+    ],
+    [
+      "SessionConversation",
+      "Typography"
     ]
   ],
   "summary": {
-    "total": 230,
+    "total": 232,
     "dead": [
       "Autocomplete",
       "Breadcrumbs",
@@ -11154,6 +11311,7 @@
       "PortfolioOverview",
       "PrHistoryModal",
       "ReadinessCheck",
+      "SessionConversation",
       "SessionDetail",
       "SessionList",
       "Switch",
@@ -11181,6 +11339,7 @@
       "Carousel",
       "ChatCard",
       "ConversationIdentity",
+      "ConversationTurn",
       "DateSeparator",
       "ExerciseDetailSectionCard",
       "InitiativeCard",
