@@ -241,6 +241,35 @@ describe('Pill neutral faces', () => {
     )
     expect(classesOf('pill')).toEqual(expect.arrayContaining([...expected]))
   })
+
+  it.each([
+    ['brand', 'text-text-brand'],
+    ['brand-secondary', 'text-text-brand-secondary'],
+    ['success', 'text-text-success'],
+    ['warning', 'text-text-warning'],
+    ['error', 'text-text-error'],
+    ['info', 'text-text-info'],
+  ] as const)('the %s outline label reads from the text token', (tone, label) => {
+    render(
+      <Pill testID="pill" variant="outline" tone={tone}>
+        Active
+      </Pill>
+    )
+    expect(classesOf('pill')).toContain(label)
+  })
+})
+
+describe('Pill neutral outline', () => {
+  it('draws its ring one hairline step above the shared default', () => {
+    render(
+      <Pill testID="pill" variant="outline" tone="neutral">
+        Idle
+      </Pill>
+    )
+    const classes = (capturedClassNames.get('pill') ?? '').split(/\s+/)
+    expect(classes).toContain('border-hairline-strong')
+    expect(classes).not.toContain('border-hairline')
+  })
 })
 
 describe('Pill outline error', () => {

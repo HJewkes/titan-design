@@ -65,7 +65,12 @@ export const Default: Story = {
 }
 
 export const Filled: Story = {
-  args: { variant: 'filled', size: 'md', placeholder: 'Select a fruit...' },
+  args: {
+    variant: 'filled',
+    size: 'md',
+    placeholder: 'Select a fruit...',
+    accessibilityLabel: 'Fruit',
+  },
   render: function Render(args) {
     const [value, setValue] = useState<string | null>(null)
     return (
