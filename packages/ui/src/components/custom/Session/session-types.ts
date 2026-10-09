@@ -39,11 +39,15 @@ export type TimelineTurnOrigin = 'prompt' | 'injected' | 'compaction' | 'none'
 /** `unknown` is a result whose source did not report an error state; `pending` has no result yet. */
 export type TimelineToolOutcome = 'success' | 'error' | 'unknown' | 'pending'
 
+/** One message: a turn's opener (`user`) or one of the assistant's replies. */
 export interface TimelineMessage {
+  /** Who wrote it. A turn's opener is `user` even when the harness inserted it; read the turn's `origin`. */
   role: 'user' | 'assistant'
   /** Source order across the whole session; sort a turn's messages and tool calls by it to interleave them. */
   seq: number
+  /** When the message was written, epoch ms; null when the source gave no time. */
   atMs: number | null
+  /** The message text, untrusted: render it as text, never as markup. */
   text: string
   /** True when `text` was cut at the cap. */
   truncated: boolean
@@ -85,7 +89,9 @@ export interface TimelineToolCall {
 
 /** Prompt-side counts are disjoint: `input` excludes cache reads and cache writes. */
 export interface TimelineTokens {
+  /** Uncached prompt tokens. */
   input: number
+  /** Prompt tokens read from cache. */
   cacheRead: number
   /** All cache writes, `cacheWrite5m + cacheWrite1h`. */
   cacheWrite: number
@@ -93,24 +99,35 @@ export interface TimelineTokens {
   cacheWrite5m: number
   /** Writes at the 1h rate. */
   cacheWrite1h: number
+  /** Generated tokens. */
   output: number
 }
 
+/** One turn: the message that opened it and everything the agent did in reply. */
 export interface TimelineTurn {
+  /** Position in the session from 0; the key for expansion and search results. */
   index: number
+  /** What opened the turn. */
   origin: TimelineTurnOrigin
   /** The session-read injected-marker name when `origin` is `injected` or `compaction`. */
   injectedMarker: string | null
+  /** When the turn opened, epoch ms; null when the source gave no time. */
   startMs: number | null
+  /** When the turn's last event happened, epoch ms; null while live or untimed. */
   endMs: number | null
   /** Idle time before this turn when it is `TIMELINE_GAP_MIN_MS` or more, else null. */
   gapBeforeMs: number | null
   /** The message that opened the turn; null when `origin` is `none`. */
   user: TimelineMessage | null
+  /** The assistant's messages, in `seq` order. */
   assistant: TimelineMessage[]
+  /** Every tool call the turn made, its subagents' included. */
   toolCalls: TimelineToolCall[]
+  /** Calls in this turn whose outcome is `error`. */
   errorCount: number
+  /** Token counts summed over the turn's requests. */
   tokens: TimelineTokens
+  /** Priced cost of the turn's requests, in US dollars. */
   costUsd: number
 }
 

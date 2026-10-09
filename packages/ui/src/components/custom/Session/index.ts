@@ -2,6 +2,13 @@ export { ToolBadge, type ToolBadgeProps } from './ToolBadge'
 export { GapIndicator, type GapIndicatorProps } from './GapIndicator'
 export { ToolCallRow, type ToolCallRowProps } from './ToolCallRow'
 export {
+  ConversationTurn,
+  type ConversationTurnProps,
+  type SessionRoleLabels,
+} from './ConversationTurn'
+export { SessionConversation, type SessionConversationProps } from './SessionConversation'
+export { searchTurns } from './conversation-model'
+export {
   CHANNEL_MARKER,
   CHANNEL_OPENER_META,
   ERROR_TEXT_LABEL,
@@ -19,8 +26,11 @@ export {
   type TurnOriginMeta,
 } from './session-vocabulary'
 export type {
+  TimelineMessage,
+  TimelineTokens,
   TimelineToolCall,
   TimelineToolOutcome,
+  TimelineTurn,
   TimelineTurnOrigin,
   ToolFamily,
 } from './session-types'

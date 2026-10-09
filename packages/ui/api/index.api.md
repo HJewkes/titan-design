@@ -1114,6 +1114,27 @@ export interface ConversationIdentityProps {
 }
 
 // @public
+export function ConversationTurn(input: ConversationTurnProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface ConversationTurnProps {
+    className?: string;
+    defaultExpanded?: boolean;
+    expanded?: boolean;
+    isDimmed?: boolean;
+    isUTC?: boolean;
+    linkers?: ProseLinker[];
+    maxToolRows?: number;
+    onExpandedChange?: (expanded: boolean) => void;
+    onRequestFullText?: (message: TimelineMessage) => void;
+    onToolCallPress?: (call: TimelineToolCall) => void;
+    previewChars?: number;
+    roleLabels?: SessionRoleLabels;
+    showDate?: boolean;
+    turn: TimelineTurn;
+}
+
+// @public
 export interface CssPropertyEntry {
     cssVariable?: string | null;
     property: string;
@@ -6047,6 +6068,12 @@ export interface ScheduleTilesProps extends ViewProps {
 // @public
 export function SearchIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
+// @public
+export function searchTurns(turns: TimelineTurn[], query: string): {
+    matched: Set<number>;
+    total: number;
+};
+
 // @public (undocumented)
 export function Section(input: SectionProps): react_jsx_runtime.JSX.Element;
 
@@ -6579,6 +6606,29 @@ export const sequentialEffort: readonly ["#2ED573", "#FFD352", "#F9B415", "#FF79
 export const SESSION_SEGMENT_LIMIT = 20;
 
 // @public
+export function SessionConversation(props: SessionConversationProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface SessionConversationProps extends Omit<ViewProps, 'children'> {
+    accessibilityLabel?: string;
+    className?: string;
+    defaultExpandedTurns?: number[];
+    emptyState?: ReactNode;
+    expandedTurns?: number[];
+    isLoading?: boolean;
+    isUTC?: boolean;
+    linkers?: ProseLinker[];
+    maxToolRows?: number;
+    onExpandedTurnsChange?: (turnIndexes: number[]) => void;
+    onRequestFullText?: (message: TimelineMessage) => void;
+    onToolCallPress?: (call: TimelineToolCall) => void;
+    previewChars?: number;
+    roleLabels?: SessionRoleLabels;
+    searchQuery?: string;
+    turns: TimelineTurn[];
+}
+
+// @public
 export function SessionDetail(input: SessionDetailProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -6703,6 +6753,9 @@ export interface SessionRailProps extends ViewProps {
     title: string;
     width?: number;
 }
+
+// @public
+export type SessionRoleLabels = Partial<Record<'user' | 'assistant' | 'injected' | 'channel' | 'compaction', string>>;
 
 // @public
 export function sessionRowMeta(session: SessionSummary, now: number, taskCount: number): string;
@@ -8203,6 +8256,26 @@ export interface TileProps extends ViewProps {
 }
 
 // @public
+export interface TimelineMessage {
+    atMs: number | null;
+    byteOffset: number;
+    role: 'user' | 'assistant';
+    seq: number;
+    text: string;
+    truncated: boolean;
+}
+
+// @public
+export interface TimelineTokens {
+    cacheRead: number;
+    cacheWrite: number;
+    cacheWrite1h: number;
+    cacheWrite5m: number;
+    input: number;
+    output: number;
+}
+
+// @public
 export interface TimelineToolCall {
     atMs: number | null;
     byteOffset: number;
@@ -8222,6 +8295,22 @@ export interface TimelineToolCall {
 
 // @public
 export type TimelineToolOutcome = 'success' | 'error' | 'unknown' | 'pending';
+
+// @public
+export interface TimelineTurn {
+    assistant: TimelineMessage[];
+    costUsd: number;
+    endMs: number | null;
+    errorCount: number;
+    gapBeforeMs: number | null;
+    index: number;
+    injectedMarker: string | null;
+    origin: TimelineTurnOrigin;
+    startMs: number | null;
+    tokens: TimelineTokens;
+    toolCalls: TimelineToolCall[];
+    user: TimelineMessage | null;
+}
 
 // @public
 export type TimelineTurnOrigin = 'prompt' | 'injected' | 'compaction' | 'none';
