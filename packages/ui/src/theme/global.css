@@ -660,9 +660,13 @@
     color: var(--color-text-primary);
   }
 
-  /* Focus visible styles */
-  *:focus-visible {
-    outline: 2px solid var(--color-border-focus);
+  /* Focus ring (TD-765): text-brand over a 2px gap. The gap is the outline offset, left transparent
+     so it shows whatever plane the element sits on; a box-shadow gap would need that plane's colour
+     and loses to any shadow utility. `.focus-ring` paints the same ring for a component that draws
+     it itself. */
+  *:focus-visible,
+  .focus-ring {
+    outline: 2px solid var(--color-text-brand);
     outline-offset: 2px;
   }
 

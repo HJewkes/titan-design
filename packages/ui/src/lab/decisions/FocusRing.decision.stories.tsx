@@ -80,18 +80,24 @@ const PLANE_CLASS: Record<Plane, string> = {
   'surface-elevated': 'bg-surface-elevated',
 }
 
-/** The ring as the focused state would paint it; a static story cannot hold :focus-visible. */
+/**
+ * The ring as the focused state would paint it; a static story cannot hold :focus-visible. The
+ * applied option takes the shipped rule itself through `.focus-ring`, so the frame is the real ring.
+ */
 function ringStyle(option: FocusOption, plane: Plane, spec: SampleSpec): ViewStyle {
   const ring = `var(--color-${option.ring})`
-  const paint = option.isTwoTone
-    ? { boxShadow: `0 0 0 2px var(--color-${plane}), 0 0 0 4px ${ring}` }
-    : { outlineStyle: 'solid', outlineWidth: 2, outlineOffset: 2, outlineColor: ring }
+  const paint = option.isApplied
+    ? {}
+    : option.isTwoTone
+      ? { boxShadow: `0 0 0 2px var(--color-${plane}), 0 0 0 4px ${ring}` }
+      : { outlineStyle: 'solid', outlineWidth: 2, outlineOffset: 2, outlineColor: ring }
   return { ...paint, borderRadius: spec.radius, width: spec.width } as ViewStyle
 }
 
-function verdict(ratio: number | null) {
+function verdict(ratio: number | null, isGapped = false) {
   if (ratio === null) return 'none'
-  return `${ratio.toFixed(2)}${ratio >= NON_TEXT_FLOOR ? '' : ' (below 3)'}`
+  if (ratio >= NON_TEXT_FLOOR) return ratio.toFixed(2)
+  return `${ratio.toFixed(2)} (below 3${isGapped ? ', gap between' : ''})`
 }
 
 function SampleCell(props: {
@@ -105,13 +111,16 @@ function SampleCell(props: {
   const measured = measureRing(option, mode, plane, sample)
   return (
     <View className="items-start gap-2" style={{ width: 180 }}>
-      <View className="self-start" style={ringStyle(option, plane, spec)}>
+      <View
+        className={option.isApplied ? 'focus-ring self-start' : 'self-start'}
+        style={ringStyle(option, plane, spec)}
+      >
         {spec.render()}
       </View>
       <Text className="font-mono text-xs text-text-secondary">
         {spec.label}
         {'\n'}plane {verdict(measured.plane)}
-        {'\n'}component {verdict(measured.component)}
+        {'\n'}component {verdict(measured.component, option.isTwoTone)}
       </Text>
     </View>
   )
@@ -171,7 +180,7 @@ function OptionUnit({ option, modes }: { option: FocusOption; modes: ThemeMode[]
 const meta: Meta<Args> = {
   title: 'Lab/Decisions/Focus Ring',
   tags: ['autodocs', 'status:lab', '!status:review'],
-  args: { option: 'all', mode: 'both' },
+  args: { option: 'twoTone', mode: 'both' },
   argTypes: {
     option: { control: 'inline-radio', options: ['all', ...FOCUS_OPTIONS.map((o) => o.key)] },
     mode: { control: 'inline-radio', options: ['both', ...MODES] },
@@ -183,9 +192,11 @@ const meta: Meta<Args> = {
         component:
           '**Lab decision** (TD-765). Composes [Button](?path=/docs/components-atoms-button--docs), ' +
           '[Input](?path=/docs/components-atoms-input--docs), [Chip](?path=/docs/components-atoms-chip--docs), ' +
-          '[NavItem](?path=/docs/shell-navitem--docs) and the Chat DateSeparator. Keyboard focus is ' +
-          'the global `*:focus-visible` outline (2px `border-focus`, 2px offset); each option swaps ' +
-          "the ring for another existing token. NavItem is shown active, and the date separator's " +
+          '[NavItem](?path=/docs/shell-navitem--docs) and the Chat DateSeparator. The owner picked ' +
+          'two-tone and it is applied: the global `*:focus-visible` rule in `global.css` is a 2px ' +
+          '`text-brand` outline at a 2px offset (it was `border-focus`). A component that paints the ' +
+          'ring itself adds the `focus-ring` class. The applied unit renders through that class; the ' +
+          'other options stay as the record of what was compared. NavItem is shown active, and the date separator's " +
           "caption is drawn in `text-secondary`: both components' `text-tertiary` labels are under " +
           '4.5:1 on some of these planes, which is not this decision. Under each sample: the ring against the plane and ' +
           'against the component edge (WCAG 1.4.11 / 2.4.11 non-text floor 3:1). With the offset ' +
