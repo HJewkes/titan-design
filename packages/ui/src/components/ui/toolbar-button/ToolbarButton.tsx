@@ -14,9 +14,7 @@ import type { HitTargetLimit, HitTargetOutset } from '../../../utils/hit-target'
 import { getHoverColors } from '../../../theme'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 import { resolveColor } from '../../../theme/resolve-color'
-import { getPressedRecessShadow } from '../../../theme/elevation'
-import { liftStyle } from '../../../theme/lift'
-import { useSurfaceMode } from '../surface'
+import { resolveSurfaceDepth, useSurface, type ResolvedSurface } from '../surface'
 import { ToolbarButtonIcon, ToolbarButtonMenu } from './ToolbarButtonParts'
 
 export type ToolbarButtonVariant = 'default' | 'raised'
@@ -82,7 +80,8 @@ const textSizeStyles: Record<ToolbarButtonSize, string> = {
  * ToolbarButton component for toolbar actions with toggle state support.
  *
  * Features:
- * - Depth from the fill plus the lift (raised) or the inset recess (active)
+ * - Faces from the elevation system, relative to the enclosing Surface: the raised
+ *   face is one plane up with the lift, the active face one plane down with the recess
  * - Active (pressed) state is the default visual appearance
  * - Set isActive={false} explicitly for the raised/inactive appearance
  * - Orange accent color on icon when isActive={true}
@@ -122,7 +121,7 @@ export function ToolbarButton({
 }: ToolbarButtonProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
-  const mode = useSurfaceMode()
+  const faces = useToolbarFaces()
   const hitTarget = useHitTarget({ limit: useContext(ToolbarButtonGroupContext) })
 
   const handlePress = useCallback(() => {
@@ -166,10 +165,7 @@ export function ToolbarButton({
             isDisabled && 'opacity-40 web:cursor-default web:pointer-events-none',
             className
           )}
-          style={[
-            variant === 'raised' && raisedStyle({ isDisabled, showActive, isHovered, mode }),
-            variant === 'default' && flatStyle(showActive, mode),
-          ]}
+          style={faceStyle({ faces, variant, isDisabled, showActive, isHovered })}
         >
           {hitTarget.layerProps && <View {...hitTarget.layerProps} />}
           {icon && <ToolbarButtonIcon icon={icon} color={iconTint} />}
@@ -203,37 +199,49 @@ function iconColor(isActive: boolean | undefined): string {
   return isActive !== false ? resolveColor('on-control-active') : resolveColor('on-control-idle')
 }
 
+interface ToolbarFaces {
+  mode: ThemeMode
+  /** One plane up from the enclosing Surface, wearing the lift. */
+  raised: ResolvedSurface
+  /** One plane down from the enclosing Surface, wearing the recess. */
+  pressed: ResolvedSurface
+}
+
 /**
- * Raised/pressed treatment on the depth model: the raised face is a plane one
- * step above the toolbar and wears the lift, the active face is pressed into
- * it and wears the recess. The hairline ring both used to carry is an edge,
- * not depth, and is gone with the rest of the rings on this pass.
+ * The two faces on the depth model, read off the enclosing Surface the same way
+ * `<Surface raise>` and `<Surface pressed>` are: the raised face is the plane one
+ * step above the toolbar with the lift, the active face is the plane one step
+ * below it with the recess. No bespoke face colour; both are ramp planes.
  */
-function raisedStyle(p: {
+function useToolbarFaces(): ToolbarFaces {
+  const inherited = useSurface()
+  return useMemo(
+    () => ({
+      mode: inherited.mode,
+      raised: resolveSurfaceDepth(inherited, { raise: 1 }),
+      pressed: resolveSurfaceDepth(inherited, { pressed: true }),
+    }),
+    [inherited]
+  )
+}
+
+// The raised variant wears the plane's treatment; the default variant is the same
+// planes flat. Hover nudges the fill the way the plane moves: up lightens, down darkens.
+function faceStyle(p: {
+  faces: ToolbarFaces
+  variant: ToolbarButtonVariant
   isDisabled: boolean
   showActive: boolean
   isHovered: boolean
-  mode: ThemeMode
 }): ViewStyle {
-  if (p.isDisabled) return disabledStyles[p.mode]
-  const colors = getSemanticColors(p.mode)
-  const hoverColors = getHoverColors(colors['control-face'], 'medium')
-  if (p.showActive) {
-    const fill = p.isHovered ? hoverColors.pressed : colors['control-face-active']
-    return { backgroundColor: fill, ...getPressedRecessShadow(fill, p.mode) }
-  }
-  // The light face is white, which cannot lighten, so its hover darkens instead.
-  const raisedHover = p.mode === 'light' ? hoverColors.pressed : hoverColors.raised
+  if (p.isDisabled) return disabledStyles[p.faces.mode]
+  const face = p.showActive ? p.faces.pressed : p.faces.raised
+  const hover = getHoverColors(face.backgroundColor, 'medium')
+  const hoverFill = p.showActive ? hover.pressed : hover.raised
   return {
-    backgroundColor: p.isHovered ? raisedHover : colors['control-face'],
-    ...liftStyle(1, p.mode),
+    backgroundColor: p.isHovered ? hoverFill : face.backgroundColor,
+    ...(p.variant === 'raised' ? face.depthStyle : {}),
   }
-}
-
-// The default variant is flat: the same faces with no lift or recess.
-function flatStyle(showActive: boolean, mode: ThemeMode): ViewStyle {
-  const colors = getSemanticColors(mode)
-  return { backgroundColor: showActive ? colors['control-face-active'] : colors['control-face'] }
 }
 
 // Disabled - flat face per theme, no lift or recess

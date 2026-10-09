@@ -60,9 +60,10 @@ The `on-*` family is "the label that sits ON this fill". Two members are not fil
 
 - **`on-control-*`** — a toolbar control face is a grey plane, not a brand or status fill. Use
   `on-control-active` / `on-control-idle` rather than `on-brand-primary`, even though the dark active
-  value is the same white; the role is what makes it survive a retune. The face itself is
-  `control-face` (idle), `control-face-active` (pressed) and `control-face-disabled`; faces and labels
-  flip together in light mode (TD-264).
+  value is the same white; the role is what makes it survive a retune. The idle and pressed faces are
+  elevation planes one step up and one step down from the toolbar's plane (TD-265), so the labels owe
+  AA on every plane a face can land on; `control-face-disabled` paints the disabled face. `control-face`
+  and `control-face-active` (TD-264) have no component reader.
 - **`on-data-strong`** — a label on a light categorical data tile. Every `text-*` role is far too
   light to read there.
 

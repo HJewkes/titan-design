@@ -2,16 +2,24 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { ToolbarButton, ToolbarButtonGroup } from './ToolbarButton'
-import { Surface } from '../surface'
+import {
+  Surface,
+  pressedLevel,
+  raisedLevel,
+  surfaceBackground,
+  type SurfaceLevel,
+} from '../surface'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 
-function faceColor(theme: 'dark' | 'light', isActive?: boolean): string {
-  render(
-    <Surface theme={theme}>
+function faceColor(theme: 'dark' | 'light', isActive?: boolean, level?: SurfaceLevel): string {
+  const { unmount } = render(
+    <Surface theme={theme} level={level}>
       <ToolbarButton label="Face" isActive={isActive} />
     </Surface>
   )
-  return getComputedStyle(screen.getByRole('button', { name: 'Face' })).backgroundColor
+  const face = getComputedStyle(screen.getByRole('button', { name: 'Face' })).backgroundColor
+  unmount()
+  return face
 }
 
 function hexToRgb(hex: string): string {
@@ -117,28 +125,36 @@ describe('ToolbarButton', () => {
     })
   })
 
-  describe('control faces (TD-265)', () => {
-    it('paints the light control-face on a light surface', () => {
-      const light = getSemanticColors('light')['control-face']
+  describe('faces from the elevation system (TD-264, TD-265)', () => {
+    it.each(['dark', 'light'] as const)(
+      'raises the inactive face one plane above the enclosing %s Surface',
+      (theme) => {
+        const plane = raisedLevel('elevated', 1)
 
-      const face = faceColor('light', false)
+        expect(faceColor(theme, false, 'elevated')).toBe(hexToRgb(surfaceBackground(plane, theme)))
+      }
+    )
 
-      expect(face).toBe(hexToRgb(light))
-      expect(light).not.toBe(getSemanticColors('dark')['control-face'])
+    it.each(['dark', 'light'] as const)(
+      'presses the active face one plane below the enclosing %s Surface',
+      (theme) => {
+        const plane = pressedLevel('elevated')
+
+        expect(faceColor(theme, true, 'elevated')).toBe(hexToRgb(surfaceBackground(plane, theme)))
+      }
+    )
+
+    it('reads the plane it sits on, not a fixed one', () => {
+      expect(faceColor('dark', false, 'base')).not.toBe(faceColor('dark', false, 'elevated'))
     })
 
-    it('paints the light control-face-active when pressed on a light surface', () => {
-      expect(faceColor('light', true)).toBe(
-        hexToRgb(getSemanticColors('light')['control-face-active'])
-      )
-    })
+    it('presses the light face to a lighter plane than the silver control-face-active', () => {
+      const silver = getSemanticColors('light')['control-face-active']
 
-    it('keeps the dark faces it painted before the tokens', () => {
-      expect(faceColor('dark', false)).toBe(hexToRgb('#424140'))
-    })
+      const face = faceColor('light', true, 'elevated')
 
-    it('keeps the dark pressed face it painted before the tokens', () => {
-      expect(faceColor('dark', true)).toBe(hexToRgb('#2C2A28'))
+      expect(face).not.toBe(hexToRgb(silver))
+      expect(face).toBe(hexToRgb(surfaceBackground('base', 'light')))
     })
   })
 

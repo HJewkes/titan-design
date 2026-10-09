@@ -272,8 +272,5 @@
   },
   "components/ui/toast/Toast.tsx": {
     "file-lines": 228
-  },
-  "components/ui/toolbar-button/ToolbarButton.tsx#ToolbarButton": {
-    "complexity": 16
   }
 }
