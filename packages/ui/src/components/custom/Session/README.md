@@ -66,9 +66,11 @@ word outside that list or the tool names. Fixtures are never exported from a bar
 
 - `ToolBadge` is an image named by the family label; the glyph is hidden.
 - `ToolCallRow` is a group (or, with `onPress`, a native button) named "Read,
-  src/orchard/tree-ledger.ts, succeeded, 1.2 s". The dot is hidden, and the outcome is always
-  printed in words. The error text is a separate disclosure beside the row and renders as
-  literal text.
+  src/orchard/tree-ledger.ts, succeeded, 1.2 s". The row prints no outcome word: the dot carries
+  it (owner pick, Gate 2 batch 12). The dot is named by the outcome and shows the word in a
+  tooltip on hover and keyboard focus. Without `onPress` the dot is its own tip trigger; in a
+  pressable row the row is the focus stop and its focus opens the dot's tip. The error text is a
+  separate disclosure beside the row and renders as literal text.
 - `GapIndicator` is a separator named by the idle time.
 
 ## Known gaps
@@ -76,5 +78,6 @@ word outside that list or the tool names. Fixtures are never exported from a bar
 - `CollapseButton` does not expose `aria-expanded` on web (react-native-web drops
   `accessibilityState.expanded`; see `ui/collapse/Collapse.test.tsx`). The error disclosure
   inherits that until `Collapse` is fixed.
-- A tint per tool family needs fill and on-fill tokens. That is an
-  owner question (C12), so `ToolBadge` is neutral.
+- A tint per tool family waits for subtle surface pairs for every ramp hue (owner direction,
+  Gate 2 batch 12), so `ToolBadge` is neutral for now; the neutral variant stays when a tinted one
+  lands.

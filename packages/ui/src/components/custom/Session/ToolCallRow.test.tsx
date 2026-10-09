@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedClassNames } from '../../../test/classname-capture'
 import { ToolCallRow } from './ToolCallRow'
 import {
   SESSION_ALL_ERRORS,
@@ -26,7 +27,39 @@ describe('ToolCallRow', () => {
     expect(
       screen.getByRole('group', { name: `Read, ${SUCCEEDED.inputSummary}, succeeded, 1.2 s` })
     ).toBeInTheDocument()
+  })
+
+  it('prints no outcome word at rest; the dot carries it', () => {
+    render(<ToolCallRow call={FAILED} />)
+
+    expect(screen.queryByText('failed')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'failed' })).toBeInTheDocument()
+  })
+
+  it('shows the outcome word when the keyboard reaches the dot', () => {
+    render(<ToolCallRow call={SUCCEEDED} />)
+
+    fireEvent.focus(screen.getByRole('button', { name: 'succeeded' }))
+
     expect(screen.getByText('succeeded')).toBeInTheDocument()
+  })
+
+  it('shows the outcome word when the keyboard reaches a pressable row', () => {
+    render(<ToolCallRow call={FAILED} onPress={() => {}} />)
+    expect(screen.queryByText('failed')).not.toBeInTheDocument()
+
+    fireEvent.focus(screen.getByRole('button', { name: new RegExp(`^${FAILED.name}, `) }))
+
+    expect(screen.getByText('failed')).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'failed' })).toBeInTheDocument()
+  })
+
+  it('centres the family badge on the row rather than pinning it to the top', () => {
+    render(<ToolCallRow call={SUCCEEDED} />)
+
+    const classes = (capturedClassNames.get('tool-badge') ?? '').split(/\s+/)
+    expect(classes).toContain('self-center')
+    expect(classes).not.toContain('self-start')
   })
 
   it('prints no duration for a pending call', () => {
@@ -40,8 +73,8 @@ describe('ToolCallRow', () => {
   it('reads an unknown outcome as no result status, not a success', () => {
     render(<ToolCallRow call={{ ...SUCCEEDED, outcome: 'unknown' }} />)
 
-    expect(screen.getByText('no result status')).toBeInTheDocument()
-    expect(screen.queryByText('succeeded')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'no result status' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'succeeded' })).not.toBeInTheDocument()
   })
 
   it('keeps error text behind a disclosure, as literal text', () => {
@@ -58,7 +91,7 @@ describe('ToolCallRow', () => {
   it('is not a button without onPress', () => {
     render(<ToolCallRow call={SUCCEEDED} />)
 
-    expect(screen.queryByRole('button')).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /^Read, / })).not.toBeInTheDocument()
   })
 
   it('with onPress, is a native button that presses once with the call', () => {
