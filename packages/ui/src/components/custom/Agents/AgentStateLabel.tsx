@@ -6,11 +6,15 @@ import { Typography } from '../../ui/typography'
 import { agentStateMeta } from './agent-state'
 import type { AgentSummaryState } from './agent-types'
 
+/** Props for {@link AgentStateLabel}. */
 export interface AgentStateLabelProps {
+  /** The state to show. */
   state: AgentSummaryState
   /** The session holds pushes; adds a neutral pill. */
   isDnd?: boolean
+  /** `sm` (caption) for cards and rows, `md` (body) for headers. */
   size?: 'sm' | 'md'
+  /** Tailwind overrides on the row. */
   className?: string
 }
 

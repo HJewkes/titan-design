@@ -2,9 +2,13 @@ import type { IndicatorColor, IndicatorPulse } from '../../ui/indicator'
 import { agentCostLabel, agentLastEventLabel, type AgentSummary } from './agent-metrics'
 import { LIVE_HISTORY_STATES, PRESENCE_STATES, type AgentSummaryState } from './agent-types'
 
+/** How one state is shown. */
 export interface AgentStateMeta {
+  /** The state word, always printed beside the dot. */
   label: string
+  /** The dot colour. */
   dot: IndicatorColor
+  /** The dot's pulse, or none. */
   pulse: IndicatorPulse | false
 }
 

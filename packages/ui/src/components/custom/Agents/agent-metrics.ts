@@ -9,9 +9,13 @@ import type {
 
 /** Transcript-derived numbers for one session. Cost lives on the summary, since it may come from the exit row. */
 export interface AgentMetrics {
+  /** Input tokens, cache reads included. */
   tokensIn: number
+  /** Output tokens. */
   tokensOut: number
+  /** Tool calls made. */
   toolCalls: number
+  /** Tool calls that failed. */
   errors: number
   /** Tool calls per bucket, oldest first. */
   activity?: number[]
@@ -25,29 +29,45 @@ export interface AgentMetrics {
  * field accepts the roster's `null`.
  */
 export interface AgentSummary {
+  /** Stable across reconnects; the roster's `id`. */
   id: string
+  /** The broker name. */
   name: string
+  /** Presence status or lifecycle state. */
   state: AgentSummaryState
   /** `history` marks an agent known only from durable history; the card recedes. */
   stateSource?: AgentStateSource
+  /** The broker's durable agent id. */
   agentId?: string | null
+  /** Spawned, adopted or unknown. */
   origin?: AgentOrigin
+  /** The spawn profile. */
   profile?: string | null
+  /** The session holds pushes. */
   isDnd?: boolean
   /** The name was derived from a directory, not chosen. */
   isProvisional?: boolean
   /** Declared by the model (`workingOn`): rendered as text, never as a link target. */
   task?: string | null
+  /** A task id the session declared. A claim; the card makes it a link only through `onPressTask`. */
   taskId?: string | null
+  /** The observed git branch (`gitBranch`). */
   branch?: string | null
+  /** The working directory. */
   cwd?: string | null
+  /** The seat the agent belongs to. */
   seat?: string | null
+  /** Where the process is presented. */
   surface?: string | null
+  /** The spawner's name. */
   spawnedBy?: string | null
   /** Epoch ms of the newest presence or history signal. */
   lastEventAt?: number | null
+  /** Tag labels, rendered as plain text. */
   tags?: string[]
+  /** The session's cost in US dollars. */
   costUsd?: number | null
+  /** Where `costUsd` came from. */
   costSource?: AgentCostSource | null
   /** null or absent: no transcript was found. Never read as zero. */
   metrics?: AgentMetrics | null
@@ -70,6 +90,7 @@ export function errorRate(metrics: Pick<AgentMetrics, 'toolCalls' | 'errors'>): 
   return Math.min(1, errors / toolCalls)
 }
 
+/** True when a rate is above {@link ERROR_RATE_FLAG_ABOVE}. */
 export function isErrorRateFlagged(rate: number | null): boolean {
   return rate !== null && rate > ERROR_RATE_FLAG_ABOVE
 }

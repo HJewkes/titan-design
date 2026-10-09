@@ -26,11 +26,15 @@ import { agentAccessibleSummary, isHistoryOnly } from './agent-state'
 const MAX_TAGS = 3
 const MAX_SPARK_BARS = 24
 
+/** Props for {@link AgentCard}. */
 export interface AgentCardProps extends Omit<CardProps, 'children' | 'onPress' | 'variant'> {
+  /** The session to show. */
   agent: AgentSummary
   /** Reference instant for the recency label, injected so renders are deterministic. */
   now: number
+  /** Marks the card with the accent stripe, for the agent the host has in focus. */
   isHighlighted?: boolean
+  /** Renders the card's skeleton in place of the content. */
   isLoading?: boolean
   /** Makes the agent name a link. The card itself is never a button. */
   onPress?: () => void
@@ -38,7 +42,9 @@ export interface AgentCardProps extends Omit<CardProps, 'children' | 'onPress' |
   onPressTask?: (taskId: string) => void
   /** Shown in place of the metrics block when `agent.metrics` is null or absent. */
   metricsEmpty?: ReactNode
+  /** Host actions under the metrics. */
   footer?: ReactNode
+  /** Tailwind overrides on the card. */
   className?: string
 }
 
