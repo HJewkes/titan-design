@@ -6241,10 +6241,14 @@ export interface SelectProps<T = string> extends ViewProps {
     onChangeMulti?: (values: T[]) => void;
     options: SelectOption<T>[];
     placeholder?: string;
+    size?: SelectSize;
     value?: T | null;
     values?: T[];
     variant?: 'default' | 'filled';
 }
+
+// @public
+export type SelectSize = 'sm' | 'md' | 'lg';
 
 // @public (undocumented)
 export const semanticColorsDark: {
