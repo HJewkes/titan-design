@@ -8184,10 +8184,12 @@
       "exports": [
         "ToolCallRow",
         "ToolCallRowProps",
+        "OutcomeTip",
+        "OutcomeDot",
         "RowBody",
         "ErrorText"
       ],
-      "libDependents": 0,
+      "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -8200,7 +8202,9 @@
         "Collapse",
         "DateTime",
         "Indicator",
+        "TipTrigger",
         "ToolBadge",
+        "Tooltip",
         "Typography"
       ],
       "leak": {
@@ -8208,12 +8212,12 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 125,
+        "loc": 164,
         "score": 3
       },
       "tier": "organism",
-      "verdict": "dead",
-      "deadByAssociation": false,
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
       "audited": "unaudited",
       "standard": false
     },
@@ -11211,26 +11215,6 @@
       "Typography"
     ],
     [
-      "ToolCallRow",
-      "ToolBadge"
-    ],
-    [
-      "ToolCallRow",
-      "Collapse"
-    ],
-    [
-      "ToolCallRow",
-      "DateTime"
-    ],
-    [
-      "ToolCallRow",
-      "Indicator"
-    ],
-    [
-      "ToolCallRow",
-      "Typography"
-    ],
-    [
       "ConversationTurn",
       "MarkdownProse"
     ],
@@ -11289,6 +11273,34 @@
     [
       "SessionConversation",
       "Typography"
+    ],
+    [
+      "ToolCallRow",
+      "ToolBadge"
+    ],
+    [
+      "ToolCallRow",
+      "Collapse"
+    ],
+    [
+      "ToolCallRow",
+      "DateTime"
+    ],
+    [
+      "ToolCallRow",
+      "Indicator"
+    ],
+    [
+      "ToolCallRow",
+      "TipTrigger"
+    ],
+    [
+      "ToolCallRow",
+      "Tooltip"
+    ],
+    [
+      "ToolCallRow",
+      "Typography"
     ]
   ],
   "summary": {
@@ -11320,7 +11332,6 @@
       "Tabs",
       "TaskStagePill",
       "Toast",
-      "ToolCallRow",
       "ToolbarButton",
       "VelocityBandPreview",
       "VolumeLandmarkBar",
@@ -11358,6 +11369,7 @@
       "TaskRow",
       "TaskTable",
       "ToolBadge",
+      "ToolCallRow",
       "ToolbarButtonParts",
       "TypingIndicator",
       "UnreadBadge",

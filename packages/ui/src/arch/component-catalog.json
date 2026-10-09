@@ -2815,7 +2815,9 @@
         "Collapse",
         "DateTime",
         "Indicator",
+        "TipTrigger",
         "ToolBadge",
+        "Tooltip",
         "Typography"
       ],
       "family": "custom/Session",
@@ -2851,7 +2853,7 @@
           "type": "((call: TimelineToolCall) => void)"
         }
       ],
-      "purpose": "One tool call as a line: time, outcome dot, family badge, tool name, what it acted on, the outcome in words and the observed duration.",
+      "purpose": "One tool call as a line: time, outcome dot (its word on hover and focus), family badge, tool name, what it acted on and the observed duration.",
       "sources": {
         "props": "packages/ui/src/components/custom/Session/ToolCallRow.tsx",
         "status": "packages/ui/src/components/custom/Session/ToolCallRow.stories.tsx"
