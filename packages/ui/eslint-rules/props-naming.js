@@ -23,7 +23,7 @@
  *   Regenerate after fixing some:  node scripts/update-props-naming-baseline.mjs
  */
 
-const path = require('node:path')
+const { loadBaseline, baselineKey } = require('./ratchet')
 
 const BASELINE_FILE = 'props-naming-baseline.json'
 
@@ -37,25 +37,6 @@ const REPLACEMENT = {
 
 /** The names whose replacement is a flag, so a non-boolean annotation is a different prop. */
 const STATE_NAMES = new Set(['disabled', 'loading', 'selected'])
-
-let baselineCache = null
-function loadBaseline() {
-  try {
-    baselineCache ??= require(`./${BASELINE_FILE}`)
-  } catch {
-    baselineCache = {}
-  }
-  return baselineCache
-}
-
-/** Baseline keys are package-relative POSIX paths, so they're stable across machines. */
-function baselineKey(context) {
-  const cwd = context.cwd ?? context.getCwd?.() ?? process.cwd()
-  return path
-    .relative(cwd, context.filename ?? context.getFilename())
-    .split(path.sep)
-    .join('/')
-}
 
 const isPropsName = (id) => id?.type === 'Identifier' && /Props$/.test(id.name)
 
@@ -133,7 +114,9 @@ module.exports = {
   },
 
   create(context) {
-    const remaining = new Map(Object.entries(loadBaseline()[baselineKey(context)] ?? {}))
+    const remaining = new Map(
+      Object.entries(loadBaseline(BASELINE_FILE)[baselineKey(context)] ?? {})
+    )
 
     function checkMembers(typeName, members) {
       for (const member of members) {

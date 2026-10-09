@@ -11,7 +11,7 @@ import {
   ManifestSchema,
   RoundSchema,
   type ManifestInput,
-} from '../src/schema.ts'
+} from '@titan-design/review-schema'
 import { SECTION_TEXTS, SHA, noTreeGit } from './fixtures.ts'
 
 /** A decisions round: sections of questions and context, and not one frame to look at. */
