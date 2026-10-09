@@ -3,7 +3,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { QuestionBlock, optionLabel } from '../page/QuestionBlock.tsx'
 import { initialState } from '../page/state.ts'
-import { ManifestSchema, type Question } from '../src/schema.ts'
+import { ManifestSchema, type Question } from '@titan-design/review-schema'
 import { sectionedInput } from './fixtures.ts'
 
 const render = (question: Question, recommendations: 'shown' | 'after-answer' = 'after-answer') => {

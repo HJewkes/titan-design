@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:2c778aa70caac672f71d99136c96be1607e30d896a7436de7fd978e280d50437",
+  "componentBarrelHash": "sha256:581a1484ce1c811f73f25dd7a43a8a03bc552ee1e2de4a087e5e9e3806eaca27",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -816,6 +816,43 @@
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": true
+    },
+    {
+      "name": "CardStat",
+      "file": "packages/ui/src/components/ui/card/CardStat.tsx",
+      "dir": "ui",
+      "family": "ui/card",
+      "exports": [
+        "CardStat",
+        "CardStatMetricProps",
+        "CardStatProps"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Card",
+        "Metric"
+      ],
+      "leak": {
+        "rawView": 0,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 63,
+        "score": 0
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "Carousel",
@@ -3484,6 +3521,41 @@
       "standard": false
     },
     {
+      "name": "HighlightText",
+      "file": "packages/ui/src/components/ui/highlight-text/HighlightText.tsx",
+      "dir": "ui",
+      "family": "ui/highlight-text",
+      "exports": [
+        "HighlightText",
+        "HighlightTextProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 0,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 52,
+        "score": 0
+      },
+      "tier": "molecule",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "IconBox",
       "file": "packages/ui/src/components/ui/icon-box/IconBox.tsx",
       "dir": "ui",
@@ -3879,6 +3951,43 @@
       "tier": "atom",
       "verdict": "keep-internal",
       "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Kbd",
+      "file": "packages/ui/src/components/ui/kbd/Kbd.tsx",
+      "dir": "ui",
+      "family": "ui/kbd",
+      "exports": [
+        "Kbd",
+        "KbdSize",
+        "KbdProps",
+        "spokenName"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 2,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 86,
+        "score": 2
+      },
+      "tier": "molecule",
+      "verdict": "dead",
+      "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
     },
@@ -4729,6 +4838,47 @@
       },
       "tier": "organism",
       "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "Page",
+      "file": "packages/ui/src/components/ui/page/Page.tsx",
+      "dir": "ui",
+      "family": "ui/page",
+      "exports": [
+        "Page",
+        "PageHeader",
+        "PageGutter",
+        "PageMaxWidth",
+        "PageProps",
+        "PageHeaderProps",
+        "useScrolledUnder",
+        "PageHeaderBand"
+      ],
+      "libDependents": 1,
+      "storyRefs": 2,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 9,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 196,
+        "score": 9
+      },
+      "tier": "page",
+      "verdict": "demo-only",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -10711,10 +10861,30 @@
     [
       "Tooltip",
       "TriggerSurface"
+    ],
+    [
+      "HighlightText",
+      "Typography"
+    ],
+    [
+      "Kbd",
+      "Typography"
+    ],
+    [
+      "Page",
+      "Typography"
+    ],
+    [
+      "CardStat",
+      "Card"
+    ],
+    [
+      "CardStat",
+      "Metric"
     ]
   ],
   "summary": {
-    "total": 222,
+    "total": 226,
     "dead": [
       "Autocomplete",
       "Breadcrumbs",
@@ -10722,8 +10892,10 @@
       "Eyebrow",
       "FilePathLabel",
       "GoalLiftCard",
+      "HighlightText",
       "IconBox",
       "InitiativeHeader",
+      "Kbd",
       "Menu",
       "MessageList",
       "PortfolioOverview",

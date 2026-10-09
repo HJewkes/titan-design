@@ -10,6 +10,8 @@
  * claim that now resolves or is gone. `--update` drops those rows; `--allow-increase` also adds
  * new ones.
  *
+ * A released section of packages/ui/CHANGELOG.md is exempt; only `## [Unreleased]` is checked.
+ *
  * The resolvers take a repo context from loadRepoContext and touch no disk, so the .claude/skills
  * shape check (TD-307) imports them rather than writing its own.
  */
@@ -183,9 +185,29 @@ export function resolveClaim(key, doc, context) {
   return false
 }
 
+const CHANGELOG_DOC = 'packages/ui/CHANGELOG.md'
+const VERSION_HEADING = /^## (?!\[?Unreleased\]?\s*$)/i
+
+/**
+ * The part of a document whose claims are checked. A released CHANGELOG section is history, so
+ * `changelog:compile` moving fragments under a version heading cannot turn a file the fragment
+ * named, and a later change deleted, into a dead claim.
+ */
+export function checkedText(doc, markdown) {
+  if (doc !== CHANGELOG_DOC) return markdown
+  let released = false
+  return markdown
+    .split('\n')
+    .filter((line) => {
+      if (line.startsWith('## ')) released = VERSION_HEADING.test(line)
+      return !released
+    })
+    .join('\n')
+}
+
 /** The dead claims of one document, sorted. */
 export function deadClaims(doc, markdown, context) {
-  return extractClaims(markdown, context.retired)
+  return extractClaims(checkedText(doc, markdown), context.retired)
     .filter((key) => !resolveClaim(key, doc, context))
     .sort()
 }

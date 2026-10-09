@@ -11,7 +11,7 @@ import {
   type MeasuredFrame,
 } from '../src/contrast-gate.ts'
 import { ReviewError } from '../src/review.ts'
-import { ManifestSchema, MANIFEST_SCHEMA_ID, type ManifestInput } from '../src/schema.ts'
+import { ManifestSchema, MANIFEST_SCHEMA_ID, type ManifestInput } from '@titan-design/review-schema'
 import { noTreeGit, underContract } from './fixtures.ts'
 
 const SHA = 'a'.repeat(64)

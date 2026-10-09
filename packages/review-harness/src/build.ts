@@ -10,7 +10,7 @@ import {
 } from './contrast-gate.ts'
 import { MAIN_REF } from './harness-freshness.ts'
 import { ReviewError, assertStoriesExist, loadRound, type LoadedRound } from './review.ts'
-import type { ContrastOverride, Manifest } from './schema.ts'
+import type { ContrastOverride, Manifest } from '@titan-design/review-schema'
 
 /** The round was measured and an undeclared miss (or an unmeasured image) blocked it. */
 export const EXIT_REFUSED = 3

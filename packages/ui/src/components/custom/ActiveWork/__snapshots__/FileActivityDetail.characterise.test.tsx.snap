@@ -65,69 +65,105 @@ exports[`FileActivityDetail characterisation > on a dark surface > renders the D
         >
           <div
             class="css-view-175oi2r"
+            style="background-color: var(--color-surface-overlay); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden;"
           >
             <div
-              class="css-text-146c3p1"
-              dir="auto"
+              class="css-view-175oi2r"
             >
-              Reads
-            </div>
-            <div
-              class="css-text-146c3p1"
-              dir="auto"
-              style="color: rgb(33, 150, 243);"
-            >
-              84
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Reads
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                  style="color: rgb(33, 150, 243);"
+                >
+                  84
+                </div>
+              </div>
             </div>
           </div>
           <div
             class="css-view-175oi2r"
+            style="background-color: var(--color-surface-overlay); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden;"
           >
             <div
-              class="css-text-146c3p1"
-              dir="auto"
+              class="css-view-175oi2r"
             >
-              Writes
-            </div>
-            <div
-              class="css-text-146c3p1"
-              dir="auto"
-              style="color: rgb(213, 72, 175);"
-            >
-              12
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Writes
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                  style="color: rgb(213, 72, 175);"
+                >
+                  12
+                </div>
+              </div>
             </div>
           </div>
           <div
             class="css-view-175oi2r"
+            style="background-color: var(--color-surface-overlay); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden;"
           >
             <div
-              class="css-text-146c3p1"
-              dir="auto"
+              class="css-view-175oi2r"
             >
-              Edits
-            </div>
-            <div
-              class="css-text-146c3p1"
-              dir="auto"
-              style="color: rgb(224, 82, 84);"
-            >
-              61
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Edits
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                  style="color: rgb(224, 82, 84);"
+                >
+                  61
+                </div>
+              </div>
             </div>
           </div>
           <div
             class="css-view-175oi2r"
+            style="background-color: var(--color-surface-overlay); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden;"
           >
             <div
-              class="css-text-146c3p1"
-              dir="auto"
+              class="css-view-175oi2r"
             >
-              Touches
-            </div>
-            <div
-              class="css-text-146c3p1"
-              dir="auto"
-            >
-              157
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Touches
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  157
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -472,69 +508,105 @@ exports[`FileActivityDetail characterisation > on a dark surface > renders the N
         >
           <div
             class="css-view-175oi2r"
+            style="background-color: var(--color-surface-overlay); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden;"
           >
             <div
-              class="css-text-146c3p1"
-              dir="auto"
+              class="css-view-175oi2r"
             >
-              Reads
-            </div>
-            <div
-              class="css-text-146c3p1"
-              dir="auto"
-              style="color: rgb(33, 150, 243);"
-            >
-              52
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Reads
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                  style="color: rgb(33, 150, 243);"
+                >
+                  52
+                </div>
+              </div>
             </div>
           </div>
           <div
             class="css-view-175oi2r"
+            style="background-color: var(--color-surface-overlay); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden;"
           >
             <div
-              class="css-text-146c3p1"
-              dir="auto"
+              class="css-view-175oi2r"
             >
-              Writes
-            </div>
-            <div
-              class="css-text-146c3p1"
-              dir="auto"
-              style="color: rgb(213, 72, 175);"
-            >
-              4
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Writes
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                  style="color: rgb(213, 72, 175);"
+                >
+                  4
+                </div>
+              </div>
             </div>
           </div>
           <div
             class="css-view-175oi2r"
+            style="background-color: var(--color-surface-overlay); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden;"
           >
             <div
-              class="css-text-146c3p1"
-              dir="auto"
+              class="css-view-175oi2r"
             >
-              Edits
-            </div>
-            <div
-              class="css-text-146c3p1"
-              dir="auto"
-              style="color: rgb(224, 82, 84);"
-            >
-              18
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Edits
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                  style="color: rgb(224, 82, 84);"
+                >
+                  18
+                </div>
+              </div>
             </div>
           </div>
           <div
             class="css-view-175oi2r"
+            style="background-color: var(--color-surface-overlay); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden;"
           >
             <div
-              class="css-text-146c3p1"
-              dir="auto"
+              class="css-view-175oi2r"
             >
-              Touches
-            </div>
-            <div
-              class="css-text-146c3p1"
-              dir="auto"
-            >
-              74
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Touches
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  74
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -783,69 +855,105 @@ exports[`FileActivityDetail characterisation > on a dark surface > renders the N
         >
           <div
             class="css-view-175oi2r"
+            style="background-color: var(--color-surface-overlay); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden;"
           >
             <div
-              class="css-text-146c3p1"
-              dir="auto"
+              class="css-view-175oi2r"
             >
-              Reads
-            </div>
-            <div
-              class="css-text-146c3p1"
-              dir="auto"
-              style="color: rgb(33, 150, 243);"
-            >
-              40
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Reads
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                  style="color: rgb(33, 150, 243);"
+                >
+                  40
+                </div>
+              </div>
             </div>
           </div>
           <div
             class="css-view-175oi2r"
+            style="background-color: var(--color-surface-overlay); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden;"
           >
             <div
-              class="css-text-146c3p1"
-              dir="auto"
+              class="css-view-175oi2r"
             >
-              Writes
-            </div>
-            <div
-              class="css-text-146c3p1"
-              dir="auto"
-              style="color: rgb(213, 72, 175);"
-            >
-              6
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Writes
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                  style="color: rgb(213, 72, 175);"
+                >
+                  6
+                </div>
+              </div>
             </div>
           </div>
           <div
             class="css-view-175oi2r"
+            style="background-color: var(--color-surface-overlay); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden;"
           >
             <div
-              class="css-text-146c3p1"
-              dir="auto"
+              class="css-view-175oi2r"
             >
-              Edits
-            </div>
-            <div
-              class="css-text-146c3p1"
-              dir="auto"
-              style="color: rgb(224, 82, 84);"
-            >
-              9
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Edits
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                  style="color: rgb(224, 82, 84);"
+                >
+                  9
+                </div>
+              </div>
             </div>
           </div>
           <div
             class="css-view-175oi2r"
+            style="background-color: var(--color-surface-overlay); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden;"
           >
             <div
-              class="css-text-146c3p1"
-              dir="auto"
+              class="css-view-175oi2r"
             >
-              Touches
-            </div>
-            <div
-              class="css-text-146c3p1"
-              dir="auto"
-            >
-              55
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Touches
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  55
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1057,69 +1165,105 @@ exports[`FileActivityDetail characterisation > on a light surface > renders the 
         >
           <div
             class="css-view-175oi2r"
+            style="background-color: var(--color-surface-overlay); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden;"
           >
             <div
-              class="css-text-146c3p1"
-              dir="auto"
+              class="css-view-175oi2r"
             >
-              Reads
-            </div>
-            <div
-              class="css-text-146c3p1"
-              dir="auto"
-              style="color: rgb(33, 150, 243);"
-            >
-              84
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Reads
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                  style="color: rgb(33, 150, 243);"
+                >
+                  84
+                </div>
+              </div>
             </div>
           </div>
           <div
             class="css-view-175oi2r"
+            style="background-color: var(--color-surface-overlay); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden;"
           >
             <div
-              class="css-text-146c3p1"
-              dir="auto"
+              class="css-view-175oi2r"
             >
-              Writes
-            </div>
-            <div
-              class="css-text-146c3p1"
-              dir="auto"
-              style="color: rgb(213, 72, 175);"
-            >
-              12
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Writes
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                  style="color: rgb(213, 72, 175);"
+                >
+                  12
+                </div>
+              </div>
             </div>
           </div>
           <div
             class="css-view-175oi2r"
+            style="background-color: var(--color-surface-overlay); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden;"
           >
             <div
-              class="css-text-146c3p1"
-              dir="auto"
+              class="css-view-175oi2r"
             >
-              Edits
-            </div>
-            <div
-              class="css-text-146c3p1"
-              dir="auto"
-              style="color: rgb(224, 82, 84);"
-            >
-              61
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Edits
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                  style="color: rgb(224, 82, 84);"
+                >
+                  61
+                </div>
+              </div>
             </div>
           </div>
           <div
             class="css-view-175oi2r"
+            style="background-color: var(--color-surface-overlay); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden;"
           >
             <div
-              class="css-text-146c3p1"
-              dir="auto"
+              class="css-view-175oi2r"
             >
-              Touches
-            </div>
-            <div
-              class="css-text-146c3p1"
-              dir="auto"
-            >
-              157
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Touches
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  157
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1464,69 +1608,105 @@ exports[`FileActivityDetail characterisation > on a light surface > renders the 
         >
           <div
             class="css-view-175oi2r"
+            style="background-color: var(--color-surface-overlay); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden;"
           >
             <div
-              class="css-text-146c3p1"
-              dir="auto"
+              class="css-view-175oi2r"
             >
-              Reads
-            </div>
-            <div
-              class="css-text-146c3p1"
-              dir="auto"
-              style="color: rgb(33, 150, 243);"
-            >
-              52
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Reads
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                  style="color: rgb(33, 150, 243);"
+                >
+                  52
+                </div>
+              </div>
             </div>
           </div>
           <div
             class="css-view-175oi2r"
+            style="background-color: var(--color-surface-overlay); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden;"
           >
             <div
-              class="css-text-146c3p1"
-              dir="auto"
+              class="css-view-175oi2r"
             >
-              Writes
-            </div>
-            <div
-              class="css-text-146c3p1"
-              dir="auto"
-              style="color: rgb(213, 72, 175);"
-            >
-              4
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Writes
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                  style="color: rgb(213, 72, 175);"
+                >
+                  4
+                </div>
+              </div>
             </div>
           </div>
           <div
             class="css-view-175oi2r"
+            style="background-color: var(--color-surface-overlay); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden;"
           >
             <div
-              class="css-text-146c3p1"
-              dir="auto"
+              class="css-view-175oi2r"
             >
-              Edits
-            </div>
-            <div
-              class="css-text-146c3p1"
-              dir="auto"
-              style="color: rgb(224, 82, 84);"
-            >
-              18
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Edits
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                  style="color: rgb(224, 82, 84);"
+                >
+                  18
+                </div>
+              </div>
             </div>
           </div>
           <div
             class="css-view-175oi2r"
+            style="background-color: var(--color-surface-overlay); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden;"
           >
             <div
-              class="css-text-146c3p1"
-              dir="auto"
+              class="css-view-175oi2r"
             >
-              Touches
-            </div>
-            <div
-              class="css-text-146c3p1"
-              dir="auto"
-            >
-              74
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Touches
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  74
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1775,69 +1955,105 @@ exports[`FileActivityDetail characterisation > on a light surface > renders the 
         >
           <div
             class="css-view-175oi2r"
+            style="background-color: var(--color-surface-overlay); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden;"
           >
             <div
-              class="css-text-146c3p1"
-              dir="auto"
+              class="css-view-175oi2r"
             >
-              Reads
-            </div>
-            <div
-              class="css-text-146c3p1"
-              dir="auto"
-              style="color: rgb(33, 150, 243);"
-            >
-              40
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Reads
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                  style="color: rgb(33, 150, 243);"
+                >
+                  40
+                </div>
+              </div>
             </div>
           </div>
           <div
             class="css-view-175oi2r"
+            style="background-color: var(--color-surface-overlay); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden;"
           >
             <div
-              class="css-text-146c3p1"
-              dir="auto"
+              class="css-view-175oi2r"
             >
-              Writes
-            </div>
-            <div
-              class="css-text-146c3p1"
-              dir="auto"
-              style="color: rgb(213, 72, 175);"
-            >
-              6
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Writes
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                  style="color: rgb(213, 72, 175);"
+                >
+                  6
+                </div>
+              </div>
             </div>
           </div>
           <div
             class="css-view-175oi2r"
+            style="background-color: var(--color-surface-overlay); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden;"
           >
             <div
-              class="css-text-146c3p1"
-              dir="auto"
+              class="css-view-175oi2r"
             >
-              Edits
-            </div>
-            <div
-              class="css-text-146c3p1"
-              dir="auto"
-              style="color: rgb(224, 82, 84);"
-            >
-              9
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Edits
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                  style="color: rgb(224, 82, 84);"
+                >
+                  9
+                </div>
+              </div>
             </div>
           </div>
           <div
             class="css-view-175oi2r"
+            style="background-color: var(--color-surface-overlay); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px; overflow-x: hidden; overflow-y: hidden;"
           >
             <div
-              class="css-text-146c3p1"
-              dir="auto"
+              class="css-view-175oi2r"
             >
-              Touches
-            </div>
-            <div
-              class="css-text-146c3p1"
-              dir="auto"
-            >
-              55
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Touches
+              </div>
+              <div
+                class="css-view-175oi2r"
+              >
+                <div
+                  class="css-text-146c3p1"
+                  dir="auto"
+                >
+                  55
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -24,8 +24,7 @@
     "#ffffff|#c7c7c7": 3
   },
   "components-atoms-badge--all-colors dark": {
-    "#307b9b|#252321": 1,
-    "#d14343|#252321": 1
+    "#e05254|#252321": 1
   },
   "components-atoms-badge--all-colors light": {
     "#c27400|#ffffff": 1,
@@ -56,9 +55,6 @@
   },
   "components-atoms-gauge--override-color light": {
     "#7bafde|#ffffff": 1
-  },
-  "components-atoms-link--all-colors dark": {
-    "#307b9b|#252321": 1
   },
   "components-atoms-link--all-colors light": {
     "#ff7900|#ffffff": 1
@@ -215,7 +211,7 @@
   "components-molecules-alert--solid-variants dark": {
     "#a29f9d|#2196f3": 1,
     "#a29f9d|#2ed573": 1,
-    "#a29f9d|#d14343": 1,
+    "#a29f9d|#e05254": 1,
     "#a29f9d|#f9b415": 1
   },
   "components-molecules-alert--solid-variants light": {
@@ -375,7 +371,7 @@
     "#888684|#2c2a28": 1
   },
   "components-molecules-select--controlled dark": {
-    "#d14343|#252321": 1
+    "#e05254|#252321": 1
   },
   "components-molecules-select--controlled light": {
     "#ff7900|#ffffff": 5
@@ -388,7 +384,7 @@
   },
   "components-molecules-select--invalid dark": {
     "#888684|#252321": 1,
-    "#d14343|#252321": 1
+    "#e05254|#252321": 1
   },
   "components-molecules-select--many-options dark": {
     "#888684|#252321": 1
@@ -808,7 +804,6 @@
     "#72716f|#edeae7": 2
   },
   "custom-activework-sessiondetail--ad-hoc dark": {
-    "#828df8|#31302f": 1,
     "#888684|#31302f": 5,
     "#ff7900|#4a3929": 1
   },
@@ -1138,9 +1133,6 @@
     "#5a5958|#1c1916": 4,
     "#995d06|#1c1916": 1
   },
-  "custom-fatigue-verdict-hero--across-states dark": {
-    "#d14343|#100d0a": 2
-  },
   "custom-fatigue-verdict-hero--across-states light": {
     "#298732|#100d0a": 2,
     "#72716f|#100d0a": 7,
@@ -1327,7 +1319,7 @@
     "#298732|#eaf3eb": 1
   },
   "custom-workout-dataviz-strengthtrendchart--declining dark": {
-    "#d14343|#362624": 1
+    "#e05254|#382826": 1
   },
   "custom-workout-dataviz-strengthtrendchart--declining light": {
     "#d14343|#faecec": 1
@@ -1844,9 +1836,6 @@
   "custom-workout-prhistorymodal--interactive light": {
     "#ffffff|#ff7900": 1
   },
-  "custom-workout-readinesscheck--low-readiness dark": {
-    "#d14343|#31302f": 1
-  },
   "custom-workout-readinesscheck--with-warm-up-caution dark": {
     "#f77175|#413535": 1
   },
@@ -2274,11 +2263,11 @@
   },
   "foundations-spacing--anti-patterns dark": {
     "#888684|#252321": 5,
-    "#d14343|#252321": 5
+    "#e05254|#252321": 5
   },
   "foundations-spacing--do-and-dont dark": {
     "#888684|#252321": 4,
-    "#d14343|#252321": 4
+    "#e05254|#252321": 4
   },
   "foundations-spacing--pill-ramps dark": {
     "#a29f9d|#3b3937": 11
@@ -2353,19 +2342,11 @@
   },
   "lab-archive-rep-breakdown--overview-r-2 dark": {
     "#5b5855|#100d0a": 8,
-    "#d14343|#100d0a": 3,
-    "#d14343|#2f1613": 6
+    "#e05254|#311816": 6
   },
   "lab-archive-rep-breakdown--overview-r-2 light": {
     "#5b5855|#100d0a": 8,
-    "#d14343|#100d0a": 3,
-    "#d14343|#2f1613": 6
-  },
-  "lab-archive-rep-breakdown--refined-composite dark": {
-    "#d14343|#100d0a": 3
-  },
-  "lab-archive-rep-breakdown--refined-composite light": {
-    "#d14343|#100d0a": 3
+    "#e05254|#311816": 6
   },
   "lab-archive-rep-breakdown--three-track-strip dark": {
     "#5b5855|#100d0a": 8
@@ -2381,17 +2362,17 @@
   },
   "lab-archive-rep-breakdown--warnings-depth-hybrid dark": {
     "#5b5855|#100d0a": 8,
-    "#d14343|#2b1512": 6
+    "#e05254|#2d1714": 6
   },
   "lab-archive-rep-breakdown--warnings-depth-hybrid light": {
     "#5b5855|#100d0a": 8,
-    "#d14343|#2b1512": 6
+    "#e05254|#2d1714": 6
   },
   "lab-archive-rep-breakdown--warnings-model dark": {
-    "#d14343|#2f1613": 6
+    "#e05254|#311816": 6
   },
   "lab-archive-rep-breakdown--warnings-model light": {
-    "#d14343|#2f1613": 6
+    "#e05254|#311816": 6
   },
   "lab-audits-row-inventory--all-rows dark": {
     "#5b616d|#131418": 17,
@@ -2522,7 +2503,8 @@
     "#888684|#2c2a28": 2,
     "#888684|#373635": 1,
     "#a29f9d|#463b3a": 6,
-    "#d14343|#463b3a": 2
+    "#d14343|#463b3a": 1,
+    "#e05254|#463b3a": 1
   },
   "lab-decisions-dual-pinned-live-strip--chosen-pair light": {
     "#22a444|#edeae7": 1,

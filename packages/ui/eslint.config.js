@@ -4,6 +4,7 @@ const react = require('eslint-plugin-react')
 const reactHooks = require('eslint-plugin-react-hooks')
 const globals = require('globals')
 const noClassnameOnAnimated = require('./eslint-rules/no-classname-on-animated')
+const noCopyPitfalls = require('./eslint-rules/no-copy-pitfalls')
 const noDeprecatedImport = require('./eslint-rules/no-deprecated-import')
 const noDeviceInternals = require('./eslint-rules/no-device-internals')
 const noFrozenTheme = require('./eslint-rules/no-frozen-theme')
@@ -118,6 +119,7 @@ module.exports = tseslint.config(
       titan: {
         rules: {
           'no-classname-on-animated': noClassnameOnAnimated,
+          'no-copy-pitfalls': noCopyPitfalls,
           'no-deprecated-import': noDeprecatedImport,
           'no-device-internals': noDeviceInternals,
           'no-frozen-theme': noFrozenTheme,
@@ -575,6 +577,19 @@ module.exports = tseslint.config(
     ignores: ['src/**/*.test.{ts,tsx}', 'src/**/*.stories.{ts,tsx}'],
     rules: {
       'titan/props-naming': 'error',
+    },
+  },
+
+  // TD-340: display copy avoids a spaced × between digits, all-caps words outside
+  // copy-glossary.json, " & " and ! in error strings. JSX text and display props only.
+  // RATCHETED: today's sites are in no-copy-pitfalls-baseline.json, keyed by file and
+  // fragment, which must stay exact (an unspent allowance is reported as stale). Stories and
+  // tests are exempt; src/lab is outside the glob.
+  {
+    files: ['src/components/{ui,custom,shell}/**/*.{ts,tsx}'],
+    ignores: ['src/**/*.test.{ts,tsx}', 'src/**/*.stories.{ts,tsx}'],
+    rules: {
+      'titan/no-copy-pitfalls': 'error',
     },
   },
 

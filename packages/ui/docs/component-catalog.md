@@ -20,6 +20,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | CapacityBandChart | candidate | custom/Workout | Gentler-Streak-inspired fatigue visualization. | CapacityBandOverlays, CapacityBandPlot | custom-workout-dataviz-capacitybandchart--compact |
 | CapacityBandPlot | review | custom/Workout | The band and projection, drawn left to right through an animated clip. | — | — |
 | Card | stable | ui/card | Card component for containing related content. | Surface | components-molecules-card--brand-colored-cards |
+| CardStat | review | ui/card | The Card stat preset: one labelled figure on a card plane (roadmap decision 1). | Card, Metric | — |
 | Carousel | stable | ui/carousel | A row of peer cards, one per view with the neighbours peeking, that a phone swipes through instead of scrolling past. | Button, icons | components-molecules-carousel--default |
 | ChatCard | candidate | custom/Chat | A structured card a message carries in a `data-*` part: a status line, a title, a subtitle, a body, small print and up to three actions. | Button, Card, Typography | custom-chat-chatcard--checkin |
 | Checkbox | stable | ui/checkbox | Checkbox component for boolean inputs. | — | components-molecules-checkbox--all-sizes |
@@ -71,6 +72,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | GoalTrajectoryPlot | review | custom/Workout | — | GoalTrajectoryBand, GoalTrajectoryCalibrating, SvgIcon, icons | — |
 | GoalTrajectoryWeekTips | review | custom/Workout | The week targets over the plot, absolute against the chart's own box. | Metric, Pill, PrBadge, TipTrigger, Typography | — |
 | GoalWeekColumnsChart | review | custom/Workout | — | GoalMilestoneWeekStrip, GoalTrajectoryMini | — |
+| HighlightText | candidate | ui/highlight-text | A string with matched ranges emphasised by weight only, so no colour pair is added. | Typography | components-atoms-highlighttext--default |
 | IconBox | stable | ui/icon-box | — | — | components-atoms-iconbox--all-colors |
 | Indicator | stable | ui/indicator | — | — | components-atoms-indicator--all-colors |
 | InitiativeBrief | candidate | custom/ActiveWork | InitiativeBrief — an initiative's brief prose as a single-open accordion of its `##` sections: click any heading to open it, or step through them with the prev/next controls in the header, which close the current section and open the next. | Eyebrow, MarkdownProse, Typography | custom-activework-initiativebrief--default |
@@ -79,6 +81,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | Input | stable | ui/input | Input component for text entry. | — | components-molecules-input--all-sizes |
 | InputBar | candidate | custom/Workout | — | — | custom-workout-inputbar--default |
 | IntensityBar | candidate | custom/Workout | — | — | custom-workout-dataviz-intensitybar--all-zones |
+| Kbd | candidate | ui/kbd | Kbd — a display-only keyboard shortcut hint, one keycap per key. | Typography | components-atoms-kbd--default |
 | Link | stable | ui/link | Link component for navigation. | — | components-atoms-link--all-colors |
 | ListItem | stable | ui/list-item | — | — | components-molecules-listitem--basic |
 | LiveAuraFrame | candidate | custom/Workout | Full-surface color-flood frame tied to a coaching category. | — | custom-workout-liveauraframe--all-states |
@@ -99,6 +102,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | MuscleStrip | candidate | custom/Workout | MuscleStrip — all 15 `MuscleGroupChip`s in one wrapping row, each labeled with its weekly sets against target. | MuscleGroupChip | custom-workout-musclestrip--default |
 | NavItem | candidate | shell | Shell S2 · NavItem — one category button in the {@link SideNav }: a 20px glyph over an uppercase micro-label in a 46×46 target. | Typography | shell-navitem--active |
 | OpenLoops | candidate | custom/ActiveWork | OpenLoops — the initiative's hanging threads from the session ledger: each loop's kind, age and auto-linked text. | Divider, Eyebrow, MarkdownProse, Pill, Typography | custom-activework-openloops--default |
+| Page | candidate | ui/page | A page container for a view's content region: a gutter, an optional width cap, a header slot and a scroller. | Typography | components-molecules-page--default |
 | Pill | stable | ui/pill | The single pill primitive: a capsule of tone-coloured label with optional leading and trailing slots. | — | components-atoms-pill--all-sizes |
 | PinnedLiveStrip | review | shell | Shell · PinnedLiveStrip (VW-429): the row pinned atop every non-live page while a set or rest runs, so the lifter never loses the live set. | SetBarChart, icons, pinnedLiveStripParts | shell-workout-pinnedlivestrip--default |
 | PlaceholderStrip | candidate | custom/Workout | — | — | custom-workout-placeholderstrip--default |
@@ -164,7 +168,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | TaskStagePill | candidate | custom/ActiveWork | The one renderer of a stage outside the board columns; label and tone come from the stage table. | Pill | custom-activework-taskstagepill--default |
 | TaskTable | candidate | custom/ActiveWork | TaskTable — every open task across initiatives in one dense, sortable grid. | Eyebrow, SeverityLabel, Table, TableHeaderCell, TaskRow, Typography | custom-activework-tasktable--default |
 | TempoDisplay | candidate | custom/Workout | — | metricText | custom-workout-tempodisplay--active-tempo-conditions |
-| Tile | candidate | ui/tile | Tile — a compact label-over-value stat card. | — | components-atoms-tile--default |
+| Tile | candidate | ui/tile | Tile — a compact label-over-value stat, now a wrapper over the `CardStat` preset. | — | components-atoms-tile--default |
 | TimerReadout | candidate | custom/TimerReadout | Atom · TimerReadout — a small textual timer (⏱ + mono, right-justified) built on [useTimer]. | Typography | components-molecules-timerreadout--countdown-running |
 | TipTrigger | review | ui/tooltip | One tip that opens on hover (web), focus (keyboard) and press (native) — the three affordances share a single open state, because RNW ends a wrapper's hover the moment a nested Pressable claims the pointer. | Tooltip | — |
 | Toast | stable | ui/toast | Standalone Toast component (for static rendering without provider). | Surface | components-molecules-toast--all-statuses |

@@ -8,7 +8,7 @@ import {
   type Manifest,
   type StoryVariant,
   type Variant,
-} from './schema.ts'
+} from '@titan-design/review-schema'
 import { storyUrl } from './round.ts'
 import { AUTO_FALLBACK_HEIGHT, frameHeight, isAuto } from './sections.ts'
 
