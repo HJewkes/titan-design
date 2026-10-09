@@ -190,5 +190,8 @@ const FRAME_TO_CONTENT_BOX_X = 48 + 32
 export const Widths: Story = {
   tags: ['width-matrix'],
   render: renderSection,
-  parameters: { layout: 'fullscreen', widthMatrix: { thresholds: [WHOLE_BODY_WALL_MIN_WIDTH + FRAME_TO_CONTENT_BOX_X] } },
+  parameters: {
+    layout: 'fullscreen',
+    widthMatrix: { thresholds: [WHOLE_BODY_WALL_MIN_WIDTH + FRAME_TO_CONTENT_BOX_X] },
+  },
 }
