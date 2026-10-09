@@ -67,7 +67,7 @@ function D2Unit({ option }: { option: D2Option }) {
 
 export function D2Frame() {
   return (
-    <ModeFrame mode="light">
+    <ModeFrame mode="light" isPage>
       <FrameHeader
         title="D2 · light brand and warning solids"
         summary="Every other light solid is hue[600] + white. Brand (orange) and warning (amber) ship at 500."
@@ -104,7 +104,7 @@ function CrossModeColumn({ mode, rows }: { mode: ThemeMode; rows: CrossModeReadi
         {rows.map((r) => (
           <View key={r.hue} className="gap-stack-sm">
             <MissSwatch fill={r.fill} label={r.label} ratio={r.ratio} />
-            <Caption>{`  best 3:1 fill: ${r.best.fill.label} ${fmt(r.best.ratio)}`}</Caption>
+            <Caption>{`  best 3:1 fill: ${r.best.fill.label} ${fmt(r.best.ratio)} ${r.best.ratio >= 4.5 ? 'AA' : 'misses AA'}`}</Caption>
           </View>
         ))}
       </View>
@@ -115,7 +115,7 @@ function CrossModeColumn({ mode, rows }: { mode: ThemeMode; rows: CrossModeReadi
 export function D1Frame() {
   const { whiteInDark, grey950InLight } = readD1()
   return (
-    <View className="gap-section-sm bg-background-base p-gutter-sm">
+    <View className="min-h-screen gap-section-sm bg-background-base p-gutter-sm">
       <View className="gap-stack-md" testID="d1-a">
         <OptionTitle
           title="Reading A · same rule per mode (default)"
@@ -142,17 +142,20 @@ export function D1Frame() {
 
 function D5Cell({ r, page }: { r: D5Reading; page: string }) {
   return (
-    <View className="gap-stack-sm">
+    <View className="w-28 gap-stack-sm">
       <LiveChip pair={asPair(r)} plane={page} />
       <Caption>{`label ${fmt(r.ratio)}`}</Caption>
-      <Caption>{`vs page ${fmt(r.vsPage)}${r.lighter ? ' lighter' : ''}`}</Caption>
+      <Caption>{`vs page ${fmt(r.vsPage)}`}</Caption>
+      <Caption>{r.lighter ? 'lighter than page' : 'darker than page'}</Caption>
     </View>
   )
 }
 
+const D5_ROW = { today: 'today: 100 + 700', rule: 'D5 rule' } as const
+
 export function D5Frame() {
   return (
-    <ModeFrame mode="light">
+    <ModeFrame mode="light" isPage>
       <FrameHeader
         title="D5 · light subtle step per page"
         summary="Top row per page: today's 100 + 700. Bottom row: the D5 rule, fill one hue step below the page's grey step, label fill + 600."
@@ -167,6 +170,9 @@ export function D5Frame() {
           <Text className="text-sm font-semibold text-text-primary">{context}</Text>
           {(['today', 'rule'] as const).map((which) => (
             <View key={which} className="flex-row flex-wrap gap-inline-md">
+              <View className="w-28">
+                <Caption>{D5_ROW[which]}</Caption>
+              </View>
               {rows.map((row) => (
                 <D5Cell key={row.hue} r={row[which]} page={page.hex} />
               ))}

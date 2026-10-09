@@ -1,14 +1,15 @@
-import { vars } from 'nativewind'
 import type { ReactNode } from 'react'
 import { Text, View } from 'react-native'
 import { compositeOver } from '../../theme/color-checks'
+import { cn } from '../../utils/cn'
 import { getSemanticColors, type ThemeMode } from '../../theme/tokens/semantic'
 import { AA, fmt, type SurfacePair, type Swatch } from './surface-family'
 
 /**
  * Each frame paints its own mode: the mode's semantic map is set as local custom properties, so
  * `text-text-primary` and every component token resolve in that mode whatever the toolbar theme.
- * Built from `getSemanticColors`, not `theme/config`, which leaves a static build blank.
+ * A plain custom-property map, which is what nativewind's `vars()` returns on web: importing
+ * `vars` pulls a CommonJS chunk that leaves a static Storybook build blank.
  */
 const MODE_VARS: Record<ThemeMode, object> = {
   dark: modeVars('dark'),
@@ -17,13 +18,25 @@ const MODE_VARS: Record<ThemeMode, object> = {
 
 function modeVars(mode: ThemeMode) {
   const colors = getSemanticColors(mode) as Record<string, string>
-  return vars(Object.fromEntries(Object.entries(colors).map(([k, v]) => [`--color-${k}`, v])))
+  return Object.fromEntries(Object.entries(colors).map(([k, v]) => [`--color-${k}`, v]))
 }
 
-export function ModeFrame({ mode, children }: { mode: ThemeMode; children: ReactNode }) {
+/** `isPage` makes the frame the whole story canvas, so a light frame never sits on a dark page. */
+export function ModeFrame({
+  mode,
+  isPage = false,
+  children,
+}: {
+  mode: ThemeMode
+  isPage?: boolean
+  children: ReactNode
+}) {
   return (
     <View
-      className="gap-stack-md rounded-lg bg-background-base p-gutter-sm"
+      className={cn(
+        'gap-stack-md bg-background-base p-gutter-sm',
+        isPage ? 'min-h-screen' : 'rounded-lg'
+      )}
       style={MODE_VARS[mode]}
       testID={`frame-${mode}`}
     >
@@ -72,7 +85,7 @@ export function HueCarrier({
           '--color-on-status-error-subtle': pair.on.hex,
         }
   return (
-    <View className="flex-row flex-wrap items-center gap-inline-sm" style={vars(overrides)}>
+    <View className="flex-row flex-wrap items-center gap-inline-sm" style={overrides}>
       {children}
     </View>
   )
@@ -101,7 +114,10 @@ export function MissSwatch({ fill, label, ratio }: { fill: Swatch; label: Swatch
   return (
     <View className="flex-row items-center gap-inline-sm">
       <View className="h-8 w-12 rounded-md" style={{ backgroundColor: fill.hex }} />
-      <View className="h-8 w-3 rounded-sm" style={{ backgroundColor: label.hex }} />
+      <View
+        className="h-8 w-3 rounded-sm border border-hairline-strong"
+        style={{ backgroundColor: label.hex }}
+      />
       <Caption>{`${fill.label} + ${label.label}: ${fmt(ratio)} ${verdict}`}</Caption>
     </View>
   )

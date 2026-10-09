@@ -8,7 +8,7 @@ const BOTH = ['normal', 'deuteranopia'] as const
 /**
  * Surface-system plan S3, sibling of `Lab/Decisions/Categorical Light vs Dark` (TD-757): the
  * categorical sets under the one-label rule, one story per option so each sits beside its own
- * question (owner item 136).
+ * question.
  */
 const meta: Meta = {
   title: 'Lab/Decisions/Categorical One Label',

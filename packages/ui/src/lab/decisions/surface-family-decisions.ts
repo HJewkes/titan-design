@@ -40,7 +40,7 @@ export const D2_OPTIONS: readonly D2Option[] = [
     id: 'keep-500',
     title: 'Keep orange[500] and amber[500] as named exceptions (default)',
     summary:
-      'The batch 10 picks. White clears 3:1 (large text) but not 4.5, so both sit in the exception register. Shown as swatches: their labels miss AA.',
+      'The batch 10 picks (main still ships brand at orange[400] until TD-772 lands). White clears 3:1 (large text) but not 4.5, so both sit in the exception register. Shown as swatches: their labels miss AA.',
     pairs: [pair('orange', 500, WHITE), pair('amber', 500, WHITE)],
   },
   {

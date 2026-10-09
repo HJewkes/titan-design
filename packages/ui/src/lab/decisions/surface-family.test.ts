@@ -4,6 +4,7 @@ import {
   neutralSolidPair,
   readOnPlanes,
   solidPair,
+  shippedLine,
   subtlePair,
   worst,
 } from './surface-family'
@@ -50,6 +51,19 @@ describe('surface family (plan §2)', () => {
     )
 
     expect(at2(Math.min(...labels))).toBe(5.63)
+  })
+})
+
+describe('shipped comparison', () => {
+  it('names where today differs from the family, by ramp step', () => {
+    expect(shippedLine('red', 'solid', 'light')).toBe('today: status-error-solid (same)')
+    expect(shippedLine('orange', 'solid', 'light')).toBe(
+      'today: brand-primary-solid is orange[400]'
+    )
+    expect(shippedLine('red', 'subtle', 'dark')).toBe(
+      'today: status-error-subtle is red[400] at 8%'
+    )
+    expect(shippedLine('magenta', 'solid', 'dark')).toBe('today: no token')
   })
 })
 

@@ -150,7 +150,7 @@ export function OptionFrame({
   visions: readonly Vision[]
 }) {
   return (
-    <ModeFrame mode={options[0].mode}>
+    <ModeFrame mode={options[0].mode} isPage>
       {options.map((o) => (
         <OptionUnit key={o.id} o={o} visions={visions} />
       ))}

@@ -12,7 +12,7 @@ export type FamilyHue = (typeof FAMILY_HUES)[number]
 export type RampStep = keyof (typeof ramp)['red']
 type GreyStep = keyof typeof greyRamp
 
-/** A colour as the owner reads it: a ramp step, never a bare hex (item 136). */
+/** A colour as the owner reads it: a ramp step, never a bare hex. */
 export interface Swatch {
   hex: string
   label: string
@@ -46,15 +46,15 @@ export const NEUTRAL_SOLID: Record<ThemeMode, Swatch> = {
   dark: greyStep(200),
 }
 
-/** What already ships under another name at the family's value (plan §2.1-§2.4). */
-export const EXISTING: Record<FamilyHue, string> = {
+/** The shipped role each hue's pair already lives under; magenta has none (plan §2.1-§2.4). */
+export const SHIPPED_ROLE: Record<FamilyHue, string | null> = {
   red: 'status-error',
   orange: 'brand-primary',
   amber: 'status-warning',
   green: 'status-success',
   cyan: 'brand-secondary',
   blue: 'status-info',
-  magenta: 'new (no token)',
+  magenta: null,
 }
 
 /** The dark subtle wash: hue[300] at this alpha over the plane, label hue[300] (plan §2.4). */
@@ -75,7 +75,34 @@ const PLANE_TOKENS: Record<ThemeMode, readonly PlaneToken[]> = {
 export function nameOf(hex: string): string {
   if (hex.toUpperCase() === primitiveColors.white) return 'white'
   const grey = Object.entries(greyRamp).find(([, v]) => v.toUpperCase() === hex.toUpperCase())
-  return grey ? `grey[${grey[0]}]` : hex
+  if (grey) return `grey[${grey[0]}]`
+  for (const hue of FAMILY_HUES) {
+    const step = Object.entries(ramp[hue]).find(([, v]) => v.toUpperCase() === hex.toUpperCase())
+    if (step) return `${hue}[${step[0]}]`
+  }
+  return hex
+}
+
+const RGBA = /^rgba\((\d+), *(\d+), *(\d+), *([\d.]+)\)$/
+
+/** A token value by ramp step: `red[400]`, or `red[400] at 8%` for a wash. */
+export function valueName(value: string): string {
+  const m = RGBA.exec(value)
+  if (!m) return nameOf(value)
+  const hex = '#' + [m[1], m[2], m[3]].map((c) => Number(c).toString(16).padStart(2, '0')).join('')
+  return `${nameOf(hex.toUpperCase())} at ${Math.round(Number(m[4]) * 100)}%`
+}
+
+/** What ships today under the hue's role, against the family's value. */
+export function shippedLine(hue: FamilyHue, kind: 'solid' | 'subtle', mode: ThemeMode): string {
+  const role = SHIPPED_ROLE[hue]
+  if (!role) return 'today: no token'
+  const token = `${role}-${kind}`
+  const shipped = valueName((getSemanticColors(mode) as Record<string, string>)[token])
+  const family = kind === 'solid' ? solidPair(hue, mode) : subtlePair(hue, mode)
+  return shipped === valueName(family.fill)
+    ? `today: ${token} (same)`
+    : `today: ${token} is ${shipped}`
 }
 
 /** The content planes of a mode (light: white, grey[50], grey[100]; dark: base to overlay). */

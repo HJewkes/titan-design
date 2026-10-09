@@ -5,11 +5,11 @@ import { Button, ButtonText } from '../../components/ui/button'
 import { Pill } from '../../components/ui/pill'
 import { getSemanticColors, type ThemeMode } from '../../theme/tokens/semantic'
 import {
-  EXISTING,
   FAMILY_HUES,
   fmt,
   neutralSolidPair,
   readOnPlanes,
+  shippedLine,
   solidPair,
   subtlePair,
   worst,
@@ -35,8 +35,10 @@ function pairsOf(kind: FamilyKind, mode: ThemeMode): SurfacePair[] {
   return [...FAMILY_HUES.map((hue) => solidPair(hue, mode)), neutralSolidPair(mode)]
 }
 
-function existingOf(pair: SurfacePair): string {
-  return pair.hue === 'neutral' ? 'status-neutral (TD-777)' : EXISTING[pair.hue]
+function shippedOf(pair: SurfacePair, kind: FamilyKind, mode: ThemeMode): string {
+  return pair.hue === 'neutral'
+    ? 'today: status-neutral (TD-777)'
+    : shippedLine(pair.hue, kind, mode)
 }
 
 function PlaneTiles({
@@ -104,7 +106,7 @@ function HueRow({ pair, mode, kind }: { pair: SurfacePair; mode: ThemeMode; kind
         <Text className="text-sm font-semibold text-text-primary">{pair.hue}</Text>
         <Caption>{`${pair.fillLabel} + ${pair.on.label}`}</Caption>
         <Caption>{`worst label ${fmt(worst(readings, 'label'))}`}</Caption>
-        <Caption>{`today: ${existingOf(pair)}`}</Caption>
+        <Caption>{shippedOf(pair, kind, mode)}</Caption>
       </View>
       <PlaneTiles pair={pair} mode={mode} kind={kind} />
       <Components pair={pair} kind={kind} mode={mode} />
@@ -114,7 +116,7 @@ function HueRow({ pair, mode, kind }: { pair: SurfacePair; mode: ThemeMode; kind
 
 export function FamilyFrame({ kind, mode }: { kind: FamilyKind; mode: ThemeMode }) {
   return (
-    <ModeFrame mode={mode}>
+    <ModeFrame mode={mode} isPage>
       <FrameHeader title={`${kind} surfaces, ${mode}`} summary={RULE[kind][mode]} />
       {pairsOf(kind, mode).map((pair) => (
         <HueRow key={pair.hue} pair={pair} mode={mode} kind={kind} />

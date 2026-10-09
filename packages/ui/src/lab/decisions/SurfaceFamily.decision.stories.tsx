@@ -4,7 +4,7 @@ import { FamilyFrame } from './SurfaceFamilyFrame'
 
 /**
  * Surface-system plan S2: one story per frame, so each Gate 2 question sits beside its own frame
- * (owner item 136). Every colour is named by its ramp step and every ratio is measured in
+ * in review. Every colour is named by its ramp step and every ratio is measured in
  * `surface-family.ts`; a pair that misses AA is a swatch with its ratio, never live text.
  */
 const meta: Meta = {
