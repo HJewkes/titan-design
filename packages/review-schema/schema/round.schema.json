@@ -265,6 +265,9 @@
                   ]
                 }
               },
+              "implemented": {
+                "type": "string"
+              },
               "recommendation": {
                 "type": "object",
                 "properties": {
@@ -434,6 +437,13 @@
                     "changes",
                     "neutral"
                   ]
+                }
+              },
+              "implemented": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string"
                 }
               },
               "recommendation": {
