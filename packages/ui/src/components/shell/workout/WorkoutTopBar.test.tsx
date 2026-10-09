@@ -24,7 +24,7 @@ describe('WorkoutTopBar', () => {
     render(<WorkoutTopBar state="live" devices={devices} time={AT_1612} showClock />)
     expect(screen.getByText('VOLTRAS')).toBeInTheDocument()
     expect(screen.getByText('LIVE')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Devices' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Devices, Connected' })).toBeInTheDocument()
     expect(screen.getByText('16:12')).toBeInTheDocument()
   })
 

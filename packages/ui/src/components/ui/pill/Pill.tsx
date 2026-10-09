@@ -112,7 +112,7 @@ const toneStyles: Record<PillVariant, Record<PillTone, string>> = {
     'brand-secondary': 'border-brand-secondary text-brand-secondary',
     success: 'border-status-success text-status-success',
     warning: 'border-status-warning text-status-warning',
-    error: 'border-status-error text-status-error',
+    error: 'border-status-error text-text-error',
     info: 'border-status-info text-status-info',
   },
   // No fill and no ring, so the label is read against the plane the pill sits on. The

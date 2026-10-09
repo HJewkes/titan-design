@@ -43,17 +43,11 @@
   "src/components/custom/Workout/MesoStatusCard.tsx": {
     "StatusDot": 1
   },
-  "src/components/custom/Workout/metricText.stories.tsx": {
-    "MetricCell": 1
-  },
   "src/components/custom/Workout/MetricTiles.tsx": {
     "Tile": 1
   },
   "src/components/custom/Workout/ScheduleTiles.tsx": {
     "Tile": 1
-  },
-  "src/components/custom/Workout/SetsRepsLoad.tsx": {
-    "MetricCell": 1
   },
   "src/components/custom/Workout/StatusDot.stories.tsx": {
     "StatusDot": 1
@@ -64,9 +58,6 @@
   "src/components/custom/Workout/StatusPill.tsx": {
     "StatusDot": 1,
     "StatusDotVariant": 1
-  },
-  "src/components/custom/Workout/tempoDisplayParts.tsx": {
-    "MetricCell": 1
   },
   "src/components/custom/Workout/WeightBadge.stories.tsx": {
     "WeightBadge": 1

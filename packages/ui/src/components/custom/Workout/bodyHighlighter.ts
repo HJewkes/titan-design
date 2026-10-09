@@ -1,6 +1,7 @@
 import BodyHighlighter from 'react-native-body-highlighter'
 
 import { primitiveColors } from '../../../theme/tokens/primitives'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 import { alpha } from '../../../utils/colors'
 
 /**
@@ -14,3 +15,12 @@ export const Body = ((BodyHighlighter as unknown as { default?: typeof BodyHighl
 export const UNLIT_FILL_DARK = alpha(primitiveColors.white, 0.08)
 /** Outline of every muscle region on the figure. */
 export const UNLIT_BORDER = alpha(primitiveColors.white, 0.12)
+
+/** `Body` fill and outline props for unlit muscle regions on a figure painted in `mode`. */
+export function unlitBodyProps(mode: ThemeMode) {
+  const sem = getSemanticColors(mode)
+  return {
+    defaultFill: mode === 'dark' ? UNLIT_FILL_DARK : alpha(sem['text-primary'], 0.08),
+    border: alpha(sem['hairline-subtle'], 0.12),
+  }
+}
