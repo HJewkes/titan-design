@@ -1327,6 +1327,8 @@ export function DateSeparator(input: DateSeparatorProps): react_jsx_runtime.JSX.
 
 // @public
 export interface DateSeparatorLabels {
+    hideTimes: string;
+    showTimes: string;
     today: string;
     yesterday: string;
 }
@@ -1338,8 +1340,10 @@ export interface DateSeparatorProps {
     date: string | Date | number;
     labels?: Partial<DateSeparatorLabels>;
     now?: string | Date | number;
+    onPress?: () => void;
     showDay?: boolean;
     showTime?: boolean;
+    timesShown?: boolean;
 }
 
 // @public

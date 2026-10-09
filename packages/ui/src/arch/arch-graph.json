@@ -10961,6 +10961,14 @@
       "Typography"
     ],
     [
+      "CardStat",
+      "Card"
+    ],
+    [
+      "CardStat",
+      "Metric"
+    ],
+    [
       "BarList",
       "BarListCells"
     ],
@@ -10975,14 +10983,6 @@
     [
       "BarList",
       "EmptyState"
-    ],
-    [
-      "CardStat",
-      "Card"
-    ],
-    [
-      "CardStat",
-      "Metric"
     ]
   ],
   "summary": {
