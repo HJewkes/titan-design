@@ -1051,77 +1051,35 @@
       "props": [
         {
           "default": null,
-          "description": "Accent stripe color for accent variant (CSS color or hex)",
-          "name": "accentColor",
-          "required": false,
-          "type": "string"
-        },
-        {
-          "default": null,
-          "description": "Accent stripe width for accent variant in pixels (default: 3)",
-          "name": "accentWidth",
-          "required": false,
-          "type": "number"
-        },
-        {
-          "default": null,
-          "description": "",
+          "description": "The session to show.",
           "name": "agent",
           "required": true,
           "type": "AgentSummary"
         },
         {
           "default": null,
-          "description": "Custom background color.",
-          "name": "bgColor",
-          "required": false,
-          "type": "string"
-        },
-        {
-          "default": null,
-          "description": "Custom border color (hex, rgb, or CSS color).",
-          "name": "borderColor",
-          "required": false,
-          "type": "string"
-        },
-        {
-          "default": null,
-          "description": "Additional className",
+          "description": "Tailwind overrides on the card.",
           "name": "className",
           "required": false,
           "type": "string"
         },
         {
           "default": null,
-          "description": "Planes to lift above the enclosing Surface (default 2: page → the card plane).",
-          "name": "elevation",
-          "required": false,
-          "type": "CardElevation"
-        },
-        {
-          "default": null,
-          "description": "",
+          "description": "Host actions under the metrics.",
           "name": "footer",
           "required": false,
           "type": "ReactNode"
         },
         {
           "default": "false",
-          "description": "",
+          "description": "Marks the card with the accent stripe, for the agent the host has in focus.",
           "name": "isHighlighted",
           "required": false,
           "type": "boolean"
         },
         {
-          "default": null,
-          "description": "Whether the card is interactive (hoverable/pressable)",
-          "name": "isInteractive",
-          "required": false,
-          "type": "boolean"
-        },
-        {
           "default": "false",
-          "description": "Whether the card is in a loading state (renders skeleton)",
+          "description": "Renders the card's skeleton in place of the content.",
           "name": "isLoading",
           "required": false,
           "type": "boolean"
@@ -1155,25 +1113,11 @@
           "type": "((taskId: string) => void)"
         },
         {
-          "default": null,
-          "description": "Number of content lines in skeleton when loading (default: 3)",
-          "name": "skeletonContentLines",
+          "default": "agent-card",
+          "description": "Test id on the card root.",
+          "name": "testID",
           "required": false,
-          "type": "number"
-        },
-        {
-          "default": null,
-          "description": "Show footer skeleton when loading (default: false)",
-          "name": "skeletonHasFooter",
-          "required": false,
-          "type": "boolean"
-        },
-        {
-          "default": null,
-          "description": "Show header skeleton when loading (default: true)",
-          "name": "skeletonHasHeader",
-          "required": false,
-          "type": "boolean"
+          "type": "string"
         }
       ],
       "purpose": "One agent session: name, state, stated task, branch, recency, and the transcript's tokens, tool calls, errors, cost and activity.",
@@ -1199,7 +1143,7 @@
       "props": [
         {
           "default": null,
-          "description": "",
+          "description": "Tailwind overrides on the row.",
           "name": "className",
           "required": false,
           "type": "string"
@@ -1213,14 +1157,14 @@
         },
         {
           "default": "sm",
-          "description": "",
+          "description": "`sm` (caption) for cards and rows, `md` (body) for headers.",
           "name": "size",
           "required": false,
           "type": "\"sm\" | \"md\""
         },
         {
           "default": null,
-          "description": "",
+          "description": "The state to show.",
           "name": "state",
           "required": true,
           "type": "AgentSummaryState"

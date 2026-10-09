@@ -13,14 +13,16 @@ This README is the **index**: **composes ↓** and **used-by ↑**.
 
 ## Dependency map
 
-| Member             | Kind     | Composes ↓                                                                                      | Used-by ↑                               |
-| ------------------ | -------- | ----------------------------------------------------------------------------------------------- | --------------------------------------- |
-| `AgentCard`        | organism | `Card`, `CardInset`, `AgentStateLabel`, `Avatar`, `Pill`, `SparkBars`, `Progress`, `Typography` | console agents view (TP-864)            |
-| `AgentStateLabel`  | molecule | `Indicator`, `Typography`, `Pill`                                                               | `AgentCard`, `AgentRosterRow` (TP-858b) |
-| `agent-state.ts`   | pure fns | `IndicatorColor`                                                                                | every member                            |
-| `agent-metrics.ts` | pure fns | `formatCompact`, `formatUsd`, `formatTaskAge`, `formatSessionDuration` (`utils/`)               | every member                            |
-| `agent-types.ts`   | types    | —                                                                                               | every member                            |
-| `agent-fixture.ts` | fixtures | `seededRandom` (`ui/charts/kit`)                                                                | tests and stories only                  |
+| Member                  | Kind     | Composes ↓                                                                              | Used-by ↑                               |
+| ----------------------- | -------- | --------------------------------------------------------------------------------------- | --------------------------------------- |
+| `AgentCard`             | organism | `Card`, the two parts files below                                                       | console agents view (TP-864)            |
+| `AgentCardIdentity.tsx` | parts    | `AgentStateLabel`, `Avatar`, `Pill`, `Typography` (header, task, branch, recency, tags) | `AgentCard`                             |
+| `AgentCardMetrics.tsx`  | parts    | `CardInset`, `SparkBars`, `Progress`, `Typography` (metric cells, no-transcript notice) | `AgentCard`                             |
+| `AgentStateLabel`       | molecule | `Indicator`, `Typography`, `Pill`                                                       | `AgentCard`, `AgentRosterRow` (TP-858b) |
+| `agent-state.ts`        | pure fns | `IndicatorColor`                                                                        | every member                            |
+| `agent-metrics.ts`      | pure fns | `formatCompact`, `formatUsd`, `formatTaskAge`, `formatSessionDuration` (`utils/`)       | every member                            |
+| `agent-types.ts`        | types    | —                                                                                       | every member                            |
+| `agent-fixture.ts`      | fixtures | `seededRandom` (`ui/charts/kit`)                                                        | tests and stories only                  |
 
 No new primitive and no new token.
 
