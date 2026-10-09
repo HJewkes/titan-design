@@ -215,7 +215,7 @@ export function AppShell(input: AppShellProps): react_jsx_runtime.JSX.Element;
 // @public (undocumented)
 export interface AppShellProps {
     activeKey?: string;
-    brand?: BrandKey;
+    brand: BrandKey | BrandPreset;
     children?: ReactNode;
     // (undocumented)
     className?: string;
@@ -465,7 +465,7 @@ export function BrandLockup(input: BrandLockupProps): react_jsx_runtime.JSX.Elem
 // @public (undocumented)
 export interface BrandLockupProps extends ViewProps {
     accentClassName?: string;
-    brand?: BrandKey;
+    brand: BrandKey | BrandPreset;
     // (undocumented)
     className?: string;
     mark?: ReactNode;
@@ -719,6 +719,15 @@ export interface CardSkeletonProps {
     contentLines?: number;
     hasFooter?: boolean;
     hasHeader?: boolean;
+}
+
+// @public
+export function CardStat(input: CardStatProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface CardStatProps extends ViewProps, Pick<MetricProps, 'label' | 'value' | 'unit' | 'size' | 'align' | 'tone'>, Pick<CardProps, 'variant' | 'elevation' | 'bgColor'> {
+    className?: string;
+    metricProps?: CardStatMetricProps;
 }
 
 // @public
@@ -1154,6 +1163,11 @@ export const darkThemeCSSVars: {
     readonly '--color-text-disabled': "rgba(255, 255, 255, 0.38)";
     readonly '--color-text-inverse': "#1C1916";
     readonly '--color-text-error': "#E05254";
+    readonly '--color-text-brand': "#FF7900";
+    readonly '--color-text-brand-secondary': "#22D3EE";
+    readonly '--color-text-success': "#21C05D";
+    readonly '--color-text-warning': "#F9B415";
+    readonly '--color-text-info': "#78C2FF";
     readonly '--color-text-link': "#78C2FF";
     readonly '--color-surface-base': "#252321";
     readonly '--color-surface-elevated': "#2C2A28";
@@ -1281,6 +1295,8 @@ export function DateSeparator(input: DateSeparatorProps): react_jsx_runtime.JSX.
 
 // @public
 export interface DateSeparatorLabels {
+    hideTimes: string;
+    showTimes: string;
     today: string;
     yesterday: string;
 }
@@ -1292,8 +1308,10 @@ export interface DateSeparatorProps {
     date: string | Date | number;
     labels?: Partial<DateSeparatorLabels>;
     now?: string | Date | number;
+    onPress?: () => void;
     showDay?: boolean;
     showTime?: boolean;
+    timesShown?: boolean;
 }
 
 // @public
@@ -1615,6 +1633,7 @@ export interface EmptyStateProps extends ViewProps {
         size?: number;
         className?: string;
     }>;
+    isIconBare?: boolean;
     title: string;
 }
 
@@ -2255,6 +2274,11 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly 'text-inverse': "#FFFFFF";
     readonly 'text-error': "#A4221C";
+    readonly 'text-brand': "#983804";
+    readonly 'text-brand-secondary': "#2A617F";
+    readonly 'text-success': "#2B6B25";
+    readonly 'text-warning': "#814D14";
+    readonly 'text-info': "#135AA8";
     readonly 'text-link': "#135AA8";
     readonly 'text-link-hover': "#135AA8";
     readonly 'surface-base': "#FFFFFF";
@@ -2405,6 +2429,11 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'text-disabled': "rgba(255, 255, 255, 0.38)";
     readonly 'text-inverse': "#1C1916";
     readonly 'text-error': "#E05254";
+    readonly 'text-brand': "#FF7900";
+    readonly 'text-brand-secondary': "#22D3EE";
+    readonly 'text-success': "#21C05D";
+    readonly 'text-warning': "#F9B415";
+    readonly 'text-info': "#78C2FF";
     readonly 'text-link': "#78C2FF";
     readonly 'text-link-hover': "#3CA8FF";
     readonly 'surface-base': "#252321";
@@ -2516,6 +2545,11 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly '--color-text-inverse': "#FFFFFF";
     readonly '--color-text-error': "#A4221C";
+    readonly '--color-text-brand': "#983804";
+    readonly '--color-text-brand-secondary': "#2A617F";
+    readonly '--color-text-success': "#2B6B25";
+    readonly '--color-text-warning': "#814D14";
+    readonly '--color-text-info': "#135AA8";
     readonly '--color-text-link': "#135AA8";
     readonly '--color-surface-base': "#FFFFFF";
     readonly '--color-surface-elevated': "#F9F6F3";
@@ -2684,6 +2718,11 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-text-disabled': "rgba(255, 255, 255, 0.38)";
     readonly '--color-text-inverse': "#1C1916";
     readonly '--color-text-error': "#E05254";
+    readonly '--color-text-brand': "#FF7900";
+    readonly '--color-text-brand-secondary': "#22D3EE";
+    readonly '--color-text-success': "#21C05D";
+    readonly '--color-text-warning': "#F9B415";
+    readonly '--color-text-info': "#78C2FF";
     readonly '--color-text-link': "#78C2FF";
     readonly '--color-surface-base': "#252321";
     readonly '--color-surface-elevated': "#2C2A28";
@@ -3909,6 +3948,11 @@ export const lightThemeCSSVars: {
     readonly '--color-text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly '--color-text-inverse': "#FFFFFF";
     readonly '--color-text-error': "#A4221C";
+    readonly '--color-text-brand': "#983804";
+    readonly '--color-text-brand-secondary': "#2A617F";
+    readonly '--color-text-success': "#2B6B25";
+    readonly '--color-text-warning': "#814D14";
+    readonly '--color-text-info': "#135AA8";
     readonly '--color-text-link': "#135AA8";
     readonly '--color-surface-base': "#FFFFFF";
     readonly '--color-surface-elevated': "#F9F6F3";
@@ -4536,6 +4580,9 @@ export interface MetricGroupProps extends ViewProps {
     className?: string;
 }
 
+// @public
+export type MetricLabelPosition = 'above' | 'below';
+
 // @public (undocumented)
 export interface MetricProps extends ViewProps {
     align?: MetricAlign;
@@ -4544,6 +4591,7 @@ export interface MetricProps extends ViewProps {
     // (undocumented)
     label: string;
     labelClassName?: string;
+    labelPosition?: MetricLabelPosition;
     // (undocumented)
     size?: 'sm' | 'md' | 'lg';
     tone?: MetricTone;
@@ -4554,6 +4602,7 @@ export interface MetricProps extends ViewProps {
     // (undocumented)
     value: string;
     valueClassName?: string;
+    valueStyle?: StyleProp<TextStyle>;
 }
 
 // @public (undocumented)
@@ -5763,6 +5812,9 @@ export interface RepVelocityCurve {
 export function resolveActualWeek(actual: GoalActualPoint, weeks: GoalTrajectoryWeek[]): number | undefined;
 
 // @public
+export function resolveBrand(brand: BrandKey | BrandPreset): BrandPreset;
+
+// @public
 export function resolveColor(token: ColorToken$1, mode?: ThemeMode): string;
 
 // @public (undocumented)
@@ -6164,6 +6216,11 @@ export const semanticColorsDark: {
     readonly 'text-disabled': "rgba(255, 255, 255, 0.38)";
     readonly 'text-inverse': "#1C1916";
     readonly 'text-error': "#E05254";
+    readonly 'text-brand': "#FF7900";
+    readonly 'text-brand-secondary': "#22D3EE";
+    readonly 'text-success': "#21C05D";
+    readonly 'text-warning': "#F9B415";
+    readonly 'text-info': "#78C2FF";
     readonly 'text-link': "#78C2FF";
     readonly 'text-link-hover': "#3CA8FF";
     readonly 'surface-base': "#252321";
@@ -6317,6 +6374,11 @@ export const semanticColorsLight: {
     readonly 'text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly 'text-inverse': "#FFFFFF";
     readonly 'text-error': "#A4221C";
+    readonly 'text-brand': "#983804";
+    readonly 'text-brand-secondary': "#2A617F";
+    readonly 'text-success': "#2B6B25";
+    readonly 'text-warning': "#814D14";
+    readonly 'text-info': "#135AA8";
     readonly 'text-link': "#135AA8";
     readonly 'text-link-hover': "#135AA8";
     readonly 'surface-base': "#FFFFFF";
@@ -7631,6 +7693,7 @@ export interface TabPanelsProps {
     children?: React__default.ReactNode;
     // (undocumented)
     className?: string;
+    fill?: boolean;
 }
 
 // @public (undocumented)
@@ -8071,6 +8134,7 @@ export interface TileProps extends ViewProps {
     className?: string;
     label: string;
     value: string;
+    // @deprecated
     valueColor?: string;
 }
 
@@ -8239,7 +8303,7 @@ export function TopBar(input: TopBarProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
 export interface TopBarProps {
-    brand?: BrandKey;
+    brand: BrandKey | BrandPreset;
     // (undocumented)
     className?: string;
     leading?: ReactNode;

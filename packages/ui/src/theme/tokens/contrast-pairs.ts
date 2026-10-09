@@ -63,11 +63,24 @@ const TEXT_FLOORS = {
   'text-link-hover': AA,
 } as const
 
+// Declared on the four content planes only; background-frame is a page backdrop no text token here sits on.
+const TONE_TEXT = [
+  'text-brand',
+  'text-brand-secondary',
+  'text-success',
+  'text-warning',
+  'text-info',
+] as const
+
 const TONES = ['success', 'error', 'warning', 'info'] as const
 const BRANDS = ['primary', 'secondary'] as const
 
 const textOnPlanes: ContrastPair[] = Object.entries(TEXT_FLOORS).flatMap(([fg, floor]) =>
   TEXT_PLANES.map((bg) => ({ fg, bg, floor, modes: BOTH }))
+)
+
+const toneTextOnPlanes: ContrastPair[] = TONE_TEXT.flatMap((fg) =>
+  CONTENT_PLANES.map((bg) => ({ fg, bg, floor: AA, modes: BOTH }))
 )
 
 // Components still draw error text in status-error until TD-249 moves them onto
@@ -108,6 +121,7 @@ const labelsOnOtherFills: ContrastPair[] = [
 
 export const CONTRAST_PAIRS: readonly ContrastPair[] = [
   ...textOnPlanes,
+  ...toneTextOnPlanes,
   ...statusErrorText,
   ...labelsOnSolidFills,
   ...labelsOnSubtleFills,

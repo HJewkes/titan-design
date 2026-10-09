@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client'
 import 'virtual:titan-tokens.css'
-import type { Manifest } from '../src/schema.ts'
+import type { Manifest } from '@titan-design/review-schema'
 import { App } from './App.tsx'
 import './styles.css'
 

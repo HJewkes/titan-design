@@ -3,6 +3,9 @@ import { spacingClassesAt, spacingClassesOf, resolveAll } from '../../../test/sp
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { RestTimer } from './RestTimer'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { alpha } from '../../../utils/colors'
+import { Surface } from '../../ui/surface'
 
 const defaultProps = {
   totalSeconds: 150,
@@ -275,5 +278,17 @@ describe('RestTimer geometry resolves to the spacing tokens', () => {
     render(<RestTimer {...defaultProps} variant="ring" />)
     expect(spacingClassesOf('rest-timer')).toEqual(['gap-stack-lg'])
     expect(resolveAll(['gap-stack-lg'])).toEqual(['16px'])
+  })
+})
+
+describe('RestTimer on a light surface', () => {
+  it('washes the +30s face with the light hairline-subtle token', () => {
+    const wash = alpha(getSemanticColors('light')['hairline-subtle'], 0.06)
+    render(
+      <Surface theme="light">
+        <RestTimer {...defaultProps} />
+      </Surface>
+    )
+    expect(screen.getByTestId('rest-timer-add-time')).toHaveStyle({ backgroundColor: wash })
   })
 })

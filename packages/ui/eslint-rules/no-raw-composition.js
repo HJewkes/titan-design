@@ -23,6 +23,7 @@
  */
 
 const path = require('node:path')
+const { loadBaseline, baselineKey } = require('./ratchet')
 
 const D3_SPECIFIER = /^d3(-[a-z0-9-]+)?(\/.*)?$/
 
@@ -124,23 +125,6 @@ function scopeOf(srcRelative) {
     button: inComponents && !isTestOrStory(srcRelative),
     d3: !inCharts,
     path: !inCharts && !isTestOrStory(srcRelative),
-  }
-}
-
-/** Baseline keys are package-relative POSIX paths, so they're stable across machines. */
-function baselineKey(context) {
-  const cwd = context.cwd ?? context.getCwd?.() ?? process.cwd()
-  return path
-    .relative(cwd, context.filename ?? context.getFilename())
-    .split(path.sep)
-    .join('/')
-}
-
-function loadBaseline() {
-  try {
-    return require('./composition-baseline.json')
-  } catch {
-    return {}
   }
 }
 
@@ -257,8 +241,6 @@ function createRule(getBaseline) {
   }
 }
 
-let baselineCache = null
-
 /** @type {import('eslint').Rule.RuleModule & { withBaseline: (baseline: object) => import('eslint').Rule.RuleModule }} */
-module.exports = createRule(() => (baselineCache ??= loadBaseline()))
+module.exports = createRule(() => loadBaseline('composition-baseline.json'))
 module.exports.withBaseline = (baseline) => createRule(() => baseline)

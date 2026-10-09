@@ -74,6 +74,28 @@ function describePairs(observed: PairCounts, baselined: PairCounts, pairs: strin
     .join(', ')
 }
 
+export const WIDTH_MATRIX_TAG = 'width-matrix'
+
+/**
+ * A `width-matrix` story renders its component in every width frame, so each miss its sibling
+ * Default already baselines would count once per frame against a baseline of 0. The pairs the
+ * sibling's baseline entry carries (any count) are dropped from the Widths story's counts; a pair
+ * the sibling lacks stays. Without a sibling Default or a baseline entry for it, nothing is dropped.
+ */
+export function withoutSiblingPairs(
+  storyId: string,
+  tags: readonly string[] | undefined,
+  theme: ContrastTheme,
+  observed: PairCounts,
+  baseline: ContrastBaseline
+): PairCounts {
+  const separator = storyId.indexOf('--')
+  if (!tags?.includes(WIDTH_MATRIX_TAG) || separator < 0) return observed
+  const sibling = baseline[baselineKey(`${storyId.slice(0, separator)}--default`, theme)]
+  if (!sibling) return observed
+  return Object.fromEntries(Object.entries(observed).filter(([pair]) => !(pair in sibling)))
+}
+
 /** Why `observed` does not match the baseline entry, one problem per direction; empty when it does. */
 export function contrastProblems(
   key: string,

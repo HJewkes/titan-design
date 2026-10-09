@@ -1284,6 +1284,13 @@
           "type": "string | number | Date"
         },
         {
+          "default": null,
+          "description": "Makes the separator a button that toggles message times; the keyboard and tap route to them.",
+          "name": "onPress",
+          "required": false,
+          "type": "(() => void)"
+        },
+        {
           "default": "true",
           "description": "Name the day.",
           "name": "showDay",
@@ -1294,6 +1301,13 @@
           "default": "false",
           "description": "Add the clock time, as Messages does when it opens a day or follows a long pause.",
           "name": "showTime",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "false",
+          "description": "Whether message times are showing, which names the button's action and its state.",
+          "name": "timesShown",
           "required": false,
           "type": "boolean"
         }
@@ -6651,7 +6665,7 @@
           "type": "number"
         },
         {
-          "default": "primitiveRamps.green[500]",
+          "default": null,
           "description": "Overlay-marker colour.",
           "name": "markerColor",
           "required": false,
@@ -9057,11 +9071,11 @@
           "type": "string"
         },
         {
-          "default": "voltras",
-          "description": "Which app identity the default {@link TopBar} and nav accent render.",
+          "default": null,
+          "description": "Which app identity the default {@link TopBar} and nav accent render: a registry key or the app's own preset.",
           "name": "brand",
-          "required": false,
-          "type": "BrandKey"
+          "required": true,
+          "type": "BrandKey | BrandPreset"
         },
         {
           "default": null,
@@ -9165,11 +9179,11 @@
           "type": "string"
         },
         {
-          "default": "voltras",
-          "description": "Which app's identity to render.",
+          "default": null,
+          "description": "Which app's identity to render: a registry key, or the app's own preset.",
           "name": "brand",
-          "required": false,
-          "type": "BrandKey"
+          "required": true,
+          "type": "BrandKey | BrandPreset"
         },
         {
           "default": null,
@@ -9238,14 +9252,14 @@
         },
         {
           "default": "text-brand-primary",
-          "description": "Semantic `text-*` token for the active glyph and label.",
+          "description": "Semantic `text-*` token for the active glyph (a non-text mark).",
           "name": "accentClassName",
           "required": false,
           "type": "string"
         },
         {
           "default": "false",
-          "description": "Active category → left accent bar + accent-colored glyph & label.",
+          "description": "Active category → left accent bar + accent-colored glyph, label on `text-primary`.",
           "name": "active",
           "required": false,
           "type": "boolean"
@@ -9323,7 +9337,7 @@
         },
         {
           "default": null,
-          "description": "Semantic `text-*` token for the active item.",
+          "description": "Semantic `text-*` token for the active item's glyph.",
           "name": "accentClassName",
           "required": false,
           "type": "string"
@@ -9396,11 +9410,11 @@
       "name": "TopBar",
       "props": [
         {
-          "default": "voltras",
+          "default": null,
           "description": "Which app identity the default {@link BrandLockup} renders.",
           "name": "brand",
-          "required": false,
-          "type": "BrandKey"
+          "required": true,
+          "type": "BrandKey | BrandPreset"
         },
         {
           "default": null,
@@ -9482,7 +9496,7 @@
         },
         {
           "default": "Devices",
-          "description": "Accessible label (names the glyph / the wrapping trigger button).",
+          "description": "Accessible label (names the glyph / the wrapping trigger button); the state word is appended.",
           "name": "label",
           "required": false,
           "type": "string"
@@ -10740,10 +10754,107 @@
         "components-molecules-card--outline",
         "components-molecules-card--simple-card",
         "components-molecules-card--skeleton",
+        "components-molecules-card--stat",
         "components-molecules-card--status-filled-cards",
         "components-molecules-card--status-outline-cards"
       ],
       "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Card",
+        "Metric"
+      ],
+      "family": "ui/card",
+      "file": "packages/ui/src/components/ui/card/CardStat.tsx",
+      "name": "CardStat",
+      "props": [
+        {
+          "default": "center",
+          "description": "Aligns the figure and label to the start, centre or end of the column.",
+          "name": "align",
+          "required": false,
+          "type": "MetricAlign"
+        },
+        {
+          "default": null,
+          "description": "Custom background color.",
+          "name": "bgColor",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Merged onto the card.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "1",
+          "description": "Planes to lift above the enclosing Surface (default 2: page → the card plane).",
+          "name": "elevation",
+          "required": false,
+          "type": "CardElevation"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "label",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Passed to the inner Metric.",
+          "name": "metricProps",
+          "required": false,
+          "type": "CardStatMetricProps"
+        },
+        {
+          "default": "sm",
+          "description": "",
+          "name": "size",
+          "required": false,
+          "type": "\"sm\" | \"md\" | \"lg\""
+        },
+        {
+          "default": null,
+          "description": "Colours the value from a semantic token.",
+          "name": "tone",
+          "required": false,
+          "type": "MetricTone"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "unit",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "value",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": "filled",
+          "description": "How the card separates from its host: - `elevated` (default): lifts `elevation` planes and wears the lift (rim + shadow).",
+          "name": "variant",
+          "required": false,
+          "type": "CardVariant"
+        }
+      ],
+      "purpose": "The Card stat preset: one labelled figure on a card plane (roadmap decision 1).",
+      "sources": {
+        "props": "packages/ui/src/components/ui/card/CardStat.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "organism"
     },
     {
       "composes": [
@@ -11018,7 +11129,7 @@
           "description": "",
           "name": "colors",
           "required": true,
-          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 144 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
+          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 149 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
         },
         {
           "default": null,
@@ -11055,7 +11166,7 @@
           "description": "",
           "name": "colors",
           "required": true,
-          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 144 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
+          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 149 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
         },
         {
           "default": null,
@@ -11865,6 +11976,13 @@
           "type": "ComponentType<{ size?: number | undefined; className?: string | undefined; }>"
         },
         {
+          "default": "false",
+          "description": "Draw the icon bare above the title, without the rounded well behind it",
+          "name": "isIconBare",
+          "required": false,
+          "type": "boolean"
+        },
+        {
           "default": null,
           "description": "Title text",
           "name": "title",
@@ -12171,6 +12289,68 @@
       "tier": "molecule"
     },
     {
+      "composes": [
+        "Typography"
+      ],
+      "family": "ui/highlight-text",
+      "file": "packages/ui/src/components/ui/highlight-text/HighlightText.tsx",
+      "name": "HighlightText",
+      "props": [
+        {
+          "default": null,
+          "description": "Additional className for the root.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "primary",
+          "description": "Text colour; matched segments inherit it.",
+          "name": "color",
+          "required": false,
+          "type": "TypographyColor"
+        },
+        {
+          "default": null,
+          "description": "Maximum number of lines before truncating.",
+          "name": "maxLines",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Matched ranges, end exclusive.",
+          "name": "ranges",
+          "required": true,
+          "type": "readonly HighlightRange[]"
+        },
+        {
+          "default": null,
+          "description": "The full string to render.",
+          "name": "text",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": "body2",
+          "description": "Typography variant of the whole string.",
+          "name": "variant",
+          "required": false,
+          "type": "TypographyVariant"
+        }
+      ],
+      "purpose": "A string with matched ranges emphasised by weight only, so no colour pair is added.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/highlight-text/HighlightText.tsx",
+        "status": "packages/ui/src/components/ui/highlight-text/HighlightText.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-highlighttext--default"
+      ],
+      "tier": "molecule"
+    },
+    {
       "composes": [],
       "family": "ui/icon-box",
       "file": "packages/ui/src/components/ui/icon-box/IconBox.tsx",
@@ -12434,6 +12614,54 @@
       "tier": "atom"
     },
     {
+      "composes": [
+        "Typography"
+      ],
+      "family": "ui/kbd",
+      "file": "packages/ui/src/components/ui/kbd/Kbd.tsx",
+      "name": "Kbd",
+      "props": [
+        {
+          "default": null,
+          "description": "Overrides the spoken name derived from `keys`.",
+          "name": "accessibilityLabel",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Tailwind classes merged onto the root through `cn()`.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "One keycap per entry, e.g. `['⌘', 'K']`.",
+          "name": "keys",
+          "required": true,
+          "type": "string[]"
+        },
+        {
+          "default": "sm",
+          "description": "Keycap size.",
+          "name": "size",
+          "required": false,
+          "type": "KbdSize"
+        }
+      ],
+      "purpose": "Kbd — a display-only keyboard shortcut hint, one keycap per key.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/kbd/Kbd.tsx",
+        "status": "packages/ui/src/components/ui/kbd/Kbd.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-kbd--default"
+      ],
+      "tier": "molecule"
+    },
+    {
       "composes": [],
       "family": "ui/link",
       "file": "packages/ui/src/components/ui/link/Link.tsx",
@@ -12631,6 +12859,13 @@
           "type": "string"
         },
         {
+          "default": "below",
+          "description": "Puts the label above or below the figure.",
+          "name": "labelPosition",
+          "required": false,
+          "type": "MetricLabelPosition"
+        },
+        {
           "default": "md",
           "description": "",
           "name": "size",
@@ -12671,6 +12906,13 @@
           "name": "valueClassName",
           "required": false,
           "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Inline style on the value text, for a value a token class cannot express.",
+          "name": "valueStyle",
+          "required": false,
+          "type": "StyleProp<TextStyle>"
         }
       ],
       "purpose": "",
@@ -12767,6 +13009,82 @@
         "components-organisms-modal--with-form-content"
       ],
       "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Typography"
+      ],
+      "family": "ui/page",
+      "file": "packages/ui/src/components/ui/page/Page.tsx",
+      "name": "Page",
+      "props": [
+        {
+          "default": null,
+          "description": "The body.",
+          "name": "children",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Tailwind classes merged onto the root.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The padded outer column.",
+          "name": "contentClassName",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "md",
+          "description": "`md` widens from 640px and a consumer `p-*` in `contentClassName` loses to it there; pass `sm` for a fixed narrow gutter.",
+          "name": "gutter",
+          "required": false,
+          "type": "PageGutter"
+        },
+        {
+          "default": null,
+          "description": "Stacked above the body.",
+          "name": "header",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": "false",
+          "description": "true: the header sits in a ruled band that stays put while the body scrolls under it, and casts a shadow once content is under it.",
+          "name": "isHeaderPinned",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "true",
+          "description": "false: the page fills the region and the view owns its own scroll.",
+          "name": "isScrollable",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "full",
+          "description": "Caps the content column, gutters excluded.",
+          "name": "maxWidth",
+          "required": false,
+          "type": "PageMaxWidth"
+        }
+      ],
+      "purpose": "A page container for a view's content region: a gutter, an optional width cap, a header slot and a scroller.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/page/Page.tsx",
+        "status": "packages/ui/src/components/ui/page/Page.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-page--default"
+      ],
+      "tier": "page"
     },
     {
       "composes": [],
@@ -13439,7 +13757,7 @@
           "description": "",
           "name": "align",
           "required": false,
-          "type": "\"center\" | \"stretch\" | \"start\" | \"end\""
+          "type": "\"start\" | \"center\" | \"end\" | \"stretch\""
         },
         {
           "default": null,
@@ -13460,7 +13778,7 @@
           "description": "",
           "name": "justify",
           "required": false,
-          "type": "\"center\" | \"between\" | \"start\" | \"end\" | \"around\""
+          "type": "\"start\" | \"center\" | \"end\" | \"between\" | \"around\""
         },
         {
           "default": null,
@@ -13962,7 +14280,7 @@
           "description": "Text alignment",
           "name": "align",
           "required": false,
-          "type": "\"right\" | \"left\" | \"center\""
+          "type": "\"right\" | \"center\" | \"left\""
         },
         {
           "default": null,
@@ -14052,7 +14370,7 @@
           "description": "Text alignment",
           "name": "align",
           "required": false,
-          "type": "\"right\" | \"left\" | \"center\""
+          "type": "\"right\" | \"center\" | \"left\""
         },
         {
           "default": null,
@@ -14262,11 +14580,11 @@
           "description": "Content alignment within the tile (default: 'center')",
           "name": "align",
           "required": false,
-          "type": "\"center\" | \"start\""
+          "type": "\"start\" | \"center\""
         },
         {
           "default": null,
-          "description": "Additional className",
+          "description": "Additional className.",
           "name": "className",
           "required": false,
           "type": "string"
@@ -14287,13 +14605,13 @@
         },
         {
           "default": null,
-          "description": "Tints the value (status/accent hex or CSS color); defaults to primary text",
+          "description": "Tints the value (status/accent hex or CSS color); defaults to primary text.",
           "name": "valueColor",
           "required": false,
           "type": "string"
         }
       ],
-      "purpose": "Tile — a compact label-over-value stat card.",
+      "purpose": "Tile — a compact label-over-value stat, now a wrapper over the `CardStat` preset.",
       "sources": {
         "props": "packages/ui/src/components/ui/tile/Tile.tsx",
         "status": "packages/ui/src/components/ui/tile/Tile.stories.tsx"

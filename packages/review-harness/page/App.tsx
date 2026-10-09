@@ -11,7 +11,7 @@ import {
 import { buildFeedback, pendingQuestionIds } from '../src/feedback.ts'
 import { feedbackProblems } from '../src/round.ts'
 import { roundLayout, type ResolvedSection } from '../src/sections.ts'
-import type { Manifest, Question, StripKind, Variant } from '../src/schema.ts'
+import type { Manifest, Question, StripKind, Variant } from '@titan-design/review-schema'
 import { Markdown } from './Markdown.tsx'
 import { QuestionBlock } from './QuestionBlock.tsx'
 import { ReviewScreen } from './ReviewScreen.tsx'
