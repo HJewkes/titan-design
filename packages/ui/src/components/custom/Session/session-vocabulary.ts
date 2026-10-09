@@ -19,6 +19,7 @@ export interface ToolFamilyMeta {
   glyph: string
 }
 
+/** Every tool family's label and glyph. */
 export const TOOL_FAMILY_META: Record<ToolFamily, ToolFamilyMeta> = {
   fs_read: { label: 'Read files', glyph: 'R' },
   fs_write: { label: 'Write files', glyph: 'W' },
@@ -46,10 +47,13 @@ export function toolFamilyMeta(family: string): ToolFamilyMeta {
   return TOOL_FAMILY_META[isToolFamily(family) ? family : 'other_tool']
 }
 
+/** How a tool outcome reads and marks. */
 export interface ToolOutcomeMeta {
   /** Reads mid-sentence in a row's accessible name: "Read, src/a.ts, succeeded, 1.2 s". */
   label: string
+  /** The outcome dot's colour. */
   indicator: IndicatorColor
+  /** True while the outcome is still open. */
   pulse: boolean
 }
 
@@ -68,7 +72,9 @@ export function toolOutcomeMeta(outcome: string): ToolOutcomeMeta {
     : TOOL_OUTCOME_META.unknown
 }
 
+/** How a turn's opener is labelled. */
 export interface TurnOriginMeta {
+  /** Names the opener above its text. */
   label: string
 }
 

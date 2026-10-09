@@ -5,6 +5,7 @@ import { DateTime, formatDateTime } from '../../ui/date-time'
 import { Divider } from '../../ui/divider'
 import { Typography } from '../../ui/typography'
 
+/** Props for {@link GapIndicator}. */
 export interface GapIndicatorProps {
   /** The idle span. A negative or non-finite value prints the placeholder. */
   durationMs: number
@@ -12,7 +13,9 @@ export interface GapIndicatorProps {
   resumedAtMs?: number | null
   /** Set on the first gap after a day change, so the reader sees the new day. */
   showDate?: boolean
+  /** Shows the date in UTC rather than the runtime's zone. */
   isUTC?: boolean
+  /** Tailwind overrides on the row. */
   className?: string
 }
 

@@ -14,11 +14,15 @@ import {
 import type { TimelineToolCall } from './session-types'
 import { ToolBadge } from './ToolBadge'
 
+/** Props for {@link ToolCallRow}. */
 export interface ToolCallRowProps {
+  /** The call to draw. */
   call: TimelineToolCall
+  /** Shows the time stamp in UTC rather than the runtime's zone. */
   isUTC?: boolean
   /** Makes the row a button. The error disclosure stays a separate control beside it. */
   onPress?: (call: TimelineToolCall) => void
+  /** Tailwind overrides on the row. */
   className?: string
 }
 

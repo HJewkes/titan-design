@@ -51,24 +51,35 @@ export interface TimelineMessage {
   byteOffset: number
 }
 
+/** One tool call, with its result once it arrived. */
 export interface TimelineToolCall {
   /** The harness's own call id, unique within the session. */
   id: string
+  /** Source order across the whole session. */
   seq: number
+  /** The `index` of the turn that holds the call. */
   turnIndex: number
+  /** The tool name as the harness reported it; may be empty. */
   name: string
+  /** The cost-audit family of `name`. */
   family: ToolFamily
+  /** When the call was made, epoch ms; null when the source gave no time. */
   atMs: number | null
   /** When the result arrived; null while pending. */
   endMs: number | null
   /** Observed call-to-result span, not harness execution time. */
   durationMs: number | null
+  /** What the result said; `pending` until one arrives. */
   outcome: TimelineToolOutcome
+  /** The failing result text; null unless the call failed. */
   errorMessage: string | null
   /** One line naming what the call acted on: a path, a command, a pattern or a description. */
   inputSummary: string
+  /** The file a read or write call touched, else null. */
   filePath: string | null
+  /** True for a call a subagent made. */
   sidechain: boolean
+  /** Offset of the transcript line, for reading the full record. */
   byteOffset: number
 }
 

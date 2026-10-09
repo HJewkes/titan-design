@@ -21,9 +21,6 @@ export {
 export type {
   TimelineToolCall,
   TimelineToolOutcome,
-  TimelineTurn,
   TimelineTurnOrigin,
-  TimelineMessage,
-  TimelineTokens,
   ToolFamily,
 } from './session-types'

@@ -836,6 +836,12 @@ export const categoricalPalette: {
 export type CategoricalVariant = keyof typeof categoricalPalette;
 
 // @public
+export const CHANNEL_MARKER = "channel";
+
+// @public
+export const CHANNEL_OPENER_META: TurnOriginMeta;
+
+// @public
 export function ChartIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -1678,6 +1684,9 @@ export interface EmptyStateProps extends ViewProps {
 export function EqualIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
+export const ERROR_TEXT_LABEL = "Error text";
+
+// @public
 export function ExactTime(input: {
     session: SessionSummary;
 }): react_jsx_runtime.JSX.Element;
@@ -2145,6 +2154,18 @@ export interface FormSectionProps extends ViewProps {
     className?: string;
     description?: string;
     title?: string;
+}
+
+// @public
+export function GapIndicator(input: GapIndicatorProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface GapIndicatorProps {
+    className?: string;
+    durationMs: number;
+    isUTC?: boolean;
+    resumedAtMs?: number | null;
+    showDate?: boolean;
 }
 
 // @public
@@ -6978,6 +6999,9 @@ export interface SidebarSectionProps {
 }
 
 // @public
+export const SIDECHAIN_LABEL = "in subagent";
+
+// @public
 export function SideNav(input: SideNavProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -8178,6 +8202,30 @@ export interface TileProps extends ViewProps {
     valueColor?: string;
 }
 
+// @public
+export interface TimelineToolCall {
+    atMs: number | null;
+    byteOffset: number;
+    durationMs: number | null;
+    endMs: number | null;
+    errorMessage: string | null;
+    family: ToolFamily;
+    filePath: string | null;
+    id: string;
+    inputSummary: string;
+    name: string;
+    outcome: TimelineToolOutcome;
+    seq: number;
+    sidechain: boolean;
+    turnIndex: number;
+}
+
+// @public
+export type TimelineToolOutcome = 'success' | 'error' | 'unknown' | 'pending';
+
+// @public
+export type TimelineTurnOrigin = 'prompt' | 'injected' | 'compaction' | 'none';
+
 // @public (undocumented)
 export type TimerMode = 'up' | 'down';
 
@@ -8280,6 +8328,25 @@ export const TONE_TOKEN: {
 };
 
 // @public
+export const TOOL_FAMILY_META: Record<ToolFamily, ToolFamilyMeta>;
+
+// @public
+export const TOOL_FAMILY_ORDER: ToolFamily[];
+
+// @public
+export const TOOL_OUTCOME_META: Record<TimelineToolOutcome, ToolOutcomeMeta>;
+
+// @public
+export function ToolBadge(input: ToolBadgeProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface ToolBadgeProps {
+    className?: string;
+    family: ToolFamily | string;
+    size?: 'sm' | 'md';
+}
+
+// @public
 export function ToolbarButton(input: ToolbarButtonProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -8314,6 +8381,39 @@ export type ToolbarButtonSize = 'sm' | 'md' | 'lg';
 
 // @public (undocumented)
 export type ToolbarButtonVariant = 'default' | 'raised';
+
+// @public
+export function ToolCallRow(input: ToolCallRowProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface ToolCallRowProps {
+    call: TimelineToolCall;
+    className?: string;
+    isUTC?: boolean;
+    onPress?: (call: TimelineToolCall) => void;
+}
+
+// @public
+export type ToolFamily = 'none' | 'mcp_agentchat' | 'mcp_other' | 'fs_read' | 'bash' | 'fs_write' | 'ask_user' | 'subagent' | 'web' | 'scheduling' | 'skill_toolsearch' | 'other_tool';
+
+// @public
+export interface ToolFamilyMeta {
+    glyph: string;
+    label: string;
+}
+
+// @public
+export function toolFamilyMeta(family: string): ToolFamilyMeta;
+
+// @public
+export interface ToolOutcomeMeta {
+    indicator: IndicatorColor;
+    label: string;
+    pulse: boolean;
+}
+
+// @public
+export function toolOutcomeMeta(outcome: string): ToolOutcomeMeta;
 
 // @public
 export function Tooltip(input: TooltipProps): react_jsx_runtime.JSX.Element;
@@ -8448,6 +8548,17 @@ export function TrendingDownIcon(props: IconProps): react_jsx_runtime.JSX.Elemen
 export function TrendingUpIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
+export const TURN_ORIGIN_META: Record<TimelineTurnOrigin, TurnOriginMeta>;
+
+// @public
+export interface TurnOriginMeta {
+    label: string;
+}
+
+// @public
+export function turnOriginMeta(turn: Pick<TimelineTurn, 'origin' | 'injectedMarker'>): TurnOriginMeta;
+
+// @public
 export function TypingIndicator(input: TypingIndicatorProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -8491,6 +8602,9 @@ export interface TypographyProps extends TextProps {
 
 // @public (undocumented)
 export type TypographyVariant = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'body1' | 'body2' | 'subtitle1' | 'subtitle2' | 'caption' | 'overline' | 'button' | 'mono' | 'monoLabel' | 'microLabel' | 'boldLabel';
+
+// @public
+export const UNNAMED_TOOL_LABEL = "Unnamed tool";
 
 // @public
 export function UnreadBadge(input: UnreadBadgeProps): react_jsx_runtime.JSX.Element | null;

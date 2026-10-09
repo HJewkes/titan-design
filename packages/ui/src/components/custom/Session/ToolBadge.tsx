@@ -4,10 +4,13 @@ import { Pill } from '../../ui/pill'
 import { toolFamilyMeta } from './session-vocabulary'
 import type { ToolFamily } from './session-types'
 
+/** Props for {@link ToolBadge}. */
 export interface ToolBadgeProps {
   /** A ToolFamily, or any string from a newer read model (falls back to other_tool). */
   family: ToolFamily | string
+  /** `sm` for a dense row, `md` (default) beside a label. */
   size?: 'sm' | 'md'
+  /** Tailwind overrides on the pill. */
   className?: string
 }
 
