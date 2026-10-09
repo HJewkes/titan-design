@@ -4031,6 +4031,9 @@ export interface KnowledgeListTable {
 }
 
 // @public
+export type KnowledgeMetaLayout = 'inline' | 'split';
+
+// @public
 export interface KnowledgeProblem {
     error: string;
     filename: string;
@@ -4047,6 +4050,7 @@ export interface KnowledgeReaderProps extends SessionLinkHandlers {
     document?: KnowledgeDocument;
     emptyState?: ReactNode;
     isLoading?: boolean;
+    metaLayout?: KnowledgeMetaLayout;
     now: number;
     onPressInitiative?: (initiative: string) => void;
     onPressTag?: (tag: string) => void;

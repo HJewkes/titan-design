@@ -681,6 +681,13 @@
           "type": "boolean"
         },
         {
+          "default": "inline",
+          "description": "`inline` (default): initiative, record and kind share the eyebrow line, then date and tags.",
+          "name": "metaLayout",
+          "required": false,
+          "type": "KnowledgeMetaLayout"
+        },
+        {
           "default": null,
           "description": "Reference time.",
           "name": "now",
@@ -723,14 +730,15 @@
           "type": "((id: string) => void)"
         }
       ],
-      "purpose": "KnowledgeReader — one note or source under a metadata header: the title, then one line of initiative, record, kind and date, the tags, and the file's text as markdown prose (with task ids, `[[name]]` links and PR numbers linked), as mono text, or as \"no preview\" for a file type it cannot show.",
+      "purpose": "KnowledgeReader — one note or source under a metadata header: the title, an eyebrow of initiative, record and kind (a note kind as icon + label), a line of date and tags, and the file's text as markdown prose (with task ids, `[[name]]` links and PR numbers linked), as mono text, or as \"no preview\" for a file type it cannot show.",
       "sources": {
         "props": "packages/ui/src/components/custom/ActiveWork/KnowledgeReader.tsx",
         "status": "packages/ui/src/components/custom/ActiveWork/KnowledgeReader.stories.tsx"
       },
       "status": "candidate",
       "storyIds": [
-        "custom-activework-knowledgereader--default"
+        "custom-activework-knowledgereader--default",
+        "custom-activework-knowledgereader--split-metadata"
       ],
       "tier": "organism"
     },

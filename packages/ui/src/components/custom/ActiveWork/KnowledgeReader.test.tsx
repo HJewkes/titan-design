@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { KnowledgeReader, type KnowledgeReaderProps } from './KnowledgeReader'
+import { NOTE_KINDS, NOTE_KIND_LABEL } from './knowledge-class'
 import { KNOWLEDGE_NOW } from './knowledge-fixture'
 import {
   DOCUMENT_BINARY,
@@ -17,17 +18,60 @@ const renderReader = (props: Partial<KnowledgeReaderProps> = {}) =>
   render(<KnowledgeReader document={NOTE_DOCUMENT} now={KNOWLEDGE_NOW} {...props} />)
 
 describe('KnowledgeReader', () => {
-  it('shows the title, then initiative, record, kind, date and tags', () => {
+  it('orders the header: title, then the eyebrow, then date and tags on one line', () => {
     renderReader()
-    expect(screen.getByRole('region', { name: NOTE_DOCUMENT.item.title })).toBeInTheDocument()
-    const meta = within(screen.getByTestId('knowledge-meta'))
-    expect(meta.getByText('garden')).toBeInTheDocument()
-    expect(meta.getByText('Note')).toBeInTheDocument()
-    expect(meta.getByText('Gotcha')).toBeInTheDocument()
-    expect(meta.getByText('Sep 28, 2026')).toBeInTheDocument()
-    expect(
-      within(screen.getByTestId('knowledge-tags')).getAllByText(/soil|water|beds/)
-    ).toHaveLength(3)
+    const title = screen.getByText(NOTE_DOCUMENT.item.title)
+    const eyebrow = screen.getByTestId('knowledge-meta')
+    const dateTags = screen.getByTestId('knowledge-date-tags')
+    const follows = (a: Node, b: Node) =>
+      Boolean(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING)
+    expect(follows(title, eyebrow)).toBe(true)
+    expect(follows(eyebrow, dateTags)).toBe(true)
+    expect(within(eyebrow).getByText('garden')).toBeInTheDocument()
+    expect(within(eyebrow).getByText('Note')).toBeInTheDocument()
+    expect(within(dateTags).getByText('Sep 28, 2026')).toBeInTheDocument()
+    expect(within(dateTags).getAllByText(/soil|water|beds/)).toHaveLength(3)
+    expect(within(eyebrow).queryByText('Sep 28, 2026')).toBeNull()
+  })
+
+  it('shows a note kind as an icon and a label, not a pill', () => {
+    renderReader()
+    const kind = screen.getByTestId('knowledge-kind')
+    expect(kind).toHaveTextContent('Gotcha')
+    expect(kind.querySelector('svg')).not.toBeNull()
+    expect(within(screen.getByTestId('knowledge-meta')).queryByText('Note')).not.toBe(kind)
+  })
+
+  it('gives every note kind its own icon', () => {
+    const paths = NOTE_KINDS.map((noteKind) => {
+      const item = { ...NOTE_DOCUMENT.item, noteKind }
+      const { container, unmount } = renderReader({ document: { ...NOTE_DOCUMENT, item } })
+      const svg = container.querySelector('[data-testid="knowledge-kind"] svg')!
+      const html = svg.innerHTML
+      expect(screen.getByTestId('knowledge-kind')).toHaveTextContent(NOTE_KIND_LABEL[noteKind])
+      unmount()
+      return html
+    })
+    expect(new Set(paths).size).toBe(NOTE_KINDS.length)
+  })
+
+  it('shows a source type as its label with no icon', () => {
+    renderReader({ document: SOURCE_DOCUMENT_TABLES })
+    const kind = screen.queryByTestId('knowledge-kind')
+    if (kind) expect(kind.querySelector('svg')).toBeNull()
+    expect(within(screen.getByTestId('knowledge-meta')).getByText('Source')).toBeInTheDocument()
+  })
+
+  it('the split layout puts the date after the tags, at the right edge', () => {
+    const { unmount } = renderReader()
+    const inline = screen.getByTestId('knowledge-date-tags')
+    expect(inline.firstElementChild).not.toBe(screen.getByTestId('knowledge-tags'))
+    unmount()
+    renderReader({ metaLayout: 'split' })
+    const dateTags = screen.getByTestId('knowledge-date-tags')
+    expect(dateTags.firstElementChild).toBe(screen.getByTestId('knowledge-tags'))
+    expect(dateTags.lastElementChild).toHaveTextContent('Sep 28, 2026')
+    expect(within(screen.getByTestId('knowledge-meta')).getByText('Gotcha')).toBeInTheDocument()
   })
 
   it('does not print the title twice', () => {
@@ -135,6 +179,7 @@ describe('KnowledgeReader', () => {
   describe('accessibility', () => {
     const cases: Array<[string, Partial<KnowledgeReaderProps>]> = [
       ['document', { onPressInitiative: () => {}, onPressTag: () => {} }],
+      ['split layout', { metaLayout: 'split' }],
       ['tables', { document: SOURCE_DOCUMENT_TABLES }],
       ['loading', { isLoading: true }],
       ['nothing selected', { document: undefined }],

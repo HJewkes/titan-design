@@ -5,19 +5,17 @@ import { cn } from '../../../utils/cn'
 import { formatBytes } from '../../../utils/number-format'
 import { Alert, AlertDescription, AlertTitle } from '../../ui/alert'
 import { Card } from '../../ui/card'
-import { DateTime } from '../../ui/date-time'
 import { Divider } from '../../ui/divider'
 import { EmptyState } from '../../ui/empty-state'
-import { Link } from '../../ui/link'
-import { Pill } from '../../ui/pill'
 import { Skeleton } from '../../ui/skeleton'
 import { Typography } from '../../ui/typography'
 import { MarkdownProse, type ProseLinker } from '../Prose'
-import { KNOWLEDGE_CLASS_META, NOTE_KIND_LABEL, SOURCE_TYPE_LABEL } from './knowledge-class'
 import { knowledgeBodyFormat, type KnowledgeDocument } from './knowledge-document'
-import type { KnowledgeItem } from './knowledge-filters'
+import { KnowledgeReaderMeta, type KnowledgeMetaLayout } from './KnowledgeReaderMeta'
 import { sessionLinkers, type SessionLinkHandlers } from './session-linkers'
 import { stripLeadingHeading } from './SessionDetail'
+
+export type { KnowledgeMetaLayout }
 
 /** Props for {@link KnowledgeReader}. */
 export interface KnowledgeReaderProps extends SessionLinkHandlers {
@@ -33,95 +31,15 @@ export interface KnowledgeReaderProps extends SessionLinkHandlers {
   onPressTag?: (tag: string) => void
   /** Header actions, right of the title. */
   actions?: ReactNode
+  /**
+   * `inline` (default): initiative, record and kind share the eyebrow line, then date and tags.
+   * `split`: record and kind sit at the right edge of the eyebrow, and the date at the right of the tags.
+   */
+  metaLayout?: KnowledgeMetaLayout
   /** Replaces the default "nothing selected" state. */
   emptyState?: ReactNode
   /** Tailwind overrides for the card. */
   className?: string
-}
-
-function recordLabel(item: KnowledgeItem): string {
-  if (item.record === 'note') return KNOWLEDGE_CLASS_META.note.label
-  return KNOWLEDGE_CLASS_META[item.isNested ? 'nested_source' : 'source'].label
-}
-
-function kindLabel(item: KnowledgeItem): string | undefined {
-  if (item.record === 'note') return item.noteKind && NOTE_KIND_LABEL[item.noteKind]
-  return item.sourceType && SOURCE_TYPE_LABEL[item.sourceType]
-}
-
-function InitiativeName({
-  initiative,
-  onPress,
-}: {
-  initiative: string
-  onPress?: (initiative: string) => void
-}) {
-  if (!onPress) {
-    return (
-      <Typography variant="mono" className="text-text-secondary web:break-words">
-        {initiative}
-      </Typography>
-    )
-  }
-  return (
-    <Link
-      onPress={() => onPress(initiative)}
-      color="inherit"
-      className="font-mono text-sm text-text-secondary web:break-words"
-    >
-      {initiative}
-    </Link>
-  )
-}
-
-function KnowledgeMeta({
-  item,
-  onPressInitiative,
-}: {
-  item: KnowledgeItem
-  onPressInitiative?: (initiative: string) => void
-}) {
-  const kind = kindLabel(item)
-  return (
-    <View className="flex-row flex-wrap items-center gap-2.5" testID="knowledge-meta">
-      <InitiativeName initiative={item.initiative} onPress={onPressInitiative} />
-      <Pill variant="subtle" color="default" size="xs">
-        {recordLabel(item)}
-      </Pill>
-      {kind ? (
-        <Pill variant="subtle" color="default" size="xs">
-          {kind}
-        </Pill>
-      ) : null}
-      <DateTime
-        value={item.created ?? item.mtime}
-        format="medium"
-        isUTC
-        fallback=""
-        variant="mono"
-        className="shrink-0 text-text-secondary"
-      />
-    </View>
-  )
-}
-
-function KnowledgeTags({ tags, onPress }: { tags: string[]; onPress?: (tag: string) => void }) {
-  if (tags.length === 0) return null
-  return (
-    <View className="flex-row flex-wrap items-center gap-1.5" testID="knowledge-tags">
-      {tags.map((tag) => (
-        <Pill
-          key={tag}
-          variant="subtle"
-          color="default"
-          size="xs"
-          onPress={onPress ? () => onPress(tag) : undefined}
-        >
-          {tag}
-        </Pill>
-      ))}
-    </View>
-  )
 }
 
 function TruncatedNotice({ bytes }: { bytes?: number }) {
@@ -208,8 +126,8 @@ function LoadingCard({ className }: { className?: string }) {
 }
 
 /**
- * KnowledgeReader — one note or source under a metadata header: the title, then one
- * line of initiative, record, kind and date, the tags, and the file's text as markdown
+ * KnowledgeReader — one note or source under a metadata header: the title, an eyebrow of
+ * initiative, record and kind (a note kind as icon + label), a line of date and tags, and the file's text as markdown
  * prose (with task ids, `[[name]]` links and PR numbers linked), as mono text, or as
  * "no preview" for a file type it cannot show. A truncated read says so.
  *
@@ -226,6 +144,7 @@ export function KnowledgeReader({
   onPressLink,
   onPressPr,
   actions,
+  metaLayout = 'inline',
   emptyState,
   className,
 }: KnowledgeReaderProps) {
@@ -248,8 +167,12 @@ export function KnowledgeReader({
           </Typography>
           {actions}
         </View>
-        <KnowledgeMeta item={item} onPressInitiative={onPressInitiative} />
-        <KnowledgeTags tags={item.tags ?? []} onPress={onPressTag} />
+        <KnowledgeReaderMeta
+          item={item}
+          layout={metaLayout}
+          onPressInitiative={onPressInitiative}
+          onPressTag={onPressTag}
+        />
       </View>
       <Divider />
       {document.isTruncated ? <TruncatedNotice bytes={document.bytes} /> : null}

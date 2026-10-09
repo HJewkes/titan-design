@@ -44,6 +44,7 @@ const meta: Meta<StoryArgs> = {
       mapping: DOCUMENTS,
     },
     isLoading: { control: 'boolean' },
+    metaLayout: { control: 'inline-radio', options: ['inline', 'split'] },
     now: { table: { disable: true } },
     onPressInitiative: { control: false },
     onPressTag: { control: false },
@@ -67,8 +68,9 @@ const meta: Meta<StoryArgs> = {
     docs: {
       description: {
         component:
-          '**Organism.** One note or source under a metadata header: title, then initiative, record, kind ' +
-          'and date, the tags, and the file’s text. Composes ' +
+          '**Organism.** One note or source under a metadata header: title, an eyebrow of initiative, ' +
+          'record and kind (a note kind as icon + label), date and tags on one line, and the file’s text. ' +
+          '`SplitMetadata` right-aligns the record and kind and the date, for comparison. Composes ' +
           '[Card](?path=/docs/components-molecules-card--docs), ' +
           '[Typography](?path=/docs/foundations-typography--docs), ' +
           '[Pill](?path=/docs/components-atoms-pill--docs), ' +
@@ -94,3 +96,6 @@ export default meta
 type Story = StoryObj<StoryArgs>
 
 export const Default: Story = {}
+
+/** The right-aligned variant, for comparison with `Default`: record and kind, and the date, at the right edge. */
+export const SplitMetadata: Story = { args: { metaLayout: 'split' } }
