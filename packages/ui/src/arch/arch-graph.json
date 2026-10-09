@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:a8797754054b823562b243f16ee7d4d3b72f5091e13cd95711ec0ad6b93cc4af",
+  "componentBarrelHash": "sha256:4ccab0fd30ca3ff1669a79017431004da9d52de0c2d49a56bbbecf17b1c0a24c",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -4068,6 +4068,91 @@
         "score": 2
       },
       "tier": "molecule",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "KnowledgeClassLabel",
+      "file": "packages/ui/src/components/custom/ActiveWork/KnowledgeClassLabel.tsx",
+      "dir": "custom",
+      "family": "custom/ActiveWork",
+      "exports": [
+        "KnowledgeClassLabel",
+        "KnowledgeClassLabelProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Indicator",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 1,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 61,
+        "score": 1
+      },
+      "tier": "molecule",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "KnowledgeList",
+      "file": "packages/ui/src/components/custom/ActiveWork/KnowledgeList.tsx",
+      "dir": "custom",
+      "family": "custom/ActiveWork",
+      "exports": [
+        "KnowledgeList",
+        "KnowledgeListTable",
+        "KnowledgeListSlots",
+        "KnowledgeListProps",
+        "useKnowledgeListState",
+        "useKnowledgeListState.setFilters",
+        "countLabel",
+        "ProblemsAlert",
+        "NoMatchState",
+        "KnowledgeList.resetFilters"
+      ],
+      "libDependents": 0,
+      "storyRefs": 2,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Alert",
+        "Button",
+        "EmptyState",
+        "Eyebrow",
+        "KnowledgeFilterBar",
+        "KnowledgeRow",
+        "KnowledgeTable"
+      ],
+      "leak": {
+        "rawView": 2,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 201,
+        "score": 2
+      },
+      "tier": "organism",
       "verdict": "dead",
       "deadByAssociation": false,
       "audited": "unaudited",
@@ -11044,6 +11129,42 @@
       "Typography"
     ],
     [
+      "KnowledgeClassLabel",
+      "Indicator"
+    ],
+    [
+      "KnowledgeClassLabel",
+      "Typography"
+    ],
+    [
+      "KnowledgeList",
+      "KnowledgeFilterBar"
+    ],
+    [
+      "KnowledgeList",
+      "KnowledgeRow"
+    ],
+    [
+      "KnowledgeList",
+      "KnowledgeTable"
+    ],
+    [
+      "KnowledgeList",
+      "Alert"
+    ],
+    [
+      "KnowledgeList",
+      "Button"
+    ],
+    [
+      "KnowledgeList",
+      "EmptyState"
+    ],
+    [
+      "KnowledgeList",
+      "Eyebrow"
+    ],
+    [
       "MesoStatusCard",
       "MesoStatusCard.parts"
     ],
@@ -11057,7 +11178,7 @@
     ]
   ],
   "summary": {
-    "total": 228,
+    "total": 230,
     "dead": [
       "Autocomplete",
       "Breadcrumbs",
@@ -11070,6 +11191,8 @@
       "IconBox",
       "InitiativeHeader",
       "Kbd",
+      "KnowledgeClassLabel",
+      "KnowledgeList",
       "Menu",
       "MessageList",
       "PortfolioOverview",

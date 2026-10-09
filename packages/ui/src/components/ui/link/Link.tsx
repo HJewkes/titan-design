@@ -59,6 +59,11 @@ export function Link({
     if (isDisabled) return
     onPress?.()
   }
+  // react-native-web leaves Enter on a `link` role to the browser, which only
+  // activates a real anchor; without an href this is a focusable view, so Enter is handled here.
+  const handleKeyDown = (event: { key?: string }) => {
+    if (event.key === 'Enter' && href == null) handlePress()
+  }
 
   return (
     <Pressable
@@ -66,6 +71,7 @@ export function Link({
       disabled={isDisabled}
       accessibilityRole="link"
       accessibilityHint={isExternal ? 'Opens in new window' : undefined}
+      {...{ onKeyDown: handleKeyDown }}
     >
       <Text
         className={cn(

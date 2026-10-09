@@ -1,8 +1,8 @@
 # ActiveWork — component family
 
 Presentational components for surfacing `active-work` data: initiative/task rollups (portfolio status),
-the cross-initiative task table, session logs (the session reader) and per-file mined history (the
-file-history explorer). Read-only: every component takes plain data as props and
+the cross-initiative task table, session logs (the session reader), per-file mined history (the
+file-history explorer) and durable knowledge (notes and sources, the console's knowledge page). Read-only: every component takes plain data as props and
 has no fetch/store dependency of its own — wiring to a live source (the active-work session-mining export, or
 a future API) is entirely the caller's concern. Components live flat on disk; the tiering below is a
 documentation contract, not a directory layout.
@@ -72,6 +72,17 @@ Initiative reader (no organism: the host composes the pieces)
 │  └─ MarkdownProse .............. molecule
 ├─ TaskTable ..................... organism     (embedded, hideColumns)
 └─ SessionList ................... list
+
+KnowledgeList .................... organism     (notes and sources; the reader beside it follows, TP-859b)
+├─ Eyebrow ....................... molecule     (polite live count, "N of M", undated count)
+├─ Alert ......................... (existing primitive; unreadable files)
+├─ KnowledgeFilterBar ............ internal     (query Input + date Select; facets wait for FacetBar, `slots.filterBar` replaces it)
+├─ Table (density="dense") ....... (existing primitive; useTable sort, useColumnFit drop order)
+│  └─ KnowledgeRow ............... row          (title Link, Pill record/kind, DateTime, TagPills)
+├─ TablePagination ............... (existing primitive)
+└─ EmptyState .................... (existing primitive; empty, and no match with a reset)
+
+KnowledgeClassLabel .............. molecule     (Indicator + Typography; class vocabulary owner)
 ```
 
 ## Dependency map
@@ -98,6 +109,9 @@ Initiative reader (no organism: the host composes the pieces)
 | `InitiativeBrief`        | card     | Eyebrow, Typography, MarkdownProse                                                                                           | host composition (`Custom/ActiveWork/InitiativeReader` story)       |
 | `RelatedList`            | list     | Eyebrow, Typography, Skeleton, EmptyState, RefChip                                                                           | not yet composed (console detail pages' related panel)              |
 | `RefChip`                | molecule | Pill, Link (+ `REF_KIND_META`)                                                                                               | RelatedList                                                         |
+| `KnowledgeList`          | organism | Eyebrow, Alert, Input, Select, Table, useTable, useColumnFit, TablePagination, EmptyState, Button, KnowledgeRow              | console knowledge page (TP-869)                                     |
+| `KnowledgeRow`           | row      | TableRow, TableCell, Link, Pill, DateTime, TagPills                                                                          | KnowledgeList                                                       |
+| `KnowledgeClassLabel`    | molecule | Indicator, Typography (`caption`) (+ `KNOWLEDGE_CLASS_META`)                                                                 | search row and inventory legend (TP-859c)                           |
 
 ## Surfaces and depth
 
@@ -212,6 +226,16 @@ hands the table to NetworkGraph as node kinds. A pull request's state maps on th
 already has the `{ label, tone }` shape. `RefChip` composes `Link`, so its `href` becomes a real anchor when Link
 renders one (TD-493). Contract: TD-P5 and K1, K3 of the M3 page contracts.
 
+## Knowledge class vocabulary has one owner
+
+`knowledge-class.ts` owns `KnowledgeClass`, `KNOWLEDGE_CLASS_ORDER` and `KNOWLEDGE_CLASS_META` (label, plural,
+categorical colour token), plus the note kinds and source types. `toKnowledgeClass` reads both the plural wire
+names (`notes`, `nested_sources`, the search `hit.class` form) and the singular, and returns undefined for an
+unknown class so the caller shows the raw name. Seven classes share six CVD-safe slots: `nested_source` and
+`transcript` share the sixth, because no view shows both. The list shows class and kind as neutral pills; the
+categorical dot is for the search row and the inventory legend. `knowledge-filters.ts` holds the list's view
+model (`KnowledgeItem`) and its pure filter, facet-count and de-duplication functions.
+
 ## Reuse audit
 
 | Concern            | Uses                                                  | Not                                                                                                                   |
@@ -309,6 +333,9 @@ hardening it; see TOKENS.md §6.
 - React Native's `Role` union has `'option'` but omits `'listbox'`, so `FileHistoryExplorer` casts once
   through a named `LISTBOX_ROLE` constant rather than dropping the ARIA parent. `SessionList` does the same;
   each `SessionListItem` is an `option` with `aria-selected` and an accessible name of title plus footer.
+- `KnowledgeList` is a read-only WAI-ARIA table, not a grid: sortable headers are buttons with `aria-sort`, each
+  row's title is its one link (Enter selects it), and the open row carries `aria-current`. The count above the
+  table is a polite live region, so a filter change is announced. The built-in filter row is a labelled `group`.
 - `MarkdownProse` references with a handler carry `accessibilityRole="link"`; inert ones carry no role, so
   a screen reader does not announce a link that goes nowhere.
 

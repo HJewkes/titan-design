@@ -76,6 +76,11 @@ describe('Select', () => {
     expect(clearButtons.length).toBeGreaterThan(0)
   })
 
+  it('hides the clear button when isClearable is false', () => {
+    render(<Select options={defaultOptions} value="1" isClearable={false} />)
+    expect(screen.queryByLabelText('Clear selection')).not.toBeInTheDocument()
+  })
+
   describe('multi-select', () => {
     it('renders with multi-select mode', () => {
       render(<Select options={defaultOptions} isMulti values={[]} />)

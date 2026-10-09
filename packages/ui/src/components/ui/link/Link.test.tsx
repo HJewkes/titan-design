@@ -21,6 +21,39 @@ describe('Link', () => {
     expect(onPress).toHaveBeenCalledTimes(1)
   })
 
+  it('fires onPress once on Enter, as a native link would', () => {
+    const onPress = vi.fn()
+    render(<Link onPress={onPress}>Press me</Link>)
+    const link = screen.getByRole('link')
+    fireEvent.keyDown(link, { key: 'Enter' })
+    fireEvent.keyUp(link, { key: 'Enter' })
+    expect(onPress).toHaveBeenCalledTimes(1)
+  })
+
+  it('leaves Enter to the browser when the link has an href', () => {
+    const onPress = vi.fn()
+    render(
+      <Link href="/page" onPress={onPress}>
+        Press me
+      </Link>
+    )
+    fireEvent.keyDown(screen.getByRole('link'), { key: 'Enter' })
+    expect(onPress).not.toHaveBeenCalled()
+  })
+
+  it('ignores keys other than Enter, and Enter when disabled', () => {
+    const onPress = vi.fn()
+    const { rerender } = render(<Link onPress={onPress}>Press me</Link>)
+    fireEvent.keyDown(screen.getByRole('link'), { key: ' ' })
+    rerender(
+      <Link onPress={onPress} isDisabled>
+        Press me
+      </Link>
+    )
+    fireEvent.keyDown(screen.getByRole('link'), { key: 'Enter' })
+    expect(onPress).not.toHaveBeenCalled()
+  })
+
   it('does not fire onPress when disabled', () => {
     const onPress = vi.fn()
     render(

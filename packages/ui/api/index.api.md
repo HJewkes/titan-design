@@ -1108,6 +1108,9 @@ export interface ConversationIdentityProps {
 }
 
 // @public
+export function countUndatedExcluded(items: KnowledgeItem[], filters: KnowledgeFilters, now: number): number;
+
+// @public
 export interface CssPropertyEntry {
     cssVariable?: string | null;
     property: string;
@@ -1658,6 +1661,9 @@ export type ElevationLevel = -2 | -1 | 0 | 1 | 2 | 3 | 4 | 5;
 // @public
 export function elevationPlane(level: ElevationLevel): SurfaceLevel;
 
+// @public
+export const EMPTY_KNOWLEDGE_FILTERS: KnowledgeFilters;
+
 // @public (undocumented)
 export const EMPTY_TASK_FLOW_FILTERS: TaskFlowFilters;
 
@@ -2038,6 +2044,9 @@ export interface FilePathLabelProps extends ViewProps {
 
 // @public
 export type FilePathLabelSize = 'sm' | 'md';
+
+// @public
+export function filterKnowledge(items: KnowledgeItem[], filters: KnowledgeFilters, now: number): KnowledgeItem[];
 
 // @public
 export function filterTaskFlow(tasks: TaskFlowItem[], filters: TaskFlowFilters): TaskFlowItem[];
@@ -3889,6 +3898,144 @@ export interface KbdProps {
 export type KbdSize = 'sm' | 'md';
 
 // @public
+export const KNOWLEDGE_CLASS_META: Record<KnowledgeClass, KnowledgeClassMeta>;
+
+// @public
+export const KNOWLEDGE_CLASS_ORDER: KnowledgeClass[];
+
+// @public
+export const KNOWLEDGE_COMPARATORS: {
+    title: (a: KnowledgeSortRow, b: KnowledgeSortRow) => number;
+    initiative: (a: KnowledgeSortRow, b: KnowledgeSortRow) => number;
+};
+
+// @public
+export const KNOWLEDGE_DATE_RANGE_DAYS: Record<Exclude<KnowledgeDateRange, 'all'>, number>;
+
+// @public
+export type KnowledgeClass = 'initiative' | 'note' | 'source' | 'nested_source' | 'task' | 'session' | 'transcript';
+
+// @public
+export function KnowledgeClassLabel(input: KnowledgeClassLabelProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface KnowledgeClassLabelProps {
+    className?: string;
+    dotOnly?: boolean;
+    isPlural?: boolean;
+    knowledgeClass: KnowledgeClass | (string & {});
+}
+
+// @public
+export interface KnowledgeClassMeta {
+    colorToken: ColorToken$1;
+    label: string;
+    plural: string;
+}
+
+// @public
+export type KnowledgeColumnKey = 'initiative' | 'record' | 'kind' | 'date' | 'tags';
+
+// @public
+export function knowledgeDate(item: KnowledgeItem): number | undefined;
+
+// @public
+export type KnowledgeDateRange = 'all' | '7d' | '30d' | '90d';
+
+// @public
+export interface KnowledgeFacetCounts {
+    initiatives: Record<string, number>;
+    noteKinds: Record<NoteKind, number>;
+    records: Record<KnowledgeRecord, number>;
+    sourceTypes: Record<SourceType, number>;
+}
+
+// @public
+export function knowledgeFacetCounts(items: KnowledgeItem[]): KnowledgeFacetCounts;
+
+// @public
+export interface KnowledgeFilters {
+    dateRange: KnowledgeDateRange;
+    initiatives: string[];
+    noteKinds: NoteKind[];
+    query: string;
+    records: KnowledgeRecord[];
+    sourceTypes: SourceType[];
+}
+
+// @public
+export interface KnowledgeItem {
+    created?: string;
+    id: string;
+    initiative: string;
+    isNested?: boolean;
+    mtime?: string;
+    noteKind?: NoteKind;
+    path: string;
+    record: KnowledgeRecord;
+    ref?: string;
+    sourceType?: SourceType;
+    tags?: string[];
+    title: string;
+}
+
+// @public
+export function knowledgeKind(item: KnowledgeItem): NoteKind | SourceType | undefined;
+
+// @public
+export function KnowledgeList(props: KnowledgeListProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface KnowledgeListProps {
+    className?: string;
+    defaultFilters?: KnowledgeFilters;
+    defaultSelectedId?: string;
+    filters?: KnowledgeFilters;
+    isLoading?: boolean;
+    items: KnowledgeItem[];
+    now: number;
+    onFiltersChange?: (filters: KnowledgeFilters) => void;
+    onSelectedIdChange?: (id: string | undefined) => void;
+    problems?: KnowledgeProblem[];
+    selectedId?: string;
+    slots?: KnowledgeListSlots;
+    table?: KnowledgeListTable;
+}
+
+// @public
+export interface KnowledgeListSlots {
+    emptyState?: ReactNode;
+    filterBar?: ReactNode;
+    noMatchState?: ReactNode;
+}
+
+// @public
+export interface KnowledgeListTable {
+    defaultPage?: number;
+    fitWidth?: number;
+    hideColumns?: KnowledgeColumnKey[];
+    onPageChange?: (page: number) => void;
+    page?: number;
+    pageSize?: number;
+}
+
+// @public
+export interface KnowledgeProblem {
+    error: string;
+    filename: string;
+    initiative: string;
+}
+
+// @public
+export type KnowledgeRecord = 'note' | 'source';
+
+// @public
+export interface KnowledgeSortRow extends KnowledgeItem {
+    date?: number;
+    kind?: string;
+}
+
+// @public
 export function Label(props: LabelProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -4979,6 +5126,15 @@ export interface NextTargetCoord extends GeometryPoint {
 export function normalizeLossThresholds(input?: unknown): VelocityLossThresholds;
 
 // @public
+export const NOTE_KIND_LABEL: Record<NoteKind, string>;
+
+// @public
+export const NOTE_KINDS: NoteKind[];
+
+// @public
+export type NoteKind = 'process' | 'gotcha' | 'fyi' | 'decision' | 'plan';
+
+// @public
 export function onSurfaceColors(mode: ThemeMode): Record<OnSurfaceRole, string>;
 
 // @public
@@ -5108,6 +5264,9 @@ export function Paragraph(input: ParagraphProps): react_jsx_runtime.JSX.Element;
 export interface ParagraphProps extends Omit<TypographyProps, 'variant'> {
     small?: boolean;
 }
+
+// @public
+export function parseKnowledgeDate(iso: string | undefined): number | undefined;
 
 // @public
 export function parseProseBlocks(body: string): ProseBlock[];
@@ -6237,6 +6396,7 @@ export interface SelectOption<T = string> {
 // @public (undocumented)
 export interface SelectProps<T = string> extends ViewProps {
     className?: string;
+    isClearable?: boolean;
     isDisabled?: boolean;
     isInvalid?: boolean;
     isMulti?: boolean;
@@ -6244,10 +6404,14 @@ export interface SelectProps<T = string> extends ViewProps {
     onChangeMulti?: (values: T[]) => void;
     options: SelectOption<T>[];
     placeholder?: string;
+    size?: SelectSize;
     value?: T | null;
     values?: T[];
     variant?: 'default' | 'filled';
 }
+
+// @public
+export type SelectSize = 'sm' | 'md' | 'lg';
 
 // @public (undocumented)
 export const semanticColorsDark: {
@@ -7228,6 +7392,15 @@ export function smoothPath(pts: Pt[]): string;
 
 // @public (undocumented)
 export type SortDirection = 'asc' | 'desc' | null;
+
+// @public
+export const SOURCE_TYPE_LABEL: Record<SourceType, string>;
+
+// @public
+export const SOURCE_TYPES: SourceType[];
+
+// @public
+export type SourceType = 'pr' | 'deepdive' | 'session' | 'pointer';
 
 // @public
 export const space: {
@@ -8381,6 +8554,12 @@ export interface ToastProviderProps {
 export type ToastStatus = 'success' | 'error' | 'warning' | 'info';
 
 // @public
+export function toKnowledgeClass(raw: string): KnowledgeClass | undefined;
+
+// @public
+export function toKnowledgeSortRows(items: KnowledgeItem[]): KnowledgeSortRow[];
+
+// @public
 export const TONE_TOKEN: {
     readonly ok: "status-success";
     readonly warn: "status-warning";
@@ -8599,6 +8778,9 @@ export interface TypographyProps extends TextProps {
 
 // @public (undocumented)
 export type TypographyVariant = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'body1' | 'body2' | 'subtitle1' | 'subtitle2' | 'caption' | 'overline' | 'button' | 'mono' | 'monoLabel' | 'microLabel' | 'boldLabel';
+
+// @public
+export function uniqueKnowledge(items: KnowledgeItem[]): KnowledgeItem[];
 
 // @public
 export function UnreadBadge(input: UnreadBadgeProps): react_jsx_runtime.JSX.Element | null;
