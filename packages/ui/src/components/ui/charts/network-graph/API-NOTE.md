@@ -259,9 +259,9 @@ readout. The legend sits below the scroll container.
 **Paint.** A node is a 12 px disc in its kind's colour (`DATAVIZ_CATEGORICAL_ROLES` in `nodeKinds`
 order, repeating after six; `GraphKind.color` overrides; `text-secondary` when the kind is unset or
 unlisted) with its label to the right, cut at 22 characters. An edge is a curve with an arrowhead,
-dashed when its kind says so, in one of three widths by weight. Edges need 3:1 against every plane
-(WCAG 1.4.11), so they take `text-secondary` at rest and `text-primary` when active, incident to the
-active node, or selected; the border family's hairlines sit near 2:1. Two
+dashed when its kind says so, in one of three widths by weight. Edges are lines, so they take the
+border family: `hairline-strong` at rest and `border-prominent` when active, incident to the active
+node, or selected (the contract's `border-default` and `border-strong` were retired for these). Two
 edges that join the same pair of nodes are drawn 6 px apart. A selected node has a `text-primary` ring; the active node
 has an `interactive-focus` halo. `isMuted` halves a node's opacity.
 

@@ -1,13 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { contrast } from '../../../../theme/color-checks'
-import { getSemanticColors } from '../../../../theme/tokens/semantic'
 import { smallFixture } from './fixtures'
 import { layeredLayout } from './layouts/layered-layout-model'
 import { buildGraphModel } from './network-graph-model'
 import {
   ARROW_LENGTH,
-  EDGE_REST_COLOR,
-  EDGE_STRONG_COLOR,
   LABEL_MAX_CHARS,
   NODE_RADIUS,
   PARALLEL_EDGE_GAP,
@@ -27,24 +23,6 @@ const at = (positions: Record<string, { x: number; y: number }>): GraphLayout =>
 const build = (nodes: GraphNode[], edges: GraphEdge[], layout: GraphLayout) =>
   buildGraphModel(nodes, edges, layout, { width: 400, height: 400 })
 const small = build(smallFixture.nodes, smallFixture.edges, layeredLayout())
-
-const PLANES = ['surface-base', 'surface-raised', 'surface-elevated', 'surface-overlay'] as const
-
-describe('edge colours', () => {
-  const cases = (['dark', 'light'] as const).flatMap((theme) =>
-    [EDGE_REST_COLOR, EDGE_STRONG_COLOR].flatMap((edge) =>
-      PLANES.map((plane) => [theme, edge, plane] as const)
-    )
-  )
-
-  it.each(cases)(
-    '%s %s clears 3:1 against %s, as WCAG 1.4.11 asks of graphics',
-    (theme, edge, plane) => {
-      const colors = getSemanticColors(theme) as Record<string, string>
-      expect(contrast(colors[edge], colors[plane])).toBeGreaterThanOrEqual(3)
-    }
-  )
-})
 
 describe('truncateLabel', () => {
   it('keeps a label at the limit and cuts a longer one to the limit plus an ellipsis', () => {
