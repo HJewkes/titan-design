@@ -1,6 +1,7 @@
 import { DATAVIZ_CATEGORICAL_ROLES } from '../../../../theme/extracted-colors-dataviz'
 import type { ColorToken } from '../../../../theme/resolve-color'
 import { CATEGORICAL_CVD_SAFE_MAX } from '../../../../theme/tokens/primitives'
+import { arcGeometry, arcMidpoint, arcPath, edgeSlots } from './network-graph-arc'
 import {
   binWeight,
   edgeId,
@@ -95,25 +96,50 @@ function anchors(from: GraphPoint, to: GraphPoint, offset: number) {
   }
 }
 
+/**
+ * Where the arrowhead's reference point sits. A horizontal path stops an arrowhead short of the
+ * target, so the marker starts at the path end; an arc runs to the mark's rim, so the tip sits there.
+ */
+export const arrowRefX = (shape: GraphModel['edgeShape']) => (shape === 'arc' ? ARROW_LENGTH : 0)
+
+type Curve = Pick<EdgeGeometry, 'path' | 'mid'>
+
+/** The horizontal link of the layered layout, with parallel edges spread about the centre line. */
+function horizontalCurve(from: GraphPoint, to: GraphPoint, offset: number): Curve {
+  const { start, end } = anchors(from, to, offset)
+  return { path: edgePath(start, end), mid: { x: (start.x + end.x) / 2, y: (start.y + end.y) / 2 } }
+}
+
+/** The arc of a free-form layout; parallel edges separate by their slot, not by an offset. */
+function arcCurve(from: GraphPoint, to: GraphPoint, slot: number): Curve {
+  const arc = arcGeometry(from, to, slot)
+  return {
+    path: arcPath(from, to, slot),
+    mid: arc ? arcMidpoint(arc) : { x: (from.x + to.x) / 2, y: (from.y + to.y) / 2 },
+  }
+}
+
 export function edgeGeometries(
   model: GraphModel,
   edgeKinds: readonly GraphEdgeKind[] = []
 ): EdgeGeometry[] {
   const range = weightRange(model.drawnEdges)
   const dashed = new Set(edgeKinds.filter((kind) => kind.stroke === 'dashed').map((k) => k.id))
-  const offsets = parallelOffsets(model.drawnEdges)
+  const isArc = model.edgeShape === 'arc'
+  const spread = isArc ? edgeSlots(model.drawnEdges) : parallelOffsets(model.drawnEdges)
   return model.drawnEdges.flatMap((edge) => {
     const from = model.positions[edge.source]
     const to = model.positions[edge.target]
     if (!from || !to) return []
     const id = edgeId(edge)
-    const { start, end } = anchors(from, to, offsets.get(id) ?? 0)
+    const curve = isArc
+      ? arcCurve(from, to, spread.get(id) ?? 0)
+      : horizontalCurve(from, to, spread.get(id) ?? 0)
     return [
       {
         id,
         edge,
-        path: edgePath(start, end),
-        mid: { x: (start.x + end.x) / 2, y: (start.y + end.y) / 2 },
+        ...curve,
         step: binWeight(edge.weight, range),
         isDashed: edge.kind !== undefined && dashed.has(edge.kind),
       },

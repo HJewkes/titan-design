@@ -12,7 +12,7 @@ initiatives. A chart whose prop, type or label names a domain concept lives in i
 | `treemap/`           | atom     | `Treemap`: squarified tiles sized by value on a linear, sqrt or log scale. Moved from `custom/Treemap` in M8 (TD-471).                                                                                                      |
 | `gauge/`             | atom     | `Gauge`: a segmented dial read against threshold bands. Moved from `custom/Gauge` in M8 (TD-471).                                                                                                                           |
 | `dependency-matrix/` | notes    | API note and fixtures for the planned dependency matrix; no component yet.                                                                                                                                                  |
-| `network-graph/`     | organism | `NetworkGraph`: a directed node-link graph with pressable nodes and edges, one selection, keyboard traversal and an edge pulse. See its `API-NOTE.md`. `d3-force` is imported by one file, `layouts/force-layout-model.ts`. |
+| `network-graph/`     | organism | `NetworkGraph`: a directed node-link graph with pressable nodes and edges, one selection, keyboard traversal and an edge pulse, on a layered, supplied, force, ego or clustered layout. See its `API-NOTE.md`. `d3-force` is imported by one file, `layouts/force-layout-model.ts`. |
 | `kit/`               | module   | Shared domain scales, tick rules, label thinning and entrance motion. See its README.                                                                                                                                       |
 
 ## Layouts are values

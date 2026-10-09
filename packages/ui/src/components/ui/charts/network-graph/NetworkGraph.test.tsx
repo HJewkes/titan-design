@@ -4,6 +4,7 @@ import { Text } from 'react-native'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { capturedClassNames } from '../../../../test/classname-capture'
 import {
+  groupedGroups,
   hostileFixture,
   hostilePositions,
   largeFixture,
@@ -12,10 +13,15 @@ import {
   smallFixture,
   type GraphFixture,
 } from './fixtures'
+import { clusteredLayout } from './layouts/clustered-layout-model'
+import { egoLayout } from './layouts/ego-layout-model'
+import { forceLayout } from './layouts/force-layout-model'
 import { suppliedLayout } from './layouts/supplied-layout-model'
+import { buildGraphModel } from './network-graph-model'
+import { ARROW_LENGTH } from './network-graph-plot-model'
 import { NetworkGraph } from './NetworkGraph'
 import { DIM_OPACITY } from './NetworkGraphPlot'
-import type { GraphLayout, GraphLayoutInput, NetworkGraphProps } from './types'
+import type { GraphLayout, GraphLayoutInput, GraphPoint, NetworkGraphProps } from './types'
 import { PULSE_MS } from './useNetworkGraph'
 
 const SPAWN_TO_WORKER_01 = 'lead-01->worker-01:spawn'
@@ -611,4 +617,222 @@ describe('NetworkGraph layout prop', () => {
     renderGraph({ layout })
     expect(screen.getAllByTestId(/^network-graph-node-/)).toHaveLength(5)
   })
+})
+
+const grouped = networkGraphFixtures['Grouped (40)']
+const clustered = () => clusteredLayout({ groups: groupedGroups })
+const ego = (hops = 2) => egoLayout({ focusId: grouped.focusId ?? null, hops })
+
+/** Four nodes in two tight pairs: each left node's label runs into the right node's mark. */
+const TIGHT_POSITIONS: Record<string, GraphPoint> = {
+  'alpha-01': { x: 50, y: 50 },
+  'alpha-02': { x: 100, y: 50 },
+  'alpha-03': { x: 50, y: 150 },
+  'alpha-04': { x: 100, y: 150 },
+}
+const tightLayout: GraphLayout = {
+  key: 'tight',
+  compute: () => ({
+    positions: TIGHT_POSITIONS,
+    order: Object.keys(TIGHT_POSITIONS),
+    width: 400,
+    height: 300,
+    labelMode: 'declutter',
+  }),
+}
+const tightFixture: GraphFixture = {
+  nodes: Object.keys(TIGHT_POSITIONS).map((id) => ({ id, label: id, kind: 'worker' })),
+  edges: [{ source: 'alpha-01', target: 'alpha-02', kind: 'spawn' }],
+  nodeKinds: smallFixture.nodeKinds,
+  edgeKinds: smallFixture.edgeKinds,
+  layout: tightLayout,
+}
+
+describe('NetworkGraph free-form layouts', () => {
+  it.each([
+    ['force', forceLayout()],
+    ['ego', ego()],
+    ['clustered', clustered()],
+  ])(
+    '%s renders one node element per placed node and one arc per drawn edge on Grouped (40)',
+    (_, layout) => {
+      const model = buildGraphModel(grouped.nodes, grouped.edges, layout, {
+        width: 720,
+        height: 420,
+      })
+      const { container } = renderGraph({ layout }, grouped)
+      expect(model.order.length).toBeGreaterThan(0)
+      expect(screen.getAllByTestId(/^network-graph-node-/)).toHaveLength(model.order.length)
+      expect(container.querySelectorAll('g[data-node]')).toHaveLength(model.order.length)
+      const paths = [...container.querySelectorAll('path[data-edge]')]
+      expect(paths).toHaveLength(model.drawnEdges.length)
+      expect(container.querySelectorAll('path[role="button"]')).toHaveLength(paths.length)
+      expect(paths.every((path) => /^M[^Q]+Q/.test(path.getAttribute('d') ?? ''))).toBe(true)
+      expect(container.querySelector('marker')).toHaveAttribute('refX', String(ARROW_LENGTH))
+    }
+  )
+
+  it('force and clustered draw all 40 nodes and 53 edges; the layered layout keeps straight links', () => {
+    const { container, update } = renderGraph({ layout: forceLayout() }, grouped)
+    expect(screen.getAllByTestId(/^network-graph-node-/)).toHaveLength(40)
+    expect(container.querySelectorAll('path[data-edge]')).toHaveLength(53)
+    update({ layout: clustered() })
+    expect(screen.getAllByTestId(/^network-graph-node-/)).toHaveLength(40)
+    expect(container.querySelectorAll('path[data-edge]')).toHaveLength(53)
+    update({ layout: undefined })
+    const first = container.querySelector('path[data-edge]')?.getAttribute('d') ?? ''
+    expect(first).toMatch(/^M.*C/)
+    expect(container.querySelector('marker')).toHaveAttribute('refX', '0')
+  })
+
+  it('ego does not render nodes beyond hops and the name says "showing n of m"', () => {
+    const fixture = networkGraphFixtures['Two components']
+    const { container } = renderGraph(
+      { layout: egoLayout({ focusId: 'alpha-01', hops: 1 }) },
+      fixture
+    )
+    expect(screen.getAllByTestId(/^network-graph-node-/).map((el) => el.dataset.testid)).toEqual([
+      'network-graph-node-alpha-01',
+      'network-graph-node-alpha-02',
+      'network-graph-node-alpha-05',
+    ])
+    expect(screen.queryByTestId('network-graph-node-alpha-03')).toBeNull()
+    expect(container.querySelectorAll('g[data-node]')).toHaveLength(3)
+    expect(root()).toHaveAccessibleName(/Focus alpha-01: 1 hop 2\..*Showing 3 of 16 nodes/)
+    expect(nodeButton('alpha-01')).toHaveAccessibleName(/^alpha-01, Worker, focus, /)
+    expect(nodeButton('alpha-05')).toHaveAccessibleName(/^alpha-05, Worker, 1 hop, /)
+  })
+
+  it('ego paints one dashed ring per hop beyond the focus, hidden from assistive tech', () => {
+    const { container } = renderGraph({ layout: ego() }, grouped)
+    const rings = [...container.querySelectorAll('circle[data-variant="ring"]')]
+    expect(rings.map((ring) => ring.getAttribute('data-group'))).toEqual(['hop-1', 'hop-2'])
+    expect(rings.every((ring) => Number(ring.getAttribute('r')) > 0)).toBe(true)
+    expect(screen.queryByTestId('network-graph-group-hop-0')).toBeNull()
+    const label = screen.getByTestId('network-graph-group-hop-2')
+    expect(label).toHaveTextContent('2 hops')
+    expect(label).toHaveAttribute('aria-hidden', 'true')
+    expect(container.querySelector('[data-testid="network-graph-groups"]')).toHaveAttribute(
+      'aria-hidden',
+      'true'
+    )
+  })
+
+  it('ego with an unknown or null focus renders emptyState', () => {
+    const { update } = renderGraph(
+      { layout: egoLayout({ focusId: 'ghost' }), emptyState: <Text>Pick a node</Text> },
+      grouped
+    )
+    expect(screen.getByText('Pick a node')).toBeInTheDocument()
+    expect(screen.queryByTestId('network-graph-root')).toBeNull()
+    update({ layout: egoLayout({ focusId: null }), emptyState: <Text>Pick a node</Text> })
+    expect(screen.getByText('Pick a node')).toBeInTheDocument()
+    update({ layout: ego(), emptyState: <Text>Pick a node</Text> })
+    expect(screen.queryByText('Pick a node')).toBeNull()
+  })
+
+  it("clustered renders one labelled region per group, hidden from assistive tech, and each node's name holds its group", () => {
+    const { container } = renderGraph({ layout: clustered() }, grouped)
+    const regions = [...container.querySelectorAll('circle[data-variant="region"]')]
+    expect(regions.map((region) => region.getAttribute('data-group'))).toEqual([
+      'alpha',
+      'beta',
+      'gamma',
+      'delta',
+      '',
+    ])
+    for (const [id, text] of [
+      ['alpha', 'Alpha'],
+      ['delta', 'Delta'],
+      ['', 'Ungrouped'],
+    ]) {
+      const label = screen.getByTestId(`network-graph-group-${id}`)
+      expect(label).toHaveTextContent(text)
+      expect(label).toHaveAttribute('aria-hidden', 'true')
+    }
+    expect(screen.queryAllByText('Alpha')).toHaveLength(1)
+    expect(nodeButton('alpha-01')).toHaveAccessibleName(/^alpha-01, Worker, Alpha, /)
+    expect(nodeButton('solo-01')).toHaveAccessibleName(/^solo-01, Worker, Ungrouped, /)
+    expect(root()).toHaveAccessibleName(
+      /5 groups: Alpha 12, Beta 10, Gamma 8, Delta 5, Ungrouped 5\./
+    )
+  })
+
+  it('the default tooltip names the group of the active node', () => {
+    renderGraph({ layout: clustered() }, grouped)
+    fireEvent.pointerEnter(nodeButton('beta-01'))
+    expect(screen.getByRole('tooltip')).toHaveTextContent('Worker, Beta')
+  })
+
+  it('a node whose label is hidden is still named and reached with Down and Up', () => {
+    renderGraph({}, tightFixture)
+    expect(nodeButton('alpha-01')).toHaveTextContent('')
+    expect(nodeButton('alpha-02')).toHaveTextContent('alpha-02')
+    expect(nodeButton('alpha-01')).toHaveAccessibleName('alpha-01, Worker, 0 incoming, 1 outgoing')
+    focusRoot()
+    expect(activeElement()).toBe(nodeButton('alpha-01'))
+    press('ArrowDown')
+    expect(activeElement()).toBe(nodeButton('alpha-02'))
+    press('ArrowUp')
+    expect(activeElement()).toBe(nodeButton('alpha-01'))
+    expect(screen.getByRole('tooltip')).toHaveTextContent('alpha-01')
+  })
+
+  it("hovering a node with a hidden label shows its label and its neighbours' labels", () => {
+    renderGraph({}, tightFixture)
+    expect(nodeButton('alpha-03')).toHaveTextContent('')
+    fireEvent.pointerEnter(nodeButton('alpha-01'))
+    expect(nodeButton('alpha-01')).toHaveTextContent('alpha-01')
+    expect(nodeButton('alpha-02')).toHaveTextContent('alpha-02')
+    expect(nodeButton('alpha-03')).toHaveTextContent('')
+    fireEvent.pointerLeave(nodeButton('alpha-01'))
+    expect(nodeButton('alpha-01')).toHaveTextContent('')
+    fireEvent.click(nodeButton('alpha-03'))
+    expect(nodeButton('alpha-03')).toHaveTextContent('alpha-03')
+  })
+
+  it('an inline factory call with equal options computes once across re-renders; a new seed computes again', () => {
+    const compute = vi.fn(forceLayout().compute)
+    const inline = (options?: { seed?: number; iterations?: number }) => ({
+      ...forceLayout(options),
+      compute,
+    })
+    const { update } = renderGraph({ layout: inline() })
+    update({ layout: inline() })
+    update({ layout: inline({ seed: 1, iterations: 300 }) })
+    expect(compute).toHaveBeenCalledTimes(1)
+    update({ layout: inline({ seed: 2 }) })
+    expect(compute).toHaveBeenCalledTimes(2)
+    update({ layout: inline({ seed: 2, iterations: 50 }) })
+    expect(compute).toHaveBeenCalledTimes(3)
+  })
+
+  it('on the force layout Right goes to the first outgoing edge and then to its target', () => {
+    renderGraph({ layout: forceLayout(), defaultSelection: { type: 'node', id: 'lead-01' } })
+    focusRoot()
+    expect(activeElement()).toBe(nodeButton('lead-01'))
+    press('ArrowRight')
+    const edge = activeName() ?? ''
+    expect(edge).toMatch(/^lead-01 to worker-0\d, /)
+    const target = /^lead-01 to (worker-0\d), /.exec(edge)?.[1] as string
+    press('ArrowRight')
+    expect(activeElement()).toBe(nodeButton(target))
+    press('ArrowLeft')
+    expect(activeName()).toBe(edge)
+  })
+
+  it.each([
+    ['force', { layout: forceLayout() }, grouped],
+    ['ego', { layout: ego() }, grouped],
+    ['clustered', { layout: clustered(), showLegend: true }, grouped],
+    ['the ego empty state', { layout: egoLayout({ focusId: null }) }, grouped],
+  ] as [string, Partial<NetworkGraphProps>, GraphFixture][])(
+    'has no axe violations for %s',
+    { timeout: AXE_TIMEOUT },
+    async (...args) => {
+      const [, props, fixture] = args
+      const { container } = renderGraph(props, fixture)
+      expect(await axe(container)).toHaveNoViolations()
+    }
+  )
 })

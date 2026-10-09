@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { smallFixture } from './fixtures'
+import { networkGraphFixtures, smallFixture } from './fixtures'
 import { layeredLayout } from './layouts/layered-layout-model'
 import { buildGraphModel } from './network-graph-model'
 import {
@@ -7,6 +7,7 @@ import {
   LABEL_MAX_CHARS,
   NODE_RADIUS,
   PARALLEL_EDGE_GAP,
+  arrowRefX,
   edgeGeometries,
   emphasisFor,
   kindColors,
@@ -23,6 +24,7 @@ const at = (positions: Record<string, { x: number; y: number }>): GraphLayout =>
 const build = (nodes: GraphNode[], edges: GraphEdge[], layout: GraphLayout) =>
   buildGraphModel(nodes, edges, layout, { width: 400, height: 400 })
 const small = build(smallFixture.nodes, smallFixture.edges, layeredLayout())
+const mutualPairFixture = networkGraphFixtures['Mutual pair']
 
 describe('truncateLabel', () => {
   it('keeps a label at the limit and cuts a longer one to the limit plus an ellipsis', () => {
@@ -163,5 +165,53 @@ describe('weightText', () => {
     expect(
       [null, undefined, Number.NaN, -1].map((weight) => weightText({ ...edge, weight }))
     ).toEqual(Array(4).fill('weight unknown'))
+  })
+})
+
+describe('edgeGeometries on an arc layout', () => {
+  const arcAt = (positions: Record<string, { x: number; y: number }>): GraphLayout => ({
+    key: 'arc',
+    compute: () => ({
+      positions,
+      order: Object.keys(positions),
+      width: 400,
+      height: 400,
+      edgeShape: 'arc',
+    }),
+  })
+  const pair = { a: { x: 100, y: 50 }, b: { x: 300, y: 50 } }
+
+  it('draws a quadratic curve from rim to rim, with the arrowhead tip at the path end', () => {
+    const model = build([n('a'), n('b')], [{ source: 'a', target: 'b' }], arcAt(pair))
+    const [arc] = edgeGeometries(model)
+    expect(arc?.path).toBe(
+      `M${String(100 + NODE_RADIUS)},50Q200,20 ${String(300 - NODE_RADIUS)},50`
+    )
+    expect(arrowRefX('arc')).toBe(ARROW_LENGTH)
+    expect(arrowRefX('horizontal')).toBe(0)
+  })
+
+  it('Mutual pair: the two directions bow to opposite sides, a second edge the same way bows further, and each mid sits on its curve', () => {
+    const model = build(
+      mutualPairFixture.nodes,
+      mutualPairFixture.edges,
+      arcAt({ 'alpha-01': pair.a, 'alpha-02': pair.b })
+    )
+    const mids = new Map(edgeGeometries(model).map((g) => [g.id, g.mid.y]))
+    expect(mids.get('alpha-01->alpha-02:message')).toBe(35)
+    expect(mids.get('alpha-01->alpha-02:spawn')).toBe(20)
+    expect(mids.get('alpha-02->alpha-01:message')).toBe(65)
+    expect(new Set(edgeGeometries(model).map((g) => g.path)).size).toBe(3)
+  })
+
+  it('gives an empty path and a finite mid for two nodes at the same point', () => {
+    const model = build(
+      [n('a'), n('b')],
+      [{ source: 'a', target: 'b' }],
+      arcAt({ a: { x: 100, y: 50 }, b: { x: 100, y: 50 } })
+    )
+    const [arc] = edgeGeometries(model)
+    expect(arc?.path).toBe('')
+    expect(arc?.mid).toEqual({ x: 100, y: 50 })
   })
 })

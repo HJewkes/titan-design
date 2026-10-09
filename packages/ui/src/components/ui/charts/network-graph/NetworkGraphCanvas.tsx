@@ -2,6 +2,7 @@
 import { useCallback, useId, useMemo, useRef } from 'react'
 import { ScrollView, type ViewProps } from 'react-native'
 import { graphItems, kindLabel, labelsById, type GraphItems } from './network-graph-items-model'
+import { groupLabelsByNode, pinnedNodeIds, placeLabels } from './network-graph-labels'
 import {
   edgeGeometries,
   emphasisFor,
@@ -10,10 +11,11 @@ import {
   type EdgeGeometry,
   type GraphEmphasis,
 } from './network-graph-plot-model'
+import { NetworkGraphGroups } from './NetworkGraphGroups'
 import { NetworkGraphHitLayer } from './NetworkGraphHitLayer'
 import { DefaultNodeTip, EdgeWeight, NodeButton, NodeTip } from './NetworkGraphParts'
 import { NetworkGraphPlot } from './NetworkGraphPlot'
-import type { GraphItemRef, GraphModel, GraphNode, NetworkGraphProps } from './types'
+import type { GraphFocus, GraphItemRef, GraphModel, GraphNode, NetworkGraphProps } from './types'
 import { useGraphRoot } from './useGraphRoot'
 import { useNetworkGraph, type NetworkGraphState } from './useNetworkGraph'
 
@@ -41,12 +43,14 @@ interface NodeLayerProps {
   items: GraphItems
   state: NetworkGraphState
   emphasis: GraphEmphasis | null
+  /** The nodes whose labels show; see `placeLabels`. */
+  labels: ReadonlySet<string>
   /** The node whose tooltip is open, and the id of that tooltip. */
   tip: { nodeId: string; id: string } | null
   onPress: (item: GraphItemRef) => void
 }
 
-function NodeLayer({ model, items, state, emphasis, tip, onPress }: NodeLayerProps) {
+function NodeLayer({ model, items, state, emphasis, labels, tip, onPress }: NodeLayerProps) {
   return model.order.map((id) => {
     const node = model.index.nodesById.get(id)
     const point = model.positions[id]
@@ -60,6 +64,7 @@ function NodeLayer({ model, items, state, emphasis, tip, onPress }: NodeLayerPro
         name={items.nodeNames.get(id)}
         isSelected={isItem(state.selection, 'node', id)}
         isDimmed={emphasis !== null && !emphasis.nodes.has(id)}
+        isLabelHidden={!labels.has(id)}
         describedBy={tip?.nodeId === id ? tip.id : undefined}
         onPress={onPress}
         onHoverIn={state.activate}
@@ -88,6 +93,7 @@ function ActiveReadout({ graph, model, tipNode, tipId, activeEdge }: ActiveReado
             <DefaultNodeTip
               node={tipNode}
               kind={kindLabel(labelsById(graph.nodeKinds), tipNode.kind)}
+              groupLabels={groupLabelsByNode(model).get(tipNode.id)}
             />
           )}
         </NodeTip>
@@ -110,12 +116,27 @@ function useGraphPaint(graph: GraphContentProps, model: GraphModel) {
   return { prefix, items, geometries, colors }
 }
 
+/** The labels to show: every one under `'all'`; under `'declutter'`, the pinned ones and those that meet nothing. */
+function useVisibleLabels(
+  model: GraphModel,
+  selection: GraphItemRef | null,
+  active: GraphFocus | null
+): ReadonlySet<string> {
+  const selectedId = selection?.type === 'node' ? selection.id : null
+  const activeId = active?.type === 'node' ? active.id : null
+  return useMemo(
+    () => new Set(placeLabels(model, pinnedNodeIds(model.index, selectedId, activeId)).keys()),
+    [model, selectedId, activeId]
+  )
+}
+
 export function NetworkGraphCanvas({ graph, model, summary }: NetworkGraphCanvasProps) {
   const { accessibilityLabel, width, height, animate = true, isDisabled = false } = graph
   const state = useNetworkGraph({ ...graph, model })
   const { prefix, items, geometries, colors } = useGraphPaint(graph, model)
   const { active, selection } = state
   const emphasis = useMemo(() => emphasisFor(model.index, active), [model, active])
+  const labels = useVisibleLabels(model, selection, active)
   const scrollRef = useRef<ScrollView>(null)
   const activeDomId = active
     ? (active.type === 'node' ? items.nodeDomIds : items.edgeDomIds).get(active.id)
@@ -148,6 +169,7 @@ export function NetworkGraphCanvas({ graph, model, summary }: NetworkGraphCanvas
       testID="network-graph-root"
       {...rootProps}
     >
+      <NetworkGraphGroups groups={model.groups} width={model.width} height={model.height} />
       <NetworkGraphPlot
         model={model}
         geometries={geometries}
@@ -174,6 +196,7 @@ export function NetworkGraphCanvas({ graph, model, summary }: NetworkGraphCanvas
         items={items}
         state={state}
         emphasis={emphasis}
+        labels={labels}
         tip={tipNode ? { nodeId: tipNode.id, id: tipId } : null}
         onPress={press}
       />
