@@ -29,6 +29,7 @@ interface Args {
 }
 
 const FIXED_NOW = '2026-10-08T12:00:00Z'
+const CAPTION_AS_SECONDARY = { '--color-text-tertiary': 'var(--color-text-secondary)' } as ViewStyle
 
 interface SampleSpec {
   label: string
@@ -55,15 +56,21 @@ const SAMPLES: Record<SampleKey, SampleSpec> = {
   },
   chip: { label: 'Chip', radius: 6, render: () => <Chip onPress={() => {}}>Filter</Chip> },
   navItem: {
-    label: 'NavItem',
+    label: 'NavItem (active)',
     radius: 0,
-    render: () => <NavItem icon={<ActivityIcon />} label="Train" onPress={() => {}} />,
+    render: () => <NavItem icon={<ActivityIcon />} label="Train" active onPress={() => {}} />,
   },
   dateSeparator: {
     label: 'Chat date separator',
     radius: 0,
     width: 170,
-    render: () => <DateSeparator date={FIXED_NOW} now={FIXED_NOW} onPress={() => {}} />,
+    render: () => (
+      // Its text-tertiary caption is under 4.5:1 on some of these planes (baselined on its own
+      // stories); that is not this decision, so the caption borrows text-secondary here.
+      <View style={CAPTION_AS_SECONDARY}>
+        <DateSeparator date={FIXED_NOW} now={FIXED_NOW} onPress={() => {}} />
+      </View>
+    ),
   },
 }
 
@@ -178,7 +185,9 @@ const meta: Meta<Args> = {
           '[Input](?path=/docs/components-atoms-input--docs), [Chip](?path=/docs/components-atoms-chip--docs), ' +
           '[NavItem](?path=/docs/shell-navitem--docs) and the Chat DateSeparator. Keyboard focus is ' +
           'the global `*:focus-visible` outline (2px `border-focus`, 2px offset); each option swaps ' +
-          'the ring for another existing token. Under each sample: the ring against the plane and ' +
+          "the ring for another existing token. NavItem is shown active, and the date separator's " +
+          "caption is drawn in `text-secondary`: both components' `text-tertiary` labels are under " +
+          '4.5:1 on some of these planes, which is not this decision. Under each sample: the ring against the plane and ' +
           'against the component edge (WCAG 1.4.11 / 2.4.11 non-text floor 3:1). With the offset ' +
           'or the painted gap the ring touches only the plane, so the plane ratio is the binding ' +
           'one; the component ratio says how well the ring reads against the control itself.',
