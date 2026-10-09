@@ -1976,13 +1976,11 @@
     "#22d3ee|#edeae7": 8,
     "#72716f|#edeae7": 2,
     "#a29f9d|#ffffff": 14,
-    "#c27400|#edeae7": 2,
     "#ed69c3|#edeae7": 1,
     "#edeae7|#ffffff": 5
   },
   "custom-workout-tempodisplay--live-animated light": {
-    "#72716f|#edeae7": 1,
-    "#c27400|#edeae7": 1
+    "#72716f|#edeae7": 1
   },
   "custom-workout-tempodisplay--live-playground dark": {
     "#22a444|#31302f": 1
@@ -1996,8 +1994,7 @@
   "custom-workout-tempodisplay--static-vs-live light": {
     "#22a444|#edeae7": 1,
     "#22d3ee|#edeae7": 1,
-    "#72716f|#edeae7": 2,
-    "#c27400|#edeae7": 1
+    "#72716f|#edeae7": 2
   },
   "custom-workout-velocitybandoverlay--default light": {
     "#ff7900|#ffffff": 1
