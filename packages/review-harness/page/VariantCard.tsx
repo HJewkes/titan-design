@@ -1,7 +1,12 @@
 import type { Dispatch } from 'react'
 import type { VariantDraft } from '../src/feedback.ts'
 import { frameSizing } from '../src/sections.ts'
-import { isImageVariant, isStoryVariant, type Manifest, type Variant } from '../src/schema.ts'
+import {
+  isImageVariant,
+  isStoryVariant,
+  type Manifest,
+  type Variant,
+} from '@titan-design/review-schema'
 import { Frame, type PinInput } from './Frame.tsx'
 import { ImageFrame } from './ImageFrame.tsx'
 import { PinList } from './PinList.tsx'

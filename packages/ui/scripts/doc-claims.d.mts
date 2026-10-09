@@ -43,6 +43,8 @@ export function resolveImport(name: string, context: RepoContext): boolean
 
 export function resolveClaim(key: string, doc: string, context: RepoContext): boolean
 
+export function checkedText(doc: string, markdown: string): string
+
 export function deadClaims(doc: string, markdown: string, context: RepoContext): string[]
 
 export function pathSuffixSet(files: string[]): Set<string>

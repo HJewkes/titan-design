@@ -2,9 +2,8 @@ import { mkdtemp, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { isBlanketSignOff } from '../src/contract.ts'
 import { loadRound } from '../src/review.ts'
-import { RoundSchema, type ManifestInput } from '../src/schema.ts'
+import { RoundSchema, isBlanketSignOff, type ManifestInput } from '@titan-design/review-schema'
 import { SECTION_TEXTS } from './fixtures.ts'
 
 const PNG_SIGNATURE = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]

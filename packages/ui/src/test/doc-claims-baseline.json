@@ -10,7 +10,6 @@
     "path:ComponentName.test.tsx"
   ],
   "docs/design-freeze-workflow.md": ["path:docs/improved-workflow.md"],
-  "packages/ui/CHANGELOG.md": ["path:tokens.css", "retired:WORKOUT_TOKENS"],
   "packages/ui/DEPRECATIONS.md": [
     "path:src/dashboard/spa/planner/SessionSummaryPage.tsx",
     "retired:WORKOUT_TOKENS"
