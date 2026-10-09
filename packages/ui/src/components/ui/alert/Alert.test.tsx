@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Alert, AlertTitle, AlertDescription } from './Alert'
 import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
+import { capturedClassNames } from '../../../test/classname-capture'
 
 describe('Alert', () => {
   it('renders children correctly', () => {
@@ -276,5 +277,15 @@ describe('Alert geometry resolves to the spacing tokens', () => {
     expect(source).toContain(classes)
     const spacing = classes.split(' ').filter((c) => resolveAll([c])[0] !== undefined)
     expect(resolveAll(spacing)).toEqual([...pixels])
+  })
+})
+
+// TD-789 3b: status-error as text missed 4.5:1 on the grey 100 page.
+describe('Alert error message', () => {
+  it('paints an outline error message in text-error, not status-error', () => {
+    render(<Alert status="error" variant="outline" message="Upload failed" />)
+    const classes = (capturedClassNames.get('alert-message') ?? '').split(/\s+/)
+    expect(classes).toContain('text-text-error')
+    expect(classes).not.toContain('text-status-error')
   })
 })

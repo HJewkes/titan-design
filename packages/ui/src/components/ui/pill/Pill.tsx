@@ -109,7 +109,7 @@ const toneStyles: Record<PillVariant, Record<PillTone, string>> = {
   outline: {
     neutral: 'border-hairline text-text-secondary',
     brand: 'border-brand-primary text-brand-primary',
-    'brand-secondary': 'border-brand-secondary text-brand-secondary',
+    'brand-secondary': 'border-brand-secondary text-text-brand-secondary',
     success: 'border-status-success text-status-success',
     warning: 'border-status-warning text-status-warning',
     error: 'border-status-error text-text-error',

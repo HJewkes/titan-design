@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Link } from './Link'
+import { capturedByNode } from '../../../test/classname-capture'
 
 describe('Link', () => {
   it('renders children correctly', () => {
@@ -56,6 +57,14 @@ describe('Link', () => {
       expect(screen.getByText('Test')).toBeInTheDocument()
       unmount()
     })
+  })
+
+  // TD-789 3b: brand-secondary as text missed 4.5:1 on the grey 100 page.
+  it('paints the secondary link in the brand-secondary text role', () => {
+    render(<Link color="secondary">Docs</Link>)
+    const classes = (capturedByNode.get(screen.getByText('Docs')) ?? '').split(/\s+/)
+    expect(classes).toContain('text-text-brand-secondary')
+    expect(classes).not.toContain('text-brand-secondary')
   })
 
   it('renders with all underline options', () => {

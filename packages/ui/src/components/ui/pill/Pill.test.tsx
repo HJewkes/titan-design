@@ -254,4 +254,18 @@ describe('Pill outline error', () => {
     expect(classes).toEqual(expect.arrayContaining(['border-status-error', 'text-text-error']))
     expect(classes).not.toContain('text-status-error')
   })
+
+  // TD-789 3b: brand-secondary as text missed 4.5:1 on the grey 100 page.
+  it('puts the brand-secondary outline label on text-brand-secondary', () => {
+    render(
+      <Pill testID="pill" variant="outline" tone="brand-secondary">
+        Accent
+      </Pill>
+    )
+    const classes = (capturedClassNames.get('pill') ?? '').split(/\s+/)
+    expect(classes).toEqual(
+      expect.arrayContaining(['border-brand-secondary', 'text-text-brand-secondary'])
+    )
+    expect(classes).not.toContain('text-brand-secondary')
+  })
 })
