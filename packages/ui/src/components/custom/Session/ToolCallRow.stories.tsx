@@ -49,10 +49,12 @@ const meta: Meta<typeof ToolCallRow> = {
       description: {
         component:
           '**Molecule.** One tool call: time, outcome dot, family badge, tool name, what it acted ' +
-          'on, the outcome in words and the observed duration. A failed call keeps its error ' +
+          'on and the observed duration. The dot carries the outcome: its word shows on hover and ' +
+          'on keyboard focus, and names the dot. A failed call keeps its error ' +
           'text behind a disclosure, as literal text. Composes ' +
           '[ToolBadge](?path=/docs/custom-session-toolbadge--docs) + ' +
           '[Indicator](?path=/docs/components-atoms-indicator--docs) + ' +
+          '[Tooltip](?path=/docs/components-molecules-tooltip--docs) + ' +
           '[DateTime](?path=/docs/components-molecules-datetime--docs) + ' +
           '[Typography](?path=/docs/foundations-typography--docs) + ' +
           '[Collapse](?path=/docs/components-organisms-accordion--docs). Use the `call` control ' +
