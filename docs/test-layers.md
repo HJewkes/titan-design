@@ -21,6 +21,9 @@ fail for the reason you care about.
 | Offline fonts      | Does a single-file consumer load every font face with no network?                                                                            | `packages/ui/tests/offline-fonts/*.spec.ts`                     | `visual` job, `test:offline-fonts`                                                                       |
 | Dependency audit   | Does the lockfile carry a known advisory?                                                                                                    | `scripts/audit-retry.sh`                                        | `check` job, "Audit" step                                                                                |
 
+The story contrast gate covers every story except `play`-tagged ones. A story tagged `width-matrix` does not fail on
+a foreground|background pair that its sibling `--default` story already baselines; a pair the sibling lacks fails as usual.
+
 The `check` job first fails unless `build`, `visual` and `contrast` passed, then runs audit, stories
 axe and the Storybook play functions. On a pull request, `packages/ui/scripts/visual-paths.mjs` skips
 stories axe, play, the `visual` layers and the `contrast` shards when no changed path is rendered UI. Layer-1 baselines exist only as
