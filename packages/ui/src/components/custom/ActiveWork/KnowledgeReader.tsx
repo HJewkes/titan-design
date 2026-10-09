@@ -12,7 +12,7 @@ import { Link } from '../../ui/link'
 import { Pill } from '../../ui/pill'
 import { Skeleton } from '../../ui/skeleton'
 import { Typography } from '../../ui/typography'
-import { MarkdownProse } from '../Prose'
+import { MarkdownProse, type ProseLinker } from '../Prose'
 import { KNOWLEDGE_CLASS_META, NOTE_KIND_LABEL, SOURCE_TYPE_LABEL } from './knowledge-class'
 import { knowledgeBodyFormat, type KnowledgeDocument } from './knowledge-document'
 import type { KnowledgeItem } from './knowledge-filters'
@@ -137,6 +137,14 @@ function TruncatedNotice({ bytes }: { bytes?: number }) {
   )
 }
 
+/**
+ * The family's linkers, all in the link tone. The brand tone (orange) and the muted tone
+ * (text-tertiary) miss AA on the reader card's surface in one theme or both.
+ */
+function readerLinkers(handlers: SessionLinkHandlers): ProseLinker[] {
+  return sessionLinkers(handlers).map((linker) => ({ ...linker, tone: 'link' }))
+}
+
 function ReaderBody({
   document,
   handlers,
@@ -148,7 +156,7 @@ function ReaderBody({
   const format = knowledgeBodyFormat(item.path)
   const { onPressTask, onPressLink, onPressPr } = handlers
   const linkers = useMemo(
-    () => sessionLinkers({ onPressTask, onPressLink, onPressPr }),
+    () => readerLinkers({ onPressTask, onPressLink, onPressPr }),
     [onPressTask, onPressLink, onPressPr]
   )
   const prose = useMemo(

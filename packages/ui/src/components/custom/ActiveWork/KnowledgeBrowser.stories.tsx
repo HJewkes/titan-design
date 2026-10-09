@@ -50,7 +50,7 @@ function KnowledgeBrowser({ items, now, isLoading, ...handlers }: BrowserArgs) {
         isLoading={isLoading}
         selectedId={selectedId}
         onSelectedIdChange={setSelectedId}
-        table={{ hideColumns: ['record', 'tags'], pageSize: 15 }}
+        table={{ hideColumns: ['record', 'tags'] }}
       />
       <KnowledgeReader
         {...handlers}
