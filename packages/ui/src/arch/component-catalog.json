@@ -6663,7 +6663,7 @@
           "type": "number"
         },
         {
-          "default": "primitiveRamps.green[500]",
+          "default": null,
           "description": "Overlay-marker colour.",
           "name": "markerColor",
           "required": false,
