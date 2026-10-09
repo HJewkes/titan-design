@@ -65,6 +65,10 @@ neutral dot for a state from a newer roster.
 known only from durable history; its card takes the `subtle` variant (stays on the host plane, no
 lift) instead of the `historical` state the contract first proposed.
 
+`isDnd` (the roster's `dnd`) is not a state: the session holds pushes, so a message sent to it
+queues in its inbox until it reads it, whatever its status. `AgentStateLabel` shows it as a neutral
+`DND` pill centred on the state word, because "available" alone would promise a prompt reply.
+
 ## States
 
 | State    | `AgentCard`                                                                                                          | `AgentStateLabel` |
