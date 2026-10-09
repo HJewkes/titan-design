@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type Dispatch } from 'react'
-import type { Feedback, Manifest } from '../src/schema.ts'
+import type { Feedback, Manifest } from '@titan-design/review-schema'
 import { Markdown } from './Markdown.tsx'
 import { optionLabel, REVISION_LABEL } from './QuestionBlock.tsx'
 import type { Action } from './state.ts'

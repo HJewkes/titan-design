@@ -26,37 +26,11 @@
  * imports the new name under the old local binding, so no call site changes.
  */
 
-const path = require('node:path')
+const { loadBaseline, baselineKey, srcRootOf } = require('./ratchet')
 const { registryFor, resolveModule } = require('./deprecated-export-registry')
 
 const PURE_RENAME = /^Renamed to `([A-Za-z_$][\w$]*)`/
 const NO_SENTENCE = 'Its @deprecated tag names no replacement.'
-
-function srcRootOf(filename) {
-  const marker = `${path.sep}src${path.sep}`
-  const i = filename.indexOf(marker)
-  return i === -1 ? null : filename.slice(0, i + marker.length - 1)
-}
-
-let baselineCache = null
-function loadBaseline() {
-  if (baselineCache) return baselineCache
-  try {
-    baselineCache = require('./deprecated-import-baseline.json')
-  } catch {
-    baselineCache = {}
-  }
-  return baselineCache
-}
-
-/** Baseline keys are package-relative POSIX paths, so they're stable across machines. */
-function baselineKey(context) {
-  const cwd = context.getCwd?.() ?? process.cwd()
-  return path
-    .relative(cwd, context.filename ?? context.getFilename())
-    .split(path.sep)
-    .join('/')
-}
 
 /** Import the new name under the old local binding, so the file's call sites keep compiling. */
 function renameSuggestion(specifier, sentence) {
@@ -89,14 +63,16 @@ module.exports = {
 
   create(context) {
     const filename = context.filename ?? context.getFilename()
-    const srcRoot = srcRootOf(filename)
+    const srcRoot = srcRootOf(context)
     if (!srcRoot) return {}
     const registry = registryFor(srcRoot)
 
     // Remaining allowance per deprecated NAME, not a plain count — same
     // reasoning as no-raw-color: the message lands on the import you just
     // added rather than whichever grandfathered one sits at the boundary.
-    const remaining = new Map(Object.entries(loadBaseline()[baselineKey(context)] ?? {}))
+    const remaining = new Map(
+      Object.entries(loadBaseline('deprecated-import-baseline.json')[baselineKey(context)] ?? {})
+    )
 
     function flag(specifier, sentence) {
       const name = specifier.imported.name

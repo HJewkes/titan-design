@@ -1,4 +1,3 @@
-import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { exampleManifest } from '../src/example.ts'
 import {
@@ -6,7 +5,7 @@ import {
   ManifestSchema,
   feedbackJsonSchema,
   manifestJsonSchema,
-} from '../src/schema.ts'
+} from '@titan-design/review-schema'
 import { pagedImageInput, validFeedback } from './fixtures.ts'
 
 const base = () => exampleManifest('http://127.0.0.1:6100')
@@ -314,15 +313,5 @@ describe('a PR page and its ship/no-ship question (round@2 merge, page)', () => 
 
   it('leaves the feedback schema untouched', () => {
     expect(JSON.stringify(feedbackJsonSchema())).not.toMatch(/headSha|"merge"|mergeSha|"page"/)
-  })
-})
-
-describe('exported JSON Schema files', () => {
-  const onDisk = (name: string) =>
-    JSON.parse(readFileSync(new URL(`../schema/${name}`, import.meta.url), 'utf8'))
-
-  it('match the zod schemas (run `pnpm schema` after changing them)', () => {
-    expect(onDisk('round.schema.json')).toEqual(manifestJsonSchema())
-    expect(onDisk('feedback.schema.json')).toEqual(feedbackJsonSchema())
   })
 })

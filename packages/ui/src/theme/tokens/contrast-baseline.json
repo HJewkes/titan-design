@@ -19,9 +19,7 @@
     "text-error on surface-elevated",
     "text-error on surface-input",
     "text-error on surface-overlay",
-    "text-error on surface-raised",
-    "text-link on surface-overlay",
-    "text-link on surface-raised"
+    "text-error on surface-raised"
   ],
   "light": [
     "on-brand-primary on brand-primary-solid",

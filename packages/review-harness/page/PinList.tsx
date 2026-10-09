@@ -1,5 +1,5 @@
 import type { Dispatch } from 'react'
-import type { Annotation } from '../src/schema.ts'
+import type { Annotation } from '@titan-design/review-schema'
 import { pinNumber } from './pins.ts'
 import type { Action } from './state.ts'
 

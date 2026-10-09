@@ -7,7 +7,7 @@ import {
   type Question,
   type Recommendation,
   type Verdict,
-} from './schema.ts'
+} from '@titan-design/review-schema'
 import { isAnswered, normalizeAnswer, offersBuiltInRevision } from './round.ts'
 import { questionsForVariant, sectionOfQuestion } from './sections.ts'
 
