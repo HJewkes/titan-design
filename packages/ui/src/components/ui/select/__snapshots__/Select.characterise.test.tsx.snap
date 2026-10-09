@@ -5753,7 +5753,7 @@ exports[`Select characterisation > on a light surface > renders the filled varia
         aria-expanded="false"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         role="combobox"
-        style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+        style="background-color: rgb(255, 255, 255); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
         tabindex="0"
       >
         <div
@@ -5805,7 +5805,7 @@ exports[`Select characterisation > on a light surface > renders the filled varia
         aria-expanded="true"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         role="combobox"
-        style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+        style="background-color: rgb(255, 255, 255); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
         tabindex="0"
       >
         <div
@@ -5899,7 +5899,7 @@ exports[`Select characterisation > on a light surface > renders the filled varia
         aria-expanded="true"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         role="combobox"
-        style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+        style="background-color: rgb(255, 255, 255); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
         tabindex="0"
       >
         <div

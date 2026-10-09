@@ -72,7 +72,7 @@ describe('Input', () => {
       ['light', 'elevated'],
       ['light', 'raised'],
     ] as const)(
-      'fills the field one plane down from the enclosing plane with the inset-well recess (%s %s)',
+      'fills the field with the well colour of the enclosing plane and the inset-well recess (%s %s)',
       (mode, level) => {
         render(
           <Surface theme={mode} level={level}>

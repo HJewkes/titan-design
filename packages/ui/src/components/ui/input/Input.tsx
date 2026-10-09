@@ -64,7 +64,7 @@ const variantStyles: Record<
     focus: 'border-border-input-focus',
     error: 'border-border-input-error',
   },
-  // The fill is the inset elevation (one plane down from the enclosing plane, see `fieldWell`);
+  // The fill is the inset well (`insetFieldFill` of the enclosing plane, see `fieldWell`);
   // the focus ring replaces the well while the field is focused.
   filled: {
     base: 'border border-transparent rounded-md',
@@ -81,7 +81,7 @@ const variantStyles: Record<
 }
 
 /**
- * The inset elevation of the filled field: one plane down from the enclosing plane, with the
+ * The inset well of the filled field (`insetFieldFill` of the enclosing plane), with the
  * inset-well recess. Dropped while focused so the focus border reads alone.
  */
 function fieldWell(variant: InputVariant, isFocused: boolean, surface: SurfaceContextValue) {

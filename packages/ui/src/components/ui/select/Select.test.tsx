@@ -153,7 +153,7 @@ describe('Select', () => {
       ['light', 'base'],
       ['light', 'elevated'],
     ] as const)(
-      'fills the filled trigger one plane down from the enclosing plane in the inset well (%s %s)',
+      'fills the filled trigger with the well colour of the enclosing plane (%s %s)',
       (mode, level) => {
         render(
           <Surface theme={mode} level={level}>

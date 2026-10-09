@@ -5,11 +5,21 @@ import { pressedLevel, surfaceBackground, type SurfaceLevel } from './SurfaceCon
 import type { ThemeMode } from '../../../theme/tokens/semantic'
 
 /**
- * Fill of a filled field: the plane one down from the enclosing one, cut in by the inset-well
- * recess (the recess is web only; native keeps the flat fill).
+ * The well colour of a filled field on a plane. Dark steps one plane down. Light keeps the
+ * plane's own colour: its planes repeat colours (background and raised are one grey, base and
+ * overlay are white), so a step down by level gave two wells for one plane colour and a grey 400
+ * well on the page background; the recess carries the inset instead.
+ */
+export function insetFieldFill(level: SurfaceLevel, mode: ThemeMode): string {
+  return surfaceBackground(mode === 'light' ? level : pressedLevel(level), mode)
+}
+
+/**
+ * Fill of a filled field: the well colour, cut in by the inset-well recess (the recess is web
+ * only; native keeps the flat fill).
  */
 export function insetFieldStyle(level: SurfaceLevel, mode: ThemeMode): ViewStyle {
-  const backgroundColor = surfaceBackground(pressedLevel(level), mode)
+  const backgroundColor = insetFieldFill(level, mode)
   return { backgroundColor, ...getPressedRecessShadow(backgroundColor, mode) }
 }
 
