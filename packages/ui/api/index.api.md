@@ -491,7 +491,7 @@ export function BotIcon(input: IconProps): react_jsx_runtime.JSX.Element;
 export function BrainIcon(input: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
-export type BrandKey = 'voltras' | 'audiobook' | 'active-work' | 'agents' | 'brain';
+export type BrandKey = 'voltras' | 'audiobook' | 'active-work' | 'agents' | 'brain' | 'console';
 
 // @public
 export const brandKeys: BrandKey[];

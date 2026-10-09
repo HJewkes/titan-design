@@ -19,6 +19,7 @@ const EXPECTED_ACCENTS: Record<BrandKey, string> = {
   'active-work': 'dataviz-categorical-0',
   agents: 'dataviz-categorical-4',
   brain: 'dataviz-categorical-6',
+  console: 'dataviz-categorical-2',
 }
 
 // Accent marks measured under 3:1 on a shell plane. Shrink-only: a fix deletes its
@@ -79,6 +80,15 @@ describe('brand accents', () => {
 })
 
 describe('brand accent contrast on the shell planes', () => {
+  // cat-1 and cat-4 also clear 3:1 but belong to audiobook and agents; cat-2 is the free one.
+  it.each(MODES)('holds the console accent at 3:1 on both shell planes in %s', (mode) => {
+    const colors = getSemanticColors(mode) as Record<string, string>
+    const accent = colors[tokenOf(brandPresets.console.accentClassName)]
+    PLANES.forEach((plane) => {
+      expect(contrast(accent, colors[plane])).toBeGreaterThanOrEqual(3)
+    })
+  })
+
   it('holds every accent mark at 3:1 (WCAG 1.4.11) bar the recorded misses', () => {
     expect(nonTextMisses()).toEqual(KNOWN_NON_TEXT_MISSES)
   })
