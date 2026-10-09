@@ -312,7 +312,7 @@ export const semanticColorsDark = {
   'brand-primary-hover': ramp.orange[300],
   'brand-primary-active': ramp.orange[200],
 
-  'brand-secondary': ramp.cyan[600],
+  'brand-secondary': ramp.cyan[500], // lifted from cyan 600 to clear 3:1 on every dark plane (item 42 d4)
   'brand-secondary-light': ramp.cyan[500],
   'brand-secondary-dark': ramp.cyan[700],
   'brand-secondary-subtle': 'rgba(34, 211, 238, 0.12)',
@@ -350,7 +350,7 @@ export const semanticColorsDark = {
   // its own, so a deload week reads the same wherever it is drawn. Callers alpha it.
   'status-deload': ramp.magenta[600],
 
-  'status-error': ramp.red[600],
+  'status-error': ramp.red[500], // equals text-error; red 600 missed 3:1 on the upper planes (item 42 d3)
   'status-error-light': ramp.red[500],
   'status-error-dark': ramp.red[700],
   // Alpha 0.08, not the family's 0.12: error's label is red[400], a rung darker than
@@ -387,6 +387,8 @@ export const semanticColorsDark = {
   // because their base steps are too dark to carry a readable dark label — even the
   // darkest step of their own hue only reaches ~3.6 on them. Lifting the FILL is what
   // lets all six share one label, which is the point (AW-141).
+  // Item 42 later lifted those two dark base tones to rung 500 as well, so here the
+  // fill equals its base tone; the fill must not follow either back to rung 600.
   'brand-primary-solid': ramp.orange[400],
   'brand-secondary-solid': ramp.cyan[500],
   'status-success-solid': ramp.green[300],
@@ -476,7 +478,7 @@ export const semanticColorsDark = {
   'text-disabled': 'rgba(255, 255, 255, 0.38)',
   'text-inverse': greyRamp[950],
   'text-error': ramp.red[500], // owner chose red 500 below 4.5:1 knowingly, round q4b-red-conflict r1 (a)
-  'text-link': semanticPins.focusIndigoDark,
+  'text-link': ramp.blue[300], // on the ramp; border-focus keeps the indigo pin (item 42 d5)
   'text-link-hover': ramp.blue[400],
 
   // Surface colors - dark backgrounds — warm-tapered DERIVED ramp (TD-surface-tokens,
@@ -515,13 +517,14 @@ export const semanticColorsDark = {
   // existing rather than being re-solved per plane. The three solid tokens were
   // deleted outright; consumers point at the `hairline-*` family below.
   //
-  // `border-prominent` stays SOLID: it is the one border meant to be seen
-  // outright (4 call sites, high-visibility dividers), and grey-800 is not a
-  // plane, so it keeps its job without collision.
-  'border-prominent': greyRamp[800], // high-visibility divider
+  // `border-prominent` is the one border meant to be seen outright (4 call
+  // sites, high-visibility dividers). It was solid grey-800, which read weaker
+  // than `hairline-default`; it is now white alpha like the hairlines, so it
+  // cannot collide with a plane either.
+  'border-prominent': 'rgba(255, 255, 255, 0.30)', // high-visibility divider, one step above hairline-strong (item 42 d2)
   'border-focus': semanticPins.focusIndigoDark,
   'border-input': greyRamp[500], // Input field border, matches light (TD-674)
-  'border-input-hover': greyRamp[600],
+  'border-input-hover': greyRamp[400], // grey 600 missed 3:1 on every dark plane (item 42 d1)
   'border-input-focus': semanticPins.focusIndigoDark,
   'border-input-error': ramp.red[500],
 

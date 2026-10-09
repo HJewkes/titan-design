@@ -14,6 +14,7 @@
  * share one label.
  */
 import { describe, it, expect } from 'vitest'
+import { primitiveRamps } from './tokens/primitives'
 import { semanticColorsDark } from './tokens/semantic'
 
 const hex2rgb = (h: string): [number, number, number] => {
@@ -57,13 +58,13 @@ describe('solid label (dark)', () => {
     expect(labels.size).toBe(1)
   })
 
-  // Guards the lift itself. Aliasing these back to their base tone would restore a
-  // dark fill under a dark label — the original defect — and the per-tone assertion
-  // above would catch it, but this names the cause rather than the symptom.
-  it('keeps the two lifted fills off their base tone step', () => {
-    expect(semanticColorsDark['brand-secondary-solid']).not.toBe(
-      semanticColorsDark['brand-secondary']
-    )
-    expect(semanticColorsDark['status-error-solid']).not.toBe(semanticColorsDark['status-error'])
+  // Guards the lift itself. Aliasing these back to rung 600 would restore a dark
+  // fill under a dark label — the original defect — and the per-tone assertion
+  // above would catch it, but this names the cause rather than the symptom. The
+  // dark base tones moved up to rung 500 too (item 42), so the fill and the base
+  // tone now share a step; what matters is that neither fill is back on 600.
+  it('keeps the two lifted fills off rung 600', () => {
+    expect(semanticColorsDark['brand-secondary-solid']).toBe(primitiveRamps.cyan[500])
+    expect(semanticColorsDark['status-error-solid']).toBe(primitiveRamps.red[500])
   })
 })

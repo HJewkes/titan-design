@@ -1,4 +1,4 @@
-import type { CheckKind } from './schema.ts'
+import type { CheckKind } from '@titan-design/review-schema'
 
 /** sRGB channels 0-255 and alpha 0-1, as the browser computes them. */
 export type Rgba = [number, number, number, number]

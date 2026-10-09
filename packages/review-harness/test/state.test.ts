@@ -8,7 +8,7 @@ import {
   pagesFor,
   stopsFor,
 } from '../page/state.ts'
-import { ManifestSchema } from '../src/schema.ts'
+import { ManifestSchema } from '@titan-design/review-schema'
 import { manifest, pagedImageInput, sectioned, sectionedInput } from './fixtures.ts'
 
 const m = manifest()

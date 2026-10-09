@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type MouseEvent } from 'react'
-import type { Annotation, FrameHeight, StoryVariant } from '../src/schema.ts'
+import type { Annotation, FrameHeight, StoryVariant } from '@titan-design/review-schema'
 import { storyUrl } from '../src/round.ts'
 import { isAuto } from '../src/sections.ts'
 import {
