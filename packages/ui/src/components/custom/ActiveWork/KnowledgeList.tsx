@@ -27,7 +27,9 @@ export type { KnowledgeColumnKey }
 export interface KnowledgeListTable {
   /** 1-based. A filter change returns to page 1. */
   page?: number
+  /** Starting page when uncontrolled. Defaults to 1. */
   defaultPage?: number
+  /** Called with the new page, including the return to page 1 on a filter change. */
   onPageChange?: (page: number) => void
   /** Rows per page. Defaults to 50. */
   pageSize?: number
@@ -47,24 +49,33 @@ export interface KnowledgeListSlots {
   noMatchState?: ReactNode
 }
 
+/** Props for {@link KnowledgeList}. */
 export interface KnowledgeListProps {
+  /** Every note and source to list. A duplicated id renders once, the first copy. */
   items: KnowledgeItem[]
   /** Reference time for the date range. Injected so stories and tests never read the clock. */
   now: number
+  /** Controlled filter state. */
   filters?: KnowledgeFilters
+  /** Starting filters when uncontrolled. Defaults to `EMPTY_KNOWLEDGE_FILTERS`. */
   defaultFilters?: KnowledgeFilters
+  /** Called with the next filters on any filter change. */
   onFiltersChange?: (filters: KnowledgeFilters) => void
   /** The open item, marked `aria-current`. */
   selectedId?: string
+  /** Starting selection when uncontrolled. */
   defaultSelectedId?: string
   /** Called when a title is pressed. */
   onSelectedIdChange?: (id: string | undefined) => void
+  /** Paging and columns. */
   table?: KnowledgeListTable
   /** Files the source could not read. Reported above the table, never dropped. */
   problems?: KnowledgeProblem[]
   /** Fills the rows with skeleton cells; the header and the filter row stay, inert. */
   isLoading?: boolean
+  /** Consumer parts that replace the built-in filter row and empty states. */
   slots?: KnowledgeListSlots
+  /** Tailwind overrides for the root. */
   className?: string
 }
 

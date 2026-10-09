@@ -470,7 +470,7 @@
       "props": [
         {
           "default": null,
-          "description": "",
+          "description": "Tailwind overrides for the row.",
           "name": "className",
           "required": false,
           "type": "string"
@@ -524,28 +524,28 @@
       "props": [
         {
           "default": null,
-          "description": "",
+          "description": "Tailwind overrides for the root.",
           "name": "className",
           "required": false,
           "type": "string"
         },
         {
           "default": null,
-          "description": "",
+          "description": "Starting filters when uncontrolled.",
           "name": "defaultFilters",
           "required": false,
           "type": "KnowledgeFilters"
         },
         {
           "default": null,
-          "description": "",
+          "description": "Starting selection when uncontrolled.",
           "name": "defaultSelectedId",
           "required": false,
           "type": "string"
         },
         {
           "default": null,
-          "description": "",
+          "description": "Controlled filter state.",
           "name": "filters",
           "required": false,
           "type": "KnowledgeFilters"
@@ -559,7 +559,7 @@
         },
         {
           "default": null,
-          "description": "",
+          "description": "Every note and source to list.",
           "name": "items",
           "required": true,
           "type": "KnowledgeItem[]"
@@ -573,7 +573,7 @@
         },
         {
           "default": null,
-          "description": "",
+          "description": "Called with the next filters on any filter change.",
           "name": "onFiltersChange",
           "required": false,
           "type": "((filters: KnowledgeFilters) => void)"
@@ -601,14 +601,14 @@
         },
         {
           "default": null,
-          "description": "",
+          "description": "Consumer parts that replace the built-in filter row and empty states.",
           "name": "slots",
           "required": false,
           "type": "KnowledgeListSlots"
         },
         {
           "default": null,
-          "description": "",
+          "description": "Paging and columns.",
           "name": "table",
           "required": false,
           "type": "KnowledgeListTable"
@@ -621,7 +621,9 @@
       },
       "status": "candidate",
       "storyIds": [
-        "custom-activework-knowledgelist--default"
+        "custom-activework-knowledgelist--default",
+        "custom-activework-knowledgelist-interactions--enter-on-a-header-cycles-the-sort",
+        "custom-activework-knowledgelist-interactions--enter-on-a-title-selects-its-row"
       ],
       "tier": "organism"
     },

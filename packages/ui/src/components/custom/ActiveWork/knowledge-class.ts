@@ -21,8 +21,11 @@ export const KNOWLEDGE_CLASS_ORDER: KnowledgeClass[] = [
   'transcript',
 ]
 
+/** How a record class reads and which colour it takes. */
 export interface KnowledgeClassMeta {
+  /** Singular name, for one item. */
   label: string
+  /** Plural name, for a legend or a count. */
   plural: string
   /** A categorical token, fixed per class so a class keeps its colour in every view. */
   colorToken: ColorToken
@@ -78,6 +81,7 @@ export type NoteKind = 'process' | 'gotcha' | 'fyi' | 'decision' | 'plan'
 /** What a source document is. */
 export type SourceType = 'pr' | 'deepdive' | 'session' | 'pointer'
 
+/** Display name per note kind. */
 export const NOTE_KIND_LABEL: Record<NoteKind, string> = {
   process: 'Process',
   gotcha: 'Gotcha',
@@ -86,6 +90,7 @@ export const NOTE_KIND_LABEL: Record<NoteKind, string> = {
   plan: 'Plan',
 }
 
+/** Display name per source type. */
 export const SOURCE_TYPE_LABEL: Record<SourceType, string> = {
   pr: 'PR',
   deepdive: 'Deep dive',
@@ -93,5 +98,7 @@ export const SOURCE_TYPE_LABEL: Record<SourceType, string> = {
   pointer: 'Pointer',
 }
 
+/** Every note kind, in display order. */
 export const NOTE_KINDS = Object.keys(NOTE_KIND_LABEL) as NoteKind[]
+/** Every source type, in display order. */
 export const SOURCE_TYPES = Object.keys(SOURCE_TYPE_LABEL) as SourceType[]

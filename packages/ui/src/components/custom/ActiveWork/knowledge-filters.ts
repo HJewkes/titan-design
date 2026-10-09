@@ -13,17 +13,23 @@ export interface KnowledgeItem {
   id: string
   /** The wire ref a navigation or chip reads (`note:<slug>/<file>`). Not the row key. */
   ref?: string
+  /** Whether the item is a note or a source. */
   record: KnowledgeRecord
+  /** The initiative slug the file lives under. */
   initiative: string
+  /** A note's title, or a source's first heading. */
   title: string
   /** Absolute path. Display text only; a filename repeats across initiatives, so it is never the identity. */
   path: string
+  /** Set on a note only. */
   noteKind?: NoteKind
+  /** Set on a source only. */
   sourceType?: SourceType
   /** ISO date the note was written. Sources carry none. */
   created?: string
   /** ISO time the file last changed. Both records carry it; null on the wire maps to absent. */
   mtime?: string
+  /** Free tags, shown capped with a `+N` count. */
   tags?: string[]
   /** A source under a `sources/<dir>/` subdirectory: listed by path, not in the search index. */
   isNested?: boolean
@@ -31,20 +37,30 @@ export interface KnowledgeItem {
 
 /** A file the source could not read. Reported, never dropped. */
 export interface KnowledgeProblem {
+  /** The initiative slug the file lives under. */
   initiative: string
+  /** The file name, without its directory. */
   filename: string
+  /** Why the read failed, as the source reported it. */
   error: string
 }
 
+/** How far back the date filter reaches; `all` keeps undated items. */
 export type KnowledgeDateRange = 'all' | '7d' | '30d' | '90d'
 
+/** The list's filter state. Every facet array is a union; an empty one means any value. */
 export interface KnowledgeFilters {
   /** Literal words, matched case-insensitively against title, path, initiative and tags. */
   query: string
+  /** Initiative slugs to keep. */
   initiatives: string[]
+  /** Record kinds to keep. */
   records: KnowledgeRecord[]
+  /** Note kinds to keep. With source types, the two form one facet: an item matching either stays. */
   noteKinds: NoteKind[]
+  /** Source types to keep. */
   sourceTypes: SourceType[]
+  /** Items older than the range, or undated, are left out unless it is `all`. */
   dateRange: KnowledgeDateRange
 }
 
@@ -60,6 +76,7 @@ export const EMPTY_KNOWLEDGE_FILTERS: KnowledgeFilters = {
 
 const DAY_MS = 86_400_000
 
+/** Days each bounded range reaches back from `now`, inclusive. */
 export const KNOWLEDGE_DATE_RANGE_DAYS: Record<Exclude<KnowledgeDateRange, 'all'>, number> = {
   '7d': 7,
   '30d': 30,
@@ -150,11 +167,15 @@ export function countUndatedExcluded(
   return undated.filter((item) => knowledgeDate(item) === undefined).length
 }
 
+/** Item counts per facet value, for the filter controls. */
 export interface KnowledgeFacetCounts {
   /** Initiatives in first-seen order. */
   initiatives: Record<string, number>
+  /** Notes and sources. */
   records: Record<KnowledgeRecord, number>
+  /** Notes per kind; every kind is present, zero if unused. */
   noteKinds: Record<NoteKind, number>
+  /** Sources per type; every type is present, zero if unused. */
   sourceTypes: Record<SourceType, number>
 }
 
@@ -184,10 +205,13 @@ export function knowledgeFacetCounts(items: KnowledgeItem[]): KnowledgeFacetCoun
  * invalid date becomes an absent `date` here rather than a comparator branch.
  */
 export interface KnowledgeSortRow extends KnowledgeItem {
+  /** Epoch ms of the item's date; absent when it has none or it is invalid. */
   date?: number
+  /** The note kind or source type, whichever the item has. */
   kind?: string
 }
 
+/** Adds the sort values `useTable` reads to each item. */
 export function toKnowledgeSortRows(items: KnowledgeItem[]): KnowledgeSortRow[] {
   return items.map((item) => ({ ...item, date: knowledgeDate(item), kind: knowledgeKind(item) }))
 }

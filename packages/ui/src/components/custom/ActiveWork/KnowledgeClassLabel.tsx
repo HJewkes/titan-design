@@ -6,6 +6,7 @@ import { Indicator } from '../../ui/indicator'
 import { Typography } from '../../ui/typography'
 import { KNOWLEDGE_CLASS_META, toKnowledgeClass, type KnowledgeClass } from './knowledge-class'
 
+/** Props for {@link KnowledgeClassLabel}. */
 export interface KnowledgeClassLabelProps {
   /**
    * A {@link KnowledgeClass} or any wire name for one (`notes`, `nested_sources`).
@@ -16,6 +17,7 @@ export interface KnowledgeClassLabelProps {
   isPlural?: boolean
   /** Hides the text, leaving only the dot. Pair it with a tooltip or a visible legend. */
   dotOnly?: boolean
+  /** Tailwind overrides for the row. */
   className?: string
 }
 
