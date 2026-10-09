@@ -120,7 +120,7 @@ const resolvedBeforeFixture = {
     'status-success-strong': 'rgba(46, 213, 115, 0.50)',
     'status-live': '#2ED573',
     'status-live-muted': '#22A444',
-    'status-deload': '#BA2996',
+    'status-deload': '#9C0D7A',
     'status-error': '#D14343',
     'status-error-light': '#E05254',
     'status-error-dark': '#A4221C',

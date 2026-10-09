@@ -64,7 +64,7 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'status-success-strong': "rgba(46, 213, 115, 0.50)";
     readonly 'status-live': "#2ED573";
     readonly 'status-live-muted': "#22A444";
-    readonly 'status-deload': "#BA2996";
+    readonly 'status-deload': "#9C0D7A";
     readonly 'status-error': "#D14343";
     readonly 'status-error-light': "#E05254";
     readonly 'status-error-dark': "#A4221C";
@@ -773,7 +773,7 @@ export const semanticColorsLight: {
     readonly 'status-success-strong': "rgba(46, 213, 115, 0.50)";
     readonly 'status-live': "#2ED573";
     readonly 'status-live-muted': "#22A444";
-    readonly 'status-deload': "#BA2996";
+    readonly 'status-deload': "#9C0D7A";
     readonly 'status-error': "#D14343";
     readonly 'status-error-light': "#E05254";
     readonly 'status-error-dark': "#A4221C";

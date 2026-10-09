@@ -104,7 +104,7 @@ export const semanticColorsLight = {
 
   // Deload: the magenta WorkoutPill and WeekRow have washed by hand since VW-0; a role of
   // its own, so a deload week reads the same wherever it is drawn. Callers alpha it.
-  'status-deload': ramp.magenta[600],
+  'status-deload': ramp.magenta[700], // TD-789 3b: magenta 600 labels miss 4.5:1 on grey 100
 
   'status-error': ramp.red[600],
   'status-error-light': ramp.red[500],

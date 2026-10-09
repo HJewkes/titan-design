@@ -312,7 +312,7 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'status-success-strong': "rgba(46, 213, 115, 0.50)";
     readonly 'status-live': "#2ED573";
     readonly 'status-live-muted': "#22A444";
-    readonly 'status-deload': "#BA2996";
+    readonly 'status-deload': "#9C0D7A";
     readonly 'status-error': "#D14343";
     readonly 'status-error-light': "#E05254";
     readonly 'status-error-dark': "#A4221C";
@@ -636,7 +636,7 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-status-success-muted': "rgba(46, 213, 115, 0.30)";
     readonly '--color-status-success-strong': "rgba(46, 213, 115, 0.50)";
     readonly '--color-status-live': "#2ED573";
-    readonly '--color-status-deload': "#BA2996";
+    readonly '--color-status-deload': "#9C0D7A";
     readonly '--color-status-live-muted': "#22A444";
     readonly '--color-status-error': "#D14343";
     readonly '--color-status-error-subtle': "#FFE3E5";
@@ -1130,7 +1130,7 @@ export const lightThemeCSSVars: {
     readonly '--color-status-success-muted': "rgba(46, 213, 115, 0.30)";
     readonly '--color-status-success-strong': "rgba(46, 213, 115, 0.50)";
     readonly '--color-status-live': "#2ED573";
-    readonly '--color-status-deload': "#BA2996";
+    readonly '--color-status-deload': "#9C0D7A";
     readonly '--color-status-live-muted': "#22A444";
     readonly '--color-status-error': "#D14343";
     readonly '--color-status-error-subtle': "#FFE3E5";
@@ -1714,7 +1714,7 @@ export const semanticColorsLight: {
     readonly 'status-success-strong': "rgba(46, 213, 115, 0.50)";
     readonly 'status-live': "#2ED573";
     readonly 'status-live-muted': "#22A444";
-    readonly 'status-deload': "#BA2996";
+    readonly 'status-deload': "#9C0D7A";
     readonly 'status-error': "#D14343";
     readonly 'status-error-light': "#E05254";
     readonly 'status-error-dark': "#A4221C";
