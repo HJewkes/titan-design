@@ -9250,14 +9250,14 @@
         },
         {
           "default": "text-brand-primary",
-          "description": "Semantic `text-*` token for the active glyph and label.",
+          "description": "Semantic `text-*` token for the active glyph (a non-text mark).",
           "name": "accentClassName",
           "required": false,
           "type": "string"
         },
         {
           "default": "false",
-          "description": "Active category → left accent bar + accent-colored glyph & label.",
+          "description": "Active category → left accent bar + accent-colored glyph, label on `text-primary`.",
           "name": "active",
           "required": false,
           "type": "boolean"
@@ -9335,7 +9335,7 @@
         },
         {
           "default": null,
-          "description": "Semantic `text-*` token for the active item.",
+          "description": "Semantic `text-*` token for the active item's glyph.",
           "name": "accentClassName",
           "required": false,
           "type": "string"

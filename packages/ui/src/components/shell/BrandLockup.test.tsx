@@ -10,8 +10,8 @@ import { capturedByNode } from '../../test/classname-capture'
 const hyperframes: BrandPreset = {
   mark: <Text testID="hyperframes-mark">*</Text>,
   wordmark: 'HYPERFRAMES',
-  accentClassName: 'text-data-6',
-  accentBarClassName: 'bg-data-6',
+  accentClassName: 'text-dataviz-categorical-2',
+  accentBarClassName: 'bg-dataviz-categorical-2',
   subtitle: 'renders',
 }
 
@@ -39,7 +39,7 @@ describe('BrandLockup', () => {
     expect(screen.getByText('HYPERFRAMES')).toBeInTheDocument()
     expect(screen.getByText('/ renders')).toBeInTheDocument()
     const markWrapper = screen.getByTestId('hyperframes-mark').parentElement
-    expect(capturedByNode.get(markWrapper as Element)).toBe('text-data-6')
+    expect(capturedByNode.get(markWrapper as Element)).toBe('text-dataviz-categorical-2')
   })
 
   it('resolves a key to its registry entry and passes a preset through', () => {
@@ -59,7 +59,7 @@ describe('BrandLockup', () => {
   // semantic `text-*` token, and no two apps share one.
   it('gives every brand a distinct semantic accent token', () => {
     const accents = brandKeys.map((brand) => brandPresets[brand].accentClassName)
-    accents.forEach((accent) => expect(accent).toMatch(/^text-(brand|data)-/))
+    accents.forEach((accent) => expect(accent).toMatch(/^text-(brand|dataviz-categorical)-/))
     expect(new Set(accents).size).toBe(accents.length)
   })
 
@@ -68,7 +68,7 @@ describe('BrandLockup', () => {
   it('pairs every accent with the same token as a background', () => {
     brandKeys.forEach((brand) => {
       const { accentClassName, accentBarClassName } = brandPresets[brand]
-      expect(accentBarClassName).toMatch(/^bg-(brand|data)-/)
+      expect(accentBarClassName).toMatch(/^bg-(brand|dataviz-categorical)-/)
       expect(accentBarClassName).toBe(accentClassName.replace(/^text-/, 'bg-'))
     })
   })
