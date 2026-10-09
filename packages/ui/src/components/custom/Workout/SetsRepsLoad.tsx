@@ -1,7 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps } from 'react-native'
 import { useOnSurfaceColor } from '../../ui/surface/SurfaceContext'
-import { MetricCell } from './metricText'
+import { Typography } from '../../ui/typography'
 
 const TIMES = '×' // × multiplication sign, padded by muted separators
 const AT = '@'
@@ -26,15 +26,14 @@ export interface SetsRepsLoadProps extends ViewProps {
 
 /**
  * The `sets × reps @ load` prescription line, in the TempoDisplay visual language
- * (Inter · letter-spacing 1 · value cells with muted `×` / `@` separators).
- * Shares the {@link MetricCell} primitive with TempoDisplay so the two stay in step.
+ * (Typography `mono` · value cells with muted `×` / `@` separators).
  */
 export function SetsRepsLoad({
   sets,
   reps,
   load,
   unit = 'lb',
-  fontSize,
+  fontSize = 11,
   muted = false,
   className,
   ...props
@@ -44,7 +43,8 @@ export function SetsRepsLoad({
   const secondary = useOnSurfaceColor('secondary')
   const value = muted ? secondary : primary
   const sep = muted ? secondary : tertiary
-  const weight = muted ? 400 : 600
+  const weight = muted ? ('400' as const) : ('600' as const)
+  const cell = (color: string) => ({ color, fontSize, fontWeight: weight })
   const times = muted ? TIMES : ` ${TIMES} `
 
   return (
@@ -55,20 +55,20 @@ export function SetsRepsLoad({
       testID="sets-reps-load"
       {...props}
     >
-      <MetricCell color={value} fontSize={fontSize} weight={weight}>
+      <Typography variant="mono" color="inherit" style={cell(value)}>
         {sets}
-      </MetricCell>
-      <MetricCell color={sep} fontSize={fontSize} weight={weight}>
+      </Typography>
+      <Typography variant="mono" color="inherit" style={cell(sep)}>
         {times}
-      </MetricCell>
-      <MetricCell color={value} fontSize={fontSize} weight={weight}>
+      </Typography>
+      <Typography variant="mono" color="inherit" style={cell(value)}>
         {reps}
-      </MetricCell>
-      <MetricCell color={sep} fontSize={fontSize} weight={weight}>{` ${AT} `}</MetricCell>
-      <MetricCell color={value} fontSize={fontSize} weight={weight}>
+      </Typography>
+      <Typography variant="mono" color="inherit" style={cell(sep)}>{` ${AT} `}</Typography>
+      <Typography variant="mono" color="inherit" style={cell(value)}>
         {load}
-      </MetricCell>
-      <MetricCell color={sep} fontSize={fontSize} weight={weight}>{` ${unit}`}</MetricCell>
+      </Typography>
+      <Typography variant="mono" color="inherit" style={cell(sep)}>{` ${unit}`}</Typography>
     </View>
   )
 }
