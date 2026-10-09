@@ -77,6 +77,20 @@ export const VariantSchema = z
 const repoShape = z.string().regex(/^[^/\s]+\/[^/\s]+$/, 'must be owner/name')
 const prPage = z.string().regex(/^[^/\s#]+\/[^/\s#]+#[1-9][0-9]*$/, 'must be owner/name#pr')
 
+/**
+ * What a topic key marks: `ask:` is the same question across rounds (by default
+ * `ask:<unit>/<questionId>`); `component:`, `token:` and `topic:` mark a shared component,
+ * token or topic, so a dashboard can group questions from different rounds.
+ */
+export const TOPIC_PREFIXES = ['ask', 'component', 'token', 'topic'] as const
+
+const topicKey = z
+  .string()
+  .regex(
+    new RegExp(`^(${TOPIC_PREFIXES.join('|')}):\\S+$`),
+    'a topic is ask:, component:, token: or topic: then a name without spaces'
+  )
+
 const questionBase = {
   id,
   prompt: z.string().min(1),
@@ -84,6 +98,8 @@ const questionBase = {
   scope: scope.optional(),
   /** The PR this question is about, as `owner/name#pr`; a question with no page is on the general page. */
   page: prPage.optional(),
+  /** The keys this question shares with questions in other rounds. */
+  topics: z.array(topicKey).optional(),
 }
 
 /** Which variant each option stands for, so one click answers and picks the variant. */
@@ -441,6 +457,11 @@ function recommendationProblems(m: { questions: z.output<typeof QuestionSchema>[
 /** What the Storybook was built from; written by the build, never by hand. */
 const BuildProvenanceSchema = z.object({ mainSha: sha40, mergeSha: sha40 }).strict()
 
+/** The base PR a stacked round renders beneath its own; its frames are context, not under review. */
+export const StackedOnSchema = z
+  .object({ repo: repoShape, pr: z.number().int().positive(), headSha: sha40 })
+  .strict()
+
 const sameList = (a: string[] | undefined, b: string[]) =>
   a?.length === b.length && a.every((v, i) => v === b[i])
 
@@ -502,6 +523,7 @@ const ManifestObject = z
     /** Written by `--contrast-override` when the round is served ungated; never hand-written. */
     contrastOverride: ContrastOverrideSchema.optional(),
     build: BuildProvenanceSchema.optional(),
+    stackedOn: StackedOnSchema.optional(),
   })
   .strict()
 
@@ -640,6 +662,8 @@ export type Variant = Manifest['variants'][number]
 export type StoryVariant = Variant & { storyId: string }
 export type ImageVariant = Variant & { image: string }
 export type Question = Manifest['questions'][number]
+export type TopicPrefix = (typeof TOPIC_PREFIXES)[number]
+export type StackedOn = z.infer<typeof StackedOnSchema>
 export type Section = z.output<typeof SectionSchema>
 export type Part = z.output<typeof PartSchema>
 export type StripKind = (typeof STRIP_KINDS)[number]

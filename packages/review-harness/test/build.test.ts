@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { EXIT_REFUSED, buildRound, contrastProblem, type TreeGit } from '../src/build.ts'
+import { applyRoundRules } from '../src/round-rules.ts'
 import { ReviewError, loadRound } from '../src/review.ts'
 import { MANIFEST_SCHEMA_ID, type ManifestInput } from '@titan-design/review-schema'
 import { SECTION_TEXTS, noTreeGit } from './fixtures.ts'
@@ -95,7 +96,7 @@ describe('titan-review build --tree', () => {
     expect(code).toBe(0)
     const { build: provenance, ...rest } = await readJson(join(dir, 'round.json'))
     expect(provenance).toEqual({ mainSha: MAIN, mergeSha: MERGE })
-    expect(rest).toEqual(JSON.parse(before.toString('utf8')))
+    expect(rest).toEqual(applyRoundRules(JSON.parse(before.toString('utf8'))))
     expect((await readFile(path)).equals(before)).toBe(true)
   })
 
@@ -123,7 +124,9 @@ describe('titan-review build --tree', () => {
     const { dir, path } = await setup(draft([]))
     const { code } = await build(path, noTreeGit)
     expect(code).toBe(0)
-    expect((await readFile(join(dir, 'round.json'))).equals(await readFile(path))).toBe(true)
+    expect(await readJson(join(dir, 'round.json'))).toEqual(
+      applyRoundRules(JSON.parse(await readFile(path, 'utf8')))
+    )
   })
 
   it('a round built with a tree serves: contrast.json records the bytes written', async () => {
