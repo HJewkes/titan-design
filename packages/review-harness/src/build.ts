@@ -8,9 +8,10 @@ import {
   type ContrastReport,
   type MeasuredFrame,
 } from './contrast-gate.ts'
+import { FRAMES_DIR, FRAMES_FILE, type FramesIndex } from './frames.ts'
 import { MAIN_REF } from './harness-freshness.ts'
 import { ReviewError, assertStoriesExist, loadRound, type LoadedRound } from './review.ts'
-import type { ContrastOverride, Manifest } from './schema.ts'
+import type { ContrastOverride, Manifest } from '@titan-design/review-schema'
 
 /** The round was measured and an undeclared miss (or an unmeasured image) blocked it. */
 export const EXIT_REFUSED = 3
@@ -29,6 +30,8 @@ export interface TreeGit {
 export interface BuildIo {
   stderr: (text: string) => void
   measure: (round: LoadedRound) => Promise<MeasuredFrame[]>
+  /** Writes the round's static frames under `<roundDir>/frames/`; a build without one writes none. */
+  renderFrames?: (round: LoadedRound, roundDir: string) => Promise<FramesIndex>
   git: TreeGit
 }
 
@@ -98,10 +101,18 @@ async function loadDraft(draftPath: string, storybook: string | undefined) {
   return round
 }
 
+/** The static frames a passing round gets, rendered for the bytes round.json will carry. */
+async function writeFrames(io: BuildIo, round: LoadedRound, dir: string): Promise<void> {
+  if (!io.renderFrames) return
+  const index = await io.renderFrames(round, dir)
+  io.stderr(`wrote ${join(dir, FRAMES_DIR, FRAMES_FILE)} (${index.frames.length} frames)`)
+}
+
 /**
  * Measures a draft round in light and dark, writes contrast.json beside it, and writes
  * round.json only when nothing undeclared failed: the draft byte for byte, or with `--tree`
- * the draft plus `build`. contrast.json records the sha of the bytes round.json gets.
+ * the draft plus `build`. contrast.json records the sha of the bytes round.json gets, and
+ * a passing round's static frames are rendered under `frames/` before round.json lands.
  */
 export async function buildRound(
   draftPath: string,
@@ -128,6 +139,7 @@ export async function buildRound(
     io.stderr(REFUSAL)
     return EXIT_REFUSED
   }
+  await writeFrames(io, { ...round, manifestSha256 }, dir)
   await writeFile(join(dir, ROUND_FILE), bytes)
   io.stderr(`wrote ${join(dir, ROUND_FILE)}`)
   return 0

@@ -5,14 +5,12 @@ import { cn } from '../../../utils/cn'
 import { resolveColor } from '../../../theme/resolve-color'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../ui/surface'
-import { primitiveColors } from '../../../theme/tokens/primitives'
 import { alpha } from '../../../utils/colors'
 import { roundWeight } from '../../../utils/workout-format'
 
 // Line/border color for the dashed projection, used where a className cannot
 // apply (passed as a prop into an inline style, and a per-edge borderTopColor).
 const PROJECTION_LINE_COLOR = resolveColor('text-tertiary')
-const GRID_LINE = alpha(primitiveColors.white, 0.06)
 
 /** The chart's brand and status colours in the given theme. */
 function chartColors(mode: ThemeMode) {
@@ -28,6 +26,8 @@ function chartColors(mode: ThemeMode) {
     successPillBorder: alpha(success, 0.2),
     errorPillBg: alpha(error, 0.1),
     errorPillBorder: alpha(error, 0.2),
+    gridLine: alpha(sem['hairline-subtle'], 0.06),
+    boundaryGuide: sem['hairline-subtle'],
   }
 }
 
@@ -354,7 +354,7 @@ export function StrengthTrendChart({
                 right: 0,
                 top: line.y,
                 height: 1,
-                backgroundColor: GRID_LINE,
+                backgroundColor: colors.gridLine,
               }}
             >
               <Text
@@ -387,7 +387,7 @@ export function StrengthTrendChart({
                 height,
                 borderLeftWidth: 1,
                 borderStyle: 'dashed',
-                borderLeftColor: alpha(primitiveColors.white, 0.1),
+                borderLeftColor: colors.boundaryGuide,
               }}
             />
           ))}

@@ -11,6 +11,7 @@ import {
 } from './build.ts'
 import { calibrationReport, readFeedbackFiles } from './calibration.ts'
 import { sectionedExampleManifest } from './example.ts'
+import { FrameRenderError } from './frames.ts'
 import { buildMorningDraft } from './morning.ts'
 import { harnessVerdict, serveMainCommand, type HarnessFreshness } from './harness-freshness.ts'
 import {
@@ -41,6 +42,8 @@ build measures every story frame of a draft round at every width, light and dark
 headless Chromium: text at 4.5:1 (3:1 when large), control boundaries, separators, tracks and
 marks at 3:1. It writes contrast.json beside the draft and copies the draft to round.json
 only if every miss is declared in contrast.knownDefects with its route; otherwise it exits 3.
+A passing round also gets its static frames: frames/<width>-<key>-<story>.png beside the
+draft, one per story variant per width, indexed in frames/frames.json.
 A round that binds a question to a PR head needs --tree, the checkout the Storybook ran from:
 build exits 3 unless every bound head is an ancestor of that tree's HEAD, and with --tree it
 records build {mainSha (the tree's origin/main), mergeSha (its HEAD)} in round.json.
@@ -70,7 +73,8 @@ writes draft.json beside the items file (or --out); run build on it next.
 
 const DRAFT_FILE = 'draft.json'
 
-export interface CliIo extends Omit<ReviewDeps, 'onReady'>, Pick<BuildIo, 'measure' | 'git'> {
+export interface CliIo
+  extends Omit<ReviewDeps, 'onReady'>, Pick<BuildIo, 'measure' | 'renderFrames' | 'git'> {
   stdout: (text: string) => void
   stderr: (text: string) => void
   openBrowser: (url: string) => void
@@ -202,7 +206,9 @@ async function fromMorning(parsed: Parsed, io: CliIo): Promise<number> {
 function isUsageError(err: unknown): err is Error {
   const code = (err as { code?: unknown }).code
   return (
-    err instanceof ReviewError || (typeof code === 'string' && code.startsWith('ERR_PARSE_ARGS'))
+    err instanceof ReviewError ||
+    err instanceof FrameRenderError ||
+    (typeof code === 'string' && code.startsWith('ERR_PARSE_ARGS'))
   )
 }
 

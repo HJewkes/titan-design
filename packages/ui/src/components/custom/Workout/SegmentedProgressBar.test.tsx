@@ -1,8 +1,22 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { SegmentedProgressBar, type SegmentedProgressBarSegment } from './SegmentedProgressBar'
 import { paceTone, paceToneColor } from './paceTone'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { Surface } from '../../ui/surface'
+
+// Light status-live-muted equals dark, so light is swapped for another token to prove the mode is read.
+vi.mock('../../../theme/tokens/semantic', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../../theme/tokens/semantic')>()
+  const light = actual.getSemanticColors('light')
+  const probeLight = { ...light, 'status-live-muted': light['status-info'] }
+  return {
+    ...actual,
+    getSemanticColors: (mode: 'dark' | 'light') =>
+      mode === 'light' ? probeLight : actual.getSemanticColors(mode),
+  }
+})
 
 const PLAN: SegmentedProgressBarSegment[] = [
   { weight: 3 },
@@ -76,5 +90,16 @@ describe('SegmentedProgressBar', () => {
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
+  })
+
+  it('paints the default marker with the light status-live-muted token on a light surface', () => {
+    const lightLive = getSemanticColors('light')['status-live-muted']
+    expect(lightLive).not.toBe(getSemanticColors('dark')['status-live-muted'])
+    render(
+      <Surface theme="light">
+        <SegmentedProgressBar segments={PLAN} value={6} target={0.5} />
+      </Surface>
+    )
+    expect(screen.getByTestId('segmented-bar-marker')).toHaveStyle({ backgroundColor: lightLive })
   })
 })

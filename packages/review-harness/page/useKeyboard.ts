@@ -1,5 +1,5 @@
 import { useEffect, useRef, type Dispatch } from 'react'
-import type { Manifest } from '../src/schema.ts'
+import type { Manifest } from '@titan-design/review-schema'
 import {
   numberKeyAction,
   pageStepAction,

@@ -1,5 +1,5 @@
 import fs from 'node:fs'
-import { test, expect, type Page, type TestInfo } from '@playwright/test'
+import { test as base, expect, type Browser, type Page, type TestInfo } from '@playwright/test'
 import { blankRenderReason, type RootMetrics } from '../../src/test/blank-render'
 import { STORY_INDEX_ENV } from './story-index.global-setup'
 
@@ -108,8 +108,11 @@ const SETTLE_MS = 1000
 
 // A blank root says nothing about why, so a failed guard reports what the page logged and what its
 // root and body held at that moment (TD-636: a zero-height root with no trace to explain it).
-function recordPageEvents(page: Page): string[] {
+const pageEvents = new WeakMap<Page, string[]>()
+
+function recordPageEvents(page: Page): void {
   const events: string[] = []
+  pageEvents.set(page, events)
   page.on('console', (m) => {
     if (m.type() === 'error' || m.type() === 'warning')
       events.push(`console.${m.type()}: ${m.text()}`)
@@ -124,7 +127,6 @@ function recordPageEvents(page: Page): string[] {
   page.on('framenavigated', (f) => {
     if (f === page.mainFrame()) events.push(`navigated: ${f.url()}`)
   })
-  return events
 }
 
 async function describeBlankPage(page: Page, events: string[]): Promise<string> {
@@ -150,13 +152,58 @@ function repauseClock(time: number) {
   void (globalThis as InjectedClock).__pwClock?.controller.pauseAt(time)
 }
 
+const VIEWPORT = { width: 1280, height: 720 }
+
+// install() alone keeps ticking from FIXED_TIME in real time, so a story rendered late in the run
+// showed 16:13 instead of 16:12 (#250); it starts early so pauseAt never rewinds.
+async function openClockedPage(browser: Browser) {
+  const context = await browser.newContext({ viewport: VIEWPORT })
+  await context.clock.install({ time: CLOCK_START })
+  await context.addInitScript(repauseClock, FIXED_TIME.getTime())
+  const page = await context.newPage()
+  recordPageEvents(page)
+  return { context, page }
+}
+
+// One context and page per worker: a story is a navigation inside it, so the preview loads once a
+// worker instead of once a story (TD-730). The clock cannot rewind, so a story that advances it
+// (SETTLED_CLOCK_PREFIX, COLD_PAGE_PREFIXES) takes a page of its own via `isolatedPage`.
+const test = base.extend<{ isolatedPage: () => Promise<Page> }, { storyPage: Page }>({
+  storyPage: [
+    async ({ browser }, use) => {
+      const { context, page } = await openClockedPage(browser)
+      await use(page)
+      await context.close()
+    },
+    { scope: 'worker' },
+  ],
+  isolatedPage: async ({ browser }, use) => {
+    const contexts: Array<Awaited<ReturnType<typeof openClockedPage>>['context']> = []
+    await use(async () => {
+      const opened = await openClockedPage(browser)
+      contexts.push(opened.context)
+      return opened.page
+    })
+    await Promise.all(contexts.map((context) => context.close()))
+  },
+})
+
+const advancesClock = (id: string) => id.startsWith(SETTLED_CLOCK_PREFIX)
+
+// The VelocityStrip family draws its SVG labels differently on a page that already loaded another
+// story (13 baselines drifted by a few hundred pixels, same Chromium, same machine), so each takes a
+// cold page like the pre-TD-730 runs did. The cause is retained browser state; it is not pinned down.
+const COLD_PAGE_PREFIXES = [
+  'custom-workout-dataviz-velocitystrip',
+  'custom-workout-dataviz-dualvelocitystrip--',
+]
+const needsOwnPage = (id: string) =>
+  advancesClock(id) || COLD_PAGE_PREFIXES.some((prefix) => id.startsWith(prefix))
+
 async function renderStory(page: Page, id: string) {
-  const events = recordPageEvents(page)
-  // install() alone keeps ticking from FIXED_TIME in real time, so a story
-  // rendered late in the run showed 16:13 instead of 16:12 (#250); it starts early so pauseAt never rewinds.
-  await page.clock.install({ time: CLOCK_START })
+  const events = pageEvents.get(page) ?? []
+  events.length = 0
   await page.clock.pauseAt(FIXED_TIME)
-  await page.addInitScript(repauseClock, FIXED_TIME.getTime())
   await page.goto(storyUrl(id))
   await page.waitForLoadState('networkidle')
   await page.evaluate(() => document.fonts.ready)
@@ -164,7 +211,7 @@ async function renderStory(page: Page, id: string) {
     e.message += `\nblank page state: ${await describeBlankPage(page, events)}`
     throw e
   })
-  if (id.startsWith(SETTLED_CLOCK_PREFIX)) await page.clock.runFor(SETTLE_MS)
+  if (advancesClock(id)) await page.clock.runFor(SETTLE_MS)
   return page.locator('#storybook-root')
 }
 
@@ -177,7 +224,8 @@ test('the story index lists every in-scope story', () => {
 
 test.describe('storybook story baselines', () => {
   for (const id of storyIds) {
-    test(id, async ({ page }) => {
+    test(id, async ({ storyPage, isolatedPage }) => {
+      const page = needsOwnPage(id) ? await isolatedPage() : storyPage
       const root = await renderStory(page, id)
       await expect(root, `visual drift for ${id}`).toHaveScreenshot(`${id}.png`, SHOT_OPTIONS)
     })
@@ -234,17 +282,19 @@ async function renderSensitivityStory(page: Page, testInfo: TestInfo) {
   return renderStory(page, SENSITIVITY_STORY)
 }
 
-test('sensitivity: unmutated MesoProgressBar matches its baseline', async ({ page }, testInfo) => {
-  const root = await renderSensitivityStory(page, testInfo)
+test('sensitivity: unmutated MesoProgressBar matches its baseline', async ({
+  storyPage,
+}, testInfo) => {
+  const root = await renderSensitivityStory(storyPage, testInfo)
   await expect(root).toHaveScreenshot(SENSITIVITY_BASELINE, SHOT_OPTIONS)
   console.log('[sensitivity] unmutated 0.10: matches baseline')
 })
 
 for (const alpha of ['0.50', '0.13']) {
   test(`sensitivity: hairline-subtle track 0.10 to ${alpha} fails the gate`, async ({
-    page,
+    storyPage,
   }, testInfo) => {
-    const root = await renderSensitivityStory(page, testInfo)
+    const root = await renderSensitivityStory(storyPage, testInfo)
     await root.evaluate((el, value) => {
       el.style.setProperty('--color-hairline-subtle', value)
     }, `rgba(255, 255, 255, ${alpha})`)
