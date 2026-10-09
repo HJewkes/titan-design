@@ -1,12 +1,15 @@
 import { existsSync } from 'node:fs'
-import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
 import { defineConfig } from '@playwright/test'
 
+import { createRunTmpRoot } from '../../scripts/test-tmp-root.mjs'
+
 // Outside Storybook's watched root: trace files written inside it make Vite reload the page mid-test.
-const STORIES_OUTPUT_DIR = join(tmpdir(), 'titan-ui-playwright-stories')
-const INTERACTION_OUTPUT_DIR = join(tmpdir(), 'titan-ui-playwright-interaction')
+// Per-run root, removed on exit with Playwright's own browser profiles (TD-770).
+const RUN_TMP = createRunTmpRoot().root
+const STORIES_OUTPUT_DIR = join(RUN_TMP, 'playwright-stories')
+const INTERACTION_OUTPUT_DIR = join(RUN_TMP, 'playwright-interaction')
 
 // Both projects load a production `storybook build`: a fresh context on the dev server re-fetched
 // every unbundled module, about 7.7 s a story (TD-726). CI builds once per checkout and reuses the

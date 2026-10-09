@@ -1,8 +1,8 @@
-import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
 import { defineConfig } from '@playwright/test'
 
+import { createRunTmpRoot } from '../../scripts/test-tmp-root.mjs'
 import base from './playwright.config'
 
 /**
@@ -17,7 +17,7 @@ export default defineConfig({
   ...base,
   testMatch: 'contrast.spec.ts',
   testIgnore: [],
-  outputDir: join(tmpdir(), 'titan-ui-playwright-contrast'),
+  outputDir: join(createRunTmpRoot().root, 'playwright-contrast'),
   // Room for the spec's 20 s render wait plus axe (longest measured call 1.8 s).
   timeout: 60_000,
   // A retry re-renders from a fresh page. Sampling is frozen, but a story whose render depends on
