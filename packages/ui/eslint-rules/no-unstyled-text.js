@@ -24,31 +24,12 @@
  *   Regenerate after fixing some:  node scripts/update-no-unstyled-text-baseline.mjs
  */
 
-const path = require('node:path')
+const { loadBaseline, baselineKey } = require('./ratchet')
 
 const TEXT_SOURCES = new Set(['react-native', 'react-native-web'])
 const STYLE_ATTRIBUTES = new Set(['className', 'style'])
 const BASELINE_FILE = 'no-unstyled-text-baseline.json'
 const BASELINE_KEY = 'unstyled'
-
-let baselineCache = null
-function loadBaseline() {
-  try {
-    baselineCache ??= require(`./${BASELINE_FILE}`)
-  } catch {
-    baselineCache = {}
-  }
-  return baselineCache
-}
-
-/** Baseline keys are package-relative POSIX paths, so they're stable across machines. */
-function baselineKey(context) {
-  const cwd = context.getCwd?.() ?? process.cwd()
-  return path
-    .relative(cwd, context.filename ?? context.getFilename())
-    .split(path.sep)
-    .join('/')
-}
 
 /** The local names `Text` is bound to, and the namespaces it can be read from. */
 function textBindings(program) {
@@ -113,7 +94,7 @@ module.exports = {
   },
 
   create(context) {
-    let allowance = loadBaseline()[baselineKey(context)]?.[BASELINE_KEY] ?? 0
+    let allowance = loadBaseline(BASELINE_FILE)[baselineKey(context)]?.[BASELINE_KEY] ?? 0
     let bindings
 
     return {

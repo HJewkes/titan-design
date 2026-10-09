@@ -7,7 +7,7 @@ import {
   roundLayout,
   type ResolvedSection,
 } from '../src/sections.ts'
-import type { Annotation, Manifest, Question, Verdict } from '../src/schema.ts'
+import type { Annotation, Manifest, Question, Verdict } from '@titan-design/review-schema'
 import { loadDraft, type DraftStorage } from './draftStore.ts'
 import { pinId, pinNumber } from './pins.ts'
 

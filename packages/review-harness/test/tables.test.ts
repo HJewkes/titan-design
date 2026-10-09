@@ -18,7 +18,12 @@ import {
 import { readFeedbackFiles } from '../src/calibration.ts'
 import { REQUIRED_RATIO } from '../src/contrast.ts'
 import { loadRound } from '../src/review.ts'
-import { CHECK_KINDS, VerdictSchema, type Annotation, type CheckKind } from '../src/schema.ts'
+import {
+  CHECK_KINDS,
+  VerdictSchema,
+  type Annotation,
+  type CheckKind,
+} from '@titan-design/review-schema'
 import { sectionOfQuestion } from '../src/sections.ts'
 import { manifest, sectioned } from './fixtures.ts'
 

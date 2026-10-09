@@ -1,16 +1,17 @@
 import { createHash } from 'node:crypto'
 import { mkdir, open, readFile, realpath, writeFile } from 'node:fs/promises'
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path'
-import { choiceMismatchMessage, settingMismatches } from './contract.ts'
 import {
   RoundSchema,
+  choiceMismatchMessage,
   isImageVariant,
   isLoopbackUrl,
   isStoryVariant,
+  settingMismatches,
   type Feedback,
   type ImageVariant,
   type Manifest,
-} from './schema.ts'
+} from '@titan-design/review-schema'
 import { urlParamProblems } from './round.ts'
 import { startReviewServer, type PageHandler } from './server.ts'
 

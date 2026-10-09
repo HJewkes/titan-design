@@ -31,7 +31,7 @@
  *     unaffected and still flagged
  */
 
-const path = require('node:path')
+const { loadBaseline, baselineKey } = require('./ratchet')
 const { extractRawColors, NAMED_KEYWORD } = require('./raw-color-patterns')
 const { classOptions, styleOptions, optionList } = require('./color-options')
 
@@ -102,26 +102,6 @@ function messageData(text, { value, id, index }) {
   return { value, options, notation: value.replace(/\s*\($/, '') }
 }
 
-let baselineCache = null
-function loadBaseline() {
-  if (baselineCache) return baselineCache
-  try {
-    baselineCache = require('./raw-color-baseline.json')
-  } catch {
-    baselineCache = {}
-  }
-  return baselineCache
-}
-
-/** Baseline keys are package-relative POSIX paths, so they're stable across machines. */
-function baselineKey(context) {
-  const cwd = context.getCwd?.() ?? process.cwd()
-  return path
-    .relative(cwd, context.filename ?? context.getFilename())
-    .split(path.sep)
-    .join('/')
-}
-
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
   meta: {
@@ -150,7 +130,9 @@ module.exports = {
     // Remaining allowance per colour VALUE, not a plain count. Keying on the
     // value means the message lands on the colour you just added rather than on
     // whichever grandfathered literal happened to sit at the count boundary.
-    const remaining = new Map(Object.entries(loadBaseline()[baselineKey(context)] ?? {}))
+    const remaining = new Map(
+      Object.entries(loadBaseline('raw-color-baseline.json')[baselineKey(context)] ?? {})
+    )
 
     const check = (text, node, loc) => {
       for (const found of extractRawColors(text)) {
