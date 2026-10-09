@@ -37,13 +37,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "ExerciseCard",
-        "InputBar",
-        "RestTimer",
-        "SetRow",
-        "SupersetWrapper"
-      ],
+      "dependsOn": ["ExerciseCard", "InputBar", "RestTimer", "SetRow", "SupersetWrapper"],
       "leak": {
         "rawView": 11,
         "rawText": 4,
@@ -103,11 +97,7 @@
       "file": "packages/ui/src/components/shell/AppShell.tsx",
       "dir": "shell",
       "family": "shell",
-      "exports": [
-        "AppShell",
-        "AppShellProps",
-        "ContentPlaceholder"
-      ],
+      "exports": ["AppShell", "AppShellProps", "ContentPlaceholder"],
       "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
@@ -117,12 +107,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "SideNav",
-        "Surface",
-        "TopBar",
-        "brands"
-      ],
+      "dependsOn": ["SideNav", "Surface", "TopBar", "brands"],
       "leak": {
         "rawView": 3,
         "rawText": 1,
@@ -142,10 +127,7 @@
       "file": "packages/ui/src/components/ui/autocomplete/Autocomplete.tsx",
       "dir": "ui",
       "family": "ui/autocomplete",
-      "exports": [
-        "Autocomplete",
-        "AutocompleteProps"
-      ],
+      "exports": ["Autocomplete", "AutocompleteProps"],
       "libDependents": 0,
       "storyRefs": 1,
       "xproj": {
@@ -155,9 +137,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "AutocompleteParts"
-      ],
+      "dependsOn": ["AutocompleteParts"],
       "leak": {
         "rawView": 3,
         "rawText": 0,
@@ -195,9 +175,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Surface"
-      ],
+      "dependsOn": ["Surface"],
       "leak": {
         "rawView": 1,
         "rawText": 8,
@@ -274,10 +252,7 @@
         "audiobook": 2,
         "total": 5
       },
-      "dependsOn": [
-        "Indicator",
-        "Pill"
-      ],
+      "dependsOn": ["Indicator", "Pill"],
       "leak": {
         "rawView": 0,
         "rawText": 1,
@@ -297,11 +272,7 @@
       "file": "packages/ui/src/components/ui/charts/bar-list/BarList.tsx",
       "dir": "ui",
       "family": "ui/charts",
-      "exports": [
-        "BarList",
-        "BarListProps",
-        "keyDownProps"
-      ],
+      "exports": ["BarList", "BarListProps", "keyDownProps"],
       "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
@@ -311,12 +282,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "BarListCells",
-        "BarListParts",
-        "BarListTip",
-        "EmptyState"
-      ],
+      "dependsOn": ["BarListCells", "BarListParts", "BarListTip", "EmptyState"],
       "leak": {
         "rawView": 3,
         "rawText": 0,
@@ -437,11 +403,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Badge",
-        "BodyMapDetailSections",
-        "Sparkline"
-      ],
+      "dependsOn": ["Badge", "BodyMapDetailSections", "Sparkline"],
       "leak": {
         "rawView": 16,
         "rawText": 15,
@@ -479,11 +441,7 @@
         "audiobook": 0,
         "total": 5
       },
-      "dependsOn": [
-        "DataRow",
-        "PrBadge",
-        "StrengthTrendChart"
-      ],
+      "dependsOn": ["DataRow", "PrBadge", "StrengthTrendChart"],
       "leak": {
         "rawView": 9,
         "rawText": 8,
@@ -545,10 +503,7 @@
       "file": "packages/ui/src/components/shell/BrandLockup.tsx",
       "dir": "shell",
       "family": "shell",
-      "exports": [
-        "BrandLockup",
-        "BrandLockupProps"
-      ],
+      "exports": ["BrandLockup", "BrandLockupProps"],
       "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
@@ -558,10 +513,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Typography",
-        "brands"
-      ],
+      "dependsOn": ["Typography", "brands"],
       "leak": {
         "rawView": 2,
         "rawText": 0,
@@ -581,12 +533,7 @@
       "file": "packages/ui/src/components/shell/brands.tsx",
       "dir": "shell",
       "family": "shell",
-      "exports": [
-        "BrandKey",
-        "BrandPreset",
-        "brandPresets",
-        "brandKeys"
-      ],
+      "exports": ["BrandKey", "BrandPreset", "brandPresets", "brandKeys"],
       "libDependents": 3,
       "storyRefs": 4,
       "xproj": {
@@ -596,9 +543,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "icons"
-      ],
+      "dependsOn": ["icons"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -714,10 +659,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "CapacityBandOverlays",
-        "CapacityBandPlot"
-      ],
+      "dependsOn": ["CapacityBandOverlays", "CapacityBandPlot"],
       "leak": {
         "rawView": 3,
         "rawText": 0,
@@ -737,12 +679,7 @@
       "file": "packages/ui/src/components/custom/Workout/CapacityBandOverlays.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "YAxisLabel",
-        "XAxisLabels",
-        "WorkoutDots",
-        "WorkoutDotMark"
-      ],
+      "exports": ["YAxisLabel", "XAxisLabels", "WorkoutDots", "WorkoutDotMark"],
       "libDependents": 1,
       "storyRefs": 0,
       "xproj": {
@@ -839,9 +776,7 @@
         "audiobook": 1,
         "total": 75
       },
-      "dependsOn": [
-        "Surface"
-      ],
+      "dependsOn": ["Surface"],
       "leak": {
         "rawView": 8,
         "rawText": 4,
@@ -861,11 +796,7 @@
       "file": "packages/ui/src/components/ui/card/CardStat.tsx",
       "dir": "ui",
       "family": "ui/card",
-      "exports": [
-        "CardStat",
-        "CardStatMetricProps",
-        "CardStatProps"
-      ],
+      "exports": ["CardStat", "CardStatMetricProps", "CardStatProps"],
       "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
@@ -875,10 +806,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Card",
-        "Metric"
-      ],
+      "dependsOn": ["Card", "Metric"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -924,10 +852,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Button",
-        "icons"
-      ],
+      "dependsOn": ["Button", "icons"],
       "leak": {
         "rawView": 12,
         "rawText": 1,
@@ -947,12 +872,7 @@
       "file": "packages/ui/src/components/custom/Chat/ChatCard.tsx",
       "dir": "custom",
       "family": "custom/Chat",
-      "exports": [
-        "ChatCard",
-        "ChatCardAction",
-        "ChatCardProps",
-        "ActionRow"
-      ],
+      "exports": ["ChatCard", "ChatCardAction", "ChatCardProps", "ActionRow"],
       "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
@@ -962,11 +882,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Button",
-        "Card",
-        "Typography"
-      ],
+      "dependsOn": ["Button", "Card", "Typography"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -1023,14 +939,7 @@
       "file": "packages/ui/src/components/ui/chip/Chip.tsx",
       "dir": "ui",
       "family": "ui/chip",
-      "exports": [
-        "Chip",
-        "ChipVariant",
-        "ChipColor",
-        "ChipSize",
-        "ChipProps",
-        "DeleteButton"
-      ],
+      "exports": ["Chip", "ChipVariant", "ChipColor", "ChipSize", "ChipProps", "DeleteButton"],
       "libDependents": 1,
       "storyRefs": 3,
       "xproj": {
@@ -1040,9 +949,7 @@
         "audiobook": 1,
         "total": 1
       },
-      "dependsOn": [
-        "Pill"
-      ],
+      "dependsOn": ["Pill"],
       "leak": {
         "rawView": 1,
         "rawText": 1,
@@ -1062,10 +969,7 @@
       "file": "packages/ui/src/components/custom/CircularTimer/CircularTimer.tsx",
       "dir": "custom",
       "family": "custom/CircularTimer",
-      "exports": [
-        "CircularTimer",
-        "CircularTimerProps"
-      ],
+      "exports": ["CircularTimer", "CircularTimerProps"],
       "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
@@ -1075,9 +979,7 @@
         "audiobook": 0,
         "total": 1
       },
-      "dependsOn": [
-        "Progress"
-      ],
+      "dependsOn": ["Progress"],
       "leak": {
         "rawView": 1,
         "rawText": 1,
@@ -1097,10 +999,7 @@
       "file": "packages/ui/src/components/custom/Chat/coach-cards.tsx",
       "dir": "custom",
       "family": "custom/Chat",
-      "exports": [
-        "CheckinCard",
-        "renderCoachPart"
-      ],
+      "exports": ["CheckinCard", "renderCoachPart"],
       "libDependents": 0,
       "storyRefs": 4,
       "xproj": {
@@ -1110,12 +1009,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "ChatCard",
-        "DateTime",
-        "Pill",
-        "Typography"
-      ],
+      "dependsOn": ["ChatCard", "DateTime", "Pill", "Typography"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -1135,10 +1029,7 @@
       "file": "packages/ui/src/components/custom/ActiveWork/CoChangeChip.tsx",
       "dir": "custom",
       "family": "custom/ActiveWork",
-      "exports": [
-        "CoChangeChip",
-        "CoChangeChipProps"
-      ],
+      "exports": ["CoChangeChip", "CoChangeChipProps"],
       "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
@@ -1148,12 +1039,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Card",
-        "FilePathLabel",
-        "Pill",
-        "Typography"
-      ],
+      "dependsOn": ["Card", "FilePathLabel", "Pill", "Typography"],
       "leak": {
         "rawView": 1,
         "rawText": 0,
@@ -1238,11 +1124,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Button",
-        "Input",
-        "Surface"
-      ],
+      "dependsOn": ["Button", "Input", "Surface"],
       "leak": {
         "rawView": 2,
         "rawText": 0,
@@ -1262,10 +1144,7 @@
       "file": "packages/ui/src/components/custom/Chat/ConversationIdentity.tsx",
       "dir": "custom",
       "family": "custom/Chat",
-      "exports": [
-        "ConversationIdentity",
-        "ConversationIdentityProps"
-      ],
+      "exports": ["ConversationIdentity", "ConversationIdentityProps"],
       "libDependents": 1,
       "storyRefs": 2,
       "xproj": {
@@ -1275,10 +1154,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Avatar",
-        "Typography"
-      ],
+      "dependsOn": ["Avatar", "Typography"],
       "leak": {
         "rawView": 1,
         "rawText": 0,
@@ -1298,10 +1174,7 @@
       "file": "packages/ui/src/components/ui/data-row/DataRow.tsx",
       "dir": "ui",
       "family": "ui/data-row",
-      "exports": [
-        "DataRow",
-        "DataRowProps"
-      ],
+      "exports": ["DataRow", "DataRowProps"],
       "libDependents": 3,
       "storyRefs": 1,
       "xproj": {
@@ -1331,12 +1204,7 @@
       "file": "packages/ui/src/components/custom/Chat/DateSeparator.tsx",
       "dir": "custom",
       "family": "custom/Chat",
-      "exports": [
-        "DateSeparator",
-        "DateSeparatorProps",
-        "relativeDayName",
-        "DayLabel"
-      ],
+      "exports": ["DateSeparator", "DateSeparatorProps", "relativeDayName", "DayLabel"],
       "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
@@ -1346,11 +1214,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "DateTime",
-        "Divider",
-        "Typography"
-      ],
+      "dependsOn": ["DateTime", "Divider", "Typography"],
       "leak": {
         "rawView": 1,
         "rawText": 0,
@@ -1387,9 +1251,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Typography"
-      ],
+      "dependsOn": ["Typography"],
       "leak": {
         "rawView": 0,
         "rawText": 1,
@@ -1409,12 +1271,7 @@
       "file": "packages/ui/src/components/custom/Workout/DeviationBar.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "DeviationBar",
-        "DeviationBarProps",
-        "getDotColor",
-        "getDeviationDescription"
-      ],
+      "exports": ["DeviationBar", "DeviationBarProps", "getDotColor", "getDeviationDescription"],
       "libDependents": 2,
       "storyRefs": 1,
       "xproj": {
@@ -1444,11 +1301,7 @@
       "file": "packages/ui/src/components/shell/workout/DeviceIndicator.tsx",
       "dir": "shell",
       "family": "shell",
-      "exports": [
-        "DeviceIndicator",
-        "DeviceConnState",
-        "DeviceIndicatorProps"
-      ],
+      "exports": ["DeviceIndicator", "DeviceConnState", "DeviceIndicatorProps"],
       "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
@@ -1458,9 +1311,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "icons"
-      ],
+      "dependsOn": ["icons"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -1480,11 +1331,7 @@
       "file": "packages/ui/src/components/shell/workout/DeviceMenu.tsx",
       "dir": "shell",
       "family": "shell",
-      "exports": [
-        "DeviceMenu",
-        "DeviceMenuProps",
-        "aggregateStatus"
-      ],
+      "exports": ["DeviceMenu", "DeviceMenuProps", "aggregateStatus"],
       "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
@@ -1494,12 +1341,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "DeviceIndicator",
-        "DeviceRow",
-        "Popover",
-        "Typography"
-      ],
+      "dependsOn": ["DeviceIndicator", "DeviceRow", "Popover", "Typography"],
       "leak": {
         "rawView": 1,
         "rawText": 0,
@@ -1519,12 +1361,7 @@
       "file": "packages/ui/src/components/shell/workout/DeviceRow.tsx",
       "dir": "shell",
       "family": "shell",
-      "exports": [
-        "DeviceRow",
-        "DeviceRowState",
-        "Device",
-        "DeviceRowProps"
-      ],
+      "exports": ["DeviceRow", "DeviceRowState", "Device", "DeviceRowProps"],
       "libDependents": 3,
       "storyRefs": 4,
       "xproj": {
@@ -1534,10 +1371,7 @@
         "audiobook": 0,
         "total": 2
       },
-      "dependsOn": [
-        "Indicator",
-        "Typography"
-      ],
+      "dependsOn": ["Indicator", "Typography"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -1557,11 +1391,7 @@
       "file": "packages/ui/src/components/ui/divider/Divider.tsx",
       "dir": "ui",
       "family": "ui/divider",
-      "exports": [
-        "Divider",
-        "DividerOrientation",
-        "DividerProps"
-      ],
+      "exports": ["Divider", "DividerOrientation", "DividerProps"],
       "libDependents": 6,
       "storyRefs": 4,
       "xproj": {
@@ -1613,9 +1443,7 @@
         "audiobook": 0,
         "total": 6
       },
-      "dependsOn": [
-        "Surface"
-      ],
+      "dependsOn": ["Surface"],
       "leak": {
         "rawView": 6,
         "rawText": 3,
@@ -1635,12 +1463,7 @@
       "file": "packages/ui/src/components/custom/Fatigue/DualGhostSpark.tsx",
       "dir": "custom",
       "family": "custom/Fatigue",
-      "exports": [
-        "mergePhaseSegments",
-        "DualGhostSpark",
-        "DualGhostSparkProps",
-        "phaseAt"
-      ],
+      "exports": ["mergePhaseSegments", "DualGhostSpark", "DualGhostSparkProps", "phaseAt"],
       "libDependents": 0,
       "storyRefs": 1,
       "xproj": {
@@ -1650,11 +1473,7 @@
         "audiobook": 0,
         "total": 1
       },
-      "dependsOn": [
-        "DualGhostSparkParts",
-        "GhostBand",
-        "GhostSpark"
-      ],
+      "dependsOn": ["DualGhostSparkParts", "GhostBand", "GhostSpark"],
       "leak": {
         "rawView": 2,
         "rawText": 0,
@@ -1674,10 +1493,7 @@
       "file": "packages/ui/src/components/custom/Fatigue/DualGhostSparkParts.tsx",
       "dir": "custom",
       "family": "custom/Fatigue",
-      "exports": [
-        "DualWingBloom",
-        "DualDeviceLabels"
-      ],
+      "exports": ["DualWingBloom", "DualDeviceLabels"],
       "libDependents": 1,
       "storyRefs": 0,
       "xproj": {
@@ -1687,9 +1503,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "GhostBloom"
-      ],
+      "dependsOn": ["GhostBloom"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -1742,12 +1556,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "DualVelocityStrip",
-        "Typography",
-        "icons",
-        "pinnedLiveStripParts"
-      ],
+      "dependsOn": ["DualVelocityStrip", "Typography", "icons", "pinnedLiveStripParts"],
       "leak": {
         "rawView": 13,
         "rawText": 10,
@@ -1787,10 +1596,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "SetBarChart",
-        "VelocityStrip"
-      ],
+      "dependsOn": ["SetBarChart", "VelocityStrip"],
       "leak": {
         "rawView": 8,
         "rawText": 0,
@@ -1810,10 +1616,7 @@
       "file": "packages/ui/src/components/custom/Workout/DualVelocityStrip.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "DualVelocityStrip",
-        "DualVelocityStripProps"
-      ],
+      "exports": ["DualVelocityStrip", "DualVelocityStripProps"],
       "libDependents": 2,
       "storyRefs": 7,
       "xproj": {
@@ -1823,10 +1626,7 @@
         "audiobook": 0,
         "total": 1
       },
-      "dependsOn": [
-        "DualVelocityCharts",
-        "SetBarChart"
-      ],
+      "dependsOn": ["DualVelocityCharts", "SetBarChart"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -1846,10 +1646,7 @@
       "file": "packages/ui/src/components/ui/empty-state/EmptyState.tsx",
       "dir": "ui",
       "family": "ui/empty-state",
-      "exports": [
-        "EmptyState",
-        "EmptyStateProps"
-      ],
+      "exports": ["EmptyState", "EmptyStateProps"],
       "libDependents": 2,
       "storyRefs": 2,
       "xproj": {
@@ -1944,12 +1741,7 @@
         "audiobook": 0,
         "total": 1
       },
-      "dependsOn": [
-        "ExerciseHeading",
-        "SetBar",
-        "SetStrip",
-        "Tooltip"
-      ],
+      "dependsOn": ["ExerciseHeading", "SetBar", "SetStrip", "Tooltip"],
       "leak": {
         "rawView": 1,
         "rawText": 0,
@@ -2032,9 +1824,7 @@
       "file": "packages/ui/src/components/custom/Workout/ExerciseDetailSectionCard.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "SectionCard"
-      ],
+      "exports": ["SectionCard"],
       "libDependents": 1,
       "storyRefs": 0,
       "xproj": {
@@ -2085,12 +1875,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "ExerciseIndicator",
-        "SetsRepsLoad",
-        "TempoDisplay",
-        "Typography"
-      ],
+      "dependsOn": ["ExerciseIndicator", "SetsRepsLoad", "TempoDisplay", "Typography"],
       "leak": {
         "rawView": 6,
         "rawText": 0,
@@ -2126,10 +1911,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "SvgIcon",
-        "icons"
-      ],
+      "dependsOn": ["SvgIcon", "icons"],
       "leak": {
         "rawView": 1,
         "rawText": 0,
@@ -2159,9 +1941,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Typography"
-      ],
+      "dependsOn": ["Typography"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -2181,10 +1961,7 @@
       "file": "packages/ui/src/components/ui/eyebrow/Eyebrow.tsx",
       "dir": "ui",
       "family": "ui/eyebrow",
-      "exports": [
-        "Eyebrow",
-        "EyebrowProps"
-      ],
+      "exports": ["Eyebrow", "EyebrowProps"],
       "libDependents": 9,
       "storyRefs": 2,
       "xproj": {
@@ -2194,9 +1971,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Typography"
-      ],
+      "dependsOn": ["Typography"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -2216,11 +1991,7 @@
       "file": "packages/ui/src/components/custom/Fatigue/FatigueLights.tsx",
       "dir": "custom",
       "family": "custom/Fatigue",
-      "exports": [
-        "FatigueLights",
-        "FatigueLightsProps",
-        "Light"
-      ],
+      "exports": ["FatigueLights", "FatigueLightsProps", "Light"],
       "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
@@ -2230,10 +2001,7 @@
         "audiobook": 0,
         "total": 1
       },
-      "dependsOn": [
-        "StatusDot",
-        "Tooltip"
-      ],
+      "dependsOn": ["StatusDot", "Tooltip"],
       "leak": {
         "rawView": 2,
         "rawText": 1,
@@ -2253,10 +2021,7 @@
       "file": "packages/ui/src/components/custom/Workout/FatigueMeter.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "FatigueMeter",
-        "FatigueMeterProps"
-      ],
+      "exports": ["FatigueMeter", "FatigueMeterProps"],
       "libDependents": 0,
       "storyRefs": 1,
       "xproj": {
@@ -2266,9 +2031,7 @@
         "audiobook": 0,
         "total": 1
       },
-      "dependsOn": [
-        "ZoneTrack"
-      ],
+      "dependsOn": ["ZoneTrack"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -2334,10 +2097,7 @@
       "file": "packages/ui/src/components/custom/ActiveWork/FileActivityGrowthWell.tsx",
       "dir": "custom",
       "family": "custom/ActiveWork",
-      "exports": [
-        "GrowthWell",
-        "GrowthStat"
-      ],
+      "exports": ["GrowthWell", "GrowthStat"],
       "libDependents": 1,
       "storyRefs": 0,
       "xproj": {
@@ -2347,13 +2107,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Card",
-        "Eyebrow",
-        "FileActivityRow",
-        "SparkBars",
-        "Typography"
-      ],
+      "dependsOn": ["Card", "Eyebrow", "FileActivityRow", "SparkBars", "Typography"],
       "leak": {
         "rawView": 3,
         "rawText": 0,
@@ -2392,11 +2146,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "FilePathLabel",
-        "SparkBars",
-        "Typography"
-      ],
+      "dependsOn": ["FilePathLabel", "SparkBars", "Typography"],
       "leak": {
         "rawView": 5,
         "rawText": 0,
@@ -2471,9 +2221,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Typography"
-      ],
+      "dependsOn": ["Typography"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -2493,12 +2241,7 @@
       "file": "packages/ui/src/components/ui/file-path-label/FilePathLabel.tsx",
       "dir": "ui",
       "family": "ui/file-path-label",
-      "exports": [
-        "splitPath",
-        "FilePathLabel",
-        "FilePathLabelSize",
-        "FilePathLabelProps"
-      ],
+      "exports": ["splitPath", "FilePathLabel", "FilePathLabelSize", "FilePathLabelProps"],
       "libDependents": 4,
       "storyRefs": 1,
       "xproj": {
@@ -2508,9 +2251,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Typography"
-      ],
+      "dependsOn": ["Typography"],
       "leak": {
         "rawView": 1,
         "rawText": 0,
@@ -2569,10 +2310,7 @@
       "file": "packages/ui/src/components/custom/Session/GapIndicator.tsx",
       "dir": "custom",
       "family": "custom/Session",
-      "exports": [
-        "GapIndicator",
-        "GapIndicatorProps"
-      ],
+      "exports": ["GapIndicator", "GapIndicatorProps"],
       "libDependents": 0,
       "storyRefs": 1,
       "xproj": {
@@ -2582,11 +2320,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "DateTime",
-        "Divider",
-        "Typography"
-      ],
+      "dependsOn": ["DateTime", "Divider", "Typography"],
       "leak": {
         "rawView": 1,
         "rawText": 0,
@@ -2645,12 +2379,7 @@
       "file": "packages/ui/src/components/custom/Fatigue/GhostBand.tsx",
       "dir": "custom",
       "family": "custom/Fatigue",
-      "exports": [
-        "GhostBand",
-        "BAND_H",
-        "BAND_GAP",
-        "GhostBandProps"
-      ],
+      "exports": ["GhostBand", "BAND_H", "BAND_GAP", "GhostBandProps"],
       "libDependents": 4,
       "storyRefs": 2,
       "xproj": {
@@ -2660,9 +2389,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "GhostBandParts"
-      ],
+      "dependsOn": ["GhostBandParts"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -2682,11 +2409,7 @@
       "file": "packages/ui/src/components/custom/Fatigue/GhostBandParts.tsx",
       "dir": "custom",
       "family": "custom/Fatigue",
-      "exports": [
-        "GhostBandDefs",
-        "GhostBandRunRects",
-        "GhostBandLabels"
-      ],
+      "exports": ["GhostBandDefs", "GhostBandRunRects", "GhostBandLabels"],
       "libDependents": 1,
       "storyRefs": 0,
       "xproj": {
@@ -2770,10 +2493,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "GhostBand",
-        "GhostBloom"
-      ],
+      "dependsOn": ["GhostBand", "GhostBloom"],
       "leak": {
         "rawView": 3,
         "rawText": 0,
@@ -2888,14 +2608,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Card",
-        "Carousel",
-        "GoalCard",
-        "GoalMuscleCard",
-        "Metric",
-        "Typography"
-      ],
+      "dependsOn": ["Card", "Carousel", "GoalCard", "GoalMuscleCard", "Metric", "Typography"],
       "leak": {
         "rawView": 1,
         "rawText": 0,
@@ -2979,11 +2692,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "GoalMilestoneWeekStrip",
-        "GoalTrajectoryPlot",
-        "Typography"
-      ],
+      "dependsOn": ["GoalMilestoneWeekStrip", "GoalTrajectoryPlot", "Typography"],
       "leak": {
         "rawView": 4,
         "rawText": 0,
@@ -3020,12 +2729,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "GoalMilestoneSummary",
-        "Indicator",
-        "Surface",
-        "Typography"
-      ],
+      "dependsOn": ["GoalMilestoneSummary", "Indicator", "Surface", "Typography"],
       "leak": {
         "rawView": 3,
         "rawText": 0,
@@ -3067,13 +2771,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "GoalTrajectoryPlot",
-        "Pill",
-        "SegmentedBar",
-        "TipTrigger",
-        "Typography"
-      ],
+      "dependsOn": ["GoalTrajectoryPlot", "Pill", "SegmentedBar", "TipTrigger", "Typography"],
       "leak": {
         "rawView": 6,
         "rawText": 0,
@@ -3110,14 +2808,7 @@
         "audiobook": 0,
         "total": 1
       },
-      "dependsOn": [
-        "Card",
-        "GoalCard",
-        "Indicator",
-        "MuscleGlyph",
-        "Pill",
-        "Typography"
-      ],
+      "dependsOn": ["Card", "GoalCard", "Indicator", "MuscleGlyph", "Pill", "Typography"],
       "leak": {
         "rawView": 8,
         "rawText": 0,
@@ -3155,12 +2846,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "SvgIcon",
-        "TipTrigger",
-        "Typography",
-        "icons"
-      ],
+      "dependsOn": ["SvgIcon", "TipTrigger", "Typography", "icons"],
       "leak": {
         "rawView": 2,
         "rawText": 0,
@@ -3196,10 +2882,7 @@
         "audiobook": 0,
         "total": 2
       },
-      "dependsOn": [
-        "GoalPriorityIcon",
-        "Typography"
-      ],
+      "dependsOn": ["GoalPriorityIcon", "Typography"],
       "leak": {
         "rawView": 3,
         "rawText": 0,
@@ -3290,12 +2973,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "GoalTrajectoryPlot",
-        "TipTrigger",
-        "Typography",
-        "icons"
-      ],
+      "dependsOn": ["GoalTrajectoryPlot", "TipTrigger", "Typography", "icons"],
       "leak": {
         "rawView": 3,
         "rawText": 0,
@@ -3315,10 +2993,7 @@
       "file": "packages/ui/src/components/custom/Workout/GoalTrajectoryChart.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "GoalTrajectoryChart",
-        "GoalTrajectoryChartProps"
-      ],
+      "exports": ["GoalTrajectoryChart", "GoalTrajectoryChartProps"],
       "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
@@ -3328,11 +3003,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "GoalTrajectoryBand",
-        "GoalTrajectoryChartParts",
-        "GoalTrajectoryPlot"
-      ],
+      "dependsOn": ["GoalTrajectoryBand", "GoalTrajectoryChartParts", "GoalTrajectoryPlot"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -3352,10 +3023,7 @@
       "file": "packages/ui/src/components/custom/Workout/GoalTrajectoryChartParts.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "GoalTrajectoryChartEmpty",
-        "GoalTrajectoryChartFrame"
-      ],
+      "exports": ["GoalTrajectoryChartEmpty", "GoalTrajectoryChartFrame"],
       "libDependents": 1,
       "storyRefs": 0,
       "xproj": {
@@ -3365,11 +3033,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "GoalTrajectoryCalibrating",
-        "GoalTrajectoryPlot",
-        "GoalTrajectoryWeekTips"
-      ],
+      "dependsOn": ["GoalTrajectoryCalibrating", "GoalTrajectoryPlot", "GoalTrajectoryWeekTips"],
       "leak": {
         "rawView": 4,
         "rawText": 1,
@@ -3419,9 +3083,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "GoalTrajectoryPlot"
-      ],
+      "dependsOn": ["GoalTrajectoryPlot"],
       "leak": {
         "rawView": 1,
         "rawText": 0,
@@ -3491,12 +3153,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "GoalTrajectoryBand",
-        "GoalTrajectoryCalibrating",
-        "SvgIcon",
-        "icons"
-      ],
+      "dependsOn": ["GoalTrajectoryBand", "GoalTrajectoryCalibrating", "SvgIcon", "icons"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -3537,13 +3194,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Metric",
-        "Pill",
-        "PrBadge",
-        "TipTrigger",
-        "Typography"
-      ],
+      "dependsOn": ["Metric", "Pill", "PrBadge", "TipTrigger", "Typography"],
       "leak": {
         "rawView": 8,
         "rawText": 0,
@@ -3578,10 +3229,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "GoalMilestoneWeekStrip",
-        "GoalTrajectoryMini"
-      ],
+      "dependsOn": ["GoalMilestoneWeekStrip", "GoalTrajectoryMini"],
       "leak": {
         "rawView": 2,
         "rawText": 0,
@@ -3622,9 +3270,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Surface"
-      ],
+      "dependsOn": ["Surface"],
       "leak": {
         "rawView": 4,
         "rawText": 5,
@@ -3644,10 +3290,7 @@
       "file": "packages/ui/src/components/ui/highlight-text/HighlightText.tsx",
       "dir": "ui",
       "family": "ui/highlight-text",
-      "exports": [
-        "HighlightText",
-        "HighlightTextProps"
-      ],
+      "exports": ["HighlightText", "HighlightTextProps"],
       "libDependents": 0,
       "storyRefs": 1,
       "xproj": {
@@ -3657,9 +3300,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Typography"
-      ],
+      "dependsOn": ["Typography"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -3679,10 +3320,7 @@
       "file": "packages/ui/src/components/ui/icon-box/IconBox.tsx",
       "dir": "ui",
       "family": "ui/icon-box",
-      "exports": [
-        "IconBox",
-        "IconBoxProps"
-      ],
+      "exports": ["IconBox", "IconBoxProps"],
       "libDependents": 0,
       "storyRefs": 1,
       "xproj": {
@@ -3722,9 +3360,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "SvgIcon"
-      ],
+      "dependsOn": ["SvgIcon"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -3782,9 +3418,7 @@
         "audiobook": 0,
         "total": 8
       },
-      "dependsOn": [
-        "SvgIcon"
-      ],
+      "dependsOn": ["SvgIcon"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -3859,11 +3493,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Eyebrow",
-        "MarkdownProse",
-        "Typography"
-      ],
+      "dependsOn": ["Eyebrow", "MarkdownProse", "Typography"],
       "leak": {
         "rawView": 5,
         "rawText": 0,
@@ -3899,14 +3529,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Card",
-        "Pill",
-        "SegmentedBar",
-        "SeverityLabel",
-        "StatusDot",
-        "Typography"
-      ],
+      "dependsOn": ["Card", "Pill", "SegmentedBar", "SeverityLabel", "StatusDot", "Typography"],
       "leak": {
         "rawView": 4,
         "rawText": 0,
@@ -3926,10 +3549,7 @@
       "file": "packages/ui/src/components/custom/ActiveWork/InitiativeHeader.tsx",
       "dir": "custom",
       "family": "custom/ActiveWork",
-      "exports": [
-        "InitiativeHeader",
-        "InitiativeHeaderProps"
-      ],
+      "exports": ["InitiativeHeader", "InitiativeHeaderProps"],
       "libDependents": 0,
       "storyRefs": 2,
       "xproj": {
@@ -3939,13 +3559,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "DateTime",
-        "InitiativeCard",
-        "Pill",
-        "StatusDot",
-        "Typography"
-      ],
+      "dependsOn": ["DateTime", "InitiativeCard", "Pill", "StatusDot", "Typography"],
       "leak": {
         "rawView": 3,
         "rawText": 0,
@@ -4007,10 +3621,7 @@
       "file": "packages/ui/src/components/custom/Workout/InputBar.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "InputBar",
-        "InputBarProps"
-      ],
+      "exports": ["InputBar", "InputBarProps"],
       "libDependents": 2,
       "storyRefs": 1,
       "xproj": {
@@ -4078,12 +3689,7 @@
       "file": "packages/ui/src/components/ui/kbd/Kbd.tsx",
       "dir": "ui",
       "family": "ui/kbd",
-      "exports": [
-        "Kbd",
-        "KbdSize",
-        "KbdProps",
-        "spokenName"
-      ],
+      "exports": ["Kbd", "KbdSize", "KbdProps", "spokenName"],
       "libDependents": 0,
       "storyRefs": 1,
       "xproj": {
@@ -4093,9 +3699,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Typography"
-      ],
+      "dependsOn": ["Typography"],
       "leak": {
         "rawView": 2,
         "rawText": 0,
@@ -4115,13 +3719,7 @@
       "file": "packages/ui/src/components/ui/link/Link.tsx",
       "dir": "ui",
       "family": "ui/link",
-      "exports": [
-        "Link",
-        "LinkUnderline",
-        "LinkColor",
-        "LinkProps",
-        "Link.handlePress"
-      ],
+      "exports": ["Link", "LinkUnderline", "LinkColor", "LinkProps", "Link.handlePress"],
       "libDependents": 0,
       "storyRefs": 2,
       "xproj": {
@@ -4192,12 +3790,7 @@
       "file": "packages/ui/src/components/custom/Workout/LiveAuraFrame.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "liveAuraColor",
-        "LiveAuraFrame",
-        "LiveAuraCategory",
-        "LiveAuraFrameProps"
-      ],
+      "exports": ["liveAuraColor", "LiveAuraFrame", "LiveAuraCategory", "LiveAuraFrameProps"],
       "libDependents": 3,
       "storyRefs": 3,
       "xproj": {
@@ -4227,10 +3820,7 @@
       "file": "packages/ui/src/components/custom/Fatigue/LiveFatigueCard.tsx",
       "dir": "custom",
       "family": "custom/Fatigue",
-      "exports": [
-        "LiveFatigueCard",
-        "LiveFatigueCardProps"
-      ],
+      "exports": ["LiveFatigueCard", "LiveFatigueCardProps"],
       "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
@@ -4240,13 +3830,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "FatigueLights",
-        "GhostSpark",
-        "RomProgressionChart",
-        "Surface",
-        "VerdictHero"
-      ],
+      "dependsOn": ["FatigueLights", "GhostSpark", "RomProgressionChart", "Surface", "VerdictHero"],
       "leak": {
         "rawView": 3,
         "rawText": 0,
@@ -4266,11 +3850,7 @@
       "file": "packages/ui/src/components/custom/Fatigue/LiveFatiguePanel.tsx",
       "dir": "custom",
       "family": "custom/Fatigue",
-      "exports": [
-        "LiveFatiguePanel",
-        "LiveFatiguePanelVelocity",
-        "LiveFatiguePanelProps"
-      ],
+      "exports": ["LiveFatiguePanel", "LiveFatiguePanelVelocity", "LiveFatiguePanelProps"],
       "libDependents": 0,
       "storyRefs": 1,
       "xproj": {
@@ -4280,11 +3860,7 @@
         "audiobook": 0,
         "total": 1
       },
-      "dependsOn": [
-        "LiveAuraFrame",
-        "LiveFatigueCard",
-        "VelocityHero"
-      ],
+      "dependsOn": ["LiveAuraFrame", "LiveFatigueCard", "VelocityHero"],
       "leak": {
         "rawView": 3,
         "rawText": 1,
@@ -4330,9 +3906,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Typography"
-      ],
+      "dependsOn": ["Typography"],
       "leak": {
         "rawView": 2,
         "rawText": 5,
@@ -4377,10 +3951,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Surface",
-        "TriggerSurface"
-      ],
+      "dependsOn": ["Surface", "TriggerSurface"],
       "leak": {
         "rawView": 4,
         "rawText": 2,
@@ -4416,11 +3987,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Badge",
-        "Card",
-        "WeekRow"
-      ],
+      "dependsOn": ["Badge", "Card", "WeekRow"],
       "leak": {
         "rawView": 8,
         "rawText": 2,
@@ -4507,10 +4074,7 @@
         "audiobook": 1,
         "total": 2
       },
-      "dependsOn": [
-        "Card",
-        "StatusDot"
-      ],
+      "dependsOn": ["Card", "StatusDot"],
       "leak": {
         "rawView": 18,
         "rawText": 12,
@@ -4551,12 +4115,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Avatar",
-        "MarkdownProse",
-        "Surface",
-        "Typography"
-      ],
+      "dependsOn": ["Avatar", "MarkdownProse", "Surface", "Typography"],
       "leak": {
         "rawView": 6,
         "rawText": 0,
@@ -4628,13 +4187,7 @@
       "file": "packages/ui/src/components/ui/metric/Metric.tsx",
       "dir": "ui",
       "family": "ui/metric",
-      "exports": [
-        "Metric",
-        "MetricGroup",
-        "MetricTrend",
-        "MetricProps",
-        "MetricGroupProps"
-      ],
+      "exports": ["Metric", "MetricGroup", "MetricTrend", "MetricProps", "MetricGroupProps"],
       "libDependents": 6,
       "storyRefs": 1,
       "xproj": {
@@ -4664,11 +4217,7 @@
       "file": "packages/ui/src/components/custom/Workout/metricText.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "MetricCell",
-        "METRIC_FONT",
-        "MetricCellProps"
-      ],
+      "exports": ["MetricCell", "METRIC_FONT", "MetricCellProps"],
       "libDependents": 2,
       "storyRefs": 1,
       "xproj": {
@@ -4698,11 +4247,7 @@
       "file": "packages/ui/src/components/custom/Workout/MetricTiles.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "MetricTiles",
-        "MetricTileData",
-        "MetricTilesProps"
-      ],
+      "exports": ["MetricTiles", "MetricTileData", "MetricTilesProps"],
       "libDependents": 2,
       "storyRefs": 1,
       "xproj": {
@@ -4712,10 +4257,7 @@
         "audiobook": 0,
         "total": 5
       },
-      "dependsOn": [
-        "Stack",
-        "Tile"
-      ],
+      "dependsOn": ["Stack", "Tile"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -4763,9 +4305,7 @@
         "audiobook": 6,
         "total": 6
       },
-      "dependsOn": [
-        "Surface"
-      ],
+      "dependsOn": ["Surface"],
       "leak": {
         "rawView": 3,
         "rawText": 3,
@@ -4785,10 +4325,7 @@
       "file": "packages/ui/src/components/custom/Workout/MuscleGlyph.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "MuscleGlyph",
-        "MuscleGlyphProps"
-      ],
+      "exports": ["MuscleGlyph", "MuscleGlyphProps"],
       "libDependents": 1,
       "storyRefs": 0,
       "xproj": {
@@ -4818,10 +4355,7 @@
       "file": "packages/ui/src/components/custom/Workout/MuscleGroupChip.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "MuscleGroupChip",
-        "MuscleGroupChipProps"
-      ],
+      "exports": ["MuscleGroupChip", "MuscleGroupChipProps"],
       "libDependents": 4,
       "storyRefs": 4,
       "xproj": {
@@ -4831,9 +4365,7 @@
         "audiobook": 0,
         "total": 1
       },
-      "dependsOn": [
-        "Pill"
-      ],
+      "dependsOn": ["Pill"],
       "leak": {
         "rawView": 1,
         "rawText": 0,
@@ -4853,11 +4385,7 @@
       "file": "packages/ui/src/components/custom/Workout/MuscleStrip.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "MuscleStrip",
-        "MuscleStripMuscleData",
-        "MuscleStripProps"
-      ],
+      "exports": ["MuscleStrip", "MuscleStripMuscleData", "MuscleStripProps"],
       "libDependents": 0,
       "storyRefs": 1,
       "xproj": {
@@ -4867,9 +4395,7 @@
         "audiobook": 0,
         "total": 2
       },
-      "dependsOn": [
-        "MuscleGroupChip"
-      ],
+      "dependsOn": ["MuscleGroupChip"],
       "leak": {
         "rawView": 1,
         "rawText": 0,
@@ -4889,10 +4415,7 @@
       "file": "packages/ui/src/components/shell/NavItem.tsx",
       "dir": "shell",
       "family": "shell",
-      "exports": [
-        "NavItem",
-        "NavItemProps"
-      ],
+      "exports": ["NavItem", "NavItemProps"],
       "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
@@ -4902,9 +4425,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Typography"
-      ],
+      "dependsOn": ["Typography"],
       "leak": {
         "rawView": 2,
         "rawText": 0,
@@ -4924,13 +4445,7 @@
       "file": "packages/ui/src/components/custom/ActiveWork/OpenLoops.tsx",
       "dir": "custom",
       "family": "custom/ActiveWork",
-      "exports": [
-        "OpenLoops",
-        "OpenLoopKind",
-        "OpenLoop",
-        "OpenLoopsProps",
-        "LoopRow"
-      ],
+      "exports": ["OpenLoops", "OpenLoopKind", "OpenLoop", "OpenLoopsProps", "LoopRow"],
       "libDependents": 1,
       "storyRefs": 2,
       "xproj": {
@@ -4940,13 +4455,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Divider",
-        "Eyebrow",
-        "MarkdownProse",
-        "Pill",
-        "Typography"
-      ],
+      "dependsOn": ["Divider", "Eyebrow", "MarkdownProse", "Pill", "Typography"],
       "leak": {
         "rawView": 5,
         "rawText": 0,
@@ -4985,9 +4494,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Typography"
-      ],
+      "dependsOn": ["Typography"],
       "leak": {
         "rawView": 9,
         "rawText": 0,
@@ -5082,11 +4589,7 @@
         "audiobook": 0,
         "total": 1
       },
-      "dependsOn": [
-        "SetBarChart",
-        "icons",
-        "pinnedLiveStripParts"
-      ],
+      "dependsOn": ["SetBarChart", "icons", "pinnedLiveStripParts"],
       "leak": {
         "rawView": 14,
         "rawText": 10,
@@ -5137,13 +4640,7 @@
         "audiobook": 0,
         "total": 1
       },
-      "dependsOn": [
-        "Indicator",
-        "Progress",
-        "Surface",
-        "Typography",
-        "icons"
-      ],
+      "dependsOn": ["Indicator", "Progress", "Surface", "Typography", "icons"],
       "leak": {
         "rawView": 6,
         "rawText": 2,
@@ -5163,12 +4660,7 @@
       "file": "packages/ui/src/components/custom/Workout/PlaceholderStrip.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "PlaceholderStrip",
-        "PlaceholderStripProps",
-        "SingleStrip",
-        "SegmentedStrip"
-      ],
+      "exports": ["PlaceholderStrip", "PlaceholderStripProps", "SingleStrip", "SegmentedStrip"],
       "libDependents": 2,
       "storyRefs": 2,
       "xproj": {
@@ -5218,10 +4710,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Surface",
-        "TriggerSurface"
-      ],
+      "dependsOn": ["Surface", "TriggerSurface"],
       "leak": {
         "rawView": 1,
         "rawText": 1,
@@ -5256,13 +4745,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Card",
-        "Eyebrow",
-        "InitiativeCard",
-        "Metric",
-        "Typography"
-      ],
+      "dependsOn": ["Card", "Eyebrow", "InitiativeCard", "Metric", "Typography"],
       "leak": {
         "rawView": 5,
         "rawText": 0,
@@ -5282,11 +4765,7 @@
       "file": "packages/ui/src/components/custom/Workout/PrBadge.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "PrBadge",
-        "PRType",
-        "PrBadgeProps"
-      ],
+      "exports": ["PrBadge", "PRType", "PrBadgeProps"],
       "libDependents": 5,
       "storyRefs": 3,
       "xproj": {
@@ -5296,11 +4775,7 @@
         "audiobook": 0,
         "total": 2
       },
-      "dependsOn": [
-        "BaseBadge",
-        "Typography",
-        "icons"
-      ],
+      "dependsOn": ["BaseBadge", "Typography", "icons"],
       "leak": {
         "rawView": 1,
         "rawText": 1,
@@ -5338,10 +4813,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Drawer",
-        "icons"
-      ],
+      "dependsOn": ["Drawer", "icons"],
       "leak": {
         "rawView": 4,
         "rawText": 6,
@@ -5376,9 +4848,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "GoalCard"
-      ],
+      "dependsOn": ["GoalCard"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -5398,11 +4868,7 @@
       "file": "packages/ui/src/components/custom/Workout/ProgramPlanningBreadcrumbs.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "Breadcrumbs",
-        "ProgramNavLevel",
-        "ProgramBreadcrumb"
-      ],
+      "exports": ["Breadcrumbs", "ProgramNavLevel", "ProgramBreadcrumb"],
       "libDependents": 1,
       "storyRefs": 0,
       "xproj": {
@@ -5594,10 +5060,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Badge",
-        "Card"
-      ],
+      "dependsOn": ["Badge", "Card"],
       "leak": {
         "rawView": 7,
         "rawText": 7,
@@ -5617,12 +5080,7 @@
       "file": "packages/ui/src/components/custom/Workout/RestTimer.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "RestTimer",
-        "RestTimerProps",
-        "RestActions",
-        "RestTimerRing"
-      ],
+      "exports": ["RestTimer", "RestTimerProps", "RestActions", "RestTimerRing"],
       "libDependents": 3,
       "storyRefs": 1,
       "xproj": {
@@ -5632,9 +5090,7 @@
         "audiobook": 0,
         "total": 1
       },
-      "dependsOn": [
-        "CircularTimer"
-      ],
+      "dependsOn": ["CircularTimer"],
       "leak": {
         "rawView": 7,
         "rawText": 6,
@@ -5654,13 +5110,7 @@
       "file": "packages/ui/src/components/custom/Chat/RevealRow.tsx",
       "dir": "custom",
       "family": "custom/Chat",
-      "exports": [
-        "revealOffset",
-        "useRevealGesture",
-        "RevealProvider",
-        "RevealRow",
-        "REVEAL_PX"
-      ],
+      "exports": ["revealOffset", "useRevealGesture", "RevealProvider", "RevealRow", "REVEAL_PX"],
       "libDependents": 2,
       "storyRefs": 0,
       "xproj": {
@@ -5670,9 +5120,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "DateTime"
-      ],
+      "dependsOn": ["DateTime"],
       "leak": {
         "rawView": 2,
         "rawText": 0,
@@ -5707,9 +5155,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "SetBarChart"
-      ],
+      "dependsOn": ["SetBarChart"],
       "leak": {
         "rawView": 4,
         "rawText": 0,
@@ -5729,10 +5175,7 @@
       "file": "packages/ui/src/components/ui/charts/scatter/Scatter.tsx",
       "dir": "ui",
       "family": "ui/charts",
-      "exports": [
-        "Scatter",
-        "ScatterProps"
-      ],
+      "exports": ["Scatter", "ScatterProps"],
       "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
@@ -5742,11 +5185,7 @@
         "audiobook": 0,
         "total": 1
       },
-      "dependsOn": [
-        "ScatterFrame",
-        "ScatterGridlines",
-        "ScatterPointMark"
-      ],
+      "dependsOn": ["ScatterFrame", "ScatterGridlines", "ScatterPointMark"],
       "leak": {
         "rawView": 3,
         "rawText": 0,
@@ -5766,10 +5205,7 @@
       "file": "packages/ui/src/components/ui/charts/scatter/ScatterFrame.tsx",
       "dir": "ui",
       "family": "ui/charts",
-      "exports": [
-        "ScatterFrame",
-        "LineSegment"
-      ],
+      "exports": ["ScatterFrame", "LineSegment"],
       "libDependents": 1,
       "storyRefs": 0,
       "xproj": {
@@ -5799,9 +5235,7 @@
       "file": "packages/ui/src/components/ui/charts/scatter/ScatterGridlines.tsx",
       "dir": "ui",
       "family": "ui/charts",
-      "exports": [
-        "ScatterGridlines"
-      ],
+      "exports": ["ScatterGridlines"],
       "libDependents": 1,
       "storyRefs": 0,
       "xproj": {
@@ -5831,9 +5265,7 @@
       "file": "packages/ui/src/components/ui/charts/scatter/ScatterPointMark.tsx",
       "dir": "ui",
       "family": "ui/charts",
-      "exports": [
-        "ScatterPointMark"
-      ],
+      "exports": ["ScatterPointMark"],
       "libDependents": 1,
       "storyRefs": 0,
       "xproj": {
@@ -5863,11 +5295,7 @@
       "file": "packages/ui/src/components/custom/Workout/ScheduleTiles.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "compactUntil",
-        "ScheduleTiles",
-        "ScheduleTilesProps"
-      ],
+      "exports": ["compactUntil", "ScheduleTiles", "ScheduleTilesProps"],
       "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
@@ -5877,11 +5305,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "DateTime",
-        "Stack",
-        "Tile"
-      ],
+      "dependsOn": ["DateTime", "Stack", "Tile"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -5938,12 +5362,7 @@
       "file": "packages/ui/src/components/custom/Workout/SegmentedBar.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "SegmentedBar",
-        "SegmentedBarSegment",
-        "SegmentedBarProps",
-        "usePulse"
-      ],
+      "exports": ["SegmentedBar", "SegmentedBarSegment", "SegmentedBarProps", "usePulse"],
       "libDependents": 5,
       "storyRefs": 2,
       "xproj": {
@@ -5987,9 +5406,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "SegmentedBar"
-      ],
+      "dependsOn": ["SegmentedBar"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -6026,9 +5443,7 @@
         "audiobook": 1,
         "total": 2
       },
-      "dependsOn": [
-        "SelectPopover"
-      ],
+      "dependsOn": ["SelectPopover"],
       "leak": {
         "rawView": 3,
         "rawText": 5,
@@ -6048,9 +5463,7 @@
       "file": "packages/ui/src/components/ui/select/SelectPopover.tsx",
       "dir": "ui",
       "family": "ui/select",
-      "exports": [
-        "SelectPopover"
-      ],
+      "exports": ["SelectPopover"],
       "libDependents": 1,
       "storyRefs": 0,
       "xproj": {
@@ -6060,9 +5473,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Surface"
-      ],
+      "dependsOn": ["Surface"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -6131,11 +5542,7 @@
       "file": "packages/ui/src/components/custom/Workout/SessionHeader.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "SessionHeader",
-        "SessionHeaderPlanEntry",
-        "SessionHeaderProps"
-      ],
+      "exports": ["SessionHeader", "SessionHeaderPlanEntry", "SessionHeaderProps"],
       "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
@@ -6188,12 +5595,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Divider",
-        "Eyebrow",
-        "SessionListItem",
-        "Typography"
-      ],
+      "dependsOn": ["Divider", "Eyebrow", "SessionListItem", "Typography"],
       "leak": {
         "rawView": 4,
         "rawText": 0,
@@ -6233,11 +5635,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "DateTime",
-        "Tooltip",
-        "Typography"
-      ],
+      "dependsOn": ["DateTime", "Tooltip", "Typography"],
       "leak": {
         "rawView": 3,
         "rawText": 0,
@@ -6257,11 +5655,7 @@
       "file": "packages/ui/src/components/custom/Workout/SessionRail.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "SessionRail",
-        "SessionRailExercise",
-        "SessionRailProps"
-      ],
+      "exports": ["SessionRail", "SessionRailExercise", "SessionRailProps"],
       "libDependents": 2,
       "storyRefs": 2,
       "xproj": {
@@ -6317,13 +5711,7 @@
         "audiobook": 0,
         "total": 1
       },
-      "dependsOn": [
-        "GoalCard",
-        "Progress",
-        "SegmentedBar",
-        "StatCard",
-        "wholeBodyCardParts"
-      ],
+      "dependsOn": ["GoalCard", "Progress", "SegmentedBar", "StatCard", "wholeBodyCardParts"],
       "leak": {
         "rawView": 1,
         "rawText": 0,
@@ -6343,11 +5731,7 @@
       "file": "packages/ui/src/components/shell/workout/SessionStatePill.tsx",
       "dir": "shell",
       "family": "shell",
-      "exports": [
-        "SessionStatePill",
-        "SessionState",
-        "SessionStatePillProps"
-      ],
+      "exports": ["SessionStatePill", "SessionState", "SessionStatePillProps"],
       "libDependents": 2,
       "storyRefs": 1,
       "xproj": {
@@ -6357,10 +5741,7 @@
         "audiobook": 0,
         "total": 2
       },
-      "dependsOn": [
-        "Indicator",
-        "Typography"
-      ],
+      "dependsOn": ["Indicator", "Typography"],
       "leak": {
         "rawView": 1,
         "rawText": 0,
@@ -6404,9 +5785,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "SegmentedBar"
-      ],
+      "dependsOn": ["SegmentedBar"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -6530,9 +5909,7 @@
         "audiobook": 0,
         "total": 2
       },
-      "dependsOn": [
-        "TempoDisplay"
-      ],
+      "dependsOn": ["TempoDisplay"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -6573,10 +5950,7 @@
         "audiobook": 0,
         "total": 3
       },
-      "dependsOn": [
-        "Typography",
-        "VelocityStrip"
-      ],
+      "dependsOn": ["Typography", "VelocityStrip"],
       "leak": {
         "rawView": 4,
         "rawText": 0,
@@ -6596,10 +5970,7 @@
       "file": "packages/ui/src/components/custom/Workout/SetsRepsLoad.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "SetsRepsLoad",
-        "SetsRepsLoadProps"
-      ],
+      "exports": ["SetsRepsLoad", "SetsRepsLoadProps"],
       "libDependents": 2,
       "storyRefs": 1,
       "xproj": {
@@ -6609,9 +5980,7 @@
         "audiobook": 0,
         "total": 1
       },
-      "dependsOn": [
-        "metricText"
-      ],
+      "dependsOn": ["metricText"],
       "leak": {
         "rawView": 1,
         "rawText": 0,
@@ -6649,9 +6018,7 @@
         "audiobook": 0,
         "total": 1
       },
-      "dependsOn": [
-        "SetBar"
-      ],
+      "dependsOn": ["SetBar"],
       "leak": {
         "rawView": 3,
         "rawText": 2,
@@ -6671,11 +6038,7 @@
       "file": "packages/ui/src/components/custom/Workout/SetTableHeader.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "SetTableHeader",
-        "SetTableHeaderProps",
-        "buildColumns"
-      ],
+      "exports": ["SetTableHeader", "SetTableHeaderProps", "buildColumns"],
       "libDependents": 1,
       "storyRefs": 3,
       "xproj": {
@@ -6685,9 +6048,7 @@
         "audiobook": 0,
         "total": 1
       },
-      "dependsOn": [
-        "Typography"
-      ],
+      "dependsOn": ["Typography"],
       "leak": {
         "rawView": 2,
         "rawText": 1,
@@ -6726,10 +6087,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Indicator",
-        "Typography"
-      ],
+      "dependsOn": ["Indicator", "Typography"],
       "leak": {
         "rawView": 1,
         "rawText": 0,
@@ -6795,11 +6153,7 @@
       "file": "packages/ui/src/components/shell/SideNav.tsx",
       "dir": "shell",
       "family": "shell",
-      "exports": [
-        "SideNav",
-        "SideNavItem",
-        "SideNavProps"
-      ],
+      "exports": ["SideNav", "SideNavItem", "SideNavProps"],
       "libDependents": 3,
       "storyRefs": 2,
       "xproj": {
@@ -6809,9 +6163,7 @@
         "audiobook": 0,
         "total": 1
       },
-      "dependsOn": [
-        "NavItem"
-      ],
+      "dependsOn": ["NavItem"],
       "leak": {
         "rawView": 1,
         "rawText": 0,
@@ -6874,10 +6226,7 @@
       "file": "packages/ui/src/components/ui/charts/spark-bars/SparkBars.tsx",
       "dir": "ui",
       "family": "ui/charts",
-      "exports": [
-        "SparkBars",
-        "SparkBarsProps"
-      ],
+      "exports": ["SparkBars", "SparkBarsProps"],
       "libDependents": 3,
       "storyRefs": 1,
       "xproj": {
@@ -6907,10 +6256,7 @@
       "file": "packages/ui/src/components/custom/Workout/Sparkline.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "Sparkline",
-        "SparklineProps"
-      ],
+      "exports": ["Sparkline", "SparklineProps"],
       "libDependents": 3,
       "storyRefs": 1,
       "xproj": {
@@ -6920,9 +6266,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "SparklineParts"
-      ],
+      "dependsOn": ["SparklineParts"],
       "leak": {
         "rawView": 2,
         "rawText": 0,
@@ -6958,9 +6302,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Typography"
-      ],
+      "dependsOn": ["Typography"],
       "leak": {
         "rawView": 4,
         "rawText": 1,
@@ -6980,13 +6322,7 @@
       "file": "packages/ui/src/components/ui/spinner/Spinner.tsx",
       "dir": "ui",
       "family": "ui/spinner",
-      "exports": [
-        "Spinner",
-        "SpinnerSize",
-        "SpinnerColor",
-        "SpinnerProps",
-        "colorMap"
-      ],
+      "exports": ["Spinner", "SpinnerSize", "SpinnerColor", "SpinnerProps", "colorMap"],
       "libDependents": 0,
       "storyRefs": 1,
       "xproj": {
@@ -7016,12 +6352,7 @@
       "file": "packages/ui/src/components/ui/stack/Stack.tsx",
       "dir": "ui",
       "family": "ui/stack",
-      "exports": [
-        "Stack",
-        "HStack",
-        "VStack",
-        "StackProps"
-      ],
+      "exports": ["Stack", "HStack", "VStack", "StackProps"],
       "libDependents": 2,
       "storyRefs": 1,
       "xproj": {
@@ -7070,10 +6401,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Card",
-        "Typography"
-      ],
+      "dependsOn": ["Card", "Typography"],
       "leak": {
         "rawView": 9,
         "rawText": 0,
@@ -7093,13 +6421,7 @@
       "file": "packages/ui/src/components/custom/Workout/StatusDot.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "StatusDot",
-        "StatusDotVariant",
-        "StatusDotProps",
-        "isSolidVariant",
-        "ringStyle"
-      ],
+      "exports": ["StatusDot", "StatusDotVariant", "StatusDotProps", "isSolidVariant", "ringStyle"],
       "libDependents": 8,
       "storyRefs": 2,
       "xproj": {
@@ -7109,9 +6431,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Typography"
-      ],
+      "dependsOn": ["Typography"],
       "leak": {
         "rawView": 4,
         "rawText": 0,
@@ -7131,12 +6451,7 @@
       "file": "packages/ui/src/components/custom/Workout/StatusPill.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "statusPillColor",
-        "StatusPill",
-        "StatusPillStatus",
-        "StatusPillProps"
-      ],
+      "exports": ["statusPillColor", "StatusPill", "StatusPillStatus", "StatusPillProps"],
       "libDependents": 0,
       "storyRefs": 1,
       "xproj": {
@@ -7146,10 +6461,7 @@
         "audiobook": 1,
         "total": 1
       },
-      "dependsOn": [
-        "Pill",
-        "StatusDot"
-      ],
+      "dependsOn": ["Pill", "StatusDot"],
       "leak": {
         "rawView": 1,
         "rawText": 0,
@@ -7256,10 +6568,7 @@
       "file": "packages/ui/src/components/custom/Workout/SupersetWrapper.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "SupersetWrapper",
-        "SupersetWrapperProps"
-      ],
+      "exports": ["SupersetWrapper", "SupersetWrapperProps"],
       "libDependents": 2,
       "storyRefs": 2,
       "xproj": {
@@ -7269,9 +6578,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Typography"
-      ],
+      "dependsOn": ["Typography"],
       "leak": {
         "rawView": 2,
         "rawText": 0,
@@ -7291,10 +6598,7 @@
       "file": "packages/ui/src/components/ui/surface/Surface.tsx",
       "dir": "ui",
       "family": "ui/surface",
-      "exports": [
-        "Surface",
-        "SurfaceProps"
-      ],
+      "exports": ["Surface", "SurfaceProps"],
       "libDependents": 20,
       "storyRefs": 85,
       "xproj": {
@@ -7324,12 +6628,7 @@
       "file": "packages/ui/src/components/icons/SvgIcon.tsx",
       "dir": "icons",
       "family": "icons",
-      "exports": [
-        "SvgIcon",
-        "IconProps",
-        "SvgIconProps",
-        "ICON_VIEWBOX"
-      ],
+      "exports": ["SvgIcon", "IconProps", "SvgIconProps", "ICON_VIEWBOX"],
       "libDependents": 6,
       "storyRefs": 0,
       "xproj": {
@@ -7359,12 +6658,7 @@
       "file": "packages/ui/src/components/ui/switch/Switch.tsx",
       "dir": "ui",
       "family": "ui/switch",
-      "exports": [
-        "SwitchSize",
-        "SwitchProps",
-        "Switch",
-        "<anonymous>.handlePress"
-      ],
+      "exports": ["SwitchSize", "SwitchProps", "Switch", "<anonymous>.handlePress"],
       "libDependents": 0,
       "storyRefs": 3,
       "xproj": {
@@ -7434,10 +6728,7 @@
       "file": "packages/ui/src/components/ui/table/TableCell.tsx",
       "dir": "ui",
       "family": "ui/table",
-      "exports": [
-        "TableCell",
-        "TableCellProps"
-      ],
+      "exports": ["TableCell", "TableCellProps"],
       "libDependents": 2,
       "storyRefs": 1,
       "xproj": {
@@ -7467,10 +6758,7 @@
       "file": "packages/ui/src/components/ui/table/TableEmptyState.tsx",
       "dir": "ui",
       "family": "ui/table",
-      "exports": [
-        "TableEmptyState",
-        "TableEmptyStateProps"
-      ],
+      "exports": ["TableEmptyState", "TableEmptyStateProps"],
       "libDependents": 0,
       "storyRefs": 1,
       "xproj": {
@@ -7516,9 +6804,7 @@
         "audiobook": 0,
         "total": 2
       },
-      "dependsOn": [
-        "Tooltip"
-      ],
+      "dependsOn": ["Tooltip"],
       "leak": {
         "rawView": 2,
         "rawText": 2,
@@ -7538,12 +6824,7 @@
       "file": "packages/ui/src/components/ui/table/TablePagination.tsx",
       "dir": "ui",
       "family": "ui/table",
-      "exports": [
-        "TablePagination",
-        "TablePaginationProps",
-        "PageSizeOption",
-        "PageStepButton"
-      ],
+      "exports": ["TablePagination", "TablePaginationProps", "PageSizeOption", "PageStepButton"],
       "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
@@ -7697,10 +6978,7 @@
       "file": "packages/ui/src/components/custom/ActiveWork/TaskStagePill.tsx",
       "dir": "custom",
       "family": "custom/ActiveWork",
-      "exports": [
-        "TaskStagePill",
-        "TaskStagePillProps"
-      ],
+      "exports": ["TaskStagePill", "TaskStagePillProps"],
       "libDependents": 0,
       "storyRefs": 1,
       "xproj": {
@@ -7710,9 +6988,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Pill"
-      ],
+      "dependsOn": ["Pill"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -7801,9 +7077,7 @@
         "audiobook": 0,
         "total": 3
       },
-      "dependsOn": [
-        "metricText"
-      ],
+      "dependsOn": ["metricText"],
       "leak": {
         "rawView": 10,
         "rawText": 6,
@@ -7823,10 +7097,7 @@
       "file": "packages/ui/src/components/ui/tile/Tile.tsx",
       "dir": "ui",
       "family": "ui/tile",
-      "exports": [
-        "Tile",
-        "TileProps"
-      ],
+      "exports": ["Tile", "TileProps"],
       "libDependents": 4,
       "storyRefs": 1,
       "xproj": {
@@ -7856,10 +7127,7 @@
       "file": "packages/ui/src/components/custom/TimerReadout/TimerReadout.tsx",
       "dir": "custom",
       "family": "custom/TimerReadout",
-      "exports": [
-        "TimerReadout",
-        "TimerReadoutProps"
-      ],
+      "exports": ["TimerReadout", "TimerReadoutProps"],
       "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
@@ -7869,9 +7137,7 @@
         "audiobook": 0,
         "total": 1
       },
-      "dependsOn": [
-        "Typography"
-      ],
+      "dependsOn": ["Typography"],
       "leak": {
         "rawView": 1,
         "rawText": 3,
@@ -7908,9 +7174,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Tooltip"
-      ],
+      "dependsOn": ["Tooltip"],
       "leak": {
         "rawView": 3,
         "rawText": 0,
@@ -7950,9 +7214,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Surface"
-      ],
+      "dependsOn": ["Surface"],
       "leak": {
         "rawView": 7,
         "rawText": 8,
@@ -7972,10 +7234,7 @@
       "file": "packages/ui/src/components/custom/Session/ToolBadge.tsx",
       "dir": "custom",
       "family": "custom/Session",
-      "exports": [
-        "ToolBadge",
-        "ToolBadgeProps"
-      ],
+      "exports": ["ToolBadge", "ToolBadgeProps"],
       "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
@@ -7985,9 +7244,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Pill"
-      ],
+      "dependsOn": ["Pill"],
       "leak": {
         "rawView": 0,
         "rawText": 1,
@@ -8027,9 +7284,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "ToolbarButtonParts"
-      ],
+      "dependsOn": ["ToolbarButtonParts"],
       "leak": {
         "rawView": 2,
         "rawText": 1,
@@ -8049,10 +7304,7 @@
       "file": "packages/ui/src/components/ui/toolbar-button/ToolbarButtonParts.tsx",
       "dir": "ui",
       "family": "ui/toolbar-button",
-      "exports": [
-        "ToolbarButtonIcon",
-        "ToolbarButtonMenu"
-      ],
+      "exports": ["ToolbarButtonIcon", "ToolbarButtonMenu"],
       "libDependents": 1,
       "storyRefs": 0,
       "xproj": {
@@ -8062,9 +7314,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Surface"
-      ],
+      "dependsOn": ["Surface"],
       "leak": {
         "rawView": 1,
         "rawText": 0,
@@ -8087,6 +7337,8 @@
       "exports": [
         "ToolCallRow",
         "ToolCallRowProps",
+        "OutcomeTip",
+        "OutcomeDot",
         "RowBody",
         "ErrorText"
       ],
@@ -8103,7 +7355,9 @@
         "Collapse",
         "DateTime",
         "Indicator",
+        "TipTrigger",
         "ToolBadge",
+        "Tooltip",
         "Typography"
       ],
       "leak": {
@@ -8111,7 +7365,7 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 125,
+        "loc": 164,
         "score": 3
       },
       "tier": "organism",
@@ -8125,11 +7379,7 @@
       "file": "packages/ui/src/components/ui/tooltip/Tooltip.tsx",
       "dir": "ui",
       "family": "ui/tooltip",
-      "exports": [
-        "useHoverState",
-        "Tooltip",
-        "TooltipProps"
-      ],
+      "exports": ["useHoverState", "Tooltip", "TooltipProps"],
       "libDependents": 11,
       "storyRefs": 2,
       "xproj": {
@@ -8139,11 +7389,7 @@
         "audiobook": 1,
         "total": 3
       },
-      "dependsOn": [
-        "Surface",
-        "TooltipParts",
-        "TriggerSurface"
-      ],
+      "dependsOn": ["Surface", "TooltipParts", "TriggerSurface"],
       "leak": {
         "rawView": 5,
         "rawText": 3,
@@ -8163,10 +7409,7 @@
       "file": "packages/ui/src/components/ui/tooltip/TooltipParts.tsx",
       "dir": "ui",
       "family": "ui/tooltip",
-      "exports": [
-        "TooltipPortal",
-        "canPortal"
-      ],
+      "exports": ["TooltipPortal", "canPortal"],
       "libDependents": 1,
       "storyRefs": 0,
       "xproj": {
@@ -8196,13 +7439,7 @@
       "file": "packages/ui/src/components/shell/TopBar.tsx",
       "dir": "shell",
       "family": "shell",
-      "exports": [
-        "TopBar",
-        "TopBarProps",
-        "ClusterDivider",
-        "dividedCluster",
-        "TopBar.onLayout"
-      ],
+      "exports": ["TopBar", "TopBarProps", "ClusterDivider", "dividedCluster", "TopBar.onLayout"],
       "libDependents": 2,
       "storyRefs": 1,
       "xproj": {
@@ -8212,12 +7449,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "BrandLockup",
-        "DateTime",
-        "Divider",
-        "brands"
-      ],
+      "dependsOn": ["BrandLockup", "DateTime", "Divider", "brands"],
       "leak": {
         "rawView": 2,
         "rawText": 0,
@@ -8257,11 +7489,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "BodyMap",
-        "BodyMapDetailPanel",
-        "MesoStatusCard"
-      ],
+      "dependsOn": ["BodyMap", "BodyMapDetailPanel", "MesoStatusCard"],
       "leak": {
         "rawView": 10,
         "rawText": 4,
@@ -8320,11 +7548,7 @@
       "file": "packages/ui/src/components/ui/trigger/TriggerSurface.tsx",
       "dir": "ui",
       "family": "ui/trigger",
-      "exports": [
-        "TriggerSurface",
-        "TriggerSurfaceProps",
-        "chain"
-      ],
+      "exports": ["TriggerSurface", "TriggerSurfaceProps", "chain"],
       "libDependents": 3,
       "storyRefs": 0,
       "xproj": {
@@ -8372,11 +7596,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Indicator",
-        "Surface",
-        "Typography"
-      ],
+      "dependsOn": ["Indicator", "Surface", "Typography"],
       "leak": {
         "rawView": 2,
         "rawText": 0,
@@ -8443,12 +7663,7 @@
       "file": "packages/ui/src/components/custom/Chat/UnreadBadge.tsx",
       "dir": "custom",
       "family": "custom/Chat",
-      "exports": [
-        "unreadCountLabel",
-        "UnreadBadge",
-        "UnreadBadgeProps",
-        "jumpLabel"
-      ],
+      "exports": ["unreadCountLabel", "UnreadBadge", "UnreadBadgeProps", "jumpLabel"],
       "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
@@ -8458,9 +7673,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Pill"
-      ],
+      "dependsOn": ["Pill"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -8518,10 +7731,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "DualVelocityStrip",
-        "VelocityStrip"
-      ],
+      "dependsOn": ["DualVelocityStrip", "VelocityStrip"],
       "leak": {
         "rawView": 9,
         "rawText": 5,
@@ -8565,10 +7775,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "SetBarChart",
-        "Typography"
-      ],
+      "dependsOn": ["SetBarChart", "Typography"],
       "leak": {
         "rawView": 9,
         "rawText": 0,
@@ -8602,10 +7809,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "SetBarChart",
-        "VelocityBandOverlay"
-      ],
+      "dependsOn": ["SetBarChart", "VelocityBandOverlay"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -8625,11 +7829,7 @@
       "file": "packages/ui/src/components/custom/Fatigue/VelocityHero.tsx",
       "dir": "custom",
       "family": "custom/Fatigue",
-      "exports": [
-        "VelocityHero",
-        "VelocityHeroProps",
-        "velocityLabel"
-      ],
+      "exports": ["VelocityHero", "VelocityHeroProps", "velocityLabel"],
       "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
@@ -8639,9 +7839,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "VelocityStrip"
-      ],
+      "dependsOn": ["VelocityStrip"],
       "leak": {
         "rawView": 1,
         "rawText": 0,
@@ -8678,9 +7876,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "SetBarChart"
-      ],
+      "dependsOn": ["SetBarChart"],
       "leak": {
         "rawView": 6,
         "rawText": 1,
@@ -8700,11 +7896,7 @@
       "file": "packages/ui/src/components/custom/Workout/VelocityStrip.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "VelocityStrip",
-        "VelocityStripProps",
-        "VelocityStrip.barColorFor"
-      ],
+      "exports": ["VelocityStrip", "VelocityStripProps", "VelocityStrip.barColorFor"],
       "libDependents": 9,
       "storyRefs": 9,
       "xproj": {
@@ -8714,10 +7906,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "SetBarChart",
-        "VelocityStripVariants"
-      ],
+      "dependsOn": ["SetBarChart", "VelocityStripVariants"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -8737,10 +7926,7 @@
       "file": "packages/ui/src/components/custom/Workout/VelocityStripFramed.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "VelocityStripFramed",
-        "framedBarOverlay"
-      ],
+      "exports": ["VelocityStripFramed", "framedBarOverlay"],
       "libDependents": 1,
       "storyRefs": 0,
       "xproj": {
@@ -8750,9 +7936,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "SetBarChart"
-      ],
+      "dependsOn": ["SetBarChart"],
       "leak": {
         "rawView": 0,
         "rawText": 3,
@@ -8787,11 +7971,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "SetBarChart",
-        "VelocityLossBands",
-        "VelocityStripFramed"
-      ],
+      "dependsOn": ["SetBarChart", "VelocityLossBands", "VelocityStripFramed"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -8811,10 +7991,7 @@
       "file": "packages/ui/src/components/custom/Fatigue/VerdictHero.tsx",
       "dir": "custom",
       "family": "custom/Fatigue",
-      "exports": [
-        "VerdictHero",
-        "VerdictHeroProps"
-      ],
+      "exports": ["VerdictHero", "VerdictHeroProps"],
       "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
@@ -8844,12 +8021,7 @@
       "file": "packages/ui/src/components/custom/Workout/VolumeLandmarkBar.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "VolumeLandmarkBar",
-        "VolumeZone",
-        "VolumeLandmarkBarProps",
-        "zoneForSets"
-      ],
+      "exports": ["VolumeLandmarkBar", "VolumeZone", "VolumeLandmarkBarProps", "zoneForSets"],
       "libDependents": 0,
       "storyRefs": 1,
       "xproj": {
@@ -8859,11 +8031,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "DataRow",
-        "Typography",
-        "ZoneTrack"
-      ],
+      "dependsOn": ["DataRow", "Typography", "ZoneTrack"],
       "leak": {
         "rawView": 1,
         "rawText": 0,
@@ -8883,11 +8051,7 @@
       "file": "packages/ui/src/components/custom/Workout/WeekRow.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "WeekRow",
-        "WeekRowWorkout",
-        "WeekRowProps"
-      ],
+      "exports": ["WeekRow", "WeekRowWorkout", "WeekRowProps"],
       "libDependents": 2,
       "storyRefs": 3,
       "xproj": {
@@ -8897,11 +8061,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "IntensityBar",
-        "Typography",
-        "WorkoutPill"
-      ],
+      "dependsOn": ["IntensityBar", "Typography", "WorkoutPill"],
       "leak": {
         "rawView": 5,
         "rawText": 0,
@@ -8921,11 +8081,7 @@
       "file": "packages/ui/src/components/custom/Workout/WeightBadge.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "WeightBadge",
-        "WeightBadgeSize",
-        "WeightBadgeProps"
-      ],
+      "exports": ["WeightBadge", "WeightBadgeSize", "WeightBadgeProps"],
       "libDependents": 3,
       "storyRefs": 2,
       "xproj": {
@@ -8935,11 +8091,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "BaseBadge",
-        "Typography",
-        "icons"
-      ],
+      "dependsOn": ["BaseBadge", "Typography", "icons"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -9038,12 +8190,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Card",
-        "ExerciseCard",
-        "MuscleGroupChip",
-        "Typography"
-      ],
+      "dependsOn": ["Card", "ExerciseCard", "MuscleGroupChip", "Typography"],
       "leak": {
         "rawView": 5,
         "rawText": 0,
@@ -9063,10 +8210,7 @@
       "file": "packages/ui/src/components/shell/workout/workoutNavItems.tsx",
       "dir": "shell",
       "family": "shell",
-      "exports": [
-        "workoutNavItems",
-        "defaultNavItems"
-      ],
+      "exports": ["workoutNavItems", "defaultNavItems"],
       "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
@@ -9076,10 +8220,7 @@
         "audiobook": 0,
         "total": 1
       },
-      "dependsOn": [
-        "SideNav",
-        "icons"
-      ],
+      "dependsOn": ["SideNav", "icons"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -9099,13 +8240,7 @@
       "file": "packages/ui/src/components/custom/Workout/WorkoutPill.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "WorkoutPill",
-        "WorkoutPillStatus",
-        "WorkoutPillProps",
-        "paintFor",
-        "usePulse"
-      ],
+      "exports": ["WorkoutPill", "WorkoutPillStatus", "WorkoutPillProps", "paintFor", "usePulse"],
       "libDependents": 4,
       "storyRefs": 2,
       "xproj": {
@@ -9115,9 +8250,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Typography"
-      ],
+      "dependsOn": ["Typography"],
       "leak": {
         "rawView": 1,
         "rawText": 0,
@@ -9137,12 +8270,7 @@
       "file": "packages/ui/src/components/shell/workout/WorkoutShell.tsx",
       "dir": "shell",
       "family": "shell",
-      "exports": [
-        "WorkoutShell",
-        "WorkoutShellProps",
-        "DashboardShell",
-        "DashboardShellProps"
-      ],
+      "exports": ["WorkoutShell", "WorkoutShellProps", "DashboardShell", "DashboardShellProps"],
       "libDependents": 0,
       "storyRefs": 4,
       "xproj": {
@@ -9179,10 +8307,7 @@
       "file": "packages/ui/src/components/shell/workout/WorkoutTopBar.tsx",
       "dir": "shell",
       "family": "shell",
-      "exports": [
-        "WorkoutTopBar",
-        "WorkoutTopBarProps"
-      ],
+      "exports": ["WorkoutTopBar", "WorkoutTopBarProps"],
       "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
@@ -9192,12 +8317,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "DeviceMenu",
-        "DeviceRow",
-        "SessionStatePill",
-        "TopBar"
-      ],
+      "dependsOn": ["DeviceMenu", "DeviceRow", "SessionStatePill", "TopBar"],
       "leak": {
         "rawView": 0,
         "rawText": 0,
@@ -9217,11 +8337,7 @@
       "file": "packages/ui/src/components/custom/Workout/ZoneTrack.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "ZoneTrack",
-        "ZoneTrackProps",
-        "ZoneTrack.onTrackLayout"
-      ],
+      "exports": ["ZoneTrack", "ZoneTrackProps", "ZoneTrack.onTrackLayout"],
       "libDependents": 3,
       "storyRefs": 1,
       "xproj": {
@@ -9231,10 +8347,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "ZoneTrackParts",
-        "ZoneTrackTicks"
-      ],
+      "dependsOn": ["ZoneTrackParts", "ZoneTrackTicks"],
       "leak": {
         "rawView": 2,
         "rawText": 0,
@@ -9254,11 +8367,7 @@
       "file": "packages/ui/src/components/custom/Workout/ZoneTrackParts.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "ZoneTrackPill",
-        "ZoneTrackNeedle",
-        "ZoneTrackFill"
-      ],
+      "exports": ["ZoneTrackPill", "ZoneTrackNeedle", "ZoneTrackFill"],
       "libDependents": 1,
       "storyRefs": 0,
       "xproj": {
@@ -9288,11 +8397,7 @@
       "file": "packages/ui/src/components/custom/Workout/ZoneTrackTicks.tsx",
       "dir": "workout",
       "family": "custom/Workout",
-      "exports": [
-        "ZoneTrackTickLines",
-        "ZoneTrackTickLabels",
-        "ZoneTrackTickLabel"
-      ],
+      "exports": ["ZoneTrackTickLines", "ZoneTrackTickLabels", "ZoneTrackTickLabel"],
       "libDependents": 1,
       "storyRefs": 0,
       "xproj": {
@@ -9302,9 +8407,7 @@
         "audiobook": 0,
         "total": 0
       },
-      "dependsOn": [
-        "Tooltip"
-      ],
+      "dependsOn": ["Tooltip"],
       "leak": {
         "rawView": 3,
         "rawText": 1,
@@ -9321,1818 +8424,461 @@
     }
   ],
   "edges": [
-    [
-      "CoChangeChip",
-      "Card"
-    ],
-    [
-      "CoChangeChip",
-      "FilePathLabel"
-    ],
-    [
-      "CoChangeChip",
-      "Pill"
-    ],
-    [
-      "CoChangeChip",
-      "Typography"
-    ],
-    [
-      "FileActivityDetail",
-      "FileActivityGrowthWell"
-    ],
-    [
-      "FileActivityDetail",
-      "FileActivityRow"
-    ],
-    [
-      "FileActivityDetail",
-      "Card"
-    ],
-    [
-      "FileActivityDetail",
-      "DataRow"
-    ],
-    [
-      "FileActivityDetail",
-      "DateTime"
-    ],
-    [
-      "FileActivityDetail",
-      "Eyebrow"
-    ],
-    [
-      "FileActivityDetail",
-      "FilePathLabel"
-    ],
-    [
-      "FileActivityDetail",
-      "Pill"
-    ],
-    [
-      "FileActivityDetail",
-      "Tile"
-    ],
-    [
-      "FileActivityDetail",
-      "Typography"
-    ],
-    [
-      "FileActivityGrowthWell",
-      "FileActivityRow"
-    ],
-    [
-      "FileActivityGrowthWell",
-      "Card"
-    ],
-    [
-      "FileActivityGrowthWell",
-      "SparkBars"
-    ],
-    [
-      "FileActivityGrowthWell",
-      "Eyebrow"
-    ],
-    [
-      "FileActivityGrowthWell",
-      "Typography"
-    ],
-    [
-      "FileActivityRow",
-      "SparkBars"
-    ],
-    [
-      "FileActivityRow",
-      "FilePathLabel"
-    ],
-    [
-      "FileActivityRow",
-      "Typography"
-    ],
-    [
-      "FileHistoryExplorer",
-      "CoChangeChip"
-    ],
-    [
-      "FileHistoryExplorer",
-      "FileActivityDetail"
-    ],
-    [
-      "FileHistoryExplorer",
-      "FileActivityRow"
-    ],
-    [
-      "FileHistoryExplorer",
-      "Card"
-    ],
-    [
-      "FileHistoryExplorer",
-      "Divider"
-    ],
-    [
-      "FileHistoryExplorer",
-      "Eyebrow"
-    ],
-    [
-      "FileHistoryExplorer",
-      "Tile"
-    ],
-    [
-      "FileHistoryExplorer",
-      "Typography"
-    ],
-    [
-      "InitiativeBrief",
-      "MarkdownProse"
-    ],
-    [
-      "InitiativeBrief",
-      "Eyebrow"
-    ],
-    [
-      "InitiativeBrief",
-      "Typography"
-    ],
-    [
-      "InitiativeCard",
-      "SeverityLabel"
-    ],
-    [
-      "InitiativeCard",
-      "SegmentedBar"
-    ],
-    [
-      "InitiativeCard",
-      "StatusDot"
-    ],
-    [
-      "InitiativeCard",
-      "Card"
-    ],
-    [
-      "InitiativeCard",
-      "Pill"
-    ],
-    [
-      "InitiativeCard",
-      "Typography"
-    ],
-    [
-      "InitiativeHeader",
-      "InitiativeCard"
-    ],
-    [
-      "InitiativeHeader",
-      "StatusDot"
-    ],
-    [
-      "InitiativeHeader",
-      "DateTime"
-    ],
-    [
-      "InitiativeHeader",
-      "Pill"
-    ],
-    [
-      "InitiativeHeader",
-      "Typography"
-    ],
-    [
-      "OpenLoops",
-      "MarkdownProse"
-    ],
-    [
-      "OpenLoops",
-      "Divider"
-    ],
-    [
-      "OpenLoops",
-      "Eyebrow"
-    ],
-    [
-      "OpenLoops",
-      "Pill"
-    ],
-    [
-      "OpenLoops",
-      "Typography"
-    ],
-    [
-      "PortfolioOverview",
-      "InitiativeCard"
-    ],
-    [
-      "PortfolioOverview",
-      "Metric"
-    ],
-    [
-      "PortfolioOverview",
-      "Card"
-    ],
-    [
-      "PortfolioOverview",
-      "Eyebrow"
-    ],
-    [
-      "PortfolioOverview",
-      "Typography"
-    ],
-    [
-      "SessionDetail",
-      "SessionListItem"
-    ],
-    [
-      "SessionDetail",
-      "TaskRow"
-    ],
-    [
-      "SessionDetail",
-      "TaskTable"
-    ],
-    [
-      "SessionDetail",
-      "MarkdownProse"
-    ],
-    [
-      "SessionDetail",
-      "Card"
-    ],
-    [
-      "SessionDetail",
-      "Collapse"
-    ],
-    [
-      "SessionDetail",
-      "DateTime"
-    ],
-    [
-      "SessionDetail",
-      "Divider"
-    ],
-    [
-      "SessionDetail",
-      "Pill"
-    ],
-    [
-      "SessionDetail",
-      "Tooltip"
-    ],
-    [
-      "SessionDetail",
-      "Typography"
-    ],
-    [
-      "SessionList",
-      "SessionListItem"
-    ],
-    [
-      "SessionList",
-      "Divider"
-    ],
-    [
-      "SessionList",
-      "Eyebrow"
-    ],
-    [
-      "SessionList",
-      "Typography"
-    ],
-    [
-      "SessionListItem",
-      "DateTime"
-    ],
-    [
-      "SessionListItem",
-      "Tooltip"
-    ],
-    [
-      "SessionListItem",
-      "Typography"
-    ],
-    [
-      "SeverityLabel",
-      "Indicator"
-    ],
-    [
-      "SeverityLabel",
-      "Typography"
-    ],
-    [
-      "TaskRow",
-      "SeverityLabel"
-    ],
-    [
-      "TaskRow",
-      "DateTime"
-    ],
-    [
-      "TaskRow",
-      "Pill"
-    ],
-    [
-      "TaskRow",
-      "Table"
-    ],
-    [
-      "TaskRow",
-      "TableCell"
-    ],
-    [
-      "TaskRow",
-      "Tooltip"
-    ],
-    [
-      "TaskRow",
-      "Typography"
-    ],
-    [
-      "TaskStagePill",
-      "Pill"
-    ],
-    [
-      "TaskTable",
-      "SeverityLabel"
-    ],
-    [
-      "TaskTable",
-      "TaskRow"
-    ],
-    [
-      "TaskTable",
-      "Eyebrow"
-    ],
-    [
-      "TaskTable",
-      "Table"
-    ],
-    [
-      "TaskTable",
-      "TableHeaderCell"
-    ],
-    [
-      "TaskTable",
-      "Typography"
-    ],
-    [
-      "ChatCard",
-      "Button"
-    ],
-    [
-      "ChatCard",
-      "Card"
-    ],
-    [
-      "ChatCard",
-      "Typography"
-    ],
-    [
-      "Composer",
-      "Button"
-    ],
-    [
-      "Composer",
-      "Input"
-    ],
-    [
-      "Composer",
-      "Surface"
-    ],
-    [
-      "ConversationIdentity",
-      "Avatar"
-    ],
-    [
-      "ConversationIdentity",
-      "Typography"
-    ],
-    [
-      "DateSeparator",
-      "DateTime"
-    ],
-    [
-      "DateSeparator",
-      "Divider"
-    ],
-    [
-      "DateSeparator",
-      "Typography"
-    ],
-    [
-      "MessageBubble",
-      "MarkdownProse"
-    ],
-    [
-      "MessageBubble",
-      "Avatar"
-    ],
-    [
-      "MessageBubble",
-      "Surface"
-    ],
-    [
-      "MessageBubble",
-      "Typography"
-    ],
-    [
-      "MessageList",
-      "ConversationIdentity"
-    ],
-    [
-      "MessageList",
-      "DateSeparator"
-    ],
-    [
-      "MessageList",
-      "MessageBubble"
-    ],
-    [
-      "MessageList",
-      "RevealRow"
-    ],
-    [
-      "MessageList",
-      "TypingIndicator"
-    ],
-    [
-      "MessageList",
-      "UnreadBadge"
-    ],
-    [
-      "MessageList",
-      "MarkdownProse"
-    ],
-    [
-      "MessageList",
-      "Button"
-    ],
-    [
-      "RevealRow",
-      "DateTime"
-    ],
-    [
-      "TypingIndicator",
-      "Indicator"
-    ],
-    [
-      "TypingIndicator",
-      "Surface"
-    ],
-    [
-      "TypingIndicator",
-      "Typography"
-    ],
-    [
-      "UnreadBadge",
-      "Pill"
-    ],
-    [
-      "coach-cards",
-      "ChatCard"
-    ],
-    [
-      "coach-cards",
-      "DateTime"
-    ],
-    [
-      "coach-cards",
-      "Pill"
-    ],
-    [
-      "coach-cards",
-      "Typography"
-    ],
-    [
-      "CircularTimer",
-      "Progress"
-    ],
-    [
-      "DualGhostSpark",
-      "DualGhostSparkParts"
-    ],
-    [
-      "DualGhostSpark",
-      "GhostBand"
-    ],
-    [
-      "DualGhostSpark",
-      "GhostSpark"
-    ],
-    [
-      "DualGhostSparkParts",
-      "GhostBloom"
-    ],
-    [
-      "FatigueLights",
-      "StatusDot"
-    ],
-    [
-      "FatigueLights",
-      "Tooltip"
-    ],
-    [
-      "GhostBand",
-      "GhostBandParts"
-    ],
-    [
-      "GhostSpark",
-      "GhostBand"
-    ],
-    [
-      "GhostSpark",
-      "GhostBloom"
-    ],
-    [
-      "LiveFatigueCard",
-      "FatigueLights"
-    ],
-    [
-      "LiveFatigueCard",
-      "GhostSpark"
-    ],
-    [
-      "LiveFatigueCard",
-      "RomProgressionChart"
-    ],
-    [
-      "LiveFatigueCard",
-      "VerdictHero"
-    ],
-    [
-      "LiveFatigueCard",
-      "Surface"
-    ],
-    [
-      "LiveFatiguePanel",
-      "LiveFatigueCard"
-    ],
-    [
-      "LiveFatiguePanel",
-      "VelocityHero"
-    ],
-    [
-      "LiveFatiguePanel",
-      "LiveAuraFrame"
-    ],
-    [
-      "RomProgressionChart",
-      "SetBarChart"
-    ],
-    [
-      "VelocityHero",
-      "VelocityStrip"
-    ],
-    [
-      "MarkdownProse",
-      "Typography"
-    ],
-    [
-      "TimerReadout",
-      "Typography"
-    ],
-    [
-      "ActiveWorkoutPage",
-      "ExerciseCard"
-    ],
-    [
-      "ActiveWorkoutPage",
-      "InputBar"
-    ],
-    [
-      "ActiveWorkoutPage",
-      "RestTimer"
-    ],
-    [
-      "ActiveWorkoutPage",
-      "SetRow"
-    ],
-    [
-      "ActiveWorkoutPage",
-      "SupersetWrapper"
-    ],
-    [
-      "BodyMapDetailPanel",
-      "BodyMapDetailSections"
-    ],
-    [
-      "BodyMapDetailPanel",
-      "Sparkline"
-    ],
-    [
-      "BodyMapDetailPanel",
-      "Badge"
-    ],
-    [
-      "BodyMapDetailSections",
-      "PrBadge"
-    ],
-    [
-      "BodyMapDetailSections",
-      "StrengthTrendChart"
-    ],
-    [
-      "BodyMapDetailSections",
-      "DataRow"
-    ],
-    [
-      "BodyweightGoalCard",
-      "GoalTrajectoryBand"
-    ],
-    [
-      "BodyweightGoalCard",
-      "ZoneTrack"
-    ],
-    [
-      "BodyweightGoalCard",
-      "wholeBodyCardParts"
-    ],
-    [
-      "BodyweightGoalCard",
-      "StatCard"
-    ],
-    [
-      "BodyweightGoalCard",
-      "Typography"
-    ],
-    [
-      "CapacityBandChart",
-      "CapacityBandOverlays"
-    ],
-    [
-      "CapacityBandChart",
-      "CapacityBandPlot"
-    ],
-    [
-      "DualVelocityCharts",
-      "VelocityStrip"
-    ],
-    [
-      "DualVelocityCharts",
-      "SetBarChart"
-    ],
-    [
-      "DualVelocityStrip",
-      "DualVelocityCharts"
-    ],
-    [
-      "DualVelocityStrip",
-      "SetBarChart"
-    ],
-    [
-      "ExerciseCard",
-      "ExerciseCardHeading"
-    ],
-    [
-      "ExerciseCard",
-      "ExerciseIndicator"
-    ],
-    [
-      "ExerciseCard",
-      "SetBar"
-    ],
-    [
-      "ExerciseCard",
-      "SetRow"
-    ],
-    [
-      "ExerciseCard",
-      "SetTableHeader"
-    ],
-    [
-      "ExerciseCardHeading",
-      "ExerciseHeading"
-    ],
-    [
-      "ExerciseCardHeading",
-      "SetBar"
-    ],
-    [
-      "ExerciseCardHeading",
-      "SetStrip"
-    ],
-    [
-      "ExerciseCardHeading",
-      "Tooltip"
-    ],
-    [
-      "ExerciseDetailPage",
-      "CapacityBandChart"
-    ],
-    [
-      "ExerciseDetailPage",
-      "ExerciseCard"
-    ],
-    [
-      "ExerciseDetailPage",
-      "ExerciseDetailSectionCard"
-    ],
-    [
-      "ExerciseDetailPage",
-      "MesoStatusCard"
-    ],
-    [
-      "ExerciseDetailPage",
-      "SetRow"
-    ],
-    [
-      "ExerciseDetailPage",
-      "StrengthTrendChart"
-    ],
-    [
-      "ExerciseDetailPage",
-      "VelocityStrip"
-    ],
-    [
-      "ExerciseHeading",
-      "ExerciseIndicator"
-    ],
-    [
-      "ExerciseHeading",
-      "SetsRepsLoad"
-    ],
-    [
-      "ExerciseHeading",
-      "TempoDisplay"
-    ],
-    [
-      "ExerciseHeading",
-      "Typography"
-    ],
-    [
-      "ExerciseIndicator",
-      "SvgIcon"
-    ],
-    [
-      "ExerciseIndicator",
-      "icons"
-    ],
-    [
-      "FatigueMeter",
-      "ZoneTrack"
-    ],
-    [
-      "GoalCard",
-      "GoalMilestoneSummary"
-    ],
-    [
-      "GoalCard",
-      "GoalMilestoneWeekStrip"
-    ],
-    [
-      "GoalCard",
-      "GoalPriorityIcon"
-    ],
-    [
-      "GoalCard",
-      "GoalTrajectoryChart"
-    ],
-    [
-      "GoalCard",
-      "GoalWeekColumnsChart"
-    ],
-    [
-      "GoalCard",
-      "PrBadge"
-    ],
-    [
-      "GoalCard",
-      "Card"
-    ],
-    [
-      "GoalCard",
-      "Indicator"
-    ],
-    [
-      "GoalCard",
-      "Pill"
-    ],
-    [
-      "GoalCard",
-      "TipTrigger"
-    ],
-    [
-      "GoalCard",
-      "Typography"
-    ],
-    [
-      "GoalMilestoneSummary",
-      "GoalMilestoneWeekStrip"
-    ],
-    [
-      "GoalMilestoneSummary",
-      "GoalTrajectoryPlot"
-    ],
-    [
-      "GoalMilestoneSummary",
-      "Typography"
-    ],
-    [
-      "GoalMilestoneTile",
-      "GoalMilestoneSummary"
-    ],
-    [
-      "GoalMilestoneTile",
-      "Indicator"
-    ],
-    [
-      "GoalMilestoneTile",
-      "Surface"
-    ],
-    [
-      "GoalMilestoneTile",
-      "Typography"
-    ],
-    [
-      "GoalMilestoneWeekStrip",
-      "GoalTrajectoryPlot"
-    ],
-    [
-      "GoalMilestoneWeekStrip",
-      "SegmentedBar"
-    ],
-    [
-      "GoalMilestoneWeekStrip",
-      "Pill"
-    ],
-    [
-      "GoalMilestoneWeekStrip",
-      "TipTrigger"
-    ],
-    [
-      "GoalMilestoneWeekStrip",
-      "Typography"
-    ],
-    [
-      "GoalMuscleCard",
-      "GoalCard"
-    ],
-    [
-      "GoalMuscleCard",
-      "MuscleGlyph"
-    ],
-    [
-      "GoalMuscleCard",
-      "Card"
-    ],
-    [
-      "GoalMuscleCard",
-      "Indicator"
-    ],
-    [
-      "GoalMuscleCard",
-      "Pill"
-    ],
-    [
-      "GoalMuscleCard",
-      "Typography"
-    ],
-    [
-      "GoalPriorityIcon",
-      "SvgIcon"
-    ],
-    [
-      "GoalPriorityIcon",
-      "icons"
-    ],
-    [
-      "GoalPriorityIcon",
-      "TipTrigger"
-    ],
-    [
-      "GoalPriorityIcon",
-      "Typography"
-    ],
-    [
-      "GoalPriorityIndex",
-      "GoalPriorityIcon"
-    ],
-    [
-      "GoalPriorityIndex",
-      "Typography"
-    ],
-    [
-      "GoalTrajectoryCalibrating",
-      "GoalTrajectoryPlot"
-    ],
-    [
-      "GoalTrajectoryCalibrating",
-      "icons"
-    ],
-    [
-      "GoalTrajectoryCalibrating",
-      "TipTrigger"
-    ],
-    [
-      "GoalTrajectoryCalibrating",
-      "Typography"
-    ],
-    [
-      "GoalTrajectoryChart",
-      "GoalTrajectoryBand"
-    ],
-    [
-      "GoalTrajectoryChart",
-      "GoalTrajectoryChartParts"
-    ],
-    [
-      "GoalTrajectoryChart",
-      "GoalTrajectoryPlot"
-    ],
-    [
-      "GoalTrajectoryChartParts",
-      "GoalTrajectoryCalibrating"
-    ],
-    [
-      "GoalTrajectoryChartParts",
-      "GoalTrajectoryPlot"
-    ],
-    [
-      "GoalTrajectoryChartParts",
-      "GoalTrajectoryWeekTips"
-    ],
-    [
-      "GoalTrajectoryMini",
-      "GoalTrajectoryPlot"
-    ],
-    [
-      "GoalTrajectoryPlot",
-      "GoalTrajectoryBand"
-    ],
-    [
-      "GoalTrajectoryPlot",
-      "GoalTrajectoryCalibrating"
-    ],
-    [
-      "GoalTrajectoryPlot",
-      "SvgIcon"
-    ],
-    [
-      "GoalTrajectoryPlot",
-      "icons"
-    ],
-    [
-      "GoalTrajectoryWeekTips",
-      "Metric"
-    ],
-    [
-      "GoalTrajectoryWeekTips",
-      "PrBadge"
-    ],
-    [
-      "GoalTrajectoryWeekTips",
-      "Pill"
-    ],
-    [
-      "GoalTrajectoryWeekTips",
-      "TipTrigger"
-    ],
-    [
-      "GoalTrajectoryWeekTips",
-      "Typography"
-    ],
-    [
-      "GoalWeekColumnsChart",
-      "GoalMilestoneWeekStrip"
-    ],
-    [
-      "GoalWeekColumnsChart",
-      "GoalTrajectoryMini"
-    ],
-    [
-      "MesoCard",
-      "WeekRow"
-    ],
-    [
-      "MesoCard",
-      "Badge"
-    ],
-    [
-      "MesoCard",
-      "Card"
-    ],
-    [
-      "MesoStatusCard",
-      "StatusDot"
-    ],
-    [
-      "MesoStatusCard",
-      "Card"
-    ],
-    [
-      "MetricTiles",
-      "Stack"
-    ],
-    [
-      "MetricTiles",
-      "Tile"
-    ],
-    [
-      "MuscleGroupChip",
-      "Pill"
-    ],
-    [
-      "MuscleStrip",
-      "MuscleGroupChip"
-    ],
-    [
-      "PrBadge",
-      "BaseBadge"
-    ],
-    [
-      "PrBadge",
-      "icons"
-    ],
-    [
-      "PrBadge",
-      "Typography"
-    ],
-    [
-      "PrHistoryModal",
-      "icons"
-    ],
-    [
-      "PrHistoryModal",
-      "Drawer"
-    ],
-    [
-      "PrimaryGoalCard",
-      "GoalCard"
-    ],
-    [
-      "ProgramPlanningPage",
-      "ExerciseCard"
-    ],
-    [
-      "ProgramPlanningPage",
-      "MesoCard"
-    ],
-    [
-      "ProgramPlanningPage",
-      "MesoProgressBar"
-    ],
-    [
-      "ProgramPlanningPage",
-      "ProgramPlanningBreadcrumbs"
-    ],
-    [
-      "ProgramPlanningPage",
-      "WeekRow"
-    ],
-    [
-      "ProgramPlanningPage",
-      "WorkoutCard"
-    ],
-    [
-      "ProgramPlanningPage",
-      "WorkoutPill"
-    ],
-    [
-      "ReadinessCheck",
-      "Badge"
-    ],
-    [
-      "ReadinessCheck",
-      "Card"
-    ],
-    [
-      "RestTimer",
-      "CircularTimer"
-    ],
-    [
-      "ScheduleTiles",
-      "DateTime"
-    ],
-    [
-      "ScheduleTiles",
-      "Stack"
-    ],
-    [
-      "ScheduleTiles",
-      "Tile"
-    ],
-    [
-      "SegmentedProgressBar",
-      "SegmentedBar"
-    ],
-    [
-      "SessionHeader",
-      "TimerReadout"
-    ],
-    [
-      "SessionHeader",
-      "MetricTiles"
-    ],
-    [
-      "SessionHeader",
-      "ScheduleTiles"
-    ],
-    [
-      "SessionHeader",
-      "SegmentedProgressBar"
-    ],
-    [
-      "SessionHeader",
-      "Surface"
-    ],
-    [
-      "SessionHeader",
-      "Typography"
-    ],
-    [
-      "SessionRail",
-      "ExerciseCard"
-    ],
-    [
-      "SessionRail",
-      "ExerciseCardHeading"
-    ],
-    [
-      "SessionRail",
-      "ExerciseIndicator"
-    ],
-    [
-      "SessionRail",
-      "MetricTiles"
-    ],
-    [
-      "SessionRail",
-      "SessionHeader"
-    ],
-    [
-      "SessionRail",
-      "SetBar"
-    ],
-    [
-      "SessionRail",
-      "SetRow"
-    ],
-    [
-      "SessionRail",
-      "Surface"
-    ],
-    [
-      "SessionsGoalCard",
-      "GoalCard"
-    ],
-    [
-      "SessionsGoalCard",
-      "SegmentedBar"
-    ],
-    [
-      "SessionsGoalCard",
-      "wholeBodyCardParts"
-    ],
-    [
-      "SessionsGoalCard",
-      "Progress"
-    ],
-    [
-      "SessionsGoalCard",
-      "StatCard"
-    ],
-    [
-      "SetBar",
-      "SegmentedBar"
-    ],
-    [
-      "SetRow",
-      "VelocityStrip"
-    ],
-    [
-      "SetRow",
-      "Typography"
-    ],
-    [
-      "SetStrip",
-      "SetBar"
-    ],
-    [
-      "SetTableHeader",
-      "Typography"
-    ],
-    [
-      "SetsRepsLoad",
-      "metricText"
-    ],
-    [
-      "Sparkline",
-      "SparklineParts"
-    ],
-    [
-      "SparklineParts",
-      "Typography"
-    ],
-    [
-      "StatusDot",
-      "Typography"
-    ],
-    [
-      "StatusPill",
-      "StatusDot"
-    ],
-    [
-      "StatusPill",
-      "Pill"
-    ],
-    [
-      "SupersetWrapper",
-      "Typography"
-    ],
-    [
-      "TempoDisplay",
-      "metricText"
-    ],
-    [
-      "TrainingStatusPage",
-      "BodyMap"
-    ],
-    [
-      "TrainingStatusPage",
-      "BodyMapDetailPanel"
-    ],
-    [
-      "TrainingStatusPage",
-      "MesoStatusCard"
-    ],
-    [
-      "VelocityBandOverlay",
-      "SetBarChart"
-    ],
-    [
-      "VelocityBandOverlay",
-      "Typography"
-    ],
-    [
-      "VelocityBandPreview",
-      "VelocityBandOverlay"
-    ],
-    [
-      "VelocityBandPreview",
-      "SetBarChart"
-    ],
-    [
-      "VelocityLossBands",
-      "SetBarChart"
-    ],
-    [
-      "VelocityStrip",
-      "VelocityStripVariants"
-    ],
-    [
-      "VelocityStrip",
-      "SetBarChart"
-    ],
-    [
-      "VelocityStripFramed",
-      "SetBarChart"
-    ],
-    [
-      "VelocityStripVariants",
-      "VelocityLossBands"
-    ],
-    [
-      "VelocityStripVariants",
-      "VelocityStripFramed"
-    ],
-    [
-      "VelocityStripVariants",
-      "SetBarChart"
-    ],
-    [
-      "VolumeLandmarkBar",
-      "ZoneTrack"
-    ],
-    [
-      "VolumeLandmarkBar",
-      "DataRow"
-    ],
-    [
-      "VolumeLandmarkBar",
-      "Typography"
-    ],
-    [
-      "WeekRow",
-      "IntensityBar"
-    ],
-    [
-      "WeekRow",
-      "WorkoutPill"
-    ],
-    [
-      "WeekRow",
-      "Typography"
-    ],
-    [
-      "WeightBadge",
-      "BaseBadge"
-    ],
-    [
-      "WeightBadge",
-      "icons"
-    ],
-    [
-      "WeightBadge",
-      "Typography"
-    ],
-    [
-      "WorkoutCard",
-      "ExerciseCard"
-    ],
-    [
-      "WorkoutCard",
-      "MuscleGroupChip"
-    ],
-    [
-      "WorkoutCard",
-      "Card"
-    ],
-    [
-      "WorkoutCard",
-      "Typography"
-    ],
-    [
-      "WorkoutPill",
-      "Typography"
-    ],
-    [
-      "ZoneTrack",
-      "ZoneTrackParts"
-    ],
-    [
-      "ZoneTrack",
-      "ZoneTrackTicks"
-    ],
-    [
-      "ZoneTrackTicks",
-      "Tooltip"
-    ],
-    [
-      "goalCarousel-fixture",
-      "Metric"
-    ],
-    [
-      "goalCarousel-fixture",
-      "GoalCard"
-    ],
-    [
-      "goalCarousel-fixture",
-      "GoalMuscleCard"
-    ],
-    [
-      "goalCarousel-fixture",
-      "Card"
-    ],
-    [
-      "goalCarousel-fixture",
-      "Carousel"
-    ],
-    [
-      "goalCarousel-fixture",
-      "Typography"
-    ],
-    [
-      "setHeadingKit",
-      "TempoDisplay"
-    ],
-    [
-      "velocity-story-kit",
-      "DualVelocityStrip"
-    ],
-    [
-      "velocity-story-kit",
-      "VelocityStrip"
-    ],
-    [
-      "wholeBodyCardParts",
-      "Metric"
-    ],
-    [
-      "wholeBodyCardParts",
-      "GoalCard"
-    ],
-    [
-      "wholeBodyCardParts",
-      "GoalTrajectoryPlot"
-    ],
-    [
-      "wholeBodyCardParts",
-      "SvgIcon"
-    ],
-    [
-      "wholeBodyCardParts",
-      "icons"
-    ],
-    [
-      "wholeBodyCardParts",
-      "Pill"
-    ],
-    [
-      "wholeBodyCardParts",
-      "StatCard"
-    ],
-    [
-      "wholeBodyCardParts",
-      "TipTrigger"
-    ],
-    [
-      "wholeBodyCardParts",
-      "Tooltip"
-    ],
-    [
-      "wholeBodyCardParts",
-      "Typography"
-    ],
-    [
-      "icons",
-      "SvgIcon"
-    ],
-    [
-      "AppShell",
-      "SideNav"
-    ],
-    [
-      "AppShell",
-      "TopBar"
-    ],
-    [
-      "AppShell",
-      "brands"
-    ],
-    [
-      "AppShell",
-      "Surface"
-    ],
-    [
-      "BrandLockup",
-      "brands"
-    ],
-    [
-      "BrandLockup",
-      "Typography"
-    ],
-    [
-      "NavItem",
-      "Typography"
-    ],
-    [
-      "SideNav",
-      "NavItem"
-    ],
-    [
-      "TopBar",
-      "BrandLockup"
-    ],
-    [
-      "TopBar",
-      "brands"
-    ],
-    [
-      "TopBar",
-      "DateTime"
-    ],
-    [
-      "TopBar",
-      "Divider"
-    ],
-    [
-      "brands",
-      "icons"
-    ],
-    [
-      "DeviceIndicator",
-      "icons"
-    ],
-    [
-      "DeviceMenu",
-      "DeviceIndicator"
-    ],
-    [
-      "DeviceMenu",
-      "DeviceRow"
-    ],
-    [
-      "DeviceMenu",
-      "Popover"
-    ],
-    [
-      "DeviceMenu",
-      "Typography"
-    ],
-    [
-      "DeviceRow",
-      "Indicator"
-    ],
-    [
-      "DeviceRow",
-      "Typography"
-    ],
-    [
-      "DualPinnedLiveStrip",
-      "DualVelocityStrip"
-    ],
-    [
-      "DualPinnedLiveStrip",
-      "icons"
-    ],
-    [
-      "DualPinnedLiveStrip",
-      "pinnedLiveStripParts"
-    ],
-    [
-      "DualPinnedLiveStrip",
-      "Typography"
-    ],
-    [
-      "PinnedLiveStrip",
-      "SetBarChart"
-    ],
-    [
-      "PinnedLiveStrip",
-      "icons"
-    ],
-    [
-      "PinnedLiveStrip",
-      "pinnedLiveStripParts"
-    ],
-    [
-      "SessionStatePill",
-      "Indicator"
-    ],
-    [
-      "SessionStatePill",
-      "Typography"
-    ],
-    [
-      "WorkoutShell",
-      "AppShell"
-    ],
-    [
-      "WorkoutShell",
-      "SideNav"
-    ],
-    [
-      "WorkoutShell",
-      "DeviceRow"
-    ],
-    [
-      "WorkoutShell",
-      "SessionStatePill"
-    ],
-    [
-      "WorkoutShell",
-      "WorkoutTopBar"
-    ],
-    [
-      "WorkoutShell",
-      "workoutNavItems"
-    ],
-    [
-      "WorkoutTopBar",
-      "TopBar"
-    ],
-    [
-      "WorkoutTopBar",
-      "DeviceMenu"
-    ],
-    [
-      "WorkoutTopBar",
-      "DeviceRow"
-    ],
-    [
-      "WorkoutTopBar",
-      "SessionStatePill"
-    ],
-    [
-      "pinnedLiveStripParts",
-      "icons"
-    ],
-    [
-      "pinnedLiveStripParts",
-      "Indicator"
-    ],
-    [
-      "pinnedLiveStripParts",
-      "Progress"
-    ],
-    [
-      "pinnedLiveStripParts",
-      "Surface"
-    ],
-    [
-      "pinnedLiveStripParts",
-      "Typography"
-    ],
-    [
-      "workoutNavItems",
-      "icons"
-    ],
-    [
-      "workoutNavItems",
-      "SideNav"
-    ],
-    [
-      "Autocomplete",
-      "AutocompleteParts"
-    ],
-    [
-      "AutocompleteParts",
-      "Surface"
-    ],
-    [
-      "Badge",
-      "Indicator"
-    ],
-    [
-      "Badge",
-      "Pill"
-    ],
-    [
-      "Card",
-      "Surface"
-    ],
-    [
-      "Carousel",
-      "icons"
-    ],
-    [
-      "Carousel",
-      "Button"
-    ],
-    [
-      "Scatter",
-      "ScatterFrame"
-    ],
-    [
-      "Scatter",
-      "ScatterGridlines"
-    ],
-    [
-      "Scatter",
-      "ScatterPointMark"
-    ],
-    [
-      "Chip",
-      "Pill"
-    ],
-    [
-      "DateTime",
-      "Typography"
-    ],
-    [
-      "Drawer",
-      "Surface"
-    ],
-    [
-      "Eyebrow",
-      "Typography"
-    ],
-    [
-      "FilePathLabel",
-      "Typography"
-    ],
-    [
-      "HelpTip",
-      "Surface"
-    ],
-    [
-      "Menu",
-      "Surface"
-    ],
-    [
-      "Menu",
-      "TriggerSurface"
-    ],
-    [
-      "Modal",
-      "Surface"
-    ],
-    [
-      "Popover",
-      "Surface"
-    ],
-    [
-      "Popover",
-      "TriggerSurface"
-    ],
-    [
-      "Select",
-      "SelectPopover"
-    ],
-    [
-      "SelectPopover",
-      "Surface"
-    ],
-    [
-      "StatCard",
-      "Card"
-    ],
-    [
-      "StatCard",
-      "Typography"
-    ],
-    [
-      "TableHeaderCell",
-      "Tooltip"
-    ],
-    [
-      "Toast",
-      "Surface"
-    ],
-    [
-      "ToolbarButton",
-      "ToolbarButtonParts"
-    ],
-    [
-      "ToolbarButtonParts",
-      "Surface"
-    ],
-    [
-      "TipTrigger",
-      "Tooltip"
-    ],
-    [
-      "Tooltip",
-      "Surface"
-    ],
-    [
-      "Tooltip",
-      "TooltipParts"
-    ],
-    [
-      "Tooltip",
-      "TriggerSurface"
-    ],
-    [
-      "HighlightText",
-      "Typography"
-    ],
-    [
-      "Kbd",
-      "Typography"
-    ],
-    [
-      "Page",
-      "Typography"
-    ],
-    [
-      "CardStat",
-      "Card"
-    ],
-    [
-      "CardStat",
-      "Metric"
-    ],
-    [
-      "BarList",
-      "BarListCells"
-    ],
-    [
-      "BarList",
-      "BarListParts"
-    ],
-    [
-      "BarList",
-      "BarListTip"
-    ],
-    [
-      "BarList",
-      "EmptyState"
-    ],
-    [
-      "ToolBadge",
-      "Pill"
-    ],
-    [
-      "GapIndicator",
-      "DateTime"
-    ],
-    [
-      "GapIndicator",
-      "Divider"
-    ],
-    [
-      "GapIndicator",
-      "Typography"
-    ],
-    [
-      "ToolCallRow",
-      "ToolBadge"
-    ],
-    [
-      "ToolCallRow",
-      "Collapse"
-    ],
-    [
-      "ToolCallRow",
-      "DateTime"
-    ],
-    [
-      "ToolCallRow",
-      "Indicator"
-    ],
-    [
-      "ToolCallRow",
-      "Typography"
-    ]
+    ["CoChangeChip", "Card"],
+    ["CoChangeChip", "FilePathLabel"],
+    ["CoChangeChip", "Pill"],
+    ["CoChangeChip", "Typography"],
+    ["FileActivityDetail", "FileActivityGrowthWell"],
+    ["FileActivityDetail", "FileActivityRow"],
+    ["FileActivityDetail", "Card"],
+    ["FileActivityDetail", "DataRow"],
+    ["FileActivityDetail", "DateTime"],
+    ["FileActivityDetail", "Eyebrow"],
+    ["FileActivityDetail", "FilePathLabel"],
+    ["FileActivityDetail", "Pill"],
+    ["FileActivityDetail", "Tile"],
+    ["FileActivityDetail", "Typography"],
+    ["FileActivityGrowthWell", "FileActivityRow"],
+    ["FileActivityGrowthWell", "Card"],
+    ["FileActivityGrowthWell", "SparkBars"],
+    ["FileActivityGrowthWell", "Eyebrow"],
+    ["FileActivityGrowthWell", "Typography"],
+    ["FileActivityRow", "SparkBars"],
+    ["FileActivityRow", "FilePathLabel"],
+    ["FileActivityRow", "Typography"],
+    ["FileHistoryExplorer", "CoChangeChip"],
+    ["FileHistoryExplorer", "FileActivityDetail"],
+    ["FileHistoryExplorer", "FileActivityRow"],
+    ["FileHistoryExplorer", "Card"],
+    ["FileHistoryExplorer", "Divider"],
+    ["FileHistoryExplorer", "Eyebrow"],
+    ["FileHistoryExplorer", "Tile"],
+    ["FileHistoryExplorer", "Typography"],
+    ["InitiativeBrief", "MarkdownProse"],
+    ["InitiativeBrief", "Eyebrow"],
+    ["InitiativeBrief", "Typography"],
+    ["InitiativeCard", "SeverityLabel"],
+    ["InitiativeCard", "SegmentedBar"],
+    ["InitiativeCard", "StatusDot"],
+    ["InitiativeCard", "Card"],
+    ["InitiativeCard", "Pill"],
+    ["InitiativeCard", "Typography"],
+    ["InitiativeHeader", "InitiativeCard"],
+    ["InitiativeHeader", "StatusDot"],
+    ["InitiativeHeader", "DateTime"],
+    ["InitiativeHeader", "Pill"],
+    ["InitiativeHeader", "Typography"],
+    ["OpenLoops", "MarkdownProse"],
+    ["OpenLoops", "Divider"],
+    ["OpenLoops", "Eyebrow"],
+    ["OpenLoops", "Pill"],
+    ["OpenLoops", "Typography"],
+    ["PortfolioOverview", "InitiativeCard"],
+    ["PortfolioOverview", "Metric"],
+    ["PortfolioOverview", "Card"],
+    ["PortfolioOverview", "Eyebrow"],
+    ["PortfolioOverview", "Typography"],
+    ["SessionDetail", "SessionListItem"],
+    ["SessionDetail", "TaskRow"],
+    ["SessionDetail", "TaskTable"],
+    ["SessionDetail", "MarkdownProse"],
+    ["SessionDetail", "Card"],
+    ["SessionDetail", "Collapse"],
+    ["SessionDetail", "DateTime"],
+    ["SessionDetail", "Divider"],
+    ["SessionDetail", "Pill"],
+    ["SessionDetail", "Tooltip"],
+    ["SessionDetail", "Typography"],
+    ["SessionList", "SessionListItem"],
+    ["SessionList", "Divider"],
+    ["SessionList", "Eyebrow"],
+    ["SessionList", "Typography"],
+    ["SessionListItem", "DateTime"],
+    ["SessionListItem", "Tooltip"],
+    ["SessionListItem", "Typography"],
+    ["SeverityLabel", "Indicator"],
+    ["SeverityLabel", "Typography"],
+    ["TaskRow", "SeverityLabel"],
+    ["TaskRow", "DateTime"],
+    ["TaskRow", "Pill"],
+    ["TaskRow", "Table"],
+    ["TaskRow", "TableCell"],
+    ["TaskRow", "Tooltip"],
+    ["TaskRow", "Typography"],
+    ["TaskStagePill", "Pill"],
+    ["TaskTable", "SeverityLabel"],
+    ["TaskTable", "TaskRow"],
+    ["TaskTable", "Eyebrow"],
+    ["TaskTable", "Table"],
+    ["TaskTable", "TableHeaderCell"],
+    ["TaskTable", "Typography"],
+    ["ChatCard", "Button"],
+    ["ChatCard", "Card"],
+    ["ChatCard", "Typography"],
+    ["Composer", "Button"],
+    ["Composer", "Input"],
+    ["Composer", "Surface"],
+    ["ConversationIdentity", "Avatar"],
+    ["ConversationIdentity", "Typography"],
+    ["DateSeparator", "DateTime"],
+    ["DateSeparator", "Divider"],
+    ["DateSeparator", "Typography"],
+    ["MessageBubble", "MarkdownProse"],
+    ["MessageBubble", "Avatar"],
+    ["MessageBubble", "Surface"],
+    ["MessageBubble", "Typography"],
+    ["MessageList", "ConversationIdentity"],
+    ["MessageList", "DateSeparator"],
+    ["MessageList", "MessageBubble"],
+    ["MessageList", "RevealRow"],
+    ["MessageList", "TypingIndicator"],
+    ["MessageList", "UnreadBadge"],
+    ["MessageList", "MarkdownProse"],
+    ["MessageList", "Button"],
+    ["RevealRow", "DateTime"],
+    ["TypingIndicator", "Indicator"],
+    ["TypingIndicator", "Surface"],
+    ["TypingIndicator", "Typography"],
+    ["UnreadBadge", "Pill"],
+    ["coach-cards", "ChatCard"],
+    ["coach-cards", "DateTime"],
+    ["coach-cards", "Pill"],
+    ["coach-cards", "Typography"],
+    ["CircularTimer", "Progress"],
+    ["DualGhostSpark", "DualGhostSparkParts"],
+    ["DualGhostSpark", "GhostBand"],
+    ["DualGhostSpark", "GhostSpark"],
+    ["DualGhostSparkParts", "GhostBloom"],
+    ["FatigueLights", "StatusDot"],
+    ["FatigueLights", "Tooltip"],
+    ["GhostBand", "GhostBandParts"],
+    ["GhostSpark", "GhostBand"],
+    ["GhostSpark", "GhostBloom"],
+    ["LiveFatigueCard", "FatigueLights"],
+    ["LiveFatigueCard", "GhostSpark"],
+    ["LiveFatigueCard", "RomProgressionChart"],
+    ["LiveFatigueCard", "VerdictHero"],
+    ["LiveFatigueCard", "Surface"],
+    ["LiveFatiguePanel", "LiveFatigueCard"],
+    ["LiveFatiguePanel", "VelocityHero"],
+    ["LiveFatiguePanel", "LiveAuraFrame"],
+    ["RomProgressionChart", "SetBarChart"],
+    ["VelocityHero", "VelocityStrip"],
+    ["MarkdownProse", "Typography"],
+    ["TimerReadout", "Typography"],
+    ["ActiveWorkoutPage", "ExerciseCard"],
+    ["ActiveWorkoutPage", "InputBar"],
+    ["ActiveWorkoutPage", "RestTimer"],
+    ["ActiveWorkoutPage", "SetRow"],
+    ["ActiveWorkoutPage", "SupersetWrapper"],
+    ["BodyMapDetailPanel", "BodyMapDetailSections"],
+    ["BodyMapDetailPanel", "Sparkline"],
+    ["BodyMapDetailPanel", "Badge"],
+    ["BodyMapDetailSections", "PrBadge"],
+    ["BodyMapDetailSections", "StrengthTrendChart"],
+    ["BodyMapDetailSections", "DataRow"],
+    ["BodyweightGoalCard", "GoalTrajectoryBand"],
+    ["BodyweightGoalCard", "ZoneTrack"],
+    ["BodyweightGoalCard", "wholeBodyCardParts"],
+    ["BodyweightGoalCard", "StatCard"],
+    ["BodyweightGoalCard", "Typography"],
+    ["CapacityBandChart", "CapacityBandOverlays"],
+    ["CapacityBandChart", "CapacityBandPlot"],
+    ["DualVelocityCharts", "VelocityStrip"],
+    ["DualVelocityCharts", "SetBarChart"],
+    ["DualVelocityStrip", "DualVelocityCharts"],
+    ["DualVelocityStrip", "SetBarChart"],
+    ["ExerciseCard", "ExerciseCardHeading"],
+    ["ExerciseCard", "ExerciseIndicator"],
+    ["ExerciseCard", "SetBar"],
+    ["ExerciseCard", "SetRow"],
+    ["ExerciseCard", "SetTableHeader"],
+    ["ExerciseCardHeading", "ExerciseHeading"],
+    ["ExerciseCardHeading", "SetBar"],
+    ["ExerciseCardHeading", "SetStrip"],
+    ["ExerciseCardHeading", "Tooltip"],
+    ["ExerciseDetailPage", "CapacityBandChart"],
+    ["ExerciseDetailPage", "ExerciseCard"],
+    ["ExerciseDetailPage", "ExerciseDetailSectionCard"],
+    ["ExerciseDetailPage", "MesoStatusCard"],
+    ["ExerciseDetailPage", "SetRow"],
+    ["ExerciseDetailPage", "StrengthTrendChart"],
+    ["ExerciseDetailPage", "VelocityStrip"],
+    ["ExerciseHeading", "ExerciseIndicator"],
+    ["ExerciseHeading", "SetsRepsLoad"],
+    ["ExerciseHeading", "TempoDisplay"],
+    ["ExerciseHeading", "Typography"],
+    ["ExerciseIndicator", "SvgIcon"],
+    ["ExerciseIndicator", "icons"],
+    ["FatigueMeter", "ZoneTrack"],
+    ["GoalCard", "GoalMilestoneSummary"],
+    ["GoalCard", "GoalMilestoneWeekStrip"],
+    ["GoalCard", "GoalPriorityIcon"],
+    ["GoalCard", "GoalTrajectoryChart"],
+    ["GoalCard", "GoalWeekColumnsChart"],
+    ["GoalCard", "PrBadge"],
+    ["GoalCard", "Card"],
+    ["GoalCard", "Indicator"],
+    ["GoalCard", "Pill"],
+    ["GoalCard", "TipTrigger"],
+    ["GoalCard", "Typography"],
+    ["GoalMilestoneSummary", "GoalMilestoneWeekStrip"],
+    ["GoalMilestoneSummary", "GoalTrajectoryPlot"],
+    ["GoalMilestoneSummary", "Typography"],
+    ["GoalMilestoneTile", "GoalMilestoneSummary"],
+    ["GoalMilestoneTile", "Indicator"],
+    ["GoalMilestoneTile", "Surface"],
+    ["GoalMilestoneTile", "Typography"],
+    ["GoalMilestoneWeekStrip", "GoalTrajectoryPlot"],
+    ["GoalMilestoneWeekStrip", "SegmentedBar"],
+    ["GoalMilestoneWeekStrip", "Pill"],
+    ["GoalMilestoneWeekStrip", "TipTrigger"],
+    ["GoalMilestoneWeekStrip", "Typography"],
+    ["GoalMuscleCard", "GoalCard"],
+    ["GoalMuscleCard", "MuscleGlyph"],
+    ["GoalMuscleCard", "Card"],
+    ["GoalMuscleCard", "Indicator"],
+    ["GoalMuscleCard", "Pill"],
+    ["GoalMuscleCard", "Typography"],
+    ["GoalPriorityIcon", "SvgIcon"],
+    ["GoalPriorityIcon", "icons"],
+    ["GoalPriorityIcon", "TipTrigger"],
+    ["GoalPriorityIcon", "Typography"],
+    ["GoalPriorityIndex", "GoalPriorityIcon"],
+    ["GoalPriorityIndex", "Typography"],
+    ["GoalTrajectoryCalibrating", "GoalTrajectoryPlot"],
+    ["GoalTrajectoryCalibrating", "icons"],
+    ["GoalTrajectoryCalibrating", "TipTrigger"],
+    ["GoalTrajectoryCalibrating", "Typography"],
+    ["GoalTrajectoryChart", "GoalTrajectoryBand"],
+    ["GoalTrajectoryChart", "GoalTrajectoryChartParts"],
+    ["GoalTrajectoryChart", "GoalTrajectoryPlot"],
+    ["GoalTrajectoryChartParts", "GoalTrajectoryCalibrating"],
+    ["GoalTrajectoryChartParts", "GoalTrajectoryPlot"],
+    ["GoalTrajectoryChartParts", "GoalTrajectoryWeekTips"],
+    ["GoalTrajectoryMini", "GoalTrajectoryPlot"],
+    ["GoalTrajectoryPlot", "GoalTrajectoryBand"],
+    ["GoalTrajectoryPlot", "GoalTrajectoryCalibrating"],
+    ["GoalTrajectoryPlot", "SvgIcon"],
+    ["GoalTrajectoryPlot", "icons"],
+    ["GoalTrajectoryWeekTips", "Metric"],
+    ["GoalTrajectoryWeekTips", "PrBadge"],
+    ["GoalTrajectoryWeekTips", "Pill"],
+    ["GoalTrajectoryWeekTips", "TipTrigger"],
+    ["GoalTrajectoryWeekTips", "Typography"],
+    ["GoalWeekColumnsChart", "GoalMilestoneWeekStrip"],
+    ["GoalWeekColumnsChart", "GoalTrajectoryMini"],
+    ["MesoCard", "WeekRow"],
+    ["MesoCard", "Badge"],
+    ["MesoCard", "Card"],
+    ["MesoStatusCard", "StatusDot"],
+    ["MesoStatusCard", "Card"],
+    ["MetricTiles", "Stack"],
+    ["MetricTiles", "Tile"],
+    ["MuscleGroupChip", "Pill"],
+    ["MuscleStrip", "MuscleGroupChip"],
+    ["PrBadge", "BaseBadge"],
+    ["PrBadge", "icons"],
+    ["PrBadge", "Typography"],
+    ["PrHistoryModal", "icons"],
+    ["PrHistoryModal", "Drawer"],
+    ["PrimaryGoalCard", "GoalCard"],
+    ["ProgramPlanningPage", "ExerciseCard"],
+    ["ProgramPlanningPage", "MesoCard"],
+    ["ProgramPlanningPage", "MesoProgressBar"],
+    ["ProgramPlanningPage", "ProgramPlanningBreadcrumbs"],
+    ["ProgramPlanningPage", "WeekRow"],
+    ["ProgramPlanningPage", "WorkoutCard"],
+    ["ProgramPlanningPage", "WorkoutPill"],
+    ["ReadinessCheck", "Badge"],
+    ["ReadinessCheck", "Card"],
+    ["RestTimer", "CircularTimer"],
+    ["ScheduleTiles", "DateTime"],
+    ["ScheduleTiles", "Stack"],
+    ["ScheduleTiles", "Tile"],
+    ["SegmentedProgressBar", "SegmentedBar"],
+    ["SessionHeader", "TimerReadout"],
+    ["SessionHeader", "MetricTiles"],
+    ["SessionHeader", "ScheduleTiles"],
+    ["SessionHeader", "SegmentedProgressBar"],
+    ["SessionHeader", "Surface"],
+    ["SessionHeader", "Typography"],
+    ["SessionRail", "ExerciseCard"],
+    ["SessionRail", "ExerciseCardHeading"],
+    ["SessionRail", "ExerciseIndicator"],
+    ["SessionRail", "MetricTiles"],
+    ["SessionRail", "SessionHeader"],
+    ["SessionRail", "SetBar"],
+    ["SessionRail", "SetRow"],
+    ["SessionRail", "Surface"],
+    ["SessionsGoalCard", "GoalCard"],
+    ["SessionsGoalCard", "SegmentedBar"],
+    ["SessionsGoalCard", "wholeBodyCardParts"],
+    ["SessionsGoalCard", "Progress"],
+    ["SessionsGoalCard", "StatCard"],
+    ["SetBar", "SegmentedBar"],
+    ["SetRow", "VelocityStrip"],
+    ["SetRow", "Typography"],
+    ["SetStrip", "SetBar"],
+    ["SetTableHeader", "Typography"],
+    ["SetsRepsLoad", "metricText"],
+    ["Sparkline", "SparklineParts"],
+    ["SparklineParts", "Typography"],
+    ["StatusDot", "Typography"],
+    ["StatusPill", "StatusDot"],
+    ["StatusPill", "Pill"],
+    ["SupersetWrapper", "Typography"],
+    ["TempoDisplay", "metricText"],
+    ["TrainingStatusPage", "BodyMap"],
+    ["TrainingStatusPage", "BodyMapDetailPanel"],
+    ["TrainingStatusPage", "MesoStatusCard"],
+    ["VelocityBandOverlay", "SetBarChart"],
+    ["VelocityBandOverlay", "Typography"],
+    ["VelocityBandPreview", "VelocityBandOverlay"],
+    ["VelocityBandPreview", "SetBarChart"],
+    ["VelocityLossBands", "SetBarChart"],
+    ["VelocityStrip", "VelocityStripVariants"],
+    ["VelocityStrip", "SetBarChart"],
+    ["VelocityStripFramed", "SetBarChart"],
+    ["VelocityStripVariants", "VelocityLossBands"],
+    ["VelocityStripVariants", "VelocityStripFramed"],
+    ["VelocityStripVariants", "SetBarChart"],
+    ["VolumeLandmarkBar", "ZoneTrack"],
+    ["VolumeLandmarkBar", "DataRow"],
+    ["VolumeLandmarkBar", "Typography"],
+    ["WeekRow", "IntensityBar"],
+    ["WeekRow", "WorkoutPill"],
+    ["WeekRow", "Typography"],
+    ["WeightBadge", "BaseBadge"],
+    ["WeightBadge", "icons"],
+    ["WeightBadge", "Typography"],
+    ["WorkoutCard", "ExerciseCard"],
+    ["WorkoutCard", "MuscleGroupChip"],
+    ["WorkoutCard", "Card"],
+    ["WorkoutCard", "Typography"],
+    ["WorkoutPill", "Typography"],
+    ["ZoneTrack", "ZoneTrackParts"],
+    ["ZoneTrack", "ZoneTrackTicks"],
+    ["ZoneTrackTicks", "Tooltip"],
+    ["goalCarousel-fixture", "Metric"],
+    ["goalCarousel-fixture", "GoalCard"],
+    ["goalCarousel-fixture", "GoalMuscleCard"],
+    ["goalCarousel-fixture", "Card"],
+    ["goalCarousel-fixture", "Carousel"],
+    ["goalCarousel-fixture", "Typography"],
+    ["setHeadingKit", "TempoDisplay"],
+    ["velocity-story-kit", "DualVelocityStrip"],
+    ["velocity-story-kit", "VelocityStrip"],
+    ["wholeBodyCardParts", "Metric"],
+    ["wholeBodyCardParts", "GoalCard"],
+    ["wholeBodyCardParts", "GoalTrajectoryPlot"],
+    ["wholeBodyCardParts", "SvgIcon"],
+    ["wholeBodyCardParts", "icons"],
+    ["wholeBodyCardParts", "Pill"],
+    ["wholeBodyCardParts", "StatCard"],
+    ["wholeBodyCardParts", "TipTrigger"],
+    ["wholeBodyCardParts", "Tooltip"],
+    ["wholeBodyCardParts", "Typography"],
+    ["icons", "SvgIcon"],
+    ["AppShell", "SideNav"],
+    ["AppShell", "TopBar"],
+    ["AppShell", "brands"],
+    ["AppShell", "Surface"],
+    ["BrandLockup", "brands"],
+    ["BrandLockup", "Typography"],
+    ["NavItem", "Typography"],
+    ["SideNav", "NavItem"],
+    ["TopBar", "BrandLockup"],
+    ["TopBar", "brands"],
+    ["TopBar", "DateTime"],
+    ["TopBar", "Divider"],
+    ["brands", "icons"],
+    ["DeviceIndicator", "icons"],
+    ["DeviceMenu", "DeviceIndicator"],
+    ["DeviceMenu", "DeviceRow"],
+    ["DeviceMenu", "Popover"],
+    ["DeviceMenu", "Typography"],
+    ["DeviceRow", "Indicator"],
+    ["DeviceRow", "Typography"],
+    ["DualPinnedLiveStrip", "DualVelocityStrip"],
+    ["DualPinnedLiveStrip", "icons"],
+    ["DualPinnedLiveStrip", "pinnedLiveStripParts"],
+    ["DualPinnedLiveStrip", "Typography"],
+    ["PinnedLiveStrip", "SetBarChart"],
+    ["PinnedLiveStrip", "icons"],
+    ["PinnedLiveStrip", "pinnedLiveStripParts"],
+    ["SessionStatePill", "Indicator"],
+    ["SessionStatePill", "Typography"],
+    ["WorkoutShell", "AppShell"],
+    ["WorkoutShell", "SideNav"],
+    ["WorkoutShell", "DeviceRow"],
+    ["WorkoutShell", "SessionStatePill"],
+    ["WorkoutShell", "WorkoutTopBar"],
+    ["WorkoutShell", "workoutNavItems"],
+    ["WorkoutTopBar", "TopBar"],
+    ["WorkoutTopBar", "DeviceMenu"],
+    ["WorkoutTopBar", "DeviceRow"],
+    ["WorkoutTopBar", "SessionStatePill"],
+    ["pinnedLiveStripParts", "icons"],
+    ["pinnedLiveStripParts", "Indicator"],
+    ["pinnedLiveStripParts", "Progress"],
+    ["pinnedLiveStripParts", "Surface"],
+    ["pinnedLiveStripParts", "Typography"],
+    ["workoutNavItems", "icons"],
+    ["workoutNavItems", "SideNav"],
+    ["Autocomplete", "AutocompleteParts"],
+    ["AutocompleteParts", "Surface"],
+    ["Badge", "Indicator"],
+    ["Badge", "Pill"],
+    ["Card", "Surface"],
+    ["Carousel", "icons"],
+    ["Carousel", "Button"],
+    ["Scatter", "ScatterFrame"],
+    ["Scatter", "ScatterGridlines"],
+    ["Scatter", "ScatterPointMark"],
+    ["Chip", "Pill"],
+    ["DateTime", "Typography"],
+    ["Drawer", "Surface"],
+    ["Eyebrow", "Typography"],
+    ["FilePathLabel", "Typography"],
+    ["HelpTip", "Surface"],
+    ["Menu", "Surface"],
+    ["Menu", "TriggerSurface"],
+    ["Modal", "Surface"],
+    ["Popover", "Surface"],
+    ["Popover", "TriggerSurface"],
+    ["Select", "SelectPopover"],
+    ["SelectPopover", "Surface"],
+    ["StatCard", "Card"],
+    ["StatCard", "Typography"],
+    ["TableHeaderCell", "Tooltip"],
+    ["Toast", "Surface"],
+    ["ToolbarButton", "ToolbarButtonParts"],
+    ["ToolbarButtonParts", "Surface"],
+    ["TipTrigger", "Tooltip"],
+    ["Tooltip", "Surface"],
+    ["Tooltip", "TooltipParts"],
+    ["Tooltip", "TriggerSurface"],
+    ["HighlightText", "Typography"],
+    ["Kbd", "Typography"],
+    ["Page", "Typography"],
+    ["CardStat", "Card"],
+    ["CardStat", "Metric"],
+    ["BarList", "BarListCells"],
+    ["BarList", "BarListParts"],
+    ["BarList", "BarListTip"],
+    ["BarList", "EmptyState"],
+    ["ToolBadge", "Pill"],
+    ["GapIndicator", "DateTime"],
+    ["GapIndicator", "Divider"],
+    ["GapIndicator", "Typography"],
+    ["ToolCallRow", "ToolBadge"],
+    ["ToolCallRow", "Collapse"],
+    ["ToolCallRow", "DateTime"],
+    ["ToolCallRow", "Indicator"],
+    ["ToolCallRow", "TipTrigger"],
+    ["ToolCallRow", "Tooltip"],
+    ["ToolCallRow", "Typography"]
   ],
   "summary": {
     "total": 230,
@@ -11213,26 +8959,19 @@
         "name": "Button",
         "category": "Forms",
         "status": "present",
-        "have": [
-          "Button"
-        ]
+        "have": ["Button"]
       },
       {
         "name": "IconButton",
         "category": "Forms",
         "status": "present-dead",
-        "have": [
-          "IconBox",
-          "ToolbarButton"
-        ]
+        "have": ["IconBox", "ToolbarButton"]
       },
       {
         "name": "Input",
         "category": "Forms",
         "status": "present",
-        "have": [
-          "Input"
-        ]
+        "have": ["Input"]
       },
       {
         "name": "Textarea",
@@ -11244,41 +8983,31 @@
         "name": "Select",
         "category": "Forms",
         "status": "present",
-        "have": [
-          "Select"
-        ]
+        "have": ["Select"]
       },
       {
         "name": "Combobox",
         "category": "Forms",
         "status": "present-dead",
-        "have": [
-          "Autocomplete"
-        ]
+        "have": ["Autocomplete"]
       },
       {
         "name": "Checkbox",
         "category": "Forms",
         "status": "present",
-        "have": [
-          "Checkbox"
-        ]
+        "have": ["Checkbox"]
       },
       {
         "name": "Radio",
         "category": "Forms",
         "status": "present",
-        "have": [
-          "Radio"
-        ]
+        "have": ["Radio"]
       },
       {
         "name": "Switch",
         "category": "Forms",
         "status": "present-dead",
-        "have": [
-          "Switch"
-        ]
+        "have": ["Switch"]
       },
       {
         "name": "Slider",
@@ -11290,49 +9019,37 @@
         "name": "FormField",
         "category": "Forms",
         "status": "present",
-        "have": [
-          "FormField"
-        ]
+        "have": ["FormField"]
       },
       {
         "name": "DatePicker",
         "category": "Forms",
         "status": "present",
-        "have": [
-          "DateTime"
-        ]
+        "have": ["DateTime"]
       },
       {
         "name": "Tabs",
         "category": "Navigation",
         "status": "present-dead",
-        "have": [
-          "Tabs"
-        ]
+        "have": ["Tabs"]
       },
       {
         "name": "Breadcrumbs",
         "category": "Navigation",
         "status": "present-dead",
-        "have": [
-          "Breadcrumbs"
-        ]
+        "have": ["Breadcrumbs"]
       },
       {
         "name": "Menu",
         "category": "Navigation",
         "status": "present-dead",
-        "have": [
-          "Menu"
-        ]
+        "have": ["Menu"]
       },
       {
         "name": "Link",
         "category": "Navigation",
         "status": "present",
-        "have": [
-          "Link"
-        ]
+        "have": ["Link"]
       },
       {
         "name": "Pagination",
@@ -11344,203 +9061,151 @@
         "name": "Stepper",
         "category": "Navigation",
         "status": "present",
-        "have": [
-          "Stepper"
-        ]
+        "have": ["Stepper"]
       },
       {
         "name": "Sidebar",
         "category": "Navigation",
         "status": "present",
-        "have": [
-          "SideNav",
-          "Sidebar"
-        ]
+        "have": ["SideNav", "Sidebar"]
       },
       {
         "name": "Alert",
         "category": "Feedback",
         "status": "present",
-        "have": [
-          "Alert"
-        ]
+        "have": ["Alert"]
       },
       {
         "name": "Toast",
         "category": "Feedback",
         "status": "present-dead",
-        "have": [
-          "Toast"
-        ]
+        "have": ["Toast"]
       },
       {
         "name": "Tooltip",
         "category": "Feedback",
         "status": "present",
-        "have": [
-          "Tooltip"
-        ]
+        "have": ["Tooltip"]
       },
       {
         "name": "Popover",
         "category": "Feedback",
         "status": "present",
-        "have": [
-          "Popover"
-        ]
+        "have": ["Popover"]
       },
       {
         "name": "Modal",
         "category": "Feedback",
         "status": "present",
-        "have": [
-          "Modal"
-        ]
+        "have": ["Modal"]
       },
       {
         "name": "Drawer",
         "category": "Feedback",
         "status": "present",
-        "have": [
-          "Drawer"
-        ]
+        "have": ["Drawer"]
       },
       {
         "name": "Progress",
         "category": "Feedback",
         "status": "present",
-        "have": [
-          "Progress"
-        ]
+        "have": ["Progress"]
       },
       {
         "name": "Spinner",
         "category": "Feedback",
         "status": "present",
-        "have": [
-          "Spinner"
-        ]
+        "have": ["Spinner"]
       },
       {
         "name": "Skeleton",
         "category": "Feedback",
         "status": "present",
-        "have": [
-          "Skeleton"
-        ]
+        "have": ["Skeleton"]
       },
       {
         "name": "EmptyState",
         "category": "Feedback",
         "status": "present",
-        "have": [
-          "EmptyState"
-        ]
+        "have": ["EmptyState"]
       },
       {
         "name": "Card",
         "category": "Data display",
         "status": "present",
-        "have": [
-          "Card"
-        ]
+        "have": ["Card"]
       },
       {
         "name": "Badge",
         "category": "Data display",
         "status": "present",
-        "have": [
-          "Badge"
-        ]
+        "have": ["Badge"]
       },
       {
         "name": "Avatar",
         "category": "Data display",
         "status": "present-dead",
-        "have": [
-          "Avatar"
-        ]
+        "have": ["Avatar"]
       },
       {
         "name": "Table",
         "category": "Data display",
         "status": "present",
-        "have": [
-          "Table"
-        ]
+        "have": ["Table"]
       },
       {
         "name": "ListItem",
         "category": "Data display",
         "status": "present",
-        "have": [
-          "ListItem"
-        ]
+        "have": ["ListItem"]
       },
       {
         "name": "Chip",
         "category": "Data display",
         "status": "present",
-        "have": [
-          "Chip",
-          "Pill"
-        ]
+        "have": ["Chip", "Pill"]
       },
       {
         "name": "Accordion",
         "category": "Data display",
         "status": "present",
-        "have": [
-          "Collapse"
-        ]
+        "have": ["Collapse"]
       },
       {
         "name": "Tooltip / HelpTip",
         "category": "Data display",
         "status": "present-dead",
-        "have": [
-          "HelpTip"
-        ]
+        "have": ["HelpTip"]
       },
       {
         "name": "Typography",
         "category": "Layout",
         "status": "present",
-        "have": [
-          "Typography"
-        ]
+        "have": ["Typography"]
       },
       {
         "name": "Stack",
         "category": "Layout",
         "status": "present",
-        "have": [
-          "Stack"
-        ]
+        "have": ["Stack"]
       },
       {
         "name": "Surface",
         "category": "Layout",
         "status": "present",
-        "have": [
-          "Surface"
-        ]
+        "have": ["Surface"]
       },
       {
         "name": "Divider",
         "category": "Layout",
         "status": "present",
-        "have": [
-          "Divider"
-        ]
+        "have": ["Divider"]
       },
       {
         "name": "Section",
         "category": "Layout",
         "status": "present",
-        "have": [
-          "Section"
-        ]
+        "have": ["Section"]
       }
     ],
     "extractionTop": [

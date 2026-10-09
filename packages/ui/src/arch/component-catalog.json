@@ -1,12 +1,7 @@
 {
   "entries": [
     {
-      "composes": [
-        "Card",
-        "FilePathLabel",
-        "Pill",
-        "Typography"
-      ],
+      "composes": ["Card", "FilePathLabel", "Pill", "Typography"],
       "family": "custom/ActiveWork",
       "file": "packages/ui/src/components/custom/ActiveWork/CoChangeChip.tsx",
       "name": "CoChangeChip",
@@ -105,11 +100,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "FilePathLabel",
-        "SparkBars",
-        "Typography"
-      ],
+      "composes": ["FilePathLabel", "SparkBars", "Typography"],
       "family": "custom/ActiveWork",
       "file": "packages/ui/src/components/custom/ActiveWork/FileActivityRow.tsx",
       "name": "FileActivityRow",
@@ -252,11 +243,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "Eyebrow",
-        "MarkdownProse",
-        "Typography"
-      ],
+      "composes": ["Eyebrow", "MarkdownProse", "Typography"],
       "family": "custom/ActiveWork",
       "file": "packages/ui/src/components/custom/ActiveWork/InitiativeBrief.tsx",
       "name": "InitiativeBrief",
@@ -289,20 +276,11 @@
         "status": "packages/ui/src/components/custom/ActiveWork/InitiativeBrief.stories.tsx"
       },
       "status": "candidate",
-      "storyIds": [
-        "custom-activework-initiativebrief--default"
-      ],
+      "storyIds": ["custom-activework-initiativebrief--default"],
       "tier": "organism"
     },
     {
-      "composes": [
-        "Card",
-        "Pill",
-        "SegmentedBar",
-        "SeverityLabel",
-        "StatusDot",
-        "Typography"
-      ],
+      "composes": ["Card", "Pill", "SegmentedBar", "SeverityLabel", "StatusDot", "Typography"],
       "family": "custom/ActiveWork",
       "file": "packages/ui/src/components/custom/ActiveWork/InitiativeCard.tsx",
       "name": "InitiativeCard",
@@ -385,13 +363,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "DateTime",
-        "InitiativeCard",
-        "Pill",
-        "StatusDot",
-        "Typography"
-      ],
+      "composes": ["DateTime", "InitiativeCard", "Pill", "StatusDot", "Typography"],
       "family": "custom/ActiveWork",
       "file": "packages/ui/src/components/custom/ActiveWork/InitiativeHeader.tsx",
       "name": "InitiativeHeader",
@@ -460,13 +432,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "Divider",
-        "Eyebrow",
-        "MarkdownProse",
-        "Pill",
-        "Typography"
-      ],
+      "composes": ["Divider", "Eyebrow", "MarkdownProse", "Pill", "Typography"],
       "family": "custom/ActiveWork",
       "file": "packages/ui/src/components/custom/ActiveWork/OpenLoops.tsx",
       "name": "OpenLoops",
@@ -520,20 +486,11 @@
         "status": "packages/ui/src/components/custom/ActiveWork/OpenLoops.stories.tsx"
       },
       "status": "candidate",
-      "storyIds": [
-        "custom-activework-openloops--default",
-        "custom-activework-openloops--empty"
-      ],
+      "storyIds": ["custom-activework-openloops--default", "custom-activework-openloops--empty"],
       "tier": "organism"
     },
     {
-      "composes": [
-        "Card",
-        "Eyebrow",
-        "InitiativeCard",
-        "Metric",
-        "Typography"
-      ],
+      "composes": ["Card", "Eyebrow", "InitiativeCard", "Metric", "Typography"],
       "family": "custom/ActiveWork",
       "file": "packages/ui/src/components/custom/ActiveWork/PortfolioOverview.tsx",
       "name": "PortfolioOverview",
@@ -670,12 +627,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "Divider",
-        "Eyebrow",
-        "SessionListItem",
-        "Typography"
-      ],
+      "composes": ["Divider", "Eyebrow", "SessionListItem", "Typography"],
       "family": "custom/ActiveWork",
       "file": "packages/ui/src/components/custom/ActiveWork/SessionList.tsx",
       "name": "SessionList",
@@ -738,11 +690,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "DateTime",
-        "Tooltip",
-        "Typography"
-      ],
+      "composes": ["DateTime", "Tooltip", "Typography"],
       "family": "custom/ActiveWork",
       "file": "packages/ui/src/components/custom/ActiveWork/SessionListItem.tsx",
       "name": "SessionListItem",
@@ -798,10 +746,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "Indicator",
-        "Typography"
-      ],
+      "composes": ["Indicator", "Typography"],
       "family": "custom/ActiveWork",
       "file": "packages/ui/src/components/custom/ActiveWork/SeverityLabel.tsx",
       "name": "SeverityLabel",
@@ -900,9 +845,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "Pill"
-      ],
+      "composes": ["Pill"],
       "family": "custom/ActiveWork",
       "file": "packages/ui/src/components/custom/ActiveWork/TaskStagePill.tsx",
       "name": "TaskStagePill",
@@ -935,20 +878,11 @@
         "status": "packages/ui/src/components/custom/ActiveWork/TaskStagePill.stories.tsx"
       },
       "status": "candidate",
-      "storyIds": [
-        "custom-activework-taskstagepill--default"
-      ],
+      "storyIds": ["custom-activework-taskstagepill--default"],
       "tier": "molecule"
     },
     {
-      "composes": [
-        "Eyebrow",
-        "SeverityLabel",
-        "Table",
-        "TableHeaderCell",
-        "TaskRow",
-        "Typography"
-      ],
+      "composes": ["Eyebrow", "SeverityLabel", "Table", "TableHeaderCell", "TaskRow", "Typography"],
       "family": "custom/ActiveWork",
       "file": "packages/ui/src/components/custom/ActiveWork/TaskTable.tsx",
       "name": "TaskTable",
@@ -1036,11 +970,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "Button",
-        "Card",
-        "Typography"
-      ],
+      "composes": ["Button", "Card", "Typography"],
       "family": "custom/Chat",
       "file": "packages/ui/src/components/custom/Chat/ChatCard.tsx",
       "name": "ChatCard",
@@ -1109,11 +1039,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "Button",
-        "Input",
-        "Surface"
-      ],
+      "composes": ["Button", "Input", "Surface"],
       "family": "custom/Chat",
       "file": "packages/ui/src/components/custom/Chat/Composer.tsx",
       "name": "Composer",
@@ -1204,10 +1130,7 @@
       "tier": "molecule"
     },
     {
-      "composes": [
-        "Avatar",
-        "Typography"
-      ],
+      "composes": ["Avatar", "Typography"],
       "family": "custom/Chat",
       "file": "packages/ui/src/components/custom/Chat/ConversationIdentity.tsx",
       "name": "ConversationIdentity",
@@ -1240,17 +1163,11 @@
         "status": "packages/ui/src/components/custom/Chat/ConversationIdentity.stories.tsx"
       },
       "status": "candidate",
-      "storyIds": [
-        "custom-chat-conversationidentity--default"
-      ],
+      "storyIds": ["custom-chat-conversationidentity--default"],
       "tier": "molecule"
     },
     {
-      "composes": [
-        "DateTime",
-        "Divider",
-        "Typography"
-      ],
+      "composes": ["DateTime", "Divider", "Typography"],
       "family": "custom/Chat",
       "file": "packages/ui/src/components/custom/Chat/DateSeparator.tsx",
       "name": "DateSeparator",
@@ -1326,12 +1243,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "Avatar",
-        "MarkdownProse",
-        "Surface",
-        "Typography"
-      ],
+      "composes": ["Avatar", "MarkdownProse", "Surface", "Typography"],
       "family": "custom/Chat",
       "file": "packages/ui/src/components/custom/Chat/MessageBubble.tsx",
       "name": "MessageBubble",
@@ -1571,9 +1483,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "DateTime"
-      ],
+      "composes": ["DateTime"],
       "family": "custom/Chat",
       "file": "packages/ui/src/components/custom/Chat/RevealRow.tsx",
       "name": "RevealRow",
@@ -1596,11 +1506,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "Indicator",
-        "Surface",
-        "Typography"
-      ],
+      "composes": ["Indicator", "Surface", "Typography"],
       "family": "custom/Chat",
       "file": "packages/ui/src/components/custom/Chat/TypingIndicator.tsx",
       "name": "TypingIndicator",
@@ -1640,9 +1546,7 @@
       "tier": "molecule"
     },
     {
-      "composes": [
-        "Pill"
-      ],
+      "composes": ["Pill"],
       "family": "custom/Chat",
       "file": "packages/ui/src/components/custom/Chat/UnreadBadge.tsx",
       "name": "UnreadBadge",
@@ -1711,9 +1615,7 @@
       "tier": "molecule"
     },
     {
-      "composes": [
-        "Progress"
-      ],
+      "composes": ["Progress"],
       "family": "custom/CircularTimer",
       "file": "packages/ui/src/components/custom/CircularTimer/CircularTimer.tsx",
       "name": "CircularTimer",
@@ -1819,11 +1721,7 @@
       "tier": "molecule"
     },
     {
-      "composes": [
-        "DualGhostSparkParts",
-        "GhostBand",
-        "GhostSpark"
-      ],
+      "composes": ["DualGhostSparkParts", "GhostBand", "GhostSpark"],
       "family": "custom/Fatigue",
       "file": "packages/ui/src/components/custom/Fatigue/DualGhostSpark.tsx",
       "name": "DualGhostSpark",
@@ -1909,10 +1807,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "StatusDot",
-        "Tooltip"
-      ],
+      "composes": ["StatusDot", "Tooltip"],
       "family": "custom/Fatigue",
       "file": "packages/ui/src/components/custom/Fatigue/FatigueLights.tsx",
       "name": "FatigueLights",
@@ -1945,9 +1840,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "GhostBandParts"
-      ],
+      "composes": ["GhostBandParts"],
       "family": "custom/Fatigue",
       "file": "packages/ui/src/components/custom/Fatigue/GhostBand.tsx",
       "name": "GhostBand",
@@ -2084,10 +1977,7 @@
       "tier": "atom"
     },
     {
-      "composes": [
-        "GhostBand",
-        "GhostBloom"
-      ],
+      "composes": ["GhostBand", "GhostBloom"],
       "family": "custom/Fatigue",
       "file": "packages/ui/src/components/custom/Fatigue/GhostSpark.tsx",
       "name": "GhostSpark",
@@ -2143,13 +2033,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "FatigueLights",
-        "GhostSpark",
-        "RomProgressionChart",
-        "Surface",
-        "VerdictHero"
-      ],
+      "composes": ["FatigueLights", "GhostSpark", "RomProgressionChart", "Surface", "VerdictHero"],
       "family": "custom/Fatigue",
       "file": "packages/ui/src/components/custom/Fatigue/LiveFatigueCard.tsx",
       "name": "LiveFatigueCard",
@@ -2193,11 +2077,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "LiveAuraFrame",
-        "LiveFatigueCard",
-        "VelocityHero"
-      ],
+      "composes": ["LiveAuraFrame", "LiveFatigueCard", "VelocityHero"],
       "family": "custom/Fatigue",
       "file": "packages/ui/src/components/custom/Fatigue/LiveFatiguePanel.tsx",
       "name": "LiveFatiguePanel",
@@ -2261,9 +2141,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "SetBarChart"
-      ],
+      "composes": ["SetBarChart"],
       "family": "custom/Fatigue",
       "file": "packages/ui/src/components/custom/Fatigue/RomProgressionChart.tsx",
       "name": "RomProgressionChart",
@@ -2324,9 +2202,7 @@
       "tier": "molecule"
     },
     {
-      "composes": [
-        "VelocityStrip"
-      ],
+      "composes": ["VelocityStrip"],
       "family": "custom/Fatigue",
       "file": "packages/ui/src/components/custom/Fatigue/VelocityHero.tsx",
       "name": "VelocityHero",
@@ -2413,15 +2289,11 @@
         "status": "packages/ui/src/components/custom/Fatigue/VerdictHero.stories.tsx"
       },
       "status": "candidate",
-      "storyIds": [
-        "custom-fatigue-verdict-hero--across-states"
-      ],
+      "storyIds": ["custom-fatigue-verdict-hero--across-states"],
       "tier": "atom"
     },
     {
-      "composes": [
-        "Typography"
-      ],
+      "composes": ["Typography"],
       "family": "custom/Prose",
       "file": "packages/ui/src/components/custom/Prose/MarkdownProse.tsx",
       "name": "MarkdownProse",
@@ -2478,11 +2350,7 @@
       "tier": "molecule"
     },
     {
-      "composes": [
-        "DateTime",
-        "Divider",
-        "Typography"
-      ],
+      "composes": ["DateTime", "Divider", "Typography"],
       "family": "custom/Session",
       "file": "packages/ui/src/components/custom/Session/GapIndicator.tsx",
       "name": "GapIndicator",
@@ -2529,15 +2397,11 @@
         "status": "packages/ui/src/components/custom/Session/GapIndicator.stories.tsx"
       },
       "status": "candidate",
-      "storyIds": [
-        "custom-session-gapindicator--default"
-      ],
+      "storyIds": ["custom-session-gapindicator--default"],
       "tier": "organism"
     },
     {
-      "composes": [
-        "Pill"
-      ],
+      "composes": ["Pill"],
       "family": "custom/Session",
       "file": "packages/ui/src/components/custom/Session/ToolBadge.tsx",
       "name": "ToolBadge",
@@ -2570,9 +2434,7 @@
         "status": "packages/ui/src/components/custom/Session/ToolBadge.stories.tsx"
       },
       "status": "candidate",
-      "storyIds": [
-        "custom-session-toolbadge--default"
-      ],
+      "storyIds": ["custom-session-toolbadge--default"],
       "tier": "molecule"
     },
     {
@@ -2580,7 +2442,9 @@
         "Collapse",
         "DateTime",
         "Indicator",
+        "TipTrigger",
         "ToolBadge",
+        "Tooltip",
         "Typography"
       ],
       "family": "custom/Session",
@@ -2616,15 +2480,13 @@
           "type": "((call: TimelineToolCall) => void)"
         }
       ],
-      "purpose": "One tool call as a line: time, outcome dot, family badge, tool name, what it acted on, the outcome in words and the observed duration.",
+      "purpose": "One tool call as a line: time, outcome dot (its word on hover and focus), family badge, tool name, what it acted on and the observed duration.",
       "sources": {
         "props": "packages/ui/src/components/custom/Session/ToolCallRow.tsx",
         "status": "packages/ui/src/components/custom/Session/ToolCallRow.stories.tsx"
       },
       "status": "candidate",
-      "storyIds": [
-        "custom-session-toolcallrow--default"
-      ],
+      "storyIds": ["custom-session-toolcallrow--default"],
       "tier": "organism"
     },
     {
@@ -2693,9 +2555,7 @@
       "tier": "atom"
     },
     {
-      "composes": [
-        "Typography"
-      ],
+      "composes": ["Typography"],
       "family": "custom/TimerReadout",
       "file": "packages/ui/src/components/custom/TimerReadout/TimerReadout.tsx",
       "name": "TimerReadout",
@@ -2766,13 +2626,7 @@
       "tier": "molecule"
     },
     {
-      "composes": [
-        "ExerciseCard",
-        "InputBar",
-        "RestTimer",
-        "SetRow",
-        "SupersetWrapper"
-      ],
+      "composes": ["ExerciseCard", "InputBar", "RestTimer", "SetRow", "SupersetWrapper"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/ActiveWorkoutPage.tsx",
       "name": "ActiveWorkoutPage",
@@ -3006,11 +2860,7 @@
       "tier": "atom"
     },
     {
-      "composes": [
-        "Badge",
-        "BodyMapDetailSections",
-        "Sparkline"
-      ],
+      "composes": ["Badge", "BodyMapDetailSections", "Sparkline"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/BodyMapDetailPanel.tsx",
       "name": "BodyMapDetailPanel",
@@ -3234,10 +3084,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "CapacityBandOverlays",
-        "CapacityBandPlot"
-      ],
+      "composes": ["CapacityBandOverlays", "CapacityBandPlot"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/CapacityBandChart.tsx",
       "name": "CapacityBandChart",
@@ -3405,10 +3252,7 @@
       "tier": "atom"
     },
     {
-      "composes": [
-        "DualVelocityCharts",
-        "SetBarChart"
-      ],
+      "composes": ["DualVelocityCharts", "SetBarChart"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/DualVelocityStrip.tsx",
       "name": "DualVelocityStrip",
@@ -3682,12 +3526,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "ExerciseHeading",
-        "SetBar",
-        "SetStrip",
-        "Tooltip"
-      ],
+      "composes": ["ExerciseHeading", "SetBar", "SetStrip", "Tooltip"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/ExerciseCardHeading.tsx",
       "name": "ExerciseCardHeading",
@@ -3962,19 +3801,11 @@
         "status": "packages/ui/src/components/custom/Workout/ExerciseDetailPage.stories.tsx"
       },
       "status": "candidate",
-      "storyIds": [
-        "pages-exercise-detail--default",
-        "pages-exercise-detail--no-vbt-data"
-      ],
+      "storyIds": ["pages-exercise-detail--default", "pages-exercise-detail--no-vbt-data"],
       "tier": "page"
     },
     {
-      "composes": [
-        "ExerciseIndicator",
-        "SetsRepsLoad",
-        "TempoDisplay",
-        "Typography"
-      ],
+      "composes": ["ExerciseIndicator", "SetsRepsLoad", "TempoDisplay", "Typography"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/ExerciseHeading.tsx",
       "name": "ExerciseHeading",
@@ -4128,10 +3959,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "SvgIcon",
-        "icons"
-      ],
+      "composes": ["SvgIcon", "icons"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/ExerciseIndicator.tsx",
       "name": "ExerciseIndicator",
@@ -4177,9 +4005,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "ZoneTrack"
-      ],
+      "composes": ["ZoneTrack"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/FatigueMeter.tsx",
       "name": "FatigueMeter",
@@ -4419,11 +4245,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "GoalMilestoneWeekStrip",
-        "GoalTrajectoryPlot",
-        "Typography"
-      ],
+      "composes": ["GoalMilestoneWeekStrip", "GoalTrajectoryPlot", "Typography"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/GoalMilestoneSummary.tsx",
       "name": "GoalMilestoneSummary",
@@ -4544,12 +4366,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "GoalMilestoneSummary",
-        "Indicator",
-        "Surface",
-        "Typography"
-      ],
+      "composes": ["GoalMilestoneSummary", "Indicator", "Surface", "Typography"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/GoalMilestoneTile.tsx",
       "name": "GoalMilestoneTile",
@@ -4701,13 +4518,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "GoalTrajectoryPlot",
-        "Pill",
-        "SegmentedBar",
-        "TipTrigger",
-        "Typography"
-      ],
+      "composes": ["GoalTrajectoryPlot", "Pill", "SegmentedBar", "TipTrigger", "Typography"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/GoalMilestoneWeekStrip.tsx",
       "name": "GoalMilestoneWeekStrip",
@@ -4765,14 +4576,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "Card",
-        "GoalCard",
-        "Indicator",
-        "MuscleGlyph",
-        "Pill",
-        "Typography"
-      ],
+      "composes": ["Card", "GoalCard", "Indicator", "MuscleGlyph", "Pill", "Typography"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/GoalMuscleCard.tsx",
       "name": "GoalMuscleCard",
@@ -4862,12 +4666,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "SvgIcon",
-        "TipTrigger",
-        "Typography",
-        "icons"
-      ],
+      "composes": ["SvgIcon", "TipTrigger", "Typography", "icons"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/GoalPriorityIcon.tsx",
       "name": "GoalPriorityIcon",
@@ -4911,10 +4710,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "GoalPriorityIcon",
-        "Typography"
-      ],
+      "composes": ["GoalPriorityIcon", "Typography"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/GoalPriorityIndex.tsx",
       "name": "GoalPriorityIndex",
@@ -4947,11 +4743,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "GoalTrajectoryBand",
-        "GoalTrajectoryChartParts",
-        "GoalTrajectoryPlot"
-      ],
+      "composes": ["GoalTrajectoryBand", "GoalTrajectoryChartParts", "GoalTrajectoryPlot"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/GoalTrajectoryChart.tsx",
       "name": "GoalTrajectoryChart",
@@ -5140,9 +4932,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "GoalTrajectoryPlot"
-      ],
+      "composes": ["GoalTrajectoryPlot"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/GoalTrajectoryMini.tsx",
       "name": "GoalTrajectoryMini",
@@ -5242,12 +5032,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "GoalTrajectoryBand",
-        "GoalTrajectoryCalibrating",
-        "SvgIcon",
-        "icons"
-      ],
+      "composes": ["GoalTrajectoryBand", "GoalTrajectoryCalibrating", "SvgIcon", "icons"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/GoalTrajectoryPlot.tsx",
       "name": "GoalTrajectoryPlot",
@@ -5354,13 +5139,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "Metric",
-        "Pill",
-        "PrBadge",
-        "TipTrigger",
-        "Typography"
-      ],
+      "composes": ["Metric", "Pill", "PrBadge", "TipTrigger", "Typography"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/GoalTrajectoryWeekTips.tsx",
       "name": "GoalTrajectoryWeekTips",
@@ -5397,10 +5176,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "GoalMilestoneWeekStrip",
-        "GoalTrajectoryMini"
-      ],
+      "composes": ["GoalMilestoneWeekStrip", "GoalTrajectoryMini"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/GoalWeekColumnsChart.tsx",
       "name": "GoalWeekColumnsChart",
@@ -5718,11 +5494,7 @@
       "tier": "atom"
     },
     {
-      "composes": [
-        "Badge",
-        "Card",
-        "WeekRow"
-      ],
+      "composes": ["Badge", "Card", "WeekRow"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/MesoCard.tsx",
       "name": "MesoCard",
@@ -5877,10 +5649,7 @@
       "tier": "atom"
     },
     {
-      "composes": [
-        "Card",
-        "StatusDot"
-      ],
+      "composes": ["Card", "StatusDot"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/MesoStatusCard.tsx",
       "name": "MesoStatusCard",
@@ -5966,10 +5735,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "Stack",
-        "Tile"
-      ],
+      "composes": ["Stack", "Tile"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/MetricTiles.tsx",
       "name": "MetricTiles",
@@ -6054,9 +5820,7 @@
       "tier": "atom"
     },
     {
-      "composes": [
-        "Pill"
-      ],
+      "composes": ["Pill"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/MuscleGroupChip.tsx",
       "name": "MuscleGroupChip",
@@ -6112,9 +5876,7 @@
       "tier": "molecule"
     },
     {
-      "composes": [
-        "MuscleGroupChip"
-      ],
+      "composes": ["MuscleGroupChip"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/MuscleStrip.tsx",
       "name": "MuscleStrip",
@@ -6208,11 +5970,7 @@
       "tier": "atom"
     },
     {
-      "composes": [
-        "BaseBadge",
-        "Typography",
-        "icons"
-      ],
+      "composes": ["BaseBadge", "Typography", "icons"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/PrBadge.tsx",
       "name": "PrBadge",
@@ -6280,10 +6038,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "Drawer",
-        "icons"
-      ],
+      "composes": ["Drawer", "icons"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/PrHistoryModal.tsx",
       "name": "PrHistoryModal",
@@ -6348,9 +6103,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "GoalCard"
-      ],
+      "composes": ["GoalCard"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/PrimaryGoalCard.tsx",
       "name": "PrimaryGoalCard",
@@ -6498,17 +6251,11 @@
         "status": "packages/ui/src/components/custom/Workout/ProgramPlanningPage.stories.tsx"
       },
       "status": "candidate",
-      "storyIds": [
-        "pages-program-planning--default",
-        "pages-program-planning--single-meso"
-      ],
+      "storyIds": ["pages-program-planning--default", "pages-program-planning--single-meso"],
       "tier": "page"
     },
     {
-      "composes": [
-        "Badge",
-        "Card"
-      ],
+      "composes": ["Badge", "Card"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/ReadinessCheck.tsx",
       "name": "ReadinessCheck",
@@ -6580,9 +6327,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "CircularTimer"
-      ],
+      "composes": ["CircularTimer"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/RestTimer.tsx",
       "name": "RestTimer",
@@ -6672,11 +6417,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "DateTime",
-        "Stack",
-        "Tile"
-      ],
+      "composes": ["DateTime", "Stack", "Tile"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/ScheduleTiles.tsx",
       "name": "ScheduleTiles",
@@ -6786,9 +6527,7 @@
       "tier": "atom"
     },
     {
-      "composes": [
-        "SegmentedBar"
-      ],
+      "composes": ["SegmentedBar"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/SegmentedProgressBar.tsx",
       "name": "SegmentedProgressBar",
@@ -7068,13 +6807,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "GoalCard",
-        "Progress",
-        "SegmentedBar",
-        "StatCard",
-        "wholeBodyCardParts"
-      ],
+      "composes": ["GoalCard", "Progress", "SegmentedBar", "StatCard", "wholeBodyCardParts"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/SessionsGoalCard.tsx",
       "name": "SessionsGoalCard",
@@ -7124,9 +6857,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "SegmentedBar"
-      ],
+      "composes": ["SegmentedBar"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/SetBar.tsx",
       "name": "SetBar",
@@ -7165,10 +6896,7 @@
       "tier": "molecule"
     },
     {
-      "composes": [
-        "Typography",
-        "VelocityStrip"
-      ],
+      "composes": ["Typography", "VelocityStrip"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/SetRow.tsx",
       "name": "SetRow",
@@ -7274,9 +7002,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "SetBar"
-      ],
+      "composes": ["SetBar"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/SetStrip.tsx",
       "name": "SetStrip",
@@ -7326,9 +7052,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "Typography"
-      ],
+      "composes": ["Typography"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/SetTableHeader.tsx",
       "name": "SetTableHeader",
@@ -7369,9 +7093,7 @@
       "tier": "molecule"
     },
     {
-      "composes": [
-        "metricText"
-      ],
+      "composes": ["metricText"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/SetsRepsLoad.tsx",
       "name": "SetsRepsLoad",
@@ -7440,9 +7162,7 @@
       "tier": "molecule"
     },
     {
-      "composes": [
-        "SparklineParts"
-      ],
+      "composes": ["SparklineParts"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/Sparkline.tsx",
       "name": "Sparkline",
@@ -7553,9 +7273,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "Typography"
-      ],
+      "composes": ["Typography"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/StatusDot.tsx",
       "name": "StatusDot",
@@ -7625,10 +7343,7 @@
       "tier": "molecule"
     },
     {
-      "composes": [
-        "Pill",
-        "StatusDot"
-      ],
+      "composes": ["Pill", "StatusDot"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/StatusPill.tsx",
       "name": "StatusPill",
@@ -7758,9 +7473,7 @@
       "tier": "atom"
     },
     {
-      "composes": [
-        "Typography"
-      ],
+      "composes": ["Typography"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/SupersetWrapper.tsx",
       "name": "SupersetWrapper",
@@ -7795,9 +7508,7 @@
       "tier": "molecule"
     },
     {
-      "composes": [
-        "metricText"
-      ],
+      "composes": ["metricText"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/TempoDisplay.tsx",
       "name": "TempoDisplay",
@@ -7882,11 +7593,7 @@
       "tier": "molecule"
     },
     {
-      "composes": [
-        "BodyMap",
-        "BodyMapDetailPanel",
-        "MesoStatusCard"
-      ],
+      "composes": ["BodyMap", "BodyMapDetailPanel", "MesoStatusCard"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/TrainingStatusPage.tsx",
       "name": "TrainingStatusPage",
@@ -7941,10 +7648,7 @@
       "tier": "page"
     },
     {
-      "composes": [
-        "SetBarChart",
-        "Typography"
-      ],
+      "composes": ["SetBarChart", "Typography"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/VelocityBandOverlay.tsx",
       "name": "VelocityBandOverlay",
@@ -8005,16 +7709,11 @@
         "status": "packages/ui/src/components/custom/Workout/VelocityBandOverlay.stories.tsx"
       },
       "status": "candidate",
-      "storyIds": [
-        "custom-workout-velocitybandoverlay--default"
-      ],
+      "storyIds": ["custom-workout-velocitybandoverlay--default"],
       "tier": "molecule"
     },
     {
-      "composes": [
-        "SetBarChart",
-        "VelocityBandOverlay"
-      ],
+      "composes": ["SetBarChart", "VelocityBandOverlay"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/VelocityBandPreview.tsx",
       "name": "VelocityBandPreview",
@@ -8072,9 +7771,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "SetBarChart"
-      ],
+      "composes": ["SetBarChart"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/VelocityLossBands.tsx",
       "name": "VelocityLossBands",
@@ -8125,10 +7822,7 @@
       "tier": "molecule"
     },
     {
-      "composes": [
-        "SetBarChart",
-        "VelocityStripVariants"
-      ],
+      "composes": ["SetBarChart", "VelocityStripVariants"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/VelocityStrip.tsx",
       "name": "VelocityStrip",
@@ -8322,9 +8016,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "SetBarChart"
-      ],
+      "composes": ["SetBarChart"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/VelocityStripFramed.tsx",
       "name": "VelocityStripFramed",
@@ -8361,11 +8053,7 @@
       "tier": "molecule"
     },
     {
-      "composes": [
-        "DataRow",
-        "Typography",
-        "ZoneTrack"
-      ],
+      "composes": ["DataRow", "Typography", "ZoneTrack"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/VolumeLandmarkBar.tsx",
       "name": "VolumeLandmarkBar",
@@ -8437,11 +8125,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "IntensityBar",
-        "Typography",
-        "WorkoutPill"
-      ],
+      "composes": ["IntensityBar", "Typography", "WorkoutPill"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/WeekRow.tsx",
       "name": "WeekRow",
@@ -8518,11 +8202,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "BaseBadge",
-        "Typography",
-        "icons"
-      ],
+      "composes": ["BaseBadge", "Typography", "icons"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/WeightBadge.tsx",
       "name": "WeightBadge",
@@ -8610,12 +8290,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "Card",
-        "ExerciseCard",
-        "MuscleGroupChip",
-        "Typography"
-      ],
+      "composes": ["Card", "ExerciseCard", "MuscleGroupChip", "Typography"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/WorkoutCard.tsx",
       "name": "WorkoutCard",
@@ -8721,9 +8396,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "Typography"
-      ],
+      "composes": ["Typography"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/WorkoutPill.tsx",
       "name": "WorkoutPill",
@@ -8790,10 +8463,7 @@
       "tier": "molecule"
     },
     {
-      "composes": [
-        "ZoneTrackParts",
-        "ZoneTrackTicks"
-      ],
+      "composes": ["ZoneTrackParts", "ZoneTrackTicks"],
       "family": "custom/Workout",
       "file": "packages/ui/src/components/custom/Workout/ZoneTrack.tsx",
       "name": "ZoneTrack",
@@ -9203,12 +8873,7 @@
       "tier": "atom"
     },
     {
-      "composes": [
-        "SideNav",
-        "Surface",
-        "TopBar",
-        "brands"
-      ],
+      "composes": ["SideNav", "Surface", "TopBar", "brands"],
       "family": "shell",
       "file": "packages/ui/src/components/shell/AppShell.tsx",
       "name": "AppShell",
@@ -9313,10 +8978,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "Typography",
-        "brands"
-      ],
+      "composes": ["Typography", "brands"],
       "family": "shell",
       "file": "packages/ui/src/components/shell/BrandLockup.tsx",
       "name": "BrandLockup",
@@ -9386,9 +9048,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "Typography"
-      ],
+      "composes": ["Typography"],
       "family": "shell",
       "file": "packages/ui/src/components/shell/NavItem.tsx",
       "name": "NavItem",
@@ -9471,9 +9131,7 @@
       "tier": "molecule"
     },
     {
-      "composes": [
-        "NavItem"
-      ],
+      "composes": ["NavItem"],
       "family": "shell",
       "file": "packages/ui/src/components/shell/SideNav.tsx",
       "name": "SideNav",
@@ -9549,12 +9207,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "BrandLockup",
-        "DateTime",
-        "Divider",
-        "brands"
-      ],
+      "composes": ["BrandLockup", "DateTime", "Divider", "brands"],
       "family": "shell",
       "file": "packages/ui/src/components/shell/TopBar.tsx",
       "name": "TopBar",
@@ -9630,9 +9283,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "icons"
-      ],
+      "composes": ["icons"],
       "family": "shell",
       "file": "packages/ui/src/components/shell/workout/DeviceIndicator.tsx",
       "name": "DeviceIndicator",
@@ -9672,18 +9323,11 @@
         "status": "packages/ui/src/components/shell/workout/DeviceIndicator.stories.tsx"
       },
       "status": "candidate",
-      "storyIds": [
-        "shell-workout-deviceindicator--default"
-      ],
+      "storyIds": ["shell-workout-deviceindicator--default"],
       "tier": "organism"
     },
     {
-      "composes": [
-        "DeviceIndicator",
-        "DeviceRow",
-        "Popover",
-        "Typography"
-      ],
+      "composes": ["DeviceIndicator", "DeviceRow", "Popover", "Typography"],
       "family": "shell",
       "file": "packages/ui/src/components/shell/workout/DeviceMenu.tsx",
       "name": "DeviceMenu",
@@ -9730,16 +9374,11 @@
         "status": "packages/ui/src/components/shell/workout/DeviceMenu.stories.tsx"
       },
       "status": "candidate",
-      "storyIds": [
-        "shell-workout-devicemenu--default"
-      ],
+      "storyIds": ["shell-workout-devicemenu--default"],
       "tier": "organism"
     },
     {
-      "composes": [
-        "Indicator",
-        "Typography"
-      ],
+      "composes": ["Indicator", "Typography"],
       "family": "shell",
       "file": "packages/ui/src/components/shell/workout/DeviceRow.tsx",
       "name": "DeviceRow",
@@ -9772,18 +9411,11 @@
         "status": "packages/ui/src/components/shell/workout/DeviceRow.stories.tsx"
       },
       "status": "candidate",
-      "storyIds": [
-        "shell-workout-devicerow--default"
-      ],
+      "storyIds": ["shell-workout-devicerow--default"],
       "tier": "molecule"
     },
     {
-      "composes": [
-        "DualVelocityStrip",
-        "Typography",
-        "icons",
-        "pinnedLiveStripParts"
-      ],
+      "composes": ["DualVelocityStrip", "Typography", "icons", "pinnedLiveStripParts"],
       "family": "shell",
       "file": "packages/ui/src/components/shell/workout/DualPinnedLiveStrip.tsx",
       "name": "DualPinnedLiveStrip",
@@ -9900,11 +9532,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "SetBarChart",
-        "icons",
-        "pinnedLiveStripParts"
-      ],
+      "composes": ["SetBarChart", "icons", "pinnedLiveStripParts"],
       "family": "shell",
       "file": "packages/ui/src/components/shell/workout/PinnedLiveStrip.tsx",
       "name": "PinnedLiveStrip",
@@ -10036,10 +9664,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "Indicator",
-        "Typography"
-      ],
+      "composes": ["Indicator", "Typography"],
       "family": "shell",
       "file": "packages/ui/src/components/shell/workout/SessionStatePill.tsx",
       "name": "SessionStatePill",
@@ -10072,9 +9697,7 @@
         "status": "packages/ui/src/components/shell/workout/SessionStatePill.stories.tsx"
       },
       "status": "candidate",
-      "storyIds": [
-        "shell-workout-sessionstatepill--default"
-      ],
+      "storyIds": ["shell-workout-sessionstatepill--default"],
       "tier": "molecule"
     },
     {
@@ -10167,19 +9790,11 @@
         "status": "packages/ui/src/components/shell/workout/WorkoutShell.stories.tsx"
       },
       "status": "candidate",
-      "storyIds": [
-        "pages-workoutshell--default",
-        "pages-workoutshell--with-content"
-      ],
+      "storyIds": ["pages-workoutshell--default", "pages-workoutshell--with-content"],
       "tier": "organism"
     },
     {
-      "composes": [
-        "DeviceMenu",
-        "DeviceRow",
-        "SessionStatePill",
-        "TopBar"
-      ],
+      "composes": ["DeviceMenu", "DeviceRow", "SessionStatePill", "TopBar"],
       "family": "shell",
       "file": "packages/ui/src/components/shell/workout/WorkoutTopBar.tsx",
       "name": "WorkoutTopBar",
@@ -10341,9 +9956,7 @@
       "tier": "atom"
     },
     {
-      "composes": [
-        "AutocompleteParts"
-      ],
+      "composes": ["AutocompleteParts"],
       "family": "ui/autocomplete",
       "file": "packages/ui/src/components/ui/autocomplete/Autocomplete.tsx",
       "name": "Autocomplete",
@@ -10577,10 +10190,7 @@
       "tier": "atom"
     },
     {
-      "composes": [
-        "Indicator",
-        "Pill"
-      ],
+      "composes": ["Indicator", "Pill"],
       "family": "ui/badge",
       "file": "packages/ui/src/components/ui/badge/Badge.tsx",
       "name": "Badge",
@@ -10785,9 +10395,7 @@
       "tier": "atom"
     },
     {
-      "composes": [
-        "Surface"
-      ],
+      "composes": ["Surface"],
       "family": "ui/card",
       "file": "packages/ui/src/components/ui/card/Card.tsx",
       "name": "Card",
@@ -10911,10 +10519,7 @@
       "tier": "molecule"
     },
     {
-      "composes": [
-        "Card",
-        "Metric"
-      ],
+      "composes": ["Card", "Metric"],
       "family": "ui/card",
       "file": "packages/ui/src/components/ui/card/CardStat.tsx",
       "name": "CardStat",
@@ -11007,10 +10612,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "Button",
-        "icons"
-      ],
+      "composes": ["Button", "icons"],
       "family": "ui/carousel",
       "file": "packages/ui/src/components/ui/carousel/Carousel.tsx",
       "name": "Carousel",
@@ -11078,18 +10680,11 @@
         "status": "packages/ui/src/components/ui/carousel/Carousel.stories.tsx"
       },
       "status": "stable",
-      "storyIds": [
-        "components-molecules-carousel--default"
-      ],
+      "storyIds": ["components-molecules-carousel--default"],
       "tier": "organism"
     },
     {
-      "composes": [
-        "BarListCells",
-        "BarListParts",
-        "BarListTip",
-        "EmptyState"
-      ],
+      "composes": ["BarListCells", "BarListParts", "BarListTip", "EmptyState"],
       "family": "ui/charts",
       "file": "packages/ui/src/components/ui/charts/bar-list/BarList.tsx",
       "name": "BarList",
@@ -11192,9 +10787,7 @@
         "status": "packages/ui/src/components/ui/charts/bar-list/BarList.stories.tsx"
       },
       "status": "candidate",
-      "storyIds": [
-        "components-molecules-barlist--default"
-      ],
+      "storyIds": ["components-molecules-barlist--default"],
       "tier": "organism"
     },
     {
@@ -11285,11 +10878,7 @@
       "tier": "atom"
     },
     {
-      "composes": [
-        "ScatterFrame",
-        "ScatterGridlines",
-        "ScatterPointMark"
-      ],
+      "composes": ["ScatterFrame", "ScatterGridlines", "ScatterPointMark"],
       "family": "ui/charts",
       "file": "packages/ui/src/components/ui/charts/scatter/Scatter.tsx",
       "name": "Scatter",
@@ -11760,9 +11349,7 @@
       "tier": "atom"
     },
     {
-      "composes": [
-        "Pill"
-      ],
+      "composes": ["Pill"],
       "family": "ui/chip",
       "file": "packages/ui/src/components/ui/chip/Chip.tsx",
       "name": "Chip",
@@ -11969,9 +11556,7 @@
       "tier": "atom"
     },
     {
-      "composes": [
-        "Typography"
-      ],
+      "composes": ["Typography"],
       "family": "ui/date-time",
       "file": "packages/ui/src/components/ui/date-time/DateTime.tsx",
       "name": "DateTime",
@@ -12125,9 +11710,7 @@
       "tier": "atom"
     },
     {
-      "composes": [
-        "Surface"
-      ],
+      "composes": ["Surface"],
       "family": "ui/drawer",
       "file": "packages/ui/src/components/ui/drawer/Drawer.tsx",
       "name": "Drawer",
@@ -12270,9 +11853,7 @@
       "tier": "atom"
     },
     {
-      "composes": [
-        "Typography"
-      ],
+      "composes": ["Typography"],
       "family": "ui/eyebrow",
       "file": "packages/ui/src/components/ui/eyebrow/Eyebrow.tsx",
       "name": "Eyebrow",
@@ -12291,15 +11872,11 @@
         "status": "packages/ui/src/components/ui/eyebrow/Eyebrow.stories.tsx"
       },
       "status": "candidate",
-      "storyIds": [
-        "components-molecules-eyebrow--default"
-      ],
+      "storyIds": ["components-molecules-eyebrow--default"],
       "tier": "molecule"
     },
     {
-      "composes": [
-        "Typography"
-      ],
+      "composes": ["Typography"],
       "family": "ui/file-path-label",
       "file": "packages/ui/src/components/ui/file-path-label/FilePathLabel.tsx",
       "name": "FilePathLabel",
@@ -12453,9 +12030,7 @@
       "tier": "atom"
     },
     {
-      "composes": [
-        "Surface"
-      ],
+      "composes": ["Surface"],
       "family": "ui/help-tip",
       "file": "packages/ui/src/components/ui/help-tip/HelpTip.tsx",
       "name": "HelpTip",
@@ -12553,9 +12128,7 @@
       "tier": "molecule"
     },
     {
-      "composes": [
-        "Typography"
-      ],
+      "composes": ["Typography"],
       "family": "ui/highlight-text",
       "file": "packages/ui/src/components/ui/highlight-text/HighlightText.tsx",
       "name": "HighlightText",
@@ -12609,9 +12182,7 @@
         "status": "packages/ui/src/components/ui/highlight-text/HighlightText.stories.tsx"
       },
       "status": "candidate",
-      "storyIds": [
-        "components-atoms-highlighttext--default"
-      ],
+      "storyIds": ["components-atoms-highlighttext--default"],
       "tier": "molecule"
     },
     {
@@ -12878,9 +12449,7 @@
       "tier": "atom"
     },
     {
-      "composes": [
-        "Typography"
-      ],
+      "composes": ["Typography"],
       "family": "ui/kbd",
       "file": "packages/ui/src/components/ui/kbd/Kbd.tsx",
       "name": "Kbd",
@@ -12920,9 +12489,7 @@
         "status": "packages/ui/src/components/ui/kbd/Kbd.stories.tsx"
       },
       "status": "candidate",
-      "storyIds": [
-        "components-atoms-kbd--default"
-      ],
+      "storyIds": ["components-atoms-kbd--default"],
       "tier": "molecule"
     },
     {
@@ -13034,10 +12601,7 @@
       "tier": "atom"
     },
     {
-      "composes": [
-        "Surface",
-        "TriggerSurface"
-      ],
+      "composes": ["Surface", "TriggerSurface"],
       "family": "ui/menu",
       "file": "packages/ui/src/components/ui/menu/Menu.tsx",
       "name": "Menu",
@@ -13185,15 +12749,11 @@
         "status": "packages/ui/src/components/ui/metric/Metric.stories.tsx"
       },
       "status": "candidate",
-      "storyIds": [
-        "components-molecules-metric--default"
-      ],
+      "storyIds": ["components-molecules-metric--default"],
       "tier": "atom"
     },
     {
-      "composes": [
-        "Surface"
-      ],
+      "composes": ["Surface"],
       "family": "ui/modal",
       "file": "packages/ui/src/components/ui/modal/Modal.tsx",
       "name": "Modal",
@@ -13275,9 +12835,7 @@
       "tier": "molecule"
     },
     {
-      "composes": [
-        "Typography"
-      ],
+      "composes": ["Typography"],
       "family": "ui/page",
       "file": "packages/ui/src/components/ui/page/Page.tsx",
       "name": "Page",
@@ -13345,9 +12903,7 @@
         "status": "packages/ui/src/components/ui/page/Page.stories.tsx"
       },
       "status": "candidate",
-      "storyIds": [
-        "components-molecules-page--default"
-      ],
+      "storyIds": ["components-molecules-page--default"],
       "tier": "page"
     },
     {
@@ -13474,10 +13030,7 @@
       "tier": "atom"
     },
     {
-      "composes": [
-        "Surface",
-        "TriggerSurface"
-      ],
+      "composes": ["Surface", "TriggerSurface"],
       "family": "ui/popover",
       "file": "packages/ui/src/components/ui/popover/Popover.tsx",
       "name": "Popover",
@@ -13751,9 +13304,7 @@
       "tier": "atom"
     },
     {
-      "composes": [
-        "SelectPopover"
-      ],
+      "composes": ["SelectPopover"],
       "family": "ui/select",
       "file": "packages/ui/src/components/ui/select/Select.tsx",
       "name": "Select",
@@ -13858,9 +13409,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "Surface"
-      ],
+      "composes": ["Surface"],
       "family": "ui/select",
       "file": "packages/ui/src/components/ui/select/SelectPopover.tsx",
       "name": "SelectPopover",
@@ -14069,10 +13618,7 @@
       "tier": "atom"
     },
     {
-      "composes": [
-        "Card",
-        "Typography"
-      ],
+      "composes": ["Card", "Typography"],
       "family": "ui/stat-card",
       "file": "packages/ui/src/components/ui/stat-card/StatCard.tsx",
       "name": "StatCard",
@@ -14224,9 +13770,7 @@
         "status": "packages/ui/src/components/ui/stat-card/StatCard.stories.tsx"
       },
       "status": "candidate",
-      "storyIds": [
-        "components-molecules-statcard--default"
-      ],
+      "storyIds": ["components-molecules-statcard--default"],
       "tier": "organism"
     },
     {
@@ -14622,9 +14166,7 @@
       "tier": "atom"
     },
     {
-      "composes": [
-        "Tooltip"
-      ],
+      "composes": ["Tooltip"],
       "family": "ui/table",
       "file": "packages/ui/src/components/ui/table/TableHeaderCell.tsx",
       "name": "TableHeaderCell",
@@ -14891,9 +14433,7 @@
       "tier": "atom"
     },
     {
-      "composes": [
-        "Surface"
-      ],
+      "composes": ["Surface"],
       "family": "ui/toast",
       "file": "packages/ui/src/components/ui/toast/Toast.tsx",
       "name": "Toast",
@@ -14972,9 +14512,7 @@
       "tier": "molecule"
     },
     {
-      "composes": [
-        "ToolbarButtonParts"
-      ],
+      "composes": ["ToolbarButtonParts"],
       "family": "ui/toolbar-button",
       "file": "packages/ui/src/components/ui/toolbar-button/ToolbarButton.tsx",
       "name": "ToolbarButton",
@@ -15080,9 +14618,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "Tooltip"
-      ],
+      "composes": ["Tooltip"],
       "family": "ui/tooltip",
       "file": "packages/ui/src/components/ui/tooltip/TipTrigger.tsx",
       "name": "TipTrigger",
@@ -15161,11 +14697,7 @@
       "tier": "organism"
     },
     {
-      "composes": [
-        "Surface",
-        "TooltipParts",
-        "TriggerSurface"
-      ],
+      "composes": ["Surface", "TooltipParts", "TriggerSurface"],
       "family": "ui/tooltip",
       "file": "packages/ui/src/components/ui/tooltip/Tooltip.tsx",
       "name": "Tooltip",
