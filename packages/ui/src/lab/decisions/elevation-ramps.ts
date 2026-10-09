@@ -1,7 +1,8 @@
 /**
  * TD-789: the dark and light elevation ramps, level -2 to +5, per option. Pure data and
- * measurements; `ElevationRampsView.tsx` paints them. No token changes: every option
- * other than `today` is a set of hexes drawn from the existing grey ramp.
+ * measurements; `ElevationRampsView.tsx` paints them. Every light option is a set of hexes
+ * drawn from the existing grey ramp; `today` pins the light ramp the owner judged, so the
+ * record survives the ramp that #800 ships.
  */
 import { contrast, relativeLuminance } from '../../theme/color-checks'
 import { getElevationShadow, getElevationSurface, type ElevationLevel } from '../../theme/elevation'
@@ -67,7 +68,7 @@ export const OPTIONS: RampOption[] = [
     title: '1 · Today on main',
     summary:
       'Light: frame grey[400], background grey[100], base white, elevated grey[50], raised grey[100], overlay white.',
-    light: todayPlanes('light'),
+    light: planesFrom([g[400], g[100], white, g[50], g[100], white]),
     lightLift: 'today',
   },
   {
