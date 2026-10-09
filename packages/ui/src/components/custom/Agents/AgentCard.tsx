@@ -70,7 +70,7 @@ function AgentCardHeader({ agent, onPress }: Pick<AgentCardProps, 'agent' | 'onP
       <View className="flex-1 gap-stack-sm">
         <AgentName agent={agent} onPress={onPress} />
         {agent.isProvisional ? (
-          <Typography variant="caption" color="tertiary">
+          <Typography variant="caption" color="secondary">
             Provisional name
           </Typography>
         ) : null}
@@ -93,7 +93,7 @@ function AgentCardTask({ agent, onPressTask }: Pick<AgentCardProps, 'agent' | 'o
           {taskId}
         </Pill>
       ) : null}
-      <Typography variant="body2" color={task ? 'secondary' : 'tertiary'} className="flex-1">
+      <Typography variant="body2" color="secondary" className="flex-1">
         {task || 'No stated task'}
       </Typography>
     </View>
@@ -123,7 +123,7 @@ function AgentCardMeta({ agent, now }: Pick<AgentCardProps, 'agent' | 'now'>) {
           {agent.branch}
         </Typography>
       ) : null}
-      <Typography variant="caption" color="tertiary">
+      <Typography variant="caption" color="secondary">
         {`Last event ${agentLastEventLabel(agent.lastEventAt, now)}`}
       </Typography>
       <AgentCardTags tags={agent.tags ?? []} />
@@ -142,7 +142,7 @@ function MetricCell({
 }) {
   return (
     <View className="flex-1 gap-stack-sm">
-      <Typography variant="microLabel" color="tertiary">
+      <Typography variant="microLabel" color="secondary">
         {label}
       </Typography>
       <Typography variant="mono" color={isFlagged ? 'error' : 'primary'}>
@@ -192,7 +192,7 @@ function AgentMetricsBlock({
 function DefaultMetricsEmpty({ costUsd }: { costUsd: AgentSummary['costUsd'] }) {
   return (
     <View className="gap-stack-sm" testID="agent-card-metrics-empty">
-      <Typography variant="caption" color="tertiary">
+      <Typography variant="caption" color="secondary">
         No transcript for this session
       </Typography>
       {costUsd == null ? null : (
