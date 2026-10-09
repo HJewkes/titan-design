@@ -818,6 +818,43 @@
       "standard": true
     },
     {
+      "name": "CardStat",
+      "file": "packages/ui/src/components/ui/card/CardStat.tsx",
+      "dir": "ui",
+      "family": "ui/card",
+      "exports": [
+        "CardStat",
+        "CardStatMetricProps",
+        "CardStatProps"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Card",
+        "Metric"
+      ],
+      "leak": {
+        "rawView": 0,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 63,
+        "score": 0
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "Carousel",
       "file": "packages/ui/src/components/ui/carousel/Carousel.tsx",
       "dir": "ui",
@@ -10920,12 +10957,20 @@
       "Typography"
     ],
     [
+      "CardStat",
+      "Card"
+    ],
+    [
+      "CardStat",
+      "Metric"
+    ],
+    [
       "StatusMark",
       "Pill"
     ]
   ],
   "summary": {
-    "total": 226,
+    "total": 227,
     "dead": [
       "Autocomplete",
       "Breadcrumbs",
