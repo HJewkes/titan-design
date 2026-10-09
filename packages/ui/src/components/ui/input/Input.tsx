@@ -146,9 +146,8 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
           multiline ? 'items-start' : 'items-center',
           variantStyles[variant].base,
           !isDisabled && !isInvalid && variantStyles[variant].hover,
-          isFocused && variantStyles[variant].focus,
           // The ring goes on the field box, not the bare text element inside it (TD-765).
-          isFocused && 'focus-ring',
+          isFocused && [variantStyles[variant].focus, 'focus-ring'],
           isInvalid && variantStyles[variant].error,
           isDisabled && 'opacity-40 cursor-not-allowed'
         )}
