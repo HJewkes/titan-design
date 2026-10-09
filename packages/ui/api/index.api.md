@@ -215,7 +215,7 @@ export function AppShell(input: AppShellProps): react_jsx_runtime.JSX.Element;
 // @public (undocumented)
 export interface AppShellProps {
     activeKey?: string;
-    brand?: BrandKey;
+    brand: BrandKey | BrandPreset;
     children?: ReactNode;
     // (undocumented)
     className?: string;
@@ -465,7 +465,7 @@ export function BrandLockup(input: BrandLockupProps): react_jsx_runtime.JSX.Elem
 // @public (undocumented)
 export interface BrandLockupProps extends ViewProps {
     accentClassName?: string;
-    brand?: BrandKey;
+    brand: BrandKey | BrandPreset;
     // (undocumented)
     className?: string;
     mark?: ReactNode;
@@ -5782,6 +5782,9 @@ export interface RepVelocityCurve {
 export function resolveActualWeek(actual: GoalActualPoint, weeks: GoalTrajectoryWeek[]): number | undefined;
 
 // @public
+export function resolveBrand(brand: BrandKey | BrandPreset): BrandPreset;
+
+// @public
 export function resolveColor(token: ColorToken$1, mode?: ThemeMode): string;
 
 // @public (undocumented)
@@ -8260,7 +8263,7 @@ export function TopBar(input: TopBarProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
 export interface TopBarProps {
-    brand?: BrandKey;
+    brand: BrandKey | BrandPreset;
     // (undocumented)
     className?: string;
     leading?: ReactNode;

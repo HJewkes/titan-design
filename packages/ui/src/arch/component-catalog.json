@@ -9069,11 +9069,11 @@
           "type": "string"
         },
         {
-          "default": "voltras",
-          "description": "Which app identity the default {@link TopBar} and nav accent render.",
+          "default": null,
+          "description": "Which app identity the default {@link TopBar} and nav accent render: a registry key or the app's own preset.",
           "name": "brand",
-          "required": false,
-          "type": "BrandKey"
+          "required": true,
+          "type": "BrandKey | BrandPreset"
         },
         {
           "default": null,
@@ -9177,11 +9177,11 @@
           "type": "string"
         },
         {
-          "default": "voltras",
-          "description": "Which app's identity to render.",
+          "default": null,
+          "description": "Which app's identity to render: a registry key, or the app's own preset.",
           "name": "brand",
-          "required": false,
-          "type": "BrandKey"
+          "required": true,
+          "type": "BrandKey | BrandPreset"
         },
         {
           "default": null,
@@ -9408,11 +9408,11 @@
       "name": "TopBar",
       "props": [
         {
-          "default": "voltras",
+          "default": null,
           "description": "Which app identity the default {@link BrandLockup} renders.",
           "name": "brand",
-          "required": false,
-          "type": "BrandKey"
+          "required": true,
+          "type": "BrandKey | BrandPreset"
         },
         {
           "default": null,
