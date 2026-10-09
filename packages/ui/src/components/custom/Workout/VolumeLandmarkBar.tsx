@@ -64,6 +64,75 @@ function zoneForSets(sets: number, { mev, mav, mrv }: VolumeLandmarks): VolumeZo
   return sets < midpoint ? 'productive' : 'approaching'
 }
 
+/** The bar's reading: its HEAT zone and the % of the MAV target. */
+export function volumeLandmarkReading(
+  currentSets: number,
+  landmarks: VolumeLandmarks
+): { zone: VolumeZone; pct: number } {
+  const { mav } = landmarks
+  return {
+    zone: zoneForSets(currentSets, landmarks),
+    pct: mav > 0 ? Math.round((currentSets / mav) * 100) : 0,
+  }
+}
+
+export interface VolumeLandmarkTrackProps {
+  muscle: string
+  currentSets: number
+  landmarks: VolumeLandmarks
+  trackHeight: number
+  scaleMax?: number
+}
+
+/**
+ * The bar's track without its header lockup, so the lab can pair it with
+ * another header (TD-101). Not exported from the family barrel.
+ */
+export function VolumeLandmarkTrack({
+  muscle,
+  currentSets,
+  landmarks,
+  trackHeight,
+  scaleMax,
+}: VolumeLandmarkTrackProps) {
+  const { mev, mav, mrv } = landmarks
+  const max = scaleMax ?? mrv * 1.2
+  const { zone, pct } = volumeLandmarkReading(currentSets, landmarks)
+  // Resolved per render from the nearest Surface, not frozen at import (VW-371).
+  // ZoneTrack takes literal hex only, so this reads the diverging roles through
+  // `heatmapColors` rather than `resolveColor`, which returns `var()` on web.
+  const fillColor = heatmapColors(useSurfaceMode())[zone]
+  const trackColor = getSemanticColors(useSurfaceMode())[TRACK_TOKEN]
+
+  return (
+    <ZoneTrack
+      zones={[{ upTo: max, color: trackColor }]}
+      max={max}
+      marker={{
+        type: 'fill',
+        value: currentSets,
+        color: fillColor,
+        // Glow when in the optimal productive band — the "sweet spot" cue.
+        glow: zone === 'productive',
+      }}
+      trackColor={CLEAR}
+      trackHeight={trackHeight}
+      ticks={[
+        { value: mev, label: 'MEV', tooltip: `${LANDMARK_NAME.MEV} · ${mev} sets/wk` },
+        {
+          value: mav,
+          label: 'MAV',
+          emphasized: true,
+          tooltip: `${LANDMARK_NAME.MAV} (target) · ${mav} sets/wk`,
+        },
+        { value: mrv, label: 'MRV', tooltip: `${LANDMARK_NAME.MRV} · ${mrv} sets/wk` },
+      ]}
+      accessibilityLabel={`${muscle} weekly volume: ${currentSets} sets, ${pct}% of MAV target, ${ZONE_DESCRIPTION[zone]}`}
+      testID="volume-landmark-track"
+    />
+  )
+}
+
 /**
  * Horizontal weekly-volume bar with MEV / MAV / MRV landmark ticks and a HEAT-scale
  * fill positioned against the MAV target. Composes the shared {@link ZoneTrack}
@@ -87,15 +156,7 @@ export function VolumeLandmarkBar({
   style,
   ...props
 }: VolumeLandmarkBarProps) {
-  const { mev, mav, mrv } = landmarks
-  const max = scaleMax ?? mrv * 1.2
-  const zone = zoneForSets(currentSets, landmarks)
-  // Resolved per render from the nearest Surface, not frozen at import (VW-371).
-  // ZoneTrack takes literal hex only, so this reads the diverging roles through
-  // `heatmapColors` rather than `resolveColor`, which returns `var()` on web.
-  const fillColor = heatmapColors(useSurfaceMode())[zone]
-  const trackColor = getSemanticColors(useSurfaceMode())[TRACK_TOKEN]
-  const pct = mav > 0 ? Math.round((currentSets / mav) * 100) : 0
+  const { pct } = volumeLandmarkReading(currentSets, landmarks)
 
   return (
     <View
@@ -129,31 +190,12 @@ export function VolumeLandmarkBar({
         className="p-0"
         testID="volume-landmark-header"
       />
-
-      <ZoneTrack
-        zones={[{ upTo: max, color: trackColor }]}
-        max={max}
-        marker={{
-          type: 'fill',
-          value: currentSets,
-          color: fillColor,
-          // Glow when in the optimal productive band — the "sweet spot" cue.
-          glow: zone === 'productive',
-        }}
-        trackColor={CLEAR}
+      <VolumeLandmarkTrack
+        muscle={muscle}
+        currentSets={currentSets}
+        landmarks={landmarks}
         trackHeight={trackHeight}
-        ticks={[
-          { value: mev, label: 'MEV', tooltip: `${LANDMARK_NAME.MEV} · ${mev} sets/wk` },
-          {
-            value: mav,
-            label: 'MAV',
-            emphasized: true,
-            tooltip: `${LANDMARK_NAME.MAV} (target) · ${mav} sets/wk`,
-          },
-          { value: mrv, label: 'MRV', tooltip: `${LANDMARK_NAME.MRV} · ${mrv} sets/wk` },
-        ]}
-        accessibilityLabel={`${muscle} weekly volume: ${currentSets} sets, ${pct}% of MAV target, ${ZONE_DESCRIPTION[zone]}`}
-        testID="volume-landmark-track"
+        scaleMax={scaleMax}
       />
     </View>
   )
