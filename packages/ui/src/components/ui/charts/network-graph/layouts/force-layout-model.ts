@@ -12,6 +12,7 @@ import { seededRandom } from '../../kit/seededRandom'
 import type { GraphEdge, GraphLayout, GraphLayoutInput, GraphNode, GraphPoint } from '../types'
 import { LAYOUT_DEFAULTS, clampInt, frameLayout, readingOrder, toSeed } from './layout-geometry'
 
+/** Options of `forceLayout`; both are part of the layout's `key`. */
 export interface ForceLayoutOptions {
   /** Default 1. */
   seed?: number
@@ -114,6 +115,11 @@ function computeForce({ nodes, edges, width, height }: GraphLayoutInput, options
   }
 }
 
+/**
+ * A force-directed layout: linked nodes sit near each other and unlinked ones are pushed apart, so
+ * distance means connection. Deterministic for a `seed`; it steps `d3-force` a fixed number of
+ * `iterations` with no timer. Asks for arc edges and decluttered labels.
+ */
 export function forceLayout(options: ForceLayoutOptions = {}): GraphLayout {
   const seed = toSeed(options.seed ?? LAYOUT_DEFAULTS.SEED)
   const iterations = clampInt(

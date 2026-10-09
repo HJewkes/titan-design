@@ -9,8 +9,10 @@ import type {
 } from '../types'
 import { LAYOUT_DEFAULTS, clampInt, frameLayout, round2 } from './layout-geometry'
 
+/** Which edges count as a hop: every edge two-way, source to target only, or target to source only. */
 export type EgoDirection = 'both' | 'outgoing' | 'incoming'
 
+/** Options of `egoLayout`; all three are part of the layout's `key`. There is no `seed`: nothing is random. */
 export interface EgoLayoutOptions {
   /** `null` or an unknown id places nothing. */
   focusId: string | null
@@ -138,6 +140,12 @@ function sanitize(options: EgoLayoutOptions | undefined): Required<EgoLayoutOpti
   return { focusId, hops, direction }
 }
 
+/**
+ * An ego layout: the focus at the centre and one ring per hop out to `hops`, so distance means hops
+ * from one node. Nodes further away are left unplaced and counted; a `null` or unknown `focusId`
+ * places nothing, so the empty state renders. Asks for arc edges and decluttered labels, and
+ * returns one `ring` group per hop.
+ */
 export function egoLayout(options: EgoLayoutOptions): GraphLayout {
   const clean = sanitize(options)
   return {
