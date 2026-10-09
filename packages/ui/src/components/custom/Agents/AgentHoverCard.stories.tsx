@@ -56,7 +56,7 @@ const meta: Meta<typeof AgentHoverCard> = {
   decorators: [
     (Story) => (
       <Surface level="base" className="min-h-screen p-6">
-        <View className="pb-[420px] pr-[360px]">
+        <View className="py-[240px] pr-[360px]">
           <Story />
         </View>
       </Surface>

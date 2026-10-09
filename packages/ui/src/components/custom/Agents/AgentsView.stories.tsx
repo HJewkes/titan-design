@@ -53,7 +53,7 @@ function CardGrid({ agents, selectedId }: { agents: AgentSummary[]; selectedId?:
           agent={agent}
           now={AGENTS_NOW}
           isHighlighted={agent.id === selectedId}
-          className="w-[320px]"
+          className="w-[380px]"
         />
       ))}
     </View>

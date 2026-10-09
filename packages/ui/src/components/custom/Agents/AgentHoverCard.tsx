@@ -150,21 +150,24 @@ export function AgentHoverCard({
   })
   const isVisible = !isDisabled && (isOpen ?? isHeld)
   const cardId = `agent-card-${useId().replace(/[^a-zA-Z0-9]/g, '')}`
+  // The Tooltip anchors to its own root, so the root hugs the trigger instead of the parent's width.
   return (
-    <Tooltip
-      isOpen={isVisible}
-      usePortal
-      placement={placement}
-      hasArrow={false}
-      content={
-        <View nativeID={cardId} role="tooltip">
-          <AgentHoverCardContent agent={agent} now={now} className={className} />
-        </View>
-      }
-    >
-      <TriggerSurface handlers={triggerProps}>
-        {asTrigger(children, isVisible ? cardId : undefined)}
-      </TriggerSurface>
-    </Tooltip>
+    <View className="self-start">
+      <Tooltip
+        isOpen={isVisible}
+        usePortal
+        placement={placement}
+        hasArrow={false}
+        content={
+          <View nativeID={cardId} role="tooltip">
+            <AgentHoverCardContent agent={agent} now={now} className={className} />
+          </View>
+        }
+      >
+        <TriggerSurface handlers={triggerProps}>
+          {asTrigger(children, isVisible ? cardId : undefined)}
+        </TriggerSurface>
+      </Tooltip>
+    </View>
   )
 }
