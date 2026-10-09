@@ -761,12 +761,12 @@
   },
   "custom-activework-initiativereader--default dark": {
     "#888684|#252321": 4,
-    "#888684|#31302f": 16,
+    "#888684|#31302f": 12,
     "#ff7900|#4a3929": 3
   },
   "custom-activework-initiativereader--default light": {
-    "#72716f|#edeae7": 16,
-    "#ff7900|#edeae7": 7
+    "#72716f|#edeae7": 12,
+    "#ff7900|#edeae7": 4
   },
   "custom-activework-initiativereader--no-open-loops dark": {
     "#888684|#252321": 4,
@@ -807,12 +807,11 @@
     "#72716f|#edeae7": 2
   },
   "custom-activework-sessiondetail--ad-hoc dark": {
-    "#888684|#31302f": 5,
+    "#888684|#31302f": 4,
     "#ff7900|#4a3929": 1
   },
   "custom-activework-sessiondetail--ad-hoc light": {
-    "#72716f|#edeae7": 5,
-    "#ff7900|#edeae7": 1
+    "#72716f|#edeae7": 4
   },
   "custom-activework-sessiondetail--default dark": {
     "#888684|#31302f": 10,
@@ -822,11 +821,11 @@
     "#72716f|#edeae7": 10
   },
   "custom-activework-sessiondetail--inert dark": {
-    "#888684|#31302f": 10,
+    "#888684|#31302f": 4,
     "#ff7900|#4a3929": 6
   },
   "custom-activework-sessiondetail--inert light": {
-    "#72716f|#edeae7": 10
+    "#72716f|#edeae7": 4
   },
   "custom-activework-sessiondetail--short dark": {
     "#888684|#31302f": 4,
@@ -836,11 +835,11 @@
     "#72716f|#edeae7": 4
   },
   "custom-activework-sessiondetail--without-tasks dark": {
-    "#888684|#31302f": 10,
+    "#888684|#31302f": 4,
     "#ff7900|#4a3929": 6
   },
   "custom-activework-sessiondetail--without-tasks light": {
-    "#72716f|#edeae7": 10
+    "#72716f|#edeae7": 4
   },
   "custom-activework-sessionlist--custom-label dark": {
     "#888684|#252321": 23,
@@ -883,27 +882,27 @@
   },
   "custom-activework-sessionreader--default dark": {
     "#888684|#252321": 23,
-    "#888684|#31302f": 14,
+    "#888684|#31302f": 8,
     "#ff7900|#4a3929": 6
   },
   "custom-activework-sessionreader--default light": {
-    "#72716f|#edeae7": 14
+    "#72716f|#edeae7": 8
   },
   "custom-activework-sessionreader--one-session dark": {
     "#888684|#252321": 1,
-    "#888684|#31302f": 14,
+    "#888684|#31302f": 8,
     "#ff7900|#4a3929": 6
   },
   "custom-activework-sessionreader--one-session light": {
-    "#72716f|#edeae7": 14
+    "#72716f|#edeae7": 8
   },
   "custom-activework-sessionreader--without-task-store dark": {
     "#888684|#252321": 23,
-    "#888684|#31302f": 14,
+    "#888684|#31302f": 8,
     "#ff7900|#4a3929": 6
   },
   "custom-activework-sessionreader--without-task-store light": {
-    "#72716f|#edeae7": 14
+    "#72716f|#edeae7": 8
   },
   "custom-activework-taskrow--critical-with-overflowing-tags dark": {
     "#888684|#252321": 3
