@@ -2,6 +2,8 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Select } from './Select'
+import { Surface } from '../surface'
+import { insetFieldStyle } from '../surface/insetField'
 
 const defaultOptions = [
   { value: '1', label: 'Option 1' },
@@ -143,6 +145,36 @@ describe('Select', () => {
     it('renders with default variant when omitted', () => {
       render(<Select options={defaultOptions} />)
       expect(screen.getByRole('combobox')).toBeInTheDocument()
+    })
+
+    it.each([
+      ['dark', 'base'],
+      ['dark', 'raised'],
+      ['light', 'base'],
+      ['light', 'elevated'],
+    ] as const)(
+      'fills the filled trigger with the well colour of the enclosing plane (%s %s)',
+      (mode, level) => {
+        render(
+          <Surface theme={mode} level={level}>
+            <Select options={defaultOptions} variant="filled" />
+          </Surface>
+        )
+        const expected = insetFieldStyle(level, mode) as {
+          backgroundColor: string
+          boxShadow: string
+        }
+        const trigger = screen.getByRole('combobox')
+        const probe = document.createElement('div')
+        probe.style.backgroundColor = expected.backgroundColor
+        expect(trigger.style.boxShadow).toBe(expected.boxShadow)
+        expect(trigger.style.backgroundColor).toBe(probe.style.backgroundColor)
+      }
+    )
+
+    it('keeps the default trigger flat', () => {
+      render(<Select options={defaultOptions} />)
+      expect(screen.getByRole('combobox').style.boxShadow).toBe('')
     })
 
     it('supports selection in filled variant', () => {

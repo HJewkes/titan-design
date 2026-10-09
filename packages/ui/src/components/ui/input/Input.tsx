@@ -1,6 +1,8 @@
 import React, { forwardRef, useState } from 'react'
 import { TextInput, View, Text, Pressable, type TextInputProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { useSurface, type SurfaceContextValue } from '../surface'
+import { insetFieldStyle } from '../surface/insetField'
 
 export type InputSize = 'sm' | 'md' | 'lg'
 export type InputVariant = 'outline' | 'filled' | 'underline'
@@ -62,8 +64,10 @@ const variantStyles: Record<
     focus: 'border-border-input-focus',
     error: 'border-border-input-error',
   },
+  // The fill is the inset well (`insetFieldFill` of the enclosing plane, see `fieldWell`);
+  // the focus ring replaces the well while the field is focused.
   filled: {
-    base: 'border border-transparent rounded-md bg-surface-input',
+    base: 'border border-transparent rounded-md',
     hover: 'web:hover:border-border-input-hover',
     focus: 'border-border-input-focus bg-transparent',
     error: 'border-border-input-error',
@@ -74,6 +78,15 @@ const variantStyles: Record<
     focus: 'border-border-input-focus',
     error: 'border-border-input-error',
   },
+}
+
+/**
+ * The inset well of the filled field (`insetFieldFill` of the enclosing plane), with the
+ * inset-well recess. Dropped while focused so the focus border reads alone.
+ */
+function fieldWell(variant: InputVariant, isFocused: boolean, surface: SurfaceContextValue) {
+  if (variant !== 'filled' || isFocused) return undefined
+  return insetFieldStyle(surface.level, surface.mode)
 }
 
 /**
@@ -117,6 +130,7 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
   ref
 ) {
   const [isFocused, setIsFocused] = useState(false)
+  const well = fieldWell(variant, isFocused, useSurface())
 
   const handleFocus = (e: TextInputFocusEvent) => {
     setIsFocused(true)
@@ -141,6 +155,7 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
       )}
 
       <View
+        style={well}
         className={cn(
           'flex-row transition-colors duration-150',
           multiline ? 'items-start' : 'items-center',
