@@ -10932,6 +10932,120 @@
       "tier": "organism"
     },
     {
+      "composes": [
+        "BarListCells",
+        "BarListParts",
+        "BarListTip",
+        "EmptyState"
+      ],
+      "family": "ui/charts",
+      "file": "packages/ui/src/components/ui/charts/bar-list/BarList.tsx",
+      "name": "BarList",
+      "props": [
+        {
+          "default": null,
+          "description": "Names the list; the summary is appended to it for assistive tech.",
+          "name": "accessibilityLabel",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Tailwind classes merged onto the list root.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Replaces the default empty state, shown when `rows` is empty.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Formats each row's `secondaryValue`.",
+          "name": "formatSecondary",
+          "required": false,
+          "type": "((value: number, row: BarListRow) => string)"
+        },
+        {
+          "default": null,
+          "description": "Formats each row's value, and the total of the rows past the cap (called without a row).",
+          "name": "formatValue",
+          "required": false,
+          "type": "BarListValueFormatter"
+        },
+        {
+          "default": "false",
+          "description": "Shows skeleton rows in place of the data.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "false",
+          "description": "Hides each row's value after its bar.",
+          "name": "isValueHidden",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "inline",
+          "description": "`inline` puts label, bar and value on one line; `stacked` puts the bar under them.",
+          "name": "layout",
+          "required": false,
+          "type": "\"inline\" | \"stacked\""
+        },
+        {
+          "default": null,
+          "description": "Value that fills a whole bar.",
+          "name": "max",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Rows shown before the rest fold into one overflow row.",
+          "name": "maxRows",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The data, one row per bar.",
+          "name": "rows",
+          "required": true,
+          "type": "BarListRow[]"
+        },
+        {
+          "default": "md",
+          "description": "Text size and bar thickness.",
+          "name": "size",
+          "required": false,
+          "type": "\"sm\" | \"md\""
+        },
+        {
+          "default": "descending",
+          "description": "`descending` ranks by value; `none` keeps input order (a funnel).",
+          "name": "sort",
+          "required": false,
+          "type": "\"none\" | \"descending\""
+        }
+      ],
+      "purpose": "BarList: a ranked horizontal bar list.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/charts/bar-list/BarList.tsx",
+        "status": "packages/ui/src/components/ui/charts/bar-list/BarList.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-barlist--default"
+      ],
+      "tier": "organism"
+    },
+    {
       "composes": [],
       "family": "ui/charts",
       "file": "packages/ui/src/components/ui/charts/gauge/Gauge.tsx",
