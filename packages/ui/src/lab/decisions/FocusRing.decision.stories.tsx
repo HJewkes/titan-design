@@ -196,7 +196,8 @@ const meta: Meta<Args> = {
           'two-tone and it is applied: the global `*:focus-visible` rule in `global.css` is a 2px ' +
           '`text-brand` outline at a 2px offset (it was `border-focus`). A component that paints the ' +
           'ring itself adds the `focus-ring` class. The applied unit renders through that class; the ' +
-          'other options stay as the record of what was compared. NavItem is shown active, and the date separator's " +
+          'other options stay as the record of what was compared. NavItem is shown active, and ' +
+          "the date separator's " +
           "caption is drawn in `text-secondary`: both components' `text-tertiary` labels are under " +
           '4.5:1 on some of these planes, which is not this decision. Under each sample: the ring against the plane and ' +
           'against the component edge (WCAG 1.4.11 / 2.4.11 non-text floor 3:1). With the offset ' +

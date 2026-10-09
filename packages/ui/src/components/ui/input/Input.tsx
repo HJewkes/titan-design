@@ -147,6 +147,8 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
           variantStyles[variant].base,
           !isDisabled && !isInvalid && variantStyles[variant].hover,
           isFocused && variantStyles[variant].focus,
+          // The ring goes on the field box, not the bare text element inside it (TD-765).
+          isFocused && 'focus-ring',
           isInvalid && variantStyles[variant].error,
           isDisabled && 'opacity-40 cursor-not-allowed'
         )}
@@ -167,7 +169,7 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
           onFocus={handleFocus}
           onBlur={handleBlur}
           className={cn(
-            'flex-1 text-text-primary',
+            'flex-1 text-text-primary web:outline-none',
             multiline ? multilineSizeStyles[size] : sizeStyles[size],
             leftElement && 'pl-1',
             rightElement && 'pr-1',
