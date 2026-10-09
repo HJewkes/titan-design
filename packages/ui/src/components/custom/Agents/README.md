@@ -50,18 +50,18 @@ stops fitting. The console (TP-864) owns the adapter and joins `metrics` from th
 component never spells a state label of its own. `agentStateMeta` falls back to the raw word and a
 neutral dot for a state from a newer roster.
 
-| State       | Source   | Live | Dot                 |
-| ----------- | -------- | ---- | ------------------- |
-| `blocked`   | presence | yes  | `warning`           |
-| `working`   | presence | yes  | `success`, ping     |
-| `available` | presence | yes  | `info`              |
-| `spawning`  | history  | yes  | `default` (pending) |
-| `detached`  | history  | yes  | `default` (pending) |
-| `failed`    | history  | no   | `default` (pending) |
-| `exited`    | history  | no   | `default`           |
-| `retired`   | history  | no   | `default` (pending) |
+| State       | Source   | Live | Dot             |
+| ----------- | -------- | ---- | --------------- |
+| `blocked`   | presence | yes  | `warning`       |
+| `working`   | presence | yes  | `success`, ping |
+| `available` | presence | yes  | `info`          |
+| `spawning`  | history  | yes  | `info`, fade    |
+| `detached`  | history  | yes  | `info`          |
+| `failed`    | history  | no   | `error`         |
+| `exited`    | history  | no   | `default`       |
+| `retired`   | history  | no   | `default`       |
 
-"Pending" tones belong to the owner's TASTE item T1. An agent whose `stateSource` is `history` is
+The owner picked the history tones in TASTE item T1 (mock B). An agent whose `stateSource` is `history` is
 known only from durable history; its card takes the `subtle` variant (stays on the host plane, no
 lift) instead of the `historical` state the contract first proposed.
 
@@ -118,8 +118,6 @@ transcript, bare, zero calls, huge, non-finite, hostile and provisional, and the
 exported from a barrel.
 
 ## Known gaps
-
-- The roster's state tones are 858a's, pending the owner's TASTE item T1.
 
 - `formatDurationMs` lands in `utils/time-format.ts` with TP-855a. Until then the recency label
   composes `formatSessionDuration` and `formatTaskAge`.

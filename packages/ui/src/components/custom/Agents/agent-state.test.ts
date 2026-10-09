@@ -37,6 +37,16 @@ describe('agent state vocabulary', () => {
     for (const state of all) expect(AGENT_STATE_META[state].label).toBeTruthy()
   })
 
+  it.each([
+    ['spawning', 'info', 'opacity'],
+    ['detached', 'info', false],
+    ['failed', 'error', false],
+    ['exited', 'default', false],
+    ['retired', 'default', false],
+  ] as const)('gives %s the %s dot, pulse %s', (state, dot, pulse) => {
+    expect(AGENT_STATE_META[state]).toMatchObject({ dot, pulse })
+  })
+
   it('treats presence states and the still-running history states as live', () => {
     const live = AGENT_STATE_ORDER.filter(isLiveAgent)
     expect(live).toEqual(['blocked', 'working', 'available', 'spawning', 'detached'])
