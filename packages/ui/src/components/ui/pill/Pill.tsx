@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 
-export type PillVariant = 'solid' | 'subtle' | 'outline'
+export type PillVariant = 'solid' | 'subtle' | 'outline' | 'clear'
 /** Semantic tone. `brand-secondary` is the accent, not a second brand. */
 export type PillTone =
   | 'neutral'
@@ -34,7 +34,7 @@ export type PillSize = PillSizeLevel | DeprecatedPillSize
 export interface PillProps extends ViewProps {
   /** Pill content */
   children?: React.ReactNode
-  /** Visual variant */
+  /** Visual variant. `clear` has no fill and no border: label and dot only. */
   variant?: PillVariant
   /** Semantic tone */
   tone?: PillTone
@@ -114,6 +114,17 @@ const toneStyles: Record<PillVariant, Record<PillTone, string>> = {
     warning: 'border-status-warning text-status-warning',
     error: 'border-status-error text-status-error',
     info: 'border-status-info text-status-info',
+  },
+  // No fill and no ring, so the label is read against the plane the pill sits on. The
+  // transparent border keeps the capsule's box the size of the other variants.
+  clear: {
+    neutral: 'border-transparent text-text-primary',
+    brand: 'border-transparent text-brand-primary',
+    'brand-secondary': 'border-transparent text-brand-secondary',
+    success: 'border-transparent text-status-success',
+    warning: 'border-transparent text-status-warning',
+    error: 'border-transparent text-status-error',
+    info: 'border-transparent text-status-info',
   },
 }
 

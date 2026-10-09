@@ -13177,7 +13177,7 @@
         },
         {
           "default": null,
-          "description": "Visual variant",
+          "description": "Visual variant.",
           "name": "variant",
           "required": false,
           "type": "PillVariant"

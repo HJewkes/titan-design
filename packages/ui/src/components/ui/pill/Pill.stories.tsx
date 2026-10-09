@@ -10,7 +10,7 @@ const meta: Meta<typeof Pill> = {
   component: Pill,
   tags: ['autodocs', 'status:stable', '!status:review'],
   argTypes: {
-    variant: { control: 'select', options: ['solid', 'subtle', 'outline'] },
+    variant: { control: 'select', options: ['solid', 'subtle', 'outline', 'clear'] },
     tone: {
       control: 'select',
       options: ['neutral', 'brand', 'brand-secondary', 'success', 'warning', 'error', 'info'],

@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { WorkoutTopBar } from './WorkoutTopBar'
 import { type Device } from './DeviceRow'
+import { capturedClassNames } from '../../../test/classname-capture'
 
 // Class names are stripped in jsdom, so surface the colour prop to assert it.
 vi.mock('../../ui/typography', () => ({
@@ -30,6 +31,13 @@ describe('WorkoutTopBar', () => {
   it('sets the idle label in primary text so it clears AA on the neutral pill', () => {
     render(<WorkoutTopBar state="idle" devices={devices} time={AT_1612} />)
     expect(screen.getByText('IDLE')).toHaveAttribute('data-color', 'primary')
+  })
+
+  it('draws the session-state readout as a clear pill with no fill', () => {
+    render(<WorkoutTopBar state="idle" devices={devices} time={AT_1612} />)
+    const classes = (capturedClassNames.get('session-state-pill') ?? '').split(/\s+/)
+    expect(classes).toContain('border-transparent')
+    expect(classes.filter((c) => c.startsWith('bg-'))).toEqual([])
   })
 
   it('hides the clock when showClock is false', () => {

@@ -34,7 +34,7 @@ const sessionStateConfig: Record<
 }
 
 /**
- * The session-state readout as a neutral Pill; the dot carries the state, the label stays quiet.
+ * The session-state readout as a clear Pill (no fill, no ring); the dot carries the state, the label stays quiet.
  * `self-auto` keeps it centred in the bar instead of Pill's `self-start`.
  */
 function SessionStateReadout({ state }: { state: SessionState }) {
@@ -42,7 +42,7 @@ function SessionStateReadout({ state }: { state: SessionState }) {
   return (
     <Pill
       tone="neutral"
-      variant="subtle"
+      variant="clear"
       size="sm"
       className="self-auto gap-inline-md"
       leading={<Indicator size="md" color={cfg.color} pulse={cfg.pulse} />}
