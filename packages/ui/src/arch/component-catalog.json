@@ -1150,7 +1150,7 @@
         },
         {
           "default": "false",
-          "description": "The session holds pushes; adds a neutral pill.",
+          "description": "The session holds pushes: a message sent to it queues in its inbox instead of interrupting.",
           "name": "isDnd",
           "required": false,
           "type": "boolean"
