@@ -27,19 +27,14 @@
     "#e05254|#252321": 1
   },
   "components-atoms-badge--all-colors light": {
-    "#307b9b|#edeae7": 1,
-    "#a45e00|#edeae7": 1,
-    "#ff7900|#edeae7": 1,
     "#ffffff|#2196f3": 1,
     "#ffffff|#c27400": 1,
     "#ffffff|#ff7900": 1
   },
   "components-atoms-badge--all-variants light": {
-    "#ff7900|#edeae7": 1,
     "#ffffff|#ff7900": 1
   },
   "components-atoms-chip--all-variants light": {
-    "#ff7900|#edeae7": 1,
     "#ffffff|#ff7900": 1
   },
   "components-atoms-chip--disabled dark": {
@@ -58,11 +53,9 @@
     "#7bafde|#edeae7": 1
   },
   "components-atoms-link--all-colors light": {
-    "#307b9b|#edeae7": 1,
     "#ff7900|#edeae7": 1
   },
   "components-atoms-pill--all-variants light": {
-    "#ff7900|#edeae7": 1,
     "#ffffff|#ff7900": 1
   },
   "components-atoms-pill--on-both-planes dark": {
@@ -1025,12 +1018,6 @@
     "#424140|#1c1916": 4,
     "#824d06|#1c1916": 1
   },
-  "custom-fatigue-verdict-hero--across-states light": {
-    "#2b6b25|#100d0a": 3,
-    "#5a5958|#100d0a": 7,
-    "#a45e00|#100d0a": 4,
-    "#d14343|#100d0a": 2
-  },
   "custom-prose-markdownprose--default dark": {
     "#888684|#252321": 1
   },
@@ -1323,7 +1310,6 @@
     "#d14343|#252321": 1
   },
   "custom-workout-dataviz-zonetrack--colored-tooltip-ticks light": {
-    "#d14343|#edeae7": 1,
     "#ff7900|#edeae7": 1
   },
   "custom-workout-dataviz-zonetrack--gradient-fill dark": {
@@ -1561,7 +1547,6 @@
     "#ff7900|#56361a": 1
   },
   "custom-workout-mesocard--expanded light": {
-    "#ba2996|#e4c8d9": 2,
     "#ff7900|#ffe6d4": 2
   },
   "custom-workout-mesocard--highlighted dark": {
@@ -1570,7 +1555,6 @@
     "#ff7900|#56361a": 1
   },
   "custom-workout-mesocard--highlighted light": {
-    "#ba2996|#e4c8d9": 2,
     "#ff7900|#ffe6d4": 2
   },
   "custom-workout-mesocard--strength-block dark": {
@@ -1579,7 +1563,6 @@
     "#ff7900|#56361a": 1
   },
   "custom-workout-mesocard--strength-block light": {
-    "#ba2996|#e4c8d9": 3,
     "#ff7900|#ffe6d4": 2
   },
   "custom-workout-metrictiles--four-tiles dark": {
@@ -1779,11 +1762,7 @@
     "#888684|#252321": 2
   },
   "custom-workout-setstrip--set-types dark": {
-    "#72716f|#252321": 2
-  },
-  "custom-workout-setstrip--set-types light": {
-    "#72716f|#edeae7": 2,
-    "#f9f6f3|#edeae7": 5
+    "#888684|#252321": 2
   },
   "custom-workout-settableheader--kg dark": {
     "#888684|#252321": 5
@@ -1841,16 +1820,12 @@
   "custom-workout-weekrow--deload-week dark": {
     "#ba2996|#3f2435": 2
   },
-  "custom-workout-weekrow--deload-week light": {
-    "#ba2996|#e4c8d9": 2
-  },
   "custom-workout-weekrow--mesocycle-progression dark": {
     "#888684|#31302f": 1,
     "#ba2996|#3f2435": 2,
     "#ff7900|#56361a": 1
   },
   "custom-workout-weekrow--mesocycle-progression light": {
-    "#ba2996|#e4c8d9": 2,
     "#ff7900|#ffe6d4": 2
   },
   "custom-workout-weightbadge--all-variants dark": {
@@ -1912,7 +1887,6 @@
     "#ba2996|#37242f": 1
   },
   "custom-workout-workoutpill--all-statuses light": {
-    "#ba2996|#e7d3dd": 1,
     "#ff7900|#edeae7": 1,
     "#ff7900|#ffe6d4": 1
   },
@@ -1924,9 +1898,6 @@
   },
   "custom-workout-workoutpill--deload dark": {
     "#ba2996|#37242f": 1
-  },
-  "custom-workout-workoutpill--deload light": {
-    "#ba2996|#e7d3dd": 1
   },
   "custom-workout-workoutpill--missed dark": {
     "#a4221c|#362928": 1
@@ -2188,7 +2159,7 @@
     "#424140|#131418": 6,
     "#5a5958|#131418": 1,
     "#5b616d|#131418": 17,
-    "#ba2996|#271727": 1,
+    "#9c0d7a|#231324": 1,
     "#ff7900|#ffe6d4": 3,
     "#ffffff|#ff7900": 1
   },
@@ -2373,9 +2344,6 @@
     "#888684|#2c2a28": 4,
     "#888684|#373635": 4,
     "#ba2996|#54334a": 1
-  },
-  "lab-decisions-goal-chart-marks--deload-column light": {
-    "#ba2996|#f0d0e8": 1
   },
   "lab-decisions-goal-chart-marks--deload-with-reading dark": {
     "#888684|#2c2a28": 4
@@ -2861,7 +2829,6 @@
     "#ff7900|#56361a": 1
   },
   "pages-program-planning--default light": {
-    "#ba2996|#e4c8d9": 2,
     "#ff7900|#ffe6d4": 2
   },
   "pages-program-planning--single-meso dark": {
@@ -2870,7 +2837,6 @@
     "#ff7900|#56361a": 1
   },
   "pages-program-planning--single-meso light": {
-    "#ba2996|#e4c8d9": 2,
     "#ff7900|#ffe6d4": 2
   },
   "pages-training-status--default dark": {
