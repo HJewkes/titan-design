@@ -84,13 +84,19 @@ export function useLineRange({
     },
     [activeLine, clamp, isInert, selectedRange, setSelectedRange]
   )
-  const toggleActive = useCallback(() => {
-    if (isInert) return
-    const isSoleSelection =
-      selectedRange?.startLine === activeLine && selectedRange.endLine === activeLine
-    anchorRef.current = activeLine
-    setSelectedRange(isSoleSelection ? null : { startLine: activeLine, endLine: activeLine })
-  }, [activeLine, isInert, selectedRange, setSelectedRange])
+  const selectLine = useCallback(
+    (line: number) => {
+      if (isInert) return
+      const target = clamp(line)
+      const isSoleSelection =
+        selectedRange?.startLine === target && selectedRange.endLine === target
+      anchorRef.current = target
+      setRawActive(target)
+      setSelectedRange(isSoleSelection ? null : { startLine: target, endLine: target })
+    },
+    [clamp, isInert, selectedRange, setSelectedRange]
+  )
+  const toggleActive = useCallback(() => selectLine(activeLine), [activeLine, selectLine])
   const clearSelection = useCallback(() => {
     if (isInert) return
     anchorRef.current = null
@@ -105,6 +111,7 @@ export function useLineRange({
     moveActiveTo,
     extendSelection,
     toggleActive,
+    selectLine,
     clearSelection,
   }
 }
