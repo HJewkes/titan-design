@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:5b261a5b46fc042b49d3c80fed3e7b21f207c93021810c0bad0d32e366f6accc",
+  "componentBarrelHash": "sha256:593e6d7225e70f4a03fdf7d27c09a2676910106e303340ae95f5a14d24d22020",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -5662,6 +5662,86 @@
       "standard": false
     },
     {
+      "name": "RefChip",
+      "file": "packages/ui/src/components/custom/ActiveWork/RefChip.tsx",
+      "dir": "custom",
+      "family": "custom/ActiveWork",
+      "exports": [
+        "RefChip",
+        "RefChipProps",
+        "RefChipBody"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Link",
+        "Pill"
+      ],
+      "leak": {
+        "rawView": 1,
+        "rawText": 1,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 107,
+        "score": 2
+      },
+      "tier": "molecule",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "RelatedList",
+      "file": "packages/ui/src/components/custom/ActiveWork/RelatedList.tsx",
+      "dir": "custom",
+      "family": "custom/ActiveWork",
+      "exports": [
+        "groupRefsByKind",
+        "RelatedList",
+        "RefGroup",
+        "RelatedListProps",
+        "RefGroupSection",
+        "RelatedListSkeleton"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "EmptyState",
+        "Eyebrow",
+        "RefChip",
+        "Skeleton",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 7,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 117,
+        "score": 7
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "RestTimer",
       "file": "packages/ui/src/components/custom/Workout/RestTimer.tsx",
       "dir": "workout",
@@ -11109,6 +11189,34 @@
     [
       "AgentCard",
       "Typography"
+    ],
+    [
+      "RefChip",
+      "Link"
+    ],
+    [
+      "RefChip",
+      "Pill"
+    ],
+    [
+      "RelatedList",
+      "RefChip"
+    ],
+    [
+      "RelatedList",
+      "EmptyState"
+    ],
+    [
+      "RelatedList",
+      "Eyebrow"
+    ],
+    [
+      "RelatedList",
+      "Skeleton"
+    ],
+    [
+      "RelatedList",
+      "Typography"
     ]
   ],
   "summary": {
@@ -11131,6 +11239,7 @@
       "PortfolioOverview",
       "PrHistoryModal",
       "ReadinessCheck",
+      "RelatedList",
       "SessionDetail",
       "SessionList",
       "Switch",
@@ -11167,6 +11276,7 @@
       "MesoProgressBar",
       "MessageBubble",
       "ProgramPlanningBreadcrumbs",
+      "RefChip",
       "RevealRow",
       "SessionListItem",
       "SeverityLabel",
