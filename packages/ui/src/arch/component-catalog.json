@@ -13318,6 +13318,7 @@
         "components-atoms-pill--default",
         "components-atoms-pill--leading-slot",
         "components-atoms-pill--on-both-planes",
+        "components-atoms-pill--outline-on-all-elevations",
         "components-atoms-pill--solid-tones",
         "components-atoms-pill--square-corners"
       ],

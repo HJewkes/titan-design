@@ -67,6 +67,12 @@
   "components-atoms-pill--on-both-planes light": {
     "#72716f|#edeae7": 1
   },
+  "components-atoms-pill--outline-on-all-elevations dark": {
+    "#e05254|#252321": 1,
+    "#e05254|#2c2a28": 1,
+    "#e05254|#31302f": 1,
+    "#e05254|#373635": 1
+  },
   "components-atoms-pill--solid-tones light": {
     "#ffffff|#2196f3": 1,
     "#ffffff|#c27400": 1,

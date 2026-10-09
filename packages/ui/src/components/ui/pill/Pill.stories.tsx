@@ -4,7 +4,7 @@ import { Pill } from './Pill'
 import { Indicator } from '../indicator'
 import { Surface } from '../surface'
 import { Typography } from '../typography'
-import { darkThemeCSSVars, lightThemeCSSVars } from '../../../theme/config'
+import { useSurfaceMode } from '../../../theme/surface-context'
 import { formatTrimmedDecimal } from '../../../utils/number-format'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 
@@ -219,7 +219,7 @@ const OUTLINE_TONES = [
   ['error', 'status-error'],
   ['info', 'status-info'],
 ] as const
-const PLANES = ['surface-base', 'surface-elevated', 'surface-raised', 'surface-overlay'] as const
+const PLANES = ['base', 'elevated', 'raised', 'overlay'] as const
 
 type Rgb = [number, number, number]
 
@@ -250,52 +250,44 @@ function borderRatio(border: string, plane: string): number {
   return (hi + 0.05) / (lo + 0.05)
 }
 
-/**
- * Every outline tone on every elevation plane, both themes, with the ring-vs-plane
- * contrast ratio printed under each pill. The neutral ring reads `hairline-strong`, one
- * step above the shared `hairline-default` (lighter in dark, darker in light). Each theme
- * column scopes its own CSS variables, so both render whichever theme Storybook is in.
- */
-export const OutlineOnAllElevations: Story = {
-  render: () => (
-    <View className="gap-6">
-      {(['dark', 'light'] as const).map((mode) => {
-        const colors = getSemanticColors(mode)
-        return (
-          <View
-            key={mode}
-            className="gap-2"
-            style={(mode === 'dark' ? darkThemeCSSVars : lightThemeCSSVars) as never}
-          >
-            <Typography variant="caption" color="tertiary">
-              {mode}
-            </Typography>
-            {PLANES.map((plane) => (
-              <View
-                key={plane}
-                className="gap-2 rounded-xl p-4"
-                style={{ backgroundColor: colors[plane] }}
-              >
-                <Typography variant="caption" color="tertiary">
-                  {plane} · {colors[plane]}
+function OutlineFrame() {
+  const mode = useSurfaceMode()
+  const colors = getSemanticColors(mode)
+  return (
+    <View className="gap-2">
+      <Typography variant="caption" color="secondary">
+        {mode}
+      </Typography>
+      {PLANES.map((plane) => (
+        <Surface key={plane} level={plane} className="gap-2 rounded-xl p-4">
+          <Typography variant="caption" color="secondary">
+            {plane} · {colors[`surface-${plane}`]}
+          </Typography>
+          <View className="flex-row flex-wrap gap-4">
+            {OUTLINE_TONES.map(([tone, token]) => (
+              <View key={tone} className="items-start gap-1">
+                <Pill variant="outline" tone={tone}>
+                  {tone}
+                </Pill>
+                <Typography variant="caption" color="secondary">
+                  {formatTrimmedDecimal(borderRatio(colors[token], colors[`surface-${plane}`]), 2)}
+                  :1
                 </Typography>
-                <View className="flex-row flex-wrap gap-4">
-                  {OUTLINE_TONES.map(([tone, token]) => (
-                    <View key={tone} className="items-start gap-1">
-                      <Pill variant="outline" tone={tone}>
-                        {tone}
-                      </Pill>
-                      <Typography variant="caption" color="tertiary">
-                        {formatTrimmedDecimal(borderRatio(colors[token], colors[plane]), 2)}:1
-                      </Typography>
-                    </View>
-                  ))}
-                </View>
               </View>
             ))}
           </View>
-        )
-      })}
+        </Surface>
+      ))}
     </View>
-  ),
+  )
+}
+
+/**
+ * Every outline tone on every elevation plane, with the ring-vs-plane contrast ratio
+ * printed under each pill. Switch the toolbar theme to see the other mode. The neutral
+ * ring reads `hairline-strong`, one step above the shared `hairline-default` (lighter in
+ * dark, darker in light).
+ */
+export const OutlineOnAllElevations: Story = {
+  render: () => <OutlineFrame />,
 }
