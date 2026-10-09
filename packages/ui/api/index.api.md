@@ -3729,6 +3729,9 @@ export function InitiativeCard(input: InitiativeCardProps): react_jsx_runtime.JS
 export interface InitiativeCardProps extends ViewProps {
     // (undocumented)
     className?: string;
+    href?: string;
+    meta?: ReactNode;
+    onPress?: () => void;
     openCount: number;
     rank?: number;
     severityCounts: Record<TaskSeverity, number>;
