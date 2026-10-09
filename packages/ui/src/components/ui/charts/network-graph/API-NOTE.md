@@ -2,7 +2,8 @@
 
 Source: TP-850 Round 0 contract (owner-decided), restated in our own words. TP-850a (TP-1040) shipped
 the model, the layout seam, two layouts and fixtures, all pure `.ts`. TP-850b (TP-1041) added the
-component, its hook, the story and the barrel export.
+component, its hook, the story and the barrel export. TP-851 (TP-1036 to TP-1039) added the force, ego
+and clustered layouts, the plot model for free-form layouts, and their painting.
 
 ## Purpose
 
@@ -35,6 +36,7 @@ no other meaning. Nodes, edges and kinds name no domain concept, so the unit sit
 | `useGraphRoot.ts`                   | The root's role, `aria-activedescendant`, key and focus handlers, and scroll-into-view. |
 | `NetworkGraph.tsx`                  | The exported component: loading, empty, and the legend.                                 |
 | `NetworkGraphCanvas.tsx`            | The scroll container that is the graph's one tab stop, and its layers.                  |
+| `NetworkGraphGroups.tsx`            | The group layer under the edges: a region disc or hop ring per group, with its label.   |
 | `NetworkGraphPlot.tsx`              | The painted `<svg>`: edges, arrowheads, pulses and node marks.                          |
 | `NetworkGraphHitLayer.tsx`          | The second `<svg>`: one named, pressable path per edge.                                 |
 | `NetworkGraphParts.tsx`             | Node press targets, the tooltip anchor, the weight readout and the legend.              |
@@ -129,7 +131,7 @@ The force layout counts each distinct node id once, so a repeated id in raw inpu
 same frame as the positions. `variant: 'region'` is a disc that encloses its members (clustered);
 `variant: 'ring'` is an outline at a hop distance (ego). A radius of 0 is not painted. Each label is
 meant for the members' accessible names and the summary, so hop and membership are never position
-alone; the painting and the wording arrive with TP-851c and TP-851d.
+alone.
 
 ## The ego layout
 
@@ -179,7 +181,7 @@ has no `seed`, because it draws no random number.
 `GraphModel` carries three more fields, read from the layout result: `edgeShape` (`'horizontal'` or
 `'arc'`, default horizontal), `labelMode` (`'all'` or `'declutter'`, default all) and `groups`
 (the layout's `GraphGroupRegion`s, limited to placed nodes, with a non-finite circle set to 0). The
-painting reads them; nothing here paints.
+painting reads them (see _Free-form layouts_ under _The component_); nothing here paints.
 
 **Edge paths.** `edgePath(from, to, shape = 'horizontal', slot = 0)`. `'horizontal'` is the
 `linkHorizontal` path, unchanged byte for byte. `'arc'` is one quadratic curve whose ends stop
@@ -252,9 +254,10 @@ DOM `<svg>`.
 
 There is no error state: the consumer renders the failure in place of the graph.
 
-**Layers.** One `ScrollView` of `width` by `height` holds a painted `<svg aria-hidden>`, a second
-`<svg>` of unpainted hit paths (one per edge), one `Pressable` per node, and the active item's
-readout. The legend sits below the scroll container.
+**Layers.** One `ScrollView` of `width` by `height` holds the group layer (an `<svg aria-hidden>`
+of circles and a hidden label per group, only when the layout returns groups), a painted
+`<svg aria-hidden>`, a second `<svg>` of unpainted hit paths (one per edge), one `Pressable` per
+node, and the active item's readout. The legend sits below the scroll container.
 
 **Paint.** A node is a 12 px disc in its kind's colour (`DATAVIZ_CATEGORICAL_ROLES` in `nodeKinds`
 order, repeating after six; `GraphKind.color` overrides; `text-secondary` when the kind is unset or
@@ -268,6 +271,22 @@ has an `interactive-focus` halo. `isMuted` halves a node's opacity.
 **Active item.** Hover and the keyboard cursor share one active item. Everything but the active
 item, its edges and its neighbours dims to 25%. An active node opens its tooltip; an active edge
 shows its weight. A hover that ends while the graph holds focus leaves the cursor in place.
+
+**Free-form layouts.** When the layout asks for `edgeShape: 'arc'`, every edge is the quadratic
+curve of `edgePath(from, to, 'arc', slot)`: it runs rim to rim, so the arrowhead marker's reference
+point moves to its tip (`arrowRefX`) and the tip sits on the target's rim; parallel edges separate
+by slot, not by the layered layout's 6 px offset, and the weight readout sits at the curve's
+midpoint. When it asks for `labelMode: 'declutter'`, `placeLabels` picks the labels to show on
+every render with the selected node, the active node and its neighbours pinned, and a node whose
+label is left out keeps its `Pressable`, its name and its tooltip, so hover and the keyboard reach
+it unchanged. When it returns `groups`, `NetworkGraphGroups` paints each one with a radius above 0
+under the edges: a `region` is a `surface-elevated` disc with a dashed `hairline-default` outline
+and its label centred in the band above it; a `ring` is the dashed outline alone with its label
+centred just inside its bottom, clear of a node at six o'clock (the ego focus has radius 0 and
+paints nothing). The circles and the labels are hidden from assistive tech, because each node's name and
+the default tooltip state its group or hop (`"<label>, <kind>, <group>, …"`) and the summary counts
+the groups. Which labels show, the link distance, the region look, the ring guides and the arc bow
+are the Gate 2 taste items of the TP-851 contract (T1 to T6).
 
 **Keyboard.** The scroll container is the only tab stop: `role="application"`,
 `aria-roledescription="network graph"`, and `aria-activedescendant` on the active node or edge.

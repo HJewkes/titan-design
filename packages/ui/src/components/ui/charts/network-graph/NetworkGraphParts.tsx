@@ -27,6 +27,8 @@ interface NodeButtonProps {
   name: string | undefined
   isSelected: boolean
   isDimmed: boolean
+  /** The label is left out to avoid overlap; the name and the tooltip still carry it. */
+  isLabelHidden: boolean
   describedBy: string | undefined
   onPress: (item: GraphItemRef) => void
   onHoverIn: (item: GraphItemRef) => void
@@ -35,7 +37,7 @@ interface NodeButtonProps {
 
 /** A node's press target and visible label, over the mark the plot paints. */
 export const NodeButton = memo(function NodeButton(props: NodeButtonProps) {
-  const { node, point, domId, name, isSelected, isDimmed, describedBy } = props
+  const { node, point, domId, name, isSelected, isDimmed, isLabelHidden, describedBy } = props
   const { onPress, onHoverIn, onHoverOut } = props
   const item: GraphItemRef = { type: 'node', id: node.id }
   const webProps = {
@@ -61,25 +63,35 @@ export const NodeButton = memo(function NodeButton(props: NodeButtonProps) {
       testID={`network-graph-node-${node.id}`}
       {...webProps}
     >
-      <Typography
-        variant="caption"
-        color={node.isMuted ? 'secondary' : 'primary'}
-        numberOfLines={1}
-        className="max-w-40"
-      >
-        {truncateLabel(displayLabel(node))}
-      </Typography>
+      {isLabelHidden ? null : (
+        <Typography
+          variant="caption"
+          color={node.isMuted ? 'secondary' : 'primary'}
+          numberOfLines={1}
+          className="max-w-40"
+        >
+          {truncateLabel(displayLabel(node))}
+        </Typography>
+      )}
     </Pressable>
   )
 })
 
-export function DefaultNodeTip({ node, kind }: { node: GraphNode; kind: string | undefined }) {
+export interface DefaultNodeTipProps {
+  node: GraphNode
+  kind: string | undefined
+  /** The node's group, or its hop from an ego focus. */
+  groupLabels?: readonly string[]
+}
+
+export function DefaultNodeTip({ node, kind, groupLabels = [] }: DefaultNodeTipProps) {
+  const detail = [kind, ...groupLabels].filter((part) => part !== undefined).join(', ')
   return (
     <View className="gap-stack-xs">
       <Typography variant="subtitle2">{displayLabel(node)}</Typography>
-      {kind !== undefined && (
+      {detail !== '' && (
         <Typography variant="caption" color="secondary">
-          {kind}
+          {detail}
         </Typography>
       )}
       {node.description !== undefined && (
