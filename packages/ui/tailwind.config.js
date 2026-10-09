@@ -305,7 +305,10 @@ module.exports = {
           hover: 'var(--color-interactive-hover)',
           focus: 'var(--color-interactive-focus)',
           active: 'var(--color-interactive-active)',
-          selected: 'var(--color-interactive-selected)',
+          selected: {
+            DEFAULT: 'var(--color-interactive-selected)',
+            solid: 'var(--color-interactive-selected-solid)',
+          },
           disabled: {
             DEFAULT: 'var(--color-interactive-disabled)',
             text: 'var(--color-interactive-disabled-text)',

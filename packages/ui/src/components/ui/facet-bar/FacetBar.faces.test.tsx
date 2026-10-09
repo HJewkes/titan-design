@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { capturedByNode } from '../../../test/classname-capture'
 import { compositeOver, contrast } from '../../../theme/color-checks'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
+import { greyRamp, primitiveColors } from '../../../theme/tokens/primitives'
 import type { ChipColor } from '../chip'
 import { chipLightContrastExceptions } from '../../../test/chip-contrast'
 import { FacetBar } from './FacetBar'
@@ -36,11 +37,12 @@ describe('FacetBar faces, real Chip', () => {
     }
   })
 
-  it('default colour: selected is the inverse face, unselected reads text-primary', () => {
+  it('default colour: selected is the selected-solid face, unselected reads text-primary', () => {
     renderBar('default')
     expect(chipClasses('Notes')).toEqual(
-      expect.arrayContaining(['bg-text-primary', 'text-text-inverse'])
+      expect.arrayContaining(['bg-interactive-selected-solid', 'text-text-inverse'])
     )
+    expect(chipClasses('Notes')).not.toContain('bg-text-primary')
     expect(chipClasses('Sources')).toContain('text-text-primary')
     expect(chipClasses('Drafts')).toContain('text-text-primary')
   })
@@ -94,6 +96,25 @@ describe('FacetBar face contrast', () => {
       expect(labelOnFill(mode, fill as string, label as string)).toBeGreaterThanOrEqual(4.5)
     }
   )
+})
+
+describe('FacetBar selected default face token', () => {
+  // The owner's pick (console round 7, fb-selected): grey[700] in light, dark keeps grey[50].
+  it.each([
+    ['light', greyRamp[700], primitiveColors.white],
+    ['dark', greyRamp[50], greyRamp[950]],
+  ] as const)('%s: the face is %s under a %s label', (mode, face, label) => {
+    const colors = getSemanticColors(mode)
+    expect(colors['interactive-selected-solid']).toBe(face)
+    expect(colors['text-inverse']).toBe(label)
+  })
+
+  it.each(['dark', 'light'] as const)('%s: the label reads 4.5 or more on the face', (mode) => {
+    const colors = getSemanticColors(mode)
+    expect(
+      contrast(colors['text-inverse'], colors['interactive-selected-solid'])
+    ).toBeGreaterThanOrEqual(4.5)
+  })
 })
 
 describe('FacetBar label contrast', () => {

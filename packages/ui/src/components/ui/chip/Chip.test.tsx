@@ -259,7 +259,7 @@ type Face = { fill: string; label: string }
 const faceOf = (color: ChipColor, isSelected: boolean): Face => {
   if (color === 'default') {
     return isSelected
-      ? { fill: 'text-primary', label: 'text-inverse' }
+      ? { fill: 'interactive-selected-solid', label: 'text-inverse' }
       : { fill: 'hairline-subtle', label: 'text-primary' }
   }
   const root = toneRoots[color]

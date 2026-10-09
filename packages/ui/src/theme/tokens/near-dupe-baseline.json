@@ -1,10 +1,15 @@
 {
   "dark": [
+    "avatar-text | interactive-selected-solid",
     "avatar-text | text-primary",
     "border-input-error | result-degrade",
     "border-input-hover | result-inconclusive",
     "data-2 | result-improve",
     "dataviz-categorical-2 | result-degrade",
+    "interactive-selected-solid | on-control-active",
+    "interactive-selected-solid | on-result-degrade",
+    "interactive-selected-solid | on-result-improve",
+    "interactive-selected-solid | on-result-inconclusive",
     "on-control-active | text-primary",
     "on-result-degrade | text-primary",
     "on-result-improve | text-primary",

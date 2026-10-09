@@ -318,6 +318,7 @@
     --color-interactive-focus: rgba(255, 255, 255, 0.12);
     --color-interactive-active: rgba(255, 255, 255, 0.16);
     --color-interactive-selected: rgba(255, 255, 255, 0.08);
+    --color-interactive-selected-solid: #F9F6F3;
     --color-interactive-disabled: rgba(255, 255, 255, 0.12);
     --color-interactive-disabled-text: rgba(255, 255, 255, 0.26);
 
@@ -564,6 +565,7 @@
     --color-interactive-focus: rgba(55, 65, 81, 0.12);
     --color-interactive-active: rgba(55, 65, 81, 0.16);
     --color-interactive-selected: rgba(55, 65, 81, 0.08);
+    --color-interactive-selected-solid: #5A5958;
     --color-interactive-disabled: rgba(55, 65, 81, 0.12);
     --color-interactive-disabled-text: rgba(55, 65, 81, 0.26);
 

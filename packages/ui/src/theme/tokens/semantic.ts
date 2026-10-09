@@ -289,6 +289,7 @@ export const semanticColorsLight = {
   'interactive-focus': 'rgba(55, 65, 81, 0.12)',
   'interactive-active': 'rgba(55, 65, 81, 0.16)',
   'interactive-selected': 'rgba(55, 65, 81, 0.08)',
+  'interactive-selected-solid': greyRamp[700], // selected neutral toggle face; white label 6.98 (console round 7, fb-selected)
   'interactive-disabled': 'rgba(55, 65, 81, 0.12)',
   'interactive-disabled-text': 'rgba(55, 65, 81, 0.26)',
 
@@ -600,6 +601,7 @@ export const semanticColorsDark = {
   'interactive-focus': 'rgba(255, 255, 255, 0.12)',
   'interactive-active': 'rgba(255, 255, 255, 0.16)',
   'interactive-selected': 'rgba(255, 255, 255, 0.08)',
+  'interactive-selected-solid': greyRamp[50], // selected neutral toggle face; the text-primary value it had
   'interactive-disabled': 'rgba(255, 255, 255, 0.12)',
   'interactive-disabled-text': 'rgba(255, 255, 255, 0.26)',
 
