@@ -1,4 +1,4 @@
-import { primitiveRamps as ramp } from '../../theme/tokens/primitives'
+import { greyRamp, primitiveColors, primitiveRamps as ramp } from '../../theme/tokens/primitives'
 import { getSemanticColors, type ThemeMode } from '../../theme/tokens/semantic'
 
 /**
@@ -125,7 +125,17 @@ export function setColors(set: CategoricalSet): string[] {
   return CATEGORICAL_HUES.map((hue, slot) => ramp[hue][set.steps[slot]])
 }
 
+// The light planes the TD-756 round was judged on, before TD-789 re-stepped the light ramp.
+const LIGHT_PLANES_AS_JUDGED: Record<string, string> = {
+  'background-base': greyRamp[100],
+  'surface-elevated': greyRamp[50],
+  'surface-base': primitiveColors.white,
+  'surface-raised': greyRamp[100],
+  'surface-overlay': primitiveColors.white,
+}
+
 export function planeColors(mode: ThemeMode): string[] {
-  const colors = getSemanticColors(mode)
+  const colors: Record<string, string> =
+    mode === 'light' ? LIGHT_PLANES_AS_JUDGED : getSemanticColors(mode)
   return CATEGORICAL_PLANES.map((plane) => colors[plane.token])
 }

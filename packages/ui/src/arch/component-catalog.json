@@ -5299,7 +5299,7 @@
           "description": "",
           "name": "palette",
           "required": true,
-          "type": "{ status: \"#E05254\" | \"#D14343\" | \"#F9B415\" | \"#C27400\" | \"#2ED573\" | \"#298732\" | \"#2196F3\" | \"#1072CB\" | \"#A29F9D\" | \"#72716F\" | \"#9E9A97\"; band: string; bandHue: \"#2697B7\" | \"#307B9B\"; ... 11 more ...; shadeScale: number; }"
+          "type": "{ status: \"#E05254\" | \"#D14343\" | \"#F9B415\" | \"#A45E00\" | \"#2ED573\" | \"#2B6B25\" | \"#2196F3\" | \"#135AA8\" | \"#A29F9D\" | \"#72716F\" | \"#9E9A97\"; band: string; bandHue: \"#2697B7\" | \"#307B9B\"; ... 11 more ...; shadeScale: number; }"
         },
         {
           "default": null,

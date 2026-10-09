@@ -375,7 +375,7 @@ describe('BarList', () => {
       }
     )
 
-    // The light near red (red[500], the owner's console round 6 pick) is the one fill under 3:1
+    // The light near red (red[600], TD-789 3b) is the one fill under 3:1
     // against the track; it still clears 3:1 against the plane. Removing it from this list fails
     // the suite until the measurement actually passes.
     const trackFloorExceptions: Record<'dark' | 'light', readonly (keyof SilverRedScheme)[]> = {

@@ -25,7 +25,10 @@ export interface BrandPreset {
 // CVD-checked hues with no semantic load and a value per mode, which is what a
 // per-app identity accent needs. They paint only non-text marks (the glyph and
 // the nav bar), so they answer to 3:1, not 4.5; labels stay on `text-primary`.
-// Voltras keeps the real brand token.
+// Voltras keeps the real brand token. Active Work and Agents take the status token
+// one light step past their categorical hue (TD-789 3b): the categorical step
+// misses 3:1 on the grey 200 rail, and charts keep the categorical palette.
+// Each matches its categorical hue in dark.
 export const brandPresets: Record<BrandKey, BrandPreset> = {
   voltras: {
     mark: <VoltrasMark size={14} color="currentColor" />,
@@ -44,15 +47,15 @@ export const brandPresets: Record<BrandKey, BrandPreset> = {
   'active-work': {
     mark: <KanbanIcon size={14} color="currentColor" />,
     wordmark: 'ACTIVE WORK',
-    accentClassName: 'text-dataviz-categorical-0',
-    accentBarClassName: 'bg-dataviz-categorical-0',
+    accentClassName: 'text-status-info',
+    accentBarClassName: 'bg-status-info',
     subtitle: 'initiatives',
   },
   agents: {
     mark: <BotIcon size={14} color="currentColor" />,
     wordmark: 'AGENTS',
-    accentClassName: 'text-dataviz-categorical-4',
-    accentBarClassName: 'bg-dataviz-categorical-4',
+    accentClassName: 'text-status-success',
+    accentBarClassName: 'bg-status-success',
     subtitle: 'fleet',
   },
   brain: {

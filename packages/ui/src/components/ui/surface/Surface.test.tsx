@@ -24,7 +24,7 @@ const BASE = greyRamp[925]
 const ELEVATED = greyRamp[900]
 const RAISED = greyRamp[875]
 const OVERLAY = greyRamp[850]
-const LIGHT_BASE = greyRamp[200]
+const LIGHT_BASE = greyRamp[100]
 const LIGHT_TEXT_PRIMARY = getSemanticColors('light')['text-primary']
 
 // A descendant probe that renders the on-surface colour + mode it resolves from

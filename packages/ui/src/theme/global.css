@@ -422,7 +422,7 @@
     --color-on-brand-primary-subtle: #983804;
     --color-on-brand-secondary-subtle: #2A617F;
 
-    --color-status-success: #298732;
+    --color-status-success: #2B6B25;
     --color-status-success-light: #58F69E;
     --color-status-success-dark: #298732;
     --color-status-success-subtle: #B5FFD2;
@@ -437,7 +437,7 @@
     --color-status-error-subtle: #FFE3E5;
     --color-status-error-muted: rgba(209, 67, 67, 0.30);
     --color-status-error-strong: rgba(209, 67, 67, 0.50);
-    --color-status-error-vivid: #FF4757;
+    --color-status-error-vivid: #A4221C;
     --color-status-error-vivid-light: #E05254;
     --color-status-error-vivid-dark: #A4221C;
     --color-status-error-vivid-subtle: rgba(255, 71, 87, 0.12);
@@ -445,13 +445,13 @@
     --color-status-error-vivid-strong: rgba(255, 71, 87, 0.50);
     --color-status-error-vivid-rgb: 255, 71, 87;
     --color-border-prominent: #A29F9D;
-    --color-status-warning: #C27400;
+    --color-status-warning: #A45E00;
     --color-status-warning-light: #FFD352;
     --color-status-warning-dark: #C27400;
     --color-status-warning-subtle: #FFEAA9;
     --color-status-warning-muted: rgba(249, 180, 21, 0.30);
     --color-status-warning-strong: rgba(249, 180, 21, 0.50);
-    --color-status-info: #1072CB;
+    --color-status-info: #135AA8;
     --color-status-info-light: #78C2FF;
     --color-status-info-dark: #1072CB;
     --color-status-info-subtle: #D9EFFF;
@@ -523,42 +523,42 @@
     --color-dataviz-categorical-6: #A45E00;
 
     --color-text-primary: #121828;
-    --color-text-secondary: #5A5958;
-    --color-text-tertiary: #72716F;
+    --color-text-secondary: #424140;
+    --color-text-tertiary: #5A5958;
     --color-text-disabled: rgba(55, 65, 81, 0.48);
     --color-text-inverse: #FFFFFF;
     --color-text-error: #A4221C;
     --color-text-brand: #983804;
-    --color-text-brand-secondary: #2A617F;
-    --color-text-success: #2B6B25;
+    --color-text-brand-secondary: #22465F;
+    --color-text-success: #264D1C;
     --color-text-warning: #814D14;
     --color-text-info: #135AA8;
     --color-text-link: #135AA8;
     --color-text-link-hover: #135AA8;
 
-    /* Monotonic like dark (TD-789 option 3): every plane up is one grey step lighter. */
-    --color-surface-base: #D4D1CE;
-    --color-surface-elevated: #EDEAE7;
-    --color-surface-raised: #F9F6F3;
+    /* TD-789 3b: page grey 100 up to elevated grey 50; raised and overlay share white. */
+    --color-surface-base: #EDEAE7;
+    --color-surface-elevated: #F9F6F3;
+    --color-surface-raised: #FFFFFF;
     --color-surface-overlay: #FFFFFF;
     --color-surface-input: #F9F6F3;
 
-    --color-background-base: #BDBAB7;
-    --color-background-default: #D4D1CE;
-    --color-background-subtle: #EDEAE7;
-    --color-background-frame: #A29F9D;
+    --color-background-base: #D4D1CE;
+    --color-background-default: #EDEAE7;
+    --color-background-subtle: #F9F6F3;
+    --color-background-frame: #BDBAB7;
 
     --color-border-focus: #1072CB;
-    --color-border-input: #888684;
-    --color-border-input-hover: #72716F;
+    --color-border-input: #72716F;
+    --color-border-input-hover: #5A5958;
     --color-border-input-focus: #1072CB;
     --color-border-input-error: #D14343;
 
     /* Alpha hairline separators — mirrors the dark-mode white-alpha family,
        composited toward black on light surfaces (§4/S-2). */
     --color-hairline-subtle: rgba(0, 0, 0, 0.10);
-    --color-hairline-default: rgba(0, 0, 0, 0.15);
-    --color-hairline-strong: rgba(0, 0, 0, 0.22);
+    --color-hairline-default: rgba(0, 0, 0, 0.16);
+    --color-hairline-strong: rgba(0, 0, 0, 0.24);
 
     /* Scrims and control/data labels (VW-82) — identical to the dark block on
        purpose; see tokens/semantic.ts. */
@@ -577,7 +577,7 @@
     --color-interactive-disabled: rgba(55, 65, 81, 0.12);
     --color-interactive-disabled-text: rgba(55, 65, 81, 0.26);
 
-    --color-divider: rgba(0, 0, 0, 0.15);
+    --color-divider: rgba(0, 0, 0, 0.16);
 
     --color-avatar-background: #72716F;
     --color-avatar-text: #FFFFFF;

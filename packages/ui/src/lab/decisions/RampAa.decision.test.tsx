@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
 import { axe, toHaveNoViolations } from 'jest-axe'
 import { contrast } from '../../theme/color-checks'
+import { greyRamp, primitiveRamps } from '../../theme/tokens/primitives'
 import { getSemanticColors } from '../../theme/tokens/semantic'
+import { silverRed } from '../../components/ui/charts/kit/silverRed'
 import {
   MONOTONIC,
   OPTIONS,
@@ -30,11 +32,48 @@ const misses = (key: OptionKey) => {
 }
 
 describe('Elevation ramp AA decision', () => {
-  it('measures option 1 on the planes #800 ships', () => {
+  it('ships option 3 (3b) planes, the owner pick in item 149', () => {
     const light = getSemanticColors('light')
-    expect(MONOTONIC.base).toBe(light['surface-base'])
-    expect(MONOTONIC.background).toBe(light['background-base'])
-    expect(MONOTONIC.elevated).toBe(light['surface-elevated'])
+    const { planes } = option('q5cInsets')
+    expect(planes.frame).toBe(light['background-frame'])
+    expect(planes.background).toBe(light['background-base'])
+    expect(planes.base).toBe(light['surface-base'])
+    expect(planes.elevated).toBe(light['surface-elevated'])
+    expect(planes.raised).toBe(light['surface-raised'])
+    expect(planes.overlay).toBe(light['surface-overlay'])
+  })
+
+  it('ships 3b re-colours on the tokens, bar the recorded departures', () => {
+    const light = getSemanticColors('light') as Record<string, string>
+    const bars = silverRed('light')
+    const shipped: Record<string, string> = {
+      ...light,
+      'bar neutral': bars.neutral,
+      'bar near': bars.near,
+      'active-work: dataviz-categorical-0': light['status-info'],
+      'agents: dataviz-categorical-4': light['status-success'],
+    }
+    // Departures: vivid red 600 would equal status-error (status-distinctness.test.ts),
+    // and active-work's accent follows status-info, which moved to blue 700 for Progress.
+    const DEPARTURES: Record<string, string> = {
+      'status-error-vivid': primitiveRamps.red[700],
+      'active-work: dataviz-categorical-0': primitiveRamps.blue[700],
+    }
+    const solved = solveRecolours(option('q5cInsets').planes)
+    expect(Object.keys(solved)).toHaveLength(16)
+    for (const [id, colour] of Object.entries(solved)) {
+      if (id === 'status-error as text') continue
+      const at = id in shipped ? shipped[id] : light[id.replace(/^[\w-]+: /, '')]
+      expect(at, id).toBe(DEPARTURES[id] ?? colour)
+    }
+  })
+
+  it('still measures option 1 on the planes it was judged on', () => {
+    expect([MONOTONIC.background, MONOTONIC.base, MONOTONIC.elevated].map(stepName)).toEqual([
+      'grey 300',
+      'grey 200',
+      'grey 100',
+    ])
   })
 
   it('reports the regressions #800 lists for option 1', () => {
@@ -95,7 +134,7 @@ describe('Elevation ramp AA decision', () => {
 
   it('draws a failing text role as a swatch, never as live text in that colour', () => {
     render(<OptionUnit option={option('asPicked')} />)
-    const tertiary = getSemanticColors('light')['text-tertiary']
+    const tertiary = greyRamp[600]
     const page = screen.getByTestId('plane-base')
     const row = within(page).getByText(/^text-tertiary · grey 600/).parentElement!
     expect(row).toHaveAttribute('data-testid', 'aa-miss')
