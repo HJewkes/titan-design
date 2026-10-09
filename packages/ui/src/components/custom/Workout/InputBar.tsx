@@ -18,7 +18,7 @@ export interface InputBarProps {
   visible: boolean
 }
 
-const FIELD_CLASSNAME = 'text-center font-sans font-semibold px-0.5'
+const FIELD_CLASSNAME = 'min-w-0 text-center font-sans font-semibold px-0.5'
 
 function InputBarLabel({ exerciseName, setLabel }: { exerciseName: string; setLabel: string }) {
   return (
@@ -33,7 +33,7 @@ function InputBarLabel({ exerciseName, setLabel }: { exerciseName: string; setLa
       </Typography>
       <Typography
         variant="microLabel"
-        color="tertiary"
+        color="secondary"
         className="normal-case tracking-normal font-normal"
         testID="input-bar-set-info"
       >
