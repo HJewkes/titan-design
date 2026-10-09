@@ -166,12 +166,13 @@ export function KnowledgeList(props: KnowledgeListProps) {
   return (
     <View className={cn('gap-3', className)}>
       <View accessibilityLiveRegion="polite">
-        <Eyebrow>{countLabel(rows.length, unique.length, undated)}</Eyebrow>
+        <Eyebrow className="text-text-secondary">
+          {countLabel(rows.length, unique.length, undated)}
+        </Eyebrow>
       </View>
       {problems.length > 0 ? <ProblemsAlert problems={problems} /> : null}
       {slots.filterBar ?? (
         <KnowledgeFilterBar
-          items={unique}
           filters={state.filters}
           onFiltersChange={state.setFilters}
           isDisabled={isLoading}

@@ -61,7 +61,7 @@ export function KnowledgeRow({ row, isSelected, onSelect, hideColumns }: Knowled
     >
       {show('initiative') ? (
         <TableCell width={KNOWLEDGE_COLUMN_WIDTHS.initiative}>
-          <Typography variant="mono" className="text-xs text-text-tertiary web:break-words">
+          <Typography variant="mono" className="text-xs text-text-secondary web:break-words">
             {row.initiative}
           </Typography>
         </TableCell>
@@ -92,7 +92,7 @@ export function KnowledgeRow({ row, isSelected, onSelect, hideColumns }: Knowled
               {kind}
             </Pill>
           ) : (
-            <Typography variant="caption" className="text-text-tertiary">
+            <Typography variant="caption" className="text-text-secondary">
               —
             </Typography>
           )}
@@ -107,7 +107,7 @@ export function KnowledgeRow({ row, isSelected, onSelect, hideColumns }: Knowled
             isUTC
             fallback="—"
             variant="caption"
-            color="tertiary"
+            color="secondary"
           />
         </TableCell>
       ) : null}
