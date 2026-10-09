@@ -27,18 +27,14 @@
     "#e05254|#252321": 1
   },
   "components-atoms-badge--all-colors light": {
-    "#c27400|#ffffff": 1,
-    "#ff7900|#ffffff": 1,
     "#ffffff|#2196f3": 1,
     "#ffffff|#c27400": 1,
     "#ffffff|#ff7900": 1
   },
   "components-atoms-badge--all-variants light": {
-    "#ff7900|#ffffff": 1,
     "#ffffff|#ff7900": 1
   },
   "components-atoms-chip--all-variants light": {
-    "#ff7900|#ffffff": 1,
     "#ffffff|#ff7900": 1
   },
   "components-atoms-chip--disabled dark": {
@@ -60,7 +56,6 @@
     "#ff7900|#ffffff": 1
   },
   "components-atoms-pill--all-variants light": {
-    "#ff7900|#ffffff": 1,
     "#ffffff|#ff7900": 1
   },
   "components-atoms-pill--on-both-planes dark": {

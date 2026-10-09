@@ -241,4 +241,20 @@ describe('Pill neutral faces', () => {
     )
     expect(classesOf('pill')).toEqual(expect.arrayContaining([...expected]))
   })
+
+  it.each([
+    ['brand', 'text-text-brand'],
+    ['brand-secondary', 'text-text-brand-secondary'],
+    ['success', 'text-text-success'],
+    ['warning', 'text-text-warning'],
+    ['error', 'text-text-error'],
+    ['info', 'text-text-info'],
+  ] as const)('the %s outline label reads from the text token', (tone, label) => {
+    render(
+      <Pill testID="pill" variant="outline" tone={tone}>
+        Active
+      </Pill>
+    )
+    expect(classesOf('pill')).toContain(label)
+  })
 })
