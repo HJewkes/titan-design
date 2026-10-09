@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedClassNames } from '../../../test/classname-capture'
 import { AgentStateLabel } from './AgentStateLabel'
 import { AGENT_STATE_ORDER, AGENT_STATE_META } from './agent-state'
 
@@ -24,6 +25,13 @@ describe('AgentStateLabel', () => {
     expect(screen.queryByText('DND')).not.toBeInTheDocument()
     rerender(<AgentStateLabel state="blocked" isDnd />)
     expect(screen.getByText('DND')).toBeInTheDocument()
+  })
+
+  it('centres the do-not-disturb pill on the state word, not the top of the row', () => {
+    render(<AgentStateLabel state="available" isDnd size="md" />)
+    const classes = (capturedClassNames.get('agent-state-dnd') ?? '').split(/\s+/)
+    expect(classes).toContain('self-center')
+    expect(classes).not.toContain('self-start')
   })
 
   it('has no accessibility violations', async () => {

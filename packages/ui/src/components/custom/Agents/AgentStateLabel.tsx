@@ -10,7 +10,10 @@ import type { AgentSummaryState } from './agent-types'
 export interface AgentStateLabelProps {
   /** The state to show. */
   state: AgentSummaryState
-  /** The session holds pushes; adds a neutral pill. */
+  /**
+   * The session holds pushes: a message sent to it queues in its inbox instead of interrupting.
+   * Independent of `state` (an available agent can hold pushes), so it gets its own neutral pill.
+   */
   isDnd?: boolean
   /** `sm` (caption) for cards and rows, `md` (body) for headers. */
   size?: 'sm' | 'md'
@@ -44,7 +47,7 @@ export function AgentStateLabel({
         {label}
       </Typography>
       {isDnd ? (
-        <Pill tone="neutral" size="xs">
+        <Pill tone="neutral" size="xs" className="self-center" testID="agent-state-dnd">
           DND
         </Pill>
       ) : null}
