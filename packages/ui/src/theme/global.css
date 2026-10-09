@@ -536,16 +536,16 @@
     --color-text-link: #135AA8;
     --color-text-link-hover: #135AA8;
 
-    --color-surface-base: #FFFFFF;
-    --color-surface-elevated: #F9F6F3;
-    --color-surface-raised: #EDEAE7;
+    /* Monotonic like dark (TD-789 option 3): every plane up is one grey step lighter. */
+    --color-surface-base: #D4D1CE;
+    --color-surface-elevated: #EDEAE7;
+    --color-surface-raised: #F9F6F3;
     --color-surface-overlay: #FFFFFF;
     --color-surface-input: #F9F6F3;
 
-    --color-background-base: #EDEAE7;
-    --color-background-default: #FFFFFF;
-    --color-background-subtle: #F9F6F3;
-    /* Placeholder pairing — light mode is deferred. */
+    --color-background-base: #BDBAB7;
+    --color-background-default: #D4D1CE;
+    --color-background-subtle: #EDEAE7;
     --color-background-frame: #A29F9D;
 
     --color-border-focus: #1072CB;

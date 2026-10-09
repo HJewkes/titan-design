@@ -12,7 +12,7 @@ import {
   useSurfaceMode,
 } from './SurfaceContext'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { greyRamp, primitiveColors } from '../../../theme/tokens/primitives'
+import { greyRamp } from '../../../theme/tokens/primitives'
 import { getPressedRecessShadow } from '../../../theme/elevation'
 
 // Planes by RAMP STEP, never by literal bytes: a re-space of the grey ramp
@@ -24,7 +24,7 @@ const BASE = greyRamp[925]
 const ELEVATED = greyRamp[900]
 const RAISED = greyRamp[875]
 const OVERLAY = greyRamp[850]
-const LIGHT_BASE = primitiveColors.white
+const LIGHT_BASE = greyRamp[200]
 const LIGHT_TEXT_PRIMARY = getSemanticColors('light')['text-primary']
 
 // A descendant probe that renders the on-surface colour + mode it resolves from

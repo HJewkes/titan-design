@@ -245,18 +245,18 @@ export const semanticColorsLight = {
   'text-link-hover': ramp.blue[700],
 
   // Surface colors (surface-*) - for elevated containers
-  'surface-base': p.white,
-  'surface-elevated': greyRamp[50], // slightly off-white for elevated cards
-  'surface-raised': greyRamp[100], // light gray for raised cards
+  // Monotonic like dark (TD-789 option 3): every plane up is one grey step lighter.
+  'surface-base': greyRamp[200], // the page
+  'surface-elevated': greyRamp[100],
+  'surface-raised': greyRamp[50], // Card default
   'surface-overlay': p.white,
   'surface-input': greyRamp[50], // Input field background (filled variant)
 
   // Background colors (background-*)
-  'background-base': greyRamp[100],
-  'background-default': p.white,
-  'background-subtle': greyRamp[50],
-  // Frame/bezel chrome — top bar + side nav shell, one step below
-  // `background-base`. Placeholder pairing for light mode, which is deferred.
+  'background-base': greyRamp[300], // one step below surface-base
+  'background-default': greyRamp[200], // matches surface-base
+  'background-subtle': greyRamp[100], // matches surface-elevated
+  // Frame/bezel chrome — top bar + side nav shell, one step below `background-base`.
   'background-frame': greyRamp[400],
 
   // Border colors (border-*)
