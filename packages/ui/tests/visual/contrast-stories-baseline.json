@@ -1141,18 +1141,6 @@
     "#72716f|#100d0a": 7,
     "#d14343|#100d0a": 2
   },
-  "custom-prose-markdownprose--default dark": {
-    "#888684|#252321": 1
-  },
-  "custom-prose-markdownprose--default light": {
-    "#ff7900|#ffffff": 3
-  },
-  "custom-prose-markdownprose--pressable dark": {
-    "#888684|#252321": 1
-  },
-  "custom-prose-markdownprose--pressable light": {
-    "#ff7900|#ffffff": 3
-  },
   "custom-workout-basebadge--all-variants light": {
     "#a29f9d|#edeae7": 4,
     "#ff7900|#ffefe0": 3
