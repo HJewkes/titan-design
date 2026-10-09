@@ -64,7 +64,7 @@ export interface KnowledgeFilterBarProps {
  * then one multi-select per facet with its counts, then a date range.
  *
  * Composes {@link Input} and {@link Select}. A stand-in until `ui/facet-bar`
- * ships toggle chips with a pressed state; the list's `filterBar` slot replaces it.
+ * ships toggle chips with a pressed state; the list's `slots.filterBar` replaces it.
  */
 export function KnowledgeFilterBar({
   items,

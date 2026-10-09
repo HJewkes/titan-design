@@ -461,6 +461,172 @@
     },
     {
       "composes": [
+        "Indicator",
+        "Typography"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/KnowledgeClassLabel.tsx",
+      "name": "KnowledgeClassLabel",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "false",
+          "description": "Hides the text, leaving only the dot.",
+          "name": "dotOnly",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "false",
+          "description": "Reads `Notes` rather than `Note`, for a legend or a count.",
+          "name": "isPlural",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "A {@link KnowledgeClass} or any wire name for one (`notes`, `nested_sources`).",
+          "name": "knowledgeClass",
+          "required": true,
+          "type": "KnowledgeClass | (string & {})"
+        }
+      ],
+      "purpose": "KnowledgeClassLabel — a record class as a categorical dot plus its name.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/ActiveWork/KnowledgeClassLabel.tsx",
+        "status": "packages/ui/src/components/custom/ActiveWork/KnowledgeClassLabel.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-knowledgeclasslabel--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Alert",
+        "Button",
+        "EmptyState",
+        "Eyebrow",
+        "KnowledgeFilterBar",
+        "KnowledgeRow",
+        "KnowledgeTable"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/KnowledgeList.tsx",
+      "name": "KnowledgeList",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "defaultFilters",
+          "required": false,
+          "type": "KnowledgeFilters"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "defaultSelectedId",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "filters",
+          "required": false,
+          "type": "KnowledgeFilters"
+        },
+        {
+          "default": null,
+          "description": "Fills the rows with skeleton cells; the header and the filter row stay, inert.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "items",
+          "required": true,
+          "type": "KnowledgeItem[]"
+        },
+        {
+          "default": null,
+          "description": "Reference time for the date range.",
+          "name": "now",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "onFiltersChange",
+          "required": false,
+          "type": "((filters: KnowledgeFilters) => void)"
+        },
+        {
+          "default": null,
+          "description": "Called when a title is pressed.",
+          "name": "onSelectedIdChange",
+          "required": false,
+          "type": "((id: string | undefined) => void)"
+        },
+        {
+          "default": null,
+          "description": "Files the source could not read.",
+          "name": "problems",
+          "required": false,
+          "type": "KnowledgeProblem[]"
+        },
+        {
+          "default": null,
+          "description": "The open item, marked `aria-current`.",
+          "name": "selectedId",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "slots",
+          "required": false,
+          "type": "KnowledgeListSlots"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "table",
+          "required": false,
+          "type": "KnowledgeListTable"
+        }
+      ],
+      "purpose": "KnowledgeList — every note and source across initiatives in one filterable, sortable, paged table.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/ActiveWork/KnowledgeList.tsx",
+        "status": "packages/ui/src/components/custom/ActiveWork/KnowledgeList.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-knowledgelist--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
         "Divider",
         "Eyebrow",
         "MarkdownProse",

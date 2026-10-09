@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
 import { Surface } from '../../ui/surface'
-import { KnowledgeList, type KnowledgeListProps } from './KnowledgeList'
+import { KnowledgeList, type KnowledgeListProps, type KnowledgeListTable } from './KnowledgeList'
 import type { KnowledgeItem, KnowledgeProblem } from './knowledge-filters'
 import {
   KNOWLEDGE_EMPTY,
@@ -30,10 +30,11 @@ const PROBLEM_SETS: Record<string, KnowledgeProblem[]> = {
   three: KNOWLEDGE_PROBLEMS,
 }
 
-type StoryArgs = Omit<KnowledgeListProps, 'items' | 'problems'> & {
-  itemSet: string
-  problemSet: string
-}
+type StoryArgs = Omit<KnowledgeListProps, 'items' | 'problems' | 'table'> &
+  Pick<KnowledgeListTable, 'pageSize' | 'hideColumns' | 'fitWidth'> & {
+    itemSet: string
+    problemSet: string
+  }
 
 // Storybook maps a key to its fixture; composeStories (the smoke test) passes the key through.
 const pick = <T,>(sets: Record<string, T>, value: string | T): T =>
@@ -67,7 +68,6 @@ const meta: Meta<StoryArgs> = {
     isLoading: { control: 'boolean' },
     pageSize: { control: { type: 'number', min: 5, step: 5 } },
     fitWidth: { control: { type: 'number', min: 200, step: 20 } },
-    label: { control: 'text' },
     now: { table: { disable: true } },
     filters: { control: false },
     defaultFilters: { control: false },
@@ -75,12 +75,7 @@ const meta: Meta<StoryArgs> = {
     selectedId: { control: false },
     defaultSelectedId: { control: false },
     onSelectedIdChange: { control: false },
-    page: { control: false },
-    defaultPage: { control: false },
-    onPageChange: { control: false },
-    filterBar: { control: false },
-    emptyState: { control: false },
-    noMatchState: { control: false },
+    slots: { control: false },
   },
   decorators: [
     (Story) => (
@@ -103,7 +98,7 @@ const meta: Meta<StoryArgs> = {
           '[Alert](?path=/docs/components-molecules-alert--docs) (unreadable files), ' +
           '[Input](?path=/docs/components-atoms-input--docs) and ' +
           '[Select](?path=/docs/components-molecules-select--docs) (the built-in filter row, replaced by the ' +
-          '`filterBar` slot), [Pill](?path=/docs/components-atoms-pill--docs), ' +
+          '`slots.filterBar`), [Pill](?path=/docs/components-atoms-pill--docs), ' +
           '[DateTime](?path=/docs/components-atoms-datetime--docs) and ' +
           '[EmptyState](?path=/docs/components-molecules-emptystate--docs). ' +
           'Loading: `isLoading` keeps the header and filter row, fills the body with skeleton cells and ' +
@@ -113,12 +108,13 @@ const meta: Meta<StoryArgs> = {
       },
     },
   },
-  render: function Render({ itemSet, problemSet, ...args }) {
+  render: function Render({ itemSet, problemSet, pageSize, hideColumns, fitWidth, ...args }) {
     return (
       <KnowledgeList
         {...args}
         items={pick(ITEM_SETS, itemSet)}
         problems={pick(PROBLEM_SETS, problemSet)}
+        table={{ pageSize, hideColumns, fitWidth }}
       />
     )
   },

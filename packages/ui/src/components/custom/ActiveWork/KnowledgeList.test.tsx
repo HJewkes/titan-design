@@ -35,7 +35,7 @@ describe('KnowledgeList', () => {
   it('an invalid date sorts last in both directions', () => {
     renderList({ items: KNOWLEDGE_HOSTILE })
     const impossible = 'Written on a day that does not exist'
-    expect(rowTitles().at(-1)).toBe(impossible)
+    expect(rowTitles().slice(-1)).toEqual([impossible])
     const header = screen.getByRole('button', { name: 'Sort by Date' })
     // desc, then unsorted, then asc.
     fireEvent.click(header)
@@ -44,7 +44,7 @@ describe('KnowledgeList', () => {
       'aria-sort',
       'ascending'
     )
-    expect(rowTitles().at(-1)).toBe(impossible)
+    expect(rowTitles().slice(-1)).toEqual([impossible])
   })
 
   it('same filename in two initiatives renders two rows with unique keys', () => {
@@ -86,12 +86,12 @@ describe('KnowledgeList', () => {
   })
 
   it('takes custom empty and no-match states', () => {
-    const { unmount } = renderList({ items: [], emptyState: <>Nothing written yet</> })
+    const { unmount } = renderList({ items: [], slots: { emptyState: <>Nothing written yet</> } })
     expect(screen.getByText('Nothing written yet')).toBeInTheDocument()
     unmount()
     renderList({
       filters: { ...EMPTY_KNOWLEDGE_FILTERS, query: 'zzz' },
-      noMatchState: <>Try another word</>,
+      slots: { noMatchState: <>Try another word</> },
     })
     expect(screen.getByText('Try another word')).toBeInTheDocument()
   })
@@ -106,7 +106,7 @@ describe('KnowledgeList', () => {
 
   it('changing a filter asks for page 1 when controlled', () => {
     const onPageChange = vi.fn()
-    renderList({ items: KNOWLEDGE_LARGE, page: 3, onPageChange })
+    renderList({ items: KNOWLEDGE_LARGE, table: { page: 3, onPageChange } })
     expect(pageReadout()).toBe('101-150 of 5000')
     search('note')
     expect(onPageChange).toHaveBeenCalledWith(1)
@@ -190,13 +190,13 @@ describe('KnowledgeList', () => {
   })
 
   it('replaces the built-in filter row with the filterBar slot', () => {
-    renderList({ filterBar: <>Host filters</> })
+    renderList({ slots: { filterBar: <>Host filters</> } })
     expect(screen.getByText('Host filters')).toBeInTheDocument()
     expect(screen.queryByLabelText('Search notes and sources')).not.toBeInTheDocument()
   })
 
   it('drops metadata columns before the title as it narrows', () => {
-    renderList({ fitWidth: 520 })
+    renderList({ table: { fitWidth: 520 } })
     const headers = screen.getAllByRole('columnheader').map((h) => h.textContent)
     expect(headers.some((h) => h?.startsWith('Title'))).toBe(true)
     expect(headers.some((h) => h?.startsWith('Tags'))).toBe(false)
@@ -205,7 +205,7 @@ describe('KnowledgeList', () => {
   })
 
   it('leaves out hidden columns in the header and the rows', () => {
-    renderList({ hideColumns: ['initiative', 'tags'] })
+    renderList({ table: { hideColumns: ['initiative', 'tags'] } })
     const headers = screen.getAllByRole('columnheader').map((h) => h.textContent)
     expect(headers.some((h) => h?.startsWith('Initiative'))).toBe(false)
     const firstRow = screen.getAllByTestId('knowledge-row')[0]!
@@ -220,7 +220,11 @@ describe('KnowledgeList', () => {
     ['problems', { problems: KNOWLEDGE_PROBLEMS }],
     ['hostile', { items: KNOWLEDGE_HOSTILE }],
   ] as const)('has no a11y violations: %s', async (_, props) => {
-    const { container } = renderList(props as Partial<KnowledgeListProps>)
+    // A 10-row page has every row shape; axe over all 40 rows outran the 5 s timeout in the full suite.
+    const { container } = renderList({
+      table: { pageSize: 10 },
+      ...props,
+    } as Partial<KnowledgeListProps>)
     expect(await axe(container)).toHaveNoViolations()
   })
 })
