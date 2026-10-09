@@ -159,7 +159,7 @@ export function agentAccessibleSummary(agent: AgentSummary, now: number): string
 export function AgentCard(input: AgentCardProps): react_jsx_runtime.JSX.Element;
 
 // @public
-export interface AgentCardProps extends Omit<CardProps, 'children' | 'onPress' | 'variant'> {
+export interface AgentCardProps {
     agent: AgentSummary;
     className?: string;
     footer?: ReactNode;
@@ -169,6 +169,7 @@ export interface AgentCardProps extends Omit<CardProps, 'children' | 'onPress' |
     now: number;
     onPress?: () => void;
     onPressTask?: (taskId: string) => void;
+    testID?: string;
 }
 
 // @public
