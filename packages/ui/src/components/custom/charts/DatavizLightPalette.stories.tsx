@@ -47,7 +47,7 @@ const CURRENT_COLUMNS: Column[] = [
   },
   {
     id: 'light-current',
-    title: 'LIGHT · current (landed 2026-09-17)',
+    title: 'LIGHT · current',
     note: 'what ships today on light, read from the tokens; equals the CHOSEN column below',
     theme: 'light',
   },
@@ -632,7 +632,7 @@ function PaletteDecision({ palette }: { palette: DatavizPalette }) {
  * | --- | --- | --- |
  * | diverging | C' | blue[500] cyan[400] green[300] amber[400] red[600]; black label on slot 0 |
  * | sequential | S1 | green[300] amber[300] orange[400] orange[500] red[700] red[800] |
- * | categorical | B | blue[500] magenta[600] red[600] orange[400] green[600] cyan[400] amber[600] |
+ * | categorical | B′ (TD-759, 2026-10-09; was B) | blue[500] magenta[600] red[400] orange[400] green[700] cyan[400] amber[600] |
  *
  * The light block of `semantic.ts` and `global.css` carries these steps; the
  * `LIGHT · current` column reads them from the tokens and must equal the CHOSEN

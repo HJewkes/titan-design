@@ -2300,9 +2300,9 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'dataviz-sequential-5': "#7E1002";
     readonly 'dataviz-categorical-0': "#2196F3";
     readonly 'dataviz-categorical-1': "#BA2996";
-    readonly 'dataviz-categorical-2': "#D14343";
+    readonly 'dataviz-categorical-2': "#F77175";
     readonly 'dataviz-categorical-3': "#FF7900";
-    readonly 'dataviz-categorical-4': "#298732";
+    readonly 'dataviz-categorical-4': "#2B6B25";
     readonly 'dataviz-categorical-5': "#01B5D1";
     readonly 'dataviz-categorical-6': "#A45E00";
     readonly 'text-primary': "#121828";
@@ -2658,9 +2658,9 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-dataviz-sequential-5': "#7E1002";
     readonly '--color-dataviz-categorical-0': "#2196F3";
     readonly '--color-dataviz-categorical-1': "#BA2996";
-    readonly '--color-dataviz-categorical-2': "#D14343";
+    readonly '--color-dataviz-categorical-2': "#F77175";
     readonly '--color-dataviz-categorical-3': "#FF7900";
-    readonly '--color-dataviz-categorical-4': "#298732";
+    readonly '--color-dataviz-categorical-4': "#2B6B25";
     readonly '--color-dataviz-categorical-5': "#01B5D1";
     readonly '--color-dataviz-categorical-6': "#A45E00";
     readonly '--color-text-link-hover': "#135AA8";
@@ -4061,9 +4061,9 @@ export const lightThemeCSSVars: {
     readonly '--color-dataviz-sequential-5': "#7E1002";
     readonly '--color-dataviz-categorical-0': "#2196F3";
     readonly '--color-dataviz-categorical-1': "#BA2996";
-    readonly '--color-dataviz-categorical-2': "#D14343";
+    readonly '--color-dataviz-categorical-2': "#F77175";
     readonly '--color-dataviz-categorical-3': "#FF7900";
-    readonly '--color-dataviz-categorical-4': "#298732";
+    readonly '--color-dataviz-categorical-4': "#2B6B25";
     readonly '--color-dataviz-categorical-5': "#01B5D1";
     readonly '--color-dataviz-categorical-6': "#A45E00";
     readonly '--color-text-link-hover': "#135AA8";
@@ -6403,9 +6403,9 @@ export const semanticColorsLight: {
     readonly 'dataviz-sequential-5': "#7E1002";
     readonly 'dataviz-categorical-0': "#2196F3";
     readonly 'dataviz-categorical-1': "#BA2996";
-    readonly 'dataviz-categorical-2': "#D14343";
+    readonly 'dataviz-categorical-2': "#F77175";
     readonly 'dataviz-categorical-3': "#FF7900";
-    readonly 'dataviz-categorical-4': "#298732";
+    readonly 'dataviz-categorical-4': "#2B6B25";
     readonly 'dataviz-categorical-5': "#01B5D1";
     readonly 'dataviz-categorical-6': "#A45E00";
     readonly 'text-primary': "#121828";
