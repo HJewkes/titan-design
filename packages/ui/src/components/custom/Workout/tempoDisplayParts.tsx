@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native'
 import { alpha } from '../../../utils/colors'
 import { useSurfaceMode } from '../../ui/surface'
-import { MetricCell } from './metricText'
+import { Typography } from '../../ui/typography'
 import {
   liveReadoutText,
   pacingNumberTone,
@@ -25,17 +25,17 @@ export function TempoValue({
   fontSize: number
 }) {
   return (
-    <MetricCell color={color} fontSize={fontSize}>
+    <Typography variant="mono" color="inherit" style={{ color, fontSize, fontWeight: '600' }}>
       {value}
-    </MetricCell>
+    </Typography>
   )
 }
 
 export function TempoSeparator({ color, fontSize }: { color: string; fontSize: number }) {
   return (
-    <MetricCell color={color} fontSize={fontSize}>
+    <Typography variant="mono" color="inherit" style={{ color, fontSize, fontWeight: '600' }}>
       -
-    </MetricCell>
+    </Typography>
   )
 }
 

@@ -27,18 +27,14 @@
     "#e05254|#252321": 1
   },
   "components-atoms-badge--all-colors light": {
-    "#c27400|#ffffff": 1,
-    "#ff7900|#ffffff": 1,
     "#ffffff|#2196f3": 1,
     "#ffffff|#c27400": 1,
     "#ffffff|#ff7900": 1
   },
   "components-atoms-badge--all-variants light": {
-    "#ff7900|#ffffff": 1,
     "#ffffff|#ff7900": 1
   },
   "components-atoms-chip--all-variants light": {
-    "#ff7900|#ffffff": 1,
     "#ffffff|#ff7900": 1
   },
   "components-atoms-chip--disabled dark": {
@@ -60,7 +56,6 @@
     "#ff7900|#ffffff": 1
   },
   "components-atoms-pill--all-variants light": {
-    "#ff7900|#ffffff": 1,
     "#ffffff|#ff7900": 1
   },
   "components-atoms-pill--on-both-planes dark": {
@@ -1734,15 +1729,6 @@
     "#ba2996|#f3daed": 3,
     "#ff7900|#ffe6d4": 2
   },
-  "custom-workout-metriccell--in-context dark": {
-    "#72716f|#252321": 1
-  },
-  "custom-workout-metriccell--in-context light": {
-    "#f9f6f3|#ffffff": 1
-  },
-  "custom-workout-metriccell--value-cell light": {
-    "#f9f6f3|#ffffff": 1
-  },
   "custom-workout-metrictiles--four-tiles dark": {
     "#888684|#31302f": 4
   },
@@ -1985,13 +1971,11 @@
     "#22d3ee|#edeae7": 8,
     "#72716f|#edeae7": 2,
     "#a29f9d|#ffffff": 14,
-    "#c27400|#edeae7": 2,
     "#ed69c3|#edeae7": 1,
     "#edeae7|#ffffff": 5
   },
   "custom-workout-tempodisplay--live-animated light": {
-    "#72716f|#edeae7": 1,
-    "#c27400|#edeae7": 1
+    "#72716f|#edeae7": 1
   },
   "custom-workout-tempodisplay--live-playground dark": {
     "#22a444|#31302f": 1
@@ -2005,8 +1989,7 @@
   "custom-workout-tempodisplay--static-vs-live light": {
     "#22a444|#edeae7": 1,
     "#22d3ee|#edeae7": 1,
-    "#72716f|#edeae7": 2,
-    "#c27400|#edeae7": 1
+    "#72716f|#edeae7": 2
   },
   "custom-workout-velocitybandoverlay--default light": {
     "#ff7900|#ffffff": 1

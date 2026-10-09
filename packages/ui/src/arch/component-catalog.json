@@ -316,6 +316,27 @@
         },
         {
           "default": null,
+          "description": "Makes the whole card one link to this URL.",
+          "name": "href",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Consumer vocabulary under the top task: counts, newest activity, a badge.",
+          "name": "meta",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Makes the whole card one link.",
+          "name": "onPress",
+          "required": false,
+          "type": "(() => void)"
+        },
+        {
+          "default": null,
           "description": "Count of open tasks for this initiative.",
           "name": "openCount",
           "required": true,
@@ -5879,6 +5900,7 @@
     {
       "composes": [
         "Card",
+        "MesoStatusCard.parts",
         "StatusDot"
       ],
       "family": "custom/Workout",
@@ -7384,7 +7406,7 @@
           "type": "string"
         },
         {
-          "default": null,
+          "default": "11",
           "description": "Cell font size (px).",
           "name": "fontSize",
           "required": false,
@@ -7426,7 +7448,7 @@
           "type": "string"
         }
       ],
-      "purpose": "The `sets × reps @ load` prescription line, in the TempoDisplay visual language (Inter · letter-spacing 1 · value cells with muted `×` / `@` separators).",
+      "purpose": "The `sets × reps @ load` prescription line, in the TempoDisplay visual language (Typography `mono` · value cells with muted `×` / `@` separators).",
       "sources": {
         "props": "packages/ui/src/components/custom/Workout/SetsRepsLoad.tsx",
         "status": "packages/ui/src/components/custom/Workout/SetsRepsLoad.stories.tsx"
@@ -13638,6 +13660,7 @@
         "components-atoms-pill--default",
         "components-atoms-pill--leading-slot",
         "components-atoms-pill--on-both-planes",
+        "components-atoms-pill--outline-on-all-elevations",
         "components-atoms-pill--solid-tones",
         "components-atoms-pill--square-corners"
       ],
@@ -15667,10 +15690,6 @@
     },
     {
       "file": "packages/ui/src/components/custom/Workout/icons.tsx",
-      "reason": "not-pascal-case"
-    },
-    {
-      "file": "packages/ui/src/components/custom/Workout/metricText.tsx",
       "reason": "not-pascal-case"
     },
     {
