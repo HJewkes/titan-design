@@ -95,3 +95,12 @@ export function turnOriginMeta(
   }
   return TURN_ORIGIN_META[turn.origin] ?? TURN_ORIGIN_META.none
 }
+
+/** Names a call whose tool name is empty, so a row never reads blank. */
+export const UNNAMED_TOOL_LABEL = 'Unnamed tool'
+
+/** Marks a call a subagent made, inside the dispatching turn. */
+export const SIDECHAIN_LABEL = 'in subagent'
+
+/** Names the disclosure that holds a failed call's error text. */
+export const ERROR_TEXT_LABEL = 'Error text'
