@@ -124,11 +124,12 @@ imports. Its `schema/round.schema.json` and `schema/feedback.schema.json` are ge
 - Manifest `titan-review/round@2`: `unit`, `round`, `storybookUrl`, `context?`, `widths[]`,
   `height` (a number of px or `"auto"`, default `"auto"`; at round level a number caps every
   frame), `maxHeight` (default 1200, the cap when the round's `height` is `"auto"`),
-  `variants[{key, storyId | image, label, args?, globals?, height?}]` (at most 12 in a round
+  `variants[{key, storyId | image, label, args?, globals?, height?, variantUnit?, alternate?, change?: changed|new|removed|unchanged}]` (at most 12 in a round
   without `sections`, uncapped in one with them; empty for a round of questions only, which needs no placeholder
   frame; every frame sits in a section),
-  `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?, recommendation?, signsOff (pick-one), page?, merge? (pick-one), frames?[]}]`,
+  `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?, recommendation?, signsOff (pick-one), page?, merge? (pick-one), frames?[], decision?: iterate|ship|decide, outcomes? (option to accept|changes|neutral)}]`,
   `sections[{id, title, deciding, changed, context, kind?: CHOICE|STATES, questionIds[], variantKeys[], seeAlso?[], height?}]`,
+  `prGroups?[{pr: owner/name#n, headSha, sectionIds[]}]` (a PR group named outright),
   `build?{mainSha, mergeSha}` (written by `build --tree`; a draft that carries it is refused),
   `recommendations` (`"after-answer"`, the default, or `"shown"`),
   `contrast?{knownDefects[], measured[], unmeasured[]}` (also on a section; see _Contrast gate_).
@@ -343,11 +344,15 @@ heads rewrites `build` only. A round without bindings needs no tree.
   carries `topic:iteration` or `topic:ship`.
 - **Stacked PRs.** A draft's `stackedOn` is written through. When no question is about the base
   PR, every frame in the base PR's sections is labelled `base PR #n, not under review: <label>`.
-- **Grouping.** A section belongs to a PR by its questions' `page`, else a leading `#n` or
-  `owner/name#n` in its title. Each PR's sections sit together, at the first one's place, the
-  section holding its Ship question last, and the Ship question last in that section. The page
-  shows each such group as one page. A question whose `frames` are not in its own section is
-  refused, so each pick stays directly under its frames after the regrouping.
+- **Grouping.** A section belongs to a PR by the `prGroups` entry that lists it, else its
+  questions' `page`, else a leading `#n` or `owner/name#n` in its title. Each PR's sections sit
+  together, at the first one's place, the section holding its Ship question last, and the Ship
+  question last in that section. The page shows each such group as one page and never splits one.
+- **Layout lint.** The ruled round must pass `lintRound` from `@titan-design/review-schema`, or
+  `build` throws with one `<rule>: <message>` line per problem: a deciding question without
+  `frames`, a frame outside its question's section or under two questions, a variant unit split
+  across blocks or alternates, alternates shown over different modes, a split PR group, a Ship
+  that is not last in its group, or a Ship whose head or PR is not its group's one PR at one head.
 - **Ship gate.** `build` exits 3, writing no `round.json`, for a Ship question whose PR had a
   changes-requested (`revisionRequested`), declined (a pick outside `merge.ship`) or non-agreed
   (`agreed: false`) answer in the latest earlier round that asked about it. It reads
@@ -578,7 +583,7 @@ Rules worth knowing:
   decision is never read away from what it decides. A section reads top to bottom: questions
   without `frames`, the strip of frames no question names, each question under its `frames`,
   then the section's Ship question. Every key in `frames` must be a frame of the question's own
-  section, and a frame sits above one question only; validation refuses anything else, naming
+  section, and a frame sits above one question only; `lintRound` refuses anything else, naming
   the question, the frame and the section it is in. A STATES strip may hold a question that
   picks among its own `frames`, and a CHOICE strip holds settings constant within each
   question's `frames` (then among the frames no question names), not across the whole strip.

@@ -10,9 +10,20 @@ project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 - Optional question `frames`: the variant keys a question asks about. A renderer places them
-  directly above the question, inside the question's own section. Every key must be a frame of
-  that section, and a frame sits above one question only; both `RoundSchema` and
-  `ManifestSchema` refuse anything else, and a round without sections cannot use `frames`.
+  directly above the question, inside the question's own section. The schemas refuse an unknown
+  or repeated key and a question with `frames` in no section; `lintRound` checks placement.
+- Optional question `decision`: `iterate`, `ship` or `decide` (`DECISION_KINDS`). A merge-bound
+  question that sets it must say `ship`.
+- Optional `outcomes` on pick-one and pick-many: each option's `accept`, `changes` or `neutral`
+  (`OPTION_OUTCOMES`). Every key must be one of the question's options.
+- Optional manifest `prGroups` (`[{ pr: "owner/name#n", headSha, sectionIds }]`,
+  `PrGroupSchema`). Each section id must be known and in one group only, and each PR has one group.
+- Optional variant `variantUnit`, `alternate` and `change` (`changed`, `new`, `removed` or
+  `unchanged`, `FRAME_CHANGES`).
+- `lintRound(round)` and `LINT_RULES`: the review-layout rules a builder applies before it writes
+  a round (`unanchored-question`, `frame-outside-section`, `shared-frame-set`,
+  `split-variant-unit`, `unequal-alternates`, `split-pr-group`, `ship-not-last`,
+  `ship-head-mismatch`). It returns `{ rule, message }[]`, empty when the round passes.
 
 ### Changed
 
@@ -23,7 +34,9 @@ project adheres to [Semantic Versioning](https://semver.org/).
   Gate 2 batch; the page shows one section (or PR group) at a time and mounts a frame only as it
   nears the viewport, so round size does not bound what is on screen. A round without sections
   is still capped at 12, because it shows every frame on one page.
-- `round.schema.json` carries `frames` and drops `maxItems` on `variants`. The schema id stays
+- A frame outside its question's section, and a frame under two questions, are now
+  `lintRound` problems instead of schema errors, so `ManifestSchema` still reads such a round.
+- `round.schema.json` carries every new field and drops `maxItems` on `variants`. The schema id stays
   `titan-review/round@2`: every round written for 0.2 still validates.
 
 ## [0.2.0]
