@@ -56,3 +56,8 @@ export const DeviceLost: Story = {
     ],
   },
 }
+
+/** No active session — the label stays primary so it clears AA on the neutral pill. */
+export const Idle: Story = {
+  args: { state: 'idle' },
+}

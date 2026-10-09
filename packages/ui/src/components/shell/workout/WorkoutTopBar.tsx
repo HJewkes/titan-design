@@ -27,10 +27,10 @@ const sessionStateConfig: Record<
   SessionState,
   { label: string; color: IndicatorColor; pulse: boolean | IndicatorPulse; text: TypographyColor }
 > = {
-  // live = vivid green with an expanding ring; rest = solid amber (no pulse — operator); idle is dim.
+  // live = vivid green with an expanding ring; rest = solid amber (no pulse — operator); idle is a grey dot.
   live: { label: 'LIVE', color: 'live', pulse: 'ping', text: 'primary' },
   rest: { label: 'REST', color: 'warning', pulse: false, text: 'primary' },
-  idle: { label: 'IDLE', color: 'default', pulse: false, text: 'secondary' },
+  idle: { label: 'IDLE', color: 'default', pulse: false, text: 'primary' },
 }
 
 /**
