@@ -147,6 +147,9 @@ export interface ActiveWorkoutSuperset {
 export function ActivityIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
+export const AGENT_ROSTER_FIELDS: AgentRosterField[];
+
+// @public
 export const AGENT_STATE_META: Record<AgentSummaryState, AgentStateMeta>;
 
 // @public
@@ -185,6 +188,31 @@ export function agentCountLabel(n: number): string;
 export function agentErrorsLabel(metrics: Pick<AgentMetrics, 'toolCalls' | 'errors'>): string;
 
 // @public
+export function AgentHoverCard(input: AgentHoverCardProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export function AgentHoverCardContent(input: AgentHoverCardContentProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface AgentHoverCardContentProps {
+    agent: AgentSummary;
+    className?: string;
+    now: number;
+}
+
+// @public
+export interface AgentHoverCardProps extends AgentHoverCardContentProps {
+    children: ReactNode;
+    closeDelay?: number;
+    defaultIsOpen?: boolean;
+    isDisabled?: boolean;
+    isOpen?: boolean;
+    onOpenChange?: (isOpen: boolean) => void;
+    openDelay?: number;
+    placement?: TooltipPlacement;
+}
+
+// @public
 export type AgentIdSource = 'claudeSessionId' | 'nameAtRegisteredAt';
 
 // @public
@@ -202,6 +230,9 @@ export interface AgentMetrics {
 
 // @public
 export type AgentOrigin = 'spawned' | 'adopted' | 'unknown';
+
+// @public
+export function AgentRoster(input: AgentRosterProps): react_jsx_runtime.JSX.Element;
 
 // @public
 export interface AgentRosterEntry {
@@ -230,6 +261,44 @@ export interface AgentRosterEntry {
     tags: string[];
     taskId: string | null;
     workingOn: string | null;
+}
+
+// @public
+export type AgentRosterField = 'task' | 'branch' | 'location' | 'idle' | 'tokens' | 'errors' | 'cost';
+
+// @public
+export function agentRosterFieldText(agent: AgentSummary, field: AgentRosterField, now: number): string | null;
+
+// @public
+export interface AgentRosterProps {
+    agents: AgentSummary[];
+    className?: string;
+    defaultSelectedId?: string;
+    emptyState?: ReactNode;
+    fields?: AgentRosterField[];
+    isLoading?: boolean;
+    label?: string;
+    now: number;
+    onSelectedIdChange?: (id: string | undefined) => void;
+    selectedId?: string;
+    testID?: string;
+}
+
+// @public
+export function AgentRosterRow(input: AgentRosterRowProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface AgentRosterRowProps {
+    agent: AgentSummary;
+    className?: string;
+    fields?: AgentRosterField[];
+    focusRef?: (node: unknown) => void;
+    isSelected?: boolean;
+    now: number;
+    onSelect?: () => void;
+    tabIndex?: 0 | -1;
+    testID?: string;
+    trailing?: ReactNode;
 }
 
 // @public
@@ -1527,6 +1596,9 @@ export interface DateTimeProps extends TextProps, Pick<FormatDateTimeOptions, 'i
 
 // @public
 export const debossLabel: TextStyle;
+
+// @public
+export const DEFAULT_ROSTER_FIELDS: AgentRosterField[];
 
 // @public @deprecated (undocumented)
 export const defaultNavItems: SideNavItem[];
@@ -6123,6 +6195,12 @@ export interface RomProgressionChartProps {
     shortThresholdM: number | null;
     workingStandardM: number | null;
 }
+
+// @public
+export function rosterGroups(agents: AgentSummary[]): {
+    live: AgentSummary[];
+    past: AgentSummary[];
+};
 
 // @public
 export function roundRpe(rpe: number): number;
