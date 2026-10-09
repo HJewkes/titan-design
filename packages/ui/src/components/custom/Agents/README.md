@@ -70,7 +70,8 @@ lift) instead of the `historical` state the contract first proposed.
 
 Non-finite and negative numbers render the `—` placeholder, never `NaN`. An error rate above
 `ERROR_RATE_FLAG_ABOVE` (5 percent) prints its share beside the count, so the flag is not colour
-alone.
+alone. The flagged figure sits in the subtle error `Pill` (`AgentMetricValue`), because
+`text-error` alone measures about 3.7:1 on `CardInset` in dark, under AA at caption size.
 
 ## Accessibility
 

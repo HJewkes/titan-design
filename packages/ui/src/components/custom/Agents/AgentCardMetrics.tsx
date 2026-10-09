@@ -2,6 +2,7 @@ import { View } from 'react-native'
 import { resolveColor } from '../../../theme/resolve-color'
 import { CardInset } from '../../ui/card'
 import { SparkBars } from '../../ui/charts/spark-bars'
+import { Pill } from '../../ui/pill'
 import { Progress } from '../../ui/progress'
 import { Typography } from '../../ui/typography'
 import {
@@ -17,6 +18,28 @@ import {
 
 const MAX_SPARK_BARS = 24
 
+/**
+ * A metric figure. A flagged one sits in the subtle error pill: `text-error` alone falls under AA
+ * at this size on the dark planes, and the pill's label token is tuned to clear it.
+ */
+export function AgentMetricValue({
+  value,
+  isFlagged = false,
+}: {
+  value: string
+  isFlagged?: boolean
+}) {
+  return isFlagged ? (
+    <Pill tone="error" size="xs" className="self-start">
+      {value}
+    </Pill>
+  ) : (
+    <Typography variant="mono" color="primary">
+      {value}
+    </Typography>
+  )
+}
+
 function MetricCell({
   label,
   value,
@@ -31,9 +54,7 @@ function MetricCell({
       <Typography variant="microLabel" color="secondary">
         {label}
       </Typography>
-      <Typography variant="mono" color={isFlagged ? 'error' : 'primary'}>
-        {value}
-      </Typography>
+      <AgentMetricValue value={value} isFlagged={isFlagged} />
     </View>
   )
 }

@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedByNode } from '../../../test/classname-capture'
 import { Typography } from '../../ui/typography'
 import { AgentCard } from './AgentCard'
 import {
@@ -82,6 +83,15 @@ describe('AgentCard', () => {
   it('flags an error rate above five percent', () => {
     render(<AgentCard agent={AGENT_BLOCKED} now={AGENTS_NOW} />)
     expect(screen.getByText('11 · 9%')).toBeInTheDocument()
+  })
+
+  it('sets a flagged error count in the subtle error pill, not bare text-error', () => {
+    render(<AgentCard agent={AGENT_BLOCKED} now={AGENTS_NOW} />)
+    const pill = screen.getByText('11 · 9%').parentElement as object
+    const classes = (capturedByNode.get(pill) ?? '').split(/\s+/)
+    expect(classes).toEqual(
+      expect.arrayContaining(['bg-status-error-subtle', 'text-on-status-error-subtle'])
+    )
   })
 
   it('does not flag a session with no tool calls', () => {
