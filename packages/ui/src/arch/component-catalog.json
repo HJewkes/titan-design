@@ -629,6 +629,113 @@
     },
     {
       "composes": [
+        "Alert",
+        "Card",
+        "DateTime",
+        "Divider",
+        "EmptyState",
+        "Link",
+        "MarkdownProse",
+        "Pill",
+        "SessionDetail",
+        "Skeleton",
+        "Typography"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/KnowledgeReader.tsx",
+      "name": "KnowledgeReader",
+      "props": [
+        {
+          "default": null,
+          "description": "Header actions, right of the title.",
+          "name": "actions",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Tailwind overrides for the card.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The open note or source.",
+          "name": "document",
+          "required": false,
+          "type": "KnowledgeDocument"
+        },
+        {
+          "default": null,
+          "description": "Replaces the default \"nothing selected\" state.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": "false",
+          "description": "Skeleton lines under a skeleton title, inside the card.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Reference time.",
+          "name": "now",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Makes the initiative name a link, for the way back to the initiative.",
+          "name": "onPressInitiative",
+          "required": false,
+          "type": "((initiative: string) => void)"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "onPressLink",
+          "required": false,
+          "type": "((name: string) => void)"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "onPressPr",
+          "required": false,
+          "type": "((number: number) => void)"
+        },
+        {
+          "default": null,
+          "description": "Makes each tag a button, to filter the list by it.",
+          "name": "onPressTag",
+          "required": false,
+          "type": "((tag: string) => void)"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "onPressTask",
+          "required": false,
+          "type": "((id: string) => void)"
+        }
+      ],
+      "purpose": "KnowledgeReader — one note or source under a metadata header: the title, then one line of initiative, record, kind and date, the tags, and the file's text as markdown prose (with task ids, `[[name]]` links and PR numbers linked), as mono text, or as \"no preview\" for a file type it cannot show.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/ActiveWork/KnowledgeReader.tsx",
+        "status": "packages/ui/src/components/custom/ActiveWork/KnowledgeReader.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-knowledgereader--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
         "Divider",
         "Eyebrow",
         "MarkdownProse",

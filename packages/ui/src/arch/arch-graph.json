@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:bb23ac4023cf4a47b66367336be9a6a0ace7ec18a02214a876e7f787676c73fa",
+  "componentBarrelHash": "sha256:172e200bd08ee3a367b716cef65969a53899a07351ffa8313fe1da07ab0042f3",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -4151,6 +4151,59 @@
         "rawHex": 0,
         "loc": 189,
         "score": 2
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "KnowledgeReader",
+      "file": "packages/ui/src/components/custom/ActiveWork/KnowledgeReader.tsx",
+      "dir": "custom",
+      "family": "custom/ActiveWork",
+      "exports": [
+        "KnowledgeReader",
+        "KnowledgeReaderProps",
+        "recordLabel",
+        "kindLabel",
+        "InitiativeName",
+        "KnowledgeMeta",
+        "KnowledgeTags",
+        "TruncatedNotice",
+        "ReaderBody",
+        "LoadingCard"
+      ],
+      "libDependents": 0,
+      "storyRefs": 2,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Alert",
+        "Card",
+        "DateTime",
+        "Divider",
+        "EmptyState",
+        "Link",
+        "MarkdownProse",
+        "Pill",
+        "SessionDetail",
+        "Skeleton",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 4,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 252,
+        "score": 4
       },
       "tier": "organism",
       "verdict": "dead",
@@ -11104,10 +11157,54 @@
     [
       "KnowledgeList",
       "Eyebrow"
+    ],
+    [
+      "KnowledgeReader",
+      "SessionDetail"
+    ],
+    [
+      "KnowledgeReader",
+      "MarkdownProse"
+    ],
+    [
+      "KnowledgeReader",
+      "Alert"
+    ],
+    [
+      "KnowledgeReader",
+      "Card"
+    ],
+    [
+      "KnowledgeReader",
+      "DateTime"
+    ],
+    [
+      "KnowledgeReader",
+      "Divider"
+    ],
+    [
+      "KnowledgeReader",
+      "EmptyState"
+    ],
+    [
+      "KnowledgeReader",
+      "Link"
+    ],
+    [
+      "KnowledgeReader",
+      "Pill"
+    ],
+    [
+      "KnowledgeReader",
+      "Skeleton"
+    ],
+    [
+      "KnowledgeReader",
+      "Typography"
     ]
   ],
   "summary": {
-    "total": 229,
+    "total": 230,
     "dead": [
       "Autocomplete",
       "Breadcrumbs",
@@ -11122,6 +11219,7 @@
       "Kbd",
       "KnowledgeClassLabel",
       "KnowledgeList",
+      "KnowledgeReader",
       "Menu",
       "MessageList",
       "PortfolioOverview",
