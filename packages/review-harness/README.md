@@ -14,8 +14,10 @@ as JSON on stdout and in `feedback.json`. Private workspace tool, not published.
 5. `a` turns pins on: click a spot on any frame, type a note. `Esc` turns pins off.
 6. On a question, `1`-`9` pick its options; the scale takes its value directly.
 7. The last box is for general notes. `l` toggles one column per variant.
-   A sectioned round asks each group's question above that group's frames. It shows one
-   section at a time:
+   A sectioned round asks each question directly under the frames it names (`frames`); a
+   question without `frames` sits above its section's other frames, and a Ship question reads
+   last, under every frame. It shows one page at a time, a page being one section or every
+   section of one PR group:
    `]` pages to the next section, `[` to the previous one, and `Enter` past a section's last
    stop carries on into the next. The header lists every section as a link and says
    "Section N of M"; the end of every section repeats it between Previous and Next. Next is the
@@ -122,10 +124,10 @@ imports. Its `schema/round.schema.json` and `schema/feedback.schema.json` are ge
 - Manifest `titan-review/round@2`: `unit`, `round`, `storybookUrl`, `context?`, `widths[]`,
   `height` (a number of px or `"auto"`, default `"auto"`; at round level a number caps every
   frame), `maxHeight` (default 1200, the cap when the round's `height` is `"auto"`),
-  `variants[{key, storyId | image, label, args?, globals?, height?}]` (at most 12, or at most 80
-  in a round with `sections`; empty for a round of questions only, which needs no placeholder
+  `variants[{key, storyId | image, label, args?, globals?, height?}]` (at most 12 in a round
+  without `sections`, uncapped in one with them; empty for a round of questions only, which needs no placeholder
   frame; every frame sits in a section),
-  `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?, recommendation?, signsOff (pick-one), page?, merge? (pick-one)}]`,
+  `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?, recommendation?, signsOff (pick-one), page?, merge? (pick-one), frames?[]}]`,
   `sections[{id, title, deciding, changed, context, kind?: CHOICE|STATES, questionIds[], variantKeys[], seeAlso?[], height?}]`,
   `build?{mainSha, mergeSha}` (written by `build --tree`; a draft that carries it is refused),
   `recommendations` (`"after-answer"`, the default, or `"shown"`),
@@ -343,8 +345,9 @@ heads rewrites `build` only. A round without bindings needs no tree.
   PR, every frame in the base PR's sections is labelled `base PR #n, not under review: <label>`.
 - **Grouping.** A section belongs to a PR by its questions' `page`, else a leading `#n` or
   `owner/name#n` in its title. Each PR's sections sit together, at the first one's place, the
-  section holding its Ship question last, and the Ship question last in that section. (Rendering
-  a PR header waits for the review-page rework.)
+  section holding its Ship question last, and the Ship question last in that section. The page
+  shows each such group as one page. A question whose `frames` are not in its own section is
+  refused, so each pick stays directly under its frames after the regrouping.
 - **Ship gate.** `build` exits 3, writing no `round.json`, for a Ship question whose PR had a
   changes-requested (`revisionRequested`), declined (a pick outside `merge.ship`) or non-agreed
   (`agreed: false`) answer in the latest earlier round that asked about it. It reads
@@ -570,10 +573,23 @@ Rules worth knowing:
 - **One frame per section.** A frame that also bears on another group goes in that group's
   `seeAlso`, which renders a link to it instead of a second iframe. Validation refuses a variant
   or question claimed by two sections, and refuses an unknown key with the id in the message.
-- **Sections page a big round (TD-343).** A round without sections shows every frame on one
-  page and is capped at 12 variants. A round with sections shows one section at a time, so it
-  takes up to 80, for example one Gate 2 batch of main and PR-head frames in light and dark.
-  The page order is the sections, then "Other frames", then "Overall" with the general note.
+- **A question sits under its own frames (TD-794).** `frames` on a question names the variant
+  keys it asks about. The page renders those frames, then the question, as one block, so a
+  decision is never read away from what it decides. A section reads top to bottom: questions
+  without `frames`, the strip of frames no question names, each question under its `frames`,
+  then the section's Ship question. Every key in `frames` must be a frame of the question's own
+  section, and a frame sits above one question only; validation refuses anything else, naming
+  the question, the frame and the section it is in. A STATES strip may hold a question that
+  picks among its own `frames`, and a CHOICE strip holds settings constant within each
+  question's `frames` (then among the frames no question names), not across the whole strip.
+- **Sections page a big round (TD-343, TD-794).** A round without sections shows every frame on
+  one page and is capped at 12 variants. A round with sections shows one page at a time and is
+  not capped: frames mount only as they near the viewport, so the round's size does not bound
+  what is on screen. (The old cap of 80 was sized for one Gate 2 batch, not a limit of the page.)
+  Consecutive sections about one PR (by their questions' `page`, else a leading `#n` in the
+  title, as the builder groups them) share a page, so a PR's frames, its picks and its Ship are
+  read together. The page order is those pages, then "Other frames", then "Overall" with the
+  general note.
   A `seeAlso` link pages to the section that holds that frame. `feedback.json` is unchanged.
 
 ### Heights

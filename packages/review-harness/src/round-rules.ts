@@ -1,4 +1,5 @@
 import type { ManifestInput } from '@titan-design/review-schema'
+import { sectionPr } from './sections.ts'
 
 /**
  * The rules `build` applies to a draft before it becomes round.json (TD-768):
@@ -16,7 +17,6 @@ export const QUESTION_LABELS = ['ITERATION', 'SHIP'] as const
 export type QuestionLabel = (typeof QUESTION_LABELS)[number]
 
 const LABEL_PREFIX = new RegExp(`^(${QUESTION_LABELS.join('|')}): `)
-const TITLE_PR = /^(?:([^\s#]+\/[^\s#]+))?#(\d+)\b/
 
 export function isShip(question: DraftQuestion): boolean {
   return question.kind === 'pick-one' && question.merge !== undefined
@@ -42,16 +42,6 @@ function withTopics(question: DraftQuestion, unit: string): DraftQuestion {
 function withLabel(question: DraftQuestion): DraftQuestion {
   const prompt = `${labelOf(question)}: ${question.prompt.replace(LABEL_PREFIX, '')}`
   return { ...question, prompt }
-}
-
-/** The PR a section is about: its questions' page, else the `#n` its title opens with. */
-function sectionPr(section: DraftSection, questions: Map<string, DraftQuestion>, known: string[]) {
-  const pages = (section.questionIds ?? []).flatMap((id) => questions.get(id)?.page ?? [])
-  if (pages[0]) return pages[0]
-  const match = TITLE_PR.exec(section.title)
-  if (!match) return undefined
-  const [, repo, pr] = match
-  return repo ? `${repo}#${pr}` : (known.find((k) => k.endsWith(`#${pr}`)) ?? `#${pr}`)
 }
 
 function shipLast(section: DraftSection, questions: Map<string, DraftQuestion>): DraftSection {
