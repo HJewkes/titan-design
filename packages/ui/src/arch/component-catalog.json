@@ -1037,6 +1037,208 @@
     },
     {
       "composes": [
+        "AgentStateLabel",
+        "Avatar",
+        "Card",
+        "Pill",
+        "Progress",
+        "SparkBars",
+        "Typography"
+      ],
+      "family": "custom/Agents",
+      "file": "packages/ui/src/components/custom/Agents/AgentCard.tsx",
+      "name": "AgentCard",
+      "props": [
+        {
+          "default": null,
+          "description": "Accent stripe color for accent variant (CSS color or hex)",
+          "name": "accentColor",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Accent stripe width for accent variant in pixels (default: 3)",
+          "name": "accentWidth",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "agent",
+          "required": true,
+          "type": "AgentSummary"
+        },
+        {
+          "default": null,
+          "description": "Custom background color.",
+          "name": "bgColor",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Custom border color (hex, rgb, or CSS color).",
+          "name": "borderColor",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Additional className",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Planes to lift above the enclosing Surface (default 2: page → the card plane).",
+          "name": "elevation",
+          "required": false,
+          "type": "CardElevation"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "footer",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": "false",
+          "description": "",
+          "name": "isHighlighted",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Whether the card is interactive (hoverable/pressable)",
+          "name": "isInteractive",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "false",
+          "description": "Whether the card is in a loading state (renders skeleton)",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Shown in place of the metrics block when `agent.metrics` is null or absent.",
+          "name": "metricsEmpty",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Reference instant for the recency label, injected so renders are deterministic.",
+          "name": "now",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Makes the agent name a link.",
+          "name": "onPress",
+          "required": false,
+          "type": "(() => void)"
+        },
+        {
+          "default": null,
+          "description": "Makes the task id pill a link.",
+          "name": "onPressTask",
+          "required": false,
+          "type": "((taskId: string) => void)"
+        },
+        {
+          "default": null,
+          "description": "Number of content lines in skeleton when loading (default: 3)",
+          "name": "skeletonContentLines",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Show footer skeleton when loading (default: false)",
+          "name": "skeletonHasFooter",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Show header skeleton when loading (default: true)",
+          "name": "skeletonHasHeader",
+          "required": false,
+          "type": "boolean"
+        }
+      ],
+      "purpose": "One agent session: name, state, stated task, branch, recency, and the transcript's tokens, tool calls, errors, cost and activity.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Agents/AgentCard.tsx",
+        "status": "packages/ui/src/components/custom/Agents/AgentCard.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-agents-agentcard--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Indicator",
+        "Pill",
+        "Typography"
+      ],
+      "family": "custom/Agents",
+      "file": "packages/ui/src/components/custom/Agents/AgentStateLabel.tsx",
+      "name": "AgentStateLabel",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "false",
+          "description": "The session holds pushes; adds a neutral pill.",
+          "name": "isDnd",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "sm",
+          "description": "",
+          "name": "size",
+          "required": false,
+          "type": "\"sm\" | \"md\""
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "state",
+          "required": true,
+          "type": "AgentSummaryState"
+        }
+      ],
+      "purpose": "An agent's state as a dot and its word, never colour alone.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Agents/AgentStateLabel.tsx",
+        "status": "packages/ui/src/components/custom/Agents/AgentStateLabel.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-agents-agentstatelabel--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
         "Button",
         "Card",
         "Typography"
