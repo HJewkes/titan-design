@@ -102,7 +102,7 @@ describe('ConversationTurn', () => {
 
   it('previews a long message and shows the rest on Show more', () => {
     const turn = SESSION_LONG_TEXT.turns[0]!
-    const lastLine = turn.user!.text.split('\n').at(-1)!
+    const lastLine = turn.user!.text.split('\n').pop()!
     const { container } = render(<ConversationTurn turn={turn} previewChars={200} />)
     expect(container).not.toHaveTextContent(lastLine)
 

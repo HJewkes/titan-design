@@ -78,6 +78,8 @@ describe('callDurationText', () => {
   })
 })
 
+type ArbValue<A> = A extends fc.Arbitrary<infer T> ? T : never
+
 const OUTCOMES = ['success', 'error', 'unknown', 'pending', 'cancelled'] as const
 
 const callArb = fc.record({
@@ -87,7 +89,7 @@ const callArb = fc.record({
   durationMs: fc.oneof(fc.constant(null), fc.integer({ min: -100, max: 9_000 }), fc.constant(NaN)),
 })
 
-const toCall = (c: fc.TypeOf<typeof callArb>, i: number): TimelineToolCall => ({
+const toCall = (c: ArbValue<typeof callArb>, i: number): TimelineToolCall => ({
   ...CALL,
   id: `call-${i}`,
   ...c,
@@ -102,7 +104,7 @@ const turnArb = fc.record({
   texts: fc.array(fc.integer({ min: 0, max: 10_000 }), { maxLength: 3 }),
 })
 
-const toTurns = (specs: fc.TypeOf<typeof turnArb>[]): TimelineTurn[] =>
+const toTurns = (specs: ArbValue<typeof turnArb>[]): TimelineTurn[] =>
   specs.map((spec, index) => ({
     ...TURN,
     index,

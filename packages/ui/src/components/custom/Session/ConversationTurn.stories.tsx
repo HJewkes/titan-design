@@ -29,7 +29,7 @@ const TURNS: Record<string, TimelineTurn> = {
   channel: byOrigin('injected', 'channel'),
   compaction: byOrigin('compaction'),
   'all errors': SESSION_ALL_ERRORS.turns[0]!,
-  pending: SESSION_PENDING.turns.at(-1)!,
+  pending: SESSION_PENDING.turns[SESSION_PENDING.turns.length - 1]!,
   'long text': SESSION_LONG_TEXT.turns[0]!,
   markdown: SESSION_LONG_TEXT.turns[2]!,
   huge: SESSION_ONE_HUGE_TURN.turns[0]!,
