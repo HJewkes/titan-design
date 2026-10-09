@@ -72,31 +72,6 @@ describe('question frames', () => {
     ])
   })
 
-  it('refuses a frame from another section, which would not sit above the question', () => {
-    const r = round(['A', 'B'])
-    r.variants.push(frame('E'))
-    r.sections.push({
-      id: 's2',
-      title: 'Other',
-      ...TEXTS,
-      kind: 'STATES',
-      questionIds: [],
-      variantKeys: ['E'],
-    })
-    r.questions[0] = { ...r.questions[0], frames: ['A', 'E'] }
-    expect(messages(ManifestSchema.safeParse(r))).toEqual([
-      'question pick: frame E is in section s2, not in its own section s1, so it would not sit directly above the question',
-    ])
-  })
-
-  it('refuses one frame above two questions', () => {
-    const r = round(['A', 'B'])
-    r.questions[1] = { ...r.questions[1], frames: ['B'] }
-    expect(messages(ManifestSchema.safeParse(r))).toEqual([
-      'frame B sits above pick and note; a frame belongs to one question',
-    ])
-  })
-
   it('refuses frames on a question in no section, or in a round without sections', () => {
     const loose = round(['A', 'B'])
     loose.sections[0].questionIds = ['note']

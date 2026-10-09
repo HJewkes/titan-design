@@ -123,6 +123,23 @@
                 "const": "auto"
               }
             ]
+          },
+          "variantUnit": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,32}$"
+          },
+          "alternate": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,32}$"
+          },
+          "change": {
+            "type": "string",
+            "enum": [
+              "changed",
+              "new",
+              "removed",
+              "unchanged"
+            ]
           }
         },
         "required": [
@@ -202,6 +219,14 @@
                   "pattern": "^[A-Za-z0-9_-]{1,32}$"
                 }
               },
+              "decision": {
+                "type": "string",
+                "enum": [
+                  "iterate",
+                  "ship",
+                  "decide"
+                ]
+              },
               "kind": {
                 "type": "string",
                 "const": "pick-one"
@@ -224,6 +249,20 @@
                 "additionalProperties": {
                   "type": "string",
                   "pattern": "^[A-Za-z0-9_-]{1,32}$"
+                }
+              },
+              "outcomes": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "type": "string",
+                  "enum": [
+                    "accept",
+                    "changes",
+                    "neutral"
+                  ]
                 }
               },
               "recommendation": {
@@ -354,6 +393,14 @@
                   "pattern": "^[A-Za-z0-9_-]{1,32}$"
                 }
               },
+              "decision": {
+                "type": "string",
+                "enum": [
+                  "iterate",
+                  "ship",
+                  "decide"
+                ]
+              },
               "kind": {
                 "type": "string",
                 "const": "pick-many"
@@ -373,6 +420,20 @@
                 "additionalProperties": {
                   "type": "string",
                   "pattern": "^[A-Za-z0-9_-]{1,32}$"
+                }
+              },
+              "outcomes": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "type": "string",
+                  "enum": [
+                    "accept",
+                    "changes",
+                    "neutral"
+                  ]
                 }
               },
               "recommendation": {
@@ -465,6 +526,14 @@
                   "type": "string",
                   "pattern": "^[A-Za-z0-9_-]{1,32}$"
                 }
+              },
+              "decision": {
+                "type": "string",
+                "enum": [
+                  "iterate",
+                  "ship",
+                  "decide"
+                ]
               },
               "kind": {
                 "type": "string",
@@ -571,6 +640,14 @@
                   "type": "string",
                   "pattern": "^[A-Za-z0-9_-]{1,32}$"
                 }
+              },
+              "decision": {
+                "type": "string",
+                "enum": [
+                  "iterate",
+                  "ship",
+                  "decide"
+                ]
               },
               "kind": {
                 "type": "string",
@@ -1126,6 +1203,37 @@
         "headSha"
       ],
       "additionalProperties": false
+    },
+    "prGroups": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "pr": {
+            "type": "string",
+            "pattern": "^[^/\\s#]+\\/[^/\\s#]+#[1-9][0-9]*$"
+          },
+          "headSha": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "sectionIds": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,32}$"
+            }
+          }
+        },
+        "required": [
+          "pr",
+          "headSha",
+          "sectionIds"
+        ],
+        "additionalProperties": false
+      }
     }
   },
   "required": [
