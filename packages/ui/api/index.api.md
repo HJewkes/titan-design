@@ -3913,6 +3913,12 @@ export const KNOWLEDGE_COMPARATORS: {
 export const KNOWLEDGE_DATE_RANGE_DAYS: Record<Exclude<KnowledgeDateRange, 'all'>, number>;
 
 // @public
+export type KnowledgeBodyFormat = 'markdown' | 'text' | 'unsupported';
+
+// @public
+export function knowledgeBodyFormat(path: string): KnowledgeBodyFormat;
+
+// @public
 export type KnowledgeClass = 'initiative' | 'note' | 'source' | 'nested_source' | 'task' | 'session' | 'transcript';
 
 // @public
@@ -3941,6 +3947,14 @@ export function knowledgeDate(item: KnowledgeItem): number | undefined;
 
 // @public
 export type KnowledgeDateRange = 'all' | '7d' | '30d' | '90d';
+
+// @public
+export interface KnowledgeDocument {
+    body: string;
+    bytes?: number;
+    isTruncated?: boolean;
+    item: KnowledgeItem;
+}
 
 // @public
 export interface KnowledgeFacetCounts {
@@ -4020,10 +4034,29 @@ export interface KnowledgeListTable {
 }
 
 // @public
+export type KnowledgeMetaLayout = 'inline' | 'split';
+
+// @public
 export interface KnowledgeProblem {
     error: string;
     filename: string;
     initiative: string;
+}
+
+// @public
+export function KnowledgeReader(input: KnowledgeReaderProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface KnowledgeReaderProps extends SessionLinkHandlers {
+    actions?: ReactNode;
+    className?: string;
+    document?: KnowledgeDocument;
+    emptyState?: ReactNode;
+    isLoading?: boolean;
+    metaLayout?: KnowledgeMetaLayout;
+    now: number;
+    onPressInitiative?: (initiative: string) => void;
+    onPressTag?: (tag: string) => void;
 }
 
 // @public
