@@ -8,7 +8,7 @@ import {
   withAlpha,
   type Rgba,
 } from './contrast.ts'
-import type { CheckKind } from './schema.ts'
+import type { CheckKind } from '@titan-design/review-schema'
 import type { FrameSamples, RawSample, SampleRole } from './contrast-collect.ts'
 
 /** One measured pair, in the shape contrast.json reports it. */

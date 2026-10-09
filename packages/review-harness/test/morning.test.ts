@@ -14,7 +14,7 @@ import {
 import { proposalText, relabelAsProposed, repairMarkdown } from '../src/morning-text.ts'
 import { loadRound } from '../src/review.ts'
 import { runCli, type CliIo } from '../src/run.ts'
-import { RoundSchema } from '../src/schema.ts'
+import { RoundSchema } from '@titan-design/review-schema'
 import { noTreeGit } from './fixtures.ts'
 
 // Every item here is invented: a widget shop's seats deciding on paint and a price list.

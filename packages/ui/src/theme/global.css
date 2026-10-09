@@ -140,7 +140,7 @@
     --color-brand-primary-subtle: rgba(255, 121, 0, 0.12);
     --color-brand-primary-muted: rgba(255, 121, 0, 0.30);
     --color-brand-primary-strong: rgba(255, 121, 0, 0.50);
-    --color-brand-secondary: #307B9B;
+    --color-brand-secondary: #2697B7;
     --color-brand-secondary-light: #2697B7;
     --color-brand-secondary-dark: #2A617F;
     --color-brand-secondary-subtle: rgba(34, 211, 238, 0.12);
@@ -165,7 +165,7 @@
     --color-status-live: #2ED573;
     --color-status-deload: #BA2996;
     --color-status-live-muted: #22A444;
-    --color-status-error: #D14343;
+    --color-status-error: #E05254;
     --color-status-error-light: #E05254;
     --color-status-error-dark: #A4221C;
     --color-status-error-subtle: rgba(247, 113, 117, 0.08);
@@ -178,7 +178,7 @@
     --color-status-error-vivid-muted: rgba(255, 71, 87, 0.30);
     --color-status-error-vivid-strong: rgba(255, 71, 87, 0.50);
     --color-status-error-vivid-rgb: 255, 71, 87;
-    --color-border-prominent: #424140;
+    --color-border-prominent: rgba(255, 255, 255, 0.30);
     --color-status-warning: #F9B415;
     --color-status-warning-light: #FFD352;
     --color-status-warning-dark: #C27400;
@@ -263,7 +263,7 @@
     --color-text-disabled: rgba(255, 255, 255, 0.38);
     --color-text-inverse: #1C1916;
     --color-text-error: #E05254;
-    --color-text-link: #828DF8;
+    --color-text-link: #78C2FF;
     --color-text-link-hover: #3CA8FF;
 
     /* Surface ramp — warm-tapered DERIVED, shipped verbatim from deriveSurfaceRamp()
@@ -287,7 +287,7 @@
 
     --color-border-focus: #828DF8;
     --color-border-input: #888684;
-    --color-border-input-hover: #72716F;
+    --color-border-input-hover: #A29F9D;
     --color-border-input-focus: #828DF8;
     --color-border-input-error: #E05254;
 
