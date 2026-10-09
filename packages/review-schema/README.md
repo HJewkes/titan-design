@@ -24,6 +24,8 @@ reads a round imports them from here instead of copying them.
 - `TOPIC_PREFIXES`, the prefixes a question's optional `topics` keys take (`ask:`, `component:`,
   `token:`, `topic:`), and `StackedOnSchema`, the optional manifest `stackedOn` naming the base PR
   `{ repo, pr, headSha }` a stacked round renders beneath its own.
+- A question's optional `frames`: the variant keys it asks about, all in its own section. A
+  renderer places those frames directly above the question; a frame sits above one question.
 - `isLoopbackUrl(url)`, true only for an http(s) URL on `127.0.0.1`, `localhost` or `[::1]`.
 - `manifestJsonSchema()` and `feedbackJsonSchema()`, the JSON Schema an author writes against.
 - The inferred types: `ManifestInput`, `Manifest`, `Feedback`, `Recommendation`, `Question`,

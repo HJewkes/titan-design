@@ -38,9 +38,12 @@ const storybookUrl = z.url({ protocol: /^https?$/ }).check((ctx) => {
 
 export const AUTO_HEIGHT = 'auto'
 
-/** A round shows every frame on one page, so it stays small; sections page through more. */
+/**
+ * A round without sections shows every frame on one page, so it stays small. A sectioned round
+ * pages by section (or PR group) and mounts each frame only as it nears the viewport, so its
+ * size is not capped.
+ */
 const MAX_VARIANTS = 12
-const MAX_SECTIONED_VARIANTS = 80
 
 /** A frame height in CSS px, or "auto" to size the frame to its story's content. */
 const frameHeight = z.union([z.number().int().min(120).max(4000), z.literal(AUTO_HEIGHT)])
@@ -100,6 +103,11 @@ const questionBase = {
   page: prPage.optional(),
   /** The keys this question shares with questions in other rounds. */
   topics: z.array(topicKey).optional(),
+  /**
+   * The frames this question asks about, by variant key. The page renders them directly above
+   * the question; they must sit in the question's own section. Absent: today's placement.
+   */
+  frames: z.array(id).min(1).optional(),
 }
 
 /** Which variant each option stands for, so one click answers and picks the variant. */
@@ -394,6 +402,52 @@ function optionVariantProblems(m: {
   ])
 }
 
+interface Anchoring {
+  variants: { key: string }[]
+  questions: { id: string; frames?: string[] }[]
+  sections?: { id: string; variantKeys: string[]; questionIds: string[] }[]
+}
+
+/** Where a question's frames sit: in its own section, so the page can render them right above it. */
+function anchorPlacementProblems(m: Anchoring, q: { id: string; frames: string[] }): string[] {
+  if (!m.sections) return [`question ${q.id}: frames need sections; group the round into sections`]
+  const own = m.sections.find((s) => s.questionIds.includes(q.id))
+  if (!own)
+    return [`question ${q.id}: it has frames but is in no section, so none can sit above it`]
+  return q.frames.flatMap((key) => {
+    if (own.variantKeys.includes(key)) return []
+    const holder = m.sections?.find((s) => s.variantKeys.includes(key))
+    const where = holder ? `section ${holder.id}` : 'no section'
+    return [
+      `question ${q.id}: frame ${key} is in ${where}, not in its own section ${own.id}, so it would not sit directly above the question`,
+    ]
+  })
+}
+
+/** Each anchored frame is a known variant in the question's own section, under one question only. */
+function anchorProblems(m: Anchoring): string[] {
+  const keys = new Set(m.variants.map((v) => v.key))
+  const anchored = m.questions.flatMap((q) => (q.frames ? [{ id: q.id, frames: q.frames }] : []))
+  const owners = new Map<string, string[]>()
+  for (const q of anchored)
+    for (const key of new Set(q.frames)) owners.set(key, [...(owners.get(key) ?? []), q.id])
+  return [
+    ...anchored.flatMap((q) => [
+      ...q.frames.filter((k) => !keys.has(k)).map((k) => `question ${q.id}: unknown frame ${k}`),
+      ...[...new Set(duplicates(q.frames))].map((k) => `question ${q.id}: frame ${k} repeats`),
+    ]),
+    ...anchored.flatMap((q) =>
+      anchorPlacementProblems(m, { id: q.id, frames: q.frames.filter((k) => keys.has(k)) })
+    ),
+    ...[...owners]
+      .filter(([, ids]) => ids.length > 1)
+      .map(
+        ([key, ids]) =>
+          `frame ${key} sits above ${ids.join(' and ')}; a frame belongs to one question`
+      ),
+  ]
+}
+
 type Declarations = z.output<typeof ContrastDeclarationsSchema>
 
 function declaredVariants(decl: Declarations): { field: string; variant: string }[] {
@@ -514,7 +568,7 @@ const ManifestObject = z
     /** The ceiling an auto-sized frame stops at; taller stories scroll inside the frame. */
     maxHeight: z.number().int().min(120).max(4000).default(1200),
     /** Empty for a questions-only round; nothing has to stand in for a frame it does not have. */
-    variants: z.array(VariantSchema).max(MAX_SECTIONED_VARIANTS),
+    variants: z.array(VariantSchema),
     questions: z.array(QuestionSchema),
     sections: z.array(SectionSchema).min(1).optional(),
     recommendations: z.enum(RECOMMENDATION_MODES).default('after-answer'),
@@ -548,6 +602,7 @@ function manifestProblems(m: z.output<typeof ManifestObject>): Problem[] {
       : []),
     ...at('sections', sectionProblems(m)),
     ...at('questions', [
+      ...anchorProblems(m),
       ...optionVariantProblems(m),
       ...recommendationProblems(m),
       ...mergeBindingProblems(m),
