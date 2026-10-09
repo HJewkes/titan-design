@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:a8797754054b823562b243f16ee7d4d3b72f5091e13cd95711ec0ad6b93cc4af",
+  "componentBarrelHash": "sha256:2e8ab06ac6b88ba564070c7cdd06fc4a12cc2748d9dc0574cc1cd50895cd957d",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -55,6 +55,92 @@
       "tier": "page",
       "verdict": "demo-only",
       "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "AgentCard",
+      "file": "packages/ui/src/components/custom/Agents/AgentCard.tsx",
+      "dir": "custom",
+      "family": "custom/Agents",
+      "exports": [
+        "AgentCard",
+        "AgentCardProps",
+        "AgentName",
+        "AgentCardHeader",
+        "AgentCardTask",
+        "AgentCardTags",
+        "AgentCardMeta",
+        "MetricCell",
+        "AgentMetricsBlock",
+        "DefaultMetricsEmpty"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "AgentStateLabel",
+        "Avatar",
+        "Card",
+        "Pill",
+        "Progress",
+        "SparkBars",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 8,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 248,
+        "score": 8
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "AgentStateLabel",
+      "file": "packages/ui/src/components/custom/Agents/AgentStateLabel.tsx",
+      "dir": "custom",
+      "family": "custom/Agents",
+      "exports": [
+        "AgentStateLabel",
+        "AgentStateLabelProps"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Indicator",
+        "Pill",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 1,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 50,
+        "score": 1
+      },
+      "tier": "molecule",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
       "audited": "unaudited",
       "standard": false
     },
@@ -11016,6 +11102,46 @@
       "EmptyState"
     ],
     [
+      "AgentStateLabel",
+      "Indicator"
+    ],
+    [
+      "AgentStateLabel",
+      "Pill"
+    ],
+    [
+      "AgentStateLabel",
+      "Typography"
+    ],
+    [
+      "AgentCard",
+      "AgentStateLabel"
+    ],
+    [
+      "AgentCard",
+      "Avatar"
+    ],
+    [
+      "AgentCard",
+      "Card"
+    ],
+    [
+      "AgentCard",
+      "SparkBars"
+    ],
+    [
+      "AgentCard",
+      "Pill"
+    ],
+    [
+      "AgentCard",
+      "Progress"
+    ],
+    [
+      "AgentCard",
+      "Typography"
+    ],
+    [
       "RefChip",
       "Link"
     ],
@@ -11059,6 +11185,7 @@
   "summary": {
     "total": 228,
     "dead": [
+      "AgentCard",
       "Autocomplete",
       "Breadcrumbs",
       "Composer",
@@ -11092,6 +11219,7 @@
       "velocity-story-kit"
     ],
     "deadByAssociation": [
+      "AgentStateLabel",
       "AutocompleteParts",
       "Avatar",
       "BodyMap",
