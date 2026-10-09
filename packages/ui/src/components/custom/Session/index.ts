@@ -3,6 +3,7 @@ export { GapIndicator, type GapIndicatorProps } from './GapIndicator'
 export { ToolCallRow, type ToolCallRowProps } from './ToolCallRow'
 export {
   ConversationTurn,
+  type ConversationLimits,
   type ConversationTurnProps,
   type SessionRoleLabels,
 } from './ConversationTurn'

@@ -88,7 +88,7 @@ word outside that list or the tool names. Fixtures are never exported from a bar
   group: a match inside a closed group un-dims the turn only.
 - A message cut by the read model shows "Text cut at 4,000 characters", and "Load full text"
   only when the host passes `onRequestFullText`. Nothing here fetches.
-- Not virtualised. A closed tool group mounts no rows and an open one at most `maxToolRows` plus
+- Not virtualised. A closed tool group mounts no rows and an open one at most `limits.toolRows` plus
   a "Show N more calls" row; `SessionConversation.test.tsx` bounds the mount of 500 turns.
 
 ## Known gaps

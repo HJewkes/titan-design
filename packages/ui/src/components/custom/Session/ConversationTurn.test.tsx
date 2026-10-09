@@ -54,8 +54,8 @@ describe('ConversationTurn', () => {
     expect(screen.getByText('Agent')).toBeInTheDocument()
   })
 
-  it('mounts no tool row while closed and at most maxToolRows plus the more row when open', () => {
-    render(<ConversationTurn turn={huge} maxToolRows={25} />)
+  it('mounts no tool row while closed and at most limits.toolRows plus the more row when open', () => {
+    render(<ConversationTurn turn={huge} limits={{ toolRows: 25 }} />)
     expect(toolRows()).toHaveLength(0)
 
     fireEvent.click(toolGroup())
@@ -103,7 +103,7 @@ describe('ConversationTurn', () => {
   it('previews a long message and shows the rest on Show more', () => {
     const turn = SESSION_LONG_TEXT.turns[0]!
     const lastLine = turn.user!.text.split('\n').pop()!
-    const { container } = render(<ConversationTurn turn={turn} previewChars={200} />)
+    const { container } = render(<ConversationTurn turn={turn} limits={{ previewChars: 200 }} />)
     expect(container).not.toHaveTextContent(lastLine)
 
     fireEvent.click(screen.getAllByRole('button', { name: 'Show more' })[0]!)

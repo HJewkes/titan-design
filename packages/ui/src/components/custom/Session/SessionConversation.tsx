@@ -15,6 +15,7 @@ import {
 } from './conversation-model'
 import {
   ConversationTurn,
+  type ConversationLimits,
   type ConversationTurnProps,
   type SessionRoleLabels,
 } from './ConversationTurn'
@@ -31,8 +32,6 @@ import type { TimelineMessage, TimelineToolCall, TimelineTurn } from './session-
 export interface SessionConversationProps extends Omit<ViewProps, 'children'> {
   /** The session's turns, in order. Pass `SessionTimeline['turns']` as it comes. */
   turns: TimelineTurn[]
-  /** Names the list for assistive tech. Default "Session conversation". */
-  accessibilityLabel?: string
   /**
    * Plain text, matched case-insensitively against user and assistant text, tool names, input
    * summaries, file paths and error messages. Turns without it are dimmed, never removed, and
@@ -51,10 +50,8 @@ export interface SessionConversationProps extends Omit<ViewProps, 'children'> {
   roleLabels?: SessionRoleLabels
   /** Reference patterns to link in assistant text. */
   linkers?: ProseLinker[]
-  /** Characters of each message shown before "Show more". Default 500. */
-  previewChars?: number
-  /** Tool rows mounted at once in an open group. Default 100. */
-  maxToolRows?: number
+  /** How much text and how many tool rows each turn mounts at once. */
+  limits?: ConversationLimits
   /** Makes each tool row a button. */
   onToolCallPress?: (call: TimelineToolCall) => void
   /** Shown as an action on a message the read model cut at its cap. */
@@ -63,8 +60,6 @@ export interface SessionConversationProps extends Omit<ViewProps, 'children'> {
   isLoading?: boolean
   /** Replaces the default empty state when `turns` is empty. */
   emptyState?: ReactNode
-  /** Tailwind overrides on the root. */
-  className?: string
 }
 
 const NO_TURNS: number[] = []
@@ -86,13 +81,7 @@ function LoadingTurns() {
 
 type SharedTurnProps = Pick<
   ConversationTurnProps,
-  | 'isUTC'
-  | 'roleLabels'
-  | 'linkers'
-  | 'previewChars'
-  | 'maxToolRows'
-  | 'onToolCallPress'
-  | 'onRequestFullText'
+  'isUTC' | 'roleLabels' | 'linkers' | 'limits' | 'onToolCallPress' | 'onRequestFullText'
 >
 
 interface RowProps {
@@ -174,19 +163,17 @@ function ConversationList(props: SessionConversationProps) {
   const rows = useMemo(() => buildConversationRows(turns, dayKeyFor(isUTC)), [turns, isUTC])
   const search = useMemo(() => searchTurns(turns, searchQuery ?? ''), [turns, searchQuery])
   const { openSet, onTurnToggle } = useExpandedTurns(props)
-  const { roleLabels, linkers, previewChars, maxToolRows, onToolCallPress, onRequestFullText } =
-    props
+  const { roleLabels, linkers, limits, onToolCallPress, onRequestFullText } = props
   const shared = useMemo<SharedTurnProps>(
     () => ({
       isUTC,
       roleLabels,
       linkers,
-      previewChars,
-      maxToolRows,
+      limits,
       onToolCallPress,
       onRequestFullText,
     }),
-    [isUTC, roleLabels, linkers, previewChars, maxToolRows, onToolCallPress, onRequestFullText]
+    [isUTC, roleLabels, linkers, limits, onToolCallPress, onRequestFullText]
   )
   return (
     <>
@@ -220,8 +207,9 @@ function ConversationList(props: SessionConversationProps) {
 /**
  * An agent session read back as a conversation: each turn's opener, the assistant's text and one
  * tool group per turn, with the idle gaps the read model marked. Search dims the turns that do
- * not match and announces the count. Not virtualised: a closed tool group mounts no rows, and an
- * open one mounts at most `maxToolRows`, which bounds a 500-turn session.
+ * not match and announces the count. `accessibilityLabel` names the list (default "Session
+ * conversation"). Not virtualised: a closed tool group mounts no rows, and an
+ * open one mounts at most `limits.toolRows`, which bounds a 500-turn session.
  */
 export function SessionConversation(props: SessionConversationProps) {
   const {

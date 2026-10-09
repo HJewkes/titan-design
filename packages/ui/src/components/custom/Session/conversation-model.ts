@@ -2,10 +2,12 @@ import { formatCompact } from '../../../utils/number-format'
 import { formatDurationMs } from '../../../utils/time-format'
 import { formatDateTime } from '../../ui/date-time'
 import {
+  CHANNEL_MARKER,
   SIDECHAIN_LABEL,
   UNNAMED_TOOL_LABEL,
   countLabel,
   toolOutcomeMeta,
+  turnOriginMeta,
 } from './session-vocabulary'
 import type { TimelineMessage, TimelineToolCall, TimelineTurn, ToolFamily } from './session-types'
 
@@ -237,4 +239,16 @@ export function turnLabel(turn: TimelineTurn, isUTC?: boolean): string {
   ]
     .filter(Boolean)
     .join(', ')
+}
+
+/** Host wording for each speaker; any key left out keeps the vocabulary's label. */
+export type SessionRoleLabels = Partial<
+  Record<'user' | 'assistant' | 'injected' | 'channel' | 'compaction', string>
+>
+
+/** The label over a turn's opener: the host's wording when it gave one, else the vocabulary's. */
+export function openerLabel(turn: TimelineTurn, roleLabels?: SessionRoleLabels): string {
+  const isChannel = turn.origin === 'injected' && turn.injectedMarker === CHANNEL_MARKER
+  const key = turn.origin === 'prompt' ? 'user' : isChannel ? 'channel' : turn.origin
+  return (key === 'none' ? undefined : roleLabels?.[key]) ?? turnOriginMeta(turn).label
 }

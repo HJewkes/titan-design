@@ -1114,6 +1114,12 @@ export interface ConversationIdentityProps {
 }
 
 // @public
+export interface ConversationLimits {
+    previewChars?: number;
+    toolRows?: number;
+}
+
+// @public
 export function ConversationTurn(input: ConversationTurnProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -1123,12 +1129,11 @@ export interface ConversationTurnProps {
     expanded?: boolean;
     isDimmed?: boolean;
     isUTC?: boolean;
+    limits?: ConversationLimits;
     linkers?: ProseLinker[];
-    maxToolRows?: number;
     onExpandedChange?: (expanded: boolean) => void;
     onRequestFullText?: (message: TimelineMessage) => void;
     onToolCallPress?: (call: TimelineToolCall) => void;
-    previewChars?: number;
     roleLabels?: SessionRoleLabels;
     showDate?: boolean;
     turn: TimelineTurn;
@@ -6610,19 +6615,16 @@ export function SessionConversation(props: SessionConversationProps): react_jsx_
 
 // @public
 export interface SessionConversationProps extends Omit<ViewProps, 'children'> {
-    accessibilityLabel?: string;
-    className?: string;
     defaultExpandedTurns?: number[];
     emptyState?: ReactNode;
     expandedTurns?: number[];
     isLoading?: boolean;
     isUTC?: boolean;
+    limits?: ConversationLimits;
     linkers?: ProseLinker[];
-    maxToolRows?: number;
     onExpandedTurnsChange?: (turnIndexes: number[]) => void;
     onRequestFullText?: (message: TimelineMessage) => void;
     onToolCallPress?: (call: TimelineToolCall) => void;
-    previewChars?: number;
     roleLabels?: SessionRoleLabels;
     searchQuery?: string;
     turns: TimelineTurn[];

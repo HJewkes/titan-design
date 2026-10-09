@@ -137,7 +137,8 @@ describe('SessionConversation', () => {
     const { container } = render(<SessionConversation turns={SESSION_LARGE.turns} isUTC />)
     expect(container.querySelectorAll('[role="article"]')).toHaveLength(SESSION_LARGE.turns.length)
     expect(container.querySelectorAll('[data-testid="tool-call-row"]')).toHaveLength(0)
-  })
+    // Two 500-turn mounts take about 3 s alone and more under the full parallel suite.
+  }, 30_000)
 
   it.each([
     ['default', {}],

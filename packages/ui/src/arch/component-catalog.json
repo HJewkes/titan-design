@@ -2530,17 +2530,17 @@
         },
         {
           "default": null,
+          "description": "How much text and how many tool rows mount at once.",
+          "name": "limits",
+          "required": false,
+          "type": "ConversationLimits"
+        },
+        {
+          "default": null,
           "description": "Reference patterns to link in assistant text.",
           "name": "linkers",
           "required": false,
           "type": "ProseLinker[]"
-        },
-        {
-          "default": "100",
-          "description": "Tool rows mounted at once in an open group; a \"Show N more calls\" row pages the rest.",
-          "name": "maxToolRows",
-          "required": false,
-          "type": "number"
         },
         {
           "default": null,
@@ -2562,13 +2562,6 @@
           "name": "onToolCallPress",
           "required": false,
           "type": "((call: TimelineToolCall) => void)"
-        },
-        {
-          "default": "500",
-          "description": "Characters of each message shown before \"Show more\".",
-          "name": "previewChars",
-          "required": false,
-          "type": "number"
         },
         {
           "default": null,
@@ -2675,20 +2668,6 @@
       "props": [
         {
           "default": null,
-          "description": "Names the list for assistive tech.",
-          "name": "accessibilityLabel",
-          "required": false,
-          "type": "string"
-        },
-        {
-          "default": null,
-          "description": "Tailwind overrides on the root.",
-          "name": "className",
-          "required": false,
-          "type": "string"
-        },
-        {
-          "default": null,
           "description": "Uncontrolled: the turn indexes whose tool groups start open.",
           "name": "defaultExpandedTurns",
           "required": false,
@@ -2724,17 +2703,17 @@
         },
         {
           "default": null,
+          "description": "How much text and how many tool rows each turn mounts at once.",
+          "name": "limits",
+          "required": false,
+          "type": "ConversationLimits"
+        },
+        {
+          "default": null,
           "description": "Reference patterns to link in assistant text.",
           "name": "linkers",
           "required": false,
           "type": "ProseLinker[]"
-        },
-        {
-          "default": null,
-          "description": "Tool rows mounted at once in an open group.",
-          "name": "maxToolRows",
-          "required": false,
-          "type": "number"
         },
         {
           "default": null,
@@ -2756,13 +2735,6 @@
           "name": "onToolCallPress",
           "required": false,
           "type": "((call: TimelineToolCall) => void)"
-        },
-        {
-          "default": null,
-          "description": "Characters of each message shown before \"Show more\".",
-          "name": "previewChars",
-          "required": false,
-          "type": "number"
         },
         {
           "default": null,
