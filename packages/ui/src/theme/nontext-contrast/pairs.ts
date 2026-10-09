@@ -178,8 +178,8 @@ const tracks: NonTextPair[] = TRACKS.flatMap(([tone, fill, track]) => {
 
 // ── Separators: held to the repo's ΔL* floors (7 / 12 / 18), not to WCAG ─────
 // Divider, ListItem, Table, TablePagination and Metric paint `hairline` since
-// TD-480; nothing paints the `divider` token any more. Drawer, Modal and Menu
-// draw their rules through Divider (TD-61), so its source covers them.
+// TD-480; nothing paints the `divider` token any more. Menu draws its rule
+// through Divider (TD-61), so its source covers it; Drawer and Modal draw none.
 const separators: NonTextPair[] = [
   {
     id: 'separator.hairline-subtle',

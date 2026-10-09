@@ -12,7 +12,7 @@ import {
   ModalFooter,
 } from './Modal'
 import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
-import { dividerClasses } from '../../../test/divider-rule'
+import { bandRules, dividerClasses } from '../../../test/divider-rule'
 
 function renderModal(props: Partial<React.ComponentProps<typeof Modal>> = {}) {
   return render(
@@ -216,16 +216,14 @@ describe('Modal geometry resolves to the spacing tokens', () => {
 })
 
 describe('Modal rules', () => {
-  it('draws a Divider under the header and over the footer', () => {
+  it('separates the header and footer by spacing alone', () => {
     renderModal({ isOpen: true })
     const header = screen.getByText('Test Modal').parentElement
     const footer = screen.getByText('Cancel').parentElement
 
-    expect(dividerClasses(header?.nextElementSibling)).toEqual(['bg-hairline', 'h-px', 'w-full'])
-    expect(dividerClasses(footer?.previousElementSibling)).toEqual([
-      'bg-hairline',
-      'h-px',
-      'w-full',
-    ])
+    expect(dividerClasses(header?.nextElementSibling)).toBeUndefined()
+    expect(dividerClasses(footer?.previousElementSibling)).toBeUndefined()
+    expect(bandRules(header)).toEqual([])
+    expect(bandRules(footer)).toEqual([])
   })
 })

@@ -9,3 +9,9 @@ export function dividerClasses(node: Element | null | undefined): string[] | und
   if (!node || node.getAttribute('role') !== 'presentation') return undefined
   return capturedByNode.get(node)?.split(/\s+/)
 }
+
+/** The border and hairline classes `node` rendered with: a band ruled by its own border, not a `Divider`. */
+export function bandRules(node: Element | null | undefined): string[] {
+  const classes = node ? (capturedByNode.get(node)?.split(/\s+/) ?? []) : []
+  return classes.filter((c) => /^border(-[btlrxy])?$|hairline/.test(c))
+}

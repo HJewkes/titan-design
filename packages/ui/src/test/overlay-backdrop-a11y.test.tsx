@@ -9,19 +9,10 @@ import { Select } from '../components/ui/select'
 
 // Drawer, Popover and Select paint their backdrop as an empty sibling just before the
 // panel, so it is the first empty element preceding an ancestor of the panel's content.
-// A Divider (role presentation) is empty too, so it is skipped.
-function isBackdrop(node: Element | null): node is HTMLElement {
-  return (
-    node instanceof HTMLElement &&
-    node.childElementCount === 0 &&
-    node.getAttribute('role') !== 'presentation'
-  )
-}
-
 function backdropBefore(content: HTMLElement): HTMLElement {
   for (let node: HTMLElement | null = content; node; node = node.parentElement) {
     const previous = node.previousElementSibling
-    if (isBackdrop(previous)) return previous
+    if (previous instanceof HTMLElement && previous.childElementCount === 0) return previous
   }
   throw new Error('No backdrop precedes the overlay content')
 }

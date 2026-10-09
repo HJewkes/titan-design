@@ -9,7 +9,6 @@ import {
   type ModalProps as RNModalProps,
 } from 'react-native'
 import { cn } from '../../../utils/cn'
-import { Divider } from '../divider'
 import { Surface } from '../surface'
 
 export type ModalSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
@@ -174,14 +173,11 @@ export interface ModalHeaderProps {
  */
 export function ModalHeader({ children, className }: ModalHeaderProps) {
   return (
-    <>
-      <View
-        className={cn('flex-row items-center justify-between px-inset-xl py-inset-lg', className)}
-      >
-        {children}
-      </View>
-      <Divider />
-    </>
+    <View
+      className={cn('flex-row items-center justify-between px-inset-xl py-inset-lg', className)}
+    >
+      {children}
+    </View>
   )
 }
 
@@ -275,13 +271,10 @@ export interface ModalFooterProps {
  */
 export function ModalFooter({ children, className }: ModalFooterProps) {
   return (
-    <>
-      <Divider />
-      <View
-        className={cn('flex-row items-center justify-end gap-2 px-inset-xl py-inset-lg', className)}
-      >
-        {children}
-      </View>
-    </>
+    <View
+      className={cn('flex-row items-center justify-end gap-2 px-inset-xl py-inset-lg', className)}
+    >
+      {children}
+    </View>
   )
 }
