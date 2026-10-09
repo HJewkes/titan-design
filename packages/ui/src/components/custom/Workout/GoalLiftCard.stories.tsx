@@ -95,12 +95,15 @@ export default meta
 
 type Story = StoryObj<typeof GoalLiftCard>
 
+/** The card's `p-inset-lg` on both sides: the collapse measures the content box, so the frame is this much wider. */
+const CARD_INSET_X = 32
+
 /** The 4-up cell at 1920: (1872 - 3x12) / 4. */
 export const Default: Story = {}
 
 /**
  * The card in every width-matrix frame, one pixel either side of
- * `STATUS_COLLAPSE_WIDTH`, with the S-3 stress name so the title wrap shows.
+ * `STATUS_COLLAPSE_WIDTH` as the card's content box sees it, with the S-3 stress name so the title wrap shows.
  *
  * The wrap is verified HERE, in the browser, not in a unit test: jsdom has no
  * layout engine, so every `getBoundingClientRect` is zero and a rendered line
@@ -111,7 +114,10 @@ export const Widths: Story = {
   tags: ['width-matrix'],
   args: { name: STRESS_STRINGS.S3 },
   argTypes: { statusForm: { control: false } },
-  parameters: { layout: 'fullscreen', widthMatrix: { thresholds: [STATUS_COLLAPSE_WIDTH] } },
+  parameters: {
+    layout: 'fullscreen',
+    widthMatrix: { thresholds: [STATUS_COLLAPSE_WIDTH + CARD_INSET_X] },
+  },
   decorators: [
     (Story) => (
       <Surface level="base">

@@ -8,6 +8,9 @@ import { WHOLE_BODY_WALL_MIN_WIDTH } from './wholeBody'
 import { WHOLE_BODY_WEIGHT as W } from './wholeBody-fixture'
 import { PHASE_TAG_COLLAPSE_WIDTH } from './wholeBodyCardParts'
 
+/** The card's `p-inset-lg` on both sides: both flips measure the content box, so the frame is this much wider. */
+const CARD_INSET_X = 32
+
 /** The wall's two-up grid cell at 1920; narrower canvases take their own width. */
 const CELL_MAX_WIDTH = 920
 
@@ -73,14 +76,18 @@ export const Default: Story = {}
 
 /**
  * The card in every width-matrix frame, one pixel either side of the phase tag's
- * collapse and of the wall scale. Width decides both, so the `scale` control is off.
+ * collapse and of the wall scale, as the card's content box sees them. Width decides both, so the `scale` control is off.
  */
 export const Widths: Story = {
   tags: ['width-matrix'],
   argTypes: { scale: { control: false } },
   parameters: {
     layout: 'fullscreen',
-    widthMatrix: { thresholds: [PHASE_TAG_COLLAPSE_WIDTH, WHOLE_BODY_WALL_MIN_WIDTH] },
+    widthMatrix: {
+      thresholds: [PHASE_TAG_COLLAPSE_WIDTH, WHOLE_BODY_WALL_MIN_WIDTH].map(
+        (w) => w + CARD_INSET_X
+      ),
+    },
   },
   decorators: [
     (Story) => (
