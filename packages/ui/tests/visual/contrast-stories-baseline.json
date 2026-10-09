@@ -183,15 +183,12 @@
     "#f9b415|#edeae7": 1
   },
   "components-atoms-treemap--light dark": {
-    "#191919|#d65656": 1,
     "#ffffff|#ad6e19": 1
   },
   "components-atoms-treemap--light light": {
-    "#191919|#d65656": 1,
     "#ffffff|#ad6e19": 1
   },
   "components-atoms-treemap--truncated light": {
-    "#191919|#d65656": 5,
     "#ffffff|#ad6e19": 4
   },
   "components-molecules-alert--all-variants dark": {
@@ -2465,12 +2462,12 @@
     "#888684|#2c2a28": 19
   },
   "lab-decisions-dataviz-light-palettes--categorical dark": {
-    "#191918|#d55555": 2,
+    "#191918|#d55555": 1,
     "#888684|#252321": 2,
     "#888684|#2c2a28": 14
   },
   "lab-decisions-dataviz-light-palettes--categorical light": {
-    "#191918|#d55555": 2,
+    "#191918|#d55555": 1,
     "#888684|#252321": 1,
     "#888684|#2c2a28": 14
   },
