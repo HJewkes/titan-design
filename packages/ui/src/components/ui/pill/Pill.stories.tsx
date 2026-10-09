@@ -4,6 +4,9 @@ import { Pill } from './Pill'
 import { Indicator } from '../indicator'
 import { Surface } from '../surface'
 import { Typography } from '../typography'
+import { darkThemeCSSVars, lightThemeCSSVars } from '../../../theme/config'
+import { formatTrimmedDecimal } from '../../../utils/number-format'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 
 const meta: Meta<typeof Pill> = {
   title: 'Components/Atoms/Pill',
@@ -203,6 +206,96 @@ export const SquareCorners: Story = {
       <Pill rounded={false} tone="success">
         Done
       </Pill>
+    </View>
+  ),
+}
+
+const OUTLINE_TONES = [
+  ['neutral', 'hairline-strong'],
+  ['brand', 'brand-primary'],
+  ['brand-secondary', 'brand-secondary'],
+  ['success', 'status-success'],
+  ['warning', 'status-warning'],
+  ['error', 'status-error'],
+  ['info', 'status-info'],
+] as const
+const PLANES = ['surface-base', 'surface-elevated', 'surface-raised', 'surface-overlay'] as const
+
+type Rgb = [number, number, number]
+
+function parseColor(color: string): { rgb: Rgb; alpha: number } {
+  const rgba = color.match(/rgba?\(([^)]+)\)/)
+  if (rgba) {
+    const [r, g, b, a = '1'] = rgba[1].split(',').map((part) => part.trim())
+    return { rgb: [Number(r), Number(g), Number(b)], alpha: Number(a) }
+  }
+  const h = color.replace('#', '')
+  return { rgb: [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16)) as Rgb, alpha: 1 }
+}
+
+function luminance([r, g, b]: Rgb): number {
+  const [lr, lg, lb] = [r, g, b].map((c) => {
+    const v = c / 255
+    return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4)
+  })
+  return 0.2126 * lr + 0.7152 * lg + 0.0722 * lb
+}
+
+/** Border-vs-plane ratio, with an alpha border composited over the plane first. */
+function borderRatio(border: string, plane: string): number {
+  const b = parseColor(border)
+  const p = parseColor(plane)
+  const flat = b.rgb.map((c, i) => c * b.alpha + p.rgb[i] * (1 - b.alpha)) as Rgb
+  const [hi, lo] = [luminance(flat), luminance(p.rgb)].sort((x, y) => y - x)
+  return (hi + 0.05) / (lo + 0.05)
+}
+
+/**
+ * Every outline tone on every elevation plane, both themes, with the ring-vs-plane
+ * contrast ratio printed under each pill. The neutral ring reads `hairline-strong`, one
+ * step above the shared `hairline-default` (lighter in dark, darker in light). Each theme
+ * column scopes its own CSS variables, so both render whichever theme Storybook is in.
+ */
+export const OutlineOnAllElevations: Story = {
+  render: () => (
+    <View className="gap-6">
+      {(['dark', 'light'] as const).map((mode) => {
+        const colors = getSemanticColors(mode)
+        return (
+          <View
+            key={mode}
+            className="gap-2"
+            style={(mode === 'dark' ? darkThemeCSSVars : lightThemeCSSVars) as never}
+          >
+            <Typography variant="caption" color="tertiary">
+              {mode}
+            </Typography>
+            {PLANES.map((plane) => (
+              <View
+                key={plane}
+                className="gap-2 rounded-xl p-4"
+                style={{ backgroundColor: colors[plane] }}
+              >
+                <Typography variant="caption" color="tertiary">
+                  {plane} · {colors[plane]}
+                </Typography>
+                <View className="flex-row flex-wrap gap-4">
+                  {OUTLINE_TONES.map(([tone, token]) => (
+                    <View key={tone} className="items-start gap-1">
+                      <Pill variant="outline" tone={tone}>
+                        {tone}
+                      </Pill>
+                      <Typography variant="caption" color="tertiary">
+                        {formatTrimmedDecimal(borderRatio(colors[token], colors[plane]), 2)}:1
+                      </Typography>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            ))}
+          </View>
+        )
+      })}
     </View>
   ),
 }

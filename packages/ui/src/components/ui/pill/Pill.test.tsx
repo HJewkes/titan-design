@@ -259,6 +259,19 @@ describe('Pill neutral faces', () => {
   })
 })
 
+describe('Pill neutral outline', () => {
+  it('draws its ring one hairline step above the shared default', () => {
+    render(
+      <Pill testID="pill" variant="outline" tone="neutral">
+        Idle
+      </Pill>
+    )
+    const classes = (capturedClassNames.get('pill') ?? '').split(/\s+/)
+    expect(classes).toContain('border-hairline-strong')
+    expect(classes).not.toContain('border-hairline')
+  })
+})
+
 describe('Pill outline error', () => {
   it('keeps the ring on status-error and puts the label on text-error', () => {
     render(
