@@ -13,15 +13,17 @@ This README is the **index**: **composes ↓** and **used-by ↑**.
 
 ## Dependency map
 
-| Member                  | Kind     | Composes ↓                                                     | Used-by ↑                       |
-| ----------------------- | -------- | -------------------------------------------------------------- | ------------------------------- |
-| `ToolCallRow`           | molecule | `ToolBadge`, `Indicator`, `DateTime`, `Typography`, `Collapse` | `ConversationTurn` (TP-855b)    |
-| `GapIndicator`          | molecule | `Divider`, `Typography`, `DateTime`                            | `SessionConversation` (TP-855b) |
-| `ToolBadge`             | atom     | `Pill`                                                         | `ToolCallRow`, tool legends     |
-| `session-vocabulary.ts` | words    | `IndicatorColor`                                               | every member                    |
-| `conversation-model.ts` | pure fns | `formatDurationMs` (`utils/time-format.ts`)                    | `ToolCallRow`                   |
-| `session-types.ts`      | types    | —                                                              | every member                    |
-| `session-fixture.ts`    | fixtures | `seededRandom` (`ui/charts/kit`)                               | tests and stories only          |
+| Member                  | Kind     | Composes ↓                                                     | Used-by ↑                      |
+| ----------------------- | -------- | -------------------------------------------------------------- | ------------------------------ |
+| `SessionConversation`   | organism | `ConversationTurn`, `GapIndicator`, `Skeleton`, `EmptyState`   | console Sessions page (TP-862) |
+| `ConversationTurn`      | organism | `ToolCallRow`, `MarkdownProse`, `Card`, `Pill`, `Collapse`     | `SessionConversation`          |
+| `ToolCallRow`           | molecule | `ToolBadge`, `Indicator`, `DateTime`, `Typography`, `Collapse` | `ConversationTurn`             |
+| `GapIndicator`          | molecule | `Divider`, `Typography`, `DateTime`                            | `SessionConversation`          |
+| `ToolBadge`             | atom     | `Pill`                                                         | `ToolCallRow`, tool legends    |
+| `session-vocabulary.ts` | words    | `IndicatorColor`                                               | every member                   |
+| `conversation-model.ts` | pure fns | `formatDurationMs`, `formatCompact`, `formatDateTime`          | every component                |
+| `session-types.ts`      | types    | —                                                              | every member                   |
+| `session-fixture.ts`    | fixtures | `seededRandom` (`ui/charts/kit`)                               | tests and stories only         |
 
 No new primitive and no new token.
 
@@ -70,6 +72,24 @@ word outside that list or the tool names. Fixtures are never exported from a bar
   printed in words. The error text is a separate disclosure beside the row and renders as
   literal text.
 - `GapIndicator` is a separator named by the idle time.
+- `SessionConversation` is a `list` named by `accessibilityLabel`; each turn is an `article`
+  named "Turn 12, 02:03 PM, 6 tool calls, 1 error". While `searchQuery` is set, a polite status
+  line reads "3 of 24 turns match". Dimmed turns stay in reading order and stay focusable.
+- A turn's tool group is a disclosure named by its summary ("Tool calls: 6 calls, 1 error,
+  14 s"). Keyboard is Tab and Enter or Space only: no arrow keys and no roving focus.
+
+## Rules the reader keeps
+
+- Gap rows come from `gapBeforeMs`; the reader never recomputes the 10-minute threshold.
+- User and opener text is plain text; assistant text goes through `MarkdownProse`. Injected,
+  channel and compaction openers carry their own label, never "User".
+- Search is a case-insensitive plain substring over user and assistant text, tool names, input
+  summaries, file paths and error messages. It is never a `RegExp`, and it never opens a tool
+  group: a match inside a closed group un-dims the turn only.
+- A message cut by the read model shows "Text cut at 4,000 characters", and "Load full text"
+  only when the host passes `onRequestFullText`. Nothing here fetches.
+- Not virtualised. A closed tool group mounts no rows and an open one at most `maxToolRows` plus
+  a "Show N more calls" row; `SessionConversation.test.tsx` bounds the mount of 500 turns.
 
 ## Known gaps
 
@@ -78,3 +98,6 @@ word outside that list or the tool names. Fixtures are never exported from a bar
   inherits that until `Collapse` is fixed.
 - A tint per tool family needs fill and on-fill tokens. That is an
   owner question (C12), so `ToolBadge` is neutral.
+- A channel opener renders as a quiet `Channel` label and preview. The contract's `BusMessageRow`
+  (TD-498) and the turn's `channel` field do not exist yet.
+- Scrolling to `activeTime` and reporting the visible range are TP-855c.
