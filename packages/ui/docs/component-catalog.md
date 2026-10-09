@@ -93,7 +93,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | Menu | candidate | ui/menu | Menu component for dropdown menus. | Surface, TriggerSurface | components-molecules-menu--controlled |
 | MesoCard | candidate | custom/Workout | A mesocycle card with name, goal, split, week range, an optional volume heatmap strip, and an expandable WeekRow list. | Badge, Card, WeekRow | custom-workout-mesocard--collapsed |
 | MesoProgressBar | candidate | custom/Workout | Segmented horizontal bar of mesocycles. | — | custom-workout-mesoprogressbar--active-current |
-| MesoStatusCard | candidate | custom/Workout | Mesocycle context card for a specific exercise: prescription vs actual metrics, intensity/volume gauges, and coaching guidance. | Card, StatusDot | custom-workout-mesostatuscard--default |
+| MesoStatusCard | candidate | custom/Workout | Mesocycle context card for a specific exercise: prescription vs actual metrics, intensity/volume gauges, and coaching guidance. | Card, MesoStatusCard.parts, StatusDot | custom-workout-mesostatuscard--default |
 | MessageBubble | candidate | custom/Chat | One chat message: markdown prose in a bubble and any `data-*` parts rendered by the caller beneath it. | Avatar, MarkdownProse, Surface, Typography | custom-chat-messagelist-messagebubble--default |
 | MessageList | candidate | custom/Chat | A chat thread, oldest at the top. | Button, ConversationIdentity, DateSeparator, MarkdownProse, MessageBubble, RevealRow, TypingIndicator, UnreadBadge | custom-chat-messagelist--default |
 | Metric | candidate | ui/metric | — | — | components-molecules-metric--default |
@@ -117,6 +117,8 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | Progress | stable | ui/progress | Linear progress bar component. | — | components-molecules-progress--all-colors |
 | Radio | stable | ui/radio | Radio button component. | — | components-molecules-radio--all-colors |
 | ReadinessCheck | candidate | custom/Workout | Pre-workout readiness assessment combining subjective emoji sliders with an objective VBT warm-up validation and a computed readiness score. | Badge, Card | custom-workout-readinesscheck--default |
+| RefChip | candidate | custom/ActiveWork | RefChip — a typed pointer at another entity: a kind glyph, the ref's label and an optional status. | Link, Pill | custom-activework-refchip--default |
+| RelatedList | candidate | custom/ActiveWork | RelatedList — a detail page's related panel: refs grouped by kind, each group headed by its plural and a count, each ref a `RefChip`. | EmptyState, Eyebrow, RefChip, Skeleton, Typography | custom-activework-relatedlist--default |
 | RestTimer | candidate | custom/Workout | — | CircularTimer | custom-workout-resttimer--default |
 | RevealRow | review | custom/Chat | One thread row that slides left with the drag and carries its message time in a column parked past the right edge. | DateTime | — |
 | RomProgressionChart | candidate | custom/Fatigue | — | SetBarChart | custom-fatigue-rom-progression--across-states |

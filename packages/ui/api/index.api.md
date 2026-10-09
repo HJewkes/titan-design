@@ -491,7 +491,7 @@ export function BotIcon(input: IconProps): react_jsx_runtime.JSX.Element;
 export function BrainIcon(input: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
-export type BrandKey = 'voltras' | 'audiobook' | 'active-work' | 'agents' | 'brain';
+export type BrandKey = 'voltras' | 'audiobook' | 'active-work' | 'agents' | 'brain' | 'console';
 
 // @public
 export const brandKeys: BrandKey[];
@@ -1395,6 +1395,9 @@ export function deriveMilestoneState(input: {
 // @public
 export function deriveTrajectoryGeometry(input: GoalTrajectoryGeometryInput): GoalTrajectoryGeometry;
 
+// @public
+export function describeRef(input: EntityRef): string;
+
 // @public (undocumented)
 export function DeviationBar(input: DeviationBarProps): react_jsx_runtime.JSX.Element;
 
@@ -1672,6 +1675,15 @@ export interface EmptyStateProps extends ViewProps {
     }>;
     isIconBare?: boolean;
     title: string;
+}
+
+// @public
+export interface EntityRef {
+    href?: string;
+    id: string;
+    kind: RefKind;
+    label: string;
+    status?: RefStatus;
 }
 
 // @public
@@ -3523,6 +3535,9 @@ export function groupByPeriod(sessions: SessionSummary[]): Period[];
 
 // @public
 export function groupPriorities(entries: readonly GoalPriorityIndexEntry[]): GoalPriorityIndexGroup[];
+
+// @public
+export function groupRefsByKind(refs: readonly EntityRef[]): RefGroup[];
 
 // @public
 export function Heading(input: HeadingProps): react_jsx_runtime.JSX.Element;
@@ -5813,6 +5828,112 @@ export const RED_LIGHT: "#F77175";
 
 // @public (undocumented)
 export const RED_MID: "#D14343";
+
+// @public
+export const REF_KIND_META: {
+    readonly task: {
+        readonly label: "Task";
+        readonly plural: "Tasks";
+        readonly glyph: "#";
+        readonly color: "data-1";
+    };
+    readonly pr: {
+        readonly label: "Pull request";
+        readonly plural: "Pull requests";
+        readonly glyph: "⇄";
+        readonly color: "data-2";
+    };
+    readonly session: {
+        readonly label: "Session";
+        readonly plural: "Sessions";
+        readonly glyph: "▸";
+        readonly color: "data-5";
+    };
+    readonly agent: {
+        readonly label: "Agent";
+        readonly plural: "Agents";
+        readonly glyph: "@";
+        readonly color: "data-6";
+    };
+    readonly note: {
+        readonly label: "Note";
+        readonly plural: "Notes";
+        readonly glyph: "¶";
+        readonly color: "data-3";
+    };
+    readonly file: {
+        readonly label: "File";
+        readonly plural: "Files";
+        readonly glyph: "/";
+        readonly color: "data-7";
+    };
+    readonly initiative: {
+        readonly label: "Initiative";
+        readonly plural: "Initiatives";
+        readonly glyph: "◆";
+        readonly color: "data-9";
+    };
+};
+
+// @public
+export const REF_KIND_ORDER: readonly ["task", "pr", "session", "agent", "note", "file", "initiative"];
+
+// @public
+export function RefChip(input: RefChipProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface RefChipProps extends EntityRef {
+    className?: string;
+    onPressRef?: (ref: EntityRef) => void;
+    size?: PillSizeLevel;
+    testID?: string;
+}
+
+// @public
+export interface RefGraphKind {
+    color: ColorToken$1;
+    id: RefKind;
+    label: string;
+}
+
+// @public
+export function refGraphKinds(): RefGraphKind[];
+
+// @public
+export interface RefGroup {
+    kind: RefKind;
+    refs: EntityRef[];
+}
+
+// @public
+export type RefKind = 'task' | 'pr' | 'session' | 'agent' | 'note' | 'file' | 'initiative';
+
+// @public
+export interface RefKindMeta {
+    color: ColorToken$1;
+    glyph: string;
+    label: string;
+    plural: string;
+}
+
+// @public
+export interface RefStatus {
+    label: string;
+    tone: PillTone;
+}
+
+// @public
+export function RelatedList(input: RelatedListProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface RelatedListProps {
+    className?: string;
+    emptyState?: ReactNode;
+    isLoading?: boolean;
+    onPressRef?: (ref: EntityRef) => void;
+    refs: readonly EntityRef[];
+    testID?: string;
+}
 
 // @public
 export function RepeatIcon(props: IconProps): react_jsx_runtime.JSX.Element;
