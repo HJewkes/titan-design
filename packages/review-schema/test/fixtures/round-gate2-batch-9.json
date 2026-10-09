@@ -1,0 +1,252 @@
+{
+  "schema": "titan-review/round@2",
+  "unit": "gate2-batch-9",
+  "round": 1,
+  "storybookUrl": "http://127.0.0.1:6105",
+  "context": "Gate 2, batch 9 (trimmed to three sections): main against head in both themes, with a pick and a Ship question per PR. Keys end -d for dark and -l for light.",
+  "widths": [
+    1280
+  ],
+  "height": "auto",
+  "recommendations": "after-answer",
+  "variants": [
+    {
+      "key": "cs-preset-d",
+      "storyId": "components-molecules-card--stat",
+      "label": "CardStat Stat story, #763 (Metric: value above label, filled plane), dark"
+    },
+    {
+      "key": "cs-tile-d",
+      "storyId": "lab-gate2b9-main-tile--default",
+      "label": "Tile Default, main (label above value, raised plane), dark"
+    },
+    {
+      "key": "cs-preset-l",
+      "storyId": "components-molecules-card--stat",
+      "label": "CardStat Stat story, #763, light",
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "cs-tile-l",
+      "storyId": "lab-gate2b9-main-tile--default",
+      "label": "Tile Default, main, light",
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "mp-default-main-d",
+      "storyId": "lab-gate2b9-main-markdownprose--default",
+      "label": "MarkdownProse Default, main, dark"
+    },
+    {
+      "key": "mp-default-head-d",
+      "storyId": "custom-prose-markdownprose--default",
+      "label": "MarkdownProse Default, #765, dark"
+    },
+    {
+      "key": "mp-default-main-l",
+      "storyId": "lab-gate2b9-main-markdownprose--default",
+      "label": "MarkdownProse Default, main, light",
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "mp-default-head-l",
+      "storyId": "custom-prose-markdownprose--default",
+      "label": "MarkdownProse Default, #765, light",
+      "globals": {
+        "theme": "light"
+      }
+    }
+  ],
+  "questions": [
+    {
+      "id": "td54-pick",
+      "kind": "pick-one",
+      "prompt": "Which look should the Card stat preset carry: the CardStat Stat story as proposed, or Tile's current look?",
+      "required": true,
+      "options": [
+        "CardStat as proposed (value above label)",
+        "Tile's current look (label above value)"
+      ],
+      "signsOff": "the anatomy of the Card stat preset that replaces Tile: label position, label colour and plane",
+      "page": "HJewkes/titan-design#763",
+      "recommendation": {
+        "answer": "CardStat as proposed (value above label)",
+        "rationale": "The proposed preset is Metric anatomy on a filled Card one plane up: the figure first (heading face, text-primary), then an uppercase text-secondary label, 120 px wide in the story. Tile is the inverse: a 10 px bold text-tertiary label over a 14 px mono value on the raised plane. Tile's look is the denser one and it is what SessionMetrics and ScheduleTiles render today, which is why the PR keeps it pixel-for-pixel through the wrapper. The preset is the library's answer (roadmap decision 1: the stat is a Card preset composing Metric), reads at a glance from further away, and puts the label on text-secondary, which clears AA where Tile's text-tertiary label does not in dark. Pick the preset; Tile's consumers keep their look.",
+        "confidence": 0.6,
+        "by": "recommender"
+      }
+    },
+    {
+      "id": "td54-ship",
+      "kind": "pick-one",
+      "prompt": "Ship HJewkes/titan-design#763 at 1a9b9a1886a1d8428aea1ac06af47a63bdbaa2f6?",
+      "required": true,
+      "options": [
+        "Ship",
+        "Don't ship"
+      ],
+      "signsOff": "CardStat as the Card stat preset, Metric's labelPosition and valueStyle, and Tile rendered over CardStat",
+      "page": "HJewkes/titan-design#763",
+      "merge": {
+        "repo": "HJewkes/titan-design",
+        "pr": 763,
+        "headSha": "1a9b9a1886a1d8428aea1ac06af47a63bdbaa2f6",
+        "ship": [
+          "Ship"
+        ]
+      },
+      "recommendation": {
+        "answer": "Ship",
+        "rationale": "Tile over CardStat is a zero-pixel refactor: this round rendered the Tile Row story from main's own Tile.tsx and from the head, dark and light, and both pairs measure 0 differing pixels (the implementer's 16 pairs agree). The preset itself is new (the Stat story): a filled Card at elevation 1 holding a Metric, with tone for the value colour. Metric gains labelPosition and valueStyle so Tile can keep its label-above, hex-tinted look through the wrapper; both are additive. The 684-line snapshot churn is FileActivityDetail's characterise snapshot picking up the wrapper's extra View. No token, no layout change outside the new story.",
+        "confidence": 0.8,
+        "by": "recommender"
+      }
+    },
+    {
+      "id": "td402-ship",
+      "kind": "pick-one",
+      "prompt": "Ship HJewkes/titan-design#765 at 2be2b484df9e21ba7c7d718567cc237d5be52b01?",
+      "required": true,
+      "options": [
+        "Ship",
+        "Don't ship"
+      ],
+      "signsOff": "fenced code blocks (mono, language label, horizontal scroll) and pipe tables (ui/table, delimiter-row alignment) in MarkdownProse",
+      "page": "HJewkes/titan-design#765",
+      "merge": {
+        "repo": "HJewkes/titan-design",
+        "pr": 765,
+        "headSha": "2be2b484df9e21ba7c7d718567cc237d5be52b01",
+        "ship": [
+          "Ship"
+        ]
+      },
+      "recommendation": {
+        "answer": "Ship",
+        "rationale": "The CodeBlocks story shows a bash fence with its language label on text-secondary and the long command line clipped at the block's edge, where it scrolls sideways instead of wrapping, and an unterminated ts fence that runs to the end of the body. The Tables story shows a three-column pipe table on ui/table with the delimiter row driving alignment (Task left, Owner centre, Done right) and the ragged last row padded to the header. The Default story is unchanged: 0 differing pixels against main in both themes. One head-only defect, small but real: the rule under the language label is painted black in both themes (the gate reads #000000 on the dark plane, 1.34:1; in light it is the hard dark line under BASH and TS, darker than the block's own edge), because `border-b border-border-subtle` sits on the Text element and the colour class does not apply to it. A one-line move of the border onto a View fixes it. Ship with that as a follow-up, or ask for the fix round first if a black rule in light bothers you.",
+        "confidence": 0.7,
+        "by": "recommender"
+      }
+    }
+  ],
+  "sections": [
+    {
+      "id": "cs-pick",
+      "title": "#763 The stat preset look",
+      "deciding": "Which anatomy the Card stat preset carries: the proposed CardStat (Metric: figure above an uppercase text-secondary label, filled plane one level up) or Tile's current look (10 px bold text-tertiary label above a mono value, raised plane).",
+      "changed": "The CardStat `Stat` story is new; Tile's Default is main's own and is what Tile still renders through the wrapper.",
+      "context": "The Stat story renders CardStat at 120 px wide with Volume / 76%, size sm, align center. Tile's Default is the same label and value at its natural width. Neither frame is a page; compare the anatomy, not the width.",
+      "kind": "STATES",
+      "questionIds": [
+        "td54-pick",
+        "td54-ship"
+      ],
+      "variantKeys": [
+        "cs-preset-d",
+        "cs-tile-d",
+        "cs-preset-l",
+        "cs-tile-l"
+      ],
+      "contrast": {
+        "knownDefects": [
+          {
+            "mode": "dark",
+            "kind": "text",
+            "element": "div > div > div:nth-of-type(1)",
+            "minRatio": 3.63,
+            "route": "TD-136",
+            "reason": "dark text-tertiary (unit, caption, eyebrow, tick label) against its plane; same on main and the head (#888684 on #31302f, 3.63:1, against 4.5:1)"
+          },
+          {
+            "mode": "light",
+            "kind": "text",
+            "element": "div > div > div:nth-of-type(1)",
+            "minRatio": 4.06,
+            "route": "TD-413",
+            "reason": "light text-tertiary (unit, caption, eyebrow, tick label) against its plane; same on main and the head (#72716f on #edeae7, 4.06:1, against 4.5:1)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mp-default",
+      "title": "#765 MarkdownProse Default",
+      "deciding": "Nothing on its own: the existing Default story, main against head, both themes. Expected pixel-identical.",
+      "changed": "Nothing in this story: headings, bullets, inline code and the three linker tones are untouched. 0 differing pixels on both pairs.",
+      "context": "Each main frame is a lab copy of main's files at `decc7b7b` beside the merged tree, so the pair isolates this PR. Contrast misses that main also has are listed under this section with the task that owns each; none is in scope here.",
+      "kind": "STATES",
+      "questionIds": [
+        "td402-ship"
+      ],
+      "variantKeys": [
+        "mp-default-main-d",
+        "mp-default-head-d",
+        "mp-default-main-l",
+        "mp-default-head-l"
+      ],
+      "contrast": {
+        "knownDefects": [
+          {
+            "mode": "light",
+            "kind": "text",
+            "element": "div > div > div > div:nth-of-type(2) > div:nth-of-type(1)",
+            "minRatio": 2.62,
+            "route": "TD-412",
+            "reason": "brand, status or data colour text (bullets, task refs, tick labels, VL labels, e1RM, trend pill, a hex valueColor) against its plane; same on main and the head (#ff7900 on #ffffff, 2.62:1, against 4.5:1)"
+          },
+          {
+            "mode": "light",
+            "kind": "text",
+            "element": "div > div > div > div:nth-of-type(3) > div:nth-of-type(1)",
+            "minRatio": 2.62,
+            "route": "TD-412",
+            "reason": "brand, status or data colour text (bullets, task refs, tick labels, VL labels, e1RM, trend pill, a hex valueColor) against its plane; same on main and the head (#ff7900 on #ffffff, 2.62:1, against 4.5:1)"
+          },
+          {
+            "mode": "light",
+            "kind": "text",
+            "element": "div > div > div > div:nth-of-type(4) > div:nth-of-type(1)",
+            "minRatio": 2.62,
+            "route": "TD-412",
+            "reason": "brand, status or data colour text (bullets, task refs, tick labels, VL labels, e1RM, trend pill, a hex valueColor) against its plane; same on main and the head (#ff7900 on #ffffff, 2.62:1, against 4.5:1)"
+          },
+          {
+            "mode": "dark",
+            "kind": "text",
+            "element": "prose-ref-pr",
+            "minRatio": 4.31,
+            "route": "TD-136",
+            "reason": "dark text-tertiary (unit, caption, eyebrow, tick label) against its plane; same on main and the head (#888684 on #252321, 4.31:1, against 4.5:1)"
+          },
+          {
+            "mode": "light",
+            "kind": "text",
+            "element": "prose-ref-task",
+            "minRatio": 2.62,
+            "route": "TD-412",
+            "reason": "brand, status or data colour text (bullets, task refs, tick labels, VL labels, e1RM, trend pill, a hex valueColor) against its plane; same on main and the head (#ff7900 on #ffffff, 2.62:1, against 4.5:1)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "fyi",
+      "title": "For your information: no question",
+      "deciding": "Nothing. Each line records a route or a settled answer; reply to overrule.",
+      "changed": "Nothing is shown here.",
+      "context": "1. #763: the Tile Row pairs are 0 differing pixels in both themes. The Tile Default frame on the pick page is main's own Tile; the head renders it identically.\n2. #765: the Default story is 0 differing pixels in both themes; the long bash line is clipped at the block edge on purpose (it scrolls).",
+      "questionIds": [],
+      "variantKeys": []
+    }
+  ],
+  "build": {
+    "mainSha": "decc7b7b3262641bfde0d60a330296d25b79d3f2",
+    "mergeSha": "83e03c29f724a1ee9e55a7b7ee2182eb18bcf926"
+  }
+}
