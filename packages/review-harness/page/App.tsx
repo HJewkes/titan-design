@@ -1,4 +1,5 @@
 import {
+  Fragment,
   useLayoutEffect,
   useEffect,
   useMemo,
@@ -263,13 +264,15 @@ function SectionBlock({ section, ...props }: PartProps & { section: ResolvedSect
       <SectionText part="changed" label="Changed since last approved" text={section.changed} />
       <SectionParts parts={section.parts} />
       <SectionText part="context" label="Context only, not under review" text={section.context} />
-      {section.kind && (
-        <p className="strip-kind" data-testid={`strip-kind-${section.id}`}>
-          {STRIP_KIND_LABEL[section.kind]}
-        </p>
-      )}
       {section.blocks.map((block) => (
-        <Block key={blockKey(block)} {...props} block={block} />
+        <Fragment key={blockKey(block)}>
+          {block.kind === 'strip' && section.kind && (
+            <p className="strip-kind" data-testid={`strip-kind-${section.id}`}>
+              {STRIP_KIND_LABEL[section.kind]}
+            </p>
+          )}
+          <Block {...props} block={block} />
+        </Fragment>
       ))}
     </section>
   )

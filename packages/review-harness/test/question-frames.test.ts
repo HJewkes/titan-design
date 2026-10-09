@@ -119,6 +119,8 @@ describe('a round of two PR groups with anchored picks', () => {
       at('data-testid="question-ship-102"')
     )
     expect(markup).toContain('Section 2 of 3: #102 Button weight and style')
+    expect(markup).not.toContain('data-testid="strip-kind-pr-102-picks"')
+    expect(markup).toContain('data-testid="strip-kind-pr-102-ship"')
   })
 
   it('refuses a pick whose frames sit in another section, naming both', async () => {
