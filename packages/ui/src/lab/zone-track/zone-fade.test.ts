@@ -1,19 +1,30 @@
 import { describe, expect, it } from 'vitest'
-import { contrast } from '../../theme/color-checks'
-import { getSemanticColors } from '../../theme/tokens/semantic'
+import type { ThemeMode } from '../../theme/tokens/semantic'
 import {
+  ADJACENT_FLOOR,
+  PLANE_FLOOR,
+  fadedPalette,
   highlightZones,
-  measureFade,
   rampColor,
   rampLabel,
   scaleZones,
   stepDown,
-  type PaletteId,
   type ScaleId,
 } from './zone-fade'
 
-const RAMP_PALETTE_IDS: PaletteId[] = ['stepOne', 'stepTwo']
 const SCALE_IDS: ScaleId[] = ['effort', 'diverging']
+const MODE_IDS: ThemeMode[] = ['dark', 'light']
+
+function everyLitReading(palette: Parameters<typeof highlightZones>[0]) {
+  return MODE_IDS.flatMap((mode) =>
+    SCALE_IDS.flatMap((scale) =>
+      scaleZones(scale, mode).map((zone, lit) => ({
+        label: `${mode} ${scale} ${rampLabel(zone)} lit`,
+        readings: highlightZones(palette, scale, mode, lit),
+      }))
+    )
+  )
+}
 
 describe('zone fade palettes', () => {
   it('names every zone colour of both scales by its ramp step', () => {
@@ -48,31 +59,75 @@ describe('zone fade palettes', () => {
   it('keeps only the landed zone at full colour', () => {
     const bright = scaleZones('effort', 'dark').map((z) => z.hex)
 
-    const zones = highlightZones('stepOne', 'effort', 'dark', 2)
+    const zones = highlightZones('adjacentFloor', 'effort', 'dark', 2)
 
-    expect(zones[2]).toBe(bright[2])
-    expect(zones.filter((hex, i) => hex === bright[i])).toHaveLength(1)
+    expect(zones[2].color.hex).toBe(bright[2])
+    expect(zones.filter((z, i) => z.color.hex === bright[i])).toHaveLength(1)
   })
 
-  it('moves every ramp-faded zone closer to the plane in both themes', () => {
-    for (const mode of ['dark', 'light'] as const) {
-      const plane = getSemanticColors(mode)['surface-base']
-      for (const palette of RAMP_PALETTE_IDS) {
-        for (const scale of SCALE_IDS) {
-          for (const m of measureFade(palette, scale, mode)) {
-            const label = `${palette} ${scale} ${mode} ${rampLabel(m.bright)}`
-            expect(m.vsPlane, label).toBeLessThan(contrast(m.bright.hex, plane))
-          }
-        }
+  it('separates every lit zone from both faded neighbours by the floor in the chosen palette', () => {
+    for (const { label, readings } of everyLitReading('adjacentFloor')) {
+      for (const { vsLit } of readings.filter((r) => r.vsLit != null)) {
+        expect(vsLit, label).toBeGreaterThanOrEqual(ADJACENT_FLOOR)
       }
     }
   })
 
-  it('darkens away from the light plane under the scrim', () => {
-    const plane = getSemanticColors('light')['surface-base']
+  it('keeps every faded zone of the chosen palette visible on the plane', () => {
+    for (const { label, readings } of everyLitReading('adjacentFloor')) {
+      for (const { vsPlane } of readings) expect(vsPlane, label).toBeGreaterThanOrEqual(PLANE_FLOOR)
+    }
+  })
 
-    const faded = measureFade('scrim', 'effort', 'light')
+  it('fades the zone the owner flagged past amber 500 beside a lit red 600', () => {
+    const amber = fadedPalette('adjacentFloor', 'effort', 'dark')[1]
 
-    for (const m of faded) expect(m.vsPlane).toBeGreaterThan(contrast(m.bright.hex, plane))
+    expect(rampLabel(amber)).not.toBe('amber 500')
+  })
+
+  it('never fades a zone less than palette B does', () => {
+    for (const mode of MODE_IDS) {
+      for (const scale of SCALE_IDS) {
+        const zones = scaleZones(scale, mode)
+        fadedPalette('adjacentFloor', scale, mode).forEach((faded, i) => {
+          const paletteB = stepDown(zones[i], mode, 2)
+          const further =
+            mode === 'dark' ? faded.step >= paletteB.step : faded.step <= paletteB.step
+          expect(further, `${mode} ${scale} ${rampLabel(faded)}`).toBe(true)
+        })
+      }
+    }
+  })
+
+  it('moves only dark one more step in the dark alternative', () => {
+    expect(fadedPalette('darkFurther', 'effort', 'dark').map(rampLabel)).toEqual([
+      'green 600',
+      'amber 600',
+      'orange 700',
+      'red 900',
+    ])
+    expect(fadedPalette('darkFurther', 'effort', 'light').map(rampLabel)).toEqual([
+      'green 100',
+      'amber 100',
+      'orange 200',
+      'red 400',
+    ])
+  })
+
+  it('moves only light cyan and blue one more shade in the light alternative', () => {
+    expect(fadedPalette('lightCoolFurther', 'diverging', 'light').map(rampLabel)).toEqual([
+      'blue 200',
+      'cyan 100',
+      'green 100',
+      'amber 200',
+      'red 400',
+    ])
+    expect(fadedPalette('lightCoolFurther', 'diverging', 'dark').map(rampLabel)).toEqual([
+      'blue 700',
+      'cyan 500',
+      'green 400',
+      'amber 500',
+      'red 800',
+    ])
   })
 })
