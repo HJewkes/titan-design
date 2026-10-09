@@ -1,11 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { vars } from 'nativewind'
 import type { ReactNode } from 'react'
 import { Text, View } from 'react-native'
 import { simulateCvd, type CvdKind } from '../../theme/color-checks'
-import { darkThemeCSSVars, lightThemeCSSVars } from '../../theme/config'
 import { bestTextColor } from '../../theme/tokens/primitives'
-import type { ThemeMode } from '../../theme/tokens/semantic'
+import { getSemanticColors, type ThemeMode } from '../../theme/tokens/semantic'
 import {
   CATEGORICAL_HUES,
   CATEGORICAL_PLANES,
@@ -24,9 +22,24 @@ interface Args {
   mode: ModeFilter
 }
 
-const MODE_VARS: Record<ThemeMode, Record<string, string>> = {
-  light: lightThemeCSSVars,
-  dark: darkThemeCSSVars,
+/**
+ * Each card paints its own mode from the semantic map, so both modes sit on one page whatever the
+ * toolbar theme is. Not `vars()` over `theme/config`: that import leaves a static Storybook build
+ * blank (the four older decision stories are on `contrast-blank-stories.json` for it).
+ */
+interface Ink {
+  frame: string
+  primary: string
+  secondary: string
+}
+
+function modeInk(mode: ThemeMode): Ink {
+  const colors = getSemanticColors(mode)
+  return {
+    frame: colors['background-base'],
+    primary: colors['text-primary'],
+    secondary: colors['text-secondary'],
+  }
 }
 
 const CVD_ROWS: { kind: CvdKind; label: string }[] = [
@@ -37,7 +50,7 @@ const CVD_ROWS: { kind: CvdKind; label: string }[] = [
 
 const SURFACE_BASE = CATEGORICAL_PLANES.findIndex((plane) => plane.token === 'surface-base')
 
-function Swatch({ fill, caption }: { fill: string; caption: string }) {
+function Swatch({ fill, caption, ink }: { fill: string; caption: string; ink: Ink }) {
   return (
     <View className="w-16 items-center gap-0.5">
       <View
@@ -48,15 +61,26 @@ function Swatch({ fill, caption }: { fill: string; caption: string }) {
           {fill.toUpperCase()}
         </Text>
       </View>
-      <Text className="font-mono text-[10px] text-text-secondary">{caption}</Text>
+      <Text className="font-mono text-[10px]" style={{ color: ink.secondary }}>
+        {caption}
+      </Text>
     </View>
   )
 }
 
-function Strip({ label, plane, children }: { label: string; plane: string; children: ReactNode }) {
+interface StripProps {
+  label: string
+  plane: string
+  ink: Ink
+  children: ReactNode
+}
+
+function Strip({ label, plane, ink, children }: StripProps) {
   return (
     <View className="flex-row items-center gap-2">
-      <Text className="w-40 font-mono text-[10px] text-text-secondary">{label}</Text>
+      <Text className="w-40 font-mono text-[10px]" style={{ color: ink.secondary }}>
+        {label}
+      </Text>
       <View className="flex-row gap-1 rounded-md p-1.5" style={{ backgroundColor: plane }}>
         {children}
       </View>
@@ -64,32 +88,38 @@ function Strip({ label, plane, children }: { label: string; plane: string; child
   )
 }
 
-function PlaneRows({ set, measured }: { set: CategoricalSet; measured: SetMeasurement }) {
+interface RowsProps {
+  set: CategoricalSet
+  measured: SetMeasurement
+  ink: Ink
+}
+
+function PlaneRows({ set, measured, ink }: RowsProps) {
   const planes = planeColors(set.mode)
   return CATEGORICAL_PLANES.map((plane, p) => (
-    <Strip key={plane.token} label={`${plane.token} (${plane.role})`} plane={planes[p]}>
+    <Strip key={plane.token} label={`${plane.token} (${plane.role})`} plane={planes[p]} ink={ink}>
       {measured.slots.map((slot, i) => {
         const ratio = slot.planes[p]
         const mark = ratio < PLANE_FLOOR ? ' ✗' : ''
-        return <Swatch key={i} fill={slot.hex} caption={`${ratio.toFixed(2)}${mark}`} />
+        return <Swatch key={i} fill={slot.hex} caption={`${ratio.toFixed(2)}${mark}`} ink={ink} />
       })}
     </Strip>
   ))
 }
 
-function ValueAndCvdRows({ set, measured }: { set: CategoricalSet; measured: SetMeasurement }) {
+function ValueAndCvdRows({ set, measured, ink }: RowsProps) {
   const plane = planeColors(set.mode)[SURFACE_BASE]
   return (
     <>
-      <Strip label="grey of value" plane={plane}>
+      <Strip label="grey of value" plane={plane} ink={ink}>
         {measured.slots.map((slot, i) => (
-          <Swatch key={i} fill={slot.grey} caption={`L ${slot.lightness.toFixed(2)}`} />
+          <Swatch key={i} fill={slot.grey} caption={`L ${slot.lightness.toFixed(2)}`} ink={ink} />
         ))}
       </Strip>
       {CVD_ROWS.map(({ kind, label }) => (
-        <Strip key={kind} label={label} plane={plane}>
+        <Strip key={kind} label={label} plane={plane} ink={ink}>
           {measured.slots.map((slot, i) => (
-            <Swatch key={i} fill={simulateCvd(slot.hex, kind)} caption={`${i}`} />
+            <Swatch key={i} fill={simulateCvd(slot.hex, kind)} caption={`${i}`} ink={ink} />
           ))}
         </Strip>
       ))}
@@ -117,14 +147,23 @@ function numbersLine(m: SetMeasurement): string {
 
 function SetCard({ set }: { set: CategoricalSet }) {
   const measured = measureSet(set)
+  const ink = modeInk(set.mode)
   return (
-    <View style={vars(MODE_VARS[set.mode])} className="gap-2 bg-background-frame p-3">
-      <Text className="text-sm font-semibold text-text-primary">{`${set.id} (${set.mode})`}</Text>
-      <Text className="text-xs text-text-secondary">{set.rationale}</Text>
-      <Text className="font-mono text-[10px] text-text-secondary">{stepsLine(set)}</Text>
-      <Text className="font-mono text-[11px] text-text-primary">{numbersLine(measured)}</Text>
-      <PlaneRows set={set} measured={measured} />
-      <ValueAndCvdRows set={set} measured={measured} />
+    <View className="gap-2 rounded-md p-3" style={{ backgroundColor: ink.frame }}>
+      <Text className="text-sm font-semibold" style={{ color: ink.primary }}>
+        {`${set.id} (${set.mode})`}
+      </Text>
+      <Text className="text-xs" style={{ color: ink.secondary }}>
+        {set.rationale}
+      </Text>
+      <Text className="font-mono text-[10px]" style={{ color: ink.secondary }}>
+        {stepsLine(set)}
+      </Text>
+      <Text className="font-mono text-[11px]" style={{ color: ink.primary }}>
+        {numbersLine(measured)}
+      </Text>
+      <PlaneRows set={set} measured={measured} ink={ink} />
+      <ValueAndCvdRows set={set} measured={measured} ink={ink} />
     </View>
   )
 }
