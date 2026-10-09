@@ -21,6 +21,9 @@ reads a round imports them from here instead of copying them.
 - `FeedbackSchema`, `RecommendationSchema`, and the section, variant, question and contrast schemas
   they compose.
 - `SHIP_OPTIONS`, the only options a merge-bound question may offer.
+- `TOPIC_PREFIXES`, the prefixes a question's optional `topics` keys take (`ask:`, `component:`,
+  `token:`, `topic:`), and `StackedOnSchema`, the optional manifest `stackedOn` naming the base PR
+  `{ repo, pr, headSha }` a stacked round renders beneath its own.
 - `isLoopbackUrl(url)`, true only for an http(s) URL on `127.0.0.1`, `localhost` or `[::1]`.
 - `manifestJsonSchema()` and `feedbackJsonSchema()`, the JSON Schema an author writes against.
 - The inferred types: `ManifestInput`, `Manifest`, `Feedback`, `Recommendation`, `Question`,

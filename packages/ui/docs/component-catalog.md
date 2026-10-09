@@ -10,6 +10,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | Autocomplete | stable | ui/autocomplete | Autocomplete component for searchable dropdown selection. | AutocompleteParts | components-molecules-autocomplete--custom-no-results-text |
 | Avatar | stable | ui/avatar | Avatar component for user/entity representation. | — | components-atoms-avatar--all-sizes |
 | Badge | stable | ui/badge | Badge — a `Pill` preset for status indicators and labels. | Indicator, Pill | components-atoms-badge--all-colors |
+| BarList | candidate | ui/charts | BarList: a ranked horizontal bar list. | BarListCells, BarListParts, BarListTip, EmptyState | components-molecules-barlist--default |
 | BaseBadge | candidate | custom/Workout | — | — | custom-workout-basebadge--all-variants |
 | BodyMap | candidate | custom/Workout | Interactive SVG body map with tappable muscle groups and a volume heatmap. | — | custom-workout-dataviz-bodymap--back |
 | BodyMapDetailPanel | candidate | custom/Workout | Sheet of detailed weekly-volume info for a tapped muscle group: a MEV\|current\|MRV gradient progress bar, the big weekly set count against MRV, an optional volume sparkline, the per-exercise strength / this-week plan / PR sections, and the contributing / upcoming exercise lists. | Badge, BodyMapDetailSections, Sparkline | custom-workout-dataviz-bodymapdetailpanel--default |
@@ -88,7 +89,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | LiveAuraFrame | candidate | custom/Workout | Full-surface color-flood frame tied to a coaching category. | — | custom-workout-liveauraframe--all-states |
 | LiveFatigueCard | candidate | custom/Fatigue | — | FatigueLights, GhostSpark, RomProgressionChart, Surface, VerdictHero | custom-fatigue-live-fatigue-card--default |
 | LiveFatiguePanel | candidate | custom/Fatigue | — | LiveAuraFrame, LiveFatigueCard, VelocityHero | custom-fatigue-live-fatigue-panel--live-panel-v-2 |
-| MarkdownProse | candidate | custom/Prose | MarkdownProse — renders a small, predictable markdown subset as themed prose and auto-links references the caller describes. | Typography | custom-prose-markdownprose--default |
+| MarkdownProse | candidate | custom/Prose | MarkdownProse — renders a small, predictable markdown subset as themed prose and auto-links references the caller describes. | Typography | custom-prose-markdownprose--code-blocks |
 | Menu | candidate | ui/menu | Menu component for dropdown menus. | Surface, TriggerSurface | components-molecules-menu--controlled |
 | MesoCard | candidate | custom/Workout | A mesocycle card with name, goal, split, week range, an optional volume heatmap strip, and an expandable WeekRow list. | Badge, Card, WeekRow | custom-workout-mesocard--collapsed |
 | MesoProgressBar | candidate | custom/Workout | Segmented horizontal bar of mesocycles. | — | custom-workout-mesoprogressbar--active-current |

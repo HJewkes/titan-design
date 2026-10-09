@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:ce824c381d9bcfd7396a7bc175f15fd11ee8ebfe8b18129e89663e2c5a08452d",
+  "componentBarrelHash": "sha256:f29f07b4b54e0e41179dc9c94b87edeffe6314b4c05ac9eff9f9f1080dbccb1c",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -291,6 +291,45 @@
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": true
+    },
+    {
+      "name": "BarList",
+      "file": "packages/ui/src/components/ui/charts/bar-list/BarList.tsx",
+      "dir": "ui",
+      "family": "ui/charts",
+      "exports": [
+        "BarList",
+        "BarListProps",
+        "keyDownProps"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "BarListCells",
+        "BarListParts",
+        "BarListTip",
+        "EmptyState"
+      ],
+      "leak": {
+        "rawView": 3,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 166,
+        "score": 3
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "BaseBadge",
@@ -4582,7 +4621,6 @@
       "audited": "unaudited",
       "standard": false
     },
-
     {
       "name": "MetricTiles",
       "file": "packages/ui/src/components/custom/Workout/MetricTiles.tsx",
@@ -10894,10 +10932,26 @@
     [
       "CardStat",
       "Metric"
+    ],
+    [
+      "BarList",
+      "BarListCells"
+    ],
+    [
+      "BarList",
+      "BarListParts"
+    ],
+    [
+      "BarList",
+      "BarListTip"
+    ],
+    [
+      "BarList",
+      "EmptyState"
     ]
   ],
   "summary": {
-    "total": 226,
+    "total": 227,
     "dead": [
       "Autocomplete",
       "Breadcrumbs",

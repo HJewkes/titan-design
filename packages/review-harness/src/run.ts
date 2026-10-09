@@ -29,7 +29,7 @@ import {
 
 const USAGE = `titan-review <round.json> [options]
 titan-review --example [--storybook <url>]
-titan-review build <draft.json> [--storybook <url>] [--tree <path>]
+titan-review build <draft.json> [--storybook <url>] [--tree <path>] [--prior-feedback <feedback.json>...]
 titan-review calibration <feedback.json...>
 titan-review round from-morning <items.json> [--decider <file>] [--out <draft.json>]
 
@@ -58,6 +58,9 @@ writes draft.json beside the items file (or --out); run build on it next.
 
   --storybook <url>  Storybook base url (default: the manifest's storybookUrl)
   --tree <path>      The checkout the Storybook ran from, for build (see above)
+  --prior-feedback <feedback.json>
+                     An earlier round's feedback, for build's Ship gate (repeatable; sibling
+                     round directories of the same unit are read without the flag)
   --decider <file>   Decider recommendations for round from-morning (questionId, answer, cite)
   --out <dir>        Where feedback.json and PNGs go (default: the manifest's directory);
                      for round from-morning, the draft's file path (default: draft.json
@@ -96,6 +99,7 @@ function parseCli(argv: string[]) {
       'allow-stale': { type: 'boolean' },
       decider: { type: 'string' },
       tree: { type: 'string' },
+      'prior-feedback': { type: 'string', multiple: true },
       example: { type: 'boolean' },
       help: { type: 'boolean' },
     },
@@ -225,7 +229,13 @@ async function dispatch(parsed: Parsed, io: CliIo): Promise<number> {
   if (parsed.positionals[0] === 'build') {
     if (parsed.positionals.length !== 2) throw new ReviewError(`expected one draft\n\n${USAGE}`)
     const tree = parsed.values.tree && resolve(parsed.values.tree)
-    return buildRound(resolve(parsed.positionals[1]), parsed.values.storybook, io, tree)
+    return buildRound(
+      resolve(parsed.positionals[1]),
+      parsed.values.storybook,
+      io,
+      tree,
+      (parsed.values['prior-feedback'] ?? []).map((p) => resolve(p))
+    )
   }
   if (parsed.positionals[0] === 'round') return fromMorning(parsed, io)
   if (parsed.positionals[0] === 'calibration') {

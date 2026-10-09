@@ -242,3 +242,16 @@ describe('Pill neutral faces', () => {
     expect(classesOf('pill')).toEqual(expect.arrayContaining([...expected]))
   })
 })
+
+describe('Pill outline error', () => {
+  it('keeps the ring on status-error and puts the label on text-error', () => {
+    render(
+      <Pill testID="pill" variant="outline" tone="error">
+        Failed
+      </Pill>
+    )
+    const classes = (capturedClassNames.get('pill') ?? '').split(/\s+/)
+    expect(classes).toEqual(expect.arrayContaining(['border-status-error', 'text-text-error']))
+    expect(classes).not.toContain('text-status-error')
+  })
+})

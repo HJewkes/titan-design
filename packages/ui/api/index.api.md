@@ -360,6 +360,43 @@ export const BAND_H = 16;
 export function bandLabel(best: MuscleStrengthBestE1rm | null): string;
 
 // @public
+export function BarList(input: BarListProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface BarListProps extends Omit<ViewProps, 'children'> {
+    accessibilityLabel: string;
+    className?: string;
+    emptyState?: ReactNode;
+    formatSecondary?: (value: number, row: BarListRow) => string;
+    formatValue?: BarListValueFormatter;
+    isLoading?: boolean;
+    isValueHidden?: boolean;
+    layout?: 'inline' | 'stacked';
+    max?: number;
+    maxRows?: number;
+    rows: BarListRow[];
+    size?: 'sm' | 'md';
+    sort?: 'descending' | 'none';
+}
+
+// @public
+export interface BarListRow {
+    color?: ColorToken$1;
+    description?: string;
+    flag?: {
+        tone: 'warning' | 'error';
+        label: string;
+    };
+    id: string;
+    label: string;
+    secondaryValue?: number | null;
+    value: number | null;
+}
+
+// @public
+export type BarListValueFormatter = (value: number, row?: BarListRow) => string;
+
+// @public
 export function barPaper(color: string, flip?: boolean): ViewStyle;
 
 // @public @deprecated (undocumented)
@@ -5650,14 +5687,17 @@ export type ProgressVariant = 'linear' | 'circular';
 
 // @public (undocumented)
 export interface ProseBlock {
-    // (undocumented)
+    align?: TableAlign[];
+    header?: string[];
+    lang?: string;
+    rows?: string[][];
     text: string;
     // (undocumented)
     type: ProseBlockType;
 }
 
 // @public (undocumented)
-export type ProseBlockType = 'h1' | 'h2' | 'h3' | 'li' | 'p';
+export type ProseBlockType = 'h1' | 'h2' | 'h3' | 'li' | 'p' | 'code' | 'table';
 
 // @public
 export interface ProseLinker {

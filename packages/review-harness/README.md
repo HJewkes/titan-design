@@ -315,7 +315,7 @@ answer that is not one of the options, or a `questionId` no item has, is refused
 `titan-review build <draft.json>` measures every story variant at every manifest width in
 **light and dark** (the Storybook `theme` global; light is `.light` on `<html>`) in headless
 Chromium, using the same renderer as capture. It writes `contrast.json` beside the draft and
-copies the draft byte for byte to `round.json` only when nothing undeclared failed. Otherwise
+writes the draft, with the builder rules below applied, to `round.json` only when nothing undeclared failed. Otherwise
 it exits 3 and `round.json` is not written. A frame whose theme did not apply is an error,
 never a pass.
 
@@ -327,6 +327,30 @@ names a head the Storybook did not render. On success `round.json` is the draft 
 `build: {mainSha, mergeSha}`: `mergeSha` is the tree's `HEAD`, `mainSha` its `origin/main`.
 `contrast.json` records the sha of those bytes, so the round still serves. A rebuild at the same
 heads rewrites `build` only. A round without bindings needs no tree.
+
+### Builder rules (TD-768)
+
+`build` rewrites the draft into `round.json` under these rules (`src/round-rules.ts`,
+`src/ship-gate.ts`); applying them twice changes nothing.
+
+- **Stable ids.** A question's id is the one the draft supplies and `build` never renumbers it.
+  The ask's identity across rounds is its `ask:` topic: `ask:<repo>#<pr>/ship` for a Ship
+  question (so it holds across units) and `ask:<unit>/<id>` for any other. Draft-supplied
+  `topics` are kept. Keep the id for as long as the ask is the same ask.
+- **Labels.** Every prompt starts `ITERATION: ` or `SHIP: ` (a pick-one with `merge` is SHIP) and
+  carries `topic:iteration` or `topic:ship`.
+- **Stacked PRs.** A draft's `stackedOn` is written through. When no question is about the base
+  PR, every frame in the base PR's sections is labelled `base PR #n, not under review: <label>`.
+- **Grouping.** A section belongs to a PR by its questions' `page`, else a leading `#n` or
+  `owner/name#n` in its title. Each PR's sections sit together, at the first one's place, the
+  section holding its Ship question last, and the Ship question last in that section. (Rendering
+  a PR header waits for the review-page rework.)
+- **Ship gate.** `build` exits 3, writing no `round.json`, for a Ship question whose PR had a
+  changes-requested (`revisionRequested`), declined (a pick outside `merge.ship`) or non-agreed
+  (`agreed: false`) answer in the latest earlier round that asked about it. It reads
+  `feedback.json` beside a `round.json` (whose sha it must match) in sibling round directories of
+  the same unit with a lower round number, and any `--prior-feedback <feedback.json>` given. A Ship
+  bound to a different head than that round's is a fix round's and is not blocked.
 
 Thresholds (WCAG 2.1 SC 1.4.3 and 1.4.11): text 4.5:1; large text (24px, or 18.66px at
 weight 700 or more) 3:1; non-text 3:1 against the adjacent plane. Each colour is composited
