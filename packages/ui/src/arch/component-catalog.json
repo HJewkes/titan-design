@@ -6262,6 +6262,7 @@
     {
       "composes": [
         "Card",
+        "MesoStatusCard.parts",
         "StatusDot"
       ],
       "family": "custom/Workout",
@@ -7767,7 +7768,7 @@
           "type": "string"
         },
         {
-          "default": null,
+          "default": "11",
           "description": "Cell font size (px).",
           "name": "fontSize",
           "required": false,
@@ -7809,7 +7810,7 @@
           "type": "string"
         }
       ],
-      "purpose": "The `sets × reps @ load` prescription line, in the TempoDisplay visual language (Inter · letter-spacing 1 · value cells with muted `×` / `@` separators).",
+      "purpose": "The `sets × reps @ load` prescription line, in the TempoDisplay visual language (Typography `mono` · value cells with muted `×` / `@` separators).",
       "sources": {
         "props": "packages/ui/src/components/custom/Workout/SetsRepsLoad.tsx",
         "status": "packages/ui/src/components/custom/Workout/SetsRepsLoad.stories.tsx"
@@ -15880,10 +15881,6 @@
     },
     {
       "file": "packages/ui/src/components/custom/Workout/icons.tsx",
-      "reason": "not-pascal-case"
-    },
-    {
-      "file": "packages/ui/src/components/custom/Workout/metricText.tsx",
       "reason": "not-pascal-case"
     },
     {
