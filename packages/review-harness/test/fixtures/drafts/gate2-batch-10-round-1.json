@@ -1,0 +1,1558 @@
+{
+  "schema": "titan-review/round@2",
+  "unit": "gate2-batch-10",
+  "round": 1,
+  "storybookUrl": "http://127.0.0.1:6100",
+  "context": "Fixture round: iteration picks, then one group per PR with its Ship question.",
+  "widths": [
+    1280
+  ],
+  "height": "auto",
+  "recommendations": "after-answer",
+  "variants": [
+    {
+      "key": "tt-head-l",
+      "storyId": "lab-gate2b10-tone-table--default",
+      "label": "Frame tt-head-l",
+      "args": {
+        "option": "head"
+      },
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "tt-prop-l",
+      "storyId": "lab-gate2b10-tone-table--default",
+      "label": "Frame tt-prop-l",
+      "args": {
+        "option": "prop"
+      },
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "tt-brand600-l",
+      "storyId": "lab-gate2b10-tone-table--default",
+      "label": "Frame tt-brand600-l",
+      "args": {
+        "option": "brand600"
+      },
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "tt-brand500-l",
+      "storyId": "lab-gate2b10-tone-table--default",
+      "label": "Frame tt-brand500-l",
+      "args": {
+        "option": "brand500"
+      },
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "tt-warn950-l",
+      "storyId": "lab-gate2b10-tone-table--default",
+      "label": "Frame tt-warn950-l",
+      "args": {
+        "option": "warn950"
+      },
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "tt-warn600-l",
+      "storyId": "lab-gate2b10-tone-table--default",
+      "label": "Frame tt-warn600-l",
+      "args": {
+        "option": "warn600"
+      },
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "tt-ramp50-l",
+      "storyId": "lab-gate2b10-tone-table--default",
+      "label": "Frame tt-ramp50-l",
+      "args": {
+        "option": "ramp50"
+      },
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "al-white-paper-l",
+      "storyId": "lab-gate2b10-alert-solid-labels--default",
+      "label": "Frame al-white-paper-l",
+      "args": {
+        "option": "white-paper"
+      },
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "al-ramp-light-paper-l",
+      "storyId": "lab-gate2b10-alert-solid-labels--default",
+      "label": "Frame al-ramp-light-paper-l",
+      "args": {
+        "option": "ramp-light-paper"
+      },
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "tt-dark-main-d",
+      "storyId": "lab-gate2b10-tone-table--default",
+      "label": "Frame tt-dark-main-d",
+      "args": {
+        "option": "dark-main"
+      }
+    },
+    {
+      "key": "tt-dark-950-d",
+      "storyId": "lab-gate2b10-tone-table--default",
+      "label": "Frame tt-dark-950-d",
+      "args": {
+        "option": "dark-950"
+      }
+    },
+    {
+      "key": "tt-dark-900-d",
+      "storyId": "lab-gate2b10-tone-table--default",
+      "label": "Frame tt-dark-900-d",
+      "args": {
+        "option": "dark-900"
+      }
+    },
+    {
+      "key": "al-ramp-dark-950-paper-d",
+      "storyId": "lab-gate2b10-alert-solid-labels--default",
+      "label": "Frame al-ramp-dark-950-paper-d",
+      "args": {
+        "option": "ramp-dark-950-paper"
+      }
+    },
+    {
+      "key": "al-ramp-dark-950-paper-deboss-d",
+      "storyId": "lab-gate2b10-alert-solid-labels--default",
+      "label": "Frame al-ramp-dark-950-paper-deboss-d",
+      "args": {
+        "option": "ramp-dark-950-paper-deboss"
+      }
+    },
+    {
+      "key": "al-dark-flat-d",
+      "storyId": "lab-gate2b10-alert-solid-labels--default",
+      "label": "Frame al-dark-flat-d",
+      "args": {
+        "option": "dark-flat"
+      }
+    },
+    {
+      "key": "al-ramp-dark-paper-d",
+      "storyId": "lab-gate2b10-alert-solid-labels--default",
+      "label": "Frame al-ramp-dark-paper-d",
+      "args": {
+        "option": "ramp-dark-paper"
+      }
+    },
+    {
+      "key": "nf-l",
+      "storyId": "lab-gate2b10-neutral-face--default",
+      "label": "Frame nf-l",
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "alert-solid-d",
+      "storyId": "components-molecules-alert--solid-variants",
+      "label": "Frame alert-solid-d"
+    },
+    {
+      "key": "alert-solid-l",
+      "storyId": "components-molecules-alert--solid-variants",
+      "label": "Frame alert-solid-l",
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "facetbar-d",
+      "storyId": "components-molecules-facetbar--default",
+      "label": "Frame facetbar-d"
+    },
+    {
+      "key": "facetbar-l",
+      "storyId": "components-molecules-facetbar--default",
+      "label": "Frame facetbar-l",
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "mp-code-d",
+      "storyId": "custom-prose-markdownprose--code-blocks",
+      "label": "Frame mp-code-d"
+    },
+    {
+      "key": "mp-code-l",
+      "storyId": "custom-prose-markdownprose--code-blocks",
+      "label": "Frame mp-code-l",
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "mp-tables-d",
+      "storyId": "custom-prose-markdownprose--tables",
+      "label": "Frame mp-tables-d"
+    },
+    {
+      "key": "mp-tables-l",
+      "storyId": "custom-prose-markdownprose--tables",
+      "label": "Frame mp-tables-l",
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "zt-landmark-d",
+      "storyId": "custom-workout-dataviz-zonetrack--landmark-fill",
+      "label": "Frame zt-landmark-d"
+    },
+    {
+      "key": "zt-landmark-l",
+      "storyId": "custom-workout-dataviz-zonetrack--landmark-fill",
+      "label": "Frame zt-landmark-l",
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "zt-gradient-d",
+      "storyId": "custom-workout-dataviz-zonetrack--gradient-fill",
+      "label": "Frame zt-gradient-d"
+    },
+    {
+      "key": "zt-gradient-l",
+      "storyId": "custom-workout-dataviz-zonetrack--gradient-fill",
+      "label": "Frame zt-gradient-l",
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "vlb-all-d",
+      "storyId": "lab-gate2b10-volumelandmarkbar-all--default",
+      "label": "Frame vlb-all-d"
+    },
+    {
+      "key": "vlb-all-l",
+      "storyId": "lab-gate2b10-volumelandmarkbar-all--default",
+      "label": "Frame vlb-all-l",
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "lfp-600-d",
+      "storyId": "lab-gate2b10-lfpwidths--default",
+      "label": "Frame lfp-600-d",
+      "args": {
+        "threshold": 600
+      }
+    },
+    {
+      "key": "lfp-1000-d",
+      "storyId": "lab-gate2b10-lfpwidths--default",
+      "label": "Frame lfp-1000-d",
+      "args": {
+        "threshold": 1000
+      }
+    },
+    {
+      "key": "lfp-1200-d",
+      "storyId": "lab-gate2b10-lfpwidths--default",
+      "label": "Frame lfp-1200-d",
+      "args": {
+        "threshold": 1200
+      }
+    },
+    {
+      "key": "lfp-wall-d",
+      "storyId": "lab-gate2b10-lfpwidths--default",
+      "label": "Frame lfp-wall-d",
+      "args": {
+        "threshold": 1920,
+        "wall": true
+      }
+    },
+    {
+      "key": "topbar-widths-d",
+      "storyId": "shell-topbar--widths",
+      "label": "Frame topbar-widths-d"
+    },
+    {
+      "key": "topbar-widths-l",
+      "storyId": "shell-topbar--widths",
+      "label": "Frame topbar-widths-l",
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "gauge-ticks-d",
+      "storyId": "lab-gate2b10-gauge-ticks--default",
+      "label": "Frame gauge-ticks-d"
+    },
+    {
+      "key": "gauge-ticks-l",
+      "storyId": "lab-gate2b10-gauge-ticks--default",
+      "label": "Frame gauge-ticks-l",
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "filled-fields-d",
+      "storyId": "lab-gate2b10-filled-fields--default",
+      "label": "Frame filled-fields-d"
+    },
+    {
+      "key": "filled-fields-l",
+      "storyId": "lab-gate2b10-filled-fields--default",
+      "label": "Frame filled-fields-l",
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "divider-rules-d",
+      "storyId": "lab-gate2b10-divider-rules--default",
+      "label": "Frame divider-rules-d"
+    },
+    {
+      "key": "divider-rules-l",
+      "storyId": "lab-gate2b10-divider-rules--default",
+      "label": "Frame divider-rules-l",
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "tb-inset-depth-d",
+      "storyId": "lab-toolbarfaces-inset-depth--default",
+      "label": "Frame tb-inset-depth-d"
+    },
+    {
+      "key": "tb-inset-depth-l",
+      "storyId": "lab-toolbarfaces-inset-depth--default",
+      "label": "Frame tb-inset-depth-l",
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "tb-active-d",
+      "storyId": "components-molecules-toolbarbutton--active-vs-inactive",
+      "label": "Frame tb-active-d"
+    },
+    {
+      "key": "tb-active-l",
+      "storyId": "components-molecules-toolbarbutton--active-vs-inactive",
+      "label": "Frame tb-active-l",
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "barlist-d",
+      "storyId": "components-molecules-barlist--default",
+      "label": "Frame barlist-d"
+    },
+    {
+      "key": "barlist-l",
+      "storyId": "components-molecules-barlist--default",
+      "label": "Frame barlist-l",
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "barlist-marker-d",
+      "storyId": "components-molecules-barlist--default",
+      "label": "Frame barlist-marker-d",
+      "args": {
+        "fixture": "With marker"
+      }
+    },
+    {
+      "key": "barlist-marker-l",
+      "storyId": "components-molecules-barlist--default",
+      "label": "Frame barlist-marker-l",
+      "args": {
+        "fixture": "With marker"
+      },
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "statusmark-d",
+      "storyId": "custom-code-statusmark--default",
+      "label": "Frame statusmark-d"
+    },
+    {
+      "key": "statusmark-l",
+      "storyId": "custom-code-statusmark--default",
+      "label": "Frame statusmark-l",
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "inputbar-d",
+      "storyId": "custom-workout-inputbar--with-filled-values",
+      "label": "Frame inputbar-d"
+    },
+    {
+      "key": "inputbar-l",
+      "storyId": "custom-workout-inputbar--with-filled-values",
+      "label": "Frame inputbar-l",
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "prbadge-d",
+      "storyId": "custom-workout-prbadge--all-types",
+      "label": "Frame prbadge-d"
+    },
+    {
+      "key": "prbadge-l",
+      "storyId": "custom-workout-prbadge--all-types",
+      "label": "Frame prbadge-l",
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "select-invalid-d",
+      "storyId": "components-molecules-select--invalid",
+      "label": "Frame select-invalid-d"
+    },
+    {
+      "key": "select-invalid-l",
+      "storyId": "components-molecules-select--invalid",
+      "label": "Frame select-invalid-l",
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "tooltip-help-d",
+      "storyId": "components-molecules-tooltip--help-beside-label",
+      "label": "Frame tooltip-help-d"
+    },
+    {
+      "key": "tooltip-help-l",
+      "storyId": "components-molecules-tooltip--help-beside-label",
+      "label": "Frame tooltip-help-l",
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "cat-current-light-l",
+      "storyId": "lab-decisions-categorical-light-vs-dark--default",
+      "label": "Frame cat-current-light-l",
+      "args": {
+        "set": "current-light",
+        "mode": "light"
+      },
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "cat-vivid-l",
+      "storyId": "lab-decisions-categorical-light-vs-dark--default",
+      "label": "Frame cat-vivid-l",
+      "args": {
+        "set": "L-fix-vivid",
+        "mode": "light"
+      },
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "cat-green-l",
+      "storyId": "lab-decisions-categorical-light-vs-dark--default",
+      "label": "Frame cat-green-l",
+      "args": {
+        "set": "L-fix-green",
+        "mode": "light"
+      },
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "cat-current-dark-d",
+      "storyId": "lab-decisions-categorical-light-vs-dark--default",
+      "label": "Frame cat-current-dark-d",
+      "args": {
+        "set": "current-dark",
+        "mode": "dark"
+      }
+    },
+    {
+      "key": "cat-ink-light-a-l",
+      "storyId": "lab-decisions-categorical-light-vs-dark--default",
+      "label": "Frame cat-ink-light-a-l",
+      "args": {
+        "set": "ink-light-A",
+        "mode": "light"
+      },
+      "globals": {
+        "theme": "light"
+      }
+    },
+    {
+      "key": "cat-ink-dark-d",
+      "storyId": "lab-decisions-categorical-light-vs-dark--default",
+      "label": "Frame cat-ink-dark-d",
+      "args": {
+        "set": "ink-dark",
+        "mode": "dark"
+      }
+    }
+  ],
+  "questions": [
+    {
+      "id": "r1-rule",
+      "kind": "pick-one",
+      "prompt": "Pick for r1-rule.",
+      "required": true,
+      "options": [
+        "Yes, one rule for every coloured surface",
+        "Alert and Badge only; the Button keeps its own map"
+      ],
+      "signsOff": "the change in r1-rule"
+    },
+    {
+      "id": "r2-brand",
+      "kind": "pick-one",
+      "prompt": "Pick for r2-brand.",
+      "required": true,
+      "options": [
+        "orange[400] + grey[950] (6.66; hover orange[500] 4.68; shipped in console r7)",
+        "orange[600] + white (5.19; TD-627, the primary CTA darkens; hover orange[700] 7.24)",
+        "orange[500] + white (3.74, a declared exception)"
+      ],
+      "signsOff": "the change in r2-brand"
+    },
+    {
+      "id": "r3-warning",
+      "kind": "pick-one",
+      "prompt": "Pick for r3-warning.",
+      "required": true,
+      "options": [
+        "white on amber[500] everywhere (3.63 declared; #418's grey[950] Button label changes)",
+        "grey[950] on amber[500] everywhere (4.83; the Alert and Badge flip to the Button's label)",
+        "amber[600] + white everywhere (5.02, \"the brown\")"
+      ],
+      "signsOff": "the change in r3-warning"
+    },
+    {
+      "id": "r4-ramp50",
+      "kind": "pick-one",
+      "prompt": "Pick for r4-ramp50.",
+      "required": true,
+      "options": [
+        "White on every light solid fill (info 4.89, success 4.56, warning 3.63, error 4.57)",
+        "The tone's own rung 50 (info 4.55, success 4.30, warning 3.38, error 4.24; brand stays grey[950])"
+      ],
+      "signsOff": "the change in r4-ramp50"
+    },
+    {
+      "id": "r5-dark",
+      "kind": "pick-one",
+      "prompt": "Pick for r5-dark.",
+      "required": true,
+      "options": [
+        "The tone's own rung 950 (brand 6.53, info 5.45, success 8.65, warning 9.38, error 4.53)",
+        "grey[950] as built (6.66, 5.60, 9.07, 9.64, 4.59)",
+        "The tone's own rung 900 (brand 5.34, success 6.95, warning 7.65; info 4.39 and error 3.73 miss)"
+      ],
+      "signsOff": "the change in r5-dark"
+    },
+    {
+      "id": "r6-grain",
+      "kind": "pick-one",
+      "prompt": "Pick for r6-grain.",
+      "required": true,
+      "options": [
+        "Regular text on the grain",
+        "Debossed text on the grain (`debossLabel`)"
+      ],
+      "signsOff": "the change in r6-grain"
+    },
+    {
+      "id": "r7-neutral",
+      "kind": "pick-one",
+      "prompt": "Pick for r7-neutral.",
+      "required": true,
+      "options": [
+        "Everywhere: Badge neutral, Pill neutral and the FacetBar face on grey[700] (white 6.99)",
+        "FacetBar only (Badge and Pill neutral stay text-primary #121828, white 17.69)"
+      ],
+      "signsOff": "the change in r7-neutral"
+    },
+    {
+      "id": "ship-418",
+      "kind": "pick-one",
+      "prompt": "Ship HJewkes/titan-design#418?",
+      "required": true,
+      "options": [
+        "Ship",
+        "Don't ship"
+      ],
+      "signsOff": "the change in HJewkes/titan-design#418",
+      "page": "HJewkes/titan-design#418",
+      "merge": {
+        "repo": "HJewkes/titan-design",
+        "pr": 418,
+        "headSha": "4e69ee464b4cbe61cd23b1956cae83ff706d148f",
+        "ship": [
+          "Ship"
+        ]
+      }
+    },
+    {
+      "id": "td402-highlight",
+      "kind": "pick-one",
+      "prompt": "Pick for td402-highlight.",
+      "required": true,
+      "options": [
+        "Ship without highlighting now and file the highlighter",
+        "Hold #765 until a highlighter exists"
+      ],
+      "signsOff": "the change in HJewkes/titan-design#765",
+      "page": "HJewkes/titan-design#765"
+    },
+    {
+      "id": "ship-765",
+      "kind": "pick-one",
+      "prompt": "Ship HJewkes/titan-design#765?",
+      "required": true,
+      "options": [
+        "Ship",
+        "Don't ship"
+      ],
+      "signsOff": "the change in HJewkes/titan-design#765",
+      "page": "HJewkes/titan-design#765",
+      "merge": {
+        "repo": "HJewkes/titan-design",
+        "pr": 765,
+        "headSha": "d8d6e949c6cb84d499b170bf19523a0b0428dd03",
+        "ship": [
+          "Ship"
+        ]
+      }
+    },
+    {
+      "id": "ship-769",
+      "kind": "pick-one",
+      "prompt": "Ship HJewkes/titan-design#769?",
+      "required": true,
+      "options": [
+        "Ship",
+        "Don't ship"
+      ],
+      "signsOff": "the change in HJewkes/titan-design#769",
+      "page": "HJewkes/titan-design#769",
+      "merge": {
+        "repo": "HJewkes/titan-design",
+        "pr": 769,
+        "headSha": "27fd5822a5b77cd9c0546a7e1b4580b49e86de5d",
+        "ship": [
+          "Ship"
+        ]
+      }
+    },
+    {
+      "id": "ship-764",
+      "kind": "pick-one",
+      "prompt": "Ship HJewkes/titan-design#764?",
+      "required": true,
+      "options": [
+        "Ship",
+        "Don't ship"
+      ],
+      "signsOff": "the change in HJewkes/titan-design#764",
+      "page": "HJewkes/titan-design#764",
+      "merge": {
+        "repo": "HJewkes/titan-design",
+        "pr": 764,
+        "headSha": "bd825d55f7e2b3d1227f42e0d8b11f7de00fc1ad",
+        "ship": [
+          "Ship"
+        ]
+      }
+    },
+    {
+      "id": "ship-761",
+      "kind": "pick-one",
+      "prompt": "Ship HJewkes/titan-design#761?",
+      "required": true,
+      "options": [
+        "Ship",
+        "Don't ship"
+      ],
+      "signsOff": "the change in HJewkes/titan-design#761",
+      "page": "HJewkes/titan-design#761",
+      "merge": {
+        "repo": "HJewkes/titan-design",
+        "pr": 761,
+        "headSha": "ce01d03c5a6deedabc8a205d27e783d1d27b2fdc",
+        "ship": [
+          "Ship"
+        ]
+      }
+    },
+    {
+      "id": "td473-ticks",
+      "kind": "pick-one",
+      "prompt": "Pick for td473-ticks.",
+      "required": true,
+      "options": [
+        "border-prominent ticks, as built (2.69 / 2.63; ZoneTrack's track token)",
+        "text-tertiary ticks (4.32 / 4.88; clears 3:1, heavier)"
+      ],
+      "signsOff": "the change in HJewkes/titan-design#450",
+      "page": "HJewkes/titan-design#450"
+    },
+    {
+      "id": "ship-450",
+      "kind": "pick-one",
+      "prompt": "Ship HJewkes/titan-design#450?",
+      "required": true,
+      "options": [
+        "Ship",
+        "Don't ship"
+      ],
+      "signsOff": "the change in HJewkes/titan-design#450",
+      "page": "HJewkes/titan-design#450",
+      "merge": {
+        "repo": "HJewkes/titan-design",
+        "pr": 450,
+        "headSha": "399881144084cb1f719517f6145939b5927c6e42",
+        "ship": [
+          "Ship"
+        ]
+      }
+    },
+    {
+      "id": "ship-424",
+      "kind": "pick-one",
+      "prompt": "Ship HJewkes/titan-design#424?",
+      "required": true,
+      "options": [
+        "Ship",
+        "Don't ship"
+      ],
+      "signsOff": "the change in HJewkes/titan-design#424",
+      "page": "HJewkes/titan-design#424",
+      "merge": {
+        "repo": "HJewkes/titan-design",
+        "pr": 424,
+        "headSha": "c613014d6f2b4eb6cb6be8f05738f451d02d7d35",
+        "ship": [
+          "Ship"
+        ]
+      }
+    },
+    {
+      "id": "ship-758",
+      "kind": "pick-one",
+      "prompt": "Ship HJewkes/titan-design#758?",
+      "required": true,
+      "options": [
+        "Ship",
+        "Don't ship"
+      ],
+      "signsOff": "the change in HJewkes/titan-design#758",
+      "page": "HJewkes/titan-design#758",
+      "merge": {
+        "repo": "HJewkes/titan-design",
+        "pr": 758,
+        "headSha": "2d973b5769220942c51d961c53db1dcb49326f56",
+        "ship": [
+          "Ship"
+        ]
+      }
+    },
+    {
+      "id": "td265-depth",
+      "kind": "pick-one",
+      "prompt": "Pick for td265-depth.",
+      "required": true,
+      "options": [
+        "A: one plane down (Surface pressed), as built",
+        "B: two planes down (Surface elevation -2)"
+      ],
+      "signsOff": "the change in HJewkes/titan-design#747",
+      "page": "HJewkes/titan-design#747"
+    },
+    {
+      "id": "td264-tokens",
+      "kind": "pick-one",
+      "prompt": "Pick for td264-tokens.",
+      "required": true,
+      "options": [
+        "Remove control-face and control-face-active",
+        "Keep them for now"
+      ],
+      "signsOff": "the change in HJewkes/titan-design#747",
+      "page": "HJewkes/titan-design#747"
+    },
+    {
+      "id": "ship-747",
+      "kind": "pick-one",
+      "prompt": "Ship HJewkes/titan-design#747?",
+      "required": true,
+      "options": [
+        "Ship",
+        "Don't ship"
+      ],
+      "signsOff": "the change in HJewkes/titan-design#747",
+      "page": "HJewkes/titan-design#747",
+      "merge": {
+        "repo": "HJewkes/titan-design",
+        "pr": 747,
+        "headSha": "8eb2b70d1b9180b32f99ad8a9e4f7c737d2d6546",
+        "ship": [
+          "Ship"
+        ]
+      }
+    },
+    {
+      "id": "ship-407",
+      "kind": "pick-one",
+      "prompt": "Ship HJewkes/titan-design#407?",
+      "required": true,
+      "options": [
+        "Ship",
+        "Don't ship"
+      ],
+      "signsOff": "the change in HJewkes/titan-design#407",
+      "page": "HJewkes/titan-design#407",
+      "merge": {
+        "repo": "HJewkes/titan-design",
+        "pr": 407,
+        "headSha": "29e8f75b531009e17e50fce35f4cd8b9cee165af",
+        "ship": [
+          "Ship"
+        ]
+      }
+    },
+    {
+      "id": "ship-420",
+      "kind": "pick-one",
+      "prompt": "Ship HJewkes/titan-design#420?",
+      "required": true,
+      "options": [
+        "Ship",
+        "Don't ship"
+      ],
+      "signsOff": "the change in HJewkes/titan-design#420",
+      "page": "HJewkes/titan-design#420",
+      "merge": {
+        "repo": "HJewkes/titan-design",
+        "pr": 420,
+        "headSha": "85667b71303d4c0cd322ab6e11c5c988581436f8",
+        "ship": [
+          "Ship"
+        ]
+      }
+    },
+    {
+      "id": "ship-767",
+      "kind": "pick-one",
+      "prompt": "Ship HJewkes/titan-design#767?",
+      "required": true,
+      "options": [
+        "Ship",
+        "Don't ship"
+      ],
+      "signsOff": "the change in HJewkes/titan-design#767",
+      "page": "HJewkes/titan-design#767",
+      "merge": {
+        "repo": "HJewkes/titan-design",
+        "pr": 767,
+        "headSha": "8aa1cfca629c0da712a94502c592edf1db0fbee6",
+        "ship": [
+          "Ship"
+        ]
+      }
+    },
+    {
+      "id": "ship-745",
+      "kind": "pick-one",
+      "prompt": "Ship HJewkes/titan-design#745?",
+      "required": true,
+      "options": [
+        "Ship",
+        "Don't ship"
+      ],
+      "signsOff": "the change in HJewkes/titan-design#745",
+      "page": "HJewkes/titan-design#745",
+      "merge": {
+        "repo": "HJewkes/titan-design",
+        "pr": 745,
+        "headSha": "8c3734767d1f664547b54b576249189db4db4661",
+        "ship": [
+          "Ship"
+        ]
+      }
+    },
+    {
+      "id": "ship-729",
+      "kind": "pick-one",
+      "prompt": "Ship HJewkes/titan-design#729?",
+      "required": true,
+      "options": [
+        "Ship",
+        "Don't ship"
+      ],
+      "signsOff": "the change in HJewkes/titan-design#729",
+      "page": "HJewkes/titan-design#729",
+      "merge": {
+        "repo": "HJewkes/titan-design",
+        "pr": 729,
+        "headSha": "16d476b9d2b105c07611ebaf71cf88678c511447",
+        "ship": [
+          "Ship"
+        ]
+      }
+    },
+    {
+      "id": "ship-753",
+      "kind": "pick-one",
+      "prompt": "Ship HJewkes/titan-design#753?",
+      "required": true,
+      "options": [
+        "Ship",
+        "Don't ship"
+      ],
+      "signsOff": "the change in HJewkes/titan-design#753",
+      "page": "HJewkes/titan-design#753",
+      "merge": {
+        "repo": "HJewkes/titan-design",
+        "pr": 753,
+        "headSha": "7f8fe117ed7034eef121098065c66b9defe2ae35",
+        "ship": [
+          "Ship"
+        ]
+      }
+    },
+    {
+      "id": "ship-755",
+      "kind": "pick-one",
+      "prompt": "Ship HJewkes/titan-design#755?",
+      "required": true,
+      "options": [
+        "Ship",
+        "Don't ship"
+      ],
+      "signsOff": "the change in HJewkes/titan-design#755",
+      "page": "HJewkes/titan-design#755",
+      "merge": {
+        "repo": "HJewkes/titan-design",
+        "pr": 755,
+        "headSha": "bce9c3d2733bcc8a43b2c55cb9a57678158b7b05",
+        "ship": [
+          "Ship"
+        ]
+      }
+    },
+    {
+      "id": "d1-palettes",
+      "kind": "pick-one",
+      "prompt": "Pick for d1-palettes.",
+      "required": true,
+      "options": [
+        "Two palettes (dark kept, light re-derived)",
+        "One combined palette (needs new primitives or no plane-contrast rule)"
+      ],
+      "signsOff": "the change in d1-palettes"
+    },
+    {
+      "id": "d2-tiers",
+      "kind": "pick-one",
+      "prompt": "Pick for d2-tiers.",
+      "required": true,
+      "options": [
+        "Two tiers: fills for areas, ink for thin marks and shell accents",
+        "One tier: fills only"
+      ],
+      "signsOff": "the change in d2-tiers"
+    },
+    {
+      "id": "d3-floors",
+      "kind": "pick-one",
+      "prompt": "Pick for d3-floors.",
+      "required": true,
+      "options": [
+        "Fills: 2:1 on surface-base, elevated and raised; ink: 3:1 on all five planes of its mode",
+        "Fills and ink both 3:1 on all five planes",
+        "Fills: no plane gate (CVD and label gates only); ink: 3:1 on all five"
+      ],
+      "signsOff": "the change in d3-floors"
+    },
+    {
+      "id": "d4-light-set",
+      "kind": "pick-one",
+      "prompt": "Pick for d4-light-set.",
+      "required": true,
+      "options": [
+        "L-fix-vivid: red[400] and green[700], five slots unchanged",
+        "L-fix-green: green[800] only",
+        "Keep set B as shipped (all-pairs CVD 4.9)"
+      ],
+      "signsOff": "the change in d4-light-set"
+    },
+    {
+      "id": "d5-dark-slot6",
+      "kind": "pick-one",
+      "prompt": "Pick for d5-dark-slot6.",
+      "required": true,
+      "options": [
+        "amber[500] (3.33 on the overlay; CVD 5.0 against the six)",
+        "amber[600] as the fill (2.40 on the overlay; the shell keeps a miss)",
+        "amber[400] (CVD 1.5 against orange[400])"
+      ],
+      "signsOff": "the change in d5-dark-slot6"
+    },
+    {
+      "id": "d6-cvd-gate",
+      "kind": "pick-one",
+      "prompt": "Pick for d6-cvd-gate.",
+      "required": true,
+      "options": [
+        "All-pairs 8, both modes, slots 0-5",
+        "Adjacent 6 (VW-371 WARN)"
+      ],
+      "signsOff": "the change in d6-cvd-gate"
+    },
+    {
+      "id": "d7-greyscale",
+      "kind": "pick-one",
+      "prompt": "Pick for d7-greyscale.",
+      "required": true,
+      "options": [
+        "Review row only (the grey-of-value strip in the story and the Palettes docs)",
+        "A lightness-gap gate in CI as well"
+      ],
+      "signsOff": "the change in d7-greyscale"
+    },
+    {
+      "id": "d8-order",
+      "kind": "pick-one",
+      "prompt": "Pick for d8-order.",
+      "required": true,
+      "options": [
+        "Yes: per-slot step changes only",
+        "No: allow a reorder"
+      ],
+      "signsOff": "the change in d8-order"
+    },
+    {
+      "id": "d9-light-ink",
+      "kind": "pick-one",
+      "prompt": "Pick for d9-light-ink.",
+      "required": true,
+      "options": [
+        "A: the primitive dark variant (blue[600], magenta[600], red[500], orange[600], green[800], cyan[800], amber[600])",
+        "B: blue[700], magenta[800], red[500], orange[600], green[800], cyan[600], amber[600]"
+      ],
+      "signsOff": "the change in d9-light-ink"
+    },
+    {
+      "id": "ship-779",
+      "kind": "pick-one",
+      "prompt": "Ship HJewkes/titan-design#779?",
+      "required": true,
+      "options": [
+        "Ship",
+        "Don't ship"
+      ],
+      "signsOff": "the change in HJewkes/titan-design#779",
+      "page": "HJewkes/titan-design#779",
+      "merge": {
+        "repo": "HJewkes/titan-design",
+        "pr": 779,
+        "headSha": "db098cf187e1f63727889d8bbbfa74875213e176",
+        "ship": [
+          "Ship"
+        ]
+      }
+    }
+  ],
+  "sections": [
+    {
+      "id": "s1-rule",
+      "title": "Section s1-rule",
+      "deciding": "What this section decides.",
+      "changed": "What changed.",
+      "context": "Context only.",
+      "kind": "CHOICE",
+      "questionIds": [
+        "r1-rule",
+        "r2-brand",
+        "r3-warning"
+      ],
+      "variantKeys": [
+        "tt-head-l",
+        "tt-prop-l",
+        "tt-brand600-l",
+        "tt-brand500-l",
+        "tt-warn950-l",
+        "tt-warn600-l"
+      ],
+      "seeAlso": []
+    },
+    {
+      "id": "s1-ramp50",
+      "title": "Section s1-ramp50",
+      "deciding": "What this section decides.",
+      "changed": "What changed.",
+      "context": "Context only.",
+      "kind": "STATES",
+      "questionIds": [
+        "r4-ramp50"
+      ],
+      "variantKeys": [
+        "tt-ramp50-l",
+        "al-white-paper-l",
+        "al-ramp-light-paper-l"
+      ],
+      "seeAlso": [
+        "tt-prop-l"
+      ]
+    },
+    {
+      "id": "s1-dark",
+      "title": "Section s1-dark",
+      "deciding": "What this section decides.",
+      "changed": "What changed.",
+      "context": "Context only.",
+      "kind": "CHOICE",
+      "questionIds": [
+        "r5-dark"
+      ],
+      "variantKeys": [
+        "tt-dark-main-d",
+        "tt-dark-950-d",
+        "tt-dark-900-d"
+      ],
+      "seeAlso": []
+    },
+    {
+      "id": "s1-grain",
+      "title": "Section s1-grain",
+      "deciding": "What this section decides.",
+      "changed": "What changed.",
+      "context": "Context only.",
+      "kind": "STATES",
+      "questionIds": [
+        "r6-grain"
+      ],
+      "variantKeys": [
+        "al-ramp-dark-950-paper-d",
+        "al-ramp-dark-950-paper-deboss-d",
+        "al-dark-flat-d",
+        "al-ramp-dark-paper-d"
+      ],
+      "seeAlso": [
+        "tt-dark-950-d"
+      ]
+    },
+    {
+      "id": "s1-neutral",
+      "title": "Section s1-neutral",
+      "deciding": "What this section decides.",
+      "changed": "What changed.",
+      "context": "Context only.",
+      "kind": "STATES",
+      "questionIds": [
+        "r7-neutral"
+      ],
+      "variantKeys": [
+        "nf-l"
+      ],
+      "seeAlso": []
+    },
+    {
+      "id": "pr-444",
+      "title": "#444 pr-444",
+      "deciding": "What this section decides.",
+      "changed": "What changed.",
+      "context": "Context only.",
+      "kind": "STATES",
+      "questionIds": [],
+      "variantKeys": [
+        "alert-solid-d",
+        "alert-solid-l"
+      ],
+      "seeAlso": []
+    },
+    {
+      "id": "pr-418",
+      "title": "#418 pr-418",
+      "deciding": "What this section decides.",
+      "changed": "What changed.",
+      "context": "Context only.",
+      "kind": "STATES",
+      "questionIds": [
+        "ship-418"
+      ],
+      "variantKeys": [
+        "facetbar-d",
+        "facetbar-l"
+      ],
+      "seeAlso": []
+    },
+    {
+      "id": "pr-765",
+      "title": "#765 pr-765",
+      "deciding": "What this section decides.",
+      "changed": "What changed.",
+      "context": "Context only.",
+      "kind": "STATES",
+      "questionIds": [
+        "td402-highlight",
+        "ship-765"
+      ],
+      "variantKeys": [
+        "mp-code-d",
+        "mp-code-l",
+        "mp-tables-d",
+        "mp-tables-l"
+      ],
+      "seeAlso": []
+    },
+    {
+      "id": "pr-769",
+      "title": "#769 pr-769",
+      "deciding": "What this section decides.",
+      "changed": "What changed.",
+      "context": "Context only.",
+      "kind": "STATES",
+      "questionIds": [
+        "ship-769"
+      ],
+      "variantKeys": [
+        "zt-landmark-d",
+        "zt-landmark-l",
+        "zt-gradient-d",
+        "zt-gradient-l"
+      ],
+      "seeAlso": []
+    },
+    {
+      "id": "pr-764",
+      "title": "#764 pr-764",
+      "deciding": "What this section decides.",
+      "changed": "What changed.",
+      "context": "Context only.",
+      "kind": "STATES",
+      "questionIds": [
+        "ship-764"
+      ],
+      "variantKeys": [
+        "vlb-all-d",
+        "vlb-all-l"
+      ],
+      "seeAlso": []
+    },
+    {
+      "id": "pr-761",
+      "title": "#761 pr-761",
+      "deciding": "What this section decides.",
+      "changed": "What changed.",
+      "context": "Context only.",
+      "kind": "STATES",
+      "questionIds": [
+        "ship-761"
+      ],
+      "variantKeys": [
+        "lfp-600-d",
+        "lfp-1000-d",
+        "lfp-1200-d",
+        "lfp-wall-d",
+        "topbar-widths-d",
+        "topbar-widths-l"
+      ],
+      "seeAlso": []
+    },
+    {
+      "id": "pr-450",
+      "title": "#450 pr-450",
+      "deciding": "What this section decides.",
+      "changed": "What changed.",
+      "context": "Context only.",
+      "kind": "STATES",
+      "questionIds": [
+        "td473-ticks",
+        "ship-450"
+      ],
+      "variantKeys": [
+        "gauge-ticks-d",
+        "gauge-ticks-l"
+      ],
+      "seeAlso": []
+    },
+    {
+      "id": "pr-424",
+      "title": "#424 pr-424",
+      "deciding": "What this section decides.",
+      "changed": "What changed.",
+      "context": "Context only.",
+      "kind": "STATES",
+      "questionIds": [
+        "ship-424"
+      ],
+      "variantKeys": [
+        "filled-fields-d",
+        "filled-fields-l"
+      ],
+      "seeAlso": []
+    },
+    {
+      "id": "pr-758",
+      "title": "#758 pr-758",
+      "deciding": "What this section decides.",
+      "changed": "What changed.",
+      "context": "Context only.",
+      "kind": "STATES",
+      "questionIds": [
+        "ship-758"
+      ],
+      "variantKeys": [
+        "divider-rules-d",
+        "divider-rules-l"
+      ],
+      "seeAlso": []
+    },
+    {
+      "id": "pr-747",
+      "title": "#747 pr-747",
+      "deciding": "What this section decides.",
+      "changed": "What changed.",
+      "context": "Context only.",
+      "kind": "STATES",
+      "questionIds": [
+        "td265-depth",
+        "td264-tokens",
+        "ship-747"
+      ],
+      "variantKeys": [
+        "tb-inset-depth-d",
+        "tb-inset-depth-l",
+        "tb-active-d",
+        "tb-active-l"
+      ],
+      "seeAlso": []
+    },
+    {
+      "id": "pr-407",
+      "title": "#407 pr-407",
+      "deciding": "What this section decides.",
+      "changed": "What changed.",
+      "context": "Context only.",
+      "kind": "STATES",
+      "questionIds": [
+        "ship-407"
+      ],
+      "variantKeys": [
+        "barlist-d",
+        "barlist-l"
+      ],
+      "seeAlso": []
+    },
+    {
+      "id": "pr-420",
+      "title": "#420 pr-420",
+      "deciding": "What this section decides.",
+      "changed": "What changed.",
+      "context": "Context only.",
+      "kind": "STATES",
+      "questionIds": [
+        "ship-420"
+      ],
+      "variantKeys": [
+        "barlist-marker-d",
+        "barlist-marker-l"
+      ],
+      "seeAlso": []
+    },
+    {
+      "id": "pr-767",
+      "title": "#767 pr-767",
+      "deciding": "What this section decides.",
+      "changed": "What changed.",
+      "context": "Context only.",
+      "kind": "STATES",
+      "questionIds": [
+        "ship-767"
+      ],
+      "variantKeys": [
+        "statusmark-d",
+        "statusmark-l"
+      ],
+      "seeAlso": []
+    },
+    {
+      "id": "pr-745",
+      "title": "#745 pr-745",
+      "deciding": "What this section decides.",
+      "changed": "What changed.",
+      "context": "Context only.",
+      "kind": "STATES",
+      "questionIds": [
+        "ship-745"
+      ],
+      "variantKeys": [
+        "inputbar-d",
+        "inputbar-l"
+      ],
+      "seeAlso": []
+    },
+    {
+      "id": "pr-729",
+      "title": "#729 pr-729",
+      "deciding": "What this section decides.",
+      "changed": "What changed.",
+      "context": "Context only.",
+      "kind": "STATES",
+      "questionIds": [
+        "ship-729"
+      ],
+      "variantKeys": [
+        "prbadge-d",
+        "prbadge-l"
+      ],
+      "seeAlso": []
+    },
+    {
+      "id": "pr-753",
+      "title": "#753 pr-753",
+      "deciding": "What this section decides.",
+      "changed": "What changed.",
+      "context": "Context only.",
+      "kind": "STATES",
+      "questionIds": [
+        "ship-753"
+      ],
+      "variantKeys": [
+        "select-invalid-d",
+        "select-invalid-l"
+      ],
+      "seeAlso": []
+    },
+    {
+      "id": "pr-755",
+      "title": "#755 pr-755",
+      "deciding": "What this section decides.",
+      "changed": "What changed.",
+      "context": "Context only.",
+      "kind": "STATES",
+      "questionIds": [
+        "ship-755"
+      ],
+      "variantKeys": [
+        "tooltip-help-d",
+        "tooltip-help-l"
+      ],
+      "seeAlso": []
+    },
+    {
+      "id": "s3-light",
+      "title": "Section s3-light",
+      "deciding": "What this section decides.",
+      "changed": "What changed.",
+      "context": "Context only.",
+      "kind": "CHOICE",
+      "questionIds": [
+        "d1-palettes",
+        "d4-light-set",
+        "d6-cvd-gate",
+        "d7-greyscale",
+        "d8-order"
+      ],
+      "variantKeys": [
+        "cat-current-light-l",
+        "cat-vivid-l",
+        "cat-green-l"
+      ],
+      "seeAlso": []
+    },
+    {
+      "id": "s3-dark",
+      "title": "Section s3-dark",
+      "deciding": "What this section decides.",
+      "changed": "What changed.",
+      "context": "Context only.",
+      "kind": "STATES",
+      "questionIds": [],
+      "variantKeys": [
+        "cat-current-dark-d"
+      ],
+      "seeAlso": []
+    },
+    {
+      "id": "s3-ink",
+      "title": "Section s3-ink",
+      "deciding": "What this section decides.",
+      "changed": "What changed.",
+      "context": "Context only.",
+      "kind": "STATES",
+      "questionIds": [
+        "d2-tiers",
+        "d3-floors",
+        "d5-dark-slot6",
+        "d9-light-ink"
+      ],
+      "variantKeys": [
+        "cat-ink-light-a-l",
+        "cat-ink-dark-d"
+      ],
+      "seeAlso": []
+    },
+    {
+      "id": "pr-779",
+      "title": "#779 pr-779",
+      "deciding": "What this section decides.",
+      "changed": "What changed.",
+      "context": "Context only.",
+      "questionIds": [
+        "ship-779"
+      ],
+      "variantKeys": [],
+      "seeAlso": []
+    }
+  ]
+}
