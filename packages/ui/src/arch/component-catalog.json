@@ -10760,6 +10760,102 @@
     },
     {
       "composes": [
+        "Card",
+        "Metric"
+      ],
+      "family": "ui/card",
+      "file": "packages/ui/src/components/ui/card/CardStat.tsx",
+      "name": "CardStat",
+      "props": [
+        {
+          "default": "center",
+          "description": "Aligns the figure and label to the start, centre or end of the column.",
+          "name": "align",
+          "required": false,
+          "type": "MetricAlign"
+        },
+        {
+          "default": null,
+          "description": "Custom background color.",
+          "name": "bgColor",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Merged onto the card.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "1",
+          "description": "Planes to lift above the enclosing Surface (default 2: page → the card plane).",
+          "name": "elevation",
+          "required": false,
+          "type": "CardElevation"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "label",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Passed to the inner Metric.",
+          "name": "metricProps",
+          "required": false,
+          "type": "CardStatMetricProps"
+        },
+        {
+          "default": "sm",
+          "description": "",
+          "name": "size",
+          "required": false,
+          "type": "\"sm\" | \"md\" | \"lg\""
+        },
+        {
+          "default": null,
+          "description": "Colours the value from a semantic token.",
+          "name": "tone",
+          "required": false,
+          "type": "MetricTone"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "unit",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "value",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": "filled",
+          "description": "How the card separates from its host: - `elevated` (default): lifts `elevation` planes and wears the lift (rim + shadow).",
+          "name": "variant",
+          "required": false,
+          "type": "CardVariant"
+        }
+      ],
+      "purpose": "The Card stat preset: one labelled figure on a card plane (roadmap decision 1).",
+      "sources": {
+        "props": "packages/ui/src/components/ui/card/CardStat.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "organism"
+    },
+    {
+      "composes": [
         "Button",
         "icons"
       ],
@@ -13652,7 +13748,7 @@
           "description": "",
           "name": "align",
           "required": false,
-          "type": "\"center\" | \"stretch\" | \"start\" | \"end\""
+          "type": "\"start\" | \"center\" | \"end\" | \"stretch\""
         },
         {
           "default": null,
@@ -13673,7 +13769,7 @@
           "description": "",
           "name": "justify",
           "required": false,
-          "type": "\"center\" | \"between\" | \"start\" | \"end\" | \"around\""
+          "type": "\"start\" | \"center\" | \"end\" | \"between\" | \"around\""
         },
         {
           "default": null,
@@ -14175,7 +14271,7 @@
           "description": "Text alignment",
           "name": "align",
           "required": false,
-          "type": "\"right\" | \"left\" | \"center\""
+          "type": "\"right\" | \"center\" | \"left\""
         },
         {
           "default": null,
@@ -14265,7 +14361,7 @@
           "description": "Text alignment",
           "name": "align",
           "required": false,
-          "type": "\"right\" | \"left\" | \"center\""
+          "type": "\"right\" | \"center\" | \"left\""
         },
         {
           "default": null,
@@ -14475,7 +14571,7 @@
           "description": "Content alignment within the tile (default: 'center')",
           "name": "align",
           "required": false,
-          "type": "\"center\" | \"start\""
+          "type": "\"start\" | \"center\""
         },
         {
           "default": null,
