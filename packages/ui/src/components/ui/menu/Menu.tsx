@@ -4,6 +4,7 @@ import { cn } from '../../../utils/cn'
 import { useControllableState } from '../../../hooks/useControllableState'
 import { Surface } from '../surface'
 import { TriggerSurface } from '../trigger'
+import { Typography } from '../typography'
 
 interface MenuContextType {
   isOpen: boolean
@@ -210,9 +211,9 @@ export function MenuGroup({ label, children, className }: MenuGroupProps) {
   return (
     <View className={className}>
       {label && (
-        <Text className="px-inset-lg py-inset-sm text-xs font-semibold text-text-secondary uppercase">
+        <Typography variant="overline" color="secondary" className="px-inset-lg py-inset-sm">
           {label}
-        </Text>
+        </Typography>
       )}
       {children}
     </View>

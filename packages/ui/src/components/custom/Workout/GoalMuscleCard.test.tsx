@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedClassNames } from '../../../test/classname-capture'
 
 import { GoalMuscleCard, goalMuscleLiftText, type GoalMuscleCardProps } from './GoalMuscleCard'
 import { MuscleGroup } from './muscleTaxonomy'
@@ -24,6 +25,13 @@ describe('GoalMuscleCard', () => {
   it('renders the muscle name', () => {
     render(<GoalMuscleCard {...baseProps} />)
     expect(screen.getByTestId('goal-muscle-card-name')).toHaveTextContent('BACK')
+  })
+
+  it('renders the muscle name as an overline eyebrow on text-secondary', () => {
+    render(<GoalMuscleCard {...baseProps} />)
+    const classes = capturedClassNames.get('goal-muscle-card-name')?.split(' ') ?? []
+    expect(classes).toEqual(expect.arrayContaining(['uppercase', 'text-text-secondary']))
+    expect(classes).not.toContain('text-text-tertiary')
   })
 
   describe('the contributing lifts', () => {

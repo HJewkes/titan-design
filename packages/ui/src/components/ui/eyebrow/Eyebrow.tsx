@@ -1,6 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import type { ReactNode } from 'react'
-import { cn } from '../../../utils/cn'
 import { Typography } from '../typography'
 
 export interface EyebrowProps {
@@ -15,11 +14,7 @@ export interface EyebrowProps {
  */
 export function Eyebrow({ children, className }: EyebrowProps) {
   return (
-    <Typography
-      variant="overline"
-      color="inherit"
-      className={cn('text-xs font-semibold uppercase tracking-wider text-text-tertiary', className)}
-    >
+    <Typography variant="overline" color="secondary" className={className}>
       {children}
     </Typography>
   )
