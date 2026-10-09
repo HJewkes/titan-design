@@ -8,13 +8,9 @@
  */
 import { silverRed } from '../../components/ui/charts/kit/silverRed'
 import { compositeOver, contrast, relativeLuminance } from '../../theme/color-checks'
-import {
-  alertRedVivid,
-  greyRamp,
-  primitiveColors,
-  primitiveRamps,
-} from '../../theme/tokens/primitives'
+import { greyRamp, primitiveColors, primitiveRamps } from '../../theme/tokens/primitives'
 import { getSemanticColors, type ThemeMode } from '../../theme/tokens/semantic'
+import { colorsAsJudged } from './light-as-judged'
 
 export type PlaneKey = 'background' | 'base' | 'elevated' | 'raised' | 'overlay'
 export const PLANE_KEYS: PlaneKey[] = ['background', 'base', 'elevated', 'raised', 'overlay']
@@ -113,32 +109,14 @@ export const ROLES: Role[] = [
   mark('brain: dataviz-categorical-6', 'Shell accent', RAIL),
 ]
 
-/**
- * The light roles the owner judged, before 3b's re-colours were applied to the tokens.
- * Pinned so the lab keeps recording the decision rather than re-solving the shipped ramp.
- */
-const LIGHT_ROLES_AS_JUDGED: Record<string, string> = {
-  'hairline-default': 'rgba(0, 0, 0, 0.15)',
-  'hairline-strong': 'rgba(0, 0, 0, 0.22)',
-  'text-tertiary': greyRamp[600],
-  'text-secondary': greyRamp[700],
-  'text-success': primitiveRamps.green[700],
-  'text-brand-secondary': primitiveRamps.cyan[700],
-  'border-input': greyRamp[500],
-  'border-input-hover': greyRamp[600],
-  'status-success': primitiveRamps.green[600],
-  'status-warning': primitiveRamps.amber[500],
-  'status-info': primitiveRamps.blue[600],
-  'status-error-vivid': alertRedVivid,
-  'bar neutral': greyRamp[600],
-  'bar near': primitiveRamps.red[500],
-}
+// The light BarList tones before TD-789 3b moved neutral and near one step darker.
+const LIGHT_BARS_AS_JUDGED = { neutral: greyRamp[600], near: primitiveRamps.red[500] }
 
 /** A role's colour, keyed by role id: light as judged, dark as shipped. */
 export function roleColours(mode: ThemeMode): Record<string, string> {
-  const c = getSemanticColors(mode) as Record<string, string>
-  const bars = silverRed(mode)
-  const shipped = Object.fromEntries(
+  const c = colorsAsJudged(mode) as Record<string, string>
+  const bars = { ...silverRed(mode), ...(mode === 'light' ? LIGHT_BARS_AS_JUDGED : {}) }
+  return Object.fromEntries(
     ROLES.map(({ id }) => {
       if (id === 'bar neutral') return [id, bars.neutral]
       if (id === 'bar near') return [id, bars.near]
@@ -146,7 +124,6 @@ export function roleColours(mode: ThemeMode): Record<string, string> {
       return [id, c[roleToken(id)]]
     })
   )
-  return mode === 'light' ? { ...shipped, ...LIGHT_ROLES_AS_JUDGED } : shipped
 }
 
 /** The token a role id names: "status-error as text" → status-error, "agents: x" → x. */

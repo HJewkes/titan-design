@@ -283,5 +283,4 @@ describe('Pill outline error', () => {
     expect(classes).toEqual(expect.arrayContaining(['border-status-error', 'text-text-error']))
     expect(classes).not.toContain('text-status-error')
   })
-
 })
