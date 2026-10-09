@@ -2136,6 +2136,46 @@
       "standard": false
     },
     {
+      "name": "FacetBar",
+      "file": "packages/ui/src/components/ui/facet-bar/FacetBar.tsx",
+      "dir": "ui",
+      "family": "ui/facet-bar",
+      "exports": [
+        "FacetBar",
+        "FacetOption",
+        "FacetBarProps",
+        "hasCount",
+        "accessibleName",
+        "FacetBar.press"
+      ],
+      "libDependents": 2,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Chip",
+        "Eyebrow"
+      ],
+      "leak": {
+        "rawView": 2,
+        "rawText": 1,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 157,
+        "score": 3
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "FatigueLights",
       "file": "packages/ui/src/components/custom/Fatigue/FatigueLights.tsx",
       "dir": "custom",
@@ -10883,10 +10923,18 @@
     [
       "Page",
       "Typography"
+    ],
+    [
+      "FacetBar",
+      "Chip"
+    ],
+    [
+      "FacetBar",
+      "Eyebrow"
     ]
   ],
   "summary": {
-    "total": 225,
+    "total": 226,
     "dead": [
       "Autocomplete",
       "Breadcrumbs",
