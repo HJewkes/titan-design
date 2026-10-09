@@ -3,14 +3,18 @@ import { Link } from '../../ui/link'
 import { Pill, type PillSizeLevel } from '../../ui/pill'
 import { REF_KIND_META, describeRef, type EntityRef } from './ref-kind'
 
+/** A ref plus how the chip is pressed and drawn. */
 export interface RefChipProps extends EntityRef {
   /**
    * Called with the ref when the chip is pressed. With neither this nor `href`
    * the chip is static: no link role and no tab stop.
    */
   onPressRef?: (ref: EntityRef) => void
+  /** Pill size; defaults to `sm`. */
   size?: PillSizeLevel
+  /** Extra classes on the chip. */
   className?: string
+  /** Defaults to `ref-chip`. */
   testID?: string
 }
 

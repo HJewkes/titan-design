@@ -1681,10 +1681,8 @@ export interface EmptyStateProps extends ViewProps {
 export interface EntityRef {
     href?: string;
     id: string;
-    // (undocumented)
     kind: RefKind;
     label: string;
-    // (undocumented)
     status?: RefStatus;
 }
 
@@ -5847,7 +5845,7 @@ export const RED_LIGHT: "#F77175";
 // @public (undocumented)
 export const RED_MID: "#D14343";
 
-// @public (undocumented)
+// @public
 export const REF_KIND_META: {
     readonly task: {
         readonly label: "Task";
@@ -5899,42 +5897,34 @@ export const REF_KIND_ORDER: readonly ["task", "pr", "session", "agent", "note",
 // @public
 export function RefChip(input: RefChipProps): react_jsx_runtime.JSX.Element;
 
-// @public (undocumented)
+// @public
 export interface RefChipProps extends EntityRef {
-    // (undocumented)
     className?: string;
     onPressRef?: (ref: EntityRef) => void;
-    // (undocumented)
     size?: PillSizeLevel;
-    // (undocumented)
     testID?: string;
 }
 
 // @public
 export interface RefGraphKind {
-    // (undocumented)
     color: ColorToken$1;
-    // (undocumented)
     id: RefKind;
-    // (undocumented)
     label: string;
 }
 
 // @public
 export function refGraphKinds(): RefGraphKind[];
 
-// @public (undocumented)
+// @public
 export interface RefGroup {
-    // (undocumented)
     kind: RefKind;
-    // (undocumented)
     refs: EntityRef[];
 }
 
 // @public
 export type RefKind = 'task' | 'pr' | 'session' | 'agent' | 'note' | 'file' | 'initiative';
 
-// @public (undocumented)
+// @public
 export interface RefKindMeta {
     color: ColorToken$1;
     glyph: string;
@@ -5944,25 +5934,20 @@ export interface RefKindMeta {
 
 // @public
 export interface RefStatus {
-    // (undocumented)
     label: string;
-    // (undocumented)
     tone: PillTone;
 }
 
 // @public
 export function RelatedList(input: RelatedListProps): react_jsx_runtime.JSX.Element;
 
-// @public (undocumented)
+// @public
 export interface RelatedListProps {
-    // (undocumented)
     className?: string;
     emptyState?: ReactNode;
     isLoading?: boolean;
     onPressRef?: (ref: EntityRef) => void;
-    // (undocumented)
     refs: readonly EntityRef[];
-    // (undocumented)
     testID?: string;
 }
 

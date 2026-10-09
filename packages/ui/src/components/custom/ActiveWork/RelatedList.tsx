@@ -9,8 +9,11 @@ import { GROUP_ROLE, LISTITEM_ROLE, LIST_ROLE } from './aria-roles'
 import { RefChip } from './RefChip'
 import { REF_KIND_META, REF_KIND_ORDER, type EntityRef, type RefKind } from './ref-kind'
 
+/** The refs of one kind. */
 export interface RefGroup {
+  /** The kind every ref in the group has. */
   kind: RefKind
+  /** The group's refs, in input order. */
   refs: EntityRef[]
 }
 
@@ -21,7 +24,9 @@ export function groupRefsByKind(refs: readonly EntityRef[]): RefGroup[] {
   )
 }
 
+/** Refs to group, and the list's states. */
 export interface RelatedListProps {
+  /** Refs of any kinds, in any order. */
   refs: readonly EntityRef[]
   /** Passed to every chip. Without it, chips with an `href` still navigate and the rest are static. */
   onPressRef?: (ref: EntityRef) => void
@@ -29,7 +34,9 @@ export interface RelatedListProps {
   isLoading?: boolean
   /** Shown when `refs` is empty. Defaults to an `EmptyState`. */
   emptyState?: ReactNode
+  /** Extra classes on the root. */
   className?: string
+  /** Defaults to `related-list`; each chip is `ref-chip-<id>`. */
   testID?: string
 }
 
