@@ -777,12 +777,11 @@
     "#ff7900|#edeae7": 4
   },
   "custom-activework-openloops--default dark": {
-    "#888684|#31302f": 10,
+    "#888684|#31302f": 6,
     "#ff7900|#4a3929": 3
   },
   "custom-activework-openloops--default light": {
-    "#72716f|#edeae7": 10,
-    "#ff7900|#edeae7": 3
+    "#72716f|#edeae7": 6
   },
   "custom-activework-openloops--empty dark": {
     "#888684|#31302f": 2
@@ -814,11 +813,11 @@
     "#72716f|#edeae7": 4
   },
   "custom-activework-sessiondetail--default dark": {
-    "#888684|#31302f": 10,
+    "#888684|#31302f": 4,
     "#ff7900|#4a3929": 6
   },
   "custom-activework-sessiondetail--default light": {
-    "#72716f|#edeae7": 10
+    "#72716f|#edeae7": 4
   },
   "custom-activework-sessiondetail--inert dark": {
     "#888684|#31302f": 4,
