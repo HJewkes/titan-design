@@ -379,27 +379,8 @@
   "components-molecules-select--controlled light": {
     "#ff7900|#ffffff": 5
   },
-  "components-molecules-select--default dark": {
-    "#888684|#252321": 1
-  },
-  "components-molecules-select--in-form-layout dark": {
-    "#888684|#252321": 2
-  },
   "components-molecules-select--invalid dark": {
-    "#888684|#252321": 1,
     "#e05254|#252321": 1
-  },
-  "components-molecules-select--many-options dark": {
-    "#888684|#252321": 1
-  },
-  "components-molecules-select--multi-select dark": {
-    "#888684|#252321": 1
-  },
-  "components-molecules-select--with-disabled-options dark": {
-    "#888684|#252321": 1
-  },
-  "components-molecules-select--with-placeholder dark": {
-    "#888684|#252321": 1
   },
   "components-molecules-statcard--default dark": {
     "#888684|#2c2a28": 1
