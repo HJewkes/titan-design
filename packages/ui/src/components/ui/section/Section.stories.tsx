@@ -14,7 +14,7 @@ type Story = StoryObj<typeof Section>
 export const Default: Story = {
   render: () => (
     <Section>
-      <SectionHeader title="Recent Workouts" />
+      <SectionHeader title="Recent workouts" />
       <SectionContent>
         <Text style={{ color: 'var(--color-text-secondary)' }}>Workout items would go here</Text>
       </SectionContent>
@@ -25,7 +25,7 @@ export const Default: Story = {
 export const WithSubtitle: Story = {
   render: () => (
     <Section>
-      <SectionHeader title="Workout Stats" subtitle="Last 7 days" />
+      <SectionHeader title="Workout stats" subtitle="Last 7 days" />
       <SectionContent>
         <Text style={{ color: 'var(--color-text-secondary)' }}>Stats content</Text>
       </SectionContent>
@@ -74,7 +74,7 @@ export const MultipleSections: Story = {
 
       <Section>
         <SectionHeader
-          title="This Week"
+          title="This week"
           subtitle="12 sets completed"
           trailing={<Text style={{ color: 'var(--color-text-link)', fontSize: 13 }}>See All</Text>}
         />
@@ -84,7 +84,7 @@ export const MultipleSections: Story = {
       </Section>
 
       <Section>
-        <SectionHeader title="Personal Records" />
+        <SectionHeader title="Personal records" />
         <SectionContent className="rounded-lg bg-surface-elevated p-4">
           <Text style={{ color: 'var(--color-text-secondary)' }}>PR list</Text>
         </SectionContent>
@@ -96,7 +96,7 @@ export const MultipleSections: Story = {
 export const HeaderOnly: Story = {
   render: () => (
     <Section>
-      <SectionHeader title="Section Title Only" />
+      <SectionHeader title="Section title only" />
     </Section>
   ),
 }
