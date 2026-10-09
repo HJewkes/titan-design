@@ -4,7 +4,6 @@ import { useControllableState } from '../../../hooks/useControllableState'
 import { useListNavigation, type ListNavigationKeyEvent } from '../../../hooks/useListNavigation'
 import { cn } from '../../../utils/cn'
 import { EmptyState } from '../../ui/empty-state'
-import { Eyebrow } from '../../ui/eyebrow'
 import { SkeletonListItem } from '../../ui/skeleton'
 import { Typography } from '../../ui/typography'
 import { AgentRosterRow } from './AgentRosterRow'
@@ -160,7 +159,9 @@ export function AgentRoster({
 
   return (
     <View className={cn('gap-stack-md', className)} testID={testID}>
-      <Eyebrow>{label}</Eyebrow>
+      <Typography variant="microLabel" color="secondary">
+        {label}
+      </Typography>
       {isLoading ? (
         <RosterSkeleton />
       ) : ordered.length === 0 ? (

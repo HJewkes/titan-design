@@ -20,7 +20,7 @@ This README is the **index**: **composes ↓** and **used-by ↑**.
 | `AgentCardIdentity.tsx` | parts    | `AgentStateLabel`, `Avatar`, `Pill`, `Typography` (header, task, branch, recency, tags) | `AgentCard`                         |
 | `AgentCardMetrics.tsx`  | parts    | `CardInset`, `SparkBars`, `Progress`, `Typography` (metric cells, no-transcript notice) | `AgentCard`                         |
 | `AgentStateLabel`       | molecule | `Indicator`, `Typography`, `Pill`                                                       | `AgentCard`, `AgentRosterRow`       |
-| `AgentRoster`           | organism | `AgentRosterRow`, `Eyebrow`, `SkeletonListItem`, `EmptyState`, `useListNavigation`      | console agents view (TP-864)        |
+| `AgentRoster`           | organism | `AgentRosterRow`, `Typography`, `SkeletonListItem`, `EmptyState`, `useListNavigation`   | console agents view (TP-864)        |
 | `AgentRosterRow`        | molecule | `Avatar`, `AgentStateLabel`, `Typography`                                               | `AgentRoster`                       |
 | `AgentHoverCard`        | molecule | `Tooltip` (controlled, portalled), `useHoverFocusState`, `TriggerSurface`               | board assignee, topology (TP-865)   |
 | `AgentHoverCardContent` | molecule | the `AgentCardIdentity.tsx` parts, `Typography`                                         | `AgentHoverCard`, graph node detail |
@@ -83,7 +83,8 @@ lift) instead of the `historical` state the contract first proposed.
 
 Non-finite and negative numbers render the `—` placeholder, never `NaN`. An error rate above
 `ERROR_RATE_FLAG_ABOVE` (5 percent) prints its share beside the count, so the flag is not colour
-alone.
+alone. The flagged figure sits in the subtle error `Pill` (`AgentMetricValue`), because
+`text-error` alone measures about 3.7:1 on `CardInset` in dark, under AA at caption size.
 
 ## Accessibility
 

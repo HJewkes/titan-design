@@ -5,7 +5,7 @@ import { Tooltip, useHoverFocusState, type TooltipPlacement } from '../../ui/too
 import { TriggerSurface } from '../../ui/trigger'
 import { Typography } from '../../ui/typography'
 import { AgentCardHeader, AgentCardMeta, AgentCardTask } from './AgentCardIdentity'
-import { DefaultMetricsEmpty } from './AgentCardMetrics'
+import { AgentMetricValue, DefaultMetricsEmpty } from './AgentCardMetrics'
 import {
   agentCostLabel,
   agentCountLabel,
@@ -56,13 +56,11 @@ function MetricRow({
   isFlagged?: boolean
 }) {
   return (
-    <View className="flex-row items-baseline justify-between gap-inline-lg">
+    <View className="flex-row items-center justify-between gap-inline-lg">
       <Typography variant="caption" color="secondary">
         {label}
       </Typography>
-      <Typography variant="mono" color={isFlagged ? 'error' : 'primary'}>
-        {value}
-      </Typography>
+      <AgentMetricValue value={value} isFlagged={isFlagged} />
     </View>
   )
 }

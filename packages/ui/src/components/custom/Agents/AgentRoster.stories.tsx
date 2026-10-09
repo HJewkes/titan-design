@@ -57,7 +57,7 @@ const meta: Meta<typeof AgentRoster> = {
           '**Organism** (list). The agents as a single-select listbox, live above past, each ' +
           'group by state then recency; a duplicate id shows once. Composes ' +
           '[AgentRosterRow](?path=/docs/custom-agents-agentrosterrow--docs), ' +
-          '[Eyebrow](?path=/docs/components-atoms-eyebrow--docs), ' +
+          '[Typography](?path=/docs/foundations-typography--docs), ' +
           '[SkeletonListItem](?path=/docs/components-atoms-skeleton--docs) and ' +
           '[EmptyState](?path=/docs/components-molecules-emptystate--docs). Tab enters at the ' +
           'selected row or the first; Up, Down, Home and End move focus; Enter or Space selects. ' +
