@@ -36,7 +36,7 @@ export function TagPills({ tags = [] }: { tags?: string[] }) {
       {hiddenTags.length > 0 ? (
         <Tooltip usePortal content={<HiddenTags tags={hiddenTags} />}>
           {/* leading-none: the caption's loose line box would otherwise float the pills above centre. */}
-          <Typography variant="caption" className="leading-none text-text-tertiary">
+          <Typography variant="caption" className="leading-none text-text-secondary">
             {`+${hiddenTags.length}`}
           </Typography>
         </Tooltip>

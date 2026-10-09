@@ -906,7 +906,7 @@
     "#72716f|#edeae7": 14
   },
   "custom-activework-taskrow--critical-with-overflowing-tags dark": {
-    "#888684|#252321": 3
+    "#888684|#252321": 2
   },
   "custom-activework-taskrow--critical-with-overflowing-tags light": {
     "#ff7900|#ffffff": 1
@@ -930,7 +930,7 @@
     "#ff7900|#ffffff": 1
   },
   "custom-activework-tasktable--default dark": {
-    "#888684|#252321": 18
+    "#888684|#252321": 17
   },
   "custom-activework-tasktable--default light": {
     "#ff7900|#ffffff": 8
@@ -945,31 +945,31 @@
     "#888684|#252321": 1
   },
   "custom-activework-tasktable--narrow dark": {
-    "#888684|#252321": 18
+    "#888684|#252321": 17
   },
   "custom-activework-tasktable--narrow light": {
     "#ff7900|#ffffff": 8
   },
   "custom-activework-tasktable--no-legend dark": {
-    "#888684|#252321": 18
+    "#888684|#252321": 17
   },
   "custom-activework-tasktable--no-legend light": {
     "#ff7900|#ffffff": 8
   },
   "custom-activework-tasktable--sorted-by-age dark": {
-    "#888684|#252321": 18
+    "#888684|#252321": 17
   },
   "custom-activework-tasktable--sorted-by-age light": {
     "#ff7900|#ffffff": 8
   },
   "custom-activework-tasktable--sorted-by-estimate dark": {
-    "#888684|#252321": 18
+    "#888684|#252321": 17
   },
   "custom-activework-tasktable--sorted-by-estimate light": {
     "#ff7900|#ffffff": 8
   },
   "custom-activework-tasktable--sorted-by-severity dark": {
-    "#888684|#252321": 18
+    "#888684|#252321": 17
   },
   "custom-activework-tasktable--sorted-by-severity light": {
     "#ff7900|#ffffff": 8
