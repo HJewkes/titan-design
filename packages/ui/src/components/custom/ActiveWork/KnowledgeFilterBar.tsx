@@ -47,6 +47,8 @@ export function KnowledgeFilterBar({
       <Select
         isDisabled={isDisabled}
         variant="filled"
+        size="sm"
+        isClearable={filters.dateRange !== 'all'}
         className="w-auto min-w-40"
         accessibilityLabel="Date"
         options={DATE_RANGE_OPTIONS}

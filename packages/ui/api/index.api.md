@@ -6393,6 +6393,7 @@ export interface SelectOption<T = string> {
 // @public (undocumented)
 export interface SelectProps<T = string> extends ViewProps {
     className?: string;
+    isClearable?: boolean;
     isDisabled?: boolean;
     isInvalid?: boolean;
     isMulti?: boolean;

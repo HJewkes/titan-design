@@ -67,6 +67,8 @@ export interface SelectProps<T = string> extends ViewProps {
   options: SelectOption<T>[]
   /** Visual variant — use 'filled' on dark/elevated surfaces */
   variant?: 'default' | 'filled'
+  /** Whether a selected value shows a clear button. Set false when the value is a meaningful "all". */
+  isClearable?: boolean
   /** Control height, matching Input's sizes. Omitted, the trigger keeps its padded height. */
   size?: SelectSize
   /** Additional className */
@@ -144,6 +146,7 @@ export function Select<T extends string = string>({
   options,
   variant = 'default',
   size,
+  isClearable = true,
   className,
   ...props
 }: SelectProps<T>) {
@@ -188,7 +191,7 @@ export function Select<T extends string = string>({
         >
           <Text className={labelClassName(size, hasValue)}>{displayValue}</Text>
           <View className="flex-row items-center gap-2">
-            {hasValue && (
+            {hasValue && isClearable && (
               <Pressable
                 onPress={(e) => {
                   e.stopPropagation?.()

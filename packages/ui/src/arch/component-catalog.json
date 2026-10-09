@@ -13935,6 +13935,13 @@
           "type": "string"
         },
         {
+          "default": "true",
+          "description": "Whether a selected value shows a clear button.",
+          "name": "isClearable",
+          "required": false,
+          "type": "boolean"
+        },
+        {
           "default": "false",
           "description": "Whether the select is disabled",
           "name": "isDisabled",
