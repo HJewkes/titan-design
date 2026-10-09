@@ -27,6 +27,13 @@ export const PARALLEL_EDGE_GAP = 6
 export const LABEL_MAX_CHARS = 22
 /** Fill for a node whose kind is unset or not listed in `nodeKinds`. */
 export const NEUTRAL_NODE_COLOR: ColorToken = 'text-secondary'
+/**
+ * Edges are lines, so they take the border family: the strongest hairline at rest and
+ * `border-prominent`, the one border meant to be seen outright, when emphasised. The contract's
+ * `border-default` and `border-strong` were retired for these (TD-07.14).
+ */
+export const EDGE_REST_COLOR: ColorToken = 'hairline-strong'
+export const EDGE_STRONG_COLOR: ColorToken = 'border-prominent'
 
 /** Counts code points, so an emoji is never cut in half. */
 export function truncateLabel(label: string, max = LABEL_MAX_CHARS): string {

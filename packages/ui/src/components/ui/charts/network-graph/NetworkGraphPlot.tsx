@@ -5,6 +5,8 @@ import { resolveColor, type ColorToken } from '../../../../theme/resolve-color'
 import { CHART_EASE_OUT, useChartEntrance } from '../kit/chartEntrance'
 import {
   ARROW_LENGTH,
+  EDGE_REST_COLOR,
+  EDGE_STRONG_COLOR,
   NEUTRAL_NODE_COLOR,
   NODE_RADIUS,
   isItem,
@@ -71,7 +73,7 @@ function EdgeMark({ geometry, markerPrefix, isStrong, isDimmed }: EdgeMarkProps)
       strokeDasharray={geometry.isDashed ? EDGE_DASH : undefined}
       markerEnd={`url(#${markerPrefix}-${isStrong ? 'strong' : 'rest'})`}
       opacity={isDimmed ? DIM_OPACITY : 1}
-      style={{ stroke: resolveColor(isStrong ? 'text-primary' : 'text-secondary') }}
+      style={{ stroke: resolveColor(isStrong ? EDGE_STRONG_COLOR : EDGE_REST_COLOR) }}
       data-edge={geometry.id}
       data-emphasis={isStrong ? 'strong' : 'rest'}
     />
@@ -187,8 +189,8 @@ export function NetworkGraphPlot(props: NetworkGraphPlotProps) {
     >
       {/* eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (contract C9) */}
       <defs>
-        <ArrowMarker id={`${markerPrefix}-rest`} color="text-secondary" />
-        <ArrowMarker id={`${markerPrefix}-strong`} color="text-primary" />
+        <ArrowMarker id={`${markerPrefix}-rest`} color={EDGE_REST_COLOR} />
+        <ArrowMarker id={`${markerPrefix}-strong`} color={EDGE_STRONG_COLOR} />
       </defs>
       {geometries.map((geometry) => (
         <EdgeMark
