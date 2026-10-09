@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:bb23ac4023cf4a47b66367336be9a6a0ace7ec18a02214a876e7f787676c73fa",
+  "componentBarrelHash": "sha256:6ae06b16f00256bd29077f6a9e4b99b7513a345457b032e120089e5050fcc3cc",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -4100,7 +4100,7 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 59,
+        "loc": 61,
         "score": 1
       },
       "tier": "molecule",
@@ -4127,7 +4127,7 @@
         "KnowledgeList.resetFilters"
       ],
       "libDependents": 0,
-      "storyRefs": 1,
+      "storyRefs": 2,
       "xproj": {
         "mobile": 0,
         "mcp": 0,
@@ -4149,7 +4149,7 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 189,
+        "loc": 201,
         "score": 2
       },
       "tier": "organism",
@@ -5653,6 +5653,86 @@
         "rawHex": 0,
         "loc": 278,
         "score": 32
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "RefChip",
+      "file": "packages/ui/src/components/custom/ActiveWork/RefChip.tsx",
+      "dir": "custom",
+      "family": "custom/ActiveWork",
+      "exports": [
+        "RefChip",
+        "RefChipProps",
+        "RefChipBody"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Link",
+        "Pill"
+      ],
+      "leak": {
+        "rawView": 1,
+        "rawText": 1,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 107,
+        "score": 2
+      },
+      "tier": "molecule",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "RelatedList",
+      "file": "packages/ui/src/components/custom/ActiveWork/RelatedList.tsx",
+      "dir": "custom",
+      "family": "custom/ActiveWork",
+      "exports": [
+        "groupRefsByKind",
+        "RelatedList",
+        "RefGroup",
+        "RelatedListProps",
+        "RefGroupSection",
+        "RelatedListSkeleton"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "EmptyState",
+        "Eyebrow",
+        "RefChip",
+        "Skeleton",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 7,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 117,
+        "score": 7
       },
       "tier": "organism",
       "verdict": "dead",
@@ -11070,6 +11150,34 @@
       "EmptyState"
     ],
     [
+      "RefChip",
+      "Link"
+    ],
+    [
+      "RefChip",
+      "Pill"
+    ],
+    [
+      "RelatedList",
+      "RefChip"
+    ],
+    [
+      "RelatedList",
+      "EmptyState"
+    ],
+    [
+      "RelatedList",
+      "Eyebrow"
+    ],
+    [
+      "RelatedList",
+      "Skeleton"
+    ],
+    [
+      "RelatedList",
+      "Typography"
+    ],
+    [
       "KnowledgeClassLabel",
       "Indicator"
     ],
@@ -11107,7 +11215,7 @@
     ]
   ],
   "summary": {
-    "total": 229,
+    "total": 231,
     "dead": [
       "Autocomplete",
       "Breadcrumbs",
@@ -11127,6 +11235,7 @@
       "PortfolioOverview",
       "PrHistoryModal",
       "ReadinessCheck",
+      "RelatedList",
       "SessionDetail",
       "SessionList",
       "Switch",
@@ -11162,6 +11271,7 @@
       "MesoProgressBar",
       "MessageBubble",
       "ProgramPlanningBreadcrumbs",
+      "RefChip",
       "RevealRow",
       "SessionListItem",
       "SeverityLabel",
