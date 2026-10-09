@@ -411,8 +411,10 @@ places. `frames.json` lists `unit`, `round`, `storybookUrl`, the `manifestSha256
 whose `globals.theme` did not apply is an error, never a frame in the other theme. Image
 variants are already static files beside the round and are not copied. Frames are rendered
 only when the contrast gate passes, after `contrast.json` and before `round.json`; a refused
-build writes none. A render drops a frame an earlier build wrote for a variant the round no
-longer names.
+build writes none. A render is staged in a sibling directory and swapped in for `frames/`
+only when every frame passes, so a failed render (a theme that did not apply, a story that
+throws, a browser that dies) leaves the previous frames and `frames.json` exactly as they
+were, and a successful one leaves no file an earlier render wrote.
 
 The renderer is the harness's package-local subpath export (the harness is `private`, so the
 export resolves inside this workspace, not from npm):
@@ -430,7 +432,8 @@ const index = await renderFrames(manifest, 'http://127.0.0.1:6100', {
 `manifest` is a parsed `round@2` (`RoundSchema` or `ManifestSchema` from
 `@titan-design/review-schema`). No server is started: the renderer needs only a Storybook on a
 loopback host (any other host is refused before anything is read) and headless Chromium at 2x,
-the same renderer as the capture and the contrast gate. It refuses a story the Storybook does
+the same shooter as the post-submit capture. The contrast gate shares its story loading
+(`renderStory`, `STORY_ROOT`) but opens its own 1x page. It refuses a story the Storybook does
 not serve before a browser opens, naming each missing id. `frameKey(variant, width)` gives a
 frame's stem, `framesDir(roundsDir, roundId)` its directory, and `readFramesIndex(dir)` reads
 an index back. The `open` and `storyIds` options inject the browser and the story list for

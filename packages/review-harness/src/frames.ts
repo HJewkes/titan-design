@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
-import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
-import { join, resolve, sep } from 'node:path'
+import { mkdir, mkdtemp, readFile, rename, rm, writeFile } from 'node:fs/promises'
+import { dirname, join, resolve, sep } from 'node:path'
 import {
   THEME_MODES,
   isLoopbackUrl,
@@ -176,14 +176,10 @@ async function shootAll(shots: Shot[], storybookUrl: string, open: OpenShooter) 
   return records
 }
 
-/** Frames an earlier render left that this one will not rewrite, so the dir never shows a dropped variant. */
-async function removeStaleFrames(dir: string, shots: Shot[]): Promise<void> {
-  const previous = await readFramesIndex(dir).catch(() => null)
-  const keep = new Set(shots.map((s) => s.file))
-  for (const frame of previous?.frames ?? []) {
-    const file = resolve(dir, '..', frame.file)
-    if (file.startsWith(resolve(dir) + sep) && !keep.has(file)) await rm(file, { force: true })
-  }
+/** Replaces the frames dir with the staged one, so a reader sees the old set or the new, never a mix. */
+async function swapIn(staging: string, dir: string): Promise<void> {
+  await rm(dir, { recursive: true, force: true })
+  await rename(staging, dir)
 }
 
 /** The index a frames directory carries, read back from its frames.json. */
@@ -191,12 +187,27 @@ export async function readFramesIndex(dir: string): Promise<FramesIndex> {
   return JSON.parse(await readFile(join(dir, FRAMES_FILE), 'utf8')) as FramesIndex
 }
 
+/** Shoots into a fresh sibling of the frames dir and writes the index there; the caller swaps it in. */
+async function stageFrames(
+  manifest: Manifest,
+  staging: string,
+  index: Omit<FramesIndex, 'frames'>,
+  open: OpenShooter
+): Promise<FramesIndex> {
+  const frames = await shootAll(plannedShots(manifest, staging), index.storybookUrl, open)
+  const staged: FramesIndex = { ...index, frames }
+  await writeFile(join(staging, FRAMES_FILE), `${JSON.stringify(staged, null, 2)}\n`)
+  return staged
+}
+
 /**
  * Renders every story frame the manifest names, at every width, to static PNGs under
  * `<roundsDir>/<roundId>/frames/<key>.png`, and writes `frames.json` beside them. No server:
  * it needs only a running Storybook on loopback. Image variants are already static files
  * beside the round and are not copied. A story the Storybook does not serve, or a declared
- * theme that did not apply, rejects before (or instead of) writing the index.
+ * theme that did not apply, rejects before (or instead of) writing the index. The render is
+ * staged beside the frames dir and swapped in only on success, so a failed render leaves the
+ * previous frames and index exactly as they were.
  */
 export async function renderFrames(
   manifest: Manifest,
@@ -211,16 +222,24 @@ export async function renderFrames(
   const dir = framesDir(options.roundsDir, options.roundId)
   const shots = plannedShots(manifest, dir)
   if (shots.length) await assertStoriesServed(shots, base, options)
-  await mkdir(dir, { recursive: true })
-  await removeStaleFrames(dir, shots)
-  const index: FramesIndex = {
-    schema: FRAMES_SCHEMA_ID,
-    unit: manifest.unit,
-    round: manifest.round,
-    storybookUrl: base,
-    ...(options.manifestSha256 ? { manifestSha256: options.manifestSha256 } : {}),
-    frames: await shootAll(shots, base, options.open ?? openChromiumShooter),
+  await mkdir(dirname(dir), { recursive: true })
+  const staging = await mkdtemp(join(dirname(dir), `.${FRAMES_DIR}-`))
+  try {
+    const index = await stageFrames(
+      manifest,
+      staging,
+      {
+        schema: FRAMES_SCHEMA_ID,
+        unit: manifest.unit,
+        round: manifest.round,
+        storybookUrl: base,
+        ...(options.manifestSha256 ? { manifestSha256: options.manifestSha256 } : {}),
+      },
+      options.open ?? openChromiumShooter
+    )
+    await swapIn(staging, dir)
+    return index
+  } finally {
+    await rm(staging, { recursive: true, force: true })
   }
-  await writeFile(join(dir, FRAMES_FILE), `${JSON.stringify(index, null, 2)}\n`)
-  return index
 }

@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto'
-import { mkdtemp, readFile, readdir, stat, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, readdir, stat, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
@@ -159,7 +159,31 @@ describe('renderFrames', () => {
     await expect(renderFrames(manifest, STORYBOOK, options)).rejects.toThrow(
       `${key}: the light theme did not apply (got dark)`
     )
-    expect(await readdir(dir)).not.toContain('frames.json')
+    await expect(stat(dir)).rejects.toThrow()
+    expect(await readdir(join(dir, '..'))).toEqual([])
+  })
+
+  it('leaves the previous frames and index intact when a rerender fails its theme check', async () => {
+    const { options, dir } = await setup(round())
+    const before = await renderFrames(round(), STORYBOOK, options)
+    const failing = { ...options, open: stubShooter(() => 'dark').open }
+    await expect(renderFrames(round(true), STORYBOOK, failing)).rejects.toThrow(FrameRenderError)
+    expect(await readFramesIndex(dir)).toEqual(before)
+    for (const frame of before.frames)
+      expect(sha256(await readFile(join(dir, '..', frame.file)))).toBe(frame.sha256)
+    expect((await readdir(dir)).sort()).toEqual(
+      [...before.frames.map((f) => `${f.key}.png`), 'frames.json'].sort()
+    )
+    expect(await readdir(join(dir, '..'))).toEqual(['frames'])
+  })
+
+  it('drops a PNG left in the frames dir by a render that never wrote an index', async () => {
+    const manifest = round()
+    const { options, dir } = await setup(manifest)
+    await mkdir(dir, { recursive: true })
+    await writeFile(join(dir, 'orphan.png'), 'stale')
+    await renderFrames(manifest, STORYBOOK, options)
+    expect(await readdir(dir)).not.toContain('orphan.png')
   })
 
   it('removes a frame an earlier render wrote for a variant the round no longer names', async () => {
