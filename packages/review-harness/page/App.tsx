@@ -1,4 +1,5 @@
 import {
+  Fragment,
   useLayoutEffect,
   useEffect,
   useMemo,
@@ -10,7 +11,7 @@ import {
 } from 'react'
 import { buildFeedback, pendingQuestionIds } from '../src/feedback.ts'
 import { feedbackProblems } from '../src/round.ts'
-import { roundLayout, type ResolvedSection } from '../src/sections.ts'
+import { roundLayout, type LayoutBlock, type ResolvedSection } from '../src/sections.ts'
 import type { Manifest, Question, StripKind, Variant } from '@titan-design/review-schema'
 import { Markdown } from './Markdown.tsx'
 import { QuestionBlock } from './QuestionBlock.tsx'
@@ -221,7 +222,19 @@ function Questions({ questions, ...props }: PartProps & { questions: Question[] 
   )
 }
 
-/** The question(s) first, then the frames they are asked about. */
+/** A question with no frames of its own, the unclaimed strip, or a question under its frames. */
+function Block({ block, ...props }: PartProps & { block: LayoutBlock }) {
+  if (block.kind === 'question') return <Questions {...props} questions={[block.question]} />
+  if (block.kind === 'strip') return <Variants {...props} variants={block.variants} />
+  return (
+    <div className="anchored" data-testid={`anchored-${block.question.id}`}>
+      <Variants {...props} variants={block.variants} />
+      <Questions {...props} questions={[block.question]} />
+    </div>
+  )
+}
+
+/** The section's texts, then its blocks: each question sits right under the frames it names. */
 function SectionBlock({ section, ...props }: PartProps & { section: ResolvedSection }) {
   return (
     <section
@@ -251,16 +264,22 @@ function SectionBlock({ section, ...props }: PartProps & { section: ResolvedSect
       <SectionText part="changed" label="Changed since last approved" text={section.changed} />
       <SectionParts parts={section.parts} />
       <SectionText part="context" label="Context only, not under review" text={section.context} />
-      <Questions {...props} questions={section.questions} />
-      {section.kind && (
-        <p className="strip-kind" data-testid={`strip-kind-${section.id}`}>
-          {STRIP_KIND_LABEL[section.kind]}
-        </p>
-      )}
-      <Variants {...props} variants={section.variants} />
+      {section.blocks.map((block) => (
+        <Fragment key={blockKey(block)}>
+          {block.kind === 'strip' && section.kind && (
+            <p className="strip-kind" data-testid={`strip-kind-${section.id}`}>
+              {STRIP_KIND_LABEL[section.kind]}
+            </p>
+          )}
+          <Block {...props} block={block} />
+        </Fragment>
+      ))}
     </section>
   )
 }
+
+const blockKey = (block: LayoutBlock) =>
+  block.kind === 'strip' ? 'strip' : `${block.kind}-${block.question.id}`
 
 const STRIP_KIND_LABEL: Record<StripKind, string> = {
   CHOICE: 'Choice: these frames differ only in what is being decided',
@@ -387,7 +406,7 @@ export function Form(props: Omit<PartProps, 'indexes'>) {
   const page = pages[current]
   useScrollOnPageChange(page.id, state.active === page.first)
   const paged = layout.sections.length > 0
-  const shows = (id: string) => !paged || page.id === id
+  const shows = (id: string) => !paged || page.id === id || page.sectionIds.includes(id)
   const parts = { ...props, indexes: stopIndexes(manifest), layout }
   const last = current === pages.length - 1
   const reviewRef = useFocusOnPageEntry(page.id, paged && last)
