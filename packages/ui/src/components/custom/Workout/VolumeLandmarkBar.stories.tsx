@@ -14,7 +14,7 @@ const meta: Meta<typeof VolumeLandmarkBar> = {
           'Horizontal weekly-volume bar with MEV / MAV / MRV landmark ticks, a HEAT-scale ' +
           'fill positioned against the MAV target, and a % readout. Reuses the canonical ' +
           'BodyMap volume heat scale (under → maintenance → productive → approaching → over).' +
-          ' Composes **ZoneTrack** · **DataRow** · **Typography** (`body2` name and %).',
+          ' Composes **ZoneTrack** · **DataRow** · **Typography** (`overline` name, bold `body2` % in text-secondary).',
       },
     },
   },

@@ -47,17 +47,23 @@ describe('VolumeLandmarkBar', () => {
     expect(screen.getByTestId('volume-landmark-pct')).toHaveTextContent('100%')
   })
 
-  it('sets the name and % on one body2 line, the name muted and the % bold', () => {
+  it('sets the name as an overline label and the % bold, both in text-secondary', () => {
     renderBar(10)
     const classes = (id: string) => capturedClassNames.get(id)?.split(' ') ?? []
     const name = classes('volume-landmark-muscle')
     const pct = classes('volume-landmark-pct')
-    for (const shared of ['font-body', 'text-sm']) {
-      expect(name).toContain(shared)
-      expect(pct).toContain(shared)
-    }
-    expect(name).toContain('text-text-secondary')
-    expect(pct).toEqual(expect.arrayContaining(['text-text-primary', 'font-bold']))
+    expect(name).toEqual(
+      expect.arrayContaining([
+        'font-body',
+        'text-xs',
+        'font-semibold',
+        'uppercase',
+        'text-text-secondary',
+      ])
+    )
+    expect(pct).toEqual(
+      expect.arrayContaining(['font-body', 'text-sm', 'text-text-secondary', 'font-bold'])
+    )
     expect(pct).not.toContain('font-mono')
   })
 

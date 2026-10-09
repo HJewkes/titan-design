@@ -65,7 +65,7 @@ function zoneForSets(sets: number, { mev, mav, mrv }: VolumeLandmarks): VolumeZo
 }
 
 /** The bar's reading: its HEAT zone and the % of the MAV target. */
-export function volumeLandmarkReading(
+function volumeLandmarkReading(
   currentSets: number,
   landmarks: VolumeLandmarks
 ): { zone: VolumeZone; pct: number } {
@@ -76,7 +76,7 @@ export function volumeLandmarkReading(
   }
 }
 
-export interface VolumeLandmarkTrackProps {
+interface VolumeLandmarkTrackProps {
   muscle: string
   currentSets: number
   landmarks: VolumeLandmarks
@@ -84,11 +84,8 @@ export interface VolumeLandmarkTrackProps {
   scaleMax?: number
 }
 
-/**
- * The bar's track without its header lockup, so the lab can pair it with
- * another header (TD-101). Not exported from the family barrel.
- */
-export function VolumeLandmarkTrack({
+/** The bar's track beneath its header lockup. */
+function VolumeLandmarkTrack({
   muscle,
   currentSets,
   landmarks,
@@ -137,8 +134,8 @@ export function VolumeLandmarkTrack({
  * Horizontal weekly-volume bar with MEV / MAV / MRV landmark ticks and a HEAT-scale
  * fill positioned against the MAV target. Composes the shared {@link ZoneTrack}
  * gauge primitive (track + active-zone fill + colored/tooltip landmark ticks; glows
- * when in the productive zone) and a {@link DataRow} header lockup (muscle title +
- * current % at matched type height). The tick acronyms expand to their full name +
+ * when in the productive zone) and a {@link DataRow} header lockup (muscle name as an
+ * overline label + current % in bold). The tick acronyms expand to their full name +
  * raw set count on hover/long-press, keeping the footer light. Reuses the canonical
  * BodyMap volume heat scale so a muscle's status reads the same as in the body map.
  *
@@ -166,19 +163,18 @@ export function VolumeLandmarkBar({
       {...props}
     >
       <DataRow
-        // The labeled-bar lockup the library already uses (Progress's label and
-        // value, wholeBodyCardParts' FactCaption): one `body2` line, the name muted
-        // and the figure bold in text ink. Text ink, not the zone fill: a pale fill
-        // is unreadable as text (VW-371).
+        // The name is an overline label (sans, semibold, caps) over a bold `body2`
+        // figure, both in text-secondary (owner pick C, TD-101). Text ink, not the
+        // zone fill: a pale fill is unreadable as text (VW-371).
         label={
-          <Typography variant="body2" color="secondary" testID="volume-landmark-muscle">
+          <Typography variant="overline" color="secondary" testID="volume-landmark-muscle">
             {muscle}
           </Typography>
         }
         value={
           <Typography
             variant="body2"
-            color="primary"
+            color="secondary"
             className="font-bold"
             testID="volume-landmark-pct"
           >
