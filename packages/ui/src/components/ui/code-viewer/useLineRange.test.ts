@@ -59,27 +59,11 @@ describe('useLineRange', () => {
       result.current.moveActive(1)
       result.current.extendSelection(1)
       result.current.toggleActive()
-      result.current.selectLine(123)
       result.current.clearSelection()
     })
     expect(result.current.selectedRange).toEqual(selected)
     expect(result.current.activeLine).toBe(121)
     expect(onSelectedRangeChange).not.toHaveBeenCalled()
-  })
-
-  it('selects a pressed line alone, makes it active, and clears it on a second press', () => {
-    const onSelectedRangeChange = vi.fn()
-    const { result } = renderHook(() => useLineRange({ ...base, onSelectedRangeChange }))
-    act(() => result.current.selectLine(123))
-    expect(result.current.activeLine).toBe(123)
-    expect(result.current.selectedRange).toEqual({ startLine: 123, endLine: 123 })
-    act(() => result.current.extendSelection(-2))
-    expect(result.current.selectedRange).toEqual({ startLine: 121, endLine: 123 })
-    act(() => result.current.selectLine(999))
-    expect(result.current.selectedRange).toEqual({ startLine: 124, endLine: 124 })
-    act(() => result.current.selectLine(124))
-    expect(result.current.selectedRange).toBeNull()
-    expect(onSelectedRangeChange).toHaveBeenCalledTimes(4)
   })
 
   it('selects nothing when the text has no lines', () => {

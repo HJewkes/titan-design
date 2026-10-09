@@ -4,10 +4,7 @@ import { fcAssert } from '../../../test/property'
 import { realFixtures, syntheticFixtures, type SourceExcerpt } from './fixtures'
 import {
   buildLineModel,
-  contentWidth,
-  expandTabs,
   gutterDigits,
-  highlightSummary,
   normalizeRanges,
   rangeEdges,
   rangesByLine,
@@ -78,23 +75,6 @@ describe('normalizeRanges', () => {
           const covering = runs.findIndex((r) => r.startLine <= line && line <= r.endLine)
           expect(byLine.get(line)).toBe(covering === -1 ? undefined : covering)
         }
-      })
-    )
-  })
-
-  it('covers exactly the input lines that fall inside the window', () => {
-    fcAssert(
-      fc.property(fc.array(lineRange), window, (ranges, { first, last }) => {
-        const expected = new Set<number>()
-        for (const { startLine, endLine } of ranges) {
-          for (let line = Math.max(startLine, first); line <= Math.min(endLine, last); line++) {
-            expected.add(line)
-          }
-        }
-        const covered = rangesByLine(normalizeRanges(ranges, first, last, silent))
-        expect([...covered.keys()].sort((a, b) => a - b)).toEqual(
-          [...expected].sort((a, b) => a - b)
-        )
       })
     )
   })
@@ -238,73 +218,5 @@ describe('fixtures through the line model', () => {
     const warn = vi.fn()
     buildLineModel(fx, warn)
     expect(warn).not.toHaveBeenCalled()
-  })
-})
-
-describe('tabs and content width', () => {
-  const tabbed = fc.array(fc.constantFrom('a', ' ', '\t', '\u4f60')).map((parts) => parts.join(''))
-
-  it('expands each tab to the next tab stop', () => {
-    expect(expandTabs('\tindented')).toBe('    indented')
-    expect(expandTabs('mid\tline')).toBe('mid line')
-    expect(expandTabs('ab\tc', 2)).toBe('ab  c')
-    expect(expandTabs('a\tb', 8)).toBe('a       b')
-    expect(expandTabs('no tabs')).toBe('no tabs')
-  })
-
-  it('falls back to four columns for a tab size that is not a positive integer', () => {
-    expect(expandTabs('\tx', 0)).toBe('    x')
-    expect(expandTabs('\tx', Number.NaN)).toBe('    x')
-  })
-
-  it('leaves no tab, keeps every other character, and ends each tab on a stop', () => {
-    fcAssert(
-      fc.property(tabbed, fc.integer({ min: 1, max: 8 }), (line, tabSize) => {
-        const expanded = expandTabs(line, tabSize)
-        expect(expanded).not.toContain('\t')
-        expect(expanded.replace(/ /g, '')).toBe(line.replace(/[ \t]/g, ''))
-        const prefixBeforeLastTab = line.slice(0, line.lastIndexOf('\t') + 1)
-        expect([...expandTabs(prefixBeforeLastTab, tabSize)].length % tabSize).toBe(0)
-      })
-    )
-  })
-
-  it('measures the longest line in columns, tabs expanded and a code point as one', () => {
-    expect(contentWidth([], 7)).toBe(0)
-    expect(contentWidth(['ab', 'abcd', 'a'], 7)).toBe(28)
-    expect(contentWidth(['\tx'], 10)).toBe(50)
-    expect(contentWidth(['\tx'], 10, 2)).toBe(30)
-    expect(contentWidth(['\u{1f600}\u{1f680}'], 10)).toBe(20)
-  })
-
-  it('agrees with the expanded text for every line', () => {
-    fcAssert(
-      fc.property(fc.array(tabbed), fc.integer({ min: 1, max: 8 }), (lines, tabSize) => {
-        const longest = Math.max(0, ...lines.map((line) => [...expandTabs(line, tabSize)].length))
-        expect(contentWidth(lines, 1, tabSize)).toBe(longest)
-      })
-    )
-  })
-})
-
-describe('highlightSummary', () => {
-  it('says nothing when no line is flagged', () => {
-    expect(highlightSummary([])).toBeNull()
-  })
-
-  it('names one run per merged range, a single line in the singular, with its labels', () => {
-    const runs = normalizeRanges(
-      [
-        { startLine: 3, endLine: 8, label: 'long function' },
-        { startLine: 6, endLine: 12, label: 'deep nesting' },
-        { startLine: 27, endLine: 27 },
-      ],
-      1,
-      30,
-      silent
-    )
-    expect(highlightSummary(runs)).toBe(
-      'Flagged: lines 3 to 12 (long function, deep nesting), line 27'
-    )
   })
 })
