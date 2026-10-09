@@ -255,11 +255,18 @@ describe('SetBarChart under a SetBarTreatment', () => {
     )
   }
 
-  it('keeps the faint fill and the paper shadow outside a provider', () => {
+  it('keeps the faint fill and softens the light shadow outside a provider', () => {
     renderLight()
     const empty = getComputedStyle(screen.getByTestId('t-slot-empty'))
     expect(empty.borderTopWidth).toBe('0px')
     expect(empty.backgroundColor).not.toBe(CLEAR)
+    expect(screen.getByTestId('t-bar-0').style.boxShadow).toMatch(
+      /^0 2px 5px rgba\(0, ?0, ?0, ?0\.2\)$/
+    )
+  })
+
+  it('keeps the paper shadow on a light plane when a provider asks for raised', () => {
+    renderLight({ lightPaper: 'raised' })
     const paper = barPaper(silver()) as { boxShadow: string }
     expect(screen.getByTestId('t-bar-0').style.boxShadow).toBe(paper.boxShadow)
   })
