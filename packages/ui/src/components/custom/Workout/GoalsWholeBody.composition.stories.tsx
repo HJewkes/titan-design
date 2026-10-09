@@ -179,12 +179,16 @@ export const HoldAndNewWindow: Story = {
 /** Only a sessions goal: one card, no empty half. */
 export const SessionsOnly: Story = { args: { bodyweight: null } }
 
+/** The frame's padding (`p-gutter-md`, 24px a side) plus the card's `p-inset-lg` (16px a side): each card measures its content box. */
+const FRAME_TO_CONTENT_BOX_X = 48 + 32
+
 /**
  * The WHOLE BODY section in every width-matrix frame, one pixel either side of
- * `WHOLE_BODY_WALL_MIN_WIDTH`, where each card moves from its phone to its wall scale.
+ * `WHOLE_BODY_WALL_MIN_WIDTH` as each stacked card's content box sees it, where the card moves from
+ * its phone to its wall scale.
  */
 export const Widths: Story = {
   tags: ['width-matrix'],
   render: renderSection,
-  parameters: { layout: 'fullscreen', widthMatrix: { thresholds: [WHOLE_BODY_WALL_MIN_WIDTH] } },
+  parameters: { layout: 'fullscreen', widthMatrix: { thresholds: [WHOLE_BODY_WALL_MIN_WIDTH + FRAME_TO_CONTENT_BOX_X] } },
 }
