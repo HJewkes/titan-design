@@ -8,7 +8,7 @@ labels belongs in `ui/` (`CLAUDE.md`, Placement). Status here is `candidate` by 
 | ------------ | ------------------------------------------------------------------------------------------------ | --------------------------------------- | ---------------------- |
 | `Workout`    | sets, reps, mesocycles, goals                                                                    | voltras-mcp dashboard, voltras mobile   | `Workout/README.md`    |
 | `Fatigue`    | velocity loss, ROM, readiness                                                                    | voltras-mcp dashboard                   | `Fatigue/README.md`    |
-| `ActiveWork` | initiatives, tasks, task stages, file activity                                                   | active-work dashboard                   | `ActiveWork/README.md` |
+| `ActiveWork` | initiatives, tasks, task stages, file activity, typed refs                                       | active-work dashboard                   | `ActiveWork/README.md` |
 | `Chat`       | chat messages and participants (`ChatMessage`, `Participant` from `@titan-design/chat-protocol`) | coach chat preset (`CoachPreset` story) | `Chat/README.md`       |
 | `Agents`     | agent sessions: presence, lifecycle state, tokens, tool calls and spend                          | titan-platform console                  | `Agents/README.md`     |
 | `charts`     | workout bar marks (`SetBarChart`, `live-rep-growth`, `flatBarGeometry`)                          | Workout, Fatigue                        | `charts/README.md`     |
