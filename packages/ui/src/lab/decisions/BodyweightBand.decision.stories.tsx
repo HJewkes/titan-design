@@ -4,6 +4,7 @@ import { Card } from '../../components/ui/card'
 import { Surface } from '../../components/ui/surface'
 import { ZoneTrack } from '../../components/custom/Workout/ZoneTrack'
 import { WHOLE_BODY_WEIGHT as W } from '../../components/custom/Workout/wholeBody-fixture'
+import { bandDomain } from '../../components/custom/Workout/wholeBody'
 import { getSemanticColors, type ThemeMode } from '../../theme/tokens/semantic'
 import { BAND_OPTIONS, readBand, type BandOption, type BandOptionKey } from './bodyweight-band'
 
@@ -11,12 +12,15 @@ interface Args {
   option: 'all' | BandOptionKey
 }
 
+const WEIGH_IN = W.cut.latest?.value ?? (W.cut.week.low + W.cut.week.high) / 2
+
 const ratio = (n: number) => n.toFixed(2)
 
 function BandColumn({ option, mode }: { option: BandOption; mode: ThemeMode }) {
   const reading = readBand(option, mode)
   const ink = getSemanticColors(mode)['text-primary']
   const { low, high } = W.cut.week
+  const { min, max } = bandDomain(low, high, WEIGH_IN)
   return (
     <Surface level="base" theme={mode} className="min-w-[320px] flex-1 p-gutter-sm">
       <Card elevation={1} className="gap-stack-md p-inset-lg" testID={`band-${option.key}-${mode}`}>
@@ -24,11 +28,12 @@ function BandColumn({ option, mode }: { option: BandOption; mode: ThemeMode }) {
           {mode === 'dark' ? 'Dark' : 'Light'}
         </Text>
         <ZoneTrack
-          min={low - 4}
-          max={high + 4}
-          zones={[{ upTo: high + 4, color: 'transparent' }]}
-          band={{ from: low, to: high, color: reading.color }}
-          marker={{ type: 'needle', value: (low + high) / 2, color: ink }}
+          min={min}
+          max={max}
+          zones={[{ upTo: max, color: 'transparent' }]}
+          band={{ from: Math.min(low, high), to: Math.max(low, high), color: reading.color }}
+          ticks={[{ value: Math.min(low, high) }, { value: Math.max(low, high) }]}
+          marker={{ type: 'needle', value: WEIGH_IN, color: ink }}
           accessibilityLabel={`${option.title}, ${mode}`}
         />
         <Text className="font-mono text-[10px]" style={{ color: ink }}>
