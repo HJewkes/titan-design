@@ -52,8 +52,8 @@ function RefGroupSection({
   return (
     <View role={GROUP_ROLE} aria-label={`${plural}, ${count}`} className="gap-stack-md">
       <View className="flex-row items-baseline gap-inline-sm">
-        <Eyebrow>{plural}</Eyebrow>
-        <Typography variant="caption" className="text-text-tertiary">
+        <Eyebrow className="text-text-secondary">{plural}</Eyebrow>
+        <Typography variant="caption" className="text-text-secondary">
           {String(count)}
         </Typography>
       </View>

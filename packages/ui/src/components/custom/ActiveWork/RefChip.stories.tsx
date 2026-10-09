@@ -20,8 +20,8 @@ const meta: Meta<typeof RefChip> = {
       description: {
         component:
           '**Molecule.** A typed pointer at another entity: the kind glyph, the label and an optional ' +
-          'status. Composes [Pill](?path=/docs/components-atoms-pill--docs) (neutral; the status is a ' +
-          'nested tone pill) inside [Link](?path=/docs/components-atoms-link--docs). The kind table ' +
+          'status. Composes [Pill](?path=/docs/components-atoms-pill--docs) (a neutral chip, and the ' +
+          'status as a toned pill beside it) inside [Link](?path=/docs/components-atoms-link--docs). The kind table ' +
           '(`REF_KIND_META`, `refGraphKinds()`) is exported so a graph node of a kind matches its chip. ' +
           'With neither `href` nor `onPressRef` the chip is static: no link role, no tab stop. A real ' +
           '`<a href>` on web arrives with Link itself (TD-493). Loading, empty and error do not apply: ' +

@@ -1,4 +1,5 @@
-import { Text } from 'react-native'
+import { Text, View } from 'react-native'
+import { cn } from '../../../utils/cn'
 import { Link } from '../../ui/link'
 import { Pill, type PillSizeLevel } from '../../ui/pill'
 import { REF_KIND_META, describeRef, type EntityRef } from './ref-kind'
@@ -18,6 +19,14 @@ export interface RefChipProps extends EntityRef {
   testID?: string
 }
 
+// Pill's text ramp, so the glyph sits at the label's size.
+const glyphSize: Record<PillSizeLevel, string> = {
+  xs: 'text-3xs',
+  sm: 'text-2xs',
+  md: 'text-xs',
+  lg: 'text-sm',
+}
+
 interface RefChipBodyProps {
   entity: EntityRef
   isStatic: boolean
@@ -29,29 +38,30 @@ interface RefChipBodyProps {
 function RefChipBody({ entity, isStatic, size, className, testID }: RefChipBodyProps) {
   const { status } = entity
   return (
-    <Pill
-      variant="subtle"
-      tone="neutral"
-      size={size}
-      className={className}
+    <View
+      className={cn('flex-row items-center gap-inline-sm self-start', className)}
       testID={testID}
-      leading={
-        <Text aria-hidden className="text-text-tertiary">
-          {REF_KIND_META[entity.kind].glyph}
-        </Text>
-      }
-      trailing={
-        status ? (
-          <Pill variant="subtle" tone={status.tone} size="xs" leading="dot">
-            {status.label}
-          </Pill>
-        ) : undefined
-      }
       accessibilityRole={isStatic ? 'text' : undefined}
       accessibilityLabel={describeRef(entity)}
     >
-      {entity.label}
-    </Pill>
+      <Pill
+        variant="subtle"
+        tone="neutral"
+        size={size}
+        leading={
+          <Text aria-hidden className={cn('text-text-tertiary', glyphSize[size])}>
+            {REF_KIND_META[entity.kind].glyph}
+          </Text>
+        }
+      >
+        {entity.label}
+      </Pill>
+      {status ? (
+        <Pill variant="subtle" tone={status.tone} size={size} leading="dot">
+          {status.label}
+        </Pill>
+      ) : null}
+    </View>
   )
 }
 
