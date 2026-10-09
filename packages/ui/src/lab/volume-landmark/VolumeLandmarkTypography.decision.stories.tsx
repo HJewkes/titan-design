@@ -4,12 +4,11 @@ import { DataRow } from '../../components/ui/data-row/DataRow'
 import { Surface } from '../../components/ui/surface'
 import { useSurfaceMode } from '../../components/ui/surface/SurfaceContext'
 import { Typography, type TypographyVariant } from '../../components/ui/typography'
-import {
-  VolumeLandmarkTrack,
-  volumeLandmarkReading,
-} from '../../components/custom/Workout/VolumeLandmarkBar'
+import { volumeLandmarkReading } from '../../components/custom/Workout/VolumeLandmarkBar'
+import { ZoneTrack } from '../../components/custom/Workout/ZoneTrack'
 import { contrast } from '../../theme/color-checks'
 import { getSemanticColors } from '../../theme/tokens/semantic'
+import { heatmapColors } from '../../theme/workout-tokens'
 
 type TextColor = 'primary' | 'secondary'
 
@@ -57,6 +56,39 @@ const STATES = [
 
 const BAR_WIDTH = 220
 const PLANE_TOKEN = 'background-base'
+const TRACK_HEIGHT = 10
+
+// The question is the header type, so the tick labels are not repeated in every column: the
+// track keeps its MEV / MAV / MRV lines and the legend above the columns names them once.
+// Their light-theme colour is TD-784 and stays in the component's own stories.
+const TICK_LEGEND = `Track ticks: MEV ${LANDMARKS.mev} · MAV ${LANDMARKS.mav} (target) · MRV ${LANDMARKS.mrv} sets/wk`
+
+/** VolumeLandmarkTrack's paint with label-free ticks, so the columns carry no tick labels. */
+function UnlabelledTrack({ muscle, currentSets }: (typeof STATES)[number]) {
+  const mode = useSurfaceMode()
+  const max = LANDMARKS.mrv * 1.2
+  const { zone, pct } = volumeLandmarkReading(currentSets, LANDMARKS)
+  return (
+    <ZoneTrack
+      zones={[{ upTo: max, color: getSemanticColors(mode)['border-prominent'] }]}
+      max={max}
+      marker={{
+        type: 'fill',
+        value: currentSets,
+        color: heatmapColors(mode)[zone],
+        glow: zone === 'productive',
+      }}
+      trackColor="transparent"
+      trackHeight={TRACK_HEIGHT}
+      ticks={[
+        { value: LANDMARKS.mev },
+        { value: LANDMARKS.mav, emphasized: true },
+        { value: LANDMARKS.mrv },
+      ]}
+      accessibilityLabel={`${muscle} weekly volume: ${currentSets} sets, ${pct}% of MAV target`}
+    />
+  )
+}
 
 function Bar({ option, muscle, currentSets }: { option: HeaderOption } & (typeof STATES)[number]) {
   const { pct } = volumeLandmarkReading(currentSets, LANDMARKS)
@@ -75,12 +107,7 @@ function Bar({ option, muscle, currentSets }: { option: HeaderOption } & (typeof
         }
         className="p-0"
       />
-      <VolumeLandmarkTrack
-        muscle={muscle}
-        currentSets={currentSets}
-        landmarks={LANDMARKS}
-        trackHeight={10}
-      />
+      <UnlabelledTrack muscle={muscle} currentSets={currentSets} />
     </View>
   )
 }
@@ -117,7 +144,7 @@ function OptionColumn({ option }: { option: HeaderOption }) {
  * TD-101, owner revision of 2026-10-09: the header lockup as built (A) against an all-caps label
  * name with a text-secondary bold % (B, C). Follows the toolbar theme; shoot it in dark and light.
  * Each column is one option over the five states of the component's stories, with the measured
- * contrast of its two text roles on the story's plane.
+ * contrast of its two text roles on the story's plane. The tick labels are named once, above.
  */
 const meta: Meta = {
   title: 'Lab/Decisions/VolumeLandmarkBar Typography',
@@ -134,10 +161,15 @@ export default meta
 
 export const Comparison: StoryObj = {
   render: () => (
-    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 48 }}>
-      {OPTIONS.map((option) => (
-        <OptionColumn key={option.key} option={option} />
-      ))}
+    <View style={{ gap: 24 }}>
+      <Typography variant="caption" color="secondary">
+        {TICK_LEGEND}
+      </Typography>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 48 }}>
+        {OPTIONS.map((option) => (
+          <OptionColumn key={option.key} option={option} />
+        ))}
+      </View>
     </View>
   ),
 }
