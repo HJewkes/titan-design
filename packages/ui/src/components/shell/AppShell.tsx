@@ -6,6 +6,9 @@ import { SideNav, type SideNavItem } from './SideNav'
 import { TopBar } from './TopBar'
 import { resolveBrand, type BrandKey, type BrandPreset } from './brands'
 
+/** `default` pads the content region (16 below `md`, 24 from `md`); `none` leaves it flush for a full-bleed page. */
+export type AppShellContentPadding = 'default' | 'none'
+
 export interface AppShellProps {
   /** Which app identity the default {@link TopBar} and nav accent render: a registry key or the app's own preset. */
   brand: BrandKey | BrandPreset
@@ -31,8 +34,15 @@ export interface AppShellProps {
    * `main`, and a tree holds one. Turn it on when the children are not a `Page`.
    */
   isMainLandmark?: boolean
+  /**
+   * Gutter around the content region: `p-gutter-sm` below the `md` breakpoint, `p-gutter-md` from it.
+   * Pass `none` when the children own their gutter (a `Page`) or bleed to the frame's edge.
+   */
+  contentPadding?: AppShellContentPadding
   className?: string
 }
+
+const contentPaddingClasses = 'p-gutter-sm md:p-gutter-md'
 
 function ContentPlaceholder() {
   return (
@@ -66,6 +76,7 @@ export function AppShell({
   nav,
   children,
   isMainLandmark = false,
+  contentPadding = 'default',
   className,
 }: AppShellProps) {
   const { accentClassName, accentBarClassName } = resolveBrand(brand)
@@ -89,7 +100,10 @@ export function AppShell({
             onNavigate={onNavigate}
           />
         )}
-        <View role={isMainLandmark ? 'main' : undefined} className="flex-1">
+        <View
+          role={isMainLandmark ? 'main' : undefined}
+          className={cn('flex-1', contentPadding === 'default' && contentPaddingClasses)}
+        >
           {children ?? <ContentPlaceholder />}
         </View>
       </View>

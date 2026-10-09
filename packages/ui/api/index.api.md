@@ -212,6 +212,9 @@ export function applyThemePreset(preset: ThemePreset): () => void;
 // @public
 export function AppShell(input: AppShellProps): react_jsx_runtime.JSX.Element;
 
+// @public
+export type AppShellContentPadding = 'default' | 'none';
+
 // @public (undocumented)
 export interface AppShellProps {
     activeKey?: string;
@@ -219,6 +222,7 @@ export interface AppShellProps {
     children?: ReactNode;
     // (undocumented)
     className?: string;
+    contentPadding?: AppShellContentPadding;
     isMainLandmark?: boolean;
     liveKey?: string | null;
     nav?: ReactNode;
@@ -9231,6 +9235,7 @@ export interface WorkoutShellProps {
     children?: ReactNode;
     // (undocumented)
     className?: string;
+    contentPadding?: AppShellContentPadding;
     devices?: Device[];
     liveKey?: string | null;
     navItems?: SideNavItem[];

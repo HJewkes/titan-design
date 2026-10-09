@@ -54,7 +54,7 @@ export const Default: Story = {
 export const WithContent: Story = {
   args: { activeKey: 'review', state: 'rest', liveKey: 'live' },
   render: (args) => (
-    <WorkoutShell {...args}>
+    <WorkoutShell {...args} contentPadding="none">
       <View className="flex-1 gap-1.5 p-7">
         <Typography variant="h4" color="primary">
           Review
