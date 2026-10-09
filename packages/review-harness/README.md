@@ -393,6 +393,49 @@ thresholds, the coverage lists above, a per-frame summary (checks, failures, kno
 exempt, indeterminate), and every failure, known defect, unmeasured frame, indeterminate
 pair and unmatched declaration. Passing checks are counted, not listed.
 
+## Static frames (TD-752)
+
+`build` also renders every story frame of a passing round to static PNGs, so a round can be
+read somewhere no Storybook is running (the console's rounds view). They land beside the round:
+
+```
+<round-dir>/frames/<width>-<key>-<story-name>.png   one per story variant per width
+<round-dir>/frames/frames.json                      the index (titan-review/frames@1)
+```
+
+The file name is the same one the post-submit capture writes, so a frame has one name in both
+places. `frames.json` lists `unit`, `round`, `storybookUrl`, the `manifestSha256` of the
+`round.json` the frames were rendered for, and one record per frame: `key` (the file stem),
+`variant`, `storyId`, `theme` (`light` or `dark`, as it applied on `<html>`), `viewport`
+(`{width, height}`), `file` (relative to the round directory) and `sha256` of the PNG. A variant
+whose `globals.theme` did not apply is an error, never a frame in the other theme. Image
+variants are already static files beside the round and are not copied. Frames are rendered
+only when the contrast gate passes, after `contrast.json` and before `round.json`; a refused
+build writes none. A render drops a frame an earlier build wrote for a variant the round no
+longer names.
+
+The renderer is the harness's package-local subpath export (the harness is `private`, so the
+export resolves inside this workspace, not from npm):
+
+```ts
+import { renderFrames } from '@titan-design/review-harness/frames'
+
+const index = await renderFrames(manifest, 'http://127.0.0.1:6100', {
+  roundsDir: '/path/to/rounds', // frames go under <roundsDir>/<roundId>/frames/
+  roundId: 'td-752-fixture',
+  manifestSha256, // optional, recorded in the index
+})
+```
+
+`manifest` is a parsed `round@2` (`RoundSchema` or `ManifestSchema` from
+`@titan-design/review-schema`). No server is started: the renderer needs only a Storybook on a
+loopback host (any other host is refused before anything is read) and headless Chromium at 2x,
+the same renderer as the capture and the contrast gate. It refuses a story the Storybook does
+not serve before a browser opens, naming each missing id. `frameKey(variant, width)` gives a
+frame's stem, `framesDir(roundsDir, roundId)` its directory, and `readFramesIndex(dir)` reads
+an index back. The `open` and `storyIds` options inject the browser and the story list for
+tests. Errors are `FrameRenderError`, which the CLI reports as a usage error (exit 2).
+
 ## Calibration
 
 `titan-review calibration <feedback.json...>` reads feedback files and prints how often the

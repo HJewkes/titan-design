@@ -1,9 +1,10 @@
 import { chromium, type Page } from '@playwright/test'
-import { STORY_ROOT, captureViewportHeight, renderStory } from './capture.ts'
 import { evaluateFrame } from './contrast-check.ts'
 import { collectFrame } from './contrast-collect.ts'
 import type { MeasuredFrame } from './contrast-gate.ts'
+import { captureViewportHeight } from './frames.ts'
 import { storyUrl } from './round.ts'
+import { STORY_ROOT, renderStory } from './shooter.ts'
 import {
   THEME_MODES,
   isStoryVariant,
