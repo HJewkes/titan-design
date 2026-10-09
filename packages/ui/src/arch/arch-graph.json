@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:6e7a5670fa5fb06249f6d0679628afdc1b0b6887f077dd1db298c166580bbf62",
+  "componentBarrelHash": "sha256:184593850cb08d5f308bb58767bca1ab0a1c5adeabe783f8b4ce26154449d8a3",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -4878,6 +4878,45 @@
       },
       "tier": "molecule",
       "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "NetworkGraph",
+      "file": "packages/ui/src/components/ui/charts/network-graph/NetworkGraph.tsx",
+      "dir": "ui",
+      "family": "ui/charts",
+      "exports": [
+        "NetworkGraph",
+        "useStableLayout",
+        "LoadedGraph"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "EmptyState",
+        "NetworkGraphCanvas",
+        "NetworkGraphParts",
+        "Skeleton"
+      ],
+      "leak": {
+        "rawView": 2,
+        "rawText": 0,
+        "inlineStyle": 1,
+        "rawHex": 0,
+        "loc": 122,
+        "score": 4
+      },
+      "tier": "organism",
+      "verdict": "dead",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -10983,10 +11022,26 @@
     [
       "BarList",
       "EmptyState"
+    ],
+    [
+      "NetworkGraph",
+      "NetworkGraphCanvas"
+    ],
+    [
+      "NetworkGraph",
+      "NetworkGraphParts"
+    ],
+    [
+      "NetworkGraph",
+      "EmptyState"
+    ],
+    [
+      "NetworkGraph",
+      "Skeleton"
     ]
   ],
   "summary": {
-    "total": 227,
+    "total": 228,
     "dead": [
       "Autocomplete",
       "Breadcrumbs",
@@ -11001,6 +11056,7 @@
       "Kbd",
       "Menu",
       "MessageList",
+      "NetworkGraph",
       "PortfolioOverview",
       "PrHistoryModal",
       "ReadinessCheck",
