@@ -1,6 +1,11 @@
 import { defineConfig, type PlaywrightTestConfig } from '@playwright/test'
 
+import { createRunTmpRoot } from '../../scripts/test-tmp-root.mjs'
+
 const SPECIMEN_PORT = 5200
+
+// Browser profiles go to a per-run TMPDIR, removed on exit (TD-770).
+createRunTmpRoot()
 
 /**
  * The specimen dev server, browser and run policy shared by every Playwright config
