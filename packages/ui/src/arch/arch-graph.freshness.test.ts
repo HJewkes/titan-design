@@ -50,6 +50,17 @@ describe('arch-graph.json freshness', () => {
     ).toEqual([])
   })
 
+  it('has no node for a component file that no longer exists', () => {
+    expect(
+      graph.components
+        .map((component) => component.file)
+        .filter((file) => !existsSync(path.join(REPO_ROOT, file))),
+      'These arch-graph nodes name a deleted or moved file. Delete each block from ' +
+        'src/arch/arch-graph.json (for a move, then `pnpm arch:graph -- --add <new file>`), ' +
+        'then `pnpm catalog`.'
+    ).toEqual([])
+  })
+
   // Each of these was a line every component PR rewrote, so of any two open component
   // PRs the second to merge conflicted (TD-792). arch-graph-derived.ts derives them.
   it('stores no figure a component PR would have to rewrite', () => {
