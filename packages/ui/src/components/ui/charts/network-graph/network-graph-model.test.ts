@@ -134,14 +134,26 @@ describe('cleanGraph input order', () => {
   })
 
   it('emits nodes and edges in a canonical order and sums weights without order effects', () => {
-    const edges = [0.3, 0.1, 0.2].map((weight) => e('a', 'b', { weight }))
-    const merged = cleanGraph(ids('c', 'b', 'a'), edges)
+    // 0.1 + 0.2 + 0.3 and 0.3 + 0.2 + 0.1 differ in floating point; the ascending sum is the total.
+    const ascending = [0.1, 0.2, 0.3].map((weight) => e('a', 'b', { weight }))
+    const merged = cleanGraph(ids('c', 'b', 'a'), ascending)
     expect(merged.nodes.map((x) => x.id)).toEqual(['a', 'b', 'c'])
-    expect(merged.edges[0]?.weight).toBe(
-      cleanGraph(ids('a'.repeat(1), 'b'), [...edges].reverse()).edges[0]?.weight
+    expect(merged.edges[0]?.weight).toBe(0.1 + 0.2 + 0.3)
+    expect(cleanGraph(ids('a', 'b'), [...ascending].reverse()).edges[0]?.weight).toBe(
+      merged.edges[0]?.weight
     )
     const sorted = cleanGraph(abc, [e('c', 'a'), e('b', 'c'), e('a', 'c'), e('a', 'b')]).edges
     expect(sorted.map((x) => `${x.source}${x.target}`)).toEqual(['ab', 'ac', 'bc', 'ca'])
+  })
+
+  it("merges kind '' with no kind, and the merged edge has no kind whichever arrived first", () => {
+    const blank = e('a', 'b', { kind: '', weight: 1 })
+    const none = e('a', 'b', { weight: 2 })
+    const forward = cleanGraph(ids('a', 'b'), [blank, none])
+    expect(forward.edges).toStrictEqual([{ id: 'a->b:', source: 'a', target: 'b', weight: 3 }])
+    expect(forward.report.mergedEdges).toBe(1)
+    expect(cleanGraph(ids('a', 'b'), [none, blank])).toStrictEqual(forward)
+    expect(cleanGraph(ids('a', 'b'), [blank]).edges[0]).not.toHaveProperty('kind')
   })
 })
 

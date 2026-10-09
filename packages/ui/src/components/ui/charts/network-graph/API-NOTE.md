@@ -66,9 +66,10 @@ file. `GraphLayoutResult` gains the optional `edgeShape` (`'horizontal'` or `'ar
 
 1. Nodes: the first of duplicate node ids is kept, then nodes sort by id (plain code-unit comparison).
 2. Edges: self edges and edges to unknown ids are dropped. Edges with the same source, target and
-   kind form one group. A group merges into one edge: it takes the smallest id among its members,
-   weights sum (ascending, so float sums do not depend on order; `null` plus a number is the
-   number), and the newest `activityAt` wins.
+   kind form one group; an empty kind is no kind, so `''` and `undefined` share a group and the
+   merged edge carries no `kind`. A group merges into one edge: it takes the smallest id among its
+   members, weights sum (ascending, so float sums do not depend on order; `null` plus a number is
+   the number), and the newest `activityAt` wins.
 3. Merged edges sort by source, then target, then kind (a missing kind sorts as `''`). The three form
    a total order because each group has a distinct triple.
 4. Unique ids are assigned in that sorted order: an edge whose id is already taken becomes

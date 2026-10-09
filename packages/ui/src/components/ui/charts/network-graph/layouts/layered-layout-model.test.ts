@@ -57,7 +57,7 @@ const rawEdge = (ids: string[]) =>
     a: fc.nat(ids.length - 1),
     b: fc.nat(ids.length - 1),
     id: fc.constantFrom('e1', 'e2', 'e3', undefined),
-    kind: fc.constantFrom('spawn', 'message', undefined),
+    kind: fc.constantFrom('spawn', 'message', '', undefined),
     weight: fc.constantFrom(1, 2.5, null, undefined),
   })
 
@@ -69,7 +69,7 @@ const rawGraphWithShuffles = names.chain((ids) => {
       source: ids[r.a] as string,
       target: ids[r.b] as string,
       ...(r.id ? { id: r.id } : {}),
-      ...(r.kind ? { kind: r.kind } : {}),
+      ...(r.kind !== undefined ? { kind: r.kind } : {}),
       ...(r.weight !== undefined ? { weight: r.weight } : {}),
     }))
     return fc.record({
