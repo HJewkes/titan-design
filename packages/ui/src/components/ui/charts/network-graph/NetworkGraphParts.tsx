@@ -161,7 +161,7 @@ export function GraphLegend({ nodeKinds, edgeKinds, colors }: GraphLegendProps) 
         <View key={`edge-${kind.id}`} role="listitem" className={item}>
           <View
             className={cn(
-              'w-5 border-t border-hairline-strong',
+              'w-5 border-t border-text-secondary',
               kind.stroke === 'dashed' && 'border-dashed'
             )}
           />
