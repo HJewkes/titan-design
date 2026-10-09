@@ -120,6 +120,8 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | Progress | stable | ui/progress | Linear progress bar component. | — | components-molecules-progress--all-colors |
 | Radio | stable | ui/radio | Radio button component. | — | components-molecules-radio--all-colors |
 | ReadinessCheck | candidate | custom/Workout | Pre-workout readiness assessment combining subjective emoji sliders with an objective VBT warm-up validation and a computed readiness score. | Badge, Card | custom-workout-readinesscheck--default |
+| RefChip | candidate | custom/ActiveWork | RefChip — a typed pointer at another entity: a kind glyph, the ref's label and an optional status. | Link, Pill | custom-activework-refchip--default |
+| RelatedList | candidate | custom/ActiveWork | RelatedList — a detail page's related panel: refs grouped by kind, each group headed by its plural and a count, each ref a `RefChip`. | EmptyState, Eyebrow, RefChip, Skeleton, Typography | custom-activework-relatedlist--default |
 | RestTimer | candidate | custom/Workout | — | CircularTimer | custom-workout-resttimer--default |
 | RevealRow | review | custom/Chat | One thread row that slides left with the drag and carries its message time in a column parked past the right edge. | DateTime | — |
 | RomProgressionChart | candidate | custom/Fatigue | — | SetBarChart | custom-fatigue-rom-progression--across-states |

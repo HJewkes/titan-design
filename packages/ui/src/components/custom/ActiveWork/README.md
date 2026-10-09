@@ -114,6 +114,8 @@ KnowledgeReader .................. card         (one note or source under a meta
 | `InitiativeHeader`       | molecule | StatusDot, Pill, DateTime, Typography (+ `INITIATIVE_STATE_META`)                                                                       | host composition (`Custom/ActiveWork/InitiativeReader` story)                                  |
 | `OpenLoops`              | list     | Eyebrow, Pill, Divider, MarkdownProse                                                                                                   | host composition (`Custom/ActiveWork/InitiativeReader` story)                                  |
 | `InitiativeBrief`        | card     | Eyebrow, Typography, MarkdownProse                                                                                                      | host composition (`Custom/ActiveWork/InitiativeReader` story)                                  |
+| `RelatedList`            | list     | Eyebrow, Typography, Skeleton, EmptyState, RefChip                                                                                      | not yet composed (console detail pages' related panel)                                         |
+| `RefChip`                | molecule | Pill, Link (+ `REF_KIND_META`)                                                                                                          | RelatedList                                                                                    |
 | `KnowledgeList`          | organism | Eyebrow, Alert, Input, Select, Table, useTable, useColumnFit, TablePagination, EmptyState, Button, KnowledgeRow                         | console knowledge page (TP-869)                                                                |
 | `KnowledgeRow`           | row      | TableRow, TableCell, Link, Pill, DateTime, TagPills                                                                                     | KnowledgeList                                                                                  |
 | `KnowledgeClassLabel`    | molecule | Indicator, Typography (`caption`) (+ `KNOWLEDGE_CLASS_META`)                                                                            | search row and inventory legend (TP-859c)                                                      |
@@ -222,6 +224,15 @@ maps stay separate on purpose — `low` is `status-info` as a dot (it must stay 
 the family names a stage, so a second stage table cannot be written. `task-flow.ts` holds the task view model and
 its pure helpers; `task-pr.ts` holds the pull-request state table. Contract:
 the Round 0 contract for the task board and detail.
+
+## Ref kind vocabulary has one owner
+
+`ref-kind.ts` owns `RefKind`, `REF_KIND_ORDER` and `REF_KIND_META` (label, plural, glyph, `ColorToken`), and the
+`EntityRef` shape: a kind, an id, a label, an optional status (`{ label, tone }` from `PillTone`) and an optional
+`href`. `RefChip` stays neutral; the per-kind colour is for consumers that colour by kind, and `refGraphKinds()`
+hands the table to NetworkGraph as node kinds. A pull request's state maps on through `TASK_PR_STATE_META`, which
+already has the `{ label, tone }` shape. `RefChip` composes `Link`, so its `href` becomes a real anchor when Link
+renders one (TD-493). Contract: TD-P5 and K1, K3 of the M3 page contracts.
 
 ## Knowledge class vocabulary has one owner
 

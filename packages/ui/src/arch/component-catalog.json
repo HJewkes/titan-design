@@ -863,6 +863,156 @@
     },
     {
       "composes": [
+        "Link",
+        "Pill"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/RefChip.tsx",
+      "name": "RefChip",
+      "props": [
+        {
+          "default": null,
+          "description": "Extra classes on the chip.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Where the ref navigates.",
+          "name": "href",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The ref's stable identity, unique within a list (e.g. `task:TD-1`).",
+          "name": "id",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "What the ref points at.",
+          "name": "kind",
+          "required": true,
+          "type": "RefKind"
+        },
+        {
+          "default": null,
+          "description": "What the chip shows.",
+          "name": "label",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Called with the ref when the chip is pressed.",
+          "name": "onPressRef",
+          "required": false,
+          "type": "((ref: EntityRef) => void)"
+        },
+        {
+          "default": "sm",
+          "description": "Pill size; defaults to `sm`.",
+          "name": "size",
+          "required": false,
+          "type": "PillSizeLevel"
+        },
+        {
+          "default": null,
+          "description": "Shown after the label, e.g. a pull request's open or merged state.",
+          "name": "status",
+          "required": false,
+          "type": "RefStatus"
+        },
+        {
+          "default": "ref-chip",
+          "description": "Defaults to `ref-chip`.",
+          "name": "testID",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "purpose": "RefChip — a typed pointer at another entity: a kind glyph, the ref's label and an optional status.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/ActiveWork/RefChip.tsx",
+        "status": "packages/ui/src/components/custom/ActiveWork/RefChip.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-refchip--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "EmptyState",
+        "Eyebrow",
+        "RefChip",
+        "Skeleton",
+        "Typography"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/RelatedList.tsx",
+      "name": "RelatedList",
+      "props": [
+        {
+          "default": null,
+          "description": "Extra classes on the root.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "(\n  <EmptyState\n    title=\"Nothing related\"\n    description=\"No other item links here yet.\"\n    className=\"py-6\"\n  />\n)",
+          "description": "Shown when `refs` is empty.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": "false",
+          "description": "Draws placeholder chips in place of the groups.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Passed to every chip.",
+          "name": "onPressRef",
+          "required": false,
+          "type": "((ref: EntityRef) => void)"
+        },
+        {
+          "default": null,
+          "description": "Refs of any kinds, in any order.",
+          "name": "refs",
+          "required": true,
+          "type": "readonly EntityRef[]"
+        },
+        {
+          "default": "related-list",
+          "description": "Defaults to `related-list`; each chip is `ref-chip-<id>`.",
+          "name": "testID",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "purpose": "RelatedList — a detail page's related panel: refs grouped by kind, each group headed by its plural and a count, each ref a `RefChip`.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/ActiveWork/RelatedList.tsx",
+        "status": "packages/ui/src/components/custom/ActiveWork/RelatedList.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-relatedlist--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
         "Card",
         "Collapse",
         "DateTime",
