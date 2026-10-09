@@ -73,7 +73,7 @@ Initiative reader (no organism: the host composes the pieces)
 ├─ TaskTable ..................... organism     (embedded, hideColumns)
 └─ SessionList ................... list
 
-KnowledgeList .................... organism     (notes and sources; the reader beside it follows, TP-859b)
+KnowledgeList .................... organism     (notes and sources; the host lays KnowledgeReader beside it)
 ├─ Eyebrow ....................... molecule     (polite live count, "N of M", undated count)
 ├─ Alert ......................... (existing primitive; unreadable files)
 ├─ KnowledgeFilterBar ............ internal     (query Input + date Select; facets wait for FacetBar, `slots.filterBar` replaces it)
@@ -83,33 +83,41 @@ KnowledgeList .................... organism     (notes and sources; the reader b
 └─ EmptyState .................... (existing primitive; empty, and no match with a reset)
 
 KnowledgeClassLabel .............. molecule     (Indicator + Typography; class vocabulary owner)
+
+KnowledgeReader .................. card         (one note or source under a metadata header)
+├─ Card, Divider ................. (existing primitives)
+├─ Typography, Pill, DateTime .... (title, initiative Link, record/kind/tag Pills, date)
+├─ Alert ......................... (existing primitive; truncated read)
+├─ MarkdownProse ................. molecule     (markdown, with sessionLinkers; mono Typography for text files)
+└─ EmptyState, Skeleton .......... (existing primitives; nothing selected, no preview, loading)
 ```
 
 ## Dependency map
 
-| Component                | Tier     | Composes ↓                                                                                                                   | Used-by ↑                                                           |
-| ------------------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `PortfolioOverview`      | organism | Card, Metric, Typography, Eyebrow, InitiativeCard                                                                            | app root (`Custom/ActiveWork/PortfolioOverview`)                    |
-| `InitiativeCard`         | card     | Card, Pill, StatusDot, SegmentedBar, Typography, SeverityLabel                                                               | PortfolioOverview                                                   |
-| `FileHistoryExplorer`    | organism | Card, Tile, Divider, Typography, Eyebrow, FileActivityRow/Detail, CoChangeChip                                               | app root (`Custom/ActiveWork/FileHistoryExplorer`)                  |
-| `FileActivityDetail`     | card     | Card, Tile, Pill, DataRow, DateTime, Typography, FilePathLabel, Eyebrow, GrowthWell                                          | FileHistoryExplorer                                                 |
-| `FileActivityGrowthWell` | card     | CardInset, SparkBars (`ui/charts/spark-bars`), Typography, Eyebrow                                                           | FileActivityDetail                                                  |
-| `FileActivityRow`        | row      | FilePathLabel, SparkBars, Typography                                                                                         | FileHistoryExplorer                                                 |
-| `CoChangeChip`           | molecule | Card, Pill, FilePathLabel, Typography                                                                                        | FileHistoryExplorer                                                 |
-| `FilePathLabel`          | atom     | Typography (`mono`) — moved to `ui/file-path-label` (TD-418)                                                                 | FileActivityRow, FileActivityDetail, CoChangeChip                   |
-| `TaskTable`              | organism | Table, useTable, TableHeader/Row/HeaderCell, TaskRow, SeverityLabel, Typography, Eyebrow                                     | app root (`Custom/ActiveWork/TaskTable`), SessionDetail             |
-| `TaskRow`                | row      | TableRow, TableCell, SeverityLabel, Pill, Tooltip, Typography                                                                | TaskTable                                                           |
-| `SeverityLabel`          | molecule | Indicator, Typography (`caption`)                                                                                            | TaskRow, TaskTable (legend), InitiativeCard (vocabulary)            |
-| `TaskStagePill`          | molecule | Pill (+ `TASK_STAGE_META`)                                                                                                   | not yet composed (TaskBoard and TaskDetail follow, follow-up tasks) |
-| `SessionList`            | list     | Divider, Typography, Eyebrow, SessionListItem                                                                                | host composition (`Custom/ActiveWork/SessionReader` story)          |
-| `SessionListItem`        | row      | DateTime, Tooltip, Typography                                                                                                | SessionList, SessionDetail                                          |
-| `SessionDetail`          | card     | Card, Collapse, Divider, Pill, Tooltip, DateTime, Typography, MarkdownProse, SessionListItem, TaskTable (+ `sessionLinkers`) | host composition (`Custom/ActiveWork/SessionReader` story)          |
-| `InitiativeHeader`       | molecule | StatusDot, Pill, DateTime, Typography (+ `INITIATIVE_STATE_META`)                                                            | host composition (`Custom/ActiveWork/InitiativeReader` story)       |
-| `OpenLoops`              | list     | Eyebrow, Pill, Divider, MarkdownProse                                                                                        | host composition (`Custom/ActiveWork/InitiativeReader` story)       |
-| `InitiativeBrief`        | card     | Eyebrow, Typography, MarkdownProse                                                                                           | host composition (`Custom/ActiveWork/InitiativeReader` story)       |
-| `KnowledgeList`          | organism | Eyebrow, Alert, Input, Select, Table, useTable, useColumnFit, TablePagination, EmptyState, Button, KnowledgeRow              | console knowledge page (TP-869)                                     |
-| `KnowledgeRow`           | row      | TableRow, TableCell, Link, Pill, DateTime, TagPills                                                                          | KnowledgeList                                                       |
-| `KnowledgeClassLabel`    | molecule | Indicator, Typography (`caption`) (+ `KNOWLEDGE_CLASS_META`)                                                                 | search row and inventory legend (TP-859c)                           |
+| Component                | Tier     | Composes ↓                                                                                                                              | Used-by ↑                                                                                      |
+| ------------------------ | -------- | --------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `PortfolioOverview`      | organism | Card, Metric, Typography, Eyebrow, InitiativeCard                                                                                       | app root (`Custom/ActiveWork/PortfolioOverview`)                                               |
+| `InitiativeCard`         | card     | Card, Pill, StatusDot, SegmentedBar, Typography, SeverityLabel                                                                          | PortfolioOverview                                                                              |
+| `FileHistoryExplorer`    | organism | Card, Tile, Divider, Typography, Eyebrow, FileActivityRow/Detail, CoChangeChip                                                          | app root (`Custom/ActiveWork/FileHistoryExplorer`)                                             |
+| `FileActivityDetail`     | card     | Card, Tile, Pill, DataRow, DateTime, Typography, FilePathLabel, Eyebrow, GrowthWell                                                     | FileHistoryExplorer                                                                            |
+| `FileActivityGrowthWell` | card     | CardInset, SparkBars (`ui/charts/spark-bars`), Typography, Eyebrow                                                                      | FileActivityDetail                                                                             |
+| `FileActivityRow`        | row      | FilePathLabel, SparkBars, Typography                                                                                                    | FileHistoryExplorer                                                                            |
+| `CoChangeChip`           | molecule | Card, Pill, FilePathLabel, Typography                                                                                                   | FileHistoryExplorer                                                                            |
+| `FilePathLabel`          | atom     | Typography (`mono`) — moved to `ui/file-path-label` (TD-418)                                                                            | FileActivityRow, FileActivityDetail, CoChangeChip                                              |
+| `TaskTable`              | organism | Table, useTable, TableHeader/Row/HeaderCell, TaskRow, SeverityLabel, Typography, Eyebrow                                                | app root (`Custom/ActiveWork/TaskTable`), SessionDetail                                        |
+| `TaskRow`                | row      | TableRow, TableCell, SeverityLabel, Pill, Tooltip, Typography                                                                           | TaskTable                                                                                      |
+| `SeverityLabel`          | molecule | Indicator, Typography (`caption`)                                                                                                       | TaskRow, TaskTable (legend), InitiativeCard (vocabulary)                                       |
+| `TaskStagePill`          | molecule | Pill (+ `TASK_STAGE_META`)                                                                                                              | not yet composed (TaskBoard and TaskDetail follow, follow-up tasks)                            |
+| `SessionList`            | list     | Divider, Typography, Eyebrow, SessionListItem                                                                                           | host composition (`Custom/ActiveWork/SessionReader` story)                                     |
+| `SessionListItem`        | row      | DateTime, Tooltip, Typography                                                                                                           | SessionList, SessionDetail                                                                     |
+| `SessionDetail`          | card     | Card, Collapse, Divider, Pill, Tooltip, DateTime, Typography, MarkdownProse, SessionListItem, TaskTable (+ `sessionLinkers`)            | host composition (`Custom/ActiveWork/SessionReader` story)                                     |
+| `InitiativeHeader`       | molecule | StatusDot, Pill, DateTime, Typography (+ `INITIATIVE_STATE_META`)                                                                       | host composition (`Custom/ActiveWork/InitiativeReader` story)                                  |
+| `OpenLoops`              | list     | Eyebrow, Pill, Divider, MarkdownProse                                                                                                   | host composition (`Custom/ActiveWork/InitiativeReader` story)                                  |
+| `InitiativeBrief`        | card     | Eyebrow, Typography, MarkdownProse                                                                                                      | host composition (`Custom/ActiveWork/InitiativeReader` story)                                  |
+| `KnowledgeList`          | organism | Eyebrow, Alert, Input, Select, Table, useTable, useColumnFit, TablePagination, EmptyState, Button, KnowledgeRow                         | console knowledge page (TP-869)                                                                |
+| `KnowledgeRow`           | row      | TableRow, TableCell, Link, Pill, DateTime, TagPills                                                                                     | KnowledgeList                                                                                  |
+| `KnowledgeClassLabel`    | molecule | Indicator, Typography (`caption`) (+ `KNOWLEDGE_CLASS_META`)                                                                            | search row and inventory legend (TP-859c)                                                      |
+| `KnowledgeReader`        | card     | Card, Divider, Typography, Pill, DateTime, Link, Alert, EmptyState, Skeleton, MarkdownProse (+ `sessionLinkers`, `knowledgeBodyFormat`) | host composition (`Custom/ActiveWork/KnowledgeBrowser` story), console knowledge page (TP-869) |
 
 ## Surfaces and depth
 
@@ -325,6 +333,10 @@ hardening it; see TOKENS.md §6.
 - `KnowledgeList` is a read-only WAI-ARIA table, not a grid: sortable headers are buttons with `aria-sort`, each
   row's title is its one link (Enter selects it), and the open row carries `aria-current`. The count above the
   table is a polite live region, so a filter change is announced. The built-in filter row is a labelled `group`.
+- `KnowledgeReader` is a labelled `region` named by the document title, with the title as a heading. The
+  initiative name is a link and each tag a button only when the host passes a handler; without one they are
+  inert text. Loading sets `aria-busy` on the card. A file type with no preview shows its path, and the host
+  never reads such a file.
 - `MarkdownProse` references with a handler carry `accessibilityRole="link"`; inert ones carry no role, so
   a screen reader does not announce a link that goes nowhere.
 

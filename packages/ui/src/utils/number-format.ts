@@ -25,3 +25,13 @@ export function formatTrimmedDecimal(n: number, decimals: number): string {
 export function formatTenths(n: number): string {
   return n.toFixed(1)
 }
+
+const BYTE_UNITS = ['B', 'kB', 'MB', 'GB']
+
+/** 0 → "0 B", 1536 → "1.5 kB", 2097152 → "2 MB". A negative or non-finite count reads as zero. */
+export function formatBytes(bytes: number): string {
+  if (!Number.isFinite(bytes) || bytes <= 0) return '0 B'
+  const unit = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), BYTE_UNITS.length - 1)
+  const value = bytes / 1024 ** unit
+  return `${formatTrimmedDecimal(Math.round(value * 10) / 10, 1)} ${BYTE_UNITS[unit]}`
+}
