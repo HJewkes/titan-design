@@ -17,6 +17,7 @@ fail for the reason you care about.
 | Visual, layer 3    | Does the React render match the HTML specimen's computed styles?                                                                             | `packages/ui/specimen/comparison.visual.test.ts`                | `visual` job, `test:visual:compare`                                                                      |
 | Story contrast     | Does every story, dark and light, pass axe `color-contrast` in Chromium, or match its shrinking baseline (`contrast-stories-baseline.json`)? | `packages/ui/tests/visual/contrast.spec.ts`                     | `contrast` job (three shards), `test:visual:contrast` (path-gated); `pnpm contrast:baseline` regenerates |
 | Interaction        | Does keyboard and pointer behaviour work in a real browser?                                                                                  | `packages/ui/tests/interaction/*.spec.ts`                       | `visual` job, `interaction` project of `playwright.config.ts`                                            |
+| Storybook play     | Does every `play`-tagged story's play function pass? Not an a11y gate (see below).                                                           | `packages/ui/src/**/*.stories.tsx` tagged `play`                | `check` job, "Storybook play functions" step, `pnpm test:storybook` (path-gated)                         |
 | Offline fonts      | Does a single-file consumer load every font face with no network?                                                                            | `packages/ui/tests/offline-fonts/*.spec.ts`                     | `visual` job, `test:offline-fonts`                                                                       |
 | Dependency audit   | Does the lockfile carry a known advisory?                                                                                                    | `scripts/audit-retry.sh`                                        | `check` job, "Audit" step                                                                                |
 
@@ -28,6 +29,30 @@ stories axe, play, the `visual` layers and the `contrast` shards when no changed
 To run the interaction project locally, use
 `pnpm --filter @titan-design/react-ui exec playwright test --project=interaction`.
 `test:visual` and `test:visual:update` run only the `chromium` visual project.
+
+## Accessibility gates
+
+Two gates cover accessibility, and they are the permanent ones:
+
+| Gate           | What it checks                                                                                                                                 | Command                                                     | CI                                                  |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | --------------------------------------------------- |
+| jest-axe       | Every axe rule jsdom can decide (names, roles, labels, ARIA), per component test and per composed story against `stories-axe-baseline.json`.   | `pnpm test:unit:ci`, `pnpm test:axe`                        | `build` job ("Verify"), `check` job ("Stories axe") |
+| Story contrast | axe `color-contrast` in real Chromium on every story in both themes, against `contrast-stories-baseline.json`. jsdom has no layout to measure. | `pnpm --filter @titan-design/react-ui test:visual:contrast` | `contrast` job, shards `contrast 1/3` to `3/3`      |
+
+The Storybook Vitest addon's a11y test in the `storybook` Vitest project is a deliberate no-go
+(TD-94). `.storybook/vitest.setup.ts` sets `a11y: { test: 'off' }`, and it stays off, for two
+reasons:
+
+- **jest-axe is the rules gate** (VW-481 Q2). The browser project only runs play functions; a second
+  axe pass over the same stories would need a second baseline kept in step with stories axe.
+- **The project renders without NativeWind classes.** A play story that renders
+  `<View className="bg-surface-elevated p-4" />` in the `storybook` project gets
+  `class="css-view-175oi2r"`, a transparent background and `0px` padding; real Storybook paints the
+  token. Colour contrast measured there would measure unstyled pixels. The story contrast gate runs
+  against built Storybook, where the classes apply.
+
+Until that gap is fixed, a play function in the `storybook` project cannot prove anything that
+depends on a class (colour, spacing, state styling).
 
 ## Logic in pure hooks so Stryker can reach it
 
