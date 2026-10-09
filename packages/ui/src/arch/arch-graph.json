@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:32232e363efe0ffaa43b6701194b3954b4a2734d122ae45483319ce5d564bcb9",
+  "componentBarrelHash": "sha256:74012d5e32300ad062ac7d6a163653a8f65298435551f73a2af2bb96da951999",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -816,6 +816,43 @@
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": true
+    },
+    {
+      "name": "CardStat",
+      "file": "packages/ui/src/components/ui/card/CardStat.tsx",
+      "dir": "ui",
+      "family": "ui/card",
+      "exports": [
+        "CardStat",
+        "CardStatMetricProps",
+        "CardStatProps"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Card",
+        "Metric"
+      ],
+      "leak": {
+        "rawView": 0,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 63,
+        "score": 0
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "Carousel",
@@ -10883,10 +10920,18 @@
     [
       "Page",
       "Typography"
+    ],
+    [
+      "CardStat",
+      "Card"
+    ],
+    [
+      "CardStat",
+      "Metric"
     ]
   ],
   "summary": {
-    "total": 225,
+    "total": 226,
     "dead": [
       "Autocomplete",
       "Breadcrumbs",

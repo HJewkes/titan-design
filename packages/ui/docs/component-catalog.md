@@ -20,6 +20,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | CapacityBandChart | candidate | custom/Workout | Gentler-Streak-inspired fatigue visualization. | CapacityBandOverlays, CapacityBandPlot | custom-workout-dataviz-capacitybandchart--compact |
 | CapacityBandPlot | review | custom/Workout | The band and projection, drawn left to right through an animated clip. | — | — |
 | Card | stable | ui/card | Card component for containing related content. | Surface | components-molecules-card--brand-colored-cards |
+| CardStat | review | ui/card | The Card stat preset: one labelled figure on a card plane (roadmap decision 1). | Card, Metric | — |
 | Carousel | stable | ui/carousel | A row of peer cards, one per view with the neighbours peeking, that a phone swipes through instead of scrolling past. | Button, icons | components-molecules-carousel--default |
 | ChatCard | candidate | custom/Chat | A structured card a message carries in a `data-*` part: a status line, a title, a subtitle, a body, small print and up to three actions. | Button, Card, Typography | custom-chat-chatcard--checkin |
 | Checkbox | stable | ui/checkbox | Checkbox component for boolean inputs. | — | components-molecules-checkbox--all-sizes |
@@ -168,7 +169,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | TaskStagePill | candidate | custom/ActiveWork | The one renderer of a stage outside the board columns; label and tone come from the stage table. | Pill | custom-activework-taskstagepill--default |
 | TaskTable | candidate | custom/ActiveWork | TaskTable — every open task across initiatives in one dense, sortable grid. | Eyebrow, SeverityLabel, Table, TableHeaderCell, TaskRow, Typography | custom-activework-tasktable--default |
 | TempoDisplay | candidate | custom/Workout | — | metricText | custom-workout-tempodisplay--active-tempo-conditions |
-| Tile | candidate | ui/tile | Tile — a compact label-over-value stat card. | — | components-atoms-tile--default |
+| Tile | candidate | ui/tile | Tile — a compact label-over-value stat, now a wrapper over the `CardStat` preset. | — | components-atoms-tile--default |
 | TimerReadout | candidate | custom/TimerReadout | Atom · TimerReadout — a small textual timer (⏱ + mono, right-justified) built on [useTimer]. | Typography | components-molecules-timerreadout--countdown-running |
 | TipTrigger | review | ui/tooltip | One tip that opens on hover (web), focus (keyboard) and press (native) — the three affordances share a single open state, because RNW ends a wrapper's hover the moment a nested Pressable claims the pointer. | Tooltip | — |
 | Toast | stable | ui/toast | Standalone Toast component (for static rendering without provider). | Surface | components-molecules-toast--all-statuses |

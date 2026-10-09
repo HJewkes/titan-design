@@ -235,6 +235,12 @@ export function Tab({ index = 0, isDisabled = false, className, children }: TabP
 }
 
 export interface TabPanelsProps {
+  /**
+   * Fill the height the parent gives the panels. Off by default so the panels size to their
+   * content in an auto-height parent; turn on when Tabs sits in a fixed-height parent.
+   * Vertical tabs always fill the row's remaining width.
+   */
+  fill?: boolean
   children?: React.ReactNode
   className?: string
 }
@@ -242,11 +248,11 @@ export interface TabPanelsProps {
 /**
  * Container for TabPanel components.
  */
-export function TabPanels({ children, className }: TabPanelsProps) {
-  const { activeIndex } = useContext(TabsContext)
+export function TabPanels({ fill = false, children, className }: TabPanelsProps) {
+  const { activeIndex, orientation } = useContext(TabsContext)
 
   return (
-    <View className={cn('flex-1', className)}>
+    <View className={cn(fill || orientation === 'vertical' ? 'flex-1' : 'flex-none', className)}>
       {React.Children.map(children, (child, index) => {
         if (React.isValidElement(child) && index === activeIndex) {
           return React.cloneElement(child as React.ReactElement<TabPanelProps>, { index })
