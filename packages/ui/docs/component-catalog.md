@@ -31,7 +31,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | Collapse | stable | ui/collapse | Collapsible content container. | — | components-organisms-accordion--allow-multiple |
 | Composer | candidate | custom/Chat | The message input bar. | Button, Input, Surface | custom-chat-composer--default |
 | ConversationIdentity | candidate | custom/Chat | Who a direct thread is with, shown once at the top instead of on every message, the way Messages heads a conversation. | Avatar, Typography | custom-chat-conversationidentity--default |
-| ConversationTurn | candidate | custom/Session | One turn of an agent session: its opener, the assistant's messages in `seq` order, and every tool call of the turn in one disclosure under the text. | Button, Card, Collapse, DateTime, Indicator, MarkdownProse, Pill, ToolCallRow, Typography | custom-session-conversationturn--default |
+| ConversationTurn | candidate | custom/Session | One turn of an agent session: its opener, the assistant's messages in `seq` order, and every tool call of the turn in one disclosure under the text. | DateTime, MarkdownProse, TurnMessages, TurnToolGroup, Typography | custom-session-conversationturn--default |
 | DataRow | stable | ui/data-row | A label-and-value row: the dense rung of the row ladder. | — | components-molecules-datarow--custom-class-name |
 | DateSeparator | candidate | custom/Chat | — | DateTime, Divider, Typography | custom-chat-messagelist-dateseparator--older |
 | DateTime | candidate | ui/date-time | DateTime component for displaying formatted dates and times. | Typography | components-molecules-datetime--all-formats |
@@ -119,6 +119,8 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | Progress | stable | ui/progress | Linear progress bar component. | — | components-molecules-progress--all-colors |
 | Radio | stable | ui/radio | Radio button component. | — | components-molecules-radio--all-colors |
 | ReadinessCheck | candidate | custom/Workout | Pre-workout readiness assessment combining subjective emoji sliders with an objective VBT warm-up validation and a computed readiness score. | Badge, Card | custom-workout-readinesscheck--default |
+| RefChip | candidate | custom/ActiveWork | RefChip — a typed pointer at another entity: a kind glyph, the ref's label and an optional status. | Link, Pill | custom-activework-refchip--default |
+| RelatedList | candidate | custom/ActiveWork | RelatedList — a detail page's related panel: refs grouped by kind, each group headed by its plural and a count, each ref a `RefChip`. | EmptyState, Eyebrow, RefChip, Skeleton, Typography | custom-activework-relatedlist--default |
 | RestTimer | candidate | custom/Workout | — | CircularTimer | custom-workout-resttimer--default |
 | RevealRow | review | custom/Chat | One thread row that slides left with the drag and carries its message time in a column parked past the right edge. | DateTime | — |
 | RomProgressionChart | candidate | custom/Fatigue | — | SetBarChart | custom-fatigue-rom-progression--across-states |

@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:680d489266c9eae7b1532a277933c3e9e787c7479f6603fe7cb54c98ca57829e",
+  "componentBarrelHash": "sha256:ac7efbb71d3bf5d59a07995b200016465e9bc34c9721d2381cef6d4d9cdea3eb",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -1300,16 +1300,8 @@
       "family": "custom/Session",
       "exports": [
         "ConversationTurn",
-        "SessionRoleLabels",
+        "ConversationLimits",
         "ConversationTurnProps",
-        "CutNotice",
-        "MessageText",
-        "openerLabel",
-        "Opener",
-        "AssistantMessages",
-        "SummaryLine",
-        "ToolRows",
-        "ToolGroup",
         "TurnHeader"
       ],
       "libDependents": 1,
@@ -1322,23 +1314,19 @@
         "total": 0
       },
       "dependsOn": [
-        "Button",
-        "Card",
-        "Collapse",
         "DateTime",
-        "Indicator",
         "MarkdownProse",
-        "Pill",
-        "ToolCallRow",
+        "TurnMessages",
+        "TurnToolGroup",
         "Typography"
       ],
       "leak": {
-        "rawView": 11,
+        "rawView": 2,
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 355,
-        "score": 11
+        "loc": 145,
+        "score": 2
       },
       "tier": "organism",
       "verdict": "keep-internal",
@@ -2626,7 +2614,7 @@
         "GapIndicator",
         "GapIndicatorProps"
       ],
-      "libDependents": 0,
+      "libDependents": 1,
       "storyRefs": 1,
       "xproj": {
         "mobile": 0,
@@ -2649,8 +2637,8 @@
         "score": 1
       },
       "tier": "organism",
-      "verdict": "dead",
-      "deadByAssociation": false,
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
       "audited": "unaudited",
       "standard": false
     },
@@ -5666,6 +5654,86 @@
       "standard": false
     },
     {
+      "name": "RefChip",
+      "file": "packages/ui/src/components/custom/ActiveWork/RefChip.tsx",
+      "dir": "custom",
+      "family": "custom/ActiveWork",
+      "exports": [
+        "RefChip",
+        "RefChipProps",
+        "RefChipBody"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Link",
+        "Pill"
+      ],
+      "leak": {
+        "rawView": 1,
+        "rawText": 1,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 107,
+        "score": 2
+      },
+      "tier": "molecule",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "RelatedList",
+      "file": "packages/ui/src/components/custom/ActiveWork/RelatedList.tsx",
+      "dir": "custom",
+      "family": "custom/ActiveWork",
+      "exports": [
+        "groupRefsByKind",
+        "RelatedList",
+        "RefGroup",
+        "RelatedListProps",
+        "RefGroupSection",
+        "RelatedListSkeleton"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "EmptyState",
+        "Eyebrow",
+        "RefChip",
+        "Skeleton",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 7,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 117,
+        "score": 7
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "RestTimer",
       "file": "packages/ui/src/components/custom/Workout/RestTimer.tsx",
       "dir": "workout",
@@ -6165,7 +6233,7 @@
         "rawText": 0,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 256,
+        "loc": 244,
         "score": 6
       },
       "tier": "organism",
@@ -8090,7 +8158,7 @@
         "rawText": 1,
         "inlineStyle": 0,
         "rawHex": 0,
-        "loc": 48,
+        "loc": 51,
         "score": 1
       },
       "tier": "molecule",
@@ -11199,19 +11267,31 @@
       "EmptyState"
     ],
     [
-      "ToolBadge",
+      "RefChip",
+      "Link"
+    ],
+    [
+      "RefChip",
       "Pill"
     ],
     [
-      "GapIndicator",
-      "DateTime"
+      "RelatedList",
+      "RefChip"
     ],
     [
-      "GapIndicator",
-      "Divider"
+      "RelatedList",
+      "EmptyState"
     ],
     [
-      "GapIndicator",
+      "RelatedList",
+      "Eyebrow"
+    ],
+    [
+      "RelatedList",
+      "Skeleton"
+    ],
+    [
+      "RelatedList",
       "Typography"
     ],
     [
@@ -11220,31 +11300,15 @@
     ],
     [
       "ConversationTurn",
-      "ToolCallRow"
+      "TurnMessages"
     ],
     [
       "ConversationTurn",
-      "Button"
-    ],
-    [
-      "ConversationTurn",
-      "Card"
-    ],
-    [
-      "ConversationTurn",
-      "Collapse"
+      "TurnToolGroup"
     ],
     [
       "ConversationTurn",
       "DateTime"
-    ],
-    [
-      "ConversationTurn",
-      "Indicator"
-    ],
-    [
-      "ConversationTurn",
-      "Pill"
     ],
     [
       "ConversationTurn",
@@ -11301,17 +11365,32 @@
     [
       "ToolCallRow",
       "Typography"
+    ],
+    [
+      "GapIndicator",
+      "DateTime"
+    ],
+    [
+      "GapIndicator",
+      "Divider"
+    ],
+    [
+      "GapIndicator",
+      "Typography"
+    ],
+    [
+      "ToolBadge",
+      "Pill"
     ]
   ],
   "summary": {
-    "total": 232,
+    "total": 234,
     "dead": [
       "Autocomplete",
       "Breadcrumbs",
       "Composer",
       "Eyebrow",
       "FilePathLabel",
-      "GapIndicator",
       "GoalLiftCard",
       "HelpTip",
       "HighlightText",
@@ -11323,6 +11402,7 @@
       "PortfolioOverview",
       "PrHistoryModal",
       "ReadinessCheck",
+      "RelatedList",
       "SessionConversation",
       "SessionDetail",
       "SessionList",
@@ -11353,6 +11433,7 @@
       "ConversationTurn",
       "DateSeparator",
       "ExerciseDetailSectionCard",
+      "GapIndicator",
       "InitiativeCard",
       "InputBar",
       "IntensityBar",
@@ -11360,6 +11441,7 @@
       "MesoProgressBar",
       "MessageBubble",
       "ProgramPlanningBreadcrumbs",
+      "RefChip",
       "RevealRow",
       "SessionListItem",
       "SeverityLabel",
