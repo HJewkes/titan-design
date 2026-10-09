@@ -4206,53 +4206,6 @@
       "standard": false
     },
     {
-      "name": "KnowledgeReaderMeta",
-      "file": "packages/ui/src/components/custom/ActiveWork/KnowledgeReaderMeta.tsx",
-      "dir": "custom",
-      "family": "custom/ActiveWork",
-      "exports": [
-        "KnowledgeReaderMeta",
-        "KnowledgeMetaLayout",
-        "recordLabel",
-        "InitiativeName",
-        "KindLabel",
-        "RecordAndKind",
-        "KnowledgeEyebrow",
-        "KnowledgeTags",
-        "KnowledgeDateTags"
-      ],
-      "libDependents": 1,
-      "storyRefs": 0,
-      "xproj": {
-        "mobile": 0,
-        "mcp": 0,
-        "dash": 0,
-        "audiobook": 0,
-        "total": 0
-      },
-      "dependsOn": [
-        "DateTime",
-        "Link",
-        "Pill",
-        "SvgIcon",
-        "Typography",
-        "icons"
-      ],
-      "leak": {
-        "rawView": 5,
-        "rawText": 0,
-        "inlineStyle": 0,
-        "rawHex": 0,
-        "loc": 193,
-        "score": 5
-      },
-      "tier": "organism",
-      "verdict": "keep-internal",
-      "deadByAssociation": true,
-      "audited": "unaudited",
-      "standard": false
-    },
-    {
       "name": "Link",
       "file": "packages/ui/src/components/ui/link/Link.tsx",
       "dir": "ui",
@@ -11305,34 +11258,10 @@
     [
       "KnowledgeReader",
       "Typography"
-    ],
-    [
-      "KnowledgeReaderMeta",
-      "SvgIcon"
-    ],
-    [
-      "KnowledgeReaderMeta",
-      "icons"
-    ],
-    [
-      "KnowledgeReaderMeta",
-      "DateTime"
-    ],
-    [
-      "KnowledgeReaderMeta",
-      "Link"
-    ],
-    [
-      "KnowledgeReaderMeta",
-      "Pill"
-    ],
-    [
-      "KnowledgeReaderMeta",
-      "Typography"
     ]
   ],
   "summary": {
-    "total": 232,
+    "total": 231,
     "dead": [
       "Autocomplete",
       "Breadcrumbs",
@@ -11385,7 +11314,6 @@
       "InitiativeCard",
       "InputBar",
       "IntensityBar",
-      "KnowledgeReaderMeta",
       "MesoCard",
       "MesoProgressBar",
       "MessageBubble",

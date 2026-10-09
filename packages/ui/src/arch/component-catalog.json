@@ -742,57 +742,6 @@
     },
     {
       "composes": [
-        "DateTime",
-        "Link",
-        "Pill",
-        "SvgIcon",
-        "Typography",
-        "icons"
-      ],
-      "family": "custom/ActiveWork",
-      "file": "packages/ui/src/components/custom/ActiveWork/KnowledgeReaderMeta.tsx",
-      "name": "KnowledgeReaderMeta",
-      "props": [
-        {
-          "default": null,
-          "description": "",
-          "name": "item",
-          "required": true,
-          "type": "KnowledgeItem"
-        },
-        {
-          "default": null,
-          "description": "",
-          "name": "layout",
-          "required": true,
-          "type": "KnowledgeMetaLayout"
-        },
-        {
-          "default": null,
-          "description": "",
-          "name": "onPressInitiative",
-          "required": false,
-          "type": "((initiative: string) => void)"
-        },
-        {
-          "default": null,
-          "description": "",
-          "name": "onPressTag",
-          "required": false,
-          "type": "((tag: string) => void)"
-        }
-      ],
-      "purpose": "The header's two metadata lines under the title: the eyebrow, then date and tags.",
-      "sources": {
-        "props": "packages/ui/src/components/custom/ActiveWork/KnowledgeReaderMeta.tsx",
-        "status": null
-      },
-      "status": "review",
-      "storyIds": [],
-      "tier": "organism"
-    },
-    {
-      "composes": [
         "Divider",
         "Eyebrow",
         "MarkdownProse",
