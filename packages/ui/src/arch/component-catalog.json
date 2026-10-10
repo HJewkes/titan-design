@@ -3088,6 +3088,158 @@
       "tier": "molecule"
     },
     {
+      "composes": [
+        "DateTime",
+        "Divider",
+        "Typography"
+      ],
+      "family": "custom/Session",
+      "file": "packages/ui/src/components/custom/Session/GapIndicator.tsx",
+      "name": "GapIndicator",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides on the row.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The idle span.",
+          "name": "durationMs",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Shows the date in UTC rather than the runtime's zone.",
+          "name": "isUTC",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "When activity resumed.",
+          "name": "resumedAtMs",
+          "required": false,
+          "type": "number | null"
+        },
+        {
+          "default": "false",
+          "description": "Set on the first gap after a day change, so the reader sees the new day.",
+          "name": "showDate",
+          "required": false,
+          "type": "boolean"
+        }
+      ],
+      "purpose": "A hairline with the idle time in the middle: \"32m idle\".",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Session/GapIndicator.tsx",
+        "status": "packages/ui/src/components/custom/Session/GapIndicator.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-session-gapindicator--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Pill"
+      ],
+      "family": "custom/Session",
+      "file": "packages/ui/src/components/custom/Session/ToolBadge.tsx",
+      "name": "ToolBadge",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides on the pill.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "A ToolFamily, or any string from a newer read model (falls back to other_tool).",
+          "name": "family",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": "md",
+          "description": "`sm` for a dense row, `md` (default) beside a label.",
+          "name": "size",
+          "required": false,
+          "type": "\"sm\" | \"md\""
+        }
+      ],
+      "purpose": "A tool family as a one-character glyph in a neutral pill.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Session/ToolBadge.tsx",
+        "status": "packages/ui/src/components/custom/Session/ToolBadge.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-session-toolbadge--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Collapse",
+        "DateTime",
+        "Indicator",
+        "TipTrigger",
+        "ToolBadge",
+        "Tooltip",
+        "Typography"
+      ],
+      "family": "custom/Session",
+      "file": "packages/ui/src/components/custom/Session/ToolCallRow.tsx",
+      "name": "ToolCallRow",
+      "props": [
+        {
+          "default": null,
+          "description": "The call to draw.",
+          "name": "call",
+          "required": true,
+          "type": "TimelineToolCall"
+        },
+        {
+          "default": null,
+          "description": "Tailwind overrides on the row.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Shows the time stamp in UTC rather than the runtime's zone.",
+          "name": "isUTC",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Makes the row a button.",
+          "name": "onPress",
+          "required": false,
+          "type": "((call: TimelineToolCall) => void)"
+        }
+      ],
+      "purpose": "One tool call as a line: time, outcome dot (its word on hover and focus), family badge, tool name, what it acted on and the observed duration.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Session/ToolCallRow.tsx",
+        "status": "packages/ui/src/components/custom/Session/ToolCallRow.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-session-toolcallrow--default"
+      ],
+      "tier": "organism"
+    },
+    {
       "composes": [],
       "family": "custom/Sidebar",
       "file": "packages/ui/src/components/custom/Sidebar/Sidebar.tsx",
