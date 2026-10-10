@@ -12,6 +12,7 @@ reads a round imports them from here instead of copying them.
 | `MANIFEST_SCHEMA_ID`        | `titan-review/round@2`    | The round contract. `RoundSchema` accepts only this id.               |
 | `LEGACY_MANIFEST_SCHEMA_ID` | `titan-review/round@1`    | A round written before the contract. `ManifestSchema` still reads it. |
 | `FEEDBACK_SCHEMA_ID`        | `titan-review/feedback@1` | The submission a round returns, validated by `FeedbackSchema`.        |
+| `LOCKS_SCHEMA_ID`           | `titan-locks/1`           | The decision-lock registry, validated by `LocksSchema`.               |
 
 ## Exports
 
@@ -41,6 +42,10 @@ message }[] }[]`, one per PR group: blocked when an answer in the group has free
 - `lintRound(round)`, a pure check of a parsed round against the review-layout rules. It returns
   `{ rule, message }[]` (empty when the round passes; `LINT_RULES` lists the rules) and every
   round builder refuses a round with any problem.
+- `LocksSchema` and `parseLocks(input)`: the `titan-locks/1` registry. A lock is keyed on the
+  decision it implements, held by zero or more PRs at heads, and ordered by `after`; `dependents`
+  wait on a lock by `stack-on` or `defer`. Parsing refuses an unknown lock id, an `after` cycle
+  (`afterCycles` lists them), a repeated id and a decision row keyed by two locks.
 - `isLoopbackUrl(url)`, true only for an http(s) URL on `127.0.0.1`, `localhost` or `[::1]`.
 - `manifestJsonSchema()` and `feedbackJsonSchema()`, the JSON Schema an author writes against.
 - The inferred types: `ManifestInput`, `Manifest`, `Feedback`, `Recommendation`, `Question`,
