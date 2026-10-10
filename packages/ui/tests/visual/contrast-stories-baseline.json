@@ -1077,14 +1077,17 @@
     "#888684|#edeae7": 4
   },
   "custom-fatigue-live-fatigue-panel--live-states light": {
-    "#72716f|#edeae7": 1
+    "#72716f|#edeae7": 1,
+    "#cd923a|#edeae7": 1
   },
   "custom-fatigue-live-fatigue-panel--on-light-surface dark": {
     "#72716f|#edeae7": 1,
-    "#a29f9d|#edeae7": 2
+    "#a29f9d|#edeae7": 2,
+    "#cd923a|#edeae7": 1
   },
   "custom-fatigue-live-fatigue-panel--on-light-surface light": {
-    "#72716f|#edeae7": 1
+    "#72716f|#edeae7": 1,
+    "#cd923a|#edeae7": 1
   },
   "custom-fatigue-velocity-hero--default light": {
     "#5a5958|#1c1916": 8
