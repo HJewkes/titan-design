@@ -2827,6 +2827,13 @@
           "type": "number"
         },
         {
+          "default": "column",
+          "description": "How the sections are arranged — the panel passes its tier's.",
+          "name": "layout",
+          "required": false,
+          "type": "CardLayout"
+        },
+        {
           "default": null,
           "description": "The live fatigue read-model for the current set.",
           "name": "model",
@@ -2920,8 +2927,8 @@
         "custom-fatigue-live-fatigue-panel--live-panel-v-2",
         "custom-fatigue-live-fatigue-panel--live-states",
         "custom-fatigue-live-fatigue-panel--on-light-surface",
-        "custom-fatigue-live-fatigue-panel--responsive-tiers",
-        "custom-fatigue-live-fatigue-panel--wall-width"
+        "custom-fatigue-live-fatigue-panel--wall-width",
+        "custom-fatigue-live-fatigue-panel--widths"
       ],
       "tier": "organism"
     },
@@ -10293,6 +10300,7 @@
       "storyIds": [
         "shell-topbar--default",
         "shell-topbar--single-trailing-item",
+        "shell-topbar--widths",
         "shell-topbar--with-app-chrome"
       ],
       "tier": "organism"

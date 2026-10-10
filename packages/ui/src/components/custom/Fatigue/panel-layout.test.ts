@@ -5,8 +5,7 @@ import {
   CARD_WIDTH_BASE,
   CARD_WIDTH_MAX,
   CARD_WIDTH_XL_RATIO,
-  CARD_HEIGHT_SHARE_STACKED,
-  CARD_MIN_HEIGHT_STACKED,
+  CARD_COMPACT_HEIGHT,
   CARD_MIN_CHART_HEIGHT,
   CARD_MAX_CHART_HEIGHT,
   CARD_NATURAL_CHART_HEIGHT,
@@ -16,11 +15,17 @@ import {
   CARD_SECTION_GAP_MAX,
   HERO_EYEBROW_ALLOWANCE,
   HERO_MIN_PLOT_HEIGHT,
+  COMPACT_CHART_HEIGHT,
+  COMPACT_CHART_GAP,
+  ROM_BAR_HEIGHT_BASE,
+  ROM_FILL_SHARE,
   panelTier,
   panelLayout,
   panelBodySplit,
   cardChartHeight,
   cardSectionGap,
+  cardSections,
+  cardLayoutFor,
   TIER_GAP_XS,
   TIER_GAP_SM,
   TIER_GAP_MD,
@@ -97,8 +102,8 @@ describe('panelLayout', () => {
 
 describe('panelBodySplit — one height source', () => {
   // TD-03.60: the hero and the card must not be able to disagree about the body height.
-  it('moves BOTH the hero and the card when bodyHeight changes, in every tier', () => {
-    for (const width of [480, 900, 1000, 1440, 1920]) {
+  it('moves BOTH the hero and the card when bodyHeight changes, in the row tiers', () => {
+    for (const width of [1000, 1440, 1920]) {
       const layout = panelLayout(width)
       const small = panelBodySplit(800, layout)
       const large = panelBodySplit(1200, layout)
@@ -119,19 +124,25 @@ describe('panelBodySplit — one height source', () => {
     expect(split.heroHeight + HERO_EYEBROW_ALLOWANCE + split.cardHeight + layout.gap).toBe(900)
   })
 
-  it('gives the stacked card the larger share once there is height to share', () => {
-    const layout = panelLayout(700)
-    const split = panelBodySplit(900, layout)
-    expect(split.cardHeight).toBe(Math.round((900 - layout.gap) * CARD_HEIGHT_SHARE_STACKED))
-    expect(split.cardHeight).toBeGreaterThan(split.heroHeight)
+  // TD-326: the owner's read of the wrapped tiers was that the card was "far too large and
+  // heavy compared to the velocity strip (which should be the main item)". Stacked, the card
+  // is the fixed compact band and every extra pixel of body goes to the hero.
+  it('gives the stacked hero everything above the fixed compact card', () => {
+    for (const width of [480, 900]) {
+      const layout = panelLayout(width)
+      const small = panelBodySplit(560, layout)
+      const large = panelBodySplit(900, layout)
+      expect(small.cardHeight).toBe(CARD_COMPACT_HEIGHT)
+      expect(large.cardHeight).toBe(CARD_COMPACT_HEIGHT)
+      expect(large.heroHeight - small.heroHeight).toBe(900 - 560)
+    }
   })
 
-  // A stacked card shorter than its content spilled the ghost spark outside the rounded
-  // edge — measured at 301px against a 384px content height before the floor existed.
-  it('never draws a stacked card below its content floor', () => {
-    for (const bodyHeight of [200, 400, 560, 600]) {
-      const split = panelBodySplit(bodyHeight, panelLayout(480))
-      expect(split.cardHeight).toBeGreaterThanOrEqual(CARD_MIN_HEIGHT_STACKED)
+  // The Widths story pins the wrapped frames at 640, where the hero is the taller block.
+  it('makes the hero the taller block at the wrapped story height', () => {
+    for (const width of [599, 601, 999]) {
+      const split = panelBodySplit(640, panelLayout(width))
+      expect(split.heroHeight).toBeGreaterThan(split.cardHeight)
     }
   })
 
@@ -153,7 +164,9 @@ describe('cardSectionGap — the capped section gap (VW-276)', () => {
   })
 
   it('holds the floor on a card with no slack to spend', () => {
-    expect(cardSectionGap(CARD_MIN_HEIGHT_STACKED)).toBe(CARD_SECTION_GAP_MIN)
+    expect(cardSectionGap(CARD_FIXED_CONTENT_HEIGHT + CARD_MIN_CHART_HEIGHT)).toBe(
+      CARD_SECTION_GAP_MIN
+    )
     expect(cardSectionGap(0)).toBe(CARD_SECTION_GAP_MIN)
   })
 
@@ -180,6 +193,82 @@ describe('cardSectionGap — the capped section gap (VW-276)', () => {
     for (const height of [820, 1080, 1440, 2160]) {
       expect(cardSectionGap(height)).toBe(CARD_SECTION_GAP_MAX)
     }
+  })
+})
+
+describe('cardLayoutFor — the card arrangement per tier (TD-326)', () => {
+  it.each([
+    [599, 'compact'],
+    [999, 'compact'],
+    [1000, 'column'],
+    [1919, 'column'],
+    [1920, 'fill'],
+  ] as const)('arranges the card at %ipx as %s', (width, layout) => {
+    expect(panelLayout(width).cardLayout).toBe(layout)
+  })
+
+  it('keeps an unmeasured container on the shipped column', () => {
+    expect(panelLayout(0).cardLayout).toBe('column')
+    expect(cardLayoutFor('md', false)).toBe('column')
+  })
+})
+
+describe('cardSections — the section heights per arrangement (TD-326)', () => {
+  it('holds the shipped column arithmetic at the chosen 1200 frame height', () => {
+    expect(cardSections('column', 508)).toEqual({
+      romHeight: ROM_BAR_HEIGHT_BASE,
+      sparkHeight: cardChartHeight(508),
+      gap: cardSectionGap(508),
+    })
+  })
+
+  it('gives an unpinned card the natural sizes whatever the arrangement', () => {
+    for (const layout of ['column', 'fill'] as const) {
+      expect(cardSections(layout)).toEqual({
+        romHeight: ROM_BAR_HEIGHT_BASE,
+        sparkHeight: CARD_NATURAL_CHART_HEIGHT,
+        gap: CARD_SECTION_GAP_MIN,
+      })
+    }
+  })
+
+  // THE REGRESSION. The wall card at 820 stopped its spark at the 240 ceiling and its gaps
+  // at the 28 cap, so a third of the card sat empty under the last section.
+  it('spends the wall card height on the charts instead of a void under the spark', () => {
+    const column = cardSections('column', 820)
+    const fill = cardSections('fill', 820)
+    const spent = (s: typeof fill) =>
+      CARD_FIXED_CONTENT_HEIGHT - ROM_BAR_HEIGHT_BASE + s.romHeight + s.sparkHeight + s.gap * 2
+    expect(820 - spent(column)).toBeGreaterThan(300)
+    expect(820 - spent(fill)).toBe(0)
+    expect(fill.gap).toBe(CARD_SECTION_GAP_MAX)
+  })
+
+  it('splits the fill leftover between the ROM plot and the spark by ROM_FILL_SHARE', () => {
+    const column = cardSections('column', 820)
+    const fill = cardSections('fill', 820)
+    const slack = fill.romHeight - column.romHeight + (fill.sparkHeight - column.sparkHeight)
+    expect(fill.romHeight - column.romHeight).toBe(Math.round(slack * ROM_FILL_SHARE))
+    expect(fill.sparkHeight).toBeGreaterThan(fill.romHeight)
+  })
+
+  it('gives both compact charts the one small height, whatever the card height', () => {
+    for (const height of [undefined, 300, 820]) {
+      expect(cardSections('compact', height)).toEqual({
+        romHeight: COMPACT_CHART_HEIGHT,
+        sparkHeight: COMPACT_CHART_HEIGHT,
+        gap: CARD_SECTION_GAP_MIN,
+      })
+    }
+    expect(COMPACT_CHART_HEIGHT).toBeLessThan(CARD_MIN_CHART_HEIGHT)
+  })
+
+  it('adds the compact band up from its measured parts', () => {
+    expect(CARD_COMPACT_HEIGHT).toBe(274)
+    expect(CARD_COMPACT_HEIGHT).toBe(
+      (1 + 18) * 2 + 100 + CARD_SECTION_GAP_MIN + COMPACT_CHART_HEIGHT
+    )
+    expect(COMPACT_CHART_GAP).toBe(space.inline.lg)
   })
 })
 

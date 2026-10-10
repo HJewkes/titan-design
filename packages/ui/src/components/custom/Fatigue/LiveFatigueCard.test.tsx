@@ -4,7 +4,13 @@ import { render, screen } from '@testing-library/react'
 import { LiveFatigueCard } from './LiveFatigueCard'
 import { FATIGUE_STATES, WARMING_UP_MODEL } from './fatigue-mock'
 import { GHOST_GUTTER } from './GhostSpark'
-import { CARD_WIDTH_BASE } from './panel-layout'
+import {
+  CARD_WIDTH_BASE,
+  COMPACT_CHART_GAP,
+  COMPACT_CHART_HEIGHT,
+  ROM_BAR_HEIGHT_BASE,
+  cardSections,
+} from './panel-layout'
 import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
 const model = FATIGUE_STATES[3].model
@@ -57,6 +63,43 @@ describe('LiveFatigueCard geometry resolves to the spacing tokens', () => {
     expect(GHOST_GUTTER).toBe(4)
     expect(spark).toHaveStyle({ paddingLeft: '4px', paddingRight: '4px' })
     expect(spark.querySelector('svg')).toHaveAttribute('width', String(318 - 18 * 2 - 4 * 2))
+  })
+})
+
+/** The ghost-spark svg's rendered size. */
+function sparkSize() {
+  const svg = screen.getByTestId('ghost-spark').querySelector('svg')
+  return { width: Number(svg?.getAttribute('width')), height: Number(svg?.getAttribute('height')) }
+}
+
+describe('LiveFatigueCard layouts (TD-326)', () => {
+  it('defaults to the column, with no compact chart row', () => {
+    render(<LiveFatigueCard model={model} width={318} height={508} />)
+    expect(screen.queryByTestId('live-fatigue-card-charts')).not.toBeInTheDocument()
+    expect(sparkSize().height).toBe(cardSections('column', 508).sparkHeight)
+  })
+
+  it('puts the compact charts side by side, each at half the content width', () => {
+    render(<LiveFatigueCard model={model} width={568} layout="compact" />)
+    expect(screen.getByTestId('live-fatigue-card-charts')).toHaveStyle({ flexDirection: 'row' })
+    expect(spacingClassesAt(screen.getByTestId('live-fatigue-card-head'))).toEqual([
+      'gap-x-inline-lg',
+      'gap-y-3',
+    ])
+    const half = Math.floor((568 - 18 * 2 - COMPACT_CHART_GAP) / 2)
+    expect(sparkSize()).toEqual({ width: half - GHOST_GUTTER * 2, height: COMPACT_CHART_HEIGHT })
+  })
+
+  it('grows the wall card charts to fill the height instead of leaving a void', () => {
+    render(<LiveFatigueCard model={model} width={422} height={820} layout="fill" />)
+    const { sparkHeight, romHeight } = cardSections('fill', 820)
+    expect(sparkSize().height).toBe(sparkHeight)
+    expect(romHeight).toBeGreaterThan(ROM_BAR_HEIGHT_BASE)
+  })
+
+  it('has no accessibility violations in the compact arrangement', async () => {
+    const { container } = render(<LiveFatigueCard model={model} width={568} layout="compact" />)
+    expect(await axe(container)).toHaveNoViolations()
   })
 })
 

@@ -896,7 +896,7 @@ export interface CaptionProps extends Omit<TypographyProps, 'variant'> {
 export function Card(input: CardProps): react_jsx_runtime.JSX.Element;
 
 // @public
-export const CARD_HEIGHT_SHARE_STACKED = 0.55;
+export const CARD_COMPACT_HEIGHT: number;
 
 // @public
 export const CARD_WIDTH_BASE = 318;
@@ -963,6 +963,9 @@ export interface CardInsetProps extends ViewProps {
     className?: string;
 }
 
+// @public
+export type CardLayout = 'column' | 'fill' | 'compact';
+
 // @public (undocumented)
 export interface CardProps extends ViewProps {
     accentColor?: string;
@@ -981,6 +984,16 @@ export interface CardProps extends ViewProps {
     skeletonHasHeader?: boolean;
     variant?: CardVariant;
 }
+
+// @public
+export interface CardSections {
+    gap: number;
+    romHeight: number;
+    sparkHeight: number;
+}
+
+// @public
+export function cardSections(layout: CardLayout, cardHeight?: number): CardSections;
 
 // @public
 export function CardSkeleton(input: CardSkeletonProps): react_jsx_runtime.JSX.Element;
@@ -4721,6 +4734,7 @@ export function LiveFatigueCard(input: LiveFatigueCardProps): react_jsx_runtime.
 // @public (undocumented)
 export interface LiveFatigueCardProps {
     height?: number;
+    layout?: CardLayout;
     model: LiveFatigueModel;
     width?: number;
 }
@@ -5604,6 +5618,7 @@ export function panelBodySplit(bodyHeight: number, layout: PanelLayout): PanelBo
 
 // @public (undocumented)
 export interface PanelLayout {
+    cardLayout: CardLayout;
     cardWidth: number;
     gap: number;
     padding: number;
@@ -9094,6 +9109,12 @@ export interface TooltipProps extends ViewProps {
 
 // @public
 export function TopBar(input: TopBarProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export const TOPBAR_CLOCK_MIN = 720;
+
+// @public
+export const TOPBAR_SUBTITLE_MIN = 1024;
 
 // @public (undocumented)
 export interface TopBarProps {
