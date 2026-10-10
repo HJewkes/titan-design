@@ -1,0 +1,31 @@
+@tailwind base;
+
+@layer base {
+  /* Dark mode (default) */
+  :root {
+    --color-surface-base: #1a1918;
+    --color-surface-raised: #31302f;
+    --color-text-primary: #f9f6f3;
+    --color-text-secondary: #a29f9d;
+    --color-text-brand-secondary: #78c2ff;
+    --color-border-input: #5a5958;
+    --space-inset-md: 12px;
+  }
+
+  /* Light mode */
+  .light,
+  :root.light {
+    --color-surface-base: #ffffff;
+    /* Ramp 3b: raised is white. */
+    --color-surface-raised: #ffffff;
+    --color-text-primary: #121828;
+    --color-text-secondary: #424140;
+    --color-text-brand-secondary: #2a617f;
+    --color-border-input: #888684;
+    --space-inset-md: 12px;
+  }
+
+  .not-a-theme {
+    --color-surface-raised: #111111;
+  }
+}

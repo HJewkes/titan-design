@@ -482,6 +482,40 @@ owner's answer matched the recommendation: one row per round, the overall rate, 
 per confidence band (`<0.5`, `0.5-0.75`, `>=0.75`). An answer counts only when it has both a
 recommendation and an owner's answer.
 
+## Lock footprint (TD-808)
+
+`titan-review locks footprint <pr>` prints what a PR head changes, as the `footprint` of a
+`titan-locks/1` lock (`LockFootprintSchema` in review-schema). It reads through `gh` and `git`
+only and writes nothing; the registry is never touched.
+
+```sh
+pnpm review locks footprint 800                     # gh pr view, then fetch base and refs/pull/800/head
+pnpm review locks footprint --base origin/main --head <sha>   # offline: no gh, no fetch
+            [--repo <path>]                         # the checkout to read (default: this one)
+```
+
+The diff is `merge-base(base, head)..head`; `derivedFrom` records both shas, `mainSha` being
+the merge-base. The output has:
+
+- `tokens`: every custom property of `packages/ui/src/theme/global.css` whose value differs,
+  per mode. The `:root` block is `dark` and the `.light` block is `light`; a token that moves in
+  one mode only is listed once. `name` is the token (`surface-raised` for
+  `--color-surface-raised`), and `from` and `to` are the CSS values; an added token has only
+  `to`, a removed one only `from`. Comments and spacing never count as a change.
+- `files`: every changed path, sorted.
+- `components.direct`: the changed files that are component sources, that is `.ts` or `.tsx`
+  under `packages/ui/src/components/` that are not tests, stories, snapshots or type stubs.
+- `components.readers`: every other component source whose class strings read a changed token
+  (`bg-surface-raised`, `text-text-secondary`, under any variant prefix such as `web:hover:` or
+  `[.light_&]:`; `text-secondary` never matches `text-brand-secondary`), plus every source that
+  imports a `direct` file, transitively. The import closure is keyed by file, so two components
+  that share a name never merge.
+- `components.rendersCount`: the size of the reverse import closure over `direct` and
+  `readers` together, which is where frames render.
+
+The core is pure (`src/locks-footprint.ts`, given both CSS texts, the changed paths and a map of
+sources) and the tests run on fixtures under `test/fixtures/locks/` with git and gh faked.
+
 ## The review contract (TD-670)
 
 `serve` and `build` refuse a round that does not meet it, naming the section or question and
