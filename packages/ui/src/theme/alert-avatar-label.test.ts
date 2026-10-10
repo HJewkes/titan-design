@@ -4,6 +4,9 @@
  * Alert solid sat on `status-<tone>`, a step that is not the tone's solid fill, so the
  * label missed 4.5 on dark error (3.83). Avatar fallback sat on `hairline-strong` with
  * the inverse text colour (1.4-2.9). Both now read the tokens made for the pairing.
+ *
+ * axe reports text on the paper grain as incomplete, so the rendered contrast gate cannot
+ * see solid Alert labels; this token-pair test is their guard.
  */
 import { describe, it, expect } from 'vitest'
 import { semanticColorsDark, semanticColorsLight } from './tokens/semantic'
@@ -23,36 +26,47 @@ const contrast = (a: string, b: string) => {
 
 const TONES = ['success', 'info', 'warning', 'error'] as const
 
-describe('Alert solid label (dark)', () => {
-  it.each(TONES)('%s label clears AA on its -solid fill', (tone) => {
-    const ratio = contrast(
-      semanticColorsDark[`on-status-${tone}`],
-      semanticColorsDark[`status-${tone}-solid`]
-    )
-    expect(ratio).toBeGreaterThanOrEqual(4.5)
-  })
-})
+type Tone = (typeof TONES)[number]
+type Mode = 'dark' | 'light'
 
-describe('Alert solid label (light)', () => {
-  // The Alert reads the white `on-status-*` token on all four light tones (owner pick, Gate 2
-  // batch 5 round 2). It clears AA on success and error and the 3:1 large-text floor on all
-  // four, which is what the 20px bold glyph needs; TD-412 owns the token values.
-  const lightRatio = (tone: (typeof TONES)[number]) =>
-    contrast(semanticColorsLight[`on-status-${tone}`], semanticColorsLight[`status-${tone}-solid`])
+const PALETTES = { dark: semanticColorsDark, light: semanticColorsLight } as const
 
-  it.each(['success', 'error'] as const)('%s label clears AA on its -solid fill', (tone) => {
-    expect(lightRatio(tone)).toBeGreaterThanOrEqual(4.5)
-  })
+const solidLabelRatio = (mode: Mode, tone: Tone) =>
+  contrast(PALETTES[mode][`on-status-${tone}`], PALETTES[mode][`status-${tone}-solid`])
 
-  it.each(TONES)('%s glyph clears large-text AA on its -solid fill', (tone) => {
-    expect(lightRatio(tone)).toBeGreaterThanOrEqual(3)
-  })
+// Shrink-only: solid Alert labels allowed under AA. Each entry fails once it clears 4.5,
+// so the list cannot outlive the fix it waits on.
+const SUB_AA_SOLID_LABELS: ReadonlyArray<{ mode: Mode; tone: Tone }> = [
+  // TD-775: remove when the light info solid fill moves to blue 600.
+  { mode: 'light', tone: 'info' },
+  // TD-774: named exception, large-text AA.
+  { mode: 'light', tone: 'warning' },
+]
 
-  it.each([
-    ['warning', 3.63],
-    ['info', 3.12],
-  ] as const)('records that the %s label sits at %s:1, under AA, by owner pick', (tone, ratio) => {
-    expect(lightRatio(tone)).toBeCloseTo(ratio, 2)
+const isException = (mode: Mode, tone: Tone) =>
+  SUB_AA_SOLID_LABELS.some((entry) => entry.mode === mode && entry.tone === tone)
+
+const SOLID_LABEL_CASES = (['dark', 'light'] as const).flatMap((mode) =>
+  TONES.map((tone) => [mode, tone] as const)
+)
+
+describe('Alert solid label', () => {
+  it.each(SOLID_LABEL_CASES.filter(([mode, tone]) => !isException(mode, tone)))(
+    '%s %s label clears AA on its -solid fill',
+    (mode, tone) => {
+      expect(solidLabelRatio(mode, tone)).toBeGreaterThanOrEqual(4.5)
+    }
+  )
+
+  it.each(SUB_AA_SOLID_LABELS.map(({ mode, tone }) => [mode, tone] as const))(
+    '%s %s is still under AA, so its exception entry is not stale',
+    (mode, tone) => {
+      expect(solidLabelRatio(mode, tone)).toBeLessThan(4.5)
+    }
+  )
+
+  it.each(SOLID_LABEL_CASES)('%s %s glyph clears large-text AA on its -solid fill', (mode, tone) => {
+    expect(solidLabelRatio(mode, tone)).toBeGreaterThanOrEqual(3)
   })
 })
 
