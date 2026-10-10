@@ -2,6 +2,7 @@ import React, { createContext, useContext } from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { useControllableState } from '../../../hooks/useControllableState'
+import { Divider } from '../divider'
 import { Surface } from '../surface'
 import { TriggerSurface } from '../trigger'
 
@@ -193,7 +194,7 @@ export interface MenuDividerProps {
  * Divider between menu items.
  */
 export function MenuDivider({ className }: MenuDividerProps) {
-  return <View className={cn('h-px bg-hairline my-1', className)} />
+  return <Divider className={cn('my-1', className)} />
 }
 
 export interface MenuGroupProps {

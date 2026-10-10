@@ -2,8 +2,9 @@
 /**
  * arch-graph — deterministic component dependency + health graph for the Storybook
  * `Docs/Architecture` page. Drives everything off a codewatch symbol graph (AST, not
- * grep) plus a light import-parse of the consuming apps. Emits a single self-contained
- * JSON the Storybook page imports.
+ * grep) plus a light import-parse of the consuming apps. Emits one JSON of nodes
+ * and whole-library figures; packages/ui/src/arch/arch-graph-derived.ts adds the edges
+ * and counts the Storybook page reads.
  *
  *   node scripts/arch-graph.mjs            # use existing .codewatch/graph.db (or build it)
  *   node scripts/arch-graph.mjs --reindex  # force a fresh codewatch index first
@@ -22,7 +23,6 @@ import os from "node:os";
 import path from "node:path";
 import { execSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { componentBarrelHash } from "../packages/ui/scripts/barrel-hash.mjs";
 import { spliceComponents } from "../packages/ui/scripts/arch-graph-add.mjs";
 
 const ROOT = path.resolve(fileURLToPath(import.meta.url), "../.."); // repo root (titan-design)
@@ -410,17 +410,11 @@ const standardCoverage = (ann.standard ?? []).map((s) => {
 });
 
 // ---- 7. emit ----------------------------------------------------------------
+// Only nodes and whole-library figures are stored. The edge list, totals and dead lists
+// are derived from the nodes in packages/ui/src/arch/arch-graph-derived.ts: stored, they
+// were lines every component PR rewrote, so any two such PRs conflicted (TD-792).
+const deadCount = comps.filter((c) => c.verdict === "dead").length;
 const summary = {
-  total: comps.length,
-  dead: comps
-    .filter((c) => c.verdict === "dead")
-    .map((c) => c.name)
-    .sort(),
-  deadByAssociation: comps
-    .filter((c) => c.deadByAssociation)
-    .map((c) => c.name)
-    .sort(),
-  auditedCount: comps.filter((c) => c.audited === "audited").length,
   standardCoverage,
   extractionTop: [...comps]
     .sort((a, b) => b.leak.score - a.leak.score)
@@ -433,13 +427,8 @@ const summary = {
   })),
 };
 const payload = {
-  schema: 1,
-  // What the graph was generated FROM. `arch-graph.freshness.test.ts` recomputes
-  // it and fails when it drifts, so a component added to a barrel without a
-  // regenerate is caught in CI rather than read as an absence months later.
-  componentBarrelHash: componentBarrelHash(path.join(ROOT, "packages/ui")),
+  schema: 2,
   components: comps.sort((a, b) => a.name.localeCompare(b.name)),
-  edges,
   summary,
 };
 if (ADD.length) {
@@ -458,7 +447,7 @@ console.error(
   `✓ ${comps.length} components, ${edges.length} edges ${ADD.length ? "computed" : `→ ${path.relative(ROOT, OUT)}`}`,
 );
 console.error(
-  `  dead-everywhere: ${summary.dead.length}  ·  consumers present: ${
+  `  dead-everywhere: ${deadCount}  ·  consumers present: ${
     summary.consumers
       .filter((c) => c.present)
       .map((c) => c.name)

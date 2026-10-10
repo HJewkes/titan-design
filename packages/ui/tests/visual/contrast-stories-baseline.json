@@ -253,20 +253,6 @@
   "components-molecules-button--secondary light": {
     "#1c1916|#307b9b": 1
   },
-  "components-molecules-card--default light": {
-    "#ff7900|#edeae7": 1
-  },
-  "components-molecules-carousel-interactions--controlled-ignoring-changes light": {
-    "#ff7900|#edeae7": 9
-  },
-  "components-molecules-carousel-interactions--drag-playground light": {
-    "#ff7900|#edeae7": 9,
-    "#ff7900|#ffffff": 1
-  },
-  "components-molecules-carousel-interactions--drag-playground-looping light": {
-    "#ff7900|#edeae7": 9,
-    "#ff7900|#ffffff": 1
-  },
   "components-molecules-datarow--with-value-class-name light": {
     "#ff7900|#ffffff": 1
   },
@@ -478,15 +464,6 @@
   },
   "components-molecules-toast--without-icon dark": {
     "#a29f9d|#3f474d": 1
-  },
-  "components-molecules-toolbarbutton--variants dark": {
-    "#d1d1d1|#72716f": 1
-  },
-  "components-molecules-toolbarbutton--variants light": {
-    "#d4d1ce|#72716f": 1
-  },
-  "components-molecules-tooltip--all-placements light": {
-    "#ff7900|#ffffff": 8
   },
   "components-molecules-tooltip--on-text light": {
     "#ff7900|#ffffff": 1
@@ -974,16 +951,14 @@
     "#ff7900|#4a3929": 1
   },
   "custom-chat-chatcard--checkin light": {
-    "#72716f|#edeae7": 1,
-    "#ff7900|#edeae7": 1
+    "#72716f|#edeae7": 1
   },
   "custom-chat-chatcard--default dark": {
     "#888684|#31302f": 1,
     "#ff7900|#4a3929": 1
   },
   "custom-chat-chatcard--default light": {
-    "#72716f|#edeae7": 1,
-    "#ff7900|#edeae7": 1
+    "#72716f|#edeae7": 1
   },
   "custom-chat-chatcard--read-only dark": {
     "#888684|#31302f": 1
@@ -997,8 +972,7 @@
     "#ff7900|#4a3929": 1
   },
   "custom-chat-coachpreset--phone light": {
-    "#72716f|#edeae7": 1,
-    "#ff7900|#edeae7": 1
+    "#72716f|#edeae7": 1
   },
   "custom-chat-coachpreset--wall-drawer dark": {
     "#888684|#252321": 5,
@@ -1006,8 +980,7 @@
     "#ff7900|#4a3929": 1
   },
   "custom-chat-coachpreset--wall-drawer light": {
-    "#72716f|#edeae7": 2,
-    "#ff7900|#edeae7": 1
+    "#72716f|#edeae7": 2
   },
   "custom-chat-composer--disabled dark": {
     "#7e7c79|#2c2a28": 1
@@ -1024,8 +997,7 @@
     "#ff7900|#4a3929": 1
   },
   "custom-chat-messagelist--default light": {
-    "#72716f|#edeae7": 1,
-    "#ff7900|#edeae7": 1
+    "#72716f|#edeae7": 1
   },
   "custom-chat-messagelist--direct dark": {
     "#888684|#252321": 3
@@ -1042,9 +1014,7 @@
     "#ff7900|#4a3929": 1
   },
   "custom-chat-messagelist--new-messages-while-scrolled-up light": {
-    "#72716f|#edeae7": 1,
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#72716f|#edeae7": 1
   },
   "custom-chat-messagelist--revealed-times dark": {
     "#888684|#252321": 11
@@ -1058,14 +1028,10 @@
     "#ff7900|#4a3929": 1
   },
   "custom-chat-messagelist--typing light": {
-    "#72716f|#edeae7": 1,
-    "#ff7900|#edeae7": 1
+    "#72716f|#edeae7": 1
   },
   "custom-chat-messagelist--windowed dark": {
     "#888684|#252321": 3
-  },
-  "custom-chat-messagelist--windowed light": {
-    "#ff7900|#ffffff": 1
   },
   "custom-chat-messagelist-dateseparator--older dark": {
     "#888684|#252321": 1
@@ -1087,8 +1053,7 @@
     "#ff7900|#4a3929": 1
   },
   "custom-chat-messagelist-messagebubble--with-data-part light": {
-    "#72716f|#edeae7": 1,
-    "#ff7900|#edeae7": 1
+    "#72716f|#edeae7": 1
   },
   "custom-chat-messagelist-typingindicator--default dark": {
     "#888684|#252321": 1

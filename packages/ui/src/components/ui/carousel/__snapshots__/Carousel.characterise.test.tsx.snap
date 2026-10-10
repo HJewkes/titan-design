@@ -1185,6 +1185,10 @@ exports[`Carousel characterisation > renders the ArrowsStepOneSlide story unchan
           type="button"
         >
           <div
+            class="css-view-175oi2r"
+            data-testid="hit-target"
+          />
+          <div
             class="css-text-146c3p1"
             dir="auto"
           >
@@ -1309,6 +1313,10 @@ exports[`Carousel characterisation > renders the ArrowsStepOneSlide story unchan
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -1342,6 +1350,10 @@ exports[`Carousel characterisation > renders the ArrowsStepOneSlide story unchan
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -1377,6 +1389,10 @@ exports[`Carousel characterisation > renders the ArrowsStepOneSlide story unchan
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -1410,6 +1426,10 @@ exports[`Carousel characterisation > renders the ArrowsStepOneSlide story unchan
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -1445,6 +1465,10 @@ exports[`Carousel characterisation > renders the ArrowsStepOneSlide story unchan
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -1478,6 +1502,10 @@ exports[`Carousel characterisation > renders the ArrowsStepOneSlide story unchan
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -1513,6 +1541,10 @@ exports[`Carousel characterisation > renders the ArrowsStepOneSlide story unchan
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -1546,6 +1578,10 @@ exports[`Carousel characterisation > renders the ArrowsStepOneSlide story unchan
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -1581,6 +1617,10 @@ exports[`Carousel characterisation > renders the ArrowsStepOneSlide story unchan
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -1615,6 +1655,10 @@ exports[`Carousel characterisation > renders the ArrowsStepOneSlide story unchan
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -1646,6 +1690,10 @@ exports[`Carousel characterisation > renders the ArrowsStepOneSlide story unchan
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -1787,6 +1835,10 @@ exports[`Carousel characterisation > renders the ControlledIgnoringChanges story
                       type="button"
                     >
                       <div
+                        class="css-view-175oi2r"
+                        data-testid="hit-target"
+                      />
+                      <div
                         class="css-text-146c3p1"
                         dir="auto"
                       >
@@ -1820,6 +1872,10 @@ exports[`Carousel characterisation > renders the ControlledIgnoringChanges story
                       tabindex="0"
                       type="button"
                     >
+                      <div
+                        class="css-view-175oi2r"
+                        data-testid="hit-target"
+                      />
                       <div
                         class="css-text-146c3p1"
                         dir="auto"
@@ -1855,6 +1911,10 @@ exports[`Carousel characterisation > renders the ControlledIgnoringChanges story
                       type="button"
                     >
                       <div
+                        class="css-view-175oi2r"
+                        data-testid="hit-target"
+                      />
+                      <div
                         class="css-text-146c3p1"
                         dir="auto"
                       >
@@ -1888,6 +1948,10 @@ exports[`Carousel characterisation > renders the ControlledIgnoringChanges story
                       tabindex="0"
                       type="button"
                     >
+                      <div
+                        class="css-view-175oi2r"
+                        data-testid="hit-target"
+                      />
                       <div
                         class="css-text-146c3p1"
                         dir="auto"
@@ -1923,6 +1987,10 @@ exports[`Carousel characterisation > renders the ControlledIgnoringChanges story
                       type="button"
                     >
                       <div
+                        class="css-view-175oi2r"
+                        data-testid="hit-target"
+                      />
+                      <div
                         class="css-text-146c3p1"
                         dir="auto"
                       >
@@ -1956,6 +2024,10 @@ exports[`Carousel characterisation > renders the ControlledIgnoringChanges story
                       tabindex="0"
                       type="button"
                     >
+                      <div
+                        class="css-view-175oi2r"
+                        data-testid="hit-target"
+                      />
                       <div
                         class="css-text-146c3p1"
                         dir="auto"
@@ -1991,6 +2063,10 @@ exports[`Carousel characterisation > renders the ControlledIgnoringChanges story
                       type="button"
                     >
                       <div
+                        class="css-view-175oi2r"
+                        data-testid="hit-target"
+                      />
+                      <div
                         class="css-text-146c3p1"
                         dir="auto"
                       >
@@ -2024,6 +2100,10 @@ exports[`Carousel characterisation > renders the ControlledIgnoringChanges story
                       tabindex="0"
                       type="button"
                     >
+                      <div
+                        class="css-view-175oi2r"
+                        data-testid="hit-target"
+                      />
                       <div
                         class="css-text-146c3p1"
                         dir="auto"
@@ -2059,6 +2139,10 @@ exports[`Carousel characterisation > renders the ControlledIgnoringChanges story
                       type="button"
                     >
                       <div
+                        class="css-view-175oi2r"
+                        data-testid="hit-target"
+                      />
+                      <div
                         class="css-text-146c3p1"
                         dir="auto"
                       >
@@ -2093,6 +2177,10 @@ exports[`Carousel characterisation > renders the ControlledIgnoringChanges story
                       type="button"
                     >
                       <div
+                        class="css-view-175oi2r"
+                        data-testid="hit-target"
+                      />
+                      <div
                         class="css-text-146c3p1"
                         dir="auto"
                       >
@@ -2124,6 +2212,10 @@ exports[`Carousel characterisation > renders the ControlledIgnoringChanges story
                       tabindex="0"
                       type="button"
                     >
+                      <div
+                        class="css-view-175oi2r"
+                        data-testid="hit-target"
+                      />
                       <div
                         class="css-text-146c3p1"
                         dir="auto"
@@ -2163,6 +2255,10 @@ exports[`Carousel characterisation > renders the CopiesAreSceneryOnly story unch
           tabindex="0"
           type="button"
         >
+          <div
+            class="css-view-175oi2r"
+            data-testid="hit-target"
+          />
           <div
             class="css-text-146c3p1"
             dir="auto"
@@ -2288,6 +2384,10 @@ exports[`Carousel characterisation > renders the CopiesAreSceneryOnly story unch
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -2321,6 +2421,10 @@ exports[`Carousel characterisation > renders the CopiesAreSceneryOnly story unch
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -2356,6 +2460,10 @@ exports[`Carousel characterisation > renders the CopiesAreSceneryOnly story unch
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -2389,6 +2497,10 @@ exports[`Carousel characterisation > renders the CopiesAreSceneryOnly story unch
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -2424,6 +2536,10 @@ exports[`Carousel characterisation > renders the CopiesAreSceneryOnly story unch
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -2457,6 +2573,10 @@ exports[`Carousel characterisation > renders the CopiesAreSceneryOnly story unch
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -2492,6 +2612,10 @@ exports[`Carousel characterisation > renders the CopiesAreSceneryOnly story unch
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -2525,6 +2649,10 @@ exports[`Carousel characterisation > renders the CopiesAreSceneryOnly story unch
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -2560,6 +2688,10 @@ exports[`Carousel characterisation > renders the CopiesAreSceneryOnly story unch
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -2594,6 +2726,10 @@ exports[`Carousel characterisation > renders the CopiesAreSceneryOnly story unch
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -2625,6 +2761,10 @@ exports[`Carousel characterisation > renders the CopiesAreSceneryOnly story unch
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -3058,6 +3198,10 @@ exports[`Carousel characterisation > renders the DragPlayground story unchanged 
           type="button"
         >
           <div
+            class="css-view-175oi2r"
+            data-testid="hit-target"
+          />
+          <div
             class="css-text-146c3p1"
             dir="auto"
           >
@@ -3186,6 +3330,10 @@ exports[`Carousel characterisation > renders the DragPlayground story unchanged 
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -3219,6 +3367,10 @@ exports[`Carousel characterisation > renders the DragPlayground story unchanged 
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -3254,6 +3406,10 @@ exports[`Carousel characterisation > renders the DragPlayground story unchanged 
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -3287,6 +3443,10 @@ exports[`Carousel characterisation > renders the DragPlayground story unchanged 
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -3322,6 +3482,10 @@ exports[`Carousel characterisation > renders the DragPlayground story unchanged 
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -3355,6 +3519,10 @@ exports[`Carousel characterisation > renders the DragPlayground story unchanged 
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -3390,6 +3558,10 @@ exports[`Carousel characterisation > renders the DragPlayground story unchanged 
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -3424,6 +3596,10 @@ exports[`Carousel characterisation > renders the DragPlayground story unchanged 
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -3457,6 +3633,10 @@ exports[`Carousel characterisation > renders the DragPlayground story unchanged 
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -3498,6 +3678,10 @@ exports[`Carousel characterisation > renders the DragPlaygroundLooping story unc
           type="button"
         >
           <div
+            class="css-view-175oi2r"
+            data-testid="hit-target"
+          />
+          <div
             class="css-text-146c3p1"
             dir="auto"
           >
@@ -3622,6 +3806,10 @@ exports[`Carousel characterisation > renders the DragPlaygroundLooping story unc
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -3655,6 +3843,10 @@ exports[`Carousel characterisation > renders the DragPlaygroundLooping story unc
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -3690,6 +3882,10 @@ exports[`Carousel characterisation > renders the DragPlaygroundLooping story unc
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -3723,6 +3919,10 @@ exports[`Carousel characterisation > renders the DragPlaygroundLooping story unc
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -3758,6 +3958,10 @@ exports[`Carousel characterisation > renders the DragPlaygroundLooping story unc
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -3791,6 +3995,10 @@ exports[`Carousel characterisation > renders the DragPlaygroundLooping story unc
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -3826,6 +4034,10 @@ exports[`Carousel characterisation > renders the DragPlaygroundLooping story unc
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -3859,6 +4071,10 @@ exports[`Carousel characterisation > renders the DragPlaygroundLooping story unc
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -3894,6 +4110,10 @@ exports[`Carousel characterisation > renders the DragPlaygroundLooping story unc
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -3928,6 +4148,10 @@ exports[`Carousel characterisation > renders the DragPlaygroundLooping story unc
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -3959,6 +4183,10 @@ exports[`Carousel characterisation > renders the DragPlaygroundLooping story unc
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -4000,6 +4228,10 @@ exports[`Carousel characterisation > renders the EnterAndSpaceActivateTheArrows 
           type="button"
         >
           <div
+            class="css-view-175oi2r"
+            data-testid="hit-target"
+          />
+          <div
             class="css-text-146c3p1"
             dir="auto"
           >
@@ -4124,6 +4356,10 @@ exports[`Carousel characterisation > renders the EnterAndSpaceActivateTheArrows 
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -4157,6 +4393,10 @@ exports[`Carousel characterisation > renders the EnterAndSpaceActivateTheArrows 
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -4192,6 +4432,10 @@ exports[`Carousel characterisation > renders the EnterAndSpaceActivateTheArrows 
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -4225,6 +4469,10 @@ exports[`Carousel characterisation > renders the EnterAndSpaceActivateTheArrows 
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -4260,6 +4508,10 @@ exports[`Carousel characterisation > renders the EnterAndSpaceActivateTheArrows 
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -4293,6 +4545,10 @@ exports[`Carousel characterisation > renders the EnterAndSpaceActivateTheArrows 
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -4328,6 +4584,10 @@ exports[`Carousel characterisation > renders the EnterAndSpaceActivateTheArrows 
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -4361,6 +4621,10 @@ exports[`Carousel characterisation > renders the EnterAndSpaceActivateTheArrows 
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -4396,6 +4660,10 @@ exports[`Carousel characterisation > renders the EnterAndSpaceActivateTheArrows 
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -4430,6 +4698,10 @@ exports[`Carousel characterisation > renders the EnterAndSpaceActivateTheArrows 
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -4461,6 +4733,10 @@ exports[`Carousel characterisation > renders the EnterAndSpaceActivateTheArrows 
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -4502,6 +4778,10 @@ exports[`Carousel characterisation > renders the LoopBackFromTheFirstCard story 
           type="button"
         >
           <div
+            class="css-view-175oi2r"
+            data-testid="hit-target"
+          />
+          <div
             class="css-text-146c3p1"
             dir="auto"
           >
@@ -4626,6 +4906,10 @@ exports[`Carousel characterisation > renders the LoopBackFromTheFirstCard story 
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -4659,6 +4943,10 @@ exports[`Carousel characterisation > renders the LoopBackFromTheFirstCard story 
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -4694,6 +4982,10 @@ exports[`Carousel characterisation > renders the LoopBackFromTheFirstCard story 
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -4727,6 +5019,10 @@ exports[`Carousel characterisation > renders the LoopBackFromTheFirstCard story 
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -4762,6 +5058,10 @@ exports[`Carousel characterisation > renders the LoopBackFromTheFirstCard story 
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -4795,6 +5095,10 @@ exports[`Carousel characterisation > renders the LoopBackFromTheFirstCard story 
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -4830,6 +5134,10 @@ exports[`Carousel characterisation > renders the LoopBackFromTheFirstCard story 
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -4863,6 +5171,10 @@ exports[`Carousel characterisation > renders the LoopBackFromTheFirstCard story 
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -4898,6 +5210,10 @@ exports[`Carousel characterisation > renders the LoopBackFromTheFirstCard story 
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -4932,6 +5248,10 @@ exports[`Carousel characterisation > renders the LoopBackFromTheFirstCard story 
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -4963,6 +5283,10 @@ exports[`Carousel characterisation > renders the LoopBackFromTheFirstCard story 
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -5004,6 +5328,10 @@ exports[`Carousel characterisation > renders the LoopForwardFromTheLastCard stor
           type="button"
         >
           <div
+            class="css-view-175oi2r"
+            data-testid="hit-target"
+          />
+          <div
             class="css-text-146c3p1"
             dir="auto"
           >
@@ -5128,6 +5456,10 @@ exports[`Carousel characterisation > renders the LoopForwardFromTheLastCard stor
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -5161,6 +5493,10 @@ exports[`Carousel characterisation > renders the LoopForwardFromTheLastCard stor
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -5196,6 +5532,10 @@ exports[`Carousel characterisation > renders the LoopForwardFromTheLastCard stor
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -5229,6 +5569,10 @@ exports[`Carousel characterisation > renders the LoopForwardFromTheLastCard stor
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -5264,6 +5608,10 @@ exports[`Carousel characterisation > renders the LoopForwardFromTheLastCard stor
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -5297,6 +5645,10 @@ exports[`Carousel characterisation > renders the LoopForwardFromTheLastCard stor
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -5332,6 +5684,10 @@ exports[`Carousel characterisation > renders the LoopForwardFromTheLastCard stor
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -5365,6 +5721,10 @@ exports[`Carousel characterisation > renders the LoopForwardFromTheLastCard stor
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -5400,6 +5760,10 @@ exports[`Carousel characterisation > renders the LoopForwardFromTheLastCard stor
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -5434,6 +5798,10 @@ exports[`Carousel characterisation > renders the LoopForwardFromTheLastCard stor
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -5465,6 +5833,10 @@ exports[`Carousel characterisation > renders the LoopForwardFromTheLastCard stor
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -5506,6 +5878,10 @@ exports[`Carousel characterisation > renders the OneCardHasNoControls story unch
           type="button"
         >
           <div
+            class="css-view-175oi2r"
+            data-testid="hit-target"
+          />
+          <div
             class="css-text-146c3p1"
             dir="auto"
           >
@@ -5539,6 +5915,10 @@ exports[`Carousel characterisation > renders the OneCardHasNoControls story unch
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-text-146c3p1"
                 dir="auto"
@@ -5574,6 +5954,10 @@ exports[`Carousel characterisation > renders the RefreshKeepsTheSameCard story u
           tabindex="0"
           type="button"
         >
+          <div
+            class="css-view-175oi2r"
+            data-testid="hit-target"
+          />
           <div
             class="css-text-146c3p1"
             dir="auto"
@@ -5699,6 +6083,10 @@ exports[`Carousel characterisation > renders the RefreshKeepsTheSameCard story u
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -5732,6 +6120,10 @@ exports[`Carousel characterisation > renders the RefreshKeepsTheSameCard story u
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -5767,6 +6159,10 @@ exports[`Carousel characterisation > renders the RefreshKeepsTheSameCard story u
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -5800,6 +6196,10 @@ exports[`Carousel characterisation > renders the RefreshKeepsTheSameCard story u
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -5835,6 +6235,10 @@ exports[`Carousel characterisation > renders the RefreshKeepsTheSameCard story u
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -5868,6 +6272,10 @@ exports[`Carousel characterisation > renders the RefreshKeepsTheSameCard story u
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -5903,6 +6311,10 @@ exports[`Carousel characterisation > renders the RefreshKeepsTheSameCard story u
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -5936,6 +6348,10 @@ exports[`Carousel characterisation > renders the RefreshKeepsTheSameCard story u
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -5971,6 +6387,10 @@ exports[`Carousel characterisation > renders the RefreshKeepsTheSameCard story u
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -6005,6 +6425,10 @@ exports[`Carousel characterisation > renders the RefreshKeepsTheSameCard story u
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -6036,6 +6460,10 @@ exports[`Carousel characterisation > renders the RefreshKeepsTheSameCard story u
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -6077,6 +6505,10 @@ exports[`Carousel characterisation > renders the StopsAtBothEnds story unchanged
           type="button"
         >
           <div
+            class="css-view-175oi2r"
+            data-testid="hit-target"
+          />
+          <div
             class="css-text-146c3p1"
             dir="auto"
           >
@@ -6205,6 +6637,10 @@ exports[`Carousel characterisation > renders the StopsAtBothEnds story unchanged
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -6238,6 +6674,10 @@ exports[`Carousel characterisation > renders the StopsAtBothEnds story unchanged
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -6273,6 +6713,10 @@ exports[`Carousel characterisation > renders the StopsAtBothEnds story unchanged
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -6306,6 +6750,10 @@ exports[`Carousel characterisation > renders the StopsAtBothEnds story unchanged
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -6341,6 +6789,10 @@ exports[`Carousel characterisation > renders the StopsAtBothEnds story unchanged
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -6374,6 +6826,10 @@ exports[`Carousel characterisation > renders the StopsAtBothEnds story unchanged
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -6409,6 +6865,10 @@ exports[`Carousel characterisation > renders the StopsAtBothEnds story unchanged
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -6443,6 +6903,10 @@ exports[`Carousel characterisation > renders the StopsAtBothEnds story unchanged
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -6476,6 +6940,10 @@ exports[`Carousel characterisation > renders the StopsAtBothEnds story unchanged
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -6516,6 +6984,10 @@ exports[`Carousel characterisation > renders the SwipeCommitsWhenTheScrollRests 
           tabindex="0"
           type="button"
         >
+          <div
+            class="css-view-175oi2r"
+            data-testid="hit-target"
+          />
           <div
             class="css-text-146c3p1"
             dir="auto"
@@ -6641,6 +7113,10 @@ exports[`Carousel characterisation > renders the SwipeCommitsWhenTheScrollRests 
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -6674,6 +7150,10 @@ exports[`Carousel characterisation > renders the SwipeCommitsWhenTheScrollRests 
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -6709,6 +7189,10 @@ exports[`Carousel characterisation > renders the SwipeCommitsWhenTheScrollRests 
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -6742,6 +7226,10 @@ exports[`Carousel characterisation > renders the SwipeCommitsWhenTheScrollRests 
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -6777,6 +7265,10 @@ exports[`Carousel characterisation > renders the SwipeCommitsWhenTheScrollRests 
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -6810,6 +7302,10 @@ exports[`Carousel characterisation > renders the SwipeCommitsWhenTheScrollRests 
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -6845,6 +7341,10 @@ exports[`Carousel characterisation > renders the SwipeCommitsWhenTheScrollRests 
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -6878,6 +7378,10 @@ exports[`Carousel characterisation > renders the SwipeCommitsWhenTheScrollRests 
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -6913,6 +7417,10 @@ exports[`Carousel characterisation > renders the SwipeCommitsWhenTheScrollRests 
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -6947,6 +7455,10 @@ exports[`Carousel characterisation > renders the SwipeCommitsWhenTheScrollRests 
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -6978,6 +7490,10 @@ exports[`Carousel characterisation > renders the SwipeCommitsWhenTheScrollRests 
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -7018,6 +7534,10 @@ exports[`Carousel characterisation > renders the TabBringsTheFocusedSlideIntoVie
           tabindex="0"
           type="button"
         >
+          <div
+            class="css-view-175oi2r"
+            data-testid="hit-target"
+          />
           <div
             class="css-text-146c3p1"
             dir="auto"
@@ -7147,6 +7667,10 @@ exports[`Carousel characterisation > renders the TabBringsTheFocusedSlideIntoVie
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -7180,6 +7704,10 @@ exports[`Carousel characterisation > renders the TabBringsTheFocusedSlideIntoVie
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -7215,6 +7743,10 @@ exports[`Carousel characterisation > renders the TabBringsTheFocusedSlideIntoVie
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -7248,6 +7780,10 @@ exports[`Carousel characterisation > renders the TabBringsTheFocusedSlideIntoVie
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -7283,6 +7819,10 @@ exports[`Carousel characterisation > renders the TabBringsTheFocusedSlideIntoVie
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -7316,6 +7856,10 @@ exports[`Carousel characterisation > renders the TabBringsTheFocusedSlideIntoVie
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"
@@ -7351,6 +7895,10 @@ exports[`Carousel characterisation > renders the TabBringsTheFocusedSlideIntoVie
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -7385,6 +7933,10 @@ exports[`Carousel characterisation > renders the TabBringsTheFocusedSlideIntoVie
                         type="button"
                       >
                         <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
+                        <div
                           class="css-text-146c3p1"
                           dir="auto"
                         >
@@ -7418,6 +7970,10 @@ exports[`Carousel characterisation > renders the TabBringsTheFocusedSlideIntoVie
                         tabindex="0"
                         type="button"
                       >
+                        <div
+                          class="css-view-175oi2r"
+                          data-testid="hit-target"
+                        />
                         <div
                           class="css-text-146c3p1"
                           dir="auto"

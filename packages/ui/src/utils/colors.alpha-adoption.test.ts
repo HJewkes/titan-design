@@ -248,11 +248,11 @@ describe('alpha() adoption (VW-78) — swapped literal parity', () => {
       original: 'rgba(255,255,255,0.10)',
       swapped: alpha(primitiveColors.white, 0.1),
     },
-    // ToolbarButton.tsx
+    // ToolbarButton.tsx; the face now reads the dark control-face-disabled token (TD-264)
     {
       label: 'ToolbarButton disabledBg',
       original: 'rgba(255, 255, 255, 0.12)',
-      swapped: alpha(primitiveColors.white, 0.12),
+      swapped: getSemanticColors('dark')['control-face-disabled'],
     },
   ]
 
@@ -359,10 +359,6 @@ describe('touched source files no longer contain the swapped raw literals', () =
         'rgba(209,67,67,0.20)',
         'rgba(255,255,255,0.10)',
       ],
-    },
-    {
-      file: 'components/ui/toolbar-button/ToolbarButton.tsx',
-      removedLiterals: ['rgba(255, 255, 255, 0.12)'],
     },
   ]
 
