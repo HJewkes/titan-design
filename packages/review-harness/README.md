@@ -545,6 +545,41 @@ paths and a map of sources) and the tests run on fixtures under `test/fixtures/l
 and gh faked; `test/tailwind-theme.test.ts` also reads the real config, so a config shape the
 loader cannot follow fails there first.
 
+## Lock check (TD-814)
+
+`titan-review locks check` is the dispatch check: before a seat spawns an implementer, it gives
+the planned files and tokens and gets an exit code and advice to paste into the brief.
+
+```sh
+pnpm review locks check --registry <locks.json> \
+  --files 'packages/ui/src/components/ui/select/**' --tokens surface-base/light,text-secondary
+```
+
+`--files` takes paths or globs (`**` crosses directories, `*` and `?` do not); `--tokens` takes
+`name/light`, `name/dark`, or a bare name for both modes. Both are comma-separated and
+repeatable. Only `open` locks count. A lock's surface is its footprint's `files` and
+`components.direct`, its `touches.components`, and the tokens of both; a lock's token may name a
+family (`*-subtle`, `tint-{hue}-solid / on-tint-{hue}`).
+
+| exit | verdict    | when                                                                                                                                         |
+| ---- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0    | `clear`    | no open lock's surface is touched. A plan that edits only a lock's `components.readers` is clear, with a note that it renders under the lock |
+| 10   | `stack-on` | every lock touched has holders, and they are all one PR: the advice names its branch and head                                                |
+| 11   | `defer`    | a touched lock has no holder, or the touched locks are held by different PRs                                                                 |
+
+A lock with no holder is a decision only. The plan defers on it and the advice says not to
+re-ask the decision; if the task is the one that implements it, file it as the lock's holder.
+For example:
+
+```text
+Stack on #101 (branch feat/planes, lock L-0001): branch from feat/planes at aaaaaaa and open the
+PR with --base feat/planes; it retargets to main when #101 merges. Overlap: L-0001 on tokens
+text-secondary/light.
+```
+
+`--json` prints the verdict, the holder, the conflicts and render overlaps, and the advice. A
+usage error (no plan, a bad mode, no registry) exits 2. The pure core is `src/locks-check.ts`.
+
 ## The review contract (TD-670)
 
 `serve` and `build` refuse a round that does not meet it, naming the section or question and

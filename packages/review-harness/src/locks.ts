@@ -1,5 +1,7 @@
 import { execFile } from 'node:child_process'
+import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
+import { parseLocks, type Locks } from '@titan-design/review-schema'
 import { HARNESS_DIR } from './harness-freshness.ts'
 import {
   GLOBAL_CSS,
@@ -129,6 +131,22 @@ export async function lockFootprint(opts: FootprintOptions, io: LocksIo): Promis
   return {
     derivedFrom: { mainSha, headSha },
     ...deriveFootprint({ baseCss, headCss, theme, changedFiles, sources }),
+  }
+}
+
+/** Env var naming the registry when `--registry` is not given. */
+export const REGISTRY_ENV = 'TITAN_LOCKS_REGISTRY'
+
+/** Reads and validates a `titan-locks/1` registry; never writes it. */
+export async function readRegistry(path: string | undefined): Promise<Locks> {
+  if (!path) throw new ReviewError(`pass --registry <locks.json> or set ${REGISTRY_ENV}`)
+  const text = await readFile(path, 'utf8').catch((err: Error) => {
+    throw new ReviewError(`cannot read the registry ${path}: ${err.message}`)
+  })
+  try {
+    return parseLocks(JSON.parse(text))
+  } catch (err) {
+    throw new ReviewError(`${path} is not a titan-locks/1 registry: ${(err as Error).message}`)
   }
 }
 
