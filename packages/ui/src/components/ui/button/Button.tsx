@@ -2,58 +2,58 @@ import React, { forwardRef } from 'react'
 import { Pressable, Text, View, ActivityIndicator, type PressableProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { useHitTarget } from '../../../hooks/useHitTarget'
-import { semanticColorsDark } from '../../../theme/tokens/semantic'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
+import { resolveColor, type ColorToken } from '../../../theme/resolve-color'
+import { useSurfaceMode } from '../surface'
 
 export type ButtonVariant = 'solid' | 'outline' | 'ghost' | 'link'
 export type ButtonSize = 'sm' | 'md' | 'lg'
 export type ButtonColor = 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info'
 
-/** Inline color map for RNW where Tailwind text classes get dropped */
-const textColorMap: Record<ButtonVariant, Record<ButtonColor, string>> = {
-  // Was '#FFFFFF' on every tone, which failed AA on four of the six solid fills
-  // (warning measured 1.82). Reads the same on-* tokens as the className path (AW-141).
-  solid: {
-    primary: semanticColorsDark['on-brand-primary'],
-    secondary: semanticColorsDark['on-brand-secondary'],
-    success: semanticColorsDark['on-status-success'],
-    error: semanticColorsDark['on-status-error'],
-    warning: semanticColorsDark['on-status-warning'],
-    info: semanticColorsDark['on-status-info'],
-  },
-  outline: {
-    primary: semanticColorsDark['brand-primary'],
-    secondary: semanticColorsDark['brand-secondary'],
-    success: semanticColorsDark['status-success'],
-    error: semanticColorsDark['status-error'],
-    warning: semanticColorsDark['status-warning'],
-    info: semanticColorsDark['status-info'],
-  },
-  ghost: {
-    primary: semanticColorsDark['brand-primary'],
-    secondary: semanticColorsDark['brand-secondary'],
-    success: semanticColorsDark['status-success'],
-    error: semanticColorsDark['status-error'],
-    warning: semanticColorsDark['status-warning'],
-    info: semanticColorsDark['status-info'],
-  },
-  link: {
-    primary: semanticColorsDark['brand-primary'],
-    secondary: semanticColorsDark['brand-secondary'],
-    success: semanticColorsDark['status-success'],
-    error: semanticColorsDark['status-error'],
-    warning: semanticColorsDark['status-warning'],
-    info: semanticColorsDark['status-info'],
-  },
+// The tone recipe (decision 0003): a solid label reads the fill's `on-*` token; every
+// text emphasis (outline, ghost, link) reads `text-{tone}`, never the base tone, which
+// is the mark the outline border draws. The same token names the className and the
+// inline colour, so the two paths cannot drift apart (TD-415).
+const solidLabelToken: Record<ButtonColor, ColorToken> = {
+  primary: 'on-brand-primary',
+  secondary: 'on-brand-secondary',
+  success: 'on-status-success',
+  error: 'on-status-error',
+  warning: 'on-status-warning',
+  info: 'on-status-info',
 }
 
-/** Inline border color map for outline variant */
-const borderColorMap: Record<ButtonColor, string> = {
-  primary: semanticColorsDark['brand-primary'],
-  secondary: semanticColorsDark['brand-secondary'],
-  success: semanticColorsDark['status-success'],
-  error: semanticColorsDark['status-error'],
-  warning: semanticColorsDark['status-warning'],
-  info: semanticColorsDark['status-info'],
+const textLabelToken: Record<ButtonColor, ColorToken> = {
+  primary: 'text-brand',
+  secondary: 'text-brand-secondary',
+  success: 'text-success',
+  error: 'text-error',
+  warning: 'text-warning',
+  info: 'text-info',
+}
+
+const markToken: Record<ButtonColor, ColorToken> = {
+  primary: 'brand-primary',
+  secondary: 'brand-secondary',
+  success: 'status-success',
+  error: 'status-error',
+  warning: 'status-warning',
+  info: 'status-info',
+}
+
+function labelToken(variant: ButtonVariant, color: ButtonColor): ColorToken {
+  return variant === 'solid' ? solidLabelToken[color] : textLabelToken[color]
+}
+
+/**
+ * Inline colours for raw RN, where the Tailwind text classes are dropped. On web
+ * `resolveColor` gives the CSS variable, so the label follows the `.light` class the
+ * way the className does; on native it gives the hex of the nearest Surface's mode.
+ */
+function inlineStyle(variant: ButtonVariant, color: ButtonColor, mode: ThemeMode) {
+  const style: Record<string, string> = { color: resolveColor(labelToken(variant, color), mode) }
+  if (variant === 'outline') style.borderColor = resolveColor(markToken[color], mode)
+  return style
 }
 
 export interface ButtonProps extends Omit<PressableProps, 'children'> {
@@ -83,8 +83,10 @@ const variantStyles: Record<ButtonVariant, Record<ButtonColor, string>> = {
   // Fill from `*-solid`, not the base tone: `brand-secondary` and `status-error` are
   // dark steps, too dark for any label to read on (AW-141).
   solid: {
+    // Hover and active step down the ramp from the rest fill (decision 0003); the
+    // light `brand-primary-dark` equals the rest fill, so it is no hover at all.
     primary:
-      'bg-brand-primary-solid active:bg-brand-primary-dark active:scale-[0.98] web:hover:bg-brand-primary-dark web:active:scale-[0.98]',
+      'bg-brand-primary-solid active:bg-brand-primary-active active:scale-[0.98] web:hover:bg-brand-primary-hover web:active:scale-[0.98]',
     secondary:
       'bg-brand-secondary-solid active:bg-brand-secondary-dark active:scale-[0.98] web:hover:bg-brand-secondary-dark web:active:scale-[0.98]',
     success:
@@ -131,41 +133,9 @@ const variantStyles: Record<ButtonVariant, Record<ButtonColor, string>> = {
   },
 }
 
-const textStyles: Record<ButtonVariant, Record<ButtonColor, string>> = {
-  // `text-white` failed AA on four of six fills (warning was 1.82). The `on-*` tokens
-  // carry the label that actually reads on each solid fill (AW-141).
-  solid: {
-    primary: 'text-on-brand-primary',
-    secondary: 'text-on-brand-secondary',
-    success: 'text-on-status-success',
-    error: 'text-on-status-error',
-    warning: 'text-on-status-warning',
-    info: 'text-on-status-info',
-  },
-  outline: {
-    primary: 'text-brand-primary',
-    secondary: 'text-brand-secondary',
-    success: 'text-status-success',
-    error: 'text-text-error',
-    warning: 'text-status-warning',
-    info: 'text-status-info',
-  },
-  ghost: {
-    primary: 'text-brand-primary',
-    secondary: 'text-brand-secondary',
-    success: 'text-status-success',
-    error: 'text-text-error',
-    warning: 'text-status-warning',
-    info: 'text-status-info',
-  },
-  link: {
-    primary: 'text-brand-primary web:hover:underline',
-    secondary: 'text-brand-secondary web:hover:underline',
-    success: 'text-status-success web:hover:underline',
-    error: 'text-text-error web:hover:underline',
-    warning: 'text-status-warning web:hover:underline',
-    info: 'text-status-info web:hover:underline',
-  },
+function textStyles(variant: ButtonVariant, color: ButtonColor): string {
+  const label = `text-${labelToken(variant, color)}`
+  return variant === 'link' ? `${label} web:hover:underline` : label
 }
 
 // Pixel-identical to the px-4/py-1.5/min-h-[32px] triples these replaced — the
@@ -230,13 +200,7 @@ export const Button = forwardRef<View, ButtonProps>(function Button(
 ) {
   const disabled = isDisabled || isLoading
   const hitTarget = useHitTarget({ enabled: needsHitTarget[size], onLayout })
-
-  const inlineStyle: Record<string, string> = {
-    color: textColorMap[variant][color],
-  }
-  if (variant === 'outline') {
-    inlineStyle.borderColor = borderColorMap[color]
-  }
+  const mode = useSurfaceMode()
 
   return (
     <Pressable
@@ -252,7 +216,7 @@ export const Button = forwardRef<View, ButtonProps>(function Button(
         // Label colour lives on the container: ButtonText renders `text-inherit`, so a
         // colour set only on the inner Text never reaches the common `<ButtonText>`
         // child path — which is why solid labels stayed browser-default white (AW-141).
-        textStyles[variant][color],
+        textStyles(variant, color),
         // Size styles (icon button vs regular)
         isIconButton ? iconButtonSizeStyles[size] : sizeStyles[size],
         // Full width
@@ -263,7 +227,7 @@ export const Button = forwardRef<View, ButtonProps>(function Button(
         variant === 'link' && 'px-0 py-0 min-h-0',
         className
       )}
-      style={inlineStyle}
+      style={inlineStyle(variant, color, mode)}
       hitSlop={hitTarget.hitSlop}
       onLayout={hitTarget.onLayout}
       {...props}
@@ -272,14 +236,15 @@ export const Button = forwardRef<View, ButtonProps>(function Button(
       {isLoading && (
         <ActivityIndicator
           size="small"
-          color={variant === 'solid' ? textColorMap.solid[color] : undefined}
+          // A literal hex for the mode, the path Spinner takes for ActivityIndicator (VW-316).
+          color={variant === 'solid' ? getSemanticColors(mode)[solidLabelToken[color]] : undefined}
           className="mr-2"
         />
       )}
       {isLoading && loadingText ? (
         <Text
-          className={cn('font-semibold', textSizeStyles[size], textStyles[variant][color])}
-          style={{ color: textColorMap[variant][color] }}
+          className={cn('font-semibold', textSizeStyles[size], textStyles(variant, color))}
+          style={{ color: resolveColor(labelToken(variant, color), mode) }}
         >
           {loadingText}
         </Text>
