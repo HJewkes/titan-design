@@ -15,6 +15,7 @@ import { sectionedExampleManifest } from './example.ts'
 import { FrameRenderError } from './frames.ts'
 import { buildMorningDraft } from './morning.ts'
 import { harnessVerdict, serveMainCommand, type HarnessFreshness } from './harness-freshness.ts'
+import type { FootprintReader } from './locks-build.ts'
 import { CHECK_EXIT, checkPlan } from './locks-check.ts'
 import { formatSync } from './locks-sync.ts'
 import {
@@ -41,6 +42,7 @@ import {
 const USAGE = `titan-review <round.json> [options]
 titan-review --example [--storybook <url>]
 titan-review build <draft.json> [--storybook <url>] [--tree <path>] [--prior-feedback <feedback.json>...]
+                  [--locks [<locks.json>]]
 titan-review calibration <feedback.json...>
 titan-review round from-morning <items.json> [--decider <file>] [--out <draft.json>]
 titan-review locks footprint <pr> | --base <ref> --head <ref> [--repo <path>]
@@ -61,6 +63,12 @@ draft, one per story variant per width, indexed in frames/frames.json.
 A round that binds a question to a PR head needs --tree, the checkout the Storybook ran from:
 build exits 3 unless every bound head is an ancestor of that tree's HEAD, and with --tree it
 records build {mainSha (the tree's origin/main), mergeSha (its HEAD)} in round.json.
+With --locks it also reads the draft as a plan against a titan-locks/1 registry: each PR group
+(at its head, on the head it is stacked on) with its head's footprint from the tree, and each
+question's declared touches. It exits 3 on superseded-state, lock-order, re-ask, stale-ship and
+lock-head-missing (a holder head the tree lacks), orders lock-holder groups first and labels
+frames that render under a decided lock "rendered with decided #n". A non-PR question without
+touches only warns.
 
 calibration reads feedback files and prints how often the owner's answer matched our
 recommendation: per round, overall, and by confidence band (<0.5, 0.5-0.75, >=0.75).
@@ -91,6 +99,8 @@ paste into an implementer brief.
   --prior-feedback <feedback.json>
                      An earlier round's feedback, for build's Ship gate (repeatable; sibling
                      round directories of the same unit are read without the flag)
+  --locks [<path>]   For build: check the draft against this titan-locks/1 registry (default:
+                     $${REGISTRY_ENV}); give it after the draft
   --decider <file>   Decider recommendations for round from-morning (questionId, answer, cite)
   --base <ref>       For locks footprint: the base ref, in place of the PR's base branch
   --head <ref>       For locks footprint: the head ref, in place of the PR's head
@@ -125,11 +135,21 @@ export interface CliIo
   locks?: LocksIo
 }
 
+/** `--locks` takes an optional path: bare (last, or before another flag) it reads the env var. */
+function withLocksValue(argv: string[]): string[] {
+  return argv.flatMap((arg, i) => {
+    const next = argv[i + 1]
+    const bare = arg === '--locks' && (next === undefined || next.startsWith('-'))
+    return bare ? ['--locks='] : [arg]
+  })
+}
+
 function parseCli(argv: string[]) {
   return parseArgs({
-    args: argv,
+    args: withLocksValue(argv),
     allowPositionals: true,
     options: {
+      locks: { type: 'string' },
       storybook: { type: 'string' },
       out: { type: 'string' },
       port: { type: 'string' },
@@ -254,6 +274,31 @@ async function fromMorning(parsed: Parsed, io: CliIo): Promise<number> {
   return EXIT_OK
 }
 
+/** The registry `--locks` names, or the env var's when it is bare; undefined without the flag. */
+function locksRegistry(parsed: Parsed): string | undefined {
+  const given = parsed.values.locks
+  if (given === undefined) return undefined
+  const path = given || process.env[REGISTRY_ENV]
+  if (!path) throw new ReviewError(`--locks needs a registry path, or set ${REGISTRY_ENV}`)
+  return resolve(path)
+}
+
+async function build(parsed: Parsed, io: CliIo): Promise<number> {
+  if (parsed.positionals.length !== 2) throw new ReviewError(`expected one draft\n\n${USAGE}`)
+  const locks = locksRegistry(parsed)
+  const footprint: FootprintReader = (opts) => lockFootprint(opts, io.locks ?? locksIo)
+  return buildRound(
+    resolve(parsed.positionals[1]),
+    parsed.values.storybook,
+    { ...io, footprint },
+    {
+      tree: parsed.values.tree && resolve(parsed.values.tree),
+      priorFeedback: (parsed.values['prior-feedback'] ?? []).map((p) => resolve(p)),
+      ...(locks && { locks }),
+    }
+  )
+}
+
 const LOCKS_VERBS = ['footprint', 'sync', 'check']
 
 /** Read-only: every verb prints, and none writes a registry. */
@@ -336,17 +381,7 @@ async function dispatch(parsed: Parsed, io: CliIo): Promise<number> {
     io.stdout(`${JSON.stringify(sectionedExampleManifest(sb), null, 2)}\n`)
     return EXIT_OK
   }
-  if (parsed.positionals[0] === 'build') {
-    if (parsed.positionals.length !== 2) throw new ReviewError(`expected one draft\n\n${USAGE}`)
-    const tree = parsed.values.tree && resolve(parsed.values.tree)
-    return buildRound(
-      resolve(parsed.positionals[1]),
-      parsed.values.storybook,
-      io,
-      tree,
-      (parsed.values['prior-feedback'] ?? []).map((p) => resolve(p))
-    )
-  }
+  if (parsed.positionals[0] === 'build') return build(parsed, io)
   if (parsed.positionals[0] === 'round') return fromMorning(parsed, io)
   if (parsed.positionals[0] === 'locks') return locks(parsed, io)
   if (parsed.positionals[0] === 'calibration') {

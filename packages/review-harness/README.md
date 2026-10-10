@@ -40,6 +40,7 @@ node scripts/storybook-launch.mjs --isolated          # prints its port, e.g. 61
 pnpm review --example --storybook http://127.0.0.1:6107 > <round-dir>/draft.json   # a starting point
 pnpm review build <round-dir>/draft.json [--storybook <url>]   # contrast gate; writes round.json
             [--tree <path>]                                   # required when a question binds a PR head
+            [--locks [<locks.json>]]                          # lock checks; see _Build with locks_
 pnpm review <round-dir>/round.json [--storybook <url>] [--out <dir>] [--no-open] [--no-capture]
             [--contrast-override "<reason>"] [--allow-stale]
 ```
@@ -127,7 +128,7 @@ imports. Its `schema/round.schema.json` and `schema/feedback.schema.json` are ge
   `variants[{key, storyId | image, label, args?, globals?, height?, variantUnit?, alternate?, change?: changed|new|removed|unchanged}]` (at most 12 in a round
   without `sections`, uncapped in one with them; empty for a round of questions only, which needs no placeholder
   frame; every frame sits in a section),
-  `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?, recommendation?, signsOff (pick-one), page?, merge? (pick-one), frames?[], decision?: iterate|ship|decide, outcomes? (option to accept|changes|neutral), implemented? (the option, or options for pick-many, the PR implements)}]`,
+  `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?, recommendation?, signsOff (pick-one), page?, merge? (pick-one), frames?[], decision?: iterate|ship|decide, outcomes? (option to accept|changes|neutral), implemented? (the option, or options for pick-many, the PR implements), touches? (the tokens a non-PR question decides; see _Build with locks_)}]`,
   `sections[{id, title, deciding, changed, context, kind?: CHOICE|STATES, questionIds[], variantKeys[], seeAlso?[], height?}]`,
   `prGroups?[{pr: owner/name#n, headSha, sectionIds[]}]` (a PR group named outright),
   `build?{mainSha, mergeSha}` (written by `build --tree`; a draft that carries it is refused),
@@ -615,6 +616,48 @@ text-secondary/light.
 
 `--json` prints the verdict, the holder, the conflicts and render overlaps, and the advice. A
 usage error (no plan, a bad mode, no registry) exits 2. The pure core is `src/locks-check.ts`.
+
+## Build with locks (TD-810)
+
+`build --locks [<locks.json>]` is the authority: `locks check` advises dispatch, but the round
+builder refuses a round rendered on a state a lock supersedes. Bare `--locks` reads
+`$TITAN_LOCKS_REGISTRY`; give the flag after the draft. Without `--locks`, `build` is unchanged.
+
+```sh
+pnpm review build <round-dir>/draft.json --tree <path> --locks <locks.json>
+```
+
+The draft is read as a plan for `lockConflicts` in review-schema:
+
+- **Items.** Each `prGroups` entry is a PR at its `headSha`, rendered on its `stackedOn.headSha`
+  when it has one and on its own head otherwise; a Ship-bound PR with no group is an item too. An
+  item's touches are its head's footprint (`locks footprint --base origin/main --head <sha>`, read
+  in `--tree`, so `--locks` needs `--tree` whenever the draft holds a PR) plus the `touches` of the
+  questions on its page.
+- **Questions.** A question on no PR page declares what its answer decides as
+  `touches: { tokens: [{ name, mode? }], components?, axis? }`. One that declares nothing (other
+  than a `text` question) is not checked and prints a warning, so earlier drafts still build.
+- **Ships.** Each earlier round's Ship answers (the files the Ship gate reads) for the PRs the draft
+  holds, in round order, then the draft's own Ship asks. A PR the draft drops is not checked.
+
+`build` exits 3, writing no `round.json`, and prints the problems as lint problems print (one
+`<rule>: <message>` line each) for `superseded-state` (an item edits a locked token of an open
+lock it does not hold, on a base without the holder head: stack it on the holder or defer it),
+`lock-order`, `re-ask` and `stale-ship` from review-schema, and for its own `lock-head-missing`:
+an item overlaps an open lock (a locked token, or a changed file that is a locked file or a
+reader of a locked token) and a holder head of that lock is not an ancestor of the tree's HEAD, by
+the same `git merge-base --is-ancestor` test as the bound heads. A lock an item holds, or one
+that comes `after` a lock it holds, does not bind it: a holder renders before the decisions
+downstream of its own. A stale Ship is cured by asking Ship again at the planned head.
+
+Two more builder rules apply, before the layout lint, and applying them twice changes nothing
+(`src/locks-build.ts`):
+
+- **Holders first.** Sections about a PR that holds an open lock come first, in the registry's
+  `after` order, each group whole; every other section keeps its order.
+- **Render labels.** Every frame of an item that overlaps an open lock it does not hold is labelled
+  `rendered with decided #n: ` with the lock's holder PRs, so the page says which decided change
+  the frame shows. A lock with no holder adds no label.
 
 ## The review contract (TD-670)
 
