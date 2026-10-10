@@ -4,7 +4,12 @@ import { View } from 'react-native'
 
 import { Surface } from '../../ui/surface'
 import { BodyweightGoalCard } from './BodyweightGoalCard'
+import { WHOLE_BODY_WALL_MIN_WIDTH } from './wholeBody'
 import { WHOLE_BODY_WEIGHT as W } from './wholeBody-fixture'
+import { PHASE_TAG_COLLAPSE_WIDTH } from './wholeBodyCardParts'
+
+/** The card's `p-inset-lg` on both sides: both flips measure the content box, so the frame is this much wider. */
+const CARD_INSET_X = 32
 
 /** The wall's two-up grid cell at 1920; narrower canvases take their own width. */
 const CELL_MAX_WIDTH = 920
@@ -49,13 +54,17 @@ const meta: Meta<typeof BodyweightGoalCard> = {
     isTipOpen: { control: 'boolean' },
   },
   decorators: [
-    (Story) => (
-      <Surface level="base" style={{ minHeight: '100%' }} className="p-gutter-sm">
-        <View style={{ width: '100%', maxWidth: CELL_MAX_WIDTH }}>
-          <Story />
-        </View>
-      </Surface>
-    ),
+    // The width matrix sets each frame's width; padding here would shift every frame off its threshold.
+    (Story, { parameters }) =>
+      parameters.widthMatrix ? (
+        <Story />
+      ) : (
+        <Surface level="base" style={{ minHeight: '100%' }} className="p-gutter-sm">
+          <View style={{ width: '100%', maxWidth: CELL_MAX_WIDTH }}>
+            <Story />
+          </View>
+        </Surface>
+      ),
   ],
 }
 export default meta
@@ -64,6 +73,30 @@ type Story = StoryObj<typeof BodyweightGoalCard>
 
 /** F6: a cut from 200 lb, week 3 of 8. */
 export const Default: Story = {}
+
+/**
+ * The card in every width-matrix frame, one pixel either side of the phase tag's
+ * collapse and of the wall scale, as the card's content box sees them. Width decides both, so the `scale` control is off.
+ */
+export const Widths: Story = {
+  tags: ['width-matrix'],
+  argTypes: { scale: { control: false } },
+  parameters: {
+    layout: 'fullscreen',
+    widthMatrix: {
+      thresholds: [PHASE_TAG_COLLAPSE_WIDTH, WHOLE_BODY_WALL_MIN_WIDTH].map(
+        (w) => w + CARD_INSET_X
+      ),
+    },
+  },
+  decorators: [
+    (Story) => (
+      <Surface level="base">
+        <Story />
+      </Surface>
+    ),
+  ],
+}
 
 /**
  * The phase tag's tip, pinned open by state. The tag collapses ONLY when the card's

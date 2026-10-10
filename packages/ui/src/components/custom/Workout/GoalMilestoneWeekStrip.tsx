@@ -86,7 +86,8 @@ export function weekSegments(cells: GoalWeekCell[], t: Palette): SegmentedBarSeg
  * faintest fill, and a week still to come is the neutral track.
  */
 function paint(cell: GoalWeekCell, t: Palette): SegmentedBarSegment {
-  if (cell.phase === 'current') return { color: t['hairline-strong'], ringColor: t['text-primary'] }
+  if (cell.phase === 'current')
+    return { color: t['hairline-strong'], ringColor: t['text-secondary'] }
   if (cell.outcome === 'ahead') return { color: t[STATUS_TOKEN.ahead] }
   if (cell.outcome === 'on_track') return { color: t[STATUS_TOKEN.on_track] }
   if (cell.outcome === 'missed') return { color: t['text-tertiary'], outline: true }

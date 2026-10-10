@@ -11,6 +11,7 @@ import {
   type GoalActualPoint,
   trajectoryInsets,
 } from './GoalTrajectoryChartGeometry'
+import { weekSegments } from './GoalMilestoneWeekStrip'
 import { LEFT_LABEL_INSET } from './GoalTrajectoryPlot'
 import {
   GoalTrajectoryMini,
@@ -22,7 +23,12 @@ import {
   miniWeekAxis,
   type GoalTrajectoryMiniData,
 } from './GoalTrajectoryMini'
-import { CELLS_ROW_TOP, GoalWeekColumnsChart, cellReadingText } from './GoalWeekColumnsChart'
+import {
+  CELLS_GAP,
+  CELLS_ROW_TOP,
+  GoalWeekColumnsChart,
+  cellReadingText,
+} from './GoalWeekColumnsChart'
 
 const dark = getSemanticColors('dark')
 
@@ -144,9 +150,17 @@ describe('GoalTrajectoryMini', () => {
   })
 })
 
+describe('current week ring', () => {
+  it.each(['dark', 'light'] as const)('is text-secondary, not text-primary, in %s', (mode) => {
+    const t = getSemanticColors(mode)
+    const [segment] = weekSegments([{ week: 1, phase: 'current' }], t)
+    expect(segment.ringColor).toBe(t['text-secondary'])
+  })
+})
+
 describe('GoalWeekColumnsChart', () => {
-  it('stands the cells row on the plane top edge', () => {
-    expect(CELLS_ROW_TOP + MINI_CELL_HEIGHT).toBe(MINI_PLANE_TOP)
+  it('hangs the cells row CELLS_GAP above the plane top edge', () => {
+    expect(CELLS_ROW_TOP + MINI_CELL_HEIGHT + CELLS_GAP).toBe(MINI_PLANE_TOP)
   })
 
   it('renders one cell per week over the chart', () => {

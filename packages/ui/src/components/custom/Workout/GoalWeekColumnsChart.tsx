@@ -28,8 +28,11 @@ export function cellReadingText(entry: GoalWeekEntry, unit: string): string {
   return reading && 'load' in reading ? formatMilestoneSet(reading.reps, reading.load, unit) : ''
 }
 
-/** The cells stand ON the plane's top edge, so the row hangs above the canvas. */
-export const CELLS_ROW_TOP = MINI_PLANE_TOP - MINI_CELL_HEIGHT
+/** Air between the week cells and the plane they head. */
+export const CELLS_GAP = 2
+
+/** The cells hang just above the plane's top edge, `CELLS_GAP` clear of it. */
+export const CELLS_ROW_TOP = MINI_PLANE_TOP - MINI_CELL_HEIGHT - CELLS_GAP
 
 /**
  * @example

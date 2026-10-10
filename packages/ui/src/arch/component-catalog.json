@@ -3841,7 +3841,8 @@
         "custom-workout-goals-bodyweightgoalcard--rate-vetoed",
         "custom-workout-goals-bodyweightgoalcard--slow-loss",
         "custom-workout-goals-bodyweightgoalcard--slow-loss-one-line",
-        "custom-workout-goals-bodyweightgoalcard--tag-tip"
+        "custom-workout-goals-bodyweightgoalcard--tag-tip",
+        "custom-workout-goals-bodyweightgoalcard--widths"
       ],
       "tier": "organism"
     },
@@ -5747,7 +5748,8 @@
         "custom-workout-dataviz-goaltrajectorychart--phone-on-track",
         "custom-workout-dataviz-goaltrajectorychart--stalled",
         "custom-workout-dataviz-goaltrajectorychart--tolerated",
-        "custom-workout-dataviz-goaltrajectorychart--wall-motion"
+        "custom-workout-dataviz-goaltrajectorychart--wall-motion",
+        "custom-workout-dataviz-goaltrajectorychart--widths"
       ],
       "tier": "organism"
     },
