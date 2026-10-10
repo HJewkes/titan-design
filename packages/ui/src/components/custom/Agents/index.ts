@@ -1,4 +1,12 @@
 export { AgentCard, type AgentCardProps } from './AgentCard'
+export {
+  AgentHoverCard,
+  AgentHoverCardContent,
+  type AgentHoverCardContentProps,
+  type AgentHoverCardProps,
+} from './AgentHoverCard'
+export { AgentRoster, type AgentRosterProps } from './AgentRoster'
+export { AgentRosterRow, type AgentRosterRowProps } from './AgentRosterRow'
 export { AgentStateLabel, type AgentStateLabelProps } from './AgentStateLabel'
 export {
   AGENT_STATE_META,
@@ -12,6 +20,13 @@ export {
   uniqueAgents,
   type AgentStateMeta,
 } from './agent-state'
+export {
+  AGENT_ROSTER_FIELDS,
+  DEFAULT_ROSTER_FIELDS,
+  agentRosterFieldText,
+  rosterGroups,
+  type AgentRosterField,
+} from './agent-roster'
 export {
   ERROR_RATE_FLAG_ABOVE,
   agentCostLabel,

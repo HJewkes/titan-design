@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:e9cc44388a86421fd13701300b0b8b03bebece52ffa7e512e9a0bd35828cbd0b",
+  "componentBarrelHash": "sha256:4a873c03f5809b49ed433a71af0f19ab65a667aeba5b2c00954304eaa5d280cd",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -104,6 +104,136 @@
       "tier": "organism",
       "verdict": "dead",
       "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "AgentHoverCard",
+      "file": "packages/ui/src/components/custom/Agents/AgentHoverCard.tsx",
+      "dir": "custom",
+      "family": "custom/Agents",
+      "exports": [
+        "AgentHoverCardContent",
+        "AgentHoverCard",
+        "AgentHoverCardContentProps",
+        "AgentHoverCardProps",
+        "MetricRow",
+        "HoverMetrics",
+        "asTrigger"
+      ],
+      "libDependents": 0,
+      "storyRefs": 3,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "AgentCardIdentity",
+        "AgentCardMetrics",
+        "Tooltip",
+        "TriggerSurface",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 5,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 174,
+        "score": 5
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "AgentRoster",
+      "file": "packages/ui/src/components/custom/Agents/AgentRoster.tsx",
+      "dir": "custom",
+      "family": "custom/Agents",
+      "exports": [
+        "AgentRoster",
+        "AgentRosterProps",
+        "useRosterKeys",
+        "useRosterKeys.listHasFocus",
+        "useRosterKeys.getItemProps",
+        "useRosterKeys.getItemProps.focusRef",
+        "useRosterKeys.select",
+        "useRosterKeys.onKeyDown",
+        "focusNode",
+        "RosterSkeleton",
+        "AgentRoster.renderGroup"
+      ],
+      "libDependents": 0,
+      "storyRefs": 3,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "AgentRosterRow",
+        "EmptyState",
+        "Skeleton",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 5,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 184,
+        "score": 5
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "AgentRosterRow",
+      "file": "packages/ui/src/components/custom/Agents/AgentRosterRow.tsx",
+      "dir": "custom",
+      "family": "custom/Agents",
+      "exports": [
+        "AgentRosterRow",
+        "AgentRosterRowProps",
+        "RowDetails",
+        "RowBody"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "AgentStateLabel",
+        "Avatar",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 5,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 150,
+        "score": 5
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
       "audited": "unaudited",
       "standard": false
     },
@@ -11341,12 +11471,62 @@
     [
       "ToolCallRow",
       "Typography"
+    ],
+    [
+      "AgentHoverCard",
+      "AgentCardIdentity"
+    ],
+    [
+      "AgentHoverCard",
+      "AgentCardMetrics"
+    ],
+    [
+      "AgentHoverCard",
+      "Tooltip"
+    ],
+    [
+      "AgentHoverCard",
+      "TriggerSurface"
+    ],
+    [
+      "AgentHoverCard",
+      "Typography"
+    ],
+    [
+      "AgentRoster",
+      "AgentRosterRow"
+    ],
+    [
+      "AgentRoster",
+      "EmptyState"
+    ],
+    [
+      "AgentRoster",
+      "Skeleton"
+    ],
+    [
+      "AgentRoster",
+      "Typography"
+    ],
+    [
+      "AgentRosterRow",
+      "AgentStateLabel"
+    ],
+    [
+      "AgentRosterRow",
+      "Avatar"
+    ],
+    [
+      "AgentRosterRow",
+      "Typography"
     ]
   ],
   "summary": {
     "total": 233,
     "dead": [
       "AgentCard",
+      "AgentHoverCard",
+      "AgentRoster",
       "Autocomplete",
       "Breadcrumbs",
       "Composer",
@@ -11382,6 +11562,7 @@
       "velocity-story-kit"
     ],
     "deadByAssociation": [
+      "AgentRosterRow",
       "AgentStateLabel",
       "AutocompleteParts",
       "Avatar",
