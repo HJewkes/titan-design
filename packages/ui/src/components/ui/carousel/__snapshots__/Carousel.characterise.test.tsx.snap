@@ -129,7 +129,7 @@ exports[`Carousel characterisation > renders Default with count=2 loop=false unc
               data-testid="carousel-previous"
               disabled=""
               role="button"
-              style="color: rgb(255, 121, 0);"
+              style="color: var(--color-text-brand);"
               tabindex="-1"
               type="button"
             >
@@ -166,7 +166,7 @@ exports[`Carousel characterisation > renders Default with count=2 loop=false unc
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               data-testid="carousel-next"
               role="button"
-              style="color: rgb(255, 121, 0);"
+              style="color: var(--color-text-brand);"
               tabindex="0"
               type="button"
             >
@@ -291,7 +291,7 @@ exports[`Carousel characterisation > renders Default with count=2 loop=true unch
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               data-testid="carousel-previous"
               role="button"
-              style="color: rgb(255, 121, 0);"
+              style="color: var(--color-text-brand);"
               tabindex="0"
               type="button"
             >
@@ -328,7 +328,7 @@ exports[`Carousel characterisation > renders Default with count=2 loop=true unch
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               data-testid="carousel-next"
               role="button"
-              style="color: rgb(255, 121, 0);"
+              style="color: var(--color-text-brand);"
               tabindex="0"
               type="button"
             >
@@ -455,7 +455,7 @@ exports[`Carousel characterisation > renders Default with count=9 loop=false unc
               data-testid="carousel-previous"
               disabled=""
               role="button"
-              style="color: rgb(255, 121, 0);"
+              style="color: var(--color-text-brand);"
               tabindex="-1"
               type="button"
             >
@@ -492,7 +492,7 @@ exports[`Carousel characterisation > renders Default with count=9 loop=false unc
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               data-testid="carousel-next"
               role="button"
-              style="color: rgb(255, 121, 0);"
+              style="color: var(--color-text-brand);"
               tabindex="0"
               type="button"
             >
@@ -799,7 +799,7 @@ exports[`Carousel characterisation > renders Default with count=9 loop=true unch
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               data-testid="carousel-previous"
               role="button"
-              style="color: rgb(255, 121, 0);"
+              style="color: var(--color-text-brand);"
               tabindex="0"
               type="button"
             >
@@ -836,7 +836,7 @@ exports[`Carousel characterisation > renders Default with count=9 loop=true unch
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               data-testid="carousel-next"
               role="button"
-              style="color: rgb(255, 121, 0);"
+              style="color: var(--color-text-brand);"
               tabindex="0"
               type="button"
             >
@@ -1180,7 +1180,7 @@ exports[`Carousel characterisation > renders the ArrowsStepOneSlide story unchan
         <button
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="button"
-          style="color: rgb(255, 121, 0);"
+          style="color: var(--color-text-brand);"
           tabindex="0"
           type="button"
         >
@@ -1219,7 +1219,7 @@ exports[`Carousel characterisation > renders the ArrowsStepOneSlide story unchan
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 data-testid="carousel-previous"
                 role="button"
-                style="color: rgb(255, 121, 0);"
+                style="color: var(--color-text-brand);"
                 tabindex="0"
                 type="button"
               >
@@ -1256,7 +1256,7 @@ exports[`Carousel characterisation > renders the ArrowsStepOneSlide story unchan
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 data-testid="carousel-next"
                 role="button"
-                style="color: rgb(255, 121, 0);"
+                style="color: var(--color-text-brand);"
                 tabindex="0"
                 type="button"
               >
@@ -1308,7 +1308,7 @@ exports[`Carousel characterisation > renders the ArrowsStepOneSlide story unchan
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -1346,7 +1346,7 @@ exports[`Carousel characterisation > renders the ArrowsStepOneSlide story unchan
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -1384,7 +1384,7 @@ exports[`Carousel characterisation > renders the ArrowsStepOneSlide story unchan
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -1422,7 +1422,7 @@ exports[`Carousel characterisation > renders the ArrowsStepOneSlide story unchan
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -1460,7 +1460,7 @@ exports[`Carousel characterisation > renders the ArrowsStepOneSlide story unchan
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -1498,7 +1498,7 @@ exports[`Carousel characterisation > renders the ArrowsStepOneSlide story unchan
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -1536,7 +1536,7 @@ exports[`Carousel characterisation > renders the ArrowsStepOneSlide story unchan
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -1574,7 +1574,7 @@ exports[`Carousel characterisation > renders the ArrowsStepOneSlide story unchan
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -1612,7 +1612,7 @@ exports[`Carousel characterisation > renders the ArrowsStepOneSlide story unchan
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -1650,7 +1650,7 @@ exports[`Carousel characterisation > renders the ArrowsStepOneSlide story unchan
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -1686,7 +1686,7 @@ exports[`Carousel characterisation > renders the ArrowsStepOneSlide story unchan
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -1741,7 +1741,7 @@ exports[`Carousel characterisation > renders the ControlledIgnoringChanges story
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               data-testid="carousel-previous"
               role="button"
-              style="color: rgb(255, 121, 0);"
+              style="color: var(--color-text-brand);"
               tabindex="0"
               type="button"
             >
@@ -1778,7 +1778,7 @@ exports[`Carousel characterisation > renders the ControlledIgnoringChanges story
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               data-testid="carousel-next"
               role="button"
-              style="color: rgb(255, 121, 0);"
+              style="color: var(--color-text-brand);"
               tabindex="0"
               type="button"
             >
@@ -1830,7 +1830,7 @@ exports[`Carousel characterisation > renders the ControlledIgnoringChanges story
                     <button
                       class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                       role="button"
-                      style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                      style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                       tabindex="0"
                       type="button"
                     >
@@ -1868,7 +1868,7 @@ exports[`Carousel characterisation > renders the ControlledIgnoringChanges story
                     <button
                       class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                       role="button"
-                      style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                      style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                       tabindex="0"
                       type="button"
                     >
@@ -1906,7 +1906,7 @@ exports[`Carousel characterisation > renders the ControlledIgnoringChanges story
                     <button
                       class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                       role="button"
-                      style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                      style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                       tabindex="0"
                       type="button"
                     >
@@ -1944,7 +1944,7 @@ exports[`Carousel characterisation > renders the ControlledIgnoringChanges story
                     <button
                       class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                       role="button"
-                      style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                      style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                       tabindex="0"
                       type="button"
                     >
@@ -1982,7 +1982,7 @@ exports[`Carousel characterisation > renders the ControlledIgnoringChanges story
                     <button
                       class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                       role="button"
-                      style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                      style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                       tabindex="0"
                       type="button"
                     >
@@ -2020,7 +2020,7 @@ exports[`Carousel characterisation > renders the ControlledIgnoringChanges story
                     <button
                       class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                       role="button"
-                      style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                      style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                       tabindex="0"
                       type="button"
                     >
@@ -2058,7 +2058,7 @@ exports[`Carousel characterisation > renders the ControlledIgnoringChanges story
                     <button
                       class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                       role="button"
-                      style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                      style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                       tabindex="0"
                       type="button"
                     >
@@ -2096,7 +2096,7 @@ exports[`Carousel characterisation > renders the ControlledIgnoringChanges story
                     <button
                       class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                       role="button"
-                      style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                      style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                       tabindex="0"
                       type="button"
                     >
@@ -2134,7 +2134,7 @@ exports[`Carousel characterisation > renders the ControlledIgnoringChanges story
                     <button
                       class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                       role="button"
-                      style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                      style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                       tabindex="0"
                       type="button"
                     >
@@ -2172,7 +2172,7 @@ exports[`Carousel characterisation > renders the ControlledIgnoringChanges story
                     <button
                       class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                       role="button"
-                      style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                      style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                       tabindex="0"
                       type="button"
                     >
@@ -2208,7 +2208,7 @@ exports[`Carousel characterisation > renders the ControlledIgnoringChanges story
                     <button
                       class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                       role="button"
-                      style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                      style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                       tabindex="0"
                       type="button"
                     >
@@ -2251,7 +2251,7 @@ exports[`Carousel characterisation > renders the CopiesAreSceneryOnly story unch
         <button
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="button"
-          style="color: rgb(255, 121, 0);"
+          style="color: var(--color-text-brand);"
           tabindex="0"
           type="button"
         >
@@ -2290,7 +2290,7 @@ exports[`Carousel characterisation > renders the CopiesAreSceneryOnly story unch
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 data-testid="carousel-previous"
                 role="button"
-                style="color: rgb(255, 121, 0);"
+                style="color: var(--color-text-brand);"
                 tabindex="0"
                 type="button"
               >
@@ -2327,7 +2327,7 @@ exports[`Carousel characterisation > renders the CopiesAreSceneryOnly story unch
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 data-testid="carousel-next"
                 role="button"
-                style="color: rgb(255, 121, 0);"
+                style="color: var(--color-text-brand);"
                 tabindex="0"
                 type="button"
               >
@@ -2379,7 +2379,7 @@ exports[`Carousel characterisation > renders the CopiesAreSceneryOnly story unch
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -2417,7 +2417,7 @@ exports[`Carousel characterisation > renders the CopiesAreSceneryOnly story unch
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -2455,7 +2455,7 @@ exports[`Carousel characterisation > renders the CopiesAreSceneryOnly story unch
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -2493,7 +2493,7 @@ exports[`Carousel characterisation > renders the CopiesAreSceneryOnly story unch
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -2531,7 +2531,7 @@ exports[`Carousel characterisation > renders the CopiesAreSceneryOnly story unch
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -2569,7 +2569,7 @@ exports[`Carousel characterisation > renders the CopiesAreSceneryOnly story unch
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -2607,7 +2607,7 @@ exports[`Carousel characterisation > renders the CopiesAreSceneryOnly story unch
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -2645,7 +2645,7 @@ exports[`Carousel characterisation > renders the CopiesAreSceneryOnly story unch
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -2683,7 +2683,7 @@ exports[`Carousel characterisation > renders the CopiesAreSceneryOnly story unch
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -2721,7 +2721,7 @@ exports[`Carousel characterisation > renders the CopiesAreSceneryOnly story unch
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -2757,7 +2757,7 @@ exports[`Carousel characterisation > renders the CopiesAreSceneryOnly story unch
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -2812,7 +2812,7 @@ exports[`Carousel characterisation > renders the Default story unchanged 1`] = `
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               data-testid="carousel-previous"
               role="button"
-              style="color: rgb(255, 121, 0);"
+              style="color: var(--color-text-brand);"
               tabindex="0"
               type="button"
             >
@@ -2849,7 +2849,7 @@ exports[`Carousel characterisation > renders the Default story unchanged 1`] = `
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               data-testid="carousel-next"
               role="button"
-              style="color: rgb(255, 121, 0);"
+              style="color: var(--color-text-brand);"
               tabindex="0"
               type="button"
             >
@@ -3193,7 +3193,7 @@ exports[`Carousel characterisation > renders the DragPlayground story unchanged 
         <button
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="button"
-          style="color: rgb(255, 121, 0);"
+          style="color: var(--color-text-brand);"
           tabindex="0"
           type="button"
         >
@@ -3234,7 +3234,7 @@ exports[`Carousel characterisation > renders the DragPlayground story unchanged 
                 data-testid="carousel-previous"
                 disabled=""
                 role="button"
-                style="color: rgb(255, 121, 0);"
+                style="color: var(--color-text-brand);"
                 tabindex="-1"
                 type="button"
               >
@@ -3271,7 +3271,7 @@ exports[`Carousel characterisation > renders the DragPlayground story unchanged 
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 data-testid="carousel-next"
                 role="button"
-                style="color: rgb(255, 121, 0);"
+                style="color: var(--color-text-brand);"
                 tabindex="0"
                 type="button"
               >
@@ -3325,7 +3325,7 @@ exports[`Carousel characterisation > renders the DragPlayground story unchanged 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -3363,7 +3363,7 @@ exports[`Carousel characterisation > renders the DragPlayground story unchanged 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -3401,7 +3401,7 @@ exports[`Carousel characterisation > renders the DragPlayground story unchanged 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -3439,7 +3439,7 @@ exports[`Carousel characterisation > renders the DragPlayground story unchanged 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -3477,7 +3477,7 @@ exports[`Carousel characterisation > renders the DragPlayground story unchanged 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -3515,7 +3515,7 @@ exports[`Carousel characterisation > renders the DragPlayground story unchanged 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -3553,7 +3553,7 @@ exports[`Carousel characterisation > renders the DragPlayground story unchanged 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -3591,7 +3591,7 @@ exports[`Carousel characterisation > renders the DragPlayground story unchanged 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -3629,7 +3629,7 @@ exports[`Carousel characterisation > renders the DragPlayground story unchanged 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -3673,7 +3673,7 @@ exports[`Carousel characterisation > renders the DragPlaygroundLooping story unc
         <button
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="button"
-          style="color: rgb(255, 121, 0);"
+          style="color: var(--color-text-brand);"
           tabindex="0"
           type="button"
         >
@@ -3712,7 +3712,7 @@ exports[`Carousel characterisation > renders the DragPlaygroundLooping story unc
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 data-testid="carousel-previous"
                 role="button"
-                style="color: rgb(255, 121, 0);"
+                style="color: var(--color-text-brand);"
                 tabindex="0"
                 type="button"
               >
@@ -3749,7 +3749,7 @@ exports[`Carousel characterisation > renders the DragPlaygroundLooping story unc
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 data-testid="carousel-next"
                 role="button"
-                style="color: rgb(255, 121, 0);"
+                style="color: var(--color-text-brand);"
                 tabindex="0"
                 type="button"
               >
@@ -3801,7 +3801,7 @@ exports[`Carousel characterisation > renders the DragPlaygroundLooping story unc
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -3839,7 +3839,7 @@ exports[`Carousel characterisation > renders the DragPlaygroundLooping story unc
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -3877,7 +3877,7 @@ exports[`Carousel characterisation > renders the DragPlaygroundLooping story unc
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -3915,7 +3915,7 @@ exports[`Carousel characterisation > renders the DragPlaygroundLooping story unc
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -3953,7 +3953,7 @@ exports[`Carousel characterisation > renders the DragPlaygroundLooping story unc
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -3991,7 +3991,7 @@ exports[`Carousel characterisation > renders the DragPlaygroundLooping story unc
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -4029,7 +4029,7 @@ exports[`Carousel characterisation > renders the DragPlaygroundLooping story unc
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -4067,7 +4067,7 @@ exports[`Carousel characterisation > renders the DragPlaygroundLooping story unc
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -4105,7 +4105,7 @@ exports[`Carousel characterisation > renders the DragPlaygroundLooping story unc
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -4143,7 +4143,7 @@ exports[`Carousel characterisation > renders the DragPlaygroundLooping story unc
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -4179,7 +4179,7 @@ exports[`Carousel characterisation > renders the DragPlaygroundLooping story unc
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -4223,7 +4223,7 @@ exports[`Carousel characterisation > renders the EnterAndSpaceActivateTheArrows 
         <button
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="button"
-          style="color: rgb(255, 121, 0);"
+          style="color: var(--color-text-brand);"
           tabindex="0"
           type="button"
         >
@@ -4262,7 +4262,7 @@ exports[`Carousel characterisation > renders the EnterAndSpaceActivateTheArrows 
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 data-testid="carousel-previous"
                 role="button"
-                style="color: rgb(255, 121, 0);"
+                style="color: var(--color-text-brand);"
                 tabindex="0"
                 type="button"
               >
@@ -4299,7 +4299,7 @@ exports[`Carousel characterisation > renders the EnterAndSpaceActivateTheArrows 
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 data-testid="carousel-next"
                 role="button"
-                style="color: rgb(255, 121, 0);"
+                style="color: var(--color-text-brand);"
                 tabindex="0"
                 type="button"
               >
@@ -4351,7 +4351,7 @@ exports[`Carousel characterisation > renders the EnterAndSpaceActivateTheArrows 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -4389,7 +4389,7 @@ exports[`Carousel characterisation > renders the EnterAndSpaceActivateTheArrows 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -4427,7 +4427,7 @@ exports[`Carousel characterisation > renders the EnterAndSpaceActivateTheArrows 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -4465,7 +4465,7 @@ exports[`Carousel characterisation > renders the EnterAndSpaceActivateTheArrows 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -4503,7 +4503,7 @@ exports[`Carousel characterisation > renders the EnterAndSpaceActivateTheArrows 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -4541,7 +4541,7 @@ exports[`Carousel characterisation > renders the EnterAndSpaceActivateTheArrows 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -4579,7 +4579,7 @@ exports[`Carousel characterisation > renders the EnterAndSpaceActivateTheArrows 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -4617,7 +4617,7 @@ exports[`Carousel characterisation > renders the EnterAndSpaceActivateTheArrows 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -4655,7 +4655,7 @@ exports[`Carousel characterisation > renders the EnterAndSpaceActivateTheArrows 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -4693,7 +4693,7 @@ exports[`Carousel characterisation > renders the EnterAndSpaceActivateTheArrows 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -4729,7 +4729,7 @@ exports[`Carousel characterisation > renders the EnterAndSpaceActivateTheArrows 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -4773,7 +4773,7 @@ exports[`Carousel characterisation > renders the LoopBackFromTheFirstCard story 
         <button
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="button"
-          style="color: rgb(255, 121, 0);"
+          style="color: var(--color-text-brand);"
           tabindex="0"
           type="button"
         >
@@ -4812,7 +4812,7 @@ exports[`Carousel characterisation > renders the LoopBackFromTheFirstCard story 
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 data-testid="carousel-previous"
                 role="button"
-                style="color: rgb(255, 121, 0);"
+                style="color: var(--color-text-brand);"
                 tabindex="0"
                 type="button"
               >
@@ -4849,7 +4849,7 @@ exports[`Carousel characterisation > renders the LoopBackFromTheFirstCard story 
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 data-testid="carousel-next"
                 role="button"
-                style="color: rgb(255, 121, 0);"
+                style="color: var(--color-text-brand);"
                 tabindex="0"
                 type="button"
               >
@@ -4901,7 +4901,7 @@ exports[`Carousel characterisation > renders the LoopBackFromTheFirstCard story 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -4939,7 +4939,7 @@ exports[`Carousel characterisation > renders the LoopBackFromTheFirstCard story 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -4977,7 +4977,7 @@ exports[`Carousel characterisation > renders the LoopBackFromTheFirstCard story 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -5015,7 +5015,7 @@ exports[`Carousel characterisation > renders the LoopBackFromTheFirstCard story 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -5053,7 +5053,7 @@ exports[`Carousel characterisation > renders the LoopBackFromTheFirstCard story 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -5091,7 +5091,7 @@ exports[`Carousel characterisation > renders the LoopBackFromTheFirstCard story 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -5129,7 +5129,7 @@ exports[`Carousel characterisation > renders the LoopBackFromTheFirstCard story 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -5167,7 +5167,7 @@ exports[`Carousel characterisation > renders the LoopBackFromTheFirstCard story 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -5205,7 +5205,7 @@ exports[`Carousel characterisation > renders the LoopBackFromTheFirstCard story 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -5243,7 +5243,7 @@ exports[`Carousel characterisation > renders the LoopBackFromTheFirstCard story 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -5279,7 +5279,7 @@ exports[`Carousel characterisation > renders the LoopBackFromTheFirstCard story 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -5323,7 +5323,7 @@ exports[`Carousel characterisation > renders the LoopForwardFromTheLastCard stor
         <button
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="button"
-          style="color: rgb(255, 121, 0);"
+          style="color: var(--color-text-brand);"
           tabindex="0"
           type="button"
         >
@@ -5362,7 +5362,7 @@ exports[`Carousel characterisation > renders the LoopForwardFromTheLastCard stor
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 data-testid="carousel-previous"
                 role="button"
-                style="color: rgb(255, 121, 0);"
+                style="color: var(--color-text-brand);"
                 tabindex="0"
                 type="button"
               >
@@ -5399,7 +5399,7 @@ exports[`Carousel characterisation > renders the LoopForwardFromTheLastCard stor
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 data-testid="carousel-next"
                 role="button"
-                style="color: rgb(255, 121, 0);"
+                style="color: var(--color-text-brand);"
                 tabindex="0"
                 type="button"
               >
@@ -5451,7 +5451,7 @@ exports[`Carousel characterisation > renders the LoopForwardFromTheLastCard stor
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -5489,7 +5489,7 @@ exports[`Carousel characterisation > renders the LoopForwardFromTheLastCard stor
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -5527,7 +5527,7 @@ exports[`Carousel characterisation > renders the LoopForwardFromTheLastCard stor
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -5565,7 +5565,7 @@ exports[`Carousel characterisation > renders the LoopForwardFromTheLastCard stor
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -5603,7 +5603,7 @@ exports[`Carousel characterisation > renders the LoopForwardFromTheLastCard stor
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -5641,7 +5641,7 @@ exports[`Carousel characterisation > renders the LoopForwardFromTheLastCard stor
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -5679,7 +5679,7 @@ exports[`Carousel characterisation > renders the LoopForwardFromTheLastCard stor
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -5717,7 +5717,7 @@ exports[`Carousel characterisation > renders the LoopForwardFromTheLastCard stor
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -5755,7 +5755,7 @@ exports[`Carousel characterisation > renders the LoopForwardFromTheLastCard stor
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -5793,7 +5793,7 @@ exports[`Carousel characterisation > renders the LoopForwardFromTheLastCard stor
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -5829,7 +5829,7 @@ exports[`Carousel characterisation > renders the LoopForwardFromTheLastCard stor
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -5873,7 +5873,7 @@ exports[`Carousel characterisation > renders the OneCardHasNoControls story unch
         <button
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="button"
-          style="color: rgb(255, 121, 0);"
+          style="color: var(--color-text-brand);"
           tabindex="0"
           type="button"
         >
@@ -5911,7 +5911,7 @@ exports[`Carousel characterisation > renders the OneCardHasNoControls story unch
             <button
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+              style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
               tabindex="0"
               type="button"
             >
@@ -5950,7 +5950,7 @@ exports[`Carousel characterisation > renders the RefreshKeepsTheSameCard story u
         <button
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="button"
-          style="color: rgb(255, 121, 0);"
+          style="color: var(--color-text-brand);"
           tabindex="0"
           type="button"
         >
@@ -5989,7 +5989,7 @@ exports[`Carousel characterisation > renders the RefreshKeepsTheSameCard story u
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 data-testid="carousel-previous"
                 role="button"
-                style="color: rgb(255, 121, 0);"
+                style="color: var(--color-text-brand);"
                 tabindex="0"
                 type="button"
               >
@@ -6026,7 +6026,7 @@ exports[`Carousel characterisation > renders the RefreshKeepsTheSameCard story u
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 data-testid="carousel-next"
                 role="button"
-                style="color: rgb(255, 121, 0);"
+                style="color: var(--color-text-brand);"
                 tabindex="0"
                 type="button"
               >
@@ -6078,7 +6078,7 @@ exports[`Carousel characterisation > renders the RefreshKeepsTheSameCard story u
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -6116,7 +6116,7 @@ exports[`Carousel characterisation > renders the RefreshKeepsTheSameCard story u
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -6154,7 +6154,7 @@ exports[`Carousel characterisation > renders the RefreshKeepsTheSameCard story u
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -6192,7 +6192,7 @@ exports[`Carousel characterisation > renders the RefreshKeepsTheSameCard story u
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -6230,7 +6230,7 @@ exports[`Carousel characterisation > renders the RefreshKeepsTheSameCard story u
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -6268,7 +6268,7 @@ exports[`Carousel characterisation > renders the RefreshKeepsTheSameCard story u
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -6306,7 +6306,7 @@ exports[`Carousel characterisation > renders the RefreshKeepsTheSameCard story u
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -6344,7 +6344,7 @@ exports[`Carousel characterisation > renders the RefreshKeepsTheSameCard story u
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -6382,7 +6382,7 @@ exports[`Carousel characterisation > renders the RefreshKeepsTheSameCard story u
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -6420,7 +6420,7 @@ exports[`Carousel characterisation > renders the RefreshKeepsTheSameCard story u
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -6456,7 +6456,7 @@ exports[`Carousel characterisation > renders the RefreshKeepsTheSameCard story u
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -6500,7 +6500,7 @@ exports[`Carousel characterisation > renders the StopsAtBothEnds story unchanged
         <button
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="button"
-          style="color: rgb(255, 121, 0);"
+          style="color: var(--color-text-brand);"
           tabindex="0"
           type="button"
         >
@@ -6541,7 +6541,7 @@ exports[`Carousel characterisation > renders the StopsAtBothEnds story unchanged
                 data-testid="carousel-previous"
                 disabled=""
                 role="button"
-                style="color: rgb(255, 121, 0);"
+                style="color: var(--color-text-brand);"
                 tabindex="-1"
                 type="button"
               >
@@ -6578,7 +6578,7 @@ exports[`Carousel characterisation > renders the StopsAtBothEnds story unchanged
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 data-testid="carousel-next"
                 role="button"
-                style="color: rgb(255, 121, 0);"
+                style="color: var(--color-text-brand);"
                 tabindex="0"
                 type="button"
               >
@@ -6632,7 +6632,7 @@ exports[`Carousel characterisation > renders the StopsAtBothEnds story unchanged
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -6670,7 +6670,7 @@ exports[`Carousel characterisation > renders the StopsAtBothEnds story unchanged
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -6708,7 +6708,7 @@ exports[`Carousel characterisation > renders the StopsAtBothEnds story unchanged
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -6746,7 +6746,7 @@ exports[`Carousel characterisation > renders the StopsAtBothEnds story unchanged
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -6784,7 +6784,7 @@ exports[`Carousel characterisation > renders the StopsAtBothEnds story unchanged
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -6822,7 +6822,7 @@ exports[`Carousel characterisation > renders the StopsAtBothEnds story unchanged
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -6860,7 +6860,7 @@ exports[`Carousel characterisation > renders the StopsAtBothEnds story unchanged
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -6898,7 +6898,7 @@ exports[`Carousel characterisation > renders the StopsAtBothEnds story unchanged
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -6936,7 +6936,7 @@ exports[`Carousel characterisation > renders the StopsAtBothEnds story unchanged
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -6980,7 +6980,7 @@ exports[`Carousel characterisation > renders the SwipeCommitsWhenTheScrollRests 
         <button
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="button"
-          style="color: rgb(255, 121, 0);"
+          style="color: var(--color-text-brand);"
           tabindex="0"
           type="button"
         >
@@ -7019,7 +7019,7 @@ exports[`Carousel characterisation > renders the SwipeCommitsWhenTheScrollRests 
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 data-testid="carousel-previous"
                 role="button"
-                style="color: rgb(255, 121, 0);"
+                style="color: var(--color-text-brand);"
                 tabindex="0"
                 type="button"
               >
@@ -7056,7 +7056,7 @@ exports[`Carousel characterisation > renders the SwipeCommitsWhenTheScrollRests 
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 data-testid="carousel-next"
                 role="button"
-                style="color: rgb(255, 121, 0);"
+                style="color: var(--color-text-brand);"
                 tabindex="0"
                 type="button"
               >
@@ -7108,7 +7108,7 @@ exports[`Carousel characterisation > renders the SwipeCommitsWhenTheScrollRests 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -7146,7 +7146,7 @@ exports[`Carousel characterisation > renders the SwipeCommitsWhenTheScrollRests 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -7184,7 +7184,7 @@ exports[`Carousel characterisation > renders the SwipeCommitsWhenTheScrollRests 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -7222,7 +7222,7 @@ exports[`Carousel characterisation > renders the SwipeCommitsWhenTheScrollRests 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -7260,7 +7260,7 @@ exports[`Carousel characterisation > renders the SwipeCommitsWhenTheScrollRests 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -7298,7 +7298,7 @@ exports[`Carousel characterisation > renders the SwipeCommitsWhenTheScrollRests 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -7336,7 +7336,7 @@ exports[`Carousel characterisation > renders the SwipeCommitsWhenTheScrollRests 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -7374,7 +7374,7 @@ exports[`Carousel characterisation > renders the SwipeCommitsWhenTheScrollRests 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -7412,7 +7412,7 @@ exports[`Carousel characterisation > renders the SwipeCommitsWhenTheScrollRests 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -7450,7 +7450,7 @@ exports[`Carousel characterisation > renders the SwipeCommitsWhenTheScrollRests 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -7486,7 +7486,7 @@ exports[`Carousel characterisation > renders the SwipeCommitsWhenTheScrollRests 
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -7530,7 +7530,7 @@ exports[`Carousel characterisation > renders the TabBringsTheFocusedSlideIntoVie
         <button
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="button"
-          style="color: rgb(255, 121, 0);"
+          style="color: var(--color-text-brand);"
           tabindex="0"
           type="button"
         >
@@ -7571,7 +7571,7 @@ exports[`Carousel characterisation > renders the TabBringsTheFocusedSlideIntoVie
                 data-testid="carousel-previous"
                 disabled=""
                 role="button"
-                style="color: rgb(255, 121, 0);"
+                style="color: var(--color-text-brand);"
                 tabindex="-1"
                 type="button"
               >
@@ -7608,7 +7608,7 @@ exports[`Carousel characterisation > renders the TabBringsTheFocusedSlideIntoVie
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 data-testid="carousel-next"
                 role="button"
-                style="color: rgb(255, 121, 0);"
+                style="color: var(--color-text-brand);"
                 tabindex="0"
                 type="button"
               >
@@ -7662,7 +7662,7 @@ exports[`Carousel characterisation > renders the TabBringsTheFocusedSlideIntoVie
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -7700,7 +7700,7 @@ exports[`Carousel characterisation > renders the TabBringsTheFocusedSlideIntoVie
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -7738,7 +7738,7 @@ exports[`Carousel characterisation > renders the TabBringsTheFocusedSlideIntoVie
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -7776,7 +7776,7 @@ exports[`Carousel characterisation > renders the TabBringsTheFocusedSlideIntoVie
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -7814,7 +7814,7 @@ exports[`Carousel characterisation > renders the TabBringsTheFocusedSlideIntoVie
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -7852,7 +7852,7 @@ exports[`Carousel characterisation > renders the TabBringsTheFocusedSlideIntoVie
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -7890,7 +7890,7 @@ exports[`Carousel characterisation > renders the TabBringsTheFocusedSlideIntoVie
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -7928,7 +7928,7 @@ exports[`Carousel characterisation > renders the TabBringsTheFocusedSlideIntoVie
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
@@ -7966,7 +7966,7 @@ exports[`Carousel characterisation > renders the TabBringsTheFocusedSlideIntoVie
                       <button
                         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                         role="button"
-                        style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+                        style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
                         tabindex="0"
                         type="button"
                       >
