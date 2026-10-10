@@ -22,6 +22,7 @@ export interface PipelineInput<T> {
   columns: readonly ColumnDef<T>[]
   sort: TableSort
   comparators: UseTableOptions<T>['comparators']
+  isBlank: UseTableOptions<T>['isBlank']
 }
 
 export function useFilterSlice<T>(options: UseTableOptions<T>, columns: readonly ColumnDef<T>[]) {

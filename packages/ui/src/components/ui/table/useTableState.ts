@@ -5,6 +5,8 @@ import type {
   ColumnDef,
   SelectionState,
   SortDirection,
+  TableBlankPredicate,
+  TableComparator,
   TableSort,
   UseTableOptions,
   UseTableReturn,
@@ -24,7 +26,12 @@ export * from './table-model'
 export type * from './table-state-types'
 export { RANGE_DEBOUNCE_MS } from './useTableWindow'
 
-const isBlank = (v: unknown): boolean => v === null || v === undefined
+const isNullish = (v: unknown): boolean => v === null || v === undefined
+
+/** -1, 0 or 1 putting the blank side last; 0 when both or neither is blank. */
+function blankRank(aBlank: boolean, bBlank: boolean): number {
+  return aBlank === bBlank ? 0 : aBlank ? 1 : -1
+}
 
 function compareField<T extends object>(column: string, sign: 1 | -1) {
   return (a: T, b: T): number => {
@@ -34,7 +41,7 @@ function compareField<T extends object>(column: string, sign: 1 | -1) {
 
     // Blanks rank last in BOTH directions — outside the sign, so a missing
     // value never masquerades as the smallest one when the column flips.
-    const blanks = isBlank(aVal) ? (isBlank(bVal) ? 0 : 1) : isBlank(bVal) ? -1 : 0
+    const blanks = blankRank(isNullish(aVal), isNullish(bVal))
     if (blanks !== 0) return blanks
 
     if (aVal === bVal) return 0
@@ -42,12 +49,18 @@ function compareField<T extends object>(column: string, sign: 1 | -1) {
   }
 }
 
+/** `compare` with `isBlank` rows moved last, outside the sign; two blank rows still meet `compare`. */
+function blanksLast<T>(compare: TableComparator<T>, isBlank: TableBlankPredicate<T>) {
+  return (a: T, b: T): number => blankRank(isBlank(a), isBlank(b)) || compare(a, b)
+}
+
 /** Rows ordered by one column; `data` itself while unsorted, otherwise a stable sorted copy. */
 export function sortRows<T extends object>(
   data: T[],
   column: string | undefined,
   direction: SortDirection,
-  comparators?: UseTableOptions<T>['comparators']
+  comparators?: UseTableOptions<T>['comparators'],
+  isBlank?: UseTableOptions<T>['isBlank']
 ): T[] {
   if (!column || !direction) return data
 
@@ -55,8 +68,9 @@ export function sortRows<T extends object>(
   // tied rows, so equal values would shuffle every time direction changed.
   const sign = direction === 'asc' ? 1 : -1
   const custom = comparators?.[column]
-  const compare = custom ? (a: T, b: T) => sign * custom(a, b) : compareField<T>(column, sign)
-  return [...data].sort(compare)
+  const signed = custom ? (a: T, b: T) => sign * custom(a, b) : compareField<T>(column, sign)
+  const blank = isBlank?.[column]
+  return [...data].sort(blank ? blanksLast(signed, blank) : signed)
 }
 
 /** The header sort cycle on one column: asc, desc, then unsorted. */
@@ -151,7 +165,7 @@ function useSortSlice<T>(options: UseTableOptions<T>) {
 
 /** `filterRows` then `sortRows`, each memoised on its own inputs so a scroll or page change re-runs neither. */
 function useSortedRows<T extends object>(input: PipelineInput<T>): T[] {
-  const { isManual, data, filters, columns, sort, comparators } = input
+  const { isManual, data, filters, columns, sort, comparators, isBlank } = input
   const filtered = useMemo(
     // filterRows hands back `data` itself or a fresh array, so the cast exposes nothing shared.
     () => (isManual ? data : (filterRows(data, filters, columns) as T[])),
@@ -159,8 +173,8 @@ function useSortedRows<T extends object>(input: PipelineInput<T>): T[] {
   )
   const { column, direction } = sort
   return useMemo(
-    () => (isManual ? filtered : sortRows(filtered, column, direction, comparators)),
-    [isManual, filtered, column, direction, comparators]
+    () => (isManual ? filtered : sortRows(filtered, column, direction, comparators, isBlank)),
+    [isManual, filtered, column, direction, comparators, isBlank]
   )
 }
 
@@ -244,7 +258,7 @@ function useRowStages<T extends object>(
  * })
  */
 export function useTableState<T extends object>(options: UseTableOptions<T>): UseTableReturn<T> {
-  const { mode = 'client', data = NO_ROWS, comparators, getRowId = defaultRowId } = options
+  const { mode = 'client', data = NO_ROWS, comparators, isBlank, getRowId = defaultRowId } = options
   const columns = (options.columns ?? NO_COLUMNS) as readonly ColumnDef<T>[]
   const isManual = mode === 'manual'
   const { restart, ...view } = useViewState(options.defaultPageSize ?? 10)
@@ -252,7 +266,8 @@ export function useTableState<T extends object>(options: UseTableOptions<T>): Us
   const filterSlice = useFilterSlice(options, columns)
   useRestartOnChange(filterSlice.filters, sort, restart)
 
-  const input = { isManual, data, filters: filterSlice.filters, columns, sort, comparators }
+  const { filters } = filterSlice
+  const input = { isManual, data, filters, columns, sort, comparators, isBlank }
   const rows = useRowStages(options, input, view)
   const selectable = isManual ? rows.windowRows : rows.sortedData
   const selection = useSelectionSlice(options, selectable, getRowId)

@@ -12,7 +12,6 @@ import {
   useMeasuredWidth,
   useTable,
   type TableColumnFit,
-  type TableComparator,
 } from '../../ui/table'
 import { Typography } from '../../ui/typography'
 import { Eyebrow } from '../../ui/eyebrow'
@@ -21,7 +20,8 @@ import { TaskRow, TASK_COLUMN_WIDTHS, type TaskListItem } from './TaskRow'
 
 import { formatTaskAge } from './format-time'
 import type { TaskColumnKey, TaskSortKey } from './task-columns'
-import { compareTaskSeverity, compareTaskUpdated, taskKey } from './task-flow'
+import { taskKey } from './task-flow'
+import { TASK_BLANKS, TASK_COMPARATORS } from './task-table-sort'
 
 // Kept on this module's surface: the session reader shares the helper now, but callers imported it from here first.
 export { formatTaskAge }
@@ -149,19 +149,6 @@ const allTaskColumns = (dotOnly: boolean): TaskColumn[] => [
   },
 ]
 
-/**
- * The columns whose order is not their raw field order. Everything else falls
- * through to `useTable`'s default compare.
- */
-const TASK_COMPARATORS: Record<string, TableComparator<TaskListItem>> = {
-  // Rank, not alphabet: "critical" < "high" < "low" as strings buries low in the middle.
-  severity: compareTaskSeverity,
-  // Newest first when ascending: for an age column, "most recent" is the useful top.
-  updated: compareTaskUpdated,
-  id: (a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }),
-  slug: (a, b) => a.slug.localeCompare(b.slug) || a.priority - b.priority,
-}
-
 function SeverityLegend({ tasks }: { tasks: TaskListItem[] }) {
   const counts = useMemo(() => {
     const c: Record<TaskSeverity, number> = { critical: 0, high: 0, medium: 0, low: 0 }
@@ -268,6 +255,7 @@ export function TaskTable({
     defaultSortColumn: defaultSortKey,
     defaultSortDirection: 'asc',
     comparators: TASK_COMPARATORS,
+    isBlank: TASK_BLANKS,
   })
 
   return (
