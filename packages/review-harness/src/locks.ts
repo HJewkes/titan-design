@@ -1,0 +1,155 @@
+import { execFile } from 'node:child_process'
+import { join } from 'node:path'
+import { HARNESS_DIR } from './harness-freshness.ts'
+import {
+  GLOBAL_CSS,
+  TAILWIND_CONFIG,
+  deriveFootprint,
+  type FootprintBody,
+} from './locks-footprint.ts'
+import { ReviewError } from './review.ts'
+import { themeLeaves } from './tailwind-theme.ts'
+
+/** The read-only git and gh calls the footprint makes; tests fake them. */
+export interface LocksIo {
+  /** Trimmed stdout of `git -C <repo> <args>`. */
+  git: (repo: string, args: string[]) => Promise<string>
+  /** Raw stdout of `git -C <repo> <args>` fed `stdin`, for `cat-file --batch`. */
+  gitBatch: (repo: string, args: string[], stdin: string) => Promise<Buffer>
+  /** Trimmed stdout of `gh <args>`, run inside `repo`. */
+  gh: (repo: string, args: string[]) => Promise<string>
+}
+
+export interface FootprintOptions {
+  pr?: string
+  base?: string
+  head?: string
+  repo?: string
+}
+
+/** The L1 `footprint` shape: the body plus the shas it was derived from. */
+export interface LockFootprint extends FootprintBody {
+  derivedFrom: { mainSha: string; headSha: string }
+}
+
+export const REPO_ROOT = join(HARNESS_DIR, '..', '..')
+const COMPONENTS_DIR = 'packages/ui/src/components/'
+const EXEC_LIMIT = 256 * 1024 * 1024
+
+/** A component implementation at the head: not a test, type test, story, snapshot or type stub. */
+export function isComponentSource(path: string): boolean {
+  return (
+    path.startsWith(COMPONENTS_DIR) &&
+    /\.tsx?$/.test(path) &&
+    !/\.(test|test-d|stories|d)\.tsx?$/.test(path) &&
+    !path.includes('/__snapshots__/')
+  )
+}
+
+interface Refs {
+  base: string
+  head: string
+}
+
+/** A PR's base branch (as `origin/<name>`) and head sha from gh, after fetching both. */
+async function prRefs(pr: string, repo: string, io: LocksIo): Promise<Refs> {
+  if (!/^\d+$/.test(pr)) throw new ReviewError(`expected a PR number, got ${pr}`)
+  const args = ['pr', 'view', pr, '--json', 'baseRefName,headRefOid']
+  const view = JSON.parse(await io.gh(repo, args)) as {
+    baseRefName: string
+    headRefOid: string
+  }
+  await io.git(repo, ['fetch', '--quiet', 'origin', view.baseRefName, `refs/pull/${pr}/head`])
+  return { base: `origin/${view.baseRefName}`, head: view.headRefOid }
+}
+
+function resolveRefs(opts: FootprintOptions, repo: string, io: LocksIo): Promise<Refs> {
+  if (opts.pr && (opts.base || opts.head))
+    throw new ReviewError('give a PR number or --base and --head, not both')
+  if (opts.base && opts.head) return Promise.resolve({ base: opts.base, head: opts.head })
+  if (opts.base || opts.head) throw new ReviewError('--base and --head go together')
+  if (!opts.pr) throw new ReviewError('expected a PR number, or --base <ref> --head <ref>')
+  return prRefs(opts.pr, repo, io)
+}
+
+const ABSENT_AT_REF = /does not exist in|exists on disk, but not in/
+
+/** The file's text at `ref`, or `''` when that ref has no such path; any other failure throws. */
+function fileAt(repo: string, ref: string, path: string, io: LocksIo): Promise<string> {
+  return io.git(repo, ['show', `${ref}:${path}`]).catch((err: Error) => {
+    if (ABSENT_AT_REF.test(err.message)) return ''
+    throw err
+  })
+}
+
+async function themeAt(repo: string, ref: string, io: LocksIo) {
+  const source = await fileAt(repo, ref, TAILWIND_CONFIG, io)
+  if (!source) throw new ReviewError(`${TAILWIND_CONFIG} is missing at ${ref}; readers need it`)
+  return themeLeaves(source)
+}
+
+/** Parses `git cat-file --batch` output: a `<sha> <type> <size>` header, the bytes, a newline. */
+export function parseBatch(paths: string[], out: Buffer): Map<string, string> {
+  const files = new Map<string, string>()
+  let cursor = 0
+  for (const path of paths) {
+    const eol = out.indexOf(0x0a, cursor)
+    const header = out.subarray(cursor, eol).toString('utf8').split(' ')
+    cursor = eol + 1
+    if (header[1] === 'missing') continue
+    const size = Number(header[2])
+    files.set(path, out.subarray(cursor, cursor + size).toString('utf8'))
+    cursor += size + 1
+  }
+  return files
+}
+
+async function componentSources(repo: string, head: string, io: LocksIo) {
+  const listing = await io.git(repo, ['ls-tree', '-r', '--name-only', head, '--', COMPONENTS_DIR])
+  const paths = listing.split('\n').filter(isComponentSource)
+  if (paths.length === 0) return new Map<string, string>()
+  const stdin = paths.map((p) => `${head}:${p}\n`).join('')
+  return parseBatch(paths, await io.gitBatch(repo, ['cat-file', '--batch'], stdin))
+}
+
+/** Derives the footprint of `head` against `merge-base(base, head)`, reading only through git. */
+export async function lockFootprint(opts: FootprintOptions, io: LocksIo): Promise<LockFootprint> {
+  const repo = opts.repo ?? REPO_ROOT
+  const refs = await resolveRefs(opts, repo, io)
+  const headSha = await io.git(repo, ['rev-parse', '--verify', `${refs.head}^{commit}`])
+  const mainSha = await io.git(repo, ['merge-base', refs.base, headSha])
+  const [diff, baseCss, headCss, theme, sources] = await Promise.all([
+    io.git(repo, ['diff', '--name-only', mainSha, headSha]),
+    fileAt(repo, mainSha, GLOBAL_CSS, io),
+    fileAt(repo, headSha, GLOBAL_CSS, io),
+    themeAt(repo, headSha, io),
+    componentSources(repo, headSha, io),
+  ])
+  const changedFiles = diff ? diff.split('\n') : []
+  return {
+    derivedFrom: { mainSha, headSha },
+    ...deriveFootprint({ baseCss, headCss, theme, changedFiles, sources }),
+  }
+}
+
+function run(cmd: string, args: string[], stdin?: string, cwd?: string): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    const child = execFile(
+      cmd,
+      args,
+      { encoding: 'buffer', maxBuffer: EXEC_LIMIT, cwd },
+      (err, stdout, stderr) => {
+        if (err)
+          reject(new ReviewError(`${cmd} ${args[0]}: ${stderr.toString().trim() || err.message}`))
+        else resolve(stdout)
+      }
+    )
+    child.stdin?.end(stdin ?? '')
+  })
+}
+
+export const locksIo: LocksIo = {
+  git: (repo, args) => run('git', ['-C', repo, ...args]).then((b) => b.toString('utf8').trim()),
+  gitBatch: (repo, args, stdin) => run('git', ['-C', repo, ...args], stdin),
+  gh: (repo, args) => run('gh', args, undefined, repo).then((b) => b.toString('utf8').trim()),
+}
