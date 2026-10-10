@@ -545,6 +545,77 @@ paths and a map of sources) and the tests run on fixtures under `test/fixtures/l
 and gh faked; `test/tailwind-theme.test.ts` also reads the real config, so a config shape the
 loader cannot follow fails there first.
 
+## Lock sync (TD-813)
+
+`titan-review locks sync` reads every open lock that has holders, asks `gh pr view` about each
+holder PR and each dependent of that lock, and prints what changed. It runs none of the commands
+it prints and never writes the registry; a coordinator makes the edits and runs the commands.
+
+```sh
+pnpm review locks sync --registry <locks.json>      # or set TITAN_LOCKS_REGISTRY
+            [--repo <path>]                         # the checkout gh and git run in
+            [--json]                                # the report as JSON
+```
+
+Per holder, one of:
+
+- **merged**: when every holder has merged or closed and at least one merged, the lock goes
+  `open -> merged` with `mergeSha` and `closedAt` from the last merge. Each open `stack-on`
+  dependent still based on the holder's branch gets `gh pr edit <n> --base <the holder's base>`,
+  and every open `stack-on` dependent gets `titan-factory shepherd release <repo>#<n>`. A `defer`
+  dependent is noted as re-entering.
+- **closed**: when every holder closed unmerged, the lock goes `open -> released`. A stacked
+  dependent needs a rebase onto the holder's base first, which only its seat can do, so the
+  retarget and release are printed as a note, not as commands.
+- **new head**: the footprint is re-derived at the new head (as `locks footprint <pr>` does), and
+  so is each open dependent's. Each dependent is listed with what it shares with the new
+  footprint: files, tokens, and readers it edits. `[changed]` marks a dependent whose overlap
+  differs from the one the registry's footprint and `touches` give. A dependent's diff starts
+  at whichever of its base, the holder's recorded head and its new head leaves it the fewest
+  commits. A dependent stacked on the holder's recorded head may share two best merge-bases
+  with the moved holder (that head, and a main tip both merged in); `git merge-base` names
+  either, and naming main would hand the dependent the holder's whole diff. A dependent that
+  merged main in after stacking still shows main's later changes in its files.
+- **unchanged**: listed, nothing to do.
+
+The pure core is `src/locks-sync.ts` (`planSync`, `formatSync`); `lockSync` in `src/locks.ts`
+does the reads. Tests fake gh and git and assert no call writes.
+
+## Lock check (TD-814)
+
+`titan-review locks check` is the dispatch check: before a seat spawns an implementer, it gives
+the planned files and tokens and gets an exit code and advice to paste into the brief.
+
+```sh
+pnpm review locks check --registry <locks.json> \
+  --files 'packages/ui/src/components/ui/select/**' --tokens surface-base/light,text-secondary
+```
+
+`--files` takes paths or globs (`**` crosses directories, `*` and `?` do not); `--tokens` takes
+`name/light`, `name/dark`, or a bare name for both modes. Both are comma-separated and
+repeatable. Only `open` locks count. A lock's surface is its footprint's `files` and
+`components.direct`, its `touches.components`, and the tokens of both; a lock's token may name a
+family (`*-subtle`, `tint-{hue}-solid / on-tint-{hue}`).
+
+| exit | verdict    | when                                                                                                                                         |
+| ---- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0    | `clear`    | no open lock's surface is touched. A plan that edits only a lock's `components.readers` is clear, with a note that it renders under the lock |
+| 10   | `stack-on` | every lock touched has holders, and they are all one PR: the advice names its branch and head                                                |
+| 11   | `defer`    | a touched lock has no holder, or the touched locks are held by different PRs                                                                 |
+
+A lock with no holder is a decision only. The plan defers on it and the advice says not to
+re-ask the decision; if the task is the one that implements it, file it as the lock's holder.
+For example:
+
+```text
+Stack on #101 (branch feat/planes, lock L-0001): branch from feat/planes at aaaaaaa and open the
+PR with --base feat/planes; it retargets to main when #101 merges. Overlap: L-0001 on tokens
+text-secondary/light.
+```
+
+`--json` prints the verdict, the holder, the conflicts and render overlaps, and the advice. A
+usage error (no plan, a bad mode, no registry) exits 2. The pure core is `src/locks-check.ts`.
+
 ## The review contract (TD-670)
 
 `serve` and `build` refuse a round that does not meet it, naming the section or question and

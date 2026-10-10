@@ -1,5 +1,7 @@
 import { execFile } from 'node:child_process'
+import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
+import { parseLocks, type Locks } from '@titan-design/review-schema'
 import { HARNESS_DIR } from './harness-freshness.ts'
 import {
   GLOBAL_CSS,
@@ -7,6 +9,14 @@ import {
   deriveFootprint,
   type FootprintBody,
 } from './locks-footprint.ts'
+import {
+  PR_STATE_FIELDS,
+  planSync,
+  syncTargets,
+  type PrState,
+  type SyncFootprints,
+  type SyncReport,
+} from './locks-sync.ts'
 import { ReviewError } from './review.ts'
 import { themeLeaves } from './tailwind-theme.ts'
 
@@ -22,6 +32,12 @@ export interface LocksIo {
 
 export interface FootprintOptions {
   pr?: string
+  /**
+   * Commits the head may be stacked on, such as a holder's recorded and current heads. The
+   * diff then starts at the nearest of these and the base, so a dependent stacked on the
+   * recorded head does not count the holder's later commits as its own.
+   */
+  stackedOn?: string[]
   base?: string
   head?: string
   repo?: string
@@ -112,12 +128,41 @@ async function componentSources(repo: string, head: string, io: LocksIo) {
   return parseBatch(paths, await io.gitBatch(repo, ['cat-file', '--batch'], stdin))
 }
 
+const commitExists = (repo: string, sha: string, io: LocksIo) =>
+  io.git(repo, ['rev-parse', '--verify', '--quiet', `${sha}^{commit}`]).then(
+    () => true,
+    () => false
+  )
+
+/**
+ * The merge-base of `head` with `base` or with whichever present `stackedOn` commit leaves the
+ * fewest commits to `head`. A head stacked on a holder's recorded head can share two best
+ * merge-bases with the holder's fast-forwarded head (that recorded head, and a main tip both
+ * merged in), and `git merge-base` names either one.
+ */
+async function mergeBase(
+  repo: string,
+  base: string,
+  head: string,
+  stackedOn: string[],
+  io: LocksIo
+): Promise<string> {
+  const present = await Promise.all(stackedOn.map((sha) => commitExists(repo, sha, io)))
+  const candidates = [base, ...stackedOn.filter((_, i) => present[i])]
+  if (candidates.length === 1) return io.git(repo, ['merge-base', base, head])
+  const bases = await Promise.all(candidates.map((c) => io.git(repo, ['merge-base', c, head])))
+  const counts = await Promise.all(
+    bases.map((b) => io.git(repo, ['rev-list', '--count', `${b}..${head}`]).then(Number))
+  )
+  return bases[counts.indexOf(Math.min(...counts))]!
+}
+
 /** Derives the footprint of `head` against `merge-base(base, head)`, reading only through git. */
 export async function lockFootprint(opts: FootprintOptions, io: LocksIo): Promise<LockFootprint> {
   const repo = opts.repo ?? REPO_ROOT
   const refs = await resolveRefs(opts, repo, io)
   const headSha = await io.git(repo, ['rev-parse', '--verify', `${refs.head}^{commit}`])
-  const mainSha = await io.git(repo, ['merge-base', refs.base, headSha])
+  const mainSha = await mergeBase(repo, refs.base, headSha, opts.stackedOn ?? [], io)
   const [diff, baseCss, headCss, theme, sources] = await Promise.all([
     io.git(repo, ['diff', '--name-only', mainSha, headSha]),
     fileAt(repo, mainSha, GLOBAL_CSS, io),
@@ -130,6 +175,77 @@ export async function lockFootprint(opts: FootprintOptions, io: LocksIo): Promis
     derivedFrom: { mainSha, headSha },
     ...deriveFootprint({ baseCss, headCss, theme, changedFiles, sources }),
   }
+}
+
+/** Env var naming the registry when `--registry` is not given. */
+export const REGISTRY_ENV = 'TITAN_LOCKS_REGISTRY'
+
+/** Reads and validates a `titan-locks/1` registry; never writes it. */
+export async function readRegistry(path: string | undefined): Promise<Locks> {
+  if (!path) throw new ReviewError(`pass --registry <locks.json> or set ${REGISTRY_ENV}`)
+  const text = await readFile(path, 'utf8').catch((err: Error) => {
+    throw new ReviewError(`cannot read the registry ${path}: ${err.message}`)
+  })
+  try {
+    return parseLocks(JSON.parse(text))
+  } catch (err) {
+    throw new ReviewError(`${path} is not a titan-locks/1 registry: ${(err as Error).message}`)
+  }
+}
+
+async function prState(pr: number, repo: string, io: LocksIo): Promise<PrState> {
+  return JSON.parse(await io.gh(repo, ['pr', 'view', String(pr), '--json', PR_STATE_FIELDS]))
+}
+
+async function prStates(prs: number[], repo: string, io: LocksIo) {
+  const states = await Promise.all(prs.map((pr) => prState(pr, repo, io)))
+  return new Map(prs.map((pr, i) => [pr, states[i]!]))
+}
+
+/** Footprints at each moved holder head and of each open dependent of its lock, one PR at a time. */
+async function movedFootprints(
+  registry: Locks,
+  prs: Map<number, PrState>,
+  repo: string,
+  io: LocksIo
+): Promise<SyncFootprints> {
+  const fps: SyncFootprints = { holders: new Map(), dependents: new Map() }
+  for (const lock of registry.locks.filter((l) => l.status === 'open')) {
+    const moved = lock.holders.filter((h) => {
+      const pr = prs.get(h.pr)
+      return pr?.state === 'OPEN' && pr.headRefOid !== h.headSha
+    })
+    if (moved.length === 0) continue
+    for (const h of moved)
+      fps.holders.set(h.pr, await lockFootprint({ pr: String(h.pr), repo }, io))
+    const stackedOn = moved.flatMap((h) => [h.headSha, prs.get(h.pr)!.headRefOid])
+    for (const d of registry.dependents.filter((d) => d.lock === lock.id))
+      if (prs.get(d.pr)?.state === 'OPEN' && !fps.dependents.has(d.pr))
+        fps.dependents.set(d.pr, await lockFootprint({ pr: String(d.pr), repo, stackedOn }, io))
+  }
+  return fps
+}
+
+async function repoSlug(registry: Locks, repo: string, io: LocksIo): Promise<string> {
+  if (registry.repo) return registry.repo
+  return io.gh(repo, ['repo', 'view', '--json', 'nameWithOwner', '--jq', '.nameWithOwner'])
+}
+
+/**
+ * Reads every open lock's holders, and their dependents, through gh, re-derives the footprint of
+ * any holder with a new head, and reports what a coordinator would change and run. Writes nothing.
+ */
+export async function lockSync(
+  registry: Locks,
+  repoPath: string | undefined,
+  io: LocksIo
+): Promise<SyncReport> {
+  const repo = repoPath ?? REPO_ROOT
+  const targets = syncTargets(registry)
+  const prs = await prStates([...new Set([...targets.holders, ...targets.dependents])], repo, io)
+  const footprints = await movedFootprints(registry, prs, repo, io)
+  const slug = await repoSlug(registry, repo, io)
+  return planSync({ registry, repo: slug, prs, footprints })
 }
 
 function run(cmd: string, args: string[], stdin?: string, cwd?: string): Promise<Buffer> {
