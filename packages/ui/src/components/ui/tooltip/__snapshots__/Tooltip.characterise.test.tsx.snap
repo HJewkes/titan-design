@@ -922,6 +922,45 @@ exports[`Tooltip characterisation > story Default 1`] = `
 </div>
 `;
 
+exports[`Tooltip characterisation > story HelpBesideLabel 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+    style="padding: 100px 100px 100px 100px;"
+  >
+    <div
+      class="css-view-175oi2r"
+      style="flex-direction: row; align-items: center; gap: 8px;"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Session name
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          tabindex="-1"
+        >
+          <button
+            aria-label="Help: session name"
+            class="css-text-146c3p1"
+            dir="auto"
+            role="button"
+            type="button"
+          >
+            ?
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`Tooltip characterisation > story OnText 1`] = `
 <div>
   <div

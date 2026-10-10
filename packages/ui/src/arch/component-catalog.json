@@ -2430,6 +2430,61 @@
     },
     {
       "composes": [
+        "Pill"
+      ],
+      "family": "custom/Code",
+      "file": "packages/ui/src/components/custom/Code/StatusMark.tsx",
+      "name": "StatusMark",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides, merged by the Pill.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Score change, after minus before.",
+          "name": "delta",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Raises worsened from warning to error.",
+          "name": "isOverCutoff",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Which change the mark names.",
+          "name": "kind",
+          "required": true,
+          "type": "CodeChangeKind"
+        },
+        {
+          "default": "sm",
+          "description": "Pill size; default `sm`.",
+          "name": "size",
+          "required": false,
+          "type": "\"sm\" | \"md\" | \"xs\""
+        }
+      ],
+      "purpose": "The change vocabulary of the Code family: one Pill, named in words for assistive tech.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Code/StatusMark.tsx",
+        "status": "packages/ui/src/components/custom/Code/StatusMark.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-code-statusmark--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
         "DualGhostSparkParts",
         "GhostBand",
         "GhostSpark"
@@ -13266,106 +13321,6 @@
     },
     {
       "composes": [
-        "Surface"
-      ],
-      "family": "ui/help-tip",
-      "file": "packages/ui/src/components/ui/help-tip/HelpTip.tsx",
-      "name": "HelpTip",
-      "props": [
-        {
-          "default": "default",
-          "description": "Icon color",
-          "name": "color",
-          "required": false,
-          "type": "\"default\" | \"primary\" | \"secondary\" | \"muted\""
-        },
-        {
-          "default": null,
-          "description": "Tooltip content",
-          "name": "content",
-          "required": true,
-          "type": "ReactNode"
-        },
-        {
-          "default": "true",
-          "description": "Whether to show an arrow",
-          "name": "hasArrow",
-          "required": false,
-          "type": "boolean"
-        },
-        {
-          "default": "help",
-          "description": "Icon type",
-          "name": "icon",
-          "required": false,
-          "type": "HelpTipIcon"
-        },
-        {
-          "default": null,
-          "description": "Additional className for the icon",
-          "name": "iconClassName",
-          "required": false,
-          "type": "string"
-        },
-        {
-          "default": null,
-          "description": "Whether the tooltip is always visible (controlled)",
-          "name": "isOpen",
-          "required": false,
-          "type": "boolean"
-        },
-        {
-          "default": "250",
-          "description": "Max width of the tooltip",
-          "name": "maxWidth",
-          "required": false,
-          "type": "number"
-        },
-        {
-          "default": "top",
-          "description": "Placement of the tooltip",
-          "name": "placement",
-          "required": false,
-          "type": "HelpTipPlacement"
-        },
-        {
-          "default": "md",
-          "description": "Size of the icon",
-          "name": "size",
-          "required": false,
-          "type": "HelpTipSize"
-        },
-        {
-          "default": null,
-          "description": "Additional className for the tooltip",
-          "name": "tooltipClassName",
-          "required": false,
-          "type": "string"
-        }
-      ],
-      "purpose": "HelpTip component for displaying contextual help information.",
-      "sources": {
-        "props": "packages/ui/src/components/ui/help-tip/HelpTip.tsx",
-        "status": "packages/ui/src/components/ui/help-tip/HelpTip.stories.tsx"
-      },
-      "status": "candidate",
-      "storyIds": [
-        "components-molecules-helptip--all-colors",
-        "components-molecules-helptip--all-icons",
-        "components-molecules-helptip--all-placements",
-        "components-molecules-helptip--all-sizes",
-        "components-molecules-helptip--default",
-        "components-molecules-helptip--form-example",
-        "components-molecules-helptip--inline-with-label",
-        "components-molecules-helptip--label-with-help-component",
-        "components-molecules-helptip--no-arrow",
-        "components-molecules-helptip--with-long-content",
-        "components-molecules-helptip--with-rich-content"
-      ],
-      "tier": "molecule"
-    },
-    {
-      "composes": [
         "Typography"
       ],
       "family": "ui/highlight-text",
@@ -16084,6 +16039,7 @@
       "storyIds": [
         "components-molecules-tooltip--all-placements",
         "components-molecules-tooltip--default",
+        "components-molecules-tooltip--help-beside-label",
         "components-molecules-tooltip--on-text",
         "components-molecules-tooltip--with-delay",
         "components-molecules-tooltip--without-arrow"

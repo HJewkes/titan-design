@@ -120,6 +120,26 @@ export const WithoutArrow: Story = {
   ),
 }
 
+export const HelpBesideLabel: Story = {
+  args: { label: 'Shown to the athlete on the session card', placement: 'right' },
+  render: (args) => (
+    <View style={{ padding: 100 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+        <Text className="text-text-primary">Session name</Text>
+        <Tooltip {...args}>
+          <Text
+            accessibilityRole="button"
+            accessibilityLabel="Help: session name"
+            className="text-text-secondary"
+          >
+            ?
+          </Text>
+        </Tooltip>
+      </View>
+    </View>
+  ),
+}
+
 export const OnText: Story = {
   render: () => (
     <View style={{ padding: 100 }}>

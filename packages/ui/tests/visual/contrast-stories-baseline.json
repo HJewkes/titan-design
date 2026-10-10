@@ -303,9 +303,6 @@
   "components-molecules-formfield--with-helper-text dark": {
     "#888684|#252321": 1
   },
-  "components-molecules-helptip--form-example light": {
-    "#298732|#f9f6f3": 1
-  },
   "components-molecules-input--disabled dark": {
     "#7a7775|#252321": 1
   },

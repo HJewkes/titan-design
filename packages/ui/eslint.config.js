@@ -666,7 +666,6 @@ module.exports = tseslint.config(
       // TD-536 b9
       'src/components/ui/autocomplete/AutocompleteParts.tsx',
       'src/components/ui/form-field/FormField.tsx',
-      'src/components/ui/help-tip/HelpTip.tsx',
       'src/components/ui/input/Input.tsx',
       'src/components/ui/menu/Menu.tsx',
       'src/components/ui/toast/Toast.tsx',
