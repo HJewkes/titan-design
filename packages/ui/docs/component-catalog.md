@@ -62,6 +62,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | FileHistoryExplorer | candidate | custom/ActiveWork | FileHistoryExplorer — a file browser ranked by mined activity instead of alphabetised by name: a KPI strip, a two-pane hottest-files list ⇄ detail, and the repo's strongest co-change pairs. | Card, CoChangeChip, Divider, Eyebrow, FileActivityDetail, FileActivityRow, Tile, Typography | custom-activework-filehistoryexplorer--default |
 | FilePathLabel | candidate | ui/file-path-label | FilePathLabel — a file path with the directory dimmed and the basename bright. | Typography | components-atoms-filepathlabel--base-only |
 | FormField | stable | ui/form-field | FormField component for wrapping form inputs with label, help text, and error states. | — | components-molecules-formfield--complete-form-example |
+| GapIndicator | candidate | custom/Session | A hairline with the idle time in the middle: "32m idle". | DateTime, Divider, Typography | custom-session-gapindicator--default |
 | Gauge | candidate | ui/charts | SVG-free radial gauge (absolutely-positioned segment Views), matching the codebase's chart convention so it renders identically on web and native. | — | components-atoms-gauge--arbitrary-domain |
 | GhostBand | review | custom/Fatigue | The phase-coloured axis band — ONE contiguous strip whose internal boundaries land exactly on the sparkline's phase transitions. | GhostBandParts | — |
 | GhostBloom | review | custom/Fatigue | The ghost fan + the paper-treated tinted current line. | — | — |
@@ -182,6 +183,8 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | TimerReadout | candidate | custom/TimerReadout | Atom · TimerReadout — a small textual timer (⏱ + mono, right-justified) built on [useTimer]. | Typography | components-molecules-timerreadout--countdown-running |
 | TipTrigger | review | ui/tooltip | One tip that opens on hover (web), focus (keyboard) and press (native) — the three affordances share a single open state, because RNW ends a wrapper's hover the moment a nested Pressable claims the pointer. | Tooltip | — |
 | Toast | stable | ui/toast | Standalone Toast component (for static rendering without provider). | Surface | components-molecules-toast--all-statuses |
+| ToolBadge | candidate | custom/Session | A tool family as a one-character glyph in a neutral pill. | Pill | custom-session-toolbadge--default |
+| ToolCallRow | candidate | custom/Session | One tool call as a line: time, outcome dot (its word on hover and focus), family badge, tool name, what it acted on and the observed duration. | Collapse, DateTime, Indicator, TipTrigger, ToolBadge, Tooltip, Typography | custom-session-toolcallrow--default |
 | ToolbarButton | stable | ui/toolbar-button | ToolbarButton component for toolbar actions with toggle state support. | ToolbarButtonParts | components-molecules-toolbarbutton--active-vs-inactive |
 | Tooltip | candidate | ui/tooltip | Tooltip component for showing additional information on hover/press. | Surface, TooltipParts, TriggerSurface | components-molecules-tooltip--all-placements |
 | TopBar | candidate | shell | S1 · TopBar — the persistent shell chrome band, generic over the app. | BrandLockup, DateTime, Divider, brands | shell-topbar--default |
