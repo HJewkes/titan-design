@@ -42,8 +42,8 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'brand-primary-subtle': "#FFE6D4";
     readonly 'brand-primary-muted': "#FFC7A2";
     readonly 'brand-primary-strong': "rgba(255, 121, 0, 0.50)";
-    readonly 'brand-primary-hover': "#DA5F00";
-    readonly 'brand-primary-active': "#B94A00";
+    readonly 'brand-primary-hover': "#B94A00";
+    readonly 'brand-primary-active': "#983804";
     readonly 'brand-secondary': "#307B9B";
     readonly 'brand-secondary-light': "#2697B7";
     readonly 'brand-secondary-dark': "#2A617F";
@@ -89,7 +89,7 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'status-info-subtle': "#D9EFFF";
     readonly 'status-info-muted': "rgba(33, 150, 243, 0.30)";
     readonly 'status-info-strong': "rgba(33, 150, 243, 0.50)";
-    readonly 'brand-primary-solid': "#FF7900";
+    readonly 'brand-primary-solid': "#DA5F00";
     readonly 'brand-secondary-solid': "#307B9B";
     readonly 'status-success-solid': "#298732";
     readonly 'status-error-solid': "#D14343";
@@ -760,8 +760,8 @@ export const semanticColorsLight: {
     readonly 'brand-primary-subtle': "#FFE6D4";
     readonly 'brand-primary-muted': "#FFC7A2";
     readonly 'brand-primary-strong': "rgba(255, 121, 0, 0.50)";
-    readonly 'brand-primary-hover': "#DA5F00";
-    readonly 'brand-primary-active': "#B94A00";
+    readonly 'brand-primary-hover': "#B94A00";
+    readonly 'brand-primary-active': "#983804";
     readonly 'brand-secondary': "#307B9B";
     readonly 'brand-secondary-light': "#2697B7";
     readonly 'brand-secondary-dark': "#2A617F";
@@ -807,7 +807,7 @@ export const semanticColorsLight: {
     readonly 'status-info-subtle': "#D9EFFF";
     readonly 'status-info-muted': "rgba(33, 150, 243, 0.30)";
     readonly 'status-info-strong': "rgba(33, 150, 243, 0.50)";
-    readonly 'brand-primary-solid': "#FF7900";
+    readonly 'brand-primary-solid': "#DA5F00";
     readonly 'brand-secondary-solid': "#307B9B";
     readonly 'status-success-solid': "#298732";
     readonly 'status-error-solid': "#D14343";

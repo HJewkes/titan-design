@@ -68,8 +68,8 @@ export const semanticColorsLight = {
   'brand-primary-subtle': ramp.orange[100],
   'brand-primary-muted': ramp.orange[200],
   'brand-primary-strong': 'rgba(255, 121, 0, 0.50)',
-  'brand-primary-hover': ramp.orange[500],
-  'brand-primary-active': ramp.orange[600],
+  'brand-primary-hover': ramp.orange[600], // TD-774: one rung below the orange[500] solid
+  'brand-primary-active': ramp.orange[700], // TD-774: one rung below hover
 
   'brand-secondary': ramp.cyan[600],
   'brand-secondary-light': ramp.cyan[500],
@@ -136,9 +136,10 @@ export const semanticColorsLight = {
 
   // Solid-variant fill. Success and warning carry the light-tuning values: white
   // on green[600] clears 4.5:1; amber[500] keeps the white label at 3.6:1, a
-  // declared exception in contrast-baseline.json. Primary and info keep their
-  // earlier values until their own light values are decided.
-  'brand-primary-solid': ramp.orange[400],
+  // declared exception in contrast-baseline.json. Brand is the other named
+  // exception of decision 0003: orange[500] under white reads 3.74:1. Info keeps
+  // its earlier value until its own light value is decided.
+  'brand-primary-solid': ramp.orange[500], // TD-774: decision 0003, named exception
   'brand-secondary-solid': ramp.cyan[600],
   'status-success-solid': ramp.green[600],
   'status-error-solid': ramp.red[600],

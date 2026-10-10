@@ -415,8 +415,8 @@
     --color-brand-secondary-subtle: #C2F6FF;
     --color-brand-secondary-muted: #62EAFF;
     --color-brand-secondary-strong: rgba(48, 123, 155, 0.50);
-    --color-brand-primary-hover: #DA5F00;
-    --color-brand-primary-active: #B94A00;
+    --color-brand-primary-hover: #B94A00;
+    --color-brand-primary-active: #983804;
     --color-brand-secondary-hover: #2A617F;
     --color-brand-secondary-active: #22465F;
 
@@ -469,7 +469,7 @@
     --color-on-status-error-subtle: #A4221C;
     --color-on-status-warning-subtle: #814D14;
     --color-on-status-info-subtle: #135AA8;
-    --color-brand-primary-solid: #FF7900;
+    --color-brand-primary-solid: #DA5F00;
     --color-brand-secondary-solid: #307B9B;
     --color-status-success-solid: #298732;
     --color-status-error-solid: #D14343;

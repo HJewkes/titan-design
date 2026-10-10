@@ -89,6 +89,10 @@ describe('semantic token hex guard (VW-83)', () => {
  * AMENDED AGAIN by TD-719: fourteen LIGHT values moved to the owner's light-tuning
  * values (six subtle fills to ramp[100], their labels to ramp[700], and the
  * success and warning solid fills). Dark is untouched.
+ *
+ * AMENDED AGAIN by TD-774 (decision 0003): three LIGHT values moved. The brand solid
+ * fill sits on orange[500] under a white label, and hover and active sit one rung
+ * below it in turn (orange[600], orange[700]). Dark is untouched.
  */
 const resolvedBeforeFixture = {
   light: {
@@ -98,8 +102,8 @@ const resolvedBeforeFixture = {
     'brand-primary-subtle': '#FFE6D4',
     'brand-primary-muted': '#FFC7A2',
     'brand-primary-strong': 'rgba(255, 121, 0, 0.50)',
-    'brand-primary-hover': '#DA5F00',
-    'brand-primary-active': '#B94A00',
+    'brand-primary-hover': '#B94A00',
+    'brand-primary-active': '#983804',
     'brand-secondary': '#307B9B',
     'brand-secondary-light': '#2697B7',
     'brand-secondary-dark': '#2A617F',
@@ -243,7 +247,7 @@ const resolvedBeforeFixture = {
     divider: 'rgba(0, 0, 0, 0.16)',
     'avatar-background': '#72716F',
     'avatar-text': '#FFFFFF',
-    'brand-primary-solid': '#FF7900',
+    'brand-primary-solid': '#DA5F00',
     'brand-secondary-solid': '#307B9B',
     'status-success-solid': '#298732',
     'status-error-solid': '#D14343',
