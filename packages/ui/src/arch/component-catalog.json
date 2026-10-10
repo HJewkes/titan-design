@@ -11895,6 +11895,13 @@
         },
         {
           "default": null,
+          "description": "Replaces the \"No data\" placeholder in the centre when `value` is `null` or not finite.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
           "description": "Caption under the big number.",
           "name": "label",
           "required": false,
@@ -11940,7 +11947,7 @@
           "description": "Current value.",
           "name": "value",
           "required": true,
-          "type": "number"
+          "type": "number | null"
         }
       ],
       "purpose": "SVG-free radial gauge (absolutely-positioned segment Views), matching the codebase's chart convention so it renders identically on web and native.",
@@ -11952,7 +11959,7 @@
       "storyIds": [
         "components-atoms-gauge--arbitrary-domain",
         "components-atoms-gauge--critical",
-        "components-atoms-gauge--healthy",
+        "components-atoms-gauge--default",
         "components-atoms-gauge--over-max",
         "components-atoms-gauge--override-color",
         "components-atoms-gauge--warning",
@@ -12167,6 +12174,13 @@
           "name": "diagonal",
           "required": false,
           "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Replaces the default \"No data\" placeholder drawn over the plot box when `data` is empty.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
         },
         {
           "default": null,
@@ -12444,6 +12458,13 @@
           "name": "data",
           "required": true,
           "type": "TreemapDatum[]"
+        },
+        {
+          "default": null,
+          "description": "Replaces the default \"No data\" placeholder drawn when no datum has a positive `value`.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
         },
         {
           "default": null,
