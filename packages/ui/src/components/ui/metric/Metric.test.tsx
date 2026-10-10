@@ -89,6 +89,13 @@ describe('Metric', () => {
     expect(getSemanticColors('light')['status-warning']).toBeDefined()
   })
 
+  it('tone=error colours the value from the dark-safe text-error token, not status-error', () => {
+    render(<Metric value="12" label="Misses" tone="error" />)
+    const classes = classesOf(screen.getByText('12'))
+    expect(classes).toContain('text-text-error')
+    expect(classes).not.toContain('text-status-error')
+  })
+
   it('labelPosition=above puts the label before the figure', () => {
     render(<Metric value="76%" label="Volume" labelPosition="above" />)
     const label = screen.getByText('Volume')

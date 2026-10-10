@@ -1,8 +1,10 @@
+import { createHash } from 'node:crypto'
 import { mkdtemp, readFile, readdir, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { EXIT_REFUSED, buildRound, contrastProblem, type TreeGit } from '../src/build.ts'
+import { applyRoundRules } from '../src/round-rules.ts'
 import { ReviewError, loadRound } from '../src/review.ts'
 import { MANIFEST_SCHEMA_ID, type ManifestInput } from '@titan-design/review-schema'
 import { SECTION_TEXTS, noTreeGit } from './fixtures.ts'
@@ -94,7 +96,7 @@ describe('titan-review build --tree', () => {
     expect(code).toBe(0)
     const { build: provenance, ...rest } = await readJson(join(dir, 'round.json'))
     expect(provenance).toEqual({ mainSha: MAIN, mergeSha: MERGE })
-    expect(rest).toEqual(JSON.parse(before.toString('utf8')))
+    expect(rest).toEqual(applyRoundRules(JSON.parse(before.toString('utf8'))))
     expect((await readFile(path)).equals(before)).toBe(true)
   })
 
@@ -122,7 +124,9 @@ describe('titan-review build --tree', () => {
     const { dir, path } = await setup(draft([]))
     const { code } = await build(path, noTreeGit)
     expect(code).toBe(0)
-    expect((await readFile(join(dir, 'round.json'))).equals(await readFile(path))).toBe(true)
+    expect(await readJson(join(dir, 'round.json'))).toEqual(
+      applyRoundRules(JSON.parse(await readFile(path, 'utf8')))
+    )
   })
 
   it('a round built with a tree serves: contrast.json records the bytes written', async () => {
@@ -132,6 +136,34 @@ describe('titan-review build --tree', () => {
     const served = await loadRound(roundPath)
     expect(served.manifest.build).toEqual({ mainSha: MAIN, mergeSha: MERGE })
     expect(await contrastProblem(roundPath, served.manifestSha256)).toBeNull()
+  })
+
+  it('renders the static frames for the bytes round.json gets, only once the gate passes', async () => {
+    const { dir, path } = await setup(draft([7]))
+    const rendered: { dir: string; sha: string }[] = []
+    const io = {
+      stderr: () => {},
+      measure: async () => [],
+      renderFrames: async (round: { manifestSha256: string }, roundDir: string) => {
+        rendered.push({ dir: roundDir, sha: round.manifestSha256 })
+        return {
+          schema: 'titan-review/frames@1' as const,
+          unit: 'u',
+          round: 1,
+          storybookUrl: '',
+          frames: [],
+        }
+      },
+      git: stubTree(MERGE, [HEADS[7]]),
+    }
+    expect(await buildRound(path, undefined, io, TREE)).toBe(0)
+    const roundSha = createHash('sha256')
+      .update(await readFile(join(dir, 'round.json')))
+      .digest('hex')
+    expect(rendered).toEqual([{ dir, sha: roundSha }])
+    const refused = await buildRound(path, undefined, { ...io, git: stubTree(MERGE, []) }, TREE)
+    expect(refused).toBe(EXIT_REFUSED)
+    expect(rendered).toHaveLength(1)
   })
 
   it('a draft that already carries build is refused', async () => {

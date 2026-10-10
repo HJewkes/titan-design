@@ -251,7 +251,9 @@ module.exports = tseslint.config(
   {
     files: [
       'src/components/custom/ActiveWork/**/*.{ts,tsx}',
+      'src/components/custom/Agents/**/*.{ts,tsx}',
       'src/components/custom/Prose/**/*.{ts,tsx}',
+      'src/components/custom/Session/**/*.{ts,tsx}',
       'src/components/custom/charts/**/*.{ts,tsx}',
       'src/components/ui/charts/spark-bars/**/*.{ts,tsx}',
       // Workout batch B1 (E3) — hardened file by file, not family-wide yet.

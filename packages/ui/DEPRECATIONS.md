@@ -15,12 +15,12 @@ pin old versions, so "no consumer" can also mean "nobody upgraded yet".
 
 | Export                                                                                       | Replacement                       | Known consumers          | Task   |
 | -------------------------------------------------------------------------------------------- | --------------------------------- | ------------------------ | ------ |
-| `BaseBadge` (+ `BaseBadgeProps`, `BaseBadgeVariant`, `BaseBadgeSize`, `baseBadgeSizeConfig`) | `<Pill tone="…" variant="…">`     | in-repo Workout only     | AW-127 |
-| `WorkoutPill` (+ `WorkoutPillProps`, `WorkoutPillStatus`)                                    | `<Pill tone="…" leading="dot">`   | in-repo Workout only     | AW-127 |
-| `SessionStatePill`                                                                           | `<Pill tone="…" leading="dot">`   | in-repo shell only       | AW-127 |
-| `WeightBadge` (+ `WeightBadgeProps`, `WeightBadgeSize`)                                      | `<Pill tone="neutral">`           | in-repo Workout only     | AW-127 |
-| `SeverityLabel`                                                                              | `<Pill tone="…" leading="dot">`   | in-repo ActiveWork only  | AW-127 |
-| `CoChangeChip`                                                                               | `<Pill tone="brand" size="xs">`   | in-repo ActiveWork only  | AW-127 |
+| `BaseBadge` (+ `BaseBadgeProps`, `BaseBadgeVariant`, `BaseBadgeSize`, `baseBadgeSizeConfig`) | `<Pill tone="…" variant="…">`     | in-repo WeightBadge only | AW-127 |
+| `WorkoutPill` (+ `WorkoutPillProps`, `WorkoutPillStatus`)                                    | `<Pill tone="…" leading="dot">`   | none in-repo             | AW-127 |
+| `SessionStatePill`                                                                           | `<Pill tone="…" leading="dot">`   | none in-repo             | AW-127 |
+| `WeightBadge` (+ `WeightBadgeProps`, `WeightBadgeSize`)                                      | `<Pill tone="neutral">`           | none in-repo             | AW-127 |
+| `SeverityLabel`                                                                              | `<Pill tone="…" leading="dot">`   | in-repo TaskTable only   | AW-127 |
+| `CoChangeChip`                                                                               | `<Pill tone="brand" size="xs">`   | none in-repo             | AW-127 |
 | `StatusDot` (+ `StatusDotVariant`, `StatusDotProps`)                                         | `Indicator` (roadmap decision 10) | in-repo Workout, Fatigue | AW-127 |
 
 `StatusDot` is marked on the `custom/Workout` barrel rather than in
@@ -28,10 +28,9 @@ pin old versions, so "no consumer" can also mean "nobody upgraded yet".
 
 ## Other consolidations
 
-| Export                                                                         | Replacement                                 | Known consumers      | Task   |
-| ------------------------------------------------------------------------------ | ------------------------------------------- | -------------------- | ------ |
-| `MetricCell` (+ `MetricCellProps`)                                             | `<Metric size="…" align="…">` (decision 11) | in-repo Workout only | AW-127 |
-| `Tile` (+ `TileProps`)                                                         | `CardStat`, Card stat preset (decision 1)   | in-repo `ui/` only   | AW-127 |
+| Export                 | Replacement                               | Known consumers    | Task   |
+| ---------------------- | ----------------------------------------- | ------------------ | ------ |
+| `Tile` (+ `TileProps`) | `CardStat`, Card stat preset (decision 1) | in-repo `ui/` only | AW-127 |
 
 ## Theme presets — replaced by `ThemeProvider` + semantic tokens
 
@@ -48,9 +47,9 @@ pin old versions, so "no consumer" can also mean "nobody upgraded yet".
 they keep their public props and are **not** deprecated; they now render `<Pill>`
 internally.
 
-`PrBadge` is the fifth survivor. It was being ported by a parallel agent when
-this PR was written and is left untouched — porting it onto `Pill` is a
-follow-up.
+`PrBadge` is the fifth survivor. Its props are unchanged and it renders
+`<Pill tone="brand" variant="subtle" rounded={false}>` internally, so `BaseBadge`
+is no longer in its tree (TD-57).
 
 ## Softly deprecated on `Pill` itself
 

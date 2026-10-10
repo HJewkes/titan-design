@@ -9,7 +9,6 @@
     "Tile": 1
   },
   "src/components/custom/ActiveWork/FileHistoryExplorer.tsx": {
-    "CoChangeChip": 1,
     "Tile": 1
   },
   "src/components/custom/ActiveWork/InitiativeCard.tsx": {
@@ -23,9 +22,6 @@
     "SeverityLabel": 1
   },
   "src/components/custom/ActiveWork/SeverityLabel.test.tsx": {
-    "SeverityLabel": 1
-  },
-  "src/components/custom/ActiveWork/TaskRow.tsx": {
     "SeverityLabel": 1
   },
   "src/components/custom/ActiveWork/TaskTable.tsx": {
@@ -47,20 +43,11 @@
   "src/components/custom/Workout/MesoStatusCard.tsx": {
     "StatusDot": 1
   },
-  "src/components/custom/Workout/metricText.stories.tsx": {
-    "MetricCell": 1
-  },
   "src/components/custom/Workout/MetricTiles.tsx": {
     "Tile": 1
   },
-  "src/components/custom/Workout/PrBadge.tsx": {
-    "BaseBadge": 1
-  },
   "src/components/custom/Workout/ScheduleTiles.tsx": {
     "Tile": 1
-  },
-  "src/components/custom/Workout/SetsRepsLoad.tsx": {
-    "MetricCell": 1
   },
   "src/components/custom/Workout/StatusDot.stories.tsx": {
     "StatusDot": 1
@@ -71,12 +58,6 @@
   "src/components/custom/Workout/StatusPill.tsx": {
     "StatusDot": 1,
     "StatusDotVariant": 1
-  },
-  "src/components/custom/Workout/tempoDisplayParts.tsx": {
-    "MetricCell": 1
-  },
-  "src/components/custom/Workout/WeekRow.tsx": {
-    "WorkoutPill": 1
   },
   "src/components/custom/Workout/WeightBadge.stories.tsx": {
     "WeightBadge": 1
@@ -102,9 +83,6 @@
   "src/components/shell/workout/WorkoutShell.test.tsx": {
     "DashboardShell": 1
   },
-  "src/components/shell/workout/WorkoutTopBar.tsx": {
-    "SessionStatePill": 1
-  },
   "src/components/ui/tile/Tile.stories.tsx": {
     "Tile": 1
   },
@@ -112,9 +90,7 @@
     "Tile": 1
   },
   "src/lab/audits/RowInventory.stories.tsx": {
-    "StatusDot": 1,
-    "WeightBadge": 1,
-    "WorkoutPill": 1
+    "StatusDot": 1
   },
   "src/theme/presets/apply.ts": {
     "ThemePreset": 1
