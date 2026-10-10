@@ -1,0 +1,112 @@
+{
+  "schema": "titan-locks/1",
+  "repo": "example/design",
+  "locks": [
+    {
+      "id": "L-0001",
+      "status": "open",
+      "title": "Planes",
+      "decision": {
+        "ledger": "R1",
+        "decisionsItem": "1",
+        "round": "batch-1/round-1",
+        "questionId": "planes"
+      },
+      "holders": [
+        {
+          "pr": 101,
+          "branch": "feat/planes",
+          "headSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "task": "T-1"
+        }
+      ],
+      "axes": ["colour"],
+      "after": [],
+      "footprint": {
+        "derivedFrom": null,
+        "tokens": [
+          { "name": "surface-base", "mode": "light", "from": "white", "to": "gray-100" },
+          { "name": "text-secondary", "mode": "light", "from": "gray-700", "to": "gray-800" }
+        ],
+        "files": ["packages/ui/src/theme/global.css", "packages/ui/tests/visual/baseline.json"],
+        "components": {
+          "direct": ["packages/ui/src/components/ui/alert/Alert.tsx"],
+          "readers": ["packages/ui/src/components/ui/select/Select.tsx"],
+          "rendersCount": 3
+        }
+      }
+    },
+    {
+      "id": "L-0002",
+      "status": "open",
+      "title": "Inputs",
+      "decision": {
+        "ledger": "R2",
+        "decisionsItem": "2",
+        "round": "batch-1/round-1",
+        "questionId": "inputs"
+      },
+      "holders": [],
+      "axes": ["colour"],
+      "after": ["L-0001"],
+      "touches": {
+        "tokens": [{ "name": "border-input-focus", "mode": "light" }],
+        "components": ["packages/ui/src/components/ui/input/Input.tsx"],
+        "axis": "colour"
+      }
+    },
+    {
+      "id": "L-0003",
+      "status": "open",
+      "title": "Family",
+      "decision": {
+        "ledger": "R3",
+        "decisionsItem": "3",
+        "round": "batch-1/round-1",
+        "questionId": "family"
+      },
+      "holders": [
+        {
+          "pr": 104,
+          "branch": "feat/family",
+          "headSha": "cccccccccccccccccccccccccccccccccccccccc"
+        }
+      ],
+      "axes": ["colour"],
+      "after": [],
+      "touches": {
+        "tokens": [{ "name": "tint-{hue}-solid / on-tint-{hue}", "mode": "dark" }],
+        "components": ["packages/ui/src/components/ui/pill/Pill.tsx"],
+        "axis": "colour"
+      }
+    },
+    {
+      "id": "L-0004",
+      "status": "merged",
+      "title": "Old",
+      "decision": {
+        "ledger": "R4",
+        "decisionsItem": "4",
+        "round": "batch-0/round-1",
+        "questionId": "old"
+      },
+      "holders": [
+        {
+          "pr": 99,
+          "headSha": "dddddddddddddddddddddddddddddddddddddddd"
+        }
+      ],
+      "after": [],
+      "touches": {
+        "tokens": [{ "name": "divider", "mode": "light" }],
+        "components": [],
+        "axis": "colour"
+      }
+    }
+  ],
+  "dependents": [
+    { "pr": 102, "lock": "L-0001", "mode": "stack-on", "reason": "edits Select text" },
+    { "pr": 103, "lock": "L-0001", "mode": "defer", "reason": "waits for the planes" },
+    { "pr": 105, "lock": "L-0003", "mode": "stack-on", "reason": "edits Pill" }
+  ]
+}
