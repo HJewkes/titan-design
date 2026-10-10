@@ -9,9 +9,9 @@ import {
   isStoryVariant,
   settingMismatches,
   type Feedback,
-  type ImageVariant,
   type Manifest,
 } from '@titan-design/review-schema'
+import { baseImageKey } from './pr-tabs.ts'
 import { urlParamProblems } from './round.ts'
 import { startReviewServer, type PageHandler } from './server.ts'
 
@@ -47,9 +47,8 @@ async function startsWithPngSignature(file: string): Promise<boolean> {
 }
 
 /** Resolves an image against the round's directory, following symlinks, and refuses escapes. */
-async function resolveImage(roundDir: string, variant: ImageVariant): Promise<string> {
-  const where = `variant ${variant.key}: image ${variant.image}`
-  const file = await realpath(resolve(roundDir, variant.image)).catch(() => {
+async function resolveImage(roundDir: string, where: string, image: string): Promise<string> {
+  const file = await realpath(resolve(roundDir, image)).catch(() => {
     throw new ReviewError(`${where} does not exist (paths resolve against ${roundDir})`)
   })
   const inside = relative(roundDir, file)
@@ -99,12 +98,30 @@ function issueWhere(json: unknown, path: PropertyKey[]): string {
   return [`${noun} ${name}`, rest.map(String).join('.')].join(' ').trimEnd()
 }
 
+/** Every PNG the page may show, by route key: each image variant's, and each base render. */
+function imageSources(manifest: Manifest): { key: string; where: string; image: string }[] {
+  return manifest.variants.flatMap((v) => [
+    ...(isImageVariant(v)
+      ? [{ key: v.key, where: `variant ${v.key}: image ${v.image}`, image: v.image }]
+      : []),
+    ...(v.baseImage
+      ? [
+          {
+            key: baseImageKey(v.key),
+            where: `variant ${v.key}: baseImage ${v.baseImage}`,
+            image: v.baseImage,
+          },
+        ]
+      : []),
+  ])
+}
+
 async function resolveImages(path: string, manifest: Manifest): Promise<Record<string, string>> {
   const roundDir = await realpath(dirname(resolve(path)))
   const entries = await Promise.all(
-    manifest.variants
-      .filter(isImageVariant)
-      .map(async (v) => [v.key, await resolveImage(roundDir, v)] as const)
+    imageSources(manifest).map(
+      async (s) => [s.key, await resolveImage(roundDir, s.where, s.image)] as const
+    )
   )
   return Object.fromEntries(entries)
 }

@@ -4,9 +4,7 @@
   "round": 1,
   "storybookUrl": "http://127.0.0.1:6100",
   "context": "Fixture round: iteration picks, then one group per PR with its Ship question.",
-  "widths": [
-    1280
-  ],
+  "widths": [1280],
   "height": "auto",
   "recommendations": "after-answer",
   "variants": [
@@ -603,10 +601,7 @@
       "kind": "pick-one",
       "prompt": "Pick for r6-grain.",
       "required": true,
-      "options": [
-        "Regular text on the grain",
-        "Debossed text on the grain (`debossLabel`)"
-      ],
+      "options": ["Regular text on the grain", "Debossed text on the grain (`debossLabel`)"],
       "signsOff": "the change in r6-grain"
     },
     {
@@ -625,19 +620,14 @@
       "kind": "pick-one",
       "prompt": "Ship HJewkes/titan-design#418?",
       "required": true,
-      "options": [
-        "Ship",
-        "Don't ship"
-      ],
+      "options": ["Ship", "Don't ship"],
       "signsOff": "the change in HJewkes/titan-design#418",
       "page": "HJewkes/titan-design#418",
       "merge": {
         "repo": "HJewkes/titan-design",
         "pr": 418,
         "headSha": "4e69ee464b4cbe61cd23b1956cae83ff706d148f",
-        "ship": [
-          "Ship"
-        ]
+        "ship": ["Ship"]
       }
     },
     {
@@ -657,19 +647,14 @@
       "kind": "pick-one",
       "prompt": "Ship HJewkes/titan-design#765?",
       "required": true,
-      "options": [
-        "Ship",
-        "Don't ship"
-      ],
+      "options": ["Ship", "Don't ship"],
       "signsOff": "the change in HJewkes/titan-design#765",
       "page": "HJewkes/titan-design#765",
       "merge": {
         "repo": "HJewkes/titan-design",
         "pr": 765,
         "headSha": "d8d6e949c6cb84d499b170bf19523a0b0428dd03",
-        "ship": [
-          "Ship"
-        ]
+        "ship": ["Ship"]
       }
     },
     {
@@ -677,19 +662,14 @@
       "kind": "pick-one",
       "prompt": "Ship HJewkes/titan-design#769?",
       "required": true,
-      "options": [
-        "Ship",
-        "Don't ship"
-      ],
+      "options": ["Ship", "Don't ship"],
       "signsOff": "the change in HJewkes/titan-design#769",
       "page": "HJewkes/titan-design#769",
       "merge": {
         "repo": "HJewkes/titan-design",
         "pr": 769,
         "headSha": "27fd5822a5b77cd9c0546a7e1b4580b49e86de5d",
-        "ship": [
-          "Ship"
-        ]
+        "ship": ["Ship"]
       }
     },
     {
@@ -697,19 +677,14 @@
       "kind": "pick-one",
       "prompt": "Ship HJewkes/titan-design#764?",
       "required": true,
-      "options": [
-        "Ship",
-        "Don't ship"
-      ],
+      "options": ["Ship", "Don't ship"],
       "signsOff": "the change in HJewkes/titan-design#764",
       "page": "HJewkes/titan-design#764",
       "merge": {
         "repo": "HJewkes/titan-design",
         "pr": 764,
         "headSha": "bd825d55f7e2b3d1227f42e0d8b11f7de00fc1ad",
-        "ship": [
-          "Ship"
-        ]
+        "ship": ["Ship"]
       }
     },
     {
@@ -717,19 +692,14 @@
       "kind": "pick-one",
       "prompt": "Ship HJewkes/titan-design#761?",
       "required": true,
-      "options": [
-        "Ship",
-        "Don't ship"
-      ],
+      "options": ["Ship", "Don't ship"],
       "signsOff": "the change in HJewkes/titan-design#761",
       "page": "HJewkes/titan-design#761",
       "merge": {
         "repo": "HJewkes/titan-design",
         "pr": 761,
         "headSha": "ce01d03c5a6deedabc8a205d27e783d1d27b2fdc",
-        "ship": [
-          "Ship"
-        ]
+        "ship": ["Ship"]
       }
     },
     {
@@ -749,19 +719,14 @@
       "kind": "pick-one",
       "prompt": "Ship HJewkes/titan-design#450?",
       "required": true,
-      "options": [
-        "Ship",
-        "Don't ship"
-      ],
+      "options": ["Ship", "Don't ship"],
       "signsOff": "the change in HJewkes/titan-design#450",
       "page": "HJewkes/titan-design#450",
       "merge": {
         "repo": "HJewkes/titan-design",
         "pr": 450,
         "headSha": "399881144084cb1f719517f6145939b5927c6e42",
-        "ship": [
-          "Ship"
-        ]
+        "ship": ["Ship"]
       }
     },
     {
@@ -769,19 +734,14 @@
       "kind": "pick-one",
       "prompt": "Ship HJewkes/titan-design#424?",
       "required": true,
-      "options": [
-        "Ship",
-        "Don't ship"
-      ],
+      "options": ["Ship", "Don't ship"],
       "signsOff": "the change in HJewkes/titan-design#424",
       "page": "HJewkes/titan-design#424",
       "merge": {
         "repo": "HJewkes/titan-design",
         "pr": 424,
         "headSha": "c613014d6f2b4eb6cb6be8f05738f451d02d7d35",
-        "ship": [
-          "Ship"
-        ]
+        "ship": ["Ship"]
       }
     },
     {
@@ -789,19 +749,14 @@
       "kind": "pick-one",
       "prompt": "Ship HJewkes/titan-design#758?",
       "required": true,
-      "options": [
-        "Ship",
-        "Don't ship"
-      ],
+      "options": ["Ship", "Don't ship"],
       "signsOff": "the change in HJewkes/titan-design#758",
       "page": "HJewkes/titan-design#758",
       "merge": {
         "repo": "HJewkes/titan-design",
         "pr": 758,
         "headSha": "2d973b5769220942c51d961c53db1dcb49326f56",
-        "ship": [
-          "Ship"
-        ]
+        "ship": ["Ship"]
       }
     },
     {
@@ -821,10 +776,7 @@
       "kind": "pick-one",
       "prompt": "Pick for td264-tokens.",
       "required": true,
-      "options": [
-        "Remove control-face and control-face-active",
-        "Keep them for now"
-      ],
+      "options": ["Remove control-face and control-face-active", "Keep them for now"],
       "signsOff": "the change in HJewkes/titan-design#747",
       "page": "HJewkes/titan-design#747"
     },
@@ -833,19 +785,14 @@
       "kind": "pick-one",
       "prompt": "Ship HJewkes/titan-design#747?",
       "required": true,
-      "options": [
-        "Ship",
-        "Don't ship"
-      ],
+      "options": ["Ship", "Don't ship"],
       "signsOff": "the change in HJewkes/titan-design#747",
       "page": "HJewkes/titan-design#747",
       "merge": {
         "repo": "HJewkes/titan-design",
         "pr": 747,
         "headSha": "8eb2b70d1b9180b32f99ad8a9e4f7c737d2d6546",
-        "ship": [
-          "Ship"
-        ]
+        "ship": ["Ship"]
       }
     },
     {
@@ -853,19 +800,14 @@
       "kind": "pick-one",
       "prompt": "Ship HJewkes/titan-design#407?",
       "required": true,
-      "options": [
-        "Ship",
-        "Don't ship"
-      ],
+      "options": ["Ship", "Don't ship"],
       "signsOff": "the change in HJewkes/titan-design#407",
       "page": "HJewkes/titan-design#407",
       "merge": {
         "repo": "HJewkes/titan-design",
         "pr": 407,
         "headSha": "29e8f75b531009e17e50fce35f4cd8b9cee165af",
-        "ship": [
-          "Ship"
-        ]
+        "ship": ["Ship"]
       }
     },
     {
@@ -873,19 +815,14 @@
       "kind": "pick-one",
       "prompt": "Ship HJewkes/titan-design#420?",
       "required": true,
-      "options": [
-        "Ship",
-        "Don't ship"
-      ],
+      "options": ["Ship", "Don't ship"],
       "signsOff": "the change in HJewkes/titan-design#420",
       "page": "HJewkes/titan-design#420",
       "merge": {
         "repo": "HJewkes/titan-design",
         "pr": 420,
         "headSha": "85667b71303d4c0cd322ab6e11c5c988581436f8",
-        "ship": [
-          "Ship"
-        ]
+        "ship": ["Ship"]
       }
     },
     {
@@ -893,19 +830,14 @@
       "kind": "pick-one",
       "prompt": "Ship HJewkes/titan-design#767?",
       "required": true,
-      "options": [
-        "Ship",
-        "Don't ship"
-      ],
+      "options": ["Ship", "Don't ship"],
       "signsOff": "the change in HJewkes/titan-design#767",
       "page": "HJewkes/titan-design#767",
       "merge": {
         "repo": "HJewkes/titan-design",
         "pr": 767,
         "headSha": "8aa1cfca629c0da712a94502c592edf1db0fbee6",
-        "ship": [
-          "Ship"
-        ]
+        "ship": ["Ship"]
       }
     },
     {
@@ -913,19 +845,14 @@
       "kind": "pick-one",
       "prompt": "Ship HJewkes/titan-design#745?",
       "required": true,
-      "options": [
-        "Ship",
-        "Don't ship"
-      ],
+      "options": ["Ship", "Don't ship"],
       "signsOff": "the change in HJewkes/titan-design#745",
       "page": "HJewkes/titan-design#745",
       "merge": {
         "repo": "HJewkes/titan-design",
         "pr": 745,
         "headSha": "8c3734767d1f664547b54b576249189db4db4661",
-        "ship": [
-          "Ship"
-        ]
+        "ship": ["Ship"]
       }
     },
     {
@@ -933,19 +860,14 @@
       "kind": "pick-one",
       "prompt": "Ship HJewkes/titan-design#729?",
       "required": true,
-      "options": [
-        "Ship",
-        "Don't ship"
-      ],
+      "options": ["Ship", "Don't ship"],
       "signsOff": "the change in HJewkes/titan-design#729",
       "page": "HJewkes/titan-design#729",
       "merge": {
         "repo": "HJewkes/titan-design",
         "pr": 729,
         "headSha": "16d476b9d2b105c07611ebaf71cf88678c511447",
-        "ship": [
-          "Ship"
-        ]
+        "ship": ["Ship"]
       }
     },
     {
@@ -953,19 +875,14 @@
       "kind": "pick-one",
       "prompt": "Ship HJewkes/titan-design#753?",
       "required": true,
-      "options": [
-        "Ship",
-        "Don't ship"
-      ],
+      "options": ["Ship", "Don't ship"],
       "signsOff": "the change in HJewkes/titan-design#753",
       "page": "HJewkes/titan-design#753",
       "merge": {
         "repo": "HJewkes/titan-design",
         "pr": 753,
         "headSha": "7f8fe117ed7034eef121098065c66b9defe2ae35",
-        "ship": [
-          "Ship"
-        ]
+        "ship": ["Ship"]
       }
     },
     {
@@ -973,19 +890,14 @@
       "kind": "pick-one",
       "prompt": "Ship HJewkes/titan-design#755?",
       "required": true,
-      "options": [
-        "Ship",
-        "Don't ship"
-      ],
+      "options": ["Ship", "Don't ship"],
       "signsOff": "the change in HJewkes/titan-design#755",
       "page": "HJewkes/titan-design#755",
       "merge": {
         "repo": "HJewkes/titan-design",
         "pr": 755,
         "headSha": "bce9c3d2733bcc8a43b2c55cb9a57678158b7b05",
-        "ship": [
-          "Ship"
-        ]
+        "ship": ["Ship"]
       }
     },
     {
@@ -1051,10 +963,7 @@
       "kind": "pick-one",
       "prompt": "Pick for d6-cvd-gate.",
       "required": true,
-      "options": [
-        "All-pairs 8, both modes, slots 0-5",
-        "Adjacent 6 (VW-371 WARN)"
-      ],
+      "options": ["All-pairs 8, both modes, slots 0-5", "Adjacent 6 (VW-371 WARN)"],
       "signsOff": "the change in d6-cvd-gate"
     },
     {
@@ -1073,10 +982,7 @@
       "kind": "pick-one",
       "prompt": "Pick for d8-order.",
       "required": true,
-      "options": [
-        "Yes: per-slot step changes only",
-        "No: allow a reorder"
-      ],
+      "options": ["Yes: per-slot step changes only", "No: allow a reorder"],
       "signsOff": "the change in d8-order"
     },
     {
@@ -1095,19 +1001,14 @@
       "kind": "pick-one",
       "prompt": "Ship HJewkes/titan-design#779?",
       "required": true,
-      "options": [
-        "Ship",
-        "Don't ship"
-      ],
+      "options": ["Ship", "Don't ship"],
       "signsOff": "the change in HJewkes/titan-design#779",
       "page": "HJewkes/titan-design#779",
       "merge": {
         "repo": "HJewkes/titan-design",
         "pr": 779,
         "headSha": "db098cf187e1f63727889d8bbbfa74875213e176",
-        "ship": [
-          "Ship"
-        ]
+        "ship": ["Ship"]
       }
     }
   ],
@@ -1119,11 +1020,7 @@
       "changed": "What changed.",
       "context": "Context only.",
       "kind": "CHOICE",
-      "questionIds": [
-        "r1-rule",
-        "r2-brand",
-        "r3-warning"
-      ],
+      "questionIds": ["r1-rule", "r2-brand", "r3-warning"],
       "variantKeys": [
         "tt-head-l",
         "tt-prop-l",
@@ -1141,17 +1038,9 @@
       "changed": "What changed.",
       "context": "Context only.",
       "kind": "STATES",
-      "questionIds": [
-        "r4-ramp50"
-      ],
-      "variantKeys": [
-        "tt-ramp50-l",
-        "al-white-paper-l",
-        "al-ramp-light-paper-l"
-      ],
-      "seeAlso": [
-        "tt-prop-l"
-      ]
+      "questionIds": ["r4-ramp50"],
+      "variantKeys": ["tt-ramp50-l", "al-white-paper-l", "al-ramp-light-paper-l"],
+      "seeAlso": ["tt-prop-l"]
     },
     {
       "id": "s1-dark",
@@ -1160,14 +1049,8 @@
       "changed": "What changed.",
       "context": "Context only.",
       "kind": "CHOICE",
-      "questionIds": [
-        "r5-dark"
-      ],
-      "variantKeys": [
-        "tt-dark-main-d",
-        "tt-dark-950-d",
-        "tt-dark-900-d"
-      ],
+      "questionIds": ["r5-dark"],
+      "variantKeys": ["tt-dark-main-d", "tt-dark-950-d", "tt-dark-900-d"],
       "seeAlso": []
     },
     {
@@ -1177,18 +1060,14 @@
       "changed": "What changed.",
       "context": "Context only.",
       "kind": "STATES",
-      "questionIds": [
-        "r6-grain"
-      ],
+      "questionIds": ["r6-grain"],
       "variantKeys": [
         "al-ramp-dark-950-paper-d",
         "al-ramp-dark-950-paper-deboss-d",
         "al-dark-flat-d",
         "al-ramp-dark-paper-d"
       ],
-      "seeAlso": [
-        "tt-dark-950-d"
-      ]
+      "seeAlso": ["tt-dark-950-d"]
     },
     {
       "id": "s1-neutral",
@@ -1197,12 +1076,8 @@
       "changed": "What changed.",
       "context": "Context only.",
       "kind": "STATES",
-      "questionIds": [
-        "r7-neutral"
-      ],
-      "variantKeys": [
-        "nf-l"
-      ],
+      "questionIds": ["r7-neutral"],
+      "variantKeys": ["nf-l"],
       "seeAlso": []
     },
     {
@@ -1213,10 +1088,7 @@
       "context": "Context only.",
       "kind": "STATES",
       "questionIds": [],
-      "variantKeys": [
-        "alert-solid-d",
-        "alert-solid-l"
-      ],
+      "variantKeys": ["alert-solid-d", "alert-solid-l"],
       "seeAlso": []
     },
     {
@@ -1226,13 +1098,8 @@
       "changed": "What changed.",
       "context": "Context only.",
       "kind": "STATES",
-      "questionIds": [
-        "ship-418"
-      ],
-      "variantKeys": [
-        "facetbar-d",
-        "facetbar-l"
-      ],
+      "questionIds": ["ship-418"],
+      "variantKeys": ["facetbar-d", "facetbar-l"],
       "seeAlso": []
     },
     {
@@ -1242,16 +1109,8 @@
       "changed": "What changed.",
       "context": "Context only.",
       "kind": "STATES",
-      "questionIds": [
-        "td402-highlight",
-        "ship-765"
-      ],
-      "variantKeys": [
-        "mp-code-d",
-        "mp-code-l",
-        "mp-tables-d",
-        "mp-tables-l"
-      ],
+      "questionIds": ["td402-highlight", "ship-765"],
+      "variantKeys": ["mp-code-d", "mp-code-l", "mp-tables-d", "mp-tables-l"],
       "seeAlso": []
     },
     {
@@ -1261,15 +1120,8 @@
       "changed": "What changed.",
       "context": "Context only.",
       "kind": "STATES",
-      "questionIds": [
-        "ship-769"
-      ],
-      "variantKeys": [
-        "zt-landmark-d",
-        "zt-landmark-l",
-        "zt-gradient-d",
-        "zt-gradient-l"
-      ],
+      "questionIds": ["ship-769"],
+      "variantKeys": ["zt-landmark-d", "zt-landmark-l", "zt-gradient-d", "zt-gradient-l"],
       "seeAlso": []
     },
     {
@@ -1279,13 +1131,8 @@
       "changed": "What changed.",
       "context": "Context only.",
       "kind": "STATES",
-      "questionIds": [
-        "ship-764"
-      ],
-      "variantKeys": [
-        "vlb-all-d",
-        "vlb-all-l"
-      ],
+      "questionIds": ["ship-764"],
+      "variantKeys": ["vlb-all-d", "vlb-all-l"],
       "seeAlso": []
     },
     {
@@ -1295,9 +1142,7 @@
       "changed": "What changed.",
       "context": "Context only.",
       "kind": "STATES",
-      "questionIds": [
-        "ship-761"
-      ],
+      "questionIds": ["ship-761"],
       "variantKeys": [
         "lfp-600-d",
         "lfp-1000-d",
@@ -1315,14 +1160,8 @@
       "changed": "What changed.",
       "context": "Context only.",
       "kind": "STATES",
-      "questionIds": [
-        "td473-ticks",
-        "ship-450"
-      ],
-      "variantKeys": [
-        "gauge-ticks-d",
-        "gauge-ticks-l"
-      ],
+      "questionIds": ["td473-ticks", "ship-450"],
+      "variantKeys": ["gauge-ticks-d", "gauge-ticks-l"],
       "seeAlso": []
     },
     {
@@ -1332,13 +1171,8 @@
       "changed": "What changed.",
       "context": "Context only.",
       "kind": "STATES",
-      "questionIds": [
-        "ship-424"
-      ],
-      "variantKeys": [
-        "filled-fields-d",
-        "filled-fields-l"
-      ],
+      "questionIds": ["ship-424"],
+      "variantKeys": ["filled-fields-d", "filled-fields-l"],
       "seeAlso": []
     },
     {
@@ -1348,13 +1182,8 @@
       "changed": "What changed.",
       "context": "Context only.",
       "kind": "STATES",
-      "questionIds": [
-        "ship-758"
-      ],
-      "variantKeys": [
-        "divider-rules-d",
-        "divider-rules-l"
-      ],
+      "questionIds": ["ship-758"],
+      "variantKeys": ["divider-rules-d", "divider-rules-l"],
       "seeAlso": []
     },
     {
@@ -1364,17 +1193,8 @@
       "changed": "What changed.",
       "context": "Context only.",
       "kind": "STATES",
-      "questionIds": [
-        "td265-depth",
-        "td264-tokens",
-        "ship-747"
-      ],
-      "variantKeys": [
-        "tb-inset-depth-d",
-        "tb-inset-depth-l",
-        "tb-active-d",
-        "tb-active-l"
-      ],
+      "questionIds": ["td265-depth", "td264-tokens", "ship-747"],
+      "variantKeys": ["tb-inset-depth-d", "tb-inset-depth-l", "tb-active-d", "tb-active-l"],
       "seeAlso": []
     },
     {
@@ -1384,13 +1204,8 @@
       "changed": "What changed.",
       "context": "Context only.",
       "kind": "STATES",
-      "questionIds": [
-        "ship-407"
-      ],
-      "variantKeys": [
-        "barlist-d",
-        "barlist-l"
-      ],
+      "questionIds": ["ship-407"],
+      "variantKeys": ["barlist-d", "barlist-l"],
       "seeAlso": []
     },
     {
@@ -1400,13 +1215,8 @@
       "changed": "What changed.",
       "context": "Context only.",
       "kind": "STATES",
-      "questionIds": [
-        "ship-420"
-      ],
-      "variantKeys": [
-        "barlist-marker-d",
-        "barlist-marker-l"
-      ],
+      "questionIds": ["ship-420"],
+      "variantKeys": ["barlist-marker-d", "barlist-marker-l"],
       "seeAlso": []
     },
     {
@@ -1416,13 +1226,8 @@
       "changed": "What changed.",
       "context": "Context only.",
       "kind": "STATES",
-      "questionIds": [
-        "ship-767"
-      ],
-      "variantKeys": [
-        "statusmark-d",
-        "statusmark-l"
-      ],
+      "questionIds": ["ship-767"],
+      "variantKeys": ["statusmark-d", "statusmark-l"],
       "seeAlso": []
     },
     {
@@ -1432,13 +1237,8 @@
       "changed": "What changed.",
       "context": "Context only.",
       "kind": "STATES",
-      "questionIds": [
-        "ship-745"
-      ],
-      "variantKeys": [
-        "inputbar-d",
-        "inputbar-l"
-      ],
+      "questionIds": ["ship-745"],
+      "variantKeys": ["inputbar-d", "inputbar-l"],
       "seeAlso": []
     },
     {
@@ -1448,13 +1248,8 @@
       "changed": "What changed.",
       "context": "Context only.",
       "kind": "STATES",
-      "questionIds": [
-        "ship-729"
-      ],
-      "variantKeys": [
-        "prbadge-d",
-        "prbadge-l"
-      ],
+      "questionIds": ["ship-729"],
+      "variantKeys": ["prbadge-d", "prbadge-l"],
       "seeAlso": []
     },
     {
@@ -1464,13 +1259,8 @@
       "changed": "What changed.",
       "context": "Context only.",
       "kind": "STATES",
-      "questionIds": [
-        "ship-753"
-      ],
-      "variantKeys": [
-        "select-invalid-d",
-        "select-invalid-l"
-      ],
+      "questionIds": ["ship-753"],
+      "variantKeys": ["select-invalid-d", "select-invalid-l"],
       "seeAlso": []
     },
     {
@@ -1480,13 +1270,8 @@
       "changed": "What changed.",
       "context": "Context only.",
       "kind": "STATES",
-      "questionIds": [
-        "ship-755"
-      ],
-      "variantKeys": [
-        "tooltip-help-d",
-        "tooltip-help-l"
-      ],
+      "questionIds": ["ship-755"],
+      "variantKeys": ["tooltip-help-d", "tooltip-help-l"],
       "seeAlso": []
     },
     {
@@ -1496,18 +1281,8 @@
       "changed": "What changed.",
       "context": "Context only.",
       "kind": "CHOICE",
-      "questionIds": [
-        "d1-palettes",
-        "d4-light-set",
-        "d6-cvd-gate",
-        "d7-greyscale",
-        "d8-order"
-      ],
-      "variantKeys": [
-        "cat-current-light-l",
-        "cat-vivid-l",
-        "cat-green-l"
-      ],
+      "questionIds": ["d1-palettes", "d4-light-set", "d6-cvd-gate", "d7-greyscale", "d8-order"],
+      "variantKeys": ["cat-current-light-l", "cat-vivid-l", "cat-green-l"],
       "seeAlso": []
     },
     {
@@ -1518,9 +1293,7 @@
       "context": "Context only.",
       "kind": "STATES",
       "questionIds": [],
-      "variantKeys": [
-        "cat-current-dark-d"
-      ],
+      "variantKeys": ["cat-current-dark-d"],
       "seeAlso": []
     },
     {
@@ -1530,16 +1303,8 @@
       "changed": "What changed.",
       "context": "Context only.",
       "kind": "STATES",
-      "questionIds": [
-        "d2-tiers",
-        "d3-floors",
-        "d5-dark-slot6",
-        "d9-light-ink"
-      ],
-      "variantKeys": [
-        "cat-ink-light-a-l",
-        "cat-ink-dark-d"
-      ],
+      "questionIds": ["d2-tiers", "d3-floors", "d5-dark-slot6", "d9-light-ink"],
+      "variantKeys": ["cat-ink-light-a-l", "cat-ink-dark-d"],
       "seeAlso": []
     },
     {
@@ -1548,9 +1313,7 @@
       "deciding": "What this section decides.",
       "changed": "What changed.",
       "context": "Context only.",
-      "questionIds": [
-        "ship-779"
-      ],
+      "questionIds": ["ship-779"],
       "variantKeys": [],
       "seeAlso": []
     }
