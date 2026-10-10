@@ -1,4 +1,4 @@
-import type { Part } from '../src/schema.ts'
+import type { Part } from '@titan-design/review-schema'
 import { Markdown } from './Markdown.tsx'
 
 /** What the Current pane shows for a part that adds something. */

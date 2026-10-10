@@ -5,6 +5,7 @@ import {
   REPO_ROOT,
   collectDeadClaims,
   compareToBaseline,
+  checkedText,
   deadClaims,
   extractClaims,
   importedPackages,
@@ -82,6 +83,30 @@ describe('planted controls', () => {
     const { unlisted, stale } = compareToBaseline(findings, baseline)
 
     expect({ unlisted, stale }).toEqual({ unlisted: [], stale: [`README.md ${gone}`] })
+  })
+})
+
+describe('released changelog sections', () => {
+  const CHANGELOG = 'packages/ui/CHANGELOG.md'
+  const changelog = (unreleased: string, released: string) =>
+    `# Changelog\n\n## [Unreleased]\n\n${unreleased}\n\n## 0.1.0\n\n${released}\n`
+
+  it('ignores a dead file name under a released heading', () => {
+    const text = changelog('- Nothing.', `- Moved \`${DEAD_PATH}\`.`)
+
+    expect(deadClaims(CHANGELOG, text, context)).toEqual([])
+  })
+
+  it('reports a dead file name under Unreleased', () => {
+    const text = changelog(`- Moved \`${DEAD_PATH}\`.`, '- Nothing.')
+
+    expect(deadClaims(CHANGELOG, text, context)).toEqual([`path:${DEAD_PATH}`])
+  })
+
+  it('checks a released heading in any other doc', () => {
+    const text = `## 0.1.0\n\n- \`${DEAD_PATH}\`\n`
+
+    expect(checkedText('CLAUDE.md', text)).toBe(text)
   })
 })
 

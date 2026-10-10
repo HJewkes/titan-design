@@ -5,6 +5,7 @@ import {
   contrast,
   cvdDelta,
   deltaE,
+  grayOfValue,
   minAdjacent,
   minPairwise,
   relativeLuminance,
@@ -104,6 +105,33 @@ describe('cvdDelta', () => {
 
   it('is the worse of deutan and protan, never above plain deltaE for red/green', () => {
     expect(cvdDelta('#FF0000', '#00FF00')).toBeLessThan(deltaE('#FF0000', '#00FF00'))
+  })
+
+  it('measures only the dichromacies it is given', () => {
+    const tritan = cvdDelta('#FF0000', '#00FF00', ['tritan'])
+    expect(tritan).toBeGreaterThan(cvdDelta('#FF0000', '#00FF00'))
+    expect(cvdDelta('#FF0000', '#00FF00', ['deutan', 'protan', 'tritan'])).toBeLessThan(tritan)
+  })
+
+  it('changes only colours whose simulation leaves the gamut when clamping negatives', () => {
+    const clamp = { clampNegative: true }
+    expect(cvdDelta('#767676', '#333333', undefined, clamp)).toBeCloseTo(
+      cvdDelta('#767676', '#333333'),
+      10
+    )
+    expect(cvdDelta('#FF7900', '#2ED573', undefined, clamp)).toBeCloseTo(8.15, 2)
+    expect(cvdDelta('#FF7900', '#2ED573')).toBeCloseTo(8.34, 2)
+  })
+})
+
+describe('grayOfValue', () => {
+  it('leaves a grey as it is', () => {
+    expect(grayOfValue('#767676')).toBe('#767676')
+  })
+
+  it('gives a colour the grey of the same luminance', () => {
+    expect(grayOfValue('#2196F3')).toBe('#929292')
+    expect(relativeLuminance(grayOfValue('#2196F3'))).toBeCloseTo(relativeLuminance('#2196F3'), 2)
   })
 })
 

@@ -21,7 +21,7 @@
  *   Regenerate after fixing some:  node scripts/update-no-html-element-baseline.mjs
  */
 
-const path = require('node:path')
+const { loadBaseline, baselineKey } = require('./ratchet')
 
 const BASELINE_FILE = 'no-html-element-baseline.json'
 
@@ -109,25 +109,6 @@ const SVG_COMPONENT = {
   desc: 'an accessibilityLabel on Svg',
 }
 
-let baselineCache = null
-function loadBaseline() {
-  try {
-    baselineCache ??= require(`./${BASELINE_FILE}`)
-  } catch {
-    baselineCache = {}
-  }
-  return baselineCache
-}
-
-/** Baseline keys are package-relative POSIX paths, so they're stable across machines. */
-function baselineKey(context) {
-  const cwd = context.cwd ?? context.getCwd?.() ?? process.cwd()
-  return path
-    .relative(cwd, context.filename ?? context.getFilename())
-    .split(path.sep)
-    .join('/')
-}
-
 /** The element name when the opening element is a lowercase intrinsic, else null. */
 function intrinsicName(openingElement) {
   const { name } = openingElement
@@ -180,7 +161,9 @@ module.exports = {
   },
 
   create(context) {
-    const remaining = new Map(Object.entries(loadBaseline()[baselineKey(context)] ?? {}))
+    const remaining = new Map(
+      Object.entries(loadBaseline(BASELINE_FILE)[baselineKey(context)] ?? {})
+    )
 
     return {
       JSXOpeningElement(node) {

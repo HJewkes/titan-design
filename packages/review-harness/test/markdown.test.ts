@@ -5,7 +5,7 @@ import { App } from '../page/App.tsx'
 import { Markdown, safeUrl } from '../page/Markdown.tsx'
 import { initialState } from '../page/state.ts'
 import { QuestionBlock } from '../page/QuestionBlock.tsx'
-import { ManifestSchema, type Manifest } from '../src/schema.ts'
+import { ManifestSchema, type Manifest } from '@titan-design/review-schema'
 import { SHA, sectionedInput } from './fixtures.ts'
 
 const block = (source: string) =>

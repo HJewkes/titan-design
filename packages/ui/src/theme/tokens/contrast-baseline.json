@@ -63,8 +63,6 @@
     "text-error on surface-input",
     "text-error on surface-overlay",
     "text-error on surface-raised",
-    "text-link on surface-overlay",
-    "text-link on surface-raised",
     "text-primary on interactive-active over surface-overlay",
     "text-secondary on status-error-subtle over surface-overlay"
   ],
