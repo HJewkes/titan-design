@@ -330,6 +330,9 @@
   "components-molecules-select--controlled light": {
     "#ff7900|#edeae7": 5
   },
+  "components-molecules-select--filled light": {
+    "#424140|#a6a4a2": 1
+  },
   "components-molecules-select--invalid dark": {
     "#e05254|#252321": 1
   },
