@@ -179,11 +179,15 @@ describe('builder rules: PR grouping', () => {
 
 describe('builder rules: Ship gate', () => {
   /** Round 1 of batch-1 as answered: `answers` maps question id to its answer. */
-  async function answeredRound(answers: Record<string, object>, head = HEAD(7)) {
+  async function answeredRound(
+    answers: Record<string, object>,
+    head = HEAD(7),
+    depth: object = pick('depth', ['a2'], 7)
+  ) {
     const draft = interleaved()
     draft.questions = draft.questions.map((q) => {
       if (q.id === 'ship-7') return ship(7, head)
-      return q.id === 'depth' ? pick('depth', ['a2'], 7) : q
+      return q.id === 'depth' ? (depth as typeof q) : q
     })
     draft.sections = draft.sections!.map((s) => {
       if (s.id === 'b-ctx') return { ...s, questionIds: ['ship-8'] }
@@ -242,8 +246,18 @@ describe('builder rules: Ship gate', () => {
     expect(lines[0]).toContain('depth')
   })
 
-  it('refuses when an answer to a question about the PR was not agreed', async () => {
+  it('offers Ship when an answer is the implemented option but not the recommended one', async () => {
     const { root } = await answeredRound({ depth: { pick: 'depth-x', agreed: false } })
+    expect((await build(await nextRound(root))).code).toBe(0)
+  })
+
+  it('refuses on a not-agreed answer to an older question that declares no implemented option', async () => {
+    const { implemented: _, ...depth } = pick('depth', ['a2'], 7)
+    const { root } = await answeredRound(
+      { depth: { pick: 'depth-x', agreed: false } },
+      HEAD(7),
+      depth
+    )
     const { code, lines } = await build(await nextRound(root))
     expect(code).toBe(EXIT_REFUSED)
     expect(lines[0]).toContain('depth')
