@@ -124,6 +124,7 @@ export const lightThemeCSSVars = {
   '--color-interactive-focus': semanticColorsLight['interactive-focus'],
   '--color-interactive-active': semanticColorsLight['interactive-active'],
   '--color-interactive-selected': semanticColorsLight['interactive-selected'],
+  '--color-interactive-selected-solid': semanticColorsLight['interactive-selected-solid'],
   '--color-interactive-disabled': semanticColorsLight['interactive-disabled'],
 
   '--color-divider': semanticColorsLight['divider'],
@@ -312,6 +313,7 @@ export const darkThemeCSSVars = {
   '--color-interactive-focus': semanticColorsDark['interactive-focus'],
   '--color-interactive-active': semanticColorsDark['interactive-active'],
   '--color-interactive-selected': semanticColorsDark['interactive-selected'],
+  '--color-interactive-selected-solid': semanticColorsDark['interactive-selected-solid'],
   '--color-interactive-disabled': semanticColorsDark['interactive-disabled'],
 
   '--color-divider': semanticColorsDark['divider'],

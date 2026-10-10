@@ -137,14 +137,15 @@ export const semanticColorsLight = {
   // Solid-variant fill. Success and warning carry the light-tuning values: white
   // on green[600] clears 4.5:1; amber[500] keeps the white label at 3.6:1, a
   // declared exception in contrast-baseline.json. Brand is the other named
-  // exception of decision 0003: orange[500] under white reads 3.74:1. Info keeps
-  // its earlier value until its own light value is decided.
+  // exception of decision 0003: orange[500] under white reads 3.74:1. Info is
+  // blue[600], the fill the info Alert and `status-info` already paint: white
+  // clears 4.5:1 on it (4.89) and read 3.12 on blue[500].
   'brand-primary-solid': ramp.orange[500], // TD-774: decision 0003, named exception
   'brand-secondary-solid': ramp.cyan[600],
   'status-success-solid': ramp.green[600],
   'status-error-solid': ramp.red[600],
   'status-warning-solid': ramp.amber[500],
-  'status-info-solid': ramp.blue[500],
+  'status-info-solid': ramp.blue[600],
 
   // Text ON a `-subtle` fill — see the on-brand-*-subtle note above.
   'on-status-success-subtle': ramp.green[700],
@@ -297,6 +298,7 @@ export const semanticColorsLight = {
   'interactive-focus': 'rgba(55, 65, 81, 0.12)',
   'interactive-active': 'rgba(55, 65, 81, 0.16)',
   'interactive-selected': 'rgba(55, 65, 81, 0.08)',
+  'interactive-selected-solid': greyRamp[700], // selected neutral toggle face; white label 6.98 (console round 7, fb-selected)
   'interactive-disabled': 'rgba(55, 65, 81, 0.12)',
   'interactive-disabled-text': 'rgba(55, 65, 81, 0.26)',
 
@@ -619,6 +621,7 @@ export const semanticColorsDark = {
   'interactive-focus': 'rgba(255, 255, 255, 0.12)',
   'interactive-active': 'rgba(255, 255, 255, 0.16)',
   'interactive-selected': 'rgba(255, 255, 255, 0.08)',
+  'interactive-selected-solid': greyRamp[50], // selected neutral toggle face; the text-primary value it had
   'interactive-disabled': 'rgba(255, 255, 255, 0.12)',
   'interactive-disabled-text': 'rgba(255, 255, 255, 0.26)',
 

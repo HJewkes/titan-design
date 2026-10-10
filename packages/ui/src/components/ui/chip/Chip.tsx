@@ -152,6 +152,8 @@ export function Chip({
         sizes.container,
         onPress && 'web:cursor-pointer web:hover:opacity-80 active:opacity-70',
         isDisabled && 'cursor-not-allowed',
+        // Pill's neutral solid is text-primary, near-black in light; a selected toggle reads grey[700] there.
+        isSelected && color === 'default' && 'bg-interactive-selected-solid',
         className
       )}
       textClassName={cn('font-sans font-medium', sizes.text)}

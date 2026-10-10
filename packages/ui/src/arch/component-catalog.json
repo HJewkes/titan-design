@@ -12184,7 +12184,7 @@
           "description": "",
           "name": "colors",
           "required": true,
-          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 152 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
+          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 153 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
         },
         {
           "default": null,
@@ -12221,7 +12221,7 @@
           "description": "",
           "name": "colors",
           "required": true,
-          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 152 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
+          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 153 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
         },
         {
           "default": null,
@@ -13086,6 +13086,111 @@
         "components-molecules-eyebrow--default"
       ],
       "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Chip",
+        "Eyebrow"
+      ],
+      "family": "ui/facet-bar",
+      "file": "packages/ui/src/components/ui/facet-bar/FacetBar.tsx",
+      "name": "FacetBar",
+      "props": [
+        {
+          "default": null,
+          "description": "",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Colour of a selected chip.",
+          "name": "color",
+          "required": false,
+          "type": "ChipColor"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "defaultValue",
+          "required": false,
+          "type": "string | readonly T[] | null"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "formatCount",
+          "required": false,
+          "type": "((count: number) => string)"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "isDisabled",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "isLabelHidden",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Names the group.",
+          "name": "label",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "onValueChange",
+          "required": false,
+          "type": "((value: T[]) => void) | ((value: T | null) => void)"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "options",
+          "required": true,
+          "type": "readonly FacetOption<T>[]"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "selectionMode",
+          "required": false,
+          "type": "\"multiple\" | \"single\""
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "size",
+          "required": false,
+          "type": "ChipSize"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "value",
+          "required": false,
+          "type": "string | readonly T[] | null"
+        }
+      ],
+      "purpose": "FacetBar — one labelled row of toggle chips for one facet.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/facet-bar/FacetBar.tsx",
+        "status": "packages/ui/src/components/ui/facet-bar/FacetBar.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-facetbar--default"
+      ],
+      "tier": "organism"
     },
     {
       "composes": [

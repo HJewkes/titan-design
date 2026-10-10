@@ -27,7 +27,6 @@
     "#e05254|#252321": 1
   },
   "components-atoms-badge--all-colors light": {
-    "#ffffff|#2196f3": 1,
     "#ffffff|#c27400": 1,
     "#ffffff|#da5f00": 1
   },
@@ -65,7 +64,6 @@
     "#ff7900|#4a3929": 1
   },
   "components-atoms-pill--solid-tones light": {
-    "#ffffff|#2196f3": 1,
     "#ffffff|#c27400": 1,
     "#ffffff|#da5f00": 1
   },
@@ -207,7 +205,6 @@
     "#888684|#252321": 1
   },
   "components-molecules-button--all-colors light": {
-    "#ffffff|#2196f3": 1,
     "#ffffff|#c27400": 1,
     "#ffffff|#da5f00": 1
   },
@@ -237,6 +234,9 @@
   },
   "components-molecules-eyebrow--default dark": {
     "#888684|#252321": 1
+  },
+  "components-molecules-facetbar--default light": {
+    "#ffffff|#da5f00": 2
   },
   "components-molecules-formfield--complete-form-example dark": {
     "#888684|#252321": 2
@@ -395,7 +395,6 @@
     "#a29f9d|#3f474d": 1
   },
   "components-molecules-toast--interactive light": {
-    "#ffffff|#2196f3": 1,
     "#ffffff|#c27400": 1
   },
   "components-molecules-toast--long-duration light": {

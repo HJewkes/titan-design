@@ -94,7 +94,7 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'status-success-solid': "#298732";
     readonly 'status-error-solid': "#D14343";
     readonly 'status-warning-solid': "#C27400";
-    readonly 'status-info-solid': "#2196F3";
+    readonly 'status-info-solid': "#1072CB";
     readonly 'on-status-success-subtle': "#2B6B25";
     readonly 'on-status-error-subtle': "#A4221C";
     readonly 'on-status-warning-subtle': "#814D14";
@@ -188,6 +188,7 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'interactive-focus': "rgba(55, 65, 81, 0.12)";
     readonly 'interactive-active': "rgba(55, 65, 81, 0.16)";
     readonly 'interactive-selected': "rgba(55, 65, 81, 0.08)";
+    readonly 'interactive-selected-solid': "#5A5958";
     readonly 'interactive-disabled': "rgba(55, 65, 81, 0.12)";
     readonly 'interactive-disabled-text': "rgba(55, 65, 81, 0.26)";
     readonly divider: "rgba(0, 0, 0, 0.16)";
@@ -346,6 +347,7 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'interactive-focus': "rgba(255, 255, 255, 0.12)";
     readonly 'interactive-active': "rgba(255, 255, 255, 0.16)";
     readonly 'interactive-selected': "rgba(255, 255, 255, 0.08)";
+    readonly 'interactive-selected-solid': "#F9F6F3";
     readonly 'interactive-disabled': "rgba(255, 255, 255, 0.12)";
     readonly 'interactive-disabled-text': "rgba(255, 255, 255, 0.26)";
     readonly divider: "rgba(255, 255, 255, 0.09)";
@@ -745,6 +747,7 @@ export const semanticColorsDark: {
     readonly 'interactive-focus': "rgba(255, 255, 255, 0.12)";
     readonly 'interactive-active': "rgba(255, 255, 255, 0.16)";
     readonly 'interactive-selected': "rgba(255, 255, 255, 0.08)";
+    readonly 'interactive-selected-solid': "#F9F6F3";
     readonly 'interactive-disabled': "rgba(255, 255, 255, 0.12)";
     readonly 'interactive-disabled-text': "rgba(255, 255, 255, 0.26)";
     readonly divider: "rgba(255, 255, 255, 0.09)";
@@ -812,7 +815,7 @@ export const semanticColorsLight: {
     readonly 'status-success-solid': "#298732";
     readonly 'status-error-solid': "#D14343";
     readonly 'status-warning-solid': "#C27400";
-    readonly 'status-info-solid': "#2196F3";
+    readonly 'status-info-solid': "#1072CB";
     readonly 'on-status-success-subtle': "#2B6B25";
     readonly 'on-status-error-subtle': "#A4221C";
     readonly 'on-status-warning-subtle': "#814D14";
@@ -906,6 +909,7 @@ export const semanticColorsLight: {
     readonly 'interactive-focus': "rgba(55, 65, 81, 0.12)";
     readonly 'interactive-active': "rgba(55, 65, 81, 0.16)";
     readonly 'interactive-selected': "rgba(55, 65, 81, 0.08)";
+    readonly 'interactive-selected-solid': "#5A5958";
     readonly 'interactive-disabled': "rgba(55, 65, 81, 0.12)";
     readonly 'interactive-disabled-text': "rgba(55, 65, 81, 0.26)";
     readonly divider: "rgba(0, 0, 0, 0.16)";
