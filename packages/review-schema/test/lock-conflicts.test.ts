@@ -127,7 +127,7 @@ describe('lockConflicts', () => {
     expect(lockConflicts(released, plan({ questions: [question] }))).toEqual([])
   })
 
-  it('flags a Ship at a head that differs from the prior Ship head for that PR', () => {
+  it('flags a Ship off the prior Ship head for a PR the round does not plan', () => {
     const ships = [
       { pr: 101, head: HOLDER_HEAD },
       { pr: 102, head: DEPENDENT_HEAD },
@@ -153,6 +153,31 @@ describe('lockConflicts', () => {
         kind: 'stale-ship',
         lock: 'L-0001',
         ids: ['#101', HOLDER_HEAD, STACKED_HEAD],
+      }),
+    ])
+  })
+
+  it('accepts a PR shipped, pushed and shipped again at the head the round plans', () => {
+    const ships = [
+      { pr: 101, head: HOLDER_HEAD },
+      { pr: 101, head: STACKED_HEAD },
+    ]
+    const items = [holder(101, STACKED_HEAD)]
+
+    expect(lockConflicts(registry(), plan({ items, ships }))).toEqual([])
+  })
+
+  it('flags a re-shipped PR behind its planned head once, against its last Ship', () => {
+    const ships = [
+      { pr: 101, head: HOLDER_HEAD },
+      { pr: 101, head: STACKED_HEAD },
+    ]
+    const items = [holder(101, DEPENDENT_HEAD)]
+
+    expect(lockConflicts(registry(), plan({ items, ships }))).toEqual([
+      expect.objectContaining({
+        kind: 'stale-ship',
+        ids: ['#101', STACKED_HEAD, DEPENDENT_HEAD],
       }),
     ])
   })

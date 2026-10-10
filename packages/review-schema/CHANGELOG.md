@@ -32,8 +32,8 @@ project adheres to [Semantic Versioning](https://semver.org/).
   `{ kind, lock, ids, tokens, message }[]` of kind `superseded-state` (an item overlapping an
   open lock's tokens on a base without the holder head), `lock-order` (a holder ahead of an open
   lock it comes `after`), `re-ask` (a question touching a decided lock's tokens) and `stale-ship`
-  (a Ship at a head that differs from the PR's prior Ship, or a PR's last Ship at a head other
-  than the head its item plans). Exports `LOCK_CONFLICT_KINDS` and the
+  (at most one per PR: its last Ship is not at its planned item's head or, for a PR the plan
+  does not hold, at its prior Ship's head). Exports `LOCK_CONFLICT_KINDS` and the
   `LockPlan`, `PlannedItem`, `PlannedQuestion`, `RecordedShip`, `ModeToken` and `LockConflict`
   types.
 

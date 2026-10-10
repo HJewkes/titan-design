@@ -43,7 +43,7 @@ export interface LockPlan {
   items: PlannedItem[]
   questions: PlannedQuestion[]
   ships: RecordedShip[]
-  /** Whether `commit` has `ancestor` in its history; the caller answers it, for example with git. */
+  /** Whether `commit` has `ancestor` in its history; the caller answers it, e.g. with git. */
   contains: (commit: string, ancestor: string) => boolean
 }
 
@@ -51,7 +51,7 @@ export interface LockConflict {
   kind: LockConflictKind
   /** The lock the conflict is with; null for a stale Ship on a PR that holds no lock. */
   lock: string | null
-  /** The offending PRs (`#n`), question ids, lock ids and heads, in the order the message names them. */
+  /** The offending PRs (`#n`), question ids, lock ids and heads, in message order. */
   ids: string[]
   tokens: ModeToken[]
   message: string
@@ -140,39 +140,41 @@ function reAsk(question: PlannedQuestion, lock: Lock): LockConflict[] {
   ]
 }
 
-function staleShip(pr: number, shipped: string, now: string, locks: Lock[], at: string) {
+function staleShip(pr: number, before: string, after: string, locks: Lock[], how: string) {
   return {
     kind: 'stale-ship' as const,
     lock: heldLock(pr, locks)?.id ?? null,
-    ids: [`#${pr}`, shipped, now],
+    ids: [`#${pr}`, before, after],
     tokens: [],
     message:
-      `#${pr} was shipped at ${short(shipped)} but ${at} ${short(now)}; ` +
-      `a Ship holds for one head, so ask it again at the new head`,
+      `#${pr} was shipped at ${short(before)} ${how} ${short(after)}; ` +
+      `a Ship holds for one head, so ask it again at that head`,
   }
 }
 
-/** A Ship at a head other than the PR's prior Ship, and a PR's last Ship off its planned head. */
+/**
+ * At most one per PR, judged on its last Ship: against its planned item's head when the round
+ * holds the PR, else against the PR's prior Ship.
+ */
 function staleShips(ships: RecordedShip[], items: PlannedItem[], locks: Lock[]): LockConflict[] {
-  const last = new Map<number, string>()
-  const moved = ships.flatMap((ship) => {
-    const prior = last.get(ship.pr)
-    last.set(ship.pr, ship.head)
-    if (prior === undefined || prior === ship.head) return []
-    return [staleShip(ship.pr, prior, ship.head, locks, 'shipped again at')]
+  return [...new Set(ships.map((s) => s.pr))].flatMap((pr) => {
+    const heads = ships.filter((s) => s.pr === pr).map((s) => s.head)
+    const last = heads.at(-1)!
+    const planned = items.find((i) => i.pr === pr)?.head
+    if (planned !== undefined)
+      return planned === last ? [] : [staleShip(pr, last, planned, locks, 'but the round plans')]
+    const prior = heads.at(-2)
+    return prior === undefined || prior === last
+      ? []
+      : [staleShip(pr, prior, last, locks, 'and again at')]
   })
-  const behind = items.flatMap((item) => {
-    const shipped = last.get(item.pr)
-    if (shipped === undefined || shipped === item.head) return []
-    return [staleShip(item.pr, shipped, item.head, locks, 'the round plans it at')]
-  })
-  return [...moved, ...behind]
 }
 
 /**
  * The conflicts between a planned round (or dispatch) and the lock registry: an item rendered on
  * a state a lock supersedes, a holder ordered ahead of a lock it comes after, a question asking a
- * decided row again, and a Ship whose head moved or differs from the planned head. Empty when the plan is clear.
+ * decided row again, and a PR's last Ship at a head other than the planned one. Empty when the
+ * plan is clear.
  */
 export function lockConflicts(registry: Locks, plan: LockPlan): LockConflict[] {
   const open = registry.locks.filter((l) => l.status === 'open')
