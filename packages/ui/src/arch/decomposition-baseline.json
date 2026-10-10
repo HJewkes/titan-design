@@ -215,10 +215,10 @@
     "props": 20
   },
   "components/ui/button/Button.tsx": {
-    "file-lines": 242
+    "file-lines": 253
   },
   "components/ui/button/Button.tsx#Button": {
-    "complexity": 18
+    "complexity": 19
   },
   "components/ui/card/Card.tsx": {
     "file-lines": 245
@@ -229,6 +229,12 @@
   },
   "components/ui/carousel/Carousel.tsx": {
     "file-lines": 338
+  },
+  "components/ui/charts/bar-list/BarList.tsx#BarList": {
+    "props": 14
+  },
+  "components/ui/charts/network-graph/NetworkGraph.tsx#NetworkGraph": {
+    "props": 21
   },
   "components/ui/checkbox/Checkbox.tsx#Checkbox": {
     "complexity": 19
@@ -269,8 +275,5 @@
   },
   "components/ui/table/Table.tsx#Table": {
     "props": 14
-  },
-  "components/ui/toolbar-button/ToolbarButton.tsx#ToolbarButton": {
-    "complexity": 16
   }
 }

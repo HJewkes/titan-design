@@ -9,7 +9,7 @@ import {
   type Dispatch,
   type ReactNode,
 } from 'react'
-import { buildFeedback, pendingQuestionIds } from '../src/feedback.ts'
+import { blockedShipGroup, buildFeedback, pendingQuestionIds } from '../src/feedback.ts'
 import { feedbackProblems } from '../src/round.ts'
 import { roundLayout, type LayoutBlock, type ResolvedSection } from '../src/sections.ts'
 import type { Manifest, Question, StripKind, Variant } from '@titan-design/review-schema'
@@ -212,6 +212,7 @@ function Questions({ questions, ...props }: PartProps & { questions: Question[] 
           manifest={manifest}
           question={q}
           draft={state.draft.answers[q.id]}
+          shipBlock={blockedShipGroup(manifest, state.draft, q) ?? undefined}
           index={indexes.question(q.id)}
           active={state.active === indexes.question(q.id)}
           follow={state.follow}
@@ -464,6 +465,19 @@ function ContrastOverrideBanner({ reason }: { reason: string }) {
   )
 }
 
+/** A Ship already picked in a group that has since gained free text or a non-implemented pick. */
+function pickedBlockedShips(manifest: Manifest, state: ReviewState): string[] {
+  return manifest.questions.flatMap((q) => {
+    const picked = state.draft.answers[q.id]?.pick
+    const group = picked === undefined ? null : blockedShipGroup(manifest, state.draft, q, picked)
+    return group
+      ? [
+          `${q.id}: Ship is picked, but ${group.pr} may not ship: ${group.blockers.map((b) => b.message).join('; ')}`,
+        ]
+      : []
+  })
+}
+
 export function App({ manifest, manifestSha256, harnessWarning }: AppProps) {
   const reducer = useMemo(() => createReducer(manifest), [manifest])
   const storage = useMemo(() => browserStorage(), [])
@@ -475,7 +489,7 @@ export function App({ manifest, manifestSha256, harnessWarning }: AppProps) {
   const unanswered = pendingQuestionIds(manifest, state.draft)
   const partial = unanswered.length > 0
   const feedback = buildFeedback(manifest, manifestSha256, state.draft, new Date(), partial)
-  const problems = feedbackProblems(feedback, manifest)
+  const problems = [...feedbackProblems(feedback, manifest), ...pickedBlockedShips(manifest, state)]
   const submit = async () => {
     if (state.screen !== 'review' || problems.length) return
     dispatch({ type: 'screen', screen: 'sending' })

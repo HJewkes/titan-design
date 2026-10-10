@@ -174,6 +174,8 @@ const PickOneSchema = z
     revisionOption: z.string().optional(),
     optionVariants,
     outcomes,
+    /** The option the PR at its head already implements; a pick that differs withholds Ship. */
+    implemented: z.string().optional(),
     recommendation,
     /** The changed part an answer signs off, so no answer approves a whole PR at once. */
     signsOff: z.string().min(1).optional(),
@@ -187,6 +189,8 @@ const PickManySchema = z
     options: z.array(z.string()).min(1),
     optionVariants,
     outcomes,
+    /** The options the PR at its head already implements; a different set withholds Ship. */
+    implemented: z.array(z.string()).min(1).optional(),
     recommendation,
   })
   .strict()
@@ -398,6 +402,7 @@ function optionVariantProblems(m: {
     options?: string[]
     optionVariants?: Record<string, string>
     outcomes?: Record<string, string>
+    implemented?: string | string[]
     revisionOption?: string
     merge?: { ship: string[] }
   }[]
@@ -415,6 +420,16 @@ function optionVariantProblems(m: {
         ? [`question ${q.id}: ship option "${option}" is its revisionOption`]
         : []),
     ]),
+    ...[q.implemented ?? []]
+      .flat()
+      .flatMap((option) => [
+        ...(q.options?.includes(option)
+          ? []
+          : [`question ${q.id}: implemented option "${option}" is not one of its options`]),
+        ...(option === q.revisionOption
+          ? [`question ${q.id}: implemented option "${option}" is its revisionOption`]
+          : []),
+      ]),
     ...Object.keys(q.outcomes ?? {})
       .filter((option) => !q.options?.includes(option))
       .map(
