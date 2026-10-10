@@ -53,7 +53,6 @@
       "maximum": 4000
     },
     "variants": {
-      "maxItems": 80,
       "type": "array",
       "items": {
         "type": "object",
@@ -124,6 +123,23 @@
                 "const": "auto"
               }
             ]
+          },
+          "variantUnit": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,32}$"
+          },
+          "alternate": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,32}$"
+          },
+          "change": {
+            "type": "string",
+            "enum": [
+              "changed",
+              "new",
+              "removed",
+              "unchanged"
+            ]
           }
         },
         "required": [
@@ -188,6 +204,29 @@
                 "type": "string",
                 "pattern": "^[^/\\s#]+\\/[^/\\s#]+#[1-9][0-9]*$"
               },
+              "topics": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^(ask|component|token|topic):\\S+$"
+                }
+              },
+              "frames": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]{1,32}$"
+                }
+              },
+              "decision": {
+                "type": "string",
+                "enum": [
+                  "iterate",
+                  "ship",
+                  "decide"
+                ]
+              },
               "kind": {
                 "type": "string",
                 "const": "pick-one"
@@ -211,6 +250,23 @@
                   "type": "string",
                   "pattern": "^[A-Za-z0-9_-]{1,32}$"
                 }
+              },
+              "outcomes": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "type": "string",
+                  "enum": [
+                    "accept",
+                    "changes",
+                    "neutral"
+                  ]
+                }
+              },
+              "implemented": {
+                "type": "string"
               },
               "recommendation": {
                 "type": "object",
@@ -325,6 +381,29 @@
                 "type": "string",
                 "pattern": "^[^/\\s#]+\\/[^/\\s#]+#[1-9][0-9]*$"
               },
+              "topics": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^(ask|component|token|topic):\\S+$"
+                }
+              },
+              "frames": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]{1,32}$"
+                }
+              },
+              "decision": {
+                "type": "string",
+                "enum": [
+                  "iterate",
+                  "ship",
+                  "decide"
+                ]
+              },
               "kind": {
                 "type": "string",
                 "const": "pick-many"
@@ -344,6 +423,27 @@
                 "additionalProperties": {
                   "type": "string",
                   "pattern": "^[A-Za-z0-9_-]{1,32}$"
+                }
+              },
+              "outcomes": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "type": "string",
+                  "enum": [
+                    "accept",
+                    "changes",
+                    "neutral"
+                  ]
+                }
+              },
+              "implemented": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string"
                 }
               },
               "recommendation": {
@@ -421,6 +521,29 @@
               "page": {
                 "type": "string",
                 "pattern": "^[^/\\s#]+\\/[^/\\s#]+#[1-9][0-9]*$"
+              },
+              "topics": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^(ask|component|token|topic):\\S+$"
+                }
+              },
+              "frames": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]{1,32}$"
+                }
+              },
+              "decision": {
+                "type": "string",
+                "enum": [
+                  "iterate",
+                  "ship",
+                  "decide"
+                ]
               },
               "kind": {
                 "type": "string",
@@ -512,6 +635,29 @@
               "page": {
                 "type": "string",
                 "pattern": "^[^/\\s#]+\\/[^/\\s#]+#[1-9][0-9]*$"
+              },
+              "topics": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^(ask|component|token|topic):\\S+$"
+                }
+              },
+              "frames": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]{1,32}$"
+                }
+              },
+              "decision": {
+                "type": "string",
+                "enum": [
+                  "iterate",
+                  "ship",
+                  "decide"
+                ]
               },
               "kind": {
                 "type": "string",
@@ -1043,6 +1189,61 @@
         "mergeSha"
       ],
       "additionalProperties": false
+    },
+    "stackedOn": {
+      "type": "object",
+      "properties": {
+        "repo": {
+          "type": "string",
+          "pattern": "^[^/\\s]+\\/[^/\\s]+$"
+        },
+        "pr": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "headSha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      },
+      "required": [
+        "repo",
+        "pr",
+        "headSha"
+      ],
+      "additionalProperties": false
+    },
+    "prGroups": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "pr": {
+            "type": "string",
+            "pattern": "^[^/\\s#]+\\/[^/\\s#]+#[1-9][0-9]*$"
+          },
+          "headSha": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "sectionIds": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,32}$"
+            }
+          }
+        },
+        "required": [
+          "pr",
+          "headSha",
+          "sectionIds"
+        ],
+        "additionalProperties": false
+      }
     }
   },
   "required": [

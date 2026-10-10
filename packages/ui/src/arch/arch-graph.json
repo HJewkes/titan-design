@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:bf11f99981ad4368f97afe346a14ce1e1eca3f824e023eafdddf871c8f3ce4c8",
+  "componentBarrelHash": "sha256:ad3c5c2ff6fc269a0a1ccd5e4c9bd8e9a9007b3dc938079b6f9d9d8d958d4e49",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -55,6 +55,222 @@
       "tier": "page",
       "verdict": "demo-only",
       "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "AgentCard",
+      "file": "packages/ui/src/components/custom/Agents/AgentCard.tsx",
+      "dir": "custom",
+      "family": "custom/Agents",
+      "exports": [
+        "AgentCard",
+        "AgentCardProps",
+        "AgentName",
+        "AgentCardHeader",
+        "AgentCardTask",
+        "AgentCardTags",
+        "AgentCardMeta",
+        "MetricCell",
+        "AgentMetricsBlock",
+        "DefaultMetricsEmpty"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "AgentStateLabel",
+        "Avatar",
+        "Card",
+        "Pill",
+        "Progress",
+        "SparkBars",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 8,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 248,
+        "score": 8
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "AgentHoverCard",
+      "file": "packages/ui/src/components/custom/Agents/AgentHoverCard.tsx",
+      "dir": "custom",
+      "family": "custom/Agents",
+      "exports": [
+        "AgentHoverCardContent",
+        "AgentHoverCard",
+        "AgentHoverCardContentProps",
+        "AgentHoverCardProps",
+        "MetricRow",
+        "HoverMetrics",
+        "asTrigger"
+      ],
+      "libDependents": 0,
+      "storyRefs": 3,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "AgentCardIdentity",
+        "AgentCardMetrics",
+        "Tooltip",
+        "TriggerSurface",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 5,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 174,
+        "score": 5
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "AgentRoster",
+      "file": "packages/ui/src/components/custom/Agents/AgentRoster.tsx",
+      "dir": "custom",
+      "family": "custom/Agents",
+      "exports": [
+        "AgentRoster",
+        "AgentRosterProps",
+        "useRosterKeys",
+        "useRosterKeys.listHasFocus",
+        "useRosterKeys.getItemProps",
+        "useRosterKeys.getItemProps.focusRef",
+        "useRosterKeys.select",
+        "useRosterKeys.onKeyDown",
+        "focusNode",
+        "RosterSkeleton",
+        "AgentRoster.renderGroup"
+      ],
+      "libDependents": 0,
+      "storyRefs": 3,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "AgentRosterRow",
+        "EmptyState",
+        "Skeleton",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 5,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 184,
+        "score": 5
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "AgentRosterRow",
+      "file": "packages/ui/src/components/custom/Agents/AgentRosterRow.tsx",
+      "dir": "custom",
+      "family": "custom/Agents",
+      "exports": [
+        "AgentRosterRow",
+        "AgentRosterRowProps",
+        "RowDetails",
+        "RowBody"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "AgentStateLabel",
+        "Avatar",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 5,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 150,
+        "score": 5
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "AgentStateLabel",
+      "file": "packages/ui/src/components/custom/Agents/AgentStateLabel.tsx",
+      "dir": "custom",
+      "family": "custom/Agents",
+      "exports": [
+        "AgentStateLabel",
+        "AgentStateLabelProps"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Indicator",
+        "Pill",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 1,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 50,
+        "score": 1
+      },
+      "tier": "molecule",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
       "audited": "unaudited",
       "standard": false
     },
@@ -291,6 +507,45 @@
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": true
+    },
+    {
+      "name": "BarList",
+      "file": "packages/ui/src/components/ui/charts/bar-list/BarList.tsx",
+      "dir": "ui",
+      "family": "ui/charts",
+      "exports": [
+        "BarList",
+        "BarListProps",
+        "keyDownProps"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "BarListCells",
+        "BarListParts",
+        "BarListTip",
+        "EmptyState"
+      ],
+      "leak": {
+        "rawView": 3,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 166,
+        "score": 3
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "BaseBadge",
@@ -4457,10 +4712,10 @@
         "statusVariants",
         "clamp01",
         "getGaugeZoneColor",
-        "renderCoachingText",
-        "StatusPill",
-        "MetricCell",
-        "Gauge"
+        "MesoStatusPill",
+        "MesoMetricItem",
+        "Gauge",
+        "MesoStatusHeader"
       ],
       "libDependents": 2,
       "storyRefs": 3,
@@ -4468,20 +4723,21 @@
         "mobile": 0,
         "mcp": 0,
         "dash": 1,
-        "audiobook": 1,
-        "total": 2
+        "audiobook": 0,
+        "total": 1
       },
       "dependsOn": [
         "Card",
+        "MesoStatusCard.parts",
         "StatusDot"
       ],
       "leak": {
-        "rawView": 18,
-        "rawText": 12,
-        "inlineStyle": 21,
+        "rawView": 16,
+        "rawText": 8,
+        "inlineStyle": 15,
         "rawHex": 0,
-        "loc": 480,
-        "score": 72
+        "loc": 436,
+        "score": 54
       },
       "tier": "organism",
       "verdict": "keep-core",
@@ -4619,40 +4875,6 @@
       },
       "tier": "atom",
       "verdict": "keep-core",
-      "deadByAssociation": false,
-      "audited": "unaudited",
-      "standard": false
-    },
-    {
-      "name": "metricText",
-      "file": "packages/ui/src/components/custom/Workout/metricText.tsx",
-      "dir": "workout",
-      "family": "custom/Workout",
-      "exports": [
-        "MetricCell",
-        "METRIC_FONT",
-        "MetricCellProps"
-      ],
-      "libDependents": 2,
-      "storyRefs": 1,
-      "xproj": {
-        "mobile": 0,
-        "mcp": 0,
-        "dash": 0,
-        "audiobook": 0,
-        "total": 0
-      },
-      "dependsOn": [],
-      "leak": {
-        "rawView": 0,
-        "rawText": 1,
-        "inlineStyle": 1,
-        "rawHex": 0,
-        "loc": 41,
-        "score": 3
-      },
-      "tier": "atom",
-      "verdict": "keep-internal",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -5569,6 +5791,86 @@
         "rawHex": 0,
         "loc": 278,
         "score": 32
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "RefChip",
+      "file": "packages/ui/src/components/custom/ActiveWork/RefChip.tsx",
+      "dir": "custom",
+      "family": "custom/ActiveWork",
+      "exports": [
+        "RefChip",
+        "RefChipProps",
+        "RefChipBody"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Link",
+        "Pill"
+      ],
+      "leak": {
+        "rawView": 1,
+        "rawText": 1,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 107,
+        "score": 2
+      },
+      "tier": "molecule",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "RelatedList",
+      "file": "packages/ui/src/components/custom/ActiveWork/RelatedList.tsx",
+      "dir": "custom",
+      "family": "custom/ActiveWork",
+      "exports": [
+        "groupRefsByKind",
+        "RelatedList",
+        "RefGroup",
+        "RelatedListProps",
+        "RefGroupSection",
+        "RelatedListSkeleton"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "EmptyState",
+        "Eyebrow",
+        "RefChip",
+        "Skeleton",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 7,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 117,
+        "score": 7
       },
       "tier": "organism",
       "verdict": "dead",
@@ -10198,14 +10500,6 @@
       "Card"
     ],
     [
-      "MesoStatusCard",
-      "StatusDot"
-    ],
-    [
-      "MesoStatusCard",
-      "Card"
-    ],
-    [
       "MetricTiles",
       "Stack"
     ],
@@ -10398,10 +10692,6 @@
       "Typography"
     ],
     [
-      "SetsRepsLoad",
-      "metricText"
-    ],
-    [
       "Sparkline",
       "SparklineParts"
     ],
@@ -10424,10 +10714,6 @@
     [
       "SupersetWrapper",
       "Typography"
-    ],
-    [
-      "TempoDisplay",
-      "metricText"
     ],
     [
       "TrainingStatusPage",
@@ -10970,6 +11256,150 @@
       "Metric"
     ],
     [
+      "BarList",
+      "BarListCells"
+    ],
+    [
+      "BarList",
+      "BarListParts"
+    ],
+    [
+      "BarList",
+      "BarListTip"
+    ],
+    [
+      "BarList",
+      "EmptyState"
+    ],
+    [
+      "AgentStateLabel",
+      "Indicator"
+    ],
+    [
+      "AgentStateLabel",
+      "Pill"
+    ],
+    [
+      "AgentStateLabel",
+      "Typography"
+    ],
+    [
+      "AgentCard",
+      "AgentStateLabel"
+    ],
+    [
+      "AgentCard",
+      "Avatar"
+    ],
+    [
+      "AgentCard",
+      "Card"
+    ],
+    [
+      "AgentCard",
+      "SparkBars"
+    ],
+    [
+      "AgentCard",
+      "Pill"
+    ],
+    [
+      "AgentCard",
+      "Progress"
+    ],
+    [
+      "AgentCard",
+      "Typography"
+    ],
+    [
+      "RefChip",
+      "Link"
+    ],
+    [
+      "RefChip",
+      "Pill"
+    ],
+    [
+      "RelatedList",
+      "RefChip"
+    ],
+    [
+      "RelatedList",
+      "EmptyState"
+    ],
+    [
+      "RelatedList",
+      "Eyebrow"
+    ],
+    [
+      "RelatedList",
+      "Skeleton"
+    ],
+    [
+      "RelatedList",
+      "Typography"
+    ],
+    [
+      "MesoStatusCard",
+      "MesoStatusCard.parts"
+    ],
+    [
+      "MesoStatusCard",
+      "StatusDot"
+    ],
+    [
+      "MesoStatusCard",
+      "Card"
+    ],
+    [
+      "AgentHoverCard",
+      "AgentCardIdentity"
+    ],
+    [
+      "AgentHoverCard",
+      "AgentCardMetrics"
+    ],
+    [
+      "AgentHoverCard",
+      "Tooltip"
+    ],
+    [
+      "AgentHoverCard",
+      "TriggerSurface"
+    ],
+    [
+      "AgentHoverCard",
+      "Typography"
+    ],
+    [
+      "AgentRoster",
+      "AgentRosterRow"
+    ],
+    [
+      "AgentRoster",
+      "EmptyState"
+    ],
+    [
+      "AgentRoster",
+      "Skeleton"
+    ],
+    [
+      "AgentRoster",
+      "Typography"
+    ],
+    [
+      "AgentRosterRow",
+      "AgentStateLabel"
+    ],
+    [
+      "AgentRosterRow",
+      "Avatar"
+    ],
+    [
+      "AgentRosterRow",
+      "Typography"
+    ],
+    [
       "FacetBar",
       "Chip"
     ],
@@ -10979,8 +11409,11 @@
     ]
   ],
   "summary": {
-    "total": 227,
+    "total": 234,
     "dead": [
+      "AgentCard",
+      "AgentHoverCard",
+      "AgentRoster",
       "Autocomplete",
       "Breadcrumbs",
       "Composer",
@@ -10997,6 +11430,7 @@
       "PortfolioOverview",
       "PrHistoryModal",
       "ReadinessCheck",
+      "RelatedList",
       "SessionDetail",
       "SessionList",
       "Switch",
@@ -11013,6 +11447,8 @@
       "velocity-story-kit"
     ],
     "deadByAssociation": [
+      "AgentRosterRow",
+      "AgentStateLabel",
       "AutocompleteParts",
       "Avatar",
       "BodyMap",
@@ -11032,6 +11468,7 @@
       "MesoProgressBar",
       "MessageBubble",
       "ProgramPlanningBreadcrumbs",
+      "RefChip",
       "RevealRow",
       "SessionListItem",
       "SeverityLabel",

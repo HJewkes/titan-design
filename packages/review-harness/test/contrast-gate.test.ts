@@ -1,3 +1,4 @@
+import { applyRoundRules } from '../src/round-rules.ts'
 import { mkdir, mkdtemp, readFile, readdir, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
@@ -329,7 +330,7 @@ describe('buildRound', () => {
     expect(lines.join('\n')).toContain('refused: round.json not written')
   })
 
-  it('copies the draft byte for byte once it passes, and serving then finds no problem', async () => {
+  it('writes the draft with the builder rules applied once it passes, and serving then finds no problem', async () => {
     const { dir, path } = await setup(
       imageOnly({
         unmeasured: [
@@ -346,7 +347,9 @@ describe('buildRound', () => {
     })
     expect(code).toBe(0)
     const round = await readFile(join(dir, 'round.json'))
-    expect(round.equals(await readFile(path))).toBe(true)
+    expect(JSON.parse(round.toString('utf8'))).toEqual(
+      applyRoundRules(JSON.parse(await readFile(path, 'utf8')))
+    )
     const sha = (await import('node:crypto')).createHash('sha256').update(round).digest('hex')
     expect(await contrastProblem(join(dir, 'round.json'), sha)).toBeNull()
     expect(await contrastProblem(join(dir, 'round.json'), SHA)).toContain('different manifest')

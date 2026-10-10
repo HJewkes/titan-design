@@ -149,6 +149,11 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly 'text-inverse': "#FFFFFF";
     readonly 'text-error': "#A4221C";
+    readonly 'text-brand': "#983804";
+    readonly 'text-brand-secondary': "#2A617F";
+    readonly 'text-success': "#2B6B25";
+    readonly 'text-warning': "#814D14";
+    readonly 'text-info': "#135AA8";
     readonly 'text-link': "#135AA8";
     readonly 'text-link-hover': "#135AA8";
     readonly 'surface-base': "#FFFFFF";
@@ -300,6 +305,11 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'text-disabled': "rgba(255, 255, 255, 0.38)";
     readonly 'text-inverse': "#1C1916";
     readonly 'text-error': "#E05254";
+    readonly 'text-brand': "#FF7900";
+    readonly 'text-brand-secondary': "#22D3EE";
+    readonly 'text-success': "#21C05D";
+    readonly 'text-warning': "#F9B415";
+    readonly 'text-info': "#78C2FF";
     readonly 'text-link': "#78C2FF";
     readonly 'text-link-hover': "#3CA8FF";
     readonly 'surface-base': "#252321";
@@ -692,6 +702,11 @@ export const semanticColorsDark: {
     readonly 'text-disabled': "rgba(255, 255, 255, 0.38)";
     readonly 'text-inverse': "#1C1916";
     readonly 'text-error': "#E05254";
+    readonly 'text-brand': "#FF7900";
+    readonly 'text-brand-secondary': "#22D3EE";
+    readonly 'text-success': "#21C05D";
+    readonly 'text-warning': "#F9B415";
+    readonly 'text-info': "#78C2FF";
     readonly 'text-link': "#78C2FF";
     readonly 'text-link-hover': "#3CA8FF";
     readonly 'surface-base': "#252321";
@@ -846,6 +861,11 @@ export const semanticColorsLight: {
     readonly 'text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly 'text-inverse': "#FFFFFF";
     readonly 'text-error': "#A4221C";
+    readonly 'text-brand': "#983804";
+    readonly 'text-brand-secondary': "#2A617F";
+    readonly 'text-success': "#2B6B25";
+    readonly 'text-warning': "#814D14";
+    readonly 'text-info': "#135AA8";
     readonly 'text-link': "#135AA8";
     readonly 'text-link-hover': "#135AA8";
     readonly 'surface-base': "#FFFFFF";

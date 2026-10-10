@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Input } from './Input'
+import { capturedByNode } from '../../../test/classname-capture'
 import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
 
 describe('Input', () => {
@@ -53,6 +54,18 @@ describe('Input', () => {
     render(<Input isReadOnly defaultValue="Read only" />)
     const input = screen.getByDisplayValue('Read only')
     expect(input).toHaveAttribute('readonly')
+  })
+
+  it('draws the focus ring on the rounded field box, not the bare text element', () => {
+    render(<Input placeholder="Search" />)
+    const input = screen.getByPlaceholderText('Search')
+    const classesOf = (node: Element) => (capturedByNode.get(node) ?? '').split(/\s+/)
+    expect(classesOf(input.parentElement!)).not.toContain('focus-ring')
+
+    fireEvent.focus(input)
+
+    expect(classesOf(input.parentElement!)).toContain('focus-ring')
+    expect(classesOf(input)).toContain('web:outline-none')
   })
 
   describe('accessibility', () => {

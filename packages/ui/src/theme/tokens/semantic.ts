@@ -239,6 +239,11 @@ export const semanticColorsLight = {
   'text-disabled': 'rgba(55, 65, 81, 0.48)',
   'text-inverse': p.white,
   'text-error': ramp.red[700], // one rung darker than status-error to clear 4.5:1 on every light plane
+  'text-brand': ramp.orange[700], // rung 700 clears 4.5:1 on every light plane
+  'text-brand-secondary': ramp.cyan[700], // rung 700 clears 4.5:1 on every light plane
+  'text-success': ramp.green[700], // rung 700 clears 4.5:1 on every light plane
+  'text-warning': ramp.amber[700], // rung 700 clears 4.5:1 on every light plane
+  'text-info': ramp.blue[700], // rung 700 clears 4.5:1 on every light plane
   'text-link': ramp.blue[700],
   'text-link-hover': ramp.blue[700],
 
@@ -479,6 +484,11 @@ export const semanticColorsDark = {
   'text-disabled': 'rgba(255, 255, 255, 0.38)',
   'text-inverse': greyRamp[950],
   'text-error': ramp.red[500], // owner chose red 500 below 4.5:1 knowingly, round q4b-red-conflict r1 (a)
+  'text-brand': ramp.orange[400], // clears 4.5:1 on every dark plane
+  'text-brand-secondary': ramp.cyan[300], // clears 4.5:1 on every dark plane
+  'text-success': ramp.green[400], // clears 4.5:1 on every dark plane
+  'text-warning': ramp.amber[300], // clears 4.5:1 on every dark plane
+  'text-info': ramp.blue[300], // clears 4.5:1 on every dark plane
   'text-link': ramp.blue[300], // on the ramp; border-focus keeps the indigo pin (item 42 d5)
   'text-link-hover': ramp.blue[400],
 
