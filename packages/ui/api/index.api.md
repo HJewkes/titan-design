@@ -605,7 +605,7 @@ export interface BarListProps extends Omit<ViewProps, 'children'> {
 
 // @public
 export interface BarListRow {
-    color?: ColorToken$1;
+    color?: ColorToken;
     description?: string;
     flag?: {
         tone: 'warning' | 'error';
@@ -3905,7 +3905,7 @@ export interface GraphItemRef {
 
 // @public
 export interface GraphKind {
-    color?: ColorToken$1;
+    color?: ColorToken;
     id: string;
     label: string;
 }
@@ -6429,7 +6429,7 @@ export interface RefChipProps extends EntityRef {
 
 // @public
 export interface RefGraphKind {
-    color: ColorToken$1;
+    color: ColorToken;
     id: RefKind;
     label: string;
 }
@@ -6448,7 +6448,7 @@ export type RefKind = 'task' | 'pr' | 'session' | 'agent' | 'note' | 'file' | 'i
 
 // @public
 export interface RefKindMeta {
-    color: ColorToken$1;
+    color: ColorToken;
     glyph: string;
     label: string;
     plural: string;
@@ -6498,7 +6498,7 @@ export function resolveActualWeek(actual: GoalActualPoint, weeks: GoalTrajectory
 export function resolveBrand(brand: BrandKey | BrandPreset): BrandPreset;
 
 // @public
-export function resolveColor(token: ColorToken$1, mode?: ThemeMode): string;
+export function resolveColor(token: ColorToken, mode?: ThemeMode): string;
 
 // @public (undocumented)
 export interface ResolvedSurface {

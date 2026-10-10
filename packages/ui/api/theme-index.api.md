@@ -1511,7 +1511,7 @@ export const primitiveZIndex: {
 export function raisedLevel(parent: SurfaceLevel, steps: number): SurfaceLevel;
 
 // @public
-export function resolveColor(token: ColorToken$1, mode?: ThemeMode): string;
+export function resolveColor(token: ColorToken, mode?: ThemeMode): string;
 
 // @public
 export const resultPaletteColors: {
