@@ -6,7 +6,7 @@ import type { AutocompleteOption } from './autocompleteFilter'
 
 export function AutocompleteLabel({ label, isRequired }: { label: string; isRequired: boolean }) {
   return (
-    <Text className="text-sm font-medium text-text-primary mb-1">
+    <Text className="font-heading text-sm font-medium text-text-primary mb-1">
       {label}
       {isRequired && <Text className="text-text-error ml-0.5">*</Text>}
     </Text>

@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, renderHook, screen, fireEvent, act } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedByNode } from '../../../test/classname-capture'
 import { Autocomplete } from './Autocomplete'
 import { useAutocompleteState } from './useAutocompleteState'
 import { defaultFilterFn } from './autocompleteFilter'
@@ -339,5 +340,13 @@ describe('Autocomplete', () => {
       render(<Autocomplete options={defaultOptions} value="1" isClearable />)
       expect(screen.getByLabelText('Clear selection')).toBeInTheDocument()
     })
+  })
+})
+
+describe('Autocomplete label face', () => {
+  it('sets the label in the heading face', () => {
+    render(<Autocomplete label="Fruit" options={defaultOptions} />)
+
+    expect(capturedByNode.get(screen.getByText('Fruit'))).toContain('font-heading')
   })
 })

@@ -134,7 +134,7 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
   return (
     <View className={cn('w-full gap-stack-md', className)}>
       {label && (
-        <Text className="text-sm font-medium text-text-primary">
+        <Text className="font-heading text-sm font-medium text-text-primary">
           {label}
           {isRequired && <Text className="text-text-error ml-0.5">*</Text>}
         </Text>

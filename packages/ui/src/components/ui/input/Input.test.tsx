@@ -110,3 +110,11 @@ describe('Input geometry resolves to the spacing tokens', () => {
     }
   )
 })
+
+describe('Input label face', () => {
+  it('sets the label in the heading face', () => {
+    render(<Input label="Email" />)
+
+    expect(capturedByNode.get(screen.getByText('Email'))).toContain('font-heading')
+  })
+})
