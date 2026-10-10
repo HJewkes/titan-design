@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedByNode } from '../../../test/classname-capture'
 import type { ViewProps } from 'react-native'
 import { Checkbox, CheckboxGroup } from './Checkbox'
 
@@ -13,7 +14,9 @@ vi.mock('react-native', async (importOriginal) => {
     viewClassNames.push((props.className ?? '').split(/\s+/))
     return React.createElement(actual.View, { ...props, ref } as ViewProps)
   })
-  return { ...actual, View }
+  const { captureClassName } = await import('../../../test/classname-capture')
+  const Text = captureClassName(actual.Text as React.ComponentType<{ className?: string }>)
+  return { ...actual, View, Text }
 })
 
 describe('Checkbox', () => {
@@ -201,5 +204,23 @@ describe('Checkbox', () => {
     render(<Checkbox label="" helperText="Help" />)
     const helper = screen.getByText('Help')
     expect(helper.parentElement?.childNodes).toHaveLength(1)
+  })
+})
+
+describe('Checkbox label face', () => {
+  it('sets the item label in the heading face', () => {
+    render(<Checkbox label="Accept terms" />)
+
+    expect(capturedByNode.get(screen.getByText('Accept terms'))).toContain('font-heading')
+  })
+
+  it('sets the group label in the heading face', () => {
+    render(
+      <CheckboxGroup label="Preferences">
+        <Checkbox label="One" />
+      </CheckboxGroup>
+    )
+
+    expect(capturedByNode.get(screen.getByText('Preferences'))).toContain('font-heading')
   })
 })

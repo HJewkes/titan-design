@@ -111,7 +111,9 @@ export const Checkbox = forwardRef<View, CheckboxProps>(function Checkbox(
       {!!(label || helperText) && (
         <View className="flex-1">
           {!!label && (
-            <Text className={cn('text-text-primary font-medium', styles.label)}>{label}</Text>
+            <Text className={cn('font-heading text-text-primary font-medium', styles.label)}>
+              {label}
+            </Text>
           )}
           {!!helperText && <Text className="text-xs text-text-secondary mt-0.5">{helperText}</Text>}
         </View>
@@ -141,7 +143,9 @@ export function CheckboxGroup({
 }: CheckboxGroupProps) {
   return (
     <View className={cn('gap-1', className)}>
-      {!!label && <Text className="text-sm font-medium text-text-primary mb-2">{label}</Text>}
+      {!!label && (
+        <Text className="font-heading text-sm font-medium text-text-primary mb-2">{label}</Text>
+      )}
       <View className={cn(orientation === 'vertical' ? 'flex-col gap-2' : 'flex-row gap-4')}>
         {children}
       </View>
