@@ -9,7 +9,11 @@
     --color-text-secondary: #a29f9d;
     --color-text-brand-secondary: #78c2ff;
     --color-border-input: #5a5958;
+    --color-hairline-default: rgba(255, 255, 255, 0.12);
+    --color-scrim-default: rgba(0, 0, 0, 0.5);
     --space-inset-md: 12px;
+    --space-stack-md: 12px;
+    --size-control-md: 40px;
   }
 
   /* Light mode */
@@ -22,7 +26,11 @@
     --color-text-secondary: #5a5958;
     --color-text-brand-secondary: #2a617f;
     --color-border-input: #888684;
+    --color-hairline-default: rgba(0, 0, 0, 0.15);
+    --color-scrim-default: rgba(0, 0, 0, 0.5);
     --space-inset-md: 12px;
+    --space-stack-md: 12px;
+    --size-control-md: 40px;
   }
 
   .not-a-theme {

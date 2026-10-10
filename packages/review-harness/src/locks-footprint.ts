@@ -1,4 +1,5 @@
 import { dirname, posix } from 'node:path'
+import { utilitiesFor, type ThemeLeaf } from './tailwind-theme.ts'
 
 export type TokenMode = 'light' | 'dark'
 
@@ -8,6 +9,11 @@ export interface TokenChange {
   mode: TokenMode
   from?: string
   to?: string
+}
+
+/** A token change with the property it came from, which readers are matched on. */
+export interface PropertyChange extends TokenChange {
+  property: string
 }
 
 /** The `footprint` of a lock, minus `derivedFrom`, which only the git side knows. */
@@ -21,6 +27,8 @@ export interface FootprintInput {
   /** `packages/ui/src/theme/global.css` at the base and at the head. */
   baseCss: string
   headCss: string
+  /** The head's `tailwind.config.js` theme entries that read a custom property. */
+  theme: ThemeLeaf[]
   /** Every path the head changes against the base, repo-relative. */
   changedFiles: string[]
   /** The head's component sources, repo-relative path to text; this is the reader universe. */
@@ -28,12 +36,9 @@ export interface FootprintInput {
 }
 
 export const GLOBAL_CSS = 'packages/ui/src/theme/global.css'
+export const TAILWIND_CONFIG = 'packages/ui/tailwind.config.js'
 const SRC_ROOT = 'packages/ui/src'
-const TOKEN_PREFIX = '--color-'
-
-/** The utilities a class string reads a colour token through, before `-<token>`. */
-const CLASS_UTILITIES =
-  'bg|text|border|ring|fill|stroke|divide|outline|shadow|from|via|to|placeholder|caret|accent|decoration'
+const COLOUR_PREFIX = '--color-'
 
 const stripComments = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, '')
 
@@ -72,45 +77,62 @@ function recordDeclaration(
 
 /** `--color-surface-raised` is the token `surface-raised`; any other property keeps its stem. */
 export const tokenName = (property: string) =>
-  property.startsWith(TOKEN_PREFIX) ? property.slice(TOKEN_PREFIX.length) : property.slice(2)
+  property.startsWith(COLOUR_PREFIX) ? property.slice(COLOUR_PREFIX.length) : property.slice(2)
 
 function modeDiff(mode: TokenMode, base: Map<string, string>, head: Map<string, string>) {
   const names = [...new Set([...base.keys(), ...head.keys()])]
-  return names.flatMap((property): TokenChange[] => {
+  return names.flatMap((property): PropertyChange[] => {
     const from = base.get(property)
     const to = head.get(property)
     if (from === to) return []
-    return [{ name: tokenName(property), mode, ...(from && { from }), ...(to && { to }) }]
+    return [{ name: tokenName(property), mode, ...(from && { from }), ...(to && { to }), property }]
   })
 }
 
-/** Every token whose value differs per mode, dark block first, in file order. */
-export function tokenDiff(baseCss: string, headCss: string): TokenChange[] {
+/** Every property whose value differs per mode, dark block first, in file order. */
+export function tokenDiff(baseCss: string, headCss: string): PropertyChange[] {
   const base = parseThemeTokens(baseCss)
   const head = parseThemeTokens(headCss)
   return [...modeDiff('dark', base.dark, head.dark), ...modeDiff('light', base.light, head.light)]
 }
 
 const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+const NOT_IN_WORD = '(?![\\w-])'
 
-/**
- * Matches a read of any of `tokens`: a class through a utility (`bg-surface-raised`), whatever
- * variant prefixes precede it (`web:hover:`, `[.light_&]:`), or the bare name as a string
- * literal (`resolveColor('surface-raised')`, which is `var(--color-…)` on web). Neither hits a
- * longer token that merely starts the same way (`text-secondary` and `text-text-secondary-foo`).
- */
-export function tokenReadPattern(tokens: string[]): RegExp | null {
-  const names = [...new Set(tokens)].sort((a, b) => b.length - a.length).map(escapeRegExp)
-  if (names.length === 0) return null
-  const alternatives = names.join('|')
-  return new RegExp(
-    `(?<![\\w-])(?:${CLASS_UTILITIES})-(?:${alternatives})(?![\\w-])|['"\`](?:${alternatives})['"\`]`
-  )
+/** A class under any variant prefix, negative form included: `web:hover:-mt-stack-md`. */
+function classAlternative(leaf: ThemeLeaf): string {
+  const utilities = `(?:${utilitiesFor(leaf.key)})`
+  const stem = leaf.stem ? `-${escapeRegExp(leaf.stem)}` : ''
+  return `(?<![\\w-])-?${utilities}${stem}${NOT_IN_WORD}`
 }
 
-/** The source files whose text reads a changed token through a class string or by name. */
-export function tokenReaders(tokens: TokenChange[], sources: Map<string, string>): string[] {
-  const pattern = tokenReadPattern(tokens.map((t) => t.name))
+/**
+ * Matches a read of any of `properties`: a class the theme maps to it (`border-hairline` for
+ * `--color-hairline-default`, `gap-inset-md` for `--space-inset-md`), a raw `var(--…)`, or, for
+ * a colour, its token name as a string literal (`resolveColor('surface-raised')`). A stem never
+ * matches a longer one (`text-secondary` and `text-text-secondary-foo`).
+ */
+export function tokenReadPattern(properties: string[], theme: ThemeLeaf[]): RegExp | null {
+  const wanted = new Set(properties)
+  if (wanted.size === 0) return null
+  const sorted = [...wanted].sort((a, b) => b.length - a.length)
+  const vars = `var\\(\\s*(?:${sorted.map(escapeRegExp).join('|')})${NOT_IN_WORD}`
+  const classes = theme.filter((l) => wanted.has(l.property)).map(classAlternative)
+  const colours = sorted.filter((p) => p.startsWith(COLOUR_PREFIX)).map(tokenName)
+  const literals = colours.length ? [`['"\`](?:${colours.map(escapeRegExp).join('|')})['"\`]`] : []
+  return new RegExp([vars, ...new Set(classes), ...literals].join('|'))
+}
+
+/** The source files whose text reads a changed property. */
+export function tokenReaders(
+  changes: PropertyChange[],
+  theme: ThemeLeaf[],
+  sources: Map<string, string>
+): string[] {
+  const pattern = tokenReadPattern(
+    changes.map((c) => c.property),
+    theme
+  )
   if (!pattern) return []
   return [...sources].filter(([, text]) => pattern.test(text)).map(([path]) => path)
 }
@@ -166,19 +188,19 @@ const sorted = (items: Iterable<string>) => [...items].sort()
 
 /**
  * `direct` is the changed files that are component sources; `readers` is every other source
- * whose classes read a changed token or that imports a direct file, transitively; `rendersCount`
+ * that reads a changed property or that imports a direct file, transitively; `rendersCount`
  * counts the reverse closure over direct and readers together, which is where frames render.
  */
 export function deriveFootprint(input: FootprintInput): FootprintBody {
-  const tokens = tokenDiff(input.baseCss, input.headCss)
+  const changes = tokenDiff(input.baseCss, input.headCss)
   const direct = sorted(input.changedFiles.filter((f) => input.sources.has(f)))
   const edges = importedBy(input.sources)
   const importers = reverseClosure(direct, edges)
-  const readers = new Set([...tokenReaders(tokens, input.sources), ...importers])
+  const readers = new Set([...tokenReaders(changes, input.theme, input.sources), ...importers])
   for (const file of direct) readers.delete(file)
   const renders = reverseClosure([...direct, ...readers], edges)
   return {
-    tokens,
+    tokens: changes.map(({ property: _property, ...token }) => token),
     files: sorted(input.changedFiles),
     components: { direct, readers: sorted(readers), rendersCount: renders.size },
   }

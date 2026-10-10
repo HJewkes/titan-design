@@ -499,25 +499,43 @@ the merge-base. The output has:
 
 - `tokens`: every custom property of `packages/ui/src/theme/global.css` whose value differs,
   per mode. The `:root` block is `dark` and the `.light` block is `light`; a token that moves in
-  one mode only is listed once. `name` is the token (`surface-raised` for
-  `--color-surface-raised`), and `from` and `to` are the CSS values; an added token has only
-  `to`, a removed one only `from`. Comments and spacing never count as a change.
+  one mode only is listed once. `name` is the token: `surface-raised` for
+  `--color-surface-raised`, and the property without its dashes for any other
+  (`space-inset-md`). `from` and `to` are the CSS values; an added token has only `to`, a
+  removed one only `from`. Comments and spacing never count as a change.
 - `files`: every changed path, sorted.
 - `components.direct`: the changed files that are component sources, that is `.ts` or `.tsx`
-  under `packages/ui/src/components/` that are not tests, stories, snapshots or type stubs.
-- `components.readers`: every other component source that reads a changed token, through a
-  class string (`bg-surface-raised`, `text-text-secondary`, under any variant prefix such as
-  `web:hover:` or `[.light_&]:`; `text-secondary` never matches `text-brand-secondary`) or by
-  name as a string literal (`resolveColor('surface-raised')`, which is `var(--color-…)` on web),
-  plus every source that imports a `direct` file, transitively, wrapped import clauses included.
-  The import closure is keyed by file, so two components that share a name never merge. Only
-  `packages/ui/src/components/` is read: a change under `src/hooks`, `src/utils` or `src/theme`
-  shows in `files` and `tokens`, not in `direct`, and reaches no component through the closure.
+  under `packages/ui/src/components/` that are not tests, type tests, stories, snapshots or type
+  stubs.
+- `components.readers`: every other component source that reads a changed property, plus every
+  source that imports a `direct` file, transitively (wrapped import clauses included). The
+  import closure is keyed by file, so two components that share a name never merge.
 - `components.rendersCount`: the size of the reverse import closure over `direct` and
   `readers` together, which is where frames render.
 
-The core is pure (`src/locks-footprint.ts`, given both CSS texts, the changed paths and a map of
-sources) and the tests run on fixtures under `test/fixtures/locks/` with git and gh faked.
+**What counts as a read.** The classes come from the head's `packages/ui/tailwind.config.js`,
+not from a guess: the command loads the config in a bare sandbox (`require` returns an empty
+object, so presets and plugins never load) and takes every `theme` and `theme.extend` entry whose
+value reads a `var(--…)`, `DEFAULT` keys and entries built in code included. Each entry gives a
+class stem under its theme key, and the theme key gives its Tailwind utilities, so
+`--color-hairline-default` is read by `border-hairline` or `divide-hairline`, `--space-inset-md`
+by `p-inset-md`, `gap-inset-md` or `-mt-inset-md`, and `--size-control-md` by `h-control-md` or
+`min-h-control-md`, each under any variant prefix (`web:hover:`, `[.light_&]:`). A stem never
+matches a longer one (`text-secondary` and `text-brand-secondary`; `border-hairline` and
+`border-hairline-subtle`). Two more forms count: a raw `var(--property)` anywhere in the source,
+and, for a colour, the token name as a string literal (`resolveColor('surface-raised')`). A head
+without the config is refused, since readers would be silently incomplete.
+
+Limits that remain: a token composed at runtime (`` `bg-${tone}` ``, a name built from parts) is
+not found; a theme key the utility table does not know (`src/tailwind-theme.ts`) is matched by
+any utility, which over-reports rather than under-reports; and only
+`packages/ui/src/components/` is read, so a change under `src/hooks`, `src/utils` or `src/theme`
+shows in `files` and `tokens`, not in `direct`, and reaches no component through the closure.
+
+The core is pure (`src/locks-footprint.ts`, given both CSS texts, the theme entries, the changed
+paths and a map of sources) and the tests run on fixtures under `test/fixtures/locks/` with git
+and gh faked; `test/tailwind-theme.test.ts` also reads the real config, so a config shape the
+loader cannot follow fails there first.
 
 ## The review contract (TD-670)
 

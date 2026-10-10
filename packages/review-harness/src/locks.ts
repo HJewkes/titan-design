@@ -1,8 +1,14 @@
 import { execFile } from 'node:child_process'
 import { join } from 'node:path'
 import { HARNESS_DIR } from './harness-freshness.ts'
-import { GLOBAL_CSS, deriveFootprint, type FootprintBody } from './locks-footprint.ts'
+import {
+  GLOBAL_CSS,
+  TAILWIND_CONFIG,
+  deriveFootprint,
+  type FootprintBody,
+} from './locks-footprint.ts'
 import { ReviewError } from './review.ts'
+import { themeLeaves } from './tailwind-theme.ts'
 
 /** The read-only git and gh calls the footprint makes; tests fake them. */
 export interface LocksIo {
@@ -10,8 +16,8 @@ export interface LocksIo {
   git: (repo: string, args: string[]) => Promise<string>
   /** Raw stdout of `git -C <repo> <args>` fed `stdin`, for `cat-file --batch`. */
   gitBatch: (repo: string, args: string[], stdin: string) => Promise<Buffer>
-  /** Trimmed stdout of `gh <args>`. */
-  gh: (args: string[]) => Promise<string>
+  /** Trimmed stdout of `gh <args>`, run inside `repo`. */
+  gh: (repo: string, args: string[]) => Promise<string>
 }
 
 export interface FootprintOptions {
@@ -48,7 +54,8 @@ interface Refs {
 /** A PR's base branch (as `origin/<name>`) and head sha from gh, after fetching both. */
 async function prRefs(pr: string, repo: string, io: LocksIo): Promise<Refs> {
   if (!/^\d+$/.test(pr)) throw new ReviewError(`expected a PR number, got ${pr}`)
-  const view = JSON.parse(await io.gh(['pr', 'view', pr, '--json', 'baseRefName,headRefOid'])) as {
+  const args = ['pr', 'view', pr, '--json', 'baseRefName,headRefOid']
+  const view = JSON.parse(await io.gh(repo, args)) as {
     baseRefName: string
     headRefOid: string
   }
@@ -65,8 +72,20 @@ function resolveRefs(opts: FootprintOptions, repo: string, io: LocksIo): Promise
   return prRefs(opts.pr, repo, io)
 }
 
+const ABSENT_AT_REF = /does not exist in|exists on disk, but not in/
+
+/** The file's text at `ref`, or `''` when that ref has no such path; any other failure throws. */
 function fileAt(repo: string, ref: string, path: string, io: LocksIo): Promise<string> {
-  return io.git(repo, ['show', `${ref}:${path}`]).catch(() => '')
+  return io.git(repo, ['show', `${ref}:${path}`]).catch((err: Error) => {
+    if (ABSENT_AT_REF.test(err.message)) return ''
+    throw err
+  })
+}
+
+async function themeAt(repo: string, ref: string, io: LocksIo) {
+  const source = await fileAt(repo, ref, TAILWIND_CONFIG, io)
+  if (!source) throw new ReviewError(`${TAILWIND_CONFIG} is missing at ${ref}; readers need it`)
+  return themeLeaves(source)
 }
 
 /** Parses `git cat-file --batch` output: a `<sha> <type> <size>` header, the bytes, a newline. */
@@ -99,25 +118,26 @@ export async function lockFootprint(opts: FootprintOptions, io: LocksIo): Promis
   const refs = await resolveRefs(opts, repo, io)
   const headSha = await io.git(repo, ['rev-parse', '--verify', `${refs.head}^{commit}`])
   const mainSha = await io.git(repo, ['merge-base', refs.base, headSha])
-  const [diff, baseCss, headCss, sources] = await Promise.all([
+  const [diff, baseCss, headCss, theme, sources] = await Promise.all([
     io.git(repo, ['diff', '--name-only', mainSha, headSha]),
     fileAt(repo, mainSha, GLOBAL_CSS, io),
     fileAt(repo, headSha, GLOBAL_CSS, io),
+    themeAt(repo, headSha, io),
     componentSources(repo, headSha, io),
   ])
   const changedFiles = diff ? diff.split('\n') : []
   return {
     derivedFrom: { mainSha, headSha },
-    ...deriveFootprint({ baseCss, headCss, changedFiles, sources }),
+    ...deriveFootprint({ baseCss, headCss, theme, changedFiles, sources }),
   }
 }
 
-function run(cmd: string, args: string[], stdin?: string): Promise<Buffer> {
+function run(cmd: string, args: string[], stdin?: string, cwd?: string): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const child = execFile(
       cmd,
       args,
-      { encoding: 'buffer', maxBuffer: EXEC_LIMIT },
+      { encoding: 'buffer', maxBuffer: EXEC_LIMIT, cwd },
       (err, stdout, stderr) => {
         if (err)
           reject(new ReviewError(`${cmd} ${args[0]}: ${stderr.toString().trim() || err.message}`))
@@ -131,5 +151,5 @@ function run(cmd: string, args: string[], stdin?: string): Promise<Buffer> {
 export const locksIo: LocksIo = {
   git: (repo, args) => run('git', ['-C', repo, ...args]).then((b) => b.toString('utf8').trim()),
   gitBatch: (repo, args, stdin) => run('git', ['-C', repo, ...args], stdin),
-  gh: (args) => run('gh', args).then((b) => b.toString('utf8').trim()),
+  gh: (repo, args) => run('gh', args, undefined, repo).then((b) => b.toString('utf8').trim()),
 }

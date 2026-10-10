@@ -13,13 +13,18 @@ export const SHELL_EYEBROW = `${SHELL}/Eyebrow.tsx`
 export const HEADER = `${SHELL}/Header.tsx`
 export const CARD = `${UI}/card/Card.tsx`
 export const TASK_TABLE = 'packages/ui/src/components/custom/ActiveWork/TaskTable.tsx'
+export const TABS = `${UI}/tabs/Tabs.tsx`
+export const STACK = `${UI}/stack/Stack.tsx`
+export const INPUT = `${UI}/input/Input.tsx`
+export const DRAWER = `${UI}/drawer/Drawer.tsx`
 
 /**
- * A small head tree shaped like the #800 case: Select reads the two moved tokens through class
- * strings with variant prefixes, Card reads one by name through resolveColor, Alert is edited,
- * Toast imports Alert, Frame imports Toast on one line and TaskTable imports it in a wrapped
- * clause. Badge reads look-alike classes only. Two files are both named Eyebrow and only the
- * shell one is imported by Header.
+ * A small head tree shaped like the #800 case. Select reads two moved colours through class
+ * strings with variant prefixes; Card reads one by name through resolveColor; Tabs reads the
+ * hairline through its DEFAULT class; Stack reads a moved spacing token through gap-; Input
+ * reads a moved colour as a raw var(). Alert is edited; Toast imports Alert, Frame imports Toast
+ * on one line and TaskTable in a wrapped clause. Badge reads look-alike classes and Drawer an
+ * unchanged scrim. Two files are both named Eyebrow and only the shell one is imported by Header.
  */
 export const sources = (): Map<string, string> =>
   new Map([
@@ -55,8 +60,15 @@ export const sources = (): Map<string, string> =>
     [FRAME, "import { Toast } from '../ui/toast/Toast'\nexport const Frame = () => <Toast />"],
     [
       BADGE,
-      'export const Badge = () => <View className="text-brand-secondary bg-surface-raised-ish" />',
+      'export const Badge = () => <View className="text-brand-secondary bg-surface-raised-ish border-hairline-subtle" />',
     ],
+    [TABS, 'export const Tabs = () => <View className="border-b border-hairline" />'],
+    [STACK, 'export const Stack = () => <View className="flex-col -mt-px gap-inset-md" />'],
+    [
+      INPUT,
+      'export const Input = () => <TextInput placeholderTextColor="var(--color-text-secondary)" />',
+    ],
+    [DRAWER, 'export const Drawer = () => <View className="bg-scrim h-control-md" />'],
     [UI_EYEBROW, 'export const Eyebrow = () => null'],
     [SHELL_EYEBROW, 'export const Eyebrow = () => null'],
     [HEADER, "import { Eyebrow } from './Eyebrow'\nexport const Header = () => <Eyebrow />"],
@@ -64,3 +76,6 @@ export const sources = (): Map<string, string> =>
 
 export const css = (name: 'base' | 'head') =>
   readFileSync(new URL(`./global.${name}.css`, import.meta.url), 'utf8')
+
+export const tailwindConfig = () =>
+  readFileSync(new URL('./tailwind.config.js', import.meta.url), 'utf8')
