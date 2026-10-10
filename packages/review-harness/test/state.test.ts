@@ -74,15 +74,15 @@ describe('section paging', () => {
   const paged = ManifestSchema.parse(pagedImageInput(60))
 
   it('keeps an unsectioned round on one page', () => {
-    expect(pagesFor(m)).toEqual([{ id: 'all', title: m.unit, first: 0, last: 7 }])
+    expect(pagesFor(m)).toEqual([{ id: 'all', title: m.unit, first: 0, last: 7, sectionIds: [] }])
     expect(pageStepAction(m, 3, 1)).toBeNull()
   })
 
   it('pages each section, then Other frames, then Overall with the general note', () => {
     expect(pagesFor(sectioned())).toEqual([
-      { id: 'lead', title: 'Which card leads the page?', first: 0, last: 3 },
-      { id: '#other', title: 'Other frames', first: 4, last: 4 },
-      { id: '#overall', title: 'Overall', first: 5, last: 7 },
+      { id: 'lead', title: 'Which card leads the page?', first: 0, last: 3, sectionIds: ['lead'] },
+      { id: '#other', title: 'Other frames', first: 4, last: 4, sectionIds: [] },
+      { id: '#overall', title: 'Overall', first: 5, last: 7, sectionIds: [] },
     ])
   })
 

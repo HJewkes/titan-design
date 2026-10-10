@@ -15,6 +15,7 @@ export function ListItem({ className, children, onPress, ...props }: ListItemPro
       <Pressable
         className={cn('flex-row items-center py-inset-md px-inset-lg min-h-[48px]', className)}
         onPress={onPress}
+        accessibilityRole="button"
         {...props}
       >
         {children}

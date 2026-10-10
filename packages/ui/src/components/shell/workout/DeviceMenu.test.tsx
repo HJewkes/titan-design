@@ -19,7 +19,7 @@ describe('DeviceMenu', () => {
   })
   it('renders the trigger glyph and opens the device list on click', () => {
     render(<DeviceMenu devices={devices} />)
-    const trigger = screen.getByRole('button', { name: 'Devices' })
+    const trigger = screen.getByRole('button', { name: 'Devices, Connected' })
     expect(screen.queryByText('Left Cable')).not.toBeInTheDocument()
     fireEvent.click(trigger)
     expect(screen.getByText('Left Cable')).toBeInTheDocument()

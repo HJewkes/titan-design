@@ -25,8 +25,9 @@ const meta: Meta<typeof BrandLockup> = {
         component:
           '**Molecule.** Composes an [icon](?path=/docs/foundations-icons--docs) mark + ' +
           '[Typography](?path=/docs/foundations-typography--docs) (wordmark + subtitle).\n\n' +
-          '**Generic over the app (AW-132).** Pick a `brand` preset, or override `mark` / ' +
-          '`wordmark` / `accentClassName` / `subtitle` for an app that has no preset yet. ' +
+          '**Generic over the app (AW-132).** `brand` is required: a registry key, or a ' +
+          '`BrandPreset` object for an app that has no entry yet (see `CustomBrand`). `mark` / ' +
+          '`wordmark` / `accentClassName` / `subtitle` still override one part of either. ' +
           "Accents come from `data-*` rather than `status-*`: `data-*` is the library's set of " +
           'distinct, CVD-checked hues with no semantic load, which is what a per-app identity ' +
           'accent needs. Voltras keeps the real `brand-primary` token.\n\n' +
@@ -56,7 +57,7 @@ export const BrandVariants: Story = {
     <Surface level="elevated" className="gap-4 p-5">
       {brandKeys.map((brand) => (
         <View key={brand} className="gap-1">
-          <Typography variant="microLabel" color="tertiary">
+          <Typography variant="microLabel" color="secondary">
             {brand}
           </Typography>
           <BrandLockup brand={brand} />
@@ -77,12 +78,15 @@ export const BrandVariantsCollapsed: Story = {
   ),
 }
 
-/** An app with no preset: supply mark, wordmark, accent and subtitle directly. */
+/** An app with no registry entry passes its own `BrandPreset` as `brand`. */
 export const CustomBrand: Story = {
   args: {
-    mark: <StarIcon size={14} color="currentColor" />,
-    wordmark: 'HYPERFRAMES',
-    subtitle: 'renders',
-    accentClassName: 'text-data-6',
+    brand: {
+      mark: <StarIcon size={14} color="currentColor" />,
+      wordmark: 'HYPERFRAMES',
+      subtitle: 'renders',
+      accentClassName: 'text-dataviz-categorical-2',
+      accentBarClassName: 'bg-dataviz-categorical-2',
+    },
   },
 }

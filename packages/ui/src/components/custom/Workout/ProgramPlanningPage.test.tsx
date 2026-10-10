@@ -113,7 +113,7 @@ describe('ProgramPlanningPage', () => {
     const { container } = render(<ProgramPlanningPage mesos={mesos} />)
     expect(await axe(container)).toHaveNoViolations()
 
-    fireEvent.click(screen.getAllByTestId('workout-pill-pressable')[0])
+    fireEvent.click(screen.getAllByTestId('workout-pill')[0])
     fireEvent.click(screen.getAllByTestId('workout-card-toggle')[0])
     expect(screen.getByTestId('program-planning-page-workout-level')).toBeInTheDocument()
     expect(await axe(container)).toHaveNoViolations()
@@ -131,7 +131,7 @@ describe('ProgramPlanningPage', () => {
     render(<ProgramPlanningPage mesos={mesos} />)
 
     // Meso level: tapping a week's workout pill drills into that week.
-    fireEvent.click(screen.getAllByTestId('workout-pill-pressable')[0])
+    fireEvent.click(screen.getAllByTestId('workout-pill')[0])
     expect(screen.getByTestId('program-planning-page-week-level')).toBeInTheDocument()
     expect(screen.getByTestId('program-planning-page-crumb-week')).toHaveTextContent('Week 1')
 
@@ -148,7 +148,7 @@ describe('ProgramPlanningPage', () => {
 
   it('shows the week view again when the week breadcrumb is pressed from an open workout', () => {
     render(<ProgramPlanningPage mesos={mesos} />)
-    fireEvent.click(screen.getAllByTestId('workout-pill-pressable')[0])
+    fireEvent.click(screen.getAllByTestId('workout-pill')[0])
     fireEvent.click(screen.getAllByTestId('workout-card-toggle')[0])
     expect(screen.getByTestId('program-planning-page-workout-level')).toBeInTheDocument()
 
@@ -180,7 +180,7 @@ describe('ProgramPlanningPage geometry resolves to the spacing tokens', () => {
     expect(spacingClassesOf('program-planning-page-breadcrumbs')).toEqual(['gap-inline-sm'])
     expect(spacingClassesAt(crumb)).toEqual(['gap-inline-sm'])
     expect(spacingClassesOf('program-planning-page-meso-level')).toEqual(['gap-3'])
-    fireEvent.click(screen.getAllByTestId('workout-pill-pressable')[0])
+    fireEvent.click(screen.getAllByTestId('workout-pill')[0])
     expect(spacingClassesOf('program-planning-page-week-level')).toEqual(['gap-2.5'])
     expect(resolveAll(['gap-inline-sm', 'gap-3', 'gap-2.5'])).toEqual(['4px', '12px', '10px'])
   })

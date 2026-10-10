@@ -29,9 +29,17 @@ const stateColor: Record<DeviceRowState, IndicatorColor> = {
   lost: 'error-vivid',
 }
 
+const stateLabel: Record<DeviceRowState, string> = {
+  connected: 'Connected',
+  available: 'Available',
+  degraded: 'Unstable',
+  lost: 'Disconnected',
+}
+
 /**
  * One device in the DeviceMenu: status dot · name · Bluetooth id. The dot color
- * carries the connection state (no redundant status text); the name is the one
+ * carries the connection state (no redundant visible status text; the dot is
+ * an image named by the state word for assistive tech); the name is the one
  * slot label (no duplicate slot badge). S1 · DeviceRow.
  */
 export function DeviceRow({ device, onPress, className, ...props }: DeviceRowProps) {
@@ -42,7 +50,12 @@ export function DeviceRow({ device, onPress, className, ...props }: DeviceRowPro
       className={cn('flex-row items-center gap-2.5 p-inset-sm rounded-[7px]', className)}
       {...props}
     >
-      <Indicator size="md" color={stateColor[device.state]} />
+      <Indicator
+        size="md"
+        color={stateColor[device.state]}
+        accessibilityRole="image"
+        accessibilityLabel={stateLabel[device.state]}
+      />
       <Typography
         variant="body2"
         color={device.slot ? 'primary' : 'secondary'}

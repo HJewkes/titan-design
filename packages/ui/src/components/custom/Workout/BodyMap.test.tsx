@@ -4,6 +4,20 @@ import { axe } from 'jest-axe'
 import { BodyMap, type BodyMapData } from './BodyMap'
 import { MuscleGroup } from './muscleTaxonomy'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { alpha } from '../../../utils/colors'
+import { Surface } from '../../ui/surface'
+
+// Light brand-primary equals dark, so light is swapped for another token to prove the mode is read.
+vi.mock('../../../theme/tokens/semantic', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../../theme/tokens/semantic')>()
+  const light = actual.getSemanticColors('light')
+  const probeLight = { ...light, 'brand-primary': light['status-info'] }
+  return {
+    ...actual,
+    getSemanticColors: (mode: 'dark' | 'light') =>
+      mode === 'light' ? probeLight : actual.getSemanticColors(mode),
+  }
+})
 
 const data: BodyMapData[] = [
   { muscleGroup: MuscleGroup.CHEST, intensity: 0.7, volumeStatus: 'target', weeklySets: 12 },
@@ -188,6 +202,34 @@ describe('BodyMap', () => {
       const { container } = render(<BodyMap data={collisionData} view="front" />)
       const slug = container.querySelector('[id="deltoids"]')
       expect(slug).toHaveAttribute('fill', colors['dataviz-diverging-4'])
+    })
+  })
+})
+
+describe('BodyMap on a light surface', () => {
+  const light = getSemanticColors('light')
+
+  function renderLight() {
+    return render(
+      <Surface theme="light">
+        <BodyMap data={data} view="front" highlightedMuscle={MuscleGroup.CHEST} />
+      </Surface>
+    )
+  }
+
+  it('outlines the figure with the light hairline-subtle token', () => {
+    const { container } = renderLight()
+    const outline = container.querySelector('path:not([id])')
+    expect(outline).toHaveAttribute('stroke', alpha(light['hairline-subtle'], 0.12))
+  })
+
+  it('borders the active toggle and the highlighted muscle with the light brand-primary', () => {
+    expect(light['brand-primary']).not.toBe(getSemanticColors('dark')['brand-primary'])
+    renderLight()
+    const brand = light['brand-primary']
+    expect(screen.getByTestId('body-map-toggle-front')).toHaveStyle({ borderTopColor: brand })
+    expect(screen.getByTestId(`body-map-muscle-${MuscleGroup.CHEST}`)).toHaveStyle({
+      borderTopColor: brand,
     })
   })
 })
