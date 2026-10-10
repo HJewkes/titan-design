@@ -201,6 +201,13 @@ export function collectLayout({ spacingVars = [] } = {}) {
     }
   }
 
+  // getComputedStyle reports the used width of an auto margin, so the keyword comes from the
+  // computed style map: an auto margin is the author pushing a child apart, not a gap to judge.
+  const autoMargins = (el) => {
+    const map = el.computedStyleMap?.()
+    return ['top', 'right', 'bottom', 'left'].map((s) => String(map?.get(`margin-${s}`)) === 'auto')
+  }
+
   function describe(el, id, parent) {
     const cs = getComputedStyle(el)
     return {
@@ -214,12 +221,14 @@ export function collectLayout({ spacingVars = [] } = {}) {
       pad: sides(cs, (s) => `padding${s}`),
       border: sides(cs, (s) => `border${s}Width`),
       margin: sides(cs, (s) => `margin${s}`),
+      marginAuto: autoMargins(el),
       layout: {
         display: cs.display,
         flexDirection: cs.flexDirection,
         flexWrap: cs.flexWrap,
         alignItems: cs.alignItems,
         alignSelf: cs.alignSelf,
+        justifyContent: cs.justifyContent,
         position: cs.position,
         rowGap: cs.rowGap,
         columnGap: cs.columnGap,

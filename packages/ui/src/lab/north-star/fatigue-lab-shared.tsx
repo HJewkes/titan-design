@@ -412,7 +412,7 @@ export function CombinedChart({
               height={h - padTop - padBot}
               fill={bandTone[p.phase]}
             />
-            {revealed && x(p.t1) - x(p.t0) > 16 && (
+            {!!revealed && x(p.t1) - x(p.t0) > 16 && (
               <text
                 x={(x(p.t0) + x(p.t1)) / 2}
                 y={padTop - 8}
@@ -449,7 +449,7 @@ export function CombinedChart({
                 rx={1.5}
                 fill={markColor[p.phase]}
               />
-              {revealed && label && x(p.t1) - x(p.t0) > 14 && (
+              {!!revealed && !!label && x(p.t1) - x(p.t0) > 14 && (
                 // Label sits OPPOSITE its line so it stays clear of the curve: ECC (line below
                 // the axis) labels ABOVE; CON (line above) labels BELOW.
                 <text
@@ -468,7 +468,7 @@ export function CombinedChart({
             </g>
           )
         })}
-      {!compact && revealed && (
+      {!compact && !!revealed && (
         <text
           x={padL - 6}
           y={y(VMAX_UP * 0.62)}
@@ -480,7 +480,7 @@ export function CombinedChart({
           CON
         </text>
       )}
-      {!compact && revealed && (
+      {!compact && !!revealed && (
         <text
           x={padL - 6}
           y={y(-VMAX_DOWN * 0.55)}
@@ -530,7 +530,7 @@ export function CombinedChart({
         />
       ))}
       {/* peak concentric marker — ties back to the velocity hero (annotated view only). */}
-      {revealed && (
+      {!!revealed && (
         <circle
           cx={x(peakS.t)}
           cy={y(peakS.vel)}
@@ -540,7 +540,7 @@ export function CombinedChart({
           strokeWidth={1.5}
         />
       )}
-      {revealed && (
+      {!!revealed && (
         <text
           x={x(peakS.t) + 7}
           y={y(peakS.vel) - 6}
@@ -553,7 +553,7 @@ export function CombinedChart({
         </text>
       )}
       {/* "now" caption — pinned bottom-right so it never collides with the "time →" label. */}
-      {revealed && axisCaptions && (
+      {!!revealed && !!axisCaptions && (
         <text
           x={w - padR}
           y={h - padBot + 16}
@@ -565,7 +565,7 @@ export function CombinedChart({
           rep {current + 1} (now) · {(TOTALS[current] / 1000).toFixed(1)}s
         </text>
       )}
-      {revealed && axisCaptions && (
+      {!!revealed && !!axisCaptions && (
         <text
           x={padL}
           y={h - padBot + 16}
@@ -659,7 +659,7 @@ export function SparkCombinedChart({
       />
       {/* on hover: the bare prescribed-tempo tuple (colored digits + dashes only, no backing),
           overlaid top-left so nothing reflows. */}
-      {revealed && (
+      {!!revealed && (
         <View pointerEvents="none" style={{ position: 'absolute', top: 4, left: 8 }}>
           <MiniTempoTuple />
         </View>
@@ -703,7 +703,7 @@ function RomStrip({
         gap: 3,
       }}
     >
-      {revealed && (
+      {!!revealed && (
         <View
           style={{
             position: 'absolute',
@@ -715,7 +715,7 @@ function RomStrip({
           }}
         />
       )}
-      {revealed && (
+      {!!revealed && (
         <View
           style={{
             position: 'absolute',
@@ -728,7 +728,7 @@ function RomStrip({
           }}
         />
       )}
-      {revealed && (
+      {!!revealed && (
         <View
           style={{
             position: 'absolute',

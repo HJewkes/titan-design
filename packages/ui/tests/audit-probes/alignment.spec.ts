@@ -35,6 +35,7 @@ const negatives = [
   'baseline-hit',
   'matched-cards',
   'hero-unit',
+  'icon-first-baseline',
 ]
 
 const positives: [string, RegExp][] = [
@@ -43,6 +44,7 @@ const positives: [string, RegExp][] = [
     /: baseline Δ[\d.]+, top Δ[\d.]+, centre Δ[\d.]+, bottom Δ[\d.]+ \(band ≤ 6px\)$/,
   ],
   ['baseline-miss', /: baseline Δ[\d.]+ \(align-items: baseline\)$/],
+  ['icon-first-miss', /: baseline Δ6 \(align-items: baseline\)$/],
   ['uneven-cards', /: height Δ8 \(both paint; limit 16px\)$/],
   ['one-line-two-sizes', / 14px vs .* 13px on one line: Δ1 \(limit 2px\)$/],
 ]

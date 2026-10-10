@@ -41,7 +41,7 @@ export function tempoColors(mode: ThemeMode) {
     overlayEdge: t['surface-elevated'],
     slow: t['status-error'], // slow — over the target time
     onTarget: t['status-success'], // on target (within the band of 0.0)
-    ahead: t['status-warning'], // ahead — still time left to the target
+    ahead: t['text-warning'], // ahead — still time left to the target; text rung clears 4.5:1 on the chip
     // Phase IDENTITY colours — deliberately NON-semantic (magenta ecc / cyan con) so the
     // phase hue never collides with the semantic pacing tones the active number carries.
     phase: {

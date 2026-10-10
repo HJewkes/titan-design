@@ -11,6 +11,7 @@ import {
 } from './build.ts'
 import { calibrationReport, readFeedbackFiles } from './calibration.ts'
 import { sectionedExampleManifest } from './example.ts'
+import { FrameRenderError } from './frames.ts'
 import { buildMorningDraft } from './morning.ts'
 import { harnessVerdict, serveMainCommand, type HarnessFreshness } from './harness-freshness.ts'
 import {
@@ -28,7 +29,7 @@ import {
 
 const USAGE = `titan-review <round.json> [options]
 titan-review --example [--storybook <url>]
-titan-review build <draft.json> [--storybook <url>] [--tree <path>]
+titan-review build <draft.json> [--storybook <url>] [--tree <path>] [--prior-feedback <feedback.json>...]
 titan-review calibration <feedback.json...>
 titan-review round from-morning <items.json> [--decider <file>] [--out <draft.json>]
 
@@ -41,6 +42,8 @@ build measures every story frame of a draft round at every width, light and dark
 headless Chromium: text at 4.5:1 (3:1 when large), control boundaries, separators, tracks and
 marks at 3:1. It writes contrast.json beside the draft and copies the draft to round.json
 only if every miss is declared in contrast.knownDefects with its route; otherwise it exits 3.
+A passing round also gets its static frames: frames/<width>-<key>-<story>.png beside the
+draft, one per story variant per width, indexed in frames/frames.json.
 A round that binds a question to a PR head needs --tree, the checkout the Storybook ran from:
 build exits 3 unless every bound head is an ancestor of that tree's HEAD, and with --tree it
 records build {mainSha (the tree's origin/main), mergeSha (its HEAD)} in round.json.
@@ -55,6 +58,9 @@ writes draft.json beside the items file (or --out); run build on it next.
 
   --storybook <url>  Storybook base url (default: the manifest's storybookUrl)
   --tree <path>      The checkout the Storybook ran from, for build (see above)
+  --prior-feedback <feedback.json>
+                     An earlier round's feedback, for build's Ship gate (repeatable; sibling
+                     round directories of the same unit are read without the flag)
   --decider <file>   Decider recommendations for round from-morning (questionId, answer, cite)
   --out <dir>        Where feedback.json and PNGs go (default: the manifest's directory);
                      for round from-morning, the draft's file path (default: draft.json
@@ -70,7 +76,8 @@ writes draft.json beside the items file (or --out); run build on it next.
 
 const DRAFT_FILE = 'draft.json'
 
-export interface CliIo extends Omit<ReviewDeps, 'onReady'>, Pick<BuildIo, 'measure' | 'git'> {
+export interface CliIo
+  extends Omit<ReviewDeps, 'onReady'>, Pick<BuildIo, 'measure' | 'renderFrames' | 'git'> {
   stdout: (text: string) => void
   stderr: (text: string) => void
   openBrowser: (url: string) => void
@@ -92,6 +99,7 @@ function parseCli(argv: string[]) {
       'allow-stale': { type: 'boolean' },
       decider: { type: 'string' },
       tree: { type: 'string' },
+      'prior-feedback': { type: 'string', multiple: true },
       example: { type: 'boolean' },
       help: { type: 'boolean' },
     },
@@ -202,7 +210,9 @@ async function fromMorning(parsed: Parsed, io: CliIo): Promise<number> {
 function isUsageError(err: unknown): err is Error {
   const code = (err as { code?: unknown }).code
   return (
-    err instanceof ReviewError || (typeof code === 'string' && code.startsWith('ERR_PARSE_ARGS'))
+    err instanceof ReviewError ||
+    err instanceof FrameRenderError ||
+    (typeof code === 'string' && code.startsWith('ERR_PARSE_ARGS'))
   )
 }
 
@@ -219,7 +229,13 @@ async function dispatch(parsed: Parsed, io: CliIo): Promise<number> {
   if (parsed.positionals[0] === 'build') {
     if (parsed.positionals.length !== 2) throw new ReviewError(`expected one draft\n\n${USAGE}`)
     const tree = parsed.values.tree && resolve(parsed.values.tree)
-    return buildRound(resolve(parsed.positionals[1]), parsed.values.storybook, io, tree)
+    return buildRound(
+      resolve(parsed.positionals[1]),
+      parsed.values.storybook,
+      io,
+      tree,
+      (parsed.values['prior-feedback'] ?? []).map((p) => resolve(p))
+    )
   }
   if (parsed.positionals[0] === 'round') return fromMorning(parsed, io)
   if (parsed.positionals[0] === 'calibration') {

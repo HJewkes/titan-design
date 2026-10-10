@@ -1,7 +1,16 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { Typography, Heading, Paragraph, Caption, Label, Overline } from './Typography'
+import { capturedClassNames } from '../../../test/classname-capture'
+import {
+  Typography,
+  Heading,
+  Paragraph,
+  Caption,
+  Label,
+  Overline,
+  type TypographyVariant,
+} from './Typography'
 
 describe('Typography', () => {
   it('renders children correctly', () => {
@@ -22,6 +31,18 @@ describe('Typography', () => {
     expect(screen.getByText('Secondary text')).toBeInTheDocument()
   })
 
+  it('error text uses the text-error token, not the status-error class', () => {
+    render(
+      <Typography color="error" testID="error-text">
+        Something went wrong
+      </Typography>
+    )
+
+    const classes = capturedClassNames.get('error-text')?.split(' ') ?? []
+    expect(classes).toContain('text-text-error')
+    expect(classes).not.toContain('text-status-error')
+  })
+
   it('applies text alignment', () => {
     render(<Typography align="center">Centered text</Typography>)
     expect(screen.getByText('Centered text')).toBeInTheDocument()
@@ -37,10 +58,42 @@ describe('Typography', () => {
   describe('Heading component', () => {
     it('renders correct heading level', () => {
       const { rerender } = render(<Heading level={1}>H1</Heading>)
-      expect(screen.getByRole('heading')).toBeInTheDocument()
+      expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument()
 
       rerender(<Heading level={3}>H3</Heading>)
-      expect(screen.getByRole('heading')).toBeInTheDocument()
+      expect(screen.getByRole('heading', { level: 3 })).toBeInTheDocument()
+    })
+  })
+
+  describe('heading levels', () => {
+    it.each([1, 2, 3, 4, 5, 6])('renders variant h%i at its own heading level', (level) => {
+      render(<Typography variant={`h${level}` as TypographyVariant}>Title</Typography>)
+      expect(screen.getByRole('heading', { level })).toHaveAttribute('aria-level', String(level))
+    })
+
+    it('renders h2 and h3 variants as h2 and h3 elements on web', () => {
+      render(
+        <>
+          <Typography variant="h2">Section</Typography>
+          <Typography variant="h3">Subsection</Typography>
+        </>
+      )
+      expect(screen.getByRole('heading', { level: 2 }).tagName).toBe('H2')
+      expect(screen.getByRole('heading', { level: 3 }).tagName).toBe('H3')
+    })
+
+    it('lets an explicit aria-level override the variant level', () => {
+      render(
+        <Typography variant="h5" aria-level={1}>
+          Page title
+        </Typography>
+      )
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Page title')
+    })
+
+    it('puts no aria-level on non-heading variants', () => {
+      render(<Typography variant="body1">Body</Typography>)
+      expect(screen.getByText('Body')).not.toHaveAttribute('aria-level')
     })
   })
 

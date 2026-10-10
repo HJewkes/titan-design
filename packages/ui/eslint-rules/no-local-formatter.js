@@ -29,7 +29,7 @@
  * baked into the rule.
  */
 
-const path = require('node:path')
+const { loadBaseline, baselineKey } = require('./ratchet')
 
 const { formatterExports } = require('./fix-options')
 
@@ -43,26 +43,6 @@ const FORMATTER_EXPORT_LIST = Object.values(formatterExports)
   .map((name) => `\`${name}()\``)
   .join(', ')
 const SHARED_OPTIONS = `Call an existing export of ${FORMATTER_MODULE_LIST}: ${FORMATTER_EXPORT_LIST}.`
-
-let baselineCache = null
-function loadBaseline() {
-  if (baselineCache) return baselineCache
-  try {
-    baselineCache = require('./no-local-formatter-baseline.json')
-  } catch {
-    baselineCache = {}
-  }
-  return baselineCache
-}
-
-/** Baseline keys are package-relative POSIX paths, so they're stable across machines. */
-function baselineKey(context) {
-  const cwd = context.getCwd?.() ?? process.cwd()
-  return path
-    .relative(cwd, context.filename ?? context.getFilename())
-    .split(path.sep)
-    .join('/')
-}
 
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
@@ -85,7 +65,9 @@ module.exports = {
     // Remaining allowance per VALUE (toFixed argument text, or function name),
     // not a plain count — same reasoning as no-raw-color and
     // no-upward-tier-import: the message lands on the thing you just added.
-    const remaining = new Map(Object.entries(loadBaseline()[key] ?? {}))
+    const remaining = new Map(
+      Object.entries(loadBaseline('no-local-formatter-baseline.json')[key] ?? {})
+    )
 
     function checkValue(value, loc, messageId, data) {
       const left = remaining.get(value) ?? 0

@@ -9,8 +9,8 @@ import {
   storyContentHeight,
   type MeasurableDoc,
 } from '../page/autoHeight.ts'
-import { captureViewportHeight } from '../src/capture.ts'
-import { ManifestSchema } from '../src/schema.ts'
+import { captureViewportHeight } from '../src/frames.ts'
+import { ManifestSchema } from '@titan-design/review-schema'
 import { frameSizing } from '../src/sections.ts'
 import { sectionedInput } from './fixtures.ts'
 

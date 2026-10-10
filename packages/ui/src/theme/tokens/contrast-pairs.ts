@@ -57,16 +57,30 @@ const TEXT_FLOORS = {
   'text-tertiary': 3, // de-emphasised, AA large
   // WCAG 1.4.3 exempts disabled text; 3:1 keeps it discernible as text.
   'text-disabled': 3,
+  // Dark pairs baselined: owner q4b-red-conflict r1 (a), 2026-10-07, below AA by decision; TD-416.
   'text-error': AA,
   'text-link': AA,
   'text-link-hover': AA,
 } as const
+
+// Declared on the four content planes only; background-frame is a page backdrop no text token here sits on.
+const TONE_TEXT = [
+  'text-brand',
+  'text-brand-secondary',
+  'text-success',
+  'text-warning',
+  'text-info',
+] as const
 
 const TONES = ['success', 'error', 'warning', 'info'] as const
 const BRANDS = ['primary', 'secondary'] as const
 
 const textOnPlanes: ContrastPair[] = Object.entries(TEXT_FLOORS).flatMap(([fg, floor]) =>
   TEXT_PLANES.map((bg) => ({ fg, bg, floor, modes: BOTH }))
+)
+
+const toneTextOnPlanes: ContrastPair[] = TONE_TEXT.flatMap((fg) =>
+  CONTENT_PLANES.map((bg) => ({ fg, bg, floor: AA, modes: BOTH }))
 )
 
 // Components still draw error text in status-error until TD-249 moves them onto
@@ -107,6 +121,7 @@ const labelsOnOtherFills: ContrastPair[] = [
 
 export const CONTRAST_PAIRS: readonly ContrastPair[] = [
   ...textOnPlanes,
+  ...toneTextOnPlanes,
   ...statusErrorText,
   ...labelsOnSolidFills,
   ...labelsOnSubtleFills,

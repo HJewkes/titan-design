@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, ScrollView, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { Skeleton } from '../skeleton'
 import { TableContext, type TableDensity } from './TableContext'
 import type { SortDirection } from './useTableState'
 
@@ -211,6 +212,11 @@ interface TableLoadingSkeletonProps {
   rowCount: number
 }
 
+// Deterministic so the bars do not re-roll on every render.
+function skeletonWidth(rowIndex: number, colIndex: number) {
+  return `${50 + ((rowIndex * 7 + colIndex * 13) % 5) * 10}%`
+}
+
 function TableLoadingSkeleton({ rowCount }: TableLoadingSkeletonProps) {
   return (
     <>
@@ -218,7 +224,7 @@ function TableLoadingSkeleton({ rowCount }: TableLoadingSkeletonProps) {
         <TableRow isHoverable={false}>
           {[1, 2, 3, 4].map((i) => (
             <View key={i} className="flex-1 px-4 py-3">
-              <View className="h-4 w-20 bg-interactive-disabled rounded animate-pulse" />
+              <Skeleton width={80} />
             </View>
           ))}
         </TableRow>
@@ -228,10 +234,7 @@ function TableLoadingSkeleton({ rowCount }: TableLoadingSkeletonProps) {
           <TableRow key={rowIndex} isHoverable={false}>
             {[1, 2, 3, 4].map((colIndex) => (
               <View key={colIndex} className="flex-1 px-4 py-3.5">
-                <View
-                  className="h-4 bg-interactive-disabled rounded animate-pulse"
-                  style={{ width: `${50 + Math.random() * 40}%` }}
-                />
+                <Skeleton width={skeletonWidth(rowIndex, colIndex)} />
               </View>
             ))}
           </TableRow>

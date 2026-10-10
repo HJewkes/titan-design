@@ -7,7 +7,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { expect, test } from '@playwright/test'
 import type { ContrastReport } from '../src/contrast-gate.ts'
-import { MANIFEST_SCHEMA_ID, type ManifestInput } from '../src/schema.ts'
+import { MANIFEST_SCHEMA_ID, type ManifestInput } from '@titan-design/review-schema'
 import { SECTION_TEXTS } from '../test/fixtures.ts'
 
 const CLI = new URL('../src/cli.ts', import.meta.url).pathname

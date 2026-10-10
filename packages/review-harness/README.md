@@ -14,8 +14,10 @@ as JSON on stdout and in `feedback.json`. Private workspace tool, not published.
 5. `a` turns pins on: click a spot on any frame, type a note. `Esc` turns pins off.
 6. On a question, `1`-`9` pick its options; the scale takes its value directly.
 7. The last box is for general notes. `l` toggles one column per variant.
-   A sectioned round asks each group's question above that group's frames. It shows one
-   section at a time:
+   A sectioned round asks each question directly under the frames it names (`frames`); a
+   question without `frames` sits above its section's other frames, and a Ship question reads
+   last, under every frame. It shows one page at a time, a page being one section or every
+   section of one PR group:
    `]` pages to the next section, `[` to the previous one, and `Enter` past a section's last
    stop carries on into the next. The header lists every section as a link and says
    "Section N of M"; the end of every section repeats it between Previous and Next. Next is the
@@ -115,17 +117,19 @@ sha256 of the manifest you wrote.
 
 ## Schemas
 
-`schema/round.schema.json` and `schema/feedback.schema.json` are generated from
-`src/schema.ts` (`pnpm --filter @titan-design/review-harness schema`; a test fails if they drift).
+The schemas live in [`@titan-design/review-schema`](../review-schema/README.md), which the harness
+imports. Its `schema/round.schema.json` and `schema/feedback.schema.json` are generated from its
+`src/schema.ts` (`pnpm --filter @titan-design/review-schema schema`; a test fails if they drift).
 
 - Manifest `titan-review/round@2`: `unit`, `round`, `storybookUrl`, `context?`, `widths[]`,
   `height` (a number of px or `"auto"`, default `"auto"`; at round level a number caps every
   frame), `maxHeight` (default 1200, the cap when the round's `height` is `"auto"`),
-  `variants[{key, storyId | image, label, args?, globals?, height?}]` (at most 12, or at most 80
-  in a round with `sections`; empty for a round of questions only, which needs no placeholder
+  `variants[{key, storyId | image, label, args?, globals?, height?, variantUnit?, alternate?, change?: changed|new|removed|unchanged}]` (at most 12 in a round
+  without `sections`, uncapped in one with them; empty for a round of questions only, which needs no placeholder
   frame; every frame sits in a section),
-  `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?, recommendation?, signsOff (pick-one), page?, merge? (pick-one)}]`,
+  `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?, recommendation?, signsOff (pick-one), page?, merge? (pick-one), frames?[], decision?: iterate|ship|decide, outcomes? (option to accept|changes|neutral), implemented? (the option, or options for pick-many, the PR implements)}]`,
   `sections[{id, title, deciding, changed, context, kind?: CHOICE|STATES, questionIds[], variantKeys[], seeAlso?[], height?}]`,
+  `prGroups?[{pr: owner/name#n, headSha, sectionIds[]}]` (a PR group named outright),
   `build?{mainSha, mergeSha}` (written by `build --tree`; a draft that carries it is refused),
   `recommendations` (`"after-answer"`, the default, or `"shown"`),
   `contrast?{knownDefects[], measured[], unmeasured[]}` (also on a section; see _Contrast gate_).
@@ -314,7 +318,7 @@ answer that is not one of the options, or a `questionId` no item has, is refused
 `titan-review build <draft.json>` measures every story variant at every manifest width in
 **light and dark** (the Storybook `theme` global; light is `.light` on `<html>`) in headless
 Chromium, using the same renderer as capture. It writes `contrast.json` beside the draft and
-copies the draft byte for byte to `round.json` only when nothing undeclared failed. Otherwise
+writes the draft, with the builder rules below applied, to `round.json` only when nothing undeclared failed. Otherwise
 it exits 3 and `round.json` is not written. A frame whose theme did not apply is an error,
 never a pass.
 
@@ -326,6 +330,39 @@ names a head the Storybook did not render. On success `round.json` is the draft 
 `build: {mainSha, mergeSha}`: `mergeSha` is the tree's `HEAD`, `mainSha` its `origin/main`.
 `contrast.json` records the sha of those bytes, so the round still serves. A rebuild at the same
 heads rewrites `build` only. A round without bindings needs no tree.
+
+### Builder rules (TD-768)
+
+`build` rewrites the draft into `round.json` under these rules (`src/round-rules.ts`,
+`src/ship-gate.ts`); applying them twice changes nothing.
+
+- **Stable ids.** A question's id is the one the draft supplies and `build` never renumbers it.
+  The ask's identity across rounds is its `ask:` topic: `ask:<repo>#<pr>/ship` for a Ship
+  question (so it holds across units) and `ask:<unit>/<id>` for any other. Draft-supplied
+  `topics` are kept. Keep the id for as long as the ask is the same ask.
+- **Labels.** Every prompt starts `ITERATION: ` or `SHIP: ` (a pick-one with `merge` is SHIP) and
+  carries `topic:iteration` or `topic:ship`.
+- **Stacked PRs.** A draft's `stackedOn` is written through. When no question is about the base
+  PR, every frame in the base PR's sections is labelled `base PR #n, not under review: <label>`.
+- **Grouping.** A section belongs to a PR by the `prGroups` entry that lists it, else its
+  questions' `page`, else a leading `#n` or `owner/name#n` in its title. Each PR's sections sit
+  together, at the first one's place, the section holding its Ship question last, and the Ship
+  question last in that section. The page shows each such group as one page and never splits one.
+- **Layout lint.** The ruled round must pass `lintRound` from `@titan-design/review-schema`, or
+  `build` throws with one `<rule>: <message>` line per problem: a deciding question without
+  `frames`, a frame outside its question's section or under two questions, a variant unit split
+  across blocks or alternates, alternates shown over different modes, a split PR group, a Ship
+  that is not last in its group, a Ship whose head or PR is not its group's one PR at one head, or
+  an `iterate` or `decide` pick question without `implemented`.
+- **Ship gate.** `build` exits 3, writing no `round.json`, for a Ship question whose PR had a
+  changes-requested (`revisionRequested`), declined (a pick outside `merge.ship`) or non-agreed
+  (`agreed: false`) answer in the latest earlier round that asked about it. It reads
+  `feedback.json` beside a `round.json` (whose sha it must match) in sibling round directories of
+  the same unit with a lower round number, and any `--prior-feedback <feedback.json>` given. A Ship
+  bound to a different head than that round's is a fix round's and is not blocked. The same gate
+  refuses on the owner's Ship rule (`shipBlocks` in review-schema): an answer in the PR's group
+  carries free text, or picks other than the question's `implemented` option. The page applies
+  the rule live: a blocked group's Ship option is disabled and the reasons show under it.
 
 Thresholds (WCAG 2.1 SC 1.4.3 and 1.4.11): text 4.5:1; large text (24px, or 18.66px at
 weight 700 or more) 3:1; non-text 3:1 against the adjacent plane. Each colour is composited
@@ -391,6 +428,52 @@ round-level `contrast` holds them for every frame:
 thresholds, the coverage lists above, a per-frame summary (checks, failures, known defects,
 exempt, indeterminate), and every failure, known defect, unmeasured frame, indeterminate
 pair and unmatched declaration. Passing checks are counted, not listed.
+
+## Static frames (TD-752)
+
+`build` also renders every story frame of a passing round to static PNGs, so a round can be
+read somewhere no Storybook is running (the console's rounds view). They land beside the round:
+
+```
+<round-dir>/frames/<width>-<key>-<story-name>.png   one per story variant per width
+<round-dir>/frames/frames.json                      the index (titan-review/frames@1)
+```
+
+The file name is the same one the post-submit capture writes, so a frame has one name in both
+places. `frames.json` lists `unit`, `round`, `storybookUrl`, the `manifestSha256` of the
+`round.json` the frames were rendered for, and one record per frame: `key` (the file stem),
+`variant`, `storyId`, `theme` (`light` or `dark`, as it applied on `<html>`), `viewport`
+(`{width, height}`), `file` (relative to the round directory) and `sha256` of the PNG. A variant
+whose `globals.theme` did not apply is an error, never a frame in the other theme. Image
+variants are already static files beside the round and are not copied. Frames are rendered
+only when the contrast gate passes, after `contrast.json` and before `round.json`; a refused
+build writes none. A render is staged in a sibling directory and swapped in for `frames/`
+only when every frame passes, so a failed render (a theme that did not apply, a story that
+throws, a browser that dies) leaves the previous frames and `frames.json` exactly as they
+were, and a successful one leaves no file an earlier render wrote.
+
+The renderer is the harness's package-local subpath export (the harness is `private`, so the
+export resolves inside this workspace, not from npm):
+
+```ts
+import { renderFrames } from '@titan-design/review-harness/frames'
+
+const index = await renderFrames(manifest, 'http://127.0.0.1:6100', {
+  roundsDir: '/path/to/rounds', // frames go under <roundsDir>/<roundId>/frames/
+  roundId: 'td-752-fixture',
+  manifestSha256, // optional, recorded in the index
+})
+```
+
+`manifest` is a parsed `round@2` (`RoundSchema` or `ManifestSchema` from
+`@titan-design/review-schema`). No server is started: the renderer needs only a Storybook on a
+loopback host (any other host is refused before anything is read) and headless Chromium at 2x,
+the same shooter as the post-submit capture. The contrast gate shares its story loading
+(`renderStory`, `STORY_ROOT`) but opens its own 1x page. It refuses a story the Storybook does
+not serve before a browser opens, naming each missing id. `frameKey(variant, width)` gives a
+frame's stem, `framesDir(roundsDir, roundId)` its directory, and `readFramesIndex(dir)` reads
+an index back. The `open` and `storyIds` options inject the browser and the story list for
+tests. Errors are `FrameRenderError`, which the CLI reports as a usage error (exit 2).
 
 ## Calibration
 
@@ -499,10 +582,23 @@ Rules worth knowing:
 - **One frame per section.** A frame that also bears on another group goes in that group's
   `seeAlso`, which renders a link to it instead of a second iframe. Validation refuses a variant
   or question claimed by two sections, and refuses an unknown key with the id in the message.
-- **Sections page a big round (TD-343).** A round without sections shows every frame on one
-  page and is capped at 12 variants. A round with sections shows one section at a time, so it
-  takes up to 80, for example one Gate 2 batch of main and PR-head frames in light and dark.
-  The page order is the sections, then "Other frames", then "Overall" with the general note.
+- **A question sits under its own frames (TD-794).** `frames` on a question names the variant
+  keys it asks about. The page renders those frames, then the question, as one block, so a
+  decision is never read away from what it decides. A section reads top to bottom: questions
+  without `frames`, the strip of frames no question names, each question under its `frames`,
+  then the section's Ship question. Every key in `frames` must be a frame of the question's own
+  section, and a frame sits above one question only; `lintRound` refuses anything else, naming
+  the question, the frame and the section it is in. A STATES strip may hold a question that
+  picks among its own `frames`, and a CHOICE strip holds settings constant within each
+  question's `frames` (then among the frames no question names), not across the whole strip.
+- **Sections page a big round (TD-343, TD-794).** A round without sections shows every frame on
+  one page and is capped at 12 variants. A round with sections shows one page at a time and is
+  not capped: frames mount only as they near the viewport, so the round's size does not bound
+  what is on screen. (The old cap of 80 was sized for one Gate 2 batch, not a limit of the page.)
+  Consecutive sections about one PR (by their questions' `page`, else a leading `#n` in the
+  title, as the builder groups them) share a page, so a PR's frames, its picks and its Ship are
+  read together. The page order is those pages, then "Other frames", then "Overall" with the
+  general note.
   A `seeAlso` link pages to the section that holds that frame. `feedback.json` is unchanged.
 
 ### Heights
