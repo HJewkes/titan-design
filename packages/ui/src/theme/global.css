@@ -443,9 +443,9 @@
     --color-status-error-vivid: #A4221C;
     --color-status-error-vivid-light: #E05254;
     --color-status-error-vivid-dark: #A4221C;
-    --color-status-error-vivid-subtle: rgba(255, 71, 87, 0.12);
-    --color-status-error-vivid-muted: rgba(255, 71, 87, 0.30);
-    --color-status-error-vivid-strong: rgba(255, 71, 87, 0.50);
+    --color-status-error-vivid-subtle: rgba(164, 34, 28, 0.12);
+    --color-status-error-vivid-muted: rgba(164, 34, 28, 0.30);
+    --color-status-error-vivid-strong: rgba(164, 34, 28, 0.50);
     --color-status-error-vivid-rgb: 255, 71, 87;
     --color-border-prominent: #A29F9D;
     --color-status-warning: #A45E00;

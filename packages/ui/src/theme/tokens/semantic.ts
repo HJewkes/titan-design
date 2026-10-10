@@ -116,9 +116,9 @@ export const semanticColorsLight = {
   'status-error-vivid': ramp.red[700], // TD-789 3b: the pin missed 3:1; red 600 is status-error
   'status-error-vivid-light': ramp.red[500],
   'status-error-vivid-dark': ramp.red[700],
-  'status-error-vivid-subtle': 'rgba(255, 71, 87, 0.12)',
-  'status-error-vivid-muted': 'rgba(255, 71, 87, 0.30)',
-  'status-error-vivid-strong': 'rgba(255, 71, 87, 0.50)',
+  'status-error-vivid-subtle': 'rgba(164, 34, 28, 0.12)', // TD-789 3b: red 700, the base above
+  'status-error-vivid-muted': 'rgba(164, 34, 28, 0.30)',
+  'status-error-vivid-strong': 'rgba(164, 34, 28, 0.50)',
 
   'status-warning': ramp.amber[600], // TD-789 3b: amber 500 missed 3:1 on the light planes
   'status-warning-light': ramp.amber[200],
