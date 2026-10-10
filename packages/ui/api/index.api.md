@@ -3801,7 +3801,7 @@ export interface GraphItemRef {
 
 // @public
 export interface GraphKind {
-    color?: ColorToken$1;
+    color?: ColorToken;
     id: string;
     label: string;
 }
