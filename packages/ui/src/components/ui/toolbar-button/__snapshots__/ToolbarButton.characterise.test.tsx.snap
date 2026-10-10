@@ -2176,8 +2176,8 @@ exports[`ToolbarButton characterisation > on a light surface > paints the hover 
 
 exports[`ToolbarButton characterisation > on a light surface > paints the hover fill when isActive=true 1`] = `
 {
-  "hovered": "rgb(232, 229, 226)",
-  "rest": "rgb(237, 234, 231)",
+  "hovered": "rgb(207, 204, 201)",
+  "rest": "rgb(212, 209, 206)",
 }
 `;
 
@@ -2211,7 +2211,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Activ
               aria-label="Active (orange icon)"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
               tabindex="0"
               type="button"
             >
@@ -2260,7 +2260,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Activ
               aria-label="Default (white icon)"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
               tabindex="0"
               type="button"
             >
@@ -2309,7 +2309,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Activ
               aria-label="Inactive (gray icon)"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
               tabindex="0"
               type="button"
             >
@@ -2379,7 +2379,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Butto
               aria-label="Filter"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
               tabindex="0"
               type="button"
             >
@@ -2418,7 +2418,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Butto
               aria-label="Settings"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
               tabindex="0"
               type="button"
             >
@@ -2457,7 +2457,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Butto
               aria-label="View"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
               tabindex="0"
               type="button"
             >
@@ -2566,7 +2566,7 @@ color: #FF7900; /* when isActive=true */
               aria-label="Inactive"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
               tabindex="0"
               type="button"
             >
@@ -2605,7 +2605,7 @@ color: #FF7900; /* when isActive=true */
               aria-label="Active"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
               tabindex="0"
               type="button"
             >
@@ -2676,7 +2676,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Compa
               aria-label="Toggle"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
               tabindex="0"
               type="button"
             >
@@ -2717,7 +2717,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Compa
               aria-label="Filter"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
               tabindex="0"
               type="button"
             >
@@ -2756,7 +2756,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Compa
               aria-label="Settings"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
               tabindex="0"
               type="button"
             >
@@ -2795,7 +2795,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Compa
               aria-label="View"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
               tabindex="0"
               type="button"
             >
@@ -2851,7 +2851,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Defau
           aria-label="Settings"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="button"
-          style="background-color: rgb(255, 255, 255); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+          style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
           tabindex="0"
           type="button"
         >
@@ -3048,7 +3048,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Hover
               aria-label="Hover Me (Active)"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
               tabindex="0"
               type="button"
             >
@@ -3087,7 +3087,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Hover
               aria-label="Hover Me (Inactive)"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
               tabindex="0"
               type="button"
             >
@@ -3157,7 +3157,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders the IconO
               aria-label="Settings"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
               tabindex="0"
               type="button"
             >
@@ -3190,7 +3190,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders the IconO
               aria-label="Filter (active)"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
               tabindex="0"
               type="button"
             >
@@ -3223,7 +3223,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders the IconO
               aria-label="View"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
               tabindex="0"
               type="button"
             >
@@ -3283,7 +3283,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Inter
             aria-label="Toggle Me"
             class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
             role="button"
-            style="background-color: rgb(237, 234, 231); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+            style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
             tabindex="0"
             type="button"
           >
@@ -3358,7 +3358,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Toolb
               aria-label="Filters"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
               tabindex="0"
               type="button"
             >
@@ -3397,7 +3397,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Toolb
               aria-label="Settings"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
               tabindex="0"
               type="button"
             >
@@ -3436,7 +3436,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Toolb
               aria-label="View"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
               tabindex="0"
               type="button"
             >
@@ -3509,7 +3509,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Varia
                 aria-label="Inactive"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="button"
-                style="background-color: rgb(237, 234, 231); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+                style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
                 tabindex="0"
                 type="button"
               >
@@ -3548,7 +3548,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Varia
                 aria-label="Active"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="button"
-                style="background-color: rgb(255, 255, 255); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+                style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
                 tabindex="0"
                 type="button"
               >
@@ -3602,7 +3602,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Varia
                 aria-label="Inactive"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="button"
-                style="background-color: rgb(237, 234, 231);"
+                style="background-color: rgb(255, 255, 255);"
                 tabindex="0"
                 type="button"
               >
@@ -3641,7 +3641,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Varia
                 aria-label="Active"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="button"
-                style="background-color: rgb(255, 255, 255);"
+                style="background-color: rgb(237, 234, 231);"
                 tabindex="0"
                 type="button"
               >
@@ -3698,7 +3698,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders the WithM
           aria-label="View Options"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="button"
-          style="background-color: rgb(237, 234, 231); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+          style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
           tabindex="0"
           type="button"
         >
@@ -3752,7 +3752,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders the open 
           aria-label="View Options"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="button"
-          style="background-color: rgb(237, 234, 231); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+          style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
           tabindex="0"
           type="button"
         >
@@ -3922,7 +3922,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
         aria-label="Matrix"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         role="button"
-        style="background-color: rgb(237, 234, 231);"
+        style="background-color: rgb(212, 209, 206);"
         tabindex="0"
         type="button"
       >
@@ -4007,7 +4007,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
         aria-label="Matrix"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         role="button"
-        style="background-color: rgb(237, 234, 231);"
+        style="background-color: rgb(212, 209, 206);"
         tabindex="0"
         type="button"
       >
@@ -4177,7 +4177,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
         aria-label="Matrix"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         role="button"
-        style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+        style="background-color: rgb(212, 209, 206); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
         tabindex="0"
         type="button"
       >
@@ -4262,7 +4262,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
         aria-label="Matrix"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         role="button"
-        style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+        style="background-color: rgb(212, 209, 206); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
         tabindex="0"
         type="button"
       >

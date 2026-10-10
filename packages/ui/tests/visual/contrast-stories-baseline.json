@@ -3,29 +3,25 @@
     "#1c1916|#555352": 6
   },
   "components-atoms-avatar--all-sizes light": {
-    "#ffffff|#b4b2b0": 6,
-    "#ffffff|#c7c7c7": 6
+    "#ffffff|#b4b2b0": 6
   },
   "components-atoms-avatar--default dark": {
     "#1c1916|#555352": 1
   },
   "components-atoms-avatar--default light": {
-    "#ffffff|#b4b2b0": 1,
-    "#ffffff|#c7c7c7": 1
+    "#ffffff|#b4b2b0": 1
   },
   "components-atoms-avatar--fallback-initials dark": {
     "#1c1916|#555352": 3
   },
   "components-atoms-avatar--fallback-initials light": {
-    "#ffffff|#b4b2b0": 3,
-    "#ffffff|#c7c7c7": 3
+    "#ffffff|#b4b2b0": 3
   },
   "components-atoms-avatar--with-badge dark": {
     "#1c1916|#555352": 3
   },
   "components-atoms-avatar--with-badge light": {
-    "#ffffff|#b4b2b0": 3,
-    "#ffffff|#c7c7c7": 3
+    "#ffffff|#b4b2b0": 3
   },
   "components-atoms-badge--all-colors dark": {
     "#e05254|#252321": 1
@@ -45,8 +41,7 @@
     "#8f8d8a|#302e2c": 2
   },
   "components-atoms-chip--disabled light": {
-    "#808188|#e1dedb": 2,
-    "#898c94|#f2f2f2": 2
+    "#808188|#e1dedb": 2
   },
   "components-atoms-filepathlabel--default dark": {
     "#888684|#252321": 1
@@ -55,12 +50,10 @@
     "#888684|#252321": 1
   },
   "components-atoms-gauge--override-color light": {
-    "#7bafde|#edeae7": 1,
-    "#7bafde|#ffffff": 1
+    "#7bafde|#edeae7": 1
   },
   "components-atoms-link--all-colors light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "components-atoms-pill--all-variants light": {
     "#ffffff|#ff7900": 1
@@ -70,9 +63,6 @@
     "#888684|#31302f": 1,
     "#f77175|#413535": 1,
     "#ff7900|#4a3929": 1
-  },
-  "components-atoms-pill--on-both-planes light": {
-    "#72716f|#edeae7": 1
   },
   "components-atoms-pill--solid-tones light": {
     "#ffffff|#2196f3": 1,
@@ -111,21 +101,13 @@
     "#888684|#2c2a28": 1,
     "#888684|#31302f": 1
   },
-  "components-atoms-surface--nested-planes light": {
-    "#72716f|#edeae7": 2
-  },
-  "components-atoms-surface--on-surface-text light": {
-    "#72716f|#edeae7": 1
-  },
   "components-atoms-surface--pressed-clamp-and-nesting dark": {
     "#888684|#252321": 1,
     "#888684|#2c2a28": 1,
     "#888684|#31302f": 1
   },
   "components-atoms-surface--pressed-clamp-and-nesting light": {
-    "#5a5958|#bdbab7": 2,
-    "#72716f|#a29f9d": 2,
-    "#72716f|#edeae7": 2
+    "#5a5958|#bdbab7": 2
   },
   "components-atoms-surface--pressed-wells dark": {
     "#888684|#252321": 1,
@@ -133,95 +115,65 @@
     "#888684|#31302f": 2,
     "#888684|#373635": 1
   },
-  "components-atoms-surface--pressed-wells light": {
-    "#72716f|#edeae7": 3
-  },
   "components-atoms-surface--theme-inheritance dark": {
-    "#72716f|#edeae7": 2,
     "#888684|#31302f": 1
   },
   "components-atoms-surface--theme-inheritance light": {
-    "#72716f|#edeae7": 2,
     "#888684|#31302f": 1
   },
   "components-atoms-surface--wall-lockup dark": {
     "#888684|#2c2a28": 4,
     "#888684|#31302f": 1
   },
-  "components-atoms-surface--wall-lockup light": {
-    "#72716f|#edeae7": 2
-  },
   "components-atoms-tile--default dark": {
     "#888684|#31302f": 1
-  },
-  "components-atoms-tile--default light": {
-    "#72716f|#edeae7": 1
   },
   "components-atoms-tile--row dark": {
     "#888684|#31302f": 3
   },
   "components-atoms-tile--row light": {
-    "#72716f|#edeae7": 3,
-    "#f9b415|#edeae7": 1,
     "#f9b415|#ffffff": 1
   },
   "components-atoms-tile--schedule-tiles dark": {
     "#888684|#31302f": 3
   },
   "components-atoms-tile--schedule-tiles light": {
-    "#72716f|#edeae7": 3,
-    "#f9b415|#edeae7": 1,
     "#f9b415|#ffffff": 1
   },
   "components-atoms-tile--start-aligned dark": {
     "#888684|#31302f": 1
   },
-  "components-atoms-tile--start-aligned light": {
-    "#72716f|#edeae7": 1
-  },
   "components-atoms-tile--value-colors dark": {
     "#888684|#31302f": 3
   },
   "components-atoms-tile--value-colors light": {
-    "#2ed573|#edeae7": 1,
     "#2ed573|#ffffff": 1,
-    "#72716f|#edeae7": 3,
-    "#f9b415|#edeae7": 1,
     "#f9b415|#ffffff": 1
   },
   "components-atoms-treemap--light dark": {
     "#181717|#d45453": 1,
-    "#191919|#d65656": 1,
-    "#fdfdfd|#ab6c17": 1,
-    "#ffffff|#ad6e19": 1
+    "#fdfdfd|#ab6c17": 1
   },
   "components-atoms-treemap--light light": {
     "#181717|#d45453": 1,
-    "#191919|#d65656": 1,
-    "#fdfdfd|#ab6c17": 1,
-    "#ffffff|#ad6e19": 1
+    "#fdfdfd|#ab6c17": 1
   },
   "components-atoms-treemap--truncated light": {
     "#181717|#d45453": 5,
-    "#191919|#d65656": 5,
-    "#fdfdfd|#ab6c17": 4,
-    "#ffffff|#ad6e19": 4
+    "#fdfdfd|#ab6c17": 4
   },
   "components-molecules-alert--all-variants dark": {
     "#a29f9d|#2196f3": 1,
     "#f9f6f3|#2196f3": 1
   },
   "components-molecules-alert--all-variants light": {
-    "#121828|#1072cb": 1,
     "#121828|#135aa8": 1,
-    "#424140|#135aa8": 1,
-    "#5a5958|#1072cb": 1
+    "#424140|#135aa8": 1
   },
   "components-molecules-alert--default-vs-compact dark": {
     "#5a5958|#100d0a": 2
   },
   "components-molecules-alert--default-vs-compact light": {
-    "#5a5958|#a29f9d": 2,
     "#5a5958|#bdbab7": 2
   },
   "components-molecules-alert--solid-variants dark": {
@@ -234,25 +186,19 @@
     "#424140|#135aa8": 1,
     "#424140|#2b6b25": 1,
     "#424140|#a45e00": 1,
-    "#424140|#d14343": 1,
-    "#5a5958|#1072cb": 1,
-    "#5a5958|#298732": 1,
-    "#5a5958|#c27400": 1,
-    "#5a5958|#d14343": 1
+    "#424140|#d14343": 1
   },
   "components-molecules-autocomplete--disabled dark": {
     "#8f8d8a|#292725": 1
   },
   "components-molecules-autocomplete--disabled light": {
-    "#808188|#f3f0ed": 1,
-    "#898c94|#fcfbf9": 1
+    "#808188|#f3f0ed": 1
   },
   "components-molecules-autocomplete--form-example dark": {
     "#8f8d8a|#292725": 1
   },
   "components-molecules-autocomplete--form-example light": {
-    "#808188|#f3f0ed": 1,
-    "#898c94|#fcfbf9": 1
+    "#808188|#f3f0ed": 1
   },
   "components-molecules-autocomplete--with-error dark": {
     "#e05254|#252321": 1
@@ -266,41 +212,22 @@
     "#1c1916|#d14343": 1
   },
   "components-molecules-button--all-variants light": {
-    "#ff7900|#edeae7": 3,
-    "#ff7900|#ffffff": 3
+    "#ff7900|#edeae7": 3
   },
   "components-molecules-button--ghost light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "components-molecules-button--link light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "components-molecules-button--outline light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "components-molecules-button--secondary light": {
     "#1c1916|#307b9b": 1
   },
-  "components-molecules-card--default light": {
-    "#ff7900|#ffffff": 1
-  },
-  "components-molecules-carousel-interactions--controlled-ignoring-changes light": {
-    "#ff7900|#ffffff": 9
-  },
-  "components-molecules-carousel-interactions--drag-playground light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 9
-  },
-  "components-molecules-carousel-interactions--drag-playground-looping light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 9
-  },
   "components-molecules-datarow--with-value-class-name light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "components-molecules-datetime--colors dark": {
     "#888684|#252321": 1
@@ -321,15 +248,13 @@
     "#888684|#252321": 2
   },
   "components-molecules-formfield--complete-form-example light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "components-molecules-formfield--disabled dark": {
     "#8f8d8a|#292725": 1
   },
   "components-molecules-formfield--disabled light": {
-    "#808188|#f3f0ed": 1,
-    "#898c94|#fcfbf9": 1
+    "#808188|#f3f0ed": 1
   },
   "components-molecules-formfield--form-section-example dark": {
     "#888684|#252321": 1
@@ -343,8 +268,7 @@
     "#e05254|#252321": 1
   },
   "components-molecules-formfield--validation-states light": {
-    "#a4a2a0|#f3f0ed": 1,
-    "#b9b8b7|#fcfbf9": 1
+    "#a4a2a0|#f3f0ed": 1
   },
   "components-molecules-formfield--with-error dark": {
     "#e05254|#252321": 1
@@ -352,15 +276,11 @@
   "components-molecules-formfield--with-helper-text dark": {
     "#888684|#252321": 1
   },
-  "components-molecules-helptip--form-example light": {
-    "#298732|#f9f6f3": 1
-  },
   "components-molecules-input--disabled dark": {
     "#7a7775|#252321": 1
   },
   "components-molecules-input--disabled light": {
-    "#95969b|#edeae7": 1,
-    "#a0a3a9|#ffffff": 1
+    "#95969b|#edeae7": 1
   },
   "components-molecules-input--password-with-error dark": {
     "#e05254|#252321": 1
@@ -369,43 +289,34 @@
     "#e05254|#252321": 1
   },
   "components-molecules-menu--default light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "components-molecules-menu--destructive-item dark": {
     "#e05254|#373635": 1
   },
   "components-molecules-menu--disabled-items light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "components-molecules-menu--with-dividers light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "components-molecules-menu--with-groups light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "components-molecules-menu--with-icons light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "components-molecules-popover--placement-bottom light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "components-molecules-popover--placement-left light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "components-molecules-popover--placement-right light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "components-molecules-popover--placement-top light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "components-molecules-progress--steps dark": {
     "#888684|#252321": 3
@@ -417,8 +328,7 @@
     "#e05254|#252321": 1
   },
   "components-molecules-select--controlled light": {
-    "#ff7900|#edeae7": 5,
-    "#ff7900|#ffffff": 5
+    "#ff7900|#edeae7": 5
   },
   "components-molecules-select--default dark": {
     "#888684|#252321": 1
@@ -446,35 +356,28 @@
     "#888684|#2c2a28": 1
   },
   "components-molecules-stepper--active-step-progression light": {
-    "#ff7900|#edeae7": 6,
-    "#ff7900|#ffffff": 6
+    "#ff7900|#edeae7": 6
   },
   "components-molecules-stepper--default light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "components-molecules-stepper--horizontal light": {
-    "#ff7900|#edeae7": 2,
-    "#ff7900|#ffffff": 2
+    "#ff7900|#edeae7": 2
   },
   "components-molecules-stepper--step-states light": {
-    "#ff7900|#edeae7": 3,
-    "#ff7900|#ffffff": 3
+    "#ff7900|#edeae7": 3
   },
   "components-molecules-stepper--vertical light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "components-molecules-stepper--vertical-with-content light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "components-molecules-stepper--with-error-state dark": {
     "#e05254|#252321": 1
   },
   "components-molecules-stepper--with-error-state light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "components-molecules-tabs--all-variants light": {
     "#ffffff|#ff7900": 1
@@ -483,23 +386,19 @@
     "#ffffff|#ff7900": 1
   },
   "components-molecules-timerreadout--countdown-running light": {
-    "#22a444|#edeae7": 1,
-    "#22a444|#ffffff": 1
+    "#22a444|#edeae7": 1
   },
   "components-molecules-timerreadout--live-auto-tick light": {
-    "#22a444|#edeae7": 1,
-    "#22a444|#ffffff": 1
+    "#22a444|#edeae7": 1
   },
   "components-molecules-timerreadout--running light": {
-    "#22a444|#edeae7": 1,
-    "#22a444|#ffffff": 1
+    "#22a444|#edeae7": 1
   },
   "components-molecules-timerreadout--with-total dark": {
     "#888684|#252321": 1
   },
   "components-molecules-timerreadout--with-total light": {
-    "#22a444|#edeae7": 1,
-    "#22a444|#ffffff": 1
+    "#22a444|#edeae7": 1
   },
   "components-molecules-toast--all-statuses dark": {
     "#a29f9d|#36493c": 1,
@@ -519,12 +418,10 @@
   "components-molecules-toast--interactive light": {
     "#1c1916|#298732": 1,
     "#1c1916|#d14343": 1,
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "components-molecules-toast--long-duration light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "components-molecules-toast--success dark": {
     "#a29f9d|#36493c": 1
@@ -538,18 +435,8 @@
   "components-molecules-toast--without-icon dark": {
     "#a29f9d|#3f474d": 1
   },
-  "components-molecules-toolbarbutton--variants dark": {
-    "#d1d1d1|#72716f": 1
-  },
-  "components-molecules-toolbarbutton--variants light": {
-    "#d4d1ce|#72716f": 1
-  },
-  "components-molecules-tooltip--all-placements light": {
-    "#ff7900|#edeae7": 8
-  },
   "components-molecules-tooltip--on-text light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "components-organisms-sidebar--default light": {
     "#ff7900|#ffe6d4": 1
@@ -570,13 +457,10 @@
     "#ff7900|#ffe6d4": 1
   },
   "components-organisms-table--default light": {
-    "#298732|#b5ffd2": 4,
-    "#a45e00|#ffeaa9": 1,
-    "#c27400|#ffeaa9": 1
+    "#a45e00|#ffeaa9": 1
   },
   "components-organisms-table--empty-state light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "components-organisms-table--sorting-and-selection light": {
     "#ff7900|#ffe6d4": 1
@@ -606,7 +490,6 @@
   "custom-activework-fileactivitydetail--default light": {
     "#2196f3|#ffffff": 1,
     "#4caf50|#f9f6f3": 2,
-    "#72716f|#edeae7": 9,
     "#d548af|#ffffff": 1,
     "#e05254|#ffffff": 1,
     "#ef5350|#f9f6f3": 1
@@ -623,7 +506,6 @@
   "custom-activework-fileactivitydetail--net-shrink light": {
     "#2196f3|#ffffff": 1,
     "#4caf50|#f9f6f3": 1,
-    "#72716f|#edeae7": 7,
     "#e05254|#ffffff": 1,
     "#ef5350|#f9f6f3": 2
   },
@@ -637,7 +519,6 @@
   "custom-activework-fileactivitydetail--no-co-changes light": {
     "#2196f3|#ffffff": 1,
     "#4caf50|#f9f6f3": 2,
-    "#72716f|#edeae7": 6,
     "#ef5350|#f9f6f3": 1
   },
   "custom-activework-fileactivityrow--default dark": {
@@ -647,11 +528,8 @@
   },
   "custom-activework-fileactivityrow--default light": {
     "#2196f3|#edeae7": 1,
-    "#2196f3|#ffffff": 1,
     "#d548af|#edeae7": 1,
-    "#d548af|#ffffff": 1,
-    "#e05254|#edeae7": 1,
-    "#e05254|#ffffff": 1
+    "#e05254|#edeae7": 1
   },
   "custom-activework-fileactivityrow--net-shrink dark": {
     "#888684|#252321": 1,
@@ -660,11 +538,8 @@
   },
   "custom-activework-fileactivityrow--net-shrink light": {
     "#2196f3|#edeae7": 1,
-    "#2196f3|#ffffff": 1,
     "#d548af|#edeae7": 1,
-    "#d548af|#ffffff": 1,
-    "#e05254|#edeae7": 1,
-    "#e05254|#ffffff": 1
+    "#e05254|#edeae7": 1
   },
   "custom-activework-fileactivityrow--palette-categorical dark": {
     "#888684|#252321": 1,
@@ -673,18 +548,14 @@
   },
   "custom-activework-fileactivityrow--palette-categorical light": {
     "#2196f3|#edeae7": 1,
-    "#2196f3|#ffffff": 1,
     "#d548af|#edeae7": 1,
-    "#d548af|#ffffff": 1,
-    "#e05254|#edeae7": 1,
-    "#e05254|#ffffff": 1
+    "#e05254|#edeae7": 1
   },
   "custom-activework-fileactivityrow--palette-semantic dark": {
     "#888684|#252321": 2
   },
   "custom-activework-fileactivityrow--palette-semantic light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "custom-activework-fileactivityrow--selected dark": {
     "#2196f3|#373635": 1,
@@ -709,16 +580,12 @@
     "#e05254|#31302f": 3,
     "#e05254|#373635": 2,
     "#ef5350|#2c2a28": 1,
-    "#ff7900|#4a3929": 7
+    "#ff7900|#4a3929": 3
   },
   "custom-activework-filehistoryexplorer--default light": {
-    "#2196f3|#edeae7": 3,
     "#2196f3|#ffffff": 5,
     "#4caf50|#f9f6f3": 2,
-    "#72716f|#edeae7": 16,
-    "#d548af|#edeae7": 3,
     "#d548af|#ffffff": 5,
-    "#e05254|#edeae7": 3,
     "#e05254|#ffffff": 5,
     "#ef5350|#f9f6f3": 1
   },
@@ -734,16 +601,12 @@
     "#e05254|#31302f": 3,
     "#e05254|#373635": 2,
     "#ef5350|#2c2a28": 2,
-    "#ff7900|#4a3929": 5
+    "#ff7900|#4a3929": 1
   },
   "custom-activework-filehistoryexplorer--net-shrink-selected light": {
-    "#2196f3|#edeae7": 3,
     "#2196f3|#ffffff": 5,
     "#4caf50|#f9f6f3": 1,
-    "#72716f|#edeae7": 14,
-    "#d548af|#edeae7": 3,
     "#d548af|#ffffff": 4,
-    "#e05254|#edeae7": 3,
     "#e05254|#ffffff": 5,
     "#ef5350|#f9f6f3": 2
   },
@@ -762,13 +625,9 @@
     "#ff7900|#4a3929": 3
   },
   "custom-activework-filehistoryexplorer--no-co-changes light": {
-    "#2196f3|#edeae7": 3,
     "#2196f3|#ffffff": 5,
     "#4caf50|#f9f6f3": 2,
-    "#72716f|#edeae7": 16,
-    "#d548af|#edeae7": 3,
     "#d548af|#ffffff": 5,
-    "#e05254|#edeae7": 3,
     "#e05254|#ffffff": 5,
     "#ef5350|#f9f6f3": 1
   },
@@ -785,7 +644,6 @@
   "custom-activework-filehistoryexplorer--single-file light": {
     "#2196f3|#ffffff": 2,
     "#4caf50|#f9f6f3": 2,
-    "#72716f|#edeae7": 11,
     "#d548af|#ffffff": 1,
     "#e05254|#ffffff": 1,
     "#ef5350|#f9f6f3": 1
@@ -793,15 +651,10 @@
   "custom-activework-initiativebrief--default dark": {
     "#888684|#31302f": 2
   },
-  "custom-activework-initiativebrief--default light": {
-    "#72716f|#edeae7": 2
-  },
   "custom-activework-initiativecard--backburner dark": {
     "#888684|#31302f": 1
   },
   "custom-activework-initiativecard--backburner light": {
-    "#72716f|#edeae7": 1,
-    "#ff7900|#edeae7": 1,
     "#ff7900|#ffffff": 1
   },
   "custom-activework-initiativecard--default dark": {
@@ -809,15 +662,10 @@
     "#ff7900|#4a3929": 1
   },
   "custom-activework-initiativecard--default light": {
-    "#72716f|#edeae7": 2,
-    "#ff7900|#edeae7": 1,
     "#ff7900|#ffffff": 1
   },
   "custom-activework-initiativecard--no-open-tasks dark": {
     "#888684|#31302f": 3
-  },
-  "custom-activework-initiativecard--no-open-tasks light": {
-    "#72716f|#edeae7": 3
   },
   "custom-activework-initiativeheader--backburner dark": {
     "#888684|#252321": 3
@@ -834,8 +682,6 @@
     "#ff7900|#4a3929": 3
   },
   "custom-activework-initiativereader--default light": {
-    "#72716f|#edeae7": 16,
-    "#ff7900|#edeae7": 7,
     "#ff7900|#ffffff": 7
   },
   "custom-activework-initiativereader--no-open-loops dark": {
@@ -843,8 +689,6 @@
     "#888684|#31302f": 8
   },
   "custom-activework-initiativereader--no-open-loops light": {
-    "#72716f|#edeae7": 8,
-    "#ff7900|#edeae7": 4,
     "#ff7900|#ffffff": 4
   },
   "custom-activework-openloops--default dark": {
@@ -852,15 +696,10 @@
     "#ff7900|#4a3929": 3
   },
   "custom-activework-openloops--default light": {
-    "#72716f|#edeae7": 10,
-    "#ff7900|#edeae7": 3,
     "#ff7900|#ffffff": 3
   },
   "custom-activework-openloops--empty dark": {
     "#888684|#31302f": 2
-  },
-  "custom-activework-openloops--empty light": {
-    "#72716f|#edeae7": 2
   },
   "custom-activework-portfoliooverview--default dark": {
     "#888684|#252321": 3,
@@ -868,67 +707,42 @@
     "#ff7900|#4a3929": 1
   },
   "custom-activework-portfoliooverview--default light": {
-    "#72716f|#edeae7": 3,
-    "#ff7900|#edeae7": 2,
     "#ff7900|#ffffff": 2
   },
   "custom-activework-portfoliooverview--no-open-work dark": {
     "#888684|#252321": 2,
     "#888684|#31302f": 2
   },
-  "custom-activework-portfoliooverview--no-open-work light": {
-    "#72716f|#edeae7": 2
-  },
   "custom-activework-sessiondetail--ad-hoc dark": {
     "#888684|#31302f": 5,
     "#ff7900|#4a3929": 1
   },
   "custom-activework-sessiondetail--ad-hoc light": {
-    "#72716f|#edeae7": 5,
-    "#ff7900|#edeae7": 1,
     "#ff7900|#ffffff": 1
   },
   "custom-activework-sessiondetail--default dark": {
     "#888684|#31302f": 10,
     "#ff7900|#4a3929": 6
   },
-  "custom-activework-sessiondetail--default light": {
-    "#72716f|#edeae7": 10
-  },
   "custom-activework-sessiondetail--inert dark": {
     "#888684|#31302f": 10,
     "#ff7900|#4a3929": 6
-  },
-  "custom-activework-sessiondetail--inert light": {
-    "#72716f|#edeae7": 10
   },
   "custom-activework-sessiondetail--short dark": {
     "#888684|#31302f": 4,
     "#ff7900|#4a3929": 2
   },
-  "custom-activework-sessiondetail--short light": {
-    "#72716f|#edeae7": 4
-  },
   "custom-activework-sessiondetail--without-tasks dark": {
     "#888684|#31302f": 10,
     "#ff7900|#4a3929": 6
-  },
-  "custom-activework-sessiondetail--without-tasks light": {
-    "#72716f|#edeae7": 10
   },
   "custom-activework-sessionlist--custom-label dark": {
     "#888684|#252321": 23,
     "#888684|#31302f": 4
   },
-  "custom-activework-sessionlist--custom-label light": {
-    "#72716f|#edeae7": 4
-  },
   "custom-activework-sessionlist--default dark": {
     "#888684|#252321": 23,
     "#888684|#31302f": 4
-  },
-  "custom-activework-sessionlist--default light": {
-    "#72716f|#edeae7": 4
   },
   "custom-activework-sessionlist--no-selection dark": {
     "#888684|#252321": 27
@@ -936,9 +750,6 @@
   "custom-activework-sessionlist--single-month dark": {
     "#888684|#252321": 17,
     "#888684|#31302f": 4
-  },
-  "custom-activework-sessionlist--single-month light": {
-    "#72716f|#edeae7": 4
   },
   "custom-activework-sessionlistitem--ad-hoc dark": {
     "#888684|#252321": 4
@@ -949,9 +760,6 @@
   "custom-activework-sessionlistitem--selected dark": {
     "#888684|#31302f": 4
   },
-  "custom-activework-sessionlistitem--selected light": {
-    "#72716f|#edeae7": 4
-  },
   "custom-activework-sessionlistitem--short dark": {
     "#888684|#252321": 4
   },
@@ -960,66 +768,51 @@
     "#888684|#31302f": 14,
     "#ff7900|#4a3929": 6
   },
-  "custom-activework-sessionreader--default light": {
-    "#72716f|#edeae7": 14
-  },
   "custom-activework-sessionreader--one-session dark": {
     "#888684|#252321": 1,
     "#888684|#31302f": 14,
     "#ff7900|#4a3929": 6
-  },
-  "custom-activework-sessionreader--one-session light": {
-    "#72716f|#edeae7": 14
   },
   "custom-activework-sessionreader--without-task-store dark": {
     "#888684|#252321": 23,
     "#888684|#31302f": 14,
     "#ff7900|#4a3929": 6
   },
-  "custom-activework-sessionreader--without-task-store light": {
-    "#72716f|#edeae7": 14
-  },
   "custom-activework-taskrow--critical-with-overflowing-tags dark": {
     "#888684|#252321": 3
   },
   "custom-activework-taskrow--critical-with-overflowing-tags light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "custom-activework-taskrow--default dark": {
     "#888684|#252321": 2
   },
   "custom-activework-taskrow--default light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "custom-activework-taskrow--long-title dark": {
     "#888684|#252321": 2
   },
   "custom-activework-taskrow--long-title light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "custom-activework-taskrow--missing-severity-and-estimate dark": {
     "#888684|#252321": 2
   },
   "custom-activework-taskrow--missing-severity-and-estimate light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "custom-activework-tasktable--default dark": {
     "#888684|#252321": 18
   },
   "custom-activework-tasktable--default light": {
-    "#ff7900|#edeae7": 8,
-    "#ff7900|#ffffff": 8
+    "#ff7900|#edeae7": 8
   },
   "custom-activework-tasktable--embedded-narrow dark": {
     "#888684|#252321": 9
   },
   "custom-activework-tasktable--embedded-narrow light": {
-    "#ff7900|#edeae7": 8,
-    "#ff7900|#ffffff": 8
+    "#ff7900|#edeae7": 8
   },
   "custom-activework-tasktable--empty dark": {
     "#888684|#252321": 1
@@ -1028,76 +821,52 @@
     "#888684|#252321": 18
   },
   "custom-activework-tasktable--narrow light": {
-    "#ff7900|#edeae7": 8,
-    "#ff7900|#ffffff": 8
+    "#ff7900|#edeae7": 8
   },
   "custom-activework-tasktable--no-legend dark": {
     "#888684|#252321": 18
   },
   "custom-activework-tasktable--no-legend light": {
-    "#ff7900|#edeae7": 8,
-    "#ff7900|#ffffff": 8
+    "#ff7900|#edeae7": 8
   },
   "custom-activework-tasktable--sorted-by-age dark": {
     "#888684|#252321": 18
   },
   "custom-activework-tasktable--sorted-by-age light": {
-    "#ff7900|#edeae7": 8,
-    "#ff7900|#ffffff": 8
+    "#ff7900|#edeae7": 8
   },
   "custom-activework-tasktable--sorted-by-estimate dark": {
     "#888684|#252321": 18
   },
   "custom-activework-tasktable--sorted-by-estimate light": {
-    "#ff7900|#edeae7": 8,
-    "#ff7900|#ffffff": 8
+    "#ff7900|#edeae7": 8
   },
   "custom-activework-tasktable--sorted-by-severity dark": {
     "#888684|#252321": 18
   },
   "custom-activework-tasktable--sorted-by-severity light": {
-    "#ff7900|#edeae7": 8,
-    "#ff7900|#ffffff": 8
+    "#ff7900|#edeae7": 8
   },
   "custom-chat-chatcard--checkin dark": {
     "#888684|#31302f": 1,
     "#ff7900|#4a3929": 1
   },
-  "custom-chat-chatcard--checkin light": {
-    "#72716f|#edeae7": 1,
-    "#ff7900|#ffffff": 1
-  },
   "custom-chat-chatcard--default dark": {
     "#888684|#31302f": 1,
     "#ff7900|#4a3929": 1
   },
-  "custom-chat-chatcard--default light": {
-    "#72716f|#edeae7": 1,
-    "#ff7900|#ffffff": 1
-  },
   "custom-chat-chatcard--read-only dark": {
     "#888684|#31302f": 1
-  },
-  "custom-chat-chatcard--read-only light": {
-    "#72716f|#edeae7": 1
   },
   "custom-chat-coachpreset--phone dark": {
     "#888684|#252321": 3,
     "#888684|#31302f": 1,
     "#ff7900|#4a3929": 1
   },
-  "custom-chat-coachpreset--phone light": {
-    "#72716f|#edeae7": 1,
-    "#ff7900|#ffffff": 1
-  },
   "custom-chat-coachpreset--wall-drawer dark": {
     "#888684|#252321": 5,
     "#888684|#31302f": 1,
     "#ff7900|#4a3929": 1
-  },
-  "custom-chat-coachpreset--wall-drawer light": {
-    "#72716f|#edeae7": 2,
-    "#ff7900|#ffffff": 1
   },
   "custom-chat-composer--disabled dark": {
     "#7e7c79|#2c2a28": 1
@@ -1113,10 +882,6 @@
     "#888684|#31302f": 1,
     "#ff7900|#4a3929": 1
   },
-  "custom-chat-messagelist--default light": {
-    "#72716f|#edeae7": 1,
-    "#ff7900|#ffffff": 1
-  },
   "custom-chat-messagelist--direct dark": {
     "#888684|#252321": 3
   },
@@ -1131,11 +896,6 @@
     "#888684|#31302f": 1,
     "#ff7900|#4a3929": 1
   },
-  "custom-chat-messagelist--new-messages-while-scrolled-up light": {
-    "#72716f|#edeae7": 1,
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
-  },
   "custom-chat-messagelist--revealed-times dark": {
     "#888684|#252321": 11
   },
@@ -1147,15 +907,8 @@
     "#888684|#31302f": 1,
     "#ff7900|#4a3929": 1
   },
-  "custom-chat-messagelist--typing light": {
-    "#72716f|#edeae7": 1,
-    "#ff7900|#ffffff": 1
-  },
   "custom-chat-messagelist--windowed dark": {
     "#888684|#252321": 3
-  },
-  "custom-chat-messagelist--windowed light": {
-    "#ff7900|#edeae7": 1
   },
   "custom-chat-messagelist-dateseparator--older dark": {
     "#888684|#252321": 1
@@ -1176,10 +929,6 @@
     "#888684|#31302f": 1,
     "#ff7900|#4a3929": 1
   },
-  "custom-chat-messagelist-messagebubble--with-data-part light": {
-    "#72716f|#edeae7": 1,
-    "#ff7900|#ffffff": 1
-  },
   "custom-chat-messagelist-typingindicator--default dark": {
     "#888684|#252321": 1
   },
@@ -1193,92 +942,63 @@
     "#ffffff|#ff7900": 1
   },
   "custom-fatigue-fatigue-lights--across-states light": {
-    "#424140|#100d0a": 15,
-    "#5a5958|#100d0a": 15
+    "#424140|#100d0a": 15
   },
   "custom-fatigue-fatigue-lights--spread light": {
-    "#424140|#100d0a": 3,
-    "#5a5958|#100d0a": 3
+    "#424140|#100d0a": 3
   },
   "custom-fatigue-live-fatigue-card--states light": {
-    "#888684|#d4d1ce": 4,
-    "#888684|#edeae7": 4
+    "#888684|#d4d1ce": 4
   },
   "custom-fatigue-live-fatigue-panel--live-states light": {
-    "#72716f|#edeae7": 1,
-    "#b07b34|#d4d1ce": 1,
-    "#cd923a|#edeae7": 1
+    "#b07b34|#d4d1ce": 1
   },
   "custom-fatigue-live-fatigue-panel--on-light-surface dark": {
-    "#72716f|#edeae7": 1,
     "#a29f9d|#d4d1ce": 2,
-    "#a29f9d|#edeae7": 2,
-    "#b07b34|#d4d1ce": 1,
-    "#cd923a|#edeae7": 1
+    "#b07b34|#d4d1ce": 1
   },
   "custom-fatigue-live-fatigue-panel--on-light-surface light": {
-    "#72716f|#edeae7": 1,
-    "#b07b34|#d4d1ce": 1,
-    "#cd923a|#edeae7": 1
+    "#b07b34|#d4d1ce": 1
   },
   "custom-fatigue-velocity-hero--default light": {
-    "#424140|#1c1916": 8,
-    "#5a5958|#1c1916": 8
+    "#424140|#1c1916": 8
   },
   "custom-fatigue-velocity-hero--mid-set light": {
     "#424140|#1c1916": 4,
-    "#5a5958|#1c1916": 4,
-    "#824d06|#1c1916": 1,
-    "#995d06|#1c1916": 1
-  },
-  "custom-fatigue-verdict-hero--across-states light": {
-    "#298732|#100d0a": 2,
-    "#72716f|#100d0a": 7,
-    "#d14343|#100d0a": 2
+    "#824d06|#1c1916": 1
   },
   "custom-prose-markdownprose--default dark": {
     "#888684|#252321": 1
   },
   "custom-prose-markdownprose--default light": {
-    "#ff7900|#edeae7": 3,
-    "#ff7900|#ffffff": 3
+    "#ff7900|#edeae7": 3
   },
   "custom-prose-markdownprose--pressable dark": {
     "#888684|#252321": 1
   },
   "custom-prose-markdownprose--pressable light": {
-    "#ff7900|#edeae7": 3,
-    "#ff7900|#ffffff": 3
+    "#ff7900|#edeae7": 3
   },
   "custom-workout-basebadge--all-variants light": {
-    "#a29f9d|#edeae7": 4,
     "#a29f9d|#ffffff": 4,
-    "#ff7900|#efdccb": 3,
-    "#ff7900|#ffefe0": 3
+    "#ff7900|#efdccb": 3
   },
   "custom-workout-basebadge--plain light": {
-    "#a29f9d|#edeae7": 1,
     "#a29f9d|#ffffff": 1
   },
   "custom-workout-basebadge--pr light": {
-    "#ff7900|#efdccb": 1,
-    "#ff7900|#ffefe0": 1
+    "#ff7900|#efdccb": 1
   },
   "custom-workout-basebadge--with-icon light": {
-    "#a29f9d|#edeae7": 1,
     "#a29f9d|#ffffff": 1
   },
   "custom-workout-dataviz-bodymap--interactive light": {
-    "#ff7900|#f0d8c2": 1,
-    "#ff7900|#ffead6": 1
+    "#ff7900|#f0d8c2": 1
   },
   "custom-workout-dataviz-bodymapdetailpanel--default light": {
     "#424140|#8e8c8b": 2,
     "#5a5958|#8e8c8b": 7,
-    "#5a5958|#999999": 2,
-    "#72716f|#999999": 7,
-    "#ff7900|#9c8a7a": 1,
-    "#ff7900|#a59587": 1
+    "#ff7900|#9c8a7a": 1
   },
   "custom-workout-dataviz-bodymapdetailpanel--interactive dark": {
     "#ffffff|#ff7900": 1
@@ -1289,130 +1009,83 @@
   "custom-workout-dataviz-bodymapdetailpanel--maintenance light": {
     "#424140|#8e8c8b": 2,
     "#5a5958|#8e8c8b": 7,
-    "#5a5958|#999999": 2,
-    "#72716f|#999999": 7,
-    "#ff7900|#9c8a7a": 1,
-    "#ff7900|#a59587": 1
+    "#ff7900|#9c8a7a": 1
   },
   "custom-workout-dataviz-bodymapdetailpanel--minimal light": {
     "#424140|#8e8c8b": 1,
-    "#5a5958|#8e8c8b": 2,
-    "#5a5958|#999999": 1,
-    "#72716f|#999999": 2
+    "#5a5958|#8e8c8b": 2
   },
   "custom-workout-dataviz-bodymapdetailpanel--over-reaching light": {
     "#424140|#8e8c8b": 2,
     "#5a5958|#8e8c8b": 7,
-    "#5a5958|#999999": 2,
-    "#72716f|#999999": 7,
-    "#ff7900|#9c8a7a": 1,
-    "#ff7900|#a59587": 1
+    "#ff7900|#9c8a7a": 1
   },
   "custom-workout-dataviz-bodymapdetailpanel--productive light": {
     "#424140|#8e8c8b": 2,
     "#5a5958|#8e8c8b": 7,
-    "#5a5958|#999999": 2,
-    "#72716f|#999999": 7,
-    "#ff7900|#9c8a7a": 1,
-    "#ff7900|#a59587": 1
+    "#ff7900|#9c8a7a": 1
   },
   "custom-workout-dataviz-bodymapdetailpanel--right-side-sheet-at-phone light": {
     "#424140|#8e8c8b": 2,
     "#5a5958|#8e8c8b": 7,
-    "#5a5958|#999999": 2,
-    "#72716f|#999999": 7,
-    "#ff7900|#9c8a7a": 1,
-    "#ff7900|#a59587": 1
+    "#ff7900|#9c8a7a": 1
   },
   "custom-workout-dataviz-bodymapdetailpanel--right-side-sheet-at-wall light": {
-    "#5a5958|#8e8c8b": 4,
-    "#72716f|#999999": 4
+    "#5a5958|#8e8c8b": 4
   },
   "custom-workout-dataviz-bodymapdetailpanel--sections-bilateral-at-wall dark": {
     "#888684|#31302f": 3
   },
   "custom-workout-dataviz-bodymapdetailpanel--sections-bilateral-at-wall light": {
-    "#298732|#d9e0d5": 3,
     "#424140|#8e8c8b": 2,
-    "#5a5958|#8e8c8b": 4,
-    "#5a5958|#999999": 2,
-    "#72716f|#999999": 4,
-    "#72716f|#edeae7": 3
+    "#5a5958|#8e8c8b": 4
   },
   "custom-workout-dataviz-bodymapdetailpanel--sections-bilateral-right-at-wall dark": {
     "#888684|#31302f": 3
   },
   "custom-workout-dataviz-bodymapdetailpanel--sections-bilateral-right-at-wall light": {
-    "#298732|#d9e0d5": 3,
     "#424140|#8e8c8b": 2,
-    "#5a5958|#8e8c8b": 5,
-    "#5a5958|#999999": 2,
-    "#72716f|#999999": 5,
-    "#72716f|#edeae7": 3
+    "#5a5958|#8e8c8b": 5
   },
   "custom-workout-dataviz-bodymapdetailpanel--sections-empty-at-wall light": {
     "#424140|#8e8c8b": 3,
     "#5a5958|#8e8c8b": 4,
-    "#5a5958|#999999": 3,
-    "#72716f|#999999": 4,
-    "#ff7900|#9c8a7a": 1,
-    "#ff7900|#a59587": 1
+    "#ff7900|#9c8a7a": 1
   },
   "custom-workout-dataviz-bodymapdetailpanel--sections-empty-right-at-wall light": {
     "#424140|#8e8c8b": 3,
     "#5a5958|#8e8c8b": 4,
-    "#5a5958|#999999": 3,
-    "#72716f|#999999": 4,
-    "#ff7900|#9c8a7a": 1,
-    "#ff7900|#a59587": 1
+    "#ff7900|#9c8a7a": 1
   },
   "custom-workout-dataviz-bodymapdetailpanel--sections-single-exercise-at-wall dark": {
     "#888684|#31302f": 1
   },
   "custom-workout-dataviz-bodymapdetailpanel--sections-single-exercise-at-wall light": {
-    "#298732|#d9e0d5": 1,
     "#424140|#8e8c8b": 4,
-    "#5a5958|#8e8c8b": 8,
-    "#5a5958|#999999": 4,
-    "#72716f|#999999": 8,
-    "#72716f|#edeae7": 1
+    "#5a5958|#8e8c8b": 8
   },
   "custom-workout-dataviz-bodymapdetailpanel--sections-single-exercise-right-at-wall dark": {
     "#888684|#31302f": 1
   },
   "custom-workout-dataviz-bodymapdetailpanel--sections-single-exercise-right-at-wall light": {
-    "#298732|#d9e0d5": 1,
     "#424140|#8e8c8b": 5,
     "#5a5958|#8e8c8b": 9,
-    "#5a5958|#999999": 5,
-    "#72716f|#999999": 9,
-    "#72716f|#edeae7": 1,
-    "#ff7900|#9c8a7a": 2,
-    "#ff7900|#a59587": 1
+    "#ff7900|#9c8a7a": 1
   },
   "custom-workout-dataviz-bodymapdetailpanel--under-trained light": {
     "#424140|#8e8c8b": 2,
     "#5a5958|#8e8c8b": 7,
-    "#5a5958|#999999": 2,
-    "#72716f|#999999": 7,
-    "#ff7900|#9c8a7a": 1,
-    "#ff7900|#a59587": 1
+    "#ff7900|#9c8a7a": 1
   },
   "custom-workout-dataviz-bodymapdetailpanel--without-history light": {
     "#424140|#8e8c8b": 2,
     "#5a5958|#8e8c8b": 6,
-    "#5a5958|#999999": 2,
-    "#72716f|#999999": 6,
-    "#ff7900|#9c8a7a": 1,
-    "#ff7900|#a59587": 1
+    "#ff7900|#9c8a7a": 1
   },
   "custom-workout-dataviz-bodymapdetailpanel--without-upcoming light": {
     "#424140|#8e8c8b": 2,
     "#5a5958|#8e8c8b": 4,
-    "#5a5958|#999999": 2,
-    "#72716f|#999999": 4,
-    "#ff7900|#9c8a7a": 1,
-    "#ff7900|#a59587": 1
+    "#ff7900|#9c8a7a": 1
   },
   "custom-workout-dataviz-capacitybandchart--compact dark": {
     "#888684|#252321": 1
@@ -1424,8 +1097,7 @@
     "#888684|#252321": 1
   },
   "custom-workout-dataviz-capacitybandchart--interactive light": {
-    "#a29f9d|#edeae7": 1,
-    "#a29f9d|#ffffff": 1
+    "#a29f9d|#edeae7": 1
   },
   "custom-workout-dataviz-capacitybandchart--sparse-data dark": {
     "#888684|#252321": 1
@@ -1434,18 +1106,14 @@
     "#888684|#252321": 1
   },
   "custom-workout-dataviz-dualvelocitystrip--crowded-right-edge-label light": {
-    "#424140|#1c1916": 2,
-    "#5a5958|#1c1916": 2
+    "#424140|#1c1916": 2
   },
   "custom-workout-dataviz-dualvelocitystrip--hero light": {
     "#424140|#1c1916": 12,
-    "#5a5958|#1c1916": 12,
-    "#824d06|#1c1916": 1,
-    "#995d06|#1c1916": 1
+    "#824d06|#1c1916": 1
   },
   "custom-workout-dataviz-dualvelocitystrip--range-set light": {
-    "#424140|#1c1916": 10,
-    "#5a5958|#1c1916": 10
+    "#424140|#1c1916": 10
   },
   "custom-workout-dataviz-fatiguemeter--custom-scale dark": {
     "#888684|#252321": 5
@@ -1468,21 +1136,14 @@
   "custom-workout-dataviz-strengthtrendchart--compact dark": {
     "#888684|#252321": 2
   },
-  "custom-workout-dataviz-strengthtrendchart--compact light": {
-    "#298732|#eaf3eb": 1
-  },
   "custom-workout-dataviz-strengthtrendchart--declining dark": {
     "#e05254|#382826": 1
   },
   "custom-workout-dataviz-strengthtrendchart--declining light": {
-    "#d14343|#ead9d7": 1,
-    "#d14343|#faecec": 1
+    "#d14343|#ead9d7": 1
   },
   "custom-workout-dataviz-strengthtrendchart--default dark": {
     "#888684|#252321": 2
-  },
-  "custom-workout-dataviz-strengthtrendchart--default light": {
-    "#298732|#eaf3eb": 1
   },
   "custom-workout-dataviz-strengthtrendchart--empty dark": {
     "#888684|#252321": 1
@@ -1491,20 +1152,11 @@
     "#888684|#252321": 2
   },
   "custom-workout-dataviz-strengthtrendchart--interactive light": {
-    "#298732|#eaf3eb": 1,
-    "#a29f9d|#edeae7": 1,
-    "#a29f9d|#ffffff": 1
-  },
-  "custom-workout-dataviz-strengthtrendchart--single-point light": {
-    "#298732|#eaf3eb": 1
-  },
-  "custom-workout-dataviz-strengthtrendchart--without-projection light": {
-    "#298732|#eaf3eb": 1
+    "#a29f9d|#edeae7": 1
   },
   "custom-workout-dataviz-velocitystrip--all-views light": {
     "#424140|#1c1916": 14,
-    "#5a5958|#1c1916": 14,
-    "#72716f|#1c1916": 3
+    "#5a5958|#1c1916": 3
   },
   "custom-workout-dataviz-velocitystrip--in-context dark": {
     "#888684|#252321": 3,
@@ -1513,125 +1165,91 @@
   },
   "custom-workout-dataviz-velocitystrip--in-context light": {
     "#22a444|#d4d1ce": 1,
-    "#22a444|#edeae7": 1,
-    "#72716f|#edeae7": 4,
-    "#a45e00|#d4d1ce": 1,
-    "#c27400|#edeae7": 1
+    "#a45e00|#d4d1ce": 1
   },
   "custom-workout-dataviz-velocitystrip-dual--default light": {
     "#424140|#1c1916": 9,
-    "#5a5958|#1c1916": 9,
-    "#72716f|#1c1916": 2
+    "#5a5958|#1c1916": 2
   },
   "custom-workout-dataviz-velocitystrip-dual--in-progress light": {
     "#424140|#1c1916": 7,
-    "#5a5958|#1c1916": 7,
-    "#72716f|#1c1916": 2
+    "#5a5958|#1c1916": 2
   },
   "custom-workout-dataviz-velocitystrip-dual--playground light": {
     "#424140|#1c1916": 9,
-    "#5a5958|#1c1916": 9,
-    "#72716f|#1c1916": 2
+    "#5a5958|#1c1916": 2
   },
   "custom-workout-dataviz-velocitystrip-dual--small-height-labels light": {
-    "#424140|#1c1916": 8,
-    "#5a5958|#1c1916": 8
+    "#424140|#1c1916": 8
   },
   "custom-workout-dataviz-velocitystrip-dual--symmetric-empties light": {
     "#424140|#1c1916": 8,
-    "#5a5958|#1c1916": 8,
-    "#72716f|#1c1916": 2
+    "#5a5958|#1c1916": 2
   },
   "custom-workout-dataviz-velocitystrip-dual--tiny-height light": {
-    "#424140|#1c1916": 8,
-    "#5a5958|#1c1916": 8
+    "#424140|#1c1916": 8
   },
   "custom-workout-dataviz-velocitystrip-expanded--framed-chrome light": {
-    "#424140|#1c1916": 11,
-    "#5a5958|#1c1916": 11
+    "#424140|#1c1916": 11
   },
   "custom-workout-dataviz-velocitystrip-hero--default light": {
     "#424140|#1c1916": 14,
-    "#5a5958|#1c1916": 14,
-    "#72716f|#1c1916": 3
+    "#5a5958|#1c1916": 3
   },
   "custom-workout-dataviz-velocitystrip-hero--dual-lagging-side light": {
     "#424140|#1c1916": 12,
-    "#5a5958|#1c1916": 12,
-    "#72716f|#1c1916": 3
+    "#5a5958|#1c1916": 3
   },
   "custom-workout-dataviz-velocitystrip-hero--edge-cases light": {
     "#424140|#1c1916": 19,
-    "#5a5958|#1c1916": 19,
-    "#72716f|#1c1916": 4
+    "#5a5958|#1c1916": 4
   },
   "custom-workout-dataviz-velocitystrip-hero--empty-cold-boot light": {
-    "#5a5958|#1c1916": 3,
-    "#72716f|#1c1916": 3
+    "#5a5958|#1c1916": 3
   },
   "custom-workout-dataviz-velocitystrip-hero--fatigue-decline light": {
     "#424140|#1c1916": 17,
-    "#5a5958|#1c1916": 17,
-    "#72716f|#1c1916": 3
+    "#5a5958|#1c1916": 3
   },
   "custom-workout-dataviz-velocitystrip-hero--fixed-scale-headroom light": {
     "#424140|#1c1916": 4,
-    "#5a5958|#1c1916": 4,
-    "#72716f|#1c1916": 2
+    "#5a5958|#1c1916": 2
   },
   "custom-workout-dataviz-velocitystrip-hero--in-progress light": {
     "#424140|#1c1916": 11,
-    "#5a5958|#1c1916": 11,
-    "#72716f|#1c1916": 3
+    "#5a5958|#1c1916": 3
   },
   "custom-workout-dataviz-velocitystrip-hero--rep-types light": {
     "#424140|#1c1916": 76,
-    "#5a5958|#1c1916": 76,
-    "#72716f|#1c1916": 21,
-    "#824d06|#1c1916": 3,
-    "#995d06|#1c1916": 3
+    "#5a5958|#1c1916": 21,
+    "#824d06|#1c1916": 3
   },
   "custom-workout-dataviz-velocitystrip-hero--responsive light": {
     "#424140|#1c1916": 90,
-    "#5a5958|#1c1916": 90,
-    "#72716f|#1c1916": 16
+    "#5a5958|#1c1916": 16
   },
   "custom-workout-dataviz-velocitystrip-hero--set-types light": {
     "#424140|#1c1916": 46,
-    "#5a5958|#1c1916": 46,
-    "#72716f|#1c1916": 12,
-    "#824d06|#1c1916": 1,
-    "#995d06|#1c1916": 1
+    "#5a5958|#1c1916": 12,
+    "#824d06|#1c1916": 1
   },
   "custom-workout-dataviz-volumelandmarkbar--all-zones light": {
-    "#72716f|#edeae7": 10,
-    "#ff7900|#d4d1ce": 5,
-    "#ff7900|#edeae7": 5
+    "#ff7900|#d4d1ce": 5
   },
   "custom-workout-dataviz-volumelandmarkbar--approaching-mrv light": {
-    "#72716f|#edeae7": 2,
-    "#ff7900|#d4d1ce": 1,
-    "#ff7900|#edeae7": 1
+    "#ff7900|#d4d1ce": 1
   },
   "custom-workout-dataviz-volumelandmarkbar--maintenance light": {
-    "#72716f|#edeae7": 2,
-    "#ff7900|#d4d1ce": 1,
-    "#ff7900|#edeae7": 1
+    "#ff7900|#d4d1ce": 1
   },
   "custom-workout-dataviz-volumelandmarkbar--optimal light": {
-    "#72716f|#edeae7": 2,
-    "#ff7900|#d4d1ce": 1,
-    "#ff7900|#edeae7": 1
+    "#ff7900|#d4d1ce": 1
   },
   "custom-workout-dataviz-volumelandmarkbar--over-mrv light": {
-    "#72716f|#edeae7": 2,
-    "#ff7900|#d4d1ce": 1,
-    "#ff7900|#edeae7": 1
+    "#ff7900|#d4d1ce": 1
   },
   "custom-workout-dataviz-volumelandmarkbar--under-mev light": {
-    "#72716f|#edeae7": 2,
-    "#ff7900|#d4d1ce": 1,
-    "#ff7900|#edeae7": 1
+    "#ff7900|#d4d1ce": 1
   },
   "custom-workout-dataviz-zonetrack--band-with-marker dark": {
     "#888684|#252321": 1
@@ -1641,8 +1259,7 @@
     "#d14343|#252321": 1
   },
   "custom-workout-dataviz-zonetrack--colored-tooltip-ticks light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "custom-workout-dataviz-zonetrack--gradient-fill dark": {
     "#888684|#252321": 5
@@ -1672,14 +1289,10 @@
     "#888684|#252321": 1
   },
   "custom-workout-exercisecardheading--live light": {
-    "#2ed573|#edeae7": 1,
-    "#2ed573|#ffffff": 1
+    "#2ed573|#edeae7": 1
   },
   "custom-workout-exercisecardheading--selected dark": {
     "#888684|#363533": 1
-  },
-  "custom-workout-exercisecardheading--selected light": {
-    "#72716f|#eff0f1": 1
   },
   "custom-workout-exercisecardheading--upcoming dark": {
     "#888684|#252321": 1
@@ -1700,17 +1313,14 @@
     "#888684|#252321": 1
   },
   "custom-workout-exerciseindicator--all-kinds light": {
-    "#d4d1ce|#edeae7": 6,
-    "#d4d1ce|#ffffff": 6
+    "#d4d1ce|#edeae7": 6
   },
   "custom-workout-exerciseindicator--resolve-precedence dark": {
     "#888684|#252321": 4
   },
   "custom-workout-exerciseindicator--resolve-precedence light": {
     "#888684|#edeae7": 4,
-    "#888684|#ffffff": 4,
-    "#d4d1ce|#edeae7": 4,
-    "#d4d1ce|#ffffff": 4
+    "#d4d1ce|#edeae7": 4
   },
   "custom-workout-goalliftcard--default dark": {
     "#888684|#2c2a28": 5
@@ -1732,9 +1342,6 @@
     "#888684|#252321": 4,
     "#888684|#2c2a28": 1
   },
-  "custom-workout-goalmilestonetile--compact light": {
-    "#72716f|#edeae7": 4
-  },
   "custom-workout-goalmilestonetile--hit dark": {
     "#888684|#252321": 4,
     "#888684|#2c2a28": 1
@@ -1742,9 +1349,6 @@
   "custom-workout-goalmilestonetile--hit-exact dark": {
     "#888684|#252321": 3,
     "#888684|#2c2a28": 1
-  },
-  "custom-workout-goalmilestonetile--hit-exact light": {
-    "#298732|#f9f6f3": 1
   },
   "custom-workout-goalmilestonetile--loss-goal dark": {
     "#888684|#252321": 4,
@@ -1878,69 +1482,51 @@
   },
   "custom-workout-liveauraframe--all-states light": {
     "#888684|#d4d1ce": 5,
-    "#888684|#edeae7": 5,
     "#a29f9d|#d4d1ce": 1,
-    "#a29f9d|#edeae7": 1,
-    "#f9f6f3|#d4d1ce": 3,
-    "#f9f6f3|#edeae7": 3
+    "#f9f6f3|#d4d1ce": 3
   },
   "custom-workout-liveauraframe--productive light": {
     "#888684|#d4d1ce": 5,
-    "#888684|#edeae7": 5,
     "#a29f9d|#d4d1ce": 1,
-    "#a29f9d|#edeae7": 1,
-    "#f9f6f3|#d4d1ce": 3,
-    "#f9f6f3|#edeae7": 3
+    "#f9f6f3|#d4d1ce": 3
   },
   "custom-workout-mesocard--expanded dark": {
-    "#888684|#31302f": 3,
     "#ba2996|#3f2435": 2,
     "#ff7900|#56361a": 1
   },
   "custom-workout-mesocard--expanded light": {
-    "#ba2996|#f3daed": 2,
-    "#ff7900|#ffe6d4": 2
+    "#ff7900|#ffe6d4": 1
   },
   "custom-workout-mesocard--highlighted dark": {
-    "#888684|#31302f": 3,
     "#ba2996|#3f2435": 2,
     "#ff7900|#56361a": 1
   },
   "custom-workout-mesocard--highlighted light": {
-    "#ba2996|#f3daed": 2,
-    "#ff7900|#ffe6d4": 2
+    "#ff7900|#ffe6d4": 1
   },
   "custom-workout-mesocard--strength-block dark": {
-    "#888684|#31302f": 5,
     "#ba2996|#3f2435": 3,
     "#ff7900|#56361a": 1
   },
   "custom-workout-mesocard--strength-block light": {
-    "#ba2996|#f3daed": 3,
-    "#ff7900|#ffe6d4": 2
+    "#ff7900|#ffe6d4": 1
   },
   "custom-workout-metrictiles--four-tiles dark": {
     "#888684|#31302f": 4
   },
   "custom-workout-metrictiles--four-tiles light": {
-    "#72716f|#edeae7": 4,
-    "#f9b415|#edeae7": 1,
     "#f9b415|#ffffff": 1
   },
   "custom-workout-metrictiles--session-stats dark": {
     "#888684|#31302f": 3
   },
   "custom-workout-metrictiles--session-stats light": {
-    "#72716f|#edeae7": 3,
-    "#f9b415|#edeae7": 1,
     "#f9b415|#ffffff": 1
   },
   "custom-workout-metrictiles--two-tiles dark": {
     "#888684|#31302f": 2
   },
   "custom-workout-metrictiles--two-tiles light": {
-    "#72716f|#edeae7": 2,
-    "#f9b415|#edeae7": 1,
     "#f9b415|#ffffff": 1
   },
   "custom-workout-musclegroupchip--all-statuses dark": {
@@ -1991,27 +1577,6 @@
   "custom-workout-musclestrip--wall dark": {
     "#a29f9d|#3b3937": 15
   },
-  "custom-workout-prbadge--all-types light": {
-    "#ff7900|#efdccb": 6
-  },
-  "custom-workout-prbadge--animated light": {
-    "#ff7900|#efdccb": 1
-  },
-  "custom-workout-prbadge--custom-label light": {
-    "#ff7900|#efdccb": 1
-  },
-  "custom-workout-prbadge--reps-pr light": {
-    "#ff7900|#efdccb": 1
-  },
-  "custom-workout-prbadge--static light": {
-    "#ff7900|#efdccb": 1
-  },
-  "custom-workout-prbadge--velocity-pr light": {
-    "#ff7900|#efdccb": 1
-  },
-  "custom-workout-prbadge--weight-pr light": {
-    "#ff7900|#efdccb": 1
-  },
   "custom-workout-prhistorymodal--interactive dark": {
     "#ffffff|#ff7900": 1
   },
@@ -2026,7 +1591,6 @@
     "#ff7900|#4a3929": 1
   },
   "custom-workout-resttimer--default light": {
-    "#ff7900|#efdccb": 1,
     "#ff7900|#ffefe0": 1
   },
   "custom-workout-resttimer--just-started dark": {
@@ -2034,7 +1598,6 @@
     "#ff7900|#4a3929": 1
   },
   "custom-workout-resttimer--just-started light": {
-    "#ff7900|#efdccb": 1,
     "#ff7900|#ffefe0": 1
   },
   "custom-workout-resttimer--nearly-complete dark": {
@@ -2042,7 +1605,6 @@
     "#ff7900|#4a3929": 1
   },
   "custom-workout-resttimer--nearly-complete light": {
-    "#ff7900|#efdccb": 1,
     "#ff7900|#ffefe0": 1
   },
   "custom-workout-resttimer--ring-almost-done dark": {
@@ -2050,52 +1612,41 @@
   },
   "custom-workout-resttimer--ring-almost-done light": {
     "#424140|#0f0c09": 1,
-    "#5a5958|#0f0c09": 1,
-    "#5a5958|#100d0a": 2,
-    "#72716f|#100d0a": 1
+    "#5a5958|#100d0a": 2
   },
   "custom-workout-resttimer--ring-display-only dark": {
     "#5a5958|#100d0a": 1
   },
   "custom-workout-resttimer--ring-display-only light": {
-    "#5a5958|#100d0a": 2,
-    "#72716f|#100d0a": 1
+    "#5a5958|#100d0a": 2
   },
   "custom-workout-resttimer--ring-done dark": {
     "#5a5958|#100d0a": 1
   },
   "custom-workout-resttimer--ring-done light": {
     "#424140|#0f0c09": 1,
-    "#5a5958|#0f0c09": 1,
-    "#5a5958|#100d0a": 2,
-    "#72716f|#100d0a": 1
+    "#5a5958|#100d0a": 2
   },
   "custom-workout-resttimer--ring-just-started dark": {
     "#5a5958|#100d0a": 1
   },
   "custom-workout-resttimer--ring-just-started light": {
     "#424140|#0f0c09": 1,
-    "#5a5958|#0f0c09": 1,
-    "#5a5958|#100d0a": 2,
-    "#72716f|#100d0a": 1
+    "#5a5958|#100d0a": 2
   },
   "custom-workout-resttimer--ring-midway dark": {
     "#5a5958|#100d0a": 1
   },
   "custom-workout-resttimer--ring-midway light": {
     "#424140|#0f0c09": 1,
-    "#5a5958|#0f0c09": 1,
-    "#5a5958|#100d0a": 2,
-    "#72716f|#100d0a": 1
+    "#5a5958|#100d0a": 2
   },
   "custom-workout-resttimer--ring-playground dark": {
     "#5a5958|#100d0a": 1
   },
   "custom-workout-resttimer--ring-playground light": {
     "#424140|#0f0c09": 1,
-    "#5a5958|#0f0c09": 1,
-    "#5a5958|#100d0a": 2,
-    "#72716f|#100d0a": 1
+    "#5a5958|#100d0a": 2
   },
   "custom-workout-resttimer--with-next-set-info dark": {
     "#888684|#31302f": 1,
@@ -2103,23 +1654,16 @@
     "#ff7900|#4a3929": 1
   },
   "custom-workout-resttimer--with-next-set-info light": {
-    "#72716f|#edeae7": 1,
-    "#ff7900|#efdccb": 1,
     "#ff7900|#ffefe0": 1
   },
   "custom-workout-scheduletiles--soon-under-a-day dark": {
     "#888684|#31302f": 3
   },
   "custom-workout-scheduletiles--soon-under-a-day light": {
-    "#72716f|#edeae7": 3,
-    "#ff7900|#edeae7": 1,
     "#ff7900|#ffffff": 1
   },
   "custom-workout-scheduletiles--two-days-out dark": {
     "#888684|#31302f": 3
-  },
-  "custom-workout-scheduletiles--two-days-out light": {
-    "#72716f|#edeae7": 3
   },
   "custom-workout-setrow--table-in-context dark": {
     "#888684|#252321": 4
@@ -2143,11 +1687,7 @@
     "#888684|#252321": 2
   },
   "custom-workout-setstrip--set-types dark": {
-    "#72716f|#252321": 2,
     "#888684|#252321": 2
-  },
-  "custom-workout-setstrip--set-types light": {
-    "#f9f6f3|#ffffff": 5
   },
   "custom-workout-settableheader--kg dark": {
     "#888684|#252321": 5
@@ -2171,109 +1711,75 @@
     "#22a444|#31302f": 2
   },
   "custom-workout-tempodisplay--active-tempo-conditions light": {
-    "#22a444|#edeae7": 2,
     "#22a444|#ffffff": 2,
-    "#22d3ee|#edeae7": 8,
     "#22d3ee|#ffffff": 8,
-    "#72716f|#edeae7": 2,
     "#a29f9d|#edeae7": 14,
-    "#a29f9d|#ffffff": 14,
-    "#ed69c3|#edeae7": 1,
-    "#ed69c3|#ffffff": 1,
-    "#edeae7|#ffffff": 5
-  },
-  "custom-workout-tempodisplay--live-animated light": {
-    "#72716f|#edeae7": 1
+    "#ed69c3|#ffffff": 1
   },
   "custom-workout-tempodisplay--live-playground dark": {
     "#22a444|#31302f": 1
   },
   "custom-workout-tempodisplay--live-playground light": {
-    "#22a444|#edeae7": 1,
     "#22a444|#ffffff": 1
   },
   "custom-workout-tempodisplay--static-vs-live dark": {
     "#22a444|#31302f": 1
   },
   "custom-workout-tempodisplay--static-vs-live light": {
-    "#22a444|#edeae7": 1,
     "#22a444|#ffffff": 1,
-    "#22d3ee|#edeae7": 1,
-    "#22d3ee|#ffffff": 1,
-    "#72716f|#edeae7": 2
+    "#22d3ee|#ffffff": 1
   },
   "custom-workout-velocitybandoverlay--default light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "custom-workout-weekrow--current-week dark": {
-    "#888684|#31302f": 1,
     "#ff7900|#56361a": 1
   },
   "custom-workout-weekrow--current-week light": {
-    "#ff7900|#ffe6d4": 2
-  },
-  "custom-workout-weekrow--default dark": {
-    "#888684|#31302f": 1
+    "#ff7900|#ffe6d4": 1
   },
   "custom-workout-weekrow--deload-week dark": {
     "#ba2996|#3f2435": 2
   },
-  "custom-workout-weekrow--deload-week light": {
-    "#ba2996|#f3daed": 2
-  },
   "custom-workout-weekrow--mesocycle-progression dark": {
-    "#888684|#31302f": 1,
     "#ba2996|#3f2435": 2,
     "#ff7900|#56361a": 1
   },
   "custom-workout-weekrow--mesocycle-progression light": {
-    "#ba2996|#f3daed": 2,
-    "#ff7900|#ffe6d4": 2
+    "#ff7900|#ffe6d4": 1
   },
   "custom-workout-weightbadge--all-variants dark": {
     "#807e7c|#31302f": 3,
     "#ef5350|#31302f": 1
   },
   "custom-workout-weightbadge--all-variants light": {
-    "#4caf50|#edeae7": 1,
     "#4caf50|#efdccb": 1,
-    "#4caf50|#ffefe0": 1,
     "#4caf50|#ffffff": 1,
     "#7b7a79|#ffffff": 3,
-    "#868583|#edeae7": 3,
-    "#ef5350|#edeae7": 1,
     "#ef5350|#ffffff": 1,
-    "#ff7900|#efdccb": 4,
-    "#ff7900|#ffefe0": 4
+    "#ff7900|#efdccb": 4
   },
   "custom-workout-weightbadge--pr-with-delta light": {
     "#4caf50|#efdccb": 1,
-    "#4caf50|#ffefe0": 1,
-    "#ff7900|#efdccb": 1,
-    "#ff7900|#ffefe0": 1
+    "#ff7900|#efdccb": 1
   },
   "custom-workout-weightbadge--rep-max dark": {
     "#807e7c|#31302f": 1
   },
   "custom-workout-weightbadge--rep-max light": {
-    "#7b7a79|#ffffff": 1,
-    "#868583|#edeae7": 1
+    "#7b7a79|#ffffff": 1
   },
   "custom-workout-weightbadge--with-negative-delta dark": {
     "#ef5350|#31302f": 1
   },
   "custom-workout-weightbadge--with-negative-delta light": {
-    "#ef5350|#edeae7": 1,
     "#ef5350|#ffffff": 1
   },
   "custom-workout-weightbadge--with-positive-delta light": {
-    "#4caf50|#edeae7": 1,
     "#4caf50|#ffffff": 1
   },
   "custom-workout-weightbadge--with-pr light": {
-    "#ff7900|#efdccb": 1,
-    "#ff7900|#ffefe0": 1
+    "#ff7900|#efdccb": 1
   },
   "custom-workout-workoutcard--completed dark": {
     "#888684|#2c2a28": 1,
@@ -2283,9 +1789,6 @@
     "#888684|#3f2d1d": 2,
     "#a29f9d|#524234": 3
   },
-  "custom-workout-workoutcard--expanded light": {
-    "#72716f|#ffe6d4": 2
-  },
   "custom-workout-workoutcard--no-toggle dark": {
     "#888684|#292725": 1,
     "#a29f9d|#3e3d3b": 2
@@ -2293,9 +1796,6 @@
   "custom-workout-workoutcard--today dark": {
     "#888684|#3f2d1d": 1,
     "#a29f9d|#524234": 3
-  },
-  "custom-workout-workoutcard--today light": {
-    "#72716f|#ffe6d4": 1
   },
   "custom-workout-workoutcard--upcoming dark": {
     "#888684|#292725": 1,
@@ -2307,14 +1807,8 @@
     "#ba2996|#37242f": 1
   },
   "custom-workout-workoutpill--all-statuses light": {
-    "#298732|#b5ffd2": 1,
-    "#72716f|#edeae7": 1,
     "#ff7900|#edeae7": 1,
-    "#ff7900|#ffe6d4": 1,
-    "#ff7900|#ffffff": 1
-  },
-  "custom-workout-workoutpill--completed light": {
-    "#298732|#b5ffd2": 1
+    "#ff7900|#ffe6d4": 1
   },
   "custom-workout-workoutpill--current light": {
     "#ff7900|#ffe6d4": 1
@@ -2329,21 +1823,16 @@
     "#a4221c|#362928": 1
   },
   "custom-workout-workoutpill--next light": {
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#ffffff": 1
+    "#ff7900|#edeae7": 1
   },
   "custom-workout-workoutpill--upcoming dark": {
     "#888684|#31302f": 1
-  },
-  "custom-workout-workoutpill--upcoming light": {
-    "#72716f|#edeae7": 1
   },
   "foundations-color-alpha--default dark": {
     "#888684|#252321": 5
   },
   "foundations-color-alpha--default light": {
-    "#424140|#31302f": 1,
-    "#5a5958|#31302f": 1
+    "#424140|#31302f": 1
   },
   "foundations-color-palettes--brand-colors dark": {
     "#888684|#252321": 18
@@ -2366,7 +1855,6 @@
   },
   "foundations-color-palettes--roles-in-use light": {
     "#424140|#31302f": 19,
-    "#5a5958|#31302f": 19,
     "#72716f|#31302f": 1,
     "#ba2996|#31302f": 1
   },
@@ -2393,8 +1881,7 @@
     "#888684|#252321": 102
   },
   "foundations-color-primitives--ramps light": {
-    "#ff9628|#edeae7": 7,
-    "#ff9628|#ffffff": 7
+    "#ff9628|#edeae7": 7
   },
   "foundations-color-proposed-vw-82-tokens--default dark": {
     "#888684|#252321": 4,
@@ -2404,7 +1891,6 @@
   "foundations-color-proposed-vw-82-tokens--default light": {
     "#121828|#31302f": 1,
     "#424140|#31302f": 1,
-    "#5a5958|#31302f": 1,
     "#a29f9d|#424140": 1
   },
   "foundations-depth--elevation dark": {
@@ -2418,8 +1904,7 @@
     "#121828|#31302f": 1,
     "#121828|#373635": 3,
     "#424140|#252321": 2,
-    "#5a5958|#252321": 9,
-    "#72716f|#252321": 9
+    "#5a5958|#252321": 9
   },
   "foundations-depth--mechanisms dark": {
     "#888684|#252321": 10
@@ -2432,8 +1917,7 @@
     "#121828|#31302f": 4,
     "#121828|#373635": 1,
     "#424140|#252321": 5,
-    "#5a5958|#252321": 10,
-    "#72716f|#252321": 10
+    "#5a5958|#252321": 10
   },
   "foundations-depth--why-not-neumorphism dark": {
     "#888684|#252321": 1
@@ -2441,36 +1925,31 @@
   "foundations-depth--why-not-neumorphism light": {
     "#121828|#252321": 1,
     "#424140|#252321": 5,
-    "#5a5958|#252321": 5,
-    "#72716f|#252321": 1
+    "#5a5958|#252321": 1
   },
   "foundations-depth-calibration--banding light": {
     "#121828|#000000": 1,
     "#121828|#31302f": 1,
     "#424140|#000000": 1,
-    "#5a5958|#000000": 4,
-    "#72716f|#000000": 4
+    "#5a5958|#000000": 4
   },
   "foundations-depth-calibration--hairlines light": {
     "#121828|#000000": 1,
     "#121828|#31302f": 1,
     "#424140|#000000": 1,
-    "#5a5958|#000000": 16,
-    "#72716f|#000000": 16
+    "#5a5958|#000000": 16
   },
   "foundations-depth-calibration--paper-material light": {
     "#121828|#000000": 1,
     "#121828|#31302f": 1,
     "#424140|#000000": 3,
-    "#5a5958|#000000": 4,
-    "#72716f|#000000": 4
+    "#5a5958|#000000": 4
   },
   "foundations-depth-calibration--tone-steps light": {
     "#121828|#000000": 1,
     "#121828|#31302f": 1,
     "#424140|#000000": 1,
-    "#5a5958|#000000": 1,
-    "#72716f|#000000": 1
+    "#5a5958|#000000": 1
   },
   "foundations-icons--all dark": {
     "#888684|#252321": 22
@@ -2496,8 +1975,7 @@
     "#888684|#252321": 22
   },
   "foundations-spacing--sizing light": {
-    "#a45e00|#edeae7": 4,
-    "#c27400|#ffffff": 4
+    "#a45e00|#edeae7": 4
   },
   "foundations-typography--all-colors dark": {
     "#787775|#252321": 1,
@@ -2506,9 +1984,7 @@
   },
   "foundations-typography--all-colors light": {
     "#96999f|#edeae7": 1,
-    "#9fa4ab|#ffffff": 1,
-    "#a45e00|#edeae7": 1,
-    "#c27400|#ffffff": 1
+    "#a45e00|#edeae7": 1
   },
   "foundations-typography--micro-label-in-a-table-header dark": {
     "#888684|#252321": 5
@@ -2519,10 +1995,8 @@
     "#888684|#31302f": 8
   },
   "lab-activework-file-biography--default light": {
-    "#1072cb|#edeae7": 1,
-    "#72716f|#edeae7": 12,
     "#ff7900|#edeae7": 43,
-    "#ff7900|#ffffff": 43
+    "#ff7900|#ffffff": 4
   },
   "lab-archive-curves-per-rep--overview dark": {
     "#888684|#2c2a28": 16
@@ -2537,8 +2011,7 @@
     "#888684|#2c2a28": 16
   },
   "lab-archive-fatigue--overview light": {
-    "#424140|#100d0a": 8,
-    "#5a5958|#100d0a": 8
+    "#424140|#100d0a": 8
   },
   "lab-archive-rep-breakdown--composite-columns dark": {
     "#5b5855|#100d0a": 8
@@ -2593,24 +2066,18 @@
     "#e05254|#311816": 6
   },
   "lab-audits-row-inventory--all-rows dark": {
-    "#5b616d|#131418": 17,
+    "#5b616d|#131418": 15,
     "#888684|#2c2a28": 5,
     "#888684|#2f2015": 1,
-    "#888684|#31302f": 2,
-    "#a29f9d|#44362c": 3,
-    "#ba2996|#271727": 1
+    "#a29f9d|#44362c": 3
   },
   "lab-audits-row-inventory--all-rows light": {
     "#121828|#131418": 3,
     "#424140|#111216": 3,
     "#424140|#131418": 6,
-    "#5a5958|#111216": 3,
-    "#5a5958|#131418": 6,
-    "#5b616d|#131418": 17,
-    "#72716f|#131418": 1,
-    "#72716f|#ffe6d4": 1,
-    "#9c0d7a|#231324": 1,
-    "#ff7900|#ffe6d4": 3,
+    "#5a5958|#131418": 1,
+    "#5b616d|#131418": 15,
+    "#ff7900|#ffe6d4": 1,
     "#ffffff|#ff7900": 1
   },
   "lab-decisions-calibrating-goal-chart--chosen dark": {
@@ -2700,7 +2167,6 @@
   },
   "lab-decisions-dataviz-light-palettes--diverging light": {
     "#424140|#282624": 5,
-    "#5a5958|#282624": 5,
     "#888684|#252321": 1,
     "#888684|#2c2a28": 13,
     "#ffffff|#22a444": 1,
@@ -2727,10 +2193,6 @@
   },
   "lab-decisions-dual-pinned-live-strip--chosen-pair light": {
     "#22a444|#d4d1ce": 1,
-    "#22a444|#edeae7": 1,
-    "#298732|#ffe3e5": 1,
-    "#72716f|#edeae7": 2,
-    "#c27400|#ffffff": 1,
     "#d14343|#ffe3e5": 1,
     "#ff7900|#ffe3e5": 1,
     "#ff7900|#ffffff": 3
@@ -2741,15 +2203,10 @@
   },
   "lab-decisions-dual-pinned-live-strip--stress-pair light": {
     "#22a444|#d4d1ce": 1,
-    "#22a444|#edeae7": 1,
-    "#2ed573|#ffffff": 1,
-    "#72716f|#edeae7": 2,
-    "#c27400|#ffffff": 1
+    "#2ed573|#ffffff": 1
   },
   "lab-decisions-effort-bands--round-2-chosen light": {
-    "#72716f|#edeae7": 1,
-    "#ff7900|#d4d1ce": 1,
-    "#ff7900|#edeae7": 1
+    "#ff7900|#d4d1ce": 1
   },
   "lab-decisions-goal-card-header--compact-long dark": {
     "#888684|#2c2a28": 5
@@ -2805,9 +2262,6 @@
     "#888684|#373635": 4,
     "#ba2996|#54334a": 1
   },
-  "lab-decisions-goal-chart-marks--deload-column light": {
-    "#ba2996|#f0d0e8": 1
-  },
   "lab-decisions-goal-chart-marks--deload-with-reading dark": {
     "#888684|#2c2a28": 4
   },
@@ -2826,24 +2280,14 @@
     "#888684|#252321": 33,
     "#888684|#2c2a28": 8
   },
-  "lab-decisions-goal-milestone-tiles--phone light": {
-    "#298732|#f9f6f3": 1
-  },
   "lab-decisions-goal-milestone-tiles--wall dark": {
     "#888684|#252321": 33,
     "#888684|#2c2a28": 8
-  },
-  "lab-decisions-goal-milestone-tiles--wall light": {
-    "#298732|#f9f6f3": 1
   },
   "lab-decisions-live-bar-colour--v-2-intent-threshold dark": {
     "#888684|#463b3a": 3,
     "#a29f9d|#463b3a": 3,
     "#d14343|#463b3a": 3
-  },
-  "lab-decisions-live-bar-colour--v-2-intent-threshold light": {
-    "#298732|#ffe3e5": 3,
-    "#72716f|#ffe3e5": 3
   },
   "lab-decisions-milestone-hero-leading--compact-tight dark": {
     "#888684|#2c2a28": 5
@@ -2872,17 +2316,10 @@
     "#d14343|#463b3a": 1
   },
   "lab-decisions-pinned-live-strip--fatigue light": {
-    "#22a444|#d4d1ce": 1,
-    "#22a444|#edeae7": 1,
-    "#298732|#ffe3e5": 1,
-    "#72716f|#edeae7": 2,
-    "#72716f|#ffe3e5": 1
+    "#22a444|#d4d1ce": 1
   },
   "lab-decisions-pinned-live-strip--idle dark": {
     "#888684|#2c2a28": 3
-  },
-  "lab-decisions-pinned-live-strip--idle light": {
-    "#72716f|#edeae7": 3
   },
   "lab-decisions-pinned-live-strip--long-name dark": {
     "#888684|#2c2a28": 3,
@@ -2890,8 +2327,6 @@
   },
   "lab-decisions-pinned-live-strip--long-name light": {
     "#22a444|#d4d1ce": 1,
-    "#22a444|#edeae7": 1,
-    "#72716f|#edeae7": 2,
     "#ff7900|#ffffff": 1
   },
   "lab-decisions-pinned-live-strip--no-link dark": {
@@ -2900,9 +2335,6 @@
   },
   "lab-decisions-pinned-live-strip--no-link light": {
     "#22a444|#d4d1ce": 1,
-    "#22a444|#edeae7": 1,
-    "#72716f|#edeae7": 2,
-    "#c27400|#ffffff": 1,
     "#ff7900|#ffffff": 2
   },
   "lab-decisions-pinned-live-strip--rest dark": {
@@ -2911,9 +2343,6 @@
   },
   "lab-decisions-pinned-live-strip--rest light": {
     "#22a444|#d4d1ce": 1,
-    "#22a444|#edeae7": 1,
-    "#72716f|#edeae7": 2,
-    "#c27400|#ffffff": 1,
     "#ff7900|#ffffff": 1
   },
   "lab-decisions-pinned-live-strip--rest-pair-100 dark": {
@@ -2922,9 +2351,6 @@
   },
   "lab-decisions-pinned-live-strip--rest-pair-100 light": {
     "#22a444|#d4d1ce": 1,
-    "#22a444|#edeae7": 1,
-    "#72716f|#edeae7": 2,
-    "#c27400|#ffffff": 1,
     "#ff7900|#ffffff": 2
   },
   "lab-decisions-pinned-live-strip--rest-pair-150 dark": {
@@ -2933,9 +2359,6 @@
   },
   "lab-decisions-pinned-live-strip--rest-pair-150 light": {
     "#22a444|#d4d1ce": 1,
-    "#22a444|#edeae7": 1,
-    "#72716f|#edeae7": 2,
-    "#c27400|#ffffff": 1,
     "#ff7900|#ffffff": 2
   },
   "lab-decisions-pinned-live-strip--rest-pair-47 dark": {
@@ -2944,9 +2367,6 @@
   },
   "lab-decisions-pinned-live-strip--rest-pair-47 light": {
     "#22a444|#d4d1ce": 1,
-    "#22a444|#edeae7": 1,
-    "#72716f|#edeae7": 2,
-    "#c27400|#ffffff": 1,
     "#ff7900|#ffffff": 2
   },
   "lab-decisions-pinned-live-strip--rest-pair-99 dark": {
@@ -2955,9 +2375,6 @@
   },
   "lab-decisions-pinned-live-strip--rest-pair-99 light": {
     "#22a444|#d4d1ce": 1,
-    "#22a444|#edeae7": 1,
-    "#72716f|#edeae7": 2,
-    "#c27400|#ffffff": 1,
     "#ff7900|#ffffff": 2
   },
   "lab-decisions-pinned-live-strip--rest-pair-999 dark": {
@@ -2966,9 +2383,6 @@
   },
   "lab-decisions-pinned-live-strip--rest-pair-999 light": {
     "#22a444|#d4d1ce": 1,
-    "#22a444|#edeae7": 1,
-    "#72716f|#edeae7": 2,
-    "#c27400|#ffffff": 1,
     "#ff7900|#ffffff": 2
   },
   "lab-decisions-pinned-live-strip--rest-pair-two-digit-target dark": {
@@ -2977,10 +2391,7 @@
     "#d14343|#373635": 2
   },
   "lab-decisions-pinned-live-strip--rest-pair-two-digit-target light": {
-    "#22a444|#d4d1ce": 1,
-    "#22a444|#edeae7": 1,
-    "#72716f|#edeae7": 2,
-    "#c27400|#ffffff": 1
+    "#22a444|#d4d1ce": 1
   },
   "lab-decisions-pinned-live-strip--set dark": {
     "#888684|#2c2a28": 3,
@@ -2988,8 +2399,6 @@
   },
   "lab-decisions-pinned-live-strip--set light": {
     "#22a444|#d4d1ce": 1,
-    "#22a444|#edeae7": 1,
-    "#72716f|#edeae7": 2,
     "#ff7900|#ffffff": 1
   },
   "lab-decisions-primary-goal-card--laptop dark": {
@@ -3039,8 +2448,7 @@
   },
   "lab-depth-correction-gate-2--floating light": {
     "#121828|#373635": 2,
-    "#424140|#373635": 2,
-    "#5a5958|#373635": 2
+    "#424140|#373635": 2
   },
   "lab-depth-correction-gate-2--treatments dark": {
     "#888684|#252321": 5
@@ -3051,10 +2459,7 @@
     "#121828|#373635": 3,
     "#424140|#2c2a28": 6,
     "#424140|#31302f": 3,
-    "#424140|#373635": 3,
-    "#5a5958|#2c2a28": 6,
-    "#5a5958|#31302f": 3,
-    "#5a5958|#373635": 3
+    "#424140|#373635": 3
   },
   "lab-explorations-full-rail--next-to-nav dark": {
     "#605d5b|#100d0a": 2,
@@ -3081,8 +2486,7 @@
   },
   "lab-explorations-unified-exercise-card--unified light": {
     "#121828|#100d0a": 3,
-    "#5a5958|#100d0a": 1,
-    "#72716f|#100d0a": 1
+    "#5a5958|#100d0a": 1
   },
   "lab-explorations-workout-expansion--direction-study dark": {
     "#888684|#252321": 2
@@ -3092,11 +2496,8 @@
     "#121828|#252321": 6,
     "#424140|#100d0a": 15,
     "#424140|#121910": 5,
-    "#5a5958|#100d0a": 15,
-    "#5a5958|#121910": 5,
-    "#5a5958|#252321": 2,
-    "#72716f|#100d0a": 4,
-    "#72716f|#252321": 2
+    "#5a5958|#100d0a": 4,
+    "#5a5958|#252321": 2
   },
   "lab-north-star-1-surface-system--surface-ramp-system dark": {
     "#6b7280|#000000": 1
@@ -3105,22 +2506,16 @@
     "#6b7280|#000000": 1
   },
   "lab-north-star-3-diverging-bars--comparison light": {
-    "#424140|#100d0a": 12,
-    "#5a5958|#100d0a": 12
+    "#424140|#100d0a": 12
   },
   "lab-north-star-3-diverging-bars--overview light": {
-    "#424140|#100d0a": 12,
-    "#5a5958|#100d0a": 12
+    "#424140|#100d0a": 12
   },
   "lab-north-star-4-fatigue-system--live-states light": {
     "#888684|#d4d1ce": 2,
-    "#888684|#edeae7": 2,
     "#a29f9d|#d4d1ce": 1,
-    "#a29f9d|#edeae7": 1,
     "#b07b34|#d4d1ce": 1,
-    "#cd923a|#edeae7": 1,
-    "#f9f6f3|#d4d1ce": 1,
-    "#f9f6f3|#edeae7": 1
+    "#f9f6f3|#d4d1ce": 1
   },
   "lab-north-star-live-wall-dashboard--live dark": {
     "#888684|#252321": 3,
@@ -3128,10 +2523,7 @@
   },
   "lab-north-star-live-wall-dashboard--live light": {
     "#22a444|#d4d1ce": 1,
-    "#22a444|#edeae7": 1,
-    "#72716f|#edeae7": 7,
-    "#a45e00|#d4d1ce": 1,
-    "#c27400|#edeae7": 1
+    "#a45e00|#d4d1ce": 1
   },
   "lab-north-star-live-wall-dashboard--live-dual dark": {
     "#888684|#252321": 3,
@@ -3139,10 +2531,7 @@
   },
   "lab-north-star-live-wall-dashboard--live-dual light": {
     "#22a444|#d4d1ce": 1,
-    "#22a444|#edeae7": 1,
-    "#72716f|#edeae7": 7,
-    "#a45e00|#d4d1ce": 1,
-    "#c27400|#edeae7": 1
+    "#a45e00|#d4d1ce": 1
   },
   "lab-north-star-live-wall-dashboard--live-no-tempo dark": {
     "#888684|#252321": 3,
@@ -3150,20 +2539,13 @@
   },
   "lab-north-star-live-wall-dashboard--live-no-tempo light": {
     "#22a444|#d4d1ce": 1,
-    "#22a444|#edeae7": 1,
-    "#72716f|#edeae7": 7,
-    "#a45e00|#d4d1ce": 1,
-    "#c27400|#edeae7": 1
+    "#a45e00|#d4d1ce": 1
   },
   "lab-north-star-live-wall-dashboard--no-device light": {
-    "#01b5d1|#d4d1ce": 1,
-    "#01b5d1|#edeae7": 1,
-    "#72716f|#edeae7": 3
+    "#01b5d1|#d4d1ce": 1
   },
   "lab-north-star-live-wall-dashboard--no-session light": {
-    "#01b5d1|#d4d1ce": 1,
-    "#01b5d1|#edeae7": 1,
-    "#72716f|#edeae7": 3
+    "#01b5d1|#d4d1ce": 1
   },
   "lab-north-star-live-wall-dashboard--rest dark": {
     "#888684|#252321": 11,
@@ -3171,27 +2553,20 @@
     "#888684|#31302f": 3
   },
   "lab-north-star-live-wall-dashboard--rest light": {
-    "#72716f|#edeae7": 7,
     "#a45e00|#d4d1ce": 1,
-    "#c27400|#edeae7": 1,
-    "#ff7900|#efdccb": 1,
-    "#ff7900|#ffefe0": 1
+    "#ff7900|#efdccb": 1
   },
   "lab-north-star-live-wall-dashboard--session-ready dark": {
     "#888684|#252321": 1
   },
   "lab-north-star-live-wall-dashboard--session-ready light": {
-    "#01b5d1|#d4d1ce": 1,
-    "#01b5d1|#edeae7": 1,
-    "#72716f|#edeae7": 3
+    "#01b5d1|#d4d1ce": 1
   },
   "lab-north-star-live-wall-dashboard--session-ready-unnamed dark": {
     "#888684|#252321": 1
   },
   "lab-north-star-live-wall-dashboard--session-ready-unnamed light": {
-    "#01b5d1|#d4d1ce": 1,
-    "#01b5d1|#edeae7": 1,
-    "#72716f|#edeae7": 3
+    "#01b5d1|#d4d1ce": 1
   },
   "lab-north-star-session-rail-lockup--lockup dark": {
     "#888684|#373635": 3
@@ -3238,11 +2613,10 @@
   "lab-specimens-session-rail--directions light": {
     "#121828|#131418": 4,
     "#424140|#131418": 6,
-    "#5a5958|#131418": 6,
+    "#5a5958|#131418": 2,
     "#5b616d|#0f1012": 4,
     "#5b616d|#131418": 6,
     "#615c5c|#342215": 1,
-    "#72716f|#131418": 2,
     "#8e8681|#342215": 1,
     "#e7b2b7|#de4251": 1,
     "#e7cd9f|#de9208": 15,
@@ -3298,18 +2672,14 @@
     "#888684|#2c2a28": 1
   },
   "pages-active-workout--all-collapsed light": {
-    "#72716f|#edeae7": 3,
     "#ff7900|#d4d1ce": 1,
-    "#ff7900|#edeae7": 1,
     "#ffffff|#22d3ee": 1
   },
   "pages-active-workout--default dark": {
     "#888684|#2c2a28": 7
   },
   "pages-active-workout--default light": {
-    "#72716f|#edeae7": 3,
     "#ff7900|#d4d1ce": 1,
-    "#ff7900|#edeae7": 1,
     "#ffffff|#22d3ee": 1
   },
   "pages-active-workout--resting dark": {
@@ -3319,25 +2689,15 @@
     "#ff7900|#4a3929": 1
   },
   "pages-active-workout--resting light": {
-    "#72716f|#edeae7": 4,
     "#ff7900|#d4d1ce": 1,
-    "#ff7900|#edeae7": 1,
-    "#ff7900|#efdccb": 1,
     "#ff7900|#ffefe0": 1,
     "#ffffff|#22d3ee": 1
   },
   "pages-appshell--audiobook-app light": {
-    "#22a444|#d4d1ce": 1,
-    "#22a444|#edeae7": 1
-  },
-  "pages-appshell--brain-app light": {
-    "#72716f|#edeae7": 2
+    "#22a444|#d4d1ce": 1
   },
   "pages-appshell--default dark": {
     "#888684|#252321": 1
-  },
-  "pages-appshell--default light": {
-    "#72716f|#edeae7": 2
   },
   "pages-appshell--replaced-regions dark": {
     "#888684|#252321": 1
@@ -3347,29 +2707,22 @@
     "#888684|#332314": 1
   },
   "pages-exercise-detail--default light": {
-    "#298732|#e4ebe0": 1,
     "#5a5958|#d8c8b9": 1,
-    "#72716f|#efdfd0": 1,
-    "#ff7900|#d8c8b9": 1,
-    "#ff7900|#efdfd0": 1
+    "#ff7900|#d8c8b9": 1
   },
   "pages-exercise-detail--no-vbt-data dark": {
     "#888684|#2c2a28": 6,
     "#888684|#332314": 1
   },
   "pages-exercise-detail--no-vbt-data light": {
-    "#298732|#e4ebe0": 1,
     "#5a5958|#d8c8b9": 1,
-    "#72716f|#efdfd0": 1,
-    "#ff7900|#d8c8b9": 1,
-    "#ff7900|#efdfd0": 1
+    "#ff7900|#d8c8b9": 1
   },
   "pages-goals-carousel--default dark": {
     "#888684|#2c2a28": 58,
     "#888684|#31302f": 3
   },
   "pages-goals-carousel--default light": {
-    "#72716f|#edeae7": 3,
     "#9e9a97|#f9f6f3": 1
   },
   "pages-goals-whole-body--default dark": {
@@ -3388,22 +2741,18 @@
     "#888684|#2c2a28": 23
   },
   "pages-program-planning--default dark": {
-    "#888684|#31302f": 1,
     "#ba2996|#3f2435": 2,
     "#ff7900|#56361a": 1
   },
   "pages-program-planning--default light": {
-    "#ba2996|#f3daed": 2,
-    "#ff7900|#ffe6d4": 2
+    "#ff7900|#ffe6d4": 1
   },
   "pages-program-planning--single-meso dark": {
-    "#888684|#31302f": 1,
     "#ba2996|#3f2435": 2,
     "#ff7900|#56361a": 1
   },
   "pages-program-planning--single-meso light": {
-    "#ba2996|#f3daed": 2,
-    "#ff7900|#ffe6d4": 2
+    "#ff7900|#ffe6d4": 1
   },
   "pages-training-status--default dark": {
     "#888684|#2c2a28": 4
@@ -3417,16 +2766,11 @@
   "pages-workoutshell--default dark": {
     "#888684|#252321": 1
   },
-  "pages-workoutshell--default light": {
-    "#72716f|#edeae7": 3
-  },
   "pages-workoutshell--with-content dark": {
     "#888684|#252321": 1
   },
   "pages-workoutshell--with-content light": {
-    "#22a444|#d4d1ce": 1,
-    "#22a444|#edeae7": 1,
-    "#72716f|#edeae7": 2
+    "#22a444|#d4d1ce": 1
   },
   "shell-brandlockup--brand-variants dark": {
     "#888684|#2c2a28": 6
@@ -3437,12 +2781,8 @@
   "shell-brandlockup--default dark": {
     "#888684|#252321": 1
   },
-  "shell-navitem--default light": {
-    "#72716f|#edeae7": 1
-  },
   "shell-navitem--live-elsewhere light": {
-    "#22a444|#d4d1ce": 1,
-    "#22a444|#edeae7": 1
+    "#22a444|#d4d1ce": 1
   },
   "shell-sessionrail--default dark": {
     "#888684|#252321": 5,
@@ -3450,11 +2790,7 @@
   },
   "shell-sessionrail--default light": {
     "#22a444|#d4d1ce": 1,
-    "#22a444|#edeae7": 1,
-    "#72716f|#edeae7": 5,
     "#a45e00|#d4d1ce": 1,
-    "#c27400|#edeae7": 1,
-    "#f9b415|#edeae7": 1,
     "#f9b415|#ffffff": 1
   },
   "shell-sessionrail--no-time-target dark": {
@@ -3463,75 +2799,47 @@
   },
   "shell-sessionrail--no-time-target light": {
     "#01b5d1|#d4d1ce": 1,
-    "#01b5d1|#edeae7": 1,
     "#22a444|#d4d1ce": 1,
-    "#22a444|#edeae7": 1,
-    "#72716f|#edeae7": 4,
-    "#f9b415|#edeae7": 1,
     "#f9b415|#ffffff": 1
   },
   "shell-sessionrail--upcoming dark": {
     "#888684|#252321": 5,
     "#888684|#31302f": 3
   },
-  "shell-sessionrail--upcoming light": {
-    "#72716f|#edeae7": 4
-  },
   "shell-sessionrail-sessionheader--live-behind dark": {
     "#888684|#31302f": 3
   },
   "shell-sessionrail-sessionheader--live-behind light": {
     "#22a444|#d4d1ce": 1,
-    "#22a444|#edeae7": 1,
-    "#72716f|#edeae7": 4,
-    "#a45e00|#d4d1ce": 1,
-    "#c27400|#edeae7": 2
+    "#a45e00|#d4d1ce": 1
   },
   "shell-sessionrail-sessionheader--live-no-time dark": {
     "#888684|#31302f": 3
   },
   "shell-sessionrail-sessionheader--live-no-time light": {
     "#01b5d1|#d4d1ce": 1,
-    "#01b5d1|#edeae7": 1,
-    "#22a444|#d4d1ce": 1,
-    "#22a444|#edeae7": 1,
-    "#72716f|#edeae7": 3,
-    "#c27400|#edeae7": 1
+    "#22a444|#d4d1ce": 1
   },
   "shell-sessionrail-sessionheader--upcoming dark": {
     "#888684|#31302f": 3
   },
-  "shell-sessionrail-sessionheader--upcoming light": {
-    "#72716f|#edeae7": 3
-  },
   "shell-sidenav--another-app dark": {
     "#888684|#252321": 1
   },
-  "shell-sidenav--another-app light": {
-    "#72716f|#edeae7": 2
-  },
   "shell-sidenav--default dark": {
     "#888684|#252321": 1
-  },
-  "shell-sidenav--default light": {
-    "#72716f|#edeae7": 3
   },
   "shell-sidenav--live-elsewhere dark": {
     "#888684|#252321": 1
   },
   "shell-sidenav--live-elsewhere light": {
-    "#22a444|#d4d1ce": 1,
-    "#22a444|#edeae7": 1,
-    "#72716f|#edeae7": 2
+    "#22a444|#d4d1ce": 1
   },
   "shell-workout-devicerow--default dark": {
     "#888684|#2c2a28": 1
   },
   "shell-workout-dualpinnedlivestrip--default light": {
     "#ff7900|#ffffff": 2
-  },
-  "shell-workout-dualpinnedlivestrip--rest light": {
-    "#c27400|#ffffff": 1
   },
   "shell-workout-pinnedlivestrip--default dark": {
     "#888684|#373635": 1
@@ -3543,7 +2851,6 @@
     "#888684|#373635": 1
   },
   "shell-workout-pinnedlivestrip--rest light": {
-    "#c27400|#ffffff": 1,
     "#ff7900|#ffffff": 1
   },
   "shell-workout-pinnedlivestrip--targets-from-last-time dark": {
