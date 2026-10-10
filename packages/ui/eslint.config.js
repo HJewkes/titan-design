@@ -405,11 +405,7 @@ module.exports = tseslint.config(
     ],
     // `color-story-kit` is story chrome that happens not to be named `.stories.tsx`
     // — exempt on the same grounds as the stories themselves, not as a backlog.
-    ignores: [
-      '**/*.stories.tsx',
-      '**/*.test.{ts,tsx}',
-      'src/theme/color-story-kit.tsx',
-    ],
+    ignores: ['**/*.stories.tsx', '**/*.test.{ts,tsx}', 'src/theme/color-story-kit.tsx'],
     rules: {
       'titan/no-raw-spacing': 'error',
     },
@@ -434,11 +430,7 @@ module.exports = tseslint.config(
   // to the dark palette at module scope, so a light caller got dark fills.
   {
     files: ['src/components/**/*.{ts,tsx}', 'src/theme/materials.ts'],
-    ignores: [
-      '**/*.stories.tsx',
-      '**/*.test.{ts,tsx}',
-      '**/*-fixture.ts',
-    ],
+    ignores: ['**/*.stories.tsx', '**/*.test.{ts,tsx}', '**/*-fixture.ts'],
     rules: {
       'titan/no-frozen-theme': 'error',
     },
