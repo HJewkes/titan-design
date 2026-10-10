@@ -77,10 +77,12 @@ function DeleteButton({
   onDelete,
   isDisabled,
   className,
+  label,
 }: {
   onDelete: () => void
   isDisabled: boolean
   className: string
+  label: string
 }) {
   return (
     <Pressable
@@ -89,7 +91,7 @@ function DeleteButton({
         onDelete()
       }}
       accessibilityRole="button"
-      accessibilityLabel="Remove"
+      accessibilityLabel={label}
       disabled={isDisabled}
       className={cn(
         className,
@@ -140,6 +142,7 @@ export function Chip({
           onDelete={onDelete}
           isDisabled={isDisabled}
           deleteClassName={sizes.deleteButton}
+          deleteLabel={removeLabel(children)}
         />
       }
       {...toggleProps(Boolean(onPress), isSelected, isDisabled)}
@@ -175,22 +178,36 @@ function toggleProps(isPressable: boolean, isSelected: boolean | undefined, isDi
   }
 }
 
+// Several dismissible chips side by side need distinct names, so the label joins the chip's text when it has one.
+function removeLabel(children: React.ReactNode): string {
+  return typeof children === 'string' || typeof children === 'number'
+    ? `Remove ${children}`
+    : 'Remove'
+}
+
 function ChipTrailing({
   rightElement,
   onDelete,
   isDisabled,
   deleteClassName,
+  deleteLabel,
 }: {
   rightElement: React.ReactNode
   onDelete: (() => void) | undefined
   isDisabled: boolean
   deleteClassName: string
+  deleteLabel: string
 }) {
   return (
     <>
       {rightElement && <View className="ml-1.5">{rightElement}</View>}
       {onDelete && (
-        <DeleteButton onDelete={onDelete} isDisabled={isDisabled} className={deleteClassName} />
+        <DeleteButton
+          onDelete={onDelete}
+          isDisabled={isDisabled}
+          className={deleteClassName}
+          label={deleteLabel}
+        />
       )}
     </>
   )

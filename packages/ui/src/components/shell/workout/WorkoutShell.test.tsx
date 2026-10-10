@@ -39,7 +39,7 @@ describe('WorkoutShell', () => {
     render(<WorkoutShell activeKey="live" state="rest" />)
     expect(screen.getByText('VOLTRAS')).toBeInTheDocument()
     expect(screen.getByText('REST')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Devices' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Devices, Connected' })).toBeInTheDocument()
   })
 
   it('still exports the pre-AW-132 DashboardShell name', () => {

@@ -160,7 +160,7 @@ export function PrHistoryModal({
       onClose={onClose}
       placement="bottom"
       showCloseButton={false}
-      className="rounded-t-2xl h-auto max-h-[85%]"
+      className="rounded-t-xl h-auto max-h-[85%]"
       accessibilityLabel={dialogLabel}
       testID="pr-history-modal"
       {...props}

@@ -21,7 +21,7 @@
     "file-lines": 306
   },
   "components/custom/Workout/BodyMap.tsx#BodyMap": {
-    "function-lines": 105
+    "function-lines": 104
   },
   "components/custom/Workout/BodyMapDetailPanel.tsx": {
     "file-lines": 519
@@ -124,7 +124,7 @@
     "props": 21
   },
   "components/custom/Workout/index.ts": {
-    "file-lines": 345
+    "file-lines": 344
   },
   "components/custom/Workout/velocityBandGeometry.ts": {
     "file-lines": 318
@@ -272,9 +272,6 @@
   },
   "components/ui/table/Table.tsx#Table": {
     "props": 14
-  },
-  "components/ui/toast/Toast.tsx": {
-    "file-lines": 228
   },
   "components/ui/toolbar-button/ToolbarButton.tsx#ToolbarButton": {
     "complexity": 16

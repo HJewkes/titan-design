@@ -140,7 +140,7 @@
     --color-brand-primary-subtle: rgba(255, 121, 0, 0.12);
     --color-brand-primary-muted: rgba(255, 121, 0, 0.30);
     --color-brand-primary-strong: rgba(255, 121, 0, 0.50);
-    --color-brand-secondary: #307B9B;
+    --color-brand-secondary: #2697B7;
     --color-brand-secondary-light: #2697B7;
     --color-brand-secondary-dark: #2A617F;
     --color-brand-secondary-subtle: rgba(34, 211, 238, 0.12);
@@ -165,7 +165,7 @@
     --color-status-live: #2ED573;
     --color-status-deload: #BA2996;
     --color-status-live-muted: #22A444;
-    --color-status-error: #D14343;
+    --color-status-error: #E05254;
     --color-status-error-light: #E05254;
     --color-status-error-dark: #A4221C;
     --color-status-error-subtle: rgba(247, 113, 117, 0.08);
@@ -178,7 +178,7 @@
     --color-status-error-vivid-muted: rgba(255, 71, 87, 0.30);
     --color-status-error-vivid-strong: rgba(255, 71, 87, 0.50);
     --color-status-error-vivid-rgb: 255, 71, 87;
-    --color-border-prominent: #424140;
+    --color-border-prominent: rgba(255, 255, 255, 0.30);
     --color-status-warning: #F9B415;
     --color-status-warning-light: #FFD352;
     --color-status-warning-dark: #C27400;
@@ -263,7 +263,12 @@
     --color-text-disabled: rgba(255, 255, 255, 0.38);
     --color-text-inverse: #1C1916;
     --color-text-error: #E05254;
-    --color-text-link: #828DF8;
+    --color-text-brand: #FF7900;
+    --color-text-brand-secondary: #22D3EE;
+    --color-text-success: #21C05D;
+    --color-text-warning: #F9B415;
+    --color-text-info: #78C2FF;
+    --color-text-link: #78C2FF;
     --color-text-link-hover: #3CA8FF;
 
     /* Surface ramp — warm-tapered DERIVED, shipped verbatim from deriveSurfaceRamp()
@@ -287,7 +292,7 @@
 
     --color-border-focus: #828DF8;
     --color-border-input: #888684;
-    --color-border-input-hover: #72716F;
+    --color-border-input-hover: #A29F9D;
     --color-border-input-focus: #828DF8;
     --color-border-input-error: #E05254;
 
@@ -523,6 +528,11 @@
     --color-text-disabled: rgba(55, 65, 81, 0.48);
     --color-text-inverse: #FFFFFF;
     --color-text-error: #A4221C;
+    --color-text-brand: #983804;
+    --color-text-brand-secondary: #2A617F;
+    --color-text-success: #2B6B25;
+    --color-text-warning: #814D14;
+    --color-text-info: #135AA8;
     --color-text-link: #135AA8;
     --color-text-link-hover: #135AA8;
 
@@ -650,9 +660,13 @@
     color: var(--color-text-primary);
   }
 
-  /* Focus visible styles */
-  *:focus-visible {
-    outline: 2px solid var(--color-border-focus);
+  /* Focus ring (TD-765): text-brand over a 2px gap. The gap is the outline offset, left transparent
+     so it shows whatever plane the element sits on; a box-shadow gap would need that plane's colour
+     and loses to any shadow utility. `.focus-ring` paints the same ring for a component that draws
+     it itself. */
+  *:focus-visible,
+  .focus-ring {
+    outline: 2px solid var(--color-text-brand);
     outline-offset: 2px;
   }
 
