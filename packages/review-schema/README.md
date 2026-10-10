@@ -66,12 +66,12 @@ const result = RoundSchema.safeParse(round)
 against a parsed registry. It is pure: the caller answers `contains(commit, ancestor)` (for
 example with `git merge-base --is-ancestor`), so the function runs no git.
 
-| Kind               | Raised when                                                                                                                                      |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `superseded-state` | An item touches tokens (same name and mode) of an open lock it does not hold, and its `base` lacks a holder head. Names every overlapping token. |
-| `lock-order`       | An item holds a lock that comes `after` an open lock no earlier item in `items` holds.                                                           |
-| `re-ask`           | A question's touched tokens overlap a lock that is `open` or `merged`; a `released` lock decides nothing.                                        |
-| `stale-ship`       | A Ship in `ships` is at a different head from the previous Ship for the same PR. `lock` is the lock the PR holds, or null.                       |
+| Kind               | Raised when                                                                                                                                           |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `superseded-state` | An item touches tokens (same name and mode) of an open lock it does not hold, and its `base` lacks a holder head. Names every overlapping token.      |
+| `lock-order`       | An item holds a lock that comes `after` an open lock no earlier item in `items` holds.                                                                |
+| `re-ask`           | A question's touched tokens overlap a lock that is `open` or `merged`; a `released` lock decides nothing.                                             |
+| `stale-ship`       | A Ship is at a different head from the PR's previous Ship, or a PR's last Ship is not at its item's `head`. `lock` is the lock the PR holds, or null. |
 
 Each conflict is `{ kind, lock, ids, tokens, message }`; `ids` holds the PRs (`#n`), question ids,
 lock ids and heads it names. An empty array means the plan is clear.

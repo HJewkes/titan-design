@@ -144,6 +144,26 @@ describe('lockConflicts', () => {
     ])
   })
 
+  it('flags a single Ship at a head the round no longer plans for that PR', () => {
+    const ships = [{ pr: 101, head: HOLDER_HEAD }]
+    const items = [holder(101, STACKED_HEAD)]
+
+    expect(lockConflicts(registry(), plan({ items, ships }))).toEqual([
+      expect.objectContaining({
+        kind: 'stale-ship',
+        lock: 'L-0001',
+        ids: ['#101', HOLDER_HEAD, STACKED_HEAD],
+      }),
+    ])
+  })
+
+  it('accepts a Ship at the head the round plans', () => {
+    const ships = [{ pr: 101, head: HOLDER_HEAD }]
+    const items = [holder(101, HOLDER_HEAD)]
+
+    expect(lockConflicts(registry(), plan({ items, ships }))).toEqual([])
+  })
+
   describe('lock order', () => {
     const withSecondHolder = () =>
       registry((r) => {

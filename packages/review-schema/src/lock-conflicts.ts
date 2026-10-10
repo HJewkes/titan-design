@@ -140,30 +140,39 @@ function reAsk(question: PlannedQuestion, lock: Lock): LockConflict[] {
   ]
 }
 
-function staleShips(ships: RecordedShip[], locks: Lock[]): LockConflict[] {
+function staleShip(pr: number, shipped: string, now: string, locks: Lock[], at: string) {
+  return {
+    kind: 'stale-ship' as const,
+    lock: heldLock(pr, locks)?.id ?? null,
+    ids: [`#${pr}`, shipped, now],
+    tokens: [],
+    message:
+      `#${pr} was shipped at ${short(shipped)} but ${at} ${short(now)}; ` +
+      `a Ship holds for one head, so ask it again at the new head`,
+  }
+}
+
+/** A Ship at a head other than the PR's prior Ship, and a PR's last Ship off its planned head. */
+function staleShips(ships: RecordedShip[], items: PlannedItem[], locks: Lock[]): LockConflict[] {
   const last = new Map<number, string>()
-  return ships.flatMap((ship) => {
+  const moved = ships.flatMap((ship) => {
     const prior = last.get(ship.pr)
     last.set(ship.pr, ship.head)
     if (prior === undefined || prior === ship.head) return []
-    return [
-      {
-        kind: 'stale-ship' as const,
-        lock: heldLock(ship.pr, locks)?.id ?? null,
-        ids: [`#${ship.pr}`, prior, ship.head],
-        tokens: [],
-        message:
-          `#${ship.pr} was shipped at ${short(prior)} and again at ${short(ship.head)}; ` +
-          `a Ship holds for one head, so ask it again at the new head`,
-      },
-    ]
+    return [staleShip(ship.pr, prior, ship.head, locks, 'shipped again at')]
   })
+  const behind = items.flatMap((item) => {
+    const shipped = last.get(item.pr)
+    if (shipped === undefined || shipped === item.head) return []
+    return [staleShip(item.pr, shipped, item.head, locks, 'the round plans it at')]
+  })
+  return [...moved, ...behind]
 }
 
 /**
  * The conflicts between a planned round (or dispatch) and the lock registry: an item rendered on
  * a state a lock supersedes, a holder ordered ahead of a lock it comes after, a question asking a
- * decided row again, and a Ship whose head moved. Empty when the plan is clear.
+ * decided row again, and a Ship whose head moved or differs from the planned head. Empty when the plan is clear.
  */
 export function lockConflicts(registry: Locks, plan: LockPlan): LockConflict[] {
   const open = registry.locks.filter((l) => l.status === 'open')
@@ -171,6 +180,6 @@ export function lockConflicts(registry: Locks, plan: LockPlan): LockConflict[] {
     ...plan.items.flatMap((item) => open.flatMap((lock) => supersededState(item, lock, plan))),
     ...lockOrder(plan.items, registry.locks),
     ...plan.questions.flatMap((q) => registry.locks.flatMap((lock) => reAsk(q, lock))),
-    ...staleShips(plan.ships, registry.locks),
+    ...staleShips(plan.ships, plan.items, registry.locks),
   ]
 }
