@@ -39,11 +39,32 @@ When in doubt, write one: a short accepted decision costs less than a token that
 
 - Number it one above the highest number in the table, and add its row in the same PR.
 - Start at `proposed`. The owner moves it to `accepted` or `rejected`; a later decision that replaces
-  it marks it `superseded` and names the successor.
+  it marks it `superseded` and names the successor. A decision that re-points roles starts at
+  `accepted` instead; see the next section.
 - Put proposal stories under `packages/ui/src/lab/` with a `Lab/Decisions/` title, never under
   `src/theme/`, which the story smoke test does not cover.
 - Record distilled reasons only: no verbatim owner quotes, no transcript ids and no private paths.
   This repo is public.
+
+## Decisions that re-point roles
+
+A foundations decision that re-points roles also gets a decision record, even when it adds no new
+value: a new tone recipe, a change to the surface planes, the solid ladder or the subtle encoding, or
+a re-pointed token family or categorical set.
+
+- The PR that implements the decision, the lock-holder PR, carries the record with status `accepted`
+  from the moment the PR opens.
+- The record cites the decisions item number, the Gate 2 round and the question id. It never quotes
+  the owner.
+- If the owner answers "Don't ship", the next PR flips the record to `rejected` and keeps it as the
+  record of what was weighed.
+
+The record is `accepted` at open because the owner's pick is the decision. A Gate 2 Ship confirms the
+implementation at one head, and a commit that changed the status at Ship time would make a new head
+and void that Ship.
+
+Other PRs that render on top of an open role decision stack on the lock-holder PR or wait for it to
+merge.
 
 ## Checks
 
