@@ -784,7 +784,7 @@ export interface BriefSection {
 export const BUDGET_BAND_META: Record<CodeBudgetBand, {
     color: TypographyColor;
     word: string | null;
-    fill: ColorToken$1;
+    fill: ColorToken;
     flagTone: 'error' | 'warning' | null;
 }>;
 
@@ -6636,7 +6636,7 @@ export interface ScheduleTilesProps extends ViewProps {
 
 // @public
 export const SCORE_BAND_META: Record<CodeScoreBand, {
-    color: ColorToken$1;
+    color: ColorToken;
     indicator: IndicatorColor;
 }>;
 
