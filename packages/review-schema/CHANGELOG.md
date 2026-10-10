@@ -25,6 +25,14 @@ project adheres to [Semantic Versioning](https://semver.org/).
   schema refuses an unknown lock id in `after` or `dependents`, an `after` cycle, a repeated lock
   id and a decision row keyed by two locks, naming the ids. Exports `afterCycles`,
   `locksProblems`, `LOCK_AXES`, `LOCK_STATUSES` and `DEPENDENT_MODES`.
+- Optional `stackedOn` on a `prGroups` entry (`{ repo, pr, headSha }`): the base that one PR
+  group renders on, so groups in one round can sit on different bases. The round-level
+  `stackedOn` keeps its meaning. The schema refuses a group stacked on itself, directly or
+  through other groups. Exports `stackBase`.
+- `shipBlocks` kind `holder-not-shipped`: a group stacked on another group of the same round (its
+  holder) is blocked while the holder's Ship is answered Don't ship or asks for a revision, with a
+  message naming the holder. An unanswered or shipped holder does not block. Such a group's
+  status carries `shipsAfter`, the holder's `owner/name#n`.
 - `lockConflicts(registry, plan)`: a pure check of a planned round or dispatch against the lock
   registry (`locksProblems` checks the registry itself). The plan lists items (`pr`, `head`, the
   `base` commit they render on, touched tokens per mode), questions with touched tokens, recorded
