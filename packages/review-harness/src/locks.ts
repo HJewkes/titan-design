@@ -30,12 +30,12 @@ export const REPO_ROOT = join(HARNESS_DIR, '..', '..')
 const COMPONENTS_DIR = 'packages/ui/src/components/'
 const EXEC_LIMIT = 256 * 1024 * 1024
 
-/** A component implementation at the head: not a test, story, snapshot or type stub. */
+/** A component implementation at the head: not a test, type test, story, snapshot or type stub. */
 export function isComponentSource(path: string): boolean {
   return (
     path.startsWith(COMPONENTS_DIR) &&
     /\.tsx?$/.test(path) &&
-    !/\.(test|stories|d)\.tsx?$/.test(path) &&
+    !/\.(test|test-d|stories|d)\.tsx?$/.test(path) &&
     !path.includes('/__snapshots__/')
   )
 }
@@ -57,6 +57,8 @@ async function prRefs(pr: string, repo: string, io: LocksIo): Promise<Refs> {
 }
 
 function resolveRefs(opts: FootprintOptions, repo: string, io: LocksIo): Promise<Refs> {
+  if (opts.pr && (opts.base || opts.head))
+    throw new ReviewError('give a PR number or --base and --head, not both')
   if (opts.base && opts.head) return Promise.resolve({ base: opts.base, head: opts.head })
   if (opts.base || opts.head) throw new ReviewError('--base and --head go together')
   if (!opts.pr) throw new ReviewError('expected a PR number, or --base <ref> --head <ref>')

@@ -11,15 +11,35 @@ export const BADGE = `${UI}/badge/Badge.tsx`
 export const UI_EYEBROW = `${UI}/eyebrow/Eyebrow.tsx`
 export const SHELL_EYEBROW = `${SHELL}/Eyebrow.tsx`
 export const HEADER = `${SHELL}/Header.tsx`
+export const CARD = `${UI}/card/Card.tsx`
+export const TASK_TABLE = 'packages/ui/src/components/custom/ActiveWork/TaskTable.tsx'
 
 /**
  * A small head tree shaped like the #800 case: Select reads the two moved tokens through class
- * strings with variant prefixes, Alert is edited, Toast imports Alert and Frame imports Toast.
- * Badge reads look-alike classes only. Two files are both named Eyebrow and only the shell one
- * is imported by Header.
+ * strings with variant prefixes, Card reads one by name through resolveColor, Alert is edited,
+ * Toast imports Alert, Frame imports Toast on one line and TaskTable imports it in a wrapped
+ * clause. Badge reads look-alike classes only. Two files are both named Eyebrow and only the
+ * shell one is imported by Header.
  */
 export const sources = (): Map<string, string> =>
   new Map([
+    [
+      CARD,
+      [
+        "import { resolveColor } from '../../../theme/resolve-color'",
+        "export const Card = () => <View style={{ borderColor: resolveColor('surface-raised') }} />",
+      ].join('\n'),
+    ],
+    [
+      TASK_TABLE,
+      [
+        'import {',
+        '  Toast,',
+        '  type ToastProps,',
+        "} from '../../ui/toast/Toast'",
+        'export const TaskTable = () => <Toast />',
+      ].join('\n'),
+    ],
     [
       SELECT,
       [

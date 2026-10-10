@@ -1,3 +1,4 @@
+import { LockFootprintSchema } from '@titan-design/review-schema'
 import { describe, expect, it } from 'vitest'
 import { GLOBAL_CSS } from '../src/locks-footprint.ts'
 import { isComponentSource, lockFootprint, parseBatch, type LocksIo } from '../src/locks.ts'
@@ -93,12 +94,16 @@ describe('lockFootprint', () => {
     expect(footprint.derivedFrom.headSha).toBe(HEAD)
   })
 
-  it('refuses a half-given ref pair and a missing PR number', async () => {
-    const { io } = fakeIo()
+  it('refuses a half-given ref pair, a missing PR number, and a PR given beside refs', async () => {
+    const { io, calls } = fakeIo()
 
     await expect(lockFootprint({ base: 'origin/main', repo: REPO }, io)).rejects.toThrow(/--head/)
     await expect(lockFootprint({ repo: REPO }, io)).rejects.toThrow(/PR number/)
     await expect(lockFootprint({ pr: 'eight', repo: REPO }, io)).rejects.toThrow(/PR number/)
+    await expect(
+      lockFootprint({ pr: '800', base: 'origin/main', head: HEAD, repo: REPO }, io)
+    ).rejects.toThrow(/not both/)
+    expect(calls).toEqual([])
   })
 })
 
@@ -121,6 +126,8 @@ describe('isComponentSource', () => {
     for (const path of [
       SELECT_TEST,
       SELECT.replace('.tsx', '.stories.tsx'),
+      'packages/ui/src/components/ui/table/Table.test-d.ts',
+      'packages/ui/src/components/ui/table/types.d.ts',
       'packages/ui/src/components/ui/select/__snapshots__/Select.characterise.test.tsx.snap',
       'packages/ui/src/components/ui/select/README.md',
       'packages/ui/src/theme/tokens/semantic.ts',
@@ -144,13 +151,13 @@ describe('titan-review locks footprint', () => {
     signal: new AbortController().signal,
   })
 
-  it('prints the footprint as JSON and exits 0', async () => {
+  it('prints the footprint as JSON in the titan-locks/1 footprint shape and exits 0', async () => {
     const out: string[] = []
     const args = ['locks', 'footprint', '--base', 'origin/main', '--head', HEAD, '--repo', REPO]
 
     expect(await runCli(args, cliIo(fakeIo().io, out))).toBe(0)
 
-    const printed = JSON.parse(out.join('')) as { derivedFrom: unknown; tokens: unknown[] }
+    const printed = LockFootprintSchema.parse(JSON.parse(out.join('')))
     expect(printed.derivedFrom).toEqual({ mainSha: MAIN, headSha: HEAD })
     expect(printed.tokens).toHaveLength(2)
   })

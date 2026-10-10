@@ -3,17 +3,19 @@ import {
   deriveFootprint,
   importedBy,
   reverseClosure,
-  tokenClassPattern,
   tokenDiff,
   tokenName,
+  tokenReadPattern,
 } from '../src/locks-footprint.ts'
 import {
   ALERT,
   BADGE,
+  CARD,
   FRAME,
   HEADER,
   SELECT,
   SHELL_EYEBROW,
+  TASK_TABLE,
   TOAST,
   UI_EYEBROW,
   css,
@@ -38,14 +40,18 @@ describe('deriveFootprint on a #800-shaped change', () => {
     ])
   })
 
-  it('puts the class reader and the importers of a changed component among readers', () => {
+  it('puts class readers, by-name readers and importers of a changed component among readers', () => {
     expect(footprint.components.direct).toEqual([ALERT])
-    expect(footprint.components.readers).toEqual([FRAME, SELECT, TOAST])
+    expect(footprint.components.readers).toEqual([TASK_TABLE, FRAME, CARD, SELECT, TOAST])
     expect(footprint.components.readers).not.toContain(BADGE)
   })
 
+  it('follows an import clause wrapped across lines', () => {
+    expect(footprint.components.readers).toContain(TASK_TABLE)
+  })
+
   it('counts the reverse closure over direct and readers as where frames render', () => {
-    expect(footprint.components.rendersCount).toBe(4)
+    expect(footprint.components.rendersCount).toBe(6)
   })
 
   it('keeps every changed file, sorted, including the ones that are not components', () => {
@@ -95,8 +101,8 @@ describe('tokenDiff', () => {
   })
 })
 
-describe('tokenClassPattern', () => {
-  const pattern = tokenClassPattern(['surface-raised', 'text-secondary'])!
+describe('tokenReadPattern', () => {
+  const pattern = tokenReadPattern(['surface-raised', 'text-secondary'])!
 
   it('matches a utility reading the token under any variant prefixes', () => {
     for (const cls of [
@@ -110,19 +116,30 @@ describe('tokenClassPattern', () => {
       expect(cls, cls).toMatch(pattern)
   })
 
-  it('does not match a longer token or a bare token name', () => {
+  it('matches the token name read as a string literal', () => {
+    for (const code of [
+      "resolveColor('surface-raised')",
+      'getSemanticColors(mode)["text-secondary"]',
+      'const token = `surface-raised`',
+    ])
+      expect(code, code).toMatch(pattern)
+  })
+
+  it('does not match a longer token, a bare token name or a longer literal', () => {
     for (const cls of [
       'text-brand-secondary',
       'bg-surface-raised-ish',
       'surface-raised',
       'text-secondary',
       'bg-text-secondary-foo',
+      "resolveColor('text-secondary-muted')",
+      "'on-surface-raised'",
     ])
       expect(cls, cls).not.toMatch(pattern)
   })
 
   it('is null with no tokens', () => {
-    expect(tokenClassPattern([])).toBeNull()
+    expect(tokenReadPattern([])).toBeNull()
   })
 })
 

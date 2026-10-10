@@ -505,11 +505,14 @@ the merge-base. The output has:
 - `files`: every changed path, sorted.
 - `components.direct`: the changed files that are component sources, that is `.ts` or `.tsx`
   under `packages/ui/src/components/` that are not tests, stories, snapshots or type stubs.
-- `components.readers`: every other component source whose class strings read a changed token
-  (`bg-surface-raised`, `text-text-secondary`, under any variant prefix such as `web:hover:` or
-  `[.light_&]:`; `text-secondary` never matches `text-brand-secondary`), plus every source that
-  imports a `direct` file, transitively. The import closure is keyed by file, so two components
-  that share a name never merge.
+- `components.readers`: every other component source that reads a changed token, through a
+  class string (`bg-surface-raised`, `text-text-secondary`, under any variant prefix such as
+  `web:hover:` or `[.light_&]:`; `text-secondary` never matches `text-brand-secondary`) or by
+  name as a string literal (`resolveColor('surface-raised')`, which is `var(--color-…)` on web),
+  plus every source that imports a `direct` file, transitively, wrapped import clauses included.
+  The import closure is keyed by file, so two components that share a name never merge. Only
+  `packages/ui/src/components/` is read: a change under `src/hooks`, `src/utils` or `src/theme`
+  shows in `files` and `tokens`, not in `direct`, and reaches no component through the closure.
 - `components.rendersCount`: the size of the reverse import closure over `direct` and
   `readers` together, which is where frames render.
 

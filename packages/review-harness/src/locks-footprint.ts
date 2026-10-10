@@ -94,24 +94,33 @@ export function tokenDiff(baseCss: string, headCss: string): TokenChange[] {
 const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 /**
- * Matches a class reading any of `tokens` through a utility (`bg-surface-raised`), whatever
- * variant prefixes precede it (`web:hover:`, `[.light_&]:`), and not a longer token that merely
- * starts the same way (`text-secondary` does not hit `text-text-secondary-foo`).
+ * Matches a read of any of `tokens`: a class through a utility (`bg-surface-raised`), whatever
+ * variant prefixes precede it (`web:hover:`, `[.light_&]:`), or the bare name as a string
+ * literal (`resolveColor('surface-raised')`, which is `var(--color-…)` on web). Neither hits a
+ * longer token that merely starts the same way (`text-secondary` and `text-text-secondary-foo`).
  */
-export function tokenClassPattern(tokens: string[]): RegExp | null {
+export function tokenReadPattern(tokens: string[]): RegExp | null {
   const names = [...new Set(tokens)].sort((a, b) => b.length - a.length).map(escapeRegExp)
   if (names.length === 0) return null
-  return new RegExp(`(?<![\\w-])(?:${CLASS_UTILITIES})-(?:${names.join('|')})(?![\\w-])`)
+  const alternatives = names.join('|')
+  return new RegExp(
+    `(?<![\\w-])(?:${CLASS_UTILITIES})-(?:${alternatives})(?![\\w-])|['"\`](?:${alternatives})['"\`]`
+  )
 }
 
-/** The source files whose text reads a changed token through a class string. */
+/** The source files whose text reads a changed token through a class string or by name. */
 export function tokenReaders(tokens: TokenChange[], sources: Map<string, string>): string[] {
-  const pattern = tokenClassPattern(tokens.map((t) => t.name))
+  const pattern = tokenReadPattern(tokens.map((t) => t.name))
   if (!pattern) return []
   return [...sources].filter(([, text]) => pattern.test(text)).map(([path]) => path)
 }
 
-const IMPORT_RE = /(?:^|\n)\s*(?:import|export)\b[^'"\n]*?from\s*['"]([^'"]+)['"]/g
+/**
+ * An import or re-export clause up to its specifier. The clause may wrap across lines, but
+ * holds only names, braces, commas and `*`, so an `export const` never runs on to a later
+ * `from`.
+ */
+const IMPORT_RE = /\b(?:import|export)\s[\w\s{},*$]*?\bfrom\s*['"]([^'"]+)['"]/g
 const CANDIDATES = ['', '.ts', '.tsx', '/index.ts', '/index.tsx']
 
 function resolveImport(from: string, specifier: string, known: Set<string>): string | null {
