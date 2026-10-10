@@ -175,21 +175,28 @@ describe('Button geometry resolves to the control tokens', () => {
   })
 })
 
-// TD-789 3b: status-error as text missed 4.5:1 on the grey 100 page.
-describe('Button error label', () => {
-  it.each(['outline', 'ghost', 'link'] as const)(
-    'paints the %s error label in text-error, not status-error',
-    (variant) => {
-      render(
-        <Button variant={variant} color="error">
-          <ButtonText>Delete</ButtonText>
-        </Button>
-      )
-      const classes = (capturedByNode.get(screen.getByRole('button')) ?? '').split(/\s+/)
-      expect(classes).toContain('text-text-error')
-      expect(classes).not.toContain('text-status-error')
-    }
+// TD-789 3b: a fill or mark tone as label text missed 4.5:1 on the grey 100 and 200 planes.
+describe('Button tone labels', () => {
+  const tones = [
+    ['secondary', 'text-text-brand-secondary', 'text-brand-secondary'],
+    ['success', 'text-text-success', 'text-status-success'],
+    ['error', 'text-text-error', 'text-status-error'],
+    ['warning', 'text-text-warning', 'text-status-warning'],
+  ] as const
+  const cases = (['outline', 'ghost', 'link'] as const).flatMap((variant) =>
+    tones.map(([color, textRole, fillTone]) => [variant, color, textRole, fillTone] as const)
   )
+
+  it.each(cases)('paints the %s %s label in %s, not %s', (variant, color, textRole, fillTone) => {
+    render(
+      <Button variant={variant} color={color}>
+        <ButtonText>Go</ButtonText>
+      </Button>
+    )
+    const classes = (capturedByNode.get(screen.getByRole('button')) ?? '').split(/\s+/)
+    expect(classes).toContain(textRole)
+    expect(classes).not.toContain(fillTone)
+  })
 })
 
 // Decision 0003: the label and the outline follow the theme. The className and the

@@ -18,7 +18,7 @@ describe('CardStat', () => {
     render(<CardStat label="Fatigue" value="MOD" tone="warning" />)
 
     const value = screen.getByText('MOD')
-    expect(classNameOf(value)).toContain('text-status-warning')
+    expect(classNameOf(value)).toContain('text-text-warning')
     expect(value.style.color).toBe('')
   })
 
