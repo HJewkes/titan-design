@@ -104,11 +104,11 @@ describe('Collapse', () => {
         <CollapseContent>Content</CollapseContent>
       </Collapse>
     )
-    // react-native-web does not map accessibilityState.expanded to aria-expanded
     const button = screen.getByRole('button')
-    expect(button).toBeInTheDocument()
+    expect(button).toHaveAttribute('aria-expanded', 'false')
 
     fireEvent.click(button)
+    expect(button).toHaveAttribute('aria-expanded', 'true')
     expect(screen.getByText('Content')).toBeInTheDocument()
   })
 
@@ -248,10 +248,10 @@ describe('Collapse', () => {
         </Accordion>
       )
       const buttons = screen.getAllByRole('button')
-      // react-native-web does not map accessibilityState.expanded to aria-expanded
-      expect(buttons[0]).toBeInTheDocument()
+      expect(buttons[0]).toHaveAttribute('aria-expanded', 'false')
 
       fireEvent.click(buttons[0])
+      expect(buttons[0]).toHaveAttribute('aria-expanded', 'true')
       expect(screen.getByText('Panel 1')).toBeInTheDocument()
     })
   })
