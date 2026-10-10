@@ -4,6 +4,7 @@ import { axe } from 'jest-axe'
 import { Text } from 'react-native'
 import { Section, SectionHeader, SectionContent } from './Section'
 import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
+import { capturedByNode } from '../../../test/classname-capture'
 
 describe('Section', () => {
   it('renders children correctly', () => {
@@ -141,5 +142,22 @@ describe('Section geometry resolves to the spacing tokens', () => {
     render(<SectionHeader title="Workouts" subtitle="This week" />)
     expect(spacingClassesAt(find())).toEqual([...classes])
     expect(resolveAll([...classes])).toEqual([...pixels])
+  })
+})
+
+/** Owner D6: a section header is a sentence-case title, not an eyebrow. */
+describe('SectionHeader title', () => {
+  it('renders in the heading face, sentence case, on text-primary', () => {
+    render(<SectionHeader title="Recent workouts" />)
+    const classes = (capturedByNode.get(screen.getByText('Recent workouts')) ?? '').split(/\s+/)
+    expect(classes).toEqual(
+      expect.arrayContaining(['font-heading', 'text-sm', 'font-semibold', 'text-text-primary'])
+    )
+    expect(classes).not.toContain('uppercase')
+  })
+
+  it('is exposed as a heading', () => {
+    render(<SectionHeader title="Recent workouts" />)
+    expect(screen.getByRole('heading', { name: 'Recent workouts' })).toBeInTheDocument()
   })
 })
