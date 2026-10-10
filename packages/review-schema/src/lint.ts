@@ -13,6 +13,7 @@ export const LINT_RULES = [
   'split-pr-group',
   'ship-not-last',
   'ship-head-mismatch',
+  'missing-implemented-option',
 ] as const
 export type LintRule = (typeof LINT_RULES)[number]
 
@@ -212,6 +213,23 @@ function shipHeadProblems(m: Manifest): LintProblem[] {
   })
 }
 
+/** A decision that changes what the PR ships names the option the PR implements at its head. */
+function implementedProblems(m: Manifest): LintProblem[] {
+  return m.questions
+    .filter(
+      (q) =>
+        (q.kind === 'pick-one' || q.kind === 'pick-many') &&
+        (q.decision === 'iterate' || q.decision === 'decide') &&
+        !isMergeBound(q) &&
+        q.implemented === undefined
+    )
+    .map((q) =>
+      lint('missing-implemented-option')(
+        `question ${q.id}: its ${q.decision} decision changes what ships; declare the option the PR implements (implemented)`
+      )
+    )
+}
+
 /**
  * The review-layout problems of a parsed round, empty when it passes. Pure: builders refuse a
  * round with any problem, and a console lists one with its reasons.
@@ -225,5 +243,6 @@ export function lintRound(round: Manifest): LintProblem[] {
     ...groupProblems(round, prs),
     ...shipOrderProblems(round, prs),
     ...shipHeadProblems(round),
+    ...implementedProblems(round),
   ]
 }

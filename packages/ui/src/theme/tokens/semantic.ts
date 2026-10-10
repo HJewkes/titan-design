@@ -281,10 +281,14 @@ export const semanticColorsLight = {
   'scrim-subtle': 'rgba(0, 0, 0, 0.30)',
   'scrim-default': 'rgba(0, 0, 0, 0.50)',
 
-  // Control chrome and data labels (VW-82). Mode-independent for the same
-  // reason the `on-*` white labels are: the plane underneath them is fixed.
-  'on-control-idle': greyRamp[200],
-  'on-control-active': p.white,
+  // Toolbar control faces (TD-264): a white raised face, pressed into a warm
+  // silver. greyRamp[50] and [100] sit within ΔE 3 of other light roles. The
+  // labels flip with the faces, since the face under them now does.
+  'control-face': p.white,
+  'control-face-active': greyRamp[200],
+  'control-face-disabled': 'rgba(0, 0, 0, 0.06)',
+  'on-control-idle': greyRamp[700], // 7.0:1 on control-face
+  'on-control-active': greyRamp[950], // 11.5:1 on control-face-active
   'on-data-strong': semanticPins.onDataStrong,
 
   // Interactive states (interactive-*)
@@ -599,6 +603,12 @@ export const semanticColorsDark = {
   // the active value is the same white. `on-data-strong` is the label ON a
   // light categorical data fill (Treemap tiles), where every text-* token is
   // far too light to read.
+  //
+  // `control-face*` is the toolbar control face itself (TD-264), the values
+  // ToolbarButton painted before it read tokens.
+  'control-face': greyRamp[800],
+  'control-face-active': greyRamp[900],
+  'control-face-disabled': 'rgba(255, 255, 255, 0.12)',
   'on-control-idle': semanticPins.onControlIdle,
   'on-control-active': p.white,
   'on-data-strong': semanticPins.onDataStrong,

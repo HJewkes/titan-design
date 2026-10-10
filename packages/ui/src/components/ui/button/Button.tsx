@@ -1,6 +1,7 @@
 import React, { forwardRef } from 'react'
 import { Pressable, Text, View, ActivityIndicator, type PressableProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { useHitTarget } from '../../../hooks/useHitTarget'
 import { semanticColorsDark } from '../../../theme/tokens/semantic'
 
 export type ButtonVariant = 'solid' | 'outline' | 'ghost' | 'link'
@@ -169,7 +170,7 @@ const textStyles: Record<ButtonVariant, Record<ButtonColor, string>> = {
 
 // Pixel-identical to the px-4/py-1.5/min-h-[32px] triples these replaced — the
 // control tokens were measured off this component (AW-142). `sm` sits at 32px,
-// below the 44pt hit-target floor; raising it is AW-144.
+// below the 44pt hit-target floor, so it carries a hit box instead (TD-10).
 const sizeStyles: Record<ButtonSize, string> = {
   sm: 'px-control-x-sm py-control-y-sm min-h-control-sm',
   md: 'px-control-x-md py-control-y-md min-h-control-md',
@@ -181,6 +182,13 @@ const iconButtonSizeStyles: Record<ButtonSize, string> = {
   sm: 'w-8 h-8 p-0',
   md: 'w-10 h-10 p-0',
   lg: 'w-12 h-12 p-0',
+}
+
+// Faces under the 44pt floor: 32px carries a hit box, faces unchanged (TD-10, owner decision A4).
+const needsHitTarget: Record<ButtonSize, boolean> = {
+  sm: true,
+  md: false,
+  lg: false,
 }
 
 const textSizeStyles: Record<ButtonSize, string> = {
@@ -215,11 +223,13 @@ export const Button = forwardRef<View, ButtonProps>(function Button(
     fullWidth = false,
     className,
     children,
+    onLayout,
     ...props
   },
   ref
 ) {
   const disabled = isDisabled || isLoading
+  const hitTarget = useHitTarget({ enabled: needsHitTarget[size], onLayout })
 
   const inlineStyle: Record<string, string> = {
     color: textColorMap[variant][color],
@@ -254,8 +264,11 @@ export const Button = forwardRef<View, ButtonProps>(function Button(
         className
       )}
       style={inlineStyle}
+      hitSlop={hitTarget.hitSlop}
+      onLayout={hitTarget.onLayout}
       {...props}
     >
+      {hitTarget.layerProps && <View {...hitTarget.layerProps} />}
       {isLoading && (
         <ActivityIndicator
           size="small"

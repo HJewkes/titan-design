@@ -41,6 +41,7 @@ const pick = (id: string, frames: string[], pr?: number) => ({
   kind: 'pick-one' as const,
   prompt: `Which ${id}?`,
   options: [`${id}-x`, `${id}-y`],
+  implemented: `${id}-x`,
   required: true,
   signsOff: id,
   frames,
@@ -254,6 +255,25 @@ describe('builder rules: Ship gate', () => {
     const { code } = await build(elsewhere.path, [feedbackPath])
     expect(root).toBeDefined()
     expect(code).toBe(EXIT_REFUSED)
+  })
+
+  it('refuses when the earlier round picked an option the PR does not implement', async () => {
+    const { root } = await answeredRound({ depth: { pick: 'depth-y' } })
+    const { code, lines } = await build(await nextRound(root))
+    expect(code).toBe(EXIT_REFUSED)
+    expect(lines[0]).toContain('picked "depth-y", but the PR implements "depth-x"')
+  })
+
+  it('refuses when an earlier answer about the PR carries free text', async () => {
+    const { root } = await answeredRound({ depth: { pick: 'depth-x', comment: 'tighten it' } })
+    const { code, lines } = await build(await nextRound(root))
+    expect(code).toBe(EXIT_REFUSED)
+    expect(lines[0]).toContain('question depth: has a written comment')
+  })
+
+  it('offers Ship when every earlier answer is the implemented option with no text', async () => {
+    const { root } = await answeredRound({ depth: { pick: 'depth-x' }, 'ship-7': { pick: 'Ship' } })
+    expect((await build(await nextRound(root))).code).toBe(0)
   })
 
   it('offers Ship when the earlier round agreed', async () => {

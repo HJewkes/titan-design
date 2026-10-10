@@ -36,7 +36,7 @@ const meta: Meta<typeof TaskRow> = {
     docs: {
       description: {
         component:
-          'Composes **TableRow** · **TableCell** · **SeverityLabel** · **Pill** · **Typography**.',
+          'Composes **TableRow** · **TableCell** · **Indicator** · **Pill** · **Typography**.',
       },
     },
   },

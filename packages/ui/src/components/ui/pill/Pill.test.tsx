@@ -227,6 +227,39 @@ describe('Pill deprecated size alias', () => {
   })
 })
 
+describe('Pill clear variant', () => {
+  const classesOf = (testID: string) => (capturedClassNames.get(testID) ?? '').split(/\s+/)
+
+  it('paints no fill and no ring, only the label colour', () => {
+    render(
+      <Pill testID="pill" variant="clear" tone="neutral">
+        Idle
+      </Pill>
+    )
+    const classes = classesOf('pill')
+    expect(classes).toEqual(expect.arrayContaining(['border-transparent', 'text-text-primary']))
+    expect(classes.filter((c) => c.startsWith('bg-'))).toEqual([])
+  })
+
+  it('keeps the dot, coloured by the tone', () => {
+    render(
+      <Pill testID="pill" variant="clear" tone="success" leading="dot">
+        Live
+      </Pill>
+    )
+    expect(classesOf('pill-dot')).toContain('bg-status-success')
+  })
+
+  it('has no accessibility violations', async () => {
+    const { container } = render(
+      <Pill variant="clear" tone="warning" leading="dot">
+        Rest
+      </Pill>
+    )
+    expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
 describe('Pill neutral faces', () => {
   const classesOf = (testID: string) => (capturedClassNames.get(testID) ?? '').split(/\s+/)
 
