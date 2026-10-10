@@ -220,7 +220,7 @@ function SelectOption<T>({ option }: SelectOptionComponentProps<T>) {
       <Text
         className={cn(
           'text-sm',
-          selected && !isMulti ? 'text-brand-primary font-medium' : 'text-text-primary'
+          selected && !isMulti ? 'text-text-brand font-medium' : 'text-text-primary'
         )}
       >
         {option.label}

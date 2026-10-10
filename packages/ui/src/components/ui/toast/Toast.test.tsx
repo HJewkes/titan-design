@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, fireEvent, act } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedByNode } from '../../../test/classname-capture'
 import { Toast, ToastProvider, useToast } from './Toast'
 import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
@@ -296,5 +297,19 @@ describe('Toast geometry resolves to the spacing tokens', () => {
     render(<Toast title="Saved" description="Your changes have been saved." />)
     expect(spacingClassesAt(find())).toEqual([...classes])
     expect(resolveAll([...classes])).toEqual([...pixels])
+  })
+})
+
+// TD-483: the status glyph is a Text node, so it takes the text role, not the fill tone.
+describe('Toast status glyph', () => {
+  it.each([
+    ['success', '✓', 'text-text-success', 'text-status-success'],
+    ['warning', '⚠', 'text-text-warning', 'text-status-warning'],
+    ['info', 'ℹ', 'text-text-info', 'text-status-info'],
+  ] as const)('status=%s paints %s in %s, not %s', (status, glyph, textRole, fillTone) => {
+    render(<Toast title="Saved" status={status} />)
+    const classes = (capturedByNode.get(screen.getByText(glyph)) ?? '').split(/\s+/)
+    expect(classes).toContain(textRole)
+    expect(classes).not.toContain(fillTone)
   })
 })

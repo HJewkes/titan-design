@@ -52,9 +52,6 @@
   "components-atoms-gauge--override-color light": {
     "#7bafde|#edeae7": 1
   },
-  "components-atoms-link--all-colors light": {
-    "#ff7900|#edeae7": 1
-  },
   "components-atoms-pill--all-variants light": {
     "#ffffff|#da5f00": 1
   },
@@ -493,15 +490,6 @@
   },
   "components-organisms-table--default light": {
     "#a45e00|#ffeaa9": 1
-  },
-  "components-organisms-table--sorting-and-selection light": {
-    "#ff7900|#ffe6d4": 1
-  },
-  "components-organisms-table--use-table-hook light": {
-    "#ff7900|#ffe6d4": 1
-  },
-  "components-organisms-table--with-pagination light": {
-    "#ff7900|#ffe6d4": 1
   },
   "custom-activework-cochangechip--default dark": {
     "#ff7900|#4a3929": 1

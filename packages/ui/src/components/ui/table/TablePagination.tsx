@@ -100,14 +100,14 @@ function PageSizeOption({ size, isSelected, onPress }: PageSizeOptionProps) {
       className={cn(
         'px-2 py-1 rounded',
         isSelected
-          ? 'bg-brand-primary-subtle text-brand-primary'
+          ? 'bg-brand-primary-subtle text-text-brand'
           : 'text-text-secondary web:hover:bg-interactive-hover'
       )}
     >
       <Text
         className={cn(
           'text-sm font-medium',
-          isSelected ? 'text-brand-primary' : 'text-text-secondary'
+          isSelected ? 'text-text-brand' : 'text-text-secondary'
         )}
       >
         {size}

@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, renderHook, screen, fireEvent, act } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedByNode } from '../../../test/classname-capture'
 import { Autocomplete } from './Autocomplete'
 import { useAutocompleteState } from './useAutocompleteState'
 import { defaultFilterFn } from './autocompleteFilter'
@@ -339,5 +340,16 @@ describe('Autocomplete', () => {
       render(<Autocomplete options={defaultOptions} value="1" isClearable />)
       expect(screen.getByLabelText('Clear selection')).toBeInTheDocument()
     })
+  })
+})
+
+// TD-483: brand orange as the selected option label missed 4.5:1 on the light overlay planes.
+describe('Autocomplete selected option', () => {
+  it('paints the selected label in the brand text role, not the brand fill', () => {
+    render(<Autocomplete options={defaultOptions} value="2" />)
+    typeInInput(screen.getByRole('textbox'), 'Ban')
+    const classes = (capturedByNode.get(screen.getByText('Banana')) ?? '').split(/\s+/)
+    expect(classes).toContain('text-text-brand')
+    expect(classes).not.toContain('text-brand-primary')
   })
 })

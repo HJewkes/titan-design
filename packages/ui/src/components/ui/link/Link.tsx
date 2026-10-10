@@ -25,7 +25,7 @@ export interface LinkProps extends Omit<TextProps, 'onPress'> {
 
 const colorStyles: Record<LinkColor, string> = {
   default: 'text-text-link',
-  primary: 'text-brand-primary',
+  primary: 'text-text-brand',
   secondary: 'text-text-brand-secondary',
   inherit: '',
 }
