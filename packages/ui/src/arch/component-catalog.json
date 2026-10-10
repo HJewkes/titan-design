@@ -10417,7 +10417,8 @@
       "status": "candidate",
       "storyIds": [
         "shell-workout-workouttopbar--default",
-        "shell-workout-workouttopbar--device-lost"
+        "shell-workout-workouttopbar--device-lost",
+        "shell-workout-workouttopbar--idle"
       ],
       "tier": "organism"
     },
@@ -13617,7 +13618,7 @@
         },
         {
           "default": null,
-          "description": "Visual variant",
+          "description": "Visual variant.",
           "name": "variant",
           "required": false,
           "type": "PillVariant"

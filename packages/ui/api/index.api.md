@@ -5367,7 +5367,7 @@ export type PillSizeLevel = 'xs' | 'sm' | 'md' | 'lg';
 export type PillTone = 'neutral' | 'brand' | 'brand-secondary' | 'success' | 'warning' | 'error' | 'info';
 
 // @public (undocumented)
-export type PillVariant = 'solid' | 'subtle' | 'outline';
+export type PillVariant = 'solid' | 'subtle' | 'outline' | 'clear';
 
 // @public
 export const PINNED_LIVE_STRIP_PHONE_MAX = 640;
@@ -9221,7 +9221,7 @@ export interface WeekRowWorkout {
     // (undocumented)
     onPress?: () => void;
     // (undocumented)
-    status: WorkoutPillStatus;
+    status: 'completed' | 'current' | 'upcoming' | 'deload' | 'next' | 'missed';
 }
 
 // @public (undocumented)
