@@ -1,3 +1,4 @@
+import { lockedTokens, tokenKey, type ModeToken } from './lock-surface.ts'
 import type { Lock, Locks } from './locks.ts'
 
 // What a round or dispatch plans to do, checked against the lock registry. `locksProblems` checks
@@ -11,12 +12,6 @@ export const LOCK_CONFLICT_KINDS = [
 ] as const
 
 export type LockConflictKind = (typeof LOCK_CONFLICT_KINDS)[number]
-
-/** A colour property in one theme mode. */
-export interface ModeToken {
-  name: string
-  mode: 'light' | 'dark'
-}
 
 /** A PR in the round, in the order the round presents and ships it. */
 export interface PlannedItem {
@@ -63,28 +58,11 @@ export interface LockConflict {
   message: string
 }
 
-const tokenKey = (t: ModeToken) => `${t.name}/${t.mode}`
 const short = (sha: string) => sha.slice(0, 7)
-
-/** The tokens a lock decides: its derived footprint and its declared touches. */
-function lockTokens(lock: Lock): Set<string> {
-  return new Set([...(lock.footprint?.tokens ?? []), ...(lock.touches?.tokens ?? [])].map(tokenKey))
-}
-
-function overlap(tokens: ModeToken[], lock: Lock): ModeToken[] {
-  const decided = lockTokens(lock)
-  const seen = new Set<string>()
-  return tokens.filter((t) => {
-    const key = tokenKey(t)
-    const hit = decided.has(key) && !seen.has(key)
-    seen.add(key)
-    return hit
-  })
-}
 
 function supersededState(item: PlannedItem, lock: Lock, plan: LockPlan): LockConflict[] {
   if (lock.holders.some((h) => h.pr === item.pr)) return []
-  const tokens = overlap(item.touches.tokens, lock)
+  const tokens = lockedTokens(item.touches.tokens, lock)
   const missing = lock.holders.filter((h) => !plan.contains(item.base, h.headSha))
   if (tokens.length === 0 || missing.length === 0) return []
   const holders = missing.map((h) => `#${h.pr} at ${short(h.headSha)}`).join(', ')
@@ -154,7 +132,7 @@ function lockOrder(
 }
 
 function reAsk(question: PlannedQuestion, lock: Lock): LockConflict[] {
-  const tokens = overlap(question.touches.tokens, lock)
+  const tokens = lockedTokens(question.touches.tokens, lock)
   if (lock.status === 'released' || tokens.length === 0) return []
   return [
     {

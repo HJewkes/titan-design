@@ -1,24 +1,17 @@
-import type { Lock, Locks } from '@titan-design/review-schema'
-
-/** A token a plan or lock names; a plan may leave `mode` out to mean both modes. */
-export interface ModeToken {
-  name: string
-  mode?: 'light' | 'dark'
-}
+import {
+  globRegExp,
+  lockSurface,
+  tokenKey,
+  tokensMatch,
+  type Lock,
+  type Locks,
+  type ModeToken,
+} from '@titan-design/review-schema'
 
 /** What a task about to be dispatched plans to change: paths or globs, and tokens. */
 export interface PlannedWork {
   files: string[]
   tokens: ModeToken[]
-}
-
-/** What an open lock holds, as sets of repo paths and `name/mode` tokens. */
-export interface LockSurface {
-  /** Paths the holder changes or the decision declares: a plan touching one conflicts. */
-  files: string[]
-  tokens: ModeToken[]
-  /** Components that read a locked token: a plan touching one renders under the lock. */
-  readers: string[]
 }
 
 export interface LockHit {
@@ -40,60 +33,6 @@ export interface CheckResult {
   /** Open locks the plan only renders under: it edits a component that reads a locked token. */
   renders: LockHit[]
   advisory: string
-}
-
-const escapeRegExp = (s: string) => s.replace(/[.+^${}()|[\]\\]/g, '\\$&')
-
-/** `**` crosses directories, `*` and `?` do not. */
-export function globRegExp(glob: string): RegExp {
-  const body = glob
-    .split(/(\*\*\/|\*\*|\*|\?)/)
-    .map((part) =>
-      part === '**/'
-        ? '(?:.*/)?'
-        : part === '**'
-          ? '.*'
-          : part === '*'
-            ? '[^/]*'
-            : part === '?'
-              ? '[^/]'
-              : escapeRegExp(part)
-    )
-    .join('')
-  return new RegExp(`^${body}$`)
-}
-
-/** A lock may name a token family (`*-subtle`, `tint-{hue}-solid / on-tint-{hue}`). */
-function tokenNamePatterns(name: string): RegExp[] {
-  return name.split(' / ').map((alt) => globRegExp(alt.trim().replace(/\{[^}]*\}/g, '*')))
-}
-
-function namesMatch(a: string, b: string): boolean {
-  return (
-    tokenNamePatterns(a).some((re) => re.test(b)) || tokenNamePatterns(b).some((re) => re.test(a))
-  )
-}
-
-export const tokenKey = (t: ModeToken) => (t.mode ? `${t.name}/${t.mode}` : t.name)
-
-export function tokensMatch(a: ModeToken, b: ModeToken): boolean {
-  return (!a.mode || !b.mode || a.mode === b.mode) && namesMatch(a.name, b.name)
-}
-
-/** The derived footprint and the declared touches together. */
-export function lockSurface(lock: Pick<Lock, 'footprint' | 'touches'>): LockSurface {
-  const fp = lock.footprint
-  return {
-    files: [
-      ...new Set([
-        ...(fp?.files ?? []),
-        ...(fp?.components.direct ?? []),
-        ...(lock.touches?.components ?? []),
-      ]),
-    ],
-    tokens: [...(fp?.tokens ?? []), ...(lock.touches?.tokens ?? [])],
-    readers: fp?.components.readers ?? [],
-  }
 }
 
 function matchFiles(globs: string[], paths: string[]): string[] {

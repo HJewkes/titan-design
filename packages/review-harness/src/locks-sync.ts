@@ -1,5 +1,12 @@
-import type { Lock, LockDependent, Locks } from '@titan-design/review-schema'
-import { lockSurface, tokenKey, tokensMatch, type LockSurface } from './locks-check.ts'
+import {
+  lockSurface,
+  tokenKey,
+  tokensMatch,
+  type Lock,
+  type LockDependent,
+  type Locks,
+  type LockSurface,
+} from '@titan-design/review-schema'
 import type { FootprintBody } from './locks-footprint.ts'
 import type { LockFootprint } from './locks.ts'
 

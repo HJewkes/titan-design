@@ -1,6 +1,7 @@
 import { writeFile } from 'node:fs/promises'
 import { basename, dirname, join, resolve } from 'node:path'
 import { parseArgs } from 'node:util'
+import type { ModeToken } from '@titan-design/review-schema'
 import {
   ROUND_FILE,
   buildRound,
@@ -14,7 +15,7 @@ import { sectionedExampleManifest } from './example.ts'
 import { FrameRenderError } from './frames.ts'
 import { buildMorningDraft } from './morning.ts'
 import { harnessVerdict, serveMainCommand, type HarnessFreshness } from './harness-freshness.ts'
-import { CHECK_EXIT, checkPlan, type ModeToken } from './locks-check.ts'
+import { CHECK_EXIT, checkPlan } from './locks-check.ts'
 import { formatSync } from './locks-sync.ts'
 import {
   REGISTRY_ENV,

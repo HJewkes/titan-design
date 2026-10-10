@@ -72,9 +72,15 @@ const result = RoundSchema.safeParse(round)
 against a parsed registry. It is pure: the caller answers `contains(commit, ancestor)` (for
 example with `git merge-base --is-ancestor`), so the function runs no git.
 
+Every overlap reads a lock through `lockSurface(lock)` (its footprint and declared touches) and
+matches tokens with `tokensMatch(a, b)`. A lock may name a token family (`*-subtle`,
+`tint-{hue}-solid / on-tint-{hue}`), and a `ModeToken` with no `mode` stands for both modes. The
+harness's `locks check` and `locks sync` import the same functions, so every check agrees on what a
+lock covers.
+
 | Kind               | Raised when                                                                                                                                                                                                    |
 | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `superseded-state` | An item touches tokens (same name and mode) of an open lock it does not hold, and its `base` lacks a holder head. Names every overlapping token.                                                               |
+| `superseded-state` | An item touches tokens of an open lock it does not hold, and its `base` lacks a holder head. Names every overlapping token.                                                                                    |
 | `lock-order`       | Any open lock an item holds comes `after` an open lock that neither that item nor an earlier one holds.                                                                                                        |
 | `re-ask`           | A question's touched tokens overlap a lock that is `open` or `merged`; a `released` lock decides nothing.                                                                                                      |
 | `stale-ship`       | A PR's last Ship is not at its item's `head`; for a PR with no item, not at its previous Ship's head. At most one per PR. `lock` is the first lock the PR holds, or null; `ids` ends with every lock it holds. |

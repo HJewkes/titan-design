@@ -46,6 +46,11 @@ project adheres to [Semantic Versioning](https://semver.org/).
   reads one per-PR view: all the non-released locks a PR holds and its Ship history. Exports
   `LOCK_CONFLICT_KINDS` and the `LockPlan`, `PlannedItem`, `PlannedQuestion`, `RecordedShip`,
   `ModeToken` and `LockConflict` types.
+- `lockSurface(lock)`, `tokensMatch(a, b)`, `lockedTokens(tokens, lock)`, `tokenKey`, `globRegExp`
+  and the `ModeToken` (`mode` optional, meaning both modes) and `LockSurface` types: the one reading
+  of what a lock covers. A locked token name may be a family (`*-subtle`,
+  `tint-{hue}-solid / on-tint-{hue}`). `lockConflicts` matches through them, and
+  `@titan-design/review-harness` now imports them instead of keeping its own copy.
 
 ## [0.3.0]
 

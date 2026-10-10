@@ -115,6 +115,58 @@ describe('lockConflicts', () => {
     ])
   })
 
+  describe('a lock that names token families', () => {
+    const families = () =>
+      registry((r) => {
+        r.locks[1]!.touches!.tokens = [
+          { name: '*-subtle', mode: 'light' },
+          { name: 'tint-{hue}-solid / on-tint-{hue}', mode: 'dark' },
+        ]
+      })
+
+    it('flags a question touching concrete members of the families as one re-ask', () => {
+      const question = {
+        id: 'family-again',
+        touches: {
+          tokens: [
+            { name: 'primary-subtle', mode: 'light' as const },
+            { name: 'tint-red-solid', mode: 'dark' as const },
+            { name: 'tint-red-solid', mode: 'light' as const },
+          ],
+        },
+      }
+
+      expect(lockConflicts(families(), plan({ questions: [question] }))).toEqual([
+        expect.objectContaining({
+          kind: 're-ask',
+          lock: 'L-0002',
+          tokens: [
+            { name: 'primary-subtle', mode: 'light' },
+            { name: 'tint-red-solid', mode: 'dark' },
+          ],
+        }),
+      ])
+    })
+
+    it('flags an unstacked item touching a family of a held lock', () => {
+      const held = registry((r) => {
+        r.locks[0]!.footprint!.tokens = [{ name: 'surface-*', mode: 'light' }]
+      })
+      const item: PlannedItem = {
+        ...dependent(DEPENDENT_HEAD),
+        touches: { tokens: [{ name: 'surface-sunken' }] },
+      }
+
+      expect(lockConflicts(held, plan({ items: [item] }))).toEqual([
+        expect.objectContaining({
+          kind: 'superseded-state',
+          lock: 'L-0001',
+          tokens: [{ name: 'surface-sunken' }],
+        }),
+      ])
+    })
+  })
+
   it('does not treat a released decision as decided', () => {
     const released = registry((r) => {
       r.locks[1]!.status = 'released'

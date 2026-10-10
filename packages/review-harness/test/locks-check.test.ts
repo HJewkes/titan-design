@@ -1,8 +1,8 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
-import { parseLocks } from '@titan-design/review-schema'
+import { globRegExp, parseLocks, tokensMatch } from '@titan-design/review-schema'
 import { describe, expect, it } from 'vitest'
-import { checkPlan, globRegExp, tokensMatch } from '../src/locks-check.ts'
+import { checkPlan } from '../src/locks-check.ts'
 import { runCli } from '../src/run.ts'
 import { locksCliIo } from './fixtures/locks/cli.ts'
 
