@@ -10889,7 +10889,7 @@
         },
         {
           "default": null,
-          "description": "Convenience single-line content: renders as **status-colored, bold** text (white on `solid`) — the batteries-included cue message, so a `compact` cue is just `<Alert status=\"warning\" size=\"compact\" message=\"VL20 · …\" />` with no need to hand-color the text (RN doesn't cascade color).",
+          "description": "Convenience single-line content: renders as **status-colored, bold** text (the on-colour on `solid`) — the batteries-included cue message, so a `compact` cue is just `<Alert status=\"warning\" size=\"compact\" message=\"VL20 · …\" />` with no need to hand-color the text (RN doesn't cascade color).",
           "name": "message",
           "required": false,
           "type": "string"
