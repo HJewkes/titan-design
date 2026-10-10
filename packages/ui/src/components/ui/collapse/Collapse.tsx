@@ -84,6 +84,7 @@ export function CollapseButton({ children, accessibilityLabel, className }: Coll
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
       accessibilityState={{ expanded: isOpen }}
+      aria-expanded={isOpen}
       className={cn(
         'flex-row items-center justify-between py-3 px-4',
         'web:hover:bg-interactive-hover active:bg-interactive-active rounded-lg',
@@ -240,6 +241,7 @@ export function AccordionButton({
       onPress={onToggle}
       accessibilityRole="button"
       accessibilityState={{ expanded: isOpen }}
+      aria-expanded={isOpen}
       className={cn(
         'flex-row items-center justify-between py-4 px-1',
         'web:hover:bg-interactive-hover active:bg-interactive-active',

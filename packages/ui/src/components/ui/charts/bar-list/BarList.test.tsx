@@ -6,7 +6,7 @@ import { getSemanticColors } from '../../../../theme/tokens/semantic'
 import { capturedByNode } from '../../../../test/classname-capture'
 import { Surface } from '../../surface'
 import { silverRed, type SilverRedScheme } from '../kit/silverRed'
-import { BarList } from './BarList'
+import { BarList, type BarListValueFormatter } from './BarList'
 import storyMeta from './BarList.stories'
 import { barListFixtures, defaultFixture, veryLargeFixture, type BarListFixture } from './fixtures'
 
@@ -27,6 +27,7 @@ const renderFixture = (f: BarListFixture, props = {}) =>
       sort={f.sort}
       maxRows={f.maxRows}
       layout={f.layout}
+      referenceMarker={f.referenceMarker}
       {...props}
     />
   )
@@ -348,6 +349,302 @@ describe('BarList', () => {
     })
   })
 
+  describe('reference marker', () => {
+    const LIMIT_NAME =
+      'Tool calls. Top 10 of 12 items by value. Largest: Bash, 412. 2 more not shown, totalling 3. Limit: 100. 3 of 12 items at or above.'
+    const classesOf = (el: Element) => (capturedByNode.get(el) ?? '').split(' ')
+
+    it("draws one marker line per shown row at the marker's fraction", () => {
+      renderFixture(fixture('Funnel'), { referenceMarker: { value: 50, label: 'Target' } })
+      const lines = screen.getAllByTestId('bar-list-marker')
+      expect(lines).toHaveLength(5)
+      for (const line of lines) expect(line).toHaveStyle({ left: '50%', width: '4px' })
+    })
+
+    it('paints the line as a text-primary core with a text-inverse keyline each side', () => {
+      renderFixture(fixture('With marker'))
+      const lines = screen.getAllByTestId('bar-list-marker')
+      expect(lines).toHaveLength(10)
+      for (const el of lines) {
+        expect(classesOf(el)).toEqual(
+          expect.arrayContaining(['absolute', 'bg-text-primary', 'border-x', 'border-text-inverse'])
+        )
+      }
+    })
+
+    it.each(
+      (['dark', 'light'] as const).flatMap((mode) =>
+        (['surface-base', 'surface-elevated'] as const).map((plane) => [mode, plane] as const)
+      )
+    )(
+      'keeps the line at 3:1 or more against both fills, the track and the plane: %s %s',
+      (mode, plane) => {
+        render(
+          <Surface theme={mode}>
+            <BarList
+              accessibilityLabel="Tool calls"
+              rows={defaultFixture.rows}
+              max={500}
+              referenceMarker={{ value: 100, label: 'Limit' }}
+            />
+          </Surface>
+        )
+        const classes = classesOf(screen.getAllByTestId('bar-list-marker')[0])
+        const tokenOf = (prefix: string) => {
+          const found = classes.find((name) => name.startsWith(`${prefix}-text-`))
+          if (!found) throw new Error(`no ${prefix} colour class on the marker`)
+          return found.slice(prefix.length + 1) as 'text-primary' | 'text-inverse'
+        }
+        const colors = getSemanticColors(mode)
+        const core = colors[tokenOf('bg')]
+        const keyline = colors[tokenOf('border')]
+        for (const fill of Object.values(silverRed(mode))) {
+          expect(contrast(keyline, fill)).toBeGreaterThanOrEqual(3)
+        }
+        expect(contrast(core, colors[plane])).toBeGreaterThanOrEqual(3)
+        expect(
+          contrast(core, compositeOver(colors['hairline-default'], colors[plane]))
+        ).toBeGreaterThanOrEqual(3)
+      }
+    )
+
+    it('puts the line at the same x in every row, whatever the values column holds', () => {
+      const rows = [7, 1234, 98765].map((value) => ({ id: `v${value}`, label: `V${value}`, value }))
+      render(
+        <BarList
+          accessibilityLabel="Widths"
+          rows={rows}
+          max={100000}
+          referenceMarker={{ value: 25000, label: 'Cap' }}
+          formatValue={(value) => value.toLocaleString('en-US')}
+        />
+      )
+      const lines = screen.getAllByTestId('bar-list-marker')
+      expect(new Set(lines.map((el) => el.style.left))).toEqual(new Set(['25%']))
+      // The line shares a parent with the aligned track, so one fraction is one x in every row.
+      for (const line of lines) {
+        const track = line.parentElement?.querySelector('[data-testid="bar-list-track"]')
+        expect(line.parentElement).toBe(track?.parentElement)
+        expect(line.parentElement).toHaveAttribute('aria-hidden', 'true')
+      }
+    })
+
+    it('keeps the line, keylines included, inside the track end at fractions near 1', () => {
+      const rows = [{ id: 'a', label: 'A', value: 10 }]
+      for (const value of [9.99, 10]) {
+        const { unmount } = render(
+          <BarList accessibilityLabel="Edge" rows={rows} referenceMarker={{ value, label: 'M' }} />
+        )
+        const line = screen.getByTestId('bar-list-marker')
+        const fraction = value / 10
+        expect(line.style.left).toBe(`${fraction * 100}%`)
+        expect(line.style.marginLeft).toBe(`${-4 * fraction}px`)
+        unmount()
+      }
+    })
+
+    it('renders the bare track, hidden and unwrapped, without a marker', () => {
+      const depth = (track: Element) => {
+        let steps = 0
+        for (let el = track; el.getAttribute('data-testid') !== 'bar-list-row'; steps++) {
+          el = el.parentElement as Element
+        }
+        return steps
+      }
+      for (const f of barListFixtures.filter((x) => x.rows.length > 0)) {
+        const { unmount } = renderFixture({ ...f, referenceMarker: undefined })
+        const tracks = screen.getAllByTestId('bar-list-track')
+        for (const track of tracks) {
+          expect(track).toHaveAttribute('aria-hidden', 'true')
+          expect(classesOf(track)).toContain('flex-1')
+          expect(depth(track)).toBe(f.layout === 'stacked' ? 4 : 3)
+        }
+        unmount()
+      }
+    })
+
+    it('has no legend and no swatch when a marker is set', () => {
+      renderFixture(fixture('With marker'))
+      expect(screen.queryByTestId('bar-list-marker-legend')).not.toBeInTheDocument()
+      expect(screen.queryByTestId('bar-list-marker-swatch')).not.toBeInTheDocument()
+      expect(screen.getAllByRole('listitem')).toHaveLength(11)
+    })
+
+    describe('tip', () => {
+      const rowsOfList = () => screen.getAllByTestId('bar-list-row')
+      const tabStops = () => rowsOfList().filter((row) => row.getAttribute('tabindex') === '0')
+
+      afterEach(() => {
+        fireEvent.mouseMove(document)
+      })
+
+      it('is opt-in: without the prop (and no flag) there is no line, wrapper, tip or focusable row', () => {
+        const { container } = renderFixture(defaultFixture)
+        expect(screen.queryByTestId('bar-list-marker')).not.toBeInTheDocument()
+        expect(container.querySelector('[tabindex]')).toBeNull()
+        act(() => fireEvent.focus(rowsOfList()[0]))
+        expect(screen.queryByTestId('bar-list-tip')).toBeNull()
+        const track = screen.getAllByTestId('bar-list-track')[0]
+        expect(track.parentElement).toBe(rowsOfList()[0].firstElementChild?.firstElementChild)
+      })
+
+      it('puts every data row in the roving set, whether or not the value is hidden', () => {
+        renderFixture(fixture('With marker'))
+        expect(tabStops()).toHaveLength(1)
+        const rows = rowsOfList()
+        act(() => rows[0].focus())
+        fireEvent.keyDown(rows[0], { key: 'End' })
+        expect(document.activeElement).toBe(rows[9])
+        expect(screen.getByTestId('bar-list-overflow')).not.toHaveAttribute('tabindex')
+      })
+
+      it('holds the label, the value, the limit and the flag label of a flagged row', () => {
+        renderFixture(fixture('Over limit'))
+        act(() => rowsOfList()[0].focus())
+        const tip = screen.getByTestId('bar-list-tip')
+        for (const text of ['Parser', '9.1', 'Limit', '5', 'over 5%']) {
+          expect(within(tip).getByText(text)).toBeInTheDocument()
+        }
+        const limit = within(tip).getByText('Limit')
+        expect(classesOf(limit)).toEqual(
+          expect.arrayContaining(['leading-normal', 'text-text-secondary'])
+        )
+        const lines = [...tip.children].map((line) => line.textContent)
+        expect(lines).toEqual(['Parser9.1', 'Limit5', 'over 5%'])
+      })
+
+      it('shows the limit line on an unflagged row and no flag line', () => {
+        renderFixture(fixture('Over limit'))
+        act(() => rowsOfList()[0].focus())
+        fireEvent.keyDown(rowsOfList()[0], { key: 'End' })
+        const tip = screen.getByTestId('bar-list-tip')
+        expect(tip).toHaveTextContent('Importer')
+        expect(tip).toHaveTextContent('Limit')
+        expect(within(tip).queryByText('over 5%')).toBeNull()
+      })
+
+      it('states the limit in the tip when the marker is above the maximum, with no line', () => {
+        renderFixture(defaultFixture, { referenceMarker: { value: 5000, label: 'Limit' } })
+        expect(screen.queryByTestId('bar-list-marker')).not.toBeInTheDocument()
+        act(() => rowsOfList()[0].focus())
+        const tip = screen.getByTestId('bar-list-tip')
+        expect(tip).toHaveTextContent('Limit')
+        expect(tip).toHaveTextContent('5.0k')
+      })
+
+      it('hides the tip from assistive tech and names the row with the #407 name plus the marker', () => {
+        renderFixture(fixture('With marker'))
+        const row = rowsOfList()[0]
+        act(() => row.focus())
+        expect(screen.getByTestId('bar-list-tip').closest('[aria-hidden="true"]')).not.toBeNull()
+        expect(document.querySelector('[role="tooltip"]')).toBeNull()
+        expect(row).not.toHaveAttribute('aria-describedby')
+        expect(row).toHaveAccessibleName('Bash: 412, at or above Limit, rank 1 of 10')
+      })
+
+      it.each([
+        { value: Number.NaN, label: 'Limit' },
+        { value: Number.POSITIVE_INFINITY, label: 'Limit' },
+        { value: 0, label: 'Limit' },
+        { value: -5, label: 'Limit' },
+      ])(
+        'renders no tip and does not throw for the hostile marker %o on an unflagged list',
+        (referenceMarker) => {
+          const { container } = renderFixture(defaultFixture, { referenceMarker })
+          expect(container.querySelector('[tabindex]')).toBeNull()
+          act(() => fireEvent.focus(rowsOfList()[0]))
+          expect(screen.queryByTestId('bar-list-tip')).toBeNull()
+        }
+      )
+
+      it('keeps the model while a new marker literal carries the same values', () => {
+        const formatValue = vi.fn<BarListValueFormatter>((value) => String(value))
+        // Only the model formats the hidden total, with no row; the rows format on every render.
+        const builds = () => formatValue.mock.calls.filter((call) => call[1] === undefined).length
+        const { rerender } = render(
+          <BarList
+            accessibilityLabel="Tool calls"
+            rows={defaultFixture.rows}
+            formatValue={formatValue}
+            referenceMarker={{ value: 100, label: 'Limit' }}
+          />
+        )
+        const calls = builds()
+        expect(calls).toBe(1)
+        rerender(
+          <BarList
+            accessibilityLabel="Tool calls"
+            rows={defaultFixture.rows}
+            formatValue={formatValue}
+            referenceMarker={{ value: 100, label: 'Limit' }}
+          />
+        )
+        expect(builds()).toBe(calls)
+        rerender(
+          <BarList
+            accessibilityLabel="Tool calls"
+            rows={defaultFixture.rows}
+            formatValue={formatValue}
+            referenceMarker={{ value: 200, label: 'Limit' }}
+          />
+        )
+        expect(builds()).toBe(calls + 1)
+      })
+
+      it('passes axe on the Over limit fixture with a tip open', async () => {
+        const { container } = renderFixture(fixture('Over limit'))
+        // The focus's effect queues a frame that positions the portal; let it fire inside act.
+        act(() => rowsOfList()[0].focus())
+        await act(() => new Promise<void>((resolve) => requestAnimationFrame(() => resolve())))
+        expect(await axe(container)).toHaveNoViolations()
+        const body = await axe(document.body, { rules: { region: { enabled: false } } })
+        expect(body).toHaveNoViolations()
+      })
+    })
+
+    it('ends the list name with the marker sentence', () => {
+      renderFixture(fixture('With marker'))
+      expect(screen.getByRole('list')).toHaveAttribute('aria-label', LIMIT_NAME)
+    })
+
+    it('says in a row name that it is at or above the marker; a row below does not', () => {
+      renderFixture(fixture('With marker'))
+      const rows = screen.getAllByRole('listitem')
+      expect(rows[0]).toHaveAccessibleName('Bash: 412, at or above Limit, rank 1 of 10')
+      expect(rows[3]).toHaveAccessibleName('Grep: 96, rank 4 of 10')
+    })
+
+    it('renders no line, and keeps the name, without a marker prop', () => {
+      renderFixture(defaultFixture)
+      expect(screen.queryByTestId('bar-list-marker')).not.toBeInTheDocument()
+      expect(screen.getByRole('list')).toHaveAttribute(
+        'aria-label',
+        'Tool calls. Top 10 of 12 items by value. Largest: Bash, 412. 2 more not shown, totalling 3.'
+      )
+    })
+
+    it('renders no marker while loading or empty', () => {
+      const marker = { value: 100, label: 'Limit' }
+      const { rerender } = renderFixture(defaultFixture, {
+        isLoading: true,
+        referenceMarker: marker,
+      })
+      expect(screen.queryByTestId('bar-list-marker')).not.toBeInTheDocument()
+      rerender(<BarList accessibilityLabel="Tool calls" rows={[]} referenceMarker={marker} />)
+      expect(screen.queryByTestId('bar-list-marker')).not.toBeInTheDocument()
+    })
+
+    it('gives the story a referenceMarker object control typed so a URL can set its fields', () => {
+      const control = storyMeta.argTypes?.referenceMarker
+      expect(control?.control).toBe('object')
+      expect(control?.type).toEqual({
+        name: 'object',
+        value: { value: { name: 'number' }, label: { name: 'string' } },
+      })
+      expect(fixture('With marker').referenceMarker).toEqual({ value: 100, label: 'Limit' })
+    })
+  })
+
   describe('colour', () => {
     const flagged = fixture('Flagged')
     const fillOf = (label: string) =>
@@ -477,6 +774,24 @@ describe('BarList', () => {
     const cases: [string, () => ReturnType<typeof renderFixture>][] = [
       ['Default', () => renderFixture(defaultFixture)],
       ['Flagged (tips on)', () => renderFixture(fixture('Flagged'))],
+      ['With marker', () => renderFixture(fixture('With marker'))],
+      [
+        'marker above the maximum',
+        () => renderFixture(defaultFixture, { referenceMarker: { value: 5000, label: 'Limit' } }),
+      ],
+      [
+        'With marker (light)',
+        () =>
+          render(
+            <Surface theme="light">
+              <BarList
+                accessibilityLabel="Tool calls"
+                rows={defaultFixture.rows}
+                referenceMarker={fixture('With marker').referenceMarker}
+              />
+            </Surface>
+          ),
+      ],
       ['With description (stacked)', () => renderFixture(fixture('With description'))],
       [
         'Default with the value hidden',

@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { SHIP_OPTIONS, contractProblems, duplicates, type Problem } from './contract.ts'
+import { LOCK_AXES } from './locks.ts'
 
 export const MANIFEST_SCHEMA_ID = 'titan-review/round@2'
 /** A round written before the review contract: the page still reads it, the CLI refuses it. */
@@ -113,6 +114,23 @@ export const DECISION_KINDS = ['iterate', 'ship', 'decide'] as const
 /** What picking an option means for its PR's Ship: `changes` withholds Ship until a fix round. */
 export const OPTION_OUTCOMES = ['accept', 'changes', 'neutral'] as const
 
+/** A token a question's answer would decide; leaving `mode` out means both modes. */
+const touchedToken = z
+  .object({ name: z.string().min(1), mode: z.enum(['light', 'dark']).optional() })
+  .strict()
+
+/**
+ * What a question with no PR diff would decide: the tokens, components and axis a lock check reads
+ * (`build --locks`). A question on a PR page needs none; its PR head's footprint stands for it.
+ */
+export const QuestionTouchesSchema = z
+  .object({
+    tokens: z.array(touchedToken),
+    components: z.array(z.string().min(1)).default([]),
+    axis: z.enum(LOCK_AXES).optional(),
+  })
+  .strict()
+
 const questionBase = {
   id,
   prompt: z.string().min(1),
@@ -128,6 +146,7 @@ const questionBase = {
    */
   frames: z.array(id).min(1).optional(),
   decision: z.enum(DECISION_KINDS).optional(),
+  touches: QuestionTouchesSchema.optional(),
 }
 
 /** Which variant each option stands for, so one click answers and picks the variant. */
@@ -561,7 +580,8 @@ const PrTaskSchema = z
   .strict()
 
 /**
- * One PR at its head and the sections about it, which a page shows together, Ship last. The
+ * One PR at its head and the sections about it, which a page shows together, Ship last. A group's
+ * own `stackedOn` names the base it renders on; groups in one round may sit on different bases. The
  * rest is read-only context a page shows beside the review: never a question.
  */
 export const PrGroupSchema = z
@@ -569,6 +589,7 @@ export const PrGroupSchema = z
     pr: prPage,
     headSha: sha40,
     sectionIds: z.array(id).min(1),
+    stackedOn: StackedOnSchema.optional(),
     title: z.string().min(1).optional(),
     kind: z.enum(PR_KINDS).optional(),
     /** The PR description, as markdown. */
@@ -580,14 +601,35 @@ export const PrGroupSchema = z
   })
   .strict()
 
+type StackedGroup = { pr: string; stackedOn?: { repo: string; pr: number } }
+
+/** `owner/name#n` of the base a PR group is stacked on, or undefined when it is not stacked. */
+export const stackBase = (group: StackedGroup): string | undefined =>
+  group.stackedOn && `${group.stackedOn.repo}#${group.stackedOn.pr}`
+
+function stackProblems(groups: StackedGroup[]): string[] {
+  const bases = new Map(groups.map((g) => [g.pr, stackBase(g)]))
+  return groups.flatMap((g) => {
+    const seen = [g.pr]
+    for (let at = bases.get(g.pr); at !== undefined; at = bases.get(at)) {
+      if (at === g.pr)
+        return [`PR group ${g.pr} is stacked on itself: ${[...seen, at].join(' -> ')}`]
+      if (seen.includes(at)) return []
+      seen.push(at)
+    }
+    return []
+  })
+}
+
 function prGroupProblems(m: {
   sections?: { id: string }[]
-  prGroups?: { pr: string; sectionIds: string[] }[]
+  prGroups?: (StackedGroup & { sectionIds: string[] })[]
 }): string[] {
   if (!m.prGroups) return []
   if (!m.sections) return ['prGroups need sections; group the round into sections']
   const ids = new Set(m.sections.map((s) => s.id))
   return [
+    ...stackProblems(m.prGroups),
     ...m.prGroups.flatMap((g) =>
       g.sectionIds.filter((s) => !ids.has(s)).map((s) => `PR group ${g.pr}: unknown section ${s}`)
     ),
@@ -809,6 +851,7 @@ export type TopicPrefix = (typeof TOPIC_PREFIXES)[number]
 export type StackedOn = z.infer<typeof StackedOnSchema>
 export type PrGroup = z.infer<typeof PrGroupSchema>
 export type PrKind = (typeof PR_KINDS)[number]
+export type QuestionTouches = z.output<typeof QuestionTouchesSchema>
 export type DecisionKind = (typeof DECISION_KINDS)[number]
 export type OptionOutcome = (typeof OPTION_OUTCOMES)[number]
 export type FrameChange = (typeof FRAME_CHANGES)[number]

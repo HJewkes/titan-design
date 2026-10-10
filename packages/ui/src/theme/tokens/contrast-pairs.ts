@@ -16,7 +16,7 @@ import { getSemanticColors, type ThemeMode } from './semantic'
 export const CONTRAST_MODES: readonly ThemeMode[] = ['dark', 'light']
 
 export interface ContrastPair {
-  /** Semantic key drawn on top: a text role or an `on-*` label. */
+  /** Semantic key drawn on top: a text role, an `on-*` label or a data fill. */
   fg: string
   /** Semantic key or `grey-<step>` primitive it is drawn on. */
   bg: string
@@ -49,6 +49,17 @@ export const CONTENT_PLANES = [
   'surface-elevated',
   'surface-raised',
   'surface-overlay',
+] as const
+
+/** Planes a face one step UP from a content plane lands on (`raisedLevel`, clamped at overlay). */
+const RAISED_FACE_PLANES = ['surface-elevated', 'surface-raised', 'surface-overlay'] as const
+
+/** Planes a face one step DOWN from a content plane lands on (`pressedLevel`). */
+const PRESSED_FACE_PLANES = [
+  'background-base',
+  'surface-base',
+  'surface-elevated',
+  'surface-raised',
 ] as const
 
 const TEXT_FLOORS = {
@@ -110,14 +121,24 @@ const labelsOnOtherFills: ContrastPair[] = [
     floor: AA,
     modes: BOTH,
   })),
-  // ToolbarButton paints its face from the grey ramp in both modes.
-  { fg: 'on-control-idle', bg: 'grey-600', floor: AA, modes: BOTH },
-  { fg: 'on-control-active', bg: 'grey-800', floor: AA, modes: BOTH },
+  // ToolbarButton's faces are ramp planes one step up (idle) or down (active) from
+  // the toolbar's plane (TD-265), so each label owes AA on every plane it can land on.
+  ...RAISED_FACE_PLANES.map((bg) => ({ fg: 'on-control-idle', bg, floor: AA, modes: BOTH })),
+  ...PRESSED_FACE_PLANES.map((bg) => ({ fg: 'on-control-active', bg, floor: AA, modes: BOTH })),
   // The inverted plane is the primary ink: a tooltip, a neutral pill.
   { fg: 'text-inverse', bg: 'text-primary', floor: AA, modes: BOTH },
   // Treemap falls back to on-data-strong on its categorical tiles.
   ...DATAVIZ_CATEGORICAL_ROLES.map((bg) => ({ fg: 'on-data-strong', bg, floor: AA, modes: BOTH })),
 ]
+
+// TD-756 D3: a categorical fill carries an area, a legend and labels, so it owes 2:1
+// (VW-371's floor) on the chart planes, not 3:1.
+const CATEGORICAL_FILL_FLOOR = 2
+const CHART_PLANES = ['surface-base', 'surface-elevated', 'surface-raised'] as const
+
+const categoricalFillsOnPlanes: ContrastPair[] = DATAVIZ_CATEGORICAL_ROLES.flatMap((fg) =>
+  CHART_PLANES.map((bg) => ({ fg, bg, floor: CATEGORICAL_FILL_FLOOR, modes: BOTH }))
+)
 
 export const CONTRAST_PAIRS: readonly ContrastPair[] = [
   ...textOnPlanes,
@@ -126,6 +147,7 @@ export const CONTRAST_PAIRS: readonly ContrastPair[] = [
   ...labelsOnSolidFills,
   ...labelsOnSubtleFills,
   ...labelsOnOtherFills,
+  ...categoricalFillsOnPlanes,
 ]
 
 function resolve(key: string, colors: Colors): string {

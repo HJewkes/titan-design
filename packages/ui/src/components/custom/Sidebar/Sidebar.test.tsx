@@ -10,6 +10,7 @@ import {
   SidebarItem,
   SidebarDivider,
 } from './Sidebar'
+import { dividerClasses } from '../../../test/divider-rule'
 
 function MockIcon({ size, className }: { size?: number; className?: string }) {
   return (
@@ -135,11 +136,29 @@ describe('Sidebar', () => {
     })
   })
 
-  describe('SidebarDivider', () => {
-    it('renders divider', () => {
+  describe('rules', () => {
+    const subtleRule = ['h-px', 'w-full', 'bg-hairline-subtle']
+
+    it('draws a subtle Divider under the header and over the footer', () => {
       renderSidebar()
-      // The divider renders as a View with a separator style, just verify the sidebar renders completely
-      expect(screen.getByText('Logout')).toBeInTheDocument()
+      const header = screen.getByText('Logo').parentElement
+      const footer = screen.getByRole('button', { name: 'Logout' }).parentElement
+
+      expect(dividerClasses(header?.nextElementSibling)).toEqual(subtleRule)
+      expect(dividerClasses(footer?.previousElementSibling)).toEqual(subtleRule)
+    })
+
+    it('SidebarDivider is an inset subtle Divider', () => {
+      renderSidebar()
+      const mainSection = screen.getByRole('group', { name: 'Main' })
+
+      expect(dividerClasses(mainSection.nextElementSibling)).toEqual([
+        'h-px',
+        'w-auto',
+        'mx-4',
+        'my-2',
+        'bg-hairline-subtle',
+      ])
     })
   })
 

@@ -223,6 +223,7 @@ export const darkThemeCSSVars: {
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly '--color-control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly '--color-on-control-idle': "#D1D1D1";
     readonly '--color-on-control-active': "#FFFFFF";
     readonly '--color-on-data-strong': "#0B0B0B";
@@ -426,8 +427,9 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly 'on-control-idle': "#D4D1CE";
-    readonly 'on-control-active': "#FFFFFF";
+    readonly 'control-face-disabled': "rgba(0, 0, 0, 0.06)";
+    readonly 'on-control-idle': "#5A5958";
+    readonly 'on-control-active': "#1C1916";
     readonly 'on-data-strong': "#0B0B0B";
     readonly 'interactive-hover': "rgba(55, 65, 81, 0.04)";
     readonly 'interactive-focus': "rgba(55, 65, 81, 0.12)";
@@ -581,6 +583,7 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly 'control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly 'on-control-idle': "#D1D1D1";
     readonly 'on-control-active': "#FFFFFF";
     readonly 'on-data-strong': "#0B0B0B";
@@ -763,8 +766,9 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly '--color-on-control-idle': "#D4D1CE";
-    readonly '--color-on-control-active': "#FFFFFF";
+    readonly '--color-control-face-disabled': "rgba(0, 0, 0, 0.06)";
+    readonly '--color-on-control-idle': "#5A5958";
+    readonly '--color-on-control-active': "#1C1916";
     readonly '--color-on-data-strong': "#0B0B0B";
     readonly '--color-interactive-disabled-text': "rgba(55, 65, 81, 0.26)";
     readonly '--color-avatar-background': "#72716F";
@@ -936,6 +940,7 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly '--color-control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly '--color-on-control-idle': "#D1D1D1";
     readonly '--color-on-control-active': "#FFFFFF";
     readonly '--color-on-data-strong': "#0B0B0B";
@@ -1257,8 +1262,9 @@ export const lightThemeCSSVars: {
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly '--color-on-control-idle': "#D4D1CE";
-    readonly '--color-on-control-active': "#FFFFFF";
+    readonly '--color-control-face-disabled': "rgba(0, 0, 0, 0.06)";
+    readonly '--color-on-control-idle': "#5A5958";
+    readonly '--color-on-control-active': "#1C1916";
     readonly '--color-on-data-strong': "#0B0B0B";
     readonly '--color-interactive-disabled-text': "rgba(55, 65, 81, 0.26)";
     readonly '--color-avatar-background': "#72716F";
@@ -1670,6 +1676,7 @@ export const semanticColorsDark: {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly 'control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly 'on-control-idle': "#D1D1D1";
     readonly 'on-control-active': "#FFFFFF";
     readonly 'on-data-strong': "#0B0B0B";
@@ -1828,8 +1835,9 @@ export const semanticColorsLight: {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly 'on-control-idle': "#D4D1CE";
-    readonly 'on-control-active': "#FFFFFF";
+    readonly 'control-face-disabled': "rgba(0, 0, 0, 0.06)";
+    readonly 'on-control-idle': "#5A5958";
+    readonly 'on-control-active': "#1C1916";
     readonly 'on-data-strong': "#0B0B0B";
     readonly 'interactive-hover': "rgba(55, 65, 81, 0.04)";
     readonly 'interactive-focus': "rgba(55, 65, 81, 0.12)";
