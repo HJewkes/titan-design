@@ -163,6 +163,60 @@ describe('builder rules: stacked base PR', () => {
   })
 })
 
+describe('builder rules: per-group stacked bases', () => {
+  const on = (pr: number, sha: string) => ({ repo: REPO, pr, headSha: sha.padEnd(40, '0') })
+  const twoStacks = (extra: Partial<ManifestInput> = {}): ManifestInput => ({
+    ...interleaved(),
+    variants: ['a1', 'b1', 'a2', 'it'].map(frame),
+    questions: [pick('depth', ['a1'], 8), ship(8), pick('edge', ['b1'], 9), ship(9)],
+    sections: [
+      section('d', '#8 depth', ['depth', 'ship-8'], ['a1']),
+      section('e', '#9 edge', ['edge', 'ship-9'], ['b1']),
+      section('p', 'owner/name#800 base', [], ['a2']),
+      section('q', 'owner/name#823 base', [], ['it']),
+    ],
+    prGroups: [
+      { pr: pageOf(8), headSha: HEAD(8), sectionIds: ['d'], stackedOn: on(800, 'abc1234') },
+      { pr: pageOf(9), headSha: HEAD(9), sectionIds: ['e'], stackedOn: on(823, 'def5678') },
+    ],
+    ...extra,
+  })
+  const labels = (draft: ManifestInput) =>
+    Object.fromEntries(applyRoundRules(draft).variants.map((v) => [v.key, v.label]))
+
+  it("labels each base's frames with its own base and head", () => {
+    expect(labels(twoStacks())).toEqual({
+      a1: 'Frame a1',
+      b1: 'Frame b1',
+      a2: 'rendered on #800 at abc1234, context, not under review: Frame a2',
+      it: 'rendered on #823 at def5678, context, not under review: Frame it',
+    })
+  })
+
+  it('keeps the round-level base label beside per-group bases, and is idempotent', () => {
+    const draft = twoStacks({ stackedOn: on(700, '7777777') })
+    draft.variants.push(frame('r1'))
+    draft.sections!.push(section('r', 'owner/name#700 base', [], ['r1']))
+    const once = applyRoundRules(draft)
+    expect(once.variants.find((v) => v.key === 'r1')?.label).toBe(
+      'base PR #700, not under review: Frame r1'
+    )
+    expect(applyRoundRules(once)).toEqual(once)
+  })
+
+  it('builds a round.json that keeps each group stackedOn', async () => {
+    const { dir, path } = await dirWith('round-1', twoStacks())
+    expect((await build(path)).code).toBe(0)
+    const written = await readJson(join(dir, 'round.json'))
+    expect(written.prGroups.map((g: { stackedOn: { pr: number } }) => g.stackedOn.pr)).toEqual([
+      800, 823,
+    ])
+    expect(written.variants.map((v: { label: string }) => v.label)).toContain(
+      'rendered on #823 at def5678, context, not under review: Frame it'
+    )
+  })
+})
+
 describe('builder rules: PR grouping', () => {
   it('puts each PR sections together with the Ship section last', () => {
     const out = applyRoundRules(interleaved())
@@ -179,8 +233,12 @@ describe('builder rules: PR grouping', () => {
 
 describe('builder rules: Ship gate', () => {
   /** Round 1 of batch-1 as answered: `answers` maps question id to its answer. */
-  async function answeredRound(answers: Record<string, object>, head = HEAD(7)) {
-    const draft = interleaved()
+  async function answeredRound(
+    answers: Record<string, object>,
+    head = HEAD(7),
+    extra: Partial<ManifestInput> = {}
+  ) {
+    const draft = interleaved(extra)
     draft.questions = draft.questions.map((q) => {
       if (q.id === 'ship-7') return ship(7, head)
       return q.id === 'depth' ? pick('depth', ['a2'], 7) : q
@@ -213,14 +271,32 @@ describe('builder rules: Ship gate', () => {
     return { root, feedbackPath: join(dir, 'feedback.json') }
   }
 
-  async function nextRound(root: string, head = HEAD(7)) {
-    const draft = interleaved({ round: 2 })
+  async function nextRound(root: string, head = HEAD(7), extra: Partial<ManifestInput> = {}) {
+    const draft = interleaved({ round: 2, ...extra })
     draft.questions = draft.questions.map((q) => (q.id === 'ship-7' ? ship(7, head) : q))
     const dir = join(root, 'round-2')
     await mkdir(dir)
     await writeFile(join(dir, 'draft.json'), JSON.stringify(draft))
     return join(dir, 'draft.json')
   }
+
+  it("does not carry a holder's Don't ship into the next round for its dependent", async () => {
+    const stack = (head7: string) => ({
+      prGroups: [
+        { pr: pageOf(7), headSha: head7, sectionIds: ['a-ship', 'a-ctx'] },
+        {
+          pr: pageOf(8),
+          headSha: HEAD(8),
+          sectionIds: ['b-ctx'],
+          stackedOn: { repo: REPO, pr: 7, headSha: head7 },
+        },
+      ],
+    })
+    const answers = { 'ship-7': { pick: "Don't ship" }, 'ship-8': { pick: 'Ship' } }
+    const { root } = await answeredRound(answers, HEAD(7), stack(HEAD(7)))
+    const fixed = 'e'.repeat(40)
+    expect((await build(await nextRound(root, fixed, stack(fixed)))).code).toBe(0)
+  })
 
   it('refuses when the earlier round declined to ship the PR, naming the question', async () => {
     const { root } = await answeredRound({ 'ship-7': { pick: "Don't ship" } })

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
+import { Surface } from '../surface'
 import { ToolbarButton, ToolbarButtonGroup } from './ToolbarButton'
 
 const meta: Meta<typeof ToolbarButton> = {
@@ -24,11 +25,13 @@ const meta: Meta<typeof ToolbarButton> = {
       control: 'boolean',
     },
   },
+  // A Surface, not a bg-* View: the faces resolve one plane up and down from the
+  // plane the context publishes, so the toolbar must publish the plane it paints.
   decorators: [
     (Story) => (
-      <View className="bg-surface-elevated p-6 rounded-lg">
+      <Surface level="elevated" rounded className="p-6 rounded-lg">
         <Story />
-      </View>
+      </Surface>
     ),
   ],
 }
