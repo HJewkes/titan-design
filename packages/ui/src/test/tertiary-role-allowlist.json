@@ -1,0 +1,146 @@
+{
+  "components/custom/ActiveWork/CoChangeChip.tsx": {
+    "count": 1,
+    "reason": "ActiveWork caption outside this slice: recorded as it stands, shrink when moved"
+  },
+  "components/custom/ActiveWork/FileActivityDetail.tsx": {
+    "count": 6,
+    "reason": "ActiveWork caption outside this slice: recorded as it stands, shrink when moved"
+  },
+  "components/custom/ActiveWork/FileHistoryExplorer.tsx": {
+    "count": 2,
+    "reason": "ActiveWork caption outside this slice: recorded as it stands, shrink when moved"
+  },
+  "components/custom/ActiveWork/InitiativeBrief.tsx": {
+    "count": 2,
+    "reason": "ActiveWork caption outside this slice: recorded as it stands, shrink when moved"
+  },
+  "components/custom/ActiveWork/InitiativeCard.tsx": {
+    "count": 3,
+    "reason": "ActiveWork caption outside this slice: recorded as it stands, shrink when moved"
+  },
+  "components/custom/ActiveWork/OpenLoops.tsx": {
+    "count": 2,
+    "reason": "ActiveWork caption outside this slice: recorded as it stands, shrink when moved"
+  },
+  "components/custom/ActiveWork/PortfolioOverview.tsx": {
+    "count": 1,
+    "reason": "ActiveWork caption outside this slice: recorded as it stands, shrink when moved"
+  },
+  "components/custom/ActiveWork/SessionDetail.tsx": {
+    "count": 4,
+    "reason": "ActiveWork caption outside this slice: recorded as it stands, shrink when moved"
+  },
+  "components/custom/ActiveWork/SessionList.tsx": {
+    "count": 1,
+    "reason": "ActiveWork caption outside this slice: recorded as it stands, shrink when moved"
+  },
+  "components/custom/ActiveWork/SessionListItem.tsx": {
+    "count": 1,
+    "reason": "ActiveWork caption outside this slice: recorded as it stands, shrink when moved"
+  },
+  "components/custom/ActiveWork/SeverityLabel.tsx": {
+    "count": 1,
+    "reason": "ActiveWork caption outside this slice: recorded as it stands, shrink when moved"
+  },
+  "components/custom/ActiveWork/TaskRow.tsx": {
+    "count": 4,
+    "reason": "ActiveWork caption outside this slice: recorded as it stands, shrink when moved"
+  },
+  "components/custom/ActiveWork/TaskTable.tsx": {
+    "count": 1,
+    "reason": "ActiveWork caption outside this slice: recorded as it stands, shrink when moved"
+  },
+  "components/custom/Sidebar/Sidebar.tsx": {
+    "count": 1,
+    "reason": "uppercase section label: awaiting the remaining-labels slice"
+  },
+  "components/custom/Workout/CapacityBandOverlays.tsx": {
+    "count": 2,
+    "reason": "Workout caption: recorded as it stands, the Workout slice shrinks it"
+  },
+  "components/custom/Workout/ExerciseHeading.tsx": {
+    "count": 1,
+    "reason": "Workout caption: recorded as it stands, the Workout slice shrinks it"
+  },
+  "components/custom/Workout/GoalCard.tsx": {
+    "count": 1,
+    "reason": "Workout caption: recorded as it stands, the Workout slice shrinks it"
+  },
+  "components/custom/Workout/GoalMilestoneSummary.tsx": {
+    "count": 3,
+    "reason": "Workout caption: recorded as it stands, the Workout slice shrinks it"
+  },
+  "components/custom/Workout/GoalMilestoneTile.tsx": {
+    "count": 1,
+    "reason": "Workout caption: recorded as it stands, the Workout slice shrinks it"
+  },
+  "components/custom/Workout/GoalMilestoneWeekStrip.tsx": {
+    "count": 1,
+    "reason": "Workout caption: recorded as it stands, the Workout slice shrinks it"
+  },
+  "components/custom/Workout/GoalMuscleCard.tsx": {
+    "count": 2,
+    "reason": "Workout caption: recorded as it stands, the Workout slice shrinks it"
+  },
+  "components/custom/Workout/GoalPriorityIcon.tsx": {
+    "count": 1,
+    "reason": "Workout caption: recorded as it stands, the Workout slice shrinks it"
+  },
+  "components/custom/Workout/GoalPriorityIndex.tsx": {
+    "count": 1,
+    "reason": "Workout caption: recorded as it stands, the Workout slice shrinks it"
+  },
+  "components/custom/Workout/GoalTrajectoryWeekTips.tsx": {
+    "count": 3,
+    "reason": "Workout caption: recorded as it stands, the Workout slice shrinks it"
+  },
+  "components/custom/Workout/InputBar.tsx": {
+    "count": 2,
+    "reason": "Workout caption: recorded as it stands, the Workout slice shrinks it"
+  },
+  "components/custom/Workout/SetTableHeader.tsx": {
+    "count": 1,
+    "reason": "Workout caption: recorded as it stands, the Workout slice shrinks it"
+  },
+  "components/custom/Workout/WorkoutCard.tsx": {
+    "count": 1,
+    "reason": "Workout caption: recorded as it stands, the Workout slice shrinks it"
+  },
+  "components/custom/Workout/goalCarousel-fixture.tsx": {
+    "count": 1,
+    "reason": "Workout caption: recorded as it stands, the Workout slice shrinks it"
+  },
+  "components/custom/Workout/wholeBodyCardParts.tsx": {
+    "count": 2,
+    "reason": "Workout caption: recorded as it stands, the Workout slice shrinks it"
+  },
+  "components/shell/AppShell.tsx": {
+    "count": 1,
+    "reason": "placeholder for the content region"
+  },
+  "components/shell/workout/DeviceMenu.tsx": {
+    "count": 1,
+    "reason": "shell/workout caption: recorded as it stands, the Workout slice shrinks it"
+  },
+  "components/shell/workout/pinnedLiveStripParts.tsx": {
+    "count": 1,
+    "reason": "shell/workout caption: recorded as it stands, the Workout slice shrinks it"
+  },
+  "components/ui/breadcrumbs/Breadcrumbs.tsx": {
+    "count": 2,
+    "reason": "separator and ellipsis: decorative"
+  },
+  "components/ui/charts/gauge/Gauge.tsx": {
+    "count": 1,
+    "reason": "unit after the figure: redundant"
+  },
+  "components/ui/form-field/FormField.tsx": {
+    "count": 1,
+    "reason": "info glyph: decorative"
+  },
+  "components/ui/table/TableHeaderCell.tsx": {
+    "count": 1,
+    "reason": "unsorted sort glyph: decorative"
+  }
+}

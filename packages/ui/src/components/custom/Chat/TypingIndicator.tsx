@@ -106,7 +106,7 @@ function TypingContent({ label, className }: { label: string; className?: string
           <PulsingDot key={index} index={index} />
         ))}
       </Surface>
-      <Typography variant="caption" color="tertiary">
+      <Typography variant="caption" color="secondary">
         {label}
       </Typography>
     </View>
