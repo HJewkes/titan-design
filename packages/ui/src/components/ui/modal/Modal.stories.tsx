@@ -73,6 +73,23 @@ function ModalDemo({
   )
 }
 
+/**
+ * Footer dismiss action: a small ghost Button in neutral text, so the confirm action is the
+ * only coloured control in the footer.
+ */
+function FooterCancel({ label, onPress }: { label: string; onPress?: () => void }) {
+  return (
+    <Button
+      variant="ghost"
+      size="sm"
+      onPress={onPress}
+      className="active:bg-interactive-active web:hover:bg-interactive-hover"
+    >
+      <ButtonText className="text-text-secondary">{label}</ButtonText>
+    </Button>
+  )
+}
+
 export const Default: Story = {
   render: () => (
     <ModalDemo>
@@ -88,10 +105,8 @@ export const Default: Story = {
           </Text>
         </ModalBody>
         <ModalFooter>
-          <Button variant="ghost" color="secondary">
-            <ButtonText>Cancel</ButtonText>
-          </Button>
-          <Button variant="solid" color="primary">
+          <FooterCancel label="Cancel" />
+          <Button size="sm" variant="solid" color="primary">
             <ButtonText>Confirm</ButtonText>
           </Button>
         </ModalFooter>
@@ -117,7 +132,7 @@ export const Sizes: Story = {
               </Text>
             </ModalBody>
             <ModalFooter>
-              <Button variant="solid" color="primary">
+              <Button size="sm" variant="solid" color="primary">
                 <ButtonText>Close</ButtonText>
               </Button>
             </ModalFooter>
@@ -166,10 +181,8 @@ export const WithFormContent: Story = {
             </View>
           </ModalBody>
           <ModalFooter>
-            <Button variant="ghost" color="secondary" onPress={close}>
-              <ButtonText>Cancel</ButtonText>
-            </Button>
-            <Button variant="solid" color="primary" onPress={close}>
+            <FooterCancel label="Cancel" onPress={close} />
+            <Button size="sm" variant="solid" color="primary" onPress={close}>
               <ButtonText>Create</ButtonText>
             </Button>
           </ModalFooter>
@@ -202,10 +215,8 @@ export const ScrollableContent: Story = {
           </View>
         </ModalBody>
         <ModalFooter>
-          <Button variant="ghost" color="secondary">
-            <ButtonText>Decline</ButtonText>
-          </Button>
-          <Button variant="solid" color="primary">
+          <FooterCancel label="Decline" />
+          <Button size="sm" variant="solid" color="primary">
             <ButtonText>Accept</ButtonText>
           </Button>
         </ModalFooter>
@@ -233,7 +244,7 @@ export const BackdropBlur: Story = {
             </Text>
           </ModalBody>
           <ModalFooter>
-            <Button variant="solid" color="primary">
+            <Button size="sm" variant="solid" color="primary">
               <ButtonText>Got it</ButtonText>
             </Button>
           </ModalFooter>
@@ -258,7 +269,7 @@ export const NoOverlayClose: Story = {
           </Text>
         </ModalBody>
         <ModalFooter>
-          <Button variant="solid" color="primary">
+          <Button size="sm" variant="solid" color="primary">
             <ButtonText>I Understand</ButtonText>
           </Button>
         </ModalFooter>
@@ -282,10 +293,8 @@ export const DeleteConfirmation: Story = {
             </Text>
           </ModalBody>
           <ModalFooter>
-            <Button variant="ghost" color="secondary" onPress={close}>
-              <ButtonText>Cancel</ButtonText>
-            </Button>
-            <Button variant="solid" color="error" onPress={close}>
+            <FooterCancel label="Cancel" onPress={close} />
+            <Button size="sm" variant="solid" color="error" onPress={close}>
               <ButtonText>Delete</ButtonText>
             </Button>
           </ModalFooter>
@@ -309,7 +318,7 @@ export const SlideAnimation: Story = {
           </Text>
         </ModalBody>
         <ModalFooter>
-          <Button variant="solid" color="primary">
+          <Button size="sm" variant="solid" color="primary">
             <ButtonText>Close</ButtonText>
           </Button>
         </ModalFooter>
@@ -337,10 +346,8 @@ export const LargeWithScrollOutside: Story = {
           </View>
         </ModalBody>
         <ModalFooter>
-          <Button variant="ghost" color="secondary">
-            <ButtonText>Cancel</ButtonText>
-          </Button>
-          <Button variant="solid" color="primary">
+          <FooterCancel label="Cancel" />
+          <Button size="sm" variant="solid" color="primary">
             <ButtonText>Save</ButtonText>
           </Button>
         </ModalFooter>

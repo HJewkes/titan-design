@@ -5,6 +5,7 @@ import { Text } from 'react-native'
 import { Drawer, DrawerBody, DrawerHeader, DrawerFooter } from './Drawer'
 import { capturedClassNames } from '../../../test/classname-capture'
 import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
+import { bandRules, dividerClasses } from '../../../test/divider-rule'
 
 function renderDrawer(props: Partial<React.ComponentProps<typeof Drawer>> = {}) {
   return render(
@@ -264,5 +265,35 @@ describe('Drawer geometry resolves to the spacing tokens', () => {
     renderBands()
     expect(spacingClassesAt(find() ?? null)).toEqual([...classes])
     expect(resolveAll([...classes])).toEqual([...pixels])
+  })
+})
+
+describe('Drawer rules', () => {
+  it('separates the title header by spacing alone', () => {
+    renderDrawer({ isOpen: true })
+    const header = screen.getByText('Test Drawer').parentElement
+
+    expect(dividerClasses(header?.nextElementSibling)).toBeUndefined()
+    expect(bandRules(header)).toEqual([])
+  })
+
+  it('separates DrawerHeader and DrawerFooter by spacing alone', () => {
+    render(
+      <Drawer isOpen onClose={vi.fn()} showCloseButton={false}>
+        <DrawerHeader>
+          <Text>header band</Text>
+        </DrawerHeader>
+        <DrawerFooter>
+          <Text>footer band</Text>
+        </DrawerFooter>
+      </Drawer>
+    )
+    const header = screen.getByText('header band').parentElement
+    const footer = screen.getByText('footer band').parentElement
+
+    expect(dividerClasses(header?.nextElementSibling)).toBeUndefined()
+    expect(dividerClasses(footer?.previousElementSibling)).toBeUndefined()
+    expect(bandRules(header)).toEqual([])
+    expect(bandRules(footer)).toEqual([])
   })
 })
