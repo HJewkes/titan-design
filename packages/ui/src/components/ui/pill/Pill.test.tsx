@@ -227,6 +227,39 @@ describe('Pill deprecated size alias', () => {
   })
 })
 
+describe('Pill clear variant', () => {
+  const classesOf = (testID: string) => (capturedClassNames.get(testID) ?? '').split(/\s+/)
+
+  it('paints no fill and no ring, only the label colour', () => {
+    render(
+      <Pill testID="pill" variant="clear" tone="neutral">
+        Idle
+      </Pill>
+    )
+    const classes = classesOf('pill')
+    expect(classes).toEqual(expect.arrayContaining(['border-transparent', 'text-text-primary']))
+    expect(classes.filter((c) => c.startsWith('bg-'))).toEqual([])
+  })
+
+  it('keeps the dot, coloured by the tone', () => {
+    render(
+      <Pill testID="pill" variant="clear" tone="success" leading="dot">
+        Live
+      </Pill>
+    )
+    expect(classesOf('pill-dot')).toContain('bg-status-success')
+  })
+
+  it('has no accessibility violations', async () => {
+    const { container } = render(
+      <Pill variant="clear" tone="warning" leading="dot">
+        Rest
+      </Pill>
+    )
+    expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
 describe('Pill neutral faces', () => {
   const classesOf = (testID: string) => (capturedClassNames.get(testID) ?? '').split(/\s+/)
 
@@ -240,6 +273,35 @@ describe('Pill neutral faces', () => {
       </Pill>
     )
     expect(classesOf('pill')).toEqual(expect.arrayContaining([...expected]))
+  })
+
+  it.each([
+    ['brand', 'text-text-brand'],
+    ['brand-secondary', 'text-text-brand-secondary'],
+    ['success', 'text-text-success'],
+    ['warning', 'text-text-warning'],
+    ['error', 'text-text-error'],
+    ['info', 'text-text-info'],
+  ] as const)('the %s outline label reads from the text token', (tone, label) => {
+    render(
+      <Pill testID="pill" variant="outline" tone={tone}>
+        Active
+      </Pill>
+    )
+    expect(classesOf('pill')).toContain(label)
+  })
+})
+
+describe('Pill neutral outline', () => {
+  it('draws its ring one hairline step above the shared default', () => {
+    render(
+      <Pill testID="pill" variant="outline" tone="neutral">
+        Idle
+      </Pill>
+    )
+    const classes = (capturedClassNames.get('pill') ?? '').split(/\s+/)
+    expect(classes).toContain('border-hairline-strong')
+    expect(classes).not.toContain('border-hairline')
   })
 })
 

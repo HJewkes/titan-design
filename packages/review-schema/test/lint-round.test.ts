@@ -68,6 +68,7 @@ function base() {
         prompt: 'Which format?',
         options: ['Subtle', 'Outline', 'Current'],
         outcomes: { Subtle: 'changes', Outline: 'changes', Current: 'accept' },
+        implemented: 'Current',
         required: true,
         signsOff: 'the format',
         page: 'owner/name#101',
@@ -79,6 +80,7 @@ function base() {
         decision: 'decide',
         prompt: 'Which policy?',
         options: ['Strict', 'Loose'],
+        implemented: 'Strict',
         signsOff: 'the policy',
       },
       ship(101, HEAD_101),
@@ -110,6 +112,24 @@ const only = (draft: Draft, rule: LintRule) =>
 const question = (draft: Draft, id: string) => draft.questions.find((q) => q.id === id)!
 
 describe('lintRound', () => {
+  it('refuses an iterate or decide question that does not declare its implemented option', () => {
+    const draft = base()
+    delete (question(draft, 'format') as Record<string, unknown>).implemented
+    delete (question(draft, 'policy') as Record<string, unknown>).implemented
+    expect(only(draft, 'missing-implemented-option')).toEqual([
+      'question format: its iterate decision changes what ships; declare the option the PR implements (implemented)',
+      'question policy: its decide decision changes what ships; declare the option the PR implements (implemented)',
+    ])
+  })
+
+  it('refuses an implemented option that is not one of the options', () => {
+    const draft = base()
+    question(draft, 'format').implemented = 'Missing'
+    expect(() => RoundSchema.parse(draft)).toThrow(
+      /implemented option .*Missing.* is not one of its options/
+    )
+  })
+
   it('passes a round whose decisions sit under their frames, each PR group whole, Ship last', () => {
     expect(lint(base())).toEqual([])
   })

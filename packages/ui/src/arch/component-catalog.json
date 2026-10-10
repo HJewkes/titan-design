@@ -316,6 +316,27 @@
         },
         {
           "default": null,
+          "description": "Makes the whole card one link to this URL.",
+          "name": "href",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Consumer vocabulary under the top task: counts, newest activity, a badge.",
+          "name": "meta",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Makes the whole card one link.",
+          "name": "onPress",
+          "required": false,
+          "type": "(() => void)"
+        },
+        {
+          "default": null,
           "description": "Count of open tasks for this initiative.",
           "name": "openCount",
           "required": true,
@@ -1184,6 +1205,152 @@
         "custom-activework-tasktable--sorted-by-severity"
       ],
       "tier": "organism"
+    },
+    {
+      "composes": [
+        "AgentStateLabel",
+        "Avatar",
+        "Card",
+        "Pill",
+        "Progress",
+        "SparkBars",
+        "Typography"
+      ],
+      "family": "custom/Agents",
+      "file": "packages/ui/src/components/custom/Agents/AgentCard.tsx",
+      "name": "AgentCard",
+      "props": [
+        {
+          "default": null,
+          "description": "The session to show.",
+          "name": "agent",
+          "required": true,
+          "type": "AgentSummary"
+        },
+        {
+          "default": null,
+          "description": "Tailwind overrides on the card.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Host actions under the metrics.",
+          "name": "footer",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": "false",
+          "description": "Marks the card with the accent stripe, for the agent the host has in focus.",
+          "name": "isHighlighted",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "false",
+          "description": "Renders the card's skeleton in place of the content.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Shown in place of the metrics block when `agent.metrics` is null or absent.",
+          "name": "metricsEmpty",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Reference instant for the recency label, injected so renders are deterministic.",
+          "name": "now",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Makes the agent name a link.",
+          "name": "onPress",
+          "required": false,
+          "type": "(() => void)"
+        },
+        {
+          "default": null,
+          "description": "Makes the task id pill a link.",
+          "name": "onPressTask",
+          "required": false,
+          "type": "((taskId: string) => void)"
+        },
+        {
+          "default": "agent-card",
+          "description": "Test id on the card root.",
+          "name": "testID",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "purpose": "One agent session: name, state, stated task, branch, recency, and the transcript's tokens, tool calls, errors, cost and activity.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Agents/AgentCard.tsx",
+        "status": "packages/ui/src/components/custom/Agents/AgentCard.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-agents-agentcard--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Indicator",
+        "Pill",
+        "Typography"
+      ],
+      "family": "custom/Agents",
+      "file": "packages/ui/src/components/custom/Agents/AgentStateLabel.tsx",
+      "name": "AgentStateLabel",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides on the row.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "false",
+          "description": "The session holds pushes: a message sent to it queues in its inbox instead of interrupting.",
+          "name": "isDnd",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "sm",
+          "description": "`sm` (caption) for cards and rows, `md` (body) for headers.",
+          "name": "size",
+          "required": false,
+          "type": "\"sm\" | \"md\""
+        },
+        {
+          "default": null,
+          "description": "The state to show.",
+          "name": "state",
+          "required": true,
+          "type": "AgentSummaryState"
+        }
+      ],
+      "purpose": "An agent's state as a dot and its word, never colour alone.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Agents/AgentStateLabel.tsx",
+        "status": "packages/ui/src/components/custom/Agents/AgentStateLabel.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-agents-agentstatelabel--default"
+      ],
+      "tier": "molecule"
     },
     {
       "composes": [
@@ -10402,7 +10569,8 @@
       "status": "candidate",
       "storyIds": [
         "shell-workout-workouttopbar--default",
-        "shell-workout-workouttopbar--device-lost"
+        "shell-workout-workouttopbar--device-lost",
+        "shell-workout-workouttopbar--idle"
       ],
       "tier": "organism"
     },
@@ -13602,7 +13770,7 @@
         },
         {
           "default": null,
-          "description": "Visual variant",
+          "description": "Visual variant.",
           "name": "variant",
           "required": false,
           "type": "PillVariant"
@@ -13621,6 +13789,7 @@
         "components-atoms-pill--default",
         "components-atoms-pill--leading-slot",
         "components-atoms-pill--on-both-planes",
+        "components-atoms-pill--outline-on-all-elevations",
         "components-atoms-pill--solid-tones",
         "components-atoms-pill--square-corners"
       ],

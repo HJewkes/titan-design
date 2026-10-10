@@ -27,18 +27,14 @@
     "#e05254|#252321": 1
   },
   "components-atoms-badge--all-colors light": {
-    "#c27400|#ffffff": 1,
-    "#ff7900|#ffffff": 1,
     "#ffffff|#2196f3": 1,
     "#ffffff|#c27400": 1,
     "#ffffff|#ff7900": 1
   },
   "components-atoms-badge--all-variants light": {
-    "#ff7900|#ffffff": 1,
     "#ffffff|#ff7900": 1
   },
   "components-atoms-chip--all-variants light": {
-    "#ff7900|#ffffff": 1,
     "#ffffff|#ff7900": 1
   },
   "components-atoms-chip--disabled dark": {
@@ -60,7 +56,6 @@
     "#ff7900|#ffffff": 1
   },
   "components-atoms-pill--all-variants light": {
-    "#ff7900|#ffffff": 1,
     "#ffffff|#ff7900": 1
   },
   "components-atoms-pill--on-both-planes dark": {
@@ -642,7 +637,7 @@
     "#e05254|#31302f": 3,
     "#e05254|#373635": 2,
     "#ef5350|#2c2a28": 1,
-    "#ff7900|#4a3929": 7
+    "#ff7900|#4a3929": 3
   },
   "custom-activework-filehistoryexplorer--default light": {
     "#2196f3|#edeae7": 3,
@@ -667,7 +662,7 @@
     "#e05254|#31302f": 3,
     "#e05254|#373635": 2,
     "#ef5350|#2c2a28": 2,
-    "#ff7900|#4a3929": 5
+    "#ff7900|#4a3929": 1
   },
   "custom-activework-filehistoryexplorer--net-shrink-selected light": {
     "#2196f3|#edeae7": 3,
@@ -1252,7 +1247,7 @@
     "#5a5958|#999999": 5,
     "#72716f|#999999": 9,
     "#72716f|#edeae7": 1,
-    "#ff7900|#a59587": 2
+    "#ff7900|#a59587": 1
   },
   "custom-workout-dataviz-bodymapdetailpanel--under-trained light": {
     "#5a5958|#999999": 2,
@@ -1702,37 +1697,28 @@
     "#f9f6f3|#edeae7": 3
   },
   "custom-workout-mesocard--expanded dark": {
-    "#888684|#31302f": 3,
     "#ba2996|#3f2435": 2,
     "#ff7900|#56361a": 1
   },
   "custom-workout-mesocard--expanded light": {
-    "#298732|#b5ffd2": 2,
-    "#72716f|#edeae7": 3,
     "#ba2996|#f3daed": 2,
-    "#ff7900|#ffe6d4": 2
+    "#ff7900|#ffe6d4": 1
   },
   "custom-workout-mesocard--highlighted dark": {
-    "#888684|#31302f": 3,
     "#ba2996|#3f2435": 2,
     "#ff7900|#56361a": 1
   },
   "custom-workout-mesocard--highlighted light": {
-    "#298732|#b5ffd2": 2,
-    "#72716f|#edeae7": 3,
     "#ba2996|#f3daed": 2,
-    "#ff7900|#ffe6d4": 2
+    "#ff7900|#ffe6d4": 1
   },
   "custom-workout-mesocard--strength-block dark": {
-    "#888684|#31302f": 5,
     "#ba2996|#3f2435": 3,
     "#ff7900|#56361a": 1
   },
   "custom-workout-mesocard--strength-block light": {
-    "#298732|#b5ffd2": 3,
-    "#72716f|#edeae7": 5,
     "#ba2996|#f3daed": 3,
-    "#ff7900|#ffe6d4": 2
+    "#ff7900|#ffe6d4": 1
   },
   "custom-workout-metrictiles--four-tiles dark": {
     "#888684|#31302f": 4
@@ -1802,27 +1788,6 @@
   },
   "custom-workout-musclestrip--wall dark": {
     "#a29f9d|#3b3937": 15
-  },
-  "custom-workout-prbadge--all-types light": {
-    "#ff7900|#ffefe0": 6
-  },
-  "custom-workout-prbadge--animated light": {
-    "#ff7900|#ffefe0": 1
-  },
-  "custom-workout-prbadge--custom-label light": {
-    "#ff7900|#ffefe0": 1
-  },
-  "custom-workout-prbadge--reps-pr light": {
-    "#ff7900|#ffefe0": 1
-  },
-  "custom-workout-prbadge--static light": {
-    "#ff7900|#ffefe0": 1
-  },
-  "custom-workout-prbadge--velocity-pr light": {
-    "#ff7900|#ffefe0": 1
-  },
-  "custom-workout-prbadge--weight-pr light": {
-    "#ff7900|#ffefe0": 1
   },
   "custom-workout-prhistorymodal--interactive dark": {
     "#ffffff|#ff7900": 1
@@ -2000,20 +1965,10 @@
     "#ff7900|#ffffff": 1
   },
   "custom-workout-weekrow--current-week dark": {
-    "#888684|#31302f": 1,
     "#ff7900|#56361a": 1
   },
   "custom-workout-weekrow--current-week light": {
-    "#298732|#b5ffd2": 1,
-    "#72716f|#edeae7": 1,
-    "#ff7900|#ffe6d4": 2
-  },
-  "custom-workout-weekrow--default dark": {
-    "#888684|#31302f": 1
-  },
-  "custom-workout-weekrow--default light": {
-    "#298732|#b5ffd2": 2,
-    "#72716f|#edeae7": 1
+    "#ff7900|#ffe6d4": 1
   },
   "custom-workout-weekrow--deload-week dark": {
     "#ba2996|#3f2435": 2
@@ -2022,15 +1977,12 @@
     "#ba2996|#f3daed": 2
   },
   "custom-workout-weekrow--mesocycle-progression dark": {
-    "#888684|#31302f": 1,
     "#ba2996|#3f2435": 2,
     "#ff7900|#56361a": 1
   },
   "custom-workout-weekrow--mesocycle-progression light": {
-    "#298732|#b5ffd2": 7,
-    "#72716f|#edeae7": 1,
     "#ba2996|#f3daed": 2,
-    "#ff7900|#ffe6d4": 2
+    "#ff7900|#ffe6d4": 1
   },
   "custom-workout-weightbadge--all-variants dark": {
     "#807e7c|#31302f": 3,
@@ -2366,24 +2318,19 @@
     "#e05254|#311816": 6
   },
   "lab-audits-row-inventory--all-rows dark": {
-    "#5b616d|#131418": 17,
+    "#5b616d|#131418": 15,
     "#888684|#2c2a28": 5,
     "#888684|#2f2015": 1,
-    "#888684|#31302f": 2,
-    "#a29f9d|#44362c": 3,
-    "#ba2996|#271727": 1
+    "#a29f9d|#44362c": 3
   },
   "lab-audits-row-inventory--all-rows light": {
     "#121828|#131418": 3,
-    "#298732|#b5ffd2": 1,
     "#5a5958|#111216": 3,
     "#5a5958|#131418": 6,
-    "#5b616d|#131418": 17,
+    "#5b616d|#131418": 15,
     "#72716f|#131418": 1,
-    "#72716f|#edeae7": 2,
     "#72716f|#ffe6d4": 1,
-    "#ba2996|#271727": 1,
-    "#ff7900|#ffe6d4": 3,
+    "#ff7900|#ffe6d4": 1,
     "#ffffff|#ff7900": 1
   },
   "lab-decisions-calibrating-goal-chart--chosen dark": {
@@ -3110,26 +3057,20 @@
     "#888684|#2c2a28": 23
   },
   "pages-program-planning--default dark": {
-    "#888684|#31302f": 1,
     "#ba2996|#3f2435": 2,
     "#ff7900|#56361a": 1
   },
   "pages-program-planning--default light": {
-    "#298732|#b5ffd2": 4,
-    "#72716f|#edeae7": 1,
     "#ba2996|#f3daed": 2,
-    "#ff7900|#ffe6d4": 2
+    "#ff7900|#ffe6d4": 1
   },
   "pages-program-planning--single-meso dark": {
-    "#888684|#31302f": 1,
     "#ba2996|#3f2435": 2,
     "#ff7900|#56361a": 1
   },
   "pages-program-planning--single-meso light": {
-    "#298732|#b5ffd2": 4,
-    "#72716f|#edeae7": 1,
     "#ba2996|#f3daed": 2,
-    "#ff7900|#ffe6d4": 2
+    "#ff7900|#ffe6d4": 1
   },
   "pages-training-status--default dark": {
     "#888684|#2c2a28": 4

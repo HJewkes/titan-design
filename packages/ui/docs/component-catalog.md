@@ -5,6 +5,8 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | Name | Status | Family | Purpose | Composes | First story |
 | --- | --- | --- | --- | --- | --- |
 | ActiveWorkoutPage | candidate | custom/Workout | ActiveWorkoutPage — the during-workout screen, built as a zoom hierarchy over `ExerciseCard`s. | ExerciseCard, InputBar, RestTimer, SetRow, SupersetWrapper | pages-active-workout--all-collapsed |
+| AgentCard | candidate | custom/Agents | One agent session: name, state, stated task, branch, recency, and the transcript's tokens, tool calls, errors, cost and activity. | AgentStateLabel, Avatar, Card, Pill, Progress, SparkBars, Typography | custom-agents-agentcard--default |
+| AgentStateLabel | candidate | custom/Agents | An agent's state as a dot and its word, never colour alone. | Indicator, Pill, Typography | custom-agents-agentstatelabel--default |
 | Alert | stable | ui/alert | Alert component for displaying status messages. | — | components-molecules-alert--all-statuses |
 | AppShell | candidate | shell | `AppShell` — the generic dashboard chrome: a {@link TopBar} band over a {@link SideNav} rail and a `children` content region. | SideNav, Surface, TopBar, brands | pages-appshell--audiobook-app |
 | Autocomplete | stable | ui/autocomplete | Autocomplete component for searchable dropdown selection. | AutocompleteParts | components-molecules-autocomplete--custom-no-results-text |

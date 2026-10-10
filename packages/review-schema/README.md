@@ -32,6 +32,12 @@ reads a round imports them from here instead of copying them.
   `PrGroupSchema`); and a variant's `variantUnit` (shared by every view of one variant),
   `alternate` (the column it is compared in) and `change` (`changed`, `new`, `removed` or
   `unchanged`, `FRAME_CHANGES`).
+- `implemented` on a pick-one (an option) or pick-many (a list): what the PR implements at its
+  head. `shipBlocks(round, feedback)` returns `{ pr, blocked, blockers: { questionId, kind,
+message }[] }[]`, one per PR group: blocked when an answer in the group has free text (`comment`,
+  `text`, a frame comment) or picks other than `implemented`; an unanswered question does not
+  block. `pr` is `owner/name#n`; a group is its `prGroups` sections plus the questions whose
+  `page` is that PR.
 - `lintRound(round)`, a pure check of a parsed round against the review-layout rules. It returns
   `{ rule, message }[]` (empty when the round passes; `LINT_RULES` lists the rules) and every
   round builder refuses a round with any problem.

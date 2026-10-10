@@ -251,6 +251,7 @@ module.exports = tseslint.config(
   {
     files: [
       'src/components/custom/ActiveWork/**/*.{ts,tsx}',
+      'src/components/custom/Agents/**/*.{ts,tsx}',
       'src/components/custom/Prose/**/*.{ts,tsx}',
       'src/components/custom/Session/**/*.{ts,tsx}',
       'src/components/custom/charts/**/*.{ts,tsx}',

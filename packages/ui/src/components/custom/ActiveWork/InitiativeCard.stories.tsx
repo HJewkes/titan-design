@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { Pill } from '../../ui/pill'
 import { Surface } from '../../ui/surface'
 import { InitiativeCard } from './InitiativeCard'
 
@@ -15,6 +16,12 @@ const meta: Meta<typeof InitiativeCard> = {
     openCount: 4,
     severityCounts: { critical: 0, high: 1, medium: 2, low: 1 },
     topTask: { id: 'PL-6', title: 'Calendar and email import sources' },
+    href: undefined,
+    meta: (
+      <Pill variant="subtle" color="info" size="xs">
+        updated 2h ago
+      </Pill>
+    ),
   },
   argTypes: {
     state: { control: 'select', options: ['focused', 'backburner', 'paused', 'done'] },
@@ -23,6 +30,9 @@ const meta: Meta<typeof InitiativeCard> = {
     openCount: { control: 'number' },
     severityCounts: { control: 'object' },
     topTask: { control: 'object' },
+    href: { control: 'text' },
+    onPress: { control: false },
+    meta: { control: false },
   },
   decorators: [
     (Story) => (
@@ -37,7 +47,9 @@ const meta: Meta<typeof InitiativeCard> = {
       description: {
         component:
           '**Card.** An at-a-glance summary of one initiative: state, rank, open-task ' +
-          'count, a severity-mix bar, and its top-priority open task. Composes ' +
+          'count, a severity-mix bar, and its top-priority open task. Give it ' +
+          '`onPress` or `href` and the whole card is one link (one tab stop, named by the ' +
+          'title); `meta` is a slot for counts, newest activity or a badge. Composes ' +
           '[Card](?path=/docs/components-molecules-card--docs), ' +
           '[Pill](?path=/docs/components-atoms-pill--docs), StatusDot, and SegmentedBar ' +
           '(from the Workout family). Used by ' +
