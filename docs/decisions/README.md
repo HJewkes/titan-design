@@ -17,6 +17,7 @@ status, that numbers are unique and contiguous, and that this table lists every 
 | Number | Title                                                                                    | Status   |
 | ------ | ---------------------------------------------------------------------------------------- | -------- |
 | 0001   | [Record system extensions as decisions](./0001-record-system-extensions-as-decisions.md) | accepted |
+| 0002   | [Light elevation ramp 3b](./0002-light-elevation-ramp-3b.md)                             | accepted |
 
 ## When to write one
 

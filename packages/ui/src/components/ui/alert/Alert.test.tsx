@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Alert, AlertTitle, AlertDescription } from './Alert'
 import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
+import { capturedClassNames } from '../../../test/classname-capture'
 
 describe('Alert', () => {
   it('renders children correctly', () => {
@@ -276,5 +277,19 @@ describe('Alert geometry resolves to the spacing tokens', () => {
     expect(source).toContain(classes)
     const spacing = classes.split(' ').filter((c) => resolveAll([c])[0] !== undefined)
     expect(resolveAll(spacing)).toEqual([...pixels])
+  })
+})
+
+// TD-789 3b: a status tone as message text missed 4.5:1 on the grey 100 and 200 planes.
+describe('Alert outline message', () => {
+  it.each([
+    ['error', 'text-text-error', 'text-status-error'],
+    ['success', 'text-text-success', 'text-status-success'],
+    ['warning', 'text-text-warning', 'text-status-warning'],
+  ] as const)('paints an outline %s message in %s, not %s', (status, textRole, fillTone) => {
+    render(<Alert status={status} variant="outline" message="Upload done" />)
+    const classes = (capturedClassNames.get('alert-message') ?? '').split(/\s+/)
+    expect(classes).toContain(textRole)
+    expect(classes).not.toContain(fillTone)
   })
 })
