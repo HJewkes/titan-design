@@ -143,6 +143,6 @@ describe('InputBar geometry resolves to the spacing tokens', () => {
 
   it.each(['input-bar-reps', 'input-bar-weight'])('puts %s on the Input sm rung', (testId) => {
     renderInputBar()
-    expect(spacingClassesOf(testId)).toEqual(['h-8', 'px-0.5'])
+    expect(spacingClassesOf(testId)).toEqual(['h-control-sm', 'px-0.5'])
   })
 })
