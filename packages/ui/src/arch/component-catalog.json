@@ -12014,7 +12014,7 @@
           "description": "",
           "name": "colors",
           "required": true,
-          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 149 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
+          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 152 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
         },
         {
           "default": null,
@@ -12051,7 +12051,7 @@
           "description": "",
           "name": "colors",
           "required": true,
-          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 149 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
+          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 152 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
         },
         {
           "default": null,
