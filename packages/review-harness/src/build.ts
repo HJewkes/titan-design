@@ -15,6 +15,7 @@ import { applyRoundRules } from './round-rules.ts'
 import { discoverPriorRounds, loadPriorRound, shipRefusals } from './ship-gate.ts'
 import {
   RoundSchema,
+  lintRound,
   type ContrastOverride,
   type Manifest,
   type ManifestInput,
@@ -94,13 +95,18 @@ function roundBytes(ruled: ManifestInput, build: BuildProvenance | undefined) {
   return Buffer.from(`${JSON.stringify(build ? { ...ruled, build } : ruled, null, 2)}\n`)
 }
 
-/** The draft's own JSON with every builder rule applied, and the round it makes. */
+/** The draft's own JSON with every builder rule applied, and the round it makes, which must lint clean. */
 async function ruledDraft(draftPath: string, round: LoadedRound) {
   const draft = JSON.parse(await readFile(draftPath, 'utf8')) as ManifestInput
   const ruled = applyRoundRules(draft)
   const parsed = RoundSchema.safeParse(ruled)
   if (!parsed.success)
     throw new ReviewError(`the builder rules made an invalid round: ${parsed.error.message}`)
+  const problems = lintRound(parsed.data)
+  if (problems.length)
+    throw new ReviewError(
+      `the round fails lintRound:\n${problems.map((p) => `  ${p.rule}: ${p.message}`).join('\n')}`
+    )
   return { draft, ruled, round: { ...round, manifest: parsed.data } }
 }
 

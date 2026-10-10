@@ -2,15 +2,15 @@
 
 exports[`ToolbarButton characterisation > on a dark surface > paints the hover fill when isActive=false 1`] = `
 {
-  "hovered": "rgb(71, 70, 69)",
-  "rest": "rgb(66, 65, 64)",
+  "hovered": "rgb(49, 47, 45)",
+  "rest": "rgb(44, 42, 40)",
 }
 `;
 
 exports[`ToolbarButton characterisation > on a dark surface > paints the hover fill when isActive=true 1`] = `
 {
-  "hovered": "rgb(61, 60, 59)",
-  "rest": "rgb(44, 42, 40)",
+  "hovered": "rgb(23, 20, 18)",
+  "rest": "rgb(28, 25, 22)",
 }
 `;
 
@@ -22,6 +22,7 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Active
   >
     <div
       class="css-view-175oi2r"
+      style="background-color: rgb(44, 42, 40);"
     >
       <div
         class="css-view-175oi2r"
@@ -43,10 +44,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Active
               aria-label="Active (orange icon)"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              style="background-color: rgb(37, 35, 33); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -88,10 +93,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Active
               aria-label="Default (white icon)"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              style="background-color: rgb(37, 35, 33); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -133,10 +142,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Active
               aria-label="Inactive (gray icon)"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+              style="background-color: rgb(49, 48, 47); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -176,6 +189,7 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Button
   >
     <div
       class="css-view-175oi2r"
+      style="background-color: rgb(44, 42, 40);"
     >
       <div
         class="css-view-175oi2r"
@@ -198,10 +212,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Button
               aria-label="Filter"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+              style="background-color: rgb(49, 48, 47); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -233,10 +251,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Button
               aria-label="Settings"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              style="background-color: rgb(37, 35, 33); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -268,10 +290,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Button
               aria-label="View"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+              style="background-color: rgb(49, 48, 47); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -311,6 +337,7 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the CSSRef
   >
     <div
       class="css-view-175oi2r"
+      style="background-color: rgb(44, 42, 40);"
     >
       <div
         class="css-view-175oi2r"
@@ -372,10 +399,14 @@ color: #FF7900; /* when isActive=true */
               aria-label="Inactive"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+              style="background-color: rgb(49, 48, 47); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -407,10 +438,14 @@ color: #FF7900; /* when isActive=true */
               aria-label="Active"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              style="background-color: rgb(37, 35, 33); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -450,6 +485,7 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Compac
   >
     <div
       class="css-view-175oi2r"
+      style="background-color: rgb(44, 42, 40);"
     >
       <div
         class="css-view-175oi2r"
@@ -473,10 +509,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Compac
               aria-label="Toggle"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+              style="background-color: rgb(49, 48, 47); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -510,10 +550,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Compac
               aria-label="Filter"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              style="background-color: rgb(37, 35, 33); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -545,10 +589,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Compac
               aria-label="Settings"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+              style="background-color: rgb(49, 48, 47); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -580,10 +628,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Compac
               aria-label="View"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+              style="background-color: rgb(49, 48, 47); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -623,6 +675,7 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Defaul
   >
     <div
       class="css-view-175oi2r"
+      style="background-color: rgb(44, 42, 40);"
     >
       <div
         class="css-view-175oi2r"
@@ -631,10 +684,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Defaul
           aria-label="Settings"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="button"
-          style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+          style="background-color: rgb(37, 35, 33); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
           tabindex="0"
           type="button"
         >
+          <div
+            class="css-view-175oi2r"
+            data-testid="hit-target"
+          />
           <div
             class="css-view-175oi2r"
           >
@@ -672,6 +729,7 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Disabl
   >
     <div
       class="css-view-175oi2r"
+      style="background-color: rgb(44, 42, 40);"
     >
       <div
         class="css-view-175oi2r"
@@ -713,6 +771,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Disabl
             >
               <div
                 class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
+              <div
+                class="css-view-175oi2r"
               >
                 <div
                   class="css-view-175oi2r"
@@ -747,6 +809,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Disabl
               tabindex="-1"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -786,6 +852,7 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the HoverS
   >
     <div
       class="css-view-175oi2r"
+      style="background-color: rgb(44, 42, 40);"
     >
       <div
         class="css-view-175oi2r"
@@ -814,10 +881,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the HoverS
               aria-label="Hover Me (Active)"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              style="background-color: rgb(37, 35, 33); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -849,10 +920,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the HoverS
               aria-label="Hover Me (Inactive)"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+              style="background-color: rgb(49, 48, 47); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -892,6 +967,7 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the IconOn
   >
     <div
       class="css-view-175oi2r"
+      style="background-color: rgb(44, 42, 40);"
     >
       <div
         class="css-view-175oi2r"
@@ -914,10 +990,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the IconOn
               aria-label="Settings"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+              style="background-color: rgb(49, 48, 47); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -943,10 +1023,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the IconOn
               aria-label="Filter (active)"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              style="background-color: rgb(37, 35, 33); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -972,10 +1056,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the IconOn
               aria-label="View"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+              style="background-color: rgb(49, 48, 47); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -1009,6 +1097,7 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Intera
   >
     <div
       class="css-view-175oi2r"
+      style="background-color: rgb(44, 42, 40);"
     >
       <div
         class="css-view-175oi2r"
@@ -1027,10 +1116,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Intera
             aria-label="Toggle Me"
             class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
             role="button"
-            style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+            style="background-color: rgb(49, 48, 47); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
             tabindex="0"
             type="button"
           >
+            <div
+              class="css-view-175oi2r"
+              data-testid="hit-target"
+            />
             <div
               class="css-view-175oi2r"
             >
@@ -1076,6 +1169,7 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Toolba
   >
     <div
       class="css-view-175oi2r"
+      style="background-color: rgb(44, 42, 40);"
     >
       <div
         class="css-view-175oi2r"
@@ -1097,10 +1191,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Toolba
               aria-label="Filters"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              style="background-color: rgb(37, 35, 33); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -1132,10 +1230,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Toolba
               aria-label="Settings"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+              style="background-color: rgb(49, 48, 47); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -1167,10 +1269,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Toolba
               aria-label="View"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+              style="background-color: rgb(49, 48, 47); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -1210,6 +1316,7 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Varian
   >
     <div
       class="css-view-175oi2r"
+      style="background-color: rgb(44, 42, 40);"
     >
       <div
         class="css-view-175oi2r"
@@ -1235,10 +1342,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Varian
                 aria-label="Inactive"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="button"
-                style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+                style="background-color: rgb(49, 48, 47); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
                 tabindex="0"
                 type="button"
               >
+                <div
+                  class="css-view-175oi2r"
+                  data-testid="hit-target"
+                />
                 <div
                   class="css-view-175oi2r"
                 >
@@ -1270,10 +1381,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Varian
                 aria-label="Active"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="button"
-                style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+                style="background-color: rgb(37, 35, 33); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
                 tabindex="0"
                 type="button"
               >
+                <div
+                  class="css-view-175oi2r"
+                  data-testid="hit-target"
+                />
                 <div
                   class="css-view-175oi2r"
                 >
@@ -1320,10 +1435,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Varian
                 aria-label="Inactive"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="button"
-                style="background-color: rgb(114, 113, 111);"
+                style="background-color: rgb(49, 48, 47);"
                 tabindex="0"
                 type="button"
               >
+                <div
+                  class="css-view-175oi2r"
+                  data-testid="hit-target"
+                />
                 <div
                   class="css-view-175oi2r"
                 >
@@ -1355,10 +1474,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the Varian
                 aria-label="Active"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="button"
-                style="background-color: rgb(66, 65, 64);"
+                style="background-color: rgb(37, 35, 33);"
                 tabindex="0"
                 type="button"
               >
+                <div
+                  class="css-view-175oi2r"
+                  data-testid="hit-target"
+                />
                 <div
                   class="css-view-175oi2r"
                 >
@@ -1399,6 +1522,7 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the WithMe
   >
     <div
       class="css-view-175oi2r"
+      style="background-color: rgb(44, 42, 40);"
     >
       <div
         class="css-view-175oi2r"
@@ -1407,10 +1531,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the WithMe
           aria-label="View Options"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="button"
-          style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+          style="background-color: rgb(49, 48, 47); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
           tabindex="0"
           type="button"
         >
+          <div
+            class="css-view-175oi2r"
+            data-testid="hit-target"
+          />
           <div
             class="css-view-175oi2r"
           >
@@ -1448,6 +1576,7 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the open m
   >
     <div
       class="css-view-175oi2r"
+      style="background-color: rgb(44, 42, 40);"
     >
       <div
         class="css-view-175oi2r"
@@ -1456,10 +1585,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders the open m
           aria-label="View Options"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="button"
-          style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+          style="background-color: rgb(49, 48, 47); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
           tabindex="0"
           type="button"
         >
+          <div
+            class="css-view-175oi2r"
+            data-testid="hit-target"
+          />
           <div
             class="css-view-175oi2r"
           >
@@ -1537,10 +1670,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders variant='d
         aria-label="Matrix"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         role="button"
-        style="background-color: rgb(114, 113, 111);"
+        style="background-color: rgb(44, 42, 40);"
         tabindex="0"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -1574,13 +1711,16 @@ exports[`ToolbarButton characterisation > on a dark surface > renders variant='d
       <button
         aria-disabled="true"
         aria-label="Matrix"
-        class="css-view-175oi2r r-pointerEvents-12vffkv"
+        class="css-view-175oi2r r-pointerEvents-12vffkv r-backgroundColor-1fpi9eo r-boxShadow-17b9qp5"
         disabled=""
         role="button"
-        style="background-color: rgb(114, 113, 111);"
         tabindex="-1"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -1615,10 +1755,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders variant='d
         aria-label="Matrix"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         role="button"
-        style="background-color: rgb(66, 65, 64);"
+        style="background-color: rgb(28, 25, 22);"
         tabindex="0"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -1652,13 +1796,16 @@ exports[`ToolbarButton characterisation > on a dark surface > renders variant='d
       <button
         aria-disabled="true"
         aria-label="Matrix"
-        class="css-view-175oi2r r-pointerEvents-12vffkv"
+        class="css-view-175oi2r r-pointerEvents-12vffkv r-backgroundColor-1fpi9eo r-boxShadow-17b9qp5"
         disabled=""
         role="button"
-        style="background-color: rgb(66, 65, 64);"
         tabindex="-1"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -1693,10 +1840,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders variant='d
         aria-label="Matrix"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         role="button"
-        style="background-color: rgb(66, 65, 64);"
+        style="background-color: rgb(28, 25, 22);"
         tabindex="0"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -1730,13 +1881,16 @@ exports[`ToolbarButton characterisation > on a dark surface > renders variant='d
       <button
         aria-disabled="true"
         aria-label="Matrix"
-        class="css-view-175oi2r r-pointerEvents-12vffkv"
+        class="css-view-175oi2r r-pointerEvents-12vffkv r-backgroundColor-1fpi9eo r-boxShadow-17b9qp5"
         disabled=""
         role="button"
-        style="background-color: rgb(66, 65, 64);"
         tabindex="-1"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -1771,10 +1925,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders variant='r
         aria-label="Matrix"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         role="button"
-        style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
+        style="background-color: rgb(44, 42, 40); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.30);"
         tabindex="0"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -1816,6 +1974,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders variant='r
       >
         <div
           class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
+        <div
+          class="css-view-175oi2r"
         >
           <div
             class="css-view-175oi2r"
@@ -1848,10 +2010,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders variant='r
         aria-label="Matrix"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         role="button"
-        style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+        style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
         tabindex="0"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -1893,6 +2059,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders variant='r
       >
         <div
           class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
+        <div
+          class="css-view-175oi2r"
         >
           <div
             class="css-view-175oi2r"
@@ -1925,10 +2095,14 @@ exports[`ToolbarButton characterisation > on a dark surface > renders variant='r
         aria-label="Matrix"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         role="button"
-        style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+        style="background-color: rgb(28, 25, 22); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
         tabindex="0"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -1970,6 +2144,10 @@ exports[`ToolbarButton characterisation > on a dark surface > renders variant='r
       >
         <div
           class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
+        <div
+          class="css-view-175oi2r"
         >
           <div
             class="css-view-175oi2r"
@@ -1991,15 +2169,15 @@ exports[`ToolbarButton characterisation > on a dark surface > renders variant='r
 
 exports[`ToolbarButton characterisation > on a light surface > paints the hover fill when isActive=false 1`] = `
 {
-  "hovered": "rgb(71, 70, 69)",
-  "rest": "rgb(66, 65, 64)",
+  "hovered": "rgb(254, 251, 248)",
+  "rest": "rgb(249, 246, 243)",
 }
 `;
 
 exports[`ToolbarButton characterisation > on a light surface > paints the hover fill when isActive=true 1`] = `
 {
-  "hovered": "rgb(61, 60, 59)",
-  "rest": "rgb(44, 42, 40)",
+  "hovered": "rgb(207, 204, 201)",
+  "rest": "rgb(212, 209, 206)",
 }
 `;
 
@@ -2007,10 +2185,11 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Activ
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
+      style="background-color: rgb(249, 246, 243);"
     >
       <div
         class="css-view-175oi2r"
@@ -2032,10 +2211,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Activ
               aria-label="Active (orange icon)"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -2077,10 +2260,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Activ
               aria-label="Default (white icon)"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -2122,10 +2309,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Activ
               aria-label="Inactive (gray icon)"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -2161,10 +2352,11 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Butto
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
+      style="background-color: rgb(249, 246, 243);"
     >
       <div
         class="css-view-175oi2r"
@@ -2187,10 +2379,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Butto
               aria-label="Filter"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -2222,10 +2418,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Butto
               aria-label="Settings"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -2257,10 +2457,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Butto
               aria-label="View"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -2296,10 +2500,11 @@ exports[`ToolbarButton characterisation > on a light surface > renders the CSSRe
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
+      style="background-color: rgb(249, 246, 243);"
     >
       <div
         class="css-view-175oi2r"
@@ -2361,10 +2566,14 @@ color: #FF7900; /* when isActive=true */
               aria-label="Inactive"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -2396,10 +2605,14 @@ color: #FF7900; /* when isActive=true */
               aria-label="Active"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -2435,10 +2648,11 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Compa
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
+      style="background-color: rgb(249, 246, 243);"
     >
       <div
         class="css-view-175oi2r"
@@ -2462,10 +2676,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Compa
               aria-label="Toggle"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -2499,10 +2717,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Compa
               aria-label="Filter"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -2534,10 +2756,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Compa
               aria-label="Settings"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -2569,10 +2795,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Compa
               aria-label="View"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -2608,10 +2838,11 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Defau
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
+      style="background-color: rgb(249, 246, 243);"
     >
       <div
         class="css-view-175oi2r"
@@ -2620,10 +2851,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Defau
           aria-label="Settings"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="button"
-          style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+          style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
           tabindex="0"
           type="button"
         >
+          <div
+            class="css-view-175oi2r"
+            data-testid="hit-target"
+          />
           <div
             class="css-view-175oi2r"
           >
@@ -2657,10 +2892,11 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Disab
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
+      style="background-color: rgb(249, 246, 243);"
     >
       <div
         class="css-view-175oi2r"
@@ -2694,12 +2930,16 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Disab
             <button
               aria-disabled="true"
               aria-label="Disabled Active"
-              class="css-view-175oi2r r-pointerEvents-12vffkv r-backgroundColor-1fpi9eo r-boxShadow-17b9qp5"
+              class="css-view-175oi2r r-pointerEvents-12vffkv r-backgroundColor-kdggn r-boxShadow-17b9qp5"
               disabled=""
               role="button"
               tabindex="-1"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -2730,12 +2970,16 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Disab
             <button
               aria-disabled="true"
               aria-label="Disabled Inactive"
-              class="css-view-175oi2r r-pointerEvents-12vffkv r-backgroundColor-1fpi9eo r-boxShadow-17b9qp5"
+              class="css-view-175oi2r r-pointerEvents-12vffkv r-backgroundColor-kdggn r-boxShadow-17b9qp5"
               disabled=""
               role="button"
               tabindex="-1"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -2771,10 +3015,11 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Hover
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
+      style="background-color: rgb(249, 246, 243);"
     >
       <div
         class="css-view-175oi2r"
@@ -2803,10 +3048,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Hover
               aria-label="Hover Me (Active)"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -2838,10 +3087,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Hover
               aria-label="Hover Me (Inactive)"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -2877,10 +3130,11 @@ exports[`ToolbarButton characterisation > on a light surface > renders the IconO
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
+      style="background-color: rgb(249, 246, 243);"
     >
       <div
         class="css-view-175oi2r"
@@ -2903,10 +3157,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders the IconO
               aria-label="Settings"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -2932,10 +3190,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders the IconO
               aria-label="Filter (active)"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -2961,10 +3223,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders the IconO
               aria-label="View"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -2994,10 +3260,11 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Inter
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
+      style="background-color: rgb(249, 246, 243);"
     >
       <div
         class="css-view-175oi2r"
@@ -3016,10 +3283,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Inter
             aria-label="Toggle Me"
             class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
             role="button"
-            style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+            style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
             tabindex="0"
             type="button"
           >
+            <div
+              class="css-view-175oi2r"
+              data-testid="hit-target"
+            />
             <div
               class="css-view-175oi2r"
             >
@@ -3061,10 +3332,11 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Toolb
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
+      style="background-color: rgb(249, 246, 243);"
     >
       <div
         class="css-view-175oi2r"
@@ -3086,10 +3358,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Toolb
               aria-label="Filters"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+              style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -3121,10 +3397,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Toolb
               aria-label="Settings"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -3156,10 +3436,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Toolb
               aria-label="View"
               class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
               role="button"
-              style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+              style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
               tabindex="0"
               type="button"
             >
+              <div
+                class="css-view-175oi2r"
+                data-testid="hit-target"
+              />
               <div
                 class="css-view-175oi2r"
               >
@@ -3195,10 +3479,11 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Varia
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
+      style="background-color: rgb(249, 246, 243);"
     >
       <div
         class="css-view-175oi2r"
@@ -3224,10 +3509,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Varia
                 aria-label="Inactive"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="button"
-                style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+                style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
                 tabindex="0"
                 type="button"
               >
+                <div
+                  class="css-view-175oi2r"
+                  data-testid="hit-target"
+                />
                 <div
                   class="css-view-175oi2r"
                 >
@@ -3259,10 +3548,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Varia
                 aria-label="Active"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="button"
-                style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+                style="background-color: rgb(237, 234, 231); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
                 tabindex="0"
                 type="button"
               >
+                <div
+                  class="css-view-175oi2r"
+                  data-testid="hit-target"
+                />
                 <div
                   class="css-view-175oi2r"
                 >
@@ -3309,10 +3602,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Varia
                 aria-label="Inactive"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="button"
-                style="background-color: rgb(114, 113, 111);"
+                style="background-color: rgb(255, 255, 255);"
                 tabindex="0"
                 type="button"
               >
+                <div
+                  class="css-view-175oi2r"
+                  data-testid="hit-target"
+                />
                 <div
                   class="css-view-175oi2r"
                 >
@@ -3344,10 +3641,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders the Varia
                 aria-label="Active"
                 class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
                 role="button"
-                style="background-color: rgb(66, 65, 64);"
+                style="background-color: rgb(237, 234, 231);"
                 tabindex="0"
                 type="button"
               >
+                <div
+                  class="css-view-175oi2r"
+                  data-testid="hit-target"
+                />
                 <div
                   class="css-view-175oi2r"
                 >
@@ -3384,10 +3685,11 @@ exports[`ToolbarButton characterisation > on a light surface > renders the WithM
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
+      style="background-color: rgb(249, 246, 243);"
     >
       <div
         class="css-view-175oi2r"
@@ -3396,10 +3698,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders the WithM
           aria-label="View Options"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="button"
-          style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+          style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
           tabindex="0"
           type="button"
         >
+          <div
+            class="css-view-175oi2r"
+            data-testid="hit-target"
+          />
           <div
             class="css-view-175oi2r"
           >
@@ -3433,10 +3739,11 @@ exports[`ToolbarButton characterisation > on a light surface > renders the open 
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
+      style="background-color: rgb(249, 246, 243);"
     >
       <div
         class="css-view-175oi2r"
@@ -3445,10 +3752,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders the open 
           aria-label="View Options"
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="button"
-          style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+          style="background-color: rgb(255, 255, 255); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
           tabindex="0"
           type="button"
         >
+          <div
+            class="css-view-175oi2r"
+            data-testid="hit-target"
+          />
           <div
             class="css-view-175oi2r"
           >
@@ -3517,7 +3828,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
@@ -3526,10 +3837,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
         aria-label="Matrix"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         role="button"
-        style="background-color: rgb(114, 113, 111);"
+        style="background-color: rgb(249, 246, 243);"
         tabindex="0"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -3555,7 +3870,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
@@ -3563,13 +3878,16 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
       <button
         aria-disabled="true"
         aria-label="Matrix"
-        class="css-view-175oi2r r-pointerEvents-12vffkv"
+        class="css-view-175oi2r r-pointerEvents-12vffkv r-backgroundColor-kdggn r-boxShadow-17b9qp5"
         disabled=""
         role="button"
-        style="background-color: rgb(114, 113, 111);"
         tabindex="-1"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -3595,7 +3913,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
@@ -3604,10 +3922,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
         aria-label="Matrix"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         role="button"
-        style="background-color: rgb(66, 65, 64);"
+        style="background-color: rgb(212, 209, 206);"
         tabindex="0"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -3633,7 +3955,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
@@ -3641,13 +3963,16 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
       <button
         aria-disabled="true"
         aria-label="Matrix"
-        class="css-view-175oi2r r-pointerEvents-12vffkv"
+        class="css-view-175oi2r r-pointerEvents-12vffkv r-backgroundColor-kdggn r-boxShadow-17b9qp5"
         disabled=""
         role="button"
-        style="background-color: rgb(66, 65, 64);"
         tabindex="-1"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -3673,7 +3998,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
@@ -3682,10 +4007,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
         aria-label="Matrix"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         role="button"
-        style="background-color: rgb(66, 65, 64);"
+        style="background-color: rgb(212, 209, 206);"
         tabindex="0"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -3711,7 +4040,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
@@ -3719,13 +4048,16 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
       <button
         aria-disabled="true"
         aria-label="Matrix"
-        class="css-view-175oi2r r-pointerEvents-12vffkv"
+        class="css-view-175oi2r r-pointerEvents-12vffkv r-backgroundColor-kdggn r-boxShadow-17b9qp5"
         disabled=""
         role="button"
-        style="background-color: rgb(66, 65, 64);"
         tabindex="-1"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -3751,7 +4083,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
@@ -3760,10 +4092,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
         aria-label="Matrix"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         role="button"
-        style="background-color: rgb(66, 65, 64); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
+        style="background-color: rgb(249, 246, 243); box-shadow: inset 0 1px 0 rgba(255,255,255,0.90), 0 1px 2px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.12);"
         tabindex="0"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -3789,7 +4125,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
@@ -3797,12 +4133,16 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
       <button
         aria-disabled="true"
         aria-label="Matrix"
-        class="css-view-175oi2r r-pointerEvents-12vffkv r-backgroundColor-1fpi9eo r-boxShadow-17b9qp5"
+        class="css-view-175oi2r r-pointerEvents-12vffkv r-backgroundColor-kdggn r-boxShadow-17b9qp5"
         disabled=""
         role="button"
         tabindex="-1"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -3828,7 +4168,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
@@ -3837,10 +4177,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
         aria-label="Matrix"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         role="button"
-        style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+        style="background-color: rgb(212, 209, 206); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
         tabindex="0"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -3866,7 +4210,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
@@ -3874,12 +4218,16 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
       <button
         aria-disabled="true"
         aria-label="Matrix"
-        class="css-view-175oi2r r-pointerEvents-12vffkv r-backgroundColor-1fpi9eo r-boxShadow-17b9qp5"
+        class="css-view-175oi2r r-pointerEvents-12vffkv r-backgroundColor-kdggn r-boxShadow-17b9qp5"
         disabled=""
         role="button"
         tabindex="-1"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -3905,7 +4253,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
@@ -3914,10 +4262,14 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
         aria-label="Matrix"
         class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
         role="button"
-        style="background-color: rgb(44, 42, 40); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
+        style="background-color: rgb(212, 209, 206); box-shadow: inset 0 2px 6px rgba(0,0,0,0.55), inset 0 -1px 0 rgba(255,255,255,0.12);"
         tabindex="0"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
@@ -3943,7 +4295,7 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
@@ -3951,12 +4303,16 @@ exports[`ToolbarButton characterisation > on a light surface > renders variant='
       <button
         aria-disabled="true"
         aria-label="Matrix"
-        class="css-view-175oi2r r-pointerEvents-12vffkv r-backgroundColor-1fpi9eo r-boxShadow-17b9qp5"
+        class="css-view-175oi2r r-pointerEvents-12vffkv r-backgroundColor-kdggn r-boxShadow-17b9qp5"
         disabled=""
         role="button"
         tabindex="-1"
         type="button"
       >
+        <div
+          class="css-view-175oi2r"
+          data-testid="hit-target"
+        />
         <div
           class="css-view-175oi2r"
         >
