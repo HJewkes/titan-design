@@ -139,7 +139,7 @@ describe('lockConflicts', () => {
       expect.objectContaining({
         kind: 'stale-ship',
         lock: 'L-0001',
-        ids: ['#101', HOLDER_HEAD, STACKED_HEAD],
+        ids: ['#101', HOLDER_HEAD, STACKED_HEAD, 'L-0001'],
       }),
     ])
   })
@@ -152,7 +152,7 @@ describe('lockConflicts', () => {
       expect.objectContaining({
         kind: 'stale-ship',
         lock: 'L-0001',
-        ids: ['#101', HOLDER_HEAD, STACKED_HEAD],
+        ids: ['#101', HOLDER_HEAD, STACKED_HEAD, 'L-0001'],
       }),
     ])
   })
@@ -177,7 +177,7 @@ describe('lockConflicts', () => {
     expect(lockConflicts(registry(), plan({ items, ships }))).toEqual([
       expect.objectContaining({
         kind: 'stale-ship',
-        ids: ['#101', STACKED_HEAD, DEPENDENT_HEAD],
+        ids: ['#101', STACKED_HEAD, DEPENDENT_HEAD, 'L-0001'],
       }),
     ])
   })
@@ -223,6 +223,65 @@ describe('lockConflicts', () => {
 
       expect(lockConflicts(withSecondHolder(), plan({ items: ordered }))).toEqual([])
       expect(lockConflicts(merged, plan({ items: [holder(104, STACKED_HEAD)] }))).toEqual([])
+    })
+  })
+
+  describe('a PR holding several locks', () => {
+    // #101 holds L-0001 and a third lock that comes after the open, unheld L-0002.
+    const twoLocks = (firstStatus: 'open' | 'merged') =>
+      registry((r) => {
+        r.locks[0]!.status = firstStatus
+        r.locks.push({
+          id: 'L-0003',
+          status: 'open',
+          decision: { ledger: 'row-9', decisionsItem: '9', round: 'example', questionId: 'q' },
+          holders: [{ pr: 101, headSha: HOLDER_HEAD }],
+          after: ['L-0002'],
+        })
+      })
+
+    it.each(['open', 'merged'] as const)(
+      'checks the order of every lock it holds when the first is %s',
+      (firstStatus) => {
+        const conflicts = lockConflicts(
+          twoLocks(firstStatus),
+          plan({ items: [holder(101, HOLDER_HEAD)] })
+        )
+
+        expect(conflicts).toEqual([
+          expect.objectContaining({
+            kind: 'lock-order',
+            lock: 'L-0003',
+            ids: ['#101', 'L-0003', 'L-0002'],
+          }),
+        ])
+      }
+    )
+
+    it('accepts a PR that holds both locks of an after chain', () => {
+      const chain = registry((r) => {
+        r.locks[1]!.holders = [{ pr: 101, headSha: HOLDER_HEAD }]
+      })
+
+      expect(lockConflicts(chain, plan({ items: [holder(101, HOLDER_HEAD)] }))).toEqual([])
+    })
+
+    it('names every lock the PR holds on a stale Ship', () => {
+      const ships = [{ pr: 101, head: MAIN }]
+      const items = [holder(101, HOLDER_HEAD), holder(104, STACKED_HEAD)]
+      const registryWithL2Held = twoLocks('open')
+      registryWithL2Held.locks[1]!.holders = [{ pr: 104, headSha: STACKED_HEAD }]
+
+      const stale = lockConflicts(registryWithL2Held, plan({ items, ships })).filter(
+        (c) => c.kind === 'stale-ship'
+      )
+
+      expect(stale).toEqual([
+        expect.objectContaining({
+          lock: 'L-0001',
+          ids: ['#101', MAIN, HOLDER_HEAD, 'L-0001', 'L-0003'],
+        }),
+      ])
     })
   })
 })

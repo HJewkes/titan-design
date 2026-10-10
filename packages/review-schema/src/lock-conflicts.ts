@@ -49,9 +49,15 @@ export interface LockPlan {
 
 export interface LockConflict {
   kind: LockConflictKind
-  /** The lock the conflict is with; null for a stale Ship on a PR that holds no lock. */
+  /**
+   * The lock the conflict is with. A stale Ship names the first lock its PR holds, or null when
+   * it holds none.
+   */
   lock: string | null
-  /** The offending PRs (`#n`), question ids, lock ids and heads, in message order. */
+  /**
+   * The offending PRs (`#n`), question ids, lock ids and heads, in message order; a stale Ship
+   * then lists every lock its PR holds.
+   */
   ids: string[]
   tokens: ModeToken[]
   message: string
@@ -95,32 +101,55 @@ function supersededState(item: PlannedItem, lock: Lock, plan: LockPlan): LockCon
   ]
 }
 
-function heldLock(pr: number, locks: Lock[]): Lock | undefined {
-  return locks.find((l) => l.status !== 'released' && l.holders.some((h) => h.pr === pr))
+/** What the plan and registry say about one PR: every lock it holds and its Ships in order. */
+interface PrView {
+  locks: Lock[]
+  shipHeads: string[]
+  plannedHead: string | undefined
 }
 
-/** The open locks `lock` comes after that no earlier item in the round holds. */
-function unmetAfter(lock: Lock, earlierPrs: Set<number>, locks: Lock[]): Lock[] {
+function prViews(registry: Locks, plan: LockPlan): Map<number, PrView> {
+  const prs = new Set([...plan.items, ...plan.ships].map((x) => x.pr))
+  const live = registry.locks.filter((l) => l.status !== 'released')
+  return new Map(
+    [...prs].map((pr) => [
+      pr,
+      {
+        locks: live.filter((l) => l.holders.some((h) => h.pr === pr)),
+        shipHeads: plan.ships.filter((s) => s.pr === pr).map((s) => s.head),
+        plannedHead: plan.items.find((i) => i.pr === pr)?.head,
+      },
+    ])
+  )
+}
+
+/** The open locks `lock` comes after that no item up to and including this one holds. */
+function unmetAfter(lock: Lock, placedPrs: Set<number>, locks: Lock[]): Lock[] {
   return lock.after
     .map((id) => locks.find((l) => l.id === id))
     .filter((l): l is Lock => l?.status === 'open')
-    .filter((l) => !l.holders.some((h) => earlierPrs.has(h.pr)))
+    .filter((l) => !l.holders.some((h) => placedPrs.has(h.pr)))
 }
 
-function lockOrder(items: PlannedItem[], locks: Lock[]): LockConflict[] {
+function lockOrder(
+  items: PlannedItem[],
+  locks: Lock[],
+  views: Map<number, PrView>
+): LockConflict[] {
   return items.flatMap((item, i) => {
-    const lock = heldLock(item.pr, locks)
-    if (!lock) return []
-    const earlier = new Set(items.slice(0, i).map((x) => x.pr))
-    return unmetAfter(lock, earlier, locks).map((first) => ({
-      kind: 'lock-order' as const,
-      lock: lock.id,
-      ids: [`#${item.pr}`, lock.id, first.id],
-      tokens: [],
-      message:
-        `#${item.pr} holds ${lock.id}, which comes after ${first.id}, but ${first.id} is open ` +
-        `and no earlier item holds it; place its holder first or wait for it to merge`,
-    }))
+    const placed = new Set(items.slice(0, i + 1).map((x) => x.pr))
+    const held = views.get(item.pr)!.locks.filter((l) => l.status === 'open')
+    return held.flatMap((lock) =>
+      unmetAfter(lock, placed, locks).map((first) => ({
+        kind: 'lock-order' as const,
+        lock: lock.id,
+        ids: [`#${item.pr}`, lock.id, first.id],
+        tokens: [],
+        message:
+          `#${item.pr} holds ${lock.id}, which comes after ${first.id}, but ${first.id} is open ` +
+          `and no earlier item holds it; place its holder first or wait for it to merge`,
+      }))
+    )
   })
 }
 
@@ -140,11 +169,12 @@ function reAsk(question: PlannedQuestion, lock: Lock): LockConflict[] {
   ]
 }
 
-function staleShip(pr: number, before: string, after: string, locks: Lock[], how: string) {
+function staleShip(pr: number, view: PrView, before: string, after: string, how: string) {
+  const lockIds = view.locks.map((l) => l.id)
   return {
     kind: 'stale-ship' as const,
-    lock: heldLock(pr, locks)?.id ?? null,
-    ids: [`#${pr}`, before, after],
+    lock: lockIds[0] ?? null,
+    ids: [`#${pr}`, before, after, ...lockIds],
     tokens: [],
     message:
       `#${pr} was shipped at ${short(before)} ${how} ${short(after)}; ` +
@@ -156,17 +186,18 @@ function staleShip(pr: number, before: string, after: string, locks: Lock[], how
  * At most one per PR, judged on its last Ship: against its planned item's head when the round
  * holds the PR, else against the PR's prior Ship.
  */
-function staleShips(ships: RecordedShip[], items: PlannedItem[], locks: Lock[]): LockConflict[] {
-  return [...new Set(ships.map((s) => s.pr))].flatMap((pr) => {
-    const heads = ships.filter((s) => s.pr === pr).map((s) => s.head)
-    const last = heads.at(-1)!
-    const planned = items.find((i) => i.pr === pr)?.head
-    if (planned !== undefined)
-      return planned === last ? [] : [staleShip(pr, last, planned, locks, 'but the round plans')]
-    const prior = heads.at(-2)
+function staleShips(views: Map<number, PrView>): LockConflict[] {
+  return [...views].flatMap(([pr, view]) => {
+    const last = view.shipHeads.at(-1)
+    const prior = view.shipHeads.at(-2)
+    if (last === undefined) return []
+    if (view.plannedHead !== undefined)
+      return view.plannedHead === last
+        ? []
+        : [staleShip(pr, view, last, view.plannedHead, 'but the round plans')]
     return prior === undefined || prior === last
       ? []
-      : [staleShip(pr, prior, last, locks, 'and again at')]
+      : [staleShip(pr, view, prior, last, 'and again at')]
   })
 }
 
@@ -178,10 +209,11 @@ function staleShips(ships: RecordedShip[], items: PlannedItem[], locks: Lock[]):
  */
 export function lockConflicts(registry: Locks, plan: LockPlan): LockConflict[] {
   const open = registry.locks.filter((l) => l.status === 'open')
+  const views = prViews(registry, plan)
   return [
     ...plan.items.flatMap((item) => open.flatMap((lock) => supersededState(item, lock, plan))),
-    ...lockOrder(plan.items, registry.locks),
+    ...lockOrder(plan.items, registry.locks, views),
     ...plan.questions.flatMap((q) => registry.locks.flatMap((lock) => reAsk(q, lock))),
-    ...staleShips(plan.ships, plan.items, registry.locks),
+    ...staleShips(views),
   ]
 }
