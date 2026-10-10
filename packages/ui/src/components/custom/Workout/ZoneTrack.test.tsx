@@ -4,6 +4,7 @@ import { axe } from 'jest-axe'
 import { ZoneTrack, type ZoneTrackZone } from './ZoneTrack'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { Surface } from '../../ui/surface'
 
 const { green, yellow, orange, red } = WORKOUT_TOKENS.scale
 const t = getSemanticColors('dark')
@@ -262,4 +263,48 @@ describe('ZoneTrack onLayout', () => {
       expect(screen.getAllByTestId('zone-track-tick-label').length).toBeLessThan(MANY_TICKS.length)
     )
   })
+})
+
+describe('ZoneTrack un-reached track layers', () => {
+  // Normalise through the DOM so hex, rgb() and rgba() compare as one form.
+  function cssColor(color: string) {
+    const probe = document.createElement('div')
+    probe.style.backgroundColor = color
+    return probe.style.backgroundColor
+  }
+
+  // react-native-web writes `transparent` as rgba(0, 0, 0, 0).
+  const isPainted = (color: string) => color !== '' && !/^rgba\(.*,\s*0\)$/.test(color)
+
+  const paintedLayers = () =>
+    ['zone-track-track', 'zone-track-band', 'zone-track-unfilled']
+      .map((id) => (screen.getByTestId(id) as HTMLElement).style.backgroundColor)
+      .filter(isPainted)
+
+  const FILL = { type: 'fill', value: 10, color: green } as const
+
+  it.each(['dark', 'light'] as const)(
+    'paints one %s border-prominent layer under the un-reached region of clear zones',
+    (mode) => {
+      render(
+        <Surface theme={mode}>
+          <ZoneTrack zones={[{ upTo: 40, color: 'transparent' }]} max={40} marker={FILL} />
+        </Surface>
+      )
+      expect(paintedLayers()).toEqual([cssColor(getSemanticColors(mode)['border-prominent'])])
+    }
+  )
+
+  it.each(['dark', 'light'] as const)(
+    'paints one %s border-prominent layer when the zone already carries the track token',
+    (mode) => {
+      const track = getSemanticColors(mode)['border-prominent']
+      render(
+        <Surface theme={mode}>
+          <ZoneTrack zones={[{ upTo: 40, color: track }]} max={40} marker={FILL} />
+        </Surface>
+      )
+      expect(paintedLayers()).toEqual([cssColor(track)])
+    }
+  )
 })
