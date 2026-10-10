@@ -52,11 +52,26 @@ const matching: Answer[] = [
 
 describe('shipBlocks', () => {
   it('allows Ship when every answer matches its implemented option and has no text', () => {
-    expect(status(matching)).toEqual({ pr: PR, blocked: false, blockers: [] })
+    expect(status(matching)).toEqual({
+      pr: PR,
+      blocked: false,
+      blockers: [],
+      unansweredQuestionIds: ['notes'],
+    })
   })
 
-  it('does not block on questions that are unanswered', () => {
-    expect(status([])).toMatchObject({ blocked: false })
+  it('enables Ship with every question unanswered, and lists them apart from Ship (item 166)', () => {
+    expect(status([])).toEqual({
+      pr: PR,
+      blocked: false,
+      blockers: [],
+      unansweredQuestionIds: ['format', 'checks', 'notes'],
+    })
+  })
+
+  it('counts a comment-only answer as unanswered and as a change request', () => {
+    const result = status([...matching, { questionId: 'notes', comment: 'see the margin' }])
+    expect(result).toMatchObject({ blocked: true, unansweredQuestionIds: ['notes'] })
   })
 
   it('blocks on a pick-one that is not the implemented option', () => {
@@ -169,6 +184,7 @@ describe('shipBlocks on a stacked round', () => {
           message: `stacked on ${pr(800)}, which may not ship: it is answered "Don't ship"`,
         },
       ],
+      unansweredQuestionIds: [],
     })
   })
 
@@ -181,7 +197,13 @@ describe('shipBlocks on a stacked round', () => {
 
   it('does not block a dependent whose holder is answered Ship', () => {
     const result = group(808, [{ questionId: 'ship-800', pick: 'Ship' }])
-    expect(result).toEqual({ pr: pr(808), blocked: false, blockers: [], shipsAfter: pr(800) })
+    expect(result).toEqual({
+      pr: pr(808),
+      blocked: false,
+      blockers: [],
+      unansweredQuestionIds: [],
+      shipsAfter: pr(800),
+    })
   })
 
   it('does not block a dependent whose holder is unanswered', () => {

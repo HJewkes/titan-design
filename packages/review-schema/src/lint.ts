@@ -14,6 +14,8 @@ export const LINT_RULES = [
   'ship-not-last',
   'ship-head-mismatch',
   'missing-implemented-option',
+  'question-outside-review',
+  'base-on-new-frame',
 ] as const
 export type LintRule = (typeof LINT_RULES)[number]
 
@@ -231,6 +233,38 @@ function implementedProblems(m: Manifest): LintProblem[] {
 }
 
 /**
+ * Every question about a grouped PR sits in that group's sections, so its page's Review tab
+ * holds all of them (items 166 and 167): Diff and Context never ask anything.
+ */
+function reviewTabProblems(m: Manifest, prs: Map<string, string | undefined>): LintProblem[] {
+  const grouped = new Set(m.prGroups?.map((g) => g.pr))
+  return m.questions.flatMap((q) => {
+    if (!q.page || !grouped.has(q.page)) return []
+    const own = sectionOf(m, q.id)
+    if (own && prs.get(own.id) === q.page) return []
+    const where = own
+      ? `section ${own.id}, which is about ${prs.get(own.id) ?? 'no PR'}`
+      : 'no section'
+    return [
+      lint('question-outside-review')(
+        `question ${q.id}: it is about ${q.page} but sits in ${where}; put it in one of that PR group's sections so it is asked in its Review tab`
+      ),
+    ]
+  })
+}
+
+/** A frame that is new at head has no base render to set beside it. */
+function baseProblems(m: Manifest): LintProblem[] {
+  return m.variants
+    .filter((v) => v.change === 'new' && v.baseImage !== undefined)
+    .map((v) =>
+      lint('base-on-new-frame')(
+        `frame ${v.key}: it is new at head, so it has no base; drop baseImage or change its change class`
+      )
+    )
+}
+
+/**
  * The review-layout problems of a parsed round, empty when it passes. Pure: builders refuse a
  * round with any problem, and a console lists one with its reasons.
  */
@@ -244,5 +278,7 @@ export function lintRound(round: Manifest): LintProblem[] {
     ...shipOrderProblems(round, prs),
     ...shipHeadProblems(round),
     ...implementedProblems(round),
+    ...reviewTabProblems(round, prs),
+    ...baseProblems(round),
   ]
 }

@@ -79,7 +79,6 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | GoalTrajectoryPlot | review | custom/Workout | — | GoalTrajectoryBand, GoalTrajectoryCalibrating, SvgIcon, icons | — |
 | GoalTrajectoryWeekTips | review | custom/Workout | The week targets over the plot, absolute against the chart's own box. | Metric, Pill, PrBadge, TipTrigger, Typography | — |
 | GoalWeekColumnsChart | review | custom/Workout | — | GoalMilestoneWeekStrip, GoalTrajectoryMini | — |
-| HelpTip | candidate | ui/help-tip | HelpTip component for displaying contextual help information. | Surface | components-molecules-helptip--all-colors |
 | HighlightText | candidate | ui/highlight-text | A string with matched ranges emphasised by weight only, so no colour pair is added. | Typography | components-atoms-highlighttext--default |
 | IconBox | stable | ui/icon-box | — | — | components-atoms-iconbox--all-colors |
 | Indicator | stable | ui/indicator | — | — | components-atoms-indicator--all-colors |

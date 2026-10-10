@@ -1,9 +1,10 @@
 import { stackBase, type Answer, type Feedback, type Manifest, type Question } from './schema.ts'
 
-// The owner's rule for Ship (decisions item 151): a PR group is not shipped while any answer in it
-// carries free text, or picks an option other than the one the PR implements. A question left
-// unanswered does not block by itself. A group stacked on another group of the round ships after
-// that holder, and is blocked while the holder's Ship is answered Don't ship or asks for a revision.
+// The owner's rule for Ship (decisions items 151 and 166): Ship is enabled whenever nothing on the
+// PR requests a change. A change request is an answer that carries free text, or picks an option
+// other than the one the PR implements. An unanswered question never blocks. A group stacked on
+// another group of the round ships after that holder, and is blocked while the holder's Ship is
+// answered Don't ship or asks for a revision.
 
 export const SHIP_BLOCKER_KINDS = ['free-text', 'not-implemented', 'holder-not-shipped'] as const
 export type ShipBlockerKind = (typeof SHIP_BLOCKER_KINDS)[number]
@@ -20,6 +21,8 @@ export interface PrGroupShipStatus {
   pr: string
   blocked: boolean
   blockers: ShipBlocker[]
+  /** The group's questions, Ship aside, still without an answer: shown, never blocking. */
+  unansweredQuestionIds: string[]
   /** The holder group's `owner/name#n` when this group is stacked on a group of the same round. */
   shipsAfter?: string
 }
@@ -71,6 +74,18 @@ function pickProblem(q: Question, answer: Answer): string | null {
     : `question ${q.id}: picked ${given.map(shown).join(', ')}, but the PR implements ${want.map(shown).join(', ')}`
 }
 
+function isAnswered(answer: Answer | undefined): boolean {
+  if (!answer) return false
+  const { pick, picks, value, text, revisionRequested } = answer
+  return (
+    pick !== undefined ||
+    !!picks?.length ||
+    value !== undefined ||
+    !!text?.trim() ||
+    revisionRequested === true
+  )
+}
+
 function blockersFor(q: Question, answer: Answer | undefined): ShipBlocker[] {
   if (!answer) return []
   const pick = pickProblem(q, answer)
@@ -119,12 +134,22 @@ function holderBlocker(holder: string, ship: Question, answer: Answer | undefine
 export function shipBlocks(round: ShipRound, feedback: ShipFeedback): PrGroupShipStatus[] {
   const answers = new Map(feedback.answers.map((a) => [a.questionId, a]))
   return groupPrs(round).map((pr) => {
+    const questions = groupQuestions(round, pr)
     const holder = holderOf(round, pr)
     const ship = holder === undefined ? undefined : shipQuestion(round, holder)
     const blockers = [
-      ...groupQuestions(round, pr).flatMap((q) => blockersFor(q, answers.get(q.id))),
+      ...questions.flatMap((q) => blockersFor(q, answers.get(q.id))),
       ...(holder && ship ? holderBlocker(holder, ship, answers.get(ship.id)) : []),
     ]
-    return { pr, blocked: blockers.length > 0, blockers, ...(holder ? { shipsAfter: holder } : {}) }
+    const unansweredQuestionIds = questions
+      .filter((q) => !isMergeBound(q) && !isAnswered(answers.get(q.id)))
+      .map((q) => q.id)
+    return {
+      pr,
+      blocked: blockers.length > 0,
+      blockers,
+      unansweredQuestionIds,
+      ...(holder ? { shipsAfter: holder } : {}),
+    }
   })
 }
