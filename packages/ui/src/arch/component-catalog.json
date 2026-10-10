@@ -11962,6 +11962,176 @@
     },
     {
       "composes": [
+        "EmptyState",
+        "NetworkGraphCanvas",
+        "NetworkGraphParts",
+        "Skeleton"
+      ],
+      "family": "ui/charts",
+      "file": "packages/ui/src/components/ui/charts/network-graph/NetworkGraph.tsx",
+      "name": "NetworkGraph",
+      "props": [
+        {
+          "default": null,
+          "description": "The root is named `\"<label>.",
+          "name": "accessibilityLabel",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Default true.",
+          "name": "animate",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Tailwind classes for the outer view.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Initial selection when uncontrolled.",
+          "name": "defaultSelection",
+          "required": false,
+          "type": "GraphItemRef | null"
+        },
+        {
+          "default": null,
+          "description": "Labels and strokes for edge kinds.",
+          "name": "edgeKinds",
+          "required": false,
+          "type": "GraphEdgeKind[]"
+        },
+        {
+          "default": null,
+          "description": "Cleaned before layout: self edges and unknown ends are dropped, duplicates merge.",
+          "name": "edges",
+          "required": true,
+          "type": "GraphEdge[]"
+        },
+        {
+          "default": null,
+          "description": "Shown when no node is drawn; default `<EmptyState title=\"No nodes\" />`.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Replaces an edge's accessible name.",
+          "name": "formatEdgeLabel",
+          "required": false,
+          "type": "((edge: GraphEdge, source: GraphNode, target: GraphNode) => string)"
+        },
+        {
+          "default": null,
+          "description": "Replaces a node's accessible name.",
+          "name": "formatNodeLabel",
+          "required": false,
+          "type": "((node: GraphNode, context: GraphNodeContext) => string)"
+        },
+        {
+          "default": null,
+          "description": "Viewport height in px; a larger layout scrolls.",
+          "name": "height",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Keeps focus, traversal, hover and reading; stops selection changes; sets `aria-disabled`.",
+          "name": "isDisabled",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "false",
+          "description": "Renders a skeleton of `width` by `height` instead of the graph.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Default `layeredLayout()`.",
+          "name": "layout",
+          "required": false,
+          "type": "GraphLayout"
+        },
+        {
+          "default": null,
+          "description": "Labels and colours for node kinds, in list order.",
+          "name": "nodeKinds",
+          "required": false,
+          "type": "GraphKind[]"
+        },
+        {
+          "default": null,
+          "description": "Replaces the active node's tooltip content (label, kind and description by default).",
+          "name": "nodeTooltip",
+          "required": false,
+          "type": "((node: GraphNode) => ReactNode)"
+        },
+        {
+          "default": null,
+          "description": "Cleaned before layout: the first of duplicate ids is kept and the rest are counted.",
+          "name": "nodes",
+          "required": true,
+          "type": "GraphNode[]"
+        },
+        {
+          "default": null,
+          "description": "Called with the new selection, or `null` when it clears.",
+          "name": "onSelectionChange",
+          "required": false,
+          "type": "((selection: GraphItemRef | null) => void)"
+        },
+        {
+          "default": null,
+          "description": "Controlled selection; a ref to an item that is not drawn reads as `null`.",
+          "name": "selection",
+          "required": false,
+          "type": "GraphItemRef | null"
+        },
+        {
+          "default": null,
+          "description": "Default false.",
+          "name": "showLegend",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Replaces the summary sentence in the root's name.",
+          "name": "summarize",
+          "required": false,
+          "type": "((model: GraphModel) => string)"
+        },
+        {
+          "default": null,
+          "description": "Viewport width in px; a larger layout scrolls.",
+          "name": "width",
+          "required": true,
+          "type": "number"
+        }
+      ],
+      "purpose": "A directed graph of things and the relations between them, on a layout the caller picks.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/charts/network-graph/NetworkGraph.tsx",
+        "status": "packages/ui/src/components/ui/charts/network-graph/NetworkGraph.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-organisms-networkgraph--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
         "ScatterFrame",
         "ScatterGridlines",
         "ScatterPointMark"
@@ -12069,7 +12239,7 @@
           "description": "",
           "name": "colors",
           "required": true,
-          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 149 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
+          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 152 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
         },
         {
           "default": null,
@@ -12106,7 +12276,7 @@
           "description": "",
           "name": "colors",
           "required": true,
-          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 149 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
+          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 152 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
         },
         {
           "default": null,
@@ -16174,14 +16344,6 @@
     },
     {
       "file": "packages/ui/src/components/custom/Workout/icons.tsx",
-      "reason": "not-pascal-case"
-    },
-    {
-      "file": "packages/ui/src/components/custom/Workout/setHeadingKit.tsx",
-      "reason": "not-pascal-case"
-    },
-    {
-      "file": "packages/ui/src/components/custom/Workout/velocity-story-kit.tsx",
       "reason": "not-pascal-case"
     },
     {

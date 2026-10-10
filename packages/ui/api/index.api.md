@@ -1635,6 +1635,9 @@ export const darkThemeCSSVars: {
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly '--color-control-face': "#424140";
+    readonly '--color-control-face-active': "#2C2A28";
+    readonly '--color-control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly '--color-on-control-idle': "#D1D1D1";
     readonly '--color-on-control-active': "#FFFFFF";
     readonly '--color-on-data-strong': "#0B0B0B";
@@ -2719,8 +2722,11 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly 'on-control-idle': "#D4D1CE";
-    readonly 'on-control-active': "#FFFFFF";
+    readonly 'control-face': "#FFFFFF";
+    readonly 'control-face-active': "#D4D1CE";
+    readonly 'control-face-disabled': "rgba(0, 0, 0, 0.06)";
+    readonly 'on-control-idle': "#5A5958";
+    readonly 'on-control-active': "#1C1916";
     readonly 'on-data-strong': "#0B0B0B";
     readonly 'interactive-hover': "rgba(55, 65, 81, 0.04)";
     readonly 'interactive-focus': "rgba(55, 65, 81, 0.12)";
@@ -2874,6 +2880,9 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly 'control-face': "#424140";
+    readonly 'control-face-active': "#2C2A28";
+    readonly 'control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly 'on-control-idle': "#D1D1D1";
     readonly 'on-control-active': "#FFFFFF";
     readonly 'on-data-strong': "#0B0B0B";
@@ -3056,8 +3065,11 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly '--color-on-control-idle': "#D4D1CE";
-    readonly '--color-on-control-active': "#FFFFFF";
+    readonly '--color-control-face': "#FFFFFF";
+    readonly '--color-control-face-active': "#D4D1CE";
+    readonly '--color-control-face-disabled': "rgba(0, 0, 0, 0.06)";
+    readonly '--color-on-control-idle': "#5A5958";
+    readonly '--color-on-control-active': "#1C1916";
     readonly '--color-on-data-strong': "#0B0B0B";
     readonly '--color-interactive-disabled-text': "rgba(55, 65, 81, 0.26)";
     readonly '--color-avatar-background': "#72716F";
@@ -3229,6 +3241,9 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly '--color-control-face': "#424140";
+    readonly '--color-control-face-active': "#2C2A28";
+    readonly '--color-control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly '--color-on-control-idle': "#D1D1D1";
     readonly '--color-on-control-active': "#FFFFFF";
     readonly '--color-on-data-strong': "#0B0B0B";
@@ -3876,6 +3891,103 @@ export function grainForTone(baseColor: string): string;
 export function grainOpacityForTone(baseColor: string): number;
 
 // @public
+export interface GraphEdge {
+    activityAt?: number;
+    id?: string;
+    kind?: string;
+    source: string;
+    target: string;
+    weight?: number | null;
+}
+
+// @public
+export interface GraphEdgeKind {
+    id: string;
+    label: string;
+    stroke?: 'solid' | 'dashed';
+}
+
+// @public
+export interface GraphItemRef {
+    id: string;
+    type: 'node' | 'edge';
+}
+
+// @public
+export interface GraphKind {
+    color?: ColorToken$1;
+    id: string;
+    label: string;
+}
+
+// @public
+export interface GraphLayout {
+    compute: (input: GraphLayoutInput) => GraphLayoutResult;
+    key: string;
+}
+
+// @public
+export interface GraphLayoutInput {
+    edges: readonly GraphEdge[];
+    height: number;
+    nodes: readonly GraphNode[];
+    width: number;
+}
+
+// @public
+export interface GraphLayoutResult {
+    edgeShape?: 'horizontal' | 'arc';
+    groups?: readonly GraphGroupRegion[];
+    height: number;
+    labelMode?: 'all' | 'declutter';
+    order: readonly string[];
+    positions: Readonly<Record<string, GraphPoint>>;
+    width: number;
+}
+
+// @public
+export interface GraphModel {
+    drawnEdges: readonly GraphEdge[];
+    edges: readonly GraphEdge[];
+    edgeShape: 'horizontal' | 'arc';
+    groups: readonly GraphGroupRegion[];
+    height: number;
+    index: GraphIndex;
+    labelMode: 'all' | 'declutter';
+    nodes: readonly GraphNode[];
+    order: readonly string[];
+    positions: Readonly<Record<string, GraphPoint>>;
+    report: GraphCleanReport;
+    unplacedEdges: number;
+    unplacedNodes: number;
+    width: number;
+}
+
+// @public
+export interface GraphNode {
+    description?: string;
+    group?: string;
+    id: string;
+    isMuted?: boolean;
+    kind?: string;
+    label: string;
+}
+
+// @public
+export interface GraphNodeContext {
+    groupLabels?: readonly string[];
+    incoming: number;
+    kindLabel?: string;
+    outgoing: number;
+}
+
+// @public
+export interface GraphPoint {
+    x: number;
+    y: number;
+}
+
+// @public
 export const greyRamp: {
     readonly 50: "#F9F6F3";
     readonly 100: "#EDEAE7";
@@ -4294,6 +4406,9 @@ export interface LabelWithHelpProps extends ViewProps {
 }
 
 // @public
+export function layeredLayout(options?: LayeredLayoutOptions): GraphLayout;
+
+// @public
 export function LayersIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -4484,8 +4599,11 @@ export const lightThemeCSSVars: {
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly '--color-on-control-idle': "#D4D1CE";
-    readonly '--color-on-control-active': "#FFFFFF";
+    readonly '--color-control-face': "#FFFFFF";
+    readonly '--color-control-face-active': "#D4D1CE";
+    readonly '--color-control-face-disabled': "rgba(0, 0, 0, 0.06)";
+    readonly '--color-on-control-idle': "#5A5958";
+    readonly '--color-on-control-active': "#1C1916";
     readonly '--color-on-data-strong': "#0B0B0B";
     readonly '--color-interactive-disabled-text': "rgba(55, 65, 81, 0.26)";
     readonly '--color-avatar-background': "#72716F";
@@ -5353,6 +5471,34 @@ export interface NavItemProps {
     liveLabel?: string;
     // (undocumented)
     onPress?: () => void;
+}
+
+// @public
+export function NetworkGraph(input: NetworkGraphProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface NetworkGraphProps extends Omit<ViewProps, 'children'> {
+    accessibilityLabel: string;
+    animate?: boolean;
+    className?: string;
+    defaultSelection?: GraphItemRef | null;
+    edgeKinds?: GraphEdgeKind[];
+    edges: GraphEdge[];
+    emptyState?: ReactNode;
+    formatEdgeLabel?: (edge: GraphEdge, source: GraphNode, target: GraphNode) => string;
+    formatNodeLabel?: (node: GraphNode, context: GraphNodeContext) => string;
+    height: number;
+    isDisabled?: boolean;
+    isLoading?: boolean;
+    layout?: GraphLayout;
+    nodeKinds?: GraphKind[];
+    nodes: GraphNode[];
+    nodeTooltip?: (node: GraphNode) => ReactNode;
+    onSelectionChange?: (selection: GraphItemRef | null) => void;
+    selection?: GraphItemRef | null;
+    showLegend?: boolean;
+    summarize?: (model: GraphModel) => string;
+    width: number;
 }
 
 // @public (undocumented)
@@ -6809,6 +6955,9 @@ export const semanticColorsDark: {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly 'control-face': "#424140";
+    readonly 'control-face-active': "#2C2A28";
+    readonly 'control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly 'on-control-idle': "#D1D1D1";
     readonly 'on-control-active': "#FFFFFF";
     readonly 'on-data-strong': "#0B0B0B";
@@ -6967,8 +7116,11 @@ export const semanticColorsLight: {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly 'on-control-idle': "#D4D1CE";
-    readonly 'on-control-active': "#FFFFFF";
+    readonly 'control-face': "#FFFFFF";
+    readonly 'control-face-active': "#D4D1CE";
+    readonly 'control-face-disabled': "rgba(0, 0, 0, 0.06)";
+    readonly 'on-control-idle': "#5A5958";
+    readonly 'on-control-active': "#1C1916";
     readonly 'on-data-strong': "#0B0B0B";
     readonly 'interactive-hover': "rgba(55, 65, 81, 0.04)";
     readonly 'interactive-focus': "rgba(55, 65, 81, 0.12)";
@@ -8028,6 +8180,9 @@ export interface SupersetWrapperProps {
     // (undocumented)
     label?: string;
 }
+
+// @public
+export function suppliedLayout(positions: Readonly<Record<string, GraphPoint>>): GraphLayout;
 
 // @public
 export function Surface(input: SurfaceProps): react_jsx_runtime.JSX.Element;

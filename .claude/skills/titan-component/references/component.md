@@ -19,8 +19,9 @@ rely on this line.
 11. Cover loading, empty, error and disabled states: docs/component-states.md > Checklist.
 12. Add accessibility roles and labels: CLAUDE.md > Component Development > Accessibility
     Requirements. A titled icon gets its name from `SvgIcon`'s `title` prop.
-13. Export from the family barrel, add the `ui/README.md` row, and update only
-    `componentBarrelHash`: CLAUDE.md > Component Development > Placement and Gotchas.
+13. Export from the family barrel, add the `ui/README.md` row, and add the arch-graph node
+    with `pnpm arch:graph -- --add <file>`: CLAUDE.md > Component Development > Placement
+    and Gotchas.
 14. If the component ports a frozen HTML prototype, match it pixel for pixel and follow
     docs/agent-prompts/component-implementation.md (fidelity preamble, DO NOT list, CSS
     property manifest, token mapping). Done is then
