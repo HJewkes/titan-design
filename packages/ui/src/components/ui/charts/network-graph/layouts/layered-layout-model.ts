@@ -132,6 +132,10 @@ function computeLayered(
   }
 }
 
+/**
+ * Layers left to right by longest path along the ranking edges (every edge by default), rows by
+ * depth-first order with a parent centred on its children. Deterministic for any input order.
+ */
 export function layeredLayout(options: LayeredLayoutOptions = {}): GraphLayout {
   const { rankEdgeKinds } = options
   const key = `layered:${rankEdgeKinds === undefined ? '*' : [...rankEdgeKinds].sort(compareText).join(',')}`

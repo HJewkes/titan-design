@@ -5,6 +5,19 @@ All notable changes to `@titan-design/review-schema` are documented in this file
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this
 project adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- Optional `implemented` on pick-one (an option) and pick-many (a list of options): what the PR
+  implements at its head. Every entry must be one of the question's options and not its
+  `revisionOption`.
+- `shipBlocks(round, feedback)`: per PR group, whether Ship is blocked and why. A group is blocked
+  when any of its answers carries free text, or picks other than the question's `implemented`
+  option. An unanswered question does not block. Exports `PrGroupShipStatus` and `ShipBlocker`.
+- `lintRound` rule `missing-implemented-option`: an `iterate` or `decide` pick question declares
+  `implemented`.
+
 ## [0.3.0]
 
 ### Added

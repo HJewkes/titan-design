@@ -731,6 +731,12 @@ export const TextAndBorderColors: StoryObj = {
         <ColorSwatch name="scrim-press-strong" value={semanticColorsDark['scrim-press-strong']} />
         <ColorSwatch name="scrim-subtle" value={semanticColorsDark['scrim-subtle']} />
         <ColorSwatch name="scrim-default" value={semanticColorsDark['scrim-default']} />
+        <ColorSwatch name="control-face" value={semanticColorsDark['control-face']} />
+        <ColorSwatch name="control-face-active" value={semanticColorsDark['control-face-active']} />
+        <ColorSwatch
+          name="control-face-disabled"
+          value={semanticColorsDark['control-face-disabled']}
+        />
         <ColorSwatch name="on-control-idle" value={semanticColorsDark['on-control-idle']} />
         <ColorSwatch name="on-control-active" value={semanticColorsDark['on-control-active']} />
         <ColorSwatch name="on-data-strong" value={semanticColorsDark['on-data-strong']} />

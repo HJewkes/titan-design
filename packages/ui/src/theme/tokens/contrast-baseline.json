@@ -2,7 +2,6 @@
   "dark": [
     "on-brand-primary-subtle on brand-primary-subtle over surface-overlay",
     "on-brand-primary-subtle on brand-primary-subtle over surface-raised",
-    "on-control-idle on grey-600",
     "on-data-strong on dataviz-categorical-6",
     "on-result-degrade on result-degrade",
     "on-result-improve on result-improve",
@@ -23,7 +22,6 @@
   ],
   "light": [
     "on-brand-primary on brand-primary-solid",
-    "on-control-idle on grey-600",
     "on-data-strong on dataviz-categorical-1",
     "on-data-strong on dataviz-categorical-2",
     "on-data-strong on dataviz-categorical-4",
@@ -33,8 +31,8 @@
     "on-result-inconclusive on result-inconclusive",
     "on-status-info on status-info-solid",
     "on-status-warning on status-warning-solid",
+    "status-error on surface-base",
     "status-error on surface-elevated",
-    "status-error on surface-raised",
     "text-disabled on background-base",
     "text-disabled on background-default",
     "text-disabled on background-frame",
@@ -46,9 +44,6 @@
     "text-disabled on surface-raised",
     "text-error on background-frame",
     "text-link on background-frame",
-    "text-link-hover on background-frame",
-    "text-primary on background-frame",
-    "text-secondary on background-frame",
-    "text-tertiary on background-frame"
+    "text-link-hover on background-frame"
   ]
 }
