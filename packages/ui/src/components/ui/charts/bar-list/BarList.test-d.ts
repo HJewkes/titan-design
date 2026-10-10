@@ -1,7 +1,7 @@
 import { describe, expectTypeOf, it } from 'vitest'
 import type { ViewProps } from 'react-native'
 import type { ColorToken } from '../../../../theme/resolve-color'
-import type { BarListProps, BarListRow } from './BarList'
+import type { BarListMarker, BarListProps, BarListRow } from './BarList'
 
 describe('BarList types', () => {
   it('requires rows and accessibilityLabel', () => {
@@ -33,12 +33,13 @@ describe('BarList types', () => {
     expectTypeOf<BarListProps>().not.toHaveProperty('readouts')
   })
 
-  it('declares exactly the thirteen audited props', () => {
+  it('declares exactly the fourteen audited props', () => {
     type Own = Exclude<keyof BarListProps, keyof ViewProps> | 'accessibilityLabel' | 'className'
     expectTypeOf<Own>().toEqualTypeOf<
       | 'rows'
       | 'accessibilityLabel'
       | 'max'
+      | 'referenceMarker'
       | 'sort'
       | 'maxRows'
       | 'layout'
@@ -50,5 +51,16 @@ describe('BarList types', () => {
       | 'emptyState'
       | 'className'
     >()
+  })
+
+  it('takes an optional referenceMarker object, never a bare number', () => {
+    expectTypeOf<BarListProps['referenceMarker']>().toEqualTypeOf<BarListMarker | undefined>()
+    // @ts-expect-error a marker needs a label
+    const bare: BarListProps['referenceMarker'] = 100
+    void bare
+  })
+
+  it('hands the marker formatter a number', () => {
+    expectTypeOf<NonNullable<BarListMarker['formatValue']>>().parameter(0).toEqualTypeOf<number>()
   })
 })

@@ -2,11 +2,22 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { PrBadge } from './PrBadge'
+import { capturedClassNames } from '../../../test/classname-capture'
 
 describe('PrBadge', () => {
   it('renders star and default PR label', () => {
     render(<PrBadge animate={false} />)
     expect(screen.getByText(/\u2605 PR e1RM/)).toBeInTheDocument()
+  })
+
+  it('renders the label inside a brand-toned subtle Pill', () => {
+    render(<PrBadge animate={false} />)
+    // className never reaches the DOM under react-native-web; the capture map records it.
+    const classes = (capturedClassNames.get('pr-badge') ?? '').split(/\s+/)
+    expect(classes).toEqual(
+      expect.arrayContaining(['bg-brand-primary-subtle', 'text-on-brand-primary-subtle', 'rounded'])
+    )
+    expect(screen.getByTestId('pr-badge')).toHaveTextContent('★ PR e1RM')
   })
 
   it('renders with animation wrapper when animate is true', () => {

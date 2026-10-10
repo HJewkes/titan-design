@@ -1,5 +1,6 @@
 import { primitiveRamps as ramp } from '../../theme/tokens/primitives'
 import { getSemanticColors, type ThemeMode } from '../../theme/tokens/semantic'
+import { colorsAsJudged } from './light-as-judged'
 
 /**
  * TD-757: the categorical palette sets the owner weighs in the TD-756 round (D1-D9).
@@ -126,6 +127,6 @@ export function setColors(set: CategoricalSet): string[] {
 }
 
 export function planeColors(mode: ThemeMode): string[] {
-  const colors = getSemanticColors(mode)
+  const colors = colorsAsJudged(mode)
   return CATEGORICAL_PLANES.map((plane) => colors[plane.token])
 }

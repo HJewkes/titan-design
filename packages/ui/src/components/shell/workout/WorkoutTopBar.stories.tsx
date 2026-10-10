@@ -29,7 +29,7 @@ const meta: Meta<typeof WorkoutTopBar> = {
         component:
           '**Organism (workout app).** The generic ' +
           "[TopBar](?path=/docs/shell-topbar--docs) with the workout's own chrome in its " +
-          '`trailing` slot: [SessionStatePill](?path=/docs/shell-workout-sessionstatepill--docs) ' +
+          '`trailing` slot: a [Pill](?path=/docs/components-atoms-pill--docs) session-state readout ' +
           'then [DeviceMenu](?path=/docs/shell-workout-devicemenu--docs). The bar adds the ' +
           'dividers and the edge-pinned clock; this component only supplies the items ' +
           '(AW-132).\n\n' +
@@ -55,4 +55,9 @@ export const DeviceLost: Story = {
       { id: 'Voltra-9B1C', nickname: 'Right Cable', slot: 'R', state: 'lost' },
     ],
   },
+}
+
+/** No active session — the label stays primary so it clears AA on the neutral pill. */
+export const Idle: Story = {
+  args: { state: 'idle' },
 }

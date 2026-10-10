@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Button, ButtonText } from './Button'
 import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
+import { capturedByNode } from '../../../test/classname-capture'
 
 describe('Button', () => {
   it('renders children correctly', () => {
@@ -163,4 +164,21 @@ describe('Button geometry resolves to the control tokens', () => {
   it.each(shipped)('%s still measures what it measured before the tokens', (level, _, pixels) => {
     expect(resolveAll(classesFor(level))).toEqual([...pixels])
   })
+})
+
+// TD-789 3b: status-error as text missed 4.5:1 on the grey 100 page.
+describe('Button error label', () => {
+  it.each(['outline', 'ghost', 'link'] as const)(
+    'paints the %s error label in text-error, not status-error',
+    (variant) => {
+      render(
+        <Button variant={variant} color="error">
+          <ButtonText>Delete</ButtonText>
+        </Button>
+      )
+      const classes = (capturedByNode.get(screen.getByRole('button')) ?? '').split(/\s+/)
+      expect(classes).toContain('text-text-error')
+      expect(classes).not.toContain('text-status-error')
+    }
+  )
 })
