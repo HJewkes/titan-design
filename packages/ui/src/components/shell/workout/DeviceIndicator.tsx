@@ -9,7 +9,7 @@ export interface DeviceIndicatorProps extends ViewProps {
   status?: DeviceConnState
   /** Tap handler. When omitted the glyph is non-interactive (e.g. inside a PopoverTrigger). */
   onPress?: () => void
-  /** Accessible label (names the glyph / the wrapping trigger button). */
+  /** Accessible label (names the glyph / the wrapping trigger button); the state word is appended. */
   label?: string
   className?: string
 }
@@ -20,6 +20,13 @@ const statusTextClass: Record<DeviceConnState, string> = {
   connected: 'text-status-success',
   degraded: 'text-status-warning',
   lost: 'text-status-error-vivid',
+}
+
+// The color alone can't carry the state to a screen reader or a color-blind user.
+const stateLabel: Record<DeviceConnState, string> = {
+  connected: 'Connected',
+  degraded: 'Unstable',
+  lost: 'Disconnected',
 }
 
 /**
@@ -34,9 +41,10 @@ export function DeviceIndicator({
   ...props
 }: DeviceIndicatorProps) {
   const Wrapper = onPress ? Pressable : View
+  const name = `${label}, ${stateLabel[status]}`
   return (
     <Wrapper
-      accessibilityLabel={label}
+      accessibilityLabel={name}
       {...(onPress ? { onPress, accessibilityRole: 'button' } : {})}
       className={cn(
         'w-[26px] h-[28px] items-center justify-center rounded-[7px]',
@@ -46,7 +54,7 @@ export function DeviceIndicator({
       {...props}
     >
       {/* the SVG title names the wrapping trigger button (RNW drops aria-label on non-accessible Views) */}
-      <BluetoothIcon size={18} color="currentColor" title={label} />
+      <BluetoothIcon size={18} color="currentColor" title={name} />
     </Wrapper>
   )
 }

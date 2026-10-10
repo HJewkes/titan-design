@@ -8,18 +8,34 @@ import { announceOnIOS } from './announceOnIOS'
 import {
   buildThreadRows,
   findParticipant,
-  isStreaming,
   messageBody,
+  newestId,
+  nextAnnouncement,
   plainText,
+  type SeenState,
   type ThreadRow,
 } from './chatThread'
-import { DateSeparator } from './DateSeparator'
+import { DateSeparator, type DateSeparatorLabels } from './DateSeparator'
 import { ConversationIdentity } from './ConversationIdentity'
-import { MessageBubble, type DataPartRenderer, type ThreadLayout } from './MessageBubble'
+import {
+  MessageBubble,
+  type DataPartRenderer,
+  type MessageBubbleLabels,
+  type ThreadLayout,
+} from './MessageBubble'
 import { RevealProvider, RevealRow, useRevealGesture } from './RevealRow'
-import { TypingIndicator } from './TypingIndicator'
-import { UnreadBadge } from './UnreadBadge'
+import { TypingIndicator, type TypingIndicatorLabels } from './TypingIndicator'
+import { UnreadBadge, type UnreadBadgeLabels } from './UnreadBadge'
 import { useStickToBottom } from './useStickToBottom'
+
+/** Every built-in string in a thread: the list's own plus those of the parts it composes. */
+export interface MessageListLabels
+  extends MessageBubbleLabels, DateSeparatorLabels, TypingIndicatorLabels, UnreadBadgeLabels {
+  /** The button that pages in older messages. */
+  showEarlier: string
+  /** Names an author missing from `participants` when a new message is announced. */
+  unknownAuthor: string
+}
 
 export interface MessageListProps {
   /** Oldest first, the order a thread is stored in. */
@@ -45,21 +61,35 @@ export interface MessageListProps {
   /** Shown instead of the scroll area while the thread has no messages. */
   emptyState?: ReactNode
   linkers?: ProseLinker[]
+  /** Name of the thread's log region for assistive tech. */
+  accessibilityLabel?: string
+  /** Replaces any of the built-in strings; the rest keep their defaults. */
+  labels?: Partial<MessageListLabels>
   className?: string
 }
 
 interface RowProps {
   row: ThreadRow
+  timesShown: boolean
+  onToggleTimes: () => void
   props: MessageListProps
   layout: ThreadLayout
   newestOwnId: string | undefined
 }
 
-function Row({ row, props, layout, newestOwnId }: RowProps) {
+function Row({ row, timesShown, onToggleTimes, props, layout, newestOwnId }: RowProps) {
   if (row.kind === 'date') {
     return (
       <View className="px-gutter-sm">
-        <DateSeparator date={row.at} now={props.now} showDay={row.showDay} showTime />
+        <DateSeparator
+          date={row.at}
+          now={props.now}
+          showDay={row.showDay}
+          showTime
+          labels={props.labels}
+          onPress={onToggleTimes}
+          timesShown={timesShown}
+        />
       </View>
     )
   }
@@ -75,6 +105,7 @@ function Row({ row, props, layout, newestOwnId }: RowProps) {
         showDelivery={message.id === newestOwnId}
         renderDataPart={props.renderDataPart}
         linkers={props.linkers}
+        labels={props.labels}
         className="px-gutter-sm"
       />
     </RevealRow>
@@ -103,62 +134,21 @@ function useWindow(messages: readonly ChatMessage[], pageSize: number) {
   return { visible, hasEarlier: start > 0, showEarlier: () => setPages((count) => count + 1) }
 }
 
-/**
- * The newest incoming message after `lastSeenId`. Nothing when the newest message is
- * unchanged (older history was prepended) or `lastSeenId` left the thread (it was replaced).
- */
-function newestIncomingSince(
-  messages: readonly ChatMessage[],
-  lastSeenId: string | undefined,
-  viewerId: string
-): ChatMessage | undefined {
-  const start = lastSeenId === undefined ? 0 : messages.findIndex(({ id }) => id === lastSeenId) + 1
-  if (start === 0 && lastSeenId !== undefined) return undefined
-  return messages
-    .slice(start)
-    .filter((message) => message.authorId !== viewerId)
-    .pop()
-}
-
-function newestId(messages: readonly ChatMessage[]): string | undefined {
-  return messages[messages.length - 1]?.id
-}
-
-interface SeenState {
-  lastSeenId: string | undefined
-  /** An incoming reply still streaming; it is announced once, with its final text. */
-  streamingId?: string
-}
-
-/** The message to announce now, if any, and what has been seen after it. */
-function nextAnnouncement(
-  messages: readonly ChatMessage[],
-  seen: SeenState,
-  viewerId: string
-): { seen: SeenState; message?: ChatMessage } {
-  const lastSeenId = newestId(messages)
-  const candidate =
-    newestIncomingSince(messages, seen.lastSeenId, viewerId) ??
-    messages.find(({ id }) => id === seen.streamingId)
-  if (candidate === undefined) return { seen: { lastSeenId } }
-  if (isStreaming(candidate)) return { seen: { lastSeenId, streamingId: candidate.id } }
-  return { seen: { lastSeenId }, message: candidate }
-}
-
 /** Text for a polite live region: only the newest incoming message that arrives after mount. */
 function useIncomingAnnouncement(props: MessageListProps): string {
-  const { messages, participants, viewerId } = props
+  const { messages, participants, viewerId, labels } = props
+  const unknownAuthor = labels?.unknownAuthor ?? 'Unknown'
   const seenRef = useRef<SeenState>({ lastSeenId: newestId(messages) })
   const [announcement, setAnnouncement] = useState('')
   useEffect(() => {
     const { seen, message } = nextAnnouncement(messages, seenRef.current, viewerId)
     seenRef.current = seen
     if (message === undefined) return
-    const name = findParticipant(participants, message.authorId)?.displayName ?? 'Unknown'
+    const name = findParticipant(participants, message.authorId)?.displayName ?? unknownAuthor
     const text = `${name}: ${plainText(messageBody(message))}`
     setAnnouncement(text)
     announceOnIOS(text)
-  }, [messages, participants, viewerId])
+  }, [messages, participants, viewerId, unknownAuthor])
   return announcement
 }
 
@@ -169,7 +159,7 @@ function ThreadScroll(props: MessageListProps) {
   const layout = resolveLayout(props)
   const header = threadHeader(props, layout)
   const newestOwnId = newestOwnMessageId(messages, viewerId)
-  const { offset, panHandlers } = useRevealGesture(props.revealTimes ?? false)
+  const { offset, panHandlers, revealed, toggle } = useRevealGesture(props.revealTimes ?? false)
   const { scrollRef, onScroll, onContentSizeChange, unseen, jumpToNewest } = useStickToBottom(
     messages,
     viewerId
@@ -181,6 +171,8 @@ function ThreadScroll(props: MessageListProps) {
         onScroll={onScroll}
         onContentSizeChange={onContentSizeChange}
         scrollEventThrottle={32}
+        role="log"
+        aria-label={props.accessibilityLabel ?? 'Conversation'}
         testID="chat-message-scroll"
       >
         <RevealProvider offset={offset}>
@@ -191,25 +183,31 @@ function ThreadScroll(props: MessageListProps) {
             >
               {hasEarlier ? (
                 <Button variant="ghost" size="sm" onPress={showEarlier} className="self-center">
-                  <ButtonText>Show earlier</ButtonText>
+                  <ButtonText>{props.labels?.showEarlier ?? 'Show earlier'}</ButtonText>
                 </Button>
               ) : null}
               {rows.map((row) => (
                 <Row
                   key={row.key}
                   row={row}
+                  timesShown={revealed}
+                  onToggleTimes={toggle}
                   props={props}
                   layout={layout}
                   newestOwnId={newestOwnId}
                 />
               ))}
-              <TypingIndicator participants={typing} className="px-gutter-sm" />
+              <TypingIndicator
+                participants={typing}
+                labels={props.labels}
+                className="px-gutter-sm"
+              />
             </View>
           </View>
         </RevealProvider>
       </ScrollView>
       <View className="absolute bottom-inset-md self-center pointer-events-box-none">
-        <UnreadBadge count={unseen} onPress={jumpToNewest} size="md" />
+        <UnreadBadge count={unseen} onPress={jumpToNewest} size="md" labels={props.labels} />
       </View>
     </View>
   )

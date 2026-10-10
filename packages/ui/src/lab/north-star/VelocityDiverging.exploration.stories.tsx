@@ -163,8 +163,8 @@ function DivergingChart({ set, height, scale }: DivergingChartProps) {
   return (
     <View style={{ height, position: 'relative' }}>
       {/* Per-side running-best reference lines (hero only) — how far velocity has fallen. */}
-      {c.showBest && bestL > 0 && <RefLine y={plotHalf - lengthOf(bestL) * maxBar} />}
-      {c.showBest && bestR > 0 && <RefLine y={plotHalf + lengthOf(bestR) * maxBar} />}
+      {!!c.showBest && bestL > 0 && <RefLine y={plotHalf - lengthOf(bestL) * maxBar} />}
+      {!!c.showBest && bestR > 0 && <RefLine y={plotHalf + lengthOf(bestR) * maxBar} />}
 
       {/* The centre axis — the anchor the whole language mirrors around. */}
       <View
@@ -221,7 +221,7 @@ function DivergingChart({ set, height, scale }: DivergingChartProps) {
             <View key={i} style={{ flex: 1, maxWidth: c.maxCol, height: '100%' }}>
               {/* Up wing — LEFT. */}
               <View style={{ height: plotHalf, justifyContent: 'flex-end', alignItems: 'center' }}>
-                {c.showValues && (
+                {!!c.showValues && (
                   <View style={{ height: c.labelBand, justifyContent: 'flex-end' }}>
                     {!isPending && (
                       <Text
@@ -289,7 +289,7 @@ function DivergingChart({ set, height, scale }: DivergingChartProps) {
                     }}
                   />
                 )}
-                {c.showValues && (
+                {!!c.showValues && (
                   <View style={{ height: c.labelBand, justifyContent: 'flex-start' }}>
                     {!isPending && (
                       <Text

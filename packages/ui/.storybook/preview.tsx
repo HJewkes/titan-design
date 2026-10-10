@@ -1,15 +1,17 @@
-import type { Preview } from '@storybook/react'
+import type { Preview } from '@storybook/react-vite'
 import { withThemeByClassName } from '@storybook/addon-themes'
 import React from 'react'
 import '../src/theme/global.css'
 import { withSurfaceTheme } from './withSurfaceTheme'
+import { withWidthMatrix } from './withWidthMatrix'
 
-// Sidebar information architecture (TD Storybook reorg).
+// Sidebar information architecture (see `storySort` below).
 //
-// Six top-level roots, ordered foundations → build-up → full screens → lab:
-//   Foundations → Components → Workout → Shell → Pages → Lab.
-// `Components` reads by tier (Atoms → Molecules → Organisms → DataViz) and `Lab`
-// sorts last. Composition is expressed as autodocs "**Tier.** Composes […]" /
+// Roots, in the order `storySort.order` lists them:
+//   Foundations → Components → Custom → Shell → Pages → Lab → Docs.
+// `Components` reads by tier (Atoms → Molecules → Organisms); `Custom/<Family>` and
+// `Lab/<Family>` list their families in a fixed order; `Docs` is listed last.
+// Composition is expressed as autodocs "**Tier.** Composes […]" /
 // "Used-by ↑ […]" prose links between canonical stories — never physical nesting.
 // Maturity taxonomy (see packages/ui/MATURITY.md).
 //
@@ -33,6 +35,8 @@ const preview: Preview = {
     },
     layout: 'centered',
     options: {
+      // Titles named in `order` come first, in that order (a following array orders that
+      // title's children); anything not named sorts alphabetically after them.
       storySort: {
         method: 'alphabetical',
         order: [
@@ -48,7 +52,6 @@ const preview: Preview = {
             'Depth',
             'Depth Calibration',
             'Choosing Tokens',
-            'Theme Presets',
           ],
           'Components',
           ['Atoms', 'Molecules', 'Organisms'],
@@ -74,6 +77,7 @@ const preview: Preview = {
       parentSelector: 'html', // Apply class to html element
     }),
     withSurfaceTheme,
+    withWidthMatrix,
     (Story) => (
       <div
         className="font-sans text-text-primary"

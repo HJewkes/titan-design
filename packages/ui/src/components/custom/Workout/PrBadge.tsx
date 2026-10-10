@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { View, Animated, Easing, type ViewProps } from 'react-native'
 import { StarIcon } from './icons'
-import { BaseBadge } from './BaseBadge'
+import { Pill } from '../../ui/pill'
 import { Typography } from '../../ui/typography'
 import { resolveColor } from '../../../theme/resolve-color'
 
@@ -22,12 +22,13 @@ export interface PrBadgeProps extends ViewProps {
   className?: string
 }
 
-const typeLabels: Record<PRType, string> = {
-  e1rm: 'PR e1RM',
-  weight: 'PR Weight',
-  reps: 'PR Reps',
-  volume: 'PR Volume',
-  velocity: 'PR Velocity',
+/** Base name of each PR type; `PrBadge` prefixes it with "PR", `PrHistoryModal` shows it bare. */
+export const PR_TYPE_LABELS: Record<PRType, string> = {
+  e1rm: 'e1RM',
+  weight: 'Weight',
+  reps: 'Reps',
+  volume: 'Volume',
+  velocity: 'Velocity',
 }
 
 export function PrBadge({
@@ -39,7 +40,7 @@ export function PrBadge({
   className,
   ...props
 }: PrBadgeProps) {
-  const resolvedLabel = labelProp ?? typeLabels[type]
+  const resolvedLabel = labelProp ?? `PR ${PR_TYPE_LABELS[type]}`
   const brandPrimary = resolveColor('brand-primary')
   const [scale] = useState(() => new Animated.Value(animate ? 0.8 : 1))
   const [opacity] = useState(() => new Animated.Value(animate ? 0 : 1))
@@ -75,22 +76,22 @@ export function PrBadge({
       <StarIcon size={iconSize} color={brandPrimary} fill={brandPrimary} strokeWidth={2} />
     </View>
   ) : (
-    <BaseBadge
-      variant="pr"
+    <Pill
+      tone="brand"
+      variant="subtle"
+      size="sm"
+      rounded={false}
       className={className}
       accessibilityLabel={`Personal record: ${resolvedLabel}`}
+      testID="pr-badge"
       {...props}
     >
-      {/* `boldLabel` is the badge label exactly: 12px/700 Inter. The line box is pinned
-          because the raw <Text> it replaced carried no lineHeight. */}
-      <Typography
-        variant="boldLabel"
-        color="inherit"
-        className="leading-[normal] text-brand-primary"
-      >
+      {/* `boldLabel` is the badge label exactly: 12px/700 Inter, a step above Pill's own
+          `sm` label. The label colour is Pill's brand tone, inherited. */}
+      <Typography variant="boldLabel" color="inherit" className="leading-[normal] text-inherit">
         {'\u2605'} {resolvedLabel}
       </Typography>
-    </BaseBadge>
+    </Pill>
   )
 
   if (animate) {

@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { describe, it, expect, vi } from 'vitest'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 
 import { DateSeparator } from './DateSeparator'
@@ -33,8 +33,65 @@ describe('DateSeparator', () => {
     expect(separator).not.toHaveTextContent('Today')
   })
 
+  it('takes its day names from labels', () => {
+    const labels = { today: 'Hoy', yesterday: 'Ayer' }
+    const { rerender } = render(
+      <DateSeparator date={localIso(0, 7, 0)} now={NOW} labels={labels} />
+    )
+    expect(screen.getByText('Hoy')).toBeInTheDocument()
+    rerender(<DateSeparator date={localIso(1, 7, 0)} now={NOW} labels={labels} />)
+    expect(screen.getByText('Ayer')).toBeInTheDocument()
+  })
+
   it('has no accessibility violations', async () => {
     const { container } = render(<DateSeparator date={localIso(0, 7, 0)} now={NOW} />)
     expect(await axe(container)).toHaveNoViolations()
+  })
+
+  describe('as a times toggle', () => {
+    it('is a named button that presses through to the handler', () => {
+      const onPress = vi.fn()
+      render(<DateSeparator date={localIso(0, 7, 0)} now={NOW} onPress={onPress} />)
+
+      fireEvent.click(screen.getByRole('button', { name: 'Today, show message times' }))
+
+      expect(onPress).toHaveBeenCalledTimes(1)
+    })
+
+    it('names the hide action and reports expanded while times show', () => {
+      render(<DateSeparator date={localIso(0, 7, 0)} now={NOW} onPress={() => {}} timesShown />)
+
+      expect(screen.getByRole('button', { name: 'Today, hide message times' })).toHaveAttribute(
+        'aria-expanded',
+        'true'
+      )
+    })
+
+    it('starts its name with the visible date and differs per day', () => {
+      render(
+        <>
+          <DateSeparator date={localIso(0, 7, 0)} now={NOW} showTime onPress={() => {}} />
+          <DateSeparator date={localIso(1, 7, 0)} now={NOW} onPress={() => {}} />
+        </>
+      )
+
+      const names = screen.getAllByRole('button').map((b) => b.getAttribute('aria-label'))
+      expect(names[0]).toMatch(/^Today \S+.*, show message times$/)
+      expect(names[1]).toBe('Yesterday, show message times')
+    })
+
+    it('stays plain text when nothing is wired to it', () => {
+      render(<DateSeparator date={localIso(0, 7, 0)} now={NOW} />)
+
+      expect(screen.queryByRole('button')).not.toBeInTheDocument()
+    })
+
+    it('has no accessibility violations as a button', async () => {
+      const { container } = render(
+        <DateSeparator date={localIso(0, 7, 0)} now={NOW} onPress={() => {}} />
+      )
+
+      expect(await axe(container)).toHaveNoViolations()
+    })
   })
 })

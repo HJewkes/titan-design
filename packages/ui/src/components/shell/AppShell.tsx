@@ -4,11 +4,11 @@ import { cn } from '../../utils/cn'
 import { Surface } from '../ui/surface'
 import { SideNav, type SideNavItem } from './SideNav'
 import { TopBar } from './TopBar'
-import { brandPresets, type BrandKey } from './brands'
+import { resolveBrand, type BrandKey, type BrandPreset } from './brands'
 
 export interface AppShellProps {
-  /** Which app identity the default {@link TopBar} and nav accent render. */
-  brand?: BrandKey
+  /** Which app identity the default {@link TopBar} and nav accent render: a registry key or the app's own preset. */
+  brand: BrandKey | BrandPreset
   /** Brand subtitle on the default top bar. */
   subtitle?: string
   /** App chrome for the default top bar's right cluster (divider-separated). */
@@ -26,6 +26,11 @@ export interface AppShellProps {
   nav?: ReactNode
   /** Main content region. A placeholder renders when omitted. */
   children?: ReactNode
+  /**
+   * Render the content region as the `main` landmark. Off by default: `Page` supplies
+   * `main`, and a tree holds one. Turn it on when the children are not a `Page`.
+   */
+  isMainLandmark?: boolean
   className?: string
 }
 
@@ -50,7 +55,7 @@ function ContentPlaceholder() {
  * </AppShell>
  */
 export function AppShell({
-  brand = 'voltras',
+  brand,
   subtitle,
   topBarTrailing,
   topBar,
@@ -60,9 +65,10 @@ export function AppShell({
   onNavigate,
   nav,
   children,
+  isMainLandmark = false,
   className,
 }: AppShellProps) {
-  const { accentClassName, accentBarClassName } = brandPresets[brand]
+  const { accentClassName, accentBarClassName } = resolveBrand(brand)
 
   return (
     // Column: the TopBar spans the FULL width across the top, and the SideNav sits BELOW it
@@ -83,7 +89,9 @@ export function AppShell({
             onNavigate={onNavigate}
           />
         )}
-        <View className="flex-1">{children ?? <ContentPlaceholder />}</View>
+        <View role={isMainLandmark ? 'main' : undefined} className="flex-1">
+          {children ?? <ContentPlaceholder />}
+        </View>
       </View>
     </Surface>
   )

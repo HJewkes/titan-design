@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { emptyDraft, type ReviewDraft } from '../src/feedback.ts'
-import { AnnotationSchema, VerdictSchema, type Manifest } from '../src/schema.ts'
+import { AnnotationSchema, VerdictSchema, type Manifest } from '@titan-design/review-schema'
 
 /** The slice of `Storage` the draft needs, so tests and private windows can pass their own. */
 export type DraftStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>
@@ -21,6 +21,7 @@ const DraftSchema = z.object({
     z.string(),
     z.object({
       pick: z.string().optional(),
+      revision: z.boolean().optional(),
       picks: z.array(z.string()).optional(),
       value: z.number().optional(),
       text: z.string().optional(),

@@ -29,29 +29,20 @@
  * baked into the rule.
  */
 
-const path = require('node:path')
+const { loadBaseline, baselineKey } = require('./ratchet')
+
+const { formatterExports } = require('./fix-options')
 
 const FORMAT_NAME = /^format[A-Z]/
 
-let baselineCache = null
-function loadBaseline() {
-  if (baselineCache) return baselineCache
-  try {
-    baselineCache = require('./no-local-formatter-baseline.json')
-  } catch {
-    baselineCache = {}
-  }
-  return baselineCache
-}
-
-/** Baseline keys are package-relative POSIX paths, so they're stable across machines. */
-function baselineKey(context) {
-  const cwd = context.getCwd?.() ?? process.cwd()
-  return path
-    .relative(cwd, context.filename ?? context.getFilename())
-    .split(path.sep)
-    .join('/')
-}
+const FORMATTER_MODULE_LIST = Object.keys(formatterExports)
+  .map((mod) => `\`${mod}\``)
+  .join(', ')
+const FORMATTER_EXPORT_LIST = Object.values(formatterExports)
+  .flat()
+  .map((name) => `\`${name}()\``)
+  .join(', ')
+const SHARED_OPTIONS = `Call an existing export of ${FORMATTER_MODULE_LIST}: ${FORMATTER_EXPORT_LIST}.`
 
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
@@ -63,10 +54,8 @@ module.exports = {
     },
     schema: [],
     messages: {
-      toFixed:
-        "Raw '.toFixed({{arg}})' outside the shared formatter module. Add or reuse a formatter in utils/workout-format.ts or utils/number-format.ts so rounding rules live in one place.",
-      formatFn:
-        "Local formatter '{{name}}' duplicates the shared formatter module. Move it to utils/workout-format.ts or utils/number-format.ts (or call an existing export) so formatting rules don't drift.",
+      toFixed: `Raw '.toFixed({{arg}})' outside the shared formatter module. ${SHARED_OPTIONS} If none fits, add one to the module so rounding rules live in one place.`,
+      formatFn: `Local formatter '{{name}}' duplicates the shared formatter module. ${SHARED_OPTIONS} If none fits, move it into the module so formatting rules don't drift.`,
     },
   },
 
@@ -76,7 +65,9 @@ module.exports = {
     // Remaining allowance per VALUE (toFixed argument text, or function name),
     // not a plain count — same reasoning as no-raw-color and
     // no-upward-tier-import: the message lands on the thing you just added.
-    const remaining = new Map(Object.entries(loadBaseline()[key] ?? {}))
+    const remaining = new Map(
+      Object.entries(loadBaseline('no-local-formatter-baseline.json')[key] ?? {})
+    )
 
     function checkValue(value, loc, messageId, data) {
       const left = remaining.get(value) ?? 0

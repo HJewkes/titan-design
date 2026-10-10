@@ -85,6 +85,21 @@ describe('Table', () => {
       expect(screen.queryByText('Hidden content')).not.toBeInTheDocument()
     })
 
+    it('keeps skeleton widths equal across renders', () => {
+      const widthsOf = (container: HTMLElement) =>
+        Array.from(container.querySelectorAll<HTMLElement>('[aria-hidden="true"]')).map(
+          (bar) => bar.style.width
+        )
+      const first = render(<Table isLoading loadingRowCount={3} />)
+      const firstWidths = widthsOf(first.container)
+      first.unmount()
+      const second = render(<Table isLoading loadingRowCount={3} />)
+
+      expect(firstWidths.length).toBeGreaterThan(0)
+      expect(firstWidths.every(Boolean)).toBe(true)
+      expect(widthsOf(second.container)).toEqual(firstWidths)
+    })
+
     it('respects loadingRowCount', () => {
       render(<Table isLoading loadingRowCount={3} />)
       // Should render without errors
@@ -255,6 +270,41 @@ describe('Table', () => {
 
       const checkbox = screen.getByRole('checkbox')
       expect(checkbox).toBeInTheDocument()
+    })
+
+    it.each([
+      [new Set(['1']), 'true'],
+      [new Set<string>(), 'false'],
+    ])('row checkbox with selection %o has aria-checked=%s', (selectedRows, expected) => {
+      render(
+        <Table selectable selectedRows={selectedRows}>
+          <TableBody>
+            <TableRow>
+              <TableSelectCell rowId="1" />
+            </TableRow>
+          </TableBody>
+        </Table>
+      )
+
+      expect(screen.getByRole('checkbox')).toHaveAttribute('aria-checked', expected)
+    })
+
+    it.each([
+      [new Set(['1', '2']), 'true'],
+      [new Set(['1']), 'mixed'],
+      [new Set<string>(), 'false'],
+    ])('select-all checkbox with selection %o has aria-checked=%s', (selectedRows, expected) => {
+      render(
+        <Table selectable selectedRows={selectedRows} rowIds={['1', '2']}>
+          <TableHeader>
+            <TableRow>
+              <TableSelectAllCell />
+            </TableRow>
+          </TableHeader>
+        </Table>
+      )
+
+      expect(screen.getByRole('checkbox')).toHaveAttribute('aria-checked', expected)
     })
   })
 

@@ -10,7 +10,7 @@ import {
   REP_SET_LAGGING,
   FATIGUE_SET,
   FATIGUE_SET_LAGGING,
-} from './velocity-story-kit'
+} from '../../../lab/velocity-story-kit/velocity-story-kit'
 
 /**
  * `compact` — the flat resting strip. SetBarChart in flat mode: uniform short
@@ -28,7 +28,7 @@ const meta: Meta<typeof VelocityStrip> = {
   parameters: {
     docs: { description: { component: 'Composes **SetBarChart** · **ChartSideRail**.' } },
   },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
 }
 export default meta
 type Story = StoryObj<typeof VelocityStrip>

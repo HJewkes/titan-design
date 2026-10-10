@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View, Text } from 'react-native'
+import { Text } from 'react-native'
 import { Surface } from '../ui/surface'
 import { Pill } from '../ui/pill'
 import { Typography } from '../ui/typography'
+import { Page, PageHeader } from '../ui/page'
 import { BotIcon, BrainIcon, HeadphonesIcon, LayersIcon, StarIcon } from '../icons'
 import { AppShell } from './AppShell'
 import { brandKeys } from './brands'
@@ -19,16 +20,16 @@ const audiobookNav: SideNavItem[] = [
   { key: 'saved', label: 'Saved', icon: <StarIcon size={20} color="currentColor" /> },
 ]
 
-function Page({ title }: { title: string }) {
+function Content({ title }: { title: string }) {
   return (
-    <View className="flex-1 gap-1.5 p-7">
-      <Typography variant="h4" color="primary">
-        {title}
-      </Typography>
-      <Typography variant="body2" color="tertiary">
-        A page mounts its content here; the shell keeps the nav + top-bar chrome persistent.
-      </Typography>
-    </View>
+    <Page
+      header={
+        <PageHeader
+          title={title}
+          description="A page mounts its content here; the shell keeps the nav + top-bar chrome persistent."
+        />
+      }
+    />
   )
 }
 
@@ -97,7 +98,7 @@ export const BrainApp: Story = {
   },
   render: (args) => (
     <AppShell {...args}>
-      <Page title="Graph" />
+      <Content title="Graph" />
     </AppShell>
   ),
 }
@@ -117,14 +118,14 @@ export const AudiobookApp: Story = {
   },
   render: (args) => (
     <AppShell {...args}>
-      <Page title="Library" />
+      <Content title="Library" />
     </AppShell>
   ),
 }
 
 /** Both slots replaced: the app brings its own bar and its own rail. */
 export const ReplacedRegions: Story = {
-  args: { navItems: brainNav, activeKey: 'notes' },
+  args: { brand: 'voltras', navItems: brainNav, activeKey: 'notes' },
   render: (args) => (
     <AppShell
       {...args}
@@ -144,7 +145,7 @@ export const ReplacedRegions: Story = {
         </Surface>
       }
     >
-      <Page title="Anything" />
+      <Content title="Anything" />
     </AppShell>
   ),
 }

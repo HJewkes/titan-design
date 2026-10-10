@@ -5,7 +5,7 @@ import { LiveFatiguePanel } from './LiveFatiguePanel'
 import { Surface } from '../../ui/surface'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { buildMockPanelState } from './fatigue-mock'
-import { resolveAll, siblingSource, spacingClassesIn } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 import { PANEL_BREAKPOINTS, CARD_WIDTH_BASE, panelLayout } from './panel-layout'
 
 const { model, velocity } = buildMockPanelState(3)
@@ -127,6 +127,18 @@ describe('LiveFatiguePanel responsiveness (TD-03.58)', () => {
     expect(screen.getByTestId('live-fatigue-card')).toHaveStyle({ width: '280px' })
   })
 
+  // TD-545: the prop doc says a pinned width is ignored once the panel stacks.
+  it('ignores a pinned cardWidth when stacked and fills the content width', () => {
+    const width = 720
+    render(
+      <LiveFatiguePanel model={model} velocity={velocity} containerWidth={width} cardWidth={280} />
+    )
+    const { padding } = panelLayout(width)
+    expect(screen.getByTestId('live-fatigue-card')).toHaveStyle({
+      width: `${width - padding * 2}px`,
+    })
+  })
+
   // TD-03.60 through the rendered tree, not just the pure split.
   it('moves the rendered card height when bodyHeight changes', () => {
     const { rerender } = render(
@@ -148,15 +160,23 @@ describe('LiveFatiguePanel responsiveness (TD-03.58)', () => {
  * place in the repo where spacing is a function of viewport.
  */
 describe('LiveFatiguePanel geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'LiveFatiguePanel.tsx')
-
   it('spaces the eyebrow from the plot by gap-stack-md', () => {
-    expect(spacingClassesIn(source, 'LiveFatiguePanel')).toEqual(['gap-stack-md'])
+    render(<LiveFatiguePanel model={model} velocity={velocity} />)
+    expect(spacingClassesAt(screen.getByTestId('live-fatigue-eyebrow').parentElement)).toEqual([
+      'gap-stack-md',
+    ])
     expect(resolveAll(['gap-stack-md'])).toEqual(['8px'])
   })
 
-  it('keeps the body inset responsive rather than fixed', () => {
-    expect(source).toContain('padding: layout.padding')
-    expect(source).toContain('gap: layout.gap')
-  })
+  it.each([PANEL_BREAKPOINTS.md - 1, 1440])(
+    'keeps the body inset responsive rather than fixed at %ipx',
+    (width) => {
+      render(<LiveFatiguePanel model={model} velocity={velocity} containerWidth={width} />)
+      const { padding, gap } = panelLayout(width)
+      expect(screen.getByTestId('live-fatigue-body')).toHaveStyle({
+        padding: `${padding}px ${padding}px ${padding}px ${padding}px`,
+        gap: `${gap}px`,
+      })
+    }
+  )
 })

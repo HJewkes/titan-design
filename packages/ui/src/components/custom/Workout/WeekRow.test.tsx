@@ -1,10 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import {
-  siblingSource,
-  spacingClassesIn,
-  spacingClassesOn,
-  resolveAll,
-} from '../../../test/spacing-resolver'
+import { spacingClassesOf, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { WeekRow } from './WeekRow'
@@ -124,7 +119,7 @@ describe('WeekRow', () => {
     it('invokes onPress for a pressable workout', () => {
       const onPress = vi.fn()
       render(<WeekRow {...baseProps} workouts={[{ name: 'Upper', status: 'current', onPress }]} />)
-      fireEvent.click(screen.getByTestId('workout-pill-pressable'))
+      fireEvent.click(screen.getByRole('button', { name: 'Upper workout, current' }))
       expect(onPress).toHaveBeenCalledOnce()
     })
   })
@@ -157,16 +152,18 @@ describe('WeekRow', () => {
  * scale carries them; the row inset and the two cluster gaps do.
  */
 describe('WeekRow geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'WeekRow.tsx')
-
   it('keeps the row inset and its column gap', () => {
-    const classes = spacingClassesIn(source, 'WeekRow')
+    render(<WeekRow {...baseProps} />)
+    const classes = spacingClassesOf('week-row')
     expect(classes).toEqual(['px-inset-md', 'py-2.5', 'gap-inline-lg'])
     expect(resolveAll(classes)).toEqual(['12px', '10px', '12px'])
   })
 
   it('keeps the week-number and pill clusters', () => {
-    expect(resolveAll(spacingClassesOn(source, 'week-row-number'))).toEqual(['4px'])
-    expect(resolveAll(spacingClassesOn(source, 'week-row-pills'))).toEqual(['6px'])
+    render(<WeekRow {...baseProps} />)
+    expect(spacingClassesOf('week-row-number')).toEqual(['gap-inline-sm'])
+    expect(resolveAll(spacingClassesOf('week-row-number'))).toEqual(['4px'])
+    expect(spacingClassesOf('week-row-pills')).toEqual(['gap-1.5'])
+    expect(resolveAll(spacingClassesOf('week-row-pills'))).toEqual(['6px'])
   })
 })

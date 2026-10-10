@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Pressable } from 'react-native'
-import { VelocityStrip, DualVelocityStrip } from './VelocityStrip'
+import { VelocityStrip } from './VelocityStrip'
+import { DualVelocityStrip } from './DualVelocityStrip'
 import {
   Sheet,
   Note,
@@ -15,7 +16,7 @@ import {
   FATIGUE_SET_LAGGING,
   IN_PROGRESS_SET,
   IN_PROGRESS_LAGGING,
-} from './velocity-story-kit'
+} from '../../../lab/velocity-story-kit/velocity-story-kit'
 
 /**
  * `expanded` — the velocity-HEIGHT bar chart. Bars are scaled to their value,
@@ -37,7 +38,7 @@ const meta: Meta<typeof VelocityStrip> = {
   parameters: {
     docs: { description: { component: 'Composes **SetBarChart** · **ChartSideRail**.' } },
   },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
 }
 export default meta
 type Story = StoryObj<typeof VelocityStrip>

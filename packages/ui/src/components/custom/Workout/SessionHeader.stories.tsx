@@ -14,7 +14,7 @@ import { SessionHeader, type SessionHeaderPlanEntry } from './SessionHeader'
 const meta: Meta<typeof SessionHeader> = {
   title: 'Shell/SessionRail/SessionHeader',
   component: SessionHeader,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {

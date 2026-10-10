@@ -9,7 +9,7 @@ import {
   CardTitle,
   CardDescription,
   CardInset,
-} from '../../components/ui/card/Card'
+} from '../../components/ui/card'
 import { getSemanticColors, type ThemeMode } from '../../theme/tokens/semantic'
 import { surfaceBackground } from '../../theme/surface-planes'
 import { liftStyle, LIFT_RIM_ALPHA, type LiftStep } from '../../theme/lift'

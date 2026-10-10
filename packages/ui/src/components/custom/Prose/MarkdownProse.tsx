@@ -3,13 +3,19 @@ import { useMemo, type ReactNode } from 'react'
 import { Text, View } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Typography } from '../../ui/typography'
+import { isFenceOpen, readFence, readTable } from './proseFenceTable'
+import { CodeBlock, ProseTable } from './ProseBlocks'
+import type { ProseBlock, ProseBlockType } from './proseTypes'
 
 /** How a linked reference reads: brand for the domain's own ids, link for cross-references, muted for asides. */
 export type ProseLinkTone = 'brand' | 'link' | 'muted'
 
 /**
- * A pattern the prose auto-links. Patterns must not carry the `g` flag or
- * capture groups: the renderer combines them into one tokenizer.
+ * A pattern the prose auto-links. Patterns must not carry flags (`g`, `i`, `u`,
+ * …) or capture groups: the renderer combines every pattern's source into one
+ * tokenizer, so flags cannot be kept per linker. A flagged pattern is matched
+ * as if it had none, and warns once in development. Spell case-insensitivity
+ * out in the pattern, e.g. `/[Tt][Dd]-\d+/`.
  */
 export interface ProseLinker {
   /** Stable id, used in keys and test ids. */
@@ -22,15 +28,10 @@ export interface ProseLinker {
   onPress?: (ref: string) => void
 }
 
-export type ProseBlockType = 'h1' | 'h2' | 'h3' | 'li' | 'p'
-
-export interface ProseBlock {
-  type: ProseBlockType
-  text: string
-}
+export type { ProseBlock, ProseBlockType } from './proseTypes'
 
 export interface MarkdownProseProps {
-  /** Markdown source. Headings, bullet lists, paragraphs, bold and code are understood. */
+  /** Markdown source. Headings, bullet lists, paragraphs, bold, code, fenced code blocks and pipe tables are understood. */
   body: string
   /** Reference patterns to auto-link, tried in order. */
   linkers?: ProseLinker[]
@@ -58,10 +59,33 @@ export function parseProseBlocks(body: string): ProseBlock[] {
     if (paragraph.length) blocks.push({ type: 'p', text: paragraph.join(' ') })
     paragraph = []
   }
-  for (const raw of body.split('\n')) {
+  const lines = body.split('\n')
+  for (let i = 0; i < lines.length; i++) {
+    const raw = lines[i]!
     const line = raw.trim()
     if (!line) {
       flush()
+      continue
+    }
+    if (isFenceOpen(raw)) {
+      flush()
+      const fence = readFence(lines, i)
+      blocks.push({ type: 'code', text: fence.code, lang: fence.lang })
+      i = fence.next - 1
+      continue
+    }
+    const table = readTable(lines, i)
+    if (table) {
+      flush()
+      const { header, align, rows } = table
+      blocks.push({
+        type: 'table',
+        text: [...header, ...rows.flat()].join(' '),
+        header,
+        align,
+        rows,
+      })
+      i = table.next - 1
       continue
     }
     const heading = line.match(/^(#{1,6})\s+(.*)/)
@@ -104,8 +128,24 @@ function anchored(pattern: RegExp): RegExp {
   return new RegExp(`^(?:${pattern.source})$`)
 }
 
+// Bundlers replace `process.env.NODE_ENV` literally; the DTS build has no Node types.
+declare const process: { env: { NODE_ENV?: string } }
+const warned = new Set<string>()
+
+/** Warn once per linker in development; the tokenizer is rebuilt on every render. */
+function warnDroppedFlags(linker: ProseLinker) {
+  if (typeof process === 'undefined' || process.env.NODE_ENV === 'production') return
+  const key = `${linker.id}/${linker.pattern.flags}`
+  if (warned.has(key)) return
+  warned.add(key)
+  console.warn(
+    `titan: MarkdownProse linker "${linker.id}" has flags "${linker.pattern.flags}", which the combined tokenizer drops. Write the pattern without flags.`
+  )
+}
+
 /** One tokenizer for bold, code and every linker, so a span is classified exactly once. */
 function buildTokenizer(linkers: ProseLinker[]): RegExp {
+  linkers.filter((l) => l.pattern.flags).forEach(warnDroppedFlags)
   const parts = [BOLD.source, CODE.source, ...linkers.map((l) => l.pattern.source)]
   return new RegExp(`(${parts.join('|')})`, 'g')
 }
@@ -159,6 +199,8 @@ interface BlockProps {
 
 function Block({ block, inline, size }: BlockProps) {
   const body = BODY_TEXT[size]
+  if (block.type === 'code') return <CodeBlock code={block.text} lang={block.lang ?? ''} />
+  if (block.type === 'table') return <ProseTable block={block} inline={inline} />
   if (block.type === 'h1' || block.type === 'h2') {
     return (
       <Typography variant={block.type === 'h1' ? 'h5' : 'h6'} className="mt-1.5 text-text-primary">
@@ -195,9 +237,9 @@ function Block({ block, inline, size }: BlockProps) {
  * and auto-links references the caller describes.
  *
  * It is deliberately not a full markdown engine: headings, bullet lists,
- * paragraphs, bold and code cover the notes, briefs and session logs this
+ * paragraphs, bold, code, fenced code blocks and pipe tables cover the notes, briefs and session logs this
  * system reads, and anything richer would need a design pass of its own.
- * Composes {@link Typography}. Used by `SessionDetail` (session logs) and the
+ * Composes {@link Typography} and, for tables, `Table`. Used by `SessionDetail` (session logs) and the
  * initiative reader (brief and handoff prose).
  */
 export function MarkdownProse({

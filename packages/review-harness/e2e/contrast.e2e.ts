@@ -7,7 +7,8 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { expect, test } from '@playwright/test'
 import type { ContrastReport } from '../src/contrast-gate.ts'
-import { MANIFEST_SCHEMA_ID, type ManifestInput } from '../src/schema.ts'
+import { MANIFEST_SCHEMA_ID, type ManifestInput } from '@titan-design/review-schema'
+import { SECTION_TEXTS } from '../test/fixtures.ts'
 
 const CLI = new URL('../src/cli.ts', import.meta.url).pathname
 const STORY = 'fixture-contrast--default'
@@ -59,7 +60,14 @@ function draft(storybookUrl: string, contrast?: ManifestInput['contrast']): Mani
     variants: [{ key: 'A', storyId: STORY, label: 'Muted text and a rule' }],
     questions: [],
     sections: [
-      { id: 's1', title: 'Contrast', variantKeys: ['A'], ...(contrast ? { contrast } : {}) },
+      {
+        id: 's1',
+        title: 'Contrast',
+        ...SECTION_TEXTS,
+        kind: 'STATES',
+        variantKeys: ['A'],
+        ...(contrast ? { contrast } : {}),
+      },
     ],
   }
 }

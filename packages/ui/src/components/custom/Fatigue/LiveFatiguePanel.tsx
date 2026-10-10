@@ -115,7 +115,7 @@ export function LiveFatiguePanel({
           {/* SECONDARY — the vertical fatigue card. Stacked, it fills the content width. */}
           <LiveFatigueCard
             model={model}
-            width={cardWidth ?? layout.cardWidth}
+            width={layout.stacked ? layout.cardWidth : (cardWidth ?? layout.cardWidth)}
             height={cardHeight}
           />
         </View>

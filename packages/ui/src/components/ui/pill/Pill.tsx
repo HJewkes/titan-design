@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 
-export type PillVariant = 'solid' | 'subtle' | 'outline'
+export type PillVariant = 'solid' | 'subtle' | 'outline' | 'clear'
 /** Semantic tone. `brand-secondary` is the accent, not a second brand. */
 export type PillTone =
   | 'neutral'
@@ -34,7 +34,7 @@ export type PillSize = PillSizeLevel | DeprecatedPillSize
 export interface PillProps extends ViewProps {
   /** Pill content */
   children?: React.ReactNode
-  /** Visual variant */
+  /** Visual variant. `clear` has no fill and no border: label and dot only. */
   variant?: PillVariant
   /** Semantic tone */
   tone?: PillTone
@@ -81,7 +81,7 @@ const toneStyles: Record<PillVariant, Record<PillTone, string>> = {
   // tuned for borders and text, and `brand-secondary` / `status-error` are dark enough
   // there that no label reads on them (AW-141). Every solid tone now clears AA.
   solid: {
-    neutral: 'bg-hairline-strong border-transparent text-text-inverse',
+    neutral: 'bg-text-primary border-transparent text-text-inverse',
     brand: 'bg-brand-primary-solid border-transparent text-on-brand-primary',
     'brand-secondary': 'bg-brand-secondary-solid border-transparent text-on-brand-secondary',
     success: 'bg-status-success-solid border-transparent text-on-status-success',
@@ -97,7 +97,7 @@ const toneStyles: Record<PillVariant, Record<PillTone, string>> = {
     // Label comes from `on-*-subtle`, not the base tone token: the base is tuned to
     // carry a white label as a solid fill, which left error and accent unreadable
     // here (AW-133). The on-subtle tokens level the family at one weight.
-    neutral: 'bg-hairline-subtle border-transparent text-text-secondary',
+    neutral: 'bg-hairline-subtle border-transparent text-text-primary',
     brand: 'bg-brand-primary-subtle border-transparent text-on-brand-primary-subtle',
     'brand-secondary':
       'bg-brand-secondary-subtle border-transparent text-on-brand-secondary-subtle',
@@ -107,13 +107,24 @@ const toneStyles: Record<PillVariant, Record<PillTone, string>> = {
     info: 'bg-status-info-subtle border-transparent text-on-status-info-subtle',
   },
   outline: {
-    neutral: 'border-hairline text-text-secondary',
-    brand: 'border-brand-primary text-brand-primary',
-    'brand-secondary': 'border-brand-secondary text-brand-secondary',
-    success: 'border-status-success text-status-success',
-    warning: 'border-status-warning text-status-warning',
-    error: 'border-status-error text-status-error',
-    info: 'border-status-info text-status-info',
+    neutral: 'border-hairline-strong text-text-secondary',
+    brand: 'border-brand-primary text-text-brand',
+    'brand-secondary': 'border-brand-secondary text-text-brand-secondary',
+    success: 'border-status-success text-text-success',
+    warning: 'border-status-warning text-text-warning',
+    error: 'border-status-error text-text-error',
+    info: 'border-status-info text-text-info',
+  },
+  // No fill and no ring, so the label is read against the plane the pill sits on. The
+  // transparent border keeps the capsule's box the size of the other variants.
+  clear: {
+    neutral: 'border-transparent text-text-primary',
+    brand: 'border-transparent text-brand-primary',
+    'brand-secondary': 'border-transparent text-brand-secondary',
+    success: 'border-transparent text-status-success',
+    warning: 'border-transparent text-status-warning',
+    error: 'border-transparent text-status-error',
+    info: 'border-transparent text-status-info',
   },
 }
 

@@ -23,6 +23,13 @@ export interface ChipProps extends ViewProps {
   size?: ChipSize
   /** Left element (icon, avatar) */
   leftElement?: React.ReactNode
+  /** Right element (count, icon). Renders before the delete button. */
+  rightElement?: React.ReactNode
+  /**
+   * Pressed state of a toggle chip. Needs `onPress`; leave undefined for a plain chip.
+   * Selected paints the `solid` face; unselected never does, so `variant="solid"` falls back to `subtle`.
+   */
+  isSelected?: boolean
   /** Whether the chip is dismissible */
   onDelete?: () => void
   /** Whether the chip is clickable */
@@ -70,10 +77,12 @@ function DeleteButton({
   onDelete,
   isDisabled,
   className,
+  label,
 }: {
   onDelete: () => void
   isDisabled: boolean
   className: string
+  label: string
 }) {
   return (
     <Pressable
@@ -82,7 +91,7 @@ function DeleteButton({
         onDelete()
       }}
       accessibilityRole="button"
-      accessibilityLabel="Remove"
+      accessibilityLabel={label}
       disabled={isDisabled}
       className={cn(
         className,
@@ -108,6 +117,8 @@ export function Chip({
   color = 'default',
   size = 'md',
   leftElement,
+  rightElement,
+  isSelected,
   onDelete,
   onPress,
   isDisabled = false,
@@ -119,24 +130,25 @@ export function Chip({
 
   return (
     <Pill
-      variant={variant as PillVariant}
+      variant={chipFace(variant, isSelected)}
       tone={colorToTone[color]}
       rounded={false}
       onPress={onPress}
       isDisabled={isDisabled}
       leading={leftElement && <View className="mr-1.5">{leftElement}</View>}
       trailing={
-        onDelete && (
-          <DeleteButton
-            onDelete={onDelete}
-            isDisabled={isDisabled}
-            className={sizes.deleteButton}
-          />
-        )
+        <ChipTrailing
+          rightElement={rightElement}
+          onDelete={onDelete}
+          isDisabled={isDisabled}
+          deleteClassName={sizes.deleteButton}
+          deleteLabel={removeLabel(children)}
+        />
       }
+      {...toggleProps(Boolean(onPress), isSelected, isDisabled)}
       className={cn(
         'self-auto gap-0',
-        variant === 'outline' ? 'border' : 'border-0',
+        variant === 'outline' || isSelected !== undefined ? 'border' : 'border-0',
         sizes.container,
         onPress && 'web:cursor-pointer web:hover:opacity-80 active:opacity-70',
         isDisabled && 'cursor-not-allowed',
@@ -147,5 +159,56 @@ export function Chip({
     >
       {children}
     </Pill>
+  )
+}
+
+// Solid is the selected cue, so an unselected toggle painting it would show no state change.
+function chipFace(variant: ChipVariant, isSelected: boolean | undefined): PillVariant {
+  if (isSelected) return 'solid'
+  if (isSelected === false && variant === 'solid') return 'subtle'
+  return variant
+}
+
+// A plain or non-pressable chip gets no aria-pressed: the attribute would announce it as a toggle, or fail axe on a View.
+function toggleProps(isPressable: boolean, isSelected: boolean | undefined, isDisabled: boolean) {
+  if (!isPressable || isSelected === undefined) return {}
+  return {
+    accessibilityState: { selected: isSelected, disabled: isDisabled },
+    'aria-pressed': isSelected,
+  }
+}
+
+// Several dismissible chips side by side need distinct names, so the label joins the chip's text when it has one.
+function removeLabel(children: React.ReactNode): string {
+  return typeof children === 'string' || typeof children === 'number'
+    ? `Remove ${children}`
+    : 'Remove'
+}
+
+function ChipTrailing({
+  rightElement,
+  onDelete,
+  isDisabled,
+  deleteClassName,
+  deleteLabel,
+}: {
+  rightElement: React.ReactNode
+  onDelete: (() => void) | undefined
+  isDisabled: boolean
+  deleteClassName: string
+  deleteLabel: string
+}) {
+  return (
+    <>
+      {rightElement && <View className="ml-1.5">{rightElement}</View>}
+      {onDelete && (
+        <DeleteButton
+          onDelete={onDelete}
+          isDisabled={isDisabled}
+          className={deleteClassName}
+          label={deleteLabel}
+        />
+      )}
+    </>
   )
 }
