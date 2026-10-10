@@ -9,6 +9,10 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Optional `touches` on every question kind (`QuestionTouchesSchema`, type `QuestionTouches`):
+  `{ tokens: [{ name, mode? }], components?: string[], axis? }`, what a question with no PR diff
+  would decide. `build --locks` in review-harness reads it as the question's plan for
+  `lockConflicts`; a question on a PR page needs none.
 - Optional `implemented` on pick-one (an option) and pick-many (a list of options): what the PR
   implements at its head. Every entry must be one of the question's options and not its
   `revisionOption`.
@@ -17,6 +21,40 @@ project adheres to [Semantic Versioning](https://semver.org/).
   option. An unanswered question does not block. Exports `PrGroupShipStatus` and `ShipBlocker`.
 - `lintRound` rule `missing-implemented-option`: an `iterate` or `decide` pick question declares
   `implemented`.
+- `titan-locks/1` (`LOCKS_SCHEMA_ID`, `LocksSchema`, `parseLocks`): a registry of decision locks.
+  Each lock (`L-NNNN`) is keyed on its `decision` (ledger row, decisions item, round, question
+  id), has zero or more `holders` (a PR at a head), declares `touches` (tokens per mode,
+  components, axis) when it has no holder, and orders itself with `after`. Top-level
+  `dependents` name the lock they wait on with `mode` `stack-on` or `defer` and a `reason`. The
+  schema refuses an unknown lock id in `after` or `dependents`, an `after` cycle, a repeated lock
+  id and a decision row keyed by two locks, naming the ids. Exports `afterCycles`,
+  `locksProblems`, `LOCK_AXES`, `LOCK_STATUSES` and `DEPENDENT_MODES`.
+- Optional `stackedOn` on a `prGroups` entry (`{ repo, pr, headSha }`): the base that one PR
+  group renders on, so groups in one round can sit on different bases. The round-level
+  `stackedOn` keeps its meaning. The schema refuses a group stacked on itself, directly or
+  through other groups. Exports `stackBase`.
+- `shipBlocks` kind `holder-not-shipped`: a group stacked on another group of the same round (its
+  holder) is blocked while the holder's Ship is answered Don't ship or asks for a revision, with a
+  message naming the holder. An unanswered or shipped holder does not block. Such a group's
+  status carries `shipsAfter`, the holder's `owner/name#n`.
+- `lockConflicts(registry, plan)`: a pure check of a planned round or dispatch against the lock
+  registry (`locksProblems` checks the registry itself). The plan lists items (`pr`, `head`, the
+  `base` commit they render on, touched tokens per mode), questions with touched tokens, recorded
+  Ships, and a `contains(commit, ancestor)` predicate the caller answers. It returns
+  `{ kind, lock, ids, tokens, message }[]` of kind `superseded-state` (an item
+  overlapping an open lock's tokens on a base without the holder head), `lock-order`
+  (any open lock an item holds comes `after` an open lock no item up to it holds), `re-ask` (a
+  question touching a decided lock's tokens) and
+  `stale-ship` (at most one per PR: its last Ship is not at its planned item's head or, for a PR the
+  plan does not hold, at its prior Ship's head; `ids` names every lock the PR holds). Every check
+  reads one per-PR view: all the non-released locks a PR holds and its Ship history. Exports
+  `LOCK_CONFLICT_KINDS` and the `LockPlan`, `PlannedItem`, `PlannedQuestion`, `RecordedShip`,
+  `ModeToken` and `LockConflict` types.
+- `lockSurface(lock)`, `tokensMatch(a, b)`, `lockedTokens(tokens, lock)`, `tokenKey`, `globRegExp`
+  and the `ModeToken` (`mode` optional, meaning both modes) and `LockSurface` types: the one reading
+  of what a lock covers. A locked token name may be a family (`*-subtle`,
+  `tint-{hue}-solid / on-tint-{hue}`). `lockConflicts` matches through them, and
+  `@titan-design/review-harness` now imports them instead of keeping its own copy.
 
 ## [0.3.0]
 
