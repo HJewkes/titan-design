@@ -68,7 +68,7 @@ describe('the Ship bar (owner item 166)', () => {
   it('enables Ship with a question still unanswered, and says it does not block', () => {
     const bar = region(render(enabled), 'data-testid="ship-bar"', '</aside>')
     expect(bar).toContain('Ship enabled.')
-    expect(bar).toContain('1 question(s) still open, which do not block.')
+    expect(bar).toContain('1 question is still open, which never blocks Ship.')
     expect(bar).not.toMatch(/data-testid="ship-bar-Ship"[^>]*disabled/)
   })
 
@@ -114,7 +114,7 @@ describe('the tab badges', () => {
     const status = draftShipBlocks(manifest, blocked.draft).find((g) => g.pr === group.pr)
     expect(tabBadges(manifest, group, status)).toEqual({ open: 0, changes: 1, frames: 3 })
     const tabs = region(render(blocked), 'role="tablist"', 'role="tabpanel"')
-    expect(tabs).toContain('aria-label="1 changes"')
+    expect(tabs).toContain('aria-label="1 change"')
     expect(tabs).toContain('aria-label="3 frames"')
   })
 })

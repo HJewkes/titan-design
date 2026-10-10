@@ -37,6 +37,7 @@ interface PrPageProps {
 
 const short = (sha: string) => sha.slice(0, 7)
 const noop = () => undefined
+const counted = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`
 
 function PrHeader({ group }: { group: PrGroup }) {
   return (
@@ -53,11 +54,19 @@ function PrHeader({ group }: { group: PrGroup }) {
   )
 }
 
-function Badge({ count, label, tone }: { count: number; label: string; tone: string }) {
+interface BadgeProps {
+  count: number
+  one: string
+  many: string
+  tone: string
+}
+
+function Badge({ count, one, many, tone }: BadgeProps) {
   if (count === 0) return null
+  const text = counted(count, one, many)
   return (
-    <span className={`tab-badge tab-badge-${tone}`} aria-label={`${count} ${label}`}>
-      {count} {label}
+    <span className={`tab-badge tab-badge-${tone}`} aria-label={text}>
+      {text}
     </span>
   )
 }
@@ -66,11 +75,13 @@ function badgesFor(tab: PrTab, badges: TabBadges): ReactNode {
   if (tab === 'review')
     return (
       <>
-        <Badge count={badges.open} label="open" tone="open" />
-        <Badge count={badges.changes} label="changes" tone="changes" />
+        <Badge count={badges.open} one="open" many="open" tone="open" />
+        <Badge count={badges.changes} one="change" many="changes" tone="changes" />
       </>
     )
-  return tab === 'diff' ? <Badge count={badges.frames} label="frames" tone="count" /> : null
+  return tab === 'diff' ? (
+    <Badge count={badges.frames} one="frame" many="frames" tone="count" />
+  ) : null
 }
 
 function TabList({
@@ -125,8 +136,13 @@ function ShipStatusText({
     return (
       <div className="ship-requests" data-testid="ship-requests">
         <p>
-          <strong>Ship withheld.</strong> {new Set(status.blockers.map((b) => b.questionId)).size}{' '}
-          open change request(s):
+          <strong>Ship withheld.</strong>{' '}
+          {counted(
+            new Set(status.blockers.map((b) => b.questionId)).size,
+            'open change request',
+            'open change requests'
+          )}
+          :
         </p>
         <ul>
           {status.blockers.map((b) => (
@@ -143,7 +159,9 @@ function ShipStatusText({
   return (
     <p className="ship-ready" data-testid="ship-ready">
       <strong>Ship enabled.</strong> Nothing on this PR requests a change
-      {open > 0 ? `; ${open} question(s) still open, which do not block.` : '.'}
+      {open === 0
+        ? '.'
+        : `; ${counted(open, 'question is', 'questions are')} still open, which never blocks Ship.`}
     </p>
   )
 }
