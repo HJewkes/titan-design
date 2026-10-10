@@ -93,9 +93,7 @@ function triggerClassName(state: TriggerStyleState) {
   return cn(
     'flex-row items-center justify-between rounded-md border',
     size ? sizeStyles[size].trigger : 'px-4 py-2.5',
-    // Light re-points the scrim: 0.30 black over white leaves text-secondary at 3.33:1,
-    // 0.10 keeps the placeholder above 4.5:1 on every light plane the field sits on.
-    variant === 'filled' ? 'bg-scrim-subtle [.light_&]:bg-scrim-press' : 'bg-surface-base',
+    variant === 'filled' ? 'bg-scrim-subtle' : 'bg-surface-base',
     triggerBorderClass(state),
     !isDisabled && !isInvalid && 'web:hover:border-border-input-hover',
     isOpen && 'border-border-input-focus',

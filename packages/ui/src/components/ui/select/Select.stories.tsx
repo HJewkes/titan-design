@@ -49,28 +49,7 @@ export default meta
 type Story = StoryObj<typeof Select>
 
 export const Default: Story = {
-  render: function Render() {
-    const [value, setValue] = useState<string | null>(null)
-    return (
-      <View style={{ width: 300 }}>
-        <Select
-          value={value}
-          onChange={setValue}
-          options={basicOptions}
-          placeholder="Select a fruit..."
-        />
-      </View>
-    )
-  },
-}
-
-export const Filled: Story = {
-  args: {
-    variant: 'filled',
-    size: 'md',
-    placeholder: 'Select a fruit...',
-    accessibilityLabel: 'Fruit',
-  },
+  args: { placeholder: 'Select a fruit...' },
   render: function Render(args) {
     const [value, setValue] = useState<string | null>(null)
     return (

@@ -28,11 +28,9 @@ describe('Select classes', () => {
     expect(classes).not.toContain('text-text-tertiary')
   })
 
-  it('re-points the filled scrim in light so the placeholder clears 4.5:1', () => {
+  it('puts the filled variant on the scrim in both modes', () => {
     render(<Select variant="filled" options={options} />)
-    const classes = classOf(screen.getByRole('combobox'))
-    expect(classes).toContain('bg-scrim-subtle')
-    expect(classes).toContain('[.light_&]:bg-scrim-press')
+    expect(classOf(screen.getByRole('combobox'))).toContain('bg-scrim-subtle')
   })
 
   it('keeps the default variant on the plain surface', () => {
