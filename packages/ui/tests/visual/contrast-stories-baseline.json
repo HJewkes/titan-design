@@ -69,15 +69,6 @@
     "#ffffff|#c27400": 1,
     "#ffffff|#ff7900": 1
   },
-  "components-atoms-section--full-example dark": {
-    "#888684|#252321": 1
-  },
-  "components-atoms-section--multiple-sections dark": {
-    "#888684|#252321": 2
-  },
-  "components-atoms-section--with-subtitle dark": {
-    "#888684|#252321": 1
-  },
   "components-atoms-stack--default light": {
     "#ffffff|#ff7900": 3
   },
@@ -188,9 +179,6 @@
   "components-molecules-autocomplete--with-error dark": {
     "#e05254|#252321": 1
   },
-  "components-molecules-autocomplete--with-label dark": {
-    "#888684|#252321": 1
-  },
   "components-molecules-button--all-colors light": {
     "#1c1916|#298732": 1,
     "#1c1916|#307b9b": 1,
@@ -226,9 +214,6 @@
   "components-molecules-emptystate--with-action light": {
     "#ffffff|#ff7900": 1
   },
-  "components-molecules-formfield--complete-form-example dark": {
-    "#888684|#252321": 2
-  },
   "components-molecules-formfield--complete-form-example light": {
     "#ff7900|#edeae7": 1
   },
@@ -238,15 +223,8 @@
   "components-molecules-formfield--disabled light": {
     "#808188|#f3f0ed": 1
   },
-  "components-molecules-formfield--form-section-example dark": {
-    "#888684|#252321": 1
-  },
-  "components-molecules-formfield--horizontal-layout dark": {
-    "#888684|#252321": 1
-  },
   "components-molecules-formfield--validation-states dark": {
     "#575553|#292725": 1,
-    "#888684|#252321": 1,
     "#e05254|#252321": 1
   },
   "components-molecules-formfield--validation-states light": {
@@ -254,9 +232,6 @@
   },
   "components-molecules-formfield--with-error dark": {
     "#e05254|#252321": 1
-  },
-  "components-molecules-formfield--with-helper-text dark": {
-    "#888684|#252321": 1
   },
   "components-molecules-input--disabled dark": {
     "#7a7775|#252321": 1
@@ -299,12 +274,6 @@
   },
   "components-molecules-popover--placement-top light": {
     "#ff7900|#edeae7": 1
-  },
-  "components-molecules-progress--steps dark": {
-    "#888684|#252321": 3
-  },
-  "components-molecules-progress--usage-examples dark": {
-    "#888684|#2c2a28": 1
   },
   "components-molecules-select--controlled dark": {
     "#e05254|#252321": 1
@@ -636,16 +605,16 @@
     "#888684|#31302f": 3
   },
   "custom-activework-initiativeheader--backburner dark": {
-    "#888684|#252321": 3
+    "#888684|#252321": 1
   },
   "custom-activework-initiativeheader--default dark": {
-    "#888684|#252321": 4
+    "#888684|#252321": 1
   },
   "custom-activework-initiativeheader--done dark": {
-    "#888684|#252321": 4
+    "#888684|#252321": 1
   },
   "custom-activework-initiativereader--default dark": {
-    "#888684|#252321": 4,
+    "#888684|#252321": 1,
     "#888684|#31302f": 14,
     "#ff7900|#4a3929": 3
   },
@@ -653,7 +622,7 @@
     "#ff7900|#ffffff": 7
   },
   "custom-activework-initiativereader--no-open-loops dark": {
-    "#888684|#252321": 4,
+    "#888684|#252321": 1,
     "#888684|#31302f": 6
   },
   "custom-activework-initiativereader--no-open-loops light": {
@@ -812,24 +781,15 @@
     "#ff7900|#edeae7": 8
   },
   "custom-chat-chatcard--checkin dark": {
-    "#888684|#31302f": 1,
     "#ff7900|#4a3929": 1
   },
   "custom-chat-chatcard--default dark": {
-    "#888684|#31302f": 1,
     "#ff7900|#4a3929": 1
   },
-  "custom-chat-chatcard--read-only dark": {
-    "#888684|#31302f": 1
-  },
   "custom-chat-coachpreset--phone dark": {
-    "#888684|#252321": 3,
-    "#888684|#31302f": 1,
     "#ff7900|#4a3929": 1
   },
   "custom-chat-coachpreset--wall-drawer dark": {
-    "#888684|#252321": 5,
-    "#888684|#31302f": 1,
     "#ff7900|#4a3929": 1
   },
   "custom-chat-composer--disabled dark": {
@@ -838,66 +798,20 @@
   "custom-chat-composer--disabled light": {
     "#9d9da2|#f9f6f3": 1
   },
-  "custom-chat-conversationidentity--default dark": {
-    "#888684|#252321": 1
-  },
   "custom-chat-messagelist--default dark": {
-    "#888684|#252321": 3,
-    "#888684|#31302f": 1,
     "#ff7900|#4a3929": 1
-  },
-  "custom-chat-messagelist--direct dark": {
-    "#888684|#252321": 3
-  },
-  "custom-chat-messagelist--endorsed dark": {
-    "#888684|#252321": 3
-  },
-  "custom-chat-messagelist--group dark": {
-    "#888684|#252321": 3
   },
   "custom-chat-messagelist--new-messages-while-scrolled-up dark": {
-    "#888684|#252321": 3,
-    "#888684|#31302f": 1,
     "#ff7900|#4a3929": 1
-  },
-  "custom-chat-messagelist--revealed-times dark": {
-    "#888684|#252321": 11
-  },
-  "custom-chat-messagelist--time-breaks dark": {
-    "#888684|#252321": 5
   },
   "custom-chat-messagelist--typing dark": {
-    "#888684|#252321": 2,
-    "#888684|#31302f": 1,
     "#ff7900|#4a3929": 1
-  },
-  "custom-chat-messagelist--windowed dark": {
-    "#888684|#252321": 3
-  },
-  "custom-chat-messagelist-dateseparator--older dark": {
-    "#888684|#252321": 1
-  },
-  "custom-chat-messagelist-dateseparator--today dark": {
-    "#888684|#252321": 1
-  },
-  "custom-chat-messagelist-dateseparator--yesterday dark": {
-    "#888684|#252321": 1
-  },
-  "custom-chat-messagelist-messagebubble--streaming dark": {
-    "#888684|#252321": 1
   },
   "custom-chat-messagelist-messagebubble--undeliverable dark": {
     "#e05254|#252321": 1
   },
   "custom-chat-messagelist-messagebubble--with-data-part dark": {
-    "#888684|#31302f": 1,
     "#ff7900|#4a3929": 1
-  },
-  "custom-chat-messagelist-typingindicator--default dark": {
-    "#888684|#252321": 1
-  },
-  "custom-chat-messagelist-typingindicator--two-typists dark": {
-    "#888684|#252321": 1
   },
   "custom-chat-messagelist-unreadbadge--capped light": {
     "#ffffff|#ff7900": 1
