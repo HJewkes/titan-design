@@ -689,6 +689,14 @@ export const TextAndBorderColors: StoryObj = {
         <ColorSwatch name="text-tertiary" value={semanticColorsDark['text-tertiary']} />
         <ColorSwatch name="text-disabled" value={semanticColorsDark['text-disabled']} />
         <ColorSwatch name="text-error" value={semanticColorsDark['text-error']} />
+        <ColorSwatch name="text-brand" value={semanticColorsDark['text-brand']} />
+        <ColorSwatch
+          name="text-brand-secondary"
+          value={semanticColorsDark['text-brand-secondary']}
+        />
+        <ColorSwatch name="text-success" value={semanticColorsDark['text-success']} />
+        <ColorSwatch name="text-warning" value={semanticColorsDark['text-warning']} />
+        <ColorSwatch name="text-info" value={semanticColorsDark['text-info']} />
         <ColorSwatch name="text-link" value={semanticColorsDark['text-link']} />
         <ColorSwatch name="text-link-hover" value={semanticColorsDark['text-link-hover']} />
         <ColorSwatch name="text-inverse" value={semanticColorsDark['text-inverse']} />
@@ -723,6 +731,12 @@ export const TextAndBorderColors: StoryObj = {
         <ColorSwatch name="scrim-press-strong" value={semanticColorsDark['scrim-press-strong']} />
         <ColorSwatch name="scrim-subtle" value={semanticColorsDark['scrim-subtle']} />
         <ColorSwatch name="scrim-default" value={semanticColorsDark['scrim-default']} />
+        <ColorSwatch name="control-face" value={semanticColorsDark['control-face']} />
+        <ColorSwatch name="control-face-active" value={semanticColorsDark['control-face-active']} />
+        <ColorSwatch
+          name="control-face-disabled"
+          value={semanticColorsDark['control-face-disabled']}
+        />
         <ColorSwatch name="on-control-idle" value={semanticColorsDark['on-control-idle']} />
         <ColorSwatch name="on-control-active" value={semanticColorsDark['on-control-active']} />
         <ColorSwatch name="on-data-strong" value={semanticColorsDark['on-data-strong']} />

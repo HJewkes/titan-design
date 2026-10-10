@@ -1,0 +1,260 @@
+{
+  "schema": "titan-review/round@2",
+  "unit": "question-frames-example",
+  "round": 1,
+  "storybookUrl": "http://127.0.0.1:6100",
+  "context": "Two PR groups. Each page shows its PR's frames, each pick right under the frames it asks about (alternates as whole units, dark and light together), then its Ship.",
+  "widths": [1280],
+  "variants": [
+    {
+      "key": "pill-built",
+      "storyId": "components-atoms-pill--default",
+      "label": "Pill as built",
+      "change": "unchanged"
+    },
+    {
+      "key": "pill-subtle",
+      "storyId": "components-atoms-pill--default",
+      "label": "Pill, subtle",
+      "args": {
+        "variant": "subtle"
+      },
+      "variantUnit": "pill-subtle",
+      "alternate": "subtle",
+      "globals": {
+        "theme": "dark"
+      },
+      "change": "new"
+    },
+    {
+      "key": "pill-subtle-light",
+      "storyId": "components-atoms-pill--default",
+      "label": "Pill, subtle, light",
+      "args": {
+        "variant": "subtle"
+      },
+      "variantUnit": "pill-subtle",
+      "alternate": "subtle",
+      "globals": {
+        "theme": "light"
+      },
+      "change": "new"
+    },
+    {
+      "key": "pill-outline",
+      "storyId": "components-atoms-pill--default",
+      "label": "Pill, outline",
+      "args": {
+        "variant": "outline"
+      },
+      "variantUnit": "pill-outline",
+      "alternate": "outline",
+      "globals": {
+        "theme": "dark"
+      },
+      "change": "new"
+    },
+    {
+      "key": "pill-outline-light",
+      "storyId": "components-atoms-pill--default",
+      "label": "Pill, outline, light",
+      "args": {
+        "variant": "outline"
+      },
+      "variantUnit": "pill-outline",
+      "alternate": "outline",
+      "globals": {
+        "theme": "light"
+      },
+      "change": "new"
+    },
+    {
+      "key": "pill-sm",
+      "storyId": "components-atoms-pill--default",
+      "label": "Pill, small",
+      "args": {
+        "size": "sm"
+      }
+    },
+    {
+      "key": "pill-md",
+      "storyId": "components-atoms-pill--default",
+      "label": "Pill, medium",
+      "args": {
+        "size": "md"
+      }
+    },
+    {
+      "key": "button-primary",
+      "storyId": "components-molecules-button--primary",
+      "label": "Button, primary"
+    },
+    {
+      "key": "button-secondary",
+      "storyId": "components-molecules-button--secondary",
+      "label": "Button, secondary"
+    },
+    {
+      "key": "button-outline",
+      "storyId": "components-molecules-button--outline",
+      "label": "Button, outline"
+    },
+    {
+      "key": "button-ghost",
+      "storyId": "components-molecules-button--ghost",
+      "label": "Button, ghost"
+    },
+    {
+      "key": "button-loading",
+      "storyId": "components-molecules-button--loading",
+      "label": "Button, loading",
+      "change": "changed"
+    }
+  ],
+  "questions": [
+    {
+      "id": "ship-102",
+      "kind": "pick-one",
+      "decision": "ship",
+      "prompt": "Ship owner/name#102 at this head?",
+      "options": ["Ship", "Don't ship"],
+      "required": true,
+      "signsOff": "the change in owner/name#102",
+      "page": "owner/name#102",
+      "merge": {
+        "repo": "owner/name",
+        "pr": 102,
+        "headSha": "2222222222222222222222222222222222222222",
+        "ship": ["Ship"]
+      },
+      "outcomes": {
+        "Ship": "accept",
+        "Don't ship": "changes"
+      }
+    },
+    {
+      "id": "pill-format",
+      "kind": "pick-one",
+      "decision": "iterate",
+      "prompt": "Which Pill format?",
+      "options": ["pill-subtle", "pill-outline"],
+      "implemented": "pill-subtle",
+      "required": true,
+      "signsOff": "pill-format",
+      "page": "owner/name#101",
+      "frames": ["pill-subtle", "pill-subtle-light", "pill-outline", "pill-outline-light"]
+    },
+    {
+      "id": "pill-size",
+      "kind": "pick-one",
+      "decision": "iterate",
+      "prompt": "Which Pill size?",
+      "options": ["pill-sm", "pill-md"],
+      "implemented": "pill-sm",
+      "required": true,
+      "signsOff": "pill-size",
+      "page": "owner/name#101",
+      "frames": ["pill-sm", "pill-md"]
+    },
+    {
+      "id": "ship-101",
+      "kind": "pick-one",
+      "decision": "ship",
+      "prompt": "Ship owner/name#101 at this head?",
+      "options": ["Ship", "Don't ship"],
+      "required": true,
+      "signsOff": "the change in owner/name#101",
+      "page": "owner/name#101",
+      "merge": {
+        "repo": "owner/name",
+        "pr": 101,
+        "headSha": "1111111111111111111111111111111111111111",
+        "ship": ["Ship"]
+      },
+      "outcomes": {
+        "Ship": "accept",
+        "Don't ship": "changes"
+      }
+    },
+    {
+      "id": "button-weight",
+      "kind": "pick-one",
+      "decision": "iterate",
+      "prompt": "Which Button weight leads a form?",
+      "options": ["button-primary", "button-secondary"],
+      "implemented": "button-primary",
+      "required": true,
+      "signsOff": "button-weight",
+      "page": "owner/name#102",
+      "frames": ["button-primary", "button-secondary"],
+      "outcomes": {
+        "button-primary": "accept",
+        "button-secondary": "changes"
+      }
+    },
+    {
+      "id": "button-quiet",
+      "kind": "pick-one",
+      "decision": "iterate",
+      "prompt": "Which quiet Button style?",
+      "options": ["button-outline", "button-ghost"],
+      "implemented": "button-outline",
+      "required": true,
+      "signsOff": "button-quiet",
+      "page": "owner/name#102",
+      "frames": ["button-outline", "button-ghost"]
+    }
+  ],
+  "sections": [
+    {
+      "id": "pr-101",
+      "title": "#101 Pill format and size",
+      "deciding": "The Pill's format and size.",
+      "changed": "Two new formats and sizes.",
+      "context": "The as-built Pill is context.",
+      "kind": "STATES",
+      "questionIds": ["ship-101", "pill-format", "pill-size"],
+      "variantKeys": [
+        "pill-built",
+        "pill-subtle",
+        "pill-subtle-light",
+        "pill-outline",
+        "pill-outline-light",
+        "pill-sm",
+        "pill-md"
+      ]
+    },
+    {
+      "id": "pr-102-ship",
+      "title": "#102 Button as built",
+      "deciding": "Whether #102 ships.",
+      "changed": "The loading state.",
+      "context": "Nothing else.",
+      "kind": "STATES",
+      "questionIds": ["ship-102"],
+      "variantKeys": ["button-loading"]
+    },
+    {
+      "id": "pr-102-picks",
+      "title": "#102 Button weight and style",
+      "deciding": "The Button's lead and quiet styles.",
+      "changed": "New weights.",
+      "context": "Nothing else.",
+      "kind": "STATES",
+      "questionIds": ["button-weight", "button-quiet"],
+      "variantKeys": ["button-primary", "button-secondary", "button-outline", "button-ghost"]
+    }
+  ],
+  "prGroups": [
+    {
+      "pr": "owner/name#101",
+      "headSha": "1111111111111111111111111111111111111111",
+      "sectionIds": ["pr-101"]
+    },
+    {
+      "pr": "owner/name#102",
+      "headSha": "2222222222222222222222222222222222222222",
+      "sectionIds": ["pr-102-ship", "pr-102-picks"]
+    }
+  ]
+}

@@ -98,7 +98,7 @@ const statusColors: Record<
     onSolid: 'text-on-status-error',
     border: 'border-status-error',
     icon: 'text-status-error',
-    text: 'text-status-error',
+    text: 'text-text-error',
     subtleText: 'text-on-status-error-subtle',
   },
 }

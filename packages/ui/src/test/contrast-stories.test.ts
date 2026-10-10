@@ -6,6 +6,7 @@ import {
   interleaveForShards,
   pairCounts,
   sortedPairs,
+  withoutSiblingPairs,
 } from './contrast-stories'
 
 describe('interleaveForShards', () => {
@@ -123,5 +124,41 @@ describe('blankProblems', () => {
 describe('sortedPairs', () => {
   it('orders pairs so a regenerated baseline diffs cleanly', () => {
     expect(Object.keys(sortedPairs({ b: 1, a: 2 }))).toEqual(['a', 'b'])
+  })
+})
+
+describe('withoutSiblingPairs', () => {
+  const tags = ['autodocs', 'width-matrix']
+  const baseline = { 'a-card--default dark': { 'x|y': 5 } }
+
+  it('drops the pairs the sibling Default baselines, whatever the count', () => {
+    const observed = { 'x|y': 35, 'p|q': 7 }
+    expect(withoutSiblingPairs('a-card--widths', tags, 'dark', observed, baseline)).toEqual({
+      'p|q': 7,
+    })
+  })
+
+  it('keeps a pair the sibling lacks, so it fails as today', () => {
+    const observed = { 'p|q': 7 }
+    expect(withoutSiblingPairs('a-card--widths', tags, 'dark', observed, baseline)).toEqual(
+      observed
+    )
+  })
+
+  it('gates unchanged without a baselined sibling Default in that theme', () => {
+    const observed = { 'x|y': 35 }
+    expect(withoutSiblingPairs('a-card--widths', tags, 'light', observed, baseline)).toEqual(
+      observed
+    )
+    expect(withoutSiblingPairs('b-card--widths', tags, 'dark', observed, baseline)).toEqual(
+      observed
+    )
+  })
+
+  it('leaves a story without the width-matrix tag alone', () => {
+    const observed = { 'x|y': 35 }
+    expect(withoutSiblingPairs('a-card--other', ['autodocs'], 'dark', observed, baseline)).toEqual(
+      observed
+    )
   })
 })

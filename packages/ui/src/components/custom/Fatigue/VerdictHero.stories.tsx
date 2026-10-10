@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { VerdictHero } from './VerdictHero'
+import { Surface } from '../../ui/surface'
 import { greyRamp } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { FATIGUE_STATES, WARMING_UP_MODEL } from './fatigue-mock'
@@ -26,8 +27,11 @@ export default meta
 type Story = StoryObj<typeof VerdictHero>
 
 export const AcrossStates: Story = {
+  // A dark-only frame: the Surface keeps VerdictHero on dark tokens in the light theme too.
   render: () => (
-    <View
+    <Surface
+      theme="dark"
+      level="background"
       style={{
         backgroundColor: PAGE_BG,
         padding: 28,
@@ -54,6 +58,6 @@ export const AcrossStates: Story = {
           <VerdictHero rpe={s.model.rpe} verdict={s.model.verdict} />
         </View>
       ))}
-    </View>
+    </Surface>
   ),
 }

@@ -283,6 +283,13 @@ module.exports = {
           disabled: 'var(--color-text-disabled)',
           inverse: 'var(--color-text-inverse)',
           error: 'var(--color-text-error)',
+          brand: {
+            DEFAULT: 'var(--color-text-brand)',
+            secondary: 'var(--color-text-brand-secondary)',
+          },
+          success: 'var(--color-text-success)',
+          warning: 'var(--color-text-warning)',
+          info: 'var(--color-text-info)',
           link: {
             DEFAULT: 'var(--color-text-link)',
             hover: 'var(--color-text-link-hover)',
@@ -325,6 +332,12 @@ module.exports = {
           subtle: 'var(--color-scrim-subtle)',
           press: 'var(--color-scrim-press)',
           'press-strong': 'var(--color-scrim-press-strong)',
+        },
+        // Toolbar control face (TD-264).
+        'control-face': {
+          DEFAULT: 'var(--color-control-face)',
+          active: 'var(--color-control-face-active)',
+          disabled: 'var(--color-control-face-disabled)',
         },
         // Label on a toolbar control face (VW-82) — a grey plane, not a fill.
         'on-control': {
