@@ -280,12 +280,16 @@ describe('Alert geometry resolves to the spacing tokens', () => {
   })
 })
 
-// TD-789 3b: status-error as text missed 4.5:1 on the grey 100 page.
-describe('Alert error message', () => {
-  it('paints an outline error message in text-error, not status-error', () => {
-    render(<Alert status="error" variant="outline" message="Upload failed" />)
+// TD-789 3b: a status tone as message text missed 4.5:1 on the grey 100 and 200 planes.
+describe('Alert outline message', () => {
+  it.each([
+    ['error', 'text-text-error', 'text-status-error'],
+    ['success', 'text-text-success', 'text-status-success'],
+    ['warning', 'text-text-warning', 'text-status-warning'],
+  ] as const)('paints an outline %s message in %s, not %s', (status, textRole, fillTone) => {
+    render(<Alert status={status} variant="outline" message="Upload done" />)
     const classes = (capturedClassNames.get('alert-message') ?? '').split(/\s+/)
-    expect(classes).toContain('text-text-error')
-    expect(classes).not.toContain('text-status-error')
+    expect(classes).toContain(textRole)
+    expect(classes).not.toContain(fillTone)
   })
 })
