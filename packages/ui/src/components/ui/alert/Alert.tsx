@@ -60,7 +60,7 @@ const statusColors: Record<
     onSolid: 'text-on-status-success',
     border: 'border-status-success',
     icon: 'text-status-success',
-    text: 'text-status-success',
+    text: 'text-text-success',
     subtleText: 'text-on-status-success-subtle',
   },
   info: {
@@ -80,7 +80,7 @@ const statusColors: Record<
     onSolid: 'text-on-status-warning',
     border: 'border-status-warning',
     icon: 'text-status-warning',
-    text: 'text-status-warning',
+    text: 'text-text-warning',
     subtleText: 'text-on-status-warning-subtle',
   },
   error: {
