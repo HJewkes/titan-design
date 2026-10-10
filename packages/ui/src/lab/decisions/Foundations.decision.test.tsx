@@ -132,6 +132,13 @@ describe('FD3 light ladder', () => {
     expect(exceptions.map((r) => at2(r.edgeOnInset))).toEqual([2.46, 2.38])
   })
 
+  it('puts green 600 just under 3:1 on grey 200 (2.998), printed as 3.00', () => {
+    const green = lightLadder().find((r) => r.tone === 'success')!
+
+    expect(green.edgeOnInset).toBeLessThan(3)
+    expect(Number(green.edgeOnInset.toFixed(3))).toBe(2.998)
+  })
+
   it('prints the edge numbers on the frame', () => {
     render(<composed.Fd3LadderL />)
 

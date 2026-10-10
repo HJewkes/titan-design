@@ -13,7 +13,8 @@ import {
 const LINES = [
   'A record of picks already made, not a question. Light solid = hue 600 + white.',
   'Two named exceptions stay at 500 + white: brand orange 500 and warning amber 500 (large-text AA, labels 12px semibold or larger).',
-  'New: their edge against the -1 plane (grey 200) is under 3:1. Each tile prints the white label and the fill against that plane.',
+  'New: against the -1 plane (grey 200) their edge is 2.46 and 2.38, under 3:1; green 600 is 2.998 there, which rounds to 3.00.',
+  'Each tile prints the white label and the fill edge against its plane.',
 ]
 
 function RungTile({ rung, planeIndex }: { rung: LadderRung; planeIndex: number }) {
@@ -37,7 +38,7 @@ function RungTile({ rung, planeIndex }: { rung: LadderRung; planeIndex: number }
 function RungLegend({ rung }: { rung: LadderRung }) {
   const mark = rung.isException ? '★ named exception' : 'step 600'
   return (
-    <Caption>{`${rung.tone} · ${rung.cell.fillLabel} · ${mark} · edge on grey 200 ${fmt(rung.edgeOnInset)}`}</Caption>
+    <Caption>{`${rung.tone} · ${rung.cell.fillLabel} · ${mark} · edge on grey 200 ${fmt(rung.edgeOnInset)}${rung.edgeOnInset < NON_TEXT ? ' (under 3:1)' : ''}`}</Caption>
   )
 }
 

@@ -50,7 +50,7 @@ function CellBlock({ member, cell, kind, mode }: CellBlockProps) {
   const label = worst(readings, 'label')
   const page = getSemanticColors(mode)['surface-base']
   return (
-    <View className="w-60 gap-1" testID={`${kind}-${member}`}>
+    <View className="w-80 gap-1" testID={`${kind}-${member}`}>
       {label >= AA ? (
         <LiveChip cell={cell} plane={page} />
       ) : (

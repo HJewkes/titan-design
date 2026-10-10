@@ -53,7 +53,7 @@ function ToneCell({
   const reading = readOn(cell, plane)
   const painted = { hex: compositeOver(cell.fill, plane.swatch.hex), label: cell.fillLabel }
   return (
-    <View className="w-52 gap-1" testID={`cell-${pkg.id}-${tone}-${plane.level}`}>
+    <View className="w-64 gap-1" testID={`cell-${pkg.id}-${tone}-${plane.level}`}>
       {reading.label >= AA ? (
         <CellCarrier subtle={cell}>
           <Pill variant="subtle" tone="error">{`${tone} pill`}</Pill>
