@@ -161,5 +161,7 @@ These files change together when this decision lands:
 - The contrast baselines measured against the planes: `src/theme/tokens/contrast-baseline.json`,
   `src/theme/nontext-contrast/`, and `tests/visual/contrast-stories-baseline.json`.
 
+The info and deload re-points align with the colour family cells in decision 0004.
+
 Light colours of shell accents and categorical inks are re-measured on these planes in their own
 decisions; this one does not set them.
