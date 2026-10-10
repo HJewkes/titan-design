@@ -281,10 +281,11 @@ const modes = ['dark', 'light'] as const
 const planes = ['surface-base', 'surface-elevated'] as const
 
 /**
- * Selected faces whose label misses 4.5 in light mode. Each is asserted as a
- * miss below, so a token fix fails the suite until its entry is removed.
+ * Selected faces whose label misses 4.5 in light mode: decision 0003's two named
+ * exceptions. Each is asserted as a miss below, so a token fix fails the suite until
+ * its entry is removed (info left the list when decision 0004 moved it to blue 600).
  */
-export const chipLightContrastExceptions: readonly ToneColor[] = ['primary', 'warning', 'info']
+export const chipLightContrastExceptions: readonly ToneColor[] = ['primary', 'warning']
 
 // The face the chip actually renders, read back from its tone classes, so a Pill row revert fails here too.
 function renderedFace(color: ChipColor, isSelected: boolean): Face {

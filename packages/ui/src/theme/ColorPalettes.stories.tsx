@@ -609,17 +609,37 @@ function VariantMatrix({
  * The brand and status roles alias their hue's cells, so this is the layer they share.
  * `color-stories.coverage.test.ts` requires every `tint-*` token to be named here; the
  * labels live on their fills, with the ratios printed, are in Foundations/Color/Family.
+ * Plain swatches rather than a VariantMatrix: the matrix captions read text-tertiary,
+ * which is under AA on the dark page, and 16 cells per mode would baseline 32 misses.
  */
-const FAMILY_BASES = [
-  'tint-red',
-  'tint-orange',
-  'tint-amber',
-  'tint-green',
-  'tint-cyan',
-  'tint-blue',
-  'tint-magenta',
-  'tint-neutral',
+const FAMILY_TOKENS = [
+  'tint-red-solid',
+  'tint-red-subtle',
+  'tint-orange-solid',
+  'tint-orange-subtle',
+  'tint-amber-solid',
+  'tint-amber-subtle',
+  'tint-green-solid',
+  'tint-green-subtle',
+  'tint-cyan-solid',
+  'tint-cyan-subtle',
+  'tint-blue-solid',
+  'tint-blue-subtle',
+  'tint-magenta-solid',
+  'tint-magenta-subtle',
+  'tint-neutral-solid',
+  'tint-neutral-subtle',
 ] as const
+
+function FamilySwatches({ palette }: { palette: Record<string, string> }) {
+  return (
+    <View style={{ flex: 1, gap: 12 }}>
+      {FAMILY_TOKENS.map((token) => (
+        <ColorSwatch key={token} name={token} value={palette[token]} />
+      ))}
+    </View>
+  )
+}
 
 export const FamilyColors: StoryObj = {
   name: '6. Colour Family',
@@ -634,10 +654,16 @@ export const FamilyColors: StoryObj = {
         hue 900 under hue 300 (decision 0004). brand-* and status-* alias their hue&apos;s cells.
         Both modes with the labels live and the ratios printed: Foundations/Color/Family.
       </SectionIntro>
-      <SectionTitle>Light</SectionTitle>
-      <VariantMatrix bases={FAMILY_BASES} palette={semanticColorsLight} />
-      <SectionTitle>Dark</SectionTitle>
-      <VariantMatrix bases={FAMILY_BASES} palette={semanticColorsDark} />
+      <View style={{ flexDirection: 'row', gap: 32 }}>
+        <View style={{ flex: 1 }}>
+          <SectionTitle>Light</SectionTitle>
+          <FamilySwatches palette={semanticColorsLight} />
+        </View>
+        <View style={{ flex: 1 }}>
+          <SectionTitle>Dark</SectionTitle>
+          <FamilySwatches palette={semanticColorsDark} />
+        </View>
+      </View>
     </View>
   ),
 }
