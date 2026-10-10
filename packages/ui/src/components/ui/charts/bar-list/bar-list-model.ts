@@ -1,5 +1,17 @@
 import type { ColorToken } from '../../../../theme/resolve-color'
 import { formatCompact } from '../../../../utils/number-format'
+import {
+  buildMarker,
+  cleanMarker,
+  markerFraction,
+  markerSentence,
+  reachesMarker,
+  type BarListMarker,
+  type BarListModelMarker,
+} from './bar-list-marker'
+
+export { buildMarker, cleanMarker, markerFraction, reachesMarker }
+export type { BarListMarker, BarListModelMarker }
 
 /** One row of a BarList. */
 export interface BarListRow {
@@ -32,6 +44,7 @@ export interface BarListModelRow {
   index: number
   rank: number
   fraction: number
+  reachesMarker: boolean
 }
 
 export interface BarListModel {
@@ -49,6 +62,7 @@ export interface BarListModel {
   columnChars: BarListColumnChars
   /** Shown rows that carry a flag; any turns the row tips on, since the flag's label lives there. */
   flaggedCount: number
+  marker: BarListModelMarker | null
 }
 
 /** Widest text of each trailing cell among the shown rows; 0 when no shown row has the part. */
@@ -58,6 +72,7 @@ export interface BarListColumnChars {
 }
 
 export interface BarListModelOptions {
+  referenceMarker?: BarListMarker
   max?: number
   sort?: 'descending' | 'none'
   maxRows?: number
@@ -129,6 +144,7 @@ export function buildBarListModel(
   rows: BarListRow[],
   {
     max,
+    referenceMarker,
     sort = 'descending',
     maxRows,
     formatValue = formatCompact,
@@ -137,11 +153,13 @@ export function buildBarListModel(
 ): BarListModel {
   const resolved = resolveMax(rows, max)
   const { shown, hidden } = rankRows(rows, sort, maxRows)
+  const marker = buildMarker(referenceMarker, rows, resolved)
   const modelRows = shown.map(({ row, index }, i) => ({
     row,
     index,
     rank: i + 1,
     fraction: barFraction(row.value, resolved),
+    reachesMarker: marker !== null && reachesMarker(row.value, marker.value),
   }))
   const hiddenTotal = hidden.reduce((sum, row) => sum + (cleanValue(row.value) ?? 0), 0)
   const first = modelRows[0]
@@ -162,6 +180,7 @@ export function buildBarListModel(
     largest,
     columnChars: columnChars(modelRows, { formatValue, formatSecondary }),
     flaggedCount: modelRows.filter(({ row }) => row.flag !== undefined).length,
+    marker,
   }
 }
 
@@ -194,23 +213,6 @@ export function columnChars(
   }
 }
 
-/** What a row's tip prints: the label and value on one line, then the flag label when flagged. */
-export interface BarListTipContent {
-  label: string
-  valueText: string
-  flagLabel: string | null
-}
-
-/** The tip's text for one row, a pure function of the row and the caller's formatter. */
-export function rowTip(row: BarListRow, formatValue: BarListValueFormatter): BarListTipContent {
-  const value = cleanValue(row.value)
-  return {
-    label: row.label,
-    valueText: value === null ? NO_VALUE_TEXT : formatValue(value, row),
-    flagLabel: row.flag?.label ?? null,
-  }
-}
-
 export function overflowLabel(model: BarListModel): string {
   return `${model.hiddenCount} more · ${model.hiddenTotalText}`
 }
@@ -220,6 +222,8 @@ export interface RowLabelContext {
   rank: number
   shownCount: number
   sort: 'descending' | 'none'
+  /** Label of the reference marker the row is at or above; absent or null when it reaches none. */
+  reachedMarker?: string | null
 }
 
 /**
@@ -227,7 +231,7 @@ export interface RowLabelContext {
  * A list in input order is not ranked, so its rows carry no rank.
  */
 export function rowLabel(
-  { row, rank, shownCount, sort }: RowLabelContext,
+  { row, rank, shownCount, sort, reachedMarker = null }: RowLabelContext,
   formatters: RowFormatters
 ): string {
   const texts = rowTexts(row, formatters)
@@ -235,6 +239,7 @@ export function rowLabel(
     `${row.label}: ${texts.value}`,
     texts.secondary,
     texts.flag,
+    reachedMarker === null ? null : `at or above ${reachedMarker}`,
     sort === 'descending' ? `rank ${rank} of ${shownCount}` : null,
   ]
   return parts.filter((part): part is string => part !== null).join(', ')
@@ -244,9 +249,10 @@ const plural = (count: number): string => `${count} ${count === 1 ? 'item' : 'it
 
 export function summarizeBarList(model: BarListModel): string {
   if (model.inputCount === 0) return 'No data.'
+  const marker = markerSentence(model.marker, plural(model.inputCount))
   if (model.inputCount === 1) {
     const only = model.rows[0].row
-    return `1 item: ${only.label}${model.largest ? `, ${model.largest.valueText}` : ''}.`
+    return `1 item: ${only.label}${model.largest ? `, ${model.largest.valueText}` : ''}.${marker}`
   }
   const shown =
     model.sort === 'descending'
@@ -259,7 +265,7 @@ export function summarizeBarList(model: BarListModel): string {
     model.hiddenCount > 0
       ? ` ${model.hiddenCount} more not shown, totalling ${model.hiddenTotalText}.`
       : ''
-  return `${shown}${largest}${hidden}`
+  return `${shown}${largest}${hidden}${marker}`
 }
 
 /** The list's accessible name: the caller's label, then the summary. */

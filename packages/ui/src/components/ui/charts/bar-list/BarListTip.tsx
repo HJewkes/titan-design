@@ -7,7 +7,7 @@ import {
 } from '../../../../hooks/useListNavigation'
 import { Tooltip, useHoverFocusState } from '../../tooltip'
 import { Typography } from '../../typography'
-import type { BarListTipContent } from './bar-list-model'
+import type { BarListTipContent } from './bar-list-tip'
 import { hiddenFromAssistiveTech, LISTITEM_ROLE, TABULAR } from './shared'
 
 /** A row's place in the roving tab stop; a press settles the stop on that row. */
@@ -60,6 +60,16 @@ function TipBody({ tip }: { tip: BarListTipContent }) {
           {tip.valueText}
         </Typography>
       </View>
+      {tip.limit ? (
+        <View className="flex-row items-baseline justify-between gap-inline-lg">
+          <Typography variant="caption" color="secondary" className="leading-normal">
+            {tip.limit.label}
+          </Typography>
+          <Typography variant="mono" color="primary" style={TABULAR}>
+            {tip.limit.valueText}
+          </Typography>
+        </View>
+      ) : null}
       {tip.flagLabel ? (
         <Typography variant="caption" color="inherit" className="text-text-error leading-normal">
           {tip.flagLabel}

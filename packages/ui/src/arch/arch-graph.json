@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:7a8bc3e34dfbd407a23cc0a0789fbcc9de8908576075ad86d67c4dcf8398b1c2",
+  "componentBarrelHash": "sha256:e181c43653a870199f1a2a129a3f805c46b8c9b8b2a818ee643ef745cf94e987",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -2779,6 +2779,43 @@
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": true
+    },
+    {
+      "name": "GapIndicator",
+      "file": "packages/ui/src/components/custom/Session/GapIndicator.tsx",
+      "dir": "custom",
+      "family": "custom/Session",
+      "exports": [
+        "GapIndicator",
+        "GapIndicatorProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "DateTime",
+        "Divider",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 1,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 61,
+        "score": 1
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
     },
     {
       "name": "Gauge",
@@ -8194,6 +8231,41 @@
       "standard": true
     },
     {
+      "name": "ToolBadge",
+      "file": "packages/ui/src/components/custom/Session/ToolBadge.tsx",
+      "dir": "custom",
+      "family": "custom/Session",
+      "exports": [
+        "ToolBadge",
+        "ToolBadgeProps"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Pill"
+      ],
+      "leak": {
+        "rawView": 0,
+        "rawText": 1,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 51,
+        "score": 1
+      },
+      "tier": "molecule",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "ToolbarButton",
       "file": "packages/ui/src/components/ui/toolbar-button/ToolbarButton.tsx",
       "dir": "ui",
@@ -8267,6 +8339,51 @@
       "tier": "molecule",
       "verdict": "keep-internal",
       "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "ToolCallRow",
+      "file": "packages/ui/src/components/custom/Session/ToolCallRow.tsx",
+      "dir": "custom",
+      "family": "custom/Session",
+      "exports": [
+        "ToolCallRow",
+        "ToolCallRowProps",
+        "OutcomeTip",
+        "OutcomeDot",
+        "RowBody",
+        "ErrorText"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Collapse",
+        "DateTime",
+        "Indicator",
+        "TipTrigger",
+        "ToolBadge",
+        "Tooltip",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 3,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 164,
+        "score": 3
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
     },
@@ -11312,6 +11429,50 @@
       "Card"
     ],
     [
+      "GapIndicator",
+      "DateTime"
+    ],
+    [
+      "GapIndicator",
+      "Divider"
+    ],
+    [
+      "GapIndicator",
+      "Typography"
+    ],
+    [
+      "ToolBadge",
+      "Pill"
+    ],
+    [
+      "ToolCallRow",
+      "ToolBadge"
+    ],
+    [
+      "ToolCallRow",
+      "Collapse"
+    ],
+    [
+      "ToolCallRow",
+      "DateTime"
+    ],
+    [
+      "ToolCallRow",
+      "Indicator"
+    ],
+    [
+      "ToolCallRow",
+      "TipTrigger"
+    ],
+    [
+      "ToolCallRow",
+      "Tooltip"
+    ],
+    [
+      "ToolCallRow",
+      "Typography"
+    ],
+    [
       "AgentHoverCard",
       "AgentCardIdentity"
     ],
@@ -11371,6 +11532,7 @@
       "Composer",
       "Eyebrow",
       "FilePathLabel",
+      "GapIndicator",
       "GoalLiftCard",
       "HelpTip",
       "HighlightText",
@@ -11391,6 +11553,7 @@
       "Tabs",
       "TaskStagePill",
       "Toast",
+      "ToolCallRow",
       "ToolbarButton",
       "VelocityBandPreview",
       "VolumeLandmarkBar",
@@ -11429,6 +11592,7 @@
       "SupersetWrapper",
       "TaskRow",
       "TaskTable",
+      "ToolBadge",
       "ToolbarButtonParts",
       "TypingIndicator",
       "UnreadBadge",

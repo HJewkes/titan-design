@@ -12,7 +12,7 @@ native. Fixed anatomy is imported (Typography, Skeleton, EmptyState, Tooltip); t
 `emptyState`. Wording that belongs to the consumer arrives through `formatValue`, `formatSecondary` and the
 row's own `flag.label`.
 
-**Props (13).** `rows`, `accessibilityLabel`, `max`, `sort`, `maxRows`, `layout`, `size`, `formatValue`,
+**Props (14).** `rows`, `accessibilityLabel`, `max`, `referenceMarker`, `sort`, `maxRows`, `layout`, `size`, `formatValue`,
 `formatSecondary`, `isValueHidden`, `isLoading`, `emptyState`, `className`. `formatValue(value, row?)`
 formats each row's value and, called without a row, the total of the rows past the cap. `isValueHidden`
 takes the value out of the row; it never changes a name, it moves the text into the tip. `secondaryValue`
@@ -91,6 +91,41 @@ flag label in the tip. No brand token. On the base surface every fill measures a
 track in both modes except the light near red, which measures 2.70 there (3.81 against the plane): the
 owner's console round 6 pick, declared in `BarList.test.tsx`. The focus ring is the stylesheet's `*:focus-visible` outline
 (`global.css`); no class set is added.
+
+## Reference marker
+
+`referenceMarker: { value, label, formatValue? }` (TD-440) draws one labelled line on the value axis: a cutoff,
+a budget, a target. It is the fourteenth prop (the thirteen of the round 3 audit below, plus this one). Rules:
+
+- The marker never changes the scale. `resolveMax` ignores it. A marker above the resolved maximum draws no
+  line; the tip and the readout still state it. Pass `max` to keep the line visible.
+- The marker never recolours a row and never sets a flag.
+- One marker. An array is a later change.
+- A `value` that is not finite or is at or below zero ignores the marker. A blank `label` becomes "Reference".
+- The line is drawn in each row's bar at `value / max`, on the aligned track. There is no legend and no
+  swatch: the tip names the line. The line is hidden from assistive tech.
+- A set marker turns row tips on for every data row, whatever `isValueHidden` is, with #407's `BarListTip` and roving
+  focus unchanged. `rowTip(row, formatValue, marker)` adds the limit line between the value line and the flag
+  line: the marker label (`caption`, `secondary`, `leading-normal`), then its value text (`mono`). A marker
+  above the maximum draws no line, but the tip still states the limit. No new prop.
+- The list name gains ` <label>: <valueText>. <n> of <N items> at or above.` and a row at or above the
+  marker gains `at or above <label>` after its flag and before its rank. `reachedCount` covers hidden rows.
+- Without a marker the bar is the bare track; the wrapper that positions the line exists only with one.
+
+**The line's paint.** A 2 px `text-primary` core with a 1 px `text-inverse` keyline each side, 4 px in all
+(`BarListMarker.tsx`), with no swatch beside it. The core alone falls under 3:1 on a silver
+fill in dark mode (1.41), so the keyline separates the line from a fill and the core separates it from the
+track and the plane. Measured with `theme/color-checks` and asserted in `BarList.test.tsx` on `surface-base`
+and `surface-elevated`:
+
+| Pair                                  | Dark, base | Dark, elevated | Light, base | Light, elevated |
+| ------------------------------------- | ---------- | -------------- | ----------- | --------------- |
+| Keyline on the silver fill            | 11.51      | 11.51          | 4.88        | 4.88            |
+| Keyline on the red fill               | 6.31       | 6.31           | 4.57        | 4.57            |
+| Core on the track (hairline on plane) | 9.01       | 8.19           | 12.53       | 11.64           |
+| Core on the plane                     | 14.54      | 13.28          | 17.69       | 16.43           |
+
+A row's own `color` is outside these pairs: the consumer who sets it owns its contrast with the line.
 
 ## Props audit (round 3)
 

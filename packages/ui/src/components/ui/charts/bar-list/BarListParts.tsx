@@ -1,50 +1,36 @@
 import type { ReactNode } from 'react'
 import { View } from 'react-native'
-import { cn } from '../../../../utils/cn'
 import { Skeleton } from '../../skeleton'
 import { Typography } from '../../typography'
 import { resolveColor } from '../../../../theme/resolve-color'
 import { formatCompact } from '../../../../utils/number-format'
 import type { SilverRedScheme } from '../kit/silverRed'
 import { hiddenFromAssistiveTech, LISTITEM_ROLE } from './shared'
+import { Bar } from './BarListBar'
 import {
   overflowLabel,
   rowLabel,
   rowTexts,
-  rowTip,
   type BarListColumnChars,
   type BarListModel,
+  type BarListModelMarker,
   type BarListModelRow,
   type BarListRow,
   type BarListValueFormatter,
 } from './bar-list-model'
 import { Cells, type BarListColumns, type CellsProps } from './BarListCells'
+import { rowTip } from './bar-list-tip'
 import { TipRow, type BarListTipItem } from './BarListTip'
+
+export { hiddenFromAssistiveTech }
 
 export interface RowViewProps extends CellsProps {
   entry: BarListModelRow
   layout: 'inline' | 'stacked'
   size: 'sm' | 'md'
   fill: string
-}
-
-function Bar({ fraction, fill, size }: { fraction: number; fill: string; size: 'sm' | 'md' }) {
-  return (
-    <View
-      className={cn(
-        'flex-1 overflow-hidden rounded-full bg-hairline',
-        size === 'sm' ? 'h-1.5' : 'h-2'
-      )}
-      testID="bar-list-track"
-      {...hiddenFromAssistiveTech}
-    >
-      <View
-        className="h-full rounded-full"
-        style={{ width: `${fraction * 100}%`, backgroundColor: fill }}
-        testID="bar-list-fill"
-      />
-    </View>
-  )
+  /** Where the reference line sits on the track, or null when none is drawn. */
+  markerFraction: number | null
 }
 
 function Label({ entry, size }: { entry: BarListModelRow; size: 'sm' | 'md' }) {
@@ -56,7 +42,7 @@ function Label({ entry, size }: { entry: BarListModelRow; size: 'sm' | 'md' }) {
 }
 
 export function RowContent(props: RowViewProps) {
-  const { entry, layout, size, fill } = props
+  const { entry, layout, size, fill, markerFraction } = props
   if (layout === 'stacked') {
     return (
       <View className="gap-1">
@@ -72,7 +58,7 @@ export function RowContent(props: RowViewProps) {
           </Typography>
         ) : null}
         <View className="flex-row">
-          <Bar fraction={entry.fraction} fill={fill} size={size} />
+          <Bar fraction={entry.fraction} fill={fill} size={size} markerFraction={markerFraction} />
         </View>
       </View>
     )
@@ -82,7 +68,7 @@ export function RowContent(props: RowViewProps) {
       <View className="w-24">
         <Label entry={entry} size={size} />
       </View>
-      <Bar fraction={entry.fraction} fill={fill} size={size} />
+      <Bar fraction={entry.fraction} fill={fill} size={size} markerFraction={markerFraction} />
       <Cells {...props} />
     </View>
   )
@@ -112,6 +98,7 @@ interface ModelRowProps extends Pick<RowViewProps, 'entry' | 'layout' | 'size'> 
   sort: 'descending' | 'none'
   columnChars: BarListColumnChars
   columns: BarListColumns
+  marker: BarListModelMarker | null
   palette: SilverRedScheme
   /** The row's place in the roving tab stop; null renders a static row with no tip. */
   tipItem: BarListTipItem | null
@@ -133,6 +120,7 @@ export function ModelRow({
   sort,
   columnChars,
   columns,
+  marker,
   palette,
   tipItem,
   formatValue = formatCompact,
@@ -141,7 +129,8 @@ export function ModelRow({
 }: ModelRowProps) {
   const { row } = entry
   const formatters = { formatValue, formatSecondary }
-  const name = rowLabel({ row, rank: entry.rank, shownCount, sort }, formatters)
+  const reachedMarker = marker && entry.reachesMarker ? marker.label : null
+  const name = rowLabel({ row, rank: entry.rank, shownCount, sort, reachedMarker }, formatters)
   const content = (
     <View {...hiddenFromAssistiveTech}>
       <RowContent
@@ -150,13 +139,14 @@ export function ModelRow({
         texts={rowTexts(row, formatters)}
         columnChars={columnChars}
         columns={columns}
+        markerFraction={marker?.fraction ?? null}
         {...layoutProps}
       />
     </View>
   )
   if (tipItem) {
     return (
-      <TipRow name={name} tip={rowTip(row, formatValue)} item={tipItem}>
+      <TipRow name={name} tip={rowTip(row, formatValue, marker)} item={tipItem}>
         {content}
       </TipRow>
     )
