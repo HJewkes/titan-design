@@ -1,6 +1,7 @@
 import { useContext } from 'react'
-import { View, Text, Pressable } from 'react-native'
+import { View } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { Checkbox } from '../checkbox'
 import { TableContext } from './TableContext'
 import { selectionState } from './useTableState'
 
@@ -22,23 +23,11 @@ export function TableSelectAllCell({ className }: TableSelectAllCellProps) {
 
   return (
     <View className={cn('w-12 px-4 py-3 items-center justify-center', className)}>
-      <Pressable
-        accessibilityRole="checkbox"
-        aria-checked={allSelected ? true : someSelected ? 'mixed' : false}
-        onPress={() => onSelectAll?.(!allSelected)}
-        className={cn(
-          'w-5 h-5 rounded border-2 items-center justify-center',
-          allSelected
-            ? 'bg-brand-primary border-brand-primary'
-            : someSelected
-              ? 'bg-brand-primary-subtle border-brand-primary'
-              : 'border-hairline-strong bg-transparent'
-        )}
-      >
-        {(allSelected || someSelected) && (
-          <Text className="text-on-brand-primary text-xs font-bold">{allSelected ? '✓' : '−'}</Text>
-        )}
-      </Pressable>
+      <Checkbox
+        isChecked={allSelected}
+        isIndeterminate={someSelected}
+        onCheckedChange={(checked) => onSelectAll?.(checked)}
+      />
     </View>
   )
 }
@@ -61,19 +50,10 @@ export function TableSelectCell({ rowId, className }: TableSelectCellProps) {
 
   return (
     <View className={cn('w-12 px-4 py-3.5 items-center justify-center', className)}>
-      <Pressable
-        accessibilityRole="checkbox"
-        aria-checked={isSelected}
-        onPress={() => onSelectRow?.(rowId, !isSelected)}
-        className={cn(
-          'w-5 h-5 rounded border-2 items-center justify-center',
-          isSelected
-            ? 'bg-brand-primary border-brand-primary'
-            : 'border-hairline-strong bg-transparent web:hover:border-brand-primary'
-        )}
-      >
-        {isSelected && <Text className="text-on-brand-primary text-xs font-bold">✓</Text>}
-      </Pressable>
+      <Checkbox
+        isChecked={isSelected}
+        onCheckedChange={(checked) => onSelectRow?.(rowId, checked)}
+      />
     </View>
   )
 }

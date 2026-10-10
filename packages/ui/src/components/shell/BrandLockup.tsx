@@ -2,11 +2,11 @@ import type { ReactNode } from 'react'
 import { View, type ViewProps } from 'react-native'
 import { cn } from '../../utils/cn'
 import { Typography } from '../ui/typography'
-import { brandPresets, type BrandKey } from './brands'
+import { resolveBrand, type BrandKey, type BrandPreset } from './brands'
 
 export interface BrandLockupProps extends ViewProps {
-  /** Which app's identity to render. Defaults to `voltras`. */
-  brand?: BrandKey
+  /** Which app's identity to render: a registry key, or the app's own preset. */
+  brand: BrandKey | BrandPreset
   /** Replace the preset's mark glyph. */
   mark?: ReactNode
   /** Replace the preset's wordmark. */
@@ -22,12 +22,12 @@ export interface BrandLockupProps extends ViewProps {
 
 /**
  * Product identity lockup for the top bar: mark + wordmark + optional subtitle.
- * Generic over the app: pick a `brand` preset, or override `mark` / `wordmark` /
+ * Generic over the app: pick a `brand` key, pass a {@link BrandPreset}, or override `mark` / `wordmark` /
  * `accentClassName` / `subtitle` piecemeal for an app that has no preset yet.
  * Composes an icon primitive + Typography. S1 · BrandLockup.
  */
 export function BrandLockup({
-  brand = 'voltras',
+  brand,
   mark,
   wordmark,
   accentClassName,
@@ -36,7 +36,7 @@ export function BrandLockup({
   className,
   ...props
 }: BrandLockupProps) {
-  const preset = brandPresets[brand]
+  const preset = resolveBrand(brand)
   const resolvedSubtitle = subtitle ?? preset.subtitle
 
   return (

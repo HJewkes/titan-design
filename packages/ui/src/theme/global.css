@@ -263,6 +263,11 @@
     --color-text-disabled: rgba(255, 255, 255, 0.38);
     --color-text-inverse: #1C1916;
     --color-text-error: #E05254;
+    --color-text-brand: #FF7900;
+    --color-text-brand-secondary: #22D3EE;
+    --color-text-success: #21C05D;
+    --color-text-warning: #F9B415;
+    --color-text-info: #78C2FF;
     --color-text-link: #78C2FF;
     --color-text-link-hover: #3CA8FF;
 
@@ -526,6 +531,11 @@
     --color-text-disabled: rgba(55, 65, 81, 0.48);
     --color-text-inverse: #FFFFFF;
     --color-text-error: #A4221C;
+    --color-text-brand: #983804;
+    --color-text-brand-secondary: #2A617F;
+    --color-text-success: #2B6B25;
+    --color-text-warning: #814D14;
+    --color-text-info: #135AA8;
     --color-text-link: #135AA8;
     --color-text-link-hover: #135AA8;
 
@@ -657,9 +667,13 @@
     color: var(--color-text-primary);
   }
 
-  /* Focus visible styles */
-  *:focus-visible {
-    outline: 2px solid var(--color-border-focus);
+  /* Focus ring (TD-765): text-brand over a 2px gap. The gap is the outline offset, left transparent
+     so it shows whatever plane the element sits on; a box-shadow gap would need that plane's colour
+     and loses to any shadow utility. `.focus-ring` paints the same ring for a component that draws
+     it itself. */
+  *:focus-visible,
+  .focus-ring {
+    outline: 2px solid var(--color-text-brand);
     outline-offset: 2px;
   }
 

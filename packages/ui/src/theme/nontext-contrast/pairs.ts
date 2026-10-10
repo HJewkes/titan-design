@@ -87,7 +87,6 @@ const boundaries: NonTextPair[] = [
     floor: MARK,
     sources: [
       src('ui/select/Select.tsx', 'border-hairline-strong'),
-      src('ui/table/TableSelection.tsx', 'border-hairline-strong'),
       src('ui/progress/Progress.tsx', 'bg-hairline-strong'),
     ],
   },

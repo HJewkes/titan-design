@@ -119,7 +119,7 @@ describe('WeekRow', () => {
     it('invokes onPress for a pressable workout', () => {
       const onPress = vi.fn()
       render(<WeekRow {...baseProps} workouts={[{ name: 'Upper', status: 'current', onPress }]} />)
-      fireEvent.click(screen.getByTestId('workout-pill-pressable'))
+      fireEvent.click(screen.getByRole('button', { name: 'Upper workout, current' }))
       expect(onPress).toHaveBeenCalledOnce()
     })
   })
