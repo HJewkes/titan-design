@@ -47,6 +47,7 @@ describe('Typography', () => {
   it.each([
     ['success', 'text-text-success', 'text-status-success'],
     ['warning', 'text-text-warning', 'text-status-warning'],
+    ['info', 'text-text-info', 'text-status-info'],
   ] as const)('%s text uses %s, not %s', (color, textRole, fillTone) => {
     render(
       <Typography color={color} testID="tone-text">

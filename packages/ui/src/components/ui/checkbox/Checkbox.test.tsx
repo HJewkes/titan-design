@@ -1,10 +1,11 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import type { ViewProps } from 'react-native'
+import type { TextProps, ViewProps } from 'react-native'
 import { Checkbox, CheckboxGroup } from './Checkbox'
 
 const viewClassNames: string[][] = []
+const textClassNames = new Map<unknown, string>()
 
 vi.mock('react-native', async (importOriginal) => {
   const actual = await importOriginal<typeof import('react-native')>()
@@ -13,7 +14,11 @@ vi.mock('react-native', async (importOriginal) => {
     viewClassNames.push((props.className ?? '').split(/\s+/))
     return React.createElement(actual.View, { ...props, ref } as ViewProps)
   })
-  return { ...actual, View }
+  const Text = React.forwardRef<unknown, TextProps & { className?: string }>((props, ref) => {
+    textClassNames.set(props.children, props.className ?? '')
+    return React.createElement(actual.Text, { ...props, ref } as TextProps)
+  })
+  return { ...actual, View, Text }
 })
 
 describe('Checkbox', () => {
@@ -201,5 +206,16 @@ describe('Checkbox', () => {
     render(<Checkbox label="" helperText="Help" />)
     const helper = screen.getByText('Help')
     expect(helper.parentElement?.childNodes).toHaveLength(1)
+  })
+})
+
+// TD-483: the tick is a Text node on the on-brand chip, so it takes the brand text role.
+describe('Checkbox tick', () => {
+  it('paints the tick in the brand text role, not the brand fill', () => {
+    render(<Checkbox label="Toggle" isChecked />)
+    expect(screen.getByText('✓')).toBeInTheDocument()
+    const classes = (textClassNames.get('✓') ?? '').split(/\s+/)
+    expect(classes).toContain('text-text-brand')
+    expect(classes).not.toContain('text-brand-primary')
   })
 })

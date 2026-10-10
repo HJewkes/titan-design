@@ -38,7 +38,7 @@ const sizeStyles: Record<HelpTipSize, { icon: string; text: string }> = {
 
 const colorStyles: Record<string, string> = {
   default: 'text-text-tertiary',
-  primary: 'text-brand-primary',
+  primary: 'text-text-brand',
   secondary: 'text-text-secondary',
   muted: 'text-text-tertiary opacity-60',
 }

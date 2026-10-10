@@ -26,10 +26,10 @@ export const statusStyles: Record<ToastStatus, { bg: string; border: string; ico
 }
 
 export const iconColors: Record<ToastStatus, string> = {
-  success: 'text-status-success',
+  success: 'text-text-success',
   error: 'text-text-error',
-  warning: 'text-status-warning',
-  info: 'text-status-info',
+  warning: 'text-text-warning',
+  info: 'text-text-info',
 }
 
 export const toastRole = (status: ToastStatus) => (status === 'error' ? 'alert' : 'status')

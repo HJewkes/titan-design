@@ -50,12 +50,12 @@ describe('IconBox', () => {
   })
 
   it.each([
-    ['primary', 'bg-brand-primary-subtle', 'text-brand-primary'],
-    ['secondary', 'bg-brand-secondary-subtle', 'text-brand-secondary'],
-    ['success', 'bg-status-success-subtle', 'text-status-success'],
+    ['primary', 'bg-brand-primary-subtle', 'text-text-brand'],
+    ['secondary', 'bg-brand-secondary-subtle', 'text-text-brand-secondary'],
+    ['success', 'bg-status-success-subtle', 'text-text-success'],
     ['error', 'bg-status-error-subtle', 'text-status-error'],
-    ['warning', 'bg-status-warning-subtle', 'text-status-warning'],
-    ['info', 'bg-status-info-subtle', 'text-status-info'],
+    ['warning', 'bg-status-warning-subtle', 'text-text-warning'],
+    ['info', 'bg-status-info-subtle', 'text-text-info'],
     ['neutral', 'bg-surface-elevated', 'text-text-secondary'],
   ] as const)('tints the box and icon for color %s', (color, bg, text) => {
     render(<IconBox icon={MockIcon} color={color} testID="box" />)

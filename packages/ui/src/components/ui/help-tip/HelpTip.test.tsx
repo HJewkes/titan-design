@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedByNode } from '../../../test/classname-capture'
 import { HelpTip, LabelWithHelp } from './HelpTip'
 import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
 
@@ -211,4 +212,14 @@ describe('HelpTip geometry resolves to the spacing tokens', () => {
       expect(resolveAll(spacing)).toEqual([...pixels])
     }
   )
+})
+
+// TD-483: brand orange as the glyph text missed 4.5:1 on the grey 100 and 200 planes.
+describe('HelpTip primary glyph', () => {
+  it('paints the glyph in the brand text role, not the brand fill', () => {
+    render(<HelpTip content="Help text" color="primary" />)
+    const classes = (capturedByNode.get(screen.getByText('?')) ?? '').split(/\s+/)
+    expect(classes).toContain('text-text-brand')
+    expect(classes).not.toContain('text-brand-primary')
+  })
 })

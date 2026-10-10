@@ -92,7 +92,7 @@ const colorStyles: Record<TypographyColor, string> = {
   success: 'text-text-success',
   error: 'text-text-error',
   warning: 'text-text-warning',
-  info: 'text-status-info',
+  info: 'text-text-info',
   inherit: '', // No color class, inherit from parent
 }
 
