@@ -314,7 +314,10 @@
     --color-scrim-subtle: rgba(0, 0, 0, 0.30);
     --color-scrim-default: rgba(0, 0, 0, 0.50);
 
-    /* Control-face and data-fill labels (VW-82). */
+    /* Control faces (TD-264), control-face and data-fill labels (VW-82). */
+    --color-control-face: #424140;
+    --color-control-face-active: #2C2A28;
+    --color-control-face-disabled: rgba(255, 255, 255, 0.12);
     --color-on-control-idle: #D1D1D1;
     --color-on-control-active: #FFFFFF;
     --color-on-data-strong: #0B0B0B;
@@ -560,14 +563,18 @@
     --color-hairline-default: rgba(0, 0, 0, 0.15);
     --color-hairline-strong: rgba(0, 0, 0, 0.22);
 
-    /* Scrims and control/data labels (VW-82) — identical to the dark block on
+    /* Scrims and the data label (VW-82) — identical to the dark block on
        purpose; see tokens/semantic.ts. */
     --color-scrim-press: rgba(0, 0, 0, 0.10);
     --color-scrim-press-strong: rgba(0, 0, 0, 0.20);
     --color-scrim-subtle: rgba(0, 0, 0, 0.30);
     --color-scrim-default: rgba(0, 0, 0, 0.50);
-    --color-on-control-idle: #D4D1CE;
-    --color-on-control-active: #FFFFFF;
+    /* Control faces and their labels flip with the theme (TD-264). */
+    --color-control-face: #FFFFFF;
+    --color-control-face-active: #D4D1CE;
+    --color-control-face-disabled: rgba(0, 0, 0, 0.06);
+    --color-on-control-idle: #5A5958;
+    --color-on-control-active: #1C1916;
     --color-on-data-strong: #0B0B0B;
 
     --color-interactive-hover: rgba(55, 65, 81, 0.04);
@@ -660,9 +667,13 @@
     color: var(--color-text-primary);
   }
 
-  /* Focus visible styles */
-  *:focus-visible {
-    outline: 2px solid var(--color-border-focus);
+  /* Focus ring (TD-765): text-brand over a 2px gap. The gap is the outline offset, left transparent
+     so it shows whatever plane the element sits on; a box-shadow gap would need that plane's colour
+     and loses to any shadow utility. `.focus-ring` paints the same ring for a component that draws
+     it itself. */
+  *:focus-visible,
+  .focus-ring {
+    outline: 2px solid var(--color-text-brand);
     outline-offset: 2px;
   }
 

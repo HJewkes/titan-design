@@ -1,8 +1,16 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { WorkoutTopBar } from './WorkoutTopBar'
 import { type Device } from './DeviceRow'
+import { capturedClassNames } from '../../../test/classname-capture'
+
+// Class names are stripped in jsdom, so surface the colour prop to assert it.
+vi.mock('../../ui/typography', () => ({
+  Typography: ({ color, children }: { color?: string; children?: React.ReactNode }) => (
+    <span data-color={color}>{children}</span>
+  ),
+}))
 
 const devices: Device[] = [
   { id: 'Voltra-A3F2', nickname: 'Left Cable', slot: 'L', state: 'connected' },
@@ -18,6 +26,18 @@ describe('WorkoutTopBar', () => {
     expect(screen.getByText('LIVE')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Devices, Connected' })).toBeInTheDocument()
     expect(screen.getByText('16:12')).toBeInTheDocument()
+  })
+
+  it('sets the idle label in primary text so it clears AA on the neutral pill', () => {
+    render(<WorkoutTopBar state="idle" devices={devices} time={AT_1612} />)
+    expect(screen.getByText('IDLE')).toHaveAttribute('data-color', 'primary')
+  })
+
+  it('draws the session-state readout as a clear pill with no fill', () => {
+    render(<WorkoutTopBar state="idle" devices={devices} time={AT_1612} />)
+    const classes = (capturedClassNames.get('session-state-pill') ?? '').split(/\s+/)
+    expect(classes).toContain('border-transparent')
+    expect(classes.filter((c) => c.startsWith('bg-'))).toEqual([])
   })
 
   it('hides the clock when showClock is false', () => {

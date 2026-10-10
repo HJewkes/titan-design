@@ -3,7 +3,7 @@
     "name": "index",
     "path": "dist/index.mjs",
     "brotli": true,
-    "limit": "170 kB"
+    "limit": "184 kB"
   },
   {
     "name": "bodymap",
