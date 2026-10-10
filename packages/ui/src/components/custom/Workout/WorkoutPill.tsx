@@ -3,11 +3,8 @@ import { useEffect, useState } from 'react'
 import { View, Pressable, Animated, Easing, type ViewProps } from 'react-native'
 import { Typography } from '../../ui/typography'
 import { resolveColor } from '../../../theme/resolve-color'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { alpha } from '../../../utils/colors'
 import { usePrefersReducedMotion } from '../../../hooks/usePrefersReducedMotion'
 import { cn } from '../../../utils/cn'
-import { useSurfaceMode } from '../../ui/surface'
 
 /**
  * Spec statuses: completed | current | upcoming | deload.
@@ -33,15 +30,19 @@ interface PillPaint {
 }
 
 /**
- * Every status on the wash ladder: `-subtle` (0.12) inside a `-muted` (0.30) rim.
+ * Every status on the ladder: the `-subtle` cell inside a `-muted` (0.30) rim.
  *
  * Two do not fit a rung exactly. `next` is deliberately the strongest rim — it is
- * the only status with no wash — so it takes `-strong` (0.50) rather than collapsing
+ * the only status with no fill — so it takes `-strong` (0.50) rather than collapsing
  * onto `current`'s 0.30 and losing the distinction; it was 0.4. `missed`'s label was
  * a 0.7 alpha, which no rung expresses; `status-error-dark` composites to within a
  * hair of it on the dark planes and needs no alpha at all.
+ *
+ * `deload` has no status role with a subtle cell, so it reads the colour family
+ * directly (decision 0004): the magenta subtle cell under its on-subtle label, which
+ * also draws the rim.
  */
-function paintFor(status: WorkoutPillStatus, deload: string): PillPaint {
+function paintFor(status: WorkoutPillStatus): PillPaint {
   switch (status) {
     case 'completed':
       return {
@@ -74,7 +75,11 @@ function paintFor(status: WorkoutPillStatus, deload: string): PillPaint {
         text: resolveColor('status-error-dark'),
       }
     case 'deload':
-      return { background: alpha(deload, 0.12), border: alpha(deload, 0.3), text: deload }
+      return {
+        background: resolveColor('tint-magenta-subtle'),
+        border: resolveColor('on-tint-magenta-subtle'),
+        text: resolveColor('on-tint-magenta-subtle'),
+      }
   }
 }
 
@@ -128,7 +133,7 @@ export function WorkoutPill({
   const pulseOpacity = usePulse(shouldPulse)
   const isCompleted = status === 'completed'
   const isMissed = status === 'missed'
-  const paint = paintFor(status, getSemanticColors(useSurfaceMode())['status-deload'])
+  const paint = paintFor(status)
 
   // 11px sat between scale steps. `caption` rounds it UP to the 12px `xs` step, the
   // same call B2 made when MuscleGroupChip became a Pill preset at size md.

@@ -17,6 +17,7 @@ Pick by **what the colour means**, not by what looks right.
 | -------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------- |
 | **A value got better / worse** (delta, trend, growth)                      | `result-improve` / `result-degrade` / `result-neutral`                           | `status-success` / `status-error`        |
 | **A thing is in a state** (error, warning, live, info)                     | `status-*`                                                                       | `result-*`, brand colours                |
+| **A hue with no status meaning** (tool family, tag, zone)                  | `tint-*-solid` / `-subtle` under `on-tint-*` / `-subtle`, decision 0004          | `status-*` for a hue that is not a state |
 | **N peer categories** (chart series, tags, split counts)                   | `categoricalPalette` (see §2)                                                    | `data-1..10` — **superseded**            |
 | **A position on an ordered or diverging scale** (effort, volume vs target) | `dataviz-sequential-*` (0 low → 5 high), `dataviz-diverging-*` (2 is the centre) | `status-*`, hand-picked ramp steps       |
 | **Brand identity / primary action**                                        | `brand-primary`, `brand-secondary`                                               | a status token that happens to be orange |

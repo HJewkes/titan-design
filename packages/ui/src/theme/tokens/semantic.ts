@@ -59,13 +59,104 @@ import {
  * `text-tertiary` on dark is the one role that ignores L*-nearest; see it.
  */
 
+/**
+ * COLOUR FAMILY CELLS (decision 0004) — seven hues and neutral, four cells each, both modes.
+ *
+ * `tint-{m}-solid` carries `on-tint-{m}`; `tint-{m}-subtle` carries `on-tint-{m}-subtle`. Every
+ * value is a ramp step; there is no wash. Light solid is the decision 0003 ladder: hue 600 under
+ * white, with orange 500 and amber 500 as the two named exceptions. Light subtle is hue 100 under
+ * hue 700. Dark solid is the shipped step under grey 950; dark subtle is hue 900 under hue 300.
+ * Neutral is grey 700 / white and grey 200 / grey 800 in light, grey 200 / grey 950 and
+ * grey 800 / grey 200 in dark.
+ *
+ * The six tone roles (brand-primary, brand-secondary, status-success, -warning, -error, -info)
+ * alias their hue's cells for `-solid`, `on-*`, `-subtle` and `on-*-subtle`, so a component that
+ * reads a role keeps its name and moves with the cell. `family-alias.test.ts` holds the equality.
+ */
+const familyLight = {
+  red: { solid: ramp.red[600], on: p.white, subtle: ramp.red[100], onSubtle: ramp.red[700] },
+  orange: {
+    solid: ramp.orange[500], // decision 0003 named exception (3.74:1 under white)
+    on: p.white,
+    subtle: ramp.orange[100],
+    onSubtle: ramp.orange[700],
+  },
+  amber: {
+    solid: ramp.amber[500], // decision 0003 named exception (3.63:1 under white)
+    on: p.white,
+    subtle: ramp.amber[100],
+    onSubtle: ramp.amber[700],
+  },
+  green: {
+    solid: ramp.green[600],
+    on: p.white,
+    subtle: ramp.green[100],
+    onSubtle: ramp.green[700],
+  },
+  cyan: { solid: ramp.cyan[600], on: p.white, subtle: ramp.cyan[100], onSubtle: ramp.cyan[700] },
+  blue: { solid: ramp.blue[600], on: p.white, subtle: ramp.blue[100], onSubtle: ramp.blue[700] },
+  magenta: {
+    solid: ramp.magenta[600],
+    on: p.white,
+    subtle: ramp.magenta[100],
+    onSubtle: ramp.magenta[700],
+  },
+  neutral: { solid: greyRamp[700], on: p.white, subtle: greyRamp[200], onSubtle: greyRamp[800] },
+} as const
+
+const familyDark = {
+  red: { solid: ramp.red[500], on: greyRamp[950], subtle: ramp.red[900], onSubtle: ramp.red[300] },
+  orange: {
+    solid: ramp.orange[400],
+    on: greyRamp[950],
+    subtle: ramp.orange[900],
+    onSubtle: ramp.orange[300],
+  },
+  amber: {
+    solid: ramp.amber[300],
+    on: greyRamp[950],
+    subtle: ramp.amber[900],
+    onSubtle: ramp.amber[300],
+  },
+  green: {
+    solid: ramp.green[300],
+    on: greyRamp[950],
+    subtle: ramp.green[900],
+    onSubtle: ramp.green[300],
+  },
+  cyan: {
+    solid: ramp.cyan[500],
+    on: greyRamp[950],
+    subtle: ramp.cyan[900],
+    onSubtle: ramp.cyan[300],
+  },
+  blue: {
+    solid: ramp.blue[500],
+    on: greyRamp[950],
+    subtle: ramp.blue[900],
+    onSubtle: ramp.blue[300],
+  },
+  magenta: {
+    solid: ramp.magenta[400],
+    on: greyRamp[950],
+    subtle: ramp.magenta[900],
+    onSubtle: ramp.magenta[300],
+  },
+  neutral: {
+    solid: greyRamp[200],
+    on: greyRamp[950],
+    subtle: greyRamp[800],
+    onSubtle: greyRamp[200],
+  },
+} as const
+
 // Light mode semantic colors (default)
 export const semanticColorsLight = {
   // Brand colors (brand-*)
   'brand-primary': ramp.orange[400],
   'brand-primary-light': ramp.orange[300],
   'brand-primary-dark': ramp.orange[500],
-  'brand-primary-subtle': ramp.orange[100],
+  'brand-primary-subtle': familyLight.orange.subtle, // decision 0004: the orange subtle cell
   'brand-primary-muted': ramp.orange[200],
   'brand-primary-strong': 'rgba(255, 121, 0, 0.50)',
   'brand-primary-hover': ramp.orange[600], // TD-774: one rung below the orange[500] solid
@@ -74,27 +165,28 @@ export const semanticColorsLight = {
   'brand-secondary': ramp.cyan[600],
   'brand-secondary-light': ramp.cyan[500],
   'brand-secondary-dark': ramp.cyan[700],
-  'brand-secondary-subtle': ramp.cyan[100],
+  'brand-secondary-subtle': familyLight.cyan.subtle, // decision 0004: the cyan subtle cell
   'brand-secondary-muted': ramp.cyan[200],
   'brand-secondary-strong': 'rgba(48, 123, 155, 0.50)',
   'brand-secondary-hover': ramp.cyan[700],
   'brand-secondary-active': ramp.cyan[800],
 
-  // Text on brand backgrounds (on-*)
-  'on-brand-primary': p.white,
-  'on-brand-secondary': p.white,
+  // Text on brand backgrounds (on-*): the family's white label (decision 0004)
+  'on-brand-primary': familyLight.orange.on,
+  'on-brand-secondary': familyLight.cyan.on,
 
   // Text ON a `-subtle` fill. Light pairs a ramp[700] label with a ramp[100] fill:
   // the base rung on a near-white ramp[50] fill read 1.7 to 4.4:1. Every tone now
-  // clears 4.5:1 (subtle-label.light.test.ts).
-  'on-brand-primary-subtle': ramp.orange[700],
-  'on-brand-secondary-subtle': ramp.cyan[700],
+  // clears 4.5:1 (subtle-label.light.test.ts). Decision 0004 makes the pair the
+  // hue's subtle cell; the values are unchanged.
+  'on-brand-primary-subtle': familyLight.orange.onSubtle,
+  'on-brand-secondary-subtle': familyLight.cyan.onSubtle,
 
   // Status colors (status-*)
   'status-success': ramp.green[700], // TD-789 3b: green 600 missed 3:1 on the grey 200 rail
   'status-success-light': ramp.green[200],
   'status-success-dark': ramp.green[800], // TD-789 3b: one step past the base, as error-dark is
-  'status-success-subtle': ramp.green[100],
+  'status-success-subtle': familyLight.green.subtle, // decision 0004: the green subtle cell
   'status-success-muted': 'rgba(46, 213, 115, 0.30)',
   'status-success-strong': 'rgba(46, 213, 115, 0.50)',
 
@@ -109,7 +201,7 @@ export const semanticColorsLight = {
   'status-error': ramp.red[600],
   'status-error-light': ramp.red[500],
   'status-error-dark': ramp.red[700],
-  'status-error-subtle': ramp.red[100],
+  'status-error-subtle': familyLight.red.subtle, // decision 0004: the red subtle cell
   'status-error-muted': 'rgba(209, 67, 67, 0.30)',
   'status-error-strong': 'rgba(209, 67, 67, 0.50)',
 
@@ -123,40 +215,75 @@ export const semanticColorsLight = {
   'status-warning': ramp.amber[600], // TD-789 3b: amber 500 missed 3:1 on the light planes
   'status-warning-light': ramp.amber[200],
   'status-warning-dark': ramp.amber[700], // TD-789 3b: one step past the base
-  'status-warning-subtle': ramp.amber[100],
+  'status-warning-subtle': familyLight.amber.subtle, // decision 0004: the amber subtle cell
   'status-warning-muted': 'rgba(249, 180, 21, 0.30)',
   'status-warning-strong': 'rgba(249, 180, 21, 0.50)',
 
   'status-info': ramp.blue[700], // TD-789 3b: blue 600 missed 3:1 on its Progress track on grey 200
   'status-info-light': ramp.blue[300],
   'status-info-dark': ramp.blue[800], // TD-789 3b: one step past the base
-  'status-info-subtle': ramp.blue[100],
+  'status-info-subtle': familyLight.blue.subtle, // decision 0004: the blue subtle cell
   'status-info-muted': 'rgba(33, 150, 243, 0.30)',
   'status-info-strong': 'rgba(33, 150, 243, 0.50)',
 
-  // Solid-variant fill. Success and warning carry the light-tuning values: white
-  // on green[600] clears 4.5:1; amber[500] keeps the white label at 3.6:1, a
-  // declared exception in contrast-baseline.json. Brand is the other named
-  // exception of decision 0003: orange[500] under white reads 3.74:1. Info keeps
-  // its earlier value until its own light value is decided.
-  'brand-primary-solid': ramp.orange[500], // TD-774: decision 0003, named exception
-  'brand-secondary-solid': ramp.cyan[600],
-  'status-success-solid': ramp.green[600],
-  'status-error-solid': ramp.red[600],
-  'status-warning-solid': ramp.amber[500],
-  'status-info-solid': ramp.blue[500],
+  // Solid-variant fill: each role's hue solid cell (decision 0004), which is the
+  // decision 0003 ladder. White on green[600] clears 4.5:1; amber[500] keeps the
+  // white label at 3.6:1 and orange[500] at 3.74:1, the two named exceptions
+  // declared in contrast-baseline.json. Info moves to the ladder step, blue[600].
+  'brand-primary-solid': familyLight.orange.solid, // TD-774: decision 0003, named exception
+  'brand-secondary-solid': familyLight.cyan.solid,
+  'status-success-solid': familyLight.green.solid,
+  'status-error-solid': familyLight.red.solid,
+  'status-warning-solid': familyLight.amber.solid, // decision 0003, named exception
+  'status-info-solid': familyLight.blue.solid, // decision 0004: blue 600, was blue 500
 
   // Text ON a `-subtle` fill — see the on-brand-*-subtle note above.
-  'on-status-success-subtle': ramp.green[700],
-  'on-status-error-subtle': ramp.red[700],
-  'on-status-warning-subtle': ramp.amber[700],
-  'on-status-info-subtle': ramp.blue[700],
+  'on-status-success-subtle': familyLight.green.onSubtle,
+  'on-status-error-subtle': familyLight.red.onSubtle,
+  'on-status-warning-subtle': familyLight.amber.onSubtle,
+  'on-status-info-subtle': familyLight.blue.onSubtle,
 
-  // Text on status backgrounds (on-status-*)
-  'on-status-success': p.white,
-  'on-status-error': p.white,
-  'on-status-warning': p.white,
-  'on-status-info': p.white,
+  // Text on status backgrounds (on-status-*): the family's white label
+  'on-status-success': familyLight.green.on,
+  'on-status-error': familyLight.red.on,
+  'on-status-warning': familyLight.amber.on,
+  'on-status-info': familyLight.blue.on,
+
+  // Colour family cells (tint-*), decision 0004: a hue with no status meaning
+  // (a tool family, a tag, a zone). Light solid is hue 600 under white, subtle is
+  // hue 100 under hue 700; neutral is grey 700 / white and grey 200 / grey 800.
+  'tint-red-solid': familyLight.red.solid, // hue 600
+  'on-tint-red': familyLight.red.on, // white
+  'tint-red-subtle': familyLight.red.subtle, // hue 100
+  'on-tint-red-subtle': familyLight.red.onSubtle, // hue 700
+  'tint-orange-solid': familyLight.orange.solid, // hue 500, decision 0003 exception
+  'on-tint-orange': familyLight.orange.on, // white
+  'tint-orange-subtle': familyLight.orange.subtle, // hue 100
+  'on-tint-orange-subtle': familyLight.orange.onSubtle, // hue 700
+  'tint-amber-solid': familyLight.amber.solid, // hue 500, decision 0003 exception
+  'on-tint-amber': familyLight.amber.on, // white
+  'tint-amber-subtle': familyLight.amber.subtle, // hue 100
+  'on-tint-amber-subtle': familyLight.amber.onSubtle, // hue 700
+  'tint-green-solid': familyLight.green.solid, // hue 600
+  'on-tint-green': familyLight.green.on, // white
+  'tint-green-subtle': familyLight.green.subtle, // hue 100
+  'on-tint-green-subtle': familyLight.green.onSubtle, // hue 700
+  'tint-cyan-solid': familyLight.cyan.solid, // hue 600
+  'on-tint-cyan': familyLight.cyan.on, // white
+  'tint-cyan-subtle': familyLight.cyan.subtle, // hue 100
+  'on-tint-cyan-subtle': familyLight.cyan.onSubtle, // hue 700
+  'tint-blue-solid': familyLight.blue.solid, // hue 600
+  'on-tint-blue': familyLight.blue.on, // white
+  'tint-blue-subtle': familyLight.blue.subtle, // hue 100
+  'on-tint-blue-subtle': familyLight.blue.onSubtle, // hue 700
+  'tint-magenta-solid': familyLight.magenta.solid, // hue 600
+  'on-tint-magenta': familyLight.magenta.on, // white
+  'tint-magenta-subtle': familyLight.magenta.subtle, // hue 100
+  'on-tint-magenta-subtle': familyLight.magenta.onSubtle, // hue 700, equals status-deload
+  'tint-neutral-solid': familyLight.neutral.solid, // grey 700
+  'on-tint-neutral': familyLight.neutral.on, // white
+  'tint-neutral-subtle': familyLight.neutral.subtle, // grey 200
+  'on-tint-neutral-subtle': familyLight.neutral.onSubtle, // grey 800
 
   // Result/outcome indicators (result-*)
   'result-improve': resultPaletteColors.improve, // Green - positive outcome
@@ -314,7 +441,7 @@ export const semanticColorsDark = {
   'brand-primary': ramp.orange[400],
   'brand-primary-light': ramp.orange[300],
   'brand-primary-dark': ramp.orange[500],
-  'brand-primary-subtle': 'rgba(255, 121, 0, 0.12)',
+  'brand-primary-subtle': familyDark.orange.subtle, // decision 0004: orange 900, was a 12% wash
   'brand-primary-muted': 'rgba(255, 121, 0, 0.30)',
   'brand-primary-strong': 'rgba(255, 121, 0, 0.50)',
   'brand-primary-hover': ramp.orange[300],
@@ -323,30 +450,31 @@ export const semanticColorsDark = {
   'brand-secondary': ramp.cyan[500], // lifted from cyan 600 to clear 3:1 on every dark plane (item 42 d4)
   'brand-secondary-light': ramp.cyan[500],
   'brand-secondary-dark': ramp.cyan[700],
-  'brand-secondary-subtle': 'rgba(34, 211, 238, 0.12)',
+  'brand-secondary-subtle': familyDark.cyan.subtle, // decision 0004: cyan 900, was a 12% wash
   'brand-secondary-muted': 'rgba(48, 123, 155, 0.30)',
   'brand-secondary-strong': 'rgba(48, 123, 155, 0.50)',
   'brand-secondary-hover': ramp.cyan[500],
   'brand-secondary-active': ramp.cyan[400],
 
   // Text on a SOLID fill — see the on-status-* note below.
-  'on-brand-primary': greyRamp[950],
-  'on-brand-secondary': greyRamp[950],
+  'on-brand-primary': familyDark.orange.on,
+  'on-brand-secondary': familyDark.cyan.on,
 
   // Text ON a `-subtle` fill. Its own role: `brand-primary` and friends are tuned to
   // carry a white label as a solid fill, which makes the two deepest of them
   // (cyan[600], red[600]) too dark to read as text on a dark plane. Levelling the
   // family at rung 300 puts every tone within OKLCH L 0.769-0.813 instead of
-  // 0.550-0.813. Brand is deliberately left at its own orange[400] (operator, AW-133)
-  // so the Voltras tone never drifts; it is the one tone under AA on a raised card.
-  'on-brand-primary-subtle': ramp.orange[400],
-  'on-brand-secondary-subtle': ramp.cyan[300],
+  // 0.550-0.813. AW-133 had left brand at its own orange[400] so the brand tone never
+  // drifted; decision 0004 levels it with the family at orange[300] on the opaque
+  // orange[900] subtle cell (7.00:1), where the wash had read under AA on a raised card.
+  'on-brand-primary-subtle': familyDark.orange.onSubtle, // decision 0004: orange 300, was 400
+  'on-brand-secondary-subtle': familyDark.cyan.onSubtle,
 
   // Status colors
   'status-success': ramp.green[300],
   'status-success-light': ramp.green[200],
   'status-success-dark': ramp.green[600],
-  'status-success-subtle': 'rgba(46, 213, 115, 0.12)',
+  'status-success-subtle': familyDark.green.subtle, // decision 0004: green 900, was a 12% wash
   'status-success-muted': 'rgba(46, 213, 115, 0.30)',
   'status-success-strong': 'rgba(46, 213, 115, 0.50)',
 
@@ -361,10 +489,9 @@ export const semanticColorsDark = {
   'status-error': ramp.red[500], // equals text-error; red 600 missed 3:1 on the upper planes (item 42 d3)
   'status-error-light': ramp.red[500],
   'status-error-dark': ramp.red[700],
-  // Alpha 0.08, not the family's 0.12: error's label is red[400], a rung darker than
-  // its siblings so it reads RED rather than pink (rung 300 has only 0.121 chroma).
-  // Thinning the fill buys back the contrast that extra darkness costs. See AW-133.
-  'status-error-subtle': 'rgba(247, 113, 117, 0.08)',
+  // AW-133 thinned this wash to 0.08 to carry a red[400] label; decision 0004 makes it
+  // the opaque red[900] cell under red[300], levelled with the family (7.03:1).
+  'status-error-subtle': familyDark.red.subtle, // decision 0004: red 900, was an 8% wash
   'status-error-muted': 'rgba(209, 67, 67, 0.30)',
   'status-error-strong': 'rgba(209, 67, 67, 0.50)',
 
@@ -378,48 +505,86 @@ export const semanticColorsDark = {
   'status-warning': ramp.amber[300],
   'status-warning-light': ramp.amber[200],
   'status-warning-dark': ramp.amber[500],
-  'status-warning-subtle': 'rgba(249, 180, 21, 0.12)',
+  'status-warning-subtle': familyDark.amber.subtle, // decision 0004: amber 900, was a 12% wash
   'status-warning-muted': 'rgba(249, 180, 21, 0.30)',
   'status-warning-strong': 'rgba(249, 180, 21, 0.50)',
 
   'status-info': ramp.blue[500],
   'status-info-light': ramp.blue[300],
   'status-info-dark': ramp.blue[600],
-  'status-info-subtle': 'rgba(120, 194, 255, 0.12)',
+  'status-info-subtle': familyDark.blue.subtle, // decision 0004: blue 900, was a 12% wash
   'status-info-muted': 'rgba(33, 150, 243, 0.30)',
   'status-info-strong': 'rgba(33, 150, 243, 0.50)',
 
-  // SOLID-variant fill. Its own role, for the same reason `on-*-subtle` is: the base
-  // tone token is tuned for borders, dots and text, where a deep step is right. Four
-  // tones alias it unchanged; `brand-secondary` and `status-error` are lifted one rung
-  // because their base steps are too dark to carry a readable dark label — even the
-  // darkest step of their own hue only reaches ~3.6 on them. Lifting the FILL is what
-  // lets all six share one label, which is the point (AW-141).
+  // SOLID-variant fill: each role's hue solid cell (decision 0004), the shipped step.
+  // Its own role, for the same reason `on-*-subtle` is: the base tone token is tuned
+  // for borders, dots and text, where a deep step is right. Four tones alias it
+  // unchanged; `brand-secondary` and `status-error` are lifted one rung because their
+  // base steps are too dark to carry a readable dark label — even the darkest step of
+  // their own hue only reaches ~3.6 on them. Lifting the FILL is what lets all six
+  // share one label, which is the point (AW-141).
   // Item 42 later lifted those two dark base tones to rung 500 as well, so here the
   // fill equals its base tone; the fill must not follow either back to rung 600.
-  'brand-primary-solid': ramp.orange[400],
-  'brand-secondary-solid': ramp.cyan[500],
-  'status-success-solid': ramp.green[300],
-  'status-error-solid': ramp.red[500],
-  'status-warning-solid': ramp.amber[300],
-  'status-info-solid': ramp.blue[500],
+  'brand-primary-solid': familyDark.orange.solid,
+  'brand-secondary-solid': familyDark.cyan.solid,
+  'status-success-solid': familyDark.green.solid,
+  'status-error-solid': familyDark.red.solid,
+  'status-warning-solid': familyDark.amber.solid,
+  'status-info-solid': familyDark.blue.solid,
 
   // Text on a SOLID fill. Every solid fill is now light enough to carry the dark
   // inverse label, and measured on the `-solid` fills above it clears AA on all six
   // (5.16 to 9.64). White cleared it on none of the bright four — warning was 1.82.
-  'on-status-success': greyRamp[950],
-  'on-status-error': greyRamp[950],
-  'on-status-warning': greyRamp[950],
-  'on-status-info': greyRamp[950],
+  'on-status-success': familyDark.green.on,
+  'on-status-error': familyDark.red.on,
+  'on-status-warning': familyDark.amber.on,
+  'on-status-info': familyDark.blue.on,
 
-  // Text ON a `-subtle` fill — see the on-brand-*-subtle note above. Error is the
-  // second deliberate exception to the rung-300 rule (operator, AW-133): red[300]
-  // levelled perfectly but read PINK, because a red that light can only hold 0.121
-  // chroma. red[400] carries 0.165 and reads red; its fill is thinned to compensate.
-  'on-status-success-subtle': ramp.green[300],
-  'on-status-error-subtle': ramp.red[400],
-  'on-status-warning-subtle': ramp.amber[300],
-  'on-status-info-subtle': ramp.blue[300],
+  // Text ON a `-subtle` fill — see the on-brand-*-subtle note above. AW-133 had held
+  // error at red[400], a rung darker than its siblings, because red[300] read PINK on
+  // the thin wash (a red that light holds only 0.121 chroma). Decision 0004 levels it
+  // at red[300] on the opaque red[900] cell, where the deep fill carries the hue.
+  'on-status-success-subtle': familyDark.green.onSubtle,
+  'on-status-error-subtle': familyDark.red.onSubtle, // decision 0004: red 300, was 400
+  'on-status-warning-subtle': familyDark.amber.onSubtle,
+  'on-status-info-subtle': familyDark.blue.onSubtle,
+
+  // Colour family cells (tint-*), decision 0004: a hue with no status meaning
+  // (a tool family, a tag, a zone). Dark solid is the shipped step under grey 950,
+  // subtle is hue 900 under hue 300; neutral is grey 200 / grey 950 and
+  // grey 800 / grey 200.
+  'tint-red-solid': familyDark.red.solid, // hue 500
+  'on-tint-red': familyDark.red.on, // grey 950
+  'tint-red-subtle': familyDark.red.subtle, // hue 900
+  'on-tint-red-subtle': familyDark.red.onSubtle, // hue 300
+  'tint-orange-solid': familyDark.orange.solid, // hue 400
+  'on-tint-orange': familyDark.orange.on, // grey 950
+  'tint-orange-subtle': familyDark.orange.subtle, // hue 900
+  'on-tint-orange-subtle': familyDark.orange.onSubtle, // hue 300
+  'tint-amber-solid': familyDark.amber.solid, // hue 300
+  'on-tint-amber': familyDark.amber.on, // grey 950
+  'tint-amber-subtle': familyDark.amber.subtle, // hue 900
+  'on-tint-amber-subtle': familyDark.amber.onSubtle, // hue 300
+  'tint-green-solid': familyDark.green.solid, // hue 300
+  'on-tint-green': familyDark.green.on, // grey 950
+  'tint-green-subtle': familyDark.green.subtle, // hue 900
+  'on-tint-green-subtle': familyDark.green.onSubtle, // hue 300
+  'tint-cyan-solid': familyDark.cyan.solid, // hue 500
+  'on-tint-cyan': familyDark.cyan.on, // grey 950
+  'tint-cyan-subtle': familyDark.cyan.subtle, // hue 900
+  'on-tint-cyan-subtle': familyDark.cyan.onSubtle, // hue 300
+  'tint-blue-solid': familyDark.blue.solid, // hue 500
+  'on-tint-blue': familyDark.blue.on, // grey 950
+  'tint-blue-subtle': familyDark.blue.subtle, // hue 900
+  'on-tint-blue-subtle': familyDark.blue.onSubtle, // hue 300
+  'tint-magenta-solid': familyDark.magenta.solid, // hue 400
+  'on-tint-magenta': familyDark.magenta.on, // grey 950
+  'tint-magenta-subtle': familyDark.magenta.subtle, // hue 900
+  'on-tint-magenta-subtle': familyDark.magenta.onSubtle, // hue 300
+  'tint-neutral-solid': familyDark.neutral.solid, // grey 200
+  'on-tint-neutral': familyDark.neutral.on, // grey 950
+  'tint-neutral-subtle': familyDark.neutral.subtle, // grey 800
+  'on-tint-neutral-subtle': familyDark.neutral.onSubtle, // grey 200
 
   // Result/outcome indicators (result-*)
   'result-improve': resultPaletteColors.improve,

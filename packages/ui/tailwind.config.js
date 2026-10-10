@@ -194,6 +194,60 @@ module.exports = {
             subtle: 'var(--color-on-status-info-subtle)',
           },
         },
+        // Colour family cells (decision 0004): a hue with no status meaning, for a
+        // tool family, a tag or a zone. `-solid` carries `on-tint-{m}`; `-subtle`
+        // carries `on-tint-{m}-subtle`. The brand and status roles above alias
+        // their hue's cells, so a status keeps its own name.
+        tint: {
+          red: { solid: 'var(--color-tint-red-solid)', subtle: 'var(--color-tint-red-subtle)' },
+          orange: {
+            solid: 'var(--color-tint-orange-solid)',
+            subtle: 'var(--color-tint-orange-subtle)',
+          },
+          amber: {
+            solid: 'var(--color-tint-amber-solid)',
+            subtle: 'var(--color-tint-amber-subtle)',
+          },
+          green: {
+            solid: 'var(--color-tint-green-solid)',
+            subtle: 'var(--color-tint-green-subtle)',
+          },
+          cyan: { solid: 'var(--color-tint-cyan-solid)', subtle: 'var(--color-tint-cyan-subtle)' },
+          blue: { solid: 'var(--color-tint-blue-solid)', subtle: 'var(--color-tint-blue-subtle)' },
+          magenta: {
+            solid: 'var(--color-tint-magenta-solid)',
+            subtle: 'var(--color-tint-magenta-subtle)',
+          },
+          neutral: {
+            solid: 'var(--color-tint-neutral-solid)',
+            subtle: 'var(--color-tint-neutral-subtle)',
+          },
+        },
+        'on-tint': {
+          red: { DEFAULT: 'var(--color-on-tint-red)', subtle: 'var(--color-on-tint-red-subtle)' },
+          orange: {
+            DEFAULT: 'var(--color-on-tint-orange)',
+            subtle: 'var(--color-on-tint-orange-subtle)',
+          },
+          amber: {
+            DEFAULT: 'var(--color-on-tint-amber)',
+            subtle: 'var(--color-on-tint-amber-subtle)',
+          },
+          green: {
+            DEFAULT: 'var(--color-on-tint-green)',
+            subtle: 'var(--color-on-tint-green-subtle)',
+          },
+          cyan: { DEFAULT: 'var(--color-on-tint-cyan)', subtle: 'var(--color-on-tint-cyan-subtle)' },
+          blue: { DEFAULT: 'var(--color-on-tint-blue)', subtle: 'var(--color-on-tint-blue-subtle)' },
+          magenta: {
+            DEFAULT: 'var(--color-on-tint-magenta)',
+            subtle: 'var(--color-on-tint-magenta-subtle)',
+          },
+          neutral: {
+            DEFAULT: 'var(--color-on-tint-neutral)',
+            subtle: 'var(--color-on-tint-neutral-subtle)',
+          },
+        },
         // Result/outcome colors
         result: {
           improve: {
