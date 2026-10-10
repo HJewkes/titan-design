@@ -7,6 +7,10 @@ const meta: Meta<typeof Link> = {
   component: Link,
   tags: ['autodocs', 'status:stable', '!status:review'],
   argTypes: {
+    href: {
+      control: 'text',
+      description: 'URL; on web the link renders a real anchor',
+    },
     color: {
       control: 'select',
       options: ['default', 'primary', 'secondary', 'inherit'],
@@ -34,6 +38,8 @@ type Story = StoryObj<typeof Link>
 export const Default: Story = {
   args: {
     children: 'Click here',
+    href: 'https://example.com',
+    isExternal: false,
     color: 'default',
     underline: 'hover',
     onPress: () => {},

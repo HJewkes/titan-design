@@ -13793,7 +13793,7 @@
         },
         {
           "default": null,
-          "description": "URL to navigate to (for accessibility)",
+          "description": "URL to navigate to; on web the link renders a real `<a href>`",
           "name": "href",
           "required": false,
           "type": "string"
