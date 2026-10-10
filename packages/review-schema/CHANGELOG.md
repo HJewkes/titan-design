@@ -30,8 +30,9 @@ project adheres to [Semantic Versioning](https://semver.org/).
   `base` commit they render on, touched tokens per mode), questions with touched tokens, recorded
   Ships, and a `contains(commit, ancestor)` predicate the caller answers. It returns
   `{ kind, lock, ids, tokens, message }[]` of kind `superseded-state` (an item
-  overlapping an open lock's tokens on a base without the holder head), `lock-order` (any open lock an item holds comes `after` an open
-  lock no item up to it holds), `re-ask` (a question touching a decided lock's tokens) and
+  overlapping an open lock's tokens on a base without the holder head), `lock-order`
+  (any open lock an item holds comes `after` an open lock no item up to it holds), `re-ask` (a
+  question touching a decided lock's tokens) and
   `stale-ship` (at most one per PR: its last Ship is not at its planned item's head or, for a PR the
   plan does not hold, at its prior Ship's head; `ids` names every lock the PR holds). Every check
   reads one per-PR view: all the non-released locks a PR holds and its Ship history. Exports
