@@ -6,7 +6,7 @@ import { Badge } from '../../components/ui/badge'
 import { Button, ButtonText } from '../../components/ui/button'
 import { Chip } from '../../components/ui/chip'
 import { Pill } from '../../components/ui/pill'
-import { Tab, TabList, Tabs } from '../../components/ui/tabs'
+import { Tab, TabList, TabPanel, Tabs } from '../../components/ui/tabs'
 import { Typography } from '../../components/ui/typography'
 import { Gauge } from '../../components/ui/charts/gauge'
 import { Scatter, type ScatterDatum } from '../../components/ui/charts/scatter'
@@ -394,6 +394,9 @@ function ControlRow({ face }: { face: 'today' | 'heading' | 'sans' }) {
             <Text className={small}>History</Text>
           </Tab>
         </TabList>
+        {/* Hidden, so each Tab's aria-controls resolves without changing the layout. */}
+        <TabPanel index={0} className="hidden" />
+        <TabPanel index={1} className="hidden" />
       </Tabs>
     </View>
   )
