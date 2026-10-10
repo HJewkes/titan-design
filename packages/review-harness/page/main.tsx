@@ -1,12 +1,13 @@
 import { createRoot } from 'react-dom/client'
 import 'virtual:titan-tokens.css'
-import type { Manifest } from '../src/schema.ts'
+import type { Manifest } from '@titan-design/review-schema'
 import { App } from './App.tsx'
 import './styles.css'
 
 interface RoundResponse {
   manifest: Manifest
   manifestSha256: string
+  harnessWarning?: string
 }
 
 const root = createRoot(document.getElementById('root') as HTMLElement)

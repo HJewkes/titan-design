@@ -1,27 +1,18 @@
 import { copyFile, realpath } from 'node:fs/promises'
 import { join, resolve, sep } from 'node:path'
-import { chromium, type Page } from '@playwright/test'
 import {
   isImageVariant,
   isStoryVariant,
   type ImageVariant,
   type Manifest,
   type StoryVariant,
-  type Variant,
-} from './schema.ts'
+} from '@titan-design/review-schema'
+import { frameKey, frameViewport } from './frames.ts'
 import { storyUrl } from './round.ts'
-import { AUTO_FALLBACK_HEIGHT, frameHeight, isAuto } from './sections.ts'
-
-const SETTLE_MS = 1500
+import { openChromiumShooter } from './shooter.ts'
 
 export function captureFileName(variant: StoryVariant, width: number): string {
-  return `${width}-${variant.key}-${variant.storyId.split('--').pop()}.png`
-}
-
-/** The canvas a story is rendered on; the shot itself is cropped to `#storybook-root`. */
-export function captureViewportHeight(manifest: Manifest, variant: Variant): number {
-  const height = frameHeight(manifest, variant)
-  return isAuto(height) ? AUTO_FALLBACK_HEIGHT : height
+  return `${frameKey(variant, width)}.png`
 }
 
 /** Defence in depth: the schema already constrains key/storyId, but never write outside outDir. */
@@ -33,20 +24,8 @@ function assertInsideOutDir(file: string, outDir: string): string {
   return resolvedFile
 }
 
-async function shoot(page: Page, url: string, file: string): Promise<void> {
-  await page.goto(url, { waitUntil: 'networkidle' })
-  await page.waitForTimeout(SETTLE_MS)
-  const storyError = await page.evaluate(() =>
-    document.body.classList.contains('sb-show-errordisplay')
-      ? document.querySelector('#error-message')?.textContent || 'unknown error'
-      : null
-  )
-  if (storyError) throw new Error(`story failed to render: ${storyError.slice(0, 300)}`)
-  await page.locator('#storybook-root').first().screenshot({ path: file, animations: 'disabled' })
-}
-
 /** The first of `<key>-image.png`, `<key>-image-2.png`, ... that is not one of the round's source PNGs. */
-export function imageCopyName(variant: ImageVariant, outDir: string, sources: Set<string>): string {
+function imageCopyName(variant: ImageVariant, outDir: string, sources: Set<string>): string {
   for (let n = 1; ; n++) {
     const name = n === 1 ? `${variant.key}-image.png` : `${variant.key}-image-${n}.png`
     if (!sources.has(join(outDir, name))) return name
@@ -93,15 +72,16 @@ function plannedShots(manifest: Manifest, outDir: string, sources: Set<string>):
 
 async function shootStories(shots: Shot[], manifest: Manifest, storybookUrl: string) {
   if (shots.length === 0) return []
-  const browser = await chromium.launch()
+  const shooter = await openChromiumShooter()
   try {
-    const page = await browser.newPage({ deviceScaleFactor: 2 })
-    for (const { variant, width, file } of shots) {
-      await page.setViewportSize({ width, height: captureViewportHeight(manifest, variant) })
-      await shoot(page, storyUrl(storybookUrl, variant), file)
-    }
+    for (const { variant, width, file } of shots)
+      await shooter.shoot(
+        storyUrl(storybookUrl, variant),
+        frameViewport(manifest, variant, width),
+        file
+      )
   } finally {
-    await browser.close()
+    await shooter.close()
   }
   return shots.map((s) => s.file)
 }

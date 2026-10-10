@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { siblingSource, resolveAll } from '../../../test/spacing-resolver'
+import { spacingClassesOf, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { PlaceholderStrip } from './PlaceholderStrip'
@@ -92,10 +92,9 @@ describe('PlaceholderStrip', () => {
 
 /** PlaceholderStrip's segment hairline, pinned (AW-142); pixels unchanged. */
 describe('PlaceholderStrip geometry resolves to the numeric scale', () => {
-  const source = siblingSource(import.meta.url, 'PlaceholderStrip.tsx')
-
   it('keeps the 2px gap between placeholder segments', () => {
-    expect(source).toContain('flex-row gap-0.5')
+    render(<PlaceholderStrip mode="segmented" />)
+    expect(spacingClassesOf('placeholder-strip')).toEqual(['gap-0.5'])
     expect(resolveAll(['gap-0.5'])).toEqual(['2px'])
   })
 })

@@ -38,17 +38,15 @@ export {
   normalizeLossThresholds,
   type VelocityLossThresholds,
   type VelocityLossBand,
-  DualVelocityStrip,
-  type DualVelocityStripProps,
-  type DualVelocityStream,
 } from './VelocityStrip'
+export { DualVelocityStrip, type DualVelocityStripProps } from './DualVelocityStrip'
+export type { DualVelocityStream } from './dual-velocity-slots'
 export { MuscleGroupChip, type MuscleGroupChipProps, type VolumeStatus } from './MuscleGroupChip'
 export { MuscleStrip, type MuscleStripProps, type MuscleStripMuscleData } from './MuscleStrip'
 export { Sparkline, type SparklineProps } from './Sparkline'
 export { SetRow, type SetRowProps, type SetRowState, type SetRowUnit } from './SetRow'
 export { InputBar, type InputBarProps } from './InputBar'
 export { RestTimer, type RestTimerProps } from './RestTimer'
-export { MetricCell, type MetricCellProps, METRIC_FONT } from './metricText'
 export { SetsRepsLoad, type SetsRepsLoadProps } from './SetsRepsLoad'
 export { SegmentedBar, type SegmentedBarProps, type SegmentedBarSegment } from './SegmentedBar'
 export { paceTone, paceToneColor, type PaceTone } from './paceTone'
@@ -349,6 +347,7 @@ export type {
   ActiveWorkoutExercise,
   ActiveWorkoutSuperset,
   ActiveWorkoutInput,
+  ActiveWorkoutRecordedSet,
   ActiveWorkoutRest,
   ActiveExerciseStatus,
   WorkoutProgress,

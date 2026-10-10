@@ -1,12 +1,13 @@
-declare module 'jest-axe' {
-  export function axe(
-    html: Element | string,
-    options?: Record<string, unknown>
-  ): Promise<{ violations: unknown[] }>
+// A module file, so `declare module 'vitest'` merges instead of shadowing vitest.
+// The ambient `jest-axe` declaration needs a script file and lives in jest-axe-module.d.ts.
+import 'vitest'
 
-  export const toHaveNoViolations: {
-    toHaveNoViolations(results: { violations: unknown[] }): { pass: boolean; message(): string }
+declare module 'vitest' {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- merged declarations must repeat vitest's own `T = any` default
+  interface Assertion<T = any> {
+    toHaveNoViolations(): T
   }
-
-  export function configureAxe(options?: Record<string, unknown>): typeof axe
+  interface AsymmetricMatchersContaining {
+    toHaveNoViolations(): unknown
+  }
 }

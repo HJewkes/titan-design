@@ -55,7 +55,7 @@ function compactCard(title: string): GoalCardProps {
 const meta: Meta<typeof GoalCard> = {
   title: 'Lab/Decisions/Goal Card Header',
   component: GoalCard,
-  tags: ['status:lab'],
+  tags: ['status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
   decorators: [
     (Story, { args }) => (

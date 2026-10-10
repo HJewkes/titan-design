@@ -1,8 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
+import { Card } from '../card'
 import { Tabs, TabList, Tab, TabPanels, TabPanel } from './Tabs'
 
-const meta: Meta<typeof Tabs> = {
+type StoryArgs = React.ComponentProps<typeof Tabs> & { autoHeightCard?: boolean }
+
+const meta: Meta<StoryArgs> = {
   title: 'Components/Molecules/Tabs',
   component: Tabs,
   tags: ['autodocs', 'status:stable', '!status:review'],
@@ -15,32 +18,43 @@ const meta: Meta<typeof Tabs> = {
       control: 'select',
       options: ['horizontal', 'vertical'],
     },
+    autoHeightCard: {
+      control: 'boolean',
+      description: 'Wrap in a Card with no fixed height; the panels size to their content.',
+    },
   },
+  args: { autoHeightCard: false },
 }
 
 export default meta
-type Story = StoryObj<typeof Tabs>
+type Story = StoryObj<StoryArgs>
+
+function CardParent({ on, children }: { on?: boolean; children: React.ReactNode }) {
+  return on ? <Card>{children}</Card> : <>{children}</>
+}
 
 export const Default: Story = {
-  render: () => (
-    <Tabs defaultIndex={0}>
-      <TabList>
-        <Tab>Account</Tab>
-        <Tab>Security</Tab>
-        <Tab>Notifications</Tab>
-      </TabList>
-      <TabPanels>
-        <TabPanel>
-          <Text className="text-text-primary">Account settings content</Text>
-        </TabPanel>
-        <TabPanel>
-          <Text className="text-text-primary">Security settings content</Text>
-        </TabPanel>
-        <TabPanel>
-          <Text className="text-text-primary">Notification settings content</Text>
-        </TabPanel>
-      </TabPanels>
-    </Tabs>
+  render: ({ autoHeightCard, ...args }) => (
+    <CardParent on={autoHeightCard}>
+      <Tabs defaultValue={0} {...args}>
+        <TabList>
+          <Tab>Account</Tab>
+          <Tab>Security</Tab>
+          <Tab>Notifications</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel>
+            <Text className="text-text-primary">Account settings content</Text>
+          </TabPanel>
+          <TabPanel>
+            <Text className="text-text-primary">Security settings content</Text>
+          </TabPanel>
+          <TabPanel>
+            <Text className="text-text-primary">Notification settings content</Text>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+    </CardParent>
   ),
 }
 
@@ -184,6 +198,11 @@ export const AllVariants: Story = {
             <Tab>Tab 2</Tab>
             <Tab>Tab 3</Tab>
           </TabList>
+          <TabPanels>
+            <TabPanel>Content 1</TabPanel>
+            <TabPanel>Content 2</TabPanel>
+            <TabPanel>Content 3</TabPanel>
+          </TabPanels>
         </Tabs>
       </View>
 
@@ -195,6 +214,11 @@ export const AllVariants: Story = {
             <Tab>Tab 2</Tab>
             <Tab>Tab 3</Tab>
           </TabList>
+          <TabPanels>
+            <TabPanel>Content 1</TabPanel>
+            <TabPanel>Content 2</TabPanel>
+            <TabPanel>Content 3</TabPanel>
+          </TabPanels>
         </Tabs>
       </View>
 
@@ -206,6 +230,11 @@ export const AllVariants: Story = {
             <Tab>Tab 2</Tab>
             <Tab>Tab 3</Tab>
           </TabList>
+          <TabPanels>
+            <TabPanel>Content 1</TabPanel>
+            <TabPanel>Content 2</TabPanel>
+            <TabPanel>Content 3</TabPanel>
+          </TabPanels>
         </Tabs>
       </View>
     </View>

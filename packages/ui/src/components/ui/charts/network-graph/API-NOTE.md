@@ -14,17 +14,22 @@ no other meaning. Nodes, edges and kinds name no domain concept, so the unit sit
 
 ## Files
 
-| File                               | Holds                                                                                  |
-| ---------------------------------- | -------------------------------------------------------------------------------------- |
-| `types.ts`                         | Data, layout and model types, and `NetworkGraphProps` (type only).                     |
-| `network-graph-model.ts`           | Cleaning, indexing, weight bins, edge path, `buildGraphModel`.                         |
-| `network-graph-focus.ts`           | `nextFocus`, keyboard traversal over the graph.                                        |
-| `network-graph-text.ts`            | `nodeLabel`, `edgeLabel`, `summarizeGraph`.                                            |
-| `layouts/layered-layout-model.ts`  | `layeredLayout(options)`.                                                              |
-| `layouts/supplied-layout-model.ts` | `suppliedLayout(positions)`.                                                           |
-| `layouts/layout-geometry.ts`       | `LAYOUT_DEFAULTS`, `toSeed`, `clampInt`, `frameLayout`, `readingOrder`, `packCircles`. |
-| `layouts/force-layout-model.ts`    | `forceLayout(options)` and `simulateForces`; the only `d3-force` importer.             |
-| `fixtures.ts`                      | Synthetic graphs at 5, 30 and 150 nodes, and the edge-case set.                        |
+| File                                | Holds                                                                                  |
+| ----------------------------------- | -------------------------------------------------------------------------------------- |
+| `types.ts`                          | Data, layout and model types, and `NetworkGraphProps` (type only).                     |
+| `network-graph-model.ts`            | Cleaning, indexing, weight bins, edge path, `buildGraphModel`.                         |
+| `network-graph-arc.ts`              | `arcPath`, `edgeSlots`, `GRAPH_NODE_RADIUS`: arc geometry.                             |
+| `network-graph-groups.ts`           | `placedGroups`: the layout's groups limited to placed nodes.                           |
+| `network-graph-labels.ts`           | `placeLabels`, `labelBox`, `pinnedNodeIds`, `groupLabelsByNode`.                       |
+| `network-graph-focus.ts`            | `nextFocus`, keyboard traversal over the graph.                                        |
+| `network-graph-text.ts`             | `nodeLabel`, `edgeLabel`, `summarizeGraph`.                                            |
+| `layouts/layered-layout-model.ts`   | `layeredLayout(options)`.                                                              |
+| `layouts/supplied-layout-model.ts`  | `suppliedLayout(positions)`.                                                           |
+| `layouts/layout-geometry.ts`        | `LAYOUT_DEFAULTS`, `toSeed`, `clampInt`, `frameLayout`, `readingOrder`, `packCircles`. |
+| `layouts/force-layout-model.ts`     | `forceLayout(options)` and `simulateForces`; the only `d3-force` importer.             |
+| `layouts/ego-layout-model.ts`       | `egoLayout(options)`: rings by hop around a focus, no random source.                   |
+| `layouts/clustered-layout-model.ts` | `clusteredLayout(options)`: force per group, regions packed in rows.                   |
+| `fixtures.ts`                       | Synthetic graphs at 5, 30 and 150 nodes, and the edge-case set.                        |
 
 ## The layout seam
 
@@ -44,8 +49,8 @@ A layout is a value, `GraphLayout = { key, compute }`.
 
 TP-851 adds `force-`, `ego-` and `clustered-layout-model.ts`. `d3-force` is imported only by the force
 file. `GraphLayoutResult` gains the optional `edgeShape` (`'horizontal'` or `'arc'`, default horizontal) and
-`labelMode` (`'all'` or `'declutter'`, default all) with the force layout; `groups` follows with the
-ego and clustered layouts.
+`labelMode` (`'all'` or `'declutter'`, default all) with the force layout, and the optional `groups`
+(`GraphGroupRegion[]`) with the ego and clustered layouts.
 
 ## Cleaning
 
@@ -107,6 +112,91 @@ JavaScript engine: floating-point results can differ across engines.
 `key` is `JSON.stringify(['force', seed, iterations])` after sanitising, so `forceLayout()` and
 `forceLayout({ seed: 1, iterations: 300 })` share it.
 
+The force layout counts each distinct node id once, so a repeated id in raw input adds no second body.
+
+## Groups on a layout result
+
+`groups` is a list of `GraphGroupRegion`: `{ id, label, nodeIds, cx, cy, radius, variant }`, in the
+same frame as the positions. `variant: 'region'` is a disc that encloses its members (clustered);
+`variant: 'ring'` is an outline at a hop distance (ego). A radius of 0 is not painted. Each label is
+meant for the members' accessible names and the summary, so hop and membership are never position
+alone; the painting and the wording arrive with TP-851c and TP-851d.
+
+## The ego layout
+
+`egoLayout({ focusId, hops, direction })` places the nodes within `hops` of the focus on rings. It
+has no `seed`, because it draws no random number.
+
+1. A `null` or unknown `focusId` places nothing, so the empty state renders.
+2. `direction` picks the adjacency: `'both'` (default) treats every edge as two-way, `'outgoing'`
+   follows source to target, `'incoming'` target to source. Neighbour lists are in id order; edges
+   with an unknown or repeated endpoint are ignored.
+3. Breadth-first search from the focus up to `hops` (default 2, floored, at least 0; NaN gives 2,
+   Infinity reaches the whole component). Each ring lists its nodes in discovery order, so the
+   children of one node sit together.
+4. Ring radius: `r(0) = 0`, `r(d) = max(r(d - 1) + 120, count * 40 / (2 * PI))`, so a crowded ring
+   grows and keeps 40 px of arc per node. Node `i` of `count` sits at angle `-PI / 2 + 2 * PI * i / count`.
+5. `order` is the focus, then ring by ring in angular order. `groups` holds one `'ring'` per populated
+   hop (`hop-0` labelled `focus` with radius 0, then `1 hop`, `2 hops`), all centred on the focus.
+   The natural size holds the outermost ring, not only its nodes.
+6. Arc edges and decluttered labels. Every edge between two placed nodes is drawn.
+
+`key` is `JSON.stringify(['ego', focusId, hops, direction])` after sanitising.
+
+## The clustered layout
+
+`clusteredLayout({ seed, iterations, groups, ungroupedLabel })` gives each group a region. It uses
+`simulateForces` and imports no `d3-force` of its own.
+
+1. A node's group is `node.group`; no group, or `''`, is ungrouped. In raw input with a repeated id,
+   the smallest group wins, so input order never matters.
+2. Region order: the `groups` option in the order given (the first entry wins on a repeated id), then
+   unlisted group ids sorted, then one ungrouped region last. A listed group with no member gives no
+   region. A label is the option's label, else the group id; the ungrouped region has id `''` (no
+   group id can equal it) and label `ungroupedLabel` (default `Ungrouped`).
+3. Each group is simulated alone on its own edges (`seed`, `iterations` as the force layout). Edges
+   between groups shape nothing, so one group changing never moves the inside of another.
+4. A region is a circle at the centre of its members' bounding box; its radius is the furthest member
+   plus 24 px.
+5. Regions are packed in rows in region order with `packCircles`: a 32 px gap and a 24 px label band
+   above every row. Rows wrap so the framed width stays within the viewport unless one region alone
+   is wider.
+6. `order` runs region by region, reading order inside each. Arc edges and decluttered labels.
+
+`key` is `JSON.stringify(['clustered', seed, iterations, groups, ungroupedLabel])` after sanitising.
+
+## Plot model for free-form layouts
+
+`GraphModel` carries three more fields, read from the layout result: `edgeShape` (`'horizontal'` or
+`'arc'`, default horizontal), `labelMode` (`'all'` or `'declutter'`, default all) and `groups`
+(the layout's `GraphGroupRegion`s, limited to placed nodes, with a non-finite circle set to 0). The
+painting reads them; nothing here paints.
+
+**Edge paths.** `edgePath(from, to, shape = 'horizontal', slot = 0)`. `'horizontal'` is the
+`linkHorizontal` path, unchanged byte for byte. `'arc'` is one quadratic curve whose ends stop
+`GRAPH_NODE_RADIUS` (6 px, half the 12 px mark) short of the node centres. The control point is the
+chord midpoint pushed to the left of the direction of travel by `0.15 * length * (slot + 1)`. An edge
+each way between two nodes therefore bows to opposite sides, and a second edge the same way bows
+further. `edgeSlots(edges)` gives each cleaned edge its index among edges with the same source and
+target, in id order. Coincident, closer-than-two-radii or non-finite ends give `''`, never `NaN`.
+Painted paths and hit paths read the same string.
+
+**Labels.** `placeLabels(model, pinned)` returns the labels to show as a map of node id to box. With
+`labelMode: 'all'` every label is kept. With `'declutter'` it walks nodes in priority order (pinned
+first, then degree descending, then id) and keeps a label whose box meets no kept label and no other
+node mark. A pinned label is always kept, so two pinned labels may meet. `pinnedNodeIds(index,
+selectedId, activeId)` gives the selected node, the active node and the active node's neighbours.
+The box sits right of the mark, 16 px tall; its width is 8 px per character, at most 20 characters,
+an estimate that leans wide. The order of `model.order` never changes the result. A hidden label
+changes nothing for assistive tech: the node keeps its `Pressable`, its name and its tooltip.
+
+**Names and summary.** `groupLabelsByNode(model)` lists, per node, the labels of the groups that hold
+it, in group order (a region name, or `focus`, `1 hop`, `2 hops` for an ego ring). `nodeLabel` adds
+`context.groupLabels` after the kind: `"<label>, <kind>, <group>, <n> incoming, <m> outgoing"`; with
+none the name is unchanged. `summarizeGraph` adds one sentence when the layout returns groups,
+before the dropped and unplaced sentences, which stay. Regions: `"5 groups: Alpha 12, Beta 10,
+Ungrouped 5."`. Rings: `"Focus hub-01: 1 hop 4, 2 hops 9."`; counts are of placed nodes.
+
 ## Keyboard traversal
 
 `nextFocus(index, focus, key)` follows the graph, not the geometry, so it is the same for every layout.
@@ -124,7 +214,7 @@ An edge focus carries `from`, the node it was entered from, so Down and Up keep 
 
 ## Accessibility
 
-Names come from `nodeLabel` (`"<label>, <kind>, <n> incoming, <m> outgoing"`, the id when the label is
+Names come from `nodeLabel` (`"<label>, <kind>, <group>, <n> incoming, <m> outgoing"`, the id when the label is
 empty) and `edgeLabel` (`"<source> to <target>, <kind>, weight <w>"` or `weight unknown`).
 `summarizeGraph` gives node and edge counts, counts per kind, the most connected node, and every
 dropped or unplaced count. A graph with one node and no edges claims no structure. The pure modules
@@ -135,5 +225,8 @@ render nothing, so they carry no jest-axe test; the component tests in TP-850b d
 Names are invented (`lead-01`, `worker-07`, `human-01`, `alpha-03`). Large graphs use `seededRandom`,
 so every import gives the same data. `networkGraphFixtures` holds Small (5), Medium (30), Large (150),
 Wide fan-out, Deep chain, Supplied, Empty, One item, No edges, All equal, Missing values, Many kinds,
-Pulse, Long label and Hostile. `hostilePositions` holds the supplied positions for the Hostile case,
-two nodes missing and one non-finite, for use with `suppliedLayout`.
+Pulse, Long label, Hostile, Two components, Mutual pair, Grouped (40), Hub and spokes, Directed chain,
+One group and Many groups. `Large (150)` gives every node the group of its root. A fixture may carry
+the `focusId` an ego view centres on and the `groups` a clustered view orders by. `hostilePositions`
+holds the supplied positions for the Hostile case, two nodes missing and one non-finite, for use with
+`suppliedLayout`. `hostileLayoutOptions` holds hostile seeds, iterations, focus ids, hops and groups.

@@ -3,8 +3,10 @@ import { existsSync } from 'node:fs'
 import { mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { expect, test, type Browser } from '@playwright/test'
-import { FeedbackSchema, MANIFEST_SCHEMA_ID, type ManifestInput } from '../src/schema.ts'
+import { expect, test, type Browser, type Page } from '@playwright/test'
+import { contrastRatio, type Rgba } from '../src/contrast.ts'
+import { FeedbackSchema, MANIFEST_SCHEMA_ID, type ManifestInput } from '@titan-design/review-schema'
+import { SECTION_TEXTS } from '../test/fixtures.ts'
 
 const CLI = new URL('../src/cli.ts', import.meta.url).pathname
 
@@ -19,7 +21,25 @@ const ROUND: ManifestInput = {
     { key: 'A', image: 'shots/wall-a.png', label: 'Wall, dense' },
     { key: 'B', image: 'shots/wall-b.png', label: 'Wall, sparse' },
   ],
-  questions: [{ id: 'q1', kind: 'pick-one', prompt: 'Which wall?', options: ['A', 'B'] }],
+  questions: [
+    {
+      id: 'q1',
+      kind: 'pick-one',
+      prompt: 'Which wall?',
+      options: ['A', 'B'],
+      signsOff: 'the wall density',
+    },
+  ],
+  sections: [
+    {
+      id: 'wall',
+      title: 'Wall',
+      ...SECTION_TEXTS,
+      kind: 'CHOICE',
+      variantKeys: ['A', 'B'],
+      questionIds: ['q1'],
+    },
+  ],
 }
 
 /** A synthetic 1280x720 screen, so the e2e never depends on a real app's screenshot. */
@@ -31,6 +51,12 @@ async function syntheticPng(browser: Browser, file: string, text: string): Promi
   await page.screenshot({ path: file })
   await page.close()
 }
+
+/**
+ * A hand-written test round: it bypasses the contrast gate, and the page must say so.
+ * --allow-stale lets a branch that edits the harness e2e its own page.
+ */
+const OVERRIDE = ['--contrast-override', 'e2e fixture round, synthetic images', '--allow-stale']
 
 let cli: ChildProcess | undefined
 test.afterAll(() => cli?.kill())
@@ -46,7 +72,7 @@ test('an image variant renders at its width and its feedback comes back', async 
   const manifestPath = join(dir, 'round.json')
   await writeFile(manifestPath, JSON.stringify(ROUND))
 
-  cli = spawn('node', [CLI, manifestPath, '--no-open', '--out', dir])
+  cli = spawn('node', [CLI, manifestPath, '--no-open', '--out', dir, ...OVERRIDE])
   let stdout = ''
   cli.stdout?.on('data', (c: Buffer) => (stdout += c.toString()))
   const exit = new Promise<number | null>((resolve) => cli?.once('exit', resolve))
@@ -58,6 +84,10 @@ test('an image variant renders at its width and its feedback comes back', async 
   )
 
   await page.goto(url)
+  await expect(page.getByTestId('contrast-override')).toHaveText(
+    'Contrast was not gated for this round: e2e fixture round, synthetic images'
+  )
+  await expect(page.getByTestId('contrast-override')).toHaveCSS('position', 'sticky')
   const image = page.getByRole('img', { name: 'A · Wall, dense at 1280px' })
   await expect(image).toBeVisible()
   await expect.poll(() => image.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBe(1280)
@@ -67,7 +97,9 @@ test('an image variant renders at its width and its feedback comes back', async 
   expect(box.height).toBeCloseTo((box.width * 720) / 1280, 0)
   await expect(page.locator('iframe')).toHaveCount(0)
 
+  // The section's question comes first; picking A there also marks frame A chosen.
   await page.keyboard.press('1')
+  await page.keyboard.press('Enter')
   await page.keyboard.press('Tab')
   await page.keyboard.type('Dense reads at distance')
   await page.keyboard.press('Enter')
@@ -88,6 +120,17 @@ test('an image variant renders at its width and its feedback comes back', async 
     JSON.parse(await readFile(join(dir, 'feedback.json'), 'utf8'))
   )
   expect(JSON.parse(stdout)).toEqual(written)
+  expect(written.contrastOverride).toMatchObject({
+    reason: 'e2e fixture round, synthetic images',
+    problem: 'no contrast.json beside this round',
+  })
+  expect(written.answers).toEqual([
+    {
+      questionId: 'q1',
+      pick: 'A',
+      variantComments: [{ key: 'A', comment: 'Dense reads at distance' }],
+    },
+  ])
   const [a, b] = written.variants
   expect(a).toMatchObject({ key: 'A', image: 'shots/wall-a.png', verdict: 'chosen' })
   expect(a.comment).toBe('Dense reads at distance')
@@ -97,4 +140,183 @@ test('an image variant renders at its width and its feedback comes back', async 
   expect(b).toMatchObject({ key: 'B', image: 'shots/wall-b.png', verdict: 'rejected' })
   expect(existsSync(join(dir, 'A-image.png'))).toBe(true)
   expect(existsSync(join(dir, 'B-image.png'))).toBe(true)
+})
+
+test('sticky heads stay below an override banner whose reason wraps', async ({ page, browser }) => {
+  const dir = await mkdtemp(join(tmpdir(), 'titan-review-banner-e2e-'))
+  await mkdir(join(dir, 'shots'))
+  await syntheticPng(browser, join(dir, 'shots', 'wall-a.png'), 'Dense wall')
+  await syntheticPng(browser, join(dir, 'shots', 'wall-b.png'), 'Sparse wall')
+  const manifestPath = join(dir, 'round.json')
+  await writeFile(manifestPath, JSON.stringify(ROUND))
+
+  const reason = 'long reason '.repeat(17).slice(0, 200)
+  const server = spawn('node', [
+    CLI,
+    manifestPath,
+    '--no-open',
+    '--out',
+    dir,
+    '--contrast-override',
+    reason,
+    '--allow-stale',
+  ])
+  try {
+    const url = await new Promise<string>((resolve) =>
+      server.stderr?.on('data', (c: Buffer) => {
+        const found = c.toString().match(/at (http\S+__review\/)/)?.[1]
+        if (found) resolve(found)
+      })
+    )
+    await page.setViewportSize({ width: 1400, height: 400 })
+    await page.goto(url)
+    const banner = page.getByTestId('contrast-override')
+    await expect(banner).toBeVisible()
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(100)
+    const bannerBox = (await banner.boundingBox())!
+    expect(bannerBox.height).toBeGreaterThan(40)
+    const bannerBottom = bannerBox.y + bannerBox.height
+    const sectionHead = (await page.locator('.section-head').first().boundingBox())!
+    const variantHead = (await page.locator('.variant-head').first().boundingBox())!
+    expect(sectionHead.y).toBeGreaterThanOrEqual(bannerBottom - 0.5)
+    expect(variantHead.y).toBeGreaterThanOrEqual(bannerBottom - 0.5)
+  } finally {
+    server.kill()
+  }
+})
+
+test('the review stage skips optional questions and steps through unanswered ones', async ({
+  page,
+  browser,
+}) => {
+  const dir = await mkdtemp(join(tmpdir(), 'titan-review-unanswered-e2e-'))
+  await mkdir(join(dir, 'shots'))
+  await syntheticPng(browser, join(dir, 'shots', 'wall-a.png'), 'Dense wall')
+  await syntheticPng(browser, join(dir, 'shots', 'wall-b.png'), 'Sparse wall')
+  const manifestPath = join(dir, 'round.json')
+  const pick = (id: string) =>
+    ({
+      id,
+      kind: 'pick-one',
+      prompt: `Pick for ${id}?`,
+      options: ['A', 'B'],
+      required: true,
+      signsOff: `the wall ${id} asks about`,
+    }) as const
+  const questions = [
+    pick('r1'),
+    { id: 'extra', kind: 'text', prompt: 'Anything else?' } as const,
+    pick('r2'),
+    pick('r3'),
+  ]
+  // The questions stay loose, so the strip holds the frames and Overall holds every question.
+  const sections = ROUND.sections!.map((s) => ({ ...s, questionIds: [] }))
+  await writeFile(manifestPath, JSON.stringify({ ...ROUND, questions, sections }))
+
+  const server = spawn('node', [CLI, manifestPath, '--no-open', '--out', dir, ...OVERRIDE])
+  try {
+    const url = await new Promise<string>((resolve) =>
+      server.stderr?.on('data', (c: Buffer) => {
+        const found = c.toString().match(/at (http\S+__review\/)/)?.[1]
+        if (found) resolve(found)
+      })
+    )
+    await page.goto(url)
+    await expect(page.getByRole('img', { name: 'A · Wall, dense at 1280px' })).toBeVisible()
+    await page.keyboard.press('Meta+Enter')
+    await expect(page.getByTestId('unanswered')).toContainText('3 of 4 questions are unanswered')
+    await expect(page.getByTestId('answer-extra')).toContainText('(skipped)')
+    await expect(page.getByTestId('answer-extra')).not.toHaveAttribute('data-unanswered')
+
+    const next = page.getByRole('button', { name: 'Next unanswered' })
+    const prev = page.getByRole('button', { name: 'Previous unanswered' })
+    await expect(prev).toHaveCount(0)
+    await next.focus()
+    await page.keyboard.press('Enter')
+    await expect(page.getByTestId('answer-r1')).toBeFocused()
+    await expect(prev).toHaveCount(0)
+    await next.click()
+    await expect(page.getByTestId('answer-r2')).toBeFocused()
+    await next.click()
+    await expect(page.getByTestId('answer-r3')).toBeFocused()
+    await expect(next).toHaveCount(0)
+    await prev.click()
+    await expect(page.getByTestId('answer-r2')).toBeFocused()
+
+    await page.getByRole('button', { name: 'Show only unanswered' }).click()
+    await expect(page.getByTestId('answers').locator('[data-unanswered]')).toHaveCount(3)
+    await expect(page.getByTestId('answer-extra')).toHaveCount(0)
+  } finally {
+    server.kill()
+  }
+})
+
+/** Contrast of the section list in the active theme: link text, and the current bar. */
+async function sectionListContrast(page: Page) {
+  const colours = await page.locator('.sections').evaluate((list) => {
+    const style = (el: Element) => getComputedStyle(el)
+    const current = list.querySelector('[aria-current] a')!
+    const other = list.querySelector('li:not([aria-current]) a')!
+    return {
+      plane: style(list).backgroundColor,
+      current: style(current).color,
+      bar: style(current).borderBottomColor,
+      other: style(other).color,
+    }
+  })
+  const rgba = (css: string): Rgba => {
+    const [r, g, b, a = 1] = css.match(/[\d.]+/g)!.map(Number)
+    return [r, g, b, a]
+  }
+  const ratio = (fg: string) => contrastRatio(rgba(fg), rgba(colours.plane))
+  return { current: ratio(colours.current), bar: ratio(colours.bar), other: ratio(colours.other) }
+}
+
+test('the section list marks the current section beyond weight, in both themes', async ({
+  page,
+  browser,
+}) => {
+  const dir = await mkdtemp(join(tmpdir(), 'titan-review-sections-e2e-'))
+  await mkdir(join(dir, 'shots'))
+  await syntheticPng(browser, join(dir, 'shots', 'wall-a.png'), 'Dense wall')
+  await syntheticPng(browser, join(dir, 'shots', 'wall-b.png'), 'Sparse wall')
+  const manifestPath = join(dir, 'round.json')
+  const sectioned = {
+    ...ROUND,
+    sections: [
+      { id: 'dense', title: 'Dense', ...SECTION_TEXTS, kind: 'STATES', variantKeys: ['A'] },
+      { id: 'sparse', title: 'Sparse', ...SECTION_TEXTS, kind: 'STATES', variantKeys: ['B'] },
+    ],
+  }
+  await writeFile(manifestPath, JSON.stringify(sectioned))
+  const server = spawn('node', [CLI, manifestPath, '--no-open', '--out', dir, ...OVERRIDE])
+  try {
+    const url = await new Promise<string>((resolve) =>
+      server.stderr?.on('data', (c: Buffer) => {
+        const found = c.toString().match(/at (http\S+__review\/)/)?.[1]
+        if (found) resolve(found)
+      })
+    )
+    await page.goto(url)
+    const current = page.locator('.sections [aria-current="step"]')
+    await expect(current).toHaveText('Dense')
+    await page.locator('body').press(']')
+    await expect(current).toHaveText('Sparse')
+    await expect(page.locator('.sections li')).toHaveCount(3)
+
+    for (const theme of ['dark', 'light']) {
+      await page.evaluate(
+        (light) => document.documentElement.classList.toggle('light', light),
+        theme === 'light'
+      )
+      const ratios = await sectionListContrast(page)
+      expect(ratios.current, `${theme} current text`).toBeGreaterThanOrEqual(4.5)
+      expect(ratios.other, `${theme} other text`).toBeGreaterThanOrEqual(4.5)
+      expect(ratios.bar, `${theme} current bar`).toBeGreaterThanOrEqual(3)
+      expect(ratios.current, `${theme} current is not just bolder`).toBeGreaterThan(ratios.other)
+    }
+  } finally {
+    server.kill()
+  }
 })

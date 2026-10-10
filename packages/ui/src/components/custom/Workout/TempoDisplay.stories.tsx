@@ -9,14 +9,14 @@ import { greyRamp } from '../../../theme/tokens/primitives'
 const meta: Meta<typeof TempoDisplay> = {
   title: 'Custom/Workout/TempoDisplay',
   component: TempoDisplay,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {
         component:
           '**Molecule.** The eccentric/pause/concentric/pause tempo display. Composes ' +
-          '[MetricCell](?path=/docs/custom-workout-metriccell--docs) ' +
-          '(shared value/separator cell). Used-by ↑ ' +
+          '[Typography](?path=/docs/foundations-typography--docs) ' +
+          '(`mono` value/separator segments). Used-by ↑ ' +
           '[ExerciseHeading](?path=/docs/custom-workout-exerciseheading--docs) (`showLabel={false}`).',
       },
     },

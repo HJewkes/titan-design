@@ -1,8 +1,11 @@
 import { describe, it, expect, vi } from 'vitest'
-import { siblingSource, spacingClassesIn, resolveAll } from '../../../test/spacing-resolver'
+import { spacingClassesAt, spacingClassesOf, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { RestTimer } from './RestTimer'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { alpha } from '../../../utils/colors'
+import { Surface } from '../../ui/surface'
 
 const defaultProps = {
   totalSeconds: 150,
@@ -261,15 +264,31 @@ describe('RestTimer ring variant', () => {
 
 /** RestTimer's geometry, pinned (AW-142); pixels unchanged. */
 describe('RestTimer geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'RestTimer.tsx')
-
   it('puts the action row on the inline ramp and the controls on the control rung', () => {
-    expect(spacingClassesIn(source, 'RestActions')).toEqual(['gap-inline-md'])
+    render(<RestTimer {...defaultProps} />)
+    const addTime = screen.getByTestId('rest-timer-add-time')
+    expect(spacingClassesAt(addTime.parentElement)).toEqual(['gap-inline-md'])
+    for (const control of ['rest-timer-add-time', 'rest-timer-skip']) {
+      expect(spacingClassesOf(control)).toEqual(['py-control-y-md', 'px-control-x-md'])
+    }
     expect(resolveAll(['py-control-y-md', 'px-control-x-md'])).toEqual(['8px', '20px'])
   })
 
   it('keeps the circular variant’s stack', () => {
-    expect(source).toContain('items-center gap-stack-lg')
+    render(<RestTimer {...defaultProps} variant="ring" />)
+    expect(spacingClassesOf('rest-timer')).toEqual(['gap-stack-lg'])
     expect(resolveAll(['gap-stack-lg'])).toEqual(['16px'])
+  })
+})
+
+describe('RestTimer on a light surface', () => {
+  it('washes the +30s face with the light hairline-subtle token', () => {
+    const wash = alpha(getSemanticColors('light')['hairline-subtle'], 0.06)
+    render(
+      <Surface theme="light">
+        <RestTimer {...defaultProps} />
+      </Surface>
+    )
+    expect(screen.getByTestId('rest-timer-add-time')).toHaveStyle({ backgroundColor: wash })
   })
 })

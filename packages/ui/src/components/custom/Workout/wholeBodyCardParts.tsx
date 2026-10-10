@@ -15,7 +15,7 @@ import { Pill } from '../../ui/pill'
 import { StatCardHeader } from '../../ui/stat-card'
 import { useSurfaceMode } from '../../ui/surface'
 import { TipTrigger, Tooltip } from '../../ui/tooltip'
-import { Metric } from '../Metric'
+import { Metric } from '../../ui/metric'
 import { Typography } from '../../ui/typography'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { GOAL_STATUS_LABEL, GOAL_STATUS_TONE, type GoalLiftStatus } from './GoalCard'
@@ -166,7 +166,7 @@ export function GoalCardHeader(props: {
               isTipOpen={props.isTagTipOpen}
             />
           )}
-          <StatusPill status={props.status} basis={props.basis} testID={props.testID} />
+          <GoalStatusPill status={props.status} basis={props.basis} testID={props.testID} />
         </>
       }
       testID={props.testID}
@@ -175,7 +175,7 @@ export function GoalCardHeader(props: {
 }
 
 /** The status pill, with its basis one hover, focus or tap away when the goal has one. */
-function StatusPill(props: { status: GoalLiftStatus; basis?: string; testID: string }) {
+function GoalStatusPill(props: { status: GoalLiftStatus; basis?: string; testID: string }) {
   const label = GOAL_STATUS_LABEL[props.status]
   const pill = (
     <Pill tone={GOAL_STATUS_TONE[props.status]} variant="subtle" size="sm" leading="dot">

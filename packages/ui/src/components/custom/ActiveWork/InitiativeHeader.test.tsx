@@ -7,16 +7,16 @@ describe('InitiativeHeader', () => {
   it('renders the title, slug, state, rank, ship target and updated date', () => {
     render(
       <InitiativeHeader
-        title="active-work — durable workspace state"
-        slug="active-work"
+        title="planner — durable project state"
+        slug="planner"
         state="focused"
         rank={1}
         shipTarget="2026-Q3"
         updated="2026-07-12"
       />
     )
-    expect(screen.getByText('active-work — durable workspace state')).toBeInTheDocument()
-    expect(screen.getByText('active-work')).toBeInTheDocument()
+    expect(screen.getByText('planner — durable project state')).toBeInTheDocument()
+    expect(screen.getByText('planner')).toBeInTheDocument()
     expect(screen.getByText('Focused')).toBeInTheDocument()
     expect(screen.getByText('#1')).toBeInTheDocument()
     expect(screen.getByText('ship 2026-Q3')).toBeInTheDocument()
@@ -33,7 +33,7 @@ describe('InitiativeHeader', () => {
 
   it('has no a11y violations', async () => {
     const { container } = render(
-      <InitiativeHeader title="active-work" slug="active-work" state="focused" rank={1} />
+      <InitiativeHeader title="planner" slug="planner" state="focused" rank={1} />
     )
     expect(await axe(container)).toHaveNoViolations()
   })

@@ -136,7 +136,7 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
       {label && (
         <Text className="text-sm font-medium text-text-primary">
           {label}
-          {isRequired && <Text className="text-status-error ml-0.5">*</Text>}
+          {isRequired && <Text className="text-text-error ml-0.5">*</Text>}
         </Text>
       )}
 
@@ -146,7 +146,8 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
           multiline ? 'items-start' : 'items-center',
           variantStyles[variant].base,
           !isDisabled && !isInvalid && variantStyles[variant].hover,
-          isFocused && variantStyles[variant].focus,
+          // The ring goes on the field box, not the bare text element inside it (TD-765).
+          isFocused && [variantStyles[variant].focus, 'focus-ring'],
           isInvalid && variantStyles[variant].error,
           isDisabled && 'opacity-40 cursor-not-allowed'
         )}
@@ -167,7 +168,7 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
           onFocus={handleFocus}
           onBlur={handleBlur}
           className={cn(
-            'flex-1 text-text-primary',
+            'flex-1 text-text-primary web:outline-none',
             multiline ? multilineSizeStyles[size] : sizeStyles[size],
             leftElement && 'pl-1',
             rightElement && 'pr-1',
@@ -183,7 +184,7 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
 
       {showHelper && <Text className="text-xs text-text-secondary">{helperText}</Text>}
 
-      {showError && <Text className="text-xs text-status-error">{errorMessage}</Text>}
+      {showError && <Text className="text-xs text-text-error">{errorMessage}</Text>}
     </View>
   )
 })

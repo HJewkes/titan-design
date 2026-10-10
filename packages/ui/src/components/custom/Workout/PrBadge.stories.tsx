@@ -5,8 +5,8 @@ import { PrBadge } from './PrBadge'
 const meta: Meta<typeof PrBadge> = {
   title: 'Custom/Workout/PrBadge',
   component: PrBadge,
-  parameters: { docs: { description: { component: 'Composes **Icons** · **BaseBadge**.' } } },
-  tags: ['autodocs'],
+  parameters: { docs: { description: { component: 'Composes **Icons** · **Pill**.' } } },
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     type: {
       control: 'select',

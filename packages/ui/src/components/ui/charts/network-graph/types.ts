@@ -54,6 +54,25 @@ export interface GraphLayoutInput {
   height: number
 }
 
+export interface GraphGroup {
+  id: string
+  label: string
+}
+
+/** A circle a layout asks to be drawn under the nodes: a cluster's region or an ego hop ring. */
+export interface GraphGroupRegion {
+  id: string
+  /** Drawn at the region and added to each member's accessible name. */
+  label: string
+  nodeIds: readonly string[]
+  cx: number
+  cy: number
+  /** A radius of 0 is not painted. */
+  radius: number
+  /** `region`: a disc (clustered); `ring`: an outline (ego hop distance). */
+  variant: 'region' | 'ring'
+}
+
 export interface GraphLayoutResult {
   /** A node without a position is not drawn. */
   positions: Readonly<Record<string, GraphPoint>>
@@ -66,6 +85,7 @@ export interface GraphLayoutResult {
   edgeShape?: 'horizontal' | 'arc'
   /** Default 'all'. */
   labelMode?: 'all' | 'declutter'
+  groups?: readonly GraphGroupRegion[]
 }
 
 export interface GraphLayout {
@@ -76,6 +96,8 @@ export interface GraphLayout {
 
 export interface GraphNodeContext {
   kindLabel?: string
+  /** Labels of the groups that hold the node, in group order; a hop for an ego ring. */
+  groupLabels?: readonly string[]
   incoming: number
   outgoing: number
 }
@@ -111,6 +133,10 @@ export interface GraphModel {
   index: GraphIndex
   width: number
   height: number
+  edgeShape: 'horizontal' | 'arc'
+  labelMode: 'all' | 'declutter'
+  /** The layout's regions or rings, limited to placed nodes; empty when the layout gives none. */
+  groups: readonly GraphGroupRegion[]
 }
 
 export type GraphFocusKey = 'Down' | 'Up' | 'Right' | 'Left' | 'Home' | 'End'

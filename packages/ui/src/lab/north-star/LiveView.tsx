@@ -173,7 +173,7 @@ function AlertCue({
       <Text style={{ color: tone, fontSize: 13, fontWeight: '700', flexShrink: 0 }}>
         {VERDICT_LABEL[status]}
       </Text>
-      {mode === 'full' && meaningful && (
+      {mode === 'full' && !!meaningful && (
         // Bounded + single-line: ellipsises instead of pushing off the page (full text on hover).
         <Text
           numberOfLines={1}
@@ -354,7 +354,7 @@ export function LiveView({
     // (no radius/border), since it's the section background, not a card within it.
     <LiveAuraFrame category={verdict} style={{ flex: 1, borderRadius: 0, borderWidth: 0 }}>
       <View className="flex-row" style={{ flex: 1 }}>
-        {badgeSlot && <VerticalSlotLabel slot={badgeSlot} />}
+        {!!badgeSlot && <VerticalSlotLabel slot={badgeSlot} />}
         <View
           onLayout={onContentLayout}
           style={{ flex: 1, padding: dual ? 18 : 24, gap: dual ? 8 : 10 }}

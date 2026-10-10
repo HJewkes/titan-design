@@ -15,6 +15,7 @@ export function ListItem({ className, children, onPress, ...props }: ListItemPro
       <Pressable
         className={cn('flex-row items-center py-inset-md px-inset-lg min-h-[48px]', className)}
         onPress={onPress}
+        accessibilityRole="button"
         {...props}
       >
         {children}
@@ -59,7 +60,7 @@ export function ListItemContent({ title, subtitle, className, ...props }: ListIt
   return (
     <View className={cn('flex-1 justify-center gap-stack-sm', className)} {...props}>
       <Text className="text-sm font-medium text-text-primary">{title}</Text>
-      {subtitle && <Text className="text-xs text-text-secondary">{subtitle}</Text>}
+      {!!subtitle && <Text className="text-xs text-text-secondary">{subtitle}</Text>}
     </View>
   )
 }
@@ -87,5 +88,5 @@ export interface ListItemDividerProps extends ViewProps {
 }
 
 export function ListItemDivider({ inset = true, className, ...props }: ListItemDividerProps) {
-  return <View className={cn('h-px bg-divider', inset ? 'ml-14' : '', className)} {...props} />
+  return <View className={cn('h-px bg-hairline', inset ? 'ml-14' : '', className)} {...props} />
 }

@@ -1,12 +1,11 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useEffect, useMemo, useState } from 'react'
 import { View, Text, Pressable, Animated, Easing, type ViewProps } from 'react-native'
-import BodyHighlighter, { type ExtendedBodyPart, type Slug } from 'react-native-body-highlighter'
+import { type ExtendedBodyPart, type Slug } from 'react-native-body-highlighter'
 import { cn } from '../../../utils/cn'
 import { resolveColor } from '../../../theme/resolve-color'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../ui/surface/SurfaceContext'
-import { primitiveColors } from '../../../theme/tokens/primitives'
 import { alpha } from '../../../utils/colors'
 import { getGlowShadow } from '../../../theme/elevation'
 import {
@@ -22,18 +21,7 @@ import {
   isMoreSevere,
   type VolumeStatus,
 } from './muscleTaxonomy'
-
-/**
- * react-native-body-highlighter is published as a CommonJS default export; the
- * interop keeps it working whether the bundler unwraps the default or not.
- */
-const Body = ((BodyHighlighter as unknown as { default?: typeof BodyHighlighter }).default ??
-  BodyHighlighter) as typeof BodyHighlighter
-
-const BRAND_PRIMARY = getSemanticColors('dark')['brand-primary']
-
-const OUTLINE_FILL = alpha(primitiveColors.white, 0.08)
-const OUTLINE_BORDER = alpha(primitiveColors.white, 0.12)
+import { Body, unlitBodyProps } from './bodyHighlighter'
 
 /** Presentation size for BodyMap and TrainingStatusPage: 'phone' (default) keeps
  * today's compact geometry; 'wall' scales up for large-display dashboards. */
@@ -242,8 +230,7 @@ export function BodyMap({
           data={slugParts}
           scale={bodyScale}
           gender="male"
-          defaultFill={OUTLINE_FILL}
-          border={OUTLINE_BORDER}
+          {...unlitBodyProps(surfaceMode)}
           onBodyPartPress={handleBodyPress}
         />
       </Animated.View>
@@ -289,6 +276,7 @@ interface ViewToggleProps {
 }
 
 function ViewToggle({ view, onViewChange, ramp }: ViewToggleProps) {
+  const brandPrimary = getSemanticColors(useSurfaceMode())['brand-primary']
   return (
     <View
       className="flex-row self-center"
@@ -309,9 +297,9 @@ function ViewToggle({ view, onViewChange, ramp }: ViewToggleProps) {
               paddingHorizontal: 12 * ramp,
               paddingVertical: 4 * ramp,
               borderRadius: 9999,
-              backgroundColor: active ? alpha(BRAND_PRIMARY, 0.16) : 'transparent',
+              backgroundColor: active ? alpha(brandPrimary, 0.16) : 'transparent',
               borderWidth: 1,
-              borderColor: active ? BRAND_PRIMARY : resolveColor('hairline-strong'),
+              borderColor: active ? brandPrimary : resolveColor('hairline-strong'),
             }}
             testID={`body-map-toggle-${side}`}
           >
@@ -320,7 +308,7 @@ function ViewToggle({ view, onViewChange, ramp }: ViewToggleProps) {
                 fontSize: 12 * ramp,
                 fontFamily: 'Inter, sans-serif',
                 fontWeight: active ? '700' : '500',
-                color: active ? BRAND_PRIMARY : resolveColor('text-secondary'),
+                color: active ? brandPrimary : resolveColor('text-secondary'),
                 textTransform: 'capitalize',
               }}
             >
@@ -342,6 +330,7 @@ interface MuscleButtonProps {
 
 function MuscleButton({ entry, highlighted, onMusclePress, ramp }: MuscleButtonProps) {
   const dotColor = getHeatmapColor(entry.status, useSurfaceMode())
+  const brandPrimary = getSemanticColors(useSurfaceMode())['brand-primary']
   const label = `${entry.name}, ${VOLUME_STATUS_LABELS[entry.status]}, ${entry.sets} sets this week`
   return (
     <Pressable
@@ -358,7 +347,7 @@ function MuscleButton({ entry, highlighted, onMusclePress, ramp }: MuscleButtonP
         paddingVertical: 3 * ramp,
         borderRadius: 9999,
         borderWidth: 1,
-        borderColor: highlighted ? BRAND_PRIMARY : resolveColor('hairline-default'),
+        borderColor: highlighted ? brandPrimary : resolveColor('hairline-default'),
       }}
       testID={`body-map-muscle-${entry.key}`}
     >

@@ -1,5 +1,5 @@
 import { useEffect, useRef, type Dispatch } from 'react'
-import type { Manifest } from '../src/schema.ts'
+import type { Manifest } from '@titan-design/review-schema'
 import {
   numberKeyAction,
   pageStepAction,
@@ -21,7 +21,7 @@ interface KeyContext {
   submit: () => void
 }
 
-function onFormKey(e: KeyboardEvent, { manifest, state, dispatch }: KeyContext): void {
+export function onFormKey(e: KeyboardEvent, { manifest, state, dispatch }: KeyContext): void {
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault()
     ;(document.activeElement as HTMLElement | null)?.blur()

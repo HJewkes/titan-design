@@ -1,4 +1,10 @@
-import type { Feedback, Manifest, Question, StoryVariant } from './schema.ts'
+import type {
+  Answer,
+  Feedback,
+  Manifest,
+  Question,
+  StoryVariant,
+} from '@titan-design/review-schema'
 
 // Storybook drops URL arg keys and values outside these (docs: writing-stories/args).
 const URL_SAFE_VALUE = /^[A-Za-z0-9 _-]*$/
@@ -56,9 +62,21 @@ export function urlParamProblems(manifest: Manifest): string[] {
   ])
 }
 
-function answerProblems(question: Question, answer: Feedback['answers'][number] | undefined) {
-  if (!answer) return question.required ? [`${question.id}: required`] : []
-  const problems: string[] = []
+function revisionProblems(question: Question, answer: Answer): string[] {
+  if (!answer.revisionRequested) return []
+  if (question.kind !== 'pick-one')
+    return [`${question.id}: only a pick-one can request a revision`]
+  if (!offersBuiltInRevision(question) && question.revisionOption === undefined)
+    return [`${question.id}: this question offers no revision request`]
+  if (answer.pick !== undefined) return [`${question.id}: a revision request is not a pick`]
+  if (!(answer.comment ?? '').trim()) return [`${question.id}: a revision request needs a comment`]
+  return []
+}
+
+function answerProblems(question: Question, given: Answer | undefined, skipped: boolean) {
+  if (!given) return question.required && !skipped ? [`${question.id}: required`] : []
+  const answer = normalizeAnswer(question, given)
+  const problems = revisionProblems(question, answer)
   if (question.kind === 'pick-one' && answer.pick !== undefined) {
     if (!question.options.includes(answer.pick)) problems.push(`${question.id}: unknown option`)
   }
@@ -70,20 +88,71 @@ function answerProblems(question: Question, answer: Feedback['answers'][number] 
     if (answer.value < question.min || answer.value > question.max)
       problems.push(`${question.id}: value out of range`)
   }
-  if (question.required && !isAnswered(question, answer)) problems.push(`${question.id}: required`)
+  if (question.required && !skipped && !isAnswered(question, answer))
+    problems.push(`${question.id}: required`)
   return problems
 }
 
-export function isAnswered(question: Question, answer: Feedback['answers'][number]): boolean {
-  if (question.kind === 'pick-one') return answer.pick !== undefined
+/** A required pick-one gets the built-in revision option unless the author listed their own. */
+export function offersBuiltInRevision(question: Question): boolean {
+  return question.kind === 'pick-one' && question.required === true && !question.revisionOption
+}
+
+/**
+ * The one reading of whether a pick-one answer requests a revision: the round's own
+ * `revisionOption` sent as a pick means the same as the built-in request. The page, the
+ * validator and the stored feedback all read answers through here.
+ */
+export function normalizeAnswer(question: Question, answer: Answer): Answer {
+  if (question.kind !== 'pick-one' || question.revisionOption === undefined) return answer
+  if (answer.pick !== question.revisionOption) return answer
+  const { pick: _pick, ...rest } = answer
+  return { ...rest, revisionRequested: true, ...(rest.recommendation ? { agreed: false } : {}) }
+}
+
+/** Feedback as it is stored: every answer read through `normalizeAnswer`. */
+export function normalizeFeedback(feedback: Feedback, manifest: Manifest): Feedback {
+  const questions = new Map(manifest.questions.map((q) => [q.id, q]))
+  return {
+    ...feedback,
+    answers: feedback.answers.map((a) => {
+      const question = questions.get(a.questionId)
+      return question ? normalizeAnswer(question, a) : a
+    }),
+  }
+}
+
+export function isAnswered(question: Question, given: Answer): boolean {
+  const answer = normalizeAnswer(question, given)
+  if (question.kind === 'pick-one')
+    return answer.pick !== undefined || answer.revisionRequested === true
   if (question.kind === 'pick-many') return (answer.picks ?? []).length > 0
   if (question.kind === 'scale') return answer.value !== undefined
   return (answer.text ?? '').trim() !== ''
 }
 
+/** A partial submit must list exactly the questions it left unanswered, in manifest order. */
+function unansweredProblems(feedback: Feedback, manifest: Manifest): string[] {
+  const listed = feedback.unansweredQuestionIds
+  if (!listed) return []
+  const answers = new Map(feedback.answers.map((a) => [a.questionId, a]))
+  const actual = manifest.questions
+    .filter((q) => {
+      const answer = answers.get(q.id)
+      return !answer || !isAnswered(q, answer)
+    })
+    .map((q) => q.id)
+  return listed.join(',') === actual.join(',')
+    ? []
+    : [
+        `unansweredQuestionIds lists ${listed.join(', ')}; unanswered are ${actual.join(', ') || 'none'}`,
+      ]
+}
+
 /** Feedback that parses can still disagree with its manifest; list every disagreement. */
 export function feedbackProblems(feedback: Feedback, manifest: Manifest): string[] {
   const answers = new Map(feedback.answers.map((a) => [a.questionId, a]))
+  const skipped = new Set(feedback.unansweredQuestionIds)
   const questionIds = new Set(manifest.questions.map((q) => q.id))
   const variantKeys = feedback.variants.map((v) => v.key).join(',')
   return [
@@ -96,6 +165,7 @@ export function feedbackProblems(feedback: Feedback, manifest: Manifest): string
     ...feedback.answers
       .filter((a) => !questionIds.has(a.questionId))
       .map((a) => `${a.questionId}: unknown`),
-    ...manifest.questions.flatMap((q) => answerProblems(q, answers.get(q.id))),
+    ...manifest.questions.flatMap((q) => answerProblems(q, answers.get(q.id), skipped.has(q.id))),
+    ...unansweredProblems(feedback, manifest),
   ]
 }

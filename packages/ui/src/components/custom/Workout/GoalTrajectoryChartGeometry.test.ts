@@ -834,3 +834,19 @@ describe('week scale on a plot narrower than two insets', () => {
     g.deloadRects.forEach((rect) => expect(rect.width).toBeGreaterThanOrEqual(0))
   })
 })
+
+describe('non-finite readings (TD-527)', () => {
+  const actuals = [
+    { weekIndex: 1, value: 176 },
+    { weekIndex: 2, value: Number.NaN },
+    { weekIndex: 3, value: 182 },
+    { weekIndex: 4, value: null as unknown as number },
+  ]
+
+  it('drops NaN and null readings before the line path and the dots', () => {
+    const g = deriveTrajectoryGeometry({ ...base, expected: gainExpected, actuals })
+
+    expect(g.linePath).not.toContain('NaN')
+    expect(g.actuals.map((a) => a.value)).toEqual([176, 182])
+  })
+})

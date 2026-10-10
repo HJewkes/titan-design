@@ -246,12 +246,27 @@ describe('forceLayout positions', () => {
     expect(gap(joined)).toBeLessThan(20)
   })
 
-  it('No edges keeps all 12 nodes inside a bounded natural size', () => {
+  it('No edges keeps all 12 nodes within a span of 200 px', () => {
     const fixture = networkGraphFixtures['No edges']
-    const result = runFixture(fixture)
-    expect(Object.keys(result.positions)).toHaveLength(12)
-    expect(result.width).toBeLessThan(1500)
-    expect(result.height).toBeLessThan(1500)
+    const points = Object.values(runFixture(fixture).positions)
+    const span = (values: number[]) => Math.max(...values) - Math.min(...values)
+    expect(points).toHaveLength(12)
+    expect(span(points.map((p) => p.x))).toBeLessThan(200)
+    expect(span(points.map((p) => p.y))).toBeLessThan(200)
+  })
+
+  it('a repeated node id adds no second body', () => {
+    const layout = forceLayout({ seed: 4 })
+    const nodes = [n('a'), n('b'), n('c')]
+    const edges = [link('a', 'b'), link('b', 'c')]
+    const once = layout.compute({ nodes, edges, width: 400, height: 300 })
+    const twice = layout.compute({
+      nodes: [...nodes, n('b'), n('a')],
+      edges,
+      width: 400,
+      height: 300,
+    })
+    expect(twice).toEqual(once)
   })
 
   it('One item is centred in the viewport; Empty returns no positions', () => {
@@ -275,9 +290,18 @@ describe('forceLayout seam', () => {
     expect([result.edgeShape, result.labelMode]).toEqual(['arc', 'declutter'])
   })
 
-  it('Large (150) lays out in under 5 s', () => {
-    const started = performance.now()
-    runFixture(largeFixture)
-    expect(performance.now() - started).toBeLessThan(5000)
-  })
+  it('Large (150) costs less than 14 times Medium (30), so a quadratic repulsion fails', () => {
+    const timed = (fixture: typeof smallFixture, runs: number) => {
+      const started = performance.now()
+      for (let run = 0; run < runs; run += 1) runFixture(fixture)
+      return (performance.now() - started) / runs
+    }
+    const large: number[] = []
+    const medium: number[] = []
+    for (let pair = 0; pair < 5; pair += 1) {
+      large.push(timed(largeFixture, 1))
+      medium.push(timed(mediumFixture, 8))
+    }
+    expect(Math.min(...large) / Math.min(...medium)).toBeLessThan(14)
+  }, 60_000)
 })

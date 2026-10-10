@@ -297,7 +297,7 @@ function BasisTip({ basis, citation }: { basis: string; citation?: string }) {
   return (
     <View className="gap-stack-sm" style={{ width: TIP_WIDTH }}>
       <Typography variant="body2">{basis}</Typography>
-      {citation && (
+      {!!citation && (
         <Typography variant="caption" color="tertiary">
           {citation}
         </Typography>
@@ -437,8 +437,8 @@ function TitleRow({
         className="gap-inline-sm"
         testID="goal-card-marks"
       >
-        {priority && <GoalPriorityIcon priority={priority} size={markSize} />}
-        {isPR && <PrBadge type="weight" compact animate={false} iconSize={markSize} />}
+        {!!priority && <GoalPriorityIcon priority={priority} size={markSize} />}
+        {!!isPR && <PrBadge type="weight" compact animate={false} iconSize={markSize} />}
         <StatusAffordance badge={badge} collapsed={collapsed} basis={basis} citation={citation} />
       </View>
     </View>
@@ -503,7 +503,7 @@ function CompactBody({
         showWeeks={false}
       />
       <View style={{ minHeight: height }} testID="goal-card-trend">
-        {trend && width !== null && (
+        {!!trend && width !== null && (
           <GoalWeekColumnsChart
             actuals={trend.actuals}
             committed={trend.committed}

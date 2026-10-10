@@ -1,12 +1,11 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, Text, Pressable } from 'react-native'
-import { resolveColor } from '../../../theme/resolve-color'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../ui/surface'
-import { primitiveColors } from '../../../theme/tokens/primitives'
 import { alpha } from '../../../utils/colors'
 import { useTimer } from '../../../hooks/useTimer'
 import { CircularTimer } from '../CircularTimer/CircularTimer'
+import { RestTimerBar } from './RestTimerBar'
 
 /** Default `ring` diameter (px) — the across-the-room wall rest treatment. */
 const RING_DEFAULT_SIZE = 180
@@ -33,14 +32,15 @@ export interface RestTimerProps {
 
 /** The +30s / Skip control row — shared by both variants (hidden in `displayOnly`). */
 function RestActions({ onAddTime, onSkip }: { onAddTime: () => void; onSkip: () => void }) {
-  const brandPrimary = getSemanticColors(useSurfaceMode())['brand-primary']
+  const sem = getSemanticColors(useSurfaceMode())
+  const brandPrimary = sem['brand-primary']
   return (
     <View className="flex-row gap-inline-md">
       <Pressable
         onPress={onAddTime}
         className="py-control-y-md px-control-x-md"
         style={{
-          backgroundColor: alpha(primitiveColors.white, 0.06),
+          backgroundColor: alpha(sem['hairline-subtle'], 0.06),
           borderRadius: 8,
         }}
         accessibilityRole="button"
@@ -149,7 +149,6 @@ export function RestTimer({
   variant = 'bar',
   size = RING_DEFAULT_SIZE,
 }: RestTimerProps) {
-  const brandPrimary = getSemanticColors(useSurfaceMode())['brand-primary']
   // useTimer owns the countdown math (remaining/progress/mm:ss); a zero-duration
   // timer is complete, which keeps the width out of the 0/0 === NaN case.
   const {
@@ -183,86 +182,15 @@ export function RestTimer({
     )
   }
 
+  // Actions row — hidden in display-only (poll-only) mode
+  const actions = !displayOnly ? <RestActions onAddTime={onAddTime} onSkip={onSkip} /> : undefined
   return (
-    <View
-      className="bg-surface-raised w-full py-inset-md px-gutter-sm"
-      style={{
-        borderTopWidth: 1,
-        borderTopColor: resolveColor('hairline-default'),
-      }}
-      accessibilityRole="timer"
-      accessibilityLabel={`Rest timer, ${remainingSec} seconds remaining`}
-      testID="rest-timer"
-    >
-      {/* Top row */}
-      <View className="flex-row justify-between items-center mb-stack-md">
-        {/* Left side */}
-        <View style={{ flexDirection: 'column' }}>
-          <Text
-            className="text-text-secondary"
-            style={{
-              fontSize: 11,
-              fontFamily: 'Inter, sans-serif',
-              fontWeight: '600',
-              textTransform: 'uppercase',
-              letterSpacing: 1,
-            }}
-            testID="rest-timer-label"
-          >
-            REST
-          </Text>
-          {nextSetInfo != null && (
-            <Text
-              className="text-text-tertiary mt-0.5"
-              style={{
-                fontSize: 11,
-                fontFamily: 'Inter, sans-serif',
-              }}
-              testID="rest-timer-next-set"
-            >
-              {nextSetInfo}
-            </Text>
-          )}
-        </View>
-
-        {/* Right side - time display */}
-        <Text
-          className="text-text-primary"
-          style={{
-            fontSize: 28,
-            fontFamily: '"Space Grotesk", sans-serif',
-            fontWeight: '700',
-            fontVariant: ['tabular-nums'],
-            letterSpacing: -0.5,
-          }}
-          testID="rest-timer-time"
-        >
-          {timeDisplay}
-        </Text>
-      </View>
-
-      {/* Progress bar */}
-      <View
-        className="bg-hairline mb-3"
-        style={{
-          height: 3,
-          borderRadius: 2,
-        }}
-        testID="rest-timer-progress-track"
-      >
-        <View
-          style={{
-            height: '100%',
-            backgroundColor: brandPrimary,
-            borderRadius: 2,
-            width: `${progressPct}%`,
-          }}
-          testID="rest-timer-progress-fill"
-        />
-      </View>
-
-      {/* Actions row — hidden in display-only (poll-only) mode */}
-      {!displayOnly && <RestActions onAddTime={onAddTime} onSkip={onSkip} />}
-    </View>
+    <RestTimerBar
+      timeDisplay={timeDisplay}
+      remainingSec={remainingSec}
+      progressPct={progressPct}
+      nextSetInfo={nextSetInfo}
+      actions={actions}
+    />
   )
 }

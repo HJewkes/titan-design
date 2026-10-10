@@ -36,19 +36,27 @@ pnpm add react react-native lucide-react-native
 import '@titan-design/react-ui/theme/global.css'
 ```
 
-### 2. Configure Tailwind (optional, for custom styling)
+### 2. Configure Tailwind
+
+Titan's components style themselves with token classes such as `bg-surface-elevated`. Tailwind
+only generates those classes when it uses titan's config as a preset and scans titan's dist.
 
 ```javascript
 // tailwind.config.js
+const titanConfig = require('@titan-design/react-ui/tailwind.config.js')
+
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     './src/**/*.{js,jsx,ts,tsx}',
     './node_modules/@titan-design/react-ui/dist/**/*.{js,mjs}',
   ],
-  presets: [require('nativewind/preset')],
-  // Your customizations...
+  presets: [titanConfig],
+  darkMode: 'class',
 }
 ```
+
+The `titanConfig` preset includes `nativewind/preset`, so do not add that preset separately.
 
 ### 3. Web Setup (Vite)
 
@@ -58,9 +66,10 @@ See the full guide: **[Web Consumer Setup](docs/WEB_SETUP.md)**
 
 Quick summary:
 
-1. `npm install react-native-web` and `npm install -D nativewind` (Tailwind preset only)
+1. `npm install react-native-web` and `npm install -D tailwindcss autoprefixer postcss nativewind`
+   (`nativewind` is needed only at build time, by the titan preset)
 2. Add `resolve.alias: { 'react-native': 'react-native-web' }` to your Vite config
-3. Add titan's dist to your Tailwind `content` array and use titan's config as a preset
+3. Configure Tailwind as in step 2: titan's config as a preset and titan's dist in `content`
 
 ## Usage
 
@@ -106,28 +115,28 @@ function App() {
 
 ### Core UI Components
 
-| Component    | Description                                                         |
-| ------------ | ------------------------------------------------------------------- |
-| **Button**   | Primary action component with variants: solid, outline, ghost, link |
-| **Input**    | Text input with label, helper text, and error states                |
-| **Card**     | Container component with header, content, footer                    |
-| **Badge**    | Status indicator labels                                             |
-| **Spinner**  | Loading indicator                                                   |
-| **Avatar**   | User/entity representation                                          |
-| **Divider**  | Visual separator                                                    |
-| **Checkbox** | Boolean input with group support                                    |
-| **Switch**   | Toggle input                                                        |
-| **Modal**    | Dialog/overlay component                                            |
+| Component      | Description                                                         |
+| -------------- | ------------------------------------------------------------------- |
+| **Button**     | Primary action component with variants: solid, outline, ghost, link |
+| **Input**      | Text input with label, helper text, and error states                |
+| **Card**       | Container component with header, content, footer                    |
+| **Badge**      | Status indicator labels                                             |
+| **Spinner**    | Loading indicator                                                   |
+| **Avatar**     | User/entity representation                                          |
+| **Divider**    | Visual separator                                                    |
+| **Checkbox**   | Boolean input with group support                                    |
+| **Switch**     | Toggle input                                                        |
+| **Modal**      | Dialog/overlay component                                            |
+| **Typography** | Consistent text styling (h1-h6, body, caption, etc.)                |
+| **Table**      | Data table with sorting and pagination                              |
+| **EmptyState** | Placeholder for empty data states                                   |
 
 ### Custom Components
 
-| Component          | Description                                                                                    |
-| ------------------ | ------------------------------------------------------------------------------------------------ |
-| **Typography**     | Consistent text styling (h1-h6, body, caption, etc.)                                            |
-| **Sidebar**        | Navigation sidebar with collapsible support                                                     |
-| **Table**          | Data table with sorting and pagination                                                          |
-| **EmptyState**     | Placeholder for empty data states                                                                |
-| **GoalLiftCard**   | One lift's goal state — next milestone, status pill, committed/stretch progress (root barrel)   |
+| Component          | Description                                                                                             |
+| ------------------ | ------------------------------------------------------------------------------------------------------- |
+| **Sidebar**        | Navigation sidebar with collapsible support                                                             |
+| **GoalLiftCard**   | One lift's goal state — next milestone, status pill, committed/stretch progress (root barrel)           |
 | **GoalMuscleCard** | A muscle priority's rollup card, built on `MuscleGlyph` (`bodymap` subpath — see [Subpaths](#subpaths)) |
 
 ## Subpaths
@@ -168,7 +177,7 @@ their heavier runtime dependencies:
 
 ### Button
 
-```tsx
+```tsx fragment
 <Button
   variant="solid" | "outline" | "ghost" | "link"
   color="primary" | "secondary" | "success" | "error" | "warning" | "info"
@@ -184,13 +193,13 @@ their heavier runtime dependencies:
 
 ### Input
 
-```tsx
+```tsx fragment
 <Input
   label="Field Label"
   placeholder="Placeholder text"
   helperText="Helper text"
   errorMessage="Error message"
-  variant="outline" | "filled" | "underlined"
+  variant="outline" | "filled" | "underline"
   size="sm" | "md" | "lg"
   isDisabled={false}
   isInvalid={false}
@@ -203,11 +212,13 @@ their heavier runtime dependencies:
 
 ### Typography
 
-```tsx
+```tsx fragment
 <Typography
   variant="h1" | "h2" | "h3" | "h4" | "h5" | "h6" |
-           "body1" | "body2" | "caption" | "overline"
-  color="primary" | "secondary" | "tertiary" | "disabled"
+           "body1" | "body2" | "subtitle1" | "subtitle2" | "caption" | "overline" |
+           "button" | "mono" | "monoLabel" | "microLabel" | "boldLabel"
+  color="primary" | "secondary" | "tertiary" | "disabled" | "inverse" |
+         "success" | "error" | "warning" | "info" | "inherit"
 >
   Text content
 </Typography>
@@ -215,8 +226,8 @@ their heavier runtime dependencies:
 
 ### Card
 
-```tsx
-<Card variant="default" | "elevated" | "outline" | "filled">
+```tsx fragment
+<Card variant="elevated" | "outline" | "filled" | "accent" | "subtle">
   <CardHeader>
     <CardTitle>Title</CardTitle>
   </CardHeader>
@@ -224,7 +235,9 @@ their heavier runtime dependencies:
     Content here
   </CardContent>
   <CardFooter>
-    <Button>Action</Button>
+    <Button>
+      <ButtonText>Action</ButtonText>
+    </Button>
   </CardFooter>
 </Card>
 ```
@@ -249,7 +262,7 @@ import '@titan-design/react-ui/theme/global.css'
 
 Add the `light` class to your root element for light mode:
 
-```tsx
+```tsx fragment
 // Dark mode (default)
 <div>
   {/* Your app */}
@@ -288,8 +301,13 @@ The design system uses a two-tier token system following DTCG conventions:
 ### Using Tokens
 
 ```tsx
+import { Text, View } from 'react-native'
+
 // In components
-<View className="bg-surface-elevated rounded-lg" style={{ borderWidth: 1, borderColor: '#1F1F1F' }}>
+;<View
+  className="bg-surface-elevated rounded-lg"
+  style={{ borderWidth: 1, borderColor: '#1F1F1F' }}
+>
   <Text className="text-text-primary">Primary text</Text>
   <Text className="text-text-secondary">Secondary text</Text>
 </View>
@@ -303,29 +321,34 @@ The design system uses a two-tier token system following DTCG conventions:
 
 The bare `border` Tailwind utility sets both `borderWidth: 1` **and** `borderColor: currentColor`. When combined with a `border-border-*` color class, the color assignment order is not guaranteed in NativeWind/React Native, which can produce black borders instead of the intended theme color.
 
-```tsx
+```tsx fragment
 // WRONG — border sets currentColor, may render black on native
-<View className="border border-border-default" />
+<View className="border border-hairline" />
 
 // WRONG — same problem with any border-* color class
 <View className="border border-border-input" />
 ```
 
 ```tsx
-// RIGHT — explicit inline style, no ambiguity
-<View style={{ borderWidth: 1, borderColor: '#1F1F1F' }} />
+import { View } from 'react-native'
+import { resolveColor } from '@titan-design/react-ui/theme'
 
-// RIGHT — use WORKOUT_TOKENS constants for type-safe access
-import { WORKOUT_TOKENS } from '@titan-design/react-ui/theme'
-<View style={{ borderWidth: 1, borderColor: WORKOUT_TOKENS.border.default }} />
+// RIGHT — explicit inline style; resolveColor returns the CSS variable on web and the resolved hex on native
+export const Explicit = () => (
+  <View style={{ borderWidth: 1, borderColor: resolveColor('hairline-default') }} />
+)
 
-// RIGHT on web only — border-border (no bare 'border') resolves to the CSS variable
-<View className="border-[1px] border-border" />
+// RIGHT on web only — border-hairline (no bare 'border') resolves to the CSS variable
+export const WebOnly = () => <View className="border-[1px] border-hairline" />
 ```
 
-Run `pnpm lint:borders` to catch any `border border-*` patterns in source components.
+The arch test `src/arch/default-suffix-class.test.ts` fails on a `*-default` token class such as
+`border-border-default` in source components; Tailwind never generates one, so the element falls back
+to currentColor. Use the suffix-less DEFAULT class (`border-border`). Run it alone with
+`pnpm exec vitest run --project threads src/arch/default-suffix-class.test.ts` in `packages/ui`. It does
+not flag a bare `border`; review those by hand.
 
-For full token reference and additional pitfalls, see [`src/theme/TOKEN_MAPPING.md`](src/theme/TOKEN_MAPPING.md).
+For full token reference and additional pitfalls, see [`TOKENS.md`](TOKENS.md).
 
 ---
 
@@ -349,6 +372,14 @@ pnpm test
 pnpm test:coverage
 ```
 
+### Story audit
+
+```bash
+pnpm audit:stories
+```
+
+Audits the stories your diff touches for overflow, clipping and contrast; see [`docs/audit-stories.md`](docs/audit-stories.md).
+
 ### Build
 
 ```bash
@@ -368,6 +399,22 @@ pnpm build
   (unpublished, see AW-118) and sibling checkouts of every consumer in
   `scripts/arch.config.json`, neither of which a CI runner has; running it there
   would silently score every consumer as zero usage instead of failing loudly.
+  The per-component metrics (`exports`, `dependsOn`, `storyRefs`, `leak`, `tier`,
+  `libDependents`, `xproj`, `verdict`) are advisory for the same reason: they come from
+  the codewatch index and the consumer checkouts, a full regen takes about two minutes,
+  and the freshness test cannot recompute them. They can drift between barrel changes
+  without failing CI; regenerate with `pnpm arch:graph -- --reindex` in a commit of its
+  own so the diff stays reviewable.
+  `src/arch/component-catalog.json` derives from `arch-graph.json`, so run `pnpm catalog`
+  after every arch-graph regen and commit its output too.
+- `src/arch/arch-graph.coverage.test.ts` fails when a `.tsx` file the `ui`, `custom` or
+  `shell` barrels re-export has no arch-graph node, because the catalog never lists a
+  component without one. A feature PR adds the node without a full regen:
+  `pnpm arch:graph -- --add packages/ui/src/components/ui/kbd/Kbd.tsx` (repeat `--add`
+  for more files) indexes fresh, then writes only those nodes, their outgoing edges, their
+  `summary` membership and `componentBarrelHash`; every other node keeps its committed
+  bytes. Then run `pnpm catalog`. It needs the same codewatch CLI as a full regen
+  (`CODEWATCH_CLI=node <codewatch>/packages/cli/dist/index.js`).
 
 ## Storybook Configuration
 
@@ -405,7 +452,7 @@ All components use React Native primitives for cross-platform compatibility:
 
 Use NativeWind platform modifiers when needed:
 
-```tsx
+```tsx fragment
 <View className="p-4 web:hover:bg-gray-100 native:active:opacity-80">
 ```
 

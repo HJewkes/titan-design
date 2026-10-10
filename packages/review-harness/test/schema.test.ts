@@ -1,4 +1,3 @@
-import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { exampleManifest } from '../src/example.ts'
 import {
@@ -6,7 +5,7 @@ import {
   ManifestSchema,
   feedbackJsonSchema,
   manifestJsonSchema,
-} from '../src/schema.ts'
+} from '@titan-design/review-schema'
 import { pagedImageInput, validFeedback } from './fixtures.ts'
 
 const base = () => exampleManifest('http://127.0.0.1:6100')
@@ -37,10 +36,10 @@ describe('round manifest', () => {
     expect(issues(twelve)).toEqual([])
   })
 
-  it('takes up to 80 variants when the round pages through sections', () => {
+  it('takes any number of variants when the round pages through sections', () => {
     expect(ManifestSchema.parse(pagedImageInput(60)).variants).toHaveLength(60)
-    expect(issues(pagedImageInput(80))).toEqual([])
-    expect(issues(pagedImageInput(81))).toEqual(['variants'])
+    expect(issues(pagedImageInput(81))).toEqual([])
+    expect(issues(pagedImageInput(160))).toEqual([])
   })
 
   it('rejects duplicate variant keys, question ids and widths', () => {
@@ -150,12 +149,169 @@ describe('feedback', () => {
   })
 })
 
-describe('exported JSON Schema files', () => {
-  const onDisk = (name: string) =>
-    JSON.parse(readFileSync(new URL(`../schema/${name}`, import.meta.url), 'utf8'))
+describe('a PR page and its ship/no-ship question (round@2 merge, page)', () => {
+  const HEAD = 'a'.repeat(40)
+  const KEY = 'owner/name#7'
+  const merge = { repo: 'owner/name', pr: 7, headSha: HEAD, ship: ['Ship'] }
+  const design = (id = 'd1', patch: object = {}) => ({
+    id,
+    kind: 'text',
+    prompt: 'Anything to change?',
+    page: KEY,
+    ...patch,
+  })
+  const shipQ = (id = 'q-ship', patch: object = {}) => ({
+    id,
+    kind: 'pick-one',
+    prompt: 'Ship owner/name#7 at aaaaaaaaaaaa?',
+    signsOff: 'the toolbar layout',
+    options: ['Ship', "Don't ship"],
+    required: true,
+    page: KEY,
+    merge,
+    ...patch,
+  })
+  const round = (questions: object[], top: object = {}) => ({
+    ...JSON.parse(JSON.stringify(base())),
+    questions,
+    ...top,
+  })
+  const messages = (input: unknown) => {
+    const result = ManifestSchema.safeParse(input)
+    return result.success ? [] : result.error.issues.map((i) => i.message)
+  }
 
-  it('match the zod schemas (run `pnpm schema` after changing them)', () => {
-    expect(onDisk('round.schema.json')).toEqual(manifestJsonSchema())
-    expect(onDisk('feedback.schema.json')).toEqual(feedbackJsonSchema())
+  it("a PR page with design questions and one required Ship/Don't ship question parses", () => {
+    const parsed = ManifestSchema.parse(round([design(), shipQ()]))
+    expect(parsed.questions.map((q) => q.page)).toEqual([KEY, KEY])
+    expect(parsed.questions[1]).toMatchObject({ merge })
+  })
+
+  it('a pick-one bound to a PR head with a ship option parses', () => {
+    expect(() => ManifestSchema.parse(round([shipQ()]))).not.toThrow()
+  })
+
+  it('a short or non-hex headSha is refused', () => {
+    for (const headSha of ['abc123', 'A'.repeat(40), 'g'.repeat(40)])
+      expect(issues(round([shipQ('q-ship', { merge: { ...merge, headSha } })]))).toContain(
+        'questions.0.merge.headSha'
+      )
+  })
+
+  it('a merge-bound question that is not required is refused', () => {
+    expect(messages(round([shipQ('q-ship', { required: undefined })]))).toEqual([
+      'question q-ship: a merge-bound question must be required',
+    ])
+  })
+
+  it("options that are not exactly Ship and Don't ship are refused", () => {
+    for (const options of [
+      ["Don't ship", 'Ship'],
+      ['Ship', "Don't ship", 'Later'],
+      ['Ship', 'No'],
+    ])
+      expect(messages(round([shipQ('q-ship', { options })]))).toEqual([
+        expect.stringMatching(/question q-ship: .*options must be exactly/),
+      ])
+  })
+
+  it('a ship set that is not exactly ["Ship"] is refused', () => {
+    for (const ship of [['Ship', "Don't ship"], ["Don't ship"]])
+      expect(messages(round([shipQ('q-ship', { merge: { ...merge, ship } })]))).toContain(
+        'question q-ship: a merge-bound question\'s ship set must be exactly ["Ship"]'
+      )
+  })
+
+  it('a ship set naming the revision option is refused', () => {
+    expect(messages(round([shipQ('q-ship', { revisionOption: 'Ship' })]))).toEqual([
+      'question q-ship: ship option "Ship" is its revisionOption',
+    ])
+  })
+
+  it('a ship option not among the options is refused', () => {
+    expect(
+      messages(round([shipQ('q-ship', { merge: { ...merge, ship: ['Elsewhere'] } })]))
+    ).toEqual(
+      expect.arrayContaining(['question q-ship: ship option "Elsewhere" is not one of its options'])
+    )
+  })
+
+  it('an empty ship set or a stray merge field is refused', () => {
+    expect(issues(round([shipQ('q-ship', { merge: { ...merge, ship: [] } })]))).toContain(
+      'questions.0.merge.ship'
+    )
+    expect(issues(round([shipQ('q-ship', { merge: { ...merge, extra: 1 } })]))).toContain(
+      'questions.0.merge'
+    )
+  })
+
+  it('a PR bound by two questions is refused', () => {
+    expect(messages(round([shipQ(), shipQ('q-ship2')]))).toEqual([
+      'owner/name#7 is bound by more than one question: q-ship, q-ship2',
+    ])
+  })
+
+  it('one PR bound at two heads is refused', () => {
+    const other = shipQ('q-ship2', { merge: { ...merge, headSha: 'b'.repeat(40) } })
+    expect(messages(round([shipQ(), other]))).toEqual([
+      expect.stringContaining('owner/name#7 is bound by more than one question'),
+    ])
+  })
+
+  it('the same PR number in another repo has its own page', () => {
+    const key = 'owner/other#7'
+    const other = shipQ('q-ship2', { page: key, merge: { ...merge, repo: 'owner/other' } })
+    expect(() => ManifestSchema.parse(round([shipQ(), other]))).not.toThrow()
+  })
+
+  it('a bound question whose page is not its own PR is refused', () => {
+    expect(
+      messages(
+        round([shipQ('q-ship', { page: 'owner/name#8' }), design('d1', { page: 'owner/name#8' })])
+      )
+    ).toEqual(
+      expect.arrayContaining([
+        'question q-ship: a merge-bound question\'s page must be "owner/name#7"',
+      ])
+    )
+  })
+
+  it('an unpaged bound question is refused', () => {
+    expect(messages(round([shipQ('q-ship', { page: undefined })]))).toEqual([
+      'question q-ship: a merge-bound question\'s page must be "owner/name#7"',
+    ])
+  })
+
+  it('a page naming a PR with no ship/no-ship question is refused', () => {
+    expect(messages(round([design('d1', { page: 'owner/name#9' })]))).toEqual([
+      'question d1: page "owner/name#9" has no ship/no-ship question',
+    ])
+  })
+
+  it('a malformed page key is refused', () => {
+    for (const page of ['owner/name', 'owner/name#0', 'name#7', '#7'])
+      expect(issues(round([design('d1', { page })]))).toContain('questions.0.page')
+  })
+
+  it('a build record parses, and a malformed one is refused', () => {
+    const build = { mainSha: HEAD, mergeSha: 'c'.repeat(40) }
+    expect(ManifestSchema.parse(round([shipQ()], { build })).build).toEqual(build)
+    expect(
+      issues(round([shipQ()], { build: { mainSha: 'abc', mergeSha: build.mergeSha } }))
+    ).toContain('build.mainSha')
+  })
+
+  it('a round with no bindings parses exactly as today', () => {
+    const parsed = ManifestSchema.parse(base())
+    expect(parsed).not.toHaveProperty('build')
+    for (const q of parsed.questions) {
+      expect(q).not.toHaveProperty('merge')
+      expect(q).not.toHaveProperty('page')
+    }
+    expect(ManifestSchema.parse(JSON.parse(JSON.stringify(parsed)))).toEqual(parsed)
+  })
+
+  it('leaves the feedback schema untouched', () => {
+    expect(JSON.stringify(feedbackJsonSchema())).not.toMatch(/headSha|"merge"|mergeSha|"page"/)
   })
 })

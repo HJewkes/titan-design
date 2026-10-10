@@ -1,7 +1,20 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import type { ViewProps } from 'react-native'
 import { Radio, RadioGroup } from './Radio'
+
+const viewClassNames: string[][] = []
+
+vi.mock('react-native', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('react-native')>()
+  const React = await import('react')
+  const View = React.forwardRef<unknown, ViewProps & { className?: string }>((props, ref) => {
+    viewClassNames.push((props.className ?? '').split(/\s+/))
+    return React.createElement(actual.View, { ...props, ref } as ViewProps)
+  })
+  return { ...actual, View }
+})
 
 describe('Radio', () => {
   it('renders RadioGroup with Radio children', () => {
@@ -41,9 +54,8 @@ describe('Radio', () => {
       </RadioGroup>
     )
     const radios = screen.getAllByRole('radio')
-    // react-native-web does not map accessibilityState.checked to aria-checked
-    expect(radios[0]).toBeInTheDocument()
-    expect(radios[1]).toBeInTheDocument()
+    expect(radios[0]).toHaveAttribute('aria-checked', 'true')
+    expect(radios[1]).toHaveAttribute('aria-checked', 'false')
   })
 
   it('disables all radios when group isDisabled', () => {
@@ -152,10 +164,7 @@ describe('Radio', () => {
           <Radio value="b">Option B</Radio>
         </RadioGroup>
       )
-      const results = await axe(container, {
-        rules: { 'aria-required-attr': { enabled: false } },
-      })
-      expect(results).toHaveNoViolations()
+      expect(await axe(container)).toHaveNoViolations()
     })
 
     it('has correct radio role on items', () => {
@@ -166,5 +175,32 @@ describe('Radio', () => {
       )
       expect(screen.getByRole('radio')).toBeInTheDocument()
     })
+  })
+
+  describe('unchecked boundary', () => {
+    it.each(['primary', 'secondary', 'success', 'error'] as const)(
+      'draws the unchecked %s circle with border-input, not a hairline',
+      (color) => {
+        viewClassNames.length = 0
+        render(
+          <RadioGroup value="a" onChange={() => {}} color={color}>
+            <Radio value="a">A</Radio>
+            <Radio value="b">B</Radio>
+          </RadioGroup>
+        )
+        const [, unchecked] = viewClassNames.filter((classes) => classes.includes('border-2'))
+        expect(unchecked).toContain('border-border-input')
+        expect(unchecked.filter((c) => c.startsWith('border-hairline'))).toEqual([])
+      }
+    )
+  })
+
+  it('renders a numeric 0 child inside the label text', () => {
+    render(
+      <RadioGroup value="a" onChange={() => {}}>
+        <Radio value="a">{0}</Radio>
+      </RadioGroup>
+    )
+    expect(screen.getByText('0')).not.toBe(screen.getByRole('radio'))
   })
 })

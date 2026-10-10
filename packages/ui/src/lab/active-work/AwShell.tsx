@@ -26,7 +26,7 @@ function NavRow({ item, active }: { item: (typeof NAV)[number]; active: boolean 
   return (
     <Pressable
       accessibilityRole="tab"
-      accessibilityState={{ selected: active }}
+      aria-selected={active}
       accessibilityLabel={label}
       className={cn(
         'relative h-[38px] flex-row items-center gap-[11px] rounded-[9px] pl-[14px] pr-[10px]',

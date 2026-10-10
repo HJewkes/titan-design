@@ -2,7 +2,10 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Badge, BadgeText } from './Badge'
-import { resolveAll, siblingSource, sizeClasses } from '../../../test/spacing-resolver'
+import { capturedClassNames } from '../../../test/classname-capture'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { contrast, compositeOver } from '../../../theme/color-checks'
+import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
 describe('Badge', () => {
   it('renders string children correctly', () => {
@@ -127,8 +130,11 @@ describe('Badge', () => {
  * out so a token move fails here rather than in a screenshot.
  */
 describe('Badge geometry resolves to the squish tokens', () => {
-  const source = siblingSource(import.meta.url, 'Badge.tsx')
-  const classes = (level: string) => sizeClasses(source, 'sizeStyles', level)
+  // `gap-0` is Badge's reset of Pill's leading-slot gap, not part of the squish ramp.
+  const classes = (level: 'sm' | 'md' | 'lg') => {
+    render(<Badge size={level}>Active</Badge>)
+    return spacingClassesAt(screen.getByText('Active').parentElement).filter((c) => c !== 'gap-0')
+  }
 
   const ramp = [
     ['sm', ['px-squish-x-sm', 'py-squish-y-sm'], ['8px', '2px']],
@@ -142,5 +148,29 @@ describe('Badge geometry resolves to the squish tokens', () => {
 
   it.each(ramp)('%s measures the squish ramp', (level, _, pixels) => {
     expect(resolveAll(classes(level))).toEqual([...pixels])
+  })
+})
+
+describe('Badge default solid face', () => {
+  // Read back from the rendered classes, so a revert of Pill's neutral solid row fails here.
+  const renderedFace = () => {
+    render(
+      <Badge testID="badge" variant="solid">
+        Active
+      </Badge>
+    )
+    const classes = (capturedClassNames.get('badge') ?? '').split(/\s+/)
+    const token = (prefix: string) =>
+      classes.find((c) => c.startsWith(prefix))?.slice(prefix.length) ?? ''
+    return { fill: token('bg-'), label: token('text-') }
+  }
+
+  it.each(['dark', 'light'] as const)('the %s label reads >= 4.5 on its fill', (mode) => {
+    const colors: Record<string, string> = getSemanticColors(mode)
+    const { fill, label } = renderedFace()
+    const opaqueFill = compositeOver(colors[fill], colors['surface-base'])
+    expect(contrast(compositeOver(colors[label], opaqueFill), opaqueFill)).toBeGreaterThanOrEqual(
+      4.5
+    )
   })
 })

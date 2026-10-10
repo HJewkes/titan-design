@@ -55,7 +55,7 @@ function LeadingFrame({ surface, heroLeading }: LeadingArgs) {
  */
 const meta: Meta<LeadingArgs> = {
   title: 'Lab/Decisions/Milestone Hero Leading',
-  tags: ['status:lab'],
+  tags: ['status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
   argTypes: {
     surface: { control: 'inline-radio', options: ['compact', 'full', 'tile'] },

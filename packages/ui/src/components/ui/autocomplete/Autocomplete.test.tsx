@@ -108,6 +108,21 @@ describe('Autocomplete', () => {
     expect(screen.getByLabelText('Clear selection')).toBeInTheDocument()
   })
 
+  it('shows the clear button and leaks no bare 0 when the selected value is 0', () => {
+    render(
+      <Autocomplete
+        options={[
+          { value: '0', label: 'Zero' },
+          { value: '1', label: 'One' },
+        ]}
+        value={0 as unknown as string}
+        isClearable
+      />
+    )
+    expect(screen.getByLabelText('Clear selection')).toBeInTheDocument()
+    expect(screen.queryByText('0')).not.toBeInTheDocument()
+  })
+
   it('calls onChange with null when clear is pressed', () => {
     const onChange = vi.fn()
     render(<Autocomplete options={defaultOptions} value="1" onChange={onChange} isClearable />)
@@ -247,6 +262,33 @@ describe('Autocomplete', () => {
         vi.advanceTimersByTime(1)
       })
       expect(screen.queryByText('Apple')).not.toBeInTheDocument()
+    })
+
+    it('keeps the label of an option clicked within 200ms of blur', () => {
+      vi.useFakeTimers()
+      render(<Autocomplete options={defaultOptions} />)
+      const input = screen.getByPlaceholderText('Search...')
+      typeInInput(input, 'App')
+
+      fireEvent.blur(input)
+      fireEvent.click(screen.getByText('Apple'))
+      act(() => {
+        vi.advanceTimersByTime(200)
+      })
+
+      expect(input).toHaveValue('Apple')
+    })
+
+    it('leaves no pending timer when unmounted during the blur delay', () => {
+      vi.useFakeTimers()
+      const { unmount } = render(<Autocomplete options={defaultOptions} />)
+      const input = screen.getByPlaceholderText('Search...')
+      typeInInput(input, 'App')
+      fireEvent.blur(input)
+
+      unmount()
+
+      expect(vi.getTimerCount()).toBe(0)
     })
   })
 

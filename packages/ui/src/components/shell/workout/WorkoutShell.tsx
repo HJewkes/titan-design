@@ -52,6 +52,7 @@ export function WorkoutShell({
 }: WorkoutShellProps) {
   return (
     <AppShell
+      brand="voltras"
       className={className}
       navItems={navItems}
       activeKey={activeKey}
@@ -71,7 +72,7 @@ export function WorkoutShell({
   )
 }
 
-/** @deprecated Renamed to `WorkoutShell` — same props (AW-132). Removed after consumer migration. */
+/** @deprecated Renamed to `WorkoutShell` — same props (AW-132). voltras-mcp still imports it; removal waits on its migration to `WorkoutShell`. */
 export const DashboardShell = WorkoutShell
 /** @deprecated Renamed to `WorkoutShellProps` (AW-132). */
 export type DashboardShellProps = WorkoutShellProps
