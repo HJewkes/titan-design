@@ -25,6 +25,9 @@ reads a round imports them from here instead of copying them.
 - `TOPIC_PREFIXES`, the prefixes a question's optional `topics` keys take (`ask:`, `component:`,
   `token:`, `topic:`), and `StackedOnSchema`, the optional manifest `stackedOn` naming the base PR
   `{ repo, pr, headSha }` a stacked round renders beneath its own.
+- A question's optional `touches` (`QuestionTouchesSchema`: `{ tokens: [{ name, mode? }],
+components?, axis? }`): what a question with no PR diff would decide, which a round builder
+  checks against the lock registry (`lockConflicts`). A question on a PR page needs none.
 - A question's optional `frames`: the variant keys it asks about, all in its own section. A
   renderer places those frames directly above the question; a frame sits above one question.
 - The review kinds (all optional): a question's `decision` (`iterate`, `ship` or `decide`,

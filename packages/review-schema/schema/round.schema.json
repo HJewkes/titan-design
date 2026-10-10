@@ -227,6 +227,56 @@
                   "decide"
                 ]
               },
+              "touches": {
+                "type": "object",
+                "properties": {
+                  "tokens": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "mode": {
+                          "type": "string",
+                          "enum": [
+                            "light",
+                            "dark"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "name"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "components": {
+                    "default": [],
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "axis": {
+                    "type": "string",
+                    "enum": [
+                      "colour",
+                      "typography",
+                      "spacing",
+                      "api",
+                      "motion"
+                    ]
+                  }
+                },
+                "required": [
+                  "tokens"
+                ],
+                "additionalProperties": false
+              },
               "kind": {
                 "type": "string",
                 "const": "pick-one"
@@ -404,6 +454,56 @@
                   "decide"
                 ]
               },
+              "touches": {
+                "type": "object",
+                "properties": {
+                  "tokens": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "mode": {
+                          "type": "string",
+                          "enum": [
+                            "light",
+                            "dark"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "name"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "components": {
+                    "default": [],
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "axis": {
+                    "type": "string",
+                    "enum": [
+                      "colour",
+                      "typography",
+                      "spacing",
+                      "api",
+                      "motion"
+                    ]
+                  }
+                },
+                "required": [
+                  "tokens"
+                ],
+                "additionalProperties": false
+              },
               "kind": {
                 "type": "string",
                 "const": "pick-many"
@@ -545,6 +645,56 @@
                   "decide"
                 ]
               },
+              "touches": {
+                "type": "object",
+                "properties": {
+                  "tokens": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "mode": {
+                          "type": "string",
+                          "enum": [
+                            "light",
+                            "dark"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "name"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "components": {
+                    "default": [],
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "axis": {
+                    "type": "string",
+                    "enum": [
+                      "colour",
+                      "typography",
+                      "spacing",
+                      "api",
+                      "motion"
+                    ]
+                  }
+                },
+                "required": [
+                  "tokens"
+                ],
+                "additionalProperties": false
+              },
               "kind": {
                 "type": "string",
                 "const": "scale"
@@ -658,6 +808,56 @@
                   "ship",
                   "decide"
                 ]
+              },
+              "touches": {
+                "type": "object",
+                "properties": {
+                  "tokens": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "mode": {
+                          "type": "string",
+                          "enum": [
+                            "light",
+                            "dark"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "name"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "components": {
+                    "default": [],
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "axis": {
+                    "type": "string",
+                    "enum": [
+                      "colour",
+                      "typography",
+                      "spacing",
+                      "api",
+                      "motion"
+                    ]
+                  }
+                },
+                "required": [
+                  "tokens"
+                ],
+                "additionalProperties": false
               },
               "kind": {
                 "type": "string",
