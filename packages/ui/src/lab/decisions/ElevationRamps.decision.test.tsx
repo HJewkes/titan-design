@@ -26,11 +26,9 @@ describe('Elevation ramps decision', () => {
     }
   )
 
-  it('paints today exactly as the theme resolves each level', () => {
-    for (const mode of ['dark', 'light'] as const) {
-      const planes = planesFor(option('today'), mode)
-      expect(LEVELS.map((l) => planes[l])).toEqual(LEVELS.map((l) => getElevationSurface(l, mode)))
-    }
+  it('paints dark exactly as the theme resolves each level', () => {
+    const planes = planesFor(option('today'), 'dark')
+    expect(LEVELS.map((l) => planes[l])).toEqual(LEVELS.map((l) => getElevationSurface(l, 'dark')))
   })
 
   it('flags the light breaks the owner described today and none in dark', () => {

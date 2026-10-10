@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "componentBarrelHash": "sha256:ad3c5c2ff6fc269a0a1ccd5e4c9bd8e9a9007b3dc938079b6f9d9d8d958d4e49",
+  "componentBarrelHash": "sha256:202e95c2e543b0101da80d497e63637ccab036141bb152e5d943acbc6d65c9f5",
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -2821,6 +2821,43 @@
       "standard": true
     },
     {
+      "name": "GapIndicator",
+      "file": "packages/ui/src/components/custom/Session/GapIndicator.tsx",
+      "dir": "custom",
+      "family": "custom/Session",
+      "exports": [
+        "GapIndicator",
+        "GapIndicatorProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "DateTime",
+        "Divider",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 1,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 61,
+        "score": 1
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "Gauge",
       "file": "packages/ui/src/components/ui/charts/gauge/Gauge.tsx",
       "dir": "ui",
@@ -5101,6 +5138,45 @@
       },
       "tier": "molecule",
       "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "NetworkGraph",
+      "file": "packages/ui/src/components/ui/charts/network-graph/NetworkGraph.tsx",
+      "dir": "ui",
+      "family": "ui/charts",
+      "exports": [
+        "NetworkGraph",
+        "useStableLayout",
+        "LoadedGraph"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "EmptyState",
+        "NetworkGraphCanvas",
+        "NetworkGraphParts",
+        "Skeleton"
+      ],
+      "leak": {
+        "rawView": 2,
+        "rawText": 0,
+        "inlineStyle": 1,
+        "rawHex": 0,
+        "loc": 122,
+        "score": 4
+      },
+      "tier": "organism",
+      "verdict": "dead",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
@@ -8234,6 +8310,41 @@
       "standard": true
     },
     {
+      "name": "ToolBadge",
+      "file": "packages/ui/src/components/custom/Session/ToolBadge.tsx",
+      "dir": "custom",
+      "family": "custom/Session",
+      "exports": [
+        "ToolBadge",
+        "ToolBadgeProps"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Pill"
+      ],
+      "leak": {
+        "rawView": 0,
+        "rawText": 1,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 51,
+        "score": 1
+      },
+      "tier": "molecule",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "ToolbarButton",
       "file": "packages/ui/src/components/ui/toolbar-button/ToolbarButton.tsx",
       "dir": "ui",
@@ -8307,6 +8418,51 @@
       "tier": "molecule",
       "verdict": "keep-internal",
       "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "ToolCallRow",
+      "file": "packages/ui/src/components/custom/Session/ToolCallRow.tsx",
+      "dir": "custom",
+      "family": "custom/Session",
+      "exports": [
+        "ToolCallRow",
+        "ToolCallRowProps",
+        "OutcomeTip",
+        "OutcomeDot",
+        "RowBody",
+        "ErrorText"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Collapse",
+        "DateTime",
+        "Indicator",
+        "TipTrigger",
+        "ToolBadge",
+        "Tooltip",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 3,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 164,
+        "score": 3
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
     },
@@ -11352,6 +11508,50 @@
       "Card"
     ],
     [
+      "GapIndicator",
+      "DateTime"
+    ],
+    [
+      "GapIndicator",
+      "Divider"
+    ],
+    [
+      "GapIndicator",
+      "Typography"
+    ],
+    [
+      "ToolBadge",
+      "Pill"
+    ],
+    [
+      "ToolCallRow",
+      "ToolBadge"
+    ],
+    [
+      "ToolCallRow",
+      "Collapse"
+    ],
+    [
+      "ToolCallRow",
+      "DateTime"
+    ],
+    [
+      "ToolCallRow",
+      "Indicator"
+    ],
+    [
+      "ToolCallRow",
+      "TipTrigger"
+    ],
+    [
+      "ToolCallRow",
+      "Tooltip"
+    ],
+    [
+      "ToolCallRow",
+      "Typography"
+    ],
+    [
       "AgentHoverCard",
       "AgentCardIdentity"
     ],
@@ -11400,6 +11600,22 @@
       "Typography"
     ],
     [
+      "NetworkGraph",
+      "NetworkGraphCanvas"
+    ],
+    [
+      "NetworkGraph",
+      "NetworkGraphParts"
+    ],
+    [
+      "NetworkGraph",
+      "EmptyState"
+    ],
+    [
+      "NetworkGraph",
+      "Skeleton"
+    ],
+    [
       "FacetBar",
       "Chip"
     ],
@@ -11409,7 +11625,7 @@
     ]
   ],
   "summary": {
-    "total": 234,
+    "total": 238,
     "dead": [
       "AgentCard",
       "AgentHoverCard",
@@ -11419,6 +11635,7 @@
       "Composer",
       "Eyebrow",
       "FilePathLabel",
+      "GapIndicator",
       "GoalLiftCard",
       "HelpTip",
       "HighlightText",
@@ -11427,6 +11644,7 @@
       "Kbd",
       "Menu",
       "MessageList",
+      "NetworkGraph",
       "PortfolioOverview",
       "PrHistoryModal",
       "ReadinessCheck",
@@ -11439,6 +11657,7 @@
       "Tabs",
       "TaskStagePill",
       "Toast",
+      "ToolCallRow",
       "ToolbarButton",
       "VelocityBandPreview",
       "VolumeLandmarkBar",
@@ -11477,6 +11696,7 @@
       "SupersetWrapper",
       "TaskRow",
       "TaskTable",
+      "ToolBadge",
       "ToolbarButtonParts",
       "TypingIndicator",
       "UnreadBadge",

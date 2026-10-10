@@ -68,8 +68,8 @@ export const semanticColorsLight = {
   'brand-primary-subtle': ramp.orange[100],
   'brand-primary-muted': ramp.orange[200],
   'brand-primary-strong': 'rgba(255, 121, 0, 0.50)',
-  'brand-primary-hover': ramp.orange[500],
-  'brand-primary-active': ramp.orange[600],
+  'brand-primary-hover': ramp.orange[600], // TD-774: one rung below the orange[500] solid
+  'brand-primary-active': ramp.orange[700], // TD-774: one rung below hover
 
   'brand-secondary': ramp.cyan[600],
   'brand-secondary-light': ramp.cyan[500],
@@ -80,10 +80,8 @@ export const semanticColorsLight = {
   'brand-secondary-hover': ramp.cyan[700],
   'brand-secondary-active': ramp.cyan[800],
 
-  // Text on brand backgrounds (on-*). The brand label is grey[950] on orange[400]
-  // (6.65): white read 2.63 there (console round 4, fb-brand), and the dark theme
-  // already carries the same label on the same fill.
-  'on-brand-primary': greyRamp[950],
+  // Text on brand backgrounds (on-*)
+  'on-brand-primary': p.white,
   'on-brand-secondary': p.white,
 
   // Text ON a `-subtle` fill. Light pairs a ramp[700] label with a ramp[100] fill:
@@ -93,7 +91,7 @@ export const semanticColorsLight = {
   'on-brand-secondary-subtle': ramp.cyan[700],
 
   // Status colors (status-*)
-  'status-success': ramp.green[600],
+  'status-success': ramp.green[700], // TD-789 3b: green 600 missed 3:1 on the grey 200 rail
   'status-success-light': ramp.green[200],
   'status-success-dark': ramp.green[600],
   'status-success-subtle': ramp.green[100],
@@ -106,7 +104,7 @@ export const semanticColorsLight = {
 
   // Deload: the magenta WorkoutPill and WeekRow have washed by hand since VW-0; a role of
   // its own, so a deload week reads the same wherever it is drawn. Callers alpha it.
-  'status-deload': ramp.magenta[600],
+  'status-deload': ramp.magenta[700], // TD-789 3b: magenta 600 labels miss 4.5:1 on grey 100
 
   'status-error': ramp.red[600],
   'status-error-light': ramp.red[500],
@@ -115,21 +113,21 @@ export const semanticColorsLight = {
   'status-error-muted': 'rgba(209, 67, 67, 0.30)',
   'status-error-strong': 'rgba(209, 67, 67, 0.50)',
 
-  'status-error-vivid': alertRedVivid, // NOT red[600], that is status-error
+  'status-error-vivid': ramp.red[700], // TD-789 3b: the pin missed 3:1; red 600 is status-error
   'status-error-vivid-light': ramp.red[500],
   'status-error-vivid-dark': ramp.red[700],
   'status-error-vivid-subtle': 'rgba(255, 71, 87, 0.12)',
   'status-error-vivid-muted': 'rgba(255, 71, 87, 0.30)',
   'status-error-vivid-strong': 'rgba(255, 71, 87, 0.50)',
 
-  'status-warning': ramp.amber[500],
+  'status-warning': ramp.amber[600], // TD-789 3b: amber 500 missed 3:1 on the light planes
   'status-warning-light': ramp.amber[200],
   'status-warning-dark': ramp.amber[500],
   'status-warning-subtle': ramp.amber[100],
   'status-warning-muted': 'rgba(249, 180, 21, 0.30)',
   'status-warning-strong': 'rgba(249, 180, 21, 0.50)',
 
-  'status-info': ramp.blue[600],
+  'status-info': ramp.blue[700], // TD-789 3b: blue 600 missed 3:1 on its Progress track on grey 200
   'status-info-light': ramp.blue[300],
   'status-info-dark': ramp.blue[600],
   'status-info-subtle': ramp.blue[100],
@@ -138,10 +136,11 @@ export const semanticColorsLight = {
 
   // Solid-variant fill. Success and warning carry the light-tuning values: white
   // on green[600] clears 4.5:1; amber[500] keeps the white label at 3.6:1, a
-  // declared exception in contrast-baseline.json. Info is blue[600], the fill the
-  // info Alert and `status-info` already paint: white clears 4.5:1 on it (4.89)
-  // and read 3.12 on blue[500] (console round 4, fb-info).
-  'brand-primary-solid': ramp.orange[400],
+  // declared exception in contrast-baseline.json. Brand is the other named
+  // exception of decision 0003: orange[500] under white reads 3.74:1. Info is
+  // blue[600], the fill the info Alert and `status-info` already paint: white
+  // clears 4.5:1 on it (4.89) and read 3.12 on blue[500].
+  'brand-primary-solid': ramp.orange[500], // TD-774: decision 0003, named exception
   'brand-secondary-solid': ramp.cyan[600],
   'status-success-solid': ramp.green[600],
   'status-error-solid': ramp.red[600],
@@ -234,47 +233,48 @@ export const semanticColorsLight = {
 
   // Text colors (text-*)
   'text-primary': semanticPins.textPrimaryLight,
-  'text-secondary': greyRamp[700],
-  'text-tertiary': greyRamp[600],
+  'text-secondary': greyRamp[800], // TD-789 3b: one step past tertiary
+  'text-tertiary': greyRamp[700], // TD-789 3b: grey 600 missed 4.5:1 on grey 200
   'text-disabled': 'rgba(55, 65, 81, 0.48)',
   'text-inverse': p.white,
   'text-error': ramp.red[700], // one rung darker than status-error to clear 4.5:1 on every light plane
   'text-brand': ramp.orange[700], // rung 700 clears 4.5:1 on every light plane
-  'text-brand-secondary': ramp.cyan[700], // rung 700 clears 4.5:1 on every light plane
-  'text-success': ramp.green[700], // rung 700 clears 4.5:1 on every light plane
+  'text-brand-secondary': ramp.cyan[800], // TD-789 3b: rung 800 clears 4.5:1 on every light plane
+  'text-success': ramp.green[800], // TD-789 3b: rung 800 clears 4.5:1 on every light plane
   'text-warning': ramp.amber[700], // rung 700 clears 4.5:1 on every light plane
   'text-info': ramp.blue[700], // rung 700 clears 4.5:1 on every light plane
   'text-link': ramp.blue[700],
   'text-link-hover': ramp.blue[700],
 
   // Surface colors (surface-*) - for elevated containers
-  'surface-base': p.white,
-  'surface-elevated': greyRamp[50], // slightly off-white for elevated cards
-  'surface-raised': greyRamp[100], // light gray for raised cards
+  // TD-789 3b: the page grey 100 up to elevated grey 50; raised and overlay share white,
+  // and the lift separates them.
+  'surface-base': greyRamp[100], // the page
+  'surface-elevated': greyRamp[50],
+  'surface-raised': p.white, // Card default
   'surface-overlay': p.white,
   'surface-input': greyRamp[50], // Input field background (filled variant)
 
   // Background colors (background-*)
-  'background-base': greyRamp[100],
-  'background-default': p.white,
-  'background-subtle': greyRamp[50],
-  // Frame/bezel chrome — top bar + side nav shell, one step below
-  // `background-base`. Placeholder pairing for light mode, which is deferred.
-  'background-frame': greyRamp[400],
+  'background-base': greyRamp[200], // one step below surface-base
+  'background-default': greyRamp[100], // matches surface-base
+  'background-subtle': greyRamp[50], // matches surface-elevated
+  // Frame/bezel chrome — top bar + side nav shell, one step below `background-base`.
+  'background-frame': greyRamp[300],
 
   // Border colors (border-*)
   'border-prominent': greyRamp[400], // high-visibility divider
   'border-focus': ramp.blue[600],
-  'border-input': greyRamp[500], // Input field border, 3:1 on every content plane (TD-488)
-  'border-input-hover': greyRamp[600], // Input field border on hover
+  'border-input': greyRamp[600], // Input field border, 3:1 on every content plane (TD-488, TD-789)
+  'border-input-hover': greyRamp[700], // Input field border on hover
   'border-input-focus': ramp.blue[600], // Input field border on focus
   'border-input-error': ramp.red[600], // Input field border on error
 
   // Alpha hairline separators (surface-independent — composite toward black on
   // light surfaces, mirroring the dark-mode white-alpha family). See §4/S-2.
   'hairline-subtle': 'rgba(0, 0, 0, 0.10)',
-  'hairline-default': 'rgba(0, 0, 0, 0.15)',
-  'hairline-strong': 'rgba(0, 0, 0, 0.22)',
+  'hairline-default': 'rgba(0, 0, 0, 0.16)', // TD-789 3b: ΔL* 12 on grey 200
+  'hairline-strong': 'rgba(0, 0, 0, 0.24)', // TD-789 3b: ΔL* 18 on grey 200
 
   // Scrims (VW-82) — see the dark map for why these are tokens and not
   // `bg-black/50`, and why they do not flip with the theme.
@@ -283,10 +283,14 @@ export const semanticColorsLight = {
   'scrim-subtle': 'rgba(0, 0, 0, 0.30)',
   'scrim-default': 'rgba(0, 0, 0, 0.50)',
 
-  // Control chrome and data labels (VW-82). Mode-independent for the same
-  // reason the `on-*` white labels are: the plane underneath them is fixed.
-  'on-control-idle': greyRamp[200],
-  'on-control-active': p.white,
+  // Toolbar control faces (TD-264): a white raised face, pressed into a warm
+  // silver. greyRamp[50] and [100] sit within ΔE 3 of other light roles. The
+  // labels flip with the faces, since the face under them now does.
+  'control-face': p.white,
+  'control-face-active': greyRamp[200],
+  'control-face-disabled': 'rgba(0, 0, 0, 0.06)',
+  'on-control-idle': greyRamp[700], // 7.0:1 on control-face
+  'on-control-active': greyRamp[950], // 11.5:1 on control-face-active
   'on-data-strong': semanticPins.onDataStrong,
 
   // Interactive states (interactive-*)
@@ -299,7 +303,7 @@ export const semanticColorsLight = {
   'interactive-disabled-text': 'rgba(55, 65, 81, 0.26)',
 
   // Divider
-  divider: 'rgba(0, 0, 0, 0.15)', // the hairline-default value (TD-489)
+  divider: 'rgba(0, 0, 0, 0.16)', // the hairline-default value (TD-489)
 
   // Avatar default
   'avatar-background': greyRamp[600],
@@ -602,6 +606,12 @@ export const semanticColorsDark = {
   // the active value is the same white. `on-data-strong` is the label ON a
   // light categorical data fill (Treemap tiles), where every text-* token is
   // far too light to read.
+  //
+  // `control-face*` is the toolbar control face itself (TD-264), the values
+  // ToolbarButton painted before it read tokens.
+  'control-face': greyRamp[800],
+  'control-face-active': greyRamp[900],
+  'control-face-disabled': 'rgba(255, 255, 255, 0.12)',
   'on-control-idle': semanticPins.onControlIdle,
   'on-control-active': p.white,
   'on-data-strong': semanticPins.onDataStrong,

@@ -3088,6 +3088,158 @@
       "tier": "molecule"
     },
     {
+      "composes": [
+        "DateTime",
+        "Divider",
+        "Typography"
+      ],
+      "family": "custom/Session",
+      "file": "packages/ui/src/components/custom/Session/GapIndicator.tsx",
+      "name": "GapIndicator",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides on the row.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The idle span.",
+          "name": "durationMs",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Shows the date in UTC rather than the runtime's zone.",
+          "name": "isUTC",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "When activity resumed.",
+          "name": "resumedAtMs",
+          "required": false,
+          "type": "number | null"
+        },
+        {
+          "default": "false",
+          "description": "Set on the first gap after a day change, so the reader sees the new day.",
+          "name": "showDate",
+          "required": false,
+          "type": "boolean"
+        }
+      ],
+      "purpose": "A hairline with the idle time in the middle: \"32m idle\".",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Session/GapIndicator.tsx",
+        "status": "packages/ui/src/components/custom/Session/GapIndicator.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-session-gapindicator--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Pill"
+      ],
+      "family": "custom/Session",
+      "file": "packages/ui/src/components/custom/Session/ToolBadge.tsx",
+      "name": "ToolBadge",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides on the pill.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "A ToolFamily, or any string from a newer read model (falls back to other_tool).",
+          "name": "family",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": "md",
+          "description": "`sm` for a dense row, `md` (default) beside a label.",
+          "name": "size",
+          "required": false,
+          "type": "\"sm\" | \"md\""
+        }
+      ],
+      "purpose": "A tool family as a one-character glyph in a neutral pill.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Session/ToolBadge.tsx",
+        "status": "packages/ui/src/components/custom/Session/ToolBadge.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-session-toolbadge--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Collapse",
+        "DateTime",
+        "Indicator",
+        "TipTrigger",
+        "ToolBadge",
+        "Tooltip",
+        "Typography"
+      ],
+      "family": "custom/Session",
+      "file": "packages/ui/src/components/custom/Session/ToolCallRow.tsx",
+      "name": "ToolCallRow",
+      "props": [
+        {
+          "default": null,
+          "description": "The call to draw.",
+          "name": "call",
+          "required": true,
+          "type": "TimelineToolCall"
+        },
+        {
+          "default": null,
+          "description": "Tailwind overrides on the row.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Shows the time stamp in UTC rather than the runtime's zone.",
+          "name": "isUTC",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Makes the row a button.",
+          "name": "onPress",
+          "required": false,
+          "type": "((call: TimelineToolCall) => void)"
+        }
+      ],
+      "purpose": "One tool call as a line: time, outcome dot (its word on hover and focus), family badge, tool name, what it acted on and the observed duration.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Session/ToolCallRow.tsx",
+        "status": "packages/ui/src/components/custom/Session/ToolCallRow.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-session-toolcallrow--default"
+      ],
+      "tier": "organism"
+    },
+    {
       "composes": [],
       "family": "custom/Sidebar",
       "file": "packages/ui/src/components/custom/Sidebar/Sidebar.tsx",
@@ -5759,7 +5911,7 @@
           "description": "",
           "name": "palette",
           "required": true,
-          "type": "{ status: \"#E05254\" | \"#D14343\" | \"#F9B415\" | \"#C27400\" | \"#2ED573\" | \"#298732\" | \"#2196F3\" | \"#1072CB\" | \"#A29F9D\" | \"#72716F\" | \"#9E9A97\"; band: string; bandHue: \"#2697B7\" | \"#307B9B\"; ... 11 more ...; shadeScale: number; }"
+          "type": "{ status: \"#E05254\" | \"#D14343\" | \"#F9B415\" | \"#A45E00\" | \"#2ED573\" | \"#2B6B25\" | \"#2196F3\" | \"#135AA8\" | \"#A29F9D\" | \"#72716F\" | \"#9E9A97\"; band: string; bandHue: \"#2697B7\" | \"#307B9B\"; ... 11 more ...; shadeScale: number; }"
         },
         {
           "default": null,
@@ -11628,6 +11780,13 @@
         },
         {
           "default": null,
+          "description": "One labelled line on the value axis (a cutoff, a budget).",
+          "name": "referenceMarker",
+          "required": false,
+          "type": "BarListMarker"
+        },
+        {
+          "default": null,
           "description": "The data, one row per bar.",
           "name": "rows",
           "required": true,
@@ -11748,6 +11907,176 @@
     },
     {
       "composes": [
+        "EmptyState",
+        "NetworkGraphCanvas",
+        "NetworkGraphParts",
+        "Skeleton"
+      ],
+      "family": "ui/charts",
+      "file": "packages/ui/src/components/ui/charts/network-graph/NetworkGraph.tsx",
+      "name": "NetworkGraph",
+      "props": [
+        {
+          "default": null,
+          "description": "The root is named `\"<label>.",
+          "name": "accessibilityLabel",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Default true.",
+          "name": "animate",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Tailwind classes for the outer view.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Initial selection when uncontrolled.",
+          "name": "defaultSelection",
+          "required": false,
+          "type": "GraphItemRef | null"
+        },
+        {
+          "default": null,
+          "description": "Labels and strokes for edge kinds.",
+          "name": "edgeKinds",
+          "required": false,
+          "type": "GraphEdgeKind[]"
+        },
+        {
+          "default": null,
+          "description": "Cleaned before layout: self edges and unknown ends are dropped, duplicates merge.",
+          "name": "edges",
+          "required": true,
+          "type": "GraphEdge[]"
+        },
+        {
+          "default": null,
+          "description": "Shown when no node is drawn; default `<EmptyState title=\"No nodes\" />`.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Replaces an edge's accessible name.",
+          "name": "formatEdgeLabel",
+          "required": false,
+          "type": "((edge: GraphEdge, source: GraphNode, target: GraphNode) => string)"
+        },
+        {
+          "default": null,
+          "description": "Replaces a node's accessible name.",
+          "name": "formatNodeLabel",
+          "required": false,
+          "type": "((node: GraphNode, context: GraphNodeContext) => string)"
+        },
+        {
+          "default": null,
+          "description": "Viewport height in px; a larger layout scrolls.",
+          "name": "height",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Keeps focus, traversal, hover and reading; stops selection changes; sets `aria-disabled`.",
+          "name": "isDisabled",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "false",
+          "description": "Renders a skeleton of `width` by `height` instead of the graph.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Default `layeredLayout()`.",
+          "name": "layout",
+          "required": false,
+          "type": "GraphLayout"
+        },
+        {
+          "default": null,
+          "description": "Labels and colours for node kinds, in list order.",
+          "name": "nodeKinds",
+          "required": false,
+          "type": "GraphKind[]"
+        },
+        {
+          "default": null,
+          "description": "Replaces the active node's tooltip content (label, kind and description by default).",
+          "name": "nodeTooltip",
+          "required": false,
+          "type": "((node: GraphNode) => ReactNode)"
+        },
+        {
+          "default": null,
+          "description": "Cleaned before layout: the first of duplicate ids is kept and the rest are counted.",
+          "name": "nodes",
+          "required": true,
+          "type": "GraphNode[]"
+        },
+        {
+          "default": null,
+          "description": "Called with the new selection, or `null` when it clears.",
+          "name": "onSelectionChange",
+          "required": false,
+          "type": "((selection: GraphItemRef | null) => void)"
+        },
+        {
+          "default": null,
+          "description": "Controlled selection; a ref to an item that is not drawn reads as `null`.",
+          "name": "selection",
+          "required": false,
+          "type": "GraphItemRef | null"
+        },
+        {
+          "default": null,
+          "description": "Default false.",
+          "name": "showLegend",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Replaces the summary sentence in the root's name.",
+          "name": "summarize",
+          "required": false,
+          "type": "((model: GraphModel) => string)"
+        },
+        {
+          "default": null,
+          "description": "Viewport width in px; a larger layout scrolls.",
+          "name": "width",
+          "required": true,
+          "type": "number"
+        }
+      ],
+      "purpose": "A directed graph of things and the relations between them, on a layout the caller picks.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/charts/network-graph/NetworkGraph.tsx",
+        "status": "packages/ui/src/components/ui/charts/network-graph/NetworkGraph.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-organisms-networkgraph--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
         "ScatterFrame",
         "ScatterGridlines",
         "ScatterPointMark"
@@ -11855,7 +12184,7 @@
           "description": "",
           "name": "colors",
           "required": true,
-          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 150 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
+          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 153 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
         },
         {
           "default": null,
@@ -11892,7 +12221,7 @@
           "description": "",
           "name": "colors",
           "required": true,
-          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 150 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
+          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 153 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
         },
         {
           "default": null,

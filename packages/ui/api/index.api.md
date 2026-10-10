@@ -579,6 +579,13 @@ export function bandLabel(best: MuscleStrengthBestE1rm | null): string;
 export function BarList(input: BarListProps): react_jsx_runtime.JSX.Element;
 
 // @public
+export interface BarListMarker {
+    formatValue?: (value: number) => string;
+    label: string;
+    value: number;
+}
+
+// @public
 export interface BarListProps extends Omit<ViewProps, 'children'> {
     accessibilityLabel: string;
     className?: string;
@@ -590,6 +597,7 @@ export interface BarListProps extends Omit<ViewProps, 'children'> {
     layout?: 'inline' | 'stacked';
     max?: number;
     maxRows?: number;
+    referenceMarker?: BarListMarker;
     rows: BarListRow[];
     size?: 'sm' | 'md';
     sort?: 'descending' | 'none';
@@ -1050,6 +1058,12 @@ export const categoricalPalette: {
 
 // @public
 export type CategoricalVariant = keyof typeof categoricalPalette;
+
+// @public
+export const CHANNEL_MARKER = "channel";
+
+// @public
+export const CHANNEL_OPENER_META: TurnOriginMeta;
 
 // @public
 export function ChartIcon(props: IconProps): react_jsx_runtime.JSX.Element;
@@ -1518,6 +1532,9 @@ export const darkThemeCSSVars: {
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly '--color-control-face': "#424140";
+    readonly '--color-control-face-active': "#2C2A28";
+    readonly '--color-control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly '--color-on-control-idle': "#D1D1D1";
     readonly '--color-on-control-active': "#FFFFFF";
     readonly '--color-on-data-strong': "#0B0B0B";
@@ -1917,6 +1934,9 @@ export function EqualIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
 export const ERROR_RATE_FLAG_ABOVE = 0.05;
+
+// @public
+export const ERROR_TEXT_LABEL = "Error text";
 
 // @public
 export function errorRate(metrics: Pick<AgentMetrics, 'toolCalls' | 'errors'>): number | null;
@@ -2409,6 +2429,18 @@ export interface FormSectionProps extends ViewProps {
 }
 
 // @public
+export function GapIndicator(input: GapIndicatorProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface GapIndicatorProps {
+    className?: string;
+    durationMs: number;
+    isUTC?: boolean;
+    resumedAtMs?: number | null;
+    showDate?: boolean;
+}
+
+// @public
 export function Gauge(input: GaugeProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -2465,8 +2497,8 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'brand-primary-subtle': "#FFE6D4";
     readonly 'brand-primary-muted': "#FFC7A2";
     readonly 'brand-primary-strong': "rgba(255, 121, 0, 0.50)";
-    readonly 'brand-primary-hover': "#DA5F00";
-    readonly 'brand-primary-active': "#B94A00";
+    readonly 'brand-primary-hover': "#B94A00";
+    readonly 'brand-primary-active': "#983804";
     readonly 'brand-secondary': "#307B9B";
     readonly 'brand-secondary-light': "#2697B7";
     readonly 'brand-secondary-dark': "#2A617F";
@@ -2475,11 +2507,11 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'brand-secondary-strong': "rgba(48, 123, 155, 0.50)";
     readonly 'brand-secondary-hover': "#2A617F";
     readonly 'brand-secondary-active': "#22465F";
-    readonly 'on-brand-primary': "#1C1916";
+    readonly 'on-brand-primary': "#FFFFFF";
     readonly 'on-brand-secondary': "#FFFFFF";
     readonly 'on-brand-primary-subtle': "#983804";
     readonly 'on-brand-secondary-subtle': "#2A617F";
-    readonly 'status-success': "#298732";
+    readonly 'status-success': "#2B6B25";
     readonly 'status-success-light': "#58F69E";
     readonly 'status-success-dark': "#298732";
     readonly 'status-success-subtle': "#B5FFD2";
@@ -2487,32 +2519,32 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'status-success-strong': "rgba(46, 213, 115, 0.50)";
     readonly 'status-live': "#2ED573";
     readonly 'status-live-muted': "#22A444";
-    readonly 'status-deload': "#BA2996";
+    readonly 'status-deload': "#9C0D7A";
     readonly 'status-error': "#D14343";
     readonly 'status-error-light': "#E05254";
     readonly 'status-error-dark': "#A4221C";
     readonly 'status-error-subtle': "#FFE3E5";
     readonly 'status-error-muted': "rgba(209, 67, 67, 0.30)";
     readonly 'status-error-strong': "rgba(209, 67, 67, 0.50)";
-    readonly 'status-error-vivid': "#FF4757";
+    readonly 'status-error-vivid': "#A4221C";
     readonly 'status-error-vivid-light': "#E05254";
     readonly 'status-error-vivid-dark': "#A4221C";
     readonly 'status-error-vivid-subtle': "rgba(255, 71, 87, 0.12)";
     readonly 'status-error-vivid-muted': "rgba(255, 71, 87, 0.30)";
     readonly 'status-error-vivid-strong': "rgba(255, 71, 87, 0.50)";
-    readonly 'status-warning': "#C27400";
+    readonly 'status-warning': "#A45E00";
     readonly 'status-warning-light': "#FFD352";
     readonly 'status-warning-dark': "#C27400";
     readonly 'status-warning-subtle': "#FFEAA9";
     readonly 'status-warning-muted': "rgba(249, 180, 21, 0.30)";
     readonly 'status-warning-strong': "rgba(249, 180, 21, 0.50)";
-    readonly 'status-info': "#1072CB";
+    readonly 'status-info': "#135AA8";
     readonly 'status-info-light': "#78C2FF";
     readonly 'status-info-dark': "#1072CB";
     readonly 'status-info-subtle': "#D9EFFF";
     readonly 'status-info-muted': "rgba(33, 150, 243, 0.30)";
     readonly 'status-info-strong': "rgba(33, 150, 243, 0.50)";
-    readonly 'brand-primary-solid': "#FF7900";
+    readonly 'brand-primary-solid': "#DA5F00";
     readonly 'brand-secondary-solid': "#307B9B";
     readonly 'status-success-solid': "#298732";
     readonly 'status-error-solid': "#D14343";
@@ -2567,42 +2599,45 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'dataviz-categorical-5': "#01B5D1";
     readonly 'dataviz-categorical-6': "#A45E00";
     readonly 'text-primary': "#121828";
-    readonly 'text-secondary': "#5A5958";
-    readonly 'text-tertiary': "#72716F";
+    readonly 'text-secondary': "#424140";
+    readonly 'text-tertiary': "#5A5958";
     readonly 'text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly 'text-inverse': "#FFFFFF";
     readonly 'text-error': "#A4221C";
     readonly 'text-brand': "#983804";
-    readonly 'text-brand-secondary': "#2A617F";
-    readonly 'text-success': "#2B6B25";
+    readonly 'text-brand-secondary': "#22465F";
+    readonly 'text-success': "#264D1C";
     readonly 'text-warning': "#814D14";
     readonly 'text-info': "#135AA8";
     readonly 'text-link': "#135AA8";
     readonly 'text-link-hover': "#135AA8";
-    readonly 'surface-base': "#FFFFFF";
+    readonly 'surface-base': "#EDEAE7";
     readonly 'surface-elevated': "#F9F6F3";
-    readonly 'surface-raised': "#EDEAE7";
+    readonly 'surface-raised': "#FFFFFF";
     readonly 'surface-overlay': "#FFFFFF";
     readonly 'surface-input': "#F9F6F3";
-    readonly 'background-base': "#EDEAE7";
-    readonly 'background-default': "#FFFFFF";
+    readonly 'background-base': "#D4D1CE";
+    readonly 'background-default': "#EDEAE7";
     readonly 'background-subtle': "#F9F6F3";
-    readonly 'background-frame': "#A29F9D";
+    readonly 'background-frame': "#BDBAB7";
     readonly 'border-prominent': "#A29F9D";
     readonly 'border-focus': "#1072CB";
-    readonly 'border-input': "#888684";
-    readonly 'border-input-hover': "#72716F";
+    readonly 'border-input': "#72716F";
+    readonly 'border-input-hover': "#5A5958";
     readonly 'border-input-focus': "#1072CB";
     readonly 'border-input-error': "#D14343";
     readonly 'hairline-subtle': "rgba(0, 0, 0, 0.10)";
-    readonly 'hairline-default': "rgba(0, 0, 0, 0.15)";
-    readonly 'hairline-strong': "rgba(0, 0, 0, 0.22)";
+    readonly 'hairline-default': "rgba(0, 0, 0, 0.16)";
+    readonly 'hairline-strong': "rgba(0, 0, 0, 0.24)";
     readonly 'scrim-press': "rgba(0, 0, 0, 0.10)";
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly 'on-control-idle': "#D4D1CE";
-    readonly 'on-control-active': "#FFFFFF";
+    readonly 'control-face': "#FFFFFF";
+    readonly 'control-face-active': "#D4D1CE";
+    readonly 'control-face-disabled': "rgba(0, 0, 0, 0.06)";
+    readonly 'on-control-idle': "#5A5958";
+    readonly 'on-control-active': "#1C1916";
     readonly 'on-data-strong': "#0B0B0B";
     readonly 'interactive-hover': "rgba(55, 65, 81, 0.04)";
     readonly 'interactive-focus': "rgba(55, 65, 81, 0.12)";
@@ -2611,7 +2646,7 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'interactive-selected-solid': "#5A5958";
     readonly 'interactive-disabled': "rgba(55, 65, 81, 0.12)";
     readonly 'interactive-disabled-text': "rgba(55, 65, 81, 0.26)";
-    readonly divider: "rgba(0, 0, 0, 0.15)";
+    readonly divider: "rgba(0, 0, 0, 0.16)";
     readonly 'avatar-background': "#72716F";
     readonly 'avatar-text': "#FFFFFF";
 } | {
@@ -2757,6 +2792,9 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly 'control-face': "#424140";
+    readonly 'control-face-active': "#2C2A28";
+    readonly 'control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly 'on-control-idle': "#D1D1D1";
     readonly 'on-control-active': "#FFFFFF";
     readonly 'on-data-strong': "#0B0B0B";
@@ -2804,60 +2842,60 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-brand-secondary-subtle': "#C2F6FF";
     readonly '--color-brand-secondary-muted': "#62EAFF";
     readonly '--color-brand-secondary-strong': "rgba(48, 123, 155, 0.50)";
-    readonly '--color-on-brand-primary': "#1C1916";
+    readonly '--color-on-brand-primary': "#FFFFFF";
     readonly '--color-on-brand-secondary': "#FFFFFF";
     readonly '--color-on-brand-primary-subtle': "#983804";
     readonly '--color-on-brand-secondary-subtle': "#2A617F";
-    readonly '--color-status-success': "#298732";
+    readonly '--color-status-success': "#2B6B25";
     readonly '--color-status-success-subtle': "#B5FFD2";
     readonly '--color-status-success-muted': "rgba(46, 213, 115, 0.30)";
     readonly '--color-status-success-strong': "rgba(46, 213, 115, 0.50)";
     readonly '--color-status-live': "#2ED573";
-    readonly '--color-status-deload': "#BA2996";
+    readonly '--color-status-deload': "#9C0D7A";
     readonly '--color-status-live-muted': "#22A444";
     readonly '--color-status-error': "#D14343";
     readonly '--color-status-error-subtle': "#FFE3E5";
     readonly '--color-status-error-muted': "rgba(209, 67, 67, 0.30)";
     readonly '--color-status-error-strong': "rgba(209, 67, 67, 0.50)";
-    readonly '--color-status-warning': "#C27400";
+    readonly '--color-status-warning': "#A45E00";
     readonly '--color-status-warning-subtle': "#FFEAA9";
     readonly '--color-status-warning-muted': "rgba(249, 180, 21, 0.30)";
     readonly '--color-status-warning-strong': "rgba(249, 180, 21, 0.50)";
-    readonly '--color-status-info': "#1072CB";
+    readonly '--color-status-info': "#135AA8";
     readonly '--color-status-info-subtle': "#D9EFFF";
     readonly '--color-status-info-muted': "rgba(33, 150, 243, 0.30)";
     readonly '--color-status-info-strong': "rgba(33, 150, 243, 0.50)";
-    readonly '--color-brand-primary-solid': "#FF7900";
+    readonly '--color-brand-primary-solid': "#DA5F00";
     readonly '--color-brand-secondary-solid': "#307B9B";
     readonly '--color-status-success-solid': "#298732";
     readonly '--color-status-error-solid': "#D14343";
     readonly '--color-status-warning-solid': "#C27400";
     readonly '--color-status-info-solid': "#1072CB";
-    readonly '--color-status-error-vivid': "#FF4757";
+    readonly '--color-status-error-vivid': "#A4221C";
     readonly '--color-status-error-vivid-light': "#E05254";
     readonly '--color-status-error-vivid-dark': "#A4221C";
     readonly '--color-status-error-vivid-subtle': "rgba(255, 71, 87, 0.12)";
     readonly '--color-status-error-vivid-muted': "rgba(255, 71, 87, 0.30)";
     readonly '--color-status-error-vivid-strong': "rgba(255, 71, 87, 0.50)";
     readonly '--color-text-primary': "#121828";
-    readonly '--color-text-secondary': "#5A5958";
-    readonly '--color-text-tertiary': "#72716F";
+    readonly '--color-text-secondary': "#424140";
+    readonly '--color-text-tertiary': "#5A5958";
     readonly '--color-text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly '--color-text-inverse': "#FFFFFF";
     readonly '--color-text-error': "#A4221C";
     readonly '--color-text-brand': "#983804";
-    readonly '--color-text-brand-secondary': "#2A617F";
-    readonly '--color-text-success': "#2B6B25";
+    readonly '--color-text-brand-secondary': "#22465F";
+    readonly '--color-text-success': "#264D1C";
     readonly '--color-text-warning': "#814D14";
     readonly '--color-text-info': "#135AA8";
     readonly '--color-text-link': "#135AA8";
-    readonly '--color-surface-base': "#FFFFFF";
+    readonly '--color-surface-base': "#EDEAE7";
     readonly '--color-surface-elevated': "#F9F6F3";
-    readonly '--color-surface-raised': "#EDEAE7";
-    readonly '--color-background-base': "#EDEAE7";
-    readonly '--color-background-default': "#FFFFFF";
+    readonly '--color-surface-raised': "#FFFFFF";
+    readonly '--color-background-base': "#D4D1CE";
+    readonly '--color-background-default': "#EDEAE7";
     readonly '--color-background-subtle': "#F9F6F3";
-    readonly '--color-background-frame': "#A29F9D";
+    readonly '--color-background-frame': "#BDBAB7";
     readonly '--color-border-prominent': "#A29F9D";
     readonly '--color-border-focus': "#1072CB";
     readonly '--color-interactive-hover': "rgba(55, 65, 81, 0.04)";
@@ -2866,9 +2904,9 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-interactive-selected': "rgba(55, 65, 81, 0.08)";
     readonly '--color-interactive-selected-solid': "#5A5958";
     readonly '--color-interactive-disabled': "rgba(55, 65, 81, 0.12)";
-    readonly '--color-divider': "rgba(0, 0, 0, 0.15)";
-    readonly '--color-brand-primary-hover': "#DA5F00";
-    readonly '--color-brand-primary-active': "#B94A00";
+    readonly '--color-divider': "rgba(0, 0, 0, 0.16)";
+    readonly '--color-brand-primary-hover': "#B94A00";
+    readonly '--color-brand-primary-active': "#983804";
     readonly '--color-brand-secondary-hover': "#2A617F";
     readonly '--color-brand-secondary-active': "#22465F";
     readonly '--color-status-success-light': "#58F69E";
@@ -2930,19 +2968,22 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-text-link-hover': "#135AA8";
     readonly '--color-surface-overlay': "#FFFFFF";
     readonly '--color-surface-input': "#F9F6F3";
-    readonly '--color-border-input': "#888684";
-    readonly '--color-border-input-hover': "#72716F";
+    readonly '--color-border-input': "#72716F";
+    readonly '--color-border-input-hover': "#5A5958";
     readonly '--color-border-input-focus': "#1072CB";
     readonly '--color-border-input-error': "#D14343";
     readonly '--color-hairline-subtle': "rgba(0, 0, 0, 0.10)";
-    readonly '--color-hairline-default': "rgba(0, 0, 0, 0.15)";
-    readonly '--color-hairline-strong': "rgba(0, 0, 0, 0.22)";
+    readonly '--color-hairline-default': "rgba(0, 0, 0, 0.16)";
+    readonly '--color-hairline-strong': "rgba(0, 0, 0, 0.24)";
     readonly '--color-scrim-press': "rgba(0, 0, 0, 0.10)";
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly '--color-on-control-idle': "#D4D1CE";
-    readonly '--color-on-control-active': "#FFFFFF";
+    readonly '--color-control-face': "#FFFFFF";
+    readonly '--color-control-face-active': "#D4D1CE";
+    readonly '--color-control-face-disabled': "rgba(0, 0, 0, 0.06)";
+    readonly '--color-on-control-idle': "#5A5958";
+    readonly '--color-on-control-active': "#1C1916";
     readonly '--color-on-data-strong': "#0B0B0B";
     readonly '--color-interactive-disabled-text': "rgba(55, 65, 81, 0.26)";
     readonly '--color-avatar-background': "#72716F";
@@ -3115,6 +3156,9 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly '--color-control-face': "#424140";
+    readonly '--color-control-face-active': "#2C2A28";
+    readonly '--color-control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly '--color-on-control-idle': "#D1D1D1";
     readonly '--color-on-control-active': "#FFFFFF";
     readonly '--color-on-data-strong': "#0B0B0B";
@@ -3762,6 +3806,103 @@ export function grainForTone(baseColor: string): string;
 export function grainOpacityForTone(baseColor: string): number;
 
 // @public
+export interface GraphEdge {
+    activityAt?: number;
+    id?: string;
+    kind?: string;
+    source: string;
+    target: string;
+    weight?: number | null;
+}
+
+// @public
+export interface GraphEdgeKind {
+    id: string;
+    label: string;
+    stroke?: 'solid' | 'dashed';
+}
+
+// @public
+export interface GraphItemRef {
+    id: string;
+    type: 'node' | 'edge';
+}
+
+// @public
+export interface GraphKind {
+    color?: ColorToken$1;
+    id: string;
+    label: string;
+}
+
+// @public
+export interface GraphLayout {
+    compute: (input: GraphLayoutInput) => GraphLayoutResult;
+    key: string;
+}
+
+// @public
+export interface GraphLayoutInput {
+    edges: readonly GraphEdge[];
+    height: number;
+    nodes: readonly GraphNode[];
+    width: number;
+}
+
+// @public
+export interface GraphLayoutResult {
+    edgeShape?: 'horizontal' | 'arc';
+    groups?: readonly GraphGroupRegion[];
+    height: number;
+    labelMode?: 'all' | 'declutter';
+    order: readonly string[];
+    positions: Readonly<Record<string, GraphPoint>>;
+    width: number;
+}
+
+// @public
+export interface GraphModel {
+    drawnEdges: readonly GraphEdge[];
+    edges: readonly GraphEdge[];
+    edgeShape: 'horizontal' | 'arc';
+    groups: readonly GraphGroupRegion[];
+    height: number;
+    index: GraphIndex;
+    labelMode: 'all' | 'declutter';
+    nodes: readonly GraphNode[];
+    order: readonly string[];
+    positions: Readonly<Record<string, GraphPoint>>;
+    report: GraphCleanReport;
+    unplacedEdges: number;
+    unplacedNodes: number;
+    width: number;
+}
+
+// @public
+export interface GraphNode {
+    description?: string;
+    group?: string;
+    id: string;
+    isMuted?: boolean;
+    kind?: string;
+    label: string;
+}
+
+// @public
+export interface GraphNodeContext {
+    groupLabels?: readonly string[];
+    incoming: number;
+    kindLabel?: string;
+    outgoing: number;
+}
+
+// @public
+export interface GraphPoint {
+    x: number;
+    y: number;
+}
+
+// @public
 export const greyRamp: {
     readonly 50: "#F9F6F3";
     readonly 100: "#EDEAE7";
@@ -4180,6 +4321,9 @@ export interface LabelWithHelpProps extends ViewProps {
 }
 
 // @public
+export function layeredLayout(options?: LayeredLayoutOptions): GraphLayout;
+
+// @public
 export function LayersIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -4234,60 +4378,60 @@ export const lightThemeCSSVars: {
     readonly '--color-brand-secondary-subtle': "#C2F6FF";
     readonly '--color-brand-secondary-muted': "#62EAFF";
     readonly '--color-brand-secondary-strong': "rgba(48, 123, 155, 0.50)";
-    readonly '--color-on-brand-primary': "#1C1916";
+    readonly '--color-on-brand-primary': "#FFFFFF";
     readonly '--color-on-brand-secondary': "#FFFFFF";
     readonly '--color-on-brand-primary-subtle': "#983804";
     readonly '--color-on-brand-secondary-subtle': "#2A617F";
-    readonly '--color-status-success': "#298732";
+    readonly '--color-status-success': "#2B6B25";
     readonly '--color-status-success-subtle': "#B5FFD2";
     readonly '--color-status-success-muted': "rgba(46, 213, 115, 0.30)";
     readonly '--color-status-success-strong': "rgba(46, 213, 115, 0.50)";
     readonly '--color-status-live': "#2ED573";
-    readonly '--color-status-deload': "#BA2996";
+    readonly '--color-status-deload': "#9C0D7A";
     readonly '--color-status-live-muted': "#22A444";
     readonly '--color-status-error': "#D14343";
     readonly '--color-status-error-subtle': "#FFE3E5";
     readonly '--color-status-error-muted': "rgba(209, 67, 67, 0.30)";
     readonly '--color-status-error-strong': "rgba(209, 67, 67, 0.50)";
-    readonly '--color-status-warning': "#C27400";
+    readonly '--color-status-warning': "#A45E00";
     readonly '--color-status-warning-subtle': "#FFEAA9";
     readonly '--color-status-warning-muted': "rgba(249, 180, 21, 0.30)";
     readonly '--color-status-warning-strong': "rgba(249, 180, 21, 0.50)";
-    readonly '--color-status-info': "#1072CB";
+    readonly '--color-status-info': "#135AA8";
     readonly '--color-status-info-subtle': "#D9EFFF";
     readonly '--color-status-info-muted': "rgba(33, 150, 243, 0.30)";
     readonly '--color-status-info-strong': "rgba(33, 150, 243, 0.50)";
-    readonly '--color-brand-primary-solid': "#FF7900";
+    readonly '--color-brand-primary-solid': "#DA5F00";
     readonly '--color-brand-secondary-solid': "#307B9B";
     readonly '--color-status-success-solid': "#298732";
     readonly '--color-status-error-solid': "#D14343";
     readonly '--color-status-warning-solid': "#C27400";
     readonly '--color-status-info-solid': "#1072CB";
-    readonly '--color-status-error-vivid': "#FF4757";
+    readonly '--color-status-error-vivid': "#A4221C";
     readonly '--color-status-error-vivid-light': "#E05254";
     readonly '--color-status-error-vivid-dark': "#A4221C";
     readonly '--color-status-error-vivid-subtle': "rgba(255, 71, 87, 0.12)";
     readonly '--color-status-error-vivid-muted': "rgba(255, 71, 87, 0.30)";
     readonly '--color-status-error-vivid-strong': "rgba(255, 71, 87, 0.50)";
     readonly '--color-text-primary': "#121828";
-    readonly '--color-text-secondary': "#5A5958";
-    readonly '--color-text-tertiary': "#72716F";
+    readonly '--color-text-secondary': "#424140";
+    readonly '--color-text-tertiary': "#5A5958";
     readonly '--color-text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly '--color-text-inverse': "#FFFFFF";
     readonly '--color-text-error': "#A4221C";
     readonly '--color-text-brand': "#983804";
-    readonly '--color-text-brand-secondary': "#2A617F";
-    readonly '--color-text-success': "#2B6B25";
+    readonly '--color-text-brand-secondary': "#22465F";
+    readonly '--color-text-success': "#264D1C";
     readonly '--color-text-warning': "#814D14";
     readonly '--color-text-info': "#135AA8";
     readonly '--color-text-link': "#135AA8";
-    readonly '--color-surface-base': "#FFFFFF";
+    readonly '--color-surface-base': "#EDEAE7";
     readonly '--color-surface-elevated': "#F9F6F3";
-    readonly '--color-surface-raised': "#EDEAE7";
-    readonly '--color-background-base': "#EDEAE7";
-    readonly '--color-background-default': "#FFFFFF";
+    readonly '--color-surface-raised': "#FFFFFF";
+    readonly '--color-background-base': "#D4D1CE";
+    readonly '--color-background-default': "#EDEAE7";
     readonly '--color-background-subtle': "#F9F6F3";
-    readonly '--color-background-frame': "#A29F9D";
+    readonly '--color-background-frame': "#BDBAB7";
     readonly '--color-border-prominent': "#A29F9D";
     readonly '--color-border-focus': "#1072CB";
     readonly '--color-interactive-hover': "rgba(55, 65, 81, 0.04)";
@@ -4296,9 +4440,9 @@ export const lightThemeCSSVars: {
     readonly '--color-interactive-selected': "rgba(55, 65, 81, 0.08)";
     readonly '--color-interactive-selected-solid': "#5A5958";
     readonly '--color-interactive-disabled': "rgba(55, 65, 81, 0.12)";
-    readonly '--color-divider': "rgba(0, 0, 0, 0.15)";
-    readonly '--color-brand-primary-hover': "#DA5F00";
-    readonly '--color-brand-primary-active': "#B94A00";
+    readonly '--color-divider': "rgba(0, 0, 0, 0.16)";
+    readonly '--color-brand-primary-hover': "#B94A00";
+    readonly '--color-brand-primary-active': "#983804";
     readonly '--color-brand-secondary-hover': "#2A617F";
     readonly '--color-brand-secondary-active': "#22465F";
     readonly '--color-status-success-light': "#58F69E";
@@ -4360,19 +4504,22 @@ export const lightThemeCSSVars: {
     readonly '--color-text-link-hover': "#135AA8";
     readonly '--color-surface-overlay': "#FFFFFF";
     readonly '--color-surface-input': "#F9F6F3";
-    readonly '--color-border-input': "#888684";
-    readonly '--color-border-input-hover': "#72716F";
+    readonly '--color-border-input': "#72716F";
+    readonly '--color-border-input-hover': "#5A5958";
     readonly '--color-border-input-focus': "#1072CB";
     readonly '--color-border-input-error': "#D14343";
     readonly '--color-hairline-subtle': "rgba(0, 0, 0, 0.10)";
-    readonly '--color-hairline-default': "rgba(0, 0, 0, 0.15)";
-    readonly '--color-hairline-strong': "rgba(0, 0, 0, 0.22)";
+    readonly '--color-hairline-default': "rgba(0, 0, 0, 0.16)";
+    readonly '--color-hairline-strong': "rgba(0, 0, 0, 0.24)";
     readonly '--color-scrim-press': "rgba(0, 0, 0, 0.10)";
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly '--color-on-control-idle': "#D4D1CE";
-    readonly '--color-on-control-active': "#FFFFFF";
+    readonly '--color-control-face': "#FFFFFF";
+    readonly '--color-control-face-active': "#D4D1CE";
+    readonly '--color-control-face-disabled': "rgba(0, 0, 0, 0.06)";
+    readonly '--color-on-control-idle': "#5A5958";
+    readonly '--color-on-control-active': "#1C1916";
     readonly '--color-on-data-strong': "#0B0B0B";
     readonly '--color-interactive-disabled-text': "rgba(55, 65, 81, 0.26)";
     readonly '--color-avatar-background': "#72716F";
@@ -5240,6 +5387,34 @@ export interface NavItemProps {
     liveLabel?: string;
     // (undocumented)
     onPress?: () => void;
+}
+
+// @public
+export function NetworkGraph(input: NetworkGraphProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface NetworkGraphProps extends Omit<ViewProps, 'children'> {
+    accessibilityLabel: string;
+    animate?: boolean;
+    className?: string;
+    defaultSelection?: GraphItemRef | null;
+    edgeKinds?: GraphEdgeKind[];
+    edges: GraphEdge[];
+    emptyState?: ReactNode;
+    formatEdgeLabel?: (edge: GraphEdge, source: GraphNode, target: GraphNode) => string;
+    formatNodeLabel?: (node: GraphNode, context: GraphNodeContext) => string;
+    height: number;
+    isDisabled?: boolean;
+    isLoading?: boolean;
+    layout?: GraphLayout;
+    nodeKinds?: GraphKind[];
+    nodes: GraphNode[];
+    nodeTooltip?: (node: GraphNode) => ReactNode;
+    onSelectionChange?: (selection: GraphItemRef | null) => void;
+    selection?: GraphItemRef | null;
+    showLegend?: boolean;
+    summarize?: (model: GraphModel) => string;
+    width: number;
 }
 
 // @public (undocumented)
@@ -6684,6 +6859,9 @@ export const semanticColorsDark: {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly 'control-face': "#424140";
+    readonly 'control-face-active': "#2C2A28";
+    readonly 'control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly 'on-control-idle': "#D1D1D1";
     readonly 'on-control-active': "#FFFFFF";
     readonly 'on-data-strong': "#0B0B0B";
@@ -6707,8 +6885,8 @@ export const semanticColorsLight: {
     readonly 'brand-primary-subtle': "#FFE6D4";
     readonly 'brand-primary-muted': "#FFC7A2";
     readonly 'brand-primary-strong': "rgba(255, 121, 0, 0.50)";
-    readonly 'brand-primary-hover': "#DA5F00";
-    readonly 'brand-primary-active': "#B94A00";
+    readonly 'brand-primary-hover': "#B94A00";
+    readonly 'brand-primary-active': "#983804";
     readonly 'brand-secondary': "#307B9B";
     readonly 'brand-secondary-light': "#2697B7";
     readonly 'brand-secondary-dark': "#2A617F";
@@ -6717,11 +6895,11 @@ export const semanticColorsLight: {
     readonly 'brand-secondary-strong': "rgba(48, 123, 155, 0.50)";
     readonly 'brand-secondary-hover': "#2A617F";
     readonly 'brand-secondary-active': "#22465F";
-    readonly 'on-brand-primary': "#1C1916";
+    readonly 'on-brand-primary': "#FFFFFF";
     readonly 'on-brand-secondary': "#FFFFFF";
     readonly 'on-brand-primary-subtle': "#983804";
     readonly 'on-brand-secondary-subtle': "#2A617F";
-    readonly 'status-success': "#298732";
+    readonly 'status-success': "#2B6B25";
     readonly 'status-success-light': "#58F69E";
     readonly 'status-success-dark': "#298732";
     readonly 'status-success-subtle': "#B5FFD2";
@@ -6729,32 +6907,32 @@ export const semanticColorsLight: {
     readonly 'status-success-strong': "rgba(46, 213, 115, 0.50)";
     readonly 'status-live': "#2ED573";
     readonly 'status-live-muted': "#22A444";
-    readonly 'status-deload': "#BA2996";
+    readonly 'status-deload': "#9C0D7A";
     readonly 'status-error': "#D14343";
     readonly 'status-error-light': "#E05254";
     readonly 'status-error-dark': "#A4221C";
     readonly 'status-error-subtle': "#FFE3E5";
     readonly 'status-error-muted': "rgba(209, 67, 67, 0.30)";
     readonly 'status-error-strong': "rgba(209, 67, 67, 0.50)";
-    readonly 'status-error-vivid': "#FF4757";
+    readonly 'status-error-vivid': "#A4221C";
     readonly 'status-error-vivid-light': "#E05254";
     readonly 'status-error-vivid-dark': "#A4221C";
     readonly 'status-error-vivid-subtle': "rgba(255, 71, 87, 0.12)";
     readonly 'status-error-vivid-muted': "rgba(255, 71, 87, 0.30)";
     readonly 'status-error-vivid-strong': "rgba(255, 71, 87, 0.50)";
-    readonly 'status-warning': "#C27400";
+    readonly 'status-warning': "#A45E00";
     readonly 'status-warning-light': "#FFD352";
     readonly 'status-warning-dark': "#C27400";
     readonly 'status-warning-subtle': "#FFEAA9";
     readonly 'status-warning-muted': "rgba(249, 180, 21, 0.30)";
     readonly 'status-warning-strong': "rgba(249, 180, 21, 0.50)";
-    readonly 'status-info': "#1072CB";
+    readonly 'status-info': "#135AA8";
     readonly 'status-info-light': "#78C2FF";
     readonly 'status-info-dark': "#1072CB";
     readonly 'status-info-subtle': "#D9EFFF";
     readonly 'status-info-muted': "rgba(33, 150, 243, 0.30)";
     readonly 'status-info-strong': "rgba(33, 150, 243, 0.50)";
-    readonly 'brand-primary-solid': "#FF7900";
+    readonly 'brand-primary-solid': "#DA5F00";
     readonly 'brand-secondary-solid': "#307B9B";
     readonly 'status-success-solid': "#298732";
     readonly 'status-error-solid': "#D14343";
@@ -6809,42 +6987,45 @@ export const semanticColorsLight: {
     readonly 'dataviz-categorical-5': "#01B5D1";
     readonly 'dataviz-categorical-6': "#A45E00";
     readonly 'text-primary': "#121828";
-    readonly 'text-secondary': "#5A5958";
-    readonly 'text-tertiary': "#72716F";
+    readonly 'text-secondary': "#424140";
+    readonly 'text-tertiary': "#5A5958";
     readonly 'text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly 'text-inverse': "#FFFFFF";
     readonly 'text-error': "#A4221C";
     readonly 'text-brand': "#983804";
-    readonly 'text-brand-secondary': "#2A617F";
-    readonly 'text-success': "#2B6B25";
+    readonly 'text-brand-secondary': "#22465F";
+    readonly 'text-success': "#264D1C";
     readonly 'text-warning': "#814D14";
     readonly 'text-info': "#135AA8";
     readonly 'text-link': "#135AA8";
     readonly 'text-link-hover': "#135AA8";
-    readonly 'surface-base': "#FFFFFF";
+    readonly 'surface-base': "#EDEAE7";
     readonly 'surface-elevated': "#F9F6F3";
-    readonly 'surface-raised': "#EDEAE7";
+    readonly 'surface-raised': "#FFFFFF";
     readonly 'surface-overlay': "#FFFFFF";
     readonly 'surface-input': "#F9F6F3";
-    readonly 'background-base': "#EDEAE7";
-    readonly 'background-default': "#FFFFFF";
+    readonly 'background-base': "#D4D1CE";
+    readonly 'background-default': "#EDEAE7";
     readonly 'background-subtle': "#F9F6F3";
-    readonly 'background-frame': "#A29F9D";
+    readonly 'background-frame': "#BDBAB7";
     readonly 'border-prominent': "#A29F9D";
     readonly 'border-focus': "#1072CB";
-    readonly 'border-input': "#888684";
-    readonly 'border-input-hover': "#72716F";
+    readonly 'border-input': "#72716F";
+    readonly 'border-input-hover': "#5A5958";
     readonly 'border-input-focus': "#1072CB";
     readonly 'border-input-error': "#D14343";
     readonly 'hairline-subtle': "rgba(0, 0, 0, 0.10)";
-    readonly 'hairline-default': "rgba(0, 0, 0, 0.15)";
-    readonly 'hairline-strong': "rgba(0, 0, 0, 0.22)";
+    readonly 'hairline-default': "rgba(0, 0, 0, 0.16)";
+    readonly 'hairline-strong': "rgba(0, 0, 0, 0.24)";
     readonly 'scrim-press': "rgba(0, 0, 0, 0.10)";
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly 'on-control-idle': "#D4D1CE";
-    readonly 'on-control-active': "#FFFFFF";
+    readonly 'control-face': "#FFFFFF";
+    readonly 'control-face-active': "#D4D1CE";
+    readonly 'control-face-disabled': "rgba(0, 0, 0, 0.06)";
+    readonly 'on-control-idle': "#5A5958";
+    readonly 'on-control-active': "#1C1916";
     readonly 'on-data-strong': "#0B0B0B";
     readonly 'interactive-hover': "rgba(55, 65, 81, 0.04)";
     readonly 'interactive-focus': "rgba(55, 65, 81, 0.12)";
@@ -6853,7 +7034,7 @@ export const semanticColorsLight: {
     readonly 'interactive-selected-solid': "#5A5958";
     readonly 'interactive-disabled': "rgba(55, 65, 81, 0.12)";
     readonly 'interactive-disabled-text': "rgba(55, 65, 81, 0.26)";
-    readonly divider: "rgba(0, 0, 0, 0.15)";
+    readonly divider: "rgba(0, 0, 0, 0.16)";
     readonly 'avatar-background': "#72716F";
     readonly 'avatar-text': "#FFFFFF";
 };
@@ -7379,6 +7560,9 @@ export interface SidebarSectionProps {
 }
 
 // @public
+export const SIDECHAIN_LABEL = "in subagent";
+
+// @public
 export function SideNav(input: SideNavProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -7890,6 +8074,9 @@ export interface SupersetWrapperProps {
     // (undocumented)
     label?: string;
 }
+
+// @public
+export function suppliedLayout(positions: Readonly<Record<string, GraphPoint>>): GraphLayout;
 
 // @public
 export function Surface(input: SurfaceProps): react_jsx_runtime.JSX.Element;
@@ -8579,6 +8766,30 @@ export interface TileProps extends ViewProps {
     valueColor?: string;
 }
 
+// @public
+export interface TimelineToolCall {
+    atMs: number | null;
+    byteOffset: number;
+    durationMs: number | null;
+    endMs: number | null;
+    errorMessage: string | null;
+    family: ToolFamily;
+    filePath: string | null;
+    id: string;
+    inputSummary: string;
+    name: string;
+    outcome: TimelineToolOutcome;
+    seq: number;
+    sidechain: boolean;
+    turnIndex: number;
+}
+
+// @public
+export type TimelineToolOutcome = 'success' | 'error' | 'unknown' | 'pending';
+
+// @public
+export type TimelineTurnOrigin = 'prompt' | 'injected' | 'compaction' | 'none';
+
 // @public (undocumented)
 export type TimerMode = 'up' | 'down';
 
@@ -8681,6 +8892,25 @@ export const TONE_TOKEN: {
 };
 
 // @public
+export const TOOL_FAMILY_META: Record<ToolFamily, ToolFamilyMeta>;
+
+// @public
+export const TOOL_FAMILY_ORDER: ToolFamily[];
+
+// @public
+export const TOOL_OUTCOME_META: Record<TimelineToolOutcome, ToolOutcomeMeta>;
+
+// @public
+export function ToolBadge(input: ToolBadgeProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface ToolBadgeProps {
+    className?: string;
+    family: ToolFamily | string;
+    size?: 'sm' | 'md';
+}
+
+// @public
 export function ToolbarButton(input: ToolbarButtonProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -8715,6 +8945,39 @@ export type ToolbarButtonSize = 'sm' | 'md' | 'lg';
 
 // @public (undocumented)
 export type ToolbarButtonVariant = 'default' | 'raised';
+
+// @public
+export function ToolCallRow(input: ToolCallRowProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface ToolCallRowProps {
+    call: TimelineToolCall;
+    className?: string;
+    isUTC?: boolean;
+    onPress?: (call: TimelineToolCall) => void;
+}
+
+// @public
+export type ToolFamily = 'none' | 'mcp_agentchat' | 'mcp_other' | 'fs_read' | 'bash' | 'fs_write' | 'ask_user' | 'subagent' | 'web' | 'scheduling' | 'skill_toolsearch' | 'other_tool';
+
+// @public
+export interface ToolFamilyMeta {
+    glyph: string;
+    label: string;
+}
+
+// @public
+export function toolFamilyMeta(family: string): ToolFamilyMeta;
+
+// @public
+export interface ToolOutcomeMeta {
+    indicator: IndicatorColor;
+    label: string;
+    pulse: boolean;
+}
+
+// @public
+export function toolOutcomeMeta(outcome: string): ToolOutcomeMeta;
 
 // @public
 export function Tooltip(input: TooltipProps): react_jsx_runtime.JSX.Element;
@@ -8849,6 +9112,17 @@ export function TrendingDownIcon(props: IconProps): react_jsx_runtime.JSX.Elemen
 export function TrendingUpIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
+export const TURN_ORIGIN_META: Record<TimelineTurnOrigin, TurnOriginMeta>;
+
+// @public
+export interface TurnOriginMeta {
+    label: string;
+}
+
+// @public
+export function turnOriginMeta(turn: Pick<TimelineTurn, 'origin' | 'injectedMarker'>): TurnOriginMeta;
+
+// @public
 export function TypingIndicator(input: TypingIndicatorProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -8895,6 +9169,9 @@ export type TypographyVariant = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'body1
 
 // @public
 export function uniqueAgents(agents: AgentSummary[]): AgentSummary[];
+
+// @public
+export const UNNAMED_TOOL_LABEL = "Unnamed tool";
 
 // @public
 export function UnreadBadge(input: UnreadBadgeProps): react_jsx_runtime.JSX.Element | null;

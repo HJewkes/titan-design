@@ -668,10 +668,14 @@ exports[`Tooltip characterisation > story AllPlacements 1`] = `
           <button
             class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
             role="button"
-            style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+            style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
             tabindex="0"
             type="button"
           >
+            <div
+              class="css-view-175oi2r"
+              data-testid="hit-target"
+            />
             <div
               class="css-text-146c3p1"
               dir="auto"
@@ -691,10 +695,14 @@ exports[`Tooltip characterisation > story AllPlacements 1`] = `
           <button
             class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
             role="button"
-            style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+            style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
             tabindex="0"
             type="button"
           >
+            <div
+              class="css-view-175oi2r"
+              data-testid="hit-target"
+            />
             <div
               class="css-text-146c3p1"
               dir="auto"
@@ -714,10 +722,14 @@ exports[`Tooltip characterisation > story AllPlacements 1`] = `
           <button
             class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
             role="button"
-            style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+            style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
             tabindex="0"
             type="button"
           >
+            <div
+              class="css-view-175oi2r"
+              data-testid="hit-target"
+            />
             <div
               class="css-text-146c3p1"
               dir="auto"
@@ -742,10 +754,14 @@ exports[`Tooltip characterisation > story AllPlacements 1`] = `
           <button
             class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
             role="button"
-            style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+            style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
             tabindex="0"
             type="button"
           >
+            <div
+              class="css-view-175oi2r"
+              data-testid="hit-target"
+            />
             <div
               class="css-text-146c3p1"
               dir="auto"
@@ -765,10 +781,14 @@ exports[`Tooltip characterisation > story AllPlacements 1`] = `
           <button
             class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
             role="button"
-            style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+            style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
             tabindex="0"
             type="button"
           >
+            <div
+              class="css-view-175oi2r"
+              data-testid="hit-target"
+            />
             <div
               class="css-text-146c3p1"
               dir="auto"
@@ -793,10 +813,14 @@ exports[`Tooltip characterisation > story AllPlacements 1`] = `
           <button
             class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
             role="button"
-            style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+            style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
             tabindex="0"
             type="button"
           >
+            <div
+              class="css-view-175oi2r"
+              data-testid="hit-target"
+            />
             <div
               class="css-text-146c3p1"
               dir="auto"
@@ -816,10 +840,14 @@ exports[`Tooltip characterisation > story AllPlacements 1`] = `
           <button
             class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
             role="button"
-            style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+            style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
             tabindex="0"
             type="button"
           >
+            <div
+              class="css-view-175oi2r"
+              data-testid="hit-target"
+            />
             <div
               class="css-text-146c3p1"
               dir="auto"
@@ -839,10 +867,14 @@ exports[`Tooltip characterisation > story AllPlacements 1`] = `
           <button
             class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
             role="button"
-            style="color: rgb(255, 121, 0); border-top-color: rgb(255, 121, 0); border-right-color: rgb(255, 121, 0); border-bottom-color: rgb(255, 121, 0); border-left-color: rgb(255, 121, 0);"
+            style="color: var(--color-text-brand); border-top-color: var(--color-brand-primary); border-right-color: var(--color-brand-primary); border-bottom-color: var(--color-brand-primary); border-left-color: var(--color-brand-primary);"
             tabindex="0"
             type="button"
           >
+            <div
+              class="css-view-175oi2r"
+              data-testid="hit-target"
+            />
             <div
               class="css-text-146c3p1"
               dir="auto"
@@ -873,7 +905,7 @@ exports[`Tooltip characterisation > story Default 1`] = `
         <button
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="button"
-          style="color: rgb(28, 25, 22);"
+          style="color: var(--color-on-brand-primary);"
           tabindex="0"
           type="button"
         >
@@ -939,7 +971,7 @@ exports[`Tooltip characterisation > story WithDelay 1`] = `
         <button
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="button"
-          style="color: rgb(28, 25, 22);"
+          style="color: var(--color-on-brand-primary);"
           tabindex="0"
           type="button"
         >
@@ -972,7 +1004,7 @@ exports[`Tooltip characterisation > story WithoutArrow 1`] = `
         <button
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           role="button"
-          style="color: rgb(28, 25, 22);"
+          style="color: var(--color-on-brand-primary);"
           tabindex="0"
           type="button"
         >
