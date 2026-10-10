@@ -41,7 +41,10 @@ message }[] }[]`, one per PR group: blocked when an answer in the group has free
   `page` is that PR.
 - A `prGroups` entry's optional `stackedOn` (`{ repo, pr, headSha }`) names the base that one group
   renders on, so two groups of one round can sit on different bases (`stackBase(group)` gives
-  the base's `owner/name#n`).
+  the base's `owner/name#n`). A group stacked on another group of the round ships after that
+  holder: its `shipBlocks` status carries `shipsAfter`, and it is blocked (kind
+  `holder-not-shipped`, naming the holder) while the holder's Ship is answered Don't ship or asks
+  for a revision. An unanswered holder does not block, as an unanswered question does not.
 - `lintRound(round)`, a pure check of a parsed round against the review-layout rules. It returns
   `{ rule, message }[]` (empty when the round passes; `LINT_RULES` lists the rules) and every
   round builder refuses a round with any problem.

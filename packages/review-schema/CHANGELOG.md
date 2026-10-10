@@ -29,6 +29,10 @@ project adheres to [Semantic Versioning](https://semver.org/).
   group renders on, so groups in one round can sit on different bases. The round-level
   `stackedOn` keeps its meaning. The schema refuses a group stacked on itself, directly or
   through other groups. Exports `stackBase`.
+- `shipBlocks` kind `holder-not-shipped`: a group stacked on another group of the same round (its
+  holder) is blocked while the holder's Ship is answered Don't ship or asks for a revision, with a
+  message naming the holder. An unanswered or shipped holder does not block. Such a group's
+  status carries `shipsAfter`, the holder's `owner/name#n`.
 
 ## [0.3.0]
 

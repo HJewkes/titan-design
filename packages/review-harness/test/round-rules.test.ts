@@ -233,8 +233,12 @@ describe('builder rules: PR grouping', () => {
 
 describe('builder rules: Ship gate', () => {
   /** Round 1 of batch-1 as answered: `answers` maps question id to its answer. */
-  async function answeredRound(answers: Record<string, object>, head = HEAD(7)) {
-    const draft = interleaved()
+  async function answeredRound(
+    answers: Record<string, object>,
+    head = HEAD(7),
+    extra: Partial<ManifestInput> = {}
+  ) {
+    const draft = interleaved(extra)
     draft.questions = draft.questions.map((q) => {
       if (q.id === 'ship-7') return ship(7, head)
       return q.id === 'depth' ? pick('depth', ['a2'], 7) : q
@@ -267,14 +271,32 @@ describe('builder rules: Ship gate', () => {
     return { root, feedbackPath: join(dir, 'feedback.json') }
   }
 
-  async function nextRound(root: string, head = HEAD(7)) {
-    const draft = interleaved({ round: 2 })
+  async function nextRound(root: string, head = HEAD(7), extra: Partial<ManifestInput> = {}) {
+    const draft = interleaved({ round: 2, ...extra })
     draft.questions = draft.questions.map((q) => (q.id === 'ship-7' ? ship(7, head) : q))
     const dir = join(root, 'round-2')
     await mkdir(dir)
     await writeFile(join(dir, 'draft.json'), JSON.stringify(draft))
     return join(dir, 'draft.json')
   }
+
+  it("does not carry a holder's Don't ship into the next round for its dependent", async () => {
+    const stack = (head7: string) => ({
+      prGroups: [
+        { pr: pageOf(7), headSha: head7, sectionIds: ['a-ship', 'a-ctx'] },
+        {
+          pr: pageOf(8),
+          headSha: HEAD(8),
+          sectionIds: ['b-ctx'],
+          stackedOn: { repo: REPO, pr: 7, headSha: head7 },
+        },
+      ],
+    })
+    const answers = { 'ship-7': { pick: "Don't ship" }, 'ship-8': { pick: 'Ship' } }
+    const { root } = await answeredRound(answers, HEAD(7), stack(HEAD(7)))
+    const fixed = 'e'.repeat(40)
+    expect((await build(await nextRound(root, fixed, stack(fixed)))).code).toBe(0)
+  })
 
   it('refuses when the earlier round declined to ship the PR, naming the question', async () => {
     const { root } = await answeredRound({ 'ship-7': { pick: "Don't ship" } })
