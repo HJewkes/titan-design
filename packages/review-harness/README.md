@@ -545,6 +545,41 @@ paths and a map of sources) and the tests run on fixtures under `test/fixtures/l
 and gh faked; `test/tailwind-theme.test.ts` also reads the real config, so a config shape the
 loader cannot follow fails there first.
 
+## Lock sync (TD-813)
+
+`titan-review locks sync` reads every open lock that has holders, asks `gh pr view` about each
+holder PR and each dependent of that lock, and prints what changed. It runs none of the commands
+it prints and never writes the registry; a coordinator makes the edits and runs the commands.
+
+```sh
+pnpm review locks sync --registry <locks.json>      # or set TITAN_LOCKS_REGISTRY
+            [--repo <path>]                         # the checkout gh and git run in
+            [--json]                                # the report as JSON
+```
+
+Per holder, one of:
+
+- **merged**: when every holder has merged or closed and at least one merged, the lock goes
+  `open -> merged` with `mergeSha` and `closedAt` from the last merge. Each open `stack-on`
+  dependent still based on the holder's branch gets `gh pr edit <n> --base <the holder's base>`,
+  and every open `stack-on` dependent gets `titan-factory shepherd release <repo>#<n>`. A `defer`
+  dependent is noted as re-entering.
+- **closed**: when every holder closed unmerged, the lock goes `open -> released`. A stacked
+  dependent needs a rebase onto the holder's base first, which only its seat can do, so the
+  retarget and release are printed as a note, not as commands.
+- **new head**: the footprint is re-derived at the new head (as `locks footprint <pr>` does), and
+  so is each open dependent's. Each dependent is listed with what it shares with the new
+  footprint: files, tokens, and readers it edits. `[changed]` marks a dependent whose overlap
+  differs from the one the registry's footprint and `touches` give. A dependent's diff starts
+  at whichever of its base, the holder's recorded head and its new head leaves it the fewest
+  commits, so a dependent stacked on a holder that was since rebased does not inherit the
+  holder's diff. A dependent that merged main in after stacking still shows main's later
+  changes in its files.
+- **unchanged**: listed, nothing to do.
+
+The pure core is `src/locks-sync.ts` (`planSync`, `formatSync`); `lockSync` in `src/locks.ts`
+does the reads. Tests fake gh and git and assert no call writes.
+
 ## Lock check (TD-814)
 
 `titan-review locks check` is the dispatch check: before a seat spawns an implementer, it gives
