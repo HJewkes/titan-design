@@ -65,9 +65,12 @@ describe('Alert solid label', () => {
     }
   )
 
-  it.each(SOLID_LABEL_CASES)('%s %s glyph clears large-text AA on its -solid fill', (mode, tone) => {
-    expect(solidLabelRatio(mode, tone)).toBeGreaterThanOrEqual(3)
-  })
+  it.each(SOLID_LABEL_CASES)(
+    '%s %s glyph clears large-text AA on its -solid fill',
+    (mode, tone) => {
+      expect(solidLabelRatio(mode, tone)).toBeGreaterThanOrEqual(3)
+    }
+  )
 })
 
 describe('Avatar fallback label', () => {
