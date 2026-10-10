@@ -6,6 +6,8 @@
     "data-2 | result-improve",
     "dataviz-categorical-2 | result-degrade",
     "on-control-active | text-primary",
+    "on-control-idle | on-tint-neutral-subtle",
+    "on-control-idle | tint-neutral-solid",
     "on-result-degrade | text-primary",
     "on-result-improve | text-primary",
     "on-result-inconclusive | text-primary",
@@ -14,6 +16,7 @@
     "result-degrade | status-error-solid",
     "result-degrade | status-error-vivid-light",
     "result-degrade | text-error",
+    "result-degrade | tint-red-solid",
     "result-improve-dark | status-success-dark",
     "result-inconclusive | result-neutral",
     "result-inconclusive | text-secondary"
@@ -21,10 +24,16 @@
   "light": [
     "border-prominent | result-inconclusive",
     "brand-primary-subtle | status-error-subtle",
+    "brand-primary-subtle | tint-red-subtle",
     "data-2 | result-improve",
     "dataviz-categorical-4 | result-improve-dark",
     "result-degrade | status-error-light",
     "result-degrade | status-error-vivid-light",
-    "result-improve-dark | status-success-solid"
+    "result-improve-dark | status-success-solid",
+    "result-improve-dark | tint-green-solid",
+    "status-error-subtle | tint-magenta-subtle",
+    "status-error-subtle | tint-orange-subtle",
+    "tint-magenta-subtle | tint-red-subtle",
+    "tint-orange-subtle | tint-red-subtle"
   ]
 }

@@ -19,6 +19,7 @@ status, that numbers are unique and contiguous, and that this table lists every 
 | 0001   | [Record system extensions as decisions](./0001-record-system-extensions-as-decisions.md) | accepted |
 | 0002   | [Light elevation ramp 3b](./0002-light-elevation-ramp-3b.md)                             | accepted |
 | 0003   | [Tone recipe and light solid ladder](./0003-tone-recipe-and-light-solid-ladder.md)       | accepted |
+| 0004   | [Colour family cells](./0004-colour-family-cells.md)                                     | accepted |
 
 ## When to write one
 

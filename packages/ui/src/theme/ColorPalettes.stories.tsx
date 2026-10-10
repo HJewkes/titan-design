@@ -536,7 +536,7 @@ export const FatigueRomPalette: StoryObj = {
 }
 
 // ============================================================================
-// 6–9. Semantic roles
+// 6–10. Semantic roles
 // ============================================================================
 
 /**
@@ -603,8 +603,47 @@ function VariantMatrix({
   )
 }
 
+/**
+ * The colour family cells (decision 0004): seven hues and neutral, each with a solid
+ * cell under `on-tint-{m}` and a subtle cell under `on-tint-{m}-subtle`, in both modes.
+ * The brand and status roles alias their hue's cells, so this is the layer they share.
+ * `color-stories.coverage.test.ts` requires every `tint-*` token to be named here; the
+ * labels live on their fills, with the ratios printed, are in Foundations/Color/Family.
+ */
+const FAMILY_BASES = [
+  'tint-red',
+  'tint-orange',
+  'tint-amber',
+  'tint-green',
+  'tint-cyan',
+  'tint-blue',
+  'tint-magenta',
+  'tint-neutral',
+] as const
+
+export const FamilyColors: StoryObj = {
+  name: '6. Colour Family',
+  render: () => (
+    <View style={{ padding: 24 }}>
+      <Text className="text-2xl font-bold text-text-primary mb-2">Colour Family</Text>
+      <SectionIntro>
+        A hue with no status meaning: a tool family, a tag, a zone. Each member carries a{' '}
+        <Text className="font-semibold">solid</Text> cell under its on-tint label and a{' '}
+        <Text className="font-semibold">subtle</Text> cell under its on-tint-subtle label. Light
+        solids are the decision 0003 ladder; light subtle is hue 100 under hue 700; dark subtle is
+        hue 900 under hue 300 (decision 0004). brand-* and status-* alias their hue&apos;s cells.
+        Both modes with the labels live and the ratios printed: Foundations/Color/Family.
+      </SectionIntro>
+      <SectionTitle>Light</SectionTitle>
+      <VariantMatrix bases={FAMILY_BASES} palette={semanticColorsLight} />
+      <SectionTitle>Dark</SectionTitle>
+      <VariantMatrix bases={FAMILY_BASES} palette={semanticColorsDark} />
+    </View>
+  ),
+}
+
 export const StatusColors: StoryObj = {
-  name: '6. Status Colors',
+  name: '7. Status Colors',
   render: () => (
     <View style={{ padding: 24 }}>
       <Text className="text-2xl font-bold text-text-primary mb-2">Status Colors</Text>
@@ -634,7 +673,7 @@ export const StatusColors: StoryObj = {
 }
 
 export const BrandColors: StoryObj = {
-  name: '7. Brand Colors',
+  name: '8. Brand Colors',
   render: () => (
     <View style={{ padding: 24 }}>
       <Text className="text-2xl font-bold text-text-primary mb-2">Brand Colors</Text>
@@ -649,7 +688,7 @@ export const BrandColors: StoryObj = {
 }
 
 export const ResultColors: StoryObj = {
-  name: '8. Result / Outcome Colors',
+  name: '9. Result / Outcome Colors',
   render: () => (
     <View style={{ padding: 24 }}>
       <Text className="text-2xl font-bold text-text-primary mb-2">Result / Outcome Colors</Text>
@@ -667,7 +706,7 @@ export const ResultColors: StoryObj = {
 }
 
 export const TextAndBorderColors: StoryObj = {
-  name: '9. Text & Border Colors (Dark)',
+  name: '10. Text & Border Colors (Dark)',
   render: () => (
     <View style={{ padding: 24 }}>
       <Text className="text-2xl font-bold text-text-primary mb-2">Text & Border Colors</Text>
@@ -746,7 +785,7 @@ export const TextAndBorderColors: StoryObj = {
 }
 
 // ============================================================================
-// 10. Roles in use
+// 11. Roles in use
 // ============================================================================
 
 // Sourced from the real semantic-token layer (not re-derived) so the story can't
@@ -766,7 +805,7 @@ const SEM = {
 } as const
 
 export const RolesInUse: StoryObj = {
-  name: '10. Roles in Use — Component Examples',
+  name: '11. Roles in Use — Component Examples',
   render: () => (
     <View style={{ padding: 24 }}>
       <Text className="text-2xl font-bold text-text-primary mb-2">Roles in Use</Text>
@@ -948,7 +987,7 @@ export const RolesInUse: StoryObj = {
 }
 
 // ============================================================================
-// 11. Data-viz rainbow — superseded assignment, tokens still defined
+// 12. Data-viz rainbow — superseded assignment, tokens still defined
 // ============================================================================
 
 /**
@@ -960,7 +999,7 @@ export const RolesInUse: StoryObj = {
  * work. Retiring the `data-N` tokens would let this story go.
  */
 export const LegacyDataVisualizationColors: StoryObj = {
-  name: '11. Data Visualization (Superseded)',
+  name: '12. Data Visualization (Superseded)',
   render: () => (
     <View style={{ padding: 24 }}>
       <Text className="text-2xl font-bold text-text-primary mb-2">

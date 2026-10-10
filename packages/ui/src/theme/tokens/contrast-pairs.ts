@@ -114,6 +114,16 @@ const labelsOnSubtleFills: ContrastPair[] = [
   ...TONES.map((t) => `status-${t}-subtle`),
 ].map((bg) => ({ fg: `on-${bg}`, bg, floor: AA, modes: BOTH, over: CONTENT_PLANES }))
 
+const FAMILY = ['red', 'orange', 'amber', 'green', 'cyan', 'blue', 'magenta', 'neutral'] as const
+
+// Decision 0004: every family cell carries its own label, and every cell is an opaque
+// ramp step in both modes, so no plane compositing applies. The light orange and amber
+// solids are decision 0003's named exceptions, declared in contrast-baseline.json.
+const labelsOnFamilyCells: ContrastPair[] = FAMILY.flatMap((m) => [
+  { fg: `on-tint-${m}`, bg: `tint-${m}-solid`, floor: AA, modes: BOTH },
+  { fg: `on-tint-${m}-subtle`, bg: `tint-${m}-subtle`, floor: AA, modes: BOTH },
+])
+
 const labelsOnOtherFills: ContrastPair[] = [
   ...(['improve', 'degrade', 'inconclusive'] as const).map((r) => ({
     fg: `on-result-${r}`,
@@ -137,6 +147,7 @@ export const CONTRAST_PAIRS: readonly ContrastPair[] = [
   ...statusErrorText,
   ...labelsOnSolidFills,
   ...labelsOnSubtleFills,
+  ...labelsOnFamilyCells,
   ...labelsOnOtherFills,
 ]
 

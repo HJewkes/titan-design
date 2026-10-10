@@ -4,21 +4,6 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { WorkoutPill } from './WorkoutPill'
 import { resolveColor } from '../../../theme/resolve-color'
-import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
-import { alpha } from '../../../utils/colors'
-import { Surface } from '../../ui/surface'
-
-// Light status-deload is swapped for an unrelated token, so a pass proves the mode is read.
-vi.mock('../../../theme/tokens/semantic', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../../theme/tokens/semantic')>()
-  const light = actual.getSemanticColors('light')
-  const probeLight = { ...light, 'status-deload': light['status-info'] }
-  return {
-    ...actual,
-    getSemanticColors: (mode: 'dark' | 'light') =>
-      mode === 'light' ? probeLight : actual.getSemanticColors(mode),
-  }
-})
 
 describe('WorkoutPill', () => {
   it('renders the workout name', () => {
@@ -111,21 +96,17 @@ describe('WorkoutPill', () => {
       expect(pill.style.borderTopColor).toBe(resolveColor(`${role}-muted`))
     })
 
-    it.each(['dark', 'light'] as ThemeMode[])(
-      'washes the deload pill with the %s status-deload token',
-      (mode) => {
-        render(
-          <Surface theme={mode}>
-            <WorkoutPill name="Upper A" status="deload" />
-          </Surface>
-        )
-        const deload = getSemanticColors(mode)['status-deload']
-        const pill = screen.getByLabelText('Upper A workout, deload')
-        expect(pill).toHaveStyle({ backgroundColor: alpha(deload, 0.12) })
-        expect(pill.style.borderTopColor).toBe(alpha(deload, 0.3))
-        expect(screen.getByTestId('workout-pill-name')).toHaveStyle({ color: deload })
-      }
-    )
+    // Decision 0004: deload reads the magenta subtle cell of the colour family, and the
+    // on-subtle step is both the label and the rim. No alpha is mixed by hand.
+    it('paints the deload pill with the magenta subtle cell under its on-subtle rim', () => {
+      render(<WorkoutPill name="Upper A" status="deload" />)
+      const pill = screen.getByLabelText('Upper A workout, deload')
+      expect(pill).toHaveStyle({ backgroundColor: resolveColor('tint-magenta-subtle') })
+      expect(pill.style.borderTopColor).toBe(resolveColor('on-tint-magenta-subtle'))
+      expect(screen.getByTestId('workout-pill-name')).toHaveStyle({
+        color: resolveColor('on-tint-magenta-subtle'),
+      })
+    })
 
     it('gives the washless next pill the -strong rim, a rung above current', () => {
       render(<WorkoutPill name="Upper A" status="next" />)

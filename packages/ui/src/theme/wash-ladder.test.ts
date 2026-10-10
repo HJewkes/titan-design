@@ -2,13 +2,17 @@ import { describe, expect, it } from 'vitest'
 import { semanticColorsDark, semanticColorsLight } from './tokens/semantic'
 
 /**
- * Status and brand roles publish three wash rungs. They exist so a component can
+ * Status and brand roles publish three rungs. They exist so a component can
  * express a weight ramp without hand-mixing alpha: MesoProgressBar's segment
  * track collapsed to one weight in three hues when only `-subtle` was available.
  *
  * A rung that drifts out of order silently flattens every consumer, and the
  * consumer's own test cannot catch it — under the RNW vitest alias the rendered
  * value is a `var(...)` reference, not an rgba triplet.
+ *
+ * Decision 0004 made `-subtle` the opaque hue[900] family cell in dark, so the
+ * alpha ladder is `-muted` under `-strong`; `status-error-vivid-subtle` is the one
+ * `-subtle` still a wash, outside the family.
  */
 const WASH_ROLES = [
   'brand-primary',
@@ -44,14 +48,14 @@ describe('wash ladder', () => {
     })
   }
 
-  // Light mode's `-subtle` is still a solid ramp tint rather than a wash, so its
-  // ladder is not comparable yet. AW-121 owns bringing light onto this model.
+  // Light mode's `-muted` is a solid ramp tint rather than a wash, so its ladder is
+  // not comparable. A translucent `-subtle` still sits under `-muted`.
   for (const role of WASH_ROLES) {
     it(`${role} rungs ascend in weight (dark)`, () => {
       const [subtle, muted, strong] = RUNGS.map((r) =>
         alphaOf(semanticColorsDark[`${role}-${r}` as keyof typeof semanticColorsDark] as string)
       )
-      expect(muted, `${role}-muted must outweigh -subtle`).toBeGreaterThan(subtle)
+      if (subtle < 1) expect(muted, `${role}-muted must outweigh -subtle`).toBeGreaterThan(subtle)
       expect(strong, `${role}-strong must outweigh -muted`).toBeGreaterThan(muted)
     })
   }
