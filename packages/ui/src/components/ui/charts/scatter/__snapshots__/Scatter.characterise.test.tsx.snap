@@ -2625,7 +2625,7 @@ exports[`Scatter characterisation > on a light surface > renders the Light story
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           data-testid="scatter-point-services"
           role="button"
-          style="position: absolute; left: 220.6px; top: 176.4px; width: 24px; height: 24px; border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px; background-color: rgb(209, 67, 67); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          style="position: absolute; left: 220.6px; top: 176.4px; width: 24px; height: 24px; border-top-left-radius: 12px; border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-bottom-left-radius: 12px; background-color: rgb(247, 113, 117); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
           tabindex="0"
           type="button"
         >
@@ -2651,7 +2651,7 @@ exports[`Scatter characterisation > on a light surface > renders the Light story
           class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
           data-testid="scatter-point-cli"
           role="button"
-          style="position: absolute; left: 416.2px; top: 273.48px; width: 18px; height: 18px; border-top-left-radius: 9px; border-top-right-radius: 9px; border-bottom-right-radius: 9px; border-bottom-left-radius: 9px; background-color: rgb(41, 135, 50); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
+          style="position: absolute; left: 416.2px; top: 273.48px; width: 18px; height: 18px; border-top-left-radius: 9px; border-top-right-radius: 9px; border-bottom-right-radius: 9px; border-bottom-left-radius: 9px; background-color: rgb(43, 107, 37); opacity: 0.82; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-top-color: rgb(18, 24, 40); border-right-color: rgb(18, 24, 40); border-bottom-color: rgb(18, 24, 40); border-left-color: rgb(18, 24, 40);"
           tabindex="0"
           type="button"
         />

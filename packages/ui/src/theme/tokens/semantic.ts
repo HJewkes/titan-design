@@ -218,14 +218,14 @@ export const semanticColorsLight = {
   'dataviz-sequential-4': ramp.red[700], // dark: red[600]
   'dataviz-sequential-5': ramp.red[800], // dark: red[700]
 
-  // Categorical, set B: the `default` variant's hues, with red and green taking
-  // the darker slots so orange[400] keeps its brightness. The palette's `dark`
-  // variant stays a primitive.
+  // Categorical, set B' (L-fix-vivid, TD-759): set B with red lifted to [400]
+  // and green dropped to [700], so slots 0-5 hold all-pairs CVD ΔE 8 like the
+  // dark fills. The palette's `dark` variant stays a primitive.
   'dataviz-categorical-0': ramp.blue[500], // dark: same step
   'dataviz-categorical-1': ramp.magenta[600], // dark: magenta[500]
-  'dataviz-categorical-2': ramp.red[600], // dark: red[500]
+  'dataviz-categorical-2': ramp.red[400], // dark: red[500]
   'dataviz-categorical-3': ramp.orange[400], // dark: same step
-  'dataviz-categorical-4': ramp.green[600], // dark: green[300]
+  'dataviz-categorical-4': ramp.green[700], // dark: green[300]
   'dataviz-categorical-5': ramp.cyan[400], // dark: cyan[300]
   'dataviz-categorical-6': ramp.amber[600], // extended — pair with a legend (dark: same step)
 

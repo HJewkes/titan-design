@@ -22,7 +22,6 @@
     "border-prominent | result-inconclusive",
     "brand-primary-subtle | status-error-subtle",
     "data-2 | result-improve",
-    "dataviz-categorical-4 | result-improve-dark",
     "result-degrade | status-error-light",
     "result-degrade | status-error-vivid-light",
     "result-improve-dark | status-success",

@@ -47,6 +47,9 @@ const scaleColors = (mode: ThemeMode, name: string, length: number) => {
   return Array.from({ length }, (_, i) => colors[`dataviz-${name}-${i}`])
 }
 
+const categoricalRoles = (mode: ThemeMode) =>
+  scaleColors(mode, 'categorical', CATEGORICAL_CVD_SAFE_MAX)
+
 describe('categorical palette under colour-vision deficiency', () => {
   for (const variant of ['default', 'dark'] as const) {
     it(`${variant}: holds deutan/protan ΔE >= 8 across the CVD-safe range`, () => {
@@ -54,6 +57,21 @@ describe('categorical palette under colour-vision deficiency', () => {
 
       expect(allPairsViolations(colors, CATEGORICAL_ALL_PAIRS_FLOOR)).toEqual([])
       expect(minPairwise(colors), `${variant} min CVD ΔE`).toBeGreaterThanOrEqual(
+        CATEGORICAL_ALL_PAIRS_FLOOR
+      )
+    })
+  }
+})
+
+// TD-756 D6: the semantic roles, not only the primitive arrays, hold the all-pairs floor
+// in both modes; the light block carries its own steps and is where set B fell to 4.9.
+describe('dataviz-categorical roles under colour-vision deficiency', () => {
+  for (const mode of MODES) {
+    it(`${mode}: dataviz-categorical-0..${CATEGORICAL_CVD_SAFE_MAX - 1} hold deutan/protan ΔE >= ${CATEGORICAL_ALL_PAIRS_FLOOR} for every pair`, () => {
+      const colors = categoricalRoles(mode)
+
+      expect(allPairsViolations(colors, CATEGORICAL_ALL_PAIRS_FLOOR)).toEqual([])
+      expect(minPairwise(colors), `${mode} min CVD ΔE`).toBeGreaterThanOrEqual(
         CATEGORICAL_ALL_PAIRS_FLOOR
       )
     })

@@ -4,8 +4,9 @@ import { getSemanticColors, type ThemeMode } from '../../theme/tokens/semantic'
 /**
  * TD-757: the categorical palette sets the owner weighs in the TD-756 round (D1-D9).
  *
- * Nothing here edits a token. `current-dark` and `current-light` read the shipped
- * `dataviz-categorical-0..6` roles; every candidate is a `primitiveRamps` step, the pool the
+ * Nothing here edits a token. `current-dark` reads the shipped `dataviz-categorical-0..6`
+ * roles; `current-light` pins set B, the light fills the round weighed, which TD-759 replaced
+ * with L-fix-vivid; every candidate is a `primitiveRamps` step, the pool the
  * original palette was built from. Order is canonical in every set (blue, magenta, red, orange,
  * green, cyan, amber) so slot indexes stay stable for `Avatar` and the shell.
  */
@@ -83,8 +84,8 @@ export const CATEGORICAL_SETS: readonly CategoricalSet[] = [
     id: 'current-light',
     mode: 'light',
     rationale:
-      'Shipped light fills, set B (VW-371): scored adjacent-only at CVD 6, never all-pairs.',
-    steps: shippedSteps('light'),
+      'Light fills shipped until TD-759, set B (VW-371): scored adjacent-only at CVD 6, never all-pairs.',
+    steps: [500, 600, 600, 400, 600, 400, 600],
   },
   {
     id: 'L-fix-vivid',
