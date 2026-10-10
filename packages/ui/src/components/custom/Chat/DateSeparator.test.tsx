@@ -4,11 +4,19 @@ import { axe } from 'jest-axe'
 
 import { DateSeparator } from './DateSeparator'
 import { NOW, localIso } from './coach-thread-fixture'
+import { capturedByNode } from '../../../test/classname-capture'
 
 describe('DateSeparator', () => {
   it('names the current day Today', () => {
     render(<DateSeparator date={localIso(0, 7, 0)} now={NOW} />)
     expect(screen.getByText('Today')).toBeInTheDocument()
+  })
+
+  it('paints the day name text-secondary, since it carries content', () => {
+    render(<DateSeparator date={localIso(0, 7, 0)} now={NOW} />)
+    const classes = (capturedByNode.get(screen.getByText('Today')) ?? '').split(/\s+/)
+    expect(classes).toContain('text-text-secondary')
+    expect(classes).not.toContain('text-text-tertiary')
   })
 
   it('names the previous day Yesterday, even across midnight', () => {

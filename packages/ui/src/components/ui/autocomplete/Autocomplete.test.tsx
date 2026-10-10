@@ -4,6 +4,7 @@ import { axe } from 'jest-axe'
 import { Autocomplete } from './Autocomplete'
 import { useAutocompleteState } from './useAutocompleteState'
 import { defaultFilterFn } from './autocompleteFilter'
+import { capturedByNode } from '../../../test/classname-capture'
 
 const defaultOptions = [
   { value: '1', label: 'Apple' },
@@ -45,6 +46,26 @@ describe('Autocomplete', () => {
   it('renders helper text', () => {
     render(<Autocomplete options={defaultOptions} helperText="Pick your favorite" />)
     expect(screen.getByText('Pick your favorite')).toBeInTheDocument()
+  })
+
+  it('paints helper, empty and description text text-secondary, since each carries content', () => {
+    const classesOf = (text: string) =>
+      (capturedByNode.get(screen.getByText(text)) ?? '').split(/\s+/)
+    render(<Autocomplete options={optionsWithDescriptions} helperText="Pick a person" />)
+    const input = screen.getByPlaceholderText('Search...')
+
+    typeInInput(input, 'John')
+    const description = classesOf('john@example.com')
+    typeInInput(input, 'Zzzz')
+
+    for (const classes of [
+      classesOf('Pick a person'),
+      description,
+      classesOf('No options found'),
+    ]) {
+      expect(classes).toContain('text-text-secondary')
+      expect(classes).not.toContain('text-text-tertiary')
+    }
   })
 
   it('renders error message instead of helper text', () => {
