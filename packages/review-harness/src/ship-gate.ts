@@ -88,8 +88,10 @@ function ruleRefusal(prior: PriorRound, pr: string, head: string): string | null
     (q) => q.kind === 'pick-one' && q.merge && q.page === pr
   )
   const boundHead = bound?.kind === 'pick-one' ? bound.merge?.headSha : undefined
-  if (!group?.blocked || (boundHead !== undefined && boundHead !== head)) return null
-  return group.blockers.map((b) => b.message).join('; ')
+  // A holder's answer orders the stack within one round; it never carries into the next.
+  const own = group?.blockers.filter((b) => b.kind !== 'holder-not-shipped') ?? []
+  if (!own.length || (boundHead !== undefined && boundHead !== head)) return null
+  return own.map((b) => b.message).join('; ')
 }
 
 /**

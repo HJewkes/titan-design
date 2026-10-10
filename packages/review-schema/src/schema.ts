@@ -542,19 +542,48 @@ export const StackedOnSchema = z
   .object({ repo: repoShape, pr: z.number().int().positive(), headSha: sha40 })
   .strict()
 
-/** One PR at its head and the sections about it, which a page shows together, Ship last. */
+/**
+ * One PR at its head and the sections about it, which a page shows together, Ship last. A group's
+ * own `stackedOn` names the base it renders on; groups in one round may sit on different bases.
+ */
 export const PrGroupSchema = z
-  .object({ pr: prPage, headSha: sha40, sectionIds: z.array(id).min(1) })
+  .object({
+    pr: prPage,
+    headSha: sha40,
+    sectionIds: z.array(id).min(1),
+    stackedOn: StackedOnSchema.optional(),
+  })
   .strict()
+
+type StackedGroup = { pr: string; stackedOn?: { repo: string; pr: number } }
+
+/** `owner/name#n` of the base a PR group is stacked on, or undefined when it is not stacked. */
+export const stackBase = (group: StackedGroup): string | undefined =>
+  group.stackedOn && `${group.stackedOn.repo}#${group.stackedOn.pr}`
+
+function stackProblems(groups: StackedGroup[]): string[] {
+  const bases = new Map(groups.map((g) => [g.pr, stackBase(g)]))
+  return groups.flatMap((g) => {
+    const seen = [g.pr]
+    for (let at = bases.get(g.pr); at !== undefined; at = bases.get(at)) {
+      if (at === g.pr)
+        return [`PR group ${g.pr} is stacked on itself: ${[...seen, at].join(' -> ')}`]
+      if (seen.includes(at)) return []
+      seen.push(at)
+    }
+    return []
+  })
+}
 
 function prGroupProblems(m: {
   sections?: { id: string }[]
-  prGroups?: { pr: string; sectionIds: string[] }[]
+  prGroups?: (StackedGroup & { sectionIds: string[] })[]
 }): string[] {
   if (!m.prGroups) return []
   if (!m.sections) return ['prGroups need sections; group the round into sections']
   const ids = new Set(m.sections.map((s) => s.id))
   return [
+    ...stackProblems(m.prGroups),
     ...m.prGroups.flatMap((g) =>
       g.sectionIds.filter((s) => !ids.has(s)).map((s) => `PR group ${g.pr}: unknown section ${s}`)
     ),

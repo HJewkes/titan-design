@@ -9,7 +9,7 @@ import {
   type Dispatch,
   type ReactNode,
 } from 'react'
-import { blockedShipGroup, buildFeedback, pendingQuestionIds } from '../src/feedback.ts'
+import { blockedShipGroup, buildFeedback, pendingQuestionIds, shipsAfter } from '../src/feedback.ts'
 import { feedbackProblems } from '../src/round.ts'
 import { roundLayout, type LayoutBlock, type ResolvedSection } from '../src/sections.ts'
 import type { Manifest, Question, StripKind, Variant } from '@titan-design/review-schema'
@@ -213,6 +213,7 @@ function Questions({ questions, ...props }: PartProps & { questions: Question[] 
           question={q}
           draft={state.draft.answers[q.id]}
           shipBlock={blockedShipGroup(manifest, state.draft, q) ?? undefined}
+          shipsAfter={shipsAfter(manifest, q)}
           index={indexes.question(q.id)}
           active={state.active === indexes.question(q.id)}
           follow={state.follow}
