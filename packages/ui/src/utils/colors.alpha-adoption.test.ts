@@ -47,12 +47,6 @@ describe('alpha() adoption (VW-78) — swapped literal parity', () => {
   // The error originals were 209,67,67 (red 600). Dark status-error moved to red 500
   // (item 42), so those rows now pin the red 500 channels the swap must follow.
   const staticCases: Array<{ label: string; original: string; swapped: string }> = [
-    // Gauge.tsx
-    {
-      label: 'Gauge TRACK',
-      original: 'rgba(255,255,255,0.08)',
-      swapped: alpha(primitiveColors.white, 0.08),
-    },
     // BaseBadge.tsx
     {
       label: 'BaseBadge pr.bg',
@@ -269,8 +263,9 @@ describe('alpha() adoption (VW-78) — swapped literal parity', () => {
     }
   )
 
-  it('covers all 40 static swaps (the 41st, MesoCard, is dynamic and tested below)', () => {
-    expect(staticCases).toHaveLength(40)
+  // Gauge's track swap left the list when the track moved onto the border-prominent token (TD-473).
+  it('covers all 39 static swaps (the 40th, MesoCard, is dynamic and tested below)', () => {
+    expect(staticCases).toHaveLength(39)
   })
 
   describe('MesoCard heatmapColor (dynamic opacity)', () => {
@@ -301,7 +296,6 @@ function readSource(relativeToSrc: string): string {
 
 describe('touched source files no longer contain the swapped raw literals', () => {
   const fileCases: Array<{ file: string; removedLiterals: string[] }> = [
-    { file: 'components/ui/charts/gauge/Gauge.tsx', removedLiterals: ['rgba(255,255,255,0.08)'] },
     {
       file: 'components/custom/Workout/BaseBadge.tsx',
       removedLiterals: ['rgba(255, 121, 0, 0.12)', 'rgba(255, 121, 0, 0.3)'],

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
+import { Text } from 'react-native'
 import { axe } from 'jest-axe'
 import { Scatter, type ScatterDatum } from './Scatter'
 import { Surface } from '../../surface'
@@ -112,10 +113,36 @@ describe('Scatter', () => {
     expect(screen.getByTestId('scatter-point-one')).toBeInTheDocument()
   })
 
-  it('renders an empty plot frame with no points', () => {
-    render(<Scatter data={[]} width={200} height={200} />)
-    expect(screen.getByTestId('scatter-canvas')).toBeInTheDocument()
-    expect(screen.queryByTestId('scatter-points')?.childNodes.length ?? 0).toBe(0)
+  describe('empty state', () => {
+    it('keeps the axes and draws a "No data" placeholder over the plot box when there is no data', () => {
+      render(<Scatter data={[]} width={200} height={200} />)
+
+      expect(screen.getByTestId('scatter-empty')).toHaveTextContent('No data')
+      expect(screen.getByTestId('scatter-axis-x')).toBeInTheDocument()
+      expect(screen.getByTestId('scatter-axis-y')).toBeInTheDocument()
+      expect(screen.queryByTestId('scatter-points')).not.toBeInTheDocument()
+    })
+
+    it('centres the placeholder inside the axes, not the chart box', () => {
+      render(<Scatter data={[]} width={200} height={200} />)
+
+      const overlay = screen.getByTestId('scatter-empty')
+      expect(overlay).toHaveStyle({
+        width: '200px',
+        height: '200px',
+        paddingLeft: '40px',
+        paddingTop: '12px',
+        paddingRight: '12px',
+        paddingBottom: '34px',
+      })
+    })
+
+    it('shows the consumer emptyState instead of the default', () => {
+      render(<Scatter data={[]} width={200} height={200} emptyState={<Text>Nothing yet</Text>} />)
+
+      expect(screen.getByTestId('scatter-empty')).toHaveTextContent('Nothing yet')
+      expect(screen.queryByText('No data')).not.toBeInTheDocument()
+    })
   })
 
   it('places an outlier inside the plot when domains are overridden', () => {

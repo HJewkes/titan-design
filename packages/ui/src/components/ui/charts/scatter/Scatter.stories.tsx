@@ -13,15 +13,22 @@ const meta: Meta<typeof Scatter> = {
       description: {
         component:
           '**Atom.** A domain-free scatter plot: points placed on two linear axes, sized by `r` and ' +
-          'coloured per datum. Composes no other component: the frame, gridlines and point marks are ' +
-          '`View`s, `Text`s and `Pressable`s, and theme colours come through `useSurfaceMode` and `getSemanticColors`.',
+          'coloured per datum. Composes [EmptyState](?path=/docs/components-molecules-emptystate--docs) as the default `emptyState`, drawn ' +
+          'in place of the plot when `data` is empty (set the `data` control to `[]`, or see the `Empty` story). ' +
+          'The frame, gridlines and point marks are `View`s, `Text`s and `Pressable`s, and theme colours come ' +
+          'through `useSurfaceMode` and `getSemanticColors`.\n\n' +
+          'No loading state: the consumer passes data that is already loaded. No error state: a chart ' +
+          'cannot fail to get its data; the consumer renders a failure with `Alert`. No disabled state: ' +
+          'the chart is a read-out, and a point is pressable only when `onPress` is set.',
       },
     },
   },
   argTypes: {
     width: { control: { type: 'range', min: 240, max: 800, step: 20 } },
     height: { control: { type: 'range', min: 180, max: 600, step: 20 } },
+    data: { control: 'object' },
     referenceLines: { control: 'object' },
+    emptyState: { control: false },
     diagonal: { control: 'boolean', table: { disable: true } },
   },
 }
