@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { View, Animated, Easing, type ViewProps } from 'react-native'
 import { StarIcon } from './icons'
-import { BaseBadge } from './BaseBadge'
+import { Pill } from '../../ui/pill'
 import { Typography } from '../../ui/typography'
 import { resolveColor } from '../../../theme/resolve-color'
 
@@ -76,22 +76,22 @@ export function PrBadge({
       <StarIcon size={iconSize} color={brandPrimary} fill={brandPrimary} strokeWidth={2} />
     </View>
   ) : (
-    <BaseBadge
-      variant="pr"
+    <Pill
+      tone="brand"
+      variant="subtle"
+      size="sm"
+      rounded={false}
       className={className}
       accessibilityLabel={`Personal record: ${resolvedLabel}`}
+      testID="pr-badge"
       {...props}
     >
-      {/* `boldLabel` is the badge label exactly: 12px/700 Inter. The line box is pinned
-          because the raw <Text> it replaced carried no lineHeight. */}
-      <Typography
-        variant="boldLabel"
-        color="inherit"
-        className="leading-[normal] text-brand-primary"
-      >
+      {/* `boldLabel` is the badge label exactly: 12px/700 Inter, a step above Pill's own
+          `sm` label. The label colour is Pill's brand tone, inherited. */}
+      <Typography variant="boldLabel" color="inherit" className="leading-[normal] text-inherit">
         {'\u2605'} {resolvedLabel}
       </Typography>
-    </BaseBadge>
+    </Pill>
   )
 
   if (animate) {

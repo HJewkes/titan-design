@@ -14,8 +14,10 @@ as JSON on stdout and in `feedback.json`. Private workspace tool, not published.
 5. `a` turns pins on: click a spot on any frame, type a note. `Esc` turns pins off.
 6. On a question, `1`-`9` pick its options; the scale takes its value directly.
 7. The last box is for general notes. `l` toggles one column per variant.
-   A sectioned round asks each group's question above that group's frames. It shows one
-   section at a time:
+   A sectioned round asks each question directly under the frames it names (`frames`); a
+   question without `frames` sits above its section's other frames, and a Ship question reads
+   last, under every frame. It shows one page at a time, a page being one section or every
+   section of one PR group:
    `]` pages to the next section, `[` to the previous one, and `Enter` past a section's last
    stop carries on into the next. The header lists every section as a link and says
    "Section N of M"; the end of every section repeats it between Previous and Next. Next is the
@@ -38,6 +40,7 @@ node scripts/storybook-launch.mjs --isolated          # prints its port, e.g. 61
 pnpm review --example --storybook http://127.0.0.1:6107 > <round-dir>/draft.json   # a starting point
 pnpm review build <round-dir>/draft.json [--storybook <url>]   # contrast gate; writes round.json
             [--tree <path>]                                   # required when a question binds a PR head
+            [--locks [<locks.json>]]                          # lock checks; see _Build with locks_
 pnpm review <round-dir>/round.json [--storybook <url>] [--out <dir>] [--no-open] [--no-capture]
             [--contrast-override "<reason>"] [--allow-stale]
 ```
@@ -122,11 +125,12 @@ imports. Its `schema/round.schema.json` and `schema/feedback.schema.json` are ge
 - Manifest `titan-review/round@2`: `unit`, `round`, `storybookUrl`, `context?`, `widths[]`,
   `height` (a number of px or `"auto"`, default `"auto"`; at round level a number caps every
   frame), `maxHeight` (default 1200, the cap when the round's `height` is `"auto"`),
-  `variants[{key, storyId | image, label, args?, globals?, height?}]` (at most 12, or at most 80
-  in a round with `sections`; empty for a round of questions only, which needs no placeholder
+  `variants[{key, storyId | image, label, args?, globals?, height?, variantUnit?, alternate?, change?: changed|new|removed|unchanged}]` (at most 12 in a round
+  without `sections`, uncapped in one with them; empty for a round of questions only, which needs no placeholder
   frame; every frame sits in a section),
-  `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?, recommendation?, signsOff (pick-one), page?, merge? (pick-one)}]`,
+  `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?, recommendation?, signsOff (pick-one), page?, merge? (pick-one), frames?[], decision?: iterate|ship|decide, outcomes? (option to accept|changes|neutral), implemented? (the option, or options for pick-many, the PR implements), touches? (the tokens a non-PR question decides; see _Build with locks_)}]`,
   `sections[{id, title, deciding, changed, context, kind?: CHOICE|STATES, questionIds[], variantKeys[], seeAlso?[], height?}]`,
+  `prGroups?[{pr: owner/name#n, headSha, sectionIds[]}]` (a PR group named outright),
   `build?{mainSha, mergeSha}` (written by `build --tree`; a draft that carries it is refused),
   `recommendations` (`"after-answer"`, the default, or `"shown"`),
   `contrast?{knownDefects[], measured[], unmeasured[]}` (also on a section; see _Contrast gate_).
@@ -341,16 +345,33 @@ heads rewrites `build` only. A round without bindings needs no tree.
   carries `topic:iteration` or `topic:ship`.
 - **Stacked PRs.** A draft's `stackedOn` is written through. When no question is about the base
   PR, every frame in the base PR's sections is labelled `base PR #n, not under review: <label>`.
-- **Grouping.** A section belongs to a PR by its questions' `page`, else a leading `#n` or
-  `owner/name#n` in its title. Each PR's sections sit together, at the first one's place, the
-  section holding its Ship question last, and the Ship question last in that section. (Rendering
-  a PR header waits for the review-page rework.)
+- **Stacked PR groups.** A `prGroups` entry's own `stackedOn` is written through, so groups in one
+  round can render on different bases. When no question is about a group's base, each frame in
+  that base's sections gets the prefix `rendered on #n at <short sha>, context, not under review: `
+  on its label. A base named by a group and by the round takes the group's prefix.
+- **Ships after.** On the page, the Ship of a group stacked on another group of the round reads
+  `ships after #n`, and is disabled, naming the holder, while the holder's Ship is answered Don't
+  ship or asks for a revision. The cross-round Ship gate below ignores the holder: a holder's
+  answer orders one round and does not refuse its dependent's Ship in the next.
+- **Grouping.** A section belongs to a PR by the `prGroups` entry that lists it, else its
+  questions' `page`, else a leading `#n` or `owner/name#n` in its title. Each PR's sections sit
+  together, at the first one's place, the section holding its Ship question last, and the Ship
+  question last in that section. The page shows each such group as one page and never splits one.
+- **Layout lint.** The ruled round must pass `lintRound` from `@titan-design/review-schema`, or
+  `build` throws with one `<rule>: <message>` line per problem: a deciding question without
+  `frames`, a frame outside its question's section or under two questions, a variant unit split
+  across blocks or alternates, alternates shown over different modes, a split PR group, a Ship
+  that is not last in its group, a Ship whose head or PR is not its group's one PR at one head, or
+  an `iterate` or `decide` pick question without `implemented`.
 - **Ship gate.** `build` exits 3, writing no `round.json`, for a Ship question whose PR had a
   changes-requested (`revisionRequested`), declined (a pick outside `merge.ship`) or non-agreed
   (`agreed: false`) answer in the latest earlier round that asked about it. It reads
   `feedback.json` beside a `round.json` (whose sha it must match) in sibling round directories of
   the same unit with a lower round number, and any `--prior-feedback <feedback.json>` given. A Ship
-  bound to a different head than that round's is a fix round's and is not blocked.
+  bound to a different head than that round's is a fix round's and is not blocked. The same gate
+  refuses on the owner's Ship rule (`shipBlocks` in review-schema): an answer in the PR's group
+  carries free text, or picks other than the question's `implemented` option. The page applies
+  the rule live: a blocked group's Ship option is disabled and the reasons show under it.
 
 Thresholds (WCAG 2.1 SC 1.4.3 and 1.4.11): text 4.5:1; large text (24px, or 18.66px at
 weight 700 or more) 3:1; non-text 3:1 against the adjacent plane. Each colour is composited
@@ -470,6 +491,174 @@ owner's answer matched the recommendation: one row per round, the overall rate, 
 per confidence band (`<0.5`, `0.5-0.75`, `>=0.75`). An answer counts only when it has both a
 recommendation and an owner's answer.
 
+## Lock footprint (TD-808)
+
+`titan-review locks footprint <pr>` prints what a PR head changes, as the `footprint` of a
+`titan-locks/1` lock (`LockFootprintSchema` in review-schema). It reads through `gh` and `git`
+only and writes nothing; the registry is never touched.
+
+```sh
+pnpm review locks footprint 800                     # gh pr view, then fetch base and refs/pull/800/head
+pnpm review locks footprint --base origin/main --head <sha>   # offline: no gh, no fetch
+            [--repo <path>]                         # the checkout to read (default: this one)
+```
+
+The diff is `merge-base(base, head)..head`; `derivedFrom` records both shas, `mainSha` being
+the merge-base. The output has:
+
+- `tokens`: every custom property of `packages/ui/src/theme/global.css` whose value differs,
+  per mode. The `:root` block is `dark` and the `.light` block is `light`; a token that moves in
+  one mode only is listed once. `name` is the token: `surface-raised` for
+  `--color-surface-raised`, and the property without its dashes for any other
+  (`space-inset-md`). `from` and `to` are the CSS values; an added token has only `to`, a
+  removed one only `from`. Comments and spacing never count as a change.
+- `files`: every changed path, sorted.
+- `components.direct`: the changed files that are component sources, that is `.ts` or `.tsx`
+  under `packages/ui/src/components/` that are not tests, type tests, stories, snapshots or type
+  stubs.
+- `components.readers`: every other component source that reads a changed property, plus every
+  source that imports a `direct` file, transitively (wrapped import clauses included). The
+  import closure is keyed by file, so two components that share a name never merge.
+- `components.rendersCount`: the size of the reverse import closure over `direct` and
+  `readers` together, which is where frames render.
+
+**What counts as a read.** The classes come from the head's `packages/ui/tailwind.config.js`,
+not from a guess: the command loads the config in a bare sandbox (`require` returns an empty
+object, so presets and plugins never load) and takes every `theme` and `theme.extend` entry whose
+value reads a `var(--…)`, `DEFAULT` keys and entries built in code included. Each entry gives a
+class stem under its theme key, and the theme key gives its Tailwind utilities, so
+`--color-hairline-default` is read by `border-hairline` or `divide-hairline`, `--space-inset-md`
+by `p-inset-md`, `gap-inset-md` or `-mt-inset-md`, and `--size-control-md` by `h-control-md` or
+`min-h-control-md`, each under any variant prefix (`web:hover:`, `[.light_&]:`). A stem never
+matches a longer one (`text-secondary` and `text-brand-secondary`; `border-hairline` and
+`border-hairline-subtle`). Two more forms count: a raw `var(--property)` anywhere in the source,
+and, for a colour, the token name as a string literal (`resolveColor('surface-raised')`). A head
+without the config is refused, since readers would be silently incomplete.
+
+Limits that remain: a token composed at runtime (`` `bg-${tone}` ``, a name built from parts) is
+not found; a theme key the utility table does not know (`src/tailwind-theme.ts`) is matched by
+any utility, which over-reports rather than under-reports; and only
+`packages/ui/src/components/` is read, so a change under `src/hooks`, `src/utils` or `src/theme`
+shows in `files` and `tokens`, not in `direct`, and reaches no component through the closure.
+
+The core is pure (`src/locks-footprint.ts`, given both CSS texts, the theme entries, the changed
+paths and a map of sources) and the tests run on fixtures under `test/fixtures/locks/` with git
+and gh faked; `test/tailwind-theme.test.ts` also reads the real config, so a config shape the
+loader cannot follow fails there first.
+
+## Lock sync (TD-813)
+
+`titan-review locks sync` reads every open lock that has holders, asks `gh pr view` about each
+holder PR and each dependent of that lock, and prints what changed. It runs none of the commands
+it prints and never writes the registry; a coordinator makes the edits and runs the commands.
+
+```sh
+pnpm review locks sync --registry <locks.json>      # or set TITAN_LOCKS_REGISTRY
+            [--repo <path>]                         # the checkout gh and git run in
+            [--json]                                # the report as JSON
+```
+
+Per holder, one of:
+
+- **merged**: when every holder has merged or closed and at least one merged, the lock goes
+  `open -> merged` with `mergeSha` and `closedAt` from the last merge. Each open `stack-on`
+  dependent still based on the holder's branch gets `gh pr edit <n> --base <the holder's base>`,
+  and every open `stack-on` dependent gets `titan-factory shepherd release <repo>#<n>`. A `defer`
+  dependent is noted as re-entering.
+- **closed**: when every holder closed unmerged, the lock goes `open -> released`. A stacked
+  dependent needs a rebase onto the holder's base first, which only its seat can do, so the
+  retarget and release are printed as a note, not as commands.
+- **new head**: the footprint is re-derived at the new head (as `locks footprint <pr>` does), and
+  so is each open dependent's. Each dependent is listed with what it shares with the new
+  footprint: files, tokens, and readers it edits. `[changed]` marks a dependent whose overlap
+  differs from the one the registry's footprint and `touches` give. A dependent's diff starts
+  at whichever of its base, the holder's recorded head and its new head leaves it the fewest
+  commits. A dependent stacked on the holder's recorded head may share two best merge-bases
+  with the moved holder (that head, and a main tip both merged in); `git merge-base` names
+  either, and naming main would hand the dependent the holder's whole diff. A dependent that
+  merged main in after stacking still shows main's later changes in its files.
+- **unchanged**: listed, nothing to do.
+
+The pure core is `src/locks-sync.ts` (`planSync`, `formatSync`); `lockSync` in `src/locks.ts`
+does the reads. Tests fake gh and git and assert no call writes.
+
+## Lock check (TD-814)
+
+`titan-review locks check` is the dispatch check: before a seat spawns an implementer, it gives
+the planned files and tokens and gets an exit code and advice to paste into the brief.
+
+```sh
+pnpm review locks check --registry <locks.json> \
+  --files 'packages/ui/src/components/ui/select/**' --tokens surface-base/light,text-secondary
+```
+
+`--files` takes paths or globs (`**` crosses directories, `*` and `?` do not); `--tokens` takes
+`name/light`, `name/dark`, or a bare name for both modes. Both are comma-separated and
+repeatable. Only `open` locks count. A lock's surface is its footprint's `files` and
+`components.direct`, its `touches.components`, and the tokens of both; a lock's token may name a
+family (`*-subtle`, `tint-{hue}-solid / on-tint-{hue}`).
+
+| exit | verdict    | when                                                                                                                                         |
+| ---- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0    | `clear`    | no open lock's surface is touched. A plan that edits only a lock's `components.readers` is clear, with a note that it renders under the lock |
+| 10   | `stack-on` | every lock touched has holders, and they are all one PR: the advice names its branch and head                                                |
+| 11   | `defer`    | a touched lock has no holder, or the touched locks are held by different PRs                                                                 |
+
+A lock with no holder is a decision only. The plan defers on it and the advice says not to
+re-ask the decision; if the task is the one that implements it, file it as the lock's holder.
+For example:
+
+```text
+Stack on #101 (branch feat/planes, lock L-0001): branch from feat/planes at aaaaaaa and open the
+PR with --base feat/planes; it retargets to main when #101 merges. Overlap: L-0001 on tokens
+text-secondary/light.
+```
+
+`--json` prints the verdict, the holder, the conflicts and render overlaps, and the advice. A
+usage error (no plan, a bad mode, no registry) exits 2. The pure core is `src/locks-check.ts`.
+
+## Build with locks (TD-810)
+
+`build --locks [<locks.json>]` is the authority: `locks check` advises dispatch, but the round
+builder refuses a round rendered on a state a lock supersedes. Bare `--locks` reads
+`$TITAN_LOCKS_REGISTRY`; give the flag after the draft. Without `--locks`, `build` is unchanged.
+
+```sh
+pnpm review build <round-dir>/draft.json --tree <path> --locks <locks.json>
+```
+
+The draft is read as a plan for `lockConflicts` in review-schema:
+
+- **Items.** Each `prGroups` entry is a PR at its `headSha`, rendered on its `stackedOn.headSha`
+  when it has one and on its own head otherwise; a Ship-bound PR with no group is an item too. An
+  item's touches are its head's footprint (`locks footprint --base origin/main --head <sha>`, read
+  in `--tree`, so `--locks` needs `--tree` whenever the draft holds a PR) plus the `touches` of the
+  questions on its page.
+- **Questions.** A question on no PR page declares what its answer decides as
+  `touches: { tokens: [{ name, mode? }], components?, axis? }`. One that declares nothing (other
+  than a `text` question) is not checked and prints a warning, so earlier drafts still build.
+- **Ships.** Each earlier round's Ship answers (the files the Ship gate reads) for the PRs the draft
+  holds, in round order, then the draft's own Ship asks. A PR the draft drops is not checked.
+
+`build` exits 3, writing no `round.json`, and prints the problems as lint problems print (one
+`<rule>: <message>` line each) for `superseded-state` (an item edits a locked token of an open
+lock it does not hold, on a base without the holder head: stack it on the holder or defer it),
+`lock-order`, `re-ask` and `stale-ship` from review-schema, and for its own `lock-head-missing`:
+an item overlaps an open lock (a locked token, or a changed file that is a locked file or a
+reader of a locked token) and a holder head of that lock is not an ancestor of the tree's HEAD, by
+the same `git merge-base --is-ancestor` test as the bound heads. A lock an item holds, or one
+that comes `after` a lock it holds, does not bind it: a holder renders before the decisions
+downstream of its own. A stale Ship is cured by asking Ship again at the planned head.
+
+Two more builder rules apply, before the layout lint, and applying them twice changes nothing
+(`src/locks-build.ts`):
+
+- **Holders first.** Sections about a PR that holds an open lock come first, in the registry's
+  `after` order, each group whole; every other section keeps its order.
+- **Render labels.** Every frame of an item that overlaps an open lock it does not hold is labelled
+  `rendered with decided #n: ` with the lock's holder PRs, so the page says which decided change
+  the frame shows. A lock with no holder adds no label.
+
 ## The review contract (TD-670)
 
 `serve` and `build` refuse a round that does not meet it, naming the section or question and
@@ -570,10 +759,23 @@ Rules worth knowing:
 - **One frame per section.** A frame that also bears on another group goes in that group's
   `seeAlso`, which renders a link to it instead of a second iframe. Validation refuses a variant
   or question claimed by two sections, and refuses an unknown key with the id in the message.
-- **Sections page a big round (TD-343).** A round without sections shows every frame on one
-  page and is capped at 12 variants. A round with sections shows one section at a time, so it
-  takes up to 80, for example one Gate 2 batch of main and PR-head frames in light and dark.
-  The page order is the sections, then "Other frames", then "Overall" with the general note.
+- **A question sits under its own frames (TD-794).** `frames` on a question names the variant
+  keys it asks about. The page renders those frames, then the question, as one block, so a
+  decision is never read away from what it decides. A section reads top to bottom: questions
+  without `frames`, the strip of frames no question names, each question under its `frames`,
+  then the section's Ship question. Every key in `frames` must be a frame of the question's own
+  section, and a frame sits above one question only; `lintRound` refuses anything else, naming
+  the question, the frame and the section it is in. A STATES strip may hold a question that
+  picks among its own `frames`, and a CHOICE strip holds settings constant within each
+  question's `frames` (then among the frames no question names), not across the whole strip.
+- **Sections page a big round (TD-343, TD-794).** A round without sections shows every frame on
+  one page and is capped at 12 variants. A round with sections shows one page at a time and is
+  not capped: frames mount only as they near the viewport, so the round's size does not bound
+  what is on screen. (The old cap of 80 was sized for one Gate 2 batch, not a limit of the page.)
+  Consecutive sections about one PR (by their questions' `page`, else a leading `#n` in the
+  title, as the builder groups them) share a page, so a PR's frames, its picks and its Ship are
+  read together. The page order is those pages, then "Other frames", then "Overall" with the
+  general note.
   A `seeAlso` link pages to the section that holds that frame. `feedback.json` is unchanged.
 
 ### Heights

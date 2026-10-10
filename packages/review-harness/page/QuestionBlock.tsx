@@ -1,7 +1,12 @@
 import type { Dispatch } from 'react'
 import { agrees, draftAnswer, type AnswerDraft } from '../src/feedback.ts'
 import { isAnswered, offersBuiltInRevision } from '../src/round.ts'
-import type { Manifest, Question, Recommendation } from '@titan-design/review-schema'
+import type {
+  Manifest,
+  PrGroupShipStatus,
+  Question,
+  Recommendation,
+} from '@titan-design/review-schema'
 import { Markdown } from './Markdown.tsx'
 import { recommendationVisible, type Action } from './state.ts'
 import { Stop } from './Stop.tsx'
@@ -14,6 +19,10 @@ interface QuestionBlockProps {
   active: boolean
   follow: boolean
   dispatch: Dispatch<Action>
+  /** Set on a merge-bound question whose PR group may not ship: its Ship option is disabled. */
+  shipBlock?: PrGroupShipStatus
+  /** Set on a merge-bound question whose PR group is stacked on a holder group of the round. */
+  shipsAfter?: string
 }
 
 export const REVISION_LABEL = 'None of these, request a revision'
@@ -32,19 +41,34 @@ function Choices({
   question,
   draft,
   dispatch,
+  shipBlock,
 }: Omit<QuestionBlockProps, 'index' | 'active'>) {
   if (question.kind === 'text') return null
   const many = question.kind === 'pick-many'
   const items =
     question.kind === 'scale'
-      ? scaleValues(question).map((v) => ({ hotkey: v, label: String(v), on: draft.value === v }))
+      ? scaleValues(question).map((v) => ({
+          hotkey: v,
+          label: String(v),
+          on: draft.value === v,
+          blocked: false,
+        }))
       : question.options.map((o, i) => ({
           hotkey: i + 1,
           label: optionLabel(manifest, o),
           on: many ? (draft.picks ?? []).includes(o) : draft.pick === o,
+          blocked:
+            shipBlock !== undefined &&
+            question.kind === 'pick-one' &&
+            !!question.merge?.ship.includes(o),
         }))
   if (offersBuiltInRevision(question))
-    items.push({ hotkey: items.length + 1, label: REVISION_LABEL, on: draft.revision === true })
+    items.push({
+      hotkey: items.length + 1,
+      label: REVISION_LABEL,
+      on: draft.revision === true,
+      blocked: false,
+    })
   const act = (i: number): Action =>
     question.kind === 'scale'
       ? { type: 'value', id: question.id, value: scaleValues(question)[i] }
@@ -61,6 +85,7 @@ function Choices({
           role={many ? 'checkbox' : 'radio'}
           aria-checked={item.on}
           className="choice"
+          disabled={item.blocked}
           onClick={() => dispatch(act(i))}
         >
           {item.hotkey <= 9 && <kbd>{item.hotkey}</kbd>} <Markdown inline>{item.label}</Markdown>
@@ -103,6 +128,39 @@ function RecommendationNote({ manifest, question, draft }: QuestionBlockProps) {
   )
 }
 
+function ShipBlockedNotice({
+  shipBlock,
+  question,
+}: Pick<QuestionBlockProps, 'shipBlock' | 'question'>) {
+  if (!shipBlock) return null
+  return (
+    <div className="problems" role="alert" data-testid={`ship-blocked-${question.id}`}>
+      <p>Ship is withheld for {shipBlock.pr} until these are resolved:</p>
+      <ul>
+        {shipBlock.blockers.map((b) => (
+          <li key={`${b.questionId}-${b.kind}`}>{b.message}</li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+function ShipsAfterNote({
+  question,
+  shipsAfter,
+}: Pick<QuestionBlockProps, 'question' | 'shipsAfter'>) {
+  if (!shipsAfter || question.kind !== 'pick-one' || !question.merge) return null
+  const sameRepo = `${question.merge.repo}#`
+  const holder = shipsAfter.startsWith(sameRepo)
+    ? shipsAfter.slice(sameRepo.length - 1)
+    : shipsAfter
+  return (
+    <p className="ships-after" data-testid={`ships-after-${question.id}`}>
+      ships after {holder}
+    </p>
+  )
+}
+
 function RevisionNotice({ question, draft }: Pick<QuestionBlockProps, 'question' | 'draft'>) {
   const asked = draftAnswer(question, draft).revisionRequested
   if (!asked || draft.comment.trim()) return null
@@ -131,6 +189,8 @@ export function QuestionBlock(props: QuestionBlockProps) {
         {question.required && <span className="required"> required</span>}
       </h3>
       <Choices {...props} />
+      <ShipsAfterNote question={question} shipsAfter={props.shipsAfter} />
+      <ShipBlockedNotice question={question} shipBlock={props.shipBlock} />
       <RecommendationNote {...props} />
       <RevisionNotice question={question} draft={draft} />
       <textarea

@@ -673,6 +673,10 @@ exports[`Tooltip characterisation > story AllPlacements 1`] = `
             type="button"
           >
             <div
+              class="css-view-175oi2r"
+              data-testid="hit-target"
+            />
+            <div
               class="css-text-146c3p1"
               dir="auto"
             >
@@ -696,6 +700,10 @@ exports[`Tooltip characterisation > story AllPlacements 1`] = `
             type="button"
           >
             <div
+              class="css-view-175oi2r"
+              data-testid="hit-target"
+            />
+            <div
               class="css-text-146c3p1"
               dir="auto"
             >
@@ -718,6 +726,10 @@ exports[`Tooltip characterisation > story AllPlacements 1`] = `
             tabindex="0"
             type="button"
           >
+            <div
+              class="css-view-175oi2r"
+              data-testid="hit-target"
+            />
             <div
               class="css-text-146c3p1"
               dir="auto"
@@ -747,6 +759,10 @@ exports[`Tooltip characterisation > story AllPlacements 1`] = `
             type="button"
           >
             <div
+              class="css-view-175oi2r"
+              data-testid="hit-target"
+            />
+            <div
               class="css-text-146c3p1"
               dir="auto"
             >
@@ -769,6 +785,10 @@ exports[`Tooltip characterisation > story AllPlacements 1`] = `
             tabindex="0"
             type="button"
           >
+            <div
+              class="css-view-175oi2r"
+              data-testid="hit-target"
+            />
             <div
               class="css-text-146c3p1"
               dir="auto"
@@ -798,6 +818,10 @@ exports[`Tooltip characterisation > story AllPlacements 1`] = `
             type="button"
           >
             <div
+              class="css-view-175oi2r"
+              data-testid="hit-target"
+            />
+            <div
               class="css-text-146c3p1"
               dir="auto"
             >
@@ -821,6 +845,10 @@ exports[`Tooltip characterisation > story AllPlacements 1`] = `
             type="button"
           >
             <div
+              class="css-view-175oi2r"
+              data-testid="hit-target"
+            />
+            <div
               class="css-text-146c3p1"
               dir="auto"
             >
@@ -843,6 +871,10 @@ exports[`Tooltip characterisation > story AllPlacements 1`] = `
             tabindex="0"
             type="button"
           >
+            <div
+              class="css-view-175oi2r"
+              data-testid="hit-target"
+            />
             <div
               class="css-text-146c3p1"
               dir="auto"

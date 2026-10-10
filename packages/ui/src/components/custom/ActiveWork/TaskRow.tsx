@@ -1,11 +1,12 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View } from 'react-native'
+import { Indicator } from '../../ui/indicator'
 import { Pill } from '../../ui/pill'
 import { Tooltip } from '../../ui/tooltip'
 import { formatDateTime } from '../../ui/date-time'
 import { TableCell, TableRow } from '../../ui/table'
 import { Typography } from '../../ui/typography'
-import { SEVERITY_META, SeverityLabel, type TaskSeverity } from './SeverityLabel'
+import { SEVERITY_META, type TaskSeverity } from './SeverityLabel'
 import type { TaskColumnKey } from './task-columns'
 
 /** One open task, as the task list renders it. */
@@ -75,11 +76,48 @@ export interface TaskRowProps {
 }
 
 /**
+ * A task's severity as a neutral Pill: the {@link Indicator} carries the level. The
+ * label is `text-primary` because `text-secondary` misses AA on the pill's fill in dark
+ * mode. Unset renders the em-dash placeholder so the column stays aligned.
+ */
+function SeverityPill({
+  severity,
+  dotOnly = false,
+}: {
+  severity?: TaskSeverity
+  dotOnly?: boolean
+}) {
+  if (!severity) {
+    return (
+      <Typography variant="caption" className="text-text-tertiary">
+        —
+      </Typography>
+    )
+  }
+  const { label, dot } = SEVERITY_META[severity]
+  return (
+    <Pill
+      tone="neutral"
+      variant="subtle"
+      size="sm"
+      className="gap-1.5"
+      leading={<Indicator size="sm" color={dot} testID={`severity-dot-${severity}`} />}
+    >
+      {dotOnly ? null : (
+        <Typography variant="caption" color="inherit" className="text-text-primary">
+          {label}
+        </Typography>
+      )}
+    </Pill>
+  )
+}
+
+/**
  * TaskRow — one task as a dense grid row: initiative, id, title, severity,
  * priority, estimate, tags and age.
  *
  * Composes {@link TableRow} / {@link TableCell} for row semantics and density,
- * {@link SeverityLabel} for the severity dot, and {@link Pill} for tags. Used by
+ * {@link Pill} with an {@link Indicator} for the severity dot, and {@link Pill} for tags. Used by
  * {@link TaskTable}.
  */
 export function TaskRow({ task, ageLabel, severityDotOnly = false, hideColumns }: TaskRowProps) {
@@ -118,10 +156,10 @@ export function TaskRow({ task, ageLabel, severityDotOnly = false, hideColumns }
         <TableCell width={severityWidth}>
           {severityDotOnly && task.severity ? (
             <Tooltip usePortal label={SEVERITY_META[task.severity].label}>
-              <SeverityLabel severity={task.severity} dotOnly />
+              <SeverityPill severity={task.severity} dotOnly />
             </Tooltip>
           ) : (
-            <SeverityLabel severity={task.severity} />
+            <SeverityPill severity={task.severity} />
           )}
         </TableCell>
       ) : null}

@@ -5,6 +5,91 @@ All notable changes to `@titan-design/review-schema` are documented in this file
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this
 project adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- Optional `touches` on every question kind (`QuestionTouchesSchema`, type `QuestionTouches`):
+  `{ tokens: [{ name, mode? }], components?: string[], axis? }`, what a question with no PR diff
+  would decide. `build --locks` in review-harness reads it as the question's plan for
+  `lockConflicts`; a question on a PR page needs none.
+- Optional `implemented` on pick-one (an option) and pick-many (a list of options): what the PR
+  implements at its head. Every entry must be one of the question's options and not its
+  `revisionOption`.
+- `shipBlocks(round, feedback)`: per PR group, whether Ship is blocked and why. A group is blocked
+  when any of its answers carries free text, or picks other than the question's `implemented`
+  option. An unanswered question does not block. Exports `PrGroupShipStatus` and `ShipBlocker`.
+- `lintRound` rule `missing-implemented-option`: an `iterate` or `decide` pick question declares
+  `implemented`.
+- `titan-locks/1` (`LOCKS_SCHEMA_ID`, `LocksSchema`, `parseLocks`): a registry of decision locks.
+  Each lock (`L-NNNN`) is keyed on its `decision` (ledger row, decisions item, round, question
+  id), has zero or more `holders` (a PR at a head), declares `touches` (tokens per mode,
+  components, axis) when it has no holder, and orders itself with `after`. Top-level
+  `dependents` name the lock they wait on with `mode` `stack-on` or `defer` and a `reason`. The
+  schema refuses an unknown lock id in `after` or `dependents`, an `after` cycle, a repeated lock
+  id and a decision row keyed by two locks, naming the ids. Exports `afterCycles`,
+  `locksProblems`, `LOCK_AXES`, `LOCK_STATUSES` and `DEPENDENT_MODES`.
+- Optional `stackedOn` on a `prGroups` entry (`{ repo, pr, headSha }`): the base that one PR
+  group renders on, so groups in one round can sit on different bases. The round-level
+  `stackedOn` keeps its meaning. The schema refuses a group stacked on itself, directly or
+  through other groups. Exports `stackBase`.
+- `shipBlocks` kind `holder-not-shipped`: a group stacked on another group of the same round (its
+  holder) is blocked while the holder's Ship is answered Don't ship or asks for a revision, with a
+  message naming the holder. An unanswered or shipped holder does not block. Such a group's
+  status carries `shipsAfter`, the holder's `owner/name#n`.
+- `lockConflicts(registry, plan)`: a pure check of a planned round or dispatch against the lock
+  registry (`locksProblems` checks the registry itself). The plan lists items (`pr`, `head`, the
+  `base` commit they render on, touched tokens per mode), questions with touched tokens, recorded
+  Ships, and a `contains(commit, ancestor)` predicate the caller answers. It returns
+  `{ kind, lock, ids, tokens, message }[]` of kind `superseded-state` (an item
+  overlapping an open lock's tokens on a base without the holder head), `lock-order`
+  (any open lock an item holds comes `after` an open lock no item up to it holds), `re-ask` (a
+  question touching a decided lock's tokens) and
+  `stale-ship` (at most one per PR: its last Ship is not at its planned item's head or, for a PR the
+  plan does not hold, at its prior Ship's head; `ids` names every lock the PR holds). Every check
+  reads one per-PR view: all the non-released locks a PR holds and its Ship history. Exports
+  `LOCK_CONFLICT_KINDS` and the `LockPlan`, `PlannedItem`, `PlannedQuestion`, `RecordedShip`,
+  `ModeToken` and `LockConflict` types.
+- `lockSurface(lock)`, `tokensMatch(a, b)`, `lockedTokens(tokens, lock)`, `tokenKey`, `globRegExp`
+  and the `ModeToken` (`mode` optional, meaning both modes) and `LockSurface` types: the one reading
+  of what a lock covers. A locked token name may be a family (`*-subtle`,
+  `tint-{hue}-solid / on-tint-{hue}`). `lockConflicts` matches through them, and
+  `@titan-design/review-harness` now imports them instead of keeping its own copy.
+
+## [0.3.0]
+
+### Added
+
+- Optional question `frames`: the variant keys a question asks about. A renderer places them
+  directly above the question, inside the question's own section. The schemas refuse an unknown
+  or repeated key and a question with `frames` in no section; `lintRound` checks placement.
+- Optional question `decision`: `iterate`, `ship` or `decide` (`DECISION_KINDS`). A merge-bound
+  question that sets it must say `ship`.
+- Optional `outcomes` on pick-one and pick-many: each option's `accept`, `changes` or `neutral`
+  (`OPTION_OUTCOMES`). Every key must be one of the question's options.
+- Optional manifest `prGroups` (`[{ pr: "owner/name#n", headSha, sectionIds }]`,
+  `PrGroupSchema`). Each section id must be known and in one group only, and each PR has one group.
+- Optional variant `variantUnit`, `alternate` and `change` (`changed`, `new`, `removed` or
+  `unchanged`, `FRAME_CHANGES`).
+- `lintRound(round)` and `LINT_RULES`: the review-layout rules a builder applies before it writes
+  a round (`unanchored-question`, `frame-outside-section`, `shared-frame-set`,
+  `split-variant-unit`, `unequal-alternates`, `split-pr-group`, `ship-not-last`,
+  `ship-head-mismatch`). It returns `{ rule, message }[]`, empty when the round passes.
+
+### Changed
+
+- A STATES strip may hold a question that picks among its own `frames`; it still refuses one
+  that picks any other frame. A CHOICE strip holds settings constant within each compared set
+  (each question's `frames`, then the frames no question claims), not across the whole strip.
+- A sectioned round is no longer capped at 80 variants. The cap was a size picked for one
+  Gate 2 batch; the page shows one section (or PR group) at a time and mounts a frame only as it
+  nears the viewport, so round size does not bound what is on screen. A round without sections
+  is still capped at 12, because it shows every frame on one page.
+- A frame outside its question's section, and a frame under two questions, are now
+  `lintRound` problems instead of schema errors, so `ManifestSchema` still reads such a round.
+- `round.schema.json` carries every new field and drops `maxItems` on `variants`. The schema id stays
+  `titan-review/round@2`: every round written for 0.2 still validates.
+
 ## [0.2.0]
 
 ### Added

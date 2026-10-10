@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { SetsRepsLoad } from './SetsRepsLoad'
+import { capturedByNode } from '../../../test/classname-capture'
 
 describe('SetsRepsLoad', () => {
   it('renders the sets, reps and load values', () => {
@@ -38,6 +39,20 @@ describe('SetsRepsLoad', () => {
     render(<SetsRepsLoad sets={4} reps={8} load={140} fontSize={32} />)
     // The value cells (and separators) render at the supplied size.
     expect(screen.getByText('4')).toHaveStyle({ fontSize: 32 })
+  })
+
+  it('renders each segment through Typography mono', () => {
+    render(<SetsRepsLoad sets={5} reps={8} load={145} />)
+    const segments = screen.getByTestId('sets-reps-load').children
+    expect(segments).toHaveLength(6)
+    for (const segment of Array.from(segments)) {
+      expect(capturedByNode.get(segment)?.split(' ')).toContain('font-mono')
+    }
+  })
+
+  it('dims the value weight to regular when muted', () => {
+    render(<SetsRepsLoad sets={5} reps={8} load={145} muted />)
+    expect(screen.getByText('5').style.fontWeight).toBe('400')
   })
 
   describe('accessibility', () => {

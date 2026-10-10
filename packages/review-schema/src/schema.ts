@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { SHIP_OPTIONS, contractProblems, duplicates, type Problem } from './contract.ts'
+import { LOCK_AXES } from './locks.ts'
 
 export const MANIFEST_SCHEMA_ID = 'titan-review/round@2'
 /** A round written before the review contract: the page still reads it, the CLI refuses it. */
@@ -38,9 +39,12 @@ const storybookUrl = z.url({ protocol: /^https?$/ }).check((ctx) => {
 
 export const AUTO_HEIGHT = 'auto'
 
-/** A round shows every frame on one page, so it stays small; sections page through more. */
+/**
+ * A round without sections shows every frame on one page, so it stays small. A sectioned round
+ * pages by section (or PR group) and mounts each frame only as it nears the viewport, so its
+ * size is not capped.
+ */
 const MAX_VARIANTS = 12
-const MAX_SECTIONED_VARIANTS = 80
 
 /** A frame height in CSS px, or "auto" to size the frame to its story's content. */
 const frameHeight = z.union([z.number().int().min(120).max(4000), z.literal(AUTO_HEIGHT)])
@@ -53,6 +57,9 @@ const imagePath = z
     'a .png path relative to the round file, without .. segments'
   )
 
+/** How a frame differs from main, in reg-cli's classes; absent when the round does not say. */
+export const FRAME_CHANGES = ['changed', 'new', 'removed', 'unchanged'] as const
+
 /** A frame is a Storybook story or a static PNG: exactly one of `storyId` and `image`. */
 export const VariantSchema = z
   .object({
@@ -63,6 +70,11 @@ export const VariantSchema = z
     args: z.record(z.string(), argValue).optional(),
     globals: z.record(z.string(), argValue).optional(),
     height: frameHeight.optional(),
+    /** One variant shown in several views (themes, sizes, states): every view shares this id. */
+    variantUnit: id.optional(),
+    /** The column this frame's variant unit stands in when alternates are compared side by side. */
+    alternate: id.optional(),
+    change: z.enum(FRAME_CHANGES).optional(),
   })
   .strict()
   .superRefine((v, ctx) => {
@@ -91,6 +103,32 @@ const topicKey = z
     'a topic is ask:, component:, token: or topic: then a name without spaces'
   )
 
+/**
+ * What answering a question decides: `iterate` picks among design alternates, `ship` approves
+ * a finished change (a merge-bound question is always `ship`), `decide` is a choice no frame shows.
+ */
+export const DECISION_KINDS = ['iterate', 'ship', 'decide'] as const
+
+/** What picking an option means for its PR's Ship: `changes` withholds Ship until a fix round. */
+export const OPTION_OUTCOMES = ['accept', 'changes', 'neutral'] as const
+
+/** A token a question's answer would decide; leaving `mode` out means both modes. */
+const touchedToken = z
+  .object({ name: z.string().min(1), mode: z.enum(['light', 'dark']).optional() })
+  .strict()
+
+/**
+ * What a question with no PR diff would decide: the tokens, components and axis a lock check reads
+ * (`build --locks`). A question on a PR page needs none; its PR head's footprint stands for it.
+ */
+export const QuestionTouchesSchema = z
+  .object({
+    tokens: z.array(touchedToken),
+    components: z.array(z.string().min(1)).default([]),
+    axis: z.enum(LOCK_AXES).optional(),
+  })
+  .strict()
+
 const questionBase = {
   id,
   prompt: z.string().min(1),
@@ -100,10 +138,20 @@ const questionBase = {
   page: prPage.optional(),
   /** The keys this question shares with questions in other rounds. */
   topics: z.array(topicKey).optional(),
+  /**
+   * The frames this question asks about, by variant key. The page renders them directly above
+   * the question; they must sit in the question's own section. Absent: today's placement.
+   */
+  frames: z.array(id).min(1).optional(),
+  decision: z.enum(DECISION_KINDS).optional(),
+  touches: QuestionTouchesSchema.optional(),
 }
 
 /** Which variant each option stands for, so one click answers and picks the variant. */
 const optionVariants = z.record(z.string(), id).optional()
+
+/** Each option's outcome, by option text; an option it does not name has no declared outcome. */
+const outcomes = z.record(z.string(), z.enum(OPTION_OUTCOMES)).optional()
 
 /** Our answer to a question, hidden from the owner until they answer it themselves. */
 export const RecommendationSchema = z
@@ -144,6 +192,9 @@ const PickOneSchema = z
      */
     revisionOption: z.string().optional(),
     optionVariants,
+    outcomes,
+    /** The option the PR at its head already implements; a pick that differs withholds Ship. */
+    implemented: z.string().optional(),
     recommendation,
     /** The changed part an answer signs off, so no answer approves a whole PR at once. */
     signsOff: z.string().min(1).optional(),
@@ -156,6 +207,9 @@ const PickManySchema = z
     kind: z.literal('pick-many'),
     options: z.array(z.string()).min(1),
     optionVariants,
+    outcomes,
+    /** The options the PR at its head already implements; a different set withholds Ship. */
+    implemented: z.array(z.string()).min(1).optional(),
     recommendation,
   })
   .strict()
@@ -366,6 +420,8 @@ function optionVariantProblems(m: {
     id: string
     options?: string[]
     optionVariants?: Record<string, string>
+    outcomes?: Record<string, string>
+    implemented?: string | string[]
     revisionOption?: string
     merge?: { ship: string[] }
   }[]
@@ -383,6 +439,21 @@ function optionVariantProblems(m: {
         ? [`question ${q.id}: ship option "${option}" is its revisionOption`]
         : []),
     ]),
+    ...[q.implemented ?? []]
+      .flat()
+      .flatMap((option) => [
+        ...(q.options?.includes(option)
+          ? []
+          : [`question ${q.id}: implemented option "${option}" is not one of its options`]),
+        ...(option === q.revisionOption
+          ? [`question ${q.id}: implemented option "${option}" is its revisionOption`]
+          : []),
+      ]),
+    ...Object.keys(q.outcomes ?? {})
+      .filter((option) => !q.options?.includes(option))
+      .map(
+        (option) => `question ${q.id}: outcome for "${option}", which is not one of its options`
+      ),
     ...Object.entries(q.optionVariants ?? {}).flatMap(([option, key]) => [
       ...(q.options?.includes(option)
         ? []
@@ -392,6 +463,34 @@ function optionVariantProblems(m: {
         : [`question ${q.id}: optionVariants points at unknown variant ${key}`]),
     ]),
   ])
+}
+
+interface Anchoring {
+  variants: { key: string }[]
+  questions: { id: string; frames?: string[] }[]
+  sections?: { id: string; questionIds: string[] }[]
+}
+
+/**
+ * Each anchored frame is a known variant, named once, on a question in a section. Where the frames
+ * sit, and that a frame anchors one question, is `lintRound`'s to check.
+ */
+function anchorProblems(m: Anchoring): string[] {
+  const keys = new Set(m.variants.map((v) => v.key))
+  const inSection = new Set(m.sections?.flatMap((s) => s.questionIds))
+  return m.questions.flatMap((q) => {
+    if (!q.frames) return []
+    const placement = !m.sections
+      ? [`question ${q.id}: frames need sections; group the round into sections`]
+      : inSection.has(q.id)
+        ? []
+        : [`question ${q.id}: it has frames but is in no section, so none can sit above it`]
+    return [
+      ...q.frames.filter((k) => !keys.has(k)).map((k) => `question ${q.id}: unknown frame ${k}`),
+      ...[...new Set(duplicates(q.frames))].map((k) => `question ${q.id}: frame ${k} repeats`),
+      ...placement,
+    ]
+  })
 }
 
 type Declarations = z.output<typeof ContrastDeclarationsSchema>
@@ -462,6 +561,58 @@ export const StackedOnSchema = z
   .object({ repo: repoShape, pr: z.number().int().positive(), headSha: sha40 })
   .strict()
 
+/**
+ * One PR at its head and the sections about it, which a page shows together, Ship last. A group's
+ * own `stackedOn` names the base it renders on; groups in one round may sit on different bases.
+ */
+export const PrGroupSchema = z
+  .object({
+    pr: prPage,
+    headSha: sha40,
+    sectionIds: z.array(id).min(1),
+    stackedOn: StackedOnSchema.optional(),
+  })
+  .strict()
+
+type StackedGroup = { pr: string; stackedOn?: { repo: string; pr: number } }
+
+/** `owner/name#n` of the base a PR group is stacked on, or undefined when it is not stacked. */
+export const stackBase = (group: StackedGroup): string | undefined =>
+  group.stackedOn && `${group.stackedOn.repo}#${group.stackedOn.pr}`
+
+function stackProblems(groups: StackedGroup[]): string[] {
+  const bases = new Map(groups.map((g) => [g.pr, stackBase(g)]))
+  return groups.flatMap((g) => {
+    const seen = [g.pr]
+    for (let at = bases.get(g.pr); at !== undefined; at = bases.get(at)) {
+      if (at === g.pr)
+        return [`PR group ${g.pr} is stacked on itself: ${[...seen, at].join(' -> ')}`]
+      if (seen.includes(at)) return []
+      seen.push(at)
+    }
+    return []
+  })
+}
+
+function prGroupProblems(m: {
+  sections?: { id: string }[]
+  prGroups?: (StackedGroup & { sectionIds: string[] })[]
+}): string[] {
+  if (!m.prGroups) return []
+  if (!m.sections) return ['prGroups need sections; group the round into sections']
+  const ids = new Set(m.sections.map((s) => s.id))
+  return [
+    ...stackProblems(m.prGroups),
+    ...m.prGroups.flatMap((g) =>
+      g.sectionIds.filter((s) => !ids.has(s)).map((s) => `PR group ${g.pr}: unknown section ${s}`)
+    ),
+    ...[...new Set(duplicates(m.prGroups.flatMap((g) => g.sectionIds)))].map(
+      (s) => `section ${s} is in two PR groups`
+    ),
+    ...[...new Set(duplicates(m.prGroups.map((g) => g.pr)))].map((pr) => `PR ${pr} has two groups`),
+  ]
+}
+
 const sameList = (a: string[] | undefined, b: string[]) =>
   a?.length === b.length && a.every((v, i) => v === b[i])
 
@@ -479,6 +630,9 @@ function shipQuestionProblems(q: z.output<typeof QuestionSchema>): string[] {
       ? []
       : [`question ${q.id}: a merge-bound question's ship set must be exactly ["Ship"]`]),
     ...(q.page === key ? [] : [`question ${q.id}: a merge-bound question's page must be "${key}"`]),
+    ...(q.decision === undefined || q.decision === 'ship'
+      ? []
+      : [`question ${q.id}: a merge-bound question's decision is ship, not ${q.decision}`]),
   ]
 }
 
@@ -514,7 +668,7 @@ const ManifestObject = z
     /** The ceiling an auto-sized frame stops at; taller stories scroll inside the frame. */
     maxHeight: z.number().int().min(120).max(4000).default(1200),
     /** Empty for a questions-only round; nothing has to stand in for a frame it does not have. */
-    variants: z.array(VariantSchema).max(MAX_SECTIONED_VARIANTS),
+    variants: z.array(VariantSchema),
     questions: z.array(QuestionSchema),
     sections: z.array(SectionSchema).min(1).optional(),
     recommendations: z.enum(RECOMMENDATION_MODES).default('after-answer'),
@@ -524,6 +678,8 @@ const ManifestObject = z
     contrastOverride: ContrastOverrideSchema.optional(),
     build: BuildProvenanceSchema.optional(),
     stackedOn: StackedOnSchema.optional(),
+    /** The PR groups, in any order; a section in none is not about a PR or is grouped by `page`. */
+    prGroups: z.array(PrGroupSchema).min(1).optional(),
   })
   .strict()
 
@@ -547,7 +703,9 @@ function manifestProblems(m: z.output<typeof ManifestObject>): Problem[] {
         ])
       : []),
     ...at('sections', sectionProblems(m)),
+    ...at('prGroups', prGroupProblems(m)),
     ...at('questions', [
+      ...anchorProblems(m),
       ...optionVariantProblems(m),
       ...recommendationProblems(m),
       ...mergeBindingProblems(m),
@@ -664,6 +822,11 @@ export type ImageVariant = Variant & { image: string }
 export type Question = Manifest['questions'][number]
 export type TopicPrefix = (typeof TOPIC_PREFIXES)[number]
 export type StackedOn = z.infer<typeof StackedOnSchema>
+export type PrGroup = z.infer<typeof PrGroupSchema>
+export type QuestionTouches = z.output<typeof QuestionTouchesSchema>
+export type DecisionKind = (typeof DECISION_KINDS)[number]
+export type OptionOutcome = (typeof OPTION_OUTCOMES)[number]
+export type FrameChange = (typeof FRAME_CHANGES)[number]
 export type Section = z.output<typeof SectionSchema>
 export type Part = z.output<typeof PartSchema>
 export type StripKind = (typeof STRIP_KINDS)[number]

@@ -127,6 +127,17 @@ body:has(.contrast-override) .variant-head {
   margin-bottom: var(--space-stack-lg);
 }
 
+/* A question and the frames it names read as one block, set apart from its neighbours. */
+.anchored {
+  padding-left: var(--space-inset-md);
+  border-left: 2px solid var(--color-border-prominent);
+  margin-bottom: var(--space-section-sm);
+}
+
+.anchored > .variants {
+  margin-bottom: var(--space-stack-md);
+}
+
 .round-section {
   display: block;
   margin-bottom: var(--space-section-sm);
@@ -412,6 +423,11 @@ input:focus {
 
 .problems {
   color: var(--color-status-error);
+}
+
+.ships-after {
+  color: var(--color-text-secondary);
+  font-size: 12px;
 }
 
 .unanswered {

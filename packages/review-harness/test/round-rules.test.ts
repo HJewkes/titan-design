@@ -8,6 +8,7 @@ import { applyRoundRules } from '../src/round-rules.ts'
 import {
   FEEDBACK_SCHEMA_ID,
   MANIFEST_SCHEMA_ID,
+  RoundSchema,
   type ManifestInput,
 } from '@titan-design/review-schema'
 import { SECTION_TEXTS } from './fixtures.ts'
@@ -35,13 +36,15 @@ function ship(pr: number, head = HEAD(pr)) {
   }
 }
 
-const pick = (id: string, pr?: number) => ({
+const pick = (id: string, frames: string[], pr?: number) => ({
   id,
   kind: 'pick-one' as const,
   prompt: `Which ${id}?`,
   options: [`${id}-x`, `${id}-y`],
+  implemented: `${id}-x`,
   required: true,
   signsOff: id,
+  frames,
   ...(pr ? { page: pageOf(pr) } : {}),
 })
 
@@ -64,7 +67,7 @@ function interleaved(extra: Partial<ManifestInput> = {}): ManifestInput {
     storybookUrl: 'http://127.0.0.1:6100',
     widths: [1280],
     variants: ['it', 'a1', 'a2', 'b1'].map(frame),
-    questions: [pick('tone'), ship(7), pick('depth', 8), ship(8)],
+    questions: [pick('tone', ['it']), ship(7), pick('depth', ['b1'], 8), ship(8)],
     sections: [
       section('iter', 'Tone', ['tone'], ['it']),
       section('a-ship', `#7 ship`, ['ship-7'], ['a1']),
@@ -87,7 +90,7 @@ async function dirWith(name: string, draft: ManifestInput) {
 async function build(path: string, priorFeedback: string[] = []) {
   const lines: string[] = []
   const io = { stderr: (t: string) => lines.push(t), measure: async () => [], git: tree }
-  const code = await buildRound(path, undefined, io, '/tree', priorFeedback)
+  const code = await buildRound(path, undefined, io, { tree: '/tree', priorFeedback })
   return { code, lines }
 }
 
@@ -160,6 +163,60 @@ describe('builder rules: stacked base PR', () => {
   })
 })
 
+describe('builder rules: per-group stacked bases', () => {
+  const on = (pr: number, sha: string) => ({ repo: REPO, pr, headSha: sha.padEnd(40, '0') })
+  const twoStacks = (extra: Partial<ManifestInput> = {}): ManifestInput => ({
+    ...interleaved(),
+    variants: ['a1', 'b1', 'a2', 'it'].map(frame),
+    questions: [pick('depth', ['a1'], 8), ship(8), pick('edge', ['b1'], 9), ship(9)],
+    sections: [
+      section('d', '#8 depth', ['depth', 'ship-8'], ['a1']),
+      section('e', '#9 edge', ['edge', 'ship-9'], ['b1']),
+      section('p', 'owner/name#800 base', [], ['a2']),
+      section('q', 'owner/name#823 base', [], ['it']),
+    ],
+    prGroups: [
+      { pr: pageOf(8), headSha: HEAD(8), sectionIds: ['d'], stackedOn: on(800, 'abc1234') },
+      { pr: pageOf(9), headSha: HEAD(9), sectionIds: ['e'], stackedOn: on(823, 'def5678') },
+    ],
+    ...extra,
+  })
+  const labels = (draft: ManifestInput) =>
+    Object.fromEntries(applyRoundRules(draft).variants.map((v) => [v.key, v.label]))
+
+  it("labels each base's frames with its own base and head", () => {
+    expect(labels(twoStacks())).toEqual({
+      a1: 'Frame a1',
+      b1: 'Frame b1',
+      a2: 'rendered on #800 at abc1234, context, not under review: Frame a2',
+      it: 'rendered on #823 at def5678, context, not under review: Frame it',
+    })
+  })
+
+  it('keeps the round-level base label beside per-group bases, and is idempotent', () => {
+    const draft = twoStacks({ stackedOn: on(700, '7777777') })
+    draft.variants.push(frame('r1'))
+    draft.sections!.push(section('r', 'owner/name#700 base', [], ['r1']))
+    const once = applyRoundRules(draft)
+    expect(once.variants.find((v) => v.key === 'r1')?.label).toBe(
+      'base PR #700, not under review: Frame r1'
+    )
+    expect(applyRoundRules(once)).toEqual(once)
+  })
+
+  it('builds a round.json that keeps each group stackedOn', async () => {
+    const { dir, path } = await dirWith('round-1', twoStacks())
+    expect((await build(path)).code).toBe(0)
+    const written = await readJson(join(dir, 'round.json'))
+    expect(written.prGroups.map((g: { stackedOn: { pr: number } }) => g.stackedOn.pr)).toEqual([
+      800, 823,
+    ])
+    expect(written.variants.map((v: { label: string }) => v.label)).toContain(
+      'rendered on #823 at def5678, context, not under review: Frame it'
+    )
+  })
+})
+
 describe('builder rules: PR grouping', () => {
   it('puts each PR sections together with the Ship section last', () => {
     const out = applyRoundRules(interleaved())
@@ -176,11 +233,19 @@ describe('builder rules: PR grouping', () => {
 
 describe('builder rules: Ship gate', () => {
   /** Round 1 of batch-1 as answered: `answers` maps question id to its answer. */
-  async function answeredRound(answers: Record<string, object>, head = HEAD(7)) {
-    const draft = interleaved()
+  async function answeredRound(
+    answers: Record<string, object>,
+    head = HEAD(7),
+    extra: Partial<ManifestInput> = {}
+  ) {
+    const draft = interleaved(extra)
     draft.questions = draft.questions.map((q) => {
       if (q.id === 'ship-7') return ship(7, head)
-      return q.id === 'depth' ? pick('depth', 7) : q
+      return q.id === 'depth' ? pick('depth', ['a2'], 7) : q
+    })
+    draft.sections = draft.sections!.map((s) => {
+      if (s.id === 'b-ctx') return { ...s, questionIds: ['ship-8'] }
+      return s.id === 'a-ctx' ? { ...s, questionIds: ['depth'] } : s
     })
     const { root, dir, path } = await dirWith('round-1', draft)
     expect((await build(path)).code).toBe(0)
@@ -206,14 +271,32 @@ describe('builder rules: Ship gate', () => {
     return { root, feedbackPath: join(dir, 'feedback.json') }
   }
 
-  async function nextRound(root: string, head = HEAD(7)) {
-    const draft = interleaved({ round: 2 })
+  async function nextRound(root: string, head = HEAD(7), extra: Partial<ManifestInput> = {}) {
+    const draft = interleaved({ round: 2, ...extra })
     draft.questions = draft.questions.map((q) => (q.id === 'ship-7' ? ship(7, head) : q))
     const dir = join(root, 'round-2')
     await mkdir(dir)
     await writeFile(join(dir, 'draft.json'), JSON.stringify(draft))
     return join(dir, 'draft.json')
   }
+
+  it("does not carry a holder's Don't ship into the next round for its dependent", async () => {
+    const stack = (head7: string) => ({
+      prGroups: [
+        { pr: pageOf(7), headSha: head7, sectionIds: ['a-ship', 'a-ctx'] },
+        {
+          pr: pageOf(8),
+          headSha: HEAD(8),
+          sectionIds: ['b-ctx'],
+          stackedOn: { repo: REPO, pr: 7, headSha: head7 },
+        },
+      ],
+    })
+    const answers = { 'ship-7': { pick: "Don't ship" }, 'ship-8': { pick: 'Ship' } }
+    const { root } = await answeredRound(answers, HEAD(7), stack(HEAD(7)))
+    const fixed = 'e'.repeat(40)
+    expect((await build(await nextRound(root, fixed, stack(fixed)))).code).toBe(0)
+  })
 
   it('refuses when the earlier round declined to ship the PR, naming the question', async () => {
     const { root } = await answeredRound({ 'ship-7': { pick: "Don't ship" } })
@@ -250,6 +333,25 @@ describe('builder rules: Ship gate', () => {
     expect(code).toBe(EXIT_REFUSED)
   })
 
+  it('refuses when the earlier round picked an option the PR does not implement', async () => {
+    const { root } = await answeredRound({ depth: { pick: 'depth-y' } })
+    const { code, lines } = await build(await nextRound(root))
+    expect(code).toBe(EXIT_REFUSED)
+    expect(lines[0]).toContain('picked "depth-y", but the PR implements "depth-x"')
+  })
+
+  it('refuses when an earlier answer about the PR carries free text', async () => {
+    const { root } = await answeredRound({ depth: { pick: 'depth-x', comment: 'tighten it' } })
+    const { code, lines } = await build(await nextRound(root))
+    expect(code).toBe(EXIT_REFUSED)
+    expect(lines[0]).toContain('question depth: has a written comment')
+  })
+
+  it('offers Ship when every earlier answer is the implemented option with no text', async () => {
+    const { root } = await answeredRound({ depth: { pick: 'depth-x' }, 'ship-7': { pick: 'Ship' } })
+    expect((await build(await nextRound(root))).code).toBe(0)
+  })
+
   it('offers Ship when the earlier round agreed', async () => {
     const { root } = await answeredRound({ 'ship-7': { pick: 'Ship', agreed: true } })
     const next = await nextRound(root)
@@ -273,37 +375,42 @@ describe('builder rules: Ship gate', () => {
   })
 })
 
-describe('builder rules: an existing round still builds', () => {
-  it('builds the gate2-batch-10 draft and keeps every Ship last in its PR group', async () => {
-    const draft = JSON.parse(
+describe('builder rules: an existing round', () => {
+  const batch10 = async () =>
+    JSON.parse(
       await readFile(
         new URL('./fixtures/drafts/gate2-batch-10-round-1.json', import.meta.url),
         'utf8'
       )
     ) as ManifestInput
+
+  it('groups the gate2-batch-10 draft with every Ship last in its PR group', async () => {
+    const draft = await batch10()
+    const round = RoundSchema.parse(applyRoundRules(draft))
+    const titles: string[] = round.sections!.map((s) => s.title)
+    for (const q of round.questions) {
+      if (q.kind !== 'pick-one' || !q.merge) continue
+      const pr = q.merge.pr
+      const group = titles.flatMap((t, i) => (t.startsWith(`#${pr} `) ? [i] : []))
+      const shipAt = round.sections!.findIndex((s) => s.questionIds.includes(q.id))
+      expect(shipAt).toBe(Math.max(...group))
+    }
+    expect(round.questions.map((q) => q.id)).toEqual(draft.questions.map((q) => q.id))
+    const shipQuestions = round.questions.filter((q) => q.kind === 'pick-one' && q.merge)
+    expect(shipQuestions.length).toBeGreaterThan(10)
+    for (const q of shipQuestions) expect(q.prompt).toMatch(/^SHIP: /)
+    expect(round.questions.find((q) => q.id === 'r1-rule')?.prompt).toMatch(/^ITERATION: /)
+  })
+
+  it('refuses to build it: its picks share one spread of frames (item 136)', async () => {
+    const draft = await batch10()
     const stories = draft.variants.flatMap((v) => ('storyId' in v && v.storyId ? [v.storyId] : []))
     vi.stubGlobal('fetch', async () =>
       Response.json({ entries: Object.fromEntries(stories.map((id) => [id, {}])) })
     )
-    const { dir, path } = await dirWith('round-1', draft)
-    const { code } = await build(path)
-    expect(code).toBe(0)
-    const round = await readJson(join(dir, 'round.json'))
-    const titles: string[] = round.sections.map((s: { title: string }) => s.title)
-    for (const q of round.questions.filter((x: { merge?: object }) => x.merge)) {
-      const group = titles.flatMap((t, i) => (t.startsWith(`#${q.merge.pr} `) ? [i] : []))
-      const shipAt = round.sections.findIndex((s: { questionIds: string[] }) =>
-        s.questionIds.includes(q.id)
-      )
-      expect(shipAt).toBe(Math.max(...group))
-    }
-    expect(round.questions.map((q: { id: string }) => q.id)).toEqual(
-      draft.questions.map((q) => q.id)
+    const { path } = await dirWith('round-1', draft)
+    await expect(build(path)).rejects.toThrow(
+      /unanchored-question: question r1-rule: it decides something its section shows; name its frames/
     )
-    const shipQuestions = round.questions.filter((q: { merge?: object }) => q.merge)
-    expect(shipQuestions.length).toBeGreaterThan(10)
-    for (const q of shipQuestions) expect(q.prompt).toMatch(/^SHIP: /)
-    const tone = round.questions.find((q: { id: string }) => q.id === 'r1-rule')
-    expect(tone.prompt).toMatch(/^ITERATION: /)
   })
 })
