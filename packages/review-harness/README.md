@@ -127,7 +127,7 @@ imports. Its `schema/round.schema.json` and `schema/feedback.schema.json` are ge
   `variants[{key, storyId | image, label, args?, globals?, height?, variantUnit?, alternate?, change?: changed|new|removed|unchanged}]` (at most 12 in a round
   without `sections`, uncapped in one with them; empty for a round of questions only, which needs no placeholder
   frame; every frame sits in a section),
-  `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?, recommendation?, signsOff (pick-one), page?, merge? (pick-one), frames?[], decision?: iterate|ship|decide, outcomes? (option to accept|changes|neutral)}]`,
+  `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?, recommendation?, signsOff (pick-one), page?, merge? (pick-one), frames?[], decision?: iterate|ship|decide, outcomes? (option to accept|changes|neutral), implemented? (the option, or options for pick-many, the PR implements)}]`,
   `sections[{id, title, deciding, changed, context, kind?: CHOICE|STATES, questionIds[], variantKeys[], seeAlso?[], height?}]`,
   `prGroups?[{pr: owner/name#n, headSha, sectionIds[]}]` (a PR group named outright),
   `build?{mainSha, mergeSha}` (written by `build --tree`; a draft that carries it is refused),
@@ -352,13 +352,17 @@ heads rewrites `build` only. A round without bindings needs no tree.
   `build` throws with one `<rule>: <message>` line per problem: a deciding question without
   `frames`, a frame outside its question's section or under two questions, a variant unit split
   across blocks or alternates, alternates shown over different modes, a split PR group, a Ship
-  that is not last in its group, or a Ship whose head or PR is not its group's one PR at one head.
+  that is not last in its group, a Ship whose head or PR is not its group's one PR at one head, or
+  an `iterate` or `decide` pick question without `implemented`.
 - **Ship gate.** `build` exits 3, writing no `round.json`, for a Ship question whose PR had a
   changes-requested (`revisionRequested`), declined (a pick outside `merge.ship`) or non-agreed
   (`agreed: false`) answer in the latest earlier round that asked about it. It reads
   `feedback.json` beside a `round.json` (whose sha it must match) in sibling round directories of
   the same unit with a lower round number, and any `--prior-feedback <feedback.json>` given. A Ship
-  bound to a different head than that round's is a fix round's and is not blocked.
+  bound to a different head than that round's is a fix round's and is not blocked. The same gate
+  refuses on the owner's Ship rule (`shipBlocks` in review-schema): an answer in the PR's group
+  carries free text, or picks other than the question's `implemented` option. The page applies
+  the rule live: a blocked group's Ship option is disabled and the reasons show under it.
 
 Thresholds (WCAG 2.1 SC 1.4.3 and 1.4.11): text 4.5:1; large text (24px, or 18.66px at
 weight 700 or more) 3:1; non-text 3:1 against the adjacent plane. Each colour is composited

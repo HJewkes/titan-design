@@ -147,6 +147,222 @@ export interface ActiveWorkoutSuperset {
 export function ActivityIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
+export const AGENT_ROSTER_FIELDS: AgentRosterField[];
+
+// @public
+export const AGENT_STATE_META: Record<AgentSummaryState, AgentStateMeta>;
+
+// @public
+export const AGENT_STATE_ORDER: AgentSummaryState[];
+
+// @public
+export function agentAccessibleSummary(agent: AgentSummary, now: number): string;
+
+// @public
+export function AgentCard(input: AgentCardProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface AgentCardProps {
+    agent: AgentSummary;
+    className?: string;
+    footer?: ReactNode;
+    isHighlighted?: boolean;
+    isLoading?: boolean;
+    metricsEmpty?: ReactNode;
+    now: number;
+    onPress?: () => void;
+    onPressTask?: (taskId: string) => void;
+    testID?: string;
+}
+
+// @public
+export function agentCostLabel(costUsd: number | null | undefined): string;
+
+// @public
+export type AgentCostSource = 'session-analytics' | 'exit-report';
+
+// @public
+export function agentCountLabel(n: number): string;
+
+// @public
+export function agentErrorsLabel(metrics: Pick<AgentMetrics, 'toolCalls' | 'errors'>): string;
+
+// @public
+export function AgentHoverCard(input: AgentHoverCardProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export function AgentHoverCardContent(input: AgentHoverCardContentProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface AgentHoverCardContentProps {
+    agent: AgentSummary;
+    className?: string;
+    now: number;
+}
+
+// @public
+export interface AgentHoverCardProps extends AgentHoverCardContentProps {
+    children: ReactNode;
+    closeDelay?: number;
+    defaultIsOpen?: boolean;
+    isDisabled?: boolean;
+    isOpen?: boolean;
+    onOpenChange?: (isOpen: boolean) => void;
+    openDelay?: number;
+    placement?: TooltipPlacement;
+}
+
+// @public
+export type AgentIdSource = 'claudeSessionId' | 'nameAtRegisteredAt';
+
+// @public
+export function agentLastEventLabel(lastEventAt: number | null | undefined, now: number): string;
+
+// @public
+export interface AgentMetrics {
+    activity?: number[];
+    contextFraction?: number;
+    errors: number;
+    tokensIn: number;
+    tokensOut: number;
+    toolCalls: number;
+}
+
+// @public
+export type AgentOrigin = 'spawned' | 'adopted' | 'unknown';
+
+// @public
+export function AgentRoster(input: AgentRosterProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface AgentRosterEntry {
+    agentId: string | null;
+    claudeSessionId: string | null;
+    costSource: AgentCostSource | null;
+    costUsd: number | null;
+    cwd: string | null;
+    dnd: boolean;
+    gitBranch: string | null;
+    id: string;
+    idleMs: number | null;
+    idSource: AgentIdSource;
+    lastEventAt: number | null;
+    name: string;
+    origin: AgentOrigin;
+    profile: string | null;
+    provisional: boolean;
+    registeredAt: number | null;
+    seat: string | null;
+    spawnedAt: number | null;
+    spawnedBy: string | null;
+    state: AgentSummaryState;
+    stateSource: AgentStateSource;
+    surface: string | null;
+    tags: string[];
+    taskId: string | null;
+    workingOn: string | null;
+}
+
+// @public
+export type AgentRosterField = 'task' | 'branch' | 'location' | 'idle' | 'tokens' | 'errors' | 'cost';
+
+// @public
+export function agentRosterFieldText(agent: AgentSummary, field: AgentRosterField, now: number): string | null;
+
+// @public
+export interface AgentRosterProps {
+    agents: AgentSummary[];
+    className?: string;
+    defaultSelectedId?: string;
+    emptyState?: ReactNode;
+    fields?: AgentRosterField[];
+    isLoading?: boolean;
+    label?: string;
+    now: number;
+    onSelectedIdChange?: (id: string | undefined) => void;
+    selectedId?: string;
+    testID?: string;
+}
+
+// @public
+export function AgentRosterRow(input: AgentRosterRowProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface AgentRosterRowProps {
+    agent: AgentSummary;
+    className?: string;
+    fields?: AgentRosterField[];
+    focusRef?: (node: unknown) => void;
+    isSelected?: boolean;
+    now: number;
+    onSelect?: () => void;
+    tabIndex?: 0 | -1;
+    testID?: string;
+    trailing?: ReactNode;
+}
+
+// @public
+export interface AgentRosterSnapshot {
+    agents: AgentRosterEntry[];
+    brokerUptimeMs: number | null;
+    generatedAt: number;
+    history: HistoryWindow;
+    reconnecting: boolean;
+}
+
+// @public
+export function AgentStateLabel(input: AgentStateLabelProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface AgentStateLabelProps {
+    className?: string;
+    isDnd?: boolean;
+    size?: 'sm' | 'md';
+    state: AgentSummaryState;
+}
+
+// @public
+export interface AgentStateMeta {
+    dot: IndicatorColor;
+    label: string;
+    pulse: IndicatorPulse | false;
+}
+
+// @public
+export function agentStateMeta(state: AgentSummaryState): AgentStateMeta;
+
+// @public
+export type AgentStateSource = 'presence' | 'history';
+
+// @public
+export interface AgentSummary {
+    agentId?: string | null;
+    branch?: string | null;
+    costSource?: AgentCostSource | null;
+    costUsd?: number | null;
+    cwd?: string | null;
+    id: string;
+    isDnd?: boolean;
+    isProvisional?: boolean;
+    lastEventAt?: number | null;
+    metrics?: AgentMetrics | null;
+    name: string;
+    origin?: AgentOrigin;
+    profile?: string | null;
+    seat?: string | null;
+    spawnedBy?: string | null;
+    state: AgentSummaryState;
+    stateSource?: AgentStateSource;
+    surface?: string | null;
+    tags?: string[];
+    task?: string | null;
+    taskId?: string | null;
+}
+
+// @public
+export type AgentSummaryState = (typeof PRESENCE_STATES)[number] | (typeof HISTORY_STATES)[number];
+
+// @public
 export function aggregateDelivery(message: ChatMessage): DeliveryStatus | undefined;
 
 // @public
@@ -363,6 +579,13 @@ export function bandLabel(best: MuscleStrengthBestE1rm | null): string;
 export function BarList(input: BarListProps): react_jsx_runtime.JSX.Element;
 
 // @public
+export interface BarListMarker {
+    formatValue?: (value: number) => string;
+    label: string;
+    value: number;
+}
+
+// @public
 export interface BarListProps extends Omit<ViewProps, 'children'> {
     accessibilityLabel: string;
     className?: string;
@@ -374,6 +597,7 @@ export interface BarListProps extends Omit<ViewProps, 'children'> {
     layout?: 'inline' | 'stacked';
     max?: number;
     maxRows?: number;
+    referenceMarker?: BarListMarker;
     rows: BarListRow[];
     size?: 'sm' | 'md';
     sort?: 'descending' | 'none';
@@ -836,6 +1060,12 @@ export const categoricalPalette: {
 export type CategoricalVariant = keyof typeof categoricalPalette;
 
 // @public
+export const CHANNEL_MARKER = "channel";
+
+// @public
+export const CHANNEL_OPENER_META: TurnOriginMeta;
+
+// @public
 export function ChartIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -977,6 +1207,9 @@ export interface CircularTimerProps {
 }
 
 // @public
+export function clampedContextFraction(metrics: AgentMetrics): number | null;
+
+// @public
 export function cn(...inputs: ClassValue[]): string;
 
 // @public @deprecated
@@ -1046,6 +1279,9 @@ export interface ColumnFitResult {
 
 // @public
 export const COMPACT_SEVERITY_BELOW = 840;
+
+// @public
+export function compareAgents(a: AgentSummary, b: AgentSummary): number;
 
 // @public
 export function compareTaskFlow(a: TaskFlowItem, b: TaskFlowItem): number;
@@ -1375,6 +1611,9 @@ export interface DateTimeProps extends TextProps, Pick<FormatDateTimeOptions, 'i
 // @public
 export const debossLabel: TextStyle;
 
+// @public
+export const DEFAULT_ROSTER_FIELDS: AgentRosterField[];
+
 // @public @deprecated (undocumented)
 export const defaultNavItems: SideNavItem[];
 
@@ -1688,6 +1927,15 @@ export interface EntityRef {
 
 // @public
 export function EqualIcon(props: IconProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export const ERROR_RATE_FLAG_ABOVE = 0.05;
+
+// @public
+export const ERROR_TEXT_LABEL = "Error text";
+
+// @public
+export function errorRate(metrics: Pick<AgentMetrics, 'toolCalls' | 'errors'>): number | null;
 
 // @public
 export function ExactTime(input: {
@@ -2114,6 +2362,9 @@ export function formatSignedCompact(n: number): string;
 export function formatTaskAge(iso: string | null | undefined, now: number): string;
 
 // @public
+export function formatUsd(n: number): string;
+
+// @public
 export function formatVelocity(velocity: number): string;
 
 // @public
@@ -2157,6 +2408,18 @@ export interface FormSectionProps extends ViewProps {
     className?: string;
     description?: string;
     title?: string;
+}
+
+// @public
+export function GapIndicator(input: GapIndicatorProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface GapIndicatorProps {
+    className?: string;
+    durationMs: number;
+    isUTC?: boolean;
+    resumedAtMs?: number | null;
+    showDate?: boolean;
 }
 
 // @public
@@ -3703,7 +3966,17 @@ export interface HighlightTextProps {
 }
 
 // @public
+export const HISTORY_STATES: readonly ["spawning", "detached", "exited", "failed", "retired"];
+
+// @public
 export function HistoryIcon(props: IconProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface HistoryWindow {
+    events: number;
+    limit: number;
+    oldestAt: number | null;
+}
 
 // @public (undocumented)
 export interface HoverFocusStateOptions {
@@ -3961,6 +4234,15 @@ export function isDark(hex: string): boolean;
 
 // @public
 export function isDoneStage(stage: TaskStage): boolean;
+
+// @public
+export function isErrorRateFlagged(rate: number | null): boolean;
+
+// @public
+export function isHistoryOnly(agent: Pick<AgentSummary, 'stateSource'>): boolean;
+
+// @public
+export function isLiveAgent(state: AgentSummaryState): boolean;
 
 // @public (undocumented)
 export function isLoadTarget(target: GoalMilestoneTarget): target is GoalLoadTarget;
@@ -4290,6 +4572,9 @@ export interface ListItemTrailingProps extends ViewProps {
     // (undocumented)
     className?: string;
 }
+
+// @public
+export const LIVE_HISTORY_STATES: readonly ["spawning", "detached"];
 
 // @public
 export const LIVE_STRIP_GAP_COLOR: Record<LiveStripGap, Readonly<Record<ThemeMode, string>>>;
@@ -5247,6 +5532,12 @@ export function parseTaskKey(key: string): {
 } | undefined;
 
 // @public
+export function partitionAgents(agents: AgentSummary[]): {
+    live: AgentSummary[];
+    past: AgentSummary[];
+};
+
+// @public
 export const PasswordInput: React__default.ForwardRefExoticComponent<PasswordInputProps & React__default.RefAttributes<TextInput>>;
 
 // @public (undocumented)
@@ -5305,7 +5596,7 @@ export type PillSizeLevel = 'xs' | 'sm' | 'md' | 'lg';
 export type PillTone = 'neutral' | 'brand' | 'brand-secondary' | 'success' | 'warning' | 'error' | 'info';
 
 // @public (undocumented)
-export type PillVariant = 'solid' | 'subtle' | 'outline';
+export type PillVariant = 'solid' | 'subtle' | 'outline' | 'clear';
 
 // @public
 export const PINNED_LIVE_STRIP_PHONE_MAX = 640;
@@ -5518,6 +5809,9 @@ export interface PrBadgeProps extends ViewProps {
     label?: string;
     type?: PRType;
 }
+
+// @public
+export const PRESENCE_STATES: readonly ["working", "available", "blocked"];
 
 // @public
 export const PRESSED_ELEVATION_LEVEL: ElevationLevel;
@@ -6166,6 +6460,12 @@ export interface RomProgressionChartProps {
     shortThresholdM: number | null;
     workingStandardM: number | null;
 }
+
+// @public
+export function rosterGroups(agents: AgentSummary[]): {
+    live: AgentSummary[];
+    past: AgentSummary[];
+};
 
 // @public
 export function roundRpe(rpe: number): number;
@@ -7212,6 +7512,9 @@ export interface SidebarSectionProps {
     className?: string;
     title?: string;
 }
+
+// @public
+export const SIDECHAIN_LABEL = "in subagent";
 
 // @public
 export function SideNav(input: SideNavProps): react_jsx_runtime.JSX.Element;
@@ -8417,6 +8720,30 @@ export interface TileProps extends ViewProps {
     valueColor?: string;
 }
 
+// @public
+export interface TimelineToolCall {
+    atMs: number | null;
+    byteOffset: number;
+    durationMs: number | null;
+    endMs: number | null;
+    errorMessage: string | null;
+    family: ToolFamily;
+    filePath: string | null;
+    id: string;
+    inputSummary: string;
+    name: string;
+    outcome: TimelineToolOutcome;
+    seq: number;
+    sidechain: boolean;
+    turnIndex: number;
+}
+
+// @public
+export type TimelineToolOutcome = 'success' | 'error' | 'unknown' | 'pending';
+
+// @public
+export type TimelineTurnOrigin = 'prompt' | 'injected' | 'compaction' | 'none';
+
 // @public (undocumented)
 export type TimerMode = 'up' | 'down';
 
@@ -8519,6 +8846,25 @@ export const TONE_TOKEN: {
 };
 
 // @public
+export const TOOL_FAMILY_META: Record<ToolFamily, ToolFamilyMeta>;
+
+// @public
+export const TOOL_FAMILY_ORDER: ToolFamily[];
+
+// @public
+export const TOOL_OUTCOME_META: Record<TimelineToolOutcome, ToolOutcomeMeta>;
+
+// @public
+export function ToolBadge(input: ToolBadgeProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface ToolBadgeProps {
+    className?: string;
+    family: ToolFamily | string;
+    size?: 'sm' | 'md';
+}
+
+// @public
 export function ToolbarButton(input: ToolbarButtonProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -8553,6 +8899,39 @@ export type ToolbarButtonSize = 'sm' | 'md' | 'lg';
 
 // @public (undocumented)
 export type ToolbarButtonVariant = 'default' | 'raised';
+
+// @public
+export function ToolCallRow(input: ToolCallRowProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface ToolCallRowProps {
+    call: TimelineToolCall;
+    className?: string;
+    isUTC?: boolean;
+    onPress?: (call: TimelineToolCall) => void;
+}
+
+// @public
+export type ToolFamily = 'none' | 'mcp_agentchat' | 'mcp_other' | 'fs_read' | 'bash' | 'fs_write' | 'ask_user' | 'subagent' | 'web' | 'scheduling' | 'skill_toolsearch' | 'other_tool';
+
+// @public
+export interface ToolFamilyMeta {
+    glyph: string;
+    label: string;
+}
+
+// @public
+export function toolFamilyMeta(family: string): ToolFamilyMeta;
+
+// @public
+export interface ToolOutcomeMeta {
+    indicator: IndicatorColor;
+    label: string;
+    pulse: boolean;
+}
+
+// @public
+export function toolOutcomeMeta(outcome: string): ToolOutcomeMeta;
 
 // @public
 export function Tooltip(input: TooltipProps): react_jsx_runtime.JSX.Element;
@@ -8687,6 +9066,17 @@ export function TrendingDownIcon(props: IconProps): react_jsx_runtime.JSX.Elemen
 export function TrendingUpIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
+export const TURN_ORIGIN_META: Record<TimelineTurnOrigin, TurnOriginMeta>;
+
+// @public
+export interface TurnOriginMeta {
+    label: string;
+}
+
+// @public
+export function turnOriginMeta(turn: Pick<TimelineTurn, 'origin' | 'injectedMarker'>): TurnOriginMeta;
+
+// @public
 export function TypingIndicator(input: TypingIndicatorProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -8730,6 +9120,12 @@ export interface TypographyProps extends TextProps {
 
 // @public (undocumented)
 export type TypographyVariant = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'body1' | 'body2' | 'subtitle1' | 'subtitle2' | 'caption' | 'overline' | 'button' | 'mono' | 'monoLabel' | 'microLabel' | 'boldLabel';
+
+// @public
+export function uniqueAgents(agents: AgentSummary[]): AgentSummary[];
+
+// @public
+export const UNNAMED_TOOL_LABEL = "Unnamed tool";
 
 // @public
 export function UnreadBadge(input: UnreadBadgeProps): react_jsx_runtime.JSX.Element | null;
@@ -9156,7 +9552,7 @@ export interface WeekRowWorkout {
     // (undocumented)
     onPress?: () => void;
     // (undocumented)
-    status: WorkoutPillStatus;
+    status: 'completed' | 'current' | 'upcoming' | 'deload' | 'next' | 'missed';
 }
 
 // @public (undocumented)
