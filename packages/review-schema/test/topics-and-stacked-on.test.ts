@@ -73,3 +73,54 @@ describe('manifest stackedOn', () => {
     expect(schema.required).not.toContain('stackedOn')
   })
 })
+
+describe('PR group stackedOn', () => {
+  const base = (pr: number) => ({ repo: 'HJewkes/titan-design', pr, headSha: HEAD })
+  const twoStacks = (bases: [number, number]) => {
+    const round = realRound()
+    const [a, b] = (round.sections as { id: string }[]).map((s) => s.id)
+    return {
+      ...round,
+      stackedOn: base(762),
+      prGroups: [
+        {
+          pr: 'HJewkes/titan-design#808',
+          headSha: HEAD,
+          sectionIds: [a],
+          stackedOn: base(bases[0]),
+        },
+        {
+          pr: 'HJewkes/titan-design#418',
+          headSha: HEAD,
+          sectionIds: [b],
+          stackedOn: base(bases[1]),
+        },
+      ],
+    }
+  }
+
+  it('accepts two groups on two different bases beside the round-level field', () => {
+    const result = ManifestSchema.safeParse(twoStacks([800, 823]))
+    expect(messages(result)).toEqual([])
+    expect(result.data?.stackedOn).toEqual(base(762))
+    expect(result.data?.prGroups?.map((g) => g.stackedOn?.pr)).toEqual([800, 823])
+  })
+
+  it('refuses a group stacked on itself', () => {
+    expect(messages(ManifestSchema.safeParse(twoStacks([808, 823])))).toEqual([
+      'PR group HJewkes/titan-design#808 is stacked on itself: HJewkes/titan-design#808 -> HJewkes/titan-design#808',
+    ])
+  })
+
+  it('refuses two groups stacked on each other', () => {
+    expect(messages(ManifestSchema.safeParse(twoStacks([418, 808])))).toHaveLength(2)
+  })
+
+  it('appears in the JSON Schema as an optional group field', () => {
+    const schema = manifestJsonSchema() as {
+      properties: { prGroups: { items: { required: string[]; properties: object } } }
+    }
+    expect(schema.properties.prGroups.items.properties).toHaveProperty('stackedOn')
+    expect(schema.properties.prGroups.items.required).not.toContain('stackedOn')
+  })
+})

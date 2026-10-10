@@ -29,8 +29,14 @@ export const edgeId = (edge: GraphEdge): string =>
 export const isValidWeight = (weight: number | null | undefined): weight is number =>
   typeof weight === 'number' && Number.isFinite(weight) && weight >= 0
 
+/**
+ * One edge per source, target and kind. The weights are summed in ascending order so the float
+ * total does not depend on input order. An empty kind is no kind: `''` and `undefined` share a
+ * group, and the merged edge carries no `kind` whichever arrived first.
+ */
 function mergeGroup(group: readonly GraphEdge[]): GraphEdge {
   const base = [...group].sort((x, y) => compareText(edgeId(x), edgeId(y)))[0] as GraphEdge
+  const { kind, ...rest } = base
   const weights = group
     .map((edge) => edge.weight)
     .filter(isValidWeight)
@@ -39,7 +45,8 @@ function mergeGroup(group: readonly GraphEdge[]): GraphEdge {
     .map((edge) => edge.activityAt)
     .filter((at): at is number => at !== undefined)
   return {
-    ...base,
+    ...rest,
+    ...(kind ? { kind } : {}),
     id: edgeId(base),
     weight: weights.length > 0 ? weights.reduce((sum, w) => sum + w, 0) : null,
     ...(activity.length > 0 ? { activityAt: Math.max(...activity) } : {}),

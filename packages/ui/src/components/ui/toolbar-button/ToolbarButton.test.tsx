@@ -2,6 +2,29 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { ToolbarButton, ToolbarButtonGroup } from './ToolbarButton'
+import {
+  Surface,
+  pressedLevel,
+  raisedLevel,
+  surfaceBackground,
+  type SurfaceLevel,
+} from '../surface'
+
+function faceColor(theme: 'dark' | 'light', isActive?: boolean, level?: SurfaceLevel): string {
+  const { unmount } = render(
+    <Surface theme={theme} level={level}>
+      <ToolbarButton label="Face" isActive={isActive} />
+    </Surface>
+  )
+  const face = getComputedStyle(screen.getByRole('button', { name: 'Face' })).backgroundColor
+  unmount()
+  return face
+}
+
+function hexToRgb(hex: string): string {
+  const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16))
+  return `rgb(${r}, ${g}, ${b})`
+}
 
 describe('ToolbarButton', () => {
   it('renders with label', () => {
@@ -98,6 +121,36 @@ describe('ToolbarButton', () => {
     it('renders with default variant', () => {
       render(<ToolbarButton label="Default" variant="default" />)
       expect(screen.getByRole('button', { name: 'Default' })).toBeInTheDocument()
+    })
+  })
+
+  describe('faces from the elevation system (TD-264, TD-265)', () => {
+    it.each(['dark', 'light'] as const)(
+      'raises the inactive face one plane above the enclosing %s Surface',
+      (theme) => {
+        const plane = raisedLevel('elevated', 1)
+
+        expect(faceColor(theme, false, 'elevated')).toBe(hexToRgb(surfaceBackground(plane, theme)))
+      }
+    )
+
+    it.each(['dark', 'light'] as const)(
+      'presses the active face one plane below the enclosing %s Surface',
+      (theme) => {
+        const plane = pressedLevel('elevated')
+
+        expect(faceColor(theme, true, 'elevated')).toBe(hexToRgb(surfaceBackground(plane, theme)))
+      }
+    )
+
+    it('reads the plane it sits on, not a fixed one', () => {
+      expect(faceColor('dark', false, 'base')).not.toBe(faceColor('dark', false, 'elevated'))
+    })
+
+    it('presses the light face down to the base plane', () => {
+      const face = faceColor('light', true, 'elevated')
+
+      expect(face).toBe(hexToRgb(surfaceBackground('base', 'light')))
     })
   })
 
