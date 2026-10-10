@@ -39,7 +39,7 @@ async function build(draft: ManifestInput) {
   await writeFile(path, JSON.stringify(draft))
   const lines: string[] = []
   const io = { stderr: (t: string) => lines.push(t), measure: async () => [], git: tree }
-  const code = await buildRound(path, undefined, io, '/tree')
+  const code = await buildRound(path, undefined, io, { tree: '/tree' })
   return { code, lines, round: join(dir, 'round.json') }
 }
 

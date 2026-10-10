@@ -314,9 +314,7 @@
     --color-scrim-subtle: rgba(0, 0, 0, 0.30);
     --color-scrim-default: rgba(0, 0, 0, 0.50);
 
-    /* Control faces (TD-264), control-face and data-fill labels (VW-82). */
-    --color-control-face: #424140;
-    --color-control-face-active: #2C2A28;
+    /* Disabled control face (TD-264), control and data-fill labels (VW-82). */
     --color-control-face-disabled: rgba(255, 255, 255, 0.12);
     --color-on-control-idle: #D1D1D1;
     --color-on-control-active: #FFFFFF;
@@ -570,8 +568,6 @@
     --color-scrim-subtle: rgba(0, 0, 0, 0.30);
     --color-scrim-default: rgba(0, 0, 0, 0.50);
     /* Control faces and their labels flip with the theme (TD-264). */
-    --color-control-face: #FFFFFF;
-    --color-control-face-active: #D4D1CE;
     --color-control-face-disabled: rgba(0, 0, 0, 0.06);
     --color-on-control-idle: #5A5958;
     --color-on-control-active: #1C1916;
