@@ -29,9 +29,9 @@ const HTML_CSS = `
   .html-scope {
     --brand-primary: #FF7900;
     --brand-primary-light: #FF9630;
-    --brand-primary-subtle: rgba(255, 121, 0, 0.12);
-    /* Pill's subtle brand label (dark :root in global.css). */
-    --on-brand-primary-subtle: #FF7900;
+    --brand-primary-subtle: var(--color-brand-primary-subtle);
+    /* Pill's subtle brand label; follows the family cell in global.css. */
+    --on-brand-primary-subtle: var(--color-on-brand-primary-subtle);
     --brand-secondary: #2697B7;
     --bg-base: #100D0A;
     --surface-elevated: #2C2A28;
@@ -65,18 +65,12 @@ const HTML_CSS = `
     --status-error: #E05254;
     --status-warning: #F9B415;
     --text-inverse: #1C1916;
-    /* The wash ladder (#178): -subtle 0.12, -muted 0.30. The B3 port put the ring
-       variants and WorkoutPill on it, so the reference follows onto the rungs
-       instead of keeping the frozen demo's hand-mixed 0.15 / 0.3 / 0.25. */
-    --status-success-subtle: rgba(46, 213, 115, 0.12);
+    /* The -subtle fills follow the family cells in global.css (TD-818); -muted keeps the 0.30 wash. */
+    --status-success-subtle: var(--color-status-success-subtle);
     --status-success-muted: rgba(46, 213, 115, 0.30);
-    --status-warning-subtle: rgba(249, 180, 21, 0.12);
+    --status-warning-subtle: var(--color-status-warning-subtle);
     --status-warning-muted: rgba(249, 180, 21, 0.30);
-    /* -subtle rebased onto red[400] at 0.08, not the family's 0.12 (AW-133): the fill
-       and the text on it are one hue family, and error sits a rung darker than its
-       siblings so it reads red rather than pink. The thinner fill buys back the
-       contrast that costs. -muted stays on the base red[600]. */
-    --status-error-subtle: rgba(247, 113, 117, 0.08);
+    --status-error-subtle: var(--color-status-error-subtle);
     --status-error-muted: rgba(209, 67, 67, 0.30);
     --status-error-dark: #A4221C;
     --brand-primary-muted: rgba(255, 121, 0, 0.30);
@@ -126,7 +120,7 @@ const HTML_CSS = `
   .html-scope .weight-badge.md { font-size: 10px; padding: 2px 8px; }
   .html-scope .weight-badge.lg { font-size: 12px; padding: 4px 10px; }
   .html-scope .weight-badge.pr {
-    background: var(--brand-primary-subtle);
+    background: rgba(var(--color-brand-primary-rgb), 0.12);
     border-color: rgba(255, 121, 0, 0.3);
     color: var(--brand-primary);
   }
@@ -431,12 +425,11 @@ const HTML_CSS = `
   .html-scope .muscle-chip-dot.over { background: var(--dataviz-diverging-4); }
   .html-scope .muscle-chip-dot.untrained { background: var(--dot-inactive); }
 
-  /* WorkoutPill deload — the role has no semantic tokens, so the wash and rim are
-     derived from the same magenta-600 pin WeekRow reads, at the ladder's rungs. */
+  /* WorkoutPill deload — reads the magenta family cell directly (decision 0004). */
   .html-scope .workout-pill.deload {
-    background: rgba(186, 41, 150, 0.12);
-    border: 1px solid rgba(186, 41, 150, 0.3);
-    color: #ba2996;
+    background: var(--color-tint-magenta-subtle);
+    border: 1px solid var(--color-on-tint-magenta-subtle);
+    color: var(--color-on-tint-magenta-subtle);
   }
 
   /* 13. InputBar */
