@@ -108,6 +108,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | MuscleGroupChip | candidate | custom/Workout | MuscleGroupChip — a `Pill` preset that labels a muscle group with a volume-status dot. | Pill | custom-workout-musclegroupchip--all-statuses |
 | MuscleStrip | candidate | custom/Workout | MuscleStrip — all 15 `MuscleGroupChip`s in one wrapping row, each labeled with its weekly sets against target. | MuscleGroupChip | custom-workout-musclestrip--default |
 | NavItem | candidate | shell | Shell S2 · NavItem — one category button in the {@link SideNav }: a 20px glyph over an uppercase micro-label in a 46×46 target. | Typography | shell-navitem--active |
+| NetworkGraph | candidate | ui/charts | A directed graph of things and the relations between them, on a layout the caller picks. | EmptyState, NetworkGraphCanvas, NetworkGraphParts, Skeleton | components-organisms-networkgraph--default |
 | OpenLoops | candidate | custom/ActiveWork | OpenLoops — the initiative's hanging threads from the session ledger: each loop's kind, age and auto-linked text. | Divider, Eyebrow, MarkdownProse, Pill, Typography | custom-activework-openloops--default |
 | Page | candidate | ui/page | A page container for a view's content region: a gutter, an optional width cap, a header slot and a scroller. | Typography | components-molecules-page--default |
 | Pill | stable | ui/pill | The single pill primitive: a capsule of tone-coloured label with optional leading and trailing slots. | — | components-atoms-pill--all-sizes |
