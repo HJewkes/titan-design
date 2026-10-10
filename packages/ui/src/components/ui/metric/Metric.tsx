@@ -1,11 +1,13 @@
 import React from 'react'
-import { View, Text, type ViewProps } from 'react-native'
+import { View, Text, type StyleProp, type TextStyle, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import type { PillTone } from '../pill'
 
 export type MetricTrend = 'up' | 'down' | 'neutral'
 /** Cross-axis placement of the figure and its label. */
 export type MetricAlign = 'start' | 'center' | 'end'
+/** Whether the label reads above or below the figure. */
+export type MetricLabelPosition = 'above' | 'below'
 /** The `PillTone`s that read as text on any plane; `brand-secondary` stays a fill accent. */
 export type MetricTone = Exclude<PillTone, 'brand-secondary'>
 
@@ -22,8 +24,12 @@ export interface MetricProps extends ViewProps {
   className?: string
   /** Merged onto the value text, e.g. `leading-none` to sit the figure tight under a header. */
   valueClassName?: string
+  /** Inline style on the value text, for a value a token class cannot express. Prefer `tone`. */
+  valueStyle?: StyleProp<TextStyle>
   /** Merged onto the label text, e.g. to hold it at one size whatever the figure's `size`. */
   labelClassName?: string
+  /** Puts the label above or below the figure. Defaults to `below`. */
+  labelPosition?: MetricLabelPosition
 }
 
 const sizeConfig = {
@@ -43,7 +49,7 @@ const toneClasses: Record<MetricTone, string> = {
   brand: 'text-brand-primary',
   success: 'text-status-success',
   warning: 'text-status-warning',
-  error: 'text-status-error',
+  error: 'text-text-error',
   info: 'text-status-info',
 }
 
@@ -69,27 +75,41 @@ export function Metric({
   tone = 'neutral',
   className,
   valueClassName,
+  valueStyle,
   labelClassName,
+  labelPosition = 'below',
   testID,
   ...props
 }: MetricProps) {
   const styles = sizeConfig[size]
+  const isLabelAbove = labelPosition === 'above'
+  const labelNode = (
+    <Text
+      className={cn(
+        styles.label,
+        'text-text-secondary',
+        isLabelAbove ? 'mb-1' : 'mt-1',
+        labelClassName
+      )}
+      testID={testID ? `${testID}-label` : undefined}
+    >
+      {label}
+    </Text>
+  )
 
   return (
     <View className={cn(alignClasses[align], className)} testID={testID} {...props}>
+      {isLabelAbove ? labelNode : null}
       <View className="flex-row items-baseline gap-1">
-        <Text className={cn(styles.value, toneClasses[tone], valueClassName)}>{value}</Text>
+        <Text className={cn(styles.value, toneClasses[tone], valueClassName)} style={valueStyle}>
+          {value}
+        </Text>
         {!!unit && <Text className={cn(styles.unit, 'text-text-tertiary')}>{unit}</Text>}
         {!!trend && (
           <Text className={cn(styles.unit, trendColors[trend])}>{trendArrows[trend]}</Text>
         )}
       </View>
-      <Text
-        className={cn(styles.label, 'text-text-secondary mt-1', labelClassName)}
-        testID={testID ? `${testID}-label` : undefined}
-      >
-        {label}
-      </Text>
+      {isLabelAbove ? null : labelNode}
     </View>
   )
 }

@@ -2,7 +2,6 @@
 import { View, Text, Pressable } from 'react-native'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../ui/surface'
-import { primitiveColors } from '../../../theme/tokens/primitives'
 import { alpha } from '../../../utils/colors'
 import { useTimer } from '../../../hooks/useTimer'
 import { CircularTimer } from '../CircularTimer/CircularTimer'
@@ -33,14 +32,15 @@ export interface RestTimerProps {
 
 /** The +30s / Skip control row — shared by both variants (hidden in `displayOnly`). */
 function RestActions({ onAddTime, onSkip }: { onAddTime: () => void; onSkip: () => void }) {
-  const brandPrimary = getSemanticColors(useSurfaceMode())['brand-primary']
+  const sem = getSemanticColors(useSurfaceMode())
+  const brandPrimary = sem['brand-primary']
   return (
     <View className="flex-row gap-inline-md">
       <Pressable
         onPress={onAddTime}
         className="py-control-y-md px-control-x-md"
         style={{
-          backgroundColor: alpha(primitiveColors.white, 0.06),
+          backgroundColor: alpha(sem['hairline-subtle'], 0.06),
           borderRadius: 8,
         }}
         accessibilityRole="button"

@@ -6,6 +6,7 @@
  */
 import type { getSemanticColors } from '../../../theme/tokens/semantic'
 import { primitiveRamps, greyRamp } from '../../../theme/tokens/primitives'
+import { SILVER, RED_LIGHT, RED_MID, RED_DEEP, DRIFT_GREY } from '../../ui/charts/kit/silverRed'
 import type { DimensionTone, FatigueVerdictState, SamplePhase } from './fatigue-model'
 
 type ColorToken = keyof ReturnType<typeof getSemanticColors>
@@ -129,20 +130,12 @@ export const PACING_TONE_MIN_CONTRAST = 4.5
 
 // --- shared silver/red scheme (ROM chart + ghost-spark line) --------------------
 // One source of truth for the two quality readouts: SILVER when the rep is right,
-// SHADES OF RED when there's an issue. No greens, no ambers — those languages belong
-// to the verdict tones / velocity-loss bands, not here.
-/** On-track / at-or-above-working. */
-export const SILVER = greyRamp[200]
-export const RED_LIGHT = primitiveRamps.red[400]
-export const RED_MID = primitiveRamps.red[600]
-export const RED_DEEP = primitiveRamps.red[800]
+// SHADES OF RED when there's an issue. The tones live in the chart kit so domain-free
+// charts share them; they are re-exported here for the Fatigue family.
+export { SILVER, RED_LIGHT, RED_MID, RED_DEEP, DRIFT_GREY }
 
 /** Below this grind signature the rep is "controlled" → silver; at/above it goes red. */
 export const GRIND_THRESHOLD = 0.35
-/** A quiet grey the controlled line dims toward as it drifts (never a colour): a dimmed
- *  cool grey in the SAME neutral family as SILVER, so a fully-drifted line reads dim-silver
- *  rather than sinking toward black. Shared with the ROM chart. */
-export const DRIFT_GREY = greyRamp[700]
 
 export function clamp01(v: number): number {
   return Math.min(1, Math.max(0, v))
