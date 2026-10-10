@@ -17,21 +17,21 @@ Search `packages/ui/src/components/ui/` and the nearest `custom/<Family>/` befor
 
 ## Rules
 
-### F1 Titles, labels, values, errors and status wrap, never truncate: no `numberOfLines`, no ellipsis. Truncate only user-generated names, paths and breadcrumbs, with the full text on press. When the row runs short, status and actions move under the title.
+### F1 Titles, labels, values, errors and status wrap, never truncate: no `numberOfLines`, no ellipsis. Truncate only user-generated names, paths and breadcrumbs, with the full text on press. When the row runs short, in this order: the title wraps; actions move under the title; then status, and a pill or chip label that has an icon, collapse in place to that glyph. Titles, values and errors never collapse. A collapsed glyph opens a tip with the full word and carries it as its accessible name (M-16); that is not truncation.
 
-Check: at the narrowest width, with the longest fixture name, the whole text is readable.
+Check: at the narrowest width, with the longest fixture name, every title, value and error is readable on the surface, and each collapsed glyph's tip and accessible name hold the full word.
 
-### F2 Status is never dropped, never carried by colour alone, and keeps a spoken name.
+### F2 Status is never dropped, never carried by colour alone, and keeps a spoken name. At narrow width it collapses to its glyph as F1 orders.
 
-Check: the status is visible at every width and has an accessible name.
+Check: render the status row with the longest fixture title at 560, 360 and 320. At 560 the word shows; at 320 the glyph shows; at 360 either form shows without overlap. The glyph's tip and accessible name equal the word shown at 560.
 
 ### F3 Each fact appears once per surface; if the title or chart says it, nothing repeats it.
 
 Check: list every rendered string and number; none appears twice.
 
-### F4 Labels are one to three words, and no sentence explaining the UI sits on the surface.
+### F4 Labels are one to three words, and no sentence explaining the UI sits on the surface at any width. A reason or explanation lives in a glyph's tip and in its spoken label, never as visible text. A label that will not fit a narrow row wraps or collapses as F1 orders.
 
-Check: every rendered text traces to the brief or the fixture.
+Check: every rendered text traces to the brief or the fixture; at every rendered width no visible sentence remains, and each glyph has a tip and an accessible name in full words.
 
 ### F5 Label data directly: lines, bars and reference lines carry their own label in the mark's colour; with four or fewer series, no legend.
 
@@ -84,3 +84,5 @@ Check: with reduced motion on, the first frame is the final frame.
 ## Conflict register
 
 This floor wins where craft advice disagrees: generous white space loses to F6; a space before units loses to F12; "always show a legend" and "tooltips last" lose to F5 and F4; "truncate with an ellipsis" loses to F1.
+
+Copy rules for the words on a surface: [Microcopy](microcopy.md).

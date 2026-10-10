@@ -1,12 +1,16 @@
 import { existsSync } from 'node:fs'
-import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
 import { defineConfig } from '@playwright/test'
 
-// Outside Storybook's watched root: trace files written inside it make Vite reload the page mid-test.
-const STORIES_OUTPUT_DIR = join(tmpdir(), 'titan-ui-playwright-stories')
-const INTERACTION_OUTPUT_DIR = join(tmpdir(), 'titan-ui-playwright-interaction')
+import { createRunTmpRoot } from '../../scripts/test-tmp-root.mjs'
+
+// Failure diagnostics must outlive the run so CI can upload them, so outputDir is not under the
+// per-run temp root (TD-770), which is removed on exit. It is the git-ignored test-results, and
+// both projects load a static `storybook build`, so trace files there trigger no Vite reload.
+createRunTmpRoot()
+const STORIES_OUTPUT_DIR = join(__dirname, 'test-results', 'playwright-stories')
+const INTERACTION_OUTPUT_DIR = join(__dirname, 'test-results', 'playwright-interaction')
 
 // Both projects load a production `storybook build`: a fresh context on the dev server re-fetched
 // every unbundled module, about 7.7 s a story (TD-726). CI builds once per checkout and reuses the
@@ -18,6 +22,8 @@ const serveCommand = `pnpm exec vite preview --outDir ${STATIC_DIR} --host 127.0
 
 export default defineConfig({
   testDir: './tests/visual',
+  // Every story in both themes is about 14 minutes; playwright.contrast.config.ts runs it alone (TD-738).
+  testIgnore: '**/contrast.spec.ts',
   outputDir: STORIES_OUTPUT_DIR,
   snapshotDir: './tests/visual/reference',
   fullyParallel: true,

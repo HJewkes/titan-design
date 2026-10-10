@@ -5,7 +5,7 @@ import { App, Form } from '../page/App.tsx'
 import { ReviewScreen } from '../page/ReviewScreen.tsx'
 import { initialState, pagesFor } from '../page/state.ts'
 import { buildFeedback, emptyDraft } from '../src/feedback.ts'
-import { ManifestSchema, type Manifest } from '../src/schema.ts'
+import { ManifestSchema, type Manifest } from '@titan-design/review-schema'
 import { SHA, manifest, pagedImageInput, sectioned, sectionedInput } from './fixtures.ts'
 
 const html = (m: Manifest) =>

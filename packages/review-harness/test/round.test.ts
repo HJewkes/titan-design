@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { captureFileName } from '../src/capture.ts'
 import { buildFeedback, emptyDraft, pendingQuestionIds } from '../src/feedback.ts'
 import { feedbackProblems, questionScope, storyUrl, urlParamProblems } from '../src/round.ts'
-import { FeedbackSchema } from '../src/schema.ts'
+import { FeedbackSchema } from '@titan-design/review-schema'
 import { SHA, manifest, validFeedback } from './fixtures.ts'
 
 describe('story urls', () => {

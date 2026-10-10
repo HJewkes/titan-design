@@ -4,6 +4,7 @@ const react = require('eslint-plugin-react')
 const reactHooks = require('eslint-plugin-react-hooks')
 const globals = require('globals')
 const noClassnameOnAnimated = require('./eslint-rules/no-classname-on-animated')
+const noCopyPitfalls = require('./eslint-rules/no-copy-pitfalls')
 const noDeprecatedImport = require('./eslint-rules/no-deprecated-import')
 const noDeviceInternals = require('./eslint-rules/no-device-internals')
 const noFrozenTheme = require('./eslint-rules/no-frozen-theme')
@@ -20,6 +21,21 @@ const noVarColorOpacity = require('./eslint-rules/no-var-color-opacity')
 const propsNaming = require('./eslint-rules/props-naming')
 const restrictedSyntax = require('./eslint-rules/restricted-syntax')
 const storyTitlePrefix = require('./eslint-rules/story-title-prefix')
+
+// Flat config replaces (not merges) `no-restricted-syntax` per file, so each
+// stricter tier carries the one below it in full. Naming the tiers keeps the
+// shared entries listed once.
+const componentSelectors = [...restrictedSyntax.gradient]
+const tokenSelectors = [...componentSelectors, ...restrictedSyntax.hex]
+const tokenPureSelectors = [
+  ...tokenSelectors,
+  ...restrictedSyntax.arbitrarySpacing,
+  ...restrictedSyntax.fontSize,
+  // Freezes the value to one palette at import time. Resolve at render time
+  // instead — titan/no-frozen-theme below says the same thing for every
+  // component family, ratcheted.
+  ...restrictedSyntax.frozenTheme,
+]
 
 module.exports = tseslint.config(
   // Global ignores
@@ -103,6 +119,7 @@ module.exports = tseslint.config(
       titan: {
         rules: {
           'no-classname-on-animated': noClassnameOnAnimated,
+          'no-copy-pitfalls': noCopyPitfalls,
           'no-deprecated-import': noDeprecatedImport,
           'no-device-internals': noDeviceInternals,
           'no-frozen-theme': noFrozenTheme,
@@ -211,7 +228,7 @@ module.exports = tseslint.config(
     files: ['src/components/**/*.{ts,tsx}'],
     ignores: ['**/*.stories.tsx', '**/*.test.tsx'],
     rules: {
-      'no-restricted-syntax': ['warn', ...restrictedSyntax.gradient],
+      'no-restricted-syntax': ['warn', ...componentSelectors],
     },
   },
 
@@ -222,9 +239,7 @@ module.exports = tseslint.config(
     files: ['src/components/shell/**/*.{ts,tsx}', 'src/components/icons/**/*.{ts,tsx}'],
     ignores: ['**/*.stories.tsx', '**/*.test.tsx'],
     rules: {
-      // Flat config replaces (not merges) this rule per file, so repeat the
-      // gradient selectors here alongside the shell/icons-only hex ones.
-      'no-restricted-syntax': ['warn', ...restrictedSyntax.gradient, ...restrictedSyntax.hex],
+      'no-restricted-syntax': ['warn', ...tokenSelectors],
     },
   },
 
@@ -236,6 +251,7 @@ module.exports = tseslint.config(
   {
     files: [
       'src/components/custom/ActiveWork/**/*.{ts,tsx}',
+      'src/components/custom/Agents/**/*.{ts,tsx}',
       'src/components/custom/Prose/**/*.{ts,tsx}',
       'src/components/custom/charts/**/*.{ts,tsx}',
       'src/components/ui/charts/spark-bars/**/*.{ts,tsx}',
@@ -278,19 +294,7 @@ module.exports = tseslint.config(
     // Fixtures hold real prose (PR refs like `#102` read as hex); stories/tests exempt as elsewhere.
     ignores: ['**/*.stories.tsx', '**/*.test.tsx', '**/*-fixture.ts'],
     rules: {
-      // Flat config replaces (not merges) this rule per file, so the gradient and
-      // hex selectors are repeated here rather than inherited.
-      'no-restricted-syntax': [
-        'error',
-        ...restrictedSyntax.gradient,
-        ...restrictedSyntax.hex,
-        ...restrictedSyntax.arbitrarySpacing,
-        ...restrictedSyntax.fontSize,
-        // Freezes the value to one palette at import time. Resolve at render
-        // time instead — titan/no-frozen-theme below says the same thing for
-        // every component family, ratcheted.
-        ...restrictedSyntax.frozenTheme,
-      ],
+      'no-restricted-syntax': ['error', ...tokenPureSelectors],
     },
   },
 
@@ -577,6 +581,19 @@ module.exports = tseslint.config(
     },
   },
 
+  // TD-340: display copy avoids a spaced × between digits, all-caps words outside
+  // copy-glossary.json, " & " and ! in error strings. JSX text and display props only.
+  // RATCHETED: today's sites are in no-copy-pitfalls-baseline.json, keyed by file and
+  // fragment, which must stay exact (an unspent allowance is reported as stale). Stories and
+  // tests are exempt; src/lab is outside the glob.
+  {
+    files: ['src/components/{ui,custom,shell}/**/*.{ts,tsx}'],
+    ignores: ['src/**/*.test.{ts,tsx}', 'src/**/*.stories.{ts,tsx}'],
+    rules: {
+      'titan/no-copy-pitfalls': 'error',
+    },
+  },
+
   // TD-13: NativeWind does not compile className on an Animated.* element, so every class on
   // one renders nothing on web and jsdom strips it in tests. Every className is flagged, not
   // only spacing. A className on a plain child inside the animated element is fine.
@@ -612,13 +629,6 @@ module.exports = tseslint.config(
   // deletes this block.
   {
     files: [
-      // TD-536 b2
-      'src/lab/north-star/EmptyLiveView.tsx',
-      'src/lab/north-star/HeroTempo.exploration.stories.tsx',
-      'src/lab/north-star/LivePage.tsx',
-      'src/lab/north-star/LiveView.tsx',
-      'src/lab/north-star/VelocityDiverging.exploration.stories.tsx',
-      'src/lab/north-star/fatigue-lab-shared.tsx',
       // TD-536 b7
       'src/components/ui/alert/Alert.tsx',
       'src/components/ui/button/Button.tsx',

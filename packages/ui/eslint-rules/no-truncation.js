@@ -31,7 +31,7 @@
  * allowlist is sanctioned use, so the two never share a file.
  */
 
-const path = require('node:path')
+const { loadBaseline, baselineKey } = require('./ratchet')
 
 const JSX_ATTRIBUTES = new Set(['truncate', 'noWrap', 'maxLines', 'numberOfLines', 'ellipsizeMode'])
 const OBJECT_PROPERTIES = new Set(JSX_ATTRIBUTES)
@@ -47,37 +47,32 @@ const NON_CLASS_PARENTS = new Set([
 ])
 const COMPARISONS = new Set(['===', '!==', '==', '!='])
 const AFFORDANCES = new Set(['tooltip', 'press'])
+const KINDS = new Set(['user-name', 'path', 'id', 'breadcrumb'])
+const EVIDENCE = /^\S+:\d+$/
 
 const BASELINE_FILE = 'no-truncation-baseline.json'
 const ALLOWLIST_FILE = 'truncation-allowlist.json'
 
-function readJson(file, fallback) {
-  try {
-    return require(`./${file}`)
-  } catch {
-    return fallback
-  }
-}
-
-let baselineCache = null
-function loadBaseline() {
-  baselineCache ??= readJson(BASELINE_FILE, {})
-  return baselineCache
-}
-
 /**
- * Allowlist entries are `{ file, value, kind, affordance }`, one per sanctioned site. An entry
- * without a kind or a known affordance is a broken exception, so loading throws rather than
- * quietly allowing it.
+ * Allowlist entries are `{ file, value, kind, affordance, evidence }`, one per sanctioned site.
+ * `evidence` is the `file:line` that provides the full text (the Tooltip, or the press handler).
+ * An entry without a known kind, a known affordance or evidence is a broken exception, so
+ * loading throws rather than quietly allowing it.
  */
 function parseAllowlist(entries) {
   const byFile = {}
   for (const entry of entries) {
-    const { file, value, kind, affordance } = entry
-    if (!file || !value || !kind || !AFFORDANCES.has(affordance)) {
+    const { file, value, kind, affordance, evidence } = entry
+    if (
+      !file ||
+      !value ||
+      !KINDS.has(kind) ||
+      !AFFORDANCES.has(affordance) ||
+      !EVIDENCE.test(evidence ?? '')
+    ) {
       throw new Error(
-        `${ALLOWLIST_FILE}: every entry needs file, value, kind and an affordance of ` +
-          `${[...AFFORDANCES].join(' or ')}; got ${JSON.stringify(entry)}`
+        `${ALLOWLIST_FILE}: every entry needs file, value, a kind of ${[...KINDS].join(', ')}, ` +
+          `an affordance of ${[...AFFORDANCES].join(' or ')} and file:line evidence; got ${JSON.stringify(entry)}`
       )
     }
     byFile[file] ??= {}
@@ -86,19 +81,15 @@ function parseAllowlist(entries) {
   return byFile
 }
 
-let allowlistCache = null
-function loadAllowlist() {
-  allowlistCache ??= parseAllowlist(readJson(ALLOWLIST_FILE, []))
-  return allowlistCache
+function allowlistEntries() {
+  const entries = loadBaseline(ALLOWLIST_FILE)
+  return Array.isArray(entries) ? entries : []
 }
 
-/** Baseline keys are package-relative POSIX paths, so they're stable across machines. */
-function baselineKey(context) {
-  const cwd = context.getCwd?.() ?? process.cwd()
-  return path
-    .relative(cwd, context.filename ?? context.getFilename())
-    .split(path.sep)
-    .join('/')
+let allowlistCache = null
+function loadAllowlist() {
+  allowlistCache ??= parseAllowlist(allowlistEntries())
+  return allowlistCache
 }
 
 function classTokens(text) {
@@ -226,7 +217,7 @@ module.exports = {
   create(context) {
     const key = baselineKey(context)
     const allowed = new Map(Object.entries(loadAllowlist()[key] ?? {}))
-    const baselined = new Map(Object.entries(loadBaseline()[key] ?? {}))
+    const baselined = new Map(Object.entries(loadBaseline(BASELINE_FILE)[key] ?? {}))
 
     function spend(allowances, value) {
       const left = allowances.get(value) ?? 0

@@ -1,6 +1,5 @@
-import React from 'react'
-import { View, Text } from 'react-native'
-import { cn } from '../../../utils/cn'
+import React, { useMemo } from 'react'
+import { EmptyState } from '../empty-state'
 
 export interface TableEmptyStateProps {
   /** Title for empty state */
@@ -25,12 +24,16 @@ export function TableEmptyState({
   icon,
   className,
 }: TableEmptyStateProps) {
+  const Icon = useMemo(() => (icon ? () => <>{icon}</> : undefined), [icon])
+
   return (
-    <View className={cn('items-center justify-center py-12 px-4', className)}>
-      {icon && <View className="mb-4">{icon}</View>}
-      <Text className="text-lg font-semibold text-text-primary mb-1">{title}</Text>
-      <Text className="text-sm text-text-secondary text-center mb-4">{description}</Text>
-      {action}
-    </View>
+    <EmptyState
+      icon={Icon}
+      isIconBare
+      title={title}
+      description={description}
+      action={action}
+      className={className}
+    />
   )
 }

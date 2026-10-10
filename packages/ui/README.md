@@ -342,7 +342,11 @@ export const Explicit = () => (
 export const WebOnly = () => <View className="border-[1px] border-hairline" />
 ```
 
-Run `pnpm lint:borders` to catch any `border border-*` patterns in source components.
+The arch test `src/arch/default-suffix-class.test.ts` fails on a `*-default` token class such as
+`border-border-default` in source components; Tailwind never generates one, so the element falls back
+to currentColor. Use the suffix-less DEFAULT class (`border-border`). Run it alone with
+`pnpm exec vitest run --project threads src/arch/default-suffix-class.test.ts` in `packages/ui`. It does
+not flag a bare `border`; review those by hand.
 
 For full token reference and additional pitfalls, see [`TOKENS.md`](TOKENS.md).
 
@@ -403,6 +407,14 @@ pnpm build
   own so the diff stays reviewable.
   `src/arch/component-catalog.json` derives from `arch-graph.json`, so run `pnpm catalog`
   after every arch-graph regen and commit its output too.
+- `src/arch/arch-graph.coverage.test.ts` fails when a `.tsx` file the `ui`, `custom` or
+  `shell` barrels re-export has no arch-graph node, because the catalog never lists a
+  component without one. A feature PR adds the node without a full regen:
+  `pnpm arch:graph -- --add packages/ui/src/components/ui/kbd/Kbd.tsx` (repeat `--add`
+  for more files) indexes fresh, then writes only those nodes, their outgoing edges, their
+  `summary` membership and `componentBarrelHash`; every other node keeps its committed
+  bytes. Then run `pnpm catalog`. It needs the same codewatch CLI as a full regen
+  (`CODEWATCH_CLI=node <codewatch>/packages/cli/dist/index.js`).
 
 ## Storybook Configuration
 
