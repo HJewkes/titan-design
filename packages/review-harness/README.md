@@ -344,6 +344,10 @@ heads rewrites `build` only. A round without bindings needs no tree.
   carries `topic:iteration` or `topic:ship`.
 - **Stacked PRs.** A draft's `stackedOn` is written through. When no question is about the base
   PR, every frame in the base PR's sections is labelled `base PR #n, not under review: <label>`.
+- **Stacked PR groups.** A `prGroups` entry's own `stackedOn` is written through, so groups in one
+  round can render on different bases. When no question is about a group's base, each frame in
+  that base's sections gets the prefix `rendered on #n at <short sha>, context, not under review: `
+  on its label. A base named by a group and by the round takes the group's prefix.
 - **Grouping.** A section belongs to a PR by the `prGroups` entry that lists it, else its
   questions' `page`, else a leading `#n` or `owner/name#n` in its title. Each PR's sections sit
   together, at the first one's place, the section holding its Ship question last, and the Ship

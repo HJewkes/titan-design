@@ -25,6 +25,10 @@ project adheres to [Semantic Versioning](https://semver.org/).
   schema refuses an unknown lock id in `after` or `dependents`, an `after` cycle, a repeated lock
   id and a decision row keyed by two locks, naming the ids. Exports `afterCycles`,
   `locksProblems`, `LOCK_AXES`, `LOCK_STATUSES` and `DEPENDENT_MODES`.
+- Optional `stackedOn` on a `prGroups` entry (`{ repo, pr, headSha }`): the base that one PR
+  group renders on, so groups in one round can sit on different bases. The round-level
+  `stackedOn` keeps its meaning. The schema refuses a group stacked on itself, directly or
+  through other groups. Exports `stackBase`.
 
 ## [0.3.0]
 

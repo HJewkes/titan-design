@@ -39,6 +39,9 @@ message }[] }[]`, one per PR group: blocked when an answer in the group has free
   `text`, a frame comment) or picks other than `implemented`; an unanswered question does not
   block. `pr` is `owner/name#n`; a group is its `prGroups` sections plus the questions whose
   `page` is that PR.
+- A `prGroups` entry's optional `stackedOn` (`{ repo, pr, headSha }`) names the base that one group
+  renders on, so two groups of one round can sit on different bases (`stackBase(group)` gives
+  the base's `owner/name#n`).
 - `lintRound(round)`, a pure check of a parsed round against the review-layout rules. It returns
   `{ rule, message }[]` (empty when the round passes; `LINT_RULES` lists the rules) and every
   round builder refuses a round with any problem.
