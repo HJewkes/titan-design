@@ -647,3 +647,180 @@ button.primary kbd {
 .recommendation-meta {
   color: var(--color-text-secondary);
 }
+
+/* A PR group's page (owner item 167): header, tabs, the open tab, and the Ship bar under all. */
+.pr-head {
+  display: grid;
+  gap: 2px;
+  margin-bottom: var(--space-stack-md);
+}
+
+.pr-title,
+.pr-meta {
+  color: var(--color-text-secondary);
+}
+
+.pr-meta {
+  display: flex;
+  gap: var(--space-inline-md);
+  align-items: center;
+  margin: 0;
+}
+
+.pr-kind {
+  padding: 0 var(--space-squish-x-sm);
+  border: 1px solid var(--color-border-prominent);
+  border-radius: 999px;
+  color: var(--color-text-primary);
+}
+
+.pr-tabs {
+  display: flex;
+  gap: var(--space-inline-sm);
+  margin-bottom: var(--space-stack-lg);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.pr-tabs [role='tab'] {
+  display: inline-flex;
+  gap: var(--space-inline-sm);
+  align-items: center;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-text-secondary);
+}
+
+.pr-tabs [role='tab'][aria-selected='true'] {
+  border-bottom-color: var(--color-brand-primary);
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.tab-badge {
+  padding: 0 var(--space-squish-x-sm);
+  border: 1px solid var(--color-border-prominent);
+  border-radius: 999px;
+  background: var(--color-surface-base);
+  color: var(--color-text-primary);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.tab-badge-open {
+  border-color: var(--color-status-warning);
+  background: var(--color-status-warning-subtle);
+}
+
+.tab-badge-changes {
+  border-color: var(--color-status-error);
+  background: var(--color-status-error-subtle);
+}
+
+.tab-note,
+.tab-empty {
+  color: var(--color-text-secondary);
+}
+
+.ship-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-stack-sm) var(--space-inline-lg);
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--space-stack-lg);
+  padding: var(--space-inset-sm) var(--space-inset-md);
+  background: var(--color-surface-elevated);
+  border: 2px solid var(--color-status-success);
+  border-radius: 12px;
+}
+
+.ship-bar:has(.ship-requests) {
+  border-color: var(--color-status-error);
+}
+
+.ship-bar p,
+.ship-requests ul {
+  margin: 0;
+}
+
+.ship-requests a,
+.ship-choices a,
+.diff-row-head a {
+  color: var(--color-brand-primary);
+}
+
+.ship-choices {
+  display: flex;
+  gap: var(--space-inline-sm);
+  align-items: center;
+}
+
+.diff-row {
+  display: grid;
+  gap: var(--space-stack-sm);
+  margin-bottom: var(--space-section-sm);
+  padding: var(--space-inset-md);
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border-input);
+  border-radius: 12px;
+}
+
+.diff-row-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-inline-md);
+  align-items: baseline;
+}
+
+.diff-change {
+  padding: 0 var(--space-squish-x-sm);
+  border: 1px solid var(--color-border-prominent);
+  border-radius: 999px;
+  color: var(--color-text-primary);
+  font-size: 12px;
+}
+
+.diff-panes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-gutter-sm);
+}
+
+.diff-pane {
+  display: grid;
+  gap: var(--space-stack-sm);
+  align-content: start;
+  min-width: 0;
+  margin: 0;
+}
+
+.diff-pane img {
+  width: 100%;
+  border: 1px solid var(--color-border-subtle);
+}
+
+.diff-missing {
+  margin: 0;
+  padding: var(--space-inset-md);
+  border: 1px dashed var(--color-border-prominent);
+  color: var(--color-text-secondary);
+}
+
+.context-part {
+  margin-bottom: var(--space-stack-lg);
+}
+
+.context-label,
+.context-file-status {
+  color: var(--color-text-secondary);
+}
+
+.context-files {
+  margin: 0;
+  padding-left: var(--space-inline-lg);
+}

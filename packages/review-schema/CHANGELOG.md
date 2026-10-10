@@ -21,6 +21,16 @@ project adheres to [Semantic Versioning](https://semver.org/).
   option. An unanswered question does not block. Exports `PrGroupShipStatus` and `ShipBlocker`.
 - `lintRound` rule `missing-implemented-option`: an `iterate` or `decide` pick question declares
   `implemented`.
+- PR group context, all optional: `title`, `kind` (`PR_KINDS`), `description` and `codewatch`
+  (markdown), `task` (`{ id, title?, doneWhen? }`) and `files` (`{ path, status? }[]`). A page shows
+  them in the PR's Context tab; none of them is a question.
+- Optional variant `baseImage`: a PNG of the same frame rendered from the PR's base, which a Diff
+  view sets beside the head.
+- `PrGroupShipStatus.unansweredQuestionIds`: the group's questions, Ship aside, with no answer.
+  They are listed for the page's badges and never block Ship (owner item 166).
+- `lintRound` rules `question-outside-review` (a question whose `page` is a grouped PR sits in one
+  of that group's sections, so it is asked in the PR's Review tab) and `base-on-new-frame` (a frame
+  whose `change` is `new` has no `baseImage`).
 - `titan-locks/1` (`LOCKS_SCHEMA_ID`, `LocksSchema`, `parseLocks`): a registry of decision locks.
   Each lock (`L-NNNN`) is keyed on its `decision` (ledger row, decisions item, round, question
   id), has zero or more `holders` (a PR at a head), declares `touches` (tokens per mode,

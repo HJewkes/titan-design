@@ -19,7 +19,7 @@ import { getSemanticColors, type ThemeMode } from './semantic'
 export const CONTRAST_MODES: readonly ThemeMode[] = ['dark', 'light']
 
 export interface ContrastPair {
-  /** Semantic key drawn on top: a text role, an `on-*` label, or a tone or border painted as one. */
+  /** Semantic key drawn on top: a text role, an `on-*` label, a data fill, or a tone or border painted as one. */
   fg: string
   /** Semantic key or `grey-<step>` primitive it is drawn on. */
   bg: string
@@ -204,6 +204,15 @@ const errorStates: ContrastPair[] = [
   { fg: 'border-input-error', bg: 'surface-input', floor: 3, modes: BOTH },
 ]
 
+// TD-756 D3: a categorical fill carries an area, a legend and labels, so it owes 2:1
+// (VW-371's floor) on the chart planes, not 3:1.
+const CATEGORICAL_FILL_FLOOR = 2
+const CHART_PLANES = ['surface-base', 'surface-elevated', 'surface-raised'] as const
+
+const categoricalFillsOnPlanes: ContrastPair[] = DATAVIZ_CATEGORICAL_ROLES.flatMap((fg) =>
+  CHART_PLANES.map((bg) => ({ fg, bg, floor: CATEGORICAL_FILL_FLOOR, modes: BOTH }))
+)
+
 export const CONTRAST_PAIRS: readonly ContrastPair[] = [
   ...textOnPlanes,
   ...toneTextOnPlanes,
@@ -211,6 +220,7 @@ export const CONTRAST_PAIRS: readonly ContrastPair[] = [
   ...labelsOnSolidFills,
   ...labelsOnSubtleFills,
   ...labelsOnOtherFills,
+  ...categoricalFillsOnPlanes,
   ...buttonDisabled,
   ...otherDisabled,
   ...hoverAndPressed,

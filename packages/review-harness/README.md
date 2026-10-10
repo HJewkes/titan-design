@@ -23,6 +23,15 @@ as JSON on stdout and in `feedback.json`. Private workspace tool, not published.
    "Section N of M"; the end of every section repeats it between Previous and Next. Next is the
    primary button and takes focus whenever a section opens, so moving on is the default; on the
    last page Review answers takes that place.
+   A page for a PR named in `prGroups` heads with the PR, its short head and its kind, and splits
+   into three tabs (owner item 167). **Review** holds the sections, every question under its
+   frames; it is the only tab that asks anything. **Diff** sets each frame's `baseImage` beside
+   its head render, read-only, with its `change` class and a link back to its Review block.
+   **Context** shows the group's description, task and done-when, codewatch report and files.
+   The Review tab's badges count open questions and change requests. A **Ship bar** sits under
+   every tab: Ship and Don't ship (the same answer as the Ship question in Review), and either
+   "Ship enabled" or each open change request linked to its question. Moving to any stop, by key
+   or link, opens Review. A round without `prGroups` renders without tabs.
 8. `Cmd+Enter` opens the final check, which lists every answer and anything missing.
 9. `Cmd+Enter` again sends once every question has an answer. The tab says "Sent", and the
    agent is already iterating. If any question is unanswered, the check says how many, Back
@@ -125,12 +134,12 @@ imports. Its `schema/round.schema.json` and `schema/feedback.schema.json` are ge
 - Manifest `titan-review/round@2`: `unit`, `round`, `storybookUrl`, `context?`, `widths[]`,
   `height` (a number of px or `"auto"`, default `"auto"`; at round level a number caps every
   frame), `maxHeight` (default 1200, the cap when the round's `height` is `"auto"`),
-  `variants[{key, storyId | image, label, args?, globals?, height?, variantUnit?, alternate?, change?: changed|new|removed|unchanged}]` (at most 12 in a round
+  `variants[{key, storyId | image, label, args?, globals?, height?, variantUnit?, alternate?, change?: changed|new|removed|unchanged, baseImage? (a PNG of the frame from the PR's base)}]` (at most 12 in a round
   without `sections`, uncapped in one with them; empty for a round of questions only, which needs no placeholder
   frame; every frame sits in a section),
   `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?, recommendation?, signsOff (pick-one), page?, merge? (pick-one), frames?[], decision?: iterate|ship|decide, outcomes? (option to accept|changes|neutral), implemented? (the option, or options for pick-many, the PR implements), touches? (the tokens a non-PR question decides; see _Build with locks_)}]`,
   `sections[{id, title, deciding, changed, context, kind?: CHOICE|STATES, questionIds[], variantKeys[], seeAlso?[], height?}]`,
-  `prGroups?[{pr: owner/name#n, headSha, sectionIds[]}]` (a PR group named outright),
+  `prGroups?[{pr: owner/name#n, headSha, sectionIds[], title?, kind?, description?, task?{id, title?, doneWhen?}, codewatch?, files?[{path, status?}]}]` (a PR group named outright, and its read-only context),
   `build?{mainSha, mergeSha}` (written by `build --tree`; a draft that carries it is refused),
   `recommendations` (`"after-answer"`, the default, or `"shown"`),
   `contrast?{knownDefects[], measured[], unmeasured[]}` (also on a section; see _Contrast gate_).
@@ -362,16 +371,20 @@ heads rewrites `build` only. A round without bindings needs no tree.
   `frames`, a frame outside its question's section or under two questions, a variant unit split
   across blocks or alternates, alternates shown over different modes, a split PR group, a Ship
   that is not last in its group, a Ship whose head or PR is not its group's one PR at one head, or
-  an `iterate` or `decide` pick question without `implemented`.
+  an `iterate` or `decide` pick question without `implemented`, a question about a grouped PR
+  outside that group's sections (it would not be asked in the PR's Review tab), or a `baseImage`
+  on a frame whose `change` is `new`.
 - **Ship gate.** `build` exits 3, writing no `round.json`, for a Ship question whose PR had a
   changes-requested (`revisionRequested`), declined (a pick outside `merge.ship`) or non-agreed
-  (`agreed: false`) answer in the latest earlier round that asked about it. It reads
+  (`agreed: false`, only on a question without `implemented`) answer in the latest earlier round that asked about it. It reads
   `feedback.json` beside a `round.json` (whose sha it must match) in sibling round directories of
   the same unit with a lower round number, and any `--prior-feedback <feedback.json>` given. A Ship
   bound to a different head than that round's is a fix round's and is not blocked. The same gate
   refuses on the owner's Ship rule (`shipBlocks` in review-schema): an answer in the PR's group
   carries free text, or picks other than the question's `implemented` option. The page applies
-  the rule live: a blocked group's Ship option is disabled and the reasons show under it.
+  the rule live: a blocked group's Ship option is disabled and the reasons show under it. An
+  unanswered question never blocks Ship, and neither does an implemented pick that differs from
+  the recommendation (owner item 166).
 
 Thresholds (WCAG 2.1 SC 1.4.3 and 1.4.11): text 4.5:1; large text (24px, or 18.66px at
 weight 700 or more) 3:1; non-text 3:1 against the adjacent plane. Each colour is composited

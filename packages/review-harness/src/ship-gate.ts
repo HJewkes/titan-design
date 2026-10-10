@@ -76,7 +76,12 @@ function openRequests(prior: PriorRound, pr: string): { questionId: string; head
       q.merge !== undefined &&
       answer.pick !== undefined &&
       !q.merge.ship.includes(answer.pick)
-    const open = answer.revisionRequested === true || answer.agreed === false || declined
+    // A question that declares `implemented` is judged by the owner's rule (ruleRefusal), where
+    // disagreeing with the recommendation is no change request (item 166). Older rounds without
+    // it keep `agreed: false` as theirs.
+    const implemented = (q.kind === 'pick-one' || q.kind === 'pick-many') && q.implemented
+    const disagreed = answer.agreed === false && !implemented
+    const open = answer.revisionRequested === true || disagreed || declined
     return open ? [{ questionId: q.id, ...(headSha ? { headSha } : {}) }] : []
   })
 }

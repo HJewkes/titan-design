@@ -140,6 +140,10 @@
               "removed",
               "unchanged"
             ]
+          },
+          "baseImage": {
+            "type": "string",
+            "pattern": "^(?![/\\\\]|[A-Za-z]:)(?!(.*[/\\\\])?\\.\\.([/\\\\]|$)).+\\.[Pp][Nn][Gg]$"
           }
         },
         "required": [
@@ -1459,6 +1463,70 @@
               "headSha"
             ],
             "additionalProperties": false
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "feature",
+              "correctness",
+              "refactor",
+              "security",
+              "docs"
+            ]
+          },
+          "description": {
+            "type": "string"
+          },
+          "task": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "title": {
+                "type": "string"
+              },
+              "doneWhen": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "additionalProperties": false
+          },
+          "codewatch": {
+            "type": "string"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "added",
+                    "modified",
+                    "removed",
+                    "renamed"
+                  ]
+                }
+              },
+              "required": [
+                "path"
+              ],
+              "additionalProperties": false
+            }
           }
         },
         "required": [

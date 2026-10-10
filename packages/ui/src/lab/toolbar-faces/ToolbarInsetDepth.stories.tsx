@@ -1,16 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
-import { Surface, useOnSurfaceColor, useSurfaceMode } from '../../components/ui/surface'
+import { Surface, useOnSurfaceColor } from '../../components/ui/surface'
 import { ToolbarButton, ToolbarButtonGroup } from '../../components/ui/toolbar-button'
-import { getPressedRecessShadow } from '../../theme/elevation'
-import { getSemanticColors } from '../../theme/tokens/semantic'
 
 /**
  * Lab/ToolbarFaces — the owner's pick for the toolbar inset depth (Gate 2 batch 7,
  * td10-ship / td265-ship): the active face now comes from the elevation system,
  * one plane DOWN from the toolbar with the recess. Row B shows the same face two
- * planes down, built from `<Surface elevation={-2}>`; the control row is the
- * `control-face-active` token #747 painted. Switch the toolbar theme to compare
+ * planes down, built from `<Surface elevation={-2}>`. Switch the toolbar theme to compare
  * light and dark. Delete once the depth is recorded.
  */
 const meta: Meta = {
@@ -63,20 +60,6 @@ function SurfaceFace({ label, elevation }: { label: string; elevation: -2 | 1 })
   )
 }
 
-/** The #747 control: the silver / grey-900 `control-face-active` token with the recess. */
-function TokenFace({ label }: { label: string }) {
-  const fill = getSemanticColors(useSurfaceMode())['control-face-active']
-  return (
-    <View
-      className="flex-row items-center justify-center px-2.5 py-1 min-h-[30px] rounded"
-      style={{ backgroundColor: fill, ...getPressedRecessShadow(fill) }}
-    >
-      <Glyph glyph="⏣" />
-      <Text className="font-bold text-sm ml-2 text-on-control-active">{label}</Text>
-    </View>
-  )
-}
-
 function InsetDepth() {
   return (
     <Surface level="elevated" rounded className="p-6 gap-6">
@@ -89,11 +72,6 @@ function InsetDepth() {
       </Row>
       <Row label="B — TWO PLANES DOWN (SURFACE ELEVATION -2), SAME RAISED FACE">
         <SurfaceFace label="Filters" elevation={-2} />
-        <SurfaceFace label="Settings" elevation={1} />
-        <SurfaceFace label="View" elevation={1} />
-      </Row>
-      <Row label="CONTROL — #747 AS REVIEWED: CONTROL-FACE-ACTIVE TOKEN WITH THE RECESS">
-        <TokenFace label="Filters" />
         <SurfaceFace label="Settings" elevation={1} />
         <SurfaceFace label="View" elevation={1} />
       </Row>
