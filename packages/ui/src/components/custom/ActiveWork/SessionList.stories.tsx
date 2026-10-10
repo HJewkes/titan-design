@@ -7,7 +7,8 @@ import { SESSION_FIXTURE, SESSION_NOW } from './session-fixture'
 /**
  * **SessionList** — the selectable list half of the session reader. The host
  * holds `selectedId`; this story keeps it in Storybook args so clicking a row
- * updates the Controls panel.
+ * updates the Controls panel. Tab into the list, then use the arrow keys,
+ * Home and End to move the selection.
  *
  * Composes `Eyebrow` · `SessionListItem`.
  */
@@ -41,7 +42,7 @@ const meta: Meta<typeof SessionList> = {
     docs: {
       description: {
         component:
-          'Composes **Eyebrow** · **Divider** · **SessionListItem**. Used-by ↑ the Session Reader composition. Selection is controlled by the host; sessions group under a month divider once the list spans more than one.',
+          'Composes **Eyebrow** · **Divider** · **SessionListItem**. Used-by ↑ the Session Reader composition. Selection is controlled by the host; the listbox is one tab stop, and the arrow keys, Home and End select a neighbouring or end session. Sessions group under a month divider once the list spans more than one.',
       },
     },
   },

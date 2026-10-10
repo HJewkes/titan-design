@@ -927,6 +927,13 @@
         },
         {
           "default": null,
+          "description": "Receives the row's host node, so a list can move focus to it.",
+          "name": "focusRef",
+          "required": false,
+          "type": "((node: unknown) => void)"
+        },
+        {
+          "default": null,
           "description": "Reference instant for the age label, injected so renders are deterministic.",
           "name": "now",
           "required": true,
@@ -952,6 +959,13 @@
           "name": "session",
           "required": true,
           "type": "SessionSummary"
+        },
+        {
+          "default": null,
+          "description": "The row's tab stop, when a list roves focus across its rows.",
+          "name": "tabIndex",
+          "required": false,
+          "type": "0 | -1"
         }
       ],
       "purpose": "SessionListItem — one session in the reader's list, led by its title, with a footer of age · duration · tasks touched · track.",

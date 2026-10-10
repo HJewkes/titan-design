@@ -16,6 +16,15 @@ describe('SessionListItem', () => {
     expect(screen.queryByText('Jul 12')).not.toBeInTheDocument()
   })
 
+  it('takes the tab stop and focus ref a roving list hands it', () => {
+    const focusRef = vi.fn()
+    render(
+      <SessionListItem session={session} now={SESSION_NOW} tabIndex={-1} focusRef={focusRef} />
+    )
+    expect(screen.getByRole('option')).toHaveAttribute('tabindex', '-1')
+    expect(focusRef).toHaveBeenCalledWith(screen.getByRole('option'))
+  })
+
   it('shows the exact end time when the age is hovered', () => {
     render(<SessionListItem session={session} now={SESSION_NOW} />)
     expect(screen.queryByText('07/12/2026, 02:25 PM')).not.toBeInTheDocument()
