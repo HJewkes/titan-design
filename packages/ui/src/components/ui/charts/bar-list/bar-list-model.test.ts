@@ -4,17 +4,20 @@ import { fcAssert } from '../../../../test/property'
 import {
   barFraction,
   buildBarListModel,
+  cleanMarker,
   columnChars,
+  markerFraction,
   normalizeMaxRows,
   overflowLabel,
   rankRows,
+  reachesMarker,
   resolveMax,
   rowLabel,
-  rowTip,
   summarizeBarList,
   type BarListRow,
 } from './bar-list-model'
-import { hostileFixture, hostileOptionSets } from './fixtures'
+import { rowTip } from './bar-list-tip'
+import { defaultFixture, funnelFixture, hostileFixture, hostileOptionSets } from './fixtures'
 
 const rowsOf = (...values: (number | null)[]): BarListRow[] =>
   values.map((value, i) => ({ id: `r${i}`, label: `Row ${i}`, value }))
@@ -235,7 +238,10 @@ describe('columnChars', () => {
       secondary: 0,
     })
     expect(
-      columnChars([{ row: flaggedRow, index: 0, rank: 1, fraction: 1 }], formatters)
+      columnChars(
+        [{ row: flaggedRow, index: 0, rank: 1, fraction: 1, reachesMarker: false }],
+        formatters
+      )
     ).not.toHaveProperty('flag')
   })
 
@@ -276,6 +282,7 @@ describe('rowTip', () => {
     expect(rowTip(row, (v) => `${v}%`)).toEqual({
       label: 'Parser',
       valueText: '9.1%',
+      limit: null,
       flagLabel: 'over 5%',
     })
   })
@@ -284,7 +291,18 @@ describe('rowTip', () => {
     expect(rowTip({ id: 'b', label: 'Bare', value: null }, String)).toEqual({
       label: 'Bare',
       valueText: 'No value',
+      limit: null,
       flagLabel: null,
+    })
+  })
+
+  it('adds the marker label and value text as the limit', () => {
+    const marker = buildBarListModel(rowsOf(1), {
+      referenceMarker: { value: 5000, label: 'Limit' },
+    }).marker
+    expect(rowTip({ id: 'a', label: 'A', value: 1 }, String, marker).limit).toEqual({
+      label: 'Limit',
+      valueText: '5.0k',
     })
   })
 
@@ -292,5 +310,153 @@ describe('rowTip', () => {
     const row: BarListRow = { id: 'r', label: 'Row', value: 3 }
     const formatValue = (value: number, forRow?: BarListRow) => `${value} ${forRow?.id ?? 'none'}`
     expect(rowTip(row, formatValue).valueText).toBe('3 r')
+  })
+})
+
+const LIMIT = { value: 100, label: 'Limit' }
+
+describe('reference marker', () => {
+  it('markerFraction is value over max, and null at 0, below 0 and above 1', () => {
+    expect(markerFraction(25, 100)).toBe(0.25)
+    expect(markerFraction(0, 100)).toBeNull()
+    expect(markerFraction(-5, 100)).toBeNull()
+    expect(markerFraction(150, 100)).toBeNull()
+  })
+
+  it('markerFraction is 1 when the marker equals the maximum', () => {
+    expect(markerFraction(100, 100)).toBe(1)
+  })
+
+  it('a marker with a NaN, infinite, zero or negative value is ignored', () => {
+    for (const value of [Number.NaN, Infinity, -Infinity, 0, -5]) {
+      expect(cleanMarker({ value, label: 'Limit' })).toBeNull()
+      expect(
+        buildBarListModel(rowsOf(5), { referenceMarker: { value, label: 'x' } }).marker
+      ).toBeNull()
+    }
+    expect(cleanMarker(undefined)).toBeNull()
+  })
+
+  it('an empty or blank marker label becomes Reference', () => {
+    expect(cleanMarker({ value: 5, label: '' })?.label).toBe('Reference')
+    expect(cleanMarker({ value: 5, label: '   ' })?.label).toBe('Reference')
+    expect(cleanMarker({ value: 5, label: ' Cap ' })?.label).toBe('Cap')
+  })
+
+  it('the marker never changes the resolved maximum', () => {
+    const rows = rowsOf(4, 8)
+    const withMarker = buildBarListModel(rows, { referenceMarker: { value: 500, label: 'x' } })
+    expect(withMarker.max).toBe(8)
+    expect(withMarker.rows.map((r) => r.fraction)).toEqual(
+      buildBarListModel(rows).rows.map((r) => r.fraction)
+    )
+  })
+
+  it('a row exactly at the marker reaches it; a missing value never does', () => {
+    expect(reachesMarker(100, 100)).toBe(true)
+    expect(reachesMarker(99.9, 100)).toBe(false)
+    expect(reachesMarker(null, 100)).toBe(false)
+    expect(reachesMarker(Number.NaN, 100)).toBe(false)
+    expect(reachesMarker(Infinity, 100)).toBe(false)
+  })
+
+  it('reachedCount counts hidden rows as well as shown rows', () => {
+    const model = buildBarListModel(rowsOf(9, 8, 7, 6), {
+      maxRows: 2,
+      referenceMarker: { value: 7, label: 'M' },
+    })
+    expect(model.shownCount).toBe(2)
+    expect(model.marker?.reachedCount).toBe(3)
+    expect(model.rows.map((r) => r.reachesMarker)).toEqual([true, true])
+  })
+
+  it('the summary appends the label, the value text and the count, with item singular for one', () => {
+    const many = buildBarListModel(defaultFixture.rows, { maxRows: 10, referenceMarker: LIMIT })
+    expect(summarizeBarList(many)).toBe(
+      'Top 10 of 12 items by value. Largest: Bash, 412. 2 more not shown, totalling 3. Limit: 100. 3 of 12 items at or above.'
+    )
+    const one = buildBarListModel(rowsOf(58), { referenceMarker: LIMIT })
+    expect(summarizeBarList(one)).toBe('1 item: Row 0, 58. Limit: 100. 0 of 1 item at or above.')
+    const funnel = buildBarListModel(funnelFixture.rows, {
+      sort: 'none',
+      max: 100,
+      referenceMarker: { value: 50, label: 'Target' },
+    })
+    expect(summarizeBarList(funnel)).toBe(
+      'First 5 of 5 items, in order. Target: 50. 3 of 5 items at or above.'
+    )
+    const above = buildBarListModel(defaultFixture.rows, {
+      referenceMarker: { value: 5000, label: 'Limit' },
+    })
+    expect(summarizeBarList(above)).toContain(' Limit: 5.0k. 0 of 12 items at or above.')
+  })
+
+  it('the summary is unchanged without a marker, and for an ignored marker', () => {
+    const plain = summarizeBarList(buildBarListModel(rowsOf(1, 2, 3)))
+    expect(
+      summarizeBarList(
+        buildBarListModel(rowsOf(1, 2, 3), { referenceMarker: { value: Number.NaN, label: 'x' } })
+      )
+    ).toBe(plain)
+    expect(summarizeBarList(buildBarListModel([], { referenceMarker: LIMIT }))).toBe('No data.')
+  })
+
+  it('rowLabel adds the marker part after the flag and before the rank, only for rows that reach it', () => {
+    const row: BarListRow = {
+      id: 'p',
+      label: 'Parser',
+      value: 9.1,
+      flag: { tone: 'error', label: 'over 5%' },
+    }
+    const base = { row, rank: 1, shownCount: 5, sort: 'descending' as const }
+    expect(rowLabel({ ...base, reachedMarker: 'Budget' }, formatters)).toBe(
+      'Parser: 9.1, over 5%, at or above Budget, rank 1 of 5'
+    )
+    expect(rowLabel({ ...base, reachedMarker: null }, formatters)).toBe(
+      'Parser: 9.1, over 5%, rank 1 of 5'
+    )
+    expect(rowLabel(base, formatters)).toBe('Parser: 9.1, over 5%, rank 1 of 5')
+    expect(rowLabel({ ...base, sort: 'none', reachedMarker: 'Budget' }, formatters)).toBe(
+      'Parser: 9.1, over 5%, at or above Budget'
+    )
+  })
+
+  it('marker.formatValue formats the value text; the default is formatCompact', () => {
+    const custom = buildBarListModel(rowsOf(5), {
+      referenceMarker: { value: 5000, label: 'x', formatValue: (v) => `${v} calls` },
+    })
+    expect(custom.marker?.valueText).toBe('5000 calls')
+    expect(
+      buildBarListModel(rowsOf(5), { referenceMarker: { value: 5000, label: 'x' } }).marker
+        ?.valueText
+    ).toBe('5.0k')
+  })
+
+  it('any rows, max and marker never throw; fraction is null or in (0, 1]; reachedCount is at most inputCount', () => {
+    const valueArb = fc.oneof(fc.double(), fc.constant(null), fc.integer({ min: -50, max: 1000 }))
+    fcAssert(
+      fc.property(
+        fc.array(valueArb, { maxLength: 40 }).map((values) => rowsOf(...values)),
+        fc.double(),
+        fc.double(),
+        (rows, max, value) => {
+          const model = buildBarListModel(rows, { max, referenceMarker: { value, label: 'M' } })
+          if (model.marker) {
+            const f = model.marker.fraction
+            expect(f === null || (f > 0 && f <= 1)).toBe(true)
+            expect(model.marker.reachedCount).toBeLessThanOrEqual(model.inputCount)
+          }
+          expect(() => summarizeBarList(model)).not.toThrow()
+        }
+      )
+    )
+  })
+
+  it('the hostile fixture survives every hostile marker', () => {
+    for (const options of hostileOptionSets) {
+      const model = buildBarListModel(hostileFixture.rows, options)
+      expect(model.rows.length).toBeGreaterThanOrEqual(1)
+      expect(() => summarizeBarList(model)).not.toThrow()
+    }
   })
 })
