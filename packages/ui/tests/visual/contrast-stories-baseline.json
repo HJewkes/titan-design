@@ -235,6 +235,9 @@
   "components-molecules-eyebrow--default dark": {
     "#888684|#252321": 1
   },
+  "components-molecules-facetbar--default light": {
+    "#ffffff|#da5f00": 2
+  },
   "components-molecules-formfield--complete-form-example dark": {
     "#888684|#252321": 2
   },
