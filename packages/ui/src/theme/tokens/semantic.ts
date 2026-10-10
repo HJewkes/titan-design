@@ -93,7 +93,7 @@ export const semanticColorsLight = {
   // Status colors (status-*)
   'status-success': ramp.green[700], // TD-789 3b: green 600 missed 3:1 on the grey 200 rail
   'status-success-light': ramp.green[200],
-  'status-success-dark': ramp.green[600],
+  'status-success-dark': ramp.green[800], // TD-789 3b: one step past the base, as error-dark is
   'status-success-subtle': ramp.green[100],
   'status-success-muted': 'rgba(46, 213, 115, 0.30)',
   'status-success-strong': 'rgba(46, 213, 115, 0.50)',
@@ -104,6 +104,7 @@ export const semanticColorsLight = {
 
   // Deload: the magenta WorkoutPill and WeekRow have washed by hand since VW-0; a role of
   // its own, so a deload week reads the same wherever it is drawn. Callers alpha it.
+  // equals decision 0004's on-tint-magenta-subtle; WorkoutPill moves to the magenta cells in 0004
   'status-deload': ramp.magenta[700], // TD-789 3b: magenta 600 labels miss 4.5:1 on grey 100
 
   'status-error': ramp.red[600],
@@ -113,23 +114,25 @@ export const semanticColorsLight = {
   'status-error-muted': 'rgba(209, 67, 67, 0.30)',
   'status-error-strong': 'rgba(209, 67, 67, 0.50)',
 
+  // kept; decision 0004 gives red a solid cell (red 600) and an on-subtle step (red 700); vivid stays the Critical mark one step past status-error
   'status-error-vivid': ramp.red[700], // TD-789 3b: the pin missed 3:1; red 600 is status-error
   'status-error-vivid-light': ramp.red[500],
   'status-error-vivid-dark': ramp.red[700],
-  'status-error-vivid-subtle': 'rgba(255, 71, 87, 0.12)',
-  'status-error-vivid-muted': 'rgba(255, 71, 87, 0.30)',
-  'status-error-vivid-strong': 'rgba(255, 71, 87, 0.50)',
+  'status-error-vivid-subtle': 'rgba(164, 34, 28, 0.12)', // TD-789 3b: red 700, the base above
+  'status-error-vivid-muted': 'rgba(164, 34, 28, 0.30)',
+  'status-error-vivid-strong': 'rgba(164, 34, 28, 0.50)',
 
   'status-warning': ramp.amber[600], // TD-789 3b: amber 500 missed 3:1 on the light planes
   'status-warning-light': ramp.amber[200],
-  'status-warning-dark': ramp.amber[500],
+  'status-warning-dark': ramp.amber[700], // TD-789 3b: one step past the base
   'status-warning-subtle': ramp.amber[100],
   'status-warning-muted': 'rgba(249, 180, 21, 0.30)',
   'status-warning-strong': 'rgba(249, 180, 21, 0.50)',
 
+  // equals text-info and decision 0004's on-tint-blue-subtle; the info solid cell is blue 600, aliased by status-info-solid in 0004
   'status-info': ramp.blue[700], // TD-789 3b: blue 600 missed 3:1 on its Progress track on grey 200
   'status-info-light': ramp.blue[300],
-  'status-info-dark': ramp.blue[600],
+  'status-info-dark': ramp.blue[800], // TD-789 3b: one step past the base
   'status-info-subtle': ramp.blue[100],
   'status-info-muted': 'rgba(33, 150, 243, 0.30)',
   'status-info-strong': 'rgba(33, 150, 243, 0.50)',
