@@ -59,9 +59,7 @@ describe('BrandLockup', () => {
   // semantic `text-*` token, and no two apps share one.
   it('gives every brand a distinct semantic accent token', () => {
     const accents = brandKeys.map((brand) => brandPresets[brand].accentClassName)
-    accents.forEach((accent) =>
-      expect(accent).toMatch(/^text-(brand|dataviz-categorical|status-info|status-success)/)
-    )
+    accents.forEach((accent) => expect(accent).toMatch(/^text-(brand|dataviz-categorical)-/))
     expect(new Set(accents).size).toBe(accents.length)
   })
 
@@ -70,9 +68,7 @@ describe('BrandLockup', () => {
   it('pairs every accent with the same token as a background', () => {
     brandKeys.forEach((brand) => {
       const { accentClassName, accentBarClassName } = brandPresets[brand]
-      expect(accentBarClassName).toMatch(
-        /^bg-(brand|dataviz-categorical|status-info|status-success)/
-      )
+      expect(accentBarClassName).toMatch(/^bg-(brand|dataviz-categorical)-/)
       expect(accentBarClassName).toBe(accentClassName.replace(/^text-/, 'bg-'))
     })
   })

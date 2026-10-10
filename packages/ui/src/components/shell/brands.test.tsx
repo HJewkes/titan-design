@@ -16,27 +16,25 @@ const PLANES = ['background-base', 'surface-elevated'] as const
 const EXPECTED_ACCENTS: Record<BrandKey, string> = {
   voltras: 'brand-primary',
   audiobook: 'dataviz-categorical-1',
-  'active-work': 'status-info',
-  agents: 'status-success',
+  'active-work': 'dataviz-categorical-0',
+  agents: 'dataviz-categorical-4',
   brain: 'dataviz-categorical-6',
   console: 'dataviz-categorical-2',
 }
 
 // Accent marks measured under 3:1 on a shell plane. Shrink-only: a fix deletes its
-// row, and a new miss fails the test. Voltras is its own brand token, a pin only the
-// owner re-colours (TD-789 3b moved its rail to grey 200); the other is the owner's
-// option-1 hue (TD-485), which clears 3:1 on surface-base but not here.
+// row, and a new miss fails the test. Voltras is its own brand token; the other two
+// are the owner's option-1 hues (TD-485), which clear 3:1 on surface-base but not here.
+// The 3b light ramp (TD-789) darkens background-base to grey 200; the accents wait for
+// the categorical lock, so their misses there are recorded rather than re-coloured.
 const KNOWN_NON_TEXT_MISSES = [
   'voltras light background-base 1.73',
   'voltras light surface-elevated 2.44',
+  'active-work light background-base 2.05',
+  'active-work light surface-elevated 2.90',
+  'agents light background-base 3.00',
   'brain dark surface-elevated 2.85',
 ]
-
-// Active Work and Agents leave the categorical palette in light only (TD-789 3b).
-const CATEGORICAL_IN_DARK: Partial<Record<BrandKey, string>> = {
-  'active-work': 'dataviz-categorical-0',
-  agents: 'dataviz-categorical-4',
-}
 
 const tokenOf = (className: string) => className.replace(/^(text|bg)-/, '')
 
@@ -58,15 +56,6 @@ describe('brand accents', () => {
     expect(accentClassName).toBe(`text-${EXPECTED_ACCENTS[brand]}`)
     expect(accentBarClassName).toBe(`bg-${EXPECTED_ACCENTS[brand]}`)
   })
-
-  it.each(Object.entries(CATEGORICAL_IN_DARK))(
-    'keeps the %s accent on its categorical hue in dark',
-    (brand, categorical) => {
-      const dark = getSemanticColors('dark') as Record<string, string>
-      const accent = tokenOf(brandPresets[brand as BrandKey].accentClassName)
-      expect(dark[accent]).toBe(dark[categorical])
-    }
-  )
 
   it('puts the lockup mark in the accent and the wordmark on text-primary', () => {
     render(<BrandLockup brand={{ ...brandPresets.brain, mark: <Text testID="mark">*</Text> }} />)

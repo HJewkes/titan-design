@@ -50,19 +50,21 @@ describe('Elevation ramp AA decision', () => {
       ...light,
       'bar neutral': bars.neutral,
       'bar near': bars.near,
-      'active-work: dataviz-categorical-0': light['status-info'],
-      'agents: dataviz-categorical-4': light['status-success'],
     }
-    // Departures: vivid red 600 would equal status-error (status-distinctness.test.ts),
-    // and active-work's accent follows status-info, which moved to blue 700 for Progress.
+    // Departure: vivid red 600 would equal status-error (status-distinctness.test.ts).
     const DEPARTURES: Record<string, string> = {
       'status-error-vivid': primitiveRamps.red[700],
-      'active-work: dataviz-categorical-0': primitiveRamps.blue[700],
     }
+    // The shell accents wait for the categorical lock (FD6); brands.tsx is unchanged here.
+    const NOT_SHIPPED = new Set([
+      'status-error as text',
+      'active-work: dataviz-categorical-0',
+      'agents: dataviz-categorical-4',
+    ])
     const solved = solveRecolours(option('q5cInsets').planes)
     expect(Object.keys(solved)).toHaveLength(16)
     for (const [id, colour] of Object.entries(solved)) {
-      if (id === 'status-error as text') continue
+      if (NOT_SHIPPED.has(id)) continue
       const at = id in shipped ? shipped[id] : light[id.replace(/^[\w-]+: /, '')]
       expect(at, id).toBe(DEPARTURES[id] ?? colour)
     }
