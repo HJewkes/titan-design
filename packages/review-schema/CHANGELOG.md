@@ -17,6 +17,14 @@ project adheres to [Semantic Versioning](https://semver.org/).
   option. An unanswered question does not block. Exports `PrGroupShipStatus` and `ShipBlocker`.
 - `lintRound` rule `missing-implemented-option`: an `iterate` or `decide` pick question declares
   `implemented`.
+- `titan-locks/1` (`LOCKS_SCHEMA_ID`, `LocksSchema`, `parseLocks`): a registry of decision locks.
+  Each lock (`L-NNNN`) is keyed on its `decision` (ledger row, decisions item, round, question
+  id), has zero or more `holders` (a PR at a head), declares `touches` (tokens per mode,
+  components, axis) when it has no holder, and orders itself with `after`. Top-level
+  `dependents` name the lock they wait on with `mode` `stack-on` or `defer` and a `reason`. The
+  schema refuses an unknown lock id in `after` or `dependents`, an `after` cycle, a repeated lock
+  id and a decision row keyed by two locks, naming the ids. Exports `afterCycles`,
+  `locksProblems`, `LOCK_AXES`, `LOCK_STATUSES` and `DEPENDENT_MODES`.
 
 ## [0.3.0]
 
