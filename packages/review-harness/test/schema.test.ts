@@ -36,10 +36,10 @@ describe('round manifest', () => {
     expect(issues(twelve)).toEqual([])
   })
 
-  it('takes up to 80 variants when the round pages through sections', () => {
+  it('takes any number of variants when the round pages through sections', () => {
     expect(ManifestSchema.parse(pagedImageInput(60)).variants).toHaveLength(60)
-    expect(issues(pagedImageInput(80))).toEqual([])
-    expect(issues(pagedImageInput(81))).toEqual(['variants'])
+    expect(issues(pagedImageInput(81))).toEqual([])
+    expect(issues(pagedImageInput(160))).toEqual([])
   })
 
   it('rejects duplicate variant keys, question ids and widths', () => {

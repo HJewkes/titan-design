@@ -51,6 +51,17 @@ export const CONTENT_PLANES = [
   'surface-overlay',
 ] as const
 
+/** Planes a face one step UP from a content plane lands on (`raisedLevel`, clamped at overlay). */
+const RAISED_FACE_PLANES = ['surface-elevated', 'surface-raised', 'surface-overlay'] as const
+
+/** Planes a face one step DOWN from a content plane lands on (`pressedLevel`). */
+const PRESSED_FACE_PLANES = [
+  'background-base',
+  'surface-base',
+  'surface-elevated',
+  'surface-raised',
+] as const
+
 const TEXT_FLOORS = {
   'text-primary': 7, // body copy, AAA
   'text-secondary': AA,
@@ -110,9 +121,10 @@ const labelsOnOtherFills: ContrastPair[] = [
     floor: AA,
     modes: BOTH,
   })),
-  // ToolbarButton paints its face from the grey ramp in both modes.
-  { fg: 'on-control-idle', bg: 'grey-600', floor: AA, modes: BOTH },
-  { fg: 'on-control-active', bg: 'grey-800', floor: AA, modes: BOTH },
+  // ToolbarButton's faces are ramp planes one step up (idle) or down (active) from
+  // the toolbar's plane (TD-265), so each label owes AA on every plane it can land on.
+  ...RAISED_FACE_PLANES.map((bg) => ({ fg: 'on-control-idle', bg, floor: AA, modes: BOTH })),
+  ...PRESSED_FACE_PLANES.map((bg) => ({ fg: 'on-control-active', bg, floor: AA, modes: BOTH })),
   // The inverted plane is the primary ink: a tooltip, a neutral pill.
   { fg: 'text-inverse', bg: 'text-primary', floor: AA, modes: BOTH },
   // Treemap falls back to on-data-strong on its categorical tiles.
