@@ -62,8 +62,7 @@ The `on-*` family is "the label that sits ON this fill". Two members are not fil
   `on-control-active` / `on-control-idle` rather than `on-brand-primary`, even though the dark active
   value is the same white; the role is what makes it survive a retune. The idle and pressed faces are
   elevation planes one step up and one step down from the toolbar's plane (TD-265), so the labels owe
-  AA on every plane a face can land on; `control-face-disabled` paints the disabled face. `control-face`
-  and `control-face-active` (TD-264) have no component reader.
+  AA on every plane a face can land on; `control-face-disabled` paints the disabled face (TD-264).
 - **`on-data-strong`** — a label on a light categorical data tile. Every `text-*` role is far too
   light to read there.
 
@@ -215,6 +214,9 @@ and the line-height that comes with it.
 
 `overline` and `microLabel` are the same idea at two sizes and in two faces: `overline` is
 12px `font-body`, `microLabel` is 10px `font-sans` for dense tabular headers.
+
+Which variant, face, weight, case and colour each text role takes (headings, titles, labels, lockups,
+controls, chart text) is `docs/typography-rules.md`, rendered live in Storybook `Lab/Typography/Rules`.
 
 Raw sizes, when a variant genuinely does not fit:
 

@@ -9,7 +9,6 @@ import {
   surfaceBackground,
   type SurfaceLevel,
 } from '../surface'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
 
 function faceColor(theme: 'dark' | 'light', isActive?: boolean, level?: SurfaceLevel): string {
   const { unmount } = render(
@@ -148,12 +147,9 @@ describe('ToolbarButton', () => {
       expect(faceColor('dark', false, 'base')).not.toBe(faceColor('dark', false, 'elevated'))
     })
 
-    it('presses the light face to a lighter plane than the silver control-face-active', () => {
-      const silver = getSemanticColors('light')['control-face-active']
-
+    it('presses the light face down to the base plane', () => {
       const face = faceColor('light', true, 'elevated')
 
-      expect(face).not.toBe(hexToRgb(silver))
       expect(face).toBe(hexToRgb(surfaceBackground('base', 'light')))
     })
   })

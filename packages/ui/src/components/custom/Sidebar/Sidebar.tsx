@@ -9,6 +9,7 @@ import {
   type GestureResponderEvent,
 } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { Divider } from '../../ui/divider'
 
 interface SidebarContextType {
   isCollapsed: boolean
@@ -94,7 +95,10 @@ export interface SidebarHeaderProps {
  */
 export function SidebarHeader({ children, className }: SidebarHeaderProps) {
   return (
-    <View className={cn('px-4 py-4 border-b border-hairline-subtle', className)}>{children}</View>
+    <>
+      <View className={cn('px-4 py-4', className)}>{children}</View>
+      <Divider className="bg-hairline-subtle" />
+    </>
   )
 }
 
@@ -124,7 +128,10 @@ export interface SidebarFooterProps {
  */
 export function SidebarFooter({ children, className }: SidebarFooterProps) {
   return (
-    <View className={cn('px-2 py-4 border-t border-hairline-subtle', className)}>{children}</View>
+    <>
+      <Divider className="bg-hairline-subtle" />
+      <View className={cn('px-2 py-4', className)}>{children}</View>
+    </>
   )
 }
 
@@ -268,5 +275,5 @@ export interface SidebarDividerProps {
  * Divider between sidebar sections.
  */
 export function SidebarDivider({ className }: SidebarDividerProps) {
-  return <View className={cn('h-px mx-4 my-2 bg-hairline-subtle', className)} />
+  return <Divider className={cn('w-auto mx-4 my-2 bg-hairline-subtle', className)} />
 }

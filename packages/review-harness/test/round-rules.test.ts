@@ -90,7 +90,7 @@ async function dirWith(name: string, draft: ManifestInput) {
 async function build(path: string, priorFeedback: string[] = []) {
   const lines: string[] = []
   const io = { stderr: (t: string) => lines.push(t), measure: async () => [], git: tree }
-  const code = await buildRound(path, undefined, io, '/tree', priorFeedback)
+  const code = await buildRound(path, undefined, io, { tree: '/tree', priorFeedback })
   return { code, lines }
 }
 

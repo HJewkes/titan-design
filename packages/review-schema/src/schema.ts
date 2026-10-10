@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { SHIP_OPTIONS, contractProblems, duplicates, type Problem } from './contract.ts'
+import { LOCK_AXES } from './locks.ts'
 
 export const MANIFEST_SCHEMA_ID = 'titan-review/round@2'
 /** A round written before the review contract: the page still reads it, the CLI refuses it. */
@@ -111,6 +112,23 @@ export const DECISION_KINDS = ['iterate', 'ship', 'decide'] as const
 /** What picking an option means for its PR's Ship: `changes` withholds Ship until a fix round. */
 export const OPTION_OUTCOMES = ['accept', 'changes', 'neutral'] as const
 
+/** A token a question's answer would decide; leaving `mode` out means both modes. */
+const touchedToken = z
+  .object({ name: z.string().min(1), mode: z.enum(['light', 'dark']).optional() })
+  .strict()
+
+/**
+ * What a question with no PR diff would decide: the tokens, components and axis a lock check reads
+ * (`build --locks`). A question on a PR page needs none; its PR head's footprint stands for it.
+ */
+export const QuestionTouchesSchema = z
+  .object({
+    tokens: z.array(touchedToken),
+    components: z.array(z.string().min(1)).default([]),
+    axis: z.enum(LOCK_AXES).optional(),
+  })
+  .strict()
+
 const questionBase = {
   id,
   prompt: z.string().min(1),
@@ -126,6 +144,7 @@ const questionBase = {
    */
   frames: z.array(id).min(1).optional(),
   decision: z.enum(DECISION_KINDS).optional(),
+  touches: QuestionTouchesSchema.optional(),
 }
 
 /** Which variant each option stands for, so one click answers and picks the variant. */
@@ -804,6 +823,7 @@ export type Question = Manifest['questions'][number]
 export type TopicPrefix = (typeof TOPIC_PREFIXES)[number]
 export type StackedOn = z.infer<typeof StackedOnSchema>
 export type PrGroup = z.infer<typeof PrGroupSchema>
+export type QuestionTouches = z.output<typeof QuestionTouchesSchema>
 export type DecisionKind = (typeof DECISION_KINDS)[number]
 export type OptionOutcome = (typeof OPTION_OUTCOMES)[number]
 export type FrameChange = (typeof FRAME_CHANGES)[number]

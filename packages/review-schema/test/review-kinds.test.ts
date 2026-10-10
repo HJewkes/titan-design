@@ -43,6 +43,26 @@ describe('review kinds, outcomes, PR groups and frame units', () => {
     expect(parsed.data?.variants[0]).toMatchObject({ variantUnit: 'u1', change: 'new' })
   })
 
+  it('accepts a question that declares the tokens its answer decides (touches)', () => {
+    const round = realRound()
+    const i = pickOneIndex(round)
+    round.questions[i] = {
+      ...round.questions[i],
+      touches: { tokens: [{ name: 'surface-base', mode: 'light' }, { name: 'divider' }] },
+    }
+    const parsed = RoundSchema.safeParse(round)
+    expect(messages(parsed)).toEqual([])
+    expect(parsed.data?.questions[i].touches).toEqual({
+      tokens: [{ name: 'surface-base', mode: 'light' }, { name: 'divider' }],
+      components: [],
+    })
+    round.questions[i] = {
+      ...round.questions[i],
+      touches: { tokens: [{ name: 'surface-base', mode: 'dim' }] },
+    }
+    expect(messages(RoundSchema.safeParse(round))).not.toEqual([])
+  })
+
   it('refuses an outcome for an option the question does not offer', () => {
     const round = realRound()
     const i = pickOneIndex(round)
