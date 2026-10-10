@@ -13300,106 +13300,6 @@
     },
     {
       "composes": [
-        "Surface"
-      ],
-      "family": "ui/help-tip",
-      "file": "packages/ui/src/components/ui/help-tip/HelpTip.tsx",
-      "name": "HelpTip",
-      "props": [
-        {
-          "default": "default",
-          "description": "Icon color",
-          "name": "color",
-          "required": false,
-          "type": "\"default\" | \"primary\" | \"secondary\" | \"muted\""
-        },
-        {
-          "default": null,
-          "description": "Tooltip content",
-          "name": "content",
-          "required": true,
-          "type": "ReactNode"
-        },
-        {
-          "default": "true",
-          "description": "Whether to show an arrow",
-          "name": "hasArrow",
-          "required": false,
-          "type": "boolean"
-        },
-        {
-          "default": "help",
-          "description": "Icon type",
-          "name": "icon",
-          "required": false,
-          "type": "HelpTipIcon"
-        },
-        {
-          "default": null,
-          "description": "Additional className for the icon",
-          "name": "iconClassName",
-          "required": false,
-          "type": "string"
-        },
-        {
-          "default": null,
-          "description": "Whether the tooltip is always visible (controlled)",
-          "name": "isOpen",
-          "required": false,
-          "type": "boolean"
-        },
-        {
-          "default": "250",
-          "description": "Max width of the tooltip",
-          "name": "maxWidth",
-          "required": false,
-          "type": "number"
-        },
-        {
-          "default": "top",
-          "description": "Placement of the tooltip",
-          "name": "placement",
-          "required": false,
-          "type": "HelpTipPlacement"
-        },
-        {
-          "default": "md",
-          "description": "Size of the icon",
-          "name": "size",
-          "required": false,
-          "type": "HelpTipSize"
-        },
-        {
-          "default": null,
-          "description": "Additional className for the tooltip",
-          "name": "tooltipClassName",
-          "required": false,
-          "type": "string"
-        }
-      ],
-      "purpose": "HelpTip component for displaying contextual help information.",
-      "sources": {
-        "props": "packages/ui/src/components/ui/help-tip/HelpTip.tsx",
-        "status": "packages/ui/src/components/ui/help-tip/HelpTip.stories.tsx"
-      },
-      "status": "candidate",
-      "storyIds": [
-        "components-molecules-helptip--all-colors",
-        "components-molecules-helptip--all-icons",
-        "components-molecules-helptip--all-placements",
-        "components-molecules-helptip--all-sizes",
-        "components-molecules-helptip--default",
-        "components-molecules-helptip--form-example",
-        "components-molecules-helptip--inline-with-label",
-        "components-molecules-helptip--label-with-help-component",
-        "components-molecules-helptip--no-arrow",
-        "components-molecules-helptip--with-long-content",
-        "components-molecules-helptip--with-rich-content"
-      ],
-      "tier": "molecule"
-    },
-    {
-      "composes": [
         "Typography"
       ],
       "family": "ui/highlight-text",
@@ -16118,6 +16018,7 @@
       "storyIds": [
         "components-molecules-tooltip--all-placements",
         "components-molecules-tooltip--default",
+        "components-molecules-tooltip--help-beside-label",
         "components-molecules-tooltip--on-text",
         "components-molecules-tooltip--with-delay",
         "components-molecules-tooltip--without-arrow"
