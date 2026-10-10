@@ -4,6 +4,7 @@ import { axe } from 'jest-axe'
 import { Scatter, type ScatterDatum } from './Scatter'
 import { Surface } from '../../surface'
 import { getSemanticColors } from '../../../../theme/tokens/semantic'
+import { capturedByNode, capturedClassNames } from '../../../../test/classname-capture'
 
 const data: ScatterDatum[] = [
   { id: 'a', x: 0.1, y: 0.9, label: 'core' },
@@ -100,6 +101,19 @@ describe('Scatter', () => {
     render(<Scatter {...base} axis={{ xLabel: 'Instability', yLabel: 'Abstractness' }} />)
     expect(screen.getByTestId('scatter-x-label')).toHaveTextContent('Instability')
     expect(screen.getByTestId('scatter-y-label')).toHaveTextContent('Abstractness')
+  })
+
+  it('sets the axis title in the heading face', () => {
+    render(<Scatter {...base} axis={{ xLabel: 'Instability' }} />)
+    expect(capturedClassNames.get('scatter-x-label')?.split(/\s+/)).toContain('font-heading')
+  })
+
+  it('sets tick numerals in mono tertiary', () => {
+    render(<Scatter {...base} />)
+    const tick = screen.getAllByTestId('scatter-gridline-y')[0].firstChild as object
+    expect(capturedByNode.get(tick)?.split(/\s+/)).toEqual(
+      expect.arrayContaining(['font-mono', 'text-text-tertiary'])
+    )
   })
 
   it('labels a point by its label, falling back to id', () => {
