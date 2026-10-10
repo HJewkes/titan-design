@@ -59,6 +59,7 @@ const meta: Meta<WallArgs> = {
         liveKey={variant === 'rest' ? 'live' : null}
         devices={variant === 'no-device' ? [] : DEVICES}
         subtitle="wall dashboard"
+        contentPadding="none"
       >
         <LivePage variant={variant} model={tempo ? dashboardFixture : noTempoModel} />
       </WorkoutShell>

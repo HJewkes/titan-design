@@ -1,3 +1,4 @@
+import type React from 'react'
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { Text } from 'react-native'
@@ -5,6 +6,21 @@ import { axe } from 'jest-axe'
 import { AppShell } from './AppShell'
 import { type SideNavItem } from './SideNav'
 import { Page } from '../ui/page'
+
+// jsdom has no NativeWind transform, so surface className as data-cls for class-name assertions.
+vi.mock('react-native', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('react-native')>()
+  const Base = actual.View as React.ComponentType<Record<string, unknown>>
+  return {
+    ...actual,
+    View: function ViewWithCls(props: { className?: string }) {
+      return <Base {...props} dataSet={{ cls: props.className ?? '' }} />
+    },
+  }
+})
+
+const frameClasses = () =>
+  screen.getByText('body').parentElement?.getAttribute('data-cls')?.split(' ') ?? []
 
 const navItems: SideNavItem[] = [
   { key: 'notes', label: 'Notes', icon: null },
@@ -98,6 +114,24 @@ describe('AppShell', () => {
   it('carries the brand through to the top bar', () => {
     render(<AppShell brand="agents" navItems={navItems} activeKey="notes" />)
     expect(screen.getByText('AGENTS')).toBeInTheDocument()
+  })
+
+  it('pads the content region with the responsive gutter by default', () => {
+    render(
+      <AppShell brand="voltras" navItems={navItems} activeKey="notes">
+        <Text>body</Text>
+      </AppShell>
+    )
+    expect(frameClasses()).toEqual(expect.arrayContaining(['p-gutter-sm', 'md:p-gutter-md']))
+  })
+
+  it('drops the content padding when contentPadding is none', () => {
+    render(
+      <AppShell brand="voltras" navItems={navItems} activeKey="notes" contentPadding="none">
+        <Text>body</Text>
+      </AppShell>
+    )
+    expect(frameClasses().filter((c) => c.includes('gutter'))).toEqual([])
   })
 
   it('has no a11y violations', async () => {

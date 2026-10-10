@@ -9855,6 +9855,13 @@
           "type": "string"
         },
         {
+          "default": "default",
+          "description": "Gutter around the content region: `p-gutter-sm` below the `md` breakpoint, `p-gutter-md` from it.",
+          "name": "contentPadding",
+          "required": false,
+          "type": "AppShellContentPadding"
+        },
+        {
           "default": "false",
           "description": "Render the content region as the `main` landmark.",
           "name": "isMainLandmark",
@@ -10723,6 +10730,13 @@
           "name": "className",
           "required": false,
           "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Passed to {@link AppShell}: `none` when the children own their gutter.",
+          "name": "contentPadding",
+          "required": false,
+          "type": "AppShellContentPadding"
         },
         {
           "default": "[\n  { id: 'Voltra-A3F2', nickname: 'Left Cable', slot: 'L', state: 'connected' },\n  { id: 'Voltra-9B1C', nickname: 'Right Cable', slot: 'R', state: 'connected' },\n]",
