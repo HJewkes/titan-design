@@ -9,6 +9,10 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Optional `touches` on every question kind (`QuestionTouchesSchema`, type `QuestionTouches`):
+  `{ tokens: [{ name, mode? }], components?: string[], axis? }`, what a question with no PR diff
+  would decide. `build --locks` in review-harness reads it as the question's plan for
+  `lockConflicts`; a question on a PR page needs none.
 - Optional `implemented` on pick-one (an option) and pick-many (a list of options): what the PR
   implements at its head. Every entry must be one of the question's options and not its
   `revisionOption`.
