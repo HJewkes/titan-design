@@ -572,9 +572,10 @@ Per holder, one of:
   footprint: files, tokens, and readers it edits. `[changed]` marks a dependent whose overlap
   differs from the one the registry's footprint and `touches` give. A dependent's diff starts
   at whichever of its base, the holder's recorded head and its new head leaves it the fewest
-  commits, so a dependent stacked on a holder that was since rebased does not inherit the
-  holder's diff. A dependent that merged main in after stacking still shows main's later
-  changes in its files.
+  commits. A dependent stacked on the holder's recorded head may share two best merge-bases
+  with the moved holder (that head, and a main tip both merged in); `git merge-base` names
+  either, and naming main would hand the dependent the holder's whole diff. A dependent that
+  merged main in after stacking still shows main's later changes in its files.
 - **unchanged**: listed, nothing to do.
 
 The pure core is `src/locks-sync.ts` (`planSync`, `formatSync`); `lockSync` in `src/locks.ts`

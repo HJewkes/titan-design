@@ -34,8 +34,8 @@ export interface FootprintOptions {
   pr?: string
   /**
    * Commits the head may be stacked on, such as a holder's recorded and current heads. The
-   * diff then starts at the nearest of these and the base, so a dependent stacked on a holder
-   * that was since rebased does not count the holder's commits as its own.
+   * diff then starts at the nearest of these and the base, so a dependent stacked on the
+   * recorded head does not count the holder's later commits as its own.
    */
   stackedOn?: string[]
   base?: string
@@ -136,8 +136,9 @@ const commitExists = (repo: string, sha: string, io: LocksIo) =>
 
 /**
  * The merge-base of `head` with `base` or with whichever present `stackedOn` commit leaves the
- * fewest commits to `head`. One multi-way `git merge-base` would pick arbitrarily between a
- * stacked holder head and a main tip the head has since merged in.
+ * fewest commits to `head`. A head stacked on a holder's recorded head can share two best
+ * merge-bases with the holder's fast-forwarded head (that recorded head, and a main tip both
+ * merged in), and `git merge-base` names either one.
  */
 async function mergeBase(
   repo: string,

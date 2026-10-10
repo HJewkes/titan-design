@@ -39,21 +39,27 @@ function prs(holder: Partial<PrState>): Record<number, PrState> {
   }
 }
 
-/** git for two derivations: #101 at its new head on main, and #102 on top of that head. */
+/**
+ * git for two derivations: #101 fast-forwarded from its recorded head to a new one that merged
+ * main, and #102, stacked on the recorded head, which merged the same main. #102 then has two
+ * best merge-bases with the holder branch (the recorded head and main's tip), and git names main.
+ */
 const gitReplies: Record<string, string> = {
   [`rev-parse --verify ${NEW_HEAD}^{commit}`]: NEW_HEAD,
   [`rev-parse --verify ${DEP_HEAD}^{commit}`]: DEP_HEAD,
   [`merge-base origin/main ${NEW_HEAD}`]: MAIN,
+  [`rev-parse --verify --quiet ${HOLDER_HEAD}^{commit}`]: HOLDER_HEAD,
   [`rev-parse --verify --quiet ${NEW_HEAD}^{commit}`]: NEW_HEAD,
-  // The recorded head was force-pushed away; of main and the current head, the head is nearer.
   [`merge-base origin/feat/planes ${DEP_HEAD}`]: MAIN,
-  [`merge-base ${NEW_HEAD} ${DEP_HEAD}`]: NEW_HEAD,
+  [`merge-base ${HOLDER_HEAD} ${DEP_HEAD}`]: HOLDER_HEAD,
+  [`merge-base ${NEW_HEAD} ${DEP_HEAD}`]: MAIN,
   [`rev-list --count ${MAIN}..${DEP_HEAD}`]: '9',
-  [`rev-list --count ${NEW_HEAD}..${DEP_HEAD}`]: '2',
+  [`rev-list --count ${HOLDER_HEAD}..${DEP_HEAD}`]: '2',
   [`diff --name-only ${MAIN} ${NEW_HEAD}`]: [GLOBAL_CSS, ALERT].join('\n'),
-  [`diff --name-only ${NEW_HEAD} ${DEP_HEAD}`]: [SELECT, TABS].join('\n'),
+  [`diff --name-only ${HOLDER_HEAD} ${DEP_HEAD}`]: [SELECT, TABS].join('\n'),
   [`show ${MAIN}:${GLOBAL_CSS}`]: css('base'),
   [`show ${NEW_HEAD}:${GLOBAL_CSS}`]: css('head'),
+  [`show ${HOLDER_HEAD}:${GLOBAL_CSS}`]: css('head'),
   [`show ${DEP_HEAD}:${GLOBAL_CSS}`]: css('head'),
   [`show ${NEW_HEAD}:${TAILWIND_CONFIG}`]: tailwindConfig(),
   [`show ${DEP_HEAD}:${TAILWIND_CONFIG}`]: tailwindConfig(),
@@ -142,7 +148,7 @@ describe('lockSync', () => {
     expectReadOnly(calls)
   })
 
-  it('re-derives the footprint at a new head and flags each dependent that overlaps it', async () => {
+  it('re-derives a fast-forwarded holder and diffs a stacked dependent from the recorded head', async () => {
     const states = prs({ headRefOid: NEW_HEAD })
     const { io, calls } = fakeIo({ ...states, 103: { ...states[103]!, state: 'CLOSED' } })
 
