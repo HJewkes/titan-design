@@ -1,5 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { useMemo, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, type ReactNode } from 'react'
 import { View } from 'react-native'
 import { useControllableState } from '../../../hooks/useControllableState'
 import { cn } from '../../../utils/cn'
@@ -84,9 +84,21 @@ const NO_PROBLEMS: KnowledgeProblem[] = []
 const NO_TABLE: KnowledgeListTable = {}
 const NO_SLOTS: KnowledgeListSlots = {}
 
+/** Asks for page 1 when the filters change, whether from the built-in row, a slot or the prop. */
+function useResetPageOnFilterChange(filters: KnowledgeFilters, setPage: (page: number) => void) {
+  // Compared by value, so a host that rebuilds an equal filters object each render keeps its page.
+  const filtersKey = JSON.stringify(filters)
+  const lastFiltersKey = useRef(filtersKey)
+  useEffect(() => {
+    if (lastFiltersKey.current === filtersKey) return
+    lastFiltersKey.current = filtersKey
+    setPage(1)
+  }, [filtersKey, setPage])
+}
+
 /** The three controlled-or-uncontrolled triplets, with a filter change returning to page 1. */
 function useKnowledgeListState(props: KnowledgeListProps, table: KnowledgeListTable) {
-  const [filters, setFiltersState] = useControllableState({
+  const [filters, setFilters] = useControllableState({
     value: props.filters,
     defaultValue: props.defaultFilters ?? EMPTY_KNOWLEDGE_FILTERS,
     onChange: props.onFiltersChange,
@@ -101,10 +113,7 @@ function useKnowledgeListState(props: KnowledgeListProps, table: KnowledgeListTa
     defaultValue: props.defaultSelectedId,
     onChange: props.onSelectedIdChange,
   })
-  const setFilters = (next: KnowledgeFilters) => {
-    setFiltersState(next)
-    setPage(1)
-  }
+  useResetPageOnFilterChange(filters, setPage)
   return { filters, setFilters, page, setPage, selectedId, setSelectedId }
 }
 
@@ -160,7 +169,10 @@ export function KnowledgeList(props: KnowledgeListProps) {
     [unique, state.filters, now]
   )
   const rows = useMemo(() => toKnowledgeSortRows(filtered), [filtered])
-  const undated = countUndatedExcluded(unique, state.filters, now)
+  const undated = useMemo(
+    () => countUndatedExcluded(unique, state.filters, now),
+    [unique, state.filters, now]
+  )
   const resetFilters = () => state.setFilters(EMPTY_KNOWLEDGE_FILTERS)
 
   return (

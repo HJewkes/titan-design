@@ -114,6 +114,25 @@ describe('KnowledgeList', () => {
     expect(pageReadout()).toMatch(/^101-150 of /)
   })
 
+  it('returns to page 1 when a host changes filters through the filterBar slot', () => {
+    const props = { items: KNOWLEDGE_LARGE, now: KNOWLEDGE_NOW, slots: { filterBar: <>Host</> } }
+    const { rerender } = render(<KnowledgeList {...props} filters={EMPTY_KNOWLEDGE_FILTERS} />)
+    fireEvent.click(screen.getByLabelText('Next page'))
+    expect(pageReadout()).toBe('51-100 of 5000')
+    rerender(<KnowledgeList {...props} filters={{ ...EMPTY_KNOWLEDGE_FILTERS, query: 'note' }} />)
+    expect(pageReadout()).toMatch(/^1-50 of /)
+  })
+
+  it('keeps its page when a host passes an equal filters object again', () => {
+    const props = { items: KNOWLEDGE_LARGE, now: KNOWLEDGE_NOW }
+    const { rerender } = render(
+      <KnowledgeList {...props} filters={{ ...EMPTY_KNOWLEDGE_FILTERS }} />
+    )
+    fireEvent.click(screen.getByLabelText('Next page'))
+    rerender(<KnowledgeList {...props} filters={{ ...EMPTY_KNOWLEDGE_FILTERS }} />)
+    expect(pageReadout()).toBe('51-100 of 5000')
+  })
+
   it('does not change controlled filters on its own, and reports the change', () => {
     const onFiltersChange = vi.fn()
     renderList({ filters: EMPTY_KNOWLEDGE_FILTERS, onFiltersChange })
