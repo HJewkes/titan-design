@@ -25,6 +25,16 @@ project adheres to [Semantic Versioning](https://semver.org/).
   schema refuses an unknown lock id in `after` or `dependents`, an `after` cycle, a repeated lock
   id and a decision row keyed by two locks, naming the ids. Exports `afterCycles`,
   `locksProblems`, `LOCK_AXES`, `LOCK_STATUSES` and `DEPENDENT_MODES`.
+- `lockConflicts(registry, plan)`: a pure check of a planned round or dispatch against the lock
+  registry (`locksProblems` checks the registry itself). The plan lists items (`pr`, `head`, the
+  `base` commit they render on, touched tokens per mode), questions with touched tokens, recorded
+  Ships, and a `contains(commit, ancestor)` predicate the caller answers. It returns
+  `{ kind, lock, ids, tokens, message }[]` of kind `superseded-state` (an item overlapping an
+  open lock's tokens on a base without the holder head), `lock-order` (a holder ahead of an open
+  lock it comes `after`), `re-ask` (a question touching a decided lock's tokens) and `stale-ship`
+  (a Ship at a head that differs from the PR's prior Ship). Exports `LOCK_CONFLICT_KINDS` and the
+  `LockPlan`, `PlannedItem`, `PlannedQuestion`, `RecordedShip`, `ModeToken` and `LockConflict`
+  types.
 
 ## [0.3.0]
 
