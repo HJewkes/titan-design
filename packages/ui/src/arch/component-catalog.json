@@ -16292,14 +16292,6 @@
       "reason": "not-pascal-case"
     },
     {
-      "file": "packages/ui/src/components/custom/Workout/setHeadingKit.tsx",
-      "reason": "not-pascal-case"
-    },
-    {
-      "file": "packages/ui/src/components/custom/Workout/velocity-story-kit.tsx",
-      "reason": "not-pascal-case"
-    },
-    {
       "file": "packages/ui/src/components/custom/Workout/wholeBodyCardParts.tsx",
       "reason": "not-pascal-case"
     },

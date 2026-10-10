@@ -41,7 +41,7 @@ A reusable leaf belongs at the top level, not buried in a family folder. To prom
 2. Move the definitions.
 3. Re-export from the old path so consumers and specimens keep building. Check that the old
    location is not also exported from the root barrel, or the name is exported twice.
-4. Export it from its family barrel: CLAUDE.md > Gotchas (barrel hash).
+4. Export it from its family barrel: CLAUDE.md > Gotchas (arch graph).
 5. Repoint the consumers.
 6. Give it its own story and tests: `story.md` and `verify.md`.
 7. Update the family README reuse audit.
