@@ -1,8 +1,8 @@
 import type { Answer, Feedback, Manifest, Question } from './schema.ts'
 
-// The owner's rule for Ship (decisions item 151): a PR group is not shipped while any answer in it
-// carries free text, or picks an option other than the one the PR implements. A question left
-// unanswered does not block by itself.
+// The owner's rule for Ship (decisions items 151 and 166): Ship is enabled whenever nothing on the
+// PR requests a change. A change request is an answer that carries free text, or picks an option
+// other than the one the PR implements. An unanswered question never blocks.
 
 export const SHIP_BLOCKER_KINDS = ['free-text', 'not-implemented'] as const
 export type ShipBlockerKind = (typeof SHIP_BLOCKER_KINDS)[number]
@@ -19,6 +19,8 @@ export interface PrGroupShipStatus {
   pr: string
   blocked: boolean
   blockers: ShipBlocker[]
+  /** The group's questions, Ship aside, still without an answer: shown, never blocking. */
+  unansweredQuestionIds: string[]
 }
 
 /** The answers the rule reads: a submitted feedback, or the page's draft built the same way. */
@@ -68,6 +70,18 @@ function pickProblem(q: Question, answer: Answer): string | null {
     : `question ${q.id}: picked ${given.map(shown).join(', ')}, but the PR implements ${want.map(shown).join(', ')}`
 }
 
+function isAnswered(answer: Answer | undefined): boolean {
+  if (!answer) return false
+  const { pick, picks, value, text, revisionRequested } = answer
+  return (
+    pick !== undefined ||
+    !!picks?.length ||
+    value !== undefined ||
+    !!text?.trim() ||
+    revisionRequested === true
+  )
+}
+
 function blockersFor(q: Question, answer: Answer | undefined): ShipBlocker[] {
   if (!answer) return []
   const pick = pickProblem(q, answer)
@@ -93,7 +107,11 @@ function blockersFor(q: Question, answer: Answer | undefined): ShipBlocker[] {
 export function shipBlocks(round: ShipRound, feedback: ShipFeedback): PrGroupShipStatus[] {
   const answers = new Map(feedback.answers.map((a) => [a.questionId, a]))
   return groupPrs(round).map((pr) => {
-    const blockers = groupQuestions(round, pr).flatMap((q) => blockersFor(q, answers.get(q.id)))
-    return { pr, blocked: blockers.length > 0, blockers }
+    const questions = groupQuestions(round, pr)
+    const blockers = questions.flatMap((q) => blockersFor(q, answers.get(q.id)))
+    const unansweredQuestionIds = questions
+      .filter((q) => !isMergeBound(q) && !isAnswered(answers.get(q.id)))
+      .map((q) => q.id)
+    return { pr, blocked: blockers.length > 0, blockers, unansweredQuestionIds }
   })
 }

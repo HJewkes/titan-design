@@ -74,6 +74,8 @@ export const VariantSchema = z
     /** The column this frame's variant unit stands in when alternates are compared side by side. */
     alternate: id.optional(),
     change: z.enum(FRAME_CHANGES).optional(),
+    /** The same frame rendered from the PR's base, so a Diff view sets base beside head. */
+    baseImage: imagePath.optional(),
   })
   .strict()
   .superRefine((v, ctx) => {
@@ -542,9 +544,40 @@ export const StackedOnSchema = z
   .object({ repo: repoShape, pr: z.number().int().positive(), headSha: sha40 })
   .strict()
 
-/** One PR at its head and the sections about it, which a page shows together, Ship last. */
+/** The kind of change a PR makes, as its header names it. */
+export const PR_KINDS = ['feature', 'correctness', 'refactor', 'security', 'docs'] as const
+
+/** A path the PR changes, and how. */
+const PrFileSchema = z
+  .object({
+    path: z.string().min(1),
+    status: z.enum(['added', 'modified', 'removed', 'renamed']).optional(),
+  })
+  .strict()
+
+/** The task a PR implements, and what "done" means for it. */
+const PrTaskSchema = z
+  .object({ id: z.string().min(1), title: z.string().optional(), doneWhen: z.string().optional() })
+  .strict()
+
+/**
+ * One PR at its head and the sections about it, which a page shows together, Ship last. The
+ * rest is read-only context a page shows beside the review: never a question.
+ */
 export const PrGroupSchema = z
-  .object({ pr: prPage, headSha: sha40, sectionIds: z.array(id).min(1) })
+  .object({
+    pr: prPage,
+    headSha: sha40,
+    sectionIds: z.array(id).min(1),
+    title: z.string().min(1).optional(),
+    kind: z.enum(PR_KINDS).optional(),
+    /** The PR description, as markdown. */
+    description: z.string().optional(),
+    task: PrTaskSchema.optional(),
+    /** A codewatch report on the PR, as markdown. */
+    codewatch: z.string().optional(),
+    files: z.array(PrFileSchema).optional(),
+  })
   .strict()
 
 function prGroupProblems(m: {
@@ -775,6 +808,7 @@ export type Question = Manifest['questions'][number]
 export type TopicPrefix = (typeof TOPIC_PREFIXES)[number]
 export type StackedOn = z.infer<typeof StackedOnSchema>
 export type PrGroup = z.infer<typeof PrGroupSchema>
+export type PrKind = (typeof PR_KINDS)[number]
 export type DecisionKind = (typeof DECISION_KINDS)[number]
 export type OptionOutcome = (typeof OPTION_OUTCOMES)[number]
 export type FrameChange = (typeof FRAME_CHANGES)[number]
