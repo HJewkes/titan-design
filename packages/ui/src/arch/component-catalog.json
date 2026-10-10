@@ -3082,6 +3082,7 @@
         "custom-prose-markdownprose--code-blocks",
         "custom-prose-markdownprose--default",
         "custom-prose-markdownprose--no-linkers",
+        "custom-prose-markdownprose--on-every-plane",
         "custom-prose-markdownprose--pressable",
         "custom-prose-markdownprose--tables"
       ],

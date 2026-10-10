@@ -44,7 +44,7 @@ role; without one it is styled text, not an interactive element.
 | Headings and body copy | `Typography`       | **Closed.** `h1`/`h2` → `h5`/`h6`, `h3` → `subtitle2`, paragraphs and bullets → `body2`.                                                                                                  |
 | Bold and code spans    | `Typography`       | **Open, deliberately.** Inline spans are raw `<Text>` with `font-semibold` / `font-mono`, because they nest inside a parent `<Text>` run where a `Typography` block would break the flow. |
 | Bullet glyph           | a shared list mark | **Open.** The `•` is drawn inline. One consumer family, so no primitive is justified yet — revisit at the second.                                                                         |
-| Colour                 | semantic tokens    | **Closed.** `text-text-primary` / `text-brand-primary` throughout; the family is in the token-pure eslint error block.                                                                    |
+| Colour                 | semantic tokens    | **Closed.** `text-text-primary` / `text-text-brand` throughout; the family is in the token-pure eslint error block.                                                                       |
 | Class merging          | `cn()`             | **Closed.**                                                                                                                                                                               |
 
 ## States
