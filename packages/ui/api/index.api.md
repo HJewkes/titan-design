@@ -579,6 +579,13 @@ export function bandLabel(best: MuscleStrengthBestE1rm | null): string;
 export function BarList(input: BarListProps): react_jsx_runtime.JSX.Element;
 
 // @public
+export interface BarListMarker {
+    formatValue?: (value: number) => string;
+    label: string;
+    value: number;
+}
+
+// @public
 export interface BarListProps extends Omit<ViewProps, 'children'> {
     accessibilityLabel: string;
     className?: string;
@@ -590,6 +597,7 @@ export interface BarListProps extends Omit<ViewProps, 'children'> {
     layout?: 'inline' | 'stacked';
     max?: number;
     maxRows?: number;
+    referenceMarker?: BarListMarker;
     rows: BarListRow[];
     size?: 'sm' | 'md';
     sort?: 'descending' | 'none';

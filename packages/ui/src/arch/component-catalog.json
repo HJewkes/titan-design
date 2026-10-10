@@ -11628,6 +11628,13 @@
         },
         {
           "default": null,
+          "description": "One labelled line on the value axis (a cutoff, a budget).",
+          "name": "referenceMarker",
+          "required": false,
+          "type": "BarListMarker"
+        },
+        {
+          "default": null,
           "description": "The data, one row per bar.",
           "name": "rows",
           "required": true,
