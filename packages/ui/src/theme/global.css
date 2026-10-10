@@ -427,7 +427,7 @@
 
     --color-status-success: #2B6B25;
     --color-status-success-light: #58F69E;
-    --color-status-success-dark: #298732;
+    --color-status-success-dark: #264D1C;
     --color-status-success-subtle: #B5FFD2;
     --color-status-success-muted: rgba(46, 213, 115, 0.30);
     --color-status-success-strong: rgba(46, 213, 115, 0.50);
@@ -443,20 +443,20 @@
     --color-status-error-vivid: #A4221C;
     --color-status-error-vivid-light: #E05254;
     --color-status-error-vivid-dark: #A4221C;
-    --color-status-error-vivid-subtle: rgba(255, 71, 87, 0.12);
-    --color-status-error-vivid-muted: rgba(255, 71, 87, 0.30);
-    --color-status-error-vivid-strong: rgba(255, 71, 87, 0.50);
+    --color-status-error-vivid-subtle: rgba(164, 34, 28, 0.12);
+    --color-status-error-vivid-muted: rgba(164, 34, 28, 0.30);
+    --color-status-error-vivid-strong: rgba(164, 34, 28, 0.50);
     --color-status-error-vivid-rgb: 255, 71, 87;
     --color-border-prominent: #A29F9D;
     --color-status-warning: #A45E00;
     --color-status-warning-light: #FFD352;
-    --color-status-warning-dark: #C27400;
+    --color-status-warning-dark: #814D14;
     --color-status-warning-subtle: #FFEAA9;
     --color-status-warning-muted: rgba(249, 180, 21, 0.30);
     --color-status-warning-strong: rgba(249, 180, 21, 0.50);
     --color-status-info: #135AA8;
     --color-status-info-light: #78C2FF;
-    --color-status-info-dark: #1072CB;
+    --color-status-info-dark: #14407E;
     --color-status-info-subtle: #D9EFFF;
     --color-status-info-muted: rgba(33, 150, 243, 0.30);
     --color-status-info-strong: rgba(33, 150, 243, 0.50);

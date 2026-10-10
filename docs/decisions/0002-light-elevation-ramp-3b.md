@@ -12,9 +12,10 @@ collided: `surface-base` and `surface-overlay` were both white, and `background-
 on "the page" said nothing about the same pair on a card or a well. Every contrast check, token
 baseline and story baseline takes a plane list as input and needs one fixed light set to read from.
 
-Scope: planes only. This decision fixes which grey each light elevation level takes. The role
-re-colours that keep text and marks above their floors on these planes, and the tone recipe that
-names them, are separate decisions.
+Scope: the planes, and every light role re-point that ships with them. This decision fixes which grey
+each light elevation level takes, and records each light colour moved so that text and marks stay
+above their floors on those planes. The tone recipe that names the text roles is a separate
+decision; this one only applies it.
 
 ## Why existing tokens or primitives cannot serve it
 
@@ -65,6 +66,43 @@ on another plane.
 CVD and near-duplicate: not applicable. No hue or new colour value is added; every plane is an
 existing `greyRamp` step.
 
+Light role re-points, ratio before and after on the grey 100 page and the grey 200 background (WCAG
+2.1; text needs 4.5, marks and borders 3):
+
+| Role                                             | Old to new                              | Floor | grey 100     | grey 200     |
+| ------------------------------------------------ | --------------------------------------- | ----- | ------------ | ------------ |
+| `text-tertiary`                                  | grey 600 to 700                         | 4.5   | 4.07 to 5.83 | 3.21 to 4.60 |
+| `text-secondary`                                 | grey 700 to 800                         | 4.5   | 5.83 to 8.50 | 4.60 to 6.70 |
+| `text-success`                                   | green 700 to 800                        | 4.5   | 5.42 to 8.11 | 4.27 to 6.39 |
+| `text-brand-secondary`                           | cyan 700 to 800                         | 4.5   | 5.63 to 8.31 | 4.43 to 6.55 |
+| `border-input`                                   | grey 500 to 600                         | 3     | 3.03 to 4.07 | 2.39 to 3.21 |
+| `border-input-hover`                             | grey 600 to 700                         | 3     | 4.07 to 5.83 | 3.21 to 4.60 |
+| `status-success`                                 | green 600 to 700                        | 3     | 3.80 to 5.42 | 3.00 to 4.27 |
+| `status-warning`                                 | amber 500 to 600                        | 3     | 3.03 to 4.19 | 2.38 to 3.30 |
+| BarList neutral bar                              | grey 600 to 700                         | 3     | 4.07 to 5.83 | 3.21 to 4.60 |
+| BarList near bar                                 | red 500 to 600                          | 3     | 3.18 to 3.81 | 2.51 to 3.01 |
+| `status-error-vivid` (consequential)             | vivid pin to red 700                    | 3     | 2.79 to 6.21 | 2.20 to 4.89 |
+| `status-info` (consequential)                    | blue 600 to 700                         | 3     | 4.08 to 5.74 | 3.22 to 4.52 |
+| `status-deload` (consequential)                  | magenta 600 to 700                      | 4.5   | 4.56 to 6.37 | 3.59 to 5.02 |
+| `status-success-dark`                            | green 600 to 800                        | none  | 3.80 to 8.11 | 3.00 to 6.39 |
+| `status-warning-dark`                            | amber 500 to 700                        | none  | 3.03 to 5.83 | 2.38 to 4.60 |
+| `status-info-dark`                               | blue 600 to 800                         | none  | 4.08 to 8.49 | 3.22 to 6.69 |
+| `status-error-vivid-subtle`, `-muted`, `-strong` | vivid pin to red 700 at the same alphas | none  |              |              |
+
+The alpha hairlines are set by lightness difference, not ratio: `hairline-default` and `divider` move
+from black 15% to 16% (ΔL\* 12 on grey 200), `hairline-strong` from 22% to 24% (ΔL\* 18).
+
+Labels that painted a fill or mark tone as text now read the tone's text role, per the tone recipe.
+Before and after on grey 100 and grey 200:
+
+| Label                                                      | Old to new                                  | grey 100     | grey 200     |
+| ---------------------------------------------------------- | ------------------------------------------- | ------------ | ------------ |
+| Link; Button outline, ghost, link; Pill clear: `secondary` | `brand-secondary` to `text-brand-secondary` | 3.95 to 8.31 | 3.12 to 6.55 |
+| Alert; Button outline, ghost, link; Pill clear: `error`    | `status-error` to `text-error`              | 3.81 to 6.21 | 3.01 to 4.89 |
+| Alert, Typography, Metric, Button, Pill clear: `warning`   | `status-warning` to `text-warning`          | 4.19 to 5.83 | 3.30 to 4.60 |
+| Alert, Typography, Metric, Button, Pill clear: `success`   | `status-success` to `text-success`          | 5.42 to 8.11 | 4.27 to 6.39 |
+| Pill clear, `brand`                                        | `brand-primary` to `text-brand`             | 2.19 to 6.04 | 1.73 to 4.76 |
+
 ## Decision
 
 Option 3, 3b (decisions item 149(1), Gate 2 batch 12/13). Light frame grey 300, background grey 200,
@@ -79,6 +117,31 @@ accepted because the lift, not the fill, separates those levels.
 These planes are the locked light measurement set (lock L-0001): every token, non-text and story
 contrast baseline is measured against them.
 
+### Role re-points
+
+The re-points in the first table above, from `text-tertiary` to the BarList bars, and the two
+hairlines are the lab's 3b re-colour set. They ship with the planes under the same pick (decisions
+item 149(1)).
+
+Three re-points had no owner pick. Each is a consequence of the planes: without it a gate adds a miss.
+They are shown in the next Gate 2 round, and a Don't ship on any of them flips this record to
+`rejected`, as the README sets out for role re-points:
+
+- `status-error-vivid` to red 700. The vivid pin reads 2.79 on the page, under 3 for a mark. Red 600
+  is `status-error`, so Critical and High would collapse into one colour; red 700 is the next step.
+- `status-info` to blue 700. Its Progress fill reads 2.54 against its track on the grey 200 rail.
+- `status-deload` to magenta 700. The deload WorkoutPill label reads 3.84 on its wash over grey 100,
+  and 4.56 bare, at the floor's edge.
+
+The rest follow from those picks and add no value:
+
+- The vivid red tints move to red 700 with their base. The theme-independent `-rgb` triplet stays on
+  the vivid pin, because it is one value shared with dark, where the pin is still the base.
+- The light `-dark` variants of success, warning and info sit one step past their base, as
+  `status-error-dark` already did. 3b moved each base a step darker and left `-dark` behind it.
+- The labels in the second table above read the tone's text role, the recipe this decision applies
+  but does not set.
+
 ## Rejected alternatives
 
 - **Option 1 and 2, fully monotonic from grey 200.** The page drops to grey 200, where grey 600 text
@@ -91,11 +154,12 @@ contrast baseline is measured against them.
 
 These files change together when this decision lands:
 
-- `packages/ui/src/theme/tokens/semantic.ts` (light `surface-*`, `background-*`) and the `.light`
-  block of `packages/ui/src/theme/global.css`.
+- `packages/ui/src/theme/tokens/semantic.ts` (light `surface-*`, `background-*` and the role
+  re-points above) and the `.light` block of `packages/ui/src/theme/global.css`.
+- The components whose labels read a text role: Alert, Button, Link, Metric, Pill and Typography.
 - `packages/ui/api/*.api.md` (the light token values in the API reports).
 - The contrast baselines measured against the planes: `src/theme/tokens/contrast-baseline.json`,
   `src/theme/nontext-contrast/`, and `tests/visual/contrast-stories-baseline.json`.
 
-Light colours of shell accents, categorical inks and the tone recipe are re-measured on these
-planes in their own decisions; this one does not set them.
+Light colours of shell accents and categorical inks are re-measured on these planes in their own
+decisions; this one does not set them.
