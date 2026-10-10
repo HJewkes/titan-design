@@ -25,7 +25,7 @@ export const SEVERITY_META: Record<
   { label: string; text: string; dot: 'error-vivid' | 'error' | 'warning' | 'info' }
 > = {
   critical: { label: 'Critical', text: 'text-status-error-vivid', dot: 'error-vivid' },
-  high: { label: 'High', text: 'text-status-error', dot: 'error' },
+  high: { label: 'High', text: 'text-text-error', dot: 'error' },
   medium: { label: 'Medium', text: 'text-status-warning', dot: 'warning' },
   low: { label: 'Low', text: 'text-text-tertiary', dot: 'info' },
 }

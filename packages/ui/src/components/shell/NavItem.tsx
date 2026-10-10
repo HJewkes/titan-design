@@ -8,7 +8,7 @@ export interface NavItemProps {
   icon: ReactNode
   /** Short label shown under the glyph (uppercased for display; used as the accessible name). */
   label: string
-  /** Active category → left accent bar + accent-colored glyph & label. */
+  /** Active category → left accent bar + accent-colored glyph, label on `text-primary`. */
   active?: boolean
   /**
    * A set is running for this category while it is NOT the active view
@@ -20,7 +20,7 @@ export interface NavItemProps {
    * is not active ("Train, live"). Defaults to `'live'`.
    */
   liveLabel?: string
-  /** Semantic `text-*` token for the active glyph and label. Defaults to the Voltras brand. */
+  /** Semantic `text-*` token for the active glyph (a non-text mark). Defaults to the Voltras brand. */
   accentClassName?: string
   /** Semantic `bg-*` token for the active bar. Pair it with `accentClassName`. */
   accentBarClassName?: string
@@ -32,10 +32,11 @@ export interface NavItemProps {
  * Shell S2 · NavItem — one category button in the {@link SideNav}: a 20px glyph
  * over an uppercase micro-label in a 46×46 target. The button spans the full 60px
  * rail so the active **left accent bar** sits flush to the rail's edge. States:
- * active = accent bar + the accent token; `live` (while not active) tints only the
+ * active = accent bar + accent glyph over a `text-primary` label (an accent hue rarely
+ * clears 4.5:1 as text in both modes); `live` (while not active) tints only the
  * label `status-success-dark` (the glyph stays dim); otherwise dim `text-tertiary`.
  *
- * The accent follows the mounting app's brand, so a Brain shell reads yellow
+ * The accent follows the mounting app's brand, so a Brain shell reads amber
  * throughout rather than showing a Voltras-orange active item under its own lockup.
  */
 export function NavItem({
@@ -51,7 +52,7 @@ export function NavItem({
 }: NavItemProps) {
   const glyphColor = active ? accentClassName : 'text-text-tertiary'
   const labelColor = active
-    ? accentClassName
+    ? 'text-text-primary'
     : live
       ? 'text-status-live-muted'
       : 'text-text-tertiary'

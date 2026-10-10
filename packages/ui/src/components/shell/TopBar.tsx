@@ -5,11 +5,11 @@ import { surfaceGradient } from '../../theme/gradients'
 import { Divider } from '../ui/divider'
 import { DateTime } from '../ui/date-time'
 import { BrandLockup } from './BrandLockup'
-import { type BrandKey } from './brands'
+import { type BrandKey, type BrandPreset } from './brands'
 
 export interface TopBarProps {
   /** Which app identity the default {@link BrandLockup} renders. */
-  brand?: BrandKey
+  brand: BrandKey | BrandPreset
   /** Brand subtitle. Defaults to the brand preset's own. */
   subtitle?: string
   /** Force the subtitle on/off; defaults to container-responsive (hidden below ~1024px). */
@@ -64,7 +64,7 @@ function dividedCluster(items: ReactNode[]) {
  * <TopBar brand="brain" trailing={[<IndexStatus />, <SearchScope />]} />
  */
 export function TopBar({
-  brand = 'voltras',
+  brand,
   subtitle,
   showSubtitle,
   leading,

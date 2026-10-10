@@ -8,9 +8,18 @@ import {
   type ContrastReport,
   type MeasuredFrame,
 } from './contrast-gate.ts'
+import { FRAMES_DIR, FRAMES_FILE, type FramesIndex } from './frames.ts'
 import { MAIN_REF } from './harness-freshness.ts'
 import { ReviewError, assertStoriesExist, loadRound, type LoadedRound } from './review.ts'
-import type { ContrastOverride, Manifest } from '@titan-design/review-schema'
+import { applyRoundRules } from './round-rules.ts'
+import { discoverPriorRounds, loadPriorRound, shipRefusals } from './ship-gate.ts'
+import {
+  RoundSchema,
+  lintRound,
+  type ContrastOverride,
+  type Manifest,
+  type ManifestInput,
+} from '@titan-design/review-schema'
 
 /** The round was measured and an undeclared miss (or an unmeasured image) blocked it. */
 export const EXIT_REFUSED = 3
@@ -29,6 +38,8 @@ export interface TreeGit {
 export interface BuildIo {
   stderr: (text: string) => void
   measure: (round: LoadedRound) => Promise<MeasuredFrame[]>
+  /** Writes the round's static frames under `<roundDir>/frames/`; a build without one writes none. */
+  renderFrames?: (round: LoadedRound, roundDir: string) => Promise<FramesIndex>
   git: TreeGit
 }
 
@@ -79,12 +90,35 @@ async function treeProvenance(
   return { build: { mainSha: await git.revParse(tree, MAIN_REF), mergeSha } }
 }
 
-/** The bytes round.json gets: the draft's own, or the draft with the build's provenance. */
-async function roundBytes(draftPath: string, build: BuildProvenance | undefined) {
-  const draft = await readFile(draftPath)
-  if (!build) return draft
-  const manifest = JSON.parse(draft.toString('utf8')) as Record<string, unknown>
-  return Buffer.from(`${JSON.stringify({ ...manifest, build }, null, 2)}\n`)
+/** The bytes round.json gets: the draft with the builder rules applied, and the build's provenance. */
+function roundBytes(ruled: ManifestInput, build: BuildProvenance | undefined) {
+  return Buffer.from(`${JSON.stringify(build ? { ...ruled, build } : ruled, null, 2)}\n`)
+}
+
+/** The draft's own JSON with every builder rule applied, and the round it makes, which must lint clean. */
+async function ruledDraft(draftPath: string, round: LoadedRound) {
+  const draft = JSON.parse(await readFile(draftPath, 'utf8')) as ManifestInput
+  const ruled = applyRoundRules(draft)
+  const parsed = RoundSchema.safeParse(ruled)
+  if (!parsed.success)
+    throw new ReviewError(`the builder rules made an invalid round: ${parsed.error.message}`)
+  const problems = lintRound(parsed.data)
+  if (problems.length)
+    throw new ReviewError(
+      `the round fails lintRound:\n${problems.map((p) => `  ${p.rule}: ${p.message}`).join('\n')}`
+    )
+  return { draft, ruled, round: { ...round, manifest: parsed.data } }
+}
+
+/** The Ship questions the draft may not offer, from earlier rounds' feedback. */
+async function shipProblems(draftPath: string, draft: ManifestInput, priorFeedback: string[]) {
+  const named = await Promise.all(priorFeedback.map(loadPriorRound))
+  const found = await discoverPriorRounds(draftPath, draft)
+  const priors = [
+    ...named,
+    ...found.filter((f) => !named.some((n) => n.feedbackPath === f.feedbackPath)),
+  ]
+  return shipRefusals(draft, priors)
 }
 
 async function loadDraft(draftPath: string, storybook: string | undefined) {
@@ -98,26 +132,39 @@ async function loadDraft(draftPath: string, storybook: string | undefined) {
   return round
 }
 
+/** The static frames a passing round gets, rendered for the bytes round.json will carry. */
+async function writeFrames(io: BuildIo, round: LoadedRound, dir: string): Promise<void> {
+  if (!io.renderFrames) return
+  const index = await io.renderFrames(round, dir)
+  io.stderr(`wrote ${join(dir, FRAMES_DIR, FRAMES_FILE)} (${index.frames.length} frames)`)
+}
+
 /**
  * Measures a draft round in light and dark, writes contrast.json beside it, and writes
- * round.json only when nothing undeclared failed: the draft byte for byte, or with `--tree`
- * the draft plus `build`. contrast.json records the sha of the bytes round.json gets.
+ * round.json only when nothing undeclared failed: the draft with the builder rules applied
+ * (round-rules.ts), plus `build` with `--tree`. A Ship question over an open change request in an
+ * earlier round's feedback (ship-gate.ts) refuses the build. contrast.json records the sha of the bytes round.json gets, and
+ * a passing round's static frames are rendered under `frames/` before round.json lands.
  */
 export async function buildRound(
   draftPath: string,
   storybook: string | undefined,
   io: BuildIo,
-  tree?: string
+  tree?: string,
+  priorFeedback: string[] = []
 ): Promise<number> {
-  const round = await loadDraft(draftPath, storybook)
-  const provenance = await treeProvenance(boundHeads(round.manifest), tree, io.git)
+  const { draft, ruled, round } = await ruledDraft(draftPath, await loadDraft(draftPath, storybook))
+  const shipRefused = await shipProblems(draftPath, draft, priorFeedback)
+  const provenance = shipRefused.length
+    ? { refusal: shipRefused }
+    : await treeProvenance(boundHeads(round.manifest), tree, io.git)
   if ('refusal' in provenance) {
     provenance.refusal.forEach((line) => io.stderr(`refused: ${line}`))
     io.stderr(`refused: ${ROUND_FILE} not written`)
     return EXIT_REFUSED
   }
   await assertStoriesExist(round)
-  const bytes = await roundBytes(draftPath, provenance.build)
+  const bytes = roundBytes(ruled, provenance.build)
   const manifestSha256 = createHash('sha256').update(bytes).digest('hex')
   const report = contrastReport({ ...round, manifestSha256, frames: await io.measure(round) })
   const dir = dirname(draftPath)
@@ -128,6 +175,7 @@ export async function buildRound(
     io.stderr(REFUSAL)
     return EXIT_REFUSED
   }
+  await writeFrames(io, { ...round, manifestSha256 }, dir)
   await writeFile(join(dir, ROUND_FILE), bytes)
   io.stderr(`wrote ${join(dir, ROUND_FILE)}`)
   return 0

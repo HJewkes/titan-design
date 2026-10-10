@@ -147,6 +147,153 @@ export interface ActiveWorkoutSuperset {
 export function ActivityIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
+export const AGENT_STATE_META: Record<AgentSummaryState, AgentStateMeta>;
+
+// @public
+export const AGENT_STATE_ORDER: AgentSummaryState[];
+
+// @public
+export function agentAccessibleSummary(agent: AgentSummary, now: number): string;
+
+// @public
+export function AgentCard(input: AgentCardProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface AgentCardProps {
+    agent: AgentSummary;
+    className?: string;
+    footer?: ReactNode;
+    isHighlighted?: boolean;
+    isLoading?: boolean;
+    metricsEmpty?: ReactNode;
+    now: number;
+    onPress?: () => void;
+    onPressTask?: (taskId: string) => void;
+    testID?: string;
+}
+
+// @public
+export function agentCostLabel(costUsd: number | null | undefined): string;
+
+// @public
+export type AgentCostSource = 'session-analytics' | 'exit-report';
+
+// @public
+export function agentCountLabel(n: number): string;
+
+// @public
+export function agentErrorsLabel(metrics: Pick<AgentMetrics, 'toolCalls' | 'errors'>): string;
+
+// @public
+export type AgentIdSource = 'claudeSessionId' | 'nameAtRegisteredAt';
+
+// @public
+export function agentLastEventLabel(lastEventAt: number | null | undefined, now: number): string;
+
+// @public
+export interface AgentMetrics {
+    activity?: number[];
+    contextFraction?: number;
+    errors: number;
+    tokensIn: number;
+    tokensOut: number;
+    toolCalls: number;
+}
+
+// @public
+export type AgentOrigin = 'spawned' | 'adopted' | 'unknown';
+
+// @public
+export interface AgentRosterEntry {
+    agentId: string | null;
+    claudeSessionId: string | null;
+    costSource: AgentCostSource | null;
+    costUsd: number | null;
+    cwd: string | null;
+    dnd: boolean;
+    gitBranch: string | null;
+    id: string;
+    idleMs: number | null;
+    idSource: AgentIdSource;
+    lastEventAt: number | null;
+    name: string;
+    origin: AgentOrigin;
+    profile: string | null;
+    provisional: boolean;
+    registeredAt: number | null;
+    seat: string | null;
+    spawnedAt: number | null;
+    spawnedBy: string | null;
+    state: AgentSummaryState;
+    stateSource: AgentStateSource;
+    surface: string | null;
+    tags: string[];
+    taskId: string | null;
+    workingOn: string | null;
+}
+
+// @public
+export interface AgentRosterSnapshot {
+    agents: AgentRosterEntry[];
+    brokerUptimeMs: number | null;
+    generatedAt: number;
+    history: HistoryWindow;
+    reconnecting: boolean;
+}
+
+// @public
+export function AgentStateLabel(input: AgentStateLabelProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface AgentStateLabelProps {
+    className?: string;
+    isDnd?: boolean;
+    size?: 'sm' | 'md';
+    state: AgentSummaryState;
+}
+
+// @public
+export interface AgentStateMeta {
+    dot: IndicatorColor;
+    label: string;
+    pulse: IndicatorPulse | false;
+}
+
+// @public
+export function agentStateMeta(state: AgentSummaryState): AgentStateMeta;
+
+// @public
+export type AgentStateSource = 'presence' | 'history';
+
+// @public
+export interface AgentSummary {
+    agentId?: string | null;
+    branch?: string | null;
+    costSource?: AgentCostSource | null;
+    costUsd?: number | null;
+    cwd?: string | null;
+    id: string;
+    isDnd?: boolean;
+    isProvisional?: boolean;
+    lastEventAt?: number | null;
+    metrics?: AgentMetrics | null;
+    name: string;
+    origin?: AgentOrigin;
+    profile?: string | null;
+    seat?: string | null;
+    spawnedBy?: string | null;
+    state: AgentSummaryState;
+    stateSource?: AgentStateSource;
+    surface?: string | null;
+    tags?: string[];
+    task?: string | null;
+    taskId?: string | null;
+}
+
+// @public
+export type AgentSummaryState = (typeof PRESENCE_STATES)[number] | (typeof HISTORY_STATES)[number];
+
+// @public
 export function aggregateDelivery(message: ChatMessage): DeliveryStatus | undefined;
 
 // @public
@@ -215,7 +362,7 @@ export function AppShell(input: AppShellProps): react_jsx_runtime.JSX.Element;
 // @public (undocumented)
 export interface AppShellProps {
     activeKey?: string;
-    brand?: BrandKey;
+    brand: BrandKey | BrandPreset;
     children?: ReactNode;
     // (undocumented)
     className?: string;
@@ -360,6 +507,43 @@ export const BAND_H = 16;
 export function bandLabel(best: MuscleStrengthBestE1rm | null): string;
 
 // @public
+export function BarList(input: BarListProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface BarListProps extends Omit<ViewProps, 'children'> {
+    accessibilityLabel: string;
+    className?: string;
+    emptyState?: ReactNode;
+    formatSecondary?: (value: number, row: BarListRow) => string;
+    formatValue?: BarListValueFormatter;
+    isLoading?: boolean;
+    isValueHidden?: boolean;
+    layout?: 'inline' | 'stacked';
+    max?: number;
+    maxRows?: number;
+    rows: BarListRow[];
+    size?: 'sm' | 'md';
+    sort?: 'descending' | 'none';
+}
+
+// @public
+export interface BarListRow {
+    color?: ColorToken$1;
+    description?: string;
+    flag?: {
+        tone: 'warning' | 'error';
+        label: string;
+    };
+    id: string;
+    label: string;
+    secondaryValue?: number | null;
+    value: number | null;
+}
+
+// @public
+export type BarListValueFormatter = (value: number, row?: BarListRow) => string;
+
+// @public
 export function barPaper(color: string, flip?: boolean): ViewStyle;
 
 // @public @deprecated (undocumented)
@@ -454,7 +638,7 @@ export function BotIcon(input: IconProps): react_jsx_runtime.JSX.Element;
 export function BrainIcon(input: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
-export type BrandKey = 'voltras' | 'audiobook' | 'active-work' | 'agents' | 'brain';
+export type BrandKey = 'voltras' | 'audiobook' | 'active-work' | 'agents' | 'brain' | 'console';
 
 // @public
 export const brandKeys: BrandKey[];
@@ -465,7 +649,7 @@ export function BrandLockup(input: BrandLockupProps): react_jsx_runtime.JSX.Elem
 // @public (undocumented)
 export interface BrandLockupProps extends ViewProps {
     accentClassName?: string;
-    brand?: BrandKey;
+    brand: BrandKey | BrandPreset;
     // (undocumented)
     className?: string;
     mark?: ReactNode;
@@ -735,6 +919,15 @@ export interface CardSkeletonProps {
 }
 
 // @public
+export function CardStat(input: CardStatProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface CardStatProps extends ViewProps, Pick<MetricProps, 'label' | 'value' | 'unit' | 'size' | 'align' | 'tone'>, Pick<CardProps, 'variant' | 'elevation' | 'bgColor'> {
+    className?: string;
+    metricProps?: CardStatMetricProps;
+}
+
+// @public
 export function CardTitle(input: CardTitleProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -944,6 +1137,9 @@ export interface CircularTimerProps {
 }
 
 // @public
+export function clampedContextFraction(metrics: AgentMetrics): number | null;
+
+// @public
 export function cn(...inputs: ClassValue[]): string;
 
 // @public @deprecated
@@ -1013,6 +1209,9 @@ export interface ColumnFitResult {
 
 // @public
 export const COMPACT_SEVERITY_BELOW = 840;
+
+// @public
+export function compareAgents(a: AgentSummary, b: AgentSummary): number;
 
 // @public
 export function compareTaskFlow(a: TaskFlowItem, b: TaskFlowItem): number;
@@ -1167,6 +1366,11 @@ export const darkThemeCSSVars: {
     readonly '--color-text-disabled': "rgba(255, 255, 255, 0.38)";
     readonly '--color-text-inverse': "#1C1916";
     readonly '--color-text-error': "#E05254";
+    readonly '--color-text-brand': "#FF7900";
+    readonly '--color-text-brand-secondary': "#22D3EE";
+    readonly '--color-text-success': "#21C05D";
+    readonly '--color-text-warning': "#F9B415";
+    readonly '--color-text-info': "#78C2FF";
     readonly '--color-text-link': "#78C2FF";
     readonly '--color-surface-base': "#252321";
     readonly '--color-surface-elevated': "#2C2A28";
@@ -1294,6 +1498,8 @@ export function DateSeparator(input: DateSeparatorProps): react_jsx_runtime.JSX.
 
 // @public
 export interface DateSeparatorLabels {
+    hideTimes: string;
+    showTimes: string;
     today: string;
     yesterday: string;
 }
@@ -1305,8 +1511,10 @@ export interface DateSeparatorProps {
     date: string | Date | number;
     labels?: Partial<DateSeparatorLabels>;
     now?: string | Date | number;
+    onPress?: () => void;
     showDay?: boolean;
     showTime?: boolean;
+    timesShown?: boolean;
 }
 
 // @public
@@ -1352,6 +1560,9 @@ export function deriveMilestoneState(input: {
 
 // @public
 export function deriveTrajectoryGeometry(input: GoalTrajectoryGeometryInput): GoalTrajectoryGeometry;
+
+// @public
+export function describeRef(input: EntityRef): string;
 
 // @public (undocumented)
 export function DeviationBar(input: DeviationBarProps): react_jsx_runtime.JSX.Element;
@@ -1628,11 +1839,27 @@ export interface EmptyStateProps extends ViewProps {
         size?: number;
         className?: string;
     }>;
+    isIconBare?: boolean;
     title: string;
 }
 
 // @public
+export interface EntityRef {
+    href?: string;
+    id: string;
+    kind: RefKind;
+    label: string;
+    status?: RefStatus;
+}
+
+// @public
 export function EqualIcon(props: IconProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export const ERROR_RATE_FLAG_ABOVE = 0.05;
+
+// @public
+export function errorRate(metrics: Pick<AgentMetrics, 'toolCalls' | 'errors'>): number | null;
 
 // @public
 export function ExactTime(input: {
@@ -2059,6 +2286,9 @@ export function formatSignedCompact(n: number): string;
 export function formatTaskAge(iso: string | null | undefined, now: number): string;
 
 // @public
+export function formatUsd(n: number): string;
+
+// @public
 export function formatVelocity(velocity: number): string;
 
 // @public
@@ -2268,6 +2498,11 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly 'text-inverse': "#FFFFFF";
     readonly 'text-error': "#A4221C";
+    readonly 'text-brand': "#983804";
+    readonly 'text-brand-secondary': "#2A617F";
+    readonly 'text-success': "#2B6B25";
+    readonly 'text-warning': "#814D14";
+    readonly 'text-info': "#135AA8";
     readonly 'text-link': "#135AA8";
     readonly 'text-link-hover': "#135AA8";
     readonly 'surface-base': "#FFFFFF";
@@ -2418,6 +2653,11 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'text-disabled': "rgba(255, 255, 255, 0.38)";
     readonly 'text-inverse': "#1C1916";
     readonly 'text-error': "#E05254";
+    readonly 'text-brand': "#FF7900";
+    readonly 'text-brand-secondary': "#22D3EE";
+    readonly 'text-success': "#21C05D";
+    readonly 'text-warning': "#F9B415";
+    readonly 'text-info': "#78C2FF";
     readonly 'text-link': "#78C2FF";
     readonly 'text-link-hover': "#3CA8FF";
     readonly 'surface-base': "#252321";
@@ -2529,6 +2769,11 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly '--color-text-inverse': "#FFFFFF";
     readonly '--color-text-error': "#A4221C";
+    readonly '--color-text-brand': "#983804";
+    readonly '--color-text-brand-secondary': "#2A617F";
+    readonly '--color-text-success': "#2B6B25";
+    readonly '--color-text-warning': "#814D14";
+    readonly '--color-text-info': "#135AA8";
     readonly '--color-text-link': "#135AA8";
     readonly '--color-surface-base': "#FFFFFF";
     readonly '--color-surface-elevated': "#F9F6F3";
@@ -2697,6 +2942,11 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-text-disabled': "rgba(255, 255, 255, 0.38)";
     readonly '--color-text-inverse': "#1C1916";
     readonly '--color-text-error': "#E05254";
+    readonly '--color-text-brand': "#FF7900";
+    readonly '--color-text-brand-secondary': "#22D3EE";
+    readonly '--color-text-success': "#21C05D";
+    readonly '--color-text-warning': "#F9B415";
+    readonly '--color-text-info': "#78C2FF";
     readonly '--color-text-link': "#78C2FF";
     readonly '--color-surface-base': "#252321";
     readonly '--color-surface-elevated': "#2C2A28";
@@ -3462,6 +3712,9 @@ export function groupByPeriod(sessions: SessionSummary[]): Period[];
 export function groupPriorities(entries: readonly GoalPriorityIndexEntry[]): GoalPriorityIndexGroup[];
 
 // @public
+export function groupRefsByKind(refs: readonly EntityRef[]): RefGroup[];
+
+// @public
 export function Heading(input: HeadingProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -3528,7 +3781,17 @@ export interface HighlightTextProps {
 }
 
 // @public
+export const HISTORY_STATES: readonly ["spawning", "detached", "exited", "failed", "retired"];
+
+// @public
 export function HistoryIcon(props: IconProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface HistoryWindow {
+    events: number;
+    limit: number;
+    oldestAt: number | null;
+}
 
 // @public (undocumented)
 export interface HoverFocusStateOptions {
@@ -3651,6 +3914,9 @@ export function InitiativeCard(input: InitiativeCardProps): react_jsx_runtime.JS
 export interface InitiativeCardProps extends ViewProps {
     // (undocumented)
     className?: string;
+    href?: string;
+    meta?: ReactNode;
+    onPress?: () => void;
     openCount: number;
     rank?: number;
     severityCounts: Record<TaskSeverity, number>;
@@ -3783,6 +4049,15 @@ export function isDark(hex: string): boolean;
 
 // @public
 export function isDoneStage(stage: TaskStage): boolean;
+
+// @public
+export function isErrorRateFlagged(rate: number | null): boolean;
+
+// @public
+export function isHistoryOnly(agent: Pick<AgentSummary, 'stateSource'>): boolean;
+
+// @public
+export function isLiveAgent(state: AgentSummaryState): boolean;
 
 // @public (undocumented)
 export function isLoadTarget(target: GoalMilestoneTarget): target is GoalLoadTarget;
@@ -3922,6 +4197,11 @@ export const lightThemeCSSVars: {
     readonly '--color-text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly '--color-text-inverse': "#FFFFFF";
     readonly '--color-text-error': "#A4221C";
+    readonly '--color-text-brand': "#983804";
+    readonly '--color-text-brand-secondary': "#2A617F";
+    readonly '--color-text-success': "#2B6B25";
+    readonly '--color-text-warning': "#814D14";
+    readonly '--color-text-info': "#135AA8";
     readonly '--color-text-link': "#135AA8";
     readonly '--color-surface-base': "#FFFFFF";
     readonly '--color-surface-elevated': "#F9F6F3";
@@ -4104,6 +4384,9 @@ export interface ListItemTrailingProps extends ViewProps {
     // (undocumented)
     className?: string;
 }
+
+// @public
+export const LIVE_HISTORY_STATES: readonly ["spawning", "detached"];
 
 // @public
 export const LIVE_STRIP_GAP_COLOR: Record<LiveStripGap, Readonly<Record<ThemeMode, string>>>;
@@ -4521,23 +4804,7 @@ export interface MessageListProps {
 export function Metric(input: MetricProps): react_jsx_runtime.JSX.Element;
 
 // @public
-export const METRIC_FONT = "Inter, sans-serif";
-
-// @public
 export type MetricAlign = 'start' | 'center' | 'end';
-
-// @public @deprecated (undocumented)
-export function MetricCell(input: MetricCellProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface MetricCellProps {
-    // (undocumented)
-    children: ReactNode;
-    color: string;
-    // (undocumented)
-    fontSize?: number;
-    weight?: 400 | 600;
-}
 
 // @public (undocumented)
 export function MetricGroup(input: MetricGroupProps): react_jsx_runtime.JSX.Element;
@@ -4550,6 +4817,9 @@ export interface MetricGroupProps extends ViewProps {
     className?: string;
 }
 
+// @public
+export type MetricLabelPosition = 'above' | 'below';
+
 // @public (undocumented)
 export interface MetricProps extends ViewProps {
     align?: MetricAlign;
@@ -4558,6 +4828,7 @@ export interface MetricProps extends ViewProps {
     // (undocumented)
     label: string;
     labelClassName?: string;
+    labelPosition?: MetricLabelPosition;
     // (undocumented)
     size?: 'sm' | 'md' | 'lg';
     tone?: MetricTone;
@@ -4568,6 +4839,7 @@ export interface MetricProps extends ViewProps {
     // (undocumented)
     value: string;
     valueClassName?: string;
+    valueStyle?: StyleProp<TextStyle>;
 }
 
 // @public (undocumented)
@@ -5046,6 +5318,12 @@ export function parseTaskKey(key: string): {
 } | undefined;
 
 // @public
+export function partitionAgents(agents: AgentSummary[]): {
+    live: AgentSummary[];
+    past: AgentSummary[];
+};
+
+// @public
 export const PasswordInput: React__default.ForwardRefExoticComponent<PasswordInputProps & React__default.RefAttributes<TextInput>>;
 
 // @public (undocumented)
@@ -5104,7 +5382,7 @@ export type PillSizeLevel = 'xs' | 'sm' | 'md' | 'lg';
 export type PillTone = 'neutral' | 'brand' | 'brand-secondary' | 'success' | 'warning' | 'error' | 'info';
 
 // @public (undocumented)
-export type PillVariant = 'solid' | 'subtle' | 'outline';
+export type PillVariant = 'solid' | 'subtle' | 'outline' | 'clear';
 
 // @public
 export const PINNED_LIVE_STRIP_PHONE_MAX = 640;
@@ -5317,6 +5595,9 @@ export interface PrBadgeProps extends ViewProps {
     label?: string;
     type?: PRType;
 }
+
+// @public
+export const PRESENCE_STATES: readonly ["working", "available", "blocked"];
 
 // @public
 export const PRESSED_ELEVATION_LEVEL: ElevationLevel;
@@ -5632,14 +5913,17 @@ export type ProgressVariant = 'linear' | 'circular';
 
 // @public (undocumented)
 export interface ProseBlock {
-    // (undocumented)
+    align?: TableAlign[];
+    header?: string[];
+    lang?: string;
+    rows?: string[][];
     text: string;
     // (undocumented)
     type: ProseBlockType;
 }
 
 // @public (undocumented)
-export type ProseBlockType = 'h1' | 'h2' | 'h3' | 'li' | 'p';
+export type ProseBlockType = 'h1' | 'h2' | 'h3' | 'li' | 'p' | 'code' | 'table';
 
 // @public
 export interface ProseLinker {
@@ -5757,6 +6041,112 @@ export const RED_LIGHT: "#F77175";
 export const RED_MID: "#D14343";
 
 // @public
+export const REF_KIND_META: {
+    readonly task: {
+        readonly label: "Task";
+        readonly plural: "Tasks";
+        readonly glyph: "#";
+        readonly color: "data-1";
+    };
+    readonly pr: {
+        readonly label: "Pull request";
+        readonly plural: "Pull requests";
+        readonly glyph: "⇄";
+        readonly color: "data-2";
+    };
+    readonly session: {
+        readonly label: "Session";
+        readonly plural: "Sessions";
+        readonly glyph: "▸";
+        readonly color: "data-5";
+    };
+    readonly agent: {
+        readonly label: "Agent";
+        readonly plural: "Agents";
+        readonly glyph: "@";
+        readonly color: "data-6";
+    };
+    readonly note: {
+        readonly label: "Note";
+        readonly plural: "Notes";
+        readonly glyph: "¶";
+        readonly color: "data-3";
+    };
+    readonly file: {
+        readonly label: "File";
+        readonly plural: "Files";
+        readonly glyph: "/";
+        readonly color: "data-7";
+    };
+    readonly initiative: {
+        readonly label: "Initiative";
+        readonly plural: "Initiatives";
+        readonly glyph: "◆";
+        readonly color: "data-9";
+    };
+};
+
+// @public
+export const REF_KIND_ORDER: readonly ["task", "pr", "session", "agent", "note", "file", "initiative"];
+
+// @public
+export function RefChip(input: RefChipProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface RefChipProps extends EntityRef {
+    className?: string;
+    onPressRef?: (ref: EntityRef) => void;
+    size?: PillSizeLevel;
+    testID?: string;
+}
+
+// @public
+export interface RefGraphKind {
+    color: ColorToken$1;
+    id: RefKind;
+    label: string;
+}
+
+// @public
+export function refGraphKinds(): RefGraphKind[];
+
+// @public
+export interface RefGroup {
+    kind: RefKind;
+    refs: EntityRef[];
+}
+
+// @public
+export type RefKind = 'task' | 'pr' | 'session' | 'agent' | 'note' | 'file' | 'initiative';
+
+// @public
+export interface RefKindMeta {
+    color: ColorToken$1;
+    glyph: string;
+    label: string;
+    plural: string;
+}
+
+// @public
+export interface RefStatus {
+    label: string;
+    tone: PillTone;
+}
+
+// @public
+export function RelatedList(input: RelatedListProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface RelatedListProps {
+    className?: string;
+    emptyState?: ReactNode;
+    isLoading?: boolean;
+    onPressRef?: (ref: EntityRef) => void;
+    refs: readonly EntityRef[];
+    testID?: string;
+}
+
+// @public
 export function RepeatIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -5776,6 +6166,9 @@ export interface RepVelocityCurve {
 
 // @public
 export function resolveActualWeek(actual: GoalActualPoint, weeks: GoalTrajectoryWeek[]): number | undefined;
+
+// @public
+export function resolveBrand(brand: BrandKey | BrandPreset): BrandPreset;
 
 // @public
 export function resolveColor(token: ColorToken$1, mode?: ThemeMode): string;
@@ -6179,6 +6572,11 @@ export const semanticColorsDark: {
     readonly 'text-disabled': "rgba(255, 255, 255, 0.38)";
     readonly 'text-inverse': "#1C1916";
     readonly 'text-error': "#E05254";
+    readonly 'text-brand': "#FF7900";
+    readonly 'text-brand-secondary': "#22D3EE";
+    readonly 'text-success': "#21C05D";
+    readonly 'text-warning': "#F9B415";
+    readonly 'text-info': "#78C2FF";
     readonly 'text-link': "#78C2FF";
     readonly 'text-link-hover': "#3CA8FF";
     readonly 'surface-base': "#252321";
@@ -6332,6 +6730,11 @@ export const semanticColorsLight: {
     readonly 'text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly 'text-inverse': "#FFFFFF";
     readonly 'text-error': "#A4221C";
+    readonly 'text-brand': "#983804";
+    readonly 'text-brand-secondary': "#2A617F";
+    readonly 'text-success': "#2B6B25";
+    readonly 'text-warning': "#814D14";
+    readonly 'text-info': "#135AA8";
     readonly 'text-link': "#135AA8";
     readonly 'text-link-hover': "#135AA8";
     readonly 'surface-base': "#FFFFFF";
@@ -7646,6 +8049,7 @@ export interface TabPanelsProps {
     children?: React__default.ReactNode;
     // (undocumented)
     className?: string;
+    fill?: boolean;
 }
 
 // @public (undocumented)
@@ -8086,6 +8490,7 @@ export interface TileProps extends ViewProps {
     className?: string;
     label: string;
     value: string;
+    // @deprecated
     valueColor?: string;
 }
 
@@ -8260,7 +8665,7 @@ export const TOPBAR_SUBTITLE_MIN = 1024;
 
 // @public (undocumented)
 export interface TopBarProps {
-    brand?: BrandKey;
+    brand: BrandKey | BrandPreset;
     // (undocumented)
     className?: string;
     leading?: ReactNode;
@@ -8408,6 +8813,9 @@ export interface TypographyProps extends TextProps {
 
 // @public (undocumented)
 export type TypographyVariant = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'body1' | 'body2' | 'subtitle1' | 'subtitle2' | 'caption' | 'overline' | 'button' | 'mono' | 'monoLabel' | 'microLabel' | 'boldLabel';
+
+// @public
+export function uniqueAgents(agents: AgentSummary[]): AgentSummary[];
 
 // @public
 export function UnreadBadge(input: UnreadBadgeProps): react_jsx_runtime.JSX.Element | null;
@@ -8834,7 +9242,7 @@ export interface WeekRowWorkout {
     // (undocumented)
     onPress?: () => void;
     // (undocumented)
-    status: WorkoutPillStatus;
+    status: 'completed' | 'current' | 'upcoming' | 'deload' | 'next' | 'missed';
 }
 
 // @public (undocumented)

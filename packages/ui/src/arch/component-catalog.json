@@ -316,6 +316,27 @@
         },
         {
           "default": null,
+          "description": "Makes the whole card one link to this URL.",
+          "name": "href",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Consumer vocabulary under the top task: counts, newest activity, a badge.",
+          "name": "meta",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Makes the whole card one link.",
+          "name": "onPress",
+          "required": false,
+          "type": "(() => void)"
+        },
+        {
+          "default": null,
           "description": "Count of open tasks for this initiative.",
           "name": "openCount",
           "required": true,
@@ -583,6 +604,156 @@
       "storyIds": [
         "custom-activework-portfoliooverview--default",
         "custom-activework-portfoliooverview--no-open-work"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Link",
+        "Pill"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/RefChip.tsx",
+      "name": "RefChip",
+      "props": [
+        {
+          "default": null,
+          "description": "Extra classes on the chip.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Where the ref navigates.",
+          "name": "href",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The ref's stable identity, unique within a list (e.g. `task:TD-1`).",
+          "name": "id",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "What the ref points at.",
+          "name": "kind",
+          "required": true,
+          "type": "RefKind"
+        },
+        {
+          "default": null,
+          "description": "What the chip shows.",
+          "name": "label",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Called with the ref when the chip is pressed.",
+          "name": "onPressRef",
+          "required": false,
+          "type": "((ref: EntityRef) => void)"
+        },
+        {
+          "default": "sm",
+          "description": "Pill size; defaults to `sm`.",
+          "name": "size",
+          "required": false,
+          "type": "PillSizeLevel"
+        },
+        {
+          "default": null,
+          "description": "Shown after the label, e.g. a pull request's open or merged state.",
+          "name": "status",
+          "required": false,
+          "type": "RefStatus"
+        },
+        {
+          "default": "ref-chip",
+          "description": "Defaults to `ref-chip`.",
+          "name": "testID",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "purpose": "RefChip — a typed pointer at another entity: a kind glyph, the ref's label and an optional status.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/ActiveWork/RefChip.tsx",
+        "status": "packages/ui/src/components/custom/ActiveWork/RefChip.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-refchip--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "EmptyState",
+        "Eyebrow",
+        "RefChip",
+        "Skeleton",
+        "Typography"
+      ],
+      "family": "custom/ActiveWork",
+      "file": "packages/ui/src/components/custom/ActiveWork/RelatedList.tsx",
+      "name": "RelatedList",
+      "props": [
+        {
+          "default": null,
+          "description": "Extra classes on the root.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "(\n  <EmptyState\n    title=\"Nothing related\"\n    description=\"No other item links here yet.\"\n    className=\"py-6\"\n  />\n)",
+          "description": "Shown when `refs` is empty.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": "false",
+          "description": "Draws placeholder chips in place of the groups.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Passed to every chip.",
+          "name": "onPressRef",
+          "required": false,
+          "type": "((ref: EntityRef) => void)"
+        },
+        {
+          "default": null,
+          "description": "Refs of any kinds, in any order.",
+          "name": "refs",
+          "required": true,
+          "type": "readonly EntityRef[]"
+        },
+        {
+          "default": "related-list",
+          "description": "Defaults to `related-list`; each chip is `ref-chip-<id>`.",
+          "name": "testID",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "purpose": "RelatedList — a detail page's related panel: refs grouped by kind, each group headed by its plural and a count, each ref a `RefChip`.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/ActiveWork/RelatedList.tsx",
+        "status": "packages/ui/src/components/custom/ActiveWork/RelatedList.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-activework-relatedlist--default"
       ],
       "tier": "organism"
     },
@@ -1037,6 +1208,152 @@
     },
     {
       "composes": [
+        "AgentStateLabel",
+        "Avatar",
+        "Card",
+        "Pill",
+        "Progress",
+        "SparkBars",
+        "Typography"
+      ],
+      "family": "custom/Agents",
+      "file": "packages/ui/src/components/custom/Agents/AgentCard.tsx",
+      "name": "AgentCard",
+      "props": [
+        {
+          "default": null,
+          "description": "The session to show.",
+          "name": "agent",
+          "required": true,
+          "type": "AgentSummary"
+        },
+        {
+          "default": null,
+          "description": "Tailwind overrides on the card.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Host actions under the metrics.",
+          "name": "footer",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": "false",
+          "description": "Marks the card with the accent stripe, for the agent the host has in focus.",
+          "name": "isHighlighted",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "false",
+          "description": "Renders the card's skeleton in place of the content.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Shown in place of the metrics block when `agent.metrics` is null or absent.",
+          "name": "metricsEmpty",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Reference instant for the recency label, injected so renders are deterministic.",
+          "name": "now",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Makes the agent name a link.",
+          "name": "onPress",
+          "required": false,
+          "type": "(() => void)"
+        },
+        {
+          "default": null,
+          "description": "Makes the task id pill a link.",
+          "name": "onPressTask",
+          "required": false,
+          "type": "((taskId: string) => void)"
+        },
+        {
+          "default": "agent-card",
+          "description": "Test id on the card root.",
+          "name": "testID",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "purpose": "One agent session: name, state, stated task, branch, recency, and the transcript's tokens, tool calls, errors, cost and activity.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Agents/AgentCard.tsx",
+        "status": "packages/ui/src/components/custom/Agents/AgentCard.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-agents-agentcard--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "Indicator",
+        "Pill",
+        "Typography"
+      ],
+      "family": "custom/Agents",
+      "file": "packages/ui/src/components/custom/Agents/AgentStateLabel.tsx",
+      "name": "AgentStateLabel",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides on the row.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "false",
+          "description": "The session holds pushes: a message sent to it queues in its inbox instead of interrupting.",
+          "name": "isDnd",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "sm",
+          "description": "`sm` (caption) for cards and rows, `md` (body) for headers.",
+          "name": "size",
+          "required": false,
+          "type": "\"sm\" | \"md\""
+        },
+        {
+          "default": null,
+          "description": "The state to show.",
+          "name": "state",
+          "required": true,
+          "type": "AgentSummaryState"
+        }
+      ],
+      "purpose": "An agent's state as a dot and its word, never colour alone.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Agents/AgentStateLabel.tsx",
+        "status": "packages/ui/src/components/custom/Agents/AgentStateLabel.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-agents-agentstatelabel--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
         "Button",
         "Card",
         "Typography"
@@ -1284,6 +1601,13 @@
           "type": "string | number | Date"
         },
         {
+          "default": null,
+          "description": "Makes the separator a button that toggles message times; the keyboard and tap route to them.",
+          "name": "onPress",
+          "required": false,
+          "type": "(() => void)"
+        },
+        {
           "default": "true",
           "description": "Name the day.",
           "name": "showDay",
@@ -1294,6 +1618,13 @@
           "default": "false",
           "description": "Add the clock time, as Messages does when it opens a day or follows a long pause.",
           "name": "showTime",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "false",
+          "description": "Whether message times are showing, which names the button's action and its state.",
+          "name": "timesShown",
           "required": false,
           "type": "boolean"
         }
@@ -2462,9 +2793,11 @@
       },
       "status": "candidate",
       "storyIds": [
+        "custom-prose-markdownprose--code-blocks",
         "custom-prose-markdownprose--default",
         "custom-prose-markdownprose--no-linkers",
-        "custom-prose-markdownprose--pressable"
+        "custom-prose-markdownprose--pressable",
+        "custom-prose-markdownprose--tables"
       ],
       "tier": "molecule"
     },
@@ -5720,6 +6053,7 @@
     {
       "composes": [
         "Card",
+        "MesoStatusCard.parts",
         "StatusDot"
       ],
       "family": "custom/Workout",
@@ -6656,7 +6990,7 @@
           "type": "number"
         },
         {
-          "default": "primitiveRamps.green[500]",
+          "default": null,
           "description": "Overlay-marker colour.",
           "name": "markerColor",
           "required": false,
@@ -7225,7 +7559,7 @@
           "type": "string"
         },
         {
-          "default": null,
+          "default": "11",
           "description": "Cell font size (px).",
           "name": "fontSize",
           "required": false,
@@ -7267,7 +7601,7 @@
           "type": "string"
         }
       ],
-      "purpose": "The `sets × reps @ load` prescription line, in the TempoDisplay visual language (Inter · letter-spacing 1 · value cells with muted `×` / `@` separators).",
+      "purpose": "The `sets × reps @ load` prescription line, in the TempoDisplay visual language (Typography `mono` · value cells with muted `×` / `@` separators).",
       "sources": {
         "props": "packages/ui/src/components/custom/Workout/SetsRepsLoad.tsx",
         "status": "packages/ui/src/components/custom/Workout/SetsRepsLoad.stories.tsx"
@@ -9062,11 +9396,11 @@
           "type": "string"
         },
         {
-          "default": "voltras",
-          "description": "Which app identity the default {@link TopBar} and nav accent render.",
+          "default": null,
+          "description": "Which app identity the default {@link TopBar} and nav accent render: a registry key or the app's own preset.",
           "name": "brand",
-          "required": false,
-          "type": "BrandKey"
+          "required": true,
+          "type": "BrandKey | BrandPreset"
         },
         {
           "default": null,
@@ -9170,11 +9504,11 @@
           "type": "string"
         },
         {
-          "default": "voltras",
-          "description": "Which app's identity to render.",
+          "default": null,
+          "description": "Which app's identity to render: a registry key, or the app's own preset.",
           "name": "brand",
-          "required": false,
-          "type": "BrandKey"
+          "required": true,
+          "type": "BrandKey | BrandPreset"
         },
         {
           "default": null,
@@ -9243,14 +9577,14 @@
         },
         {
           "default": "text-brand-primary",
-          "description": "Semantic `text-*` token for the active glyph and label.",
+          "description": "Semantic `text-*` token for the active glyph (a non-text mark).",
           "name": "accentClassName",
           "required": false,
           "type": "string"
         },
         {
           "default": "false",
-          "description": "Active category → left accent bar + accent-colored glyph & label.",
+          "description": "Active category → left accent bar + accent-colored glyph, label on `text-primary`.",
           "name": "active",
           "required": false,
           "type": "boolean"
@@ -9328,7 +9662,7 @@
         },
         {
           "default": null,
-          "description": "Semantic `text-*` token for the active item.",
+          "description": "Semantic `text-*` token for the active item's glyph.",
           "name": "accentClassName",
           "required": false,
           "type": "string"
@@ -9401,11 +9735,11 @@
       "name": "TopBar",
       "props": [
         {
-          "default": "voltras",
+          "default": null,
           "description": "Which app identity the default {@link BrandLockup} renders.",
           "name": "brand",
-          "required": false,
-          "type": "BrandKey"
+          "required": true,
+          "type": "BrandKey | BrandPreset"
         },
         {
           "default": null,
@@ -9488,7 +9822,7 @@
         },
         {
           "default": "Devices",
-          "description": "Accessible label (names the glyph / the wrapping trigger button).",
+          "description": "Accessible label (names the glyph / the wrapping trigger button); the state word is appended.",
           "name": "label",
           "required": false,
           "type": "string"
@@ -10091,7 +10425,8 @@
       "status": "candidate",
       "storyIds": [
         "shell-workout-workouttopbar--default",
-        "shell-workout-workouttopbar--device-lost"
+        "shell-workout-workouttopbar--device-lost",
+        "shell-workout-workouttopbar--idle"
       ],
       "tier": "organism"
     },
@@ -10746,10 +11081,107 @@
         "components-molecules-card--outline",
         "components-molecules-card--simple-card",
         "components-molecules-card--skeleton",
+        "components-molecules-card--stat",
         "components-molecules-card--status-filled-cards",
         "components-molecules-card--status-outline-cards"
       ],
       "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Card",
+        "Metric"
+      ],
+      "family": "ui/card",
+      "file": "packages/ui/src/components/ui/card/CardStat.tsx",
+      "name": "CardStat",
+      "props": [
+        {
+          "default": "center",
+          "description": "Aligns the figure and label to the start, centre or end of the column.",
+          "name": "align",
+          "required": false,
+          "type": "MetricAlign"
+        },
+        {
+          "default": null,
+          "description": "Custom background color.",
+          "name": "bgColor",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Merged onto the card.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "1",
+          "description": "Planes to lift above the enclosing Surface (default 2: page → the card plane).",
+          "name": "elevation",
+          "required": false,
+          "type": "CardElevation"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "label",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Passed to the inner Metric.",
+          "name": "metricProps",
+          "required": false,
+          "type": "CardStatMetricProps"
+        },
+        {
+          "default": "sm",
+          "description": "",
+          "name": "size",
+          "required": false,
+          "type": "\"sm\" | \"md\" | \"lg\""
+        },
+        {
+          "default": null,
+          "description": "Colours the value from a semantic token.",
+          "name": "tone",
+          "required": false,
+          "type": "MetricTone"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "unit",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "value",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": "filled",
+          "description": "How the card separates from its host: - `elevated` (default): lifts `elevation` planes and wears the lift (rim + shadow).",
+          "name": "variant",
+          "required": false,
+          "type": "CardVariant"
+        }
+      ],
+      "purpose": "The Card stat preset: one labelled figure on a card plane (roadmap decision 1).",
+      "sources": {
+        "props": "packages/ui/src/components/ui/card/CardStat.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "organism"
     },
     {
       "composes": [
@@ -10825,6 +11257,120 @@
       "status": "stable",
       "storyIds": [
         "components-molecules-carousel--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
+        "BarListCells",
+        "BarListParts",
+        "BarListTip",
+        "EmptyState"
+      ],
+      "family": "ui/charts",
+      "file": "packages/ui/src/components/ui/charts/bar-list/BarList.tsx",
+      "name": "BarList",
+      "props": [
+        {
+          "default": null,
+          "description": "Names the list; the summary is appended to it for assistive tech.",
+          "name": "accessibilityLabel",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Tailwind classes merged onto the list root.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Replaces the default empty state, shown when `rows` is empty.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Formats each row's `secondaryValue`.",
+          "name": "formatSecondary",
+          "required": false,
+          "type": "((value: number, row: BarListRow) => string)"
+        },
+        {
+          "default": null,
+          "description": "Formats each row's value, and the total of the rows past the cap (called without a row).",
+          "name": "formatValue",
+          "required": false,
+          "type": "BarListValueFormatter"
+        },
+        {
+          "default": "false",
+          "description": "Shows skeleton rows in place of the data.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "false",
+          "description": "Hides each row's value after its bar.",
+          "name": "isValueHidden",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": "inline",
+          "description": "`inline` puts label, bar and value on one line; `stacked` puts the bar under them.",
+          "name": "layout",
+          "required": false,
+          "type": "\"inline\" | \"stacked\""
+        },
+        {
+          "default": null,
+          "description": "Value that fills a whole bar.",
+          "name": "max",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Rows shown before the rest fold into one overflow row.",
+          "name": "maxRows",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The data, one row per bar.",
+          "name": "rows",
+          "required": true,
+          "type": "BarListRow[]"
+        },
+        {
+          "default": "md",
+          "description": "Text size and bar thickness.",
+          "name": "size",
+          "required": false,
+          "type": "\"sm\" | \"md\""
+        },
+        {
+          "default": "descending",
+          "description": "`descending` ranks by value; `none` keeps input order (a funnel).",
+          "name": "sort",
+          "required": false,
+          "type": "\"none\" | \"descending\""
+        }
+      ],
+      "purpose": "BarList: a ranked horizontal bar list.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/charts/bar-list/BarList.tsx",
+        "status": "packages/ui/src/components/ui/charts/bar-list/BarList.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-barlist--default"
       ],
       "tier": "organism"
     },
@@ -11024,7 +11570,7 @@
           "description": "",
           "name": "colors",
           "required": true,
-          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 144 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
+          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 149 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
         },
         {
           "default": null,
@@ -11061,7 +11607,7 @@
           "description": "",
           "name": "colors",
           "required": true,
-          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 144 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
+          "type": "{ readonly 'brand-primary': \"#FF7900\"; readonly 'brand-primary-light': \"#FFA063\"; readonly 'brand-primary-dark': \"#DA5F00\"; readonly 'brand-primary-subtle': \"rgba(255, 121, 0, 0.12)\"; ... 149 more ...; readonly 'avatar-text': \"#FFFFFF\"; } | { ...; }"
         },
         {
           "default": null,
@@ -11869,6 +12415,13 @@
           "name": "icon",
           "required": false,
           "type": "ComponentType<{ size?: number | undefined; className?: string | undefined; }>"
+        },
+        {
+          "default": "false",
+          "description": "Draw the icon bare above the title, without the rounded well behind it",
+          "name": "isIconBare",
+          "required": false,
+          "type": "boolean"
         },
         {
           "default": null,
@@ -12747,6 +13300,13 @@
           "type": "string"
         },
         {
+          "default": "below",
+          "description": "Puts the label above or below the figure.",
+          "name": "labelPosition",
+          "required": false,
+          "type": "MetricLabelPosition"
+        },
+        {
           "default": "md",
           "description": "",
           "name": "size",
@@ -12787,6 +13347,13 @@
           "name": "valueClassName",
           "required": false,
           "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Inline style on the value text, for a value a token class cannot express.",
+          "name": "valueStyle",
+          "required": false,
+          "type": "StyleProp<TextStyle>"
         }
       ],
       "purpose": "",
@@ -13059,7 +13626,7 @@
         },
         {
           "default": null,
-          "description": "Visual variant",
+          "description": "Visual variant.",
           "name": "variant",
           "required": false,
           "type": "PillVariant"
@@ -13078,6 +13645,7 @@
         "components-atoms-pill--default",
         "components-atoms-pill--leading-slot",
         "components-atoms-pill--on-both-planes",
+        "components-atoms-pill--outline-on-all-elevations",
         "components-atoms-pill--solid-tones",
         "components-atoms-pill--square-corners"
       ],
@@ -13631,7 +14199,7 @@
           "description": "",
           "name": "align",
           "required": false,
-          "type": "\"center\" | \"stretch\" | \"start\" | \"end\""
+          "type": "\"start\" | \"center\" | \"end\" | \"stretch\""
         },
         {
           "default": null,
@@ -13652,7 +14220,7 @@
           "description": "",
           "name": "justify",
           "required": false,
-          "type": "\"center\" | \"between\" | \"start\" | \"end\" | \"around\""
+          "type": "\"start\" | \"center\" | \"end\" | \"between\" | \"around\""
         },
         {
           "default": null,
@@ -14154,7 +14722,7 @@
           "description": "Text alignment",
           "name": "align",
           "required": false,
-          "type": "\"right\" | \"left\" | \"center\""
+          "type": "\"right\" | \"center\" | \"left\""
         },
         {
           "default": null,
@@ -14244,7 +14812,7 @@
           "description": "Text alignment",
           "name": "align",
           "required": false,
-          "type": "\"right\" | \"left\" | \"center\""
+          "type": "\"right\" | \"center\" | \"left\""
         },
         {
           "default": null,
@@ -14454,11 +15022,11 @@
           "description": "Content alignment within the tile (default: 'center')",
           "name": "align",
           "required": false,
-          "type": "\"center\" | \"start\""
+          "type": "\"start\" | \"center\""
         },
         {
           "default": null,
-          "description": "Additional className",
+          "description": "Additional className.",
           "name": "className",
           "required": false,
           "type": "string"
@@ -14479,13 +15047,13 @@
         },
         {
           "default": null,
-          "description": "Tints the value (status/accent hex or CSS color); defaults to primary text",
+          "description": "Tints the value (status/accent hex or CSS color); defaults to primary text.",
           "name": "valueColor",
           "required": false,
           "type": "string"
         }
       ],
-      "purpose": "Tile — a compact label-over-value stat card.",
+      "purpose": "Tile — a compact label-over-value stat, now a wrapper over the `CardStat` preset.",
       "sources": {
         "props": "packages/ui/src/components/ui/tile/Tile.tsx",
         "status": "packages/ui/src/components/ui/tile/Tile.stories.tsx"
@@ -15107,10 +15675,6 @@
     },
     {
       "file": "packages/ui/src/components/custom/Workout/icons.tsx",
-      "reason": "not-pascal-case"
-    },
-    {
-      "file": "packages/ui/src/components/custom/Workout/metricText.tsx",
       "reason": "not-pascal-case"
     },
     {
