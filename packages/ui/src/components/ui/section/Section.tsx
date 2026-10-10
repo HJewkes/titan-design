@@ -30,7 +30,7 @@ export function SectionHeader({ title, subtitle, trailing, className }: SectionH
         <Typography variant="h6" className="text-sm">
           {title}
         </Typography>
-        {!!subtitle && <Text className="text-xs text-text-tertiary">{subtitle}</Text>}
+        {!!subtitle && <Text className="text-xs text-text-secondary">{subtitle}</Text>}
       </View>
       {!!trailing && <View>{trailing}</View>}
     </View>

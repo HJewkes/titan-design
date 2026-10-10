@@ -126,14 +126,14 @@ function MessageMeta({ message, isOwn, showDelivery, labels }: MetaProps) {
       testID="chat-message-meta"
     >
       {writing ? (
-        <Typography variant="caption" color="tertiary">
+        <Typography variant="caption" color="secondary">
           {labels.writing}
         </Typography>
       ) : null}
       {shownDelivery ? (
         <Typography
           variant="caption"
-          color={shownDelivery === 'undeliverable' ? 'error' : 'tertiary'}
+          color={shownDelivery === 'undeliverable' ? 'error' : 'secondary'}
           testID="chat-message-delivery"
         >
           {labels.delivery[shownDelivery]}

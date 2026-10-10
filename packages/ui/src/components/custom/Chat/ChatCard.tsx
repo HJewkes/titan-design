@@ -78,7 +78,7 @@ export function ChatCard({
         <CardContent className="gap-stack-sm py-inset-sm">
           {children}
           {footnote ? (
-            <Typography variant="caption" color="tertiary">
+            <Typography variant="caption" color="secondary">
               {footnote}
             </Typography>
           ) : null}

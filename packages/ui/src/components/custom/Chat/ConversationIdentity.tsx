@@ -29,7 +29,7 @@ export function ConversationIdentity({
       <Avatar size="lg" colorFromName={participant.displayName} alt={participant.displayName} />
       <Typography variant="subtitle1">{participant.displayName}</Typography>
       {description ? (
-        <Typography variant="caption" color="tertiary">
+        <Typography variant="caption" color="secondary">
           {description}
         </Typography>
       ) : null}
