@@ -950,14 +950,22 @@
   "custom-fatigue-live-fatigue-card--states light": {
     "#888684|#d4d1ce": 4
   },
+  "custom-fatigue-live-fatigue-panel--live-states light": {
+    "#b07b34|#d4d1ce": 1
+  },
   "custom-fatigue-live-fatigue-panel--on-light-surface dark": {
-    "#a29f9d|#d4d1ce": 2
+    "#a29f9d|#d4d1ce": 2,
+    "#b07b34|#d4d1ce": 1
+  },
+  "custom-fatigue-live-fatigue-panel--on-light-surface light": {
+    "#b07b34|#d4d1ce": 1
   },
   "custom-fatigue-velocity-hero--default light": {
     "#424140|#1c1916": 8
   },
   "custom-fatigue-velocity-hero--mid-set light": {
-    "#424140|#1c1916": 4
+    "#424140|#1c1916": 4,
+    "#824d06|#1c1916": 1
   },
   "custom-prose-markdownprose--default dark": {
     "#888684|#252321": 1
@@ -1214,7 +1222,7 @@
   "custom-workout-dataviz-velocitystrip-hero--rep-types light": {
     "#424140|#1c1916": 76,
     "#5a5958|#1c1916": 21,
-    "#824d06|#1c1916": 1
+    "#824d06|#1c1916": 3
   },
   "custom-workout-dataviz-velocitystrip-hero--responsive light": {
     "#424140|#1c1916": 90,
@@ -1222,7 +1230,8 @@
   },
   "custom-workout-dataviz-velocitystrip-hero--set-types light": {
     "#424140|#1c1916": 46,
-    "#5a5958|#1c1916": 12
+    "#5a5958|#1c1916": 12,
+    "#824d06|#1c1916": 1
   },
   "custom-workout-dataviz-volumelandmarkbar--all-zones light": {
     "#ff7900|#d4d1ce": 5
@@ -2504,6 +2513,7 @@
   "lab-north-star-4-fatigue-system--live-states light": {
     "#888684|#d4d1ce": 2,
     "#a29f9d|#d4d1ce": 1,
+    "#b07b34|#d4d1ce": 1,
     "#f9f6f3|#d4d1ce": 1
   },
   "lab-north-star-live-wall-dashboard--live dark": {
