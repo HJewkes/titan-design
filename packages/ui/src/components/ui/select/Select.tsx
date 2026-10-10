@@ -36,6 +36,16 @@ function useSelectContext<T>() {
   return useContext(SelectContext) as SelectContextType<T>
 }
 
+/** Control height of the Select trigger; the same steps as Input's size. */
+export type SelectSize = 'sm' | 'md' | 'lg'
+
+// Same control heights as Input's `sm | md | lg`, so a Select sits level with an Input in a row.
+const sizeStyles: Record<SelectSize, { trigger: string; text: string }> = {
+  sm: { trigger: 'h-8 px-3', text: 'text-sm' },
+  md: { trigger: 'h-10 px-4', text: 'text-base' },
+  lg: { trigger: 'h-12 px-4', text: 'text-lg' },
+}
+
 export interface SelectProps<T = string> extends ViewProps {
   /** Selected value (single mode) */
   value?: T | null
@@ -57,8 +67,44 @@ export interface SelectProps<T = string> extends ViewProps {
   options: SelectOption<T>[]
   /** Visual variant — use 'filled' on dark/elevated surfaces */
   variant?: 'default' | 'filled'
+  /** Control height, matching Input's sizes. Omitted, the trigger keeps its padded height. */
+  size?: SelectSize
   /** Additional className */
   className?: string
+}
+
+interface TriggerStyleState {
+  variant: NonNullable<SelectProps['variant']>
+  size?: SelectSize
+  isInvalid: boolean
+  isDisabled: boolean
+  isOpen: boolean
+}
+
+function triggerBorderClass({ variant, isInvalid }: TriggerStyleState) {
+  if (isInvalid) return 'border-border-input-error'
+  return variant === 'filled' ? 'border-hairline-subtle' : 'border-border-input'
+}
+
+function triggerClassName(state: TriggerStyleState) {
+  const { variant, size, isInvalid, isDisabled, isOpen } = state
+  return cn(
+    'flex-row items-center justify-between rounded-md border',
+    size ? sizeStyles[size].trigger : 'px-4 py-2.5',
+    variant === 'filled' ? 'bg-scrim-subtle' : 'bg-surface-base',
+    triggerBorderClass(state),
+    !isDisabled && !isInvalid && 'web:hover:border-border-input-hover',
+    isOpen && 'border-border-input-focus',
+    isDisabled && 'opacity-50 cursor-not-allowed'
+  )
+}
+
+function labelClassName(size: SelectSize | undefined, hasValue: boolean) {
+  return cn(
+    'flex-1',
+    size && sizeStyles[size].text,
+    hasValue ? 'text-text-primary' : 'text-text-secondary'
+  )
 }
 
 /**
@@ -95,6 +141,7 @@ export function Select<T extends string = string>({
   isInvalid = false,
   options,
   variant = 'default',
+  size,
   className,
   ...props
 }: SelectProps<T>) {
@@ -135,22 +182,9 @@ export function Select<T extends string = string>({
           accessibilityLabel={accessibilityLabel}
           aria-expanded={isOpen}
           accessibilityState={{ expanded: isOpen, disabled: isDisabled }}
-          className={cn(
-            'flex-row items-center justify-between px-4 py-2.5 rounded-md border',
-            variant === 'filled' ? 'bg-scrim-subtle' : 'bg-surface-base',
-            isInvalid
-              ? 'border-border-input-error'
-              : variant === 'filled'
-                ? 'border-hairline-subtle'
-                : 'border-border-input',
-            !isDisabled && !isInvalid && 'web:hover:border-border-input-hover',
-            isOpen && 'border-border-input-focus',
-            isDisabled && 'opacity-50 cursor-not-allowed'
-          )}
+          className={triggerClassName({ variant, size, isInvalid, isDisabled, isOpen })}
         >
-          <Text className={cn('flex-1', hasValue ? 'text-text-primary' : 'text-text-tertiary')}>
-            {displayValue}
-          </Text>
+          <Text className={labelClassName(size, hasValue)}>{displayValue}</Text>
           <View className="flex-row items-center gap-2">
             {hasValue && (
               <Pressable
