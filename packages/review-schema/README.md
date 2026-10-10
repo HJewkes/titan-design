@@ -52,6 +52,8 @@ message }[] }[]`, one per PR group: blocked when an answer in the group has free
   decision it implements, held by zero or more PRs at heads, and ordered by `after`; `dependents`
   wait on a lock by `stack-on` or `defer`. Parsing refuses an unknown lock id, an `after` cycle
   (`afterCycles` lists them), a repeated id and a decision row keyed by two locks.
+- `lockConflicts(registry, plan)`: what a planned round or dispatch conflicts with in the
+  registry. See _Lock conflicts_ below.
 - `isLoopbackUrl(url)`, true only for an http(s) URL on `127.0.0.1`, `localhost` or `[::1]`.
 - `manifestJsonSchema()` and `feedbackJsonSchema()`, the JSON Schema an author writes against.
 - The inferred types: `ManifestInput`, `Manifest`, `Feedback`, `Recommendation`, `Question`,
@@ -62,6 +64,39 @@ import { RoundSchema, MANIFEST_SCHEMA_ID, type ManifestInput } from '@titan-desi
 
 const round: ManifestInput = { schema: MANIFEST_SCHEMA_ID /* ... */ }
 const result = RoundSchema.safeParse(round)
+```
+
+## Lock conflicts
+
+`locksProblems` checks a registry against itself; `lockConflicts(registry, plan)` checks a plan
+against a parsed registry. It is pure: the caller answers `contains(commit, ancestor)` (for
+example with `git merge-base --is-ancestor`), so the function runs no git.
+
+Every overlap reads a lock through `lockSurface(lock)` (its footprint and declared touches) and
+matches tokens with `tokensMatch(a, b)`. A lock may name a token family (`*-subtle`,
+`tint-{hue}-solid / on-tint-{hue}`), and a `ModeToken` with no `mode` stands for both modes. The
+harness's `locks check` and `locks sync` import the same functions, so every check agrees on what a
+lock covers.
+
+| Kind               | Raised when                                                                                                                                                                                                    |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `superseded-state` | An item touches tokens of an open lock it does not hold, and its `base` lacks a holder head. Names every overlapping token.                                                                                    |
+| `lock-order`       | Any open lock an item holds comes `after` an open lock that neither that item nor an earlier one holds.                                                                                                        |
+| `re-ask`           | A question's touched tokens overlap a lock that is `open` or `merged`; a `released` lock decides nothing.                                                                                                      |
+| `stale-ship`       | A PR's last Ship is not at its item's `head`; for a PR with no item, not at its previous Ship's head. At most one per PR. `lock` is the first lock the PR holds, or null; `ids` ends with every lock it holds. |
+
+Each conflict is `{ kind, lock, ids, tokens, message }`; `ids` holds the PRs (`#n`), question ids,
+lock ids and heads it names. An empty array means the plan is clear.
+
+```ts
+import { lockConflicts, parseLocks } from '@titan-design/review-schema'
+
+const conflicts = lockConflicts(parseLocks(registryJson), {
+  items: [{ pr: 102, head, base: head, touches: { tokens } }],
+  questions: [],
+  ships: [],
+  contains: (commit, ancestor) => isAncestor(ancestor, commit),
+})
 ```
 
 ## JSON Schema files

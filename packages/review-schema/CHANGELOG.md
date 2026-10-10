@@ -33,6 +33,24 @@ project adheres to [Semantic Versioning](https://semver.org/).
   holder) is blocked while the holder's Ship is answered Don't ship or asks for a revision, with a
   message naming the holder. An unanswered or shipped holder does not block. Such a group's
   status carries `shipsAfter`, the holder's `owner/name#n`.
+- `lockConflicts(registry, plan)`: a pure check of a planned round or dispatch against the lock
+  registry (`locksProblems` checks the registry itself). The plan lists items (`pr`, `head`, the
+  `base` commit they render on, touched tokens per mode), questions with touched tokens, recorded
+  Ships, and a `contains(commit, ancestor)` predicate the caller answers. It returns
+  `{ kind, lock, ids, tokens, message }[]` of kind `superseded-state` (an item
+  overlapping an open lock's tokens on a base without the holder head), `lock-order`
+  (any open lock an item holds comes `after` an open lock no item up to it holds), `re-ask` (a
+  question touching a decided lock's tokens) and
+  `stale-ship` (at most one per PR: its last Ship is not at its planned item's head or, for a PR the
+  plan does not hold, at its prior Ship's head; `ids` names every lock the PR holds). Every check
+  reads one per-PR view: all the non-released locks a PR holds and its Ship history. Exports
+  `LOCK_CONFLICT_KINDS` and the `LockPlan`, `PlannedItem`, `PlannedQuestion`, `RecordedShip`,
+  `ModeToken` and `LockConflict` types.
+- `lockSurface(lock)`, `tokensMatch(a, b)`, `lockedTokens(tokens, lock)`, `tokenKey`, `globRegExp`
+  and the `ModeToken` (`mode` optional, meaning both modes) and `LockSurface` types: the one reading
+  of what a lock covers. A locked token name may be a family (`*-subtle`,
+  `tint-{hue}-solid / on-tint-{hue}`). `lockConflicts` matches through them, and
+  `@titan-design/review-harness` now imports them instead of keeping its own copy.
 
 ## [0.3.0]
 
