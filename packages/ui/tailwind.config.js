@@ -283,6 +283,13 @@ module.exports = {
           disabled: 'var(--color-text-disabled)',
           inverse: 'var(--color-text-inverse)',
           error: 'var(--color-text-error)',
+          brand: {
+            DEFAULT: 'var(--color-text-brand)',
+            secondary: 'var(--color-text-brand-secondary)',
+          },
+          success: 'var(--color-text-success)',
+          warning: 'var(--color-text-warning)',
+          info: 'var(--color-text-info)',
           link: {
             DEFAULT: 'var(--color-text-link)',
             hover: 'var(--color-text-link-hover)',

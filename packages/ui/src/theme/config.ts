@@ -101,6 +101,11 @@ export const lightThemeCSSVars = {
   '--color-text-disabled': semanticColorsLight['text-disabled'],
   '--color-text-inverse': semanticColorsLight['text-inverse'],
   '--color-text-error': semanticColorsLight['text-error'],
+  '--color-text-brand': semanticColorsLight['text-brand'],
+  '--color-text-brand-secondary': semanticColorsLight['text-brand-secondary'],
+  '--color-text-success': semanticColorsLight['text-success'],
+  '--color-text-warning': semanticColorsLight['text-warning'],
+  '--color-text-info': semanticColorsLight['text-info'],
   '--color-text-link': semanticColorsLight['text-link'],
 
   '--color-surface-base': semanticColorsLight['surface-base'],
@@ -281,6 +286,11 @@ export const darkThemeCSSVars = {
   '--color-text-disabled': semanticColorsDark['text-disabled'],
   '--color-text-inverse': semanticColorsDark['text-inverse'],
   '--color-text-error': semanticColorsDark['text-error'],
+  '--color-text-brand': semanticColorsDark['text-brand'],
+  '--color-text-brand-secondary': semanticColorsDark['text-brand-secondary'],
+  '--color-text-success': semanticColorsDark['text-success'],
+  '--color-text-warning': semanticColorsDark['text-warning'],
+  '--color-text-info': semanticColorsDark['text-info'],
   '--color-text-link': semanticColorsDark['text-link'],
 
   '--color-surface-base': semanticColorsDark['surface-base'],
