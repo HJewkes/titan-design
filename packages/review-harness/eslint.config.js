@@ -3,7 +3,8 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
-  { ignores: ['node_modules/', 'test-results/', 'playwright-report/'] },
+  // test/fixtures/**/*.js are CommonJS configs loaded as data by the tests, not code to lint.
+  { ignores: ['node_modules/', 'test-results/', 'playwright-report/', 'test/fixtures/**/*.js'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {

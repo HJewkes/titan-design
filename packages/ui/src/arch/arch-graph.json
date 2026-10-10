@@ -1,6 +1,5 @@
 {
-  "schema": 1,
-  "componentBarrelHash": "sha256:c5d97a6b4a51775baf79a52ec3671dbd02f55ac3b20dc349cb5a3a395adec7d7",
+  "schema": 2,
   "components": [
     {
       "name": "ActiveWorkoutPage",
@@ -104,6 +103,136 @@
       "tier": "organism",
       "verdict": "dead",
       "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "AgentHoverCard",
+      "file": "packages/ui/src/components/custom/Agents/AgentHoverCard.tsx",
+      "dir": "custom",
+      "family": "custom/Agents",
+      "exports": [
+        "AgentHoverCardContent",
+        "AgentHoverCard",
+        "AgentHoverCardContentProps",
+        "AgentHoverCardProps",
+        "MetricRow",
+        "HoverMetrics",
+        "asTrigger"
+      ],
+      "libDependents": 0,
+      "storyRefs": 3,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "AgentCardIdentity",
+        "AgentCardMetrics",
+        "Tooltip",
+        "TriggerSurface",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 5,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 174,
+        "score": 5
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "AgentRoster",
+      "file": "packages/ui/src/components/custom/Agents/AgentRoster.tsx",
+      "dir": "custom",
+      "family": "custom/Agents",
+      "exports": [
+        "AgentRoster",
+        "AgentRosterProps",
+        "useRosterKeys",
+        "useRosterKeys.listHasFocus",
+        "useRosterKeys.getItemProps",
+        "useRosterKeys.getItemProps.focusRef",
+        "useRosterKeys.select",
+        "useRosterKeys.onKeyDown",
+        "focusNode",
+        "RosterSkeleton",
+        "AgentRoster.renderGroup"
+      ],
+      "libDependents": 0,
+      "storyRefs": 3,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "AgentRosterRow",
+        "EmptyState",
+        "Skeleton",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 5,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 184,
+        "score": 5
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "AgentRosterRow",
+      "file": "packages/ui/src/components/custom/Agents/AgentRosterRow.tsx",
+      "dir": "custom",
+      "family": "custom/Agents",
+      "exports": [
+        "AgentRosterRow",
+        "AgentRosterRowProps",
+        "RowDetails",
+        "RowBody"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "AgentStateLabel",
+        "Avatar",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 5,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 150,
+        "score": 5
+      },
+      "tier": "organism",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
       "audited": "unaudited",
       "standard": false
     },
@@ -2651,6 +2780,43 @@
       "standard": true
     },
     {
+      "name": "GapIndicator",
+      "file": "packages/ui/src/components/custom/Session/GapIndicator.tsx",
+      "dir": "custom",
+      "family": "custom/Session",
+      "exports": [
+        "GapIndicator",
+        "GapIndicatorProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "DateTime",
+        "Divider",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 1,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 61,
+        "score": 1
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "Gauge",
       "file": "packages/ui/src/components/ui/charts/gauge/Gauge.tsx",
       "dir": "ui",
@@ -4936,6 +5102,45 @@
       "standard": false
     },
     {
+      "name": "NetworkGraph",
+      "file": "packages/ui/src/components/ui/charts/network-graph/NetworkGraph.tsx",
+      "dir": "ui",
+      "family": "ui/charts",
+      "exports": [
+        "NetworkGraph",
+        "useStableLayout",
+        "LoadedGraph"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "EmptyState",
+        "NetworkGraphCanvas",
+        "NetworkGraphParts",
+        "Skeleton"
+      ],
+      "leak": {
+        "rawView": 2,
+        "rawText": 0,
+        "inlineStyle": 1,
+        "rawHex": 0,
+        "loc": 122,
+        "score": 4
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "OpenLoops",
       "file": "packages/ui/src/components/custom/ActiveWork/OpenLoops.tsx",
       "dir": "custom",
@@ -6578,72 +6783,6 @@
       "standard": false
     },
     {
-      "name": "setHeadingKit",
-      "file": "packages/ui/src/components/custom/Workout/setHeadingKit.tsx",
-      "dir": "workout",
-      "family": "custom/Workout",
-      "exports": [
-        "SetsRepsLoad",
-        "setColors",
-        "SetStrip",
-        "Indicator",
-        "Heading",
-        "NavStub",
-        "Rail",
-        "Page",
-        "RAIL_W",
-        "SET_GAP",
-        "GREY",
-        "BORDER_SUBTLE",
-        "T_PRIMARY",
-        "T_SECONDARY",
-        "T_TERTIARY",
-        "RAISED",
-        "INSET",
-        "INSET_SHADOW",
-        "RED",
-        "ORANGE",
-        "AMBER",
-        "GREEN",
-        "velColor",
-        "PULSE_CSS",
-        "pulseAnim",
-        "SetState",
-        "Exercise",
-        "reps",
-        "SESSION",
-        "sectionTitle",
-        "monoTag",
-        "SRLCell",
-        "SetBar"
-      ],
-      "libDependents": 0,
-      "storyRefs": 7,
-      "xproj": {
-        "mobile": 0,
-        "mcp": 2,
-        "dash": 0,
-        "audiobook": 0,
-        "total": 2
-      },
-      "dependsOn": [
-        "TempoDisplay"
-      ],
-      "leak": {
-        "rawView": 0,
-        "rawText": 0,
-        "inlineStyle": 26,
-        "rawHex": 0,
-        "loc": 365,
-        "score": 52
-      },
-      "tier": "organism",
-      "verdict": "remove",
-      "deadByAssociation": false,
-      "audited": "unaudited",
-      "standard": false
-    },
-    {
       "name": "SetRow",
       "file": "packages/ui/src/components/custom/Workout/SetRow.tsx",
       "dir": "workout",
@@ -8064,6 +8203,41 @@
       "standard": true
     },
     {
+      "name": "ToolBadge",
+      "file": "packages/ui/src/components/custom/Session/ToolBadge.tsx",
+      "dir": "custom",
+      "family": "custom/Session",
+      "exports": [
+        "ToolBadge",
+        "ToolBadgeProps"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Pill"
+      ],
+      "leak": {
+        "rawView": 0,
+        "rawText": 1,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 51,
+        "score": 1
+      },
+      "tier": "molecule",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "ToolbarButton",
       "file": "packages/ui/src/components/ui/toolbar-button/ToolbarButton.tsx",
       "dir": "ui",
@@ -8137,6 +8311,51 @@
       "tier": "molecule",
       "verdict": "keep-internal",
       "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "ToolCallRow",
+      "file": "packages/ui/src/components/custom/Session/ToolCallRow.tsx",
+      "dir": "custom",
+      "family": "custom/Session",
+      "exports": [
+        "ToolCallRow",
+        "ToolCallRowProps",
+        "OutcomeTip",
+        "OutcomeDot",
+        "RowBody",
+        "ErrorText"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Collapse",
+        "DateTime",
+        "Indicator",
+        "TipTrigger",
+        "ToolBadge",
+        "Tooltip",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 3,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 164,
+        "score": 3
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
     },
@@ -8492,67 +8711,6 @@
       "tier": "molecule",
       "verdict": "keep-internal",
       "deadByAssociation": true,
-      "audited": "unaudited",
-      "standard": false
-    },
-    {
-      "name": "velocity-story-kit",
-      "file": "packages/ui/src/components/custom/Workout/velocity-story-kit.tsx",
-      "dir": "workout",
-      "family": "custom/Workout",
-      "exports": [
-        "ViewLabel",
-        "Note",
-        "Sheet",
-        "ScenarioPair",
-        "SetTypeBoard",
-        "RepTypeBoard",
-        "SURFACE_BG",
-        "VIEW_LABEL",
-        "VIEW_NOTE",
-        "VIEW_HEADING",
-        "LEFT_SLOT",
-        "RIGHT_SLOT",
-        "REP_SET",
-        "REP_SET_LAGGING",
-        "FATIGUE_SET",
-        "FATIGUE_SET_LAGGING",
-        "IN_PROGRESS_SET",
-        "IN_PROGRESS_LAGGING",
-        "dualOf",
-        "wallDecorator",
-        "VIEW_HEIGHT",
-        "StripView",
-        "dualVariantFor",
-        "BoardRow",
-        "SET_TYPE_BOARD",
-        "RepTypeRow",
-        "REP_TYPE_ROWS"
-      ],
-      "libDependents": 0,
-      "storyRefs": 5,
-      "xproj": {
-        "mobile": 0,
-        "mcp": 0,
-        "dash": 0,
-        "audiobook": 0,
-        "total": 0
-      },
-      "dependsOn": [
-        "DualVelocityStrip",
-        "VelocityStrip"
-      ],
-      "leak": {
-        "rawView": 9,
-        "rawText": 5,
-        "inlineStyle": 14,
-        "rawHex": 0,
-        "loc": 440,
-        "score": 42
-      },
-      "tier": "organism",
-      "verdict": "dead",
-      "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false
     },
@@ -9340,1923 +9498,7 @@
       "standard": false
     }
   ],
-  "edges": [
-    [
-      "CoChangeChip",
-      "Card"
-    ],
-    [
-      "CoChangeChip",
-      "FilePathLabel"
-    ],
-    [
-      "CoChangeChip",
-      "Pill"
-    ],
-    [
-      "CoChangeChip",
-      "Typography"
-    ],
-    [
-      "FileActivityDetail",
-      "FileActivityGrowthWell"
-    ],
-    [
-      "FileActivityDetail",
-      "FileActivityRow"
-    ],
-    [
-      "FileActivityDetail",
-      "Card"
-    ],
-    [
-      "FileActivityDetail",
-      "DataRow"
-    ],
-    [
-      "FileActivityDetail",
-      "DateTime"
-    ],
-    [
-      "FileActivityDetail",
-      "Eyebrow"
-    ],
-    [
-      "FileActivityDetail",
-      "FilePathLabel"
-    ],
-    [
-      "FileActivityDetail",
-      "Pill"
-    ],
-    [
-      "FileActivityDetail",
-      "Tile"
-    ],
-    [
-      "FileActivityDetail",
-      "Typography"
-    ],
-    [
-      "FileActivityGrowthWell",
-      "FileActivityRow"
-    ],
-    [
-      "FileActivityGrowthWell",
-      "Card"
-    ],
-    [
-      "FileActivityGrowthWell",
-      "SparkBars"
-    ],
-    [
-      "FileActivityGrowthWell",
-      "Eyebrow"
-    ],
-    [
-      "FileActivityGrowthWell",
-      "Typography"
-    ],
-    [
-      "FileActivityRow",
-      "SparkBars"
-    ],
-    [
-      "FileActivityRow",
-      "FilePathLabel"
-    ],
-    [
-      "FileActivityRow",
-      "Typography"
-    ],
-    [
-      "FileHistoryExplorer",
-      "CoChangeChip"
-    ],
-    [
-      "FileHistoryExplorer",
-      "FileActivityDetail"
-    ],
-    [
-      "FileHistoryExplorer",
-      "FileActivityRow"
-    ],
-    [
-      "FileHistoryExplorer",
-      "Card"
-    ],
-    [
-      "FileHistoryExplorer",
-      "Divider"
-    ],
-    [
-      "FileHistoryExplorer",
-      "Eyebrow"
-    ],
-    [
-      "FileHistoryExplorer",
-      "Tile"
-    ],
-    [
-      "FileHistoryExplorer",
-      "Typography"
-    ],
-    [
-      "InitiativeBrief",
-      "MarkdownProse"
-    ],
-    [
-      "InitiativeBrief",
-      "Eyebrow"
-    ],
-    [
-      "InitiativeBrief",
-      "Typography"
-    ],
-    [
-      "InitiativeCard",
-      "SeverityLabel"
-    ],
-    [
-      "InitiativeCard",
-      "SegmentedBar"
-    ],
-    [
-      "InitiativeCard",
-      "StatusDot"
-    ],
-    [
-      "InitiativeCard",
-      "Card"
-    ],
-    [
-      "InitiativeCard",
-      "Pill"
-    ],
-    [
-      "InitiativeCard",
-      "Typography"
-    ],
-    [
-      "InitiativeHeader",
-      "InitiativeCard"
-    ],
-    [
-      "InitiativeHeader",
-      "StatusDot"
-    ],
-    [
-      "InitiativeHeader",
-      "DateTime"
-    ],
-    [
-      "InitiativeHeader",
-      "Pill"
-    ],
-    [
-      "InitiativeHeader",
-      "Typography"
-    ],
-    [
-      "OpenLoops",
-      "MarkdownProse"
-    ],
-    [
-      "OpenLoops",
-      "Divider"
-    ],
-    [
-      "OpenLoops",
-      "Eyebrow"
-    ],
-    [
-      "OpenLoops",
-      "Pill"
-    ],
-    [
-      "OpenLoops",
-      "Typography"
-    ],
-    [
-      "PortfolioOverview",
-      "InitiativeCard"
-    ],
-    [
-      "PortfolioOverview",
-      "Metric"
-    ],
-    [
-      "PortfolioOverview",
-      "Card"
-    ],
-    [
-      "PortfolioOverview",
-      "Eyebrow"
-    ],
-    [
-      "PortfolioOverview",
-      "Typography"
-    ],
-    [
-      "SessionDetail",
-      "SessionListItem"
-    ],
-    [
-      "SessionDetail",
-      "TaskRow"
-    ],
-    [
-      "SessionDetail",
-      "TaskTable"
-    ],
-    [
-      "SessionDetail",
-      "MarkdownProse"
-    ],
-    [
-      "SessionDetail",
-      "Card"
-    ],
-    [
-      "SessionDetail",
-      "Collapse"
-    ],
-    [
-      "SessionDetail",
-      "DateTime"
-    ],
-    [
-      "SessionDetail",
-      "Divider"
-    ],
-    [
-      "SessionDetail",
-      "Pill"
-    ],
-    [
-      "SessionDetail",
-      "Tooltip"
-    ],
-    [
-      "SessionDetail",
-      "Typography"
-    ],
-    [
-      "SessionList",
-      "SessionListItem"
-    ],
-    [
-      "SessionList",
-      "Divider"
-    ],
-    [
-      "SessionList",
-      "Eyebrow"
-    ],
-    [
-      "SessionList",
-      "Typography"
-    ],
-    [
-      "SessionListItem",
-      "DateTime"
-    ],
-    [
-      "SessionListItem",
-      "Tooltip"
-    ],
-    [
-      "SessionListItem",
-      "Typography"
-    ],
-    [
-      "SeverityLabel",
-      "Indicator"
-    ],
-    [
-      "SeverityLabel",
-      "Typography"
-    ],
-    [
-      "TaskRow",
-      "SeverityLabel"
-    ],
-    [
-      "TaskRow",
-      "DateTime"
-    ],
-    [
-      "TaskRow",
-      "Pill"
-    ],
-    [
-      "TaskRow",
-      "Table"
-    ],
-    [
-      "TaskRow",
-      "TableCell"
-    ],
-    [
-      "TaskRow",
-      "Tooltip"
-    ],
-    [
-      "TaskRow",
-      "Typography"
-    ],
-    [
-      "TaskStagePill",
-      "Pill"
-    ],
-    [
-      "TaskTable",
-      "SeverityLabel"
-    ],
-    [
-      "TaskTable",
-      "TaskRow"
-    ],
-    [
-      "TaskTable",
-      "Eyebrow"
-    ],
-    [
-      "TaskTable",
-      "Table"
-    ],
-    [
-      "TaskTable",
-      "TableHeaderCell"
-    ],
-    [
-      "TaskTable",
-      "Typography"
-    ],
-    [
-      "ChatCard",
-      "Button"
-    ],
-    [
-      "ChatCard",
-      "Card"
-    ],
-    [
-      "ChatCard",
-      "Typography"
-    ],
-    [
-      "Composer",
-      "Button"
-    ],
-    [
-      "Composer",
-      "Input"
-    ],
-    [
-      "Composer",
-      "Surface"
-    ],
-    [
-      "ConversationIdentity",
-      "Avatar"
-    ],
-    [
-      "ConversationIdentity",
-      "Typography"
-    ],
-    [
-      "DateSeparator",
-      "DateTime"
-    ],
-    [
-      "DateSeparator",
-      "Divider"
-    ],
-    [
-      "DateSeparator",
-      "Typography"
-    ],
-    [
-      "MessageBubble",
-      "MarkdownProse"
-    ],
-    [
-      "MessageBubble",
-      "Avatar"
-    ],
-    [
-      "MessageBubble",
-      "Surface"
-    ],
-    [
-      "MessageBubble",
-      "Typography"
-    ],
-    [
-      "MessageList",
-      "ConversationIdentity"
-    ],
-    [
-      "MessageList",
-      "DateSeparator"
-    ],
-    [
-      "MessageList",
-      "MessageBubble"
-    ],
-    [
-      "MessageList",
-      "RevealRow"
-    ],
-    [
-      "MessageList",
-      "TypingIndicator"
-    ],
-    [
-      "MessageList",
-      "UnreadBadge"
-    ],
-    [
-      "MessageList",
-      "MarkdownProse"
-    ],
-    [
-      "MessageList",
-      "Button"
-    ],
-    [
-      "RevealRow",
-      "DateTime"
-    ],
-    [
-      "TypingIndicator",
-      "Indicator"
-    ],
-    [
-      "TypingIndicator",
-      "Surface"
-    ],
-    [
-      "TypingIndicator",
-      "Typography"
-    ],
-    [
-      "UnreadBadge",
-      "Pill"
-    ],
-    [
-      "coach-cards",
-      "ChatCard"
-    ],
-    [
-      "coach-cards",
-      "DateTime"
-    ],
-    [
-      "coach-cards",
-      "Pill"
-    ],
-    [
-      "coach-cards",
-      "Typography"
-    ],
-    [
-      "CircularTimer",
-      "Progress"
-    ],
-    [
-      "DualGhostSpark",
-      "DualGhostSparkParts"
-    ],
-    [
-      "DualGhostSpark",
-      "GhostBand"
-    ],
-    [
-      "DualGhostSpark",
-      "GhostSpark"
-    ],
-    [
-      "DualGhostSparkParts",
-      "GhostBloom"
-    ],
-    [
-      "FatigueLights",
-      "StatusDot"
-    ],
-    [
-      "FatigueLights",
-      "Tooltip"
-    ],
-    [
-      "GhostBand",
-      "GhostBandParts"
-    ],
-    [
-      "GhostSpark",
-      "GhostBand"
-    ],
-    [
-      "GhostSpark",
-      "GhostBloom"
-    ],
-    [
-      "LiveFatigueCard",
-      "FatigueLights"
-    ],
-    [
-      "LiveFatigueCard",
-      "GhostSpark"
-    ],
-    [
-      "LiveFatigueCard",
-      "RomProgressionChart"
-    ],
-    [
-      "LiveFatigueCard",
-      "VerdictHero"
-    ],
-    [
-      "LiveFatigueCard",
-      "Surface"
-    ],
-    [
-      "LiveFatiguePanel",
-      "LiveFatigueCard"
-    ],
-    [
-      "LiveFatiguePanel",
-      "VelocityHero"
-    ],
-    [
-      "LiveFatiguePanel",
-      "LiveAuraFrame"
-    ],
-    [
-      "RomProgressionChart",
-      "SetBarChart"
-    ],
-    [
-      "VelocityHero",
-      "VelocityStrip"
-    ],
-    [
-      "MarkdownProse",
-      "Typography"
-    ],
-    [
-      "TimerReadout",
-      "Typography"
-    ],
-    [
-      "ActiveWorkoutPage",
-      "ExerciseCard"
-    ],
-    [
-      "ActiveWorkoutPage",
-      "InputBar"
-    ],
-    [
-      "ActiveWorkoutPage",
-      "RestTimer"
-    ],
-    [
-      "ActiveWorkoutPage",
-      "SetRow"
-    ],
-    [
-      "ActiveWorkoutPage",
-      "SupersetWrapper"
-    ],
-    [
-      "BodyMapDetailPanel",
-      "BodyMapDetailSections"
-    ],
-    [
-      "BodyMapDetailPanel",
-      "Sparkline"
-    ],
-    [
-      "BodyMapDetailPanel",
-      "Badge"
-    ],
-    [
-      "BodyMapDetailSections",
-      "PrBadge"
-    ],
-    [
-      "BodyMapDetailSections",
-      "StrengthTrendChart"
-    ],
-    [
-      "BodyMapDetailSections",
-      "DataRow"
-    ],
-    [
-      "BodyweightGoalCard",
-      "GoalTrajectoryBand"
-    ],
-    [
-      "BodyweightGoalCard",
-      "ZoneTrack"
-    ],
-    [
-      "BodyweightGoalCard",
-      "wholeBodyCardParts"
-    ],
-    [
-      "BodyweightGoalCard",
-      "StatCard"
-    ],
-    [
-      "BodyweightGoalCard",
-      "Typography"
-    ],
-    [
-      "CapacityBandChart",
-      "CapacityBandOverlays"
-    ],
-    [
-      "CapacityBandChart",
-      "CapacityBandPlot"
-    ],
-    [
-      "DualVelocityCharts",
-      "VelocityStrip"
-    ],
-    [
-      "DualVelocityCharts",
-      "SetBarChart"
-    ],
-    [
-      "DualVelocityStrip",
-      "DualVelocityCharts"
-    ],
-    [
-      "DualVelocityStrip",
-      "SetBarChart"
-    ],
-    [
-      "ExerciseCard",
-      "ExerciseCardHeading"
-    ],
-    [
-      "ExerciseCard",
-      "ExerciseIndicator"
-    ],
-    [
-      "ExerciseCard",
-      "SetBar"
-    ],
-    [
-      "ExerciseCard",
-      "SetRow"
-    ],
-    [
-      "ExerciseCard",
-      "SetTableHeader"
-    ],
-    [
-      "ExerciseCardHeading",
-      "ExerciseHeading"
-    ],
-    [
-      "ExerciseCardHeading",
-      "SetBar"
-    ],
-    [
-      "ExerciseCardHeading",
-      "SetStrip"
-    ],
-    [
-      "ExerciseCardHeading",
-      "Tooltip"
-    ],
-    [
-      "ExerciseDetailPage",
-      "CapacityBandChart"
-    ],
-    [
-      "ExerciseDetailPage",
-      "ExerciseCard"
-    ],
-    [
-      "ExerciseDetailPage",
-      "ExerciseDetailSectionCard"
-    ],
-    [
-      "ExerciseDetailPage",
-      "MesoStatusCard"
-    ],
-    [
-      "ExerciseDetailPage",
-      "SetRow"
-    ],
-    [
-      "ExerciseDetailPage",
-      "StrengthTrendChart"
-    ],
-    [
-      "ExerciseDetailPage",
-      "VelocityStrip"
-    ],
-    [
-      "ExerciseHeading",
-      "ExerciseIndicator"
-    ],
-    [
-      "ExerciseHeading",
-      "SetsRepsLoad"
-    ],
-    [
-      "ExerciseHeading",
-      "TempoDisplay"
-    ],
-    [
-      "ExerciseHeading",
-      "Typography"
-    ],
-    [
-      "ExerciseIndicator",
-      "SvgIcon"
-    ],
-    [
-      "ExerciseIndicator",
-      "icons"
-    ],
-    [
-      "FatigueMeter",
-      "ZoneTrack"
-    ],
-    [
-      "GoalCard",
-      "GoalMilestoneSummary"
-    ],
-    [
-      "GoalCard",
-      "GoalMilestoneWeekStrip"
-    ],
-    [
-      "GoalCard",
-      "GoalPriorityIcon"
-    ],
-    [
-      "GoalCard",
-      "GoalTrajectoryChart"
-    ],
-    [
-      "GoalCard",
-      "GoalWeekColumnsChart"
-    ],
-    [
-      "GoalCard",
-      "PrBadge"
-    ],
-    [
-      "GoalCard",
-      "Card"
-    ],
-    [
-      "GoalCard",
-      "Indicator"
-    ],
-    [
-      "GoalCard",
-      "Pill"
-    ],
-    [
-      "GoalCard",
-      "TipTrigger"
-    ],
-    [
-      "GoalCard",
-      "Typography"
-    ],
-    [
-      "GoalMilestoneSummary",
-      "GoalMilestoneWeekStrip"
-    ],
-    [
-      "GoalMilestoneSummary",
-      "GoalTrajectoryPlot"
-    ],
-    [
-      "GoalMilestoneSummary",
-      "Typography"
-    ],
-    [
-      "GoalMilestoneTile",
-      "GoalMilestoneSummary"
-    ],
-    [
-      "GoalMilestoneTile",
-      "Indicator"
-    ],
-    [
-      "GoalMilestoneTile",
-      "Surface"
-    ],
-    [
-      "GoalMilestoneTile",
-      "Typography"
-    ],
-    [
-      "GoalMilestoneWeekStrip",
-      "GoalTrajectoryPlot"
-    ],
-    [
-      "GoalMilestoneWeekStrip",
-      "SegmentedBar"
-    ],
-    [
-      "GoalMilestoneWeekStrip",
-      "Pill"
-    ],
-    [
-      "GoalMilestoneWeekStrip",
-      "TipTrigger"
-    ],
-    [
-      "GoalMilestoneWeekStrip",
-      "Typography"
-    ],
-    [
-      "GoalMuscleCard",
-      "GoalCard"
-    ],
-    [
-      "GoalMuscleCard",
-      "MuscleGlyph"
-    ],
-    [
-      "GoalMuscleCard",
-      "Card"
-    ],
-    [
-      "GoalMuscleCard",
-      "Indicator"
-    ],
-    [
-      "GoalMuscleCard",
-      "Pill"
-    ],
-    [
-      "GoalMuscleCard",
-      "Typography"
-    ],
-    [
-      "GoalPriorityIcon",
-      "SvgIcon"
-    ],
-    [
-      "GoalPriorityIcon",
-      "icons"
-    ],
-    [
-      "GoalPriorityIcon",
-      "TipTrigger"
-    ],
-    [
-      "GoalPriorityIcon",
-      "Typography"
-    ],
-    [
-      "GoalPriorityIndex",
-      "GoalPriorityIcon"
-    ],
-    [
-      "GoalPriorityIndex",
-      "Typography"
-    ],
-    [
-      "GoalTrajectoryCalibrating",
-      "GoalTrajectoryPlot"
-    ],
-    [
-      "GoalTrajectoryCalibrating",
-      "icons"
-    ],
-    [
-      "GoalTrajectoryCalibrating",
-      "TipTrigger"
-    ],
-    [
-      "GoalTrajectoryCalibrating",
-      "Typography"
-    ],
-    [
-      "GoalTrajectoryChart",
-      "GoalTrajectoryBand"
-    ],
-    [
-      "GoalTrajectoryChart",
-      "GoalTrajectoryChartParts"
-    ],
-    [
-      "GoalTrajectoryChart",
-      "GoalTrajectoryPlot"
-    ],
-    [
-      "GoalTrajectoryChartParts",
-      "GoalTrajectoryCalibrating"
-    ],
-    [
-      "GoalTrajectoryChartParts",
-      "GoalTrajectoryPlot"
-    ],
-    [
-      "GoalTrajectoryChartParts",
-      "GoalTrajectoryWeekTips"
-    ],
-    [
-      "GoalTrajectoryMini",
-      "GoalTrajectoryPlot"
-    ],
-    [
-      "GoalTrajectoryPlot",
-      "GoalTrajectoryBand"
-    ],
-    [
-      "GoalTrajectoryPlot",
-      "GoalTrajectoryCalibrating"
-    ],
-    [
-      "GoalTrajectoryPlot",
-      "SvgIcon"
-    ],
-    [
-      "GoalTrajectoryPlot",
-      "icons"
-    ],
-    [
-      "GoalTrajectoryWeekTips",
-      "Metric"
-    ],
-    [
-      "GoalTrajectoryWeekTips",
-      "PrBadge"
-    ],
-    [
-      "GoalTrajectoryWeekTips",
-      "Pill"
-    ],
-    [
-      "GoalTrajectoryWeekTips",
-      "TipTrigger"
-    ],
-    [
-      "GoalTrajectoryWeekTips",
-      "Typography"
-    ],
-    [
-      "GoalWeekColumnsChart",
-      "GoalMilestoneWeekStrip"
-    ],
-    [
-      "GoalWeekColumnsChart",
-      "GoalTrajectoryMini"
-    ],
-    [
-      "MesoCard",
-      "WeekRow"
-    ],
-    [
-      "MesoCard",
-      "Badge"
-    ],
-    [
-      "MesoCard",
-      "Card"
-    ],
-    [
-      "MetricTiles",
-      "Stack"
-    ],
-    [
-      "MetricTiles",
-      "Tile"
-    ],
-    [
-      "MuscleGroupChip",
-      "Pill"
-    ],
-    [
-      "MuscleStrip",
-      "MuscleGroupChip"
-    ],
-    [
-      "PrBadge",
-      "BaseBadge"
-    ],
-    [
-      "PrBadge",
-      "icons"
-    ],
-    [
-      "PrBadge",
-      "Typography"
-    ],
-    [
-      "PrHistoryModal",
-      "icons"
-    ],
-    [
-      "PrHistoryModal",
-      "Drawer"
-    ],
-    [
-      "PrimaryGoalCard",
-      "GoalCard"
-    ],
-    [
-      "ProgramPlanningPage",
-      "ExerciseCard"
-    ],
-    [
-      "ProgramPlanningPage",
-      "MesoCard"
-    ],
-    [
-      "ProgramPlanningPage",
-      "MesoProgressBar"
-    ],
-    [
-      "ProgramPlanningPage",
-      "ProgramPlanningBreadcrumbs"
-    ],
-    [
-      "ProgramPlanningPage",
-      "WeekRow"
-    ],
-    [
-      "ProgramPlanningPage",
-      "WorkoutCard"
-    ],
-    [
-      "ProgramPlanningPage",
-      "WorkoutPill"
-    ],
-    [
-      "ReadinessCheck",
-      "Badge"
-    ],
-    [
-      "ReadinessCheck",
-      "Card"
-    ],
-    [
-      "RestTimer",
-      "CircularTimer"
-    ],
-    [
-      "ScheduleTiles",
-      "DateTime"
-    ],
-    [
-      "ScheduleTiles",
-      "Stack"
-    ],
-    [
-      "ScheduleTiles",
-      "Tile"
-    ],
-    [
-      "SegmentedProgressBar",
-      "SegmentedBar"
-    ],
-    [
-      "SessionHeader",
-      "TimerReadout"
-    ],
-    [
-      "SessionHeader",
-      "MetricTiles"
-    ],
-    [
-      "SessionHeader",
-      "ScheduleTiles"
-    ],
-    [
-      "SessionHeader",
-      "SegmentedProgressBar"
-    ],
-    [
-      "SessionHeader",
-      "Surface"
-    ],
-    [
-      "SessionHeader",
-      "Typography"
-    ],
-    [
-      "SessionRail",
-      "ExerciseCard"
-    ],
-    [
-      "SessionRail",
-      "ExerciseCardHeading"
-    ],
-    [
-      "SessionRail",
-      "ExerciseIndicator"
-    ],
-    [
-      "SessionRail",
-      "MetricTiles"
-    ],
-    [
-      "SessionRail",
-      "SessionHeader"
-    ],
-    [
-      "SessionRail",
-      "SetBar"
-    ],
-    [
-      "SessionRail",
-      "SetRow"
-    ],
-    [
-      "SessionRail",
-      "Surface"
-    ],
-    [
-      "SessionsGoalCard",
-      "GoalCard"
-    ],
-    [
-      "SessionsGoalCard",
-      "SegmentedBar"
-    ],
-    [
-      "SessionsGoalCard",
-      "wholeBodyCardParts"
-    ],
-    [
-      "SessionsGoalCard",
-      "Progress"
-    ],
-    [
-      "SessionsGoalCard",
-      "StatCard"
-    ],
-    [
-      "SetBar",
-      "SegmentedBar"
-    ],
-    [
-      "SetRow",
-      "VelocityStrip"
-    ],
-    [
-      "SetRow",
-      "Typography"
-    ],
-    [
-      "SetStrip",
-      "SetBar"
-    ],
-    [
-      "SetTableHeader",
-      "Typography"
-    ],
-    [
-      "Sparkline",
-      "SparklineParts"
-    ],
-    [
-      "SparklineParts",
-      "Typography"
-    ],
-    [
-      "StatusDot",
-      "Typography"
-    ],
-    [
-      "StatusPill",
-      "StatusDot"
-    ],
-    [
-      "StatusPill",
-      "Pill"
-    ],
-    [
-      "SupersetWrapper",
-      "Typography"
-    ],
-    [
-      "TrainingStatusPage",
-      "BodyMap"
-    ],
-    [
-      "TrainingStatusPage",
-      "BodyMapDetailPanel"
-    ],
-    [
-      "TrainingStatusPage",
-      "MesoStatusCard"
-    ],
-    [
-      "VelocityBandOverlay",
-      "SetBarChart"
-    ],
-    [
-      "VelocityBandOverlay",
-      "Typography"
-    ],
-    [
-      "VelocityBandPreview",
-      "VelocityBandOverlay"
-    ],
-    [
-      "VelocityBandPreview",
-      "SetBarChart"
-    ],
-    [
-      "VelocityLossBands",
-      "SetBarChart"
-    ],
-    [
-      "VelocityStrip",
-      "VelocityStripVariants"
-    ],
-    [
-      "VelocityStrip",
-      "SetBarChart"
-    ],
-    [
-      "VelocityStripFramed",
-      "SetBarChart"
-    ],
-    [
-      "VelocityStripVariants",
-      "VelocityLossBands"
-    ],
-    [
-      "VelocityStripVariants",
-      "VelocityStripFramed"
-    ],
-    [
-      "VelocityStripVariants",
-      "SetBarChart"
-    ],
-    [
-      "VolumeLandmarkBar",
-      "ZoneTrack"
-    ],
-    [
-      "VolumeLandmarkBar",
-      "DataRow"
-    ],
-    [
-      "VolumeLandmarkBar",
-      "Typography"
-    ],
-    [
-      "WeekRow",
-      "IntensityBar"
-    ],
-    [
-      "WeekRow",
-      "WorkoutPill"
-    ],
-    [
-      "WeekRow",
-      "Typography"
-    ],
-    [
-      "WeightBadge",
-      "BaseBadge"
-    ],
-    [
-      "WeightBadge",
-      "icons"
-    ],
-    [
-      "WeightBadge",
-      "Typography"
-    ],
-    [
-      "WorkoutCard",
-      "ExerciseCard"
-    ],
-    [
-      "WorkoutCard",
-      "MuscleGroupChip"
-    ],
-    [
-      "WorkoutCard",
-      "Card"
-    ],
-    [
-      "WorkoutCard",
-      "Typography"
-    ],
-    [
-      "WorkoutPill",
-      "Typography"
-    ],
-    [
-      "ZoneTrack",
-      "ZoneTrackParts"
-    ],
-    [
-      "ZoneTrack",
-      "ZoneTrackTicks"
-    ],
-    [
-      "ZoneTrackTicks",
-      "Tooltip"
-    ],
-    [
-      "goalCarousel-fixture",
-      "Metric"
-    ],
-    [
-      "goalCarousel-fixture",
-      "GoalCard"
-    ],
-    [
-      "goalCarousel-fixture",
-      "GoalMuscleCard"
-    ],
-    [
-      "goalCarousel-fixture",
-      "Card"
-    ],
-    [
-      "goalCarousel-fixture",
-      "Carousel"
-    ],
-    [
-      "goalCarousel-fixture",
-      "Typography"
-    ],
-    [
-      "setHeadingKit",
-      "TempoDisplay"
-    ],
-    [
-      "velocity-story-kit",
-      "DualVelocityStrip"
-    ],
-    [
-      "velocity-story-kit",
-      "VelocityStrip"
-    ],
-    [
-      "wholeBodyCardParts",
-      "Metric"
-    ],
-    [
-      "wholeBodyCardParts",
-      "GoalCard"
-    ],
-    [
-      "wholeBodyCardParts",
-      "GoalTrajectoryPlot"
-    ],
-    [
-      "wholeBodyCardParts",
-      "SvgIcon"
-    ],
-    [
-      "wholeBodyCardParts",
-      "icons"
-    ],
-    [
-      "wholeBodyCardParts",
-      "Pill"
-    ],
-    [
-      "wholeBodyCardParts",
-      "StatCard"
-    ],
-    [
-      "wholeBodyCardParts",
-      "TipTrigger"
-    ],
-    [
-      "wholeBodyCardParts",
-      "Tooltip"
-    ],
-    [
-      "wholeBodyCardParts",
-      "Typography"
-    ],
-    [
-      "icons",
-      "SvgIcon"
-    ],
-    [
-      "AppShell",
-      "SideNav"
-    ],
-    [
-      "AppShell",
-      "TopBar"
-    ],
-    [
-      "AppShell",
-      "brands"
-    ],
-    [
-      "AppShell",
-      "Surface"
-    ],
-    [
-      "BrandLockup",
-      "brands"
-    ],
-    [
-      "BrandLockup",
-      "Typography"
-    ],
-    [
-      "NavItem",
-      "Typography"
-    ],
-    [
-      "SideNav",
-      "NavItem"
-    ],
-    [
-      "TopBar",
-      "BrandLockup"
-    ],
-    [
-      "TopBar",
-      "brands"
-    ],
-    [
-      "TopBar",
-      "DateTime"
-    ],
-    [
-      "TopBar",
-      "Divider"
-    ],
-    [
-      "brands",
-      "icons"
-    ],
-    [
-      "DeviceIndicator",
-      "icons"
-    ],
-    [
-      "DeviceMenu",
-      "DeviceIndicator"
-    ],
-    [
-      "DeviceMenu",
-      "DeviceRow"
-    ],
-    [
-      "DeviceMenu",
-      "Popover"
-    ],
-    [
-      "DeviceMenu",
-      "Typography"
-    ],
-    [
-      "DeviceRow",
-      "Indicator"
-    ],
-    [
-      "DeviceRow",
-      "Typography"
-    ],
-    [
-      "DualPinnedLiveStrip",
-      "DualVelocityStrip"
-    ],
-    [
-      "DualPinnedLiveStrip",
-      "icons"
-    ],
-    [
-      "DualPinnedLiveStrip",
-      "pinnedLiveStripParts"
-    ],
-    [
-      "DualPinnedLiveStrip",
-      "Typography"
-    ],
-    [
-      "PinnedLiveStrip",
-      "SetBarChart"
-    ],
-    [
-      "PinnedLiveStrip",
-      "icons"
-    ],
-    [
-      "PinnedLiveStrip",
-      "pinnedLiveStripParts"
-    ],
-    [
-      "SessionStatePill",
-      "Indicator"
-    ],
-    [
-      "SessionStatePill",
-      "Typography"
-    ],
-    [
-      "WorkoutShell",
-      "AppShell"
-    ],
-    [
-      "WorkoutShell",
-      "SideNav"
-    ],
-    [
-      "WorkoutShell",
-      "DeviceRow"
-    ],
-    [
-      "WorkoutShell",
-      "SessionStatePill"
-    ],
-    [
-      "WorkoutShell",
-      "WorkoutTopBar"
-    ],
-    [
-      "WorkoutShell",
-      "workoutNavItems"
-    ],
-    [
-      "WorkoutTopBar",
-      "TopBar"
-    ],
-    [
-      "WorkoutTopBar",
-      "DeviceMenu"
-    ],
-    [
-      "WorkoutTopBar",
-      "DeviceRow"
-    ],
-    [
-      "WorkoutTopBar",
-      "SessionStatePill"
-    ],
-    [
-      "pinnedLiveStripParts",
-      "icons"
-    ],
-    [
-      "pinnedLiveStripParts",
-      "Indicator"
-    ],
-    [
-      "pinnedLiveStripParts",
-      "Progress"
-    ],
-    [
-      "pinnedLiveStripParts",
-      "Surface"
-    ],
-    [
-      "pinnedLiveStripParts",
-      "Typography"
-    ],
-    [
-      "workoutNavItems",
-      "icons"
-    ],
-    [
-      "workoutNavItems",
-      "SideNav"
-    ],
-    [
-      "Autocomplete",
-      "AutocompleteParts"
-    ],
-    [
-      "AutocompleteParts",
-      "Surface"
-    ],
-    [
-      "Badge",
-      "Indicator"
-    ],
-    [
-      "Badge",
-      "Pill"
-    ],
-    [
-      "Card",
-      "Surface"
-    ],
-    [
-      "Carousel",
-      "icons"
-    ],
-    [
-      "Carousel",
-      "Button"
-    ],
-    [
-      "Scatter",
-      "ScatterFrame"
-    ],
-    [
-      "Scatter",
-      "ScatterGridlines"
-    ],
-    [
-      "Scatter",
-      "ScatterPointMark"
-    ],
-    [
-      "Chip",
-      "Pill"
-    ],
-    [
-      "DateTime",
-      "Typography"
-    ],
-    [
-      "Drawer",
-      "Surface"
-    ],
-    [
-      "Eyebrow",
-      "Typography"
-    ],
-    [
-      "FilePathLabel",
-      "Typography"
-    ],
-    [
-      "HelpTip",
-      "Surface"
-    ],
-    [
-      "Menu",
-      "Surface"
-    ],
-    [
-      "Menu",
-      "TriggerSurface"
-    ],
-    [
-      "Modal",
-      "Surface"
-    ],
-    [
-      "Popover",
-      "Surface"
-    ],
-    [
-      "Popover",
-      "TriggerSurface"
-    ],
-    [
-      "Select",
-      "SelectPopover"
-    ],
-    [
-      "SelectPopover",
-      "Surface"
-    ],
-    [
-      "StatCard",
-      "Card"
-    ],
-    [
-      "StatCard",
-      "Typography"
-    ],
-    [
-      "TableHeaderCell",
-      "Tooltip"
-    ],
-    [
-      "Toast",
-      "Surface"
-    ],
-    [
-      "ToolbarButton",
-      "ToolbarButtonParts"
-    ],
-    [
-      "ToolbarButtonParts",
-      "Surface"
-    ],
-    [
-      "TipTrigger",
-      "Tooltip"
-    ],
-    [
-      "Tooltip",
-      "Surface"
-    ],
-    [
-      "Tooltip",
-      "TooltipParts"
-    ],
-    [
-      "Tooltip",
-      "TriggerSurface"
-    ],
-    [
-      "HighlightText",
-      "Typography"
-    ],
-    [
-      "Kbd",
-      "Typography"
-    ],
-    [
-      "Page",
-      "Typography"
-    ],
-    [
-      "CardStat",
-      "Card"
-    ],
-    [
-      "CardStat",
-      "Metric"
-    ],
-    [
-      "BarList",
-      "BarListCells"
-    ],
-    [
-      "BarList",
-      "BarListParts"
-    ],
-    [
-      "BarList",
-      "BarListTip"
-    ],
-    [
-      "BarList",
-      "EmptyState"
-    ],
-    [
-      "AgentStateLabel",
-      "Indicator"
-    ],
-    [
-      "AgentStateLabel",
-      "Pill"
-    ],
-    [
-      "AgentStateLabel",
-      "Typography"
-    ],
-    [
-      "AgentCard",
-      "AgentStateLabel"
-    ],
-    [
-      "AgentCard",
-      "Avatar"
-    ],
-    [
-      "AgentCard",
-      "Card"
-    ],
-    [
-      "AgentCard",
-      "SparkBars"
-    ],
-    [
-      "AgentCard",
-      "Pill"
-    ],
-    [
-      "AgentCard",
-      "Progress"
-    ],
-    [
-      "AgentCard",
-      "Typography"
-    ],
-    [
-      "RefChip",
-      "Link"
-    ],
-    [
-      "RefChip",
-      "Pill"
-    ],
-    [
-      "RelatedList",
-      "RefChip"
-    ],
-    [
-      "RelatedList",
-      "EmptyState"
-    ],
-    [
-      "RelatedList",
-      "Eyebrow"
-    ],
-    [
-      "RelatedList",
-      "Skeleton"
-    ],
-    [
-      "RelatedList",
-      "Typography"
-    ],
-    [
-      "MesoStatusCard",
-      "MesoStatusCard.parts"
-    ],
-    [
-      "MesoStatusCard",
-      "StatusDot"
-    ],
-    [
-      "MesoStatusCard",
-      "Card"
-    ]
-  ],
   "summary": {
-    "total": 228,
-    "dead": [
-      "AgentCard",
-      "Autocomplete",
-      "Breadcrumbs",
-      "Composer",
-      "Eyebrow",
-      "FilePathLabel",
-      "GoalLiftCard",
-      "HelpTip",
-      "HighlightText",
-      "IconBox",
-      "InitiativeHeader",
-      "Kbd",
-      "Menu",
-      "MessageList",
-      "PortfolioOverview",
-      "PrHistoryModal",
-      "ReadinessCheck",
-      "RelatedList",
-      "SessionDetail",
-      "SessionList",
-      "Switch",
-      "TableEmptyState",
-      "TableSelection",
-      "Tabs",
-      "TaskStagePill",
-      "Toast",
-      "ToolbarButton",
-      "VelocityBandPreview",
-      "VolumeLandmarkBar",
-      "coach-cards",
-      "goalCarousel-fixture",
-      "velocity-story-kit"
-    ],
-    "deadByAssociation": [
-      "AgentStateLabel",
-      "AutocompleteParts",
-      "Avatar",
-      "BodyMap",
-      "BodyMapDetailPanel",
-      "CapacityBandChart",
-      "CapacityBandOverlays",
-      "CapacityBandPlot",
-      "Carousel",
-      "ChatCard",
-      "ConversationIdentity",
-      "DateSeparator",
-      "ExerciseDetailSectionCard",
-      "InitiativeCard",
-      "InputBar",
-      "IntensityBar",
-      "MesoCard",
-      "MesoProgressBar",
-      "MessageBubble",
-      "ProgramPlanningBreadcrumbs",
-      "RefChip",
-      "RevealRow",
-      "SessionListItem",
-      "SeverityLabel",
-      "Sparkline",
-      "SparklineParts",
-      "SupersetWrapper",
-      "TaskRow",
-      "TaskTable",
-      "ToolbarButtonParts",
-      "TypingIndicator",
-      "UnreadBadge",
-      "VelocityBandOverlay",
-      "WeekRow",
-      "WorkoutCard",
-      "WorkoutPill"
-    ],
-    "auditedCount": 0,
     "standardCoverage": [
       {
         "name": "Button",

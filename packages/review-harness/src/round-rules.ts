@@ -7,7 +7,7 @@ import { explicitPrs, sectionPr } from './sections.ts'
  *   topic (a Ship question's is `ask:<repo>#<pr>/ship`, any other's `ask:<unit>/<id>`);
  * - every question is labelled ITERATION or SHIP, in its prompt and in a `topic:` key;
  * - each PR's sections sit together, its Ship question in the last section and last in it;
- * - frames of a stacked PR's base that is not itself asked about are labelled as context.
+ * - frames of a stacked base (the round's or a PR group's) not itself asked about are context.
  */
 type Draft = ManifestInput
 type DraftQuestion = Draft['questions'][number]
@@ -76,26 +76,57 @@ function groupSections(draft: Draft, questions: DraftQuestion[]): DraftSection[]
   return out
 }
 
-/** `base PR #n, not under review: <label>` on every frame of the base PR's sections. */
+interface StackBase {
+  key: string
+  pr: number
+  prefix: string
+}
+
+/**
+ * Every base the round renders on: the round-level `stackedOn`, labelled `base PR #n, not under
+ * review: `, and each PR group's own, labelled `rendered on #n at <short sha>, context, not under
+ * review: `. A group's label wins when it names the round-level base too.
+ */
+function stackBases(draft: Draft): StackBase[] {
+  const base = (on: NonNullable<Draft['stackedOn']>, prefix: string) => ({
+    key: `${on.repo}#${on.pr}`,
+    pr: on.pr,
+    prefix,
+  })
+  const round = draft.stackedOn
+    ? [base(draft.stackedOn, `base PR #${draft.stackedOn.pr}, not under review: `)]
+    : []
+  const groups = (draft.prGroups ?? []).flatMap((g) =>
+    g.stackedOn
+      ? [
+          base(
+            g.stackedOn,
+            `rendered on #${g.stackedOn.pr} at ${g.stackedOn.headSha.slice(0, 7)}, context, not under review: `
+          ),
+        ]
+      : []
+  )
+  return [...new Map([...round, ...groups].map((b) => [b.key, b])).values()]
+}
+
+/** Each base's label on every frame of its sections, unless a question is about that base. */
 function labelBaseFrames(draft: Draft, sections: DraftSection[]): Draft['variants'] {
-  const base = draft.stackedOn
-  if (!base) return draft.variants
   const byId = new Map(draft.questions.map((q) => [q.id, q]))
   const known = draft.questions.flatMap((q) => q.page ?? [])
   const explicit = explicitPrs(draft.prGroups)
-  const baseKey = `${base.repo}#${base.pr}`
-  const asked = draft.questions.some((q) => q.page === baseKey)
-  if (asked) return draft.variants
-  const isBase = (pr: string | undefined) => pr === baseKey || pr === `#${base.pr}`
-  const frames = new Set(
+  const prefixes = new Map<string, string>()
+  for (const base of stackBases(draft)) {
+    if (draft.questions.some((q) => q.page === base.key)) continue
+    const isBase = (pr: string | undefined) => pr === base.key || pr === `#${base.pr}`
     sections
       .filter((s) => isBase(sectionPr(s, byId, known, explicit)))
       .flatMap((s) => s.variantKeys ?? [])
-  )
-  const prefix = `base PR #${base.pr}, not under review: `
-  return draft.variants.map((v) =>
-    frames.has(v.key) && !v.label.startsWith(prefix) ? { ...v, label: prefix + v.label } : v
-  )
+      .forEach((key) => prefixes.set(key, base.prefix))
+  }
+  return draft.variants.map((v) => {
+    const prefix = prefixes.get(v.key)
+    return prefix && !v.label.startsWith(prefix) ? { ...v, label: prefix + v.label } : v
+  })
 }
 
 /** The draft with every builder rule applied; calling it again changes nothing. */

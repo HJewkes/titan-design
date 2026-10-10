@@ -25,17 +25,19 @@ export const AGENT_STATE_ORDER: AgentSummaryState[] = [
 ]
 
 /**
- * State to its label and dot. Blocked is `warning` (waits on a human, not broken). The four
- * history-only states take the neutral dot until the owner picks their tones (TASTE T1).
+ * State to its label and dot (owner's pick, TASTE T1 mock B). Blocked is `warning` (waits on a
+ * human, not broken). Spawning fades on `info` (starting, not yet working) and detached holds it
+ * still (alive, no pane); failed is `error`, the one past state that asks for action. Exited and
+ * retired stay neutral: history, nothing to act on.
  */
 export const AGENT_STATE_META: Record<AgentSummaryState, AgentStateMeta> = {
   working: { label: 'Working', dot: 'success', pulse: 'ping' },
   available: { label: 'Available', dot: 'info', pulse: false },
   blocked: { label: 'Blocked', dot: 'warning', pulse: false },
-  spawning: { label: 'Spawning', dot: 'default', pulse: false },
-  detached: { label: 'Detached', dot: 'default', pulse: false },
+  spawning: { label: 'Spawning', dot: 'info', pulse: 'opacity' },
+  detached: { label: 'Detached', dot: 'info', pulse: false },
   exited: { label: 'Exited', dot: 'default', pulse: false },
-  failed: { label: 'Failed', dot: 'default', pulse: false },
+  failed: { label: 'Failed', dot: 'error', pulse: false },
   retired: { label: 'Retired', dot: 'default', pulse: false },
 }
 
