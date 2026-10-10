@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { capturedByNode } from '../../../test/classname-capture'
 import { compositeOver, contrast } from '../../../theme/color-checks'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
-import { greyRamp, primitiveColors } from '../../../theme/tokens/primitives'
+import { greyRamp, primitiveColors, primitiveRamps } from '../../../theme/tokens/primitives'
 import type { ChipColor } from '../chip'
 import { chipLightContrastExceptions } from '../../../test/chip-contrast'
 import { FacetBar } from './FacetBar'
@@ -96,6 +96,21 @@ describe('FacetBar face contrast', () => {
       expect(labelOnFill(mode, fill as string, label as string)).toBeGreaterThanOrEqual(4.5)
     }
   )
+
+  // Decision 0003 names the light brand solid an exception: white on orange[500], 3.74.
+  it('light primary selected reads the brand solid cell, the declared white-on-orange[500] miss', () => {
+    renderBar('primary')
+    const classes = chipClasses('Notes')
+    expect(classes).toEqual(
+      expect.arrayContaining(['bg-brand-primary-solid', 'text-on-brand-primary'])
+    )
+    const light = getSemanticColors('light')
+    expect(light['brand-primary-solid']).toBe(primitiveRamps.orange[500])
+    expect(light['on-brand-primary']).toBe(primitiveColors.white)
+    const ratio = labelOnFill('light', 'bg-brand-primary-solid', 'text-on-brand-primary')
+    expect(ratio).toBeCloseTo(3.74, 2)
+    expect(chipLightContrastExceptions).toContain('primary')
+  })
 })
 
 describe('FacetBar selected default face token', () => {
