@@ -605,7 +605,7 @@ export interface BarListProps extends Omit<ViewProps, 'children'> {
 
 // @public
 export interface BarListRow {
-    color?: ColorToken$1;
+    color?: ColorToken;
     description?: string;
     flag?: {
         tone: 'warning' | 'error';
@@ -784,7 +784,7 @@ export interface BriefSection {
 export const BUDGET_BAND_META: Record<CodeBudgetBand, {
     color: TypographyColor;
     word: string | null;
-    fill: ColorToken$1;
+    fill: ColorToken;
     flagTone: 'error' | 'warning' | null;
 }>;
 
@@ -3906,7 +3906,7 @@ export interface GraphItemRef {
 
 // @public
 export interface GraphKind {
-    color?: ColorToken$1;
+    color?: ColorToken;
     id: string;
     label: string;
 }
@@ -6392,7 +6392,7 @@ export interface RefChipProps extends EntityRef {
 
 // @public
 export interface RefGraphKind {
-    color: ColorToken$1;
+    color: ColorToken;
     id: RefKind;
     label: string;
 }
@@ -6411,7 +6411,7 @@ export type RefKind = 'task' | 'pr' | 'session' | 'agent' | 'note' | 'file' | 'i
 
 // @public
 export interface RefKindMeta {
-    color: ColorToken$1;
+    color: ColorToken;
     glyph: string;
     label: string;
     plural: string;
@@ -6461,7 +6461,7 @@ export function resolveActualWeek(actual: GoalActualPoint, weeks: GoalTrajectory
 export function resolveBrand(brand: BrandKey | BrandPreset): BrandPreset;
 
 // @public
-export function resolveColor(token: ColorToken$1, mode?: ThemeMode): string;
+export function resolveColor(token: ColorToken, mode?: ThemeMode): string;
 
 // @public (undocumented)
 export interface ResolvedSurface {
@@ -6638,7 +6638,7 @@ export interface ScheduleTilesProps extends ViewProps {
 
 // @public
 export const SCORE_BAND_META: Record<CodeScoreBand, {
-    color: ColorToken$1;
+    color: ColorToken;
     indicator: IndicatorColor;
 }>;
 
