@@ -11,6 +11,7 @@ import {
   contrastProblems,
   interleaveForShards,
   pairCounts,
+  withoutSiblingPairs,
   type ContrastBaseline,
   type ContrastNode,
   type ContrastTheme,
@@ -41,6 +42,12 @@ import { STORY_INDEX_ENV } from './story-index.global-setup'
  * card between CI runs); the interaction project owns them, and their static render is the same
  * carousel as the non-play stories.
  *
+ * A story tagged `width-matrix` renders its component in every width frame, so a miss its sibling
+ * `--default` story already baselines would count once per frame against a baseline of 0. Pairs
+ * the sibling's baseline entry carries (any count) are dropped from the Widths story's counts; a
+ * pair the sibling lacks fails as for any story. With no sibling Default, or none baselined, the
+ * Widths story is gated unchanged. Widths stories carry no baseline entries of their own.
+ *
  * Light mode: `addon-themes` applies `globals=theme:light` from an effect the paused clock never
  * runs, so the class is also set on `<html>` directly. jsdom cannot compute contrast at all
  * (`src/test/stories-axe-suite.tsx` disables the rule), so this is the only gate for it.
@@ -55,11 +62,9 @@ const baseline = JSON.parse(fs.readFileSync(baselineFile, 'utf8')) as ContrastBa
 const blankListFile = path.join(__dirname, 'contrast-blank-stories.json')
 const blankStories = new Set(JSON.parse(fs.readFileSync(blankListFile, 'utf8')) as string[])
 const PLAY_TAG = 'play'
-const storyIds = interleaveForShards(
-  readStories()
-    .filter((entry) => !entry.tags?.includes(PLAY_TAG))
-    .map((entry) => entry.id)
-)
+const gatedStories = readStories().filter((entry) => !entry.tags?.includes(PLAY_TAG))
+const tagsById = new Map(gatedStories.map((entry) => [entry.id, entry.tags]))
+const storyIds = interleaveForShards(gatedStories.map((entry) => entry.id))
 
 // axe-core is jest-axe's dependency, so it resolves from there (as scripts/audit-stories does).
 const fromUi = createRequire(path.join(__dirname, '..', '..', 'package.json'))
@@ -211,7 +216,13 @@ test.describe('axe color-contrast on every story', () => {
           return
         }
         expect(blankProblems(id, null, listedBlank), `blank guard for ${key}`).toEqual([])
-        const counts = await measure(page)
+        const counts = withoutSiblingPairs(
+          id,
+          tagsById.get(id),
+          theme,
+          await measure(page),
+          baseline
+        )
         record(testInfo, { key, id, theme, counts, retry: testInfo.retry })
         expect(contrastProblems(key, counts, baseline[key]), `contrast gate for ${key}`).toEqual([])
       })

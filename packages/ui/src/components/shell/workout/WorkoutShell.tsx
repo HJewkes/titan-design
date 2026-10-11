@@ -52,6 +52,7 @@ export function WorkoutShell({
 }: WorkoutShellProps) {
   return (
     <AppShell
+      brand="voltras"
       className={className}
       navItems={navItems}
       activeKey={activeKey}

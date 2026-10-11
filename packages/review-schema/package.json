@@ -1,6 +1,6 @@
 {
   "name": "@titan-design/review-schema",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Zod schemas for titan-review rounds (titan-review/round@2) and their feedback (titan-review/feedback@1)",
   "author": "Henry Jewkes",
   "license": "MIT",
@@ -26,7 +26,8 @@
     "dist",
     "src",
     "schema",
-    "README.md"
+    "README.md",
+    "CHANGELOG.md"
   ],
   "sideEffects": false,
   "publishConfig": {

@@ -4,11 +4,11 @@ import { cn } from '../../utils/cn'
 import { Surface } from '../ui/surface'
 import { SideNav, type SideNavItem } from './SideNav'
 import { TopBar } from './TopBar'
-import { brandPresets, type BrandKey } from './brands'
+import { resolveBrand, type BrandKey, type BrandPreset } from './brands'
 
 export interface AppShellProps {
-  /** Which app identity the default {@link TopBar} and nav accent render. */
-  brand?: BrandKey
+  /** Which app identity the default {@link TopBar} and nav accent render: a registry key or the app's own preset. */
+  brand: BrandKey | BrandPreset
   /** Brand subtitle on the default top bar. */
   subtitle?: string
   /** App chrome for the default top bar's right cluster (divider-separated). */
@@ -55,7 +55,7 @@ function ContentPlaceholder() {
  * </AppShell>
  */
 export function AppShell({
-  brand = 'voltras',
+  brand,
   subtitle,
   topBarTrailing,
   topBar,
@@ -68,7 +68,7 @@ export function AppShell({
   isMainLandmark = false,
   className,
 }: AppShellProps) {
-  const { accentClassName, accentBarClassName } = brandPresets[brand]
+  const { accentClassName, accentBarClassName } = resolveBrand(brand)
 
   return (
     // Column: the TopBar spans the FULL width across the top, and the SideNav sits BELOW it

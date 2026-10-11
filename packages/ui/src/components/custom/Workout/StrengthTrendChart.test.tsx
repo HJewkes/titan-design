@@ -4,6 +4,9 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { StrengthTrendChart } from './StrengthTrendChart'
 import type { StrengthTrendDataPoint } from './StrengthTrendChart'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { alpha } from '../../../utils/colors'
+import { Surface } from '../../ui/surface'
 
 const data: StrengthTrendDataPoint[] = [
   { date: '2026-01-06', e1rm: 215, sessionLabel: 'Jan 6' },
@@ -228,5 +231,29 @@ describe('StrengthTrendChart chrome resolves to the spacing tokens', () => {
     fireEvent.click(screen.getAllByTestId('strength-trend-chart-point')[2])
     expect(spacingClassesOf('strength-trend-chart-tooltip')).toEqual(['py-inset-sm', 'px-2.5'])
     expect(resolveAll(['py-inset-sm', 'px-2.5', 'mt-stack-md'])).toEqual(['8px', '10px', '8px'])
+  })
+})
+
+describe('StrengthTrendChart on a light surface', () => {
+  const hairline = getSemanticColors('light')['hairline-subtle']
+
+  it('draws gridlines from the light hairline-subtle token', () => {
+    render(
+      <Surface theme="light">
+        <StrengthTrendChart {...baseProps} />
+      </Surface>
+    )
+    const grid = screen.getAllByTestId('strength-trend-chart-gridline')
+    expect(grid[0]).toHaveStyle({ backgroundColor: alpha(hairline, 0.06) })
+  })
+
+  it('draws meso boundary guides from the light hairline-subtle token', () => {
+    render(
+      <Surface theme="light">
+        <StrengthTrendChart {...baseProps} mesoBoundaries={mesoBoundaries} />
+      </Surface>
+    )
+    const [guide] = screen.getAllByTestId('strength-trend-chart-meso-boundary')
+    expect(guide).toHaveStyle({ borderLeftColor: hairline })
   })
 })

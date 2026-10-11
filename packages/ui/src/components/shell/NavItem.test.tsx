@@ -97,8 +97,8 @@ describe('NavItem', () => {
         icon={icon}
         label="Graph"
         active
-        accentClassName="text-data-3"
-        accentBarClassName="bg-data-3"
+        accentClassName="text-dataviz-categorical-6"
+        accentBarClassName="bg-dataviz-categorical-6"
       />
     )
     expect(screen.getByTestId('nav-item-accent')).toBeInTheDocument()

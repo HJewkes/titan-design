@@ -24,7 +24,7 @@ export interface SideNavProps {
    * running off its view) → a quiet green cue on that item's label.
    */
   liveKey?: string | null
-  /** Semantic `text-*` token for the active item. Defaults to the Voltras brand. */
+  /** Semantic `text-*` token for the active item's glyph. Defaults to the Voltras brand. */
   accentClassName?: string
   /** Semantic `bg-*` token for the active bar. Pair it with `accentClassName`. */
   accentBarClassName?: string

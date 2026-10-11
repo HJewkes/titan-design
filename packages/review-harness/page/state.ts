@@ -1,10 +1,19 @@
-import { draftAnswer, emptyDraft, type AnswerDraft, type ReviewDraft } from '../src/feedback.ts'
+import {
+  blockedShipGroup,
+  draftAnswer,
+  emptyDraft,
+  type AnswerDraft,
+  type ReviewDraft,
+} from '../src/feedback.ts'
+import type { PrTab } from '../src/pr-tabs.ts'
 import { isAnswered, offersBuiltInRevision } from '../src/round.ts'
 import {
   linksForVariant,
   optionVariants,
   orderedQuestions,
+  prGroups,
   roundLayout,
+  type LayoutBlock,
   type ResolvedSection,
 } from '../src/sections.ts'
 import type { Annotation, Manifest, Question, Verdict } from '@titan-design/review-schema'
@@ -31,6 +40,8 @@ export interface ReviewState {
   screen: Screen
   errors: string[]
   focusPin: string | null
+  /** The open tab of a PR group's page; moving to any stop opens Review, where every stop is. */
+  tab: PrTab
 }
 
 export type Action =
@@ -51,6 +62,7 @@ export type Action =
   | { type: 'toggleAnnotate' }
   | { type: 'toggleColumns' }
   | { type: 'screen'; screen: Screen; errors?: string[] }
+  | { type: 'tab'; tab: PrTab }
 
 /** Each verdict, its hotkey and its button label; the card and the keyboard both read this. */
 export const VERDICTS: { key: string; verdict: Exclude<Verdict, null>; label: string }[] = [
@@ -67,16 +79,22 @@ export const VERDICT_KEYS: Record<string, Verdict> = {
   [CLEAR_VERDICT_KEY]: null,
 }
 
+function blockStops(block: LayoutBlock): Stop[] {
+  const frames = block.kind === 'question' ? [] : block.variants
+  const question = block.kind === 'strip' ? [] : [block.question]
+  return [
+    ...frames.map((v): Stop => ({ kind: 'variant', key: v.key })),
+    ...question.map((q): Stop => ({ kind: 'question', id: q.id })),
+  ]
+}
+
 /** A section with nothing to answer still gets one stop, so its page can be reached. */
 function sectionStops(s: ResolvedSection): Stop[] {
-  const stops: Stop[] = [
-    ...s.questions.map((q): Stop => ({ kind: 'question', id: q.id })),
-    ...s.variants.map((v): Stop => ({ kind: 'variant', key: v.key })),
-  ]
+  const stops = s.blocks.flatMap(blockStops)
   return stops.length ? stops : [{ kind: 'section', id: s.id }]
 }
 
-/** Every stop in the order the page renders it: per section, its questions then its frames. */
+/** Every stop in the order the page renders it: per section, its blocks top to bottom. */
 export function stopsFor(manifest: Manifest): Stop[] {
   const layout = roundLayout(manifest)
   return [
@@ -104,33 +122,40 @@ export interface Page {
   title: string
   first: number
   last: number
+  /** The sections on this page: one, or every section of one PR group. */
+  sectionIds: string[]
 }
 
 /** Section ids allow only [A-Za-z0-9_-], so these two can never collide with one. */
 export const OTHER_PAGE = '#other'
 export const OVERALL_PAGE = '#overall'
 
-/** Each section is a page, then Other frames, then Overall; an unsectioned round is one page. */
+/**
+ * Each PR group is a page (a section about no PR is one on its own), then Other frames, then
+ * Overall; an unsectioned round is one page.
+ */
 export function pagesFor(manifest: Manifest): Page[] {
   const layout = roundLayout(manifest)
   const general = stopsFor(manifest).length - 1
   if (layout.sections.length === 0)
-    return [{ id: 'all', title: manifest.unit, first: 0, last: general }]
+    return [{ id: 'all', title: manifest.unit, first: 0, last: general, sectionIds: [] }]
+  const byId = new Map(layout.sections.map((s) => [s.id, s]))
   const sized = [
-    ...layout.sections.map((s) => ({
-      id: s.id,
-      title: s.title,
-      size: sectionStops(s).length,
+    ...prGroups(manifest).map((ids) => ({
+      id: ids[0],
+      title: byId.get(ids[0])!.title,
+      size: ids.reduce((n, id) => n + sectionStops(byId.get(id)!).length, 0),
+      sectionIds: ids,
     })),
-    { id: OTHER_PAGE, title: 'Other frames', size: layout.otherVariants.length },
+    { id: OTHER_PAGE, title: 'Other frames', size: layout.otherVariants.length, sectionIds: [] },
   ].filter((p) => p.size > 0)
   const pages: Page[] = []
-  for (const { id, title, size } of sized) {
+  for (const { size, ...page } of sized) {
     const first = pages.length ? pages[pages.length - 1].last + 1 : 0
-    pages.push({ id, title, first, last: first + size - 1 })
+    pages.push({ ...page, first, last: first + size - 1 })
   }
   const first = pages.length ? pages[pages.length - 1].last + 1 : 0
-  return [...pages, { id: OVERALL_PAGE, title: 'Overall', first, last: general }]
+  return [...pages, { id: OVERALL_PAGE, title: 'Overall', first, last: general, sectionIds: [] }]
 }
 
 /** The page that holds a stop, so the active stop decides what is on screen. */
@@ -171,6 +196,7 @@ export function initialState(manifest: Manifest): ReviewState {
     screen: 'form',
     errors: [],
     focusPin: null,
+    tab: 'review',
   }
 }
 
@@ -340,6 +366,18 @@ function reduceLinked(manifest: Manifest, draft: ReviewDraft, action: Action): R
   return next
 }
 
+/** A pick of a blocked PR group's Ship option is refused, whichever input made it. */
+function shipIsBlocked(
+  manifest: Manifest,
+  draft: ReviewDraft,
+  action: Extract<Action, { type: 'pick' }>
+): boolean {
+  const question = manifest.questions.find((q) => q.id === action.id)
+  return (
+    question !== undefined && blockedShipGroup(manifest, draft, question, action.option) !== null
+  )
+}
+
 export function createReducer(manifest: Manifest) {
   const stopCount = stopsFor(manifest).length
   return function reduce(state: ReviewState, action: Action): ReviewState {
@@ -347,11 +385,13 @@ export function createReducer(manifest: Manifest) {
       case 'activate':
         return { ...state, active: action.index, follow: false, focusPin: null }
       case 'jump':
-        return { ...state, active: action.index, follow: true, focusPin: null }
+        return { ...state, active: action.index, follow: true, focusPin: null, tab: 'review' }
       case 'advance':
         return state.active + 1 < stopCount
-          ? { ...state, active: state.active + 1, follow: true, focusPin: null }
+          ? { ...state, active: state.active + 1, follow: true, focusPin: null, tab: 'review' }
           : { ...state, screen: 'review', errors: [] }
+      case 'tab':
+        return { ...state, tab: action.tab }
       case 'addPin':
         return addPin(state, action)
       case 'toggleAnnotate':
@@ -360,6 +400,10 @@ export function createReducer(manifest: Manifest) {
         return { ...state, singleColumn: !state.singleColumn }
       case 'screen':
         return { ...state, screen: action.screen, errors: action.errors ?? [] }
+      case 'pick':
+        return shipIsBlocked(manifest, state.draft, action)
+          ? state
+          : { ...state, draft: reduceLinked(manifest, state.draft, action) }
       default:
         return { ...state, draft: reduceLinked(manifest, state.draft, action) }
     }

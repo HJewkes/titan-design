@@ -32,10 +32,10 @@ const PR_LINKER: ProseLinker = { id: 'pr', pattern: /#\d+\b/, tone: 'muted' }
 
 /**
  * **MarkdownProse** — a small markdown subset (headings, bullets, paragraphs,
- * bold, code) rendered as themed prose, with caller-described references
+ * bold, code, fenced code blocks, pipe tables) rendered as themed prose, with caller-described references
  * auto-linked in one of three tones.
  *
- * Composes `Typography`. Used by `SessionDetail` and the initiative reader.
+ * Composes `Typography` and `Table`. Used by `SessionDetail` and the initiative reader.
  */
 const meta: Meta<typeof MarkdownProse> = {
   title: 'Custom/Prose/MarkdownProse',
@@ -59,7 +59,7 @@ const meta: Meta<typeof MarkdownProse> = {
     docs: {
       description: {
         component:
-          'Composes **Typography**. Linkers are tried in order; a match renders in its tone and, when the linker carries `onPress`, as a pressable link.',
+          'Composes [Typography](?path=/docs/foundations-typography--docs) and [Table](?path=/docs/components-organisms-table--docs). Linkers are tried in order; a match renders in its tone and, when the linker carries `onPress`, as a pressable link.',
       },
     },
   },
@@ -85,4 +85,31 @@ export const Pressable: Story = {
       { ...PR_LINKER, onPress: (ref) => console.log('pr', ref) },
     ],
   },
+}
+
+const CODE_BODY = `Run the check before pushing:
+
+\`\`\`bash
+pnpm exec vitest run --project threads packages/ui/src/components/custom/Prose/MarkdownProse.test.tsx --reporter=verbose
+\`\`\`
+
+An unterminated fence renders the rest as code:
+
+\`\`\`ts
+const open = true`
+
+const TABLE_BODY = `| Task | Owner | Done |
+| :--- | :---: | ---: |
+| Parser | design | 3 |
+| Renderer | design | 5 |
+| Ragged row | design |`
+
+/** A fenced block: language label, mono text, scrolls sideways. An unterminated fence runs to the end. */
+export const CodeBlocks: Story = {
+  args: { body: CODE_BODY, linkers: [] },
+}
+
+/** A pipe table: alignment from the delimiter row, ragged rows padded to the header. */
+export const Tables: Story = {
+  args: { body: TABLE_BODY, linkers: [] },
 }

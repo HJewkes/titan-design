@@ -125,7 +125,7 @@ export const AudiobookApp: Story = {
 
 /** Both slots replaced: the app brings its own bar and its own rail. */
 export const ReplacedRegions: Story = {
-  args: { navItems: brainNav, activeKey: 'notes' },
+  args: { brand: 'voltras', navItems: brainNav, activeKey: 'notes' },
   render: (args) => (
     <AppShell
       {...args}

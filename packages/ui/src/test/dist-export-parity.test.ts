@@ -65,6 +65,7 @@ const KNOWN_TYPE_ONLY_BARE_NAMES = new Set([
   'GoalWeekEntry',
   'GoalWeekOutcome',
   'IndicatorColor', // components/ui/indicator/Indicator.tsx: type alias
+  'IndicatorPulse', // components/ui/indicator/Indicator.tsx: type alias
   'LiftOptions', // theme/lift.ts: interface
   'PillSize', // components/ui/pill/Pill.tsx: type alias
   'PillSizeLevel', // components/ui/pill/Pill.tsx: type alias

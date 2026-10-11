@@ -49,7 +49,7 @@ const toneClasses: Record<MetricTone, string> = {
   brand: 'text-brand-primary',
   success: 'text-status-success',
   warning: 'text-status-warning',
-  error: 'text-status-error',
+  error: 'text-text-error',
   info: 'text-status-info',
 }
 

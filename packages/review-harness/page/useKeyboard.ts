@@ -29,13 +29,15 @@ export function onFormKey(e: KeyboardEvent, { manifest, state, dispatch }: KeyCo
   }
   if (e.key === 'Escape' && state.annotate) return dispatch({ type: 'toggleAnnotate' })
   if (isTyping(e.target) || e.metaKey || e.ctrlKey || e.altKey) return
-  if (e.key === 'a') return dispatch({ type: 'toggleAnnotate' })
   if (e.key === 'l') return dispatch({ type: 'toggleColumns' })
   if (e.key in PAGE_KEYS) {
     const action = pageStepAction(manifest, state.active, PAGE_KEYS[e.key])
     if (action) dispatch(action)
     return
   }
+  // Diff and Context hide the active stop, so a key that answers it would answer blind.
+  if (state.tab !== 'review') return
+  if (e.key === 'a') return dispatch({ type: 'toggleAnnotate' })
   if (/^[0-9]$/.test(e.key)) {
     const action = numberKeyAction(manifest, stopsFor(manifest)[state.active], e.key)
     if (action) dispatch(action)

@@ -236,6 +236,11 @@ export const semanticColorsLight = {
   'text-disabled': 'rgba(55, 65, 81, 0.48)',
   'text-inverse': p.white,
   'text-error': ramp.red[700], // one rung darker than status-error to clear 4.5:1 on every light plane
+  'text-brand': ramp.orange[700], // rung 700 clears 4.5:1 on every light plane
+  'text-brand-secondary': ramp.cyan[700], // rung 700 clears 4.5:1 on every light plane
+  'text-success': ramp.green[700], // rung 700 clears 4.5:1 on every light plane
+  'text-warning': ramp.amber[700], // rung 700 clears 4.5:1 on every light plane
+  'text-info': ramp.blue[700], // rung 700 clears 4.5:1 on every light plane
   'text-link': ramp.blue[700],
   'text-link-hover': ramp.blue[700],
 
@@ -275,10 +280,11 @@ export const semanticColorsLight = {
   'scrim-subtle': 'rgba(0, 0, 0, 0.30)',
   'scrim-default': 'rgba(0, 0, 0, 0.50)',
 
-  // Control chrome and data labels (VW-82). Mode-independent for the same
-  // reason the `on-*` white labels are: the plane underneath them is fixed.
-  'on-control-idle': greyRamp[200],
-  'on-control-active': p.white,
+  // Toolbar disabled face (TD-264). The idle and pressed faces are elevation
+  // planes, so only the disabled face is a token.
+  'control-face-disabled': 'rgba(0, 0, 0, 0.06)',
+  'on-control-idle': greyRamp[700], // 7.0:1 on the idle face plane
+  'on-control-active': greyRamp[950], // 11.5:1 on the pressed face plane
   'on-data-strong': semanticPins.onDataStrong,
 
   // Interactive states (interactive-*)
@@ -475,6 +481,11 @@ export const semanticColorsDark = {
   'text-disabled': 'rgba(255, 255, 255, 0.38)',
   'text-inverse': greyRamp[950],
   'text-error': ramp.red[500], // owner chose red 500 below 4.5:1 knowingly, round q4b-red-conflict r1 (a)
+  'text-brand': ramp.orange[400], // clears 4.5:1 on every dark plane
+  'text-brand-secondary': ramp.cyan[300], // clears 4.5:1 on every dark plane
+  'text-success': ramp.green[400], // clears 4.5:1 on every dark plane
+  'text-warning': ramp.amber[300], // clears 4.5:1 on every dark plane
+  'text-info': ramp.blue[300], // clears 4.5:1 on every dark plane
   'text-link': ramp.blue[300], // on the ramp; border-focus keeps the indigo pin (item 42 d5)
   'text-link-hover': ramp.blue[400],
 
@@ -588,6 +599,9 @@ export const semanticColorsDark = {
   // the active value is the same white. `on-data-strong` is the label ON a
   // light categorical data fill (Treemap tiles), where every text-* token is
   // far too light to read.
+  //
+  // `control-face-disabled` is the disabled toolbar face (TD-264).
+  'control-face-disabled': 'rgba(255, 255, 255, 0.12)',
   'on-control-idle': semanticPins.onControlIdle,
   'on-control-active': p.white,
   'on-data-strong': semanticPins.onDataStrong,

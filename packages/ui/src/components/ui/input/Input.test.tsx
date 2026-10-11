@@ -4,6 +4,7 @@ import { axe } from 'jest-axe'
 import { Input } from './Input'
 import { Surface } from '../surface'
 import { insetFieldStyle } from '../surface/insetField'
+import { capturedByNode } from '../../../test/classname-capture'
 import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
 
 function normalisedColor(color: string) {
@@ -105,6 +106,18 @@ describe('Input', () => {
         (screen.getByPlaceholderText('Outline').parentElement as HTMLElement).style.boxShadow
       ).toBe('')
     })
+  })
+
+  it('draws the focus ring on the rounded field box, not the bare text element', () => {
+    render(<Input placeholder="Search" />)
+    const input = screen.getByPlaceholderText('Search')
+    const classesOf = (node: Element) => (capturedByNode.get(node) ?? '').split(/\s+/)
+    expect(classesOf(input.parentElement!)).not.toContain('focus-ring')
+
+    fireEvent.focus(input)
+
+    expect(classesOf(input.parentElement!)).toContain('focus-ring')
+    expect(classesOf(input)).toContain('web:outline-none')
   })
 
   describe('accessibility', () => {

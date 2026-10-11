@@ -154,9 +154,11 @@ export function WorkoutCard({
     <View className="p-3.5" testID="workout-card-body">
       <View className="flex-row items-center" testID="workout-card-header">
         {/* The card name was 15px/700 Space Grotesk — off the type scale between
-            `sm` and `base`. `h6` carries the heading face; `base` is the step up. */}
+            `sm` and `base`. `h6` carries the heading face; `base` is the step up.
+            The card sits directly under the page's h1, so its outline level is 2. */}
         <Typography
           variant="h6"
+          aria-level={2}
           color="primary"
           className="text-base font-bold leading-[normal]"
           testID="workout-card-name"

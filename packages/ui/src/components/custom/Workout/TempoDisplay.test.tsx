@@ -3,6 +3,7 @@ import { spacingClassesAt, spacingClassesOf, resolveAll } from '../../../test/sp
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { TempoDisplay } from './TempoDisplay'
+import { capturedByNode } from '../../../test/classname-capture'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 import { SurfaceContext } from '../../ui/surface/SurfaceContext'
 
@@ -114,6 +115,12 @@ describe('TempoDisplay', () => {
     it('overrides the digit font size via fontSize', () => {
       render(<TempoDisplay tempo={[3, 1, 1, 0]} fontSize={32} showLabel={false} />)
       expect(screen.getByText('3')).toHaveStyle({ fontSize: 32 })
+    })
+
+    it('renders digits and dashes through Typography mono', () => {
+      render(<TempoDisplay tempo={[3, 1, 1, 0]} showLabel={false} />)
+      expect(capturedByNode.get(screen.getByText('3'))?.split(' ')).toContain('font-mono')
+      expect(capturedByNode.get(screen.getAllByText('-')[0])?.split(' ')).toContain('font-mono')
     })
   })
 

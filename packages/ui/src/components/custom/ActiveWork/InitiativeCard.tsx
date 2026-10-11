@@ -1,4 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
+import type { ReactNode } from 'react'
 import { View, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Card } from '../../ui/card'
@@ -45,7 +46,23 @@ export interface InitiativeCardProps extends ViewProps {
   severityCounts: Record<TaskSeverity, number>
   /** The highest-priority open task, if any. Renders "no open tasks" when omitted. */
   topTask?: InitiativeCardTopTask
+  /** Consumer vocabulary under the top task: counts, newest activity, a badge. */
+  meta?: ReactNode
+  /** Makes the whole card one link. Fires on Enter or Space (web) and on tap. */
+  onPress?: () => void
+  /** Makes the whole card one link to this URL. Combine with `onPress` for client routing. */
+  href?: string
   className?: string
+}
+
+/**
+ * react-native-web leaves Enter on a `role="link"` to a native click, which only
+ * an anchor produces; without `href` the card is a div, so Enter is handled here.
+ */
+function pressOnEnter(onPress: (() => void) | undefined) {
+  return (event: { key?: string }) => {
+    if (event.key === 'Enter') onPress?.()
+  }
 }
 
 /**
@@ -53,6 +70,9 @@ export interface InitiativeCardProps extends ViewProps {
  * rank, open-task count, a severity-mix bar, and its top-priority open task.
  * Composes Card / Pill / StatusDot / SegmentedBar / Typography — never
  * hand-rolled. Used by {@link PortfolioOverview}.
+ *
+ * With `onPress` or `href` the whole card is one link: one tab stop, named by
+ * the title. Keep `meta` free of pressables, which would add a second tab stop.
  *
  * Sits on the card plane above the page like every other content card; the
  * `accent` stripe is reserved for the focused state, where it carries meaning.
@@ -66,13 +86,27 @@ export function InitiativeCard({
   openCount,
   severityCounts,
   topTask,
+  meta,
+  onPress,
+  href,
   className,
   ...props
 }: InitiativeCardProps) {
-  const meta = STATE_META[state]
+  const stateMeta = STATE_META[state]
   const segments: SegmentedBarSegment[] = SEVERITY_ORDER.filter((k) => severityCounts[k] > 0).map(
     (k) => ({ weight: severityCounts[k], color: SEVERITY_BAR_COLOR[k] })
   )
+
+  const isLink = onPress !== undefined || href !== undefined
+  const linkProps = isLink
+    ? {
+        onPress,
+        href,
+        accessibilityRole: 'link' as const,
+        accessibilityLabel: title,
+        ...(href === undefined && { onKeyDown: pressOnEnter(onPress) }),
+      }
+    : {}
 
   return (
     <Card
@@ -80,6 +114,8 @@ export function InitiativeCard({
       accentColor={state === 'focused' ? 'var(--color-brand-primary)' : undefined}
       className={cn('w-[326px] gap-2.5 p-4', className)}
       testID="initiative-card"
+      isInteractive={isLink}
+      {...linkProps}
       {...props}
     >
       <View className="flex-row items-start justify-between gap-2">
@@ -99,7 +135,7 @@ export function InitiativeCard({
       </View>
 
       <View className="flex-row items-center gap-3">
-        <StatusDot variant={meta.dot} size="sm" label={meta.label} />
+        <StatusDot variant={stateMeta.dot} size="sm" label={stateMeta.label} />
         <Typography variant="mono" className="text-xs text-text-secondary">
           {openCount} open
         </Typography>
@@ -132,6 +168,8 @@ export function InitiativeCard({
           no open tasks
         </Typography>
       )}
+
+      {meta ? <View className="flex-row flex-wrap items-center gap-2">{meta}</View> : null}
     </Card>
   )
 }

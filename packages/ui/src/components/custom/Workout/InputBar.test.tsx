@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
+import { capturedClassNames } from '../../../test/classname-capture'
 import { resolveAll, spacingClassesOf } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
@@ -42,6 +43,14 @@ describe('InputBar', () => {
     renderInputBar({ setNumber: 1, totalSets: null })
     expect(screen.getByTestId('input-bar-set-info')).toHaveTextContent('Set 1')
   })
+
+  it.each(['input-bar-reps', 'input-bar-weight'])(
+    'lets the %s field shrink to its box instead of its intrinsic width',
+    (testId) => {
+      renderInputBar()
+      expect(capturedClassNames.get(testId)?.split(/\s+/)).toContain('min-w-0')
+    }
+  )
 
   it('fires onRepsChange when reps input changes', () => {
     const onRepsChange = vi.fn()
