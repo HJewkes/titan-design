@@ -3158,6 +3158,7 @@
         "custom-prose-markdownprose--code-blocks",
         "custom-prose-markdownprose--default",
         "custom-prose-markdownprose--no-linkers",
+        "custom-prose-markdownprose--on-every-plane",
         "custom-prose-markdownprose--pressable",
         "custom-prose-markdownprose--tables"
       ],
@@ -9933,6 +9934,13 @@
           "type": "string"
         },
         {
+          "default": "default",
+          "description": "Gutter around the content region: `p-gutter-sm` below the `md` breakpoint, `p-gutter-md` from it.",
+          "name": "contentPadding",
+          "required": false,
+          "type": "AppShellContentPadding"
+        },
+        {
           "default": "false",
           "description": "Render the content region as the `main` landmark.",
           "name": "isMainLandmark",
@@ -10804,6 +10812,13 @@
           "type": "string"
         },
         {
+          "default": null,
+          "description": "Passed to {@link AppShell}: `none` when the children own their gutter.",
+          "name": "contentPadding",
+          "required": false,
+          "type": "AppShellContentPadding"
+        },
+        {
           "default": "[\n  { id: 'Voltra-A3F2', nickname: 'Left Cable', slot: 'L', state: 'connected' },\n  { id: 'Voltra-9B1C', nickname: 'Right Cable', slot: 'R', state: 'connected' },\n]",
           "description": "Connected devices → the TopBar connection glyph + dropdown.",
           "name": "devices",
@@ -10968,7 +10983,7 @@
         },
         {
           "default": null,
-          "description": "Convenience single-line content: renders as **status-colored, bold** text (white on `solid`) — the batteries-included cue message, so a `compact` cue is just `<Alert status=\"warning\" size=\"compact\" message=\"VL20 · …\" />` with no need to hand-color the text (RN doesn't cascade color).",
+          "description": "Convenience single-line content: renders as **status-colored, bold** text (the on-colour on `solid`) — the batteries-included cue message, so a `compact` cue is just `<Alert status=\"warning\" size=\"compact\" message=\"VL20 · …\" />` with no need to hand-color the text (RN doesn't cascade color).",
           "name": "message",
           "required": false,
           "type": "string"
