@@ -129,7 +129,7 @@ describe('component-catalog.json freshness', () => {
     'ignores an edit inside the Alert function body',
     () => {
       const changed = buildWithAlert(fresh, (t) =>
-        t.replace("const isSolid = variant === 'solid'", "const isSolid = 'solid' === variant")
+        t.replace("const isCompact = size === 'compact'", "const isCompact = 'compact' === size")
       )
       expect(differingEntries(catalog as Catalog, changed)).toEqual([])
     },

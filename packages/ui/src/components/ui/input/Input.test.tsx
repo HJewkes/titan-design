@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Input } from './Input'
 import { capturedByNode } from '../../../test/classname-capture'
-import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
+import { resolveAll, siblingSource, sizeClasses } from '../../../test/spacing-resolver'
 
 describe('Input', () => {
   it('renders correctly', () => {
@@ -109,4 +109,35 @@ describe('Input geometry resolves to the spacing tokens', () => {
       expect(resolveAll(spacing)).toEqual([...pixels])
     }
   )
+})
+
+/**
+ * Input's single-line heights sit on Button's control tokens (TD-275), so an
+ * Input and a Button of the same size line up in one row. Horizontal padding
+ * stays at 12/16/16, narrower than Button's, by the Gate 2 decision.
+ */
+describe('Input single-line sizes', () => {
+  const source = siblingSource(import.meta.url, 'Input.tsx')
+  const buttonSource = siblingSource(import.meta.url, '../button/Button.tsx')
+  const geometryFor = (level: string) =>
+    sizeClasses(source, 'sizeStyles', level).filter((c) => resolveAll([c])[0] !== undefined)
+  const heightKey = (classes: string[]) =>
+    classes.find((c) => /^(min-)?h-/.test(c))?.replace(/^(min-)?h-/, '')
+
+  const shipped = [
+    ['sm', ['h-control-sm', 'px-3'], ['32px', '12px']],
+    ['md', ['h-control-md', 'px-4'], ['40px', '16px']],
+    ['lg', ['h-control-lg', 'px-4'], ['48px', '16px']],
+  ] as const
+
+  it.each(shipped)('%s pins its height and padding', (level, classes, pixels) => {
+    expect(geometryFor(level)).toEqual([...classes])
+    expect(resolveAll(geometryFor(level))).toEqual([...pixels])
+  })
+
+  it.each(['sm', 'md', 'lg'])('%s shares its control height token with Button', (level) => {
+    const buttonHeight = heightKey(sizeClasses(buttonSource, 'sizeStyles', level))
+    expect(buttonHeight).toBe(`control-${level}`)
+    expect(heightKey(geometryFor(level))).toBe(buttonHeight)
+  })
 })
