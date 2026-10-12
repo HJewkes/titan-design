@@ -30,6 +30,10 @@ No second mechanism was introduced.
 | `AppShell.nav`            | `AppShell` | `<SideNav items=…>`     | swap the whole rail                     |
 | `AppShell.children`       | `AppShell` | a placeholder           | mount its page                          |
 
+`AppShell.contentPadding` (`'default' | 'none'`) pads the content region `p-gutter-sm` below `md` and
+`p-gutter-md` from `md`. A `Page` child owns its gutter already, so pass `none` with a `Page` or any
+full-bleed view; `WorkoutShell` forwards the prop.
+
 `AppShell.children` is normally a `Page` (`ui/page`), which owns the gutter, the width cap and the scroll.
 
 `TopBar.trailing` takes an array as well as a node. **The bar interleaves its own vertical dividers

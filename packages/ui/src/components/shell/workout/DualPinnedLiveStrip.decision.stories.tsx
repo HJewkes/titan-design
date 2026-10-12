@@ -70,7 +70,13 @@ const meta: Meta<DecisionArgs> = {
     frame: { control: 'select', options: ['chosen', 'stress'] },
   },
   render: (args) => (
-    <WorkoutShell activeKey="program" liveKey="live" state="live" subtitle="planning">
+    <WorkoutShell
+      activeKey="program"
+      liveKey="live"
+      state="live"
+      subtitle="planning"
+      contentPadding="none"
+    >
       <View className="flex-1 gap-section-sm p-gutter-sm" testID="page-content">
         <Strips {...args} />
         <PageBody />
