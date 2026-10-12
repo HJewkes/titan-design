@@ -165,10 +165,12 @@ const otherDisabled: ContrastPair[] = [
 
 /** Button outline/ghost wash → its `textStyles` label, where the label is not the wash's own tone. */
 const BUTTON_WASH_LABELS = {
+  'brand-primary-subtle': 'text-brand',
   'brand-secondary-subtle': 'text-brand-secondary',
   'status-success-subtle': 'text-success',
   'status-error-subtle': 'text-error',
   'status-warning-subtle': 'text-warning',
+  'status-info-subtle': 'text-info',
 } as const
 
 const hoverAndPressed: ContrastPair[] = [
@@ -183,7 +185,6 @@ const hoverAndPressed: ContrastPair[] = [
     over: CONTENT_PLANES,
   })),
   // Button outline and ghost `textStyles` labels under `web:hover:bg-*-subtle active:bg-*-subtle`.
-  // Primary (`text-brand-primary`) and info (`text-status-info`) match IconBox's pairs above.
   ...Object.entries(BUTTON_WASH_LABELS).map(([bg, fg]) => ({
     fg,
     bg,

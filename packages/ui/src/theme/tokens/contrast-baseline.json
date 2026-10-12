@@ -52,6 +52,8 @@
     "status-info on status-info-subtle over surface-elevated",
     "status-info on status-info-subtle over surface-overlay",
     "status-info on status-info-subtle over surface-raised",
+    "text-brand on brand-primary-subtle over surface-overlay",
+    "text-brand on brand-primary-subtle over surface-raised",
     "text-error on background-default",
     "text-error on background-subtle",
     "text-error on interactive-active over surface-overlay",
