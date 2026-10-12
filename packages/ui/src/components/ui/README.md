@@ -52,8 +52,7 @@ them, and the survivors are marked as presets below.
 | `file-path-label` | atom     | Typography                                | CoChangeChip, FileActivityDetail, FileActivityRow                                                                                                                 | 1       | 0        |
 | `eyebrow`         | molecule | Typography                                | FileActivityDetail, FileHistoryExplorer, InitiativeBrief, OpenLoops, PortfolioOverview, SessionList, TaskTable                                                    | 8       | 0        |
 | `form-field`      | atom     | —                                         | examples                                                                                                                                                          | 1       | 0        |
-| `gauge`           | atom     | —                                         | — (app-facing leaf)                                                                                                                                               | 0       | 1        |
-| `help-tip`        | molecule | Surface                                   | — **deprecated**, use Tooltip                                                                                                                                     | 0       | 0        |
+| `gauge`           | atom     | EmptyState                                | — (app-facing leaf)                                                                                                                                               | 0       | 1        |
 | `highlight-text`  | atom     | Typography                                | —                                                                                                                                                                 | 0       | 0        |
 | `icon-box`        | atom     | —                                         | —                                                                                                                                                                 | 0       | 0        |
 | `indicator`       | atom     | —                                         | Badge, DeviceRow, SessionStatePill, SeverityLabel                                                                                                                 | 6       | 0        |
@@ -70,7 +69,7 @@ them, and the survivors are marked as presets below.
 | `popover`         | molecule | Surface                                   | DeviceMenu                                                                                                                                                        | 1       | 0        |
 | `progress`        | atom     | —                                         | CircularTimer                                                                                                                                                     | 1       | 2        |
 | `radio`           | atom     | —                                         | examples                                                                                                                                                          | 1       | 2        |
-| `scatter`         | atom     | —                                         | — (app-facing leaf)                                                                                                                                               | 0       | 1        |
+| `scatter`         | atom     | EmptyState                                | — (app-facing leaf)                                                                                                                                               | 0       | 1        |
 | `section`         | atom     | —                                         | — (app-facing leaf)                                                                                                                                               | 0       | 10       |
 | `select`          | molecule | Surface                                   | examples                                                                                                                                                          | 2       | 1        |
 | `skeleton`        | atom     | —                                         | —                                                                                                                                                                 | 0       | 0        |
@@ -78,7 +77,7 @@ them, and the survivors are marked as presets below.
 | `spinner`         | atom     | —                                         | — (app-facing leaf)                                                                                                                                               | 0       | 2        |
 | `stack`           | atom     | —                                         | MetricTiles, ScheduleTiles                                                                                                                                        | 2       | 27       |
 | `stat-card`       | molecule | Card, Typography                          | BodyweightGoalCard, SessionsGoalCard                                                                                                                              | 2       | 0        |
-| `surface`         | atom     | —                                         | Autocomplete, Card, DashboardShell, Drawer, HelpTip, LiveFatigueCard, Menu, Modal, Popover, Select, SessionHeader, SessionRail, Toast, ToolbarButton, Tooltip     | 15      | 29       |
+| `surface`         | atom     | —                                         | Autocomplete, Card, DashboardShell, Drawer, LiveFatigueCard, Menu, Modal, Popover, Select, SessionHeader, SessionRail, Toast, ToolbarButton, Tooltip     | 15      | 29       |
 | `switch`          | atom     | —                                         | —                                                                                                                                                                 | 0       | 0        |
 | `table`           | organism | Tooltip                                   | TaskRow, TaskTable                                                                                                                                                | 2       | 8        |
 | `tabs`            | atom     | —                                         | —                                                                                                                                                                 | 0       | 0        |
@@ -86,7 +85,7 @@ them, and the survivors are marked as presets below.
 | `toast`           | molecule | Surface                                   | —                                                                                                                                                                 | 0       | 0        |
 | `toolbar-button`  | molecule | Surface                                   | —                                                                                                                                                                 | 0       | 0        |
 | `tooltip`         | molecule | Surface                                   | BarList, FatigueLights, GoalMilestoneWeekStrip, GoalPriorityIcon, GoalTrajectoryChart, PrimaryGoalCard, SessionDetail, SessionListItem, Table, TaskRow, ZoneTrack | 8       | 1        |
-| `treemap`         | atom     | —                                         | — (stories only: DatavizLightPalette, ProposedTokensVW82)                                                                                                         | 0       | 0        |
+| `treemap`         | atom     | EmptyState                                | — (stories only: DatavizLightPalette, ProposedTokensVW82)                                                                                                         | 0       | 0        |
 | `typography`      | atom     | —                                         | Every family — 49 in-repo call sites across `custom/`, `shell/` and `lab/`                                                                                        | 49      | 11       |
 
 Two roots carry the family: **`surface`** (15 in-repo consumers — every floating
@@ -111,7 +110,7 @@ Pattern), and seven in-repo autodocs links already point at `foundations-typogra
 | Status dots                                              | `Indicator`                       | **Closed** for `ui/*`. `StatusDot` (Workout) is deprecated toward `Indicator` (decision 10).                                                                                       |
 | Raised / floating planes                                 | `Surface` (`raise` / `elevation`) | **Closed** (#166, #173). Eleven molecules compose `Surface` rather than setting `bg-surface-*` themselves.                                                                         |
 | Rules and separators (20 `border-hairline*` in 12 files) | `Divider`                         | **Partly open.** Decision 4 allows `border-hairline` only on Card `outline`/`subtle`, Table rules and input borders — `Select`, `Radio`, `Drawer` and `Tabs` still draw their own. |
-| Tooltip-with-a-label lockup                              | `Tooltip` + your own label        | **Closed** by deprecation. `HelpTip` and `LabelWithHelp` are retired (decision 5).                                                                                                 |
+| Tooltip-with-a-label lockup                              | `Tooltip` + your own label        | **Closed** by deletion. The help-tip lockup is gone (decision 5); see the Tooltip `HelpBesideLabel` story.                                                                                                 |
 
 ## Watch list
 
@@ -119,8 +118,8 @@ Pattern), and seven in-repo autodocs links already point at `foundations-typogra
   `ui/typography` and `Eyebrow` to `ui/eyebrow`, so the tier order no longer forbids
   the import. The 79 raw `<Text>` runs above are unblocked, not fixed — converting
   them is its own task.
-- **Fourteen primitives read as dead** — `autocomplete`, `avatar`, `breadcrumbs`,
-  `chip`, `help-tip`, `icon-box`, `link`, `menu`, `modal`, `skeleton`, `switch`,
+- **Thirteen primitives read as dead** — `autocomplete`, `avatar`, `breadcrumbs`,
+  `chip`, `icon-box`, `link`, `menu`, `modal`, `skeleton`, `switch`,
   `tabs`, `toast`, `toolbar-button`. That is not automatically a delete: the graph
   sees three of seven downstream checkouts, and `Chip` in particular has a known
   consumer (audiobook/frontend, §D1) the graph cannot see. Settle per component

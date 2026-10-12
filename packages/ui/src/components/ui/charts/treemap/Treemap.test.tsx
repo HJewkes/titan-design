@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
+import { Text } from 'react-native'
 import { axe } from 'jest-axe'
 import { Treemap, type TreemapDatum } from './Treemap'
 import { Surface } from '../../surface'
@@ -66,9 +67,20 @@ describe('Treemap', () => {
     expect(container.firstChild).toBeInTheDocument()
   })
 
-  it('renders nothing meaningful for all-zero data without crashing', () => {
-    render(<Treemap data={[{ id: 'z', value: 0 }]} width={100} height={100} />)
-    expect(screen.queryByTestId('treemap-tile-z')).not.toBeInTheDocument()
+  describe('empty state', () => {
+    it('shows a "No data" placeholder when no value is positive', () => {
+      render(<Treemap data={[{ id: 'z', value: 0 }]} width={100} height={100} />)
+
+      expect(screen.getByTestId('treemap-empty')).toHaveTextContent('No data')
+      expect(screen.queryByTestId('treemap-tile-z')).not.toBeInTheDocument()
+    })
+
+    it('shows the consumer emptyState instead of the default', () => {
+      render(<Treemap data={[]} width={100} height={100} emptyState={<Text>Nothing yet</Text>} />)
+
+      expect(screen.getByTestId('treemap-empty')).toHaveTextContent('Nothing yet')
+      expect(screen.queryByText('No data')).not.toBeInTheDocument()
+    })
   })
 
   describe('theme', () => {
@@ -127,6 +139,12 @@ describe('Treemap', () => {
       const { container } = render(<Treemap data={data} width={300} height={200} />)
       const results = await axe(container)
       expect(results).toHaveNoViolations()
+    })
+
+    it('has no accessibility violations when empty', async () => {
+      const { container } = render(<Treemap data={[]} width={300} height={200} />)
+
+      expect(await axe(container)).toHaveNoViolations()
     })
   })
 })

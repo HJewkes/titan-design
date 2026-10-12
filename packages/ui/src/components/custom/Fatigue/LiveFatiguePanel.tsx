@@ -14,10 +14,12 @@
  *
  * RESPONSIVE (TD-03.58). The panel is CONTAINER-responsive (SIZE-D01), not prop-sized: it
  * measures its own width in `onLayout` and hands it to {@link panelLayout}, which owns the
- * stack/expand tiers, the spacing and the card width. The one `bodyHeight` is split across
- * the hero and the card by {@link panelBodySplit} — one call, so the two cannot disagree.
- * Nothing here animates: a tier change is a re-layout, never a transition, because the panel
- * is read from across a room mid-set.
+ * stack/expand tiers, the spacing, the card width and the card's arrangement. The one
+ * `bodyHeight` is split across the hero and the card by {@link panelBodySplit} — one call, so
+ * the two cannot disagree. Wrapped (TD-326), the card is a fixed compact band and the hero
+ * takes the rest; at the wall the card fills its height. Nothing here animates: a tier
+ * change is a re-layout, never a transition, because the panel is read from across a room
+ * mid-set.
  */
 import { useState } from 'react'
 import { View, Text, type LayoutChangeEvent } from 'react-native'
@@ -112,11 +114,12 @@ export function LiveFatiguePanel({
               height={heroHeight}
             />
           </View>
-          {/* SECONDARY — the vertical fatigue card. Stacked, it fills the content width. */}
+          {/* SECONDARY — the fatigue card. Stacked, it fills the content width as a compact band. */}
           <LiveFatigueCard
             model={model}
             width={layout.stacked ? layout.cardWidth : (cardWidth ?? layout.cardWidth)}
             height={cardHeight}
+            layout={layout.cardLayout}
           />
         </View>
       </View>
