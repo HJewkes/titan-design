@@ -4,9 +4,7 @@
   "round": 1,
   "storybookUrl": "http://127.0.0.1:6105",
   "context": "Gate 2, batch 9 (trimmed to three sections): main against head in both themes, with a pick and a Ship question per PR. Keys end -d for dark and -l for light.",
-  "widths": [
-    1280
-  ],
+  "widths": [1280],
   "height": "auto",
   "recommendations": "after-answer",
   "variants": [
@@ -87,19 +85,14 @@
       "kind": "pick-one",
       "prompt": "Ship HJewkes/titan-design#763 at 1a9b9a1886a1d8428aea1ac06af47a63bdbaa2f6?",
       "required": true,
-      "options": [
-        "Ship",
-        "Don't ship"
-      ],
+      "options": ["Ship", "Don't ship"],
       "signsOff": "CardStat as the Card stat preset, Metric's labelPosition and valueStyle, and Tile rendered over CardStat",
       "page": "HJewkes/titan-design#763",
       "merge": {
         "repo": "HJewkes/titan-design",
         "pr": 763,
         "headSha": "1a9b9a1886a1d8428aea1ac06af47a63bdbaa2f6",
-        "ship": [
-          "Ship"
-        ]
+        "ship": ["Ship"]
       },
       "recommendation": {
         "answer": "Ship",
@@ -113,19 +106,14 @@
       "kind": "pick-one",
       "prompt": "Ship HJewkes/titan-design#765 at 2be2b484df9e21ba7c7d718567cc237d5be52b01?",
       "required": true,
-      "options": [
-        "Ship",
-        "Don't ship"
-      ],
+      "options": ["Ship", "Don't ship"],
       "signsOff": "fenced code blocks (mono, language label, horizontal scroll) and pipe tables (ui/table, delimiter-row alignment) in MarkdownProse",
       "page": "HJewkes/titan-design#765",
       "merge": {
         "repo": "HJewkes/titan-design",
         "pr": 765,
         "headSha": "2be2b484df9e21ba7c7d718567cc237d5be52b01",
-        "ship": [
-          "Ship"
-        ]
+        "ship": ["Ship"]
       },
       "recommendation": {
         "answer": "Ship",
@@ -143,16 +131,8 @@
       "changed": "The CardStat `Stat` story is new; Tile's Default is main's own and is what Tile still renders through the wrapper.",
       "context": "The Stat story renders CardStat at 120 px wide with Volume / 76%, size sm, align center. Tile's Default is the same label and value at its natural width. Neither frame is a page; compare the anatomy, not the width.",
       "kind": "STATES",
-      "questionIds": [
-        "td54-pick",
-        "td54-ship"
-      ],
-      "variantKeys": [
-        "cs-preset-d",
-        "cs-tile-d",
-        "cs-preset-l",
-        "cs-tile-l"
-      ],
+      "questionIds": ["td54-pick", "td54-ship"],
+      "variantKeys": ["cs-preset-d", "cs-tile-d", "cs-preset-l", "cs-tile-l"],
       "contrast": {
         "knownDefects": [
           {
@@ -181,9 +161,7 @@
       "changed": "Nothing in this story: headings, bullets, inline code and the three linker tones are untouched. 0 differing pixels on both pairs.",
       "context": "Each main frame is a lab copy of main's files at `decc7b7b` beside the merged tree, so the pair isolates this PR. Contrast misses that main also has are listed under this section with the task that owns each; none is in scope here.",
       "kind": "STATES",
-      "questionIds": [
-        "td402-ship"
-      ],
+      "questionIds": ["td402-ship"],
       "variantKeys": [
         "mp-default-main-d",
         "mp-default-head-d",

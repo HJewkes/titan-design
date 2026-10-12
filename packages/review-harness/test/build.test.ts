@@ -71,7 +71,7 @@ async function setup(input: ManifestInput) {
 async function build(path: string, git: TreeGit, tree?: string) {
   const lines: string[] = []
   const io = { stderr: (t: string) => lines.push(t), measure: async () => [], git }
-  const code = await buildRound(path, undefined, io, tree)
+  const code = await buildRound(path, undefined, io, { tree })
   return { code, lines }
 }
 
@@ -156,12 +156,17 @@ describe('titan-review build --tree', () => {
       },
       git: stubTree(MERGE, [HEADS[7]]),
     }
-    expect(await buildRound(path, undefined, io, TREE)).toBe(0)
+    expect(await buildRound(path, undefined, io, { tree: TREE })).toBe(0)
     const roundSha = createHash('sha256')
       .update(await readFile(join(dir, 'round.json')))
       .digest('hex')
     expect(rendered).toEqual([{ dir, sha: roundSha }])
-    const refused = await buildRound(path, undefined, { ...io, git: stubTree(MERGE, []) }, TREE)
+    const refused = await buildRound(
+      path,
+      undefined,
+      { ...io, git: stubTree(MERGE, []) },
+      { tree: TREE }
+    )
     expect(refused).toBe(EXIT_REFUSED)
     expect(rendered).toHaveLength(1)
   })

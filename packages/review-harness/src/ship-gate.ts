@@ -7,6 +7,7 @@ import {
   type Feedback,
   type Manifest,
   type ManifestInput,
+  shipBlocks,
 } from '@titan-design/review-schema'
 import { normalizeAnswer } from './round.ts'
 import { ReviewError } from './review.ts'
@@ -75,9 +76,27 @@ function openRequests(prior: PriorRound, pr: string): { questionId: string; head
       q.merge !== undefined &&
       answer.pick !== undefined &&
       !q.merge.ship.includes(answer.pick)
-    const open = answer.revisionRequested === true || answer.agreed === false || declined
+    // A question that declares `implemented` is judged by the owner's rule (ruleRefusal), where
+    // disagreeing with the recommendation is no change request (item 166). Older rounds without
+    // it keep `agreed: false` as theirs.
+    const implemented = (q.kind === 'pick-one' || q.kind === 'pick-many') && q.implemented
+    const disagreed = answer.agreed === false && !implemented
+    const open = answer.revisionRequested === true || disagreed || declined
     return open ? [{ questionId: q.id, ...(headSha ? { headSha } : {}) }] : []
   })
+}
+
+/** The prior round's own verdict on `pr` under the owner's Ship rule, when it is at this head. */
+function ruleRefusal(prior: PriorRound, pr: string, head: string): string | null {
+  const group = shipBlocks(prior.manifest, prior.feedback).find((g) => g.pr === pr)
+  const bound = prior.manifest.questions.find(
+    (q) => q.kind === 'pick-one' && q.merge && q.page === pr
+  )
+  const boundHead = bound?.kind === 'pick-one' ? bound.merge?.headSha : undefined
+  // A holder's answer orders the stack within one round; it never carries into the next.
+  const own = group?.blockers.filter((b) => b.kind !== 'holder-not-shipped') ?? []
+  if (!own.length || (boundHead !== undefined && boundHead !== head)) return null
+  return own.map((b) => b.message).join('; ')
 }
 
 /**
@@ -93,6 +112,13 @@ export function shipRefusals(draft: ManifestInput, priors: PriorRound[]): string
     const prior = latest.find((p) => p.manifest.questions.some((x) => x.page === pr))
     const open = prior ? openRequests(prior, pr) : []
     const blocking = open.filter((o) => o.headSha === undefined || o.headSha === q.merge!.headSha)
+    const rule = prior ? ruleRefusal(prior, pr, q.merge.headSha) : null
+    if (rule && prior && !blocking.length)
+      return [
+        `${q.id} offers Ship for ${pr}, but round ${prior.manifest.round} of ${prior.manifest.unit} ` +
+          `(${prior.feedbackPath}) answered it with free text or a non-implemented pick: ${rule}. ` +
+          'Fix it and bind the new head, or drop the Ship question.',
+      ]
     return blocking.length && prior
       ? [
           `${q.id} offers Ship for ${pr}, but round ${prior.manifest.round} of ${prior.manifest.unit} ` +

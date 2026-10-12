@@ -176,8 +176,9 @@ const tracks: NonTextPair[] = TRACKS.flatMap(([tone, fill, track]) => {
 })
 
 // ── Separators: held to the repo's ΔL* floors (7 / 12 / 18), not to WCAG ─────
-// Divider, ListItem, Table, TablePagination, Modal and Metric paint `hairline`
-// since TD-480; nothing paints the `divider` token any more.
+// Divider, ListItem, Table, TablePagination and Metric paint `hairline` since
+// TD-480; nothing paints the `divider` token any more. Menu draws its rule
+// through Divider (TD-61), so its source covers it; Drawer and Modal draw none.
 const separators: NonTextPair[] = [
   {
     id: 'separator.hairline-subtle',
@@ -194,8 +195,6 @@ const separators: NonTextPair[] = [
     floor: DEFAULT,
     sources: [
       src('ui/tabs/Tabs.tsx', 'border-hairline'),
-      src('ui/drawer/Drawer.tsx', 'border-hairline'),
-      src('ui/menu/Menu.tsx', 'bg-hairline'),
       src('ui/collapse/Collapse.tsx', 'divide-hairline'),
       src('ui/form-field/FormField.tsx', 'border-hairline'),
       src('ui/progress/Progress.tsx', "['hairline-default']"),
@@ -203,7 +202,6 @@ const separators: NonTextPair[] = [
       src('ui/list-item/ListItem.tsx', 'bg-hairline'),
       src('ui/table/Table.tsx', 'border-hairline'),
       src('ui/table/TablePagination.tsx', 'border-hairline'),
-      src('ui/modal/Modal.tsx', 'border-hairline'),
       src('ui/metric/Metric.tsx', 'bg-hairline'),
     ],
   },

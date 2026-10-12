@@ -59,8 +59,10 @@ and that is as true on a light page as a dark one.
 The `on-*` family is "the label that sits ON this fill". Two members are not fills at all:
 
 - **`on-control-*`** — a toolbar control face is a grey plane, not a brand or status fill. Use
-  `on-control-active` / `on-control-idle` rather than `on-brand-primary`, even though the active
-  value is the same white; the role is what makes it survive a retune.
+  `on-control-active` / `on-control-idle` rather than `on-brand-primary`, even though the dark active
+  value is the same white; the role is what makes it survive a retune. The idle and pressed faces are
+  elevation planes one step up and one step down from the toolbar's plane (TD-265), so the labels owe
+  AA on every plane a face can land on; `control-face-disabled` paints the disabled face (TD-264).
 - **`on-data-strong`** — a label on a light categorical data tile. Every `text-*` role is far too
   light to read there.
 
@@ -213,6 +215,9 @@ and the line-height that comes with it.
 `overline` and `microLabel` are the same idea at two sizes and in two faces: `overline` is
 12px `font-body`, `microLabel` is 10px `font-sans` for dense tabular headers.
 
+Which variant, face, weight, case and colour each text role takes (headings, titles, labels, lockups,
+controls, chart text) is `docs/typography-rules.md`, rendered live in Storybook `Lab/Typography/Rules`.
+
 Raw sizes, when a variant genuinely does not fit:
 
 | Class       | Size |
@@ -237,7 +242,7 @@ opened from disk (titan-platform's code-report) renders with no network.
 | ------------------------------ | ------- | ---------------------------------------------------------------------- |
 | Inter (`font-sans`)            | 400–700 | latin, latin-ext, cyrillic, cyrillic-ext, greek, greek-ext, vietnamese |
 | Nunito Sans (`font-body`)      | 400–700 | latin, latin-ext, cyrillic, cyrillic-ext, vietnamese                   |
-| Space Grotesk (`font-heading`) | 600–700 | latin, latin-ext, vietnamese                                           |
+| Space Grotesk (`font-heading`) | 300–700 | latin, latin-ext, vietnamese                                           |
 
 - **The files are Google Fonts' own.** They are the variable woff2 subsets that
   `fonts.googleapis.com/css2` served to Chrome in September 2026 (Inter v20, Nunito Sans v19, Space
@@ -246,7 +251,7 @@ opened from disk (titan-platform's code-report) renders with no network.
   Titan declares `font-weight: 400 700` once instead, because a single-file build inlines every
   `url()` it meets and the repeats would quadruple the inlined bytes. Weights outside the range
   clamp to it, as the discrete rules did.
-- **Cost.** 392 KB of woff2 in the package. A single-file build that imports `global.css` grows by
+- **Cost.** 374 KB of woff2 in the package. A single-file build that imports `global.css` grows by
   about 500 KB of base64. A normal build emits the files as hashed assets and the browser fetches only
   the subsets a page uses.
 - **Licence.** All three are SIL Open Font License 1.1; each directory carries its `OFL.txt`.

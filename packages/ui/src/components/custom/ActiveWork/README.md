@@ -34,8 +34,7 @@ FileHistoryExplorer .............. organism
 │     ├─ CardInset ............... (existing primitive)
 │     ├─ SparkBars ............... atom         (`ui/charts/spark-bars`)
 │     └─ Eyebrow ................. molecule
-└─ CoChangeChip .................. molecule
-   ├─ Card + Pill ................ (existing primitives)
+└─ Pill (co-change pair) ......... (existing primitive)
    └─ FilePathLabel .............. atom
 
 TaskTable ........................ organism
@@ -45,8 +44,7 @@ TaskTable ........................ organism
 ├─ SeverityLabel ................. molecule      (legend tallies)
 └─ TaskRow ....................... row
    ├─ TableRow + TableCell ....... (existing primitives, Table family)
-   ├─ SeverityLabel .............. molecule → Indicator
-   └─ Pill / Tooltip ............. (existing primitives)
+   └─ Pill + Indicator / Tooltip . (existing primitives, severity)
 
 Session reader ................... (no organism: the host composes the two halves)
 ├─ SessionList ................... list
@@ -80,15 +78,15 @@ Initiative reader (no organism: the host composes the pieces)
 | ------------------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
 | `PortfolioOverview`      | organism | Card, Metric, Typography, Eyebrow, InitiativeCard                                                                            | app root (`Custom/ActiveWork/PortfolioOverview`)                    |
 | `InitiativeCard`         | card     | Card, Pill, StatusDot, SegmentedBar, Typography, SeverityLabel                                                               | PortfolioOverview                                                   |
-| `FileHistoryExplorer`    | organism | Card, Tile, Divider, Typography, Eyebrow, FileActivityRow/Detail, CoChangeChip                                               | app root (`Custom/ActiveWork/FileHistoryExplorer`)                  |
+| `FileHistoryExplorer`    | organism | Card, Tile, Divider, Typography, Eyebrow, FileActivityRow/Detail, Pill, FilePathLabel                                        | app root (`Custom/ActiveWork/FileHistoryExplorer`)                  |
 | `FileActivityDetail`     | card     | Card, Tile, Pill, DataRow, DateTime, Typography, FilePathLabel, Eyebrow, GrowthWell                                          | FileHistoryExplorer                                                 |
 | `FileActivityGrowthWell` | card     | CardInset, SparkBars (`ui/charts/spark-bars`), Typography, Eyebrow                                                           | FileActivityDetail                                                  |
 | `FileActivityRow`        | row      | FilePathLabel, SparkBars, Typography                                                                                         | FileHistoryExplorer                                                 |
-| `CoChangeChip`           | molecule | Card, Pill, FilePathLabel, Typography                                                                                        | FileHistoryExplorer                                                 |
-| `FilePathLabel`          | atom     | Typography (`mono`) — moved to `ui/file-path-label` (TD-418)                                                                 | FileActivityRow, FileActivityDetail, CoChangeChip                   |
+| `CoChangeChip`           | molecule | Card, Pill, FilePathLabel, Typography                                                                                        | none (deprecated)                                                   |
+| `FilePathLabel`          | atom     | Typography (`mono`) — moved to `ui/file-path-label` (TD-418)                                                                 | FileActivityRow, FileActivityDetail, FileHistoryExplorer            |
 | `TaskTable`              | organism | Table, useTable, TableHeader/Row/HeaderCell, TaskRow, SeverityLabel, Typography, Eyebrow                                     | app root (`Custom/ActiveWork/TaskTable`), SessionDetail             |
-| `TaskRow`                | row      | TableRow, TableCell, SeverityLabel, Pill, Tooltip, Typography                                                                | TaskTable                                                           |
-| `SeverityLabel`          | molecule | Indicator, Typography (`caption`)                                                                                            | TaskRow, TaskTable (legend), InitiativeCard (vocabulary)            |
+| `TaskRow`                | row      | TableRow, TableCell, Pill, Indicator, Tooltip, Typography                                                                    | TaskTable                                                           |
+| `SeverityLabel`          | molecule | Indicator, Typography (`caption`)                                                                                            | TaskTable (legend), InitiativeCard (vocabulary)                     |
 | `TaskStagePill`          | molecule | Pill (+ `TASK_STAGE_META`)                                                                                                   | not yet composed (TaskBoard and TaskDetail follow, follow-up tasks) |
 | `SessionList`            | list     | Divider, Typography, Eyebrow, SessionListItem                                                                                | host composition (`Custom/ActiveWork/SessionReader` story)          |
 | `SessionListItem`        | row      | DateTime, Tooltip, Typography                                                                                                | SessionList, SessionDetail                                          |

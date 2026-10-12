@@ -3,7 +3,7 @@
     "name": "index",
     "path": "dist/index.mjs",
     "brotli": true,
-    "limit": "170 kB"
+    "limit": "184 kB"
   },
   {
     "name": "bodymap",
@@ -33,7 +33,7 @@
     "name": "theme/tokens-css",
     "path": "dist/theme/tokens-css.mjs",
     "brotli": true,
-    "limit": "12 kB"
+    "limit": "13 kB"
   },
   {
     "name": "tokens.css",

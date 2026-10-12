@@ -1,5 +1,5 @@
 export { cn } from './cn'
-export { formatCompact, formatSignedCompact } from './number-format'
+export { formatCompact, formatSignedCompact, formatUsd } from './number-format'
 export { alpha, lighten, darken } from './colors'
 export { roundRpe, rpeColor, roundWeight, formatVelocity, roundTempo } from './workout-format'
 export { computeWindow } from './fixed-window'

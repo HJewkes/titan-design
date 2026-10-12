@@ -17,8 +17,8 @@ function contrastRatio(a: string, b: string): number {
 
 const LIGHT: Record<string, string> = {
   'text-brand': ramp.orange[700],
-  'text-brand-secondary': ramp.cyan[700],
-  'text-success': ramp.green[700],
+  'text-brand-secondary': ramp.cyan[800], // TD-789 3b
+  'text-success': ramp.green[800], // TD-789 3b
   'text-warning': ramp.amber[700],
   'text-info': ramp.blue[700],
 }

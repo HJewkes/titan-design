@@ -4,9 +4,11 @@ import {
   type Answer,
   type Feedback,
   type Manifest,
+  type PrGroupShipStatus,
   type Question,
   type Recommendation,
   type Verdict,
+  shipBlocks,
 } from '@titan-design/review-schema'
 import { isAnswered, normalizeAnswer, offersBuiltInRevision } from './round.ts'
 import { questionsForVariant, sectionOfQuestion } from './sections.ts'
@@ -148,4 +150,29 @@ export function buildFeedback(
     general: draft.general,
     ...(unanswered.length ? { unansweredQuestionIds: unanswered } : {}),
   }
+}
+
+/** Each PR group's Ship status for the draft as it stands, by the owner's Ship rule. */
+export function draftShipBlocks(manifest: Manifest, draft: ReviewDraft): PrGroupShipStatus[] {
+  return shipBlocks(manifest, buildFeedback(manifest, '', draft, new Date(0)))
+}
+
+/** The holder PR a merge-bound question's group ships after, when it is stacked on one in the round. */
+export function shipsAfter(manifest: Manifest, question: Question): string | undefined {
+  if (question.kind !== 'pick-one' || !question.merge) return undefined
+  const pr = `${question.merge.repo}#${question.merge.pr}`
+  return shipBlocks(manifest, { answers: [] }).find((g) => g.pr === pr)?.shipsAfter
+}
+
+/** The blocked group a merge-bound question's Ship option belongs to, or null when it may be picked. */
+export function blockedShipGroup(
+  manifest: Manifest,
+  draft: ReviewDraft,
+  question: Question,
+  option?: string
+): PrGroupShipStatus | null {
+  if (question.kind !== 'pick-one' || !question.merge) return null
+  if (option !== undefined && !question.merge.ship.includes(option)) return null
+  const pr = `${question.merge.repo}#${question.merge.pr}`
+  return draftShipBlocks(manifest, draft).find((g) => g.pr === pr && g.blocked) ?? null
 }

@@ -12,6 +12,7 @@ import { Linter } from 'eslint'
 import fixOptions from '../../eslint-rules/fix-options'
 import copyPitfallsBaseline from '../../eslint-rules/no-copy-pitfalls-baseline.json'
 import htmlElementBaseline from '../../eslint-rules/no-html-element-baseline.json'
+import rawCapsBaseline from '../../eslint-rules/no-raw-caps-baseline.json'
 import truncationBaseline from '../../eslint-rules/no-truncation-baseline.json'
 import unstyledTextBaseline from '../../eslint-rules/no-unstyled-text-baseline.json'
 import propsNamingBaseline from '../../eslint-rules/props-naming-baseline.json'
@@ -178,6 +179,16 @@ const FIXTURES: Record<string, Fixture> = {
   'titan/no-html-element:stale': {
     code: 'export const nothingRenders = 1',
     filename: Object.keys(htmlElementBaseline)[0],
+  },
+  'titan/no-raw-caps:uppercase': inShell("export const c = 'uppercase'"),
+  'titan/no-raw-caps:tracking': inShell("export const c = 'tracking-wider'"),
+  'titan/no-raw-caps:arbitrarySize': inShell("export const c = 'text-[10px]'"),
+  'titan/no-raw-caps:textTransform': inShell("export const s = { textTransform: 'uppercase' }"),
+  'titan/no-raw-caps:letterSpacing': inShell('export const s = { letterSpacing: 1 }'),
+  // A baselined file with its sites gone: the allowance it no longer spends is stale.
+  'titan/no-raw-caps:stale': {
+    code: 'export const nothingShouts = 1',
+    filename: Object.keys(rawCapsBaseline)[0],
   },
   'titan/props-naming:offConvention': inShell(
     'export interface ContractFixtureProps { disabled?: boolean }'

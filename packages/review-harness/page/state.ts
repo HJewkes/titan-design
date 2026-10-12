@@ -1,4 +1,11 @@
-import { draftAnswer, emptyDraft, type AnswerDraft, type ReviewDraft } from '../src/feedback.ts'
+import {
+  blockedShipGroup,
+  draftAnswer,
+  emptyDraft,
+  type AnswerDraft,
+  type ReviewDraft,
+} from '../src/feedback.ts'
+import type { PrTab } from '../src/pr-tabs.ts'
 import { isAnswered, offersBuiltInRevision } from '../src/round.ts'
 import {
   linksForVariant,
@@ -33,6 +40,8 @@ export interface ReviewState {
   screen: Screen
   errors: string[]
   focusPin: string | null
+  /** The open tab of a PR group's page; moving to any stop opens Review, where every stop is. */
+  tab: PrTab
 }
 
 export type Action =
@@ -53,6 +62,7 @@ export type Action =
   | { type: 'toggleAnnotate' }
   | { type: 'toggleColumns' }
   | { type: 'screen'; screen: Screen; errors?: string[] }
+  | { type: 'tab'; tab: PrTab }
 
 /** Each verdict, its hotkey and its button label; the card and the keyboard both read this. */
 export const VERDICTS: { key: string; verdict: Exclude<Verdict, null>; label: string }[] = [
@@ -186,6 +196,7 @@ export function initialState(manifest: Manifest): ReviewState {
     screen: 'form',
     errors: [],
     focusPin: null,
+    tab: 'review',
   }
 }
 
@@ -355,6 +366,18 @@ function reduceLinked(manifest: Manifest, draft: ReviewDraft, action: Action): R
   return next
 }
 
+/** A pick of a blocked PR group's Ship option is refused, whichever input made it. */
+function shipIsBlocked(
+  manifest: Manifest,
+  draft: ReviewDraft,
+  action: Extract<Action, { type: 'pick' }>
+): boolean {
+  const question = manifest.questions.find((q) => q.id === action.id)
+  return (
+    question !== undefined && blockedShipGroup(manifest, draft, question, action.option) !== null
+  )
+}
+
 export function createReducer(manifest: Manifest) {
   const stopCount = stopsFor(manifest).length
   return function reduce(state: ReviewState, action: Action): ReviewState {
@@ -362,11 +385,13 @@ export function createReducer(manifest: Manifest) {
       case 'activate':
         return { ...state, active: action.index, follow: false, focusPin: null }
       case 'jump':
-        return { ...state, active: action.index, follow: true, focusPin: null }
+        return { ...state, active: action.index, follow: true, focusPin: null, tab: 'review' }
       case 'advance':
         return state.active + 1 < stopCount
-          ? { ...state, active: state.active + 1, follow: true, focusPin: null }
+          ? { ...state, active: state.active + 1, follow: true, focusPin: null, tab: 'review' }
           : { ...state, screen: 'review', errors: [] }
+      case 'tab':
+        return { ...state, tab: action.tab }
       case 'addPin':
         return addPin(state, action)
       case 'toggleAnnotate':
@@ -375,6 +400,10 @@ export function createReducer(manifest: Manifest) {
         return { ...state, singleColumn: !state.singleColumn }
       case 'screen':
         return { ...state, screen: action.screen, errors: action.errors ?? [] }
+      case 'pick':
+        return shipIsBlocked(manifest, state.draft, action)
+          ? state
+          : { ...state, draft: reduceLinked(manifest, state.draft, action) }
       default:
         return { ...state, draft: reduceLinked(manifest, state.draft, action) }
     }

@@ -1,0 +1,122 @@
+{
+  "src/components/custom/charts/SetBarChart.tsx": {
+    "letterSpacing": 1,
+    "textTransform": 1
+  },
+  "src/components/custom/CircularTimer/CircularTimer.tsx": {
+    "letterSpacing": 1
+  },
+  "src/components/custom/Fatigue/DualGhostSparkParts.tsx": {
+    "letterSpacing": 2
+  },
+  "src/components/custom/Fatigue/FatigueLights.tsx": {
+    "letterSpacing": 1
+  },
+  "src/components/custom/Fatigue/GhostBandParts.tsx": {
+    "letterSpacing": 1
+  },
+  "src/components/custom/Fatigue/LiveFatiguePanel.tsx": {
+    "letterSpacing": 1
+  },
+  "src/components/custom/Fatigue/VerdictHero.tsx": {
+    "letterSpacing": 1
+  },
+  "src/components/custom/Sidebar/Sidebar.tsx": {
+    "tracking": 1,
+    "uppercase": 1
+  },
+  "src/components/custom/Workout/ActiveWorkoutPage.tsx": {
+    "letterSpacing": 1,
+    "textTransform": 1
+  },
+  "src/components/custom/Workout/BodyMap.tsx": {
+    "textTransform": 1
+  },
+  "src/components/custom/Workout/ExerciseDetailPage.tsx": {
+    "letterSpacing": 3,
+    "textTransform": 3
+  },
+  "src/components/custom/Workout/ExerciseDetailSectionCard.tsx": {
+    "letterSpacing": 1,
+    "textTransform": 1
+  },
+  "src/components/custom/Workout/GoalMilestoneSummary.tsx": {
+    "arbitrarySize": 1
+  },
+  "src/components/custom/Workout/InputBar.tsx": {
+    "tracking": 1
+  },
+  "src/components/custom/Workout/MesoStatusCard.tsx": {
+    "letterSpacing": 3,
+    "textTransform": 2
+  },
+  "src/components/custom/Workout/RestTimerBar.tsx": {
+    "letterSpacing": 2,
+    "textTransform": 1
+  },
+  "src/components/custom/Workout/TempoDisplay.tsx": {
+    "letterSpacing": 1,
+    "textTransform": 1
+  },
+  "src/components/custom/Workout/TrainingStatusPage.tsx": {
+    "letterSpacing": 1,
+    "textTransform": 2
+  },
+  "src/components/custom/Workout/ZoneTrackTicks.tsx": {
+    "letterSpacing": 1
+  },
+  "src/components/shell/BrandLockup.tsx": {
+    "arbitrarySize": 2,
+    "tracking": 2
+  },
+  "src/components/shell/NavItem.tsx": {
+    "tracking": 1,
+    "uppercase": 1
+  },
+  "src/components/shell/TopBar.tsx": {
+    "arbitrarySize": 1
+  },
+  "src/components/shell/workout/DeviceMenu.tsx": {
+    "arbitrarySize": 1,
+    "tracking": 1
+  },
+  "src/components/shell/workout/DeviceRow.tsx": {
+    "arbitrarySize": 2
+  },
+  "src/components/shell/workout/SessionStatePill.tsx": {
+    "arbitrarySize": 1
+  },
+  "src/components/shell/workout/WorkoutTopBar.tsx": {
+    "arbitrarySize": 1
+  },
+  "src/components/ui/card/CardStat.tsx": {
+    "tracking": 1,
+    "uppercase": 1
+  },
+  "src/components/ui/charts/scatter/ScatterFrame.tsx": {
+    "arbitrarySize": 2
+  },
+  "src/components/ui/charts/scatter/ScatterGridlines.tsx": {
+    "arbitrarySize": 2
+  },
+  "src/components/ui/charts/scatter/ScatterPointMark.tsx": {
+    "arbitrarySize": 1
+  },
+  "src/components/ui/charts/treemap/Treemap.tsx": {
+    "arbitrarySize": 1
+  },
+  "src/components/ui/menu/Menu.tsx": {
+    "uppercase": 1
+  },
+  "src/components/ui/section/Section.tsx": {
+    "tracking": 1,
+    "uppercase": 1
+  },
+  "src/components/ui/table/TableHeaderCell.tsx": {
+    "tracking": 1,
+    "uppercase": 1
+  },
+  "src/components/ui/tile/Tile.tsx": {
+    "arbitrarySize": 1
+  }
+}

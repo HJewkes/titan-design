@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Button, ButtonText } from './Button'
 import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
+import { capturedByNode } from '../../../test/classname-capture'
 
 describe('Button', () => {
   it('renders children correctly', () => {
@@ -162,5 +163,29 @@ describe('Button geometry resolves to the control tokens', () => {
 
   it.each(shipped)('%s still measures what it measured before the tokens', (level, _, pixels) => {
     expect(resolveAll(classesFor(level))).toEqual([...pixels])
+  })
+})
+
+// TD-789 3b: a fill or mark tone as label text missed 4.5:1 on the grey 100 and 200 planes.
+describe('Button tone labels', () => {
+  const tones = [
+    ['secondary', 'text-text-brand-secondary', 'text-brand-secondary'],
+    ['success', 'text-text-success', 'text-status-success'],
+    ['error', 'text-text-error', 'text-status-error'],
+    ['warning', 'text-text-warning', 'text-status-warning'],
+  ] as const
+  const cases = (['outline', 'ghost', 'link'] as const).flatMap((variant) =>
+    tones.map(([color, textRole, fillTone]) => [variant, color, textRole, fillTone] as const)
+  )
+
+  it.each(cases)('paints the %s %s label in %s, not %s', (variant, color, textRole, fillTone) => {
+    render(
+      <Button variant={variant} color={color}>
+        <ButtonText>Go</ButtonText>
+      </Button>
+    )
+    const classes = (capturedByNode.get(screen.getByRole('button')) ?? '').split(/\s+/)
+    expect(classes).toContain(textRole)
+    expect(classes).not.toContain(fillTone)
   })
 })

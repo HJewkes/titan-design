@@ -1,10 +1,16 @@
+import type { ReactNode } from 'react'
 import { View, type ViewProps } from 'react-native'
 import { cn } from '../../../../utils/cn'
 import { DATAVIZ_CATEGORICAL_ROLES } from '../../../../theme/extracted-colors-dataviz'
 import { getSemanticColors } from '../../../../theme/tokens/semantic'
+import { EmptyState } from '../../empty-state'
 import { useSurfaceMode } from '../../surface'
 import {
   DIAGONAL_LINE,
+  PLOT_BOTTOM,
+  PLOT_LEFT,
+  PLOT_RIGHT,
+  PLOT_TOP,
   referenceSegments,
   scatterAriaLabel,
   scatterLayout,
@@ -39,6 +45,8 @@ export interface ScatterProps extends Omit<ViewProps, 'children'> {
   onPress?: (id: string) => void
   /** Draws a highlight ring on the matching point. */
   selectedId?: string
+  /** Replaces the default "No data" placeholder drawn over the plot box when `data` is empty. */
+  emptyState?: ReactNode
   className?: string
 }
 
@@ -57,6 +65,7 @@ export function Scatter({
   diagonal = false,
   onPress,
   selectedId,
+  emptyState,
   className,
   ...props
 }: ScatterProps) {
@@ -88,21 +97,61 @@ export function Scatter({
         <ScatterFrame layout={layout} colors={colors} axis={axis} segments={segments} />
       </View>
 
-      {/* Interactive point overlay (kept out of the image-role canvas). */}
-      <View
-        style={{ position: 'absolute', top: 0, left: 0, width, height }}
-        testID="scatter-points"
-      >
-        {layout.points.map((p) => (
-          <ScatterPointMark
-            key={p.datum.id}
-            point={p}
-            isSelected={p.datum.id === selectedId}
-            ringColor={colors['text-primary']}
-            onPress={onPress}
-          />
-        ))}
-      </View>
+      {data.length === 0 ? (
+        <ScatterEmptyOverlay width={width} height={height}>
+          {emptyState}
+        </ScatterEmptyOverlay>
+      ) : (
+        /* Interactive point overlay (kept out of the image-role canvas). */
+        <View
+          style={{ position: 'absolute', top: 0, left: 0, width, height }}
+          testID="scatter-points"
+        >
+          {layout.points.map((p) => (
+            <ScatterPointMark
+              key={p.datum.id}
+              point={p}
+              isSelected={p.datum.id === selectedId}
+              ringColor={colors['text-primary']}
+              onPress={onPress}
+            />
+          ))}
+        </View>
+      )}
+    </View>
+  )
+}
+
+/**
+ * The "No data" placeholder (or the consumer's), centred inside the axes. The layer spans the
+ * chart like the point overlay does; the plot margins pad it so the content centres on the plot box.
+ */
+function ScatterEmptyOverlay({
+  width,
+  height,
+  children,
+}: {
+  width: number
+  height: number
+  children?: ReactNode
+}) {
+  return (
+    <View
+      className="items-center justify-center"
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width,
+        height,
+        paddingLeft: PLOT_LEFT,
+        paddingTop: PLOT_TOP,
+        paddingRight: PLOT_RIGHT,
+        paddingBottom: PLOT_BOTTOM,
+      }}
+      testID="scatter-empty"
+    >
+      {children ?? <EmptyState title="No data" className="py-4" />}
     </View>
   )
 }
