@@ -1,6 +1,7 @@
 import { useState, createContext, useContext } from 'react'
 import { View, Text, Pressable, ScrollView, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { useInsetFieldStyle } from '../surface/insetField'
 import { SelectPopover } from './SelectPopover'
 import { hasSelection, isValueSelected, selectDisplayLabel, toggleValue } from './selectModel'
 
@@ -99,6 +100,7 @@ export function Select<T extends string = string>({
   ...props
 }: SelectProps<T>) {
   const [isOpen, setIsOpen] = useState(false)
+  const well = useInsetFieldStyle(variant === 'filled')
 
   const selection = { isMulti, value, values }
 
@@ -135,9 +137,10 @@ export function Select<T extends string = string>({
           accessibilityLabel={accessibilityLabel}
           aria-expanded={isOpen}
           accessibilityState={{ expanded: isOpen, disabled: isDisabled }}
+          style={well}
           className={cn(
             'flex-row items-center justify-between px-4 py-2.5 rounded-md border',
-            variant === 'filled' ? 'bg-scrim-subtle' : 'bg-surface-base',
+            variant === 'filled' ? undefined : 'bg-surface-base',
             isInvalid
               ? 'border-border-input-error'
               : variant === 'filled'
