@@ -5,7 +5,6 @@ import { capturedByNode } from '../../../test/classname-capture'
 import { Autocomplete } from './Autocomplete'
 import { useAutocompleteState } from './useAutocompleteState'
 import { defaultFilterFn } from './autocompleteFilter'
-import { capturedByNode } from '../../../test/classname-capture'
 
 const defaultOptions = [
   { value: '1', label: 'Apple' },
