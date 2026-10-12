@@ -70,7 +70,7 @@ export function Avatar({
       accessibilityLabel={alt || resolvedFallback || 'Avatar'}
       className={cn(
         'items-center justify-center rounded-full overflow-hidden',
-        !nameColor && 'bg-hairline-strong',
+        !nameColor && 'bg-avatar-background',
         styles.container,
         className
       )}
@@ -85,7 +85,7 @@ export function Avatar({
         />
       ) : resolvedFallback ? (
         <Text
-          className={cn('font-semibold', !nameColor && 'text-text-inverse', styles.text)}
+          className={cn('font-semibold', !nameColor && 'text-avatar-text', styles.text)}
           style={nameColor ? { color: bestTextColor(nameColor) } : undefined}
         >
           {resolvedFallback}
@@ -108,7 +108,7 @@ const badgeColors: Record<string, string> = {
   success: 'bg-status-success',
   error: 'bg-status-error',
   warning: 'bg-status-warning',
-  default: 'bg-hairline-strong',
+  default: 'bg-avatar-background',
 }
 
 /**

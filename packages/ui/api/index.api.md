@@ -428,6 +428,9 @@ export function applyThemePreset(preset: ThemePreset): () => void;
 // @public
 export function AppShell(input: AppShellProps): react_jsx_runtime.JSX.Element;
 
+// @public
+export type AppShellContentPadding = 'default' | 'none';
+
 // @public (undocumented)
 export interface AppShellProps {
     activeKey?: string;
@@ -435,6 +438,7 @@ export interface AppShellProps {
     children?: ReactNode;
     // (undocumented)
     className?: string;
+    contentPadding?: AppShellContentPadding;
     isMainLandmark?: boolean;
     liveKey?: string | null;
     nav?: ReactNode;
@@ -5620,6 +5624,9 @@ export type PanelTier = keyof typeof PANEL_BREAKPOINTS;
 export function panelTier(width: number): PanelTier;
 
 // @public
+export function paperFill(tone: string): ViewStyle;
+
+// @public
 export function paperSheet(tone?: string, mode?: ThemeMode): ViewStyle;
 
 // @public
@@ -9908,6 +9915,7 @@ export interface WorkoutShellProps {
     children?: ReactNode;
     // (undocumented)
     className?: string;
+    contentPadding?: AppShellContentPadding;
     devices?: Device[];
     liveKey?: string | null;
     navItems?: SideNavItem[];
