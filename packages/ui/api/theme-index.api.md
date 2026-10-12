@@ -1283,6 +1283,9 @@ export interface ManifestValidationResult {
 }
 
 // @public
+export function paperFill(tone: string): ViewStyle;
+
+// @public
 export function paperSheet(tone?: string, mode?: ThemeMode): ViewStyle;
 
 // @public
