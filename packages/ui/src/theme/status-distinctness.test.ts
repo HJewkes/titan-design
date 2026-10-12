@@ -19,7 +19,7 @@
  */
 import { describe, it, expect } from 'vitest'
 import { semanticColorsDark, semanticColorsLight } from './tokens/semantic'
-import { alertRedVivid } from './tokens/primitives'
+import { alertRedVivid, primitiveRamps } from './tokens/primitives'
 
 type SemanticMap = Record<string, string>
 
@@ -57,10 +57,14 @@ describe('semantically distinct status tokens render distinct values', () => {
 })
 
 describe('status-error-vivid is the vivid red the rest of the system already assumes', () => {
-  for (const [theme, colors] of THEMES) {
-    it(`${theme}: is the alertRedVivid primitive that -rgb, -subtle and Indicator's glow encode`, () => {
-      expect(colors['status-error-vivid']).toBe(alertRedVivid)
-      expect(alertRedVivid.toLowerCase()).toBe('#ff4757')
-    })
-  }
+  it("dark: is the alertRedVivid primitive that -rgb, -subtle and Indicator's glow encode", () => {
+    expect(semanticColorsDark['status-error-vivid']).toBe(alertRedVivid)
+    expect(alertRedVivid.toLowerCase()).toBe('#ff4757')
+  })
+
+  // TD-789 3b: the pin misses 3:1 on the light planes. Red 700 is the first step that
+  // clears them and is not status-error's red 600.
+  it('light: is red 700, one step past status-error', () => {
+    expect(semanticColorsLight['status-error-vivid']).toBe(primitiveRamps.red[700])
+  })
 })

@@ -43,6 +43,21 @@ describe('Typography', () => {
     expect(classes).not.toContain('text-status-error')
   })
 
+  // TD-789 3b: the status tones as text missed 4.5:1 on the grey 100 and 200 planes.
+  it.each([
+    ['success', 'text-text-success', 'text-status-success'],
+    ['warning', 'text-text-warning', 'text-status-warning'],
+  ] as const)('%s text uses %s, not %s', (color, textRole, fillTone) => {
+    render(
+      <Typography color={color} testID="tone-text">
+        Status
+      </Typography>
+    )
+    const classes = capturedClassNames.get('tone-text')?.split(' ') ?? []
+    expect(classes).toContain(textRole)
+    expect(classes).not.toContain(fillTone)
+  })
+
   it('applies text alignment', () => {
     render(<Typography align="center">Centered text</Typography>)
     expect(screen.getByText('Centered text')).toBeInTheDocument()

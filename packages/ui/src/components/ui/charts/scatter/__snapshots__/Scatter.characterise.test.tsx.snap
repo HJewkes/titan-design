@@ -1903,7 +1903,7 @@ exports[`Scatter characterisation > on a light surface > renders the Default sto
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
@@ -2075,17 +2075,17 @@ exports[`Scatter characterisation > on a light surface > renders the Default sto
         <div
           class="css-view-175oi2r"
           data-testid="scatter-axis-y"
-          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(0, 0, 0, 0.15);"
+          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(0, 0, 0, 0.16);"
         />
         <div
           class="css-view-175oi2r"
           data-testid="scatter-axis-x"
-          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(0, 0, 0, 0.15);"
+          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(0, 0, 0, 0.16);"
         />
         <div
           class="css-view-175oi2r"
           data-testid="scatter-reference-main-sequence"
-          style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(0, 0, 0, 0.22); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
+          style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(0, 0, 0, 0.24); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
         />
         <div
           class="css-text-146c3p1"
@@ -2189,7 +2189,7 @@ exports[`Scatter characterisation > on a light surface > renders the Empty story
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
@@ -2361,12 +2361,12 @@ exports[`Scatter characterisation > on a light surface > renders the Empty story
         <div
           class="css-view-175oi2r"
           data-testid="scatter-axis-y"
-          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 254px; background-color: rgba(0, 0, 0, 0.15);"
+          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 254px; background-color: rgba(0, 0, 0, 0.16);"
         />
         <div
           class="css-view-175oi2r"
           data-testid="scatter-axis-x"
-          style="position: absolute; left: 40px; top: 266px; width: 348px; height: 1px; background-color: rgba(0, 0, 0, 0.15);"
+          style="position: absolute; left: 40px; top: 266px; width: 348px; height: 1px; background-color: rgba(0, 0, 0, 0.16);"
         />
         <div
           class="css-text-146c3p1"
@@ -2410,7 +2410,7 @@ exports[`Scatter characterisation > on a light surface > renders the Light story
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
@@ -2582,17 +2582,17 @@ exports[`Scatter characterisation > on a light surface > renders the Light story
         <div
           class="css-view-175oi2r"
           data-testid="scatter-axis-y"
-          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(0, 0, 0, 0.15);"
+          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(0, 0, 0, 0.16);"
         />
         <div
           class="css-view-175oi2r"
           data-testid="scatter-axis-x"
-          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(0, 0, 0, 0.15);"
+          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(0, 0, 0, 0.16);"
         />
         <div
           class="css-view-175oi2r"
           data-testid="scatter-reference-main-sequence"
-          style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(0, 0, 0, 0.22); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
+          style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(0, 0, 0, 0.24); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
         />
         <div
           class="css-text-146c3p1"
@@ -2696,7 +2696,7 @@ exports[`Scatter characterisation > on a light surface > renders the NoDiagonal 
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
@@ -2868,12 +2868,12 @@ exports[`Scatter characterisation > on a light surface > renders the NoDiagonal 
         <div
           class="css-view-175oi2r"
           data-testid="scatter-axis-y"
-          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(0, 0, 0, 0.15);"
+          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(0, 0, 0, 0.16);"
         />
         <div
           class="css-view-175oi2r"
           data-testid="scatter-axis-x"
-          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(0, 0, 0, 0.15);"
+          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(0, 0, 0, 0.16);"
         />
         <div
           class="css-text-146c3p1"
@@ -2977,7 +2977,7 @@ exports[`Scatter characterisation > on a light surface > renders the Outlier sto
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
@@ -3149,17 +3149,17 @@ exports[`Scatter characterisation > on a light surface > renders the Outlier sto
         <div
           class="css-view-175oi2r"
           data-testid="scatter-axis-y"
-          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(0, 0, 0, 0.15);"
+          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(0, 0, 0, 0.16);"
         />
         <div
           class="css-view-175oi2r"
           data-testid="scatter-axis-x"
-          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(0, 0, 0, 0.15);"
+          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(0, 0, 0, 0.16);"
         />
         <div
           class="css-view-175oi2r"
           data-testid="scatter-reference-main-sequence"
-          style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(0, 0, 0, 0.22); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
+          style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(0, 0, 0, 0.24); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
         />
         <div
           class="css-text-146c3p1"
@@ -3280,7 +3280,7 @@ exports[`Scatter characterisation > on a light surface > renders the Selected st
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
@@ -3452,17 +3452,17 @@ exports[`Scatter characterisation > on a light surface > renders the Selected st
         <div
           class="css-view-175oi2r"
           data-testid="scatter-axis-y"
-          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(0, 0, 0, 0.15);"
+          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 294px; background-color: rgba(0, 0, 0, 0.16);"
         />
         <div
           class="css-view-175oi2r"
           data-testid="scatter-axis-x"
-          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(0, 0, 0, 0.15);"
+          style="position: absolute; left: 40px; top: 306px; width: 428px; height: 1px; background-color: rgba(0, 0, 0, 0.16);"
         />
         <div
           class="css-view-175oi2r"
           data-testid="scatter-reference-main-sequence"
-          style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(0, 0, 0, 0.22); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
+          style="position: absolute; left: 40px; top: 12px; width: 519.2494583531118px; height: 0px; border-top-width: 1px; border-top-style: dashed; border-right-style: dashed; border-bottom-style: dashed; border-left-style: dashed; border-top-color: rgba(0, 0, 0, 0.24); transform-origin: 0 0; transform: rotate(34.48579107871906deg);"
         />
         <div
           class="css-text-146c3p1"
@@ -3574,7 +3574,7 @@ exports[`Scatter characterisation > on a light surface > renders the SinglePoint
 <div>
   <div
     class="css-view-175oi2r"
-    style="background-color: rgb(255, 255, 255);"
+    style="background-color: rgb(237, 234, 231);"
   >
     <div
       class="css-view-175oi2r"
@@ -3746,12 +3746,12 @@ exports[`Scatter characterisation > on a light surface > renders the SinglePoint
         <div
           class="css-view-175oi2r"
           data-testid="scatter-axis-y"
-          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 254px; background-color: rgba(0, 0, 0, 0.15);"
+          style="position: absolute; left: 40px; top: 12px; width: 1px; height: 254px; background-color: rgba(0, 0, 0, 0.16);"
         />
         <div
           class="css-view-175oi2r"
           data-testid="scatter-axis-x"
-          style="position: absolute; left: 40px; top: 266px; width: 348px; height: 1px; background-color: rgba(0, 0, 0, 0.15);"
+          style="position: absolute; left: 40px; top: 266px; width: 348px; height: 1px; background-color: rgba(0, 0, 0, 0.16);"
         />
         <div
           class="css-text-146c3p1"

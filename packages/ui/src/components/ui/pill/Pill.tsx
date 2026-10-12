@@ -119,11 +119,11 @@ const toneStyles: Record<PillVariant, Record<PillTone, string>> = {
   // transparent border keeps the capsule's box the size of the other variants.
   clear: {
     neutral: 'border-transparent text-text-primary',
-    brand: 'border-transparent text-brand-primary',
-    'brand-secondary': 'border-transparent text-brand-secondary',
-    success: 'border-transparent text-status-success',
-    warning: 'border-transparent text-status-warning',
-    error: 'border-transparent text-status-error',
+    brand: 'border-transparent text-text-brand',
+    'brand-secondary': 'border-transparent text-text-brand-secondary',
+    success: 'border-transparent text-text-success',
+    warning: 'border-transparent text-text-warning',
+    error: 'border-transparent text-text-error',
     info: 'border-transparent text-status-info',
   },
 }
