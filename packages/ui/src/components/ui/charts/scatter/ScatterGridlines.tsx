@@ -1,5 +1,6 @@
 import { View, Text } from 'react-native'
 import type { getSemanticColors } from '../../../../theme/tokens/semantic'
+import { chartText } from '../kit/chartText'
 import {
   PLOT_LEFT,
   PLOT_TOP,
@@ -39,7 +40,7 @@ export function ScatterGridlines({
             }}
           >
             <Text
-              className="text-[9px] text-text-tertiary"
+              className={chartText.tick}
               style={{
                 position: 'absolute',
                 left: -PLOT_LEFT,
@@ -70,7 +71,7 @@ export function ScatterGridlines({
             }}
           >
             <Text
-              className="text-[9px] text-text-tertiary"
+              className={chartText.tick}
               style={{
                 position: 'absolute',
                 top: innerH + 4,

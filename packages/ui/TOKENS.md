@@ -242,7 +242,7 @@ opened from disk (titan-platform's code-report) renders with no network.
 | ------------------------------ | ------- | ---------------------------------------------------------------------- |
 | Inter (`font-sans`)            | 400–700 | latin, latin-ext, cyrillic, cyrillic-ext, greek, greek-ext, vietnamese |
 | Nunito Sans (`font-body`)      | 400–700 | latin, latin-ext, cyrillic, cyrillic-ext, vietnamese                   |
-| Space Grotesk (`font-heading`) | 600–700 | latin, latin-ext, vietnamese                                           |
+| Space Grotesk (`font-heading`) | 300–700 | latin, latin-ext, vietnamese                                           |
 
 - **The files are Google Fonts' own.** They are the variable woff2 subsets that
   `fonts.googleapis.com/css2` served to Chrome in September 2026 (Inter v20, Nunito Sans v19, Space
@@ -251,7 +251,7 @@ opened from disk (titan-platform's code-report) renders with no network.
   Titan declares `font-weight: 400 700` once instead, because a single-file build inlines every
   `url()` it meets and the repeats would quadruple the inlined bytes. Weights outside the range
   clamp to it, as the discrete rules did.
-- **Cost.** 392 KB of woff2 in the package. A single-file build that imports `global.css` grows by
+- **Cost.** 374 KB of woff2 in the package. A single-file build that imports `global.css` grows by
   about 500 KB of base64. A normal build emits the files as hashed assets and the browser fetches only
   the subsets a page uses.
 - **Licence.** All three are SIL Open Font License 1.1; each directory carries its `OFL.txt`.

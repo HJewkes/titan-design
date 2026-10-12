@@ -1,5 +1,6 @@
 import { compositeOver, contrast } from '../../theme/color-checks'
 import { getSemanticColors, type ThemeMode } from '../../theme/tokens/semantic'
+import { colorsAsJudged } from './light-as-judged'
 
 /**
  * TD-765: the focus-ring options the owner picked from. The pick, two-tone, is applied: the
@@ -93,7 +94,7 @@ export function measureRing(
   plane: Plane,
   sample: SampleKey
 ): RingMeasurement {
-  const colors = getSemanticColors(mode)
+  const colors = colorsAsJudged(mode)
   const planeHex = colors[plane]
   const ring = compositeOver(colors[option.ring], planeHex)
   const edgeToken = SAMPLE_EDGE[sample]

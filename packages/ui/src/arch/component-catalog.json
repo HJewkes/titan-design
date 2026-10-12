@@ -927,6 +927,13 @@
         },
         {
           "default": null,
+          "description": "Receives the row's host node, so a list can move focus to it.",
+          "name": "focusRef",
+          "required": false,
+          "type": "((node: unknown) => void)"
+        },
+        {
+          "default": null,
           "description": "Reference instant for the age label, injected so renders are deterministic.",
           "name": "now",
           "required": true,
@@ -952,6 +959,13 @@
           "name": "session",
           "required": true,
           "type": "SessionSummary"
+        },
+        {
+          "default": null,
+          "description": "The row's tab stop, when a list roves focus across its rows.",
+          "name": "tabIndex",
+          "required": false,
+          "type": "0 | -1"
         }
       ],
       "purpose": "SessionListItem — one session in the reader's list, led by its title, with a footer of age · duration · tasks touched · track.",
@@ -2827,6 +2841,13 @@
           "type": "number"
         },
         {
+          "default": "column",
+          "description": "How the sections are arranged — the panel passes its tier's.",
+          "name": "layout",
+          "required": false,
+          "type": "CardLayout"
+        },
+        {
           "default": null,
           "description": "The live fatigue read-model for the current set.",
           "name": "model",
@@ -2920,8 +2941,8 @@
         "custom-fatigue-live-fatigue-panel--live-panel-v-2",
         "custom-fatigue-live-fatigue-panel--live-states",
         "custom-fatigue-live-fatigue-panel--on-light-surface",
-        "custom-fatigue-live-fatigue-panel--responsive-tiers",
-        "custom-fatigue-live-fatigue-panel--wall-width"
+        "custom-fatigue-live-fatigue-panel--wall-width",
+        "custom-fatigue-live-fatigue-panel--widths"
       ],
       "tier": "organism"
     },
@@ -3896,7 +3917,8 @@
         "custom-workout-goals-bodyweightgoalcard--rate-vetoed",
         "custom-workout-goals-bodyweightgoalcard--slow-loss",
         "custom-workout-goals-bodyweightgoalcard--slow-loss-one-line",
-        "custom-workout-goals-bodyweightgoalcard--tag-tip"
+        "custom-workout-goals-bodyweightgoalcard--tag-tip",
+        "custom-workout-goals-bodyweightgoalcard--widths"
       ],
       "tier": "organism"
     },
@@ -5802,7 +5824,8 @@
         "custom-workout-dataviz-goaltrajectorychart--phone-on-track",
         "custom-workout-dataviz-goaltrajectorychart--stalled",
         "custom-workout-dataviz-goaltrajectorychart--tolerated",
-        "custom-workout-dataviz-goaltrajectorychart--wall-motion"
+        "custom-workout-dataviz-goaltrajectorychart--wall-motion",
+        "custom-workout-dataviz-goaltrajectorychart--widths"
       ],
       "tier": "organism"
     },
@@ -5966,7 +5989,7 @@
           "description": "",
           "name": "palette",
           "required": true,
-          "type": "{ status: \"#E05254\" | \"#D14343\" | \"#F9B415\" | \"#C27400\" | \"#2ED573\" | \"#298732\" | \"#2196F3\" | \"#1072CB\" | \"#A29F9D\" | \"#72716F\" | \"#9E9A97\"; band: string; bandHue: \"#2697B7\" | \"#307B9B\"; ... 11 more ...; shadeScale: number; }"
+          "type": "{ status: \"#E05254\" | \"#D14343\" | \"#F9B415\" | \"#A45E00\" | \"#2ED573\" | \"#2B6B25\" | \"#2196F3\" | \"#135AA8\" | \"#A29F9D\" | \"#72716F\" | \"#9E9A97\"; band: string; bandHue: \"#2697B7\" | \"#307B9B\"; ... 11 more ...; shadeScale: number; }"
         },
         {
           "default": null,
@@ -10293,6 +10316,7 @@
       "storyIds": [
         "shell-topbar--default",
         "shell-topbar--single-trailing-item",
+        "shell-topbar--widths",
         "shell-topbar--with-app-chrome"
       ],
       "tier": "organism"
@@ -13714,7 +13738,7 @@
         },
         {
           "default": null,
-          "description": "URL to navigate to (for accessibility)",
+          "description": "URL to navigate to; on web the link renders a real `<a href>`",
           "name": "href",
           "required": false,
           "type": "string"
