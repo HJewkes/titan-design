@@ -634,7 +634,7 @@
   },
   "custom-activework-initiativereader--default dark": {
     "#888684|#252321": 4,
-    "#888684|#31302f": 14,
+    "#888684|#31302f": 10,
     "#ff7900|#4a3929": 3
   },
   "custom-activework-initiativereader--default light": {
@@ -648,7 +648,7 @@
     "#ff7900|#ffffff": 4
   },
   "custom-activework-openloops--default dark": {
-    "#888684|#31302f": 9,
+    "#888684|#31302f": 5,
     "#ff7900|#4a3929": 3
   },
   "custom-activework-openloops--empty dark": {
