@@ -145,7 +145,7 @@ export function FormField({
         {(helperText || errorMessage) && (
           <Text
             id={isInvalid ? errorId : helperId}
-            className={cn('text-xs', isInvalid ? 'text-text-error' : 'text-text-tertiary')}
+            className={cn('text-xs', isInvalid ? 'text-text-error' : 'text-text-secondary')}
           >
             {errorMessage || helperText}
           </Text>
