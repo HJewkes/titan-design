@@ -15,7 +15,7 @@
  */
 import { describe, it, expect } from 'vitest'
 import { primitiveRamps } from './tokens/primitives'
-import { semanticColorsDark } from './tokens/semantic'
+import { semanticColorsDark, semanticColorsLight } from './tokens/semantic'
 
 const hex2rgb = (h: string): [number, number, number] => {
   const n = parseInt(h.slice(1), 16)
@@ -66,5 +66,49 @@ describe('solid label (dark)', () => {
   it('keeps the two lifted fills off rung 600', () => {
     expect(semanticColorsDark['brand-secondary-solid']).toBe(primitiveRamps.cyan[500])
     expect(semanticColorsDark['status-error-solid']).toBe(primitiveRamps.red[500])
+  })
+})
+
+/**
+ * Decision 0003, the light solid ladder: a light solid sits on step 600 of its hue
+ * under a white label, with two named exceptions the owner picked at step 500, brand
+ * (orange, 3.74) and warning (amber, 3.63). Both clear the 3:1 large-text floor and
+ * are declared in contrast-baseline.json. Info stays on blue[500] until TD-775 moves
+ * it to 600, declared in the same file.
+ */
+const LIGHT_DECLARED_MISSES = ['brand', 'warning', 'info'] as const
+const lightMisses = SOLID_TONES.filter((t) =>
+  (LIGHT_DECLARED_MISSES as readonly string[]).includes(t.name)
+)
+const lightPasses = SOLID_TONES.filter((t) => !lightMisses.includes(t))
+
+describe('solid label (light)', () => {
+  it('uses one white label across every solid tone', () => {
+    const labels = new Set(SOLID_TONES.map((t) => semanticColorsLight[t.label]))
+    expect(labels).toEqual(new Set([semanticColorsLight['text-inverse']]))
+  })
+
+  it.each(lightPasses)('$name label clears AA on its solid fill', ({ fill, label }) => {
+    expect(contrast(semanticColorsLight[label], semanticColorsLight[fill])).toBeGreaterThanOrEqual(
+      4.5
+    )
+  })
+
+  it.each(lightMisses)('$name label reads at large-text AA, a declared miss', ({ fill, label }) => {
+    const ratio = contrast(semanticColorsLight[label], semanticColorsLight[fill])
+    expect(ratio).toBeGreaterThanOrEqual(3)
+    expect(ratio).toBeLessThan(4.5)
+  })
+
+  it('puts the brand solid on orange[500] under white at 3.7 or better', () => {
+    expect(semanticColorsLight['brand-primary-solid']).toBe(primitiveRamps.orange[500])
+    expect(
+      contrast(semanticColorsLight['on-brand-primary'], semanticColorsLight['brand-primary-solid'])
+    ).toBeGreaterThanOrEqual(3.7)
+  })
+
+  it('steps brand hover and active one rung down from the solid in turn', () => {
+    expect(semanticColorsLight['brand-primary-hover']).toBe(primitiveRamps.orange[600])
+    expect(semanticColorsLight['brand-primary-active']).toBe(primitiveRamps.orange[700])
   })
 })
