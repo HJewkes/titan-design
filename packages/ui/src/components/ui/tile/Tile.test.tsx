@@ -14,6 +14,22 @@ describe('Tile', () => {
     expect(screen.getByText('76%')).toBeInTheDocument()
   })
 
+  it('renders its label as a microLabel eyebrow on text-secondary', () => {
+    render(<Tile label="Volume" value="76%" />)
+    const classes = classesOf(screen.getByText('Volume'))
+    expect(classes).toEqual(
+      expect.arrayContaining([
+        'font-sans',
+        'text-2xs',
+        'font-semibold',
+        'uppercase',
+        'tracking-widest',
+        'text-text-secondary',
+      ])
+    )
+    expect(classes).not.toContain('text-text-tertiary')
+  })
+
   it('applies valueColor to the value text', () => {
     render(<Tile label="Fatigue" value="MOD" valueColor="#F5A623" />)
     const value = screen.getByText('MOD')
