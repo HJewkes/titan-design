@@ -93,14 +93,9 @@
     "tracking": 1,
     "uppercase": 1
   },
-  "src/components/ui/charts/scatter/ScatterFrame.tsx": {
-    "arbitrarySize": 2
-  },
-  "src/components/ui/charts/scatter/ScatterGridlines.tsx": {
-    "arbitrarySize": 2
-  },
-  "src/components/ui/charts/scatter/ScatterPointMark.tsx": {
-    "arbitrarySize": 1
+  "src/components/ui/charts/kit/chartText.ts": {
+    "tracking": 1,
+    "uppercase": 1
   },
   "src/components/ui/charts/treemap/Treemap.tsx": {
     "arbitrarySize": 1
