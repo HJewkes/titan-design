@@ -3,6 +3,7 @@ import { afterEach, describe, it, expect } from 'vitest'
 import { render } from '@testing-library/react'
 import { configureAxe } from 'jest-axe'
 import type { ComposedStoryEntry } from './composed-stories'
+import { ratchetProblems } from './ratchet'
 
 /**
  * Axe on every composed story (TD-26 S2), under the same jsdom pipeline as the smoke test.
@@ -58,22 +59,14 @@ export function baselineProblems(
   failing: string[],
   baselined: string[] = []
 ): string[] {
-  const added = failing.filter((rule) => !baselined.includes(rule))
-  const stale = baselined.filter((rule) => !failing.includes(rule))
-  const problems: string[] = []
-  if (added.length > 0) {
-    problems.push(
+  return ratchetProblems(failing, baselined, {
+    added: (added) =>
       `${id} fails axe rule(s) ${added.join(', ')}, which ${BASELINE_FILE} does not list. ` +
-        'Fix the story or the component; the baseline may only shrink, so do not add them.'
-    )
-  }
-  if (stale.length > 0) {
-    problems.push(
+      'Fix the story or the component; the baseline may only shrink, so do not add them.',
+    stale: (stale) =>
       `${id} now passes axe rule(s) ${stale.join(', ')}. Remove them from ${BASELINE_FILE}, ` +
-        'and delete the entry once its list is empty.'
-    )
-  }
-  return problems
+      'and delete the entry once its list is empty.',
+  })
 }
 
 // Lab decision record that mounts every rejected palette at once; axe did not finish in 8 min.

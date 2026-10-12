@@ -317,3 +317,23 @@ describe('Pill outline error', () => {
     expect(classes).not.toContain('text-status-error')
   })
 })
+
+// TD-789 3b: a fill or mark tone as label text missed 4.5:1 on the grey 100 and 200 planes.
+describe('Pill clear label', () => {
+  it.each([
+    ['brand', 'text-text-brand', 'text-brand-primary'],
+    ['brand-secondary', 'text-text-brand-secondary', 'text-brand-secondary'],
+    ['success', 'text-text-success', 'text-status-success'],
+    ['warning', 'text-text-warning', 'text-status-warning'],
+    ['error', 'text-text-error', 'text-status-error'],
+  ] as const)('paints the %s label in %s, not %s', (tone, textRole, fillTone) => {
+    render(
+      <Pill testID="pill" variant="clear" tone={tone}>
+        Label
+      </Pill>
+    )
+    const classes = (capturedClassNames.get('pill') ?? '').split(/\s+/)
+    expect(classes).toContain(textRole)
+    expect(classes).not.toContain(fillTone)
+  })
+})
