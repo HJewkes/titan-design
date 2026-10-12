@@ -116,6 +116,7 @@ const meta: Meta<DecisionArgs> = {
       liveKey={args.scenario === 'idle' ? null : 'live'}
       state={SHELL_STATE[args.scenario]}
       subtitle="planning"
+      contentPadding="none"
     >
       <View className="flex-1 gap-section-sm p-gutter-sm" testID="page-content">
         <Strips {...args} />

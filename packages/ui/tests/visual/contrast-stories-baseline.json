@@ -2703,9 +2703,6 @@
   "pages-appshell--audiobook-app light": {
     "#22a444|#d4d1ce": 1
   },
-  "pages-appshell--default dark": {
-    "#888684|#252321": 1
-  },
   "pages-appshell--replaced-regions dark": {
     "#888684|#252321": 1
   },
