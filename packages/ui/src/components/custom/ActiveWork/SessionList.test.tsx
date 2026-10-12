@@ -1,5 +1,7 @@
+import { useState } from 'react'
+import { TextInput } from 'react-native'
 import { describe, it, expect, vi } from 'vitest'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { SessionList, groupByPeriod, sessionPeriod } from './SessionList'
 import { SESSION_FIXTURE, SESSION_NOW } from './session-fixture'
@@ -12,6 +14,29 @@ const interleaved = [7, 5, 7].map((month, i) => ({
 }))
 
 const july = SESSION_FIXTURE.filter((s) => s.ended.startsWith('2026-07'))
+
+function ControlledList({ initialId, onSelect }: { initialId?: string; onSelect: () => void }) {
+  const [selectedId, setSelectedId] = useState(initialId)
+  return (
+    <SessionList
+      sessions={SESSION_FIXTURE}
+      now={SESSION_NOW}
+      selectedId={selectedId}
+      onSelect={(session) => {
+        setSelectedId(session.id)
+        onSelect()
+      }}
+    />
+  )
+}
+
+const options = () => screen.getAllByRole('option')
+const tabStops = () => options().filter((option) => option.getAttribute('tabindex') === '0')
+const last = SESSION_FIXTURE.length - 1
+
+function pressOnFocused(key: string) {
+  fireEvent.keyDown(document.activeElement!, { key })
+}
 
 describe('SessionList', () => {
   it('renders a row per session under a count heading, inside a listbox', () => {
@@ -78,6 +103,106 @@ describe('SessionList', () => {
         selectedId={SESSION_FIXTURE[0]!.id}
       />
     )
+    expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+describe('SessionList keyboard', () => {
+  it('makes the selected option the only tab stop', () => {
+    render(
+      <SessionList
+        sessions={SESSION_FIXTURE}
+        now={SESSION_NOW}
+        selectedId={SESSION_FIXTURE[2]!.id}
+      />
+    )
+    expect(tabStops()).toEqual([options()[2]])
+  })
+
+  it('makes the first option the only tab stop when nothing is selected', () => {
+    render(<SessionList sessions={SESSION_FIXTURE} now={SESSION_NOW} />)
+    expect(tabStops()).toEqual([options()[0]])
+  })
+
+  it('selects and focuses the next and previous session, across period groups', () => {
+    const onSelect = vi.fn()
+    render(<ControlledList initialId={SESSION_FIXTURE[last - 1]!.id} onSelect={onSelect} />)
+    act(() => options()[last - 1]!.focus())
+
+    pressOnFocused('ArrowDown')
+    expect(options()[last]).toHaveFocus()
+    expect(options()[last]).toHaveAttribute('aria-selected', 'true')
+
+    pressOnFocused('ArrowUp')
+    expect(options()[last - 1]).toHaveFocus()
+    expect(onSelect).toHaveBeenCalledTimes(2)
+  })
+
+  it('reports the session a key lands on to the host', () => {
+    const onSelect = vi.fn()
+    render(
+      <SessionList
+        sessions={SESSION_FIXTURE}
+        now={SESSION_NOW}
+        selectedId={SESSION_FIXTURE[0]!.id}
+        onSelect={onSelect}
+      />
+    )
+    fireEvent.keyDown(options()[0]!, { key: 'ArrowDown' })
+    expect(onSelect).toHaveBeenCalledWith(SESSION_FIXTURE[1])
+  })
+
+  it('reaches the ends with Home and End', () => {
+    render(<ControlledList initialId={SESSION_FIXTURE[2]!.id} onSelect={() => {}} />)
+    act(() => options()[2]!.focus())
+
+    pressOnFocused('End')
+    expect(options()[last]).toHaveFocus()
+
+    pressOnFocused('Home')
+    expect(options()[0]).toHaveFocus()
+    expect(tabStops()).toEqual([options()[0]])
+  })
+
+  it('stops at the ends instead of wrapping', () => {
+    const onSelect = vi.fn()
+    render(<ControlledList initialId={SESSION_FIXTURE[last]!.id} onSelect={onSelect} />)
+    act(() => options()[last]!.focus())
+
+    pressOnFocused('ArrowDown')
+    expect(onSelect).not.toHaveBeenCalled()
+    expect(options()[last]).toHaveFocus()
+
+    pressOnFocused('Home')
+    onSelect.mockClear()
+    pressOnFocused('ArrowUp')
+    expect(onSelect).not.toHaveBeenCalled()
+    expect(options()[0]).toHaveFocus()
+  })
+
+  it('leaves focus outside the list when the host changes the selection or order', () => {
+    const [first, second, ...rest] = SESSION_FIXTURE
+    const listWith = (sessions: typeof SESSION_FIXTURE, selectedId: string) => (
+      <>
+        <TextInput accessibilityLabel="Notes" />
+        <SessionList sessions={sessions} now={SESSION_NOW} selectedId={selectedId} />
+      </>
+    )
+    const { rerender } = render(listWith([second!, ...rest], second!.id))
+    const notes = screen.getByLabelText('Notes')
+    act(() => notes.focus())
+
+    rerender(listWith([second!, ...rest], rest[0]!.id))
+    expect(notes).toHaveFocus()
+
+    rerender(listWith([first!, second!, ...rest], rest[0]!.id))
+    expect(notes).toHaveFocus()
+  })
+
+  it('has no a11y violations after keyboard selection', async () => {
+    const { container } = render(<ControlledList onSelect={() => {}} />)
+    act(() => options()[0]!.focus())
+    pressOnFocused('ArrowDown')
     expect(await axe(container)).toHaveNoViolations()
   })
 })

@@ -2,6 +2,7 @@
 import { useMemo } from 'react'
 import { View } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { useListNavigation } from '../../../hooks/useListNavigation'
 import { Divider } from '../../ui/divider'
 import { Typography } from '../../ui/typography'
 import { Eyebrow } from '../../ui/eyebrow'
@@ -56,11 +57,41 @@ function PeriodDivider({ label }: { label: string }) {
 }
 
 /**
+ * APG listbox keys over the flat session order, across period groups. Arrows
+ * stop at the ends rather than wrapping; moving selects, and the host's new
+ * `selectedId` carries the roving focus to the row.
+ */
+function useSessionKeys(
+  sessions: SessionSummary[],
+  selectedId: string | undefined,
+  onSelect: SessionListProps['onSelect']
+) {
+  const activeIndex = sessions.findIndex((session) => session.id === selectedId)
+  const onActiveIndexChange = (index: number) => {
+    const session = sessions[index]
+    if (session) onSelect?.(session)
+  }
+  const { onKeyDown, getItemProps } = useListNavigation({
+    count: sessions.length,
+    activeIndex,
+    onActiveIndexChange,
+    loop: false,
+    focusMode: 'roving',
+  })
+  const indexOf = useMemo(
+    () => new Map(sessions.map((session, index) => [session.id, index])),
+    [sessions]
+  )
+  return { onKeyDown, getItemProps, indexOf }
+}
+
+/**
  * SessionList — the selectable list half of the session reader. Owns no
  * selection state: the host holds `selectedId` and pairs the list with a
  * `SessionDetail`, so the two can be laid out however the surface needs.
  * Sessions are grouped under a hairline divider per calendar month once the
- * list spans more than one.
+ * list spans more than one. The listbox is one tab stop: Arrow keys, Home and
+ * End select the neighbouring or end session.
  *
  * Composes {@link Eyebrow}, {@link Divider} and {@link SessionListItem}.
  */
@@ -75,10 +106,11 @@ export function SessionList({
   const heading = label ?? `${sessions.length} ${sessions.length === 1 ? 'session' : 'sessions'}`
   const periods = useMemo(() => groupByPeriod(sessions), [sessions])
   const showPeriods = periods.length > 1
+  const { onKeyDown, getItemProps, indexOf } = useSessionKeys(sessions, selectedId, onSelect)
   return (
     <View className={cn('gap-2', className)}>
       <Eyebrow>{heading}</Eyebrow>
-      <View className="gap-1" role={LISTBOX_ROLE} aria-label={heading}>
+      <View className="gap-1" role={LISTBOX_ROLE} aria-label={heading} {...{ onKeyDown }}>
         {periods.map((period, index) => (
           <View
             key={`${index}-${period.label}`}
@@ -87,15 +119,20 @@ export function SessionList({
             aria-label={period.label}
           >
             {showPeriods ? <PeriodDivider label={period.label} /> : null}
-            {period.sessions.map((session) => (
-              <SessionListItem
-                key={session.id}
-                session={session}
-                now={now}
-                selected={session.id === selectedId}
-                onSelect={onSelect ? () => onSelect(session) : undefined}
-              />
-            ))}
+            {period.sessions.map((session) => {
+              const { tabIndex, ref } = getItemProps(indexOf.get(session.id) ?? -1)
+              return (
+                <SessionListItem
+                  key={session.id}
+                  session={session}
+                  now={now}
+                  selected={session.id === selectedId}
+                  onSelect={onSelect ? () => onSelect(session) : undefined}
+                  tabIndex={tabIndex}
+                  focusRef={ref}
+                />
+              )
+            })}
           </View>
         ))}
       </View>
