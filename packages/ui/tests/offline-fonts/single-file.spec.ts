@@ -21,7 +21,7 @@ const FIXTURE_DIR = path.join(__dirname, 'fixture')
 const FACES = [
   ...[400, 500, 600, 700].map((weight) => `${weight} 16px "Inter"`),
   ...[400, 500, 600, 700].map((weight) => `${weight} 16px "Nunito Sans"`),
-  ...[600, 700].map((weight) => `${weight} 16px "Space Grotesk"`),
+  ...[400, 500, 600, 700].map((weight) => `${weight} 16px "Space Grotesk"`),
 ]
 
 let outDir: string

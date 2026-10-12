@@ -21,6 +21,8 @@ interface QuestionBlockProps {
   dispatch: Dispatch<Action>
   /** Set on a merge-bound question whose PR group may not ship: its Ship option is disabled. */
   shipBlock?: PrGroupShipStatus
+  /** Set on a merge-bound question whose PR group is stacked on a holder group of the round. */
+  shipsAfter?: string
 }
 
 export const REVISION_LABEL = 'None of these, request a revision'
@@ -143,6 +145,22 @@ function ShipBlockedNotice({
   )
 }
 
+function ShipsAfterNote({
+  question,
+  shipsAfter,
+}: Pick<QuestionBlockProps, 'question' | 'shipsAfter'>) {
+  if (!shipsAfter || question.kind !== 'pick-one' || !question.merge) return null
+  const sameRepo = `${question.merge.repo}#`
+  const holder = shipsAfter.startsWith(sameRepo)
+    ? shipsAfter.slice(sameRepo.length - 1)
+    : shipsAfter
+  return (
+    <p className="ships-after" data-testid={`ships-after-${question.id}`}>
+      ships after {holder}
+    </p>
+  )
+}
+
 function RevisionNotice({ question, draft }: Pick<QuestionBlockProps, 'question' | 'draft'>) {
   const asked = draftAnswer(question, draft).revisionRequested
   if (!asked || draft.comment.trim()) return null
@@ -171,6 +189,7 @@ export function QuestionBlock(props: QuestionBlockProps) {
         {question.required && <span className="required"> required</span>}
       </h3>
       <Choices {...props} />
+      <ShipsAfterNote question={question} shipsAfter={props.shipsAfter} />
       <ShipBlockedNotice question={question} shipBlock={props.shipBlock} />
       <RecommendationNote {...props} />
       <RevisionNotice question={question} draft={draft} />
