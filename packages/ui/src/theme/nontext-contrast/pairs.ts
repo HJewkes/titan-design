@@ -76,10 +76,7 @@ const boundaries: NonTextPair[] = [
     id: 'boundary.surface-input',
     token: 'surface-input',
     floor: MARK,
-    sources: [
-      src('ui/input/Input.tsx', 'bg-surface-input'),
-      src('ui/autocomplete/Autocomplete.tsx', 'bg-surface-input'),
-    ],
+    sources: [src('ui/autocomplete/Autocomplete.tsx', 'bg-surface-input')],
   },
   {
     id: 'boundary.hairline-strong',
