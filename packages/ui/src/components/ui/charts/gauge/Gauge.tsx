@@ -40,8 +40,11 @@ export interface GaugeProps extends Omit<ViewProps, 'children'> {
   className?: string
 }
 
-/** Unfilled-segment token — ZoneTrack's un-reached track, resolved per theme so it reads in light and dark. */
-const TRACK_TOKEN = 'border-prominent'
+/**
+ * Unfilled-segment token per theme. Light takes `border-input`: on the 3b light planes
+ * `border-prominent` falls under 2.5:1 against surface-base (TD-473).
+ */
+const TRACK_TOKEN = { dark: 'border-prominent', light: 'border-input' } as const
 
 /** Titan status-token bands for a 0–100 score, in the given theme. */
 function defaultThresholds(mode: ThemeMode): GaugeThreshold[] {
@@ -165,7 +168,7 @@ export function Gauge({
   const reading = value !== null && Number.isFinite(value) ? value : null
   const fill = reading === null ? 0 : clamp01((reading - min) / span)
   const activeColor = (f: number) => color ?? bandColor(f, bands, range)
-  const ticks = buildTicks(fill, size, { active: activeColor, track: sem[TRACK_TOKEN] })
+  const ticks = buildTicks(fill, size, { active: activeColor, track: sem[TRACK_TOKEN[mode]] })
   const displayColor = activeColor(fill)
   const tickLength = size * 0.11
   const tickThickness = Math.max(2, (size * 0.9) / SEGMENTS)

@@ -64,7 +64,10 @@ describe('Gauge', () => {
     expect(screen.getByTestId('gauge-value')).toHaveStyle({ color: '#14B8A6' })
   })
 
-  describe.each<ThemeMode>(['light', 'dark'])('unfilled ticks in %s mode', (mode) => {
+  describe.each<[ThemeMode, 'border-input' | 'border-prominent']>([
+    ['light', 'border-input'],
+    ['dark', 'border-prominent'],
+  ])('unfilled ticks in %s mode', (mode, trackToken) => {
     const sem = getSemanticColors(mode)
     const renderIn = () =>
       render(
@@ -73,11 +76,11 @@ describe('Gauge', () => {
         </SurfaceContext.Provider>
       )
 
-    it('paints every unfilled tick with the border-prominent track token', () => {
+    it(`paints every unfilled tick with the ${trackToken} track token`, () => {
       renderIn()
 
       for (const segment of screen.getAllByTestId('gauge-segment')) {
-        expect(segment).toHaveStyle({ backgroundColor: sem['border-prominent'] })
+        expect(segment).toHaveStyle({ backgroundColor: sem[trackToken] })
       }
     })
 
