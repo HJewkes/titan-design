@@ -70,6 +70,21 @@ describe('declared contrast pairs', () => {
       )
     })
 
+    it(`${mode}: measures Button outline and ghost labels on their hover washes`, () => {
+      const pairs = CONTRAST_PAIRS.filter(({ modes }) => modes.includes(mode)).map(
+        ({ fg, bg }) => `${fg} on ${bg}`
+      )
+
+      expect(pairs).toEqual(
+        expect.arrayContaining([
+          'text-brand-secondary on brand-secondary-subtle',
+          'text-success on status-success-subtle',
+          'text-error on status-error-subtle',
+          'text-warning on status-warning-subtle',
+        ])
+      )
+    })
+
     it(`${mode}: no pair falls below its floor unless baselined`, () => {
       const { added } = diffAgainstBaseline(failingContrastPairs(mode), baseline[mode])
 
@@ -136,6 +151,14 @@ describe('the contrast gate catches', () => {
 
     expect(failing).toEqual(['text-a on surface-a'])
     expect(diffAgainstBaseline(failing, []).added).toEqual(failing)
+  })
+
+  it('a failing pair two components both paint, listed once', () => {
+    const retuned = { ...colors, 'text-a': '#444444' }
+
+    const failing = failingContrastPairs('dark', [...pairs, ...pairs], retuned)
+
+    expect(failing).toEqual(['text-a on surface-a'])
   })
 
   it('a baseline entry that now passes', () => {

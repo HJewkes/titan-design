@@ -163,14 +163,30 @@ const otherDisabled: ContrastPair[] = [
   { fg: 'text-primary', bg: 'surface-overlay', floor: DISABLED, modes: BOTH, opacity: 0.5 },
 ]
 
+/** Button outline/ghost wash → its `textStyles` label, where the label is not the wash's own tone. */
+const BUTTON_WASH_LABELS = {
+  'brand-secondary-subtle': 'text-brand-secondary',
+  'status-success-subtle': 'text-success',
+  'status-error-subtle': 'text-error',
+  'status-warning-subtle': 'text-warning',
+} as const
+
 const hoverAndPressed: ContrastPair[] = [
   // Button solid `web:hover:bg-brand-primary-dark active:bg-brand-primary-dark`.
   ...BRANDS.map((b) => ({ fg: `on-brand-${b}`, bg: `brand-${b}-dark`, floor: AA, modes: BOTH })),
-  // Button outline and ghost wash the label's tone under it: `text-status-error` with
-  // `web:hover:bg-status-error-subtle active:bg-status-error-subtle`. IconBox's glyph too.
+  // IconBox paints its glyph in the tone on the tone's wash: `text-status-error` on `bg-status-error-subtle`.
   ...[...BRANDS.map((b) => `brand-${b}`), ...TONES.map((t) => `status-${t}`)].map((tone) => ({
     fg: tone,
     bg: `${tone}-subtle`,
+    floor: AA,
+    modes: BOTH,
+    over: CONTENT_PLANES,
+  })),
+  // Button outline and ghost `textStyles` labels under `web:hover:bg-*-subtle active:bg-*-subtle`.
+  // Primary (`text-brand-primary`) and info (`text-status-info`) match IconBox's pairs above.
+  ...Object.entries(BUTTON_WASH_LABELS).map(([bg, fg]) => ({
+    fg,
+    bg,
     floor: AA,
     modes: BOTH,
     over: CONTENT_PLANES,
@@ -276,14 +292,14 @@ export function measureContrastPairs(
     })
 }
 
-/** Ids of the pairs that fall below their floor in `mode`, sorted. */
+/** Ids of the pairs that fall below their floor in `mode`, sorted, each once (two components can paint one pair). */
 export function failingContrastPairs(
   mode: ThemeMode,
   pairs: readonly ContrastPair[] = CONTRAST_PAIRS,
   colors: Colors = getSemanticColors(mode)
 ): string[] {
-  return measureContrastPairs(mode, pairs, colors)
+  const failing = measureContrastPairs(mode, pairs, colors)
     .filter(({ ratio, floor }) => ratio < floor)
     .map(({ id }) => id)
-    .sort()
+  return [...new Set(failing)].sort()
 }
