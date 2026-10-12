@@ -11,8 +11,8 @@ import {
 // Ratios as the story prints them: [indicator / box, checked box / plane, unchecked border / plane].
 type Row = [number, number, number]
 const FILLED: Record<string, Row> = {
-  'light background-base': [2.63, 2.19, 3.03],
-  'light surface-base': [2.63, 2.63, 3.63],
+  'light background-base': [2.63, 1.73, 3.21],
+  'light surface-base': [2.63, 2.19, 4.07],
   'dark background-base': [6.66, 6.66, 4.83],
   'dark surface-base': [6.66, 5.96, 4.32],
 }
@@ -21,14 +21,14 @@ const PINNED: Record<CheckOptionKey, Record<string, Row>> = {
   squaredRadio: FILLED,
   strokeCheck: FILLED,
   hollowSquare: {
-    'light background-base': [6.04, 6.04, 3.03],
-    'light surface-base': [7.24, 7.24, 3.63],
+    'light background-base': [4.76, 4.76, 3.21],
+    'light surface-base': [6.04, 6.04, 4.07],
     'dark background-base': [6.66, 6.66, 4.83],
     'dark surface-base': [5.96, 5.96, 4.32],
   },
   outlineCheck: {
-    'light background-base': [14.76, 3.03, 3.03],
-    'light surface-base': [17.69, 3.63, 3.63],
+    'light background-base': [11.63, 3.21, 3.21],
+    'light surface-base': [14.76, 4.07, 4.07],
     'dark background-base': [16.25, 4.83, 4.83],
     'dark surface-base': [14.54, 4.32, 4.32],
   },
