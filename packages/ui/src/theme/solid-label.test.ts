@@ -73,10 +73,10 @@ describe('solid label (dark)', () => {
  * Decision 0003, the light solid ladder: a light solid sits on step 600 of its hue
  * under a white label, with two named exceptions the owner picked at step 500, brand
  * (orange, 3.74) and warning (amber, 3.63). Both clear the 3:1 large-text floor and
- * are declared in contrast-baseline.json. Info stays on blue[500] until TD-775 moves
- * it to 600, declared in the same file.
+ * are declared in contrast-baseline.json. Info sits on blue[600] like the rest of the
+ * ladder, so it clears 4.5:1.
  */
-const LIGHT_DECLARED_MISSES = ['brand', 'warning', 'info'] as const
+const LIGHT_DECLARED_MISSES = ['brand', 'warning'] as const
 const lightMisses = SOLID_TONES.filter((t) =>
   (LIGHT_DECLARED_MISSES as readonly string[]).includes(t.name)
 )

@@ -97,7 +97,6 @@
     "on-status-error on status-error-solid over surface-elevated at 40%",
     "on-status-error on status-error-solid over surface-overlay at 40%",
     "on-status-error on status-error-solid over surface-raised at 40%",
-    "on-status-info on status-info-solid",
     "on-status-info on status-info-solid over surface-base at 40%",
     "on-status-info on status-info-solid over surface-elevated at 40%",
     "on-status-info on status-info-solid over surface-overlay at 40%",

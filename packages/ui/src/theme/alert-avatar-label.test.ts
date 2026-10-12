@@ -37,8 +37,6 @@ const solidLabelRatio = (mode: Mode, tone: Tone) =>
 // Shrink-only: solid Alert labels allowed under AA. Each entry fails once it clears 4.5,
 // so the list cannot outlive the fix it waits on.
 const SUB_AA_SOLID_LABELS: ReadonlyArray<{ mode: Mode; tone: Tone }> = [
-  // TD-775: remove when the light info solid fill moves to blue 600.
-  { mode: 'light', tone: 'info' },
   // TD-774: named exception, large-text AA.
   { mode: 'light', tone: 'warning' },
 ]
