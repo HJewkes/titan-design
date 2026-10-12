@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, type ReactNode } from 'react'
+import { useMemo, useState, type ReactNode } from 'react'
 import { View, type ViewProps } from 'react-native'
 import { useControllableState } from '../../../hooks/useControllableState'
 import { useListNavigation, type ListNavigationKeyEvent } from '../../../hooks/useListNavigation'
@@ -45,15 +45,14 @@ export interface AgentRosterProps {
 /**
  * The roving tab stop: one stop for the list, on the selected row or the first. Arrows, Home and
  * End move focus without selecting. RNW presses an option on Enter but not on Space, so Space is
- * handled here. Rows register a guarded focus target, so a host re-sort while focus is elsewhere
- * never pulls focus into the list.
+ * handled here. useListNavigation moves focus only while a row holds it, so a host re-sort while
+ * focus is elsewhere never pulls focus into the list.
  */
 function useRosterKeys(
   ids: string[],
   selectedId: string | undefined,
   onSelect: (id: string) => void
 ) {
-  const listRef = useRef<View>(null)
   const [activeId, setActiveId] = useState<string | undefined>(undefined)
   const activeIndex = [activeId, selectedId]
     .map((id) => (id === undefined ? -1 : ids.indexOf(id)))
@@ -65,15 +64,9 @@ function useRosterKeys(
     focusMode: 'roving',
     loop: false,
   })
-  const listHasFocus = () => {
-    const list = listRef.current as unknown as Node | null
-    return typeof document !== 'undefined' && !!list?.contains(document.activeElement)
-  }
   const getItemProps = (index: number) => {
     const { tabIndex, ref } = navigation.getItemProps(index)
-    const focusRef = (node: unknown) =>
-      ref(node == null ? null : { focus: () => listHasFocus() && focusNode(node) })
-    return { tabIndex, focusRef }
+    return { tabIndex, focusRef: ref }
   }
   const select = (id: string) => {
     setActiveId(id)
@@ -85,11 +78,7 @@ function useRosterKeys(
     event.preventDefault()
     select(id)
   }
-  return { listRef, onKeyDown, getItemProps, select }
-}
-
-function focusNode(node: unknown) {
-  ;(node as { focus?: () => void }).focus?.()
+  return { onKeyDown, getItemProps, select }
 }
 
 function RosterSkeleton() {
@@ -135,7 +124,7 @@ export function AgentRoster({
   const { live, past } = useMemo(() => rosterGroups(agents), [agents])
   const ordered = useMemo(() => [...live, ...past], [live, past])
   const ids = useMemo(() => ordered.map((agent) => agent.id), [ordered])
-  const { listRef, onKeyDown, getItemProps, select } = useRosterKeys(ids, selectedId, setSelectedId)
+  const { onKeyDown, getItemProps, select } = useRosterKeys(ids, selectedId, setSelectedId)
 
   const renderGroup = (title: string, group: AgentSummary[], offset: number) =>
     group.length === 0 ? null : (
@@ -167,13 +156,7 @@ export function AgentRoster({
       ) : ordered.length === 0 ? (
         (emptyState ?? DEFAULT_EMPTY)
       ) : (
-        <View
-          ref={listRef}
-          role={LISTBOX_ROLE}
-          aria-label={label}
-          className="gap-stack-md"
-          {...{ onKeyDown }}
-        >
+        <View role={LISTBOX_ROLE} aria-label={label} className="gap-stack-md" {...{ onKeyDown }}>
           {renderGroup('Live', live, 0)}
           {renderGroup('Past', past, live.length)}
         </View>
