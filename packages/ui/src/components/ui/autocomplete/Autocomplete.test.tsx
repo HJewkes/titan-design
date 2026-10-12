@@ -48,6 +48,26 @@ describe('Autocomplete', () => {
     expect(screen.getByText('Pick your favorite')).toBeInTheDocument()
   })
 
+  it('paints helper, empty and description text text-secondary, since each carries content', () => {
+    const classesOf = (text: string) =>
+      (capturedByNode.get(screen.getByText(text)) ?? '').split(/\s+/)
+    render(<Autocomplete options={optionsWithDescriptions} helperText="Pick a person" />)
+    const input = screen.getByPlaceholderText('Search...')
+
+    typeInInput(input, 'John')
+    const description = classesOf('john@example.com')
+    typeInInput(input, 'Zzzz')
+
+    for (const classes of [
+      classesOf('Pick a person'),
+      description,
+      classesOf('No options found'),
+    ]) {
+      expect(classes).toContain('text-text-secondary')
+      expect(classes).not.toContain('text-text-tertiary')
+    }
+  })
+
   it('renders error message instead of helper text', () => {
     render(
       <Autocomplete

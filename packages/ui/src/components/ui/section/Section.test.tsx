@@ -38,6 +38,13 @@ describe('SectionHeader', () => {
     expect(screen.getByText('Subtitle text')).toBeInTheDocument()
   })
 
+  it('paints the subtitle text-secondary, since it carries content', () => {
+    render(<SectionHeader title="Title" subtitle="Subtitle text" />)
+    const classes = (capturedByNode.get(screen.getByText('Subtitle text')) ?? '').split(/\s+/)
+    expect(classes).toContain('text-text-secondary')
+    expect(classes).not.toContain('text-text-tertiary')
+  })
+
   it('does not render subtitle when not provided', () => {
     render(<SectionHeader title="Title" />)
     expect(screen.queryByText('Subtitle text')).not.toBeInTheDocument()

@@ -354,7 +354,7 @@ export function ProgressSteps({
               key={index}
               className={cn(
                 'flex-1 text-xs text-center',
-                index <= currentStep ? 'text-text-primary font-medium' : 'text-text-tertiary'
+                index <= currentStep ? 'text-text-primary font-medium' : 'text-text-secondary'
               )}
             >
               {label}
