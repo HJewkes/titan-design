@@ -119,9 +119,9 @@ const BODY_TEXT: Record<ProseSize, string> = {
   md: 'text-sm leading-5 text-text-primary',
 }
 const TONE_CLASS: Record<ProseLinkTone, string> = {
-  brand: 'font-semibold text-brand-primary',
+  brand: 'font-semibold text-text-brand',
   link: 'font-medium text-text-link',
-  muted: 'text-text-tertiary',
+  muted: 'text-text-secondary',
 }
 
 function anchored(pattern: RegExp): RegExp {
@@ -218,7 +218,7 @@ function Block({ block, inline, size }: BlockProps) {
   if (block.type === 'li') {
     return (
       <View className="flex-row gap-2 pl-1">
-        <Text className={cn(body, 'text-brand-primary')}>•</Text>
+        <Text className={cn(body, 'text-text-brand')}>•</Text>
         <Typography variant="body2" className={cn('flex-1', body)}>
           {inline(block.text)}
         </Typography>

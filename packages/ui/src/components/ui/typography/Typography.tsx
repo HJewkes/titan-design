@@ -59,8 +59,9 @@ export interface TypographyProps extends TextProps {
   children?: React.ReactNode
 }
 
-// Variant styles matching the existing theme
-const variantStyles: Record<TypographyVariant, string> = {
+// Variant styles matching the existing theme. Exported so text Typography cannot render
+// (react-native-svg's Text in charts) takes a role from here instead of hand-rolling it.
+export const typographyVariantClasses: Record<TypographyVariant, string> = {
   h1: 'font-heading text-5xl font-bold leading-tight',
   h2: 'font-heading text-4xl font-bold leading-tight',
   h3: 'font-heading text-3xl font-bold leading-tight',
@@ -160,7 +161,7 @@ export function Typography({
       aria-level={headingLevel}
       numberOfLines={numLines}
       className={cn(
-        variantStyles[variant],
+        typographyVariantClasses[variant],
         color !== 'inherit' && colorStyles[color],
         align && alignStyles[align],
         shouldTruncate && 'truncate',
