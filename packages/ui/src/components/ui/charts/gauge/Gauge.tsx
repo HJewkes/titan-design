@@ -1,9 +1,9 @@
+import type { ReactNode } from 'react'
 import { View, Text, type ViewProps } from 'react-native'
 import { cn } from '../../../../utils/cn'
 import { getSemanticColors, type ThemeMode } from '../../../../theme/tokens/semantic'
+import { EmptyState } from '../../empty-state'
 import { useSurfaceMode } from '../../surface'
-import { primitiveColors } from '../../../../theme/tokens/primitives'
-import { alpha } from '../../../../utils/colors'
 import { formatTrimmedDecimal } from '../../../../utils/number-format'
 
 export interface GaugeThreshold {
@@ -14,8 +14,11 @@ export interface GaugeThreshold {
 }
 
 export interface GaugeProps extends Omit<ViewProps, 'children'> {
-  /** Current value. Clamped to [min, max]. */
-  value: number
+  /**
+   * Current value. Clamped to [min, max] for the fill. `null` or a non-finite number draws the
+   * unfilled track with the "No data" `EmptyState` in the centre.
+   */
+  value: number | null
   min?: number
   max?: number
   /** Diameter in px. */
@@ -32,10 +35,13 @@ export interface GaugeProps extends Omit<ViewProps, 'children'> {
   thresholds?: GaugeThreshold[]
   /** Single-color override for filled segments (ignores `thresholds`). */
   color?: string
+  /** Replaces the "No data" placeholder in the centre when `value` is `null` or not finite. */
+  emptyState?: ReactNode
   className?: string
 }
 
-const TRACK = alpha(primitiveColors.white, 0.08)
+/** Unfilled-segment token — ZoneTrack's un-reached track, resolved per theme so it reads in light and dark. */
+const TRACK_TOKEN = 'border-prominent'
 
 /** Titan status-token bands for a 0–100 score, in the given theme. */
 function defaultThresholds(mode: ThemeMode): GaugeThreshold[] {
@@ -80,7 +86,11 @@ interface Tick {
 }
 
 /** Position + color each radial segment of the arc. */
-function buildTicks(fill: number, size: number, activeColor: (f: number) => string): Tick[] {
+function buildTicks(
+  fill: number,
+  size: number,
+  colors: { active: (f: number) => string; track: string }
+): Tick[] {
   const center = size / 2
   const radius = center - size * 0.08
   return Array.from({ length: SEGMENTS }, (_, i) => {
@@ -92,9 +102,39 @@ function buildTicks(fill: number, size: number, activeColor: (f: number) => stri
       left: center + radius * Math.cos(rad),
       top: center + radius * Math.sin(rad),
       rotate: `${deg - 90}deg`,
-      color: fraction <= fill ? activeColor(fraction) : TRACK,
+      color: fraction <= fill ? colors.active(fraction) : colors.track,
     }
   })
+}
+
+function ariaLabelOf(value: number | null, max: number, label?: string, unit?: string): string {
+  const reading =
+    value === null
+      ? 'no value'
+      : `${formatTrimmedDecimal(value, 1)}${unit ?? ''} of ${formatTrimmedDecimal(max, 1)}`
+  return `${label ? `${label}: ` : ''}${reading}`
+}
+
+interface ReadoutProps {
+  value: number | null
+  color: string
+  unit?: string
+  emptyState?: ReactNode
+}
+
+/** The big number and unit, or the no-value placeholder (the consumer's `emptyState`, else "No data"). */
+function GaugeReadout({ value, color, unit, emptyState }: ReadoutProps) {
+  if (value === null) {
+    return emptyState ?? <EmptyState title="No data" className="py-4" testID="gauge-empty" />
+  }
+  return (
+    <View className="flex-row items-baseline gap-0.5">
+      <Text testID="gauge-value" className="text-3xl font-bold" style={{ color }}>
+        {formatTrimmedDecimal(value, 1)}
+      </Text>
+      {unit && <Text className="text-sm text-text-tertiary">{unit}</Text>}
+    </View>
+  )
 }
 
 /**
@@ -113,21 +153,23 @@ export function Gauge({
   unit,
   thresholds,
   color,
+  emptyState,
   className,
   ...props
 }: GaugeProps) {
   const mode = useSurfaceMode()
+  const sem = getSemanticColors(mode)
   const bands = thresholds ?? defaultThresholds(mode)
-  const range = { min, max, fallback: getSemanticColors(mode)['status-success'] }
+  const range = { min, max, fallback: sem['status-success'] }
   const span = max - min || 1
-  const fill = clamp01((value - min) / span)
+  const reading = value !== null && Number.isFinite(value) ? value : null
+  const fill = reading === null ? 0 : clamp01((reading - min) / span)
   const activeColor = (f: number) => color ?? bandColor(f, bands, range)
-  const ticks = buildTicks(fill, size, activeColor)
+  const ticks = buildTicks(fill, size, { active: activeColor, track: sem[TRACK_TOKEN] })
   const displayColor = activeColor(fill)
   const tickLength = size * 0.11
   const tickThickness = Math.max(2, (size * 0.9) / SEGMENTS)
-
-  const ariaLabel = `${label ? `${label}: ` : ''}${formatTrimmedDecimal(value, 1)}${unit ?? ''} of ${formatTrimmedDecimal(max, 1)}`
+  const ariaLabel = ariaLabelOf(reading, max, label, unit)
 
   return (
     <View
@@ -161,12 +203,7 @@ export function Gauge({
         style={{ position: 'absolute', top: 0, left: 0, width: size, height: size }}
         className="items-center justify-center"
       >
-        <View className="flex-row items-baseline gap-0.5">
-          <Text testID="gauge-value" className="text-3xl font-bold" style={{ color: displayColor }}>
-            {formatTrimmedDecimal(value, 1)}
-          </Text>
-          {unit && <Text className="text-sm text-text-tertiary">{unit}</Text>}
-        </View>
+        <GaugeReadout value={reading} color={displayColor} unit={unit} emptyState={emptyState} />
         {label && (
           <Text testID="gauge-label" className="text-xs text-text-secondary mt-1">
             {label}

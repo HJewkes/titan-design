@@ -7,6 +7,7 @@
  * only shrink, the same ratchet as the stories-axe baseline.
  */
 
+import { ratchetProblems } from './ratchet'
 import {
   UnreadableMeta,
   hasGenericExport,
@@ -30,7 +31,6 @@ export type StableLayersBaseline = Record<string, string[]>
 
 export const STABLE_BASELINE_FILE = 'packages/ui/src/test/stable-layers-baseline.json'
 
-const STABLE_TAG = /tags:\s*\[[^\]]*['"]status:stable['"]/
 const PROPERTY_IMPORT = /from\s+['"]fast-check['"]|\bfcAssert\b/
 const FOCUS_NAMES = ['Pressable', 'TextInput', 'focusable', 'tabIndex']
 const WINDOWS = /\b(FlatList|SectionList|VirtualizedList)\b|fixed-window/
@@ -50,7 +50,7 @@ function sources(dir: ComponentDir, keep: (file: string) => boolean): string[] {
 }
 
 export function isStable(dir: ComponentDir): boolean {
-  return sources(dir, isStory).some((source) => STABLE_TAG.test(source))
+  return sources(dir, isStory).some((source) => metaTags(parse(source)).includes('status:stable'))
 }
 
 function storyIdPrefixes(dir: ComponentDir): string[] {
@@ -202,21 +202,13 @@ export function stableBaselineProblems(
   missing: string[],
   baselined: string[] = []
 ): string[] {
-  const added = missing.filter((layer) => !baselined.includes(layer))
-  const stale = baselined.filter((layer) => !missing.includes(layer))
-  const problems: string[] = []
-  if (added.length > 0) {
-    problems.push(
+  return ratchetProblems(missing, baselined, {
+    added: (added) =>
       `${name} lacks layer(s) ${added.join(', ')}, which ${STABLE_BASELINE_FILE} does not list. ` +
-        "Add the layer or declare it 'n/a: <reason>' in the story's parameters.layers; " +
-        'the baseline may only shrink.'
-    )
-  }
-  if (stale.length > 0) {
-    problems.push(
+      "Add the layer or declare it 'n/a: <reason>' in the story's parameters.layers; " +
+      'the baseline may only shrink.',
+    stale: (stale) =>
       `${name} now has layer(s) ${stale.join(', ')}. Remove them from ${STABLE_BASELINE_FILE}, ` +
-        'and delete the entry once its list is empty.'
-    )
-  }
-  return problems
+      'and delete the entry once its list is empty.',
+  })
 }

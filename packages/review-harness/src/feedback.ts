@@ -157,6 +157,13 @@ export function draftShipBlocks(manifest: Manifest, draft: ReviewDraft): PrGroup
   return shipBlocks(manifest, buildFeedback(manifest, '', draft, new Date(0)))
 }
 
+/** The holder PR a merge-bound question's group ships after, when it is stacked on one in the round. */
+export function shipsAfter(manifest: Manifest, question: Question): string | undefined {
+  if (question.kind !== 'pick-one' || !question.merge) return undefined
+  const pr = `${question.merge.repo}#${question.merge.pr}`
+  return shipBlocks(manifest, { answers: [] }).find((g) => g.pr === pr)?.shipsAfter
+}
+
 /** The blocked group a merge-bound question's Ship option belongs to, or null when it may be picked. */
 export function blockedShipGroup(
   manifest: Manifest,

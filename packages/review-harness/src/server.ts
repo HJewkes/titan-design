@@ -28,7 +28,7 @@ export interface ReviewServerOptions {
   storybookUrl: string
   page: PageHandler
   port?: number
-  /** Absolute PNG path by variant key; served at `api/image/<key>`, never by path. Keys need no decoding. */
+  /** Absolute PNG path by variant key (a base render by `<key>.base`); served at `api/image/<key>`, never by path. Keys need no decoding. */
   images?: Record<string, string>
   harnessWarning?: string
 }

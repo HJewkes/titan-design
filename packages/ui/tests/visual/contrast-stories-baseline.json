@@ -212,7 +212,17 @@
     "#ffffff|#da5f00": 2
   },
   "components-molecules-button--all-variants light": {
+    "#ff7900|#edeae7": 3,
     "#ffffff|#da5f00": 1
+  },
+  "components-molecules-button--ghost light": {
+    "#ff7900|#edeae7": 1
+  },
+  "components-molecules-button--link light": {
+    "#ff7900|#edeae7": 1
+  },
+  "components-molecules-button--outline light": {
+    "#ff7900|#edeae7": 1
   },
   "components-molecules-button--primary light": {
     "#ffffff|#da5f00": 1
@@ -242,6 +252,7 @@
     "#888684|#252321": 2
   },
   "components-molecules-formfield--complete-form-example light": {
+    "#ff7900|#edeae7": 1,
     "#ffffff|#da5f00": 1
   },
   "components-molecules-formfield--disabled dark": {
@@ -282,11 +293,38 @@
   "components-molecules-input--with-error dark": {
     "#e05254|#252321": 1
   },
+  "components-molecules-menu--default light": {
+    "#ff7900|#edeae7": 1
+  },
   "components-molecules-menu--destructive-item dark": {
     "#e05254|#373635": 1
   },
+  "components-molecules-menu--disabled-items light": {
+    "#ff7900|#edeae7": 1
+  },
+  "components-molecules-menu--with-dividers light": {
+    "#ff7900|#edeae7": 1
+  },
+  "components-molecules-menu--with-groups light": {
+    "#ff7900|#edeae7": 1
+  },
+  "components-molecules-menu--with-icons light": {
+    "#ff7900|#edeae7": 1
+  },
   "components-molecules-popover--default light": {
     "#ffffff|#da5f00": 1
+  },
+  "components-molecules-popover--placement-bottom light": {
+    "#ff7900|#edeae7": 1
+  },
+  "components-molecules-popover--placement-left light": {
+    "#ff7900|#edeae7": 1
+  },
+  "components-molecules-popover--placement-right light": {
+    "#ff7900|#edeae7": 1
+  },
+  "components-molecules-popover--placement-top light": {
+    "#ff7900|#edeae7": 1
   },
   "components-molecules-popover--with-close-button light": {
     "#ffffff|#da5f00": 1
@@ -395,9 +433,11 @@
     "#a29f9d|#3f474d": 1
   },
   "components-molecules-toast--interactive light": {
+    "#ff7900|#edeae7": 1,
     "#ffffff|#c27400": 1
   },
   "components-molecules-toast--long-duration light": {
+    "#ff7900|#edeae7": 1,
     "#ffffff|#da5f00": 1
   },
   "components-molecules-toast--success dark": {
@@ -492,6 +532,9 @@
   },
   "components-organisms-table--default light": {
     "#a45e00|#ffeaa9": 1
+  },
+  "components-organisms-table--empty-state light": {
+    "#ff7900|#edeae7": 1
   },
   "components-organisms-table--sorting-and-selection light": {
     "#ff7900|#ffe6d4": 1
@@ -1361,9 +1404,6 @@
   },
   "custom-workout-goalliftcard--per-lift-grid dark": {
     "#888684|#2c2a28": 19
-  },
-  "custom-workout-goalliftcard--widths dark": {
-    "#888684|#2c2a28": 14
   },
   "custom-workout-goalmilestonetile--ahead dark": {
     "#888684|#252321": 4,
