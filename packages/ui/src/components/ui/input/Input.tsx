@@ -41,9 +41,9 @@ export interface InputProps extends Omit<TextInputProps, 'editable'> {
 }
 
 const sizeStyles: Record<InputSize, string> = {
-  sm: 'h-8 px-3 text-sm',
-  md: 'h-10 px-4 text-base',
-  lg: 'h-12 px-4 text-lg',
+  sm: 'h-control-sm px-3 text-sm',
+  md: 'h-control-md px-4 text-base',
+  lg: 'h-control-lg px-4 text-lg',
 }
 
 const multilineSizeStyles: Record<InputSize, string> = {
