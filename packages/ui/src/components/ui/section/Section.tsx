@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, Text, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { Typography } from '../typography'
 
 export interface SectionProps extends ViewProps {
   className?: string
@@ -26,9 +27,9 @@ export function SectionHeader({ title, subtitle, trailing, className }: SectionH
   return (
     <View className={cn('flex-row items-center justify-between mb-3 px-inset-xs', className)}>
       <View className="flex-1 gap-stack-sm">
-        <Text className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
+        <Typography variant="h6" className="text-sm">
           {title}
-        </Text>
+        </Typography>
         {!!subtitle && <Text className="text-xs text-text-tertiary">{subtitle}</Text>}
       </View>
       {!!trailing && <View>{trailing}</View>}

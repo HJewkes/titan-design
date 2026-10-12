@@ -200,7 +200,10 @@ describe('typography roles', () => {
   it('classifies a variant the element keeps whole and calls an override raw', () => {
     const overline = classesAs(createElement(Typography, { variant: 'overline' }, LABEL), LABEL)
     expect(variantOf(overline, variantClasses)).toBe('overline')
-    const overridden = classesAs(createElement(Eyebrow, null, LABEL), LABEL)
+    const overridden = classesAs(
+      createElement(Typography, { variant: 'overline', className: 'tracking-wider' }, LABEL),
+      LABEL
+    )
     expect(overridden).toContain('tracking-wider')
     expect(variantOf(overridden, variantClasses)).toBe('raw')
   })
