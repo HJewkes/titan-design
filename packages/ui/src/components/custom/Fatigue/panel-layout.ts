@@ -11,8 +11,8 @@
  *
  * SOURCED vs CHOSEN. The breakpoint edges are titan's own `primitiveBreakpoints` — not
  * invented here. The per-tier padding/gap/card numbers below the `md` edge, the `xl`
- * card-width ratio and its cap, and the stacked height share ARE chosen; each is a single
- * named constant and each is called out in the PR body.
+ * card-width ratio and its cap, the compact chart height and the fill share ARE chosen;
+ * each is a single named constant and each is called out in the PR body.
  */
 import { primitiveBreakpoints } from '../../../theme/tokens/primitives'
 import { space } from '../../../theme/tokens/semantic'
@@ -59,14 +59,6 @@ export const CARD_WIDTH_XL_RATIO = 0.22
  */
 export const CARD_WIDTH_MAX = 460
 
-/**
- * CHOSEN. Stacked, the CARD takes the larger share of the one body height. Its sections
- * have hard floors — the verdict hero, the three lights, the ROM chart and the ghost spark —
- * while the velocity hero is a bar plot that scales continuously, so squeezing the hero
- * degrades gracefully and squeezing the card overflows it.
- */
-export const CARD_HEIGHT_SHARE_STACKED = 0.55
-
 /** What the hero reserves above its plot for the `VELOCITY · this set` eyebrow, px. */
 export const HERO_EYEBROW_ALLOWANCE = 26
 
@@ -97,7 +89,7 @@ export const CARD_SECTION_GAPS = 2
  * MEASURED. Everything in the card that is neither a section gap nor the ghost-spark plot:
  * the 18px padding top and bottom, the verdict hero + three lights (122.5) and the ROM chart
  * (44). Read off the rendered card in Storybook at `height` 820, so a change to those
- * sections needs re-measuring — same contract as {@link CARD_CHROME_HEIGHT}.
+ * sections needs re-measuring — same contract as {@link CARD_COMPACT_HEIGHT}.
  */
 export const CARD_FIXED_CONTENT_HEIGHT = 203
 
@@ -134,20 +126,102 @@ export function cardSectionGap(cardHeight?: number): number {
   return Math.min(CARD_SECTION_GAP_MAX, Math.max(CARD_SECTION_GAP_MIN, perGap))
 }
 
-/**
- * MEASURED, not chosen: everything in the card that is not the ghost-spark plot — the 18px
- * padding top and bottom, the verdict hero, the three lights, the two 16px minimum spacers
- * and the ROM chart. Taken from the rendered card in Storybook (`scrollHeight` 384 at the
- * {@link CARD_MIN_CHART_HEIGHT} floor), so a change to those sections needs re-measuring.
- */
-export const CARD_CHROME_HEIGHT = 216
+// --- the card's arrangement per tier (TD-326) ------------------------------------------
 
 /**
- * The shortest a stacked card can be drawn without its content spilling past the rounded
- * edge. Before this floor existed, an `xs` panel at `bodyHeight` 560 gave the card 301px
- * against a 384px content height and the ghost spark rendered outside the card.
+ * How the card lays its sections out.
+ *
+ * - `column`: the verdict group, the ROM chart and the ghost spark top to bottom, the
+ *   leftover past the capped gaps collecting below the last section (VW-276).
+ * - `fill`: the column, with that leftover spent on the two charts instead — the wall
+ *   card at `bodyHeight` 820 left a third of its height empty under the spark.
+ * - `compact`: the wrapped tiers. The verdict and the lights share one row and the two
+ *   charts sit side by side at one small height, so the card is a band under the velocity
+ *   hero rather than the taller of the two.
  */
-export const CARD_MIN_HEIGHT_STACKED = CARD_CHROME_HEIGHT + CARD_MIN_CHART_HEIGHT
+export type CardLayout = 'column' | 'fill' | 'compact'
+
+/** The ROM progression plot's own default height, px — `RomProgressionChart`'s `barHeight`. */
+export const ROM_BAR_HEIGHT_BASE = 44
+
+/**
+ * CHOSEN (TD-326). The share of a `fill` card's leftover height the ROM plot takes; the
+ * ghost spark takes the rest. The spark is the richer read (one curve per rep, the tempo
+ * band under it), so it grows faster, while 0.4 lifts the ROM bars from a 44px strip to a
+ * plot that echoes the velocity hero beside the card.
+ */
+export const ROM_FILL_SHARE = 0.4
+
+/**
+ * CHOSEN (TD-326). The one height both side-by-side charts share in a `compact` card. The
+ * spark's floor is {@link CARD_MIN_CHART_HEIGHT}; the owner's read of the wrapped tiers
+ * was that the card was "far too large and heavy compared to the velocity strip", so the
+ * compact charts sit well under that floor, at 0.7 of it (rounded to the 4px grid).
+ */
+export const COMPACT_CHART_HEIGHT = 120
+
+/** SOURCED. The column gap between the two compact charts, `space.inline.lg`. */
+export const COMPACT_CHART_GAP = space.inline.lg
+
+/**
+ * MEASURED (TD-326). A `compact` card's height: the 1px edge and the 18px padding top and
+ * bottom, the verdict row (100: the verdict hero, which now carries the lights beside its
+ * word), the one {@link CARD_SECTION_GAP_MIN} gap and the {@link COMPACT_CHART_HEIGHT} chart
+ * row. Read off the rendered card in Storybook at 599, 601 and 999 wide (274); a change to
+ * the verdict hero or to the chart height needs re-measuring, same contract as
+ * {@link CARD_FIXED_CONTENT_HEIGHT}. The card takes it as a `minHeight`, so a band too
+ * narrow for the lights beside the word grows instead of clipping its charts.
+ */
+export const CARD_COMPACT_HEIGHT = (1 + 18) * 2 + 100 + CARD_SECTION_GAP_MIN + COMPACT_CHART_HEIGHT
+
+/** The height of each card section for a {@link CardLayout}, from {@link cardSections}. */
+export interface CardSections {
+  /** Height of the ROM progression bar plot, px. */
+  romHeight: number
+  /** Height of the ghost-spark plot, px. */
+  sparkHeight: number
+  /** Gap between the card's sections, px. */
+  gap: number
+}
+
+/** A `fill` card's leftover below the last section, after the capped gaps and the base plots. */
+function fillSlack(cardHeight: number, sparkHeight: number, gap: number): number {
+  const spent = CARD_FIXED_CONTENT_HEIGHT + sparkHeight + gap * CARD_SECTION_GAPS
+  return Math.max(0, cardHeight - spent)
+}
+
+/**
+ * The height of each card section for a layout and a card height. `column` is the shipped
+ * arithmetic; `fill` hands the leftover to the charts by {@link ROM_FILL_SHARE}; `compact`
+ * ignores the card height, since the compact card is a fixed band.
+ */
+export function cardSections(layout: CardLayout, cardHeight?: number): CardSections {
+  if (layout === 'compact') {
+    return {
+      romHeight: COMPACT_CHART_HEIGHT,
+      sparkHeight: COMPACT_CHART_HEIGHT,
+      gap: CARD_SECTION_GAP_MIN,
+    }
+  }
+  const gap = cardSectionGap(cardHeight)
+  const sparkHeight = cardChartHeight(cardHeight)
+  if (layout === 'column' || cardHeight == null) {
+    return { romHeight: ROM_BAR_HEIGHT_BASE, sparkHeight, gap }
+  }
+  const slack = fillSlack(cardHeight, sparkHeight, gap)
+  const romExtra = Math.round(slack * ROM_FILL_SHARE)
+  return {
+    romHeight: ROM_BAR_HEIGHT_BASE + romExtra,
+    sparkHeight: sparkHeight + slack - romExtra,
+    gap,
+  }
+}
+
+/** The card arrangement for a tier: a band when the panel wraps, filled at the wall. */
+export function cardLayoutFor(tier: PanelTier, stacked: boolean): CardLayout {
+  if (stacked) return 'compact'
+  return tier === 'xl' ? 'fill' : 'column'
+}
 
 /**
  * Operator decision 2026-09-14 (AW-142 wave three): the on-ramp rungs, no measured
@@ -161,7 +235,7 @@ export const CARD_MIN_HEIGHT_STACKED = CARD_CHROME_HEIGHT + CARD_MIN_CHART_HEIGH
  *
  * Rounding `TIER_GAP_MD` (was 18) down to 16 does NOT touch the card: `LiveFatigueCard`'s
  * `PAD` stays 18 by a separate operator decision (its own comment), so
- * {@link CARD_FIXED_CONTENT_HEIGHT} and {@link CARD_CHROME_HEIGHT}, both MEASURED off the
+ * {@link CARD_FIXED_CONTENT_HEIGHT} and {@link CARD_COMPACT_HEIGHT}, both MEASURED off the
  * rendered card, are unaffected.
  */
 // stack ramp is 4/8/16/24; 12 kept as the xs-tier gap pending AW-121's Fatigue re-measure
@@ -192,6 +266,8 @@ export interface PanelLayout {
    * number rather than needing a second `onLayout` of its own to size its charts.
    */
   cardWidth: number
+  /** How the card arranges its sections at this tier. */
+  cardLayout: CardLayout
 }
 
 /** The card column width for a row tier, before any explicit `cardWidth` override. */
@@ -209,7 +285,7 @@ export function panelLayout(width: number): PanelLayout {
   const cardWidth = stacked
     ? Math.max(0, Math.round(width - padding * 2))
     : rowCardWidth(tier, width)
-  return { tier, stacked, padding, gap, cardWidth }
+  return { tier, stacked, padding, gap, cardWidth, cardLayout: cardLayoutFor(tier, stacked) }
 }
 
 export interface PanelBodySplit {
@@ -228,9 +304,10 @@ export const HERO_MIN_PLOT_HEIGHT = 140
 
 /**
  * The ONE body height split across the hero and the card (TD-03.60). Side by side both
- * take the full height; stacked they share it by {@link CARD_HEIGHT_SHARE_STACKED} with the
- * gap taken out first, and neither drops below its floor. Either way both numbers come from
- * this one call, so changing `bodyHeight` moves both or neither.
+ * take the full height. Stacked, the card is the fixed {@link CARD_COMPACT_HEIGHT} band and
+ * the hero takes everything else above its floor (TD-326: the velocity strip is the main
+ * item, so extra height goes to it, never to the card). Either way both numbers come from
+ * this one call, so the two cannot disagree about the body.
  */
 export function panelBodySplit(bodyHeight: number, layout: PanelLayout): PanelBodySplit {
   if (!layout.stacked) {
@@ -240,10 +317,7 @@ export function panelBodySplit(bodyHeight: number, layout: PanelLayout): PanelBo
     }
   }
   const usable = Math.max(0, bodyHeight - layout.gap)
-  const cardHeight = Math.max(
-    CARD_MIN_HEIGHT_STACKED,
-    Math.round(usable * CARD_HEIGHT_SHARE_STACKED)
-  )
+  const cardHeight = CARD_COMPACT_HEIGHT
   return {
     heroHeight: Math.max(HERO_MIN_PLOT_HEIGHT, usable - cardHeight - HERO_EYEBROW_ALLOWANCE),
     cardHeight,

@@ -1,3 +1,4 @@
+import { useCallback, useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { LiveFatiguePanel } from './LiveFatiguePanel'
@@ -48,62 +49,62 @@ export const LivePanelV2: Story = {
 }
 
 /**
- * The stack/expand tiers side by side (TD-03.58). Each frame pins `containerWidth` so the
- * tier is deterministic in the visual layer; live, the panel measures itself in `onLayout`
- * and picks the same tier from the real width. Nothing transitions between tiers.
+ * The width of the frame a story renders in, read once at layout. Layer 2 pauses the clock, and
+ * react-native-web's `onLayout` waits on a timer that never fires there (TD-729), so this reads the
+ * DOM node synchronously, at commit, instead. jsdom has no layout and reports 0, which leaves `null`.
  */
-export const ResponsiveTiers: Story = {
-  name: 'Responsive tiers (stack → row → wall)',
-  render: () => {
+function useFrameWidth() {
+  const [width, setWidth] = useState<number | null>(null)
+  const ref = useCallback((node: View | null) => {
+    const measured = (node as unknown as HTMLElement | null)?.getBoundingClientRect?.().width
+    if (measured) setWidth(Math.round(measured))
+  }, [])
+  return { ref, width }
+}
+
+/**
+ * Body height per tier: wrapped (the hero over the compact card band), side by side, and the
+ * wall where the card expands and fills its height.
+ */
+function bodyHeightFor(width: number): number {
+  if (width < PANEL_BREAKPOINTS.md) return 640
+  return width >= PANEL_BREAKPOINTS.xl ? 620 : 508
+}
+
+/**
+ * The stack/expand tiers (TD-03.58) on the width matrix: a frame at every `PANEL_BREAKPOINTS`
+ * edge and one pixel either side. Live, the panel measures itself in `onLayout`; the paused clock
+ * in the visual layer never fires it, so each frame reads its width at commit and pins
+ * `containerWidth` and the tier's body height. Nothing transitions between tiers.
+ */
+export const Widths: Story = {
+  tags: ['width-matrix'],
+  parameters: {
+    layout: 'fullscreen',
+    widthMatrix: {
+      thresholds: [
+        PANEL_BREAKPOINTS.sm,
+        PANEL_BREAKPOINTS.md,
+        PANEL_BREAKPOINTS.lg,
+        PANEL_BREAKPOINTS.xl,
+      ],
+    },
+  },
+  render: function Render() {
+    const frame = useFrameWidth()
     const { model, velocity } = buildMockPanelState(FATIGUE_STATES[1].current, {
       rpe: FATIGUE_STATES[1].model.rpe,
       verdict: FATIGUE_STATES[1].model.verdict,
     })
-    const frames: Array<{ label: string; width: number; bodyHeight: number }> = [
-      { label: `xs · 480px · stacked`, width: 480, bodyHeight: 560 },
-      {
-        label: `sm · ${PANEL_BREAKPOINTS.sm}px · stacked`,
-        width: PANEL_BREAKPOINTS.sm,
-        bodyHeight: 560,
-      },
-      {
-        label: `md · ${PANEL_BREAKPOINTS.md}px · row`,
-        width: PANEL_BREAKPOINTS.md,
-        bodyHeight: 508,
-      },
-      {
-        label: `lg · ${PANEL_BREAKPOINTS.lg}px · row`,
-        width: PANEL_BREAKPOINTS.lg,
-        bodyHeight: 508,
-      },
-      {
-        label: `xl · ${PANEL_BREAKPOINTS.xl}px · wall, card expands`,
-        width: PANEL_BREAKPOINTS.xl,
-        bodyHeight: 620,
-      },
-    ]
+    const width = frame.width ?? undefined
     return (
-      <View style={{ backgroundColor: PAGE_BG, padding: 24, gap: 24 }}>
-        {frames.map((f) => (
-          <View key={f.label} style={{ gap: 6, width: f.width }}>
-            <Text
-              style={{
-                fontSize: 9,
-                letterSpacing: 1,
-                fontFamily: 'monospace',
-                color: t['text-tertiary'],
-              }}
-            >
-              {f.label}
-            </Text>
-            <LiveFatiguePanel
-              model={model}
-              velocity={velocity}
-              containerWidth={f.width}
-              bodyHeight={f.bodyHeight}
-            />
-          </View>
-        ))}
+      <View ref={frame.ref} style={{ backgroundColor: PAGE_BG }}>
+        <LiveFatiguePanel
+          model={model}
+          velocity={velocity}
+          containerWidth={width}
+          bodyHeight={width === undefined ? undefined : bodyHeightFor(width)}
+        />
       </View>
     )
   },

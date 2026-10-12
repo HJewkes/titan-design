@@ -335,8 +335,6 @@ module.exports = {
         },
         // Toolbar control face (TD-264).
         'control-face': {
-          DEFAULT: 'var(--color-control-face)',
-          active: 'var(--color-control-face-active)',
           disabled: 'var(--color-control-face-disabled)',
         },
         // Label on a toolbar control face (VW-82) — a grey plane, not a fill.

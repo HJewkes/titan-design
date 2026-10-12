@@ -104,6 +104,7 @@ export const semanticColorsLight = {
 
   // Deload: the magenta WorkoutPill and WeekRow have washed by hand since VW-0; a role of
   // its own, so a deload week reads the same wherever it is drawn. Callers alpha it.
+  // equals decision 0004's on-tint-magenta-subtle; WorkoutPill moves to the magenta cells in 0004
   'status-deload': ramp.magenta[700], // TD-789 3b: magenta 600 labels miss 4.5:1 on grey 100
 
   'status-error': ramp.red[600],
@@ -113,6 +114,7 @@ export const semanticColorsLight = {
   'status-error-muted': 'rgba(209, 67, 67, 0.30)',
   'status-error-strong': 'rgba(209, 67, 67, 0.50)',
 
+  // kept; decision 0004 gives red a solid cell (red 600) and an on-subtle step (red 700); vivid stays the Critical mark one step past status-error
   'status-error-vivid': ramp.red[700], // TD-789 3b: the pin missed 3:1; red 600 is status-error
   'status-error-vivid-light': ramp.red[500],
   'status-error-vivid-dark': ramp.red[700],
@@ -127,6 +129,7 @@ export const semanticColorsLight = {
   'status-warning-muted': 'rgba(249, 180, 21, 0.30)',
   'status-warning-strong': 'rgba(249, 180, 21, 0.50)',
 
+  // equals text-info and decision 0004's on-tint-blue-subtle; the info solid cell is blue 600, aliased by status-info-solid in 0004
   'status-info': ramp.blue[700], // TD-789 3b: blue 600 missed 3:1 on its Progress track on grey 200
   'status-info-light': ramp.blue[300],
   'status-info-dark': ramp.blue[800], // TD-789 3b: one step past the base
@@ -282,14 +285,11 @@ export const semanticColorsLight = {
   'scrim-subtle': 'rgba(0, 0, 0, 0.30)',
   'scrim-default': 'rgba(0, 0, 0, 0.50)',
 
-  // Toolbar control faces (TD-264): a white raised face, pressed into a warm
-  // silver. greyRamp[50] and [100] sit within ΔE 3 of other light roles. The
-  // labels flip with the faces, since the face under them now does.
-  'control-face': p.white,
-  'control-face-active': greyRamp[200],
+  // Toolbar disabled face (TD-264). The idle and pressed faces are elevation
+  // planes, so only the disabled face is a token.
   'control-face-disabled': 'rgba(0, 0, 0, 0.06)',
-  'on-control-idle': greyRamp[700], // 7.0:1 on control-face
-  'on-control-active': greyRamp[950], // 11.5:1 on control-face-active
+  'on-control-idle': greyRamp[700], // 7.0:1 on the idle face plane
+  'on-control-active': greyRamp[950], // 11.5:1 on the pressed face plane
   'on-data-strong': semanticPins.onDataStrong,
 
   // Interactive states (interactive-*)
@@ -605,10 +605,7 @@ export const semanticColorsDark = {
   // light categorical data fill (Treemap tiles), where every text-* token is
   // far too light to read.
   //
-  // `control-face*` is the toolbar control face itself (TD-264), the values
-  // ToolbarButton painted before it read tokens.
-  'control-face': greyRamp[800],
-  'control-face-active': greyRamp[900],
+  // `control-face-disabled` is the disabled toolbar face (TD-264).
   'control-face-disabled': 'rgba(255, 255, 255, 0.12)',
   'on-control-idle': semanticPins.onControlIdle,
   'on-control-active': p.white,
