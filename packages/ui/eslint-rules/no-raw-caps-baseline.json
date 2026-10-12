@@ -93,10 +93,6 @@
     "tracking": 1,
     "uppercase": 1
   },
-  "src/components/ui/charts/kit/chartText.ts": {
-    "tracking": 1,
-    "uppercase": 1
-  },
   "src/components/ui/charts/treemap/Treemap.tsx": {
     "arbitrarySize": 1
   },
