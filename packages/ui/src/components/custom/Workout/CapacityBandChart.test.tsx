@@ -92,7 +92,7 @@ describe('CapacityBandChart', () => {
         classesOf(screen.getByTestId('capacity-band-chart-projection-training-label'))
       ).toEqual(expect.arrayContaining(['font-normal', 'text-text-success']))
       expect(classesOf(screen.getByTestId('capacity-band-chart-projection-rest-label'))).toEqual(
-        expect.arrayContaining(['font-normal', 'text-status-info'])
+        expect.arrayContaining(['font-normal', 'text-text-info'])
       )
     })
   })

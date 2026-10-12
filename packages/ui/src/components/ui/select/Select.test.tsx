@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedByNode } from '../../../test/classname-capture'
 import { Select } from './Select'
 
 const defaultOptions = [
@@ -207,5 +208,17 @@ describe('Select', () => {
       fireEvent.click(screen.getByRole('combobox'))
       expect(screen.getAllByRole('checkbox')).toHaveLength(defaultOptions.length)
     })
+  })
+})
+
+// TD-483: brand orange as the selected option label missed 4.5:1 on the light overlay planes.
+describe('Select selected option', () => {
+  it('paints the selected label in the brand text role, not the brand fill', () => {
+    render(<Select options={defaultOptions} value="2" />)
+    fireEvent.click(screen.getByRole('combobox'))
+    const option = screen.getByRole('option', { name: 'Option 2' })
+    const classes = (capturedByNode.get(within(option).getByText('Option 2')) ?? '').split(/\s+/)
+    expect(classes).toContain('text-text-brand')
+    expect(classes).not.toContain('text-brand-primary')
   })
 })
