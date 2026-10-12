@@ -67,6 +67,14 @@ describe('Link', () => {
     expect(classes).not.toContain('text-brand-secondary')
   })
 
+  // TD-483: brand orange as link text missed 4.5:1 on the grey 100 and 200 planes.
+  it('paints the primary link in the brand text role', () => {
+    render(<Link color="primary">Docs</Link>)
+    const classes = (capturedByNode.get(screen.getByText('Docs')) ?? '').split(/\s+/)
+    expect(classes).toContain('text-text-brand')
+    expect(classes).not.toContain('text-brand-primary')
+  })
+
   it('renders with all underline options', () => {
     const underlines = ['always', 'hover', 'none'] as const
     underlines.forEach((underline) => {
