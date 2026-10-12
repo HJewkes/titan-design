@@ -94,6 +94,13 @@ merges facet counts with the active selection, so a selected value with count 0 
 Properties: filtering never adds rows. Sort is stable and nulls stay last in both directions. Clearing
 filters restores the input. Every range asked for is inside `0..rowCount`.
 
+A custom comparator is ascending, and `sortRows` inverts its whole result for `desc`, so a blank it
+ranks last ascending would rank first descending. A column with a comparator marks its blank rows
+with a predicate in `isBlank`, beside `comparators`: blank rows go last in both directions, and the
+sign applies only to the compare between two rows of the same blankness. Two blank rows still meet
+the comparator, so its tie-break holds among them. The default field compare needs no predicate; it
+treats `null` and `undefined` as blank (TD-703).
+
 ## Primitives composed
 
 The decomposed `Table` shell, `Chip`, `Pill`, `Input`, `Select`, `Skeleton`, `EmptyState` (through

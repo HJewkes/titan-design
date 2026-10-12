@@ -1,6 +1,8 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { Pressable, Text } from 'react-native'
+import { userEvent } from 'storybook/test'
 import { ToolbarButton, ToolbarButtonGroup } from './ToolbarButton'
 import {
   Surface,
@@ -9,7 +11,6 @@ import {
   surfaceBackground,
   type SurfaceLevel,
 } from '../surface'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
 
 function faceColor(theme: 'dark' | 'light', isActive?: boolean, level?: SurfaceLevel): string {
   const { unmount } = render(
@@ -148,12 +149,9 @@ describe('ToolbarButton', () => {
       expect(faceColor('dark', false, 'base')).not.toBe(faceColor('dark', false, 'elevated'))
     })
 
-    it('presses the light face to a lighter plane than the silver control-face-active', () => {
-      const silver = getSemanticColors('light')['control-face-active']
-
+    it('presses the light face down to the base plane', () => {
       const face = faceColor('light', true, 'elevated')
 
-      expect(face).not.toBe(hexToRgb(silver))
       expect(face).toBe(hexToRgb(surfaceBackground('base', 'light')))
     })
   })
@@ -175,6 +173,38 @@ describe('ToolbarButton', () => {
 
       fireEvent.click(button)
       expect(screen.queryByText('Menu item')).not.toBeInTheDocument()
+    })
+
+    function NamedMenuItem() {
+      return (
+        <Pressable accessibilityRole="button" onPress={() => {}}>
+          <Text>Menu item</Text>
+        </Pressable>
+      )
+    }
+
+    // The backdrop is the empty sibling painted just before the menu surface.
+    function openMenuBackdrop() {
+      const surface = screen.getByRole('button', { name: 'Menu item' }).parentElement!
+      return surface.previousElementSibling as HTMLElement
+    }
+
+    it('keeps the menu backdrop out of the tab order and hidden from assistive tech', async () => {
+      render(<ToolbarButton label="Options" menuContent={<NamedMenuItem />} />)
+      await userEvent.click(screen.getByRole('button', { name: 'Options' }))
+
+      const backdrop = openMenuBackdrop()
+      expect(backdrop).toHaveAttribute('tabindex', '-1')
+      expect(backdrop).toHaveAttribute('aria-hidden', 'true')
+      expect(await axe(backdrop)).toHaveNoViolations()
+    })
+
+    it('lands the first Tab after opening on a named control, not the backdrop', async () => {
+      render(<ToolbarButton label="Options" menuContent={<NamedMenuItem />} />)
+      await userEvent.click(screen.getByRole('button', { name: 'Options' }))
+
+      await userEvent.tab()
+      expect(document.activeElement).toHaveAccessibleName()
     })
   })
 

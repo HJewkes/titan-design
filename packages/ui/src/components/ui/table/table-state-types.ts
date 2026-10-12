@@ -13,8 +13,14 @@ export type SortDirection = 'asc' | 'desc' | null
  * An ascending comparator for one column. Returning 0 lets the caller express a
  * tie-break inside the same function; `useTable` inverts the result for `desc`
  * rather than reversing the array, so ties keep their relative order both ways.
+ * Because the whole result is inverted, a blank the comparator ranks last
+ * ascending ranks first descending; mark blanks with `UseTableOptions.isBlank`
+ * to keep them last both ways.
  */
 export type TableComparator<T> = (a: T, b: T) => number
+
+/** True when a row has no value for one column, so the sort puts it last in both directions. */
+export type TableBlankPredicate<T> = (row: T) => boolean
 
 /** `client` filters, sorts and pages `data` in the hook; `manual` holds state and reads rows from `getRow`. */
 export type TableMode = 'client' | 'manual'
@@ -44,6 +50,15 @@ export interface UseTableOptions<T> {
    */
   comparators?: Partial<Record<keyof T & string, TableComparator<T>>> &
     Record<string, TableComparator<T> | undefined>
+  /**
+   * Per-column blank tests. A blank row sorts after every other row in both
+   * directions, as a null or undefined field does under the default compare;
+   * only the compare between two rows of the same blankness is inverted for
+   * `desc`. Two blank rows still meet the column's comparator, so its
+   * tie-break holds among them. Pass a stable object: a new one re-runs the sort.
+   */
+  isBlank?: Partial<Record<keyof T & string, TableBlankPredicate<T>>> &
+    Record<string, TableBlankPredicate<T> | undefined>
   /** Defaults to `client`. */
   mode?: TableMode
   /** The filterable columns. Pass a stable array: a new one re-runs the filter. */

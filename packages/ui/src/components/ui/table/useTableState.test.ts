@@ -63,6 +63,48 @@ describe('sortRows', () => {
     }
   })
 
+  it('puts rows a custom column marks blank last in both directions and reverses the rest', () => {
+    // A comparator that ranks blanks last ascending, as a consumer's would; inverting it alone flips them first.
+    const byGroup = (a: Row, b: Row) => (a.group ?? Infinity) - (b.group ?? Infinity) || 0
+    const isBlank = { group: (row: Row) => row.group === undefined }
+    for (const seed of SEEDS) {
+      const rows = rowsFromSeed(seed, 40)
+      const [asc, desc] = DIRECTIONS.map((direction) =>
+        sortRows(rows, 'group', direction, { group: byGroup }, isBlank).map((r) => r.group)
+      )
+      const blanks = rows.filter((r) => r.group === undefined).map(() => undefined)
+      const present = asc!.slice(0, asc!.length - blanks.length)
+      expect(asc!.slice(present.length), `seed ${seed} asc`).toEqual(blanks)
+      expect(desc!.slice(present.length), `seed ${seed} desc`).toEqual(blanks)
+      expect(desc!.slice(0, present.length), `seed ${seed}`).toEqual([...present].reverse())
+    }
+  })
+
+  it('keeps tied rows in input order both ways when a custom column marks blanks', () => {
+    const byGroup = (a: Row, b: Row) => (a.group ?? Infinity) - (b.group ?? Infinity) || 0
+    const isBlank = { group: (row: Row) => row.group === undefined }
+    for (const seed of SEEDS) {
+      for (const direction of DIRECTIONS) {
+        const rows = rowsFromSeed(seed, 40)
+        const sign = direction === 'asc' ? 1 : -1
+        // Group by group in direction order, each group in input (id) order, then blanks by id.
+        const expected = [
+          ...rows
+            .filter((r) => r.group !== undefined)
+            .sort((a, b) => sign * (a.group! - b.group!) || a.id - b.id),
+          ...rows.filter((r) => r.group === undefined),
+        ].map((r) => r.id)
+
+        const sorted = sortRows(rows, 'group', direction, { group: byGroup }, isBlank)
+
+        expect(
+          sorted.map((r) => r.id),
+          `seed ${seed} ${direction}`
+        ).toEqual(expected)
+      }
+    }
+  })
+
   it('orders present values by direction and puts every blank after them', () => {
     for (const seed of SEEDS) {
       for (const direction of DIRECTIONS) {

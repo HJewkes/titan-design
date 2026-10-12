@@ -6,6 +6,7 @@ import { captureRound } from './capture.ts'
 import { measureRound } from './contrast-measure.ts'
 import { renderFrames } from './frames.ts'
 import { checkHarnessFreshness } from './harness-freshness.ts'
+import { locksIo } from './locks.ts'
 import { createPageServer } from './page-server.ts'
 import { runCli } from './run.ts'
 
@@ -28,6 +29,7 @@ const code = await runCli(process.argv.slice(2), {
   git: treeGit,
   createPage: createPageServer,
   harnessFreshness: checkHarnessFreshness,
+  locks: locksIo,
   signal: controller.signal,
 })
 process.exit(code)

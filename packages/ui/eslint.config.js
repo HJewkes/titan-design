@@ -11,6 +11,7 @@ const noFrozenTheme = require('./eslint-rules/no-frozen-theme')
 const noHtmlElement = require('./eslint-rules/no-html-element')
 const noLocalFormatter = require('./eslint-rules/no-local-formatter')
 const noRawColor = require('./eslint-rules/no-raw-color')
+const noRawCaps = require('./eslint-rules/no-raw-caps')
 const noRawComposition = require('./eslint-rules/no-raw-composition')
 const noRawDeviceDataInChat = require('./eslint-rules/no-raw-device-data-in-chat')
 const noRawSpacing = require('./eslint-rules/no-raw-spacing')
@@ -125,6 +126,7 @@ module.exports = tseslint.config(
           'no-frozen-theme': noFrozenTheme,
           'no-html-element': noHtmlElement,
           'no-local-formatter': noLocalFormatter,
+          'no-raw-caps': noRawCaps,
           'no-raw-color': noRawColor,
           'no-raw-composition': noRawComposition,
           'no-raw-device-data-in-chat': noRawDeviceDataInChat,
@@ -403,11 +405,7 @@ module.exports = tseslint.config(
     ],
     // `color-story-kit` is story chrome that happens not to be named `.stories.tsx`
     // — exempt on the same grounds as the stories themselves, not as a backlog.
-    ignores: [
-      '**/*.stories.tsx',
-      '**/*.test.{ts,tsx}',
-      'src/theme/color-story-kit.tsx',
-    ],
+    ignores: ['**/*.stories.tsx', '**/*.test.{ts,tsx}', 'src/theme/color-story-kit.tsx'],
     rules: {
       'titan/no-raw-spacing': 'error',
     },
@@ -432,11 +430,7 @@ module.exports = tseslint.config(
   // to the dark palette at module scope, so a light caller got dark fills.
   {
     files: ['src/components/**/*.{ts,tsx}', 'src/theme/materials.ts'],
-    ignores: [
-      '**/*.stories.tsx',
-      '**/*.test.{ts,tsx}',
-      '**/*-fixture.ts',
-    ],
+    ignores: ['**/*.stories.tsx', '**/*.test.{ts,tsx}', '**/*-fixture.ts'],
     rules: {
       'titan/no-frozen-theme': 'error',
     },
@@ -555,6 +549,26 @@ module.exports = tseslint.config(
     },
   },
 
+  // TD-782: case, tracking and the small type sizes belong to the Typography variant of each
+  // text role (eyebrow `overline`, column and track label `microLabel`, status token
+  // `monoLabel`), so uppercase, tracking-*, text-[Npx], textTransform and letterSpacing are
+  // flagged outside Typography and Eyebrow. RATCHETED: today's sites are in
+  // no-raw-caps-baseline.json, keyed by file and message id, which must stay exact (an
+  // unspent allowance is reported as stale). Stories and tests are exempt, since they ship no
+  // label; src/lab is outside the glob.
+  {
+    files: ['src/components/**/*.{ts,tsx}'],
+    ignores: [
+      'src/**/*.test.{ts,tsx}',
+      'src/**/*.stories.{ts,tsx}',
+      'src/components/ui/typography/Typography.tsx',
+      'src/components/ui/eyebrow/Eyebrow.tsx',
+    ],
+    rules: {
+      'titan/no-raw-caps': 'error',
+    },
+  },
+
   // TD-689: components render on web and native, so a lowercase JSX element (`<div>`,
   // `<path>`) mounts on web only, and jsdom renders it without complaint. RATCHETED:
   // today's sites are in no-html-element-baseline.json, keyed by file and element name,
@@ -652,7 +666,6 @@ module.exports = tseslint.config(
       // TD-536 b9
       'src/components/ui/autocomplete/AutocompleteParts.tsx',
       'src/components/ui/form-field/FormField.tsx',
-      'src/components/ui/help-tip/HelpTip.tsx',
       'src/components/ui/input/Input.tsx',
       'src/components/ui/menu/Menu.tsx',
       'src/components/ui/toast/Toast.tsx',

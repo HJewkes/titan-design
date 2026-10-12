@@ -29,7 +29,7 @@ Decided by the operator before any brief or specimen work. It is the anti-duplic
 it stops a second component from being built beside one that exists.
 
 1. Refresh `packages/ui/src/arch/arch-graph.json` if it is stale (`CLAUDE.md` > Gotchas,
-   barrel hash).
+   arch graph).
 2. Write an overlap survey: what else, stable or in `lab` and `candidate`, does similar work
    or shares an element (a bar, track, needle, pill), even in a very different concept.
 3. Check `packages/ui/REJECTED.md` for the direction.
