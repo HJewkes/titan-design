@@ -605,7 +605,7 @@ export interface BarListProps extends Omit<ViewProps, 'children'> {
 
 // @public
 export interface BarListRow {
-    color?: ColorToken$1;
+    color?: ColorToken;
     description?: string;
     flag?: {
         tone: 'warning' | 'error';
@@ -781,6 +781,17 @@ export interface BriefSection {
 }
 
 // @public
+export const BUDGET_BAND_META: Record<CodeBudgetBand, {
+    color: TypographyColor;
+    word: string | null;
+    fill: ColorToken;
+    flagTone: 'error' | 'warning' | null;
+}>;
+
+// @public
+export function budgetBand(value: number | null | undefined, budget?: number, nearRatio?: number): CodeBudgetBand;
+
+// @public
 export const Button: React__default.ForwardRefExoticComponent<ButtonProps & React__default.RefAttributes<View>>;
 
 // @public (undocumented)
@@ -885,7 +896,7 @@ export interface CaptionProps extends Omit<TypographyProps, 'variant'> {
 export function Card(input: CardProps): react_jsx_runtime.JSX.Element;
 
 // @public
-export const CARD_HEIGHT_SHARE_STACKED = 0.55;
+export const CARD_COMPACT_HEIGHT: number;
 
 // @public
 export const CARD_WIDTH_BASE = 318;
@@ -952,6 +963,9 @@ export interface CardInsetProps extends ViewProps {
     className?: string;
 }
 
+// @public
+export type CardLayout = 'column' | 'fill' | 'compact';
+
 // @public (undocumented)
 export interface CardProps extends ViewProps {
     accentColor?: string;
@@ -970,6 +984,16 @@ export interface CardProps extends ViewProps {
     skeletonHasHeader?: boolean;
     variant?: CardVariant;
 }
+
+// @public
+export interface CardSections {
+    gap: number;
+    romHeight: number;
+    sparkHeight: number;
+}
+
+// @public
+export function cardSections(layout: CardLayout, cardHeight?: number): CardSections;
 
 // @public
 export function CardSkeleton(input: CardSkeletonProps): react_jsx_runtime.JSX.Element;
@@ -1058,6 +1082,15 @@ export const categoricalPalette: {
 
 // @public
 export type CategoricalVariant = keyof typeof categoricalPalette;
+
+// @public
+export function changeLabel(kind: CodeChangeKind, delta?: number): string;
+
+// @public
+export function changeName(kind: CodeChangeKind, delta?: number): string;
+
+// @public
+export function changeTone(kind: CodeChangeKind, isOverCutoff?: boolean): PillTone;
 
 // @public
 export const CHANNEL_MARKER = "channel";
@@ -1233,6 +1266,90 @@ export interface CoChangeEdge {
     // (undocumented)
     count: number;
 }
+
+// @public
+export const CODE_CHANGE_META: Record<CodeChangeKind, {
+    label: string;
+    name: string;
+    tone: PillTone;
+}>;
+
+// @public
+export const CODE_CHANGE_ORDER: CodeChangeKind[];
+
+// @public
+export const CODE_COUPLING_CLASS_META: Record<CodeCouplingClass, {
+    label: string;
+    tone: PillTone;
+}>;
+
+// @public
+export interface CodeBaselineRef {
+    ref: string;
+    snapshotId?: number;
+}
+
+// @public
+export type CodeBudgetBand = 'over' | 'near' | 'within' | 'unbudgeted';
+
+// @public
+export type CodeChangeKind = 'crossed-cutoff' | 'entered' | 'new-file' | 'worsened' | 'improved' | 'resolved';
+
+// @public
+export type CodeCouplingClass = 'hidden' | 'expected' | 'unverifiable';
+
+// @public
+export interface CodeCouplingPair {
+    a: CodeNodeRef;
+    b: CodeNodeRef;
+    coEdits: number;
+    couplingClass: CodeCouplingClass;
+}
+
+// @public
+export interface CodeCutoff {
+    label: string;
+    value: number;
+}
+
+// @public
+export interface CodeFinding {
+    detail: string;
+    id: string;
+    rule: string;
+    severity: CodeSeverity;
+    status: CodeFindingStatus;
+}
+
+// @public
+export type CodeFindingStatus = 'new' | 'carryover' | 'resolved' | 'worsened' | 'improved';
+
+// @public
+export interface CodeMetricReading {
+    budget?: number;
+    key: string;
+    label: string;
+    unit?: string;
+    value: number | null;
+}
+
+// @public
+export type CodeNodeKind = 'file' | 'symbol' | 'package' | 'directory';
+
+// @public
+export interface CodeNodeRef {
+    id: string;
+    kind?: CodeNodeKind;
+    name?: string;
+    path: string;
+    role?: string;
+}
+
+// @public
+export type CodeScoreBand = 'over' | 'elevated' | 'watch';
+
+// @public
+export type CodeSeverity = 'error' | 'warning';
 
 // @public
 export function Collapse(input: CollapseProps): react_jsx_runtime.JSX.Element;
@@ -1531,8 +1648,6 @@ export const darkThemeCSSVars: {
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly '--color-control-face': "#424140";
-    readonly '--color-control-face-active': "#2C2A28";
     readonly '--color-control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly '--color-on-control-idle': "#D1D1D1";
     readonly '--color-on-control-active': "#FFFFFF";
@@ -2433,6 +2548,7 @@ export interface GaugeProps extends Omit<ViewProps, 'children'> {
     // (undocumented)
     className?: string;
     color?: string;
+    emptyState?: ReactNode;
     label?: string;
     // (undocumented)
     max?: number;
@@ -2441,7 +2557,7 @@ export interface GaugeProps extends Omit<ViewProps, 'children'> {
     size?: number;
     thresholds?: GaugeThreshold[];
     unit?: string;
-    value: number;
+    value: number | null;
 }
 
 // @public (undocumented)
@@ -2618,8 +2734,6 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly 'control-face': "#FFFFFF";
-    readonly 'control-face-active': "#D4D1CE";
     readonly 'control-face-disabled': "rgba(0, 0, 0, 0.06)";
     readonly 'on-control-idle': "#5A5958";
     readonly 'on-control-active': "#1C1916";
@@ -2776,8 +2890,6 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly 'control-face': "#424140";
-    readonly 'control-face-active': "#2C2A28";
     readonly 'control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly 'on-control-idle': "#D1D1D1";
     readonly 'on-control-active': "#FFFFFF";
@@ -2961,8 +3073,6 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly '--color-control-face': "#FFFFFF";
-    readonly '--color-control-face-active': "#D4D1CE";
     readonly '--color-control-face-disabled': "rgba(0, 0, 0, 0.06)";
     readonly '--color-on-control-idle': "#5A5958";
     readonly '--color-on-control-active': "#1C1916";
@@ -3137,8 +3247,6 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly '--color-control-face': "#424140";
-    readonly '--color-control-face-active': "#2C2A28";
     readonly '--color-control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly '--color-on-control-idle': "#D1D1D1";
     readonly '--color-on-control-active': "#FFFFFF";
@@ -3811,7 +3919,7 @@ export interface GraphItemRef {
 
 // @public
 export interface GraphKind {
-    color?: ColorToken$1;
+    color?: ColorToken;
     id: string;
     label: string;
 }
@@ -3924,32 +4032,6 @@ export interface HeadingProps extends Omit<TypographyProps, 'variant'> {
 
 // @public
 export function HeadphonesIcon(input: IconProps): react_jsx_runtime.JSX.Element;
-
-// @public @deprecated
-export function HelpTip(input: HelpTipProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export type HelpTipIcon = 'help' | 'info' | 'warning';
-
-// @public (undocumented)
-export type HelpTipPlacement = 'top' | 'bottom' | 'left' | 'right';
-
-// @public (undocumented)
-export interface HelpTipProps extends ViewProps {
-    color?: 'default' | 'primary' | 'secondary' | 'muted';
-    content: React__default.ReactNode;
-    hasArrow?: boolean;
-    icon?: HelpTipIcon;
-    iconClassName?: string;
-    isOpen?: boolean;
-    maxWidth?: number;
-    placement?: HelpTipPlacement;
-    size?: HelpTipSize;
-    tooltipClassName?: string;
-}
-
-// @public (undocumented)
-export type HelpTipSize = 'sm' | 'md' | 'lg';
 
 // @public
 export const HERO_EYEBROW_ALLOWANCE = 26;
@@ -4289,18 +4371,6 @@ export function Label(props: LabelProps): react_jsx_runtime.JSX.Element;
 export interface LabelProps extends Omit<TypographyProps, 'variant'> {
 }
 
-// @public @deprecated
-export function LabelWithHelp(input: LabelWithHelpProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface LabelWithHelpProps extends ViewProps {
-    className?: string;
-    helpContent: React__default.ReactNode;
-    helpSize?: HelpTipSize;
-    isRequired?: boolean;
-    label: string;
-}
-
 // @public
 export function layeredLayout(options?: LayeredLayoutOptions): GraphLayout;
 
@@ -4495,8 +4565,6 @@ export const lightThemeCSSVars: {
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly '--color-control-face': "#FFFFFF";
-    readonly '--color-control-face-active': "#D4D1CE";
     readonly '--color-control-face-disabled': "rgba(0, 0, 0, 0.06)";
     readonly '--color-on-control-idle': "#5A5958";
     readonly '--color-on-control-active': "#1C1916";
@@ -4629,6 +4697,7 @@ export function LiveFatigueCard(input: LiveFatigueCardProps): react_jsx_runtime.
 // @public (undocumented)
 export interface LiveFatigueCardProps {
     height?: number;
+    layout?: CardLayout;
     model: LiveFatigueModel;
     width?: number;
 }
@@ -5512,6 +5581,7 @@ export function panelBodySplit(bodyHeight: number, layout: PanelLayout): PanelBo
 
 // @public (undocumented)
 export interface PanelLayout {
+    cardLayout: CardLayout;
     cardWidth: number;
     gap: number;
     padding: number;
@@ -5727,6 +5797,9 @@ export interface PlanWorkout {
     // (undocumented)
     unit: 'lbs' | 'kg';
 }
+
+// @public
+export function pluralize(count: number, one: string, many: string): string;
 
 // @public
 export function Popover(input: PopoverProps): react_jsx_runtime.JSX.Element;
@@ -6337,7 +6410,7 @@ export interface RefChipProps extends EntityRef {
 
 // @public
 export interface RefGraphKind {
-    color: ColorToken$1;
+    color: ColorToken;
     id: RefKind;
     label: string;
 }
@@ -6356,7 +6429,7 @@ export type RefKind = 'task' | 'pr' | 'session' | 'agent' | 'note' | 'file' | 'i
 
 // @public
 export interface RefKindMeta {
-    color: ColorToken$1;
+    color: ColorToken;
     glyph: string;
     label: string;
     plural: string;
@@ -6406,7 +6479,7 @@ export function resolveActualWeek(actual: GoalActualPoint, weeks: GoalTrajectory
 export function resolveBrand(brand: BrandKey | BrandPreset): BrandPreset;
 
 // @public
-export function resolveColor(token: ColorToken$1, mode?: ThemeMode): string;
+export function resolveColor(token: ColorToken, mode?: ThemeMode): string;
 
 // @public (undocumented)
 export interface ResolvedSurface {
@@ -6549,6 +6622,7 @@ export interface ScatterProps extends Omit<ViewProps, 'children'> {
     data: ScatterDatum[];
     // @deprecated
     diagonal?: boolean;
+    emptyState?: ReactNode;
     // (undocumented)
     height: number;
     onPress?: (id: string) => void;
@@ -6579,6 +6653,15 @@ export interface ScheduleTilesProps extends ViewProps {
     now?: number;
     when: number | Date;
 }
+
+// @public
+export const SCORE_BAND_META: Record<CodeScoreBand, {
+    color: ColorToken;
+    indicator: IndicatorColor;
+}>;
+
+// @public
+export function scoreBand(score: number | null | undefined, cutoff?: CodeCutoff | null, elevated?: CodeCutoff | null): CodeScoreBand | null;
 
 // @public
 export function SearchIcon(props: IconProps): react_jsx_runtime.JSX.Element;
@@ -6842,8 +6925,6 @@ export const semanticColorsDark: {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly 'control-face': "#424140";
-    readonly 'control-face-active': "#2C2A28";
     readonly 'control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly 'on-control-idle': "#D1D1D1";
     readonly 'on-control-active': "#FFFFFF";
@@ -7003,8 +7084,6 @@ export const semanticColorsLight: {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly 'control-face': "#FFFFFF";
-    readonly 'control-face-active': "#D4D1CE";
     readonly 'control-face-disabled': "rgba(0, 0, 0, 0.06)";
     readonly 'on-control-idle': "#5A5958";
     readonly 'on-control-active': "#1C1916";
@@ -7178,12 +7257,14 @@ export function SessionListItem(input: SessionListItemProps): react_jsx_runtime.
 // @public (undocumented)
 export interface SessionListItemProps {
     className?: string;
+    focusRef?: (node: unknown) => void;
     now: number;
     // (undocumented)
     onSelect?: () => void;
     selected?: boolean;
     // (undocumented)
     session: SessionSummary;
+    tabIndex?: 0 | -1;
 }
 
 // @public (undocumented)
@@ -7922,6 +8003,18 @@ export interface StatusDotProps extends ViewProps {
 export type StatusDotVariant = 'success' | 'warning' | 'error' | 'neutral' | 'on-track' | 'deviation' | 'future';
 
 // @public
+export function StatusMark(input: StatusMarkProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface StatusMarkProps extends Omit<ViewProps, 'children'> {
+    className?: string;
+    delta?: number;
+    isOverCutoff?: boolean;
+    kind: CodeChangeKind;
+    size?: Exclude<PillSizeLevel, 'lg'>;
+}
+
+// @public
 export function StatusPill(input: StatusPillProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -8162,6 +8255,9 @@ export function Tab(input: TabProps): react_jsx_runtime.JSX.Element;
 
 // @public
 export function Table(input: TableProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export type TableBlankPredicate<T> = (row: T) => boolean;
 
 // @public
 export function TableBody(input: TableBodyProps): react_jsx_runtime.JSX.Element;
@@ -8986,6 +9082,12 @@ export interface TooltipProps extends ViewProps {
 // @public
 export function TopBar(input: TopBarProps): react_jsx_runtime.JSX.Element;
 
+// @public
+export const TOPBAR_CLOCK_MIN = 720;
+
+// @public
+export const TOPBAR_SUBTITLE_MIN = 1024;
+
 // @public (undocumented)
 export interface TopBarProps {
     brand: BrandKey | BrandPreset;
@@ -9074,6 +9176,7 @@ export interface TreemapProps extends Omit<ViewProps, 'children'> {
     className?: string;
     // (undocumented)
     data: TreemapDatum[];
+    emptyState?: ReactNode;
     // (undocumented)
     height: number;
     maxTiles?: number;
@@ -9273,6 +9376,7 @@ export interface UseTableOptions<T> {
     filters?: TableFilters;
     getRow?: (index: number) => T | undefined;
     getRowId?: (row: T) => string;
+    isBlank?: Partial<Record<keyof T & string, TableBlankPredicate<T>>> & Record<string, TableBlankPredicate<T> | undefined>;
     mode?: TableMode;
     // (undocumented)
     onFiltersChange?: (filters: TableFilters) => void;

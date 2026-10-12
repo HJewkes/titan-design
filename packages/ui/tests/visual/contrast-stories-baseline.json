@@ -1,4 +1,16 @@
 {
+  "components-atoms-avatar--all-sizes light": {
+    "#ffffff|#b4b2b0": 6
+  },
+  "components-atoms-avatar--default light": {
+    "#ffffff|#b4b2b0": 1
+  },
+  "components-atoms-avatar--fallback-initials light": {
+    "#ffffff|#b4b2b0": 3
+  },
+  "components-atoms-avatar--with-badge light": {
+    "#ffffff|#b4b2b0": 3
+  },
   "components-atoms-badge--all-colors dark": {
     "#e05254|#252321": 1
   },
@@ -138,11 +150,21 @@
     "#181717|#d45453": 5,
     "#fdfdfd|#ab6c17": 4
   },
+  "components-molecules-alert--all-variants light": {
+    "#121828|#135aa8": 1,
+    "#424140|#135aa8": 1
+  },
   "components-molecules-alert--default-vs-compact dark": {
     "#5a5958|#100d0a": 2
   },
   "components-molecules-alert--default-vs-compact light": {
     "#5a5958|#bdbab7": 2
+  },
+  "components-molecules-alert--solid-variants light": {
+    "#424140|#135aa8": 1,
+    "#424140|#2b6b25": 1,
+    "#424140|#a45e00": 1,
+    "#424140|#d14343": 1
   },
   "components-molecules-autocomplete--disabled dark": {
     "#8f8d8a|#292725": 1
@@ -1286,9 +1308,6 @@
   },
   "custom-workout-goalliftcard--per-lift-grid dark": {
     "#888684|#2c2a28": 19
-  },
-  "custom-workout-goalliftcard--widths dark": {
-    "#888684|#2c2a28": 14
   },
   "custom-workout-goalmilestonetile--ahead dark": {
     "#888684|#252321": 4,

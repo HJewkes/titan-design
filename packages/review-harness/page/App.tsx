@@ -9,11 +9,13 @@ import {
   type Dispatch,
   type ReactNode,
 } from 'react'
-import { blockedShipGroup, buildFeedback, pendingQuestionIds } from '../src/feedback.ts'
+import { blockedShipGroup, buildFeedback, pendingQuestionIds, shipsAfter } from '../src/feedback.ts'
+import { prGroupOfPage } from '../src/pr-tabs.ts'
 import { feedbackProblems } from '../src/round.ts'
 import { roundLayout, type LayoutBlock, type ResolvedSection } from '../src/sections.ts'
 import type { Manifest, Question, StripKind, Variant } from '@titan-design/review-schema'
 import { Markdown } from './Markdown.tsx'
+import { PrPage } from './PrTabs.tsx'
 import { QuestionBlock } from './QuestionBlock.tsx'
 import { ReviewScreen } from './ReviewScreen.tsx'
 import { SectionParts } from './SectionParts.tsx'
@@ -213,6 +215,7 @@ function Questions({ questions, ...props }: PartProps & { questions: Question[] 
           question={q}
           draft={state.draft.answers[q.id]}
           shipBlock={blockedShipGroup(manifest, state.draft, q) ?? undefined}
+          shipsAfter={shipsAfter(manifest, q)}
           index={indexes.question(q.id)}
           active={state.active === indexes.question(q.id)}
           follow={state.follow}
@@ -411,13 +414,24 @@ export function Form(props: Omit<PartProps, 'indexes'>) {
   const parts = { ...props, indexes: stopIndexes(manifest), layout }
   const last = current === pages.length - 1
   const reviewRef = useFocusOnPageEntry(page.id, paged && last)
+  const group = paged ? prGroupOfPage(manifest, page.sectionIds) : undefined
+  const sections = layout.sections
+    .filter((s) => shows(s.id))
+    .map((s) => <SectionBlock key={s.id} {...parts} section={s} />)
   return (
     <main>
-      {layout.sections
-        .filter((s) => shows(s.id))
-        .map((s) => (
-          <SectionBlock key={s.id} {...parts} section={s} />
-        ))}
+      {group ? (
+        <PrPage
+          manifest={manifest}
+          group={group}
+          state={state}
+          dispatch={dispatch}
+          indexes={parts.indexes}
+          review={sections}
+        />
+      ) : (
+        sections
+      )}
       {shows(OTHER_PAGE) && <OtherFrames {...parts} />}
       {shows(OVERALL_PAGE) && <Overall {...parts} />}
       {paged && <Pager pages={pages} current={current} dispatch={dispatch} end />}
