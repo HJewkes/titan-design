@@ -5,11 +5,11 @@ import { surfaceBackground, type SurfaceLevel } from './SurfaceContext'
 const PLANES: SurfaceLevel[] = ['background', 'base', 'elevated', 'raised', 'overlay']
 
 describe('insetFieldFill', () => {
-  it('gives every light plane colour one well, its own colour, never the grey 400 frame', () => {
+  it('gives every light plane colour one well, its own colour, never the grey 300 frame', () => {
     const wells = PLANES.map((level) => insetFieldFill(level, 'light'))
 
     expect(wells).toEqual(PLANES.map((level) => surfaceBackground(level, 'light')))
-    expect(wells).toEqual(['#EDEAE7', '#FFFFFF', '#F9F6F3', '#EDEAE7', '#FFFFFF'])
+    expect(wells).toEqual(['#D4D1CE', '#EDEAE7', '#F9F6F3', '#FFFFFF', '#FFFFFF'])
   })
 
   it('steps each dark plane one plane down, so a lighter plane has a lighter well', () => {

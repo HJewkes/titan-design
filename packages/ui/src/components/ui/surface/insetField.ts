@@ -6,9 +6,9 @@ import type { ThemeMode } from '../../../theme/tokens/semantic'
 
 /**
  * The well colour of a filled field on a plane. Dark steps one plane down. Light keeps the
- * plane's own colour: its planes repeat colours (background and raised are one grey, base and
- * overlay are white), so a step down by level gave two wells for one plane colour and a grey 400
- * well on the page background; the recess carries the inset instead.
+ * plane's own colour: raised and overlay are both white, so a step down by level gave two wells
+ * for one plane colour and a grey 300 frame well on the page background; the recess carries the
+ * inset instead.
  */
 export function insetFieldFill(level: SurfaceLevel, mode: ThemeMode): string {
   return surfaceBackground(mode === 'light' ? level : pressedLevel(level), mode)
