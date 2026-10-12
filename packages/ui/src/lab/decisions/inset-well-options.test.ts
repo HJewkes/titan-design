@@ -5,11 +5,11 @@ import { MODES, PLANES, WELL_OPTIONS, measureWell, type WellOptionKey } from './
 // Wells as the story prints them, planes in the order background, base, elevated, raised, overlay.
 const PINNED: Record<WellOptionKey, Record<'light' | 'dark', string[]>> = {
   asBuilt: {
-    light: ['#A29F9D', '#EDEAE7', '#FFFFFF', '#F9F6F3', '#EDEAE7'],
+    light: ['#BDBAB7', '#D4D1CE', '#EDEAE7', '#F9F6F3', '#FFFFFF'],
     dark: ['#100D0A', '#1C1916', '#252321', '#2C2A28', '#31302F'],
   },
   planeColour: {
-    light: ['#EDEAE7', '#FFFFFF', '#F9F6F3', '#EDEAE7', '#FFFFFF'],
+    light: ['#D4D1CE', '#EDEAE7', '#F9F6F3', '#FFFFFF', '#FFFFFF'],
     dark: ['#100D0A', '#1C1916', '#252321', '#2C2A28', '#31302F'],
   },
   raisedWell: {
@@ -17,7 +17,7 @@ const PINNED: Record<WellOptionKey, Record<'light' | 'dark', string[]>> = {
     dark: ['#2C2A28', '#2C2A28', '#2C2A28', '#2C2A28', '#2C2A28'],
   },
   rampStep: {
-    light: ['#D4D1CE', '#F9F6F3', '#EDEAE7', '#D4D1CE', '#F9F6F3'],
+    light: ['#BDBAB7', '#D4D1CE', '#EDEAE7', '#F9F6F3', '#F9F6F3'],
     dark: ['#100D0A', '#1C1916', '#252321', '#2C2A28', '#31302F'],
   },
 }
@@ -43,10 +43,8 @@ describe('inset well options', () => {
   })
 
   it('gives planes of one colour one well in every option but as built', () => {
-    const sameColour = [
-      ['background', 'raised'],
-      ['base', 'overlay'],
-    ] as const
+    // On the 3b light ramp only raised and overlay share a colour (white).
+    const sameColour = [['raised', 'overlay']] as const
 
     for (const option of WELL_OPTIONS.filter((o) => o.key !== 'asBuilt')) {
       for (const [a, b] of sameColour) {
