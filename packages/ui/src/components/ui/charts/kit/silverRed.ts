@@ -24,15 +24,14 @@ export interface SilverRedScheme {
   over: string
 }
 
-// Light mirrors dark down the same ramps. On the light base surface grey[500] falls under 3:1
-// against a hairline track, so the light neutral is grey[600]. Near and over are two ramp steps
-// apart in each mode; in dark the paler red is the quieter one, in light the deeper. The light
-// reds are the owner's console round 6 pick (red[500] / red[700]): the light near red measures
-// 2.70 against the track on the base surface, a declared exception in bar-list/BarList.test.tsx;
-// every other tone clears 3:1 there.
+// Light mirrors dark down the same ramps. On the TD-789 3b light planes grey[600] falls under
+// 3:1 against a hairline track, so the light neutral is grey[700]. The light reds started as the
+// owner's console round 6 pick (red[500] / red[700]); 3b moves near to red[600], which measures
+// against the plane, a declared exception in bar-list/BarList.test.tsx. In dark the paler red is
+// the quieter one, in light the deeper.
 const SCHEMES: Record<ThemeMode, SilverRedScheme> = {
   dark: { neutral: SILVER, near: RED_PALE, over: RED_LIGHT },
-  light: { neutral: greyRamp[600], near: primitiveRamps.red[500], over: primitiveRamps.red[700] },
+  light: { neutral: greyRamp[700], near: primitiveRamps.red[600], over: primitiveRamps.red[700] },
 }
 
 /** The silver/red tones for a theme mode, as literal hex. */

@@ -12,6 +12,7 @@ labels belongs in `ui/` (`CLAUDE.md`, Placement). Status here is `candidate` by 
 | `Chat`       | chat messages and participants (`ChatMessage`, `Participant` from `@titan-design/chat-protocol`) | coach chat preset (`CoachPreset` story) | `Chat/README.md`       |
 | `Session`    | agent transcripts: turns, tool calls, tokens, replay events                                      | titan-platform console                  | `Session/README.md`    |
 | `Agents`     | agent sessions: presence, lifecycle state, tokens, tool calls and spend                          | titan-platform console                  | `Agents/README.md`     |
+| `Code`       | hotspots, findings, coupling, snapshots                                                          | codewatch app                           | `Code/README.md`       |
 | `charts`     | workout bar marks (`SetBarChart`, `live-rep-growth`, `flatBarGeometry`)                          | Workout, Fatigue                        | `charts/README.md`     |
 
 ## Generic directories awaiting a move to `ui/`

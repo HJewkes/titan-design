@@ -25,8 +25,6 @@
     "dataviz-categorical-4 | result-improve-dark",
     "result-degrade | status-error-light",
     "result-degrade | status-error-vivid-light",
-    "result-improve-dark | status-success",
-    "result-improve-dark | status-success-dark",
     "result-improve-dark | status-success-solid"
   ]
 }

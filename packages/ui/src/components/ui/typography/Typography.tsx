@@ -89,9 +89,9 @@ const colorStyles: Record<TypographyColor, string> = {
   tertiary: 'text-text-tertiary',
   disabled: 'text-text-disabled',
   inverse: 'text-text-inverse',
-  success: 'text-status-success',
+  success: 'text-text-success',
   error: 'text-text-error',
-  warning: 'text-status-warning',
+  warning: 'text-text-warning',
   info: 'text-status-info',
   inherit: '', // No color class, inherit from parent
 }

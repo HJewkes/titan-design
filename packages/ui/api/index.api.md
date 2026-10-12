@@ -605,7 +605,7 @@ export interface BarListProps extends Omit<ViewProps, 'children'> {
 
 // @public
 export interface BarListRow {
-    color?: ColorToken$1;
+    color?: ColorToken;
     description?: string;
     flag?: {
         tone: 'warning' | 'error';
@@ -781,6 +781,17 @@ export interface BriefSection {
 }
 
 // @public
+export const BUDGET_BAND_META: Record<CodeBudgetBand, {
+    color: TypographyColor;
+    word: string | null;
+    fill: ColorToken;
+    flagTone: 'error' | 'warning' | null;
+}>;
+
+// @public
+export function budgetBand(value: number | null | undefined, budget?: number, nearRatio?: number): CodeBudgetBand;
+
+// @public
 export const Button: React__default.ForwardRefExoticComponent<ButtonProps & React__default.RefAttributes<View>>;
 
 // @public (undocumented)
@@ -885,7 +896,7 @@ export interface CaptionProps extends Omit<TypographyProps, 'variant'> {
 export function Card(input: CardProps): react_jsx_runtime.JSX.Element;
 
 // @public
-export const CARD_HEIGHT_SHARE_STACKED = 0.55;
+export const CARD_COMPACT_HEIGHT: number;
 
 // @public
 export const CARD_WIDTH_BASE = 318;
@@ -952,6 +963,9 @@ export interface CardInsetProps extends ViewProps {
     className?: string;
 }
 
+// @public
+export type CardLayout = 'column' | 'fill' | 'compact';
+
 // @public (undocumented)
 export interface CardProps extends ViewProps {
     accentColor?: string;
@@ -970,6 +984,16 @@ export interface CardProps extends ViewProps {
     skeletonHasHeader?: boolean;
     variant?: CardVariant;
 }
+
+// @public
+export interface CardSections {
+    gap: number;
+    romHeight: number;
+    sparkHeight: number;
+}
+
+// @public
+export function cardSections(layout: CardLayout, cardHeight?: number): CardSections;
 
 // @public
 export function CardSkeleton(input: CardSkeletonProps): react_jsx_runtime.JSX.Element;
@@ -1058,6 +1082,15 @@ export const categoricalPalette: {
 
 // @public
 export type CategoricalVariant = keyof typeof categoricalPalette;
+
+// @public
+export function changeLabel(kind: CodeChangeKind, delta?: number): string;
+
+// @public
+export function changeName(kind: CodeChangeKind, delta?: number): string;
+
+// @public
+export function changeTone(kind: CodeChangeKind, isOverCutoff?: boolean): PillTone;
 
 // @public
 export const CHANNEL_MARKER = "channel";
@@ -1233,6 +1266,90 @@ export interface CoChangeEdge {
     // (undocumented)
     count: number;
 }
+
+// @public
+export const CODE_CHANGE_META: Record<CodeChangeKind, {
+    label: string;
+    name: string;
+    tone: PillTone;
+}>;
+
+// @public
+export const CODE_CHANGE_ORDER: CodeChangeKind[];
+
+// @public
+export const CODE_COUPLING_CLASS_META: Record<CodeCouplingClass, {
+    label: string;
+    tone: PillTone;
+}>;
+
+// @public
+export interface CodeBaselineRef {
+    ref: string;
+    snapshotId?: number;
+}
+
+// @public
+export type CodeBudgetBand = 'over' | 'near' | 'within' | 'unbudgeted';
+
+// @public
+export type CodeChangeKind = 'crossed-cutoff' | 'entered' | 'new-file' | 'worsened' | 'improved' | 'resolved';
+
+// @public
+export type CodeCouplingClass = 'hidden' | 'expected' | 'unverifiable';
+
+// @public
+export interface CodeCouplingPair {
+    a: CodeNodeRef;
+    b: CodeNodeRef;
+    coEdits: number;
+    couplingClass: CodeCouplingClass;
+}
+
+// @public
+export interface CodeCutoff {
+    label: string;
+    value: number;
+}
+
+// @public
+export interface CodeFinding {
+    detail: string;
+    id: string;
+    rule: string;
+    severity: CodeSeverity;
+    status: CodeFindingStatus;
+}
+
+// @public
+export type CodeFindingStatus = 'new' | 'carryover' | 'resolved' | 'worsened' | 'improved';
+
+// @public
+export interface CodeMetricReading {
+    budget?: number;
+    key: string;
+    label: string;
+    unit?: string;
+    value: number | null;
+}
+
+// @public
+export type CodeNodeKind = 'file' | 'symbol' | 'package' | 'directory';
+
+// @public
+export interface CodeNodeRef {
+    id: string;
+    kind?: CodeNodeKind;
+    name?: string;
+    path: string;
+    role?: string;
+}
+
+// @public
+export type CodeScoreBand = 'over' | 'elevated' | 'watch';
+
+// @public
+export type CodeSeverity = 'error' | 'warning';
 
 // @public
 export function Collapse(input: CollapseProps): react_jsx_runtime.JSX.Element;
@@ -1531,8 +1648,6 @@ export const darkThemeCSSVars: {
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly '--color-control-face': "#424140";
-    readonly '--color-control-face-active': "#2C2A28";
     readonly '--color-control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly '--color-on-control-idle': "#D1D1D1";
     readonly '--color-on-control-active': "#FFFFFF";
@@ -2433,6 +2548,7 @@ export interface GaugeProps extends Omit<ViewProps, 'children'> {
     // (undocumented)
     className?: string;
     color?: string;
+    emptyState?: ReactNode;
     label?: string;
     // (undocumented)
     max?: number;
@@ -2441,7 +2557,7 @@ export interface GaugeProps extends Omit<ViewProps, 'children'> {
     size?: number;
     thresholds?: GaugeThreshold[];
     unit?: string;
-    value: number;
+    value: number | null;
 }
 
 // @public (undocumented)
@@ -2496,36 +2612,36 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'on-brand-secondary': "#FFFFFF";
     readonly 'on-brand-primary-subtle': "#983804";
     readonly 'on-brand-secondary-subtle': "#2A617F";
-    readonly 'status-success': "#298732";
+    readonly 'status-success': "#2B6B25";
     readonly 'status-success-light': "#58F69E";
-    readonly 'status-success-dark': "#298732";
+    readonly 'status-success-dark': "#264D1C";
     readonly 'status-success-subtle': "#B5FFD2";
     readonly 'status-success-muted': "rgba(46, 213, 115, 0.30)";
     readonly 'status-success-strong': "rgba(46, 213, 115, 0.50)";
     readonly 'status-live': "#2ED573";
     readonly 'status-live-muted': "#22A444";
-    readonly 'status-deload': "#BA2996";
+    readonly 'status-deload': "#9C0D7A";
     readonly 'status-error': "#D14343";
     readonly 'status-error-light': "#E05254";
     readonly 'status-error-dark': "#A4221C";
     readonly 'status-error-subtle': "#FFE3E5";
     readonly 'status-error-muted': "rgba(209, 67, 67, 0.30)";
     readonly 'status-error-strong': "rgba(209, 67, 67, 0.50)";
-    readonly 'status-error-vivid': "#FF4757";
+    readonly 'status-error-vivid': "#A4221C";
     readonly 'status-error-vivid-light': "#E05254";
     readonly 'status-error-vivid-dark': "#A4221C";
-    readonly 'status-error-vivid-subtle': "rgba(255, 71, 87, 0.12)";
-    readonly 'status-error-vivid-muted': "rgba(255, 71, 87, 0.30)";
-    readonly 'status-error-vivid-strong': "rgba(255, 71, 87, 0.50)";
-    readonly 'status-warning': "#C27400";
+    readonly 'status-error-vivid-subtle': "rgba(164, 34, 28, 0.12)";
+    readonly 'status-error-vivid-muted': "rgba(164, 34, 28, 0.30)";
+    readonly 'status-error-vivid-strong': "rgba(164, 34, 28, 0.50)";
+    readonly 'status-warning': "#A45E00";
     readonly 'status-warning-light': "#FFD352";
-    readonly 'status-warning-dark': "#C27400";
+    readonly 'status-warning-dark': "#814D14";
     readonly 'status-warning-subtle': "#FFEAA9";
     readonly 'status-warning-muted': "rgba(249, 180, 21, 0.30)";
     readonly 'status-warning-strong': "rgba(249, 180, 21, 0.50)";
-    readonly 'status-info': "#1072CB";
+    readonly 'status-info': "#135AA8";
     readonly 'status-info-light': "#78C2FF";
-    readonly 'status-info-dark': "#1072CB";
+    readonly 'status-info-dark': "#14407E";
     readonly 'status-info-subtle': "#D9EFFF";
     readonly 'status-info-muted': "rgba(33, 150, 243, 0.30)";
     readonly 'status-info-strong': "rgba(33, 150, 243, 0.50)";
@@ -2584,42 +2700,40 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'dataviz-categorical-5': "#01B5D1";
     readonly 'dataviz-categorical-6': "#A45E00";
     readonly 'text-primary': "#121828";
-    readonly 'text-secondary': "#5A5958";
-    readonly 'text-tertiary': "#72716F";
+    readonly 'text-secondary': "#424140";
+    readonly 'text-tertiary': "#5A5958";
     readonly 'text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly 'text-inverse': "#FFFFFF";
     readonly 'text-error': "#A4221C";
     readonly 'text-brand': "#983804";
-    readonly 'text-brand-secondary': "#2A617F";
-    readonly 'text-success': "#2B6B25";
+    readonly 'text-brand-secondary': "#22465F";
+    readonly 'text-success': "#264D1C";
     readonly 'text-warning': "#814D14";
     readonly 'text-info': "#135AA8";
     readonly 'text-link': "#135AA8";
     readonly 'text-link-hover': "#135AA8";
-    readonly 'surface-base': "#FFFFFF";
+    readonly 'surface-base': "#EDEAE7";
     readonly 'surface-elevated': "#F9F6F3";
-    readonly 'surface-raised': "#EDEAE7";
+    readonly 'surface-raised': "#FFFFFF";
     readonly 'surface-overlay': "#FFFFFF";
     readonly 'surface-input': "#F9F6F3";
-    readonly 'background-base': "#EDEAE7";
-    readonly 'background-default': "#FFFFFF";
+    readonly 'background-base': "#D4D1CE";
+    readonly 'background-default': "#EDEAE7";
     readonly 'background-subtle': "#F9F6F3";
-    readonly 'background-frame': "#A29F9D";
+    readonly 'background-frame': "#BDBAB7";
     readonly 'border-prominent': "#A29F9D";
     readonly 'border-focus': "#1072CB";
-    readonly 'border-input': "#888684";
-    readonly 'border-input-hover': "#72716F";
+    readonly 'border-input': "#72716F";
+    readonly 'border-input-hover': "#5A5958";
     readonly 'border-input-focus': "#1072CB";
     readonly 'border-input-error': "#D14343";
     readonly 'hairline-subtle': "rgba(0, 0, 0, 0.10)";
-    readonly 'hairline-default': "rgba(0, 0, 0, 0.15)";
-    readonly 'hairline-strong': "rgba(0, 0, 0, 0.22)";
+    readonly 'hairline-default': "rgba(0, 0, 0, 0.16)";
+    readonly 'hairline-strong': "rgba(0, 0, 0, 0.24)";
     readonly 'scrim-press': "rgba(0, 0, 0, 0.10)";
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly 'control-face': "#FFFFFF";
-    readonly 'control-face-active': "#D4D1CE";
     readonly 'control-face-disabled': "rgba(0, 0, 0, 0.06)";
     readonly 'on-control-idle': "#5A5958";
     readonly 'on-control-active': "#1C1916";
@@ -2630,7 +2744,7 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'interactive-selected': "rgba(55, 65, 81, 0.08)";
     readonly 'interactive-disabled': "rgba(55, 65, 81, 0.12)";
     readonly 'interactive-disabled-text': "rgba(55, 65, 81, 0.26)";
-    readonly divider: "rgba(0, 0, 0, 0.15)";
+    readonly divider: "rgba(0, 0, 0, 0.16)";
     readonly 'avatar-background': "#72716F";
     readonly 'avatar-text': "#FFFFFF";
 } | {
@@ -2776,8 +2890,6 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly 'control-face': "#424140";
-    readonly 'control-face-active': "#2C2A28";
     readonly 'control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly 'on-control-idle': "#D1D1D1";
     readonly 'on-control-active': "#FFFFFF";
@@ -2829,22 +2941,22 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-on-brand-secondary': "#FFFFFF";
     readonly '--color-on-brand-primary-subtle': "#983804";
     readonly '--color-on-brand-secondary-subtle': "#2A617F";
-    readonly '--color-status-success': "#298732";
+    readonly '--color-status-success': "#2B6B25";
     readonly '--color-status-success-subtle': "#B5FFD2";
     readonly '--color-status-success-muted': "rgba(46, 213, 115, 0.30)";
     readonly '--color-status-success-strong': "rgba(46, 213, 115, 0.50)";
     readonly '--color-status-live': "#2ED573";
-    readonly '--color-status-deload': "#BA2996";
+    readonly '--color-status-deload': "#9C0D7A";
     readonly '--color-status-live-muted': "#22A444";
     readonly '--color-status-error': "#D14343";
     readonly '--color-status-error-subtle': "#FFE3E5";
     readonly '--color-status-error-muted': "rgba(209, 67, 67, 0.30)";
     readonly '--color-status-error-strong': "rgba(209, 67, 67, 0.50)";
-    readonly '--color-status-warning': "#C27400";
+    readonly '--color-status-warning': "#A45E00";
     readonly '--color-status-warning-subtle': "#FFEAA9";
     readonly '--color-status-warning-muted': "rgba(249, 180, 21, 0.30)";
     readonly '--color-status-warning-strong': "rgba(249, 180, 21, 0.50)";
-    readonly '--color-status-info': "#1072CB";
+    readonly '--color-status-info': "#135AA8";
     readonly '--color-status-info-subtle': "#D9EFFF";
     readonly '--color-status-info-muted': "rgba(33, 150, 243, 0.30)";
     readonly '--color-status-info-strong': "rgba(33, 150, 243, 0.50)";
@@ -2854,31 +2966,31 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-status-error-solid': "#D14343";
     readonly '--color-status-warning-solid': "#C27400";
     readonly '--color-status-info-solid': "#2196F3";
-    readonly '--color-status-error-vivid': "#FF4757";
+    readonly '--color-status-error-vivid': "#A4221C";
     readonly '--color-status-error-vivid-light': "#E05254";
     readonly '--color-status-error-vivid-dark': "#A4221C";
-    readonly '--color-status-error-vivid-subtle': "rgba(255, 71, 87, 0.12)";
-    readonly '--color-status-error-vivid-muted': "rgba(255, 71, 87, 0.30)";
-    readonly '--color-status-error-vivid-strong': "rgba(255, 71, 87, 0.50)";
+    readonly '--color-status-error-vivid-subtle': "rgba(164, 34, 28, 0.12)";
+    readonly '--color-status-error-vivid-muted': "rgba(164, 34, 28, 0.30)";
+    readonly '--color-status-error-vivid-strong': "rgba(164, 34, 28, 0.50)";
     readonly '--color-text-primary': "#121828";
-    readonly '--color-text-secondary': "#5A5958";
-    readonly '--color-text-tertiary': "#72716F";
+    readonly '--color-text-secondary': "#424140";
+    readonly '--color-text-tertiary': "#5A5958";
     readonly '--color-text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly '--color-text-inverse': "#FFFFFF";
     readonly '--color-text-error': "#A4221C";
     readonly '--color-text-brand': "#983804";
-    readonly '--color-text-brand-secondary': "#2A617F";
-    readonly '--color-text-success': "#2B6B25";
+    readonly '--color-text-brand-secondary': "#22465F";
+    readonly '--color-text-success': "#264D1C";
     readonly '--color-text-warning': "#814D14";
     readonly '--color-text-info': "#135AA8";
     readonly '--color-text-link': "#135AA8";
-    readonly '--color-surface-base': "#FFFFFF";
+    readonly '--color-surface-base': "#EDEAE7";
     readonly '--color-surface-elevated': "#F9F6F3";
-    readonly '--color-surface-raised': "#EDEAE7";
-    readonly '--color-background-base': "#EDEAE7";
-    readonly '--color-background-default': "#FFFFFF";
+    readonly '--color-surface-raised': "#FFFFFF";
+    readonly '--color-background-base': "#D4D1CE";
+    readonly '--color-background-default': "#EDEAE7";
     readonly '--color-background-subtle': "#F9F6F3";
-    readonly '--color-background-frame': "#A29F9D";
+    readonly '--color-background-frame': "#BDBAB7";
     readonly '--color-border-prominent': "#A29F9D";
     readonly '--color-border-focus': "#1072CB";
     readonly '--color-interactive-hover': "rgba(55, 65, 81, 0.04)";
@@ -2886,19 +2998,19 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-interactive-active': "rgba(55, 65, 81, 0.16)";
     readonly '--color-interactive-selected': "rgba(55, 65, 81, 0.08)";
     readonly '--color-interactive-disabled': "rgba(55, 65, 81, 0.12)";
-    readonly '--color-divider': "rgba(0, 0, 0, 0.15)";
+    readonly '--color-divider': "rgba(0, 0, 0, 0.16)";
     readonly '--color-brand-primary-hover': "#DA5F00";
     readonly '--color-brand-primary-active': "#B94A00";
     readonly '--color-brand-secondary-hover': "#2A617F";
     readonly '--color-brand-secondary-active': "#22465F";
     readonly '--color-status-success-light': "#58F69E";
-    readonly '--color-status-success-dark': "#298732";
+    readonly '--color-status-success-dark': "#264D1C";
     readonly '--color-status-error-light': "#E05254";
     readonly '--color-status-error-dark': "#A4221C";
     readonly '--color-status-warning-light': "#FFD352";
-    readonly '--color-status-warning-dark': "#C27400";
+    readonly '--color-status-warning-dark': "#814D14";
     readonly '--color-status-info-light': "#78C2FF";
-    readonly '--color-status-info-dark': "#1072CB";
+    readonly '--color-status-info-dark': "#14407E";
     readonly '--color-on-status-success': "#FFFFFF";
     readonly '--color-on-status-error': "#FFFFFF";
     readonly '--color-on-status-warning': "#FFFFFF";
@@ -2950,19 +3062,17 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-text-link-hover': "#135AA8";
     readonly '--color-surface-overlay': "#FFFFFF";
     readonly '--color-surface-input': "#F9F6F3";
-    readonly '--color-border-input': "#888684";
-    readonly '--color-border-input-hover': "#72716F";
+    readonly '--color-border-input': "#72716F";
+    readonly '--color-border-input-hover': "#5A5958";
     readonly '--color-border-input-focus': "#1072CB";
     readonly '--color-border-input-error': "#D14343";
     readonly '--color-hairline-subtle': "rgba(0, 0, 0, 0.10)";
-    readonly '--color-hairline-default': "rgba(0, 0, 0, 0.15)";
-    readonly '--color-hairline-strong': "rgba(0, 0, 0, 0.22)";
+    readonly '--color-hairline-default': "rgba(0, 0, 0, 0.16)";
+    readonly '--color-hairline-strong': "rgba(0, 0, 0, 0.24)";
     readonly '--color-scrim-press': "rgba(0, 0, 0, 0.10)";
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly '--color-control-face': "#FFFFFF";
-    readonly '--color-control-face-active': "#D4D1CE";
     readonly '--color-control-face-disabled': "rgba(0, 0, 0, 0.06)";
     readonly '--color-on-control-idle': "#5A5958";
     readonly '--color-on-control-active': "#1C1916";
@@ -3137,8 +3247,6 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly '--color-control-face': "#424140";
-    readonly '--color-control-face-active': "#2C2A28";
     readonly '--color-control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly '--color-on-control-idle': "#D1D1D1";
     readonly '--color-on-control-active': "#FFFFFF";
@@ -3811,7 +3919,7 @@ export interface GraphItemRef {
 
 // @public
 export interface GraphKind {
-    color?: ColorToken$1;
+    color?: ColorToken;
     id: string;
     label: string;
 }
@@ -3924,32 +4032,6 @@ export interface HeadingProps extends Omit<TypographyProps, 'variant'> {
 
 // @public
 export function HeadphonesIcon(input: IconProps): react_jsx_runtime.JSX.Element;
-
-// @public @deprecated
-export function HelpTip(input: HelpTipProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export type HelpTipIcon = 'help' | 'info' | 'warning';
-
-// @public (undocumented)
-export type HelpTipPlacement = 'top' | 'bottom' | 'left' | 'right';
-
-// @public (undocumented)
-export interface HelpTipProps extends ViewProps {
-    color?: 'default' | 'primary' | 'secondary' | 'muted';
-    content: React__default.ReactNode;
-    hasArrow?: boolean;
-    icon?: HelpTipIcon;
-    iconClassName?: string;
-    isOpen?: boolean;
-    maxWidth?: number;
-    placement?: HelpTipPlacement;
-    size?: HelpTipSize;
-    tooltipClassName?: string;
-}
-
-// @public (undocumented)
-export type HelpTipSize = 'sm' | 'md' | 'lg';
 
 // @public
 export const HERO_EYEBROW_ALLOWANCE = 26;
@@ -4289,18 +4371,6 @@ export function Label(props: LabelProps): react_jsx_runtime.JSX.Element;
 export interface LabelProps extends Omit<TypographyProps, 'variant'> {
 }
 
-// @public @deprecated
-export function LabelWithHelp(input: LabelWithHelpProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface LabelWithHelpProps extends ViewProps {
-    className?: string;
-    helpContent: React__default.ReactNode;
-    helpSize?: HelpTipSize;
-    isRequired?: boolean;
-    label: string;
-}
-
 // @public
 export function layeredLayout(options?: LayeredLayoutOptions): GraphLayout;
 
@@ -4363,22 +4433,22 @@ export const lightThemeCSSVars: {
     readonly '--color-on-brand-secondary': "#FFFFFF";
     readonly '--color-on-brand-primary-subtle': "#983804";
     readonly '--color-on-brand-secondary-subtle': "#2A617F";
-    readonly '--color-status-success': "#298732";
+    readonly '--color-status-success': "#2B6B25";
     readonly '--color-status-success-subtle': "#B5FFD2";
     readonly '--color-status-success-muted': "rgba(46, 213, 115, 0.30)";
     readonly '--color-status-success-strong': "rgba(46, 213, 115, 0.50)";
     readonly '--color-status-live': "#2ED573";
-    readonly '--color-status-deload': "#BA2996";
+    readonly '--color-status-deload': "#9C0D7A";
     readonly '--color-status-live-muted': "#22A444";
     readonly '--color-status-error': "#D14343";
     readonly '--color-status-error-subtle': "#FFE3E5";
     readonly '--color-status-error-muted': "rgba(209, 67, 67, 0.30)";
     readonly '--color-status-error-strong': "rgba(209, 67, 67, 0.50)";
-    readonly '--color-status-warning': "#C27400";
+    readonly '--color-status-warning': "#A45E00";
     readonly '--color-status-warning-subtle': "#FFEAA9";
     readonly '--color-status-warning-muted': "rgba(249, 180, 21, 0.30)";
     readonly '--color-status-warning-strong': "rgba(249, 180, 21, 0.50)";
-    readonly '--color-status-info': "#1072CB";
+    readonly '--color-status-info': "#135AA8";
     readonly '--color-status-info-subtle': "#D9EFFF";
     readonly '--color-status-info-muted': "rgba(33, 150, 243, 0.30)";
     readonly '--color-status-info-strong': "rgba(33, 150, 243, 0.50)";
@@ -4388,31 +4458,31 @@ export const lightThemeCSSVars: {
     readonly '--color-status-error-solid': "#D14343";
     readonly '--color-status-warning-solid': "#C27400";
     readonly '--color-status-info-solid': "#2196F3";
-    readonly '--color-status-error-vivid': "#FF4757";
+    readonly '--color-status-error-vivid': "#A4221C";
     readonly '--color-status-error-vivid-light': "#E05254";
     readonly '--color-status-error-vivid-dark': "#A4221C";
-    readonly '--color-status-error-vivid-subtle': "rgba(255, 71, 87, 0.12)";
-    readonly '--color-status-error-vivid-muted': "rgba(255, 71, 87, 0.30)";
-    readonly '--color-status-error-vivid-strong': "rgba(255, 71, 87, 0.50)";
+    readonly '--color-status-error-vivid-subtle': "rgba(164, 34, 28, 0.12)";
+    readonly '--color-status-error-vivid-muted': "rgba(164, 34, 28, 0.30)";
+    readonly '--color-status-error-vivid-strong': "rgba(164, 34, 28, 0.50)";
     readonly '--color-text-primary': "#121828";
-    readonly '--color-text-secondary': "#5A5958";
-    readonly '--color-text-tertiary': "#72716F";
+    readonly '--color-text-secondary': "#424140";
+    readonly '--color-text-tertiary': "#5A5958";
     readonly '--color-text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly '--color-text-inverse': "#FFFFFF";
     readonly '--color-text-error': "#A4221C";
     readonly '--color-text-brand': "#983804";
-    readonly '--color-text-brand-secondary': "#2A617F";
-    readonly '--color-text-success': "#2B6B25";
+    readonly '--color-text-brand-secondary': "#22465F";
+    readonly '--color-text-success': "#264D1C";
     readonly '--color-text-warning': "#814D14";
     readonly '--color-text-info': "#135AA8";
     readonly '--color-text-link': "#135AA8";
-    readonly '--color-surface-base': "#FFFFFF";
+    readonly '--color-surface-base': "#EDEAE7";
     readonly '--color-surface-elevated': "#F9F6F3";
-    readonly '--color-surface-raised': "#EDEAE7";
-    readonly '--color-background-base': "#EDEAE7";
-    readonly '--color-background-default': "#FFFFFF";
+    readonly '--color-surface-raised': "#FFFFFF";
+    readonly '--color-background-base': "#D4D1CE";
+    readonly '--color-background-default': "#EDEAE7";
     readonly '--color-background-subtle': "#F9F6F3";
-    readonly '--color-background-frame': "#A29F9D";
+    readonly '--color-background-frame': "#BDBAB7";
     readonly '--color-border-prominent': "#A29F9D";
     readonly '--color-border-focus': "#1072CB";
     readonly '--color-interactive-hover': "rgba(55, 65, 81, 0.04)";
@@ -4420,19 +4490,19 @@ export const lightThemeCSSVars: {
     readonly '--color-interactive-active': "rgba(55, 65, 81, 0.16)";
     readonly '--color-interactive-selected': "rgba(55, 65, 81, 0.08)";
     readonly '--color-interactive-disabled': "rgba(55, 65, 81, 0.12)";
-    readonly '--color-divider': "rgba(0, 0, 0, 0.15)";
+    readonly '--color-divider': "rgba(0, 0, 0, 0.16)";
     readonly '--color-brand-primary-hover': "#DA5F00";
     readonly '--color-brand-primary-active': "#B94A00";
     readonly '--color-brand-secondary-hover': "#2A617F";
     readonly '--color-brand-secondary-active': "#22465F";
     readonly '--color-status-success-light': "#58F69E";
-    readonly '--color-status-success-dark': "#298732";
+    readonly '--color-status-success-dark': "#264D1C";
     readonly '--color-status-error-light': "#E05254";
     readonly '--color-status-error-dark': "#A4221C";
     readonly '--color-status-warning-light': "#FFD352";
-    readonly '--color-status-warning-dark': "#C27400";
+    readonly '--color-status-warning-dark': "#814D14";
     readonly '--color-status-info-light': "#78C2FF";
-    readonly '--color-status-info-dark': "#1072CB";
+    readonly '--color-status-info-dark': "#14407E";
     readonly '--color-on-status-success': "#FFFFFF";
     readonly '--color-on-status-error': "#FFFFFF";
     readonly '--color-on-status-warning': "#FFFFFF";
@@ -4484,19 +4554,17 @@ export const lightThemeCSSVars: {
     readonly '--color-text-link-hover': "#135AA8";
     readonly '--color-surface-overlay': "#FFFFFF";
     readonly '--color-surface-input': "#F9F6F3";
-    readonly '--color-border-input': "#888684";
-    readonly '--color-border-input-hover': "#72716F";
+    readonly '--color-border-input': "#72716F";
+    readonly '--color-border-input-hover': "#5A5958";
     readonly '--color-border-input-focus': "#1072CB";
     readonly '--color-border-input-error': "#D14343";
     readonly '--color-hairline-subtle': "rgba(0, 0, 0, 0.10)";
-    readonly '--color-hairline-default': "rgba(0, 0, 0, 0.15)";
-    readonly '--color-hairline-strong': "rgba(0, 0, 0, 0.22)";
+    readonly '--color-hairline-default': "rgba(0, 0, 0, 0.16)";
+    readonly '--color-hairline-strong': "rgba(0, 0, 0, 0.24)";
     readonly '--color-scrim-press': "rgba(0, 0, 0, 0.10)";
     readonly '--color-scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly '--color-scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly '--color-scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly '--color-control-face': "#FFFFFF";
-    readonly '--color-control-face-active': "#D4D1CE";
     readonly '--color-control-face-disabled': "rgba(0, 0, 0, 0.06)";
     readonly '--color-on-control-idle': "#5A5958";
     readonly '--color-on-control-active': "#1C1916";
@@ -4629,6 +4697,7 @@ export function LiveFatigueCard(input: LiveFatigueCardProps): react_jsx_runtime.
 // @public (undocumented)
 export interface LiveFatigueCardProps {
     height?: number;
+    layout?: CardLayout;
     model: LiveFatigueModel;
     width?: number;
 }
@@ -5512,6 +5581,7 @@ export function panelBodySplit(bodyHeight: number, layout: PanelLayout): PanelBo
 
 // @public (undocumented)
 export interface PanelLayout {
+    cardLayout: CardLayout;
     cardWidth: number;
     gap: number;
     padding: number;
@@ -5724,6 +5794,9 @@ export interface PlanWorkout {
     // (undocumented)
     unit: 'lbs' | 'kg';
 }
+
+// @public
+export function pluralize(count: number, one: string, many: string): string;
 
 // @public
 export function Popover(input: PopoverProps): react_jsx_runtime.JSX.Element;
@@ -6334,7 +6407,7 @@ export interface RefChipProps extends EntityRef {
 
 // @public
 export interface RefGraphKind {
-    color: ColorToken$1;
+    color: ColorToken;
     id: RefKind;
     label: string;
 }
@@ -6353,7 +6426,7 @@ export type RefKind = 'task' | 'pr' | 'session' | 'agent' | 'note' | 'file' | 'i
 
 // @public
 export interface RefKindMeta {
-    color: ColorToken$1;
+    color: ColorToken;
     glyph: string;
     label: string;
     plural: string;
@@ -6403,7 +6476,7 @@ export function resolveActualWeek(actual: GoalActualPoint, weeks: GoalTrajectory
 export function resolveBrand(brand: BrandKey | BrandPreset): BrandPreset;
 
 // @public
-export function resolveColor(token: ColorToken$1, mode?: ThemeMode): string;
+export function resolveColor(token: ColorToken, mode?: ThemeMode): string;
 
 // @public (undocumented)
 export interface ResolvedSurface {
@@ -6546,6 +6619,7 @@ export interface ScatterProps extends Omit<ViewProps, 'children'> {
     data: ScatterDatum[];
     // @deprecated
     diagonal?: boolean;
+    emptyState?: ReactNode;
     // (undocumented)
     height: number;
     onPress?: (id: string) => void;
@@ -6576,6 +6650,15 @@ export interface ScheduleTilesProps extends ViewProps {
     now?: number;
     when: number | Date;
 }
+
+// @public
+export const SCORE_BAND_META: Record<CodeScoreBand, {
+    color: ColorToken;
+    indicator: IndicatorColor;
+}>;
+
+// @public
+export function scoreBand(score: number | null | undefined, cutoff?: CodeCutoff | null, elevated?: CodeCutoff | null): CodeScoreBand | null;
 
 // @public
 export function SearchIcon(props: IconProps): react_jsx_runtime.JSX.Element;
@@ -6839,8 +6922,6 @@ export const semanticColorsDark: {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly 'control-face': "#424140";
-    readonly 'control-face-active': "#2C2A28";
     readonly 'control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly 'on-control-idle': "#D1D1D1";
     readonly 'on-control-active': "#FFFFFF";
@@ -6878,36 +6959,36 @@ export const semanticColorsLight: {
     readonly 'on-brand-secondary': "#FFFFFF";
     readonly 'on-brand-primary-subtle': "#983804";
     readonly 'on-brand-secondary-subtle': "#2A617F";
-    readonly 'status-success': "#298732";
+    readonly 'status-success': "#2B6B25";
     readonly 'status-success-light': "#58F69E";
-    readonly 'status-success-dark': "#298732";
+    readonly 'status-success-dark': "#264D1C";
     readonly 'status-success-subtle': "#B5FFD2";
     readonly 'status-success-muted': "rgba(46, 213, 115, 0.30)";
     readonly 'status-success-strong': "rgba(46, 213, 115, 0.50)";
     readonly 'status-live': "#2ED573";
     readonly 'status-live-muted': "#22A444";
-    readonly 'status-deload': "#BA2996";
+    readonly 'status-deload': "#9C0D7A";
     readonly 'status-error': "#D14343";
     readonly 'status-error-light': "#E05254";
     readonly 'status-error-dark': "#A4221C";
     readonly 'status-error-subtle': "#FFE3E5";
     readonly 'status-error-muted': "rgba(209, 67, 67, 0.30)";
     readonly 'status-error-strong': "rgba(209, 67, 67, 0.50)";
-    readonly 'status-error-vivid': "#FF4757";
+    readonly 'status-error-vivid': "#A4221C";
     readonly 'status-error-vivid-light': "#E05254";
     readonly 'status-error-vivid-dark': "#A4221C";
-    readonly 'status-error-vivid-subtle': "rgba(255, 71, 87, 0.12)";
-    readonly 'status-error-vivid-muted': "rgba(255, 71, 87, 0.30)";
-    readonly 'status-error-vivid-strong': "rgba(255, 71, 87, 0.50)";
-    readonly 'status-warning': "#C27400";
+    readonly 'status-error-vivid-subtle': "rgba(164, 34, 28, 0.12)";
+    readonly 'status-error-vivid-muted': "rgba(164, 34, 28, 0.30)";
+    readonly 'status-error-vivid-strong': "rgba(164, 34, 28, 0.50)";
+    readonly 'status-warning': "#A45E00";
     readonly 'status-warning-light': "#FFD352";
-    readonly 'status-warning-dark': "#C27400";
+    readonly 'status-warning-dark': "#814D14";
     readonly 'status-warning-subtle': "#FFEAA9";
     readonly 'status-warning-muted': "rgba(249, 180, 21, 0.30)";
     readonly 'status-warning-strong': "rgba(249, 180, 21, 0.50)";
-    readonly 'status-info': "#1072CB";
+    readonly 'status-info': "#135AA8";
     readonly 'status-info-light': "#78C2FF";
-    readonly 'status-info-dark': "#1072CB";
+    readonly 'status-info-dark': "#14407E";
     readonly 'status-info-subtle': "#D9EFFF";
     readonly 'status-info-muted': "rgba(33, 150, 243, 0.30)";
     readonly 'status-info-strong': "rgba(33, 150, 243, 0.50)";
@@ -6966,42 +7047,40 @@ export const semanticColorsLight: {
     readonly 'dataviz-categorical-5': "#01B5D1";
     readonly 'dataviz-categorical-6': "#A45E00";
     readonly 'text-primary': "#121828";
-    readonly 'text-secondary': "#5A5958";
-    readonly 'text-tertiary': "#72716F";
+    readonly 'text-secondary': "#424140";
+    readonly 'text-tertiary': "#5A5958";
     readonly 'text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly 'text-inverse': "#FFFFFF";
     readonly 'text-error': "#A4221C";
     readonly 'text-brand': "#983804";
-    readonly 'text-brand-secondary': "#2A617F";
-    readonly 'text-success': "#2B6B25";
+    readonly 'text-brand-secondary': "#22465F";
+    readonly 'text-success': "#264D1C";
     readonly 'text-warning': "#814D14";
     readonly 'text-info': "#135AA8";
     readonly 'text-link': "#135AA8";
     readonly 'text-link-hover': "#135AA8";
-    readonly 'surface-base': "#FFFFFF";
+    readonly 'surface-base': "#EDEAE7";
     readonly 'surface-elevated': "#F9F6F3";
-    readonly 'surface-raised': "#EDEAE7";
+    readonly 'surface-raised': "#FFFFFF";
     readonly 'surface-overlay': "#FFFFFF";
     readonly 'surface-input': "#F9F6F3";
-    readonly 'background-base': "#EDEAE7";
-    readonly 'background-default': "#FFFFFF";
+    readonly 'background-base': "#D4D1CE";
+    readonly 'background-default': "#EDEAE7";
     readonly 'background-subtle': "#F9F6F3";
-    readonly 'background-frame': "#A29F9D";
+    readonly 'background-frame': "#BDBAB7";
     readonly 'border-prominent': "#A29F9D";
     readonly 'border-focus': "#1072CB";
-    readonly 'border-input': "#888684";
-    readonly 'border-input-hover': "#72716F";
+    readonly 'border-input': "#72716F";
+    readonly 'border-input-hover': "#5A5958";
     readonly 'border-input-focus': "#1072CB";
     readonly 'border-input-error': "#D14343";
     readonly 'hairline-subtle': "rgba(0, 0, 0, 0.10)";
-    readonly 'hairline-default': "rgba(0, 0, 0, 0.15)";
-    readonly 'hairline-strong': "rgba(0, 0, 0, 0.22)";
+    readonly 'hairline-default': "rgba(0, 0, 0, 0.16)";
+    readonly 'hairline-strong': "rgba(0, 0, 0, 0.24)";
     readonly 'scrim-press': "rgba(0, 0, 0, 0.10)";
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly 'control-face': "#FFFFFF";
-    readonly 'control-face-active': "#D4D1CE";
     readonly 'control-face-disabled': "rgba(0, 0, 0, 0.06)";
     readonly 'on-control-idle': "#5A5958";
     readonly 'on-control-active': "#1C1916";
@@ -7012,7 +7091,7 @@ export const semanticColorsLight: {
     readonly 'interactive-selected': "rgba(55, 65, 81, 0.08)";
     readonly 'interactive-disabled': "rgba(55, 65, 81, 0.12)";
     readonly 'interactive-disabled-text': "rgba(55, 65, 81, 0.26)";
-    readonly divider: "rgba(0, 0, 0, 0.15)";
+    readonly divider: "rgba(0, 0, 0, 0.16)";
     readonly 'avatar-background': "#72716F";
     readonly 'avatar-text': "#FFFFFF";
 };
@@ -7175,12 +7254,14 @@ export function SessionListItem(input: SessionListItemProps): react_jsx_runtime.
 // @public (undocumented)
 export interface SessionListItemProps {
     className?: string;
+    focusRef?: (node: unknown) => void;
     now: number;
     // (undocumented)
     onSelect?: () => void;
     selected?: boolean;
     // (undocumented)
     session: SessionSummary;
+    tabIndex?: 0 | -1;
 }
 
 // @public (undocumented)
@@ -7919,6 +8000,18 @@ export interface StatusDotProps extends ViewProps {
 export type StatusDotVariant = 'success' | 'warning' | 'error' | 'neutral' | 'on-track' | 'deviation' | 'future';
 
 // @public
+export function StatusMark(input: StatusMarkProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface StatusMarkProps extends Omit<ViewProps, 'children'> {
+    className?: string;
+    delta?: number;
+    isOverCutoff?: boolean;
+    kind: CodeChangeKind;
+    size?: Exclude<PillSizeLevel, 'lg'>;
+}
+
+// @public
 export function StatusPill(input: StatusPillProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -8159,6 +8252,9 @@ export function Tab(input: TabProps): react_jsx_runtime.JSX.Element;
 
 // @public
 export function Table(input: TableProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export type TableBlankPredicate<T> = (row: T) => boolean;
 
 // @public
 export function TableBody(input: TableBodyProps): react_jsx_runtime.JSX.Element;
@@ -8983,6 +9079,12 @@ export interface TooltipProps extends ViewProps {
 // @public
 export function TopBar(input: TopBarProps): react_jsx_runtime.JSX.Element;
 
+// @public
+export const TOPBAR_CLOCK_MIN = 720;
+
+// @public
+export const TOPBAR_SUBTITLE_MIN = 1024;
+
 // @public (undocumented)
 export interface TopBarProps {
     brand: BrandKey | BrandPreset;
@@ -9071,6 +9173,7 @@ export interface TreemapProps extends Omit<ViewProps, 'children'> {
     className?: string;
     // (undocumented)
     data: TreemapDatum[];
+    emptyState?: ReactNode;
     // (undocumented)
     height: number;
     maxTiles?: number;
@@ -9270,6 +9373,7 @@ export interface UseTableOptions<T> {
     filters?: TableFilters;
     getRow?: (index: number) => T | undefined;
     getRowId?: (row: T) => string;
+    isBlank?: Partial<Record<keyof T & string, TableBlankPredicate<T>>> & Record<string, TableBlankPredicate<T> | undefined>;
     mode?: TableMode;
     // (undocumented)
     onFiltersChange?: (filters: TableFilters) => void;

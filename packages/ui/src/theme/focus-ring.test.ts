@@ -22,7 +22,7 @@ function focusRule() {
 }
 
 // `background-frame` is the bezel: only lab frames paint it and nothing focusable ships on it.
-// Light measures 2.75 there (the old border-focus ring was 1.86); it is pinned, not floored.
+// Light measured 2.75 there on grey 400; TD-789 3b lifted the frame to grey 300 (3.75).
 const PLANES = [
   'background-base',
   'background-default',
@@ -49,8 +49,8 @@ describe('focus ring', () => {
     expect(below).toEqual([])
   })
 
-  it('pins the ring on the light frame bezel, the one plane under 3:1', () => {
+  it('pins the ring on the light frame bezel', () => {
     const colors = getSemanticColors('light')
-    expect(contrast(colors['text-brand'], colors['background-frame'])).toBeCloseTo(2.75, 2)
+    expect(contrast(colors['text-brand'], colors['background-frame'])).toBeCloseTo(3.75, 2)
   })
 })
