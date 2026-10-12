@@ -6,7 +6,6 @@
 export const chartText = {
   tick: 'font-mono text-2xs font-normal text-text-tertiary',
   category:
-    // eslint-disable-next-line titan/no-raw-caps -- SVG text takes classes, not Typography; mirrors microLabel
     'font-sans text-2xs font-semibold uppercase tracking-widest leading-normal text-text-secondary',
   axisTitle: 'font-heading text-xs font-semibold text-text-secondary',
   legend: 'font-heading text-xs font-medium text-text-secondary',
