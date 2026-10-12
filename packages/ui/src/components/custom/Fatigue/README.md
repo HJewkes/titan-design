@@ -89,13 +89,13 @@ under jsdom, gotcha 6). `LiveFatiguePanel` measures its own width (`SIZE-D01`:
 container-driven, not a `size` prop) and calls it; `containerWidth` overrides the
 measurement for tests and for a consumer that already knows the width.
 
-| tier | width     | layout  | padding · gap | card width                         |
-| ---- | --------- | ------- | ------------- | ---------------------------------- |
-| `xs` | < 600     | stacked | 16 · 12       | full content width                 |
-| `sm` | 600–999   | stacked | 16 · 16       | full content width                 |
-| `md` | 1000–1199 | row     | 24 · 16       | 318                                |
-| `lg` | 1200–1919 | row     | 24 · 16       | 318                                |
-| `xl` | ≥ 1920    | row     | 24 · 16       | `0.22 × width`, clamped to 318–460 |
+| tier | width     | layout  | padding · gap | card width                         | card layout |
+| ---- | --------- | ------- | ------------- | ---------------------------------- | ----------- |
+| `xs` | < 600     | stacked | 16 · 12       | full content width                 | `compact`   |
+| `sm` | 600–999   | stacked | 16 · 16       | full content width                 | `compact`   |
+| `md` | 1000–1199 | row     | 24 · 16       | 318                                | `column`    |
+| `lg` | 1200–1919 | row     | 24 · 16       | 318                                | `column`    |
+| `xl` | ≥ 1920    | row     | 24 · 16       | `0.22 × width`, clamped to 318–460 | `fill`      |
 
 The edges are titan's own `primitiveBreakpoints`, asserted by identity in
 `panel-layout.test.ts` so nobody can quietly swap in a hand-picked set. Padding and gap
@@ -103,8 +103,20 @@ are not frozen: voltras-mcp must import `panelLayout` rather than copy these num
 its stage chrome drifts from the panel whenever they move.
 
 `panelBodySplit` is the one-height rule: side by side, the hero and the card both take the
-whole `bodyHeight`; stacked, they share it (card 0.55, gap taken out first). Both numbers
-come from one call, so `bodyHeight` moves both or neither.
+whole `bodyHeight`; stacked, the card is the fixed `CARD_COMPACT_HEIGHT` band and the hero
+takes the rest (TD-326: the velocity strip is the main item). Both numbers come from one
+call, so the hero and the card cannot disagree about the body.
+
+The card's arrangement (`CardLayout`, chosen by the tier and handed to `LiveFatigueCard` as
+`layout`) and its section heights come from `cardSections`:
+
+- `column` (`md`, `lg`): verdict group, ROM chart and ghost spark top to bottom; the gaps are
+  content-driven and capped (VW-276), the leftover collects under the spark.
+- `fill` (`xl`): the column, with that leftover spent on the two charts (`ROM_FILL_SHARE`
+  to the ROM plot, the rest to the spark) so the wall card has no void under the spark.
+- `compact` (wrapped): the lights sit beside the verdict word and the two charts sit side
+  by side at `COMPACT_CHART_HEIGHT`, so the card is a band under the hero rather than the
+  taller block.
 
 Nothing here animates. A tier change is a re-layout, never a transition — the panel is
 read from across a room mid-set, and the visual baselines need a deterministic render.
