@@ -4,8 +4,6 @@ import { Surface } from '../../components/ui/surface'
 import { bestTextColor } from '../../theme/tokens/primitives'
 import { getSemanticColors, type ThemeMode } from '../../theme/tokens/semantic'
 
-export const MODES: ThemeMode[] = ['dark', 'light']
-
 /**
  * Ink resolved from the unit's own mode: a nested light Surface does not set `.light`, so
  * class-based text colours would keep painting the toolbar theme.

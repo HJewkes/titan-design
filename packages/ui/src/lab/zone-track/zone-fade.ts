@@ -1,4 +1,4 @@
-import { contrast } from '../../theme/color-checks'
+import { compositeOver, contrast } from '../../theme/color-checks'
 import { primitiveRamps } from '../../theme/tokens/primitives'
 import { getSemanticColors, type ThemeMode } from '../../theme/tokens/semantic'
 import { WORKOUT_TOKENS, heatmapColors } from '../../theme/workout-tokens'
@@ -40,13 +40,13 @@ export const PLANE_FLOOR = 1.1
 /** Palette B, two steps toward the plane, is the owner's pick over one step, so no zone fades less. */
 const MIN_FADE_STEPS = 2
 
-export type PaletteId = 'adjacentFloor' | 'darkFurther' | 'lightCoolFurther'
+export type PaletteId = 'asBuilt' | 'subtle'
 
 export interface FadedPalette {
   title: string
   /** How the palette picks each faded step, for the owner. */
   note: string
-  fade: (zones: RampColor[], mode: ThemeMode) => RampColor[]
+  fade: (zones: RampColor[], mode: ThemeMode) => ZoneFill[]
 }
 
 export function rampColor(hex: string): RampColor {
@@ -113,44 +113,79 @@ function floorFade(zones: RampColor[], mode: ThemeMode): RampColor[] {
   })
 }
 
-/** Palette B, with one more step for the zones `applies` picks in `extraMode`. */
-const paletteBPlus =
-  (extraMode: ThemeMode, applies: (zone: RampColor) => boolean) =>
-  (zones: RampColor[], mode: ThemeMode): RampColor[] =>
-    zones.map((zone) => {
-      const extra = mode === extraMode && applies(zone) ? 1 : 0
-      return stepDown(zone, mode, MIN_FADE_STEPS + extra)
-    })
+/** The step the light subtle fills (`status-*-subtle`, `brand-*-subtle`) take on `main`. */
+export const LIGHT_SUBTLE_STEP: RampStep = 100
+
+type SemanticToken = keyof ReturnType<typeof getSemanticColors>
+
+/** Each zone hue's subtle fill: the status or brand role painted in that hue. */
+const SUBTLE_TOKEN: Partial<Record<RampName, SemanticToken>> = {
+  green: 'status-success-subtle',
+  amber: 'status-warning-subtle',
+  red: 'status-error-subtle',
+  blue: 'status-info-subtle',
+  orange: 'brand-primary-subtle',
+  cyan: 'brand-secondary-subtle',
+}
+
+/** A faded zone: a ramp step or a subtle token, which is translucent in dark. */
+export interface ZoneFill {
+  ramp: RampName
+  label: string
+  fill: string
+}
+
+export const rampFill = (color: RampColor): ZoneFill => ({
+  ramp: color.ramp,
+  label: rampLabel(color),
+  fill: color.hex,
+})
+
+const lightSubtleStep = (zones: RampColor[]): ZoneFill[] =>
+  zones.map(({ ramp }) =>
+    rampFill({ ramp, step: LIGHT_SUBTLE_STEP, hex: primitiveRamps[ramp][LIGHT_SUBTLE_STEP] })
+  )
+
+function subtleFill(zone: RampColor, mode: ThemeMode): ZoneFill {
+  const token = SUBTLE_TOKEN[zone.ramp]
+  if (token == null) throw new Error(`no subtle token is painted in ${zone.ramp}`)
+  return { ramp: zone.ramp, label: token, fill: getSemanticColors(mode)[token] }
+}
+
+/** Light takes step 100 in both options; they differ only in dark. */
+const withLightStep =
+  (dark: (zones: RampColor[]) => ZoneFill[]) =>
+  (zones: RampColor[], mode: ThemeMode): ZoneFill[] =>
+    mode === 'light' ? lightSubtleStep(zones) : dark(zones)
 
 export const PALETTES: Record<PaletteId, FadedPalette> = {
-  adjacentFloor: {
-    title: `Chosen: lit vs adjacent faded at least ${ADJACENT_FLOOR}:1`,
+  asBuilt: {
+    title: 'as built',
     note:
-      `Each zone fades at least two steps (palette B), and further only until the lit zone on ` +
-      `either side clears ${ADJACENT_FLOOR}:1 against it, while it stays at least ` +
-      `${PLANE_FLOOR}:1 on the plane.`,
-    fade: floorFade,
+      `Dark: each zone fades at least two steps, and further only until the lit zone on either ` +
+      `side clears ${ADJACENT_FLOOR}:1 against it. Light: step ${LIGHT_SUBTLE_STEP}.`,
+    fade: withLightStep((zones) => floorFade(zones, 'dark').map(rampFill)),
   },
-  darkFurther: {
-    title: 'Owner alternative: one more step down in dark',
-    note: 'Dark: every zone three steps down. Light: palette B (two steps).',
-    fade: paletteBPlus('dark', () => true),
-  },
-  lightCoolFurther: {
-    title: 'Owner alternative: cyan and blue one more shade down in light',
-    note: 'Light: cyan and blue three steps down, the rest two. Dark: palette B (two steps).',
-    fade: paletteBPlus('light', (zone) => zone.ramp === 'cyan' || zone.ramp === 'blue'),
+  subtle: {
+    title: 'subtle',
+    note:
+      `Dark: each zone's hue takes its subtle fill token, painted over the plane. ` +
+      `Light: step ${LIGHT_SUBTLE_STEP}.`,
+    fade: withLightStep((zones) => zones.map((zone) => subtleFill(zone, 'dark'))),
   },
 }
 
 export interface ZoneReading {
-  color: RampColor
+  color: ZoneFill
   lit: boolean
   /** WCAG contrast against the lit zone, set only on the lit zone's faded neighbours. */
   vsLit?: number
   /** WCAG contrast against `surface-base`. */
   vsPlane: number
 }
+
+/** What a fill shows on a plane: a translucent subtle token blends with it. */
+export const paintOn = (fill: string, planeHex: string) => compositeOver(fill, planeHex)
 
 /** The zones with only `lit` at full colour, each measured against the lit zone and the plane. */
 export function highlightZones(
@@ -163,18 +198,57 @@ export function highlightZones(
   const faded = PALETTES[palette].fade(zones, mode)
   const plane = planeOf(mode)
   return zones.map((zone, i) => {
-    const color = i === lit ? zone : faded[i]
+    const color = i === lit ? rampFill(zone) : faded[i]
+    const painted = paintOn(color.fill, plane)
     const adjacent = Math.abs(i - lit) === 1
     return {
       color,
       lit: i === lit,
-      vsLit: adjacent ? contrast(color.hex, zones[lit].hex) : undefined,
-      vsPlane: contrast(color.hex, plane),
+      vsLit: adjacent ? contrast(painted, zones[lit].hex) : undefined,
+      vsPlane: contrast(painted, plane),
     }
   })
 }
 
+/** ZoneTrack's default un-reached track token. */
+const TRACK_TOKEN: SemanticToken = 'border-prominent'
+
+export type PlaneLevel = 0 | -1
+
+export const PLANES: Record<PlaneLevel, SemanticToken> = {
+  0: 'surface-base',
+  [-1]: 'background-base',
+}
+
+export interface PlaneReading {
+  level: PlaneLevel
+  plane: string
+  /** The track as painted on the plane. */
+  track: string
+  zones: { color: ZoneFill; painted: string; vsTrack: number; vsPlane: number }[]
+}
+
+/** Every faded zone of a palette against the track and the plane, on plane 0 and plane -1. */
+export function planeReadings(palette: PaletteId, scale: ScaleId, mode: ThemeMode): PlaneReading[] {
+  const colors = getSemanticColors(mode)
+  const faded = fadedPalette(palette, scale, mode)
+  return ([0, -1] as PlaneLevel[]).map((level) => {
+    const plane = colors[PLANES[level]]
+    const track = paintOn(colors[TRACK_TOKEN], plane)
+    const zones = faded.map((color) => {
+      const painted = paintOn(color.fill, plane)
+      return {
+        color,
+        painted,
+        vsTrack: contrast(painted, track),
+        vsPlane: contrast(painted, plane),
+      }
+    })
+    return { level, plane, track, zones }
+  })
+}
+
 /** The faded step each zone takes in a palette. */
-export function fadedPalette(palette: PaletteId, scale: ScaleId, mode: ThemeMode): RampColor[] {
+export function fadedPalette(palette: PaletteId, scale: ScaleId, mode: ThemeMode): ZoneFill[] {
   return PALETTES[palette].fade(scaleZones(scale, mode), mode)
 }
