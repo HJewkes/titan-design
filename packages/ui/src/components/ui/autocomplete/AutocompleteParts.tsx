@@ -84,10 +84,7 @@ export function AutocompleteOptionRow<T>({
       )}
     >
       <Text
-        className={cn(
-          'text-sm',
-          isSelected ? 'text-brand-primary font-medium' : 'text-text-primary'
-        )}
+        className={cn('text-sm', isSelected ? 'text-text-brand font-medium' : 'text-text-primary')}
       >
         {option.label}
       </Text>
