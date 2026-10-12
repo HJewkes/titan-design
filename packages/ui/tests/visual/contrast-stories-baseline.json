@@ -158,7 +158,6 @@
     "#888684|#252321": 1
   },
   "components-molecules-button--all-colors light": {
-    "#ffffff|#2196f3": 1,
     "#ffffff|#c27400": 1,
     "#ffffff|#da5f00": 1
   },
@@ -349,7 +348,6 @@
     "#a29f9d|#3f474d": 1
   },
   "components-molecules-toast--interactive light": {
-    "#ffffff|#2196f3": 1,
     "#ffffff|#c27400": 1
   },
   "components-molecules-toast--long-duration light": {
