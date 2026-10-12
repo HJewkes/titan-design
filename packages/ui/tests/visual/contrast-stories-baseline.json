@@ -682,7 +682,7 @@
     "#ff7900|#4a3929": 3
   },
   "custom-activework-initiativereader--default light": {
-    "#ff7900|#ffffff": 7
+    "#ff7900|#ffffff": 4
   },
   "custom-activework-initiativereader--no-open-loops dark": {
     "#888684|#252321": 4,
@@ -713,9 +713,6 @@
   "custom-activework-sessiondetail--ad-hoc dark": {
     "#888684|#31302f": 4,
     "#ff7900|#4a3929": 1
-  },
-  "custom-activework-sessiondetail--ad-hoc light": {
-    "#ff7900|#ffffff": 1
   },
   "custom-activework-sessiondetail--default dark": {
     "#888684|#31302f": 4,
@@ -963,12 +960,6 @@
   "custom-fatigue-velocity-hero--mid-set light": {
     "#424140|#1c1916": 4,
     "#824d06|#1c1916": 1
-  },
-  "custom-prose-markdownprose--default light": {
-    "#ff7900|#edeae7": 3
-  },
-  "custom-prose-markdownprose--pressable light": {
-    "#ff7900|#edeae7": 3
   },
   "custom-workout-basebadge--all-variants light": {
     "#a29f9d|#ffffff": 4,
