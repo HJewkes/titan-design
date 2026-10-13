@@ -1,0 +1,26 @@
+{
+ "brush": {
+  "markupIdenticalAcrossSizes": true,
+  "finishedVsStatic": {
+   "pixelsDiffering": 0,
+   "maxAlphaDelta": 0,
+   "inkStatic": 263729
+  }
+ },
+ "a": {
+  "markupIdenticalAcrossSizes": true,
+  "finishedVsStatic": {
+   "pixelsDiffering": 0,
+   "maxAlphaDelta": 0,
+   "inkStatic": 227328
+  }
+ },
+ "b": {
+  "markupIdenticalAcrossSizes": true,
+  "finishedVsStatic": {
+   "pixelsDiffering": 0,
+   "maxAlphaDelta": 0,
+   "inkStatic": 230631
+  }
+ }
+}
