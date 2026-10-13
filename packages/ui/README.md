@@ -136,13 +136,13 @@ function App() {
 | Component          | Description                                                                                             |
 | ------------------ | ------------------------------------------------------------------------------------------------------- |
 | **Sidebar**        | Navigation sidebar with collapsible support                                                             |
-| **GoalLiftCard**   | One lift's goal state — next milestone, status pill, committed/stretch progress (root barrel)           |
+| **GoalLiftCard**   | One lift's goal state — next milestone, status pill, committed/stretch progress (`workout` subpath)     |
 | **GoalMuscleCard** | A muscle priority's rollup card, built on `MuscleGlyph` (`bodymap` subpath — see [Subpaths](#subpaths)) |
 
 ## Subpaths
 
-Two exports stay off the root barrel so `@titan-design/react-ui` itself never pulls
-their heavier runtime dependencies:
+Four exports stay off the root barrel, so `@titan-design/react-ui` itself never pulls
+their heavier runtime dependencies or the code of a domain it does not need:
 
 - **`@titan-design/react-ui/bodymap`** — `BodyMap`, `BodyMapDetailPanel`,
   `TrainingStatusPage`, `MuscleGlyph`, `GoalMuscleCard`, the muscle taxonomy
@@ -172,6 +172,15 @@ their heavier runtime dependencies:
 - **`@titan-design/react-ui/pages`** — page-level organisms
   (`ActiveWorkoutPage`, `ExerciseDetailPage`, `ProgramPlanningPage`) kept off
   the root as reference implementations.
+
+- **`@titan-design/react-ui/workout`** — the Workout family (`custom/Workout`:
+  `ExerciseCard`, `SetRow`, `VelocityStrip`, the goal and meso cards, …) and the
+  workout-app chrome that composes it (`WorkoutShell`, `WorkoutTopBar`,
+  `PinnedLiveStrip`, `DeviceMenu`, …), with their types. Moved off the root in 0.22.0.
+
+- **`@titan-design/react-ui/motion`** — the motion kit (`MotionProvider`, `Beat`,
+  `useLocalTime`, `interpolate`, `spring`, `stagger`, `sequence`, the easing
+  curves, `noise2D`, `random`, `MOTION`). Moved off the root in 0.22.0.
 
 ## Component API
 
