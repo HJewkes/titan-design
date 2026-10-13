@@ -465,5 +465,10 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // TD-840: JetBrains Mono's contextual alternates draw "!=" as ≠ and "=>" as ⇒.
+    // Titan's mono text is code, paths and counts, so it shows the characters typed.
+    // `none` turns off calt as well as liga. Web only: NativeWind drops the property.
+    ({ addUtilities }) => addUtilities({ '.font-mono': { 'font-variant-ligatures': 'none' } }),
+  ],
 }

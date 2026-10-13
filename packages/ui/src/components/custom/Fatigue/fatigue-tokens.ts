@@ -4,6 +4,7 @@
  * is token-sourced (semantic tokens / primitive ramps) — no literal surface hex — so
  * the family inherits the surface-ramp refresh when it lands.
  */
+import type { TextStyle } from 'react-native'
 import type { getSemanticColors } from '../../../theme/tokens/semantic'
 import { primitiveRamps, greyRamp } from '../../../theme/tokens/primitives'
 import { SILVER, RED_LIGHT, RED_MID, RED_DEEP, DRIFT_GREY } from '../../ui/charts/kit/silverRed'
@@ -14,7 +15,13 @@ type ColorToken = keyof ReturnType<typeof getSemanticColors>
 export const FONT_HEAD = '"Space Grotesk", sans-serif'
 export const FONT_UI = '"Nunito Sans", sans-serif'
 
-export const FONT_MONO = '"JetBrains Mono", monospace'
+const FONT_MONO = '"JetBrains Mono", monospace'
+
+/** Mono text with ligatures off (TD-840): "!=" stays two characters, as `font-mono` does. */
+export const MONO_TEXT = {
+  fontFamily: FONT_MONO,
+  fontVariant: ['no-common-ligatures', 'no-contextual'],
+} satisfies TextStyle
 
 /**
  * Per-dimension tone → semantic status TOKEN (the one language the dots + hero share).

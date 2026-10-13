@@ -121,3 +121,56 @@ test('every sample is painted by its bundled face, with no system-font fallback'
   const expected = Object.fromEntries(Object.entries(SAMPLES).map(([id, family]) => [id, [family]]))
   expect(painted, 'each sample paints only with its packaged face').toEqual(expected)
 })
+
+/** Pairs JetBrains Mono's contextual alternates draw as one glyph (≠, ⇒). */
+const LIGATURE_PAIRS = ['!=', '=>']
+
+type PairRender = 'font-mono' | 'ligatures-on' | 'one-cell-per-character'
+
+/**
+ * Screenshots `pair` in `font-mono` at a fixed spot. JetBrains Mono's ligatures keep
+ * the two-cell advance, so a width check cannot see them; pixels can. The reference
+ * puts each character in its own inline-block, which no shaper joins into one glyph.
+ */
+async function renderPair(page: Page, pair: string, render: PairRender) {
+  await page.evaluate(
+    ({ pair, render }) => {
+      const stage = document.getElementById('ligature-stage') ?? document.createElement('div')
+      stage.id = 'ligature-stage'
+      stage.className = 'font-mono'
+      stage.style.cssText =
+        'position:fixed;top:0;left:0;width:64px;height:40px;font-size:20px;line-height:40px;' +
+        'background:#fff;color:#000;z-index:1'
+      if (render === 'ligatures-on') stage.style.fontVariantLigatures = 'normal'
+      stage.replaceChildren(
+        ...(render === 'one-cell-per-character' ? [...pair] : [pair]).map((text) => {
+          const cell = document.createElement('span')
+          if (render === 'one-cell-per-character') cell.style.display = 'inline-block'
+          cell.textContent = text
+          return cell
+        })
+      )
+      document.body.append(stage)
+    },
+    { pair, render }
+  )
+  return page.locator('#ligature-stage').screenshot()
+}
+
+/**
+ * TD-840 (owner decision: JetBrains with ligatures off). Mono text is code, paths and
+ * counts, so "!=" must read as the two characters typed. Catches `font-mono` losing
+ * `font-variant-ligatures: none`, or a value that leaves calt on (`no-common-ligatures`).
+ */
+test('font-mono draws "!=" and "=>" as two characters, not a ligature glyph', async ({ page }) => {
+  await openOffline(page)
+
+  for (const pair of LIGATURE_PAIRS) {
+    const reference = await renderPair(page, pair, 'one-cell-per-character')
+    const ligated = await renderPair(page, pair, 'ligatures-on')
+    const mono = await renderPair(page, pair, 'font-mono')
+
+    expect(ligated.equals(reference), `the bundled face ligates "${pair}" when allowed`).toBe(false)
+    expect(mono.equals(reference), `font-mono draws "${pair}" one glyph per character`).toBe(true)
+  }
+})

@@ -255,6 +255,7 @@ const HTML_CSS = `
   /* Typography mono face (TD-60, TD-840): the digits no longer carry the old MetricCell 1px tracking. */
   .html-scope .tempo-value {
     font-family: var(--font-family-mono);
+    font-variant-ligatures: none;
     font-weight: 600;
     letter-spacing: 0;
   }
