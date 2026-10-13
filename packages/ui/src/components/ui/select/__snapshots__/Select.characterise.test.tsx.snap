@@ -2150,7 +2150,7 @@ exports[`Select characterisation > on a dark surface > renders the MultiSelectWi
                         y="0"
                       >
                         <path
-                          d="M3.95 12.14 L9.3 17.6 Q12.6 11.4 21.18 4.08"
+                          d="M3.95 12.14 L8.6 16.89 Q9.3 17.6 9.79 16.73 Q13.2 10.89 21.18 4.08"
                           fill="none"
                           pathLength="1"
                           stroke="white"
@@ -2220,7 +2220,7 @@ exports[`Select characterisation > on a dark surface > renders the MultiSelectWi
                         y="0"
                       >
                         <path
-                          d="M3.95 12.14 L9.3 17.6 Q12.6 11.4 21.18 4.08"
+                          d="M3.95 12.14 L8.6 16.89 Q9.3 17.6 9.79 16.73 Q13.2 10.89 21.18 4.08"
                           fill="none"
                           pathLength="1"
                           stroke="white"
@@ -5213,7 +5213,7 @@ exports[`Select characterisation > on a light surface > renders the MultiSelectW
                         y="0"
                       >
                         <path
-                          d="M3.95 12.14 L9.3 17.6 Q12.6 11.4 21.18 4.08"
+                          d="M3.95 12.14 L8.6 16.89 Q9.3 17.6 9.79 16.73 Q13.2 10.89 21.18 4.08"
                           fill="none"
                           pathLength="1"
                           stroke="white"
@@ -5283,7 +5283,7 @@ exports[`Select characterisation > on a light surface > renders the MultiSelectW
                         y="0"
                       >
                         <path
-                          d="M3.95 12.14 L9.3 17.6 Q12.6 11.4 21.18 4.08"
+                          d="M3.95 12.14 L8.6 16.89 Q9.3 17.6 9.79 16.73 Q13.2 10.89 21.18 4.08"
                           fill="none"
                           pathLength="1"
                           stroke="white"

@@ -100,7 +100,7 @@ describe('icon primitives', () => {
     const d = spine.getAttribute('d')!
     expect(d.match(/[Mm]/g)).toHaveLength(1)
     expect(d).not.toMatch(/[Zz]/)
-    expect(d.startsWith('M3.95 12.14 L9.3 17.6')).toBe(true)
+    expect(d.startsWith('M3.95 12.14 L8.6 16.89 Q9.3 17.6')).toBe(true)
   })
 
   it('every check mark masks with its own id', () => {

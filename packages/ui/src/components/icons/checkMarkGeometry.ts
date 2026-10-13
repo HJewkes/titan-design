@@ -29,8 +29,13 @@ const TAIL_TAPER_EXPONENT = 1.4
  * The draw-on spine: the skeleton, short leg first, from half a unit before the start to half a
  * unit past the tip. Every outline point lies between those ends, so the spine's butt caps never
  * clip the mark and a fully drawn mask equals the static mark.
+ *
+ * The apex is rounded by a quadratic from a unit before it on the leg to a unit along the tail. At a
+ * sharp corner the dash's butt edge swings from square-to-the-leg to square-to-the-tail in one
+ * frame and shows the whole inner corner at once; the fillet sweeps that corner on over a couple of
+ * units instead.
  */
-export const CHECK_MARK_SPINE = 'M3.95 12.14 L9.3 17.6 Q12.6 11.4 21.18 4.08'
+export const CHECK_MARK_SPINE = 'M3.95 12.14 L8.6 16.89 Q9.3 17.6 9.79 16.73 Q13.2 10.89 21.18 4.08'
 
 /** The draw-on mask is this many stroke weights wide, enough to cover the swell at the apex. */
 export const CHECK_MARK_MASK_WIDTH = 2.6

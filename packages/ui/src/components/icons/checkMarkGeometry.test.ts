@@ -44,24 +44,29 @@ function pointsOf(path: string): CheckMarkPoint[] {
   })
 }
 
-/** The spine's line and quadratic, sampled finely enough to stand in for the curve. */
+/** The spine, flattened and then split into steps of at most 0.02 units to stand in for the curve. */
 function spineSamples(): CheckMarkPoint[] {
-  const n = (CHECK_MARK_SPINE.match(/\d+(?:\.\d+)?/g) ?? []).map(Number)
-  const [start, apex, bend, end]: CheckMarkPoint[] = [0, 2, 4, 6].map((i) => [n[i], n[i + 1]])
-  const samples: CheckMarkPoint[] = []
-  for (let i = 0; i <= 200; i++) {
-    const t = i / 200
-    samples.push([start[0] + (apex[0] - start[0]) * t, start[1] + (apex[1] - start[1]) * t])
-  }
-  for (let i = 1; i <= 400; i++) {
-    const t = i / 400
-    const u = 1 - t
-    samples.push([
-      u * u * apex[0] + 2 * u * t * bend[0] + t * t * end[0],
-      u * u * apex[1] + 2 * u * t * bend[1] + t * t * end[1],
-    ])
-  }
+  const [vertices] = flattenPath(CHECK_MARK_SPINE)
+  const samples: CheckMarkPoint[] = [vertices[0]]
+  vertices.slice(1).forEach((b, k) => {
+    const a = vertices[k]
+    const steps = Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) / 0.02)
+    for (let i = 1; i <= steps; i++) {
+      samples.push([a[0] + ((b[0] - a[0]) * i) / steps, a[1] + ((b[1] - a[1]) * i) / steps])
+    }
+  })
   return samples
+}
+
+/** The largest turn, in degrees, between consecutive steps of a polyline. */
+function sharpestTurn(line: readonly CheckMarkPoint[]): number {
+  const heading = (a: CheckMarkPoint, b: CheckMarkPoint) => Math.atan2(b[1] - a[1], b[0] - a[0])
+  let sharpest = 0
+  for (let k = 2; k < line.length; k++) {
+    const turn = Math.abs(heading(line[k - 1], line[k]) - heading(line[k - 2], line[k - 1]))
+    sharpest = Math.max(sharpest, Math.min(turn, 2 * Math.PI - turn))
+  }
+  return (sharpest * 180) / Math.PI
 }
 
 /** Same pixels at 2048 px, give or take the rounding of the one point that replaces the loop. */
@@ -112,7 +117,7 @@ describe('checkMarkOutline', () => {
     (weight) => {
       const spine = spineSamples()
       const reach = (weight * CHECK_MARK_MASK_WIDTH) / 2
-      for (const q of checkMarkOutline(weight)) {
+      for (const q of [...checkMarkOutline(weight), ...flattenPath(checkMarkPath(weight))[0]]) {
         const distances = spine.map((s) => Math.hypot(s[0] - q[0], s[1] - q[1]))
         const nearest = distances.indexOf(Math.min(...distances))
         expect(distances[nearest]).toBeLessThan(reach)
@@ -147,5 +152,12 @@ describe('checkMarkPath', () => {
 
   it.each([1, 2, 3, 4])('at weight %i crosses itself nowhere', (weight) => {
     expect(selfCrossings(flattenPath(checkMarkPath(weight))[0])).toEqual([])
+  })
+})
+
+describe('CHECK_MARK_SPINE', () => {
+  it('turns the apex corner gradually, so the draw-on edge never swings round in one frame', () => {
+    const [spine] = flattenPath(CHECK_MARK_SPINE)
+    expect(sharpestTurn(spine)).toBeLessThan(15)
   })
 })
