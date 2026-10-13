@@ -13,7 +13,7 @@ import { View, Text } from 'react-native'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { formatRpe } from '../../../utils/workout-format'
 import { useSurfaceMode } from '../../ui/surface'
-import { FONT_HEAD, FONT_MONO, TONE_TOKEN, STATE_LABEL } from './fatigue-tokens'
+import { FONT_HEAD, MONO_TEXT, TONE_TOKEN, STATE_LABEL } from './fatigue-tokens'
 import type { FatigueVerdict } from './fatigue-model'
 
 export interface VerdictHeroProps {
@@ -33,7 +33,7 @@ export function VerdictHero({ rpe, verdict }: VerdictHeroProps) {
         style={{
           fontSize: 9,
           letterSpacing: 1.5,
-          fontFamily: FONT_MONO,
+          ...MONO_TEXT,
           color: t['text-tertiary'],
         }}
       >

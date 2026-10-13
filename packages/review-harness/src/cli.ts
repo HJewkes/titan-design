@@ -18,7 +18,7 @@ const code = await runCli(process.argv.slice(2), {
   stderr: (text) => process.stderr.write(`${text}\n`),
   openBrowser: (url) => spawn('open', [url], { stdio: 'ignore', detached: true }).unref(),
   capture: (round, outDir) =>
-    captureRound(round.manifest, round.storybookUrl, outDir, round.images),
+    captureRound(round.manifest, round.storybookUrl, outDir, round.images, round.clips),
   measure: (round) => measureRound(round.manifest, round.storybookUrl),
   renderFrames: (round, roundDir) =>
     renderFrames(round.manifest, round.storybookUrl, {

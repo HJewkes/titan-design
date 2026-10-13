@@ -21,6 +21,41 @@ describe('seekClock', () => {
     expect(seekClock(4).now()).toBe(4)
   })
 
+  it.each([NaN, Infinity, -Infinity])('refuses seek(%s) and keeps the previous time', (t) => {
+    const clock = seekClock(2)
+    const cb = vi.fn()
+    clock.subscribe(cb)
+    expect(() => clock.seek(t)).toThrow(RangeError)
+    expect(clock.now()).toBe(2)
+    expect(cb).not.toHaveBeenCalled()
+  })
+
+  it('warns when subscribers re-enter notify 10 deep and throws at 100', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const clock = seekClock()
+    let seeks = 0
+    clock.subscribe(() => {
+      if (seeks++ < 10) clock.seek(seeks)
+    })
+    clock.seek(0)
+    expect(warn).toHaveBeenCalledTimes(1)
+    clock.subscribe(() => clock.seek(clock.now() + 1))
+    expect(() => clock.seek(0)).toThrow('re-entered notify 100 times')
+    warn.mockRestore()
+  })
+
+  it('accepts re-entrant seeks below the warning depth silently', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const clock = seekClock()
+    clock.subscribe(() => {
+      if (clock.now() < 9) clock.seek(clock.now() + 1)
+    })
+    clock.seek(0)
+    expect(clock.now()).toBe(9)
+    expect(warn).not.toHaveBeenCalled()
+    warn.mockRestore()
+  })
+
   it('stops notifying after unsubscribe', () => {
     const clock = seekClock()
     const cb = vi.fn()
