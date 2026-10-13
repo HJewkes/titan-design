@@ -84,7 +84,7 @@ export function placeLabels(
 }
 
 /** Space kept between a ring label and a node mark or node label. */
-export const RING_LABEL_CLEARANCE = 4
+export const RING_LABEL_CLEARANCE = 8
 /** A ring label's box is centred this far inside its ring: a 16 px line box ending 8 px short of the line. */
 const RING_LABEL_INSET = 16
 /** Each try turns the label this far round the ring, alternating sides of six o'clock. */

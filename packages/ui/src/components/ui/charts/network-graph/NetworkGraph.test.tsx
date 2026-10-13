@@ -720,7 +720,7 @@ describe('NetworkGraph free-form layouts', () => {
   })
 
   it.each([1, 2, 3])(
-    'ego on Grouped (40) with %i hops keeps every ring label 4 px clear of each node mark and node label',
+    'ego on Grouped (40) with %i hops keeps every ring label RING_LABEL_CLEARANCE clear of each node mark and node label',
     (hops) => {
       const model = buildGraphModel(grouped.nodes, grouped.edges, ego(hops), {
         width: 720,
