@@ -4395,6 +4395,15 @@ export interface IntensityBarProps extends ViewProps {
 }
 
 // @public
+export function interpolate(t: number, input: readonly [number, number], input2: readonly [number, number], input3?: InterpolateOptions): number;
+
+// @public
+export interface InterpolateOptions {
+    clamp?: boolean;
+    ease?: Easing;
+}
+
+// @public
 export function isCssPropertyManifest(candidate: unknown): candidate is CssPropertyManifest;
 
 // @public
@@ -4434,6 +4443,15 @@ export interface KbdProps {
 
 // @public
 export type KbdSize = 'sm' | 'md';
+
+// @public
+type Keyframe_2 = readonly [number, number];
+export { Keyframe_2 as Keyframe }
+
+// @public
+export function keyframes(t: number, stops: readonly Keyframe_2[], input?: {
+    ease?: Easing;
+}): number;
 
 // @public
 export function Label(props: LabelProps): react_jsx_runtime.JSX.Element;
@@ -7349,6 +7367,29 @@ export const semanticTypography: {
 };
 
 // @public
+export function sequence<T extends {
+    durationS: number;
+}>(items: readonly T[], input?: SequenceOptions): SequenceResult<T>;
+
+// @public
+export type Sequenced<T> = T & {
+    startS: number;
+    endS: number;
+};
+
+// @public
+export interface SequenceOptions {
+    overlapS?: number;
+    startS?: number;
+}
+
+// @public
+export interface SequenceResult<T> {
+    items: Sequenced<T>[];
+    totalS: number;
+}
+
+// @public
 export const sequentialEffort: readonly ["#2ED573", "#FFD352", "#F9B415", "#FF7900", "#D14343", "#A4221C"];
 
 // @public
@@ -8070,6 +8111,19 @@ export function splitPath(path: string): {
     base: string;
 };
 
+// @public
+export function spring(t: number, input?: SpringOptions): number;
+
+// @public
+export interface SpringOptions {
+    damping?: number;
+    from?: number;
+    mass?: number;
+    stiffness?: number;
+    to?: number;
+    velocity?: number;
+}
+
 // @public (undocumented)
 export function Stack(input: StackProps): react_jsx_runtime.JSX.Element;
 
@@ -8087,6 +8141,15 @@ export interface StackProps extends ViewProps {
     justify?: 'start' | 'center' | 'end' | 'between' | 'around';
     // (undocumented)
     wrap?: boolean;
+}
+
+// @public
+export function stagger(index: number, input: StaggerOptions): number;
+
+// @public
+export interface StaggerOptions {
+    each: number;
+    from?: number;
 }
 
 // @public

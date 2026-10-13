@@ -10,6 +10,16 @@ export {
 } from './clocks'
 export { cubicBezier, linear, type Easing } from './easing'
 export { MOTION } from './tokens'
+export { interpolate, keyframes, type InterpolateOptions, type Keyframe } from './interpolate'
+export { spring, type SpringOptions } from './spring'
+export {
+  sequence,
+  stagger,
+  type Sequenced,
+  type SequenceOptions,
+  type SequenceResult,
+  type StaggerOptions,
+} from './timeline'
 export { MotionProvider, type MotionProviderProps } from './MotionProvider'
 export {
   localTime,
