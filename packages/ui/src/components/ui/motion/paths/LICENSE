@@ -53,8 +53,9 @@ svg-path-properties (https://github.com/rveciana/svg-path-properties), by Roger 
 
 @remotion/paths marks its parser and segment helpers "Copied from rveciana/svg-path-properties".
 parse.ts, segment.ts and model.ts follow those helpers' approach and carry no copied lines (the
-parser is rewritten and the quadrature nodes are computed, not tabled). The upstream licence
-text is not reproduced here yet; see the PR for the open check.
+parser is rewritten and the quadrature nodes are computed, not tabled). svg-path-properties is
+licensed ISC (checked against its npm registry metadata); since these files port its approach
+and copy no lines, its licence text is not required here.
 
 --------------------------------------------------------------------------------
 fontello/svgpath (https://github.com/fontello/svgpath), a2c.js, by Vitaly Puzrin
