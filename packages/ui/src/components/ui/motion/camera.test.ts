@@ -64,6 +64,7 @@ describe('camera', () => {
       { atS: 10, box: world },
     ]
 
+    expect(camera(1, stations, { viewport })?.box).toEqual(child)
     expect(camera(5, stations, { viewport })?.box).toEqual(child)
     expect(camera(8.5, stations, { viewport })?.box).toEqual(child)
     expect(camera(9.25, stations, { viewport, ease: linear })?.box.width).toBeCloseTo(400)
