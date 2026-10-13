@@ -65,7 +65,7 @@ describe('MOTION tokens', () => {
   })
 })
 
-const springPresets = Object.keys(motion.spring) as (keyof typeof motion.spring)[]
+const springPresets = Object.keys(MOTION.spring) as (keyof typeof MOTION.spring)[]
 
 /** The largest value the spring reaches, sampled every millisecond until it has settled. */
 function springPeak(options: SpringOptions): number {

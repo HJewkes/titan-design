@@ -4,8 +4,17 @@ import type { SpringOptions } from './spring'
 
 type EaseName = keyof typeof motion.ease
 type DurationName = keyof typeof motion.duration
-type SpringPresetName = keyof typeof motion.spring
 type SpringPreset = Required<Pick<SpringOptions, 'stiffness' | 'damping' | 'mass'>>
+
+/** Every preset but `bouncy`, the payoff spring, is damped past critical, so it cannot overshoot. */
+const springPresets = {
+  snappy: { stiffness: 300, damping: 42, mass: 1 },
+  smooth: { stiffness: 100, damping: 24, mass: 1 },
+  heavy: { stiffness: 80, damping: 32, mass: 2 },
+  bouncy: { stiffness: 180, damping: 12, mass: 1 },
+} as const satisfies Record<string, SpringPreset>
+
+type SpringPresetName = keyof typeof springPresets
 
 const ease = Object.fromEntries(
   Object.entries(motion.ease).map(([name, [x1, y1, x2, y2]]) => [name, cubicBezier(x1, y1, x2, y2)])
@@ -39,12 +48,12 @@ function springPreset(
   name: SpringPresetName,
   { allowOvershoot = false }: { allowOvershoot?: boolean } = {}
 ): SpringPreset {
-  const preset = motion.spring[name]
+  const preset = springPresets[name]
   return allowOvershoot ? { ...preset } : withoutOvershoot(preset)
 }
 
 const spring = Object.fromEntries(
-  (Object.keys(motion.spring) as SpringPresetName[]).map((name) => [name, springPreset(name)])
+  (Object.keys(springPresets) as SpringPresetName[]).map((name) => [name, springPreset(name)])
 ) as Record<SpringPresetName, SpringPreset>
 
 /** Seconds between neighbours in a cascade of `count` items, so the whole cascade fits `video.staggerMax`. */

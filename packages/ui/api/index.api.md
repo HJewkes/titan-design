@@ -5467,28 +5467,6 @@ export const motion: {
         readonly rise: 40;
         readonly scaleFrom: 0.97;
     };
-    readonly spring: {
-        readonly snappy: {
-            readonly stiffness: 300;
-            readonly damping: 42;
-            readonly mass: 1;
-        };
-        readonly smooth: {
-            readonly stiffness: 100;
-            readonly damping: 24;
-            readonly mass: 1;
-        };
-        readonly heavy: {
-            readonly stiffness: 80;
-            readonly damping: 32;
-            readonly mass: 2;
-        };
-        readonly bouncy: {
-            readonly stiffness: 180;
-            readonly damping: 12;
-            readonly mass: 1;
-        };
-    };
     readonly dim: {
         readonly context: {
             readonly opacity: 0.35;

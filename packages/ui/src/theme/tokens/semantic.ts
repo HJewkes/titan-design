@@ -771,10 +771,11 @@ export const size = {
  * into `theme/config.ts` and `global.css`) and as `MOTION` in `ui/motion`,
  * which evaluates the same curves in JS for time-driven motion.
  *
- * `video`, `spring` and `dim` (TD-839) are JS-only: CSS UI never uses them,
- * so they have no custom property. `video` times are milliseconds, `rise` is
- * px. `spring` presets never overshoot except `bouncy`, and `MOTION` damps
- * that one critically unless the caller passes `allowOvershoot`.
+ * `video` and `dim` (TD-839) are JS-only: CSS UI never uses them, so they
+ * have no custom property. `video` times are milliseconds, `rise` is px;
+ * `exit` is `exitScale` × `enter`, and `staggerMax` caps a whole cascade.
+ * `dim.context` fades de-emphasised context and greys it. Spring presets are
+ * physics parameters, so they live beside the solver as `MOTION.spring`.
  */
 export const motion = {
   duration: { fast: 150, normal: 250, slow: 400 },
@@ -789,21 +790,15 @@ export const motion = {
     enter: 1000,
     hero: 1500,
     count: 1500,
-    exit: 850, // exitScale × enter
+    exit: 850,
     exitScale: 0.85,
     staggerEach: 60,
-    staggerMax: 500, // the whole cascade, however many items
+    staggerMax: 500,
     rise: 40,
     scaleFrom: 0.97,
   },
-  spring: {
-    snappy: { stiffness: 300, damping: 42, mass: 1 },
-    smooth: { stiffness: 100, damping: 24, mass: 1 },
-    heavy: { stiffness: 80, damping: 32, mass: 2 },
-    bouncy: { stiffness: 180, damping: 12, mass: 1 }, // the payoff spring; overshoots
-  },
   dim: {
-    context: { opacity: 0.35, saturation: 0 }, // de-emphasised context: faded and grey
+    context: { opacity: 0.35, saturation: 0 },
   },
 } as const
 
