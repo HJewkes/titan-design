@@ -1283,6 +1283,17 @@ export interface Clock {
 export type ClockKind = 'raf' | 'seek' | 'media';
 
 // @public
+export function clusteredLayout(options?: ClusteredLayoutOptions): GraphLayout;
+
+// @public
+export interface ClusteredLayoutOptions {
+    groups?: readonly GraphGroup[];
+    iterations?: number;
+    seed?: number;
+    ungroupedLabel?: string;
+}
+
+// @public
 export function cn(...inputs: ClassValue[]): string;
 
 // @public @deprecated
@@ -2082,6 +2093,19 @@ export const easeOut: (f: Easing) => Easing;
 // @public
 export type Easing = (p: number) => number;
 
+// @public
+export type EgoDirection = 'both' | 'outgoing' | 'incoming';
+
+// @public
+export function egoLayout(options: EgoLayoutOptions): GraphLayout;
+
+// @public
+export interface EgoLayoutOptions {
+    direction?: EgoDirection;
+    focusId: string | null;
+    hops?: number;
+}
+
 // @public (undocumented)
 export const ELEVATION_PLANE: Record<ElevationLevel, SurfaceLevel>;
 
@@ -2547,6 +2571,15 @@ export const FLOATING_ELEVATION_MIN: ElevationLevel;
 
 // @public
 export const FLOATING_LIFT_MIN: LiftStep;
+
+// @public
+export function forceLayout(options?: ForceLayoutOptions): GraphLayout;
+
+// @public
+export interface ForceLayoutOptions {
+    iterations?: number;
+    seed?: number;
+}
 
 // @public
 export function FormActions(input: FormActionsProps): react_jsx_runtime.JSX.Element;
@@ -4024,6 +4057,23 @@ export interface GraphEdgeKind {
     id: string;
     label: string;
     stroke?: 'solid' | 'dashed';
+}
+
+// @public
+export interface GraphGroup {
+    id: string;
+    label: string;
+}
+
+// @public
+export interface GraphGroupRegion {
+    cx: number;
+    cy: number;
+    id: string;
+    label: string;
+    nodeIds: readonly string[];
+    radius: number;
+    variant: 'region' | 'ring';
 }
 
 // @public
