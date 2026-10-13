@@ -48,24 +48,34 @@ export type SpringEaseOptions = Omit<SpringOptions, 'from' | 'to'>
 /**
  * Seconds until the spring stays within `threshold` of its rest value, as a fraction of the distance
  * from `from` to `to` (an absolute distance when they are equal). It solves an upper bound on the
- * displacement rather than the motion itself, so it is never early: underdamped springs use the
- * decay envelope in closed form; critical and overdamped ones bisect a monotone bound.
+ * displacement rather than the motion itself, so it is never early. It takes the earlier of two
+ * bounds: the modal one (the decay envelope in closed form when underdamped, a bisected sum of
+ * exponentials when overdamped) and a term-wise envelope (see `envelopeSettleS`). The modal bound is
+ * tight away from critical damping but grows without limit as damping approaches it from either
+ * side; the envelope is exact at critical damping and stays tight around it.
+ *
+ * @throws {RangeError} when `damping` is not greater than 0: an undamped spring never settles.
  */
 export function springSettleS(
   { stiffness = 100, damping = 10, mass = 1, from = 0, to = 1, velocity = 0 }: SpringOptions = {},
   threshold = 1e-3
 ): number {
+  if (!(damping > 0)) throw new RangeError('springSettleS: damping must be > 0')
   const w0 = Math.sqrt(stiffness / mass)
   const zeta = damping / (2 * Math.sqrt(stiffness * mass))
-  const bound = displacementBound(w0, zeta, from - to, velocity)
+  const x0 = from - to
   const tolerance = threshold * (Math.abs(to - from) || 1)
-  if (bound.closedForm) return Math.max(0, Math.log(bound.amplitude / tolerance) / (zeta * w0))
-  return lastTimeAbove(bound.at, tolerance, bound.peakS)
+  return Math.min(
+    modalSettleS(w0, zeta, x0, velocity, tolerance),
+    envelopeSettleS(w0, zeta, x0, velocity, tolerance)
+  )
 }
 
 /**
  * The spring as an easing curve: `p` in [0, 1] maps onto its settle time, normalised so the curve is
  * exactly 0 at 0 and exactly 1 at 1. Underdamped options overshoot past 1 in between.
+ *
+ * @throws {RangeError} when `damping` is not greater than 0, as `springSettleS` does.
  */
 export function springEase(options: SpringEaseOptions = {}): Easing {
   const springOptions = { ...options, from: 0, to: 1 }
@@ -74,26 +84,43 @@ export function springEase(options: SpringEaseOptions = {}): Easing {
   return (p) => (p <= 0 ? 0 : p >= 1 ? 1 : spring(p * settleS, springOptions) / end)
 }
 
-type DisplacementBound =
-  | { closedForm: true; amplitude: number }
-  | { closedForm: false; at: (t: number) => number; peakS: number }
-
-function displacementBound(w0: number, zeta: number, x0: number, v0: number): DisplacementBound {
+/** Settle time from the normal-mode bound; Infinity at exact critical damping, which has none. */
+function modalSettleS(w0: number, zeta: number, x0: number, v0: number, tolerance: number): number {
   if (zeta < 1) {
     const b = (v0 + zeta * w0 * x0) / (w0 * Math.sqrt(1 - zeta * zeta))
-    return { closedForm: true, amplitude: Math.hypot(x0, b) }
+    return Math.max(0, Math.log(Math.hypot(x0, b) / tolerance) / (zeta * w0))
   }
-  if (zeta === 1) {
-    const c = Math.abs(v0 + w0 * x0)
-    const peakS = c > 0 ? Math.max(0, 1 / w0 - Math.abs(x0) / c) : 0
-    return { closedForm: false, at: (t) => (Math.abs(x0) + c * t) * Math.exp(-w0 * t), peakS }
-  }
+  if (zeta === 1) return Infinity
   const root = Math.sqrt(zeta * zeta - 1)
   const r1 = -w0 * (zeta - root)
   const r2 = -w0 * (zeta + root)
   const c2 = (v0 - r1 * x0) / (r2 - r1)
   const at = (t: number) => Math.abs(x0 - c2) * Math.exp(r1 * t) + Math.abs(c2) * Math.exp(r2 * t)
-  return { closedForm: false, at, peakS: 0 }
+  return lastTimeAbove(at, tolerance, 0)
+}
+
+/**
+ * Settle time from the envelope that bounds each mode term by its absolute value, with
+ * `c = |v0 + ζ·w0·x0|`: `(|x0| + c·t)·e^{-ζ·w0·t}` up to critical damping (`|sin(wd·t)| <= wd·t`),
+ * `e^{-ζ·w0·t}·(|x0|·cosh(γt) + c·sinh(γt)/γ)` above it. Both are unimodal, and both tend to the
+ * critical form as damping approaches it.
+ */
+function envelopeSettleS(w0: number, zeta: number, x0: number, v0: number, tolerance: number): number {
+  const a = zeta * w0
+  const c = Math.abs(v0 + a * x0)
+  const x = Math.abs(x0)
+  if (zeta <= 1) {
+    const peakS = c > 0 ? Math.max(0, 1 / a - x / c) : 0
+    return lastTimeAbove((t) => (x + c * t) * Math.exp(-a * t), tolerance, peakS)
+  }
+  const g = w0 * Math.sqrt(zeta * zeta - 1)
+  // a - g, without the cancellation when damping is far above critical.
+  const slowest = w0 / (zeta + Math.sqrt(zeta * zeta - 1))
+  // e^{-at}·cosh(gt) and e^{-at}·sinh(gt)/g, written so neither overflows nor cancels.
+  const at = (t: number) =>
+    Math.exp(-slowest * t) * ((x * (1 + Math.exp(-2 * g * t))) / 2 - (c * Math.expm1(-2 * g * t)) / (2 * g))
+  const peakS = c > a * x ? Math.atanh((g * (c - a * x)) / (a * c - x * g * g)) / g : 0
+  return lastTimeAbove(at, tolerance, peakS)
 }
 
 /** The time after which `bound`, decreasing from `fromS` on, stays at or below `tolerance`. */
