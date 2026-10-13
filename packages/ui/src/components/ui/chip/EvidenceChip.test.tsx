@@ -48,14 +48,17 @@ describe('EvidenceChip', () => {
     expect(screen.getByTestId('evidence-chip-kind').style.paddingLeft).toBe(`${(16 * 40) / 14}px`)
   })
 
-  it.each(['dark', 'light'])('has no accessibility violations for any kind in %s', async (theme) => {
-    const { container } = render(
-      <div className={theme === 'light' ? 'light' : undefined}>
-        {EVIDENCE_KINDS.map((kind) => (
-          <EvidenceChip key={kind} kind={kind} text={LONG} fontPx={40} maxChars={60} />
-        ))}
-      </div>
-    )
-    expect(await axe(container)).toHaveNoViolations()
-  })
+  it.each(['dark', 'light'])(
+    'has no accessibility violations for any kind in %s',
+    async (theme) => {
+      const { container } = render(
+        <div className={theme === 'light' ? 'light' : undefined}>
+          {EVIDENCE_KINDS.map((kind) => (
+            <EvidenceChip key={kind} kind={kind} text={LONG} fontPx={40} maxChars={60} />
+          ))}
+        </div>
+      )
+      expect(await axe(container)).toHaveNoViolations()
+    }
+  )
 })

@@ -1,9 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { elideSource } from './elideSource'
-import {
-  ALL_EVIDENCE_CHIPS,
-  beatFixture,
-} from '../components/ui/chip/__fixtures__/evidence-chips'
+import { ALL_EVIDENCE_CHIPS, beatFixture } from '../components/ui/chip/__fixtures__/evidence-chips'
 
 const PREFIX_PIN = /^[A-Za-z][\w-]*@[0-9a-f]{7,40}:/
 const SUFFIX_PIN = / @[0-9a-f]{7,40}$/
@@ -13,9 +10,11 @@ const PATH_LINE = /[\w.-]+\.\w+:L?\d+(?:-L?\d+)?/
 function leadAtoms(text: string): string[] {
   const refs = text.split('; ')
   const lead = refs.find((r) => PREFIX_PIN.test(r) || SUFFIX_PIN.test(r)) ?? refs[0]
-  return [lead.match(PREFIX_PIN)?.[0], lead.match(PATH_LINE)?.[0], lead.match(SUFFIX_PIN)?.[0]].filter(
-    (atom): atom is string => Boolean(atom)
-  )
+  return [
+    lead.match(PREFIX_PIN)?.[0],
+    lead.match(PATH_LINE)?.[0],
+    lead.match(SUFFIX_PIN)?.[0],
+  ].filter((atom): atom is string => Boolean(atom))
 }
 
 const chipText = (beat: string, index = 0) => beatFixture(beat).chips[index].text

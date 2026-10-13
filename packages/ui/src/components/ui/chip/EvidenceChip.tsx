@@ -6,8 +6,10 @@ import { pillScale } from '../pill/pillScale'
 import { Typography } from '../typography'
 import { EVIDENCE_LABEL, EVIDENCE_TONE, type EvidenceKind } from './evidence'
 
+/** App sizes, one per Pill rung. */
 export type EvidenceChipSize = 'sm' | 'md' | 'lg'
 
+/** Props for {@link EvidenceChip}. */
 export interface EvidenceChipProps extends Omit<ViewProps, 'children'> {
   /** What kind of evidence backs the on-screen fact; picks the capsule's tone and label. */
   kind: EvidenceKind
@@ -19,6 +21,7 @@ export interface EvidenceChipProps extends Omit<ViewProps, 'children'> {
   fontPx?: number
   /** Character budget for `text`. Over it, the middle is elided and the pin and `path:L` stay whole. */
   maxChars?: number
+  /** Additional className on the row. */
   className?: string
 }
 
@@ -84,7 +87,11 @@ export function EvidenceChip({
     <View
       accessibilityRole="text"
       accessibilityLabel={`${EVIDENCE_LABEL[kind]}: ${text}`}
-      className={cn('flex-row items-center self-start shrink-0', !video && besideGap[size], className)}
+      className={cn(
+        'flex-row items-center self-start shrink-0',
+        !video && besideGap[size],
+        className
+      )}
       style={[video ? { gap: video.besideGap } : undefined, style]}
       {...props}
     >

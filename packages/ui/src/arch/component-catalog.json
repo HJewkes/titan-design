@@ -12839,6 +12839,69 @@
       "tier": "molecule"
     },
     {
+      "composes": [
+        "Pill",
+        "Typography"
+      ],
+      "family": "ui/chip",
+      "file": "packages/ui/src/components/ui/chip/EvidenceChip.tsx",
+      "name": "EvidenceChip",
+      "props": [
+        {
+          "default": null,
+          "description": "Additional className on the row.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Video size in px, for frames with no Tailwind rung (`40 × frameHeight / 1080`).",
+          "name": "fontPx",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "What kind of evidence backs the on-screen fact; picks the capsule's tone and label.",
+          "name": "kind",
+          "required": true,
+          "type": "\"target\" | \"verified\" | \"measured\" | \"computed\" | \"docs-claim\" | \"estimated\" | \"our-framing\" | \"reconstructed\" | \"illustrative\""
+        },
+        {
+          "default": null,
+          "description": "Character budget for `text`.",
+          "name": "maxChars",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "md",
+          "description": "App size, one Pill rung.",
+          "name": "size",
+          "required": false,
+          "type": "EvidenceChipSize"
+        },
+        {
+          "default": null,
+          "description": "The citation: refs joined by `\"; \"`, e.g. `ab@1a2b3c4:src/core/loop.ts:12-30`.",
+          "name": "text",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "purpose": "EvidenceChip — a `Pill` preset that cites the source behind an on-screen fact: a tone capsule naming the evidence kind, then the citation in mono.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/chip/EvidenceChip.tsx",
+        "status": "packages/ui/src/components/ui/chip/EvidenceChip.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-evidencechip--default"
+      ],
+      "tier": "molecule"
+    },
+    {
       "composes": [],
       "family": "ui/collapse",
       "file": "packages/ui/src/components/ui/collapse/Collapse.tsx",

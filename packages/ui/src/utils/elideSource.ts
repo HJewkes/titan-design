@@ -8,7 +8,9 @@
  */
 export type ElisionLevel = 0 | 1 | 2 | 3 | 4
 
+/** What `elideSource` returns: the shortened citation and how it got there. */
 export interface ElidedSource {
+  /** The citation as it should render, at most `maxChars` long when `fits`. */
   text: string
   /** 0 unchanged, 1 dirs, 2 prose refs, 3 lead ref + count, 4 lead ref trimmed. */
   level: ElisionLevel
@@ -37,7 +39,9 @@ function parseRef(raw: string): SourceRef {
   const pin = prefixed ? prefixed[1] : ''
   const rest = prefixed ? prefixed[2] : raw
   const suffixed = PIN_SUFFIX.exec(rest)
-  return suffixed ? { pin, body: suffixed[1], suffix: suffixed[2] } : { pin, body: rest, suffix: '' }
+  return suffixed
+    ? { pin, body: suffixed[1], suffix: suffixed[2] }
+    : { pin, body: rest, suffix: '' }
 }
 
 const refText = (ref: SourceRef) => ref.pin + ref.body + ref.suffix

@@ -13,6 +13,7 @@ export const EVIDENCE_KINDS = [
   'illustrative',
 ] as const
 
+/** One of the nine evidence kinds in {@link EVIDENCE_KINDS}. */
 export type EvidenceKind = (typeof EVIDENCE_KINDS)[number]
 
 // Grouped by trust, not one hue per kind: success = we checked it, info = stated
