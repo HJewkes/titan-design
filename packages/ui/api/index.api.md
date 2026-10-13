@@ -1166,6 +1166,9 @@ export interface CheckboxProps extends Omit<PressableProps, 'children'> {
 export type CheckboxSize = 'sm' | 'md' | 'lg';
 
 // @public
+export function CheckMark(props: IconProps): react_jsx_runtime.JSX.Element;
+
+// @public
 export function ChevronLeftIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public

@@ -2128,10 +2128,24 @@ exports[`Select characterisation > on a dark surface > renders the MultiSelectWi
                   class="css-view-175oi2r"
                 >
                   <div
-                    class="css-text-146c3p1"
-                    dir="auto"
+                    class="css-view-175oi2r"
                   >
-                    ✓
+                    <svg
+                      aria-hidden="true"
+                      fill="none"
+                      height="12"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="3"
+                      viewBox="0 0 24 24"
+                      width="12"
+                    >
+                      <path
+                        d="M4 12l5 5L20 6"
+                        pathLength="1"
+                      />
+                    </svg>
                   </div>
                 </div>
                 <div
@@ -2165,10 +2179,24 @@ exports[`Select characterisation > on a dark surface > renders the MultiSelectWi
                   class="css-view-175oi2r"
                 >
                   <div
-                    class="css-text-146c3p1"
-                    dir="auto"
+                    class="css-view-175oi2r"
                   >
-                    ✓
+                    <svg
+                      aria-hidden="true"
+                      fill="none"
+                      height="12"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="3"
+                      viewBox="0 0 24 24"
+                      width="12"
+                    >
+                      <path
+                        d="M4 12l5 5L20 6"
+                        pathLength="1"
+                      />
+                    </svg>
                   </div>
                 </div>
                 <div
@@ -5125,10 +5153,24 @@ exports[`Select characterisation > on a light surface > renders the MultiSelectW
                   class="css-view-175oi2r"
                 >
                   <div
-                    class="css-text-146c3p1"
-                    dir="auto"
+                    class="css-view-175oi2r"
                   >
-                    ✓
+                    <svg
+                      aria-hidden="true"
+                      fill="none"
+                      height="12"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="3"
+                      viewBox="0 0 24 24"
+                      width="12"
+                    >
+                      <path
+                        d="M4 12l5 5L20 6"
+                        pathLength="1"
+                      />
+                    </svg>
                   </div>
                 </div>
                 <div
@@ -5162,10 +5204,24 @@ exports[`Select characterisation > on a light surface > renders the MultiSelectW
                   class="css-view-175oi2r"
                 >
                   <div
-                    class="css-text-146c3p1"
-                    dir="auto"
+                    class="css-view-175oi2r"
                   >
-                    ✓
+                    <svg
+                      aria-hidden="true"
+                      fill="none"
+                      height="12"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="3"
+                      viewBox="0 0 24 24"
+                      width="12"
+                    >
+                      <path
+                        d="M4 12l5 5L20 6"
+                        pathLength="1"
+                      />
+                    </svg>
                   </div>
                 </div>
                 <div

@@ -21,6 +21,7 @@ import {
   ChevronsDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  CheckMark,
   SearchIcon,
   DatabaseIcon,
   ChartIcon,
@@ -49,6 +50,7 @@ describe('icon primitives', () => {
       ChevronsDownIcon,
       ChevronLeftIcon,
       ChevronRightIcon,
+      CheckMark,
       SearchIcon,
       DatabaseIcon,
       ChartIcon,
@@ -80,6 +82,19 @@ describe('icon primitives', () => {
       </>
     )
     expect(await axe(container)).toHaveNoViolations()
+  })
+
+  it('the check mark is one open stroke that a dash of 1 draws on, short leg first', () => {
+    const { container } = render(<CheckMark size={12} />)
+    const paths = container.querySelectorAll('svg > *')
+    expect(paths).toHaveLength(1)
+    const [mark] = paths
+    expect(mark.tagName).toBe('path')
+    expect(mark.getAttribute('pathLength')).toBe('1')
+    const d = mark.getAttribute('d')!
+    expect(d.match(/[Mm]/g)).toHaveLength(1)
+    expect(d).not.toMatch(/[Zz]/)
+    expect(d.startsWith('M4 12')).toBe(true)
   })
 
   it('a titled icon is exposed as an accessible image', () => {
