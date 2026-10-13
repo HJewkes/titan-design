@@ -17,6 +17,9 @@ export function Beat(input: BeatProps): react_jsx_runtime.JSX.Element | null;
 export const BEAT_MOUNT_MARGIN_S = 0.5;
 
 // @public
+export type BeatCues = Readonly<Record<string, number>>;
+
+// @public
 export function BeatFrame(input: BeatFrameProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -29,6 +32,7 @@ export interface BeatFrameProps {
 // @public
 export interface BeatProps {
     children?: ReactNode;
+    cues?: BeatCues;
     durationS: number;
     startS: number;
 }
@@ -253,6 +257,9 @@ export function useBeatEnvelope(options?: EnvelopeOptions): Envelope;
 export function useBeatTime(): LocalTime & {
     durationS: number;
 };
+
+// @public
+export function useCue(name: string): number;
 
 // @public
 export function useLocalTime(startS: number, durationS: number): LocalTime;
