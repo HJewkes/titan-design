@@ -79,7 +79,7 @@ export function sequence<T extends { durationS: number }>(
 }
 
 /** A window of time, in seconds. */
-export interface Window {
+export interface TimeWindow {
   /** Seconds at which the window opens. */
   startS: number
   /** Seconds at which the window closes. */
@@ -101,7 +101,7 @@ export interface Lagged {
   /** Seconds each item lasts. */
   itemS: number
   /** Each item's window, in order. */
-  items: Window[]
+  items: TimeWindow[]
   /** Item `index`'s progress in [0, 1] at group time `t`, after the group ease. */
   progress(t: number, index: number): number
 }
@@ -110,7 +110,7 @@ function assertSeconds(name: string, s: number): void {
   if (!(s >= 0 && s < Infinity)) throw new RangeError(`${name} must be finite and >= 0, got ${s}`)
 }
 
-function windowProgress(t: number, { startS, endS }: Window): number {
+function windowProgress(t: number, { startS, endS }: TimeWindow): number {
   if (endS <= startS) return t < startS ? 0 : 1
   return Math.min(1, Math.max(0, (t - startS) / (endS - startS)))
 }
@@ -144,10 +144,10 @@ export interface Span {
   /** Seconds from the span's start to its last end. */
   durationS: number
   /** Each leaf's window, depth first, measured from the span's start. */
-  windows: Window[]
+  windows: TimeWindow[]
 }
 
-function shift(windows: readonly Window[], byS: number): Window[] {
+function shift(windows: readonly TimeWindow[], byS: number): TimeWindow[] {
   return windows.map(({ startS, endS }) => ({ startS: startS + byS, endS: endS + byS }))
 }
 

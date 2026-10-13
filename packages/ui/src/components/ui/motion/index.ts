@@ -61,7 +61,7 @@ export {
   type SequenceResult,
   type Span,
   type StaggerOptions,
-  type Window,
+  type TimeWindow,
 } from './timeline'
 export { random, randomRange } from './random'
 export { noise2D } from './noise'
