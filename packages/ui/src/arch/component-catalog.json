@@ -14186,6 +14186,80 @@
       "tier": "molecule"
     },
     {
+      "composes": [],
+      "family": "ui/motion",
+      "file": "packages/ui/src/components/ui/motion/Beat.tsx",
+      "name": "Beat",
+      "props": [
+        {
+          "default": null,
+          "description": "The beat's content, timed from the beat's start.",
+          "name": "children",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Length of the window in seconds.",
+          "name": "durationS",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Seconds from the enclosing origin at which the beat's window starts.",
+          "name": "startS",
+          "required": true,
+          "type": "number"
+        }
+      ],
+      "purpose": "A window of the timeline: moves the time origin to `startS` and mounts only near its window.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/motion/Beat.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "atom"
+    },
+    {
+      "composes": [],
+      "family": "ui/motion",
+      "file": "packages/ui/src/components/ui/motion/MotionProvider.tsx",
+      "name": "MotionProvider",
+      "props": [
+        {
+          "default": null,
+          "description": "The timeline.",
+          "name": "children",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "The time source for every motion hook below.",
+          "name": "clock",
+          "required": true,
+          "type": "Clock"
+        },
+        {
+          "default": "0",
+          "description": "Total timeline length in seconds.",
+          "name": "durationS",
+          "required": false,
+          "type": "number"
+        }
+      ],
+      "purpose": "Puts every motion hook below it on `clock`, so a seek clock can drive a render frame by frame.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/motion/MotionProvider.tsx",
+        "status": null
+      },
+      "status": "review",
+      "storyIds": [],
+      "tier": "atom"
+    },
+    {
       "composes": [
         "Typography"
       ],

@@ -17,6 +17,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | Badge | stable | ui/badge | Badge — a `Pill` preset for status indicators and labels. | Indicator, Pill | components-atoms-badge--all-colors |
 | BarList | candidate | ui/charts | BarList: a ranked horizontal bar list. | BarListCells, BarListParts, BarListTip, EmptyState | components-molecules-barlist--default |
 | BaseBadge | candidate | custom/Workout | — | — | custom-workout-basebadge--all-variants |
+| Beat | review | ui/motion | A window of the timeline: moves the time origin to `startS` and mounts only near its window. | — | — |
 | BodyMap | candidate | custom/Workout | Interactive SVG body map with tappable muscle groups and a volume heatmap. | — | custom-workout-dataviz-bodymap--back |
 | BodyMapDetailPanel | candidate | custom/Workout | Sheet of detailed weekly-volume info for a tapped muscle group: a MEV\|current\|MRV gradient progress bar, the big weekly set count against MRV, an optional volume sparkline, the per-exercise strength / this-week plan / PR sections, and the contributing / upcoming exercise lists. | Badge, BodyMapDetailSections, Sparkline | custom-workout-dataviz-bodymapdetailpanel--default |
 | BodyweightGoalCard | candidate | custom/Workout | A bodyweight goal on `#/goals`: the latest weight, its rate this week beside it ("Rate: -0.6%/wk", or "Rate: N/A" before there is one; the bands sit in the tip), then the weigh-in against this week's band in the goal chart's own band colour. | GoalTrajectoryBand, StatCard, Typography, ZoneTrack, wholeBodyCardParts | custom-workout-goals-bodyweightgoalcard--default |
@@ -105,6 +106,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | Metric | candidate | ui/metric | — | — | components-molecules-metric--default |
 | MetricTiles | candidate | custom/Workout | MetricTiles — a row of equal-width stat tiles. | Stack, Tile | custom-workout-metrictiles--four-tiles |
 | Modal | candidate | ui/modal | Modal component for dialogs and overlays. | Surface | components-organisms-modal--backdrop-blur |
+| MotionProvider | review | ui/motion | Puts every motion hook below it on `clock`, so a seek clock can drive a render frame by frame. | — | — |
 | MuscleGlyph | review | custom/Workout | — | — | — |
 | MuscleGroupChip | candidate | custom/Workout | MuscleGroupChip — a `Pill` preset that labels a muscle group with a volume-status dot. | Pill | custom-workout-musclegroupchip--all-statuses |
 | MuscleStrip | candidate | custom/Workout | MuscleStrip — all 15 `MuscleGroupChip`s in one wrapping row, each labeled with its weekly sets against target. | MuscleGroupChip | custom-workout-musclestrip--default |

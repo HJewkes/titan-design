@@ -9,11 +9,16 @@
 
 import { motion } from './semantic'
 
-type ControlPoints = readonly [number, number, number, number]
+/** The four control points of a CSS `cubic-bezier()`. */
+export type ControlPoints = readonly [number, number, number, number]
+
+/** The CSS string for `P`, kept literal so the theme's types still name each curve exactly. */
+export type CubicBezierCss<P extends ControlPoints> =
+  `cubic-bezier(${P[0]}, ${P[1]}, ${P[2]}, ${P[3]})`
 
 /** `[0.22, 1, 0.36, 1]` → `cubic-bezier(0.22, 1, 0.36, 1)` */
-export function cubicBezierCss(points: ControlPoints): string {
-  return `cubic-bezier(${points.join(', ')})`
+export function cubicBezierCss<const P extends ControlPoints>(points: P): CubicBezierCss<P> {
+  return `cubic-bezier(${points.join(', ')})` as CubicBezierCss<P>
 }
 
 /** `{ '--ease-out': 'cubic-bezier(…)', …, '--duration-fast': '150ms', … }` */

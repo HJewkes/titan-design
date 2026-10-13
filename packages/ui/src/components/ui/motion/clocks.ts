@@ -1,16 +1,24 @@
 // Time sources. Clocks are the only part of the motion core that touches real time;
 // `now()` returns a value cached at the last tick so React sees one time per frame.
 
+/** Where a clock's time comes from: animation frames, explicit seeks, or a media element. */
 export type ClockKind = 'raf' | 'seek' | 'media'
 
+/** A source of timeline seconds that motion hooks read through `useSyncExternalStore`. */
 export interface Clock {
+  /** Where the time comes from. */
   readonly kind: ClockKind
+  /** Seconds, cached at the last tick so one frame reads one time. */
   now(): number
+  /** Calls `cb` whenever `now()` changes; returns the unsubscribe. */
   subscribe(cb: () => void): () => void
 }
 
+/** A clock that moves only when told to: the driver of frame-by-frame capture. */
 export interface SeekClock extends Clock {
+  /** Always `'seek'`. */
   readonly kind: 'seek'
+  /** Sets the time to `t` seconds and notifies every subscriber. */
   seek(t: number): void
 }
 
@@ -33,6 +41,7 @@ function subscribers(onFirst: () => void = () => {}, onLast: () => void = () => 
   }
 }
 
+/** A clock at `initialS` seconds that reports the last `seek(t)`. */
 export function seekClock(initialS = 0): SeekClock {
   let t = initialS
   const subs = subscribers()
@@ -69,7 +78,9 @@ function listenToFrames(listener: FrameListener): () => void {
   }
 }
 
+/** Options for `rafClock`. */
 export interface RafClockOptions {
+  /** Seconds the clock reports at its first frame. Default 0. */
   startS?: number
   /** The clock stops here: it reports `endS` and requests no further frames. */
   endS?: number

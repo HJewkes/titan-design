@@ -68,7 +68,11 @@ describe('without a provider', () => {
     const { result } = renderHook(() => useLocalTime(0.2, 1))
     act(() => raf.frame(0))
     act(() => raf.frame(800))
-    expect(result.current).toEqual({ t: expect.closeTo(0.6, 10), progress: expect.closeTo(0.6, 10), phase: 'during' })
+    expect(result.current).toEqual({
+      t: expect.closeTo(0.6, 10),
+      progress: expect.closeTo(0.6, 10),
+      phase: 'during',
+    })
     expect(raf.pending()).toBe(1)
     act(() => raf.frame(1300))
     expect(result.current).toEqual({ t: 1, progress: 1, phase: 'after' })
@@ -154,7 +158,13 @@ describe('under a seek-clock provider', () => {
 })
 
 describe('useWaitUntil', () => {
-  function Waits({ promise, onWaits }: { promise: Promise<unknown>; onWaits: (w: Set<Promise<unknown>>) => void }) {
+  function Waits({
+    promise,
+    onWaits,
+  }: {
+    promise: Promise<unknown>
+    onWaits: (w: Set<Promise<unknown>>) => void
+  }) {
     useWaitUntil(promise)
     const ctx = useContext(MotionContext)
     if (ctx) onWaits(ctx.waits)

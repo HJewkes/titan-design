@@ -1,4 +1,11 @@
-import { createContext, useContext, useLayoutEffect, useMemo, useState, useSyncExternalStore } from 'react'
+import {
+  createContext,
+  useContext,
+  useLayoutEffect,
+  useMemo,
+  useState,
+  useSyncExternalStore,
+} from 'react'
 import { usePrefersReducedMotion } from '../../../hooks/usePrefersReducedMotion'
 import { rafClock, REDUCED_MOTION_END_S, type Clock } from './clocks'
 import { MotionContext } from './MotionProvider'
@@ -38,12 +45,16 @@ export function useMotionTime(endS = Infinity): number {
   return useSyncExternalStore(clock.subscribe, clock.now, ctx ? clock.now : () => endSnapshot)
 }
 
+/** Where a time falls against a window: before its start, inside it, or at or past its end. */
 export type Phase = 'before' | 'during' | 'after'
 
+/** A time measured against a window. */
 export interface LocalTime {
   /** Seconds into the window, clamped to [0, durationS]. */
   t: number
+  /** `t / durationS`, in [0, 1]. */
   progress: number
+  /** Where the time falls against the window. */
   phase: Phase
 }
 

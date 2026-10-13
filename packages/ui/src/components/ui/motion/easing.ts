@@ -1,7 +1,9 @@
 // Easing curves as pure functions of progress; nothing here reads a clock.
 
+/** Maps linear progress in [0, 1] to eased progress. */
 export type Easing = (p: number) => number
 
+/** The identity easing. */
 export const linear: Easing = (p) => p
 
 const coord = (s: number, a: number, b: number) =>

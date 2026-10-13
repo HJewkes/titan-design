@@ -11,10 +11,13 @@ export interface MotionContextValue {
 
 export const MotionContext = createContext<MotionContextValue | null>(null)
 
+/** Props for `MotionProvider`. */
 export interface MotionProviderProps {
+  /** The time source for every motion hook below. */
   clock: Clock
   /** Total timeline length in seconds. */
   durationS?: number
+  /** The timeline. */
   children?: ReactNode
 }
 

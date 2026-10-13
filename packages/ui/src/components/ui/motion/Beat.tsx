@@ -8,9 +8,13 @@ export const BEAT_MOUNT_MARGIN_S = 0.5
 
 const BeatDurationContext = createContext(0)
 
+/** Props for `Beat`. */
 export interface BeatProps {
+  /** Seconds from the enclosing origin at which the beat's window starts. */
   startS: number
+  /** Length of the window in seconds. */
   durationS: number
+  /** The beat's content, timed from the beat's start. */
   children?: ReactNode
 }
 
@@ -32,10 +36,13 @@ export function useBeatTime(): LocalTime & { durationS: number } {
   return { ...useLocalTime(0, durationS), durationS }
 }
 
+/** Props for `BeatFrame`. */
 export interface BeatFrameProps {
   /** Names the beat for capture tooling, as the test ID `beat-<kind>`. */
   kind: string
+  /** Tailwind overrides, merged with `cn()`. */
   className?: string
+  /** The beat's content. */
   children?: ReactNode
 }
 
