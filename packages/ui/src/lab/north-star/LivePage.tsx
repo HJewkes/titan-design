@@ -1,6 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { ScrollView, View } from 'react-native'
-import { SessionRail } from '../../components'
+import { SessionRail } from '../../workout'
 import { ExerciseHeader, LiveView } from './LiveView'
 import { RestView } from './RestView'
 import { EmptyLiveView, type EmptyKind } from './EmptyLiveView'
