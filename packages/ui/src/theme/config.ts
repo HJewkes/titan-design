@@ -28,7 +28,7 @@ const themeIndependentCSSVars = {
   '--font-family-sans': "'Inter'",
   '--font-family-body': "'Nunito Sans'",
   '--font-family-heading': "'Space Grotesk'",
-  '--font-family-mono': "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace",
+  '--font-family-mono': "'JetBrains Mono', monospace",
 
   // Animation tokens
   '--ease-out': 'cubic-bezier(0.22, 1, 0.36, 1)',
