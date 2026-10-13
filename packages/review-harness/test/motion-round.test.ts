@@ -196,10 +196,10 @@ describe('the page for motion and scale', () => {
     expect(card('fill')).toContain('loops')
   })
 
-  it('plays a clip muted with native controls, once when it does not loop', () => {
-    expect(card('reel')).toMatch(
-      /<video[^>]*src="api\/clip\/reel"[^>]*autoplay=""[^>]*muted=""[^>]*controls=""/
-    )
+  it("plays a clip muted under the page's controls, once when it does not loop", () => {
+    expect(card('reel')).toMatch(/<video[^>]*src="api\/clip\/reel"[^>]*autoplay=""[^>]*muted=""/)
+    expect(card('reel')).not.toMatch(/<video[^>]*controls=""/)
+    expect(card('reel')).toContain('data-testid="clip-reel"')
     expect(card('reel')).not.toMatch(/<video[^>]*loop=""/)
     expect(card('reel')).toContain('clip, plays once')
   })
