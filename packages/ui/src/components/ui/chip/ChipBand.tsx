@@ -15,6 +15,7 @@ import {
   type ChipEntryOptions,
 } from './chipBandLayout'
 
+/** Props for {@link ChipBand}. */
 export interface ChipBandProps extends Omit<ViewProps, 'children'> {
   /** The beat's citations, lead first. */
   chips: BandChip[]
@@ -32,6 +33,7 @@ export interface ChipBandProps extends Omit<ViewProps, 'children'> {
   entry?: ChipEntryOptions['entry']
   /** Show the end state at any `progress`. Defaults to the OS preference. */
   reducedMotion?: boolean
+  /** Additional className on the band. */
   className?: string
 }
 

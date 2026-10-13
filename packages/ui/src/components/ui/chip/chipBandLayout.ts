@@ -7,7 +7,9 @@ import type { EvidenceKind } from './evidence'
 
 /** One citation in a band. */
 export interface BandChip {
+  /** The evidence kind; picks the tone and label. */
   kind: EvidenceKind
+  /** The full citation; the band elides it, the accessible name never does. */
   text: string
 }
 
