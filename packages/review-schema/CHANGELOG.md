@@ -83,6 +83,18 @@ project adheres to [Semantic Versioning](https://semver.org/).
   of what a lock covers. A locked token name may be a family (`*-subtle`,
   `tint-{hue}-solid / on-tint-{hue}`). `lockConflicts` matches through them, and
   `@titan-design/review-harness` now imports them instead of keeping its own copy.
+- Decision packets on pick-one and pick-many, all optional (new module `packet.ts`):
+  `optionDetails` (option text to `{ detail, weakPoint?, after? }`, `OptionDetailSchema`),
+  `evidence` (`{ caption, columns: [{ label, option? }], rows: [{ label, cells }], note? }[]`,
+  `EvidenceTableSchema`; a cell is text or `{ text, tone, span? }` with tone in `CELL_TONES`) and
+  `compare` (`{ views: [{ id, label }], cells: { [option]: { [viewId]: variantKey } }, shown? }`,
+  `CompareSchema`). `RecommendationSchema` gains `weakPoint` and `fallback`, so feedback's
+  recommendation echo carries them too. `packetProblems(round)` reports, by question id: a
+  detail, column, compare row or `fallback` that is not an option; a fallback equal to the
+  answer; a row whose cells (counting `span`) do not match the columns after the first; a
+  compare cell outside the question's `frames` or in two cells; a compare row naming an unknown
+  view or missing one; a `shown` option with no compare row; and compared frames of mixed
+  sources. A round without these fields parses as before.
 
 ## [0.3.0]
 
