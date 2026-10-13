@@ -23,6 +23,15 @@ export const categoricalPalette: {
 export type CategoricalVariant = keyof typeof categoricalPalette;
 
 // @public
+export type ControlPoints = readonly [number, number, number, number];
+
+// @public
+export type CubicBezierCss<P extends ControlPoints> = `cubic-bezier(${P[0]}, ${P[1]}, ${P[2]}, ${P[3]})`;
+
+// @public
+export function cubicBezierCss<const P extends ControlPoints>(points: P): CubicBezierCss<P>;
+
+// @public
 export const discreteRainbow: readonly ["#E8ECFB", "#D9CCE3", "#D1BBD7", "#CAACCB", "#BA8DB4", "#AE76A3", "#AA6F9E", "#994F88", "#882E72", "#1965B0", "#437DBF", "#5289C7", "#6195CF", "#7BAFDE", "#4EB265", "#90C987", "#CAE0AB", "#F7F056", "#F7CB45", "#F6C141", "#F4A736", "#F1932D", "#EE8026", "#E8601C", "#E65518", "#DC050C", "#A5170E", "#72190E", "#42150A"];
 
 // @public
@@ -369,6 +378,30 @@ export const greyRamp: {
     readonly 950: "#1C1916";
     readonly 975: "#100D0A";
 };
+
+// @public
+export const motion: {
+    readonly duration: {
+        readonly fast: 150;
+        readonly normal: 250;
+        readonly slow: 400;
+    };
+    readonly ease: {
+        readonly out: readonly [0.22, 1, 0.36, 1];
+        readonly inOut: readonly [0.65, 0, 0.35, 1];
+        readonly spring: readonly [0.34, 1.56, 0.64, 1];
+    };
+};
+
+// @public
+export const motionCSSVars: Readonly<{
+    readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
+    readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
+    readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
+    readonly '--duration-fast': "150ms";
+    readonly '--duration-normal': "250ms";
+    readonly '--duration-slow': "400ms";
+}>;
 
 // @public (undocumented)
 export const primitiveBorderRadius: {

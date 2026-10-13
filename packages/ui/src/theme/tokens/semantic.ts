@@ -764,6 +764,22 @@ export const size = {
   icon: primitiveSizing.icon,
 } as const
 
+/**
+ * Motion timing (TD-838): durations in milliseconds, eases as CSS
+ * `cubic-bezier` control points. Defined once and exposed twice: as the
+ * `--duration-*` / `--ease-*` custom properties (via `tokens/motion-vars.ts`
+ * into `theme/config.ts` and `global.css`) and as `MOTION` in `ui/motion`,
+ * which evaluates the same curves in JS for time-driven motion.
+ */
+export const motion = {
+  duration: { fast: 150, normal: 250, slow: 400 },
+  ease: {
+    out: [0.22, 1, 0.36, 1],
+    inOut: [0.65, 0, 0.35, 1],
+    spring: [0.34, 1.56, 0.64, 1],
+  },
+} as const
+
 // Export type for theme mode
 export type ThemeMode = 'light' | 'dark'
 
