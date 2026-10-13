@@ -11,9 +11,12 @@ import {
   type ReelCell,
 } from './animated-number-model'
 
+/** `count` rewrites the text; `reel` rolls one clipped column per digit. */
 export type AnimatedNumberMode = 'count' | 'reel'
+/** The type ramp step: `sm` is 20 px, `md` 30 px, `lg` 48 px. */
 export type AnimatedNumberSize = 'sm' | 'md' | 'lg'
 
+/** Props for {@link AnimatedNumber}. */
 export interface AnimatedNumberProps {
   /** The value the number lands on. */
   value: number
@@ -29,6 +32,7 @@ export interface AnimatedNumberProps {
   decimals?: number
   /** Default `md`. */
   size?: AnimatedNumberSize
+  /** Tailwind overrides for the root, merged with `cn()`. */
   className?: string
 }
 
