@@ -9,6 +9,11 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Optional `frameReference` on an image or clip variant (`FrameReferenceSchema`, type
+  `FrameReference`): `{ frame = 1920x1080, ladder = DEFAULT_SCALE_LADDER }`, the true size of a
+  recorded frame and the ladder drawn into it. A story variant may not carry one (it uses
+  `scale`). `frameSizeMismatch(actual, declared)` words a size mismatch, so review-harness refuses
+  a PNG whose IHDR size differs and flags a clip whose video size differs.
 - Optional `keyframes` on a clip motion: `[{ atMs, label }]` (1 to 12), the clip's labelled
   stages. Times strictly increase, and none is past `durationMs` when that is stated; out-of-order
   keyframes are refused, never sorted. Exports the `Keyframe` type. The review page now plays a

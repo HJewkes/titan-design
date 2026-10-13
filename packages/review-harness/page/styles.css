@@ -318,6 +318,7 @@ body:has(.contrast-override) .variant-head {
   position: sticky;
   top: 0;
   left: 0;
+  justify-self: start;
   z-index: 2;
   background: var(--color-surface-elevated);
 }
