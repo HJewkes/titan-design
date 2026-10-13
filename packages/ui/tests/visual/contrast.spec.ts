@@ -66,17 +66,23 @@ const gatedStories = readStories().filter((entry) => !entry.tags?.includes(PLAY_
 const tagsById = new Map(gatedStories.map((entry) => [entry.id, entry.tags]))
 const storyIds = interleaveForShards(gatedStories.map((entry) => entry.id))
 
-// On a PR, CI names the story files the diff reaches (scripts/contrast-stories.mjs, TD-869) and
-// only their stories are rendered; the index checks and the sensitivity proof still run in full.
-const STORY_FILES_ENV = 'TITAN_CONTRAST_STORY_FILES'
-const selectedFiles = process.env[STORY_FILES_ENV]
-  ? new Set(JSON.parse(fs.readFileSync(process.env[STORY_FILES_ENV], 'utf8')) as string[])
+// On a PR, CI names the story files the diff reaches and the stories whose baseline entries it
+// edits (scripts/contrast-stories.mjs, TD-869); only those render. The index checks and the
+// sensitivity proof still run in full.
+const SELECTION_ENV = 'TITAN_CONTRAST_STORY_FILES'
+const selection = process.env[SELECTION_ENV]
+  ? (JSON.parse(fs.readFileSync(process.env[SELECTION_ENV], 'utf8')) as {
+      files: string[]
+      ids: string[]
+    })
   : null
 const storyFileById = new Map(
   gatedStories.map((entry) => [entry.id, path.posix.join('packages/ui', entry.importPath ?? '')])
 )
-const checkedIds = selectedFiles
-  ? storyIds.filter((id) => selectedFiles.has(storyFileById.get(id) ?? ''))
+const checkedIds = selection
+  ? storyIds.filter(
+      (id) => selection.ids.includes(id) || selection.files.includes(storyFileById.get(id) ?? '')
+    )
   : storyIds
 
 // axe-core is jest-axe's dependency, so it resolves from there (as scripts/audit-stories does).

@@ -7,7 +7,7 @@ on:
   pull_request:
   # Nightly full run on main, so the whole contrast index is checked even on a day with no merge (TD-869).
   schedule:
-    - cron: '17 3 * * *'
+    - cron: "17 3 * * *"
 
 permissions:
   contents: read
@@ -254,7 +254,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # TD-869: on a PR, the story files the diff reaches; a shared token, theme or config change,
+      # TD-869: on a PR, the story files the diff reaches and the stories whose baseline entries it
+      # edits (read at BASE_SHA through the contents API). A shared token, theme or config change,
       # a push, the nightly run or any API error checks every story. A shard with nothing to check
       # skips every later step and ends green, so `check` still sees the job succeed.
       - name: Affected stories
@@ -263,6 +264,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
           SHARD: ${{ matrix.shard }}
           SHARD_TOTAL: 3
           STORY_LIST_FILE: /tmp/contrast-stories.json
