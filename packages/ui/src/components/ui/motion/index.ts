@@ -20,6 +20,8 @@ export {
   type SequenceResult,
   type StaggerOptions,
 } from './timeline'
+export { random, randomRange } from './random'
+export { noise2D } from './noise'
 export { MotionProvider, type MotionProviderProps } from './MotionProvider'
 export {
   localTime,
