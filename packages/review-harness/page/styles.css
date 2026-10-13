@@ -286,6 +286,29 @@ body:has(.contrast-override) .variant-head {
   display: block;
 }
 
+.clip-box + .motion-controls {
+  margin-top: var(--space-stack-sm);
+}
+
+.clip-keyframes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-inline-sm);
+  margin: var(--space-stack-sm) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.clip-keyframe[aria-current='step'] {
+  border-color: var(--color-brand-primary);
+  background: var(--color-brand-primary-subtle);
+}
+
+.clip-keyframe-time {
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
 .scale-views {
   display: inline-flex;
   gap: var(--space-inline-sm);
