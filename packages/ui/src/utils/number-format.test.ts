@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { formatTenths, formatTrimmedDecimal, formatUsd } from './number-format'
+import { formatGrouped, formatTenths, formatTrimmedDecimal, formatUsd } from './number-format'
 
 describe('formatTrimmedDecimal', () => {
   it('renders an integer bare', () => {
@@ -10,6 +10,14 @@ describe('formatTrimmedDecimal', () => {
   it('renders a non-integer to the requested decimal places', () => {
     expect(formatTrimmedDecimal(1.234, 1)).toBe('1.2')
     expect(formatTrimmedDecimal(0.5, 2)).toBe('0.50')
+  })
+})
+
+describe('formatGrouped', () => {
+  it('groups thousands and pads to the requested decimal places', () => {
+    expect(formatGrouped(1234.5, 1)).toBe('1,234.5')
+    expect(formatGrouped(1234, 1)).toBe('1,234.0')
+    expect(formatGrouped(-12000)).toBe('-12,000')
   })
 })
 

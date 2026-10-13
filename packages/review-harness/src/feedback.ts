@@ -7,6 +7,7 @@ import {
   type PrGroupShipStatus,
   type Question,
   type Recommendation,
+  type Variant,
   type Verdict,
   shipBlocks,
 } from '@titan-design/review-schema'
@@ -33,6 +34,12 @@ export interface ReviewDraft {
   variants: Record<string, VariantDraft>
   answers: Record<string, AnswerDraft>
   general: string
+}
+
+/** The frame's own source field, echoed so a reader needs no manifest. */
+function sourceOf(v: Variant): { storyId: string } | { image: string } | { clip: string } {
+  if (v.storyId !== undefined) return { storyId: v.storyId }
+  return v.clip !== undefined ? { clip: v.clip } : { image: v.image ?? '' }
 }
 
 export function emptyDraft(manifest: Manifest): ReviewDraft {
@@ -142,7 +149,7 @@ export function buildFeedback(
       const related = questionsForVariant(manifest, v.key)
       return {
         key: v.key,
-        ...(v.storyId !== undefined ? { storyId: v.storyId } : { image: v.image }),
+        ...sourceOf(v),
         ...(draft.variants[v.key] ?? { verdict: null, comment: '', annotations: [] }),
         ...(related.length ? { relatedQuestionIds: related } : {}),
       }
