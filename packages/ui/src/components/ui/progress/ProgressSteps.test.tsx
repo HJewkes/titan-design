@@ -80,14 +80,19 @@ describe('ProgressSteps rail', () => {
   it('takes currentStep as the position when progress is absent', () => {
     const { container } = render(<ProgressSteps variant="rail" currentStep={2} totalSteps={4} />)
 
-    expect(chipStates()).toEqual(['Step 1: done', 'Step 2: done', 'Step 3: active', 'Step 4: pending'])
+    expect(chipStates()).toEqual([
+      'Step 1: done',
+      'Step 2: done',
+      'Step 3: active',
+      'Step 4: pending',
+    ])
     expect(connectorFills(container)).toEqual(['100%', '100%', '0%'])
   })
 
   it('clamps a position past the last step to the end', () => {
     const { container } = renderRail(9)
 
-    expect(chipStates().at(-1)).toBe('Step 4, Learn: active')
+    expect(chipStates()[3]).toBe('Step 4, Learn: active')
     expect(connectorFills(container)).toEqual(['100%', '100%', '100%'])
   })
 

@@ -124,6 +124,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | PrimaryGoalCard | review | custom/Workout | The wall's lead goal card: {@link GoalCard} at `full` size. | GoalCard | — |
 | ProgramPlanningPage | candidate | custom/Workout | ProgramPlanningPage — a meso -> week -> workout drill-down over an entire training program. | ExerciseCard, MesoCard, MesoProgressBar, ProgramPlanningBreadcrumbs, WeekRow, WorkoutCard, WorkoutPill | pages-program-planning--default |
 | Progress | stable | ui/progress | Linear progress bar component. | — | components-molecules-progress--all-colors |
+| ProgressSteps | candidate | ui/progress | Step-based progress indicator. | Progress | components-molecules-progresssteps--default |
 | Radio | stable | ui/radio | Radio button component. | — | components-molecules-radio--all-colors |
 | ReadinessCheck | candidate | custom/Workout | Pre-workout readiness assessment combining subjective emoji sliders with an objective VBT warm-up validation and a computed readiness score. | Badge, Card | custom-workout-readinesscheck--default |
 | RefChip | candidate | custom/ActiveWork | RefChip — a typed pointer at another entity: a kind glyph, the ref's label and an optional status. | Link, Pill | custom-activework-refchip--default |

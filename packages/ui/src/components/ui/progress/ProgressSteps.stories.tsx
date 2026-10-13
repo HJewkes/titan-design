@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { View } from 'react-native'
 import { ProgressSteps } from './ProgressSteps'
 
 const meta: Meta<typeof ProgressSteps> = {
@@ -26,6 +27,13 @@ const meta: Meta<typeof ProgressSteps> = {
     },
     size: { control: 'select', options: ['sm', 'md', 'lg'] },
   },
+  decorators: [
+    (Story) => (
+      <View className="w-96">
+        <Story />
+      </View>
+    ),
+  ],
   parameters: {
     docs: {
       description: {
