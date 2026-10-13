@@ -2,14 +2,18 @@
 // component places marks with percentages and never measures itself.
 import { scaleLinear } from 'd3-scale'
 
+/** The colour of an event's dot; the label always stays secondary text. */
 export type TimelineTone = 'neutral' | 'primary' | 'success' | 'warning' | 'error' | 'info'
 
-/** One event on a {@link Timeline}. */
+/** One event on a Timeline. */
 export interface TimelineItem {
+  /** Unique within the timeline; the React key and the mark's test id. */
   id: string
   /** When the event happens: a number on the caller's axis (seconds, frames) or a date. */
   at: number | Date
+  /** One line under or over the dot, truncated past 96 px. */
   label: string
+  /** The dot's colour. Defaults to `neutral`. */
   tone?: TimelineTone
 }
 

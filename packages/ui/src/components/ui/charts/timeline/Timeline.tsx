@@ -14,6 +14,7 @@ import {
 
 export type { TimelineItem, TimelineRange, TimelineTone } from './timeline-model'
 
+/** `horizontal` fills its width; `vertical` runs down a fixed height (`h-60` unless overridden). */
 export type TimelineOrientation = 'horizontal' | 'vertical'
 
 /** Props of {@link Timeline}. */
@@ -28,11 +29,13 @@ export interface TimelineProps extends Omit<ViewProps, 'children'> {
   playhead?: number
   /** The visible part of the domain as fractions 0..1, e.g. `[0.5, 1]` for the second half. */
   window?: TimelineRange
+  /** Axis direction. Defaults to `horizontal`. */
   orientation?: TimelineOrientation
   /** Shows a skeleton track in place of the events. */
   isLoading?: boolean
   /** Replaces the default empty state, shown when `items` is empty. */
   emptyState?: ReactNode
+  /** Tailwind classes merged onto the root. */
   className?: string
 }
 
@@ -50,8 +53,8 @@ const TONE_CLASS: Record<TimelineTone, string> = {
 }
 
 const ROOT_CLASS: Record<TimelineOrientation, string> = {
-  horizontal: 'h-20 px-12',
-  vertical: 'h-60 py-3',
+  horizontal: 'h-20 w-full px-12',
+  vertical: 'h-60 w-full py-3',
 }
 
 const percent = (position: number): `${number}%` => `${position * 100}%`
@@ -78,7 +81,13 @@ function Mark({ mark, orientation }: { mark: TimelineMark; orientation: Timeline
     ? cn('-ml-12 w-24 items-center', mark.lane === 0 ? 'top-1/2 mt-2' : 'bottom-1/2 mb-2')
     : 'left-5 -mt-2.5'
   return (
-    <View role={LIST_ITEM_ROLE} testID={`timeline-mark-${mark.item.id}`}>
+    // Fills the plot so its absolute children position against the plot, not a 0-height row.
+    <View
+      role={LIST_ITEM_ROLE}
+      testID={`timeline-mark-${mark.item.id}`}
+      className="absolute inset-0"
+      pointerEvents="box-none"
+    >
       <View
         style={along(orientation, mark.position)}
         className={cn(

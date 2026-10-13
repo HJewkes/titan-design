@@ -1,9 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { View } from 'react-native'
 import { Timeline } from './Timeline'
 
 const meta: Meta<typeof Timeline> = {
   title: 'Components/Organisms/Timeline',
   component: Timeline,
+  decorators: [
+    (Story) => (
+      <View className="w-[640px] p-4">
+        <Story />
+      </View>
+    ),
+  ],
   tags: ['autodocs', 'status:candidate', '!status:review'],
   args: {
     accessibilityLabel: 'Video chapters',

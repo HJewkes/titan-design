@@ -11,11 +11,13 @@ import { CHAPTER_CARD_REST, chapterCardFrame } from './chapter-card-motion'
 export interface ChapterCardProps extends Omit<ViewProps, 'children'> {
   /** The chapter's number, shown zero-padded to two digits. */
   index: number
+  /** The chapter's name, set as a heading. */
   title: string
   /** A short line above the title. */
   kicker?: ReactNode
   /** Progress through the card's life, 0..1. Omit for the static card. */
   progress?: number
+  /** Tailwind classes merged onto the root. */
   className?: string
 }
 

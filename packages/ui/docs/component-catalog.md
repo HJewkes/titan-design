@@ -29,6 +29,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | Card | stable | ui/card | Card component for containing related content. | Surface | components-molecules-card--brand-colored-cards |
 | CardStat | review | ui/card | The Card stat preset: one labelled figure on a card plane (roadmap decision 1). | Card, Metric | — |
 | Carousel | stable | ui/carousel | A row of peer cards, one per view with the neighbours peeking, that a phone swipes through instead of scrolling past. | Button, icons | components-molecules-carousel--default |
+| ChapterCard | candidate | ui/chapter-card | ChapterCard: a chapter title card, its number, an optional kicker and the title. | Eyebrow, Surface, Typography | components-molecules-chaptercard--default |
 | ChatCard | candidate | custom/Chat | A structured card a message carries in a `data-*` part: a status line, a title, a subtitle, a body, small print and up to three actions. | Button, Card, Typography | custom-chat-chatcard--checkin |
 | Checkbox | stable | ui/checkbox | Checkbox component for boolean inputs. | — | components-molecules-checkbox--all-sizes |
 | Chip | stable | ui/chip | Chip — a `Pill` preset for tags, labels, and filters. | Pill | components-atoms-chip--all-colors |
@@ -183,6 +184,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | TaskTable | candidate | custom/ActiveWork | TaskTable — every open task across initiatives in one dense, sortable grid. | Eyebrow, SeverityLabel, Table, TableHeaderCell, TaskRow, Typography | custom-activework-tasktable--default |
 | TempoDisplay | candidate | custom/Workout | — | metricText | custom-workout-tempodisplay--active-tempo-conditions |
 | Tile | candidate | ui/tile | Tile — a compact label-over-value stat, now a wrapper over the `CardStat` preset. | — | components-atoms-tile--default |
+| Timeline | candidate | ui/charts | Timeline: events on one time axis, with an optional playhead and a pan window. | EmptyState, Skeleton, Typography | components-organisms-timeline--default |
 | TimerReadout | candidate | custom/TimerReadout | Atom · TimerReadout — a small textual timer (⏱ + mono, right-justified) built on [useTimer]. | Typography | components-molecules-timerreadout--countdown-running |
 | TipTrigger | review | ui/tooltip | One tip that opens on hover (web), focus (keyboard) and press (native) — the three affordances share a single open state, because RNW ends a wrapper's hover the moment a nested Pressable claims the pointer. | Tooltip | — |
 | Toast | stable | ui/toast | Standalone Toast component (for static rendering without provider). | Surface | components-molecules-toast--all-statuses |

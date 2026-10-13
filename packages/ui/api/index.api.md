@@ -1129,6 +1129,18 @@ export const CHANNEL_MARKER = "channel";
 export const CHANNEL_OPENER_META: TurnOriginMeta;
 
 // @public
+export function ChapterCard(input: ChapterCardProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface ChapterCardProps extends Omit<ViewProps, 'children'> {
+    className?: string;
+    index: number;
+    kicker?: ReactNode;
+    progress?: number;
+    title: string;
+}
+
+// @public
 export function ChartIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -9140,6 +9152,39 @@ export interface TileProps extends ViewProps {
     // @deprecated
     valueColor?: string;
 }
+
+// @public
+export function Timeline(input: TimelineProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface TimelineItem {
+    at: number | Date;
+    id: string;
+    label: string;
+    tone?: TimelineTone;
+}
+
+// @public
+export type TimelineOrientation = 'horizontal' | 'vertical';
+
+// @public
+export interface TimelineProps extends Omit<ViewProps, 'children'> {
+    accessibilityLabel: string;
+    className?: string;
+    domain?: TimelineRange<number | Date>;
+    emptyState?: ReactNode;
+    isLoading?: boolean;
+    items: TimelineItem[];
+    orientation?: TimelineOrientation;
+    playhead?: number;
+    window?: TimelineRange;
+}
+
+// @public
+export type TimelineRange<T = number> = readonly [T, T];
+
+// @public
+export type TimelineTone = 'neutral' | 'primary' | 'success' | 'warning' | 'error' | 'info';
 
 // @public
 export interface TimelineToolCall {
