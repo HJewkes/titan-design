@@ -1,16 +1,8 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useState, type ReactElement } from 'react'
 import { View, Text, type LayoutChangeEvent } from 'react-native'
-import {
-  LiveAuraFrame,
-  VelocityStrip,
-  TempoDisplay,
-  SetsRepsLoad,
-  ActivityIcon,
-  AlertTriangleIcon,
-  CircleSlashIcon,
-  type IconProps,
-} from '../../components'
+import { LiveAuraFrame, VelocityStrip, TempoDisplay, SetsRepsLoad } from '../../workout'
+import { ActivityIcon, AlertTriangleIcon, CircleSlashIcon, type IconProps } from '../../components'
 import { Tooltip } from '../../components/ui/tooltip/Tooltip'
 import { getSemanticColors } from '../../theme/tokens/semantic'
 import { alpha } from '../../utils/colors'
