@@ -5,17 +5,21 @@ name: React next
 # required check. The test step is continue-on-error so the check concludes success (Shepherd treats any
 # red check as ci-failed); the result is in the step summary, and a warning annotation fires whenever the unit step fails (its outcome, not
 # the JSON counts, so type-check and load errors are never silent).
+# Main pushes and nightly only, not PRs (TD-869): a break shows on main, the leg is advisory anyway.
 on:
   push:
     branches: [main]
-  pull_request:
+  schedule:
+    - cron: '47 3 * * *'
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+# A running main run finishes; a newer push replaces one still queued.
 concurrency:
-  group: react-next-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: react-next-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   react-19-rnw-021:

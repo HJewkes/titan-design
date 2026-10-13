@@ -5,13 +5,18 @@ on:
     branches: [main]
   # Unfiltered so `check` reports on every PR, whatever it targets; a filtered-out required check blocks the merge.
   pull_request:
+  # Nightly full run on main, so the whole contrast index is checked even on a day with no merge (TD-869).
+  schedule:
+    - cron: '17 3 * * *'
 
 permissions:
   contents: read
 
-# PR runs share a per-ref group and cancel; each main push gets its own per-sha group, so no main run is replaced or cancelled.
+# One group per ref. A PR run cancels its predecessor. On main a running run always finishes and
+# saves its caches, but a newer push replaces one still queued, so a burst of merges tests the tip
+# once (TD-869); the nightly run shares main's group.
 concurrency:
-  group: ci-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
+  group: ci-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 # Rename stage (a) of the HJewkes/ci standard: the ruleset still requires build (22), so the
@@ -227,10 +232,11 @@ jobs:
 
   # TD-738: axe color-contrast in Chromium on every story in both themes, against the shrink-only
   # packages/ui/tests/visual/contrast-stories-baseline.json. Its own job, not a visual step: the
-  # full index is about 14 minutes on one runner, so three shards run beside visual and add nothing
+  # full index is about 35 minutes on one runner, so three shards run beside visual and add nothing
   # to its critical path. Each shard builds the static Storybook itself (about 30 s): a build
   # artifact from visual would wait on visual's install and build and cost about as much to move.
   # `check` needs it, as all-green requires of every job, so it gates through `check` by that route.
+  # TD-869: a PR checks only the stories its diff reaches, on shard 1; main and nightly check all.
   contrast:
     name: contrast ${{ matrix.shard }}/3
     runs-on: ubuntu-latest
@@ -248,14 +254,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Same classifier, env and fail-open rule as visual's step (TD-645).
-      - name: Rendered UI changed?
+      # TD-869: on a PR, the story files the diff reaches; a shared token, theme or config change,
+      # a push, the nightly run or any API error checks every story. A shard with nothing to check
+      # skips every later step and ends green, so `check` still sees the job succeed.
+      - name: Affected stories
         id: paths
-        if: github.event_name == 'pull_request'
-        run: node packages/ui/scripts/visual-paths.mjs
+        run: node packages/ui/scripts/contrast-stories.mjs
         env:
           GITHUB_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          SHARD: ${{ matrix.shard }}
+          SHARD_TOTAL: 3
+          STORY_LIST_FILE: /tmp/contrast-stories.json
 
       - uses: pnpm/action-setup@v4
         if: steps.paths.outputs.run != 'false'
@@ -270,16 +280,18 @@ jobs:
         if: steps.paths.outputs.run != 'false'
 
       # One test per story and theme (playwright.contrast.config.ts); a pair or count outside the
-      # baseline fails. The report is every story-theme's counts, uploaded so the baseline can be
-      # regenerated from CI's Chromium: download the three contrast-report-* artifacts and run
+      # baseline fails. `shard` is `--shard=i/3` for a full run and empty for a PR's subset. The
+      # report is every story-theme's counts, uploaded so the baseline can be regenerated from CI's
+      # Chromium: download the contrast-report-* artifacts (one on a PR subset) and run
       # node packages/ui/scripts/update-contrast-stories-baseline.mjs <files> --allow-increase.
       # No `--` before the flag: pnpm 9 forwards it literally and Playwright then reads the shard
       # as a file filter, so every shard would run the whole index.
       - name: Story contrast (axe color-contrast)
         if: steps.paths.outputs.run != 'false'
-        run: pnpm --filter @titan-design/react-ui test:visual:contrast --shard=${{ matrix.shard }}/3
+        run: pnpm --filter @titan-design/react-ui test:visual:contrast ${{ steps.paths.outputs.shard }}
         env:
           TITAN_CONTRAST_REPORT: /tmp/contrast-report-${{ matrix.shard }}.jsonl
+          TITAN_CONTRAST_STORY_FILES: ${{ steps.paths.outputs.mode == 'subset' && '/tmp/contrast-stories.json' || '' }}
 
       - name: Upload contrast report
         if: always() && steps.paths.outputs.run != 'false'
