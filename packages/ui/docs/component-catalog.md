@@ -5,6 +5,11 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | Name | Status | Family | Purpose | Composes | First story |
 | --- | --- | --- | --- | --- | --- |
 | ActiveWorkoutPage | candidate | custom/Workout | ActiveWorkoutPage — the during-workout screen, built as a zoom hierarchy over `ExerciseCard`s. | ExerciseCard, InputBar, RestTimer, SetRow, SupersetWrapper | pages-active-workout--all-collapsed |
+| AgentCard | candidate | custom/Agents | One agent session: name, state, stated task, branch, recency, and the transcript's tokens, tool calls, errors, cost and activity. | AgentStateLabel, Avatar, Card, Pill, Progress, SparkBars, Typography | custom-agents-agentcard--default |
+| AgentHoverCard | candidate | custom/Agents | An agent summary over a trigger, as a WAI-ARIA tooltip: hover or keyboard focus opens it after `openDelay`, hover out or blur close it after `closeDelay`, Escape closes it at once, and a long press opens it on touch. | AgentCardIdentity, AgentCardMetrics, Tooltip, TriggerSurface, Typography | custom-agents-agenthovercard--default |
+| AgentRoster | candidate | custom/Agents | The agents as a single-select listbox, live above past, each group sorted by state and then recency. | AgentRosterRow, EmptyState, Skeleton, Typography | custom-agents-agentroster--default |
+| AgentRosterRow | candidate | custom/Agents | One agent in a dense list: name, state and the chosen details. | AgentStateLabel, Avatar, Typography | custom-agents-agentrosterrow--default |
+| AgentStateLabel | candidate | custom/Agents | An agent's state as a dot and its word, never colour alone. | Indicator, Pill, Typography | custom-agents-agentstatelabel--default |
 | Alert | stable | ui/alert | Alert component for displaying status messages. | — | components-molecules-alert--all-statuses |
 | AppShell | candidate | shell | `AppShell` — the generic dashboard chrome: a {@link TopBar} band over a {@link SideNav} rail and a `children` content region. | SideNav, Surface, TopBar, brands | pages-appshell--audiobook-app |
 | Autocomplete | stable | ui/autocomplete | Autocomplete component for searchable dropdown selection. | AutocompleteParts | components-molecules-autocomplete--custom-no-results-text |
@@ -12,6 +17,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | Badge | stable | ui/badge | Badge — a `Pill` preset for status indicators and labels. | Indicator, Pill | components-atoms-badge--all-colors |
 | BarList | candidate | ui/charts | BarList: a ranked horizontal bar list. | BarListCells, BarListParts, BarListTip, EmptyState | components-molecules-barlist--default |
 | BaseBadge | candidate | custom/Workout | — | — | custom-workout-basebadge--all-variants |
+| Beat | review | ui/motion | A window of the timeline: moves the time origin to `startS` and mounts only near its window. | — | — |
 | BodyMap | candidate | custom/Workout | Interactive SVG body map with tappable muscle groups and a volume heatmap. | — | custom-workout-dataviz-bodymap--back |
 | BodyMapDetailPanel | candidate | custom/Workout | Sheet of detailed weekly-volume info for a tapped muscle group: a MEV\|current\|MRV gradient progress bar, the big weekly set count against MRV, an optional volume sparkline, the per-exercise strength / this-week plan / PR sections, and the contributing / upcoming exercise lists. | Badge, BodyMapDetailSections, Sparkline | custom-workout-dataviz-bodymapdetailpanel--default |
 | BodyweightGoalCard | candidate | custom/Workout | A bodyweight goal on `#/goals`: the latest weight, its rate this week beside it ("Rate: -0.6%/wk", or "Rate: N/A" before there is one; the bands sit in the tip), then the weigh-in against this week's band in the goal chart's own band colour. | GoalTrajectoryBand, StatCard, Typography, ZoneTrack, wholeBodyCardParts | custom-workout-goals-bodyweightgoalcard--default |
@@ -50,6 +56,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | ExerciseHeading | candidate | custom/Workout | The exercise-heading info block (no strip): the name + {@link ExerciseIndicator} title row, its prescription line, and — `inline` only — a trailing previous-best caption. | ExerciseIndicator, SetsRepsLoad, TempoDisplay, Typography | custom-workout-exerciseheading--default |
 | ExerciseIndicator | candidate | custom/Workout | A small circular outlined chip for an exercise heading. | SvgIcon, icons | custom-workout-exerciseindicator--all-kinds |
 | Eyebrow | candidate | ui/eyebrow | Eyebrow — an uppercase micro-label used above a value or a section of content (e.g. "Focused · by rank", a stat tile's caption). | Typography | components-molecules-eyebrow--default |
+| FacetBar | candidate | ui/facet-bar | FacetBar — one labelled row of toggle chips for one facet. | Chip, Eyebrow | components-molecules-facetbar--default |
 | FatigueLights | candidate | custom/Fatigue | — | StatusDot, Tooltip | custom-fatigue-fatigue-lights--across-states |
 | FatigueMeter | candidate | custom/Workout | A fatigue meter: a sliding needle over a fixed green→gold→orange→red velocity-loss gradient with VL10/VL20/VL30/stop scale markers. | ZoneTrack | custom-workout-dataviz-fatiguemeter--custom-scale |
 | FileActivityDetail | candidate | custom/ActiveWork | FileActivityDetail — the right-hand pane of {@link FileHistoryExplorer }: one file's full mined history. | Card, DataRow, DateTime, Eyebrow, FileActivityGrowthWell, FileActivityRow, FilePathLabel, Pill, Tile, Typography | custom-activework-fileactivitydetail--default |
@@ -57,6 +64,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | FileHistoryExplorer | candidate | custom/ActiveWork | FileHistoryExplorer — a file browser ranked by mined activity instead of alphabetised by name: a KPI strip, a two-pane hottest-files list ⇄ detail, and the repo's strongest co-change pairs. | Card, CoChangeChip, Divider, Eyebrow, FileActivityDetail, FileActivityRow, Tile, Typography | custom-activework-filehistoryexplorer--default |
 | FilePathLabel | candidate | ui/file-path-label | FilePathLabel — a file path with the directory dimmed and the basename bright. | Typography | components-atoms-filepathlabel--base-only |
 | FormField | stable | ui/form-field | FormField component for wrapping form inputs with label, help text, and error states. | — | components-molecules-formfield--complete-form-example |
+| GapIndicator | candidate | custom/Session | A hairline with the idle time in the middle: "32m idle". | DateTime, Divider, Typography | custom-session-gapindicator--default |
 | Gauge | candidate | ui/charts | SVG-free radial gauge (absolutely-positioned segment Views), matching the codebase's chart convention so it renders identically on web and native. | — | components-atoms-gauge--arbitrary-domain |
 | GhostBand | review | custom/Fatigue | The phase-coloured axis band — ONE contiguous strip whose internal boundaries land exactly on the sparkline's phase transitions. | GhostBandParts | — |
 | GhostBloom | review | custom/Fatigue | The ghost fan + the paper-treated tinted current line. | — | — |
@@ -73,7 +81,6 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | GoalTrajectoryPlot | review | custom/Workout | — | GoalTrajectoryBand, GoalTrajectoryCalibrating, SvgIcon, icons | — |
 | GoalTrajectoryWeekTips | review | custom/Workout | The week targets over the plot, absolute against the chart's own box. | Metric, Pill, PrBadge, TipTrigger, Typography | — |
 | GoalWeekColumnsChart | review | custom/Workout | — | GoalMilestoneWeekStrip, GoalTrajectoryMini | — |
-| HelpTip | candidate | ui/help-tip | HelpTip component for displaying contextual help information. | Surface | components-molecules-helptip--all-colors |
 | HighlightText | candidate | ui/highlight-text | A string with matched ranges emphasised by weight only, so no colour pair is added. | Typography | components-atoms-highlighttext--default |
 | IconBox | stable | ui/icon-box | — | — | components-atoms-iconbox--all-colors |
 | Indicator | stable | ui/indicator | — | — | components-atoms-indicator--all-colors |
@@ -93,12 +100,13 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | Menu | candidate | ui/menu | Menu component for dropdown menus. | Surface, TriggerSurface | components-molecules-menu--controlled |
 | MesoCard | candidate | custom/Workout | A mesocycle card with name, goal, split, week range, an optional volume heatmap strip, and an expandable WeekRow list. | Badge, Card, WeekRow | custom-workout-mesocard--collapsed |
 | MesoProgressBar | candidate | custom/Workout | Segmented horizontal bar of mesocycles. | — | custom-workout-mesoprogressbar--active-current |
-| MesoStatusCard | candidate | custom/Workout | Mesocycle context card for a specific exercise: prescription vs actual metrics, intensity/volume gauges, and coaching guidance. | Card, StatusDot | custom-workout-mesostatuscard--default |
+| MesoStatusCard | candidate | custom/Workout | Mesocycle context card for a specific exercise: prescription vs actual metrics, intensity/volume gauges, and coaching guidance. | Card, MesoStatusCard.parts, StatusDot | custom-workout-mesostatuscard--default |
 | MessageBubble | candidate | custom/Chat | One chat message: markdown prose in a bubble and any `data-*` parts rendered by the caller beneath it. | Avatar, MarkdownProse, Surface, Typography | custom-chat-messagelist-messagebubble--default |
 | MessageList | candidate | custom/Chat | A chat thread, oldest at the top. | Button, ConversationIdentity, DateSeparator, MarkdownProse, MessageBubble, RevealRow, TypingIndicator, UnreadBadge | custom-chat-messagelist--default |
 | Metric | candidate | ui/metric | — | — | components-molecules-metric--default |
 | MetricTiles | candidate | custom/Workout | MetricTiles — a row of equal-width stat tiles. | Stack, Tile | custom-workout-metrictiles--four-tiles |
 | Modal | candidate | ui/modal | Modal component for dialogs and overlays. | Surface | components-organisms-modal--backdrop-blur |
+| MotionProvider | review | ui/motion | Puts every motion hook below it on `clock`, so a seek clock can drive a render frame by frame. | — | — |
 | MuscleGlyph | review | custom/Workout | — | — | — |
 | MuscleGroupChip | candidate | custom/Workout | MuscleGroupChip — a `Pill` preset that labels a muscle group with a volume-status dot. | Pill | custom-workout-musclegroupchip--all-statuses |
 | MuscleStrip | candidate | custom/Workout | MuscleStrip — all 15 `MuscleGroupChip`s in one wrapping row, each labeled with its weekly sets against target. | MuscleGroupChip | custom-workout-musclestrip--default |
@@ -118,6 +126,8 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | Progress | stable | ui/progress | Linear progress bar component. | — | components-molecules-progress--all-colors |
 | Radio | stable | ui/radio | Radio button component. | — | components-molecules-radio--all-colors |
 | ReadinessCheck | candidate | custom/Workout | Pre-workout readiness assessment combining subjective emoji sliders with an objective VBT warm-up validation and a computed readiness score. | Badge, Card | custom-workout-readinesscheck--default |
+| RefChip | candidate | custom/ActiveWork | RefChip — a typed pointer at another entity: a kind glyph, the ref's label and an optional status. | Link, Pill | custom-activework-refchip--default |
+| RelatedList | candidate | custom/ActiveWork | RelatedList — a detail page's related panel: refs grouped by kind, each group headed by its plural and a count, each ref a `RefChip`. | EmptyState, Eyebrow, RefChip, Skeleton, Typography | custom-activework-relatedlist--default |
 | RestTimer | candidate | custom/Workout | — | CircularTimer | custom-workout-resttimer--default |
 | RevealRow | review | custom/Chat | One thread row that slides left with the drag and carries its message time in a column parked past the right edge. | DateTime | — |
 | RomProgressionChart | candidate | custom/Fatigue | — | SetBarChart | custom-fatigue-rom-progression--across-states |
@@ -143,7 +153,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | SetRow | candidate | custom/Workout | ONE set row of the unified expanded exercise table. | Typography, VelocityStrip | custom-workout-setrow--done |
 | SetStrip | candidate | custom/Workout | The per-set segmented performance strip: one continuous {@link SetBar} per set (rep intensities as butted color segments, no rep gaps), sets separated by a fixed gap. | SetBar | custom-workout-setstrip--active-range-set |
 | SetTableHeader | candidate | custom/Workout | The expanded-set-table column-header row: SET · PREV · REPS · LOAD · RPE, with the weight column reflecting `unit`. | Typography | custom-workout-settableheader--kg |
-| SetsRepsLoad | candidate | custom/Workout | The `sets × reps @ load` prescription line, in the TempoDisplay visual language (Inter · letter-spacing 1 · value cells with muted `×` / `@` separators). | metricText | custom-workout-setsrepsload--default |
+| SetsRepsLoad | candidate | custom/Workout | The `sets × reps @ load` prescription line, in the TempoDisplay visual language (Typography `mono` · value cells with muted `×` / `@` separators). | metricText | custom-workout-setsrepsload--default |
 | SeverityLabel | candidate | custom/ActiveWork | SeverityLabel — a task's severity as a coloured dot plus its label. | Indicator, Typography | custom-activework-severitylabel--all-severities |
 | SideNav | candidate | shell | Shell S2 · SideNav — the persistent 60px left rail that switches the main viewport between an app's categories. | NavItem | shell-sidenav--another-app |
 | Sidebar | candidate | custom/Sidebar | Sidebar navigation component. | — | components-organisms-sidebar--collapsed |
@@ -154,6 +164,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | Stack | stable | ui/stack | — | — | components-atoms-stack--default |
 | StatCard | candidate | ui/stat-card | The stat card template: a header row, a lead figure with one caption, and a body pinned to the bottom. | Card, Typography | components-molecules-statcard--default |
 | StatusDot | candidate | custom/Workout | — | Typography | custom-workout-statusdot--all-variants |
+| StatusMark | candidate | custom/Code | The change vocabulary of the Code family: one Pill, named in words for assistive tech. | Pill | custom-code-statusmark--default |
 | StatusPill | candidate | custom/Workout | Verdict pill: a glowing status dot + coloured verdict text in a tinted capsule. | Pill, StatusDot | custom-workout-statuspill--all-states |
 | Stepper | candidate | custom/stepper | Stepper component for multi-step flows. | — | components-molecules-stepper--active-step-progression |
 | StrengthTrendChart | candidate | custom/Workout | Estimated-1RM line chart over time with an optional dashed plan-projection line and PR star markers. | — | custom-workout-dataviz-strengthtrendchart--compact |
@@ -175,6 +186,8 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | TimerReadout | candidate | custom/TimerReadout | Atom · TimerReadout — a small textual timer (⏱ + mono, right-justified) built on [useTimer]. | Typography | components-molecules-timerreadout--countdown-running |
 | TipTrigger | review | ui/tooltip | One tip that opens on hover (web), focus (keyboard) and press (native) — the three affordances share a single open state, because RNW ends a wrapper's hover the moment a nested Pressable claims the pointer. | Tooltip | — |
 | Toast | stable | ui/toast | Standalone Toast component (for static rendering without provider). | Surface | components-molecules-toast--all-statuses |
+| ToolBadge | candidate | custom/Session | A tool family as a one-character glyph in a neutral pill. | Pill | custom-session-toolbadge--default |
+| ToolCallRow | candidate | custom/Session | One tool call as a line: time, outcome dot (its word on hover and focus), family badge, tool name, what it acted on and the observed duration. | Collapse, DateTime, Indicator, TipTrigger, ToolBadge, Tooltip, Typography | custom-session-toolcallrow--default |
 | ToolbarButton | stable | ui/toolbar-button | ToolbarButton component for toolbar actions with toggle state support. | ToolbarButtonParts | components-molecules-toolbarbutton--active-vs-inactive |
 | Tooltip | candidate | ui/tooltip | Tooltip component for showing additional information on hover/press. | Surface, TooltipParts, TriggerSurface | components-molecules-tooltip--all-placements |
 | TopBar | candidate | shell | S1 · TopBar — the persistent shell chrome band, generic over the app. | BrandLockup, DateTime, Divider, brands | shell-topbar--default |

@@ -17,8 +17,8 @@ function contrastRatio(a: string, b: string): number {
 
 const LIGHT: Record<string, string> = {
   'text-brand': ramp.orange[700],
-  'text-brand-secondary': ramp.cyan[700],
-  'text-success': ramp.green[700],
+  'text-brand-secondary': ramp.cyan[800], // TD-789 3b
+  'text-success': ramp.green[800], // TD-789 3b
   'text-warning': ramp.amber[700],
   'text-info': ramp.blue[700],
 }
@@ -29,7 +29,14 @@ const DARK: Record<string, string> = {
   'text-warning': ramp.amber[300],
   'text-info': ramp.blue[300],
 }
-const PLANES = ['surface-base', 'surface-raised', 'surface-elevated', 'surface-overlay'] as const
+// The 3b planes: grey 200 / 100 / 50 / white in light, the dark ramp in dark (TD-483).
+const PLANES = [
+  'background-base',
+  'surface-base',
+  'surface-elevated',
+  'surface-raised',
+  'surface-overlay',
+] as const
 
 describe.each([
   ['light', LIGHT],

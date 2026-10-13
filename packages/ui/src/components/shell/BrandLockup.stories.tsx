@@ -57,7 +57,7 @@ export const BrandVariants: Story = {
     <Surface level="elevated" className="gap-4 p-5">
       {brandKeys.map((brand) => (
         <View key={brand} className="gap-1">
-          <Typography variant="microLabel" color="tertiary">
+          <Typography variant="microLabel" color="secondary">
             {brand}
           </Typography>
           <BrandLockup brand={brand} />

@@ -38,7 +38,7 @@
     { "name": "ListItem", "category": "Data display", "aliases": ["ListItem"] },
     { "name": "Chip", "category": "Data display", "aliases": ["Chip", "Pill"] },
     { "name": "Accordion", "category": "Data display", "aliases": ["Collapse"] },
-    { "name": "Tooltip / HelpTip", "category": "Data display", "aliases": ["HelpTip"] },
+    { "name": "Tooltip", "category": "Data display", "aliases": [] },
     { "name": "Typography", "category": "Layout", "aliases": ["Typography"] },
     { "name": "Stack", "category": "Layout", "aliases": ["Stack"] },
     { "name": "Surface", "category": "Layout", "aliases": ["Surface"] },

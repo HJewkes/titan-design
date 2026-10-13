@@ -1,2 +1,7 @@
 export * from './schema.ts'
 export * from './contract.ts'
+export * from './lint.ts'
+export * from './ship-block.ts'
+export * from './locks.ts'
+export * from './lock-surface.ts'
+export * from './lock-conflicts.ts'

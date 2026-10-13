@@ -25,6 +25,7 @@ const TEST_EXCLUDE = ['src/**/*.visual.test.{ts,tsx}', 'node_modules']
 export default defineConfig({
   plugins: [reactNativeSvgWebResolver(), reactNativeBodyHighlighterEsm(), react()],
   test: {
+    globalSetup: ['../../scripts/vitest-run-tmp-root.mjs'],
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],

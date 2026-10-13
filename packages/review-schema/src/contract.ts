@@ -51,9 +51,37 @@ export function choiceMismatchMessage(sectionId: string, mismatches: string[]): 
   )
 }
 
-function picksAFrame(question: Question, frames: Set<string>): boolean {
-  if (question.kind !== 'pick-one' && question.kind !== 'pick-many') return false
-  return !!question.optionVariants || question.options.some((o) => frames.has(o))
+/** The frames a question's options stand for, or null when picking it picks no frame. */
+function pickedFrames(question: Question, frames: Set<string>): string[] | null {
+  if (question.kind !== 'pick-one' && question.kind !== 'pick-many') return null
+  if (question.optionVariants) return Object.values(question.optionVariants)
+  const picked = question.options.filter((o) => frames.has(o))
+  return picked.length ? picked : null
+}
+
+/** A STATES strip asks no choice, except a question choosing among the frames placed above it. */
+function picksOutsideItsFrames(question: Question, frames: Set<string>): boolean {
+  const picked = pickedFrames(question, frames)
+  if (!picked) return false
+  return !question.frames || picked.some((key) => !question.frames?.includes(key))
+}
+
+/** The frames that are compared together: each question's own frames, then the rest of the strip. */
+function comparedSets(section: Section, questions: Question[]): string[][] {
+  const anchored = questions.flatMap((q) => (q.frames ? [q.frames] : []))
+  const placed = new Set(anchored.flat())
+  const rest = section.variantKeys.filter((k) => !placed.has(k))
+  return [...anchored, ...(rest.length ? [rest] : [])]
+}
+
+function choiceProblems(section: Section, questions: Question[], m: Manifest): string[] {
+  return comparedSets(section, questions).flatMap((keys) => {
+    const settings = new Map(
+      m.variants.filter((v) => keys.includes(v.key)).map((v) => [v.key, frameSettings(v)])
+    )
+    const mismatches = settingMismatches(settings)
+    return mismatches.length ? [choiceMismatchMessage(section.id, mismatches)] : []
+  })
 }
 
 function stripProblems(section: Section, m: Manifest): string[] {
@@ -64,14 +92,14 @@ function stripProblems(section: Section, m: Manifest): string[] {
   const questions = m.questions.filter((q) => section.questionIds.includes(q.id))
   if (section.kind === 'STATES')
     return questions
-      .filter((q) => picksAFrame(q, frames))
-      .map((q) => `${where}: a STATES strip asks no choice, but question ${q.id} picks a frame`)
+      .filter((q) => picksOutsideItsFrames(q, frames))
+      .map(
+        (q) =>
+          `${where}: a STATES strip asks no choice, but question ${q.id} picks a frame; ` +
+          'give it frames to choose among them'
+      )
   if (frames.size < 2) return [`${where}: a CHOICE strip needs two frames to choose between`]
-  const settings = new Map(
-    m.variants.filter((v) => frames.has(v.key)).map((v) => [v.key, frameSettings(v)])
-  )
-  const mismatches = settingMismatches(settings)
-  return mismatches.length ? [choiceMismatchMessage(section.id, mismatches)] : []
+  return choiceProblems(section, questions, m)
 }
 
 function looseFrameProblems(m: Manifest): string[] {
