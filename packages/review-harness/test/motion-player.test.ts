@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { ArgMotionSchema, type ArgMotion } from '@titan-design/review-schema'
 import { advance, argAt, initialPlayer, playheadLabel, seek, toggle } from '../page/motion.ts'
 import { LADDER_WIDTH, largestTextPx, scaleColumns, sizeLabel, viewScale } from '../page/scale.ts'
-import { UPDATE_STORY_ARGS, pushStoryArgs } from '../page/storyArgs.ts'
+import { UPDATE_STORY_ARGS, onStoryRendered, pushStoryArgs } from '../page/storyArgs.ts'
 import { ScaleReferenceSchema } from '@titan-design/review-schema'
 
 const motion = (extra: Partial<ArgMotion> = {}): ArgMotion =>
@@ -79,6 +79,26 @@ describe('sending args to a story', () => {
       },
     }) as Window
     expect(pushStoryArgs(crossOrigin, 'a--b', { progress: 0 })).toBe(false)
+  })
+})
+
+describe('following story renders', () => {
+  it('listens for storyRendered until unsubscribed', () => {
+    const listeners = new Set<() => void>()
+    const channel = {
+      emit: () => {},
+      on: (_e: string, l: () => void) => listeners.add(l),
+      off: (_e: string, l: () => void) => listeners.delete(l),
+    }
+    let renders = 0
+    const stop = onStoryRendered(
+      { __STORYBOOK_ADDONS_CHANNEL__: channel } as unknown as Window,
+      () => renders++
+    )
+    listeners.forEach((l) => l())
+    stop()
+    listeners.forEach((l) => l())
+    expect([renders, listeners.size]).toEqual([1, 0])
   })
 })
 

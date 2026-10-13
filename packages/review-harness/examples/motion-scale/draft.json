@@ -8,16 +8,14 @@
   "variants": [
     {
       "key": "fill",
-      "storyId": "components-molecules-progress--default",
-      "label": "Progress bar filling over 3 s",
-      "args": { "size": "lg" },
+      "storyId": "components-atoms-gauge--default",
+      "label": "Gauge filling over 3 s",
       "motion": { "mechanism": "arg", "arg": "value", "from": 0, "to": 100, "durationMs": 3000 }
     },
     {
       "key": "headline",
       "storyId": "foundations-typography--default",
-      "label": "Headline at three sizes, in one 1080p frame",
-      "args": { "children": "1248 kg lifted" },
+      "label": "Body copy at three heading sizes, in one 1080p frame",
       "scale": { "arg": "variant", "candidates": ["h3", "h2", "h1"] }
     }
   ],
@@ -44,10 +42,10 @@
   "sections": [
     {
       "id": "fill",
-      "title": "How fast the bar fills",
+      "title": "How fast the gauge fills",
       "deciding": "Whether the fill's pace reads on video.",
-      "changed": "The bar fills from 0 to 100 over 3 s; play, pause and scrub it.",
-      "context": "The bar's colour and size are not under review.",
+      "changed": "The gauge fills from 0 to 100 over 3 s; play, pause and scrub it.",
+      "context": "The gauge's bands and size are not under review.",
       "kind": "STATES",
       "questionIds": ["fill-pace"],
       "variantKeys": ["fill"]

@@ -1,4 +1,4 @@
-import { useRef, useState, type MouseEvent } from 'react'
+import { useEffect, useRef, useState, type MouseEvent } from 'react'
 import type { Annotation, LadderRung, StoryVariant } from '@titan-design/review-schema'
 import { storyUrl, withArg } from '../src/round.ts'
 import {
@@ -19,7 +19,7 @@ import {
   viewScale,
   type ScaleView,
 } from './scale.ts'
-import { useLiveArgs, type LiveArgs } from './storyArgs.ts'
+import { onStoryRendered, useLiveArgs, type LiveArgs } from './storyArgs.ts'
 
 type Candidate = string | number | boolean
 type ScaledVariant = StoryVariant & { scale: NonNullable<StoryVariant['scale']> }
@@ -75,6 +75,8 @@ function ScaleCell({ variant, candidate, width, height, liveArgs, onMeasure }: C
   const sendArgs = useLiveArgs(iframe, variant.storyId, liveArgs)
   const arg = variant.scale!.arg
   const measure = () => onMeasure(largestTextPx(textRuns(sameOriginDocument(iframe.current))))
+  const unsubscribe = useRef<(() => void) | null>(null)
+  useEffect(() => () => unsubscribe.current?.(), [])
   return (
     <iframe
       ref={iframe}
@@ -86,6 +88,9 @@ function ScaleCell({ variant, candidate, width, height, liveArgs, onMeasure }: C
       onLoad={(e) => {
         attachKeys(e.currentTarget)
         sendArgs(e.currentTarget)
+        unsubscribe.current?.()
+        // The window loads before the story first renders; measure each render instead.
+        unsubscribe.current = onStoryRendered(e.currentTarget.contentWindow, measure)
         measure()
         sameOriginDocument(e.currentTarget)
           ?.fonts?.ready.then(measure)
