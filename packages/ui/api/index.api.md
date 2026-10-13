@@ -422,6 +422,30 @@ export type AlertVariant = 'subtle' | 'outline' | 'solid';
 // @public
 export function alpha(color: string, opacity: number): string;
 
+// @public
+export function AnimatedNumber(input: AnimatedNumberProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export type AnimatedNumberFormat = (n: number) => string;
+
+// @public
+export type AnimatedNumberMode = 'count' | 'reel';
+
+// @public
+export interface AnimatedNumberProps {
+    className?: string;
+    decimals?: number;
+    format?: AnimatedNumberFormat;
+    from?: number;
+    mode?: AnimatedNumberMode;
+    progress: number;
+    size?: AnimatedNumberSize;
+    value: number;
+}
+
+// @public
+export type AnimatedNumberSize = 'sm' | 'md' | 'lg';
+
 // @public @deprecated (undocumented)
 export function applyThemePreset(preset: ThemePreset): () => void;
 
