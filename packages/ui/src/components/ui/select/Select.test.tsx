@@ -124,9 +124,7 @@ describe('Select', () => {
       render(<Select options={defaultOptions} isMulti values={['1', '3']} />)
       fireEvent.click(screen.getByRole('combobox'))
       expect(screen.queryByText('✓')).toBeNull()
-      const ticked = screen
-        .getAllByRole('checkbox')
-        .map((row) => row.querySelector('svg') !== null)
+      const ticked = screen.getAllByRole('checkbox').map((row) => row.querySelector('svg') !== null)
       expect(ticked).toEqual([true, false, true])
     })
   })
