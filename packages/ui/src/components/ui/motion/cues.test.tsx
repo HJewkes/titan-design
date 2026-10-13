@@ -109,8 +109,18 @@ describe('Beat cues', () => {
         <Text>Release notes</Text>
       </BeatFrame>
     )
-    const plain = renderAt(1, <Beat startS={0} durationS={3}>{frame}</Beat>)
-    const cued = renderAt(1, <Beat startS={0} durationS={3} cues={{ vo: 1 }}>{frame}</Beat>)
+    const plain = renderAt(
+      1,
+      <Beat startS={0} durationS={3}>
+        {frame}
+      </Beat>
+    )
+    const cued = renderAt(
+      1,
+      <Beat startS={0} durationS={3} cues={{ vo: 1 }}>
+        {frame}
+      </Beat>
+    )
     expect(domState(cued.container)).toEqual(domState(plain.container))
   })
 

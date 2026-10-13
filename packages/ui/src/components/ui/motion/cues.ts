@@ -20,9 +20,12 @@ export function withCues(
   if (!cues) return parent
   const merged = new Map(parent)
   for (const [name, atS] of Object.entries(cues)) {
-    if (parent.has(name)) throw new Error(`Beat cue "${name}" is already declared by an enclosing Beat`)
+    if (parent.has(name))
+      throw new Error(`Beat cue "${name}" is already declared by an enclosing Beat`)
     if (!Number.isFinite(atS) || atS < 0 || atS > durationS) {
-      throw new RangeError(`Beat cue "${name}" at ${atS} s must be finite and within [0, ${durationS}]`)
+      throw new RangeError(
+        `Beat cue "${name}" at ${atS} s must be finite and within [0, ${durationS}]`
+      )
     }
     merged.set(name, originS + atS)
   }
