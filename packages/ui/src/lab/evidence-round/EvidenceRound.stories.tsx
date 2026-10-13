@@ -63,8 +63,8 @@ function Frame({
 function Plane({ light, children }: { light?: boolean; children: ReactNode }) {
   return (
     <View
-      className={cn('bg-background-base flex-1', light && 'light')}
-      style={{ padding: 24, gap: 12 }}
+      className={cn('bg-background-base flex-1 flex-row flex-wrap content-start', light && 'light')}
+      style={{ padding: 24, gap: 20 }}
     >
       {children}
     </View>
@@ -77,17 +77,6 @@ const TONES: Record<string, Partial<Record<EvidenceKind, PillTone>>> = {
   C: { estimated: 'brand-secondary', target: 'brand-secondary' },
 }
 
-function KindRow({ kind, tone }: { kind: EvidenceKind; tone: PillTone }) {
-  return (
-    <View className="flex-row items-center" style={{ gap: pillScale(PX).besideGap }}>
-      <ScaledPill tone={tone} label={EVIDENCE_LABEL[kind]} fontPx={PX} />
-      <Text className="font-mono text-text-secondary" style={{ fontSize: PX }}>
-        notes.md:12
-      </Text>
-    </View>
-  )
-}
-
 export const Q1Tones: StoryObj<{ variant: keyof typeof TONES }> = {
   args: { variant: 'A' },
   argTypes: { variant: { control: 'inline-radio', options: Object.keys(TONES) } },
@@ -97,7 +86,12 @@ export const Q1Tones: StoryObj<{ variant: keyof typeof TONES }> = {
         {[false, true].map((light) => (
           <Plane key={String(light)} light={light}>
             {EVIDENCE_KINDS.map((kind) => (
-              <KindRow key={kind} kind={kind} tone={TONES[variant][kind] ?? EVIDENCE_TONE[kind]} />
+              <ScaledPill
+                key={kind}
+                tone={TONES[variant][kind] ?? EVIDENCE_TONE[kind]}
+                label={EVIDENCE_LABEL[kind]}
+                fontPx={PX}
+              />
             ))}
           </Plane>
         ))}
@@ -161,15 +155,17 @@ function TwoUp({ chips }: { chips: BandChip[] }) {
   const half = (BAND - 48) / 2
   return (
     <View className="flex-row" style={{ gap: 48 }}>
-      {chips.slice(0, 2).map((chip) => (
-        <EvidenceChip
-          key={chip.text}
-          kind={chip.kind}
-          text={chip.text}
-          fontPx={PX}
-          maxChars={layoutChipBand([chip], { width: half }).leadMaxChars}
-        />
-      ))}
+      {chips.slice(0, 2).map((chip) => {
+        const { leadMaxChars, fits } = layoutChipBand([chip], { width: half })
+        return (
+          <View key={chip.text} className="overflow-hidden" style={{ width: half, gap: 8 }}>
+            <EvidenceChip kind={chip.kind} text={chip.text} fontPx={PX} maxChars={leadMaxChars} />
+            <Text className="font-mono text-text-secondary" style={{ fontSize: 24 }}>
+              {`budget ${leadMaxChars} chars${fits ? '' : ', does not fit'}`}
+            </Text>
+          </View>
+        )
+      })}
     </View>
   )
 }

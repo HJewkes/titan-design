@@ -8,6 +8,7 @@ import { EVIDENCE_LABEL } from './evidence'
 import {
   bandGap,
   chipEntry,
+  entryRisePx,
   layoutChipBand,
   type BandChip,
   type ChipBandLayout,
@@ -101,11 +102,17 @@ export function ChipBand({
   }
   const items = bandItems(layout)
   const motion = { frameHeight, entry, reducedMotion: reducedMotion ?? prefersReduced }
+  // The clip box reaches one rise below and above the layout box, so a rising chip is
+  // not cropped while overflow still clips sideways.
+  const rise = entryRisePx(frameHeight)
   return (
     <View
       role="list"
       className={cn('flex-row flex-nowrap items-center overflow-hidden', className)}
-      style={[{ width, gap: bandGap(layout.fontPx) }, style]}
+      style={[
+        { width, gap: bandGap(layout.fontPx), paddingVertical: rise, marginVertical: -rise },
+        style,
+      ]}
       {...props}
     >
       {items.map((item, i) => {

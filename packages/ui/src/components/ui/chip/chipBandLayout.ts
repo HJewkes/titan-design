@@ -3,7 +3,7 @@
 import { elideSource, type ElidedSource } from '../../../utils/elideSource'
 import { MOTION } from '../motion/tokens'
 import { pillScale } from '../pill/pillScale'
-import { EVIDENCE_LABEL, type EvidenceKind } from './evidence'
+import type { EvidenceKind } from './evidence'
 
 /** One citation in a band. */
 export interface BandChip {
@@ -13,10 +13,23 @@ export interface BandChip {
 
 /** The smallest legible chip text on a 1080 px frame. */
 const FLOOR_PX_AT_1080 = 40
-// Fixed advances in em. Exact for the mono face; for the label face, the
-// average over the nine kind labels.
+// JetBrains Mono's fixed advance, measured at 40 px in Chromium: 0.600 em, with headroom.
 const MONO_ADVANCE_EM = 0.602
-const LABEL_ADVANCE_EM = 0.501
+// Space Grotesk semibold has no fixed advance; an average misjudged these labels by up
+// to 25 %, so each width is measured once at 40 px in Chromium and rounded up.
+const KIND_LABEL_EM: Record<EvidenceKind, number> = {
+  verified: 3.65,
+  measured: 4.75,
+  computed: 5.0,
+  'docs-claim': 5.2,
+  estimated: 4.85,
+  target: 3.05,
+  'our-framing': 5.65,
+  reconstructed: 7.05,
+  illustrative: 5.1,
+}
+// Digits and `+` in the label face, per character, with headroom.
+const COUNTER_EM_PER_CHAR = 0.65
 
 /** The chip font size for a frame: 40 px per 1080 px of height, never per width. */
 export function videoFontPx(frameHeight: number): number {
@@ -47,17 +60,17 @@ export interface ChipBandLayoutOptions {
   max?: number
 }
 
-function capsuleWidth(label: string, fontPx: number): number {
-  return label.length * LABEL_ADVANCE_EM * fontPx + 2 * pillScale(fontPx).paddingHorizontal
+function capsuleWidth(labelEm: number, fontPx: number): number {
+  return labelEm * fontPx + 2 * pillScale(fontPx).paddingHorizontal
 }
 
 /** Gap between band items: twice the capsule-to-citation gap, so each chip reads as one unit. */
 export const bandGap = (fontPx: number) => 2 * pillScale(fontPx).besideGap
 
 function railWidth(tabs: BandChip[], droppedCount: number, fontPx: number): number {
-  const labels = tabs.map((tab) => EVIDENCE_LABEL[tab.kind])
-  if (droppedCount > 0) labels.push(`+${droppedCount}`)
-  return labels.reduce((sum, label) => sum + bandGap(fontPx) + capsuleWidth(label, fontPx), 0)
+  const labelEms = tabs.map((tab) => KIND_LABEL_EM[tab.kind])
+  if (droppedCount > 0) labelEms.push(`+${droppedCount}`.length * COUNTER_EM_PER_CHAR)
+  return labelEms.reduce((sum, em) => sum + bandGap(fontPx) + capsuleWidth(em, fontPx), 0)
 }
 
 function fitLead(
@@ -68,7 +81,7 @@ function fitLead(
   fontPx: number
 ) {
   const rail = railWidth(tabs, dropped.length, fontPx)
-  const chrome = capsuleWidth(EVIDENCE_LABEL[lead.kind], fontPx) + pillScale(fontPx).besideGap
+  const chrome = capsuleWidth(KIND_LABEL_EM[lead.kind], fontPx) + pillScale(fontPx).besideGap
   const advance = MONO_ADVANCE_EM * fontPx
   const leadMaxChars = Math.max(0, Math.floor((width - rail - chrome) / advance))
   const leadElision = elideSource(lead.text, leadMaxChars)
@@ -102,6 +115,11 @@ export function layoutChipBand(chips: BandChip[], options: ChipBandLayoutOptions
   }
 }
 
+/** How far a chip rises on entry: the video rise token, scaled to the frame. */
+export function entryRisePx(frameHeight: number): number {
+  return (MOTION.video.rise * frameHeight) / 1080
+}
+
 export interface ChipEntry {
   opacity: number
   translateY: number
@@ -125,6 +143,6 @@ export function chipEntry(
   const start = index * MOTION.staggerEachS(count)
   const raw = (progressS - start) / MOTION.video.emphasis
   const eased = MOTION.ease.out(Math.min(1, Math.max(0, raw)))
-  const rise = entry === 'rise' ? (MOTION.video.rise * frameHeight) / 1080 : 0
+  const rise = entry === 'rise' ? entryRisePx(frameHeight) : 0
   return { opacity: eased, translateY: (1 - eased) * rise }
 }

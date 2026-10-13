@@ -40,6 +40,12 @@ describe('ChipBand', () => {
     expect(screen.getAllByRole('listitem')).toHaveLength(3)
   })
 
+  it('leaves room for a rising chip so the clip does not crop it', () => {
+    render(band(0.12, { frameHeight: 2160, width: 3600 }))
+    const { paddingTop, paddingBottom, marginTop } = screen.getByTestId('band').style
+    expect([paddingTop, paddingBottom, marginTop]).toEqual(['80px', '80px', '-80px'])
+  })
+
   it('starts hidden and shows the end state at once under reduced motion', () => {
     render(band(0))
     expect(screen.getAllByRole('listitem').map((item) => item.style.opacity)).toEqual([

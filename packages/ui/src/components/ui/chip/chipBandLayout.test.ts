@@ -19,7 +19,7 @@ describe('layoutChipBand', () => {
     expect(layout.tabs).toHaveLength(1)
     expect(layout.dropped).toHaveLength(1)
     expect(layout.leadElision).toMatchObject({
-      text: 'cd@7b2e04a1:…/heartbeat-mon.ts:120-148 +1',
+      text: 'cd@7b2e04a1:…/heartbeat.ts:120-148 +1',
       fits: true,
     })
   })
