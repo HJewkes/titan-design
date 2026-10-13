@@ -43,7 +43,10 @@ const meta: Meta<typeof ProgressSteps> = {
           'connector can fill part-way. Labels use the [Typography](?path=/docs/foundations-typography--docs) ' +
           'text tokens; the `dots` variant is [Progress](?path=/docs/components-molecules-progress--docs)’s ' +
           'step indicator. `progress` is a fractional position (0..totalSteps-1, clamped) that overrides ' +
-          '`currentStep`; under reduced motion it snaps to the step it is heading for. No loading, empty ' +
+          '`currentStep`. As the position leaves a step, its chip fills with the brand colour and then ' +
+          'fades to the done colour over the next quarter step; the last step runs the same sequence ' +
+          'just before the end, so a finished rail reads done. Drag `progress` from 1 to 1.5 to see ' +
+          'it. Under reduced motion the position snaps to the step it is heading for. No loading, empty ' +
           'or error state: it displays a position the consumer already has. No disabled state: it is ' +
           'not interactive.',
       },
