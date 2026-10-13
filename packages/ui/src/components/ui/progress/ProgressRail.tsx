@@ -1,0 +1,116 @@
+import { View, Text } from 'react-native'
+import { cn } from '../../../utils/cn'
+import { interpolate } from '../motion/interpolate'
+import { chipLook } from './railTimeline'
+
+interface RailPartProps {
+  index: number
+  position: number
+  totalSteps: number
+  sizeClass: string
+  fillClass: string
+}
+
+function RailChip({
+  index,
+  position,
+  totalSteps,
+  sizeClass,
+  fillClass,
+  label,
+}: RailPartProps & { label?: string }) {
+  const { state, core, done } = chipLook(index, position, totalSteps)
+
+  return (
+    <View
+      accessibilityRole="image"
+      accessibilityLabel={`Step ${index + 1}${label ? `, ${label}` : ''}: ${state}`}
+      className={cn('rounded-full items-center justify-center', sizeClass)}
+    >
+      {done < 1 && (
+        <View
+          className={cn(
+            'absolute inset-0 rounded-full border-2',
+            state === 'pending' ? 'border-hairline-strong' : 'border-brand-primary'
+          )}
+        />
+      )}
+      {core > 0 && done < 1 && (
+        <View
+          testID={`progress-steps-core-${index}`}
+          className="rounded-full bg-brand-primary"
+          style={{ width: `${core}%`, height: `${core}%` }}
+        />
+      )}
+      {done > 0 && (
+        <View
+          testID={`progress-steps-done-${index}`}
+          className={cn('absolute inset-0 rounded-full', fillClass)}
+          style={{ opacity: done }}
+        />
+      )}
+    </View>
+  )
+}
+
+/** Half of the connector between `segment` and `segment + 1`; each half fills over half a step. */
+function RailHalf({
+  segment,
+  half,
+  position,
+  sizeClass,
+  fillClass,
+}: { segment: number; half: 'start' | 'end' } & Omit<RailPartProps, 'index' | 'totalSteps'>) {
+  const from = half === 'start' ? segment : segment + 0.5
+  const fill = interpolate(position, [from, from + 0.5], [0, 100])
+
+  return (
+    <View className={cn('flex-1 mx-1 rounded-full overflow-hidden bg-hairline-strong', sizeClass)}>
+      <View
+        testID={`progress-steps-segment-${segment}-${half}`}
+        className={cn('h-full', fillClass)}
+        style={{ width: `${fill}%` }}
+      />
+    </View>
+  )
+}
+
+export interface RailStepProps extends RailPartProps {
+  connectorClass: string
+  label?: string
+  isReached: boolean
+}
+
+/** One column: the chip between its connector halves, its label centred beneath. */
+export function RailStep({ connectorClass, label, isReached, ...part }: RailStepProps) {
+  const { index, totalSteps, position, fillClass } = part
+  const halfProps = { position, fillClass, sizeClass: connectorClass }
+
+  return (
+    <View className="flex-1 items-center gap-stack-md">
+      <View className="w-full flex-row items-center">
+        {index > 0 ? (
+          <RailHalf segment={index - 1} half="end" {...halfProps} />
+        ) : (
+          <View className="flex-1 mx-1" />
+        )}
+        <RailChip {...part} label={label} />
+        {index < totalSteps - 1 ? (
+          <RailHalf segment={index} half="start" {...halfProps} />
+        ) : (
+          <View className="flex-1 mx-1" />
+        )}
+      </View>
+      {label != null && (
+        <Text
+          className={cn(
+            'px-1 text-xs text-center',
+            isReached ? 'text-text-primary font-medium' : 'text-text-secondary'
+          )}
+        >
+          {label}
+        </Text>
+      )}
+    </View>
+  )
+}
