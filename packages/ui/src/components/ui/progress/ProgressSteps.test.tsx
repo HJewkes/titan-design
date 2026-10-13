@@ -26,11 +26,22 @@ function chipStates() {
   return screen.getAllByRole('img').map((chip) => chip.getAttribute('aria-label'))
 }
 
-function connectorFills(container: HTMLElement) {
-  const rail = container.querySelector('[role="progressbar"]')
-  return Array.from(rail?.children ?? [])
-    .filter((child) => child.getAttribute('role') !== 'img')
-    .map((connector) => (connector.firstElementChild as HTMLElement).style.width)
+function halfFill(segment: number, half: 'start' | 'end') {
+  return parseFloat(screen.getByTestId(`progress-steps-segment-${segment}-${half}`).style.width)
+}
+
+/** Each connector is drawn as two halves, one in each step's column; report the whole. */
+function connectorFills() {
+  return [0, 1, 2].map((segment) => (halfFill(segment, 'start') + halfFill(segment, 'end')) / 2)
+}
+
+function chipLook(index: number) {
+  const core = screen.queryByTestId(`progress-steps-core-${index}`)
+  const done = screen.queryByTestId(`progress-steps-done-${index}`)
+  return {
+    core: core ? core.style.width : null,
+    done: done ? Number(done.style.opacity) : 0,
+  }
 }
 
 describe('ProgressSteps rail', () => {
@@ -57,9 +68,9 @@ describe('ProgressSteps rail', () => {
   })
 
   it('fills the connector into the active step by the fractional position', () => {
-    const { container } = renderRail(1.5)
+    renderRail(1.5)
 
-    expect(connectorFills(container)).toEqual(['100%', '50%', '0%'])
+    expect(connectorFills()).toEqual([100, 50, 0])
   })
 
   it('reports the active step as the progressbar value', () => {
@@ -78,7 +89,7 @@ describe('ProgressSteps rail', () => {
   })
 
   it('takes currentStep as the position when progress is absent', () => {
-    const { container } = render(<ProgressSteps variant="rail" currentStep={2} totalSteps={4} />)
+    render(<ProgressSteps variant="rail" currentStep={2} totalSteps={4} />)
 
     expect(chipStates()).toEqual([
       'Step 1: done',
@@ -86,22 +97,61 @@ describe('ProgressSteps rail', () => {
       'Step 3: active',
       'Step 4: pending',
     ])
-    expect(connectorFills(container)).toEqual(['100%', '100%', '0%'])
+    expect(connectorFills()).toEqual([100, 100, 0])
   })
 
-  it('clamps a position past the last step to the end', () => {
-    const { container } = renderRail(9)
+  it('clamps a position past the last step to the end, where every step is done', () => {
+    renderRail(9)
+
+    expect(chipStates()).toEqual([
+      'Step 1, Plan: done',
+      'Step 2, Build: done',
+      'Step 3, Ship: done',
+      'Step 4, Learn: done',
+    ])
+    expect(chipLook(3)).toEqual({ core: null, done: 1 })
+    expect(connectorFills()).toEqual([100, 100, 100])
+  })
+
+  it('fills a chip with the brand colour, then fades it to the done colour, as the position leaves', () => {
+    const at = (position: number) => {
+      const { unmount } = renderRail(position)
+      const look = chipLook(1)
+      unmount()
+      return look
+    }
+
+    expect(at(1)).toEqual({ core: '50%', done: 0 })
+    expect(at(1.25)).toEqual({ core: '100%', done: 0 })
+    expect(at(1.375)).toEqual({ core: '100%', done: 0.5 })
+    expect(at(1.5)).toEqual({ core: null, done: 1 })
+  })
+
+  it('runs the last chip through the same fill and fade before the end', () => {
+    renderRail(2.875)
 
     expect(chipStates()[3]).toBe('Step 4, Learn: active')
-    expect(connectorFills(container)).toEqual(['100%', '100%', '100%'])
+    expect(chipLook(3)).toEqual({ core: '100%', done: 0.5 })
+  })
+
+  it('centres each label under its own chip', () => {
+    renderRail(1.5)
+
+    LABELS.forEach((label) => {
+      const column = screen.getByText(label).parentElement
+      expect(column).toContainElement(screen.getByRole('img', { name: new RegExp(label) }))
+      expect(column?.querySelectorAll('[role="img"]')).toHaveLength(1)
+    })
   })
 
   it('shows the integer-step state under reduced motion', () => {
     reducedMotion.value = true
-    const { container } = renderRail(1.5)
+    renderRail(1.5)
 
     expect(chipStates()[2]).toBe('Step 3, Ship: active')
-    expect(connectorFills(container)).toEqual(['100%', '100%', '0%'])
+    expect(chipLook(1)).toEqual({ core: null, done: 1 })
+    expect(chipLook(2)).toEqual({ core: '50%', done: 0 })
+    expect(connectorFills()).toEqual([100, 100, 0])
   })
 
   it('has no accessibility violations', async () => {
