@@ -30,6 +30,11 @@ function encodeArgMap(map: ArgMap): string {
     .join(';')
 }
 
+/** The story with one more arg set, as a scale reference renders each candidate. */
+export function withArg(variant: StoryVariant, arg: string, value: string | number | boolean) {
+  return { ...variant, args: { ...variant.args, [arg]: value } }
+}
+
 export function storyUrl(base: string, variant: StoryVariant): string {
   const params = new URLSearchParams({
     id: variant.storyId,
@@ -59,6 +64,9 @@ export function urlParamProblems(manifest: Manifest): string[] {
   return manifest.variants.flatMap((v) => [
     ...argMapProblems(`variant ${v.key} args`, v.args),
     ...argMapProblems(`variant ${v.key} globals`, v.globals),
+    ...(v.scale?.candidates ?? []).flatMap((candidate) =>
+      argMapProblems(`variant ${v.key} scale`, { [v.scale!.arg]: candidate })
+    ),
   ])
 }
 

@@ -2,6 +2,7 @@ import { REQUIRED_RATIO, floorRatio } from './contrast.ts'
 import type { Check, FrameResult, Indeterminate } from './contrast-check.ts'
 import {
   THEME_MODES,
+  isClipVariant,
   isImageVariant,
   type CheckKind,
   type ContrastDeclarations,
@@ -172,17 +173,17 @@ function imageMisses(declared: Declared): Finding[] {
     }))
 }
 
-/** An image frame has no DOM: each mode needs a measurement or an explicit "unmeasured" reason. */
+/** An image or clip frame has no DOM: each mode needs a measurement or an "unmeasured" reason. */
 function imageProblems(manifest: Manifest, declared: Declared): string[] {
   const covered = new Set(
     [...declared.measured, ...declared.unmeasured].map((m) => `${m.variant}|${m.mode}`)
   )
   return manifest.variants
-    .filter(isImageVariant)
+    .filter((v) => isImageVariant(v) || isClipVariant(v))
     .flatMap((v) =>
       THEME_MODES.filter((mode) => !covered.has(`${v.key}|${mode}`)).map(
         (mode) =>
-          `image variant ${v.key} has no ${mode} contrast measurement; add contrast.measured, or contrast.unmeasured with a reason, for ${mode}`
+          `${isClipVariant(v) ? 'clip' : 'image'} variant ${v.key} has no ${mode} contrast measurement; add contrast.measured, or contrast.unmeasured with a reason, for ${mode}`
       )
     )
 }
