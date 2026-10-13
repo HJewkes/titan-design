@@ -93,7 +93,10 @@ describe('MOTION video tokens', () => {
   })
 
   it('keeps rise in px and scaleFrom as a factor', () => {
-    expect([MOTION.video.rise, MOTION.video.scaleFrom]).toEqual([motion.video.rise, motion.video.scaleFrom])
+    expect([MOTION.video.rise, MOTION.video.scaleFrom]).toEqual([
+      motion.video.rise,
+      motion.video.scaleFrom,
+    ])
   })
 
   it('staggers 60 ms per item while the cascade fits 0.5 s', () => {
