@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { SHIP_OPTIONS, contractProblems, duplicates, type Problem } from './contract.ts'
 import { LOCK_AXES } from './locks.ts'
+import { MotionSchema, ScaleReferenceSchema, mediaProblems } from './media.ts'
 
 export const MANIFEST_SCHEMA_ID = 'titan-review/round@2'
 /** A round written before the review contract: the page still reads it, the CLI refuses it. */
@@ -57,15 +58,30 @@ const imagePath = z
     'a .png path relative to the round file, without .. segments'
   )
 
+// A recorded clip, under the same path rules as an image; load time checks the container.
+const clipPath = z
+  .string()
+  .regex(
+    /^(?![/\\]|[A-Za-z]:)(?!(.*[/\\])?\.\.([/\\]|$)).+\.(?:[Mm][Pp]4|[Ww][Ee][Bb][Mm])$/,
+    'an .mp4 or .webm path relative to the round file, without .. segments'
+  )
+
 /** How a frame differs from main, in reg-cli's classes; absent when the round does not say. */
 export const FRAME_CHANGES = ['changed', 'new', 'removed', 'unchanged'] as const
 
-/** A frame is a Storybook story or a static PNG: exactly one of `storyId` and `image`. */
+const SOURCES = ['storyId', 'image', 'clip'] as const
+
+/** A frame is a Storybook story, a static PNG or a recorded clip: exactly one of the three. */
 export const VariantSchema = z
   .object({
     key: id,
     storyId: storyId.optional(),
     image: imagePath.optional(),
+    clip: clipPath.optional(),
+    /** How the frame moves; an animation is reviewed playing, never as sampled states. */
+    motion: MotionSchema.optional(),
+    /** A size question's candidates, rendered together in one full-size frame. */
+    scale: ScaleReferenceSchema.optional(),
     label: z.string().min(1),
     args: z.record(z.string(), argValue).optional(),
     globals: z.record(z.string(), argValue).optional(),
@@ -80,9 +96,14 @@ export const VariantSchema = z
   })
   .strict()
   .superRefine((v, ctx) => {
-    if ((v.storyId === undefined) === (v.image === undefined))
-      ctx.addIssue({ code: 'custom', message: 'a variant has either storyId or image, not both' })
-    if (v.image === undefined) return
+    if (SOURCES.filter((source) => v[source] !== undefined).length !== 1)
+      ctx.addIssue({
+        code: 'custom',
+        message: 'a variant has exactly one of storyId, image or clip',
+      })
+    for (const [field, message] of mediaProblems(v))
+      ctx.addIssue({ code: 'custom', path: [field], message })
+    if (v.storyId !== undefined) return
     for (const field of ['args', 'globals'] as const)
       if (v[field] !== undefined)
         ctx.addIssue({ code: 'custom', path: [field], message: `${field} need a storyId variant` })
@@ -509,11 +530,12 @@ function declaredVariants(decl: Declarations): { field: string; variant: string 
 
 /** A declaration names a frame of its own section (or any frame, at round level). */
 function contrastProblems(m: {
-  variants: { key: string; image?: string }[]
+  variants: { key: string; storyId?: string }[]
   contrast?: Declarations
   sections?: { id: string; variantKeys: string[]; contrast?: Declarations }[]
 }): string[] {
-  const images = new Set(m.variants.filter((v) => v.image !== undefined).map((v) => v.key))
+  // An image or a clip has no DOM to measure, so only it takes a measured ratio.
+  const withoutDom = new Set(m.variants.filter((v) => v.storyId === undefined).map((v) => v.key))
   const scopes = [
     { where: 'contrast', keys: new Set(m.variants.map((v) => v.key)), decl: m.contrast },
     ...(m.sections ?? []).map((s) => ({
@@ -525,8 +547,10 @@ function contrastProblems(m: {
   return scopes.flatMap(({ where, keys, decl }) =>
     (decl ? declaredVariants(decl) : []).flatMap(({ field, variant }) => {
       if (!keys.has(variant)) return [`${where}.${field}: ${variant} is not a frame here`]
-      if (field !== 'knownDefects' && !images.has(variant))
-        return [`${where}.${field}: ${variant} is a story; only an image variant is ${field}`]
+      if (field !== 'knownDefects' && !withoutDom.has(variant))
+        return [
+          `${where}.${field}: ${variant} is a story; only an image or clip variant is ${field}`,
+        ]
       return []
     })
   )
@@ -813,9 +837,10 @@ export const VerdictSchema = z.enum(['chosen', 'rejected', 'maybe']).nullable()
 const variantFeedbackSchema = z
   .object({
     key: z.string(),
-    /** Echoes the frame's source: `storyId` for a story variant, `image` for an image one. */
+    /** Echoes the frame's source: `storyId`, `image` or `clip`, whichever the variant has. */
     storyId: z.string().optional(),
     image: z.string().optional(),
+    clip: z.string().optional(),
     verdict: VerdictSchema,
     comment: z.string(),
     annotations: z.array(AnnotationSchema),
@@ -846,6 +871,7 @@ export type Manifest = z.output<typeof ManifestSchema>
 export type Variant = Manifest['variants'][number]
 export type StoryVariant = Variant & { storyId: string }
 export type ImageVariant = Variant & { image: string }
+export type ClipVariant = Variant & { clip: string }
 export type Question = Manifest['questions'][number]
 export type TopicPrefix = (typeof TOPIC_PREFIXES)[number]
 export type StackedOn = z.infer<typeof StackedOnSchema>
@@ -878,15 +904,25 @@ export function isImageVariant(variant: Variant): variant is ImageVariant {
   return variant.image !== undefined
 }
 
+export function isClipVariant(variant: Variant): variant is ClipVariant {
+  return variant.clip !== undefined
+}
+
 // zod can't express the object-level loopback superRefine as JSON Schema; a pattern
 // on the field is the closest honest approximation for schema consumers.
 const LOOPBACK_URL_PATTERN = '^https?://(127\\.0\\.0\\.1|localhost|\\[::1\\])(:[0-9]+)?(/.*)?$'
 
-// The variant superRefine (exactly one source; args only on stories), as JSON Schema.
+const NO_STORY_FIELDS = {
+  anyOf: [{ required: ['args'] }, { required: ['globals'] }, { required: ['scale'] }],
+}
+
+// The variant superRefine (exactly one source; args, globals and scale only on stories; a clip
+// declares its motion), as JSON Schema.
 const VARIANT_SOURCE = {
   oneOf: [
     { required: ['storyId'] },
-    { required: ['image'], not: { anyOf: [{ required: ['args'] }, { required: ['globals'] }] } },
+    { required: ['image'], not: NO_STORY_FIELDS },
+    { required: ['clip', 'motion'], not: NO_STORY_FIELDS },
   ],
 }
 
