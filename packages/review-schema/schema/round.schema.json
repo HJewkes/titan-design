@@ -127,6 +127,31 @@
                     "minimum": 100,
                     "maximum": 600000
                   },
+                  "keyframes": {
+                    "minItems": 1,
+                    "maxItems": 12,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "atMs": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 600000
+                        },
+                        "label": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 80
+                        }
+                      },
+                      "required": [
+                        "atMs",
+                        "label"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
                   "autoplay": {
                     "default": true,
                     "type": "boolean"

@@ -34,15 +34,44 @@ export const ArgMotionSchema = z
   .strict()
   .refine((m) => m.from !== m.to, { message: 'a motion arg sweeps a range: from and to differ' })
 
-/** A recorded clip (the variant's `clip`), played with the browser's own video controls. */
+/** A labelled moment in a clip; the page lists it under the clip, and a click seeks there. */
+const KeyframeSchema = z
+  .object({
+    atMs: z.number().int().min(0).max(600_000),
+    label: z.string().min(1).max(80),
+  })
+  .strict()
+
+/**
+ * A recorded clip (the variant's `clip`), played with the page's play, loop and scrub controls.
+ * `keyframes` name its stages in time order; they sit beside the playing clip, never in its place.
+ */
 export const ClipMotionSchema = z
   .object({
     mechanism: z.literal('clip'),
     /** The clip's length, when the round wants it stated; the file is the authority. */
     durationMs: z.number().int().min(100).max(600_000).optional(),
+    keyframes: z.array(KeyframeSchema).min(1).max(12).optional(),
     ...playback,
   })
   .strict()
+  .superRefine((m, ctx) => {
+    for (const [i, k] of (m.keyframes ?? []).entries()) {
+      const previous = m.keyframes?.[i - 1]
+      if (previous && k.atMs <= previous.atMs)
+        ctx.addIssue({
+          code: 'custom',
+          path: ['keyframes', i, 'atMs'],
+          message: `keyframes run in time order: ${k.label} at ${k.atMs}ms follows ${previous.atMs}ms`,
+        })
+      if (m.durationMs !== undefined && k.atMs > m.durationMs)
+        ctx.addIssue({
+          code: 'custom',
+          path: ['keyframes', i, 'atMs'],
+          message: `keyframe ${k.label} at ${k.atMs}ms is past the clip's ${m.durationMs}ms`,
+        })
+    }
+  })
 
 export const MotionSchema = z.discriminatedUnion('mechanism', [ArgMotionSchema, ClipMotionSchema])
 
@@ -95,6 +124,7 @@ export const ScaleReferenceSchema = z
 export type Motion = z.output<typeof MotionSchema>
 export type ArgMotion = z.output<typeof ArgMotionSchema>
 export type ClipMotion = z.output<typeof ClipMotionSchema>
+export type Keyframe = z.output<typeof KeyframeSchema>
 export type MotionMechanism = (typeof MOTION_MECHANISMS)[number]
 export type ScaleReference = z.output<typeof ScaleReferenceSchema>
 export type LadderRung = z.output<typeof LadderRungSchema>

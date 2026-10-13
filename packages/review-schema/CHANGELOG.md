@@ -9,6 +9,11 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Optional `keyframes` on a clip motion: `[{ atMs, label }]` (1 to 12), the clip's labelled
+  stages. Times strictly increase, and none is past `durationMs` when that is stated; out-of-order
+  keyframes are refused, never sorted. Exports the `Keyframe` type. The review page now plays a
+  clip under the arg player's controls (play/pause, scrubber, readout) plus a loop toggle, in
+  place of the browser's own, and lists the keyframes under it as seek-and-pause chips.
 - Motion and scale on a variant (owner decision 339(2)). `motion` declares how a frame moves:
   `{ mechanism: "arg", arg = "progress", from = 0, to = 1, durationMs, autoplay = true, loop = true }`
   drives a live story's numeric arg, and `{ mechanism: "clip", durationMs?, autoplay, loop }`
