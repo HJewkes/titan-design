@@ -68,7 +68,7 @@ export const darkThemeCSSVars: {
     readonly '--font-family-sans': "'Inter'";
     readonly '--font-family-body': "'Nunito Sans'";
     readonly '--font-family-heading': "'Space Grotesk'";
-    readonly '--font-family-mono': "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
+    readonly '--font-family-mono': "'JetBrains Mono', monospace";
     readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
     readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
     readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
@@ -614,7 +614,7 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--font-family-sans': "'Inter'";
     readonly '--font-family-body': "'Nunito Sans'";
     readonly '--font-family-heading': "'Space Grotesk'";
-    readonly '--font-family-mono': "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
+    readonly '--font-family-mono': "'JetBrains Mono', monospace";
     readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
     readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
     readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
@@ -789,7 +789,7 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--font-family-sans': "'Inter'";
     readonly '--font-family-body': "'Nunito Sans'";
     readonly '--font-family-heading': "'Space Grotesk'";
-    readonly '--font-family-mono': "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
+    readonly '--font-family-mono': "'JetBrains Mono', monospace";
     readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
     readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
     readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
@@ -1112,7 +1112,7 @@ export const lightThemeCSSVars: {
     readonly '--font-family-sans': "'Inter'";
     readonly '--font-family-body': "'Nunito Sans'";
     readonly '--font-family-heading': "'Space Grotesk'";
-    readonly '--font-family-mono': "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
+    readonly '--font-family-mono': "'JetBrains Mono', monospace";
     readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
     readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
     readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
@@ -1459,7 +1459,7 @@ export const primitiveTypography: {
         readonly sans: readonly ["Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Helvetica", "Arial", "sans-serif"];
         readonly body: readonly ["Nunito Sans", "sans-serif"];
         readonly heading: readonly ["Space Grotesk", "sans-serif"];
-        readonly mono: readonly ["SF Mono", "Monaco", "Inconsolata", "Fira Mono", "Droid Sans Mono", "Source Code Pro", "monospace"];
+        readonly mono: readonly ["JetBrains Mono", "monospace"];
     };
     readonly fontSizes: {
         readonly '2xs': "0.625rem";
