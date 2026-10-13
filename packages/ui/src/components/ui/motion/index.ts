@@ -65,6 +65,7 @@ export {
   type LocalTime,
   type Phase,
 } from './hooks'
+export { useCue, type BeatCues } from './cues'
 export {
   Beat,
   BEAT_MOUNT_MARGIN_S,
