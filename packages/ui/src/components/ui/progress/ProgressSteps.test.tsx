@@ -4,7 +4,7 @@ import { axe } from 'jest-axe'
 import { ProgressSteps } from './ProgressSteps'
 import { progressColor } from './progressColor'
 import { chipTint } from './railTimeline'
-import { interpolateColor } from '../motion/color'
+import { interpolateColor, interpolateColorOklch } from '../motion/color'
 
 const reducedMotion = vi.hoisted(() => ({ value: false }))
 vi.mock('../../../hooks/usePrefersReducedMotion', () => ({
@@ -140,6 +140,16 @@ describe('ProgressSteps rail', () => {
     })
     expect(chipTint(0.5, [BRAND, DONE])).not.toBe(interpolateColor(0.5, [0, 1], [BRAND, DONE]))
     expect(at(1.5)).toEqual({ core: null, colour: null, done: true })
+  })
+
+  it('holds lightness through the turn so the light theme passes gold, not olive', () => {
+    const light = [progressColor('primary', 'light'), progressColor('success', 'light')] as const
+    const brightness = (hex: string) =>
+      [1, 3, 5].reduce((sum, i) => sum + parseInt(hex.slice(i, i + 2), 16), 0)
+
+    expect(brightness(chipTint(0.5, light))).toBeGreaterThan(
+      brightness(interpolateColorOklch(0.5, [0, 1], light))
+    )
   })
 
   it('runs the last chip through the same turn before the end', () => {
