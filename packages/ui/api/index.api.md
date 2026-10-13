@@ -5675,6 +5675,9 @@ export interface NextTargetCoord extends GeometryPoint {
 }
 
 // @public
+export function noise2D(seed: number | string, x: number, y: number): number;
+
+// @public
 export function normalizeLossThresholds(input?: unknown): VelocityLossThresholds;
 
 // @public
@@ -6530,6 +6533,12 @@ export interface RafClockOptions {
 
 // @public
 export function raisedLevel(parent: SurfaceLevel, steps: number): SurfaceLevel;
+
+// @public
+export function random(seed: number | string, ...keys: number[]): number;
+
+// @public
+export function randomRange(seed: number | string, keys: readonly number[], input: readonly [number, number]): number;
 
 // @public
 export function ReadinessCheck(input: ReadinessCheckProps): react_jsx_runtime.JSX.Element;
