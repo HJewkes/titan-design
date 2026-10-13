@@ -58,6 +58,18 @@ export function cropInset(input?: CropEdges): string;
 export function cubicBezier(x1: number, y1: number, x2: number, y2: number): Easing;
 
 // @public
+export function cutPath(path: string | PathModel, length: number): string;
+
+// @public
+export function drawOn(length: number, progress: number): DrawOnStyle;
+
+// @public
+export interface DrawOnStyle {
+    strokeDasharray: number;
+    strokeDashoffset: number;
+}
+
+// @public
 export const easeIn: (f: Easing) => Easing;
 
 // @public
@@ -101,6 +113,9 @@ export interface InterpolateOptions {
     clamp?: boolean;
     ease?: Easing;
 }
+
+// @public
+export function interpolatePath(t: number, from: string, to: string): string;
 
 // @public
 export function interpolateScale(t: number, input: readonly [number, number], input2: readonly [number, number], options?: InterpolateOptions): number;
@@ -153,7 +168,78 @@ export interface MotionProviderProps {
 export function noise2D(seed: number | string, x: number, y: number): number;
 
 // @public
+export function parsePath(d: string): PathCommand[];
+
+// @public
+export type PathCommand = {
+    type: 'M' | 'L';
+    x: number;
+    y: number;
+} | {
+    type: 'C';
+    x1: number;
+    y1: number;
+    x2: number;
+    y2: number;
+    x: number;
+    y: number;
+} | {
+    type: 'Q';
+    x1: number;
+    y1: number;
+    x: number;
+    y: number;
+} | {
+    type: 'A';
+    rx: number;
+    ry: number;
+    rotation: number;
+    largeArc: boolean;
+    sweep: boolean;
+    x: number;
+    y: number;
+} | {
+    type: 'Z';
+};
+
+// @public
+export function pathLength(path: string | PathModel): number;
+
+// @public
+export interface PathModel {
+    readonly d: string;
+    readonly length: number;
+    readonly ops: readonly PathOp[];
+}
+
+// @public
+export function pathModel(d: string): PathModel;
+
+// @public
+export function pathMorph(from: string, to: string): (t: number) => string;
+
+// @public
+export type PathOp = {
+    type: 'M';
+    point: PathPoint;
+} | {
+    type: 'segment';
+    segment: readonly PathPoint[];
+    length: number;
+    closes: boolean;
+};
+
+// @public
+export interface PathPoint {
+    x: number;
+    y: number;
+}
+
+// @public
 export type Phase = 'before' | 'during' | 'after';
+
+// @public
+export function pointAtLength(path: string | PathModel, at: number): PathPoint;
 
 // @public
 export const poly: (n: number) => Easing;
@@ -245,6 +331,9 @@ export interface StaggerOptions {
     each: number;
     from?: number;
 }
+
+// @public
+export function tangentAtLength(path: string | PathModel, at: number): PathPoint;
 
 // @public
 export function useBeatEnvelope(options?: EnvelopeOptions): Envelope;
