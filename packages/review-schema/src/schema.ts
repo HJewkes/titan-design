@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { SHIP_OPTIONS, contractProblems, duplicates, type Problem } from './contract.ts'
 import { LOCK_AXES } from './locks.ts'
-import { MotionSchema, ScaleReferenceSchema, mediaProblems } from './media.ts'
+import { FrameReferenceSchema, MotionSchema, ScaleReferenceSchema, mediaProblems } from './media.ts'
 import { CompareSchema, EvidenceTableSchema, OptionDetailSchema, packetProblems } from './packet.ts'
 
 export const MANIFEST_SCHEMA_ID = 'titan-review/round@2'
@@ -83,6 +83,8 @@ export const VariantSchema = z
     motion: MotionSchema.optional(),
     /** A size question's candidates, rendered together in one full-size frame. */
     scale: ScaleReferenceSchema.optional(),
+    /** An image or clip that is a true-size frame, checked at load and drawn with a ladder. */
+    frameReference: FrameReferenceSchema.optional(),
     label: z.string().min(1),
     args: z.record(z.string(), argValue).optional(),
     globals: z.record(z.string(), argValue).optional(),
@@ -931,11 +933,11 @@ const NO_STORY_FIELDS = {
   anyOf: [{ required: ['args'] }, { required: ['globals'] }, { required: ['scale'] }],
 }
 
-// The variant superRefine (exactly one source; args, globals and scale only on stories; a clip
-// declares its motion), as JSON Schema.
+// The variant superRefine (exactly one source; args, globals and scale only on stories; a frame
+// reference only on images and clips; a clip declares its motion), as JSON Schema.
 const VARIANT_SOURCE = {
   oneOf: [
-    { required: ['storyId'] },
+    { required: ['storyId'], not: { required: ['frameReference'] } },
     { required: ['image'], not: NO_STORY_FIELDS },
     { required: ['clip', 'motion'], not: NO_STORY_FIELDS },
   ],

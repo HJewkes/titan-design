@@ -1,7 +1,14 @@
 import { useState, type MouseEvent } from 'react'
 import type { Annotation, FrameHeight, ImageVariant } from '@titan-design/review-schema'
 import { isAuto } from '../src/sections.ts'
-import { PinOverlay, pointerPin, useFitScale, type PinInput } from './Frame.tsx'
+import { PinOverlay, pointerPin, type PinInput } from './Frame.tsx'
+import {
+  LadderOverlay,
+  ViewToggle,
+  trueSizeCaption,
+  trueSizeClass,
+  useFrameView,
+} from './TrueSize.tsx'
 
 interface ImageFrameProps {
   variant: ImageVariant
@@ -18,17 +25,25 @@ function imageUrl(variant: ImageVariant): string {
   return `api/image/${encodeURIComponent(variant.key)}`
 }
 
+function boxHeight(props: ImageFrameProps, scale: number) {
+  const reference = props.variant.frameReference
+  if (reference) return { height: reference.frame.height * scale }
+  return isAuto(props.height)
+    ? { maxHeight: props.maxHeight * scale }
+    : { height: props.height * scale }
+}
+
 /**
  * A static PNG drawn at the declared width. An `auto` frame is as tall as the image at that
  * width up to the cap; a number fixes the frame. Past either, the image scrolls in its frame.
+ * A true-size frame (`frameReference`) is outlined, carries its ladder and switches Fit and 1:1.
  */
 export function ImageFrame(props: ImageFrameProps) {
   const { variant, width } = props
-  const { ref, scale } = useFitScale(width)
+  const reference = variant.frameReference
+  const { ref, scale, view, setView } = useFrameView(width)
   const [broken, setBroken] = useState(false)
-  const box = isAuto(props.height)
-    ? { maxHeight: props.maxHeight * scale }
-    : { height: props.height * scale }
+  const box = boxHeight(props, scale)
 
   const onOverlayClick = (e: MouseEvent<HTMLDivElement>) => {
     const shownHeight = e.currentTarget.getBoundingClientRect().height / scale
@@ -36,11 +51,23 @@ export function ImageFrame(props: ImageFrameProps) {
   }
 
   return (
-    <figure className="frame" data-width={width} ref={ref}>
+    <figure className={trueSizeClass('frame', reference && view)} data-width={width} ref={ref}>
       <figcaption>
-        {width}px{scale < 1 ? ` · shown at ${Math.round(scale * 100)}%` : ''} · image
+        {reference ? (
+          <>
+            {trueSizeCaption(reference, scale)} · image
+            <ViewToggle view={view} onChange={setView} />
+          </>
+        ) : (
+          <>
+            {width}px{scale < 1 ? ` · shown at ${Math.round(scale * 100)}%` : ''} · image
+          </>
+        )}
       </figcaption>
-      <div className="frame-box image-box" style={{ width: width * scale, ...box }}>
+      <div
+        className={trueSizeClass('frame-box image-box', reference && 'true-size')}
+        style={{ width: width * scale, ...box }}
+      >
         <div className="image-content">
           <img
             src={imageUrl(variant)}
@@ -58,6 +85,7 @@ export function ImageFrame(props: ImageFrameProps) {
             onClick={onOverlayClick}
           />
         </div>
+        {reference && <LadderOverlay rungs={reference.ladder} k={scale} />}
         {broken && (
           <div className="frame-dead" role="alert" data-testid={`dead-${variant.key}-${width}`}>
             <p>Image failed to load: {variant.image}</p>
