@@ -1,10 +1,16 @@
 import { describe, expect, it } from 'vitest'
-import { compareSvgPaths, selfCrossings } from '../../test/svg-overlap'
+import {
+  SAME_SHAPE_MIN_IOU,
+  compareSvgPaths,
+  flattenPath,
+  selfCrossings,
+} from '../../test/svg-overlap'
 import {
   CHECK_MARK_APEX,
   CHECK_MARK_MASK_WIDTH,
   CHECK_MARK_SPINE,
   checkMarkOutline,
+  checkMarkPath,
   type CheckMarkPoint,
 } from './checkMarkGeometry'
 
@@ -115,4 +121,31 @@ describe('checkMarkOutline', () => {
       }
     }
   )
+})
+
+describe('checkMarkPath', () => {
+  it.each([
+    [3, APPROVED_WEIGHT_3],
+    [2, APPROVED_WEIGHT_2],
+  ])('at weight %i is the same shape as the approved outline', (weight, approved) => {
+    expect(compareSvgPaths(checkMarkPath(weight), approved).iou).toBeGreaterThanOrEqual(
+      SAME_SHAPE_MIN_IOU
+    )
+  })
+
+  it.each([1, 1.5, 2.5, 4])('at weight %i is the same shape as the sampled outline', (weight) => {
+    expect(
+      compareSvgPaths(checkMarkPath(weight), [checkMarkOutline(weight)]).iou
+    ).toBeGreaterThanOrEqual(SAME_SHAPE_MIN_IOU)
+  })
+
+  it('is a fifth of the size of the approved outline, in two cubics', () => {
+    const path = checkMarkPath(3)
+    expect(path.match(/C/g)).toHaveLength(2)
+    expect(path.length * 5).toBeLessThan(APPROVED_WEIGHT_3.length)
+  })
+
+  it.each([1, 2, 3, 4])('at weight %i crosses itself nowhere', (weight) => {
+    expect(selfCrossings(flattenPath(checkMarkPath(weight))[0])).toEqual([])
+  })
 })

@@ -27,7 +27,7 @@ import {
   ChartIcon,
 } from './icons'
 import { SvgIcon } from './SvgIcon'
-import { checkMarkOutline } from './checkMarkGeometry'
+import { checkMarkPath } from './checkMarkGeometry'
 
 describe('icon primitives', () => {
   it('every icon renders an svg', () => {
@@ -89,13 +89,9 @@ describe('icon primitives', () => {
     const { container } = render(<CheckMark size={12} strokeWidth={3} />)
     const [mask, mark] = Array.from(container.querySelectorAll('svg > *'))
     expect(mask.tagName).toBe('mask')
-    expect(mark.tagName).toBe('polygon')
+    expect(mark.tagName).toBe('path')
     expect(mark.getAttribute('mask')).toBe(`url(#${mask.id})`)
-    expect(mark.getAttribute('points')).toBe(
-      checkMarkOutline(3)
-        .map(([x, y]) => `${String(x)},${String(y)}`)
-        .join(' ')
-    )
+    expect(mark.getAttribute('d')).toBe(checkMarkPath(3))
     const spines = mask.querySelectorAll('path')
     expect(spines).toHaveLength(1)
     const [spine] = spines
