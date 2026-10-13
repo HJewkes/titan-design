@@ -17,6 +17,7 @@ import * as React$1 from 'react';
 import React__default from 'react';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import { ReactNode } from 'react';
+import { RefObject } from 'react';
 import { StyleProp } from 'react-native';
 import { TextInput } from 'react-native';
 import { TextInputProps } from 'react-native';
@@ -1581,6 +1582,9 @@ export const defaultPreset: ThemePreset;
 export type DeprecatedPillSize = 'xl';
 
 // @public
+export function describeOverflow(label: string, overflow: StageOverflow): string | undefined;
+
+// @public
 export function describeRef(input: EntityRef): string;
 
 // @public
@@ -3014,6 +3018,14 @@ export function groupByPeriod(sessions: SessionSummary[]): Period[];
 
 // @public
 export function groupRefsByKind(refs: readonly EntityRef[]): RefGroup[];
+
+// @public
+export interface HeaderChrome {
+    headline: 'body' | 'title';
+    kicker?: boolean;
+    rule?: boolean;
+    sub?: boolean;
+}
 
 // @public
 export function Heading(input: HeadingProps): react_jsx_runtime.JSX.Element;
@@ -5871,6 +5883,85 @@ export interface StackProps extends ViewProps {
 }
 
 // @public
+export const STAGE_METRICS_S96: Readonly<StageMetrics>;
+
+// @public
+export interface StageBox {
+    chipBand: StageRect;
+    header: StageRect;
+    keepOut: StageRect;
+    scale: number;
+    stage: StageRect;
+}
+
+// @public
+export function stageBox(frame: StageFrame, chrome?: StageChrome): StageBox;
+
+// @public
+export interface StageChrome {
+    chipRows?: 0 | 1 | 2;
+    header?: HeaderChrome | 'none';
+    headerAt?: 'top' | 'bottom';
+    keepOutFraction?: number;
+    metrics?: Partial<StageMetrics>;
+}
+
+// @public
+export interface StageContentBox {
+    h: number;
+    w: number;
+    x: number;
+    y: number;
+}
+
+// @public
+export interface StageFrame {
+    height: number;
+    width: number;
+}
+
+// @public
+export interface StageMeasure {
+    boxes: readonly StageContentBox[];
+    height: number;
+    width: number;
+}
+
+// @public
+export interface StageMetrics {
+    body: number;
+    bottomPad: number;
+    edgeX: number;
+    gap: number;
+    gapSm: number;
+    headlineLeading: number;
+    label: number;
+    lineLeading: number;
+    rule: number;
+    title: number;
+    topPad: number;
+}
+
+// @public
+export interface StageOverflow {
+    bottom: number;
+    left: number;
+    right: number;
+    top: number;
+}
+
+// @public
+export function stageOverflow(width: number, height: number, boxes: readonly StageContentBox[]): StageOverflow;
+
+// @public
+export interface StageRect {
+    height: number;
+    width: number;
+    x: number;
+    y: number;
+}
+
+// @public
 export const STAR_ICON_BOX: {
     x: number;
     y: number;
@@ -7103,6 +7194,9 @@ export function useOnSurfaceColor(role?: OnSurfaceRole): string;
 
 // @public
 export function useResolvedSurface(props: SurfaceDepthProps): ResolvedSurface;
+
+// @public
+export function useStageFit(ref: RefObject<unknown>, label: string, measure?: (stage: HTMLElement) => StageMeasure): void;
 
 // @public
 export function useSurface(): SurfaceContextValue;
