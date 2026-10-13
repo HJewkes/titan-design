@@ -83,7 +83,7 @@ export const darkThemeCSSVars: {
     readonly '--font-family-sans': "'Inter'";
     readonly '--font-family-body': "'Nunito Sans'";
     readonly '--font-family-heading': "'Space Grotesk'";
-    readonly '--font-family-mono': "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
+    readonly '--font-family-mono': "'JetBrains Mono', monospace";
     readonly '--color-brand-primary': "#FF7900";
     readonly '--color-brand-primary-light': "#FFA063";
     readonly '--color-brand-primary-dark': "#DA5F00";
@@ -629,7 +629,7 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--font-family-sans': "'Inter'";
     readonly '--font-family-body': "'Nunito Sans'";
     readonly '--font-family-heading': "'Space Grotesk'";
-    readonly '--font-family-mono': "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
+    readonly '--font-family-mono': "'JetBrains Mono', monospace";
     readonly '--color-brand-primary': "#FF7900";
     readonly '--color-brand-primary-light': "#FFA063";
     readonly '--color-brand-primary-dark': "#DA5F00";
@@ -804,7 +804,7 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--font-family-sans': "'Inter'";
     readonly '--font-family-body': "'Nunito Sans'";
     readonly '--font-family-heading': "'Space Grotesk'";
-    readonly '--font-family-mono': "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
+    readonly '--font-family-mono': "'JetBrains Mono', monospace";
     readonly '--color-brand-primary': "#FF7900";
     readonly '--color-brand-primary-light': "#FFA063";
     readonly '--color-brand-primary-dark': "#DA5F00";
@@ -1127,7 +1127,7 @@ export const lightThemeCSSVars: {
     readonly '--font-family-sans': "'Inter'";
     readonly '--font-family-body': "'Nunito Sans'";
     readonly '--font-family-heading': "'Space Grotesk'";
-    readonly '--font-family-mono': "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
+    readonly '--font-family-mono': "'JetBrains Mono', monospace";
     readonly '--color-brand-primary': "#FF7900";
     readonly '--color-brand-primary-light': "#FFA063";
     readonly '--color-brand-primary-dark': "#DA5F00";
@@ -1492,7 +1492,7 @@ export const primitiveTypography: {
         readonly sans: readonly ["Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Helvetica", "Arial", "sans-serif"];
         readonly body: readonly ["Nunito Sans", "sans-serif"];
         readonly heading: readonly ["Space Grotesk", "sans-serif"];
-        readonly mono: readonly ["SF Mono", "Monaco", "Inconsolata", "Fira Mono", "Droid Sans Mono", "Source Code Pro", "monospace"];
+        readonly mono: readonly ["JetBrains Mono", "monospace"];
     };
     readonly fontSizes: {
         readonly '2xs': "0.625rem";
