@@ -27,6 +27,8 @@ export interface ChipBandLayout {
   fontPx: number
   /** The one chip shown with its citation. */
   lead: BandChip
+  /** The lead citation's character budget at the fixed mono advance. */
+  leadMaxChars: number
   leadElision: ElidedSource
   /** Chips shown as their kind capsule only. */
   tabs: BandChip[]
@@ -68,12 +70,11 @@ function fitLead(
   const rail = railWidth(tabs, dropped.length, fontPx)
   const chrome = capsuleWidth(EVIDENCE_LABEL[lead.kind], fontPx) + pillScale(fontPx).besideGap
   const advance = MONO_ADVANCE_EM * fontPx
-  const leadElision = elideSource(
-    lead.text,
-    Math.max(0, Math.floor((width - rail - chrome) / advance))
-  )
+  const leadMaxChars = Math.max(0, Math.floor((width - rail - chrome) / advance))
+  const leadElision = elideSource(lead.text, leadMaxChars)
   const usedWidth = chrome + leadElision.text.length * advance + rail
-  return { fontPx, lead, leadElision, tabs, dropped, usedWidth, fits: leadElision.fits }
+  const fits = leadElision.fits
+  return { fontPx, lead, leadMaxChars, leadElision, tabs, dropped, usedWidth, fits }
 }
 
 /**

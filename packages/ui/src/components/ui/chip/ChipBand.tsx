@@ -23,6 +23,8 @@ export interface ChipBandProps extends Omit<ViewProps, 'children'> {
   progress: number
   /** Frame height in px; the chip font is 40 px per 1080. Default 1080. */
   frameHeight?: number
+  /** Chip font size in px. Default and floor: 40 px per 1080 of `frameHeight`. */
+  fontPx?: number
   /** Most chips shown, counting the lead. Default 3. */
   max?: number
   /** `rise` fades in and rises; `fade` only fades. Default `rise`. */
@@ -82,6 +84,7 @@ export function ChipBand({
   width,
   progress,
   frameHeight = 1080,
+  fontPx,
   max = 3,
   entry,
   reducedMotion,
@@ -90,7 +93,7 @@ export function ChipBand({
   ...props
 }: ChipBandProps) {
   const prefersReduced = usePrefersReducedMotion()
-  const layout = layoutChipBand(chips, { width, frameHeight, max })
+  const layout = layoutChipBand(chips, { width, frameHeight, fontPx, max })
   if (!layout.fits && isDev()) {
     throw new RangeError(
       `ChipBand: "${layout.lead.text}" cannot fit ${width}px at ${layout.fontPx}px`
