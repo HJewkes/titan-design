@@ -5447,8 +5447,8 @@ export const MOTION: {
         rise: 40;
         scaleFrom: 0.97;
         exitScale: 0.85;
-        enter: number;
         count: number;
+        enter: number;
         exit: number;
         emphasis: number;
         hero: number;
