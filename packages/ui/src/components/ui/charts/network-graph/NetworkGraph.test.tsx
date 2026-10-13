@@ -720,17 +720,24 @@ describe('NetworkGraph free-form layouts', () => {
   })
 
   it.each([1, 2, 3])(
-    'ego on Grouped (40) with %i hops draws no ring label over a node mark or node label',
+    'ego on Grouped (40) with %i hops keeps every ring label 4 px clear of each node mark and node label',
     (hops) => {
       const model = buildGraphModel(grouped.nodes, grouped.edges, ego(hops), {
         width: 720,
         height: 420,
       })
-      const reach = GRAPH_NODE_RADIUS + RING_LABEL_CLEARANCE
+      const pad = RING_LABEL_CLEARANCE
       const nodes = model.order.flatMap((id) => {
         const { x, y } = model.positions[id] as GraphPoint
-        const mark = { x: x - reach, y: y - reach, width: reach * 2, height: reach * 2 }
-        return [mark, labelBox(model, id) ?? mark]
+        const r = GRAPH_NODE_RADIUS
+        const mark = { x: x - r, y: y - r, width: r * 2, height: r * 2 }
+        const label = labelBox(model, id)
+        return (label ? [mark, label] : [mark]).map((b) => ({
+          x: b.x - pad,
+          y: b.y - pad,
+          width: b.width + pad * 2,
+          height: b.height + pad * 2,
+        }))
       })
       renderGraph({ layout: ego(hops) }, grouped)
       const labels = screen.getAllByTestId(/^network-graph-group-hop-/)

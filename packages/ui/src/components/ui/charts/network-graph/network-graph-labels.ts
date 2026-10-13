@@ -83,7 +83,7 @@ export function placeLabels(
   return kept
 }
 
-/** Space kept between a ring label and a node mark. */
+/** Space kept between a ring label and a node mark or node label. */
 export const RING_LABEL_CLEARANCE = 4
 /** A ring label's box is centred this far inside its ring: a 16 px line box ending 8 px short of the line. */
 const RING_LABEL_INSET = 16
@@ -97,14 +97,15 @@ const grow = (box: LabelBox, by: number): LabelBox => ({
   height: box.height + by * 2,
 })
 
-/** What a ring label must not meet: every node mark plus `RING_LABEL_CLEARANCE`, and every node label. */
+/** What a ring label must not meet: every node mark and every node label, each grown by `RING_LABEL_CLEARANCE`. */
 export function nodeKeepOuts(model: GraphModel): LabelBox[] {
   return model.order.flatMap((id) => {
     const at = model.positions[id]
     const label = labelBox(model, id)
     if (!at) return []
-    const mark = grow(markBox(at), RING_LABEL_CLEARANCE)
-    return label ? [mark, label] : [mark]
+    return (label ? [markBox(at), label] : [markBox(at)]).map((box) =>
+      grow(box, RING_LABEL_CLEARANCE)
+    )
   })
 }
 
