@@ -105,7 +105,13 @@ function modalSettleS(w0: number, zeta: number, x0: number, v0: number, toleranc
  * `e^{-ζ·w0·t}·(|x0|·cosh(γt) + c·sinh(γt)/γ)` above it. Both are unimodal, and both tend to the
  * critical form as damping approaches it.
  */
-function envelopeSettleS(w0: number, zeta: number, x0: number, v0: number, tolerance: number): number {
+function envelopeSettleS(
+  w0: number,
+  zeta: number,
+  x0: number,
+  v0: number,
+  tolerance: number
+): number {
   const a = zeta * w0
   const c = Math.abs(v0 + a * x0)
   const x = Math.abs(x0)
@@ -118,7 +124,8 @@ function envelopeSettleS(w0: number, zeta: number, x0: number, v0: number, toler
   const slowest = w0 / (zeta + Math.sqrt(zeta * zeta - 1))
   // e^{-at}·cosh(gt) and e^{-at}·sinh(gt)/g, written so neither overflows nor cancels.
   const at = (t: number) =>
-    Math.exp(-slowest * t) * ((x * (1 + Math.exp(-2 * g * t))) / 2 - (c * Math.expm1(-2 * g * t)) / (2 * g))
+    Math.exp(-slowest * t) *
+    ((x * (1 + Math.exp(-2 * g * t))) / 2 - (c * Math.expm1(-2 * g * t)) / (2 * g))
   const peakS = c > a * x ? Math.atanh((g * (c - a * x)) / (a * c - x * g * g)) / g : 0
   return lastTimeAbove(at, tolerance, peakS)
 }
@@ -128,7 +135,10 @@ function lastTimeAbove(bound: (t: number) => number, tolerance: number, fromS: n
   if (bound(fromS) <= tolerance) return fromS
   let lo = fromS
   let hi = fromS + 1
-  while (bound(hi) > tolerance) hi *= 2
+  while (bound(hi) > tolerance) {
+    if (!Number.isFinite(hi)) return Infinity
+    hi *= 2
+  }
   for (let i = 0; i < 60; i++) {
     const mid = (lo + hi) / 2
     if (bound(mid) > tolerance) lo = mid
