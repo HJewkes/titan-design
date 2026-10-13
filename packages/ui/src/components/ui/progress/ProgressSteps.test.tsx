@@ -46,7 +46,9 @@ function cssColor(hex: string) {
 
 function chipLook(index: number) {
   const core = screen.queryByTestId(`progress-steps-core-${index}`)
+  const ring = screen.queryByTestId(`progress-steps-ring-${index}`)
   return {
+    ring: ring ? Number(ring.style.opacity) : 0,
     core: core ? core.style.width : null,
     colour: core?.style.backgroundColor || null,
     done: screen.queryByTestId(`progress-steps-done-${index}`) != null,
@@ -78,8 +80,8 @@ describe('ProgressSteps rail', () => {
     expect(chipStates()[2]).toBe('Step 3, Ship: active')
   })
 
-  it('fills the connector into the active step by the fractional position', () => {
-    renderRail(1.5)
+  it('fills the connector into the active step with the work on it', () => {
+    renderRail(1.375)
 
     expect(connectorFills()).toEqual([100, 50, 0])
   })
@@ -105,7 +107,7 @@ describe('ProgressSteps rail', () => {
     expect(chipStates()).toEqual([
       'Step 1: done',
       'Step 2: done',
-      'Step 3: active',
+      'Step 3: done',
       'Step 4: pending',
     ])
     expect(connectorFills()).toEqual([100, 100, 0])
@@ -120,26 +122,50 @@ describe('ProgressSteps rail', () => {
       'Step 3, Ship: done',
       'Step 4, Learn: done',
     ])
-    expect(chipLook(3)).toEqual({ core: null, colour: null, done: true })
+    expect(chipLook(3)).toEqual({ ring: 0, core: null, colour: null, done: true })
     expect(connectorFills()).toEqual([100, 100, 100])
   })
 
-  it('turns a chip from the brand colour to the done colour in OKLCH as it fills', () => {
+  it('runs a step from grey ring to orange ring, fills it with the bar, then completes it green', () => {
     const at = (position: number) => {
       const { unmount } = renderRail(position)
-      const look = chipLook(1)
+      const look = { state: chipStates()[2], bar: connectorFills()[1], ...chipLook(2) }
       unmount()
       return look
     }
-
-    expect(at(1)).toEqual({ core: '50%', colour: null, done: false })
-    expect(at(1.25)).toEqual({
-      core: '87.5%',
-      colour: cssColor(chipTint(0.5, [BRAND, DONE])),
-      done: false,
+    const look = (
+      state: string,
+      bar: number,
+      ring: number,
+      core: string | null,
+      colour: string | null
+    ) => ({
+      state: `Step 3, Ship: ${state}`,
+      bar,
+      ring,
+      core,
+      colour,
+      done: state === 'done',
     })
+    const mid = cssColor(chipTint(0.5, [BRAND, DONE]))
+
+    expect(at(1)).toEqual(look('pending', 0, 0, null, null))
+    expect(at(1.05)).toMatchObject({ state: 'Step 3, Ship: active', ring: 0.5 })
+    expect(at(1.375)).toEqual(look('active', 50, 1, '42.5%', null))
+    expect(at(1.75)).toEqual(look('active', 100, 1, '85%', null))
+    expect(at(1.875)).toEqual({ ...look('active', 100, 1, '96.25%', mid), ring: 1 })
+    expect(at(2)).toEqual(look('done', 100, 0, null, null))
+  })
+
+  it('has the prior step green before the bar into the next one starts', () => {
+    renderRail(1)
+
+    expect(chipLook(1)).toEqual({ ring: 0, core: null, colour: null, done: true })
+    expect(chipStates()[2]).toBe('Step 3, Ship: pending')
+  })
+
+  it('mixes the completing colour in OKLCH, not Oklab', () => {
     expect(chipTint(0.5, [BRAND, DONE])).not.toBe(interpolateColor(0.5, [0, 1], [BRAND, DONE]))
-    expect(at(1.5)).toEqual({ core: null, colour: null, done: true })
   })
 
   it('holds lightness through the turn so the light theme passes gold, not olive', () => {
@@ -152,12 +178,14 @@ describe('ProgressSteps rail', () => {
     )
   })
 
-  it('runs the last chip through the same turn before the end', () => {
-    renderRail(2.75)
+  it('completes the last step only once the bar into it is full', () => {
+    renderRail(2.875)
 
     expect(chipStates()[3]).toBe('Step 4, Learn: active')
+    expect(connectorFills()[2]).toBe(100)
     expect(chipLook(3)).toEqual({
-      core: '87.5%',
+      ring: 1,
+      core: '96.25%',
       colour: cssColor(chipTint(0.5, [BRAND, DONE])),
       done: false,
     })
@@ -173,13 +201,13 @@ describe('ProgressSteps rail', () => {
     })
   })
 
-  it('shows the integer-step state under reduced motion', () => {
+  it('jumps to the end of the step being worked on under reduced motion', () => {
     reducedMotion.value = true
     renderRail(1.5)
 
-    expect(chipStates()[2]).toBe('Step 3, Ship: active')
-    expect(chipLook(1)).toEqual({ core: null, colour: null, done: true })
-    expect(chipLook(2)).toEqual({ core: '50%', colour: null, done: false })
+    expect(chipStates()[2]).toBe('Step 3, Ship: done')
+    expect(chipLook(2)).toEqual({ ring: 0, core: null, colour: null, done: true })
+    expect(chipLook(3)).toEqual({ ring: 0, core: null, colour: null, done: false })
     expect(connectorFills()).toEqual([100, 100, 0])
   })
 

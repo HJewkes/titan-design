@@ -29,7 +29,8 @@ export interface ProgressStepsProps extends ViewProps {
   variant?: ProgressStepsVariant
   /**
    * Fractional position along the steps, 0..totalSteps-1. Overrides `currentStep` in the
-   * rail: at 1.5 steps 0-1 are done, step 2 is active and the connector into it is half full.
+   * rail. The span `k-1..k` is the work on step `k`: at 1.5 steps 0-1 are done, step 2 is
+   * active and the bar into it two-thirds full (it is full at 1.75, and step 2 is done at 2).
    */
   progress?: number
   /** Additional className */
