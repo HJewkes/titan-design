@@ -234,7 +234,7 @@ Raw sizes, when a variant genuinely does not fit:
 
 ### Font files are self-hosted (TD-36)
 
-`global.css` declares the three families with `@font-face` rules that point at woff2 files in
+`global.css` declares the four families with `@font-face` rules that point at woff2 files in
 `src/theme/fonts/`. It makes no request to Google Fonts, so a consumer built as one HTML file and
 opened from disk (titan-platform's code-report) renders with no network.
 
@@ -243,21 +243,25 @@ opened from disk (titan-platform's code-report) renders with no network.
 | Inter (`font-sans`)            | 400–700 | latin, latin-ext, cyrillic, cyrillic-ext, greek, greek-ext, vietnamese |
 | Nunito Sans (`font-body`)      | 400–700 | latin, latin-ext, cyrillic, cyrillic-ext, vietnamese                   |
 | Space Grotesk (`font-heading`) | 300–700 | latin, latin-ext, vietnamese                                           |
+| JetBrains Mono (`font-mono`)   | 400–700 | latin, latin-ext, cyrillic, cyrillic-ext, greek, vietnamese            |
 
 - **The files are Google Fonts' own.** They are the variable woff2 subsets that
   `fonts.googleapis.com/css2` served to Chrome in September 2026 (Inter v20, Nunito Sans v19, Space
-  Grotesk v22), with the same `unicode-range` split, so rendering matches the old CDN import.
+  Grotesk v22; JetBrains Mono v24 in October 2026), with the same `unicode-range` split, so rendering
+  matches the old CDN import.
 - **One rule per subset, with a weight range.** Google repeats each file once per requested weight.
   Titan declares `font-weight: 400 700` once instead, because a single-file build inlines every
   `url()` it meets and the repeats would quadruple the inlined bytes. Weights outside the range
   clamp to it, as the discrete rules did.
-- **Cost.** 374 KB of woff2 in the package. A single-file build that imports `global.css` grows by
-  about 500 KB of base64. A normal build emits the files as hashed assets and the browser fetches only
+- **Cost.** 440 KB of woff2 in the package. A single-file build that imports `global.css` grows by
+  about 590 KB of base64. A normal build emits the files as hashed assets and the browser fetches only
   the subsets a page uses.
-- **Licence.** All three are SIL Open Font License 1.1; each directory carries its `OFL.txt`.
+- **Licence.** All four are SIL Open Font License 1.1; each directory carries its `OFL.txt`.
 - **Native.** NativeWind ignores `@font-face`; native apps still register fonts themselves.
 - **Proof.** `pnpm test:offline-fonts` builds a single-file consumer, opens it over `file://` with
-  every http(s) request aborted, and checks that each family and weight loads.
+  every http(s) request aborted, and checks that each family and weight loads. It then asks Chromium
+  which font painted each sample (`CSS.getPlatformFontsForNode`) and requires the bundled face for
+  every glyph, so a silent system-font fallback, such as a glyph outside the subsets, fails the run.
 
 To refresh the files, fetch the `css2` URL for the same families with a desktop Chrome user agent,
 download each distinct woff2, and keep one rule per family and subset.

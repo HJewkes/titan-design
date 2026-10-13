@@ -576,7 +576,7 @@ export const primitiveTypography: {
         readonly sans: readonly ["Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Helvetica", "Arial", "sans-serif"];
         readonly body: readonly ["Nunito Sans", "sans-serif"];
         readonly heading: readonly ["Space Grotesk", "sans-serif"];
-        readonly mono: readonly ["SF Mono", "Monaco", "Inconsolata", "Fira Mono", "Droid Sans Mono", "Source Code Pro", "monospace"];
+        readonly mono: readonly ["JetBrains Mono", "monospace"];
     };
     readonly fontSizes: {
         readonly '2xs': "0.625rem";
