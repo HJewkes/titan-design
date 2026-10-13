@@ -46,11 +46,12 @@ export function parseImports(source) {
   return [...source.matchAll(IMPORT_SPECIFIER)].map((match) => match[1])
 }
 
+// The bare path comes last: it is a directory whenever an `index` file is meant.
 function candidates(base) {
   return [
-    base,
     ...RESOLVE_SUFFIXES.map((suffix) => base + suffix),
     ...RESOLVE_SUFFIXES.map((suffix) => `${base}/index${suffix}`),
+    base,
   ]
 }
 

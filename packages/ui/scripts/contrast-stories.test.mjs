@@ -17,9 +17,10 @@ const TREE = {
   'packages/ui/src/components/shell/Page.tsx': "const Panel = await import('../ui/panel/Panel')",
   'packages/ui/src/components/shell/Page.stories.tsx': "import { Page } from './Page'",
   'packages/ui/src/components/ui/chip/Chip.tsx': "import React from 'react'",
+  'packages/ui/src/components/ui/chip/index.ts': "export { Chip } from './Chip'",
   'packages/ui/src/components/ui/chip/Chip.stories.tsx': "import { Chip } from './Chip'",
   'packages/ui/src/components/ui/chip/ChipGroup.stories.tsx': "import { Chip } from './Chip'",
-  'packages/ui/src/components/ui/tag/Tag.tsx': "import React from 'react'",
+  'packages/ui/src/components/ui/tag/Tag.tsx': "import { Chip } from '../chip'",
   'packages/ui/src/components/ui/tag/Tag.stories.tsx': "import { Tag } from './Tag'",
   'packages/ui/src/components/ui/tile/Tile.tsx': "import React from 'react'",
   'packages/ui/src/components/ui/tile/Tile.stories.tsx': "import { Tile } from './Tile'",
@@ -30,12 +31,15 @@ const TREE = {
   'packages/ui/src/components/ui/orphan/Orphan.tsx': "import React from 'react'",
 }
 
+// Like fs.existsSync, a directory exists too.
+const exists = (path) => Object.keys(TREE).some((file) => file === path || file.startsWith(`${path}/`))
+
 function select(changedPaths) {
   return selectContrast({
     changedPaths,
     files: Object.keys(TREE).filter((file) => !file.endsWith('.css')),
     readSource: (file) => TREE[file],
-    exists: (file) => file in TREE,
+    exists,
   })
 }
 
@@ -57,12 +61,13 @@ describe('affected-story selector for the PR contrast run (TD-869)', () => {
     expect(selection.storyFiles).toEqual(['packages/ui/src/components/ui/chip/ChipGroup.stories.tsx'])
   })
 
-  it('selects every story file sharing a changed module', () => {
+  it('selects every story file sharing a changed module, through a directory index', () => {
     const selection = select(['packages/ui/src/components/ui/chip/Chip.tsx'])
 
     expect(selection.storyFiles).toEqual([
       'packages/ui/src/components/ui/chip/Chip.stories.tsx',
       'packages/ui/src/components/ui/chip/ChipGroup.stories.tsx',
+      'packages/ui/src/components/ui/tag/Tag.stories.tsx',
     ])
   })
 
