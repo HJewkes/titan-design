@@ -73,6 +73,7 @@
   ],
   "composes": [
     "Alert",
+    "AmbientStage",
     "Avatar",
     "BaseBadge",
     "Beat",

@@ -314,6 +314,42 @@
       "standard": true
     },
     {
+      "name": "AmbientStage",
+      "file": "packages/ui/src/components/ui/stage/AmbientStage.tsx",
+      "dir": "ui",
+      "family": "ui/stage",
+      "exports": [
+        "AmbientStage",
+        "AmbientStageProps",
+        "layerStyle",
+        "Layer",
+        "washStyle"
+      ],
+      "libDependents": 1,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [],
+      "leak": {
+        "rawView": 2,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 71,
+        "score": 2
+      },
+      "tier": "atom",
+      "verdict": "keep-internal",
+      "deadByAssociation": true,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "AnimatedNumber",
       "file": "packages/ui/src/components/ui/animated-number/AnimatedNumber.tsx",
       "dir": "ui",
@@ -656,6 +692,47 @@
         "score": 3
       },
       "tier": "atom",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "BeatStage",
+      "file": "packages/ui/src/components/ui/stage/BeatStage.tsx",
+      "dir": "ui",
+      "family": "ui/stage",
+      "exports": [
+        "BeatStage",
+        "BeatStageUnits",
+        "BeatStageProps",
+        "Slot",
+        "FitSlot",
+        "bandPads",
+        "bandPads.px"
+      ],
+      "libDependents": 0,
+      "storyRefs": 2,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "AmbientStage",
+        "Surface"
+      ],
+      "leak": {
+        "rawView": 3,
+        "rawText": 0,
+        "inlineStyle": 2,
+        "rawHex": 0,
+        "loc": 131,
+        "score": 7
+      },
+      "tier": "molecule",
       "verdict": "dead",
       "deadByAssociation": false,
       "audited": "unaudited",
