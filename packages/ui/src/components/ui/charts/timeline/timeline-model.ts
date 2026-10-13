@@ -34,7 +34,10 @@ export interface TimelineMark {
   item: TimelineItem
   /** Position along the visible span, 0..1. */
   position: number
-  /** Alternates 0, 1, 0 … so neighbouring labels sit on opposite sides of the track. */
+  /**
+   * Alternates 0, 1, 0 … across every item in time order, so neighbouring labels sit on opposite
+   * sides of the track and a label never changes side as the window pans.
+   */
   lane: 0 | 1
 }
 
@@ -89,9 +92,14 @@ export function layoutTimeline({
   const marks = [...items]
     .filter((item) => Number.isFinite(toNumber(item.at)))
     .sort((a, b) => toNumber(a.at) - toNumber(b.at))
-    .map((item) => ({ item, position: toView(toFraction(toNumber(item.at))) }))
+    // The lane comes from the item's place in the whole timeline, before the window filters it,
+    // so a label keeps its side of the track as the window pans.
+    .map((item, index) => ({
+      item,
+      position: toView(toFraction(toNumber(item.at))),
+      lane: (index % 2) as 0 | 1,
+    }))
     .filter(({ position }) => isVisible(position))
-    .map(({ item, position }, index) => ({ item, position, lane: (index % 2) as 0 | 1 }))
 
   const head = playhead === undefined || !Number.isFinite(playhead) ? null : toView(playhead)
   return { marks, playhead: head !== null && isVisible(head) ? head : null }

@@ -57,6 +57,21 @@ describe('layoutTimeline', () => {
     ])
   })
 
+  it('keeps each label on its side of the track as the window pans', () => {
+    const lanes = (window: [number, number]) =>
+      Object.fromEntries(
+        layoutTimeline({ items, window }).marks.map((mark) => [mark.item.id, mark.lane])
+      )
+    const whole = lanes([0, 1])
+    for (const window of [
+      [0.2, 1],
+      [0.3, 1],
+      [0.5, 1],
+    ] as [number, number][]) {
+      for (const [id, lane] of Object.entries(lanes(window))) expect(lane).toBe(whole[id])
+    }
+  })
+
   it('skips an item whose time is not finite', () => {
     const layout = layoutTimeline({ items: [...items, { id: 'bad', at: NaN, label: 'Bad' }] })
     expect(layout.marks).toHaveLength(items.length)

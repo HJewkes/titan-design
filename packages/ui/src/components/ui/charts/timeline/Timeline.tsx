@@ -112,14 +112,16 @@ function Playhead({
   position: number
   orientation: TimelineOrientation
 }) {
+  // A ringed bead on the track, 12 px against the dots' 8: it stays inside the 8 px gap the labels
+  // leave either side of the track, so it never crosses a label.
   return (
     <View
       testID="timeline-playhead"
       aria-hidden
       style={along(orientation, position)}
       className={cn(
-        'absolute bg-brand-primary',
-        orientation === 'horizontal' ? 'inset-y-0 -ml-px w-0.5' : '-left-1 -mt-px h-0.5 w-4'
+        'absolute h-3 w-3 rounded-full border-2 border-text-primary bg-brand-primary',
+        orientation === 'horizontal' ? 'top-1/2 -ml-1.5 -mt-1.5' : '-left-0.5 -mt-1.5'
       )}
     />
   )
