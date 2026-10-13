@@ -39,10 +39,12 @@ export interface TimelineMark {
    * sides of the track and a label never changes side as the window pans.
    */
   lane: 0 | 1
+  /** 1 inside the window, falling to 0 across the edge fade just outside it. */
+  opacity: number
 }
 
 export interface TimelineLayout {
-  /** The items inside the window, in time order. */
+  /** The items inside the window or its edge fade, in time order. */
   marks: TimelineMark[]
   /** Playhead position along the visible span, or null when unset or outside the window. */
   playhead: number | null
@@ -51,6 +53,12 @@ export interface TimelineLayout {
 const FULL_WINDOW: TimelineRange = [0, 1]
 // Floats from the window division must not drop an item sitting exactly on an edge.
 const EDGE_EPSILON = 1e-9
+/**
+ * How far past a window edge a mark keeps fading out, as a share of the visible span. 8% of a
+ * 640 px timeline is 43 px, inside the 48 px gutter either side of the plot, so a fading mark
+ * stays in the component's box; and a pan crossing the plot spends 8% of its time on each fade.
+ */
+export const EDGE_FADE = 0.08
 
 const toNumber = (value: number | Date) => (value instanceof Date ? value.getTime() : value)
 
@@ -78,6 +86,12 @@ export function normalizeWindow(window: TimelineRange = FULL_WINDOW): TimelineRa
 
 const isVisible = (position: number) => position >= -EDGE_EPSILON && position <= 1 + EDGE_EPSILON
 
+/** 1 inside [0, 1], falling linearly to 0 at `EDGE_FADE` beyond either edge. */
+export function edgeOpacity(position: number): number {
+  const overshoot = Math.max(-position, position - 1, 0)
+  return overshoot <= EDGE_EPSILON ? 1 : clampUnit(1 - overshoot / EDGE_FADE)
+}
+
 /** Places items and the playhead along the visible span of the window. */
 export function layoutTimeline({
   items,
@@ -99,7 +113,8 @@ export function layoutTimeline({
       position: toView(toFraction(toNumber(item.at))),
       lane: (index % 2) as 0 | 1,
     }))
-    .filter(({ position }) => isVisible(position))
+    .map((mark) => ({ ...mark, opacity: edgeOpacity(mark.position) }))
+    .filter(({ opacity }) => opacity > 0)
 
   const head = playhead === undefined || !Number.isFinite(playhead) ? null : toView(playhead)
   return { marks, playhead: head !== null && isVisible(head) ? head : null }

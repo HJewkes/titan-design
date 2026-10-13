@@ -85,6 +85,7 @@ function Mark({ mark, orientation }: { mark: TimelineMark; orientation: Timeline
     <View
       role={LIST_ITEM_ROLE}
       testID={`timeline-mark-${mark.item.id}`}
+      style={{ opacity: mark.opacity }}
       className="absolute inset-0"
       pointerEvents="box-none"
     >
@@ -112,16 +113,18 @@ function Playhead({
   position: number
   orientation: TimelineOrientation
 }) {
-  // A ringed bead on the track, 12 px against the dots' 8: it stays inside the 8 px gap the labels
-  // leave either side of the track, so it never crosses a label.
+  // A 2 px tick across the track, 12 px long: it stays inside the 8 px gap the labels leave either
+  // side of the track, so it never crosses a label.
   return (
     <View
       testID="timeline-playhead"
       aria-hidden
       style={along(orientation, position)}
       className={cn(
-        'absolute h-3 w-3 rounded-full border-2 border-text-primary bg-brand-primary',
-        orientation === 'horizontal' ? 'top-1/2 -ml-1.5 -mt-1.5' : '-left-0.5 -mt-1.5'
+        'absolute rounded-full bg-brand-primary',
+        orientation === 'horizontal'
+          ? 'top-1/2 -ml-px -mt-1.5 h-3 w-0.5'
+          : '-left-0.5 -mt-px h-0.5 w-3'
       )}
     />
   )

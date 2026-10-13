@@ -37,6 +37,14 @@ describe('Timeline', () => {
     expect(screen.getByText('Build')).toBeInTheDocument()
   })
 
+  it('fades an event just past the window edge rather than popping it', () => {
+    render(<Timeline accessibilityLabel="Chapters" items={items} window={[0.22, 1]} />)
+    const setup = screen.getByTestId('timeline-mark-setup')
+    expect(Number(setup.style.opacity)).toBeGreaterThan(0)
+    expect(Number(setup.style.opacity)).toBeLessThan(1)
+    expect(screen.getByTestId('timeline-mark-build')).toHaveStyle({ opacity: '1' })
+  })
+
   it('runs down the page when vertical', () => {
     render(
       <Timeline accessibilityLabel="Chapters" items={items} playhead={0.5} orientation="vertical" />

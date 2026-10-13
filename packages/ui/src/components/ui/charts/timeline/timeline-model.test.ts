@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
+  EDGE_FADE,
+  edgeOpacity,
   layoutTimeline,
   normalizeWindow,
   timelineDomain,
@@ -72,9 +74,31 @@ describe('layoutTimeline', () => {
     }
   })
 
+  it('fades an item out across the edge fade instead of dropping it at the edge', () => {
+    const mark = (window: [number, number]) =>
+      layoutTimeline({ items, window }).marks.find((m) => m.item.id === 'quarter')
+    // 'quarter' sits at 0.25 of the domain; a window [0.25 + d, 1] puts it just past the left edge.
+    expect(mark([0.25, 1])?.opacity).toBe(1)
+    expect(mark([0.28, 1])?.opacity).toBeCloseTo(1 - 0.03 / 0.72 / EDGE_FADE)
+    expect(mark([0.4, 1])).toBeUndefined()
+  })
+
   it('skips an item whose time is not finite', () => {
     const layout = layoutTimeline({ items: [...items, { id: 'bad', at: NaN, label: 'Bad' }] })
     expect(layout.marks).toHaveLength(items.length)
+  })
+})
+
+describe('edgeOpacity', () => {
+  it('is fully opaque inside the window, on both edges', () => {
+    expect([0, 0.5, 1].map(edgeOpacity)).toEqual([1, 1, 1])
+  })
+
+  it('falls linearly to 0 across the fade on either side', () => {
+    expect(edgeOpacity(-EDGE_FADE / 2)).toBeCloseTo(0.5)
+    expect(edgeOpacity(1 + EDGE_FADE / 4)).toBeCloseTo(0.75)
+    expect(edgeOpacity(-EDGE_FADE)).toBe(0)
+    expect(edgeOpacity(2)).toBe(0)
   })
 })
 
