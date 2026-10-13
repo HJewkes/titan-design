@@ -9,6 +9,24 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Optional `keyframes` on a clip motion: `[{ atMs, label }]` (1 to 12), the clip's labelled
+  stages. Times strictly increase, and none is past `durationMs` when that is stated; out-of-order
+  keyframes are refused, never sorted. Exports the `Keyframe` type. The review page now plays a
+  clip under the arg player's controls (play/pause, scrubber, readout) plus a loop toggle, in
+  place of the browser's own, and lists the keyframes under it as seek-and-pause chips.
+- Motion and scale on a variant (owner decision 339(2)). `motion` declares how a frame moves:
+  `{ mechanism: "arg", arg = "progress", from = 0, to = 1, durationMs, autoplay = true, loop = true }`
+  drives a live story's numeric arg, and `{ mechanism: "clip", durationMs?, autoplay, loop }`
+  plays the variant's new third source, `clip` (an `.mp4` or `.webm` beside the round). `scale`
+  (`ScaleReferenceSchema`) declares a size question's candidates:
+  `{ arg, candidates[2..6], frame = 1920x1080, ladder = DEFAULT_SCALE_LADDER }`. A variant has
+  exactly one of `storyId`, `image` or `clip`; a clip declares its clip motion; an arg the motion
+  or scale drives may not also sit in `args`. A CHOICE strip also compares `motion` and the scale
+  frame. Feedback echoes `clip`. Exports `MotionSchema`, `isClipVariant`, `mediaProblems` and
+  `motionSetting`.
+- `lintRound` rule `sampled-animation`: a STATES strip may not show static frames of one story
+  that differ only in a time arg (`progress`, `t`, `time`, `frame`, `playhead`, `elapsed`, or any
+  numeric arg whose samples sit in 0..1); it shows one motion variant instead.
 - Optional `touches` on every question kind (`QuestionTouchesSchema`, type `QuestionTouches`):
   `{ tokens: [{ name, mode? }], components?: string[], axis? }`, what a question with no PR diff
   would decide. `build --locks` in review-harness reads it as the question's plan for
@@ -65,6 +83,18 @@ project adheres to [Semantic Versioning](https://semver.org/).
   of what a lock covers. A locked token name may be a family (`*-subtle`,
   `tint-{hue}-solid / on-tint-{hue}`). `lockConflicts` matches through them, and
   `@titan-design/review-harness` now imports them instead of keeping its own copy.
+- Decision packets on pick-one and pick-many, all optional (new module `packet.ts`):
+  `optionDetails` (option text to `{ detail, weakPoint?, after? }`, `OptionDetailSchema`),
+  `evidence` (`{ caption, columns: [{ label, option? }], rows: [{ label, cells }], note? }[]`,
+  `EvidenceTableSchema`; a cell is text or `{ text, tone, span? }` with tone in `CELL_TONES`) and
+  `compare` (`{ views: [{ id, label }], cells: { [option]: { [viewId]: variantKey } }, shown? }`,
+  `CompareSchema`). `RecommendationSchema` gains `weakPoint` and `fallback`, so feedback's
+  recommendation echo carries them too. `packetProblems(round)` reports, by question id: a
+  detail, column, compare row or `fallback` that is not an option; a fallback equal to the
+  answer; a row whose cells (counting `span`) do not match the columns after the first; a
+  compare cell outside the question's `frames` or in two cells; a compare row naming an unknown
+  view or missing one; a `shown` option with no compare row; and compared frames of mixed
+  sources. A round without these fields parses as before.
 
 ## [0.3.0]
 

@@ -10,5 +10,3 @@ export * from './NavItem'
 export * from './SideNav'
 // S3 · App shell — composes the nav + top-bar chrome over a content slot.
 export * from './AppShell'
-// AW-132 · Workout-app shell, composed over the generic family above.
-export * from './workout'
