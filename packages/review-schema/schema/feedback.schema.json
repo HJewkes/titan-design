@@ -138,6 +138,9 @@
           "image": {
             "type": "string"
           },
+          "clip": {
+            "type": "string"
+          },
           "verdict": {
             "anyOf": [
               {

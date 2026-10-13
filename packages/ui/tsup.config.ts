@@ -9,6 +9,8 @@ export default defineConfig({
     index: 'src/index.ts',
     bodymap: 'src/bodymap.ts',
     pages: 'src/pages.ts',
+    workout: 'src/workout.ts',
+    motion: 'src/motion.ts',
     'theme/index': 'src/theme/index.ts',
     'theme/tokens': 'src/theme/tokens/index.ts',
     'theme/tokens-css': 'src/theme/tokens-css.ts',

@@ -1,3 +1,4 @@
+import { motionSetting } from './media.ts'
 import type { Manifest, Question, Section, Variant } from './schema.ts'
 
 // The review contract's checks across fields; the fields it requires are in RoundSchema.
@@ -24,11 +25,17 @@ export function isBlanketSignOff(text: string): boolean {
   return BLANKET_SIGN_OFF.test(words)
 }
 
+const sourceOf = (variant: Variant) =>
+  variant.image !== undefined ? 'image' : variant.clip !== undefined ? 'clip' : 'live story'
+
 function frameSettings(variant: Variant): Record<string, string> {
+  const { frame } = variant.scale ?? {}
   return {
-    source: variant.image === undefined ? 'live story' : 'image',
+    source: sourceOf(variant),
     height: String(variant.height ?? 'the section default'),
     globals: JSON.stringify(variant.globals ?? {}),
+    motion: motionSetting(variant.motion),
+    'scale frame': frame ? `${frame.width}x${frame.height}` : 'none',
   }
 }
 

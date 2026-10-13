@@ -9,6 +9,19 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Motion and scale on a variant (owner decision 339(2)). `motion` declares how a frame moves:
+  `{ mechanism: "arg", arg = "progress", from = 0, to = 1, durationMs, autoplay = true, loop = true }`
+  drives a live story's numeric arg, and `{ mechanism: "clip", durationMs?, autoplay, loop }`
+  plays the variant's new third source, `clip` (an `.mp4` or `.webm` beside the round). `scale`
+  (`ScaleReferenceSchema`) declares a size question's candidates:
+  `{ arg, candidates[2..6], frame = 1920x1080, ladder = DEFAULT_SCALE_LADDER }`. A variant has
+  exactly one of `storyId`, `image` or `clip`; a clip declares its clip motion; an arg the motion
+  or scale drives may not also sit in `args`. A CHOICE strip also compares `motion` and the scale
+  frame. Feedback echoes `clip`. Exports `MotionSchema`, `isClipVariant`, `mediaProblems` and
+  `motionSetting`.
+- `lintRound` rule `sampled-animation`: a STATES strip may not show static frames of one story
+  that differ only in a time arg (`progress`, `t`, `time`, `frame`, `playhead`, `elapsed`, or any
+  numeric arg whose samples sit in 0..1); it shows one motion variant instead.
 - Optional `touches` on every question kind (`QuestionTouchesSchema`, type `QuestionTouches`):
   `{ tokens: [{ name, mode? }], components?: string[], axis? }`, what a question with no PR diff
   would decide. `build --locks` in review-harness reads it as the question's plan for
