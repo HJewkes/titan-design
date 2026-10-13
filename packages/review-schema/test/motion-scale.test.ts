@@ -120,6 +120,41 @@ describe('motion on a variant', () => {
     ).toEqual([': a variant has exactly one of storyId, image or clip'])
   })
 
+  describe('keyframes on a clip', () => {
+    const reel = (motion: Record<string, unknown>) => ({
+      key: 'reel',
+      clip: 'clips/reel.webm',
+      label: 'Reel',
+      motion: { mechanism: 'clip', ...motion },
+    })
+    const stages = [
+      { atMs: 0, label: '1 overview' },
+      { atMs: 1200, label: '2 drill in' },
+      { atMs: 2400, label: '3 enter: D4' },
+    ]
+
+    it('keeps keyframes in the order the round gives them', () => {
+      const v = VariantSchema.parse(reel({ durationMs: 4000, keyframes: stages }))
+      expect(v.motion?.mechanism === 'clip' && v.motion.keyframes).toEqual(stages)
+    })
+
+    it('refuses keyframes out of time order, or at one time twice', () => {
+      expect(messages(reel({ keyframes: [stages[0], stages[2], stages[1]] }))).toEqual([
+        'motion.keyframes.2.atMs: keyframes run in time order: 2 drill in at 1200ms follows 2400ms',
+      ])
+      expect(messages(reel({ keyframes: [stages[1], { atMs: 1200, label: 'again' }] }))).toEqual([
+        'motion.keyframes.1.atMs: keyframes run in time order: again at 1200ms follows 1200ms',
+      ])
+    })
+
+    it("refuses a keyframe past the clip's stated duration, and allows any time without one", () => {
+      expect(messages(reel({ durationMs: 2000, keyframes: stages }))).toEqual([
+        "motion.keyframes.2.atMs: keyframe 3 enter: D4 at 2400ms is past the clip's 2000ms",
+      ])
+      expect(messages(reel({ keyframes: stages }))).toEqual([])
+    })
+  })
+
   it('refuses a driven arg that the variant also fixes in args', () => {
     expect(
       messages({

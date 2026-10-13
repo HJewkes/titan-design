@@ -257,8 +257,14 @@ otherwise (`autoplay: false`, `loop: false`).
 - `{ "mechanism": "clip" }` plays the variant's `clip`, a third source beside `storyId` and
   `image`: an `.mp4` or `.webm` path relative to the round file, under the same rules as an image
   (no `..`, inside the round directory after symlinks, sniffed for an mp4 `ftyp` box or the webm
-  magic). It plays muted, with the browser's own controls, at each width; the server answers byte
-  ranges so the video can seek. Use it for a component with no such arg. A clip needs a contrast
+  magic). It plays muted at each width, under the arg player's controls: Play/Pause, a scrubber
+  that pauses where it is dropped, a readout (`1.20 / 4.00 s`) and a **Loop** checkbox that starts
+  at `loop`. The server answers byte ranges so the video can seek. Use it for a component with no
+  such arg. `keyframes` name the clip's stages in time order,
+  `[{ "atMs": 2400, "label": "3 enter: D4" }]`, each at or before `durationMs` when that is
+  stated. They list under the clip as time chips; a click pauses there, and the chip for the
+  stage the playhead is in is marked. They sit beside the playing clip, never in its place. A clip
+  needs a contrast
   `measured` or `unmeasured` entry per mode, as an image does. Capture copies it to
   `<key>-clip.<ext>`.
 
