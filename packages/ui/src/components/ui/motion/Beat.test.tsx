@@ -1,8 +1,8 @@
-import { act, render, screen } from '@testing-library/react'
+import { act, render, renderHook, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import type { ReactNode } from 'react'
 import { Text } from 'react-native'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { Beat, BeatFrame, useBeatTime } from './Beat'
 import { seekClock, type SeekClock } from './clocks'
 import { useRawLocalTime } from './hooks'
@@ -71,6 +71,18 @@ describe('Beat', () => {
     expect(screen.getByTestId('beat-clock').textContent).toBe('1 during 3')
     act(() => clock.seek(5.2))
     expect(screen.getByTestId('beat-clock').textContent).toBe('3 after 3')
+  })
+})
+
+describe('useBeatTime', () => {
+  it('throws outside a Beat instead of reading a zero-length window', () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+    expect(() =>
+      renderHook(useBeatTime, {
+        wrapper: ({ children }) => <MotionProvider clock={seekClock(1)}>{children}</MotionProvider>,
+      })
+    ).toThrow('useBeatTime needs an enclosing <Beat startS durationS>')
+    error.mockRestore()
   })
 })
 

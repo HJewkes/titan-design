@@ -227,6 +227,17 @@ function Missing({ text }: { text: string }) {
 
 function HeadPane({ manifest, variant }: { manifest: Manifest; variant: Variant }) {
   if (variant.change === 'removed') return <Missing text="Removed at head" />
+  if (variant.clip !== undefined)
+    return (
+      <video
+        src={`api/clip/${encodeURIComponent(variant.key)}`}
+        aria-label={`${variant.label} at head`}
+        autoPlay
+        loop
+        muted
+        controls
+      />
+    )
   if (!isStoryVariant(variant))
     return (
       <img src={`api/image/${encodeURIComponent(variant.key)}`} alt={`${variant.label} at head`} />

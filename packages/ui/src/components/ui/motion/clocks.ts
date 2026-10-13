@@ -18,15 +18,23 @@ export interface Clock {
 export interface SeekClock extends Clock {
   /** Always `'seek'`. */
   readonly kind: 'seek'
-  /** Sets the time to `t` seconds and notifies every subscriber. */
+  /**
+   * Sets the time to `t` seconds and notifies every subscriber. A non-finite `t` throws a
+   * `RangeError` and keeps the previous time.
+   */
   seek(t: number): void
 }
 
 /** What a reduced-motion rAF clock with no end reports: past the end of any entrance or beat. */
 export const REDUCED_MOTION_END_S = 1e4
 
+// A subscriber that seeks its own clock re-enters notify; past these depths that is a loop.
+const NOTIFY_WARN_DEPTH = 10
+const NOTIFY_MAX_DEPTH = 100
+
 function subscribers(onFirst: () => void = () => {}, onLast: () => void = () => {}) {
   const set = new Set<() => void>()
+  let depth = 0
   return {
     add(cb: () => void): () => void {
       set.add(cb)
@@ -36,7 +44,18 @@ function subscribers(onFirst: () => void = () => {}, onLast: () => void = () => 
       }
     },
     notify(): void {
-      for (const cb of [...set]) cb()
+      if (depth >= NOTIFY_MAX_DEPTH) {
+        throw new RangeError(`clock: subscribers re-entered notify ${NOTIFY_MAX_DEPTH} times`)
+      }
+      if (depth === NOTIFY_WARN_DEPTH) {
+        console.warn(`titan: clock subscribers re-entered notify ${NOTIFY_WARN_DEPTH} times`)
+      }
+      depth++
+      try {
+        for (const cb of [...set]) cb()
+      } finally {
+        depth--
+      }
     },
   }
 }
@@ -50,6 +69,8 @@ export function seekClock(initialS = 0): SeekClock {
     now: () => t,
     subscribe: subs.add,
     seek(next) {
+      if (!Number.isFinite(next))
+        throw new RangeError(`seekClock: seek(${next}) needs a finite time`)
       t = next
       subs.notify()
     },

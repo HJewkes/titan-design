@@ -80,70 +80,6 @@ export interface AccordionProps extends ViewProps {
 }
 
 // @public
-export type ActiveExerciseStatus = 'completed' | 'active' | 'upcoming';
-
-// @public
-export interface ActiveWorkoutExercise {
-    id: string;
-    isPR?: boolean;
-    name: string;
-    prescription?: string;
-    previousBest?: string;
-    sets?: SetRowProps[];
-    setVelocities?: number[][];
-    status: ActiveExerciseStatus;
-    summary?: ExerciseCardProps['summary'];
-    supersetId?: string;
-    tempo?: ExerciseCardProps['tempo'];
-    totalPlannedSets: number;
-    unit: 'lbs' | 'kg';
-}
-
-// @public
-export interface ActiveWorkoutInput {
-    reps: string;
-    weight: string;
-}
-
-// @public (undocumented)
-export interface ActiveWorkoutPageProps extends ViewProps {
-    // (undocumented)
-    className?: string;
-    exercises: ActiveWorkoutExercise[];
-    initialResting?: boolean;
-    input?: ActiveWorkoutInput;
-    onAddTime?: () => void;
-    onRecord?: (set: ActiveWorkoutRecordedSet) => void;
-    onSkip?: () => void;
-    rest?: ActiveWorkoutRest;
-    subtitle?: string;
-    supersets?: ActiveWorkoutSuperset[];
-    title?: string;
-}
-
-// @public
-export interface ActiveWorkoutRecordedSet {
-    exerciseId: string;
-    reps: string;
-    setNumber: number;
-    weight: string;
-}
-
-// @public
-export interface ActiveWorkoutRest {
-    elapsedMs: number;
-    nextSetInfo?: string;
-    totalSeconds: number;
-}
-
-// @public
-export interface ActiveWorkoutSuperset {
-    color?: string;
-    id: string;
-    label: string;
-}
-
-// @public
 export function ActivityIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -366,9 +302,6 @@ export type AgentSummaryState = (typeof PRESENCE_STATES)[number] | (typeof HISTO
 export function aggregateDelivery(message: ChatMessage): DeliveryStatus | undefined;
 
 // @public
-export const AGREEMENT_LABELS: Record<MuscleStrengthAgreement, string>;
-
-// @public
 export function Alert(input: AlertProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -421,6 +354,30 @@ export type AlertVariant = 'subtle' | 'outline' | 'solid';
 
 // @public
 export function alpha(color: string, opacity: number): string;
+
+// @public
+export function AnimatedNumber(input: AnimatedNumberProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export type AnimatedNumberFormat = (n: number) => string;
+
+// @public
+export type AnimatedNumberMode = 'count' | 'reel';
+
+// @public
+export interface AnimatedNumberProps {
+    className?: string;
+    decimals?: number;
+    format?: AnimatedNumberFormat;
+    from?: number;
+    mode?: AnimatedNumberMode;
+    progress: number;
+    size?: AnimatedNumberSize;
+    value: number;
+}
+
+// @public
+export type AnimatedNumberSize = 'sm' | 'md' | 'lg';
 
 // @public @deprecated (undocumented)
 export function applyThemePreset(preset: ThemePreset): () => void;
@@ -536,9 +493,6 @@ export type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 export function AwardIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
-export const back: (s?: number) => Easing;
-
-// @public
 export function Badge(input: BadgeProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -578,9 +532,6 @@ export const BAND_GAP = 4;
 
 // @public
 export const BAND_H = 16;
-
-// @public
-export function bandLabel(best: MuscleStrengthBestE1rm | null): string;
 
 // @public
 export function BarList(input: BarListProps): react_jsx_runtime.JSX.Element;
@@ -630,113 +581,11 @@ export type BarListValueFormatter = (value: number, row?: BarListRow) => string;
 // @public
 export function barPaper(color: string, flip?: boolean): ViewStyle;
 
-// @public @deprecated (undocumented)
-export function BaseBadge(input: BaseBadgeProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface BaseBadgeProps extends ViewProps {
-    // (undocumented)
-    children?: ReactNode;
-    // (undocumented)
-    className?: string;
-    icon?: ReactNode;
-    // (undocumented)
-    onPress?: () => void;
-    size?: BaseBadgeSize;
-    variant?: BaseBadgeVariant;
-}
-
-// @public (undocumented)
-export type BaseBadgeSize = 'sm' | 'md' | 'lg';
-
-// @public (undocumented)
-export type BaseBadgeVariant = 'plain' | 'pr';
-
-// @public
-export function Beat(input: BeatProps): react_jsx_runtime.JSX.Element | null;
-
-// @public
-export const BEAT_MOUNT_MARGIN_S = 0.5;
-
-// @public
-export function BeatFrame(input: BeatFrameProps): react_jsx_runtime.JSX.Element;
-
-// @public
-export interface BeatFrameProps {
-    children?: ReactNode;
-    className?: string;
-    kind: string;
-}
-
-// @public
-export interface BeatProps {
-    children?: ReactNode;
-    durationS: number;
-    startS: number;
-}
-
 // @public
 export function bestTextColor(hex: string): '#000000' | '#FFFFFF';
 
 // @public
 export function BluetoothIcon(input: IconProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface BodyMapData {
-    intensity: number;
-    // (undocumented)
-    muscleGroup: MuscleGroup;
-    volumeStatus: VolumeStatus;
-    weeklySets: number;
-}
-
-// @public (undocumented)
-export interface BodyMapDetailPanelProps extends ViewProps {
-    contributingExercises?: ContributingExercise[];
-    displayName: string;
-    isOpen?: boolean;
-    landmarks: VolumeLandmarks;
-    lastTrained?: string;
-    muscleGroup: MuscleGroup;
-    onClose: () => void;
-    onViewExercises?: () => void;
-    placement?: SheetPlacement;
-    plan?: MusclePlanSection;
-    strength?: MuscleStrengthSection;
-    upcomingExercises?: UpcomingExercise[];
-    visible?: boolean;
-    volumeStatus: VolumeStatus;
-    weeklyHistory?: number[];
-    weeklySets: number;
-}
-
-// @public (undocumented)
-export interface BodyMapProps extends ViewProps {
-    // (undocumented)
-    className?: string;
-    data: BodyMapData[];
-    highlightedMuscle?: MuscleGroup | null;
-    mode?: 'simple' | 'detailed';
-    onMusclePress?: (muscleGroup: MuscleGroup) => void;
-    onViewChange?: (view: 'front' | 'back') => void;
-    size?: BodyMapSize;
-    view: 'front' | 'back';
-}
-
-// @public
-export function BodyweightGoalCard(input: BodyweightGoalCardProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface BodyweightGoalCardProps extends ViewProps {
-    // (undocumented)
-    className?: string;
-    // (undocumented)
-    goal: WholeBodyWeightRow;
-    isTagTipOpen?: boolean;
-    isTipOpen?: boolean;
-    scale?: WholeBodyScale;
-    tagCollapsed?: boolean;
-}
 
 // @public
 export function BotIcon(input: IconProps): react_jsx_runtime.JSX.Element;
@@ -880,40 +729,6 @@ export interface ButtonTextProps {
 
 // @public (undocumented)
 export type ButtonVariant = 'solid' | 'outline' | 'ghost' | 'link';
-
-// @public
-export function calculateMeanVelocity(velocities: number[]): number;
-
-// @public
-export function calculateVelocityLoss(velocities: number[]): number;
-
-// @public
-export function CapacityBandChart(input: CapacityBandChartProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface CapacityBandChartProps extends ViewProps {
-    band: CapacityBandDataPoint[];
-    // (undocumented)
-    className?: string;
-    height: number;
-    onWorkoutPress?: (workout: WorkoutDot) => void;
-    projection?: CapacityBandProjection;
-    width: number;
-    workouts: WorkoutDot[];
-}
-
-// @public (undocumented)
-export interface CapacityBandDataPoint {
-    bandHigh: number;
-    bandLow: number;
-    date: string;
-}
-
-// @public (undocumented)
-export interface CapacityBandProjection {
-    withRest: CapacityBandDataPoint[];
-    withTraining: CapacityBandDataPoint[];
-}
 
 // @public
 export function Caption(props: CaptionProps): react_jsx_runtime.JSX.Element;
@@ -1273,16 +1088,6 @@ export interface CircularTimerProps {
 export function clampedContextFraction(metrics: AgentMetrics): number | null;
 
 // @public
-export interface Clock {
-    readonly kind: ClockKind;
-    now(): number;
-    subscribe(cb: () => void): () => void;
-}
-
-// @public
-export type ClockKind = 'raf' | 'seek' | 'media';
-
-// @public
 export function cn(...inputs: ClassValue[]): string;
 
 // @public @deprecated
@@ -1475,13 +1280,6 @@ export interface ComposerProps {
 // @public
 export function computeWindow(input: FixedWindowInput): FixedWindow;
 
-// @public (undocumented)
-export interface ContributingExercise {
-    contributionWeight: number;
-    name: string;
-    sets: number;
-}
-
 // @public
 export interface ControlledProps<T> {
     defaultValue?: T;
@@ -1504,17 +1302,6 @@ export interface ConversationIdentityProps {
 }
 
 // @public
-export interface CropEdges {
-    bottom?: number;
-    left?: number;
-    right?: number;
-    top?: number;
-}
-
-// @public
-export function cropInset(input?: CropEdges): string;
-
-// @public
 export interface CssPropertyEntry {
     cssVariable?: string | null;
     property: string;
@@ -1530,9 +1317,6 @@ export interface CssPropertyManifest {
     description?: string;
     properties: CssPropertyEntry[];
 }
-
-// @public
-export function cubicBezier(x1: number, y1: number, x2: number, y2: number): Easing;
 
 // @public
 export type CubicBezierCss<P extends ControlPoints> = `cubic-bezier(${P[0]}, ${P[1]}, ${P[2]}, ${P[3]})`;
@@ -1562,7 +1346,7 @@ export const darkThemeCSSVars: {
     readonly '--font-family-sans': "'Inter'";
     readonly '--font-family-body': "'Nunito Sans'";
     readonly '--font-family-heading': "'Space Grotesk'";
-    readonly '--font-family-mono': "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
+    readonly '--font-family-mono': "'JetBrains Mono', monospace";
     readonly '--color-brand-primary': "#FF7900";
     readonly '--color-brand-primary-light': "#FFA063";
     readonly '--color-brand-primary-dark': "#DA5F00";
@@ -1721,12 +1505,6 @@ export const darkThemeCSSVars: {
     readonly '--color-avatar-text': "#FFFFFF";
 };
 
-// @public @deprecated (undocumented)
-export const DashboardShell: typeof WorkoutShell;
-
-// @public @deprecated (undocumented)
-export type DashboardShellProps = WorkoutShellProps;
-
 // @public
 export function DatabaseIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
@@ -1797,95 +1575,13 @@ export const debossLabel: TextStyle;
 export const DEFAULT_ROSTER_FIELDS: AgentRosterField[];
 
 // @public @deprecated (undocumented)
-export const defaultNavItems: SideNavItem[];
-
-// @public @deprecated (undocumented)
 export const defaultPreset: ThemePreset;
 
 // @public @deprecated (undocumented)
 export type DeprecatedPillSize = 'xl';
 
 // @public
-export function deriveMilestoneState(input: {
-    state?: GoalMilestoneState;
-    met: boolean;
-    currentWeek?: number;
-    goalWeek: number;
-}): GoalMilestoneState;
-
-// @public
-export function deriveTrajectoryGeometry(input: GoalTrajectoryGeometryInput): GoalTrajectoryGeometry;
-
-// @public
 export function describeRef(input: EntityRef): string;
-
-// @public (undocumented)
-export function DeviationBar(input: DeviationBarProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface DeviationBarProps extends ViewProps {
-    // (undocumented)
-    className?: string;
-    // (undocumented)
-    deviation: number;
-    // (undocumented)
-    width?: number;
-}
-
-// @public (undocumented)
-export interface Device {
-    id: string;
-    nickname: string;
-    slot?: 'L' | 'R' | null;
-    state: DeviceRowState;
-}
-
-// @public (undocumented)
-export type DeviceConnState = 'connected' | 'degraded' | 'lost';
-
-// @public
-export function DeviceIndicator(input: DeviceIndicatorProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface DeviceIndicatorProps extends ViewProps {
-    // (undocumented)
-    className?: string;
-    label?: string;
-    onPress?: () => void;
-    status?: DeviceConnState;
-}
-
-// @public
-export function DeviceMenu(input: DeviceMenuProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface DeviceMenuProps {
-    // (undocumented)
-    className?: string;
-    // (undocumented)
-    devices: Device[];
-    isOpen?: boolean;
-    // (undocumented)
-    onOpenChange?: (open: boolean) => void;
-    // (undocumented)
-    onSelectDevice?: (device: Device) => void;
-}
-
-// @public
-export function DeviceRow(input: DeviceRowProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface DeviceRowProps extends ViewProps {
-    // (undocumented)
-    className?: string;
-    // (undocumented)
-    device: Device;
-    // (undocumented)
-    onPress?: () => void;
-}
-
-// @public (undocumented)
-export type DeviceRowState = 'connected' | 'available' | 'degraded' | 'lost';
 
 // @public
 export type DimensionTone = 'ok' | 'warn' | 'alarm';
@@ -1983,104 +1679,7 @@ export interface DualGhostSparkProps {
 }
 
 // @public
-export function DualPinnedLiveStrip(props: DualPinnedLiveStripProps): react_jsx_runtime.JSX.Element | null;
-
-// @public (undocumented)
-export interface DualPinnedLiveStripProps {
-    // (undocumented)
-    barColor?: LiveStripBarColor;
-    // (undocumented)
-    className?: string;
-    // (undocumented)
-    exerciseName: string;
-    // (undocumented)
-    layout?: PinnedLiveStripLayout;
-    left?: LiveStripSlot;
-    // (undocumented)
-    lossThresholds?: VelocityLossThresholds;
-    // (undocumented)
-    onPress?: () => void;
-    // (undocumented)
-    restDurationMs?: number;
-    // (undocumented)
-    restRemainingMs?: number;
-    right?: LiveStripSlot;
-    // (undocumented)
-    setCount: number;
-    // (undocumented)
-    setNumber: number;
-    // (undocumented)
-    state: LiveStripState;
-    // (undocumented)
-    targetReps: number;
-}
-
-// @public
-export interface DualVelocityStream {
-    isDimmed?: boolean;
-    label?: string;
-    set?: VelocitySet;
-    velocities?: number[];
-}
-
-// @public
-export function DualVelocityStrip(input: DualVelocityStripProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface DualVelocityStripProps extends ViewProps {
-    barColor?: 'zone' | 'loss';
-    // (undocumented)
-    className?: string;
-    height?: number;
-    left: DualVelocityStream;
-    liveRepIndex?: number;
-    lossThresholds?: VelocityLossThresholds;
-    right: DualVelocityStream;
-    scale?: 'peak' | 'fixed';
-    targetReps?: number;
-    variant?: 'hero' | 'compact' | 'dual-expanded' | 'rail';
-    zones?: readonly VelocityZoneBandProp[];
-}
-
-// @public
 export function DumbbellIcon(props: IconProps): react_jsx_runtime.JSX.Element;
-
-// @public
-export interface E1RMBand {
-    biasLbs: number | null;
-    // (undocumented)
-    biasPct: number | null;
-    // (undocumented)
-    citation: string;
-    fitFor: 'trend';
-    // (undocumented)
-    highLbs: number | null;
-    lowLbs: number | null;
-    // (undocumented)
-    method: E1RMMethod;
-    // (undocumented)
-    note: string;
-    seeLbs: number | null;
-    // (undocumented)
-    seePct: number | null;
-    // (undocumented)
-    seePctCi: readonly [number, number] | null;
-}
-
-// @public
-export type E1RMMethod = 'profile' | 'reps' | 'hybrid';
-
-// @public
-export const easeIn: (f: Easing) => Easing;
-
-// @public
-export const easeInOut: (f: Easing) => Easing;
-
-// @public
-export const easeOut: (f: Easing) => Easing;
-
-// @public
-export type Easing = (p: number) => number;
 
 // @public (undocumented)
 export const ELEVATION_PLANE: Record<ElevationLevel, SurfaceLevel>;
@@ -2120,27 +1719,6 @@ export interface EntityRef {
 }
 
 // @public
-export interface Envelope {
-    holdS: number;
-    holdT: number;
-    inP: number;
-    outP: number;
-    phase: EnvelopePhase;
-}
-
-// @public
-export function envelope(t: number, durationS: number, input?: EnvelopeOptions): Envelope;
-
-// @public
-export interface EnvelopeOptions {
-    inS?: number;
-    outS?: number;
-}
-
-// @public
-export type EnvelopePhase = 'before' | 'in' | 'hold' | 'out' | 'after';
-
-// @public
 export function EqualIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -2156,173 +1734,6 @@ export function errorRate(metrics: Pick<AgentMetrics, 'toolCalls' | 'errors'>): 
 export function ExactTime(input: {
     session: SessionSummary;
 }): react_jsx_runtime.JSX.Element;
-
-// @public
-export function ExerciseCard(input: ExerciseCardProps): react_jsx_runtime.JSX.Element;
-
-// @public
-export function ExerciseCardHeading(props: ExerciseCardHeadingProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export type ExerciseCardHeadingProps = ExerciseHeadingProps & {
-    density?: ExerciseRowDensity;
-    setStates?: SetStripSet[];
-    stripHeight?: number;
-    isSelected?: boolean;
-    style?: StyleProp<ViewStyle>;
-    className?: string;
-    testID?: string;
-};
-
-// @public (undocumented)
-export interface ExerciseCardProps {
-    defaultExpanded?: boolean;
-    expanded?: boolean;
-    indicator?: ExerciseIndicatorKind;
-    isLive?: boolean;
-    // (undocumented)
-    isPR?: boolean;
-    isSelected?: boolean;
-    // (undocumented)
-    name: string;
-    onExpandedChange?: (expanded: boolean) => void;
-    // (undocumented)
-    prescription?: string;
-    // (undocumented)
-    previousBest?: string;
-    sets?: SetRowProps[];
-    setStates?: SetStripSet[];
-    setVelocities?: number[][];
-    stripHeight?: number;
-    // (undocumented)
-    summary?: {
-        sets: number;
-        reps: number | string;
-        weight: number;
-        unit: 'lbs' | 'kg';
-    };
-    // (undocumented)
-    supersetPosition?: 'first' | 'last' | 'middle' | null;
-    // (undocumented)
-    tempo?: [number, number, number, number];
-    totalPlannedSets?: number;
-    upcoming?: boolean;
-    velocityZones?: readonly VelocityZoneBandProp[];
-}
-
-// @public
-export interface ExerciseDetailEntry {
-    e1rm?: {
-        value: number;
-        unit: 'lbs' | 'kg';
-    };
-    id: string;
-    isPR?: boolean;
-    sets: SetRowProps[];
-    summary?: ExerciseCardProps['summary'];
-    tempo?: ExerciseCardProps['tempo'];
-    title: string;
-}
-
-// @public
-export interface ExerciseDetailHeader {
-    currentE1rm?: number;
-    name: string;
-    subtitle: string;
-    unit: 'lbs' | 'kg';
-}
-
-// @public (undocumented)
-export interface ExerciseDetailPageProps extends ViewProps {
-    // (undocumented)
-    className?: string;
-    exercise: ExerciseDetailHeader;
-    history: ExerciseDetailEntry[];
-    meso: MesoStatusCardProps;
-    progression: ExerciseDetailEntry[];
-    trend: ExerciseTrend;
-    vbt: ExerciseVbt;
-}
-
-// @public
-export interface ExerciseDetailStats {
-    bestE1rm: number | null;
-    prCount: number;
-    sessions: number;
-}
-
-// @public
-export type ExerciseDetailTab = 'progress' | 'history' | 'advanced';
-
-// @public
-export function ExerciseHeading(props: ExerciseHeadingProps): react_jsx_runtime.JSX.Element;
-
-// @public
-export function exerciseHeadingLabel(p: ExerciseHeadingProps, unit?: string): string;
-
-// @public
-export type ExerciseHeadingLayout = 'stacked' | 'inline';
-
-// @public (undocumented)
-export type ExerciseHeadingProps = ExerciseHeadingBaseProps & ExerciseHeadingPrescription;
-
-// @public
-export function ExerciseIndicator(input: ExerciseIndicatorProps): react_jsx_runtime.JSX.Element;
-
-// @public
-export type ExerciseIndicatorKind = 'imbalance' | 'overshoot' | 'velocity-loss' | 'missed-reps' | 'pr' | 'info';
-
-// @public (undocumented)
-export interface ExerciseIndicatorProps extends Omit<ViewProps, 'children'> {
-    // (undocumented)
-    className?: string;
-    // (undocumented)
-    kind: ExerciseIndicatorKind;
-    onPress?: () => void;
-}
-
-// @public
-export function exerciseLiveColor(mode?: ThemeMode): string;
-
-// @public
-export type ExerciseRowDensity = 'rail' | 'compact' | 'upcoming';
-
-// @public
-export type ExerciseRowState = 'hovered' | 'selected' | 'pressed';
-
-// @public
-export function exerciseRowStateColor(state: ExerciseRowState, mode?: ThemeMode): string;
-
-// @public
-export interface ExerciseTrend {
-    data: StrengthTrendDataPoint[];
-    mesoBoundaries?: StrengthTrendChartMesoBoundary[];
-    projection?: StrengthTrendDataPoint[];
-}
-
-// @public
-export interface ExerciseVbt {
-    band: CapacityBandDataPoint[];
-    projection?: CapacityBandProjection;
-    sets: ExerciseVbtSet[];
-    workouts: WorkoutDot[];
-    zones?: readonly VelocityZoneBandProp[];
-}
-
-// @public
-export interface ExerciseVbtSet {
-    label: string;
-    velocities: number[];
-}
-
-// @public
-export interface ExpectedRepsRange {
-    // (undocumented)
-    high: number;
-    // (undocumented)
-    low: number;
-    n: number;
-}
 
 // @public
 export function extractTaskRefs(body: string): string[];
@@ -2359,23 +1770,6 @@ export function FatigueLights(input: FatigueLightsProps): react_jsx_runtime.JSX.
 export interface FatigueLightsProps {
     dimensions: FatigueVerdict['dimensions'] | null;
     spread?: boolean;
-}
-
-// @public
-export function FatigueMeter(input: FatigueMeterProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface FatigueMeterProps extends ViewProps {
-    // (undocumented)
-    className?: string;
-    labels?: string[];
-    max?: number;
-    needleColor?: string;
-    size?: ZoneTrackSize;
-    thresholds?: VelocityLossThresholds;
-    trackHeight?: number;
-    value: number;
-    zoneColors?: [string, string, string, string];
 }
 
 // @public
@@ -2538,9 +1932,6 @@ export interface FixedWindowInput {
     overscan: number;
     viewport: number;
 }
-
-// @public
-export function flattenDeloadWeeks(expected: GoalExpectedPoint[], weeks: GoalTrajectoryWeek[]): GoalExpectedPoint[];
 
 // @public
 export const FLOATING_ELEVATION_MIN: ElevationLevel;
@@ -3037,7 +2428,7 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--font-family-sans': "'Inter'";
     readonly '--font-family-body': "'Nunito Sans'";
     readonly '--font-family-heading': "'Space Grotesk'";
-    readonly '--font-family-mono': "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
+    readonly '--font-family-mono': "'JetBrains Mono', monospace";
     readonly '--color-brand-primary': "#FF7900";
     readonly '--color-brand-primary-light': "#FFA063";
     readonly '--color-brand-primary-dark': "#DA5F00";
@@ -3212,7 +2603,7 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--font-family-sans': "'Inter'";
     readonly '--font-family-body': "'Nunito Sans'";
     readonly '--font-family-heading': "'Space Grotesk'";
-    readonly '--font-family-mono': "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
+    readonly '--font-family-mono': "'JetBrains Mono', monospace";
     readonly '--color-brand-primary': "#FF7900";
     readonly '--color-brand-primary-light': "#FFA063";
     readonly '--color-brand-primary-dark': "#DA5F00";
@@ -3372,15 +2763,6 @@ export function getThemeCSSVars(mode: ThemeMode): {
 };
 
 // @public
-export function getVelocityLossColor(lossPct: number, thresholds?: VelocityLossThresholds, mode?: ThemeMode): string;
-
-// @public (undocumented)
-export function getVelocityZoneColor(velocity: number): string;
-
-// @public (undocumented)
-export function getVelocityZoneName(velocity: number): string;
-
-// @public
 export function GhostBand(input: GhostBandProps): react_jsx_runtime.JSX.Element | null;
 
 // @public (undocumented)
@@ -3496,507 +2878,6 @@ export const gluestackConfig: {
         readonly rounded: "borderRadius";
     };
 };
-
-// @public
-export const GOAL_LIFT_CARD_STATUS_COLLAPSE_WIDTH = 320;
-
-// @public
-export const GOAL_MILESTONE_WALL_MIN_WIDTH = 420;
-
-// @public (undocumented)
-export const GOAL_PRIORITY_LABEL: Record<GoalPriority, string>;
-
-// @public
-export const GOAL_PRIORITY_MEANING: Record<GoalPriority, string>;
-
-// @public
-export const GOAL_TRAJECTORY_WALL_BREAKPOINT = 720;
-
-// @public
-export interface GoalActualPoint {
-    // (undocumented)
-    isPR?: boolean;
-    // (undocumented)
-    matched?: boolean;
-    // (undocumented)
-    ts?: string;
-    // (undocumented)
-    value: number;
-    // (undocumented)
-    weekIndex?: number;
-}
-
-// @public
-export function GoalCard(props: GoalCardProps): react_jsx_runtime.JSX.Element;
-
-// @public
-export type GoalCardChart = Omit<GoalTrajectoryChartProps, 'width' | 'height' | 'status' | 'metricLabel'>;
-
-// @public
-export function goalCardMarkSize(width: number | null): number;
-
-// @public
-export type GoalCardMilestone = Omit<GoalMilestoneSummaryProps, 'axis' | 'className'>;
-
-// @public (undocumented)
-export interface GoalCardProps extends ViewProps {
-    basis?: string;
-    chartHeight?: number;
-    chartWidth?: number;
-    citation?: string;
-    // (undocumented)
-    className?: string;
-    // (undocumented)
-    density?: GoalLiftCardDensity;
-    goal?: GoalCardChart;
-    isPR?: boolean;
-    // (undocumented)
-    milestone: GoalCardMilestone;
-    priority?: GoalPriority;
-    // (undocumented)
-    size?: GoalCardSize;
-    // (undocumented)
-    status: GoalLiftStatus;
-    statusForm?: 'pill' | 'dot';
-    title: string;
-    trend?: GoalCardTrend;
-}
-
-// @public
-export type GoalCardSize = 'full' | 'compact';
-
-// @public
-export interface GoalCardTrend {
-    actuals: GoalLiftActual[];
-    committed: number;
-    goalWeek: number;
-    nextTarget?: GoalNextTarget;
-    // (undocumented)
-    stretch: number;
-    // (undocumented)
-    unit: string;
-}
-
-// @public
-export type GoalDirection = 'up' | 'down';
-
-// @public
-export interface GoalExpectedPoint {
-    // (undocumented)
-    high: number;
-    // (undocumented)
-    low: number;
-    // (undocumented)
-    weekIndex: number;
-}
-
-// @public
-export interface GoalLiftActual {
-    // (undocumented)
-    value: number;
-    weekIndex: number;
-}
-
-// @public
-export function GoalLiftCard(input: GoalLiftCardProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export type GoalLiftCardDensity = 'comfortable' | 'compact';
-
-// @public
-export interface GoalLiftCardProps extends ViewProps {
-    // (undocumented)
-    actuals: GoalLiftActual[];
-    // (undocumented)
-    className?: string;
-    // (undocumented)
-    committed: number;
-    currentWeek?: number;
-    // (undocumented)
-    density?: GoalLiftCardDensity;
-    // (undocumented)
-    isPR?: boolean;
-    latest?: GoalMilestoneReading;
-    // (undocumented)
-    milestone: GoalLiftMilestone;
-    name: string;
-    // (undocumented)
-    status: GoalLiftStatus;
-    // (undocumented)
-    statusForm?: 'pill' | 'dot';
-    // (undocumented)
-    stretch: number;
-    weeks?: readonly GoalWeekEntry[];
-}
-
-// @public
-export interface GoalLiftMilestone {
-    goalWeek: number;
-    // (undocumented)
-    load: number;
-    // (undocumented)
-    reps: number;
-    // (undocumented)
-    unit: 'lb' | 'kg';
-}
-
-// @public
-export type GoalLiftStatus = 'on_track' | 'ahead' | 'behind' | 'tolerated' | 'deload_week' | 'calibrating' | 'stalled' | 'goal_met' | 'beyond_goal';
-
-// @public (undocumented)
-export function goalLiftStatusLabel(status: GoalLiftStatus): string;
-
-// @public
-export type GoalLoadMetric = 'top_load_at_reps' | 'reps_at_load';
-
-// @public (undocumented)
-export interface GoalLoadTarget extends GoalMilestoneSet {
-    // (undocumented)
-    metric: GoalLoadMetric;
-    // (undocumented)
-    unit: 'lb' | 'kg';
-}
-
-// @public
-export type GoalMilestoneGap = {
-    kind: 'load';
-    amount: number;
-} | {
-    kind: 'reps';
-    amount: number;
-} | {
-    kind: 'value';
-    amount: number;
-} | {
-    kind: 'none';
-};
-
-// @public
-export type GoalMilestoneReading = GoalMilestoneSet | GoalMilestoneValue;
-
-// @public (undocumented)
-export interface GoalMilestoneSet {
-    // (undocumented)
-    load: number;
-    // (undocumented)
-    reps: number;
-}
-
-// @public
-export type GoalMilestoneState = 'upcoming' | 'hit' | 'missed';
-
-// @public
-export function GoalMilestoneSummary(props: GoalMilestoneSummaryProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface GoalMilestoneSummaryProps {
-    axis?: GoalMilestoneWeekAxis;
-    // (undocumented)
-    className?: string;
-    currentWeek?: number;
-    direction?: GoalDirection;
-    heroLeading?: 'default' | 'tight';
-    latest?: GoalMilestoneReading;
-    reach?: GoalReach;
-    scale?: GoalMilestoneTileScale;
-    // (undocumented)
-    showWeeks?: boolean;
-    state?: GoalMilestoneState;
-    status: GoalTrajectoryStatus;
-    summaryFit?: 'row' | 'stacked';
-    target: GoalMilestoneTarget;
-    // (undocumented)
-    weekCount: number;
-    weeks?: readonly GoalWeekEntry[];
-}
-
-// @public
-export type GoalMilestoneTarget = GoalLoadTarget | GoalValueTarget;
-
-// @public
-export function GoalMilestoneTile(allProps: GoalMilestoneTileProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export type GoalMilestoneTileLayout = 'full' | 'compact';
-
-// @public (undocumented)
-export interface GoalMilestoneTileProps extends GoalMilestoneSummaryProps {
-    framed?: boolean;
-    // (undocumented)
-    label?: string;
-    layout?: GoalMilestoneTileLayout;
-}
-
-// @public (undocumented)
-export type GoalMilestoneTileScale = 'wall' | 'phone';
-
-// @public (undocumented)
-export interface GoalMilestoneValue {
-    // (undocumented)
-    value: number;
-}
-
-// @public
-export interface GoalMilestoneWeekAxis {
-    left: number;
-    // (undocumented)
-    right: number;
-    span: number;
-    x: (week: number) => number;
-}
-
-// @public
-export function GoalMilestoneWeekStrip(input: GoalMilestoneWeekStripProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface GoalMilestoneWeekStripProps {
-    axis?: GoalMilestoneWeekAxis;
-    cellHeight?: number;
-    // (undocumented)
-    currentWeek?: number;
-    readingText: (entry: GoalWeekEntry) => string;
-    // (undocumented)
-    weekCount: number;
-    weeks?: readonly GoalWeekEntry[];
-}
-
-// @public (undocumented)
-export interface GoalMuscleCardProps extends ViewProps {
-    // (undocumented)
-    className?: string;
-    commonGoalWeek: number;
-    // (undocumented)
-    density?: GoalLiftCardDensity;
-    // (undocumented)
-    lifts: GoalMuscleLift[];
-    // (undocumented)
-    liftsOnTrack: number;
-    // (undocumented)
-    liftsTotal: number;
-    muscle: MuscleGroup;
-    name: string;
-    side: 'front' | 'back';
-    status: GoalLiftStatus;
-}
-
-// @public
-export interface GoalMuscleLift {
-    // (undocumented)
-    goalWeek: number;
-    // (undocumented)
-    load: number;
-    // (undocumented)
-    name: string;
-    // (undocumented)
-    reps: number;
-    // (undocumented)
-    status: GoalLiftStatus;
-    // (undocumented)
-    unit: 'lb' | 'kg';
-}
-
-// @public
-export interface GoalNextTarget {
-    label: string;
-    // (undocumented)
-    value: number;
-    // (undocumented)
-    weekIndex: number;
-}
-
-// @public
-export type GoalPriority = 'specialize' | 'maintain' | 'deprioritize';
-
-// @public
-export function GoalPriorityIcon(input: GoalPriorityIconProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface GoalPriorityIconProps {
-    // (undocumented)
-    className?: string;
-    // (undocumented)
-    priority: GoalPriority;
-    size?: number;
-    withTip?: boolean;
-}
-
-// @public
-export function GoalPriorityIndex(input: GoalPriorityIndexProps): react_jsx_runtime.JSX.Element | null;
-
-// @public
-export interface GoalPriorityIndexEntry {
-    hasTarget: boolean;
-    // (undocumented)
-    level: GoalPriority;
-    name: string;
-}
-
-// @public (undocumented)
-export interface GoalPriorityIndexGroup {
-    // (undocumented)
-    level: GoalPriority;
-    // (undocumented)
-    names: string[];
-}
-
-// @public (undocumented)
-export interface GoalPriorityIndexProps extends ViewProps {
-    // (undocumented)
-    className?: string;
-    // (undocumented)
-    priorities: readonly GoalPriorityIndexEntry[];
-}
-
-// @public
-export type GoalReach = 'short' | 'met' | 'beyond';
-
-// @public
-export function goalStatusBadge(status: GoalLiftStatus, reach: GoalReach): StatusBadgeSpec;
-
-// @public
-export function GoalTrajectoryChart(input: GoalTrajectoryChartProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface GoalTrajectoryChartProps extends ViewProps {
-    actuals: GoalActualPoint[];
-    animate?: boolean;
-    calibratingNote?: string;
-    // (undocumented)
-    className?: string;
-    committed: number;
-    currentWeek?: number;
-    direction?: GoalDirection;
-    expected: GoalExpectedPoint[];
-    height: number;
-    mesoBoundaries?: number[];
-    metricLabel?: string;
-    nextTarget?: GoalNextTarget;
-    referenceLabelSide?: ReferenceLabelSide;
-    ruleLabelText?: RuleLabelText;
-    showWeekLabels?: boolean;
-    status: GoalTrajectoryStatus;
-    stretch: number;
-    unit?: string;
-    weeks: GoalTrajectoryWeek[];
-    width: number;
-    yAxisLabels?: boolean;
-}
-
-// @public (undocumented)
-export interface GoalTrajectoryGeometry {
-    // (undocumented)
-    actuals: ActualCoord[];
-    bandEdgePath: string;
-    bandIsDegenerate: boolean;
-    bandPath: string;
-    bandPolygon: GeometryPoint[];
-    bandSlices: BandSlice[];
-    // (undocumented)
-    boundaries: BoundaryRule[];
-    // (undocumented)
-    committedY: number;
-    currentWeekPoint: CurrentWeekPoint | null;
-    // (undocumented)
-    deloadRects: DeloadRect[];
-    domain: {
-        min: number;
-        max: number;
-    };
-    // (undocumented)
-    hasActuals: boolean;
-    // (undocumented)
-    hasBand: boolean;
-    linePath: string;
-    nextTarget: NextTargetCoord | null;
-    plane: PlaneRect;
-    // (undocumented)
-    plot: PlotRect;
-    // (undocumented)
-    prStars: ActualCoord[];
-    // (undocumented)
-    stretchY: number;
-    // (undocumented)
-    toX: (weekIndex: number) => number;
-    // (undocumented)
-    toY: (value: number) => number;
-    weekSpan: number;
-    // (undocumented)
-    yTicks: YTick[];
-}
-
-// @public (undocumented)
-export interface GoalTrajectoryGeometryInput {
-    // (undocumented)
-    actuals: GoalActualPoint[];
-    bandCurve?: BandCurve;
-    // (undocumented)
-    committed: number;
-    currentWeek?: number;
-    // (undocumented)
-    expected: GoalExpectedPoint[];
-    // (undocumented)
-    height: number;
-    insets?: PlotInsets;
-    labelFont?: number;
-    // (undocumented)
-    mesoBoundaries?: number[];
-    nextTarget?: GoalNextTarget;
-    // (undocumented)
-    stretch: number;
-    tickCount?: number;
-    // (undocumented)
-    weeks: GoalTrajectoryWeek[];
-    // (undocumented)
-    width: number;
-}
-
-// @public
-export type GoalTrajectoryStatus = 'on_track' | 'ahead' | 'behind' | 'tolerated' | 'deload_week' | 'calibrating' | 'stalled' | 'goal_met' | 'beyond_goal';
-
-// @public
-export interface GoalTrajectoryWeek {
-    // (undocumented)
-    index: number;
-    // (undocumented)
-    isDeload?: boolean;
-    // (undocumented)
-    startDate?: string;
-}
-
-// @public
-export type GoalValueMetric = 'bodyweight' | 'sessions_28d' | 'e1rm_trend' | 'composite_strength';
-
-// @public (undocumented)
-export interface GoalValueTarget extends GoalMilestoneValue {
-    // (undocumented)
-    metric: GoalValueMetric;
-    // (undocumented)
-    unit?: string;
-}
-
-// @public (undocumented)
-export interface GoalWeekCell {
-    // (undocumented)
-    entry?: GoalWeekEntry;
-    outcome?: GoalWeekOutcome;
-    // (undocumented)
-    phase: GoalWeekPhase;
-    // (undocumented)
-    week: number;
-}
-
-// @public
-export interface GoalWeekEntry {
-    // (undocumented)
-    outcome: GoalWeekOutcome;
-    reading?: GoalMilestoneReading;
-}
-
-// @public
-export type GoalWeekOutcome = 'ahead' | 'on_track' | 'missed' | 'none';
-
-// @public (undocumented)
-export type GoalWeekPhase = 'past' | 'current' | 'future';
 
 // @public
 export type GradientStyle = {
@@ -4132,9 +3013,6 @@ export const GRIND_THRESHOLD = 0.35;
 export function groupByPeriod(sessions: SessionSummary[]): Period[];
 
 // @public
-export function groupPriorities(entries: readonly GoalPriorityIndexEntry[]): GoalPriorityIndexGroup[];
-
-// @public
 export function groupRefsByKind(refs: readonly EntityRef[]): RefGroup[];
 
 // @public
@@ -4242,9 +3120,6 @@ export interface IconProps {
 
 // @public (undocumented)
 export function Indicator(input: IndicatorProps): react_jsx_runtime.JSX.Element;
-
-// @public
-export const INDICATOR_PRECEDENCE: readonly ExerciseIndicatorKind[];
 
 // @public (undocumented)
 export type IndicatorColor = 'default' | 'primary' | 'success' | 'live' | 'error' | 'warning' | 'info' | 'error-vivid';
@@ -4355,35 +3230,6 @@ export type InitiativeState = 'focused' | 'backburner' | 'paused' | 'done';
 // @public
 export const Input: React__default.ForwardRefExoticComponent<InputProps & React__default.RefAttributes<TextInput>>;
 
-// @public (undocumented)
-export function InputBar(input: InputBarProps): react_jsx_runtime.JSX.Element | null;
-
-// @public (undocumented)
-export interface InputBarProps {
-    // (undocumented)
-    canRecord: boolean;
-    // (undocumented)
-    exerciseName: string;
-    // (undocumented)
-    onRecord: () => void;
-    // (undocumented)
-    onRepsChange: (value: string) => void;
-    // (undocumented)
-    onWeightChange: (value: string) => void;
-    // (undocumented)
-    reps: string;
-    // (undocumented)
-    setNumber: number;
-    // (undocumented)
-    totalSets: number | null;
-    // (undocumented)
-    unit: 'lbs' | 'kg';
-    // (undocumented)
-    visible: boolean;
-    // (undocumented)
-    weight: string;
-}
-
 // @public
 export function InputGroup(input: InputGroupProps): react_jsx_runtime.JSX.Element;
 
@@ -4423,36 +3269,6 @@ export type InputVariant = 'outline' | 'filled' | 'underline';
 // @public
 export function insetWell(tone?: string, mode?: ThemeMode): ViewStyle;
 
-// @public (undocumented)
-export function IntensityBar(input: IntensityBarProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface IntensityBarProps extends ViewProps {
-    // (undocumented)
-    className?: string;
-    level: number;
-    orientation?: IntensityBarOrientation;
-    showThresholdLabel?: boolean;
-    size?: number;
-    thickness?: number;
-    threshold?: number;
-}
-
-// @public
-export function interpolate(t: number, input: readonly [number, number], input2: readonly [number, number], input3?: InterpolateOptions): number;
-
-// @public
-export function interpolateColor(t: number, input: readonly [number, number], input2: readonly [string, string], options?: InterpolateOptions): string;
-
-// @public
-export interface InterpolateOptions {
-    clamp?: boolean;
-    ease?: Easing;
-}
-
-// @public
-export function interpolateScale(t: number, input: readonly [number, number], input2: readonly [number, number], options?: InterpolateOptions): number;
-
 // @public
 export function isCssPropertyManifest(candidate: unknown): candidate is CssPropertyManifest;
 
@@ -4471,12 +3287,6 @@ export function isHistoryOnly(agent: Pick<AgentSummary, 'stateSource'>): boolean
 // @public
 export function isLiveAgent(state: AgentSummaryState): boolean;
 
-// @public (undocumented)
-export function isLoadTarget(target: GoalMilestoneTarget): target is GoalLoadTarget;
-
-// @public (undocumented)
-export function isMilestoneMet(target: GoalMilestoneTarget, latest: GoalMilestoneReading, direction?: GoalDirection): boolean;
-
 // @public
 export function KanbanIcon(input: IconProps): react_jsx_runtime.JSX.Element;
 
@@ -4493,18 +3303,6 @@ export interface KbdProps {
 
 // @public
 export type KbdSize = 'sm' | 'md';
-
-// @public
-type Keyframe_2 = readonly [number, number];
-export { Keyframe_2 as Keyframe }
-
-// @public
-export function keyframes(t: number, stops: readonly Keyframe_2[], input?: KeyframesOptions): number;
-
-// @public
-export interface KeyframesOptions {
-    ease?: Easing | readonly Easing[];
-}
 
 // @public
 export function Label(props: LabelProps): react_jsx_runtime.JSX.Element;
@@ -4558,7 +3356,7 @@ export const lightThemeCSSVars: {
     readonly '--font-family-sans': "'Inter'";
     readonly '--font-family-body': "'Nunito Sans'";
     readonly '--font-family-heading': "'Space Grotesk'";
-    readonly '--font-family-mono': "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
+    readonly '--font-family-mono': "'JetBrains Mono', monospace";
     readonly '--color-brand-primary': "#FF7900";
     readonly '--color-brand-primary-light': "#FFA063";
     readonly '--color-brand-primary-dark': "#DA5F00";
@@ -4718,9 +3516,6 @@ export const lightThemeCSSVars: {
 };
 
 // @public
-export const linear: Easing;
-
-// @public
 export function linearGradient(from: ColorToken, to: ColorToken, angle?: number, mode?: ThemeMode): GradientStyle;
 
 // @public
@@ -4808,35 +3603,6 @@ export interface ListItemTrailingProps extends ViewProps {
 // @public
 export const LIVE_HISTORY_STATES: readonly ["spawning", "detached"];
 
-// @public
-export const LIVE_STRIP_GAP_COLOR: Record<LiveStripGap, Readonly<Record<ThemeMode, string>>>;
-
-// @public
-export const LIVE_STRIP_REST_MAX_SECONDS = 999;
-
-// @public
-export const LIVE_STRIP_ZONE_TOKEN: Record<LiveStripZone, ColorToken_2>;
-
-// @public
-export type LiveAuraCategory = 'productive' | 'threshold' | 'stop';
-
-// @public
-export function liveAuraColor(category: LiveAuraCategory, mode: ThemeMode): string | null;
-
-// @public
-export function LiveAuraFrame(input: LiveAuraFrameProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface LiveAuraFrameProps extends ViewProps {
-    // (undocumented)
-    category: LiveAuraCategory;
-    // (undocumented)
-    children?: React.ReactNode;
-    // (undocumented)
-    className?: string;
-    pulse?: boolean;
-}
-
 // @public (undocumented)
 export function LiveFatigueCard(input: LiveFatigueCardProps): react_jsx_runtime.JSX.Element;
 
@@ -4886,83 +3652,6 @@ export interface LiveFatiguePanelVelocity {
 }
 
 // @public
-export type LiveStripBarColor = 'zone' | 'loss';
-
-// @public
-export function liveStripBars(state: LiveStripState): SetBarTreatment;
-
-// @public
-export type LiveStripGap = 'behind' | 'missed';
-
-// @public (undocumented)
-export function liveStripGap(state: LiveStripState): LiveStripGap;
-
-// @public
-export function liveStripLastVelocity(reps: readonly LiveStripRep[]): number | null;
-
-// @public
-export function liveStripMs(ms: number | undefined): number;
-
-// @public
-export interface LiveStripRep {
-    // (undocumented)
-    velocity: number;
-    // (undocumented)
-    zone?: LiveStripZone;
-}
-
-// @public
-export function liveStripRepToken(reps: readonly LiveStripRep[], index: number, barColor?: LiveStripBarColor, lossThresholds?: VelocityLossThresholds): ColorToken_2;
-
-// @public
-export function liveStripRestReadout(remainingMs: number | undefined): {
-    seconds: number;
-    step: LiveStripRestStep;
-};
-
-// @public
-export type LiveStripRestStep = 'full' | 'reduced';
-
-// @public
-export function liveStripRestType(layout: PinnedLiveStripLayout, remainingMs: number | undefined): {
-    seconds: number;
-    size: string;
-    unit: string;
-    raisePx: number;
-};
-
-// @public
-export interface LiveStripSlot {
-    isConnected?: boolean;
-    isFatigued?: boolean;
-    label?: string;
-    loadLabel?: string;
-    reps?: readonly LiveStripRep[];
-}
-
-// @public
-export type LiveStripState = 'set' | 'rest' | 'idle';
-
-// @public
-export function liveStripTarget(targetReps: number): number;
-
-// @public
-export type LiveStripTargetSource = 'plan' | 'last-time';
-
-// @public
-export type LiveStripZone = 'grinding' | 'maximalStrength' | 'strengthSpeed' | 'power' | 'speed';
-
-// @public
-export interface LocalTime {
-    phase: Phase;
-    progress: number;
-    t: number;
-}
-
-// @public
-export function localTime(raw: number, durationS: number): LocalTime;
-
-// @public
 export interface ManifestValidationResult {
     // (undocumented)
     errors: string[];
@@ -4983,9 +3672,6 @@ export interface MarkdownProseProps {
     // (undocumented)
     testID?: string;
 }
-
-// @public
-export function mediaClock(media: HTMLMediaElement): Clock;
 
 // @public
 export function Menu(input: MenuProps): react_jsx_runtime.JSX.Element;
@@ -5059,114 +3745,6 @@ export interface MenuTriggerProps {
 
 // @public
 export function mergePhaseSegments(a: PhaseSegment[], b: PhaseSegment[]): PhaseSegment[];
-
-// @public (undocumented)
-export interface Meso {
-    currentWeek?: number;
-    // (undocumented)
-    id: string;
-    // (undocumented)
-    name: string;
-    // (undocumented)
-    status: MesoStatus;
-    // (undocumented)
-    weekCount: number;
-}
-
-// @public
-export function MesoCard(input: MesoCardProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface MesoCardProps extends ViewProps {
-    // (undocumented)
-    className?: string;
-    currentWeek?: number;
-    expanded?: boolean;
-    goal: string;
-    highlighted?: boolean;
-    name: string;
-    onToggle?: () => void;
-    split: string;
-    totalWeeks: number;
-    volumeHeatmap?: MesoVolumeHeatmapEntry[];
-    weekRange: string;
-    weeks: WeekRowProps[];
-}
-
-// @public
-export function MesoProgressBar(input: MesoProgressBarProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface MesoProgressBarProps extends ViewProps {
-    // (undocumented)
-    activeMesoId: string | null;
-    // (undocumented)
-    className?: string;
-    // (undocumented)
-    mesos: Meso[];
-    // (undocumented)
-    onMesoPress: (mesoId: string) => void;
-}
-
-// @public (undocumented)
-export type MesoStatus = 'completed' | 'current' | 'upcoming';
-
-// @public (undocumented)
-export interface MesoStatusBadge {
-    label: string;
-    variant: MesoStatusBadgeVariant;
-}
-
-// @public (undocumented)
-export type MesoStatusBadgeVariant = 'success' | 'warning' | 'error' | 'info';
-
-// @public
-export function MesoStatusCard(input: MesoStatusCardProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface MesoStatusCardProps extends ViewProps {
-    basis?: string;
-    // (undocumented)
-    className?: string;
-    coaching?: MesoStatusCoaching;
-    gauges: MesoStatusGauge[];
-    mesoName: string;
-    mesoSubtitle: string;
-    metrics: MesoStatusMetric[];
-    nextTarget?: MesoStatusNextTarget;
-    statusBadge: MesoStatusBadge;
-}
-
-// @public (undocumented)
-export interface MesoStatusCoaching {
-    highlights?: string[];
-    text: string;
-}
-
-// @public (undocumented)
-export interface MesoStatusGauge {
-    label: string;
-    level: number;
-    sublabel?: string;
-}
-
-// @public (undocumented)
-export interface MesoStatusMetric {
-    label: string;
-    value: string;
-}
-
-// @public (undocumented)
-export interface MesoStatusNextTarget {
-    icon: string;
-    text: string;
-}
-
-// @public (undocumented)
-export interface MesoVolumeHeatmapEntry {
-    group: string;
-    percentage: number;
-}
 
 // @public
 export function messageBody(message: ChatMessage): string;
@@ -5275,56 +3853,11 @@ export interface MetricProps extends ViewProps {
     valueStyle?: StyleProp<TextStyle>;
 }
 
-// @public (undocumented)
-export interface MetricTileData {
-    label: string;
-    value: string;
-    valueColor?: string;
-}
-
-// @public
-export function MetricTiles(input: MetricTilesProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface MetricTilesProps extends ViewProps {
-    gap?: 0 | 1 | 2 | 3 | 4;
-    metrics: MetricTileData[];
-}
-
 // @public
 export type MetricTone = Exclude<PillTone, 'brand-secondary'>;
 
 // @public (undocumented)
 export type MetricTrend = 'up' | 'down' | 'neutral';
-
-// @public
-export function milestoneBlock(input: Pick<GoalLiftCardProps, 'milestone' | 'actuals' | 'status' | 'weeks' | 'currentWeek' | 'latest'>): GoalCardMilestone;
-
-// @public
-export function MilestoneFacts(input: {
-    tile: ResolvedTile;
-}): react_jsx_runtime.JSX.Element;
-
-// @public
-export function milestoneGap(target: GoalMilestoneTarget, latest: GoalMilestoneReading, direction?: GoalDirection): GoalMilestoneGap | null;
-
-// @public
-export function MilestoneHero(input: {
-    tile: ResolvedTile;
-    scale: GoalMilestoneTileScale;
-}): react_jsx_runtime.JSX.Element;
-
-// @public
-export function milestoneReach(target: GoalMilestoneTarget, latest: GoalMilestoneReading, direction?: GoalDirection): GoalReach | null;
-
-// @public
-export function milestoneToneToken(state: GoalMilestoneState, status: GoalTrajectoryStatus, beyond?: boolean): "status-success" | "status-error" | "status-warning" | "status-info" | "result-inconclusive" | "result-neutral" | "text-tertiary";
-
-// @public
-export function MilestoneWeekStrip(input: {
-    tile: ResolvedTile;
-    scale: GoalMilestoneTileScale;
-}): react_jsx_runtime.JSX.Element;
 
 // @public
 export function Modal(input: ModalProps): react_jsx_runtime.JSX.Element;
@@ -5412,12 +3945,6 @@ export interface ModalTitleProps {
 }
 
 // @public
-export const MOTION: {
-    readonly duration: Record<"normal" | "fast" | "slow", number>;
-    readonly ease: Record<"out" | "inOut" | "spring", Easing>;
-};
-
-// @public
 export const motion: {
     readonly duration: {
         readonly fast: 150;
@@ -5440,184 +3967,6 @@ export const motionCSSVars: Readonly<{
     readonly '--duration-normal': "250ms";
     readonly '--duration-slow': "400ms";
 }>;
-
-// @public
-export function MotionProvider(input: MotionProviderProps): react_jsx_runtime.JSX.Element;
-
-// @public
-export interface MotionProviderProps {
-    children?: ReactNode;
-    clock: Clock;
-    durationS?: number;
-}
-
-// @public
-export type MovementCategory = 'push' | 'pull' | 'legs' | 'core';
-
-// @public
-export interface MuscleGlyphProps extends Omit<ViewProps, 'children'> {
-    // (undocumented)
-    className?: string;
-    litColor: string;
-    // (undocumented)
-    muscle: MuscleGroup;
-    scale?: number;
-    side: 'front' | 'back';
-}
-
-// @public
-export enum MuscleGroup {
-    // (undocumented)
-    ABS = "abs",
-    // (undocumented)
-    BICEPS = "biceps",
-    // (undocumented)
-    CALVES = "calves",
-    // (undocumented)
-    CHEST = "chest",
-    // (undocumented)
-    FOREARMS = "forearms",
-    // (undocumented)
-    FRONT_DELTS = "front_delts",
-    // (undocumented)
-    GLUTES = "glutes",
-    // (undocumented)
-    HAMSTRINGS = "hamstrings",
-    // (undocumented)
-    LATS = "lats",
-    // (undocumented)
-    OBLIQUES = "obliques",
-    // (undocumented)
-    QUADS = "quads",
-    // (undocumented)
-    REAR_DELTS = "rear_delts",
-    // (undocumented)
-    SIDE_DELTS = "side_delts",
-    // (undocumented)
-    TRICEPS = "triceps",
-    // (undocumented)
-    UPPER_BACK = "upper_back"
-}
-
-// @public
-export function MuscleGroupChip(input: MuscleGroupChipProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface MuscleGroupChipProps extends ViewProps {
-    // (undocumented)
-    className?: string;
-    // (undocumented)
-    name: string;
-    // (undocumented)
-    onPress?: () => void;
-    // (undocumented)
-    volumeStatus?: VolumeStatus;
-}
-
-// @public
-export interface MusclePlanExerciseRow extends MusclePlanRemainingExercise {
-    // (undocumented)
-    done: boolean;
-}
-
-// @public
-export interface MusclePlanRemainingExercise {
-    // (undocumented)
-    exerciseId: string;
-    // (undocumented)
-    exerciseName: string;
-    // (undocumented)
-    sets: number;
-    // (undocumented)
-    workoutName: string;
-}
-
-// @public
-export interface MusclePlanSection {
-    // (undocumented)
-    doneSetsThisWeek: number;
-    // (undocumented)
-    exercises: MusclePlanExerciseRow[];
-    frequency: {
-        plannedPerWeek: number;
-        observedThisWeek: number;
-    };
-    // (undocumented)
-    plannedSetsThisWeek: number;
-}
-
-// @public
-export type MuscleStrengthAgreement = 'stronger' | 'weaker' | 'mixed' | 'insufficient';
-
-// @public
-export interface MuscleStrengthBestE1rm {
-    // (undocumented)
-    band: E1RMBand;
-    confidence: number;
-    // (undocumented)
-    method: E1RMMethod;
-    // (undocumented)
-    value: number;
-}
-
-// @public
-export interface MuscleStrengthExerciseRow {
-    // (undocumented)
-    bestE1rm: MuscleStrengthBestE1rm | null;
-    currentLevel: number | null;
-    daysSinceTrained: number | null;
-    // (undocumented)
-    exerciseId: string;
-    // (undocumented)
-    isPR: boolean;
-    // (undocumented)
-    name: string;
-    // (undocumented)
-    plateau: 'plateau' | 'tolerated' | 'none' | null;
-    // (undocumented)
-    priorBest: number | null;
-    recency: 'current' | 'fading' | 'no_current_read' | null;
-    relativeIndex: number | null;
-    // (undocumented)
-    rSquared: number | null;
-    setCount: number;
-    // (undocumented)
-    side: MuscleStrengthSide;
-    slopePctPerWeek: number | null;
-}
-
-// @public
-export interface MuscleStrengthSection {
-    // (undocumented)
-    agreement: MuscleStrengthAgreement;
-    daysSinceTrained: number | null;
-    earlyPhase: boolean;
-    // (undocumented)
-    exercises: StrengthExerciseRow[];
-    relativeIndexBySide: Partial<Record<'left' | 'right' | 'none', number>>;
-}
-
-// @public
-export type MuscleStrengthSide = 'left' | 'right' | null;
-
-// @public
-export function MuscleStrip(input: MuscleStripProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface MuscleStripMuscleData {
-    sets: number;
-    target: number;
-    // (undocumented)
-    volumeStatus?: VolumeStatus;
-}
-
-// @public (undocumented)
-export interface MuscleStripProps extends ViewProps {
-    // (undocumented)
-    className?: string;
-    data: Record<MuscleGroup, MuscleStripMuscleData>;
-    onMusclePress?: (muscle: MuscleGroup) => void;
-}
 
 // @public
 export function NavItem(input: NavItemProps): react_jsx_runtime.JSX.Element;
@@ -5665,21 +4014,6 @@ export interface NetworkGraphProps extends Omit<ViewProps, 'children'> {
     width: number;
 }
 
-// @public (undocumented)
-export interface NextTargetCoord extends GeometryPoint {
-    leadPath: string;
-    // (undocumented)
-    value: number;
-    // (undocumented)
-    weekIndex: number;
-}
-
-// @public
-export function noise2D(seed: number | string, x: number, y: number): number;
-
-// @public
-export function normalizeLossThresholds(input?: unknown): VelocityLossThresholds;
-
 // @public
 export function onSurfaceColors(mode: ThemeMode): Record<OnSurfaceRole, string>;
 
@@ -5721,15 +4055,6 @@ export function Overline(props: OverlineProps): react_jsx_runtime.JSX.Element;
 // @public (undocumented)
 export interface OverlineProps extends Omit<TypographyProps, 'variant'> {
 }
-
-// @public
-export type PaceTone = 'ahead' | 'behind' | 'neutral';
-
-// @public
-export function paceTone(progress: number, target?: number): PaceTone;
-
-// @public
-export function paceToneColor(tone: PaceTone, mode: ThemeMode): string;
 
 // @public
 export function Page(input: PageProps): react_jsx_runtime.JSX.Element;
@@ -5843,9 +4168,6 @@ export interface PasswordInputProps extends Omit<InputProps, 'secureTextEntry' |
 export function PersonStandingIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
-export type Phase = 'before' | 'during' | 'after';
-
-// @public
 export const PHASE_AXIS_COLOR: Record<SamplePhase, string>;
 
 // @public
@@ -5895,119 +4217,10 @@ export type PillTone = 'neutral' | 'brand' | 'brand-secondary' | 'success' | 'wa
 export type PillVariant = 'solid' | 'subtle' | 'outline' | 'clear';
 
 // @public
-export const PINNED_LIVE_STRIP_PHONE_MAX = 640;
-
-// @public
-export function PinnedLiveStrip(props: PinnedLiveStripProps): react_jsx_runtime.JSX.Element | null;
-
-// @public (undocumented)
-export type PinnedLiveStripLayout = 'wall' | 'phone';
-
-// @public (undocumented)
-export interface PinnedLiveStripProps {
-    barColor?: LiveStripBarColor;
-    // (undocumented)
-    className?: string;
-    // (undocumented)
-    exerciseName: string;
-    isFatigued?: boolean;
-    layout?: PinnedLiveStripLayout;
-    loadLabel?: string;
-    lossThresholds?: VelocityLossThresholds;
-    onPress?: () => void;
-    reps: readonly LiveStripRep[];
-    // (undocumented)
-    restDurationMs?: number;
-    restRemainingMs?: number;
-    // (undocumented)
-    setCount: number;
-    setNumber: number;
-    state: LiveStripState;
-    // (undocumented)
-    targetReps: number;
-    targetSource?: LiveStripTargetSource;
-}
-
-// @public (undocumented)
-export function PlaceholderStrip(input: PlaceholderStripProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface PlaceholderStripProps extends ViewProps {
-    // (undocumented)
-    className?: string;
-    mode?: 'single' | 'segmented';
-    segments?: number;
-    // (undocumented)
-    width?: number | string;
-}
-
-// @public
 export const PLANE_ORDER: readonly ["frame", "background", "base", "elevated", "raised", "overlay"];
 
 // @public
-export interface PlanMeso {
-    // (undocumented)
-    currentWeek?: number;
-    // (undocumented)
-    goal: string;
-    // (undocumented)
-    id: string;
-    // (undocumented)
-    name: string;
-    // (undocumented)
-    split: string;
-    // (undocumented)
-    status: MesoStatus;
-    // (undocumented)
-    volumeHeatmap?: MesoVolumeHeatmapEntry[];
-    // (undocumented)
-    weekCount: number;
-    // (undocumented)
-    weekRange: string;
-    // (undocumented)
-    weeks: PlanWeek[];
-}
-
-// @public
-export interface PlanWeek {
-    intensityLevel: number;
-    intensityThreshold?: number;
-    // (undocumented)
-    isCurrent?: boolean;
-    // (undocumented)
-    isDeload?: boolean;
-    weekNumber: number;
-    // (undocumented)
-    workouts: PlanWorkout[];
-}
-
-// @public
-export interface PlanWorkout {
-    // (undocumented)
-    date: string;
-    // (undocumented)
-    duration?: string;
-    exercises: ExerciseCardProps[];
-    id: string;
-    // (undocumented)
-    muscleGroups: WorkoutMuscleGroup[];
-    // (undocumented)
-    name: string;
-    // (undocumented)
-    status: WorkoutStatus;
-    // (undocumented)
-    totalSets: number;
-    // (undocumented)
-    totalVolume?: number;
-    // (undocumented)
-    unit: 'lbs' | 'kg';
-}
-
-// @public
 export function pluralize(count: number, one: string, many: string): string;
-
-// @public
-export const poly: (n: number) => Easing;
 
 // @public
 export function Popover(input: PopoverProps): react_jsx_runtime.JSX.Element;
@@ -6098,20 +4311,6 @@ export function postIt(tone?: string, deg?: number, mode?: ThemeMode): ViewStyle
 // @public
 export const PR_REF_PATTERN: RegExp;
 
-// @public (undocumented)
-export function PrBadge(input: PrBadgeProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface PrBadgeProps extends ViewProps {
-    animate?: boolean;
-    // (undocumented)
-    className?: string;
-    compact?: boolean;
-    iconSize?: number;
-    label?: string;
-    type?: PRType;
-}
-
 // @public
 export const PRESENCE_STATES: readonly ["working", "available", "blocked"];
 
@@ -6120,33 +4319,6 @@ export const PRESSED_ELEVATION_LEVEL: ElevationLevel;
 
 // @public
 export function pressedLevel(parent: SurfaceLevel): SurfaceLevel;
-
-// @public
-export function PrHistoryModal(input: PrHistoryModalProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface PrHistoryModalProps extends ViewProps {
-    exerciseId: string;
-    exerciseName?: string;
-    isOpen?: boolean;
-    onClose: () => void;
-    records: PrRecord[];
-    visible?: boolean;
-}
-
-// @public
-export function PrimaryGoalCard(props: PrimaryGoalCardProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface PrimaryGoalCardProps extends Omit<GoalCardProps, 'size' | 'goal' | 'trend'> {
-    goal: GoalCardChart;
-}
-
-// @public
-export type PrimaryGoalChart = GoalCardChart;
-
-// @public
-export type PrimaryGoalMilestone = GoalCardMilestone;
 
 // @public (undocumented)
 export const primitiveBorderRadius: {
@@ -6301,7 +4473,7 @@ export const primitiveTypography: {
         readonly sans: readonly ["Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Helvetica", "Arial", "sans-serif"];
         readonly body: readonly ["Nunito Sans", "sans-serif"];
         readonly heading: readonly ["Space Grotesk", "sans-serif"];
-        readonly mono: readonly ["SF Mono", "Monaco", "Inconsolata", "Fira Mono", "Droid Sans Mono", "Source Code Pro", "monospace"];
+        readonly mono: readonly ["JetBrains Mono", "monospace"];
     };
     readonly fontSizes: {
         readonly '2xs': "0.625rem";
@@ -6357,35 +4529,6 @@ export const primitiveZIndex: {
     readonly toast: 1700;
     readonly tooltip: 1800;
 };
-
-// @public
-export interface ProgramBreadcrumb {
-    // (undocumented)
-    key: string;
-    // (undocumented)
-    label: string;
-    // (undocumented)
-    level: ProgramNavLevel;
-}
-
-// @public
-export type ProgramNavLevel = 'meso' | 'week' | 'workout';
-
-// @public (undocumented)
-export interface ProgramPlanningPageProps extends ViewProps {
-    // (undocumented)
-    className?: string;
-    mesos: PlanMeso[];
-    title?: string;
-}
-
-// @public
-export interface ProgramSelection {
-    // (undocumented)
-    weekNumber: number | null;
-    // (undocumented)
-    workoutId: string | null;
-}
 
 // @public
 export function Progress(input: ProgressProps): react_jsx_runtime.JSX.Element;
@@ -6458,26 +4601,8 @@ export type ProseLinkTone = 'brand' | 'link' | 'muted';
 // @public (undocumented)
 export type ProseSize = 'sm' | 'md';
 
-// @public (undocumented)
-export interface PrRecord {
-    date: string;
-    isRecent?: boolean;
-    type: PRType;
-    unit?: 'lbs' | 'kg';
-    value: string | number;
-}
-
-// @public @deprecated (undocumented)
-export type PrRecordType = PRType;
-
 // @public
 export function prRefLinker(onPress?: (number: number) => void): ProseLinker;
-
-// @public
-export function prRows(exercises: readonly StrengthExerciseRow[]): StrengthExerciseRow[];
-
-// @public (undocumented)
-export type PRType = 'e1rm' | 'weight' | 'reps' | 'volume' | 'velocity';
 
 // @public
 export type Pt = [number, number];
@@ -6522,46 +4647,7 @@ export interface RadioProps extends ViewProps {
 export type RadioSize = 'sm' | 'md' | 'lg';
 
 // @public
-export function rafClock(input?: RafClockOptions): Clock;
-
-// @public
-export interface RafClockOptions {
-    endS?: number;
-    reducedMotion?: boolean;
-    startS?: number;
-}
-
-// @public
 export function raisedLevel(parent: SurfaceLevel, steps: number): SurfaceLevel;
-
-// @public
-export function random(seed: number | string, ...keys: number[]): number;
-
-// @public
-export function randomRange(seed: number | string, keys: readonly number[], input: readonly [number, number]): number;
-
-// @public
-export function ReadinessCheck(input: ReadinessCheckProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface ReadinessCheckProps {
-    // (undocumented)
-    className?: string;
-    factors: ReadinessFactor[];
-    isConfirmDisabled?: boolean;
-    onConfirm: () => void;
-    score: number;
-    warmUpCompleted: boolean;
-    warmUpValidation?: WarmUpValidation;
-}
-
-// @public (undocumented)
-export interface ReadinessFactor {
-    id: string;
-    label: string;
-    onChange: (value: number) => void;
-    value: number;
-}
 
 // @public (undocumented)
 export const RED_DEEP: "#7E1002";
@@ -6571,9 +4657,6 @@ export const RED_LIGHT: "#F77175";
 
 // @public (undocumented)
 export const RED_MID: "#D14343";
-
-// @public
-export const REDUCED_MOTION_END_S = 10000;
 
 // @public
 export const REF_KIND_META: {
@@ -6700,9 +4783,6 @@ export interface RepVelocityCurve {
 }
 
 // @public
-export function resolveActualWeek(actual: GoalActualPoint, weeks: GoalTrajectoryWeek[]): number | undefined;
-
-// @public
 export function resolveBrand(brand: BrandKey | BrandPreset): BrandPreset;
 
 // @public
@@ -6723,32 +4803,7 @@ export interface ResolvedSurface {
 }
 
 // @public
-export function resolveIndicator(candidates: ExerciseIndicatorKind[]): ExerciseIndicatorKind | undefined;
-
-// @public
 export function resolveSurfaceDepth(inherited: SurfaceContextValue, props: SurfaceDepthProps): ResolvedSurface;
-
-// @public (undocumented)
-export function RestTimer(input: RestTimerProps): react_jsx_runtime.JSX.Element | null;
-
-// @public (undocumented)
-export interface RestTimerProps {
-    displayOnly?: boolean;
-    // (undocumented)
-    elapsedMs: number;
-    // (undocumented)
-    nextSetInfo?: string;
-    // (undocumented)
-    onAddTime: () => void;
-    // (undocumented)
-    onSkip: () => void;
-    size?: number;
-    // (undocumented)
-    totalSeconds: number;
-    variant?: 'bar' | 'ring';
-    // (undocumented)
-    visible: boolean;
-}
 
 // @public
 export const resultPaletteColors: {
@@ -6799,12 +4854,6 @@ export function roundWeight(weight: number): number;
 
 // @public
 export function rpeColor(rpe: number): string;
-
-// @public
-export function sameLiveStripReps(a: readonly LiveStripRep[], b: readonly LiveStripRep[]): boolean;
-
-// @public
-export function sameLossThresholds(a?: VelocityLossThresholds, b?: VelocityLossThresholds): boolean;
 
 // @public
 export type SamplePhase = 'concentric' | 'eccentric' | 'hold' | 'idle';
@@ -6872,16 +4921,6 @@ export type ScatterReferenceLine = ({
 };
 
 // @public
-export function ScheduleTiles(input: ScheduleTilesProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface ScheduleTilesProps extends ViewProps {
-    gap?: Gap;
-    now?: number;
-    when: number | Date;
-}
-
-// @public
 export const SCORE_BAND_META: Record<CodeScoreBand, {
     color: ColorToken;
     indicator: IndicatorColor;
@@ -6928,65 +4967,6 @@ export interface SectionProps extends ViewProps {
     children: React__default.ReactNode;
     // (undocumented)
     className?: string;
-}
-
-// @public
-export interface SeekClock extends Clock {
-    readonly kind: 'seek';
-    seek(t: number): void;
-}
-
-// @public
-export function seekClock(initialS?: number): SeekClock;
-
-// @public
-export function SegmentedBar(input: SegmentedBarProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface SegmentedBarProps extends ViewProps {
-    gap?: number;
-    height?: number;
-    marker?: {
-        position: number;
-        color: string;
-    } | null;
-    radius?: number;
-    renderSegment?: (slot: ReactNode, segment: SegmentedBarSegment, index: number) => ReactNode;
-    segments: SegmentedBarSegment[];
-    segmentTestID?: (segment: SegmentedBarSegment, index: number) => string | undefined;
-}
-
-// @public (undocumented)
-export interface SegmentedBarSegment {
-    color: string;
-    fill?: number;
-    heightFraction?: number;
-    leadingGap?: number;
-    opacity?: number;
-    outline?: boolean;
-    pulse?: boolean;
-    pulseColor?: [from: string, to: string];
-    ringColor?: string;
-    weight?: number;
-}
-
-// @public
-export function SegmentedProgressBar(input: SegmentedProgressBarProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface SegmentedProgressBarProps extends ViewProps {
-    color?: string;
-    gap?: number;
-    height?: number;
-    markerColor?: string;
-    segments: SegmentedProgressBarSegment[];
-    target?: number;
-    value: number;
-}
-
-// @public (undocumented)
-export interface SegmentedProgressBarSegment {
-    weight: number;
 }
 
 // @public
@@ -7432,33 +5412,7 @@ export const semanticTypography: {
 };
 
 // @public
-export function sequence<T extends {
-    durationS: number;
-}>(items: readonly T[], input?: SequenceOptions): SequenceResult<T>;
-
-// @public
-export type Sequenced<T> = T & {
-    startS: number;
-    endS: number;
-};
-
-// @public
-export interface SequenceOptions {
-    overlapS?: number;
-    startS?: number;
-}
-
-// @public
-export interface SequenceResult<T> {
-    items: Sequenced<T>[];
-    totalS: number;
-}
-
-// @public
 export const sequentialEffort: readonly ["#2ED573", "#FFD352", "#F9B415", "#FF7900", "#D14343", "#A4221C"];
-
-// @public
-export const SESSION_SEGMENT_LIMIT = 20;
 
 // @public
 export function SessionDetail(input: SessionDetailProps): react_jsx_runtime.JSX.Element;
@@ -7471,29 +5425,6 @@ export interface SessionDetailProps extends SessionLinkHandlers {
     // (undocumented)
     session: SessionSummary;
     tasks?: TaskListItem[];
-}
-
-// @public
-export function SessionHeader(input: SessionHeaderProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface SessionHeaderPlanEntry {
-    name?: string;
-    sets: number;
-}
-
-// @public (undocumented)
-export interface SessionHeaderProps extends ViewProps {
-    budgetMs?: number;
-    // (undocumented)
-    className?: string;
-    elapsedMs?: number;
-    metrics?: MetricTileData[];
-    next?: number | Date;
-    plan: SessionHeaderPlanEntry[];
-    running?: boolean;
-    setsDone?: number;
-    title: string;
 }
 
 // @public
@@ -7545,78 +5476,7 @@ export interface SessionListProps {
 export function sessionPeriod(iso: string): string;
 
 // @public
-export function SessionRail(input: SessionRailProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface SessionRailExercise {
-    id?: string;
-    // (undocumented)
-    indicator?: ExerciseIndicatorKind;
-    // (undocumented)
-    name: string;
-    plannedSets?: number;
-    sets?: SetRowProps[];
-    setStates: SetStripSet[];
-    summary: {
-        sets: number;
-        reps: number | string;
-        weight: number | string;
-        unit: 'lbs' | 'kg';
-    };
-    // (undocumented)
-    tempo?: [number, number, number, number];
-    upcoming?: boolean;
-}
-
-// @public (undocumented)
-export interface SessionRailProps extends ViewProps {
-    budgetMs?: number;
-    // (undocumented)
-    className?: string;
-    elapsedMs?: number;
-    // (undocumented)
-    exercises: SessionRailExercise[];
-    expandedIndex?: number;
-    metrics?: MetricTileData[];
-    next?: number | Date;
-    // (undocumented)
-    onExercisePress?: (exercise: SessionRailExercise, index: number) => void;
-    running?: boolean;
-    setsDone?: number;
-    stripHeight?: number;
-    title: string;
-    width?: number;
-}
-
-// @public
 export function sessionRowMeta(session: SessionSummary, now: number, taskCount: number): string;
-
-// @public
-export function SessionsGoalCard(input: SessionsGoalCardProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface SessionsGoalCardProps extends ViewProps {
-    // (undocumented)
-    className?: string;
-    // (undocumented)
-    goal: WholeBodySessionsRow;
-    isTipOpen?: boolean;
-    scale?: WholeBodyScale;
-}
-
-// @public (undocumented)
-export type SessionState = 'live' | 'rest' | 'idle';
-
-// @public @deprecated
-export function SessionStatePill(input: SessionStatePillProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface SessionStatePillProps extends ViewProps {
-    // (undocumented)
-    className?: string;
-    label?: string;
-    state: SessionState;
-}
 
 // @public
 export interface SessionSummary {
@@ -7629,136 +5489,6 @@ export interface SessionSummary {
     started: string;
     title: string;
     track: string;
-}
-
-// @public
-export const SET_STRIP_VARIABLE_COLOR: "#0B3149";
-
-// @public
-export const SET_STRIP_ZONES: {
-    readonly slow: "#D14343";
-    readonly moderate: "#FF7900";
-    readonly fast: "#F9B415";
-    readonly fastest: "#2ED573";
-};
-
-// @public
-export function SetBar(input: SetBarProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface SetBarProps {
-    height?: number;
-    set: SetStripSet;
-}
-
-// @public
-export function SetRow(set: SetRowProps): react_jsx_runtime.JSX.Element;
-
-// @public
-export type SetRowProps = (SetRowBase & {
-    state: 'done';
-    reps: number;
-    weight: number;
-    rpe?: number | null;
-    velocities: number[];
-}) | (SetRowBase & {
-    state: 'live';
-    target: {
-        reps: number;
-        weight: number;
-    };
-    reps: number;
-    weight: number;
-    rpe?: number | null;
-    velocities: number[];
-    liveRepIndex?: number;
-}) | (SetRowBase & {
-    state: 'todo';
-    target: {
-        reps: number;
-        weight: number;
-    };
-    planned?: number;
-});
-
-// @public
-export type SetRowState = 'done' | 'live' | 'todo';
-
-// @public (undocumented)
-export type SetRowUnit = 'lbs' | 'kg';
-
-// @public
-export function SetsRepsLoad(input: SetsRepsLoadProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface SetsRepsLoadProps extends ViewProps {
-    // (undocumented)
-    className?: string;
-    fontSize?: number;
-    load: number | string;
-    muted?: boolean;
-    // (undocumented)
-    reps: number | string;
-    // (undocumented)
-    sets: number;
-    unit?: string;
-}
-
-// @public
-export function SetStrip(input: SetStripProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface SetStripProps extends ViewProps {
-    // (undocumented)
-    className?: string;
-    height?: number;
-    sets: SetStripSet[];
-}
-
-// @public
-export type SetStripSet = {
-    status: 'done';
-    velocities: number[];
-} | {
-    status: 'active';
-    velocities: number[];
-    planned: number;
-    repsLow?: number;
-    repsHigh?: number;
-    expectedRange?: ExpectedRepsRange;
-} | {
-    status: 'todo';
-    planned: number;
-    repsLow?: number;
-    repsHigh?: number;
-    expectedRange?: ExpectedRepsRange;
-} | {
-    status: 'range';
-    floor: number;
-    max: number;
-    doneVels: number[];
-    isActive?: boolean;
-} | {
-    status: 'drop';
-    subloads: number[][];
-} | {
-    status: 'myo';
-    activation: number[];
-    clusters: number[][];
-} | {
-    status: 'myo-upcoming';
-    activationLen: number;
-    clusterCount?: number;
-};
-
-// @public
-export function SetTableHeader(input: SetTableHeaderProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface SetTableHeaderProps {
-    showPrevious?: boolean;
-    testID?: string;
-    unit?: 'lbs' | 'kg';
 }
 
 // @public
@@ -7912,26 +5642,6 @@ export interface SideNavProps {
 export const SILVER: "#D4D1CE";
 
 // @public
-export enum SimpleMuscleGroup {
-    // (undocumented)
-    BACK = "back",
-    // (undocumented)
-    BICEPS = "biceps",
-    // (undocumented)
-    CHEST = "chest",
-    // (undocumented)
-    CORE = "core",
-    // (undocumented)
-    FOREARMS = "forearms",
-    // (undocumented)
-    LEGS = "legs",
-    // (undocumented)
-    SHOULDERS = "shoulders",
-    // (undocumented)
-    TRICEPS = "triceps"
-}
-
-// @public
 export const size: {
     readonly control: {
         readonly sm: 32;
@@ -8021,16 +5731,7 @@ export interface SkeletonTextProps {
 export type SkeletonVariant = 'text' | 'circle' | 'rect' | 'rounded';
 
 // @public
-export function slopeLabel(row: MuscleStrengthExerciseRow): string;
-
-// @public
-export const smootherstep: Easing;
-
-// @public
 export function smoothPath(pts: Pt[]): string;
-
-// @public
-export const smoothstep: Easing;
 
 // @public (undocumented)
 export type SortDirection = 'asc' | 'desc' | null;
@@ -8124,38 +5825,6 @@ export interface SparkBarsProps extends Omit<ViewProps, 'accessibilityLabel'> {
     values: number[];
 }
 
-// @public (undocumented)
-export function Sparkline(input: SparklineProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface SparklineProps extends ViewProps {
-    band?: SparklineBand;
-    // (undocumented)
-    className?: string;
-    // (undocumented)
-    color?: string;
-    // (undocumented)
-    data: number[];
-    domain?: SparklineDomain;
-    // (undocumented)
-    height?: number;
-    // (undocumented)
-    highlightLast?: boolean;
-    referenceLabelPlacement?: SparklineReferenceLabelPlacement;
-    // (undocumented)
-    referenceLines?: Array<{
-        value: number;
-        color: string;
-        dashed?: boolean;
-        label?: string;
-    }>;
-    // (undocumented)
-    showDots?: boolean;
-    // (undocumented)
-    width?: number;
-    xValues?: number[];
-}
-
 // @public
 export function Spinner(input: SpinnerProps): react_jsx_runtime.JSX.Element;
 
@@ -8182,28 +5851,6 @@ export function splitPath(path: string): {
     base: string;
 };
 
-// @public
-export function spring(t: number, input?: SpringOptions): number;
-
-// @public
-export function springEase(options?: SpringEaseOptions): Easing;
-
-// @public
-export type SpringEaseOptions = Omit<SpringOptions, 'from' | 'to'>;
-
-// @public
-export interface SpringOptions {
-    damping?: number;
-    from?: number;
-    mass?: number;
-    stiffness?: number;
-    to?: number;
-    velocity?: number;
-}
-
-// @public
-export function springSettleS(input?: SpringOptions, threshold?: number): number;
-
 // @public (undocumented)
 export function Stack(input: StackProps): react_jsx_runtime.JSX.Element;
 
@@ -8216,20 +5863,11 @@ export interface StackProps extends ViewProps {
     // (undocumented)
     className?: string;
     // (undocumented)
-    gap?: Gap$1;
+    gap?: Gap;
     // (undocumented)
     justify?: 'start' | 'center' | 'end' | 'between' | 'around';
     // (undocumented)
     wrap?: boolean;
-}
-
-// @public
-export function stagger(index: number, input: StaggerOptions): number;
-
-// @public
-export interface StaggerOptions {
-    each: number;
-    from?: number;
 }
 
 // @public
@@ -8280,26 +5918,6 @@ export interface StatCardProps extends Omit<CardProps, 'children'> {
 // @public
 export const STATE_LABEL: Record<FatigueVerdictState, string>;
 
-// @public (undocumented)
-export function StatusDot(input: StatusDotProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface StatusDotProps extends ViewProps {
-    // (undocumented)
-    className?: string;
-    glow?: boolean;
-    icon?: 'check' | 'exclamation' | 'dash';
-    // (undocumented)
-    label?: string;
-    // (undocumented)
-    size?: 'sm' | 'md';
-    // (undocumented)
-    variant: StatusDotVariant;
-}
-
-// @public (undocumented)
-export type StatusDotVariant = 'success' | 'warning' | 'error' | 'neutral' | 'on-track' | 'deviation' | 'future';
-
 // @public
 export function StatusMark(input: StatusMarkProps): react_jsx_runtime.JSX.Element;
 
@@ -8311,24 +5929,6 @@ export interface StatusMarkProps extends Omit<ViewProps, 'children'> {
     kind: CodeChangeKind;
     size?: Exclude<PillSizeLevel, 'lg'>;
 }
-
-// @public
-export function StatusPill(input: StatusPillProps): react_jsx_runtime.JSX.Element;
-
-// @public
-export function statusPillColor(status: StatusPillStatus): string;
-
-// @public (undocumented)
-export interface StatusPillProps extends ViewProps {
-    // (undocumented)
-    className?: string;
-    label?: string;
-    // (undocumented)
-    status: StatusPillStatus;
-}
-
-// @public
-export type StatusPillStatus = 'productive' | 'threshold' | 'stop';
 
 // @public
 export function StepContent(input: StepContentProps): react_jsx_runtime.JSX.Element | null;
@@ -8394,58 +5994,7 @@ export interface StepperStepProps {
 export type StepStatus = 'completed' | 'active' | 'upcoming' | 'error';
 
 // @public
-export interface StrengthExerciseRow extends MuscleStrengthExerciseRow {
-    history?: StrengthTrendDataPoint[];
-}
-
-// @public
-export function strengthRowTitle(row: MuscleStrengthExerciseRow): string;
-
-// @public
-export function StrengthTrendChart(input: StrengthTrendChartProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface StrengthTrendChartMesoBoundary {
-    date: string;
-    label: string;
-}
-
-// @public (undocumented)
-export interface StrengthTrendChartProps extends ViewProps {
-    animateOnMount?: boolean;
-    // (undocumented)
-    className?: string;
-    data: StrengthTrendDataPoint[];
-    height: number;
-    mesoBoundaries?: StrengthTrendChartMesoBoundary[];
-    onPointPress?: (point: StrengthTrendDataPoint) => void;
-    projection?: StrengthTrendDataPoint[];
-    unit: 'lbs' | 'kg';
-    width: number;
-}
-
-// @public (undocumented)
-export interface StrengthTrendDataPoint {
-    date: string;
-    e1rm: number;
-    isPR?: boolean;
-    sessionLabel?: string;
-}
-
-// @public
 export function stripLeadingHeading(body: string): string;
-
-// @public (undocumented)
-export function SupersetWrapper(input: SupersetWrapperProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface SupersetWrapperProps {
-    // (undocumented)
-    children: React__default.ReactNode;
-    color?: string;
-    // (undocumented)
-    label?: string;
-}
 
 // @public
 export function suppliedLayout(positions: Readonly<Record<string, GraphPoint>>): GraphLayout;
@@ -8932,38 +6481,6 @@ export interface TaskTableProps {
 }
 
 // @public (undocumented)
-export function TempoDisplay(input: TempoDisplayProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface TempoDisplayProps extends ViewProps {
-    // (undocumented)
-    className?: string;
-    fontSize?: number;
-    live?: TempoLiveState;
-    liveReadout?: TempoLiveReadout;
-    // (undocumented)
-    onPress?: () => void;
-    showInfo?: boolean;
-    showLabel?: boolean;
-    // (undocumented)
-    size?: 'sm' | 'md';
-    tempo: [number, number, number, number];
-}
-
-// @public
-export type TempoLivePhase = 'eccentric' | 'pauseBottom' | 'concentric' | 'pauseTop';
-
-// @public
-export type TempoLiveReadout = 'countdown' | 'countup';
-
-// @public
-export interface TempoLiveState {
-    activePhase: TempoLivePhase | null;
-    completed?: Partial<Record<TempoLivePhase, number>>;
-    phaseElapsedMs: number;
-}
-
-// @public (undocumented)
 export type ThemeConfig = typeof gluestackConfig;
 
 // @public (undocumented)
@@ -9409,55 +6926,6 @@ export function toTaskPrState(raw: string): TaskPrState | undefined;
 export function toTaskStage(raw: string): TaskStage | undefined;
 
 // @public
-export interface TrainingStatusMuscle {
-    contributingExercises?: ContributingExercise[];
-    displayName: string;
-    intensity: number;
-    landmarks: VolumeLandmarks;
-    lastTrained?: string;
-    muscleGroup: MuscleGroup;
-    side: 'front' | 'back';
-    upcomingExercises?: UpcomingExercise[];
-    volumeStatus: VolumeStatus;
-    weeklyHistory?: number[];
-    weeklySets: number;
-}
-
-// @public (undocumented)
-export interface TrainingStatusPageProps extends ViewProps {
-    // (undocumented)
-    className?: string;
-    meso: MesoStatusCardProps;
-    muscles: TrainingStatusMuscle[];
-    size?: BodyMapSize;
-    title?: string;
-}
-
-// @public
-export interface TrainingStatusSummary {
-    statusCounts: Record<VolumeStatus, number>;
-    totalWeeklySets: number;
-    trackedMuscles: number;
-}
-
-// @public
-export function trajectoryReach(committed: number, actuals: GoalActualPoint[], direction?: GoalDirection): GoalReach;
-
-// @public
-export interface TrajectoryWeekScale {
-    plot: {
-        left: number;
-        right: number;
-    };
-    span: number;
-    toX: (weekIndex: number) => number;
-    weeks: number[];
-}
-
-// @public
-export function trajectoryWeekScale(input: TrajectoryWeekScaleInput): TrajectoryWeekScale;
-
-// @public
 export function Treemap(input: TreemapProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -9577,21 +7045,6 @@ export interface UnreadBadgeProps {
     testID?: string;
 }
 
-// @public (undocumented)
-export interface UpcomingExercise {
-    name: string;
-    sets: number;
-    workoutName: string;
-}
-
-// @public
-export function useBeatEnvelope(options?: EnvelopeOptions): Envelope;
-
-// @public
-export function useBeatTime(): LocalTime & {
-    durationS: number;
-};
-
 // @public
 export function useCarouselState(input: UseCarouselStateOptions): CarouselState;
 
@@ -9636,9 +7089,6 @@ export function useHoverState(): {
 };
 
 // @public
-export function useLocalTime(startS: number, durationS: number): LocalTime;
-
-// @public
 export function useMeasuredWidth(override?: number): UseMeasuredWidthResult;
 
 // @public (undocumented)
@@ -9649,16 +7099,7 @@ export interface UseMeasuredWidthResult {
 }
 
 // @public
-export function useMotionTime(endS?: number): number;
-
-// @public
 export function useOnSurfaceColor(role?: OnSurfaceRole): string;
-
-// @public
-export function useRawLocalTime(startS?: number, untilS?: number): number;
-
-// @public
-export function useResolvedMilestone(props: GoalMilestoneSummaryProps): ResolvedTile;
 
 // @public
 export function useResolvedSurface(props: SurfaceDepthProps): ResolvedSurface;
@@ -9779,13 +7220,7 @@ export function useToast(): ToastContextType;
 export function useToolbarButton(): ToolbarButtonContextType;
 
 // @public
-export function useWaitUntil(promise: Promise<unknown> | undefined): void;
-
-// @public
 export function validateCssPropertyManifest(candidate: unknown): ManifestValidationResult;
-
-// @public
-export function valueReach(target: number, latest: number, direction?: GoalDirection): GoalReach;
 
 // @public
 export type VariantAxes = Record<string, string>;
@@ -9796,12 +7231,6 @@ export interface VariantOverride {
     resolvedValue: string;
     token?: string | null;
     variant: VariantAxes;
-}
-
-// @public
-export interface VbtSummary {
-    meanVelocity: number;
-    velocityLoss: number;
 }
 
 // @public (undocumented)
@@ -9818,106 +7247,11 @@ export interface VelocityHeroProps {
 }
 
 // @public
-export type VelocityLossBand = 0 | 1 | 2 | 3;
-
-// @public (undocumented)
-export function velocityLossBand(lossPct: number, thresholds?: VelocityLossThresholds): VelocityLossBand;
-
-// @public
-export function velocityLossForRep(velocity: number, best: number): number;
-
-// @public
-export type VelocityLossThresholds = readonly [number, number, number];
-
-// @public
 export interface VelocitySample {
     phase: SamplePhase;
     tMs: number;
     velocityMps: number;
 }
-
-// @public
-export type VelocitySet =
-/** Fixed reps at a fixed load: done reps colored + a grey todo remainder to `planned`. */
-    {
-    type: 'straight';
-    velocities: number[];
-    planned?: number;
-}
-/** Bounded reps: committed slots `0..floor`, then a cyan variable window `floor..max`. */
-| {
-    type: 'range';
-    velocities: number[];
-    floor: number;
-    max: number;
-}
-/** As-many-reps-as-possible: done reps + a trailing cyan "continue" slot that never closes. */
-| {
-    type: 'amrap';
-    velocities: number[];
-    target?: number;
-}
-/** Load drops with no rest: each sub-load's reps, split by a WIDE notch gap. */
-| {
-    type: 'drop';
-    subloads: number[][];
-}
-/** Rest-pause: an activation chunk + mini-clusters split by WIDE gaps; `open` adds a cyan continue. */
-| {
-    type: 'myo';
-    activation: number[];
-    clusters: number[][];
-    open?: boolean;
-}
-/** Fixed count broken by intra-set rests: reps grouped by `groupSize` with WIDE intra-rest gaps. */
-| {
-    type: 'cluster';
-    velocities: number[];
-    groupSize: number;
-    planned?: number;
-};
-
-// @public (undocumented)
-export function VelocityStrip(input: VelocityStripProps): react_jsx_runtime.JSX.Element | null;
-
-// @public (undocumented)
-export interface VelocityStripProps extends ViewProps {
-    barColor?: 'zone' | 'loss';
-    // (undocumented)
-    className?: string;
-    columnSlots?: SetSlot[];
-    expanded?: boolean;
-    height?: number;
-    label?: string;
-    liveRepIndex?: number;
-    lossThresholds?: VelocityLossThresholds;
-    // (undocumented)
-    onRepPress?: (index: number, velocity: number) => void;
-    // (undocumented)
-    onToggle?: () => void;
-    orientation?: 'up' | 'down';
-    scale?: 'peak' | 'fixed';
-    scaleMax?: number;
-    set?: VelocitySet;
-    showInfo?: boolean;
-    showLossBands?: boolean;
-    showNumbers?: boolean;
-    targetReps?: number;
-    variant?: 'compact' | 'expanded' | 'hero';
-    velocities?: number[];
-    zones?: readonly VelocityZoneBandProp[];
-}
-
-// @public
-export interface VelocityZoneBandProp {
-    id: string;
-    label: string;
-    max: number | null;
-    min: number;
-}
-
-// @public
-export function velocityZoneColor(v: number): string;
 
 // @public (undocumented)
 export function VerdictHero(input: VerdictHeroProps): react_jsx_runtime.JSX.Element;
@@ -9931,367 +7265,14 @@ export interface VerdictHeroProps {
 // @public
 export function VoltrasMark(input: IconProps): react_jsx_runtime.JSX.Element;
 
-// @public
-export function VolumeLandmarkBar(input: VolumeLandmarkBarProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface VolumeLandmarkBarProps extends ViewProps {
-    // (undocumented)
-    className?: string;
-    currentSets: number;
-    landmarks: VolumeLandmarks;
-    muscle: string;
-    scaleMax?: number;
-    trackHeight?: number;
-    width?: number;
-}
-
-// @public
-export interface VolumeLandmarks {
-    // (undocumented)
-    mav: number;
-    // (undocumented)
-    mev: number;
-    // (undocumented)
-    mrv: number;
-}
-
-// @public
-export type VolumeStatus = 'untrained' | 'behind' | 'ontrack' | 'target' | 'approaching' | 'over';
-
-// @public (undocumented)
-export type VolumeZone = 'under' | 'maintenance' | 'productive' | 'approaching' | 'over';
-
 // @public (undocumented)
 export function VStack(props: StackProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export type WarmUpStatus = 'good' | 'moderate' | 'caution';
-
-// @public (undocumented)
-export interface WarmUpValidation {
-    recommendation: string;
-    status: WarmUpStatus;
-    velocityDeficit: number;
-}
-
-// @public (undocumented)
-export const WEEK_OUTCOME_LABEL: Record<GoalWeekOutcome, string>;
-
-// @public
-export function WeekRow(input: WeekRowProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface WeekRowProps extends ViewProps {
-    // (undocumented)
-    className?: string;
-    intensityLevel: number;
-    intensityThreshold?: number;
-    isCurrent?: boolean;
-    isDeload?: boolean;
-    totalWeeks: number;
-    weekNumber: number;
-    workouts: WeekRowWorkout[];
-}
-
-// @public (undocumented)
-export interface WeekRowWorkout {
-    // (undocumented)
-    name: string;
-    // (undocumented)
-    onPress?: () => void;
-    // (undocumented)
-    status: 'completed' | 'current' | 'upcoming' | 'deload' | 'next' | 'missed';
-}
-
-// @public (undocumented)
-export function weekSegments(cells: GoalWeekCell[], t: Palette): SegmentedBarSegment[];
-
-// @public
-export function weekStripCells(weekCount: number, currentWeek?: number, weeks?: readonly GoalWeekEntry[]): GoalWeekCell[];
-
-// @public @deprecated (undocumented)
-export function WeightBadge(input: WeightBadgeProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface WeightBadgeProps extends Omit<BaseBadgeProps, 'variant' | 'icon' | 'children'> {
-    // (undocumented)
-    className?: string;
-    delta?: number;
-    // (undocumented)
-    isPr?: boolean;
-    // (undocumented)
-    onPress?: () => void;
-    reps?: number;
-    showIcon?: boolean;
-    // (undocumented)
-    size?: WeightBadgeSize;
-    // (undocumented)
-    unit?: 'lbs' | 'kg';
-    // (undocumented)
-    value: number;
-}
-
-// @public (undocumented)
-export type WeightBadgeSize = BaseBadgeSize;
-
-// @public
-export const WHOLE_BODY_WALL_MIN_WIDTH = 560;
-
-// @public
-export type WholeBodyDietPhase = 'fat-loss' | 'gain' | 'maintenance' | 'recomposition' | 'unknown';
-
-// @public
-export type WholeBodyDirection = 'up' | 'down' | 'hold';
-
-// @public
-export interface WholeBodyRate {
-    bandHighPctPerWeek: number | null;
-    bandLowPctPerWeek: number | null;
-    // (undocumented)
-    observedPctPerWeek: number | null;
-    vetoed: boolean;
-}
-
-// @public
-export type WholeBodyScale = 'wall' | 'phone';
-
-// @public (undocumented)
-export interface WholeBodySessionsRow {
-    agingOutNext7d: number | null;
-    // (undocumented)
-    basis?: string;
-    // (undocumented)
-    committed: number;
-    counted: number;
-    dueByNow: number;
-    // (undocumented)
-    status: GoalLiftStatus;
-    // (undocumented)
-    windowDays: number;
-}
-
-// @public (undocumented)
-export interface WholeBodyWeightRow {
-    basis?: string;
-    // (undocumented)
-    direction: WholeBodyDirection;
-    latest: {
-        value: number;
-        ts: string;
-    } | null;
-    // (undocumented)
-    phase: {
-        name: WholeBodyDietPhase;
-        slowLoss?: boolean;
-    };
-    // (undocumented)
-    rate: WholeBodyRate | null;
-    // (undocumented)
-    status: GoalLiftStatus;
-    // (undocumented)
-    unit: 'lb' | 'kg';
-    week: {
-        index: number;
-        of: number;
-        low: number;
-        high: number;
-    };
-}
 
 // @public
 export const WIKI_LINK_PATTERN: RegExp;
 
 // @public
 export function wikiLinkLinker(onPress?: (name: string) => void): ProseLinker;
-
-// @public
-export function WorkoutCard(input: WorkoutCardProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface WorkoutCardProps extends ViewProps {
-    // (undocumented)
-    className?: string;
-    // (undocumented)
-    date: string;
-    duration?: string;
-    // (undocumented)
-    exercises?: ExerciseCardProps[];
-    // (undocumented)
-    expanded?: boolean;
-    // (undocumented)
-    muscleGroups: WorkoutMuscleGroup[];
-    // (undocumented)
-    name: string;
-    // (undocumented)
-    onToggle?: () => void;
-    // (undocumented)
-    status: WorkoutStatus;
-    // (undocumented)
-    totalSets: number;
-    totalVolume?: number;
-    // (undocumented)
-    unit: 'lbs' | 'kg';
-}
-
-// @public (undocumented)
-export interface WorkoutDot {
-    // (undocumented)
-    date: string;
-    load: number;
-    status: WorkoutDotStatus;
-}
-
-// @public (undocumented)
-export type WorkoutDotStatus = 'within' | 'above' | 'below';
-
-// @public
-export type WorkoutGroup = {
-    type: 'single';
-    exercise: ActiveWorkoutExercise;
-} | {
-    type: 'superset';
-    superset: ActiveWorkoutSuperset;
-    exercises: ActiveWorkoutExercise[];
-};
-
-// @public (undocumented)
-export interface WorkoutMuscleGroup {
-    group: string;
-    label: string;
-    volumeStatus?: WorkoutMuscleVolumeStatus;
-}
-
-// @public @deprecated
-export type WorkoutMuscleVolumeStatus = VolumeLandmarkZone;
-
-// @public
-export const workoutNavItems: SideNavItem[];
-
-// @public @deprecated (undocumented)
-export function WorkoutPill(input: WorkoutPillProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface WorkoutPillProps extends ViewProps {
-    // (undocumented)
-    className?: string;
-    // (undocumented)
-    highlighted?: boolean;
-    // (undocumented)
-    name: string;
-    // (undocumented)
-    onPress?: () => void;
-    pulse?: boolean;
-    // (undocumented)
-    status: WorkoutPillStatus;
-}
-
-// @public
-export type WorkoutPillStatus = 'completed' | 'current' | 'upcoming' | 'deload' | 'next' | 'missed';
-
-// @public
-export interface WorkoutProgress {
-    completedExercises: number;
-    completedSets: number;
-    fraction: number;
-    totalExercises: number;
-    totalSets: number;
-}
-
-// @public (undocumented)
-export function WorkoutShell(input: WorkoutShellProps): react_jsx_runtime.JSX.Element;
-
-// @public
-export interface WorkoutShellProps {
-    activeKey?: string;
-    children?: ReactNode;
-    // (undocumented)
-    className?: string;
-    contentPadding?: AppShellContentPadding;
-    devices?: Device[];
-    liveKey?: string | null;
-    navItems?: SideNavItem[];
-    // (undocumented)
-    onNavigate?: (key: string) => void;
-    // (undocumented)
-    onSelectDevice?: (device: Device) => void;
-    state?: SessionState;
-    subtitle?: string;
-}
-
-// @public (undocumented)
-export type WorkoutStatus = 'completed' | 'today' | 'upcoming';
-
-// @public
-export function WorkoutTopBar(input: WorkoutTopBarProps): react_jsx_runtime.JSX.Element;
-
-// @public (undocumented)
-export interface WorkoutTopBarProps {
-    // (undocumented)
-    className?: string;
-    devices: Device[];
-    // (undocumented)
-    onSelectDevice?: (device: Device) => void;
-    showClock?: boolean;
-    showSubtitle?: boolean;
-    state: SessionState;
-    subtitle?: string;
-    time?: number | Date;
-}
-
-// @public
-export function ZoneTrack(input: ZoneTrackProps): react_jsx_runtime.JSX.Element;
-
-// @public
-export interface ZoneTrackBand {
-    color: string;
-    from: number;
-    to: number;
-}
-
-// @public
-export type ZoneTrackMarker = {
-    type: 'needle';
-    value: number;
-    color?: string;
-    glow?: boolean;
-} | {
-    type: 'fill';
-    value: number;
-    color?: string;
-    glow?: boolean;
-};
-
-// @public (undocumented)
-export interface ZoneTrackProps extends ViewProps {
-    band?: ZoneTrackBand | null;
-    // (undocumented)
-    className?: string;
-    marker?: ZoneTrackMarker | null;
-    max: number;
-    min?: number;
-    needleOverhang?: number;
-    size?: ZoneTrackSize;
-    ticks?: ZoneTrackTick[];
-    trackColor?: string;
-    trackHeight?: number;
-    zones: ZoneTrackZone[];
-}
-
-// @public
-export interface ZoneTrackTick {
-    color?: string;
-    emphasized?: boolean;
-    label?: string;
-    tooltip?: string;
-    value: number;
-}
-
-// @public
-export interface ZoneTrackZone {
-    color: string;
-    upTo: number;
-}
 
 // (No @packageDocumentation comment for this package)
 

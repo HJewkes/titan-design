@@ -1,5 +1,6 @@
 // Core UI components
 export * from './alert'
+export * from './animated-number'
 export * from './button'
 export * from './input'
 export * from './card'
@@ -55,4 +56,3 @@ export * from './highlight-text'
 export * from './date-time'
 export * from './facet-bar'
 export * from './metric'
-export * from './motion'

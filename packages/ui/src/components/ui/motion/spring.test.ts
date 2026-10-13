@@ -66,6 +66,29 @@ describe('springSettleS', () => {
     const pushed = { damping: 20, velocity: 40 }
     expect(springSettleS(pushed)).toBeGreaterThanOrEqual(lastUnsettledS(pushed))
   })
+
+  it.each([19.9999, 20, 20.0001])(
+    'stays within 20 %% of the sampled settle just around critical damping (%s)',
+    (damping) => {
+      const options = { stiffness: 100, damping }
+      const sampled = lastUnsettledS(options)
+      expect(springSettleS(options)).toBeGreaterThanOrEqual(sampled)
+      expect(springSettleS(options)).toBeLessThanOrEqual(sampled * 1.2)
+    }
+  )
+
+  it.each([
+    { damping: 19.9999, velocity: 40 },
+    { damping: 20.0001, velocity: 40 },
+    { damping: 20.0001, velocity: -30 },
+    { stiffness: 400, damping: 120, velocity: 40 },
+  ])('is never early with an initial velocity near or above critical damping (%o)', (options) => {
+    expect(springSettleS(options)).toBeGreaterThanOrEqual(lastUnsettledS(options))
+  })
+
+  it.each([0, -1, Number.NaN])('rejects damping %s, which never settles', (damping) => {
+    expect(() => springSettleS({ damping })).toThrow(RangeError)
+  })
 })
 
 describe('springEase', () => {
@@ -85,5 +108,15 @@ describe('springEase', () => {
   it('overshoots past 1 when the spring is underdamped', () => {
     const ease = springEase({ stiffness: 100, damping: 8 })
     expect(Math.max(...Array.from({ length: 101 }, (_, i) => ease(i / 100)))).toBeGreaterThan(1)
+  })
+
+  it('is continuous across the critical damping boundary', () => {
+    const critical = springEase({ stiffness: 100, damping: 20 })(0.5)
+    expect(springEase({ stiffness: 100, damping: 19.9999 })(0.5)).toBeCloseTo(critical, 3)
+    expect(springEase({ stiffness: 100, damping: 20.0001 })(0.5)).toBeCloseTo(critical, 3)
+  })
+
+  it('rejects an undamped spring instead of returning NaN', () => {
+    expect(() => springEase({ damping: 0 })).toThrow(RangeError)
   })
 })

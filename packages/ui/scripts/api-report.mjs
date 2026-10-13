@@ -22,6 +22,8 @@ const ENTRIES = {
   index: 'dist/index.d.ts',
   bodymap: 'dist/bodymap.d.ts',
   pages: 'dist/pages.d.ts',
+  workout: 'dist/workout.d.ts',
+  motion: 'dist/motion.d.ts',
   'theme-index': 'dist/theme/index.d.ts',
   'theme-tokens': 'dist/theme/tokens.d.ts',
   'theme-tokens-css': 'dist/theme/tokens-css.d.ts',
