@@ -52,6 +52,28 @@
         "default": "./dist/pages.js"
       }
     },
+    "./workout": {
+      "react-native": "./src/workout.ts",
+      "import": {
+        "types": "./dist/workout.d.mts",
+        "default": "./dist/workout.mjs"
+      },
+      "require": {
+        "types": "./dist/workout.d.ts",
+        "default": "./dist/workout.js"
+      }
+    },
+    "./motion": {
+      "react-native": "./src/motion.ts",
+      "import": {
+        "types": "./dist/motion.d.mts",
+        "default": "./dist/motion.mjs"
+      },
+      "require": {
+        "types": "./dist/motion.d.ts",
+        "default": "./dist/motion.js"
+      }
+    },
     "./theme": {
       "react-native": "./src/theme/index.ts",
       "import": {

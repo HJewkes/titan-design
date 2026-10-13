@@ -4,6 +4,7 @@ import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path'
 import {
   RoundSchema,
   choiceMismatchMessage,
+  isClipVariant,
   isImageVariant,
   isLoopbackUrl,
   isStoryVariant,
@@ -30,6 +31,8 @@ export interface LoadedRound {
   storybookUrl: string
   /** Absolute path of each image variant's PNG, by variant key. */
   images: Record<string, string>
+  /** Absolute path of each clip variant's mp4 or webm, by variant key. */
+  clips: Record<string, string>
   /** A page banner saying the harness is not origin/main's, or could not be checked. */
   harnessWarning?: string
 }
@@ -46,16 +49,47 @@ async function startsWithPngSignature(file: string): Promise<boolean> {
   }
 }
 
-/** Resolves an image against the round's directory, following symlinks, and refuses escapes. */
-async function resolveImage(roundDir: string, where: string, image: string): Promise<string> {
-  const file = await realpath(resolve(roundDir, image)).catch(() => {
+async function readHead(file: string, bytes: number): Promise<Buffer> {
+  const handle = await open(file)
+  try {
+    const { buffer, bytesRead } = await handle.read(Buffer.alloc(bytes), 0, bytes, 0)
+    return buffer.subarray(0, bytesRead)
+  } finally {
+    await handle.close()
+  }
+}
+
+const WEBM_SIGNATURE = Buffer.from([0x1a, 0x45, 0xdf, 0xa3])
+
+/** An mp4 names its `ftyp` box at byte 4; a webm opens with the EBML magic. */
+export function isVideoHead(head: Buffer): boolean {
+  return (
+    head.subarray(0, 4).equals(WEBM_SIGNATURE) || head.subarray(4, 8).toString('latin1') === 'ftyp'
+  )
+}
+
+/** Resolves a path against the round's directory, following symlinks, and refuses escapes. */
+async function resolveInside(roundDir: string, where: string, path: string): Promise<string> {
+  const file = await realpath(resolve(roundDir, path)).catch(() => {
     throw new ReviewError(`${where} does not exist (paths resolve against ${roundDir})`)
   })
   const inside = relative(roundDir, file)
   if (inside === '..' || inside.startsWith(`..${sep}`) || isAbsolute(inside))
     throw new ReviewError(`${where} resolves outside the round directory ${roundDir}`)
+  return file
+}
+
+async function resolveImage(roundDir: string, where: string, image: string): Promise<string> {
+  const file = await resolveInside(roundDir, where, image)
   if (!(await startsWithPngSignature(file).catch(() => false)))
     throw new ReviewError(`${where} is not a PNG file`)
+  return file
+}
+
+async function resolveClip(roundDir: string, where: string, clip: string): Promise<string> {
+  const file = await resolveInside(roundDir, where, clip)
+  if (!isVideoHead(await readHead(file, 8).catch(() => Buffer.alloc(0))))
+    throw new ReviewError(`${where} is not an mp4 or webm file`)
   return file
 }
 
@@ -126,6 +160,19 @@ async function resolveImages(path: string, manifest: Manifest): Promise<Record<s
   return Object.fromEntries(entries)
 }
 
+async function resolveClips(path: string, manifest: Manifest): Promise<Record<string, string>> {
+  const roundDir = await realpath(dirname(resolve(path)))
+  const entries = await Promise.all(
+    manifest.variants
+      .filter(isClipVariant)
+      .map(
+        async (v) =>
+          [v.key, await resolveClip(roundDir, `variant ${v.key}: clip ${v.clip}`, v.clip)] as const
+      )
+  )
+  return Object.fromEntries(entries)
+}
+
 /** A JSON file and its bytes; the error names the path when it cannot be read or parsed. */
 export async function readJsonFile(path: string): Promise<{ json: unknown; raw: Buffer }> {
   const raw = await readFile(path).catch(() => {
@@ -159,12 +206,13 @@ export async function loadRound(path: string, storybookOverride?: string): Promi
       `only loopback Storybook hosts (127.0.0.1, localhost, [::1]) are allowed: ${storybookOverride}`
     )
   const images = await resolveImages(path, manifest)
+  const clips = await resolveClips(path, manifest)
   const widthProblems = await choiceWidthProblems(manifest, images)
   if (widthProblems.length)
     throw new ReviewError(`invalid manifest ${path}:\n  ${widthProblems.join('\n  ')}`)
   const manifestSha256 = createHash('sha256').update(raw).digest('hex')
   const storybookUrl = (storybookOverride ?? manifest.storybookUrl).replace(/\/$/, '')
-  return { manifest, manifestSha256, storybookUrl, images }
+  return { manifest, manifestSha256, storybookUrl, images, clips }
 }
 
 /** An image-only round never touches Storybook, so it needs none running. */

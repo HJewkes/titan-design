@@ -46,6 +46,20 @@ describe('cubicBezier', () => {
       expect(samples[i]).toBeGreaterThanOrEqual((samples[i - 1] as number) - 1e-6)
     }
   })
+
+  it.each([
+    [1.1, 0, 0, 1],
+    [0, 0, -0.1, 1],
+    [NaN, 0, 0, 1],
+    [0, Infinity, 0, 1],
+    [0, 0, 0, NaN],
+  ])('refuses cubicBezier(%s, %s, %s, %s) as CSS does', (x1, y1, x2, y2) => {
+    expect(() => cubicBezier(x1, y1, x2, y2)).toThrow(RangeError)
+  })
+
+  it('accepts x at the ends of [0, 1] and y outside it', () => {
+    expect(cubicBezier(0, -2, 1, 3)(0.5)).toBeCloseTo(0.5, 3)
+  })
 })
 
 describe('easing combinators', () => {

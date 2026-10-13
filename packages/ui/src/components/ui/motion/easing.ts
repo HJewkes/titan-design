@@ -33,8 +33,16 @@ function solveCurveParameter(x: number, x1: number, x2: number): number {
   return s
 }
 
-/** CSS `cubic-bezier(x1, y1, x2, y2)` evaluated as y for a given x in [0, 1]. */
+/**
+ * CSS `cubic-bezier(x1, y1, x2, y2)` evaluated as y for a given x in [0, 1]. As in CSS, a
+ * non-finite argument, or `x1` or `x2` outside [0, 1], throws a `RangeError`.
+ */
 export function cubicBezier(x1: number, y1: number, x2: number, y2: number): Easing {
+  if (![x1, y1, x2, y2].every(Number.isFinite) || !(x1 >= 0 && x1 <= 1 && x2 >= 0 && x2 <= 1)) {
+    throw new RangeError(
+      `cubicBezier(${x1}, ${y1}, ${x2}, ${y2}): needs finite values, x1 and x2 in [0, 1]`
+    )
+  }
   return (p) => {
     if (p <= 0) return 0
     if (p >= 1) return 1

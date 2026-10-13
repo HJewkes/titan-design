@@ -30,7 +30,7 @@ const themeIndependentCSSVars = {
   '--font-family-sans': "'Inter'",
   '--font-family-body': "'Nunito Sans'",
   '--font-family-heading': "'Space Grotesk'",
-  '--font-family-mono': "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace",
+  '--font-family-mono': "'JetBrains Mono', monospace",
 
   // Animation tokens (TD-838), derived from `motion` in tokens/semantic.ts.
   ...motionCSSVars,
