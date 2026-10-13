@@ -2,9 +2,10 @@ import React from 'react'
 import { View, Text, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { usePrefersReducedMotion } from '../../../hooks/usePrefersReducedMotion'
+import { useSurfaceMode } from '../surface'
 import { railPosition, type ProgressStepState } from './railTimeline'
 import { RailStep } from './ProgressRail'
-import type { ProgressColor } from './progressColor'
+import { progressColor, type ProgressColor } from './progressColor'
 
 /** `dots`: the compact indicator. `rail`: state chips joined by connectors that fill with `progress`. */
 export type ProgressStepsVariant = 'dots' | 'rail'
@@ -131,6 +132,8 @@ function RailSteps({
   const reached = Math.min(Math.ceil(position), totalSteps - 1)
   const { chip, connector } = stepSizeStyles[size]
   const fillClass = stepColorStyles[color]
+  const mode = useSurfaceMode()
+  const tintColors = [progressColor('primary', mode), progressColor(color, mode)] as const
 
   return (
     <View
@@ -152,6 +155,7 @@ function RailSteps({
           totalSteps={totalSteps}
           sizeClass={chip}
           fillClass={fillClass}
+          tintColors={tintColors}
           connectorClass={connector}
           label={labels?.[index]}
           isReached={index <= reached}

@@ -2,6 +2,7 @@
 // capture reproduces every frame.
 import { interpolate } from '../motion/interpolate'
 import { easeOut, poly } from '../motion/easing'
+import { interpolateColorOklch } from '../motion/color'
 
 /** A rail chip's state, announced in its accessibility label. */
 export type ProgressStepState = 'done' | 'active' | 'pending'
@@ -12,16 +13,18 @@ const coreEase = easeOut(poly(2))
 const RESTING_CORE = 50
 /**
  * A chip's timeline, in steps of position relative to its anchor: the core grows to the
- * resting dot over `ARRIVE`, fills the chip over `FILL`, then the done colour fades in over
- * `FADE`. Pure functions of position, so a seek or a frame-stepped capture reproduces it.
+ * resting dot over `ARRIVE`, then over `LEAVE` it fills the chip while its colour turns from
+ * the brand colour to the done colour. Pure functions of position, so a seek or a
+ * frame-stepped capture reproduces it.
  */
 const ARRIVE = 0.5
-const FILL = 0.25
-const FADE = 0.25
+const LEAVE = 0.5
+/** Lightness turns last, so the hue passes through yellow at full lightness rather than olive. */
+const tintLightnessEase = poly(3)
 
 /** Where a chip's resting point sits: the last step's runs early, so the rail ends done. */
 function chipAnchor(index: number, totalSteps: number): number {
-  return index === totalSteps - 1 ? index - FILL - FADE : index
+  return index === totalSteps - 1 ? index - LEAVE : index
 }
 
 /** Steps behind the position are done; the step it is moving toward (or resting on) is active. */
@@ -36,8 +39,8 @@ export interface ChipLook {
   state: ProgressStepState
   /** Brand core diameter, percent of the chip. */
   core: number
-  /** Opacity of the done-colour layer over the core. */
-  done: number
+  /** How far the chip's colour has turned from the brand colour to the done colour, 0..1. */
+  tint: number
 }
 
 export function chipLook(index: number, position: number, totalSteps: number): ChipLook {
@@ -45,9 +48,14 @@ export function chipLook(index: number, position: number, totalSteps: number): C
   const core =
     position <= anchor
       ? interpolate(position, [anchor - ARRIVE, anchor], [0, RESTING_CORE], { ease: coreEase })
-      : interpolate(position, [anchor, anchor + FILL], [RESTING_CORE, 100], { ease: coreEase })
-  const done = interpolate(position, [anchor + FILL, anchor + FILL + FADE], [0, 1])
-  return { state: stepStateAt(index, position, totalSteps), core, done }
+      : interpolate(position, [anchor, anchor + LEAVE], [RESTING_CORE, 100], { ease: coreEase })
+  const tint = interpolate(position, [anchor, anchor + LEAVE], [0, 1])
+  return { state: stepStateAt(index, position, totalSteps), core, tint }
+}
+
+/** The chip colour at `tint`, mixed in OKLCH between resolved brand and done hex values. */
+export function chipTint(tint: number, [brand, done]: readonly [string, string]): string {
+  return interpolateColorOklch(tint, [0, 1], [brand, done], { lightnessEase: tintLightnessEase })
 }
 
 export function railPosition(position: number, totalSteps: number, reducedMotion: boolean): number {

@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { interpolate } from '../motion/interpolate'
-import { chipLook } from './railTimeline'
+import { chipLook, chipTint } from './railTimeline'
 
 interface RailPartProps {
   index: number
@@ -9,6 +9,8 @@ interface RailPartProps {
   totalSteps: number
   sizeClass: string
   fillClass: string
+  /** Resolved brand and done hex values for the chip's colour turn. */
+  tintColors: readonly [string, string]
 }
 
 function RailChip({
@@ -17,9 +19,11 @@ function RailChip({
   totalSteps,
   sizeClass,
   fillClass,
+  tintColors,
   label,
 }: RailPartProps & { label?: string }) {
-  const { state, core, done } = chipLook(index, position, totalSteps)
+  const { state, core, tint } = chipLook(index, position, totalSteps)
+  const colour = tint > 0 && tint < 1 ? chipTint(tint, tintColors) : undefined
 
   return (
     <View
@@ -27,26 +31,27 @@ function RailChip({
       accessibilityLabel={`Step ${index + 1}${label ? `, ${label}` : ''}: ${state}`}
       className={cn('rounded-full items-center justify-center', sizeClass)}
     >
-      {done < 1 && (
-        <View
-          className={cn(
-            'absolute inset-0 rounded-full border-2',
-            state === 'pending' ? 'border-hairline-strong' : 'border-brand-primary'
+      {tint < 1 ? (
+        <>
+          <View
+            className={cn(
+              'absolute inset-0 rounded-full border-2',
+              state === 'pending' ? 'border-hairline-strong' : 'border-brand-primary'
+            )}
+            style={colour ? { borderColor: colour } : undefined}
+          />
+          {core > 0 && (
+            <View
+              testID={`progress-steps-core-${index}`}
+              className="rounded-full bg-brand-primary"
+              style={{ width: `${core}%`, height: `${core}%`, backgroundColor: colour }}
+            />
           )}
-        />
-      )}
-      {core > 0 && done < 1 && (
-        <View
-          testID={`progress-steps-core-${index}`}
-          className="rounded-full bg-brand-primary"
-          style={{ width: `${core}%`, height: `${core}%` }}
-        />
-      )}
-      {done > 0 && (
+        </>
+      ) : (
         <View
           testID={`progress-steps-done-${index}`}
           className={cn('absolute inset-0 rounded-full', fillClass)}
-          style={{ opacity: done }}
         />
       )}
     </View>
@@ -60,7 +65,10 @@ function RailHalf({
   position,
   sizeClass,
   fillClass,
-}: { segment: number; half: 'start' | 'end' } & Omit<RailPartProps, 'index' | 'totalSteps'>) {
+}: { segment: number; half: 'start' | 'end' } & Omit<
+  RailPartProps,
+  'index' | 'totalSteps' | 'tintColors'
+>) {
   const from = half === 'start' ? segment : segment + 0.5
   const fill = interpolate(position, [from, from + 0.5], [0, 100])
 

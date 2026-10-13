@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { poly } from './easing'
-import { interpolateColor } from './color'
+import { interpolateColor, interpolateColorOklch } from './color'
 
 describe('interpolateColor', () => {
   it('returns the endpoints at the ends of the input range', () => {
@@ -34,5 +34,41 @@ describe('interpolateColor', () => {
     expect(() => interpolateColor(0, [0, 1], ['var(--color-brand-primary)', '#000000'])).toThrow(
       /resolve tokens first/
     )
+  })
+})
+
+const channels = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16))
+const spread = (hex: string) => Math.max(...channels(hex)) - Math.min(...channels(hex))
+
+describe('interpolateColorOklch', () => {
+  it('returns the endpoints at the ends of the input range', () => {
+    expect(interpolateColorOklch(0, [0, 1], ['#ff7900', '#2b6b25'])).toBe('#ff7900')
+    expect(interpolateColorOklch(1, [0, 1], ['#ff7900', '#2b6b25'])).toBe('#2b6b25')
+  })
+
+  it('keeps an orange-to-green midpoint more saturated than the Oklab mix', () => {
+    const oklch = interpolateColorOklch(0.5, [0, 1], ['#ff7900', '#2b6b25'])
+    const oklab = interpolateColor(0.5, [0, 1], ['#ff7900', '#2b6b25'])
+
+    expect(spread(oklch)).toBeGreaterThan(spread(oklab))
+  })
+
+  it('turns the hue along the shorter arc', () => {
+    const [r, g, b] = channels(interpolateColorOklch(0.5, [0, 1], ['#00ff00', '#0000ff']))
+
+    expect(Math.min(g, b)).toBeGreaterThan(r)
+  })
+
+  it('takes the hue of the chromatic end when the other is grey', () => {
+    const [r, g, b] = channels(interpolateColorOklch(0.5, [0, 1], ['#808080', '#ff0000']))
+
+    expect(r).toBeGreaterThan(g)
+    expect(Math.abs(g - b)).toBeLessThan(16)
+  })
+
+  it('holds lightness with lightnessEase so the hue turns first', () => {
+    expect(
+      interpolateColorOklch(0.5, [0, 1], ['#ff7900', '#2b6b25'], { lightnessEase: poly(3) })
+    ).toBe('#b89900')
   })
 })

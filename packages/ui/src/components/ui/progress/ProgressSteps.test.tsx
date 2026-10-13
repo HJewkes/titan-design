@@ -2,6 +2,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { ProgressSteps } from './ProgressSteps'
+import { progressColor } from './progressColor'
+import { chipTint } from './railTimeline'
+import { interpolateColor } from '../motion/color'
 
 const reducedMotion = vi.hoisted(() => ({ value: false }))
 vi.mock('../../../hooks/usePrefersReducedMotion', () => ({
@@ -35,14 +38,22 @@ function connectorFills() {
   return [0, 1, 2].map((segment) => (halfFill(segment, 'start') + halfFill(segment, 'end')) / 2)
 }
 
+function cssColor(hex: string) {
+  const probe = document.createElement('div')
+  probe.style.backgroundColor = hex
+  return probe.style.backgroundColor
+}
+
 function chipLook(index: number) {
   const core = screen.queryByTestId(`progress-steps-core-${index}`)
-  const done = screen.queryByTestId(`progress-steps-done-${index}`)
   return {
     core: core ? core.style.width : null,
-    done: done ? Number(done.style.opacity) : 0,
+    colour: core?.style.backgroundColor || null,
+    done: screen.queryByTestId(`progress-steps-done-${index}`) != null,
   }
 }
+
+const [BRAND, DONE] = [progressColor('primary', 'dark'), progressColor('success', 'dark')]
 
 describe('ProgressSteps rail', () => {
   beforeEach(() => {
@@ -109,11 +120,11 @@ describe('ProgressSteps rail', () => {
       'Step 3, Ship: done',
       'Step 4, Learn: done',
     ])
-    expect(chipLook(3)).toEqual({ core: null, done: 1 })
+    expect(chipLook(3)).toEqual({ core: null, colour: null, done: true })
     expect(connectorFills()).toEqual([100, 100, 100])
   })
 
-  it('fills a chip with the brand colour, then fades it to the done colour, as the position leaves', () => {
+  it('turns a chip from the brand colour to the done colour in OKLCH as it fills', () => {
     const at = (position: number) => {
       const { unmount } = renderRail(position)
       const look = chipLook(1)
@@ -121,17 +132,25 @@ describe('ProgressSteps rail', () => {
       return look
     }
 
-    expect(at(1)).toEqual({ core: '50%', done: 0 })
-    expect(at(1.25)).toEqual({ core: '100%', done: 0 })
-    expect(at(1.375)).toEqual({ core: '100%', done: 0.5 })
-    expect(at(1.5)).toEqual({ core: null, done: 1 })
+    expect(at(1)).toEqual({ core: '50%', colour: null, done: false })
+    expect(at(1.25)).toEqual({
+      core: '87.5%',
+      colour: cssColor(chipTint(0.5, [BRAND, DONE])),
+      done: false,
+    })
+    expect(chipTint(0.5, [BRAND, DONE])).not.toBe(interpolateColor(0.5, [0, 1], [BRAND, DONE]))
+    expect(at(1.5)).toEqual({ core: null, colour: null, done: true })
   })
 
-  it('runs the last chip through the same fill and fade before the end', () => {
-    renderRail(2.875)
+  it('runs the last chip through the same turn before the end', () => {
+    renderRail(2.75)
 
     expect(chipStates()[3]).toBe('Step 4, Learn: active')
-    expect(chipLook(3)).toEqual({ core: '100%', done: 0.5 })
+    expect(chipLook(3)).toEqual({
+      core: '87.5%',
+      colour: cssColor(chipTint(0.5, [BRAND, DONE])),
+      done: false,
+    })
   })
 
   it('centres each label under its own chip', () => {
@@ -149,8 +168,8 @@ describe('ProgressSteps rail', () => {
     renderRail(1.5)
 
     expect(chipStates()[2]).toBe('Step 3, Ship: active')
-    expect(chipLook(1)).toEqual({ core: null, done: 1 })
-    expect(chipLook(2)).toEqual({ core: '50%', done: 0 })
+    expect(chipLook(1)).toEqual({ core: null, colour: null, done: true })
+    expect(chipLook(2)).toEqual({ core: '50%', colour: null, done: false })
     expect(connectorFills()).toEqual([100, 100, 0])
   })
 
