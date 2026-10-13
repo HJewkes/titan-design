@@ -29,12 +29,13 @@ out or randomised at render.
 
 ## Files
 
-| File               | Holds                                                                                              |
-| ------------------ | -------------------------------------------------------------------------------------------------- |
-| `types.ts`         | `MapLayout` (repo-map/v1) and `MapTimeline`, data only.                                            |
-| `fixtures.ts`      | `mapLayoutFixture` (four levels, routed at every level), `mapTimelineFixture` (map, non-map, map). |
-| `validate.ts`      | `validateMapLayout`, `validateMapTimeline`: pure invariant checks.                                 |
-| `fixtures.test.ts` | The fixtures are valid, and each invariant has a failing case.                                     |
+| File                 | Holds                                                                                              |
+| -------------------- | -------------------------------------------------------------------------------------------------- |
+| `types.ts`           | `MapLayout` (repo-map/v1) and `MapTimeline`, data only.                                            |
+| `fixtures.ts`        | `mapLayoutFixture` (four levels, routed at every level), `mapTimelineFixture` (map, non-map, map). |
+| `validate.ts`        | `validateMapLayout`, `validateMapTimeline`: pure invariant checks.                                 |
+| `fixtures.test.ts`   | The fixtures are valid, and each invariant has a failing case.                                     |
+| `map-state-model.ts` | `resolveMapState`, `mapTime`, `MAP_WEIGHT`: the pure state model (D1).                             |
 
 ## Layout invariants (`validateMapLayout`)
 
@@ -63,8 +64,28 @@ The map keeps its own clock, `mapT`: the on-screen time elapsed before `t`. It s
 is converted to map time and its `durS` runs in map time, so a change that straddles an exit finishes after the map
 returns. The camera and flow layers read the same `mapT`, so every layer resumes together.
 
+## State model (`resolveMapState`)
+
+`resolveMapState(timeline, layout, t)` returns the map's state at video time `t`. It reads no clock, hook or previous
+frame; a cold seek and a 1/60 s sweep agree at every frame. It imports only `interpolate` and `MOTION` from the motion
+core. Every change eases with `MOTION.ease.inOut` over `[atS, atS + durS]` in map time, and a change that interrupts
+another starts from the value at that moment.
+
+| Channel             | Rule                                                                                                                 |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `nodes[id].opacity` | 0 until the node's first `reveal`, then 1. A node no `reveal` names is always 1.                                     |
+| `nodes[id].weight`  | `MAP_WEIGHT.full` (1) for the focus set, `MAP_WEIGHT.context` (0.35) for the rest; no focus is full.                 |
+| `nodes[id].lit`     | 1 for the `lit` set, else 0.                                                                                         |
+| `edges[id]`         | Draw-on progress, 0 until the edge's first `edge` keyframe. An edge none names is always 1.                          |
+| `cards`             | `enter` and `exit` progress, sorted as `layout.cards`. A card is listed from its `card-in` until its exit completes. |
+| `level`, `minimap`  | The latest `level` (a step; D5 cross-fades by camera scale); the minimap fades 0 to 1.                               |
+| `mapT`, `onMap`     | The map clock and whether `t` falls inside a span. Off the map the state holds.                                      |
+
+`MAP_WEIGHT.context` is local until the motion core gains a context weight token; it moves there with the `/diagram`
+subpath.
+
 ## Not in this slice
 
-The model (`resolveMapState`, D1), the painter (D2), the camera (`motion/camera.ts`, D4), semantic zoom, the flow
+The painter (D2), the camera (`motion/camera.ts`, D4), semantic zoom, the flow
 token, cards and the minimap. The `map_state` beat schema and its lints live with the pipeline, which compiles them
 into a `MapTimeline`.
