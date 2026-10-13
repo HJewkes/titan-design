@@ -179,3 +179,21 @@ export function overlapOf(a: Raster, b: Raster): Overlap {
 export function compareSvgPaths(a: Shape, b: Shape, size = 2048, viewBox = ICON_VIEW_BOX): Overlap {
   return overlapOf(rasterize(a, size, viewBox), rasterize(b, size, viewBox))
 }
+
+/** Every pair of non-adjacent edges of a closed polygon that cross, with where they cross. */
+export function selfCrossings(polygon: readonly Point[]): { edges: [number, number]; at: Point }[] {
+  const side = (o: Point, a: Point, b: Point) =>
+    (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+  const n = polygon.length
+  const found: { edges: [number, number]; at: Point }[] = []
+  for (let i = 0; i < n; i++) {
+    for (let j = i + 2; j < n && !(i === 0 && j === n - 1); j++) {
+      const [a, b, c, d] = [polygon[i], polygon[(i + 1) % n], polygon[j], polygon[(j + 1) % n]]
+      const [s1, s2] = [side(c, d, a), side(c, d, b)]
+      if (s1 * s2 >= 0 || side(a, b, c) * side(a, b, d) >= 0) continue
+      const t = s1 / (s1 - s2)
+      found.push({ edges: [i, j], at: [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t] })
+    }
+  }
+  return found
+}

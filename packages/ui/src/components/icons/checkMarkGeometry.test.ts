@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
+import { compareSvgPaths, selfCrossings } from '../../test/svg-overlap'
 import {
+  CHECK_MARK_APEX,
   CHECK_MARK_MASK_WIDTH,
   CHECK_MARK_SPINE,
   checkMarkOutline,
@@ -56,12 +58,32 @@ function spineSamples(): CheckMarkPoint[] {
   return samples
 }
 
+/** Same pixels at 2048 px, give or take the rounding of the one point that replaces the loop. */
+const SAME_PIXELS_MIN_IOU = 0.9999
+
 describe('checkMarkOutline', () => {
   it.each([
     [3, APPROVED_WEIGHT_3],
     [2, APPROVED_WEIGHT_2],
-  ])('at weight %i is the approved outline, point for point', (weight, approved) => {
-    expect(checkMarkOutline(weight)).toEqual(pointsOf(approved))
+  ])("at weight %i fills the approved outline's pixels", (weight, approved) => {
+    expect(compareSvgPaths([checkMarkOutline(weight)], approved).iou).toBeGreaterThanOrEqual(
+      SAME_PIXELS_MIN_IOU
+    )
+  })
+
+  it.each([
+    [3, APPROVED_WEIGHT_3],
+    [2, APPROVED_WEIGHT_2],
+  ])('at weight %i drops the loop the approved outline wound at the apex', (weight, approved) => {
+    const [loop] = selfCrossings(pointsOf(approved))
+    expect(
+      Math.hypot(loop.at[0] - CHECK_MARK_APEX[0], loop.at[1] - CHECK_MARK_APEX[1])
+    ).toBeLessThan(3)
+    expect(selfCrossings(checkMarkOutline(weight))).toEqual([])
+  })
+
+  it.each([1, 4])('at weight %i crosses itself nowhere', (weight) => {
+    expect(selfCrossings(checkMarkOutline(weight))).toEqual([])
   })
 
   it('starts with a vertical cut and has no round cap', () => {

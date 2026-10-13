@@ -82,10 +82,34 @@ function offsetSides(weight: number) {
   return { outer, inner }
 }
 
+/** Where segments ab and cd cross, or null if they do not. */
+function crossing(a: CheckMarkPoint, b: CheckMarkPoint, c: CheckMarkPoint, d: CheckMarkPoint) {
+  const denominator = (b[0] - a[0]) * (d[1] - c[1]) - (b[1] - a[1]) * (d[0] - c[0])
+  if (denominator === 0) return null
+  const t = ((c[0] - a[0]) * (d[1] - c[1]) - (c[1] - a[1]) * (d[0] - c[0])) / denominator
+  const u = ((c[0] - a[0]) * (b[1] - a[1]) - (c[1] - a[1]) * (b[0] - a[0])) / denominator
+  return t > 0 && t < 1 && u > 0 && u < 1 ? snap(lerp(a, b, t)) : null
+}
+
 /**
- * The outline as a closed polygon, to hundredths of a unit. The start is cut on the vertical
- * through the inner side's first point: outer points left of it are dropped, and the cut meets
- * the outer side at one new point.
+ * The inner side overshoots the apex: the leg and the tail each run past the other before turning,
+ * so the side crosses itself and winds a small loop inside the stroke. Nonzero fill hides it; an
+ * even-odd fill or a stroked outline would show it. This cuts the loop out at the crossing.
+ */
+function unfold(side: CheckMarkPoint[]): CheckMarkPoint[] {
+  for (let i = 0; i + 1 < side.length; i++) {
+    for (let j = i + 2; j + 1 < side.length; j++) {
+      const hit = crossing(side[i], side[i + 1], side[j], side[j + 1])
+      if (hit) return [...side.slice(0, i + 1), hit, ...side.slice(j + 1)]
+    }
+  }
+  return side
+}
+
+/**
+ * The outline as a simple closed polygon, to hundredths of a unit. The start is cut on the
+ * vertical through the inner side's first point: outer points left of it are dropped, and the cut
+ * meets the outer side at one new point.
  */
 export function checkMarkOutline(weight: number): CheckMarkPoint[] {
   const { outer, inner } = offsetSides(weight)
@@ -93,5 +117,5 @@ export function checkMarkOutline(weight: number): CheckMarkPoint[] {
   const firstKept = outer.findIndex((q) => q[0] >= cutX)
   const [a, b] = [outer[firstKept - 1], outer[firstKept]]
   const hit = snap([cutX, a[1] + ((b[1] - a[1]) * (cutX - a[0])) / (b[0] - a[0])])
-  return [hit, ...outer.slice(firstKept), ...[...inner].reverse()]
+  return [hit, ...outer.slice(firstKept), ...unfold(inner).reverse()]
 }

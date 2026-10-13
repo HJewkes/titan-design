@@ -5,6 +5,7 @@ import {
   compareSvgPaths,
   flattenPath,
   rasterize,
+  selfCrossings,
   type Point,
 } from './svg-overlap'
 
@@ -68,5 +69,26 @@ describe('compareSvgPaths', () => {
     expect(overlap.iou).toBeLessThan(SAME_SHAPE_MIN_IOU)
     expect(overlap).toMatchObject({ onlyA: 0, onlyB: expect.any(Number) as number })
     expect(overlap.onlyB).toBeGreaterThan(0)
+  })
+})
+
+describe('selfCrossings', () => {
+  it('finds the crossing of a bow tie and none in a square', () => {
+    expect(
+      selfCrossings([
+        [0, 0],
+        [4, 4],
+        [4, 0],
+        [0, 4],
+      ])
+    ).toEqual([{ edges: [0, 2], at: [2, 2] }])
+    expect(
+      selfCrossings([
+        [0, 0],
+        [4, 0],
+        [4, 4],
+        [0, 4],
+      ])
+    ).toEqual([])
   })
 })
