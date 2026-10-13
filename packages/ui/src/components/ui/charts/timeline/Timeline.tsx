@@ -52,9 +52,11 @@ const TONE_CLASS: Record<TimelineTone, string> = {
   info: 'bg-status-info',
 }
 
+// The gutter holds an edge item's label; overflow-hidden clips a mark fading past the window edge
+// to the component's box, so it never draws over neighbouring content.
 const ROOT_CLASS: Record<TimelineOrientation, string> = {
-  horizontal: 'h-20 w-full px-12',
-  vertical: 'h-60 w-full py-3',
+  horizontal: 'h-20 w-full overflow-hidden px-12',
+  vertical: 'h-60 w-full overflow-hidden py-3',
 }
 
 const percent = (position: number): `${number}%` => `${position * 100}%`

@@ -54,9 +54,9 @@ const FULL_WINDOW: TimelineRange = [0, 1]
 // Floats from the window division must not drop an item sitting exactly on an edge.
 const EDGE_EPSILON = 1e-9
 /**
- * How far past a window edge a mark keeps fading out, as a share of the visible span. 8% of a
- * 640 px timeline is 43 px, inside the 48 px gutter either side of the plot, so a fading mark
- * stays in the component's box; and a pan crossing the plot spends 8% of its time on each fade.
+ * How far past a window edge a mark keeps fading out, as a share of the visible span: a pan
+ * crossing the plot spends 8% of its time on each fade. Timeline clips anything that fades past
+ * its own box, so on a wide timeline the fade ends at the component's edge.
  */
 export const EDGE_FADE = 0.08
 
