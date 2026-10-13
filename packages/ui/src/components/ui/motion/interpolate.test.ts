@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { interpolate, keyframes } from './interpolate'
+import { linear, poly } from './easing'
+import { interpolate, interpolateScale, keyframes } from './interpolate'
 
 describe('interpolate', () => {
   it.each([
@@ -57,5 +58,43 @@ describe('keyframes', () => {
 
   it('is 0 with no stops', () => {
     expect(keyframes(1, [])).toBe(0)
+  })
+})
+
+describe('keyframes with one easing per segment', () => {
+  const stops = [
+    [0, 0],
+    [1, 10],
+    [2, 20],
+    [3, 30],
+  ] as const
+  const ease = [linear, poly(2), linear]
+
+  it('applies each easing to its own segment only', () => {
+    expect(keyframes(0.5, stops, { ease })).toBe(5)
+    expect(keyframes(1.5, stops, { ease })).toBe(12.5)
+    expect(keyframes(2.5, stops, { ease })).toBe(25)
+  })
+
+  it('throws when there are fewer easings than segments', () => {
+    expect(() => keyframes(0.5, stops, { ease: [linear, linear] })).toThrow(RangeError)
+  })
+})
+
+describe('interpolateScale', () => {
+  it('grows by area, so the midpoint of 0 to 1 is sqrt(0.5)', () => {
+    expect(interpolateScale(0.5, [0, 1], [0, 1])).toBeCloseTo(Math.sqrt(0.5), 12)
+    expect(interpolateScale(1, [0, 1], [0, 1])).toBe(1)
+  })
+
+  it('keeps the sign through a flip from 1 to -1', () => {
+    expect(interpolateScale(0.5, [0, 1], [1, -1])).toBe(0)
+    expect(interpolateScale(0.25, [0, 1], [1, -1])).toBeCloseTo(Math.sqrt(0.5), 12)
+    expect(interpolateScale(0.75, [0, 1], [1, -1])).toBeCloseTo(-Math.sqrt(0.5), 12)
+  })
+
+  it('passes ease and clamp through', () => {
+    expect(interpolateScale(2, [0, 1], [0, 1], { clamp: false })).toBeCloseTo(Math.sqrt(2), 12)
+    expect(interpolateScale(0.5, [0, 1], [0, 1], { ease: poly(2) })).toBe(0.5)
   })
 })

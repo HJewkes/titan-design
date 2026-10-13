@@ -11050,6 +11050,82 @@
     },
     {
       "composes": [
+        "Typography"
+      ],
+      "family": "ui/animated-number",
+      "file": "packages/ui/src/components/ui/animated-number/AnimatedNumber.tsx",
+      "name": "AnimatedNumber",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides for the root, merged with `cn()`.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "0",
+          "description": "Fraction digits for the default format.",
+          "name": "decimals",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Overrides the default grouped format; `decimals` is then ignored.",
+          "name": "format",
+          "required": false,
+          "type": "AnimatedNumberFormat"
+        },
+        {
+          "default": "0",
+          "description": "Where the number starts at progress 0.",
+          "name": "from",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "count",
+          "description": "`count` rewrites the text; `reel` rolls one clipped column per digit.",
+          "name": "mode",
+          "required": false,
+          "type": "AnimatedNumberMode"
+        },
+        {
+          "default": null,
+          "description": "0..1, driven by the caller's clock.",
+          "name": "progress",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": "md",
+          "description": "Default `md`.",
+          "name": "size",
+          "required": false,
+          "type": "AnimatedNumberSize"
+        },
+        {
+          "default": null,
+          "description": "The value the number lands on.",
+          "name": "value",
+          "required": true,
+          "type": "number"
+        }
+      ],
+      "purpose": "A number that counts or rolls from `from` to `value` as `progress` goes 0 → 1.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/animated-number/AnimatedNumber.tsx",
+        "status": "packages/ui/src/components/ui/animated-number/AnimatedNumber.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-animatednumber--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
         "AutocompleteParts"
       ],
       "family": "ui/autocomplete",

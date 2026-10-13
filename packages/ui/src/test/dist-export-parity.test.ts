@@ -4,7 +4,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 /**
- * Root barrel dist/runtime export parity (VW-388).
+ * Dist/runtime export parity for the root, /workout and /motion entries (VW-388).
  *
  * The bug: `export type { MuscleGroup } from './muscleTaxonomy'` restricts the
  * COMPILED JS to a type-only re-export (dist/index.mjs has no `MuscleGroup`
@@ -13,8 +13,8 @@ import { fileURLToPath } from 'node:url'
  * `export { ... }` of dist/index.d.ts. `import { MuscleGroup } from
  * '@titan-design/react-ui'` then typechecks and crashes at runtime.
  *
- * This walks the actual built dist/index.d.ts export list and asserts every
- * bare (non-`type`) name is a real dist/index.mjs export, unless it's on the
+ * This walks each entry's built dist/<entry>.d.ts export list and asserts every
+ * bare (non-`type`) name is a real dist/<entry>.mjs export, unless it's on the
  * explicit allowlist below — names whose only declaration anywhere in `src`
  * is an `interface`/`type` alias, so the bare listing is a cosmetic bundler
  * quirk (rollup-plugin-dts loses the `type` keyword through multi-hop
@@ -30,13 +30,16 @@ import { fileURLToPath } from 'node:url'
 
 const testDir = path.dirname(fileURLToPath(import.meta.url))
 const uiRoot = path.resolve(testDir, '..', '..')
-const DTS_PATH = path.join(uiRoot, 'dist', 'index.d.ts')
-const MJS_PATH = path.join(uiRoot, 'dist', 'index.mjs')
+const distPath = (file: string) => path.join(uiRoot, 'dist', file)
+// The root entry plus the subpaths decision 323 split off it, which inherit its names.
+const ENTRIES = ['index', 'workout', 'motion']
 
 // Confirmed via `grep -rn "export (enum|class|function|const|let|var) <Name>"
 // src` returning nothing for any of these: every declaration site is an
 // `interface` or `type` alias, so none can ever be imported as a value.
 const KNOWN_TYPE_ONLY_BARE_NAMES = new Set([
+  'BrandKey', // components/shell/brands.tsx: type alias
+  'BrandPreset', // components/shell/brands.tsx: interface
   'ElevationLevel', // theme/elevation.ts: type alias
   'ExerciseIndicatorKind', // components/custom/Workout/ExerciseIndicator.tsx: type alias
   'GlowIntensity', // theme/elevation.ts: type alias
@@ -103,29 +106,38 @@ function parseFinalExportStatement(source: string): ExportEntry[] {
     })
 }
 
-const distBuilt = fs.existsSync(DTS_PATH) && fs.existsSync(MJS_PATH)
+function exportedNames(file: string): Set<string> {
+  return new Set(
+    parseFinalExportStatement(fs.readFileSync(distPath(file), 'utf8')).map((e) => e.alias)
+  )
+}
 
-describe.skipIf(!distBuilt)('root barrel dist/runtime export parity (VW-388)', () => {
-  it('has a runtime export for every non-type-only name dist/index.d.ts declares', () => {
-    const dtsExports = parseFinalExportStatement(fs.readFileSync(DTS_PATH, 'utf8'))
-    const mjsNames = new Set(
-      parseFinalExportStatement(fs.readFileSync(MJS_PATH, 'utf8')).map((e) => e.alias)
-    )
+const distBuilt = ENTRIES.every(
+  (entry) => fs.existsSync(distPath(`${entry}.d.ts`)) && fs.existsSync(distPath(`${entry}.mjs`))
+)
 
-    const missing = dtsExports
-      .filter((e) => !e.typeOnly && !KNOWN_TYPE_ONLY_BARE_NAMES.has(e.alias))
-      .filter((e) => !mjsNames.has(e.alias))
-      .map((e) => e.alias)
+describe.skipIf(!distBuilt)('dist/runtime export parity (VW-388)', () => {
+  it.each(ENTRIES)(
+    'has a runtime export for every non-type-only name dist/%s.d.ts declares',
+    (entry) => {
+      const dtsExports = parseFinalExportStatement(
+        fs.readFileSync(distPath(`${entry}.d.ts`), 'utf8')
+      )
+      const mjsNames = exportedNames(`${entry}.mjs`)
 
-    expect(missing).toEqual([])
-  })
+      const missing = dtsExports
+        .filter((e) => !e.typeOnly && !KNOWN_TYPE_ONLY_BARE_NAMES.has(e.alias))
+        .filter((e) => !mjsNames.has(e.alias))
+        .map((e) => e.alias)
+
+      expect(missing).toEqual([])
+    }
+  )
 
   // Positive control: MuscleGroup is the exact case VW-388 found, and stays a
   // real value export post-fix (not just absent from the `missing` list above).
-  it('exports MuscleGroup as a runtime value, matching the type dist/index.d.ts declares', () => {
-    const mjsNames = new Set(
-      parseFinalExportStatement(fs.readFileSync(MJS_PATH, 'utf8')).map((e) => e.alias)
-    )
-    expect(mjsNames.has('MuscleGroup')).toBe(true)
+  // It moved with the Workout family to the `/workout` entry.
+  it('exports MuscleGroup as a runtime value from dist/workout.mjs', () => {
+    expect(exportedNames('workout.mjs').has('MuscleGroup')).toBe(true)
   })
 })
