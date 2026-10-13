@@ -12840,6 +12840,90 @@
     },
     {
       "composes": [
+        "EvidenceChip",
+        "ScaledPill"
+      ],
+      "family": "ui/chip",
+      "file": "packages/ui/src/components/ui/chip/ChipBand.tsx",
+      "name": "ChipBand",
+      "props": [
+        {
+          "default": null,
+          "description": "The beat's citations, lead first.",
+          "name": "chips",
+          "required": true,
+          "type": "BandChip[]"
+        },
+        {
+          "default": null,
+          "description": "Additional className on the band.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "`rise` fades in and rises; `fade` only fades.",
+          "name": "entry",
+          "required": false,
+          "type": "\"rise\" | \"fade\""
+        },
+        {
+          "default": null,
+          "description": "Chip font size in px.",
+          "name": "fontPx",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "1080",
+          "description": "Frame height in px; the chip font is 40 px per 1080.",
+          "name": "frameHeight",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "3",
+          "description": "Most chips shown, counting the lead.",
+          "name": "max",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Seconds since the band's cue.",
+          "name": "progress",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Show the end state at any `progress`.",
+          "name": "reducedMotion",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Band width in px.",
+          "name": "width",
+          "required": true,
+          "type": "number"
+        }
+      ],
+      "purpose": "ChipBand — one beat's citations on a single line at video scale: the lead chip with its citation, the next chips as kind tabs, the rest as a `+d` count.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/chip/ChipBand.tsx",
+        "status": "packages/ui/src/components/ui/chip/ChipBand.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-chipband--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
         "Pill",
         "Typography"
       ],

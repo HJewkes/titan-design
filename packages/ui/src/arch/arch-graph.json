@@ -1349,6 +1349,46 @@
       "standard": true
     },
     {
+      "name": "ChipBand",
+      "file": "packages/ui/src/components/ui/chip/ChipBand.tsx",
+      "dir": "ui",
+      "family": "ui/chip",
+      "exports": [
+        "ChipBand",
+        "ChipBandProps",
+        "isDev",
+        "droppedLabel",
+        "citationLabel",
+        "bandItems"
+      ],
+      "libDependents": 0,
+      "storyRefs": 2,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "EvidenceChip",
+        "ScaledPill"
+      ],
+      "leak": {
+        "rawView": 2,
+        "rawText": 0,
+        "inlineStyle": 1,
+        "rawHex": 0,
+        "loc": 137,
+        "score": 4
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "CircularTimer",
       "file": "packages/ui/src/components/custom/CircularTimer/CircularTimer.tsx",
       "dir": "custom",
