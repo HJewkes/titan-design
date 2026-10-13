@@ -38,3 +38,19 @@ export {
   type BeatFrameProps,
   type BeatProps,
 } from './Beat'
+export {
+  cutPath,
+  drawOn,
+  interpolatePath,
+  parsePath,
+  pathLength,
+  pathModel,
+  pathMorph,
+  pointAtLength,
+  tangentAtLength,
+  type DrawOnStyle,
+  type PathCommand,
+  type PathModel,
+  type PathOp,
+  type PathPoint,
+} from './paths'

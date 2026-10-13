@@ -1527,6 +1527,9 @@ export type CubicBezierCss<P extends ControlPoints> = `cubic-bezier(${P[0]}, ${P
 export function cubicBezierCss<const P extends ControlPoints>(points: P): CubicBezierCss<P>;
 
 // @public
+export function cutPath(path: string | PathModel, length: number): string;
+
+// @public
 export function darken(hex: string, amount?: number): string;
 
 // @public (undocumented)
@@ -1947,6 +1950,15 @@ export interface DrawerProps extends ViewProps {
 
 // @public (undocumented)
 export type DrawerSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
+
+// @public
+export function drawOn(length: number, progress: number): DrawOnStyle;
+
+// @public
+export interface DrawOnStyle {
+    strokeDasharray: number;
+    strokeDashoffset: number;
+}
 
 // @public
 export const DRIFT_GREY: "#5A5958";
@@ -4404,6 +4416,9 @@ export interface InterpolateOptions {
 }
 
 // @public
+export function interpolatePath(t: number, from: string, to: string): string;
+
+// @public
 export function isCssPropertyManifest(candidate: unknown): candidate is CssPropertyManifest;
 
 // @public
@@ -5760,6 +5775,9 @@ export interface ParagraphProps extends Omit<TypographyProps, 'variant'> {
 }
 
 // @public
+export function parsePath(d: string): PathCommand[];
+
+// @public
 export function parseProseBlocks(body: string): ProseBlock[];
 
 // @public
@@ -5781,6 +5799,71 @@ export const PasswordInput: React__default.ForwardRefExoticComponent<PasswordInp
 export interface PasswordInputProps extends Omit<InputProps, 'secureTextEntry' | 'rightElement'> {
     hideIcon?: React__default.ReactNode;
     showIcon?: React__default.ReactNode;
+}
+
+// @public
+export type PathCommand = {
+    type: 'M' | 'L';
+    x: number;
+    y: number;
+} | {
+    type: 'C';
+    x1: number;
+    y1: number;
+    x2: number;
+    y2: number;
+    x: number;
+    y: number;
+} | {
+    type: 'Q';
+    x1: number;
+    y1: number;
+    x: number;
+    y: number;
+} | {
+    type: 'A';
+    rx: number;
+    ry: number;
+    rotation: number;
+    largeArc: boolean;
+    sweep: boolean;
+    x: number;
+    y: number;
+} | {
+    type: 'Z';
+};
+
+// @public
+export function pathLength(path: string | PathModel): number;
+
+// @public
+export interface PathModel {
+    readonly d: string;
+    readonly length: number;
+    readonly ops: readonly PathOp[];
+}
+
+// @public
+export function pathModel(d: string): PathModel;
+
+// @public
+export function pathMorph(from: string, to: string): (t: number) => string;
+
+// @public
+export type PathOp = {
+    type: 'M';
+    point: PathPoint;
+} | {
+    type: 'segment';
+    segment: readonly PathPoint[];
+    length: number;
+    closes: boolean;
+};
+
+// @public
+export interface PathPoint {
+    x: number;
+    y: number;
 }
 
 // @public
@@ -5949,6 +6032,9 @@ export interface PlanWorkout {
 
 // @public
 export function pluralize(count: number, one: string, many: string): string;
+
+// @public
+export function pointAtLength(path: string | PathModel, at: number): PathPoint;
 
 // @public
 export function Popover(input: PopoverProps): react_jsx_runtime.JSX.Element;
@@ -8651,6 +8737,9 @@ export interface TabsProps extends ViewProps, ControlledProps<number> {
 
 // @public (undocumented)
 export type TabsVariant = 'line' | 'enclosed' | 'soft-rounded';
+
+// @public
+export function tangentAtLength(path: string | PathModel, at: number): PathPoint;
 
 // @public
 export function TargetIcon(props: IconProps): react_jsx_runtime.JSX.Element;
