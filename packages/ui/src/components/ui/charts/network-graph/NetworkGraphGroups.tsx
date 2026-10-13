@@ -5,19 +5,13 @@ import { View, type ViewProps } from 'react-native'
 import { resolveColor } from '../../../../theme/resolve-color'
 import { Typography } from '../../typography'
 import { LAYOUT_DEFAULTS } from './layouts/layout-geometry'
+import type { LabelBox } from './network-graph-labels'
 import { LAYER_STYLE } from './NetworkGraphPlot'
 import type { GraphGroupRegion } from './types'
 
 const GROUP_FILL = 'surface-elevated'
 const GROUP_STROKE = 'hairline-default'
 const GROUP_DASH = '4 4'
-/** Height of a group label's line box. */
-const LABEL_HEIGHT = 16
-/**
- * A ring's label sits centred just inside the ring's bottom, where the outermost ring still has
- * room (the frame pads only 24 px past it) and a node at six o'clock ends 8 px short of the line.
- */
-const RING_LABEL_GAP = 8
 /** A label is centred on its circle inside a band at least this wide, so a small circle keeps a long label. */
 const LABEL_MIN_BAND = 240
 
@@ -43,26 +37,53 @@ function GroupCircle({ group }: { group: GraphGroupRegion }) {
   )
 }
 
-/** A region's label sits centred in the band above its circle; a ring's sits centred just inside the ring's bottom. */
-function GroupLabel({ group }: { group: GraphGroupRegion }) {
+/** A region's label sits centred in the band above its circle. */
+function RegionLabel({ group }: { group: GraphGroupRegion }) {
   const band = Math.max(group.radius * 2, LABEL_MIN_BAND)
-  const vertical =
-    group.variant === 'region'
-      ? {
-          top: group.cy - group.radius - LAYOUT_DEFAULTS.REGION_LABEL_BAND,
-          height: LAYOUT_DEFAULTS.REGION_LABEL_BAND,
-          justifyContent: 'flex-end' as const,
-        }
-      : { top: group.cy + group.radius - RING_LABEL_GAP - LABEL_HEIGHT, height: LABEL_HEIGHT }
+  return (
+    <GroupLabelText
+      id={group.id}
+      label={group.label}
+      style={{
+        left: group.cx - band / 2,
+        width: band,
+        top: group.cy - group.radius - LAYOUT_DEFAULTS.REGION_LABEL_BAND,
+        height: LAYOUT_DEFAULTS.REGION_LABEL_BAND,
+        justifyContent: 'flex-end',
+      }}
+    />
+  )
+}
+
+/** A ring's label fills the box `ringLabelBoxes` chose, clear of every node. */
+function RingLabel({ group, box }: { group: GraphGroupRegion; box: LabelBox }) {
+  return (
+    <GroupLabelText
+      id={group.id}
+      label={group.label}
+      style={{ left: box.x, top: box.y, width: box.width, height: box.height }}
+    />
+  )
+}
+
+function GroupLabelText({
+  id,
+  label,
+  style,
+}: {
+  id: string
+  label: string
+  style: ViewProps['style']
+}) {
   return (
     <View
       className="pointer-events-none absolute items-center"
-      style={{ left: group.cx - band / 2, width: band, ...vertical }}
-      testID={`network-graph-group-${group.id}`}
+      style={style}
+      testID={`network-graph-group-${id}`}
       {...hidden}
     >
       <Typography variant="caption" color="secondary" numberOfLines={1}>
-        {group.label}
+        {label}
       </Typography>
     </View>
   )
@@ -70,12 +91,14 @@ function GroupLabel({ group }: { group: GraphGroupRegion }) {
 
 export interface NetworkGraphGroupsProps {
   groups: readonly GraphGroupRegion[]
+  /** Ring label boxes by group id, from `ringLabelBoxes`. */
+  ringLabels: ReadonlyMap<string, LabelBox>
   width: number
   height: number
 }
 
 /** One circle and one label per group with a radius; a radius of 0 (an ego focus) paints nothing. */
-export function NetworkGraphGroups({ groups, width, height }: NetworkGraphGroupsProps) {
+export function NetworkGraphGroups({ groups, ringLabels, width, height }: NetworkGraphGroupsProps) {
   const painted = groups.filter((group) => group.radius > 0)
   if (painted.length === 0) return null
   return (
@@ -92,9 +115,11 @@ export function NetworkGraphGroups({ groups, width, height }: NetworkGraphGroups
           <GroupCircle key={group.id} group={group} />
         ))}
       </svg>
-      {painted.map((group) => (
-        <GroupLabel key={group.id} group={group} />
-      ))}
+      {painted.map((group) => {
+        const box = ringLabels.get(group.id)
+        if (group.variant === 'region') return <RegionLabel key={group.id} group={group} />
+        return box ? <RingLabel key={group.id} group={group} box={box} /> : null
+      })}
     </>
   )
 }

@@ -2,7 +2,12 @@
 import { useCallback, useId, useMemo, useRef } from 'react'
 import { ScrollView, type ViewProps } from 'react-native'
 import { graphItems, kindLabel, labelsById, type GraphItems } from './network-graph-items-model'
-import { groupLabelsByNode, pinnedNodeIds, placeLabels } from './network-graph-labels'
+import {
+  groupLabelsByNode,
+  pinnedNodeIds,
+  placeLabels,
+  ringLabelBoxes,
+} from './network-graph-labels'
 import {
   edgeGeometries,
   emphasisFor,
@@ -137,6 +142,7 @@ export function NetworkGraphCanvas({ graph, model, summary }: NetworkGraphCanvas
   const { active, selection } = state
   const emphasis = useMemo(() => emphasisFor(model.index, active), [model, active])
   const labels = useVisibleLabels(model, selection, active)
+  const ringLabels = useMemo(() => ringLabelBoxes(model), [model])
   const scrollRef = useRef<ScrollView>(null)
   const activeDomId = active
     ? (active.type === 'node' ? items.nodeDomIds : items.edgeDomIds).get(active.id)
@@ -169,7 +175,12 @@ export function NetworkGraphCanvas({ graph, model, summary }: NetworkGraphCanvas
       testID="network-graph-root"
       {...rootProps}
     >
-      <NetworkGraphGroups groups={model.groups} width={model.width} height={model.height} />
+      <NetworkGraphGroups
+        groups={model.groups}
+        ringLabels={ringLabels}
+        width={model.width}
+        height={model.height}
+      />
       <NetworkGraphPlot
         model={model}
         geometries={geometries}

@@ -17,7 +17,8 @@ import { clusteredLayout } from './layouts/clustered-layout-model'
 import { egoLayout } from './layouts/ego-layout-model'
 import { forceLayout } from './layouts/force-layout-model'
 import { suppliedLayout } from './layouts/supplied-layout-model'
-import { buildGraphModel } from './network-graph-model'
+import { labelBox, RING_LABEL_CLEARANCE } from './network-graph-labels'
+import { buildGraphModel, GRAPH_NODE_RADIUS } from './network-graph-model'
 import { ARROW_LENGTH } from './network-graph-plot-model'
 import { NetworkGraph } from './NetworkGraph'
 import { DIM_OPACITY } from './NetworkGraphPlot'
@@ -717,6 +718,38 @@ describe('NetworkGraph free-form layouts', () => {
       'true'
     )
   })
+
+  it.each([1, 2, 3])(
+    'ego on Grouped (40) with %i hops draws no ring label over a node mark or node label',
+    (hops) => {
+      const model = buildGraphModel(grouped.nodes, grouped.edges, ego(hops), {
+        width: 720,
+        height: 420,
+      })
+      const reach = GRAPH_NODE_RADIUS + RING_LABEL_CLEARANCE
+      const nodes = model.order.flatMap((id) => {
+        const { x, y } = model.positions[id] as GraphPoint
+        const mark = { x: x - reach, y: y - reach, width: reach * 2, height: reach * 2 }
+        return [mark, labelBox(model, id) ?? mark]
+      })
+      renderGraph({ layout: ego(hops) }, grouped)
+      const labels = screen.getAllByTestId(/^network-graph-group-hop-/)
+      expect(labels).toHaveLength(hops)
+      for (const label of labels) {
+        const px = (side: 'left' | 'top' | 'width' | 'height') => parseFloat(label.style[side])
+        const box = { x: px('left'), y: px('top'), width: px('width'), height: px('height') }
+        expect(Object.values(box).every(Number.isFinite)).toBe(true)
+        const hit = nodes.filter(
+          (n) =>
+            box.x < n.x + n.width &&
+            n.x < box.x + box.width &&
+            box.y < n.y + n.height &&
+            n.y < box.y + box.height
+        )
+        expect({ label: label.textContent, hit }).toEqual({ label: label.textContent, hit: [] })
+      }
+    }
+  )
 
   it('ego with an unknown or null focus renders emptyState', () => {
     const { update } = renderGraph(
