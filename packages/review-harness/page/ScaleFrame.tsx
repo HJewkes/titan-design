@@ -7,6 +7,7 @@ import {
   sameOriginDocument,
   useFitScale,
   useFrameKeys,
+  useNearViewport,
   type PinInput,
 } from './Frame.tsx'
 import {
@@ -122,6 +123,7 @@ export function ScaleFrame({ variant, annotate, pins, onPin, liveArgs }: ScaleFr
   const [view, setView] = useState<ScaleView>('fit')
   const [measured, setMeasured] = useState<Record<string, number | null>>({})
   const { ref, scale: fit } = useFitScale(frame.width)
+  const { ref: lazyRef, near } = useNearViewport()
   const k = viewScale(view, fit)
   const columns = scaleColumns(variant.scale)
   const onOverlayClick = (e: MouseEvent<HTMLDivElement>) =>
@@ -146,25 +148,33 @@ export function ScaleFrame({ variant, annotate, pins, onPin, liveArgs }: ScaleFr
             </li>
           )
         })}
+        <li className="scale-legend-ladder">
+          ladder: {ladder.map((r) => `${r.label} ${sizeLabel(r.px, frame.height)}`).join('; ')}
+        </li>
       </ol>
       <div className={`scale-viewport ${view}`}>
-        <div className="frame-box" style={{ width: frame.width * k, height: frame.height * k }}>
+        <div
+          className="frame-box"
+          ref={lazyRef}
+          style={{ width: frame.width * k, height: frame.height * k }}
+        >
           <div
             className="scale-canvas"
             style={{ width: frame.width, height: frame.height, transform: `scale(${k})` }}
           >
             <Ladder rungs={ladder} width={columns.ladder} frameHeight={frame.height} />
-            {candidates.map((c) => (
-              <ScaleCell
-                key={String(c)}
-                variant={variant}
-                candidate={c}
-                width={columns.cell}
-                height={frame.height}
-                liveArgs={liveArgs}
-                onMeasure={(px) => setMeasured((m) => ({ ...m, [String(c)]: px }))}
-              />
-            ))}
+            {near &&
+              candidates.map((c) => (
+                <ScaleCell
+                  key={String(c)}
+                  variant={variant}
+                  candidate={c}
+                  width={columns.cell}
+                  height={frame.height}
+                  liveArgs={liveArgs}
+                  onMeasure={(px) => setMeasured((m) => ({ ...m, [String(c)]: px }))}
+                />
+              ))}
           </div>
           <PinOverlay
             variantKey={variant.key}

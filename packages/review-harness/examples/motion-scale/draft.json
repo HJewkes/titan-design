@@ -1,0 +1,66 @@
+{
+  "schema": "titan-review/round@2",
+  "unit": "example-motion-scale",
+  "round": 1,
+  "storybookUrl": "http://127.0.0.1:6200",
+  "context": "An example of the two review aids for video components: a frame that **plays**, with a scrubber, and a size question asked inside one **1920x1080** frame beside a reference ladder.",
+  "widths": [1920],
+  "variants": [
+    {
+      "key": "fill",
+      "storyId": "components-molecules-progress--default",
+      "label": "Progress bar filling over 3 s",
+      "args": { "size": "lg" },
+      "motion": { "mechanism": "arg", "arg": "value", "from": 0, "to": 100, "durationMs": 3000 }
+    },
+    {
+      "key": "headline",
+      "storyId": "foundations-typography--default",
+      "label": "Headline at three sizes, in one 1080p frame",
+      "args": { "children": "1248 kg lifted" },
+      "scale": { "arg": "variant", "candidates": ["h3", "h2", "h1"] }
+    }
+  ],
+  "questions": [
+    {
+      "id": "fill-pace",
+      "kind": "pick-one",
+      "prompt": "Does the fill read at this pace?",
+      "options": ["The pace reads", "Too fast", "Too slow"],
+      "signsOff": "the fill pace",
+      "frames": ["fill"],
+      "required": true
+    },
+    {
+      "id": "headline-size",
+      "kind": "pick-one",
+      "prompt": "Which headline size reads on a 1080p video?",
+      "options": ["h3", "h2", "h1"],
+      "signsOff": "the headline size",
+      "frames": ["headline"],
+      "required": true
+    }
+  ],
+  "sections": [
+    {
+      "id": "fill",
+      "title": "How fast the bar fills",
+      "deciding": "Whether the fill's pace reads on video.",
+      "changed": "The bar fills from 0 to 100 over 3 s; play, pause and scrub it.",
+      "context": "The bar's colour and size are not under review.",
+      "kind": "STATES",
+      "questionIds": ["fill-pace"],
+      "variantKeys": ["fill"]
+    },
+    {
+      "id": "size",
+      "title": "How large the headline is",
+      "deciding": "Which headline size the video uses.",
+      "changed": "Three candidate sizes, side by side in one 1920x1080 frame.",
+      "context": "The ladder on the left is a fixed reference, not a candidate. Use 1:1 to see real pixels.",
+      "kind": "STATES",
+      "questionIds": ["headline-size"],
+      "variantKeys": ["headline"]
+    }
+  ]
+}

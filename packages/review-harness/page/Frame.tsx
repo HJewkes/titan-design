@@ -49,7 +49,7 @@ export function useFitScale(width: number) {
 }
 
 /** Mount the iframe only once it nears the viewport; ten live stories are heavy. */
-function useNearViewport() {
+export function useNearViewport() {
   const ref = useRef<HTMLDivElement>(null)
   const [near, setNear] = useState(false)
   useEffect(() => {

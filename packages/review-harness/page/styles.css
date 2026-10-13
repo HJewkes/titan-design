@@ -301,6 +301,10 @@ body:has(.contrast-override) .variant-head {
   list-style: none;
 }
 
+.scale-legend-ladder {
+  color: var(--color-text-secondary);
+}
+
 .scale-viewport.actual {
   overflow: auto;
   max-height: 90vh;
