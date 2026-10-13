@@ -4,6 +4,8 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { motionCSSVars } from '../../../theme/tokens/motion-vars'
+import { motion } from '../../../theme/tokens/semantic'
+import { spring, springSettleS, type SpringOptions } from './spring'
 import { MOTION } from './tokens'
 
 const require = createRequire(import.meta.url)
@@ -35,6 +37,7 @@ const curves = [
   ['out', '--ease-out', 'out'],
   ['inOut', '--ease-in-out', 'in-out'],
   ['spring', '--ease-spring', 'spring'],
+  ['in', '--ease-in', 'in'],
 ] as const
 
 const durations = [
@@ -60,6 +63,81 @@ describe('MOTION tokens', () => {
   it.each(durations)('duration.%s is %s in seconds', (name, variable) => {
     expect(`${Math.round(MOTION.duration[name] * 1000)}ms`).toBe(motionCSSVars[variable])
   })
+})
+
+const springPresets = Object.keys(motion.spring) as (keyof typeof motion.spring)[]
+
+/** The largest value the spring reaches, sampled every millisecond until it has settled. */
+function springPeak(options: SpringOptions): number {
+  const settleS = springSettleS(options)
+  let peak = -Infinity
+  for (let t = 0; t <= settleS; t += 1e-3) peak = Math.max(peak, spring(t, options))
+  return peak
+}
+
+describe('MOTION video tokens', () => {
+  it.each(['emphasis', 'enter', 'hero', 'count', 'exit', 'staggerEach', 'staggerMax'] as const)(
+    'video.%s is the semantic milliseconds in seconds',
+    (name) => {
+      expect(MOTION.video[name] * 1000).toBe(motion.video[name])
+    }
+  )
+
+  it('holds the owner durations 0.5, 1.0 and 1.5 s', () => {
+    expect([MOTION.video.emphasis, MOTION.video.enter, MOTION.video.hero]).toEqual([0.5, 1, 1.5])
+  })
+
+  it('exits in 0.85 of the entrance', () => {
+    expect(MOTION.video.exit).toBeCloseTo(MOTION.video.enter * MOTION.video.exitScale, 12)
+    expect(MOTION.video.exitScale).toBe(0.85)
+  })
+
+  it('keeps rise in px and scaleFrom as a factor', () => {
+    expect([MOTION.video.rise, MOTION.video.scaleFrom]).toEqual([motion.video.rise, motion.video.scaleFrom])
+  })
+
+  it('staggers 60 ms per item while the cascade fits 0.5 s', () => {
+    expect(MOTION.staggerEachS(5)).toBe(0.06)
+    expect(MOTION.staggerEachS(1)).toBe(0.06)
+  })
+
+  it('shrinks the stagger of a long cascade so it totals 0.5 s', () => {
+    expect(MOTION.staggerEachS(21) * 20).toBeCloseTo(0.5, 12)
+  })
+
+  it('dims context to 35% opacity, fully grey', () => {
+    expect(MOTION.dim.context).toEqual({ opacity: 0.35, saturation: 0 })
+  })
+})
+
+describe('MOTION spring presets', () => {
+  it.each(springPresets)('%s settles within 3 s and stays settled', (name) => {
+    const options = MOTION.spring[name]
+    const settleS = springSettleS(options)
+    expect(settleS).toBeGreaterThan(0)
+    expect(settleS).toBeLessThan(3)
+    for (let t = settleS; t <= settleS + 1; t += 0.01) {
+      expect(Math.abs(spring(t, options) - 1)).toBeLessThanOrEqual(1e-3 + 1e-12)
+    }
+  })
+
+  it.each(springPresets)('%s does not overshoot without allowOvershoot', (name) => {
+    expect(springPeak(MOTION.spring[name])).toBeLessThanOrEqual(1)
+    expect(springPeak(MOTION.springPreset(name))).toBeLessThanOrEqual(1)
+  })
+
+  it('bouncy overshoots only with allowOvershoot, and settles', () => {
+    const payoff = MOTION.springPreset('bouncy', { allowOvershoot: true })
+    expect(springPeak(payoff)).toBeGreaterThan(1.1)
+    expect(springSettleS(payoff)).toBeLessThan(3)
+  })
+
+  it.each(springPresets.filter((name) => name !== 'bouncy'))(
+    '%s keeps its own shape when allowOvershoot is set',
+    (name) => {
+      expect(MOTION.springPreset(name, { allowOvershoot: true })).toEqual(MOTION.spring[name])
+    }
+  )
 })
 
 describe('motion CSS variables', () => {

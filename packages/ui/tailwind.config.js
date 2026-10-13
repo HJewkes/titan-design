@@ -428,6 +428,7 @@ module.exports = {
         out: 'cubic-bezier(0.22, 1, 0.36, 1)',
         'in-out': 'cubic-bezier(0.65, 0, 0.35, 1)',
         spring: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+        in: 'cubic-bezier(0.55, 0, 1, 0.45)',
       },
       transitionDuration: {
         fast: '150ms',
