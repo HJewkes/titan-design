@@ -1,5 +1,6 @@
 // Core UI components
 export * from './alert'
+export * from './animated-number'
 export * from './button'
 export * from './input'
 export * from './card'
