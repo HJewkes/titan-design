@@ -41,3 +41,36 @@ export function cubicBezier(x1: number, y1: number, x2: number, y2: number): Eas
     return coord(solveCurveParameter(p, x1, x2), y1, y2)
   }
 }
+
+/** Returns `f` unchanged: an ease-in curve, named so call sites read like their ease-out pair. */
+export const easeIn = (f: Easing): Easing => f
+
+/** `f` reflected through the centre: what `f` does at the start happens at the end. */
+export const easeOut =
+  (f: Easing): Easing =>
+  (p) =>
+    1 - f(1 - p)
+
+/** `f` over the first half and `easeOut(f)` over the second, meeting at (0.5, 0.5). */
+export const easeInOut =
+  (f: Easing): Easing =>
+  (p) =>
+    p < 0.5 ? f(2 * p) / 2 : 1 - f(2 * (1 - p)) / 2
+
+/** The power curve `p ** n`: `poly(2)` is quadratic, `poly(3)` cubic. */
+export const poly =
+  (n: number): Easing =>
+  (p) =>
+    p ** n
+
+/** Pulls back below 0 before moving to 1; `s` sets the depth (the default dips about 10 %). */
+export const back =
+  (s = 1.70158): Easing =>
+  (p) =>
+    p * p * (s * (p - 1) + p)
+
+/** Hermite smoothstep: zero slope at both ends. */
+export const smoothstep: Easing = (p) => p * p * (3 - 2 * p)
+
+/** Perlin's smootherstep: zero slope and zero curvature at both ends. */
+export const smootherstep: Easing = (p) => p ** 3 * (p * (6 * p - 15) + 10)

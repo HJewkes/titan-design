@@ -536,6 +536,9 @@ export type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 export function AwardIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
+export const back: (s?: number) => Easing;
+
+// @public
 export function Badge(input: BadgeProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -1501,6 +1504,17 @@ export interface ConversationIdentityProps {
 }
 
 // @public
+export interface CropEdges {
+    bottom?: number;
+    left?: number;
+    right?: number;
+    top?: number;
+}
+
+// @public
+export function cropInset(input?: CropEdges): string;
+
+// @public
 export interface CssPropertyEntry {
     cssVariable?: string | null;
     property: string;
@@ -2069,6 +2083,15 @@ export interface E1RMBand {
 export type E1RMMethod = 'profile' | 'reps' | 'hybrid';
 
 // @public
+export const easeIn: (f: Easing) => Easing;
+
+// @public
+export const easeInOut: (f: Easing) => Easing;
+
+// @public
+export const easeOut: (f: Easing) => Easing;
+
+// @public
 export type Easing = (p: number) => number;
 
 // @public (undocumented)
@@ -2107,6 +2130,27 @@ export interface EntityRef {
     label: string;
     status?: RefStatus;
 }
+
+// @public
+export interface Envelope {
+    holdS: number;
+    holdT: number;
+    inP: number;
+    outP: number;
+    phase: EnvelopePhase;
+}
+
+// @public
+export function envelope(t: number, durationS: number, input?: EnvelopeOptions): Envelope;
+
+// @public
+export interface EnvelopeOptions {
+    inS?: number;
+    outS?: number;
+}
+
+// @public
+export type EnvelopePhase = 'before' | 'in' | 'hold' | 'out' | 'after';
 
 // @public
 export function EqualIcon(props: IconProps): react_jsx_runtime.JSX.Element;
@@ -4410,6 +4454,9 @@ export interface IntensityBarProps extends ViewProps {
 export function interpolate(t: number, input: readonly [number, number], input2: readonly [number, number], input3?: InterpolateOptions): number;
 
 // @public
+export function interpolateColor(t: number, input: readonly [number, number], input2: readonly [string, string], options?: InterpolateOptions): string;
+
+// @public
 export interface InterpolateOptions {
     clamp?: boolean;
     ease?: Easing;
@@ -4417,6 +4464,9 @@ export interface InterpolateOptions {
 
 // @public
 export function interpolatePath(t: number, from: string, to: string): string;
+
+// @public
+export function interpolateScale(t: number, input: readonly [number, number], input2: readonly [number, number], options?: InterpolateOptions): number;
 
 // @public
 export function isCssPropertyManifest(candidate: unknown): candidate is CssPropertyManifest;
@@ -4464,9 +4514,12 @@ type Keyframe_2 = readonly [number, number];
 export { Keyframe_2 as Keyframe }
 
 // @public
-export function keyframes(t: number, stops: readonly Keyframe_2[], input?: {
-    ease?: Easing;
-}): number;
+export function keyframes(t: number, stops: readonly Keyframe_2[], input?: KeyframesOptions): number;
+
+// @public
+export interface KeyframesOptions {
+    ease?: Easing | readonly Easing[];
+}
 
 // @public
 export function Label(props: LabelProps): react_jsx_runtime.JSX.Element;
@@ -5637,6 +5690,9 @@ export interface NextTargetCoord extends GeometryPoint {
 }
 
 // @public
+export function noise2D(seed: number | string, x: number, y: number): number;
+
+// @public
 export function normalizeLossThresholds(input?: unknown): VelocityLossThresholds;
 
 // @public
@@ -6035,6 +6091,9 @@ export function pluralize(count: number, one: string, many: string): string;
 
 // @public
 export function pointAtLength(path: string | PathModel, at: number): PathPoint;
+
+// @public
+export const poly: (n: number) => Easing;
 
 // @public
 export function Popover(input: PopoverProps): react_jsx_runtime.JSX.Element;
@@ -6560,6 +6619,12 @@ export interface RafClockOptions {
 
 // @public
 export function raisedLevel(parent: SurfaceLevel, steps: number): SurfaceLevel;
+
+// @public
+export function random(seed: number | string, ...keys: number[]): number;
+
+// @public
+export function randomRange(seed: number | string, keys: readonly number[], input: readonly [number, number]): number;
 
 // @public
 export function ReadinessCheck(input: ReadinessCheckProps): react_jsx_runtime.JSX.Element;
@@ -8045,7 +8110,13 @@ export type SkeletonVariant = 'text' | 'circle' | 'rect' | 'rounded';
 export function slopeLabel(row: MuscleStrengthExerciseRow): string;
 
 // @public
+export const smootherstep: Easing;
+
+// @public
 export function smoothPath(pts: Pt[]): string;
+
+// @public
+export const smoothstep: Easing;
 
 // @public (undocumented)
 export type SortDirection = 'asc' | 'desc' | null;
@@ -8201,6 +8272,12 @@ export function splitPath(path: string): {
 export function spring(t: number, input?: SpringOptions): number;
 
 // @public
+export function springEase(options?: SpringEaseOptions): Easing;
+
+// @public
+export type SpringEaseOptions = Omit<SpringOptions, 'from' | 'to'>;
+
+// @public
 export interface SpringOptions {
     damping?: number;
     from?: number;
@@ -8209,6 +8286,9 @@ export interface SpringOptions {
     to?: number;
     velocity?: number;
 }
+
+// @public
+export function springSettleS(input?: SpringOptions, threshold?: number): number;
 
 // @public (undocumented)
 export function Stack(input: StackProps): react_jsx_runtime.JSX.Element;
@@ -9592,6 +9672,9 @@ export interface UpcomingExercise {
     sets: number;
     workoutName: string;
 }
+
+// @public
+export function useBeatEnvelope(options?: EnvelopeOptions): Envelope;
 
 // @public
 export function useBeatTime(): LocalTime & {
