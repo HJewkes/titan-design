@@ -650,6 +650,29 @@ export type BaseBadgeSize = 'sm' | 'md' | 'lg';
 export type BaseBadgeVariant = 'plain' | 'pr';
 
 // @public
+export function Beat(input: BeatProps): react_jsx_runtime.JSX.Element | null;
+
+// @public
+export const BEAT_MOUNT_MARGIN_S = 0.5;
+
+// @public
+export function BeatFrame(input: BeatFrameProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface BeatFrameProps {
+    children?: ReactNode;
+    className?: string;
+    kind: string;
+}
+
+// @public
+export interface BeatProps {
+    children?: ReactNode;
+    durationS: number;
+    startS: number;
+}
+
+// @public
 export function bestTextColor(hex: string): '#000000' | '#FFFFFF';
 
 // @public
@@ -1247,6 +1270,16 @@ export interface CircularTimerProps {
 export function clampedContextFraction(metrics: AgentMetrics): number | null;
 
 // @public
+export interface Clock {
+    readonly kind: ClockKind;
+    now(): number;
+    subscribe(cb: () => void): () => void;
+}
+
+// @public
+export type ClockKind = 'raf' | 'seek' | 'media';
+
+// @public
 export function cn(...inputs: ClassValue[]): string;
 
 // @public @deprecated
@@ -1454,6 +1487,9 @@ export interface ControlledProps<T> {
 }
 
 // @public
+export type ControlPoints = readonly [number, number, number, number];
+
+// @public
 export function ConversationIdentity(input: ConversationIdentityProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -1482,10 +1518,25 @@ export interface CssPropertyManifest {
 }
 
 // @public
+export function cubicBezier(x1: number, y1: number, x2: number, y2: number): Easing;
+
+// @public
+export type CubicBezierCss<P extends ControlPoints> = `cubic-bezier(${P[0]}, ${P[1]}, ${P[2]}, ${P[3]})`;
+
+// @public
+export function cubicBezierCss<const P extends ControlPoints>(points: P): CubicBezierCss<P>;
+
+// @public
 export function darken(hex: string, amount?: number): string;
 
 // @public (undocumented)
 export const darkThemeCSSVars: {
+    readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
+    readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
+    readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
+    readonly '--duration-fast': "150ms";
+    readonly '--duration-normal': "250ms";
+    readonly '--duration-slow': "400ms";
     readonly '--color-brand-primary-rgb': "255, 121, 0";
     readonly '--color-brand-secondary-rgb': "48, 123, 155";
     readonly '--color-status-success-rgb': "46, 213, 115";
@@ -1498,12 +1549,6 @@ export const darkThemeCSSVars: {
     readonly '--font-family-body': "'Nunito Sans'";
     readonly '--font-family-heading': "'Space Grotesk'";
     readonly '--font-family-mono': "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
-    readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
-    readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
-    readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
-    readonly '--duration-fast': "150ms";
-    readonly '--duration-normal': "250ms";
-    readonly '--duration-slow': "400ms";
     readonly '--color-brand-primary': "#FF7900";
     readonly '--color-brand-primary-light': "#FFA063";
     readonly '--color-brand-primary-dark': "#DA5F00";
@@ -2010,6 +2055,9 @@ export interface E1RMBand {
 
 // @public
 export type E1RMMethod = 'profile' | 'reps' | 'hybrid';
+
+// @public
+export type Easing = (p: number) => number;
 
 // @public (undocumented)
 export const ELEVATION_PLANE: Record<ElevationLevel, SurfaceLevel>;
@@ -2928,6 +2976,12 @@ export function getSemanticColors(mode: ThemeMode): {
 
 // @public (undocumented)
 export function getThemeCSSVars(mode: ThemeMode): {
+    readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
+    readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
+    readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
+    readonly '--duration-fast': "150ms";
+    readonly '--duration-normal': "250ms";
+    readonly '--duration-slow': "400ms";
     readonly '--color-brand-primary-rgb': "255, 121, 0";
     readonly '--color-brand-secondary-rgb': "48, 123, 155";
     readonly '--color-status-success-rgb': "46, 213, 115";
@@ -2940,12 +2994,6 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--font-family-body': "'Nunito Sans'";
     readonly '--font-family-heading': "'Space Grotesk'";
     readonly '--font-family-mono': "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
-    readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
-    readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
-    readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
-    readonly '--duration-fast': "150ms";
-    readonly '--duration-normal': "250ms";
-    readonly '--duration-slow': "400ms";
     readonly '--color-brand-primary': "#FF7900";
     readonly '--color-brand-primary-light': "#FFA063";
     readonly '--color-brand-primary-dark': "#DA5F00";
@@ -3103,6 +3151,12 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-avatar-background': "#72716F";
     readonly '--color-avatar-text': "#FFFFFF";
 } | {
+    readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
+    readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
+    readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
+    readonly '--duration-fast': "150ms";
+    readonly '--duration-normal': "250ms";
+    readonly '--duration-slow': "400ms";
     readonly '--color-brand-primary-rgb': "255, 121, 0";
     readonly '--color-brand-secondary-rgb': "48, 123, 155";
     readonly '--color-status-success-rgb': "46, 213, 115";
@@ -3115,12 +3169,6 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--font-family-body': "'Nunito Sans'";
     readonly '--font-family-heading': "'Space Grotesk'";
     readonly '--font-family-mono': "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
-    readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
-    readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
-    readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
-    readonly '--duration-fast': "150ms";
-    readonly '--duration-normal': "250ms";
-    readonly '--duration-slow': "400ms";
     readonly '--color-brand-primary': "#FF7900";
     readonly '--color-brand-primary-light': "#FFA063";
     readonly '--color-brand-primary-dark': "#DA5F00";
@@ -4422,6 +4470,12 @@ export function lighten(hex: string, amount?: number): string;
 
 // @public
 export const lightThemeCSSVars: {
+    readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
+    readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
+    readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
+    readonly '--duration-fast': "150ms";
+    readonly '--duration-normal': "250ms";
+    readonly '--duration-slow': "400ms";
     readonly '--color-brand-primary-rgb': "255, 121, 0";
     readonly '--color-brand-secondary-rgb': "48, 123, 155";
     readonly '--color-status-success-rgb': "46, 213, 115";
@@ -4434,12 +4488,6 @@ export const lightThemeCSSVars: {
     readonly '--font-family-body': "'Nunito Sans'";
     readonly '--font-family-heading': "'Space Grotesk'";
     readonly '--font-family-mono': "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
-    readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
-    readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
-    readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
-    readonly '--duration-fast': "150ms";
-    readonly '--duration-normal': "250ms";
-    readonly '--duration-slow': "400ms";
     readonly '--color-brand-primary': "#FF7900";
     readonly '--color-brand-primary-light': "#FFA063";
     readonly '--color-brand-primary-dark': "#DA5F00";
@@ -4597,6 +4645,9 @@ export const lightThemeCSSVars: {
     readonly '--color-avatar-background': "#72716F";
     readonly '--color-avatar-text': "#FFFFFF";
 };
+
+// @public
+export const linear: Easing;
 
 // @public
 export function linearGradient(from: ColorToken, to: ColorToken, angle?: number, mode?: ThemeMode): GradientStyle;
@@ -4831,6 +4882,16 @@ export type LiveStripTargetSource = 'plan' | 'last-time';
 export type LiveStripZone = 'grinding' | 'maximalStrength' | 'strengthSpeed' | 'power' | 'speed';
 
 // @public
+export interface LocalTime {
+    phase: Phase;
+    progress: number;
+    t: number;
+}
+
+// @public
+export function localTime(raw: number, durationS: number): LocalTime;
+
+// @public
 export interface ManifestValidationResult {
     // (undocumented)
     errors: string[];
@@ -4851,6 +4912,9 @@ export interface MarkdownProseProps {
     // (undocumented)
     testID?: string;
 }
+
+// @public
+export function mediaClock(media: HTMLMediaElement): Clock;
 
 // @public
 export function Menu(input: MenuProps): react_jsx_runtime.JSX.Element;
@@ -5277,6 +5341,46 @@ export interface ModalTitleProps {
 }
 
 // @public
+export const MOTION: {
+    readonly duration: Record<"normal" | "fast" | "slow", number>;
+    readonly ease: Record<"out" | "inOut" | "spring", Easing>;
+};
+
+// @public
+export const motion: {
+    readonly duration: {
+        readonly fast: 150;
+        readonly normal: 250;
+        readonly slow: 400;
+    };
+    readonly ease: {
+        readonly out: readonly [0.22, 1, 0.36, 1];
+        readonly inOut: readonly [0.65, 0, 0.35, 1];
+        readonly spring: readonly [0.34, 1.56, 0.64, 1];
+    };
+};
+
+// @public
+export const motionCSSVars: Readonly<{
+    readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
+    readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
+    readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
+    readonly '--duration-fast': "150ms";
+    readonly '--duration-normal': "250ms";
+    readonly '--duration-slow': "400ms";
+}>;
+
+// @public
+export function MotionProvider(input: MotionProviderProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface MotionProviderProps {
+    children?: ReactNode;
+    clock: Clock;
+    durationS?: number;
+}
+
+// @public
 export type MovementCategory = 'push' | 'pull' | 'legs' | 'core';
 
 // @public
@@ -5663,6 +5767,9 @@ export interface PasswordInputProps extends Omit<InputProps, 'secureTextEntry' |
 
 // @public
 export function PersonStandingIcon(props: IconProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export type Phase = 'before' | 'during' | 'after';
 
 // @public
 export const PHASE_AXIS_COLOR: Record<SamplePhase, string>;
@@ -6338,6 +6445,16 @@ export interface RadioProps extends ViewProps {
 export type RadioSize = 'sm' | 'md' | 'lg';
 
 // @public
+export function rafClock(input?: RafClockOptions): Clock;
+
+// @public
+export interface RafClockOptions {
+    endS?: number;
+    reducedMotion?: boolean;
+    startS?: number;
+}
+
+// @public
 export function raisedLevel(parent: SurfaceLevel, steps: number): SurfaceLevel;
 
 // @public
@@ -6371,6 +6488,9 @@ export const RED_LIGHT: "#F77175";
 
 // @public (undocumented)
 export const RED_MID: "#D14343";
+
+// @public
+export const REDUCED_MOTION_END_S = 10000;
 
 // @public
 export const REF_KIND_META: {
@@ -6726,6 +6846,15 @@ export interface SectionProps extends ViewProps {
     // (undocumented)
     className?: string;
 }
+
+// @public
+export interface SeekClock extends Clock {
+    readonly kind: 'seek';
+    seek(t: number): void;
+}
+
+// @public
+export function seekClock(initialS?: number): SeekClock;
 
 // @public
 export function SegmentedBar(input: SegmentedBarProps): react_jsx_runtime.JSX.Element;
@@ -9313,6 +9442,11 @@ export interface UpcomingExercise {
 }
 
 // @public
+export function useBeatTime(): LocalTime & {
+    durationS: number;
+};
+
+// @public
 export function useCarouselState(input: UseCarouselStateOptions): CarouselState;
 
 // @public (undocumented)
@@ -9356,6 +9490,9 @@ export function useHoverState(): {
 };
 
 // @public
+export function useLocalTime(startS: number, durationS: number): LocalTime;
+
+// @public
 export function useMeasuredWidth(override?: number): UseMeasuredWidthResult;
 
 // @public (undocumented)
@@ -9366,7 +9503,13 @@ export interface UseMeasuredWidthResult {
 }
 
 // @public
+export function useMotionTime(endS?: number): number;
+
+// @public
 export function useOnSurfaceColor(role?: OnSurfaceRole): string;
+
+// @public
+export function useRawLocalTime(startS?: number, untilS?: number): number;
 
 // @public
 export function useResolvedMilestone(props: GoalMilestoneSummaryProps): ResolvedTile;
@@ -9488,6 +9631,9 @@ export function useToast(): ToastContextType;
 
 // @public
 export function useToolbarButton(): ToolbarButtonContextType;
+
+// @public
+export function useWaitUntil(promise: Promise<unknown> | undefined): void;
 
 // @public
 export function validateCssPropertyManifest(candidate: unknown): ManifestValidationResult;
