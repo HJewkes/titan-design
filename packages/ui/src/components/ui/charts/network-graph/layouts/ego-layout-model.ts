@@ -74,6 +74,23 @@ function ringRadii(rings: readonly (readonly string[])[]): number[] {
   return radii
 }
 
+/**
+ * The outer radius that fits the viewport once `frameLayout` adds padding and label room; `Infinity`
+ * when the viewport is unsized, so the rings keep their natural radii.
+ */
+function fittingRadius({ width, height }: { width: number; height: number }): number {
+  const { PADDING, LABEL_ROOM } = LAYOUT_DEFAULTS
+  const room = Math.min(width - PADDING * 2 - LABEL_ROOM, height - PADDING * 2) / 2
+  return Number.isFinite(room) && room > 0 ? room : Number.POSITIVE_INFINITY
+}
+
+/** Shrinks every radius by one factor so the outer ring fits the viewport; never grows them. */
+function fitRadii(radii: readonly number[], viewport: { width: number; height: number }): number[] {
+  const outer = radii[radii.length - 1] ?? 0
+  const scale = outer > 0 ? Math.min(1, fittingRadius(viewport) / outer) : 1
+  return radii.map((radius) => radius * scale)
+}
+
 /** Built with `Object.fromEntries`, so an id such as `__proto__` becomes an own key. */
 function ringPositions(
   rings: readonly (readonly string[])[],
@@ -108,7 +125,7 @@ function computeEgo(
     focusId !== null && ids.has(focusId)
       ? egoRings(focusId, adjacency(ids, edges, direction), hops)
       : []
-  const radii = ringRadii(rings)
+  const radii = fitRadii(ringRadii(rings), { width, height })
   const outer = radii[radii.length - 1] ?? 0
   const framed = frameLayout(ringPositions(rings, radii), { width, height }, ringBounds(outer))
   const groups: GraphGroupRegion[] = rings.map((ring, hop) => ({
@@ -143,7 +160,8 @@ function sanitize(options: EgoLayoutOptions | undefined): Required<EgoLayoutOpti
 /**
  * An ego layout: the focus at the centre and one ring per hop out to `hops`, so distance means hops
  * from one node. Nodes further away are left unplaced and counted; a `null` or unknown `focusId`
- * places nothing, so the empty state renders. Asks for arc edges and decluttered labels, and
+ * places nothing, so the empty state renders. When the rings would overflow a sized viewport, every
+ * radius shrinks by one factor so the outer ring fits. Asks for arc edges and decluttered labels, and
  * returns one `ring` group per hop.
  */
 export function egoLayout(options: EgoLayoutOptions): GraphLayout {

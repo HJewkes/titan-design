@@ -21,10 +21,11 @@ const run = (
 }
 const fixtureRun = (
   name: keyof typeof networkGraphFixtures,
-  options: Partial<EgoLayoutOptions>
+  options: Partial<EgoLayoutOptions>,
+  size = viewport
 ) => {
   const fixture = networkGraphFixtures[name]
-  return run(fixture.nodes, fixture.edges, { focusId: fixture.focusId ?? null, ...options })
+  return run(fixture.nodes, fixture.edges, { focusId: fixture.focusId ?? null, ...options }, size)
 }
 const placed = (result: GraphLayoutResult) => Object.keys(result.positions).sort()
 const ringOf = (result: GraphLayoutResult, id: string) =>
@@ -150,8 +151,34 @@ describe('egoLayout geometry', () => {
     expect(radii.every((r, i) => i === 0 || r > (radii[i - 1] as number))).toBe(true)
   })
 
-  it('Hub and spokes: neighbours on a ring are at least MIN_ARC apart along the ring', () => {
-    const result = fixtureRun('Hub and spokes', {})
+  it('Grouped (40) in the story viewport: every 2-hop node lies inside the viewport', () => {
+    const story = { width: 720, height: 420 }
+    const result = fixtureRun('Grouped (40)', {}, story)
+    const outer = result.groups?.[2]
+    expect(outer?.nodeIds.length).toBeGreaterThan(0)
+    for (const id of outer?.nodeIds ?? []) {
+      const p = result.positions[id] ?? { x: Number.NaN, y: Number.NaN }
+      expect([p.x >= 0 && p.x <= story.width, p.y >= 0 && p.y <= story.height]).toEqual([
+        true,
+        true,
+      ])
+    }
+    expect([result.width, result.height]).toEqual([story.width, story.height])
+  })
+
+  it('a sized viewport shrinks every ring by one factor; an unsized one keeps the natural radii', () => {
+    const radii = (size: typeof viewport) =>
+      (fixtureRun('Grouped (40)', {}, size).groups ?? []).map((ring) => ring.radius)
+    const natural = radii({ width: 0, height: 0 })
+    const fitted = radii({ width: 720, height: 420 })
+    expect(natural.slice(1)).toEqual([LAYOUT_DEFAULTS.RING_GAP, LAYOUT_DEFAULTS.RING_GAP * 2])
+    const scale = (fitted[2] as number) / (natural[2] as number)
+    expect(scale).toBeLessThan(1)
+    expect(fitted[1]).toBeCloseTo((natural[1] as number) * scale, 1)
+  })
+
+  it('Hub and spokes: neighbours on a ring are at least MIN_ARC apart along the ring when the viewport has room', () => {
+    const result = fixtureRun('Hub and spokes', {}, { width: 0, height: 0 })
     for (const ring of (result.groups ?? []).slice(1)) {
       const arc = (2 * Math.PI * ring.radius) / ring.nodeIds.length
       expect(arc).toBeGreaterThanOrEqual(LAYOUT_DEFAULTS.MIN_ARC - 0.01)
