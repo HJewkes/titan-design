@@ -7,7 +7,9 @@ import { easeOut, poly } from '../motion/easing'
 import type { ProgressColor } from './progressColor'
 import type { ProgressSize } from './Progress'
 
+/** `dots`: the compact indicator. `rail`: state chips joined by connectors that fill with `progress`. */
 export type ProgressStepsVariant = 'dots' | 'rail'
+/** A rail chip's state, announced in its accessibility label. */
 export type ProgressStepState = 'done' | 'active' | 'pending'
 
 export interface ProgressStepsProps extends ViewProps {

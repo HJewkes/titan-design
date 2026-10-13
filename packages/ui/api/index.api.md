@@ -6420,9 +6420,17 @@ export interface ProgressStepsProps extends ViewProps {
     color?: ProgressColor;
     currentStep: number;
     labels?: string[];
+    progress?: number;
     size?: ProgressSize;
     totalSteps: number;
+    variant?: ProgressStepsVariant;
 }
+
+// @public
+export type ProgressStepState = 'done' | 'active' | 'pending';
+
+// @public
+export type ProgressStepsVariant = 'dots' | 'rail';
 
 // @public (undocumented)
 export type ProgressVariant = 'linear' | 'circular';
