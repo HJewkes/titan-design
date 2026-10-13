@@ -7,9 +7,12 @@ import graph from './arch-graph.json'
 
 const PKG_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const REPO_ROOT = path.resolve(PKG_ROOT, '../..')
-const BARRELS = ['ui', 'custom', 'shell'].map((tier) =>
-  path.join(PKG_ROOT, 'src/components', tier, 'index.ts')
-)
+const BARRELS = [
+  ...['ui', 'custom', 'shell'].map((tier) =>
+    path.join(PKG_ROOT, 'src/components', tier, 'index.ts')
+  ),
+  ...['workout', 'motion'].map((entry) => path.join(PKG_ROOT, 'src', `${entry}.ts`)),
+]
 const VALUE_REEXPORT = /^export\s+(?!type\b)[^;]*?\bfrom\s+['"](\.[^'"]*)['"]/gm
 const WHOLE_LIBRARY_SUMMARY = ['consumers', 'extractionTop', 'standardCoverage', 'substitution']
 
@@ -38,7 +41,7 @@ function reexportedComponentFiles(entries: string[]): string[] {
 }
 
 describe('arch-graph.json freshness', () => {
-  it('has a node for every component file the ui, custom and shell barrels export', () => {
+  it('has a node for every component file the ui, custom, shell, workout and motion barrels export', () => {
     const nodes = new Set(graph.components.map((component) => component.file))
     const exported = reexportedComponentFiles(BARRELS)
 
