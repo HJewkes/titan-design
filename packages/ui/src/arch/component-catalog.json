@@ -14692,10 +14692,10 @@
         },
         {
           "default": null,
-          "description": "Size of step indicators",
+          "description": "Size of step indicators.",
           "name": "size",
           "required": false,
-          "type": "ProgressSize"
+          "type": "\"sm\" | \"md\" | \"lg\""
         },
         {
           "default": null,

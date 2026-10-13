@@ -5,7 +5,6 @@ import { usePrefersReducedMotion } from '../../../hooks/usePrefersReducedMotion'
 import { interpolate } from '../motion/interpolate'
 import { easeOut, poly } from '../motion/easing'
 import type { ProgressColor } from './progressColor'
-import type { ProgressSize } from './Progress'
 
 /** `dots`: the compact indicator. `rail`: state chips joined by connectors that fill with `progress`. */
 export type ProgressStepsVariant = 'dots' | 'rail'
@@ -19,8 +18,11 @@ export interface ProgressStepsProps extends ViewProps {
   totalSteps: number
   /** Color of completed steps. Default `primary`; `success` for the rail. */
   color?: ProgressColor
-  /** Size of step indicators */
-  size?: ProgressSize
+  /**
+   * Size of step indicators. `ProgressSize` spelled out: importing it from `./Progress`, which
+   * re-exports this file, is an import cycle.
+   */
+  size?: 'sm' | 'md' | 'lg'
   /** Labels for each step */
   labels?: string[]
   /** `dots` (default) or `rail`: state chips joined by connectors that fill with `progress`. */
@@ -43,7 +45,9 @@ const stepColorStyles: Record<ProgressColor, string> = {
   info: 'bg-status-info',
 }
 
-const stepSizeStyles: Record<ProgressSize, { dot: string; connector: string; chip: string }> = {
+type StepSize = NonNullable<ProgressStepsProps['size']>
+
+const stepSizeStyles: Record<StepSize, { dot: string; connector: string; chip: string }> = {
   sm: { dot: 'w-2 h-2', connector: 'h-0.5', chip: 'w-4 h-4' },
   md: { dot: 'w-3 h-3', connector: 'h-1', chip: 'w-5 h-5' },
   lg: { dot: 'w-4 h-4', connector: 'h-1.5', chip: 'w-6 h-6' },

@@ -6421,7 +6421,7 @@ export interface ProgressStepsProps extends ViewProps {
     currentStep: number;
     labels?: string[];
     progress?: number;
-    size?: ProgressSize;
+    size?: 'sm' | 'md' | 'lg';
     totalSteps: number;
     variant?: ProgressStepsVariant;
 }
