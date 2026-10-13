@@ -80,7 +80,9 @@ export function sequence<T extends { durationS: number }>(
 
 /** A window of time, in seconds. */
 export interface Window {
+  /** Seconds at which the window opens. */
   startS: number
+  /** Seconds at which the window closes. */
   endS: number
 }
 
@@ -139,7 +141,9 @@ export function lagged(n: number, { totalS, lagRatio, ease = linear }: LaggedOpt
 
 /** A composed stretch of time: its length, and each leaf's absolute window in input order. */
 export interface Span {
+  /** Seconds from the span's start to its last end. */
   durationS: number
+  /** Each leaf's window, depth first, measured from the span's start. */
   windows: Window[]
 }
 
