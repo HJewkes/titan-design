@@ -7,6 +7,7 @@ import {
   ViewToggle,
   trueSizeCaption,
   trueSizeClass,
+  trueSizeHeight,
   useFrameView,
 } from './TrueSize.tsx'
 
@@ -27,7 +28,7 @@ function imageUrl(variant: ImageVariant): string {
 
 function boxHeight(props: ImageFrameProps, scale: number) {
   const reference = props.variant.frameReference
-  if (reference) return { height: reference.frame.height * scale }
+  if (reference) return trueSizeHeight(reference, scale)
   return isAuto(props.height)
     ? { maxHeight: props.maxHeight * scale }
     : { height: props.height * scale }

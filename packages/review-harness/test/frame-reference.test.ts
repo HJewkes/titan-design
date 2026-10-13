@@ -123,7 +123,9 @@ describe('the page for true-size frames', () => {
       expect(card(key)).toContain('1920×1080 · 1:1')
       expect(card(key)).toContain('>Fit</button>')
       expect(card(key)).toContain('>1:1</button>')
-      expect(card(key)).toMatch(/class="frame-box (image|clip)-box true-size"/)
+      expect(card(key)).toMatch(
+        /class="frame-box (image|clip)-box true-size" style="width:1920px;height:1080px"/
+      )
       expect(card(key).match(/data-testid="frame-ladder"/g)).toHaveLength(1)
     }
   })

@@ -70,6 +70,14 @@ export function trueSizeClass(base: string, extra: string | false | undefined): 
   return extra ? `${base} ${extra}` : base
 }
 
+/**
+ * A true-size frame's box is exactly the frame at the scale shown. Stated, not left to the media:
+ * a grid item that clips its overflow has no minimum height, so at 1:1 the scroller would crush it.
+ */
+export function trueSizeHeight(reference: FrameReference | undefined, scale: number) {
+  return reference ? { height: reference.frame.height * scale } : {}
+}
+
 /** The `loadedmetadata` check of a clip's real size against its frame reference. */
 export function clipSizeCheck(
   reference: FrameReference | undefined,

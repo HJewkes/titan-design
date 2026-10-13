@@ -8,6 +8,7 @@ import {
   clipSizeCheck,
   trueSizeCaption,
   trueSizeClass,
+  trueSizeHeight,
   useFrameView,
 } from './TrueSize.tsx'
 
@@ -59,7 +60,7 @@ export function ClipFrame({ variant, width, annotate, pins, onPin }: ClipFramePr
       </figcaption>
       <div
         className={trueSizeClass('frame-box clip-box', reference && 'true-size')}
-        style={{ width: width * scale }}
+        style={{ width: width * scale, ...trueSizeHeight(reference, scale) }}
       >
         <video
           src={clipUrl(variant)}
