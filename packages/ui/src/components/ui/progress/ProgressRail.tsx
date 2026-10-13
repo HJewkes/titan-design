@@ -65,7 +65,14 @@ function RailHalf({
   const fill = interpolate(position, [from, from + 0.5], [0, 100])
 
   return (
-    <View className={cn('flex-1 mx-1 rounded-full overflow-hidden bg-hairline-strong', sizeClass)}>
+    <View
+      className={cn(
+        'flex-1 overflow-hidden bg-hairline-strong',
+        // The halves meet flush at the column edge, so a connector reads as one line.
+        half === 'start' ? 'ml-1 rounded-l-full' : 'mr-1 rounded-r-full',
+        sizeClass
+      )}
+    >
       <View
         testID={`progress-steps-segment-${segment}-${half}`}
         className={cn('h-full', fillClass)}
@@ -92,13 +99,13 @@ export function RailStep({ connectorClass, label, isReached, ...part }: RailStep
         {index > 0 ? (
           <RailHalf segment={index - 1} half="end" {...halfProps} />
         ) : (
-          <View className="flex-1 mx-1" />
+          <View className="flex-1 mr-1" />
         )}
         <RailChip {...part} label={label} />
         {index < totalSteps - 1 ? (
           <RailHalf segment={index} half="start" {...halfProps} />
         ) : (
-          <View className="flex-1 mx-1" />
+          <View className="flex-1 ml-1" />
         )}
       </View>
       {label != null && (
