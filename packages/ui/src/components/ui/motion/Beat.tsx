@@ -6,7 +6,7 @@ import { TimeOriginContext, useLocalTime, useRawLocalTime, type LocalTime } from
 /** A beat stays mounted this long either side of its window, so entrances can pre-roll. */
 export const BEAT_MOUNT_MARGIN_S = 0.5
 
-const BeatDurationContext = createContext(0)
+const BeatDurationContext = createContext<number | null>(null)
 
 /** Props for `Beat`. */
 export interface BeatProps {
@@ -30,9 +30,10 @@ export function Beat({ startS, durationS, children }: BeatProps) {
   )
 }
 
-/** Local time across the enclosing Beat's whole window. */
+/** Local time across the enclosing Beat's whole window. Throws outside a `Beat`. */
 export function useBeatTime(): LocalTime & { durationS: number } {
   const durationS = useContext(BeatDurationContext)
+  if (durationS === null) throw new Error('useBeatTime needs an enclosing <Beat startS durationS>')
   return { ...useLocalTime(0, durationS), durationS }
 }
 
