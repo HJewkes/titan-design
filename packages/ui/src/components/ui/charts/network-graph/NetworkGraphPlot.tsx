@@ -14,7 +14,7 @@ import {
   type EdgeGeometry,
   type GraphEmphasis,
 } from './network-graph-plot-model'
-import type { GraphFocus, GraphItemRef, GraphModel, GraphNode } from './types'
+import type { GraphBox, GraphFocus, GraphItemRef, GraphModel, GraphNode } from './types'
 import { PULSE_MS } from './useNetworkGraph'
 
 /** Opacity of everything that is not the active item, its edges or its neighbours. */
@@ -27,6 +27,10 @@ const PULSE_STROKE_WIDTH = 3
 const PULSE_DASH = 0.2
 const SELECTION_RING_GAP = 3
 const ACTIVE_HALO_GAP = 5
+/** Corner radius of a box node; its rings follow the corner out. */
+export const BOX_CORNER_RADIUS = 6
+const BOX_FILL: ColorToken = 'surface-raised'
+const BOX_STROKE_WIDTH = 2
 
 export const LAYER_STYLE: CSSProperties = {
   position: 'absolute',
@@ -161,6 +165,51 @@ function NodeMark({ node, x, y, color, isActive, isSelected, isDimmed }: NodeMar
   )
 }
 
+const outset = (box: GraphBox, gap: number) => ({
+  x: box.x - gap,
+  y: box.y - gap,
+  width: box.width + 2 * gap,
+  height: box.height + 2 * gap,
+  rx: BOX_CORNER_RADIUS + gap,
+})
+
+interface BoxMarkProps extends Omit<NodeMarkProps, 'x' | 'y'> {
+  box: GraphBox
+}
+
+/** A `box` node: a raised rectangle outlined in its kind's colour, with the same halo and ring as a dot. */
+function BoxMark({ node, box, color, isActive, isSelected, isDimmed }: BoxMarkProps) {
+  const opacity = isDimmed ? DIM_OPACITY : node.isMuted ? MUTED_OPACITY : 1
+  return (
+    // eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (contract C9)
+    <g opacity={opacity} data-node={node.id} data-shape="box">
+      {isActive ? (
+        // eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (contract C9)
+        <rect
+          {...outset(box, ACTIVE_HALO_GAP)}
+          style={{ fill: resolveColor('interactive-focus') }}
+        />
+      ) : null}
+      {/* eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (contract C9) */}
+      <rect
+        {...outset(box, 0)}
+        strokeWidth={BOX_STROKE_WIDTH}
+        style={{ fill: resolveColor(BOX_FILL), stroke: resolveColor(color) }}
+      />
+      {isSelected ? (
+        // eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (contract C9)
+        <rect
+          {...outset(box, SELECTION_RING_GAP + BOX_STROKE_WIDTH / 2)}
+          fill="none"
+          strokeWidth={2}
+          style={{ stroke: resolveColor('text-primary') }}
+          data-ring="selected"
+        />
+      ) : null}
+    </g>
+  )
+}
+
 export interface NetworkGraphPlotProps {
   model: GraphModel
   geometries: readonly EdgeGeometry[]
@@ -216,17 +265,18 @@ export function NetworkGraphPlot(props: NetworkGraphPlotProps) {
         const node = model.index.nodesById.get(id)
         const point = model.positions[id]
         if (!node || !point) return null
-        return (
-          <NodeMark
-            key={id}
-            node={node}
-            x={point.x}
-            y={point.y}
-            color={(node.kind !== undefined && nodeColors.get(node.kind)) || NEUTRAL_NODE_COLOR}
-            isActive={isItem(active, 'node', id)}
-            isSelected={isItem(selection, 'node', id)}
-            isDimmed={emphasis !== null && !emphasis.nodes.has(id)}
-          />
+        const mark = {
+          node,
+          color: (node.kind !== undefined && nodeColors.get(node.kind)) || NEUTRAL_NODE_COLOR,
+          isActive: isItem(active, 'node', id),
+          isSelected: isItem(selection, 'node', id),
+          isDimmed: emphasis !== null && !emphasis.nodes.has(id),
+        }
+        const box = model.nodeBoxes[id]
+        return box ? (
+          <BoxMark key={id} {...mark} box={box} />
+        ) : (
+          <NodeMark key={id} {...mark} x={point.x} y={point.y} />
         )
       })}
     </svg>
