@@ -145,8 +145,13 @@ has no `seed`, because it draws no random number.
 3. Breadth-first search from the focus up to `hops` (default 2, floored, at least 0; NaN gives 2,
    Infinity reaches the whole component). Each ring lists its nodes in discovery order, so the
    children of one node sit together.
-4. Ring radius: `r(0) = 0`, `r(d) = max(r(d - 1) + 120, count * 40 / (2 * PI))`, so a crowded ring
-   grows and keeps 40 px of arc per node. Node `i` of `count` sits at angle `-PI / 2 + 2 * PI * i / count`.
+4. Natural ring radius: `r(0) = 0`, `r(d) = max(r(d - 1) + 120, count * 40 / (2 * PI))`, so a
+   crowded ring grows and keeps 40 px of arc per node. When the outer ring would overflow a sized
+   viewport, every radius is scaled by one factor so the outer ring fits inside the padding and label
+   room. The factor never goes below the one that keeps 40 px of arc per node on every ring, so marks
+   and press targets never meet; past that floor the layout is larger than the viewport and scrolls.
+   A zero-sized viewport keeps the natural radii. Node `i` of `count` sits at angle
+   `-PI / 2 + 2 * PI * i / count`.
 5. `order` is the focus, then ring by ring in angular order. `groups` holds one `'ring'` per populated
    hop (`hop-0` labelled `focus` with radius 0, then `1 hop`, `2 hops`), all centred on the focus.
    The natural size holds the outermost ring, not only its nodes.
@@ -240,7 +245,7 @@ DOM `<svg>`.
 | ---------------------------------------------------- | -------------------------------- | --------------------------------- | -------------------------------------------------------------------------------------------------- |
 | `nodes`, `edges`                                     | `GraphNode[]`, `GraphEdge[]`     | required                          | Cleaned before layout; every drop is counted in the summary.                                       |
 | `accessibilityLabel`                                 | `string`                         | required                          | The root is named `"<label>. <summary>"`.                                                          |
-| `width`, `height`                                    | `number`                         | required                          | The viewport in px. A larger layout scrolls on both axes; nodes never shrink.                      |
+| `width`, `height`                                    | `number`                         | required                          | The viewport in px. A larger layout scrolls on both axes; nodes never shrink. Ego rings fit first. |
 | `layout`                                             | `GraphLayout`                    | `layeredLayout()`                 | Memoised on `layout.key`.                                                                          |
 | `nodeKinds`, `edgeKinds`                             | `GraphKind[]`, `GraphEdgeKind[]` | unset                             | Labels, node colours in list order, and `stroke: 'dashed'` per edge kind.                          |
 | `showLegend`                                         | `boolean`                        | `false`                           | A row below the plot, built from the two kind lists.                                               |
