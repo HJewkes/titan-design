@@ -309,6 +309,60 @@ body:has(.contrast-override) .variant-head {
   font-variant-numeric: tabular-nums;
 }
 
+.frame.actual {
+  overflow: auto;
+  max-height: 90vh;
+}
+
+.frame.actual > figcaption {
+  position: sticky;
+  top: 0;
+  left: 0;
+  justify-self: start;
+  z-index: 2;
+  background: var(--color-surface-elevated);
+}
+
+.frame-box.true-size {
+  outline: 2px solid var(--color-brand-primary);
+  outline-offset: -2px;
+}
+
+.frame-ladder {
+  position: absolute;
+  top: var(--space-inset-sm);
+  right: var(--space-inset-sm);
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-inline-md);
+  margin: 0;
+  padding: var(--space-inset-sm);
+  list-style: none;
+  background: var(--color-surface-base);
+  border: 1px solid var(--color-border-input);
+  pointer-events: none;
+}
+
+.frame-ladder li {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+}
+
+.frame-ladder-bar {
+  width: 8px;
+  background: var(--color-text-primary);
+}
+
+.frame-ladder-label {
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
 .scale-views {
   display: inline-flex;
   gap: var(--space-inline-sm);

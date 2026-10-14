@@ -9,6 +9,11 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Optional `frameReference` on an image or clip variant (`FrameReferenceSchema`, type
+  `FrameReference`): `{ frame = 1920x1080, ladder = DEFAULT_SCALE_LADDER }`, the true size of a
+  recorded frame and the ladder drawn into it. A story variant may not carry one (it uses
+  `scale`). `frameSizeMismatch(actual, declared)` words a size mismatch, so review-harness refuses
+  a PNG whose IHDR size differs and flags a clip whose video size differs.
 - Three optional fields on a feedback answer, for decision packets: `optionNotes`
   (`[{ option, note }]`, the owner's notes on any of the question's options), `after` (the picked
   option's `optionDetails` `after`, echoed so the agent acting on the pick needs no manifest; never
