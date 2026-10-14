@@ -1104,6 +1104,17 @@ export interface CircularTimerProps {
 export function clampedContextFraction(metrics: AgentMetrics): number | null;
 
 // @public
+export function clusteredLayout(options?: ClusteredLayoutOptions): GraphLayout;
+
+// @public
+export interface ClusteredLayoutOptions {
+    groups?: readonly GraphGroup[];
+    iterations?: number;
+    seed?: number;
+    ungroupedLabel?: string;
+}
+
+// @public
 export function cn(...inputs: ClassValue[]): string;
 
 // @public @deprecated
@@ -1701,6 +1712,19 @@ export interface DualGhostSparkProps {
 // @public
 export function DumbbellIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
+// @public
+export type EgoDirection = 'both' | 'outgoing' | 'incoming';
+
+// @public
+export function egoLayout(options: EgoLayoutOptions): GraphLayout;
+
+// @public
+export interface EgoLayoutOptions {
+    direction?: EgoDirection;
+    focusId: string | null;
+    hops?: number;
+}
+
 // @public (undocumented)
 export const ELEVATION_PLANE: Record<ElevationLevel, SurfaceLevel>;
 
@@ -1994,6 +2018,15 @@ export const FLOATING_LIFT_MIN: LiftStep;
 
 // @public
 export function followWindow(playhead: number, width: number): TimelineRange;
+
+// @public
+export function forceLayout(options?: ForceLayoutOptions): GraphLayout;
+
+// @public
+export interface ForceLayoutOptions {
+    iterations?: number;
+    seed?: number;
+}
 
 // @public
 export function FormActions(input: FormActionsProps): react_jsx_runtime.JSX.Element;
@@ -2963,6 +2996,23 @@ export interface GraphEdgeKind {
     id: string;
     label: string;
     stroke?: 'solid' | 'dashed';
+}
+
+// @public
+export interface GraphGroup {
+    id: string;
+    label: string;
+}
+
+// @public
+export interface GraphGroupRegion {
+    cx: number;
+    cy: number;
+    id: string;
+    label: string;
+    nodeIds: readonly string[];
+    radius: number;
+    variant: 'region' | 'ring';
 }
 
 // @public
