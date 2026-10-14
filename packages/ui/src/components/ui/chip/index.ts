@@ -1,2 +1,5 @@
 export { Chip } from './Chip'
 export type { ChipProps, ChipVariant, ChipColor, ChipSize } from './Chip'
+export { EvidenceChip } from './EvidenceChip'
+export type { EvidenceChipProps, EvidenceChipSize } from './EvidenceChip'
+export type { EvidenceKind } from './evidence'

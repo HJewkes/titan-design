@@ -170,11 +170,14 @@ imports. Its `schema/round.schema.json` and `schema/feedback.schema.json` are ge
   `recommendation {answer, rationale, confidence, by}`, our own answer to it. `answer` is one of
   the options (pick-one), a list of them (pick-many) or a value on the scale; `confidence` is
   0 to 1; `by` names the recommender (an agent name or `design-coord`). A text question takes
-  none. The page hides the recommendation until the owner answers the question, so it cannot
-  anchor them, then shows it under their pick with whether the two match. Set the round's
-  `recommendations` to `"shown"` to show every recommendation from the start.
+  none. The page hides the recommendation until the owner reveals it or answers the question, so
+  it cannot anchor them unnoticed, then shows it under their pick with whether the two match. Set
+  the round's `recommendations` to `"shown"` to show every recommendation from the start. An
+  answer given while the recommendation is visible (after a reveal, after an earlier answer, or in
+  a `"shown"` round) is sent with `recommendationSeen: true`; a blind pick stays blind when the
+  owner reveals it afterwards, and clearing the answer clears the tag.
 - Feedback `titan-review/feedback@1`: `manifestSha256`, `submittedAt`,
-  `answers[{questionId, pick | picks | value | text | revisionRequested, comment?, variantComments?, recommendation?, agreed?}]`,
+  `answers[{questionId, pick | picks | value | text | revisionRequested, comment?, variantComments?, recommendation?, agreed?, optionNotes?, after?, recommendationSeen?}]`,
   `variants[{key, storyId | image | clip, verdict: chosen|rejected|maybe|null, comment, annotations[], relatedQuestionIds?}]`,
   `general`, `unansweredQuestionIds?`, `contrastOverride?` (see _The agent's side_). Each annotation has `width`,
   `x`/`y` in CSS px of the story frame, `xPct`/`yPct` as fractions of it, a `note`, and `target {testId?, role?, text?}` from element hit-testing.
@@ -183,7 +186,11 @@ imports. Its `schema/round.schema.json` and `schema/feedback.schema.json` are ge
   Both appear only in a sectioned round. `recommendation` echoes the question's recommendation,
   and `agreed` says whether the owner's answer equals it (pick-many: the same set); `agreed` is
   absent when the owner only commented. Both appear only when the question has a
-  recommendation. `unansweredQuestionIds` marks a deliberate partial submit: it lists, in
+  recommendation. `optionNotes[{option, note}]` carries the owner's non-blank notes on the
+  question's options, in option order; a note counts as free text for Ship, as a comment does.
+  `after` echoes the picked option's `optionDetails` `after` (pick-one only, never on a revision
+  request), and the server rejects one that differs from it, a note on a non-option, and
+  `recommendationSeen` on a question with no recommendation or no answer. `unansweredQuestionIds` marks a deliberate partial submit: it lists, in
   manifest order, every question the owner sent without an answer (a comment alone is not an
   answer), and a required question it lists is not an error. A full submit omits the field; the
   page sends one only when every question has an answer. The server rejects a list that
@@ -576,7 +583,9 @@ tests. Errors are `FrameRenderError`, which the CLI reports as a usage error (ex
 `titan-review calibration <feedback.json...>` reads feedback files and prints how often the
 owner's answer matched the recommendation: one row per round, the overall rate, and the rate
 per confidence band (`<0.5`, `0.5-0.75`, `>=0.75`). An answer counts only when it has both a
-recommendation and an owner's answer.
+recommendation and an owner's answer. Every rate counts blind answers only (no
+`recommendationSeen`); a round row says how many seen answers it left out, and Overall adds the
+seen answers' own rate. Feedback written before the tag has none, so it counts as blind.
 
 ## Lock footprint (TD-808)
 

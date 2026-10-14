@@ -1332,6 +1332,7 @@ export const darkThemeCSSVars: {
     readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
     readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
     readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
+    readonly '--ease-in': "cubic-bezier(0.55, 0, 1, 0.45)";
     readonly '--duration-fast': "150ms";
     readonly '--duration-normal': "250ms";
     readonly '--duration-slow': "400ms";
@@ -1690,6 +1691,20 @@ export type ElevationLevel = -2 | -1 | 0 | 1 | 2 | 3 | 4 | 5;
 // @public
 export function elevationPlane(level: ElevationLevel): SurfaceLevel;
 
+// @public
+export interface ElidedSource {
+    droppedRefs: number;
+    fits: boolean;
+    level: ElisionLevel;
+    text: string;
+}
+
+// @public
+export function elideSource(text: string, maxChars: number): ElidedSource;
+
+// @public
+export type ElisionLevel = 0 | 1 | 2 | 3 | 4;
+
 // @public (undocumented)
 export const EMPTY_TASK_FLOW_FILTERS: TaskFlowFilters;
 
@@ -1729,6 +1744,25 @@ export const ERROR_TEXT_LABEL = "Error text";
 
 // @public
 export function errorRate(metrics: Pick<AgentMetrics, 'toolCalls' | 'errors'>): number | null;
+
+// @public
+export function EvidenceChip(input: EvidenceChipProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface EvidenceChipProps extends Omit<ViewProps, 'children'> {
+    className?: string;
+    fontPx?: number;
+    kind: EvidenceKind;
+    maxChars?: number;
+    size?: EvidenceChipSize;
+    text: string;
+}
+
+// @public
+export type EvidenceChipSize = 'sm' | 'md' | 'lg';
+
+// @public
+export type EvidenceKind = (typeof EVIDENCE_KINDS)[number];
 
 // @public
 export function ExactTime(input: {
@@ -2414,6 +2448,7 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
     readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
     readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
+    readonly '--ease-in': "cubic-bezier(0.55, 0, 1, 0.45)";
     readonly '--duration-fast': "150ms";
     readonly '--duration-normal': "250ms";
     readonly '--duration-slow': "400ms";
@@ -2589,6 +2624,7 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
     readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
     readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
+    readonly '--ease-in': "cubic-bezier(0.55, 0, 1, 0.45)";
     readonly '--duration-fast': "150ms";
     readonly '--duration-normal': "250ms";
     readonly '--duration-slow': "400ms";
@@ -3342,6 +3378,7 @@ export const lightThemeCSSVars: {
     readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
     readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
     readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
+    readonly '--ease-in': "cubic-bezier(0.55, 0, 1, 0.45)";
     readonly '--duration-fast': "150ms";
     readonly '--duration-normal': "250ms";
     readonly '--duration-slow': "400ms";
@@ -3955,6 +3992,25 @@ export const motion: {
         readonly out: readonly [0.22, 1, 0.36, 1];
         readonly inOut: readonly [0.65, 0, 0.35, 1];
         readonly spring: readonly [0.34, 1.56, 0.64, 1];
+        readonly in: readonly [0.55, 0, 1, 0.45];
+    };
+    readonly video: {
+        readonly emphasis: 500;
+        readonly enter: 1000;
+        readonly hero: 1500;
+        readonly count: 1500;
+        readonly exit: 850;
+        readonly exitScale: 0.85;
+        readonly staggerEach: 60;
+        readonly staggerMax: 500;
+        readonly rise: 40;
+        readonly scaleFrom: 0.97;
+    };
+    readonly dim: {
+        readonly context: {
+            readonly opacity: 0.35;
+            readonly saturation: 0;
+        };
     };
 };
 
@@ -3963,6 +4019,7 @@ export const motionCSSVars: Readonly<{
     readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
     readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
     readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
+    readonly '--ease-in': "cubic-bezier(0.55, 0, 1, 0.45)";
     readonly '--duration-fast': "150ms";
     readonly '--duration-normal': "250ms";
     readonly '--duration-slow': "400ms";

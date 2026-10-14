@@ -58,7 +58,7 @@ cells }], note? }[]`. The first column heads the row labels; each row has one ce
 - `implemented` on a pick-one (an option) or pick-many (a list): what the PR implements at its
   head. `shipBlocks(round, feedback)` returns `{ pr, blocked, blockers: { questionId, kind,
 message }[] }[]`, one per PR group: blocked when an answer in the group has free text (`comment`,
-  `text`, a frame comment) or picks other than `implemented`; an unanswered question does not
+  `text`, a frame comment, an option note) or picks other than `implemented`; an unanswered question does not
   block (owner item 166), and `unansweredQuestionIds` lists those, Ship aside. `pr` is `owner/name#n`; a group is its `prGroups` sections plus the questions whose
   `page` is that PR.
 - A `prGroups` entry's optional `stackedOn` (`{ repo, pr, headSha }`) names the base that one group
