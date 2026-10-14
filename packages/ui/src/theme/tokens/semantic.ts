@@ -776,29 +776,80 @@ export const size = {
  * `exit` is `exitScale` × `enter`, and `staggerMax` caps a whole cascade.
  * `dim.context` fades de-emphasised context and greys it. Spring presets are
  * physics parameters, so they live beside the solver as `MOTION.spring`.
+ *
+ * `tiers` (TD-909) are one scale per medium: `video` restates `motion.video`
+ * and `app` is the UI scale (ms and px, as above). `presets` define a motion
+ * once as data; `MOTION.preset(name, tier)` in `ui/motion` evaluates one at a
+ * tier. A string endpoint names a tier value (`rise`) or a caller value
+ * (`from`, `to`); `reduced` is what reduced motion keeps.
  */
+const motionDuration = { fast: 150, normal: 250, slow: 400 } as const
+const videoMotion = {
+  emphasis: 500,
+  enter: 1000,
+  hero: 1500,
+  count: 1500,
+  exit: 850,
+  exitScale: 0.85,
+  staggerEach: 60,
+  staggerMax: 500,
+  rise: 40,
+  scaleFrom: 0.97,
+} as const
+
 export const motion = {
-  duration: { fast: 150, normal: 250, slow: 400 },
+  duration: motionDuration,
   ease: {
     out: [0.22, 1, 0.36, 1],
     inOut: [0.65, 0, 0.35, 1],
     spring: [0.34, 1.56, 0.64, 1],
     in: [0.55, 0, 1, 0.45],
   },
-  video: {
-    emphasis: 500,
-    enter: 1000,
-    hero: 1500,
-    count: 1500,
-    exit: 850,
-    exitScale: 0.85,
-    staggerEach: 60,
-    staggerMax: 500,
-    rise: 40,
-    scaleFrom: 0.97,
-  },
+  video: videoMotion,
   dim: {
     context: { opacity: 0.35, saturation: 0 },
+  },
+  tiers: {
+    video: {
+      enter: videoMotion.enter,
+      emphasis: videoMotion.emphasis,
+      hero: videoMotion.hero,
+      count: videoMotion.count,
+      rise: videoMotion.rise,
+      staggerEach: videoMotion.staggerEach,
+      staggerMax: videoMotion.staggerMax,
+    },
+    app: {
+      enter: motionDuration.normal,
+      emphasis: motionDuration.fast,
+      hero: motionDuration.slow,
+      count: 600,
+      rise: 8,
+      staggerEach: 40,
+      staggerMax: 300,
+    },
+  },
+  presets: {
+    riseIn: {
+      props: { opacity: [0, 1], translateY: ['rise', 0] },
+      duration: 'emphasis',
+      ease: 'out',
+      stagger: true,
+      exit: { ratio: videoMotion.exitScale, ease: 'in' },
+      reduced: 'fade',
+    },
+    countUp: {
+      props: { value: ['from', 'to'] },
+      duration: 'count',
+      ease: 'out',
+      reduced: 'jump',
+    },
+    payoff: {
+      props: { scale: [0.6, 1] },
+      spring: 'bouncy',
+      allowOvershoot: true,
+      reduced: 'fade',
+    },
   },
 } as const
 

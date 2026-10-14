@@ -2,13 +2,16 @@
 // motion functions: a ui/ component takes time as a prop and never reads a motion clock.
 import { easeOut, poly } from '../motion/easing'
 import { interpolate } from '../motion/interpolate'
+import { motionPreset } from '../motion/presets'
+
+const riseIn = motionPreset('riseIn', 'app')
 
 /** Share of the card's life spent entering. */
 export const CHAPTER_CARD_ENTER = 0.2
-/** Share spent leaving: an exit runs at 0.85 of the entrance (decision 308). */
-export const CHAPTER_CARD_EXIT = CHAPTER_CARD_ENTER * 0.85
-/** How far the card travels while it enters and leaves, in px. */
-const TRAVEL_PX = 8
+/** Share spent leaving: riseIn's exit ratio, 0.85 of the entrance (decision 308). */
+export const CHAPTER_CARD_EXIT = CHAPTER_CARD_ENTER * (riseIn.exitRatio ?? 1)
+/** How far the card travels while it enters and leaves, in px: riseIn's rise at the app tier. */
+const TRAVEL_PX = riseIn.at(0).translateY
 
 export interface ChapterCardFrame {
   opacity: number
