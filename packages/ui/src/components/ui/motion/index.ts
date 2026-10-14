@@ -18,6 +18,7 @@ export {
   poly,
   smootherstep,
   smoothstep,
+  thereAndBack,
   type Easing,
 } from './easing'
 export { MOTION } from './tokens'
@@ -65,6 +66,7 @@ export {
 } from './timeline'
 export { random, randomRange } from './random'
 export { noise2D } from './noise'
+export { roughEllipse, roughLine, type RoughOptions } from './rough'
 export { MotionProvider, type MotionProviderProps } from './MotionProvider'
 export {
   localTime,
@@ -100,3 +102,17 @@ export {
   type PathOp,
   type PathPoint,
 } from './paths'
+export {
+  ANNOTATION_DEFAULTS,
+  Annotate,
+  AnnotationMark,
+  annotationStrokes,
+  strokeProgress,
+  type AnnotateProps,
+  type AnnotationBox,
+  type AnnotationColor,
+  type AnnotationGeometryOptions,
+  type AnnotationKind,
+  type AnnotationMarkProps,
+  type AnnotationStroke,
+} from './annotate'
