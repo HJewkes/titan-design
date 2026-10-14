@@ -97,13 +97,24 @@ describe('partsMorph', () => {
     expect(layerById(layers, 'from:a').opacity).toBe(0)
   })
 
+  // Mutation: dropping the sign flip, which sends both swapping parts along the same side.
+  it('bows swapping parts to opposite sides when given an arc, landing on their targets', () => {
+    const morph = partsMorph([part('a', 0), part('c', 100)], [part('c', 0), part('a', 100)], {
+      ease: linear,
+      arc: 0.25,
+    })
+    const mid = morph(0.5)
+
+    expect(layerById(mid, 'to:a').box.y).toBe(10 - 25)
+    expect(layerById(mid, 'to:c').box.y).toBe(10 + 25)
+    expect(layerById(morph(1), 'to:a').box).toEqual(part('a', 100).box)
+  })
+
   // Mutation: holding state between calls (a cache keyed on the last progress).
   it('is a pure function of progress: seeking back and forth gives equal frames', () => {
-    const morph = partsMorph(
-      [part('a', 0), part('gone', 40)],
-      [part('a', 80), part('new', 10)],
-      { keyMap: {} }
-    )
+    const morph = partsMorph([part('a', 0), part('gone', 40)], [part('a', 80), part('new', 10)], {
+      keyMap: {},
+    })
     const first = morph(0.7)
     morph(0.2)
     morph(1)

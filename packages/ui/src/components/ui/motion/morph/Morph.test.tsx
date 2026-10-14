@@ -20,8 +20,18 @@ const token = (id: string, label: string, x: number, key?: string): Token => ({
   box: { x, y: 0, width: 40, height: 20 },
 })
 
-const FROM = [token('a', 'a', 0), token('plus', '+', 40), token('b', 'b', 80), token('old', 'old', 120)]
-const TO = [token('b', 'b', 0), token('plus', '+', 40), token('a', 'a', 80), token('new', 'new', 120)]
+const FROM = [
+  token('a', 'a', 0),
+  token('plus', '+', 40),
+  token('b', 'b', 80),
+  token('old', 'old', 120),
+]
+const TO = [
+  token('b', 'b', 0),
+  token('plus', '+', 40),
+  token('a', 'a', 80),
+  token('new', 'new', 120),
+]
 
 const paint = (part: Token) => <Text>{part.label}</Text>
 
@@ -107,7 +117,9 @@ describe('Morph', () => {
   it('shows the target scene under reduced motion', () => {
     vi.stubGlobal(
       'matchMedia',
-      vi.fn().mockReturnValue({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })
+      vi
+        .fn()
+        .mockReturnValue({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })
     )
     render(<Morph from={FROM} to={TO} progress={0} width={160} height={20} renderPart={paint} />)
 

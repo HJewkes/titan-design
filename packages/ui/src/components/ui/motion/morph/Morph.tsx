@@ -5,7 +5,8 @@ import { cn } from '../../../../utils/cn'
 import type { MorphPart } from './match-parts'
 import { partsMorph, type MorphLayer, type PartsMorphOptions } from './parts-morph'
 
-export interface MorphProps<P extends MorphPart> extends PartsMorphOptions, Omit<ViewProps, 'children'> {
+export interface MorphProps<P extends MorphPart>
+  extends PartsMorphOptions, Omit<ViewProps, 'children'> {
   /** The scene the morph leaves. */
   from: readonly P[]
   /** The scene the morph arrives at. */
@@ -35,6 +36,7 @@ export function Morph<P extends MorphPart>({
   keyMap,
   ease,
   windows,
+  arc,
   renderPart,
   width,
   height,
@@ -44,8 +46,8 @@ export function Morph<P extends MorphPart>({
 }: MorphProps<P>) {
   const isReducedMotion = usePrefersReducedMotion()
   const morph = useMemo(
-    () => partsMorph(from, to, { keyMap, ease, windows }),
-    [from, to, keyMap, ease, windows]
+    () => partsMorph(from, to, { keyMap, ease, windows, arc }),
+    [from, to, keyMap, ease, windows, arc]
   )
   const layers = morph(isReducedMotion ? 1 : progress)
 

@@ -23,6 +23,12 @@ export interface PartsMorphOptions {
   /** Eases the move; may overshoot. Default `MOTION.ease.inOut`. */
   ease?: Easing
   windows?: Partial<MorphWindows>
+  /**
+   * Bows each moving part's path (Manim's `path_arc`): the peak sideways offset as a share of the
+   * distance travelled, to the left of travel. Parts swapping places pass on opposite sides instead
+   * of through each other. Default 0, a straight line.
+   */
+  arc?: number
 }
 
 /** How a layer takes part: `match` by key, `mapped` by the key map, or fading `exit` and `enter`. */
@@ -58,10 +64,12 @@ function assertBox({ id, box }: MorphPart): void {
 
 const lerp = (a: number, b: number, p: number) => a + (b - a) * p
 
-function lerpBox(a: MorphBox, b: MorphBox, p: number): MorphBox {
+function lerpBox(a: MorphBox, b: MorphBox, p: number, arc = 0): MorphBox {
+  // sin(π) is 1e-16, not 0: pin the ends so a finished move lands exactly on its target.
+  const bow = Number.isInteger(p) ? 0 : arc * Math.sin(Math.PI * p)
   return {
-    x: lerp(a.x, b.x, p),
-    y: lerp(a.y, b.y, p),
+    x: lerp(a.x, b.x, p) + (b.y - a.y) * bow,
+    y: lerp(a.y, b.y, p) - (b.x - a.x) * bow,
     width: lerp(a.width, b.width, p),
     height: lerp(a.height, b.height, p),
   }
@@ -89,13 +97,20 @@ function paint<P extends MorphPart>(
   box: MorphBox,
   opacity: number
 ): MorphLayer<P> {
-  return { id: `${side}:${part.id}`, part, role, box, transform: transformTo(part.box, box), opacity }
+  return {
+    id: `${side}:${part.id}`,
+    part,
+    role,
+    box,
+    transform: transformTo(part.box, box),
+    opacity,
+  }
 }
 
-function planPair<P extends MorphPart>(a: P, b: P, via: 'key' | 'keyMap'): Plan<P> {
-  if (via === 'key') return (move) => [paint('to', b, 'match', lerpBox(a.box, b.box, move), 1)]
+function planPair<P extends MorphPart>(a: P, b: P, via: 'key' | 'keyMap', arc: number): Plan<P> {
+  if (via === 'key') return (move) => [paint('to', b, 'match', lerpBox(a.box, b.box, move, arc), 1)]
   return (move) => {
-    const box = lerpBox(a.box, b.box, move)
+    const box = lerpBox(a.box, b.box, move, arc)
     return [
       paint('from', a, 'mapped', box, 1 - unit(move)),
       paint('to', b, 'mapped', box, unit(move)),
@@ -120,7 +135,7 @@ function planFade<P extends MorphPart>(part: P, role: 'exit' | 'enter'): Plan<P>
 export function partsMorph<P extends MorphPart>(
   from: readonly P[],
   to: readonly P[],
-  { keyMap, ease = MOTION.ease.inOut, windows = {} }: PartsMorphOptions = {}
+  { keyMap, ease = MOTION.ease.inOut, windows = {}, arc = 0 }: PartsMorphOptions = {}
 ): (progress: number) => MorphLayer<P>[] {
   ;[...from, ...to].forEach(assertBox)
   const { exit, move, enter } = { ...DEFAULT_MORPH_WINDOWS, ...windows }
@@ -129,7 +144,9 @@ export function partsMorph<P extends MorphPart>(
   const { pairs, exits, enters } = matchParts(from, to, keyMap)
   const plans: Plan<P>[] = [
     ...exits.map((id) => planFade(source.get(id) as P, 'exit')),
-    ...pairs.map(({ from: a, to: b, via }) => planPair(source.get(a) as P, target.get(b) as P, via)),
+    ...pairs.map(({ from: a, to: b, via }) =>
+      planPair(source.get(a) as P, target.get(b) as P, via, arc)
+    ),
     ...enters.map((id) => planFade(target.get(id) as P, 'enter')),
   ]
   return (progress) => {
