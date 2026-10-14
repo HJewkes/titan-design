@@ -14601,7 +14601,7 @@
         },
         {
           "default": "0",
-          "description": "Total timeline length in seconds.",
+          "description": "Total timeline length in seconds, published as `__titanMotion.duration`.",
           "name": "durationS",
           "required": false,
           "type": "number"

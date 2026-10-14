@@ -66,6 +66,7 @@ export {
 export { random, randomRange } from './random'
 export { noise2D } from './noise'
 export { MotionProvider, type MotionProviderProps } from './MotionProvider'
+export type { TitanMotionApi } from './bridge'
 export {
   localTime,
   useLocalTime,
