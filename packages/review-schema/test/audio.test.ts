@@ -133,6 +133,16 @@ describe('a blind-ab question', () => {
     ])
   })
 
+  // Catches: a pair whose takes differ in format, whose served type would name the engine.
+  it('refuses a pair whose takes are different formats', () => {
+    const mixed = pair('p1')
+    mixed.takes[1].src = 'audio/p1-y.mp3'
+    const q = { id: 'tts', kind: 'blind-ab', prompt: 'Which?', pairs: [mixed] }
+    expect(messages(QuestionSchema, q)).toEqual([
+      'pairs.0: the takes of a pair share one format, so the file type does not tell them apart',
+    ])
+  })
+
   // Catches: two pairs under one id, whose answers could not be told apart.
   it('refuses a repeated pair id', () => {
     const q = { id: 'tts', kind: 'blind-ab', prompt: 'Which?', pairs: [pair('p1'), pair('p1')] }

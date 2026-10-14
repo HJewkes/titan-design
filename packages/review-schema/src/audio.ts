@@ -14,6 +14,8 @@ export const audioPath = z
 /** How long a recording runs, when the round wants it stated; the file is the authority. */
 export const audioDuration = z.number().int().min(100).max(600_000)
 
+const extension = (path: string) => path.slice(path.lastIndexOf('.')).toLowerCase()
+
 const pairId = z.string().regex(/^[A-Za-z0-9_-]{1,32}$/, 'letters, digits, _ and - only')
 
 /** One engine's take of a pair; `engine` is the hidden key, which the page never receives. */
@@ -31,6 +33,9 @@ export const BlindPairSchema = z
   .strict()
   .refine((p) => p.takes[0].engine !== p.takes[1].engine, {
     message: 'a pair compares two engines: its takes name different engines',
+  })
+  .refine((p) => extension(p.takes[0].src) === extension(p.takes[1].src), {
+    message: 'the takes of a pair share one format, so the file type does not tell them apart',
   })
 
 /** The positions a blind pair is played in; an answer names one of them, never an engine. */

@@ -599,7 +599,7 @@ function contrastProblems(m: {
   )
 }
 
-type Recommendable = Exclude<z.output<typeof QuestionSchema>, { kind: 'text' | 'blind-ab' }>
+type Recommendable = Exclude<Question, { kind: 'text' | 'blind-ab' }>
 
 function recommendationProblem(q: Recommendable, answer: Recommendation['answer']) {
   if (q.kind === 'scale')
@@ -617,7 +617,9 @@ function recommendationProblem(q: Recommendable, answer: Recommendation['answer'
 function recommendationProblems(m: { questions: z.output<typeof QuestionSchema>[] }): string[] {
   return m.questions.flatMap((q) => {
     const problem =
-      'recommendation' in q && q.recommendation && recommendationProblem(q, q.recommendation.answer)
+      takesRecommendation(q) &&
+      q.recommendation &&
+      recommendationProblem(q, q.recommendation.answer)
     return problem ? [`question ${q.id}: the recommended answer ${problem}`] : []
   })
 }
@@ -979,6 +981,13 @@ export function isImageVariant(variant: Variant): variant is ImageVariant {
 
 export function isClipVariant(variant: Variant): variant is ClipVariant {
   return variant.clip !== undefined
+}
+
+/** The questions that may carry a recommendation: a text or blind-ab question takes none. */
+export function takesRecommendation(
+  q: Question
+): q is Exclude<Question, { kind: 'text' | 'blind-ab' }> {
+  return q.kind !== 'text' && q.kind !== 'blind-ab'
 }
 
 export function isAudioVariant(variant: Variant): variant is AudioVariant {
