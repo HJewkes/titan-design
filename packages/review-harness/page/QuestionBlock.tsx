@@ -83,7 +83,12 @@ function choiceAction(question: ChoiceQuestion, i: number): Action {
     return { type: 'value', id: question.id, value: scaleValues(question)[i] }
   return i === question.options.length
     ? { type: 'revision', id: question.id }
-    : { type: 'pick', id: question.id, option: question.options[i], many: question.kind === 'pick-many' }
+    : {
+        type: 'pick',
+        id: question.id,
+        option: question.options[i],
+        many: question.kind === 'pick-many',
+      }
 }
 
 function ChoiceButton({
@@ -221,7 +226,11 @@ function OptionCards(props: ChoiceProps & { question: PickQuestion }) {
   const press = (i: number) => () => dispatch(choiceAction(question, i))
   const revision = items[question.options.length]
   return (
-    <div className="option-packet" role={many ? 'group' : 'radiogroup'} aria-label={question.prompt}>
+    <div
+      className="option-packet"
+      role={many ? 'group' : 'radiogroup'}
+      aria-label={question.prompt}
+    >
       <div className="option-cards">
         {question.options.map((option, i) => (
           <OptionCard
