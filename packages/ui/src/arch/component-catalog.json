@@ -14703,7 +14703,7 @@
         },
         {
           "default": null,
-          "description": "",
+          "description": "Test id on the SVG layer.",
           "name": "testID",
           "required": false,
           "type": "string"
@@ -14791,7 +14791,7 @@
         },
         {
           "default": null,
-          "description": "",
+          "description": "Test id on the SVG layer.",
           "name": "testID",
           "required": false,
           "type": "string"
