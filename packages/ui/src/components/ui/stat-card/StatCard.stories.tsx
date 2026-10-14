@@ -16,6 +16,7 @@ interface StatCardStoryArgs {
   hasFigure: boolean
   hasBody: boolean
   isLoading: boolean
+  progress?: number
 }
 
 function StatCardStory(args: StatCardStoryArgs) {
@@ -36,13 +37,8 @@ function StatCardStory(args: StatCardStoryArgs) {
             }
           />
         }
-        figure={
-          args.hasFigure ? (
-            <Typography variant="h3" className="leading-none">
-              {args.figure}
-            </Typography>
-          ) : undefined
-        }
+        figure={args.hasFigure ? args.figure : undefined}
+        progress={args.progress}
         caption={
           args.hasFigure && args.caption ? (
             <Typography variant="body2" color="secondary" className="text-sm">
@@ -81,6 +77,10 @@ const meta: Meta<typeof StatCardStory> = {
     hasFigure: { control: 'boolean' },
     hasBody: { control: 'boolean' },
     isLoading: { control: 'boolean' },
+    progress: {
+      control: { type: 'range', min: 0, max: 1, step: 0.01 },
+      description: 'Counts the number in `figure` up from 0; unset renders it as given',
+    },
   },
   parameters: {
     docs: {
@@ -91,7 +91,7 @@ const meta: Meta<typeof StatCardStory> = {
           'and the paint order set once here. Composes [Card](?path=/docs/components-molecules-card--docs) ' +
           '(elevation, loading skeleton) and [Typography](?path=/docs/foundations-typography--docs) ' +
           "(the header's overline title). Header and figure touch; the figure trims its own line " +
-          'box with `leading-none`.\n\n' +
+          'box with `leading-none`. A string figure counts up while `progress` runs.\n\n' +
           '**States.** Loading: `isLoading` shows the Card skeleton. Empty: the consumer puts its ' +
           'empty line in `figure`. Error and disabled do not apply: the card holds no data of its ' +
           'own and does not press.',
