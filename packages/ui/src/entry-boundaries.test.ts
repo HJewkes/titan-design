@@ -28,22 +28,18 @@ const RUNTIME_MODULES = new Set([
   'cues',
   'envelope',
 ])
-const RUNTIME_NAMES = new Set([
-  'mediaClock',
-  'rafClock',
-  'seekClock',
-  'MotionProvider',
-  'Beat',
-  'BeatFrame',
-  'envelope',
-  'useBeatEnvelope',
-  'useCue',
-  'localTime',
-  'useLocalTime',
-  'useMotionTime',
-  'useRawLocalTime',
-  'useWaitUntil',
-])
+// Value exports the motion barrel re-exports from a runtime module, read from the barrel so the list cannot drift.
+const RUNTIME_NAMES = new Set(
+  [
+    ...readFileSync(path.join(MOTION_DIR, 'index.ts'), 'utf8').matchAll(
+      /export\s+(?!type\s)\{([^}]*)\}\s*from\s*'\.\/([^']+)'/g
+    ),
+  ]
+    .filter(([, , source]) => RUNTIME_MODULES.has(source))
+    .flatMap(([, names]) => names.split(',').map((n) => n.trim()))
+    .filter((n) => n && !n.startsWith('type '))
+)
+
 const FORBIDDEN_PACKAGE =
   /^(?:zod(?:\/|$)|@titan-design\/beats(?:\/|$)|@titan-platform\/|titan-platform(?:\/|$))/
 
@@ -85,8 +81,11 @@ function boundImports(clause: string): string[] {
 
 /** True when `specifier`, imported from `fromFile`, reaches a time-owning motion module or symbol. */
 function reachesMotionRuntime(fromFile: string, ref: ImportRef): boolean {
-  if (!ref.specifier.startsWith('.')) return false
-  const target = path.resolve(path.dirname(fromFile), ref.specifier)
+  const aliased = ref.specifier.startsWith('@/')
+  if (!aliased && !ref.specifier.startsWith('.')) return false
+  const target = aliased
+    ? path.join(SRC_DIR, ref.specifier.slice(2))
+    : path.resolve(path.dirname(fromFile), ref.specifier)
   const rel = path.relative(MOTION_DIR, target)
   if (rel.startsWith('..') || path.isAbsolute(rel)) return false
   if (RUNTIME_MODULES.has(rel.split(path.sep)[0].replace(/\.[jt]sx?$/, ''))) return true
@@ -159,6 +158,9 @@ describe('entry boundaries', () => {
       ["import { Beat } from '../motion'"],
       ["import { seekClock } from '../motion/index'"],
       ["export * from '../motion'"],
+      ["import { seekClock } from '@/components/ui/motion/clocks'"],
+      ["import { Beat } from '@/components/ui/motion'"],
+      ["import { useBeatTime } from '../motion'"],
       ["const m = await import('../motion/Beat')"],
     ])('flags %s', (line) => {
       expect(findRuntimeImports(component, line)).not.toEqual([])
@@ -168,6 +170,8 @@ describe('entry boundaries', () => {
       ["import { interpolate } from '../motion/interpolate'"],
       ["import { easeOut, poly } from '../motion/easing'"],
       ["import { MOTION } from '../motion'"],
+      ["import { interpolate } from '@/components/ui/motion/interpolate'"],
+      ["import type { Clock } from '../motion'"],
       ["import { useState } from 'react'"],
     ])('allows %s', (line) => {
       expect(findRuntimeImports(component, line)).toEqual([])
