@@ -181,6 +181,8 @@ their heavier runtime dependencies or the code of a domain it does not need:
 - **`@titan-design/react-ui/motion`** — the motion kit (`MotionProvider`, `Beat`,
   `useLocalTime`, `interpolate`, `spring`, `stagger`, `sequence`, the easing
   curves, `noise2D`, `random`, `MOTION`). Moved off the root in 0.22.0.
+  It also carries the video-only components and utils (`EvidenceChip`,
+  `elideSource`), which never shipped on the root.
 
 ## Component API
 

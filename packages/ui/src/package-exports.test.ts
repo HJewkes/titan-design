@@ -56,3 +56,18 @@ describe('package.json exports', () => {
     if (keys.includes('react-native')) expect(keys[0]).toBe('react-native')
   })
 })
+
+// Video-only names export from /motion alone (TD-893); the root keeps its budget.
+describe('video-only exports', () => {
+  const MOTION_ONLY_VALUES = ['EvidenceChip', 'elideSource']
+
+  it.each(MOTION_ONLY_VALUES)('%s comes from the motion entry', async (name) => {
+    const motion: Record<string, unknown> = await import('./motion')
+    expect(motion[name]).toBeDefined()
+  })
+
+  it.each(MOTION_ONLY_VALUES)('%s is absent from the root entry', async (name) => {
+    const root: Record<string, unknown> = await import('./index')
+    expect(root).not.toHaveProperty(name)
+  })
+})
