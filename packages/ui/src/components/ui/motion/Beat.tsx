@@ -1,12 +1,13 @@
-import { createContext, useContext, type ReactNode } from 'react'
+import { createContext, useContext, useMemo, type ReactNode } from 'react'
 import { View } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { CueContext, withCues, type BeatCues } from './cues'
 import { TimeOriginContext, useLocalTime, useRawLocalTime, type LocalTime } from './hooks'
 
 /** A beat stays mounted this long either side of its window, so entrances can pre-roll. */
 export const BEAT_MOUNT_MARGIN_S = 0.5
 
-const BeatDurationContext = createContext(0)
+const BeatDurationContext = createContext<number | null>(null)
 
 /** Props for `Beat`. */
 export interface BeatProps {
@@ -14,25 +15,38 @@ export interface BeatProps {
   startS: number
   /** Length of the window in seconds. */
   durationS: number
+  /**
+   * Named moments in seconds from the beat's start, each within `[0, durationS]`; content reads one
+   * with `useCue(name)`. A name an enclosing Beat already declared throws.
+   */
+  cues?: BeatCues
   /** The beat's content, timed from the beat's start. */
   children?: ReactNode
 }
 
 /** A window of the timeline: moves the time origin to `startS` and mounts only near its window. */
-export function Beat({ startS, durationS, children }: BeatProps) {
+export function Beat({ startS, durationS, cues, children }: BeatProps) {
   const origin = useContext(TimeOriginContext)
+  const parentCues = useContext(CueContext)
+  const scopedCues = useMemo(
+    () => withCues(parentCues, cues, origin + startS, durationS),
+    [parentCues, cues, origin, startS, durationS]
+  )
   const raw = useRawLocalTime(startS, durationS + BEAT_MOUNT_MARGIN_S)
   if (raw < -BEAT_MOUNT_MARGIN_S || raw > durationS + BEAT_MOUNT_MARGIN_S) return null
   return (
     <TimeOriginContext.Provider value={origin + startS}>
-      <BeatDurationContext.Provider value={durationS}>{children}</BeatDurationContext.Provider>
+      <BeatDurationContext.Provider value={durationS}>
+        <CueContext.Provider value={scopedCues}>{children}</CueContext.Provider>
+      </BeatDurationContext.Provider>
     </TimeOriginContext.Provider>
   )
 }
 
-/** Local time across the enclosing Beat's whole window. */
+/** Local time across the enclosing Beat's whole window. Throws outside a `Beat`. */
 export function useBeatTime(): LocalTime & { durationS: number } {
   const durationS = useContext(BeatDurationContext)
+  if (durationS === null) throw new Error('useBeatTime needs an enclosing <Beat startS durationS>')
   return { ...useLocalTime(0, durationS), durationS }
 }
 

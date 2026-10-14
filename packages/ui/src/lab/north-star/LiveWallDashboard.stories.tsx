@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
-import { WorkoutShell, type Device } from '../../components'
+import { WorkoutShell, type Device } from '../../workout'
 import { LivePage, type LivePageVariant } from './LivePage'
 import { dashboardFixture } from './fixtures'
 
