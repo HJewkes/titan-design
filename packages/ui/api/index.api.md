@@ -2090,6 +2090,7 @@ export interface GaugeProps extends Omit<ViewProps, 'children'> {
     max?: number;
     // (undocumented)
     min?: number;
+    progress?: number;
     size?: number;
     thresholds?: GaugeThreshold[];
     unit?: string;
@@ -3877,6 +3878,7 @@ export interface MetricProps extends ViewProps {
     label: string;
     labelClassName?: string;
     labelPosition?: MetricLabelPosition;
+    progress?: number;
     // (undocumented)
     size?: 'sm' | 'md' | 'lg';
     tone?: MetricTone;
@@ -5970,6 +5972,7 @@ export interface StatCardProps extends Omit<CardProps, 'children'> {
     header: ReactNode;
     inset?: StatCardInset;
     onContentLayout?: ViewProps['onLayout'];
+    progress?: number;
 }
 
 // @public
