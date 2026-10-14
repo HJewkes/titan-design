@@ -141,15 +141,15 @@ export const MOTION: {
         rise: 40;
         scaleFrom: 0.97;
         exitScale: 0.85;
-        exit: number;
-        hero: number;
-        enter: number;
         count: number;
+        enter: number;
         emphasis: number;
+        hero: number;
+        exit: number;
         staggerEach: number;
         staggerMax: number;
     };
-    readonly spring: Record<"heavy" | "smooth" | "snappy" | "bouncy", Required<Pick<SpringOptions, "stiffness" | "damping" | "mass">>>;
+    readonly spring: Record<"snappy" | "smooth" | "heavy" | "bouncy", Required<Pick<SpringOptions, "stiffness" | "damping" | "mass">>>;
     readonly springPreset: typeof springPreset;
     readonly staggerEachS: typeof staggerEachS;
     readonly dim: {
