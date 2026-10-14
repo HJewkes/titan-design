@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import {
   EDGE_FADE,
   edgeOpacity,
+  followWindow,
   layoutTimeline,
   normalizeWindow,
   timelineDomain,
@@ -113,11 +114,54 @@ describe('timelineDomain', () => {
 })
 
 describe('normalizeWindow', () => {
-  it('clamps the window to the domain', () => {
-    expect(normalizeWindow([-0.5, 0.5])).toEqual([0, 0.5])
+  it('lets the window run past the domain ends', () => {
+    expect(normalizeWindow([-0.5, 0.5])).toEqual([-0.5, 0.5])
+  })
+
+  it('treats a non-finite window as the whole domain', () => {
+    expect(normalizeWindow([NaN, 0.5])).toEqual([0, 1])
   })
 
   it('treats an inverted window as the whole domain', () => {
     expect(normalizeWindow([0.8, 0.2])).toEqual([0, 1])
+  })
+})
+
+describe('followWindow', () => {
+  it('centres a window of the given width on the playhead', () => {
+    const [start, end] = followWindow(0.3, 0.5)
+    expect(start).toBeCloseTo(0.05)
+    expect(end).toBeCloseTo(0.55)
+  })
+
+  it('runs past the domain start rather than stopping at it', () => {
+    expect(followWindow(0.1, 0.5)).toEqual([-0.15, 0.35])
+  })
+
+  it('gives the whole domain for a width outside (0, 1]', () => {
+    expect(followWindow(0.3, 0)).toEqual([0, 1])
+    expect(followWindow(0.3, 1.5)).toEqual([0, 1])
+  })
+
+  it('keeps the playhead at the centre from the first frame to the last', () => {
+    for (const playhead of [0, 0.05, 0.25, 0.5, 0.8, 0.95, 1]) {
+      const layout = layoutTimeline({ items, playhead, window: followWindow(playhead, 0.5) })
+      expect(layout.playhead).toBeCloseTo(0.5)
+    }
+  })
+})
+
+describe('layoutTimeline track', () => {
+  it('spans the whole plot when the window is the whole domain', () => {
+    expect(layoutTimeline({ items }).track).toEqual([0, 1])
+  })
+
+  it('starts where the domain starts when the window runs past it', () => {
+    expect(layoutTimeline({ items, window: [-0.25, 0.25] }).track).toEqual([0.5, 1])
+    expect(layoutTimeline({ items, window: [0.75, 1.25] }).track).toEqual([0, 0.5])
+  })
+
+  it('is absent when the window misses the domain', () => {
+    expect(layoutTimeline({ items, window: [1.5, 2] }).track).toBeNull()
   })
 })

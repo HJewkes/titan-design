@@ -12,6 +12,7 @@ import {
   type TimelineTone,
 } from './timeline-model'
 
+export { followWindow } from './timeline-model'
 export type { TimelineItem, TimelineRange, TimelineTone } from './timeline-model'
 
 /** `horizontal` fills its width; `vertical` runs down a fixed height (`h-60` unless overridden). */
@@ -27,7 +28,10 @@ export interface TimelineProps extends Omit<ViewProps, 'children'> {
   domain?: TimelineRange<number | Date>
   /** Playhead as a fraction of the domain, 0..1. Omit for no playhead. */
   playhead?: number
-  /** The visible part of the domain as fractions 0..1, e.g. `[0.5, 1]` for the second half. */
+  /**
+   * The visible part of the domain as fractions of it, e.g. `[0.5, 1]` for the second half. It may
+   * run past either end; `followWindow(playhead, width)` keeps the playhead centred as it advances.
+   */
   window?: TimelineRange
   /** Axis direction. Defaults to `horizontal`. */
   orientation?: TimelineOrientation
@@ -66,13 +70,24 @@ function along(orientation: TimelineOrientation, position: number) {
   return orientation === 'horizontal' ? { left: percent(position) } : { top: percent(position) }
 }
 
-function Track({ orientation }: { orientation: TimelineOrientation }) {
+/** The track spans only the domain, so its ends show where the timeline starts and stops. */
+function Track({
+  span: [from, to],
+  orientation,
+}: {
+  span: TimelineRange
+  orientation: TimelineOrientation
+}) {
+  const horizontal = orientation === 'horizontal'
   return (
     <View
-      className={cn(
-        'absolute bg-hairline-strong',
-        orientation === 'horizontal' ? 'inset-x-0 top-1/2 h-px' : 'inset-y-0 left-1 w-px'
-      )}
+      testID="timeline-track"
+      style={
+        horizontal
+          ? { left: percent(from), right: percent(1 - to) }
+          : { top: percent(from), bottom: percent(1 - to) }
+      }
+      className={cn('absolute bg-hairline-strong', horizontal ? 'top-1/2 h-px' : 'left-1 w-px')}
     />
   )
 }
@@ -187,7 +202,7 @@ export function Timeline({
       {...props}
     >
       <View className="relative flex-1">
-        <Track orientation={orientation} />
+        {layout.track !== null && <Track span={layout.track} orientation={orientation} />}
         {layout.marks.map((mark) => (
           <Mark key={mark.item.id} mark={mark} orientation={orientation} />
         ))}

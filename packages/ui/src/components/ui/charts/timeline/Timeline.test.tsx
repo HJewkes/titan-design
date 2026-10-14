@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { Timeline } from './Timeline'
+import { Timeline, followWindow } from './Timeline'
 import type { TimelineItem } from './timeline-model'
 
 const items: TimelineItem[] = [
@@ -43,6 +43,19 @@ describe('Timeline', () => {
     expect(Number(setup.style.opacity)).toBeGreaterThan(0)
     expect(Number(setup.style.opacity)).toBeLessThan(1)
     expect(screen.getByTestId('timeline-mark-build')).toHaveStyle({ opacity: '1' })
+  })
+
+  it('holds the playhead at the centre near the start when following it', () => {
+    render(
+      <Timeline
+        accessibilityLabel="Chapters"
+        items={items}
+        playhead={0.05}
+        window={followWindow(0.05, 0.5)}
+      />
+    )
+    expect(screen.getByTestId('timeline-playhead')).toHaveStyle({ left: '50%' })
+    expect(screen.getByTestId('timeline-track')).toHaveStyle({ left: '40%', right: '0%' })
   })
 
   it('runs down the page when vertical', () => {

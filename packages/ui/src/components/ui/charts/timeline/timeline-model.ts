@@ -26,7 +26,10 @@ export interface TimelineLayoutInput {
   domain?: TimelineRange<number | Date>
   /** Playhead as a fraction of the domain, 0..1. */
   playhead?: number
-  /** The visible part of the domain, as fractions 0..1. Defaults to [0, 1]. */
+  /**
+   * The visible part of the domain, as fractions of it. Defaults to [0, 1]. It may run past either
+   * end, so a window that follows the playhead keeps the playhead at the same place on screen.
+   */
   window?: TimelineRange
 }
 
@@ -48,6 +51,8 @@ export interface TimelineLayout {
   marks: TimelineMark[]
   /** Playhead position along the visible span, or null when unset or outside the window. */
   playhead: number | null
+  /** The part of the visible span the domain covers, [from, to] in 0..1, or null if none. */
+  track: TimelineRange | null
 }
 
 const FULL_WINDOW: TimelineRange = [0, 1]
@@ -77,11 +82,31 @@ export function timelineDomain(
   return min === max ? [min - 1, max + 1] : [min, max]
 }
 
-/** The window clamped to [0, 1]; an empty or inverted window falls back to the whole domain. */
+/**
+ * The window as given, which may run past the domain ends; an empty, inverted or non-finite window
+ * falls back to the whole domain.
+ */
 export function normalizeWindow(window: TimelineRange = FULL_WINDOW): TimelineRange {
-  const start = clampUnit(window[0])
-  const end = clampUnit(window[1])
-  return end > start ? [start, end] : FULL_WINDOW
+  const [start, end] = window
+  return Number.isFinite(start) && Number.isFinite(end) && end > start ? [start, end] : FULL_WINDOW
+}
+
+/**
+ * A window `width` of the domain wide, centred on `playhead`, for a zoomed timeline whose playhead
+ * stays fixed at the centre while the events scroll behind it. Near the ends it runs past the
+ * domain rather than stopping, so the playhead never moves off centre. A width outside (0, 1]
+ * gives the whole domain.
+ */
+export function followWindow(playhead: number, width: number): TimelineRange {
+  if (!Number.isFinite(playhead) || !(width > 0 && width <= 1)) return FULL_WINDOW
+  return [playhead - width / 2, playhead + width / 2]
+}
+
+/** Where the domain [0, 1] lies on the visible span, clipped to it. */
+function visibleTrack(toView: (fraction: number) => number): TimelineRange | null {
+  const from = clampUnit(toView(0))
+  const to = clampUnit(toView(1))
+  return to > from ? [from, to] : null
 }
 
 const isVisible = (position: number) => position >= -EDGE_EPSILON && position <= 1 + EDGE_EPSILON
@@ -117,5 +142,9 @@ export function layoutTimeline({
     .filter(({ opacity }) => opacity > 0)
 
   const head = playhead === undefined || !Number.isFinite(playhead) ? null : toView(playhead)
-  return { marks, playhead: head !== null && isVisible(head) ? head : null }
+  return {
+    marks,
+    playhead: head !== null && isVisible(head) ? head : null,
+    track: visibleTrack(toView),
+  }
 }

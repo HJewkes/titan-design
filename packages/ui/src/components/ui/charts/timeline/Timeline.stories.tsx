@@ -44,7 +44,9 @@ const meta: Meta<typeof Timeline> = {
           '**Organism.** Events on one time axis with a playhead and a pan window, both driven by props: a ' +
           'beat author derives `playhead` and `window` from time, and the timeline itself never animates. ' +
           '`window` is the visible part of the domain as fractions, so `[0.5, 1]` shows the second half and ' +
-          'drops the events before it. Composes [Typography](?path=/docs/foundations-typography--docs), ' +
+          'fades out the events before it. At full width the playhead moves over still events; zoomed in, ' +
+          'pass `window={followWindow(playhead, 0.5)}` and the playhead stays at the centre while the ' +
+          'events scroll behind it. Composes [Typography](?path=/docs/foundations-typography--docs), ' +
           '[Skeleton](?path=/docs/components-atoms-skeleton--docs) (`isLoading`) and ' +
           '[EmptyState](?path=/docs/components-molecules-emptystate--docs) (no `items`). No error state: ' +
           'a consumer that fails to load the events renders the failure, usually with `Alert`. No disabled ' +

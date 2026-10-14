@@ -1993,6 +1993,9 @@ export const FLOATING_ELEVATION_MIN: ElevationLevel;
 export const FLOATING_LIFT_MIN: LiftStep;
 
 // @public
+export function followWindow(playhead: number, width: number): TimelineRange;
+
+// @public
 export function FormActions(input: FormActionsProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
