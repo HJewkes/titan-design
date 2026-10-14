@@ -14408,6 +14408,13 @@
         },
         {
           "default": null,
+          "description": "Named moments in seconds from the beat's start, each within `[0, durationS]`; content reads one with `useCue(name)`.",
+          "name": "cues",
+          "required": false,
+          "type": "Readonly<Record<string, number>>"
+        },
+        {
+          "default": null,
           "description": "Length of the window in seconds.",
           "name": "durationS",
           "required": true,
