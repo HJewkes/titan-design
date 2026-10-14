@@ -2166,6 +2166,44 @@
       "standard": true
     },
     {
+      "name": "EvidenceChip",
+      "file": "packages/ui/src/components/ui/chip/EvidenceChip.tsx",
+      "dir": "ui",
+      "family": "ui/chip",
+      "exports": [
+        "EvidenceChip",
+        "EvidenceChipSize",
+        "EvidenceChipProps",
+        "KindCapsule"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Pill",
+        "Typography"
+      ],
+      "leak": {
+        "rawView": 1,
+        "rawText": 1,
+        "inlineStyle": 2,
+        "rawHex": 0,
+        "loc": 108,
+        "score": 6
+      },
+      "tier": "molecule",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "ExerciseCard",
       "file": "packages/ui/src/components/custom/Workout/ExerciseCard.tsx",
       "dir": "workout",
@@ -5859,6 +5897,50 @@
       "standard": true
     },
     {
+      "name": "ProgressSteps",
+      "file": "packages/ui/src/components/ui/progress/ProgressSteps.tsx",
+      "dir": "ui",
+      "family": "ui/progress",
+      "exports": [
+        "ProgressSteps",
+        "ProgressStepsVariant",
+        "ProgressStepState",
+        "ProgressStepsProps",
+        "stepStateAt",
+        "railPosition",
+        "StepLabels",
+        "DotSteps",
+        "RailChip",
+        "RailConnector",
+        "RailSteps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 2,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Progress"
+      ],
+      "leak": {
+        "rawView": 11,
+        "rawText": 1,
+        "inlineStyle": 2,
+        "rawHex": 0,
+        "loc": 247,
+        "score": 16
+      },
+      "tier": "molecule",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "Radio",
       "file": "packages/ui/src/components/ui/radio/Radio.tsx",
       "dir": "ui",
@@ -7427,6 +7509,44 @@
       },
       "tier": "organism",
       "verdict": "keep-internal",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
+      "name": "StateChip",
+      "file": "packages/ui/src/components/ui/chip/StateChip.tsx",
+      "dir": "ui",
+      "family": "ui/chip",
+      "exports": [
+        "StateChip",
+        "StateChipSize",
+        "StateChipProps",
+        "labelColors",
+        "TransitionLayers"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "Pill"
+      ],
+      "leak": {
+        "rawView": 3,
+        "rawText": 1,
+        "inlineStyle": 4,
+        "rawHex": 0,
+        "loc": 157,
+        "score": 12
+      },
+      "tier": "molecule",
+      "verdict": "dead",
       "deadByAssociation": false,
       "audited": "unaudited",
       "standard": false

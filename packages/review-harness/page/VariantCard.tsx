@@ -62,7 +62,15 @@ interface CardFramesProps extends VariantCardProps {
   liveArgs?: LiveArgs
 }
 
-/** A scale reference is one full-size frame; every other variant is drawn at each manifest width. */
+/** The widths a frame is drawn at: a true-size image or clip once, at its own frame width. */
+function frameWidths(manifest: Manifest, variant: Variant): number[] {
+  return variant.frameReference ? [variant.frameReference.frame.width] : manifest.widths
+}
+
+/**
+ * A scale reference is one full-size frame, and so is a true-size image or clip; every other
+ * variant is drawn at each manifest width.
+ */
 function CardFrames(props: CardFramesProps) {
   const { manifest, variant, draft, onPin, liveArgs } = props
   const sizing = frameSizing(manifest, variant)
@@ -81,7 +89,7 @@ function CardFrames(props: CardFramesProps) {
     )
   return (
     <div className="frames">
-      {manifest.widths.map((width) => {
+      {frameWidths(manifest, variant).map((width) => {
         const shared = { width, annotate: props.annotate, pins, onPin }
         if (isClipVariant(variant)) return <ClipFrame key={width} {...shared} variant={variant} />
         if (isImageVariant(variant))

@@ -27,6 +27,7 @@ export {
   keyframes,
   type InterpolateOptions,
   type Keyframe,
+  type KeyframeOptions,
   type KeyframesOptions,
 } from './interpolate'
 export {
@@ -46,12 +47,21 @@ export {
   type EnvelopePhase,
 } from './envelope'
 export {
+  all,
+  chain,
+  delay,
+  lagged,
   sequence,
+  span,
   stagger,
+  type Lagged,
+  type LaggedOptions,
   type Sequenced,
   type SequenceOptions,
   type SequenceResult,
+  type Span,
   type StaggerOptions,
+  type TimeWindow,
 } from './timeline'
 export { random, randomRange } from './random'
 export { noise2D } from './noise'
@@ -65,6 +75,7 @@ export {
   type LocalTime,
   type Phase,
 } from './hooks'
+export { useCue, type BeatCues } from './cues'
 export {
   Beat,
   BEAT_MOUNT_MARGIN_S,

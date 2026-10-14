@@ -4,6 +4,7 @@ import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path'
 import {
   RoundSchema,
   choiceMismatchMessage,
+  frameSizeMismatch,
   isClipVariant,
   isImageVariant,
   isLoopbackUrl,
@@ -93,16 +94,37 @@ async function resolveClip(roundDir: string, where: string, clip: string): Promi
   return file
 }
 
-/** A PNG's pixel width, from its IHDR chunk, which the signature check has already placed. */
-async function pngWidth(file: string): Promise<number> {
+/** The first `length` bytes of a PNG's IHDR data, which the signature check has already placed. */
+async function readIhdr(file: string, length: 4 | 8, what: string): Promise<Buffer> {
   const handle = await open(file)
   try {
-    const { buffer, bytesRead } = await handle.read(Buffer.alloc(4), 0, 4, 16)
-    if (bytesRead < 4) throw new ReviewError(`cannot read PNG width from ${file}`)
-    return buffer.readUInt32BE(0)
+    const { buffer, bytesRead } = await handle.read(Buffer.alloc(length), 0, length, 16)
+    if (bytesRead < length) throw new ReviewError(`cannot read PNG ${what} from ${file}`)
+    return buffer
   } finally {
     await handle.close()
   }
+}
+
+async function pngWidth(file: string): Promise<number> {
+  return (await readIhdr(file, 4, 'width')).readUInt32BE(0)
+}
+
+async function pngSize(file: string): Promise<{ width: number; height: number }> {
+  const ihdr = await readIhdr(file, 8, 'size')
+  return { width: ihdr.readUInt32BE(0), height: ihdr.readUInt32BE(4) }
+}
+
+/** An image that declares a true-size frame must be that size, in both dimensions. */
+async function frameReferenceProblems(manifest: Manifest, images: Record<string, string>) {
+  const problems = await Promise.all(
+    manifest.variants.filter(isImageVariant).map(async (v) => {
+      if (!v.frameReference) return []
+      const mismatch = frameSizeMismatch(await pngSize(images[v.key]), v.frameReference.frame)
+      return mismatch ? [`variant ${v.key}: image ${v.image} ${mismatch}`] : []
+    })
+  )
+  return problems.flat()
 }
 
 /** Image frames of one CHOICE strip are captured at one width; the manifest cannot see that. */
@@ -207,9 +229,12 @@ export async function loadRound(path: string, storybookOverride?: string): Promi
     )
   const images = await resolveImages(path, manifest)
   const clips = await resolveClips(path, manifest)
-  const widthProblems = await choiceWidthProblems(manifest, images)
-  if (widthProblems.length)
-    throw new ReviewError(`invalid manifest ${path}:\n  ${widthProblems.join('\n  ')}`)
+  const sizeProblems = [
+    ...(await choiceWidthProblems(manifest, images)),
+    ...(await frameReferenceProblems(manifest, images)),
+  ]
+  if (sizeProblems.length)
+    throw new ReviewError(`invalid manifest ${path}:\n  ${sizeProblems.join('\n  ')}`)
   const manifestSha256 = createHash('sha256').update(raw).digest('hex')
   const storybookUrl = (storybookOverride ?? manifest.storybookUrl).replace(/\/$/, '')
   return { manifest, manifestSha256, storybookUrl, images, clips }
