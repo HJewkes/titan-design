@@ -5950,6 +5950,17 @@ export function StatCard(input: StatCardProps): react_jsx_runtime.JSX.Element;
 export type StatCardCaptionPlacement = 'beside' | 'below';
 
 // @public
+export function StatCardFigure(input: StatCardFigureProps): react_jsx_runtime.JSX.Element;
+
+// @public (undocumented)
+export interface StatCardFigureProps {
+    progress?: number;
+    // (undocumented)
+    testID?: string;
+    value: string;
+}
+
+// @public
 export function StatCardHeader(input: StatCardHeaderProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
@@ -5972,7 +5983,6 @@ export interface StatCardProps extends Omit<CardProps, 'children'> {
     header: ReactNode;
     inset?: StatCardInset;
     onContentLayout?: ViewProps['onLayout'];
-    progress?: number;
 }
 
 // @public
