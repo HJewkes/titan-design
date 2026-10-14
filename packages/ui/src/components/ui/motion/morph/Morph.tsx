@@ -5,6 +5,7 @@ import { cn } from '../../../../utils/cn'
 import type { MorphPart } from './match-parts'
 import { partsMorph, type MorphLayer, type PartsMorphOptions } from './parts-morph'
 
+/** Props for `Morph`: two scenes, a progress and a painter, plus the `partsMorph` options. */
 export interface MorphProps<P extends MorphPart>
   extends PartsMorphOptions, Omit<ViewProps, 'children'> {
   /** The scene the morph leaves. */
@@ -17,7 +18,9 @@ export interface MorphProps<P extends MorphPart>
   renderPart: (part: P, layer: MorphLayer<P>) => ReactNode
   /** Stage size in px; parts are placed in this box. */
   width: number
+  /** Stage height in px. */
   height: number
+  /** Tailwind classes for the stage. */
   className?: string
 }
 

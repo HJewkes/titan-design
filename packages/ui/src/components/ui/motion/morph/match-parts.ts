@@ -8,9 +8,13 @@
 
 /** A part's box on the stage, in px from the stage's top left. */
 export interface MorphBox {
+  /** Left edge, px. */
   x: number
+  /** Top edge, px. */
   y: number
+  /** Width, px; positive. */
   width: number
+  /** Height, px; positive. */
   height: number
 }
 
@@ -20,6 +24,7 @@ export interface MorphPart {
   id: string
   /** What the part is, for matching: a label, a shape or a role. Defaults to `id`. */
   key?: string
+  /** Where the part sits in its own scene. */
   box: MorphBox
 }
 
@@ -28,15 +33,21 @@ export type MorphKeyMap = Readonly<Record<string, string>>
 
 /** A source part carried to a target part, by an equal key or by the key map. */
 export interface PartPair {
+  /** Source part id. */
   from: string
+  /** Target part id. */
   to: string
+  /** `key` when the keys are equal, `keyMap` when the key map paired them. */
   via: 'key' | 'keyMap'
 }
 
 /** The parts that transform, and the ids that fade out (`exits`) and in (`enters`). */
 export interface PartMatching {
+  /** Parts that transform, key-mapped pairs first, then in source order. */
   pairs: PartPair[]
+  /** Source part ids with no partner, in source order. */
   exits: string[]
+  /** Target part ids with no partner, in target order. */
   enters: string[]
 }
 

@@ -109,6 +109,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | Metric | candidate | ui/metric | — | — | components-molecules-metric--default |
 | MetricTiles | candidate | custom/Workout | MetricTiles — a row of equal-width stat tiles. | Stack, Tile | custom-workout-metrictiles--four-tiles |
 | Modal | candidate | ui/modal | Modal component for dialogs and overlays. | Surface | components-organisms-modal--backdrop-blur |
+| Morph | candidate | ui/motion | A keyed morph between two scenes (Manim's TransformMatchingParts): parts whose keys match move to their new box, key-mapped parts move and cross-fade, and the rest fade out and in. | — | components-molecules-morph--default |
 | MotionProvider | review | ui/motion | Puts every motion hook below it on `clock`, so a seek clock can drive a render frame by frame. | — | — |
 | MuscleGlyph | review | custom/Workout | — | — | — |
 | MuscleGroupChip | candidate | custom/Workout | MuscleGroupChip — a `Pill` preset that labels a muscle group with a volume-status dot. | Pill | custom-workout-musclegroupchip--all-statuses |

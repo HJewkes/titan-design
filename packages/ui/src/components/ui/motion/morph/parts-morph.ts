@@ -19,9 +19,11 @@ export interface MorphWindows {
 
 /** Options for `partsMorph`. */
 export interface PartsMorphOptions {
+  /** Source keys to target keys that transform although they differ; see `matchParts`. */
   keyMap?: MorphKeyMap
   /** Eases the move; may overshoot. Default `MOTION.ease.inOut`. */
   ease?: Easing
+  /** Overrides some of `DEFAULT_MORPH_WINDOWS`. */
   windows?: Partial<MorphWindows>
   /**
    * Bows each moving part's path (Manim's `path_arc`): the peak sideways offset as a share of the
@@ -36,9 +38,13 @@ export type MorphRole = 'match' | 'mapped' | 'exit' | 'enter'
 
 /** Centre-origin transform from a part's own box to where the layer is now. */
 export interface MorphTransform {
+  /** Horizontal shift of the box centre, px. */
   translateX: number
+  /** Vertical shift of the box centre, px. */
   translateY: number
+  /** Current width over the part's own width. */
   scaleX: number
+  /** Current height over the part's own height. */
   scaleY: number
 }
 
@@ -46,13 +52,19 @@ export interface MorphTransform {
 export interface MorphLayer<P extends MorphPart = MorphPart> {
   /** `from:` or `to:` and the painted part's id: stable across progress, unique within the morph. */
   id: string
+  /** The part whose content this layer paints. */
   part: P
+  /** How the part takes part in the morph. */
   role: MorphRole
+  /** Where the layer is now. */
   box: MorphBox
+  /** From `part.box` to `box`, about the centre. */
   transform: MorphTransform
+  /** In [0, 1]. */
   opacity: number
 }
 
+/** Exits fade over the first half, enters over the second, and matched parts move throughout. */
 export const DEFAULT_MORPH_WINDOWS: MorphWindows = { exit: [0, 0.5], move: [0, 1], enter: [0.5, 1] }
 
 function assertBox({ id, box }: MorphPart): void {

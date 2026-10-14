@@ -136,7 +136,8 @@ const meta: Meta<StoryArgs> = {
           'TransformMatchingParts. Parts with equal keys move and scale to their new box; a `keyMap` ' +
           'entry carries a renamed part across with a cross-fade; the rest fade out over the first half ' +
           'and in over the second. `t` is the morph’s progress, so it seeks frame-exactly. Under ' +
-          'reduced motion it shows the target scene. The parts here are painted with ' +
+          'reduced motion it shows the target scene. Composes no ui/ component itself: `renderPart` ' +
+          'paints each part, here with ' +
           '[Surface](?path=/docs/components-atoms-surface--docs) and ' +
           '[Typography](?path=/docs/foundations-typography--docs). No loading, empty, error or ' +
           'disabled state: it paints parts the consumer already has and takes no input.',
