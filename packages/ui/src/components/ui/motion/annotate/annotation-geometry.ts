@@ -1,6 +1,6 @@
 // The strokes of each annotation kind as pure geometry in the anchor box's own frame (0, 0 is its top-left).
-// The kinds, their placement round the box and their iteration counts follow rough-notation by Preet Shihn and
-// its @remotion/rough-notation port (both MIT, see ../LICENSE-rough-notation); the strokes come from ../rough.
+// The kinds and their placement round the box follow rough-notation by Preet Shihn (MIT, see
+// ../LICENSE-rough-notation); no lines are copied, and the strokes come from ../rough.
 import type { PathModel } from '../paths/model'
 import type { PathPoint } from '../paths/parse'
 import { roughEllipse, roughLine } from '../rough'
@@ -38,7 +38,7 @@ export interface AnnotationStroke {
   width: number
 }
 
-/** Per-kind defaults: the padding and pass counts the @remotion/rough-notation port settled on. */
+/** Per-kind defaults. rough-notation goes over every mark twice; a single line through or across reads cleaner. */
 export const ANNOTATION_DEFAULTS: Record<AnnotationKind, { padding: number; iterations: number }> =
   {
     highlight: { padding: 2, iterations: 2 }, // optical: marker bleed past the glyphs

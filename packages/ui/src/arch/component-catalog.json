@@ -14618,6 +14618,198 @@
     },
     {
       "composes": [
+        "AnnotationMark"
+      ],
+      "family": "ui/motion",
+      "file": "packages/ui/src/components/ui/motion/annotate/Annotate.tsx",
+      "name": "Annotate",
+      "props": [
+        {
+          "default": null,
+          "description": "Pins the mark's box instead of measuring the children, for a story or a test.",
+          "name": "box",
+          "required": false,
+          "type": "AnnotationBox"
+        },
+        {
+          "default": null,
+          "description": "The annotated content, usually a `Typography` word or phrase.",
+          "name": "children",
+          "required": true,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Tailwind classes merged onto the root.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Default `error` for the strike-through and the cross, else `primary`.",
+          "name": "color",
+          "required": false,
+          "type": "AnnotationColor"
+        },
+        {
+          "default": null,
+          "description": "Passes of the pen.",
+          "name": "iterations",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Which mark to draw.",
+          "name": "kind",
+          "required": true,
+          "type": "AnnotationKind"
+        },
+        {
+          "default": null,
+          "description": "Clearance round the box, px.",
+          "name": "padding",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "How far the mark is drawn, 0..1.",
+          "name": "progress",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "0 draws clean lines.",
+          "name": "roughness",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Picks the wobble; the same seed draws the same mark on every render.",
+          "name": "seed",
+          "required": false,
+          "type": "string | number"
+        },
+        {
+          "default": null,
+          "description": "Pen width, px; ignored by `highlight`, which fills the padded box height.",
+          "name": "strokeWidth",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "testID",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "purpose": "Annotate: marks its children with a hand-drawn highlight, underline, box, circle, strike-through or cross, drawn on as `progress` runs 0..1.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/motion/annotate/Annotate.tsx",
+        "status": "packages/ui/src/components/ui/motion/annotate/Annotate.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-annotate--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [],
+      "family": "ui/motion",
+      "file": "packages/ui/src/components/ui/motion/annotate/AnnotationMark.tsx",
+      "name": "AnnotationMark",
+      "props": [
+        {
+          "default": null,
+          "description": "The annotated area in the parent's px, e.g. a node box after `project`.",
+          "name": "box",
+          "required": true,
+          "type": "AnnotationBox"
+        },
+        {
+          "default": "defaultColor(kind)",
+          "description": "Default `error` for the strike-through and the cross, else `primary`.",
+          "name": "color",
+          "required": false,
+          "type": "AnnotationColor"
+        },
+        {
+          "default": "ANNOTATION_DEFAULTS[kind].iterations",
+          "description": "Passes of the pen.",
+          "name": "iterations",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Which mark to draw.",
+          "name": "kind",
+          "required": true,
+          "type": "AnnotationKind"
+        },
+        {
+          "default": "ANNOTATION_DEFAULTS[kind].padding",
+          "description": "Clearance round the box, px.",
+          "name": "padding",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "How far the mark is drawn, 0..1.",
+          "name": "progress",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "1",
+          "description": "0 draws clean lines.",
+          "name": "roughness",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Picks the wobble; the same seed draws the same mark on every render.",
+          "name": "seed",
+          "required": false,
+          "type": "string | number"
+        },
+        {
+          "default": "2",
+          "description": "Pen width, px; ignored by `highlight`, which fills the padded box height.",
+          "name": "strokeWidth",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "",
+          "name": "testID",
+          "required": false,
+          "type": "string"
+        }
+      ],
+      "purpose": "AnnotationMark: a rough-notation style mark (highlight, underline, box, circle, strike-through or crossed-off) drawn round `box` as far as `progress`.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/motion/annotate/AnnotationMark.tsx",
+        "status": "packages/ui/src/components/ui/motion/annotate/AnnotationMark.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-annotationmark--default"
+      ],
+      "tier": "atom"
+    },
+    {
+      "composes": [
         "Typography"
       ],
       "family": "ui/page",

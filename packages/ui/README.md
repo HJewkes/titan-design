@@ -468,3 +468,7 @@ Use NativeWind platform modifiers when needed:
 ## License
 
 MIT
+
+The `/motion` entry ports or follows MIT, BSD and Apache-2.0 licensed work, each noticed in a `LICENSE*` file beside
+the code in `src/components/ui/motion/`: simplex-noise, Theatre.js, @remotion/paths and its sources, and
+rough-notation with roughjs (the `Annotate` marks and `roughLine` / `roughEllipse`).
