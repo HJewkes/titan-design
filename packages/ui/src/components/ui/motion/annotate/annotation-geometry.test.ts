@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { pointAtLength } from '../paths'
+import { pointAtLength, type PathPoint } from '../paths'
 import {
   ANNOTATION_DEFAULTS,
   annotationStrokes,
@@ -14,11 +14,24 @@ function options(kind: AnnotationKind, overrides: { roughness?: number; seed?: n
   return { seed: 1, roughness: 1, strokeWidth: 2, ...ANNOTATION_DEFAULTS[kind], ...overrides }
 }
 
-const ends = (kind: AnnotationKind) =>
-  annotationStrokes(kind, box, options(kind, { roughness: 0 })).map(({ model }) => [
-    pointAtLength(model, 0),
-    pointAtLength(model, model.length),
-  ])
+interface StrokeEnds {
+  start: PathPoint
+  end: PathPoint
+}
+
+/** Where each clean (roughness 0) stroke of `kind` starts and ends. */
+function ends(kind: AnnotationKind): StrokeEnds[] {
+  return annotationStrokes(kind, box, options(kind, { roughness: 0 })).map(({ model }) => ({
+    start: pointAtLength(model, 0),
+    end: pointAtLength(model, model.length),
+  }))
+}
+
+function nth(strokes: readonly StrokeEnds[], i: number): StrokeEnds {
+  const stroke = strokes[i]
+  if (!stroke) throw new Error(`no stroke ${String(i)}`)
+  return stroke
+}
 
 describe('annotationStrokes', () => {
   // Mutation caught: any unseeded randomness in a kind's geometry.
@@ -45,21 +58,20 @@ describe('annotationStrokes', () => {
 
   // Mutation caught: an underline drawn at the box top or without its clearance.
   it('puts the underline the padding below the box, across its width', () => {
-    const [[start, end]] = ends('underline') as [[{ x: number; y: number }, { x: number }]]
+    const { start, end } = nth(ends('underline'), 0)
     expect(start.y).toBeCloseTo(box.h + ANNOTATION_DEFAULTS.underline.padding, 6)
     expect([start.x, end.x]).toEqual([0, box.w])
   })
 
   // Mutation caught: a second pass that repeats the first direction instead of coming back.
   it('runs each repeat pass back over the last', () => {
-    const [first, second] = ends('underline') as [[{ x: number }, { x: number }], [{ x: number }]]
-    expect(second[0].x).toBeCloseTo(first[1].x, 6)
+    const strokes = ends('underline')
+    expect(nth(strokes, 1).start.x).toBeCloseTo(nth(strokes, 0).end.x, 6)
   })
 
   // Mutation caught: a strike-through at the baseline instead of mid-height.
   it('strikes through at mid-height', () => {
-    const [[start]] = ends('strike-through') as [[{ y: number }]]
-    expect(start.y).toBeCloseTo(box.h / 2, 6)
+    expect(nth(ends('strike-through'), 0).start.y).toBeCloseTo(box.h / 2, 6)
   })
 
   // Mutation caught: a highlight stroke as thin as a pen line.
@@ -71,24 +83,21 @@ describe('annotationStrokes', () => {
   // Mutation caught: crossing only one diagonal, or both the same way.
   it('crosses off corner to corner both ways', () => {
     const p = ANNOTATION_DEFAULTS['crossed-off'].padding
-    const [diagonal, anti] = ends('crossed-off') as [
-      [{ x: number; y: number }],
-      [{ x: number; y: number }],
-    ]
-    expect(diagonal[0]).toEqual({ x: -p, y: -p })
-    expect(anti[0]).toEqual({ x: box.w + p, y: -p })
+    const strokes = ends('crossed-off')
+    expect(nth(strokes, 0).start).toEqual({ x: -p, y: -p })
+    expect(nth(strokes, 1).start).toEqual({ x: box.w + p, y: -p })
   })
 
   // Mutation caught: a box whose sides do not join corner to corner.
   it('draws a box as four sides joined at the padded corners', () => {
     const p = ANNOTATION_DEFAULTS.box.padding
-    const sides = ends('box').slice(0, 4)
+    const sides = ends('box')
     for (let i = 0; i < 4; i++) {
-      const next = sides[(i + 1) % 4]?.[0]
-      expect(sides[i]?.[1].x).toBeCloseTo(next?.x ?? NaN, 6)
-      expect(sides[i]?.[1].y).toBeCloseTo(next?.y ?? NaN, 6)
+      const next = nth(sides, (i + 1) % 4).start
+      expect(nth(sides, i).end.x).toBeCloseTo(next.x, 6)
+      expect(nth(sides, i).end.y).toBeCloseTo(next.y, 6)
     }
-    expect(sides[0]?.[0]).toEqual({ x: -p, y: -p })
+    expect(nth(sides, 0).start).toEqual({ x: -p, y: -p })
   })
 })
 
