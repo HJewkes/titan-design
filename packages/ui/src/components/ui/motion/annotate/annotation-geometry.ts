@@ -141,10 +141,9 @@ export function annotationStrokes(
  * speed, so each takes a share of the time equal to its share of the total length.
  */
 export function strokeProgress(lengths: readonly number[], progress: number): number[] {
-  const clamped = Math.min(1, Math.max(0, progress))
   // A finished mark is exactly finished; summing lengths in another order would leave 1e-14 undrawn.
-  if (clamped === 1) return lengths.map(() => 1)
-  const drawn = clamped * lengths.reduce((sum, length) => sum + length, 0)
+  if (progress >= 1) return lengths.map(() => 1)
+  const drawn = progress * lengths.reduce((sum, length) => sum + length, 0)
   let before = 0
   return lengths.map((length) => {
     const share = length > 0 ? (drawn - before) / length : drawn >= before ? 1 : 0

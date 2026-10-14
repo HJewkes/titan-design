@@ -99,9 +99,14 @@ describe('strokeProgress', () => {
     expect(strokeProgress([100, 300], 0.625)).toEqual([1, 0.5])
   })
 
-  // Mutation caught: no clamp, so a progress past 1 overdraws and below 0 draws backwards.
+  // Mutation caught: no clamp on each share, so a progress past 1 overdraws and below 0 draws backwards.
   it('clamps progress to 0..1', () => {
     expect(strokeProgress([10, 10], -1)).toEqual([0, 0])
     expect(strokeProgress([10, 10], 2)).toEqual([1, 1])
+  })
+
+  // Mutation caught: dropping the exact finish, which leaves the last stroke 1e-14 short at progress 1.
+  it('finishes every stroke exactly at progress 1', () => {
+    expect(strokeProgress([0.1, 0.2, 0.3], 1)).toEqual([1, 1, 1])
   })
 })

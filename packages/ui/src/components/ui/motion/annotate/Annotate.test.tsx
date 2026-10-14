@@ -39,6 +39,15 @@ describe('AnnotationMark', () => {
     expect(second.container.innerHTML).toBe(firstHtml)
   })
 
+  // Mutation caught: a seed that never reaches the stroke geometry.
+  it('draws another wobble for another seed', () => {
+    const d = (seed: string) =>
+      paths(
+        render(<AnnotationMark kind="circle" box={box} seed={seed} />).container
+      )[0]?.getAttribute('d')
+    expect(d('a')).not.toBe(d('b'))
+  })
+
   // Mutation caught: drawing the box in world space rather than at the anchor box.
   it('places its layer at the anchor box', () => {
     const { container } = render(<AnnotationMark kind="box" box={box} />)
@@ -115,12 +124,18 @@ describe('Annotate', () => {
 
   // Mutation caught: drawing before layout with a zero box, which paints a stray dot.
   it('draws no mark until the children have a size', () => {
-    const { container } = render(
+    const unmeasured = render(
       <Annotate kind="circle">
         <Typography>word</Typography>
       </Annotate>
     )
-    expect(container.querySelector('svg')).toBeNull()
+    expect(unmeasured.container.querySelector('svg')).toBeNull()
+    const empty = render(
+      <Annotate kind="circle" box={{ x: 0, y: 0, w: 0, h: 0 }}>
+        <Typography>word</Typography>
+      </Annotate>
+    )
+    expect(empty.container.querySelector('svg')).toBeNull()
   })
 
   // Mutation caught: giving the layer role="img" with no name (axe svg-img-alt).
