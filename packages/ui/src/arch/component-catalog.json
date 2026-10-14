@@ -15005,6 +15005,82 @@
       "tier": "atom"
     },
     {
+      "composes": [
+        "Progress"
+      ],
+      "family": "ui/progress",
+      "file": "packages/ui/src/components/ui/progress/ProgressSteps.tsx",
+      "name": "ProgressSteps",
+      "props": [
+        {
+          "default": null,
+          "description": "Additional className",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Color of completed steps.",
+          "name": "color",
+          "required": false,
+          "type": "ProgressColor"
+        },
+        {
+          "default": null,
+          "description": "Current step (0-indexed)",
+          "name": "currentStep",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Labels for each step",
+          "name": "labels",
+          "required": false,
+          "type": "string[]"
+        },
+        {
+          "default": null,
+          "description": "Fractional position along the steps, 0..totalSteps-1.",
+          "name": "progress",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Size of step indicators.",
+          "name": "size",
+          "required": false,
+          "type": "\"sm\" | \"md\" | \"lg\""
+        },
+        {
+          "default": null,
+          "description": "Total number of steps",
+          "name": "totalSteps",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": "dots",
+          "description": "`dots` (default) or `rail`: state chips joined by connectors that fill with `progress`.",
+          "name": "variant",
+          "required": false,
+          "type": "ProgressStepsVariant"
+        }
+      ],
+      "purpose": "Step-based progress indicator.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/progress/ProgressSteps.tsx",
+        "status": "packages/ui/src/components/ui/progress/ProgressSteps.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-progresssteps--default"
+      ],
+      "tier": "molecule"
+    },
+    {
       "composes": [],
       "family": "ui/radio",
       "file": "packages/ui/src/components/ui/radio/Radio.tsx",

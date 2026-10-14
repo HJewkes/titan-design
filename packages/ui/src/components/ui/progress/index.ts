@@ -3,6 +3,8 @@ export type {
   ProgressProps,
   CircularProgressProps,
   ProgressStepsProps,
+  ProgressStepsVariant,
+  ProgressStepState,
   ProgressSize,
   ProgressColor,
   ProgressVariant,

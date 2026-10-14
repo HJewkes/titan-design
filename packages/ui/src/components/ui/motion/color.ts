@@ -8,6 +8,7 @@
 // parsing and formatting are titan's own, the lerp takes titan's `interpolate` options, and
 // non-hex input throws instead of falling back to black.
 import { interpolate, type InterpolateOptions } from './interpolate'
+import { linear, type Easing } from './easing'
 
 interface Rgba {
   r: number
@@ -89,5 +90,50 @@ export function interpolateColor(
   const lerp = (x: number, y: number) => x + (y - x) * p
   return toHexString(
     oklabToSrgb({ r: lerp(a.r, b.r), g: lerp(a.g, b.g), b: lerp(a.b, b.b), a: lerp(a.a, b.a) })
+  )
+}
+
+const TAU = 2 * Math.PI
+/** Below this chroma a colour's hue is noise. */
+const ACHROMATIC = 1e-4
+
+function toOklch({ r: l, g: a, b, a: alpha }: Rgba) {
+  return { l, c: Math.hypot(a, b), h: Math.atan2(b, a), alpha }
+}
+
+/** Options for `interpolateColorOklch`. */
+export interface OklchInterpolateOptions extends InterpolateOptions {
+  /** Applied to the eased progress for lightness only, e.g. to hold lightness while hue turns. */
+  lightnessEase?: Easing
+}
+
+/**
+ * Like `interpolateColor`, but mixed in OKLCH: lightness and chroma move in a straight line and the
+ * hue turns along the shorter arc, so two saturated colours stay saturated through the midpoint
+ * (orange to green passes yellow, not olive). An achromatic end takes the other end's hue. The same
+ * token bypass applies: pass resolved hex values.
+ */
+export function interpolateColorOklch(
+  t: number,
+  input: readonly [number, number],
+  [from, to]: readonly [string, string],
+  { lightnessEase = linear, ...options }: OklchInterpolateOptions = {}
+): string {
+  const p = interpolate(t, input, [0, 1], options)
+  const a = toOklch(srgbToOklab(parseHex(from)))
+  const b = toOklch(srgbToOklab(parseHex(to)))
+  const lerp = (x: number, y: number, q = p) => x + (y - x) * q
+  const hueA = a.c < ACHROMATIC ? b.h : a.h
+  const hueB = b.c < ACHROMATIC ? hueA : b.h
+  const turn = ((((hueB - hueA) % TAU) + 3 * Math.PI) % TAU) - Math.PI
+  const h = hueA + turn * p
+  const c = lerp(a.c, b.c)
+  return toHexString(
+    oklabToSrgb({
+      r: lerp(a.l, b.l, lightnessEase(p)),
+      g: c * Math.cos(h),
+      b: c * Math.sin(h),
+      a: lerp(a.alpha, b.alpha),
+    })
   )
 }
