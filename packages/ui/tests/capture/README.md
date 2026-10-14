@@ -8,13 +8,13 @@ captures it frame by frame under virtual time. `pnpm test:capture` builds the pa
 | File                 | Role                                                                                           |
 | -------------------- | ---------------------------------------------------------------------------------------------- |
 | `page/ProofBeat.tsx` | One `Beat` holding the six components, each driven by its own staggered window                 |
-| `page/main.tsx`      | `MotionProvider(seekClock)` and a local `window.__titanMotion` shim                            |
+| `page/main.tsx`      | `MotionProvider(seekClock)`, which publishes the `window.__titanMotion` bridge (TD-842a)       |
 | `vite.config.ts`     | The RNW alias, nativewind as the JSX runtime and Tailwind; `no-rnw-alias` mode drops the alias |
 | `virtual-time.ts`    | The spike's virtual-time init script, unchanged                                                |
 | `capture.ts`         | Open, seek, `ready()`, screenshot                                                              |
 
-The shim has the bridge's shape (`seek`, `ready`, `duration`). When TD-842a lands, the page
-switches to the bridge and drops the shim.
+Capture drives the bridge MotionProvider publishes on a seek clock. The page installs nothing of
+its own, and a test checks that `__titanMotion` is the provider's.
 
 ## Result
 
@@ -36,7 +36,7 @@ needed. The svg resolution Storybook carries is not needed for these six compone
 | --------------------------------------------- | ---------------------------------------------------------- |
 | Two 90-frame captures                         | byte-identical, 90 of 90 frames                            |
 | Scrambled-order capture against a sweep       | identical, 90 of 90 frames                                 |
-| Seek + `ready()`, 90 seeks in scrambled order | median 6.7 ms, max 11.9 ms                                 |
+| Seek + `ready()`, 90 seeks in scrambled order | median 6.9 ms, max 13.4 ms                                 |
 | Build without the alias                       | fails: Rollup parses `react-native/index.js` (Flow source) |
 | react-native-web in the page bundle           | 256 kB raw, 79 kB gzip, of 490 kB / 157 kB JS              |
 
