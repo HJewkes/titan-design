@@ -140,7 +140,28 @@ export function mediaClock(media: HTMLMediaElement): Clock;
 // @public
 export const MOTION: {
     readonly duration: Record<"normal" | "fast" | "slow", number>;
-    readonly ease: Record<"out" | "inOut" | "spring", Easing>;
+    readonly ease: Record<"out" | "inOut" | "spring" | "in", Easing>;
+    readonly video: {
+        rise: 40;
+        scaleFrom: 0.97;
+        exitScale: 0.85;
+        exit: number;
+        hero: number;
+        enter: number;
+        count: number;
+        emphasis: number;
+        staggerEach: number;
+        staggerMax: number;
+    };
+    readonly spring: Record<"heavy" | "smooth" | "snappy" | "bouncy", Required<Pick<SpringOptions, "stiffness" | "damping" | "mass">>>;
+    readonly springPreset: typeof springPreset;
+    readonly staggerEachS: typeof staggerEachS;
+    readonly dim: {
+        readonly context: {
+            readonly opacity: 0.35;
+            readonly saturation: 0;
+        };
+    };
 };
 
 // @public

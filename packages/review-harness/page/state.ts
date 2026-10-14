@@ -58,6 +58,8 @@ export type Action =
   | { type: 'value'; id: string; value: number }
   | { type: 'text'; id: string; text: string }
   | { type: 'answerComment'; id: string; comment: string }
+  | { type: 'optionNote'; id: string; option: string; note: string }
+  | { type: 'reveal'; id: string }
   | { type: 'general'; text: string }
   | { type: 'toggleAnnotate' }
   | { type: 'toggleColumns' }
@@ -173,7 +175,14 @@ export function pageStepAction(manifest: Manifest, active: number, delta: number
   return target ? { type: 'jump', index: target.first } : null
 }
 
-/** A recommendation stays hidden until its question is answered, so it cannot anchor the pick. */
+function isDraftAnswered(question: Question, draft: AnswerDraft): boolean {
+  return isAnswered(question, { ...draft, ...draftAnswer(question, draft) })
+}
+
+/**
+ * A recommendation stays hidden until the owner reveals it or answers, so it cannot anchor the
+ * pick unnoticed; an answer given while it shows is tagged seen.
+ */
 export function recommendationVisible(
   manifest: Manifest,
   question: Question,
@@ -182,7 +191,8 @@ export function recommendationVisible(
   if (question.kind === 'text' || !question.recommendation) return false
   return (
     manifest.recommendations === 'shown' ||
-    isAnswered(question, { ...draft, ...draftAnswer(question, draft) })
+    draft.revealed === true ||
+    isDraftAnswered(question, draft)
   )
 }
 
@@ -331,6 +341,12 @@ function reduceAnswer(draft: ReviewDraft, action: Action): ReviewDraft {
       return updateAnswer(draft, action.id, () => ({ text: action.text }))
     case 'answerComment':
       return updateAnswer(draft, action.id, () => ({ comment: action.comment }))
+    case 'optionNote':
+      return updateAnswer(draft, action.id, (a) => ({
+        notes: { ...a.notes, [action.option]: action.note },
+      }))
+    case 'reveal':
+      return updateAnswer(draft, action.id, (a) => ({ revealed: !a.revealed }))
     case 'general':
       return { ...draft, general: action.text }
     default:
@@ -364,6 +380,29 @@ function reduceLinked(manifest: Manifest, draft: ReviewDraft, action: Action): R
   if (action.type === 'verdict') return linkVerdict(manifest, next, action)
   if (action.type === 'revision') return linkRevision(manifest, next, action.id)
   return next
+}
+
+const givenAnswer = (a: AnswerDraft | undefined) =>
+  JSON.stringify([a?.pick, a?.revision, a?.picks, a?.value])
+
+/**
+ * An answer that lands while the recommendation shows is seen; one given blind stays blind when
+ * revealed later, and clearing the answer clears the tag.
+ */
+function tagSeen(manifest: Manifest, before: ReviewDraft, after: ReviewDraft): ReviewDraft {
+  return manifest.questions.reduce((draft, q) => {
+    const [was, now] = [before.answers[q.id], draft.answers[q.id]]
+    if (!now || givenAnswer(was) === givenAnswer(now)) return draft
+    if (!isDraftAnswered(q, now))
+      return now.seen ? updateAnswer(draft, q.id, () => ({ seen: undefined })) : draft
+    return was && recommendationVisible(manifest, q, was)
+      ? updateAnswer(draft, q.id, () => ({ seen: true }))
+      : draft
+  }, after)
+}
+
+function reduceDraft(manifest: Manifest, draft: ReviewDraft, action: Action): ReviewDraft {
+  return tagSeen(manifest, draft, reduceLinked(manifest, draft, action))
 }
 
 /** A pick of a blocked PR group's Ship option is refused, whichever input made it. */
@@ -403,9 +442,9 @@ export function createReducer(manifest: Manifest) {
       case 'pick':
         return shipIsBlocked(manifest, state.draft, action)
           ? state
-          : { ...state, draft: reduceLinked(manifest, state.draft, action) }
+          : { ...state, draft: reduceDraft(manifest, state.draft, action) }
       default:
-        return { ...state, draft: reduceLinked(manifest, state.draft, action) }
+        return { ...state, draft: reduceDraft(manifest, state.draft, action) }
     }
   }
 }
