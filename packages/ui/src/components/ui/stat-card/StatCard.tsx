@@ -168,6 +168,7 @@ export function StatCardHeader({ title, trailing, testID }: StatCardHeaderProps)
   )
 }
 
+/** Props for {@link StatCardFigure}. */
 export interface StatCardFigureProps {
   /** The figure as it reads when settled, e.g. `12,480 kg`. */
   value: string
@@ -176,6 +177,7 @@ export interface StatCardFigureProps {
    * and lands on `value` exactly at 1. Omitted, or under reduced motion, `value` shows as given.
    */
   progress?: number
+  /** Test id on the figure text. */
   testID?: string
 }
 

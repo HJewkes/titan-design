@@ -5952,10 +5952,9 @@ export type StatCardCaptionPlacement = 'beside' | 'below';
 // @public
 export function StatCardFigure(input: StatCardFigureProps): react_jsx_runtime.JSX.Element;
 
-// @public (undocumented)
+// @public
 export interface StatCardFigureProps {
     progress?: number;
-    // (undocumented)
     testID?: string;
     value: string;
 }
