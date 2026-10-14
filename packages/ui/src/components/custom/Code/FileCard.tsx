@@ -30,6 +30,7 @@ export interface FileCardProps extends Omit<ViewProps, 'children'> {
   metrics?: readonly FileCardMetric[]
   /** How the file changed against the baseline. Absent means unchanged. */
   status?: FileCardStatus
+  /** Tailwind classes merged onto the root. */
   className?: string
 }
 
@@ -45,7 +46,7 @@ function RowValue({ row }: { row: FileCardRow }) {
   const delta = metricDeltaText(row.delta)
   const hasPercentile = row.percentile !== null && row.percentile !== undefined
   return (
-    <View className="flex-row items-baseline gap-inline-xs">
+    <View className="flex-row items-baseline gap-inline-sm">
       <Typography variant="mono" className="text-sm" style={TABULAR}>
         {metricValueText(row.value)}
       </Typography>
@@ -85,7 +86,7 @@ export function FileCard({
   const statusMeta = status === undefined ? undefined : STATUS_TONE[status]
   return (
     <View className={cn('gap-stack-sm', className)} {...props}>
-      <View className="flex-row flex-wrap items-center gap-inline-sm">
+      <View className="flex-row flex-wrap items-center gap-inline-md">
         <FilePathLabel path={path} className="shrink" />
         {statusMeta ? (
           <Pill variant="subtle" size="sm" tone={statusMeta.tone}>

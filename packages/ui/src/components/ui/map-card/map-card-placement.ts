@@ -7,7 +7,9 @@ export type MapCardSide = 'left' | 'right'
 
 /** A card's size in screen px. */
 export interface MapCardSize {
+  /** Width in px. */
   width: number
+  /** Height in px. */
   height: number
 }
 
@@ -15,7 +17,9 @@ export interface MapCardSize {
 export interface MapCardPlacementInput {
   /** The anchor's screen point, as `project()` returns it. */
   anchor: Point
+  /** The screen the map renders into, in px. */
   viewport: Viewport
+  /** The card's box size. */
   size: MapCardSize
   /** `auto` prefers the right and flips left when the card would cross the right margin. */
   side?: 'auto' | MapCardSide
@@ -25,7 +29,9 @@ export interface MapCardPlacementInput {
 
 /** A card's box and its leader line, in screen px. */
 export interface MapCardPlacement {
+  /** The side the card ended up on. */
   side: MapCardSide
+  /** The card's box: inside the viewport margins and above the keep-out. */
   box: { x: number; y: number; width: number; height: number }
   /** From the anchor to the card's near edge. */
   leader: { from: Point; to: Point }
@@ -33,6 +39,7 @@ export interface MapCardPlacement {
   keepOutY: number
 }
 
+/** The default caption keep-out: the card stays above 83% of the viewport height. */
 export const MAP_CARD_KEEP_OUT = 0.83
 /** Horizontal run of the leader line from the anchor to the card. */
 export const MAP_CARD_LEADER_PX = 48

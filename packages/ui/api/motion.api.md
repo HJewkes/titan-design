@@ -6,6 +6,7 @@
 
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import { ReactNode } from 'react';
+import { ViewProps } from 'react-native';
 
 // @public
 export function all(...spans: Span[]): Span;
@@ -116,6 +117,35 @@ export interface EnvelopeOptions {
 export type EnvelopePhase = 'before' | 'in' | 'hold' | 'out' | 'after';
 
 // @public
+export const FILE_CARD_METRIC_ORDER: readonly ["loc", "function_count", "cyclomatic_max", "cyclomatic_sum", "max_nesting_depth", "fan_in", "fan_out", "instability"];
+
+// @public
+export function FileCard(input: FileCardProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface FileCardMetric {
+    delta?: number | null;
+    key: string;
+    label?: string;
+    percentile?: number | null;
+    value: number | null;
+}
+
+// @public
+export interface FileCardProps extends Omit<ViewProps, 'children'> {
+    className?: string;
+    fanIn?: number;
+    fanOut?: number;
+    loc?: number;
+    metrics?: readonly FileCardMetric[];
+    path: string;
+    status?: FileCardStatus;
+}
+
+// @public
+export type FileCardStatus = 'added' | 'removed' | 'renamed';
+
+// @public
 export function interpolate(t: number, input: readonly [number, number], input2: readonly [number, number], input3?: InterpolateOptions): number;
 
 // @public
@@ -180,6 +210,64 @@ export interface LocalTime {
 
 // @public
 export function localTime(raw: number, durationS: number): LocalTime;
+
+// @public
+export const MAP_CARD_KEEP_OUT = 0.83;
+
+// @public
+export function MapCard(input: MapCardProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface MapCardPlacement {
+    box: {
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+    };
+    keepOutY: number;
+    leader: {
+        from: Point;
+        to: Point;
+    };
+    side: MapCardSide;
+}
+
+// @public
+export function mapCardPlacement(input: MapCardPlacementInput): MapCardPlacement;
+
+// @public
+export interface MapCardPlacementInput {
+    anchor: Point;
+    keepOutFraction?: number;
+    side?: 'auto' | MapCardSide;
+    size: MapCardSize;
+    viewport: Viewport;
+}
+
+// @public
+export interface MapCardProps {
+    accessibilityLabel?: string;
+    anchor: Point;
+    children: ReactNode;
+    className?: string;
+    enter?: number;
+    exit?: number;
+    keepOutFraction?: number;
+    side?: 'auto' | 'left' | 'right';
+    size?: MapCardSize;
+    title?: ReactNode;
+    viewport: Viewport;
+}
+
+// @public
+export type MapCardSide = 'left' | 'right';
+
+// @public
+export interface MapCardSize {
+    height: number;
+    width: number;
+}
 
 // @public
 export function mediaClock(media: HTMLMediaElement): Clock;

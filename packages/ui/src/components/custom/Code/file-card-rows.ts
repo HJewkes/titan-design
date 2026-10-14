@@ -7,6 +7,7 @@ export interface FileCardMetric {
   key: string
   /** Display name. Defaults to the known key's label, else the key. */
   label?: string
+  /** The measured value; `null` when it was not measured. */
   value: number | null
   /** The file's rank among its peers, 0..100. */
   percentile?: number | null
