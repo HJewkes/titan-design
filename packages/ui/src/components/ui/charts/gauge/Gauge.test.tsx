@@ -3,6 +3,7 @@ import { stubReducedMotion } from '../../../../test/reduced-motion-stub'
 import { render, screen } from '@testing-library/react'
 import { Text } from 'react-native'
 import { axe } from 'jest-axe'
+import { capturedByNode } from '../../../../test/classname-capture'
 import { contrast, compositeOver } from '../../../../theme/color-checks'
 import { getSemanticColors, type ThemeMode } from '../../../../theme/tokens/semantic'
 import { SurfaceContext } from '../../surface'
@@ -152,6 +153,7 @@ describe('Gauge with progress', () => {
   const filled = () =>
     screen.getAllByTestId('gauge-segment').filter((s) => s.style.backgroundColor !== track).length
   const shown = () => screen.getByTestId('gauge-value').textContent
+  const valueClasses = () => capturedByNode.get(screen.getByTestId('gauge-value'))?.split(' ') ?? []
 
   it.each([
     [0, '0.0', 0],
@@ -170,7 +172,7 @@ describe('Gauge with progress', () => {
 
   it('draws the counting number in tabular digits', () => {
     render(<Gauge value={82.5} progress={0.5} />)
-    expect(screen.getByTestId('gauge-value')).toHaveStyle({ fontVariant: 'tabular-nums' })
+    expect(valueClasses()).toContain('tabular-nums')
   })
 
   it('shows the final value and fill when the reader prefers reduced motion', () => {
@@ -188,7 +190,7 @@ describe('Gauge with progress', () => {
   it('keeps proportional digits with no progress', () => {
     render(<Gauge value={82.5} />)
     expect(shown()).toBe('82.5')
-    expect(screen.getByTestId('gauge-value').style.fontVariant).toBe('')
+    expect(valueClasses()).not.toContain('tabular-nums')
     expect(filled()).toBe(33)
   })
 })

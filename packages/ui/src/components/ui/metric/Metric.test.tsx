@@ -192,17 +192,16 @@ describe('Metric with progress', () => {
     [1, '2,400'],
   ])('at progress %s shows %s', (progress, shown) => {
     render(<Metric value="2,400" label="Reps" progress={progress} testID="metric" />)
-    expect(valueText()).toHaveTextContent(shown)
+    expect(valueText().textContent).toBe(shown)
   })
 
   it('lands on the exact value text, decimals included, at progress 1', () => {
-    render(<Metric value="1.24" label="Velocity" unit="m/s" progress={1} testID="metric" />)
-    expect(valueText().textContent).toBe('1.24')
+    render(<Metric value="98,765.4" label="Load" unit="kg" progress={1} testID="metric" />)
+    expect(valueText().textContent).toBe('98,765.4')
   })
 
   it('draws the counting figure in tabular digits', () => {
     render(<Metric value="2,400" label="Reps" progress={0.5} testID="metric" />)
-    expect(valueText()).toHaveStyle({ fontVariant: 'tabular-nums' })
     expect(classesOf(valueText())).toContain('tabular-nums')
   })
 
@@ -215,7 +214,6 @@ describe('Metric with progress', () => {
   it('keeps proportional digits and the given text with no progress', () => {
     render(<Metric value="2,400" label="Reps" testID="metric" />)
     expect(valueText().textContent).toBe('2,400')
-    expect(valueText().style.fontVariant).toBe('')
     expect(classesOf(valueText())).not.toContain('tabular-nums')
   })
 

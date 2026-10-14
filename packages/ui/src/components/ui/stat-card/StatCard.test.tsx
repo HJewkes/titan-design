@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Text } from 'react-native'
 
-import { capturedClassNames } from '../../../test/classname-capture'
+import { capturedByNode, capturedClassNames } from '../../../test/classname-capture'
 import { resolveAll, spacingClassesOf } from '../../../test/spacing-resolver'
 import { StatCard, StatCardHeader, type StatCardProps } from './StatCard'
 
@@ -149,6 +149,7 @@ describe('StatCard with progress', () => {
   afterEach(() => vi.unstubAllGlobals())
   const figureText = () =>
     screen.getByTestId('card-stat-card-figure').firstElementChild as HTMLElement
+  const figureClasses = () => capturedByNode.get(figureText())?.split(' ') ?? []
 
   it.each([
     [0, '0.0 lb'],
@@ -161,7 +162,7 @@ describe('StatCard with progress', () => {
 
   it('draws the counting figure in tabular digits', () => {
     renderCard({ figure: '196.8 lb', caption: undefined, progress: 0.5 })
-    expect(figureText()).toHaveStyle({ fontVariant: 'tabular-nums' })
+    expect(figureClasses()).toContain('tabular-nums')
   })
 
   it('shows the final figure when the reader prefers reduced motion', () => {
@@ -173,7 +174,7 @@ describe('StatCard with progress', () => {
   it('renders a string figure as given, in proportional digits, with no progress', () => {
     renderCard({ figure: '196.8 lb', caption: undefined })
     expect(figureText().textContent).toBe('196.8 lb')
-    expect(figureText().style.fontVariant).toBe('')
+    expect(figureClasses()).not.toContain('tabular-nums')
   })
 
   it('leaves a node figure untouched whatever the progress', () => {
