@@ -160,6 +160,11 @@ describe('StatCard with progress', () => {
     expect(figureText().textContent).toBe(shown)
   })
 
+  it('lands on the exact figure text at progress 1', () => {
+    renderCard({ figure: '98,765.4 kg', caption: undefined, progress: 1 })
+    expect(figureText().textContent).toBe('98,765.4 kg')
+  })
+
   it('draws the counting figure in tabular digits', () => {
     renderCard({ figure: '196.8 lb', caption: undefined, progress: 0.5 })
     expect(figureClasses()).toContain('tabular-nums')

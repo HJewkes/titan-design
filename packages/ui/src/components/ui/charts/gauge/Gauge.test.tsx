@@ -165,6 +165,11 @@ describe('Gauge with progress', () => {
     expect(filled()).toBe(segments)
   })
 
+  it('lands on the exact value text at progress 1', () => {
+    render(<Gauge value={98765.4} max={100000} progress={1} />)
+    expect(shown()).toBe('98765.4')
+  })
+
   it('counts up from min', () => {
     render(<Gauge value={80} min={20} progress={0} />)
     expect(shown()).toBe('20')
