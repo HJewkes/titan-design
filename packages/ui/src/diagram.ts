@@ -17,3 +17,16 @@ export {
   validateMapLayout,
   validateMapTimeline,
 } from './components/ui/charts/network-graph/map/validate'
+// Card content the map suite's MapCard hosts (TD-859).
+export {
+  SchemaCard,
+  schemaCardDurationS,
+  schemaCardSize,
+  type SchemaCardProps,
+  type SchemaData,
+  type SchemaField,
+  type SchemaFieldRef,
+  type SchemaHighlight,
+  type SchemaRelation,
+  type SchemaTable,
+} from './components/ui/charts/schema-card'
