@@ -12679,7 +12679,7 @@
         },
         {
           "default": null,
-          "description": "The visible part of the domain as fractions 0..1, e.g. `[0.5, 1]` for the second half.",
+          "description": "The visible part of the domain as fractions of it, e.g. `[0.5, 1]` for the second half.",
           "name": "window",
           "required": false,
           "type": "TimelineRange"
