@@ -1041,6 +1041,9 @@ export interface ChipProps extends ViewProps {
 // @public (undocumented)
 export type ChipSize = 'sm' | 'md' | 'lg';
 
+// @public
+export type ChipState = (typeof CHIP_STATES)[number];
+
 // @public (undocumented)
 export type ChipVariant = 'solid' | 'subtle' | 'outline';
 
@@ -6065,6 +6068,34 @@ export interface StatCardProps extends Omit<CardProps, 'children'> {
 
 // @public
 export const STATE_LABEL: Record<FatigueVerdictState, string>;
+
+// @public
+export function StateChip(input: StateChipProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface StateChipLook {
+    border: 'dashed' | 'solid';
+    fill: number;
+    settled: boolean;
+    tint: number;
+}
+
+// @public
+export function stateChipLook(state: ChipState, from: ChipState | undefined, progress: number): StateChipLook;
+
+// @public
+export interface StateChipProps extends Omit<ViewProps, 'children'> {
+    className?: string;
+    fontPx?: number;
+    from?: ChipState;
+    progress?: number;
+    size?: StateChipSize;
+    state: ChipState;
+    text: string;
+}
+
+// @public
+export type StateChipSize = 'sm' | 'md' | 'lg';
 
 // @public
 export function StatusMark(input: StatusMarkProps): react_jsx_runtime.JSX.Element;
