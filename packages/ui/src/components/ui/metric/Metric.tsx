@@ -2,6 +2,7 @@ import React from 'react'
 import { View, Text, type StyleProp, type TextStyle, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import type { PillTone } from '../pill'
+import { TABULAR_STYLE, useCountedText } from '../animated-number/useCountedText'
 
 export type MetricTrend = 'up' | 'down' | 'neutral'
 /** Cross-axis placement of the figure and its label. */
@@ -30,6 +31,11 @@ export interface MetricProps extends ViewProps {
   labelClassName?: string
   /** Puts the label above or below the figure. Defaults to `below`. */
   labelPosition?: MetricLabelPosition
+  /**
+   * 0..1 from the caller's clock: the first number in `value` counts up from 0 in tabular digits
+   * and lands on `value` exactly at 1. Omitted, or under reduced motion, `value` shows as given.
+   */
+  progress?: number
 }
 
 const sizeConfig = {
@@ -78,10 +84,13 @@ export function Metric({
   valueStyle,
   labelClassName,
   labelPosition = 'below',
+  progress,
   testID,
   ...props
 }: MetricProps) {
   const styles = sizeConfig[size]
+  const shownValue = useCountedText(value, progress)
+  const counts = progress !== undefined
   const isLabelAbove = labelPosition === 'above'
   const labelNode = (
     <Text
@@ -101,8 +110,12 @@ export function Metric({
     <View className={cn(alignClasses[align], className)} testID={testID} {...props}>
       {isLabelAbove ? labelNode : null}
       <View className="flex-row items-baseline gap-1">
-        <Text className={cn(styles.value, toneClasses[tone], valueClassName)} style={valueStyle}>
-          {value}
+        <Text
+          className={cn(styles.value, toneClasses[tone], counts && 'tabular-nums', valueClassName)}
+          style={counts ? [TABULAR_STYLE, valueStyle] : valueStyle}
+          accessibilityLabel={counts ? value : undefined}
+        >
+          {shownValue}
         </Text>
         {!!unit && <Text className={cn(styles.unit, 'text-text-tertiary')}>{unit}</Text>}
         {!!trend && (

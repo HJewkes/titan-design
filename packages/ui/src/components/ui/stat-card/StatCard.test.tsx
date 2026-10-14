@@ -1,4 +1,5 @@
-import { describe, it, expect } from 'vitest'
+import { afterEach, describe, it, expect, vi } from 'vitest'
+import { stubReducedMotion } from '../../../test/reduced-motion-stub'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Text } from 'react-native'
@@ -140,6 +141,53 @@ describe('StatCardHeader', () => {
     const { container } = render(
       <StatCardHeader title="Bodyweight" trailing={<Text>On track</Text>} />
     )
+    expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+describe('StatCard with progress', () => {
+  afterEach(() => vi.unstubAllGlobals())
+  const figureText = () =>
+    screen.getByTestId('card-stat-card-figure').firstElementChild as HTMLElement
+
+  it.each([
+    [0, '0.0 lb'],
+    [0.5, '147.6 lb'],
+    [1, '196.8 lb'],
+  ])('at progress %s counts a string figure to %s', (progress, shown) => {
+    renderCard({ figure: '196.8 lb', caption: undefined, progress })
+    expect(figureText().textContent).toBe(shown)
+  })
+
+  it('draws the counting figure in tabular digits', () => {
+    renderCard({ figure: '196.8 lb', caption: undefined, progress: 0.5 })
+    expect(figureText()).toHaveStyle({ fontVariant: 'tabular-nums' })
+  })
+
+  it('shows the final figure when the reader prefers reduced motion', () => {
+    stubReducedMotion(true)
+    renderCard({ figure: '196.8 lb', caption: undefined, progress: 0.2 })
+    expect(figureText().textContent).toBe('196.8 lb')
+  })
+
+  it('renders a string figure as given, in proportional digits, with no progress', () => {
+    renderCard({ figure: '196.8 lb', caption: undefined })
+    expect(figureText().textContent).toBe('196.8 lb')
+    expect(figureText().style.fontVariant).toBe('')
+  })
+
+  it('leaves a node figure untouched whatever the progress', () => {
+    renderCard({ progress: 0.2 })
+    expect(screen.getByText('196.8 lb')).toBeInTheDocument()
+  })
+
+  it('names the final figure for assistive tech mid-count', () => {
+    renderCard({ figure: '196.8 lb', caption: undefined, progress: 0.2 })
+    expect(screen.getByLabelText('196.8 lb')).toBe(figureText())
+  })
+
+  it('has no accessibility violations mid-count', async () => {
+    const { container } = renderCard({ figure: '196.8 lb', progress: 0.4 })
     expect(await axe(container)).toHaveNoViolations()
   })
 })

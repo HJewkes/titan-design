@@ -1,4 +1,5 @@
-import { describe, it, expect, vi } from 'vitest'
+import { afterEach, describe, it, expect, vi } from 'vitest'
+import { stubReducedMotion } from '../../../test/reduced-motion-stub'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { capturedByNode } from '../../../test/classname-capture'
@@ -177,5 +178,54 @@ describe('MetricGroup', () => {
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
+  })
+})
+
+describe('Metric with progress', () => {
+  afterEach(() => vi.unstubAllGlobals())
+  // The label sits below by default, so the first text node is the value.
+  const valueText = () => screen.getByTestId('metric').querySelector<HTMLElement>('[dir]')!
+
+  it.each([
+    [0, '0'],
+    [0.5, '1,800'],
+    [1, '2,400'],
+  ])('at progress %s shows %s', (progress, shown) => {
+    render(<Metric value="2,400" label="Reps" progress={progress} testID="metric" />)
+    expect(valueText()).toHaveTextContent(shown)
+  })
+
+  it('lands on the exact value text, decimals included, at progress 1', () => {
+    render(<Metric value="1.24" label="Velocity" unit="m/s" progress={1} testID="metric" />)
+    expect(valueText().textContent).toBe('1.24')
+  })
+
+  it('draws the counting figure in tabular digits', () => {
+    render(<Metric value="2,400" label="Reps" progress={0.5} testID="metric" />)
+    expect(valueText()).toHaveStyle({ fontVariant: 'tabular-nums' })
+    expect(classesOf(valueText())).toContain('tabular-nums')
+  })
+
+  it('shows the final value when the reader prefers reduced motion', () => {
+    stubReducedMotion(true)
+    render(<Metric value="2,400" label="Reps" progress={0.2} testID="metric" />)
+    expect(valueText().textContent).toBe('2,400')
+  })
+
+  it('keeps proportional digits and the given text with no progress', () => {
+    render(<Metric value="2,400" label="Reps" testID="metric" />)
+    expect(valueText().textContent).toBe('2,400')
+    expect(valueText().style.fontVariant).toBe('')
+    expect(classesOf(valueText())).not.toContain('tabular-nums')
+  })
+
+  it('names the final value for assistive tech mid-count', () => {
+    render(<Metric value="2,400" label="Reps" progress={0.2} testID="metric" />)
+    expect(screen.getByLabelText('2,400')).toBe(valueText())
+  })
+
+  it('has no accessibility violations mid-count', async () => {
+    const { container } = render(<Metric value="2,400" label="Reps" progress={0.4} />)
+    expect(await axe(container)).toHaveNoViolations()
   })
 })

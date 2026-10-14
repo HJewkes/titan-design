@@ -5,6 +5,7 @@ import { View, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Card, type CardProps } from '../card'
 import { Typography } from '../typography'
+import { TABULAR_STYLE, useCountedText } from '../animated-number/useCountedText'
 
 export type StatCardCaptionPlacement = 'beside' | 'below'
 export type StatCardInset = 'md' | 'lg'
@@ -12,8 +13,17 @@ export type StatCardInset = 'md' | 'lg'
 export interface StatCardProps extends Omit<CardProps, 'children'> {
   /** The top row. Usually a `<StatCardHeader>`. */
   header: ReactNode
-  /** The lead figure. Omitted, the body follows the header at the figure-to-body gap. */
+  /**
+   * The lead figure. A string renders as an `h3`; omitted, the body follows the header at the
+   * figure-to-body gap.
+   */
   figure?: ReactNode
+  /**
+   * 0..1 from the caller's clock: the first number in a string `figure` counts up from 0 in
+   * tabular digits and lands on the figure exactly at 1. Omitted, or under reduced motion, the
+   * figure shows as given.
+   */
+  progress?: number
   /** One line about the figure. `beside` sits right on the figure's row and wraps under it. */
   caption?: ReactNode
   /** Where the caption sits against the figure (default `beside`). */
@@ -37,6 +47,22 @@ const INSET: Record<StatCardInset, string> = {
  * every later sibling, whatever the tip's own z-index says.
  */
 const Z = { top: 10, header: 20, figure: 10 } as const
+
+/** A string figure: the template's lead type, counting while `progress` runs. */
+function FigureText({ text, progress }: { text: string; progress?: number }) {
+  const shown = useCountedText(text, progress)
+  const counts = progress !== undefined
+  return (
+    <Typography
+      variant="h3"
+      className={cn('leading-none', counts && 'tabular-nums')}
+      style={counts ? TABULAR_STYLE : undefined}
+      accessibilityLabel={counts ? text : undefined}
+    >
+      {shown}
+    </Typography>
+  )
+}
 
 /** The figure and its caption: one wrapping row, or the caption stacked under the figure. */
 function FigureRow(props: {
@@ -93,6 +119,7 @@ function FigureRow(props: {
 export function StatCard({
   header,
   figure,
+  progress,
   caption,
   captionPlacement = 'beside',
   body,
@@ -119,7 +146,9 @@ export function StatCard({
             {header}
           </View>
           <FigureRow
-            figure={figure}
+            figure={
+              typeof figure === 'string' ? <FigureText text={figure} progress={progress} /> : figure
+            }
             caption={caption}
             placement={captionPlacement}
             testID={part('figure')}
