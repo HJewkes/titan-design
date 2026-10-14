@@ -72,6 +72,9 @@ interface RowProps {
 
 function FieldRow({ table, field, frame, relations }: RowProps) {
   const { opacity, offset } = frame.row(table, field.id)
+  const highlight = frame.highlight(table, field.id)
+  // Secondary text falls below 4.5:1 on the selected fill, so a lit row's quiet text goes primary.
+  const quiet = highlight >= 0.5 ? 'primary' : 'secondary'
   return (
     <View
       style={{ height: ROW_HEIGHT, opacity, transform: [{ translateX: -offset }] }}
@@ -82,13 +85,13 @@ function FieldRow({ table, field, frame, relations }: RowProps) {
       testID={`schema-row-${table}-${field.id}`}
     >
       <View
-        style={{ opacity: frame.highlight(table, field.id) }}
+        style={{ opacity: highlight }}
         className="absolute inset-0 bg-interactive-selected"
         testID={`schema-highlight-${table}-${field.id}`}
       />
       <View style={{ width: KEY_COLUMN_WIDTH }}>
         {field.key !== undefined && (
-          <Typography variant="microLabel" color="secondary">
+          <Typography variant="microLabel" color={quiet}>
             {KEY_LABEL[field.key]}
           </Typography>
         )}
@@ -97,7 +100,7 @@ function FieldRow({ table, field, frame, relations }: RowProps) {
         {field.name}
       </Typography>
       {field.type !== undefined && (
-        <Typography variant="mono" color="tertiary">
+        <Typography variant="mono" color={quiet}>
           {field.type}
         </Typography>
       )}

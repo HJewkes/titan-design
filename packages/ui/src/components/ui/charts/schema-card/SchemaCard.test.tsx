@@ -1,7 +1,8 @@
-import { act, render, screen } from '@testing-library/react'
+import { act, render, screen, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { seekClock, type SeekClock } from '../../motion/clocks'
+import { capturedByNode } from '../../../../test/classname-capture'
 import { useMotionTime } from '../../motion/hooks'
 import { MotionProvider } from '../../motion/MotionProvider'
 import { Typography } from '../../typography'
@@ -103,6 +104,24 @@ describe('SchemaCard', () => {
     )
     expect(screen.getByTestId('schema-highlight-posts-author_id')).toHaveStyle({ opacity: '1' })
     expect(screen.getByTestId('schema-highlight-posts-id')).toHaveStyle({ opacity: '0' })
+  })
+
+  it('sets a lit row’s quiet text in primary so it keeps contrast on the fill', () => {
+    // Catches: secondary text left on the selected fill (3.6:1 in dark, under 4.5:1).
+    const { atS, durS } = blogHighlights[0]!
+    render(
+      <SchemaCard
+        data={blogSchema}
+        highlights={blogHighlights}
+        t={atS + durS! / 2}
+        accessibilityLabel={LABEL}
+      />
+    )
+    const classesOf = (row: string, text: string) =>
+      capturedByNode.get(within(screen.getByTestId(row)).getByText(text))?.split(' ')
+    expect(classesOf('schema-row-posts-author_id', 'uuid')).toContain('text-text-primary')
+    expect(classesOf('schema-row-posts-author_id', 'FK')).toContain('text-text-primary')
+    expect(classesOf('schema-row-posts-title', 'text')).toContain('text-text-secondary')
   })
 
   it('renders the same frame on a seek clock whether swept to t or seeked there cold', () => {
