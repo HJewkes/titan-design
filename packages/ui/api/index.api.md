@@ -1040,6 +1040,9 @@ export interface ChipProps extends ViewProps {
 // @public (undocumented)
 export type ChipSize = 'sm' | 'md' | 'lg';
 
+// @public
+export type ChipState = (typeof CHIP_STATES)[number];
+
 // @public (undocumented)
 export type ChipVariant = 'solid' | 'subtle' | 'outline';
 
@@ -1691,6 +1694,20 @@ export type ElevationLevel = -2 | -1 | 0 | 1 | 2 | 3 | 4 | 5;
 // @public
 export function elevationPlane(level: ElevationLevel): SurfaceLevel;
 
+// @public
+export interface ElidedSource {
+    droppedRefs: number;
+    fits: boolean;
+    level: ElisionLevel;
+    text: string;
+}
+
+// @public
+export function elideSource(text: string, maxChars: number): ElidedSource;
+
+// @public
+export type ElisionLevel = 0 | 1 | 2 | 3 | 4;
+
 // @public (undocumented)
 export const EMPTY_TASK_FLOW_FILTERS: TaskFlowFilters;
 
@@ -1730,6 +1747,25 @@ export const ERROR_TEXT_LABEL = "Error text";
 
 // @public
 export function errorRate(metrics: Pick<AgentMetrics, 'toolCalls' | 'errors'>): number | null;
+
+// @public
+export function EvidenceChip(input: EvidenceChipProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface EvidenceChipProps extends Omit<ViewProps, 'children'> {
+    className?: string;
+    fontPx?: number;
+    kind: EvidenceKind;
+    maxChars?: number;
+    size?: EvidenceChipSize;
+    text: string;
+}
+
+// @public
+export type EvidenceChipSize = 'sm' | 'md' | 'lg';
+
+// @public
+export type EvidenceKind = (typeof EVIDENCE_KINDS)[number];
 
 // @public
 export function ExactTime(input: {
@@ -5941,6 +5977,34 @@ export interface StatCardProps extends Omit<CardProps, 'children'> {
 
 // @public
 export const STATE_LABEL: Record<FatigueVerdictState, string>;
+
+// @public
+export function StateChip(input: StateChipProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface StateChipLook {
+    border: 'dashed' | 'solid';
+    fill: number;
+    settled: boolean;
+    tint: number;
+}
+
+// @public
+export function stateChipLook(state: ChipState, from: ChipState | undefined, progress: number): StateChipLook;
+
+// @public
+export interface StateChipProps extends Omit<ViewProps, 'children'> {
+    className?: string;
+    fontPx?: number;
+    from?: ChipState;
+    progress?: number;
+    size?: StateChipSize;
+    state: ChipState;
+    text: string;
+}
+
+// @public
+export type StateChipSize = 'sm' | 'md' | 'lg';
 
 // @public
 export function StatusMark(input: StatusMarkProps): react_jsx_runtime.JSX.Element;
