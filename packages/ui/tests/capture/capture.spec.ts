@@ -84,6 +84,32 @@ test('all six react-ui components render inside the stage, styled by nativewind'
 })
 
 /**
+ * Catches: a page-local `__titanMotion` standing in for MotionProvider's bridge (TD-842a), which
+ * would shadow it. Only the bridge words a non-finite seek as `__titanMotion.seek(NaN)`, and it is
+ * a plain assigned property, where a stand-in installed with defineProperty is read-only.
+ */
+test("the capture drives MotionProvider's own __titanMotion bridge", async ({ browser }) => {
+  const { page } = await openCapturePage(browser, url)
+
+  const bridge = await page.evaluate(() => {
+    const descriptor = Object.getOwnPropertyDescriptor(window, '__titanMotion')
+    let seekError = ''
+    try {
+      window.__titanMotion!.seek(Number.NaN)
+    } catch (error) {
+      seekError = `${(error as Error).name}: ${(error as Error).message}`
+    }
+    return { writable: descriptor?.writable, configurable: descriptor?.configurable, seekError }
+  })
+
+  expect(bridge).toEqual({
+    writable: true,
+    configurable: true,
+    seekError: 'RangeError: __titanMotion.seek(NaN) needs a finite time',
+  })
+})
+
+/**
  * Catches: anything in the render that reads real time or unseeded randomness (for example
  * dropping the virtual-time init script while a component reads Date.now()), and a page that
  * no longer moves, since a frozen page would also be identical run to run.

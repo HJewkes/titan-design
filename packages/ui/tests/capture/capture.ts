@@ -1,11 +1,11 @@
 import { createHash } from 'node:crypto'
 import type { Browser, Page } from '@playwright/test'
+import type {} from '../../src/components/ui/motion/bridge'
 import { installVirtualTime, type VirtualTimeApi } from './virtual-time'
 
 declare global {
   interface Window {
     __virtualTime: VirtualTimeApi
-    __titanMotion?: { seek(t: number): void; ready(): Promise<void>; readonly duration: number }
   }
 }
 
@@ -39,7 +39,7 @@ export async function openCapturePage(browser: Browser, url: string): Promise<Ca
   return { page, duration, errors }
 }
 
-/** Advances virtual time, seeks (the shim commits through flushSync) and awaits `ready()`. */
+/** Advances virtual time, seeks (the bridge commits through flushSync) and awaits `ready()`. */
 export async function seekTo(page: Page, t: number): Promise<void> {
   await page.evaluate(async (seconds) => {
     window.__virtualTime.advanceTo(Math.max(window.__virtualTime.now(), seconds * 1000))
