@@ -109,10 +109,9 @@ describe('SchemaCard', () => {
     // Catches: any state carried between frames, such as a latch on the furthest t seen.
     const swept = seekClock(0)
     const { container: sweptRoot } = renderOnClock(swept)
-    act(() => {
-      for (let t = 0; t <= 4; t += 1 / 60) swept.seek(t)
-      swept.seek(2.4)
-    })
+    // One act per frame: a single act would batch the sweep down to its last seek.
+    for (let t = 0; t <= 4; t += 1 / 60) act(() => swept.seek(t))
+    act(() => swept.seek(2.4))
     const { container: coldRoot } = renderOnClock(seekClock(2.4))
     expect(sweptRoot.innerHTML).toBe(coldRoot.innerHTML)
   })
