@@ -30,6 +30,12 @@
     "limit": "31 kB"
   },
   {
+    "name": "diagram",
+    "path": "dist/diagram.mjs",
+    "brotli": true,
+    "limit": "4 kB"
+  },
+  {
     "name": "theme",
     "path": "dist/theme/index.mjs",
     "brotli": true,
