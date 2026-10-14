@@ -96,7 +96,7 @@ describe('straight routed edges', () => {
       { id: 'a->b:import', source: 'a', target: 'b', kind: 'import' },
       { id: 'a->b:runtime', source: 'a', target: 'b', kind: 'runtime' },
     ]
-    const offsets = routedOffsets(edges, (edge) => edge.id)
+    const offsets = routedOffsets(edges, (edge) => edge.id as string)
     const [importLine, runtimeLine] = edges.map((edge) =>
       straightRoute(a, b, offsets.get(edge.id) ?? 0)
     )
@@ -111,7 +111,7 @@ describe('straight routed edges', () => {
         { id: 'ab', source: 'a', target: 'b' },
         { id: 'ba', source: 'b', target: 'a' },
       ],
-      (edge) => edge.id
+      (edge) => edge.id as string
     )
     const [forward] = straightRoute(a, b, offsets.get('ab') ?? 0)
     const [, back] = straightRoute(b, a, offsets.get('ba') ?? 0)
