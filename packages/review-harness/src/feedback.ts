@@ -11,7 +11,7 @@ import {
   type Verdict,
   shipBlocks,
 } from '@titan-design/review-schema'
-import { isAnswered, normalizeAnswer, offersBuiltInRevision } from './round.ts'
+import { isAnswered, normalizeAnswer, offersBuiltInRevision, pickedAfter } from './round.ts'
 import { questionsForVariant, sectionOfQuestion } from './sections.ts'
 
 export interface VariantDraft {
@@ -28,6 +28,12 @@ export interface AnswerDraft {
   value?: number
   text?: string
   comment: string
+  /** A note per option, keyed by option text; blank notes are dropped at build time. */
+  notes?: Record<string, string>
+  /** The owner pressed "Show recommendation"; hiding it again clears this. */
+  revealed?: boolean
+  /** The answer landed while the recommendation was visible; only clearing the answer clears it. */
+  seen?: boolean
 }
 
 export interface ReviewDraft {
@@ -90,6 +96,29 @@ export function draftAnswer(question: Question, draft: AnswerDraft): Answer {
     : answer
 }
 
+/** The non-blank notes on the question's own options, in option order. */
+function optionNotes(question: Question, draft: AnswerDraft): Answer['optionNotes'] {
+  if (question.kind !== 'pick-one' && question.kind !== 'pick-many') return undefined
+  const notes = question.options.flatMap((option) => {
+    const note = draft.notes?.[option]?.trim()
+    return note ? [{ option, note }] : []
+  })
+  return notes.length ? notes : undefined
+}
+
+function withPacket(question: Question, draft: AnswerDraft, answer: Answer): Answer {
+  const notes = optionNotes(question, draft)
+  const after = pickedAfter(question, answer)
+  const hasRecommendation = question.kind !== 'text' && question.recommendation !== undefined
+  const seen = draft.seen && hasRecommendation && isAnswered(question, answer)
+  return {
+    ...answer,
+    ...(notes ? { optionNotes: notes } : {}),
+    ...(after !== undefined ? { after } : {}),
+    ...(seen ? { recommendationSeen: true as const } : {}),
+  }
+}
+
 function toAnswer(
   question: Question,
   draft: AnswerDraft,
@@ -101,8 +130,9 @@ function toAnswer(
   if (question.kind === 'text' && draft.text?.trim()) answer.text = draft.text
   if (draft.comment.trim()) answer.comment = draft.comment
   if (variantComments.length) answer.variantComments = variantComments
-  return isAnswered(question, answer) || answer.comment || variantComments.length
-    ? withRecommendation(question, answer)
+  const full = withPacket(question, draft, answer)
+  return isAnswered(question, full) || full.comment || full.variantComments || full.optionNotes
+    ? withRecommendation(question, full)
     : null
 }
 

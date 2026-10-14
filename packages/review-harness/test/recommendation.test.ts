@@ -219,16 +219,37 @@ const ROUNDS = [
 describe('the calibration report', () => {
   it('prints agreement per round, overall and by confidence band', () => {
     expect(calibrationReport(ROUNDS).split('\n')).toEqual([
-      'By round',
+      'By round (blind)',
       '  vw-1 round 1                         1/2   50%',
       '  vw-1 round 2                         2/3   67%',
       '  vw-385-goal-card round 1             0/0     -',
       'Overall',
-      '  all rounds                           3/5   60%',
-      'By confidence',
+      '  all rounds, blind                    3/5   60%',
+      '  all rounds, seen                     0/0     -',
+      'By confidence (blind)',
       '  <0.5                                 0/1    0%',
       '  0.5-0.75                             1/2   50%',
       '  >=0.75                               2/2  100%',
+    ])
+  })
+
+  it('rates blind answers apart from seen ones, and counts the seen in their round', () => {
+    const round = roundFeedback('vw-2', 1, [
+      [true, 0.9],
+      [false, 0.9],
+      [true, 0.9],
+    ])
+    round.answers[2] = { ...round.answers[2], recommendationSeen: true }
+    expect(calibrationReport([round]).split('\n')).toEqual([
+      'By round (blind)',
+      '  vw-2 round 1 (1 seen)                1/2   50%',
+      'Overall',
+      '  all rounds, blind                    1/2   50%',
+      '  all rounds, seen                     1/1  100%',
+      'By confidence (blind)',
+      '  <0.5                                 0/0     -',
+      '  0.5-0.75                             0/0     -',
+      '  >=0.75                               1/2   50%',
     ])
   })
 
@@ -242,7 +263,7 @@ describe('the calibration report', () => {
       stderr: (t: string) => out.stderr.push(t),
     } as unknown as CliIo
     expect(await runCli(['calibration', ...paths], io)).toBe(0)
-    expect(out.stdout).toContain('  all rounds                           3/5   60%')
+    expect(out.stdout).toContain('  all rounds, blind                    3/5   60%')
     expect(await runCli(['calibration'], io)).toBe(2)
     expect(await runCli(['calibration', join(dir, 'missing.json')], io)).toBe(2)
     expect(out.stderr.join('\n')).toContain('at least one feedback.json')
