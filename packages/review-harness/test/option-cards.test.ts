@@ -2,6 +2,7 @@ import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { QuestionBlock } from '../page/QuestionBlock.tsx'
+import { ReviewScreen } from '../page/ReviewScreen.tsx'
 import {
   createReducer,
   initialState,
@@ -10,7 +11,9 @@ import {
   type Action,
 } from '../page/state.ts'
 import { exampleManifest } from '../src/example.ts'
+import { buildFeedback } from '../src/feedback.ts'
 import { ManifestSchema, type Manifest, type ManifestInput } from '@titan-design/review-schema'
+import { SHA } from './fixtures.ts'
 
 const recommendation = { answer: 'B', rationale: 'Reads first.', confidence: 0.8, by: 'agent' }
 
@@ -118,5 +121,31 @@ describe('a question without option details', () => {
     expect(strip(shown)).toMatchInlineSnapshot(
       `"<section tabindex="-1" data-testid="question-q1" class="stop question"><h3>Which one leads the page?<span class="required"> required</span></h3><div class="choices" role="radiogroup" aria-label="Which one leads the page?"><button type="button" tabindex="-1" role="radio" aria-checked="false" class="choice"><kbd>1</kbd> A · Primary goal card</button><button type="button" tabindex="-1" role="radio" aria-checked="false" class="choice"><kbd>2</kbd> B · Milestone tiles</button><button type="button" tabindex="-1" role="radio" aria-checked="false" class="choice"><kbd>3</kbd> C · Compact goal chart</button><button type="button" tabindex="-1" role="radio" aria-checked="false" class="choice"><kbd>4</kbd> none</button></div><aside class="recommendation" data-testid="recommendation-q1"><p><strong>Recommended: B · Milestone tiles</strong></p><div class="md"><p>Reads first.</p></div><p class="recommendation-meta">80% confident · agent</p></aside><textarea aria-label="Comment on q1" placeholder="Comment (optional)"></textarea></section>"`
     )
+  })
+})
+
+describe('the review screen', () => {
+  it('lists a seen pick, its option notes and the after text before sending', () => {
+    const actions: Action[] = [
+      reveal,
+      { type: 'pick', id: 'q1', option: 'B', many: false },
+      { type: 'optionNote', id: 'q1', option: 'C', note: 'worth a second look' },
+    ]
+    const state = actions.reduce(createReducer(packet), initialState(packet))
+    const markup = renderToStaticMarkup(
+      createElement(ReviewScreen, {
+        manifest: packet,
+        feedback: buildFeedback(packet, SHA, state.draft, new Date(0)),
+        problems: [],
+        unanswered: [],
+        sending: false,
+        sendErrors: [],
+        dispatch: () => {},
+        onSubmit: () => {},
+      })
+    )
+    expect(markup).toContain('B · Milestone tiles (seen recommendation)')
+    expect(markup).toContain('on C · Compact goal chart: worth a second look')
+    expect(markup).toContain('<dd class="answer-after">The tiles lead.</dd>')
   })
 })
