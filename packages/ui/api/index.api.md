@@ -4092,6 +4092,58 @@ export const motion: {
             readonly saturation: 0;
         };
     };
+    readonly tiers: {
+        readonly video: {
+            readonly enter: 1000;
+            readonly emphasis: 500;
+            readonly hero: 1500;
+            readonly count: 1500;
+            readonly rise: 40;
+            readonly staggerEach: 60;
+            readonly staggerMax: 500;
+        };
+        readonly app: {
+            readonly enter: 250;
+            readonly emphasis: 150;
+            readonly hero: 400;
+            readonly count: 600;
+            readonly rise: 8;
+            readonly staggerEach: 40;
+            readonly staggerMax: 300;
+        };
+    };
+    readonly presets: {
+        readonly riseIn: {
+            readonly props: {
+                readonly opacity: readonly [0, 1];
+                readonly translateY: readonly ["rise", 0];
+            };
+            readonly duration: "emphasis";
+            readonly ease: "out";
+            readonly stagger: true;
+            readonly exit: {
+                readonly ratio: 0.85;
+                readonly ease: "in";
+            };
+            readonly reduced: "fade";
+        };
+        readonly countUp: {
+            readonly props: {
+                readonly value: readonly ["from", "to"];
+            };
+            readonly duration: "count";
+            readonly ease: "out";
+            readonly reduced: "jump";
+        };
+        readonly payoff: {
+            readonly props: {
+                readonly scale: readonly [0.6, 1];
+            };
+            readonly spring: "bouncy";
+            readonly allowOvershoot: true;
+            readonly reduced: "fade";
+        };
+    };
 };
 
 // @public

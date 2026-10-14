@@ -764,6 +764,21 @@ export const size = {
   icon: primitiveSizing.icon,
 } as const
 
+// The duration and video scales `motion.tiers` restates.
+const motionDuration = { fast: 150, normal: 250, slow: 400 } as const
+const videoMotion = {
+  emphasis: 500,
+  enter: 1000,
+  hero: 1500,
+  count: 1500,
+  exit: 850,
+  exitScale: 0.85,
+  staggerEach: 60,
+  staggerMax: 500,
+  rise: 40,
+  scaleFrom: 0.97,
+} as const
+
 /**
  * Motion timing (TD-838): durations in milliseconds, eases as CSS
  * `cubic-bezier` control points. Defined once and exposed twice: as the
@@ -783,20 +798,6 @@ export const size = {
  * tier. A string endpoint names a tier value (`rise`) or a caller value
  * (`from`, `to`); `reduced` is what reduced motion keeps.
  */
-const motionDuration = { fast: 150, normal: 250, slow: 400 } as const
-const videoMotion = {
-  emphasis: 500,
-  enter: 1000,
-  hero: 1500,
-  count: 1500,
-  exit: 850,
-  exitScale: 0.85,
-  staggerEach: 60,
-  staggerMax: 500,
-  rise: 40,
-  scaleFrom: 0.97,
-} as const
-
 export const motion = {
   duration: motionDuration,
   ease: {

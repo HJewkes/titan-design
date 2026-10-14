@@ -187,22 +187,23 @@ export function mediaClock(media: HTMLMediaElement): Clock;
 // @public
 export const MOTION: {
     readonly duration: Record<"normal" | "fast" | "slow", number>;
-    readonly ease: Record<"out" | "inOut" | "spring" | "in", Easing>;
+    readonly ease: Record<"out" | "in" | "inOut" | "spring", Easing>;
     readonly video: {
         rise: 40;
         scaleFrom: 0.97;
         exitScale: 0.85;
+        emphasis: number;
+        count: number;
         exit: number;
         hero: number;
         enter: number;
-        count: number;
-        emphasis: number;
         staggerEach: number;
         staggerMax: number;
     };
-    readonly spring: Record<"heavy" | "smooth" | "snappy" | "bouncy", Required<Pick<SpringOptions, "stiffness" | "damping" | "mass">>>;
+    readonly spring: Record<"bouncy" | "heavy" | "smooth" | "snappy", Required<Pick<SpringOptions, "stiffness" | "damping" | "mass">>>;
     readonly springPreset: typeof springPreset;
     readonly staggerEachS: typeof staggerEachS;
+    readonly preset: typeof motionPreset;
     readonly dim: {
         readonly context: {
             readonly opacity: 0.35;
@@ -210,6 +211,28 @@ export const MOTION: {
         };
     };
 };
+
+// @public
+export interface MotionPreset<N extends MotionPresetName> {
+    at(p: number, values?: MotionPresetValues): MotionPresetFrame<N>;
+    delayS(index: number, count: number): number;
+    durationS: number;
+    exitRatio: number | undefined;
+    exitS: number | undefined;
+    reduced: MotionReduced;
+    reducedAt(p: number, values?: MotionPresetValues): MotionReducedFrame<N>;
+}
+
+// @public
+export type MotionPresetFrame<N extends MotionPresetName> = {
+    [K in keyof (typeof motion.presets)[N]['props']]: number;
+};
+
+// @public
+export type MotionPresetName = keyof typeof motion.presets;
+
+// @public
+export type MotionPresetValues = Readonly<Record<string, number>>;
 
 // @public
 export function MotionProvider(input: MotionProviderProps): react_jsx_runtime.JSX.Element;
@@ -220,6 +243,17 @@ export interface MotionProviderProps {
     clock: Clock;
     durationS?: number;
 }
+
+// @public
+export type MotionReduced = 'fade' | 'jump';
+
+// @public
+export type MotionReducedFrame<N extends MotionPresetName> = Partial<MotionPresetFrame<N>> & {
+    opacity?: number;
+};
+
+// @public
+export type MotionTierName = keyof typeof motion.tiers;
 
 // @public
 export function noise2D(seed: number | string, x: number, y: number): number;

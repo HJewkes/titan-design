@@ -27,6 +27,7 @@ export type {
   MotionPresetName,
   MotionPresetValues,
   MotionReduced,
+  MotionReducedFrame,
   MotionTierName,
 } from './presets'
 export {

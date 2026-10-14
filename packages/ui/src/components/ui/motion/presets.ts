@@ -18,6 +18,11 @@ export type MotionPresetFrame<N extends MotionPresetName> = {
   [K in keyof (typeof motion.presets)[N]['props']]: number
 }
 
+/** A preset's values under reduced motion: opacity alone for `fade`, every property for `jump`. */
+export type MotionReducedFrame<N extends MotionPresetName> = Partial<MotionPresetFrame<N>> & {
+  opacity?: number
+}
+
 /** A preset evaluated at one tier. */
 export interface MotionPreset<N extends MotionPresetName> {
   /** Seconds the motion runs; for a spring preset, its settle time. */
@@ -27,11 +32,12 @@ export interface MotionPreset<N extends MotionPresetName> {
   /** The values at progress `p` through `durationS`, clamped to [0, 1]. */
   at(p: number, values?: MotionPresetValues): MotionPresetFrame<N>
   /** The values under reduced motion at progress `p`: opacity alone for `fade`, the end for `jump`. */
-  reducedAt(p: number, values?: MotionPresetValues): Partial<MotionPresetFrame<N>> & { opacity?: number }
+  reducedAt(p: number, values?: MotionPresetValues): MotionReducedFrame<N>
   /** The exit's length as a share of the entrance; undefined when the preset has no exit. */
   exitRatio: number | undefined
   /** The exit's length in seconds; undefined when the preset has no exit. */
   exitS: number | undefined
+  /** What reduced motion keeps, as `reducedAt` applies it. */
   reduced: MotionReduced
 }
 
@@ -74,7 +80,10 @@ function frameAt(spec: PresetSpec, tier: Tier, eased: number, values: MotionPres
 
 function curveOf(spec: PresetSpec, tier: Tier): { ease: Easing; durationS: number } {
   if (spec.spring === undefined) {
-    return { ease: motionEase[spec.ease ?? 'out'], durationS: seconds(tier[spec.duration ?? 'enter']) }
+    return {
+      ease: motionEase[spec.ease ?? 'out'],
+      durationS: seconds(tier[spec.duration ?? 'enter']),
+    }
   }
   const physics = springPreset(spec.spring, { allowOvershoot: spec.allowOvershoot })
   return { ease: springEase(physics), durationS: springSettleS(physics) }
@@ -86,7 +95,13 @@ function staggerDelayS(tier: Tier, index: number, count: number): number {
 }
 
 /** Opacity alone under `fade`; a spring preset fades on `out`, since opacity must not overshoot. */
-function reducedFrameAt(spec: PresetSpec, tier: Tier, ease: Easing, p: number, values: MotionPresetValues): Frame {
+function reducedFrameAt(
+  spec: PresetSpec,
+  tier: Tier,
+  ease: Easing,
+  p: number,
+  values: MotionPresetValues
+): Frame {
   if (spec.reduced === 'jump') return frameAt(spec, tier, 1, values)
   const fade: PresetSpec = { ...spec, props: { opacity: spec.props.opacity ?? [0, 1] } }
   const fadeEase = spec.spring === undefined ? ease : motionEase.out
@@ -103,11 +118,16 @@ function reducedFrameAt(spec: PresetSpec, tier: Tier, ease: Easing, p: number, v
  * const rise = MOTION.preset('riseIn', 'app')
  * rise.at(0.5) // { opacity, translateY }
  */
-export function motionPreset<N extends MotionPresetName>(name: N, tierName: MotionTierName): MotionPreset<N> {
+export function motionPreset<N extends MotionPresetName>(
+  name: N,
+  tierName: MotionTierName
+): MotionPreset<N> {
   const spec = specs[name] as PresetSpec | undefined
   const tier = motion.tiers[tierName] as Tier | undefined
   if (spec === undefined || tier === undefined) {
-    throw new RangeError(`MOTION.preset: unknown preset '${String(name)}' or tier '${String(tierName)}'`)
+    throw new RangeError(
+      `MOTION.preset: unknown preset '${String(name)}' or tier '${String(tierName)}'`
+    )
   }
   const { ease, durationS } = curveOf(spec, tier)
   const exitRatio = spec.exit?.ratio
@@ -115,7 +135,8 @@ export function motionPreset<N extends MotionPresetName>(name: N, tierName: Moti
     durationS,
     delayS: (index, count) => (spec.stagger ? staggerDelayS(tier, index, count) : 0),
     at: (p, values = {}) => frameAt(spec, tier, ease(clampUnit(p)), values) as MotionPresetFrame<N>,
-    reducedAt: (p, values = {}) => reducedFrameAt(spec, tier, ease, p, values),
+    reducedAt: (p, values = {}) =>
+      reducedFrameAt(spec, tier, ease, p, values) as MotionReducedFrame<N>,
     exitRatio,
     exitS: exitRatio === undefined ? undefined : durationS * exitRatio,
     reduced: spec.reduced,
