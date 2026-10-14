@@ -2444,6 +2444,78 @@
     },
     {
       "composes": [
+        "DataRow",
+        "FilePathLabel",
+        "Pill",
+        "Typography"
+      ],
+      "family": "custom/Code",
+      "file": "packages/ui/src/components/custom/Code/FileCard.tsx",
+      "name": "FileCard",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind classes merged onto the root.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Files that import this one; the `fan_in` row.",
+          "name": "fanIn",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Files this one imports; the `fan_out` row.",
+          "name": "fanOut",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Lines of code; the `loc` row.",
+          "name": "loc",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "[]",
+          "description": "Further metrics.",
+          "name": "metrics",
+          "required": false,
+          "type": "readonly FileCardMetric[]"
+        },
+        {
+          "default": null,
+          "description": "The repo-relative path.",
+          "name": "path",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "How the file changed against the baseline.",
+          "name": "status",
+          "required": false,
+          "type": "FileCardStatus"
+        }
+      ],
+      "purpose": "FileCard: one file's facts for a map card.",
+      "sources": {
+        "props": "packages/ui/src/components/custom/Code/FileCard.tsx",
+        "status": "packages/ui/src/components/custom/Code/FileCard.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "custom-code-filecard--default"
+      ],
+      "tier": "organism"
+    },
+    {
+      "composes": [
         "Pill"
       ],
       "family": "custom/Code",
@@ -14293,6 +14365,104 @@
         "components-molecules-listitem--with-trailing"
       ],
       "tier": "atom"
+    },
+    {
+      "composes": [
+        "Surface",
+        "Typography"
+      ],
+      "family": "ui/map-card",
+      "file": "packages/ui/src/components/ui/map-card/MapCard.tsx",
+      "name": "MapCard",
+      "props": [
+        {
+          "default": null,
+          "description": "The card's spoken name.",
+          "name": "accessibilityLabel",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The anchor's screen point in px, as `project()` returns it for the node's world point.",
+          "name": "anchor",
+          "required": true,
+          "type": "Point"
+        },
+        {
+          "default": null,
+          "description": "The content: a FileCard, a StatCard, a SchemaCard or any node.",
+          "name": "children",
+          "required": true,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Tailwind classes merged onto the card's surface.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "1",
+          "description": "Progress in, 0..1, from the map state.",
+          "name": "enter",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "0",
+          "description": "Progress out, 0..1, from the map state.",
+          "name": "exit",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The card stays above this fraction of the viewport height.",
+          "name": "keepOutFraction",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "`auto` sits right of the anchor and flips left near the right edge.",
+          "name": "side",
+          "required": false,
+          "type": "\"auto\" | \"left\" | \"right\""
+        },
+        {
+          "default": "{ width: 320, height: 180 }",
+          "description": "The card's box in px.",
+          "name": "size",
+          "required": false,
+          "type": "MapCardSize"
+        },
+        {
+          "default": null,
+          "description": "A heading above the content.",
+          "name": "title",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "The screen the map renders into.",
+          "name": "viewport",
+          "required": true,
+          "type": "Viewport"
+        }
+      ],
+      "purpose": "MapCard: a pop-out card beside a point on a map, joined to it by a leader line.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/map-card/MapCard.tsx",
+        "status": "packages/ui/src/components/ui/map-card/MapCard.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-mapcard--default"
+      ],
+      "tier": "molecule"
     },
     {
       "composes": [
