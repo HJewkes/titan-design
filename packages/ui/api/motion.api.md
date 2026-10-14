@@ -135,7 +135,7 @@ export interface KeyframesOptions {
 // @public
 export interface Lagged {
     itemS: number;
-    items: Window_2[];
+    items: TimeWindow[];
     progress(t: number, index: number): number;
 }
 
@@ -271,7 +271,7 @@ export const smoothstep: Easing;
 // @public
 export interface Span {
     durationS: number;
-    windows: Window_2[];
+    windows: TimeWindow[];
 }
 
 // @public
@@ -310,6 +310,12 @@ export interface StaggerOptions {
 }
 
 // @public
+export interface TimeWindow {
+    endS: number;
+    startS: number;
+}
+
+// @public
 export function useBeatEnvelope(options?: EnvelopeOptions): Envelope;
 
 // @public
@@ -328,13 +334,6 @@ export function useRawLocalTime(startS?: number, untilS?: number): number;
 
 // @public
 export function useWaitUntil(promise: Promise<unknown> | undefined): void;
-
-// @public
-interface Window_2 {
-    endS: number;
-    startS: number;
-}
-export { Window_2 as Window }
 
 // (No @packageDocumentation comment for this package)
 
