@@ -75,7 +75,7 @@ afterEach(() => {
 })
 
 describe('Morph', () => {
-  // Mutation: rendering `from` parts for matched layers, which would paint `old` labels at the end.
+  // Mutation: painting both sides of a matched pair, which shows `+` twice.
   it('paints each matched part once and each unmatched part on its own layer', () => {
     render(<Morph from={FROM} to={TO} progress={0.5} width={160} height={20} renderPart={paint} />)
 
@@ -127,6 +127,7 @@ describe('Morph', () => {
     expect(layer('to:new')).toHaveStyle({ opacity: '1' })
   })
 
+  // Mutation: giving the stage `role="img"` without a label (axe `role-img-alt`).
   it('has no accessibility violations', async () => {
     const { container } = render(
       <Morph from={FROM} to={TO} progress={0.5} width={160} height={20} renderPart={paint} />

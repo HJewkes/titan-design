@@ -110,7 +110,7 @@ describe('partsMorph', () => {
     expect(layerById(morph(1), 'to:a').box).toEqual(part('a', 100).box)
   })
 
-  // Mutation: holding state between calls (a cache keyed on the last progress).
+  // Mutation: smoothing the move toward its target across calls, as a frame-to-frame lerp would.
   it('is a pure function of progress: seeking back and forth gives equal frames', () => {
     const morph = partsMorph([part('a', 0), part('gone', 40)], [part('a', 80), part('new', 10)], {
       keyMap: {},
