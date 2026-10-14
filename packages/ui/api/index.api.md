@@ -17,6 +17,7 @@ import * as React$1 from 'react';
 import React__default from 'react';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import { ReactNode } from 'react';
+import { RefObject } from 'react';
 import { StyleProp } from 'react-native';
 import { TextInput } from 'react-native';
 import { TextInputProps } from 'react-native';
@@ -1040,6 +1041,9 @@ export interface ChipProps extends ViewProps {
 // @public (undocumented)
 export type ChipSize = 'sm' | 'md' | 'lg';
 
+// @public
+export type ChipState = (typeof CHIP_STATES)[number];
+
 // @public (undocumented)
 export type ChipVariant = 'solid' | 'subtle' | 'outline';
 
@@ -1580,6 +1584,9 @@ export const defaultPreset: ThemePreset;
 
 // @public @deprecated (undocumented)
 export type DeprecatedPillSize = 'xl';
+
+// @public
+export function describeOverflow(label: string, overflow: StageOverflow): string | undefined;
 
 // @public
 export function describeRef(input: EntityRef): string;
@@ -3050,6 +3057,14 @@ export function groupByPeriod(sessions: SessionSummary[]): Period[];
 
 // @public
 export function groupRefsByKind(refs: readonly EntityRef[]): RefGroup[];
+
+// @public
+export interface HeaderChrome {
+    headline: 'body' | 'title';
+    kicker?: boolean;
+    rule?: boolean;
+    sub?: boolean;
+}
 
 // @public
 export function Heading(input: HeadingProps): react_jsx_runtime.JSX.Element;
@@ -5928,6 +5943,85 @@ export interface StackProps extends ViewProps {
 }
 
 // @public
+export const STAGE_METRICS_S96: Readonly<StageMetrics>;
+
+// @public
+export interface StageBox {
+    chipBand: StageRect;
+    header: StageRect;
+    keepOut: StageRect;
+    scale: number;
+    stage: StageRect;
+}
+
+// @public
+export function stageBox(frame: StageFrame, chrome?: StageChrome): StageBox;
+
+// @public
+export interface StageChrome {
+    chipRows?: 0 | 1 | 2;
+    header?: HeaderChrome | 'none';
+    headerAt?: 'top' | 'bottom';
+    keepOutFraction?: number;
+    metrics?: Partial<StageMetrics>;
+}
+
+// @public
+export interface StageContentBox {
+    h: number;
+    w: number;
+    x: number;
+    y: number;
+}
+
+// @public
+export interface StageFrame {
+    height: number;
+    width: number;
+}
+
+// @public
+export interface StageMeasure {
+    boxes: readonly StageContentBox[];
+    height: number;
+    width: number;
+}
+
+// @public
+export interface StageMetrics {
+    body: number;
+    bottomPad: number;
+    edgeX: number;
+    gap: number;
+    gapSm: number;
+    headlineLeading: number;
+    label: number;
+    lineLeading: number;
+    rule: number;
+    title: number;
+    topPad: number;
+}
+
+// @public
+export interface StageOverflow {
+    bottom: number;
+    left: number;
+    right: number;
+    top: number;
+}
+
+// @public
+export function stageOverflow(width: number, height: number, boxes: readonly StageContentBox[]): StageOverflow;
+
+// @public
+export interface StageRect {
+    height: number;
+    width: number;
+    x: number;
+    y: number;
+}
+
+// @public
 export const STAR_ICON_BOX: {
     x: number;
     y: number;
@@ -5974,6 +6068,34 @@ export interface StatCardProps extends Omit<CardProps, 'children'> {
 
 // @public
 export const STATE_LABEL: Record<FatigueVerdictState, string>;
+
+// @public
+export function StateChip(input: StateChipProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface StateChipLook {
+    border: 'dashed' | 'solid';
+    fill: number;
+    settled: boolean;
+    tint: number;
+}
+
+// @public
+export function stateChipLook(state: ChipState, from: ChipState | undefined, progress: number): StateChipLook;
+
+// @public
+export interface StateChipProps extends Omit<ViewProps, 'children'> {
+    className?: string;
+    fontPx?: number;
+    from?: ChipState;
+    progress?: number;
+    size?: StateChipSize;
+    state: ChipState;
+    text: string;
+}
+
+// @public
+export type StateChipSize = 'sm' | 'md' | 'lg';
 
 // @public
 export function StatusMark(input: StatusMarkProps): react_jsx_runtime.JSX.Element;
@@ -7160,6 +7282,9 @@ export function useOnSurfaceColor(role?: OnSurfaceRole): string;
 
 // @public
 export function useResolvedSurface(props: SurfaceDepthProps): ResolvedSurface;
+
+// @public
+export function useStageFit(ref: RefObject<unknown>, label: string, measure?: (stage: HTMLElement) => StageMeasure): void;
 
 // @public
 export function useSurface(): SurfaceContextValue;

@@ -12902,6 +12902,75 @@
       "tier": "molecule"
     },
     {
+      "composes": [
+        "Pill"
+      ],
+      "family": "ui/chip",
+      "file": "packages/ui/src/components/ui/chip/StateChip.tsx",
+      "name": "StateChip",
+      "props": [
+        {
+          "default": null,
+          "description": "Additional className on the capsule.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Video size in px, for frames with no Tailwind rung (`40 × frameHeight / 1080`).",
+          "name": "fontPx",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The state the chip is leaving.",
+          "name": "from",
+          "required": false,
+          "type": "\"met\" | \"unmet\""
+        },
+        {
+          "default": "1",
+          "description": "How far the move from `from` has run, 0..1.",
+          "name": "progress",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "md",
+          "description": "App size, one Pill rung.",
+          "name": "size",
+          "required": false,
+          "type": "StateChipSize"
+        },
+        {
+          "default": null,
+          "description": "The state the chip is in, or moving to.",
+          "name": "state",
+          "required": true,
+          "type": "\"met\" | \"unmet\""
+        },
+        {
+          "default": null,
+          "description": "What the chip names, e.g. `ci:green@h`.",
+          "name": "text",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "purpose": "StateChip — a `Pill` preset that shows whether a requirement is met.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/chip/StateChip.tsx",
+        "status": "packages/ui/src/components/ui/chip/StateChip.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-statechip--default"
+      ],
+      "tier": "molecule"
+    },
+    {
       "composes": [],
       "family": "ui/collapse",
       "file": "packages/ui/src/components/ui/collapse/Collapse.tsx",
@@ -14336,6 +14405,13 @@
           "name": "children",
           "required": false,
           "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Named moments in seconds from the beat's start, each within `[0, durationS]`; content reads one with `useCue(name)`.",
+          "name": "cues",
+          "required": false,
+          "type": "Readonly<Record<string, number>>"
         },
         {
           "default": null,
