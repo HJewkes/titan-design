@@ -75,7 +75,10 @@ describe('option cards', () => {
   it('put option n on hotkey n, so pressing 2 picks and checks the second card', () => {
     const action = numberKeyAction(packet, { kind: 'question', id: 'q1' }, '2')
     expect(action).toEqual({ type: 'pick', id: 'q1', option: 'B', many: false })
-    const card = render(packet, [action!]).match(/data-testid="option-card-2"[\s\S]*?<\/button>/)
+    const markup = render(packet, [action!])
+    const order = [...markup.matchAll(/data-testid="option-card-(\d)"/g)].map((m) => m[1])
+    expect(order).toEqual(['1', '2', '3', '4'])
+    const card = markup.match(/data-testid="option-card-2"[\s\S]*?<\/button>[\s\S]*?Tiles first/)
     expect(card?.[0]).toContain('aria-checked="true"')
     expect(card?.[0]).toContain('B · Milestone tiles')
   })
