@@ -4,7 +4,9 @@ import { space } from '../../../../theme/tokens/semantic'
 
 /** One field of a table. `id` is unique within its table and keys the row across frames. */
 export interface SchemaField {
+  /** Unique within its table; keys the row across frames. */
   id: string
+  /** The field's name, shown in the row. */
   name: string
   /** The field's type, shown after the name. */
   type?: string
@@ -16,11 +18,15 @@ export interface SchemaField {
 
 /** A table: a named box of field rows. */
 export interface SchemaTable {
+  /** Unique within the schema. */
   id: string
+  /** The table's name, shown in its header. */
   name: string
+  /** The rows, top to bottom. */
   fields: readonly SchemaField[]
   /** Grid cell, left to right then top to bottom. Default: the next column of row 0. */
   column?: number
+  /** Grid row; tables in a later row sit below the tallest table of the rows above. */
   row?: number
   /** Seconds at which the table starts to enter. Default: after the previous table's last row. */
   atS?: number
@@ -28,12 +34,15 @@ export interface SchemaTable {
 
 /** A field in a table. */
 export interface SchemaFieldRef {
+  /** The table's `id`. */
   table: string
+  /** The field's `id` within that table. */
   field: string
 }
 
 /** A reference from one field to another, drawn as a connector between their rows. */
 export interface SchemaRelation {
+  /** Unique within the schema. */
   id: string
   /** The referencing field: the "many" end of a `many-to-one` relation. */
   from: SchemaFieldRef
@@ -47,7 +56,9 @@ export interface SchemaRelation {
 
 /** The data a SchemaCard draws. */
 export interface SchemaData {
+  /** The tables, in reveal order. */
   tables: readonly SchemaTable[]
+  /** The relations; one naming a missing table or field is dropped. */
   relations?: readonly SchemaRelation[]
 }
 

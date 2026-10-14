@@ -140,6 +140,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | ScatterGridlines | review | ui/charts | Horizontal then vertical gridlines, each carrying its tick label. | — | — |
 | ScatterPointMark | review | ui/charts | One pressable bubble, ringed when selected, labelled when large or selected. | — | — |
 | ScheduleTiles | candidate | custom/Workout | ScheduleTiles — Date / Time / Until row for an upcoming session. | DateTime, Stack, Tile | custom-workout-scheduletiles--soon-under-a-day |
+| SchemaCard | candidate | ui/charts | SchemaCard: tables, their fields and the relations between them, laid out from data with no measuring. | EmptyState, SchemaConnectors, Skeleton, Surface, Typography | components-organisms-schemacard--default |
 | Section | stable | ui/section | — | — | components-atoms-section--default |
 | SegmentedBar | candidate | custom/Workout | A horizontal track split into weighted, individually-fillable segments — the presentational atom the per-set strips are built from. | — | custom-workout-segmentedbar--equal-segments |
 | SegmentedProgressBar | candidate | custom/Workout | A progress bar segmented by weighted slots (one chunk per exercise, width ∝ its set count): `value` fills the chunks left-to-right, and a single pace colour spans them all — green when at/ahead of the `target` pace, amber when behind, steel when there is no target. | SegmentedBar | custom-workout-segmentedprogressbar--ahead |

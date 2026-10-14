@@ -12526,6 +12526,86 @@
       "tier": "atom"
     },
     {
+      "composes": [
+        "EmptyState",
+        "SchemaConnectors",
+        "Skeleton",
+        "Surface",
+        "Typography"
+      ],
+      "family": "ui/charts",
+      "file": "packages/ui/src/components/ui/charts/schema-card/SchemaCard.tsx",
+      "name": "SchemaCard",
+      "props": [
+        {
+          "default": null,
+          "description": "Names the diagram for assistive technology.",
+          "name": "accessibilityLabel",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Tailwind classes merged onto the root.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The tables, their fields and the relations between them.",
+          "name": "data",
+          "required": true,
+          "type": "SchemaData"
+        },
+        {
+          "default": null,
+          "description": "Shown when `data` has no tables.",
+          "name": "emptyState",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": "[]",
+          "description": "Fields to emphasise, each over its own window.",
+          "name": "highlights",
+          "required": false,
+          "type": "readonly SchemaHighlight[]"
+        },
+        {
+          "default": "false",
+          "description": "Shows a placeholder of the card's settled size.",
+          "name": "isLoading",
+          "required": false,
+          "type": "boolean"
+        },
+        {
+          "default": null,
+          "description": "Seconds into the card's reveal.",
+          "name": "t",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "192",
+          "description": "Width of every table, in px.",
+          "name": "tableWidth",
+          "required": false,
+          "type": "number"
+        }
+      ],
+      "purpose": "SchemaCard: tables, their fields and the relations between them, laid out from data with no measuring.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/charts/schema-card/SchemaCard.tsx",
+        "status": "packages/ui/src/components/ui/charts/schema-card/SchemaCard.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-organisms-schemacard--default"
+      ],
+      "tier": "molecule"
+    },
+    {
       "composes": [],
       "family": "ui/charts",
       "file": "packages/ui/src/components/ui/charts/spark-bars/SparkBars.tsx",

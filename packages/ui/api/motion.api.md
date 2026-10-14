@@ -6,6 +6,7 @@
 
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import { ReactNode } from 'react';
+import { ViewProps } from 'react-native';
 
 // @public
 export function all(...spans: Span[]): Span;
@@ -319,6 +320,77 @@ export function randomRange(seed: number | string, keys: readonly number[], inpu
 
 // @public
 export const REDUCED_MOTION_END_S = 10000;
+
+// @public
+export function SchemaCard(input: SchemaCardProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export function schemaCardDurationS(data: SchemaData, highlights?: readonly SchemaHighlight[]): number;
+
+// @public
+export interface SchemaCardProps extends Omit<ViewProps, 'children'> {
+    accessibilityLabel: string;
+    className?: string;
+    data: SchemaData;
+    emptyState?: ReactNode;
+    highlights?: readonly SchemaHighlight[];
+    isLoading?: boolean;
+    t?: number;
+    tableWidth?: number;
+}
+
+// @public
+export function schemaCardSize(data: SchemaData, tableWidth?: number): {
+    width: number;
+    height: number;
+};
+
+// @public
+export interface SchemaData {
+    relations?: readonly SchemaRelation[];
+    tables: readonly SchemaTable[];
+}
+
+// @public
+export interface SchemaField {
+    atS?: number;
+    id: string;
+    key?: 'primary' | 'foreign';
+    name: string;
+    type?: string;
+}
+
+// @public
+export interface SchemaFieldRef {
+    field: string;
+    table: string;
+}
+
+// @public
+export interface SchemaHighlight {
+    atS: number;
+    durS?: number;
+    field: SchemaFieldRef;
+}
+
+// @public
+export interface SchemaRelation {
+    atS?: number;
+    cardinality?: 'many-to-one' | 'one-to-one';
+    from: SchemaFieldRef;
+    id: string;
+    to: SchemaFieldRef;
+}
+
+// @public
+export interface SchemaTable {
+    atS?: number;
+    column?: number;
+    fields: readonly SchemaField[];
+    id: string;
+    name: string;
+    row?: number;
+}
 
 // @public
 export interface SeekClock extends Clock {

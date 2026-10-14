@@ -8,8 +8,11 @@ import type { SchemaData, SchemaFieldRef, SchemaRelation, SchemaTable } from './
 
 /** A field to emphasise from `atS` for `durS` seconds (held to the end when `durS` is omitted). */
 export interface SchemaHighlight {
+  /** The row to fill. */
   field: SchemaFieldRef
+  /** Seconds at which the fill starts to rise. */
   atS: number
+  /** Seconds the fill lasts, exit included. Omit to hold it to the end. */
   durS?: number
 }
 

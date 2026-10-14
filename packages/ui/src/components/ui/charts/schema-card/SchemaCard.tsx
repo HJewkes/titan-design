@@ -40,6 +40,7 @@ export interface SchemaCardProps extends Omit<ViewProps, 'children'> {
   isLoading?: boolean
   /** Shown when `data` has no tables. Default: an `EmptyState` reading "No tables". */
   emptyState?: ReactNode
+  /** Tailwind classes merged onto the root. */
   className?: string
 }
 

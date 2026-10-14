@@ -27,7 +27,7 @@
     "name": "motion",
     "path": "dist/motion.mjs",
     "brotli": true,
-    "limit": "24 kB"
+    "limit": "31 kB"
   },
   {
     "name": "diagram",
