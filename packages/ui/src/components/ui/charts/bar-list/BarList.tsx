@@ -12,11 +12,12 @@ import {
   buildBarListModel,
   readoutName,
   normalizeMaxRows,
+  type BarListMarker,
   type BarListRow,
   type BarListValueFormatter,
 } from './bar-list-model'
 
-export type { BarListRow, BarListValueFormatter } from './bar-list-model'
+export type { BarListMarker, BarListRow, BarListValueFormatter } from './bar-list-model'
 
 /** Props of {@link BarList}. */
 export interface BarListProps extends Omit<ViewProps, 'children'> {
@@ -26,6 +27,8 @@ export interface BarListProps extends Omit<ViewProps, 'children'> {
   accessibilityLabel: string
   /** Value that fills a whole bar. Defaults to the largest value. */
   max?: number
+  /** One labelled line on the value axis (a cutoff, a budget). It never changes the scale. */
+  referenceMarker?: BarListMarker
   /** `descending` ranks by value; `none` keeps input order (a funnel). */
   sort?: 'descending' | 'none'
   /** Rows shown before the rest fold into one overflow row. */
@@ -71,6 +74,16 @@ function keyDownProps(tips: RowTips | null, caller: KeyDownProps['onKeyDown']): 
   }
 }
 
+/** One marker object for as long as its fields hold, so an inline literal does not rebuild the model. */
+function useStableMarker(marker: BarListMarker | undefined): BarListMarker | undefined {
+  const isSet = marker !== undefined
+  const { value, label, formatValue } = marker ?? {}
+  return useMemo(
+    () => (isSet ? { value: value as number, label: label as string, formatValue } : undefined),
+    [isSet, value, label, formatValue]
+  )
+}
+
 /**
  * BarList: a ranked horizontal bar list. Each row is a label, a bar sized as a fraction of the
  * largest value (or `max`), a value and an optional secondary value. Rows beyond `maxRows` fold
@@ -86,6 +99,7 @@ export function BarList({
   rows,
   accessibilityLabel,
   max,
+  referenceMarker,
   sort = 'descending',
   maxRows,
   layout = 'inline',
@@ -99,11 +113,23 @@ export function BarList({
   ...props
 }: BarListProps) {
   const palette = silverRed(useSurfaceMode())
+  const marker = useStableMarker(referenceMarker)
   const model = useMemo(
-    () => buildBarListModel(rows, { max, sort, maxRows, formatValue, formatSecondary }),
-    [rows, max, sort, maxRows, formatValue, formatSecondary]
+    () =>
+      buildBarListModel(rows, {
+        max,
+        referenceMarker: marker,
+        sort,
+        maxRows,
+        formatValue,
+        formatSecondary,
+      }),
+    [rows, max, marker, sort, maxRows, formatValue, formatSecondary]
   )
-  const tips = useRowTips(model.shownCount, isValueHidden || model.flaggedCount > 0)
+  const tips = useRowTips(
+    model.shownCount,
+    isValueHidden || model.flaggedCount > 0 || model.marker !== null
+  )
   const columns = resolveColumns(model.columnChars, isValueHidden)
   const { onKeyDown: callerKeyDown, ...viewProps } = props as typeof props & KeyDownProps
 
@@ -151,6 +177,7 @@ export function BarList({
           sort={model.sort}
           columnChars={model.columnChars}
           columns={columns}
+          marker={model.marker}
           tipItem={tips ? tips.getItemProps(index) : null}
           layout={layout}
           size={size}

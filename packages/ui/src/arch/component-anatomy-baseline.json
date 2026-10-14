@@ -48,6 +48,10 @@
   "shell/workout/WorkoutTopBar": [
     "doc"
   ],
+  "ui/motion": [
+    "status",
+    "story"
+  ],
   "ui/trigger": [
     "doc",
     "status",

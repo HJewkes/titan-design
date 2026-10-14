@@ -2,7 +2,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ZoneTrack, type ZoneTrackZone } from './ZoneTrack'
 import { WORKOUT_TOKENS } from '../../../theme/workout-tokens'
-import { Surface } from '../../ui/surface'
+import { Surface, useSurfaceMode } from '../../ui/surface'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 
 const { green, yellow, orange, red } = WORKOUT_TOKENS.scale
@@ -127,16 +127,26 @@ export const Glow: Story = {
 }
 
 /** Colored + emphasized ticks with tooltips — hover a label to expand the acronym / show the raw value. */
+// The STOP label is text: in light it takes text-error, since red 600 misses 4.5:1 on the
+// grey 100 page (TD-789 3b).
 export const ColoredTooltipTicks: Story = {
   args: {
     zones: FATIGUE_ZONES,
     max: 40,
     marker: { type: 'needle', value: 22 },
     trackHeight: 12,
-    ticks: [
-      { value: 10, label: 'VL10', tooltip: '10% velocity loss' },
-      { value: 20, label: 'VL20', emphasized: true, tooltip: '20% velocity loss — threshold' },
-      { value: 30, label: 'STOP', color: red, tooltip: '30% velocity loss — stop the set' },
-    ],
+  },
+  render: function Render(args) {
+    const stop = useSurfaceMode() === 'light' ? getSemanticColors('light')['text-error'] : red
+    return (
+      <ZoneTrack
+        {...args}
+        ticks={[
+          { value: 10, label: 'VL10', tooltip: '10% velocity loss' },
+          { value: 20, label: 'VL20', emphasized: true, tooltip: '20% velocity loss — threshold' },
+          { value: 30, label: 'STOP', color: stop, tooltip: '30% velocity loss — stop the set' },
+        ]}
+      />
+    )
   },
 }

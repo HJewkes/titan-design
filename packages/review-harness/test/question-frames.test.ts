@@ -39,7 +39,7 @@ async function build(draft: ManifestInput) {
   await writeFile(path, JSON.stringify(draft))
   const lines: string[] = []
   const io = { stderr: (t: string) => lines.push(t), measure: async () => [], git: tree }
-  const code = await buildRound(path, undefined, io, '/tree')
+  const code = await buildRound(path, undefined, io, { tree: '/tree' })
   return { code, lines, round: join(dir, 'round.json') }
 }
 
@@ -164,10 +164,22 @@ describe('a round of two PR groups with anchored picks', () => {
     draft.questions = draft.questions.map((q) => {
       if (q.id !== 'pill-size' || q.kind !== 'pick-one') return q
       const { frames: _, ...rest } = q
-      return { ...rest, options: ['Small', 'Medium'] }
+      return { ...rest, options: ['Small', 'Medium'], implemented: 'Small' }
     })
     await expect(build(draft)).rejects.toThrow(
       'unanchored-question: question pill-size: it decides something its section shows; name its frames'
+    )
+  })
+
+  it('refuses an iterate question that does not declare its implemented option', async () => {
+    const draft = await readDraft()
+    draft.questions = draft.questions.map((q) => {
+      if (q.id !== 'pill-size' || q.kind !== 'pick-one') return q
+      const { implemented: _, ...rest } = q
+      return rest
+    })
+    await expect(build(draft)).rejects.toThrow(
+      'missing-implemented-option: question pill-size: its iterate decision changes what ships; declare the option the PR implements (implemented)'
     )
   })
 

@@ -4,14 +4,16 @@ import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path'
 import {
   RoundSchema,
   choiceMismatchMessage,
+  frameSizeMismatch,
+  isClipVariant,
   isImageVariant,
   isLoopbackUrl,
   isStoryVariant,
   settingMismatches,
   type Feedback,
-  type ImageVariant,
   type Manifest,
 } from '@titan-design/review-schema'
+import { baseImageKey } from './pr-tabs.ts'
 import { urlParamProblems } from './round.ts'
 import { startReviewServer, type PageHandler } from './server.ts'
 
@@ -30,6 +32,8 @@ export interface LoadedRound {
   storybookUrl: string
   /** Absolute path of each image variant's PNG, by variant key. */
   images: Record<string, string>
+  /** Absolute path of each clip variant's mp4 or webm, by variant key. */
+  clips: Record<string, string>
   /** A page banner saying the harness is not origin/main's, or could not be checked. */
   harnessWarning?: string
 }
@@ -46,30 +50,81 @@ async function startsWithPngSignature(file: string): Promise<boolean> {
   }
 }
 
-/** Resolves an image against the round's directory, following symlinks, and refuses escapes. */
-async function resolveImage(roundDir: string, variant: ImageVariant): Promise<string> {
-  const where = `variant ${variant.key}: image ${variant.image}`
-  const file = await realpath(resolve(roundDir, variant.image)).catch(() => {
+async function readHead(file: string, bytes: number): Promise<Buffer> {
+  const handle = await open(file)
+  try {
+    const { buffer, bytesRead } = await handle.read(Buffer.alloc(bytes), 0, bytes, 0)
+    return buffer.subarray(0, bytesRead)
+  } finally {
+    await handle.close()
+  }
+}
+
+const WEBM_SIGNATURE = Buffer.from([0x1a, 0x45, 0xdf, 0xa3])
+
+/** An mp4 names its `ftyp` box at byte 4; a webm opens with the EBML magic. */
+export function isVideoHead(head: Buffer): boolean {
+  return (
+    head.subarray(0, 4).equals(WEBM_SIGNATURE) || head.subarray(4, 8).toString('latin1') === 'ftyp'
+  )
+}
+
+/** Resolves a path against the round's directory, following symlinks, and refuses escapes. */
+async function resolveInside(roundDir: string, where: string, path: string): Promise<string> {
+  const file = await realpath(resolve(roundDir, path)).catch(() => {
     throw new ReviewError(`${where} does not exist (paths resolve against ${roundDir})`)
   })
   const inside = relative(roundDir, file)
   if (inside === '..' || inside.startsWith(`..${sep}`) || isAbsolute(inside))
     throw new ReviewError(`${where} resolves outside the round directory ${roundDir}`)
+  return file
+}
+
+async function resolveImage(roundDir: string, where: string, image: string): Promise<string> {
+  const file = await resolveInside(roundDir, where, image)
   if (!(await startsWithPngSignature(file).catch(() => false)))
     throw new ReviewError(`${where} is not a PNG file`)
   return file
 }
 
-/** A PNG's pixel width, from its IHDR chunk, which the signature check has already placed. */
-async function pngWidth(file: string): Promise<number> {
+async function resolveClip(roundDir: string, where: string, clip: string): Promise<string> {
+  const file = await resolveInside(roundDir, where, clip)
+  if (!isVideoHead(await readHead(file, 8).catch(() => Buffer.alloc(0))))
+    throw new ReviewError(`${where} is not an mp4 or webm file`)
+  return file
+}
+
+/** The first `length` bytes of a PNG's IHDR data, which the signature check has already placed. */
+async function readIhdr(file: string, length: 4 | 8, what: string): Promise<Buffer> {
   const handle = await open(file)
   try {
-    const { buffer, bytesRead } = await handle.read(Buffer.alloc(4), 0, 4, 16)
-    if (bytesRead < 4) throw new ReviewError(`cannot read PNG width from ${file}`)
-    return buffer.readUInt32BE(0)
+    const { buffer, bytesRead } = await handle.read(Buffer.alloc(length), 0, length, 16)
+    if (bytesRead < length) throw new ReviewError(`cannot read PNG ${what} from ${file}`)
+    return buffer
   } finally {
     await handle.close()
   }
+}
+
+async function pngWidth(file: string): Promise<number> {
+  return (await readIhdr(file, 4, 'width')).readUInt32BE(0)
+}
+
+async function pngSize(file: string): Promise<{ width: number; height: number }> {
+  const ihdr = await readIhdr(file, 8, 'size')
+  return { width: ihdr.readUInt32BE(0), height: ihdr.readUInt32BE(4) }
+}
+
+/** An image that declares a true-size frame must be that size, in both dimensions. */
+async function frameReferenceProblems(manifest: Manifest, images: Record<string, string>) {
+  const problems = await Promise.all(
+    manifest.variants.filter(isImageVariant).map(async (v) => {
+      if (!v.frameReference) return []
+      const mismatch = frameSizeMismatch(await pngSize(images[v.key]), v.frameReference.frame)
+      return mismatch ? [`variant ${v.key}: image ${v.image} ${mismatch}`] : []
+    })
+  )
+  return problems.flat()
 }
 
 /** Image frames of one CHOICE strip are captured at one width; the manifest cannot see that. */
@@ -99,12 +154,43 @@ function issueWhere(json: unknown, path: PropertyKey[]): string {
   return [`${noun} ${name}`, rest.map(String).join('.')].join(' ').trimEnd()
 }
 
+/** Every PNG the page may show, by route key: each image variant's, and each base render. */
+function imageSources(manifest: Manifest): { key: string; where: string; image: string }[] {
+  return manifest.variants.flatMap((v) => [
+    ...(isImageVariant(v)
+      ? [{ key: v.key, where: `variant ${v.key}: image ${v.image}`, image: v.image }]
+      : []),
+    ...(v.baseImage
+      ? [
+          {
+            key: baseImageKey(v.key),
+            where: `variant ${v.key}: baseImage ${v.baseImage}`,
+            image: v.baseImage,
+          },
+        ]
+      : []),
+  ])
+}
+
 async function resolveImages(path: string, manifest: Manifest): Promise<Record<string, string>> {
   const roundDir = await realpath(dirname(resolve(path)))
   const entries = await Promise.all(
+    imageSources(manifest).map(
+      async (s) => [s.key, await resolveImage(roundDir, s.where, s.image)] as const
+    )
+  )
+  return Object.fromEntries(entries)
+}
+
+async function resolveClips(path: string, manifest: Manifest): Promise<Record<string, string>> {
+  const roundDir = await realpath(dirname(resolve(path)))
+  const entries = await Promise.all(
     manifest.variants
-      .filter(isImageVariant)
-      .map(async (v) => [v.key, await resolveImage(roundDir, v)] as const)
+      .filter(isClipVariant)
+      .map(
+        async (v) =>
+          [v.key, await resolveClip(roundDir, `variant ${v.key}: clip ${v.clip}`, v.clip)] as const
+      )
   )
   return Object.fromEntries(entries)
 }
@@ -142,12 +228,16 @@ export async function loadRound(path: string, storybookOverride?: string): Promi
       `only loopback Storybook hosts (127.0.0.1, localhost, [::1]) are allowed: ${storybookOverride}`
     )
   const images = await resolveImages(path, manifest)
-  const widthProblems = await choiceWidthProblems(manifest, images)
-  if (widthProblems.length)
-    throw new ReviewError(`invalid manifest ${path}:\n  ${widthProblems.join('\n  ')}`)
+  const clips = await resolveClips(path, manifest)
+  const sizeProblems = [
+    ...(await choiceWidthProblems(manifest, images)),
+    ...(await frameReferenceProblems(manifest, images)),
+  ]
+  if (sizeProblems.length)
+    throw new ReviewError(`invalid manifest ${path}:\n  ${sizeProblems.join('\n  ')}`)
   const manifestSha256 = createHash('sha256').update(raw).digest('hex')
   const storybookUrl = (storybookOverride ?? manifest.storybookUrl).replace(/\/$/, '')
-  return { manifest, manifestSha256, storybookUrl, images }
+  return { manifest, manifestSha256, storybookUrl, images, clips }
 }
 
 /** An image-only round never touches Storybook, so it needs none running. */

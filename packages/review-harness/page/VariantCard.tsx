@@ -2,13 +2,18 @@ import type { Dispatch } from 'react'
 import type { VariantDraft } from '../src/feedback.ts'
 import { frameSizing } from '../src/sections.ts'
 import {
+  isClipVariant,
   isImageVariant,
   isStoryVariant,
   type Manifest,
   type Variant,
 } from '@titan-design/review-schema'
+import { ClipFrame } from './ClipFrame.tsx'
 import { Frame, type PinInput } from './Frame.tsx'
 import { ImageFrame } from './ImageFrame.tsx'
+import { MotionControls, useMotionPlayer } from './MotionControls.tsx'
+import { ScaleFrame } from './ScaleFrame.tsx'
+import type { LiveArgs } from './storyArgs.ts'
 import { PinList } from './PinList.tsx'
 import { VERDICTS, type Action } from './state.ts'
 import { Stop } from './Stop.tsx'
@@ -52,9 +57,73 @@ function VerdictControl({ variant, draft, dispatch }: Omit<VariantCardProps, 'ma
   )
 }
 
-export function VariantCard(props: VariantCardProps) {
-  const { manifest, variant, draft, index, active, dispatch } = props
+interface CardFramesProps extends VariantCardProps {
+  onPin: (pin: PinInput) => void
+  liveArgs?: LiveArgs
+}
+
+/** The widths a frame is drawn at: a true-size image or clip once, at its own frame width. */
+function frameWidths(manifest: Manifest, variant: Variant): number[] {
+  return variant.frameReference ? [variant.frameReference.frame.width] : manifest.widths
+}
+
+/**
+ * A scale reference is one full-size frame, and so is a true-size image or clip; every other
+ * variant is drawn at each manifest width.
+ */
+function CardFrames(props: CardFramesProps) {
+  const { manifest, variant, draft, onPin, liveArgs } = props
   const sizing = frameSizing(manifest, variant)
+  const pins = draft.annotations
+  if (isStoryVariant(variant) && variant.scale)
+    return (
+      <div className="frames">
+        <ScaleFrame
+          variant={{ ...variant, scale: variant.scale }}
+          annotate={props.annotate}
+          pins={pins}
+          onPin={onPin}
+          liveArgs={liveArgs}
+        />
+      </div>
+    )
+  return (
+    <div className="frames">
+      {frameWidths(manifest, variant).map((width) => {
+        const shared = { width, annotate: props.annotate, pins, onPin }
+        if (isClipVariant(variant)) return <ClipFrame key={width} {...shared} variant={variant} />
+        if (isImageVariant(variant))
+          return (
+            <ImageFrame
+              key={width}
+              {...shared}
+              variant={variant}
+              height={sizing.height}
+              maxHeight={sizing.maxHeight}
+            />
+          )
+        return (
+          isStoryVariant(variant) && (
+            <Frame
+              key={width}
+              {...shared}
+              variant={variant}
+              height={sizing.height}
+              maxHeight={sizing.maxHeight}
+              onHitTesting={props.onHitTesting}
+              liveArgs={liveArgs}
+            />
+          )
+        )
+      })}
+    </div>
+  )
+}
+
+export function VariantCard(props: VariantCardProps) {
+  const { variant, draft, index, active, dispatch } = props
+  const argMotion = variant.motion?.mechanism === 'arg' ? variant.motion : undefined
+  const player = useMotionPlayer(argMotion)
   const onPin = (pin: PinInput) => {
     dispatch({ type: 'activate', index })
     dispatch({ type: 'addPin', key: variant.key, pin })
@@ -73,38 +142,10 @@ export function VariantCard(props: VariantCardProps) {
         <h3>
           <span className="key">{variant.key}</span> {variant.label}
         </h3>
-        <code>{variant.storyId ?? variant.image}</code>
+        <code>{variant.storyId ?? variant.image ?? variant.clip}</code>
       </header>
-      <div className="frames">
-        {manifest.widths.map((width) => {
-          const shared = { width, height: sizing.height, annotate: props.annotate }
-          const pins = draft.annotations
-          if (isImageVariant(variant))
-            return (
-              <ImageFrame
-                key={width}
-                {...shared}
-                variant={variant}
-                maxHeight={sizing.maxHeight}
-                pins={pins}
-                onPin={onPin}
-              />
-            )
-          return (
-            isStoryVariant(variant) && (
-              <Frame
-                key={width}
-                {...shared}
-                variant={variant}
-                maxHeight={sizing.maxHeight}
-                pins={pins}
-                onPin={onPin}
-                onHitTesting={props.onHitTesting}
-              />
-            )
-          )
-        })}
-      </div>
+      {argMotion && <MotionControls variantKey={variant.key} motion={argMotion} player={player} />}
+      <CardFrames {...props} onPin={onPin} liveArgs={player.args} />
       <VerdictControl {...props} />
       <textarea
         aria-label={`Comment on ${variant.key}`}

@@ -1,4 +1,5 @@
 import { createReadStream } from 'node:fs'
+import { stat } from 'node:fs/promises'
 import http from 'node:http'
 import type { AddressInfo } from 'node:net'
 import type { Duplex } from 'node:stream'
@@ -28,8 +29,10 @@ export interface ReviewServerOptions {
   storybookUrl: string
   page: PageHandler
   port?: number
-  /** Absolute PNG path by variant key; served at `api/image/<key>`, never by path. Keys need no decoding. */
+  /** Absolute PNG path by variant key (a base render by `<key>.base`); served at `api/image/<key>`, never by path. Keys need no decoding. */
   images?: Record<string, string>
+  /** Absolute mp4 or webm path by variant key; served at `api/clip/<key>` with byte ranges. */
+  clips?: Record<string, string>
   harnessWarning?: string
 }
 
@@ -96,6 +99,49 @@ function sendImage(opts: ReviewServerOptions, key: string, res: http.ServerRespo
     .pipe(res)
 }
 
+/** The byte range a `Range: bytes=a-b` header asks of a file of `size`, or null for the whole file. */
+export function byteRange(header: string | undefined, size: number): [number, number] | null {
+  const match = /^bytes=(\d*)-(\d*)$/.exec(header ?? '')
+  if (!match || (match[1] === '' && match[2] === '')) return null
+  const [start, end] =
+    match[1] === ''
+      ? [Math.max(0, size - Number(match[2])), size - 1]
+      : [Number(match[1]), match[2] === '' ? size - 1 : Math.min(Number(match[2]), size - 1)]
+  return start <= end && start < size ? [start, end] : null
+}
+
+const CLIP_TYPES: Record<string, string> = { mp4: 'video/mp4', webm: 'video/webm' }
+
+/** A clip, by variant key, in byte ranges: a video element seeks and loops by them. */
+async function sendClip(
+  opts: ReviewServerOptions,
+  key: string,
+  req: http.IncomingMessage,
+  res: http.ServerResponse
+) {
+  const file = Object.hasOwn(opts.clips ?? {}, key) ? opts.clips?.[key] : undefined
+  const size = file
+    ? await stat(file).then(
+        (s) => s.size,
+        () => null
+      )
+    : null
+  if (!file || size === null) return sendJson(res, 404, { errors: [`no clip variant ${key}`] })
+  const type = CLIP_TYPES[file.split('.').pop()?.toLowerCase() ?? ''] ?? 'application/octet-stream'
+  const range = byteRange(req.headers.range, size)
+  const [start, end] = range ?? [0, size - 1]
+  res.writeHead(range ? 206 : 200, {
+    'content-type': type,
+    'content-length': end - start + 1,
+    'accept-ranges': 'bytes',
+    'cache-control': 'no-store',
+    ...(range && { 'content-range': `bytes ${start}-${end}/${size}` }),
+  })
+  createReadStream(file, { start, end })
+    .once('error', () => res.destroy())
+    .pipe(res)
+}
+
 function createRouter(opts: ReviewServerOptions, accept: Accept): http.RequestListener {
   const upstream = new URL(opts.storybookUrl)
   const submit = createSubmitHandler(opts, accept)
@@ -114,6 +160,8 @@ function createRouter(opts: ReviewServerOptions, accept: Accept): http.RequestLi
     if (path === `${API}submit` && req.method === 'POST') return void submit(req, res)
     if (path.startsWith(`${API}image/`) && req.method === 'GET')
       return sendImage(opts, path.slice(`${API}image/`.length), res)
+    if (path.startsWith(`${API}clip/`) && req.method === 'GET')
+      return void sendClip(opts, path.slice(`${API}clip/`.length), req, res)
     if (path.startsWith(API)) return sendJson(res, 404, { errors: ['unknown endpoint'] })
     if (path.startsWith(PAGE_BASE)) return opts.page(req, res, () => sendJson(res, 404, {}))
     proxyRequest(upstream, req, res)

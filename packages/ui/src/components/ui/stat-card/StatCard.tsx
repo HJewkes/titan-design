@@ -151,7 +151,7 @@ export function StatCardHeader({ title, trailing, testID }: StatCardHeaderProps)
       testID={testID}
     >
       {typeof title === 'string' ? (
-        <Typography variant="overline" color="tertiary">
+        <Typography variant="overline" color="secondary">
           {title}
         </Typography>
       ) : (

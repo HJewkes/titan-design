@@ -10,6 +10,7 @@ import {
 } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Tooltip } from '../tooltip'
+import { Typography } from '../typography'
 import { CELL_PADDING, FLEX_CELL, TableContext } from './TableContext'
 import { sortName } from './sort-name'
 import { columnSortState, type ColumnSortState } from './useTableState'
@@ -152,14 +153,9 @@ function SortableHeaderCell({
 
 function HeaderLabel({ isSorted, children }: { isSorted: boolean; children?: React.ReactNode }) {
   return (
-    <Text
-      className={cn(
-        'text-xs font-semibold uppercase tracking-wider text-text-secondary',
-        isSorted && 'text-text-primary'
-      )}
-    >
+    <Typography variant="overline" color={isSorted ? 'primary' : 'secondary'}>
       {children}
-    </Text>
+    </Typography>
   )
 }
 

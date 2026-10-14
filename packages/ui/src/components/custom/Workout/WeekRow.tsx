@@ -1,7 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps } from 'react-native'
-import { WorkoutPill, type WorkoutPillStatus } from './WorkoutPill'
 import { IntensityBar } from './IntensityBar'
+import { Pill, type PillTone, type PillVariant } from '../../ui/pill'
 import { Typography } from '../../ui/typography'
 import { resolveColor } from '../../../theme/resolve-color'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
@@ -11,8 +11,69 @@ import { useSurfaceMode } from '../../ui/surface'
 
 export interface WeekRowWorkout {
   name: string
-  status: WorkoutPillStatus
+  status: 'completed' | 'current' | 'upcoming' | 'deload' | 'next' | 'missed'
   onPress?: () => void
+}
+
+type WeekRowWorkoutStatus = WeekRowWorkout['status']
+
+/** Deload has no Pill tone; its pill is painted from `status-deload` below. */
+const pillPaint: Record<
+  Exclude<WeekRowWorkoutStatus, 'deload'>,
+  { tone: PillTone; variant: PillVariant }
+> = {
+  completed: { tone: 'success', variant: 'subtle' },
+  current: { tone: 'brand', variant: 'subtle' },
+  next: { tone: 'brand', variant: 'outline' },
+  upcoming: { tone: 'neutral', variant: 'outline' },
+  missed: { tone: 'error', variant: 'subtle' },
+}
+
+const statusGlyph: Partial<Record<WeekRowWorkoutStatus, { glyph: string; testID: string }>> = {
+  completed: { glyph: '\u2713', testID: 'workout-pill-check' },
+  missed: { glyph: '\u2014', testID: 'workout-pill-dash' },
+}
+
+function StatusGlyph({ status }: { status: WeekRowWorkoutStatus }) {
+  const mark = statusGlyph[status]
+  if (!mark) return null
+  return (
+    <Typography
+      variant="caption"
+      color="inherit"
+      className="font-semibold leading-[normal] text-inherit"
+      accessibilityElementsHidden
+      testID={mark.testID}
+    >
+      {mark.glyph}
+    </Typography>
+  )
+}
+
+/** One workout as a Pill. The label is 12px Nunito, the step `caption` rounds 11px up to. */
+function WorkoutStatusPill({ name, status, onPress }: WeekRowWorkout) {
+  const deload = getSemanticColors(useSurfaceMode())['status-deload']
+  const isDeload = status === 'deload'
+  const paint = isDeload
+    ? { tone: 'neutral' as const, variant: 'subtle' as const }
+    : pillPaint[status]
+  return (
+    <Pill
+      tone={paint.tone}
+      variant={paint.variant}
+      size="md"
+      rounded={false}
+      leading={<StatusGlyph status={status} />}
+      onPress={onPress}
+      className={isDeload ? 'text-status-deload' : undefined}
+      style={isDeload ? { backgroundColor: alpha(deload, 0.12) } : undefined}
+      textClassName="font-body leading-[normal]"
+      accessibilityLabel={`${name} workout, ${status}`}
+      testID="workout-pill"
+    >
+      {name}
+    </Pill>
+  )
 }
 
 export interface WeekRowProps extends ViewProps {
@@ -115,7 +176,7 @@ export function WeekRow({
 
       <View className="flex-1 flex-row items-center flex-wrap gap-1.5" testID="week-row-pills">
         {workouts.map((workout, i) => (
-          <WorkoutPill
+          <WorkoutStatusPill
             key={i}
             name={workout.name}
             status={isDeload ? 'deload' : workout.status}

@@ -1,5 +1,8 @@
+import { Indicator, type IndicatorColor, type IndicatorPulse } from '../../ui/indicator'
+import { Pill } from '../../ui/pill'
+import { Typography, type TypographyColor } from '../../ui/typography'
 import { TopBar } from '../TopBar'
-import { SessionStatePill, type SessionState } from './SessionStatePill'
+import { type SessionState } from './SessionStatePill'
 import { DeviceMenu } from './DeviceMenu'
 import { type Device } from './DeviceRow'
 
@@ -18,6 +21,38 @@ export interface WorkoutTopBarProps {
   showClock?: boolean
   onSelectDevice?: (device: Device) => void
   className?: string
+}
+
+const sessionStateConfig: Record<
+  SessionState,
+  { label: string; color: IndicatorColor; pulse: boolean | IndicatorPulse; text: TypographyColor }
+> = {
+  // live = vivid green with an expanding ring; rest = solid amber (no pulse — operator); idle is a grey dot.
+  live: { label: 'LIVE', color: 'live', pulse: 'ping', text: 'primary' },
+  rest: { label: 'REST', color: 'warning', pulse: false, text: 'primary' },
+  idle: { label: 'IDLE', color: 'default', pulse: false, text: 'primary' },
+}
+
+/**
+ * The session-state readout as a clear Pill (no fill, no ring); the dot carries the state, the label stays quiet.
+ * `self-auto` keeps it centred in the bar instead of Pill's `self-start`.
+ */
+function SessionStateReadout({ state }: { state: SessionState }) {
+  const cfg = sessionStateConfig[state]
+  return (
+    <Pill
+      tone="neutral"
+      variant="clear"
+      size="sm"
+      className="self-auto gap-inline-md"
+      leading={<Indicator size="md" color={cfg.color} pulse={cfg.pulse} />}
+      testID="session-state-pill"
+    >
+      <Typography variant="monoLabel" color={cfg.text} className="text-[11px]">
+        {cfg.label}
+      </Typography>
+    </Pill>
+  )
 }
 
 /**
@@ -44,7 +79,7 @@ export function WorkoutTopBar({
       time={time}
       className={className}
       trailing={[
-        <SessionStatePill key="state" state={state} />,
+        <SessionStateReadout key="state" state={state} />,
         <DeviceMenu key="devices" devices={devices} onSelectDevice={onSelectDevice} />,
       ]}
     />

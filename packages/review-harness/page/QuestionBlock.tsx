@@ -1,9 +1,15 @@
-import type { Dispatch } from 'react'
+import { useState, type Dispatch } from 'react'
 import { agrees, draftAnswer, type AnswerDraft } from '../src/feedback.ts'
 import { isAnswered, offersBuiltInRevision } from '../src/round.ts'
-import type { Manifest, Question, Recommendation } from '@titan-design/review-schema'
+import type {
+  Manifest,
+  OptionDetail,
+  PrGroupShipStatus,
+  Question,
+  Recommendation,
+} from '@titan-design/review-schema'
 import { Markdown } from './Markdown.tsx'
-import { recommendationVisible, type Action } from './state.ts'
+import { recommendationVisible, revealLocked, type Action } from './state.ts'
 import { Stop } from './Stop.tsx'
 
 interface QuestionBlockProps {
@@ -14,6 +20,10 @@ interface QuestionBlockProps {
   active: boolean
   follow: boolean
   dispatch: Dispatch<Action>
+  /** Set on a merge-bound question whose PR group may not ship: its Ship option is disabled. */
+  shipBlock?: PrGroupShipStatus
+  /** Set on a merge-bound question whose PR group is stacked on a holder group of the round. */
+  shipsAfter?: string
 }
 
 export const REVISION_LABEL = 'None of these, request a revision'
@@ -27,45 +37,244 @@ function scaleValues(question: Extract<Question, { kind: 'scale' }>): number[] {
   return Array.from({ length: question.max - question.min + 1 }, (_, i) => question.min + i)
 }
 
-function Choices({
-  manifest,
-  question,
-  draft,
-  dispatch,
-}: Omit<QuestionBlockProps, 'index' | 'active'>) {
-  if (question.kind === 'text') return null
+type ChoiceProps = Omit<QuestionBlockProps, 'index' | 'active' | 'follow'>
+type ChoiceQuestion = Exclude<Question, { kind: 'text' }>
+type PickQuestion = Extract<Question, { kind: 'pick-one' | 'pick-many' }>
+
+interface ChoiceItem {
+  hotkey: number
+  label: string
+  on: boolean
+  blocked: boolean
+}
+
+/** One item per option (or scale value) in hotkey order, then the built-in revision request. */
+function choiceItems({ manifest, draft, shipBlock }: ChoiceProps, question: ChoiceQuestion) {
   const many = question.kind === 'pick-many'
-  const items =
+  const items: ChoiceItem[] =
     question.kind === 'scale'
-      ? scaleValues(question).map((v) => ({ hotkey: v, label: String(v), on: draft.value === v }))
+      ? scaleValues(question).map((v) => ({
+          hotkey: v,
+          label: String(v),
+          on: draft.value === v,
+          blocked: false,
+        }))
       : question.options.map((o, i) => ({
           hotkey: i + 1,
           label: optionLabel(manifest, o),
           on: many ? (draft.picks ?? []).includes(o) : draft.pick === o,
+          blocked:
+            shipBlock !== undefined &&
+            question.kind === 'pick-one' &&
+            !!question.merge?.ship.includes(o),
         }))
   if (offersBuiltInRevision(question))
-    items.push({ hotkey: items.length + 1, label: REVISION_LABEL, on: draft.revision === true })
-  const act = (i: number): Action =>
-    question.kind === 'scale'
-      ? { type: 'value', id: question.id, value: scaleValues(question)[i] }
-      : i === question.options.length
-        ? { type: 'revision', id: question.id }
-        : { type: 'pick', id: question.id, option: question.options[i], many }
+    items.push({
+      hotkey: items.length + 1,
+      label: REVISION_LABEL,
+      on: draft.revision === true,
+      blocked: false,
+    })
+  return items
+}
+
+function choiceAction(question: ChoiceQuestion, i: number): Action {
+  if (question.kind === 'scale')
+    return { type: 'value', id: question.id, value: scaleValues(question)[i] }
+  return i === question.options.length
+    ? { type: 'revision', id: question.id }
+    : {
+        type: 'pick',
+        id: question.id,
+        option: question.options[i],
+        many: question.kind === 'pick-many',
+      }
+}
+
+function ChoiceButton({
+  item,
+  many,
+  onPress,
+  className = 'choice',
+}: {
+  item: ChoiceItem
+  many: boolean
+  onPress: () => void
+  className?: string
+}) {
+  return (
+    <button
+      type="button"
+      tabIndex={-1}
+      role={many ? 'checkbox' : 'radio'}
+      aria-checked={item.on}
+      className={className}
+      disabled={item.blocked}
+      onClick={onPress}
+    >
+      {item.hotkey <= 9 && <kbd>{item.hotkey}</kbd>} <Markdown inline>{item.label}</Markdown>
+    </button>
+  )
+}
+
+function Choices(props: ChoiceProps) {
+  const { question, dispatch } = props
+  if (question.kind === 'text') return null
+  if (question.kind !== 'scale' && question.optionDetails)
+    return <OptionCards {...props} question={question} />
+  const many = question.kind === 'pick-many'
   return (
     <div className="choices" role={many ? 'group' : 'radiogroup'} aria-label={question.prompt}>
-      {items.map((item, i) => (
-        <button
+      {choiceItems(props, question).map((item, i) => (
+        <ChoiceButton
           key={item.label}
-          type="button"
-          tabIndex={-1}
-          role={many ? 'checkbox' : 'radio'}
-          aria-checked={item.on}
-          className="choice"
-          onClick={() => dispatch(act(i))}
-        >
-          {item.hotkey <= 9 && <kbd>{item.hotkey}</kbd>} <Markdown inline>{item.label}</Markdown>
-        </button>
+          item={item}
+          many={many}
+          onPress={() => dispatch(choiceAction(question, i))}
+        />
       ))}
+    </div>
+  )
+}
+
+/** The recommended options, only while the recommendation shows: a hidden one must not leak. */
+function recommendedOptions(manifest: Manifest, question: PickQuestion, draft: AnswerDraft) {
+  const answer = question.recommendation?.answer
+  if (answer === undefined || typeof answer === 'number') return []
+  return recommendationVisible(manifest, question, draft) ? [answer].flat() : []
+}
+
+/** Pros and cons are always visible, whether or not the recommendation is. */
+function OptionTexts({ detail }: { detail: OptionDetail }) {
+  return (
+    <>
+      <Markdown>{detail.detail}</Markdown>
+      {detail.weakPoint && (
+        <div className="weak-point">
+          <span className="packet-tag">Weak point:</span>
+          <Markdown>{detail.weakPoint}</Markdown>
+        </div>
+      )}
+      {detail.after && (
+        <div className="option-after">
+          <span className="packet-tag">If you pick this:</span>
+          <Markdown>{detail.after}</Markdown>
+        </div>
+      )}
+    </>
+  )
+}
+
+function OptionNote({
+  option,
+  note,
+  onNote,
+}: {
+  option: string
+  note: string
+  onNote: (note: string) => void
+}) {
+  const [open, setOpen] = useState(note !== '')
+  if (!open)
+    return (
+      <button type="button" className="option-note-toggle" onClick={() => setOpen(true)}>
+        Add a note
+      </button>
+    )
+  return (
+    <textarea
+      className="option-note"
+      aria-label={`Note on ${option}`}
+      placeholder="Note on this option (optional)"
+      value={note}
+      onChange={(e) => onNote(e.target.value)}
+    />
+  )
+}
+
+interface OptionCardProps {
+  option: string
+  item: ChoiceItem
+  many: boolean
+  recommended: boolean
+  detail?: OptionDetail
+  note: string
+  onPress: () => void
+  onNote: (note: string) => void
+}
+
+function OptionCard({ option, item, many, recommended, detail, note, ...on }: OptionCardProps) {
+  const classes = ['option-card', item.on && 'is-on', recommended && 'is-recommended']
+  return (
+    <div className={classes.filter(Boolean).join(' ')} data-testid={`option-card-${item.hotkey}`}>
+      <div className="option-head">
+        <ChoiceButton item={item} many={many} onPress={on.onPress} className="choice option-pick" />
+        {recommended && <span className="option-badge">Recommended</span>}
+      </div>
+      {detail && <OptionTexts detail={detail} />}
+      <OptionNote option={option} note={note} onNote={on.onNote} />
+    </div>
+  )
+}
+
+/** Each option as a card that is also its radio or checkbox, so hotkeys and picks are unchanged. */
+function OptionCards(props: ChoiceProps & { question: PickQuestion }) {
+  const { manifest, question, draft, dispatch } = props
+  const many = question.kind === 'pick-many'
+  const items = choiceItems(props, question)
+  const recommended = recommendedOptions(manifest, question, draft)
+  const press = (i: number) => () => dispatch(choiceAction(question, i))
+  const revision = items[question.options.length]
+  return (
+    <div
+      className="option-packet"
+      role={many ? 'group' : 'radiogroup'}
+      aria-label={question.prompt}
+    >
+      <div className="option-cards">
+        {question.options.map((option, i) => (
+          <OptionCard
+            key={option}
+            option={option}
+            item={items[i]}
+            many={many}
+            recommended={recommended.includes(option)}
+            detail={question.optionDetails?.[option]}
+            note={draft.notes?.[option] ?? ''}
+            onPress={press(i)}
+            onNote={(note) => dispatch({ type: 'optionNote', id: question.id, option, note })}
+          />
+        ))}
+      </div>
+      {revision && <ChoiceButton item={revision} many={many} onPress={press(items.length - 1)} />}
+    </div>
+  )
+}
+
+/** Off by default so the owner can answer blind; an answer given while it shows is tagged seen. */
+function RevealToggle({ manifest, question, draft, dispatch }: ChoiceProps) {
+  if (question.kind === 'text' || !question.recommendation) return null
+  const visible = recommendationVisible(manifest, question, draft)
+  const locked = revealLocked(manifest, question, draft)
+  const help = locked
+    ? manifest.recommendations === 'shown'
+      ? 'This round shows every recommendation.'
+      : 'Shown because you answered.'
+    : visible
+      ? 'Your answer will be marked as seen.'
+      : 'Showing it first marks your answer as seen.'
+  return (
+    <div className="reveal">
+      <button
+        type="button"
+        aria-pressed={visible}
+        disabled={locked}
+        data-testid={`reveal-${question.id}`}
+        onClick={() => dispatch({ type: 'reveal', id: question.id })}
+      >
+        {visible ? 'Hide recommendation' : 'Show recommendation'} <kbd>r</kbd>
+      </button>
+      <span className="reveal-help">{help}</span>
     </div>
   )
 }
@@ -79,7 +288,26 @@ function verdictText(question: Question, draft: AnswerDraft, recommendation: Rec
   const answer = { ...draft, ...draftAnswer(question, draft) }
   if (!isAnswered(question, answer)) return null
   if (answer.revisionRequested) return 'You asked for a revision'
-  return agrees(answer, recommendation) ? 'Matches your pick' : 'Differs from your pick'
+  const verdict = agrees(answer, recommendation) ? 'Matches your pick' : 'Differs from your pick'
+  return draft.seen ? `${verdict} · seen before answering` : verdict
+}
+
+function RecommendationExtras({ manifest, rec }: { manifest: Manifest; rec: Recommendation }) {
+  return (
+    <>
+      {rec.weakPoint && (
+        <div className="weak-point">
+          <span className="packet-tag">Weak point:</span>
+          <Markdown>{rec.weakPoint}</Markdown>
+        </div>
+      )}
+      {rec.fallback && (
+        <p className="recommendation-fallback">
+          Fallback: <Markdown inline>{optionLabel(manifest, rec.fallback)}</Markdown>
+        </p>
+      )}
+    </>
+  )
 }
 
 function RecommendationNote({ manifest, question, draft }: QuestionBlockProps) {
@@ -96,10 +324,44 @@ function RecommendationNote({ manifest, question, draft }: QuestionBlockProps) {
         {verdict && <span className="recommendation-verdict"> · {verdict}</span>}
       </p>
       <Markdown>{rec.rationale}</Markdown>
+      <RecommendationExtras manifest={manifest} rec={rec} />
       <p className="recommendation-meta">
         {Math.round(rec.confidence * 100)}% confident · {rec.by}
       </p>
     </aside>
+  )
+}
+
+function ShipBlockedNotice({
+  shipBlock,
+  question,
+}: Pick<QuestionBlockProps, 'shipBlock' | 'question'>) {
+  if (!shipBlock) return null
+  return (
+    <div className="problems" role="alert" data-testid={`ship-blocked-${question.id}`}>
+      <p>Ship is withheld for {shipBlock.pr} until these are resolved:</p>
+      <ul>
+        {shipBlock.blockers.map((b) => (
+          <li key={`${b.questionId}-${b.kind}`}>{b.message}</li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+function ShipsAfterNote({
+  question,
+  shipsAfter,
+}: Pick<QuestionBlockProps, 'question' | 'shipsAfter'>) {
+  if (!shipsAfter || question.kind !== 'pick-one' || !question.merge) return null
+  const sameRepo = `${question.merge.repo}#`
+  const holder = shipsAfter.startsWith(sameRepo)
+    ? shipsAfter.slice(sameRepo.length - 1)
+    : shipsAfter
+  return (
+    <p className="ships-after" data-testid={`ships-after-${question.id}`}>
+      ships after {holder}
+    </p>
   )
 }
 
@@ -131,6 +393,9 @@ export function QuestionBlock(props: QuestionBlockProps) {
         {question.required && <span className="required"> required</span>}
       </h3>
       <Choices {...props} />
+      <RevealToggle {...props} />
+      <ShipsAfterNote question={question} shipsAfter={props.shipsAfter} />
+      <ShipBlockedNotice question={question} shipBlock={props.shipBlock} />
       <RecommendationNote {...props} />
       <RevisionNotice question={question} draft={draft} />
       <textarea

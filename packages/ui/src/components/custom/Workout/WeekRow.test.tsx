@@ -9,7 +9,7 @@ import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { alpha } from '../../../utils/colors'
 import { Surface } from '../../ui/surface'
 
-// Light status-deload equals dark, so light is swapped for another token to prove the mode is read.
+// Light status-deload is swapped for an unrelated token, so a pass proves the mode is read.
 vi.mock('../../../theme/tokens/semantic', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../../../theme/tokens/semantic')>()
   const light = actual.getSemanticColors('light')
@@ -119,7 +119,7 @@ describe('WeekRow', () => {
     it('invokes onPress for a pressable workout', () => {
       const onPress = vi.fn()
       render(<WeekRow {...baseProps} workouts={[{ name: 'Upper', status: 'current', onPress }]} />)
-      fireEvent.click(screen.getByTestId('workout-pill-pressable'))
+      fireEvent.click(screen.getByRole('button', { name: 'Upper workout, current' }))
       expect(onPress).toHaveBeenCalledOnce()
     })
   })

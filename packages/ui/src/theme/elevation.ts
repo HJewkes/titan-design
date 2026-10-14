@@ -38,6 +38,7 @@ import {
   GLOW_CONFIG,
   type ElevationLevel,
   type GlowIntensity,
+  glowShadow,
 } from './elevation-planes'
 import type { ThemeMode } from './tokens/semantic'
 
@@ -102,7 +103,7 @@ export function getGlowShadow(color: string, intensity: GlowIntensity = 'medium'
 
   return Platform.select({
     web: {
-      boxShadow: `0 0 ${config.blur}px ${config.spread}px rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${config.opacity})`,
+      boxShadow: glowShadow(`${rgb.r}, ${rgb.g}, ${rgb.b}`, intensity),
     } as unknown as ViewStyle,
     default: {
       shadowColor: color,

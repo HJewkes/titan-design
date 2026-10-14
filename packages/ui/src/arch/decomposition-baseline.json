@@ -1,6 +1,6 @@
 {
   "components/custom/ActiveWork/TaskTable.tsx": {
-    "file-lines": 242
+    "file-lines": 237
   },
   "components/custom/Chat/MessageList.tsx#MessageList": {
     "props": 16
@@ -67,7 +67,7 @@
     "props": 19
   },
   "components/custom/Workout/GoalCard.tsx": {
-    "file-lines": 477
+    "file-lines": 476
   },
   "components/custom/Workout/GoalCard.tsx#GoalCard": {
     "props": 15
@@ -207,15 +207,9 @@
   "components/shell/workout/PinnedLiveStrip.tsx#WallValues": {
     "props": 19
   },
-  "components/ui/alert/Alert.tsx#Alert": {
-    "complexity": 19
-  },
   "components/ui/autocomplete/Autocomplete.tsx#Autocomplete": {
     "complexity": 28,
     "props": 20
-  },
-  "components/ui/button/Button.tsx": {
-    "file-lines": 242
   },
   "components/ui/button/Button.tsx#Button": {
     "complexity": 18
@@ -229,6 +223,12 @@
   },
   "components/ui/carousel/Carousel.tsx": {
     "file-lines": 338
+  },
+  "components/ui/charts/bar-list/BarList.tsx#BarList": {
+    "props": 14
+  },
+  "components/ui/charts/network-graph/NetworkGraph.tsx#NetworkGraph": {
+    "props": 21
   },
   "components/ui/checkbox/Checkbox.tsx#Checkbox": {
     "complexity": 19
@@ -252,9 +252,6 @@
   "components/ui/pill/Pill.tsx#PillContent": {
     "props": 14
   },
-  "components/ui/progress/Progress.tsx": {
-    "file-lines": 267
-  },
   "components/ui/progress/Progress.tsx#CircularProgress": {
     "complexity": 17
   },
@@ -269,8 +266,5 @@
   },
   "components/ui/table/Table.tsx#Table": {
     "props": 14
-  },
-  "components/ui/toolbar-button/ToolbarButton.tsx#ToolbarButton": {
-    "complexity": 16
   }
 }

@@ -1,9 +1,10 @@
-// Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
+// Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body), font-mono=JetBrains Mono
 /**
  * Shared tokens + pure colour helpers for the live-fatigue family. Everything here
  * is token-sourced (semantic tokens / primitive ramps) — no literal surface hex — so
  * the family inherits the surface-ramp refresh when it lands.
  */
+import type { TextStyle } from 'react-native'
 import type { getSemanticColors } from '../../../theme/tokens/semantic'
 import { primitiveRamps, greyRamp } from '../../../theme/tokens/primitives'
 import { SILVER, RED_LIGHT, RED_MID, RED_DEEP, DRIFT_GREY } from '../../ui/charts/kit/silverRed'
@@ -14,18 +15,13 @@ type ColorToken = keyof ReturnType<typeof getSemanticColors>
 export const FONT_HEAD = '"Space Grotesk", sans-serif'
 export const FONT_UI = '"Nunito Sans", sans-serif'
 
-/**
- * FOUNDATIONS GAP (TD-03.59 debt 3) — deliberately still the generic CSS fallback.
- *
- * titan has TWO mono declarations and they disagree, so adopting either here would be
- * choosing a typeface rather than resolving a token:
- *   `primitiveTypography.fontFamilies.mono`  SF Mono · Monaco · Inconsolata · Fira Mono · …
- *   `--font-family-mono` (global.css, both themes)  SFMono-Regular · Consolas · Liberation Mono · Menlo
- * They also pick different first faces on macOS, so the two render at different metrics.
- * Reconciling them is a foundations decision; until it lands this stays `monospace` so the
- * wall render does not move under a half-made choice.
- */
-export const FONT_MONO = 'monospace'
+const FONT_MONO = '"JetBrains Mono", monospace'
+
+/** Mono text with ligatures off (TD-840): "!=" stays two characters, as `font-mono` does. */
+export const MONO_TEXT = {
+  fontFamily: FONT_MONO,
+  fontVariant: ['no-common-ligatures', 'no-contextual'],
+} satisfies TextStyle
 
 /**
  * Per-dimension tone → semantic status TOKEN (the one language the dots + hero share).

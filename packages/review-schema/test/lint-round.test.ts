@@ -68,6 +68,7 @@ function base() {
         prompt: 'Which format?',
         options: ['Subtle', 'Outline', 'Current'],
         outcomes: { Subtle: 'changes', Outline: 'changes', Current: 'accept' },
+        implemented: 'Current',
         required: true,
         signsOff: 'the format',
         page: 'owner/name#101',
@@ -79,6 +80,7 @@ function base() {
         decision: 'decide',
         prompt: 'Which policy?',
         options: ['Strict', 'Loose'],
+        implemented: 'Strict',
         signsOff: 'the policy',
       },
       ship(101, HEAD_101),
@@ -110,6 +112,64 @@ const only = (draft: Draft, rule: LintRule) =>
 const question = (draft: Draft, id: string) => draft.questions.find((q) => q.id === id)!
 
 describe('lintRound', () => {
+  it('refuses an iterate or decide question that does not declare its implemented option', () => {
+    const draft = base()
+    delete (question(draft, 'format') as Record<string, unknown>).implemented
+    delete (question(draft, 'policy') as Record<string, unknown>).implemented
+    expect(only(draft, 'missing-implemented-option')).toEqual([
+      'question format: its iterate decision changes what ships; declare the option the PR implements (implemented)',
+      'question policy: its decide decision changes what ships; declare the option the PR implements (implemented)',
+    ])
+  })
+
+  it('refuses an implemented option that is not one of the options', () => {
+    const draft = base()
+    question(draft, 'format').implemented = 'Missing'
+    expect(() => RoundSchema.parse(draft)).toThrow(
+      /implemented option .*Missing.* is not one of its options/
+    )
+  })
+
+  it("refuses a question about a grouped PR that sits outside that PR group's sections", () => {
+    const draft = base()
+    draft.sections = [
+      section(
+        'pr-101',
+        ['ship-101'],
+        ['built', 'subtle-dark', 'subtle-light', 'outline-dark', 'outline-light']
+      ),
+      section('pr-102', ['format', 'policy', 'ship-102'], ['button']),
+    ]
+    question(draft, 'format').frames = undefined
+    question(draft, 'format').decision = 'decide'
+    expect(only(draft, 'question-outside-review')).toEqual([
+      "question format: it is about owner/name#101 but sits in section pr-102, which is about owner/name#102; put it in one of that PR group's sections so it is asked in its Review tab",
+    ])
+  })
+
+  it('refuses a base render on a frame that is new at head', () => {
+    const draft = base()
+    draft.variants[1] = { ...draft.variants[1], baseImage: 'frames/base.png' } as never
+    expect(only(draft, 'base-on-new-frame')).toEqual([
+      'frame subtle-dark: it is new at head, so it has no base; drop baseImage or change its change class',
+    ])
+  })
+
+  it('accepts a base render and PR context on a changed frame', () => {
+    const draft = base()
+    draft.variants[5] = { ...draft.variants[5], baseImage: 'frames/button-base.png' } as never
+    draft.prGroups[1] = {
+      ...draft.prGroups[1],
+      title: 'Tighten the button',
+      kind: 'feature',
+      description: 'Why it changes.',
+      task: { id: 'T-1', doneWhen: 'The button is tighter.' },
+      codewatch: 'No findings.',
+      files: [{ path: 'src/Button.tsx', status: 'modified' }],
+    } as never
+    expect(lint(draft)).toEqual([])
+  })
+
   it('passes a round whose decisions sit under their frames, each PR group whole, Ship last', () => {
     expect(lint(base())).toEqual([])
   })

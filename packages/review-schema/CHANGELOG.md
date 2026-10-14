@@ -5,6 +5,109 @@ All notable changes to `@titan-design/review-schema` are documented in this file
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this
 project adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- Optional `frameReference` on an image or clip variant (`FrameReferenceSchema`, type
+  `FrameReference`): `{ frame = 1920x1080, ladder = DEFAULT_SCALE_LADDER }`, the true size of a
+  recorded frame and the ladder drawn into it. A story variant may not carry one (it uses
+  `scale`). `frameSizeMismatch(actual, declared)` words a size mismatch, so review-harness refuses
+  a PNG whose IHDR size differs and flags a clip whose video size differs.
+- Three optional fields on a feedback answer, for decision packets: `optionNotes`
+  (`[{ option, note }]`, the owner's notes on any of the question's options), `after` (the picked
+  option's `optionDetails` `after`, echoed so the agent acting on the pick needs no manifest; never
+  on pick-many or a revision request) and `recommendationSeen: true` (the answer was given while
+  the recommendation was visible; absent means blind). Old feedback files parse unchanged; an older
+  strict reader rejects a file that uses the fields. `shipBlocks` counts an option note as free
+  text, so a note blocks Ship as a comment does; `recommendationSeen` never blocks.
+- Optional `keyframes` on a clip motion: `[{ atMs, label }]` (1 to 12), the clip's labelled
+  stages. Times strictly increase, and none is past `durationMs` when that is stated; out-of-order
+  keyframes are refused, never sorted. Exports the `Keyframe` type. The review page now plays a
+  clip under the arg player's controls (play/pause, scrubber, readout) plus a loop toggle, in
+  place of the browser's own, and lists the keyframes under it as seek-and-pause chips.
+- Motion and scale on a variant (owner decision 339(2)). `motion` declares how a frame moves:
+  `{ mechanism: "arg", arg = "progress", from = 0, to = 1, durationMs, autoplay = true, loop = true }`
+  drives a live story's numeric arg, and `{ mechanism: "clip", durationMs?, autoplay, loop }`
+  plays the variant's new third source, `clip` (an `.mp4` or `.webm` beside the round). `scale`
+  (`ScaleReferenceSchema`) declares a size question's candidates:
+  `{ arg, candidates[2..6], frame = 1920x1080, ladder = DEFAULT_SCALE_LADDER }`. A variant has
+  exactly one of `storyId`, `image` or `clip`; a clip declares its clip motion; an arg the motion
+  or scale drives may not also sit in `args`. A CHOICE strip also compares `motion` and the scale
+  frame. Feedback echoes `clip`. Exports `MotionSchema`, `isClipVariant`, `mediaProblems` and
+  `motionSetting`.
+- `lintRound` rule `sampled-animation`: a STATES strip may not show static frames of one story
+  that differ only in a time arg (`progress`, `t`, `time`, `frame`, `playhead`, `elapsed`, or any
+  numeric arg whose samples sit in 0..1); it shows one motion variant instead.
+- Optional `touches` on every question kind (`QuestionTouchesSchema`, type `QuestionTouches`):
+  `{ tokens: [{ name, mode? }], components?: string[], axis? }`, what a question with no PR diff
+  would decide. `build --locks` in review-harness reads it as the question's plan for
+  `lockConflicts`; a question on a PR page needs none.
+- Optional `implemented` on pick-one (an option) and pick-many (a list of options): what the PR
+  implements at its head. Every entry must be one of the question's options and not its
+  `revisionOption`.
+- `shipBlocks(round, feedback)`: per PR group, whether Ship is blocked and why. A group is blocked
+  when any of its answers carries free text, or picks other than the question's `implemented`
+  option. An unanswered question does not block. Exports `PrGroupShipStatus` and `ShipBlocker`.
+- `lintRound` rule `missing-implemented-option`: an `iterate` or `decide` pick question declares
+  `implemented`.
+- PR group context, all optional: `title`, `kind` (`PR_KINDS`), `description` and `codewatch`
+  (markdown), `task` (`{ id, title?, doneWhen? }`) and `files` (`{ path, status? }[]`). A page shows
+  them in the PR's Context tab; none of them is a question.
+- Optional variant `baseImage`: a PNG of the same frame rendered from the PR's base, which a Diff
+  view sets beside the head.
+- `PrGroupShipStatus.unansweredQuestionIds`: the group's questions, Ship aside, with no answer.
+  They are listed for the page's badges and never block Ship (owner item 166).
+- `lintRound` rules `question-outside-review` (a question whose `page` is a grouped PR sits in one
+  of that group's sections, so it is asked in the PR's Review tab) and `base-on-new-frame` (a frame
+  whose `change` is `new` has no `baseImage`).
+- `titan-locks/1` (`LOCKS_SCHEMA_ID`, `LocksSchema`, `parseLocks`): a registry of decision locks.
+  Each lock (`L-NNNN`) is keyed on its `decision` (ledger row, decisions item, round, question
+  id), has zero or more `holders` (a PR at a head), declares `touches` (tokens per mode,
+  components, axis) when it has no holder, and orders itself with `after`. Top-level
+  `dependents` name the lock they wait on with `mode` `stack-on` or `defer` and a `reason`. The
+  schema refuses an unknown lock id in `after` or `dependents`, an `after` cycle, a repeated lock
+  id and a decision row keyed by two locks, naming the ids. Exports `afterCycles`,
+  `locksProblems`, `LOCK_AXES`, `LOCK_STATUSES` and `DEPENDENT_MODES`.
+- Optional `stackedOn` on a `prGroups` entry (`{ repo, pr, headSha }`): the base that one PR
+  group renders on, so groups in one round can sit on different bases. The round-level
+  `stackedOn` keeps its meaning. The schema refuses a group stacked on itself, directly or
+  through other groups. Exports `stackBase`.
+- `shipBlocks` kind `holder-not-shipped`: a group stacked on another group of the same round (its
+  holder) is blocked while the holder's Ship is answered Don't ship or asks for a revision, with a
+  message naming the holder. An unanswered or shipped holder does not block. Such a group's
+  status carries `shipsAfter`, the holder's `owner/name#n`.
+- `lockConflicts(registry, plan)`: a pure check of a planned round or dispatch against the lock
+  registry (`locksProblems` checks the registry itself). The plan lists items (`pr`, `head`, the
+  `base` commit they render on, touched tokens per mode), questions with touched tokens, recorded
+  Ships, and a `contains(commit, ancestor)` predicate the caller answers. It returns
+  `{ kind, lock, ids, tokens, message }[]` of kind `superseded-state` (an item
+  overlapping an open lock's tokens on a base without the holder head), `lock-order`
+  (any open lock an item holds comes `after` an open lock no item up to it holds), `re-ask` (a
+  question touching a decided lock's tokens) and
+  `stale-ship` (at most one per PR: its last Ship is not at its planned item's head or, for a PR the
+  plan does not hold, at its prior Ship's head; `ids` names every lock the PR holds). Every check
+  reads one per-PR view: all the non-released locks a PR holds and its Ship history. Exports
+  `LOCK_CONFLICT_KINDS` and the `LockPlan`, `PlannedItem`, `PlannedQuestion`, `RecordedShip`,
+  `ModeToken` and `LockConflict` types.
+- `lockSurface(lock)`, `tokensMatch(a, b)`, `lockedTokens(tokens, lock)`, `tokenKey`, `globRegExp`
+  and the `ModeToken` (`mode` optional, meaning both modes) and `LockSurface` types: the one reading
+  of what a lock covers. A locked token name may be a family (`*-subtle`,
+  `tint-{hue}-solid / on-tint-{hue}`). `lockConflicts` matches through them, and
+  `@titan-design/review-harness` now imports them instead of keeping its own copy.
+- Decision packets on pick-one and pick-many, all optional (new module `packet.ts`):
+  `optionDetails` (option text to `{ detail, weakPoint?, after? }`, `OptionDetailSchema`),
+  `evidence` (`{ caption, columns: [{ label, option? }], rows: [{ label, cells }], note? }[]`,
+  `EvidenceTableSchema`; a cell is text or `{ text, tone, span? }` with tone in `CELL_TONES`) and
+  `compare` (`{ views: [{ id, label }], cells: { [option]: { [viewId]: variantKey } }, shown? }`,
+  `CompareSchema`). `RecommendationSchema` gains `weakPoint` and `fallback`, so feedback's
+  recommendation echo carries them too. `packetProblems(round)` reports, by question id: a
+  detail, column, compare row or `fallback` that is not an option; a fallback equal to the
+  answer; a row whose cells (counting `span`) do not match the columns after the first; a
+  compare cell outside the question's `frames` or in two cells; a compare row naming an unknown
+  view or missing one; a `shown` option with no compare row; and compared frames of mixed
+  sources. A round without these fields parses as before.
+
 ## [0.3.0]
 
 ### Added

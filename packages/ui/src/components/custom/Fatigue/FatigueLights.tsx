@@ -12,7 +12,7 @@ import { cn } from '../../../utils/cn'
 import { StatusDot, type StatusDotVariant } from '../Workout/StatusDot'
 import { Tooltip } from '../../ui/tooltip/Tooltip'
 import { useOnSurfaceColor } from '../../ui/surface'
-import { FONT_MONO, TONE_TOKEN } from './fatigue-tokens'
+import { MONO_TEXT, TONE_TOKEN } from './fatigue-tokens'
 import type { DimensionTone, FatigueVerdict } from './fatigue-model'
 
 /** Tone → the StatusDot variant, read off the status token `TONE_TOKEN` names for it. */
@@ -52,7 +52,7 @@ function Light({
           style={{
             fontSize: 9,
             letterSpacing: 0.6,
-            fontFamily: FONT_MONO,
+            ...MONO_TEXT,
             color: labelColor,
           }}
         >
