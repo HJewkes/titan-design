@@ -596,6 +596,96 @@ button.primary kbd {
   margin: 0 0 var(--space-stack-sm);
 }
 
+/* Decision packets: option cards with their pros and cons, and the recommendation's reveal. */
+.option-packet {
+  display: grid;
+  gap: var(--space-stack-sm);
+  justify-items: start;
+}
+
+.option-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-inline-sm);
+  width: 100%;
+}
+
+.option-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack-sm);
+  padding: var(--space-inset-sm);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 8px;
+  background: var(--color-surface-raised);
+}
+
+.option-card.is-on {
+  border-color: var(--color-brand-primary);
+  background: var(--color-brand-primary-subtle);
+}
+
+.option-card .md p {
+  margin: 0;
+}
+
+.option-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-inline-sm);
+}
+
+.option-pick {
+  flex: 1;
+  text-align: left;
+  font-weight: 600;
+}
+
+.option-badge {
+  padding: 0 var(--space-squish-x-sm);
+  border: 1px solid var(--color-brand-primary);
+  border-radius: 8px;
+  color: var(--color-text-primary);
+  font-size: 12px;
+}
+
+.packet-tag {
+  font-weight: 600;
+}
+
+.weak-point {
+  padding-left: var(--space-inline-sm);
+  border-left: 3px solid var(--color-status-error);
+}
+
+.option-after,
+.reveal-help,
+.answer-after {
+  color: var(--color-text-secondary);
+}
+
+.option-note-toggle {
+  align-self: flex-start;
+  font-size: 12px;
+}
+
+.reveal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-inline-sm);
+  margin-top: var(--space-stack-sm);
+}
+
+.reveal button[aria-pressed='true'] {
+  border-color: var(--color-brand-primary);
+}
+
+.reveal-help {
+  font-size: 12px;
+}
+
 /* Rendered round text (Markdown.tsx). */
 .md {
   max-width: 960px;

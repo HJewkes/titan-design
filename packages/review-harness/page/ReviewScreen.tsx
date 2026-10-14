@@ -17,12 +17,35 @@ interface ReviewScreenProps {
   onSubmit: () => void
 }
 
-function answerText(manifest: Manifest, a: Feedback['answers'][number]): string {
+function givenText(manifest: Manifest, a: Feedback['answers'][number]): string {
   if (a.revisionRequested) return `${REVISION_LABEL} (revision request)`
   if (a.pick !== undefined) return optionLabel(manifest, a.pick)
   if (a.picks) return a.picks.map((p) => optionLabel(manifest, p)).join(', ')
   if (a.value !== undefined) return String(a.value)
   return a.text ?? '(no answer)'
+}
+
+function answerText(manifest: Manifest, a: Feedback['answers'][number]): string {
+  const given = givenText(manifest, a)
+  return a.recommendationSeen ? `${given} (seen recommendation)` : given
+}
+
+/** The owner's option notes and what the pick sets in motion, so both are checked before sending. */
+function PacketLines({ manifest, a }: { manifest: Manifest; a: Feedback['answers'][number] }) {
+  return (
+    <>
+      {a.optionNotes?.map((n) => (
+        <dd key={n.option} className="quote">
+          on {optionLabel(manifest, n.option)}: {n.note}
+        </dd>
+      ))}
+      {a.after && (
+        <dd className="answer-after">
+          <Markdown inline>{a.after}</Markdown>
+        </dd>
+      )}
+    </>
+  )
 }
 
 function Answers({
@@ -62,6 +85,7 @@ function Answers({
             </dt>
             <dd>{a ? answerText(manifest, a) : q.required ? '(no answer)' : '(skipped)'}</dd>
             {a?.comment && <dd className="quote">{a.comment}</dd>}
+            {a && <PacketLines manifest={manifest} a={a} />}
           </div>
         )
       })}

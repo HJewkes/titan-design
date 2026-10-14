@@ -3,6 +3,7 @@ import type { Manifest } from '@titan-design/review-schema'
 import {
   numberKeyAction,
   pageStepAction,
+  revealKeyAction,
   stopsFor,
   type Action,
   type ReviewState,
@@ -38,6 +39,11 @@ export function onFormKey(e: KeyboardEvent, { manifest, state, dispatch }: KeyCo
   // Diff and Context hide the active stop, so a key that answers it would answer blind.
   if (state.tab !== 'review') return
   if (e.key === 'a') return dispatch({ type: 'toggleAnnotate' })
+  if (e.key === 'r') {
+    const action = revealKeyAction(manifest, stopsFor(manifest)[state.active])
+    if (action) dispatch(action)
+    return
+  }
   if (/^[0-9]$/.test(e.key)) {
     const action = numberKeyAction(manifest, stopsFor(manifest)[state.active], e.key)
     if (action) dispatch(action)
@@ -57,7 +63,7 @@ function onKey(e: KeyboardEvent, ctx: KeyContext): void {
   if (state.screen === 'form') onFormKey(e, ctx)
 }
 
-/** Keyboard-first: digits pick, Tab reaches the comment, Enter advances, [ and ] page sections, Cmd+Enter reviews and sends. */
+/** Keyboard-first: digits pick, r reveals the recommendation, Tab reaches the comment, Enter advances, [ and ] page sections, Cmd+Enter reviews and sends. */
 export function useKeyboard(ctx: KeyContext): void {
   const latest = useRef(ctx)
   useEffect(() => {
