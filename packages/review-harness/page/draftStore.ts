@@ -26,6 +26,9 @@ const DraftSchema = z.object({
       value: z.number().optional(),
       text: z.string().optional(),
       comment: z.string(),
+      notes: z.record(z.string(), z.string()).optional(),
+      revealed: z.boolean().optional(),
+      seen: z.boolean().optional(),
     })
   ),
   general: z.string(),

@@ -11050,6 +11050,82 @@
     },
     {
       "composes": [
+        "Typography"
+      ],
+      "family": "ui/animated-number",
+      "file": "packages/ui/src/components/ui/animated-number/AnimatedNumber.tsx",
+      "name": "AnimatedNumber",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides for the root, merged with `cn()`.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": "0",
+          "description": "Fraction digits for the default format.",
+          "name": "decimals",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Overrides the default grouped format; `decimals` is then ignored.",
+          "name": "format",
+          "required": false,
+          "type": "AnimatedNumberFormat"
+        },
+        {
+          "default": "0",
+          "description": "Where the number starts at progress 0.",
+          "name": "from",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "count",
+          "description": "`count` rewrites the text; `reel` rolls one clipped column per digit.",
+          "name": "mode",
+          "required": false,
+          "type": "AnimatedNumberMode"
+        },
+        {
+          "default": null,
+          "description": "0..1, driven by the caller's clock.",
+          "name": "progress",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": "md",
+          "description": "Default `md`.",
+          "name": "size",
+          "required": false,
+          "type": "AnimatedNumberSize"
+        },
+        {
+          "default": null,
+          "description": "The value the number lands on.",
+          "name": "value",
+          "required": true,
+          "type": "number"
+        }
+      ],
+      "purpose": "A number that counts or rolls from `from` to `value` as `progress` goes 0 → 1.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/animated-number/AnimatedNumber.tsx",
+        "status": "packages/ui/src/components/ui/animated-number/AnimatedNumber.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-animatednumber--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
         "AutocompleteParts"
       ],
       "family": "ui/autocomplete",
@@ -12763,6 +12839,138 @@
       "tier": "molecule"
     },
     {
+      "composes": [
+        "Pill",
+        "Typography"
+      ],
+      "family": "ui/chip",
+      "file": "packages/ui/src/components/ui/chip/EvidenceChip.tsx",
+      "name": "EvidenceChip",
+      "props": [
+        {
+          "default": null,
+          "description": "Additional className on the row.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Video size in px, for frames with no Tailwind rung (`40 × frameHeight / 1080`).",
+          "name": "fontPx",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "What kind of evidence backs the on-screen fact; picks the capsule's tone and label.",
+          "name": "kind",
+          "required": true,
+          "type": "\"target\" | \"verified\" | \"measured\" | \"computed\" | \"docs-claim\" | \"estimated\" | \"our-framing\" | \"reconstructed\" | \"illustrative\""
+        },
+        {
+          "default": null,
+          "description": "Character budget for `text`.",
+          "name": "maxChars",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "md",
+          "description": "App size, one Pill rung.",
+          "name": "size",
+          "required": false,
+          "type": "EvidenceChipSize"
+        },
+        {
+          "default": null,
+          "description": "The citation: refs joined by `\"; \"`, e.g. `ab@1a2b3c4:src/core/loop.ts:12-30`.",
+          "name": "text",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "purpose": "EvidenceChip — a `Pill` preset that cites the source behind an on-screen fact: a tone capsule naming the evidence kind, then the citation in mono.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/chip/EvidenceChip.tsx",
+        "status": "packages/ui/src/components/ui/chip/EvidenceChip.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-evidencechip--default"
+      ],
+      "tier": "molecule"
+    },
+    {
+      "composes": [
+        "Pill"
+      ],
+      "family": "ui/chip",
+      "file": "packages/ui/src/components/ui/chip/StateChip.tsx",
+      "name": "StateChip",
+      "props": [
+        {
+          "default": null,
+          "description": "Additional className on the capsule.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Video size in px, for frames with no Tailwind rung (`40 × frameHeight / 1080`).",
+          "name": "fontPx",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "The state the chip is leaving.",
+          "name": "from",
+          "required": false,
+          "type": "\"met\" | \"unmet\""
+        },
+        {
+          "default": "1",
+          "description": "How far the move from `from` has run, 0..1.",
+          "name": "progress",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": "md",
+          "description": "App size, one Pill rung.",
+          "name": "size",
+          "required": false,
+          "type": "StateChipSize"
+        },
+        {
+          "default": null,
+          "description": "The state the chip is in, or moving to.",
+          "name": "state",
+          "required": true,
+          "type": "\"met\" | \"unmet\""
+        },
+        {
+          "default": null,
+          "description": "What the chip names, e.g. `ci:green@h`.",
+          "name": "text",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "purpose": "StateChip — a `Pill` preset that shows whether a requirement is met.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/chip/StateChip.tsx",
+        "status": "packages/ui/src/components/ui/chip/StateChip.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-statechip--default"
+      ],
+      "tier": "molecule"
+    },
+    {
       "composes": [],
       "family": "ui/collapse",
       "file": "packages/ui/src/components/ui/collapse/Collapse.tsx",
@@ -14200,6 +14408,13 @@
         },
         {
           "default": null,
+          "description": "Named moments in seconds from the beat's start, each within `[0, durationS]`; content reads one with `useCue(name)`.",
+          "name": "cues",
+          "required": false,
+          "type": "Readonly<Record<string, number>>"
+        },
+        {
+          "default": null,
           "description": "Length of the window in seconds.",
           "name": "durationS",
           "required": true,
@@ -14646,6 +14861,82 @@
         "components-molecules-progress--with-label"
       ],
       "tier": "atom"
+    },
+    {
+      "composes": [
+        "Progress"
+      ],
+      "family": "ui/progress",
+      "file": "packages/ui/src/components/ui/progress/ProgressSteps.tsx",
+      "name": "ProgressSteps",
+      "props": [
+        {
+          "default": null,
+          "description": "Additional className",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "Color of completed steps.",
+          "name": "color",
+          "required": false,
+          "type": "ProgressColor"
+        },
+        {
+          "default": null,
+          "description": "Current step (0-indexed)",
+          "name": "currentStep",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Labels for each step",
+          "name": "labels",
+          "required": false,
+          "type": "string[]"
+        },
+        {
+          "default": null,
+          "description": "Fractional position along the steps, 0..totalSteps-1.",
+          "name": "progress",
+          "required": false,
+          "type": "number"
+        },
+        {
+          "default": null,
+          "description": "Size of step indicators.",
+          "name": "size",
+          "required": false,
+          "type": "\"sm\" | \"md\" | \"lg\""
+        },
+        {
+          "default": null,
+          "description": "Total number of steps",
+          "name": "totalSteps",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "default": "dots",
+          "description": "`dots` (default) or `rail`: state chips joined by connectors that fill with `progress`.",
+          "name": "variant",
+          "required": false,
+          "type": "ProgressStepsVariant"
+        }
+      ],
+      "purpose": "Step-based progress indicator.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/progress/ProgressSteps.tsx",
+        "status": "packages/ui/src/components/ui/progress/ProgressSteps.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-molecules-progresssteps--default"
+      ],
+      "tier": "molecule"
     },
     {
       "composes": [],

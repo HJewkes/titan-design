@@ -27,7 +27,7 @@ import { LiveAuraFrame, type LiveAuraCategory } from '../Workout/LiveAuraFrame'
 import { useOnSurfaceColor } from '../../ui/surface'
 import { VelocityHero, type VelocityHeroProps } from './VelocityHero'
 import { LiveFatigueCard } from './LiveFatigueCard'
-import { FONT_MONO, auraForVerdict } from './fatigue-tokens'
+import { MONO_TEXT, auraForVerdict } from './fatigue-tokens'
 import { panelLayout, panelBodySplit } from './panel-layout'
 import type { LiveFatigueModel } from './fatigue-model'
 
@@ -100,7 +100,7 @@ export function LiveFatiguePanel({
               style={{
                 fontSize: 9,
                 letterSpacing: 1.2,
-                fontFamily: FONT_MONO,
+                ...MONO_TEXT,
                 color: eyebrowColor,
               }}
             >

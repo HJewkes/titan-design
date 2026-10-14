@@ -428,6 +428,7 @@ module.exports = {
         out: 'cubic-bezier(0.22, 1, 0.36, 1)',
         'in-out': 'cubic-bezier(0.65, 0, 0.35, 1)',
         spring: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+        in: 'cubic-bezier(0.55, 0, 1, 0.45)',
       },
       transitionDuration: {
         fast: '150ms',
@@ -465,5 +466,10 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // TD-840: JetBrains Mono's contextual alternates draw "!=" as ≠ and "=>" as ⇒.
+    // Titan's mono text is code, paths and counts, so it shows the characters typed.
+    // `none` turns off calt as well as liga. Web only: NativeWind drops the property.
+    ({ addUtilities }) => addUtilities({ '.font-mono': { 'font-variant-ligatures': 'none' } }),
+  ],
 }

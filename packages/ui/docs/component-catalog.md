@@ -11,6 +11,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | AgentRosterRow | candidate | custom/Agents | One agent in a dense list: name, state and the chosen details. | AgentStateLabel, Avatar, Typography | custom-agents-agentrosterrow--default |
 | AgentStateLabel | candidate | custom/Agents | An agent's state as a dot and its word, never colour alone. | Indicator, Pill, Typography | custom-agents-agentstatelabel--default |
 | Alert | stable | ui/alert | Alert component for displaying status messages. | — | components-molecules-alert--all-statuses |
+| AnimatedNumber | candidate | ui/animated-number | A number that counts or rolls from `from` to `value` as `progress` goes 0 → 1. | Typography | components-atoms-animatednumber--default |
 | AppShell | candidate | shell | `AppShell` — the generic dashboard chrome: a {@link TopBar} band over a {@link SideNav} rail and a `children` content region. | SideNav, Surface, TopBar, brands | pages-appshell--audiobook-app |
 | Autocomplete | stable | ui/autocomplete | Autocomplete component for searchable dropdown selection. | AutocompleteParts | components-molecules-autocomplete--custom-no-results-text |
 | Avatar | stable | ui/avatar | Avatar component for user/entity representation. | — | components-atoms-avatar--all-sizes |
@@ -50,6 +51,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | DualPinnedLiveStrip | candidate | shell | Shell · DualPinnedLiveStrip (VW-439): the pinned live strip for a two-Voltra session. | DualVelocityStrip, Typography, icons, pinnedLiveStripParts | shell-workout-dualpinnedlivestrip--default |
 | DualVelocityStrip | candidate | custom/Workout | The dual-voltra (bilateral) DIVERGING per-rep velocity chart. | DualVelocityCharts, SetBarChart | custom-workout-dataviz-dualvelocitystrip--crowded-right-edge-label |
 | EmptyState | candidate | ui/empty-state | Empty state component for when there's no data to display. | — | components-molecules-emptystate--default |
+| EvidenceChip | candidate | ui/chip | EvidenceChip — a `Pill` preset that cites the source behind an on-screen fact: a tone capsule naming the evidence kind, then the citation in mono. | Pill, Typography | components-molecules-evidencechip--default |
 | ExerciseCard | candidate | custom/Workout | The data-contract exercise card, in three representations — all three now ONE {@link ExerciseCardHeading}, selected by its `density`, rather than three hand-rolled heads: - `upcoming` — a dimmed, not-yet-reached row (`density="upcoming"`). | ExerciseCardHeading, ExerciseIndicator, SetBar, SetRow, SetTableHeader | custom-workout-exercisecard--collapsed-with-pr |
 | ExerciseCardHeading | candidate | custom/Workout | The exercise row — one component for all three densities the workout surfaces list an exercise in: the standalone session-rail heading (`rail`), the collapsed card row (`compact`) and the not-yet-reached row (`upcoming`). | ExerciseHeading, SetBar, SetStrip, Tooltip | custom-workout-exercisecardheading--compact |
 | ExerciseDetailPage | candidate | custom/Workout | ExerciseDetailPage — a tabbed per-exercise view. | CapacityBandChart, ExerciseCard, ExerciseDetailSectionCard, MesoStatusCard, SetRow, StrengthTrendChart, VelocityStrip | pages-exercise-detail--default |
@@ -124,6 +126,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | PrimaryGoalCard | review | custom/Workout | The wall's lead goal card: {@link GoalCard} at `full` size. | GoalCard | — |
 | ProgramPlanningPage | candidate | custom/Workout | ProgramPlanningPage — a meso -> week -> workout drill-down over an entire training program. | ExerciseCard, MesoCard, MesoProgressBar, ProgramPlanningBreadcrumbs, WeekRow, WorkoutCard, WorkoutPill | pages-program-planning--default |
 | Progress | stable | ui/progress | Linear progress bar component. | — | components-molecules-progress--all-colors |
+| ProgressSteps | candidate | ui/progress | Step-based progress indicator. | Progress | components-molecules-progresssteps--default |
 | Radio | stable | ui/radio | Radio button component. | — | components-molecules-radio--all-colors |
 | ReadinessCheck | candidate | custom/Workout | Pre-workout readiness assessment combining subjective emoji sliders with an objective VBT warm-up validation and a computed readiness score. | Badge, Card | custom-workout-readinesscheck--default |
 | RefChip | candidate | custom/ActiveWork | RefChip — a typed pointer at another entity: a kind glyph, the ref's label and an optional status. | Link, Pill | custom-activework-refchip--default |
@@ -163,6 +166,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | Spinner | stable | ui/spinner | Spinner component for loading states. | — | components-atoms-spinner--all-colors |
 | Stack | stable | ui/stack | — | — | components-atoms-stack--default |
 | StatCard | candidate | ui/stat-card | The stat card template: a header row, a lead figure with one caption, and a body pinned to the bottom. | Card, Typography | components-molecules-statcard--default |
+| StateChip | candidate | ui/chip | StateChip — a `Pill` preset that shows whether a requirement is met. | Pill | components-molecules-statechip--default |
 | StatusDot | candidate | custom/Workout | — | Typography | custom-workout-statusdot--all-variants |
 | StatusMark | candidate | custom/Code | The change vocabulary of the Code family: one Pill, named in words for assistive tech. | Pill | custom-code-statusmark--default |
 | StatusPill | candidate | custom/Workout | Verdict pill: a glowing status dot + coloured verdict text in a tinted capsule. | Pill, StatusDot | custom-workout-statuspill--all-states |
