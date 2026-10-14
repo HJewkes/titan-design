@@ -88,7 +88,7 @@ function FieldRow({ table, field, frame, relations }: RowProps) {
       />
       <View style={{ width: KEY_COLUMN_WIDTH }}>
         {field.key !== undefined && (
-          <Typography variant="microLabel" color="tertiary">
+          <Typography variant="microLabel" color="secondary">
             {KEY_LABEL[field.key]}
           </Typography>
         )}
