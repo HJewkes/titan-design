@@ -2,7 +2,13 @@ import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { QuestionBlock } from '../page/QuestionBlock.tsx'
-import { createReducer, initialState, type Action } from '../page/state.ts'
+import {
+  createReducer,
+  initialState,
+  numberKeyAction,
+  revealKeyAction,
+  type Action,
+} from '../page/state.ts'
 import { exampleManifest } from '../src/example.ts'
 import { ManifestSchema, type Manifest, type ManifestInput } from '@titan-design/review-schema'
 
@@ -30,6 +36,70 @@ function render(m: Manifest, actions: Action[] = []): string {
     })
   )
 }
+
+const packet = round({
+  optionDetails: {
+    A: { detail: 'Card first.', weakPoint: 'Hides the tiles.', after: 'The card leads.' },
+    B: { detail: 'Tiles first.', weakPoint: 'Busy at 1080.', after: 'The tiles lead.' },
+    C: { detail: 'Chart first.' },
+  },
+  recommendation: { ...recommendation, weakPoint: 'Tiles crowd.', fallback: 'A' },
+})
+const reveal: Action = { type: 'reveal', id: 'q1' }
+const BADGE = 'class="option-badge"'
+
+describe('option cards', () => {
+  it('show every pros and cons before a reveal, and nothing of the recommendation', () => {
+    const markup = render(packet)
+    for (const text of ['Card first.', 'Hides the tiles.', 'The card leads.', 'Busy at 1080.'])
+      expect(markup).toContain(text)
+    expect(markup).toContain('Weak point:')
+    expect(markup).toContain('If you pick this:')
+    expect(markup).not.toContain(BADGE)
+    expect(markup).not.toContain('data-testid="recommendation-q1"')
+    expect(markup).not.toContain('Tiles crowd.')
+  })
+
+  it('show the badge on the recommended card and the box with weak point and fallback after a reveal', () => {
+    const markup = render(packet, [reveal])
+    expect(markup.match(/class="option-card is-recommended"[\s\S]*?<\/kbd>/)?.[0]).toContain(
+      '<kbd>2</kbd>'
+    )
+    expect(markup.split(BADGE)).toHaveLength(2)
+    expect(markup).toContain('data-testid="recommendation-q1"')
+    expect(markup).toContain('Tiles crowd.')
+    expect(markup).toContain('Fallback: A · Primary goal card')
+    expect(markup).toContain('aria-pressed="true"')
+  })
+
+  it('put option n on hotkey n, so pressing 2 picks and checks the second card', () => {
+    const action = numberKeyAction(packet, { kind: 'question', id: 'q1' }, '2')
+    expect(action).toEqual({ type: 'pick', id: 'q1', option: 'B', many: false })
+    const card = render(packet, [action!]).match(/data-testid="option-card-2"[\s\S]*?<\/button>/)
+    expect(card?.[0]).toContain('aria-checked="true"')
+    expect(card?.[0]).toContain('B · Milestone tiles')
+  })
+
+  it('tag the recommendation verdict when the pick was made after a reveal', () => {
+    const pickB: Action = { type: 'pick', id: 'q1', option: 'B', many: false }
+    expect(render(packet, [reveal, pickB])).toContain('Matches your pick · seen before answering')
+    expect(render(packet, [pickB, reveal])).not.toContain('seen before answering')
+  })
+})
+
+describe('the reveal toggle', () => {
+  it('shows on a question with a recommendation and not on one without', () => {
+    expect(render(round({ recommendation }))).toContain('data-testid="reveal-q1"')
+    expect(render(round({}))).not.toContain('data-testid="reveal-q1"')
+  })
+
+  it('answers r on a question stop with a reveal, and ignores r elsewhere', () => {
+    const m = round({ recommendation })
+    expect(revealKeyAction(m, { kind: 'question', id: 'q1' })).toEqual(reveal)
+    expect(revealKeyAction(m, { kind: 'question', id: 'q2' })).toBeNull()
+    expect(revealKeyAction(m, { kind: 'variant', key: 'A' })).toBeNull()
+  })
+})
 
 describe('a question without option details', () => {
   it('renders the button row as before, plus only the reveal toggle', () => {

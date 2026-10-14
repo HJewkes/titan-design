@@ -196,6 +196,19 @@ export function recommendationVisible(
   )
 }
 
+/** The round or the owner's answer shows the recommendation, so the reveal toggle cannot hide it. */
+export function revealLocked(manifest: Manifest, question: Question, draft: AnswerDraft): boolean {
+  return manifest.recommendations === 'shown' || isDraftAnswered(question, draft)
+}
+
+/** What `r` means at the active stop: toggle the reveal of a question that has a recommendation. */
+export function revealKeyAction(manifest: Manifest, stop: Stop | undefined): Action | null {
+  if (stop?.kind !== 'question') return null
+  const question = manifest.questions.find((q) => q.id === stop.id)
+  if (!question || question.kind === 'text' || !question.recommendation) return null
+  return { type: 'reveal', id: question.id }
+}
+
 export function initialState(manifest: Manifest): ReviewState {
   return {
     draft: emptyDraft(manifest),
