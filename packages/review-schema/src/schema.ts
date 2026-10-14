@@ -823,6 +823,17 @@ const answerSchema = z
     recommendation: RecommendationSchema.optional(),
     /** Whether the owner's answer equals the recommendation's (pick-many: the same set). */
     agreed: z.boolean().optional(),
+    /** The owner's notes on options other than (or as well as) the one they picked. */
+    optionNotes: z
+      .array(z.object({ option: z.string(), note: z.string().min(1) }).strict())
+      .optional(),
+    /** The picked option's `after` text, echoed so the agent acting on the pick needs no manifest. */
+    after: z.string().optional(),
+    /**
+     * The answer was given while the recommendation was visible: after a reveal, or in a `shown`
+     * round. Absent means blind. Only on a question with a recommendation and an answer.
+     */
+    recommendationSeen: z.literal(true).optional(),
   })
   .strict()
 
