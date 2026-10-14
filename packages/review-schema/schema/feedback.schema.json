@@ -104,6 +104,13 @@
               "by": {
                 "type": "string",
                 "minLength": 1
+              },
+              "weakPoint": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "fallback": {
+                "type": "string"
               }
             },
             "required": [
@@ -116,6 +123,33 @@
           },
           "agreed": {
             "type": "boolean"
+          },
+          "optionNotes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "option": {
+                  "type": "string"
+                },
+                "note": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "option",
+                "note"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "after": {
+            "type": "string"
+          },
+          "recommendationSeen": {
+            "type": "boolean",
+            "const": true
           }
         },
         "required": [

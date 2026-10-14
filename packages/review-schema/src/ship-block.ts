@@ -55,6 +55,7 @@ function hasFreeText(answer: Answer): boolean {
     answer.comment,
     answer.text,
     ...(answer.variantComments ?? []).map((c) => c.comment),
+    ...(answer.optionNotes ?? []).map((n) => n.note),
   ]
   return written.some((t) => t !== undefined && t.trim() !== '')
 }

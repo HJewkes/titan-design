@@ -3,7 +3,7 @@
     "name": "index",
     "path": "dist/index.mjs",
     "brotli": true,
-    "limit": "133 kB"
+    "limit": "150 kB"
   },
   {
     "name": "bodymap",
@@ -27,7 +27,7 @@
     "name": "motion",
     "path": "dist/motion.mjs",
     "brotli": true,
-    "limit": "8 kB"
+    "limit": "24 kB"
   },
   {
     "name": "theme",

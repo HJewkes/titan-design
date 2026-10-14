@@ -34,15 +34,44 @@ export const ArgMotionSchema = z
   .strict()
   .refine((m) => m.from !== m.to, { message: 'a motion arg sweeps a range: from and to differ' })
 
-/** A recorded clip (the variant's `clip`), played with the browser's own video controls. */
+/** A labelled moment in a clip; the page lists it under the clip, and a click seeks there. */
+const KeyframeSchema = z
+  .object({
+    atMs: z.number().int().min(0).max(600_000),
+    label: z.string().min(1).max(80),
+  })
+  .strict()
+
+/**
+ * A recorded clip (the variant's `clip`), played with the page's play, loop and scrub controls.
+ * `keyframes` name its stages in time order; they sit beside the playing clip, never in its place.
+ */
 export const ClipMotionSchema = z
   .object({
     mechanism: z.literal('clip'),
     /** The clip's length, when the round wants it stated; the file is the authority. */
     durationMs: z.number().int().min(100).max(600_000).optional(),
+    keyframes: z.array(KeyframeSchema).min(1).max(12).optional(),
     ...playback,
   })
   .strict()
+  .superRefine((m, ctx) => {
+    for (const [i, k] of (m.keyframes ?? []).entries()) {
+      const previous = m.keyframes?.[i - 1]
+      if (previous && k.atMs <= previous.atMs)
+        ctx.addIssue({
+          code: 'custom',
+          path: ['keyframes', i, 'atMs'],
+          message: `keyframes run in time order: ${k.label} at ${k.atMs}ms follows ${previous.atMs}ms`,
+        })
+      if (m.durationMs !== undefined && k.atMs > m.durationMs)
+        ctx.addIssue({
+          code: 'custom',
+          path: ['keyframes', i, 'atMs'],
+          message: `keyframe ${k.label} at ${k.atMs}ms is past the clip's ${m.durationMs}ms`,
+        })
+    }
+  })
 
 export const MotionSchema = z.discriminatedUnion('mechanism', [ArgMotionSchema, ClipMotionSchema])
 
@@ -66,6 +95,19 @@ const LadderRungSchema = z
   .object({ label: z.string().min(1).max(40), px: z.number().positive().max(1000) })
   .strict()
 
+const FrameSizeSchema = z
+  .object({
+    width: z.number().int().min(320).max(3840),
+    height: z.number().int().min(240).max(2160),
+  })
+  .strict()
+
+const ladder = z
+  .array(LadderRungSchema)
+  .min(1)
+  .max(8)
+  .default([...DEFAULT_SCALE_LADDER])
+
 /**
  * A size question's candidate set: the story rendered once per value of `arg`, side by side in
  * one `frame`, beside the reference `ladder`. The page shows the frame fitted and at 1:1.
@@ -74,30 +116,32 @@ export const ScaleReferenceSchema = z
   .object({
     arg: argName,
     candidates: z.array(argValue).min(2).max(6),
-    frame: z
-      .object({
-        width: z.number().int().min(320).max(3840),
-        height: z.number().int().min(240).max(2160),
-      })
-      .strict()
-      .default(DEFAULT_SCALE_FRAME),
-    ladder: z
-      .array(LadderRungSchema)
-      .min(1)
-      .max(8)
-      .default([...DEFAULT_SCALE_LADDER]),
+    frame: FrameSizeSchema.default(DEFAULT_SCALE_FRAME),
+    ladder,
   })
   .strict()
   .refine((s) => new Set(s.candidates.map(String)).size === s.candidates.length, {
     message: 'scale candidates repeat a value',
   })
 
+/**
+ * A recorded image or clip that is a true-size `frame` (1920x1080 by default). Load checks the
+ * file is that size; the page outlines the frame, offers Fit and 1:1, and draws the `ladder` in
+ * the frame's top-right corner, each bar as tall as its rung at the scale shown.
+ */
+export const FrameReferenceSchema = z
+  .object({ frame: FrameSizeSchema.default(DEFAULT_SCALE_FRAME), ladder })
+  .strict()
+
 export type Motion = z.output<typeof MotionSchema>
 export type ArgMotion = z.output<typeof ArgMotionSchema>
 export type ClipMotion = z.output<typeof ClipMotionSchema>
+export type Keyframe = z.output<typeof KeyframeSchema>
 export type MotionMechanism = (typeof MOTION_MECHANISMS)[number]
 export type ScaleReference = z.output<typeof ScaleReferenceSchema>
 export type LadderRung = z.output<typeof LadderRungSchema>
+export type FrameReference = z.output<typeof FrameReferenceSchema>
+export type FrameSize = z.output<typeof FrameSizeSchema>
 
 interface MediaFields {
   storyId?: string
@@ -105,6 +149,7 @@ interface MediaFields {
   args?: Record<string, unknown>
   motion?: Motion
   scale?: ScaleReference
+  frameReference?: FrameReference
 }
 
 /** What a frame's motion and scale ask of its source, as `[field, message]` pairs. */
@@ -119,6 +164,11 @@ export function mediaProblems(v: MediaFields): [string, string][] {
     problems.push(['motion', 'a clip variant declares motion { mechanism: "clip" }'])
   if (v.scale && !story)
     problems.push(['scale', 'a scale reference renders a live story; give the variant a storyId'])
+  if (v.frameReference && story)
+    problems.push([
+      'frameReference',
+      'a frame reference sizes an image or clip; a story uses scale',
+    ])
   const driven = [
     ...(v.motion?.mechanism === 'arg' ? [v.motion.arg] : []),
     ...(v.scale ? [v.scale.arg] : []),
@@ -129,6 +179,12 @@ export function mediaProblems(v: MediaFields): [string, string][] {
     if (v.args && Object.hasOwn(v.args, arg))
       problems.push(['args', `${arg} is driven by the frame's motion or scale; drop it from args`])
   return problems
+}
+
+/** Why a recorded frame is not the size its frame reference declares, or null when it is. */
+export function frameSizeMismatch(actual: FrameSize, declared: FrameSize): string | null {
+  if (actual.width === declared.width && actual.height === declared.height) return null
+  return `is ${actual.width}×${actual.height}; its frame reference declares ${declared.width}×${declared.height}`
 }
 
 /** A one-line account of a frame's motion, so two CHOICE frames are compared on it too. */

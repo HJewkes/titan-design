@@ -120,6 +120,41 @@ describe('motion on a variant', () => {
     ).toEqual([': a variant has exactly one of storyId, image or clip'])
   })
 
+  describe('keyframes on a clip', () => {
+    const reel = (motion: Record<string, unknown>) => ({
+      key: 'reel',
+      clip: 'clips/reel.webm',
+      label: 'Reel',
+      motion: { mechanism: 'clip', ...motion },
+    })
+    const stages = [
+      { atMs: 0, label: '1 overview' },
+      { atMs: 1200, label: '2 drill in' },
+      { atMs: 2400, label: '3 enter: D4' },
+    ]
+
+    it('keeps keyframes in the order the round gives them', () => {
+      const v = VariantSchema.parse(reel({ durationMs: 4000, keyframes: stages }))
+      expect(v.motion?.mechanism === 'clip' && v.motion.keyframes).toEqual(stages)
+    })
+
+    it('refuses keyframes out of time order, or at one time twice', () => {
+      expect(messages(reel({ keyframes: [stages[0], stages[2], stages[1]] }))).toEqual([
+        'motion.keyframes.2.atMs: keyframes run in time order: 2 drill in at 1200ms follows 2400ms',
+      ])
+      expect(messages(reel({ keyframes: [stages[1], { atMs: 1200, label: 'again' }] }))).toEqual([
+        'motion.keyframes.1.atMs: keyframes run in time order: again at 1200ms follows 1200ms',
+      ])
+    })
+
+    it("refuses a keyframe past the clip's stated duration, and allows any time without one", () => {
+      expect(messages(reel({ durationMs: 2000, keyframes: stages }))).toEqual([
+        "motion.keyframes.2.atMs: keyframe 3 enter: D4 at 2400ms is past the clip's 2000ms",
+      ])
+      expect(messages(reel({ keyframes: stages }))).toEqual([])
+    })
+  })
+
   it('refuses a driven arg that the variant also fixes in args', () => {
     expect(
       messages({
@@ -170,6 +205,36 @@ describe('a scale reference on a variant', () => {
         motion: { mechanism: 'arg', durationMs: 900 },
       })
     ).toEqual(['scale: motion and scale both drive progress; they set different args'])
+  })
+})
+
+describe('a frame reference on a variant', () => {
+  it('defaults an image to a 1920x1080 frame and the 1080p reference ladder', () => {
+    const v = VariantSchema.parse({
+      key: 'shot',
+      image: 'shot.png',
+      label: 'Shot',
+      frameReference: {},
+    })
+    expect(v.frameReference).toEqual({
+      frame: DEFAULT_SCALE_FRAME,
+      ladder: [...DEFAULT_SCALE_LADDER],
+    })
+  })
+
+  it('takes a clip with its own frame and ladder', () => {
+    const frameReference = {
+      frame: { width: 1280, height: 720 },
+      ladder: [{ label: 'floor x-height', px: 21.6 }],
+    }
+    const clip = { key: 'reel', clip: 'reel.webm', label: 'Reel', motion: { mechanism: 'clip' } }
+    expect(VariantSchema.parse({ ...clip, frameReference }).frameReference).toEqual(frameReference)
+  })
+
+  it('refuses one on a story, which uses scale instead', () => {
+    expect(messages({ key: 'card', storyId: STORY, label: 'Card', frameReference: {} })).toEqual([
+      'frameReference: a frame reference sizes an image or clip; a story uses scale',
+    ])
   })
 })
 
