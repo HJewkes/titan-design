@@ -8,6 +8,9 @@ import * as react_jsx_runtime from 'react/jsx-runtime';
 import { ReactNode } from 'react';
 
 // @public
+export function all(...spans: Span[]): Span;
+
+// @public
 export const back: (s?: number) => Easing;
 
 // @public
@@ -15,6 +18,9 @@ export function Beat(input: BeatProps): react_jsx_runtime.JSX.Element | null;
 
 // @public
 export const BEAT_MOUNT_MARGIN_S = 0.5;
+
+// @public
+export type BeatCues = Readonly<Record<string, number>>;
 
 // @public
 export function BeatFrame(input: BeatFrameProps): react_jsx_runtime.JSX.Element;
@@ -29,9 +35,13 @@ export interface BeatFrameProps {
 // @public
 export interface BeatProps {
     children?: ReactNode;
+    cues?: BeatCues;
     durationS: number;
     startS: number;
 }
+
+// @public
+export function chain(...spans: Span[]): Span;
 
 // @public
 export interface Clock {
@@ -56,6 +66,9 @@ export function cropInset(input?: CropEdges): string;
 
 // @public
 export function cubicBezier(x1: number, y1: number, x2: number, y2: number): Easing;
+
+// @public
+export function delay(s: number, inner: Span): Span;
 
 // @public
 export const easeIn: (f: Easing) => Easing;
@@ -106,8 +119,14 @@ export interface InterpolateOptions {
 export function interpolateScale(t: number, input: readonly [number, number], input2: readonly [number, number], options?: InterpolateOptions): number;
 
 // @public
-type Keyframe_2 = readonly [number, number];
+type Keyframe_2 = readonly [t: number, value: number, options?: KeyframeOptions];
 export { Keyframe_2 as Keyframe }
+
+// @public
+export interface KeyframeOptions {
+    connectedRight?: boolean;
+    holdS?: number;
+}
 
 // @public
 export function keyframes(t: number, stops: readonly Keyframe_2[], input?: KeyframesOptions): number;
@@ -115,6 +134,23 @@ export function keyframes(t: number, stops: readonly Keyframe_2[], input?: Keyfr
 // @public
 export interface KeyframesOptions {
     ease?: Easing | readonly Easing[];
+}
+
+// @public
+export interface Lagged {
+    itemS: number;
+    items: TimeWindow[];
+    progress(t: number, index: number): number;
+}
+
+// @public
+export function lagged(n: number, input: LaggedOptions): Lagged;
+
+// @public
+export interface LaggedOptions {
+    ease?: Easing;
+    lagRatio: number;
+    totalS: number;
 }
 
 // @public
@@ -136,7 +172,28 @@ export function mediaClock(media: HTMLMediaElement): Clock;
 // @public
 export const MOTION: {
     readonly duration: Record<"normal" | "fast" | "slow", number>;
-    readonly ease: Record<"out" | "inOut" | "spring", Easing>;
+    readonly ease: Record<"out" | "inOut" | "spring" | "in", Easing>;
+    readonly video: {
+        rise: 40;
+        scaleFrom: 0.97;
+        exitScale: 0.85;
+        exit: number;
+        hero: number;
+        enter: number;
+        count: number;
+        emphasis: number;
+        staggerEach: number;
+        staggerMax: number;
+    };
+    readonly spring: Record<"heavy" | "smooth" | "snappy" | "bouncy", Required<Pick<SpringOptions, "stiffness" | "damping" | "mass">>>;
+    readonly springPreset: typeof springPreset;
+    readonly staggerEachS: typeof staggerEachS;
+    readonly dim: {
+        readonly context: {
+            readonly opacity: 0.35;
+            readonly saturation: 0;
+        };
+    };
 };
 
 // @public
@@ -216,6 +273,15 @@ export const smootherstep: Easing;
 export const smoothstep: Easing;
 
 // @public
+export interface Span {
+    durationS: number;
+    windows: TimeWindow[];
+}
+
+// @public
+export function span(durationS: number): Span;
+
+// @public
 export function spring(t: number, input?: SpringOptions): number;
 
 // @public
@@ -242,8 +308,15 @@ export function stagger(index: number, input: StaggerOptions): number;
 
 // @public
 export interface StaggerOptions {
-    each: number;
+    count: number;
+    each?: number;
     from?: number;
+}
+
+// @public
+export interface TimeWindow {
+    endS: number;
+    startS: number;
 }
 
 // @public
@@ -253,6 +326,9 @@ export function useBeatEnvelope(options?: EnvelopeOptions): Envelope;
 export function useBeatTime(): LocalTime & {
     durationS: number;
 };
+
+// @public
+export function useCue(name: string): number;
 
 // @public
 export function useLocalTime(startS: number, durationS: number): LocalTime;

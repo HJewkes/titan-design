@@ -22,8 +22,16 @@ export function interpolate(
   return out0 + (out1 - out0) * ease(p)
 }
 
-/** A `[t, value]` stop for `keyframes`. */
-export type Keyframe = readonly [number, number]
+/** How a `keyframes` stop leaves its value. */
+export interface KeyframeOptions {
+  /** Seconds the value holds before the segment to the next stop starts easing. Default 0. */
+  holdS?: number
+  /** `false` holds the value until the next stop, then steps to it. Default true. */
+  connectedRight?: boolean
+}
+
+/** A `[t, value]` stop for `keyframes`, with optional `KeyframeOptions`. */
+export type Keyframe = readonly [t: number, value: number, options?: KeyframeOptions]
 
 /** Options for `keyframes`. */
 export interface KeyframesOptions {
@@ -31,10 +39,40 @@ export interface KeyframesOptions {
   ease?: Easing | readonly Easing[]
 }
 
+function assertStops(stops: readonly Keyframe[]): void {
+  stops.forEach(([t, value, { holdS = 0 } = {}], i) => {
+    if (!Number.isFinite(t) || !Number.isFinite(value)) {
+      throw new RangeError(`keyframes: stop ${i} is [${t}, ${value}]`)
+    }
+    const previous = stops[i - 1]
+    if (previous && t <= previous[0])
+      throw new RangeError(`keyframes: stop ${i} at ${t} is not after ${previous[0]}`)
+    const next = stops[i + 1]
+    if (!(holdS >= 0 && holdS < Infinity) || (next && t + holdS > next[0])) {
+      throw new RangeError(
+        `keyframes: stop ${i} holdS ${holdS} is negative or runs past the next stop`
+      )
+    }
+  })
+}
+
+function segmentValue(
+  t: number,
+  [t0, v0, options = {}]: Keyframe,
+  [t1, v1]: Keyframe,
+  ease: Easing
+): number {
+  const holdEndS = t0 + (options.holdS ?? 0)
+  if (options.connectedRight === false || t <= holdEndS) return v0
+  return interpolate(t, [holdEndS, t1], [v0, v1], { ease })
+}
+
 /**
  * Piecewise `interpolate` through stops sorted by t: holds the first value before the first stop and the
- * last after the last. Two stops at one t jump to the second. An `ease` array shorter than the
- * segment count throws a `RangeError`.
+ * last after the last. A stop's `holdS` keeps its value that long before easing to the next stop, and
+ * `connectedRight: false` keeps it until the next stop, then steps. Throws a `RangeError` for a
+ * non-finite stop, stops not strictly increasing in t (express a jump with `connectedRight: false`),
+ * a negative hold or one past the next stop, or an `ease` array shorter than the segment count.
  */
 export function keyframes(
   t: number,
@@ -45,14 +83,14 @@ export function keyframes(
   if (typeof ease !== 'function' && ease.length < segments) {
     throw new RangeError(`keyframes: ${segments} segments but ${ease.length} easings`)
   }
+  assertStops(stops)
   const first = stops[0]
   if (!first) return 0
   if (t <= first[0]) return first[1]
   for (let i = 1; i < stops.length; i++) {
-    const [t0, v0] = stops[i - 1] as Keyframe
-    const [t1, v1] = stops[i] as Keyframe
+    const stop = stops[i] as Keyframe
     const segmentEase = typeof ease === 'function' ? ease : (ease[i - 1] as Easing)
-    if (t < t1) return interpolate(t, [t0, t1], [v0, v1], { ease: segmentEase })
+    if (t < stop[0]) return segmentValue(t, stops[i - 1] as Keyframe, stop, segmentEase)
   }
   return (stops[stops.length - 1] as Keyframe)[1]
 }

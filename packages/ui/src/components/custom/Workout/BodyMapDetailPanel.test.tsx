@@ -220,16 +220,15 @@ describe('BodyMapDetailPanel', () => {
       expect(await axe(container)).toHaveNoViolations()
     })
 
-    it('has no accessibility violations for each volume status', async () => {
-      const statuses = ['untrained', 'behind', 'ontrack', 'target', 'approaching', 'over'] as const
-      for (const volumeStatus of statuses) {
-        const { container, unmount } = render(
+    it.each(['untrained', 'behind', 'ontrack', 'target', 'approaching', 'over'] as const)(
+      'has no accessibility violations with volume status %s',
+      async (volumeStatus) => {
+        const { container } = render(
           <BodyMapDetailPanel {...baseProps} volumeStatus={volumeStatus} />
         )
         expect(await axe(container)).toHaveNoViolations()
-        unmount()
       }
-    })
+    )
 
     it('has no accessibility violations as a right side-sheet', async () => {
       const { container } = render(
