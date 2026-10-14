@@ -81,10 +81,38 @@ function revisionProblems(question: Question, answer: Answer): string[] {
   return []
 }
 
+/** The picked option's `after`, which an answer echoes; a revision request picks nothing. */
+export function pickedAfter(question: Question, answer: Answer): string | undefined {
+  if (question.kind !== 'pick-one' || answer.pick === undefined) return undefined
+  return question.optionDetails?.[answer.pick]?.after
+}
+
+function seenProblems(question: Question, answer: Answer): string[] {
+  if (!answer.recommendationSeen) return []
+  if (question.kind === 'text' || !question.recommendation)
+    return [`${question.id}: recommendationSeen on a question with no recommendation`]
+  return isAnswered(question, answer) ? [] : [`${question.id}: recommendationSeen with no answer`]
+}
+
+/** Option notes, the echoed `after` and the seen tag must agree with the question and its answer. */
+function packetProblems(question: Question, answer: Answer): string[] {
+  const options =
+    question.kind === 'pick-one' || question.kind === 'pick-many' ? question.options : []
+  return [
+    ...(answer.optionNotes ?? [])
+      .filter((n) => !options.includes(n.option))
+      .map((n) => `${question.id}: a note on "${n.option}", which is not an option`),
+    ...(answer.after !== undefined && answer.after !== pickedAfter(question, answer)
+      ? [`${question.id}: after is not the picked option's`]
+      : []),
+    ...seenProblems(question, answer),
+  ]
+}
+
 function answerProblems(question: Question, given: Answer | undefined, skipped: boolean) {
   if (!given) return question.required && !skipped ? [`${question.id}: required`] : []
   const answer = normalizeAnswer(question, given)
-  const problems = revisionProblems(question, answer)
+  const problems = [...revisionProblems(question, answer), ...packetProblems(question, answer)]
   if (question.kind === 'pick-one' && answer.pick !== undefined) {
     if (!question.options.includes(answer.pick)) problems.push(`${question.id}: unknown option`)
   }

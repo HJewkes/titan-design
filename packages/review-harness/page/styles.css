@@ -286,6 +286,83 @@ body:has(.contrast-override) .variant-head {
   display: block;
 }
 
+.clip-box + .motion-controls {
+  margin-top: var(--space-stack-sm);
+}
+
+.clip-keyframes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-inline-sm);
+  margin: var(--space-stack-sm) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.clip-keyframe[aria-current='step'] {
+  border-color: var(--color-brand-primary);
+  background: var(--color-brand-primary-subtle);
+}
+
+.clip-keyframe-time {
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.frame.actual {
+  overflow: auto;
+  max-height: 90vh;
+}
+
+.frame.actual > figcaption {
+  position: sticky;
+  top: 0;
+  left: 0;
+  justify-self: start;
+  z-index: 2;
+  background: var(--color-surface-elevated);
+}
+
+.frame-box.true-size {
+  outline: 2px solid var(--color-brand-primary);
+  outline-offset: -2px;
+}
+
+.frame-ladder {
+  position: absolute;
+  top: var(--space-inset-sm);
+  right: var(--space-inset-sm);
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-inline-md);
+  margin: 0;
+  padding: var(--space-inset-sm);
+  list-style: none;
+  background: var(--color-surface-base);
+  border: 1px solid var(--color-border-input);
+  pointer-events: none;
+}
+
+.frame-ladder li {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+}
+
+.frame-ladder-bar {
+  width: 8px;
+  background: var(--color-text-primary);
+}
+
+.frame-ladder-label {
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
 .scale-views {
   display: inline-flex;
   gap: var(--space-inline-sm);
@@ -571,6 +648,96 @@ button.primary kbd {
 
 .recommendation p {
   margin: 0 0 var(--space-stack-sm);
+}
+
+/* Decision packets: option cards with their pros and cons, and the recommendation's reveal. */
+.option-packet {
+  display: grid;
+  gap: var(--space-stack-sm);
+  justify-items: start;
+}
+
+.option-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-inline-sm);
+  width: 100%;
+}
+
+.option-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack-sm);
+  padding: var(--space-inset-sm);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 8px;
+  background: var(--color-surface-raised);
+}
+
+.option-card.is-on {
+  border-color: var(--color-brand-primary);
+  background: var(--color-brand-primary-subtle);
+}
+
+.option-card .md p {
+  margin: 0;
+}
+
+.option-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-inline-sm);
+}
+
+.option-pick {
+  flex: 1;
+  text-align: left;
+  font-weight: 600;
+}
+
+.option-badge {
+  padding: 0 var(--space-squish-x-sm);
+  border: 1px solid var(--color-brand-primary);
+  border-radius: 8px;
+  color: var(--color-text-primary);
+  font-size: 12px;
+}
+
+.packet-tag {
+  font-weight: 600;
+}
+
+.weak-point {
+  padding-left: var(--space-inline-sm);
+  border-left: 3px solid var(--color-status-error);
+}
+
+.option-after,
+.reveal-help,
+.answer-after {
+  color: var(--color-text-secondary);
+}
+
+.option-note-toggle {
+  align-self: flex-start;
+  font-size: 12px;
+}
+
+.reveal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-inline-sm);
+  margin-top: var(--space-stack-sm);
+}
+
+.reveal button[aria-pressed='true'] {
+  border-color: var(--color-brand-primary);
+}
+
+.reveal-help {
+  font-size: 12px;
 }
 
 /* Rendered round text (Markdown.tsx). */

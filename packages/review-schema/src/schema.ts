@@ -1,7 +1,8 @@
 import { z } from 'zod'
 import { SHIP_OPTIONS, contractProblems, duplicates, type Problem } from './contract.ts'
 import { LOCK_AXES } from './locks.ts'
-import { MotionSchema, ScaleReferenceSchema, mediaProblems } from './media.ts'
+import { FrameReferenceSchema, MotionSchema, ScaleReferenceSchema, mediaProblems } from './media.ts'
+import { CompareSchema, EvidenceTableSchema, OptionDetailSchema, packetProblems } from './packet.ts'
 
 export const MANIFEST_SCHEMA_ID = 'titan-review/round@2'
 /** A round written before the review contract: the page still reads it, the CLI refuses it. */
@@ -82,6 +83,8 @@ export const VariantSchema = z
     motion: MotionSchema.optional(),
     /** A size question's candidates, rendered together in one full-size frame. */
     scale: ScaleReferenceSchema.optional(),
+    /** An image or clip that is a true-size frame, checked at load and drawn with a ladder. */
+    frameReference: FrameReferenceSchema.optional(),
     label: z.string().min(1),
     args: z.record(z.string(), argValue).optional(),
     globals: z.record(z.string(), argValue).optional(),
@@ -176,6 +179,13 @@ const optionVariants = z.record(z.string(), id).optional()
 /** Each option's outcome, by option text; an option it does not name has no declared outcome. */
 const outcomes = z.record(z.string(), z.enum(OPTION_OUTCOMES)).optional()
 
+/** A decision packet: each option's pros and cons by option text, measured tables, a viewer. */
+const packet = {
+  optionDetails: z.record(z.string(), OptionDetailSchema).optional(),
+  evidence: z.array(EvidenceTableSchema).min(1).optional(),
+  compare: CompareSchema.optional(),
+}
+
 /** Our answer to a question, hidden from the owner until they answer it themselves. */
 export const RecommendationSchema = z
   .object({
@@ -184,6 +194,10 @@ export const RecommendationSchema = z
     confidence: z.number().min(0).max(1),
     /** The recommender: an agent name or "design-coord". */
     by: z.string().min(1),
+    /** Where the recommended answer is weakest (markdown); hidden with the recommendation. */
+    weakPoint: z.string().regex(/\S/, 'a weak point is not blank').optional(),
+    /** The option to take if the recommended one fails: one of the options, not the answer. */
+    fallback: z.string().optional(),
   })
   .strict()
 const recommendation = RecommendationSchema.optional()
@@ -216,6 +230,7 @@ const PickOneSchema = z
     revisionOption: z.string().optional(),
     optionVariants,
     outcomes,
+    ...packet,
     /** The option the PR at its head already implements; a pick that differs withholds Ship. */
     implemented: z.string().optional(),
     recommendation,
@@ -231,6 +246,7 @@ const PickManySchema = z
     options: z.array(z.string()).min(1),
     optionVariants,
     outcomes,
+    ...packet,
     /** The options the PR at its head already implements; a different set withholds Ship. */
     implemented: z.array(z.string()).min(1).optional(),
     recommendation,
@@ -760,6 +776,7 @@ function manifestProblems(m: z.output<typeof ManifestObject>): Problem[] {
       ...optionVariantProblems(m),
       ...recommendationProblems(m),
       ...mergeBindingProblems(m),
+      ...packetProblems(m),
     ]),
     ...at('contrast', contrastProblems(m)),
   ]
@@ -808,6 +825,17 @@ const answerSchema = z
     recommendation: RecommendationSchema.optional(),
     /** Whether the owner's answer equals the recommendation's (pick-many: the same set). */
     agreed: z.boolean().optional(),
+    /** The owner's notes on options other than (or as well as) the one they picked. */
+    optionNotes: z
+      .array(z.object({ option: z.string(), note: z.string().min(1) }).strict())
+      .optional(),
+    /** The picked option's `after` text, echoed so the agent acting on the pick needs no manifest. */
+    after: z.string().optional(),
+    /**
+     * The answer was given while the recommendation was visible: after a reveal, or in a `shown`
+     * round. Absent means blind. Only on a question with a recommendation and an answer.
+     */
+    recommendationSeen: z.literal(true).optional(),
   })
   .strict()
 
@@ -916,11 +944,11 @@ const NO_STORY_FIELDS = {
   anyOf: [{ required: ['args'] }, { required: ['globals'] }, { required: ['scale'] }],
 }
 
-// The variant superRefine (exactly one source; args, globals and scale only on stories; a clip
-// declares its motion), as JSON Schema.
+// The variant superRefine (exactly one source; args, globals and scale only on stories; a frame
+// reference only on images and clips; a clip declares its motion), as JSON Schema.
 const VARIANT_SOURCE = {
   oneOf: [
-    { required: ['storyId'] },
+    { required: ['storyId'], not: { required: ['frameReference'] } },
     { required: ['image'], not: NO_STORY_FIELDS },
     { required: ['clip', 'motion'], not: NO_STORY_FIELDS },
   ],

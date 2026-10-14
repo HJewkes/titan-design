@@ -26,6 +26,7 @@ export const motionCSSVars = Object.freeze({
   '--ease-out': cubicBezierCss(motion.ease.out),
   '--ease-in-out': cubicBezierCss(motion.ease.inOut),
   '--ease-spring': cubicBezierCss(motion.ease.spring),
+  '--ease-in': cubicBezierCss(motion.ease.in),
   '--duration-fast': `${motion.duration.fast}ms`,
   '--duration-normal': `${motion.duration.normal}ms`,
   '--duration-slow': `${motion.duration.slow}ms`,

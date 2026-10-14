@@ -12,7 +12,8 @@ as JSON on stdout and in `feedback.json`. Private workspace tool, not published.
 3. The active card has an orange border. `1` chosen, `2` rejected, `3` maybe, `0` clears.
 4. `Tab` jumps to that card's comment box. `Enter` moves to the next card or question.
 5. `a` turns pins on: click a spot on any frame, type a note. `Esc` turns pins off.
-6. On a question, `1`-`9` pick its options; the scale takes its value directly.
+6. On a question, `1`-`9` pick its options; the scale takes its value directly. `r` shows or
+   hides the question's recommendation.
 7. The last box is for general notes. `l` toggles one column per variant.
    A sectioned round asks each question directly under the frames it names (`frames`); a
    question without `frames` sits above its section's other frames, and a Ship question reads
@@ -134,8 +135,8 @@ imports. Its `schema/round.schema.json` and `schema/feedback.schema.json` are ge
 - Manifest `titan-review/round@2`: `unit`, `round`, `storybookUrl`, `context?`, `widths[]`,
   `height` (a number of px or `"auto"`, default `"auto"`; at round level a number caps every
   frame), `maxHeight` (default 1200, the cap when the round's `height` is `"auto"`),
-  `variants[{key, storyId | image | clip, label, args?, globals?, height?, motion?, scale?, variantUnit?, alternate?, change?: changed|new|removed|unchanged, baseImage? (a PNG of the frame from the PR's base)}]`
-  (`motion`, `clip` and `scale`: see _Motion and scale_) (at most 12 in a round
+  `variants[{key, storyId | image | clip, label, args?, globals?, height?, motion?, scale?, frameReference?, variantUnit?, alternate?, change?: changed|new|removed|unchanged, baseImage? (a PNG of the frame from the PR's base)}]`
+  (`motion`, `clip`, `scale` and `frameReference`: see _Motion and scale_) (at most 12 in a round
   without `sections`, uncapped in one with them; empty for a round of questions only, which needs no placeholder
   frame; every frame sits in a section),
   `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?, recommendation?, signsOff (pick-one), page?, merge? (pick-one), frames?[], decision?: iterate|ship|decide, outcomes? (option to accept|changes|neutral), implemented? (the option, or options for pick-many, the PR implements), touches? (the tokens a non-PR question decides; see _Build with locks_)}]`,
@@ -170,11 +171,25 @@ imports. Its `schema/round.schema.json` and `schema/feedback.schema.json` are ge
   `recommendation {answer, rationale, confidence, by}`, our own answer to it. `answer` is one of
   the options (pick-one), a list of them (pick-many) or a value on the scale; `confidence` is
   0 to 1; `by` names the recommender (an agent name or `design-coord`). A text question takes
-  none. The page hides the recommendation until the owner answers the question, so it cannot
-  anchor them, then shows it under their pick with whether the two match. Set the round's
-  `recommendations` to `"shown"` to show every recommendation from the start.
+  none. The page hides the recommendation until the owner reveals it or answers the question, so
+  it cannot anchor them unnoticed, then shows it under their pick with whether the two match. Set
+  the round's `recommendations` to `"shown"` to show every recommendation from the start. An
+  answer given while the recommendation is visible (after a reveal, after an earlier answer, or in
+  a `"shown"` round) is sent with `recommendationSeen: true`; a blind pick stays blind when the
+  owner reveals it afterwards, and clearing the answer clears the tag. The reveal is a "Show
+  recommendation" button (`r` on the active question) on every question with a recommendation;
+  it is disabled once an answer or a `"shown"` round makes the recommendation visible anyway.
+  The recommendation box adds the recommendation's `weakPoint` and `fallback`, and its verdict
+  says "seen before answering" on a seen answer.
+- Option cards: a pick-one or pick-many with `optionDetails` shows each option as a card instead
+  of a button, in option order, so hotkey `n` still picks option `n`. A card shows its `detail`,
+  its `weakPoint` (red rule, "Weak point:") and its `after` ("If you pick this:") from the start,
+  never gated by the recommendation, plus an "Add a note" field that writes `optionNotes`. Only
+  while the recommendation is visible does the recommended card carry a "Recommended" badge.
+  The review screen lists each option note as "on <option>: <note>", the pick's `after` in muted
+  type, and "(seen recommendation)" after a seen answer.
 - Feedback `titan-review/feedback@1`: `manifestSha256`, `submittedAt`,
-  `answers[{questionId, pick | picks | value | text | revisionRequested, comment?, variantComments?, recommendation?, agreed?}]`,
+  `answers[{questionId, pick | picks | value | text | revisionRequested, comment?, variantComments?, recommendation?, agreed?, optionNotes?, after?, recommendationSeen?}]`,
   `variants[{key, storyId | image | clip, verdict: chosen|rejected|maybe|null, comment, annotations[], relatedQuestionIds?}]`,
   `general`, `unansweredQuestionIds?`, `contrastOverride?` (see _The agent's side_). Each annotation has `width`,
   `x`/`y` in CSS px of the story frame, `xPct`/`yPct` as fractions of it, a `note`, and `target {testId?, role?, text?}` from element hit-testing.
@@ -183,7 +198,11 @@ imports. Its `schema/round.schema.json` and `schema/feedback.schema.json` are ge
   Both appear only in a sectioned round. `recommendation` echoes the question's recommendation,
   and `agreed` says whether the owner's answer equals it (pick-many: the same set); `agreed` is
   absent when the owner only commented. Both appear only when the question has a
-  recommendation. `unansweredQuestionIds` marks a deliberate partial submit: it lists, in
+  recommendation. `optionNotes[{option, note}]` carries the owner's non-blank notes on the
+  question's options, in option order; a note counts as free text for Ship, as a comment does.
+  `after` echoes the picked option's `optionDetails` `after` (pick-one only, never on a revision
+  request), and the server rejects one that differs from it, a note on a non-option, and
+  `recommendationSeen` on a question with no recommendation or no answer. `unansweredQuestionIds` marks a deliberate partial submit: it lists, in
   manifest order, every question the owner sent without an answer (a comment alone is not an
   answer), and a required question it lists is not an error. A full submit omits the field; the
   page sends one only when every question has an answer. The server rejects a list that
@@ -257,8 +276,14 @@ otherwise (`autoplay: false`, `loop: false`).
 - `{ "mechanism": "clip" }` plays the variant's `clip`, a third source beside `storyId` and
   `image`: an `.mp4` or `.webm` path relative to the round file, under the same rules as an image
   (no `..`, inside the round directory after symlinks, sniffed for an mp4 `ftyp` box or the webm
-  magic). It plays muted, with the browser's own controls, at each width; the server answers byte
-  ranges so the video can seek. Use it for a component with no such arg. A clip needs a contrast
+  magic). It plays muted at each width, under the arg player's controls: Play/Pause, a scrubber
+  that pauses where it is dropped, a readout (`1.20 / 4.00 s`) and a **Loop** checkbox that starts
+  at `loop`. The server answers byte ranges so the video can seek. Use it for a component with no
+  such arg. `keyframes` name the clip's stages in time order,
+  `[{ "atMs": 2400, "label": "3 enter: D4" }]`, each at or before `durationMs` when that is
+  stated. They list under the clip as time chips; a click pauses there, and the chip for the
+  stage the playhead is in is marked. They sit beside the playing clip, never in its place. A clip
+  needs a contrast
   `measured` or `unmeasured` entry per mode, as an image does. Capture copies it to
   `<key>-clip.<ext>`.
 
@@ -289,6 +314,21 @@ rules above. Capture shoots one PNG per candidate at the frame size,
 `<width>-<key>-<story>-<arg>-<candidate>.png`. The contrast gate measures the story at its own
 `args`, not at each candidate. A variant can carry both `motion` and `scale` when they drive
 different args; every candidate then follows the playhead.
+
+**True-size frames.** `frameReference` on an image or clip variant says the file is a
+true-size frame, with the same `frame` and `ladder` (and defaults) as a scale:
+
+```json
+"frameReference": { "frame": { "width": 1920, "height": 1080 }, "ladder": [{ "label": "44", "px": 44 }] }
+```
+
+Load refuses a PNG whose IHDR width or height is not the declared frame; a clip's `videoWidth`
+and `videoHeight` are checked as its metadata loads, and a mismatch shows the frame-dead alert.
+The variant is drawn once, at the frame's width, not at each manifest width. It is outlined, the
+caption reads `1920×1080 · shown at 47%` (or `1:1`), and **Fit** and **1:1** switch it like a
+scale frame. The ladder is drawn into the frame's top-right corner, each bar `px × k` tall at the
+scale `k` shown, so a bar sits beside text of that size in the frame. A story variant uses
+`scale` instead and may not carry `frameReference`.
 
 ## A round from Morning items (TD-680)
 
@@ -555,7 +595,9 @@ tests. Errors are `FrameRenderError`, which the CLI reports as a usage error (ex
 `titan-review calibration <feedback.json...>` reads feedback files and prints how often the
 owner's answer matched the recommendation: one row per round, the overall rate, and the rate
 per confidence band (`<0.5`, `0.5-0.75`, `>=0.75`). An answer counts only when it has both a
-recommendation and an owner's answer.
+recommendation and an owner's answer. Every rate counts blind answers only (no
+`recommendationSeen`); a round row says how many seen answers it left out, and Overall adds the
+seen answers' own rate. Feedback written before the tag has none, so it counts as blind.
 
 ## Lock footprint (TD-808)
 
