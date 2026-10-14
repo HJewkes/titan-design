@@ -80,8 +80,9 @@ describe('window.__titanMotion', () => {
 describe('__titanMotion.seek', () => {
   // Mutation caught: seeking without flushSync, so the frame commits after seek returns.
   it('commits the frame before it returns', () => {
-    const actEnvironment = globalThis.IS_REACT_ACT_ENVIRONMENT
-    globalThis.IS_REACT_ACT_ENVIRONMENT = false
+    const reactGlobals = globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }
+    const actEnvironment = reactGlobals.IS_REACT_ACT_ENVIRONMENT
+    reactGlobals.IS_REACT_ACT_ENVIRONMENT = false
     try {
       render(
         <MotionProvider clock={seekClock()} durationS={5}>
@@ -91,7 +92,7 @@ describe('__titanMotion.seek', () => {
       bridge().seek(2.5)
       expect(screen.getByTestId('now').textContent).toBe('2.5')
     } finally {
-      globalThis.IS_REACT_ACT_ENVIRONMENT = actEnvironment
+      reactGlobals.IS_REACT_ACT_ENVIRONMENT = actEnvironment
     }
   })
 
