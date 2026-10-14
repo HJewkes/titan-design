@@ -14,16 +14,10 @@ export interface StatCardProps extends Omit<CardProps, 'children'> {
   /** The top row. Usually a `<StatCardHeader>`. */
   header: ReactNode
   /**
-   * The lead figure. A string renders as an `h3`; omitted, the body follows the header at the
+   * The lead figure. Usually a `<StatCardFigure>`. Omitted, the body follows the header at the
    * figure-to-body gap.
    */
   figure?: ReactNode
-  /**
-   * 0..1 from the caller's clock: the first number in a string `figure` counts up from 0 in
-   * tabular digits and lands on the figure exactly at 1. Omitted, or under reduced motion, the
-   * figure shows as given.
-   */
-  progress?: number
   /** One line about the figure. `beside` sits right on the figure's row and wraps under it. */
   caption?: ReactNode
   /** Where the caption sits against the figure (default `beside`). */
@@ -47,22 +41,6 @@ const INSET: Record<StatCardInset, string> = {
  * every later sibling, whatever the tip's own z-index says.
  */
 const Z = { top: 10, header: 20, figure: 10 } as const
-
-/** A string figure: the template's lead type, counting while `progress` runs. */
-function FigureText({ text, progress }: { text: string; progress?: number }) {
-  const shown = useCountedText(text, progress)
-  const counts = progress !== undefined
-  return (
-    <Typography
-      variant="h3"
-      className={cn('leading-none', counts && 'tabular-nums')}
-      style={counts ? TABULAR_STYLE : undefined}
-      accessibilityLabel={counts ? text : undefined}
-    >
-      {shown}
-    </Typography>
-  )
-}
 
 /** The figure and its caption: one wrapping row, or the caption stacked under the figure. */
 function FigureRow(props: {
@@ -119,7 +97,6 @@ function FigureRow(props: {
 export function StatCard({
   header,
   figure,
-  progress,
   caption,
   captionPlacement = 'beside',
   body,
@@ -146,9 +123,7 @@ export function StatCard({
             {header}
           </View>
           <FigureRow
-            figure={
-              typeof figure === 'string' ? <FigureText text={figure} progress={progress} /> : figure
-            }
+            figure={figure}
             caption={caption}
             placement={captionPlacement}
             testID={part('figure')}
@@ -190,5 +165,33 @@ export function StatCardHeader({ title, trailing, testID }: StatCardHeaderProps)
         <View className="flex-row items-center gap-inline-sm">{trailing}</View>
       )}
     </View>
+  )
+}
+
+export interface StatCardFigureProps {
+  /** The figure as it reads when settled, e.g. `12,480 kg`. */
+  value: string
+  /**
+   * 0..1 from the caller's clock: the first number in `value` counts up from 0 in tabular digits
+   * and lands on `value` exactly at 1. Omitted, or under reduced motion, `value` shows as given.
+   */
+  progress?: number
+  testID?: string
+}
+
+/** A stat card's lead figure in the template's type, trimmed to its glyphs (`leading-none`). */
+export function StatCardFigure({ value, progress, testID }: StatCardFigureProps) {
+  const shown = useCountedText(value, progress)
+  const counts = progress !== undefined
+  return (
+    <Typography
+      variant="h3"
+      className={cn('leading-none', counts && 'tabular-nums')}
+      style={counts ? TABULAR_STYLE : undefined}
+      accessibilityLabel={counts ? value : undefined}
+      testID={testID}
+    >
+      {shown}
+    </Typography>
   )
 }

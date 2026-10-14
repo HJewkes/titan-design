@@ -4,7 +4,7 @@ import { View } from 'react-native'
 import { Pill } from '../pill'
 import { Progress } from '../progress'
 import { Typography } from '../typography'
-import { StatCard, StatCardHeader } from './StatCard'
+import { StatCard, StatCardFigure, StatCardHeader } from './StatCard'
 
 interface StatCardStoryArgs {
   title: string
@@ -37,8 +37,11 @@ function StatCardStory(args: StatCardStoryArgs) {
             }
           />
         }
-        figure={args.hasFigure ? args.figure : undefined}
-        progress={args.progress}
+        figure={
+          args.hasFigure ? (
+            <StatCardFigure value={args.figure} progress={args.progress} />
+          ) : undefined
+        }
         caption={
           args.hasFigure && args.caption ? (
             <Typography variant="body2" color="secondary" className="text-sm">
@@ -91,7 +94,7 @@ const meta: Meta<typeof StatCardStory> = {
           'and the paint order set once here. Composes [Card](?path=/docs/components-molecules-card--docs) ' +
           '(elevation, loading skeleton) and [Typography](?path=/docs/foundations-typography--docs) ' +
           "(the header's overline title). Header and figure touch; the figure trims its own line " +
-          'box with `leading-none`. A string figure counts up while `progress` runs.\n\n' +
+          'box with `leading-none`. `StatCardFigure` is that figure; its `progress` counts the number up for a video beat.\n\n' +
           '**States.** Loading: `isLoading` shows the Card skeleton. Empty: the consumer puts its ' +
           'empty line in `figure`. Error and disabled do not apply: the card holds no data of its ' +
           'own and does not press.',

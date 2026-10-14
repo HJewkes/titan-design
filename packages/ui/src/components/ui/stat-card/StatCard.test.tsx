@@ -6,7 +6,7 @@ import { Text } from 'react-native'
 
 import { capturedByNode, capturedClassNames } from '../../../test/classname-capture'
 import { resolveAll, spacingClassesOf } from '../../../test/spacing-resolver'
-import { StatCard, StatCardHeader, type StatCardProps } from './StatCard'
+import { StatCard, StatCardFigure, StatCardHeader, type StatCardProps } from './StatCard'
 
 function renderCard(props: Partial<StatCardProps> = {}) {
   return render(
@@ -145,55 +145,51 @@ describe('StatCardHeader', () => {
   })
 })
 
-describe('StatCard with progress', () => {
+describe('StatCardFigure with progress', () => {
   afterEach(() => vi.unstubAllGlobals())
-  const figureText = () =>
-    screen.getByTestId('card-stat-card-figure').firstElementChild as HTMLElement
+  const figureText = () => screen.getByTestId('figure')
   const figureClasses = () => capturedByNode.get(figureText())?.split(' ') ?? []
 
   it.each([
     [0, '0.0 lb'],
     [0.5, '147.6 lb'],
     [1, '196.8 lb'],
-  ])('at progress %s counts a string figure to %s', (progress, shown) => {
-    renderCard({ figure: '196.8 lb', caption: undefined, progress })
+  ])('at progress %s counts the figure to %s', (progress, shown) => {
+    render(<StatCardFigure value="196.8 lb" progress={progress} testID="figure" />)
     expect(figureText().textContent).toBe(shown)
   })
 
   it('lands on the exact figure text at progress 1', () => {
-    renderCard({ figure: '98,765.4 kg', caption: undefined, progress: 1 })
+    render(<StatCardFigure value="98,765.4 kg" progress={1} testID="figure" />)
     expect(figureText().textContent).toBe('98,765.4 kg')
   })
 
   it('draws the counting figure in tabular digits', () => {
-    renderCard({ figure: '196.8 lb', caption: undefined, progress: 0.5 })
+    render(<StatCardFigure value="196.8 lb" progress={0.5} testID="figure" />)
     expect(figureClasses()).toContain('tabular-nums')
   })
 
   it('shows the final figure when the reader prefers reduced motion', () => {
     stubReducedMotion(true)
-    renderCard({ figure: '196.8 lb', caption: undefined, progress: 0.2 })
+    render(<StatCardFigure value="196.8 lb" progress={0.2} testID="figure" />)
     expect(figureText().textContent).toBe('196.8 lb')
   })
 
-  it('renders a string figure as given, in proportional digits, with no progress', () => {
-    renderCard({ figure: '196.8 lb', caption: undefined })
+  it('renders the figure as given, in proportional digits, with no progress', () => {
+    render(<StatCardFigure value="196.8 lb" testID="figure" />)
     expect(figureText().textContent).toBe('196.8 lb')
     expect(figureClasses()).not.toContain('tabular-nums')
   })
 
-  it('leaves a node figure untouched whatever the progress', () => {
-    renderCard({ progress: 0.2 })
-    expect(screen.getByText('196.8 lb')).toBeInTheDocument()
-  })
-
   it('names the final figure for assistive tech mid-count', () => {
-    renderCard({ figure: '196.8 lb', caption: undefined, progress: 0.2 })
+    render(<StatCardFigure value="196.8 lb" progress={0.2} testID="figure" />)
     expect(screen.getByLabelText('196.8 lb')).toBe(figureText())
   })
 
-  it('has no accessibility violations mid-count', async () => {
-    const { container } = renderCard({ figure: '196.8 lb', progress: 0.4 })
+  it('has no accessibility violations mid-count in a card', async () => {
+    const { container } = renderCard({
+      figure: <StatCardFigure value="196.8 lb" progress={0.4} />,
+    })
     expect(await axe(container)).toHaveNoViolations()
   })
 })
