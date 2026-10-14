@@ -99,7 +99,7 @@ export const mapLayoutFixture: MapLayout = {
       box: box(1350, 200, 320, 56),
     },
   ],
-  // Every level is routed: L0 and L1 by a second ELK pass over the collapsed graph with fixed boxes.
+  // Every level is routed in the same compound pass as the boxes, including edges between group boxes.
   edges: [
     {
       id: 'e:user->sys',
@@ -211,6 +211,37 @@ export const mapLayoutFixture: MapLayout = {
     { id: 'card:api-size', kind: 'stat', anchor: 'pkg/api' },
   ],
   sha: 'sha256:synthetic-fixture',
+}
+
+/**
+ * Three boxes and no routes, so every edge runs straight between borders: an import and a call share
+ * one pair, and an import and a traced edge run each way between another.
+ */
+export const straightMapFixture: MapLayout = {
+  version: 'repo-map/v1',
+  width: 1040,
+  height: 520,
+  levels: [{ id: 1, name: 'containers' }],
+  nodes: [
+    { id: 'pkg/web', label: 'web', level: 1, kind: 'package', box: box(40, 60, 240, 96) },
+    { id: 'pkg/api', label: 'api', level: 1, kind: 'package', box: box(440, 60, 240, 96) },
+    { id: 'pkg/store', label: 'store', level: 1, kind: 'package', box: box(440, 360, 240, 96) },
+  ],
+  edges: [
+    {
+      id: 'e:web->api:import',
+      source: 'pkg/web',
+      target: 'pkg/api',
+      level: 1,
+      edgeSource: 'import',
+    },
+    { id: 'e:web->api:call', source: 'pkg/web', target: 'pkg/api', level: 1, edgeSource: 'call' },
+    { id: 'e:api->store', source: 'pkg/api', target: 'pkg/store', level: 1, edgeSource: 'import' },
+    { id: 'e:store->api', source: 'pkg/store', target: 'pkg/api', level: 1, edgeSource: 'traced' },
+  ],
+  flows: [],
+  cards: [],
+  sha: 'sha256:synthetic-straight',
 }
 
 /**
