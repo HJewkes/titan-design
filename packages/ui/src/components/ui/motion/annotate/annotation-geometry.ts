@@ -16,25 +16,35 @@ export type AnnotationKind =
 
 /** The annotated area in px: a word's layout box, or a map node's box after projection. */
 export interface AnnotationBox {
+  /** Left edge, px. */
   x: number
+  /** Top edge, px. */
   y: number
+  /** Width, px. */
   w: number
+  /** Height, px. */
   h: number
 }
 
+/** What shapes a mark besides its kind and box. */
 export interface AnnotationGeometryOptions {
+  /** Picks the wobble; equal seeds give equal strokes. */
   seed: number | string
   /** Clearance between the box and the mark, px. */
   padding: number
   /** How many times the mark is gone over. */
   iterations: number
+  /** Scales every jitter; 0 draws clean lines. */
   roughness: number
   /** Pen width, px; a highlight is as thick as the padded box is tall. */
   strokeWidth: number
 }
 
+/** One stroke of a mark, in drawing order. */
 export interface AnnotationStroke {
+  /** The measured path, ready for `drawOn`. */
   model: PathModel
+  /** Stroke width, px. */
   width: number
 }
 

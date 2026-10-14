@@ -35,6 +35,7 @@ export interface AnnotationMarkProps {
   roughness?: number
   /** Pen width, px; ignored by `highlight`, which fills the padded box height. Default 2. */
   strokeWidth?: number
+  /** Test id on the SVG layer. */
   testID?: string
 }
 
