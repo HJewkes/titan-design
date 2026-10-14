@@ -17,7 +17,6 @@ const GROUP_DASH = '4 4'
 const LABEL_MIN_BAND = 240
 /** A box's label sits inside its top-left corner, this far in from both edges. */
 const BOX_LABEL_INSET = 8
-const BOX_LABEL_HEIGHT = 16
 
 const hidden = { 'aria-hidden': true } as ViewProps
 
@@ -68,7 +67,6 @@ function BoxLabel({ group, box }: { group: GraphGroupRegion; box: GraphBox }) {
         left: box.x + BOX_LABEL_INSET,
         top: box.y + BOX_LABEL_INSET,
         width: Math.max(0, box.width - 2 * BOX_LABEL_INSET),
-        height: BOX_LABEL_HEIGHT,
         alignItems: 'flex-start',
       }}
     />

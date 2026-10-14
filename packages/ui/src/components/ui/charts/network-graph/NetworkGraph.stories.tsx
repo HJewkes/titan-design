@@ -20,7 +20,7 @@ const MAPS = {
   'Level 1': mapGraph(mapLayoutFixture, 1),
   'Level 2': mapGraph(mapLayoutFixture, 2),
   'Level 3': mapGraph(mapLayoutFixture, 3),
-  'Straight (no routes)': mapGraph(straightMapFixture, 1),
+  'No routes': mapGraph(straightMapFixture, 1),
 }
 type MapView = 'off' | keyof typeof MAPS
 
@@ -167,7 +167,7 @@ const meta: Meta<StoryArgs> = {
           'order and labels.\n\n' +
           'The `map` control paints a precomputed map (the [box](?path=/story/components-organisms-networkgraph--default&args=map:Level+3) ' +
           'painter): each node is its box, parents are compound boxes under their children, and ' +
-          'each edge follows its route through every bend. `Straight (no routes)` shows the ' +
+          'each edge follows its route through every bend. `No routes` shows the ' +
           'fallback: border to border, with two edges between one pair 18px apart.',
       },
     },
