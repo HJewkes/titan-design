@@ -12,8 +12,13 @@ see _Painter_.
    API report entry.
 3. **The map is optional per beat.** A video leaves the map for other slides and comes back. While it is off screen,
    the map's clock stops; on re-entry the state resumes from where it stopped (see _Map clock_).
-4. **Every level is routed.** One compound ELK pass places the boxes and routes every level's edges, the aggregate
-   edges between group boxes included; there is no second pass. Every fixture edge carries a `route`.
+4. **Every level is routed.** L2 and L3 edges are routed by the compound ELK layout. L0 and L1 edges come from a second
+   ELK pass over the collapsed graph with the boxes fixed. Every fixture edge carries a `route`.
+
+**Implementation note (needs owner confirmation).** The pipeline's routing work found the fixed-box second pass not
+workable in elkjs 0.10.2. It instead routes the L0 and L1 aggregate edges in the same compound pass that places the
+boxes, as edges between group boxes. That differs from decision 4. The painter (D2) does not depend on either choice:
+it draws the `route` each edge carries, and an edge without one runs straight from border to border.
 
 ## Purpose
 

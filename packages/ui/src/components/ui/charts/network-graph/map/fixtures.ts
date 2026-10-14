@@ -99,7 +99,7 @@ export const mapLayoutFixture: MapLayout = {
       box: box(1350, 200, 320, 56),
     },
   ],
-  // Every level is routed in the same compound pass as the boxes, including edges between group boxes.
+  // Every level is routed: L0 and L1 by a second ELK pass over the collapsed graph with fixed boxes.
   edges: [
     {
       id: 'e:user->sys',
