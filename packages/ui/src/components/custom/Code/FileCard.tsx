@@ -1,7 +1,7 @@
 import { View, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { DataRow } from '../../ui/data-row'
-import { FilePathLabel } from '../../ui/file-path-label'
+import { splitPath } from '../../ui/file-path-label'
 import { Pill, type PillTone } from '../../ui/pill'
 import { Typography } from '../../ui/typography'
 import {
@@ -42,6 +42,24 @@ const STATUS_TONE: Record<FileCardStatus, { label: string; tone: PillTone }> = {
 
 const TABULAR = { fontVariant: ['tabular-nums' as const] }
 
+// FilePathLabel's directory is text-tertiary, which misses 4.5:1 on the elevation-3 surface a map
+// card sits on; the same split, with the directory in text-secondary, clears it.
+function CardPath({ path }: { path: string }) {
+  const { dir, base } = splitPath(path)
+  return (
+    <View className="shrink flex-row flex-wrap items-baseline">
+      {dir ? (
+        <Typography variant="mono" color="secondary">
+          {dir}
+        </Typography>
+      ) : null}
+      <Typography variant="mono" className="text-sm">
+        {base}
+      </Typography>
+    </View>
+  )
+}
+
 function RowValue({ row }: { row: FileCardRow }) {
   const delta = metricDeltaText(row.delta)
   const hasPercentile = row.percentile !== null && row.percentile !== undefined
@@ -56,7 +74,7 @@ function RowValue({ row }: { row: FileCardRow }) {
         </Typography>
       )}
       {hasPercentile ? (
-        <Typography variant="mono" color="tertiary" style={TABULAR}>
+        <Typography variant="mono" color="secondary" style={TABULAR}>
           {`p${metricValueText(row.percentile ?? null)}`}
         </Typography>
       ) : null}
@@ -87,7 +105,7 @@ export function FileCard({
   return (
     <View className={cn('gap-stack-sm', className)} {...props}>
       <View className="flex-row flex-wrap items-center gap-inline-md">
-        <FilePathLabel path={path} className="shrink" />
+        <CardPath path={path} />
         {statusMeta ? (
           <Pill variant="subtle" size="sm" tone={statusMeta.tone}>
             {statusMeta.label}

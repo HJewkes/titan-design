@@ -73,7 +73,8 @@ export function mapCardPlacement(input: MapCardPlacementInput): MapCardPlacement
     keepOutY - MAP_CARD_MARGIN_PX - size.height
   )
   const edgeX = side === 'right' ? x : x + size.width
-  const edgeY = clamp(anchor.y, y + CORNER_PX, y + size.height - CORNER_PX)
+  const corner = Math.min(CORNER_PX, size.height / 2)
+  const edgeY = clamp(anchor.y, y + corner, y + size.height - corner)
   return {
     side,
     box: { x, y, width: size.width, height: size.height },

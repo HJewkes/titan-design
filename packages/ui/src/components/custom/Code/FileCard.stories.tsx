@@ -43,7 +43,8 @@ const meta: Meta<typeof FileCard> = {
           'with its change status; the rows follow codewatch’s node panel order (lines, functions, ' +
           'complexity, nesting, fan-in, fan-out, instability), then any other metric in the order given. ' +
           'The fixture passes its metrics out of order to show the reordering. Composes ' +
-          '[FilePathLabel](?path=/docs/components-molecules-filepathlabel--docs), ' +
+          'FilePathLabel’s path split (with the directory in text-secondary, which clears 4.5:1 on ' +
+          'elevation 3), ' +
           '[DataRow](?path=/docs/components-molecules-datarow--docs), ' +
           '[Pill](?path=/docs/components-atoms-pill--docs) and ' +
           '[Typography](?path=/docs/foundations-typography--docs). A missing value reads as a dash; ' +

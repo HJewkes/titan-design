@@ -4,7 +4,7 @@ import { axe } from 'jest-axe'
 import { Typography } from '../typography'
 import { MapCard } from './MapCard'
 import { mapCardFrame } from './map-card-motion'
-import { MAP_CARD_KEEP_OUT, mapCardPlacement } from './map-card-placement'
+import { MAP_CARD_KEEP_OUT, MAP_CARD_MARGIN_PX, mapCardPlacement } from './map-card-placement'
 
 const viewport = { width: 1280, height: 720 }
 const size = { width: 320, height: 180 }
@@ -54,6 +54,39 @@ describe('mapCardPlacement', () => {
     const left = mapCardPlacement({ anchor: { x: 1180, y: 300 }, viewport, size })
     expect(right.leader.to.x).toBe(right.box.x)
     expect(left.leader.to.x).toBe(left.box.x + left.box.width)
+  })
+
+  // Mutation caught: dropping the horizontal margin clamp (`x = preferredX`) pushes a forced-side card
+  // off a narrow viewport.
+  it('keeps a forced-side card inside the margins of a narrow viewport', () => {
+    const narrow = { width: 400, height: 720 }
+    const right = mapCardPlacement({
+      anchor: { x: 300, y: 300 },
+      viewport: narrow,
+      size,
+      side: 'right',
+    })
+    const left = mapCardPlacement({
+      anchor: { x: 100, y: 300 },
+      viewport: narrow,
+      size,
+      side: 'left',
+    })
+    for (const { box } of [right, left]) {
+      expect(box.x).toBeGreaterThanOrEqual(MAP_CARD_MARGIN_PX)
+      expect(box.x + box.width).toBeLessThanOrEqual(narrow.width - MAP_CARD_MARGIN_PX)
+    }
+  })
+
+  // Mutation caught: a fixed 16px corner inset on a short card puts the leader's end above the box.
+  it('ends the leader on the box of a card shorter than two corners', () => {
+    const { box, leader } = mapCardPlacement({
+      anchor: { x: 400, y: 100 },
+      viewport,
+      size: { width: 200, height: 20 },
+    })
+    expect(leader.to.y).toBeGreaterThanOrEqual(box.y)
+    expect(leader.to.y).toBeLessThanOrEqual(box.y + box.height)
   })
 
   // Mutation caught: ignoring `side` lets auto placement override an explicit choice.
