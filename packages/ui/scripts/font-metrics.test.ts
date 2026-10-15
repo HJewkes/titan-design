@@ -3,7 +3,15 @@ import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { LABELS, METRICS_FILE, measureAdvance, measureAll } from './font-metrics.ts'
 
-const SPACE_GROTESK = join(import.meta.dirname, '..', 'src', 'theme', 'fonts', 'space-grotesk', 'latin.woff2')
+const SPACE_GROTESK = join(
+  import.meta.dirname,
+  '..',
+  'src',
+  'theme',
+  'fonts',
+  'space-grotesk',
+  'latin.woff2'
+)
 /** Kerning is not applied; on these labels the file measure and Chromium's canvas differ by 0.4 %. */
 const TOLERANCE_EM = 0.003
 

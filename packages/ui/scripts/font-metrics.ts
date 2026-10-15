@@ -9,9 +9,13 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { brotliDecompressSync } from 'node:zlib'
 
-const KNOWN_TAGS = ('cmap head hhea hmtx maxp name OS/2 post cvt  fpgm glyf loca prep CFF  VORG EBDT EBLC gasp hdmx kern LTSH PCLT VDMX ' +
+const KNOWN_TAGS = (
+  'cmap head hhea hmtx maxp name OS/2 post cvt  fpgm glyf loca prep CFF  VORG EBDT EBLC gasp hdmx kern LTSH PCLT VDMX ' +
   'vhea vmtx BASE GDEF GPOS GSUB EBSC JSTF MATH CBDT CBLC COLR CPAL SVG  sbix acnt avar bdat bloc bsln cvar fdsc feat fmtx fvar gvar hsty ' +
-  'just lcar mort morx opbd prop trak Zapf Silf Glat Gloc Feat Sill').match(/.{4}\s?/g)!.map((t) => t.slice(0, 4))
+  'just lcar mort morx opbd prop trak Zapf Silf Glat Gloc Feat Sill'
+)
+  .match(/.{4}\s?/g)!
+  .map((t) => t.slice(0, 4))
 
 type Tables = Map<string, Buffer>
 
@@ -31,7 +35,8 @@ export function woff2Tables(file: Buffer): Tables {
   const dir: { tag: string; length: number }[] = []
   for (let i = 0; i < file.readUInt16BE(12); i++) {
     const flags = file[o++] as number
-    const tag = (flags & 63) === 63 ? file.toString('ascii', o, (o += 4)) : (KNOWN_TAGS[flags & 63] as string)
+    const tag =
+      (flags & 63) === 63 ? file.toString('ascii', o, (o += 4)) : (KNOWN_TAGS[flags & 63] as string)
     const version = flags >> 6
     const origLength = base128()
     const transformed = tag === 'glyf' || tag === 'loca' ? version === 0 : version !== 0
@@ -47,7 +52,11 @@ const f2dot14 = (b: Buffer, o: number) => b.readInt16BE(o) / 16384
 function cmap4(cmap: Buffer): (code: number) => number {
   for (let i = 0; i < cmap.readUInt16BE(2); i++) {
     const sub = cmap.readUInt32BE(8 + i * 8)
-    if (cmap.readUInt16BE(4 + i * 8) === 3 && cmap.readUInt16BE(6 + i * 8) === 1 && cmap.readUInt16BE(sub) === 4) {
+    if (
+      cmap.readUInt16BE(4 + i * 8) === 3 &&
+      cmap.readUInt16BE(6 + i * 8) === 1 &&
+      cmap.readUInt16BE(sub) === 4
+    ) {
       const segs = cmap.readUInt16BE(sub + 6) / 2
       const ends = sub + 14
       const starts = ends + segs * 2 + 2
@@ -78,7 +87,11 @@ function normalisedWeight(tables: Tables, weight: number): number {
   for (let i = 0; i < fvar.readUInt16BE(8); i++) {
     const a = axes + i * fvar.readUInt16BE(10)
     if (fvar.toString('ascii', a, a + 4) !== 'wght') continue
-    const [min, def, max] = [4, 8, 12].map((d) => fvar.readInt32BE(a + d) / 65536) as [number, number, number]
+    const [min, def, max] = [4, 8, 12].map((d) => fvar.readInt32BE(a + d) / 65536) as [
+      number,
+      number,
+      number,
+    ]
     const v = Math.min(max, Math.max(min, weight))
     const n = v < def ? (v - def) / (def - min) : v > def ? (v - def) / (max - def) : 0
     return avarMap(tables.get('avar'), i, n)
@@ -90,10 +103,16 @@ function avarMap(avar: Buffer | undefined, axis: number, n: number): number {
   if (!avar) return n
   let o = 8
   for (let i = 0; i < axis; i++) o += 2 + avar.readUInt16BE(o) * 4
-  const pairs = Array.from({ length: avar.readUInt16BE(o) }, (_, k) => [f2dot14(avar, o + 2 + k * 4), f2dot14(avar, o + 4 + k * 4)] as const)
+  const pairs = Array.from(
+    { length: avar.readUInt16BE(o) },
+    (_, k) => [f2dot14(avar, o + 2 + k * 4), f2dot14(avar, o + 4 + k * 4)] as const
+  )
   const hi = pairs.findIndex(([from]) => from >= n)
   if (hi <= 0) return hi === 0 ? (pairs[0] as readonly [number, number])[1] : n
-  const [[f0, t0], [f1, t1]] = [pairs[hi - 1], pairs[hi]] as [readonly [number, number], readonly [number, number]]
+  const [[f0, t0], [f1, t1]] = [pairs[hi - 1], pairs[hi]] as [
+    readonly [number, number],
+    readonly [number, number],
+  ]
   return t0 + ((n - f0) / (f1 - f0)) * (t1 - t0)
 }
 
@@ -102,7 +121,11 @@ function regionScalars(store: Buffer, coord: number): number[] {
   const axisCount = store.readUInt16BE(list)
   return Array.from({ length: store.readUInt16BE(list + 2) }, (_, r) => {
     const at = list + 4 + r * axisCount * 6
-    const [start, peak, end] = [0, 2, 4].map((d) => f2dot14(store, at + d)) as [number, number, number]
+    const [start, peak, end] = [0, 2, 4].map((d) => f2dot14(store, at + d)) as [
+      number,
+      number,
+      number,
+    ]
     if (peak === 0 || coord === peak) return 1
     if (coord <= start || coord >= end) return 0
     return coord < peak ? (coord - start) / (peak - start) : (end - coord) / (end - peak)
@@ -115,7 +138,9 @@ function storeDelta(store: Buffer, scalars: number[], outer: number, inner: numb
   const words = store.readUInt16BE(data + 2)
   const longWords = (words & 0x8000) !== 0
   const wordCount = words & 0x7fff
-  const regions = Array.from({ length: store.readUInt16BE(data + 4) }, (_, k) => store.readUInt16BE(data + 6 + k * 2))
+  const regions = Array.from({ length: store.readUInt16BE(data + 4) }, (_, k) =>
+    store.readUInt16BE(data + 6 + k * 2)
+  )
   const big = longWords ? 4 : 2
   const small = longWords ? 2 : 1
   const rowSize = wordCount * big + (regions.length - wordCount) * small
@@ -173,7 +198,11 @@ export interface FaceAdvance {
   worstLabel: string
 }
 
-export function measureAdvance(fontFile: string, weight: number, labels: readonly string[]): FaceAdvance {
+export function measureAdvance(
+  fontFile: string,
+  weight: number,
+  labels: readonly string[]
+): FaceAdvance {
   return advanceOf(woff2Tables(readFileSync(fontFile)), weight, labels)
 }
 
@@ -184,7 +213,9 @@ function advanceOf(tables: Tables, weight: number, labels: readonly string[]): F
   const upem = head.readUInt16BE(18)
   const metrics = hhea.readUInt16BE(34)
   const glyphOf = cmap4(tables.get('cmap') as Buffer)
-  const delta = tables.has('HVAR') ? hvarDelta(tables.get('HVAR') as Buffer, normalisedWeight(tables, weight)) : () => 0
+  const delta = tables.has('HVAR')
+    ? hvarDelta(tables.get('HVAR') as Buffer, normalisedWeight(tables, weight))
+    : () => 0
   const advance = (ch: string) => {
     const g = glyphOf(ch.codePointAt(0) as number)
     return (hmtx.readUInt16BE(Math.min(g, metrics - 1) * 4) + delta(g)) / upem
@@ -193,11 +224,26 @@ function advanceOf(tables: Tables, weight: number, labels: readonly string[]): F
   const chars = labels.reduce((n, l) => n + [...l].length, 0)
   const per = labels.map((l, i) => (widths[i] as number) / [...l].length)
   const worst = per.indexOf(Math.max(...per))
-  return { avgAdvance: widths.reduce((a, b) => a + b, 0) / chars, worstAdvance: per[worst] as number, worstLabel: labels[worst] as string }
+  return {
+    avgAdvance: widths.reduce((a, b) => a + b, 0) / chars,
+    worstAdvance: per[worst] as number,
+    worstLabel: labels[worst] as string,
+  }
 }
 
 /** Space Grotesk's L1 box labels, the vocabulary the average advance is taken over. */
-export const LABELS = ['session-miner', 'store-sqlite', 'session-read', 'session-analytics', 'code-graph', 'factory', 'console', '+8 more', 'imported by', 'imports']
+export const LABELS = [
+  'session-miner',
+  'store-sqlite',
+  'session-read',
+  'session-analytics',
+  'code-graph',
+  'factory',
+  'console',
+  '+8 more',
+  'imported by',
+  'imports',
+]
 
 export const WEIGHTS = [400, 500, 600, 700] as const
 
@@ -234,9 +280,15 @@ export function measureFace(fontFile: string): FaceMetrics {
   const tables = woff2Tables(readFileSync(fontFile))
   const entries = WEIGHTS.map((weight) => [
     String(weight),
-    { avgAdvance: round(advanceOf(tables, weight, LABELS).avgAdvance), xHeight: round(xHeightOf(tables, weight)) },
+    {
+      avgAdvance: round(advanceOf(tables, weight, LABELS).avgAdvance),
+      xHeight: round(xHeightOf(tables, weight)),
+    },
   ])
-  return { unitsPerEm: (tables.get('head') as Buffer).readUInt16BE(18), weights: Object.fromEntries(entries) }
+  return {
+    unitsPerEm: (tables.get('head') as Buffer).readUInt16BE(18),
+    weights: Object.fromEntries(entries),
+  }
 }
 
 const THEME_DIR = join(import.meta.dirname, '..', 'src', 'theme')
@@ -244,7 +296,9 @@ const FONTS_DIR = join(THEME_DIR, 'fonts')
 export const METRICS_FILE = join(THEME_DIR, 'font-metrics.json')
 
 export function measureAll(): Record<string, FaceMetrics> {
-  return Object.fromEntries(FACES.map(({ name, file }) => [name, measureFace(join(FONTS_DIR, file))]))
+  return Object.fromEntries(
+    FACES.map(({ name, file }) => [name, measureFace(join(FONTS_DIR, file))])
+  )
 }
 
 if (process.argv[1] === import.meta.filename) {
