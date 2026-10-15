@@ -83,7 +83,7 @@ describe('mapCardPlacement', () => {
     const { box, leader } = mapCardPlacement({
       anchor: { x: 400, y: 100 },
       viewport,
-      size: { width: 200, height: 20 },
+      size: { width: 200, height: 10 },
     })
     expect(leader.to.y).toBeGreaterThanOrEqual(box.y)
     expect(leader.to.y).toBeLessThanOrEqual(box.y + box.height)
