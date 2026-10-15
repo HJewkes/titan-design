@@ -7628,6 +7628,45 @@
       "standard": false
     },
     {
+      "name": "StatusGlyph",
+      "file": "packages/ui/src/components/ui/status-glyph/StatusGlyph.tsx",
+      "dir": "ui",
+      "family": "ui/status-glyph",
+      "exports": [
+        "StatusGlyph",
+        "StatusGlyphTone",
+        "StatusGlyphSize",
+        "StatusGlyphProps"
+      ],
+      "libDependents": 0,
+      "storyRefs": 1,
+      "xproj": {
+        "mobile": 0,
+        "mcp": 0,
+        "dash": 0,
+        "audiobook": 0,
+        "total": 0
+      },
+      "dependsOn": [
+        "SvgIcon",
+        "icons",
+        "statusIcons"
+      ],
+      "leak": {
+        "rawView": 1,
+        "rawText": 0,
+        "inlineStyle": 0,
+        "rawHex": 0,
+        "loc": 66,
+        "score": 1
+      },
+      "tier": "organism",
+      "verdict": "dead",
+      "deadByAssociation": false,
+      "audited": "unaudited",
+      "standard": false
+    },
+    {
       "name": "StatusMark",
       "file": "packages/ui/src/components/custom/Code/StatusMark.tsx",
       "dir": "custom",

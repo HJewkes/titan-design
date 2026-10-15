@@ -10,16 +10,21 @@ import {
   type IconProps,
 } from '../../icons'
 
+/** The condition a StatusGlyph shows; each tone has its own shape. */
 export type StatusGlyphTone = 'success' | 'warning' | 'error' | 'neutral'
 
+/** Glyph edge: 16px (`sm`), 20px (`md`) or 24px (`lg`). */
 export type StatusGlyphSize = 'sm' | 'md' | 'lg'
 
+/** Props for {@link StatusGlyph}. */
 export interface StatusGlyphProps extends Omit<ViewProps, 'children'> {
   /** The condition shown. Each tone has its own shape, so the glyph never relies on colour alone. */
   tone: StatusGlyphTone
   /** The status word, spoken as the glyph's accessible name. */
   label: string
+  /** Defaults to `md`. */
   size?: StatusGlyphSize
+  /** Tailwind overrides for the wrapper, merged with `cn()`. */
   className?: string
 }
 

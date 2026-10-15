@@ -90,7 +90,7 @@ describe('StatusGlyph', () => {
         {TONES.map((tone) => (
           <StatusGlyph key={tone} tone={tone} label={tone} />
         ))}
-      </>,
+      </>
     )
 
     expect(await axe(container)).toHaveNoViolations()

@@ -169,6 +169,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | StatCard | candidate | ui/stat-card | The stat card template: a header row, a lead figure with one caption, and a body pinned to the bottom. | Card, Typography | components-molecules-statcard--default |
 | StateChip | candidate | ui/chip | StateChip — a `Pill` preset that shows whether a requirement is met. | Pill | components-molecules-statechip--default |
 | StatusDot | candidate | custom/Workout | — | Typography | custom-workout-statusdot--all-variants |
+| StatusGlyph | candidate | ui/status-glyph | One status condition as a shaped, coloured mark: circle-check, alert-triangle, octagon-x or a dashed ring. | SvgIcon, icons, statusIcons | components-atoms-statusglyph--default |
 | StatusMark | candidate | custom/Code | The change vocabulary of the Code family: one Pill, named in words for assistive tech. | Pill | custom-code-statusmark--default |
 | StatusPill | candidate | custom/Workout | Verdict pill: a glowing status dot + coloured verdict text in a tinted capsule. | Pill, StatusDot | custom-workout-statuspill--all-states |
 | Stepper | candidate | custom/stepper | Stepper component for multi-step flows. | — | components-molecules-stepper--active-step-progression |
