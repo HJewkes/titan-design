@@ -180,7 +180,9 @@ their heavier runtime dependencies or the code of a domain it does not need:
 
 - **`@titan-design/react-ui/motion`** — the motion kit (`MotionProvider`, `Beat`,
   `useLocalTime`, `interpolate`, `spring`, `stagger`, `sequence`, the easing
-  curves, `noise2D`, `random`, `MOTION`). Moved off the root in 0.22.0.
+  curves, `noise2D`, `random`, `MOTION`). Moved off the root in 0.22.0. On web, a
+  `MotionProvider` on a `seekClock` publishes `window.__titanMotion`
+  (`TitanMotionApi`: `seek`, `ready`, `duration`) for a frame-capture renderer.
 
 ## Component API
 

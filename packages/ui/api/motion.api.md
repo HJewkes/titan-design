@@ -409,6 +409,13 @@ export interface TimeWindow {
 }
 
 // @public
+export interface TitanMotionApi {
+    readonly duration: number;
+    ready(): Promise<void>;
+    seek(t: number): void;
+}
+
+// @public
 export function useBeatEnvelope(options?: EnvelopeOptions): Envelope;
 
 // @public

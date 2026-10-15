@@ -124,7 +124,12 @@ describe('image variants', () => {
       .properties.variants.items
     expect(items).toMatchObject({
       required: ['key', 'label'],
-      oneOf: [{ required: ['storyId'] }, { required: ['image'] }, { required: ['clip', 'motion'] }],
+      oneOf: [
+        { required: ['storyId'] },
+        { required: ['image'] },
+        { required: ['clip', 'motion'] },
+        { required: ['audio', 'transcript'] },
+      ],
     })
   })
 })

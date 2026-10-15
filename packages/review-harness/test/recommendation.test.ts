@@ -14,6 +14,7 @@ import { runCli, type CliIo } from '../src/run.ts'
 import {
   FeedbackSchema,
   ManifestSchema,
+  takesRecommendation,
   type Feedback,
   type ManifestInput,
   type Recommendation,
@@ -57,12 +58,9 @@ function withQuestion(index: number, patch: Record<string, unknown>): ManifestIn
 describe('a recommendation in the round manifest', () => {
   it('is accepted on pick-one, pick-many and scale questions', () => {
     const m = recommended()
-    expect(m.questions.map((q) => (q.kind === 'text' ? undefined : q.recommendation))).toEqual([
-      rec('A'),
-      rec(['A', 'C'], 0.6),
-      rec(4, 0.3),
-      undefined,
-    ])
+    expect(m.questions.map((q) => (takesRecommendation(q) ? q.recommendation : undefined))).toEqual(
+      [rec('A'), rec(['A', 'C'], 0.6), rec(4, 0.3), undefined]
+    )
     expect(m.recommendations).toBe('after-answer')
   })
 
