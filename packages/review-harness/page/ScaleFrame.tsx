@@ -5,21 +5,13 @@ import {
   PinOverlay,
   pointerPin,
   sameOriginDocument,
-  useFitScale,
   useFrameKeys,
   useNearViewport,
   type PinInput,
 } from './Frame.tsx'
-import {
-  SCALE_VIEWS,
-  largestTextPx,
-  scaleColumns,
-  sizeLabel,
-  textRuns,
-  viewScale,
-  type ScaleView,
-} from './scale.ts'
+import { largestTextPx, scaleColumns, sizeLabel, textRuns } from './scale.ts'
 import { onStoryRendered, useLiveArgs, type LiveArgs } from './storyArgs.ts'
+import { ViewToggle, useFrameView } from './TrueSize.tsx'
 
 type Candidate = string | number | boolean
 type ScaledVariant = StoryVariant & { scale: NonNullable<StoryVariant['scale']> }
@@ -31,8 +23,6 @@ interface ScaleFrameProps {
   onPin: (pin: PinInput) => void
   liveArgs?: LiveArgs
 }
-
-const VIEW_LABELS: Record<ScaleView, string> = { fit: 'Fit', actual: '1:1' }
 
 function Ladder({
   rungs,
@@ -100,36 +90,15 @@ function ScaleCell({ variant, candidate, width, height, liveArgs, onMeasure }: C
   )
 }
 
-function ViewToggle({ view, onChange }: { view: ScaleView; onChange: (v: ScaleView) => void }) {
-  return (
-    <span className="scale-views" role="radiogroup" aria-label="Frame view">
-      {SCALE_VIEWS.map((v) => (
-        <button
-          key={v}
-          type="button"
-          role="radio"
-          aria-checked={view === v}
-          className="choice"
-          onClick={() => onChange(v)}
-        >
-          {VIEW_LABELS[v]}
-        </button>
-      ))}
-    </span>
-  )
-}
-
 /**
  * A size question's candidates side by side in one full-size frame, beside a ladder of text at
  * known sizes. Fit shows the whole frame; 1:1 shows it at its real pixels and scrolls.
  */
 export function ScaleFrame({ variant, annotate, pins, onPin, liveArgs }: ScaleFrameProps) {
   const { frame, candidates, ladder, arg } = variant.scale
-  const [view, setView] = useState<ScaleView>('fit')
   const [measured, setMeasured] = useState<Record<string, number | null>>({})
-  const { ref, scale: fit } = useFitScale(frame.width)
+  const { ref, view, setView, scale: k } = useFrameView(frame.width)
   const { ref: lazyRef, near } = useNearViewport()
-  const k = viewScale(view, fit)
   const columns = scaleColumns(variant.scale)
   const onOverlayClick = (e: MouseEvent<HTMLDivElement>) =>
     onPin(pointerPin(e, k, frame.width, frame.height))

@@ -3,7 +3,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { fcAssert } from '../../../../../test/property'
 import { hostileLayoutOptions, networkGraphFixtures } from '../fixtures'
 import { cleanGraph } from '../network-graph-model'
-import type { GraphEdge, GraphLayoutResult, GraphNode } from '../types'
+import { GRAPH_NODE_RADIUS } from '../network-graph-arc'
+import type { GraphEdge, GraphLayoutResult, GraphNode, GraphPoint } from '../types'
 import { egoLayout, type EgoDirection, type EgoLayoutOptions } from './ego-layout-model'
 import { LAYOUT_DEFAULTS } from './layout-geometry'
 
@@ -21,10 +22,11 @@ const run = (
 }
 const fixtureRun = (
   name: keyof typeof networkGraphFixtures,
-  options: Partial<EgoLayoutOptions>
+  options: Partial<EgoLayoutOptions>,
+  size = viewport
 ) => {
   const fixture = networkGraphFixtures[name]
-  return run(fixture.nodes, fixture.edges, { focusId: fixture.focusId ?? null, ...options })
+  return run(fixture.nodes, fixture.edges, { focusId: fixture.focusId ?? null, ...options }, size)
 }
 const placed = (result: GraphLayoutResult) => Object.keys(result.positions).sort()
 const ringOf = (result: GraphLayoutResult, id: string) =>
@@ -150,6 +152,32 @@ describe('egoLayout geometry', () => {
     expect(radii.every((r, i) => i === 0 || r > (radii[i - 1] as number))).toBe(true)
   })
 
+  it('Grouped (40) in the story viewport: every 2-hop node lies inside the viewport', () => {
+    const story = { width: 720, height: 420 }
+    const result = fixtureRun('Grouped (40)', {}, story)
+    const outer = result.groups?.[2]
+    expect(outer?.nodeIds.length).toBeGreaterThan(0)
+    for (const id of outer?.nodeIds ?? []) {
+      const p = result.positions[id] ?? { x: Number.NaN, y: Number.NaN }
+      expect([p.x >= 0 && p.x <= story.width, p.y >= 0 && p.y <= story.height]).toEqual([
+        true,
+        true,
+      ])
+    }
+    expect([result.width, result.height]).toEqual([story.width, story.height])
+  })
+
+  it('a sized viewport shrinks every ring by one factor; an unsized one keeps the natural radii', () => {
+    const radii = (size: typeof viewport) =>
+      (fixtureRun('Grouped (40)', {}, size).groups ?? []).map((ring) => ring.radius)
+    const natural = radii({ width: 0, height: 0 })
+    const fitted = radii({ width: 720, height: 420 })
+    expect(natural.slice(1)).toEqual([LAYOUT_DEFAULTS.RING_GAP, LAYOUT_DEFAULTS.RING_GAP * 2])
+    const scale = (fitted[2] as number) / (natural[2] as number)
+    expect(scale).toBeLessThan(1)
+    expect(fitted[1]).toBeCloseTo((natural[1] as number) * scale, 1)
+  })
+
   it('Hub and spokes: neighbours on a ring are at least MIN_ARC apart along the ring', () => {
     const result = fixtureRun('Hub and spokes', {})
     for (const ring of (result.groups ?? []).slice(1)) {
@@ -157,6 +185,38 @@ describe('egoLayout geometry', () => {
       expect(arc).toBeGreaterThanOrEqual(LAYOUT_DEFAULTS.MIN_ARC - 0.01)
       expect(ring.radius).toBeGreaterThan(LAYOUT_DEFAULTS.RING_GAP)
     }
+  })
+
+  it('Large (150) at 2 hops in the story viewport: fitting stops at MIN_ARC per node and the layout scrolls', () => {
+    const story = { width: 720, height: 420 }
+    const result = fixtureRun('Large (150)', { focusId: 'worker-003', hops: 2 }, story)
+    const rings = (result.groups ?? []).slice(1)
+    expect(rings.map((ring) => ring.nodeIds.length)).toEqual([6, 34])
+    for (const ring of rings) {
+      const arc = (2 * Math.PI * ring.radius) / ring.nodeIds.length
+      expect(arc).toBeGreaterThanOrEqual(LAYOUT_DEFAULTS.MIN_ARC - 0.01)
+    }
+    expect(result.height).toBeGreaterThan(story.height)
+  })
+
+  it('120 spokes in the story viewport: neighbouring marks and press targets never overlap', () => {
+    const story = { width: 720, height: 420 }
+    const spokes = Array.from({ length: 120 }, (_, i) => `spoke-${String(i + 1).padStart(3, '0')}`)
+    const result = run(
+      [n('hub'), ...spokes.map(n)],
+      spokes.map((id) => link('hub', id)),
+      { focusId: 'hub', hops: 1 },
+      story
+    )
+    const ring = result.groups?.[1]
+    const points = (ring?.nodeIds ?? []).map((id) => result.positions[id] ?? { x: 0, y: 0 })
+    expect(points).toHaveLength(120)
+    const gaps = points.map((p, i) => {
+      const next = points[(i + 1) % points.length] as GraphPoint
+      return Math.hypot(next.x - p.x, next.y - p.y)
+    })
+    expect(Math.min(...gaps)).toBeGreaterThan(2 * GRAPH_NODE_RADIUS)
+    expect([result.width > story.width, result.height > story.height]).toEqual([true, true])
   })
 
   it('every ring guide fits inside the natural size, even a ring holding one node', () => {

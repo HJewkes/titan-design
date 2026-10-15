@@ -7,19 +7,39 @@ export const ARC_BOW = 0.15
 
 const round2 = (value: number) => Math.round(value * 100) / 100
 
-/** A quadratic curve between the node marks, bowed left of the direction of travel. Coincident or non-finite ends give no path. */
-export function arcPath(from: GraphPoint, to: GraphPoint, slot: number): string {
+export interface ArcGeometry {
+  start: GraphPoint
+  control: GraphPoint
+  end: GraphPoint
+}
+
+/** The quadratic curve's three points, or null when the ends coincide, nearly touch or are not finite. */
+export function arcGeometry(from: GraphPoint, to: GraphPoint, slot: number): ArcGeometry | null {
   const dx = to.x - from.x
   const dy = to.y - from.y
   const length = Math.hypot(dx, dy)
-  if (!Number.isFinite(length) || length <= 2 * GRAPH_NODE_RADIUS) return ''
+  if (!Number.isFinite(length) || length <= 2 * GRAPH_NODE_RADIUS) return null
   const [ux, uy] = [dx / length, dy / length]
   const bow = ARC_BOW * length * (Math.max(0, Math.floor(slot) || 0) + 1)
-  const control = { x: (from.x + to.x) / 2 + uy * bow, y: (from.y + to.y) / 2 - ux * bow }
-  const start = { x: from.x + ux * GRAPH_NODE_RADIUS, y: from.y + uy * GRAPH_NODE_RADIUS }
-  const end = { x: to.x - ux * GRAPH_NODE_RADIUS, y: to.y - uy * GRAPH_NODE_RADIUS }
+  return {
+    start: { x: from.x + ux * GRAPH_NODE_RADIUS, y: from.y + uy * GRAPH_NODE_RADIUS },
+    control: { x: (from.x + to.x) / 2 + uy * bow, y: (from.y + to.y) / 2 - ux * bow },
+    end: { x: to.x - ux * GRAPH_NODE_RADIUS, y: to.y - uy * GRAPH_NODE_RADIUS },
+  }
+}
+
+/** The point halfway along the curve, for a readout beside it. */
+export const arcMidpoint = ({ start, control, end }: ArcGeometry): GraphPoint => ({
+  x: (start.x + 2 * control.x + end.x) / 4,
+  y: (start.y + 2 * control.y + end.y) / 4,
+})
+
+/** A quadratic curve between the node marks, bowed left of the direction of travel. Coincident or non-finite ends give no path. */
+export function arcPath(from: GraphPoint, to: GraphPoint, slot: number): string {
+  const arc = arcGeometry(from, to, slot)
+  if (arc === null) return ''
   const point = (p: GraphPoint) => `${round2(p.x)},${round2(p.y)}`
-  return `M${point(start)}Q${point(control)} ${point(end)}`
+  return `M${point(arc.start)}Q${point(arc.control)} ${point(arc.end)}`
 }
 
 /** Edge id to its index among edges with the same source and target, in id order. Takes cleaned edges, which all carry an id. */

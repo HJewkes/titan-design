@@ -267,6 +267,79 @@
             ],
             "additionalProperties": false
           },
+          "frameReference": {
+            "type": "object",
+            "properties": {
+              "frame": {
+                "default": {
+                  "width": 1920,
+                  "height": 1080
+                },
+                "type": "object",
+                "properties": {
+                  "width": {
+                    "type": "integer",
+                    "minimum": 320,
+                    "maximum": 3840
+                  },
+                  "height": {
+                    "type": "integer",
+                    "minimum": 240,
+                    "maximum": 2160
+                  }
+                },
+                "required": [
+                  "width",
+                  "height"
+                ],
+                "additionalProperties": false
+              },
+              "ladder": {
+                "default": [
+                  {
+                    "label": "caption",
+                    "px": 24
+                  },
+                  {
+                    "label": "body",
+                    "px": 32
+                  },
+                  {
+                    "label": "title",
+                    "px": 64
+                  },
+                  {
+                    "label": "display",
+                    "px": 96
+                  }
+                ],
+                "minItems": 1,
+                "maxItems": 8,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 40
+                    },
+                    "px": {
+                      "type": "number",
+                      "exclusiveMinimum": 0,
+                      "maximum": 1000
+                    }
+                  },
+                  "required": [
+                    "label",
+                    "px"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          },
           "label": {
             "type": "string",
             "minLength": 1
@@ -353,7 +426,12 @@
           {
             "required": [
               "storyId"
-            ]
+            ],
+            "not": {
+              "required": [
+                "frameReference"
+              ]
+            }
           },
           {
             "required": [

@@ -12,7 +12,8 @@ as JSON on stdout and in `feedback.json`. Private workspace tool, not published.
 3. The active card has an orange border. `1` chosen, `2` rejected, `3` maybe, `0` clears.
 4. `Tab` jumps to that card's comment box. `Enter` moves to the next card or question.
 5. `a` turns pins on: click a spot on any frame, type a note. `Esc` turns pins off.
-6. On a question, `1`-`9` pick its options; the scale takes its value directly.
+6. On a question, `1`-`9` pick its options; the scale takes its value directly. `r` shows or
+   hides the question's recommendation.
 7. The last box is for general notes. `l` toggles one column per variant.
    A sectioned round asks each question directly under the frames it names (`frames`); a
    question without `frames` sits above its section's other frames, and a Ship question reads
@@ -134,8 +135,8 @@ imports. Its `schema/round.schema.json` and `schema/feedback.schema.json` are ge
 - Manifest `titan-review/round@2`: `unit`, `round`, `storybookUrl`, `context?`, `widths[]`,
   `height` (a number of px or `"auto"`, default `"auto"`; at round level a number caps every
   frame), `maxHeight` (default 1200, the cap when the round's `height` is `"auto"`),
-  `variants[{key, storyId | image | clip, label, args?, globals?, height?, motion?, scale?, variantUnit?, alternate?, change?: changed|new|removed|unchanged, baseImage? (a PNG of the frame from the PR's base)}]`
-  (`motion`, `clip` and `scale`: see _Motion and scale_) (at most 12 in a round
+  `variants[{key, storyId | image | clip, label, args?, globals?, height?, motion?, scale?, frameReference?, variantUnit?, alternate?, change?: changed|new|removed|unchanged, baseImage? (a PNG of the frame from the PR's base)}]`
+  (`motion`, `clip`, `scale` and `frameReference`: see _Motion and scale_) (at most 12 in a round
   without `sections`, uncapped in one with them; empty for a round of questions only, which needs no placeholder
   frame; every frame sits in a section),
   `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?, recommendation?, signsOff (pick-one), page?, merge? (pick-one), frames?[], decision?: iterate|ship|decide, outcomes? (option to accept|changes|neutral), implemented? (the option, or options for pick-many, the PR implements), touches? (the tokens a non-PR question decides; see _Build with locks_)}]`,
@@ -175,7 +176,18 @@ imports. Its `schema/round.schema.json` and `schema/feedback.schema.json` are ge
   the round's `recommendations` to `"shown"` to show every recommendation from the start. An
   answer given while the recommendation is visible (after a reveal, after an earlier answer, or in
   a `"shown"` round) is sent with `recommendationSeen: true`; a blind pick stays blind when the
-  owner reveals it afterwards, and clearing the answer clears the tag.
+  owner reveals it afterwards, and clearing the answer clears the tag. The reveal is a "Show
+  recommendation" button (`r` on the active question) on every question with a recommendation;
+  it is disabled once an answer or a `"shown"` round makes the recommendation visible anyway.
+  The recommendation box adds the recommendation's `weakPoint` and `fallback`, and its verdict
+  says "seen before answering" on a seen answer.
+- Option cards: a pick-one or pick-many with `optionDetails` shows each option as a card instead
+  of a button, in option order, so hotkey `n` still picks option `n`. A card shows its `detail`,
+  its `weakPoint` (red rule, "Weak point:") and its `after` ("If you pick this:") from the start,
+  never gated by the recommendation, plus an "Add a note" field that writes `optionNotes`. Only
+  while the recommendation is visible does the recommended card carry a "Recommended" badge.
+  The review screen lists each option note as "on <option>: <note>", the pick's `after` in muted
+  type, and "(seen recommendation)" after a seen answer.
 - Feedback `titan-review/feedback@1`: `manifestSha256`, `submittedAt`,
   `answers[{questionId, pick | picks | value | text | revisionRequested, comment?, variantComments?, recommendation?, agreed?, optionNotes?, after?, recommendationSeen?}]`,
   `variants[{key, storyId | image | clip, verdict: chosen|rejected|maybe|null, comment, annotations[], relatedQuestionIds?}]`,
@@ -302,6 +314,21 @@ rules above. Capture shoots one PNG per candidate at the frame size,
 `<width>-<key>-<story>-<arg>-<candidate>.png`. The contrast gate measures the story at its own
 `args`, not at each candidate. A variant can carry both `motion` and `scale` when they drive
 different args; every candidate then follows the playhead.
+
+**True-size frames.** `frameReference` on an image or clip variant says the file is a
+true-size frame, with the same `frame` and `ladder` (and defaults) as a scale:
+
+```json
+"frameReference": { "frame": { "width": 1920, "height": 1080 }, "ladder": [{ "label": "44", "px": 44 }] }
+```
+
+Load refuses a PNG whose IHDR width or height is not the declared frame; a clip's `videoWidth`
+and `videoHeight` are checked as its metadata loads, and a mismatch shows the frame-dead alert.
+The variant is drawn once, at the frame's width, not at each manifest width. It is outlined, the
+caption reads `1920×1080 · shown at 47%` (or `1:1`), and **Fit** and **1:1** switch it like a
+scale frame. The ladder is drawn into the frame's top-right corner, each bar `px × k` tall at the
+scale `k` shown, so a bar sits beside text of that size in the frame. A story variant uses
+`scale` instead and may not carry `frameReference`.
 
 ## A round from Morning items (TD-680)
 
