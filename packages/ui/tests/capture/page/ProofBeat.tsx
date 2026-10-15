@@ -3,14 +3,13 @@ import { View } from 'react-native'
 import {
   AnimatedNumber,
   ChapterCard,
-  EvidenceChip,
   ProgressSteps,
   StatCard,
   StatCardHeader,
   Timeline,
   type TimelineItem,
 } from '../../../src'
-import { Beat, BeatFrame, localTime, useRawLocalTime } from '../../../src/motion'
+import { Beat, BeatFrame, EvidenceChip, localTime, useRawLocalTime } from '../../../src/motion'
 
 import { PROOF_COMPONENTS, PROOF_DURATION_S, type ProofComponent } from './proof-components'
 
