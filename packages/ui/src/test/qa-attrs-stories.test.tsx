@@ -48,7 +48,7 @@ describe('qa-relevant stories emit the render-QA hooks', () => {
     const graph = stories.find((story) => story.file.endsWith('NetworkGraph.stories.tsx'))
     if (!graph) throw new Error('NetworkGraph story not loaded')
     const { container } = render(<graph.Story />)
-    const leaf = screen.getAllByTestId(/^network-graph-node-/).at(-1)
+    const leaf = screen.getAllByTestId(/^network-graph-node-/).pop()
     if (!leaf) throw new Error('NetworkGraph story drew no nodes')
 
     fireEvent.pointerEnter(leaf)
