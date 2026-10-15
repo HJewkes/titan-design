@@ -9,6 +9,16 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Audio (TD-916). A variant's fourth source, `audio` (a `.wav`, `.mp3`, `.ogg` or `.m4a` beside
+  the round), with a required `transcript` and an optional `durationMs`; it takes no `motion` or
+  `frameReference`, and feedback echoes `audio`. A `blind-ab` question holds `pairs`
+  (`[{ id, transcript, takes: [{ engine, src, durationMs? }, …] }]`, two engines per pair) and an
+  optional `seed`; `blindAbOrder(seed, count)` is the balanced seeded order,
+  `blindAbKey(round, question)` the pairs as played (the hidden key), and `engineOf(key, pair,
+choice)` maps an answer back to its engine. A feedback answer gains
+  `pairs: [{ pair, choice: 'A' | 'B', engine? }]`. Exports `isAudioVariant`, `BLIND_CHOICES` and
+  `takesRecommendation` and the `AudioVariant`, `BlindAbQuestion`, `BlindPair` and `PlayedPair`
+  types.
 - Optional `frameReference` on an image or clip variant (`FrameReferenceSchema`, type
   `FrameReference`): `{ frame = 1920x1080, ladder = DEFAULT_SCALE_LADDER }`, the true size of a
   recorded frame and the ladder drawn into it. A story variant may not carry one (it uses

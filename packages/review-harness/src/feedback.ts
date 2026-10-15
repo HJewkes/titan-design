@@ -2,6 +2,7 @@ import {
   FEEDBACK_SCHEMA_ID,
   type Annotation,
   type Answer,
+  type BlindChoice,
   type Feedback,
   type Manifest,
   type PrGroupShipStatus,
@@ -10,6 +11,7 @@ import {
   type Variant,
   type Verdict,
   shipBlocks,
+  takesRecommendation,
 } from '@titan-design/review-schema'
 import { isAnswered, normalizeAnswer, offersBuiltInRevision, pickedAfter } from './round.ts'
 import { questionsForVariant, sectionOfQuestion } from './sections.ts'
@@ -34,6 +36,8 @@ export interface AnswerDraft {
   revealed?: boolean
   /** The answer landed while the recommendation was visible; only clearing the answer clears it. */
   seen?: boolean
+  /** A blind-ab question's position picked in each pair, by pair id. */
+  blind?: Record<string, BlindChoice>
 }
 
 export interface ReviewDraft {
@@ -42,9 +46,12 @@ export interface ReviewDraft {
   general: string
 }
 
+type Source = { storyId: string } | { image: string } | { clip: string } | { audio: string }
+
 /** The frame's own source field, echoed so a reader needs no manifest. */
-function sourceOf(v: Variant): { storyId: string } | { image: string } | { clip: string } {
+function sourceOf(v: Variant): Source {
   if (v.storyId !== undefined) return { storyId: v.storyId }
+  if (v.audio !== undefined) return { audio: v.audio }
   return v.clip !== undefined ? { clip: v.clip } : { image: v.image ?? '' }
 }
 
@@ -76,7 +83,7 @@ export function agrees(answer: Answer, recommendation: Recommendation): boolean 
 
 /** Echo the question's recommendation; `agreed` only once there is an answer to compare. */
 function withRecommendation(question: Question, answer: Answer): Answer {
-  if (question.kind === 'text' || !question.recommendation) return answer
+  if (!takesRecommendation(question) || !question.recommendation) return answer
   const { recommendation } = question
   return isAnswered(question, answer)
     ? { ...answer, recommendation, agreed: agrees(answer, recommendation) }
@@ -109,7 +116,7 @@ function optionNotes(question: Question, draft: AnswerDraft): Answer['optionNote
 function withPacket(question: Question, draft: AnswerDraft, answer: Answer): Answer {
   const notes = optionNotes(question, draft)
   const after = pickedAfter(question, answer)
-  const hasRecommendation = question.kind !== 'text' && question.recommendation !== undefined
+  const hasRecommendation = takesRecommendation(question) && question.recommendation !== undefined
   const seen = draft.seen && hasRecommendation && isAnswered(question, answer)
   return {
     ...answer,
@@ -117,6 +124,15 @@ function withPacket(question: Question, draft: AnswerDraft, answer: Answer): Ans
     ...(after !== undefined ? { after } : {}),
     ...(seen ? { recommendationSeen: true as const } : {}),
   }
+}
+
+/** The pairs picked so far, in the question's pair order; a pair not yet picked is left out. */
+function blindPairs(question: Question, draft: AnswerDraft): NonNullable<Answer['pairs']> {
+  if (question.kind !== 'blind-ab') return []
+  return question.pairs.flatMap((p) => {
+    const choice = draft.blind?.[p.id]
+    return choice ? [{ pair: p.id, choice }] : []
+  })
 }
 
 function toAnswer(
@@ -128,10 +144,16 @@ function toAnswer(
   if (question.kind === 'pick-many' && draft.picks?.length) answer.picks = draft.picks
   if (question.kind === 'scale' && draft.value !== undefined) answer.value = draft.value
   if (question.kind === 'text' && draft.text?.trim()) answer.text = draft.text
+  const pairs = blindPairs(question, draft)
+  if (pairs.length) answer.pairs = pairs
   if (draft.comment.trim()) answer.comment = draft.comment
   if (variantComments.length) answer.variantComments = variantComments
   const full = withPacket(question, draft, answer)
-  return isAnswered(question, full) || full.comment || full.variantComments || full.optionNotes
+  return isAnswered(question, full) ||
+    full.comment ||
+    full.variantComments ||
+    full.optionNotes ||
+    full.pairs
     ? withRecommendation(question, full)
     : null
 }
