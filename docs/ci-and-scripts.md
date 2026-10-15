@@ -50,6 +50,7 @@ them in `inputs` with `$TURBO_ROOT$` (as `test:unit` and `test:unit:ci` do in `t
 | ---------------------------- | ----------------------------------------- |
 | Layer 3 HTML vs React parity | `test:visual:compare`                     |
 | Offline fonts                | `test:offline-fonts`                      |
+| Capture proof                | `test:capture`                            |
 | Layer 1 component baselines  | `test:visual:baseline`                    |
 | Layer 2 story baselines      | `test:visual:stories`                     |
 | Interaction                  | `playwright test --project=interaction`   |

@@ -165,6 +165,7 @@
     "test:visual:contrast:update": "node scripts/update-contrast-stories-baseline.mjs",
     "test:offline-fonts": "playwright test --config playwright.offline-fonts.config.ts",
     "test:audit-probes": "playwright test --config playwright.audit-probes.config.ts",
+    "test:capture": "playwright test --config playwright.capture.config.ts",
     "prepublishOnly": "node scripts/ci-only-publish.mjs && pnpm build && vitest --run --project threads --project local-time --project types --project stories-axe",
     "lint:colors:baseline": "node scripts/update-raw-color-baseline.mjs",
     "storybook:isolated": "node scripts/storybook-launch.mjs --isolated",

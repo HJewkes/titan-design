@@ -4,6 +4,7 @@ import http from 'node:http'
 import type { AddressInfo } from 'node:net'
 import type { Duplex } from 'node:stream'
 import { FeedbackSchema, type Feedback, type Manifest } from '@titan-design/review-schema'
+import { blindReveal, pageManifest, withBlindEngines } from './blind-ab.ts'
 import { feedbackProblems, normalizeFeedback } from './round.ts'
 import { proxyRequest, proxyUpgrade } from './proxy.ts'
 
@@ -33,6 +34,11 @@ export interface ReviewServerOptions {
   images?: Record<string, string>
   /** Absolute mp4 or webm path by variant key; served at `api/clip/<key>` with byte ranges. */
   clips?: Record<string, string>
+  /**
+   * Absolute audio path by variant key, or by `<question>/<pair>/<A|B>` for a blind take; served
+   * at `api/audio/<key>` with byte ranges, so a blind take's URL names its position, not its engine.
+   */
+  audio?: Record<string, string>
   harnessWarning?: string
 }
 
@@ -67,7 +73,9 @@ function submissionError(opts: ReviewServerOptions, body: unknown): [number, str
   if (parsed.data.manifestSha256 !== opts.manifestSha256)
     return [409, ['the manifest changed since this page loaded; reload the page']]
   const problems = feedbackProblems(parsed.data, opts.manifest)
-  return problems.length ? [422, problems] : normalizeFeedback(parsed.data, opts.manifest)
+  return problems.length
+    ? [422, problems]
+    : withBlindEngines(normalizeFeedback(parsed.data, opts.manifest), opts.manifest)
 }
 
 function createSubmitHandler(opts: ReviewServerOptions, accept: Accept) {
@@ -81,7 +89,7 @@ function createSubmitHandler(opts: ReviewServerOptions, accept: Accept) {
     const result = submissionError(opts, body)
     if (Array.isArray(result)) return sendJson(res, result[0], { errors: result[1] })
     done = true
-    sendJson(res, 200, { ok: true })
+    sendJson(res, 200, { ok: true, reveal: blindReveal(opts.manifest, result) })
     const { contrastOverride: _posted, ...unoverridden } = result
     const { contrastOverride } = opts.manifest
     accept(contrastOverride ? { ...unoverridden, contrastOverride } : unoverridden)
@@ -110,24 +118,32 @@ export function byteRange(header: string | undefined, size: number): [number, nu
   return start <= end && start < size ? [start, end] : null
 }
 
-const CLIP_TYPES: Record<string, string> = { mp4: 'video/mp4', webm: 'video/webm' }
+const MEDIA_TYPES: Record<string, string> = {
+  mp4: 'video/mp4',
+  webm: 'video/webm',
+  wav: 'audio/wav',
+  mp3: 'audio/mpeg',
+  ogg: 'audio/ogg',
+  m4a: 'audio/mp4',
+}
 
-/** A clip, by variant key, in byte ranges: a video element seeks and loops by them. */
-async function sendClip(
-  opts: ReviewServerOptions,
+/** A clip or a sound, by route key, in byte ranges: a media element seeks and loops by them. */
+async function sendMedia(
+  files: Record<string, string> | undefined,
+  what: string,
   key: string,
   req: http.IncomingMessage,
   res: http.ServerResponse
 ) {
-  const file = Object.hasOwn(opts.clips ?? {}, key) ? opts.clips?.[key] : undefined
+  const file = Object.hasOwn(files ?? {}, key) ? files?.[key] : undefined
   const size = file
     ? await stat(file).then(
         (s) => s.size,
         () => null
       )
     : null
-  if (!file || size === null) return sendJson(res, 404, { errors: [`no clip variant ${key}`] })
-  const type = CLIP_TYPES[file.split('.').pop()?.toLowerCase() ?? ''] ?? 'application/octet-stream'
+  if (!file || size === null) return sendJson(res, 404, { errors: [`no ${what} ${key}`] })
+  const type = MEDIA_TYPES[file.split('.').pop()?.toLowerCase() ?? ''] ?? 'application/octet-stream'
   const range = byteRange(req.headers.range, size)
   const [start, end] = range ?? [0, size - 1]
   res.writeHead(range ? 206 : 200, {
@@ -153,7 +169,7 @@ function createRouter(opts: ReviewServerOptions, accept: Accept): http.RequestLi
     }
     if (path === `${API}round` && req.method === 'GET')
       return sendJson(res, 200, {
-        manifest: opts.manifest,
+        manifest: pageManifest(opts.manifest),
         manifestSha256: opts.manifestSha256,
         harnessWarning: opts.harnessWarning,
       })
@@ -161,7 +177,9 @@ function createRouter(opts: ReviewServerOptions, accept: Accept): http.RequestLi
     if (path.startsWith(`${API}image/`) && req.method === 'GET')
       return sendImage(opts, path.slice(`${API}image/`.length), res)
     if (path.startsWith(`${API}clip/`) && req.method === 'GET')
-      return void sendClip(opts, path.slice(`${API}clip/`.length), req, res)
+      return void sendMedia(opts.clips, 'clip variant', path.slice(`${API}clip/`.length), req, res)
+    if (path.startsWith(`${API}audio/`) && req.method === 'GET')
+      return void sendMedia(opts.audio, 'audio', path.slice(`${API}audio/`.length), req, res)
     if (path.startsWith(API)) return sendJson(res, 404, { errors: ['unknown endpoint'] })
     if (path.startsWith(PAGE_BASE)) return opts.page(req, res, () => sendJson(res, 404, {}))
     proxyRequest(upstream, req, res)

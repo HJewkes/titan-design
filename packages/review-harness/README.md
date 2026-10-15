@@ -135,11 +135,12 @@ imports. Its `schema/round.schema.json` and `schema/feedback.schema.json` are ge
 - Manifest `titan-review/round@2`: `unit`, `round`, `storybookUrl`, `context?`, `widths[]`,
   `height` (a number of px or `"auto"`, default `"auto"`; at round level a number caps every
   frame), `maxHeight` (default 1200, the cap when the round's `height` is `"auto"`),
-  `variants[{key, storyId | image | clip, label, args?, globals?, height?, motion?, scale?, frameReference?, variantUnit?, alternate?, change?: changed|new|removed|unchanged, baseImage? (a PNG of the frame from the PR's base)}]`
-  (`motion`, `clip`, `scale` and `frameReference`: see _Motion and scale_) (at most 12 in a round
+  `variants[{key, storyId | image | clip | audio, label, transcript? (audio), durationMs? (audio), args?, globals?, height?, motion?, scale?, frameReference?, variantUnit?, alternate?, change?: changed|new|removed|unchanged, baseImage? (a PNG of the frame from the PR's base)}]`
+  (`motion`, `clip`, `scale` and `frameReference`: see _Motion and scale_; `audio`: see _Audio and
+  blind A/B_) (at most 12 in a round
   without `sections`, uncapped in one with them; empty for a round of questions only, which needs no placeholder
   frame; every frame sits in a section),
-  `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?, recommendation?, signsOff (pick-one), page?, merge? (pick-one), frames?[], decision?: iterate|ship|decide, outcomes? (option to accept|changes|neutral), implemented? (the option, or options for pick-many, the PR implements), touches? (the tokens a non-PR question decides; see _Build with locks_)}]`,
+  `questions[{id, kind: pick-one|pick-many|scale|text|blind-ab, prompt, pairs + seed? (blind-ab), options | min+max, required?, scope?, optionVariants?, recommendation?, signsOff (pick-one), page?, merge? (pick-one), frames?[], decision?: iterate|ship|decide, outcomes? (option to accept|changes|neutral), implemented? (the option, or options for pick-many, the PR implements), touches? (the tokens a non-PR question decides; see _Build with locks_)}]`,
   `sections[{id, title, deciding, changed, context, kind?: CHOICE|STATES, questionIds[], variantKeys[], seeAlso?[], height?}]`,
   `prGroups?[{pr: owner/name#n, headSha, sectionIds[], title?, kind?, description?, task?{id, title?, doneWhen?}, codewatch?, files?[{path, status?}]}]` (a PR group named outright, and its read-only context),
   `build?{mainSha, mergeSha}` (written by `build --tree`; a draft that carries it is refused),
@@ -189,8 +190,8 @@ imports. Its `schema/round.schema.json` and `schema/feedback.schema.json` are ge
   The review screen lists each option note as "on <option>: <note>", the pick's `after` in muted
   type, and "(seen recommendation)" after a seen answer.
 - Feedback `titan-review/feedback@1`: `manifestSha256`, `submittedAt`,
-  `answers[{questionId, pick | picks | value | text | revisionRequested, comment?, variantComments?, recommendation?, agreed?, optionNotes?, after?, recommendationSeen?}]`,
-  `variants[{key, storyId | image | clip, verdict: chosen|rejected|maybe|null, comment, annotations[], relatedQuestionIds?}]`,
+  `answers[{questionId, pick | picks | value | text | pairs | revisionRequested, comment?, variantComments?, recommendation?, agreed?, optionNotes?, after?, recommendationSeen?}]`,
+  `variants[{key, storyId | image | clip | audio, verdict: chosen|rejected|maybe|null, comment, annotations[], relatedQuestionIds?}]`,
   `general`, `unansweredQuestionIds?`, `contrastOverride?` (see _The agent's side_). Each annotation has `width`,
   `x`/`y` in CSS px of the story frame, `xPct`/`yPct` as fractions of it, a `note`, and `target {testId?, role?, text?}` from element hit-testing.
   `variantComments[{key, comment}]` repeats, under the answer, every comment left on a frame
@@ -329,6 +330,56 @@ caption reads `1920×1080 · shown at 47%` (or `1:1`), and **Fit** and **1:1** s
 scale frame. The ladder is drawn into the frame's top-right corner, each bar `px × k` tall at the
 scale `k` shown, so a bar sits beside text of that size in the frame. A story variant uses
 `scale` instead and may not carry `frameReference`.
+
+## Audio and blind A/B (TD-916)
+
+**Audio frames.** `audio` is a variant's fourth source: a `.wav`, `.mp3`, `.ogg` or `.m4a` path
+relative to the round file, under the image rules (no `..`, inside the round directory after
+symlinks, sniffed for a RIFF/WAVE, ID3 or mp3 frame, OggS or `ftyp` head). It needs a `transcript`,
+shown under the player, and may state `durationMs`. The card draws one player whatever the round's
+widths: the browser's own controls (play, pause, scrub) plus a **Loop** checkbox. The server serves
+it at `api/audio/<key>` in byte ranges. It takes no `motion`, `frameReference` or pins, and no
+contrast declaration. Feedback echoes `audio`.
+
+**Blind A/B.** A `blind-ab` question compares two engines over N pairs, blind. Each pair is one
+line read by both engines; the round plays each pair's takes as A and B in an order seeded per
+round. Each engine leads in half the pairs, shuffled by the seed (`blindAbOrder` in review-schema),
+so the same seed always gives the same order. The seed is the question's `seed`, else
+`<unit>#<round>/<question id>`, so a new round reshuffles.
+
+```json
+{
+  "id": "tts",
+  "kind": "blind-ab",
+  "prompt": "Which take of each line sounds more natural?",
+  "required": true,
+  "pairs": [
+    {
+      "id": "p1",
+      "transcript": "The kettle is on and the window is open.",
+      "takes": [
+        { "engine": "engine-x", "src": "audio/p1-x.wav", "durationMs": 400 },
+        { "engine": "engine-y", "src": "audio/p1-y.wav" }
+      ]
+    }
+  ]
+}
+```
+
+Put it in a section's `questionIds` like any question; `test/fixtures/blind-ab/round.json` is a
+complete two-pair round. A pair's two takes name different engines and share one file format, so
+the served type does not tell them apart. The key (which engine plays at A) never reaches the page:
+
+- `api/round` sends each take with its `engine` replaced by its position (`A`, `B`), its `src`
+  emptied, and the question's `seed` dropped.
+- The page fetches a take at `api/audio/<question>/<pair>/<A|B>`, a URL that names its position.
+- Each pair shows its transcript, a player for A and for B, **Play A then B** (A from the start,
+  then B as A ends; A stops looping for its turn), and an A or B pick. A second click on the
+  picked take clears it. The question counts as answered once every pair is picked.
+- The answer is `pairs: [{ pair, choice: "A" | "B" }]`. The server refuses one that names an
+  `engine`, then stores each pick with the `engine` its key maps it to.
+- The reply to the submit carries the reveal, and the sent screen shows it: per pair, the engines
+  at A and B and what was picked, and how many pairs each engine won.
 
 ## A round from Morning items (TD-680)
 
