@@ -17,7 +17,8 @@ project adheres to [Semantic Versioning](https://semver.org/).
   `blindAbKey(round, question)` the pairs as played (the hidden key), and `engineOf(key, pair,
 choice)` maps an answer back to its engine. A feedback answer gains
   `pairs: [{ pair, choice: 'A' | 'B', engine? }]`. Exports `isAudioVariant`, `BLIND_CHOICES` and
-  the `AudioVariant`, `BlindAbQuestion`, `BlindPair` and `PlayedPair` types.
+  `takesRecommendation` and the `AudioVariant`, `BlindAbQuestion`, `BlindPair` and `PlayedPair`
+  types.
 - Optional `frameReference` on an image or clip variant (`FrameReferenceSchema`, type
   `FrameReference`): `{ frame = 1920x1080, ladder = DEFAULT_SCALE_LADDER }`, the true size of a
   recorded frame and the ladder drawn into it. A story variant may not carry one (it uses
