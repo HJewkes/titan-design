@@ -4,7 +4,6 @@ import { axe } from 'jest-axe'
 import { capturedByNode } from '../../../test/classname-capture'
 import { FormField, FormSection, FormActions, FormRow } from './FormField'
 import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
-import { capturedByNode } from '../../../test/classname-capture'
 
 describe('FormField', () => {
   it('renders label and children', () => {
