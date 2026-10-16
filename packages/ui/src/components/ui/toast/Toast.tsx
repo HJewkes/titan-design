@@ -1,9 +1,12 @@
-import React, { createContext, useContext, useState, useCallback, useEffect } from 'react'
+import React, { createContext, useContext, useState, useCallback } from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { CheckMark } from '../../icons'
 import { Surface } from '../surface'
+import { statusStyles, iconColors, textGlyphs, toastRole, type ToastStatus } from './toastStatus'
+import { useAutoDismiss } from './useAutoDismiss'
 
-export type ToastStatus = 'success' | 'error' | 'warning' | 'info'
+export type { ToastStatus }
 export type ToastPosition =
   | 'top'
   | 'top-right'
@@ -153,40 +156,24 @@ export function useToast() {
   return context
 }
 
+/** The status glyph, hidden from assistive tech: the title and the live-region role carry it. */
+function ToastGlyph({ status }: { status: ToastStatus }) {
+  if (status === 'success') {
+    return (
+      <View aria-hidden className={iconColors.success}>
+        <CheckMark size={18} strokeWidth={3} />
+      </View>
+    )
+  }
+  return (
+    <Text aria-hidden className={cn('text-lg', iconColors[status])}>
+      {textGlyphs[status]}
+    </Text>
+  )
+}
+
 interface ToastItemProps extends ToastConfig {
   onClose: () => void
-}
-
-// `-subtle` is the wash ladder's lightest rung. It replaces a `/10` opacity
-// modifier, which emitted no rule at all against a var()-backed token (VW-308).
-const statusStyles: Record<ToastStatus, { bg: string; border: string; icon: string }> = {
-  success: {
-    bg: 'bg-status-success-subtle',
-    border: 'border-status-success',
-    icon: '✓',
-  },
-  error: {
-    bg: 'bg-status-error-subtle',
-    border: 'border-status-error',
-    icon: '✕',
-  },
-  warning: {
-    bg: 'bg-status-warning-subtle',
-    border: 'border-status-warning',
-    icon: '⚠',
-  },
-  info: {
-    bg: 'bg-status-info-subtle',
-    border: 'border-status-info',
-    icon: 'ℹ',
-  },
-}
-
-const iconColors: Record<ToastStatus, string> = {
-  success: 'text-status-success',
-  error: 'text-status-error',
-  warning: 'text-status-warning',
-  info: 'text-status-info',
 }
 
 function ToastItem({
@@ -198,27 +185,27 @@ function ToastItem({
   isClosable = true,
   onClose,
 }: ToastItemProps) {
-  const { bg, border, icon } = statusStyles[status]
+  const { bg, border } = statusStyles[status]
 
-  // Auto-dismiss
-  useEffect(() => {
-    if (duration > 0) {
-      const timer = setTimeout(onClose, duration)
-      return () => clearTimeout(timer)
-    }
-  }, [duration, onClose])
+  const [isHovered, setIsHovered] = useState(false)
+  const [isFocused, setIsFocused] = useState(false)
+  useAutoDismiss(duration, isHovered || isFocused, onClose)
 
   return (
     <Surface
       elevation={5}
       rounded={false}
       className={cn('min-w-[280px] max-w-[400px] rounded-lg border-l-4', border)}
-      accessibilityRole="alert"
+      role={toastRole(status)}
+      onPointerEnter={() => setIsHovered(true)}
+      onPointerLeave={() => setIsHovered(false)}
+      onFocus={() => setIsFocused(true)}
+      onBlur={() => setIsFocused(false)}
     >
       <View className={cn('flex-row items-start p-inset-md', bg)}>
         {/* Icon */}
         <View className={cn('w-6 h-6 items-center justify-center mr-3')}>
-          <Text className={cn('text-lg', iconColors[status])}>{icon}</Text>
+          <ToastGlyph status={status} />
         </View>
 
         {/* Content */}
@@ -232,9 +219,12 @@ function ToastItem({
           <Pressable
             onPress={onClose}
             className="p-1 -m-1 rounded web:hover:bg-interactive-hover"
+            accessibilityRole="button"
             accessibilityLabel="Close toast"
           >
-            <Text className="text-text-tertiary text-lg">×</Text>
+            <Text aria-hidden className="text-text-tertiary text-lg">
+              ×
+            </Text>
           </Pressable>
         )}
       </View>
@@ -279,21 +269,21 @@ export function Toast({
   className,
   ...props
 }: ToastProps) {
-  const { bg, border, icon } = statusStyles[status]
+  const { bg, border } = statusStyles[status]
 
   return (
     <Surface
       elevation={5}
       rounded={false}
       className={cn('min-w-[280px] max-w-[400px] rounded-lg border-l-4', border, className)}
-      accessibilityRole="alert"
+      role={toastRole(status)}
       {...props}
     >
       <View className={cn('flex-row items-start p-inset-md', bg)}>
         {/* Icon */}
         {showIcon && (
           <View className="w-6 h-6 items-center justify-center mr-3">
-            <Text className={cn('text-lg', iconColors[status])}>{icon}</Text>
+            <ToastGlyph status={status} />
           </View>
         )}
 
@@ -308,9 +298,12 @@ export function Toast({
           <Pressable
             onPress={onClose}
             className="p-1 -m-1 rounded web:hover:bg-interactive-hover"
+            accessibilityRole="button"
             accessibilityLabel="Close toast"
           >
-            <Text className="text-text-tertiary text-lg">×</Text>
+            <Text aria-hidden className="text-text-tertiary text-lg">
+              ×
+            </Text>
           </Pressable>
         )}
       </View>

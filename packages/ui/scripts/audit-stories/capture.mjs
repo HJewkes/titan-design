@@ -4,7 +4,7 @@
 import { mkdirSync, readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { join } from 'node:path'
-import { auditPage, themeGeometryShift } from './checks.mjs'
+import { auditPage, fontSizeDrift, themeGeometryShift } from './checks.mjs'
 import { loadSpacingConfig } from './spacing-scale.mjs'
 
 export const EXIT_CLEAN = 0
@@ -66,7 +66,9 @@ export async function captureAll({
   } finally {
     await browser.close()
   }
-  return results.flat()
+  const entries = results.flat()
+  addFontSizeDrift(entries)
+  return entries.map(withoutProbeData)
 }
 
 async function captureJob(browser, ctx, job) {
@@ -93,13 +95,14 @@ async function captureJob(browser, ctx, job) {
     await context.close()
   }
   addThemeShift(entries)
-  return entries.map(withoutGeometry)
+  return entries
 }
 
-// Geometry only feeds the theme comparison; it is too large to keep in dom.json.
-function withoutGeometry(entry) {
+// Geometry and text sizes only feed the theme and width comparisons; too large for dom.json.
+function withoutProbeData(entry) {
   const kept = { ...entry }
   delete kept.geometry
+  delete kept.texts
   return kept
 }
 
@@ -179,6 +182,7 @@ const failedRender = (error, details) => ({
   metrics: {},
   axe: { violations: [] },
   geometry: [],
+  texts: [],
 })
 
 async function readStoryError(page) {
@@ -216,6 +220,23 @@ function addThemeShift(entries) {
   for (const entry of rest) {
     if (!first?.rendered || !entry.rendered) continue
     entry.warnings.push(...themeGeometryShift(first.geometry, entry.geometry, first.theme))
+  }
+}
+
+/**
+ * Compares each story's text sizes across widths, on the first theme's frames, and puts each
+ * drift once on the frame of the first width that differs. Frames that failed to render sit out.
+ */
+export function addFontSizeDrift(entries) {
+  const byStory = new Map()
+  for (const e of entries) {
+    if (!e.rendered || e.theme !== entries.find((x) => x.id === e.id).theme) continue
+    if (!byStory.has(e.id)) byStory.set(e.id, [])
+    byStory.get(e.id).push(e)
+  }
+  for (const frames of byStory.values()) {
+    for (const { width, ...finding } of fontSizeDrift(frames))
+      frames.find((f) => f.width === width).warnings.push(finding)
   }
 }
 

@@ -38,17 +38,15 @@ export {
   normalizeLossThresholds,
   type VelocityLossThresholds,
   type VelocityLossBand,
-  DualVelocityStrip,
-  type DualVelocityStripProps,
-  type DualVelocityStream,
 } from './VelocityStrip'
+export { DualVelocityStrip, type DualVelocityStripProps } from './DualVelocityStrip'
+export type { DualVelocityStream } from './dual-velocity-slots'
 export { MuscleGroupChip, type MuscleGroupChipProps, type VolumeStatus } from './MuscleGroupChip'
 export { MuscleStrip, type MuscleStripProps, type MuscleStripMuscleData } from './MuscleStrip'
 export { Sparkline, type SparklineProps } from './Sparkline'
 export { SetRow, type SetRowProps, type SetRowState, type SetRowUnit } from './SetRow'
 export { InputBar, type InputBarProps } from './InputBar'
 export { RestTimer, type RestTimerProps } from './RestTimer'
-export { MetricCell, type MetricCellProps, METRIC_FONT } from './metricText'
 export { SetsRepsLoad, type SetsRepsLoadProps } from './SetsRepsLoad'
 export { SegmentedBar, type SegmentedBarProps, type SegmentedBarSegment } from './SegmentedBar'
 export { paceTone, paceToneColor, type PaceTone } from './paceTone'
@@ -60,6 +58,15 @@ export {
 export { MetricTiles, type MetricTilesProps, type MetricTileData } from './MetricTiles'
 export { ScheduleTiles, type ScheduleTilesProps } from './ScheduleTiles'
 export { SetBar, type SetBarProps } from './SetBar'
+export { SetLossStrip, type SetLossStripProps } from './SetLossStrip'
+export {
+  DEFAULT_LOSS_CEILING_PCT,
+  type SetLossStripSet,
+  type SetLossPurpose,
+  type SetRepMark,
+  type SetLossStripScale,
+  type SetLossMarkTone,
+} from './setLossStripModel'
 export {
   SetStrip,
   type SetStripProps,
@@ -349,6 +356,7 @@ export type {
   ActiveWorkoutExercise,
   ActiveWorkoutSuperset,
   ActiveWorkoutInput,
+  ActiveWorkoutRecordedSet,
   ActiveWorkoutRest,
   ActiveExerciseStatus,
   WorkoutProgress,

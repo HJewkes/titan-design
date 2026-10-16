@@ -13,8 +13,8 @@ import * as stories from './DualPinnedLiveStrip.stories'
 
 const charts = vi.hoisted(() => ({ count: 0 }))
 
-vi.mock('../../custom/Workout/VelocityStrip', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../custom/Workout/VelocityStrip')>()
+vi.mock('../../custom/Workout/DualVelocityStrip', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../custom/Workout/DualVelocityStrip')>()
   return {
     ...actual,
     DualVelocityStrip: (props: Parameters<typeof actual.DualVelocityStrip>[0]) => {

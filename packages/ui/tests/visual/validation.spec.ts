@@ -4,18 +4,6 @@ import path from 'path'
 const VALIDATION_DIR = path.join(__dirname, 'validation')
 
 test.describe('Storybook Validation Screenshots', () => {
-  test('default preset story', async ({ page }) => {
-    await page.goto('/iframe.html?id=theme-presets--default')
-    await page.waitForLoadState('networkidle')
-    await page.screenshot({ path: path.join(VALIDATION_DIR, 'preset-default.png'), fullPage: true })
-  })
-
-  test('audiobook preset story', async ({ page }) => {
-    await page.goto('/iframe.html?id=theme-presets--audiobook')
-    await page.waitForLoadState('networkidle')
-    await page.screenshot({ path: path.join(VALIDATION_DIR, 'preset-audiobook.png'), fullPage: true })
-  })
-
   test('button with default theme', async ({ page }) => {
     await page.goto('/iframe.html?id=components-button--primary')
     await page.waitForLoadState('networkidle')

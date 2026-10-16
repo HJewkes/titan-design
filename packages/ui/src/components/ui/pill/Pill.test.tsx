@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Pill } from './Pill'
+import { capturedClassNames } from '../../../test/classname-capture'
 import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
 describe('Pill', () => {
@@ -223,5 +224,116 @@ describe('Pill deprecated size alias', () => {
     render(<Pill size="xl">Legacy</Pill>)
     expect(warn).not.toHaveBeenCalled()
     warn.mockRestore()
+  })
+})
+
+describe('Pill clear variant', () => {
+  const classesOf = (testID: string) => (capturedClassNames.get(testID) ?? '').split(/\s+/)
+
+  it('paints no fill and no ring, only the label colour', () => {
+    render(
+      <Pill testID="pill" variant="clear" tone="neutral">
+        Idle
+      </Pill>
+    )
+    const classes = classesOf('pill')
+    expect(classes).toEqual(expect.arrayContaining(['border-transparent', 'text-text-primary']))
+    expect(classes.filter((c) => c.startsWith('bg-'))).toEqual([])
+  })
+
+  it('keeps the dot, coloured by the tone', () => {
+    render(
+      <Pill testID="pill" variant="clear" tone="success" leading="dot">
+        Live
+      </Pill>
+    )
+    expect(classesOf('pill-dot')).toContain('bg-status-success')
+  })
+
+  it('has no accessibility violations', async () => {
+    const { container } = render(
+      <Pill variant="clear" tone="warning" leading="dot">
+        Rest
+      </Pill>
+    )
+    expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+describe('Pill neutral faces', () => {
+  const classesOf = (testID: string) => (capturedClassNames.get(testID) ?? '').split(/\s+/)
+
+  it.each([
+    ['solid', ['bg-text-primary', 'text-text-inverse']],
+    ['subtle', ['bg-hairline-subtle', 'text-text-primary']],
+  ] as const)('the neutral %s row paints its fill and label', (variant, expected) => {
+    render(
+      <Pill testID="pill" variant={variant} tone="neutral">
+        Active
+      </Pill>
+    )
+    expect(classesOf('pill')).toEqual(expect.arrayContaining([...expected]))
+  })
+
+  it.each([
+    ['brand', 'text-text-brand'],
+    ['brand-secondary', 'text-text-brand-secondary'],
+    ['success', 'text-text-success'],
+    ['warning', 'text-text-warning'],
+    ['error', 'text-text-error'],
+    ['info', 'text-text-info'],
+  ] as const)('the %s outline label reads from the text token', (tone, label) => {
+    render(
+      <Pill testID="pill" variant="outline" tone={tone}>
+        Active
+      </Pill>
+    )
+    expect(classesOf('pill')).toContain(label)
+  })
+})
+
+describe('Pill neutral outline', () => {
+  it('draws its ring one hairline step above the shared default', () => {
+    render(
+      <Pill testID="pill" variant="outline" tone="neutral">
+        Idle
+      </Pill>
+    )
+    const classes = (capturedClassNames.get('pill') ?? '').split(/\s+/)
+    expect(classes).toContain('border-hairline-strong')
+    expect(classes).not.toContain('border-hairline')
+  })
+})
+
+describe('Pill outline error', () => {
+  it('keeps the ring on status-error and puts the label on text-error', () => {
+    render(
+      <Pill testID="pill" variant="outline" tone="error">
+        Failed
+      </Pill>
+    )
+    const classes = (capturedClassNames.get('pill') ?? '').split(/\s+/)
+    expect(classes).toEqual(expect.arrayContaining(['border-status-error', 'text-text-error']))
+    expect(classes).not.toContain('text-status-error')
+  })
+})
+
+// TD-789 3b: a fill or mark tone as label text missed 4.5:1 on the grey 100 and 200 planes.
+describe('Pill clear label', () => {
+  it.each([
+    ['brand', 'text-text-brand', 'text-brand-primary'],
+    ['brand-secondary', 'text-text-brand-secondary', 'text-brand-secondary'],
+    ['success', 'text-text-success', 'text-status-success'],
+    ['warning', 'text-text-warning', 'text-status-warning'],
+    ['error', 'text-text-error', 'text-status-error'],
+  ] as const)('paints the %s label in %s, not %s', (tone, textRole, fillTone) => {
+    render(
+      <Pill testID="pill" variant="clear" tone={tone}>
+        Label
+      </Pill>
+    )
+    const classes = (capturedClassNames.get('pill') ?? '').split(/\s+/)
+    expect(classes).toContain(textRole)
+    expect(classes).not.toContain(fillTone)
   })
 })

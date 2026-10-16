@@ -1,7 +1,21 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import type { ViewProps } from 'react-native'
 import { EmptyState } from './EmptyState'
+
+vi.mock('react-native', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('react-native')>()
+  const React = await import('react')
+  const View = React.forwardRef<unknown, ViewProps & { className?: string }>((props, ref) =>
+    React.createElement(actual.View, {
+      ...props,
+      ref,
+      dataSet: { class: props.className },
+    } as ViewProps)
+  )
+  return { ...actual, View }
+})
 
 function MockIcon({ size, className }: { size?: number; className?: string }) {
   return (
@@ -22,6 +36,14 @@ describe('EmptyState', () => {
     expect(screen.getByText("You don't have any messages yet.")).toBeInTheDocument()
   })
 
+  it('leaves no empty string among the View children when description and action are empty strings', () => {
+    // React DOM drops '' silently, but React Native throws on a bare string inside a View,
+    // so assert on the element tree rather than the DOM.
+    const tree = EmptyState({ title: 'No data', description: '', action: '' })
+    const children = [tree.props.children].flat()
+    expect(children.filter((child) => typeof child === 'string')).toEqual([])
+  })
+
   it('renders without description', () => {
     render(<EmptyState title="No data" />)
     expect(screen.getByText('No data')).toBeInTheDocument()
@@ -30,6 +52,19 @@ describe('EmptyState', () => {
   it('renders with icon', () => {
     render(<EmptyState title="No items" icon={MockIcon} />)
     expect(screen.getByTestId('mock-icon')).toBeInTheDocument()
+  })
+
+  it('puts the icon in a rounded well by default', () => {
+    render(<EmptyState title="No items" icon={MockIcon} />)
+    const wrapper = screen.getByTestId('mock-icon').parentElement
+    expect(wrapper).toHaveAttribute('data-class', expect.stringContaining('rounded-full'))
+    expect(wrapper).toHaveAttribute('data-class', expect.stringContaining('bg-background-subtle'))
+  })
+
+  it('draws the icon without a well when isIconBare', () => {
+    render(<EmptyState title="No items" icon={MockIcon} isIconBare />)
+    const wrapper = screen.getByTestId('mock-icon').parentElement
+    expect(wrapper).toHaveAttribute('data-class', 'mb-4')
   })
 
   it('renders without icon', () => {

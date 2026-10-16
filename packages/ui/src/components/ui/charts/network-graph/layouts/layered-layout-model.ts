@@ -1,3 +1,4 @@
+import { compareText } from '../../kit/compareText'
 import { GRAPH_LABEL_ROOM, GRAPH_NODE_PADDING, edgeId } from '../network-graph-model'
 import type { GraphEdge, GraphLayout, GraphLayoutInput, GraphLayoutResult } from '../types'
 
@@ -8,8 +9,6 @@ export interface LayeredLayoutOptions {
   /** Edge kinds that rank the layers; every edge ranks when unset. */
   rankEdgeKinds?: readonly string[]
 }
-
-const compareText = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0)
 
 function reaches(successors: Map<string, string[]>, from: string, to: string): boolean {
   const seen = new Set<string>()
@@ -133,6 +132,10 @@ function computeLayered(
   }
 }
 
+/**
+ * Layers left to right by longest path along the ranking edges (every edge by default), rows by
+ * depth-first order with a parent centred on its children. Deterministic for any input order.
+ */
 export function layeredLayout(options: LayeredLayoutOptions = {}): GraphLayout {
   const { rankEdgeKinds } = options
   const key = `layered:${rankEdgeKinds === undefined ? '*' : [...rankEdgeKinds].sort(compareText).join(',')}`

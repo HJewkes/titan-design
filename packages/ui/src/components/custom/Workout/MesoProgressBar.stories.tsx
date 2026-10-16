@@ -6,7 +6,7 @@ import { MesoProgressBar, type Meso } from './MesoProgressBar'
 const meta: Meta<typeof MesoProgressBar> = {
   title: 'Custom/Workout/MesoProgressBar',
   component: MesoProgressBar,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     activeMesoId: {
       control: 'text',

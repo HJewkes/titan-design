@@ -5,7 +5,7 @@ import { DeviationBar } from './DeviationBar'
 const meta: Meta<typeof DeviationBar> = {
   title: 'Custom/Workout/DataViz/DeviationBar',
   component: DeviationBar,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     deviation: {
       control: { type: 'range', min: -1, max: 1, step: 0.1 },

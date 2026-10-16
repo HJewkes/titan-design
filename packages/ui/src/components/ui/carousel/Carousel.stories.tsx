@@ -49,7 +49,7 @@ function ExampleCard({ name, lines }: { name: string; lines: number }) {
 
 const meta: Meta<StoryArgs> = {
   title: 'Components/Molecules/Carousel',
-  tags: ['autodocs', 'status:candidate', '!status:review'],
+  tags: ['autodocs', 'status:stable', '!status:review'],
   parameters: {
     layout: 'fullscreen',
     docs: {

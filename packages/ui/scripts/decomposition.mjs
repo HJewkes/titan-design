@@ -17,8 +17,15 @@
  * anonymous callback takes the binding its call is assigned to (`SetBarChart>bars` for
  * `const bars = useMemo(() => ...)`), else its callee with receiver (`ticks.map`) or JSX
  * attribute (`onPress`). An anonymous default export takes the file's basename. A repeat
- * among siblings gets `#2` when anonymous and `~2` when declared. A class field
- * initializer is measured only when it is a function.
+ * among siblings gets `#2` when anonymous and `~2` when declared. A destructured
+ * binding takes its first name (`const [a, setA] = useState(() => ...)` is `a`). A class
+ * field initializer is measured only when it is a function.
+ *
+ * Ordinals count in source order, so inserting a same-base sibling above an existing one
+ * shifts every `#n` below it and the baseline entry moves to a new key. Three baselined keys
+ * have that exposure today: `SegmentedBar>segments.map`, `weekTips>axis.map` and
+ * `SetBarChart>cells.map`. Documented here, beside the keying rule, because this is where an
+ * editor reads when a baseline key changes unexpectedly.
  */
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'

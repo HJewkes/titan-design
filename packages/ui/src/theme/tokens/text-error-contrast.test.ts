@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { primitiveRamps } from './primitives'
 import { getSemanticColors } from './semantic'
 
 /** WCAG 2.1 relative luminance / contrast ratio. */
@@ -18,13 +19,20 @@ function contrastRatio(a: string, b: string): number {
 const PLANES = ['surface-base', 'surface-raised', 'surface-elevated', 'surface-overlay'] as const
 
 describe('text-error contrast', () => {
-  describe.each(['dark', 'light'] as const)('%s theme', (theme) => {
-    const colors = getSemanticColors(theme)
+  describe('light theme', () => {
+    const colors = getSemanticColors('light')
 
     it.each(PLANES)('clears 4.5:1 on %s', (plane) => {
       const ratio = contrastRatio(colors['text-error'], colors[plane])
-      console.info(`${theme} text-error on ${plane}: ${ratio.toFixed(2)}`)
+      console.info(`light text-error on ${plane}: ${ratio.toFixed(2)}`)
       expect(ratio).toBeGreaterThanOrEqual(4.5)
+    })
+  })
+
+  // Dark sits below 4.5:1 by owner decision (q4b-red-conflict r1 (a)); contrast-baseline.json records it.
+  describe('dark theme', () => {
+    it('uses red 500, as chosen at Gate 2', () => {
+      expect(getSemanticColors('dark')['text-error']).toBe(primitiveRamps.red[500])
     })
   })
 })

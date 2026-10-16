@@ -15,7 +15,7 @@ const t = getSemanticColors('dark')
 const meta: Meta<typeof SegmentedBar> = {
   title: 'Custom/Workout/SegmentedBar',
   component: SegmentedBar,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {

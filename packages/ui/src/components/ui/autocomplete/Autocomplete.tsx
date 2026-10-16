@@ -58,6 +58,11 @@ export interface AutocompleteProps<T = string> extends ViewProps {
   inputProps?: Partial<TextInputProps>
 }
 
+/** A selected value of 0 is still a selection, so `!!value` alone would hide the clear button. */
+function hasSelection(value: unknown): boolean {
+  return value === 0 || !!value
+}
+
 /**
  * Autocomplete component for searchable dropdown selection.
  *
@@ -129,7 +134,7 @@ export function Autocomplete<T extends string = string>({
   return (
     <View className={cn('w-full', className)} {...props}>
       {/* Label */}
-      {label && <AutocompleteLabel label={label} isRequired={isRequired} />}
+      {!!label && <AutocompleteLabel label={label} isRequired={isRequired} />}
 
       {/* Input Container */}
       <View className="relative">
@@ -155,25 +160,25 @@ export function Autocomplete<T extends string = string>({
           />
 
           {/* Clear button */}
-          {isClearable && value && !isDisabled && (
+          {!!isClearable && hasSelection(value) && !isDisabled && (
             <AutocompleteClearButton onClear={state.handleClear} />
           )}
 
           {/* Loading indicator */}
-          {isLoading && <AutocompleteSpinner />}
+          {!!isLoading && <AutocompleteSpinner />}
         </View>
 
         {/* Dropdown */}
-        {state.isOpen && (
+        {!!state.isOpen && (
           <AutocompleteDropdown>
-            {showMinCharsMessage && (
+            {!!showMinCharsMessage && (
               <AutocompleteMessage>
                 {minCharsText || `Type at least ${minChars} characters`}
               </AutocompleteMessage>
             )}
-            {isLoading && <AutocompleteMessage>{loadingText}</AutocompleteMessage>}
-            {showNoResults && <AutocompleteMessage>{noOptionsText}</AutocompleteMessage>}
-            {showOptions &&
+            {!!isLoading && <AutocompleteMessage>{loadingText}</AutocompleteMessage>}
+            {!!showNoResults && <AutocompleteMessage>{noOptionsText}</AutocompleteMessage>}
+            {!!showOptions &&
               state.filteredOptions.map((option, index) => (
                 <AutocompleteOptionRow
                   key={String(option.value)}
@@ -189,7 +194,7 @@ export function Autocomplete<T extends string = string>({
       </View>
 
       {/* Helper/Error text */}
-      {(helperText || errorMessage) && (
+      {!!(helperText || errorMessage) && (
         <AutocompleteHelper text={errorMessage || helperText} isInvalid={isInvalid} />
       )}
     </View>

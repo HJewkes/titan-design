@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type MouseEvent } from 'react'
-import type { Annotation, FrameHeight, StoryVariant } from '../src/schema.ts'
+import type { Annotation, FrameHeight, StoryVariant } from '@titan-design/review-schema'
 import { storyUrl } from '../src/round.ts'
 import { isAuto } from '../src/sections.ts'
 import {
@@ -9,6 +9,8 @@ import {
   type MeasurableDoc,
 } from './autoHeight.ts'
 import { forwardFrameKeys } from './frameKeys.ts'
+import { pinNumber } from './pins.ts'
+import { useLiveArgs, type LiveArgs } from './storyArgs.ts'
 
 export type PinInput = Omit<Annotation, 'id' | 'note'>
 
@@ -21,6 +23,8 @@ interface FrameProps {
   pins: Annotation[]
   onPin: (pin: PinInput) => void
   onHitTesting: (sameOrigin: boolean) => void
+  /** Args the page drives without a reload (a playing motion); sent on every change. */
+  liveArgs?: LiveArgs
 }
 
 /** Remeasures after a load and whenever the story reflows; the frame ends up its size. */
@@ -45,7 +49,7 @@ export function useFitScale(width: number) {
 }
 
 /** Mount the iframe only once it nears the viewport; ten live stories are heavy. */
-function useNearViewport() {
+export function useNearViewport() {
   const ref = useRef<HTMLDivElement>(null)
   const [near, setNear] = useState(false)
   useEffect(() => {
@@ -60,7 +64,7 @@ function useNearViewport() {
   return { ref, near }
 }
 
-function sameOriginDocument(iframe: HTMLIFrameElement | null): Document | null {
+export function sameOriginDocument(iframe: HTMLIFrameElement | null): Document | null {
   try {
     return iframe?.contentDocument ?? null
   } catch {
@@ -136,7 +140,7 @@ function useFrameHealth(onHitTesting: (sameOrigin: boolean) => void) {
 }
 
 /** Keeps the page's shortcuts alive while focus is inside the story; re-attached per load. */
-function useFrameKeys() {
+export function useFrameKeys() {
   const detach = useRef<(() => void) | null>(null)
   const attach = useCallback((iframe: HTMLIFrameElement) => {
     detach.current?.()
@@ -193,7 +197,7 @@ export function PinOverlay({ variantKey, width, scale, annotate, pins, onClick }
         .filter((p) => p.width === width)
         .map((p) => (
           <span key={p.id} className="pin" style={{ left: p.x * scale, top: p.y * scale }}>
-            {p.id.split('-').pop()}
+            {pinNumber(p.id)}
           </span>
         ))}
     </div>
@@ -217,6 +221,7 @@ export function Frame(props: FrameProps) {
   const health = useFrameHealth(props.onHitTesting)
   const { height, watch } = useFittedHeight(props.height, props.maxHeight)
   const attachKeys = useFrameKeys()
+  const sendArgs = useLiveArgs(iframe, variant.storyId, props.liveArgs)
 
   const onOverlayClick = (e: MouseEvent<HTMLDivElement>) => {
     const pin = pointerPin(e, scale, width, height)
@@ -246,6 +251,7 @@ export function Frame(props: FrameProps) {
               health.onLoad(e.currentTarget)
               watch(e.currentTarget)
               attachKeys(e.currentTarget)
+              sendArgs(e.currentTarget)
             }}
           />
         )}

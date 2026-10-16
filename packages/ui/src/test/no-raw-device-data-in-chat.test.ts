@@ -3,7 +3,7 @@
  * shapes it rejects. Every value below is invented for the test — none is a
  * real device value.
  */
-import { RuleTester } from 'eslint'
+import { Linter, RuleTester } from 'eslint'
 import rule from '../../eslint-rules/no-raw-device-data-in-chat'
 
 const ruleTester = new RuleTester({
@@ -15,6 +15,17 @@ const ruleTester = new RuleTester({
 // assertions silently no-op under this repo's vitest globals (found in
 // VW-381; see no-frozen-theme.test.ts and no-device-internals.test.ts, which
 // carry the broken nested-in-it() shape and so never actually assert).
+function messagesFor(code: string): string[] {
+  const linter = new Linter({ configType: 'flat' })
+  return linter
+    .verify(code, {
+      plugins: { t: { rules: { r: rule as never } } },
+      languageOptions: { ecmaVersion: 2022, sourceType: 'module' },
+      rules: { 't/r': 'error' },
+    })
+    .map((m) => m.message)
+}
+
 describe('no-raw-device-data-in-chat', () => {
   ruleTester.run('no-raw-device-data-in-chat', rule as never, {
     valid: [
@@ -57,5 +68,18 @@ describe('no-raw-device-data-in-chat', () => {
         errors: [{ messageId: 'hyphenatedDataKey' }],
       },
     ],
+  })
+})
+
+describe('no-raw-device-data-in-chat messages', () => {
+  it('hyphenatedDataKey computes the camelCase key', () => {
+    const [message] = messagesFor("const type = 'data-foo-bar'")
+    expect(message).toContain('"data-foo-bar"')
+    expect(message).toContain('`data-fooBar`')
+  })
+
+  it('camel-cases every hyphen after the prefix and ignores trailing text', () => {
+    const [message] = messagesFor("const type = 'data-cable-health-state ok'")
+    expect(message).toContain('`data-cableHealthState`')
   })
 })

@@ -12,6 +12,9 @@ import {
   PersonStandingIcon,
   ScaleIcon,
   AlertTriangleIcon,
+  CircleCheckIcon,
+  OctagonXIcon,
+  CircleDashedIcon,
   TrendingDownIcon,
   CircleSlashIcon,
   AwardIcon,
@@ -21,6 +24,10 @@ import {
   ChevronsDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  CheckMark,
+  SearchIcon,
+  DatabaseIcon,
+  ChartIcon,
 } from './icons'
 
 const meta: Meta = {
@@ -44,7 +51,7 @@ function Swatch({ label, children }: { label: string; children: ReactNode }) {
   return (
     <View className="items-center gap-2">
       {children}
-      <Text className="font-mono text-[10px] text-text-tertiary">{label}</Text>
+      <Text className="font-mono text-[10px] text-text-secondary">{label}</Text>
     </View>
   )
 }
@@ -102,6 +109,21 @@ export const All: Story = {
           <AlertTriangleIcon size={28} />
         </View>
       </Swatch>
+      <Swatch label="CircleCheckIcon">
+        <View className="text-status-success">
+          <CircleCheckIcon size={28} />
+        </View>
+      </Swatch>
+      <Swatch label="OctagonXIcon">
+        <View className="text-status-error">
+          <OctagonXIcon size={28} />
+        </View>
+      </Swatch>
+      <Swatch label="CircleDashedIcon">
+        <View className="text-text-secondary">
+          <CircleDashedIcon size={28} />
+        </View>
+      </Swatch>
       <Swatch label="TrendingDownIcon">
         <View className="text-status-warning">
           <TrendingDownIcon size={28} />
@@ -145,6 +167,26 @@ export const All: Story = {
       <Swatch label="ChevronRightIcon">
         <View className="text-text-primary">
           <ChevronRightIcon size={28} />
+        </View>
+      </Swatch>
+      <Swatch label="CheckMark">
+        <View className="text-text-primary">
+          <CheckMark size={28} />
+        </View>
+      </Swatch>
+      <Swatch label="SearchIcon">
+        <View className="text-text-primary">
+          <SearchIcon size={28} />
+        </View>
+      </Swatch>
+      <Swatch label="DatabaseIcon">
+        <View className="text-text-primary">
+          <DatabaseIcon size={28} />
+        </View>
+      </Swatch>
+      <Swatch label="ChartIcon">
+        <View className="text-text-primary">
+          <ChartIcon size={28} />
         </View>
       </Swatch>
     </View>

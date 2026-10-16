@@ -192,7 +192,7 @@ const meta: Meta<typeof TrainingStatusPage> = {
       },
     },
   },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   args: { title: 'Training Status', meso, muscles },
 }
 

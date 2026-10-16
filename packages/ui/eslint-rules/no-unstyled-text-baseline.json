@@ -1,0 +1,11 @@
+{
+  "src/components/custom/Chat/MessageList.tsx": {
+    "unstyled": 1
+  },
+  "src/components/custom/Prose/MarkdownProse.tsx": {
+    "unstyled": 1
+  },
+  "src/components/shell/workout/PinnedLiveStrip.tsx": {
+    "unstyled": 1
+  }
+}

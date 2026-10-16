@@ -1,6 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useMemo, type ReactNode } from 'react'
 import { Pressable, View } from 'react-native'
+import { cn } from '../../../utils/cn'
 import { Tooltip, useHoverState } from '../../ui/tooltip'
 import { DateTime } from '../../ui/date-time'
 import { Typography } from '../../ui/typography'
@@ -30,6 +31,12 @@ export interface SessionListItemProps {
   /** Renders the selected treatment (raised fill + leading accent bar). */
   selected?: boolean
   onSelect?: () => void
+  /** The row's tab stop, when a list roves focus across its rows. Omitted, the row keeps the default. */
+  tabIndex?: 0 | -1
+  /** Receives the row's host node, so a list can move focus to it. */
+  focusRef?: (node: unknown) => void
+  /** Merged over the row's own classes through `cn()`, so a conflicting class wins. */
+  className?: string
 }
 
 /** The row's footer as one string: age, wall-clock length, distinct tasks touched, and the track. */
@@ -124,18 +131,27 @@ export function SessionListItem({
   now,
   selected = false,
   onSelect,
+  tabIndex,
+  focusRef,
+  className,
 }: SessionListItemProps) {
   const refs = useMemo(() => extractTaskRefs(session.body), [session.body])
   return (
     <Pressable
       onPress={onSelect}
+      ref={focusRef}
+      {...(tabIndex === undefined ? {} : { tabIndex })}
       // Raw `role`/`aria-selected` rather than `accessibilityState={{ selected }}`:
       // RNW silently drops the latter, so selection would never reach AT.
       role="option"
       aria-selected={selected}
       accessibilityLabel={`${session.title}, ${sessionRowMeta(session, now, refs.length)}`}
       testID="session-list-item"
-      className={`relative gap-1 rounded-md px-3 py-2 ${selected ? 'bg-surface-raised' : ''}`}
+      className={cn(
+        'relative gap-1 rounded-md px-3 py-2',
+        selected && 'bg-surface-raised',
+        className
+      )}
     >
       {selected ? (
         <View

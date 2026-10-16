@@ -1,10 +1,10 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps, type ViewStyle } from 'react-native'
+import { surfaceGradient } from '../../../theme/gradients'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 import { greyRamp } from '../../../theme/tokens/primitives'
 import { liftStyle } from '../../../theme/lift'
 import { useSurfaceMode } from '../../ui/surface'
-import { alpha } from '../../../utils/colors'
 
 export interface DeviationBarProps extends ViewProps {
   deviation: number
@@ -29,7 +29,6 @@ function getDeviationDescription(deviation: number): string {
 
 export function DeviationBar({ deviation, width, className, ...props }: DeviationBarProps) {
   const mode = useSurfaceMode()
-  const t = getSemanticColors(mode)
   const clamped = Math.max(-1, Math.min(1, deviation))
   const resolvedWidth = width ?? 40
   const dotPosition = ((clamped + 1) / 2) * resolvedWidth
@@ -47,7 +46,7 @@ export function DeviationBar({ deviation, width, className, ...props }: Deviatio
         height: containerHeight,
         width: resolvedWidth,
       }}
-      accessibilityRole="adjustable"
+      accessibilityRole="progressbar"
       accessibilityValue={{ min: -100, max: 100, now: valueNow }}
       accessibilityLabel={`Session deviation: ${getDeviationDescription(clamped)}`}
       testID="deviation-bar"
@@ -63,7 +62,7 @@ export function DeviationBar({ deviation, width, className, ...props }: Deviatio
             width: resolvedWidth,
             borderRadius: 3,
             // react-native-web renders backgroundImage at runtime; not in RN ViewStyle types
-            backgroundImage: `linear-gradient(90deg, ${alpha(t['status-success'], 0.25)} 0%, ${alpha(t['result-neutral'], 0.15)} 50%, ${alpha(t['status-warning'], 0.25)} 100%)`,
+            ...surfaceGradient.deviationTrack(mode),
           } as ViewStyle
         }
       />
@@ -77,7 +76,7 @@ export function DeviationBar({ deviation, width, className, ...props }: Deviatio
           borderColor: greyRamp[50],
           // The dot is a knob resting on the track: one plane of lift. Its light
           // ring is already the edge, so the lift contributes the shadow alone.
-          ...liftStyle(1, 'dark', { rim: 0 }),
+          ...liftStyle(1, mode, { rim: 0 }),
           backgroundColor: getDotColor(clamped, mode),
           left: Math.max(0, Math.min(dotPosition - dotSize / 2, resolvedWidth - dotSize)),
           top: (containerHeight - dotSize) / 2,

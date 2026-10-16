@@ -34,6 +34,17 @@ describe('UnreadBadge', () => {
     expect(screen.getByRole('button')).toHaveTextContent('2+ new messages')
   })
 
+  it('takes its jump label from labels', () => {
+    render(
+      <UnreadBadge
+        count={3}
+        onPress={() => {}}
+        labels={{ newMessages: (shown, count) => `${shown}/${count} nuevos` }}
+      />
+    )
+    expect(screen.getByRole('button', { name: '3/3 nuevos' })).toHaveTextContent('3/3 nuevos')
+  })
+
   it('has no accessibility violations', async () => {
     const { container } = render(<UnreadBadge count={3} onPress={() => {}} />)
     expect(await axe(container)).toHaveNoViolations()

@@ -23,9 +23,21 @@ export interface LiveStripRep {
   zone?: LiveStripZone
 }
 
-/** Same reps by velocity: a rest tick re-renders the strip with equal but new arrays. */
+/** Same reps by velocity and zone: a rest tick re-renders the strip with equal but new arrays. */
 export function sameLiveStripReps(a: readonly LiveStripRep[], b: readonly LiveStripRep[]): boolean {
-  return a === b || (a.length === b.length && a.every((rep, i) => rep.velocity === b[i].velocity))
+  return (
+    a === b ||
+    (a.length === b.length &&
+      a.every((rep, i) => rep.velocity === b[i].velocity && rep.zone === b[i].zone))
+  )
+}
+
+/** Same loss thresholds by value, so a consumer rebuilding the tuple each render does not redraw. */
+export function sameLossThresholds(
+  a?: VelocityLossThresholds,
+  b?: VelocityLossThresholds
+): boolean {
+  return a === b || (a != null && b != null && a.every((t, i) => t === b[i]))
 }
 
 /** The last rep's velocity, or `null` when there is none or it is not a finite number. */

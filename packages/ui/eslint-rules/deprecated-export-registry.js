@@ -60,19 +60,37 @@ function walk(dir, out) {
 }
 
 /**
- * Whether `node` is immediately preceded by a block comment containing
- * `@deprecated`, with nothing but whitespace between them — the same "is this
- * its JSDoc" test an editor's hover tooltip uses.
+ * The first sentence after `@deprecated` in a JSDoc body, with the `*` gutter
+ * and line breaks collapsed: `Use \`Indicator\` (roadmap decision 10) — …`.
+ * A bare tag gives ''. A sentence ends at a `.` followed by whitespace, so
+ * `0.23.0` stays whole.
  */
-function hasLeadingDeprecated(sourceText, comments, node) {
+function firstSentenceOf(commentValue) {
+  const text = commentValue
+    .split('@deprecated')[1]
+    .split(/\n\s*\*?\s*@\w/)[0]
+    .replace(/\n\s*\*/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+  return /^.*?\.(?=\s|$)/.exec(text)?.[0] ?? text
+}
+
+/**
+ * The deprecation sentence when `node` is immediately preceded by a block
+ * comment containing `@deprecated`, with nothing but whitespace between them
+ * (the same "is this its JSDoc" test an editor's hover tooltip uses); null
+ * otherwise.
+ */
+function leadingDeprecation(sourceText, comments, node) {
   for (let i = comments.length - 1; i >= 0; i--) {
     const comment = comments[i]
     if (comment.range[1] > node.range[0]) continue
     const between = sourceText.slice(comment.range[1], node.range[0])
-    if (!/^\s*$/.test(between)) return false
-    return comment.type === 'Block' && /@deprecated/.test(comment.value)
+    if (!/^\s*$/.test(between)) return null
+    const tagged = comment.type === 'Block' && /@deprecated/.test(comment.value)
+    return tagged ? firstSentenceOf(comment.value) : null
   }
-  return false
+  return null
 }
 
 const RESOLVE_EXTENSIONS = ['.tsx', '.ts']
@@ -135,11 +153,11 @@ function addTo(map, key, value) {
 
 function indexNamedExport(registry, source, comments, node, file) {
   const { tagged, edges, explicit } = registry
-  const deprecated = hasLeadingDeprecated(source, comments, node)
+  const deprecation = leadingDeprecation(source, comments, node)
   if (node.declaration) {
     for (const name of declaredNames(node.declaration)) {
       addTo(explicit, file.rel, name)
-      if (deprecated) tagged.add(`${file.rel}::${name}`)
+      if (deprecation !== null) tagged.set(`${file.rel}::${name}`, deprecation)
     }
     return
   }
@@ -149,7 +167,7 @@ function indexNamedExport(registry, source, comments, node, file) {
   for (const specifier of node.specifiers ?? []) {
     const reExportKey = `${file.rel}::${specifier.exported.name}`
     addTo(explicit, file.rel, specifier.exported.name)
-    if (deprecated) tagged.add(reExportKey)
+    if (deprecation !== null) tagged.set(reExportKey, deprecation)
     if (node.source && specifier.local.name === specifier.exported.name) {
       const target = resolveModule(node.source.value, file.abs, file.srcRoot)
       if (target) addEdge(edges, reExportKey, `${target}::${specifier.local.name}`)
@@ -187,7 +205,7 @@ function buildRegistry(srcRoot) {
   }
 
   const registry = {
-    tagged: new Set(), // `${srcRelativeFile}::${name}` directly carries @deprecated
+    tagged: new Map(), // `${srcRelativeFile}::${name}` directly carries @deprecated -> its first sentence
     edges: new Map(), // same-name-forwarding identity graph, both directions
     explicit: new Map(), // file -> names it exports itself, which shadow its `export *`
     stars: new Map(), // file -> files it `export * from`, followed one way only
@@ -211,14 +229,17 @@ function neighborsOf({ edges, explicit, stars }, key) {
   return neighbors
 }
 
-/** Graph walk: deprecated if any reachable node carries the tag; `seen` guards `export *` cycles. */
-function isDeprecated(registry, file, name) {
+/**
+ * Graph walk: the first sentence of the first reachable tag, or null when no
+ * node carries one; `seen` guards `export *` cycles.
+ */
+function deprecationOf(registry, file, name) {
   const start = `${file}::${name}`
   const seen = new Set([start])
   const stack = [start]
   while (stack.length) {
     const key = stack.pop()
-    if (registry.tagged.has(key)) return true
+    if (registry.tagged.has(key)) return registry.tagged.get(key)
     for (const neighbor of neighborsOf(registry, key)) {
       if (!seen.has(neighbor)) {
         seen.add(neighbor)
@@ -226,13 +247,14 @@ function isDeprecated(registry, file, name) {
       }
     }
   }
-  return false
+  return null
 }
 
 const cache = new Map()
 function registryFor(srcRoot) {
   if (!cache.has(srcRoot)) cache.set(srcRoot, buildRegistry(srcRoot))
-  return { isDeprecated: (file, name) => isDeprecated(cache.get(srcRoot), file, name) }
+  const deprecation = (file, name) => deprecationOf(cache.get(srcRoot), file, name)
+  return { deprecation, isDeprecated: (file, name) => deprecation(file, name) !== null }
 }
 
-module.exports = { registryFor, resolveModule, hasLeadingDeprecated }
+module.exports = { registryFor, resolveModule, leadingDeprecation }

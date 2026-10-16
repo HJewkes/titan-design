@@ -1,3 +1,4 @@
+import { compareText } from '../../kit/compareText'
 import {
   forceCollide,
   forceLink,
@@ -11,6 +12,7 @@ import { seededRandom } from '../../kit/seededRandom'
 import type { GraphEdge, GraphLayout, GraphLayoutInput, GraphNode, GraphPoint } from '../types'
 import { LAYOUT_DEFAULTS, clampInt, frameLayout, readingOrder, toSeed } from './layout-geometry'
 
+/** Options of `forceLayout`; both are part of the layout's `key`. */
 export interface ForceLayoutOptions {
   /** Default 1. */
   seed?: number
@@ -23,10 +25,6 @@ export interface SimulateOptions {
   iterations: number
 }
 
-const DEFAULT_SEED = 1
-const DEFAULT_ITERATIONS = 300
-const MIN_ITERATIONS = 1
-const MAX_ITERATIONS = 1000
 const VELOCITY_DECAY = 0.6
 const FINAL_ALPHA = 0.001
 
@@ -37,8 +35,6 @@ interface Body extends SimulationNodeDatum {
   vx: number
   vy: number
 }
-
-const compareText = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0)
 
 /** Edges between two distinct known nodes, copied as plain ids and sorted by source, target, id. */
 function simulationLinks(
@@ -119,13 +115,18 @@ function computeForce({ nodes, edges, width, height }: GraphLayoutInput, options
   }
 }
 
+/**
+ * A force-directed layout: linked nodes sit near each other and unlinked ones are pushed apart, so
+ * distance means connection. Deterministic for a `seed`; it steps `d3-force` a fixed number of
+ * `iterations` with no timer. Asks for arc edges and decluttered labels.
+ */
 export function forceLayout(options: ForceLayoutOptions = {}): GraphLayout {
-  const seed = toSeed(options.seed ?? DEFAULT_SEED)
+  const seed = toSeed(options.seed ?? LAYOUT_DEFAULTS.SEED)
   const iterations = clampInt(
     options.iterations,
-    MIN_ITERATIONS,
-    MAX_ITERATIONS,
-    DEFAULT_ITERATIONS
+    LAYOUT_DEFAULTS.MIN_ITERATIONS,
+    LAYOUT_DEFAULTS.MAX_ITERATIONS,
+    LAYOUT_DEFAULTS.ITERATIONS
   )
   return {
     key: JSON.stringify(['force', seed, iterations]),

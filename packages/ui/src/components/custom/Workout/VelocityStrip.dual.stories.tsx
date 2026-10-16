@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { DualVelocityStrip } from './VelocityStrip'
+import { DualVelocityStrip } from './DualVelocityStrip'
 import {
   LEFT_SLOT,
   RIGHT_SLOT,
@@ -9,7 +9,7 @@ import {
   IN_PROGRESS_LAGGING,
   dualOf,
   wallDecorator,
-} from './velocity-story-kit'
+} from '../../../lab/velocity-story-kit/velocity-story-kit'
 
 /**
  * `DualVelocityStrip` — the strip when the exercise used TWO Voltras.
@@ -42,7 +42,7 @@ const meta: Meta<typeof DualVelocityStrip> = {
   parameters: {
     docs: { description: { component: 'Composes **SetBarChart** · **ChartSideRail**.' } },
   },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   decorators: [wallDecorator],
   argTypes: {
     left: {

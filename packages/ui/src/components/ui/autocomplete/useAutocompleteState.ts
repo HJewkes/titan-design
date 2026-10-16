@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import {
   filterOptions,
   type AutocompleteFilterFn,
@@ -26,6 +26,15 @@ export function useAutocompleteState<T>({
   const [inputValue, setInputValue] = useState('')
   const [isOpen, setIsOpen] = useState(false)
   const [highlightedIndex, setHighlightedIndex] = useState(-1)
+  const blurTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const cancelBlurTimer = useCallback(() => {
+    if (blurTimerRef.current === null) return
+    clearTimeout(blurTimerRef.current)
+    blurTimerRef.current = null
+  }, [])
+
+  useEffect(() => cancelBlurTimer, [cancelBlurTimer])
 
   const selectedOption = useMemo(() => options.find((o) => o.value === value), [options, value])
 
@@ -47,11 +56,13 @@ export function useAutocompleteState<T>({
   const handleSelectOption = useCallback(
     (option: AutocompleteOption<T>) => {
       if (option.isDisabled) return
+      // The pending blur reset holds the pre-click selection and would overwrite this label
+      cancelBlurTimer()
       onChange?.(option.value)
       setInputValue(option.label)
       setIsOpen(false)
     },
-    [onChange]
+    [onChange, cancelBlurTimer]
   )
 
   const handleClear = useCallback(() => {
@@ -70,7 +81,9 @@ export function useAutocompleteState<T>({
 
   const handleBlur = useCallback(() => {
     // Delay to allow click on options
-    setTimeout(() => {
+    cancelBlurTimer()
+    blurTimerRef.current = setTimeout(() => {
+      blurTimerRef.current = null
       setIsOpen(false)
       // Reset input to selected value if nothing new selected
       if (selectedOption) {
@@ -79,7 +92,7 @@ export function useAutocompleteState<T>({
         setInputValue('')
       }
     }, 200)
-  }, [selectedOption])
+  }, [selectedOption, cancelBlurTimer])
 
   return {
     inputValue,

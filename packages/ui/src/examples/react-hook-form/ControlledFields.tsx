@@ -122,8 +122,8 @@ export function ControlledCheckbox<T extends FieldValues>({
             onCheckedChange={field.onChange}
             isInvalid={!!fieldState.error}
           />
-          {fieldState.error && (
-            <Text className="text-xs text-status-error">{fieldState.error.message}</Text>
+          {!!fieldState.error && (
+            <Text className="text-xs text-text-error">{fieldState.error.message}</Text>
           )}
         </View>
       )}
@@ -161,8 +161,8 @@ export function ControlledRadioGroup<T extends FieldValues>({
               </Radio>
             ))}
           </RadioGroup>
-          {fieldState.error && (
-            <Text className="text-xs text-status-error">{fieldState.error.message}</Text>
+          {!!fieldState.error && (
+            <Text className="text-xs text-text-error">{fieldState.error.message}</Text>
           )}
         </View>
       )}

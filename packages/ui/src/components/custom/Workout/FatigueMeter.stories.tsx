@@ -6,7 +6,7 @@ import { Surface } from '../../ui/surface'
 const meta: Meta<typeof FatigueMeter> = {
   title: 'Custom/Workout/DataViz/FatigueMeter',
   component: FatigueMeter,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     value: { control: { type: 'range', min: 0, max: 40, step: 1 } },
   },

@@ -1,5 +1,6 @@
 // Synthetic fixtures for Board. Every name is invented (an editorial pipeline); only the numeric
 // shapes follow the TP-852 Round 0 contract. Deterministic by construction. Not exported from any barrel.
+import { seededRandom } from '../charts/kit/seededRandom'
 import type { BoardColumn, BoardItem, BoardLane } from './types'
 
 export interface BoardFixture {
@@ -89,11 +90,7 @@ const VERY_LARGE_LANES: BoardLane[] = Array.from({ length: 8 }, (_, i) => ({
 }))
 
 function veryLargeItems(): BoardItem[] {
-  let state = 20261003
-  const random = (): number => {
-    state = (state * 1664525 + 1013904223) % 4294967296
-    return state / 4294967296
-  }
+  const random = seededRandom(20261003)
   const lastColumn = COLUMNS.length - 1
   return Array.from({ length: 900 }, (_, n) => {
     const columnIndex = n < 432 ? lastColumn : Math.floor(random() * lastColumn)

@@ -1,6 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, Text } from 'react-native'
-import { RestTimer, ExerciseCard, Metric, MetricGroup, type SetRowProps } from '../../components'
+import { Metric, MetricGroup } from '../../components'
+import { RestTimer, ExerciseCard, type SetRowProps } from '../../workout'
 import { type DashboardModel, meanVelocity, verdictFromLoss } from './fixtures'
 
 /** Project the fixture's completed + current sets onto the recap card's set rows. */

@@ -1,21 +1,17 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useState } from 'react'
 import { View, type ViewProps } from 'react-native'
+import { cn } from '../../../utils/cn'
 import { Card } from '../../ui/card'
 import { Divider } from '../../ui/divider'
+import { FilePathLabel } from '../../ui/file-path-label'
+import { Pill } from '../../ui/pill'
 import { Tile } from '../../ui/tile'
 import { Typography } from '../../ui/typography'
 import { Eyebrow } from '../../ui/eyebrow'
-import { CoChangeChip } from './CoChangeChip'
 import { FileActivityRow } from './FileActivityRow'
 import { FileActivityDetail, type FileActivityDetailData } from './FileActivityDetail'
-
-/**
- * React Native's `Role` union has `'option'` but omits `'listbox'`, even though
- * RNW passes it straight through to the DOM. Cast once here rather than drop
- * the ARIA parent that makes the option rows valid.
- */
-const LISTBOX_ROLE = 'listbox' as ViewProps['role']
+import { LISTBOX_ROLE } from './aria-roles'
 
 /** A KPI shown in the strip above the explorer. */
 export interface FileHistoryStat {
@@ -28,6 +24,39 @@ export interface CoChangeEdge {
   a: string
   b: string
   count: number
+}
+
+/**
+ * One symmetric "these two files change together" pair as a neutral Pill, with the
+ * session count as a brand Pill in its trailing slot. Basenames only: at chip size
+ * the directory is noise. The count's label is `text-primary`, not `on-brand-primary-subtle`:
+ * nested on the neutral fill, orange on orange-tint falls under AA in dark mode, and no
+ * brand-hued text token clears it in both themes. The tinted fill still carries brand.
+ */
+function CoChangePill({ a, b, count }: CoChangeEdge) {
+  return (
+    <Pill
+      tone="neutral"
+      variant="subtle"
+      size="md"
+      rounded={false}
+      className="gap-2"
+      trailing={
+        <Pill variant="subtle" tone="brand" size="xs" textClassName="text-text-primary">
+          {`${count}×`}
+        </Pill>
+      }
+      accessibilityRole="text"
+      accessibilityLabel={`${a} and ${b} changed together ${count} times`}
+      testID="co-change-chip"
+    >
+      <FilePathLabel path={a} size="sm" baseOnly />
+      <Typography variant="caption" className="text-text-tertiary">
+        ↔
+      </Typography>
+      <FilePathLabel path={b} size="sm" baseOnly />
+    </Pill>
+  )
 }
 
 export interface FileHistoryExplorerProps extends ViewProps {
@@ -56,7 +85,7 @@ export interface FileHistoryExplorerProps extends ViewProps {
  * and the repo's strongest co-change pairs.
  *
  * Composes Card / Tile / Divider plus {@link FileActivityRow},
- * {@link FileActivityDetail}, {@link CoChangeChip} and {@link Eyebrow}.
+ * {@link FileActivityDetail}, {@link Pill} co-change pairs and {@link Eyebrow}.
  * Selection is controlled when `selectedPath` is supplied and internal
  * otherwise.
  *
@@ -88,7 +117,7 @@ export function FileHistoryExplorer({
   }
 
   return (
-    <View className={`gap-3.5 ${className ?? ''}`} testID="file-history-explorer" {...props}>
+    <View className={cn('gap-3.5', className)} testID="file-history-explorer" {...props}>
       <View className="gap-1.5">
         <View className="flex-row flex-wrap gap-2.5">
           {stats.map((s) => (
@@ -128,7 +157,7 @@ export function FileHistoryExplorer({
           <Eyebrow>Strongest co-changes across the repo</Eyebrow>
           <View className="flex-row flex-wrap gap-2">
             {coEdges.slice(0, maxCoEdges).map((e) => (
-              <CoChangeChip key={`${e.a}|${e.b}`} a={e.a} b={e.b} count={e.count} />
+              <CoChangePill key={`${e.a}|${e.b}`} {...e} />
             ))}
           </View>
         </View>

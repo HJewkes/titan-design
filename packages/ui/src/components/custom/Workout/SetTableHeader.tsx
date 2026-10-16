@@ -4,7 +4,7 @@ import { Typography } from '../../ui/typography'
 import { cn } from '../../../utils/cn'
 
 // One header column: its label and its fixed width (PREV is the lone flex column,
-// `undefined`). Order + widths mirror SetRow's cells so headers align over rows.
+// `undefined`).
 type Column = { label: string; width: number | undefined }
 
 export interface SetTableHeaderProps {
@@ -15,6 +15,9 @@ export interface SetTableHeaderProps {
   /** Overridable so a host card can keep its own testID. Default "table-header". */
   testID?: string
 }
+
+/** Fixed column widths, read by the header and by {@link SetRow}'s cells so headers align over rows. */
+export const SET_TABLE_COLUMN_WIDTH = { set: 36, reps: 44, load: 56, rpe: 36 } as const
 
 // The previous-best column is the lone flex column (`undefined` width). When hidden
 // it is dropped entirely (not blanked to a spacer) and the four fixed columns
@@ -29,19 +32,19 @@ const COLUMN_LABEL = 'leading-[normal]'
 /** Columns in order, with the weight column reflecting `unit`; PREV dropped when hidden. */
 function buildColumns(unit: 'lbs' | 'kg', showPrevious: boolean): Column[] {
   return [
-    { label: 'SET', width: 36 },
+    { label: 'SET', width: SET_TABLE_COLUMN_WIDTH.set },
     ...(showPrevious ? [PREV_COLUMN] : []),
-    { label: 'REPS', width: 44 },
-    { label: unit.toUpperCase(), width: 56 },
-    { label: 'RPE', width: 36 },
+    { label: 'REPS', width: SET_TABLE_COLUMN_WIDTH.reps },
+    { label: unit.toUpperCase(), width: SET_TABLE_COLUMN_WIDTH.load },
+    { label: 'RPE', width: SET_TABLE_COLUMN_WIDTH.rpe },
   ]
 }
 
 /**
  * The expanded-set-table column-header row: SET · PREV · REPS · LOAD · RPE, with
  * the weight column reflecting `unit`. `showPrevious={false}` drops PREV (rail
- * density). Its per-column widths mirror {@link SetRow} so headers align over the
- * rows. Extracted from {@link ExerciseCard}'s expanded state for reuse.
+ * density). Its widths come from
+ * {@link SET_TABLE_COLUMN_WIDTH}, shared with {@link SetRow}. Extracted from {@link ExerciseCard}'s expanded state for reuse.
  */
 export function SetTableHeader({
   unit = 'lbs',

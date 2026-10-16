@@ -41,7 +41,14 @@ export function ToolbarButtonMenu({
   return (
     <>
       {/* Backdrop */}
-      <Pressable onPress={onClose} style={StyleSheet.absoluteFill} className="z-40" />
+      <Pressable
+        onPress={onClose}
+        focusable={false}
+        tabIndex={-1}
+        aria-hidden
+        style={StyleSheet.absoluteFill}
+        className="z-40"
+      />
       {/* Menu Content — floating: overlay plane + lift, no ring. */}
       <Surface
         elevation={4}

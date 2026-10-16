@@ -20,6 +20,7 @@ import { buildEntry, exclusionReason } from './catalog/entries.mjs'
 import { ARCH_GRAPH, MATURITY, PREVIEW, readInput, storyFiles } from './catalog/inputs.mjs'
 import { docgen, propsFor } from './catalog/props.mjs'
 import { defaultExportTags, maturityStatuses, readStoryFile } from './catalog/stories.mjs'
+import { isEntryPoint } from './lib/entry.mjs'
 
 export const CATALOG = 'packages/ui/src/arch/component-catalog.json'
 export const DIGEST = 'packages/ui/docs/component-catalog.md'
@@ -43,10 +44,17 @@ function readContext(repoRoot, graph, read) {
 /**
  * The catalog object for the checkout at `repoRoot`. Every non-TypeScript file it reads goes
  * through `read`; docgen reads entry sources through the compiler, with `overlay` (repo-relative
- * path to source text) served in place of the disk.
+ * path to source text) served in place of the disk. `include` narrows the arch-graph components
+ * to a subset, so a test can rebuild a few entries without a full docgen pass.
  */
-export function buildCatalog(repoRoot = REPO_ROOT, read = readInput, overlay = {}) {
-  const graph = JSON.parse(read(repoRoot, ARCH_GRAPH))
+export function buildCatalog(
+  repoRoot = REPO_ROOT,
+  read = readInput,
+  overlay = {},
+  include = () => true
+) {
+  const fullGraph = JSON.parse(read(repoRoot, ARCH_GRAPH))
+  const graph = { ...fullGraph, components: fullGraph.components.filter(include) }
   const context = readContext(repoRoot, graph, read)
   const included = graph.components.filter((component) => !exclusionReason(component))
   const docs = docgen(
@@ -79,7 +87,7 @@ export function serializeCatalog(catalog) {
   return `${JSON.stringify(sortKeys(catalog), null, 2)}\n`
 }
 
-if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
+if (isEntryPoint(import.meta.url, process.argv[1])) {
   const catalog = buildCatalog()
   const serialized = serializeCatalog(catalog)
   fs.writeFileSync(path.join(REPO_ROOT, CATALOG), serialized)

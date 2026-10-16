@@ -29,24 +29,13 @@
  * migrating a file.
  */
 
-const path = require('node:path')
+const { loadBaseline, baselineKey, isAtModuleScope } = require('./ratchet')
+const { onSurfaceRoles } = require('./fix-options')
 
-const FUNCTION_TYPES = new Set([
-  'FunctionDeclaration',
-  'FunctionExpression',
-  'ArrowFunctionExpression',
-])
+const ROLE_LIST = onSurfaceRoles.map((role) => `\`${role}\``).join(', ')
 
 /** The frozen-value key for a non-literal module-scope call. */
 const MODULE_SCOPE_KEY = 'module-scope'
-
-/** True when no enclosing function stands between the call and the module body. */
-function isAtModuleScope(node) {
-  for (let current = node.parent; current; current = current.parent) {
-    if (FUNCTION_TYPES.has(current.type)) return false
-  }
-  return true
-}
 
 /** `getSemanticColors(...)` as a bare identifier or a namespace member. */
 function isGetSemanticColorsCall(node) {
@@ -59,26 +48,6 @@ function isGetSemanticColorsCall(node) {
   )
 }
 
-let baselineCache = null
-function loadBaseline() {
-  if (baselineCache) return baselineCache
-  try {
-    baselineCache = require('./frozen-theme-baseline.json')
-  } catch {
-    baselineCache = {}
-  }
-  return baselineCache
-}
-
-/** Baseline keys are package-relative POSIX paths, so they're stable across machines. */
-function baselineKey(context) {
-  const cwd = context.getCwd?.() ?? process.cwd()
-  return path
-    .relative(cwd, context.filename ?? context.getFilename())
-    .split(path.sep)
-    .join('/')
-}
-
 /** @type {import('eslint').Rule.RuleModule} */
 module.exports = {
   meta: {
@@ -89,10 +58,8 @@ module.exports = {
     },
     schema: [],
     messages: {
-      literalMode:
-        "getSemanticColors('{{mode}}') freezes the component to the {{mode}} palette. Resolve at render time instead: useOnSurfaceColor(role) for text, or getSemanticColors(useSurfaceMode()) for other tokens. See TOKENS.md §3.",
-      moduleScope:
-        'getSemanticColors() at module scope captures one palette at import time, so the component can never follow the theme. Move the call inside the component and read the mode from the nearest Surface (useSurfaceMode / useOnSurfaceColor). See TOKENS.md §3.',
+      literalMode: `getSemanticColors('{{mode}}') freezes the component to the {{mode}} palette. Resolve at render time instead: \`useOnSurfaceColor(role)\` for text (role is one of ${ROLE_LIST}), or getSemanticColors(useSurfaceMode()) for other tokens. See TOKENS.md §3.`,
+      moduleScope: `getSemanticColors() at module scope captures one palette at import time, so the component can never follow the theme. Move the call inside the component and read the mode from the nearest Surface: \`useOnSurfaceColor(role)\` for text (role is one of ${ROLE_LIST}), or getSemanticColors(useSurfaceMode()) for other tokens. See TOKENS.md §3.`,
     },
   },
 
@@ -100,7 +67,9 @@ module.exports = {
     // Remaining allowance per frozen VALUE, not a plain count — same reasoning
     // as no-raw-color: the message lands on the call you just added rather than
     // whichever grandfathered one sits at the boundary.
-    const remaining = new Map(Object.entries(loadBaseline()[baselineKey(context)] ?? {}))
+    const remaining = new Map(
+      Object.entries(loadBaseline('frozen-theme-baseline.json')[baselineKey(context)] ?? {})
+    )
 
     return {
       CallExpression(node) {

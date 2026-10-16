@@ -3,7 +3,6 @@ import { cn } from '../../../utils/cn'
 import { getGlowShadow } from '../../../theme/elevation'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../surface'
-import { greyRamp } from '../../../theme/tokens/primitives'
 
 export type IndicatorSize = 'xs' | 'sm' | 'md' | 'lg'
 export type IndicatorColor =
@@ -64,7 +63,7 @@ const colorStyles: Record<IndicatorColor, string> = {
 function glowColors(mode: ThemeMode): Record<IndicatorColor, string> {
   const t = getSemanticColors(mode)
   return {
-    default: greyRamp[500],
+    default: t['text-tertiary'],
     primary: t['brand-primary'],
     success: t['status-success'],
     live: t['status-live'],
@@ -91,6 +90,8 @@ export function Indicator({
   const colorClass = !customColor ? colorStyles[color] : undefined
   const colorStyle = customColor ? { backgroundColor: customColor } : undefined
 
+  const glowStyle = glow ? getGlowShadow(customColor ?? glowColors(mode)[color], 'subtle') : null
+
   // Expanding-ring pulse: a ping layer behind the solid dot (for live/active status).
   if (pulseMode === 'ping') {
     return (
@@ -106,13 +107,11 @@ export function Indicator({
             colorClass,
             ring && 'border-2 border-background-base'
           )}
-          style={colorStyle}
+          style={[colorStyle, glowStyle]}
         />
       </View>
     )
   }
-
-  const glowStyle = glow ? getGlowShadow(customColor ?? glowColors(mode)[color], 'subtle') : null
 
   return (
     <View

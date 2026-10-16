@@ -1,12 +1,9 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import type { ViewProps } from 'react-native'
-import { primitiveRamps } from '../../../theme/tokens/primitives'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../ui/surface'
 import { SegmentedBar } from './SegmentedBar'
 import { paceTone, paceToneColor } from './paceTone'
-
-/** Default overlay-marker colour: status-live-muted — the SideNav "Live" cue / active-timer green. */
-const DEFAULT_MARKER_COLOR = primitiveRamps.green[500]
 
 export interface SegmentedProgressBarSegment {
   /** Weight of this segment's slot — e.g. an exercise's planned set count. */
@@ -41,13 +38,15 @@ export function SegmentedProgressBar({
   segments,
   value,
   target,
-  markerColor = DEFAULT_MARKER_COLOR,
+  markerColor,
   color,
   height,
   gap,
   ...props
 }: SegmentedProgressBarProps) {
   const mode = useSurfaceMode()
+  // status-live-muted — the SideNav "Live" cue / active-timer green.
+  const marker = markerColor ?? getSemanticColors(mode)['status-live-muted']
   const total = segments.reduce((sum, s) => sum + s.weight, 0)
   const fillColor = color ?? paceToneColor(paceTone(total > 0 ? value / total : 0, target), mode)
 
@@ -60,7 +59,7 @@ export function SegmentedProgressBar({
   return (
     <SegmentedBar
       segments={barSegments}
-      marker={target != null ? { position: target, color: markerColor } : null}
+      marker={target != null ? { position: target, color: marker } : null}
       height={height}
       gap={gap}
       {...props}

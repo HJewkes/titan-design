@@ -297,7 +297,7 @@ function BasisTip({ basis, citation }: { basis: string; citation?: string }) {
   return (
     <View className="gap-stack-sm" style={{ width: TIP_WIDTH }}>
       <Typography variant="body2">{basis}</Typography>
-      {citation && (
+      {!!citation && (
         <Typography variant="caption" color="tertiary">
           {citation}
         </Typography>
@@ -422,23 +422,22 @@ function TitleRow({
       testID="goal-card-title-row"
     >
       <View style={{ flexShrink: 1, minWidth: 0 }}>
-        {size === 'full' ? (
-          <Typography variant="h5" testID="goal-card-title" {...TITLE_GUARD}>
-            {title}
-          </Typography>
-        ) : (
-          <Typography variant="overline" color="tertiary" testID="goal-card-title" {...TITLE_GUARD}>
-            {title}
-          </Typography>
-        )}
+        <Typography
+          variant={size === 'full' ? 'h5' : 'overline'}
+          color={size === 'full' ? 'primary' : 'secondary'}
+          testID="goal-card-title"
+          {...TITLE_GUARD}
+        >
+          {title}
+        </Typography>
       </View>
       <View
         style={{ flexDirection: 'row', alignItems: 'center', flexShrink: 0 }}
         className="gap-inline-sm"
         testID="goal-card-marks"
       >
-        {priority && <GoalPriorityIcon priority={priority} size={markSize} />}
-        {isPR && <PrBadge type="weight" compact animate={false} iconSize={markSize} />}
+        {!!priority && <GoalPriorityIcon priority={priority} size={markSize} />}
+        {!!isPR && <PrBadge type="weight" compact animate={false} iconSize={markSize} />}
         <StatusAffordance badge={badge} collapsed={collapsed} basis={basis} citation={citation} />
       </View>
     </View>
@@ -503,7 +502,7 @@ function CompactBody({
         showWeeks={false}
       />
       <View style={{ minHeight: height }} testID="goal-card-trend">
-        {trend && width !== null && (
+        {!!trend && width !== null && (
           <GoalWeekColumnsChart
             actuals={trend.actuals}
             committed={trend.committed}

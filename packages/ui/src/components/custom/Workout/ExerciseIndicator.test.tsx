@@ -23,9 +23,10 @@ const kinds: { kind: ExerciseIndicatorKind; label: string; tier: StatusToken }[]
   { kind: 'info', label: 'More info', tier: 'status-info' },
 ]
 
-// The dark-mode values the tier tokens must keep resolving to (the pre-port literals).
+// The dark-mode values the tier tokens must keep resolving to (the pre-port literals;
+// status-error moved to red 500 at item 42).
 const DARK_TIER: Record<StatusToken, string> = {
-  'status-error': '#D14343',
+  'status-error': '#E05254',
   'status-warning': '#F9B415',
   'status-success': '#2ED573',
   'status-info': '#2196F3',

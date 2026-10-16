@@ -22,7 +22,7 @@ export function Divider({ orientation = 'horizontal', className, ...props }: Div
     <View
       accessibilityRole="none"
       className={cn(
-        'bg-divider',
+        'bg-hairline',
         orientation === 'horizontal' ? 'h-px w-full' : 'w-px h-full',
         className
       )}

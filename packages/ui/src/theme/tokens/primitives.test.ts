@@ -10,9 +10,8 @@ import {
 } from './primitives'
 import { cvdDelta, minPairwise, relativeLuminance, toOklab } from '../color-checks'
 
-// The categorical CVD floor is a real, checked property; see theme/color-checks.ts for the
-// OKLab and Machado-2009 maths. The palette solver optimises worst-case deut/protanopia
-// (red-green is the binding case), which is what `cvdDelta` measures.
+// The categorical CVD floor lives in theme/token-cvd.test.ts; `cvdDelta` (theme/color-checks.ts)
+// measures the worst-case deut/protanopia the palette solver optimises.
 const HEX6 = /^#[0-9A-F]{6}$/
 const STEPS = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950] as const
 const HUES = ['red', 'orange', 'amber', 'green', 'cyan', 'blue', 'magenta'] as const
@@ -70,17 +69,6 @@ describe('categoricalPalette', () => {
       for (const hex of categoricalPalette[variant]) {
         expect(hex).toMatch(HEX6)
       }
-    }
-  })
-
-  it('holds the deut/protanopia dichromacy floor (deltaE >= 8) through the CVD-safe max', () => {
-    // The first CATEGORICAL_CVD_SAFE_MAX colors are legend-free CVD-safe; the 7th is extended.
-    for (const variant of ['default', 'dark'] as const) {
-      const colors = categoricalPalette[variant].slice(0, CATEGORICAL_CVD_SAFE_MAX)
-      expect(
-        minPairwise(colors),
-        `${variant} min CVD deltaE (first ${CATEGORICAL_CVD_SAFE_MAX})`
-      ).toBeGreaterThanOrEqual(8)
     }
   })
 

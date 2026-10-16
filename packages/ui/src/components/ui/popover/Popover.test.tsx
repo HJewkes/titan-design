@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, act } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Popover, PopoverTrigger, PopoverContent, PopoverCloseButton } from './Popover'
-import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
 describe('Popover', () => {
   it('renders trigger element', () => {
@@ -338,6 +338,43 @@ describe('Popover', () => {
       expect(screen.getByText('Hover content')).toBeInTheDocument()
     })
 
+    it('renders the hover spacer as a View, not a raw div', () => {
+      const { container } = render(
+        <Popover triggerMode="hover" isOpen>
+          <PopoverTrigger>
+            <button>Hover me</button>
+          </PopoverTrigger>
+          <PopoverContent>
+            <span>Hover content</span>
+          </PopoverContent>
+        </Popover>
+      )
+
+      expect(screen.getByText('Hover content')).toBeInTheDocument()
+      expect(container.querySelector('div:not([class])')).toBeNull()
+    })
+
+    it.each(['top', 'bottom', 'left', 'right'] as const)(
+      'offsets the %s hover spacer in pixels, which every supported React Native accepts',
+      (placement) => {
+        const { container } = render(
+          <Popover triggerMode="hover" isOpen placement={placement}>
+            <PopoverTrigger>
+              <button>Hover me</button>
+            </PopoverTrigger>
+            <PopoverContent>
+              <span>Hover content</span>
+            </PopoverContent>
+          </Popover>
+        )
+
+        const transforms = Array.from(container.querySelectorAll<HTMLElement>('[style]'))
+          .map((el) => el.style.transform)
+          .filter(Boolean)
+        expect(transforms).toEqual([expect.stringMatching(/^translate[XY]\(-?8px\)$/)])
+      }
+    )
+
     it('still closes on click outside in hover mode', () => {
       render(
         <Popover triggerMode="hover">
@@ -418,16 +455,23 @@ describe('Popover', () => {
  * Popover's chrome, pinned (AW-142 wave two). Unchanged in pixels.
  */
 describe('Popover geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'Popover.tsx')
-
-  it.each([['the panel', 'rounded-lg p-inset-lg', ['16px']]] as const)(
-    '%s ships `%s`',
-    (_label, classes, pixels) => {
-      expect(source).toContain(classes)
-      const spacing = classes.split(' ').filter((c) => resolveAll([c])[0] !== undefined)
-      expect(resolveAll(spacing)).toEqual([...pixels])
-    }
-  )
+  it('the bottom panel renders its inset and offset', () => {
+    render(
+      <Popover defaultIsOpen>
+        <PopoverTrigger>
+          <button>Open</button>
+        </PopoverTrigger>
+        <PopoverContent>
+          <span>Panel body</span>
+        </PopoverContent>
+      </Popover>
+    )
+    expect(spacingClassesAt(screen.getByText('Panel body').parentElement)).toEqual([
+      'p-inset-lg',
+      'mt-2',
+    ])
+    expect(resolveAll(['p-inset-lg', 'mt-2'])).toEqual(['16px', '8px'])
+  })
 })
 
 describe('Popover defaultIsOpen', () => {

@@ -3,6 +3,7 @@ import { spacingClassesOf, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { MesoCard } from './MesoCard'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import type { WeekRowProps } from './WeekRow'
 
 const weeks: WeekRowProps[] = [
@@ -118,6 +119,18 @@ describe('MesoCard', () => {
       const card = screen.getByTestId('meso-card')
       const style = card.getAttribute('style') ?? ''
       expect(style).toContain('box-shadow')
+    })
+
+    it('renders the brand-primary colour as the highlighted border and the hairline otherwise', () => {
+      const t = getSemanticColors('dark')
+      const { rerender } = render(<MesoCard {...baseProps} highlighted />)
+      expect(screen.getByTestId('meso-card')).toHaveStyle({
+        borderTopColor: t['brand-primary'],
+      })
+      rerender(<MesoCard {...baseProps} />)
+      expect(screen.getByTestId('meso-card')).toHaveStyle({
+        borderTopColor: t['hairline-default'],
+      })
     })
   })
 

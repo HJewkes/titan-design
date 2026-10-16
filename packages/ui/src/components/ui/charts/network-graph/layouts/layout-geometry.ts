@@ -1,3 +1,4 @@
+import { compareText } from '../../kit/compareText'
 import { GRAPH_LABEL_ROOM, GRAPH_NODE_PADDING } from '../network-graph-model'
 import type { GraphPoint } from '../types'
 
@@ -17,6 +18,11 @@ export const LAYOUT_DEFAULTS = {
   REGION_GAP: 32,
   /** Height kept above each region for its label. */
   REGION_LABEL_BAND: 24,
+  /** Force and clustered layouts: the seed and iteration count used when a caller gives none, and the clamp range. */
+  SEED: 1,
+  ITERATIONS: 300,
+  MIN_ITERATIONS: 1,
+  MAX_ITERATIONS: 1000,
   PADDING: GRAPH_NODE_PADDING,
   LABEL_ROOM: GRAPH_LABEL_ROOM,
 } as const
@@ -35,8 +41,6 @@ export interface PackedCircle extends PackCircle {
   cx: number
   cy: number
 }
-
-const compareText = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0)
 
 export const round2 = (value: number) => Math.round(value * 100) / 100 + 0
 

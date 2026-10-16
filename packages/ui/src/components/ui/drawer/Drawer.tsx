@@ -114,7 +114,13 @@ export function Drawer({
     >
       <View className="flex-1">
         {/* Backdrop */}
-        <Pressable onPress={handleOverlayPress} className="absolute inset-0 bg-scrim" />
+        <Pressable
+          onPress={handleOverlayPress}
+          focusable={false}
+          tabIndex={-1}
+          aria-hidden
+          className="absolute inset-0 bg-scrim"
+        />
 
         {/* Drawer Panel — floating: overlay plane + lift, no ring. */}
         <Surface
@@ -130,8 +136,8 @@ export function Drawer({
         >
           {/* Header */}
           {(title || showCloseButton) && (
-            <View className="flex-row items-center justify-between px-inset-xl py-inset-lg border-b border-hairline">
-              {title && (
+            <View className="flex-row items-center justify-between px-inset-xl py-inset-lg">
+              {!!title && (
                 <Text
                   id={titleId}
                   role="heading"
@@ -172,7 +178,7 @@ export interface DrawerHeaderProps extends ViewProps {
  */
 export function DrawerHeader({ className, children, ...props }: DrawerHeaderProps) {
   return (
-    <View className={cn('px-inset-xl py-inset-lg border-b border-hairline', className)} {...props}>
+    <View className={cn('px-inset-xl py-inset-lg', className)} {...props}>
       {children}
     </View>
   )
@@ -217,11 +223,7 @@ export interface DrawerFooterProps extends ViewProps {
 export function DrawerFooter({ className, children, ...props }: DrawerFooterProps) {
   return (
     <View
-      className={cn(
-        'flex-row items-center justify-end gap-3',
-        'px-inset-xl py-inset-lg border-t border-hairline',
-        className
-      )}
+      className={cn('flex-row items-center justify-end gap-3 px-inset-xl py-inset-lg', className)}
       {...props}
     >
       {children}

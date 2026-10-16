@@ -1,6 +1,8 @@
 import React, { forwardRef, useState } from 'react'
 import { TextInput, View, Text, Pressable, type TextInputProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { useSurface, type SurfaceContextValue } from '../surface'
+import { insetFieldStyle } from '../surface/insetField'
 
 export type InputSize = 'sm' | 'md' | 'lg'
 export type InputVariant = 'outline' | 'filled' | 'underline'
@@ -41,9 +43,9 @@ export interface InputProps extends Omit<TextInputProps, 'editable'> {
 }
 
 const sizeStyles: Record<InputSize, string> = {
-  sm: 'h-8 px-3 text-sm',
-  md: 'h-10 px-4 text-base',
-  lg: 'h-12 px-4 text-lg',
+  sm: 'h-control-sm px-3 text-sm',
+  md: 'h-control-md px-4 text-base',
+  lg: 'h-control-lg px-4 text-lg',
 }
 
 const multilineSizeStyles: Record<InputSize, string> = {
@@ -62,8 +64,10 @@ const variantStyles: Record<
     focus: 'border-border-input-focus',
     error: 'border-border-input-error',
   },
+  // The fill is the inset well (`insetFieldFill` of the enclosing plane, see `fieldWell`);
+  // the focus ring replaces the well while the field is focused.
   filled: {
-    base: 'border border-transparent rounded-md bg-surface-input',
+    base: 'border border-transparent rounded-md',
     hover: 'web:hover:border-border-input-hover',
     focus: 'border-border-input-focus bg-transparent',
     error: 'border-border-input-error',
@@ -74,6 +78,15 @@ const variantStyles: Record<
     focus: 'border-border-input-focus',
     error: 'border-border-input-error',
   },
+}
+
+/**
+ * The inset well of the filled field (`insetFieldFill` of the enclosing plane), with the
+ * inset-well recess. Dropped while focused so the focus border reads alone.
+ */
+function fieldWell(variant: InputVariant, isFocused: boolean, surface: SurfaceContextValue) {
+  if (variant !== 'filled' || isFocused) return undefined
+  return insetFieldStyle(surface.level, surface.mode)
 }
 
 /**
@@ -117,6 +130,7 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
   ref
 ) {
   const [isFocused, setIsFocused] = useState(false)
+  const well = fieldWell(variant, isFocused, useSurface())
 
   const handleFocus = (e: TextInputFocusEvent) => {
     setIsFocused(true)
@@ -136,17 +150,19 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
       {label && (
         <Text className="text-sm font-medium text-text-primary">
           {label}
-          {isRequired && <Text className="text-status-error ml-0.5">*</Text>}
+          {isRequired && <Text className="text-text-error ml-0.5">*</Text>}
         </Text>
       )}
 
       <View
+        style={well}
         className={cn(
           'flex-row transition-colors duration-150',
           multiline ? 'items-start' : 'items-center',
           variantStyles[variant].base,
           !isDisabled && !isInvalid && variantStyles[variant].hover,
-          isFocused && variantStyles[variant].focus,
+          // The ring goes on the field box, not the bare text element inside it (TD-765).
+          isFocused && [variantStyles[variant].focus, 'focus-ring'],
           isInvalid && variantStyles[variant].error,
           isDisabled && 'opacity-40 cursor-not-allowed'
         )}
@@ -167,7 +183,7 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
           onFocus={handleFocus}
           onBlur={handleBlur}
           className={cn(
-            'flex-1 text-text-primary',
+            'flex-1 text-text-primary web:outline-none',
             multiline ? multilineSizeStyles[size] : sizeStyles[size],
             leftElement && 'pl-1',
             rightElement && 'pr-1',
@@ -183,7 +199,7 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
 
       {showHelper && <Text className="text-xs text-text-secondary">{helperText}</Text>}
 
-      {showError && <Text className="text-xs text-status-error">{errorMessage}</Text>}
+      {showError && <Text className="text-xs text-text-error">{errorMessage}</Text>}
     </View>
   )
 })

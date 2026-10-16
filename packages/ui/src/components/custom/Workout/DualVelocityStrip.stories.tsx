@@ -1,7 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
-import { DualVelocityStrip } from './VelocityStrip'
+import { DualVelocityStrip } from './DualVelocityStrip'
 import { greyRamp, primitiveColors } from '../../../theme/tokens/primitives'
 
 const PAGE_BG = greyRamp[975]
@@ -15,7 +15,7 @@ const RIGHT = [0.49, 0.47, 0.45, 0.42, 0.4, 0.38]
 const meta: Meta<typeof DualVelocityStrip> = {
   title: 'Custom/Workout/DataViz/DualVelocityStrip',
   component: DualVelocityStrip,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     layout: 'fullscreen',
     docs: {

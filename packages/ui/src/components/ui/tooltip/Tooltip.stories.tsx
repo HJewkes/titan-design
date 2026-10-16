@@ -6,7 +6,7 @@ import { Button, ButtonText } from '../button'
 const meta: Meta<typeof Tooltip> = {
   title: 'Components/Molecules/Tooltip',
   component: Tooltip,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     placement: {
       control: 'select',
@@ -116,6 +116,26 @@ export const WithoutArrow: Story = {
           <ButtonText>Hover me</ButtonText>
         </Button>
       </Tooltip>
+    </View>
+  ),
+}
+
+export const HelpBesideLabel: Story = {
+  args: { label: 'Shown to the athlete on the session card', placement: 'right' },
+  render: (args) => (
+    <View style={{ padding: 100 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+        <Text className="text-text-primary">Session name</Text>
+        <Tooltip {...args}>
+          <Text
+            accessibilityRole="button"
+            accessibilityLabel="Help: session name"
+            className="text-text-secondary"
+          >
+            ?
+          </Text>
+        </Tooltip>
+      </View>
     </View>
   ),
 }

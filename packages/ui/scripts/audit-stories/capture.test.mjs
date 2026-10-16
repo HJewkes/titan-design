@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url'
 import { USAGE, UsageError, parseOptions, resolveOutDir } from '../audit-stories.mjs'
 import {
   MAX_SUMMARY_LINES,
+  addFontSizeDrift,
   exitCodeFor,
   exitCodeForError,
   loadAxeSource,
@@ -155,6 +156,65 @@ describe('exit codes', () => {
 
   it('names every exit code in the usage text', () => {
     for (const code of [0, 1, 2, 64, 70, 130]) expect(USAGE).toMatch(new RegExp(`\\b${code} `))
+  })
+})
+
+describe('font-size drift across widths', () => {
+  const text = (path, size, words = 'Total') => [path, `.t${path}`, words, size]
+  const at = (width, texts, overrides = {}) => frame({ width, texts, warnings: [], ...overrides })
+  const drifts = (entries) =>
+    entries.flatMap((e) => e.warnings.map((w) => ({ width: e.width, theme: e.theme, ...w })))
+
+  it('reports a size change between two widths once, at the outermost path', () => {
+    const entries = [
+      at(360, [text('0', 14), text('0.1', 12, 'kg')]),
+      at(360, [text('0', 14), text('0.1', 12, 'kg')], { theme: 'light' }),
+      at(1280, [text('0', 16), text('0.1', 14, 'kg')]),
+      at(1280, [text('0', 16), text('0.1', 14, 'kg')], { theme: 'light' }),
+    ]
+    addFontSizeDrift(entries)
+    expect(drifts(entries)).toEqual([
+      {
+        width: 1280,
+        theme: 'dark',
+        kind: 'font-size-drift',
+        selector: '.t0',
+        detail: '"Total" is 14px at 360, 16px at 1280',
+      },
+    ])
+  })
+
+  it('names every width once, on the first width that differs', () => {
+    const entries = [at(360, [text('0', 14)]), at(768, [text('0', 16)]), at(1280, [text('0', 16)])]
+    addFontSizeDrift(entries)
+    expect(drifts(entries)).toEqual([
+      expect.objectContaining({
+        width: 768,
+        detail: '"Total" is 14px at 360, 16px at 768, 16px at 1280',
+      }),
+    ])
+  })
+
+  it('does not match text whose element path changes between widths', () => {
+    const entries = [at(360, [text('0.0', 14)]), at(1280, [text('1.0', 16)])]
+    addFontSizeDrift(entries)
+    expect(drifts(entries)).toEqual([])
+  })
+
+  it('does not match a different text at the same path', () => {
+    const entries = [at(360, [text('0', 14, 'Total')]), at(1280, [text('0', 16, 'Sum')])]
+    addFontSizeDrift(entries)
+    expect(drifts(entries)).toEqual([])
+  })
+
+  it('keeps stories apart and skips frames that failed to render', () => {
+    const entries = [
+      at(360, [text('0', 14)]),
+      at(1280, [text('0', 14)], { id: 'other--default' }),
+      at(1280, [text('0', 16)], { rendered: false }),
+    ]
+    addFontSizeDrift(entries)
+    expect(drifts(entries)).toEqual([])
   })
 })
 

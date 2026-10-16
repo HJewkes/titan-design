@@ -151,7 +151,7 @@ Two things argue against it being the whole answer:
 
 1. **Its chrome is hero chrome.** The brand gradient + 3px brand accent say "this is the one
    thing on the page." In a 3–4-up grid of peers, every card shouting that says nothing.
-2. **Its internals are not primitives.** Private `StatusPill`, `MetricCell` and `Gauge` with
+2. **Its internals are not primitives.** Private `StatusPill`, metric cell and `Gauge` with
    raw `fontSize: 10/13/15` `<Text>`s. Adding a `density` prop threads a fifth axis through
    453 lines of already-flagged extraction debt instead of paying it down.
 

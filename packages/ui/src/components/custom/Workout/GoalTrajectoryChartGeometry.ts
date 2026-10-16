@@ -171,6 +171,8 @@ export interface GoalTrajectoryGeometry {
   hasActuals: boolean
   toX: (weekIndex: number) => number
   toY: (value: number) => number
+  /** Width in px of one week's column on the x axis. */
+  weekSpan: number
   /** Value range the plot spans, bottom edge to top edge. */
   domain: { min: number; max: number }
   /** Closed ring: top edge left→right, then bottom edge right→left. */
@@ -465,8 +467,10 @@ function valueScale(input: ScaleInput) {
   return scaleLinear().domain([floor, ceiling]).range([input.plot.bottom, input.plot.top])
 }
 
+// A non-finite reading would reach the line path, the dots and the summary as "NaN".
 function placeActuals(input: GoalTrajectoryGeometryInput) {
   return input.actuals
+    .filter((a) => Number.isFinite(a.value))
     .map((actual, index) => ({ actual, index, week: resolveActualWeek(actual, input.weeks) }))
     .filter(
       (a): a is { actual: GoalActualPoint; index: number; week: number } => a.week !== undefined
@@ -835,6 +839,7 @@ export function deriveTrajectoryGeometry(
     hasActuals: actuals.length > 0,
     toX,
     toY,
+    weekSpan,
     domain: { min: domainMin, max: domainMax },
     bandPolygon: hasBand ? ringOf(slices) : [],
     bandPath: hasBand ? bandPathAt(slices, 1, input.bandCurve) : '',

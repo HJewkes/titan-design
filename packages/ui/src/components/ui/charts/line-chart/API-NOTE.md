@@ -123,7 +123,7 @@ values: a file-level limit would force the y domain down and make the default st
 Illustrative only; not shipped. A node the snapshot predates answers an error envelope, which maps to
 a gap with a reason.
 
-```ts
+```ts fragment
 function fromSnapshots(
   snapshots: Snapshot[],
   answers: Map<number, NodeAnswer>,

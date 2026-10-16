@@ -1,0 +1,46 @@
+{
+  "CLAUDE.md": ["path:stories-smoke.test.tsx", "path:tokens.css", "retired:Gluestack"],
+  "README.md": ["retired:Gluestack"],
+  "docs/ARCHITECTURE.md": ["retired:Gluestack", "retired:lucide-react", "retired:useTheme()"],
+  "docs/STORYBOOK_SETUP.md": ["import:@storybook/react"],
+  "docs/agent-prompts/component-implementation.md": ["path:docs/improved-workflow.md"],
+  "docs/ci-and-scripts.md": ["path:HJewkes/ci/actions/all-green", "path:tokens.css"],
+  "docs/component-implementation-checklist.md": [
+    "path:ComponentName.stories.tsx",
+    "path:ComponentName.test.tsx"
+  ],
+  "docs/design-freeze-workflow.md": ["path:docs/improved-workflow.md"],
+  "packages/ui/DEPRECATIONS.md": [
+    "path:src/dashboard/spa/planner/SessionSummaryPage.tsx",
+    "retired:WORKOUT_TOKENS"
+  ],
+  "packages/ui/README.md": ["import:lucide-react", "retired:Gluestack", "retired:lucide-react"],
+  "packages/ui/REJECTED.md": [
+    "path:calibratingNoteFit.ts",
+    "path:theme/bar-paper.ts",
+    "path:voltras/docs/prototypes"
+  ],
+  "packages/ui/docs/WEB_SETUP.md": ["path:setup-interop.ts"],
+  "packages/ui/docs/audit-stories.md": ["path:dom.json"],
+  "packages/ui/docs/audits/2026-09-08-library-critique.md": [
+    "path:06-lint-guardrails.md",
+    "path:PresetShowcase.stories.tsx",
+    "path:Workout/setHeadingKit.tsx",
+    "path:Workout/velocity-story-kit.tsx",
+    "path:lab/north-star/surfaces.ts",
+    "path:shadows.ts",
+    "path:shell/SessionRailSpecimen",
+    "path:src/stories/ThemePresets.stories.tsx",
+    "path:theme/color-math",
+    "path:theme/color-math.ts",
+    "path:useTheme.ts",
+    "path:utils/format",
+    "path:utils/useTheme.ts"
+  ],
+  "packages/ui/docs/library-roadmap.md": [
+    "path:06-lint-guardrails.md",
+    "path:lab/north-star/surfaces.ts",
+    "path:theme/color-math.ts",
+    "path:utils/useTheme.ts"
+  ]
+}

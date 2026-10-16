@@ -4,6 +4,7 @@ import { render } from '@testing-library/react'
 import { GhostBand, BAND_H, type GhostBandProps } from './GhostBand'
 import { PHASE_AXIS_COLOR, PHASE_AXIS_BASE_COLOR, PACING_TONE } from './fatigue-tokens'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { relativeLuminance } from '../../../theme/color-checks'
 import type { PhaseSegment } from './fatigue-model'
 
 const t = getSemanticColors('dark')
@@ -23,6 +24,13 @@ const band = (segs: PhaseSegment[] = segments, props: Partial<GhostBandProps> = 
       <GhostBand segments={segs} x={x} top={0} height={BAND_H} {...props} />
     </svg>
   ).container
+
+describe('GhostBand assistive-tech exposure', () => {
+  it('hides the decorative band from assistive tech', () => {
+    const c = band(segments, { showLabels: true })
+    expect(c.querySelector('svg > g')).toHaveAttribute('aria-hidden', 'true')
+  })
+})
 
 const geom = (r: Element) => ({
   x: Number(r.getAttribute('x')),
@@ -96,9 +104,10 @@ describe('GhostBand', () => {
     )
     expect(runs[1].fill).toBe(PHASE_AXIS_COLOR.hold)
     expect(runs[1].fill).not.toBe(PHASE_AXIS_COLOR.idle)
-    // A filled hold sits BRIGHTER than idle, an unfilled one darker — never the same.
-    expect(PHASE_AXIS_COLOR.hold).not.toBe(PHASE_AXIS_BASE_COLOR.hold)
-    expect(PHASE_AXIS_BASE_COLOR.hold).not.toBe(PHASE_AXIS_COLOR.idle)
+    // A filled hold sits BRIGHTER than idle, an unfilled one darker — an inverted ramp fails.
+    const lum = relativeLuminance
+    expect(lum(PHASE_AXIS_BASE_COLOR.hold)).toBeLessThan(lum(PHASE_AXIS_COLOR.idle))
+    expect(lum(PHASE_AXIS_COLOR.idle)).toBeLessThan(lum(PHASE_AXIS_COLOR.hold))
   })
 
   it('labels ONLY the movement phases — hold and idle stay unnamed', () => {

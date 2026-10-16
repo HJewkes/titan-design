@@ -4,6 +4,8 @@ node_modules/
 
 # Build outputs
 dist/
+# API Extractor scratch (reports live in packages/ui/api/)
+.api-extractor-temp/
 build/
 storybook-static/
 .turbo/

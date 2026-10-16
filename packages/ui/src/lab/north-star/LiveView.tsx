@@ -1,16 +1,8 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useState, type ReactElement } from 'react'
 import { View, Text, type LayoutChangeEvent } from 'react-native'
-import {
-  LiveAuraFrame,
-  VelocityStrip,
-  TempoDisplay,
-  SetsRepsLoad,
-  ActivityIcon,
-  AlertTriangleIcon,
-  CircleSlashIcon,
-  type IconProps,
-} from '../../components'
+import { LiveAuraFrame, VelocityStrip, TempoDisplay, SetsRepsLoad } from '../../workout'
+import { ActivityIcon, AlertTriangleIcon, CircleSlashIcon, type IconProps } from '../../components'
 import { Tooltip } from '../../components/ui/tooltip/Tooltip'
 import { getSemanticColors } from '../../theme/tokens/semantic'
 import { alpha } from '../../utils/colors'
@@ -173,7 +165,7 @@ function AlertCue({
       <Text style={{ color: tone, fontSize: 13, fontWeight: '700', flexShrink: 0 }}>
         {VERDICT_LABEL[status]}
       </Text>
-      {mode === 'full' && meaningful && (
+      {mode === 'full' && !!meaningful && (
         // Bounded + single-line: ellipsises instead of pushing off the page (full text on hover).
         <Text
           numberOfLines={1}
@@ -354,7 +346,7 @@ export function LiveView({
     // (no radius/border), since it's the section background, not a card within it.
     <LiveAuraFrame category={verdict} style={{ flex: 1, borderRadius: 0, borderWidth: 0 }}>
       <View className="flex-row" style={{ flex: 1 }}>
-        {badgeSlot && <VerticalSlotLabel slot={badgeSlot} />}
+        {!!badgeSlot && <VerticalSlotLabel slot={badgeSlot} />}
         <View
           onLayout={onContentLayout}
           style={{ flex: 1, padding: dual ? 18 : 24, gap: dual ? 8 : 10 }}

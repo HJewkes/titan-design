@@ -8,6 +8,7 @@ Gotchas states are not repeated here, and test-writing traps live in `verify.md`
 - [Token files take additive edits only](#token-files-take-additive-edits-only)
 - [Pulse is opacity, ping is a ring](#pulse-is-opacity-ping-is-a-ring)
 - [Gradients need a native fallback](#gradients-need-a-native-fallback)
+- [react-native-web keeps labels and drops state and hints](#react-native-web-keeps-labels-and-drops-state-and-hints)
 - [Responsive means container-driven](#responsive-means-container-driven)
 - [Barrels and back-compat](#barrels-and-back-compat)
 - [Storybook ids and booting](#storybook-ids-and-booting)
@@ -40,6 +41,22 @@ HTML prototype does not port to native.
 `backgroundImage` is web-only and React Native ignores it. A gradient from `theme/gradients`
 needs a solid `bg-*` className beside it for native. How to resolve the colours is TOKENS.md
 section 3.
+
+## react-native-web keeps labels and drops state and hints
+
+In react-native-web 0.19.13 (`packages/ui/node_modules/react-native-web/dist/cjs/modules/createDOMProps/index.js`):
+
+- `aria-label` and `accessibilityLabel` always reach the DOM as `aria-label` (lines 425-427;
+  `aria-label` wins when both are set). A missing label is never a mapping problem.
+- `accessibilityState` is silently dropped. `View` forwards only the props in its allow-list
+  (`exports/View/index.js:38`, built from `modules/forwardedProps`), and `accessibilityState`
+  is not in it, so `expanded`, `selected` and `checked` never become `aria-*`.
+- `accessibilityHint` has no mapping in `createDOMProps` and is dropped the same way.
+
+Pass the direct `aria-*` props, which all map (`Tabs.tsx` passes `aria-selected={isActive}`,
+`Select.tsx` passes `aria-expanded={isOpen}`). The `PopoverTrigger` a11y failure was a missing
+`role="button"`, not a dropped label. `src/test/rnw-aria-mapping.test.tsx` pins all of this, so a
+react-native-web upgrade that changes it fails there first. Also see verify.md step 7.
 
 ## Responsive means container-driven
 

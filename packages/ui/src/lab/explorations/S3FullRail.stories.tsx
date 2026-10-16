@@ -3,7 +3,7 @@
  * Open item: depth tuning · 4-vs-8px strip height · indicator taxonomy. See DECISIONS-ExerciseRow doc.
  */
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { NavStub, Rail, Page, T_TERTIARY } from '../../components/custom/Workout/setHeadingKit'
+import { NavStub, Rail, Page, T_TERTIARY } from './setHeadingKit'
 import { getSemanticColors } from '../../theme/tokens/semantic'
 
 const t = getSemanticColors('dark')

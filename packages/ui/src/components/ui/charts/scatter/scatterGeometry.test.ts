@@ -5,6 +5,7 @@ import {
   PLOT_LEFT,
   PLOT_RIGHT,
   PLOT_TOP,
+  TICK_COUNT,
   domainOf,
   scatterAriaLabel,
   scatterLayout,
@@ -15,30 +16,54 @@ import {
 } from './scatterGeometry'
 
 describe('domainOf', () => {
-  it('spans the data when no override is given', () => {
-    expect(domainOf([3, -2, 7])).toEqual({ min: -2, max: 7 })
+  it('pads the data span so no mark sits on the plot edge', () => {
+    const d = domainOf([3, -2, 7], 100)
+    expect(d.min).toBeLessThan(-2)
+    expect(d.max).toBeGreaterThan(7)
   })
 
   it('prefers explicit bounds over the data', () => {
-    expect(domainOf([3, -2, 7], 0, 10)).toEqual({ min: 0, max: 10 })
+    expect(domainOf([3, -2, 7], 100, 0, 10)).toEqual({ min: 0, max: 10 })
+  })
+
+  it('keeps one override and derives the other bound from the data', () => {
+    const d = domainOf([3, 7], 100, 0)
+    expect(d.min).toBe(0)
+    expect(d.max).toBeGreaterThan(7)
+  })
+
+  it('keeps min below max when a lone override lies beyond the data', () => {
+    const d = domainOf([1, 2], 100, 5)
+    expect(d.min).toBe(5)
+    expect(d.max).toBeGreaterThan(5)
   })
 
   it('falls back to 0..1 with no data', () => {
-    expect(domainOf([])).toEqual({ min: 0, max: 1 })
+    expect(domainOf([], 100)).toEqual({ min: 0, max: 1 })
   })
 
-  it('pads a single value by a tenth of its magnitude', () => {
-    expect(domainOf([5])).toEqual({ min: 4.5, max: 5.5 })
+  it('widens a single value around itself', () => {
+    const d = domainOf([5], 100)
+    expect(d.min).toBeLessThan(5)
+    expect(d.max).toBeGreaterThan(5)
+    expect((d.min + d.max) / 2).toBeCloseTo(5)
   })
 
-  it('pads a zero-width domain at zero by half a unit', () => {
-    expect(domainOf([0, 0])).toEqual({ min: -0.5, max: 0.5 })
+  it('ignores non-finite values and overrides', () => {
+    const d = domainOf([NaN, 1, Infinity, 3], 100, NaN)
+    expect(d.min).toBeLessThan(1)
+    expect(d.max).toBeGreaterThan(3)
+    expect(d.max).toBeLessThan(4)
   })
 })
 
 describe('ticksOf', () => {
-  it('spaces ticks evenly from min to max inclusive', () => {
-    expect(ticksOf({ min: 0, max: 1 }, 5)).toEqual([0, 0.25, 0.5, 0.75, 1])
+  it('places round ticks inside the domain', () => {
+    expect(ticksOf({ min: 0, max: 1 }, 5)).toEqual([0, 0.2, 0.4, 0.6, 0.8, 1])
+  })
+
+  it('caps the tick count at one more than asked', () => {
+    expect(ticksOf({ min: 170, max: 196 }, 5).length).toBeLessThanOrEqual(6)
   })
 })
 
@@ -82,6 +107,21 @@ describe('scatterLayout', () => {
     const { points } = scatterLayout(data, 200, 100, {}, palette)
     expect(points.map((p) => p.radius)).toEqual([DEFAULT_R, 9, DEFAULT_R])
     expect(points.map((p) => p.color)).toEqual(['#111111', '#abcdef', '#111111'])
+  })
+
+  it('keeps both axes finite when one point is NaN', () => {
+    const data = [
+      { id: 'a', x: 1, y: 2 },
+      { id: 'b', x: NaN, y: NaN },
+      { id: 'c', x: 3, y: 4 },
+    ]
+    const layout = scatterLayout(data, 200, 100, {}, palette)
+    const bounds = [layout.xd.min, layout.xd.max, layout.yd.min, layout.yd.max]
+    expect(bounds.every(Number.isFinite)).toBe(true)
+    const ticks = [...ticksOf(layout.xd, TICK_COUNT), ...ticksOf(layout.yd, TICK_COUNT)]
+    expect(ticks.length).toBeGreaterThan(0)
+    expect(ticks.map(layout.toX).every(Number.isFinite)).toBe(true)
+    expect(ticks.map(layout.toY).every(Number.isFinite)).toBe(true)
   })
 })
 
@@ -188,7 +228,7 @@ describe('referenceSegments', () => {
       ['#000']
     )
     expect(referenceSegments(l, [{ y: 9 }])).toEqual([])
-    expect(l.yd).toEqual({ min: 0, max: 1 })
+    expect(l.yd.max).toBeLessThan(2)
   })
 })
 

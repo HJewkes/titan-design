@@ -11,7 +11,7 @@ const NOW = Date.now()
 const meta: Meta<typeof ScheduleTiles> = {
   title: 'Custom/Workout/ScheduleTiles',
   component: ScheduleTiles,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {
