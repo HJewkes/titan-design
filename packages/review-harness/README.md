@@ -467,6 +467,54 @@ reasoning is recorded and is appended to the rationale. Each becomes the questio
 `recommendation` with `by: "decider"`, hidden until the owner answers (`after-answer`). An
 answer that is not one of the options, or a `questionId` no item has, is refused.
 
+## A packet from CI (TD-920)
+
+`writePacketDir` (`src/packet.ts`) writes a visual review packet for one PR head, in code, with no
+Storybook and no agent-made image. Its input is each visual layer (`component`, `story`) with the
+baselines to show and their bytes on each side, plus the PR, run and main they are bound to;
+`titan-review packet from-ci` gathers that input from one CI run and git.
+
+**Classes.** Against `origin/main`, by git blob id: `unchanged` (counted, not shown), `changed`,
+`new` and `removed`. A layer with no artifact shows no removed images. A changed pair of one size
+gets a diff: CI's `<stem>-diff.png` when its `<stem>-expected.png` is main's bytes and its size
+matches (`diff.source: "ci"`), otherwise pixelmatch at threshold 0.02 (`"computed"`). Both
+`diffPixels` (at 0.02) and `anyChannelPixels` (exact) are recorded; a pair with no differing
+pixel is `pixelIdentical`. A pair that changed size gets `diff: null` and `size`.
+
+**Montage**, one per shown image: `BEFORE | AFTER | DIFF`; `BEFORE | AFTER` aligned top-left on a
+checker, labelled `SIZE 2686>2772 W`; the new image under a magenta `NEW` bar; main's image under a
+red `REMOVED` bar. Small shots are scaled up to 4x; panels stack top to bottom when three would
+not fit 1600 pixels across.
+
+**Output**, staged beside `--out` (default `./packets/<name>-pr<n>-<head12>/`) and swapped in
+whole, so a failure part way leaves any earlier packet as it was:
+
+```
+before/<key>.png  after/<key>.png  diff/<key>.png  montage/<key>.png
+draft.json        packet.json      (packet.json is written last)
+```
+
+`packet.json` is `titan-review/ci-packet@1`:
+
+- `packetId`: the sha256 of the canonical JSON of the repo, PR, head, head tree, run id, main
+  sha and each image's path, change and before and after sha256
+- `repo`, `pr`, `headSha`, `headTree`, `mainSha`, `mergeBase`
+- `ci`: `runId`, `url`, `conclusion`, `visualJob` (the `visual` job's conclusion),
+  `regenerated` and `diagnostics` (each `{component, story}`)
+- `images[]`: `key` (`img-001`, ordinal), `layer`, `path`, `change`, `source` (`artifact` or
+  `git`), `label`, `file` (the montage), `sha256`, `viewport`, `storyId` (story layer),
+  `before` and `after` (`{file, sha256, width, height}`), `diff`, `size`, `pixelIdentical`, and
+  `cause: null` (the packager fills it)
+- `unchanged` (`{component, story}`), `warnings` (main changed a baseline since the merge-base)
+- `draft`: `{file: "draft.json", sha256}`
+
+`draft.json` is a `round@2` draft (never `round.json`): a `STATES` section each for changed, new
+and removed images (empty ones omitted, every frame `unmeasured` in both modes, `baseImage` on
+changed frames only), then a `side` section holding the `--side` questions (a JSON array of
+questions, each put on the PR page), then the one merge-bound Ship question, all in one PR
+group. It must pass the builder rules, the round contract and `lintRound`, or from-ci refuses with
+the problems. Run `titan-review build <out>/draft.json --tree <clone>` on it next.
+
 ## Contrast gate (TD-478)
 
 `titan-review build <draft.json>` measures every story variant at every manifest width in
