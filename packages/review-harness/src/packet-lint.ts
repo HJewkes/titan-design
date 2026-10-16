@@ -252,20 +252,26 @@ async function walkPacketDir(dir: string): Promise<Walked> {
   return walk(dir)
 }
 
-/** Every way `dir` differs from the packet from-ci writes for `opts.gateHead`. */
-export async function lintPacket(
+export interface PacketLintResult {
+  /** packet.json's packetId when it passes the schema, else null. */
+  packetId: string | null
+  problems: PacketLintProblem[]
+}
+
+/** Every way `dir` differs from the packet from-ci writes for `opts.gateHead`, with its id. */
+export async function lintPacketResult(
   dir: string,
   opts: PacketLintOptions
-): Promise<PacketLintProblem[]> {
+): Promise<PacketLintResult> {
   const walked = await walkPacketDir(dir)
   const links = walked.links.map((file) => ({
     rule: 'file-link' as const,
     message: `${file} is a link or not a regular file`,
   }))
   const packet = await readPacket(dir, walked)
-  if ('rule' in packet) return [...links, packet]
+  if ('rule' in packet) return { packetId: null, problems: [...links, packet] }
   const draft = await readJson(dir, walked, DRAFT_FILE)
-  return [
+  const problems = [
     ...links,
     ...bindingProblems(packet, opts),
     ...draftProblems(draft, packet, opts),
@@ -273,4 +279,13 @@ export async function lintPacket(
     ...(await proseProblems(dir, walked, packet, opts)),
     ...(await roundFileProblems(dir, walked, packet, opts, draft)),
   ]
+  return { packetId: packet.packetId, problems }
+}
+
+/** Every way `dir` differs from the packet from-ci writes for `opts.gateHead`. */
+export async function lintPacket(
+  dir: string,
+  opts: PacketLintOptions
+): Promise<PacketLintProblem[]> {
+  return (await lintPacketResult(dir, opts)).problems
 }
