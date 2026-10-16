@@ -15,6 +15,12 @@ export function all(...spans: Span[]): Span;
 export const back: (s?: number) => Easing;
 
 // @public
+export interface BandChip {
+    kind: EvidenceKind;
+    text: string;
+}
+
+// @public
 export function Beat(input: BeatProps): react_jsx_runtime.JSX.Element | null;
 
 // @public
@@ -43,6 +49,22 @@ export interface BeatProps {
 
 // @public
 export function chain(...spans: Span[]): Span;
+
+// @public
+export function ChipBand(input: ChipBandProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface ChipBandProps extends Omit<ViewProps, 'children'> {
+    chips: BandChip[];
+    className?: string;
+    entry?: ChipEntryOptions['entry'];
+    fontPx?: number;
+    frameHeight?: number;
+    max?: number;
+    progress: number;
+    reducedMotion?: boolean;
+    width: number;
+}
 
 // @public
 export interface Clock {
