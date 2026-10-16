@@ -1820,6 +1820,7 @@ export function FatigueLights(input: FatigueLightsProps): react_jsx_runtime.JSX.
 export interface FatigueLightsProps {
     dimensions: FatigueVerdict['dimensions'] | null;
     spread?: boolean;
+    variant?: 'dots' | 'chips';
 }
 
 // @public
@@ -7055,6 +7056,13 @@ export interface ToastProviderProps {
 export type ToastStatus = 'success' | 'error' | 'warning' | 'info';
 
 // @public
+export const TONE_GLYPH: {
+    readonly ok: "success";
+    readonly warn: "warning";
+    readonly alarm: "error";
+};
+
+// @public
 export const TONE_TOKEN: {
     readonly ok: "status-success";
     readonly warn: "status-warning";
@@ -7535,11 +7543,27 @@ export interface VelocitySample {
 }
 
 // @public (undocumented)
-export function VerdictHero(input: VerdictHeroProps): react_jsx_runtime.JSX.Element;
+export function VerdictHero(props: VerdictHeroProps): react_jsx_runtime.JSX.Element;
 
 // @public (undocumented)
-export interface VerdictHeroProps {
+export type VerdictHeroProps = VerdictHeroRpeProps | VerdictHeroWordProps;
+
+// @public
+export interface VerdictHeroRpeProps {
+    lead?: 'rpe';
     rpe: number | null;
+    verdict: FatigueVerdict | null;
+}
+
+// @public
+export interface VerdictHeroWordProps {
+    kicker?: ReactNode;
+    lead: 'word';
+    noVerdict?: {
+        title: string;
+        reason: string;
+    };
+    scale?: 'card' | 'wall';
     verdict: FatigueVerdict | null;
 }
 

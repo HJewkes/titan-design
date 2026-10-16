@@ -28,7 +28,7 @@ const meta: Meta<typeof FatigueLights> = {
   args: {
     variant: 'chips',
     spread: false,
-    dimensions: FATIGUE_STATES[3].model.verdict?.dimensions ?? null,
+    dimensions: { velocityLoss: 'alarm', rom: 'warn', tempo: 'ok' },
   },
   argTypes: {
     variant: { control: 'inline-radio', options: ['dots', 'chips'] },

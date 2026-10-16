@@ -60,7 +60,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | ExerciseIndicator | candidate | custom/Workout | A small circular outlined chip for an exercise heading. | SvgIcon, icons | custom-workout-exerciseindicator--all-kinds |
 | Eyebrow | candidate | ui/eyebrow | Eyebrow — an uppercase micro-label used above a value or a section of content (e.g. "Focused · by rank", a stat tile's caption). | Typography | components-molecules-eyebrow--default |
 | FacetBar | candidate | ui/facet-bar | FacetBar — one labelled row of toggle chips for one facet. | Chip, Eyebrow | components-molecules-facetbar--default |
-| FatigueLights | candidate | custom/Fatigue | — | StatusDot, Tooltip | custom-fatigue-fatigue-lights--across-states |
+| FatigueLights | candidate | custom/Fatigue | — | Pill, StatusDot, StatusGlyph, Tooltip | custom-fatigue-fatigue-lights--across-states |
 | FatigueMeter | candidate | custom/Workout | A fatigue meter: a sliding needle over a fixed green→gold→orange→red velocity-loss gradient with VL10/VL20/VL30/stop scale markers. | ZoneTrack | custom-workout-dataviz-fatiguemeter--custom-scale |
 | FileActivityDetail | candidate | custom/ActiveWork | FileActivityDetail — the right-hand pane of {@link FileHistoryExplorer }: one file's full mined history. | Card, DataRow, DateTime, Eyebrow, FileActivityGrowthWell, FileActivityRow, FilePathLabel, Pill, Tile, Typography | custom-activework-fileactivitydetail--default |
 | FileActivityRow | candidate | custom/ActiveWork | FileActivityRow — one file in the ranked "hottest files" list: its path, total touches, the read/write/edit split, and a sparkline of per-session growth. | FilePathLabel, SparkBars, Typography | custom-activework-fileactivityrow--default |
@@ -210,7 +210,7 @@ Generated from `src/arch/component-catalog.json` by `pnpm catalog`. Do not edit 
 | VelocityLossBands | review | custom/Workout | Velocity-LOSS decision bands for the `hero` variant: the VL20 / VL30 coaching cues (off the running best) drawn as absolutely-positioned bands + dashed threshold lines BEHIND the bars, on the hero's own peak scale so a bar dropping into the amber → red band reads as "these are your last effective reps". | SetBarChart | — |
 | VelocityStrip | candidate | custom/Workout | — | SetBarChart, VelocityStripVariants | custom-workout-dataviz-velocitystrip--all-views |
 | VelocityStripFramed | review | custom/Workout | — | SetBarChart | — |
-| VerdictHero | candidate | custom/Fatigue | — | — | custom-fatigue-verdict-hero--across-states |
+| VerdictHero | candidate | custom/Fatigue | — | Eyebrow, StatusGlyph, Tooltip, Typography | custom-fatigue-verdict-hero--across-states |
 | VolumeLandmarkBar | candidate | custom/Workout | Horizontal weekly-volume bar with MEV / MAV / MRV landmark ticks and a HEAT-scale fill positioned against the MAV target. | DataRow, Typography, ZoneTrack | custom-workout-dataviz-volumelandmarkbar--all-zones |
 | WeekRow | candidate | custom/Workout | A single week within a mesocycle, showing the week number, its workout pills, and a right-aligned vertical intensity indicator. | IntensityBar, Typography, WorkoutPill | custom-workout-weekrow--current-week |
 | WeightBadge | candidate | custom/Workout | — | BaseBadge, Typography, icons | custom-workout-weightbadge--all-variants |

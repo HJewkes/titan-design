@@ -32,6 +32,7 @@ import type { FatigueVerdict } from './fatigue-model'
 
 /** The RPE-led hero the Live card shows. */
 export interface VerdictHeroRpeProps {
+  /** Lead with the RPE number. The default. */
   lead?: 'rpe'
   /** Exact (unrounded) RPE estimate; rounded to the conventional 0.5 for display. `null` = warming up. */
   rpe: number | null
@@ -41,6 +42,7 @@ export interface VerdictHeroRpeProps {
 
 /** The word-led hero: glyph + verdict word, no RPE. */
 export interface VerdictHeroWordProps {
+  /** Lead with the verdict word and its glyph. */
   lead: 'word'
   /** The aggregated verdict + tone. `null` = warming up (renders neutral). */
   verdict: FatigueVerdict | null
