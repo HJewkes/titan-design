@@ -15649,6 +15649,56 @@
       "tier": "organism"
     },
     {
+      "composes": [
+        "SvgIcon",
+        "icons",
+        "statusIcons"
+      ],
+      "family": "ui/status-glyph",
+      "file": "packages/ui/src/components/ui/status-glyph/StatusGlyph.tsx",
+      "name": "StatusGlyph",
+      "props": [
+        {
+          "default": null,
+          "description": "Tailwind overrides for the wrapper, merged with `cn()`.",
+          "name": "className",
+          "required": false,
+          "type": "string"
+        },
+        {
+          "default": null,
+          "description": "The status word, spoken as the glyph's accessible name.",
+          "name": "label",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "default": "md",
+          "description": "Defaults to `md`.",
+          "name": "size",
+          "required": false,
+          "type": "StatusGlyphSize"
+        },
+        {
+          "default": null,
+          "description": "The condition shown.",
+          "name": "tone",
+          "required": true,
+          "type": "StatusGlyphTone"
+        }
+      ],
+      "purpose": "One status condition as a shaped, coloured mark: circle-check, alert-triangle, octagon-x or a dashed ring.",
+      "sources": {
+        "props": "packages/ui/src/components/ui/status-glyph/StatusGlyph.tsx",
+        "status": "packages/ui/src/components/ui/status-glyph/StatusGlyph.stories.tsx"
+      },
+      "status": "candidate",
+      "storyIds": [
+        "components-atoms-statusglyph--default"
+      ],
+      "tier": "organism"
+    },
+    {
       "composes": [],
       "family": "ui/surface",
       "file": "packages/ui/src/components/ui/surface/Surface.tsx",

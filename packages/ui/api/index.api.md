@@ -1060,6 +1060,12 @@ export type ChipState = (typeof CHIP_STATES)[number];
 export type ChipVariant = 'solid' | 'subtle' | 'outline';
 
 // @public
+export function CircleCheckIcon(props: IconProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export function CircleDashedIcon(props: IconProps): react_jsx_runtime.JSX.Element;
+
+// @public
 export function CircleSlashIcon(props: IconProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -4119,6 +4125,9 @@ export interface NetworkGraphProps extends Omit<ViewProps, 'children'> {
 }
 
 // @public
+export function OctagonXIcon(props: IconProps): react_jsx_runtime.JSX.Element;
+
+// @public
 export function onSurfaceColors(mode: ThemeMode): Record<OnSurfaceRole, string>;
 
 // @public
@@ -6136,6 +6145,23 @@ export interface StateChipProps extends Omit<ViewProps, 'children'> {
 
 // @public
 export type StateChipSize = 'sm' | 'md' | 'lg';
+
+// @public
+export function StatusGlyph(input: StatusGlyphProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface StatusGlyphProps extends Omit<ViewProps, 'children'> {
+    className?: string;
+    label: string;
+    size?: StatusGlyphSize;
+    tone: StatusGlyphTone;
+}
+
+// @public
+export type StatusGlyphSize = 'sm' | 'md' | 'lg';
+
+// @public
+export type StatusGlyphTone = 'success' | 'warning' | 'error' | 'neutral';
 
 // @public
 export function StatusMark(input: StatusMarkProps): react_jsx_runtime.JSX.Element;
