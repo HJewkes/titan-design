@@ -103,6 +103,24 @@ describe('BodyMap', () => {
     })
   })
 
+  describe('legend dots', () => {
+    it('draws a no-verdict muscle as a ring and a verdict muscle as a solid dot', () => {
+      const withNoVerdict: BodyMapData[] = [
+        ...data,
+        { muscleGroup: MuscleGroup.BICEPS, intensity: 0.3, volumeStatus: 'noverdict', weeklySets: 4 },
+      ]
+      render(<BodyMap data={withNoVerdict} view="front" mode="detailed" />)
+
+      const ring = screen.getByTestId('body-map-muscle-dot-biceps')
+      const solid = screen.getByTestId('body-map-muscle-dot-chest')
+
+      expect(ring).toHaveStyle({ borderTopWidth: '1.5px' })
+      expect(ring.getAttribute('style')).not.toContain('background-color')
+      expect(solid.getAttribute('style')).toContain('background-color')
+      expect(solid.getAttribute('style')).not.toContain('border-top-width')
+    })
+  })
+
   describe('size variants', () => {
     it('renders identical figure geometry for size unset and size="phone"', () => {
       const { unmount } = render(<BodyMap data={data} view="front" />)

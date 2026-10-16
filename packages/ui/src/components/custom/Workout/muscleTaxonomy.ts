@@ -353,6 +353,20 @@ export function isVolumeStatusDotRing(status: VolumeStatus | null | undefined): 
   return status === 'noverdict'
 }
 
+/**
+ * A status dot's paint: a `ringWidth` outline for a ring status, a solid fill otherwise.
+ * The chip and both legends share it so "no verdict" is a ring in every view (VW-741).
+ */
+export function volumeStatusDotStyle(
+  status: VolumeStatus | null | undefined,
+  color: string,
+  ringWidth = 1.5
+): { borderWidth: number; borderColor: string } | { backgroundColor: string } {
+  return isVolumeStatusDotRing(status)
+    ? { borderWidth: ringWidth, borderColor: color }
+    : { backgroundColor: color }
+}
+
 /** True when one status is at least as severe as another. */
 export function isMoreSevere(a: VolumeStatus, b: VolumeStatus): boolean {
   return STATUS_SEVERITY[a] >= STATUS_SEVERITY[b]

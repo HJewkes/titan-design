@@ -81,7 +81,10 @@ export const Back: Story = {
   args: { data: backData, view: 'back', mode: 'detailed' },
 }
 
-/** Back and glutes are trained, but their MEV is withheld: no verdict, painted result-neutral (VW-741). */
+/**
+ * Back and glutes are trained, but their MEV is withheld: no verdict, painted result-neutral, and
+ * keyed in the legend by the same ring as `MuscleGroupChip` (VW-741).
+ */
 export const NoVerdict: Story = {
   args: {
     data: backData.map((entry) =>

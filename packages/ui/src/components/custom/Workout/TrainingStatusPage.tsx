@@ -13,6 +13,7 @@ import {
   MuscleGroup,
   VOLUME_STATUS_LABELS,
   getHeatmapColor,
+  volumeStatusDotStyle,
   type VolumeLandmarks,
   type VolumeStatus,
 } from './muscleTaxonomy'
@@ -186,9 +187,10 @@ function StatusLegend({ size = 'phone' }: { size?: BodyMapSize }) {
               width: 8 * ramp,
               height: 8 * ramp,
               borderRadius: 9999,
-              backgroundColor: getHeatmapColor(status, surfaceMode),
+              ...volumeStatusDotStyle(status, getHeatmapColor(status, surfaceMode), 1.5 * ramp),
             }}
             accessibilityElementsHidden
+            testID={`training-status-page-legend-${status}-dot`}
           />
           <Text
             className="text-text-secondary"

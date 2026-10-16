@@ -213,6 +213,15 @@ export const Wall: Story = {
   },
 }
 
+/** Glutes have sets but no verdict: the status legend and the muscle legend both key it as a ring (VW-741). */
+export const NoVerdict: Story = {
+  args: {
+    muscles: muscles.map((m) =>
+      m.muscleGroup === MuscleGroup.GLUTES ? { ...m, volumeStatus: 'noverdict' } : m
+    ),
+  },
+}
+
 export const NeedsAttention: Story = {
   args: {
     meso: {
