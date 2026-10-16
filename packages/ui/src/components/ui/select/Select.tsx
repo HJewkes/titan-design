@@ -1,6 +1,8 @@
 import { useState, createContext, useContext } from 'react'
 import { View, Text, Pressable, ScrollView, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { CheckMark } from '../../icons'
+import { useInsetFieldStyle } from '../surface/insetField'
 import { SelectPopover } from './SelectPopover'
 import { hasSelection, isValueSelected, selectDisplayLabel, toggleValue } from './selectModel'
 
@@ -91,7 +93,7 @@ function triggerClassName(state: TriggerStyleState) {
   return cn(
     'flex-row items-center justify-between rounded-md border',
     size ? sizeStyles[size].trigger : 'px-4 py-2.5',
-    variant === 'filled' ? 'bg-scrim-subtle' : 'bg-surface-base',
+    variant === 'filled' ? undefined : 'bg-surface-base',
     triggerBorderClass(state),
     !isDisabled && !isInvalid && 'web:hover:border-border-input-hover',
     isOpen && 'border-border-input-focus',
@@ -146,6 +148,7 @@ export function Select<T extends string = string>({
   ...props
 }: SelectProps<T>) {
   const [isOpen, setIsOpen] = useState(false)
+  const well = useInsetFieldStyle(variant === 'filled')
 
   const selection = { isMulti, value, values }
 
@@ -182,6 +185,7 @@ export function Select<T extends string = string>({
           accessibilityLabel={accessibilityLabel}
           aria-expanded={isOpen}
           accessibilityState={{ expanded: isOpen, disabled: isDisabled }}
+          style={well}
           className={triggerClassName({ variant, size, isInvalid, isDisabled, isOpen })}
         >
           <Text className={labelClassName(size, hasValue)}>{displayValue}</Text>
@@ -244,17 +248,21 @@ function SelectOption<T>({ option }: SelectOptionComponentProps<T>) {
       {isMulti && (
         <View
           className={cn(
-            'w-4 h-4 mr-3 rounded border',
+            'w-4 h-4 mr-3 rounded border items-center justify-center',
             selected ? 'bg-brand-primary border-brand-primary' : 'border-hairline-strong'
           )}
         >
-          {selected && <Text className="text-on-brand-primary text-xs text-center">✓</Text>}
+          {selected && (
+            <View className="text-on-brand-primary">
+              <CheckMark size={12} strokeWidth={3} />
+            </View>
+          )}
         </View>
       )}
       <Text
         className={cn(
           'text-sm',
-          selected && !isMulti ? 'text-brand-primary font-medium' : 'text-text-primary'
+          selected && !isMulti ? 'text-text-brand font-medium' : 'text-text-primary'
         )}
       >
         {option.label}

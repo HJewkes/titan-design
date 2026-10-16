@@ -68,8 +68,8 @@ export const semanticColorsLight = {
   'brand-primary-subtle': ramp.orange[100],
   'brand-primary-muted': ramp.orange[200],
   'brand-primary-strong': 'rgba(255, 121, 0, 0.50)',
-  'brand-primary-hover': ramp.orange[500],
-  'brand-primary-active': ramp.orange[600],
+  'brand-primary-hover': ramp.orange[600], // TD-774: one rung below the orange[500] solid
+  'brand-primary-active': ramp.orange[700], // TD-774: one rung below hover
 
   'brand-secondary': ramp.cyan[600],
   'brand-secondary-light': ramp.cyan[500],
@@ -139,14 +139,16 @@ export const semanticColorsLight = {
 
   // Solid-variant fill. Success and warning carry the light-tuning values: white
   // on green[600] clears 4.5:1; amber[500] keeps the white label at 3.6:1, a
-  // declared exception in contrast-baseline.json. Primary and info keep their
-  // earlier values until their own light values are decided.
-  'brand-primary-solid': ramp.orange[400],
+  // declared exception in contrast-baseline.json. Brand is the other named
+  // exception of decision 0003: orange[500] under white reads 3.74:1. Info is
+  // blue[600], the fill the info Alert and `status-info` already paint: white
+  // clears 4.5:1 on it (4.89) and read 3.12 on blue[500].
+  'brand-primary-solid': ramp.orange[500], // TD-774: decision 0003, named exception
   'brand-secondary-solid': ramp.cyan[600],
   'status-success-solid': ramp.green[600],
   'status-error-solid': ramp.red[600],
   'status-warning-solid': ramp.amber[500],
-  'status-info-solid': ramp.blue[500],
+  'status-info-solid': ramp.blue[600],
 
   // Text ON a `-subtle` fill — see the on-brand-*-subtle note above.
   'on-status-success-subtle': ramp.green[700],
@@ -284,14 +286,11 @@ export const semanticColorsLight = {
   'scrim-subtle': 'rgba(0, 0, 0, 0.30)',
   'scrim-default': 'rgba(0, 0, 0, 0.50)',
 
-  // Toolbar control faces (TD-264): a white raised face, pressed into a warm
-  // silver. greyRamp[50] and [100] sit within ΔE 3 of other light roles. The
-  // labels flip with the faces, since the face under them now does.
-  'control-face': p.white,
-  'control-face-active': greyRamp[200],
+  // Toolbar disabled face (TD-264). The idle and pressed faces are elevation
+  // planes, so only the disabled face is a token.
   'control-face-disabled': 'rgba(0, 0, 0, 0.06)',
-  'on-control-idle': greyRamp[700], // 7.0:1 on control-face
-  'on-control-active': greyRamp[950], // 11.5:1 on control-face-active
+  'on-control-idle': greyRamp[700], // 7.0:1 on the idle face plane
+  'on-control-active': greyRamp[950], // 11.5:1 on the pressed face plane
   'on-data-strong': semanticPins.onDataStrong,
 
   // Interactive states (interactive-*)
@@ -299,6 +298,7 @@ export const semanticColorsLight = {
   'interactive-focus': 'rgba(55, 65, 81, 0.12)',
   'interactive-active': 'rgba(55, 65, 81, 0.16)',
   'interactive-selected': 'rgba(55, 65, 81, 0.08)',
+  'interactive-selected-solid': greyRamp[700], // selected neutral toggle face; white label 6.98 (console round 7, fb-selected)
   'interactive-disabled': 'rgba(55, 65, 81, 0.12)',
   'interactive-disabled-text': 'rgba(55, 65, 81, 0.26)',
 
@@ -607,10 +607,7 @@ export const semanticColorsDark = {
   // light categorical data fill (Treemap tiles), where every text-* token is
   // far too light to read.
   //
-  // `control-face*` is the toolbar control face itself (TD-264), the values
-  // ToolbarButton painted before it read tokens.
-  'control-face': greyRamp[800],
-  'control-face-active': greyRamp[900],
+  // `control-face-disabled` is the disabled toolbar face (TD-264).
   'control-face-disabled': 'rgba(255, 255, 255, 0.12)',
   'on-control-idle': semanticPins.onControlIdle,
   'on-control-active': p.white,
@@ -621,6 +618,7 @@ export const semanticColorsDark = {
   'interactive-focus': 'rgba(255, 255, 255, 0.12)',
   'interactive-active': 'rgba(255, 255, 255, 0.16)',
   'interactive-selected': 'rgba(255, 255, 255, 0.08)',
+  'interactive-selected-solid': greyRamp[50], // selected neutral toggle face; the text-primary value it had
   'interactive-disabled': 'rgba(255, 255, 255, 0.12)',
   'interactive-disabled-text': 'rgba(255, 255, 255, 0.26)',
 
@@ -764,6 +762,44 @@ export const space = {
 export const size = {
   control: primitiveSizing.control,
   icon: primitiveSizing.icon,
+} as const
+
+/**
+ * Motion timing (TD-838): durations in milliseconds, eases as CSS
+ * `cubic-bezier` control points. Defined once and exposed twice: as the
+ * `--duration-*` / `--ease-*` custom properties (via `tokens/motion-vars.ts`
+ * into `theme/config.ts` and `global.css`) and as `MOTION` in `ui/motion`,
+ * which evaluates the same curves in JS for time-driven motion.
+ *
+ * `video` and `dim` (TD-839) are JS-only: CSS UI never uses them, so they
+ * have no custom property. `video` times are milliseconds, `rise` is px;
+ * `exit` is `exitScale` × `enter`, and `staggerMax` caps a whole cascade.
+ * `dim.context` fades de-emphasised context and greys it. Spring presets are
+ * physics parameters, so they live beside the solver as `MOTION.spring`.
+ */
+export const motion = {
+  duration: { fast: 150, normal: 250, slow: 400 },
+  ease: {
+    out: [0.22, 1, 0.36, 1],
+    inOut: [0.65, 0, 0.35, 1],
+    spring: [0.34, 1.56, 0.64, 1],
+    in: [0.55, 0, 1, 0.45],
+  },
+  video: {
+    emphasis: 500,
+    enter: 1000,
+    hero: 1500,
+    count: 1500,
+    exit: 850,
+    exitScale: 0.85,
+    staggerEach: 60,
+    staggerMax: 500,
+    rise: 40,
+    scaleFrom: 0.97,
+  },
+  dim: {
+    context: { opacity: 0.35, saturation: 0 },
+  },
 } as const
 
 // Export type for theme mode

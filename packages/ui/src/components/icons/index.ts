@@ -2,3 +2,4 @@
 // wrapper (24×24 web SVG + a11y contract + currentColor) and the icon glyphs.
 export { SvgIcon, ICON_VIEWBOX, type IconProps, type SvgIconProps } from './SvgIcon'
 export * from './icons'
+export { TriangleUpIcon, TriangleDownIcon } from './statusIcons'

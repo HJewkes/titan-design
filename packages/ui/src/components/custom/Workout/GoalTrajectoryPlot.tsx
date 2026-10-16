@@ -77,7 +77,7 @@ const FONT_FAMILY = 'Inter, sans-serif'
 /** How much of the deload magenta the column carries over the plane: the owner's pick, round 7. */
 export const DELOAD_WASH = 0.12
 /** How much of the rule colour lights the current week's column, on the full and compact charts alike. */
-export const CURRENT_WEEK_TINT = 0.2
+export const CURRENT_WEEK_TINT = 0.12
 const LABEL_GAP = 8
 export const PLANE_RADIUS = 6
 export const DOT_RADIUS = 4

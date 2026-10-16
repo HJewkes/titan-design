@@ -62,8 +62,7 @@ The `on-*` family is "the label that sits ON this fill". Two members are not fil
   `on-control-active` / `on-control-idle` rather than `on-brand-primary`, even though the dark active
   value is the same white; the role is what makes it survive a retune. The idle and pressed faces are
   elevation planes one step up and one step down from the toolbar's plane (TD-265), so the labels owe
-  AA on every plane a face can land on; `control-face-disabled` paints the disabled face. `control-face`
-  and `control-face-active` (TD-264) have no component reader.
+  AA on every plane a face can land on; `control-face-disabled` paints the disabled face (TD-264).
 - **`on-data-strong`** — a label on a light categorical data tile. Every `text-*` role is far too
   light to read there.
 
@@ -216,6 +215,9 @@ and the line-height that comes with it.
 `overline` and `microLabel` are the same idea at two sizes and in two faces: `overline` is
 12px `font-body`, `microLabel` is 10px `font-sans` for dense tabular headers.
 
+Which variant, face, weight, case and colour each text role takes (headings, titles, labels, lockups,
+controls, chart text) is `docs/typography-rules.md`, rendered live in Storybook `Lab/Typography/Rules`.
+
 Raw sizes, when a variant genuinely does not fit:
 
 | Class       | Size |
@@ -232,7 +234,7 @@ Raw sizes, when a variant genuinely does not fit:
 
 ### Font files are self-hosted (TD-36)
 
-`global.css` declares the three families with `@font-face` rules that point at woff2 files in
+`global.css` declares the four families with `@font-face` rules that point at woff2 files in
 `src/theme/fonts/`. It makes no request to Google Fonts, so a consumer built as one HTML file and
 opened from disk (titan-platform's code-report) renders with no network.
 
@@ -240,22 +242,26 @@ opened from disk (titan-platform's code-report) renders with no network.
 | ------------------------------ | ------- | ---------------------------------------------------------------------- |
 | Inter (`font-sans`)            | 400–700 | latin, latin-ext, cyrillic, cyrillic-ext, greek, greek-ext, vietnamese |
 | Nunito Sans (`font-body`)      | 400–700 | latin, latin-ext, cyrillic, cyrillic-ext, vietnamese                   |
-| Space Grotesk (`font-heading`) | 600–700 | latin, latin-ext, vietnamese                                           |
+| Space Grotesk (`font-heading`) | 300–700 | latin, latin-ext, vietnamese                                           |
+| JetBrains Mono (`font-mono`)   | 400–700 | latin, latin-ext, cyrillic, cyrillic-ext, greek, vietnamese            |
 
 - **The files are Google Fonts' own.** They are the variable woff2 subsets that
   `fonts.googleapis.com/css2` served to Chrome in September 2026 (Inter v20, Nunito Sans v19, Space
-  Grotesk v22), with the same `unicode-range` split, so rendering matches the old CDN import.
+  Grotesk v22; JetBrains Mono v24 in October 2026), with the same `unicode-range` split, so rendering
+  matches the old CDN import.
 - **One rule per subset, with a weight range.** Google repeats each file once per requested weight.
   Titan declares `font-weight: 400 700` once instead, because a single-file build inlines every
   `url()` it meets and the repeats would quadruple the inlined bytes. Weights outside the range
   clamp to it, as the discrete rules did.
-- **Cost.** 392 KB of woff2 in the package. A single-file build that imports `global.css` grows by
-  about 500 KB of base64. A normal build emits the files as hashed assets and the browser fetches only
+- **Cost.** 440 KB of woff2 in the package. A single-file build that imports `global.css` grows by
+  about 590 KB of base64. A normal build emits the files as hashed assets and the browser fetches only
   the subsets a page uses.
-- **Licence.** All three are SIL Open Font License 1.1; each directory carries its `OFL.txt`.
+- **Licence.** All four are SIL Open Font License 1.1; each directory carries its `OFL.txt`.
 - **Native.** NativeWind ignores `@font-face`; native apps still register fonts themselves.
 - **Proof.** `pnpm test:offline-fonts` builds a single-file consumer, opens it over `file://` with
-  every http(s) request aborted, and checks that each family and weight loads.
+  every http(s) request aborted, and checks that each family and weight loads. It then asks Chromium
+  which font painted each sample (`CSS.getPlatformFontsForNode`) and requires the bundled face for
+  every glyph, so a silent system-font fallback, such as a glyph outside the subsets, fails the run.
 
 To refresh the files, fetch the `css2` URL for the same families with a desktop Chrome user agent,
 download each distinct woff2, and keep one rule per family and subset.

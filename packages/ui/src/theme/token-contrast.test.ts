@@ -57,6 +57,34 @@ describe('declared contrast pairs', () => {
       ).toEqual([])
     })
 
+    it(`${mode}: measures the disabled, hover and pressed, and error state pairs`, () => {
+      const ids = measureContrastPairs(mode).map(({ id }) => id)
+
+      expect(ids).toEqual(
+        expect.arrayContaining([
+          'on-brand-primary on brand-primary-solid over surface-base at 40%',
+          'on-brand-primary on brand-primary-dark',
+          'text-primary on interactive-hover over surface-overlay',
+          'text-error on interactive-hover over surface-overlay',
+        ])
+      )
+    })
+
+    it(`${mode}: measures Button outline and ghost labels on their hover washes`, () => {
+      const pairs = CONTRAST_PAIRS.filter(({ modes }) => modes.includes(mode)).map(
+        ({ fg, bg }) => `${fg} on ${bg}`
+      )
+
+      expect(pairs).toEqual(
+        expect.arrayContaining([
+          'text-brand-secondary on brand-secondary-subtle',
+          'text-success on status-success-subtle',
+          'text-error on status-error-subtle',
+          'text-warning on status-warning-subtle',
+        ])
+      )
+    })
+
     it(`${mode}: no pair falls below its floor unless baselined`, () => {
       const { added } = diffAgainstBaseline(failingContrastPairs(mode), baseline[mode])
 
@@ -125,6 +153,14 @@ describe('the contrast gate catches', () => {
     expect(diffAgainstBaseline(failing, []).added).toEqual(failing)
   })
 
+  it('a failing pair two components both paint, listed once', () => {
+    const retuned = { ...colors, 'text-a': '#444444' }
+
+    const failing = failingContrastPairs('dark', [...pairs, ...pairs], retuned)
+
+    expect(failing).toEqual(['text-a on surface-a'])
+  })
+
   it('a baseline entry that now passes', () => {
     expect(diffAgainstBaseline([], ['text-a on surface-a']).stale).toEqual(['text-a on surface-a'])
   })
@@ -142,6 +178,22 @@ describe('the contrast gate catches', () => {
 
     expect(measured.id).toBe('text-a on fill-a over surface-a')
     expect(measured.ratio).toBeCloseTo(contrast('#FFFFFF', '#808080'), 5)
+  })
+
+  it('a disabled control, label and fill faded together over the plane beneath', () => {
+    const disabled: ContrastPair = {
+      fg: 'text-a',
+      bg: 'surface-a',
+      floor: 3,
+      modes: ['dark'],
+      over: ['surface-a'],
+      opacity: 0.5,
+    }
+
+    const [measured] = measureContrastPairs('dark', [disabled], colors)
+
+    expect(measured.id).toBe('text-a on surface-a over surface-a at 50%')
+    expect(measured.ratio).toBeCloseTo(contrast('#808080', '#000000'), 5)
   })
 
   it('a pair that names a colour the theme does not have', () => {

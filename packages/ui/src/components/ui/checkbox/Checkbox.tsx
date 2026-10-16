@@ -2,6 +2,7 @@ import React, { forwardRef } from 'react'
 import { Pressable, View, Text, type PressableProps } from 'react-native'
 import { useControllableState } from '../../../hooks/useControllableState'
 import { cn } from '../../../utils/cn'
+import { CheckMark } from '../../icons'
 
 export type CheckboxSize = 'sm' | 'md' | 'lg'
 
@@ -30,10 +31,13 @@ export interface CheckboxProps extends Omit<PressableProps, 'children'> {
   className?: string
 }
 
-const sizeStyles: Record<CheckboxSize, { box: string; icon: string; label: string }> = {
-  sm: { box: 'w-4 h-4', icon: 'w-2.5 h-2.5', label: 'text-sm' },
-  md: { box: 'w-5 h-5', icon: 'w-3 h-3', label: 'text-base' },
-  lg: { box: 'w-6 h-6', icon: 'w-3.5 h-3.5', label: 'text-lg' },
+const sizeStyles: Record<
+  CheckboxSize,
+  { box: string; icon: string; iconPx: number; label: string }
+> = {
+  sm: { box: 'w-4 h-4', icon: 'w-2.5 h-2.5', iconPx: 10, label: 'text-sm' },
+  md: { box: 'w-5 h-5', icon: 'w-3 h-3', iconPx: 12, label: 'text-base' },
+  lg: { box: 'w-6 h-6', icon: 'w-3.5 h-3.5', iconPx: 14, label: 'text-lg' },
 }
 
 /**
@@ -100,9 +104,13 @@ export const Checkbox = forwardRef<View, CheckboxProps>(function Checkbox(
         )}
       >
         {!!isChecked && !isIndeterminate && (
-          <View className={cn('bg-on-brand-primary rounded-sm', styles.icon)}>
-            {/* Checkmark icon - using a simple view as placeholder */}
-            <Text className="text-brand-primary font-bold text-center leading-none">✓</Text>
+          <View
+            className={cn(
+              'bg-on-brand-primary rounded-sm items-center justify-center text-text-brand',
+              styles.icon
+            )}
+          >
+            <CheckMark size={styles.iconPx} strokeWidth={3} />
           </View>
         )}
         {!!isIndeterminate && <View className={cn('bg-on-brand-primary h-0.5 w-2/3 rounded')} />}

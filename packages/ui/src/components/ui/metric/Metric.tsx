@@ -46,11 +46,11 @@ const alignClasses: Record<MetricAlign, string> = {
 
 const toneClasses: Record<MetricTone, string> = {
   neutral: 'text-text-primary',
-  brand: 'text-brand-primary',
+  brand: 'text-text-brand',
   success: 'text-text-success',
   warning: 'text-text-warning',
   error: 'text-text-error',
-  info: 'text-status-info',
+  info: 'text-text-info',
 }
 
 const trendColors: Record<MetricTrend, string> = {

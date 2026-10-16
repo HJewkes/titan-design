@@ -1,5 +1,9 @@
 import { z } from 'zod'
+import { BLIND_CHOICES, BlindPairSchema, audioDuration, audioPath } from './audio.ts'
 import { SHIP_OPTIONS, contractProblems, duplicates, type Problem } from './contract.ts'
+import { LOCK_AXES } from './locks.ts'
+import { FrameReferenceSchema, MotionSchema, ScaleReferenceSchema, mediaProblems } from './media.ts'
+import { CompareSchema, EvidenceTableSchema, OptionDetailSchema, packetProblems } from './packet.ts'
 
 export const MANIFEST_SCHEMA_ID = 'titan-review/round@2'
 /** A round written before the review contract: the page still reads it, the CLI refuses it. */
@@ -56,15 +60,38 @@ const imagePath = z
     'a .png path relative to the round file, without .. segments'
   )
 
+// A recorded clip, under the same path rules as an image; load time checks the container.
+const clipPath = z
+  .string()
+  .regex(
+    /^(?![/\\]|[A-Za-z]:)(?!(.*[/\\])?\.\.([/\\]|$)).+\.(?:[Mm][Pp]4|[Ww][Ee][Bb][Mm])$/,
+    'an .mp4 or .webm path relative to the round file, without .. segments'
+  )
+
 /** How a frame differs from main, in reg-cli's classes; absent when the round does not say. */
 export const FRAME_CHANGES = ['changed', 'new', 'removed', 'unchanged'] as const
 
-/** A frame is a Storybook story or a static PNG: exactly one of `storyId` and `image`. */
+const SOURCES = ['storyId', 'image', 'clip', 'audio'] as const
+
+/** A frame is a Storybook story, a static PNG, a recorded clip or a sound: exactly one of the four. */
 export const VariantSchema = z
   .object({
     key: id,
     storyId: storyId.optional(),
     image: imagePath.optional(),
+    clip: clipPath.optional(),
+    /** A sound to listen to, played with loop and scrub; it needs its `transcript`. */
+    audio: audioPath.optional(),
+    /** What an audio frame says, shown under its player. */
+    transcript: z.string().min(1).optional(),
+    /** An audio frame's length, when the round wants it stated; the file is the authority. */
+    durationMs: audioDuration.optional(),
+    /** How the frame moves; an animation is reviewed playing, never as sampled states. */
+    motion: MotionSchema.optional(),
+    /** A size question's candidates, rendered together in one full-size frame. */
+    scale: ScaleReferenceSchema.optional(),
+    /** An image or clip that is a true-size frame, checked at load and drawn with a ladder. */
+    frameReference: FrameReferenceSchema.optional(),
     label: z.string().min(1),
     args: z.record(z.string(), argValue).optional(),
     globals: z.record(z.string(), argValue).optional(),
@@ -74,12 +101,19 @@ export const VariantSchema = z
     /** The column this frame's variant unit stands in when alternates are compared side by side. */
     alternate: id.optional(),
     change: z.enum(FRAME_CHANGES).optional(),
+    /** The same frame rendered from the PR's base, so a Diff view sets base beside head. */
+    baseImage: imagePath.optional(),
   })
   .strict()
   .superRefine((v, ctx) => {
-    if ((v.storyId === undefined) === (v.image === undefined))
-      ctx.addIssue({ code: 'custom', message: 'a variant has either storyId or image, not both' })
-    if (v.image === undefined) return
+    if (SOURCES.filter((source) => v[source] !== undefined).length !== 1)
+      ctx.addIssue({
+        code: 'custom',
+        message: 'a variant has exactly one of storyId, image, clip or audio',
+      })
+    for (const [field, message] of mediaProblems(v))
+      ctx.addIssue({ code: 'custom', path: [field], message })
+    if (v.storyId !== undefined) return
     for (const field of ['args', 'globals'] as const)
       if (v[field] !== undefined)
         ctx.addIssue({ code: 'custom', path: [field], message: `${field} need a storyId variant` })
@@ -111,6 +145,23 @@ export const DECISION_KINDS = ['iterate', 'ship', 'decide'] as const
 /** What picking an option means for its PR's Ship: `changes` withholds Ship until a fix round. */
 export const OPTION_OUTCOMES = ['accept', 'changes', 'neutral'] as const
 
+/** A token a question's answer would decide; leaving `mode` out means both modes. */
+const touchedToken = z
+  .object({ name: z.string().min(1), mode: z.enum(['light', 'dark']).optional() })
+  .strict()
+
+/**
+ * What a question with no PR diff would decide: the tokens, components and axis a lock check reads
+ * (`build --locks`). A question on a PR page needs none; its PR head's footprint stands for it.
+ */
+export const QuestionTouchesSchema = z
+  .object({
+    tokens: z.array(touchedToken),
+    components: z.array(z.string().min(1)).default([]),
+    axis: z.enum(LOCK_AXES).optional(),
+  })
+  .strict()
+
 const questionBase = {
   id,
   prompt: z.string().min(1),
@@ -126,6 +177,7 @@ const questionBase = {
    */
   frames: z.array(id).min(1).optional(),
   decision: z.enum(DECISION_KINDS).optional(),
+  touches: QuestionTouchesSchema.optional(),
 }
 
 /** Which variant each option stands for, so one click answers and picks the variant. */
@@ -133,6 +185,13 @@ const optionVariants = z.record(z.string(), id).optional()
 
 /** Each option's outcome, by option text; an option it does not name has no declared outcome. */
 const outcomes = z.record(z.string(), z.enum(OPTION_OUTCOMES)).optional()
+
+/** A decision packet: each option's pros and cons by option text, measured tables, a viewer. */
+const packet = {
+  optionDetails: z.record(z.string(), OptionDetailSchema).optional(),
+  evidence: z.array(EvidenceTableSchema).min(1).optional(),
+  compare: CompareSchema.optional(),
+}
 
 /** Our answer to a question, hidden from the owner until they answer it themselves. */
 export const RecommendationSchema = z
@@ -142,6 +201,10 @@ export const RecommendationSchema = z
     confidence: z.number().min(0).max(1),
     /** The recommender: an agent name or "design-coord". */
     by: z.string().min(1),
+    /** Where the recommended answer is weakest (markdown); hidden with the recommendation. */
+    weakPoint: z.string().regex(/\S/, 'a weak point is not blank').optional(),
+    /** The option to take if the recommended one fails: one of the options, not the answer. */
+    fallback: z.string().optional(),
   })
   .strict()
 const recommendation = RecommendationSchema.optional()
@@ -174,6 +237,7 @@ const PickOneSchema = z
     revisionOption: z.string().optional(),
     optionVariants,
     outcomes,
+    ...packet,
     /** The option the PR at its head already implements; a pick that differs withholds Ship. */
     implemented: z.string().optional(),
     recommendation,
@@ -189,6 +253,7 @@ const PickManySchema = z
     options: z.array(z.string()).min(1),
     optionVariants,
     outcomes,
+    ...packet,
     /** The options the PR at its head already implements; a different set withholds Ship. */
     implemented: z.array(z.string()).min(1).optional(),
     recommendation,
@@ -206,11 +271,30 @@ const ScaleSchema = z
   .refine((q) => q.min < q.max, { message: 'scale min must be below max' })
 const TextSchema = z.object({ ...questionBase, kind: z.literal('text') }).strict()
 
+/**
+ * A blind listening test: each pair is played as A and B in an order seeded per round (`seed`,
+ * else the unit, round and id), the owner picks one per pair, and the engines are revealed only
+ * after the round is sent. The server never sends a take's engine or path to the page.
+ */
+const BlindAbSchema = z
+  .object({
+    ...questionBase,
+    kind: z.literal('blind-ab'),
+    pairs: z.array(BlindPairSchema).min(1),
+    seed: z.string().min(1).optional(),
+  })
+  .strict()
+  .superRefine((q, ctx) => {
+    for (const pair of duplicates(q.pairs.map((p) => p.id)))
+      ctx.addIssue({ code: 'custom', path: ['pairs'], message: `pair ${pair} repeats` })
+  })
+
 export const QuestionSchema = z.discriminatedUnion('kind', [
   PickOneSchema,
   PickManySchema,
   ScaleSchema,
   TextSchema,
+  BlindAbSchema,
 ])
 
 const SIGNS_OFF = 'a pick-one question names the changed part it signs off (signsOff)'
@@ -220,6 +304,7 @@ const ContractQuestionSchema = z.discriminatedUnion('kind', [
   PickManySchema,
   ScaleSchema,
   TextSchema,
+  BlindAbSchema,
 ])
 
 export const THEME_MODES = ['light', 'dark'] as const
@@ -488,11 +573,12 @@ function declaredVariants(decl: Declarations): { field: string; variant: string 
 
 /** A declaration names a frame of its own section (or any frame, at round level). */
 function contrastProblems(m: {
-  variants: { key: string; image?: string }[]
+  variants: { key: string; storyId?: string }[]
   contrast?: Declarations
   sections?: { id: string; variantKeys: string[]; contrast?: Declarations }[]
 }): string[] {
-  const images = new Set(m.variants.filter((v) => v.image !== undefined).map((v) => v.key))
+  // An image or a clip has no DOM to measure, so only it takes a measured ratio.
+  const withoutDom = new Set(m.variants.filter((v) => v.storyId === undefined).map((v) => v.key))
   const scopes = [
     { where: 'contrast', keys: new Set(m.variants.map((v) => v.key)), decl: m.contrast },
     ...(m.sections ?? []).map((s) => ({
@@ -504,14 +590,16 @@ function contrastProblems(m: {
   return scopes.flatMap(({ where, keys, decl }) =>
     (decl ? declaredVariants(decl) : []).flatMap(({ field, variant }) => {
       if (!keys.has(variant)) return [`${where}.${field}: ${variant} is not a frame here`]
-      if (field !== 'knownDefects' && !images.has(variant))
-        return [`${where}.${field}: ${variant} is a story; only an image variant is ${field}`]
+      if (field !== 'knownDefects' && !withoutDom.has(variant))
+        return [
+          `${where}.${field}: ${variant} is a story; only an image or clip variant is ${field}`,
+        ]
       return []
     })
   )
 }
 
-type Recommendable = Exclude<z.output<typeof QuestionSchema>, { kind: 'text' }>
+type Recommendable = Exclude<Question, { kind: 'text' | 'blind-ab' }>
 
 function recommendationProblem(q: Recommendable, answer: Recommendation['answer']) {
   if (q.kind === 'scale')
@@ -529,7 +617,9 @@ function recommendationProblem(q: Recommendable, answer: Recommendation['answer'
 function recommendationProblems(m: { questions: z.output<typeof QuestionSchema>[] }): string[] {
   return m.questions.flatMap((q) => {
     const problem =
-      q.kind !== 'text' && q.recommendation && recommendationProblem(q, q.recommendation.answer)
+      takesRecommendation(q) &&
+      q.recommendation &&
+      recommendationProblem(q, q.recommendation.answer)
     return problem ? [`question ${q.id}: the recommended answer ${problem}`] : []
   })
 }
@@ -542,19 +632,73 @@ export const StackedOnSchema = z
   .object({ repo: repoShape, pr: z.number().int().positive(), headSha: sha40 })
   .strict()
 
-/** One PR at its head and the sections about it, which a page shows together, Ship last. */
-export const PrGroupSchema = z
-  .object({ pr: prPage, headSha: sha40, sectionIds: z.array(id).min(1) })
+/** The kind of change a PR makes, as its header names it. */
+export const PR_KINDS = ['feature', 'correctness', 'refactor', 'security', 'docs'] as const
+
+/** A path the PR changes, and how. */
+const PrFileSchema = z
+  .object({
+    path: z.string().min(1),
+    status: z.enum(['added', 'modified', 'removed', 'renamed']).optional(),
+  })
   .strict()
+
+/** The task a PR implements, and what "done" means for it. */
+const PrTaskSchema = z
+  .object({ id: z.string().min(1), title: z.string().optional(), doneWhen: z.string().optional() })
+  .strict()
+
+/**
+ * One PR at its head and the sections about it, which a page shows together, Ship last. A group's
+ * own `stackedOn` names the base it renders on; groups in one round may sit on different bases. The
+ * rest is read-only context a page shows beside the review: never a question.
+ */
+export const PrGroupSchema = z
+  .object({
+    pr: prPage,
+    headSha: sha40,
+    sectionIds: z.array(id).min(1),
+    stackedOn: StackedOnSchema.optional(),
+    title: z.string().min(1).optional(),
+    kind: z.enum(PR_KINDS).optional(),
+    /** The PR description, as markdown. */
+    description: z.string().optional(),
+    task: PrTaskSchema.optional(),
+    /** A codewatch report on the PR, as markdown. */
+    codewatch: z.string().optional(),
+    files: z.array(PrFileSchema).optional(),
+  })
+  .strict()
+
+type StackedGroup = { pr: string; stackedOn?: { repo: string; pr: number } }
+
+/** `owner/name#n` of the base a PR group is stacked on, or undefined when it is not stacked. */
+export const stackBase = (group: StackedGroup): string | undefined =>
+  group.stackedOn && `${group.stackedOn.repo}#${group.stackedOn.pr}`
+
+function stackProblems(groups: StackedGroup[]): string[] {
+  const bases = new Map(groups.map((g) => [g.pr, stackBase(g)]))
+  return groups.flatMap((g) => {
+    const seen = [g.pr]
+    for (let at = bases.get(g.pr); at !== undefined; at = bases.get(at)) {
+      if (at === g.pr)
+        return [`PR group ${g.pr} is stacked on itself: ${[...seen, at].join(' -> ')}`]
+      if (seen.includes(at)) return []
+      seen.push(at)
+    }
+    return []
+  })
+}
 
 function prGroupProblems(m: {
   sections?: { id: string }[]
-  prGroups?: { pr: string; sectionIds: string[] }[]
+  prGroups?: (StackedGroup & { sectionIds: string[] })[]
 }): string[] {
   if (!m.prGroups) return []
   if (!m.sections) return ['prGroups need sections; group the round into sections']
   const ids = new Set(m.sections.map((s) => s.id))
   return [
+    ...stackProblems(m.prGroups),
     ...m.prGroups.flatMap((g) =>
       g.sectionIds.filter((s) => !ids.has(s)).map((s) => `PR group ${g.pr}: unknown section ${s}`)
     ),
@@ -661,6 +805,7 @@ function manifestProblems(m: z.output<typeof ManifestObject>): Problem[] {
       ...optionVariantProblems(m),
       ...recommendationProblems(m),
       ...mergeBindingProblems(m),
+      ...packetProblems(m),
     ]),
     ...at('contrast', contrastProblems(m)),
   ]
@@ -709,6 +854,32 @@ const answerSchema = z
     recommendation: RecommendationSchema.optional(),
     /** Whether the owner's answer equals the recommendation's (pick-many: the same set). */
     agreed: z.boolean().optional(),
+    /** The owner's notes on options other than (or as well as) the one they picked. */
+    optionNotes: z
+      .array(z.object({ option: z.string(), note: z.string().min(1) }).strict())
+      .optional(),
+    /** The picked option's `after` text, echoed so the agent acting on the pick needs no manifest. */
+    after: z.string().optional(),
+    /**
+     * The answer was given while the recommendation was visible: after a reveal, or in a `shown`
+     * round. Absent means blind. Only on a question with a recommendation and an answer.
+     */
+    recommendationSeen: z.literal(true).optional(),
+    /**
+     * A blind-ab answer: the position picked in each pair. The page sends `choice` only; the
+     * server adds the `engine` it maps to after the round is sent.
+     */
+    pairs: z
+      .array(
+        z
+          .object({
+            pair: z.string(),
+            choice: z.enum(BLIND_CHOICES),
+            engine: z.string().optional(),
+          })
+          .strict()
+      )
+      .optional(),
   })
   .strict()
 
@@ -738,9 +909,11 @@ export const VerdictSchema = z.enum(['chosen', 'rejected', 'maybe']).nullable()
 const variantFeedbackSchema = z
   .object({
     key: z.string(),
-    /** Echoes the frame's source: `storyId` for a story variant, `image` for an image one. */
+    /** Echoes the frame's source: `storyId`, `image`, `clip` or `audio`, whichever it has. */
     storyId: z.string().optional(),
     image: z.string().optional(),
+    clip: z.string().optional(),
+    audio: z.string().optional(),
     verdict: VerdictSchema,
     comment: z.string(),
     annotations: z.array(AnnotationSchema),
@@ -771,10 +944,15 @@ export type Manifest = z.output<typeof ManifestSchema>
 export type Variant = Manifest['variants'][number]
 export type StoryVariant = Variant & { storyId: string }
 export type ImageVariant = Variant & { image: string }
+export type ClipVariant = Variant & { clip: string }
+export type AudioVariant = Variant & { audio: string; transcript: string }
+export type BlindAbQuestion = Extract<Question, { kind: 'blind-ab' }>
 export type Question = Manifest['questions'][number]
 export type TopicPrefix = (typeof TOPIC_PREFIXES)[number]
 export type StackedOn = z.infer<typeof StackedOnSchema>
 export type PrGroup = z.infer<typeof PrGroupSchema>
+export type PrKind = (typeof PR_KINDS)[number]
+export type QuestionTouches = z.output<typeof QuestionTouchesSchema>
 export type DecisionKind = (typeof DECISION_KINDS)[number]
 export type OptionOutcome = (typeof OPTION_OUTCOMES)[number]
 export type FrameChange = (typeof FRAME_CHANGES)[number]
@@ -801,15 +979,42 @@ export function isImageVariant(variant: Variant): variant is ImageVariant {
   return variant.image !== undefined
 }
 
+export function isClipVariant(variant: Variant): variant is ClipVariant {
+  return variant.clip !== undefined
+}
+
+/** The questions that may carry a recommendation: a text or blind-ab question takes none. */
+export function takesRecommendation(
+  q: Question
+): q is Exclude<Question, { kind: 'text' | 'blind-ab' }> {
+  return q.kind !== 'text' && q.kind !== 'blind-ab'
+}
+
+export function isAudioVariant(variant: Variant): variant is AudioVariant {
+  return variant.audio !== undefined
+}
+
 // zod can't express the object-level loopback superRefine as JSON Schema; a pattern
 // on the field is the closest honest approximation for schema consumers.
 const LOOPBACK_URL_PATTERN = '^https?://(127\\.0\\.0\\.1|localhost|\\[::1\\])(:[0-9]+)?(/.*)?$'
 
-// The variant superRefine (exactly one source; args only on stories), as JSON Schema.
+const NO_STORY_FIELDS = {
+  anyOf: [{ required: ['args'] }, { required: ['globals'] }, { required: ['scale'] }],
+}
+
+const NO_FRAME_FIELDS = {
+  anyOf: [...NO_STORY_FIELDS.anyOf, { required: ['frameReference'] }, { required: ['motion'] }],
+}
+
+// The variant superRefine (exactly one source; args, globals and scale only on stories; a frame
+// reference only on images and clips; a clip declares its motion; audio names its transcript and
+// neither moves nor sizes), as JSON Schema.
 const VARIANT_SOURCE = {
   oneOf: [
-    { required: ['storyId'] },
-    { required: ['image'], not: { anyOf: [{ required: ['args'] }, { required: ['globals'] }] } },
+    { required: ['storyId'], not: { required: ['frameReference'] } },
+    { required: ['image'], not: NO_STORY_FIELDS },
+    { required: ['clip', 'motion'], not: NO_STORY_FIELDS },
+    { required: ['audio', 'transcript'], not: NO_FRAME_FIELDS },
   ],
 }
 

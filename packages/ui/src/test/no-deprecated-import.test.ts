@@ -132,9 +132,9 @@ describe('no-deprecated-import', () => {
         filename: newCustomConsumer,
         errors: [{ messageId: 'deprecated' }],
       },
-      // Two `export *` hops, ending on StatusDot's tag on the `custom/Workout` barrel.
+      // The `custom/Workout` barrel import, which carries StatusDot's tag on its re-export line.
       {
-        code: "import { StatusDot } from '@/components'",
+        code: "import { StatusDot } from '@/components/custom/Workout'",
         filename: newUiConsumer,
         errors: [{ messageId: 'deprecated' }],
       },

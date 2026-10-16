@@ -1,2 +1,7 @@
 export { Chip } from './Chip'
 export type { ChipProps, ChipVariant, ChipColor, ChipSize } from './Chip'
+export { StateChip } from './StateChip'
+export type { StateChipProps, StateChipSize } from './StateChip'
+export type { ChipState } from './chipState'
+export { stateChipLook } from './stateChipTimeline'
+export type { StateChipLook } from './stateChipTimeline'
