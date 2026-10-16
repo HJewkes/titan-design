@@ -1,7 +1,8 @@
 import fc from 'fast-check'
 import { describe, expect, it } from 'vitest'
 import { fcAssert } from '../../../../../test/property'
-import { largeFixture, networkGraphFixtures } from '../fixtures'
+import { seededRandom } from '../../kit/seededRandom'
+import { largeFixture, mediumFixture, networkGraphFixtures } from '../fixtures'
 import { GRAPH_LABEL_ROOM, GRAPH_NODE_PADDING, cleanGraph } from '../network-graph-model'
 import type { GraphEdge, GraphLayoutResult, GraphNode } from '../types'
 import { LAYER_COLUMN_WIDTH, LAYER_ROW_HEIGHT, layeredLayout } from './layered-layout-model'
@@ -56,7 +57,7 @@ const rawEdge = (ids: string[]) =>
     a: fc.nat(ids.length - 1),
     b: fc.nat(ids.length - 1),
     id: fc.constantFrom('e1', 'e2', 'e3', undefined),
-    kind: fc.constantFrom('spawn', 'message', undefined),
+    kind: fc.constantFrom('spawn', 'message', '', undefined),
     weight: fc.constantFrom(1, 2.5, null, undefined),
   })
 
@@ -68,7 +69,7 @@ const rawGraphWithShuffles = names.chain((ids) => {
       source: ids[r.a] as string,
       target: ids[r.b] as string,
       ...(r.id ? { id: r.id } : {}),
-      ...(r.kind ? { kind: r.kind } : {}),
+      ...(r.kind !== undefined ? { kind: r.kind } : {}),
       ...(r.weight !== undefined ? { weight: r.weight } : {}),
     }))
     return fc.record({
@@ -90,6 +91,18 @@ describe('layeredLayout', () => {
         expect(run(shuffled.nodes, shuffled.edges)).toEqual(run(direct.nodes, direct.edges))
       })
     )
+  })
+
+  it('compute gives the same result when its nodes arrive shuffled', () => {
+    const { nodes, edges } = cleanGraph(mediumFixture.nodes, mediumFixture.edges)
+    const random = seededRandom(7)
+    const shuffled = nodes
+      .map((node) => ({ node, at: random() }))
+      .sort((a, b) => a.at - b.at)
+      .map(({ node }) => node)
+    expect(shuffled.map((node) => node.id)).not.toEqual(nodes.map((node) => node.id))
+    expect(run(shuffled, edges)).toEqual(run(nodes, edges))
+    expect(run([...nodes].reverse(), edges)).toEqual(run(nodes, edges))
   })
 
   it('gives every input node one finite position and no two nodes share one', () => {

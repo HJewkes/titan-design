@@ -1,5 +1,6 @@
 import { View, Text } from 'react-native'
 import type { getSemanticColors } from '../../../../theme/tokens/semantic'
+import { chartText } from '../kit/chartText'
 import {
   PLOT_LEFT,
   PLOT_TOP,
@@ -105,7 +106,7 @@ export function ScatterFrame({
       {!!axis.xLabel && (
         <Text
           testID="scatter-x-label"
-          className="text-[10px] font-semibold text-text-secondary"
+          className={chartText.axisTitle}
           style={{
             position: 'absolute',
             left: PLOT_LEFT,
@@ -120,7 +121,7 @@ export function ScatterFrame({
       {!!axis.yLabel && (
         <Text
           testID="scatter-y-label"
-          className="text-[10px] font-semibold text-text-secondary"
+          className={chartText.axisTitle}
           style={{
             position: 'absolute',
             left: -innerH / 2 + 6,

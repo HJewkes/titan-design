@@ -452,15 +452,7 @@ export const primitiveTypography = {
     ],
     body: ['Nunito Sans', 'sans-serif'],
     heading: ['Space Grotesk', 'sans-serif'],
-    mono: [
-      'SF Mono',
-      'Monaco',
-      'Inconsolata',
-      'Fira Mono',
-      'Droid Sans Mono',
-      'Source Code Pro',
-      'monospace',
-    ],
+    mono: ['JetBrains Mono', 'monospace'],
   },
   fontSizes: {
     '2xs': '0.625rem', // 10px

@@ -36,10 +36,10 @@ describe('round manifest', () => {
     expect(issues(twelve)).toEqual([])
   })
 
-  it('takes up to 80 variants when the round pages through sections', () => {
+  it('takes any number of variants when the round pages through sections', () => {
     expect(ManifestSchema.parse(pagedImageInput(60)).variants).toHaveLength(60)
-    expect(issues(pagedImageInput(80))).toEqual([])
-    expect(issues(pagedImageInput(81))).toEqual(['variants'])
+    expect(issues(pagedImageInput(81))).toEqual([])
+    expect(issues(pagedImageInput(160))).toEqual([])
   })
 
   it('rejects duplicate variant keys, question ids and widths', () => {
@@ -119,12 +119,17 @@ describe('image variants', () => {
     ).toEqual(['variants.2.args', 'variants.2.globals'])
   })
 
-  it('states the either-or rule in the exported JSON Schema too', () => {
+  it('states the one-source rule in the exported JSON Schema too', () => {
     const items = (manifestJsonSchema() as { properties: { variants: { items: object } } })
       .properties.variants.items
     expect(items).toMatchObject({
       required: ['key', 'label'],
-      oneOf: [{ required: ['storyId'] }, { required: ['image'] }],
+      oneOf: [
+        { required: ['storyId'] },
+        { required: ['image'] },
+        { required: ['clip', 'motion'] },
+        { required: ['audio', 'transcript'] },
+      ],
     })
   })
 })

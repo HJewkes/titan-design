@@ -8,9 +8,27 @@ const bound: Device = { id: 'Voltra-A3F2', nickname: 'Left Cable', slot: 'L', st
 const unbound: Device = { id: 'Voltra-77E0', nickname: 'Spare', slot: null, state: 'available' }
 
 describe('DeviceRow', () => {
-  it('has no accessibility violations', async () => {
-    const { container } = render(<DeviceRow device={bound} onPress={vi.fn()} />)
-    expect(await axe(container)).toHaveNoViolations()
+  it.each(['connected', 'available', 'degraded', 'lost'] as const)(
+    'has no accessibility violations when %s',
+    async (state) => {
+      const { container } = render(<DeviceRow device={{ ...bound, state }} onPress={vi.fn()} />)
+      expect(await axe(container)).toHaveNoViolations()
+    }
+  )
+
+  it.each([
+    ['connected', 'Connected'],
+    ['available', 'Available'],
+    ['degraded', 'Unstable'],
+    ['lost', 'Disconnected'],
+  ] as const)('names the %s dot in words, not only by color', (state, name) => {
+    render(<DeviceRow device={{ ...bound, state }} />)
+    expect(screen.getByRole('img', { name })).toBeInTheDocument()
+  })
+
+  it('names a degraded connection unstable', () => {
+    render(<DeviceRow device={{ ...bound, state: 'degraded' }} />)
+    expect(screen.getByRole('img', { name: /unstable/i })).toBeInTheDocument()
   })
   it('renders the device name and Bluetooth id', () => {
     render(<DeviceRow device={bound} />)

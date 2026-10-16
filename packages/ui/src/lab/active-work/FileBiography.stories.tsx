@@ -242,7 +242,7 @@ function FileBiography() {
             <StatTile
               label="Net growth"
               value={signedCompact(f.netGrowth) + ' ch'}
-              color={f.netGrowth >= 0 ? 'text-brand-primary' : 'text-status-error'}
+              color={f.netGrowth >= 0 ? 'text-brand-primary' : 'text-text-error'}
             />
             <StatTile
               label="Sessions"

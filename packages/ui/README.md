@@ -136,13 +136,13 @@ function App() {
 | Component          | Description                                                                                             |
 | ------------------ | ------------------------------------------------------------------------------------------------------- |
 | **Sidebar**        | Navigation sidebar with collapsible support                                                             |
-| **GoalLiftCard**   | One lift's goal state — next milestone, status pill, committed/stretch progress (root barrel)           |
+| **GoalLiftCard**   | One lift's goal state — next milestone, status pill, committed/stretch progress (`workout` subpath)     |
 | **GoalMuscleCard** | A muscle priority's rollup card, built on `MuscleGlyph` (`bodymap` subpath — see [Subpaths](#subpaths)) |
 
 ## Subpaths
 
-Two exports stay off the root barrel so `@titan-design/react-ui` itself never pulls
-their heavier runtime dependencies:
+Four exports stay off the root barrel, so `@titan-design/react-ui` itself never pulls
+their heavier runtime dependencies or the code of a domain it does not need:
 
 - **`@titan-design/react-ui/bodymap`** — `BodyMap`, `BodyMapDetailPanel`,
   `TrainingStatusPage`, `MuscleGlyph`, `GoalMuscleCard`, the muscle taxonomy
@@ -172,6 +172,19 @@ their heavier runtime dependencies:
 - **`@titan-design/react-ui/pages`** — page-level organisms
   (`ActiveWorkoutPage`, `ExerciseDetailPage`, `ProgramPlanningPage`) kept off
   the root as reference implementations.
+
+- **`@titan-design/react-ui/workout`** — the Workout family (`custom/Workout`:
+  `ExerciseCard`, `SetRow`, `VelocityStrip`, the goal and meso cards, …) and the
+  workout-app chrome that composes it (`WorkoutShell`, `WorkoutTopBar`,
+  `PinnedLiveStrip`, `DeviceMenu`, …), with their types. Moved off the root in 0.22.0.
+
+- **`@titan-design/react-ui/motion`** — the motion kit (`MotionProvider`, `Beat`,
+  `useLocalTime`, `interpolate`, `spring`, `stagger`, `sequence`, the easing
+  curves, `noise2D`, `random`, `MOTION`). Moved off the root in 0.22.0. On web, a
+  `MotionProvider` on a `seekClock` publishes `window.__titanMotion`
+  (`TitanMotionApi`: `seek`, `ready`, `duration`) for a frame-capture renderer.
+  It also carries the video-only components and utils (`EvidenceChip`,
+  `elideSource`), which never shipped on the root.
 
 ## Component API
 
@@ -392,9 +405,10 @@ pnpm build
   top-level group (`Foundations`, `Components`, `Custom`, `Shell`, `Pages`, `Lab`,
   `Docs` — see `eslint-rules/story-title-prefix.js`), so a new story can't invent an
   unlisted sidebar root.
-- `pnpm test` runs `src/arch/arch-graph.freshness.test.ts`, which fails CI when
-  `src/arch/arch-graph.json`'s recorded component-barrel hash no longer matches the
-  current barrels — i.e. when `pnpm arch:graph` needs to be re-run and committed.
+- `pnpm test` runs `src/arch/arch-graph.freshness.test.ts`, which fails CI when a `.tsx`
+  file the `ui`, `custom` or `shell` barrels re-export has no node in
+  `src/arch/arch-graph.json` (the catalog never lists a component without one), or when a
+  node names a file that no longer exists (delete that block by hand).
   Full regeneration doesn't run in CI itself: it needs the `@codewatch/cli` CLI
   (unpublished, see AW-118) and sibling checkouts of every consumer in
   `scripts/arch.config.json`, neither of which a CI runner has; running it there
@@ -407,13 +421,12 @@ pnpm build
   own so the diff stays reviewable.
   `src/arch/component-catalog.json` derives from `arch-graph.json`, so run `pnpm catalog`
   after every arch-graph regen and commit its output too.
-- `src/arch/arch-graph.coverage.test.ts` fails when a `.tsx` file the `ui`, `custom` or
-  `shell` barrels re-export has no arch-graph node, because the catalog never lists a
-  component without one. A feature PR adds the node without a full regen:
+- A feature PR adds a missing node without a full regen:
   `pnpm arch:graph -- --add packages/ui/src/components/ui/kbd/Kbd.tsx` (repeat `--add`
-  for more files) indexes fresh, then writes only those nodes, their outgoing edges, their
-  `summary` membership and `componentBarrelHash`; every other node keeps its committed
-  bytes. Then run `pnpm catalog`. It needs the same codewatch CLI as a full regen
+  for more files) indexes fresh, then writes only those nodes' blocks; every other node
+  keeps its committed bytes. The file stores no edge list, totals, dead lists or barrel
+  hash: `src/arch/arch-graph-derived.ts` derives them from the nodes, so two PRs that each
+  add a component merge in either order. Then run `pnpm catalog`. It needs the same codewatch CLI as a full regen
   (`CODEWATCH_CLI=node <codewatch>/packages/cli/dist/index.js`).
 
 ## Storybook Configuration

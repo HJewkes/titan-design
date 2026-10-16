@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, act } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Popover, PopoverTrigger, PopoverContent, PopoverCloseButton } from './Popover'
-import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
 describe('Popover', () => {
   it('renders trigger element', () => {
@@ -455,16 +455,23 @@ describe('Popover', () => {
  * Popover's chrome, pinned (AW-142 wave two). Unchanged in pixels.
  */
 describe('Popover geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'Popover.tsx')
-
-  it.each([['the panel', 'rounded-lg p-inset-lg', ['16px']]] as const)(
-    '%s ships `%s`',
-    (_label, classes, pixels) => {
-      expect(source).toContain(classes)
-      const spacing = classes.split(' ').filter((c) => resolveAll([c])[0] !== undefined)
-      expect(resolveAll(spacing)).toEqual([...pixels])
-    }
-  )
+  it('the bottom panel renders its inset and offset', () => {
+    render(
+      <Popover defaultIsOpen>
+        <PopoverTrigger>
+          <button>Open</button>
+        </PopoverTrigger>
+        <PopoverContent>
+          <span>Panel body</span>
+        </PopoverContent>
+      </Popover>
+    )
+    expect(spacingClassesAt(screen.getByText('Panel body').parentElement)).toEqual([
+      'p-inset-lg',
+      'mt-2',
+    ])
+    expect(resolveAll(['p-inset-lg', 'mt-2'])).toEqual(['16px', '8px'])
+  })
 })
 
 describe('Popover defaultIsOpen', () => {

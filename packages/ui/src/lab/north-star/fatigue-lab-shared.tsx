@@ -11,7 +11,7 @@
  */
 import { type ReactNode, useState } from 'react'
 import { View, Text, Pressable, type ViewStyle } from 'react-native'
-import { LiveAuraFrame, VelocityStrip } from '../../components'
+import { LiveAuraFrame, VelocityStrip } from '../../workout'
 import { Tooltip } from '../../components/ui/tooltip/Tooltip'
 import { getSemanticColors } from '../../theme/tokens/semantic'
 import { greyRamp, primitiveRamps } from '../../theme/tokens/primitives'

@@ -119,7 +119,7 @@ export const Invalid: Story = {
           isInvalid
           placeholder="Select a fruit..."
         />
-        <Text className="text-sm text-status-error">This field is required</Text>
+        <Text className="text-sm text-text-error">This field is required</Text>
       </View>
     )
   },
@@ -230,7 +230,7 @@ export const Controlled: Story = {
               </Text>
             </View>
           ))}
-          <Text className="text-sm text-status-error underline" onPress={() => setValue(null)}>
+          <Text className="text-sm text-text-error underline" onPress={() => setValue(null)}>
             Clear
           </Text>
         </View>

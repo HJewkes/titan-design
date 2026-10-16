@@ -1,8 +1,10 @@
+import type { ReactNode } from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../../utils/cn'
 import { DATAVIZ_CATEGORICAL_ROLES } from '../../../../theme/extracted-colors-dataviz'
 import { bestTextColor, primitiveColors } from '../../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../../theme/tokens/semantic'
+import { EmptyState } from '../../empty-state'
 import { useSurfaceMode } from '../../surface'
 
 export interface TreemapDatum {
@@ -35,6 +37,8 @@ export interface TreemapProps extends Omit<ViewProps, 'children'> {
   onPress?: (id: string) => void
   /** Draws a highlight border on the matching tile. */
   selectedId?: string
+  /** Replaces the default "No data" placeholder drawn when no datum has a positive `value`. */
+  emptyState?: ReactNode
   className?: string
 }
 
@@ -135,6 +139,7 @@ export function Treemap({
   maxTiles = 60,
   onPress,
   selectedId,
+  emptyState,
   className,
   ...props
 }: TreemapProps) {
@@ -145,6 +150,19 @@ export function Treemap({
     .filter((d) => d.value > 0)
     .sort((a, b) => b.value - a.value)
     .map((d, i) => ({ ...d, color: d.color ?? palette[i % palette.length] }))
+
+  if (clean.length === 0) {
+    return (
+      <View
+        className={cn('relative items-center justify-center', className)}
+        style={{ width, height }}
+        testID="treemap-empty"
+        {...props}
+      >
+        {emptyState ?? <EmptyState title="No data" className="py-4" />}
+      </View>
+    )
+  }
 
   let tiles = clean
   if (clean.length > maxTiles) {

@@ -45,6 +45,16 @@ describe('ListItem', () => {
     expect(onPress).toHaveBeenCalledTimes(1)
   })
 
+  it('exposes the pressable row as a button', () => {
+    render(
+      <ListItem onPress={() => {}}>
+        <ListItemContent title="Pressable item" />
+      </ListItem>
+    )
+
+    expect(screen.getByRole('button')).toHaveTextContent('Pressable item')
+  })
+
   it('uses View when onPress is not provided', () => {
     render(
       <ListItem testID="list-item">
@@ -126,7 +136,7 @@ describe('ListItem accessibility', () => {
 
   it('has no accessibility violations when pressable', async () => {
     const { container } = render(
-      <ListItem onPress={() => {}} accessibilityRole="button">
+      <ListItem onPress={() => {}}>
         <ListItemContent title="Pressable item" />
       </ListItem>
     )

@@ -12,13 +12,11 @@ import { View, Text } from 'react-native'
 import { ExerciseCard } from '../../components/custom/Workout/ExerciseCard'
 import { SetRow } from '../../components/custom/Workout/SetRow'
 import { WorkoutCard } from '../../components/custom/Workout/WorkoutCard'
-import { WorkoutPill } from '../../components/custom/Workout/WorkoutPill'
 import { WeekRow } from '../../components/custom/Workout/WeekRow'
 import { MesoCard } from '../../components/custom/Workout/MesoCard'
 import { MesoProgressBar } from '../../components/custom/Workout/MesoProgressBar'
 import { MuscleGroupChip } from '../../components/custom/Workout/MuscleGroupChip'
 import { StatusDot } from '../../components/custom/Workout/StatusDot'
-import { WeightBadge } from '../../components/custom/Workout/WeightBadge'
 import { PrBadge } from '../../components/custom/Workout/PrBadge'
 import { PlaceholderStrip } from '../../components/custom/Workout/PlaceholderStrip'
 import { SupersetWrapper } from '../../components/custom/Workout/SupersetWrapper'
@@ -251,7 +249,7 @@ export const AllRows: Story = {
 
       <Section
         title="Workout"
-        note="WorkoutCard (full) and WorkoutPill (chip) = two legit densities; ExerciseDetailPage overloads ExerciseCard as a 3rd"
+        note="WorkoutCard is the full row; the chip density is a Pill inside WeekRow; ExerciseDetailPage overloads ExerciseCard as a 3rd"
       >
         <Cell
           name="WorkoutCard"
@@ -275,14 +273,6 @@ export const AllRows: Story = {
             onToggle={() => {}}
           />
         </Cell>
-        <Cell name="WorkoutPill" entity="workout · chip" expand="no">
-          <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
-            <WorkoutPill name="Push" status="completed" />
-            <WorkoutPill name="Pull" status="current" />
-            <WorkoutPill name="Legs" status="upcoming" />
-            <WorkoutPill name="Deload" status="deload" />
-          </View>
-        </Cell>
       </Section>
 
       <Section
@@ -292,7 +282,7 @@ export const AllRows: Story = {
         <Cell
           name="WeekRow"
           entity="week"
-          expand="no · row of WorkoutPills + intensity bar"
+          expand="no · row of workout Pills + intensity bar"
           width={380}
         >
           <WeekRow
@@ -349,12 +339,6 @@ export const AllRows: Story = {
         </Cell>
         <Cell name="StatusDot" entity="status glyph" expand="no">
           <StatusDot variant="success" label="On track" />
-        </Cell>
-        <Cell name="WeightBadge" entity="badge" expand="no">
-          <View style={{ flexDirection: 'row', gap: 8 }}>
-            <WeightBadge value={205} unit="lbs" />
-            <WeightBadge value={217} unit="lbs" isPr />
-          </View>
         </Cell>
         <Cell name="PrBadge" entity="badge" expand="no">
           <PrBadge type="e1rm" animate={false} />

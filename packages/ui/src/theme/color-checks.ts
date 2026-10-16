@@ -105,16 +105,28 @@ export function simulateCvd(hex: string, kind: CvdKind): string {
 /**
  * Worst-case perceived difference across deutan and protan. Red-green is the
  * binding case the palette solver optimises; tritan is deliberately excluded.
- * The simulated colour is not clamped to gamut, to match the solver.
+ * The simulated colour is not clamped to gamut, to match the solver. Pass
+ * `['tritan']` to measure the tritan case that is printed but not gated.
+ * `clampNegative` zeroes negative simulated channels first, the convention of
+ * the TD-756 plan's measurement script.
  */
-export function cvdDelta(a: string, b: string): number {
-  const simulate = (hex: string, kind: CvdKind) =>
-    oklabFromLinear(mulMatrix(CVD_MATRICES[kind], linearRgb(hex)))
-  return Math.min(
-    ...(['deutan', 'protan'] as const).map((kind) =>
-      oklabDistance(simulate(a, kind), simulate(b, kind))
-    )
-  )
+export function cvdDelta(
+  a: string,
+  b: string,
+  kinds: readonly CvdKind[] = ['deutan', 'protan'],
+  { clampNegative = false }: { clampNegative?: boolean } = {}
+): number {
+  const simulate = (hex: string, kind: CvdKind) => {
+    const linear = mulMatrix(CVD_MATRICES[kind], linearRgb(hex))
+    return oklabFromLinear(clampNegative ? (linear.map((c) => Math.max(0, c)) as Vec3) : linear)
+  }
+  return Math.min(...kinds.map((kind) => oklabDistance(simulate(a, kind), simulate(b, kind))))
+}
+
+/** The grey of equal WCAG luminance, for reading a palette's value structure. */
+export function grayOfValue(hex: string): string {
+  const channel = toHex(toGamma(relativeLuminance(hex)))
+  return `#${channel}${channel}${channel}`.toUpperCase()
 }
 
 type Metric = (a: string, b: string) => number

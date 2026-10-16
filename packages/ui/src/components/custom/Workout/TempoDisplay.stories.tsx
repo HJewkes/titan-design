@@ -15,8 +15,8 @@ const meta: Meta<typeof TempoDisplay> = {
       description: {
         component:
           '**Molecule.** The eccentric/pause/concentric/pause tempo display. Composes ' +
-          '[MetricCell](?path=/docs/custom-workout-metriccell--docs) ' +
-          '(shared value/separator cell). Used-by ↑ ' +
+          '[Typography](?path=/docs/foundations-typography--docs) ' +
+          '(`mono` value/separator segments). Used-by ↑ ' +
           '[ExerciseHeading](?path=/docs/custom-workout-exerciseheading--docs) (`showLabel={false}`).',
       },
     },

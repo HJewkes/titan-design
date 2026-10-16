@@ -163,7 +163,7 @@ function MesoStatusPill({ badge }: { badge: MesoStatusBadge }) {
   )
 }
 
-function MetricCell({ metric }: { metric: MesoStatusMetric }) {
+function MesoMetricItem({ metric }: { metric: MesoStatusMetric }) {
   return (
     <View style={{ width: '48%' }} testID="meso-status-card-metric">
       <Text
@@ -413,7 +413,7 @@ export function MesoStatusCard({
         {metrics.length > 0 && (
           <View className="flex-row flex-wrap gap-inline-md" testID="meso-status-card-metrics">
             {metrics.map((metric, index) => (
-              <MetricCell key={`${metric.label}-${index}`} metric={metric} />
+              <MesoMetricItem key={`${metric.label}-${index}`} metric={metric} />
             ))}
           </View>
         )}

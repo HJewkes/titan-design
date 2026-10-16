@@ -416,7 +416,7 @@ function Pair({ rule, children }: { rule: string; children: ReactNode }) {
 function Verdict({ ok, note, children }: { ok: boolean; note: string; children: ReactNode }) {
   return (
     <View style={{ width: 230 }} className="gap-stack-sm">
-      <Text className={ok ? 'text-sm text-status-success' : 'text-sm text-status-error'}>
+      <Text className={ok ? 'text-sm text-status-success' : 'text-sm text-text-error'}>
         {ok ? '✓' : '✗'} {note}
       </Text>
       <Card variant="subtle" elevation={1}>
@@ -544,7 +544,7 @@ export const AntiPatterns: Story = {
         {ANTI_PATTERNS.map(([bad, good, why]) => (
           <View key={bad} className="flex-row items-start gap-inline-lg">
             <View style={{ width: 170 }}>
-              <Text className="font-mono text-xs text-status-error">✗ {bad}</Text>
+              <Text className="font-mono text-xs text-text-error">✗ {bad}</Text>
             </View>
             <View style={{ width: 230 }}>
               <Text className="font-mono text-xs text-status-success">✓ {good}</Text>

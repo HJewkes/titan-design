@@ -31,6 +31,10 @@ export interface SessionListItemProps {
   /** Renders the selected treatment (raised fill + leading accent bar). */
   selected?: boolean
   onSelect?: () => void
+  /** The row's tab stop, when a list roves focus across its rows. Omitted, the row keeps the default. */
+  tabIndex?: 0 | -1
+  /** Receives the row's host node, so a list can move focus to it. */
+  focusRef?: (node: unknown) => void
   /** Merged over the row's own classes through `cn()`, so a conflicting class wins. */
   className?: string
 }
@@ -127,12 +131,16 @@ export function SessionListItem({
   now,
   selected = false,
   onSelect,
+  tabIndex,
+  focusRef,
   className,
 }: SessionListItemProps) {
   const refs = useMemo(() => extractTaskRefs(session.body), [session.body])
   return (
     <Pressable
       onPress={onSelect}
+      ref={focusRef}
+      {...(tabIndex === undefined ? {} : { tabIndex })}
       // Raw `role`/`aria-selected` rather than `accessibilityState={{ selected }}`:
       // RNW silently drops the latter, so selection would never reach AT.
       role="option"

@@ -59,8 +59,9 @@ export interface TypographyProps extends TextProps {
   children?: React.ReactNode
 }
 
-// Variant styles matching the existing theme
-const variantStyles: Record<TypographyVariant, string> = {
+// Variant styles matching the existing theme. Exported so text Typography cannot render
+// (react-native-svg's Text in charts) takes a role from here instead of hand-rolling it.
+export const typographyVariantClasses: Record<TypographyVariant, string> = {
   h1: 'font-heading text-5xl font-bold leading-tight',
   h2: 'font-heading text-4xl font-bold leading-tight',
   h3: 'font-heading text-3xl font-bold leading-tight',
@@ -89,10 +90,10 @@ const colorStyles: Record<TypographyColor, string> = {
   tertiary: 'text-text-tertiary',
   disabled: 'text-text-disabled',
   inverse: 'text-text-inverse',
-  success: 'text-status-success',
+  success: 'text-text-success',
   error: 'text-text-error',
-  warning: 'text-status-warning',
-  info: 'text-status-info',
+  warning: 'text-text-warning',
+  info: 'text-text-info',
   inherit: '', // No color class, inherit from parent
 }
 
@@ -103,8 +104,15 @@ const alignStyles: Record<TypographyAlign, string> = {
   justify: 'text-justify',
 }
 
-// Heading variants for accessibility role
-const headingVariants: TypographyVariant[] = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+// Heading variants carry a level so web renders h1..h6 rather than a flat outline of h1s
+const headingLevels: Partial<Record<TypographyVariant, number>> = {
+  h1: 1,
+  h2: 2,
+  h3: 3,
+  h4: 4,
+  h5: 5,
+  h6: 6,
+}
 
 const marginBottomStyles: Record<TypographyMarginBottom, string> = {
   none: '',
@@ -135,7 +143,7 @@ export function Typography({
   children,
   ...props
 }: TypographyProps) {
-  const isHeading = headingVariants.includes(variant)
+  const headingLevel = headingLevels[variant]
   const shouldTruncate = truncate || noWrap
   const mb = marginBottom || (gutterBottom ? 'md' : 'none')
 
@@ -149,10 +157,11 @@ export function Typography({
 
   return (
     <Text
-      accessibilityRole={isHeading ? 'header' : 'text'}
+      accessibilityRole={headingLevel ? 'header' : 'text'}
+      aria-level={headingLevel}
       numberOfLines={numLines}
       className={cn(
-        variantStyles[variant],
+        typographyVariantClasses[variant],
         color !== 'inherit' && colorStyles[color],
         align && alignStyles[align],
         shouldTruncate && 'truncate',

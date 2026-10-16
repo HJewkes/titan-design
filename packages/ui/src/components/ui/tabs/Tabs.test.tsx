@@ -273,4 +273,37 @@ describe('Tabs', () => {
       expect(tabs[1]).toHaveAttribute('aria-selected', 'false')
     })
   })
+
+  describe('panel height', () => {
+    const panelWrapperClasses = (props: { fill?: boolean; orientation?: 'vertical' }) => {
+      render(
+        <Tabs orientation={props.orientation}>
+          <TabList>
+            <Tab>A</Tab>
+          </TabList>
+          <TabPanels fill={props.fill}>
+            <TabPanel>Panel</TabPanel>
+          </TabPanels>
+        </Tabs>
+      )
+      const wrapper = screen.getByRole('tabpanel').parentElement as HTMLElement
+      return (capturedByNode.get(wrapper) ?? '').split(/\s+/)
+    }
+
+    it('sizes the panels to content in an auto-height parent by default', () => {
+      const classes = panelWrapperClasses({})
+      expect(classes).toContain('flex-none')
+      expect(classes).not.toContain('flex-1')
+    })
+
+    it('fills a fixed-height parent when fill is set', () => {
+      const classes = panelWrapperClasses({ fill: true })
+      expect(classes).toContain('flex-1')
+      expect(classes).not.toContain('flex-none')
+    })
+
+    it('keeps vertical panels filling the row beside the tab list', () => {
+      expect(panelWrapperClasses({ orientation: 'vertical' })).toContain('flex-1')
+    })
+  })
 })

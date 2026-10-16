@@ -52,6 +52,39 @@
         "default": "./dist/pages.js"
       }
     },
+    "./workout": {
+      "react-native": "./src/workout.ts",
+      "import": {
+        "types": "./dist/workout.d.mts",
+        "default": "./dist/workout.mjs"
+      },
+      "require": {
+        "types": "./dist/workout.d.ts",
+        "default": "./dist/workout.js"
+      }
+    },
+    "./motion": {
+      "react-native": "./src/motion.ts",
+      "import": {
+        "types": "./dist/motion.d.mts",
+        "default": "./dist/motion.mjs"
+      },
+      "require": {
+        "types": "./dist/motion.d.ts",
+        "default": "./dist/motion.js"
+      }
+    },
+    "./diagram": {
+      "react-native": "./src/diagram.ts",
+      "import": {
+        "types": "./dist/diagram.d.mts",
+        "default": "./dist/diagram.mjs"
+      },
+      "require": {
+        "types": "./dist/diagram.d.ts",
+        "default": "./dist/diagram.js"
+      }
+    },
     "./theme": {
       "react-native": "./src/theme/index.ts",
       "import": {
@@ -132,6 +165,7 @@
     "test:visual:contrast:update": "node scripts/update-contrast-stories-baseline.mjs",
     "test:offline-fonts": "playwright test --config playwright.offline-fonts.config.ts",
     "test:audit-probes": "playwright test --config playwright.audit-probes.config.ts",
+    "test:capture": "playwright test --config playwright.capture.config.ts",
     "prepublishOnly": "node scripts/ci-only-publish.mjs && pnpm build && vitest --run --project threads --project local-time --project types --project stories-axe",
     "lint:colors:baseline": "node scripts/update-raw-color-baseline.mjs",
     "storybook:isolated": "node scripts/storybook-launch.mjs --isolated",

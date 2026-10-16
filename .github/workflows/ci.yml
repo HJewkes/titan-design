@@ -137,11 +137,32 @@ jobs:
         if: steps.paths.outputs.run != 'false'
         run: pnpm --filter @titan-design/react-ui test:offline-fonts
 
+      # A Vite beat page renders six react-ui components through react-native-web and nativewind,
+      # captured frame by frame under virtual time: identical runs, order-independent frames,
+      # seek median under 100 ms, and no build without the react-native-web alias (TD-845).
+      - name: Capture proof — react-ui under react-native-web
+        if: steps.paths.outputs.run != 'false'
+        run: pnpm --filter @titan-design/react-ui test:capture
+
       # Layer 1 — component screenshot baselines. Any pixel diff against the
       # committed baselines exits non-zero and fails the build.
       - name: Layer 1 — component screenshot baselines
         if: steps.paths.outputs.run != 'false'
         run: pnpm --filter @titan-design/react-ui test:visual:baseline
+
+      # The regen step below empties Playwright's default test-results, so the gate's diff and
+      # expected images are saved first (TD-921).
+      - name: Upload Layer 1 diff and expected images
+        if: always() && steps.paths.outputs.run != 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: component-visual-diffs
+          path: |
+            packages/ui/test-results/**/*-diff.png
+            packages/ui/test-results/**/*-expected.png
+            !packages/ui/test-results/playwright-*/**
+          if-no-files-found: ignore
+          retention-days: 7
 
       # Layer 1 — REGEN (refresh): regenerate the Layer-1 baselines IN this pinned
       # container and upload them, so a drifted baseline can be refreshed byte-exact.
@@ -178,10 +199,21 @@ jobs:
         with:
           name: layer2-failure-results
           path: |
-            /tmp/titan-ui-playwright-stories/**/test-failed-*.png
-            /tmp/titan-ui-playwright-stories/**/error-context.md
-            /tmp/titan-ui-playwright-stories/**/trace.zip
+            packages/ui/test-results/playwright-stories/**/test-failed-*.png
+            packages/ui/test-results/playwright-stories/**/error-context.md
+            packages/ui/test-results/playwright-stories/**/trace.zip
           if-no-files-found: warn
+          retention-days: 7
+
+      - name: Upload Layer 2 diff and expected images
+        if: always() && steps.paths.outputs.run != 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: storybook-visual-diffs
+          path: |
+            packages/ui/test-results/playwright-stories/**/*-diff.png
+            packages/ui/test-results/playwright-stories/**/*-expected.png
+          if-no-files-found: ignore
           retention-days: 7
 
       # Layer 2 — REGEN (refresh): same pattern as Layer 1. Runs only on a failed
@@ -209,8 +241,8 @@ jobs:
 
       # No html reporter is configured, so the diagnostics are the per-test
       # -actual/-diff/-expected PNGs: Layer 2 and the interaction project write
-      # to /tmp (playwright.config.ts outputDir), Layers 1 and 3 to Playwright's
-      # default test-results. Uploading a
+      # to packages/ui/test-results/playwright-* (playwright.config.ts outputDir, not the per-run
+      # temp root, which is removed on exit), Layers 1 and 3 to Playwright's default test-results. Uploading a
       # directory that never exists made every failed gate undiagnosable from CI
       # (titan PR #245 was the first casualty).
       - name: Upload Playwright failure diagnostics
@@ -219,8 +251,8 @@ jobs:
         with:
           name: playwright-failure-diagnostics
           path: |
-            /tmp/titan-ui-playwright-stories/
-            /tmp/titan-ui-playwright-interaction/
+            packages/ui/test-results/playwright-stories/
+            packages/ui/test-results/playwright-interaction/
             packages/ui/test-results/
           if-no-files-found: warn
           retention-days: 7
@@ -295,7 +327,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: contrast-failure-diagnostics-${{ matrix.shard }}
-          path: /tmp/titan-ui-playwright-contrast/
+          path: packages/ui/test-results/playwright-contrast/
           if-no-files-found: warn
           retention-days: 7
 

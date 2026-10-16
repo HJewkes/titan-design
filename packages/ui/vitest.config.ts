@@ -17,7 +17,7 @@ const LOCAL_TIME_TEST_PATHS = [
 
 const STORYBOOK_CONFIG_DIR = fileURLToPath(new URL('./.storybook', import.meta.url))
 
-const TEST_GLOB = ['src/**/*.test.{ts,tsx}', 'scripts/**/*.test.mjs']
+const TEST_GLOB = ['src/**/*.test.{ts,tsx}', 'scripts/**/*.test.{mjs,ts}']
 // Axe on every story is the slowest suite, so CI runs this project in a step of its own.
 const STORIES_AXE_GLOB = ['src/test/stories-axe.test.tsx', 'src/test/stories-axe.*.test.tsx']
 const TEST_EXCLUDE = ['src/**/*.visual.test.{ts,tsx}', 'node_modules']
@@ -25,6 +25,7 @@ const TEST_EXCLUDE = ['src/**/*.visual.test.{ts,tsx}', 'node_modules']
 export default defineConfig({
   plugins: [reactNativeSvgWebResolver(), reactNativeBodyHighlighterEsm(), react()],
   test: {
+    globalSetup: ['../../scripts/vitest-run-tmp-root.mjs'],
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],

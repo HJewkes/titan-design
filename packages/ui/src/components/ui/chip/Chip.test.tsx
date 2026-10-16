@@ -5,6 +5,7 @@ import { Chip, type ChipColor, type ChipVariant } from './Chip'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 import { contrast, compositeOver } from '../../../theme/color-checks'
 import { capturedClassNames } from '../../../test/classname-capture'
+import { chipLightContrastExceptions } from '../../../test/chip-contrast'
 import { resolveAll, siblingSource, sizeClasses } from '../../../test/spacing-resolver'
 
 describe('Chip', () => {
@@ -46,13 +47,13 @@ describe('Chip', () => {
   it('renders delete button when onDelete is provided', () => {
     const onDelete = vi.fn()
     render(<Chip onDelete={onDelete}>Dismissible</Chip>)
-    expect(screen.getByLabelText('Remove')).toBeInTheDocument()
+    expect(screen.getByLabelText('Remove Dismissible')).toBeInTheDocument()
   })
 
   it('handles delete events', () => {
     const onDelete = vi.fn()
     render(<Chip onDelete={onDelete}>Dismissible</Chip>)
-    fireEvent.click(screen.getByLabelText('Remove'))
+    fireEvent.click(screen.getByLabelText('Remove Dismissible'))
     expect(onDelete).toHaveBeenCalledTimes(1)
   })
 
@@ -119,9 +120,18 @@ describe('Chip', () => {
       expect(screen.getByRole('button')).toBeInTheDocument()
     })
 
-    it('delete button has accessible label', () => {
-      render(<Chip onDelete={() => {}}>Tag</Chip>)
-      expect(screen.getByLabelText('Remove')).toBeInTheDocument()
+    it('names the delete button after the chip label', () => {
+      render(<Chip onDelete={() => {}}>Alpha</Chip>)
+      expect(screen.getByRole('button', { name: 'Remove Alpha' })).toBeInTheDocument()
+    })
+
+    it('falls back to a bare Remove name when the label is not text', () => {
+      render(
+        <Chip onDelete={() => {}}>
+          <span>Alpha</span>
+        </Chip>
+      )
+      expect(screen.getByRole('button', { name: 'Remove' })).toBeInTheDocument()
     })
   })
 })
@@ -227,7 +237,7 @@ describe('Chip isSelected and rightElement', () => {
     )
     const label = screen.getByText('Notes')
     const count = screen.getByTestId('count')
-    const remove = screen.getByLabelText('Remove')
+    const remove = screen.getByLabelText('Remove Notes')
     expect(label.compareDocumentPosition(count) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
     expect(count.compareDocumentPosition(remove) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
@@ -258,7 +268,7 @@ type Face = { fill: string; label: string }
 const faceOf = (color: ChipColor, isSelected: boolean): Face => {
   if (color === 'default') {
     return isSelected
-      ? { fill: 'text-primary', label: 'text-inverse' }
+      ? { fill: 'interactive-selected-solid', label: 'text-inverse' }
       : { fill: 'hairline-subtle', label: 'text-primary' }
   }
   const root = toneRoots[color]
@@ -270,12 +280,6 @@ const faceOf = (color: ChipColor, isSelected: boolean): Face => {
 const chipColors = ['default', ...(Object.keys(toneRoots) as ToneColor[])] as const
 const modes = ['dark', 'light'] as const
 const planes = ['surface-base', 'surface-elevated'] as const
-
-/**
- * Selected faces whose label misses 4.5 in light mode. Each is asserted as a
- * miss below, so a token fix fails the suite until its entry is removed.
- */
-export const chipLightContrastExceptions: readonly ToneColor[] = ['primary', 'warning', 'info']
 
 // The face the chip actually renders, read back from its tone classes, so a Pill row revert fails here too.
 function renderedFace(color: ChipColor, isSelected: boolean): Face {
@@ -343,9 +347,7 @@ describe('Chip faces', () => {
     )
   )
   const isException = (row: (typeof contrastRows)[number]) =>
-    row.mode === 'light' &&
-    row.isSelected &&
-    (chipLightContrastExceptions as readonly string[]).includes(row.color)
+    row.mode === 'light' && row.isSelected && chipLightContrastExceptions.includes(row.color)
 
   it.each(contrastRows.filter((row) => !isException(row)))(
     '$mode $color selected=$isSelected label reads >= 4.5 on $plane',

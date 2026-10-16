@@ -39,7 +39,9 @@
     "WorkoutShell"
   ],
   "storyIds": [
+    "Beat",
     "CapacityBandPlot",
+    "CardStat",
     "GhostBand",
     "GhostBloom",
     "GoalMilestoneSummary",
@@ -49,6 +51,7 @@
     "GoalTrajectoryPlot",
     "GoalTrajectoryWeekTips",
     "GoalWeekColumnsChart",
+    "MotionProvider",
     "MuscleGlyph",
     "PrimaryGoalCard",
     "RevealRow",
@@ -72,6 +75,7 @@
     "Alert",
     "Avatar",
     "BaseBadge",
+    "Beat",
     "BodyMap",
     "Breadcrumbs",
     "Button",
@@ -95,6 +99,7 @@
     "LiveAuraFrame",
     "MesoProgressBar",
     "Metric",
+    "MotionProvider",
     "MuscleGlyph",
     "Pill",
     "PlaceholderStrip",
@@ -124,7 +129,6 @@
     "Tile",
     "Treemap",
     "TriggerSurface",
-    "Typography",
-    "VerdictHero"
+    "Typography"
   ]
 }

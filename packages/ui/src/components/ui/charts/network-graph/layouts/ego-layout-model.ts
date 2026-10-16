@@ -9,8 +9,10 @@ import type {
 } from '../types'
 import { LAYOUT_DEFAULTS, clampInt, frameLayout, round2 } from './layout-geometry'
 
+/** Which edges count as a hop: every edge two-way, source to target only, or target to source only. */
 export type EgoDirection = 'both' | 'outgoing' | 'incoming'
 
+/** Options of `egoLayout`; all three are part of the layout's `key`. There is no `seed`: nothing is random. */
 export interface EgoLayoutOptions {
   /** `null` or an unknown id places nothing. */
   focusId: string | null
@@ -72,6 +74,40 @@ function ringRadii(rings: readonly (readonly string[])[]): number[] {
   return radii
 }
 
+/**
+ * The outer radius that fits the viewport once `frameLayout` adds padding and label room; `Infinity`
+ * when the viewport is unsized, so the rings keep their natural radii.
+ */
+function fittingRadius({ width, height }: { width: number; height: number }): number {
+  const { PADDING, LABEL_ROOM } = LAYOUT_DEFAULTS
+  const room = Math.min(width - PADDING * 2 - LABEL_ROOM, height - PADDING * 2) / 2
+  return Number.isFinite(room) && room > 0 ? room : Number.POSITIVE_INFINITY
+}
+
+/** The smallest factor that leaves every node `MIN_ARC` of arc on its ring; at most 1. */
+function minimumScale(rings: readonly (readonly string[])[], radii: readonly number[]): number {
+  const { MIN_ARC } = LAYOUT_DEFAULTS
+  return rings.reduce((floor, ring, hop) => {
+    const radius = radii[hop] as number
+    return radius > 0 ? Math.max(floor, (ring.length * MIN_ARC) / (2 * Math.PI * radius)) : floor
+  }, 0)
+}
+
+/**
+ * Shrinks every radius by one factor so the outer ring fits the viewport, but never below the factor
+ * that keeps `MIN_ARC` per node; a ring still too large overflows and the canvas scrolls.
+ */
+function fitRadii(
+  rings: readonly (readonly string[])[],
+  radii: readonly number[],
+  viewport: { width: number; height: number }
+): number[] {
+  const outer = radii[radii.length - 1] ?? 0
+  const fit = outer > 0 ? Math.min(1, fittingRadius(viewport) / outer) : 1
+  const scale = Math.max(fit, minimumScale(rings, radii))
+  return radii.map((radius) => radius * scale)
+}
+
 /** Built with `Object.fromEntries`, so an id such as `__proto__` becomes an own key. */
 function ringPositions(
   rings: readonly (readonly string[])[],
@@ -106,7 +142,7 @@ function computeEgo(
     focusId !== null && ids.has(focusId)
       ? egoRings(focusId, adjacency(ids, edges, direction), hops)
       : []
-  const radii = ringRadii(rings)
+  const radii = fitRadii(rings, ringRadii(rings), { width, height })
   const outer = radii[radii.length - 1] ?? 0
   const framed = frameLayout(ringPositions(rings, radii), { width, height }, ringBounds(outer))
   const groups: GraphGroupRegion[] = rings.map((ring, hop) => ({
@@ -138,6 +174,14 @@ function sanitize(options: EgoLayoutOptions | undefined): Required<EgoLayoutOpti
   return { focusId, hops, direction }
 }
 
+/**
+ * An ego layout: the focus at the centre and one ring per hop out to `hops`, so distance means hops
+ * from one node. Nodes further away are left unplaced and counted; a `null` or unknown `focusId`
+ * places nothing, so the empty state renders. When the rings would overflow a sized viewport, every
+ * radius shrinks by one factor so the outer ring fits, never so far that a node keeps less than
+ * `MIN_ARC` of arc; past that the layout overflows and scrolls. Asks for arc edges and decluttered labels, and
+ * returns one `ring` group per hop.
+ */
 export function egoLayout(options: EgoLayoutOptions): GraphLayout {
   const clean = sanitize(options)
   return {

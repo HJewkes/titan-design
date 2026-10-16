@@ -30,6 +30,10 @@ No second mechanism was introduced.
 | `AppShell.nav`            | `AppShell` | `<SideNav items=…>`     | swap the whole rail                     |
 | `AppShell.children`       | `AppShell` | a placeholder           | mount its page                          |
 
+`AppShell.contentPadding` (`'default' | 'none'`) pads the content region `p-gutter-sm` below `md` and
+`p-gutter-md` from `md`. A `Page` child owns its gutter already, so pass `none` with a `Page` or any
+full-bleed view; `WorkoutShell` forwards the prop.
+
 `AppShell.children` is normally a `Page` (`ui/page`), which owns the gutter, the width cap and the scroll.
 
 `TopBar.trailing` takes an array as well as a node. **The bar interleaves its own vertical dividers
@@ -153,15 +157,17 @@ Every leaf now composes a primitive rather than hand-rolling it:
 
 **AW-132 shared substrate:** four brand marks added to `components/icons` (`HeadphonesIcon`,
 `KanbanIcon`, `BotIcon`, `BrainIcon`), so `brands.tsx` can carry a preset for every app expected to
-mount this shell. Brand accents come from `data-*` rather than `status-*`: `data-*` is the library's
-set of distinct, CVD-checked hues with no semantic load, which is what a per-app identity accent
-needs. Voltras keeps the real `brand-primary` token.
+mount this shell. Brand accents come from `dataviz-categorical-*` rather than `status-*`: distinct,
+CVD-checked hues with no semantic load and a value per mode, which is what a per-app identity accent
+needs (TD-485 moved them off the superseded `data-*`). Voltras keeps the real `brand-primary` token.
 
 **The nav accent is brand-level, not shell-level** (operator, Gate 2 2026-09-11). `SideNav`'s active
-item and its edge bar take the mounting app's accent, so a Brain shell reads yellow throughout
-rather than showing a Voltras-orange active item under a yellow lockup. `AppShell` threads it down
+item's glyph and its edge bar take the mounting app's accent, so a Brain shell reads amber throughout
+rather than showing a Voltras-orange active item under an amber lockup. The accent paints only those
+non-text marks (3:1, WCAG 1.4.11); the active label is `text-primary`, because few accent hues clear
+4.5:1 as text in both modes. `brands.test.tsx` measures every accent against the rail and top-bar planes. `AppShell` threads it down
 from `brand`; a bare `SideNav` takes `accentClassName` / `accentBarClassName`. Each preset declares
-both as literals (`text-data-3` + `bg-data-3`) because Tailwind only emits classes it can see in the
+both as literals (`text-dataviz-categorical-6` + `bg-dataviz-categorical-6`) because Tailwind only emits classes it can see in the
 source — a name built at runtime is never generated — and a test asserts the pair always matches.
 Workout is unaffected: its accent _is_ `brand-primary`.
 

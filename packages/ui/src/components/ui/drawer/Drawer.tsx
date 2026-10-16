@@ -136,7 +136,7 @@ export function Drawer({
         >
           {/* Header */}
           {(title || showCloseButton) && (
-            <View className="flex-row items-center justify-between px-inset-xl py-inset-lg border-b border-hairline">
+            <View className="flex-row items-center justify-between px-inset-xl py-inset-lg">
               {!!title && (
                 <Text
                   id={titleId}
@@ -178,7 +178,7 @@ export interface DrawerHeaderProps extends ViewProps {
  */
 export function DrawerHeader({ className, children, ...props }: DrawerHeaderProps) {
   return (
-    <View className={cn('px-inset-xl py-inset-lg border-b border-hairline', className)} {...props}>
+    <View className={cn('px-inset-xl py-inset-lg', className)} {...props}>
       {children}
     </View>
   )
@@ -223,11 +223,7 @@ export interface DrawerFooterProps extends ViewProps {
 export function DrawerFooter({ className, children, ...props }: DrawerFooterProps) {
   return (
     <View
-      className={cn(
-        'flex-row items-center justify-end gap-3',
-        'px-inset-xl py-inset-lg border-t border-hairline',
-        className
-      )}
+      className={cn('flex-row items-center justify-end gap-3 px-inset-xl py-inset-lg', className)}
       {...props}
     >
       {children}

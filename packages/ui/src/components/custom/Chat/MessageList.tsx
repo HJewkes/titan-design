@@ -70,12 +70,14 @@ export interface MessageListProps {
 
 interface RowProps {
   row: ThreadRow
+  timesShown: boolean
+  onToggleTimes: () => void
   props: MessageListProps
   layout: ThreadLayout
   newestOwnId: string | undefined
 }
 
-function Row({ row, props, layout, newestOwnId }: RowProps) {
+function Row({ row, timesShown, onToggleTimes, props, layout, newestOwnId }: RowProps) {
   if (row.kind === 'date') {
     return (
       <View className="px-gutter-sm">
@@ -85,6 +87,8 @@ function Row({ row, props, layout, newestOwnId }: RowProps) {
           showDay={row.showDay}
           showTime
           labels={props.labels}
+          onPress={onToggleTimes}
+          timesShown={timesShown}
         />
       </View>
     )
@@ -155,7 +159,7 @@ function ThreadScroll(props: MessageListProps) {
   const layout = resolveLayout(props)
   const header = threadHeader(props, layout)
   const newestOwnId = newestOwnMessageId(messages, viewerId)
-  const { offset, panHandlers } = useRevealGesture(props.revealTimes ?? false)
+  const { offset, panHandlers, revealed, toggle } = useRevealGesture(props.revealTimes ?? false)
   const { scrollRef, onScroll, onContentSizeChange, unseen, jumpToNewest } = useStickToBottom(
     messages,
     viewerId
@@ -186,6 +190,8 @@ function ThreadScroll(props: MessageListProps) {
                 <Row
                   key={row.key}
                   row={row}
+                  timesShown={revealed}
+                  onToggleTimes={toggle}
                   props={props}
                   layout={layout}
                   newestOwnId={newestOwnId}

@@ -23,6 +23,15 @@ export const categoricalPalette: {
 export type CategoricalVariant = keyof typeof categoricalPalette;
 
 // @public
+export type ControlPoints = readonly [number, number, number, number];
+
+// @public
+export type CubicBezierCss<P extends ControlPoints> = `cubic-bezier(${P[0]}, ${P[1]}, ${P[2]}, ${P[3]})`;
+
+// @public
+export function cubicBezierCss<const P extends ControlPoints>(points: P): CubicBezierCss<P>;
+
+// @public
 export const discreteRainbow: readonly ["#E8ECFB", "#D9CCE3", "#D1BBD7", "#CAACCB", "#BA8DB4", "#AE76A3", "#AA6F9E", "#994F88", "#882E72", "#1965B0", "#437DBF", "#5289C7", "#6195CF", "#7BAFDE", "#4EB265", "#90C987", "#CAE0AB", "#F7F056", "#F7CB45", "#F6C141", "#F4A736", "#F1932D", "#EE8026", "#E8601C", "#E65518", "#DC050C", "#A5170E", "#72190E", "#42150A"];
 
 // @public
@@ -42,8 +51,8 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'brand-primary-subtle': "#FFE6D4";
     readonly 'brand-primary-muted': "#FFC7A2";
     readonly 'brand-primary-strong': "rgba(255, 121, 0, 0.50)";
-    readonly 'brand-primary-hover': "#DA5F00";
-    readonly 'brand-primary-active': "#B94A00";
+    readonly 'brand-primary-hover': "#B94A00";
+    readonly 'brand-primary-active': "#983804";
     readonly 'brand-secondary': "#307B9B";
     readonly 'brand-secondary-light': "#2697B7";
     readonly 'brand-secondary-dark': "#2A617F";
@@ -56,45 +65,45 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'on-brand-secondary': "#FFFFFF";
     readonly 'on-brand-primary-subtle': "#983804";
     readonly 'on-brand-secondary-subtle': "#2A617F";
-    readonly 'status-success': "#298732";
+    readonly 'status-success': "#2B6B25";
     readonly 'status-success-light': "#58F69E";
-    readonly 'status-success-dark': "#298732";
+    readonly 'status-success-dark': "#264D1C";
     readonly 'status-success-subtle': "#B5FFD2";
     readonly 'status-success-muted': "rgba(46, 213, 115, 0.30)";
     readonly 'status-success-strong': "rgba(46, 213, 115, 0.50)";
     readonly 'status-live': "#2ED573";
     readonly 'status-live-muted': "#22A444";
-    readonly 'status-deload': "#BA2996";
+    readonly 'status-deload': "#9C0D7A";
     readonly 'status-error': "#D14343";
     readonly 'status-error-light': "#E05254";
     readonly 'status-error-dark': "#A4221C";
     readonly 'status-error-subtle': "#FFE3E5";
     readonly 'status-error-muted': "rgba(209, 67, 67, 0.30)";
     readonly 'status-error-strong': "rgba(209, 67, 67, 0.50)";
-    readonly 'status-error-vivid': "#FF4757";
+    readonly 'status-error-vivid': "#A4221C";
     readonly 'status-error-vivid-light': "#E05254";
     readonly 'status-error-vivid-dark': "#A4221C";
-    readonly 'status-error-vivid-subtle': "rgba(255, 71, 87, 0.12)";
-    readonly 'status-error-vivid-muted': "rgba(255, 71, 87, 0.30)";
-    readonly 'status-error-vivid-strong': "rgba(255, 71, 87, 0.50)";
-    readonly 'status-warning': "#C27400";
+    readonly 'status-error-vivid-subtle': "rgba(164, 34, 28, 0.12)";
+    readonly 'status-error-vivid-muted': "rgba(164, 34, 28, 0.30)";
+    readonly 'status-error-vivid-strong': "rgba(164, 34, 28, 0.50)";
+    readonly 'status-warning': "#A45E00";
     readonly 'status-warning-light': "#FFD352";
-    readonly 'status-warning-dark': "#C27400";
+    readonly 'status-warning-dark': "#814D14";
     readonly 'status-warning-subtle': "#FFEAA9";
     readonly 'status-warning-muted': "rgba(249, 180, 21, 0.30)";
     readonly 'status-warning-strong': "rgba(249, 180, 21, 0.50)";
-    readonly 'status-info': "#1072CB";
+    readonly 'status-info': "#135AA8";
     readonly 'status-info-light': "#78C2FF";
-    readonly 'status-info-dark': "#1072CB";
+    readonly 'status-info-dark': "#14407E";
     readonly 'status-info-subtle': "#D9EFFF";
     readonly 'status-info-muted': "rgba(33, 150, 243, 0.30)";
     readonly 'status-info-strong': "rgba(33, 150, 243, 0.50)";
-    readonly 'brand-primary-solid': "#FF7900";
+    readonly 'brand-primary-solid': "#DA5F00";
     readonly 'brand-secondary-solid': "#307B9B";
     readonly 'status-success-solid': "#298732";
     readonly 'status-error-solid': "#D14343";
     readonly 'status-warning-solid': "#C27400";
-    readonly 'status-info-solid': "#2196F3";
+    readonly 'status-info-solid': "#1072CB";
     readonly 'on-status-success-subtle': "#2B6B25";
     readonly 'on-status-error-subtle': "#A4221C";
     readonly 'on-status-warning-subtle': "#814D14";
@@ -144,45 +153,52 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'dataviz-categorical-5': "#01B5D1";
     readonly 'dataviz-categorical-6': "#A45E00";
     readonly 'text-primary': "#121828";
-    readonly 'text-secondary': "#5A5958";
-    readonly 'text-tertiary': "#72716F";
+    readonly 'text-secondary': "#424140";
+    readonly 'text-tertiary': "#5A5958";
     readonly 'text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly 'text-inverse': "#FFFFFF";
     readonly 'text-error': "#A4221C";
+    readonly 'text-brand': "#983804";
+    readonly 'text-brand-secondary': "#22465F";
+    readonly 'text-success': "#264D1C";
+    readonly 'text-warning': "#814D14";
+    readonly 'text-info': "#135AA8";
     readonly 'text-link': "#135AA8";
     readonly 'text-link-hover': "#135AA8";
-    readonly 'surface-base': "#FFFFFF";
+    readonly 'surface-base': "#EDEAE7";
     readonly 'surface-elevated': "#F9F6F3";
-    readonly 'surface-raised': "#EDEAE7";
+    readonly 'surface-raised': "#FFFFFF";
     readonly 'surface-overlay': "#FFFFFF";
     readonly 'surface-input': "#F9F6F3";
-    readonly 'background-base': "#EDEAE7";
-    readonly 'background-default': "#FFFFFF";
+    readonly 'background-base': "#D4D1CE";
+    readonly 'background-default': "#EDEAE7";
     readonly 'background-subtle': "#F9F6F3";
-    readonly 'background-frame': "#A29F9D";
+    readonly 'background-frame': "#BDBAB7";
     readonly 'border-prominent': "#A29F9D";
     readonly 'border-focus': "#1072CB";
-    readonly 'border-input': "#888684";
-    readonly 'border-input-hover': "#72716F";
+    readonly 'border-input': "#72716F";
+    readonly 'border-input-hover': "#5A5958";
     readonly 'border-input-focus': "#1072CB";
     readonly 'border-input-error': "#D14343";
     readonly 'hairline-subtle': "rgba(0, 0, 0, 0.10)";
-    readonly 'hairline-default': "rgba(0, 0, 0, 0.15)";
-    readonly 'hairline-strong': "rgba(0, 0, 0, 0.22)";
+    readonly 'hairline-default': "rgba(0, 0, 0, 0.16)";
+    readonly 'hairline-strong': "rgba(0, 0, 0, 0.24)";
     readonly 'scrim-press': "rgba(0, 0, 0, 0.10)";
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly 'on-control-idle': "#D4D1CE";
-    readonly 'on-control-active': "#FFFFFF";
+    readonly 'control-face-disabled': "rgba(0, 0, 0, 0.06)";
+    readonly 'on-control-idle': "#5A5958";
+    readonly 'on-control-active': "#1C1916";
     readonly 'on-data-strong': "#0B0B0B";
     readonly 'interactive-hover': "rgba(55, 65, 81, 0.04)";
     readonly 'interactive-focus': "rgba(55, 65, 81, 0.12)";
     readonly 'interactive-active': "rgba(55, 65, 81, 0.16)";
     readonly 'interactive-selected': "rgba(55, 65, 81, 0.08)";
+    readonly 'interactive-selected-solid': "#5A5958";
     readonly 'interactive-disabled': "rgba(55, 65, 81, 0.12)";
     readonly 'interactive-disabled-text': "rgba(55, 65, 81, 0.26)";
-    readonly divider: "rgba(0, 0, 0, 0.15)";
+    readonly divider: "rgba(0, 0, 0, 0.16)";
     readonly 'avatar-background': "#72716F";
     readonly 'avatar-text': "#FFFFFF";
 } | {
@@ -299,6 +315,11 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'text-disabled': "rgba(255, 255, 255, 0.38)";
     readonly 'text-inverse': "#1C1916";
     readonly 'text-error': "#E05254";
+    readonly 'text-brand': "#FF7900";
+    readonly 'text-brand-secondary': "#22D3EE";
+    readonly 'text-success': "#21C05D";
+    readonly 'text-warning': "#F9B415";
+    readonly 'text-info': "#78C2FF";
     readonly 'text-link': "#78C2FF";
     readonly 'text-link-hover': "#3CA8FF";
     readonly 'surface-base': "#252321";
@@ -323,6 +344,7 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly 'control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly 'on-control-idle': "#D1D1D1";
     readonly 'on-control-active': "#FFFFFF";
     readonly 'on-data-strong': "#0B0B0B";
@@ -330,6 +352,7 @@ export function getSemanticColors(mode: ThemeMode): {
     readonly 'interactive-focus': "rgba(255, 255, 255, 0.12)";
     readonly 'interactive-active': "rgba(255, 255, 255, 0.16)";
     readonly 'interactive-selected': "rgba(255, 255, 255, 0.08)";
+    readonly 'interactive-selected-solid': "#F9F6F3";
     readonly 'interactive-disabled': "rgba(255, 255, 255, 0.12)";
     readonly 'interactive-disabled-text': "rgba(255, 255, 255, 0.26)";
     readonly divider: "rgba(255, 255, 255, 0.09)";
@@ -355,6 +378,50 @@ export const greyRamp: {
     readonly 950: "#1C1916";
     readonly 975: "#100D0A";
 };
+
+// @public
+export const motion: {
+    readonly duration: {
+        readonly fast: 150;
+        readonly normal: 250;
+        readonly slow: 400;
+    };
+    readonly ease: {
+        readonly out: readonly [0.22, 1, 0.36, 1];
+        readonly inOut: readonly [0.65, 0, 0.35, 1];
+        readonly spring: readonly [0.34, 1.56, 0.64, 1];
+        readonly in: readonly [0.55, 0, 1, 0.45];
+    };
+    readonly video: {
+        readonly emphasis: 500;
+        readonly enter: 1000;
+        readonly hero: 1500;
+        readonly count: 1500;
+        readonly exit: 850;
+        readonly exitScale: 0.85;
+        readonly staggerEach: 60;
+        readonly staggerMax: 500;
+        readonly rise: 40;
+        readonly scaleFrom: 0.97;
+    };
+    readonly dim: {
+        readonly context: {
+            readonly opacity: 0.35;
+            readonly saturation: 0;
+        };
+    };
+};
+
+// @public
+export const motionCSSVars: Readonly<{
+    readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
+    readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
+    readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
+    readonly '--ease-in': "cubic-bezier(0.55, 0, 1, 0.45)";
+    readonly '--duration-fast': "150ms";
+    readonly '--duration-normal': "250ms";
+    readonly '--duration-slow': "400ms";
+}>;
 
 // @public (undocumented)
 export const primitiveBorderRadius: {
@@ -509,7 +576,7 @@ export const primitiveTypography: {
         readonly sans: readonly ["Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Helvetica", "Arial", "sans-serif"];
         readonly body: readonly ["Nunito Sans", "sans-serif"];
         readonly heading: readonly ["Space Grotesk", "sans-serif"];
-        readonly mono: readonly ["SF Mono", "Monaco", "Inconsolata", "Fira Mono", "Droid Sans Mono", "Source Code Pro", "monospace"];
+        readonly mono: readonly ["JetBrains Mono", "monospace"];
     };
     readonly fontSizes: {
         readonly '2xs': "0.625rem";
@@ -690,6 +757,11 @@ export const semanticColorsDark: {
     readonly 'text-disabled': "rgba(255, 255, 255, 0.38)";
     readonly 'text-inverse': "#1C1916";
     readonly 'text-error': "#E05254";
+    readonly 'text-brand': "#FF7900";
+    readonly 'text-brand-secondary': "#22D3EE";
+    readonly 'text-success': "#21C05D";
+    readonly 'text-warning': "#F9B415";
+    readonly 'text-info': "#78C2FF";
     readonly 'text-link': "#78C2FF";
     readonly 'text-link-hover': "#3CA8FF";
     readonly 'surface-base': "#252321";
@@ -714,6 +786,7 @@ export const semanticColorsDark: {
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
+    readonly 'control-face-disabled': "rgba(255, 255, 255, 0.12)";
     readonly 'on-control-idle': "#D1D1D1";
     readonly 'on-control-active': "#FFFFFF";
     readonly 'on-data-strong': "#0B0B0B";
@@ -721,6 +794,7 @@ export const semanticColorsDark: {
     readonly 'interactive-focus': "rgba(255, 255, 255, 0.12)";
     readonly 'interactive-active': "rgba(255, 255, 255, 0.16)";
     readonly 'interactive-selected': "rgba(255, 255, 255, 0.08)";
+    readonly 'interactive-selected-solid': "#F9F6F3";
     readonly 'interactive-disabled': "rgba(255, 255, 255, 0.12)";
     readonly 'interactive-disabled-text': "rgba(255, 255, 255, 0.26)";
     readonly divider: "rgba(255, 255, 255, 0.09)";
@@ -736,8 +810,8 @@ export const semanticColorsLight: {
     readonly 'brand-primary-subtle': "#FFE6D4";
     readonly 'brand-primary-muted': "#FFC7A2";
     readonly 'brand-primary-strong': "rgba(255, 121, 0, 0.50)";
-    readonly 'brand-primary-hover': "#DA5F00";
-    readonly 'brand-primary-active': "#B94A00";
+    readonly 'brand-primary-hover': "#B94A00";
+    readonly 'brand-primary-active': "#983804";
     readonly 'brand-secondary': "#307B9B";
     readonly 'brand-secondary-light': "#2697B7";
     readonly 'brand-secondary-dark': "#2A617F";
@@ -750,45 +824,45 @@ export const semanticColorsLight: {
     readonly 'on-brand-secondary': "#FFFFFF";
     readonly 'on-brand-primary-subtle': "#983804";
     readonly 'on-brand-secondary-subtle': "#2A617F";
-    readonly 'status-success': "#298732";
+    readonly 'status-success': "#2B6B25";
     readonly 'status-success-light': "#58F69E";
-    readonly 'status-success-dark': "#298732";
+    readonly 'status-success-dark': "#264D1C";
     readonly 'status-success-subtle': "#B5FFD2";
     readonly 'status-success-muted': "rgba(46, 213, 115, 0.30)";
     readonly 'status-success-strong': "rgba(46, 213, 115, 0.50)";
     readonly 'status-live': "#2ED573";
     readonly 'status-live-muted': "#22A444";
-    readonly 'status-deload': "#BA2996";
+    readonly 'status-deload': "#9C0D7A";
     readonly 'status-error': "#D14343";
     readonly 'status-error-light': "#E05254";
     readonly 'status-error-dark': "#A4221C";
     readonly 'status-error-subtle': "#FFE3E5";
     readonly 'status-error-muted': "rgba(209, 67, 67, 0.30)";
     readonly 'status-error-strong': "rgba(209, 67, 67, 0.50)";
-    readonly 'status-error-vivid': "#FF4757";
+    readonly 'status-error-vivid': "#A4221C";
     readonly 'status-error-vivid-light': "#E05254";
     readonly 'status-error-vivid-dark': "#A4221C";
-    readonly 'status-error-vivid-subtle': "rgba(255, 71, 87, 0.12)";
-    readonly 'status-error-vivid-muted': "rgba(255, 71, 87, 0.30)";
-    readonly 'status-error-vivid-strong': "rgba(255, 71, 87, 0.50)";
-    readonly 'status-warning': "#C27400";
+    readonly 'status-error-vivid-subtle': "rgba(164, 34, 28, 0.12)";
+    readonly 'status-error-vivid-muted': "rgba(164, 34, 28, 0.30)";
+    readonly 'status-error-vivid-strong': "rgba(164, 34, 28, 0.50)";
+    readonly 'status-warning': "#A45E00";
     readonly 'status-warning-light': "#FFD352";
-    readonly 'status-warning-dark': "#C27400";
+    readonly 'status-warning-dark': "#814D14";
     readonly 'status-warning-subtle': "#FFEAA9";
     readonly 'status-warning-muted': "rgba(249, 180, 21, 0.30)";
     readonly 'status-warning-strong': "rgba(249, 180, 21, 0.50)";
-    readonly 'status-info': "#1072CB";
+    readonly 'status-info': "#135AA8";
     readonly 'status-info-light': "#78C2FF";
-    readonly 'status-info-dark': "#1072CB";
+    readonly 'status-info-dark': "#14407E";
     readonly 'status-info-subtle': "#D9EFFF";
     readonly 'status-info-muted': "rgba(33, 150, 243, 0.30)";
     readonly 'status-info-strong': "rgba(33, 150, 243, 0.50)";
-    readonly 'brand-primary-solid': "#FF7900";
+    readonly 'brand-primary-solid': "#DA5F00";
     readonly 'brand-secondary-solid': "#307B9B";
     readonly 'status-success-solid': "#298732";
     readonly 'status-error-solid': "#D14343";
     readonly 'status-warning-solid': "#C27400";
-    readonly 'status-info-solid': "#2196F3";
+    readonly 'status-info-solid': "#1072CB";
     readonly 'on-status-success-subtle': "#2B6B25";
     readonly 'on-status-error-subtle': "#A4221C";
     readonly 'on-status-warning-subtle': "#814D14";
@@ -838,45 +912,52 @@ export const semanticColorsLight: {
     readonly 'dataviz-categorical-5': "#01B5D1";
     readonly 'dataviz-categorical-6': "#A45E00";
     readonly 'text-primary': "#121828";
-    readonly 'text-secondary': "#5A5958";
-    readonly 'text-tertiary': "#72716F";
+    readonly 'text-secondary': "#424140";
+    readonly 'text-tertiary': "#5A5958";
     readonly 'text-disabled': "rgba(55, 65, 81, 0.48)";
     readonly 'text-inverse': "#FFFFFF";
     readonly 'text-error': "#A4221C";
+    readonly 'text-brand': "#983804";
+    readonly 'text-brand-secondary': "#22465F";
+    readonly 'text-success': "#264D1C";
+    readonly 'text-warning': "#814D14";
+    readonly 'text-info': "#135AA8";
     readonly 'text-link': "#135AA8";
     readonly 'text-link-hover': "#135AA8";
-    readonly 'surface-base': "#FFFFFF";
+    readonly 'surface-base': "#EDEAE7";
     readonly 'surface-elevated': "#F9F6F3";
-    readonly 'surface-raised': "#EDEAE7";
+    readonly 'surface-raised': "#FFFFFF";
     readonly 'surface-overlay': "#FFFFFF";
     readonly 'surface-input': "#F9F6F3";
-    readonly 'background-base': "#EDEAE7";
-    readonly 'background-default': "#FFFFFF";
+    readonly 'background-base': "#D4D1CE";
+    readonly 'background-default': "#EDEAE7";
     readonly 'background-subtle': "#F9F6F3";
-    readonly 'background-frame': "#A29F9D";
+    readonly 'background-frame': "#BDBAB7";
     readonly 'border-prominent': "#A29F9D";
     readonly 'border-focus': "#1072CB";
-    readonly 'border-input': "#888684";
-    readonly 'border-input-hover': "#72716F";
+    readonly 'border-input': "#72716F";
+    readonly 'border-input-hover': "#5A5958";
     readonly 'border-input-focus': "#1072CB";
     readonly 'border-input-error': "#D14343";
     readonly 'hairline-subtle': "rgba(0, 0, 0, 0.10)";
-    readonly 'hairline-default': "rgba(0, 0, 0, 0.15)";
-    readonly 'hairline-strong': "rgba(0, 0, 0, 0.22)";
+    readonly 'hairline-default': "rgba(0, 0, 0, 0.16)";
+    readonly 'hairline-strong': "rgba(0, 0, 0, 0.24)";
     readonly 'scrim-press': "rgba(0, 0, 0, 0.10)";
     readonly 'scrim-press-strong': "rgba(0, 0, 0, 0.20)";
     readonly 'scrim-subtle': "rgba(0, 0, 0, 0.30)";
     readonly 'scrim-default': "rgba(0, 0, 0, 0.50)";
-    readonly 'on-control-idle': "#D4D1CE";
-    readonly 'on-control-active': "#FFFFFF";
+    readonly 'control-face-disabled': "rgba(0, 0, 0, 0.06)";
+    readonly 'on-control-idle': "#5A5958";
+    readonly 'on-control-active': "#1C1916";
     readonly 'on-data-strong': "#0B0B0B";
     readonly 'interactive-hover': "rgba(55, 65, 81, 0.04)";
     readonly 'interactive-focus': "rgba(55, 65, 81, 0.12)";
     readonly 'interactive-active': "rgba(55, 65, 81, 0.16)";
     readonly 'interactive-selected': "rgba(55, 65, 81, 0.08)";
+    readonly 'interactive-selected-solid': "#5A5958";
     readonly 'interactive-disabled': "rgba(55, 65, 81, 0.12)";
     readonly 'interactive-disabled-text': "rgba(55, 65, 81, 0.26)";
-    readonly divider: "rgba(0, 0, 0, 0.15)";
+    readonly divider: "rgba(0, 0, 0, 0.16)";
     readonly 'avatar-background': "#72716F";
     readonly 'avatar-text': "#FFFFFF";
 };

@@ -2,7 +2,6 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { capturedByNode } from '../../../test/classname-capture'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { Metric, MetricGroup } from './Metric'
 
 const classesOf = (node: Element | null) => (node ? capturedByNode.get(node) : '')?.split(' ') ?? []
@@ -80,13 +79,33 @@ describe('Metric', () => {
     expect(classes.filter((c) => c.startsWith('items-'))).toEqual([expected])
   })
 
-  it('tone=warning colours the value from the status-warning semantic token', () => {
-    render(<Metric value="76%" label="Volume" tone="warning" />)
-    const classes = classesOf(screen.getByText('76%'))
-    expect(classes).toContain('text-status-warning')
-    expect(classes).not.toContain('text-text-primary')
-    expect(getSemanticColors('dark')['status-warning']).toBeDefined()
-    expect(getSemanticColors('light')['status-warning']).toBeDefined()
+  it('tone=error colours the value from the dark-safe text-error token, not status-error', () => {
+    render(<Metric value="12" label="Misses" tone="error" />)
+    const classes = classesOf(screen.getByText('12'))
+    expect(classes).toContain('text-text-error')
+    expect(classes).not.toContain('text-status-error')
+  })
+
+  // TD-789 3b: the status tones as value text missed 4.5:1 on the grey 100 and 200 planes.
+  it.each([
+    ['success', 'text-text-success', 'text-status-success'],
+    ['warning', 'text-text-warning', 'text-status-warning'],
+    ['info', 'text-text-info', 'text-status-info'],
+    ['brand', 'text-text-brand', 'text-brand-primary'],
+  ] as const)('tone=%s colours the value from %s, not %s', (tone, textRole, fillTone) => {
+    render(<Metric value="12" label="Sets" tone={tone} />)
+    const classes = classesOf(screen.getByText('12'))
+    expect(classes).toContain(textRole)
+    expect(classes).not.toContain(fillTone)
+  })
+
+  it('labelPosition=above puts the label before the figure', () => {
+    render(<Metric value="76%" label="Volume" labelPosition="above" />)
+    const label = screen.getByText('Volume')
+    expect(
+      label.compareDocumentPosition(screen.getByText('76%')) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy()
+    expect(classesOf(label)).toContain('mb-1')
   })
 
   it('keeps the value on text-primary when no tone is given', () => {
