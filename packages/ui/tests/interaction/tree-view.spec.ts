@@ -82,7 +82,8 @@ test('End on 5,000 rows scrolls the last row in, then focuses it', async ({ page
 
   await page.keyboard.press('End')
 
-  await expect.poll(async () => (await focused(page)).role).toBe('treeitem')
+  // The first row already holds focus, so wait for focus to leave it before measuring.
+  await expect.poll(async () => (await focused(page)).label).not.toBe(first)
   const state = await page.evaluate(() => {
     const row = document.activeElement as HTMLElement
     const scroller = row.closest('[role="tree"]')?.parentElement?.parentElement as HTMLElement
