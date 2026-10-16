@@ -59,7 +59,7 @@ function SizeRow({ option, size }: { option: CheckOption; size: Size }) {
       {STATES.map((state) => (
         <View key={state} className="items-center gap-1" style={{ width: 84 }}>
           <CheckIndicatorBox option={option} size={size} state={state} />
-          <Text className="font-mono text-xs text-text-tertiary">{state}</Text>
+          <Text className="font-mono text-xs text-text-secondary">{state}</Text>
         </View>
       ))}
     </View>
