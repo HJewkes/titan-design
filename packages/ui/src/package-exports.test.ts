@@ -65,7 +65,7 @@ describe('package.json exports', () => {
 
 // Video-only names export from /motion alone (TD-893); the root keeps its budget.
 describe('video-only exports', () => {
-  const MOTION_ONLY_VALUES = ['EvidenceChip', 'elideSource']
+  const MOTION_ONLY_VALUES = ['EvidenceChip', 'elideSource', 'ChipBand']
 
   it.each(MOTION_ONLY_VALUES)('%s comes from the motion entry', async (name) => {
     const motion: Record<string, unknown> = await import('./motion')
