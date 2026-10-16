@@ -42,7 +42,13 @@ describe('readPng', () => {
   it('reaches the inflater for an in-bounds size, so the spy can see it', () => {
     const inflate = vi.spyOn(zlibInflater, 'Inflate')
 
-    expect(() => readPng(pngClaiming(8, 8))).toThrow()
+    // The IDAT holds 4x4 rows, short for 8x8: Node 24 throws on it and Node 22 does not, and only
+    // reaching the inflater matters here.
+    try {
+      readPng(pngClaiming(8, 8))
+    } catch {
+      /* either outcome is fine */
+    }
     expect(inflate).toHaveBeenCalled()
   })
 
