@@ -190,6 +190,42 @@ function compareStyles(
   return mismatches
 }
 
+const CHECK_MARK_SVG_PROPS = ['width', 'height'] as const
+
+/**
+ * The check mark is an SVG polygon (TD-840), so it has no text to compare: match the painted
+ * fill (the ground truth's `currentColor` against the component's colour role) and the box.
+ */
+async function assertCheckMarkMatch(
+  page: Page,
+  testId: string,
+  htmlSvgSelector: string,
+  reactSvgSelector: string
+) {
+  const container = page.locator(`[data-testid="${testId}"]`)
+  const htmlSvg = container.locator(htmlSvgSelector).first()
+  const reactSvg = container.locator(reactSvgSelector).first()
+  await expect(htmlSvg).toBeAttached({ timeout: 3000 })
+  await expect(reactSvg).toBeAttached({ timeout: 3000 })
+
+  const mismatches = [
+    ...compareStyles(
+      await getStyles(htmlSvg.locator('polygon'), ['fill']),
+      await getStyles(reactSvg.locator('polygon'), ['fill']),
+      ['fill']
+    ),
+    ...compareStyles(
+      await getStyles(htmlSvg, CHECK_MARK_SVG_PROPS),
+      await getStyles(reactSvg, CHECK_MARK_SVG_PROPS),
+      CHECK_MARK_SVG_PROPS
+    ),
+  ]
+  const report = mismatches.map((m) => `  check.${m.prop}: HTML="${m.html}" React="${m.react}"`)
+  expect
+    .soft(mismatches.length, `Check mark mismatches for ${testId}:\n${report.join('\n')}`)
+    .toBe(0)
+}
+
 /**
  * Core assertion: find both versions within a test-id container and compare styles.
  *
@@ -574,6 +610,15 @@ test.describe('HTML vs React Component Comparison', () => {
         '[data-testid="status-dot"]',
         statusDotProps
       )
+      if (variant === 'success') {
+        await assertCheckMarkMatch(
+          page,
+          'compare-status-dot-success-icon',
+          '.html-version .dot-icon svg',
+          '.react-version [data-testid="status-dot"] svg'
+        )
+        return
+      }
       // Check the icon text element
       const container = page.locator(`[data-testid="compare-status-dot-${variant}-icon"]`)
       const htmlIcon = container.locator('.html-version .dot-icon').first()
@@ -1013,6 +1058,14 @@ test.describe('HTML vs React Component Comparison', () => {
         '[data-testid="workout-pill"] > div',
         { reactTextSelector: '[data-testid="workout-pill"] div[dir="auto"]', props: pillProps }
       )
+      if (status === 'completed') {
+        await assertCheckMarkMatch(
+          page,
+          'compare-workout-pill-completed',
+          '.html-version .pill-check',
+          '.react-version [data-testid="workout-pill"] svg'
+        )
+      }
     })
   }
 

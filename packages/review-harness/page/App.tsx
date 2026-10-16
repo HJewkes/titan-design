@@ -9,11 +9,13 @@ import {
   type Dispatch,
   type ReactNode,
 } from 'react'
+import type { BlindReveal } from '../src/blind-ab.ts'
 import { blockedShipGroup, buildFeedback, pendingQuestionIds, shipsAfter } from '../src/feedback.ts'
 import { prGroupOfPage } from '../src/pr-tabs.ts'
 import { feedbackProblems } from '../src/round.ts'
 import { roundLayout, type LayoutBlock, type ResolvedSection } from '../src/sections.ts'
 import type { Manifest, Question, StripKind, Variant } from '@titan-design/review-schema'
+import { BlindRevealTable } from './BlindAb.tsx'
 import { Markdown } from './Markdown.tsx'
 import { PrPage } from './PrTabs.tsx'
 import { QuestionBlock } from './QuestionBlock.tsx'
@@ -43,16 +45,35 @@ interface AppProps {
   harnessWarning?: string
 }
 
-async function postFeedback(body: unknown): Promise<string[]> {
+interface SubmitReply {
+  errors: string[]
+  /** Each blind-ab question's key and picks, which the server sends only once the round is in. */
+  reveal: BlindReveal[]
+}
+
+async function postFeedback(body: unknown): Promise<SubmitReply> {
   const res = await fetch('api/submit', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(body),
   }).catch(() => null)
-  if (!res) return ['the titan-review process is gone; rerun it']
-  if (res.ok) return []
+  if (!res) return { errors: ['the titan-review process is gone; rerun it'], reveal: [] }
+  const reply = (await res.json().catch(() => ({}))) as Partial<SubmitReply>
+  if (res.ok) return { errors: [], reveal: reply.reveal ?? [] }
+  return { errors: reply.errors ?? [`HTTP ${res.status}`], reveal: [] }
+}
+
+/** The sent screen; a round with blind pairs reveals their engines here, and only here. */
+export function Sent({ reveal }: { reveal: BlindReveal[] }) {
   return (
-    ((await res.json().catch(() => ({}))) as { errors?: string[] }).errors ?? [`HTTP ${res.status}`]
+    <>
+      <p className="sent" data-testid="sent">
+        Sent. The agent has your answers; you can close this tab.
+      </p>
+      {reveal.map((r) => (
+        <BlindRevealTable key={r.questionId} reveal={r} />
+      ))}
+    </>
   )
 }
 
@@ -500,6 +521,7 @@ export function App({ manifest, manifestSha256, harnessWarning }: AppProps) {
   )
   useDraftBackup(storage, manifestSha256, state)
   const [hitTesting, setHitTesting] = useState<boolean | null>(null)
+  const [reveal, setReveal] = useState<BlindReveal[]>([])
   const unanswered = pendingQuestionIds(manifest, state.draft)
   const partial = unanswered.length > 0
   const feedback = buildFeedback(manifest, manifestSha256, state.draft, new Date(), partial)
@@ -507,20 +529,17 @@ export function App({ manifest, manifestSha256, harnessWarning }: AppProps) {
   const submit = async () => {
     if (state.screen !== 'review' || problems.length) return
     dispatch({ type: 'screen', screen: 'sending' })
-    const errors = await postFeedback(
+    const reply = await postFeedback(
       buildFeedback(manifest, manifestSha256, state.draft, new Date(), partial)
     )
+    const { errors } = reply
+    setReveal(reply.reveal)
     dispatch({ type: 'screen', screen: errors.length ? 'review' : 'sent', errors })
   }
   // Cmd+Enter sends only a complete round; a partial one takes the explicit Send partial click.
   const submitByKey = () => (partial ? undefined : submit())
   useKeyboard({ manifest, state, dispatch, submit: submitByKey })
-  if (state.screen === 'sent')
-    return (
-      <p className="sent" data-testid="sent">
-        Sent. The agent has your answers; you can close this tab.
-      </p>
-    )
+  if (state.screen === 'sent') return <Sent reveal={reveal} />
   return (
     <>
       {harnessWarning && (

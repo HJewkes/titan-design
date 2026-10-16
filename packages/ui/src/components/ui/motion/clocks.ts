@@ -1,0 +1,180 @@
+// Time sources. Clocks are the only part of the motion core that touches real time;
+// `now()` returns a value cached at the last tick so React sees one time per frame.
+
+/** Where a clock's time comes from: animation frames, explicit seeks, or a media element. */
+export type ClockKind = 'raf' | 'seek' | 'media'
+
+/** A source of timeline seconds that motion hooks read through `useSyncExternalStore`. */
+export interface Clock {
+  /** Where the time comes from. */
+  readonly kind: ClockKind
+  /** Seconds, cached at the last tick so one frame reads one time. */
+  now(): number
+  /** Calls `cb` whenever `now()` changes; returns the unsubscribe. */
+  subscribe(cb: () => void): () => void
+}
+
+/** A clock that moves only when told to: the driver of frame-by-frame capture. */
+export interface SeekClock extends Clock {
+  /** Always `'seek'`. */
+  readonly kind: 'seek'
+  /**
+   * Sets the time to `t` seconds and notifies every subscriber. A non-finite `t` throws a
+   * `RangeError` and keeps the previous time.
+   */
+  seek(t: number): void
+}
+
+/** What a reduced-motion rAF clock with no end reports: past the end of any entrance or beat. */
+export const REDUCED_MOTION_END_S = 1e4
+
+// A subscriber that seeks its own clock re-enters notify; past these depths that is a loop.
+const NOTIFY_WARN_DEPTH = 10
+const NOTIFY_MAX_DEPTH = 100
+
+function subscribers(onFirst: () => void = () => {}, onLast: () => void = () => {}) {
+  const set = new Set<() => void>()
+  let depth = 0
+  return {
+    add(cb: () => void): () => void {
+      set.add(cb)
+      if (set.size === 1) onFirst()
+      return () => {
+        if (set.delete(cb) && set.size === 0) onLast()
+      }
+    },
+    notify(): void {
+      if (depth >= NOTIFY_MAX_DEPTH) {
+        throw new RangeError(`clock: subscribers re-entered notify ${NOTIFY_MAX_DEPTH} times`)
+      }
+      if (depth === NOTIFY_WARN_DEPTH) {
+        console.warn(`titan: clock subscribers re-entered notify ${NOTIFY_WARN_DEPTH} times`)
+      }
+      depth++
+      try {
+        for (const cb of [...set]) cb()
+      } finally {
+        depth--
+      }
+    },
+  }
+}
+
+/** A clock at `initialS` seconds that reports the last `seek(t)`. */
+export function seekClock(initialS = 0): SeekClock {
+  let t = initialS
+  const subs = subscribers()
+  return {
+    kind: 'seek',
+    now: () => t,
+    subscribe: subs.add,
+    seek(next) {
+      if (!Number.isFinite(next))
+        throw new RangeError(`seekClock: seek(${next}) needs a finite time`)
+      t = next
+      subs.notify()
+    },
+  }
+}
+
+type FrameListener = (ms: number) => void
+
+// One requestAnimationFrame loop for every rAF clock, running only while one is subscribed,
+// so a screen of entrances costs one frame callback rather than one per component.
+const frameListeners = new Set<FrameListener>()
+let sharedFrame = 0
+
+function onSharedFrame(ms: number): void {
+  for (const listener of [...frameListeners]) listener(ms)
+  sharedFrame = frameListeners.size > 0 ? requestAnimationFrame(onSharedFrame) : 0
+}
+
+function listenToFrames(listener: FrameListener): () => void {
+  frameListeners.add(listener)
+  if (frameListeners.size === 1) sharedFrame = requestAnimationFrame(onSharedFrame)
+  return () => {
+    if (!frameListeners.delete(listener) || frameListeners.size > 0) return
+    cancelAnimationFrame(sharedFrame)
+    sharedFrame = 0
+  }
+}
+
+/** Options for `rafClock`. */
+export interface RafClockOptions {
+  /** Seconds the clock reports at its first frame. Default 0. */
+  startS?: number
+  /** The clock stops here: it reports `endS` and requests no further frames. */
+  endS?: number
+  /** Report the end at once. Read the preference with `usePrefersReducedMotion`. */
+  reducedMotion?: boolean
+}
+
+/** Advances with requestAnimationFrame from the first frame after the first subscriber. */
+export function rafClock({
+  startS = 0,
+  endS = Infinity,
+  reducedMotion = false,
+}: RafClockOptions = {}): Clock {
+  if (reducedMotion) {
+    const end = Number.isFinite(endS) ? endS : REDUCED_MOTION_END_S
+    return { kind: 'raf', now: () => end, subscribe: () => () => {} }
+  }
+  let t = Math.min(startS, endS)
+  let originMs: number | null = null
+  let stop: (() => void) | null = null
+  const tick = (ms: number) => {
+    originMs ??= ms - t * 1000
+    t = Math.min(endS, (ms - originMs) / 1000)
+    if (t >= endS) halt()
+    subs.notify()
+  }
+  const halt = () => {
+    stop?.()
+    stop = null
+  }
+  const subs = subscribers(() => {
+    if (t < endS) stop = listenToFrames(tick)
+  }, halt)
+  return { kind: 'raf', now: () => t, subscribe: subs.add }
+}
+
+/** Follows `media.currentTime`: on timeupdate and seeked, and every frame while playing. */
+export function mediaClock(media: HTMLMediaElement): Clock {
+  let t = media.currentTime
+  let frame = 0
+  const sync = () => {
+    if (media.currentTime === t) return
+    t = media.currentTime
+    subs.notify()
+  }
+  const loop = () => {
+    sync()
+    frame = requestAnimationFrame(loop)
+  }
+  const startLoop = () => {
+    cancelAnimationFrame(frame)
+    frame = requestAnimationFrame(loop)
+  }
+  const stopLoop = () => {
+    cancelAnimationFrame(frame)
+    sync()
+  }
+  const events: [string, () => void][] = [
+    ['timeupdate', sync],
+    ['seeked', sync],
+    ['play', startLoop],
+    ['pause', stopLoop],
+    ['ended', stopLoop],
+  ]
+  const subs = subscribers(
+    () => {
+      for (const [name, fn] of events) media.addEventListener(name, fn)
+      if (!media.paused) startLoop()
+    },
+    () => {
+      for (const [name, fn] of events) media.removeEventListener(name, fn)
+      cancelAnimationFrame(frame)
+    }
+  )
+  return { kind: 'media', now: () => t, subscribe: subs.add }
+}
