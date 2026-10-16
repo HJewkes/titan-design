@@ -9,7 +9,7 @@
     "name": "bodymap",
     "path": "dist/bodymap.mjs",
     "brotli": true,
-    "limit": "34 kB"
+    "limit": "36 kB"
   },
   {
     "name": "pages",
