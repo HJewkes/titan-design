@@ -22,11 +22,14 @@ const objectEntries = Object.entries(pkg.exports).filter(
 )
 
 describe('package.json exports', () => {
-  it('has the six TypeScript subpaths as object entries', () => {
+  it('has the nine TypeScript subpaths as object entries', () => {
     expect(objectEntries.map(([subpath]) => subpath)).toEqual([
       '.',
       './bodymap',
       './pages',
+      './workout',
+      './motion',
+      './diagram',
       './theme',
       './theme/tokens',
       './theme/tokens-css',
@@ -52,5 +55,25 @@ describe('package.json exports', () => {
   it.each(objectEntries)('%s lists react-native first when present', (_subpath, entry) => {
     const keys = Object.keys(entry)
     if (keys.includes('react-native')) expect(keys[0]).toBe('react-native')
+  })
+
+  it('resolves resolveMapState through the ./diagram subpath', async () => {
+    const entry = await import('@titan-design/react-ui/diagram')
+    expect(entry.resolveMapState).toBeTypeOf('function')
+  })
+})
+
+// Video-only names export from /motion alone (TD-893); the root keeps its budget.
+describe('video-only exports', () => {
+  const MOTION_ONLY_VALUES = ['EvidenceChip', 'elideSource']
+
+  it.each(MOTION_ONLY_VALUES)('%s comes from the motion entry', async (name) => {
+    const motion: Record<string, unknown> = await import('./motion')
+    expect(motion[name]).toBeDefined()
+  })
+
+  it.each(MOTION_ONLY_VALUES)('%s is absent from the root entry', async (name) => {
+    const root: Record<string, unknown> = await import('./index')
+    expect(root).not.toHaveProperty(name)
   })
 })

@@ -24,6 +24,11 @@ describe('the package entry', () => {
         'SHIP_OPTIONS',
         'isLoopbackUrl',
         'manifestJsonSchema',
+        'OptionDetailSchema',
+        'EvidenceTableSchema',
+        'CompareSchema',
+        'CELL_TONES',
+        'packetProblems',
       ])
     )
   })

@@ -16,6 +16,7 @@ export const LINT_RULES = [
   'missing-implemented-option',
   'question-outside-review',
   'base-on-new-frame',
+  'sampled-animation',
 ] as const
 export type LintRule = (typeof LINT_RULES)[number]
 
@@ -264,6 +265,53 @@ function baseProblems(m: Manifest): LintProblem[] {
     )
 }
 
+/** Args that time an animation; any other numeric arg counts only when every sample sits in 0..1. */
+const TIME_ARGS = new Set(['progress', 't', 'time', 'frame', 'playhead', 'elapsed'])
+
+/** The one numeric arg a set of frames of one story differs in, when it reads as time. */
+function sampledArg(views: Variant[]): string | null {
+  const names = new Set(views.flatMap((v) => Object.keys(v.args ?? {})))
+  const differing = [...names].filter(
+    (name) => new Set(views.map((v) => JSON.stringify(v.args?.[name]))).size > 1
+  )
+  if (differing.length !== 1) return null
+  const [arg] = differing
+  const values = views.map((v) => v.args?.[arg])
+  if (!values.every((x): x is number => typeof x === 'number')) return null
+  return TIME_ARGS.has(arg) || values.every((x) => x >= 0 && x <= 1) ? arg : null
+}
+
+/** Static frames of one live story, the same in all but its time arg, grouped per story and mode. */
+function sampledGroups(section: Section, m: Manifest): Variant[][] {
+  const groups = new Map<string, Variant[]>()
+  for (const v of m.variants)
+    if (section.variantKeys.includes(v.key) && v.storyId && !v.motion && !v.scale) {
+      const at = `${v.storyId} ${modeOf(v)}`
+      groups.set(at, [...(groups.get(at) ?? []), v])
+    }
+  return [...groups.values()].filter((views) => views.length > 1)
+}
+
+/** An animation is reviewed playing, with a scrubber, not as STATES sampled from it (339(2)). */
+function sampledAnimationProblems(m: Manifest): LintProblem[] {
+  return (m.sections ?? [])
+    .filter((s) => s.kind === 'STATES')
+    .flatMap((s) =>
+      sampledGroups(s, m).flatMap((views) => {
+        const arg = sampledArg(views)
+        if (!arg) return []
+        const at = views.map((v) => String(v.args?.[arg])).join(', ')
+        return [
+          lint('sampled-animation')(
+            `section ${s.id}: frames ${views.map((v) => v.key).join(', ')} sample ${views[0].storyId} ` +
+              `at ${arg} ${at}; show one variant with motion { mechanism: "arg", arg: "${arg}" } ` +
+              'so it plays with a scrubber'
+          ),
+        ]
+      })
+    )
+}
+
 /**
  * The review-layout problems of a parsed round, empty when it passes. Pure: builders refuse a
  * round with any problem, and a console lists one with its reasons.
@@ -280,5 +328,6 @@ export function lintRound(round: Manifest): LintProblem[] {
     ...implementedProblems(round),
     ...reviewTabProblems(round, prs),
     ...baseProblems(round),
+    ...sampledAnimationProblems(round),
   ]
 }

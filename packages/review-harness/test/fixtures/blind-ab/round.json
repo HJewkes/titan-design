@@ -1,0 +1,54 @@
+{
+  "schema": "titan-review/round@2",
+  "unit": "tts-blind-ab",
+  "round": 1,
+  "storybookUrl": "http://127.0.0.1:6006",
+  "widths": [1280],
+  "variants": [
+    {
+      "key": "ref",
+      "audio": "audio/ref.wav",
+      "label": "The reference read",
+      "transcript": "The kettle is on and the window is open.",
+      "durationMs": 400
+    }
+  ],
+  "questions": [
+    {
+      "id": "tts",
+      "kind": "blind-ab",
+      "prompt": "Which take of each line sounds more natural?",
+      "required": true,
+      "pairs": [
+        {
+          "id": "p1",
+          "transcript": "The kettle is on and the window is open.",
+          "takes": [
+            { "engine": "engine-x", "src": "audio/p1-x.wav", "durationMs": 400 },
+            { "engine": "engine-y", "src": "audio/p1-y.wav", "durationMs": 400 }
+          ]
+        },
+        {
+          "id": "p2",
+          "transcript": "Seven boats left the harbour before noon.",
+          "takes": [
+            { "engine": "engine-x", "src": "audio/p2-x.wav" },
+            { "engine": "engine-y", "src": "audio/p2-y.wav" }
+          ]
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "id": "listen",
+      "title": "Two engines, read blind",
+      "deciding": "Which engine reads these lines more naturally.",
+      "changed": "Both engines read the same two lines; the reference read is for calibration.",
+      "context": "The lines and their order are fixed; only the voices differ.",
+      "kind": "STATES",
+      "questionIds": ["tts"],
+      "variantKeys": ["ref"]
+    }
+  ]
+}

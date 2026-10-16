@@ -12,6 +12,9 @@ import {
   PersonStandingIcon,
   ScaleIcon,
   AlertTriangleIcon,
+  CircleCheckIcon,
+  OctagonXIcon,
+  CircleDashedIcon,
   TrendingDownIcon,
   CircleSlashIcon,
   AwardIcon,
@@ -26,6 +29,7 @@ import {
   DatabaseIcon,
   ChartIcon,
 } from './icons'
+import { TriangleDownIcon, TriangleUpIcon } from './statusIcons'
 import { SvgIcon } from './SvgIcon'
 import { checkMarkOutline } from './checkMarkGeometry'
 
@@ -42,6 +46,11 @@ describe('icon primitives', () => {
       PersonStandingIcon,
       ScaleIcon,
       AlertTriangleIcon,
+      CircleCheckIcon,
+      OctagonXIcon,
+      CircleDashedIcon,
+      TriangleUpIcon,
+      TriangleDownIcon,
       TrendingDownIcon,
       CircleSlashIcon,
       AwardIcon,

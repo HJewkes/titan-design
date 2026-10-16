@@ -21,6 +21,7 @@ import {
   type PackedCircle,
 } from './layout-geometry'
 
+/** Options of `clusteredLayout`; all four are part of the layout's `key`. */
 export interface ClusteredLayoutOptions {
   /** Default 1. */
   seed?: number
@@ -189,6 +190,12 @@ function sanitize(options: ClusteredLayoutOptions): CleanOptions {
   }
 }
 
+/**
+ * A clustered layout: every node sits inside the region of its `group`, so enclosure means
+ * membership and an edge that leaves a region is a link between groups. Each group is a force
+ * layout of its own, and the regions are packed in rows; ungrouped nodes share one last region.
+ * Asks for arc edges and decluttered labels, and returns one `region` group per region.
+ */
 export function clusteredLayout(options: ClusteredLayoutOptions = {}): GraphLayout {
   const clean = sanitize(options)
   return {

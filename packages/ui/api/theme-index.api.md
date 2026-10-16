@@ -36,6 +36,9 @@ export const categoricalPalette: {
 export type CategoricalVariant = keyof typeof categoricalPalette;
 
 // @public
+export type ControlPoints = readonly [number, number, number, number];
+
+// @public
 export interface CssPropertyEntry {
     cssVariable?: string | null;
     property: string;
@@ -53,10 +56,23 @@ export interface CssPropertyManifest {
 }
 
 // @public
+export type CubicBezierCss<P extends ControlPoints> = `cubic-bezier(${P[0]}, ${P[1]}, ${P[2]}, ${P[3]})`;
+
+// @public
+export function cubicBezierCss<const P extends ControlPoints>(points: P): CubicBezierCss<P>;
+
+// @public
 export function darken(hex: string, amount?: number): string;
 
 // @public (undocumented)
 export const darkThemeCSSVars: {
+    readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
+    readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
+    readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
+    readonly '--ease-in': "cubic-bezier(0.55, 0, 1, 0.45)";
+    readonly '--duration-fast': "150ms";
+    readonly '--duration-normal': "250ms";
+    readonly '--duration-slow': "400ms";
     readonly '--color-brand-primary-rgb': "255, 121, 0";
     readonly '--color-brand-secondary-rgb': "48, 123, 155";
     readonly '--color-status-success-rgb': "46, 213, 115";
@@ -68,13 +84,7 @@ export const darkThemeCSSVars: {
     readonly '--font-family-sans': "'Inter'";
     readonly '--font-family-body': "'Nunito Sans'";
     readonly '--font-family-heading': "'Space Grotesk'";
-    readonly '--font-family-mono': "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
-    readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
-    readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
-    readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
-    readonly '--duration-fast': "150ms";
-    readonly '--duration-normal': "250ms";
-    readonly '--duration-slow': "400ms";
+    readonly '--font-family-mono': "'JetBrains Mono', monospace";
     readonly '--color-brand-primary': "#FF7900";
     readonly '--color-brand-primary-light': "#FFA063";
     readonly '--color-brand-primary-dark': "#DA5F00";
@@ -603,6 +613,13 @@ export function getSemanticColors(mode: ThemeMode): {
 
 // @public (undocumented)
 export function getThemeCSSVars(mode: ThemeMode): {
+    readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
+    readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
+    readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
+    readonly '--ease-in': "cubic-bezier(0.55, 0, 1, 0.45)";
+    readonly '--duration-fast': "150ms";
+    readonly '--duration-normal': "250ms";
+    readonly '--duration-slow': "400ms";
     readonly '--color-brand-primary-rgb': "255, 121, 0";
     readonly '--color-brand-secondary-rgb': "48, 123, 155";
     readonly '--color-status-success-rgb': "46, 213, 115";
@@ -614,13 +631,7 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--font-family-sans': "'Inter'";
     readonly '--font-family-body': "'Nunito Sans'";
     readonly '--font-family-heading': "'Space Grotesk'";
-    readonly '--font-family-mono': "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
-    readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
-    readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
-    readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
-    readonly '--duration-fast': "150ms";
-    readonly '--duration-normal': "250ms";
-    readonly '--duration-slow': "400ms";
+    readonly '--font-family-mono': "'JetBrains Mono', monospace";
     readonly '--color-brand-primary': "#FF7900";
     readonly '--color-brand-primary-light': "#FFA063";
     readonly '--color-brand-primary-dark': "#DA5F00";
@@ -778,6 +789,13 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--color-avatar-background': "#72716F";
     readonly '--color-avatar-text': "#FFFFFF";
 } | {
+    readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
+    readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
+    readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
+    readonly '--ease-in': "cubic-bezier(0.55, 0, 1, 0.45)";
+    readonly '--duration-fast': "150ms";
+    readonly '--duration-normal': "250ms";
+    readonly '--duration-slow': "400ms";
     readonly '--color-brand-primary-rgb': "255, 121, 0";
     readonly '--color-brand-secondary-rgb': "48, 123, 155";
     readonly '--color-status-success-rgb': "46, 213, 115";
@@ -789,13 +807,7 @@ export function getThemeCSSVars(mode: ThemeMode): {
     readonly '--font-family-sans': "'Inter'";
     readonly '--font-family-body': "'Nunito Sans'";
     readonly '--font-family-heading': "'Space Grotesk'";
-    readonly '--font-family-mono': "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
-    readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
-    readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
-    readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
-    readonly '--duration-fast': "150ms";
-    readonly '--duration-normal': "250ms";
-    readonly '--duration-slow': "400ms";
+    readonly '--font-family-mono': "'JetBrains Mono', monospace";
     readonly '--color-brand-primary': "#FF7900";
     readonly '--color-brand-primary-light': "#FFA063";
     readonly '--color-brand-primary-dark': "#DA5F00";
@@ -1101,6 +1113,13 @@ export function lighten(hex: string, amount?: number): string;
 
 // @public
 export const lightThemeCSSVars: {
+    readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
+    readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
+    readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
+    readonly '--ease-in': "cubic-bezier(0.55, 0, 1, 0.45)";
+    readonly '--duration-fast': "150ms";
+    readonly '--duration-normal': "250ms";
+    readonly '--duration-slow': "400ms";
     readonly '--color-brand-primary-rgb': "255, 121, 0";
     readonly '--color-brand-secondary-rgb': "48, 123, 155";
     readonly '--color-status-success-rgb': "46, 213, 115";
@@ -1112,13 +1131,7 @@ export const lightThemeCSSVars: {
     readonly '--font-family-sans': "'Inter'";
     readonly '--font-family-body': "'Nunito Sans'";
     readonly '--font-family-heading': "'Space Grotesk'";
-    readonly '--font-family-mono': "'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace";
-    readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
-    readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
-    readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
-    readonly '--duration-fast': "150ms";
-    readonly '--duration-normal': "250ms";
-    readonly '--duration-slow': "400ms";
+    readonly '--font-family-mono': "'JetBrains Mono', monospace";
     readonly '--color-brand-primary': "#FF7900";
     readonly '--color-brand-primary-light': "#FFA063";
     readonly '--color-brand-primary-dark': "#DA5F00";
@@ -1287,6 +1300,50 @@ export interface ManifestValidationResult {
     // (undocumented)
     valid: boolean;
 }
+
+// @public
+export const motion: {
+    readonly duration: {
+        readonly fast: 150;
+        readonly normal: 250;
+        readonly slow: 400;
+    };
+    readonly ease: {
+        readonly out: readonly [0.22, 1, 0.36, 1];
+        readonly inOut: readonly [0.65, 0, 0.35, 1];
+        readonly spring: readonly [0.34, 1.56, 0.64, 1];
+        readonly in: readonly [0.55, 0, 1, 0.45];
+    };
+    readonly video: {
+        readonly emphasis: 500;
+        readonly enter: 1000;
+        readonly hero: 1500;
+        readonly count: 1500;
+        readonly exit: 850;
+        readonly exitScale: 0.85;
+        readonly staggerEach: 60;
+        readonly staggerMax: 500;
+        readonly rise: 40;
+        readonly scaleFrom: 0.97;
+    };
+    readonly dim: {
+        readonly context: {
+            readonly opacity: 0.35;
+            readonly saturation: 0;
+        };
+    };
+};
+
+// @public
+export const motionCSSVars: Readonly<{
+    readonly '--ease-out': "cubic-bezier(0.22, 1, 0.36, 1)";
+    readonly '--ease-in-out': "cubic-bezier(0.65, 0, 0.35, 1)";
+    readonly '--ease-spring': "cubic-bezier(0.34, 1.56, 0.64, 1)";
+    readonly '--ease-in': "cubic-bezier(0.55, 0, 1, 0.45)";
+    readonly '--duration-fast': "150ms";
+    readonly '--duration-normal': "250ms";
+    readonly '--duration-slow': "400ms";
+}>;
 
 // @public
 export function paperFill(tone: string): ViewStyle;
@@ -1459,7 +1516,7 @@ export const primitiveTypography: {
         readonly sans: readonly ["Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Helvetica", "Arial", "sans-serif"];
         readonly body: readonly ["Nunito Sans", "sans-serif"];
         readonly heading: readonly ["Space Grotesk", "sans-serif"];
-        readonly mono: readonly ["SF Mono", "Monaco", "Inconsolata", "Fira Mono", "Droid Sans Mono", "Source Code Pro", "monospace"];
+        readonly mono: readonly ["JetBrains Mono", "monospace"];
     };
     readonly fontSizes: {
         readonly '2xs': "0.625rem";

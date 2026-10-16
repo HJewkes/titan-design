@@ -137,6 +137,13 @@ jobs:
         if: steps.paths.outputs.run != 'false'
         run: pnpm --filter @titan-design/react-ui test:offline-fonts
 
+      # A Vite beat page renders six react-ui components through react-native-web and nativewind,
+      # captured frame by frame under virtual time: identical runs, order-independent frames,
+      # seek median under 100 ms, and no build without the react-native-web alias (TD-845).
+      - name: Capture proof — react-ui under react-native-web
+        if: steps.paths.outputs.run != 'false'
+        run: pnpm --filter @titan-design/react-ui test:capture
+
       # Layer 1 — component screenshot baselines. Any pixel diff against the
       # committed baselines exits non-zero and fails the build.
       - name: Layer 1 — component screenshot baselines
