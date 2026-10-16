@@ -2589,7 +2589,9 @@
     },
     {
       "composes": [
+        "Pill",
         "StatusDot",
+        "StatusGlyph",
         "Tooltip"
       ],
       "family": "custom/Fatigue",
@@ -2609,6 +2611,13 @@
           "name": "spread",
           "required": false,
           "type": "boolean"
+        },
+        {
+          "default": "dots",
+          "description": "`dots` (default) are glowing status dots; `chips` are neutral pills led by a status glyph.",
+          "name": "variant",
+          "required": false,
+          "type": "\"dots\" | \"chips\""
         }
       ],
       "purpose": "",
@@ -2619,6 +2628,7 @@
       "status": "candidate",
       "storyIds": [
         "custom-fatigue-fatigue-lights--across-states",
+        "custom-fatigue-fatigue-lights--default",
         "custom-fatigue-fatigue-lights--spread"
       ],
       "tier": "organism"
@@ -3073,17 +3083,50 @@
       "tier": "organism"
     },
     {
-      "composes": [],
+      "composes": [
+        "Eyebrow",
+        "StatusGlyph",
+        "Tooltip",
+        "Typography"
+      ],
       "family": "custom/Fatigue",
       "file": "packages/ui/src/components/custom/Fatigue/VerdictHero.tsx",
       "name": "VerdictHero",
       "props": [
         {
           "default": null,
+          "description": "A label above the word naming what was read (\"HOW IT MOVED · WORST SET #2\").",
+          "name": "kicker",
+          "required": false,
+          "type": "ReactNode"
+        },
+        {
+          "default": null,
+          "description": "Lead with the RPE number.",
+          "name": "lead",
+          "required": false,
+          "type": "\"rpe\" | \"word\""
+        },
+        {
+          "default": null,
+          "description": "The set was not scored: `title` shows in place of the word, `reason` is the glyph's tip and spoken name.",
+          "name": "noVerdict",
+          "required": false,
+          "type": "{ title: string; reason: string; }"
+        },
+        {
+          "default": null,
           "description": "Exact (unrounded) RPE estimate; rounded to the conventional 0.5 for display.",
           "name": "rpe",
           "required": true,
           "type": "number | null"
+        },
+        {
+          "default": null,
+          "description": "`card` sets the word at h3; `wall` at h2 for reading across a room.",
+          "name": "scale",
+          "required": false,
+          "type": "\"wall\" | \"card\""
         },
         {
           "default": null,
@@ -3100,9 +3143,10 @@
       },
       "status": "candidate",
       "storyIds": [
-        "custom-fatigue-verdict-hero--across-states"
+        "custom-fatigue-verdict-hero--across-states",
+        "custom-fatigue-verdict-hero--default"
       ],
-      "tier": "atom"
+      "tier": "organism"
     },
     {
       "composes": [

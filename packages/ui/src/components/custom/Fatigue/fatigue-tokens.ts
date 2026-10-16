@@ -8,6 +8,7 @@ import type { TextStyle } from 'react-native'
 import type { getSemanticColors } from '../../../theme/tokens/semantic'
 import { primitiveRamps, greyRamp } from '../../../theme/tokens/primitives'
 import { SILVER, RED_LIGHT, RED_MID, RED_DEEP, DRIFT_GREY } from '../../ui/charts/kit/silverRed'
+import type { StatusGlyphTone } from '../../ui/status-glyph'
 import type { DimensionTone, FatigueVerdictState, SamplePhase } from './fatigue-model'
 
 type ColorToken = keyof ReturnType<typeof getSemanticColors>
@@ -35,6 +36,17 @@ export const TONE_TOKEN = {
   warn: 'status-warning',
   alarm: 'status-error',
 } as const satisfies Record<DimensionTone, ColorToken>
+
+/**
+ * Per-dimension tone → the {@link StatusGlyph} tone, so a word-led verdict and its chips
+ * give each tone its own shape as well as its colour. Shared with consumers that draw the
+ * same tones beside the verdict.
+ */
+export const TONE_GLYPH = {
+  ok: 'success',
+  warn: 'warning',
+  alarm: 'error',
+} as const satisfies Record<DimensionTone, StatusGlyphTone>
 
 /** Verdict state → the hero word. */
 export const STATE_LABEL: Record<FatigueVerdictState, string> = {

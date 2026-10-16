@@ -2626,7 +2626,8 @@
       "exports": [
         "FatigueLights",
         "FatigueLightsProps",
-        "Light"
+        "Chip",
+        "Dot"
       ],
       "libDependents": 1,
       "storyRefs": 1,
@@ -2634,20 +2635,22 @@
         "mobile": 0,
         "mcp": 1,
         "dash": 0,
-        "audiobook": 0,
-        "total": 1
+        "audiobook": 1,
+        "total": 2
       },
       "dependsOn": [
+        "Pill",
         "StatusDot",
+        "StatusGlyph",
         "Tooltip"
       ],
       "leak": {
-        "rawView": 2,
+        "rawView": 3,
         "rawText": 1,
         "inlineStyle": 1,
         "rawHex": 0,
-        "loc": 80,
-        "score": 5
+        "loc": 109,
+        "score": 6
       },
       "tier": "organism",
       "verdict": "keep-core",
@@ -9374,7 +9377,11 @@
       "family": "custom/Fatigue",
       "exports": [
         "VerdictHero",
-        "VerdictHeroProps"
+        "VerdictHeroRpeProps",
+        "VerdictHeroWordProps",
+        "VerdictHeroProps",
+        "WordLead",
+        "RpeLead"
       ],
       "libDependents": 1,
       "storyRefs": 1,
@@ -9385,16 +9392,21 @@
         "audiobook": 0,
         "total": 1
       },
-      "dependsOn": [],
+      "dependsOn": [
+        "Eyebrow",
+        "StatusGlyph",
+        "Tooltip",
+        "Typography"
+      ],
       "leak": {
-        "rawView": 3,
+        "rawView": 6,
         "rawText": 4,
-        "inlineStyle": 5,
+        "inlineStyle": 6,
         "rawHex": 0,
-        "loc": 84,
-        "score": 17
+        "loc": 164,
+        "score": 22
       },
-      "tier": "atom",
+      "tier": "organism",
       "verdict": "keep-core",
       "deadByAssociation": false,
       "audited": "unaudited",
