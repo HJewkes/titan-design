@@ -13,7 +13,11 @@ import {
   packetIdOf,
   type CiPacket,
 } from './packet.ts'
+import { CONTRAST_FILE, ROUND_FILE } from './build.ts'
+import { draftHeadProblems, roundProblems } from './packet-lint-round.ts'
+import { PROSE_FILE, PROSE_SCHEMA_ID, ProseSchema, type Prose } from './packet-prose.ts'
 import { ReviewError } from './review.ts'
+import type { z } from 'zod'
 
 export const PACKET_LINT_RULES = [
   'packet-schema',
@@ -25,6 +29,16 @@ export const PACKET_LINT_RULES = [
   'file-path',
   'file-extra',
   'file-link',
+  'prose-missing',
+  'prose-schema',
+  'prose-binding',
+  'cause-unknown',
+  'cause-missing',
+  'draft-head',
+  'round-missing',
+  'round-unit',
+  'round-draft',
+  'round-head',
 ] as const
 
 export type PacketLintRule = (typeof PACKET_LINT_RULES)[number]
@@ -34,19 +48,19 @@ export interface PacketLintProblem {
   message: string
 }
 
+/** The optional files a lint can require; each is linted whenever it is present. */
+export const PACKET_REQUIREMENTS = ['prose', 'round'] as const
+export type PacketRequirement = (typeof PACKET_REQUIREMENTS)[number]
+
 export interface PacketLintOptions {
   /** The head the gate is open on; the packet must be for it. */
   gateHead: string
+  /** Files that must be present: prose.json, round.json. */
+  require?: readonly PacketRequirement[]
 }
 
 /** The files a packet directory may hold beside the images packet.json names. */
-export const PACKET_ROOT_FILES = [
-  PACKET_FILE,
-  DRAFT_FILE,
-  'prose.json',
-  'round.json',
-  'contrast.json',
-]
+export const PACKET_ROOT_FILES = [PACKET_FILE, DRAFT_FILE, PROSE_FILE, ROUND_FILE, CONTRAST_FILE]
 
 const NAMED_PATH = /^(before|after|diff|montage)\/[A-Za-z0-9_.-]+\.png$/
 
@@ -78,19 +92,34 @@ async function readNoFollow(dir: string, rel: string): Promise<Buffer> {
 
 const sha256 = (bytes: Buffer) => createHash('sha256').update(bytes).digest('hex')
 
+/** A root file's bytes and its JSON (`isJson` false when it does not parse). */
+interface JsonFile {
+  bytes: Buffer
+  json: unknown
+  isJson: boolean
+}
+
+async function readJson(dir: string, walked: Walked, file: string): Promise<JsonFile | null> {
+  if (!walked.files.has(file)) return null
+  const bytes = await readNoFollow(dir, file)
+  try {
+    return { bytes, json: JSON.parse(bytes.toString('utf8')), isJson: true }
+  } catch {
+    return { bytes, json: undefined, isJson: false }
+  }
+}
+
+const issueText = (error: z.ZodError) =>
+  error.issues.map((i) => `${i.path.map(String).join('.')}: ${i.message}`).join('; ')
+
 async function readPacket(dir: string, walked: Walked): Promise<CiPacket | PacketLintProblem> {
   const refuse = (message: string) => ({ rule: 'packet-schema' as const, message })
-  if (!walked.files.has(PACKET_FILE)) return refuse(`${PACKET_FILE} is missing`)
-  let json: unknown
-  try {
-    json = JSON.parse((await readNoFollow(dir, PACKET_FILE)).toString('utf8'))
-  } catch {
-    return refuse(`${PACKET_FILE} is not JSON`)
-  }
-  const parsed = CiPacketSchema.safeParse(json)
+  const read = await readJson(dir, walked, PACKET_FILE)
+  if (!read) return refuse(`${PACKET_FILE} is missing`)
+  if (!read.isJson) return refuse(`${PACKET_FILE} is not JSON`)
+  const parsed = CiPacketSchema.safeParse(read.json)
   if (parsed.success) return parsed.data
-  const issues = parsed.error.issues.map((i) => `${i.path.map(String).join('.')}: ${i.message}`)
-  return refuse(`${PACKET_FILE} fails ${CI_PACKET_SCHEMA_ID}: ${issues.join('; ')}`)
+  return refuse(`${PACKET_FILE} fails ${CI_PACKET_SCHEMA_ID}: ${issueText(parsed.error)}`)
 }
 
 function bindingProblems(packet: CiPacket, opts: PacketLintOptions): PacketLintProblem[] {
@@ -131,11 +160,75 @@ async function fileProblem(dir: string, walked: Walked, [file, want]: [string, s
   return null
 }
 
-async function draftProblems(dir: string, walked: Walked, packet: CiPacket) {
-  if (!walked.files.has(DRAFT_FILE))
+function draftProblems(draft: JsonFile | null, packet: CiPacket, opts: PacketLintOptions) {
+  if (!draft)
     return [{ rule: 'file-missing' as const, message: `${DRAFT_FILE} is named but not present` }]
-  if (sha256(await readNoFollow(dir, DRAFT_FILE)) === packet.draft.sha256) return []
-  return [{ rule: 'draft-sha' as const, message: `${DRAFT_FILE} does not hash to draft.sha256` }]
+  const problems: PacketLintProblem[] = draftHeadProblems(draft.json, packet, opts.gateHead)
+  if (sha256(draft.bytes) !== packet.draft.sha256)
+    problems.unshift({ rule: 'draft-sha', message: `${DRAFT_FILE} does not hash to draft.sha256` })
+  return problems
+}
+
+const required = (opts: PacketLintOptions, what: PacketRequirement, file: string) =>
+  opts.require?.includes(what)
+    ? [{ rule: `${what}-missing` as const, message: `${file} is required but not present` }]
+    : []
+
+function causeProblems(prose: Prose, packet: CiPacket): PacketLintProblem[] {
+  const keys = packet.images.map((i) => i.key)
+  const unknown = Object.keys(prose.cause).filter((key) => !keys.includes(key))
+  const missing = keys.filter((key) => !Object.hasOwn(prose.cause, key))
+  return [
+    ...unknown.map((key) => ({
+      rule: 'cause-unknown' as const,
+      message: `${PROSE_FILE} gives a cause for ${key}, which is not an image of the packet`,
+    })),
+    ...missing.map((key) => ({
+      rule: 'cause-missing' as const,
+      message: `${PROSE_FILE} gives no cause for image ${key}`,
+    })),
+  ]
+}
+
+function proseBinding(prose: Prose, packet: CiPacket, opts: PacketLintOptions) {
+  const problems: PacketLintProblem[] = []
+  if (prose.packetId !== packet.packetId)
+    problems.push({ rule: 'prose-binding', message: `${PROSE_FILE} is for another packetId` })
+  if (prose.headSha !== opts.gateHead)
+    problems.push({
+      rule: 'prose-binding',
+      message: `${PROSE_FILE} is for head ${prose.headSha}, the gate is on ${opts.gateHead}`,
+    })
+  return problems
+}
+
+async function proseProblems(
+  dir: string,
+  walked: Walked,
+  packet: CiPacket,
+  opts: PacketLintOptions
+) {
+  const read = await readJson(dir, walked, PROSE_FILE)
+  if (!read) return required(opts, 'prose', PROSE_FILE)
+  const refuse = (message: string) => [{ rule: 'prose-schema' as const, message }]
+  if (!read.isJson) return refuse(`${PROSE_FILE} is not JSON`)
+  const parsed = ProseSchema.safeParse(read.json)
+  if (!parsed.success)
+    return refuse(`${PROSE_FILE} fails ${PROSE_SCHEMA_ID}: ${issueText(parsed.error)}`)
+  return [...proseBinding(parsed.data, packet, opts), ...causeProblems(parsed.data, packet)]
+}
+
+async function roundFileProblems(
+  dir: string,
+  walked: Walked,
+  packet: CiPacket,
+  opts: PacketLintOptions,
+  draft: JsonFile | null
+): Promise<PacketLintProblem[]> {
+  const read = await readJson(dir, walked, ROUND_FILE)
+  if (!read) return required(opts, 'round', ROUND_FILE)
+  if (!read.isJson) return [{ rule: 'round-draft', message: `${ROUND_FILE} is not JSON` }]
+  return roundProblems(read.json, draft?.json, packet, opts.gateHead)
 }
 
 async function fileProblems(dir: string, walked: Walked, packet: CiPacket) {
@@ -171,10 +264,13 @@ export async function lintPacket(
   }))
   const packet = await readPacket(dir, walked)
   if ('rule' in packet) return [...links, packet]
+  const draft = await readJson(dir, walked, DRAFT_FILE)
   return [
     ...links,
     ...bindingProblems(packet, opts),
-    ...(await draftProblems(dir, walked, packet)),
+    ...draftProblems(draft, packet, opts),
     ...(await fileProblems(dir, walked, packet)),
+    ...(await proseProblems(dir, walked, packet, opts)),
+    ...(await roundFileProblems(dir, walked, packet, opts, draft)),
   ]
 }
