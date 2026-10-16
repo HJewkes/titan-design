@@ -15,6 +15,12 @@ export function all(...spans: Span[]): Span;
 export const back: (s?: number) => Easing;
 
 // @public
+export interface BandChip {
+    kind: EvidenceKind;
+    text: string;
+}
+
+// @public
 export function Beat(input: BeatProps): react_jsx_runtime.JSX.Element | null;
 
 // @public
@@ -43,6 +49,22 @@ export interface BeatProps {
 
 // @public
 export function chain(...spans: Span[]): Span;
+
+// @public
+export function ChipBand(input: ChipBandProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface ChipBandProps extends Omit<ViewProps, 'children'> {
+    chips: BandChip[];
+    className?: string;
+    entry?: ChipEntryOptions['entry'];
+    fontPx?: number;
+    frameHeight?: number;
+    max?: number;
+    progress: number;
+    reducedMotion?: boolean;
+    width: number;
+}
 
 // @public
 export interface Clock {
@@ -226,15 +248,15 @@ export const MOTION: {
         rise: 40;
         scaleFrom: 0.97;
         exitScale: 0.85;
-        count: number;
-        enter: number;
-        emphasis: number;
-        hero: number;
         exit: number;
+        hero: number;
+        enter: number;
+        count: number;
+        emphasis: number;
         staggerEach: number;
         staggerMax: number;
     };
-    readonly spring: Record<"snappy" | "smooth" | "heavy" | "bouncy", Required<Pick<SpringOptions, "stiffness" | "damping" | "mass">>>;
+    readonly spring: Record<"heavy" | "smooth" | "snappy" | "bouncy", Required<Pick<SpringOptions, "stiffness" | "damping" | "mass">>>;
     readonly springPreset: typeof springPreset;
     readonly staggerEachS: typeof staggerEachS;
     readonly dim: {

@@ -14,3 +14,6 @@ export type { EvidenceChipProps, EvidenceChipSize } from './components/ui/chip/E
 export type { EvidenceKind } from './components/ui/chip/evidence'
 export { elideSource } from './utils/elideSource'
 export type { ElidedSource, ElisionLevel } from './utils/elideSource'
+export { ChipBand } from './components/ui/chip/ChipBand'
+export type { ChipBandProps } from './components/ui/chip/ChipBand'
+export type { BandChip } from './components/ui/chip/chipBandLayout'

@@ -5,7 +5,8 @@ import { cn } from '../../utils/cn'
 import { Pill, type PillTone } from '../../components/ui/pill'
 import { ScaledPill } from '../../components/ui/pill/ScaledPill'
 import { pillScale } from '../../components/ui/pill/pillScale'
-import { ChipBand, EvidenceChip } from '../../components/ui/chip'
+import { ChipBand } from '../../components/ui/chip/ChipBand'
+import { EvidenceChip } from '../../components/ui/chip/EvidenceChip'
 import {
   EVIDENCE_KINDS,
   EVIDENCE_LABEL,

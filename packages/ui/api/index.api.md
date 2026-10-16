@@ -535,12 +535,6 @@ export const BAND_GAP = 4;
 export const BAND_H = 16;
 
 // @public
-export interface BandChip {
-    kind: EvidenceKind;
-    text: string;
-}
-
-// @public
 export function BarList(input: BarListProps): react_jsx_runtime.JSX.Element;
 
 // @public
@@ -1036,22 +1030,6 @@ export function ChevronsDownIcon(props: IconProps): react_jsx_runtime.JSX.Elemen
 
 // @public
 export function Chip(input: ChipProps): react_jsx_runtime.JSX.Element;
-
-// @public
-export function ChipBand(input: ChipBandProps): react_jsx_runtime.JSX.Element;
-
-// @public
-export interface ChipBandProps extends Omit<ViewProps, 'children'> {
-    chips: BandChip[];
-    className?: string;
-    entry?: ChipEntryOptions['entry'];
-    fontPx?: number;
-    frameHeight?: number;
-    max?: number;
-    progress: number;
-    reducedMotion?: boolean;
-    width: number;
-}
 
 // @public (undocumented)
 export type ChipColor = 'default' | 'primary' | 'secondary' | 'success' | 'error' | 'warning' | 'info';
