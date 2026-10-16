@@ -106,6 +106,29 @@ describe('packet lint command', () => {
     expect(unknown.stderr).toContain('--require takes prose, round')
   })
 
+  it('re-derives from git with --clone, reading through the CLI io', async () => {
+    const dir = await cleanDir()
+
+    const { code, stdout } = await run(
+      lintArgs(dir, '--gate-head', HEAD, '--clone', await tempDir(), '--json')
+    )
+
+    const rules = JSON.parse(stdout).problems.map((p: { rule: string }) => p.rule)
+    expect(rules).toEqual(['before-source'])
+    expect(code).toBe(3)
+  })
+
+  it('refuses a --clone that is not a directory', async () => {
+    const missing = join(await tempDir(), 'absent')
+
+    const { code, stderr } = await run(
+      lintArgs(await cleanDir(), '--gate-head', HEAD, '--clone', missing)
+    )
+
+    expect(code).toBe(2)
+    expect(stderr).toContain('--clone must be a directory')
+  })
+
   it('exits 2 on a directory it cannot read', async () => {
     const missing = join(await tempDir(), 'absent')
 
