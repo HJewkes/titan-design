@@ -144,7 +144,8 @@ describe('Elevation ramp AA decision', () => {
     expect(screen.getAllByRole('heading')).toHaveLength(1)
   })
 
-  it('has no accessibility violations', async () => {
+  // axe takes ~0.45 s alone but hit the 5 s default once on a loaded CI runner (TD-927).
+  it('has no accessibility violations', { timeout: 30_000 }, async () => {
     const { container } = render(<OptionUnit option={option('recoloured')} />)
     expect(await axe(container)).toHaveNoViolations()
   })
