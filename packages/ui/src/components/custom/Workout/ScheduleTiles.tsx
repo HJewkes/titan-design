@@ -3,7 +3,7 @@ import { type ViewProps } from 'react-native'
 import { resolveColor } from '../../../theme/resolve-color'
 import { HStack } from '../../ui/stack'
 import { Tile } from '../../ui/tile/Tile'
-import { formatDateTime } from '../DateTime/DateTime'
+import { formatDateTime } from '../../ui/date-time'
 
 const DAY_MS = 24 * 60 * 60 * 1000
 

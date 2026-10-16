@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { captureFileName } from '../src/capture.ts'
-import { buildFeedback, emptyDraft } from '../src/feedback.ts'
+import { buildFeedback, emptyDraft, pendingQuestionIds } from '../src/feedback.ts'
 import { feedbackProblems, questionScope, storyUrl, urlParamProblems } from '../src/round.ts'
-import { FeedbackSchema } from '../src/schema.ts'
+import { FeedbackSchema } from '@titan-design/review-schema'
 import { SHA, manifest, validFeedback } from './fixtures.ts'
 
 describe('story urls', () => {
@@ -80,5 +80,56 @@ describe('building feedback from the page draft', () => {
     const feedback = validFeedback(m)
     feedback.answers = [{ questionId: 'q2', picks: ['A', 'Z'] }]
     expect(feedbackProblems(feedback, m)).toEqual(['q1: required', 'q2: unknown options Z'])
+  })
+})
+
+describe('a partial submit', () => {
+  const draftWithQ3 = () => {
+    const m = manifest()
+    const draft = emptyDraft(m)
+    draft.answers.q1 = { comment: 'a comment is not an answer' }
+    draft.answers.q3 = { value: 4, comment: '' }
+    return { m, draft }
+  }
+
+  it('lists exactly the unanswered questions, in manifest order, and lifts required', () => {
+    const { m, draft } = draftWithQ3()
+    const feedback = buildFeedback(m, SHA, draft, new Date(), true)
+    expect(feedback.unansweredQuestionIds).toEqual(['q1', 'q2', 'q4'])
+    expect(FeedbackSchema.safeParse(feedback).success).toBe(true)
+    expect(feedbackProblems(feedback, m)).toEqual([])
+  })
+
+  it('omits the list from a full submit, which still needs every required answer', () => {
+    const { m, draft } = draftWithQ3()
+    const feedback = buildFeedback(m, SHA, draft, new Date())
+    expect(feedback).not.toHaveProperty('unansweredQuestionIds')
+    expect(feedbackProblems(feedback, m)).toEqual(['q1: required'])
+    expect(buildFeedback(m, SHA, emptyDraft(m), new Date(), true).unansweredQuestionIds).toEqual([
+      'q1',
+      'q2',
+      'q3',
+      'q4',
+    ])
+  })
+
+  it('rejects a list that disagrees with the answers sent', () => {
+    const { m, draft } = draftWithQ3()
+    const feedback = { ...buildFeedback(m, SHA, draft, new Date(), true) }
+    feedback.unansweredQuestionIds = ['q2', 'q4']
+    expect(feedbackProblems(feedback, m)).toEqual([
+      'q1: required',
+      'unansweredQuestionIds lists q2, q4; unanswered are q1, q2, q4',
+    ])
+  })
+})
+
+describe('pending questions', () => {
+  it('counts only required questions left unanswered, so an optional blank is skipped', () => {
+    const m = manifest()
+    const draft = emptyDraft(m)
+    const required = m.questions.filter((q) => q.required).map((q) => q.id)
+    expect(pendingQuestionIds(m, draft)).toEqual(required)
+    expect(required.length).toBeLessThan(m.questions.length)
   })
 })

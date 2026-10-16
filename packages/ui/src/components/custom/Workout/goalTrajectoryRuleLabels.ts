@@ -41,6 +41,9 @@ export interface RuleLabelInput {
 // Digits are tabular in Inter; a numeric label is digits and at most one point.
 const DIGIT_EM = 0.62
 const POINT_EM = 0.3
+// Words and spaces in a named label: Inter's mean advance for mixed-case text.
+const LETTER_EM = 0.6
+const SPACE_EM = 0.28
 const DOT_REACH = 6
 const LINE_REACH = 3
 const LINE_SAMPLES = 12
@@ -56,6 +59,17 @@ interface Rect {
 export function numericLabelWidth(text: string, font = CHART_FONT): number {
   let em = 0
   for (const c of text) em += c >= '0' && c <= '9' ? DIGIT_EM : POINT_EM
+  return em * font
+}
+
+/** Estimated width of a rule label in px; words in a named label are measured by letter. */
+export function ruleLabelWidth(text: string, font = CHART_FONT): number {
+  let em = 0
+  for (const c of text) {
+    if (c >= '0' && c <= '9') em += DIGIT_EM
+    else if (c === '.') em += POINT_EM
+    else em += c === ' ' ? SPACE_EM : LETTER_EM
+  }
   return em * font
 }
 
@@ -87,7 +101,7 @@ function named(input: RuleLabelInput): RuleLabelSpec[] {
 }
 
 function rectOf(spec: RuleLabelSpec): Rect {
-  const width = numericLabelWidth(spec.text)
+  const width = ruleLabelWidth(spec.text)
   const left = spec.anchor === 'start' ? spec.x : spec.x - width
   return {
     left,

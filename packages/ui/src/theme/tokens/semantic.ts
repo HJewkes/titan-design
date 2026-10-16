@@ -65,17 +65,17 @@ export const semanticColorsLight = {
   'brand-primary': ramp.orange[400],
   'brand-primary-light': ramp.orange[300],
   'brand-primary-dark': ramp.orange[500],
-  'brand-primary-subtle': 'rgba(255, 121, 0, 0.08)',
-  'brand-primary-muted': 'rgba(255, 121, 0, 0.30)',
+  'brand-primary-subtle': ramp.orange[100],
+  'brand-primary-muted': ramp.orange[200],
   'brand-primary-strong': 'rgba(255, 121, 0, 0.50)',
-  'brand-primary-hover': ramp.orange[500],
-  'brand-primary-active': ramp.orange[600],
+  'brand-primary-hover': ramp.orange[600], // TD-774: one rung below the orange[500] solid
+  'brand-primary-active': ramp.orange[700], // TD-774: one rung below hover
 
   'brand-secondary': ramp.cyan[600],
   'brand-secondary-light': ramp.cyan[500],
   'brand-secondary-dark': ramp.cyan[700],
-  'brand-secondary-subtle': 'rgba(48, 123, 155, 0.08)',
-  'brand-secondary-muted': 'rgba(48, 123, 155, 0.30)',
+  'brand-secondary-subtle': ramp.cyan[100],
+  'brand-secondary-muted': ramp.cyan[200],
   'brand-secondary-strong': 'rgba(48, 123, 155, 0.50)',
   'brand-secondary-hover': ramp.cyan[700],
   'brand-secondary-active': ramp.cyan[800],
@@ -84,18 +84,17 @@ export const semanticColorsLight = {
   'on-brand-primary': p.white,
   'on-brand-secondary': p.white,
 
-  // Text ON a `-subtle` fill. Light mode keeps today's pairing (the base token) so
-  // nothing moves here: light has the same disease mirrored — a light rung on a
-  // near-white ramp[50] fill — but correcting it belongs with the light-mode pass
-  // in AW-121, not this one.
-  'on-brand-primary-subtle': ramp.orange[400],
-  'on-brand-secondary-subtle': ramp.cyan[600],
+  // Text ON a `-subtle` fill. Light pairs a ramp[700] label with a ramp[100] fill:
+  // the base rung on a near-white ramp[50] fill read 1.7 to 4.4:1. Every tone now
+  // clears 4.5:1 (subtle-label.light.test.ts).
+  'on-brand-primary-subtle': ramp.orange[700],
+  'on-brand-secondary-subtle': ramp.cyan[700],
 
   // Status colors (status-*)
-  'status-success': ramp.green[300],
+  'status-success': ramp.green[700], // TD-789 3b: green 600 missed 3:1 on the grey 200 rail
   'status-success-light': ramp.green[200],
-  'status-success-dark': ramp.green[600],
-  'status-success-subtle': ramp.green[50],
+  'status-success-dark': ramp.green[800], // TD-789 3b: one step past the base, as error-dark is
+  'status-success-subtle': ramp.green[100],
   'status-success-muted': 'rgba(46, 213, 115, 0.30)',
   'status-success-strong': 'rgba(46, 213, 115, 0.50)',
 
@@ -105,51 +104,57 @@ export const semanticColorsLight = {
 
   // Deload: the magenta WorkoutPill and WeekRow have washed by hand since VW-0; a role of
   // its own, so a deload week reads the same wherever it is drawn. Callers alpha it.
-  'status-deload': ramp.magenta[600],
+  // equals decision 0004's on-tint-magenta-subtle; WorkoutPill moves to the magenta cells in 0004
+  'status-deload': ramp.magenta[700], // TD-789 3b: magenta 600 labels miss 4.5:1 on grey 100
 
   'status-error': ramp.red[600],
   'status-error-light': ramp.red[500],
   'status-error-dark': ramp.red[700],
-  'status-error-subtle': ramp.red[50],
+  'status-error-subtle': ramp.red[100],
   'status-error-muted': 'rgba(209, 67, 67, 0.30)',
   'status-error-strong': 'rgba(209, 67, 67, 0.50)',
 
-  'status-error-vivid': alertRedVivid, // NOT red[600], that is status-error
+  // kept; decision 0004 gives red a solid cell (red 600) and an on-subtle step (red 700); vivid stays the Critical mark one step past status-error
+  'status-error-vivid': ramp.red[700], // TD-789 3b: the pin missed 3:1; red 600 is status-error
   'status-error-vivid-light': ramp.red[500],
   'status-error-vivid-dark': ramp.red[700],
-  'status-error-vivid-subtle': 'rgba(255, 71, 87, 0.12)',
-  'status-error-vivid-muted': 'rgba(255, 71, 87, 0.30)',
-  'status-error-vivid-strong': 'rgba(255, 71, 87, 0.50)',
+  'status-error-vivid-subtle': 'rgba(164, 34, 28, 0.12)', // TD-789 3b: red 700, the base above
+  'status-error-vivid-muted': 'rgba(164, 34, 28, 0.30)',
+  'status-error-vivid-strong': 'rgba(164, 34, 28, 0.50)',
 
-  'status-warning': ramp.amber[300],
+  'status-warning': ramp.amber[600], // TD-789 3b: amber 500 missed 3:1 on the light planes
   'status-warning-light': ramp.amber[200],
-  'status-warning-dark': ramp.amber[500],
-  'status-warning-subtle': ramp.amber[50],
+  'status-warning-dark': ramp.amber[700], // TD-789 3b: one step past the base
+  'status-warning-subtle': ramp.amber[100],
   'status-warning-muted': 'rgba(249, 180, 21, 0.30)',
   'status-warning-strong': 'rgba(249, 180, 21, 0.50)',
 
-  'status-info': ramp.blue[500],
+  // equals text-info and decision 0004's on-tint-blue-subtle; the info solid cell is blue 600, aliased by status-info-solid in 0004
+  'status-info': ramp.blue[700], // TD-789 3b: blue 600 missed 3:1 on its Progress track on grey 200
   'status-info-light': ramp.blue[300],
-  'status-info-dark': ramp.blue[600],
-  'status-info-subtle': ramp.blue[50],
+  'status-info-dark': ramp.blue[800], // TD-789 3b: one step past the base
+  'status-info-subtle': ramp.blue[100],
   'status-info-muted': 'rgba(33, 150, 243, 0.30)',
   'status-info-strong': 'rgba(33, 150, 243, 0.50)',
 
-  // Solid-variant fill. Light mode aliases the base tone unchanged: the dark-mode
-  // lift and label flip (AW-141) were measured against dark planes only, and light
-  // needs its own pass with AW-121. Defined here so no token is mode-incomplete.
-  'brand-primary-solid': ramp.orange[400],
+  // Solid-variant fill. Success and warning carry the light-tuning values: white
+  // on green[600] clears 4.5:1; amber[500] keeps the white label at 3.6:1, a
+  // declared exception in contrast-baseline.json. Brand is the other named
+  // exception of decision 0003: orange[500] under white reads 3.74:1. Info is
+  // blue[600], the fill the info Alert and `status-info` already paint: white
+  // clears 4.5:1 on it (4.89) and read 3.12 on blue[500].
+  'brand-primary-solid': ramp.orange[500], // TD-774: decision 0003, named exception
   'brand-secondary-solid': ramp.cyan[600],
-  'status-success-solid': ramp.green[300],
+  'status-success-solid': ramp.green[600],
   'status-error-solid': ramp.red[600],
-  'status-warning-solid': ramp.amber[300],
-  'status-info-solid': ramp.blue[500],
+  'status-warning-solid': ramp.amber[500],
+  'status-info-solid': ramp.blue[600],
 
   // Text ON a `-subtle` fill — see the on-brand-*-subtle note above.
-  'on-status-success-subtle': ramp.green[300],
-  'on-status-error-subtle': ramp.red[600],
-  'on-status-warning-subtle': ramp.amber[300],
-  'on-status-info-subtle': ramp.blue[500],
+  'on-status-success-subtle': ramp.green[700],
+  'on-status-error-subtle': ramp.red[700],
+  'on-status-warning-subtle': ramp.amber[700],
+  'on-status-info-subtle': ramp.blue[700],
 
   // Text on status backgrounds (on-status-*)
   'on-status-success': p.white,
@@ -231,41 +236,48 @@ export const semanticColorsLight = {
 
   // Text colors (text-*)
   'text-primary': semanticPins.textPrimaryLight,
-  'text-secondary': semanticPins.textSecondaryLight,
-  'text-tertiary': greyRamp[400],
+  'text-secondary': greyRamp[800], // TD-789 3b: one step past tertiary
+  'text-tertiary': greyRamp[700], // TD-789 3b: grey 600 missed 4.5:1 on grey 200
   'text-disabled': 'rgba(55, 65, 81, 0.48)',
   'text-inverse': p.white,
-  'text-link': ramp.blue[600],
+  'text-error': ramp.red[700], // one rung darker than status-error to clear 4.5:1 on every light plane
+  'text-brand': ramp.orange[700], // rung 700 clears 4.5:1 on every light plane
+  'text-brand-secondary': ramp.cyan[800], // TD-789 3b: rung 800 clears 4.5:1 on every light plane
+  'text-success': ramp.green[800], // TD-789 3b: rung 800 clears 4.5:1 on every light plane
+  'text-warning': ramp.amber[700], // rung 700 clears 4.5:1 on every light plane
+  'text-info': ramp.blue[700], // rung 700 clears 4.5:1 on every light plane
+  'text-link': ramp.blue[700],
   'text-link-hover': ramp.blue[700],
 
   // Surface colors (surface-*) - for elevated containers
-  'surface-base': p.white,
-  'surface-elevated': greyRamp[50], // slightly off-white for elevated cards
-  'surface-raised': greyRamp[100], // light gray for raised cards
+  // TD-789 3b: the page grey 100 up to elevated grey 50; raised and overlay share white,
+  // and the lift separates them.
+  'surface-base': greyRamp[100], // the page
+  'surface-elevated': greyRamp[50],
+  'surface-raised': p.white, // Card default
   'surface-overlay': p.white,
   'surface-input': greyRamp[50], // Input field background (filled variant)
 
   // Background colors (background-*)
-  'background-base': semanticPins.backgroundBaseLight,
-  'background-default': p.white,
-  'background-subtle': greyRamp[50],
-  // Frame/bezel chrome — top bar + side nav shell, one step below
-  // `background-base`. Placeholder pairing for light mode, which is deferred.
-  'background-frame': greyRamp[400],
+  'background-base': greyRamp[200], // one step below surface-base
+  'background-default': greyRamp[100], // matches surface-base
+  'background-subtle': greyRamp[50], // matches surface-elevated
+  // Frame/bezel chrome — top bar + side nav shell, one step below `background-base`.
+  'background-frame': greyRamp[300],
 
   // Border colors (border-*)
   'border-prominent': greyRamp[400], // high-visibility divider
   'border-focus': ramp.blue[600],
-  'border-input': greyRamp[200], // Input field border
-  'border-input-hover': greyRamp[400], // Input field border on hover
+  'border-input': greyRamp[600], // Input field border, 3:1 on every content plane (TD-488, TD-789)
+  'border-input-hover': greyRamp[700], // Input field border on hover
   'border-input-focus': ramp.blue[600], // Input field border on focus
   'border-input-error': ramp.red[600], // Input field border on error
 
   // Alpha hairline separators (surface-independent — composite toward black on
   // light surfaces, mirroring the dark-mode white-alpha family). See §4/S-2.
-  'hairline-subtle': 'rgba(0, 0, 0, 0.06)',
-  'hairline-default': 'rgba(0, 0, 0, 0.09)',
-  'hairline-strong': 'rgba(0, 0, 0, 0.14)',
+  'hairline-subtle': 'rgba(0, 0, 0, 0.10)',
+  'hairline-default': 'rgba(0, 0, 0, 0.16)', // TD-789 3b: ΔL* 12 on grey 200
+  'hairline-strong': 'rgba(0, 0, 0, 0.24)', // TD-789 3b: ΔL* 18 on grey 200
 
   // Scrims (VW-82) — see the dark map for why these are tokens and not
   // `bg-black/50`, and why they do not flip with the theme.
@@ -274,10 +286,11 @@ export const semanticColorsLight = {
   'scrim-subtle': 'rgba(0, 0, 0, 0.30)',
   'scrim-default': 'rgba(0, 0, 0, 0.50)',
 
-  // Control chrome and data labels (VW-82). Mode-independent for the same
-  // reason the `on-*` white labels are: the plane underneath them is fixed.
-  'on-control-idle': semanticPins.onControlIdle,
-  'on-control-active': p.white,
+  // Toolbar disabled face (TD-264). The idle and pressed faces are elevation
+  // planes, so only the disabled face is a token.
+  'control-face-disabled': 'rgba(0, 0, 0, 0.06)',
+  'on-control-idle': greyRamp[700], // 7.0:1 on the idle face plane
+  'on-control-active': greyRamp[950], // 11.5:1 on the pressed face plane
   'on-data-strong': semanticPins.onDataStrong,
 
   // Interactive states (interactive-*)
@@ -285,11 +298,12 @@ export const semanticColorsLight = {
   'interactive-focus': 'rgba(55, 65, 81, 0.12)',
   'interactive-active': 'rgba(55, 65, 81, 0.16)',
   'interactive-selected': 'rgba(55, 65, 81, 0.08)',
+  'interactive-selected-solid': greyRamp[700], // selected neutral toggle face; white label 6.98 (console round 7, fb-selected)
   'interactive-disabled': 'rgba(55, 65, 81, 0.12)',
   'interactive-disabled-text': 'rgba(55, 65, 81, 0.26)',
 
   // Divider
-  divider: semanticPins.dividerLight,
+  divider: 'rgba(0, 0, 0, 0.16)', // the hairline-default value (TD-489)
 
   // Avatar default
   'avatar-background': greyRamp[600],
@@ -308,7 +322,7 @@ export const semanticColorsDark = {
   'brand-primary-hover': ramp.orange[300],
   'brand-primary-active': ramp.orange[200],
 
-  'brand-secondary': ramp.cyan[600],
+  'brand-secondary': ramp.cyan[500], // lifted from cyan 600 to clear 3:1 on every dark plane (item 42 d4)
   'brand-secondary-light': ramp.cyan[500],
   'brand-secondary-dark': ramp.cyan[700],
   'brand-secondary-subtle': 'rgba(34, 211, 238, 0.12)',
@@ -346,7 +360,7 @@ export const semanticColorsDark = {
   // its own, so a deload week reads the same wherever it is drawn. Callers alpha it.
   'status-deload': ramp.magenta[600],
 
-  'status-error': ramp.red[600],
+  'status-error': ramp.red[500], // equals text-error; red 600 missed 3:1 on the upper planes (item 42 d3)
   'status-error-light': ramp.red[500],
   'status-error-dark': ramp.red[700],
   // Alpha 0.08, not the family's 0.12: error's label is red[400], a rung darker than
@@ -383,6 +397,8 @@ export const semanticColorsDark = {
   // because their base steps are too dark to carry a readable dark label — even the
   // darkest step of their own hue only reaches ~3.6 on them. Lifting the FILL is what
   // lets all six share one label, which is the point (AW-141).
+  // Item 42 later lifted those two dark base tones to rung 500 as well, so here the
+  // fill equals its base tone; the fill must not follow either back to rung 600.
   'brand-primary-solid': ramp.orange[400],
   'brand-secondary-solid': ramp.cyan[500],
   'status-success-solid': ramp.green[300],
@@ -467,11 +483,17 @@ export const semanticColorsDark = {
   // and `600` carried that failure forward almost exactly (2.93 / 2.70 / 2.47).
   // `500` clears 3:1 everywhere (3.32–5.34). Contrast beats colour fidelity for
   // text roles; borders and surfaces still use strict L*-nearest. See
-  // semantic-contrast.test.ts, which fails if this is moved back down.
+  // token-contrast.test.ts, which fails if this is moved back down.
   'text-tertiary': greyRamp[500],
   'text-disabled': 'rgba(255, 255, 255, 0.38)',
   'text-inverse': greyRamp[950],
-  'text-link': semanticPins.focusIndigoDark,
+  'text-error': ramp.red[500], // owner chose red 500 below 4.5:1 knowingly, round q4b-red-conflict r1 (a)
+  'text-brand': ramp.orange[400], // clears 4.5:1 on every dark plane
+  'text-brand-secondary': ramp.cyan[300], // clears 4.5:1 on every dark plane
+  'text-success': ramp.green[400], // clears 4.5:1 on every dark plane
+  'text-warning': ramp.amber[300], // clears 4.5:1 on every dark plane
+  'text-info': ramp.blue[300], // clears 4.5:1 on every dark plane
+  'text-link': ramp.blue[300], // on the ramp; border-focus keeps the indigo pin (item 42 d5)
   'text-link-hover': ramp.blue[400],
 
   // Surface colors - dark backgrounds — warm-tapered DERIVED ramp (TD-surface-tokens,
@@ -510,13 +532,14 @@ export const semanticColorsDark = {
   // existing rather than being re-solved per plane. The three solid tokens were
   // deleted outright; consumers point at the `hairline-*` family below.
   //
-  // `border-prominent` stays SOLID: it is the one border meant to be seen
-  // outright (4 call sites, high-visibility dividers), and grey-800 is not a
-  // plane, so it keeps its job without collision.
-  'border-prominent': greyRamp[800], // high-visibility divider
+  // `border-prominent` is the one border meant to be seen outright (4 call
+  // sites, high-visibility dividers). It was solid grey-800, which read weaker
+  // than `hairline-default`; it is now white alpha like the hairlines, so it
+  // cannot collide with a plane either.
+  'border-prominent': 'rgba(255, 255, 255, 0.30)', // high-visibility divider, one step above hairline-strong (item 42 d2)
   'border-focus': semanticPins.focusIndigoDark,
-  'border-input': greyRamp[700],
-  'border-input-hover': greyRamp[600],
+  'border-input': greyRamp[500], // Input field border, matches light (TD-674)
+  'border-input-hover': greyRamp[400], // grey 600 missed 3:1 on every dark plane (item 42 d1)
   'border-input-focus': semanticPins.focusIndigoDark,
   'border-input-error': ramp.red[500],
 
@@ -583,6 +606,9 @@ export const semanticColorsDark = {
   // the active value is the same white. `on-data-strong` is the label ON a
   // light categorical data fill (Treemap tiles), where every text-* token is
   // far too light to read.
+  //
+  // `control-face-disabled` is the disabled toolbar face (TD-264).
+  'control-face-disabled': 'rgba(255, 255, 255, 0.12)',
   'on-control-idle': semanticPins.onControlIdle,
   'on-control-active': p.white,
   'on-data-strong': semanticPins.onDataStrong,
@@ -592,6 +618,7 @@ export const semanticColorsDark = {
   'interactive-focus': 'rgba(255, 255, 255, 0.12)',
   'interactive-active': 'rgba(255, 255, 255, 0.16)',
   'interactive-selected': 'rgba(255, 255, 255, 0.08)',
+  'interactive-selected-solid': greyRamp[50], // selected neutral toggle face; the text-primary value it had
   'interactive-disabled': 'rgba(255, 255, 255, 0.12)',
   'interactive-disabled-text': 'rgba(255, 255, 255, 0.26)',
 
@@ -735,6 +762,44 @@ export const space = {
 export const size = {
   control: primitiveSizing.control,
   icon: primitiveSizing.icon,
+} as const
+
+/**
+ * Motion timing (TD-838): durations in milliseconds, eases as CSS
+ * `cubic-bezier` control points. Defined once and exposed twice: as the
+ * `--duration-*` / `--ease-*` custom properties (via `tokens/motion-vars.ts`
+ * into `theme/config.ts` and `global.css`) and as `MOTION` in `ui/motion`,
+ * which evaluates the same curves in JS for time-driven motion.
+ *
+ * `video` and `dim` (TD-839) are JS-only: CSS UI never uses them, so they
+ * have no custom property. `video` times are milliseconds, `rise` is px;
+ * `exit` is `exitScale` × `enter`, and `staggerMax` caps a whole cascade.
+ * `dim.context` fades de-emphasised context and greys it. Spring presets are
+ * physics parameters, so they live beside the solver as `MOTION.spring`.
+ */
+export const motion = {
+  duration: { fast: 150, normal: 250, slow: 400 },
+  ease: {
+    out: [0.22, 1, 0.36, 1],
+    inOut: [0.65, 0, 0.35, 1],
+    spring: [0.34, 1.56, 0.64, 1],
+    in: [0.55, 0, 1, 0.45],
+  },
+  video: {
+    emphasis: 500,
+    enter: 1000,
+    hero: 1500,
+    count: 1500,
+    exit: 850,
+    exitScale: 0.85,
+    staggerEach: 60,
+    staggerMax: 500,
+    rise: 40,
+    scaleFrom: 0.97,
+  },
+  dim: {
+    context: { opacity: 0.35, saturation: 0 },
+  },
 } as const
 
 // Export type for theme mode

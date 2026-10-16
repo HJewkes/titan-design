@@ -1,17 +1,24 @@
 import type { Dispatch } from 'react'
 import type { VariantDraft } from '../src/feedback.ts'
-import { frameHeight, questionsForVariant } from '../src/sections.ts'
-import type { Manifest, Variant, Verdict } from '../src/schema.ts'
-import { Frame } from './Frame.tsx'
+import { frameSizing } from '../src/sections.ts'
+import {
+  isAudioVariant,
+  isClipVariant,
+  isImageVariant,
+  isStoryVariant,
+  type Manifest,
+  type Variant,
+} from '@titan-design/review-schema'
+import { AudioFrame } from './AudioFrame.tsx'
+import { ClipFrame } from './ClipFrame.tsx'
+import { Frame, type PinInput } from './Frame.tsx'
+import { ImageFrame } from './ImageFrame.tsx'
+import { MotionControls, useMotionPlayer } from './MotionControls.tsx'
+import { ScaleFrame } from './ScaleFrame.tsx'
+import type { LiveArgs } from './storyArgs.ts'
 import { PinList } from './PinList.tsx'
-import type { Action } from './state.ts'
+import { VERDICTS, type Action } from './state.ts'
 import { Stop } from './Stop.tsx'
-
-const VERDICTS: { key: string; verdict: Exclude<Verdict, null>; label: string }[] = [
-  { key: '1', verdict: 'chosen', label: 'Chosen' },
-  { key: '2', verdict: 'rejected', label: 'Rejected' },
-  { key: '3', verdict: 'maybe', label: 'Maybe' },
-]
 
 interface VariantCardProps {
   manifest: Manifest
@@ -52,18 +59,83 @@ function VerdictControl({ variant, draft, dispatch }: Omit<VariantCardProps, 'ma
   )
 }
 
-/** What this frame is being asked about, kept on screen while the frame is. */
-function answersLine(manifest: Manifest, variantKey: string): string {
-  const ids = questionsForVariant(manifest, variantKey)
-  const prompts = ids
-    .map((id) => manifest.questions.find((q) => q.id === id)?.prompt)
-    .filter((p): p is string => !!p)
-  return prompts.length ? `Answers: ${prompts.join(' · ')}` : ''
+interface CardFramesProps extends VariantCardProps {
+  onPin: (pin: PinInput) => void
+  liveArgs?: LiveArgs
+}
+
+/** The widths a frame is drawn at: a true-size image or clip once, at its own frame width. */
+function frameWidths(manifest: Manifest, variant: Variant): number[] {
+  return variant.frameReference ? [variant.frameReference.frame.width] : manifest.widths
+}
+
+/**
+ * A scale reference is one full-size frame, and so is a true-size image or clip; a sound has one
+ * player; every other variant is drawn at each manifest width.
+ */
+function CardFrames(props: CardFramesProps) {
+  const { manifest, variant, draft, onPin, liveArgs } = props
+  const sizing = frameSizing(manifest, variant)
+  const pins = draft.annotations
+  if (isAudioVariant(variant))
+    return (
+      <div className="frames">
+        <AudioFrame variant={variant} />
+      </div>
+    )
+  if (isStoryVariant(variant) && variant.scale)
+    return (
+      <div className="frames">
+        <ScaleFrame
+          variant={{ ...variant, scale: variant.scale }}
+          annotate={props.annotate}
+          pins={pins}
+          onPin={onPin}
+          liveArgs={liveArgs}
+        />
+      </div>
+    )
+  return (
+    <div className="frames">
+      {frameWidths(manifest, variant).map((width) => {
+        const shared = { width, annotate: props.annotate, pins, onPin }
+        if (isClipVariant(variant)) return <ClipFrame key={width} {...shared} variant={variant} />
+        if (isImageVariant(variant))
+          return (
+            <ImageFrame
+              key={width}
+              {...shared}
+              variant={variant}
+              height={sizing.height}
+              maxHeight={sizing.maxHeight}
+            />
+          )
+        return (
+          isStoryVariant(variant) && (
+            <Frame
+              key={width}
+              {...shared}
+              variant={variant}
+              height={sizing.height}
+              maxHeight={sizing.maxHeight}
+              onHitTesting={props.onHitTesting}
+              liveArgs={liveArgs}
+            />
+          )
+        )
+      })}
+    </div>
+  )
 }
 
 export function VariantCard(props: VariantCardProps) {
-  const { manifest, variant, draft, index, active, dispatch } = props
-  const answers = answersLine(manifest, variant.key)
+  const { variant, draft, index, active, dispatch } = props
+  const argMotion = variant.motion?.mechanism === 'arg' ? variant.motion : undefined
+  const player = useMotionPlayer(argMotion)
+  const onPin = (pin: PinInput) => {
+    dispatch({ type: 'activate', index })
+    dispatch({ type: 'addPin', key: variant.key, pin })
+  }
   return (
     <Stop
       id={`variant-${variant.key}`}
@@ -78,27 +150,10 @@ export function VariantCard(props: VariantCardProps) {
         <h3>
           <span className="key">{variant.key}</span> {variant.label}
         </h3>
-        <code>{variant.storyId}</code>
-        {answers && <p className="variant-question">{answers}</p>}
+        <code>{variant.storyId ?? variant.image ?? variant.clip ?? variant.audio}</code>
       </header>
-      <div className="frames">
-        {manifest.widths.map((width) => (
-          <Frame
-            key={width}
-            variant={variant}
-            width={width}
-            height={frameHeight(manifest, variant)}
-            maxHeight={manifest.maxHeight}
-            annotate={props.annotate}
-            pins={draft.annotations}
-            onHitTesting={props.onHitTesting}
-            onPin={(pin) => {
-              dispatch({ type: 'activate', index })
-              dispatch({ type: 'addPin', key: variant.key, pin })
-            }}
-          />
-        ))}
-      </div>
+      {argMotion && <MotionControls variantKey={variant.key} motion={argMotion} player={player} />}
+      <CardFrames {...props} onPin={onPin} liveArgs={player.args} />
       <VerdictControl {...props} />
       <textarea
         aria-label={`Comment on ${variant.key}`}

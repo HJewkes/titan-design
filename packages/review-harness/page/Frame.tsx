@@ -1,19 +1,21 @@
 import { useCallback, useEffect, useRef, useState, type MouseEvent } from 'react'
-import type { Annotation, FrameHeight, Variant } from '../src/schema.ts'
+import type { Annotation, FrameHeight, StoryVariant } from '@titan-design/review-schema'
 import { storyUrl } from '../src/round.ts'
 import { isAuto } from '../src/sections.ts'
 import {
-  AUTO_FALLBACK_HEIGHT,
+  initialFrameHeight,
   nextFrameHeight,
   storyContentHeight,
   type MeasurableDoc,
 } from './autoHeight.ts'
 import { forwardFrameKeys } from './frameKeys.ts'
+import { pinNumber } from './pins.ts'
+import { useLiveArgs, type LiveArgs } from './storyArgs.ts'
 
-type PinInput = Omit<Annotation, 'id' | 'note'>
+export type PinInput = Omit<Annotation, 'id' | 'note'>
 
 interface FrameProps {
-  variant: Variant
+  variant: StoryVariant
   width: number
   height: FrameHeight
   maxHeight: number
@@ -21,6 +23,8 @@ interface FrameProps {
   pins: Annotation[]
   onPin: (pin: PinInput) => void
   onHitTesting: (sameOrigin: boolean) => void
+  /** Args the page drives without a reload (a playing motion); sent on every change. */
+  liveArgs?: LiveArgs
 }
 
 /** Remeasures after a load and whenever the story reflows; the frame ends up its size. */
@@ -29,7 +33,7 @@ const MAX_MEASUREMENTS = 12
 const round = (n: number, places: number) => Number(n.toFixed(places))
 
 /** Scale that fits `width` into the space the card gives it; never enlarges. */
-function useFitScale(width: number) {
+export function useFitScale(width: number) {
   const ref = useRef<HTMLDivElement>(null)
   const [scale, setScale] = useState(1)
   useEffect(() => {
@@ -45,7 +49,7 @@ function useFitScale(width: number) {
 }
 
 /** Mount the iframe only once it nears the viewport; ten live stories are heavy. */
-function useNearViewport() {
+export function useNearViewport() {
   const ref = useRef<HTMLDivElement>(null)
   const [near, setNear] = useState(false)
   useEffect(() => {
@@ -60,7 +64,7 @@ function useNearViewport() {
   return { ref, near }
 }
 
-function sameOriginDocument(iframe: HTMLIFrameElement | null): Document | null {
+export function sameOriginDocument(iframe: HTMLIFrameElement | null): Document | null {
   try {
     return iframe?.contentDocument ?? null
   } catch {
@@ -79,8 +83,8 @@ export function reachedStorybook(doc: Pick<Document, 'getElementById'> | null): 
  * cannot read, or one that never renders, stays at the fallback height.
  */
 function useFittedHeight(height: FrameHeight, maxHeight: number) {
-  const [fitted, setFitted] = useState(AUTO_FALLBACK_HEIGHT)
-  const applied = useRef(AUTO_FALLBACK_HEIGHT)
+  const [fitted, setFitted] = useState(() => initialFrameHeight(maxHeight))
+  const applied = useRef(fitted)
   const measurements = useRef(0)
   const observer = useRef<{ disconnect: () => void } | null>(null)
   const auto = isAuto(height)
@@ -136,7 +140,7 @@ function useFrameHealth(onHitTesting: (sameOrigin: boolean) => void) {
 }
 
 /** Keeps the page's shortcuts alive while focus is inside the story; re-attached per load. */
-function useFrameKeys() {
+export function useFrameKeys() {
   const detach = useRef<(() => void) | null>(null)
   const attach = useCallback((iframe: HTMLIFrameElement) => {
     detach.current?.()
@@ -160,6 +164,46 @@ function DeadFrame({ testId, onRetry }: { testId: string; onRetry: () => void })
   )
 }
 
+/** Where a click on a frame's overlay lands, in the frame's own CSS px. */
+export function pointerPin(
+  e: MouseEvent<HTMLDivElement>,
+  scale: number,
+  width: number,
+  height: number
+): PinInput {
+  const rect = e.currentTarget.getBoundingClientRect()
+  const x = round((e.clientX - rect.left) / scale, 0)
+  const y = round((e.clientY - rect.top) / scale, 0)
+  return { width, x, y, xPct: round(x / width, 4), yPct: round(y / height, 4) }
+}
+
+interface PinOverlayProps {
+  variantKey: string
+  width: number
+  scale: number
+  annotate: boolean
+  pins: Annotation[]
+  onClick: (e: MouseEvent<HTMLDivElement>) => void
+}
+
+export function PinOverlay({ variantKey, width, scale, annotate, pins, onClick }: PinOverlayProps) {
+  return (
+    <div
+      className={annotate ? 'overlay annotating' : 'overlay'}
+      data-testid={`overlay-${variantKey}-${width}`}
+      onClick={annotate ? onClick : undefined}
+    >
+      {pins
+        .filter((p) => p.width === width)
+        .map((p) => (
+          <span key={p.id} className="pin" style={{ left: p.x * scale, top: p.y * scale }}>
+            {pinNumber(p.id)}
+          </span>
+        ))}
+    </div>
+  )
+}
+
 function hitTarget(iframe: HTMLIFrameElement | null, x: number, y: number) {
   const hit = sameOriginDocument(iframe)?.elementFromPoint(x, y) as HTMLElement | null | undefined
   if (!hit) return undefined
@@ -177,13 +221,11 @@ export function Frame(props: FrameProps) {
   const health = useFrameHealth(props.onHitTesting)
   const { height, watch } = useFittedHeight(props.height, props.maxHeight)
   const attachKeys = useFrameKeys()
+  const sendArgs = useLiveArgs(iframe, variant.storyId, props.liveArgs)
 
   const onOverlayClick = (e: MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect()
-    const x = round((e.clientX - rect.left) / scale, 0)
-    const y = round((e.clientY - rect.top) / scale, 0)
-    const target = hitTarget(iframe.current, x, y)
-    props.onPin({ width, x, y, xPct: round(x / width, 4), yPct: round(y / height, 4), target })
+    const pin = pointerPin(e, scale, width, height)
+    props.onPin({ ...pin, target: hitTarget(iframe.current, pin.x, pin.y) })
   }
 
   return (
@@ -209,22 +251,18 @@ export function Frame(props: FrameProps) {
               health.onLoad(e.currentTarget)
               watch(e.currentTarget)
               attachKeys(e.currentTarget)
+              sendArgs(e.currentTarget)
             }}
           />
         )}
-        <div
-          className={annotate ? 'overlay annotating' : 'overlay'}
-          data-testid={`overlay-${variant.key}-${width}`}
-          onClick={annotate ? onOverlayClick : undefined}
-        >
-          {pins
-            .filter((p) => p.width === width)
-            .map((p) => (
-              <span key={p.id} className="pin" style={{ left: p.x * scale, top: p.y * scale }}>
-                {p.id.split('-').pop()}
-              </span>
-            ))}
-        </div>
+        <PinOverlay
+          variantKey={variant.key}
+          width={width}
+          scale={scale}
+          annotate={annotate}
+          pins={pins}
+          onClick={onOverlayClick}
+        />
         {health.dead && (
           <DeadFrame testId={`dead-${variant.key}-${width}`} onRetry={health.retry} />
         )}

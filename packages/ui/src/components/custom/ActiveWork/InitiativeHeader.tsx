@@ -3,13 +3,13 @@ import { View } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Pill } from '../../ui/pill'
 import { StatusDot } from '../Workout/StatusDot'
-import { DateTime } from '../DateTime'
+import { DateTime } from '../../ui/date-time'
 import { Typography } from '../../ui/typography'
 import { INITIATIVE_STATE_META, type InitiativeState } from './InitiativeCard'
 
 export interface InitiativeHeaderProps {
   title: string
-  /** Short slug shown under the title, e.g. `active-work`. */
+  /** Short slug shown under the title, e.g. `planner`. */
   slug: string
   state: InitiativeState
   /** Focused rank (1-based). Shown as `#N` for a ranked state. */
@@ -55,16 +55,16 @@ export function InitiativeHeader({
           </Pill>
         ) : null}
         {shipTarget ? (
-          <Typography variant="caption" className="text-text-tertiary">
+          <Typography variant="caption" className="text-text-secondary">
             {`ship ${shipTarget}`}
           </Typography>
         ) : null}
         {updated ? (
           <View className="flex-row items-center gap-1">
-            <Typography variant="caption" className="text-text-tertiary">
+            <Typography variant="caption" className="text-text-secondary">
               updated
             </Typography>
-            <DateTime value={updated} format="medium" isUTC variant="caption" color="tertiary" />
+            <DateTime value={updated} format="medium" isUTC variant="caption" color="secondary" />
           </View>
         ) : null}
       </View>

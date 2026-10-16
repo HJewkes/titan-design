@@ -22,7 +22,7 @@ const meta: Meta<typeof CoChangeChip> = {
           'shown — at chip size the directory is noise. Composes ' +
           '[Card](?path=/docs/components-molecules-card--docs), ' +
           '[Pill](?path=/docs/components-atoms-pill--docs) and ' +
-          '[FilePathLabel](?path=/docs/custom-activework-filepathlabel--docs). ' +
+          '[FilePathLabel](?path=/docs/components-atoms-filepathlabel--docs). ' +
           'Used by [FileHistoryExplorer](?path=/docs/custom-activework-filehistoryexplorer--docs).',
       },
     },

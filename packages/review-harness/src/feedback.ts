@@ -2,13 +2,19 @@ import {
   FEEDBACK_SCHEMA_ID,
   type Annotation,
   type Answer,
+  type BlindChoice,
   type Feedback,
   type Manifest,
+  type PrGroupShipStatus,
   type Question,
+  type Recommendation,
+  type Variant,
   type Verdict,
-} from './schema.ts'
-import { isAnswered } from './round.ts'
-import { questionsForVariant } from './sections.ts'
+  shipBlocks,
+  takesRecommendation,
+} from '@titan-design/review-schema'
+import { isAnswered, normalizeAnswer, offersBuiltInRevision, pickedAfter } from './round.ts'
+import { questionsForVariant, sectionOfQuestion } from './sections.ts'
 
 export interface VariantDraft {
   verdict: Verdict
@@ -18,16 +24,35 @@ export interface VariantDraft {
 
 export interface AnswerDraft {
   pick?: string
+  /** The built-in "None of these, request a revision" is on; excludes `pick`. */
+  revision?: boolean
   picks?: string[]
   value?: number
   text?: string
   comment: string
+  /** A note per option, keyed by option text; blank notes are dropped at build time. */
+  notes?: Record<string, string>
+  /** The owner pressed "Show recommendation"; hiding it again clears this. */
+  revealed?: boolean
+  /** The answer landed while the recommendation was visible; only clearing the answer clears it. */
+  seen?: boolean
+  /** A blind-ab question's position picked in each pair, by pair id. */
+  blind?: Record<string, BlindChoice>
 }
 
 export interface ReviewDraft {
   variants: Record<string, VariantDraft>
   answers: Record<string, AnswerDraft>
   general: string
+}
+
+type Source = { storyId: string } | { image: string } | { clip: string } | { audio: string }
+
+/** The frame's own source field, echoed so a reader needs no manifest. */
+function sourceOf(v: Variant): Source {
+  if (v.storyId !== undefined) return { storyId: v.storyId }
+  if (v.audio !== undefined) return { audio: v.audio }
+  return v.clip !== undefined ? { clip: v.clip } : { image: v.image ?? '' }
 }
 
 export function emptyDraft(manifest: Manifest): ReviewDraft {
@@ -42,10 +67,72 @@ export function emptyDraft(manifest: Manifest): ReviewDraft {
 
 /** Comments left on the frames this question's section showed, so he never repeats one. */
 function sectionComments(manifest: Manifest, questionId: string, draft: ReviewDraft) {
-  const section = manifest.sections?.find((s) => s.questionIds.includes(questionId))
-  return (section?.variantKeys ?? [])
+  return (sectionOfQuestion(manifest, questionId)?.variantKeys ?? [])
     .map((key) => ({ key, comment: draft.variants[key]?.comment.trim() ?? '' }))
     .filter((v) => v.comment !== '')
+}
+
+/** True when the owner's answer equals the recommended one; pick-many compares sets. */
+export function agrees(answer: Answer, recommendation: Recommendation): boolean {
+  if (answer.revisionRequested) return false
+  const given = answer.picks ?? answer.pick ?? answer.value
+  const wanted = recommendation.answer
+  if (!Array.isArray(wanted) || !Array.isArray(given)) return given === wanted
+  return given.length === wanted.length && wanted.every((w) => given.includes(w))
+}
+
+/** Echo the question's recommendation; `agreed` only once there is an answer to compare. */
+function withRecommendation(question: Question, answer: Answer): Answer {
+  if (!takesRecommendation(question) || !question.recommendation) return answer
+  const { recommendation } = question
+  return isAnswered(question, answer)
+    ? { ...answer, recommendation, agreed: agrees(answer, recommendation) }
+    : { ...answer, recommendation }
+}
+
+/**
+ * The draft as an answer; a revision request (built-in or the author's own option) is never a
+ * pick. A stale `revision` flag on a question that no longer offers the built-in is dropped.
+ */
+export function draftAnswer(question: Question, draft: AnswerDraft): Answer {
+  const answer: Answer = { questionId: question.id }
+  if (question.kind !== 'pick-one') return answer
+  if (draft.pick !== undefined) return normalizeAnswer(question, { ...answer, pick: draft.pick })
+  return draft.revision && offersBuiltInRevision(question)
+    ? { ...answer, revisionRequested: true }
+    : answer
+}
+
+/** The non-blank notes on the question's own options, in option order. */
+function optionNotes(question: Question, draft: AnswerDraft): Answer['optionNotes'] {
+  if (question.kind !== 'pick-one' && question.kind !== 'pick-many') return undefined
+  const notes = question.options.flatMap((option) => {
+    const note = draft.notes?.[option]?.trim()
+    return note ? [{ option, note }] : []
+  })
+  return notes.length ? notes : undefined
+}
+
+function withPacket(question: Question, draft: AnswerDraft, answer: Answer): Answer {
+  const notes = optionNotes(question, draft)
+  const after = pickedAfter(question, answer)
+  const hasRecommendation = takesRecommendation(question) && question.recommendation !== undefined
+  const seen = draft.seen && hasRecommendation && isAnswered(question, answer)
+  return {
+    ...answer,
+    ...(notes ? { optionNotes: notes } : {}),
+    ...(after !== undefined ? { after } : {}),
+    ...(seen ? { recommendationSeen: true as const } : {}),
+  }
+}
+
+/** The pairs picked so far, in the question's pair order; a pair not yet picked is left out. */
+function blindPairs(question: Question, draft: AnswerDraft): NonNullable<Answer['pairs']> {
+  if (question.kind !== 'blind-ab') return []
+  return question.pairs.flatMap((p) => {
+    const choice = draft.blind?.[p.id]
+    return choice ? [{ pair: p.id, choice }] : []
+  })
 }
 
 function toAnswer(
@@ -53,22 +140,52 @@ function toAnswer(
   draft: AnswerDraft,
   variantComments: { key: string; comment: string }[]
 ): Answer | null {
-  const answer: Answer = { questionId: question.id }
-  if (question.kind === 'pick-one' && draft.pick !== undefined) answer.pick = draft.pick
+  const answer = draftAnswer(question, draft)
   if (question.kind === 'pick-many' && draft.picks?.length) answer.picks = draft.picks
   if (question.kind === 'scale' && draft.value !== undefined) answer.value = draft.value
   if (question.kind === 'text' && draft.text?.trim()) answer.text = draft.text
+  const pairs = blindPairs(question, draft)
+  if (pairs.length) answer.pairs = pairs
   if (draft.comment.trim()) answer.comment = draft.comment
   if (variantComments.length) answer.variantComments = variantComments
-  return isAnswered(question, answer) || answer.comment || variantComments.length ? answer : null
+  const full = withPacket(question, draft, answer)
+  return isAnswered(question, full) ||
+    full.comment ||
+    full.variantComments ||
+    full.optionNotes ||
+    full.pairs
+    ? withRecommendation(question, full)
+    : null
 }
 
+/** The questions a draft leaves without an answer, in manifest order; a comment alone does not answer. */
+export function unansweredQuestionIds(manifest: Manifest, draft: ReviewDraft): string[] {
+  return manifest.questions
+    .filter(
+      (q) =>
+        !isAnswered(q, {
+          ...draft.answers[q.id],
+          ...draftAnswer(q, draft.answers[q.id] ?? { comment: '' }),
+        })
+    )
+    .map((q) => q.id)
+}
+
+/** The unanswered questions that still need an answer: an optional one left blank counts as skipped. */
+export function pendingQuestionIds(manifest: Manifest, draft: ReviewDraft): string[] {
+  const unanswered = new Set(unansweredQuestionIds(manifest, draft))
+  return manifest.questions.filter((q) => q.required && unanswered.has(q.id)).map((q) => q.id)
+}
+
+/** A partial build lists what was left out, which is what lets a required question go unanswered. */
 export function buildFeedback(
   manifest: Manifest,
   manifestSha256: string,
   draft: ReviewDraft,
-  now: Date
+  now: Date,
+  partial = false
 ): Feedback {
+  const unanswered = partial ? unansweredQuestionIds(manifest, draft) : []
   return {
     schema: FEEDBACK_SCHEMA_ID,
     unit: manifest.unit,
@@ -84,11 +201,37 @@ export function buildFeedback(
       const related = questionsForVariant(manifest, v.key)
       return {
         key: v.key,
-        storyId: v.storyId,
+        ...sourceOf(v),
         ...(draft.variants[v.key] ?? { verdict: null, comment: '', annotations: [] }),
         ...(related.length ? { relatedQuestionIds: related } : {}),
       }
     }),
     general: draft.general,
+    ...(unanswered.length ? { unansweredQuestionIds: unanswered } : {}),
   }
+}
+
+/** Each PR group's Ship status for the draft as it stands, by the owner's Ship rule. */
+export function draftShipBlocks(manifest: Manifest, draft: ReviewDraft): PrGroupShipStatus[] {
+  return shipBlocks(manifest, buildFeedback(manifest, '', draft, new Date(0)))
+}
+
+/** The holder PR a merge-bound question's group ships after, when it is stacked on one in the round. */
+export function shipsAfter(manifest: Manifest, question: Question): string | undefined {
+  if (question.kind !== 'pick-one' || !question.merge) return undefined
+  const pr = `${question.merge.repo}#${question.merge.pr}`
+  return shipBlocks(manifest, { answers: [] }).find((g) => g.pr === pr)?.shipsAfter
+}
+
+/** The blocked group a merge-bound question's Ship option belongs to, or null when it may be picked. */
+export function blockedShipGroup(
+  manifest: Manifest,
+  draft: ReviewDraft,
+  question: Question,
+  option?: string
+): PrGroupShipStatus | null {
+  if (question.kind !== 'pick-one' || !question.merge) return null
+  if (option !== undefined && !question.merge.ship.includes(option)) return null
+  const pr = `${question.merge.repo}#${question.merge.pr}`
+  return draftShipBlocks(manifest, draft).find((g) => g.pr === pr && g.blocked) ?? null
 }

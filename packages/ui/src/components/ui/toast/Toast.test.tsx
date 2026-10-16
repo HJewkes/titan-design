@@ -1,8 +1,9 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, fireEvent, act } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedByNode } from '../../../test/classname-capture'
 import { Toast, ToastProvider, useToast } from './Toast'
-import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
 describe('Toast (standalone)', () => {
   it('renders with title', () => {
@@ -33,19 +34,22 @@ describe('Toast (standalone)', () => {
 
   it('renders with default info status', () => {
     render(<Toast title="Info toast" />)
-    expect(screen.getByRole('alert')).toBeInTheDocument()
+    expect(screen.getByRole('status')).toBeInTheDocument()
   })
 
   describe('icon visibility', () => {
-    it('shows icon by default', () => {
-      render(<Toast title="Test" status="success" />)
-      // The checkmark icon is rendered
-      expect(screen.getByRole('alert')).toBeInTheDocument()
+    it('draws the success icon as an SVG check, not a ✓ text glyph', () => {
+      const { container } = render(<Toast title="Test" status="success" />)
+      expect(screen.queryByText('✓')).toBeNull()
+      const svg = container.querySelector('svg')!
+      expect(svg.getAttribute('width')).toBe('18')
+      expect(svg.getAttribute('stroke')).toBe('currentColor')
     })
 
     it('hides icon when showIcon is false', () => {
-      render(<Toast title="Test" showIcon={false} />)
+      const { container } = render(<Toast title="Test" status="success" showIcon={false} />)
       expect(screen.getByText('Test')).toBeInTheDocument()
+      expect(container.querySelector('svg')).toBeNull()
     })
   })
 
@@ -79,9 +83,29 @@ describe('Toast (standalone)', () => {
       expect(results).toHaveNoViolations()
     })
 
-    it('has alert role', () => {
-      render(<Toast title="Alert" />)
+    it('gives an error toast role alert', () => {
+      render(<Toast title="Failed" status="error" />)
       expect(screen.getByRole('alert')).toBeInTheDocument()
+    })
+
+    it('gives a success toast role status, not alert', () => {
+      render(<Toast title="Saved" status="success" />)
+      expect(screen.getByRole('status')).toBeInTheDocument()
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+    })
+
+    it('hides the status glyph from assistive tech', () => {
+      const { container, rerender } = render(<Toast title="Saved" status="success" />)
+      expect(container.querySelector('svg')!.parentElement).toHaveAttribute('aria-hidden', 'true')
+      rerender(<Toast title="Careful" status="warning" />)
+      expect(screen.getByText('⚠')).toHaveAttribute('aria-hidden', 'true')
+    })
+
+    it('exposes the close control as a button and hides its glyph', () => {
+      render(<Toast title="Saved" isClosable onClose={() => {}} />)
+      const close = screen.getByLabelText('Close toast')
+      expect(close).toHaveAttribute('role', 'button')
+      expect(screen.getByText('×')).toHaveAttribute('aria-hidden', 'true')
     })
   })
 })
@@ -170,6 +194,60 @@ describe('ToastProvider', () => {
     vi.useRealTimers()
   })
 
+  describe('auto-dismiss pausing', () => {
+    function setup() {
+      vi.useFakeTimers()
+      render(
+        <ToastProvider>
+          <TestConsumer />
+        </ToastProvider>
+      )
+      fireEvent.click(screen.getByText('Add Toast'))
+      return screen.getByRole('status')
+    }
+
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    it('stays open past the duration while hovered, then dismisses after leaving', () => {
+      const toast = setup()
+      act(() => {
+        vi.advanceTimersByTime(2000)
+      })
+      fireEvent.pointerEnter(toast)
+      act(() => {
+        vi.advanceTimersByTime(10000)
+      })
+      expect(screen.getByText('New Toast')).toBeInTheDocument()
+
+      fireEvent.pointerLeave(toast)
+      act(() => {
+        vi.advanceTimersByTime(2999)
+      })
+      expect(screen.getByText('New Toast')).toBeInTheDocument()
+      act(() => {
+        vi.advanceTimersByTime(1)
+      })
+      expect(screen.queryByText('New Toast')).not.toBeInTheDocument()
+    })
+
+    it('stays open past the duration while focused, then dismisses after blur', () => {
+      const toast = setup()
+      fireEvent.focus(toast)
+      act(() => {
+        vi.advanceTimersByTime(6000)
+      })
+      expect(screen.getByText('New Toast')).toBeInTheDocument()
+
+      fireEvent.blur(toast)
+      act(() => {
+        vi.advanceTimersByTime(5000)
+      })
+      expect(screen.queryByText('New Toast')).not.toBeInTheDocument()
+    })
+  })
+
   it('throws when useToast is used outside ToastProvider', () => {
     function BadConsumer() {
       useToast()
@@ -208,14 +286,40 @@ describe('ToastProvider', () => {
  * grain and off every ramp; it becomes the column's 4px stack gap.
  */
 describe('Toast geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'Toast.tsx')
+  it.each([
+    [
+      'the band',
+      () => screen.getByText('Saved').parentElement?.parentElement ?? null,
+      ['p-inset-md'],
+      ['12px'],
+    ],
+    [
+      'the content column',
+      () => screen.getByText('Saved').parentElement,
+      ['gap-stack-sm'],
+      ['4px'],
+    ],
+  ] as const)('%s ships its spacing tokens', (_label, find, classes, pixels) => {
+    render(<Toast title="Saved" description="Your changes have been saved." />)
+    expect(spacingClassesAt(find())).toEqual([...classes])
+    expect(resolveAll([...classes])).toEqual([...pixels])
+  })
+})
+
+// TD-483: the status glyph takes the text role, not the fill tone. TD-840: success draws an
+// SVG CheckMark that inherits the role as currentColor from its wrapper.
+describe('Toast status glyph', () => {
+  const glyphNode = (container: HTMLElement, glyph: string | null) =>
+    glyph ? screen.getByText(glyph) : container.querySelector('svg')!.parentElement!
 
   it.each([
-    ['the band', 'flex-row items-start p-inset-md', ['12px']],
-    ['the content column', 'flex-1 gap-stack-sm', ['4px']],
-  ] as const)('%s ships `%s`', (_label, classes, pixels) => {
-    expect(source).toContain(classes)
-    const spacing = classes.split(' ').filter((c) => resolveAll([c])[0] !== undefined)
-    expect(resolveAll(spacing)).toEqual([...pixels])
+    ['success', null, 'text-text-success', 'text-status-success'],
+    ['warning', '⚠', 'text-text-warning', 'text-status-warning'],
+    ['info', 'ℹ', 'text-text-info', 'text-status-info'],
+  ] as const)('status=%s paints its glyph in %s, not %s', (status, glyph, textRole, fillTone) => {
+    const { container } = render(<Toast title="Saved" status={status} />)
+    const classes = (capturedByNode.get(glyphNode(container, glyph)) ?? '').split(/\s+/)
+    expect(classes).toContain(textRole)
+    expect(classes).not.toContain(fillTone)
   })
 })

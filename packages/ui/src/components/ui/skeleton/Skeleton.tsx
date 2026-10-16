@@ -1,4 +1,3 @@
-import React from 'react'
 import { View, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 
@@ -14,10 +13,12 @@ export interface SkeletonProps extends ViewProps {
   width?: number | string
   /** Height (number for pixels, string for percentages/other) */
   height?: number | string
-  /** Border radius (only for 'rect' variant) */
+  /** Border radius in pixels; applies to every variant and overrides the variant's radius class */
   borderRadius?: number
   /** Additional className */
   className?: string
+  /** Names the placeholder as a progressbar; omitted, the skeleton is hidden from assistive tech */
+  accessibilityLabel?: string
 }
 
 /**
@@ -41,6 +42,7 @@ export function Skeleton({
   borderRadius,
   className,
   style,
+  accessibilityLabel,
   ...props
 }: SkeletonProps) {
   const variantStyles = {
@@ -64,10 +66,18 @@ export function Skeleton({
     if (height && !width) finalWidth = height
   }
 
+  // A named node needs a role that permits a name; unlabelled bars are decorative.
+  const a11yProps = accessibilityLabel
+    ? { accessibilityRole: 'progressbar' as const, accessibilityLabel }
+    : {
+        'aria-hidden': true,
+        accessibilityElementsHidden: true,
+        importantForAccessibility: 'no-hide-descendants' as const,
+      }
+
   return (
     <View
-      accessibilityRole="none"
-      accessibilityLabel="Loading..."
+      {...a11yProps}
       className={cn(
         'bg-interactive-disabled',
         variantStyles[variant],

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { siblingSource, spacingClassesIn, resolveAll } from '../../../test/spacing-resolver'
+import { spacingClassesAt, spacingClassesOf, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { ReadinessCheck, type ReadinessFactor } from './ReadinessCheck'
@@ -67,6 +67,30 @@ describe('ReadinessCheck', () => {
       render(<ReadinessCheck {...baseProps} factors={makeFactors()} onConfirm={onConfirm} />)
       fireEvent.click(screen.getByTestId('readiness-check-confirm'))
       expect(onConfirm).toHaveBeenCalledOnce()
+    })
+
+    it('exposes the disabled start button and does not confirm from it', () => {
+      const onConfirm = vi.fn()
+      render(
+        <ReadinessCheck
+          {...baseProps}
+          factors={makeFactors()}
+          onConfirm={onConfirm}
+          isConfirmDisabled
+        />
+      )
+      const start = screen.getByRole('button', { name: 'Confirm readiness and start workout' })
+      expect(start).toHaveAttribute('aria-disabled', 'true')
+      fireEvent.click(start)
+      expect(onConfirm).not.toHaveBeenCalled()
+    })
+
+    it('leaves the start button enabled by default', () => {
+      render(<ReadinessCheck {...baseProps} factors={makeFactors()} />)
+      expect(screen.getByTestId('readiness-check-confirm')).not.toHaveAttribute(
+        'aria-disabled',
+        'true'
+      )
     })
   })
 
@@ -177,16 +201,25 @@ describe('ReadinessCheck', () => {
 
 /** ReadinessCheck's geometry, pinned (AW-142); pixels unchanged. */
 describe('ReadinessCheck geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'ReadinessCheck.tsx')
-
   it('keeps the card inset and the factor rhythm', () => {
-    expect(spacingClassesIn(source, 'ReadinessCheck')).toEqual(['p-inset-lg'])
-    expect(spacingClassesIn(source, 'EmojiSlider')).toEqual(['mt-3.5'])
+    render(<ReadinessCheck {...baseProps} factors={makeFactors()} />)
+    const factor = screen.getByTestId('readiness-check-factor-sleep')
+    expect(spacingClassesAt(factor.parentElement)).toEqual(['p-inset-lg'])
+    expect(spacingClassesAt(factor)).toEqual(['mt-3.5'])
     expect(resolveAll(['p-inset-lg', 'mt-3.5'])).toEqual(['16px', '14px'])
   })
 
   it('keeps the warm-up panel inset', () => {
-    expect(source).toContain('mt-stack-lg p-inset-md')
-    expect(resolveAll(['mt-stack-lg', 'p-inset-md'])).toEqual(['16px', '12px'])
+    render(
+      <ReadinessCheck
+        {...baseProps}
+        factors={makeFactors()}
+        warmUpCompleted
+        warmUpValidation={{ velocityDeficit: 0, recommendation: 'Proceed.', status: 'good' }}
+      />
+    )
+    const classes = spacingClassesOf('readiness-check-warmup')
+    expect(classes).toEqual(['mt-stack-lg', 'p-inset-md'])
+    expect(resolveAll(classes)).toEqual(['16px', '12px'])
   })
 })

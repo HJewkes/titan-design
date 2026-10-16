@@ -1,7 +1,10 @@
-import React, { useState, createContext, useContext } from 'react'
+import { useState, createContext, useContext } from 'react'
 import { View, Text, Pressable, ScrollView, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
-import { Surface } from '../surface'
+import { CheckMark } from '../../icons'
+import { useInsetFieldStyle } from '../surface/insetField'
+import { SelectPopover } from './SelectPopover'
+import { hasSelection, isValueSelected, selectDisplayLabel, toggleValue } from './selectModel'
 
 export interface SelectOption<T = string> {
   value: T
@@ -9,16 +12,18 @@ export interface SelectOption<T = string> {
   isDisabled?: boolean
 }
 
+// Method signatures check their parameters bivariantly, so a `Select<T>` provider fits the shared
+// `unknown` context and every `SelectOption<T>` can pass its own `T` back.
 interface SelectContextType<T = string> {
   value: T | T[] | null
   isMulti: boolean
   isOpen: boolean
   setIsOpen: (open: boolean) => void
-  selectValue: (val: T) => void
-  isSelected: (val: T) => boolean
+  selectValue(val: T): void
+  isSelected(val: T): boolean
 }
 
-const SelectContext = createContext<SelectContextType<any>>({
+const SelectContext = createContext<SelectContextType<unknown>>({
   value: null,
   isMulti: false,
   isOpen: false,
@@ -26,6 +31,12 @@ const SelectContext = createContext<SelectContextType<any>>({
   selectValue: () => {},
   isSelected: () => false,
 })
+
+// The provider is a `Select<T>` and the consumer a `SelectOption<T>` of the same `T`; the shared
+// context object cannot carry that, so the cast lives here, once.
+function useSelectContext<T>() {
+  return useContext(SelectContext) as SelectContextType<T>
+}
 
 export interface SelectProps<T = string> extends ViewProps {
   /** Selected value (single mode) */
@@ -80,6 +91,7 @@ export function Select<T extends string = string>({
   onChange,
   onChangeMulti,
   isMulti = false,
+  accessibilityLabel,
   placeholder = 'Select...',
   isDisabled = false,
   isInvalid = false,
@@ -89,35 +101,21 @@ export function Select<T extends string = string>({
   ...props
 }: SelectProps<T>) {
   const [isOpen, setIsOpen] = useState(false)
+  const well = useInsetFieldStyle(variant === 'filled')
+
+  const selection = { isMulti, value, values }
 
   const selectValue = (val: T) => {
     if (isMulti) {
-      const newValues = values.includes(val) ? values.filter((v) => v !== val) : [...values, val]
-      onChangeMulti?.(newValues)
+      onChangeMulti?.(toggleValue(values, val))
     } else {
       onChange?.(val)
       setIsOpen(false)
     }
   }
 
-  const isSelected = (val: T) => {
-    if (isMulti) {
-      return values.includes(val)
-    }
-    return value === val
-  }
-
-  const getDisplayValue = () => {
-    if (isMulti) {
-      if (values.length === 0) return placeholder
-      if (values.length === 1) {
-        return options.find((o) => o.value === values[0])?.label || placeholder
-      }
-      return `${values.length} selected`
-    }
-    if (value === null || value === undefined) return placeholder
-    return options.find((o) => o.value === value)?.label || placeholder
-  }
+  const isSelected = (val: T) => isValueSelected(selection, val)
+  const displayValue = selectDisplayLabel(selection, options, placeholder)
 
   const clearValue = () => {
     if (isMulti) {
@@ -127,7 +125,7 @@ export function Select<T extends string = string>({
     }
   }
 
-  const hasValue = isMulti ? values.length > 0 : value !== null && value !== undefined
+  const hasValue = hasSelection(selection)
 
   return (
     <SelectContext.Provider value={{ value, isMulti, isOpen, setIsOpen, selectValue, isSelected }}>
@@ -137,10 +135,13 @@ export function Select<T extends string = string>({
           onPress={() => !isDisabled && setIsOpen(!isOpen)}
           disabled={isDisabled}
           accessibilityRole="combobox"
+          accessibilityLabel={accessibilityLabel}
+          aria-expanded={isOpen}
           accessibilityState={{ expanded: isOpen, disabled: isDisabled }}
+          style={well}
           className={cn(
             'flex-row items-center justify-between px-4 py-2.5 rounded-md border',
-            variant === 'filled' ? 'bg-scrim-subtle' : 'bg-surface-base',
+            variant === 'filled' ? undefined : 'bg-surface-base',
             isInvalid
               ? 'border-border-input-error'
               : variant === 'filled'
@@ -152,7 +153,7 @@ export function Select<T extends string = string>({
           )}
         >
           <Text className={cn('flex-1', hasValue ? 'text-text-primary' : 'text-text-tertiary')}>
-            {getDisplayValue()}
+            {displayValue}
           </Text>
           <View className="flex-row items-center gap-2">
             {hasValue && (
@@ -161,6 +162,10 @@ export function Select<T extends string = string>({
                   e.stopPropagation?.()
                   clearValue()
                 }}
+                accessibilityRole="button"
+                accessibilityLabel={
+                  accessibilityLabel ? `Clear ${accessibilityLabel}` : 'Clear selection'
+                }
                 className="p-1"
               >
                 <Text className="text-text-secondary text-xs">×</Text>
@@ -172,27 +177,13 @@ export function Select<T extends string = string>({
 
         {/* Dropdown */}
         {isOpen && (
-          <>
-            <Pressable
-              onPress={() => setIsOpen(false)}
-              className="fixed inset-0 z-40"
-              style={{ position: 'absolute' }}
-            />
-            <Surface
-              elevation={4}
-              rounded={false}
-              className={cn(
-                'absolute z-50 top-full left-0 right-0 mt-1',
-                'rounded-md max-h-60 overflow-hidden'
-              )}
-            >
-              <ScrollView className="py-1">
-                {options.map((option) => (
-                  <SelectOption key={option.value} option={option} />
-                ))}
-              </ScrollView>
-            </Surface>
-          </>
+          <SelectPopover onClose={() => setIsOpen(false)}>
+            <ScrollView className="py-1">
+              {options.map((option) => (
+                <SelectOption key={option.value} option={option} />
+              ))}
+            </ScrollView>
+          </SelectPopover>
         )}
       </View>
     </SelectContext.Provider>
@@ -204,14 +195,14 @@ interface SelectOptionComponentProps<T> {
 }
 
 function SelectOption<T>({ option }: SelectOptionComponentProps<T>) {
-  const { selectValue, isSelected, isMulti } = useContext(SelectContext)
+  const { selectValue, isSelected, isMulti } = useSelectContext<T>()
   const selected = isSelected(option.value)
 
   return (
     <Pressable
       onPress={() => !option.isDisabled && selectValue(option.value)}
       disabled={option.isDisabled}
-      accessibilityRole={isMulti ? 'checkbox' : ('option' as any)}
+      role={isMulti ? 'checkbox' : 'option'}
       accessibilityState={{ selected, disabled: option.isDisabled }}
       className={cn(
         'flex-row items-center px-4 py-2',
@@ -223,17 +214,21 @@ function SelectOption<T>({ option }: SelectOptionComponentProps<T>) {
       {isMulti && (
         <View
           className={cn(
-            'w-4 h-4 mr-3 rounded border',
+            'w-4 h-4 mr-3 rounded border items-center justify-center',
             selected ? 'bg-brand-primary border-brand-primary' : 'border-hairline-strong'
           )}
         >
-          {selected && <Text className="text-on-brand-primary text-xs text-center">✓</Text>}
+          {selected && (
+            <View className="text-on-brand-primary">
+              <CheckMark size={12} strokeWidth={3} />
+            </View>
+          )}
         </View>
       )}
       <Text
         className={cn(
           'text-sm',
-          selected && !isMulti ? 'text-brand-primary font-medium' : 'text-text-primary'
+          selected && !isMulti ? 'text-text-brand font-medium' : 'text-text-primary'
         )}
       >
         {option.label}

@@ -1,0 +1,1426 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Autocomplete characterisation > helper text, not clearable, selected 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+    >
+      Fruit
+    </div>
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <input
+          aria-label="Fruit"
+          autocapitalize="sentences"
+          autocomplete="on"
+          autocorrect="on"
+          class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+          dir="auto"
+          placeholder="Search..."
+          rows="1"
+          spellcheck="true"
+          value="Banana"
+          virtualkeyboardpolicy="auto"
+        />
+      </div>
+      <div
+        class="css-view-175oi2r"
+        style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+      >
+        <div
+          class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Banana
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+    >
+      Pick one
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Autocomplete characterisation > invalid, required, disabled and selected 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+    >
+      Fruit
+      <span
+        class="css-textHasAncestor-1jxf684"
+      >
+        *
+      </span>
+    </div>
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <input
+          aria-label="Fruit"
+          autocapitalize="sentences"
+          autocomplete="on"
+          autocorrect="on"
+          class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+          dir="auto"
+          placeholder="Search..."
+          readonly=""
+          rows="1"
+          spellcheck="true"
+          value="Apple"
+          virtualkeyboardpolicy="auto"
+        />
+      </div>
+      <div
+        class="css-view-175oi2r"
+        style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+      >
+        <div
+          class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Apple
+              </div>
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Red fruit
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+    >
+      Bad
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Autocomplete characterisation > open and empty 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+    >
+      Fruit
+    </div>
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <input
+          aria-label="Fruit"
+          autocapitalize="sentences"
+          autocomplete="on"
+          autocorrect="on"
+          class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+          dir="auto"
+          placeholder="Search..."
+          rows="1"
+          spellcheck="true"
+          value=""
+          virtualkeyboardpolicy="auto"
+        />
+      </div>
+      <div
+        class="css-view-175oi2r"
+        style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+      >
+        <div
+          class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Apple
+              </div>
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Red fruit
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Apricot
+              </div>
+            </div>
+            <div
+              aria-disabled="true"
+              class="css-view-175oi2r r-pointerEvents-12vffkv"
+              tabindex="-1"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Avocado
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Banana
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Autocomplete characterisation > open below min chars 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+    >
+      Fruit
+    </div>
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <input
+          aria-label="Fruit"
+          autocapitalize="sentences"
+          autocomplete="on"
+          autocorrect="on"
+          class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+          dir="auto"
+          placeholder="Search..."
+          rows="1"
+          spellcheck="true"
+          value="a"
+          virtualkeyboardpolicy="auto"
+        />
+      </div>
+      <div
+        class="css-view-175oi2r"
+        style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+      >
+        <div
+          class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Type at least 3 characters
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Autocomplete characterisation > open below min chars with custom text 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+    >
+      Fruit
+    </div>
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <input
+          aria-label="Fruit"
+          autocapitalize="sentences"
+          autocomplete="on"
+          autocorrect="on"
+          class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+          dir="auto"
+          placeholder="Search..."
+          rows="1"
+          spellcheck="true"
+          value="a"
+          virtualkeyboardpolicy="auto"
+        />
+      </div>
+      <div
+        class="css-view-175oi2r"
+        style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+      >
+        <div
+          class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              More please
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Autocomplete characterisation > open matching on a description 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+    >
+      Fruit
+    </div>
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <input
+          aria-label="Fruit"
+          autocapitalize="sentences"
+          autocomplete="on"
+          autocorrect="on"
+          class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+          dir="auto"
+          placeholder="Search..."
+          rows="1"
+          spellcheck="true"
+          value="red"
+          virtualkeyboardpolicy="auto"
+        />
+      </div>
+      <div
+        class="css-view-175oi2r"
+        style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+      >
+        <div
+          class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Apple
+              </div>
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Red fruit
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Autocomplete characterisation > open while loading 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+    >
+      Fruit
+    </div>
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <input
+          aria-label="Fruit"
+          autocapitalize="sentences"
+          autocomplete="on"
+          autocorrect="on"
+          class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+          dir="auto"
+          placeholder="Search..."
+          rows="1"
+          spellcheck="true"
+          value="a"
+          virtualkeyboardpolicy="auto"
+        />
+        <div
+          class="css-view-175oi2r"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            ⟳
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+      >
+        <div
+          class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Wait
+            </div>
+            <div
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Apple
+              </div>
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Red fruit
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Apricot
+              </div>
+            </div>
+            <div
+              aria-disabled="true"
+              class="css-view-175oi2r r-pointerEvents-12vffkv"
+              tabindex="-1"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Avocado
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Banana
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Autocomplete characterisation > open with a custom filter 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+    >
+      Fruit
+    </div>
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <input
+          aria-label="Fruit"
+          autocapitalize="sentences"
+          autocomplete="on"
+          autocorrect="on"
+          class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+          dir="auto"
+          placeholder="Search..."
+          rows="1"
+          spellcheck="true"
+          value="o"
+          virtualkeyboardpolicy="auto"
+        />
+      </div>
+      <div
+        class="css-view-175oi2r"
+        style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+      >
+        <div
+          class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              aria-disabled="true"
+              class="css-view-175oi2r r-pointerEvents-12vffkv"
+              tabindex="-1"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Avocado
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Autocomplete characterisation > open with matches and a selection 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+    >
+      Fruit
+    </div>
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <input
+          aria-label="Fruit"
+          autocapitalize="sentences"
+          autocomplete="on"
+          autocorrect="on"
+          class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+          dir="auto"
+          placeholder="Search..."
+          rows="1"
+          spellcheck="true"
+          value="ap"
+          virtualkeyboardpolicy="auto"
+        />
+        <div
+          aria-label="Clear selection"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            ×
+          </div>
+        </div>
+      </div>
+      <div
+        class="css-view-175oi2r"
+        style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+      >
+        <div
+          class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Apple
+              </div>
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Red fruit
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Apricot
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Autocomplete characterisation > open with no matches 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+    >
+      Fruit
+    </div>
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <input
+          aria-label="Fruit"
+          autocapitalize="sentences"
+          autocomplete="on"
+          autocorrect="on"
+          class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+          dir="auto"
+          placeholder="Search..."
+          rows="1"
+          spellcheck="true"
+          value="zzz"
+          virtualkeyboardpolicy="auto"
+        />
+      </div>
+      <div
+        class="css-view-175oi2r"
+        style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+      >
+        <div
+          class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              Nothing
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Autocomplete characterisation > open with renderOption 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+    >
+      Fruit
+    </div>
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <input
+          aria-label="Fruit"
+          autocapitalize="sentences"
+          autocomplete="on"
+          autocorrect="on"
+          class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+          dir="auto"
+          placeholder="Search..."
+          rows="1"
+          spellcheck="true"
+          value="a"
+          virtualkeyboardpolicy="auto"
+        />
+      </div>
+      <div
+        class="css-view-175oi2r"
+        style="background-color: rgb(55, 54, 53); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 1px 2px rgba(0,0,0,0.35), 0 10px 24px rgba(0,0,0,0.30), 0 24px 48px rgba(0,0,0,0.20);"
+      >
+        <div
+          class="css-view-175oi2r r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx"
+        >
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Apple:false
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Apricot:false
+              </div>
+            </div>
+            <div
+              aria-disabled="true"
+              class="css-view-175oi2r r-pointerEvents-12vffkv"
+              tabindex="-1"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Avocado:false
+              </div>
+            </div>
+            <div
+              class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+              tabindex="0"
+            >
+              <div
+                class="css-text-146c3p1"
+                dir="auto"
+              >
+                Banana:false
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Autocomplete characterisation > selects, blurs and clears > cleared 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <input
+          autocapitalize="sentences"
+          autocomplete="on"
+          autocorrect="on"
+          class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+          dir="auto"
+          placeholder="Search..."
+          rows="1"
+          spellcheck="true"
+          value=""
+          virtualkeyboardpolicy="auto"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Autocomplete characterisation > selects, blurs and clears > selected 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <input
+          autocapitalize="sentences"
+          autocomplete="on"
+          autocorrect="on"
+          class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+          dir="auto"
+          placeholder="Search..."
+          rows="1"
+          spellcheck="true"
+          value="Banana"
+          virtualkeyboardpolicy="auto"
+        />
+        <div
+          aria-label="Clear selection"
+          class="css-view-175oi2r r-cursor-1loqt21 r-touchAction-1otgn73"
+          tabindex="0"
+        >
+          <div
+            class="css-text-146c3p1"
+            dir="auto"
+          >
+            ×
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Autocomplete characterisation > story CustomNoResultsText 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <input
+            autocapitalize="sentences"
+            autocomplete="on"
+            autocorrect="on"
+            class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+            dir="auto"
+            placeholder="Search..."
+            rows="1"
+            spellcheck="true"
+            value=""
+            virtualkeyboardpolicy="auto"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Autocomplete characterisation > story Default 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <input
+            autocapitalize="sentences"
+            autocomplete="on"
+            autocorrect="on"
+            class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+            dir="auto"
+            placeholder="Search fruits..."
+            rows="1"
+            spellcheck="true"
+            value=""
+            virtualkeyboardpolicy="auto"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+    >
+      Selected: 
+      None
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Autocomplete characterisation > story Disabled 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Disabled field
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <input
+            aria-label="Disabled field"
+            autocapitalize="sentences"
+            autocomplete="on"
+            autocorrect="on"
+            class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+            dir="auto"
+            placeholder="Search..."
+            readonly=""
+            rows="1"
+            spellcheck="true"
+            value=""
+            virtualkeyboardpolicy="auto"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Autocomplete characterisation > story DisabledOptions 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Select plan
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <input
+            aria-label="Select plan"
+            autocapitalize="sentences"
+            autocomplete="on"
+            autocorrect="on"
+            class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+            dir="auto"
+            placeholder="Choose a plan..."
+            rows="1"
+            spellcheck="true"
+            value=""
+            virtualkeyboardpolicy="auto"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Autocomplete characterisation > story FormExample 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-text-146c3p1"
+      dir="auto"
+    >
+      Location
+    </div>
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Country
+        <span
+          class="css-textHasAncestor-1jxf684"
+        >
+          *
+        </span>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <input
+            aria-label="Country"
+            autocapitalize="sentences"
+            autocomplete="on"
+            autocorrect="on"
+            class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+            dir="auto"
+            placeholder="Select country..."
+            rows="1"
+            spellcheck="true"
+            value=""
+            virtualkeyboardpolicy="auto"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        City
+        <span
+          class="css-textHasAncestor-1jxf684"
+        >
+          *
+        </span>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <input
+            aria-label="City"
+            autocapitalize="sentences"
+            autocomplete="on"
+            autocorrect="on"
+            class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+            dir="auto"
+            placeholder="Select country first"
+            readonly=""
+            rows="1"
+            spellcheck="true"
+            value=""
+            virtualkeyboardpolicy="auto"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Selected: 
+        -
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Autocomplete characterisation > story Loading 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Loading state
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <input
+            aria-label="Loading state"
+            autocapitalize="sentences"
+            autocomplete="on"
+            autocorrect="on"
+            class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+            dir="auto"
+            placeholder="Search..."
+            rows="1"
+            spellcheck="true"
+            value=""
+            virtualkeyboardpolicy="auto"
+          />
+          <div
+            class="css-view-175oi2r"
+          >
+            <div
+              class="css-text-146c3p1"
+              dir="auto"
+            >
+              ⟳
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Autocomplete characterisation > story MinimumCharacters 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Search (min 2 chars)
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <input
+            aria-label="Search (min 2 chars)"
+            autocapitalize="sentences"
+            autocomplete="on"
+            autocorrect="on"
+            class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+            dir="auto"
+            placeholder="Type at least 2 characters..."
+            rows="1"
+            spellcheck="true"
+            value=""
+            virtualkeyboardpolicy="auto"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Autocomplete characterisation > story NonClearable 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Cannot clear selection
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <input
+            aria-label="Cannot clear selection"
+            autocapitalize="sentences"
+            autocomplete="on"
+            autocorrect="on"
+            class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+            dir="auto"
+            placeholder="Search..."
+            rows="1"
+            spellcheck="true"
+            value=""
+            virtualkeyboardpolicy="auto"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Autocomplete characterisation > story WithDescriptions 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Assign to
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <input
+            aria-label="Assign to"
+            autocapitalize="sentences"
+            autocomplete="on"
+            autocorrect="on"
+            class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+            dir="auto"
+            placeholder="Search users..."
+            rows="1"
+            spellcheck="true"
+            value=""
+            virtualkeyboardpolicy="auto"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Autocomplete characterisation > story WithError 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Select fruit
+        <span
+          class="css-textHasAncestor-1jxf684"
+        >
+          *
+        </span>
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <input
+            aria-label="Select fruit"
+            autocapitalize="sentences"
+            autocomplete="on"
+            autocorrect="on"
+            class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+            dir="auto"
+            placeholder="Search..."
+            rows="1"
+            spellcheck="true"
+            value=""
+            virtualkeyboardpolicy="auto"
+          />
+        </div>
+      </div>
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Please select a fruit
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Autocomplete characterisation > story WithLabel 1`] = `
+<div>
+  <div
+    class="css-view-175oi2r"
+  >
+    <div
+      class="css-view-175oi2r"
+    >
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Select a fruit
+      </div>
+      <div
+        class="css-view-175oi2r"
+      >
+        <div
+          class="css-view-175oi2r"
+        >
+          <input
+            aria-label="Select a fruit"
+            autocapitalize="sentences"
+            autocomplete="on"
+            autocorrect="on"
+            class="css-textinput-11aywtz r-placeholderTextColor-6taxm2"
+            dir="auto"
+            placeholder="Type to search..."
+            rows="1"
+            spellcheck="true"
+            value=""
+            virtualkeyboardpolicy="auto"
+          />
+        </div>
+      </div>
+      <div
+        class="css-text-146c3p1"
+        dir="auto"
+      >
+        Choose your favorite fruit
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -1,5 +1,9 @@
 import { SvgIcon, type IconProps } from './SvgIcon'
 
+export { SearchIcon, DatabaseIcon, ChartIcon } from './consoleIcons'
+export { CheckMark } from './CheckMark'
+export { CircleCheckIcon, OctagonXIcon, CircleDashedIcon } from './statusIcons'
+
 /**
  * Voltras brand mark — the ◇ diamond (outline). Pass `fill` for a solid mark.
  */

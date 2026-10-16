@@ -11,7 +11,7 @@ import { Surface } from '../../ui/surface'
 const meta: Meta<typeof SetBar> = {
   title: 'Custom/Workout/SetBar',
   component: SetBar,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {
@@ -52,6 +52,29 @@ export const Active: Story = {
   },
   parameters: {
     docs: { description: { story: 'Performed reps pulse; the planned remainder is greyed.' } },
+  },
+}
+
+export const ActiveRangeSet: Story = {
+  name: 'Active range set',
+  args: {
+    height: 8,
+    set: {
+      status: 'range',
+      floor: 15,
+      max: 20,
+      doneVels: decay(9, 0.8),
+      isActive: true,
+    } as SetStripSet,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'A live variable-range set: done reps pulse like the Active story; the committed ' +
+          'grey and variable cyan zones stay still.',
+      },
+    },
   },
 }
 

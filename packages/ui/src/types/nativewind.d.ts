@@ -44,10 +44,12 @@ declare module 'react-native' {
     className?: string
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- declaration merging requires the original type parameter names
   interface FlatListProps<ItemT> {
     className?: string
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- declaration merging requires the original type parameter names
   interface SectionListProps<ItemT, SectionT> {
     className?: string
   }

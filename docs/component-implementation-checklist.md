@@ -7,7 +7,7 @@ it complete. Every box must be checked and every gate green.
 > **Scope.** This checklist applies only when you port a **frozen HTML
 > prototype** that has pixel-parity requirements: a manifest extracted from the
 > prototype, and computed-style parity against it. Every other component follows
-> Gate 2 of the `titan-component-workflow` skill instead: the operator validates
+> Gate 2 of the `titan-component` skill (`.claude/skills/titan-component`) instead: the operator validates
 > the final rendered Storybook state before merge. That includes exploratory and
 > greenfield components and anything without an HTML prototype. If there is no
 > frozen prototype to extract a manifest from, this checklist does not apply.
@@ -39,7 +39,7 @@ src/components/{ui|custom}/{ComponentName}/
 - [ ] A manifest exists for the component under
       `packages/ui/src/theme/manifest/`, or is generated from the frozen HTML
       prototype:
-      `pnpm extract-css <html> <selector> <ComponentName> --out src/theme/manifest/<component>.json`
+      `pnpm extract-css <html> <selector> <ComponentName> --out src/theme/manifest/<component>.manifest.json`
       (wraps `node scripts/extract-css-properties.mjs`; repeat `--variant axis=value`
       per variant axis).
 - [ ] The manifest is **schema-valid**: it conforms to
@@ -61,8 +61,13 @@ src/components/{ui|custom}/{ComponentName}/
 - [ ] Every manifest property is styled from its semantic **token**
       (`src/theme/tokens/semantic.ts` → `src/theme/global.css`), falling back
       to a literal only where the manifest has `token: null`.
-- [ ] No bare `border` class (defaults to 1px black on web). Verify with
-      `pnpm lint:borders` (`scripts/check-border-classes.sh`).
+- [ ] No bare `border` class (defaults to 1px black on web), checked by hand,
+      and no `*-default` token class such as `border-border-default`, which
+      Tailwind never generates. The arch test
+      `packages/ui/src/arch/default-suffix-class.test.ts` checks the second; run
+      it alone with
+      `pnpm exec vitest run --project threads src/arch/default-suffix-class.test.ts`
+      in `packages/ui`.
 - [ ] Barrel `index.ts` exports the component and its public types.
 
 ## 3. Layer 1 — specimen entry (HTML ground truth + React)
@@ -78,8 +83,7 @@ src/components/{ui|custom}/{ComponentName}/
 
 - [ ] `ComponentName.test.tsx` asserts the component's own computed/inline
       styles against the manifest's `resolvedValue`s for the pinned
-      properties (e.g. border style/width, box-shadow, colors — as in
-      `src/components/custom/Workout/StatusDot.test.tsx`).
+      properties (e.g. border style/width, box-shadow, colors).
 - [ ] Rendering, props, and each variant are covered (Arrange-Act-Assert).
 
 ## 5. Layer 3 — HTML vs React parity test
@@ -93,13 +97,21 @@ src/components/{ui|custom}/{ComponentName}/
       (Playwright, `playwright.comparison.config.ts`; boots the specimen
       server automatically).
 
-## 6. Storybook story — all variants
+## 6. Storybook story: one `Default` story
 
 - [ ] `ComponentName.stories.tsx` uses `Meta`/`StoryObj` from
-      `@storybook/react-vite`, `tags: ['autodocs']`, and `argTypes` controls
-      for every prop.
-- [ ] One named story per variant **plus** an `AllVariants` story covering the
-      full matrix (see `StatusDot.stories.tsx`).
+      `@storybook/react-vite`.
+- [ ] It exports one `Default` story, driven by `args` and `argTypes`.
+      Variants, colours, sizes and states are controls on that story. Do not
+      add one story per variant or an `AllVariants` story.
+- [ ] `tags` holds `autodocs` and the status tag that the rule in
+      `packages/ui/MATURITY.md` derives, plus `!status:review` to negate the
+      inherited default.
+- [ ] The models are `src/components/shell/workout/SessionStatePill.stories.tsx`
+      (args and `select` controls; the component is deprecated in favour of
+      `<Pill tone="…" leading="dot">`, the story shape still stands) and
+      `src/components/shell/workout/DeviceMenu.stories.tsx` (a data fixture as
+      an `object` control, `control: false` for handlers).
 - [ ] Storybook compiles: `pnpm build-storybook`.
 
 ## 7. Accessibility
@@ -111,7 +123,7 @@ src/components/{ui|custom}/{ComponentName}/
 
 ## 8. Quality gates — all green, zero new warnings
 
-- [ ] `pnpm lint` (ESLint) clean, including `pnpm lint:borders`.
+- [ ] `pnpm lint` (ESLint) clean.
 - [ ] `pnpm type-check` (`tsc --noEmit`) clean.
 - [ ] `pnpm format:check` (Prettier) clean on touched files.
 - [ ] `pnpm test` — all Vitest suites pass (Layer 2 + manifest + a11y).

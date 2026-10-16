@@ -44,29 +44,9 @@ const dark = getSemanticColors('dark')
 const BRAND_PRIMARY = dark['brand-primary']
 
 describe('alpha() adoption (VW-78) — swapped literal parity', () => {
+  // The error originals were 209,67,67 (red 600). Dark status-error moved to red 500
+  // (item 42), so those rows now pin the red 500 channels the swap must follow.
   const staticCases: Array<{ label: string; original: string; swapped: string }> = [
-    // Gauge.tsx
-    {
-      label: 'Gauge TRACK',
-      original: 'rgba(255,255,255,0.08)',
-      swapped: alpha(primitiveColors.white, 0.08),
-    },
-    // Scatter.tsx
-    {
-      label: 'Scatter GRID_LINE',
-      original: 'rgba(255,255,255,0.07)',
-      swapped: alpha(primitiveColors.white, 0.07),
-    },
-    {
-      label: 'Scatter AXIS_LINE',
-      original: 'rgba(255,255,255,0.18)',
-      swapped: alpha(primitiveColors.white, 0.18),
-    },
-    {
-      label: 'Scatter DIAGONAL_LINE',
-      original: 'rgba(255,255,255,0.28)',
-      swapped: alpha(primitiveColors.white, 0.28),
-    },
     // BaseBadge.tsx
     {
       label: 'BaseBadge pr.bg',
@@ -162,7 +142,7 @@ describe('alpha() adoption (VW-78) — swapped literal parity', () => {
     },
     {
       label: 'MesoStatusCard gradient error',
-      original: 'rgba(209,67,67,0.25)',
+      original: 'rgba(224,82,84,0.25)',
       swapped: alpha(dark['status-error'], 0.25),
     },
     {
@@ -187,12 +167,12 @@ describe('alpha() adoption (VW-78) — swapped literal parity', () => {
     },
     {
       label: 'MesoStatusCard error.bg',
-      original: 'rgba(209,67,67,0.15)',
+      original: 'rgba(224,82,84,0.15)',
       swapped: alpha(dark['status-error'], 0.15),
     },
     {
       label: 'MesoStatusCard error.border',
-      original: 'rgba(209,67,67,0.25)',
+      original: 'rgba(224,82,84,0.25)',
       swapped: alpha(dark['status-error'], 0.25),
     },
     {
@@ -255,12 +235,12 @@ describe('alpha() adoption (VW-78) — swapped literal parity', () => {
     },
     {
       label: 'StrengthTrendChart ERROR_PILL_BG',
-      original: 'rgba(209,67,67,0.10)',
+      original: 'rgba(224,82,84,0.10)',
       swapped: alpha(dark['status-error'], 0.1),
     },
     {
       label: 'StrengthTrendChart ERROR_PILL_BORDER',
-      original: 'rgba(209,67,67,0.20)',
+      original: 'rgba(224,82,84,0.20)',
       swapped: alpha(dark['status-error'], 0.2),
     },
     {
@@ -268,11 +248,11 @@ describe('alpha() adoption (VW-78) — swapped literal parity', () => {
       original: 'rgba(255,255,255,0.10)',
       swapped: alpha(primitiveColors.white, 0.1),
     },
-    // ToolbarButton.tsx
+    // ToolbarButton.tsx; the face now reads the dark control-face-disabled token (TD-264)
     {
       label: 'ToolbarButton disabledBg',
       original: 'rgba(255, 255, 255, 0.12)',
-      swapped: alpha(primitiveColors.white, 0.12),
+      swapped: getSemanticColors('dark')['control-face-disabled'],
     },
   ]
 
@@ -283,8 +263,9 @@ describe('alpha() adoption (VW-78) — swapped literal parity', () => {
     }
   )
 
-  it('covers all 43 static swaps (the 44th, MesoCard, is dynamic and tested below)', () => {
-    expect(staticCases).toHaveLength(43)
+  // Gauge's track swap left the list when the track moved onto the border-prominent token (TD-473).
+  it('covers all 39 static swaps (the 40th, MesoCard, is dynamic and tested below)', () => {
+    expect(staticCases).toHaveLength(39)
   })
 
   describe('MesoCard heatmapColor (dynamic opacity)', () => {
@@ -315,15 +296,6 @@ function readSource(relativeToSrc: string): string {
 
 describe('touched source files no longer contain the swapped raw literals', () => {
   const fileCases: Array<{ file: string; removedLiterals: string[] }> = [
-    { file: 'components/custom/Gauge/Gauge.tsx', removedLiterals: ['rgba(255,255,255,0.08)'] },
-    {
-      file: 'components/custom/Scatter/Scatter.tsx',
-      removedLiterals: [
-        'rgba(255,255,255,0.07)',
-        'rgba(255,255,255,0.18)',
-        'rgba(255,255,255,0.28)',
-      ],
-    },
     {
       file: 'components/custom/Workout/BaseBadge.tsx',
       removedLiterals: ['rgba(255, 121, 0, 0.12)', 'rgba(255, 121, 0, 0.3)'],
@@ -339,10 +311,6 @@ describe('touched source files no longer contain the swapped raw literals', () =
     {
       file: 'components/custom/Workout/CapacityBandChart.tsx',
       removedLiterals: ['rgba(46,213,115,0.1)', 'rgba(46,213,115,0.45)', 'rgba(46,213,115,0.05)'],
-    },
-    {
-      file: 'components/custom/Workout/DeviationBar.tsx',
-      removedLiterals: ['rgba(46,213,115,0.25)', 'rgba(249,180,21,0.25)'],
     },
     {
       file: 'components/custom/Workout/ExerciseDetailPage.tsx',
@@ -391,10 +359,6 @@ describe('touched source files no longer contain the swapped raw literals', () =
         'rgba(209,67,67,0.20)',
         'rgba(255,255,255,0.10)',
       ],
-    },
-    {
-      file: 'components/ui/toolbar-button/ToolbarButton.tsx',
-      removedLiterals: ['rgba(255, 255, 255, 0.12)'],
     },
   ]
 

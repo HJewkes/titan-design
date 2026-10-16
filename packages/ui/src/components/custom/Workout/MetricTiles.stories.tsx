@@ -8,7 +8,7 @@ const AMBER = getSemanticColors('dark')['status-warning']
 const meta: Meta<typeof MetricTiles> = {
   title: 'Custom/Workout/MetricTiles',
   component: MetricTiles,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {

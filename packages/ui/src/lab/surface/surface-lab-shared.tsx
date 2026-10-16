@@ -201,10 +201,10 @@ export function SurfaceScene({
   const sep = sepStyle(separation)
   return (
     <View style={{ width: 420, gap: 4 }}>
-      {showName && (
+      {!!showName && (
         <Text style={{ color: TEXT.primary, fontSize: 12, fontWeight: '600' }}>{ramp.name}</Text>
       )}
-      {showName && <Text style={{ color: TEXT.tertiary, fontSize: 10 }}>{ramp.note}</Text>}
+      {!!showName && <Text style={{ color: TEXT.tertiary, fontSize: 10 }}>{ramp.note}</Text>}
       {/* shell = darkest plane */}
       <View
         style={{
@@ -468,7 +468,7 @@ export function RampBar({
   return (
     <View style={{ gap: 6 }}>
       <Text style={{ color: TEXT.primary, fontSize: 12, fontWeight: '600' }}>{name}</Text>
-      {note && <Text style={{ color: TEXT.tertiary, fontSize: 10 }}>{note}</Text>}
+      {!!note && <Text style={{ color: TEXT.tertiary, fontSize: 10 }}>{note}</Text>}
       <View style={{ flexDirection: 'row', borderRadius: 8, overflow: 'hidden' }}>
         {planes.map((p, i) => {
           const L = lstar(p)
@@ -883,7 +883,7 @@ export function NavCol({ full }: { full?: boolean }) {
         gap: 16,
       }}
     >
-      {full && (
+      {!!full && (
         <View
           style={{
             width: 22,

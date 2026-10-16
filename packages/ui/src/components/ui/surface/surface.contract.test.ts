@@ -7,7 +7,8 @@ import { getSemanticColors } from '../../../theme/tokens/semantic'
  * token VALUES, independent of any component, the same way the categorical
  * palette locks its eligibility mask with a value-level test.
  *
- * Scope: DARK mode only. The north-star diagnosis
+ * Scope: DARK mode only, except R3, which also runs on the light planes (TD-489).
+ * The north-star diagnosis
  * (`sources/design/surface-system-north-star.md`, in the `voltras-workspace`
  * active-work initiative rather than this repo) measured and
  * fixed the dark ramp specifically; light mode has its own latent collisions
@@ -199,16 +200,34 @@ describe('surface ramp contract (dark) — token-value guardrails', () => {
       strong: { token: 'hairline-strong', floor: 18 },
     } as const
 
-    for (const [name, { token, floor }] of Object.entries(HAIRLINES)) {
-      it(`${name} (${token}) clears ΔL* >= ${floor} on every ramp plane`, () => {
-        const hairlineColor = dark[token as keyof typeof dark]
-        for (const plane of PLANE_ORDER) {
-          const planeHex = RAMP_HEX[plane]
-          const composited = compositeOver(planeHex, hairlineColor)
-          const dL = lstar(composited) - lstar(planeHex)
-          expect(dL, `${name} on ${plane}`).toBeGreaterThanOrEqual(floor)
-        }
-      })
+    // Light (TD-489) holds the same three floors with black alphas of .10/.15/.22.
+    // `background-frame` is left out: its light value is a placeholder mid-grey, and
+    // no light surface sits on it.
+    const light = getSemanticColors('light')
+    const HAIRLINE_MODES = {
+      dark: { colors: dark, planes: PLANE_ORDER.map((plane) => RAMP_HEX[plane]) },
+      light: {
+        colors: light,
+        planes: [
+          light['background-base'],
+          light['surface-base'],
+          light['surface-elevated'],
+          light['surface-raised'],
+          light['surface-overlay'],
+        ],
+      },
+    } as const
+
+    for (const [mode, { colors, planes }] of Object.entries(HAIRLINE_MODES)) {
+      for (const [name, { token, floor }] of Object.entries(HAIRLINES)) {
+        it(`${name} (${token}) clears ΔL* >= ${floor} on every ${mode} plane`, () => {
+          for (const planeHex of planes) {
+            const composited = compositeOver(planeHex, colors[token])
+            const dL = Math.abs(lstar(composited) - lstar(planeHex))
+            expect(dL, `${mode} ${name} on ${planeHex}`).toBeGreaterThanOrEqual(floor)
+          }
+        })
+      }
     }
 
     it('is near-constant (self-normalizing) across all planes: spread stays proportional', () => {
@@ -242,8 +261,9 @@ describe('surface ramp contract (dark) — token-value guardrails', () => {
   // R4 used to check that the solid `border-subtle` hex did not match the plane
   // it sat on. Those solid borders are gone (TD-07.14) — separation is R3's
   // alpha hairlines, which cannot collide with a plane by construction. What is
-  // left to guard is the one border still solid.
-  describe('R4 — border-prominent, the last solid border', () => {
+  // left to guard is `border-prominent`, the divider meant to be seen outright.
+  // It is white alpha too since item 42, so it is measured composited.
+  describe('R4 — border-prominent, the high-visibility divider', () => {
     it('clears ΔL* >= 3 on every content plane', () => {
       const planes = [
         'surface-base',
@@ -252,7 +272,8 @@ describe('surface ramp contract (dark) — token-value guardrails', () => {
         'surface-overlay',
       ] as const
       for (const plane of planes) {
-        const dL = Math.abs(lstar(dark['border-prominent']) - lstar(dark[plane]))
+        const composited = compositeOver(dark[plane], dark['border-prominent'])
+        const dL = Math.abs(lstar(composited) - lstar(dark[plane]))
         expect(dL, `border-prominent vs ${plane}`).toBeGreaterThanOrEqual(3)
       }
     })

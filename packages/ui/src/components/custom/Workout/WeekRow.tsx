@@ -1,23 +1,82 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View, type ViewProps } from 'react-native'
-import { WorkoutPill, type WorkoutPillStatus } from './WorkoutPill'
 import { IntensityBar } from './IntensityBar'
+import { CheckMark } from '../../icons'
+import { Pill, type PillTone, type PillVariant } from '../../ui/pill'
 import { Typography } from '../../ui/typography'
 import { resolveColor } from '../../../theme/resolve-color'
-import { WORKOUT_PILL_DELOAD } from '../../../theme/extracted-colors-dataviz'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { alpha } from '../../../utils/colors'
 import { cn } from '../../../utils/cn'
-
-// Deload magenta has no semantic token — it is a ramp pin shared with WorkoutPill
-// (`extracted-colors-dataviz`). The row wash must track the pill exactly, so it
-// is derived from the same pin rather than mixed independently. FINDING for E3:
-// the deload role needs a `-subtle` token like every other status.
-const DELOAD_ROW_WASH = alpha(WORKOUT_PILL_DELOAD, 0.06)
+import { useSurfaceMode } from '../../ui/surface'
 
 export interface WeekRowWorkout {
   name: string
-  status: WorkoutPillStatus
+  status: 'completed' | 'current' | 'upcoming' | 'deload' | 'next' | 'missed'
   onPress?: () => void
+}
+
+type WeekRowWorkoutStatus = WeekRowWorkout['status']
+
+/** Deload has no Pill tone; its pill is painted from `status-deload` below. */
+const pillPaint: Record<
+  Exclude<WeekRowWorkoutStatus, 'deload'>,
+  { tone: PillTone; variant: PillVariant }
+> = {
+  completed: { tone: 'success', variant: 'subtle' },
+  current: { tone: 'brand', variant: 'subtle' },
+  next: { tone: 'brand', variant: 'outline' },
+  upcoming: { tone: 'neutral', variant: 'outline' },
+  missed: { tone: 'error', variant: 'subtle' },
+}
+
+/** Completed draws `CheckMark` (TD-840) and missed a dash, both in the pill's text colour. */
+function StatusGlyph({ status }: { status: WeekRowWorkoutStatus }) {
+  if (status === 'completed') {
+    return (
+      <View className="text-inherit" accessibilityElementsHidden testID="workout-pill-check">
+        <CheckMark size={12} strokeWidth={3} />
+      </View>
+    )
+  }
+  if (status !== 'missed') return null
+  return (
+    <Typography
+      variant="caption"
+      color="inherit"
+      className="font-semibold leading-[normal] text-inherit"
+      accessibilityElementsHidden
+      testID="workout-pill-dash"
+    >
+      {'\u2014'}
+    </Typography>
+  )
+}
+
+/** One workout as a Pill. The label is 12px Nunito, the step `caption` rounds 11px up to. */
+function WorkoutStatusPill({ name, status, onPress }: WeekRowWorkout) {
+  const deload = getSemanticColors(useSurfaceMode())['status-deload']
+  const isDeload = status === 'deload'
+  const paint = isDeload
+    ? { tone: 'neutral' as const, variant: 'subtle' as const }
+    : pillPaint[status]
+  return (
+    <Pill
+      tone={paint.tone}
+      variant={paint.variant}
+      size="md"
+      rounded={false}
+      leading={<StatusGlyph status={status} />}
+      onPress={onPress}
+      className={isDeload ? 'text-status-deload' : undefined}
+      style={isDeload ? { backgroundColor: alpha(deload, 0.12) } : undefined}
+      textClassName="font-body leading-[normal]"
+      accessibilityLabel={`${name} workout, ${status}`}
+      testID="workout-pill"
+    >
+      {name}
+    </Pill>
+  )
 }
 
 export interface WeekRowProps extends ViewProps {
@@ -67,10 +126,11 @@ export function WeekRow({
   ...props
 }: WeekRowProps) {
   const brandPrimary = resolveColor('brand-primary')
+  const deload = getSemanticColors(useSurfaceMode())['status-deload']
   const rowStyle: Record<string, unknown> = {}
 
   if (isDeload) {
-    rowStyle.backgroundColor = DELOAD_ROW_WASH
+    rowStyle.backgroundColor = alpha(deload, 0.06)
   }
 
   // Current wins over deload: the active week keeps the brand rail and wash.
@@ -93,7 +153,7 @@ export function WeekRow({
         style={{ width: 32 }}
         testID="week-row-number"
       >
-        {isCurrent && (
+        {!!isCurrent && (
           <View
             style={{
               width: 6,
@@ -119,7 +179,7 @@ export function WeekRow({
 
       <View className="flex-1 flex-row items-center flex-wrap gap-1.5" testID="week-row-pills">
         {workouts.map((workout, i) => (
-          <WorkoutPill
+          <WorkoutStatusPill
             key={i}
             name={workout.name}
             status={isDeload ? 'deload' : workout.status}

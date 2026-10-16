@@ -98,6 +98,14 @@ export interface GoalTrajectoryGeometryInput {
   nextTarget?: GoalNextTarget
   /** Gutters around the plot. Defaults to {@link DEFAULT_PLOT_INSETS}, the axis-bearing chart's. */
   insets?: PlotInsets
+  /** 1-based week the athlete is in; marked on the lead when it has no reading yet. */
+  currentWeek?: number
+}
+
+/** The current week's hollow point on the dashed lead, in px and in the goal's unit. */
+export interface CurrentWeekPoint extends GeometryPoint {
+  weekIndex: number
+  value: number
 }
 
 /** The plot's gutters for a chart with or without its y-axis value labels. */
@@ -163,6 +171,8 @@ export interface GoalTrajectoryGeometry {
   hasActuals: boolean
   toX: (weekIndex: number) => number
   toY: (value: number) => number
+  /** Width in px of one week's column on the x axis. */
+  weekSpan: number
   /** Value range the plot spans, bottom edge to top edge. */
   domain: { min: number; max: number }
   /** Closed ring: top edge left→right, then bottom edge right→left. */
@@ -186,6 +196,8 @@ export interface GoalTrajectoryGeometry {
   actuals: ActualCoord[]
   /** The next planned waypoint in px, or null when the caller passed none. */
   nextTarget: NextTargetCoord | null
+  /** The current week's point on the lead when it has no reading, else null ({@link currentWeekPoint}). */
+  currentWeekPoint: CurrentWeekPoint | null
   prStars: ActualCoord[]
   deloadRects: DeloadRect[]
   boundaries: BoundaryRule[]
@@ -455,8 +467,10 @@ function valueScale(input: ScaleInput) {
   return scaleLinear().domain([floor, ceiling]).range([input.plot.bottom, input.plot.top])
 }
 
+// A non-finite reading would reach the line path, the dots and the summary as "NaN".
 function placeActuals(input: GoalTrajectoryGeometryInput) {
   return input.actuals
+    .filter((a) => Number.isFinite(a.value))
     .map((actual, index) => ({ actual, index, week: resolveActualWeek(actual, input.weeks) }))
     .filter(
       (a): a is { actual: GoalActualPoint; index: number; week: number } => a.week !== undefined
@@ -717,7 +731,8 @@ export function trajectoryWeekScale(input: TrajectoryWeekScaleInput): Trajectory
     ...(input.nextTarget ? [input.nextTarget.weekIndex] : []),
   ])
   const steps = Math.max(1, wks.max - wks.min)
-  const inset = weekInset(plot.right - plot.left, steps + 1)
+  // The WEEK_INSET floor must not exceed half the plot, or the range inverts and spans go negative.
+  const inset = Math.min(weekInset(plot.right - plot.left, steps + 1), (plot.right - plot.left) / 2)
   const xScale = scaleLinear()
     .domain([wks.min, wks.max])
     .range([plot.left + inset, plot.right - inset])
@@ -750,6 +765,29 @@ function nextTargetCoord(
     value: next.value,
     leadPath: last ? `M${String(last.x)},${String(last.y)}L${String(x)},${String(y)}` : '',
   }
+}
+
+/**
+ * Where "now" sits when the current week has no reading (VW-422): on the dashed
+ * lead, at the value the lead passes through that week. Null when the week has a
+ * reading (its filled point is "now"), when there is no lead to sit on, and from
+ * the next target's week on: that week already has the target's hollow dot, and
+ * a later week would extrapolate past the end of the lead.
+ */
+export function currentWeekPoint(
+  currentWeek: number | undefined,
+  actuals: readonly ActualCoord[],
+  next: GoalNextTarget | undefined,
+  toX: (weekIndex: number) => number,
+  toY: (value: number) => number
+): CurrentWeekPoint | null {
+  const last = actuals[actuals.length - 1]
+  if (currentWeek === undefined || !last || !next) return null
+  if (actuals.some((a) => Math.round(a.weekIndex) === currentWeek)) return null
+  if (currentWeek <= last.weekIndex || currentWeek >= next.weekIndex) return null
+  const t = (currentWeek - last.weekIndex) / (next.weekIndex - last.weekIndex)
+  const value = last.value + t * (next.value - last.value)
+  return { x: toX(currentWeek), y: toY(value), weekIndex: currentWeek, value }
 }
 
 /**
@@ -801,6 +839,7 @@ export function deriveTrajectoryGeometry(
     hasActuals: actuals.length > 0,
     toX,
     toY,
+    weekSpan,
     domain: { min: domainMin, max: domainMax },
     bandPolygon: hasBand ? ringOf(slices) : [],
     bandPath: hasBand ? bandPathAt(slices, 1, input.bandCurve) : '',
@@ -818,6 +857,7 @@ export function deriveTrajectoryGeometry(
     stretchY: toY(stretch),
     actuals,
     nextTarget: next ? nextTargetCoord(next, actuals, toX, toY) : null,
+    currentWeekPoint: currentWeekPoint(input.currentWeek, actuals, next, toX, toY),
     prStars: actuals.filter((a) => a.isPR),
     deloadRects: deloadRects(weeks, plot, weekSpan, toX),
     boundaries: mesoBoundaries.map((weekIndex) => ({ weekIndex, x: toX(weekIndex) })),

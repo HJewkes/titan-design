@@ -11,11 +11,11 @@ navigates both ways. Counts come from
 
 ## Dependency map
 
-| Member                          | Kind     | Composes ↓         | Used-by ↑                                                  |
-| ------------------------------- | -------- | ------------------ | ---------------------------------------------------------- |
-| `MarkdownProse`                 | molecule | `Typography`, `cn` | InitiativeBrief, OpenLoops, SessionDetail (all ActiveWork) |
-| `parseProseBlocks`              | pure fn  | —                  | `MarkdownProse`, and its own tests                         |
-| `ProseLinker` / `ProseLinkTone` | types    | —                  | every consumer that supplies reference patterns            |
+| Member                          | Kind     | Composes ↓                  | Used-by ↑                                                   |
+| ------------------------------- | -------- | --------------------------- | ----------------------------------------------------------- |
+| `MarkdownProse`                 | molecule | `Typography`, `Table`, `cn` | InitiativeBrief, OpenLoops, SessionDetail (all ActiveWork)  |
+| `parseProseBlocks`              | pure fn  | —                           | `MarkdownProse`, `custom/Chat/chatThread.ts`, its own tests |
+| `ProseLinker` / `ProseLinkTone` | types    | —                           | every consumer that supplies reference patterns             |
 
 Four in-repo consumers, zero external — `keep-internal` in the arch graph. The
 parser is exported separately on purpose: block-splitting is the part worth
@@ -23,8 +23,8 @@ testing directly, and it is testable without rendering.
 
 ## The two halves
 
-**`parseProseBlocks(body)`** splits markdown into the five block kinds this
-renderer understands (`h1` `h2` `h3` `li` `p`). Consecutive text lines join into
+**`parseProseBlocks(body)`** splits markdown into the block kinds this
+renderer understands (`h1` `h2` `h3` `li` `p`, plus `code` and `table`). A fenced block keeps its lines verbatim and, left unterminated, takes the rest of the body; a table is a pipe header line over a delimiter row (`:---`, `:---:`, `---:` set alignment) and its rows are padded or truncated to the header count. Consecutive text lines join into
 one paragraph and a blank line ends it; an indented line straight after a bullet
 continues that bullet; deeper headings flatten to `h3`, because session prose
 never needs more than three levels. It is pure, so it is unit-tested on its own.
@@ -44,15 +44,21 @@ role; without one it is styled text, not an interactive element.
 | Headings and body copy | `Typography`       | **Closed.** `h1`/`h2` → `h5`/`h6`, `h3` → `subtitle2`, paragraphs and bullets → `body2`.                                                                                                  |
 | Bold and code spans    | `Typography`       | **Open, deliberately.** Inline spans are raw `<Text>` with `font-semibold` / `font-mono`, because they nest inside a parent `<Text>` run where a `Typography` block would break the flow. |
 | Bullet glyph           | a shared list mark | **Open.** The `•` is drawn inline. One consumer family, so no primitive is justified yet — revisit at the second.                                                                         |
-| Colour                 | semantic tokens    | **Closed.** `text-text-primary` / `text-brand-primary` throughout; the family is in the token-pure eslint error block.                                                                    |
+| Colour                 | semantic tokens    | **Closed.** `text-text-primary` / `text-text-brand` throughout; the family is in the token-pure eslint error block.                                                                       |
 | Class merging          | `cn()`             | **Closed.**                                                                                                                                                                               |
+
+## States
+
+Code and table blocks are pure renderings of the body, so they hold no loading or error state of their own: an
+empty body renders nothing, a malformed fence or table degrades to code or paragraph text, and there is no
+disabled state because nothing in them is interactive. Table cells keep inline bold, code and linkers.
 
 ## Watch list
 
 - **The tokenizer contract is unenforced.** A `linkers` entry with a `g` flag or a
   capture group breaks reference splitting at runtime with no type error. If a
   third consumer arrives, validate in `MarkdownProse` rather than in each caller.
-- **Markdown coverage is intentionally partial** — no tables, links, images,
+- **Markdown coverage is intentionally partial** — no links, images,
   blockquotes or nested lists. Widen it only against a real document that needs
   it; the parser's value is that it is small enough to read.
 - **Zero external consumers.** Prop changes are cheap while that holds.

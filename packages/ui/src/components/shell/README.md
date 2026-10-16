@@ -30,6 +30,12 @@ No second mechanism was introduced.
 | `AppShell.nav`            | `AppShell` | `<SideNav items=…>`     | swap the whole rail                     |
 | `AppShell.children`       | `AppShell` | a placeholder           | mount its page                          |
 
+`AppShell.contentPadding` (`'default' | 'none'`) pads the content region `p-gutter-sm` below `md` and
+`p-gutter-md` from `md`. A `Page` child owns its gutter already, so pass `none` with a `Page` or any
+full-bleed view; `WorkoutShell` forwards the prop.
+
+`AppShell.children` is normally a `Page` (`ui/page`), which owns the gutter, the width cap and the scroll.
+
 `TopBar.trailing` takes an array as well as a node. **The bar interleaves its own vertical dividers
 between the items**, so an app supplies the controls and the shell keeps the divider rhythm from the
 S1 lock — the app never hand-places a `Divider`, and can't drift from it.
@@ -119,7 +125,7 @@ Building S1 grew the design system — these are now available to every componen
 - **`theme/gradients.ts`** — `linearGradient(from, to, angle)` + named `surfaceGradient.*`, built on
   `resolveColor` (themeable web CSS vars + native hex fallback).
 - **`Indicator`** (titan atom) — `pulse: 'ping'` (expanding ring) + `success` / `error-vivid` colors.
-- **`DateTime`** (titan) — `hour12`, `seconds`, self-ticking `live`, and Typography routing via `variant`.
+- **`DateTime`** (titan) — `hour12`, `seconds`, self-ticking `isLive`, and Typography routing via `variant`.
 - **`Typography`** — `mono` (technical readouts) + `monoLabel` (all-caps mono) variants.
 - **Tokens** — a full **vivid** green/red palette + **`border-prominent`** divider token.
 
@@ -145,21 +151,23 @@ Every leaf now composes a primitive rather than hand-rolling it:
   `tests/visual/reference/stories.spec.ts-snapshots/`; any drift, or an in-scope story with no baseline,
   fails CI. **Baselines must be generated in the pinned container**
   (`mcr.microsoft.com/playwright:v1.58.2-noble`): download the `storybook-visual-baselines` artifact the
-  refresh step uploads on every run and commit the changed PNGs. Widen `SCOPE` to cover more of the library.
+  refresh step uploads on a failed run and commit the changed PNGs. Widen `SCOPE` to cover more of the library.
 - **Lint guardrails** — components may not inline `linear-gradient` (use `surfaceGradient`); shell + icons may
   not use raw hex (use tokens).
 
 **AW-132 shared substrate:** four brand marks added to `components/icons` (`HeadphonesIcon`,
 `KanbanIcon`, `BotIcon`, `BrainIcon`), so `brands.tsx` can carry a preset for every app expected to
-mount this shell. Brand accents come from `data-*` rather than `status-*`: `data-*` is the library's
-set of distinct, CVD-checked hues with no semantic load, which is what a per-app identity accent
-needs. Voltras keeps the real `brand-primary` token.
+mount this shell. Brand accents come from `dataviz-categorical-*` rather than `status-*`: distinct,
+CVD-checked hues with no semantic load and a value per mode, which is what a per-app identity accent
+needs (TD-485 moved them off the superseded `data-*`). Voltras keeps the real `brand-primary` token.
 
 **The nav accent is brand-level, not shell-level** (operator, Gate 2 2026-09-11). `SideNav`'s active
-item and its edge bar take the mounting app's accent, so a Brain shell reads yellow throughout
-rather than showing a Voltras-orange active item under a yellow lockup. `AppShell` threads it down
+item's glyph and its edge bar take the mounting app's accent, so a Brain shell reads amber throughout
+rather than showing a Voltras-orange active item under an amber lockup. The accent paints only those
+non-text marks (3:1, WCAG 1.4.11); the active label is `text-primary`, because few accent hues clear
+4.5:1 as text in both modes. `brands.test.tsx` measures every accent against the rail and top-bar planes. `AppShell` threads it down
 from `brand`; a bare `SideNav` takes `accentClassName` / `accentBarClassName`. Each preset declares
-both as literals (`text-data-3` + `bg-data-3`) because Tailwind only emits classes it can see in the
+both as literals (`text-dataviz-categorical-6` + `bg-dataviz-categorical-6`) because Tailwind only emits classes it can see in the
 source — a name built at runtime is never generated — and a test asserts the pair always matches.
 Workout is unaffected: its accent _is_ `brand-primary`.
 
@@ -170,15 +178,11 @@ Workout is unaffected: its accent _is_ `brand-primary`.
 
 - **Dot primitive overlap** — titan has both `StatusDot` (Workout, semantic) and `Indicator` (ui, generic).
   The shell standardizes on `Indicator`; a future pass could consolidate.
-- **Other hand-rolled gradients** — `MesoCard`, `DeviationBar`, `MesoStatusCard` still
-  inline `linear-gradient` strings; they should adopt `surfaceGradient` / `linearGradient`.
-  `BodyMapDetailPanel` is done (VW-335): its volume track is `surfaceGradient.volumeTrack`, the
-  three-stop form added alongside `chrome`.
+- **Component gradients** — every component gradient now composes `surfaceGradient` (TD-200).
+  `BodyMapDetailPanel`'s volume track (VW-335) is `surfaceGradient.volumeTrack`, the three-stop form
+  added alongside `chrome`.
 - **`status-live` token family (new, decoupled from success)** — introduced `status-live` (green-300, the
   vivid LIVE-pill green) + `status-live-muted` (green-500 `#22A444`, the quiet nav cue) so "live" has its own
   role: changing `status-success` no longer affects live, and vice-versa. Wired the full chain (semantic →
   config → global.css → tailwind); `Indicator` gained a `live` color; the S1 LIVE pill was repointed
   `success`→`live` (value-preserving). This realized a slice of TD-05.09 Fork 1b (wiring ramp steps as tokens).
-- **`aria-selected` on `NavItem`** — RNW does not emit `aria-selected` from `accessibilityState={{selected}}`
-  in the jsdom test env, so active-state is asserted via the accent-bar testID. Confirm the on-device/RNW
-  build exposes selection to AT (may need an explicit `aria-selected` for full tab semantics).

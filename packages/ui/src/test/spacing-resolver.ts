@@ -25,7 +25,12 @@ import { createRequire } from 'node:module'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { capturedClassNames } from './classname-capture'
+import {
+  animatedNodes,
+  animatedTestIds,
+  capturedByNode,
+  capturedClassNames,
+} from './classname-capture'
 
 const require = createRequire(import.meta.url)
 const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
@@ -116,15 +121,20 @@ export function constClasses(source: string, constName: string): string[] {
 /** A class naming a semantic key rather than a step of the numeric scale. */
 const SEMANTIC_CLASS = /-(inset|squish|stack|inline|control|section|gutter)-/
 
-/** Drop the non-spacing classes; throw on a semantic key that does not resolve. */
+/**
+ * Drop the non-spacing classes; throw on a semantic key that does not resolve.
+ * A negative utility (`-m-1`) resolves by magnitude, sign stripped.
+ */
 function spacingOnly(classNames: string[], where: string): string[] {
-  return classNames.filter((className) => {
-    const resolved = resolvePx(className)
-    if (resolved === undefined && SEMANTIC_CLASS.test(className)) {
-      throw new Error(`${where}: '${className}' is not a spacing key`)
-    }
-    return resolved !== undefined
-  })
+  return classNames
+    .map((className) => className.replace(/^-/, ''))
+    .filter((className) => {
+      const resolved = resolvePx(className)
+      if (resolved === undefined && SEMANTIC_CLASS.test(className)) {
+        throw new Error(`${where}: '${className}' is not a spacing key`)
+      }
+      return resolved !== undefined
+    })
 }
 
 /**
@@ -169,14 +179,25 @@ export function spacingClassesIn(source: string, functionName: string): string[]
 export function spacingClassesOf(testId: string): string[] {
   const raw = capturedClassNames.get(testId)
   if (raw === undefined) throw new Error(`no captured className for testID '${testId}'`)
-  return raw
-    .split(/\s+/)
-    .map((className) => className.replace(/^-/, ''))
-    .filter((className) => {
-      const resolved = resolvePx(className)
-      if (resolved === undefined && SEMANTIC_CLASS.test(className)) {
-        throw new Error(`'${className}' is not a spacing key`)
-      }
-      return resolved !== undefined
-    })
+  if (animatedTestIds.has(testId)) throw animatedError(`testID '${testId}'`)
+  return spacingOnly(raw.split(/\s+/), `testID '${testId}'`)
+}
+
+/**
+ * The spacing classes the host `node` actually rendered — the handle for an
+ * element found with `getByText(...).parentElement`, `getByRole` or
+ * `getByLabelText`, so rebinding a geometry test adds no `testID` to the DOM.
+ * A node that recorded no className throws "no captured className for this node".
+ */
+export function spacingClassesAt(node: Element | null): string[] {
+  const raw = node ? capturedByNode.get(node) : undefined
+  if (node === null || raw === undefined) throw new Error('no captured className for this node')
+  if (animatedNodes.has(node)) throw animatedError('this node')
+  return spacingOnly(raw.split(/\s+/), 'this node')
+}
+
+function animatedError(where: string): Error {
+  return new Error(
+    `${where} is an Animated element carrying a className; NativeWind does not apply it. Move the class to an inner View, or use style.`
+  )
 }

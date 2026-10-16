@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { Text } from 'react-native'
 import { Breadcrumbs, BreadcrumbItem } from './Breadcrumbs'
 
 const meta: Meta<typeof Breadcrumbs> = {

@@ -1,5 +1,12 @@
+import path from 'node:path'
 import { RuleTester } from 'eslint'
+import { createRequire } from 'node:module'
 import rule from '../../eslint-rules/no-upward-tier-import'
+
+// The rule loads the registry through Node's require; an ESM import here gets a second instance with its own cache.
+const { registryFor } = createRequire(import.meta.url)(
+  '../../eslint-rules/deprecated-export-registry'
+)
 
 const ruleTester = new RuleTester({
   languageOptions: { ecmaVersion: 2022, sourceType: 'module' },
@@ -9,6 +16,8 @@ const ruleTester = new RuleTester({
 const uiFile = '/repo/packages/ui/src/components/ui/select/Select.tsx'
 const customFile = '/repo/packages/ui/src/components/custom/Metric/Metric.tsx'
 const themeFile = '/repo/packages/ui/src/theme/config.ts'
+// A checkout under a directory that is itself named `src`: the root is the LAST `/src/`.
+const underSrcDirFile = '/work/src/repo/packages/ui/src/components/ui/select/Select.tsx'
 const labFile = '/repo/packages/ui/src/lab/specimens/Sample.tsx'
 
 describe('no-upward-tier-import', () => {
@@ -31,10 +40,19 @@ describe('no-upward-tier-import', () => {
     ],
     invalid: [
       // Positive control: ui reaching into custom is the exact gap VW-88 found.
+      // The message names the move target and the placement rule, never "promote the importer".
       {
         code: "import { Typography } from '../../custom/Typography'",
         filename: uiFile,
-        errors: [{ messageId: 'upward' }],
+        errors: [
+          {
+            message:
+              "'../../custom/Typography' imports from the custom tier, which sits above ui " +
+              '(tier order: theme -> icons -> ui -> custom -> shell -> pages). ' +
+              'Move `custom/Typography` down to `ui/`, the lowest tier that makes this import legal. ' +
+              'Never copy it, and never replace it with a slot.',
+          },
+        ],
       },
       // Same violation, via the `@/` alias instead of a relative path.
       {
@@ -46,7 +64,7 @@ describe('no-upward-tier-import', () => {
       {
         code: "import { Pill } from '../components/ui/pill/Pill'",
         filename: themeFile,
-        errors: [{ messageId: 'upward' }],
+        errors: [{ message: /Move `ui\/pill\/Pill` down to `theme\/`/ }],
       },
       // A re-export counts too, not just a direct import.
       {
@@ -54,6 +72,38 @@ describe('no-upward-tier-import', () => {
         filename: uiFile,
         errors: [{ messageId: 'upward' }],
       },
+      // Regression (TD-552): the first `/src/` made tierOf null here, so every import passed.
+      {
+        code: "import { Typography } from '../../custom/Typography'",
+        filename: underSrcDirFile,
+        errors: [{ messageId: 'upward' }],
+      },
     ],
+  })
+
+  describe('a deprecated shim', () => {
+    // The registry reads real tags, so this case imports a real shim from a fake file under the real src.
+    const srcRoot = path.resolve(__dirname, '..')
+    const realUiFile = path.join(srcRoot, 'components/ui/newthing/NewThing.tsx')
+
+    // The registry's cold scan of src takes 5-8 s on a CI runner; pay it here, not in the case.
+    beforeAll(() => {
+      registryFor(srcRoot)
+    }, 30_000)
+
+    ruleTester.run('no-upward-tier-import', rule as never, {
+      valid: [],
+      invalid: [
+        {
+          code: "import { Eyebrow } from '../../custom/ActiveWork/Eyebrow'",
+          filename: realUiFile,
+          errors: [
+            {
+              message: /import it from `ui\/eyebrow`, where it already moved\. Never copy it/,
+            },
+          ],
+        },
+      ],
+    })
   })
 })

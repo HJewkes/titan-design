@@ -1,13 +1,21 @@
-import React, { useState, useCallback, createContext, useContext } from 'react'
-import { View, Text, Pressable, type ViewProps, StyleSheet, Platform } from 'react-native'
+import React, { useState, useCallback, useMemo, createContext, useContext } from 'react'
+import {
+  View,
+  Text,
+  Pressable,
+  type ViewProps,
+  type ViewStyle,
+  StyleSheet,
+  Platform,
+} from 'react-native'
 import { cn } from '../../../utils/cn'
+import { useHitTarget } from '../../../hooks/useHitTarget'
+import type { HitTargetLimit, HitTargetOutset } from '../../../utils/hit-target'
 import { getHoverColors } from '../../../theme'
-import { greyRamp, primitiveColors } from '../../../theme/tokens/primitives'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
 import { resolveColor } from '../../../theme/resolve-color'
-import { getPressedRecessShadow } from '../../../theme/elevation'
-import { liftStyle } from '../../../theme/lift'
-import { alpha } from '../../../utils/colors'
-import { Surface, useSurfaceMode } from '../surface'
+import { resolveSurfaceDepth, useSurface, type ResolvedSurface } from '../surface'
+import { ToolbarButtonIcon, ToolbarButtonMenu } from './ToolbarButtonParts'
 
 export type ToolbarButtonVariant = 'default' | 'raised'
 export type ToolbarButtonSize = 'sm' | 'md' | 'lg'
@@ -21,6 +29,9 @@ const ToolbarButtonContext = createContext<ToolbarButtonContextType>({
   isOpen: false,
   setIsOpen: () => {},
 })
+
+// Set by ToolbarButtonGroup so a button's hit box stops at its neighbour's face (TD-10).
+const ToolbarButtonGroupContext = createContext<HitTargetLimit | undefined>(undefined)
 
 export interface ToolbarButtonProps extends ViewProps {
   /** Button label */
@@ -52,13 +63,7 @@ export interface ToolbarButtonProps extends ViewProps {
   className?: string
 }
 
-// Base button colours.
-const BUTTON_BG = greyRamp[800]
-
-// Calculate hover colors using color math
-const hoverColors = getHoverColors(BUTTON_BG, 'medium')
-
-// Size style maps
+// Size style maps. Every face is under the 44pt floor, so each carries a hit box (TD-10).
 const sizeStyles: Record<ToolbarButtonSize, string> = {
   sm: 'px-2 py-1 min-h-[26px]',
   md: 'px-2.5 py-1 min-h-[30px]',
@@ -75,7 +80,8 @@ const textSizeStyles: Record<ToolbarButtonSize, string> = {
  * ToolbarButton component for toolbar actions with toggle state support.
  *
  * Features:
- * - Depth from the fill plus the lift (raised) or the inset recess (active)
+ * - Faces from the elevation system, relative to the enclosing Surface: the raised
+ *   face is one plane up with the lift, the active face one plane down with the recess
  * - Active (pressed) state is the default visual appearance
  * - Set isActive={false} explicitly for the raised/inactive appearance
  * - Orange accent color on icon when isActive={true}
@@ -115,7 +121,8 @@ export function ToolbarButton({
 }: ToolbarButtonProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
-  const mode = useSurfaceMode()
+  const faces = useToolbarFaces()
+  const hitTarget = useHitTarget({ limit: useContext(ToolbarButtonGroupContext) })
 
   const handlePress = useCallback(() => {
     if (isDisabled) return
@@ -132,30 +139,7 @@ export function ToolbarButton({
   // Match original logic: active !== false means "active" (sunken) appearance
   const selected = isActive === undefined ? isOpen : isActive
   const showActive = isActive !== false
-
-  // Determine icon color based on state
-  const getIconColor = () => {
-    if (isActive === true) return resolveColor('brand-primary')
-    return showActive ? resolveColor('on-control-active') : resolveColor('on-control-idle')
-  }
-
-  /**
-   * Raised/pressed treatment on the depth model: the raised face is a plane one
-   * step above the toolbar and wears the lift, the active face is pressed into
-   * it and wears the recess. The hairline ring both used to carry is an edge,
-   * not depth, and is gone with the rest of the rings on this pass.
-   */
-  const getRaisedStyle = () => {
-    if (isDisabled) return styles.disabledBg
-    if (showActive) {
-      const fill = isHovered ? hoverColors.pressed : greyRamp[900]
-      return { backgroundColor: fill, ...getPressedRecessShadow(fill, mode) }
-    }
-    return {
-      backgroundColor: isHovered ? hoverColors.raised : BUTTON_BG,
-      ...liftStyle(1, mode),
-    }
-  }
+  const iconTint = iconColor(isActive)
 
   return (
     <ToolbarButtonContext.Provider value={{ isOpen, setIsOpen }}>
@@ -169,6 +153,8 @@ export function ToolbarButton({
           accessibilityState={{ selected, disabled: isDisabled }}
           accessibilityLabel={label}
           accessibilityHint={tooltip}
+          hitSlop={hitTarget.hitSlop}
+          onLayout={hitTarget.onLayout}
           className={cn(
             // Base styles
             'flex-row items-center justify-center rounded',
@@ -179,30 +165,10 @@ export function ToolbarButton({
             isDisabled && 'opacity-40 web:cursor-default web:pointer-events-none',
             className
           )}
-          style={[
-            variant === 'raised' && getRaisedStyle(),
-            variant === 'default' && {
-              backgroundColor: showActive ? BUTTON_BG : greyRamp[600],
-            },
-          ]}
+          style={faceStyle({ faces, variant, isDisabled, showActive, isHovered })}
         >
-          {icon && (
-            <View className="w-5 h-5 items-center justify-center">
-              {React.isValidElement(icon)
-                ? React.cloneElement(icon as React.ReactElement<any>, {
-                    size: 20,
-                    width: 20,
-                    height: 20,
-                    color: getIconColor(),
-                    style: {
-                      color: getIconColor(),
-                      width: 20,
-                      height: 20,
-                    },
-                  })
-                : icon}
-            </View>
-          )}
+          {hitTarget.layerProps && <View {...hitTarget.layerProps} />}
+          {icon && <ToolbarButtonIcon icon={icon} color={iconTint} />}
           {showLabel && (
             <Text
               className={cn(
@@ -220,37 +186,78 @@ export function ToolbarButton({
 
         {/* Popover Menu */}
         {menuContent && isOpen && (
-          <>
-            {/* Backdrop */}
-            <Pressable onPress={handleClose} style={StyleSheet.absoluteFill} className="z-40" />
-            {/* Menu Content — floating: overlay plane + lift, no ring. */}
-            <Surface
-              elevation={4}
-              rounded={false}
-              className={cn(
-                'absolute z-50 top-full left-0 mt-1',
-                'rounded-lg min-w-[150px] overflow-hidden'
-              )}
-            >
-              {menuContent}
-            </Surface>
-          </>
+          <ToolbarButtonMenu onClose={handleClose}>{menuContent}</ToolbarButtonMenu>
         )}
       </View>
     </ToolbarButtonContext.Provider>
   )
 }
 
-// Styles that can't be easily expressed in Tailwind
-const styles = StyleSheet.create({
-  // Disabled - flat gray background, no shadows
-  disabledBg: {
-    backgroundColor: alpha(primitiveColors.white, 0.12),
+// Determine icon color based on state
+function iconColor(isActive: boolean | undefined): string {
+  if (isActive === true) return resolveColor('brand-primary')
+  return isActive !== false ? resolveColor('on-control-active') : resolveColor('on-control-idle')
+}
+
+interface ToolbarFaces {
+  mode: ThemeMode
+  /** One plane up from the enclosing Surface, wearing the lift. */
+  raised: ResolvedSurface
+  /** One plane down from the enclosing Surface, wearing the recess. */
+  pressed: ResolvedSurface
+}
+
+/**
+ * The two faces on the depth model, read off the enclosing Surface the same way
+ * `<Surface raise>` and `<Surface pressed>` are: the raised face is the plane one
+ * step above the toolbar with the lift, the active face is the plane one step
+ * below it with the recess. No bespoke face colour; both are ramp planes.
+ */
+function useToolbarFaces(): ToolbarFaces {
+  const inherited = useSurface()
+  return useMemo(
+    () => ({
+      mode: inherited.mode,
+      raised: resolveSurfaceDepth(inherited, { raise: 1 }),
+      pressed: resolveSurfaceDepth(inherited, { pressed: true }),
+    }),
+    [inherited]
+  )
+}
+
+// The raised variant wears the plane's treatment; the default variant is the same
+// planes flat. Hover nudges the fill the way the plane moves: up lightens, down darkens.
+function faceStyle(p: {
+  faces: ToolbarFaces
+  variant: ToolbarButtonVariant
+  isDisabled: boolean
+  showActive: boolean
+  isHovered: boolean
+}): ViewStyle {
+  if (p.isDisabled) return disabledStyles[p.faces.mode]
+  const face = p.showActive ? p.faces.pressed : p.faces.raised
+  const hover = getHoverColors(face.backgroundColor, 'medium')
+  const hoverFill = p.showActive ? hover.pressed : hover.raised
+  return {
+    backgroundColor: p.isHovered ? hoverFill : face.backgroundColor,
+    ...(p.variant === 'raised' ? face.depthStyle : {}),
+  }
+}
+
+// Disabled - flat face per theme, no lift or recess
+function disabledFace(mode: ThemeMode): ViewStyle {
+  return {
+    backgroundColor: getSemanticColors(mode)['control-face-disabled'],
     ...Platform.select({
-      web: { boxShadow: 'none' } as any,
+      web: { boxShadow: 'none' },
       default: { shadowOpacity: 0, elevation: 0 },
     }),
-  },
+  }
+}
+
+const disabledStyles = StyleSheet.create({
+  dark: disabledFace('dark'),
+  light: disabledFace('light'),
 })
 
 export interface ToolbarButtonGroupProps extends ViewProps {
@@ -269,6 +276,13 @@ const gapStyles: Record<string, string> = {
   md: 'gap-2',
 }
 
+// The px each gap class resolves to: how far a hit box may grow toward a neighbour.
+const gapOutsets: Record<string, HitTargetOutset> = {
+  none: 0,
+  sm: 4,
+  md: 8,
+}
+
 /**
  * Container for grouping toolbar buttons together.
  */
@@ -279,19 +293,24 @@ export function ToolbarButtonGroup({
   children,
   ...props
 }: ToolbarButtonGroupProps) {
+  const outset = gapOutsets[gap]
+  const hitTargetLimit = useMemo(() => ({ axis: orientation, outset }), [orientation, outset])
+
   return (
-    <View
-      className={cn(
-        orientation === 'horizontal' ? 'flex-row' : 'flex-col',
-        gapStyles[gap],
-        'items-center',
-        className
-      )}
-      accessibilityRole="toolbar"
-      {...props}
-    >
-      {children}
-    </View>
+    <ToolbarButtonGroupContext.Provider value={hitTargetLimit}>
+      <View
+        className={cn(
+          orientation === 'horizontal' ? 'flex-row' : 'flex-col',
+          gapStyles[gap],
+          'items-center',
+          className
+        )}
+        accessibilityRole="toolbar"
+        {...props}
+      >
+        {children}
+      </View>
+    </ToolbarButtonGroupContext.Provider>
   )
 }
 

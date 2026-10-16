@@ -1,9 +1,47 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import type { ViewProps } from 'react-native'
 import { Checkbox, CheckboxGroup } from './Checkbox'
 
+const viewClassNames: string[][] = []
+
+vi.mock('react-native', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('react-native')>()
+  const React = await import('react')
+  const View = React.forwardRef<unknown, ViewProps & { className?: string }>((props, ref) => {
+    viewClassNames.push((props.className ?? '').split(/\s+/))
+    return React.createElement(actual.View, { ...props, ref } as ViewProps)
+  })
+  return { ...actual, View }
+})
+
 describe('Checkbox', () => {
+  it('flips its own state on press when uncontrolled and calls onCheckedChange', () => {
+    const onCheckedChange = vi.fn()
+    render(<Checkbox label="Toggle" defaultIsChecked={false} onCheckedChange={onCheckedChange} />)
+    const control = screen.getByRole('checkbox')
+    expect(control).toHaveAttribute('aria-checked', 'false')
+    fireEvent.click(control)
+    expect(control).toHaveAttribute('aria-checked', 'true')
+    expect(onCheckedChange).toHaveBeenLastCalledWith(true)
+    fireEvent.click(control)
+    expect(control).toHaveAttribute('aria-checked', 'false')
+    expect(onCheckedChange).toHaveBeenLastCalledWith(false)
+  })
+
+  it('seeds uncontrolled state from defaultIsChecked', () => {
+    render(<Checkbox label="Toggle" defaultIsChecked />)
+    expect(screen.getByRole('checkbox')).toHaveAttribute('aria-checked', 'true')
+  })
+
+  it('stays controlled when isChecked is given', () => {
+    render(<Checkbox label="Toggle" isChecked={false} defaultIsChecked />)
+    const control = screen.getByRole('checkbox')
+    fireEvent.click(control)
+    expect(control).toHaveAttribute('aria-checked', 'false')
+  })
+
   it('renders correctly', () => {
     render(<Checkbox label="Accept terms" />)
     expect(screen.getByRole('checkbox')).toBeInTheDocument()
@@ -40,16 +78,19 @@ describe('Checkbox', () => {
     expect(onCheckedChange).not.toHaveBeenCalled()
   })
 
-  it('shows checkmark when checked', () => {
+  it('emits aria-checked true when checked', () => {
     render(<Checkbox isChecked label="Checked" />)
-    expect(screen.getByText('\u2713')).toBeInTheDocument()
+    expect(screen.getByRole('checkbox')).toHaveAttribute('aria-checked', 'true')
   })
 
-  it('renders indeterminate state', () => {
+  it('emits aria-checked false when unchecked', () => {
+    render(<Checkbox label="Unchecked" />)
+    expect(screen.getByRole('checkbox')).toHaveAttribute('aria-checked', 'false')
+  })
+
+  it('emits aria-checked mixed when indeterminate', () => {
     render(<Checkbox isIndeterminate label="Mixed" />)
-    const checkbox = screen.getByRole('checkbox')
-    // react-native-web does not map accessibilityState.checked to aria-checked
-    expect(checkbox).toBeInTheDocument()
+    expect(screen.getByRole('checkbox')).toHaveAttribute('aria-checked', 'mixed')
   })
 
   it('communicates disabled state', () => {
@@ -122,18 +163,12 @@ describe('Checkbox', () => {
   describe('accessibility', () => {
     it('has no accessibility violations', async () => {
       const { container } = render(<Checkbox label="Accept terms" />)
-      const results = await axe(container, {
-        rules: { 'aria-required-attr': { enabled: false } },
-      })
-      expect(results).toHaveNoViolations()
+      expect(await axe(container)).toHaveNoViolations()
     })
 
     it('has no accessibility violations when checked', async () => {
       const { container } = render(<Checkbox label="Checked" isChecked />)
-      const results = await axe(container, {
-        rules: { 'aria-required-attr': { enabled: false } },
-      })
-      expect(results).toHaveNoViolations()
+      expect(await axe(container)).toHaveNoViolations()
     })
 
     it('has no accessibility violations for CheckboxGroup', async () => {
@@ -143,10 +178,44 @@ describe('Checkbox', () => {
           <Checkbox label="B" />
         </CheckboxGroup>
       )
-      const results = await axe(container, {
-        rules: { 'aria-required-attr': { enabled: false } },
-      })
-      expect(results).toHaveNoViolations()
+      expect(await axe(container)).toHaveNoViolations()
     })
+  })
+
+  describe('unchecked boundary', () => {
+    it('draws the unchecked box with border-input, not a hairline', () => {
+      viewClassNames.length = 0
+      render(<Checkbox label="Accept terms" />)
+      const box = viewClassNames.find((classes) => classes.includes('border-2'))
+      expect(box).toContain('border-border-input')
+      expect(box?.filter((c) => c.startsWith('border-hairline'))).toEqual([])
+    })
+  })
+
+  it('renders no empty text node for an empty label', () => {
+    render(<Checkbox label="" helperText="Help" />)
+    const helper = screen.getByText('Help')
+    expect(helper.parentElement?.childNodes).toHaveLength(1)
+  })
+})
+
+// TD-483: the tick sits on the on-brand chip, so it takes the brand text role. TD-840: it is
+// an SVG CheckMark that inherits that role as currentColor, not a ✓ glyph in a host font.
+describe('Checkbox tick', () => {
+  it('draws the tick as an SVG in the brand text role, not the brand fill', () => {
+    viewClassNames.length = 0
+    const { container } = render(<Checkbox label="Toggle" isChecked />)
+    expect(screen.queryByText('✓')).toBeNull()
+    expect(container.querySelector('svg')?.getAttribute('stroke')).toBe('currentColor')
+    const chip = viewClassNames.find((classes) => classes.includes('bg-on-brand-primary'))
+    expect(chip).toContain('text-text-brand')
+    expect(chip).not.toContain('text-brand-primary')
+  })
+
+  it('draws no tick when unchecked or indeterminate', () => {
+    const { container, rerender } = render(<Checkbox label="Toggle" />)
+    expect(container.querySelector('svg')).toBeNull()
+    rerender(<Checkbox label="Toggle" isIndeterminate />)
+    expect(container.querySelector('svg')).toBeNull()
   })
 })

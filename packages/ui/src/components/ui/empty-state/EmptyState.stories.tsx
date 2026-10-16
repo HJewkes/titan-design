@@ -16,6 +16,10 @@ const meta: Meta<typeof EmptyState> = {
     },
   },
   argTypes: {
+    isIconBare: {
+      control: 'boolean',
+      description: 'Draw the icon bare above the title, without the rounded well',
+    },
     title: {
       control: 'text',
       description: 'Title text',

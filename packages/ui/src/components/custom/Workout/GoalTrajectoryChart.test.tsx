@@ -1,7 +1,12 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen, within, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { GoalTrajectoryChart, outcomeReach, trajectoryReach } from './GoalTrajectoryChart'
+import {
+  GoalTrajectoryChart,
+  GoalTrajectoryTreatment,
+  outcomeReach,
+  trajectoryReach,
+} from './GoalTrajectoryChart'
 import type {
   GoalActualPoint,
   GoalExpectedPoint,
@@ -12,6 +17,8 @@ import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { pressedLevel, surfaceBackground } from '../../../theme/surface-planes'
 import { alpha } from '../../../utils/colors'
 import { PLOT_LEFT } from './GoalTrajectoryChartGeometry'
+import { CURRENT_WEEK_TINT } from './GoalTrajectoryPlot'
+import { STATUS_LABEL } from './goalTrajectoryChartModel'
 import { GoalWeekColumnsChart } from './GoalWeekColumnsChart'
 
 const dark = getSemanticColors('dark')
@@ -130,6 +137,39 @@ describe('GoalTrajectoryChart', () => {
       )
       expect(screen.getByTestId('goal-trajectory-chart-empty')).toBeInTheDocument()
       expect(screen.queryByTestId('goal-trajectory-chart-canvas')).not.toBeInTheDocument()
+    })
+
+    it.each(Object.entries(STATUS_LABEL))(
+      'words the empty state from status %s',
+      (status, label) => {
+        render(
+          <GoalTrajectoryChart
+            {...baseProps}
+            expected={[]}
+            actuals={[]}
+            weeks={[]}
+            status={status as GoalTrajectoryStatus}
+          />
+        )
+        const empty = screen.getByTestId('goal-trajectory-chart-empty')
+        expect(empty).toHaveTextContent(`${label} — no band yet`)
+        expect(empty.getAttribute('aria-label')).toContain(`${label}: no band yet.`)
+      }
+    )
+
+    it('puts no aria-label on any element inside the aria-hidden plot', () => {
+      render(
+        <GoalTrajectoryChart
+          {...baseProps}
+          actuals={actuals.slice(0, 3)}
+          status="on_track"
+          nextTarget={{ weekIndex: 5, value: 186, label: 'next week: 186 x 8' }}
+          currentWeek={4}
+        />
+      )
+      const plot = screen.getByTestId('goal-trajectory-chart-canvas').querySelector('svg')
+      expect(plot).toHaveAttribute('aria-hidden', 'true')
+      expect(plot?.querySelectorAll('[aria-label]')).toHaveLength(0)
     })
   })
 
@@ -351,7 +391,9 @@ describe('GoalTrajectoryChart', () => {
 
     it('fades the left inner shadow from 16% over the given spread', () => {
       const { container } = render(
-        <GoalTrajectoryChart {...baseProps} leftShadowSpread={0.03} status="on_track" />
+        <GoalTrajectoryTreatment leftShadowSpread={0.03}>
+          <GoalTrajectoryChart {...baseProps} status="on_track" />
+        </GoalTrajectoryTreatment>
       )
       const left = [...container.querySelectorAll('linearGradient')][1]
       const stops = left.querySelectorAll('stop')
@@ -440,6 +482,59 @@ describe('GoalTrajectoryChart next target', () => {
   it('draws nothing when the caller passes no next target', () => {
     render(<GoalTrajectoryChart {...baseProps} status="on_track" />)
     expect(screen.queryByTestId('goal-trajectory-chart-next-target-dot')).not.toBeInTheDocument()
+  })
+})
+
+describe('GoalTrajectoryChart current week without a reading', () => {
+  const nextTarget = { weekIndex: 5, value: 186, label: 'next week: 186 x 8' }
+  const throughWeek3 = actuals.slice(0, 3)
+
+  function summary(): string {
+    return screen.getByTestId('goal-trajectory-chart-canvas').getAttribute('aria-label') ?? ''
+  }
+
+  it('marks the current week with a hollow point on the dashed lead, said in the summary', () => {
+    render(
+      <GoalTrajectoryChart
+        {...baseProps}
+        actuals={throughWeek3}
+        status="on_track"
+        nextTarget={nextTarget}
+        currentWeek={4}
+      />
+    )
+    const point = screen.getByTestId('goal-trajectory-chart-current-week-point')
+    expect(point.getAttribute('fill')).toBe('none')
+    expect(point.getAttribute('stroke')).toBe(dark['status-success'])
+    expect(point).not.toHaveAttribute('aria-label')
+    expect(screen.getByTestId('goal-trajectory-chart-next-target-lead')).toBeInTheDocument()
+    expect(summary()).toContain('Current week, no reading yet (week 4).')
+  })
+
+  it('draws no hollow point when the current week has a reading', () => {
+    render(
+      <GoalTrajectoryChart
+        {...baseProps}
+        status="on_track"
+        nextTarget={nextTarget}
+        currentWeek={4}
+      />
+    )
+    expect(screen.queryByTestId('goal-trajectory-chart-current-week-point')).not.toBeInTheDocument()
+    expect(summary()).not.toContain('Current week')
+  })
+
+  it('draws no hollow point on a calibrating chart, which has no lead', () => {
+    render(
+      <GoalTrajectoryChart
+        {...baseProps}
+        actuals={throughWeek3}
+        status="calibrating"
+        nextTarget={nextTarget}
+        currentWeek={4}
+      />
+    )
+    expect(screen.queryByTestId('goal-trajectory-chart-current-week-point')).not.toBeInTheDocument()
   })
 })
 
@@ -549,7 +644,7 @@ describe('GoalTrajectoryChart current week', () => {
         animate={false}
       />
     )
-    expect(tintOf(full.container)).toBe(alpha(dark['text-secondary'], 0.2))
+    expect(tintOf(full.container)).toBe(alpha(dark['text-secondary'], CURRENT_WEEK_TINT))
     expect(tintOf(full.container)).toBe(tintOf(compact.container))
   })
 
@@ -569,5 +664,17 @@ describe('GoalTrajectoryChart current week', () => {
   it('lights no column when no week is current', () => {
     render(<GoalTrajectoryChart {...baseProps} status="on_track" animate={false} />)
     expect(screen.queryByTestId('goal-trajectory-chart-current-week')).toBeNull()
+  })
+})
+
+describe('GoalTrajectoryChart at a width narrower than its week insets (VW-427)', () => {
+  it.each([20, 40, 120])('paints no rect with a negative width at %ipx', (width) => {
+    const { container } = render(
+      <GoalTrajectoryChart {...baseProps} width={width} currentWeek={3} status="on_track" />
+    )
+    const widths = Array.from(container.querySelectorAll('rect')).map((r) =>
+      Number(r.getAttribute('width') ?? 0)
+    )
+    expect(widths.filter((w) => w < 0)).toEqual([])
   })
 })

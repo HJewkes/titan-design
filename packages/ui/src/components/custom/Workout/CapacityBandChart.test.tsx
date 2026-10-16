@@ -1,7 +1,11 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { Animated } from 'react-native'
+import { capturedByNode } from '../../../test/classname-capture'
 import { CapacityBandChart } from './CapacityBandChart'
+import { Surface } from '../../ui/surface'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import type { CapacityBandDataPoint, CapacityBandProjection, WorkoutDot } from './CapacityBandChart'
 
 const band: CapacityBandDataPoint[] = [
@@ -66,6 +70,69 @@ describe('CapacityBandChart', () => {
     })
   })
 
+  describe('labels', () => {
+    const classesOf = (node: HTMLElement) => capturedByNode.get(node)?.split(' ') ?? []
+
+    it('renders the axis labels through Typography in the tertiary text colour', () => {
+      render(<CapacityBandChart {...baseProps} />)
+      const labels = [
+        screen.getByTestId('capacity-band-chart-y-axis-label'),
+        ...screen.getAllByTestId('capacity-band-chart-x-label'),
+      ]
+      labels.forEach((label) => {
+        expect(classesOf(label)).toEqual(
+          expect.arrayContaining(['font-normal', 'text-text-tertiary'])
+        )
+      })
+    })
+
+    it('renders the projection labels through Typography in their status colours', () => {
+      render(<CapacityBandChart {...baseProps} projection={projection} />)
+      expect(
+        classesOf(screen.getByTestId('capacity-band-chart-projection-training-label'))
+      ).toEqual(expect.arrayContaining(['font-normal', 'text-text-success']))
+      expect(classesOf(screen.getByTestId('capacity-band-chart-projection-rest-label'))).toEqual(
+        expect.arrayContaining(['font-normal', 'text-text-info'])
+      )
+    })
+  })
+
+  describe('reduced motion', () => {
+    const originalMatchMedia = window.matchMedia
+
+    function stubReducedMotion(matches: boolean) {
+      window.matchMedia = vi.fn().mockReturnValue({
+        matches,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+      }) as unknown as typeof window.matchMedia
+    }
+
+    afterEach(() => {
+      vi.restoreAllMocks()
+      if (originalMatchMedia) window.matchMedia = originalMatchMedia
+      else delete (window as { matchMedia?: unknown }).matchMedia
+    })
+
+    it('renders the final frame with no reveal or dot pops', () => {
+      stubReducedMotion(true)
+      const timing = vi.spyOn(Animated, 'timing')
+      render(<CapacityBandChart {...baseProps} />)
+      expect(screen.getByTestId('capacity-band-chart-reveal')).toHaveStyle({ width: '320px' })
+      screen.getAllByTestId('capacity-band-chart-dot-wrapper').forEach((dot) => {
+        expect(dot).toHaveStyle({ transform: 'scale(1)' })
+      })
+      expect(timing).not.toHaveBeenCalled()
+    })
+
+    it('draws the band and pops each dot when motion is allowed', () => {
+      stubReducedMotion(false)
+      const timing = vi.spyOn(Animated, 'timing')
+      render(<CapacityBandChart {...baseProps} />)
+      expect(timing).toHaveBeenCalledTimes(1 + workouts.length)
+    })
+  })
+
   describe('workout dots', () => {
     it('renders one dot per workout', () => {
       render(<CapacityBandChart {...baseProps} />)
@@ -88,6 +155,18 @@ describe('CapacityBandChart', () => {
         height: '8px',
         borderTopColor: '#F9F6F3', // text-primary (VW-82 grey snap, was #F3F4F6)
       })
+    })
+
+    it('outlines dots with the light text-primary inside a light Surface', () => {
+      const light = getSemanticColors('light')['text-primary']
+      expect(light).not.toBe(getSemanticColors('dark')['text-primary'])
+      render(
+        <Surface theme="light">
+          <CapacityBandChart {...baseProps} />
+        </Surface>
+      )
+      const dots = screen.getAllByTestId('capacity-band-chart-dot')
+      expect(dots[0]).toHaveStyle({ borderTopColor: light })
     })
 
     it('does not render dots as buttons without onWorkoutPress', () => {

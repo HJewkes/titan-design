@@ -1,0 +1,38 @@
+{
+  "src/components/custom/Fatigue/FatigueLights.tsx": {
+    "TEMPO": 1
+  },
+  "src/components/custom/Fatigue/LiveFatiguePanel.tsx": {
+    "VELOCITY": 1
+  },
+  "src/components/custom/Fatigue/VerdictHero.tsx": {
+    "FATIGUE": 1
+  },
+  "src/components/custom/Workout/BodyMapDetailPanel.tsx": {
+    "CONTRIBUTING": 1,
+    "EXERCISES": 1,
+    "TREND": 1,
+    "UPCOMING": 1,
+    "VOLUME": 1
+  },
+  "src/components/custom/Workout/BodyMapDetailSections.tsx": {
+    "DONE": 1,
+    "PERSONAL": 1,
+    "RECORDS": 1,
+    "STRENGTH": 1,
+    "THIS": 1,
+    "UPCOMING": 1,
+    "WEEK": 1
+  },
+  "src/components/custom/Workout/goalCarousel-fixture.tsx": {
+    "BODYWEIGHT": 1,
+    "DAYS": 1,
+    "SESSIONS": 1
+  },
+  "src/components/custom/Workout/RestTimerBar.tsx": {
+    "REST": 1
+  },
+  "src/components/custom/Workout/TempoDisplay.tsx": {
+    "TEMPO": 1
+  }
+}

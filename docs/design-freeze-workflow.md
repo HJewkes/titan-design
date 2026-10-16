@@ -21,14 +21,13 @@ below), never a hand-edit of the React component to "match the new design."
 
 ## What "freeze" means, concretely
 
-Three steps, in order, run by `packages/ui/scripts/design-freeze.mjs`:
+Four steps, in order, run by `packages/ui/scripts/design-freeze.mjs`:
 
-1. **Tag the HTML file in git.** The script runs `git status --porcelain --
-   <html file>` and refuses to proceed if it reports any change — staged,
-   unstaged, or untracked. This guarantees the freeze point is an exact,
-   already-committed version of the prototype, not a moving target. It then
-   creates an annotated tag at `HEAD`: `design-freeze/<component>-<version>`
-   (version defaults to today's date, override with `--tag-version`).
+1. **Refuse to freeze a prototype with uncommitted changes.** The script runs
+   `git status --porcelain -- <html file>` and refuses to proceed if it
+   reports any change — staged, unstaged, or untracked. This guarantees the
+   freeze point is an exact, already-committed version of the prototype, not a
+   moving target.
 
 2. **Extract a CSS property manifest.** Delegates to
    `extract-css-properties.mjs` (TD-06.02) to read `getComputedStyle` off the
@@ -44,6 +43,12 @@ Three steps, in order, run by `packages/ui/scripts/design-freeze.mjs`:
    this snippet (to stdout or `--out-skeleton <file>`); it does not edit
    `comparison.tsx` itself, so pasting it in stays a deliberate, reviewable
    step rather than unattended codegen against a large shared file.
+
+4. **Tag the HTML file in git.** Only once both extractions have succeeded,
+   the script creates an annotated tag at `HEAD` recording the freeze point:
+   `design-freeze/<component>-<version>` (version defaults to today's date,
+   override with `--tag-version`). A failed extraction therefore leaves no
+   tag behind, and a same-day re-run does not collide with one.
 
 ## Usage
 
@@ -74,7 +79,7 @@ freeze, or for prototypes that live outside this repo's git history.
 ```
 TD-06.01  CSS property manifest schema        (packages/ui/src/theme/manifest/*.schema.json)
 TD-06.02  extract-css-properties.mjs           (schema-conforming extraction from a rendered page)
-TD-06.04  design-freeze.mjs   ◄── this ticket  (git tag + 06.02 + specimen skeleton, in one gated step)
+TD-06.04  design-freeze.mjs   ◄── this ticket  (06.02 + specimen skeleton + git tag, in one gated step)
 TD-06.03  component-implementation.md prompt   (consumes the manifest + specimen entry this produces)
 TD-06.05  implementation checklist             (marks a component done once built against the freeze)
 ```

@@ -1,15 +1,18 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useMemo, useState } from 'react'
-import { View, Text, Pressable, type ViewProps } from 'react-native'
+import { View, Text, type ViewProps } from 'react-native'
 import { MesoProgressBar, type Meso, type MesoStatus } from './MesoProgressBar'
 import { MesoCard, type MesoVolumeHeatmapEntry } from './MesoCard'
 import { type WeekRowProps, type WeekRowWorkout } from './WeekRow'
 import { WorkoutCard, type WorkoutStatus, type WorkoutMuscleGroup } from './WorkoutCard'
 import { type WorkoutPillStatus } from './WorkoutPill'
 import { type ExerciseCardProps } from './ExerciseCard'
+import {
+  Breadcrumbs,
+  type ProgramBreadcrumb,
+  type ProgramNavLevel,
+} from './ProgramPlanningBreadcrumbs'
 import { cn } from '../../../utils/cn'
-import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { useSurfaceMode } from '../../ui/surface'
 
 /** A single workout within a planned week, plus its exercise breakdown. */
 export interface PlanWorkout {
@@ -54,20 +57,12 @@ export interface PlanMeso {
   weeks: PlanWeek[]
 }
 
-/** Current depth of the meso -> week -> workout drill-down. */
-export type ProgramNavLevel = 'meso' | 'week' | 'workout'
+export type { ProgramNavLevel, ProgramBreadcrumb } from './ProgramPlanningBreadcrumbs'
 
 /** The navigation cursor within the active mesocycle. */
 export interface ProgramSelection {
   weekNumber: number | null
   workoutId: string | null
-}
-
-/** One tappable step in the breadcrumb trail. */
-export interface ProgramBreadcrumb {
-  key: string
-  label: string
-  level: ProgramNavLevel
 }
 
 export interface ProgramPlanningPageProps extends ViewProps {
@@ -135,52 +130,6 @@ export function buildBreadcrumbs(
     crumbs.push({ key: 'workout', label: workout.name, level: 'workout' })
   }
   return crumbs
-}
-
-interface BreadcrumbsProps {
-  crumbs: ProgramBreadcrumb[]
-  onNavigate: (level: ProgramNavLevel) => void
-}
-
-function Breadcrumbs({ crumbs, onNavigate }: BreadcrumbsProps) {
-  const brandPrimary = getSemanticColors(useSurfaceMode())['brand-primary']
-  return (
-    <View
-      className="flex-row items-center flex-wrap gap-inline-sm"
-      testID="program-planning-page-breadcrumbs"
-    >
-      {crumbs.map((crumb, index) => {
-        const isLast = index === crumbs.length - 1
-        return (
-          <View key={crumb.key} className="flex-row items-center gap-inline-sm">
-            {index > 0 && (
-              <Text className="text-text-tertiary" style={{ fontSize: 12 }}>
-                {'›'}
-              </Text>
-            )}
-            <Pressable
-              onPress={() => onNavigate(crumb.level)}
-              disabled={isLast}
-              accessibilityRole="button"
-              testID={`program-planning-page-crumb-${crumb.key}`}
-            >
-              <Text
-                className={isLast ? 'text-text-primary' : undefined}
-                style={{
-                  fontSize: 12,
-                  fontFamily: 'Inter, sans-serif',
-                  fontWeight: isLast ? '700' : '500',
-                  color: isLast ? undefined : brandPrimary,
-                }}
-              >
-                {crumb.label}
-              </Text>
-            </Pressable>
-          </View>
-        )
-      })}
-    </View>
-  )
 }
 
 /** Project a plan week onto WeekRow props, wiring pill taps to week selection. */
@@ -298,23 +247,7 @@ function WorkoutLevel({ workout, expandedExercise, onToggleExercise }: WorkoutLe
   )
 }
 
-/**
- * ProgramPlanningPage — a meso -> week -> workout drill-down over an entire
- * training program. A `MesoProgressBar` pins the mesocycle timeline to the top;
- * the body swaps between three levels: expandable `MesoCard`s (with inline
- * `WeekRow`s), a week's `WorkoutCard` list, and a single opened `WorkoutCard`
- * with inline `ExerciseCard` expansion. A breadcrumb trail tracks and rewinds
- * the drill path. Selection is page-level state; children keep their own styles.
- *
- * @example
- * <ProgramPlanningPage mesos={mesos} />
- */
-export function ProgramPlanningPage({
-  title = 'Program Plan',
-  mesos,
-  className,
-  ...props
-}: ProgramPlanningPageProps) {
+function useProgramNavigation(mesos: PlanMeso[]) {
   const [activeMesoId, setActiveMesoId] = useState<string | null>(mesos[0]?.id ?? null)
   const [selectedWeek, setSelectedWeek] = useState<number | null>(null)
   const [selectedWorkoutId, setSelectedWorkoutId] = useState<string | null>(null)
@@ -348,6 +281,56 @@ export function ProgramPlanningPage({
     else if (target === 'week' && selectedWeek != null) selectWeek(selectedWeek)
   }
 
+  return {
+    activeMesoId,
+    expandedExercise,
+    progressMesos,
+    activeMeso,
+    selectedWeek,
+    level,
+    activeWeek,
+    activeWorkout,
+    selectMeso,
+    selectWeek,
+    selectWorkout,
+    toggleExercise,
+    navigateTo,
+  }
+}
+
+/**
+ * ProgramPlanningPage — a meso -> week -> workout drill-down over an entire
+ * training program. A `MesoProgressBar` pins the mesocycle timeline to the top;
+ * the body swaps between three levels: expandable `MesoCard`s (with inline
+ * `WeekRow`s), a week's `WorkoutCard` list, and a single opened `WorkoutCard`
+ * with inline `ExerciseCard` expansion. A breadcrumb trail tracks and rewinds
+ * the drill path. Selection is page-level state; children keep their own styles.
+ *
+ * @example
+ * <ProgramPlanningPage mesos={mesos} />
+ */
+export function ProgramPlanningPage({
+  title = 'Program Plan',
+  mesos,
+  className,
+  ...props
+}: ProgramPlanningPageProps) {
+  const {
+    activeMesoId,
+    expandedExercise,
+    progressMesos,
+    activeMeso,
+    selectedWeek,
+    level,
+    activeWeek,
+    activeWorkout,
+    selectMeso,
+    selectWeek,
+    selectWorkout,
+    toggleExercise,
+    navigateTo,
+  } = useProgramNavigation(mesos)
+
   return (
     <View
       className={cn(className, 'bg-background-base')}
@@ -371,6 +354,7 @@ export function ProgramPlanningPage({
           {title}
         </Text>
 
+        {/* optical: bleeds the progress bar through the page's 16px side padding. */}
         <View style={{ marginHorizontal: -16 }}>
           <MesoProgressBar
             mesos={progressMesos}

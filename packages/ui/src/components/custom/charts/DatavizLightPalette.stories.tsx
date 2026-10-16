@@ -10,7 +10,7 @@ import {
 } from '../../ui/surface'
 import { Pill } from '../../ui/pill'
 import { Typography, type TypographyVariant } from '../../ui/typography'
-import { Treemap, type TreemapDatum } from '../Treemap'
+import { Treemap, type TreemapDatum } from '../../ui/charts/treemap'
 import { MuscleGroupChip } from '../Workout/MuscleGroupChip'
 import type { VolumeStatus } from '../Workout/muscleTaxonomy'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
@@ -671,7 +671,7 @@ function PaletteDecision({ palette }: { palette: DatavizPalette }) {
  */
 const meta: Meta<{ palette: DatavizPalette }> = {
   title: 'Lab/Decisions/Dataviz Light Palettes',
-  tags: ['autodocs', 'status:lab'],
+  tags: ['autodocs', 'status:lab', '!status:review'],
 }
 
 export default meta

@@ -21,7 +21,7 @@ const meta: Meta<typeof PrHistoryModal> = {
   parameters: {
     docs: { description: { component: 'Composes **Icons** · **Drawer** · **DrawerBody**.' } },
   },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     exerciseId: {
       control: 'text',

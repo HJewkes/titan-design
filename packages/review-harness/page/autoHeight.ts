@@ -9,7 +9,7 @@ export const STORY_GUTTER = 32
 
 /** A re-measure this close to the applied height is ignored, so a story that fills its
  * own frame cannot pump the frame taller one gutter at a time. */
-export const HEIGHT_HYSTERESIS = 8
+const HEIGHT_HYSTERESIS = 8
 
 interface Box {
   top: number
@@ -38,6 +38,11 @@ export function storyContentHeight(doc: MeasurableDoc | null): number | null {
   const boxes = children.map((child) => child.getBoundingClientRect())
   const height = Math.max(...boxes.map((b) => b.bottom)) - Math.min(...boxes.map((b) => b.top))
   return height > 0 ? Math.ceil(height) + STORY_GUTTER : null
+}
+
+/** What an auto frame shows before its first measurement: the fallback, held under the cap. */
+export function initialFrameHeight(max: number): number {
+  return Math.min(AUTO_FALLBACK_HEIGHT, max)
 }
 
 /** What the frame should be after a measurement: the applied height when nothing changed. */

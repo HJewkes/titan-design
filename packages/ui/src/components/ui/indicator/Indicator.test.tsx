@@ -1,6 +1,10 @@
 import { describe, it, expect } from 'vitest'
 import { render } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import type { CSSProperties, ReactNode } from 'react'
+import { getGlowShadow } from '../../../theme/elevation'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
+import { SurfaceContext } from '../surface'
 import { Indicator } from './Indicator'
 
 describe('Indicator', () => {
@@ -70,5 +74,33 @@ describe('Indicator', () => {
       const results = await axe(container)
       expect(results).toHaveNoViolations()
     })
+  })
+})
+
+describe('Indicator glow', () => {
+  const glowOf = (color: string) => {
+    const probe = render(<div style={getGlowShadow(color, 'subtle') as CSSProperties} />)
+    return (probe.container.firstChild as HTMLElement).style.boxShadow
+  }
+  const wrap = (mode: ThemeMode, node: ReactNode) => (
+    <SurfaceContext.Provider value={{ mode, level: 'base' }}>{node}</SurfaceContext.Provider>
+  )
+
+  it('paints the glow on the solid dot when pulse is ping', () => {
+    const { container } = render(<Indicator glow pulse="ping" color="success" />)
+    const [pingLayer, solidDot] = Array.from(
+      (container.firstChild as HTMLElement).children
+    ) as HTMLElement[]
+    const expected = glowOf(getSemanticColors('dark')['status-success'])
+    expect(expected).not.toBe('')
+    expect(solidDot.style.boxShadow).toBe(expected)
+    expect(pingLayer.style.boxShadow).toBe('')
+  })
+
+  it.each(['dark', 'light'] as const)('defaults the glow to text-tertiary in %s mode', (mode) => {
+    const { container } = render(wrap(mode, <Indicator glow />))
+    const expected = glowOf(getSemanticColors(mode)['text-tertiary'])
+    expect(expected).not.toBe('')
+    expect((container.firstChild as HTMLElement).style.boxShadow).toBe(expected)
   })
 })

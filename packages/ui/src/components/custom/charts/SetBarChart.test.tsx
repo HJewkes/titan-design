@@ -1,6 +1,9 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { barPaper } from '../../../theme/materials'
+import { SurfaceContext } from '../../ui/surface/SurfaceContext'
+import { SetBarTreatmentContext, type SetBarTreatment } from './setBarTones'
 import {
   SetBarChart,
   sideLabelText,
@@ -231,6 +234,51 @@ describe('SetBarChart empty columns', () => {
     render(<SetBarChart slots={slots} colorFor={silver} height={200} testIDPrefix="t" />)
     expect(screen.getAllByTestId(/^t-bar-\d+$/)).toHaveLength(2)
     expect(screen.getByTestId('t-slot-empty')).toBeInTheDocument()
+  })
+})
+
+describe('SetBarChart under a SetBarTreatment', () => {
+  const slots: SetSlot[] = [{ kind: 'rep', value: 0.9 }, { kind: 'empty' }]
+  const CLEAR = 'rgba(0, 0, 0, 0)'
+  const renderLight = (treatment?: SetBarTreatment) => {
+    const chart = <SetBarChart slots={slots} colorFor={silver} height={200} testIDPrefix="t" />
+    return render(
+      <SurfaceContext.Provider value={{ mode: 'light', level: 'base' }}>
+        {treatment ? (
+          <SetBarTreatmentContext.Provider value={treatment}>
+            {chart}
+          </SetBarTreatmentContext.Provider>
+        ) : (
+          chart
+        )}
+      </SurfaceContext.Provider>
+    )
+  }
+
+  it('keeps the faint fill and softens the light shadow outside a provider', () => {
+    renderLight()
+    const empty = getComputedStyle(screen.getByTestId('t-slot-empty'))
+    expect(empty.borderTopWidth).toBe('0px')
+    expect(empty.backgroundColor).not.toBe(CLEAR)
+    expect(screen.getByTestId('t-bar-0').style.boxShadow).toMatch(
+      /^0 2px 5px rgba\(0, ?0, ?0, ?0\.2\)$/
+    )
+  })
+
+  it('keeps the paper shadow on a light plane when a provider asks for raised', () => {
+    renderLight({ lightPaper: 'raised' })
+    const paper = barPaper(silver()) as { boxShadow: string }
+    expect(screen.getByTestId('t-bar-0').style.boxShadow).toBe(paper.boxShadow)
+  })
+
+  it('fills the empty cell in its colour and softens the light shadow when opted in', () => {
+    renderLight({ emptyColor: { light: '#72716F', dark: '#A29F9D' }, lightPaper: 'soft' })
+    const empty = getComputedStyle(screen.getByTestId('t-slot-empty'))
+    expect(empty.borderTopWidth).toBe('0px')
+    expect(empty.backgroundColor).toBe('rgb(114, 113, 111)')
+    expect(screen.getByTestId('t-bar-0').style.boxShadow).toMatch(
+      /^0 2px 5px rgba\(0, ?0, ?0, ?0\.2\)$/
+    )
   })
 })
 

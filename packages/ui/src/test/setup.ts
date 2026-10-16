@@ -3,7 +3,7 @@ import '@testing-library/jest-dom'
 import { expect, afterEach } from 'vitest'
 import { cleanup } from '@testing-library/react'
 import { toHaveNoViolations } from 'jest-axe'
-import { captureClassName, capturedClassNames } from './classname-capture'
+import { captureClassName, capturedClassNames, animatedTestIds } from './classname-capture'
 
 // Extend Vitest's expect with jest-axe matchers
 expect.extend(toHaveNoViolations)
@@ -12,6 +12,7 @@ expect.extend(toHaveNoViolations)
 afterEach(() => {
   cleanup()
   capturedClassNames.clear()
+  animatedTestIds.clear()
 })
 
 const CAPTURED_PRIMITIVES = [
@@ -34,8 +35,8 @@ vi.mock('react-native', async () => {
   if (RNW.Animated) {
     wrapped.Animated = {
       ...RNW.Animated,
-      View: captureClassName(RNW.Animated.View),
-      Text: captureClassName(RNW.Animated.Text),
+      View: captureClassName(RNW.Animated.View, { animated: true }),
+      Text: captureClassName(RNW.Animated.Text, { animated: true }),
     }
   }
   return wrapped

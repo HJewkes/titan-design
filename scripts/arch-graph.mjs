@@ -2,11 +2,14 @@
 /**
  * arch-graph — deterministic component dependency + health graph for the Storybook
  * `Docs/Architecture` page. Drives everything off a codewatch symbol graph (AST, not
- * grep) plus a light import-parse of the consuming apps. Emits a single self-contained
- * JSON the Storybook page imports.
+ * grep) plus a light import-parse of the consuming apps. Emits one JSON of nodes
+ * and whole-library figures; packages/ui/src/arch/arch-graph-derived.ts adds the edges
+ * and counts the Storybook page reads.
  *
  *   node scripts/arch-graph.mjs            # use existing .codewatch/graph.db (or build it)
  *   node scripts/arch-graph.mjs --reindex  # force a fresh codewatch index first
+ *   node scripts/arch-graph.mjs --add <file> [--add <file>]
+ *       # fresh index, then write ONLY the named components' nodes (see packages/ui/scripts/arch-graph-add.mjs)
  *
  * codewatch CLI: `@codewatch/cli` is NOT published to npm (AW-118), so `npx` 404s.
  * Resolution order is CODEWATCH_CLI → `codewatchCli` in scripts/arch.config.json →
@@ -20,7 +23,7 @@ import os from "node:os";
 import path from "node:path";
 import { execSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { componentBarrelHash } from "../packages/ui/scripts/barrel-hash.mjs";
+import { spliceComponents } from "../packages/ui/scripts/arch-graph-add.mjs";
 
 const ROOT = path.resolve(fileURLToPath(import.meta.url), "../.."); // repo root (titan-design)
 const DB = path.join(ROOT, ".codewatch", "graph.db");
@@ -75,10 +78,20 @@ function resolveCodewatch() {
 }
 const CW = resolveCodewatch();
 
+// ---- --add: which components to splice (none = full write) ------------------
+// Paths may be repo-relative or absolute; stored repo-relative, as node `file`s are.
+const ADD = process.argv
+  .flatMap((arg, i, argv) => (arg === "--add" ? [argv[i + 1]] : []))
+  .map((file) => {
+    if (!file) throw new Error("--add needs a component file path");
+    return path.relative(ROOT, path.resolve(ROOT, file));
+  });
+
 // ---- codewatch index -------------------------------------------------------
 // codewatch indexes incrementally and appends a snapshot; nodes for files deleted
 // since a prior index linger. Build into a FRESH db so there is exactly one snapshot.
-if (process.argv.includes("--reindex") || !fs.existsSync(DB)) {
+// --add always reindexes: a node from a stale db would be committed as current.
+if (process.argv.includes("--reindex") || ADD.length || !fs.existsSync(DB)) {
   console.error("· indexing packages/ui with codewatch (fresh) …");
   fs.rmSync(path.dirname(DB), { recursive: true, force: true });
   sh(
@@ -397,17 +410,11 @@ const standardCoverage = (ann.standard ?? []).map((s) => {
 });
 
 // ---- 7. emit ----------------------------------------------------------------
+// Only nodes and whole-library figures are stored. The edge list, totals and dead lists
+// are derived from the nodes in packages/ui/src/arch/arch-graph-derived.ts: stored, they
+// were lines every component PR rewrote, so any two such PRs conflicted (TD-792).
+const deadCount = comps.filter((c) => c.verdict === "dead").length;
 const summary = {
-  total: comps.length,
-  dead: comps
-    .filter((c) => c.verdict === "dead")
-    .map((c) => c.name)
-    .sort(),
-  deadByAssociation: comps
-    .filter((c) => c.deadByAssociation)
-    .map((c) => c.name)
-    .sort(),
-  auditedCount: comps.filter((c) => c.audited === "audited").length,
   standardCoverage,
   extractionTop: [...comps]
     .sort((a, b) => b.leak.score - a.leak.score)
@@ -420,22 +427,27 @@ const summary = {
   })),
 };
 const payload = {
-  schema: 1,
-  // What the graph was generated FROM. `arch-graph.freshness.test.ts` recomputes
-  // it and fails when it drifts, so a component added to a barrel without a
-  // regenerate is caught in CI rather than read as an absence months later.
-  componentBarrelHash: componentBarrelHash(path.join(ROOT, "packages/ui")),
+  schema: 2,
   components: comps.sort((a, b) => a.name.localeCompare(b.name)),
-  edges,
   summary,
 };
-fs.mkdirSync(path.dirname(OUT), { recursive: true });
-fs.writeFileSync(OUT, JSON.stringify(payload, null, 2));
+if (ADD.length) {
+  fs.writeFileSync(
+    OUT,
+    spliceComponents(fs.readFileSync(OUT, "utf8"), payload, ADD),
+  );
+  console.error(
+    `✓ spliced ${ADD.join(", ")} → ${path.relative(ROOT, OUT)}; other nodes as committed`,
+  );
+} else {
+  fs.mkdirSync(path.dirname(OUT), { recursive: true });
+  fs.writeFileSync(OUT, JSON.stringify(payload, null, 2));
+}
 console.error(
-  `✓ ${comps.length} components, ${edges.length} edges → ${path.relative(ROOT, OUT)}`,
+  `✓ ${comps.length} components, ${edges.length} edges ${ADD.length ? "computed" : `→ ${path.relative(ROOT, OUT)}`}`,
 );
 console.error(
-  `  dead-everywhere: ${summary.dead.length}  ·  consumers present: ${
+  `  dead-everywhere: ${deadCount}  ·  consumers present: ${
     summary.consumers
       .filter((c) => c.present)
       .map((c) => c.name)

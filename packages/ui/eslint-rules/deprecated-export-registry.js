@@ -24,6 +24,24 @@
  * the tag. A RENAME (`export { IconProps as WorkoutIconProps }`) does NOT
  * unify — it deprecates the alias in favour of the source's own name, the
  * opposite relationship, so `IconProps` itself must stay clean.
+ *
+ * `export * from './x'` (VW-322) is followed ONE way: `(barrel, X)` leads to
+ * `(x, X)` for every name, so `import { Tile } from '@/components/ui'` reaches
+ * Tile.tsx's tag through `ui/index.ts` -> `ui/tile` -> `Tile.tsx`. It is not an
+ * identity edge, because a star line names nothing a tag could sit on. As in
+ * ES, a name the barrel exports itself (declared or `export { X }`) shadows its
+ * star re-exports, and `default` is never star-forwarded. The walk keeps a
+ * seen-set, so an `export *` cycle terminates.
+ *
+ * Known limits:
+ *   - `export * as ns from './x'` is out of scope: `ns` counts as an explicit
+ *     export, and `ns.Tile` member access is never checked.
+ *   - Two star sources exporting the same name is an ambiguity ES drops; here
+ *     the name is deprecated if either source's copy is.
+ *   - Only `src/theme` and `src/components` are scanned, so `src/index.ts`,
+ *     `hooks/` and `utils/` barrels are not followed, and bare package
+ *     specifiers (`@titan-design/react-ui`) are not resolved.
+ *   - A tag directly on an `export *` line is ignored.
  */
 
 const fs = require('node:fs')
@@ -42,19 +60,37 @@ function walk(dir, out) {
 }
 
 /**
- * Whether `node` is immediately preceded by a block comment containing
- * `@deprecated`, with nothing but whitespace between them — the same "is this
- * its JSDoc" test an editor's hover tooltip uses.
+ * The first sentence after `@deprecated` in a JSDoc body, with the `*` gutter
+ * and line breaks collapsed: `Use \`Indicator\` (roadmap decision 10) — …`.
+ * A bare tag gives ''. A sentence ends at a `.` followed by whitespace, so
+ * `0.23.0` stays whole.
  */
-function hasLeadingDeprecated(sourceText, comments, node) {
+function firstSentenceOf(commentValue) {
+  const text = commentValue
+    .split('@deprecated')[1]
+    .split(/\n\s*\*?\s*@\w/)[0]
+    .replace(/\n\s*\*/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+  return /^.*?\.(?=\s|$)/.exec(text)?.[0] ?? text
+}
+
+/**
+ * The deprecation sentence when `node` is immediately preceded by a block
+ * comment containing `@deprecated`, with nothing but whitespace between them
+ * (the same "is this its JSDoc" test an editor's hover tooltip uses); null
+ * otherwise.
+ */
+function leadingDeprecation(sourceText, comments, node) {
   for (let i = comments.length - 1; i >= 0; i--) {
     const comment = comments[i]
     if (comment.range[1] > node.range[0]) continue
     const between = sourceText.slice(comment.range[1], node.range[0])
-    if (!/^\s*$/.test(between)) return false
-    return comment.type === 'Block' && /@deprecated/.test(comment.value)
+    if (!/^\s*$/.test(between)) return null
+    const tagged = comment.type === 'Block' && /@deprecated/.test(comment.value)
+    return tagged ? firstSentenceOf(comment.value) : null
   }
-  return false
+  return null
 }
 
 const RESOLVE_EXTENSIONS = ['.tsx', '.ts']
@@ -110,6 +146,57 @@ function addEdge(edges, a, b) {
   edges.get(b).add(a)
 }
 
+function addTo(map, key, value) {
+  if (!map.has(key)) map.set(key, new Set())
+  map.get(key).add(value)
+}
+
+function indexNamedExport(registry, source, comments, node, file) {
+  const { tagged, edges, explicit } = registry
+  const deprecation = leadingDeprecation(source, comments, node)
+  if (node.declaration) {
+    for (const name of declaredNames(node.declaration)) {
+      addTo(explicit, file.rel, name)
+      if (deprecation !== null) tagged.set(`${file.rel}::${name}`, deprecation)
+    }
+    return
+  }
+  // Re-export edges are recorded regardless of whether THIS statement is
+  // tagged — an untagged barrel forwarding a tagged export (Tile via
+  // ui/tile's index.ts) still needs to reach it.
+  for (const specifier of node.specifiers ?? []) {
+    const reExportKey = `${file.rel}::${specifier.exported.name}`
+    addTo(explicit, file.rel, specifier.exported.name)
+    if (deprecation !== null) tagged.set(reExportKey, deprecation)
+    if (node.source && specifier.local.name === specifier.exported.name) {
+      const target = resolveModule(node.source.value, file.abs, file.srcRoot)
+      if (target) addEdge(edges, reExportKey, `${target}::${specifier.local.name}`)
+    }
+  }
+}
+
+function indexFile(registry, file) {
+  const source = fs.readFileSync(file.abs, 'utf8')
+  let ast
+  try {
+    ast = parse(source, { loc: true, range: true, comment: true, jsx: file.abs.endsWith('x') })
+  } catch {
+    return // unparseable file contributes no registry entries
+  }
+  for (const node of ast.body) {
+    if (node.type === 'ExportNamedDeclaration') {
+      indexNamedExport(registry, source, ast.comments ?? [], node, file)
+    } else if (node.type === 'ExportDefaultDeclaration') {
+      addTo(registry.explicit, file.rel, 'default')
+    } else if (node.type === 'ExportAllDeclaration' && node.exported) {
+      addTo(registry.explicit, file.rel, node.exported.name) // `export * as ns` is out of scope
+    } else if (node.type === 'ExportAllDeclaration') {
+      const target = resolveModule(node.source.value, file.abs, file.srcRoot)
+      if (target) addTo(registry.stars, file.rel, target)
+    }
+  }
+}
+
 function buildRegistry(srcRoot) {
   const files = []
   for (const root of SCAN_ROOTS) {
@@ -117,70 +204,57 @@ function buildRegistry(srcRoot) {
     if (fs.existsSync(dir)) walk(dir, files)
   }
 
-  const tagged = new Set() // `${srcRelativeFile}::${name}` directly carries @deprecated
-  const edges = new Map() // same-name-forwarding identity graph, both directions
-
-  for (const absFile of files) {
-    const rel = path.relative(srcRoot, absFile).split(path.sep).join('/')
-    if (SKIP_FILE.test(rel)) continue
-
-    const source = fs.readFileSync(absFile, 'utf8')
-    let ast
-    try {
-      ast = parse(source, { loc: true, range: true, comment: true, jsx: absFile.endsWith('x') })
-    } catch {
-      continue // unparseable file contributes no registry entries
-    }
-    const comments = ast.comments ?? []
-
-    for (const node of ast.body) {
-      if (node.type !== 'ExportNamedDeclaration') continue
-      const deprecated = hasLeadingDeprecated(source, comments, node)
-
-      if (node.declaration) {
-        if (deprecated) {
-          for (const name of declaredNames(node.declaration)) tagged.add(`${rel}::${name}`)
-        }
-        continue
-      }
-      // Re-export edges are recorded regardless of whether THIS statement is
-      // tagged — an untagged barrel forwarding a tagged export (Tile via
-      // ui/tile's index.ts) still needs to reach it.
-      for (const specifier of node.specifiers ?? []) {
-        const reExportKey = `${rel}::${specifier.exported.name}`
-        if (deprecated) tagged.add(reExportKey)
-        if (node.source && specifier.local.name === specifier.exported.name) {
-          const target = resolveModule(node.source.value, absFile, srcRoot)
-          if (target) addEdge(edges, reExportKey, `${target}::${specifier.local.name}`)
-        }
-      }
-    }
+  const registry = {
+    tagged: new Map(), // `${srcRelativeFile}::${name}` directly carries @deprecated -> its first sentence
+    edges: new Map(), // same-name-forwarding identity graph, both directions
+    explicit: new Map(), // file -> names it exports itself, which shadow its `export *`
+    stars: new Map(), // file -> files it `export * from`, followed one way only
   }
-  return { tagged, edges }
+  for (const abs of files) {
+    const rel = path.relative(srcRoot, abs).split(path.sep).join('/')
+    if (!SKIP_FILE.test(rel)) indexFile(registry, { abs, rel, srcRoot })
+  }
+  return registry
 }
 
-/** BFS over the identity graph: deprecated if any connected node carries the tag. */
-function isDeprecated({ tagged, edges }, file, name) {
+/** Where `file::name` leads: its identity edges, plus its `export *` sources unless it exports `name` itself. */
+function neighborsOf({ edges, explicit, stars }, key) {
+  const neighbors = [...(edges.get(key) ?? [])]
+  const sep = key.lastIndexOf('::')
+  const file = key.slice(0, sep)
+  const name = key.slice(sep + 2)
+  if (name !== 'default' && !explicit.get(file)?.has(name)) {
+    for (const target of stars.get(file) ?? []) neighbors.push(`${target}::${name}`)
+  }
+  return neighbors
+}
+
+/**
+ * Graph walk: the first sentence of the first reachable tag, or null when no
+ * node carries one; `seen` guards `export *` cycles.
+ */
+function deprecationOf(registry, file, name) {
   const start = `${file}::${name}`
   const seen = new Set([start])
   const stack = [start]
   while (stack.length) {
     const key = stack.pop()
-    if (tagged.has(key)) return true
-    for (const neighbor of edges.get(key) ?? []) {
+    if (registry.tagged.has(key)) return registry.tagged.get(key)
+    for (const neighbor of neighborsOf(registry, key)) {
       if (!seen.has(neighbor)) {
         seen.add(neighbor)
         stack.push(neighbor)
       }
     }
   }
-  return false
+  return null
 }
 
 const cache = new Map()
 function registryFor(srcRoot) {
   if (!cache.has(srcRoot)) cache.set(srcRoot, buildRegistry(srcRoot))
-  return { isDeprecated: (file, name) => isDeprecated(cache.get(srcRoot), file, name) }
+  const deprecation = (file, name) => deprecationOf(cache.get(srcRoot), file, name)
+  return { deprecation, isDeprecated: (file, name) => deprecation(file, name) !== null }
 }
 
-module.exports = { registryFor, resolveModule, hasLeadingDeprecated }
+module.exports = { registryFor, resolveModule, leadingDeprecation }

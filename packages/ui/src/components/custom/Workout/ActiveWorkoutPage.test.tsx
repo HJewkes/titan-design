@@ -1,6 +1,7 @@
-import { describe, it, expect } from 'vitest'
-import { siblingSource, resolveAll } from '../../../test/spacing-resolver'
+import { describe, it, expect, vi } from 'vitest'
+import { resolveAll, spacingClassesOf } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
+import { axe } from 'jest-axe'
 import {
   ActiveWorkoutPage,
   countCompletedSets,
@@ -138,6 +139,11 @@ describe('groupExercises', () => {
 })
 
 describe('ActiveWorkoutPage', () => {
+  it('has no accessibility violations', async () => {
+    const { container } = render(<ActiveWorkoutPage {...baseProps} />)
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
   it('renders the header, progress, and the focused active exercise expanded', () => {
     render(<ActiveWorkoutPage {...baseProps} />)
     expect(screen.getByTestId('active-workout-page')).toBeInTheDocument()
@@ -174,15 +180,52 @@ describe('ActiveWorkoutPage', () => {
   })
 })
 
+describe('ActiveWorkoutPage callbacks', () => {
+  it('reports a recorded set with the active exercise, set number and typed values', () => {
+    const onRecord = vi.fn()
+    render(<ActiveWorkoutPage {...baseProps} onRecord={onRecord} />)
+
+    fireEvent.change(screen.getByTestId('input-bar-reps'), { target: { value: '7' } })
+    fireEvent.change(screen.getByTestId('input-bar-weight'), { target: { value: '200' } })
+    fireEvent.click(screen.getByTestId('input-bar-record'))
+
+    expect(onRecord).toHaveBeenCalledTimes(1)
+    expect(onRecord).toHaveBeenCalledWith({
+      exerciseId: 'bench',
+      setNumber: 3,
+      reps: '7',
+      weight: '200',
+    })
+  })
+
+  it('reports a rest skip and brings the input bar back', () => {
+    const onSkip = vi.fn()
+    render(<ActiveWorkoutPage {...baseProps} initialResting onSkip={onSkip} />)
+
+    fireEvent.click(screen.getByTestId('rest-timer-skip'))
+
+    expect(onSkip).toHaveBeenCalledTimes(1)
+    expect(screen.getByTestId('input-bar')).toBeInTheDocument()
+  })
+
+  it('reports an add-time press', () => {
+    const onAddTime = vi.fn()
+    render(<ActiveWorkoutPage {...baseProps} initialResting onAddTime={onAddTime} />)
+
+    fireEvent.click(screen.getByTestId('rest-timer-add-time'))
+
+    expect(onAddTime).toHaveBeenCalledTimes(1)
+  })
+})
+
 /**
  * ActiveWorkoutPage's geometry, pinned (AW-142); pixels unchanged. 16px page
  * padding is `gutter-sm`; the 14px between page sections has no semantic rung.
  */
 describe('ActiveWorkoutPage geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'ActiveWorkoutPage.tsx')
-
   it('keeps the page gutter and its section rhythm', () => {
-    expect(source).toContain('p-gutter-sm gap-3.5')
+    render(<ActiveWorkoutPage {...baseProps} />)
+    expect(spacingClassesOf('active-workout-page-content')).toEqual(['p-gutter-sm', 'gap-3.5'])
     expect(resolveAll(['p-gutter-sm', 'gap-3.5'])).toEqual(['16px', '14px'])
   })
 })

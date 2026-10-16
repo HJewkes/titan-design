@@ -161,7 +161,7 @@ function MiniNextTarget({ geometry, palette }: LayerProps) {
   if (!next) return null
   return (
     <>
-      {next.leadPath && (
+      {!!next.leadPath && (
         <path
           d={next.leadPath}
           fill="none"

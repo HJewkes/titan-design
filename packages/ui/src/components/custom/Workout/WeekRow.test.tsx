@@ -1,17 +1,25 @@
 import { describe, it, expect, vi } from 'vitest'
-import {
-  siblingSource,
-  spacingClassesIn,
-  spacingClassesOn,
-  resolveAll,
-} from '../../../test/spacing-resolver'
+import { spacingClassesOf, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { WeekRow } from './WeekRow'
 import type { WeekRowWorkout } from './WeekRow'
 import { resolveColor } from '../../../theme/resolve-color'
-import { WORKOUT_PILL_DELOAD } from '../../../theme/extracted-colors-dataviz'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { alpha } from '../../../utils/colors'
+import { Surface } from '../../ui/surface'
+
+// Light status-deload is swapped for an unrelated token, so a pass proves the mode is read.
+vi.mock('../../../theme/tokens/semantic', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../../theme/tokens/semantic')>()
+  const light = actual.getSemanticColors('light')
+  const probeLight = { ...light, 'status-deload': light['status-info'] }
+  return {
+    ...actual,
+    getSemanticColors: (mode: 'dark' | 'light') =>
+      mode === 'light' ? probeLight : actual.getSemanticColors(mode),
+  }
+})
 
 const workouts: WeekRowWorkout[] = [
   { name: 'Upper', status: 'completed' },
@@ -31,6 +39,25 @@ describe('WeekRow', () => {
     it('renders the week number label', () => {
       render(<WeekRow {...baseProps} />)
       expect(screen.getByTestId('week-row-number')).toHaveTextContent('W1')
+    })
+
+    it('marks a completed workout with an SVG check and a missed one with a dash', () => {
+      render(
+        <WeekRow
+          weekNumber={2}
+          totalWeeks={4}
+          intensityLevel={0.5}
+          workouts={[
+            { name: 'Upper', status: 'completed' },
+            { name: 'Lower', status: 'missed' },
+            { name: 'Pull', status: 'upcoming' },
+          ]}
+        />
+      )
+      expect(screen.queryByText('\u2713')).toBeNull()
+      expect(screen.getByTestId('workout-pill-check').querySelector('svg')).not.toBeNull()
+      expect(screen.getByTestId('workout-pill-dash')).toHaveTextContent('\u2014')
+      expect(screen.getAllByTestId('workout-pill-check')).toHaveLength(1)
     })
 
     it('renders a workout pill for each workout', () => {
@@ -80,10 +107,23 @@ describe('WeekRow', () => {
       expect(screen.getAllByLabelText(/workout, deload/)).toHaveLength(3)
     })
 
-    it('washes the row with the same deload pin WorkoutPill uses', () => {
+    it('washes the row with the dark status-deload token by default', () => {
       render(<WeekRow {...baseProps} isDeload />)
       const style = screen.getByTestId('week-row').getAttribute('style') ?? ''
-      expect(style).toContain(`background-color: ${alpha(WORKOUT_PILL_DELOAD, 0.06)}`)
+      const deload = getSemanticColors('dark')['status-deload']
+      expect(style).toContain(`background-color: ${alpha(deload, 0.06)}`)
+    })
+
+    it('washes the row with the light status-deload token on a light surface', () => {
+      render(
+        <Surface theme="light">
+          <WeekRow {...baseProps} isDeload />
+        </Surface>
+      )
+      const style = screen.getByTestId('week-row').getAttribute('style') ?? ''
+      const deload = getSemanticColors('light')['status-deload']
+      expect(deload).not.toBe(getSemanticColors('dark')['status-deload'])
+      expect(style).toContain(`background-color: ${alpha(deload, 0.06)}`)
     })
 
     it('lets a current deload week keep the brand rail over the deload wash', () => {
@@ -98,7 +138,7 @@ describe('WeekRow', () => {
     it('invokes onPress for a pressable workout', () => {
       const onPress = vi.fn()
       render(<WeekRow {...baseProps} workouts={[{ name: 'Upper', status: 'current', onPress }]} />)
-      fireEvent.click(screen.getByTestId('workout-pill-pressable'))
+      fireEvent.click(screen.getByRole('button', { name: 'Upper workout, current' }))
       expect(onPress).toHaveBeenCalledOnce()
     })
   })
@@ -131,16 +171,18 @@ describe('WeekRow', () => {
  * scale carries them; the row inset and the two cluster gaps do.
  */
 describe('WeekRow geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'WeekRow.tsx')
-
   it('keeps the row inset and its column gap', () => {
-    const classes = spacingClassesIn(source, 'WeekRow')
+    render(<WeekRow {...baseProps} />)
+    const classes = spacingClassesOf('week-row')
     expect(classes).toEqual(['px-inset-md', 'py-2.5', 'gap-inline-lg'])
     expect(resolveAll(classes)).toEqual(['12px', '10px', '12px'])
   })
 
   it('keeps the week-number and pill clusters', () => {
-    expect(resolveAll(spacingClassesOn(source, 'week-row-number'))).toEqual(['4px'])
-    expect(resolveAll(spacingClassesOn(source, 'week-row-pills'))).toEqual(['6px'])
+    render(<WeekRow {...baseProps} />)
+    expect(spacingClassesOf('week-row-number')).toEqual(['gap-inline-sm'])
+    expect(resolveAll(spacingClassesOf('week-row-number'))).toEqual(['4px'])
+    expect(spacingClassesOf('week-row-pills')).toEqual(['gap-1.5'])
+    expect(resolveAll(spacingClassesOf('week-row-pills'))).toEqual(['6px'])
   })
 })

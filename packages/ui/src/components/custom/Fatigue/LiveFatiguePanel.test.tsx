@@ -1,11 +1,18 @@
 import { describe, it, expect } from 'vitest'
+import { axe } from 'jest-axe'
 import { render, screen } from '@testing-library/react'
 import { LiveFatiguePanel } from './LiveFatiguePanel'
 import { Surface } from '../../ui/surface'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { buildMockPanelState } from './fatigue-mock'
-import { resolveAll, siblingSource, spacingClassesIn } from '../../../test/spacing-resolver'
-import { PANEL_BREAKPOINTS, CARD_WIDTH_BASE, panelLayout } from './panel-layout'
+import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
+import {
+  PANEL_BREAKPOINTS,
+  CARD_WIDTH_BASE,
+  CARD_COMPACT_HEIGHT,
+  cardSections,
+  panelLayout,
+} from './panel-layout'
 
 const { model, velocity } = buildMockPanelState(3)
 
@@ -13,6 +20,11 @@ const dark = getSemanticColors('dark')
 const light = getSemanticColors('light')
 
 describe('LiveFatiguePanel', () => {
+  it('has no accessibility violations', async () => {
+    const { container } = render(<LiveFatiguePanel model={model} velocity={velocity} />)
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
   it('composes the aura frame, the velocity hero and the fatigue card', () => {
     render(<LiveFatiguePanel model={model} velocity={velocity} />)
     expect(screen.getByTestId('live-fatigue-panel')).toBeInTheDocument()
@@ -121,6 +133,68 @@ describe('LiveFatiguePanel responsiveness (TD-03.58)', () => {
     expect(screen.getByTestId('live-fatigue-card')).toHaveStyle({ width: '280px' })
   })
 
+  // TD-545: the prop doc says a pinned width is ignored once the panel stacks.
+  it('ignores a pinned cardWidth when stacked and fills the content width', () => {
+    const width = 720
+    render(
+      <LiveFatiguePanel model={model} velocity={velocity} containerWidth={width} cardWidth={280} />
+    )
+    const { padding } = panelLayout(width)
+    expect(screen.getByTestId('live-fatigue-card')).toHaveStyle({
+      width: `${width - padding * 2}px`,
+    })
+  })
+
+  // TD-326: wrapped, the card is a compact band — charts side by side, hero on top of it.
+  it.each([PANEL_BREAKPOINTS.sm - 1, PANEL_BREAKPOINTS.md - 1])(
+    'wraps at %ipx into the compact card with the two charts side by side',
+    (width) => {
+      render(
+        <LiveFatiguePanel
+          model={model}
+          velocity={velocity}
+          containerWidth={width}
+          bodyHeight={640}
+        />
+      )
+      expect(screen.getByTestId('live-fatigue-card-charts')).toHaveStyle({ flexDirection: 'row' })
+      expect(screen.getByTestId('live-fatigue-card')).toHaveStyle({
+        minHeight: `${CARD_COMPACT_HEIGHT}px`,
+      })
+      const heroHeight = Number(screen.getByTestId('velocity-hero').style.height.replace('px', ''))
+      expect(heroHeight).toBeGreaterThan(CARD_COMPACT_HEIGHT)
+    }
+  )
+
+  it('keeps the row tiers on the column card', () => {
+    for (const width of [1000, 1440, 1920]) {
+      const { unmount } = render(
+        <LiveFatiguePanel model={model} velocity={velocity} containerWidth={width} />
+      )
+      expect(screen.queryByTestId('live-fatigue-card-charts')).not.toBeInTheDocument()
+      unmount()
+    }
+  })
+
+  // TD-326: at the wall the card's leftover height goes to the charts, not under them.
+  it('fills the wall card height with taller charts than the lg card', () => {
+    const sparkHeightAt = (width: number) => {
+      const { unmount } = render(
+        <LiveFatiguePanel
+          model={model}
+          velocity={velocity}
+          containerWidth={width}
+          bodyHeight={820}
+        />
+      )
+      const height = screen.getByTestId('ghost-spark').querySelector('svg')?.getAttribute('height')
+      unmount()
+      return Number(height)
+    }
+    expect(sparkHeightAt(1920)).toBe(cardSections('fill', 820).sparkHeight)
+    expect(sparkHeightAt(1920)).toBeGreaterThan(sparkHeightAt(1919))
+  })
+
   // TD-03.60 through the rendered tree, not just the pure split.
   it('moves the rendered card height when bodyHeight changes', () => {
     const { rerender } = render(
@@ -142,15 +216,23 @@ describe('LiveFatiguePanel responsiveness (TD-03.58)', () => {
  * place in the repo where spacing is a function of viewport.
  */
 describe('LiveFatiguePanel geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'LiveFatiguePanel.tsx')
-
   it('spaces the eyebrow from the plot by gap-stack-md', () => {
-    expect(spacingClassesIn(source, 'LiveFatiguePanel')).toEqual(['gap-stack-md'])
+    render(<LiveFatiguePanel model={model} velocity={velocity} />)
+    expect(spacingClassesAt(screen.getByTestId('live-fatigue-eyebrow').parentElement)).toEqual([
+      'gap-stack-md',
+    ])
     expect(resolveAll(['gap-stack-md'])).toEqual(['8px'])
   })
 
-  it('keeps the body inset responsive rather than fixed', () => {
-    expect(source).toContain('padding: layout.padding')
-    expect(source).toContain('gap: layout.gap')
-  })
+  it.each([PANEL_BREAKPOINTS.md - 1, 1440])(
+    'keeps the body inset responsive rather than fixed at %ipx',
+    (width) => {
+      render(<LiveFatiguePanel model={model} velocity={velocity} containerWidth={width} />)
+      const { padding, gap } = panelLayout(width)
+      expect(screen.getByTestId('live-fatigue-body')).toHaveStyle({
+        padding: `${padding}px ${padding}px ${padding}px ${padding}px`,
+        gap: `${gap}px`,
+      })
+    }
+  )
 })

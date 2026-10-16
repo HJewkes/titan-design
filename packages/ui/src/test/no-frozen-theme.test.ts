@@ -1,4 +1,4 @@
-import { RuleTester } from 'eslint'
+import { Linter, RuleTester } from 'eslint'
 import * as tsParser from '@typescript-eslint/parser'
 import rule from '../../eslint-rules/no-frozen-theme'
 
@@ -13,6 +13,21 @@ const componentFile = '/fake/packages/ui/src/components/custom/Fatigue/GhostBand
 // `ruleTester.run` must sit directly in the `describe` callback, not nested
 // inside `it()` — nesting it inside `it()` makes RuleTester's internal
 // assertions no-op silently (see no-raw-device-data-in-chat.test.ts).
+function messagesFor(code: string): string[] {
+  const linter = new Linter({ configType: 'flat' })
+  return linter
+    .verify(
+      code,
+      {
+        plugins: { t: { rules: { r: rule as never } } },
+        languageOptions: { ecmaVersion: 2022, sourceType: 'module' },
+        rules: { 't/r': 'error' },
+      },
+      'Widget.js'
+    )
+    .map((m) => m.message)
+}
+
 describe('no-frozen-theme', () => {
   ruleTester.run('no-frozen-theme', rule as never, {
     valid: [
@@ -72,5 +87,16 @@ describe('no-frozen-theme', () => {
         errors: [{ messageId: 'literalMode' }, { messageId: 'literalMode' }],
       },
     ],
+  })
+})
+
+describe('no-frozen-theme messages', () => {
+  it.each([
+    ['literalMode', "const t = getSemanticColors('dark')"],
+    ['moduleScope', 'const t = getSemanticColors(MODE)'],
+  ])('%s lists the on-surface roles', (_id, code) => {
+    const [message] = messagesFor(code)
+    for (const role of ['primary', 'secondary', 'tertiary'])
+      expect(message).toContain(`\`${role}\``)
   })
 })

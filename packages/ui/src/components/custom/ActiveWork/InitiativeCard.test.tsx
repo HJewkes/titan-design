@@ -1,11 +1,12 @@
-import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { describe, it, expect, vi } from 'vitest'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedClassNames } from '../../../test/classname-capture'
 import { InitiativeCard, type InitiativeState } from './InitiativeCard'
 
 const base = {
-  title: 'active-work — durable workspace state',
-  slug: 'active-work',
+  title: 'planner — durable project state',
+  slug: 'planner',
   openCount: 4,
   severityCounts: { critical: 0, high: 1, medium: 2, low: 1 },
 }
@@ -30,10 +31,10 @@ describe('InitiativeCard', () => {
       <InitiativeCard
         {...base}
         state="focused"
-        topTask={{ id: 'AW-6', title: 'Discovery sources' }}
+        topTask={{ id: 'PL-6', title: 'Discovery sources' }}
       />
     )
-    expect(screen.getByText('AW-6')).toBeInTheDocument()
+    expect(screen.getByText('PL-6')).toBeInTheDocument()
     expect(screen.getByText('Discovery sources')).toBeInTheDocument()
   })
 
@@ -63,6 +64,77 @@ describe('InitiativeCard', () => {
 
   it('has no accessibility violations', async () => {
     const { container } = render(<InitiativeCard {...base} state="focused" rank={1} />)
+    expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+describe('InitiativeCard className merge', () => {
+  it('lets a caller class replace the root class it conflicts with', () => {
+    render(<InitiativeCard {...base} state="focused" className="p-2" testID="cn-root" />)
+    const classes = capturedClassNames.get('cn-root')?.split(/\s+/)
+    expect(classes).toContain('p-2')
+    expect(classes).not.toContain('p-4')
+  })
+})
+
+describe('InitiativeCard as a link', () => {
+  it('is static with neither onPress nor href', () => {
+    render(<InitiativeCard {...base} state="focused" />)
+    expect(screen.queryByRole('link')).not.toBeInTheDocument()
+    expect(screen.queryByRole('button')).not.toBeInTheDocument()
+  })
+
+  it('is one link named by the initiative title and one tab stop', () => {
+    const { container } = render(
+      <InitiativeCard {...base} state="focused" rank={1} onPress={() => {}} />
+    )
+    expect(screen.getAllByRole('link')).toHaveLength(1)
+    expect(screen.getByRole('link', { name: base.title })).toBeInTheDocument()
+    const tabbable = container.querySelectorAll('[tabindex]:not([tabindex="-1"]), a[href], button')
+    expect(tabbable).toHaveLength(1)
+  })
+
+  it('calls onPress when activated', () => {
+    const onPress = vi.fn()
+    render(<InitiativeCard {...base} state="focused" onPress={onPress} />)
+    fireEvent.click(screen.getByRole('link', { name: base.title }))
+    expect(onPress).toHaveBeenCalledTimes(1)
+  })
+
+  it('activates from the keyboard', () => {
+    const onPress = vi.fn()
+    render(<InitiativeCard {...base} state="focused" onPress={onPress} />)
+    const link = screen.getByRole('link', { name: base.title })
+    fireEvent.keyDown(link, { key: 'Enter' })
+    expect(onPress).toHaveBeenCalledTimes(1)
+  })
+
+  it('carries the href when given', () => {
+    render(<InitiativeCard {...base} state="focused" href="/initiatives/planner" />)
+    expect(screen.getByRole('link', { name: base.title })).toHaveAttribute(
+      'href',
+      '/initiatives/planner'
+    )
+  })
+
+  it('renders the meta slot after the top task without adding a link', () => {
+    render(
+      <InitiativeCard {...base} state="focused" onPress={() => {}} meta={<span>3 days ago</span>} />
+    )
+    expect(screen.getByText('3 days ago')).toBeInTheDocument()
+    expect(screen.getAllByRole('link')).toHaveLength(1)
+  })
+
+  it('has no accessibility violations as a link', async () => {
+    const { container } = render(
+      <InitiativeCard
+        {...base}
+        state="focused"
+        href="/x"
+        onPress={() => {}}
+        meta={<span>new</span>}
+      />
+    )
     expect(await axe(container)).toHaveNoViolations()
   })
 })

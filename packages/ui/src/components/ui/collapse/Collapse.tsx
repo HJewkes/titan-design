@@ -84,6 +84,7 @@ export function CollapseButton({ children, accessibilityLabel, className }: Coll
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
       accessibilityState={{ expanded: isOpen }}
+      aria-expanded={isOpen}
       className={cn(
         'flex-row items-center justify-between py-3 px-4',
         'web:hover:bg-interactive-hover active:bg-interactive-active rounded-lg',
@@ -182,7 +183,7 @@ export function Accordion({
       <View className={cn('w-full divide-y divide-hairline', className)} {...props}>
         {React.Children.map(children, (child, index) => {
           if (React.isValidElement(child)) {
-            return React.cloneElement(child as React.ReactElement<any>, { index })
+            return React.cloneElement(child as React.ReactElement<AccordionItemProps>, { index })
           }
           return child
         })}
@@ -208,7 +209,7 @@ export function AccordionItem({ index = 0, children, className }: AccordionItemP
     <View className={className}>
       {React.Children.map(children, (child) => {
         if (React.isValidElement(child)) {
-          return React.cloneElement(child as React.ReactElement<any>, {
+          return React.cloneElement(child as React.ReactElement<AccordionButtonProps>, {
             isOpen,
             onToggle: () => toggleIndex(index),
           })
@@ -240,6 +241,7 @@ export function AccordionButton({
       onPress={onToggle}
       accessibilityRole="button"
       accessibilityState={{ expanded: isOpen }}
+      aria-expanded={isOpen}
       className={cn(
         'flex-row items-center justify-between py-4 px-1',
         'web:hover:bg-interactive-hover active:bg-interactive-active',

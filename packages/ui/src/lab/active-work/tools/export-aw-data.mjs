@@ -6,20 +6,22 @@
  * a focus initiative's prose (brief body, handoff, recent session bodies) so the
  * session/initiative readers render real content. Re-run to refresh.
  *
- * Output: ../data/aw-data.ts
+ * Output: ../.private-out/aw-data.ts (gitignored). Refuses any path git tracks.
+ * Output never replaces the checked-in synthetic ../data/ files.
  */
 import { promises as fs } from 'node:fs';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import path from 'node:path';
 import os from 'node:os';
+import { defaultOutPath, prepareOutPath, runMain } from './output-guard.mjs';
 
 const pexec = promisify(execFile);
 const ACTIVE_ROOT =
   process.env.ACTIVE_ROOT ||
   path.join(os.homedir(), 'Library', 'Application Support', 'active-work');
 const FOCUS = process.argv[2] || 'active-work';
-const OUT = path.join(path.dirname(new URL(import.meta.url).pathname), '..', 'data', 'aw-data.ts');
+const OUT = defaultOutPath('aw-data.ts');
 
 async function aw(args) {
   const { stdout } = await pexec('active-work', ['--json', ...args], {
@@ -48,6 +50,7 @@ function clip(text, maxLines = 80) {
 }
 
 async function main() {
+  const outPath = prepareOutPath(OUT);
   const list = await aw(['list']);
   const taskData = await aw(['task', 'list', FOCUS, '--all-initiatives', '--status', 'all']);
   const tasks = taskData.tasks ?? [];
@@ -158,14 +161,11 @@ export interface AwData {
 export const awData: AwData = ${JSON.stringify(data, null, 2)};
 `;
 
-  await fs.writeFile(OUT, module, 'utf8');
+  await fs.writeFile(outPath, module, 'utf8');
   console.log(
     `wrote ${OUT}\n  initiatives: ${flat.length}  tasks: ${tasks.length}  ` +
       `focus=${FOCUS} sessions: ${sessions.length}`,
   );
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
+runMain(main);

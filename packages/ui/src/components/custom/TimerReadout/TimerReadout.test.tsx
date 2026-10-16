@@ -1,11 +1,24 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, act } from '@testing-library/react'
+import { axe } from 'jest-axe'
 import { TimerReadout } from './TimerReadout'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
-import { primitiveRamps } from '../../../theme/tokens/primitives'
+import { Surface } from '../../ui/surface'
+
+// Light status-live-muted equals dark, so light is swapped for another token to prove the mode is read.
+vi.mock('../../../theme/tokens/semantic', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../../theme/tokens/semantic')>()
+  const light = actual.getSemanticColors('light')
+  const probeLight = { ...light, 'status-live-muted': light['status-info'] }
+  return {
+    ...actual,
+    getSemanticColors: (mode: 'dark' | 'light') =>
+      mode === 'light' ? probeLight : actual.getSemanticColors(mode),
+  }
+})
 
 const semantic = getSemanticColors('dark')
-const LIVE_GREEN = primitiveRamps.green[500]
+const LIVE_GREEN = semantic['status-live-muted']
 const SECONDARY = semantic['text-secondary']
 const TERTIARY = semantic['text-tertiary']
 
@@ -14,6 +27,13 @@ afterEach(() => {
 })
 
 describe('TimerReadout', () => {
+  it('has no accessibility violations', async () => {
+    const { container } = render(
+      <TimerReadout mode="up" elapsedMs={42 * 1000} durationMs={60 * 60000} showTotal running />
+    )
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
   it('renders elapsed mm:ss from a controlled up-timer', () => {
     render(<TimerReadout mode="up" elapsedMs={65 * 1000} />)
     expect(screen.getByTestId('timer-readout-current')).toHaveTextContent('1:05')
@@ -33,6 +53,17 @@ describe('TimerReadout', () => {
     render(<TimerReadout mode="up" elapsedMs={0} running />)
     expect(screen.getByTestId('timer-readout-current')).toHaveStyle({ color: LIVE_GREEN })
     expect(screen.getByTestId('timer-readout-glyph')).toHaveStyle({ color: LIVE_GREEN })
+  })
+
+  it('shows the live green from the light status-live-muted token on a light surface', () => {
+    const lightLive = getSemanticColors('light')['status-live-muted']
+    expect(lightLive).not.toBe(LIVE_GREEN)
+    render(
+      <Surface theme="light">
+        <TimerReadout mode="up" elapsedMs={0} running />
+      </Surface>
+    )
+    expect(screen.getByTestId('timer-readout-current')).toHaveStyle({ color: lightLive })
   })
 
   it('shows the current value in secondary when paused', () => {

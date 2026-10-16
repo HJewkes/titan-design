@@ -6,7 +6,7 @@ import { Surface } from '../../ui/surface'
 const meta: Meta<typeof VolumeLandmarkBar> = {
   title: 'Custom/Workout/DataViz/VolumeLandmarkBar',
   component: VolumeLandmarkBar,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {
@@ -14,7 +14,7 @@ const meta: Meta<typeof VolumeLandmarkBar> = {
           'Horizontal weekly-volume bar with MEV / MAV / MRV landmark ticks, a HEAT-scale ' +
           'fill positioned against the MAV target, and a % readout. Reuses the canonical ' +
           'BodyMap volume heat scale (under → maintenance → productive → approaching → over).' +
-          ' Composes **ZoneTrack** · **DataRow**.',
+          ' Composes **ZoneTrack** · **DataRow** · **Typography** (`overline` name, bold `body2` % in text-secondary).',
       },
     },
   },

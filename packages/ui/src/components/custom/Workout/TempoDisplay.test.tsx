@@ -1,8 +1,19 @@
 import { describe, it, expect, vi } from 'vitest'
-import { siblingSource, resolveAll } from '../../../test/spacing-resolver'
+import { spacingClassesAt, spacingClassesOf, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { TempoDisplay } from './TempoDisplay'
+import { capturedByNode } from '../../../test/classname-capture'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
+import { SurfaceContext } from '../../ui/surface/SurfaceContext'
+
+function renderInMode(mode: ThemeMode) {
+  return render(
+    <SurfaceContext.Provider value={{ mode, level: 'base' }}>
+      <TempoDisplay tempo={[3, 1, 1, 0]} />
+    </SurfaceContext.Provider>
+  )
+}
 
 // tempo = [eccentric, pauseBottom, concentric, pauseTop]
 describe('TempoDisplay', () => {
@@ -10,6 +21,23 @@ describe('TempoDisplay', () => {
     render(<TempoDisplay tempo={[3, 1, 1, 0]} />)
     expect(screen.getByTestId('tempo-value')).toBeInTheDocument()
     expect(screen.getByText('3')).toBeInTheDocument()
+  })
+
+  it.each<ThemeMode>(['light', 'dark'])(
+    'colours the resting TEMPO label text-secondary in %s mode',
+    (mode) => {
+      renderInMode(mode)
+      expect(screen.getByText('TEMPO')).toHaveStyle({
+        color: getSemanticColors(mode)['text-secondary'],
+      })
+    }
+  )
+
+  it('keeps the resting TEMPO label off result-neutral in light mode', () => {
+    renderInMode('light')
+    expect(screen.getByText('TEMPO')).not.toHaveStyle({
+      color: getSemanticColors('light')['result-neutral'],
+    })
   })
 
   it('renders the TEMPO label prefix', () => {
@@ -37,10 +65,19 @@ describe('TempoDisplay', () => {
     ).toBeInTheDocument()
   })
 
-  it('is always a Pressable for tooltip', () => {
+  it('is a button when it shows the info tooltip', () => {
     render(<TempoDisplay tempo={[3, 1, 1, 0]} />)
-    const display = screen.getByTestId('tempo-display')
-    expect(display).toBeInTheDocument()
+    expect(screen.getByTestId('tempo-display')).toHaveAttribute('role', 'button')
+  })
+
+  it('is a button when it has an onPress handler', () => {
+    render(<TempoDisplay tempo={[3, 1, 1, 0]} showInfo={false} onPress={() => {}} />)
+    expect(screen.getByTestId('tempo-display')).toHaveAttribute('role', 'button')
+  })
+
+  it('has no button role when it is neither pressable nor showing info', () => {
+    render(<TempoDisplay tempo={[3, 1, 1, 0]} showInfo={false} />)
+    expect(screen.getByTestId('tempo-display')).not.toHaveAttribute('role')
   })
 
   it('calls onPress when pressed', () => {
@@ -78,6 +115,12 @@ describe('TempoDisplay', () => {
     it('overrides the digit font size via fontSize', () => {
       render(<TempoDisplay tempo={[3, 1, 1, 0]} fontSize={32} showLabel={false} />)
       expect(screen.getByText('3')).toHaveStyle({ fontSize: 32 })
+    })
+
+    it('renders digits and dashes through Typography mono', () => {
+      render(<TempoDisplay tempo={[3, 1, 1, 0]} showLabel={false} />)
+      expect(capturedByNode.get(screen.getByText('3'))?.split(' ')).toContain('font-mono')
+      expect(capturedByNode.get(screen.getAllByText('-')[0])?.split(' ')).toContain('font-mono')
     })
   })
 
@@ -190,16 +233,24 @@ describe('TempoDisplay', () => {
  * spacing that no fixed rung expresses — and is exempt by design.
  */
 describe('TempoDisplay tooltip geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'TempoDisplay.tsx')
+  const openTooltip = () => {
+    render(<TempoDisplay tempo={[3, 1, 1, 0]} />)
+    fireEvent.click(screen.getByTestId('tempo-display'))
+  }
 
   it('keeps the tooltip offset and inset', () => {
-    expect(source).toContain('items-center mb-stack-md')
-    expect(resolveAll(['mb-stack-md'])).toEqual(['8px'])
-    expect(resolveAll(['py-inset-sm', 'px-inset-md'])).toEqual(['8px', '12px'])
+    openTooltip()
+    expect(spacingClassesOf('tempo-tooltip')).toEqual(['mb-stack-md'])
+    expect(resolveAll(spacingClassesOf('tempo-tooltip'))).toEqual(['8px'])
+    const inner = screen.getByTestId('tempo-tooltip').firstElementChild
+    expect(spacingClassesAt(inner)).toEqual(['py-inset-sm', 'px-inset-md'])
+    expect(resolveAll(spacingClassesAt(inner))).toEqual(['8px', '12px'])
   })
 
   it('leaves the chip padding proportional to the digit size', () => {
-    expect(source).toContain('Math.round(fontSize * 0.6)')
-    expect(source).toContain('Math.round(fontSize * 0.3)')
+    render(<TempoDisplay tempo={[3, 1, 1, 0]} fontSize={20} />)
+    const chip = screen.getByTestId('tempo-display').firstElementChild
+    expect(chip).toHaveStyle({ paddingLeft: '12px', paddingRight: '12px' })
+    expect(chip).toHaveStyle({ paddingTop: '6px', paddingBottom: '6px' })
   })
 })

@@ -100,7 +100,7 @@ interface DecisionArgs {
  */
 const meta: Meta<DecisionArgs> = {
   title: 'Lab/Decisions/Primary Goal Card',
-  tags: ['autodocs', 'status:lab'],
+  tags: ['autodocs', 'status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
   argTypes: { width: { control: 'inline-radio', options: WIDTHS } },
   render: (args) => (

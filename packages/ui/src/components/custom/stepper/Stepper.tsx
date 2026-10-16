@@ -1,6 +1,7 @@
 import React, { createContext, useContext } from 'react'
 import { View, Text, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+import { CheckMark } from '../../icons'
 
 export type StepStatus = 'completed' | 'active' | 'upcoming' | 'error'
 export type StepperOrientation = 'horizontal' | 'vertical'
@@ -64,7 +65,7 @@ export function Stepper({
           if (React.isValidElement(child)) {
             return (
               <>
-                {React.cloneElement(child as React.ReactElement<any>, { index })}
+                {React.cloneElement(child as React.ReactElement<StepProps>, { index })}
                 {index < React.Children.count(children) - 1 && <StepConnector index={index} />}
               </>
             )
@@ -95,6 +96,8 @@ function StepConnector({ index }: StepConnectorProps) {
   )
 }
 
+type StepPartProps = Pick<StepIndicatorProps, 'status' | 'index'>
+
 export interface StepProps {
   /** Step index (injected by Stepper) */
   index?: number
@@ -123,7 +126,7 @@ export function Step({ index = 0, status, className, children }: StepProps) {
     >
       {React.Children.map(children, (child) => {
         if (React.isValidElement(child)) {
-          return React.cloneElement(child as React.ReactElement<any>, {
+          return React.cloneElement(child as React.ReactElement<StepPartProps>, {
             status: derivedStatus,
             index,
           })
@@ -176,11 +179,14 @@ export function StepIndicator({
         className
       )}
     >
-      {icon || (
-        <Text className={cn('text-sm font-semibold', glyphStyles[status])}>
-          {status === 'completed' ? '✓' : index + 1}
-        </Text>
-      )}
+      {icon ||
+        (status === 'completed' ? (
+          <View className={glyphStyles.completed}>
+            <CheckMark size={16} strokeWidth={3} />
+          </View>
+        ) : (
+          <Text className={cn('text-sm font-semibold', glyphStyles[status])}>{index + 1}</Text>
+        ))}
     </View>
   )
 }
@@ -209,7 +215,7 @@ export function StepLabel({ status = 'upcoming', className, children }: StepLabe
           : status === 'completed'
             ? 'text-brand-primary'
             : status === 'error'
-              ? 'text-status-error'
+              ? 'text-text-error'
               : 'text-text-secondary',
         className
       )}

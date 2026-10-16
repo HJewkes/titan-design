@@ -1,7 +1,10 @@
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { describe, it, expect, vi, afterEach } from 'vitest'
+import { render, renderHook, screen, fireEvent, act } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedByNode } from '../../../test/classname-capture'
 import { Autocomplete } from './Autocomplete'
+import { useAutocompleteState } from './useAutocompleteState'
+import { defaultFilterFn } from './autocompleteFilter'
 
 const defaultOptions = [
   { value: '1', label: 'Apple' },
@@ -43,6 +46,26 @@ describe('Autocomplete', () => {
   it('renders helper text', () => {
     render(<Autocomplete options={defaultOptions} helperText="Pick your favorite" />)
     expect(screen.getByText('Pick your favorite')).toBeInTheDocument()
+  })
+
+  it('paints helper, empty and description text text-secondary, since each carries content', () => {
+    const classesOf = (text: string) =>
+      (capturedByNode.get(screen.getByText(text)) ?? '').split(/\s+/)
+    render(<Autocomplete options={optionsWithDescriptions} helperText="Pick a person" />)
+    const input = screen.getByPlaceholderText('Search...')
+
+    typeInInput(input, 'John')
+    const description = classesOf('john@example.com')
+    typeInInput(input, 'Zzzz')
+
+    for (const classes of [
+      classesOf('Pick a person'),
+      description,
+      classesOf('No options found'),
+    ]) {
+      expect(classes).toContain('text-text-secondary')
+      expect(classes).not.toContain('text-text-tertiary')
+    }
   })
 
   it('renders error message instead of helper text', () => {
@@ -104,6 +127,21 @@ describe('Autocomplete', () => {
   it('shows clear button when value is selected', () => {
     render(<Autocomplete options={defaultOptions} value="1" isClearable />)
     expect(screen.getByLabelText('Clear selection')).toBeInTheDocument()
+  })
+
+  it('shows the clear button and leaks no bare 0 when the selected value is 0', () => {
+    render(
+      <Autocomplete
+        options={[
+          { value: '0', label: 'Zero' },
+          { value: '1', label: 'One' },
+        ]}
+        value={0 as unknown as string}
+        isClearable
+      />
+    )
+    expect(screen.getByLabelText('Clear selection')).toBeInTheDocument()
+    expect(screen.queryByText('0')).not.toBeInTheDocument()
   })
 
   it('calls onChange with null when clear is pressed', () => {
@@ -178,6 +216,103 @@ describe('Autocomplete', () => {
     })
   })
 
+  describe('selecting an option', () => {
+    it('shows the selected option label in the input', () => {
+      render(<Autocomplete options={defaultOptions} />)
+      const input = screen.getByPlaceholderText('Search...')
+
+      typeInInput(input, 'App')
+      fireEvent.click(screen.getByText('Apple'))
+
+      expect(input).toHaveValue('Apple')
+    })
+
+    it('does not select a disabled option', () => {
+      const onChange = vi.fn()
+      const options = [{ value: '1', label: 'Apple', isDisabled: true }]
+      render(<Autocomplete options={options} onChange={onChange} />)
+      const input = screen.getByPlaceholderText('Search...')
+
+      typeInInput(input, 'App')
+      fireEvent.click(screen.getByText('Apple'))
+
+      expect(onChange).not.toHaveBeenCalled()
+      expect(input).toHaveValue('App')
+    })
+  })
+
+  describe('selecting a disabled option through the state handler', () => {
+    it('ignores the selection, even when the row does not block it', () => {
+      const onChange = vi.fn()
+      const { result } = renderHook(() =>
+        useAutocompleteState({
+          options: [{ value: '1', label: 'Apple', isDisabled: true }],
+          onChange,
+          minChars: 0,
+          filterFn: defaultFilterFn,
+        })
+      )
+
+      act(() => {
+        result.current.handleSelectOption({ value: '1', label: 'Apple', isDisabled: true })
+      })
+
+      expect(onChange).not.toHaveBeenCalled()
+      expect(result.current.inputValue).toBe('')
+    })
+  })
+
+  describe('blur', () => {
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    it('keeps the list open for 200ms after blur, then closes it', () => {
+      vi.useFakeTimers()
+      render(<Autocomplete options={defaultOptions} />)
+      const input = screen.getByPlaceholderText('Search...')
+      typeInInput(input, 'App')
+
+      fireEvent.blur(input)
+      act(() => {
+        vi.advanceTimersByTime(199)
+      })
+      expect(screen.getByText('Apple')).toBeInTheDocument()
+
+      act(() => {
+        vi.advanceTimersByTime(1)
+      })
+      expect(screen.queryByText('Apple')).not.toBeInTheDocument()
+    })
+
+    it('keeps the label of an option clicked within 200ms of blur', () => {
+      vi.useFakeTimers()
+      render(<Autocomplete options={defaultOptions} />)
+      const input = screen.getByPlaceholderText('Search...')
+      typeInInput(input, 'App')
+
+      fireEvent.blur(input)
+      fireEvent.click(screen.getByText('Apple'))
+      act(() => {
+        vi.advanceTimersByTime(200)
+      })
+
+      expect(input).toHaveValue('Apple')
+    })
+
+    it('leaves no pending timer when unmounted during the blur delay', () => {
+      vi.useFakeTimers()
+      const { unmount } = render(<Autocomplete options={defaultOptions} />)
+      const input = screen.getByPlaceholderText('Search...')
+      typeInInput(input, 'App')
+      fireEvent.blur(input)
+
+      unmount()
+
+      expect(vi.getTimerCount()).toBe(0)
+    })
+  })
+
   describe('options with descriptions', () => {
     it('renders option descriptions', () => {
       render(<Autocomplete options={optionsWithDescriptions} />)
@@ -225,5 +360,16 @@ describe('Autocomplete', () => {
       render(<Autocomplete options={defaultOptions} value="1" isClearable />)
       expect(screen.getByLabelText('Clear selection')).toBeInTheDocument()
     })
+  })
+})
+
+// TD-483: brand orange as the selected option label missed 4.5:1 on the light overlay planes.
+describe('Autocomplete selected option', () => {
+  it('paints the selected label in the brand text role, not the brand fill', () => {
+    render(<Autocomplete options={defaultOptions} value="2" />)
+    typeInInput(screen.getByRole('textbox'), 'Ban')
+    const classes = (capturedByNode.get(screen.getByText('Banana')) ?? '').split(/\s+/)
+    expect(classes).toContain('text-text-brand')
+    expect(classes).not.toContain('text-brand-primary')
   })
 })

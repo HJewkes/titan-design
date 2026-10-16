@@ -18,7 +18,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { ReactNode } from 'react'
 import { View, Text, type ViewStyle } from 'react-native'
-import { DualVelocityStrip, LiveAuraFrame } from '../../components'
+import { DualVelocityStrip, LiveAuraFrame } from '../../workout'
 import type { TempoLivePhase } from '../../components/custom/Workout/TempoDisplay'
 import { getSemanticColors } from '../../theme/tokens/semantic'
 import { greyRamp, primitiveRamps } from '../../theme/tokens/primitives'
@@ -136,7 +136,7 @@ function HeroNumeralsTempo({ side }: { side: 'L' | 'R' }) {
                 overflow: 'hidden',
               }}
             >
-              {active && (
+              {!!active && (
                 <View
                   style={{
                     position: 'absolute',
@@ -191,7 +191,7 @@ function CadenceBarTempo({ side }: { side: 'L' | 'R' }) {
                 backgroundColor: alpha(WARM_TRACK, 0.16),
               }}
             >
-              {active && (
+              {!!active && (
                 <View
                   style={{
                     position: 'absolute',

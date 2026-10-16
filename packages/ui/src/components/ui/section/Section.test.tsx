@@ -3,7 +3,8 @@ import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Text } from 'react-native'
 import { Section, SectionHeader, SectionContent } from './Section'
-import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
+import { capturedByNode } from '../../../test/classname-capture'
 
 describe('Section', () => {
   it('renders children correctly', () => {
@@ -16,7 +17,7 @@ describe('Section', () => {
   })
 
   it('applies custom className', () => {
-    const { container } = render(
+    render(
       <Section className="mt-4" testID="section">
         <Text>Content</Text>
       </Section>
@@ -37,6 +38,13 @@ describe('SectionHeader', () => {
     expect(screen.getByText('Subtitle text')).toBeInTheDocument()
   })
 
+  it('paints the subtitle text-secondary, since it carries content', () => {
+    render(<SectionHeader title="Title" subtitle="Subtitle text" />)
+    const classes = (capturedByNode.get(screen.getByText('Subtitle text')) ?? '').split(/\s+/)
+    expect(classes).toContain('text-text-secondary')
+    expect(classes).not.toContain('text-text-tertiary')
+  })
+
   it('does not render subtitle when not provided', () => {
     render(<SectionHeader title="Title" />)
     expect(screen.queryByText('Subtitle text')).not.toBeInTheDocument()
@@ -48,7 +56,7 @@ describe('SectionHeader', () => {
   })
 
   it('does not render trailing when not provided', () => {
-    const { container } = render(<SectionHeader title="Title" />)
+    render(<SectionHeader title="Title" />)
     expect(screen.getByText('Title')).toBeInTheDocument()
   })
 
@@ -124,14 +132,39 @@ describe('Section compound component', () => {
  * the caller puts under it, which is not a sibling Section owns.
  */
 describe('Section geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'Section.tsx')
-
   it.each([
-    ['the header', 'flex-row items-center justify-between mb-3 px-inset-xs', ['12px', '4px']],
-    ['the title column', 'flex-1 gap-stack-sm', ['4px']],
-  ] as const)('%s ships `%s`', (_label, classes, pixels) => {
-    expect(source).toContain(classes)
-    const spacing = classes.split(' ').filter((c) => resolveAll([c])[0] !== undefined)
-    expect(resolveAll(spacing)).toEqual([...pixels])
+    [
+      'the header',
+      () => screen.getByText('Workouts').parentElement?.parentElement ?? null,
+      ['mb-3', 'px-inset-xs'],
+      ['12px', '4px'],
+    ],
+    [
+      'the title column',
+      () => screen.getByText('Workouts').parentElement,
+      ['gap-stack-sm'],
+      ['4px'],
+    ],
+  ] as const)('%s ships its spacing tokens', (_label, find, classes, pixels) => {
+    render(<SectionHeader title="Workouts" subtitle="This week" />)
+    expect(spacingClassesAt(find())).toEqual([...classes])
+    expect(resolveAll([...classes])).toEqual([...pixels])
+  })
+})
+
+/** Owner D6: a section header is a sentence-case title, not an eyebrow. */
+describe('SectionHeader title', () => {
+  it('renders in the heading face, sentence case, on text-primary', () => {
+    render(<SectionHeader title="Recent workouts" />)
+    const classes = (capturedByNode.get(screen.getByText('Recent workouts')) ?? '').split(/\s+/)
+    expect(classes).toEqual(
+      expect.arrayContaining(['font-heading', 'text-sm', 'font-semibold', 'text-text-primary'])
+    )
+    expect(classes).not.toContain('uppercase')
+  })
+
+  it('is exposed as a heading', () => {
+    render(<SectionHeader title="Recent workouts" />)
+    expect(screen.getByRole('heading', { name: 'Recent workouts' })).toBeInTheDocument()
   })
 })

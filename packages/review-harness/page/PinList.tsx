@@ -1,5 +1,6 @@
 import type { Dispatch } from 'react'
-import type { Annotation } from '../src/schema.ts'
+import type { Annotation } from '@titan-design/review-schema'
+import { pinNumber } from './pins.ts'
 import type { Action } from './state.ts'
 
 interface PinListProps {
@@ -22,7 +23,7 @@ export function PinList({ variantKey, pins, focusPin, dispatch }: PinListProps) 
       {pins.map((pin) => (
         <li key={pin.id} data-testid={`pin-${pin.id}`}>
           <span className="pin-label">
-            {pin.id.split('-').pop()} · {pin.width}px ({pin.x}, {pin.y}) · {describeTarget(pin)}
+            {pinNumber(pin.id)} · {pin.width}px ({pin.x}, {pin.y}) · {describeTarget(pin)}
           </span>
           <input
             aria-label={`Note for pin ${pin.id}`}

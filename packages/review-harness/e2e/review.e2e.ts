@@ -4,27 +4,31 @@ import { mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { expect, test, type Page } from '@playwright/test'
-import { FeedbackSchema, MANIFEST_SCHEMA_ID, type ManifestInput } from '../src/schema.ts'
+import { FeedbackSchema, MANIFEST_SCHEMA_ID, type ManifestInput } from '@titan-design/review-schema'
+import { SECTION_TEXTS, underContract } from '../test/fixtures.ts'
 import { isolatedStorybook, type RunningStorybook } from './storybook.ts'
 
 const CLI = new URL('../src/cli.ts', import.meta.url).pathname
 
 function round(storybookUrl: string, height = 700): ManifestInput {
-  return {
-    schema: MANIFEST_SCHEMA_ID,
-    unit: 'vw-419-e2e',
-    round: 1,
-    storybookUrl,
-    widths: [360],
-    height,
-    variants: [
-      { key: 'A', storyId: 'lab-decisions-goal-milestone-tiles--phone', label: 'Tiles' },
-      { key: 'B', storyId: 'lab-decisions-compact-goal-chart--phone', label: 'Chart' },
-    ],
-    questions: [
-      { id: 'q1', kind: 'pick-one', prompt: 'Which one?', options: ['A', 'B'], required: true },
-    ],
-  }
+  return underContract(
+    {
+      schema: MANIFEST_SCHEMA_ID,
+      unit: 'vw-419-e2e',
+      round: 1,
+      storybookUrl,
+      widths: [360],
+      height,
+      variants: [
+        { key: 'A', storyId: 'lab-decisions-goal-milestone-tiles--phone', label: 'Tiles' },
+        { key: 'B', storyId: 'lab-decisions-compact-goal-chart--phone', label: 'Chart' },
+      ],
+      questions: [
+        { id: 'q1', kind: 'pick-one', prompt: 'Which one?', options: ['A', 'B'], required: true },
+      ],
+    },
+    'CHOICE'
+  )
 }
 
 const STORIES = [
@@ -36,8 +40,16 @@ const STORIES = [
 function sectionedRound(storybookUrl: string): ManifestInput {
   const keys = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
   const pick = (id: string, options: string[]) =>
-    ({ id, kind: 'pick-one', prompt: `Pick for ${id}?`, options, required: true }) as const
-  const text = (id: string) => ({ id, kind: 'text', prompt: `Wording for ${id}?` }) as const
+    ({
+      id,
+      kind: 'pick-one',
+      prompt: `Pick for ${id}?`,
+      options,
+      required: true,
+      signsOff: `the part ${id} asks about`,
+    }) as const
+  const text = (id: string, required = false) =>
+    ({ id, kind: 'text', prompt: `Wording for ${id}?`, required }) as const
   return {
     schema: MANIFEST_SCHEMA_ID,
     unit: 'vw-545-e2e',
@@ -51,20 +63,38 @@ function sectionedRound(storybookUrl: string): ManifestInput {
       pick('q2', ['on the chart', 'in the hero eyebrow']),
       pick('q3', ['D', 'E']),
       pick('q4', ['F', 'G']),
-      text('overall'),
+      text('overall', true),
     ],
     sections: [
-      { id: 's1', title: 'First', questionIds: ['q1', 'q1-text'], variantKeys: ['A', 'B'] },
-      { id: 's2', title: 'Second', questionIds: ['q2'], variantKeys: ['C'] },
+      {
+        id: 's1',
+        title: 'First',
+        ...SECTION_TEXTS,
+        kind: 'CHOICE',
+        questionIds: ['q1', 'q1-text'],
+        variantKeys: ['A', 'B'],
+      },
+      {
+        id: 's2',
+        title: 'Second',
+        ...SECTION_TEXTS,
+        kind: 'STATES',
+        questionIds: ['q2'],
+        variantKeys: ['C'],
+      },
       {
         id: 's3',
         title: 'Third',
+        ...SECTION_TEXTS,
+        kind: 'CHOICE',
         questionIds: ['q3'],
         variantKeys: ['D', 'E'],
       },
       {
         id: 's4',
         title: 'Fourth',
+        ...SECTION_TEXTS,
+        kind: 'CHOICE',
         questionIds: ['q4'],
         variantKeys: ['F', 'G'],
       },
@@ -73,7 +103,17 @@ function sectionedRound(storybookUrl: string): ManifestInput {
 }
 
 function startCli(manifestPath: string, outDir: string, ...flags: string[]) {
-  const child = spawn('node', [CLI, manifestPath, '--no-open', '--out', outDir, ...flags])
+  const child = spawn('node', [
+    CLI,
+    manifestPath,
+    '--no-open',
+    '--out',
+    outDir,
+    '--contrast-override',
+    'e2e fixture round',
+    '--allow-stale',
+    ...flags,
+  ])
   let stdout = ''
   child.stdout.on('data', (c: Buffer) => (stdout += c.toString()))
   const url = new Promise<string>((resolve) => {
@@ -230,9 +270,7 @@ test('a reload keeps the unsent verdicts, comments, pins and answers', async ({ 
   run.child.kill()
 })
 
-test('a sectioned round scrolls to the end and sends with focus left in a story', async ({
-  page,
-}) => {
+test('a sectioned round pages section by section and sends a partial review', async ({ page }) => {
   const dir = await mkdtemp(join(tmpdir(), 'titan-review-e2e-'))
   const manifestPath = join(dir, 'round.json')
   await writeFile(manifestPath, JSON.stringify(sectionedRound(storybook.url)))
@@ -240,18 +278,16 @@ test('a sectioned round scrolls to the end and sends with focus left in a story'
   cli = run.child
   await page.goto(await run.url)
 
-  for (const id of ['q1', 'q2', 'q3', 'q4'])
+  const ids = ['q1', 'q2', 'q3', 'q4']
+  const next = page.getByTestId('pager-end').getByRole('button', { name: /Next/ })
+  for (const [i, id] of ids.entries()) {
+    await expect(page.getByTestId('page-position')).toContainText(`Section ${i + 1} of 5`)
+    await expect(page.getByTestId('page-position-end')).toContainText(`Section ${i + 1} of 5`)
+    await expect(next, `Next is focused on entering section ${i + 1}`).toBeFocused()
     await page.getByTestId(`question-${id}`).getByRole('radio').first().click()
-  const review = page.getByRole('button', { name: /Review answers/ })
-  await page.mouse.move(700, 500)
-  for (
-    let i = 0;
-    i < 40 && !((await review.isVisible()) && (await review.boundingBox())!.y < 1000);
-    i++
-  )
-    await page.mouse.wheel(0, 600)
-  await expect(review).toBeInViewport()
-  expect(await page.locator('[data-width] iframe').count()).toBe(14)
+    if (i < ids.length - 1) await page.keyboard.press(']')
+  }
+  expect(await page.locator('[data-width] iframe').count(), 'only section 4 is on screen').toBe(4)
 
   const story = page.getByTestId('variant-G').locator('iframe').last()
   // A cold Storybook compiles the story on first request, which can outlast the 5 s default.
@@ -264,7 +300,11 @@ test('a sectioned round scrolls to the end and sends with focus left in a story'
 
   await page.keyboard.press('Meta+Enter')
   await expect(page.getByTestId('review-screen'), 'focus leaves the hidden form').toBeFocused()
+  await expect(page.getByTestId('unanswered')).toContainText('1 of 6 questions are unanswered')
   await page.keyboard.press('Meta+Enter')
+  const held = page.waitForTimeout(2_000).then(() => 'held')
+  expect(await Promise.race([run.exit.then(() => 'sent'), held]), 'Cmd+Enter sent').toBe('held')
+  await page.getByTestId('send').click()
   await expect(page.getByTestId('sent')).toBeVisible()
 
   expect(await run.exit).toBe(0)
@@ -272,6 +312,67 @@ test('a sectioned round scrolls to the end and sends with focus left in a story'
     JSON.parse(await readFile(join(dir, 'feedback.json'), 'utf8'))
   )
   expect(written.answers.map((a) => a.questionId)).toEqual(['q1', 'q2', 'q3', 'q4'])
+  expect(written.unansweredQuestionIds).toEqual(['q1-text', 'overall'])
+})
+
+/** Two auto variants about 450 px apart in content, and one tall story in a fixed box. */
+function mixedHeightRound(storybookUrl: string): ManifestInput {
+  return {
+    ...round(storybookUrl, 1300),
+    unit: 'vw-695-e2e',
+    variants: [
+      { key: 'A', storyId: 'lab-decisions-compact-goal-chart--phone', label: 'Chart' },
+      { key: 'B', storyId: 'custom-workout-goals-goalcard--phone', label: 'Card' },
+      { key: 'C', storyId: STORIES[0], label: 'Tiles', height: 500 },
+    ],
+  }
+}
+
+/** The story's drawn height, measured the way page/autoHeight.ts measures it. */
+function drawnHeight(page: Page, key: string): Promise<number> {
+  const story = page.getByTestId(`variant-${key}`).locator('iframe').contentFrame()
+  return story.locator('#storybook-root').evaluate((root) => {
+    const boxes = Array.from(root.children).map((c) => c.getBoundingClientRect())
+    return Math.ceil(Math.max(...boxes.map((b) => b.bottom)) - Math.min(...boxes.map((b) => b.top)))
+  })
+}
+
+async function frameBoxHeight(page: Page, key: string): Promise<number> {
+  return (await page.getByTestId(`variant-${key}`).locator('.frame-box').boundingBox())!.height
+}
+
+test("a round with mixed story heights fits each frame under the round's height", async ({
+  page,
+}) => {
+  test.setTimeout(120_000)
+  const dir = await mkdtemp(join(tmpdir(), 'titan-review-e2e-'))
+  const manifestPath = join(dir, 'round.json')
+  await writeFile(manifestPath, JSON.stringify(mixedHeightRound(storybook.url)))
+  const run = startCli(manifestPath, dir, '--no-capture')
+  cli = run.child
+  await page.goto(await run.url)
+
+  const fitted: number[] = []
+  for (const key of ['A', 'B']) {
+    const card = page.getByTestId(`variant-${key}`)
+    await card.scrollIntoViewIfNeeded()
+    const root = card.locator('iframe').contentFrame().locator('#storybook-root')
+    await expect(root).not.toBeEmpty({ timeout: 30_000 })
+    const offFit = async () =>
+      Math.abs((await frameBoxHeight(page, key)) - ((await drawnHeight(page, key)) + 32))
+    await expect.poll(offFit, `frame ${key} fits its story`).toBeLessThanOrEqual(8)
+    const box = await frameBoxHeight(page, key)
+    expect(box, `frame ${key} sits under the round's height`).toBeLessThan(1300)
+    fitted.push(box)
+  }
+  expect(
+    Math.abs(fitted[0] - fitted[1]),
+    'the two auto frames fit different stories'
+  ).toBeGreaterThan(40)
+
+  await page.getByTestId('variant-C').scrollIntoViewIfNeeded()
+  expect(await frameBoxHeight(page, 'C')).toBe(500)
+  run.child.kill()
 })
 
 test('a frame Storybook does not answer says so and retries', async ({ page }) => {

@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { userEvent } from 'storybook/test'
 import {
   Modal,
   ModalContent,
@@ -10,7 +11,8 @@ import {
   ModalBody,
   ModalFooter,
 } from './Modal'
-import { resolveAll, siblingSource } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
+import { bandRules, dividerClasses } from '../../../test/divider-rule'
 
 function renderModal(props: Partial<React.ComponentProps<typeof Modal>> = {}) {
   return render(
@@ -29,6 +31,17 @@ function renderModal(props: Partial<React.ComponentProps<typeof Modal>> = {}) {
   )
 }
 
+// react-native-web grants its Modal the dialog role once the open animation ends.
+function finishOpenAnimation() {
+  const focusTrap = document.querySelector('[aria-modal="true"]')!.parentElement!
+  fireEvent.animationEnd(focusTrap.parentElement!)
+}
+
+// The backdrop is the Pressable that wraps the content, so it is the first element with a tabindex.
+function getBackdrop() {
+  return document.querySelector('[aria-modal="true"] [tabindex]') as HTMLElement
+}
+
 describe('Modal', () => {
   it('renders when isOpen is true', () => {
     renderModal({ isOpen: true })
@@ -44,14 +57,29 @@ describe('Modal', () => {
   it('calls onClose when backdrop is pressed', () => {
     const onClose = vi.fn()
     renderModal({ isOpen: true, onClose })
-    // The backdrop is a Pressable wrapping children
-    // ModalContent stops propagation, so clicking outside content triggers onClose
+    fireEvent.click(getBackdrop())
+    expect(onClose).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not call onClose when a press lands inside the content', () => {
+    const onClose = vi.fn()
+    renderModal({ isOpen: true, onClose })
+    fireEvent.click(screen.getByText('Modal body content'))
+    expect(onClose).not.toHaveBeenCalled()
   })
 
   it('does not call onClose on backdrop press when closeOnOverlayClick is false', () => {
     const onClose = vi.fn()
     renderModal({ isOpen: true, onClose, closeOnOverlayClick: false })
-    // Backdrop press should not trigger onClose
+    fireEvent.click(getBackdrop())
+    expect(onClose).not.toHaveBeenCalled()
+  })
+
+  it('lands the first Tab on a named control, not the backdrop or content wrapper', async () => {
+    renderModal({ isOpen: true })
+    finishOpenAnimation()
+    await userEvent.tab()
+    expect(document.activeElement).toHaveAccessibleName()
   })
 
   describe('ModalCloseButton', () => {
@@ -79,6 +107,13 @@ describe('Modal', () => {
     it('has header accessibility role', () => {
       renderModal({ isOpen: true })
       expect(screen.getByRole('heading')).toBeInTheDocument()
+    })
+
+    it('names the dialog', () => {
+      renderModal({ isOpen: true })
+      finishOpenAnimation()
+
+      expect(screen.getByRole('dialog', { name: 'Test Modal' })).toBeInTheDocument()
     })
   })
 
@@ -167,19 +202,41 @@ describe('Modal', () => {
  * Drawer moved to meet it.
  */
 describe('Modal geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'Modal.tsx')
-
   it.each([
-    ['the header', 'px-inset-xl py-inset-lg border-b border-divider', ['24px', '16px']],
-    ['the body', 'px-inset-xl py-inset-lg', ['24px', '16px']],
+    [
+      'the header',
+      () => screen.getByText('Test Modal').parentElement,
+      ['px-inset-xl', 'py-inset-lg'],
+      ['24px', '16px'],
+    ],
+    [
+      'the body',
+      () => screen.getByText('Modal body content'),
+      ['px-inset-xl', 'py-inset-lg'],
+      ['24px', '16px'],
+    ],
     [
       'the footer',
-      'gap-2 px-inset-xl py-inset-lg border-t border-divider',
+      () => screen.getByText('Cancel').parentElement,
+      ['gap-2', 'px-inset-xl', 'py-inset-lg'],
       ['8px', '24px', '16px'],
     ],
-  ] as const)('%s ships `%s`', (_label, classes, pixels) => {
-    expect(source).toContain(classes)
-    const spacing = classes.split(' ').filter((c) => resolveAll([c])[0] !== undefined)
-    expect(resolveAll(spacing)).toEqual([...pixels])
+  ] as const)('%s renders its band inset', (_label, getBand, classes, pixels) => {
+    renderModal({ isOpen: true })
+    expect(spacingClassesAt(getBand())).toEqual([...classes])
+    expect(resolveAll([...classes])).toEqual([...pixels])
+  })
+})
+
+describe('Modal rules', () => {
+  it('separates the header and footer by spacing alone', () => {
+    renderModal({ isOpen: true })
+    const header = screen.getByText('Test Modal').parentElement
+    const footer = screen.getByText('Cancel').parentElement
+
+    expect(dividerClasses(header?.nextElementSibling)).toBeUndefined()
+    expect(dividerClasses(footer?.previousElementSibling)).toBeUndefined()
+    expect(bandRules(header)).toEqual([])
+    expect(bandRules(footer)).toEqual([])
   })
 })

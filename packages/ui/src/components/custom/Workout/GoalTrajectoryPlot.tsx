@@ -77,7 +77,7 @@ const FONT_FAMILY = 'Inter, sans-serif'
 /** How much of the deload magenta the column carries over the plane: the owner's pick, round 7. */
 export const DELOAD_WASH = 0.12
 /** How much of the rule colour lights the current week's column, on the full and compact charts alike. */
-export const CURRENT_WEEK_TINT = 0.2
+export const CURRENT_WEEK_TINT = 0.12
 const LABEL_GAP = 8
 export const PLANE_RADIUS = 6
 export const DOT_RADIUS = 4
@@ -143,7 +143,6 @@ export interface PlotStyle {
   baseline: PlotBaseline
   bandFade: BandFade
   bandCurve: BandCurve
-  referenceLabelSide: ReferenceLabelSide
 }
 
 export interface LayerProps {
@@ -521,6 +520,29 @@ function NextTargetMark({ geometry, palette, stroke }: LayerProps & { stroke: nu
   )
 }
 
+/** The hollow current-week point's words, said in the chart's summary: the plot is aria-hidden. */
+export const CURRENT_WEEK_NO_READING = 'Current week, no reading yet'
+
+/**
+ * "Now" on a week with no reading yet (VW-422): a hollow dot on the dashed lead,
+ * at the value the lead passes through, so the current week is never a gap.
+ */
+function CurrentWeekMark({ geometry, palette }: LayerProps) {
+  const point = geometry.currentWeekPoint
+  if (!point) return null
+  return (
+    <circle
+      data-testid="goal-trajectory-chart-current-week-point"
+      cx={point.x}
+      cy={point.y}
+      r={DOT_RADIUS}
+      fill="none"
+      stroke={palette.status}
+      strokeWidth={DOT_RING}
+    />
+  )
+}
+
 function WeekAxis({
   geometry,
   palette,
@@ -605,6 +627,7 @@ export function GoalTrajectoryPlot(props: GoalTrajectoryPlotProps) {
         />
         <g style={popStyle(props.entrance)}>
           <NextTargetMark {...layer} stroke={style.stroke} />
+          <CurrentWeekMark {...layer} />
         </g>
         {geometry.actuals.map((coord) => (
           <g key={coord.index} style={popStyle(props.entrance)}>

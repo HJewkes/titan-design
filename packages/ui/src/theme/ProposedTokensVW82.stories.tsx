@@ -4,7 +4,7 @@ import { getSemanticColors } from './tokens/semantic'
 import { greyRamp, primitiveColors, primitiveRamps } from './tokens/primitives'
 import { SectionIntro, SectionTitle, SWATCH_BORDER } from './color-story-kit'
 import { ToolbarButton } from '../components/ui/toolbar-button'
-import { Treemap } from '../components/custom/Treemap'
+import { Treemap } from '../components/ui/charts/treemap'
 
 const t = getSemanticColors('dark')
 
@@ -174,7 +174,7 @@ function ScrimPanel({ showScrims, backdrop }: ProposedTokensArgs) {
             )}
             {backdrop === 'gradient' && <GradientWash />}
             <BackdropContent />
-            {showScrims && (
+            {!!showScrims && (
               <View
                 style={{
                   position: 'absolute',

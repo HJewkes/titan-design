@@ -14,7 +14,7 @@ const meta: Meta<typeof DateSeparator> = {
         component:
           '**Atom.** Opens each calendar day of a thread: Today, Yesterday, then a date. ' +
           'Composes [Divider](?path=/docs/components-divider--docs) + ' +
-          '[DateTime](?path=/docs/custom-datetime--docs) + ' +
+          '[DateTime](?path=/docs/components-molecules-datetime--docs) + ' +
           '[Typography](?path=/docs/custom-typography--docs).',
       },
     },

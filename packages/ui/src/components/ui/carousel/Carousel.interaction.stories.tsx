@@ -1,7 +1,7 @@
 // Behaviour and keyboard tests as play functions. Hidden from the sidebar and docs (`!dev`,
-// `!autodocs`); `tests/interaction/carousel.spec.ts` runs them in Chromium and reads the
-// `data-play-status` marker each one leaves on <body>.
-import type { Meta, StoryContext, StoryObj } from '@storybook/react-vite'
+// `!autodocs`). The `!play` playground stories are opened by `tests/interaction/carousel.spec.ts`,
+// which drives them in Chromium and asserts on the DOM.
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 import { Text, View } from 'react-native'
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test'
@@ -78,22 +78,6 @@ const meta: Meta<Args> = {
 }
 export default meta
 type Story = StoryObj<Args>
-type Play = (context: StoryContext<Args>) => Promise<void>
-
-/** Leaves a pass/fail marker for the Playwright runner, then rethrows so Storybook shows it too. */
-function marked(play: Play): Play {
-  return async (context) => {
-    document.body.dataset.playStatus = 'running'
-    try {
-      await play(context)
-      document.body.dataset.playStatus = 'passed'
-    } catch (error) {
-      document.body.dataset.playStatus = 'failed'
-      document.body.dataset.playError = error instanceof Error ? error.message : String(error)
-      throw error
-    }
-  }
-}
 
 function viewport(canvas: HTMLElement): HTMLElement {
   return within(canvas).getByTestId('carousel-viewport')
@@ -120,17 +104,17 @@ async function expectPosition(canvas: HTMLElement, text: string) {
 }
 
 export const ArrowsStepOneSlide: Story = {
-  play: marked(async ({ canvasElement }) => {
+  play: async ({ canvasElement }) => {
     const next = within(canvasElement).getByRole('button', { name: 'Next slide' })
     await userEvent.click(next)
     await expectPosition(canvasElement, '2 of 9')
     await expectInView(canvasElement, NAMES[1])
-  }),
+  },
 }
 
 export const StopsAtBothEnds: Story = {
   args: { loop: false },
-  play: marked(async ({ canvasElement }) => {
+  play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await expect(canvas.getByRole('button', { name: 'Previous slide' })).toHaveAttribute(
       'aria-disabled',
@@ -144,7 +128,7 @@ export const StopsAtBothEnds: Story = {
       'true'
     )
     await expectInView(canvasElement, NAMES[8])
-  }),
+  },
 }
 
 /** The distance between two slide starts, once two polls in a row agree the layout has settled. */
@@ -162,7 +146,7 @@ async function measuredStep(canvas: HTMLElement): Promise<number> {
 }
 
 export const SwipeCommitsWhenTheScrollRests: Story = {
-  play: marked(async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args }) => {
     await expectPosition(canvasElement, '1 of 9')
     const step = await measuredStep(canvasElement)
     // react-native-web replaces the node's scrollTo with its own {x, y} one; set the offset as a swipe would.
@@ -171,14 +155,14 @@ export const SwipeCommitsWhenTheScrollRests: Story = {
     await expectPosition(canvasElement, '4 of 9')
     await waitFor(() => expect(args.onValueChange).toHaveBeenLastCalledWith(NAMES[3], 3))
     await expect(args.onValueChange).toHaveBeenCalledTimes(1)
-  }),
+  },
 }
 
 // user-event computes its own tab order and does not honour `inert`, so the looping case
 // (copies must never take focus) is a real-keyboard test in tests/interaction instead.
 export const TabBringsTheFocusedSlideIntoView: Story = {
   args: { loop: false },
-  play: marked(async ({ canvasElement }) => {
+  play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     canvas.getByRole('button', { name: 'Drop first card' }).focus()
     // The arrows come first in the tab order, then the cards; without a loop the
@@ -187,11 +171,11 @@ export const TabBringsTheFocusedSlideIntoView: Story = {
     await expect(canvas.getByRole('button', { name: `Open ${NAMES[2]}` })).toHaveFocus()
     await expectPosition(canvasElement, '3 of 9')
     await expectInView(canvasElement, NAMES[2])
-  }),
+  },
 }
 
 export const EnterAndSpaceActivateTheArrows: Story = {
-  play: marked(async ({ canvasElement }) => {
+  play: async ({ canvasElement }) => {
     const next = within(canvasElement).getByRole('button', { name: 'Next slide' })
     next.focus()
     await userEvent.keyboard('{Enter}')
@@ -200,11 +184,11 @@ export const EnterAndSpaceActivateTheArrows: Story = {
     await expectPosition(canvasElement, '3 of 9')
     await expect(next).toHaveFocus()
     await expectInView(canvasElement, NAMES[2])
-  }),
+  },
 }
 
 export const RefreshKeepsTheSameCard: Story = {
-  play: marked(async ({ canvasElement }) => {
+  play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     for (let i = 0; i < 3; i += 1)
       await userEvent.click(canvas.getByRole('button', { name: 'Next slide' }))
@@ -213,17 +197,17 @@ export const RefreshKeepsTheSameCard: Story = {
     await expectPosition(canvasElement, '3 of 8')
     await expect(canvas.getByRole('group', { name: `3 of 8: ${NAMES[3]}` })).toBeInTheDocument()
     await expectInView(canvasElement, NAMES[3])
-  }),
+  },
 }
 
 export const OneCardHasNoControls: Story = {
   args: { count: 1 },
-  play: marked(async ({ canvasElement }) => {
+  play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await expect(canvas.getByText(NAMES[0])).toBeInTheDocument()
     await expect(canvas.queryByRole('region')).toBeNull()
     await expect(canvas.queryByRole('button', { name: 'Next slide' })).toBeNull()
-  }),
+  },
 }
 
 /** No play function: the Playwright spec drags this one with a real mouse. */
@@ -234,7 +218,7 @@ export const DragPlaygroundLooping: Story = { args: { loop: true }, tags: ['!pla
 
 export const LoopForwardFromTheLastCard: Story = {
   args: { loop: true },
-  play: marked(async ({ canvasElement }) => {
+  play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await measuredStep(canvasElement)
     for (let i = 0; i < 8; i += 1)
@@ -243,24 +227,24 @@ export const LoopForwardFromTheLastCard: Story = {
     await userEvent.click(canvas.getByRole('button', { name: 'Next slide' }))
     await expectPosition(canvasElement, '1 of 9')
     await expectInView(canvasElement, NAMES[0])
-  }),
+  },
 }
 
 export const LoopBackFromTheFirstCard: Story = {
   args: { loop: true },
-  play: marked(async ({ canvasElement }) => {
+  play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await measuredStep(canvasElement)
     await expectPosition(canvasElement, '1 of 9')
     await userEvent.click(canvas.getByRole('button', { name: 'Previous slide' }))
     await expectPosition(canvasElement, '9 of 9')
     await expectInView(canvasElement, NAMES[8])
-  }),
+  },
 }
 
 export const CopiesAreSceneryOnly: Story = {
   args: { loop: true },
-  play: marked(async ({ canvasElement }) => {
+  play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const clones = canvas.getAllByTestId(/^carousel-clone-/)
     await expect(clones).toHaveLength(2)
@@ -270,7 +254,7 @@ export const CopiesAreSceneryOnly: Story = {
     }
     await expect(canvas.getAllByRole('group')).toHaveLength(9)
     await expect(canvas.getByTestId('carousel-position')).toHaveTextContent('1 of 9')
-  }),
+  },
 }
 
 /** A controlled carousel whose owner never accepts a change: the view must return to `value`. */

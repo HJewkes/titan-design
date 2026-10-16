@@ -20,7 +20,7 @@ import {
   PHASE_AXIS_COLOR,
   FONT_HEAD,
   FONT_UI,
-  FONT_MONO,
+  MONO_TEXT,
 } from './fatigue-tokens'
 
 const PAGE_BG = greyRamp[975]
@@ -77,13 +77,11 @@ function Swatch({ def }: { def: SwatchDef }) {
         >
           {def.name}
         </Text>
-        <Text style={{ fontSize: 10, fontFamily: FONT_MONO, color: t['text-tertiary'] }}>
-          {def.token}
-        </Text>
-        <Text style={{ fontSize: 11, fontFamily: FONT_MONO, color: t['text-secondary'] }}>
+        <Text style={{ fontSize: 10, ...MONO_TEXT, color: t['text-tertiary'] }}>{def.token}</Text>
+        <Text style={{ fontSize: 11, ...MONO_TEXT, color: t['text-secondary'] }}>
           {def.value.toUpperCase()}
         </Text>
-        {def.note && (
+        {!!def.note && (
           <Text
             style={{ fontSize: 10, fontFamily: FONT_UI, color: t['text-tertiary'], lineHeight: 13 }}
           >
@@ -102,7 +100,7 @@ function SwatchGroup({ label, defs }: { label: string; defs: SwatchDef[] }) {
         style={{
           fontSize: 9,
           letterSpacing: 1.4,
-          fontFamily: FONT_MONO,
+          ...MONO_TEXT,
           color: t['text-tertiary'],
         }}
       >
@@ -177,7 +175,7 @@ export const Palette: Story = {
           style={{
             fontSize: 9,
             letterSpacing: 1.4,
-            fontFamily: FONT_MONO,
+            ...MONO_TEXT,
             color: t['text-tertiary'],
           }}
         >

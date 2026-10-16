@@ -1,6 +1,14 @@
 import React from 'react'
-import { View, Text, type ViewProps } from 'react-native'
+import { View, Text, type AccessibilityState, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
+
+interface FieldControlProps {
+  accessibilityHint?: string
+  accessibilityState?: AccessibilityState & { invalid?: boolean }
+  isDisabled?: boolean
+  isReadOnly?: boolean
+  isInvalid?: boolean
+}
 
 export interface FormFieldProps extends ViewProps {
   /** Label text */
@@ -100,12 +108,12 @@ export function FormField({
         >
           <Text className={cn('font-medium text-text-primary', labelSizeStyles[labelSize])}>
             {label}
-            {isRequired && <Text className="text-status-error ml-0.5">*</Text>}
+            {isRequired && <Text className="text-text-error ml-0.5">*</Text>}
           </Text>
 
           {helpContent && (
             <View className="ml-1">
-              {/* Inline help indicator - could use HelpTip here */}
+              {/* Inline help indicator - could use Tooltip here */}
               <Text className="text-text-tertiary text-xs">ℹ</Text>
             </View>
           )}
@@ -117,8 +125,8 @@ export function FormField({
         {/* Clone children to pass accessibility props */}
         {React.Children.map(children, (child) => {
           if (React.isValidElement(child)) {
-            const childProps = child.props as Record<string, any>
-            return React.cloneElement(child as React.ReactElement<any>, {
+            const childProps = child.props as FieldControlProps
+            return React.cloneElement(child as React.ReactElement<FieldControlProps>, {
               accessibilityHint: errorMessage || helperText || childProps.accessibilityHint,
               accessibilityState: {
                 ...childProps.accessibilityState,
@@ -137,7 +145,7 @@ export function FormField({
         {(helperText || errorMessage) && (
           <Text
             id={isInvalid ? errorId : helperId}
-            className={cn('text-xs', isInvalid ? 'text-status-error' : 'text-text-tertiary')}
+            className={cn('text-xs', isInvalid ? 'text-text-error' : 'text-text-secondary')}
           >
             {errorMessage || helperText}
           </Text>
@@ -180,7 +188,7 @@ export function FormSection({
   return (
     <View
       className={cn('w-full gap-stack-lg', className)}
-      accessibilityRole={'group' as any}
+      role="group"
       accessibilityLabel={title}
       {...props}
     >

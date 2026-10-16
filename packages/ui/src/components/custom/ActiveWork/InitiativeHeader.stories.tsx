@@ -14,8 +14,8 @@ const meta: Meta<typeof InitiativeHeader> = {
   component: InitiativeHeader,
   tags: ['autodocs', 'status:candidate', '!status:review'],
   args: {
-    title: 'active-work — durable workspace state',
-    slug: 'active-work',
+    title: 'planner — durable project state',
+    slug: 'planner',
     state: 'focused',
     rank: 1,
     shipTarget: '2026-Q3',

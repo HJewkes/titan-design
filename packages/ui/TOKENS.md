@@ -13,17 +13,18 @@ where the choice is actually made.
 
 Pick by **what the colour means**, not by what looks right.
 
-| The colour means…                                         | Use                                                           | Not                                      |
-| --------------------------------------------------------- | ------------------------------------------------------------- | ---------------------------------------- |
-| **A value got better / worse** (delta, trend, growth)     | `result-improve` / `result-degrade` / `result-neutral`        | `status-success` / `status-error`        |
-| **A thing is in a state** (error, warning, live, info)    | `status-*`                                                    | `result-*`, brand colours                |
-| **N peer categories** (chart series, tags, split counts)  | `categoricalPalette` (see §2)                                 | `data-1..10` — **superseded**            |
-| **Brand identity / primary action**                       | `brand-primary`, `brand-secondary`                            | a status token that happens to be orange |
-| **Structural chrome** (page, card, input backgrounds)     | `surface-*`, `background-*`                                   | grey ramp steps directly                 |
-| **Text**                                                  | `text-primary` / `-secondary` / `-tertiary`                   | grey ramp steps directly                 |
-| **Rules and separators**                                  | `hairline-*`, `divider`, `border-*`                           | a hardcoded `border` colour              |
-| **A dimming layer over content** (modal, drawer, press)   | `scrim-*`                                                     | `bg-black/50` — see below                |
-| **A label ON a fill** (solid button, chart tile, toolbar) | `on-brand-*`, `on-status-*`, `on-control-*`, `on-data-strong` | `text-white`, `text-primary`             |
+| The colour means…                                                          | Use                                                                              | Not                                      |
+| -------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------- |
+| **A value got better / worse** (delta, trend, growth)                      | `result-improve` / `result-degrade` / `result-neutral`                           | `status-success` / `status-error`        |
+| **A thing is in a state** (error, warning, live, info)                     | `status-*`                                                                       | `result-*`, brand colours                |
+| **N peer categories** (chart series, tags, split counts)                   | `categoricalPalette` (see §2)                                                    | `data-1..10` — **superseded**            |
+| **A position on an ordered or diverging scale** (effort, volume vs target) | `dataviz-sequential-*` (0 low → 5 high), `dataviz-diverging-*` (2 is the centre) | `status-*`, hand-picked ramp steps       |
+| **Brand identity / primary action**                                        | `brand-primary`, `brand-secondary`                                               | a status token that happens to be orange |
+| **Structural chrome** (page, card, input backgrounds)                      | `surface-*`, `background-*`                                                      | grey ramp steps directly                 |
+| **Text**                                                                   | `text-primary` / `-secondary` / `-tertiary`                                      | grey ramp steps directly                 |
+| **Rules and separators**                                                   | `hairline-*`, `divider`, `border-*`                                              | a hardcoded `border` colour              |
+| **A dimming layer over content** (modal, drawer, press)                    | `scrim-*`                                                                        | `bg-black/50` — see below                |
+| **A label ON a fill** (solid button, chart tile, toolbar)                  | `on-brand-*`, `on-status-*`, `on-control-*`, `on-data-strong`                    | `text-white`, `text-primary`             |
 
 ### `result-*` vs `status-*` — the distinction that gets missed
 
@@ -58,8 +59,10 @@ and that is as true on a light page as a dark one.
 The `on-*` family is "the label that sits ON this fill". Two members are not fills at all:
 
 - **`on-control-*`** — a toolbar control face is a grey plane, not a brand or status fill. Use
-  `on-control-active` / `on-control-idle` rather than `on-brand-primary`, even though the active
-  value is the same white; the role is what makes it survive a retune.
+  `on-control-active` / `on-control-idle` rather than `on-brand-primary`, even though the dark active
+  value is the same white; the role is what makes it survive a retune. The idle and pressed faces are
+  elevation planes one step up and one step down from the toolbar's plane (TD-265), so the labels owe
+  AA on every plane a face can land on; `control-face-disabled` paints the disabled face (TD-264).
 - **`on-data-strong`** — a label on a light categorical data tile. Every `text-*` role is far too
   light to read there.
 
@@ -74,7 +77,7 @@ look like the obvious choice for chart data. Use `categoricalPalette`.
 ## 2. The categorical palette
 
 ```ts
-import { categoricalPalette, CATEGORICAL_CVD_SAFE_MAX } from '../theme/tokens/primitives'
+import { categoricalPalette, CATEGORICAL_CVD_SAFE_MAX } from '@/theme/tokens/primitives'
 
 const [reads, writes, edits] = categoricalPalette.default
 ```
@@ -86,6 +89,14 @@ const [reads, writes, edits] = categoricalPalette.default
   second encoding.
 - **Two variants:** `default` (vivid — neutral/light surfaces, legible under black text) and `dark`
   (deeper — legible under white text on a filled swatch).
+
+**Theme-aware form.** `dataviz-categorical-0..6` is the same seven hues in the same order, resolved
+per theme: dark equals `categoricalPalette.default`, light carries its own steps. Use the role where the
+colour must follow the active theme. `Scatter` and `Treemap` take it through
+`DATAVIZ_CATEGORICAL_ROLES`, and `Avatar` hashes a name onto it.
+`dataviz-diverging-*` paints volume status (`BodyMap`, `MuscleGroupChip`,
+`TrainingStatusPage`, through `getHeatmapColor` and `volumeStatusDotColor`); `dataviz-sequential-*` paints velocity zones (`VelocityStrip`,
+`PinnedLiveStrip`).
 
 Take colours **in order from the front**. Hand-picking indices to "look nicer" breaks the CVD
 guarantee and the nested-stability property in one move.
@@ -113,7 +124,10 @@ palette size.
 so the component stops responding to the theme. `resolveColor` returns `var(--color-<token>)` on web —
 which is what makes light/dark switching work — and the resolved hex on native, where it is dark-only.
 
-```ts
+```tsx
+import { View } from 'react-native'
+import { getSemanticColors, resolveColor } from '@titan-design/react-ui'
+
 // ✗ frozen to dark, silently breaks light theme
 const t = getSemanticColors('dark')
 ;<View style={{ backgroundColor: t['brand-primary'] }} />
@@ -131,8 +145,10 @@ component whose colours are asserted needs literal hex that still follows the th
 Surface hooks give you: the mode comes from the nearest `<Surface>` on every render.
 
 ```ts
+import { getSemanticColors, useOnSurfaceColor, useSurfaceMode } from '@titan-design/react-ui'
+
 // ✗ frozen at import time — one palette for the process's lifetime
-const t = getSemanticColors('dark')
+const frozen = getSemanticColors('dark')
 
 // ✓ literal hex, re-resolved per render from the enclosing Surface
 const t = getSemanticColors(useSurfaceMode())
@@ -149,7 +165,7 @@ warning, not a fallback — the class is dead CSS, and the element paints nothin
 `tailwind.config.js` is `var(--color-…)`, which is exactly what makes light/dark switching work, so
 this hits every token in the system:
 
-```tsx
+```tsx fragment
 // ✗ dead CSS — no rule is generated, the tint never appears
 <View className="bg-brand-primary/10" />
 
@@ -199,6 +215,9 @@ and the line-height that comes with it.
 `overline` and `microLabel` are the same idea at two sizes and in two faces: `overline` is
 12px `font-body`, `microLabel` is 10px `font-sans` for dense tabular headers.
 
+Which variant, face, weight, case and colour each text role takes (headings, titles, labels, lockups,
+controls, chart text) is `docs/typography-rules.md`, rendered live in Storybook `Lab/Typography/Rules`.
+
 Raw sizes, when a variant genuinely does not fit:
 
 | Class       | Size |
@@ -215,7 +234,7 @@ Raw sizes, when a variant genuinely does not fit:
 
 ### Font files are self-hosted (TD-36)
 
-`global.css` declares the three families with `@font-face` rules that point at woff2 files in
+`global.css` declares the four families with `@font-face` rules that point at woff2 files in
 `src/theme/fonts/`. It makes no request to Google Fonts, so a consumer built as one HTML file and
 opened from disk (titan-platform's code-report) renders with no network.
 
@@ -223,22 +242,26 @@ opened from disk (titan-platform's code-report) renders with no network.
 | ------------------------------ | ------- | ---------------------------------------------------------------------- |
 | Inter (`font-sans`)            | 400–700 | latin, latin-ext, cyrillic, cyrillic-ext, greek, greek-ext, vietnamese |
 | Nunito Sans (`font-body`)      | 400–700 | latin, latin-ext, cyrillic, cyrillic-ext, vietnamese                   |
-| Space Grotesk (`font-heading`) | 600–700 | latin, latin-ext, vietnamese                                           |
+| Space Grotesk (`font-heading`) | 300–700 | latin, latin-ext, vietnamese                                           |
+| JetBrains Mono (`font-mono`)   | 400–700 | latin, latin-ext, cyrillic, cyrillic-ext, greek, vietnamese            |
 
 - **The files are Google Fonts' own.** They are the variable woff2 subsets that
   `fonts.googleapis.com/css2` served to Chrome in September 2026 (Inter v20, Nunito Sans v19, Space
-  Grotesk v22), with the same `unicode-range` split, so rendering matches the old CDN import.
+  Grotesk v22; JetBrains Mono v24 in October 2026), with the same `unicode-range` split, so rendering
+  matches the old CDN import.
 - **One rule per subset, with a weight range.** Google repeats each file once per requested weight.
   Titan declares `font-weight: 400 700` once instead, because a single-file build inlines every
   `url()` it meets and the repeats would quadruple the inlined bytes. Weights outside the range
   clamp to it, as the discrete rules did.
-- **Cost.** 392 KB of woff2 in the package. A single-file build that imports `global.css` grows by
-  about 500 KB of base64. A normal build emits the files as hashed assets and the browser fetches only
+- **Cost.** 440 KB of woff2 in the package. A single-file build that imports `global.css` grows by
+  about 590 KB of base64. A normal build emits the files as hashed assets and the browser fetches only
   the subsets a page uses.
-- **Licence.** All three are SIL Open Font License 1.1; each directory carries its `OFL.txt`.
+- **Licence.** All four are SIL Open Font License 1.1; each directory carries its `OFL.txt`.
 - **Native.** NativeWind ignores `@font-face`; native apps still register fonts themselves.
 - **Proof.** `pnpm test:offline-fonts` builds a single-file consumer, opens it over `file://` with
-  every http(s) request aborted, and checks that each family and weight loads.
+  every http(s) request aborted, and checks that each family and weight loads. It then asks Chromium
+  which font painted each sample (`CSS.getPlatformFontsForNode`) and requires the bundled face for
+  every glyph, so a silent system-font fallback, such as a glyph outside the subsets, fails the run.
 
 To refresh the files, fetch the `css2` URL for the same families with a desktop Chrome user agent,
 download each distinct woff2, and keep one rule per family and subset.
@@ -268,7 +291,7 @@ future density mode remaps custom properties instead of editing components.
 | `section` | sm md lg       | 24 32 48                         | gap between unrelated blocks                |
 | `gutter`  | sm md          | 16 24                            | padding from the container or viewport edge |
 
-```tsx
+```tsx fragment
 <View className="p-inset-md gap-stack-md" />
 <Pressable className="px-control-x-md py-control-y-md min-h-control-md" />
 <View className="px-squish-x-md py-squish-y-md" />
@@ -302,12 +325,14 @@ The bracket form is only one dialect. `titan/no-raw-spacing` covers the other �
 CSS shorthand string on a `padding*`, `margin*`, `gap`, `rowGap` or `columnGap` property inside a
 style object, which is how the specimen-derived families write spacing:
 
-```ts
+```tsx
+import { View } from 'react-native'
+
 // ✗ both flagged
 const s = { paddingVertical: 9, padding: '9px 12px' }
 
 // ✓ the semantic class, or the numeric scale
-<View className="py-squish-y-lg px-inset-md" />
+;<View className="py-squish-y-lg px-inset-md" />
 ```
 
 `0` is never flagged — zero is the absence of spacing, not a value off the scale. A computed value
@@ -316,7 +341,7 @@ const s = { paddingVertical: 9, padding: '9px 12px' }
 **A genuine optical correction survives with a reason.** A `// optical: <why>` comment on the same
 line or the line above exempts the value:
 
-```ts
+```ts fragment
 // optical: the cap sits 1px high at this weight
 paddingTop: 7,
 ```
@@ -333,6 +358,8 @@ Both rules are enrolled per family, extended as each migration wave lands and ne
 
 ## 6. Guardrails
 
+Lint messages follow the four-line contract in `eslint-rules/README.md`, enforced by `src/test/lint-message-contract.test.ts`.
+
 `eslint.config.js` enforces a subset of the above, scoped by directory:
 
 | Scope                                  | Enforced                                                                                    |
@@ -342,12 +369,11 @@ Both rules are enrolled per family, extended as each migration wave lands and ne
 | all of `src/components/**`             | no frozen theme — module-scope or literal-mode `getSemanticColors()` (**error**, ratcheted) |
 | `shell/`, `icons/`                     | \+ no raw hex (warn)                                                                        |
 | `custom/ActiveWork/`, `custom/charts/` | \+ no raw hex, no arbitrary px, no inline `fontSize` (**error**)                            |
-| `custom/Workout/` — batch B1 only      | same errors, listed file by file until the family is ported                                 |
+| `custom/Workout/` — listed files       | same errors, enrolled file by file in `eslint.config.js` until the family is ported         |
 
 Workout is being ported in batches (E3), so it is enrolled per file rather than per
-family. Batch B1: `SetStrip`, `SetTableHeader`, `SetsRepsLoad`, `ExerciseHeading`,
-`ExerciseIndicator`, `ExerciseCardHeading`, `PrBadge`. Add each later batch's files to
-the same list as it lands; swap the list for a `Workout/**` glob when the last one is in.
+family; the enrolled files are the list in `eslint.config.js`. Add each later batch's files to
+that list as it lands; swap the list for a `Workout/**` glob when the last one is in.
 
 The scope is deliberately per-family rather than repo-wide: a codebase-wide migration is a separate
 effort, and a rule that fires 140 times on legacy code gets ignored. **When you harden a new family
@@ -356,8 +382,7 @@ new family opts in while it is still clean.
 
 `titan/no-frozen-theme` is the exception that covers every family at once, because it can: its
 offenders are recorded per file in `eslint-rules/frozen-theme-baseline.json`, keyed by frozen value.
-A new frozen call fails immediately anywhere under `src/components/**`; the 38 recorded at the start
-migrated in batches (VW-316) and **7 remain**, all in families another ticket is mid-way through.
+A new frozen call fails immediately anywhere under `src/components/**`; the remainder is whatever the baseline file still lists.
 After migrating a file, run `node scripts/update-frozen-theme-baseline.mjs` to lower its allowance —
 the script refuses to raise one without `--allow-increase`, so the ratchet only shrinks.
 
@@ -366,3 +391,16 @@ module-scope call. Resolving at render time is what clears it, NOT switching to 
 component whose colours are asserted needs literal hex, and `getSemanticColors(mode)` gives that
 while still following the theme. Where `getGlowShadow` or `ActivityIndicator` needs a literal
 (`ui/indicator`, `ui/spinner`), the hook form satisfies both.
+
+## 7. Adding to the system
+
+If no existing token serves a component, propose one before adding it. A decision under
+`docs/decisions/` at the repo root, copied from `docs/decisions/0000-template.md` and accepted, comes
+first for:
+
+- a new token category, palette, ramp step or primitive;
+- a new role inside an existing category that introduces a new colour value.
+
+A new role that only aliases an existing primitive value needs no decision: the PR checklist and the
+CI gates cover it. The index and the full rule are in `docs/decisions/README.md`. Once the decision is
+accepted, the token files, this file's entry and their tests land in one PR.

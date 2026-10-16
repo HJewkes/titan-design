@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeAll } from 'vitest'
-import { createRequire } from 'node:module'
 import { readdirSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { compileClasses, tailwindConfig, uiRoot } from '../test/tailwind-compile'
 
 /**
  * Tailwind opacity modifiers on var()-backed colours (VW-308).
@@ -27,19 +27,6 @@ import { fileURLToPath } from 'node:url'
  * React Native understands. The wash ladder (`-subtle`/`-muted`/`-strong`)
  * already expresses translucency on both platforms.
  */
-
-const require = createRequire(import.meta.url)
-const uiRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..')
-
-// postcss is a declared dependency of tailwindcss, not of this package; resolve
-// it from there rather than relying on hoisting.
-const tailwindEntry = require.resolve('tailwindcss', { paths: [uiRoot] })
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const tailwind = require(tailwindEntry) as any
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const postcss = createRequire(tailwindEntry)('postcss') as any
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const tailwindConfig = require(path.join(uiRoot, 'tailwind.config.js')) as any
 
 /** `brand.primary.DEFAULT` -> the `brand-primary` class suffix. */
 function flattenColors(
@@ -86,14 +73,7 @@ const PROBE_CLASSES = [
 let emitted: Set<string>
 
 beforeAll(async () => {
-  const raw = `<div class="${PROBE_CLASSES.join(' ')}"></div>`
-  const result = await postcss([
-    tailwind({ ...tailwindConfig, content: { files: [{ raw, extension: 'html' }] } }),
-  ]).process('@tailwind utilities;', { from: undefined })
-
-  emitted = new Set(
-    [...(result.css as string).matchAll(/^\.([^\s{]+)\s*\{/gm)].map((m) => m[1].replace(/\\/g, ''))
-  )
+  emitted = await compileClasses(PROBE_CLASSES)
 }, 30_000)
 
 describe('tailwind opacity modifiers on var()-backed colours (VW-308)', () => {
@@ -143,6 +123,12 @@ function sourceFiles(dir: string, found: string[] = []): string[] {
   return found
 }
 
+/** Lint-rule tests that feed the dead classes to the rule and the message contract as probes. */
+const PROBE_FILES = new Set([
+  'src/test/lint-message-contract.test.ts',
+  'src/test/no-var-color-opacity.test.ts',
+])
+
 describe('no var()-backed opacity modifier survives in src/', () => {
   it('finds no dead colour class', () => {
     const srcRoot = path.join(uiRoot, 'src')
@@ -151,6 +137,7 @@ describe('no var()-backed opacity modifier survives in src/', () => {
     for (const file of sourceFiles(srcRoot)) {
       // This file quotes the dead classes on purpose, as the probe list above.
       if (file === fileURLToPath(import.meta.url)) continue
+      if (PROBE_FILES.has(path.relative(uiRoot, file).split(path.sep).join('/'))) continue
       for (const match of readFileSync(file, 'utf8').matchAll(OPACITY_UTILITY)) {
         if (varBackedTokens.has(match[1])) {
           violations.push(`${path.relative(uiRoot, file)}: ${match[0]}`)

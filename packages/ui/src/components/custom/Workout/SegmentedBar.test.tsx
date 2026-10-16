@@ -1,6 +1,7 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { Animated } from 'react-native'
 import { SegmentedBar, type SegmentedBarSegment } from './SegmentedBar'
 
 const threeSegments: SegmentedBarSegment[] = [
@@ -56,6 +57,40 @@ describe('SegmentedBar', () => {
     expect(screen.queryByTestId('segmented-bar-marker')).not.toBeInTheDocument()
     rerender(<SegmentedBar segments={threeSegments} marker={{ position: 0.5, color: '#01B5D1' }} />)
     expect(screen.getByTestId('segmented-bar-marker')).toBeInTheDocument()
+  })
+
+  describe('pulse and reduced motion', () => {
+    const originalMatchMedia = window.matchMedia
+    const pulsing = [{ color: '#FF7900', pulse: true }]
+
+    function stubReducedMotion(matches: boolean) {
+      window.matchMedia = vi.fn().mockReturnValue({
+        matches,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+      }) as unknown as typeof window.matchMedia
+    }
+
+    afterEach(() => {
+      vi.restoreAllMocks()
+      if (originalMatchMedia) window.matchMedia = originalMatchMedia
+      else delete (window as { matchMedia?: unknown }).matchMedia
+    })
+
+    it('holds opacity at 1 and starts no loop under reduced motion', () => {
+      stubReducedMotion(true)
+      const loop = vi.spyOn(Animated, 'loop')
+      render(<SegmentedBar segments={pulsing} />)
+      expect(screen.getByTestId('segmented-bar-segment')).toHaveStyle({ opacity: 1 })
+      expect(loop).not.toHaveBeenCalled()
+    })
+
+    it('runs the pulse loop when reduced motion is off', () => {
+      stubReducedMotion(false)
+      const loop = vi.spyOn(Animated, 'loop')
+      render(<SegmentedBar segments={pulsing} />)
+      expect(loop).toHaveBeenCalledTimes(1)
+    })
   })
 
   describe('accessibility', () => {

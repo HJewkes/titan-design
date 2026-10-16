@@ -6,7 +6,7 @@ import { VOLUME_STATUSES } from './muscleTaxonomy'
 const meta: Meta<typeof MuscleGroupChip> = {
   title: 'Custom/Workout/MuscleGroupChip',
   component: MuscleGroupChip,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     name: {
       control: 'text',

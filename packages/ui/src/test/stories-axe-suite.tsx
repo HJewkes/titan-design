@@ -1,8 +1,9 @@
 import type { ComponentType } from 'react'
-import { describe, it, expect } from 'vitest'
+import { afterEach, describe, it, expect } from 'vitest'
 import { render } from '@testing-library/react'
 import { configureAxe } from 'jest-axe'
 import type { ComposedStoryEntry } from './composed-stories'
+import { ratchetProblems } from './ratchet'
 
 /**
  * Axe on every composed story (TD-26 S2), under the same jsdom pipeline as the smoke test.
@@ -19,20 +20,38 @@ export const BASELINE_FILE = 'packages/ui/src/test/stories-axe-baseline.json'
 
 const axe = configureAxe({
   rules: {
-    // jsdom has no layout, so contrast cannot be computed; the browser run of TD-26 S7 covers it.
+    // jsdom has no layout, so contrast cannot be computed; tests/visual/contrast.spec.ts (the CI `contrast` job) covers it.
     'color-contrast': { enabled: false },
     // A story is a component, not a page; landmark containment belongs to the consuming page.
     region: { enabled: false },
   },
 })
 
-export async function violatedRules(Story: ComponentType): Promise<string[]> {
+export type AxeRun = (element: Element) => Promise<{ violations: unknown[] }>
+
+// A timed-out test abandons its run without stopping it, so every run queues behind the last.
+let lastRun: Promise<unknown> = Promise.resolve()
+
+export function axeIdle(): Promise<unknown> {
+  return lastRun
+}
+
+export function violatedRules(Story: ComponentType, run: AxeRun = axe): Promise<string[]> {
+  const current = lastRun.then(() => axeOnStory(Story, run))
+  lastRun = current.catch(() => undefined)
+  return current
+}
+
+async function axeOnStory(Story: ComponentType, run: AxeRun): Promise<string[]> {
   const { unmount } = render(<Story />)
-  // document.body, not the container: modal and popover stories render into portals.
-  const { violations } = await axe(document.body)
-  unmount()
-  const ids = (violations as { id: string }[]).map((violation) => violation.id)
-  return [...new Set(ids)].sort()
+  try {
+    // document.body, not the container: modal and popover stories render into portals.
+    const { violations } = await run(document.body)
+    const ids = (violations as { id: string }[]).map((violation) => violation.id)
+    return [...new Set(ids)].sort()
+  } finally {
+    unmount()
+  }
 }
 
 export function baselineProblems(
@@ -40,22 +59,14 @@ export function baselineProblems(
   failing: string[],
   baselined: string[] = []
 ): string[] {
-  const added = failing.filter((rule) => !baselined.includes(rule))
-  const stale = baselined.filter((rule) => !failing.includes(rule))
-  const problems: string[] = []
-  if (added.length > 0) {
-    problems.push(
+  return ratchetProblems(failing, baselined, {
+    added: (added) =>
       `${id} fails axe rule(s) ${added.join(', ')}, which ${BASELINE_FILE} does not list. ` +
-        'Fix the story or the component; the baseline may only shrink, so do not add them.'
-    )
-  }
-  if (stale.length > 0) {
-    problems.push(
+      'Fix the story or the component; the baseline may only shrink, so do not add them.',
+    stale: (stale) =>
       `${id} now passes axe rule(s) ${stale.join(', ')}. Remove them from ${BASELINE_FILE}, ` +
-        'and delete the entry once its list is empty.'
-    )
-  }
-  return problems
+      'and delete the entry once its list is empty.',
+  })
 }
 
 // Lab decision record that mounts every rejected palette at once; axe did not finish in 8 min.
@@ -63,6 +74,8 @@ export const EXCLUDED_STORY_IDS = new Set(['lab-decisions-volume-status-palette-
 
 // Decision-record stories take 5 s or more under axe, and a timed-out run blocks every later one.
 const AXE_TIMEOUT = 30_000
+// Long enough for an abandoned run to finish, so the next story's own timeout starts after it.
+const AXE_DRAIN_TIMEOUT = 120_000
 
 const isWorkout = (file: string) => file.startsWith('custom/Workout/')
 const workoutInitial = (file: string) => file.charAt('custom/Workout/'.length).toUpperCase()
@@ -83,6 +96,7 @@ export function describeAxeShard(
   stories: ComposedStoryEntry[]
 ): void {
   describe(`axe on every composed story (${shard})`, () => {
+    afterEach(axeIdle, AXE_DRAIN_TIMEOUT)
     for (const { file, name, id, Story } of stories.filter((s) => AXE_SHARDS[shard](s.file))) {
       const test = EXCLUDED_STORY_IDS.has(id) ? it.skip : it
       test(

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View, Text, TextInput } from 'react-native'
+import { View, Text, TextInput, type TextInputProps } from 'react-native'
 import { FormField, FormSection, FormActions, FormRow } from './FormField'
 import { Button, ButtonText } from '../button'
 
@@ -30,7 +30,12 @@ export default meta
 type Story = StoryObj<typeof FormField>
 
 // Simple input for stories
-function SimpleInput({ isInvalid, isDisabled, ...props }: any) {
+interface SimpleInputProps extends TextInputProps {
+  isInvalid?: boolean
+  isDisabled?: boolean
+}
+
+function SimpleInput({ isInvalid, isDisabled, ...props }: SimpleInputProps) {
   return (
     <View
       className={`border rounded-md px-3 py-2 bg-surface-input ${

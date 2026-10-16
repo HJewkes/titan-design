@@ -27,7 +27,7 @@ function setCategory(set: SetStripSet): 'done' | 'active' | 'upcoming' {
     case 'active':
       return 'active'
     case 'range':
-      return set.doneVels.length > 0 ? 'active' : 'upcoming'
+      return set.isActive || set.doneVels.length > 0 ? 'active' : 'upcoming'
     case 'todo':
     case 'myo-upcoming':
       return 'upcoming'

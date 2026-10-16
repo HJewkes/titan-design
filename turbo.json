@@ -1,5 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalEnv": ["NODE_VERSION"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -15,6 +16,34 @@
     "test": {
       "dependsOn": ["^build"]
     },
+    "test:unit": {
+      "dependsOn": ["^build"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/*",
+        "$TURBO_ROOT$/.github/**",
+        "$TURBO_ROOT$/docs/**",
+        "$TURBO_ROOT$/scripts/**"
+      ]
+    },
+    "test:unit:ci": {
+      "dependsOn": ["^build"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "$TURBO_ROOT$/*",
+        "$TURBO_ROOT$/.github/**",
+        "$TURBO_ROOT$/docs/**",
+        "$TURBO_ROOT$/scripts/**"
+      ]
+    },
+    "test:axe": {
+      "dependsOn": ["^build"]
+    },
+    "test:storybook": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "passThroughEnv": ["PLAYWRIGHT_BROWSERS_PATH"]
+    },
     "storybook": {
       "cache": false,
       "persistent": true
@@ -24,8 +53,17 @@
       "outputs": ["storybook-static/**"]
     },
     "type-check": {},
+    "type-check:examples": {
+      "cache": false
+    },
     "check:package": {
       "dependsOn": ["build"]
+    },
+    "api:check": {
+      "dependsOn": ["build"]
+    },
+    "docs:check": {
+      "cache": false
     },
     "format:check": {}
   }

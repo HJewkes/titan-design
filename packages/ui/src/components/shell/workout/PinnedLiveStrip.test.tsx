@@ -94,6 +94,15 @@ describe('PinnedLiveStrip', () => {
       render(<PinnedLiveStrip {...S.set} reps={[]} layout="wall" />)
       expect(nameOf()).toBe('Live set, Cable Chest Press, Set 2 of 3 · 140 lb, 0 of 8 reps')
     })
+
+    it('shows a placeholder and no NaN when the last rep velocity is not a number', () => {
+      render(
+        <PinnedLiveStrip {...S.set} reps={[{ velocity: 1.0 }, { velocity: NaN }]} layout="wall" />
+      )
+      expect(screen.queryByTestId('live-strip-velocity')).toBeNull()
+      expect(screen.getByTestId('pinned-live-strip').textContent).not.toMatch(/NaN/)
+      expect(nameOf()).not.toMatch(/NaN/)
+    })
   })
 
   describe('without onPress', () => {

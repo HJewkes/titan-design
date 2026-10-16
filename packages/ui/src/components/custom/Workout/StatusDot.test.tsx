@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { siblingSource, resolveAll } from '../../../test/spacing-resolver'
+import { spacingClassesAt, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { StatusDot } from './StatusDot'
@@ -20,14 +20,15 @@ describe('StatusDot', () => {
     expect(screen.getByTestId('status-dot')).toBeInTheDocument()
   })
 
-  it('shows icon at md size', () => {
-    render(<StatusDot variant="success" size="md" icon="check" />)
-    expect(screen.getByText('\u2713')).toBeInTheDocument()
+  it('draws the check icon at md size as an SVG, not a ✓ text glyph', () => {
+    const { container } = render(<StatusDot variant="success" size="md" icon="check" />)
+    expect(screen.queryByText('\u2713')).toBeNull()
+    expect(container.querySelector('svg')?.getAttribute('width')).toBe('12')
   })
 
   it('does not show icon at sm size', () => {
-    render(<StatusDot variant="success" size="sm" icon="check" />)
-    expect(screen.queryByText('\u2713')).not.toBeInTheDocument()
+    const { container } = render(<StatusDot variant="success" size="sm" icon="check" />)
+    expect(container.querySelector('svg')).toBeNull()
   })
 
   it('renders exclamation icon', () => {
@@ -74,8 +75,12 @@ describe('StatusDot', () => {
     })
 
     it('draws the glyph on a solid fill in text-inverse', () => {
-      render(<StatusDot variant="success" size="md" icon="check" />)
-      expect(screen.getByText('✓')).toHaveStyle({ color: resolveColor('text-inverse') })
+      const { container } = render(<StatusDot variant="success" size="md" icon="check" />)
+      expect(container.querySelector('svg')?.getAttribute('stroke')).toBe(
+        resolveColor('text-inverse')
+      )
+      render(<StatusDot variant="warning" size="md" icon="exclamation" />)
+      expect(screen.getByText('!')).toHaveStyle({ color: resolveColor('text-inverse') })
     })
 
     it('renders all solid variant types without error', () => {
@@ -206,10 +211,10 @@ describe('StatusDot', () => {
 
 /** StatusDot's labelled gap, pinned (AW-142); pixels unchanged. */
 describe('StatusDot geometry resolves to the numeric scale', () => {
-  const source = siblingSource(import.meta.url, 'StatusDot.tsx')
-
   it('keeps the dot-to-label gap', () => {
-    expect(source).toContain('flex-row items-center gap-1.5')
+    render(<StatusDot variant="success" label="On track" />)
+    const row = screen.getByLabelText('success status: On track')
+    expect(spacingClassesAt(row)).toEqual(['gap-1.5'])
     expect(resolveAll(['gap-1.5'])).toEqual(['6px'])
   })
 })

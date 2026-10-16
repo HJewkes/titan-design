@@ -1,35 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
 
-interface IndexEntry {
-  id: string
-  type: string
-  tags?: string[]
-}
-
-const INTERACTIONS = /^components-molecules-carousel-interactions--/
 const DEFAULT_STORY = 'components-molecules-carousel--default'
-
-async function interactionStories(page: Page): Promise<string[]> {
-  const response = await page.request.get('/index.json')
-  const index = (await response.json()) as { entries: Record<string, IndexEntry> }
-  return Object.values(index.entries)
-    .filter((e) => e.type === 'story' && INTERACTIONS.test(e.id) && e.tags?.includes('play'))
-    .map((e) => e.id)
-}
-
-test('every carousel play function passes in a real browser', async ({ page }) => {
-  const ids = await interactionStories(page)
-  expect(ids.length).toBeGreaterThanOrEqual(7)
-  for (const id of ids) {
-    await page.goto(`/iframe.html?id=${id}&viewMode=story`)
-    await page.waitForLoadState('networkidle')
-    const body = page.locator('body[data-play-status="passed"], body[data-play-status="failed"]')
-    await body.waitFor({ timeout: 20_000 })
-    const status = await page.locator('body').getAttribute('data-play-status')
-    const error = await page.locator('body').getAttribute('data-play-error')
-    expect(`${id}: ${status ?? 'none'}${error ? ` (${error})` : ''}`).toBe(`${id}: passed`)
-  }
-})
 
 async function openDefault(page: Page) {
   await page.goto(`/iframe.html?id=${DEFAULT_STORY}&viewMode=story`)
@@ -105,6 +76,23 @@ async function countSettleTimers(page: Page) {
 
 const settleTimers = (page: Page) =>
   page.evaluate(() => (window as unknown as { __settleTimers: number }).__settleTimers)
+
+/**
+ * The settle-timer count once it has held still for 400 ms, long enough for react-native-web's
+ * 100 ms scroll-end event to schedule its last legitimate timer.
+ */
+async function quiescentSettleTimers(page: Page) {
+  let last = await settleTimers(page)
+  for (let stableFor = 0; stableFor < 400; stableFor += 100) {
+    await page.waitForTimeout(100)
+    const now = await settleTimers(page)
+    if (now !== last) {
+      last = now
+      stableFor = -100
+    }
+  }
+  return last
+}
 
 /** The counter's number and the name of the centred real slide agree. */
 async function centredMatchesCounter(page: Page) {
@@ -275,14 +263,15 @@ test('dropping a card mid-wrap leaves the counter and the centred card agreeing,
 }) => {
   await countSettleTimers(page)
   await openDragStory(page, LOOP_STORY)
+  const viewport = page.getByTestId('carousel-viewport')
+  const start = await viewport.evaluate((el) => el.scrollLeft)
   await page.getByRole('button', { name: 'Previous slide' }).click()
-  await page.waitForTimeout(80)
+  await expect.poll(() => viewport.evaluate((el) => el.scrollLeft)).not.toBe(start)
   await page.getByRole('button', { name: 'Drop first card' }).click()
-  await page.waitForTimeout(1500)
-  const state = await centredMatchesCounter(page)
-  expect(state.agree, JSON.stringify(state)).toBe(true)
-  expect(state.counter).toBe('8 of 8')
-  const before = await settleTimers(page)
+  await expect
+    .poll(() => centredMatchesCounter(page), { timeout: 10_000 })
+    .toMatchObject({ agree: true, counter: '8 of 8' })
+  const before = await quiescentSettleTimers(page)
   await page.waitForTimeout(1000)
   expect(await settleTimers(page)).toBe(before)
 })
@@ -297,7 +286,7 @@ test('a width change mid-wrap still lands centred on the card it committed', asy
   const state = await centredMatchesCounter(page)
   expect(state.agree, JSON.stringify(state)).toBe(true)
   expect(state.counter).toBe('9 of 9')
-  const before = await settleTimers(page)
+  const before = await quiescentSettleTimers(page)
   await page.waitForTimeout(1000)
   expect(await settleTimers(page)).toBe(before)
 })

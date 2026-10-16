@@ -95,6 +95,11 @@ diagonal), `foldItems`, `binValue`, `mutualPairs`, `groupBands`, `nextCell`, `ce
 `useMatrixNavigation` owns the active cell. Properties to test: `nextCell` never leaves the matrix,
 folding preserves total weight, `binValue` is monotonic, hostile input never throws.
 
+`foldItems` runs after `indexCells`: it expects unique item ids and drops cells naming an unknown
+id. The "+M more" item has the reserved id `FOLD_ITEM_ID` (`'\u0000more'`), and that id can reach
+`onActiveCellChange` and `onCellPress` like any other; the component (S4) decides what a press on it
+does.
+
 ## Fixtures
 
 `fixtures.ts` holds thirteen synthetic fixtures: Default, Hub, Heaviest cell, Cycle, Wide, Package

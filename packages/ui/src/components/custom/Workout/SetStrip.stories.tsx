@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { SetStrip, type SetStripSet } from './SetStrip'
 import { Surface } from '../../ui/surface'
-import { greyRamp } from '../../../theme/tokens/primitives'
 
 /**
  * `SetStrip` — the per-set segmented performance strip. One continuous bar per
@@ -13,7 +12,7 @@ import { greyRamp } from '../../../theme/tokens/primitives'
 const meta: Meta<typeof SetStrip> = {
   title: 'Custom/Workout/SetStrip',
   component: SetStrip,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {
@@ -63,6 +62,27 @@ export const InProgress: Story = {
   },
   parameters: {
     docs: { description: { story: 'Active set: performed reps pulse; the remainder is greyed.' } },
+  },
+}
+
+export const ActiveRangeSet: Story = {
+  name: 'Active range set',
+  args: {
+    height: 8,
+    sets: [
+      { status: 'range', floor: 15, max: 20, doneVels: decay(17, 0.85) },
+      { status: 'range', floor: 15, max: 20, doneVels: decay(9, 0.8), isActive: true },
+      { status: 'range', floor: 15, max: 20, doneVels: [] },
+    ],
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'A live variable-range set (`isActive`): its done reps pulse exactly as a planned ' +
+          "active set's do, while the committed grey and variable cyan zones stay still.",
+      },
+    },
   },
 }
 
@@ -240,8 +260,12 @@ function SheetRow({ label, meta, sets }: { label: string; meta: string; sets: Se
   return (
     <View style={{ gap: 6 }}>
       <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 8 }}>
-        <Text style={{ color: greyRamp[50], fontSize: 13, fontWeight: '800' }}>{label}</Text>
-        <Text style={{ color: greyRamp[600], fontSize: 10, fontFamily: 'monospace' }}>{meta}</Text>
+        <Text className="text-text-primary" style={{ fontSize: 13, fontWeight: '800' }}>
+          {label}
+        </Text>
+        <Text className="text-text-tertiary" style={{ fontSize: 10, fontFamily: 'monospace' }}>
+          {meta}
+        </Text>
       </View>
       <SetStrip sets={sets} />
     </View>

@@ -1,9 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { useCallback, useState } from 'react'
 import { View } from 'react-native'
 import { Surface } from '../../ui/surface'
 import { Typography } from '../../ui/typography'
-import { GoalTrajectoryChart } from './GoalTrajectoryChart'
+import {
+  GoalTrajectoryChart,
+  GoalTrajectoryTreatment,
+  type GoalTrajectoryChartExplorationProps,
+} from './GoalTrajectoryChart'
 import { calibratingGoal } from './goalTrajectoryCalibratingFixture'
+import { WALL_BREAKPOINT } from './goalTrajectoryChartModel'
 import type { GoalActualPoint, GoalExpectedPoint, GoalTrajectoryWeek } from './GoalTrajectoryChart'
 
 /** Six-week bench block: +5 lb/wk committed edge, the RP ramp as the stretch edge. */
@@ -47,10 +53,30 @@ const WALL = { width: 1200, height: 340 }
 /** Phone: 360 px wide, the VW-353 phone layout target. */
 const PHONE = { width: 360, height: 220 }
 
-const meta: Meta<typeof GoalTrajectoryChart> = {
+/** The chart with the exploration knobs applied through the internal treatment seam. */
+function renderWithTreatment({
+  leftShadowSpread,
+  baseline,
+  bandFade,
+  bandCurve,
+  ...chart
+}: GoalTrajectoryChartExplorationProps) {
+  return (
+    <GoalTrajectoryTreatment
+      leftShadowSpread={leftShadowSpread}
+      baseline={baseline}
+      bandFade={bandFade}
+      bandCurve={bandCurve}
+    >
+      <GoalTrajectoryChart {...chart} />
+    </GoalTrajectoryTreatment>
+  )
+}
+
+const meta: Meta<GoalTrajectoryChartExplorationProps> = {
   title: 'Custom/Workout/DataViz/GoalTrajectoryChart',
   component: GoalTrajectoryChart,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     width: {
       control: { type: 'range', min: 320, max: 1400, step: 20 },
@@ -114,20 +140,26 @@ const meta: Meta<typeof GoalTrajectoryChart> = {
   },
   // Controls open on the locked treatment; the Explore stories override one at a time.
   args: { bandCurve: 'monotone', bandFade: 'centre-14', baseline: 'lip' },
+  // The knobs are off the public props; the internal seam reaches them.
+  render: renderWithTreatment,
   // The plot plane sits one step below the card it is drawn on, as on the page.
   decorators: [
-    (Story) => (
-      <Surface level="base" className="p-gutter-md">
-        <Surface raise={1} className="p-inset-md self-start">
-          <Story />
+    // The width matrix sets each frame's width; padding here would shift every frame off its threshold.
+    (Story, { parameters }) =>
+      parameters.widthMatrix ? (
+        <Story />
+      ) : (
+        <Surface level="base" className="p-gutter-md">
+          <Surface raise={1} className="p-inset-md self-start">
+            <Story />
+          </Surface>
         </Surface>
-      </Surface>
-    ),
+      ),
   ],
 }
 
 export default meta
-type Story = StoryObj<typeof GoalTrajectoryChart>
+type Story = StoryObj<GoalTrajectoryChartExplorationProps>
 
 /** Week 4 is current, lit in the same tint the compact chart uses (VW-423). */
 export const OnTrack: Story = {
@@ -296,6 +328,22 @@ export const EmptyCalibrating: Story = {
   },
 }
 
+/**
+ * Week 4 is current but not lifted yet (VW-422): a hollow point marks it on the
+ * dashed lead from week 3's reading to the next target, so "now" is never a gap.
+ */
+export const CurrentWeekWithoutReading: Story = {
+  name: 'Current week without a reading',
+  args: {
+    ...bench,
+    ...WALL,
+    actuals: onTrackActuals.slice(0, 3),
+    status: 'on_track',
+    currentWeek: 4,
+    nextTarget: { weekIndex: 6, value: 187, label: 'next week: 187 x 8' },
+  },
+}
+
 /** The same on-track block at phone width: 2px line and three gridlines. */
 export const PhoneOnTrack: Story = {
   args: { ...bench, ...PHONE, actuals: onTrackActuals, status: 'on_track', currentWeek: 4 },
@@ -334,6 +382,50 @@ export const WallMotion: Story = {
 /** The same noisy block at phone width: 2px line, three gridlines. */
 export const PhoneMotion: Story = {
   args: { ...WallMotion.args, ...PHONE } as Story['args'],
+}
+
+/**
+ * The width of the frame a story renders in, read once at layout. Layer 2 pauses the clock, and
+ * react-native-web's `onLayout` waits on a timer that never fires there (TD-729), so this reads the
+ * DOM node synchronously, at commit, instead. jsdom has no layout and reports 0, which leaves `null`.
+ */
+function useFrameWidth() {
+  const [width, setWidth] = useState<number | null>(null)
+  const ref = useCallback((node: View | null) => {
+    const measured = (node as unknown as HTMLElement | null)?.getBoundingClientRect?.().width
+    if (measured) setWidth(Math.round(measured))
+  }, [])
+  return { ref, width }
+}
+
+/**
+ * The final frame in every width-matrix frame, one pixel either side of
+ * `WALL_BREAKPOINT`. The chart takes its width from the frame, so the `width`
+ * and `height` controls are off; jsdom measures nothing and falls back to `args.width`.
+ */
+export const Widths: Story = {
+  tags: ['width-matrix'],
+  args: { ...NoMotion.args },
+  argTypes: { width: { control: false }, height: { control: false } },
+  parameters: { layout: 'fullscreen', widthMatrix: { thresholds: [WALL_BREAKPOINT] } },
+  decorators: [
+    (Story) => (
+      <Surface raise={1}>
+        <Story />
+      </Surface>
+    ),
+  ],
+  render: function Render(args) {
+    const frame = useFrameWidth()
+    const width = frame.width ?? args.width
+    const height = width >= WALL_BREAKPOINT ? WALL.height : PHONE.height
+    return (
+      // `w-full` so the frame sets the measured width, not the chart's first-paint fallback.
+      <View ref={frame.ref} className="w-full">
+        {renderWithTreatment({ ...args, width, height })}
+      </View>
+    )
+  },
 }
 
 /*
@@ -409,7 +501,7 @@ export const ExploreAllTreatments: Story = {
           <Typography variant="caption" color="secondary">
             {treatment.caption}
           </Typography>
-          <GoalTrajectoryChart {...args} {...treatment.args} />
+          {renderWithTreatment({ ...args, ...treatment.args })}
         </View>
       ))}
     </View>

@@ -1,16 +1,25 @@
 import { describe, it, expect } from 'vitest'
-import { avatarColor, getInitials, AVATAR_COLORS } from './avatar-color'
+import { avatarColor, avatarColors, getInitials } from './avatar-color'
 
 describe('avatarColor', () => {
-  it('returns a color from the palette', () => {
-    expect(AVATAR_COLORS).toContain(avatarColor('Alice'))
+  it.each(['dark', 'light'] as const)('returns a categorical role colour in %s', (mode) => {
+    expect(avatarColors(mode)).toContain(avatarColor('Alice', mode))
   })
   it('is deterministic', () => {
-    expect(avatarColor('Bob')).toBe(avatarColor('Bob'))
+    expect(avatarColor('Bob', 'light')).toBe(avatarColor('Bob', 'light'))
   })
   it('varies across names', () => {
-    const colors = new Set(['Alice', 'Bob', 'Charlie', 'Dave'].map(avatarColor))
+    const colors = new Set(['Alice', 'Bob', 'Charlie', 'Dave'].map((n) => avatarColor(n, 'dark')))
     expect(colors.size).toBeGreaterThan(1)
+  })
+  it('the same name lands on the same palette slot in dark and light', () => {
+    const dark = avatarColors('dark')
+    const light = avatarColors('light')
+    for (const name of ['Alice', 'Bob', 'Charlie', 'Dave', 'Eve', 'Frank', 'Grace']) {
+      expect(light.indexOf(avatarColor(name, 'light'))).toBe(
+        dark.indexOf(avatarColor(name, 'dark'))
+      )
+    }
   })
 })
 

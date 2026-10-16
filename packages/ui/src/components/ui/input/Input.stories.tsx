@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View, Text } from 'react-native'
+import { View } from 'react-native'
 import { Input, InputGroup, PasswordInput } from './Input'
 
 const meta: Meta<typeof Input> = {

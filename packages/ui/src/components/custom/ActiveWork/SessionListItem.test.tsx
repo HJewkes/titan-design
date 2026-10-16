@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedClassNames } from '../../../test/classname-capture'
 import { SessionListItem, sessionRowMeta } from './SessionListItem'
 import { SESSION_FIXTURE, SESSION_NOW } from './session-fixture'
 
@@ -15,6 +16,15 @@ describe('SessionListItem', () => {
     expect(screen.queryByText('Jul 12')).not.toBeInTheDocument()
   })
 
+  it('takes the tab stop and focus ref a roving list hands it', () => {
+    const focusRef = vi.fn()
+    render(
+      <SessionListItem session={session} now={SESSION_NOW} tabIndex={-1} focusRef={focusRef} />
+    )
+    expect(screen.getByRole('option')).toHaveAttribute('tabindex', '-1')
+    expect(focusRef).toHaveBeenCalledWith(screen.getByRole('option'))
+  })
+
   it('shows the exact end time when the age is hovered', () => {
     render(<SessionListItem session={session} now={SESSION_NOW} />)
     expect(screen.queryByText('07/12/2026, 02:25 PM')).not.toBeInTheDocument()
@@ -27,7 +37,7 @@ describe('SessionListItem', () => {
   it('lists the task ids when the count is hovered', () => {
     render(<SessionListItem session={session} now={SESSION_NOW} />)
     fireEvent.pointerEnter(screen.getByTestId('session-task-count'))
-    expect(screen.getByText(/^AW-17 AW-18/)).toBeInTheDocument()
+    expect(screen.getByText(/^PL-17 PL-18/)).toBeInTheDocument()
   })
 
   it('exposes selection to assistive tech and shows the accent bar only when selected', () => {
@@ -58,5 +68,14 @@ describe('SessionListItem', () => {
       </div>
     )
     expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+describe('SessionListItem className merge', () => {
+  it('lets a caller class replace the root class it conflicts with', () => {
+    render(<SessionListItem session={session} now={SESSION_NOW} className="rounded-lg" />)
+    const classes = capturedClassNames.get('session-list-item')?.split(/\s+/)
+    expect(classes).toContain('rounded-lg')
+    expect(classes).not.toContain('rounded-md')
   })
 })

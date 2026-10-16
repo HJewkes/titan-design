@@ -20,6 +20,7 @@ import {
   ExerciseCard,
   SupersetWrapper,
 } from '../src/components/custom/Workout'
+import { checkMarkOutline } from '../src/components/icons/checkMarkGeometry'
 
 /* ─────────────────────────────────────────────
    HTML Ground Truth CSS (verbatim from component-demo.html lines 218-720)
@@ -30,7 +31,9 @@ const HTML_CSS = `
     --brand-primary: #FF7900;
     --brand-primary-light: #FF9630;
     --brand-primary-subtle: rgba(255, 121, 0, 0.12);
-    --brand-secondary: #307B9B;
+    /* Pill's subtle brand label (dark :root in global.css). */
+    --on-brand-primary-subtle: #FF7900;
+    --brand-secondary: #2697B7;
     --bg-base: #100D0A;
     --surface-elevated: #2C2A28;
     --surface-raised: #31302F;
@@ -48,10 +51,10 @@ const HTML_CSS = `
        plane. A dot is foreground, so it takes the muted text role: text-tertiary,
        grey-500. */
     --dot-inactive: #888684;
-    /* The B2 port put PlaceholderStrip on border-prominent (grey-800). The
-       frozen demo's #3A3A3A sat between two ramp steps, so the reference follows
-       the component onto the ramp rather than pinning it back off it. */
-    --border-prominent: #424140;
+    /* The B2 port put PlaceholderStrip on border-prominent. The frozen demo's
+       #3A3A3A sat between two ramp steps, so the reference follows the component
+       rather than pinning it back: grey-800 first, white at 0.30 since item 42. */
+    --border-prominent: rgba(255, 255, 255, 0.30);
     /* The diverging dataviz scale (VW-371 roles), mirrored for the chip dot the
        way every other var here mirrors tokens/semantic.ts. */
     --dataviz-diverging-0: #2196F3;
@@ -60,7 +63,7 @@ const HTML_CSS = `
     --dataviz-diverging-3: #F9B415;
     --dataviz-diverging-4: #D14343;
     --status-success: #2ED573;
-    --status-error: #D14343;
+    --status-error: #E05254;
     --status-warning: #F9B415;
     --text-inverse: #1C1916;
     /* The wash ladder (#178): -subtle 0.12, -muted 0.30. The B3 port put the ring
@@ -81,9 +84,6 @@ const HTML_CSS = `
     --brand-primary-strong: rgba(255, 121, 0, 0.50);
     --result-improve: #4caf50;
     --result-degrade: #ef5350;
-    --vel-red: #d14343;
-    --vel-orange: #ff7900;
-    --vel-yellow: #f9b415;
     --vel-green: #2ed573;
     --font-heading: 'Space Grotesk', sans-serif;
     --font-ui: 'Nunito Sans', sans-serif;
@@ -141,15 +141,15 @@ const HTML_CSS = `
   .html-scope .pr-badge {
     display: inline-flex;
     align-items: center;
-    /* 4px, not 3: BaseBadge's icon gap moved to Pill's inline-sm rung (AW-142). */
+    /* The Pill face (tone brand, variant subtle, size sm, rounded false): TD-57. */
     gap: 4px;
     background: var(--brand-primary-subtle);
-    border: 1px solid rgba(255, 121, 0, 0.3);
-    border-radius: 2px;
+    border: 1px solid transparent;
+    border-radius: 8px;
     padding: 2px 8px;
     font-size: 12px;
     font-weight: 700;
-    color: var(--brand-primary);
+    color: var(--on-brand-primary-subtle);
     font-family: var(--font-body-token);
   }
   .html-scope .pr-badge-compact {
@@ -207,7 +207,7 @@ const HTML_CSS = `
      reference tracks the shipped value rather than the pre-centralisation one. */
   .html-scope .glow-success { box-shadow: 0 0 12px rgba(46,213,115,0.25); }   /* green-300  #2ED573 */
   .html-scope .glow-warning { box-shadow: 0 0 12px rgba(249,180,21,0.25); }   /* amber-300  #F9B415 */
-  .html-scope .glow-error   { box-shadow: 0 0 12px rgba(209,67,67,0.25); }    /* red-600    #D14343 */
+  .html-scope .glow-error   { box-shadow: 0 0 12px rgba(224,82,84,0.25); }    /* red-500    #E05254 */
 
   /* 4. PlaceholderStrip */
   .html-scope .placeholder-strip-single {
@@ -230,19 +230,8 @@ const HTML_CSS = `
     min-width: 4px;
   }
 
-  /* 5. VelocityStrip (collapsed mini only for static comparison) */
-  .html-scope .velocity-mini {
-    display: flex;
-    gap: 2px;
-    height: 3px;
-    border-radius: 2px;
-    width: 100%;
-  }
-  .html-scope .velocity-mini .vel-bar { flex: 1; border-radius: 1px; min-width: 4px; }
+  /* 5. VelocityStrip */
   .html-scope .vel-bar.green { background: var(--vel-green); }
-  .html-scope .vel-bar.yellow { background: var(--vel-yellow); }
-  .html-scope .vel-bar.orange { background: var(--vel-orange); }
-  .html-scope .vel-bar.red { background: var(--vel-red); }
 
   /* 6. TempoDisplay */
   .html-scope .tempo-display {
@@ -264,9 +253,12 @@ const HTML_CSS = `
     text-transform: uppercase;
     margin-right: 6px;
   }
+  /* Typography mono face (TD-60, TD-840): the digits no longer carry the old MetricCell 1px tracking. */
   .html-scope .tempo-value {
+    font-family: var(--font-family-mono);
+    font-variant-ligatures: none;
     font-weight: 600;
-    letter-spacing: 1px;
+    letter-spacing: 0;
   }
   .html-scope .tempo-display.md-size .tempo-value { font-size: 11px; }
   .html-scope .tempo-display.sm-size .tempo-value { font-size: 9px; }
@@ -379,6 +371,8 @@ const HTML_CSS = `
     border: 1px solid var(--status-success-muted);
     color: var(--status-success);
   }
+  /* The check is an SVG flex item, so the prefix's space collapses; the gap is inline-sm. */
+  .html-scope .workout-pill .pill-check { margin-right: 4px; }
   .html-scope .workout-pill.active {
     background: var(--brand-primary-subtle);
     border: 1px solid var(--brand-primary-muted);
@@ -433,7 +427,7 @@ const HTML_CSS = `
      muscle reads as one colour on both surfaces. Was status-success / brand-primary
      / brand-secondary — a status-family palette that disagreed with the figure.
      untrained is not a stop on the scale and keeps the muted text role; over is
-     unchanged (status-error and dataviz-diverging-4 are the same red). */
+     unchanged (dataviz-diverging-4, red-600). */
   .html-scope .muscle-chip-dot.behind { background: var(--dataviz-diverging-0); }
   .html-scope .muscle-chip-dot.ontrack { background: var(--dataviz-diverging-1); }
   .html-scope .muscle-chip-dot.target { background: var(--dataviz-diverging-2); }
@@ -696,6 +690,14 @@ const HTML_CSS = `
    Comparison Pair wrapper
    ───────────────────────────────────────────── */
 
+/** The check the components draw since TD-840 replaced the ✓ glyph, in the wrapper's colour. */
+function checkMarkHtml(size: number, className = ''): string {
+  const points = checkMarkOutline(3)
+    .map(([x, y]) => `${String(x)},${String(y)}`)
+    .join(' ')
+  return `<svg class="${className}" width="${String(size)}" height="${String(size)}" viewBox="0 0 24 24" aria-hidden="true"><polygon points="${points}" fill="currentColor" /></svg>`
+}
+
 function ComparisonPair({
   testId,
   label,
@@ -935,7 +937,7 @@ function App() {
       {/* ── 3b. StatusDot with icons ── */}
       {(
         [
-          { variant: 'success', icon: 'check', iconChar: '\u2713' },
+          { variant: 'success', icon: 'check', iconChar: checkMarkHtml(12) },
           { variant: 'warning', icon: 'exclamation', iconChar: '!' },
           { variant: 'error', icon: 'dash', iconChar: '\u2014' },
         ] as const
@@ -1111,7 +1113,7 @@ function App() {
           missed: 'Core C',
         }
         const prefixes: Record<string, string> = {
-          completed: '\u2713 ',
+          completed: checkMarkHtml(12, 'pill-check'),
           missed: '\u2014 ',
         }
         const prefix = prefixes[status] ?? ''

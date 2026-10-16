@@ -1,19 +1,14 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useEffect, useState } from 'react'
 import { View, Pressable, Animated, Easing, type ViewProps } from 'react-native'
+import { CheckMark } from '../../icons'
 import { Typography } from '../../ui/typography'
 import { resolveColor } from '../../../theme/resolve-color'
-import { WORKOUT_PILL_DELOAD } from '../../../theme/extracted-colors-dataviz'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { alpha } from '../../../utils/colors'
 import { usePrefersReducedMotion } from '../../../hooks/usePrefersReducedMotion'
 import { cn } from '../../../utils/cn'
-
-// The deload role has no semantic tokens at all, so its wash and rim are derived from
-// the same ramp pin WeekRow reads, at the LADDER'S rungs (0.12 subtle, 0.30 muted)
-// rather than the frozen demo's hand-mixed 0.15. FINDING for E3: deload needs the
-// wash ladder like every other role — its values already sit on one.
-const DELOAD_WASH = alpha(WORKOUT_PILL_DELOAD, 0.12)
-const DELOAD_RIM = alpha(WORKOUT_PILL_DELOAD, 0.3)
+import { useSurfaceMode } from '../../ui/surface'
 
 /**
  * Spec statuses: completed | current | upcoming | deload.
@@ -47,7 +42,7 @@ interface PillPaint {
  * a 0.7 alpha, which no rung expresses; `status-error-dark` composites to within a
  * hair of it on the dark planes and needs no alpha at all.
  */
-function paintFor(status: WorkoutPillStatus): PillPaint {
+function paintFor(status: WorkoutPillStatus, deload: string): PillPaint {
   switch (status) {
     case 'completed':
       return {
@@ -80,7 +75,7 @@ function paintFor(status: WorkoutPillStatus): PillPaint {
         text: resolveColor('status-error-dark'),
       }
     case 'deload':
-      return { background: DELOAD_WASH, border: DELOAD_RIM, text: WORKOUT_PILL_DELOAD }
+      return { background: alpha(deload, 0.12), border: alpha(deload, 0.3), text: deload }
   }
 }
 
@@ -134,7 +129,7 @@ export function WorkoutPill({
   const pulseOpacity = usePulse(shouldPulse)
   const isCompleted = status === 'completed'
   const isMissed = status === 'missed'
-  const paint = paintFor(status)
+  const paint = paintFor(status, getSemanticColors(useSurfaceMode())['status-deload'])
 
   // 11px sat between scale steps. `caption` rounds it UP to the 12px `xs` step, the
   // same call B2 made when MuscleGroupChip became a Pill preset at size md.
@@ -159,19 +154,12 @@ export function WorkoutPill({
         accessibilityLabel={onPress ? undefined : `${name} workout, ${status}`}
         {...props}
       >
-        {isCompleted && (
-          <Typography
-            variant="caption"
-            color="inherit"
-            className={cn(labelClass, 'mr-inline-sm')}
-            style={{ color: paint.text }}
-            accessibilityElementsHidden
-            testID="workout-pill-check"
-          >
-            {'\u2713'}
-          </Typography>
+        {!!isCompleted && (
+          <View className="mr-inline-sm" accessibilityElementsHidden testID="workout-pill-check">
+            <CheckMark size={12} strokeWidth={3} color={paint.text} />
+          </View>
         )}
-        {isMissed && (
+        {!!isMissed && (
           <Typography
             variant="caption"
             color="inherit"

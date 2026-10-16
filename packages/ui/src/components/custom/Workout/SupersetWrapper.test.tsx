@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { siblingSource, spacingClassesIn, resolveAll } from '../../../test/spacing-resolver'
+import { spacingClassesOf, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { View, Text } from 'react-native'
@@ -134,16 +134,24 @@ describe('SupersetWrapper', () => {
 
 /** SupersetWrapper's geometry, pinned (AW-142); pixels unchanged. */
 describe('SupersetWrapper geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'SupersetWrapper.tsx')
-
   it('keeps the rail inset and the inter-card margin', () => {
-    const classes = spacingClassesIn(source, 'SupersetWrapper')
+    render(
+      <SupersetWrapper>
+        <View />
+      </SupersetWrapper>
+    )
+    const classes = spacingClassesOf('superset-wrapper')
     expect(classes).toEqual(['pl-inset-sm', 'mx-inset-md', 'mb-stack-md'])
     expect(resolveAll(classes)).toEqual(['8px', '12px', '8px'])
   })
 
   it('keeps the hairline between stacked children', () => {
-    expect(source).toContain('gap-0.5')
+    render(
+      <SupersetWrapper>
+        <View />
+      </SupersetWrapper>
+    )
+    expect(spacingClassesOf('superset-children')).toEqual(['gap-0.5'])
     expect(resolveAll(['gap-0.5'])).toEqual(['2px'])
   })
 })

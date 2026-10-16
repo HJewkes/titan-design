@@ -1,6 +1,15 @@
 import { useEffect, useRef, type Dispatch } from 'react'
-import type { Manifest } from '../src/schema.ts'
-import { numberKeyAction, stopsFor, type Action, type ReviewState } from './state.ts'
+import type { Manifest } from '@titan-design/review-schema'
+import {
+  numberKeyAction,
+  pageStepAction,
+  revealKeyAction,
+  stopsFor,
+  type Action,
+  type ReviewState,
+} from './state.ts'
+
+const PAGE_KEYS: Record<string, number> = { ']': 1, '[': -1 }
 
 function isTyping(target: EventTarget | null): boolean {
   return target instanceof HTMLTextAreaElement || target instanceof HTMLInputElement
@@ -13,7 +22,7 @@ interface KeyContext {
   submit: () => void
 }
 
-function onFormKey(e: KeyboardEvent, { manifest, state, dispatch }: KeyContext): void {
+export function onFormKey(e: KeyboardEvent, { manifest, state, dispatch }: KeyContext): void {
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault()
     ;(document.activeElement as HTMLElement | null)?.blur()
@@ -21,8 +30,20 @@ function onFormKey(e: KeyboardEvent, { manifest, state, dispatch }: KeyContext):
   }
   if (e.key === 'Escape' && state.annotate) return dispatch({ type: 'toggleAnnotate' })
   if (isTyping(e.target) || e.metaKey || e.ctrlKey || e.altKey) return
-  if (e.key === 'a') return dispatch({ type: 'toggleAnnotate' })
   if (e.key === 'l') return dispatch({ type: 'toggleColumns' })
+  if (e.key in PAGE_KEYS) {
+    const action = pageStepAction(manifest, state.active, PAGE_KEYS[e.key])
+    if (action) dispatch(action)
+    return
+  }
+  // Diff and Context hide the active stop, so a key that answers it would answer blind.
+  if (state.tab !== 'review') return
+  if (e.key === 'a') return dispatch({ type: 'toggleAnnotate' })
+  if (e.key === 'r') {
+    const action = revealKeyAction(manifest, stopsFor(manifest)[state.active])
+    if (action) dispatch(action)
+    return
+  }
   if (/^[0-9]$/.test(e.key)) {
     const action = numberKeyAction(manifest, stopsFor(manifest)[state.active], e.key)
     if (action) dispatch(action)
@@ -42,7 +63,7 @@ function onKey(e: KeyboardEvent, ctx: KeyContext): void {
   if (state.screen === 'form') onFormKey(e, ctx)
 }
 
-/** Keyboard-first: digits pick, Tab reaches the comment, Enter advances, Cmd+Enter reviews and sends. */
+/** Keyboard-first: digits pick, r reveals the recommendation, Tab reaches the comment, Enter advances, [ and ] page sections, Cmd+Enter reviews and sends. */
 export function useKeyboard(ctx: KeyContext): void {
   const latest = useRef(ctx)
   useEffect(() => {

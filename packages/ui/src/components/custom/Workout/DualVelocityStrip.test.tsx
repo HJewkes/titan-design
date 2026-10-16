@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { DualVelocityStrip } from './VelocityStrip'
+import { DualVelocityStrip } from './DualVelocityStrip'
 
 /**
  * The newest-rep entrance is an `Animated` value applied IMPERATIVELY, so jsdom never reflects it:
@@ -53,8 +53,6 @@ const DISTINCT_RED = '#A4221C' // grinding (5th band, no collapse)
 // `velocity-slot-todo`, `velocity-hero-reference`. The `rail` variant is a lean dedicated
 // renderer that keeps the `dual-velocity-bar-L/R-N` testIDs.
 const HERO_BARS = /^velocity-bar-\d+$/
-const RAIL_LEFT_BARS = /^dual-velocity-bar-L-\d+$/
-const RAIL_RIGHT_BARS = /^dual-velocity-bar-R-\d+$/
 const wingUp = () => within(screen.getByTestId('dual-velocity-wing-up'))
 const wingDown = () => within(screen.getByTestId('dual-velocity-wing-down'))
 
