@@ -1,11 +1,13 @@
-// A synthetic CI world for `packet from-ci`: an invented repo, run and baselines, every PNG built in
-// code. The fake gh and git answer only the calls from-ci plans to make; any other call throws.
+// Synthetic packet inputs: an invented repo, run and baselines, every PNG built in code. The fake gh
+// and git answer only the calls from-ci plans to make; any other call throws.
 import { mkdir, mkdtemp, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
+import type { Collected } from '../src/packet.ts'
 import { CI_SOURCES, type CiIo } from '../src/packet-ci.ts'
 import { gitBlobId } from '../src/packet-classify.ts'
 import { solidImage, writePng } from '../src/packet-png.ts'
+import type { LayerSources } from '../src/packet-types.ts'
 import type { CliIo } from '../src/run.ts'
 import { noTreeGit } from './fixtures.ts'
 
@@ -27,12 +29,49 @@ export function png(w: number, h: number, rgba = GREY, changes: [number, number,
   return writePng(image)
 }
 
+export const tempDir = () => mkdtemp(join(tmpdir(), 'titan-packet-test-'))
+
+/** A layer with nothing regenerated and nothing shown, to override. */
+export function layer(over: Partial<LayerSources> & Pick<LayerSources, 'layer'>): LayerSources {
+  return { regenerated: false, diagnostics: false, unchanged: 0, shown: [], ...over }
+}
+
+/** What a packet is written from, bound to the invented run, head and main. */
+export function collected(layers: LayerSources[] = [], over: Partial<Collected> = {}): Collected {
+  const of = (name: LayerSources['layer']) => layers.find((l) => l.layer === name)
+  return {
+    target: { repo: REPO, pr: PR, head: HEAD, run: RUN, clone: '/nonexistent-clone' },
+    binding: {
+      url: `https://example.test/runs/${RUN}`,
+      conclusion: 'failure',
+      visualJob: 'failure',
+      headTree: TREE,
+      mainSha: MAIN,
+      mergeBase: MERGE_BASE,
+    },
+    layers: [
+      of('component') ?? layer({ layer: 'component' }),
+      of('story') ?? layer({ layer: 'story' }),
+    ],
+    warnings: [],
+    side: [],
+    ...over,
+  }
+}
+
+export interface FakeArtifact {
+  id: number
+  name: string
+  expired: boolean
+  created_at: string
+}
+
 export interface World {
   run: { headSha: string; status: string; conclusion: string; workflowName: string }
   pr: { headRefOid: string; state: string }
-  artifacts: { name: string; expired: boolean }[]
-  /** Each artifact's files, relative to its root. */
-  downloads: Record<string, Record<string, Buffer>>
+  artifacts: FakeArtifact[]
+  /** Each artifact's files by its id, relative to its root. */
+  downloads: Record<number, Record<string, Buffer>>
   /** Main's files by repo path. */
   main: Record<string, Buffer>
   /** The PNGs the PR adds or modifies, by repo path, at its head. */
@@ -54,12 +93,20 @@ export function world(overrides: Partial<World> = {}): World {
   }
 }
 
-/** Adds an artifact to the world with these files. */
-export function withArtifact(w: World, name: string, files: Record<string, Buffer>): World {
+export const UPLOADED = '2026-01-01T00:00:00Z'
+
+/** Adds an artifact to the world with these files, under the next id. */
+export function withArtifact(
+  w: World,
+  name: string,
+  files: Record<string, Buffer>,
+  over: Partial<Omit<FakeArtifact, 'id' | 'name'>> = {}
+): World {
+  const id = w.artifacts.length + 1
   return {
     ...w,
-    artifacts: [...w.artifacts, { name, expired: false }],
-    downloads: { ...w.downloads, [name]: files },
+    artifacts: [...w.artifacts, { id, name, expired: false, created_at: UPLOADED, ...over }],
+    downloads: { ...w.downloads, [id]: files },
   }
 }
 
@@ -121,10 +168,10 @@ export function fakeCi(w: World): { io: CiIo; calls: string[][] } {
       if (!bytes) throw new Error(`unplanned call: git show ${spec}`)
       return bytes
     },
-    ghDownload: async (repo, run, name, dir) => {
-      calls.push(['gh', 'run', 'download', run, '--repo', repo, '--name', name])
-      const files = w.downloads[name]
-      if (!files) throw new Error(`unplanned download: ${name}`)
+    ghDownload: async (repo, id, dir) => {
+      calls.push(['gh', 'api', `repos/${repo}/actions/artifacts/${id}/zip`])
+      const files = w.downloads[id]
+      if (!files) throw new Error(`unplanned download: ${id}`)
       for (const [path, bytes] of Object.entries(files)) {
         await mkdir(dirname(join(dir, path)), { recursive: true })
         await writeFile(join(dir, path), bytes)
@@ -148,8 +195,6 @@ export function cliIo(ci: CiIo, stderr: string[] = []): CliIo {
     ci,
   }
 }
-
-export const tempDir = () => mkdtemp(join(tmpdir(), 'titan-packet-test-'))
 
 /** The argv for one from-ci run into `out`. */
 export const fromCiArgs = (out: string, extra: string[] = []) => [

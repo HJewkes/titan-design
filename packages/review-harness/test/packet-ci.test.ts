@@ -1,4 +1,4 @@
-import { access, readFile } from 'node:fs/promises'
+import { access, mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { CiPacketSchema, type CiPacket } from '../src/packet.ts'
@@ -21,8 +21,8 @@ const SPEC = 'x.test.ts-snapshots/'
 const A = `${SPEC}a-chromium-linux.png`
 const RED = [255, 0, 0, 255]
 
-async function run(w: World) {
-  const out = join(await tempDir(), 'packet')
+async function run(w: World, out?: string) {
+  out ??= join(await tempDir(), 'packet')
   const stderr: string[] = []
   const fake = fakeCi(w)
   const code = await runCli(fromCiArgs(out), cliIo(fake.io, stderr))
@@ -74,12 +74,80 @@ describe('packet from-ci binding', () => {
   })
 
   it('refuses an expired artifact by name rather than reading it as no changes', async () => {
-    const w = world({ artifacts: [{ name: COMPONENT.artifact, expired: true }] })
+    const w = withArtifact(world(), COMPONENT.artifact, {}, { expired: true })
     const result = await run(w)
 
     expect(result.code).toBe(2)
     expect(result.stderr).toContain(`${COMPONENT.artifact} has expired`)
     expect(await exists(result.out)).toBe(false)
+  })
+})
+
+describe('packet from-ci artifacts', () => {
+  const regenerated = (red: number[]) => ({ [A]: png(40, 20, undefined, [[3, 4, red]]) })
+  const STALE = [0, 0, 255, 255]
+  const LATER = '2026-01-02T00:00:00Z'
+
+  it('reads the latest upload of a name a rerun uploaded twice, in either list order', async () => {
+    const mains = {
+      [`${COMPONENT.prefix}${A}`]: png(40, 20),
+      [`${STORY.prefix}s-chromium-linux.png`]: png(40, 20),
+    }
+    const storyFile = (red: number[]) => ({ 's-chromium-linux.png': png(40, 20, red) })
+    let w = withArtifact(world({ main: mains }), COMPONENT.artifact, regenerated(STALE))
+    w = withArtifact(w, COMPONENT.artifact, regenerated(RED), { created_at: LATER })
+    w = withArtifact(w, STORY.artifact, storyFile(RED), { created_at: LATER })
+    w = withArtifact(w, STORY.artifact, storyFile(STALE))
+    const { code, out } = await run(w)
+    const images = (await readPacket(out)).images
+    const afters = await Promise.all(images.map((i) => readFile(join(out, i.after!.file))))
+
+    expect(code).toBe(0)
+    expect(afters).toEqual([regenerated(RED)[A], storyFile(RED)['s-chromium-linux.png']])
+  })
+
+  it('refuses when the latest upload of a name has expired, though an older one is live', async () => {
+    let w = withArtifact(world(), COMPONENT.artifact, regenerated(RED))
+    w = withArtifact(w, COMPONENT.artifact, {}, { created_at: LATER, expired: true })
+    const result = await run(w)
+
+    expect(result.code).toBe(2)
+    expect(result.stderr).toContain(`${COMPONENT.artifact} has expired`)
+  })
+
+  it('leaves an earlier packet untouched when a downloaded PNG is corrupt', async () => {
+    const out = join(await tempDir(), 'packet')
+    await mkdir(out)
+    await writeFile(join(out, 'packet.json'), 'earlier')
+    const corrupt = withArtifact(world(), COMPONENT.artifact, {
+      [`${SPEC}broken-chromium-linux.png`]: Buffer.from('not a png'),
+    })
+    const result = await run(corrupt, out)
+
+    expect(result.code).toBe(2)
+    expect(result.stderr).toContain('not a PNG')
+    expect(await readdir(out)).toEqual(['packet.json'])
+    expect(await readFile(join(out, 'packet.json'), 'utf8')).toBe('earlier')
+  })
+})
+
+describe('packet from-ci command', () => {
+  it('warns when main changed a baseline after the merge-base', async () => {
+    const moved = `${COMPONENT.prefix}${SPEC}elsewhere-chromium-linux.png`
+    const result = await run(world({ moved: [moved] }))
+
+    expect(result.stderr).toContain(moved)
+    expect((await readPacket(result.out)).warnings).toHaveLength(1)
+  })
+
+  it('refuses a missing --run before calling gh', async () => {
+    const out = join(await tempDir(), 'packet')
+    const args = fromCiArgs(out).filter((a, i, all) => a !== '--run' && all[i - 1] !== '--run')
+    const fake = fakeCi(world())
+
+    expect(await runCli(args, cliIo(fake.io))).toBe(2)
+    expect(fake.calls).toEqual([])
+    expect(await exists(out)).toBe(false)
   })
 })
 

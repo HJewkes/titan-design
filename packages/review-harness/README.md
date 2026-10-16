@@ -469,15 +469,20 @@ answer that is not one of the options, or a `questionId` no item has, is refused
 
 ## A packet from CI (TD-920)
 
+`writePacketDir` (`src/packet.ts`) writes a visual review packet for one PR head, in code, with no
+Storybook and no agent-made image. Its input is each visual layer (`component`, `story`) with the
+baselines to show and their bytes on each side, plus the PR, run and main they are bound to;
+`titan-review packet from-ci` gathers that input from one CI run and git.
+
 ```sh
 titan-review packet from-ci --repo <owner/name> --pr <n> --head <40-hex> --run <id> \
   [--out <dir>] [--clone <path>] [--side <questions.json>]
 ```
 
-It builds a visual review packet for one PR head in code, from one CI run and git, with no
-Storybook and no agent-made image. `--repo` here is the GitHub repo (`owner/name`); the checkout
-git reads is `--clone` (default: this one). It only reads: `gh run view`, `gh pr view`, `gh api`
-and `gh run download`; `git fetch`, `rev-parse`, `merge-base`, `ls-tree`, `diff` and `show`.
+`--repo` here is the GitHub repo (`owner/name`); the checkout git reads is `--clone` (default:
+this one). It only reads: `gh run view`, `gh pr view` and `gh api` (an artifact is fetched by id
+as a zip and unzipped into a scratch directory); `git fetch`, `rev-parse`, `merge-base`,
+`ls-tree`, `diff` and `show`.
 
 **Refusals** (exit 2, nothing written): the run's `headSha` is not `--head`; its workflow is not
 `CI`; it has not completed; the PR is not open, or its head has moved past `--head`; an artifact
@@ -489,6 +494,9 @@ it reads has expired (an expired artifact is never read as "no changes").
 | ----------- | ---------------------------- | --------------------------------------------------------------- | ------------------------ |
 | `component` | `component-visual-baselines` | `packages/ui/specimen/baseline/`                                | `component-visual-diffs` |
 | `story`     | `storybook-visual-baselines` | `packages/ui/tests/visual/reference/stories.spec.ts-snapshots/` | `storybook-visual-diffs` |
+
+A rerun attempt uploads its artifacts again under the same names, so from-ci reads each name's
+latest upload (by `created_at`, then id) and refuses if that one has expired.
 
 Observed on a real failed run: the component artifact holds `<spec>-snapshots/<name>-chromium-linux.png`
 relative to its prefix, the story artifact holds the snapshot directory's files flat, and each holds

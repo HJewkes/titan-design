@@ -1,5 +1,5 @@
-// `titan-review packet from-ci`: a visual review packet for one PR head, built in code from a CI run
-// and git, with no Storybook. The packet is staged beside its directory and swapped in whole, so a
+// packet.json and the packet directory for one PR head: the images, montages and draft written in
+// code from gathered baselines. The packet is staged beside its directory and swapped in whole, so a
 // refusal or a failure part way through leaves no packet and any earlier one as it was.
 import { createHash } from 'node:crypto'
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
@@ -10,23 +10,25 @@ import { QuestionSchema, RoundSchema, lintRound } from '@titan-design/review-sch
 import { swapIn } from './frames.ts'
 import {
   CI_SOURCES,
-  LAYERS,
   checkBinding,
   gatherLayer,
   liveArtifacts,
   mainMoved,
-  type Binding,
-  type CiDiff,
   type CiIo,
-  type CiTarget,
-  type Gathered,
-  type LayerSources,
 } from './packet-ci.ts'
 import { stemOf } from './packet-classify.ts'
 import { diffImages } from './packet-diff.ts'
 import { packetDraft } from './packet-draft.ts'
 import { montage, type MontageEntry } from './packet-montage.ts'
 import { declaredSize, readPng, writePng, type Rgba } from './packet-png.ts'
+import {
+  LAYERS,
+  type Binding,
+  type CiDiff,
+  type CiTarget,
+  type Gathered,
+  type LayerSources,
+} from './packet-types.ts'
 import { ReviewError } from './review.ts'
 import { applyRoundRules } from './round-rules.ts'
 
@@ -100,11 +102,6 @@ export const CiPacketSchema = z
 
 export type CiPacket = z.infer<typeof CiPacketSchema>
 type PacketImage = z.infer<typeof PacketImageSchema>
-
-export interface PacketOptions extends CiTarget {
-  out: string
-  side?: string
-}
 
 const sha256 = (bytes: Buffer) => createHash('sha256').update(bytes).digest('hex')
 
@@ -231,9 +228,10 @@ function checkDraft(draft: ReturnType<typeof packetDraft>): void {
     )
 }
 
-type DraftQuestion = Parameters<typeof packetDraft>[1][number]
+export type DraftQuestion = Parameters<typeof packetDraft>[1][number]
 
-async function readSide(path: string): Promise<DraftQuestion[]> {
+/** The `--side` questions file: a JSON array of round questions. */
+export async function readSide(path: string): Promise<DraftQuestion[]> {
   const raw = await readFile(path, 'utf8').catch(() => {
     throw new ReviewError(`cannot read --side ${path}`)
   })
@@ -249,7 +247,8 @@ async function readSide(path: string): Promise<DraftQuestion[]> {
   return questions as DraftQuestion[]
 }
 
-interface Collected {
+/** Everything a packet is written from. */
+export interface Collected {
   target: CiTarget
   binding: Binding
   layers: LayerSources[]
@@ -297,6 +296,24 @@ async function writePacket(c: Collected, staging: string): Promise<CiPacket> {
   return packet
 }
 
+/** Writes the packet to `out`; a failure leaves `out` as it was. */
+export async function writePacketDir(c: Collected, out: string): Promise<CiPacket> {
+  await mkdir(dirname(out), { recursive: true })
+  const staging = await mkdtemp(join(dirname(out), '.packet-'))
+  try {
+    const packet = await writePacket(c, staging)
+    await swapIn(staging, out)
+    return packet
+  } finally {
+    await rm(staging, { recursive: true, force: true })
+  }
+}
+
+export interface PacketOptions extends CiTarget {
+  out: string
+  side?: string
+}
+
 function checkTarget(t: CiTarget): void {
   if (!/^[^/\s]+\/[^/\s]+$/.test(t.repo))
     throw new ReviewError(`--repo is owner/name, got ${t.repo}`)
@@ -319,7 +336,8 @@ async function collect(o: PacketOptions, scratch: string, io: CiIo): Promise<Col
   return { target: o, binding, layers, warnings, side }
 }
 
-/** Builds the packet at `o.out`; every refusal is a ReviewError and leaves `o.out` untouched. */
+/** `packet from-ci`: gathers from the run and git, then writes the packet at `o.out`. Every refusal
+ * is a ReviewError and leaves `o.out` untouched. */
 export async function packetFromCi(
   o: PacketOptions,
   io: CiIo
@@ -328,15 +346,7 @@ export async function packetFromCi(
   const scratch = await mkdtemp(join(tmpdir(), 'titan-packet-'))
   try {
     const collected = await collect(o, scratch, io)
-    await mkdir(dirname(o.out), { recursive: true })
-    const staging = await mkdtemp(join(dirname(o.out), '.packet-'))
-    try {
-      const packet = await writePacket(collected, staging)
-      await swapIn(staging, o.out)
-      return { packet, warnings: collected.warnings }
-    } finally {
-      await rm(staging, { recursive: true, force: true })
-    }
+    return { packet: await writePacketDir(collected, o.out), warnings: collected.warnings }
   } finally {
     await rm(scratch, { recursive: true, force: true })
   }

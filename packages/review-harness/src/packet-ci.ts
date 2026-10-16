@@ -1,10 +1,11 @@
 // The read-only gh and git side of `packet from-ci`: it binds a CI run to a PR head, then gathers
 // each visual layer's baselines from the run's artifacts, from main and from the PR's own commits.
 import { execFile } from 'node:child_process'
-import { readFile, readdir, stat } from 'node:fs/promises'
+import { readFile, readdir, stat, writeFile } from 'node:fs/promises'
 import { join, relative, sep } from 'node:path'
-import { classify, gitBlobId, isBaseline, stemOf, type ShownChange } from './packet-classify.ts'
+import { classify, gitBlobId, isBaseline, stemOf } from './packet-classify.ts'
 import { PNG_LIMITS } from './packet-png.ts'
+import type { Binding, CiDiff, CiTarget, Gathered, Layer, LayerSources } from './packet-types.ts'
 import { ReviewError } from './review.ts'
 
 /** The gh and git calls from-ci makes, none of which writes; tests fake them. */
@@ -15,12 +16,9 @@ export interface CiIo {
   git: (clone: string, args: string[]) => Promise<string>
   /** The raw bytes of `git -C <clone> show <spec>`, for a PNG at `<ref>:<path>`. */
   gitBlob: (clone: string, spec: string) => Promise<Buffer>
-  /** `gh run download <run> --repo <repo> --name <name> --dir <dir>`. */
-  ghDownload: (repo: string, run: string, name: string, dir: string) => Promise<void>
+  /** Artifact `id` of `repo`, unzipped into `dir`. */
+  ghDownload: (repo: string, id: number, dir: string) => Promise<void>
 }
-
-export const LAYERS = ['component', 'story'] as const
-export type Layer = (typeof LAYERS)[number]
 
 export interface CiSource {
   layer: Layer
@@ -49,23 +47,6 @@ export const CI_SOURCES: readonly CiSource[] = [
 
 export const CI_WORKFLOW = 'CI'
 const VISUAL_JOB = 'visual'
-
-export interface CiTarget {
-  repo: string
-  pr: number
-  head: string
-  run: string
-  clone: string
-}
-
-export interface Binding {
-  url: string
-  conclusion: string
-  visualJob: string | null
-  headTree: string
-  mainSha: string
-  mergeBase: string
-}
 
 interface RunView {
   headSha: string
@@ -111,19 +92,36 @@ async function mainRefs(t: CiTarget, io: CiIo) {
   return { mainSha, mergeBase: await io.git(t.clone, ['merge-base', mainSha, t.head]) }
 }
 
-/** The run's artifact names that from-ci reads, refusing an expired one rather than reading it as absent. */
-export async function liveArtifacts(t: CiTarget, io: CiIo): Promise<Set<string>> {
+interface Artifact {
+  id: number
+  name: string
+  expired: boolean
+  created_at: string
+}
+
+const newer = (a: Artifact, b: Artifact) =>
+  a.created_at === b.created_at ? a.id > b.id : a.created_at > b.created_at
+
+/** Each name's latest upload: a rerun attempt uploads again under the same name. */
+function latestByName(artifacts: Artifact[]): Map<string, Artifact> {
+  const latest = new Map<string, Artifact>()
+  for (const a of artifacts) {
+    const seen = latest.get(a.name)
+    if (!seen || newer(a, seen)) latest.set(a.name, a)
+  }
+  return latest
+}
+
+/** The artifact id from-ci reads for each name, refusing an expired one rather than reading it as absent. */
+export async function liveArtifacts(t: CiTarget, io: CiIo): Promise<Map<string, number>> {
   const path = `repos/${t.repo}/actions/runs/${t.run}/artifacts?per_page=100`
-  const { artifacts } = await json<{ artifacts: { name: string; expired: boolean }[] }>(io, [
-    'api',
-    path,
-  ])
+  const { artifacts } = await json<{ artifacts: Artifact[] }>(io, ['api', path])
   const wanted = new Set(CI_SOURCES.flatMap((s) => [s.artifact, s.diagnostics]))
-  const ours = artifacts.filter((a) => wanted.has(a.name))
+  const ours = [...latestByName(artifacts.filter((a) => wanted.has(a.name))).values()]
   const expired = ours.filter((a) => a.expired).map((a) => a.name)
   if (expired.length)
     throw new ReviewError(`run ${t.run}'s artifact ${expired.join(', ')} has expired`)
-  return new Set(ours.map((a) => a.name))
+  return new Map(ours.map((a) => [a.name, a.id]))
 }
 
 /** Every PNG under `dir`, by its path relative to `dir` with forward slashes. */
@@ -141,16 +139,10 @@ export async function readPngTree(dir: string): Promise<Map<string, Buffer>> {
   return files
 }
 
-async function download(t: CiTarget, name: string, scratch: string, io: CiIo) {
-  const dir = join(scratch, name)
-  await io.ghDownload(t.repo, t.run, name, dir)
+async function download(t: CiTarget, name: string, ctx: GatherContext, io: CiIo) {
+  const dir = join(ctx.scratch, name)
+  await io.ghDownload(t.repo, ctx.live.get(name)!, dir)
   return readPngTree(dir)
-}
-
-/** A CI diff, kept only when its stem names one pair in the artifact. */
-export interface CiDiff {
-  diff: Buffer
-  expected: Buffer
 }
 
 function diagnosticsByStem(files: Map<string, Buffer>): Map<string, CiDiff> {
@@ -167,25 +159,6 @@ function diagnosticsByStem(files: Map<string, Buffer>): Map<string, CiDiff> {
     if (expected?.length === 1) pairs.set(stem, { diff, expected: expected[0] })
   }
   return pairs
-}
-
-/** One baseline to show: where its bytes came from, and the bytes on each side. */
-export interface Gathered {
-  layer: Layer
-  path: string
-  change: ShownChange
-  source: 'artifact' | 'git'
-  before?: Buffer
-  after?: Buffer
-  ciDiff?: CiDiff
-}
-
-export interface LayerSources {
-  layer: Layer
-  regenerated: boolean
-  diagnostics: boolean
-  unchanged: number
-  shown: Gathered[]
 }
 
 async function mainBlobs(t: CiTarget, mainSha: string, prefix: string, io: CiIo) {
@@ -224,23 +197,24 @@ async function fromGit(
 export interface GatherContext {
   target: CiTarget
   binding: Binding
-  live: Set<string>
+  /** Artifact ids by name, from liveArtifacts. */
+  live: Map<string, number>
   scratch: string
 }
 
 /** The layer's regenerated files by repo path and its CI diffs by stem; empty when not uploaded. */
 async function artifactSide(source: CiSource, ctx: GatherContext, io: CiIo) {
-  const { target: t, live, scratch } = ctx
+  const { target: t, live } = ctx
   const regenerated = live.has(source.artifact)
   const diagnostics = live.has(source.diagnostics)
   return {
     regenerated,
     diagnostics,
     artifact: regenerated
-      ? prefixed(await download(t, source.artifact, scratch, io), source.prefix)
+      ? prefixed(await download(t, source.artifact, ctx, io), source.prefix)
       : new Map<string, Buffer>(),
     ciDiffs: diagnostics
-      ? diagnosticsByStem(await download(t, source.diagnostics, scratch, io))
+      ? diagnosticsByStem(await download(t, source.diagnostics, ctx, io))
       : new Map<string, CiDiff>(),
   }
 }
@@ -296,7 +270,7 @@ export async function mainMoved(t: CiTarget, binding: Binding, io: CiIo): Promis
 const EXEC_LIMIT = 256 * 1024 * 1024
 const DOWNLOAD_TIMEOUT_MS = 10 * 60 * 1000
 
-function exec(cmd: 'gh' | 'git', args: string[]): Promise<Buffer> {
+function exec(cmd: 'gh' | 'git' | 'unzip', args: string[]): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     execFile(
       cmd,
@@ -315,7 +289,9 @@ export const ciIo: CiIo = {
   gh: (args) => exec('gh', args).then((b) => b.toString('utf8').trim()),
   git: (clone, args) => exec('git', ['-C', clone, ...args]).then((b) => b.toString('utf8').trim()),
   gitBlob: (clone, spec) => exec('git', ['-C', clone, 'show', spec]),
-  ghDownload: async (repo, run, name, dir) => {
-    await exec('gh', ['run', 'download', run, '--repo', repo, '--name', name, '--dir', dir])
+  ghDownload: async (repo, id, dir) => {
+    const zip = await exec('gh', ['api', `repos/${repo}/actions/artifacts/${id}/zip`])
+    await writeFile(`${dir}.zip`, zip)
+    await exec('unzip', ['-q', `${dir}.zip`, '-d', dir])
   },
 }

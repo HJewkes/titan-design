@@ -3,59 +3,78 @@ import { access, mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { sha256Of } from '../src/frames.ts'
-import { CiPacketSchema } from '../src/packet.ts'
-import { runCli } from '../src/run.ts'
-import {
-  COMPONENT,
-  STORY,
-  cliIo,
-  fakeCi,
-  fromCiArgs,
-  png,
-  tempDir,
-  withArtifact,
-  world,
-  type World,
-} from './packet-fake.ts'
+import { CiPacketSchema, readSide, writePacketDir } from '../src/packet.ts'
+import type { Gathered } from '../src/packet-types.ts'
+import { collected, layer, png, tempDir } from './packet-fake.ts'
 
-const SPEC = 'x.test.ts-snapshots/'
-const path = (name: string) => `${SPEC}${name}-chromium-linux.png`
+const COMPONENT = 'packages/ui/specimen/baseline/x.test.ts-snapshots/'
+const STORY = 'packages/ui/tests/visual/reference/stories.spec.ts-snapshots/'
+const path = (name: string) => `${COMPONENT}${name}-chromium-linux.png`
 const RED = [255, 0, 0, 255]
 
+const shown = (over: Partial<Gathered> & Pick<Gathered, 'path' | 'change'>): Gathered => ({
+  layer: 'component',
+  source: 'artifact',
+  ...over,
+})
+
 /** A failed run: one baseline changed, one new, one removed, one unchanged, and one story changed. */
-function failedRun(): World {
-  const c = (name: string) => `${COMPONENT.prefix}${path(name)}`
-  const story = 'shell-rail--default-chromium-linux.png'
-  const base = world({
-    main: {
-      [c('same')]: png(40, 20),
-      [c('changed')]: png(40, 20),
-      [c('removed')]: png(40, 20),
-      [`${STORY.prefix}${story}`]: png(64, 32),
-    },
-  })
-  const component = withArtifact(base, COMPONENT.artifact, {
-    [path('same')]: png(40, 20),
-    [path('changed')]: png(40, 20, undefined, [[1, 1, RED]]),
-    [path('new')]: png(40, 20, RED),
-  })
-  return withArtifact(component, STORY.artifact, { [story]: png(64, 40) })
+function failedRun() {
+  return collected([
+    layer({
+      layer: 'component',
+      regenerated: true,
+      unchanged: 1,
+      shown: [
+        shown({
+          path: path('changed'),
+          change: 'changed',
+          before: png(40, 20),
+          after: png(40, 20, undefined, [[1, 1, RED]]),
+        }),
+        shown({ path: path('new'), change: 'new', after: png(40, 20, RED) }),
+        shown({ path: path('removed'), change: 'removed', before: png(40, 20) }),
+      ],
+    }),
+    layer({
+      layer: 'story',
+      regenerated: true,
+      shown: [
+        shown({
+          layer: 'story',
+          path: `${STORY}shell-rail--default-chromium-linux.png`,
+          change: 'changed',
+          before: png(64, 32),
+          after: png(64, 40),
+        }),
+      ],
+    }),
+  ])
 }
 
-async function build(w: World, out: string) {
-  const stderr: string[] = []
-  const code = await runCli(fromCiArgs(out), cliIo(fakeCi(w).io, stderr))
-  return { code, stderr: stderr.join('\n') }
+/** Main's one baseline, changed by one red pixel, with this CI diff for it. */
+function withCiDiff(diff: Buffer, expected: Buffer) {
+  const changed = shown({
+    path: path('a'),
+    change: 'changed',
+    before: png(40, 20),
+    after: png(40, 20, undefined, [[3, 4, RED]]),
+    ciDiff: { diff, expected },
+  })
+  return collected([layer({ layer: 'component', regenerated: true, shown: [changed] })])
 }
 
 const readJson = async (file: string) => JSON.parse(await readFile(file, 'utf8'))
+const readPacket = async (out: string) =>
+  CiPacketSchema.parse(await readJson(join(out, 'packet.json')))
 const sha256 = (bytes: Buffer) => createHash('sha256').update(bytes).digest('hex')
+const outDir = async () => join(await tempDir(), 'packet')
 
-describe('titan-review packet from-ci', () => {
+describe('packet.json', () => {
   it('writes a packet whose every sha256 is the sha256 of the file it names', async () => {
-    const out = join(await tempDir(), 'packet')
-    expect((await build(failedRun(), out)).code).toBe(0)
-    const packet = CiPacketSchema.parse(await readJson(join(out, 'packet.json')))
+    const out = await outDir()
+    await writePacketDir(failedRun(), out)
+    const packet = await readPacket(out)
 
     expect(packet.images.map((i) => [i.layer, i.change])).toEqual([
       ['component', 'changed'],
@@ -71,54 +90,56 @@ describe('titan-review packet from-ci', () => {
   })
 
   it('records a size change with no pixel diff', async () => {
-    const out = join(await tempDir(), 'packet')
-    await build(failedRun(), out)
-    const story = CiPacketSchema.parse(await readJson(join(out, 'packet.json'))).images[3]
+    const out = await outDir()
+    await writePacketDir(failedRun(), out)
+    const story = (await readPacket(out)).images[3]
 
     expect(story.diff).toBeNull()
     expect(story.size).toEqual({ before: { w: 64, h: 32 }, after: { w: 64, h: 40 } })
+    expect(story.storyId).toBe('shell-rail--default')
   })
 
-  it('gives the same packetId to two runs over the same inputs', async () => {
-    const [a, b] = [join(await tempDir(), 'a'), join(await tempDir(), 'b')]
-    await build(failedRun(), a)
-    await build(failedRun(), b)
+  it('gives the same packetId to two builds over the same inputs', async () => {
+    const [a, b] = [await outDir(), await outDir()]
+    await writePacketDir(failedRun(), a)
+    await writePacketDir(failedRun(), b)
 
-    const id = async (out: string) => (await readJson(join(out, 'packet.json'))).packetId
-    expect(await id(a)).toBe(await id(b))
+    expect((await readPacket(a)).packetId).toBe((await readPacket(b)).packetId)
   })
 
-  it('leaves an earlier packet untouched when a downloaded PNG is corrupt', async () => {
-    const out = join(await tempDir(), 'packet')
-    await mkdir(out)
-    await writeFile(join(out, 'packet.json'), 'earlier')
-    const corrupt = withArtifact(world(), COMPONENT.artifact, {
-      [path('broken')]: Buffer.from('not a png'),
-    })
+  it('gives another packetId when the head changes', async () => {
+    const [a, b] = [await outDir(), await outDir()]
+    const other = failedRun()
+    other.target = { ...other.target, head: 'e5'.repeat(20) }
+    await writePacketDir(failedRun(), a)
+    await writePacketDir(other, b)
 
-    const result = await build(corrupt, out)
-
-    expect(result.code).toBe(2)
-    expect(result.stderr).toContain('not a PNG')
-    expect(await readdir(out)).toEqual(['packet.json'])
-    expect(await readFile(join(out, 'packet.json'), 'utf8')).toBe('earlier')
+    expect((await readPacket(a)).packetId).not.toBe((await readPacket(b)).packetId)
   })
 
-  it('leaves no packet directory when the first build fails part way', async () => {
-    const out = join(await tempDir(), 'packet')
-    const corrupt = withArtifact(world(), COMPONENT.artifact, {
-      [path('broken')]: Buffer.from('not a png'),
-    })
+  it("uses CI's diff when its expected image is main's bytes", async () => {
+    const out = await outDir()
+    const ciDiff = png(40, 20, [1, 2, 3, 255])
+    await writePacketDir(withCiDiff(ciDiff, png(40, 20)), out)
+    const [image] = (await readPacket(out)).images
 
-    expect((await build(corrupt, out)).code).toBe(2)
-    await expect(access(out)).rejects.toThrow()
+    expect(image.diff?.source).toBe('ci')
+    expect(await readFile(join(out, image.diff!.file))).toEqual(ciDiff)
   })
 
-  it('builds a Ship-only packet from a green run with nothing regenerated', async () => {
-    const out = join(await tempDir(), 'packet')
-    const green = world({ run: { ...world().run, conclusion: 'success' } })
-    expect((await build(green, out)).code).toBe(0)
-    const packet = CiPacketSchema.parse(await readJson(join(out, 'packet.json')))
+  it('computes its own diff when the CI diff was made against another main', async () => {
+    const out = await outDir()
+    await writePacketDir(withCiDiff(png(40, 20), png(40, 20, [9, 9, 9, 255])), out)
+    const [image] = (await readPacket(out)).images
+
+    expect(image.diff?.source).toBe('computed')
+    expect(image.diff?.diffPixels).toBe(1)
+  })
+
+  it('builds a Ship-only packet when nothing is shown', async () => {
+    const out = await outDir()
+    await writePacketDir(collected(), out)
+    const packet = await readPacket(out)
     const draft = await readJson(join(out, 'draft.json'))
 
     expect(packet.images).toEqual([])
@@ -126,22 +147,47 @@ describe('titan-review packet from-ci', () => {
     expect(draft.sections.map((s: { id: string }) => s.id)).toEqual(['ship'])
   })
 
-  it('warns when main changed a baseline after the merge-base', async () => {
-    const out = join(await tempDir(), 'packet')
-    const moved = `${COMPONENT.prefix}${path('elsewhere')}`
-    const result = await build(world({ moved: [moved] }), out)
+  it('records the warnings it is given', async () => {
+    const out = await outDir()
+    await writePacketDir(collected([], { warnings: ['main moved'] }), out)
 
-    expect(result.stderr).toContain(moved)
-    expect((await readJson(join(out, 'packet.json'))).warnings).toHaveLength(1)
+    expect((await readPacket(out)).warnings).toEqual(['main moved'])
+  })
+})
+
+describe('packet directory', () => {
+  const corrupt = () =>
+    collected([
+      layer({
+        layer: 'component',
+        shown: [shown({ path: path('broken'), change: 'new', after: Buffer.from('not a png') })],
+      }),
+    ])
+
+  it('leaves an earlier packet untouched when a PNG is corrupt', async () => {
+    const out = await outDir()
+    await mkdir(out)
+    await writeFile(join(out, 'packet.json'), 'earlier')
+
+    await expect(writePacketDir(corrupt(), out)).rejects.toThrow('not a PNG')
+    expect(await readdir(out)).toEqual(['packet.json'])
+    expect(await readFile(join(out, 'packet.json'), 'utf8')).toBe('earlier')
   })
 
-  it('refuses a missing --run before calling gh', async () => {
-    const out = join(await tempDir(), 'packet')
-    const args = fromCiArgs(out).filter((a, i, all) => a !== '--run' && all[i - 1] !== '--run')
-    const fake = fakeCi(world())
+  it('leaves no packet directory when the first build fails part way', async () => {
+    const out = await outDir()
 
-    expect(await runCli(args, cliIo(fake.io))).toBe(2)
-    expect(fake.calls).toEqual([])
+    await expect(writePacketDir(corrupt(), out)).rejects.toThrow()
     await expect(access(out)).rejects.toThrow()
+    expect(await readdir(join(out, '..'))).toEqual([])
+  })
+})
+
+describe('--side', () => {
+  it('refuses a file that is not an array of questions', async () => {
+    const file = join(await tempDir(), 'side.json')
+    await writeFile(file, JSON.stringify([{ id: 'x' }]))
+
+    await expect(readSide(file)).rejects.toThrow('is not an array of questions')
   })
 })
