@@ -49,8 +49,8 @@ const meta: Meta<Args> = {
     const data = byName(fixture)
     return (
       <LineChart
-        {...args}
         key={fixture}
+        {...args}
         series={data.series}
         xScale={xScale ?? data.xScale}
         metricLabel={data.metricLabel}
