@@ -223,9 +223,7 @@ export const semanticColorsLight = {
   'dataviz-sequential-4': ramp.red[700], // dark: red[600]
   'dataviz-sequential-5': ramp.red[800], // dark: red[700]
 
-  // Categorical, set B' (L-fix-vivid, TD-759): set B with red lifted to [400]
-  // and green dropped to [700], so slots 0-5 hold all-pairs CVD ΔE 8 like the
-  // dark fills. The palette's `dark` variant stays a primitive.
+  // Categorical, set B' (TD-759): red [400], green [700] hold CVD ΔE 8 on 0-5.
   'dataviz-categorical-0': ramp.blue[500], // dark: same step
   'dataviz-categorical-1': ramp.magenta[600], // dark: magenta[500]
   'dataviz-categorical-2': ramp.red[400], // dark: red[500]
