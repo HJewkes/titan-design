@@ -46,7 +46,7 @@ export function MatrixLegend({ direction, hasEdges, hasCycle }: MatrixLegendProp
     <View testID="matrix-legend" className="gap-stack-sm">
       <View className="flex-row flex-wrap items-center gap-inline-lg">
         <IntensityKey />
-        {hasCycle && (
+        {!!hasCycle && (
           <View className="flex-row items-center gap-inline-sm">
             <MatrixFlagMark flag="cycle" />
             <Typography variant="caption" color="secondary">

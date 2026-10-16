@@ -94,7 +94,7 @@ function MatrixCellView(props: MatrixCellViewProps) {
       {...gridProps}
     >
       {step !== null && <MatrixFill step={step} />}
-      {flag && <MatrixFlagMark flag={flag} className="absolute right-0.5 top-0.5" />}
+      {!!flag && <MatrixFlagMark flag={flag} className="absolute right-0.5 top-0.5" />}
       {valueText !== undefined && (
         <Typography variant="caption" numberOfLines={1}>
           {valueText}
