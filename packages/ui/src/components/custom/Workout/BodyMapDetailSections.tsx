@@ -19,6 +19,16 @@ import {
 /** testID prefix, shared with the panel that hosts these sections. */
 const ID = 'body-map-detail-panel'
 
+/** Mass unit the strength figures arrive in; the sections format and label, never convert. */
+export type MassUnit = 'lb' | 'kg'
+
+/** StrengthTrendChart predates the panel's `'lb'` vocabulary and labels pounds `'lbs'`. */
+const CHART_UNIT = { lb: 'lbs', kg: 'kg' } as const satisfies Record<MassUnit, 'lbs' | 'kg'>
+
+function formatMass(value: number, unit: MassUnit): string {
+  return `${roundWeight(value)} ${unit}`
+}
+
 /** The mini trend chart: wide enough for the 26px y-axis gutter, short enough to be a row. */
 const MINI_CHART_WIDTH = 150
 const MINI_CHART_HEIGHT = 60
@@ -44,10 +54,18 @@ function Caption({ children, testID }: { children: string; testID?: string }) {
 }
 
 /** One (exercise, side) strength row: e1RM headline, mini trend, band and slope. */
-function StrengthRow({ row, index }: { row: StrengthExerciseRow; index: number }) {
+function StrengthRow({
+  row,
+  index,
+  unit,
+}: {
+  row: StrengthExerciseRow
+  index: number
+  unit: MassUnit
+}) {
   const id = `${ID}-strength-${index}`
   const history = row.history ?? []
-  const e1rm = row.bestE1rm === null ? '—' : `${roundWeight(row.bestE1rm.value)} lb`
+  const e1rm = row.bestE1rm === null ? '—' : formatMass(row.bestE1rm.value, unit)
   return (
     <View
       className="mb-stack-sm gap-stack-sm px-inset-md py-2 bg-surface-raised border-hairline"
@@ -71,7 +89,7 @@ function StrengthRow({ row, index }: { row: StrengthExerciseRow; index: number }
           data={history}
           width={MINI_CHART_WIDTH}
           height={MINI_CHART_HEIGHT}
-          unit="lbs"
+          unit={CHART_UNIT[unit]}
           animateOnMount={false}
           testID={`${id}-chart`}
         />
@@ -82,7 +100,7 @@ function StrengthRow({ row, index }: { row: StrengthExerciseRow; index: number }
           style={{ ...ROW_DETAIL, flexShrink: 1 }}
           testID={`${id}-band`}
         >
-          {bandLabel(row.bestE1rm)}
+          {bandLabel(row.bestE1rm, unit)}
         </Text>
         <Text className="text-text-secondary" style={ROW_DETAIL} testID={`${id}-slope`}>
           {slopeLabel(row)}
@@ -97,13 +115,24 @@ function StrengthRow({ row, index }: { row: StrengthExerciseRow; index: number }
  * of signs between separate exercises, never a magnitude verdict, so it is
  * captioned rather than rendered as a value.
  */
-export function StrengthSection({ section }: { section: MuscleStrengthSection }) {
+export function StrengthSection({
+  section,
+  unit,
+}: {
+  section: MuscleStrengthSection
+  unit: MassUnit
+}) {
   if (section.exercises.length === 0) return null
   return (
     <View className="mt-stack-lg" testID={`${ID}-strength`}>
       <Caption>{'STRENGTH'}</Caption>
       {section.exercises.map((row, index) => (
-        <StrengthRow key={`${row.exerciseId}-${row.side ?? 'none'}`} row={row} index={index} />
+        <StrengthRow
+          key={`${row.exerciseId}-${row.side ?? 'none'}`}
+          row={row}
+          index={index}
+          unit={unit}
+        />
       ))}
       <Text className="text-text-tertiary" style={ROW_DETAIL} testID={`${ID}-strength-agreement`}>
         {section.earlyPhase
@@ -115,10 +144,10 @@ export function StrengthSection({ section }: { section: MuscleStrengthSection })
 }
 
 /** One PR: the shared badge, the exercise it was set on, and what it beat. */
-function PrRow({ row, index }: { row: StrengthExerciseRow; index: number }) {
+function PrRow({ row, index, unit }: { row: StrengthExerciseRow; index: number; unit: MassUnit }) {
   const id = `${ID}-pr-${index}`
-  const best = row.bestE1rm === null ? '—' : `${roundWeight(row.bestE1rm.value)} lb`
-  const prior = row.priorBest === null ? 'no prior best' : `prev ${roundWeight(row.priorBest)} lb`
+  const best = row.bestE1rm === null ? '—' : formatMass(row.bestE1rm.value, unit)
+  const prior = row.priorBest === null ? 'no prior best' : `prev ${formatMass(row.priorBest, unit)}`
   return (
     <View className="mb-stack-sm gap-inline-md" style={SPLIT_ROW} testID={id}>
       <View className="gap-inline-md" style={{ ...SPLIT_ROW, flexShrink: 1 }}>
@@ -143,14 +172,19 @@ function PrRow({ row, index }: { row: StrengthExerciseRow; index: number }) {
  * An e1RM PR inside the estimate's own error band is still a PR to
  * `evaluateE1RMPr`, which is why each strength row carries its band above.
  */
-export function PrSection({ section }: { section: MuscleStrengthSection }) {
+export function PrSection({ section, unit }: { section: MuscleStrengthSection; unit: MassUnit }) {
   const rows = prRows(section.exercises)
   if (rows.length === 0) return null
   return (
     <View className="mt-stack-lg" testID={`${ID}-prs`}>
       <Caption>{'PERSONAL RECORDS'}</Caption>
       {rows.map((row, index) => (
-        <PrRow key={`${row.exerciseId}-${row.side ?? 'none'}`} row={row} index={index} />
+        <PrRow
+          key={`${row.exerciseId}-${row.side ?? 'none'}`}
+          row={row}
+          index={index}
+          unit={unit}
+        />
       ))}
     </View>
   )

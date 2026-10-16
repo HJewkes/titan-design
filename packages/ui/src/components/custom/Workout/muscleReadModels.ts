@@ -36,7 +36,10 @@ export interface E1RMBand {
   method: E1RMMethod
   seePct: number | null
   seePctCi: readonly [number, number] | null
-  /** `seePct` of this estimate, in lb. */
+  /**
+   * `seePct` of this estimate, in the consumer's mass unit (lb unless the panel
+   * gets `unit="kg"`). The `Lbs` suffix is the wire name, kept for compatibility.
+   */
   seeLbs: number | null
   biasPct: number | null
   /** `biasPct` of this estimate, in lb. Reported, never subtracted. */
@@ -165,14 +168,18 @@ export function slopeLabel(row: MuscleStrengthExerciseRow): string {
  * The band caption for an e1RM. `fitFor` is the load-bearing part, not the
  * numbers: a band with null figures says so rather than borrowing a
  * load-velocity error figure that was never measured on a rep formula.
+ * `unit` labels `seeLbs`; it is never converted.
  */
-export function bandLabel(best: MuscleStrengthBestE1rm | null): string {
+export function bandLabel(
+  best: MuscleStrengthBestE1rm | null,
+  unit: 'lb' | 'kg' = 'lb'
+): string {
   if (best === null) return 'no e1RM in this window'
   const { band } = best
   if (band.seeLbs === null || band.seePct === null) {
     return `${band.fitFor} only · no stated band for a ${band.method} estimate`
   }
-  return `${band.fitFor} only · ±${band.seeLbs} lb (SEE ${band.seePct}%)`
+  return `${band.fitFor} only · ±${band.seeLbs} ${unit} (SEE ${band.seePct}%)`
 }
 
 /** Row title: the exercise, and the limb when the sets recorded one. */
