@@ -4,7 +4,7 @@ import { getSemanticColors, type ThemeMode } from '../../theme/tokens/semantic'
 /**
  * TD-802 Gate 2 batch 16: the owner found the Checkbox tick odd and asked for a squared radio
  * and other options. Each option here is painted from existing semantic tokens only; none adds a
- * colour. `current` reproduces main's indicator (with the `text-brand` glyph PR #828 ships).
+ * colour. `current` reproduces main's indicator: the TD-840 CheckMark on an on-brand chip.
  */
 export type ColorToken = keyof ReturnType<typeof getSemanticColors>
 export type CheckOptionKey =
@@ -13,7 +13,7 @@ export type CheckOptionKey =
   | 'hollowSquare'
   | 'strokeCheck'
   | 'outlineCheck'
-export type IndicatorShape = 'chipGlyph' | 'square' | 'stroke'
+export type IndicatorShape = 'chipMark' | 'square' | 'stroke'
 
 export interface CheckOption {
   key: CheckOptionKey
@@ -23,23 +23,27 @@ export interface CheckOption {
   isFilled: boolean
   /** Border of the checked box. */
   edge: ColorToken
-  /** Colour of the glyph, square or dash. */
+  /** Colour of the chip, square, check or dash. */
   indicator: ColorToken
+  /** Colour of the check drawn on the chip (`chipMark` only). */
+  mark?: ColorToken
   note: string
 }
 
 export const CHECK_OPTIONS: CheckOption[] = [
   {
     key: 'current',
-    name: 'Baseline (main): on-brand chip with a ✓ text glyph',
-    shape: 'chipGlyph',
+    name: 'Baseline (main): on-brand chip with the drawn CheckMark',
+    shape: 'chipMark',
     isFilled: true,
     edge: 'brand-primary',
     indicator: 'on-brand-primary',
+    mark: 'text-brand',
     note:
-      'What ships: the box fills brand, an on-brand chip sits 1px inside the border, and a font ✓ ' +
-      'character is drawn on the chip in text-brand (PR #828; main used brand-primary). The glyph ' +
-      'is font-dependent and off-centre, which is the odd look.',
+      'What ships: the box fills brand, an on-brand chip sits 1px inside the border, and the ' +
+      'drawn CheckMark (TD-840, 3px brush stroke) sits on the chip in text-brand. TD-840 replaced ' +
+      'the font ✓ glyph, so the mark no longer depends on the host font. What remains is a ' +
+      'brand-coloured tick on a white tile inside a brand box: three layers in 20px.',
   },
   {
     key: 'squaredRadio',
@@ -66,24 +70,26 @@ export const CHECK_OPTIONS: CheckOption[] = [
   },
   {
     key: 'strokeCheck',
-    name: 'Stroke check: on-brand 3px tick on the brand fill',
+    name: 'Stroke check: the shipped CheckMark on the brand fill, no chip',
     shape: 'stroke',
     isFilled: true,
     edge: 'brand-primary',
     indicator: 'on-brand-primary',
     note:
-      'The Material, Carbon, Fluent and shadcn shape: a drawn check path at a 3px stroke, no chip. ' +
-      'Reads as a checkbox at a glance; shares the baseline’s on-brand pairing.',
+      'The Material, Carbon, Fluent and shadcn shape: the baseline without its chip, so the ' +
+      'CheckMark is drawn straight on the brand fill in on-brand. Shares the baseline’s on-brand ' +
+      'pairing.',
   },
   {
     key: 'outlineCheck',
-    name: 'Outline check: text-primary 3px tick, no fill',
+    name: 'Outline check: text-primary CheckMark, no fill',
     shape: 'stroke',
     isFilled: false,
     edge: 'border-input',
     indicator: 'text-primary',
     note:
-      'The GOV.UK shape: the box stays as it is unchecked and a heavy neutral tick appears. ' +
+      'The GOV.UK shape: the box stays as it is unchecked and the CheckMark appears in ' +
+      'text-primary. ' +
       'Highest indicator contrast; no brand colour in the checked state.',
   },
 ]
