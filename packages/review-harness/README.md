@@ -573,14 +573,43 @@ network. It walks the tree with `lstat` and never follows a link.
   `git show <headSha>:<path>` (`after-source`), and each montage and computed diff is recomputed
   bit-exact from the two sides (`derived`). A CI-regenerated after and a CI diff have no git source
   and stay checked by sha only. `--clone` has no default, so no flag means no git read.
+- `frames/frames.json`, when present, is byte for byte the index `packet round` derives from
+  packet.json, round.json and prose.json (rule `frames-index`).
 
-`--require` makes `prose.json` or `round.json` a problem when absent. `--gate-head` has no default,
+`--require` makes `prose.json` or `round.json` a problem when absent; `--require round` also
+requires `frames/frames.json` (rule `frames-missing`), since a round imported without its index
+shows no images. `--gate-head` has no default,
 so the lint never trusts the packet's own head. Exit 0 when clean, 3 on any problem (as `build`),
 2 on an unreadable directory or a usage error. Each problem prints as `<rule>: <message>`; with
 `--json`, stdout is one object and nothing else:
 `{schema: "titan-review/packet-lint@1", ok, packetId, problems: [{rule, message}]}`, where
 `packetId` is packet.json's when it passes its schema and `null` otherwise. The rule ids are
 `PACKET_LINT_RULES` in `src/packet-lint.ts`.
+
+### packet round (TP-3235)
+
+```sh
+titan-review packet round <dir>
+```
+
+Builds a packet's round with no Storybook and no tree, for `titan-console rounds import`. It writes
+`round.json`, `applyRoundRules(draft.json)` plus `build {mainSha, mergeSha: headSha}` from
+packet.json (the bytes `build` would write, so lint's `round-draft` holds), and
+`frames/frames.json`, a `titan-review/frames@1` index:
+
+| field            | value                                                                       |
+| ---------------- | --------------------------------------------------------------------------- |
+| `unit`, `round`  | round.json's                                                                |
+| `manifestSha256` | sha256 of the round.json bytes                                              |
+| `packet`         | `{file: "packet.json", sha256}` of its bytes                                |
+| `prose`          | `{file: "prose.json", sha256}` of its bytes                                 |
+| `frames[]`       | per packet image: `key`; `file`, `sha256` = the montage (the round's head)  |
+|                  | `base` = before, `diff` = diff, `after` = after, each when the image has it |
+
+Paths are relative to the directory. The montage is the head view because the round's variant
+`image` names it, and the console copies only the files the index lists. Each file is written
+beside its target and renamed in; a run on the same directory writes the same bytes. It refuses
+(exit 2, writing nothing) without a valid packet.json, the draft.json it names, and prose.json.
 
 ### packet prompt (TD-924)
 
