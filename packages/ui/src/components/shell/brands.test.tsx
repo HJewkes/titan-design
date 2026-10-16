@@ -27,8 +27,8 @@ const EXPECTED_ACCENTS: Record<BrandKey, string> = {
 // are the owner's option-1 hues (TD-485), which clear 3:1 on surface-base but not here.
 // The 3b light ramp (TD-789) darkens background-base to grey 200; the accents wait for
 // the categorical lock, so their misses there are recorded rather than re-coloured.
-// Set B' (TD-759) lifts light cat-2 to red 400, which clears agents (green 700) and
-// sends console under 3:1 in light; console's accent is the owner's to re-pick.
+// Set B' (TD-759) puts light cat-4 on green 700, clearing agents, and cat-2 on red 400,
+// which sends console under 3:1 in light until TD-761 moves it to the ink tier.
 const KNOWN_NON_TEXT_MISSES = [
   'voltras light background-base 1.73',
   'voltras light surface-elevated 2.44',
@@ -87,7 +87,7 @@ describe('brand accents', () => {
 
 describe('brand accent contrast on the shell planes', () => {
   // cat-1 and cat-4 also clear 3:1 but belong to audiobook and agents; cat-2 is the free one.
-  // Its light miss under set B' is recorded in KNOWN_NON_TEXT_MISSES.
+  // Its light miss under set B' is recorded in KNOWN_NON_TEXT_MISSES until TD-761.
   it('holds the console accent at 3:1 on both shell planes in dark', () => {
     const colors = getSemanticColors('dark') as Record<string, string>
     const accent = colors[tokenOf(brandPresets.console.accentClassName)]
