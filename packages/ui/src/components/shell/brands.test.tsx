@@ -19,16 +19,20 @@ const EXPECTED_ACCENTS: Record<BrandKey, string> = {
   'active-work': 'dataviz-categorical-0',
   agents: 'dataviz-categorical-4',
   brain: 'dataviz-categorical-6',
+  console: 'dataviz-categorical-2',
 }
 
 // Accent marks measured under 3:1 on a shell plane. Shrink-only: a fix deletes its
 // row, and a new miss fails the test. Voltras is its own brand token; the other two
 // are the owner's option-1 hues (TD-485), which clear 3:1 on surface-base but not here.
+// The 3b light ramp (TD-789) darkens background-base to grey 200; the accents wait for
+// the categorical lock, so their misses there are recorded rather than re-coloured.
 const KNOWN_NON_TEXT_MISSES = [
-  'voltras light background-base 2.19',
+  'voltras light background-base 1.73',
   'voltras light surface-elevated 2.44',
-  'active-work light background-base 2.61',
+  'active-work light background-base 2.05',
   'active-work light surface-elevated 2.90',
+  'agents light background-base 3.00',
   'brain dark surface-elevated 2.85',
 ]
 
@@ -79,6 +83,15 @@ describe('brand accents', () => {
 })
 
 describe('brand accent contrast on the shell planes', () => {
+  // cat-1 and cat-4 also clear 3:1 but belong to audiobook and agents; cat-2 is the free one.
+  it.each(MODES)('holds the console accent at 3:1 on both shell planes in %s', (mode) => {
+    const colors = getSemanticColors(mode) as Record<string, string>
+    const accent = colors[tokenOf(brandPresets.console.accentClassName)]
+    PLANES.forEach((plane) => {
+      expect(contrast(accent, colors[plane])).toBeGreaterThanOrEqual(3)
+    })
+  })
+
   it('holds every accent mark at 3:1 (WCAG 1.4.11) bar the recorded misses', () => {
     expect(nonTextMisses()).toEqual(KNOWN_NON_TEXT_MISSES)
   })

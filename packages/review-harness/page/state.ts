@@ -1,13 +1,29 @@
-import { draftAnswer, emptyDraft, type AnswerDraft, type ReviewDraft } from '../src/feedback.ts'
+import {
+  blockedShipGroup,
+  draftAnswer,
+  emptyDraft,
+  type AnswerDraft,
+  type ReviewDraft,
+} from '../src/feedback.ts'
+import type { PrTab } from '../src/pr-tabs.ts'
 import { isAnswered, offersBuiltInRevision } from '../src/round.ts'
 import {
   linksForVariant,
   optionVariants,
   orderedQuestions,
+  prGroups,
   roundLayout,
+  type LayoutBlock,
   type ResolvedSection,
 } from '../src/sections.ts'
-import type { Annotation, Manifest, Question, Verdict } from '@titan-design/review-schema'
+import {
+  takesRecommendation,
+  type Annotation,
+  type BlindChoice,
+  type Manifest,
+  type Question,
+  type Verdict,
+} from '@titan-design/review-schema'
 import { loadDraft, type DraftStorage } from './draftStore.ts'
 import { pinId, pinNumber } from './pins.ts'
 
@@ -31,6 +47,8 @@ export interface ReviewState {
   screen: Screen
   errors: string[]
   focusPin: string | null
+  /** The open tab of a PR group's page; moving to any stop opens Review, where every stop is. */
+  tab: PrTab
 }
 
 export type Action =
@@ -45,12 +63,16 @@ export type Action =
   | { type: 'pick'; id: string; option: string; many: boolean }
   | { type: 'revision'; id: string }
   | { type: 'value'; id: string; value: number }
+  | { type: 'blindPick'; id: string; pair: string; choice: BlindChoice }
   | { type: 'text'; id: string; text: string }
   | { type: 'answerComment'; id: string; comment: string }
+  | { type: 'optionNote'; id: string; option: string; note: string }
+  | { type: 'reveal'; id: string }
   | { type: 'general'; text: string }
   | { type: 'toggleAnnotate' }
   | { type: 'toggleColumns' }
   | { type: 'screen'; screen: Screen; errors?: string[] }
+  | { type: 'tab'; tab: PrTab }
 
 /** Each verdict, its hotkey and its button label; the card and the keyboard both read this. */
 export const VERDICTS: { key: string; verdict: Exclude<Verdict, null>; label: string }[] = [
@@ -67,16 +89,22 @@ export const VERDICT_KEYS: Record<string, Verdict> = {
   [CLEAR_VERDICT_KEY]: null,
 }
 
+function blockStops(block: LayoutBlock): Stop[] {
+  const frames = block.kind === 'question' ? [] : block.variants
+  const question = block.kind === 'strip' ? [] : [block.question]
+  return [
+    ...frames.map((v): Stop => ({ kind: 'variant', key: v.key })),
+    ...question.map((q): Stop => ({ kind: 'question', id: q.id })),
+  ]
+}
+
 /** A section with nothing to answer still gets one stop, so its page can be reached. */
 function sectionStops(s: ResolvedSection): Stop[] {
-  const stops: Stop[] = [
-    ...s.questions.map((q): Stop => ({ kind: 'question', id: q.id })),
-    ...s.variants.map((v): Stop => ({ kind: 'variant', key: v.key })),
-  ]
+  const stops = s.blocks.flatMap(blockStops)
   return stops.length ? stops : [{ kind: 'section', id: s.id }]
 }
 
-/** Every stop in the order the page renders it: per section, its questions then its frames. */
+/** Every stop in the order the page renders it: per section, its blocks top to bottom. */
 export function stopsFor(manifest: Manifest): Stop[] {
   const layout = roundLayout(manifest)
   return [
@@ -104,33 +132,40 @@ export interface Page {
   title: string
   first: number
   last: number
+  /** The sections on this page: one, or every section of one PR group. */
+  sectionIds: string[]
 }
 
 /** Section ids allow only [A-Za-z0-9_-], so these two can never collide with one. */
 export const OTHER_PAGE = '#other'
 export const OVERALL_PAGE = '#overall'
 
-/** Each section is a page, then Other frames, then Overall; an unsectioned round is one page. */
+/**
+ * Each PR group is a page (a section about no PR is one on its own), then Other frames, then
+ * Overall; an unsectioned round is one page.
+ */
 export function pagesFor(manifest: Manifest): Page[] {
   const layout = roundLayout(manifest)
   const general = stopsFor(manifest).length - 1
   if (layout.sections.length === 0)
-    return [{ id: 'all', title: manifest.unit, first: 0, last: general }]
+    return [{ id: 'all', title: manifest.unit, first: 0, last: general, sectionIds: [] }]
+  const byId = new Map(layout.sections.map((s) => [s.id, s]))
   const sized = [
-    ...layout.sections.map((s) => ({
-      id: s.id,
-      title: s.title,
-      size: sectionStops(s).length,
+    ...prGroups(manifest).map((ids) => ({
+      id: ids[0],
+      title: byId.get(ids[0])!.title,
+      size: ids.reduce((n, id) => n + sectionStops(byId.get(id)!).length, 0),
+      sectionIds: ids,
     })),
-    { id: OTHER_PAGE, title: 'Other frames', size: layout.otherVariants.length },
+    { id: OTHER_PAGE, title: 'Other frames', size: layout.otherVariants.length, sectionIds: [] },
   ].filter((p) => p.size > 0)
   const pages: Page[] = []
-  for (const { id, title, size } of sized) {
+  for (const { size, ...page } of sized) {
     const first = pages.length ? pages[pages.length - 1].last + 1 : 0
-    pages.push({ id, title, first, last: first + size - 1 })
+    pages.push({ ...page, first, last: first + size - 1 })
   }
   const first = pages.length ? pages[pages.length - 1].last + 1 : 0
-  return [...pages, { id: OVERALL_PAGE, title: 'Overall', first, last: general }]
+  return [...pages, { id: OVERALL_PAGE, title: 'Overall', first, last: general, sectionIds: [] }]
 }
 
 /** The page that holds a stop, so the active stop decides what is on screen. */
@@ -148,17 +183,38 @@ export function pageStepAction(manifest: Manifest, active: number, delta: number
   return target ? { type: 'jump', index: target.first } : null
 }
 
-/** A recommendation stays hidden until its question is answered, so it cannot anchor the pick. */
+function isDraftAnswered(question: Question, draft: AnswerDraft): boolean {
+  return isAnswered(question, { ...draft, ...draftAnswer(question, draft) })
+}
+
+/**
+ * A recommendation stays hidden until the owner reveals it or answers, so it cannot anchor the
+ * pick unnoticed; an answer given while it shows is tagged seen.
+ */
 export function recommendationVisible(
   manifest: Manifest,
   question: Question,
   draft: AnswerDraft
 ): boolean {
-  if (question.kind === 'text' || !question.recommendation) return false
+  if (!takesRecommendation(question) || !question.recommendation) return false
   return (
     manifest.recommendations === 'shown' ||
-    isAnswered(question, { ...draft, ...draftAnswer(question, draft) })
+    draft.revealed === true ||
+    isDraftAnswered(question, draft)
   )
+}
+
+/** The round or the owner's answer shows the recommendation, so the reveal toggle cannot hide it. */
+export function revealLocked(manifest: Manifest, question: Question, draft: AnswerDraft): boolean {
+  return manifest.recommendations === 'shown' || isDraftAnswered(question, draft)
+}
+
+/** What `r` means at the active stop: toggle the reveal of a question that has a recommendation. */
+export function revealKeyAction(manifest: Manifest, stop: Stop | undefined): Action | null {
+  if (stop?.kind !== 'question') return null
+  const question = manifest.questions.find((q) => q.id === stop.id)
+  if (!question || !takesRecommendation(question) || !question.recommendation) return null
+  return { type: 'reveal', id: question.id }
 }
 
 export function initialState(manifest: Manifest): ReviewState {
@@ -171,6 +227,7 @@ export function initialState(manifest: Manifest): ReviewState {
     screen: 'form',
     errors: [],
     focusPin: null,
+    tab: 'review',
   }
 }
 
@@ -210,6 +267,15 @@ function updateAnswer(
 function togglePick(picks: string[] | undefined, option: string): string[] {
   const list = picks ?? []
   return list.includes(option) ? list.filter((p) => p !== option) : [...list, option]
+}
+
+/** Picks a pair's take, or clears the pick when that take was already picked. */
+function toggleBlind(
+  blind: AnswerDraft['blind'],
+  { pair, choice }: { pair: string; choice: BlindChoice }
+): AnswerDraft['blind'] {
+  const { [pair]: was, ...rest } = blind ?? {}
+  return was === choice ? rest : { ...rest, [pair]: choice }
 }
 
 function reduceVariant(draft: ReviewDraft, action: Action): ReviewDraft {
@@ -301,10 +367,18 @@ function reduceAnswer(draft: ReviewDraft, action: Action): ReviewDraft {
       )
     case 'value':
       return updateAnswer(draft, action.id, () => ({ value: action.value }))
+    case 'blindPick':
+      return updateAnswer(draft, action.id, (a) => ({ blind: toggleBlind(a.blind, action) }))
     case 'text':
       return updateAnswer(draft, action.id, () => ({ text: action.text }))
     case 'answerComment':
       return updateAnswer(draft, action.id, () => ({ comment: action.comment }))
+    case 'optionNote':
+      return updateAnswer(draft, action.id, (a) => ({
+        notes: { ...a.notes, [action.option]: action.note },
+      }))
+    case 'reveal':
+      return updateAnswer(draft, action.id, (a) => ({ revealed: !a.revealed }))
     case 'general':
       return { ...draft, general: action.text }
     default:
@@ -340,6 +414,41 @@ function reduceLinked(manifest: Manifest, draft: ReviewDraft, action: Action): R
   return next
 }
 
+const givenAnswer = (a: AnswerDraft | undefined) =>
+  JSON.stringify([a?.pick, a?.revision, a?.picks, a?.value])
+
+/**
+ * An answer that lands while the recommendation shows is seen; one given blind stays blind when
+ * revealed later, and clearing the answer clears the tag.
+ */
+function tagSeen(manifest: Manifest, before: ReviewDraft, after: ReviewDraft): ReviewDraft {
+  return manifest.questions.reduce((draft, q) => {
+    const [was, now] = [before.answers[q.id], draft.answers[q.id]]
+    if (!now || givenAnswer(was) === givenAnswer(now)) return draft
+    if (!isDraftAnswered(q, now))
+      return now.seen ? updateAnswer(draft, q.id, () => ({ seen: undefined })) : draft
+    return was && recommendationVisible(manifest, q, was)
+      ? updateAnswer(draft, q.id, () => ({ seen: true }))
+      : draft
+  }, after)
+}
+
+function reduceDraft(manifest: Manifest, draft: ReviewDraft, action: Action): ReviewDraft {
+  return tagSeen(manifest, draft, reduceLinked(manifest, draft, action))
+}
+
+/** A pick of a blocked PR group's Ship option is refused, whichever input made it. */
+function shipIsBlocked(
+  manifest: Manifest,
+  draft: ReviewDraft,
+  action: Extract<Action, { type: 'pick' }>
+): boolean {
+  const question = manifest.questions.find((q) => q.id === action.id)
+  return (
+    question !== undefined && blockedShipGroup(manifest, draft, question, action.option) !== null
+  )
+}
+
 export function createReducer(manifest: Manifest) {
   const stopCount = stopsFor(manifest).length
   return function reduce(state: ReviewState, action: Action): ReviewState {
@@ -347,11 +456,13 @@ export function createReducer(manifest: Manifest) {
       case 'activate':
         return { ...state, active: action.index, follow: false, focusPin: null }
       case 'jump':
-        return { ...state, active: action.index, follow: true, focusPin: null }
+        return { ...state, active: action.index, follow: true, focusPin: null, tab: 'review' }
       case 'advance':
         return state.active + 1 < stopCount
-          ? { ...state, active: state.active + 1, follow: true, focusPin: null }
+          ? { ...state, active: state.active + 1, follow: true, focusPin: null, tab: 'review' }
           : { ...state, screen: 'review', errors: [] }
+      case 'tab':
+        return { ...state, tab: action.tab }
       case 'addPin':
         return addPin(state, action)
       case 'toggleAnnotate':
@@ -360,8 +471,12 @@ export function createReducer(manifest: Manifest) {
         return { ...state, singleColumn: !state.singleColumn }
       case 'screen':
         return { ...state, screen: action.screen, errors: action.errors ?? [] }
+      case 'pick':
+        return shipIsBlocked(manifest, state.draft, action)
+          ? state
+          : { ...state, draft: reduceDraft(manifest, state.draft, action) }
       default:
-        return { ...state, draft: reduceLinked(manifest, state.draft, action) }
+        return { ...state, draft: reduceDraft(manifest, state.draft, action) }
     }
   }
 }

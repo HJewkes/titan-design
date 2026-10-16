@@ -17,6 +17,7 @@ import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { pressedLevel, surfaceBackground } from '../../../theme/surface-planes'
 import { alpha } from '../../../utils/colors'
 import { PLOT_LEFT } from './GoalTrajectoryChartGeometry'
+import { CURRENT_WEEK_TINT } from './GoalTrajectoryPlot'
 import { STATUS_LABEL } from './goalTrajectoryChartModel'
 import { GoalWeekColumnsChart } from './GoalWeekColumnsChart'
 
@@ -643,7 +644,7 @@ describe('GoalTrajectoryChart current week', () => {
         animate={false}
       />
     )
-    expect(tintOf(full.container)).toBe(alpha(dark['text-secondary'], 0.2))
+    expect(tintOf(full.container)).toBe(alpha(dark['text-secondary'], CURRENT_WEEK_TINT))
     expect(tintOf(full.container)).toBe(tintOf(compact.container))
   })
 

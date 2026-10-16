@@ -1,0 +1,286 @@
+{
+  "schema": "titan-review/round@2",
+  "unit": "packet-demo",
+  "round": 1,
+  "storybookUrl": "http://127.0.0.1:6200",
+  "widths": [1920],
+  "variants": [
+    {
+      "key": "q1-a-wide",
+      "image": "frames/q1-a-wide.png",
+      "label": "A · 44 px · wide"
+    },
+    {
+      "key": "q1-a-mid",
+      "image": "frames/q1-a-mid.png",
+      "label": "A · 44 px · mid"
+    },
+    {
+      "key": "q1-a-dense",
+      "image": "frames/q1-a-dense.png",
+      "label": "A · 44 px · dense"
+    },
+    {
+      "key": "q1-a-target",
+      "image": "frames/q1-a-target.png",
+      "label": "A · 44 px · target"
+    },
+    {
+      "key": "q1-ap-wide",
+      "image": "frames/q1-ap-wide.png",
+      "label": "A′ · 44 px, measured advance · wide"
+    },
+    {
+      "key": "q1-ap-mid",
+      "image": "frames/q1-ap-mid.png",
+      "label": "A′ · 44 px, measured advance · mid"
+    },
+    {
+      "key": "q1-ap-dense",
+      "image": "frames/q1-ap-dense.png",
+      "label": "A′ · 44 px, measured advance · dense"
+    },
+    {
+      "key": "q1-ap-target",
+      "image": "frames/q1-ap-target.png",
+      "label": "A′ · 44 px, measured advance · target"
+    },
+    {
+      "key": "q1-b-wide",
+      "image": "frames/q1-b-wide.png",
+      "label": "B · 40 px nominal · wide"
+    },
+    {
+      "key": "q1-b-mid",
+      "image": "frames/q1-b-mid.png",
+      "label": "B · 40 px nominal · mid"
+    },
+    {
+      "key": "q1-b-dense",
+      "image": "frames/q1-b-dense.png",
+      "label": "B · 40 px nominal · dense"
+    },
+    {
+      "key": "q1-b-target",
+      "image": "frames/q1-b-target.png",
+      "label": "B · 40 px nominal · target"
+    },
+    {
+      "key": "q1-c-wide",
+      "image": "frames/q1-c-wide.png",
+      "label": "C · 40 px, wide mono face · wide"
+    },
+    {
+      "key": "q1-c-mid",
+      "image": "frames/q1-c-mid.png",
+      "label": "C · 40 px, wide mono face · mid"
+    },
+    {
+      "key": "q1-c-dense",
+      "image": "frames/q1-c-dense.png",
+      "label": "C · 40 px, wide mono face · dense"
+    },
+    {
+      "key": "q1-c-target",
+      "image": "frames/q1-c-target.png",
+      "label": "C · 40 px, wide mono face · target"
+    }
+  ],
+  "sections": [
+    {
+      "id": "q1",
+      "title": "Q1 · Label floor for map labels",
+      "kind": "CHOICE",
+      "deciding": "What size map labels are at 1080, and how their boxes are budgeted.",
+      "changed": "First review. The current floor is 40 px nominal; this round measures 40 and 44 px across four layouts.",
+      "context": "Dark theme, 1920×1080, every frame a true-size render. A frame fits when its layout fits the content area unscaled.",
+      "questionIds": ["label-floor"],
+      "variantKeys": [
+        "q1-a-wide",
+        "q1-a-mid",
+        "q1-a-dense",
+        "q1-a-target",
+        "q1-ap-wide",
+        "q1-ap-mid",
+        "q1-ap-dense",
+        "q1-ap-target",
+        "q1-b-wide",
+        "q1-b-mid",
+        "q1-b-dense",
+        "q1-b-target",
+        "q1-c-wide",
+        "q1-c-mid",
+        "q1-c-dense",
+        "q1-c-target"
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "label-floor",
+      "kind": "pick-one",
+      "decision": "decide",
+      "required": true,
+      "prompt": "What size are map labels at 1080?",
+      "signsOff": "the map label floor and box budget",
+      "options": [
+        "A · 44 px",
+        "A′ · 44 px, measured advance",
+        "B · 40 px nominal",
+        "C · 40 px, wide mono face"
+      ],
+      "frames": [
+        "q1-a-wide",
+        "q1-a-mid",
+        "q1-a-dense",
+        "q1-a-target",
+        "q1-ap-wide",
+        "q1-ap-mid",
+        "q1-ap-dense",
+        "q1-ap-target",
+        "q1-b-wide",
+        "q1-b-mid",
+        "q1-b-dense",
+        "q1-b-target",
+        "q1-c-wide",
+        "q1-c-mid",
+        "q1-c-dense",
+        "q1-c-target"
+      ],
+      "implemented": "B · 40 px nominal",
+      "optionDetails": {
+        "A · 44 px": {
+          "detail": "x-height = 2% of frame height (21.6 px at 1080) in any face. In the label face (x-height 0.500 em) that is 44 px.",
+          "weakPoint": "The wide layout does not fit: 2100 px against 1872, scaled 0.89, labels 39 px.",
+          "after": "The floor becomes `xHeightFraction 0.02`; the wide layout needs a narrower arrangement before it ships."
+        },
+        "A′ · 44 px, measured advance": {
+          "detail": "A's size, with label boxes budgeted at the face's measured 0.50 em advance instead of 0.60 em. Config switch `faceAdvance` (default off).",
+          "weakPoint": "Layout depends on per-face metrics; a face or weight change needs a re-measure.",
+          "after": "`faceAdvance` turns on, the floor is 44 px, and the advance is re-measured when the label face changes."
+        },
+        "B · 40 px nominal": {
+          "detail": "Today's floor. The x-height is 20.0 px: 7% under the 2% rule.",
+          "weakPoint": "Fails the 2% x-height rule.",
+          "after": "Nothing changes; the floor stays at 40 px."
+        },
+        "C · 40 px, wide mono face": {
+          "detail": "A wider mono face (0.55 em) gives 21.9 px, meeting the 2% rule at 40 px; layout is B's.",
+          "weakPoint": "The face is not self-hosted, so it falls back to a narrower one under the rule.",
+          "after": "The theme's label face becomes the wide mono face, and self-hosting it is filed."
+        }
+      },
+      "evidence": [
+        {
+          "caption": "Measured cost (dark, 1080)",
+          "columns": [
+            {
+              "label": "layout"
+            },
+            {
+              "label": "B and C · 40 px",
+              "option": "B · 40 px nominal"
+            },
+            {
+              "label": "A · 44 px",
+              "option": "A · 44 px"
+            },
+            {
+              "label": "A′ · 44 px",
+              "option": "A′ · 44 px, measured advance"
+            }
+          ],
+          "rows": [
+            {
+              "label": "Wide layout",
+              "cells": [
+                {
+                  "text": "fits · 12 boxes",
+                  "tone": "pass"
+                },
+                {
+                  "text": "does not fit · 2100 px against 1872",
+                  "tone": "fail"
+                },
+                {
+                  "text": "fits · 12 boxes",
+                  "tone": "pass"
+                }
+              ]
+            },
+            {
+              "label": "Dense layout",
+              "cells": [
+                {
+                  "text": "does not fit · 0.98",
+                  "tone": "fail",
+                  "span": 3
+                }
+              ]
+            },
+            {
+              "label": "Target matrix",
+              "cells": ["fits", "fits", "fits"]
+            }
+          ],
+          "note": "Numbers from the build's own metrics."
+        }
+      ],
+      "compare": {
+        "views": [
+          {
+            "id": "wide",
+            "label": "Wide layout"
+          },
+          {
+            "id": "mid",
+            "label": "Mid layout"
+          },
+          {
+            "id": "dense",
+            "label": "Dense layout"
+          },
+          {
+            "id": "target",
+            "label": "Target matrix"
+          }
+        ],
+        "cells": {
+          "A · 44 px": {
+            "wide": "q1-a-wide",
+            "mid": "q1-a-mid",
+            "dense": "q1-a-dense",
+            "target": "q1-a-target"
+          },
+          "A′ · 44 px, measured advance": {
+            "wide": "q1-ap-wide",
+            "mid": "q1-ap-mid",
+            "dense": "q1-ap-dense",
+            "target": "q1-ap-target"
+          },
+          "B · 40 px nominal": {
+            "wide": "q1-b-wide",
+            "mid": "q1-b-mid",
+            "dense": "q1-b-dense",
+            "target": "q1-b-target"
+          },
+          "C · 40 px, wide mono face": {
+            "wide": "q1-c-wide",
+            "mid": "q1-c-mid",
+            "dense": "q1-c-dense",
+            "target": "q1-c-target"
+          }
+        },
+        "shown": ["A′ · 44 px, measured advance", "C · 40 px, wide mono face"]
+      },
+      "recommendation": {
+        "answer": "A′ · 44 px, measured advance",
+        "rationale": "Keeps the label face, meets the 2% rule (x-height 22.0 px), and every layout that fits at 40 px fits.",
+        "weakPoint": "The advance is a measured number; only an overflow count catches a stale value.",
+        "fallback": "C · 40 px, wide mono face",
+        "confidence": 0.75,
+        "by": "packet-demo"
+      }
+    }
+  ]
+}

@@ -36,10 +36,17 @@ describe('tempoDisplayModel', () => {
     const t = getSemanticColors('dark')
 
     expect(numberPalette('dark')).toEqual({
-      ahead: t['status-warning'],
+      ahead: t['text-warning'],
       onPace: t['status-success'],
       over: t['status-error'],
       noTarget: t['text-primary'],
     })
   })
+
+  it.each(['dark', 'light'] as const)(
+    'paints the ahead number with text-warning in %s mode',
+    (mode) => {
+      expect(numberPalette(mode).ahead).toBe(getSemanticColors(mode)['text-warning'])
+    }
+  )
 })

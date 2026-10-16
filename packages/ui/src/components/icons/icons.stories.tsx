@@ -12,6 +12,9 @@ import {
   PersonStandingIcon,
   ScaleIcon,
   AlertTriangleIcon,
+  CircleCheckIcon,
+  OctagonXIcon,
+  CircleDashedIcon,
   TrendingDownIcon,
   CircleSlashIcon,
   AwardIcon,
@@ -47,7 +50,7 @@ function Swatch({ label, children }: { label: string; children: ReactNode }) {
   return (
     <View className="items-center gap-2">
       {children}
-      <Text className="font-mono text-[10px] text-text-tertiary">{label}</Text>
+      <Text className="font-mono text-[10px] text-text-secondary">{label}</Text>
     </View>
   )
 }
@@ -103,6 +106,21 @@ export const All: Story = {
       <Swatch label="AlertTriangleIcon">
         <View className="text-status-error">
           <AlertTriangleIcon size={28} />
+        </View>
+      </Swatch>
+      <Swatch label="CircleCheckIcon">
+        <View className="text-status-success">
+          <CircleCheckIcon size={28} />
+        </View>
+      </Swatch>
+      <Swatch label="OctagonXIcon">
+        <View className="text-status-error">
+          <OctagonXIcon size={28} />
+        </View>
+      </Swatch>
+      <Swatch label="CircleDashedIcon">
+        <View className="text-text-secondary">
+          <CircleDashedIcon size={28} />
         </View>
       </Swatch>
       <Swatch label="TrendingDownIcon">

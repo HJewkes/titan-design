@@ -422,15 +422,14 @@ function TitleRow({
       testID="goal-card-title-row"
     >
       <View style={{ flexShrink: 1, minWidth: 0 }}>
-        {size === 'full' ? (
-          <Typography variant="h5" testID="goal-card-title" {...TITLE_GUARD}>
-            {title}
-          </Typography>
-        ) : (
-          <Typography variant="overline" color="tertiary" testID="goal-card-title" {...TITLE_GUARD}>
-            {title}
-          </Typography>
-        )}
+        <Typography
+          variant={size === 'full' ? 'h5' : 'overline'}
+          color={size === 'full' ? 'primary' : 'secondary'}
+          testID="goal-card-title"
+          {...TITLE_GUARD}
+        >
+          {title}
+        </Typography>
       </View>
       <View
         style={{ flexDirection: 'row', alignItems: 'center', flexShrink: 0 }}

@@ -1,7 +1,32 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { Pressable, Text } from 'react-native'
+import { userEvent } from 'storybook/test'
 import { ToolbarButton, ToolbarButtonGroup } from './ToolbarButton'
+import {
+  Surface,
+  pressedLevel,
+  raisedLevel,
+  surfaceBackground,
+  type SurfaceLevel,
+} from '../surface'
+
+function faceColor(theme: 'dark' | 'light', isActive?: boolean, level?: SurfaceLevel): string {
+  const { unmount } = render(
+    <Surface theme={theme} level={level}>
+      <ToolbarButton label="Face" isActive={isActive} />
+    </Surface>
+  )
+  const face = getComputedStyle(screen.getByRole('button', { name: 'Face' })).backgroundColor
+  unmount()
+  return face
+}
+
+function hexToRgb(hex: string): string {
+  const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16))
+  return `rgb(${r}, ${g}, ${b})`
+}
 
 describe('ToolbarButton', () => {
   it('renders with label', () => {
@@ -101,6 +126,36 @@ describe('ToolbarButton', () => {
     })
   })
 
+  describe('faces from the elevation system (TD-264, TD-265)', () => {
+    it.each(['dark', 'light'] as const)(
+      'raises the inactive face one plane above the enclosing %s Surface',
+      (theme) => {
+        const plane = raisedLevel('elevated', 1)
+
+        expect(faceColor(theme, false, 'elevated')).toBe(hexToRgb(surfaceBackground(plane, theme)))
+      }
+    )
+
+    it.each(['dark', 'light'] as const)(
+      'presses the active face one plane below the enclosing %s Surface',
+      (theme) => {
+        const plane = pressedLevel('elevated')
+
+        expect(faceColor(theme, true, 'elevated')).toBe(hexToRgb(surfaceBackground(plane, theme)))
+      }
+    )
+
+    it('reads the plane it sits on, not a fixed one', () => {
+      expect(faceColor('dark', false, 'base')).not.toBe(faceColor('dark', false, 'elevated'))
+    })
+
+    it('presses the light face down to the base plane', () => {
+      const face = faceColor('light', true, 'elevated')
+
+      expect(face).toBe(hexToRgb(surfaceBackground('base', 'light')))
+    })
+  })
+
   describe('menu content', () => {
     it('shows menu when pressed with menuContent', () => {
       render(<ToolbarButton label="Options" menuContent={<span>Menu item</span>} />)
@@ -118,6 +173,38 @@ describe('ToolbarButton', () => {
 
       fireEvent.click(button)
       expect(screen.queryByText('Menu item')).not.toBeInTheDocument()
+    })
+
+    function NamedMenuItem() {
+      return (
+        <Pressable accessibilityRole="button" onPress={() => {}}>
+          <Text>Menu item</Text>
+        </Pressable>
+      )
+    }
+
+    // The backdrop is the empty sibling painted just before the menu surface.
+    function openMenuBackdrop() {
+      const surface = screen.getByRole('button', { name: 'Menu item' }).parentElement!
+      return surface.previousElementSibling as HTMLElement
+    }
+
+    it('keeps the menu backdrop out of the tab order and hidden from assistive tech', async () => {
+      render(<ToolbarButton label="Options" menuContent={<NamedMenuItem />} />)
+      await userEvent.click(screen.getByRole('button', { name: 'Options' }))
+
+      const backdrop = openMenuBackdrop()
+      expect(backdrop).toHaveAttribute('tabindex', '-1')
+      expect(backdrop).toHaveAttribute('aria-hidden', 'true')
+      expect(await axe(backdrop)).toHaveNoViolations()
+    })
+
+    it('lands the first Tab after opening on a named control, not the backdrop', async () => {
+      render(<ToolbarButton label="Options" menuContent={<NamedMenuItem />} />)
+      await userEvent.click(screen.getByRole('button', { name: 'Options' }))
+
+      await userEvent.tab()
+      expect(document.activeElement).toHaveAccessibleName()
     })
   })
 

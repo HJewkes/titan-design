@@ -84,7 +84,7 @@ export function RevealRow({ at, children }: { at: string; children: ReactNode })
           className="justify-center pl-inset-sm"
           testID="chat-line-time"
         >
-          <DateTime value={at} format="time" variant="caption" color="tertiary" />
+          <DateTime value={at} format="time" variant="caption" color="secondary" />
         </View>
       </Animated.View>
     </View>

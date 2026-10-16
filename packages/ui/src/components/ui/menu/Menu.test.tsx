@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { Menu, MenuTrigger, MenuList, MenuItem, MenuDivider, MenuGroup } from './Menu'
 import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
+import { dividerClasses } from '../../../test/divider-rule'
 
 describe('Menu', () => {
   it('renders trigger element', () => {
@@ -215,8 +216,8 @@ describe('Menu', () => {
   })
 
   describe('MenuDivider', () => {
-    it('renders a divider', () => {
-      const { container } = render(
+    it('renders a Divider between the items', () => {
+      render(
         <Menu isOpen>
           <MenuTrigger>
             <button>Options</button>
@@ -228,7 +229,13 @@ describe('Menu', () => {
           </MenuList>
         </Menu>
       )
-      expect(container).toBeInTheDocument()
+      const edit = screen.getByRole('menuitem', { name: 'Edit' })
+      expect(dividerClasses(edit.nextElementSibling)).toEqual([
+        'bg-hairline',
+        'h-px',
+        'w-full',
+        'my-1',
+      ])
     })
   })
 

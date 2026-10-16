@@ -3,7 +3,7 @@
     "name": "index",
     "path": "dist/index.mjs",
     "brotli": true,
-    "limit": "170 kB"
+    "limit": "150 kB"
   },
   {
     "name": "bodymap",
@@ -16,6 +16,24 @@
     "path": "dist/pages.mjs",
     "brotli": true,
     "limit": "59 kB"
+  },
+  {
+    "name": "workout",
+    "path": "dist/workout.mjs",
+    "brotli": true,
+    "limit": "110 kB"
+  },
+  {
+    "name": "motion",
+    "path": "dist/motion.mjs",
+    "brotli": true,
+    "limit": "24 kB"
+  },
+  {
+    "name": "diagram",
+    "path": "dist/diagram.mjs",
+    "brotli": true,
+    "limit": "4 kB"
   },
   {
     "name": "theme",
@@ -33,7 +51,7 @@
     "name": "theme/tokens-css",
     "path": "dist/theme/tokens-css.mjs",
     "brotli": true,
-    "limit": "12 kB"
+    "limit": "13 kB"
   },
   {
     "name": "tokens.css",

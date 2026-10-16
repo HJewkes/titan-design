@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
-import { BotIcon, BrainIcon, HeadphonesIcon, KanbanIcon, VoltrasMark } from '../icons'
+import { ActivityIcon, BotIcon, BrainIcon, HeadphonesIcon, KanbanIcon, VoltrasMark } from '../icons'
 
 /** The apps that are expected to mount this shell. */
-export type BrandKey = 'voltras' | 'audiobook' | 'active-work' | 'agents' | 'brain'
+export type BrandKey = 'voltras' | 'audiobook' | 'active-work' | 'agents' | 'brain' | 'console'
 
 export interface BrandPreset {
   /** The mark glyph, rendered at 14px through the accent token via `currentColor`. */
@@ -61,6 +61,13 @@ export const brandPresets: Record<BrandKey, BrandPreset> = {
     accentClassName: 'text-dataviz-categorical-6',
     accentBarClassName: 'bg-dataviz-categorical-6',
     subtitle: 'knowledge',
+  },
+  console: {
+    mark: <ActivityIcon size={14} color="currentColor" />,
+    wordmark: 'CONSOLE',
+    accentClassName: 'text-dataviz-categorical-2',
+    accentBarClassName: 'bg-dataviz-categorical-2',
+    subtitle: 'operations',
   },
 }
 

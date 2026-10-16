@@ -1,0 +1,72 @@
+{
+  "schema": "titan-locks/1",
+  "repo": "owner/name",
+  "updatedAt": "2026-01-01T00:00:00Z",
+  "locks": [
+    {
+      "id": "L-0001",
+      "status": "open",
+      "title": "Light surface ramp: the planes every colour is measured against",
+      "decision": {
+        "ledger": "row-1",
+        "decisionsItem": "1",
+        "round": "example-batch/round-1",
+        "questionId": "ramp"
+      },
+      "holders": [
+        {
+          "pr": 101,
+          "headSha": "1111111111111111111111111111111111111111",
+          "branch": "feat/surface-ramp",
+          "task": "EX-1"
+        }
+      ],
+      "axes": ["colour"],
+      "after": [],
+      "footprint": {
+        "derivedFrom": {
+          "mainSha": "0000000000000000000000000000000000000000",
+          "headSha": "1111111111111111111111111111111111111111"
+        },
+        "tokens": [
+          { "name": "surface-base", "mode": "light", "from": "white", "to": "gray-100" },
+          { "name": "surface-raised", "mode": "light", "from": "gray-100", "to": "white" },
+          { "name": "text-secondary", "mode": "light", "from": "gray-700", "to": "gray-800" }
+        ],
+        "files": ["packages/ui/src/theme/global.css", "packages/ui/src/theme/tokens/semantic.ts"],
+        "components": {
+          "direct": ["packages/ui/src/components/ui/alert/Alert.tsx"],
+          "readers": ["packages/ui/src/components/ui/select/Select.tsx"],
+          "rendersCount": 12
+        }
+      },
+      "precedent": { "adr": null, "contractEntry": "planes" },
+      "openedBy": "coordinator",
+      "openedAt": "2026-01-01T00:00:00Z",
+      "closedAt": null,
+      "mergeSha": null
+    },
+    {
+      "id": "L-0002",
+      "status": "open",
+      "title": "Tone table, decided with no PR yet",
+      "decision": {
+        "ledger": ["row-2", "row-3"],
+        "decisionsItem": "2",
+        "round": "example-batch/round-1",
+        "questionId": ["tone-rule", "tone-brand"]
+      },
+      "holders": [],
+      "after": ["L-0001"],
+      "touches": {
+        "tokens": [{ "name": "brand-primary-solid", "mode": "light" }],
+        "components": ["packages/ui/src/components/ui/button/Button.tsx"],
+        "axis": "colour"
+      }
+    }
+  ],
+  "dependents": [
+    { "pr": 102, "lock": "L-0001", "mode": "stack-on", "reason": "edits text-secondary on light" },
+    { "pr": 103, "lock": "L-0001", "mode": "defer", "reason": "its variant pick waits on the ramp" }
+  ]
+}

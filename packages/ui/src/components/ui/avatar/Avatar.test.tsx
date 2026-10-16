@@ -4,6 +4,8 @@ import { axe } from 'jest-axe'
 import { Avatar, AvatarBadge, AvatarGroup } from './Avatar'
 import { Surface } from '../surface'
 import { avatarColors, avatarColorSlot } from '../../../utils/avatar-color'
+import { siblingSource } from '../../../test/spacing-resolver'
+import { capturedClassNames } from '../../../test/classname-capture'
 import { bestTextColor } from '../../../theme/tokens/primitives'
 
 function luminance(hex: string): number {
@@ -86,6 +88,20 @@ describe('Avatar', () => {
     render(<Avatar source={{ uri: 'https://example.com/avatar.jpg' }} alt="User" />)
     const imgs = screen.getAllByRole('img')
     expect(imgs.length).toBeGreaterThan(0)
+  })
+
+  it('draws the fallback on the avatar tokens', () => {
+    render(<Avatar fallback="JD" testID="fallback-avatar" />)
+    const classes = capturedClassNames.get('fallback-avatar')?.split(' ')
+    expect(classes).toContain('bg-avatar-background')
+    expect(classes).not.toContain('bg-hairline-strong')
+  })
+
+  it('labels the fallback with text-avatar-text, not the inverse text', () => {
+    const source = siblingSource(import.meta.url, 'Avatar.tsx')
+    expect(source).toContain("'text-avatar-text'")
+    expect(source).not.toContain('text-text-inverse')
+    expect(source).not.toContain('bg-hairline-strong')
   })
 
   it('renders with all size options', () => {

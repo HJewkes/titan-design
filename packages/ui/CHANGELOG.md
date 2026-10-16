@@ -12,6 +12,7 @@ changelog:compile` folds them into `[Unreleased]` at release.
 
 ### Added
 
+- `NetworkGraph` (`ui/charts/network-graph`, `Components/Organisms/NetworkGraph`): a directed node-link graph on a layout the caller passes as a value (`layeredLayout`, `suppliedLayout`, or its own `GraphLayout`). Nodes and edges are pressable, one of them can be selected (`selection`, `defaultSelection`, `onSelectionChange`), the graph is one tab stop whose arrow keys follow the edges, and an edge pulses when its `activityAt` rises, with a still form under reduced motion and no pulse under `animate={false}`. Web and React Native Web only. Exported with the graph types (TP-1041).
 - `Scatter` takes `referenceLines` (`{ y }`, `{ x }` or `{ slope, intercept }`, each with optional `id` and `label`), clipped to the plot box and never widening the domain; a `label` joins the canvas accessible name. `diagonal` is a deprecated alias for `[{ slope: -1, intercept: 1 }]` and keeps its `scatter-diagonal` test id, removed in 0.23.0 (TD-472).
 - `ui/charts/network-graph` plot model for free-form layouts: `edgePath` gains the `'arc'` shape and a slot so an edge each way between two nodes separates, `placeLabels` declutters labels while always keeping the selected and active nodes' (and neighbours') labels, and node names and `summarizeGraph` state each node's group or hop. `GraphModel` carries `edgeShape`, `labelMode` and `groups`; `GraphNodeContext` takes `groupLabels`. Pure `.ts`, not yet exported (TP-1038).
 - `custom/ActiveWork` task-stage vocabulary (`TASK_STAGE_META`, `TASK_STAGE_ORDER`, `toTaskStage`), `TaskStagePill`, and the `task-flow` and `task-pr` modules (`TaskFlowItem`, `compareTaskFlow`, `filterTaskFlow`, `taskKey`, `toTaskPrState`) (TP-860a).
@@ -66,6 +67,7 @@ changelog:compile` folds them into `[Unreleased]` at release.
 
 ### Changed
 
+- `Alert` solid fills use `bg-status-<tone>-solid` for all four tones, so the dark error label clears 4.5:1 (3.83 to 4.59). The `Avatar` fallback (and the default `AvatarBadge`) uses `bg-avatar-background` and `text-avatar-text` in place of `bg-hairline-strong` and `text-text-inverse`, lifting the label from 1.38-2.88 to 4.88 (light) and 6.99 (dark). On a `solid` Alert the title, description, message, glyph and close mark read the fill's on-colour (`on-status-<tone>` in both themes; in light the white token sits at 3.63:1 and 3.12:1 on warning and info, large-text AA for the glyph only, by owner pick), the default glyph is 20px bold in the first text line's 20px line box so it centres on it, and the fill carries the paper grain (`paperFill`, new in `theme/materials`) (TD-482a).
 - `global.css` self-hosts Inter, Nunito Sans and Space Grotesk instead of importing them from
   Google Fonts, so a single-file build opened from disk renders with no network. The woff2
   files are the ones Google Fonts served, with the same subsets and weights, and ship with their

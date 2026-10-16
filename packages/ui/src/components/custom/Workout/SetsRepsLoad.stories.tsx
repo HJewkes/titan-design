@@ -16,7 +16,7 @@ const meta: Meta<typeof SetsRepsLoad> = {
       description: {
         component:
           '**Atom.** The `sets × reps @ load` prescription line in the TempoDisplay visual ' +
-          'language. Composes [MetricCell](?path=/docs/custom-workout-metriccell--docs) ' +
+          'language. Composes [Typography](?path=/docs/foundations-typography--docs) ' +
           '(shared with [TempoDisplay](?path=/docs/custom-workout-tempodisplay--docs)). ' +
           'Used-by ↑ [ExerciseHeading](?path=/docs/custom-workout-exerciseheading--docs).',
       },
