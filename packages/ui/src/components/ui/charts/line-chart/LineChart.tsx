@@ -61,7 +61,7 @@ function LineChartPicture(props: LineChartPictureProps) {
           active={active}
           readout={readout}
         />
-        {showLegend && <LineLegend series={series} left={frame.left} />}
+        {!!showLegend && <LineLegend series={series} left={frame.left} />}
       </View>
       <LinePoints
         chart={chart}

@@ -68,6 +68,7 @@ function SeriesMarks({ facet, index, stroke, entrance }: SeriesMarksProps) {
   return (
     <>
       {projected.paths.map((d, i) => (
+        // eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (API-NOTE A1)
         <path
           key={i}
           data-testid="line-chart-path"
@@ -82,6 +83,7 @@ function SeriesMarks({ facet, index, stroke, entrance }: SeriesMarksProps) {
         />
       ))}
       {lonePoints(facet, index).map((point) => (
+        // eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (API-NOTE A1)
         <circle
           key={point.id}
           data-testid="line-chart-dot"
@@ -101,6 +103,7 @@ function Swatches({ labels, x }: { labels: GutterLabel[]; x: number }) {
     <>
       {labels.map((label) =>
         label.stroke ? (
+          // eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (API-NOTE A1)
           <line
             key={label.key}
             x1={x + SWATCH_START}
@@ -128,6 +131,7 @@ interface ActiveMarkProps {
 function ActiveMark({ active, stroke, height, mode }: ActiveMarkProps) {
   return (
     <>
+      {/* eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (API-NOTE A1) */}
       <line
         data-testid="line-chart-crosshair"
         x1={active.x}
@@ -137,6 +141,7 @@ function ActiveMark({ active, stroke, height, mode }: ActiveMarkProps) {
         stroke={resolveColor('hairline-strong', mode)}
       />
       {active.y !== null && (
+        // eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (API-NOTE A1)
         <circle
           data-testid="line-chart-active-marker"
           cx={active.x}
@@ -157,12 +162,14 @@ function PlotSvg(props: LinePlotProps & { gutter: GutterLabel[]; mode: ThemeMode
   const strokes = facet.geometry.series.map((s, i) => seriesStroke(s.series, i, mode))
   const activeIndex = facet.geometry.series.findIndex((s) => s.series.id === active?.seriesId)
   return (
+    // eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (API-NOTE A1)
     <svg
       aria-hidden
       width={width}
       height={height}
       viewBox={`0 0 ${String(width)} ${String(height)}`}
     >
+      {/* eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (API-NOTE A1) */}
       <g transform={`translate(${String(frame.left)} ${String(frame.top)})`}>
         <Rules geometry={facet.geometry} mode={mode} />
         {strokes.map((stroke, index) => (
@@ -175,7 +182,7 @@ function PlotSvg(props: LinePlotProps & { gutter: GutterLabel[]; mode: ThemeMode
           />
         ))}
         <Swatches labels={gutter} x={facet.geometry.width} />
-        {active && (
+        {!!active && (
           <ActiveMark
             active={active}
             stroke={strokes[activeIndex] ?? resolveColor('text-primary', mode)}
@@ -205,7 +212,7 @@ export function LinePlot(props: LinePlotProps) {
       />
       <GutterLabels {...layer} gutter={gutter} />
       <BoundaryLabels {...layer} />
-      {active && readout && <Readout {...layer} active={active} readout={readout} />}
+      {!!active && !!readout && <Readout {...layer} active={active} readout={readout} />}
     </View>
   )
 }

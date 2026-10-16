@@ -14,6 +14,7 @@ export function Rules({ geometry, mode }: { geometry: LineGeometry; mode: ThemeM
   return (
     <>
       {geometry.yTicks.map((tick) => (
+        // eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (API-NOTE A1)
         <line
           key={tick.value}
           data-testid="line-chart-gridline"
@@ -24,6 +25,7 @@ export function Rules({ geometry, mode }: { geometry: LineGeometry; mode: ThemeM
         />
       ))}
       {geometry.referenceLines.map((line, i) => (
+        // eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (API-NOTE A1)
         <line
           key={i}
           data-testid="line-chart-reference"
@@ -35,6 +37,7 @@ export function Rules({ geometry, mode }: { geometry: LineGeometry; mode: ThemeM
         />
       ))}
       {geometry.boundaries.map((b, i) => (
+        // eslint-disable-next-line titan/no-html-element -- DOM svg, web and React Native Web only (API-NOTE A1)
         <line
           key={i}
           data-testid="line-chart-boundary"
