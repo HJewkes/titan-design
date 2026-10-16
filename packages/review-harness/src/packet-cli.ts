@@ -1,5 +1,5 @@
-// `titan-review packet <verb>`: from-ci builds a packet, lint judges one, prompt prints the
-// packager's instructions. Each verb is one function; a new verb adds one row to VERBS.
+// `titan-review packet <verb>`: from-ci builds a packet, round builds its round, lint judges one,
+// prompt prints the packager's instructions. Each verb is one function; a new verb adds one row to VERBS.
 import { readFile, stat } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import { DRAFT_FILE, PACKET_FILE, packetFromCi } from './packet.ts'
@@ -11,7 +11,8 @@ import {
   type PacketLintProblem,
   type PacketRequirement,
 } from './packet-lint.ts'
-import { EXIT_REFUSED } from './build.ts'
+import { packetRound } from './packet-round.ts'
+import { EXIT_REFUSED, ROUND_FILE } from './build.ts'
 import { REPO_ROOT } from './locks.ts'
 import { EXIT_OK, ReviewError } from './review.ts'
 
@@ -21,6 +22,7 @@ export const PACKET_LINT_SCHEMA_ID = 'titan-review/packet-lint@1'
 export const PACKET_USAGE = `titan-review packet from-ci --repo <owner/name> --pr <n> --head <sha> --run <id> [--out <dir>]
                   [--clone <path>] [--side <questions.json>]
 titan-review packet lint <dir> --gate-head <sha> [--require prose,round] [--clone <path>] [--json]
+titan-review packet round <dir>
 titan-review packet prompt`
 
 /** The packager's instructions, shipped beside the lint that judges what it writes. */
@@ -122,6 +124,19 @@ async function lint(parsed: PacketParsed, io: PacketIo): Promise<number> {
   return ok ? EXIT_OK : EXIT_REFUSED
 }
 
+/** Writes round.json and frames/frames.json into the packet and prints round.json's path. */
+async function round(parsed: PacketParsed, io: PacketIo): Promise<number> {
+  const [, , dir] = parsed.positionals
+  if (dir === undefined || parsed.positionals.length !== 3)
+    throw usage('expected: packet round <dir>')
+  const { frames } = await packetRound(resolve(dir))
+  io.stderr(
+    `${frames.frames.length} frames; next: titan-review packet lint ${dir} --gate-head <sha>`
+  )
+  io.stdout(`${join(resolve(dir), ROUND_FILE)}\n`)
+  return EXIT_OK
+}
+
 async function prompt(parsed: PacketParsed, io: PacketIo): Promise<number> {
   if (parsed.positionals.length !== 2) throw usage('expected: packet prompt')
   io.stdout(await readFile(PACKAGER_PROMPT, 'utf8'))
@@ -131,6 +146,7 @@ async function prompt(parsed: PacketParsed, io: PacketIo): Promise<number> {
 const VERBS: Record<string, (parsed: PacketParsed, io: PacketIo) => Promise<number>> = {
   'from-ci': fromCi,
   lint,
+  round,
   prompt,
 }
 

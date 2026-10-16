@@ -18,6 +18,7 @@ import { CONTRAST_FILE, ROUND_FILE } from './build.ts'
 import { ciIo } from './packet-ci.ts'
 import { deriveProblems, type DeriveIo } from './packet-derive.ts'
 import { draftHeadProblems, roundProblems } from './packet-lint-round.ts'
+import { PACKET_FRAMES_PATH, framesIndexBytes } from './packet-round.ts'
 import { PROSE_FILE, PROSE_SCHEMA_ID, ProseSchema, type Prose } from './packet-prose.ts'
 import { ReviewError } from './review.ts'
 import type { z } from 'zod'
@@ -45,6 +46,8 @@ export const PACKET_LINT_RULES = [
   'before-source',
   'after-source',
   'derived',
+  'frames-index',
+  'frames-missing',
 ] as const
 
 export type PacketLintRule = (typeof PACKET_LINT_RULES)[number]
@@ -68,7 +71,14 @@ export interface PacketLintOptions {
 }
 
 /** The files a packet directory may hold beside the images packet.json names. */
-export const PACKET_ROOT_FILES = [PACKET_FILE, DRAFT_FILE, PROSE_FILE, ROUND_FILE, CONTRAST_FILE]
+export const PACKET_ROOT_FILES = [
+  PACKET_FILE,
+  DRAFT_FILE,
+  PROSE_FILE,
+  ROUND_FILE,
+  CONTRAST_FILE,
+  PACKET_FRAMES_PATH,
+]
 
 const NAMED_PATH = /^(before|after|diff|montage)\/[A-Za-z0-9_.-]+\.png$/
 
@@ -239,6 +249,39 @@ async function roundFileProblems(
   return roundProblems(read.json, draft?.json, packet, opts.gateHead)
 }
 
+/** frames/frames.json, required with round.json, must be the index `packet round` derives from these bytes. */
+async function framesProblems(
+  dir: string,
+  walked: Walked,
+  packet: CiPacket,
+  opts: PacketLintOptions
+) {
+  if (!walked.files.has(PACKET_FRAMES_PATH))
+    return opts.require?.includes('round')
+      ? [
+          {
+            rule: 'frames-missing' as const,
+            message: `${PACKET_FRAMES_PATH} is required with ${ROUND_FILE} but not present`,
+          },
+        ]
+      : []
+  const refuse = (message: string) => [{ rule: 'frames-index' as const, message }]
+  const absent = [ROUND_FILE, PROSE_FILE].filter((file) => !walked.files.has(file))
+  if (absent.length) return refuse(`${PACKET_FRAMES_PATH} is present without ${absent.join(', ')}`)
+  const [frames, round, prose, packetBytes] = await Promise.all(
+    [PACKET_FRAMES_PATH, ROUND_FILE, PROSE_FILE, PACKET_FILE].map((f) => readNoFollow(dir, f))
+  )
+  let want: Buffer
+  try {
+    want = framesIndexBytes(packet, { packet: packetBytes, round, prose })
+  } catch {
+    return refuse(`${ROUND_FILE} is not JSON, so ${PACKET_FRAMES_PATH} cannot be derived`)
+  }
+  return frames.equals(want)
+    ? []
+    : refuse(`${PACKET_FRAMES_PATH} is not the index packet round derives from this packet`)
+}
+
 async function fileProblems(dir: string, walked: Walked, packet: CiPacket) {
   const named = namedFiles(packet)
   const problems: PacketLintProblem[] = []
@@ -303,6 +346,7 @@ export async function lintPacketResult(
     ...(await fileProblems(dir, walked, packet)),
     ...(await proseProblems(dir, walked, packet, opts)),
     ...(await roundFileProblems(dir, walked, packet, opts, draft)),
+    ...(await framesProblems(dir, walked, packet, opts)),
     ...(await cloneProblems(dir, walked, packet, opts, io)),
   ]
   return { packetId: packet.packetId, problems }

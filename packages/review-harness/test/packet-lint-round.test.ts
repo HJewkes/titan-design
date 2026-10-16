@@ -28,7 +28,10 @@ describe('packet lint: round.json', () => {
     const dir = await withRound()
 
     expect(await lint(dir)).toEqual([])
-    expect(await rules(dir, { require: ['prose', 'round'] })).toEqual(['prose-missing'])
+    expect(await rules(dir, { require: ['prose', 'round'] })).toEqual([
+      'prose-missing',
+      'frames-missing',
+    ])
   })
 
   it('refuses a round whose question prompt was edited', async () => {
@@ -70,7 +73,7 @@ describe('packet lint: round.json', () => {
   it('refuses a missing round.json only when it is required', async () => {
     const dir = await packetDir()
 
-    expect(await rules(dir, { require: ['round'] })).toEqual(['round-missing'])
+    expect(await rules(dir, { require: ['round'] })).toEqual(['round-missing', 'frames-missing'])
     expect(await rules(dir)).toEqual([])
   })
 })
