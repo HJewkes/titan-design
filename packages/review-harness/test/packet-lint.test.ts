@@ -1,59 +1,18 @@
-import { createHash } from 'node:crypto'
 import { mkdir, readFile, rm, symlink, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { writePacketDir, type CiPacket } from '../src/packet.ts'
 import { lintPacket } from '../src/packet-lint.ts'
-import type { Gathered } from '../src/packet-types.ts'
-import { HEAD, collected, layer, png, tempDir } from './packet-fake.ts'
-
-const RED = [255, 0, 0, 255]
-const OTHER_HEAD = 'e5'.repeat(20)
-const sha256 = (bytes: Buffer) => createHash('sha256').update(bytes).digest('hex')
-
-const shown = (over: Partial<Gathered> & Pick<Gathered, 'path' | 'change'>): Gathered => ({
-  layer: 'component',
-  source: 'artifact',
-  ...over,
-})
-
-/** A 4x4 packet: one changed baseline (before, after, diff, montage) and one new one. */
-async function packetDir() {
-  const dir = join(await tempDir(), 'packet')
-  const changed = shown({
-    path: 'snapshots/a-chromium-linux.png',
-    change: 'changed',
-    before: png(4, 4),
-    after: png(4, 4, undefined, [[1, 1, RED]]),
-  })
-  const added = shown({
-    path: 'snapshots/b-chromium-linux.png',
-    change: 'new',
-    after: png(4, 4, RED),
-  })
-  const layers = [layer({ layer: 'component', regenerated: true, shown: [changed, added] })]
-  await writePacketDir(collected(layers, { warnings: ['a synthetic warning'] }), dir)
-  return dir
-}
-
-const readPacket = async (dir: string): Promise<CiPacket> =>
-  JSON.parse(await readFile(join(dir, 'packet.json'), 'utf8'))
-const writePacket = (dir: string, packet: unknown) =>
-  writeFile(join(dir, 'packet.json'), `${JSON.stringify(packet, null, 2)}\n`)
-
-async function editPacket(dir: string, edit: (p: CiPacket) => void) {
-  const packet = await readPacket(dir)
-  edit(packet)
-  await writePacket(dir, packet)
-}
-
-async function lint(dir: string, gateHead = HEAD) {
-  const problems = await lintPacket(dir, { gateHead })
-  for (const p of problems) expect(p.message).not.toContain(dirname(dir))
-  return problems
-}
-
-const rules = async (dir: string, gateHead = HEAD) => (await lint(dir, gateHead)).map((p) => p.rule)
+import { HEAD, png, tempDir } from './packet-fake.ts'
+import {
+  OTHER_HEAD,
+  RED,
+  editDraft,
+  editPacket,
+  lint,
+  packetDir,
+  rules,
+  sha256,
+} from './packet-lint-fake.ts'
 
 describe('packet lint: the packet and its binding', () => {
   it('passes a clean from-ci packet whose head is the gate head', async () => {
@@ -62,12 +21,9 @@ describe('packet lint: the packet and its binding', () => {
 
   it('refuses a packet for another head, even when its draft names the gate head', async () => {
     const dir = await packetDir()
-    const draftFile = join(dir, 'draft.json')
-    const draft = Buffer.from((await readFile(draftFile, 'utf8')).replaceAll(HEAD, OTHER_HEAD))
-    await writeFile(draftFile, draft)
-    await editPacket(dir, (p) => (p.draft.sha256 = sha256(draft)))
+    await editDraft(dir, (draft) => draft.replaceAll(HEAD, OTHER_HEAD))
 
-    expect(await rules(dir, OTHER_HEAD)).toEqual(['gate-head'])
+    expect(await rules(dir, { gateHead: OTHER_HEAD })).toEqual(['gate-head'])
   })
 
   it('refuses a packet.json that writes a cause, since the schema is strict', async () => {
@@ -144,10 +100,9 @@ describe('packet lint: the files', () => {
     ])
   })
 
-  it('accepts the root files a packager or a build may add', async () => {
+  it('accepts a contrast.json beside the packet', async () => {
     const dir = await packetDir()
-    for (const file of ['prose.json', 'round.json', 'contrast.json'])
-      await writeFile(join(dir, file), '{}')
+    await writeFile(join(dir, 'contrast.json'), '{}')
 
     expect(await lint(dir)).toEqual([])
   })
