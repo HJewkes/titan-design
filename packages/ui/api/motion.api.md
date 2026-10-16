@@ -6,6 +6,10 @@
 
 import * as react_jsx_runtime from 'react/jsx-runtime';
 import { ReactNode } from 'react';
+import { ViewProps } from 'react-native';
+
+// @public
+export function all(...spans: Span[]): Span;
 
 // @public
 export const back: (s?: number) => Easing;
@@ -15,6 +19,9 @@ export function Beat(input: BeatProps): react_jsx_runtime.JSX.Element | null;
 
 // @public
 export const BEAT_MOUNT_MARGIN_S = 0.5;
+
+// @public
+export type BeatCues = Readonly<Record<string, number>>;
 
 // @public
 export function BeatFrame(input: BeatFrameProps): react_jsx_runtime.JSX.Element;
@@ -29,9 +36,13 @@ export interface BeatFrameProps {
 // @public
 export interface BeatProps {
     children?: ReactNode;
+    cues?: BeatCues;
     durationS: number;
     startS: number;
 }
+
+// @public
+export function chain(...spans: Span[]): Span;
 
 // @public
 export interface Clock {
@@ -58,6 +69,21 @@ export function cropInset(input?: CropEdges): string;
 export function cubicBezier(x1: number, y1: number, x2: number, y2: number): Easing;
 
 // @public
+export function cutPath(path: string | PathModel, length: number): string;
+
+// @public
+export function delay(s: number, inner: Span): Span;
+
+// @public
+export function drawOn(length: number, progress: number): DrawOnStyle;
+
+// @public
+export interface DrawOnStyle {
+    strokeDasharray: number;
+    strokeDashoffset: number;
+}
+
+// @public
 export const easeIn: (f: Easing) => Easing;
 
 // @public
@@ -68,6 +94,20 @@ export const easeOut: (f: Easing) => Easing;
 
 // @public
 export type Easing = (p: number) => number;
+
+// @public
+export interface ElidedSource {
+    droppedRefs: number;
+    fits: boolean;
+    level: ElisionLevel;
+    text: string;
+}
+
+// @public
+export function elideSource(text: string, maxChars: number): ElidedSource;
+
+// @public
+export type ElisionLevel = 0 | 1 | 2 | 3 | 4;
 
 // @public
 export interface Envelope {
@@ -91,6 +131,25 @@ export interface EnvelopeOptions {
 export type EnvelopePhase = 'before' | 'in' | 'hold' | 'out' | 'after';
 
 // @public
+export function EvidenceChip(input: EvidenceChipProps): react_jsx_runtime.JSX.Element;
+
+// @public
+export interface EvidenceChipProps extends Omit<ViewProps, 'children'> {
+    className?: string;
+    fontPx?: number;
+    kind: EvidenceKind;
+    maxChars?: number;
+    size?: EvidenceChipSize;
+    text: string;
+}
+
+// @public
+export type EvidenceChipSize = 'sm' | 'md' | 'lg';
+
+// @public
+export type EvidenceKind = (typeof EVIDENCE_KINDS)[number];
+
+// @public
 export function interpolate(t: number, input: readonly [number, number], input2: readonly [number, number], input3?: InterpolateOptions): number;
 
 // @public
@@ -103,11 +162,20 @@ export interface InterpolateOptions {
 }
 
 // @public
+export function interpolatePath(t: number, from: string, to: string): string;
+
+// @public
 export function interpolateScale(t: number, input: readonly [number, number], input2: readonly [number, number], options?: InterpolateOptions): number;
 
 // @public
-type Keyframe_2 = readonly [number, number];
+type Keyframe_2 = readonly [t: number, value: number, options?: KeyframeOptions];
 export { Keyframe_2 as Keyframe }
+
+// @public
+export interface KeyframeOptions {
+    connectedRight?: boolean;
+    holdS?: number;
+}
 
 // @public
 export function keyframes(t: number, stops: readonly Keyframe_2[], input?: KeyframesOptions): number;
@@ -115,6 +183,23 @@ export function keyframes(t: number, stops: readonly Keyframe_2[], input?: Keyfr
 // @public
 export interface KeyframesOptions {
     ease?: Easing | readonly Easing[];
+}
+
+// @public
+export interface Lagged {
+    itemS: number;
+    items: TimeWindow[];
+    progress(t: number, index: number): number;
+}
+
+// @public
+export function lagged(n: number, input: LaggedOptions): Lagged;
+
+// @public
+export interface LaggedOptions {
+    ease?: Easing;
+    lagRatio: number;
+    totalS: number;
 }
 
 // @public
@@ -174,7 +259,78 @@ export interface MotionProviderProps {
 export function noise2D(seed: number | string, x: number, y: number): number;
 
 // @public
+export function parsePath(d: string): PathCommand[];
+
+// @public
+export type PathCommand = {
+    type: 'M' | 'L';
+    x: number;
+    y: number;
+} | {
+    type: 'C';
+    x1: number;
+    y1: number;
+    x2: number;
+    y2: number;
+    x: number;
+    y: number;
+} | {
+    type: 'Q';
+    x1: number;
+    y1: number;
+    x: number;
+    y: number;
+} | {
+    type: 'A';
+    rx: number;
+    ry: number;
+    rotation: number;
+    largeArc: boolean;
+    sweep: boolean;
+    x: number;
+    y: number;
+} | {
+    type: 'Z';
+};
+
+// @public
+export function pathLength(path: string | PathModel): number;
+
+// @public
+export interface PathModel {
+    readonly d: string;
+    readonly length: number;
+    readonly ops: readonly PathOp[];
+}
+
+// @public
+export function pathModel(d: string): PathModel;
+
+// @public
+export function pathMorph(from: string, to: string): (t: number) => string;
+
+// @public
+export type PathOp = {
+    type: 'M';
+    point: PathPoint;
+} | {
+    type: 'segment';
+    segment: readonly PathPoint[];
+    length: number;
+    closes: boolean;
+};
+
+// @public
+export interface PathPoint {
+    x: number;
+    y: number;
+}
+
+// @public
 export type Phase = 'before' | 'during' | 'after';
+
+// @public
+export function pointAtLength(path: string | PathModel, at: number): PathPoint;
 
 // @public
 export const poly: (n: number) => Easing;
@@ -237,6 +393,15 @@ export const smootherstep: Easing;
 export const smoothstep: Easing;
 
 // @public
+export interface Span {
+    durationS: number;
+    windows: TimeWindow[];
+}
+
+// @public
+export function span(durationS: number): Span;
+
+// @public
 export function spring(t: number, input?: SpringOptions): number;
 
 // @public
@@ -263,8 +428,25 @@ export function stagger(index: number, input: StaggerOptions): number;
 
 // @public
 export interface StaggerOptions {
-    each: number;
+    count: number;
+    each?: number;
     from?: number;
+}
+
+// @public
+export function tangentAtLength(path: string | PathModel, at: number): PathPoint;
+
+// @public
+export interface TimeWindow {
+    endS: number;
+    startS: number;
+}
+
+// @public
+export interface TitanMotionApi {
+    readonly duration: number;
+    ready(): Promise<void>;
+    seek(t: number): void;
 }
 
 // @public
@@ -274,6 +456,9 @@ export function useBeatEnvelope(options?: EnvelopeOptions): Envelope;
 export function useBeatTime(): LocalTime & {
     durationS: number;
 };
+
+// @public
+export function useCue(name: string): number;
 
 // @public
 export function useLocalTime(startS: number, durationS: number): LocalTime;

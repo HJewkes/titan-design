@@ -150,6 +150,32 @@
           "recommendationSeen": {
             "type": "boolean",
             "const": true
+          },
+          "pairs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "pair": {
+                  "type": "string"
+                },
+                "choice": {
+                  "type": "string",
+                  "enum": [
+                    "A",
+                    "B"
+                  ]
+                },
+                "engine": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "pair",
+                "choice"
+              ],
+              "additionalProperties": false
+            }
           }
         },
         "required": [
@@ -173,6 +199,9 @@
             "type": "string"
           },
           "clip": {
+            "type": "string"
+          },
+          "audio": {
             "type": "string"
           },
           "verdict": {

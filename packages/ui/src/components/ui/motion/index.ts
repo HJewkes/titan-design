@@ -27,6 +27,7 @@ export {
   keyframes,
   type InterpolateOptions,
   type Keyframe,
+  type KeyframeOptions,
   type KeyframesOptions,
 } from './interpolate'
 export {
@@ -46,16 +47,26 @@ export {
   type EnvelopePhase,
 } from './envelope'
 export {
+  all,
+  chain,
+  delay,
+  lagged,
   sequence,
+  span,
   stagger,
+  type Lagged,
+  type LaggedOptions,
   type Sequenced,
   type SequenceOptions,
   type SequenceResult,
+  type Span,
   type StaggerOptions,
+  type TimeWindow,
 } from './timeline'
 export { random, randomRange } from './random'
 export { noise2D } from './noise'
 export { MotionProvider, type MotionProviderProps } from './MotionProvider'
+export type { TitanMotionApi } from './bridge'
 export {
   localTime,
   useLocalTime,
@@ -65,6 +76,7 @@ export {
   type LocalTime,
   type Phase,
 } from './hooks'
+export { useCue, type BeatCues } from './cues'
 export {
   Beat,
   BEAT_MOUNT_MARGIN_S,
@@ -73,3 +85,19 @@ export {
   type BeatFrameProps,
   type BeatProps,
 } from './Beat'
+export {
+  cutPath,
+  drawOn,
+  interpolatePath,
+  parsePath,
+  pathLength,
+  pathModel,
+  pathMorph,
+  pointAtLength,
+  tangentAtLength,
+  type DrawOnStyle,
+  type PathCommand,
+  type PathModel,
+  type PathOp,
+  type PathPoint,
+} from './paths'

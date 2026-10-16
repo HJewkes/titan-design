@@ -32,8 +32,8 @@ describe('interpolate', () => {
 describe('keyframes', () => {
   const stops = [
     [1, 0],
-    [2, 10],
-    [2, 20],
+    [2, 10, { connectedRight: false }],
+    [3, 20],
     [4, 0],
   ] as const
 
@@ -41,12 +41,13 @@ describe('keyframes', () => {
     { t: 0, expected: 0 },
     { t: 1, expected: 0 },
     { t: 1.5, expected: 5 },
-    { t: 2, expected: 20 },
-    { t: 3, expected: 10 },
+    { t: 2.5, expected: 10 },
+    { t: 3, expected: 20 },
+    { t: 3.5, expected: 10 },
     { t: 4, expected: 0 },
     { t: 9, expected: 0 },
   ])(
-    'at $t is $expected, holding the ends and jumping on a zero-length segment',
+    'at $t is $expected, holding the ends and stepping where a stop disconnects',
     ({ t, expected }) => {
       expect(keyframes(t, stops)).toBeCloseTo(expected, 10)
     }
@@ -78,6 +79,102 @@ describe('keyframes with one easing per segment', () => {
 
   it('throws when there are fewer easings than segments', () => {
     expect(() => keyframes(0.5, stops, { ease: [linear, linear] })).toThrow(RangeError)
+  })
+
+  it('keeps each easing on its segment when an earlier stop holds', () => {
+    const held = [
+      [0, 0, { holdS: 0.5 }],
+      [1, 10],
+      [2, 20],
+      [3, 30],
+    ] as const
+    expect(keyframes(1.5, held, { ease })).toBe(12.5)
+    expect(keyframes(0.75, held, { ease })).toBe(5)
+  })
+})
+
+describe('keyframes holds and steps', () => {
+  it.each([
+    { t: 0.5, expected: 0 },
+    { t: 1, expected: 0 },
+    { t: 1.5, expected: 5 },
+    { t: 2, expected: 10 },
+  ])(
+    'holds the first value for holdS, then eases over the rest: $expected at $t',
+    ({ t, expected }) => {
+      expect(
+        keyframes(t, [
+          [0, 0, { holdS: 1 }],
+          [2, 10],
+        ])
+      ).toBeCloseTo(expected, 10)
+    }
+  )
+
+  it('allows holds on the first and the last stop', () => {
+    const stops = [
+      [1, 5, { holdS: 1 }],
+      [3, 7],
+      [4, 9, { holdS: 2 }],
+    ] as const
+    expect(keyframes(0, stops)).toBe(5)
+    expect(keyframes(2, stops)).toBe(5)
+    expect(keyframes(4, stops)).toBe(9)
+    expect(keyframes(7, stops)).toBe(9)
+  })
+
+  it('holds a disconnected stop until the next one, then steps', () => {
+    const stops = [
+      [0, 0, { connectedRight: false }],
+      [2, 10],
+    ] as const
+    expect(keyframes(1.999, stops)).toBe(0)
+    expect(keyframes(2, stops)).toBe(10)
+  })
+
+  it('allows connectedRight false on the last stop', () => {
+    expect(
+      keyframes(3, [
+        [0, 0],
+        [2, 10, { connectedRight: false }],
+      ])
+    ).toBe(10)
+  })
+
+  it.each([
+    { name: 'a non-finite value', stops: [[0, NaN]] },
+    { name: 'a non-finite t', stops: [[Infinity, 0]] },
+    {
+      name: 'unsorted stops',
+      stops: [
+        [2, 0],
+        [1, 1],
+      ],
+    },
+    {
+      name: 'two stops at one t',
+      stops: [
+        [1, 0],
+        [1, 5],
+      ],
+    },
+    {
+      name: 'a negative hold',
+      stops: [
+        [0, 0, { holdS: -1 }],
+        [2, 1],
+      ],
+    },
+    { name: 'a non-finite hold', stops: [[0, 0, { holdS: NaN }]] },
+    {
+      name: 'a hold past the next stop',
+      stops: [
+        [0, 0, { holdS: 3 }],
+        [2, 1],
+      ],
+    },
+  ] as const)('throws a RangeError for $name', ({ stops }) => {
+    expect(() => keyframes(0, stops)).toThrow(RangeError)
   })
 })
 

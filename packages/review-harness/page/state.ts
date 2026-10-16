@@ -16,7 +16,14 @@ import {
   type LayoutBlock,
   type ResolvedSection,
 } from '../src/sections.ts'
-import type { Annotation, Manifest, Question, Verdict } from '@titan-design/review-schema'
+import {
+  takesRecommendation,
+  type Annotation,
+  type BlindChoice,
+  type Manifest,
+  type Question,
+  type Verdict,
+} from '@titan-design/review-schema'
 import { loadDraft, type DraftStorage } from './draftStore.ts'
 import { pinId, pinNumber } from './pins.ts'
 
@@ -56,6 +63,7 @@ export type Action =
   | { type: 'pick'; id: string; option: string; many: boolean }
   | { type: 'revision'; id: string }
   | { type: 'value'; id: string; value: number }
+  | { type: 'blindPick'; id: string; pair: string; choice: BlindChoice }
   | { type: 'text'; id: string; text: string }
   | { type: 'answerComment'; id: string; comment: string }
   | { type: 'optionNote'; id: string; option: string; note: string }
@@ -188,12 +196,25 @@ export function recommendationVisible(
   question: Question,
   draft: AnswerDraft
 ): boolean {
-  if (question.kind === 'text' || !question.recommendation) return false
+  if (!takesRecommendation(question) || !question.recommendation) return false
   return (
     manifest.recommendations === 'shown' ||
     draft.revealed === true ||
     isDraftAnswered(question, draft)
   )
+}
+
+/** The round or the owner's answer shows the recommendation, so the reveal toggle cannot hide it. */
+export function revealLocked(manifest: Manifest, question: Question, draft: AnswerDraft): boolean {
+  return manifest.recommendations === 'shown' || isDraftAnswered(question, draft)
+}
+
+/** What `r` means at the active stop: toggle the reveal of a question that has a recommendation. */
+export function revealKeyAction(manifest: Manifest, stop: Stop | undefined): Action | null {
+  if (stop?.kind !== 'question') return null
+  const question = manifest.questions.find((q) => q.id === stop.id)
+  if (!question || !takesRecommendation(question) || !question.recommendation) return null
+  return { type: 'reveal', id: question.id }
 }
 
 export function initialState(manifest: Manifest): ReviewState {
@@ -246,6 +267,15 @@ function updateAnswer(
 function togglePick(picks: string[] | undefined, option: string): string[] {
   const list = picks ?? []
   return list.includes(option) ? list.filter((p) => p !== option) : [...list, option]
+}
+
+/** Picks a pair's take, or clears the pick when that take was already picked. */
+function toggleBlind(
+  blind: AnswerDraft['blind'],
+  { pair, choice }: { pair: string; choice: BlindChoice }
+): AnswerDraft['blind'] {
+  const { [pair]: was, ...rest } = blind ?? {}
+  return was === choice ? rest : { ...rest, [pair]: choice }
 }
 
 function reduceVariant(draft: ReviewDraft, action: Action): ReviewDraft {
@@ -337,6 +367,8 @@ function reduceAnswer(draft: ReviewDraft, action: Action): ReviewDraft {
       )
     case 'value':
       return updateAnswer(draft, action.id, () => ({ value: action.value }))
+    case 'blindPick':
+      return updateAnswer(draft, action.id, (a) => ({ blind: toggleBlind(a.blind, action) }))
     case 'text':
       return updateAnswer(draft, action.id, () => ({ text: action.text }))
     case 'answerComment':
