@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View, Text } from 'react-native'
 import { FatigueLights } from './FatigueLights'
+import { Surface } from '../../ui/surface'
 import { greyRamp } from '../../../theme/tokens/primitives'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { FATIGUE_STATES } from './fatigue-mock'
@@ -18,14 +19,33 @@ const meta: Meta<typeof FatigueLights> = {
         component:
           'The three VEL/ROM/TEMPO "why" dots behind the verdict. Composes the shared `StatusDot` ' +
           '(glow) inside a `Tooltip` that reveals the dimension detail on hover. `dimensions === null` ' +
-          '⇒ three neutral dots (warming up).',
+          '⇒ three neutral dots (warming up). `variant="chips"` draws each dimension as a neutral ' +
+          '[Pill](?path=/docs/components-atoms-pill--docs) led by a ' +
+          '[StatusGlyph](?path=/docs/components-atoms-statusglyph--docs), label in neutral ink.',
       },
     },
   },
-  argTypes: { spread: { control: 'boolean' } },
+  args: {
+    variant: 'chips',
+    spread: false,
+    dimensions: FATIGUE_STATES[3].model.verdict?.dimensions ?? null,
+  },
+  argTypes: {
+    variant: { control: 'inline-radio', options: ['dots', 'chips'] },
+    spread: { control: 'boolean' },
+    dimensions: { control: 'object' },
+  },
 }
 export default meta
 type Story = StoryObj<typeof FatigueLights>
+
+export const Default: Story = {
+  render: (args) => (
+    <Surface level="raised" className="p-inset-md" style={{ width: 396 }}>
+      <FatigueLights {...args} />
+    </Surface>
+  ),
+}
 
 export const AcrossStates: Story = {
   render: () => (
