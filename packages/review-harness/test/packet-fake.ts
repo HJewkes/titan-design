@@ -114,16 +114,18 @@ const under = (files: Record<string, unknown>, prefix: string) =>
   Object.keys(files).filter((p) => p.startsWith(prefix))
 
 function ghReplies(w: World): Record<string, string> {
-  const run = { ...w.run, event: 'pull_request', url: `https://example.test/runs/${RUN}` }
+  const run = { ...w.run, url: `https://example.test/runs/${RUN}` }
   const jobs = [{ name: 'visual', conclusion: w.run.conclusion }]
   return {
-    [`run view ${RUN} --repo ${REPO} --json headSha,status,conclusion,event,workflowName,url,jobs`]:
+    [`run view ${RUN} --repo ${REPO} --json headSha,status,conclusion,workflowName,url,jobs`]:
       JSON.stringify({ ...run, jobs }),
     [`pr view ${PR} --repo ${REPO} --json headRefOid,state`]: JSON.stringify(w.pr),
     [`api repos/${REPO}/git/commits/${HEAD} --jq .tree.sha`]: TREE,
-    [`api repos/${REPO}/actions/runs/${RUN}/artifacts?per_page=100`]: JSON.stringify({
-      artifacts: w.artifacts,
-    }),
+    // One artifact per page, so a reader of the first page alone misses the rest.
+    [`api --paginate --slurp repos/${REPO}/actions/runs/${RUN}/artifacts?per_page=100`]:
+      JSON.stringify(
+        w.artifacts.length ? w.artifacts.map((a) => ({ artifacts: [a] })) : [{ artifacts: [] }]
+      ),
   }
 }
 

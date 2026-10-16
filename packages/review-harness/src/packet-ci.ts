@@ -61,7 +61,7 @@ const json = async <T>(io: CiIo, args: string[]) => JSON.parse(await io.gh(args)
 
 /** Refuses unless the run is a finished CI run of `head` and the PR is still open at `head`. */
 export async function checkBinding(t: CiTarget, io: CiIo): Promise<Binding> {
-  const runFields = 'headSha,status,conclusion,event,workflowName,url,jobs'
+  const runFields = 'headSha,status,conclusion,workflowName,url,jobs'
   const run = await json<RunView>(io, ['run', 'view', t.run, '--repo', t.repo, '--json', runFields])
   if (run.headSha !== t.head)
     throw new ReviewError(`run ${t.run} is of head ${run.headSha}, not --head ${t.head}`)
@@ -115,7 +115,8 @@ function latestByName(artifacts: Artifact[]): Map<string, Artifact> {
 /** The artifact id from-ci reads for each name, refusing an expired one rather than reading it as absent. */
 export async function liveArtifacts(t: CiTarget, io: CiIo): Promise<Map<string, number>> {
   const path = `repos/${t.repo}/actions/runs/${t.run}/artifacts?per_page=100`
-  const { artifacts } = await json<{ artifacts: Artifact[] }>(io, ['api', path])
+  const pages = await json<{ artifacts: Artifact[] }[]>(io, ['api', '--paginate', '--slurp', path])
+  const artifacts = pages.flatMap((p) => p.artifacts)
   const wanted = new Set(CI_SOURCES.flatMap((s) => [s.artifact, s.diagnostics]))
   const ours = [...latestByName(artifacts.filter((a) => wanted.has(a.name))).values()]
   const expired = ours.filter((a) => a.expired).map((a) => a.name)

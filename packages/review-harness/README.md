@@ -496,7 +496,7 @@ it reads has expired (an expired artifact is never read as "no changes").
 | `story`     | `storybook-visual-baselines` | `packages/ui/tests/visual/reference/stories.spec.ts-snapshots/` | `storybook-visual-diffs` |
 
 A rerun attempt uploads its artifacts again under the same names, so from-ci reads each name's
-latest upload (by `created_at`, then id) and refuses if that one has expired.
+latest upload (by `created_at`, then id) across every page of the artifact list and refuses if that one has expired.
 
 Observed on a real failed run: the component artifact holds `<spec>-snapshots/<name>-chromium-linux.png`
 relative to its prefix, the story artifact holds the snapshot directory's files flat, and each holds

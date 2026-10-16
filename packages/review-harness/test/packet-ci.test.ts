@@ -214,7 +214,7 @@ describe('packet from-ci sources', () => {
     const result = await run(changedWorld({ [`run/a-diff.png`]: png(40, 20) }))
     const verbs = new Set(result.calls.map(([tool, ...args]) => `${tool} ${args[0]} ${args[1]}`))
     const read =
-      /^(gh (run (view|download)|pr view|api \S+)|git (fetch|rev-parse|merge-base|ls-tree|diff|show) \S+)$/
+      /^(gh (run view|pr view|api \S+)|git (fetch|rev-parse|merge-base|ls-tree|diff|show) \S+)$/
 
     expect(result.code).toBe(0)
     for (const verb of verbs) expect(verb).toMatch(read)
