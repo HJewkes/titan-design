@@ -5,7 +5,7 @@
  */
 import { heatmapColors } from '../../../theme/workout-tokens'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
-import type { VolumeStatus } from './muscleTaxonomy'
+import type { VolumeStatus } from './volumeStatus'
 
 /** Statuses with no stop on the diverging scale. */
 type OffScaleStatus = 'untrained' | 'noverdict'

@@ -15,6 +15,8 @@ export {
   volumeStatusDotColor,
   volumeStatusDotStyle,
 } from './volumeStatusPaint'
+export { VOLUME_STATUSES, type VolumeStatus } from './volumeStatus'
+import type { VolumeStatus } from './volumeStatus'
 
 /**
  * Full muscle group taxonomy for volume tracking and exercise mapping.
@@ -199,28 +201,6 @@ export const DEFAULT_VOLUME_LANDMARKS: Record<MuscleGroup, VolumeLandmarks> = {
  * that name now belongs to the one UI status below.
  */
 export type VolumeLandmarkZone = 'under' | 'maintenance' | 'productive' | 'over'
-
-/**
- * The ONE volume status, shared by the BodyMap fill, the MuscleGroupChip dot and
- * every legend over them (VW-333). Before it existed, the figure keyed off the
- * landmark zone and the chip off a five-value union of its own, so one muscle
- * could render two different hues.
- *
- * `noverdict` (VW-741) marks a trained muscle whose landmarks are withheld, so its
- * week has sets but no verdict. It paints result-neutral, never a diverging stop.
- */
-export type VolumeStatus = (typeof VOLUME_STATUSES)[number]
-
-/** Every status in severity order; the union derives from it, so tests can iterate it whole. */
-export const VOLUME_STATUSES = [
-  'untrained',
-  'noverdict',
-  'behind',
-  'ontrack',
-  'target',
-  'approaching',
-  'over',
-] as const
 
 /**
  * Intensity at or above which a muscle inside the productive band reads as
