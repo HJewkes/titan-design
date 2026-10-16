@@ -1,6 +1,7 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { Platform, Text } from 'react-native'
 import {
   Card,
   CardHeader,
@@ -11,8 +12,10 @@ import {
   CardSkeleton,
   CardInset,
 } from './Card'
+import { Surface } from '../surface/Surface'
 import { greyRamp } from '../../../theme/tokens/primitives'
-import { resolveAll, siblingSource, spacingClassesIn } from '../../../test/spacing-resolver'
+import { getSemanticColors } from '../../../theme/tokens/semantic'
+import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 
 // Planes by RAMP STEP, never by literal bytes — see Surface.test.tsx.
 const BASE = greyRamp[925]
@@ -232,6 +235,20 @@ describe('Card', () => {
       expect(screen.getByRole('heading')).toBeInTheDocument()
     })
 
+    it('CardTitle renders an h3 by default', () => {
+      render(<CardTitle>My Title</CardTitle>)
+      const heading = screen.getByRole('heading')
+      expect(heading.tagName).toBe('H3')
+      expect(heading).toHaveAttribute('aria-level', '3')
+    })
+
+    it('CardTitle renders the heading level it is given', () => {
+      render(<CardTitle level={2}>My Title</CardTitle>)
+      const heading = screen.getByRole('heading')
+      expect(heading.tagName).toBe('H2')
+      expect(heading).toHaveAttribute('aria-level', '2')
+    })
+
     it('accepts custom className on sub-components', () => {
       render(
         <Card className="custom-card">
@@ -320,6 +337,44 @@ describe('Card', () => {
     })
   })
 
+  describe('accent stripe colour', () => {
+    const originalOS = Platform.OS
+    afterEach(() => {
+      Platform.OS = originalOS
+    })
+
+    it('keeps the brand CSS variable on web', () => {
+      render(<Card variant="accent" testID="card" />)
+      expect(screen.getByTestId('card').style.borderLeftColor).toBe('var(--color-brand-primary)')
+    })
+
+    it.each(['ios', 'android'] as const)('resolves to the dark brand colour on %s', (os) => {
+      Platform.OS = os
+      render(<Card variant="accent" testID="card" />)
+      expect(screen.getByTestId('card')).toHaveStyle({
+        borderLeftColor: getSemanticColors('dark')['brand-primary'],
+      })
+    })
+
+    it('resolves to the light brand colour on native inside a light surface', () => {
+      Platform.OS = 'ios'
+      render(
+        <Surface theme="light">
+          <Card variant="accent" testID="card" />
+        </Surface>
+      )
+      expect(screen.getByTestId('card')).toHaveStyle({
+        borderLeftColor: getSemanticColors('light')['brand-primary'],
+      })
+    })
+
+    it('lets a caller accentColor win on native', () => {
+      Platform.OS = 'ios'
+      render(<Card variant="accent" accentColor="rgb(1, 2, 3)" testID="card" />)
+      expect(screen.getByTestId('card')).toHaveStyle({ borderLeftColor: 'rgb(1, 2, 3)' })
+    })
+  })
+
   describe('custom styling', () => {
     it('applies custom borderColor', () => {
       const { container } = render(
@@ -376,14 +431,17 @@ describe('Card', () => {
  * only stopped being anonymous.
  */
 describe('Card geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'Card.tsx')
-
   it.each([
-    ['CardHeader', ['p-inset-xl', 'gap-stack-md'], ['24px', '8px']],
-    ['CardContent', ['px-inset-xl', 'py-inset-lg'], ['24px', '16px']],
-    ['CardFooter', ['px-inset-xl', 'py-inset-lg', 'gap-2'], ['24px', '16px', '8px']],
-  ] as const)('%s ships %s', (functionName, classes, pixels) => {
-    expect(spacingClassesIn(source, functionName)).toEqual([...classes])
+    ['CardHeader', CardHeader, ['p-inset-xl', 'gap-stack-md'], ['24px', '8px']],
+    ['CardContent', CardContent, ['px-inset-xl', 'py-inset-lg'], ['24px', '16px']],
+    ['CardFooter', CardFooter, ['px-inset-xl', 'py-inset-lg', 'gap-2'], ['24px', '16px', '8px']],
+  ] as const)('%s ships its spacing tokens', (_name, Band, classes, pixels) => {
+    render(
+      <Band>
+        <Text>band</Text>
+      </Band>
+    )
+    expect(spacingClassesAt(screen.getByText('band').parentElement)).toEqual([...classes])
     expect(resolveAll([...classes])).toEqual([...pixels])
   })
 })

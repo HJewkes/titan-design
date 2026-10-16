@@ -9,7 +9,7 @@ import { INITIATIVE_STATE_META, type InitiativeState } from './InitiativeCard'
 
 export interface InitiativeHeaderProps {
   title: string
-  /** Short slug shown under the title, e.g. `active-work`. */
+  /** Short slug shown under the title, e.g. `planner`. */
   slug: string
   state: InitiativeState
   /** Focused rank (1-based). Shown as `#N` for a ranked state. */
@@ -55,16 +55,16 @@ export function InitiativeHeader({
           </Pill>
         ) : null}
         {shipTarget ? (
-          <Typography variant="caption" className="text-text-tertiary">
+          <Typography variant="caption" className="text-text-secondary">
             {`ship ${shipTarget}`}
           </Typography>
         ) : null}
         {updated ? (
           <View className="flex-row items-center gap-1">
-            <Typography variant="caption" className="text-text-tertiary">
+            <Typography variant="caption" className="text-text-secondary">
               updated
             </Typography>
-            <DateTime value={updated} format="medium" isUTC variant="caption" color="tertiary" />
+            <DateTime value={updated} format="medium" isUTC variant="caption" color="secondary" />
           </View>
         ) : null}
       </View>

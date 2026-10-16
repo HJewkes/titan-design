@@ -193,7 +193,7 @@ export function resolveTile(props: GoalMilestoneSummaryProps, t: Palette): Resol
   const met = reach
     ? reach !== 'short'
     : latest
-      ? milestoneGap(target, latest, direction)?.kind === 'none'
+      ? (milestoneReach(target, latest, direction) ?? 'short') !== 'short'
       : false
   const state = deriveMilestoneState({ state: props.state, met, currentWeek, goalWeek: weekCount })
   const gap = state === 'hit' ? null : gapAmountText(props)
@@ -240,7 +240,7 @@ export function MilestoneHero({
       testID="goal-milestone-hero"
     >
       {tile.hero}
-      {suffix && (
+      {!!suffix && (
         <Typography variant="caption" color="tertiary" className="font-body font-normal">
           {`  ${suffix}`}
         </Typography>
@@ -340,7 +340,8 @@ export function MilestoneFacts({ tile }: { tile: ResolvedTile }) {
         style={{ position: 'absolute', opacity: 0, flexDirection: 'row', alignSelf: 'flex-start' }}
         className="gap-inline-lg"
         pointerEvents="none"
-        accessibilityElementsHidden
+        aria-hidden
+        testID="goal-milestone-facts-measure"
         onLayout={(e) => setNatural(e.nativeEvent.layout.width)}
       >
         <FactItems tile={tile} spread={false} measuring />
@@ -392,7 +393,7 @@ function SummaryBody({ tile, scale }: { tile: ResolvedTile; scale: GoalMilestone
     <>
       <MilestoneHero tile={tile} scale={scale} />
       <MilestoneFacts tile={tile} />
-      {(tile.props.showWeeks ?? true) && <MilestoneWeekStrip tile={tile} scale={scale} />}
+      {!!(tile.props.showWeeks ?? true) && <MilestoneWeekStrip tile={tile} scale={scale} />}
     </>
   )
 }

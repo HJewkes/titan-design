@@ -25,6 +25,15 @@ function styleOf(testId: string): string {
  * under the name and the name wrap. Whether the marks actually drop at 360 is
  * proven only by the VW-432 captures of `Lab/Decisions/Goal Card Header`.
  */
+describe('the compact title', () => {
+  it('renders as an overline eyebrow on text-secondary', () => {
+    render(<GoalCard {...card('compact')} />)
+    const classes = capturedClassNames.get('goal-card-title')?.split(' ') ?? []
+    expect(classes).toEqual(expect.arrayContaining(['uppercase', 'text-text-secondary']))
+    expect(classes).not.toContain('text-text-tertiary')
+  })
+})
+
 describe.each<GoalCardSize>(['full', 'compact'])('the %s title row at phone width', (size) => {
   it('puts every mark after the name, so a wrap drops them under it', () => {
     render(<GoalCard {...card(size)} />)

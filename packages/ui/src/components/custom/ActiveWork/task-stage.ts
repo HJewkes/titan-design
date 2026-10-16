@@ -23,8 +23,8 @@ export const TASK_STAGE_ORDER = [
 ] as const satisfies readonly TaskStage[]
 
 /**
- * The one stage table. Exactly two readers: `buildTaskBoard` (columns) and
- * {@link TaskStagePill} (every other surface). Neither takes a tone prop.
+ * The one stage table. Its one consumer is {@link TaskStagePill}; it takes no
+ * tone prop.
  */
 export const TASK_STAGE_META = {
   blocked: {

@@ -1,6 +1,6 @@
 import type { ProseLinker } from '../Prose'
 
-/** A per-initiative task id such as `AW-22` or `TD-07.14`. */
+/** A per-initiative task id such as `PL-22` or `TD-07.14`. */
 export const TASK_REF_PATTERN = /\b[A-Z]{2,}-\d+(?:\.\d+)?\b/
 /** An Obsidian-style `[[name]]` link into notes or memory. */
 export const WIKI_LINK_PATTERN = /\[\[[^\]]+\]\]/

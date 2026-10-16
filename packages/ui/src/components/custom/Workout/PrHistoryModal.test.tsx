@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { siblingSource, resolveAll } from '../../../test/spacing-resolver'
+import { spacingClassesOf, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { PrHistoryModal, type PrRecord } from './PrHistoryModal'
@@ -142,19 +142,16 @@ describe('PrHistoryModal', () => {
 
 /** PrHistoryModal's geometry, pinned (AW-142); pixels unchanged. */
 describe('PrHistoryModal geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'PrHistoryModal.tsx')
-
   it('keeps the header inset', () => {
-    expect(source).toContain('px-gutter-sm pt-inset-md pb-inset-sm')
-    expect(resolveAll(['px-gutter-sm', 'pt-inset-md', 'pb-inset-sm'])).toEqual([
-      '16px',
-      '12px',
-      '8px',
-    ])
+    render(<PrHistoryModal {...baseProps} />)
+    const classes = spacingClassesOf('pr-history-modal-header')
+    expect(classes).toEqual(['px-gutter-sm', 'pt-inset-md', 'pb-inset-sm'])
+    expect(resolveAll(classes)).toEqual(['16px', '12px', '8px'])
   })
 
   it('keeps the empty state’s breathing room', () => {
-    expect(source).toContain('py-inset-xl')
+    render(<PrHistoryModal {...baseProps} records={[]} />)
+    expect(spacingClassesOf('pr-history-modal-empty')).toEqual(['py-inset-xl'])
     expect(resolveAll(['py-inset-xl'])).toEqual(['24px'])
   })
 })

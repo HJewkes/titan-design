@@ -22,7 +22,19 @@ a `status:` tag, never in the barrel.
 An entry should say what was tried, what was chosen instead, and _why_ — enough
 that someone can tell whether a future change invalidates the reasoning.
 
+Component and chart directions stay here. Token, palette and primitive
+rejections live in the "Rejected alternatives" section of each decision in
+[`docs/decisions/`](../../docs/decisions/README.md), and its index lists them.
+
 ---
+
+## Runtime theme presets (`applyThemePreset`, `audiobookPreset`) — rejected 2026-09-08
+
+**Tried:** a JS call that overrides `--color-*` and font properties on `<html>` per product, with `audiobookPreset` as the one product preset.
+
+**Chosen:** one token set. A product that needs its own palette overrides the CSS properties in its own stylesheet.
+
+**Why:** the operator decision of 2026-09-08 (deprecate, do not port to ramp refs). There is one consumer. The presets are hex literals outside the two-tier token system, and dark-only. Their `radii` and `shadows` fields were never applied. The two preset stories are removed. The `theme/presets` code and its exports stay until audiobook migrates (TD-2 S4).
 
 ## Tailwind theme-replace for colours, and eslint-plugin-tailwindcss `no-custom-classname` — rejected 2026-10-02
 

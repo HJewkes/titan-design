@@ -1,6 +1,7 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useEffect, useState } from 'react'
 import { View, Pressable, Animated, Easing, type ViewProps } from 'react-native'
+import { CheckMark } from '../../icons'
 import { Typography } from '../../ui/typography'
 import { resolveColor } from '../../../theme/resolve-color'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
@@ -153,19 +154,12 @@ export function WorkoutPill({
         accessibilityLabel={onPress ? undefined : `${name} workout, ${status}`}
         {...props}
       >
-        {isCompleted && (
-          <Typography
-            variant="caption"
-            color="inherit"
-            className={cn(labelClass, 'mr-inline-sm')}
-            style={{ color: paint.text }}
-            accessibilityElementsHidden
-            testID="workout-pill-check"
-          >
-            {'\u2713'}
-          </Typography>
+        {!!isCompleted && (
+          <View className="mr-inline-sm" accessibilityElementsHidden testID="workout-pill-check">
+            <CheckMark size={12} strokeWidth={3} color={paint.text} />
+          </View>
         )}
-        {isMissed && (
+        {!!isMissed && (
           <Typography
             variant="caption"
             color="inherit"

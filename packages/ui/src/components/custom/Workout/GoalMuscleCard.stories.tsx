@@ -8,7 +8,7 @@ import { Surface } from '../../ui/surface'
 const meta: Meta<typeof GoalMuscleCard> = {
   title: 'Custom/Workout/GoalMuscleCard',
   component: GoalMuscleCard,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {

@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { DataRow } from './DataRow'
-import { resolveAll, siblingSource, spacingClassesIn } from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesAt } from '../../../test/spacing-resolver'
 import { cn } from '../../../utils/cn'
 
 describe('DataRow', () => {
@@ -82,10 +82,9 @@ describe('DataRow', () => {
  * two — so the ladder's escape hatch gets a test, not an assumption.
  */
 describe('DataRow geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'DataRow.tsx')
-
   it('ships the dense rung: 12 across, 8 down, 8 between', () => {
-    expect(spacingClassesIn(source, 'DataRow')).toEqual([
+    render(<DataRow label="Load" value="80 kg" />)
+    expect(spacingClassesAt(screen.getByText('Load').parentElement)).toEqual([
       'gap-inline-md',
       'px-inset-md',
       'py-inset-sm',

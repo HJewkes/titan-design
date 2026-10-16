@@ -5,9 +5,8 @@
 // I on" instead of a `text-*` className. Those classNames silently fail to black
 // when the tree renders as raw RN in the standalone wall SPA (no global.css, no
 // nativewind), which is the bug class this primitive retires.
-import { createContext, useContext } from 'react'
 import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
-import type { SurfaceLevel } from '../../../theme/surface-planes'
+import { useSurfaceMode } from '../../../theme/surface-context'
 
 // The plane vocabulary lives in the theme so `elevation.ts` can resolve levels
 // to planes without importing a component. Re-exported here for callers that
@@ -20,6 +19,14 @@ export {
   raisedLevel,
   type SurfaceLevel,
 } from '../../../theme/surface-planes'
+// The context object lives in the theme so `ThemeProvider` can seed it without
+// importing a component (TD-511).
+export {
+  SurfaceContext,
+  useSurface,
+  useSurfaceMode,
+  type SurfaceContextValue,
+} from '../../../theme/surface-context'
 
 type ColorToken = keyof ReturnType<typeof getSemanticColors>
 
@@ -31,29 +38,6 @@ const ON_SURFACE_TOKEN = {
   secondary: 'text-secondary',
   tertiary: 'text-tertiary',
 } as const satisfies Record<OnSurfaceRole, ColorToken>
-
-export interface SurfaceContextValue {
-  /** Active theme mode. Defaults to dark (the wall). */
-  mode: ThemeMode
-  /** Plane of the nearest enclosing Surface. */
-  level: SurfaceLevel
-}
-
-// Default context: dark 'base' plane, so descendants OUTSIDE any Surface still
-// resolve to real dark colours (never black) on the dark-only wall.
-const DEFAULT_CONTEXT: SurfaceContextValue = { mode: 'dark', level: 'base' }
-
-export const SurfaceContext = createContext<SurfaceContextValue>(DEFAULT_CONTEXT)
-
-/** The nearest surface context ({ mode, level }); default dark 'base'. */
-export function useSurface(): SurfaceContextValue {
-  return useContext(SurfaceContext)
-}
-
-/** The active theme mode from the nearest Surface/provider (default dark). */
-export function useSurfaceMode(): ThemeMode {
-  return useContext(SurfaceContext).mode
-}
 
 /**
  * Literal-hex on-surface neutral text colours for a theme mode. Uses

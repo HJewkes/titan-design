@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { siblingSource, resolveAll } from '../../../test/spacing-resolver'
+import { spacingClassesOf, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { WeightBadge } from './WeightBadge'
@@ -202,11 +202,10 @@ describe('WeightBadge', () => {
 
 /** WeightBadge's inline offsets, pinned (AW-142); pixels unchanged. */
 describe('WeightBadge geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'WeightBadge.tsx')
-
   it('keeps the rep-max and delta offsets', () => {
-    expect(source).toContain('ml-0.5')
-    expect(source).toContain('ml-inline-sm')
+    render(<WeightBadge value={275} reps={5} delta={-3} />)
+    expect(spacingClassesOf('weight-badge-repmax')).toEqual(['ml-0.5'])
+    expect(spacingClassesOf('weight-badge-delta')).toEqual(['ml-inline-sm'])
     expect(resolveAll(['ml-0.5', 'ml-inline-sm'])).toEqual(['2px', '4px'])
   })
 })

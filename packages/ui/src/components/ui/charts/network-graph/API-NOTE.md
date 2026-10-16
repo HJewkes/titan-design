@@ -1,9 +1,9 @@
 # NetworkGraph API note
 
-Source: TP-850 Round 0 contract (owner-decided), restated in our own words for the part that has
-landed. TP-850a (TP-1040) ships the model, the layout seam, two layouts and fixtures, all pure `.ts`.
-The component (`NetworkGraph.tsx`, `NetworkGraphPlot.tsx`, `useNetworkGraph.ts`, story, barrel and
-README row) arrives with TP-850b (TP-1041). Nothing here is exported from a barrel yet.
+Source: TP-850 Round 0 contract (owner-decided), restated in our own words. TP-850a (TP-1040) shipped
+the model, the layout seam, two layouts and fixtures, all pure `.ts`. TP-850b (TP-1041) added the
+component, its hook, the story and the barrel export. TP-851 (TP-1036 to TP-1039) added the force, ego
+and clustered layouts, the plot model for free-form layouts, and their painting.
 
 ## Purpose
 
@@ -14,22 +14,32 @@ no other meaning. Nodes, edges and kinds name no domain concept, so the unit sit
 
 ## Files
 
-| File                                | Holds                                                                                  |
-| ----------------------------------- | -------------------------------------------------------------------------------------- |
-| `types.ts`                          | Data, layout and model types, and `NetworkGraphProps` (type only).                     |
-| `network-graph-model.ts`            | Cleaning, indexing, weight bins, edge path, `buildGraphModel`.                         |
-| `network-graph-arc.ts`              | `arcPath`, `edgeSlots`, `GRAPH_NODE_RADIUS`: arc geometry.                             |
-| `network-graph-groups.ts`           | `placedGroups`: the layout's groups limited to placed nodes.                           |
-| `network-graph-labels.ts`           | `placeLabels`, `labelBox`, `pinnedNodeIds`, `groupLabelsByNode`.                       |
-| `network-graph-focus.ts`            | `nextFocus`, keyboard traversal over the graph.                                        |
-| `network-graph-text.ts`             | `nodeLabel`, `edgeLabel`, `summarizeGraph`.                                            |
-| `layouts/layered-layout-model.ts`   | `layeredLayout(options)`.                                                              |
-| `layouts/supplied-layout-model.ts`  | `suppliedLayout(positions)`.                                                           |
-| `layouts/layout-geometry.ts`        | `LAYOUT_DEFAULTS`, `toSeed`, `clampInt`, `frameLayout`, `readingOrder`, `packCircles`. |
-| `layouts/force-layout-model.ts`     | `forceLayout(options)` and `simulateForces`; the only `d3-force` importer.             |
-| `layouts/ego-layout-model.ts`       | `egoLayout(options)`: rings by hop around a focus, no random source.                   |
-| `layouts/clustered-layout-model.ts` | `clusteredLayout(options)`: force per group, regions packed in rows.                   |
-| `fixtures.ts`                       | Synthetic graphs at 5, 30 and 150 nodes, and the edge-case set.                        |
+| File                                | Holds                                                                                   |
+| ----------------------------------- | --------------------------------------------------------------------------------------- |
+| `types.ts`                          | Data, layout and model types, and `NetworkGraphProps` (type only).                      |
+| `network-graph-model.ts`            | Cleaning, indexing, weight bins, edge path, `buildGraphModel`.                          |
+| `network-graph-arc.ts`              | `arcPath`, `edgeSlots`, `GRAPH_NODE_RADIUS`: arc geometry.                              |
+| `network-graph-groups.ts`           | `placedGroups`: the layout's groups limited to placed nodes.                            |
+| `network-graph-labels.ts`           | `placeLabels`, `labelBox`, `pinnedNodeIds`, `groupLabelsByNode`.                        |
+| `network-graph-focus.ts`            | `nextFocus`, keyboard traversal over the graph.                                         |
+| `network-graph-text.ts`             | `nodeLabel`, `edgeLabel`, `summarizeGraph`.                                             |
+| `layouts/layered-layout-model.ts`   | `layeredLayout(options)`.                                                               |
+| `layouts/supplied-layout-model.ts`  | `suppliedLayout(positions)`.                                                            |
+| `layouts/layout-geometry.ts`        | `LAYOUT_DEFAULTS`, `toSeed`, `clampInt`, `frameLayout`, `readingOrder`, `packCircles`.  |
+| `layouts/force-layout-model.ts`     | `forceLayout(options)` and `simulateForces`; the only `d3-force` importer.              |
+| `layouts/ego-layout-model.ts`       | `egoLayout(options)`: rings by hop around a focus, no random source.                    |
+| `layouts/clustered-layout-model.ts` | `clusteredLayout(options)`: force per group, regions packed in rows.                    |
+| `fixtures.ts`                       | Synthetic graphs at 5, 30 and 150 nodes, and the edge-case set.                         |
+| `network-graph-plot-model.ts`       | Edge geometry, parallel-edge offsets, kind colours, emphasis, label truncation.         |
+| `network-graph-items-model.ts`      | Accessible names and DOM ids of the drawn items.                                        |
+| `useNetworkGraph.ts`                | The selection triplet, the active item, the key map and the edge pulses.                |
+| `useGraphRoot.ts`                   | The root's role, `aria-activedescendant`, key and focus handlers, and scroll-into-view. |
+| `NetworkGraph.tsx`                  | The exported component: loading, empty, and the legend.                                 |
+| `NetworkGraphCanvas.tsx`            | The scroll container that is the graph's one tab stop, and its layers.                  |
+| `NetworkGraphGroups.tsx`            | The group layer under the edges: a region disc or hop ring per group, with its label.   |
+| `NetworkGraphPlot.tsx`              | The painted `<svg>`: edges, arrowheads, pulses and node marks.                          |
+| `NetworkGraphHitLayer.tsx`          | The second `<svg>`: one named, pressable path per edge.                                 |
+| `NetworkGraphParts.tsx`             | Node press targets, the tooltip anchor, the weight readout and the legend.              |
 
 ## The layout seam
 
@@ -58,9 +68,10 @@ file. `GraphLayoutResult` gains the optional `edgeShape` (`'horizontal'` or `'ar
 
 1. Nodes: the first of duplicate node ids is kept, then nodes sort by id (plain code-unit comparison).
 2. Edges: self edges and edges to unknown ids are dropped. Edges with the same source, target and
-   kind form one group. A group merges into one edge: it takes the smallest id among its members,
-   weights sum (ascending, so float sums do not depend on order; `null` plus a number is the
-   number), and the newest `activityAt` wins.
+   kind form one group; an empty kind is no kind, so `''` and `undefined` share a group and the
+   merged edge carries no `kind`. A group merges into one edge: it takes the smallest id among its
+   members, weights sum (ascending, so float sums do not depend on order; `null` plus a number is
+   the number), and the newest `activityAt` wins.
 3. Merged edges sort by source, then target, then kind (a missing kind sorts as `''`). The three form
    a total order because each group has a distinct triple.
 4. Unique ids are assigned in that sorted order: an edge whose id is already taken becomes
@@ -120,7 +131,7 @@ The force layout counts each distinct node id once, so a repeated id in raw inpu
 same frame as the positions. `variant: 'region'` is a disc that encloses its members (clustered);
 `variant: 'ring'` is an outline at a hop distance (ego). A radius of 0 is not painted. Each label is
 meant for the members' accessible names and the summary, so hop and membership are never position
-alone; the painting and the wording arrive with TP-851c and TP-851d.
+alone.
 
 ## The ego layout
 
@@ -134,8 +145,13 @@ has no `seed`, because it draws no random number.
 3. Breadth-first search from the focus up to `hops` (default 2, floored, at least 0; NaN gives 2,
    Infinity reaches the whole component). Each ring lists its nodes in discovery order, so the
    children of one node sit together.
-4. Ring radius: `r(0) = 0`, `r(d) = max(r(d - 1) + 120, count * 40 / (2 * PI))`, so a crowded ring
-   grows and keeps 40 px of arc per node. Node `i` of `count` sits at angle `-PI / 2 + 2 * PI * i / count`.
+4. Natural ring radius: `r(0) = 0`, `r(d) = max(r(d - 1) + 120, count * 40 / (2 * PI))`, so a
+   crowded ring grows and keeps 40 px of arc per node. When the outer ring would overflow a sized
+   viewport, every radius is scaled by one factor so the outer ring fits inside the padding and label
+   room. The factor never goes below the one that keeps 40 px of arc per node on every ring, so marks
+   and press targets never meet; past that floor the layout is larger than the viewport and scrolls.
+   A zero-sized viewport keeps the natural radii. Node `i` of `count` sits at angle
+   `-PI / 2 + 2 * PI * i / count`.
 5. `order` is the focus, then ring by ring in angular order. `groups` holds one `'ring'` per populated
    hop (`hop-0` labelled `focus` with radius 0, then `1 hop`, `2 hops`), all centred on the focus.
    The natural size holds the outermost ring, not only its nodes.
@@ -170,7 +186,7 @@ has no `seed`, because it draws no random number.
 `GraphModel` carries three more fields, read from the layout result: `edgeShape` (`'horizontal'` or
 `'arc'`, default horizontal), `labelMode` (`'all'` or `'declutter'`, default all) and `groups`
 (the layout's `GraphGroupRegion`s, limited to placed nodes, with a non-finite circle set to 0). The
-painting reads them; nothing here paints.
+painting reads them (see _Free-form layouts_ under _The component_); nothing here paints.
 
 **Edge paths.** `edgePath(from, to, shape = 'horizontal', slot = 0)`. `'horizontal'` is the
 `linkHorizontal` path, unchanged byte for byte. `'arc'` is one quadratic curve whose ends stop
@@ -218,7 +234,81 @@ Names come from `nodeLabel` (`"<label>, <kind>, <group>, <n> incoming, <m> outgo
 empty) and `edgeLabel` (`"<source> to <target>, <kind>, weight <w>"` or `weight unknown`).
 `summarizeGraph` gives node and edge counts, counts per kind, the most connected node, and every
 dropped or unplaced count. A graph with one node and no edges claims no structure. The pure modules
-render nothing, so they carry no jest-axe test; the component tests in TP-850b do.
+render nothing, so they carry no jest-axe test; `NetworkGraph.test.tsx` does.
+
+## The component
+
+`NetworkGraph` extends `ViewProps` (minus `children`). Web and React Native Web only: the marks are a
+DOM `<svg>`.
+
+| Prop                                                 | Type                             | Default                           | Notes                                                                                              |
+| ---------------------------------------------------- | -------------------------------- | --------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `nodes`, `edges`                                     | `GraphNode[]`, `GraphEdge[]`     | required                          | Cleaned before layout; every drop is counted in the summary.                                       |
+| `accessibilityLabel`                                 | `string`                         | required                          | The root is named `"<label>. <summary>"`.                                                          |
+| `width`, `height`                                    | `number`                         | required                          | The viewport in px. A larger layout scrolls on both axes; nodes never shrink. Ego rings fit first. |
+| `layout`                                             | `GraphLayout`                    | `layeredLayout()`                 | Memoised on `layout.key`.                                                                          |
+| `nodeKinds`, `edgeKinds`                             | `GraphKind[]`, `GraphEdgeKind[]` | unset                             | Labels, node colours in list order, and `stroke: 'dashed'` per edge kind.                          |
+| `showLegend`                                         | `boolean`                        | `false`                           | A row below the plot, built from the two kind lists.                                               |
+| `selection`, `defaultSelection`, `onSelectionChange` | `GraphItemRef \| null`           | uncontrolled                      | One node or one edge. A ref to an item that is not drawn reads as `null` and is not reported back. |
+| `nodeTooltip`                                        | `(node) => ReactNode`            | label, kind, description          | Content of the active node's tooltip.                                                              |
+| `formatNodeLabel`, `formatEdgeLabel`, `summarize`    | functions                        | built-in text                     | Slots for the accessible names and the summary.                                                    |
+| `animate`                                            | `boolean`                        | `true`                            | `false` paints no pulse at all; reduced motion keeps the still form.                               |
+| `isLoading`                                          | `boolean`                        | `false`                           | A `Skeleton` of `width` by `height`; no partial graph.                                             |
+| `isDisabled`                                         | `boolean`                        | `false`                           | Keeps focus, traversal, hover and reading; stops selection changes; sets `aria-disabled`.          |
+| `emptyState`                                         | `ReactNode`                      | `<EmptyState title="No nodes" />` | Shown when no node is drawn.                                                                       |
+
+There is no error state: the consumer renders the failure in place of the graph.
+
+**Layers.** One `ScrollView` of `width` by `height` holds the group layer (an `<svg aria-hidden>`
+of circles and a hidden label per group, only when the layout returns groups), a painted
+`<svg aria-hidden>`, a second `<svg>` of unpainted hit paths (one per edge), one `Pressable` per
+node, and the active item's readout. The legend sits below the scroll container.
+
+**Paint.** A node is a 12 px disc in its kind's colour (`DATAVIZ_CATEGORICAL_ROLES` in `nodeKinds`
+order, repeating after six; `GraphKind.color` overrides; `text-secondary` when the kind is unset or
+unlisted) with its label to the right, cut at 22 characters. An edge is a curve with an arrowhead,
+dashed when its kind says so, in one of three widths by weight. Edges are lines, so they take the
+border family: `hairline-strong` at rest and `border-prominent` when active, incident to the active
+node, or selected (the contract's `border-default` and `border-strong` were retired for these). Two
+edges that join the same pair of nodes are drawn 6 px apart. A selected node has a `text-primary` ring; the active node
+has an `interactive-focus` halo. `isMuted` halves a node's opacity.
+
+**Active item.** Hover and the keyboard cursor share one active item. Everything but the active
+item, its edges and its neighbours dims to 25%. An active node opens its tooltip; an active edge
+shows its weight. A hover that ends while the graph holds focus leaves the cursor in place.
+
+**Free-form layouts.** When the layout asks for `edgeShape: 'arc'`, every edge is the quadratic
+curve of `edgePath(from, to, 'arc', slot)`: it runs rim to rim, so the arrowhead marker's reference
+point moves to its tip (`arrowRefX`) and the tip sits on the target's rim; parallel edges separate
+by slot, not by the layered layout's 6 px offset, and the weight readout sits at the curve's
+midpoint. When it asks for `labelMode: 'declutter'`, `placeLabels` picks the labels to show on
+every render with the selected node, the active node and its neighbours pinned, and a node whose
+label is left out keeps its `Pressable`, its name and its tooltip, so hover and the keyboard reach
+it unchanged. When it returns `groups`, `NetworkGraphGroups` paints each one with a radius above 0
+under the edges: a `region` is a `surface-elevated` disc with a dashed `hairline-default` outline
+and its label centred in the band above it; a `ring` is the dashed outline alone with its label
+centred just inside its bottom, clear of a node at six o'clock (the ego focus has radius 0 and
+paints nothing). The circles and the labels are hidden from assistive tech, because each node's name and
+the default tooltip state its group or hop (`"<label>, <kind>, <group>, …"`) and the summary counts
+the groups. Which labels show, the link distance, the region look, the ring guides and the arc bow
+are the Gate 2 taste items of the TP-851 contract (T1 to T6).
+
+**Keyboard.** The scroll container is the only tab stop: `role="application"`,
+`aria-roledescription="network graph"`, and `aria-activedescendant` on the active node or edge.
+Every node and every edge target is a `role="button"` with `tabIndex={-1}`, a name and
+`aria-pressed`. A press on one moves DOM focus back to the container. Tab enters at the selection,
+else at the first node in `order`. A pointer press on the canvas gives focus without placing the
+cursor; the next move key enters. Arrow keys, Home and End follow the table above. Enter or Space
+selects the active item, and again clears it. Escape clears the selection and closes the tooltip.
+A key that moves the active item scrolls it into view, and so does Tab entering; a hover never
+scrolls.
+
+**Pulse.** An edge pulses when its `activityAt` is greater than the value seen on the previous
+render, or when it arrives after mount with one. Nothing pulses on the first render. The pulse is a
+`brand-primary` dash that travels source to target as one CSS transition of `PULSE_MS` (1000 ms).
+With reduced motion it is a still `brand-primary` stroke over the whole edge with no transition.
+Either form is removed after `PULSE_MS`. With `animate={false}` nothing is painted. A pulse never
+moves focus and is not announced. Alt, Ctrl and Cmd chords are left to the browser.
 
 ## Fixtures
 

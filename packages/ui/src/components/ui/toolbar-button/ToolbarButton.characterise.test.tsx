@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
-import { composeStories } from '@storybook/react'
+import { composeStories } from '@storybook/react-vite'
 import { View } from 'react-native'
 import * as stories from './ToolbarButton.stories'
 import { ToolbarButton, type ToolbarButtonVariant } from './ToolbarButton'

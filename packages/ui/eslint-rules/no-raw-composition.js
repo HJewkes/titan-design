@@ -23,6 +23,7 @@
  */
 
 const path = require('node:path')
+const { loadBaseline, baselineKey } = require('./ratchet')
 
 const D3_SPECIFIER = /^d3(-[a-z0-9-]+)?(\/.*)?$/
 
@@ -127,23 +128,6 @@ function scopeOf(srcRelative) {
   }
 }
 
-/** Baseline keys are package-relative POSIX paths, so they're stable across machines. */
-function baselineKey(context) {
-  const cwd = context.cwd ?? context.getCwd?.() ?? process.cwd()
-  return path
-    .relative(cwd, context.filename ?? context.getFilename())
-    .split(path.sep)
-    .join('/')
-}
-
-function loadBaseline() {
-  try {
-    return require('./composition-baseline.json')
-  } catch {
-    return {}
-  }
-}
-
 function staticString(node) {
   if (!node) return null
   if (node.type === 'Literal' && typeof node.value === 'string') return node.value
@@ -224,11 +208,11 @@ function createRule(getBaseline) {
       schema: [],
       messages: {
         rawButton:
-          'Raw <button> bypasses titan’s pressable primitives. Use Button (with ButtonText), ToolbarButton for an icon action, TriggerSurface for an overlay trigger, or Pressable.',
+          'Raw <button> bypasses titan’s pressable primitives. Use `Button` (with `ButtonText`), `ToolbarButton` for an icon action, TriggerSurface (internal, not exported) for an overlay trigger, or Pressable from react-native.',
         d3Import:
-          "'{{specifier}}' is a d3 import outside src/components/ui/charts. Move the scale or geometry into ui/charts/kit/, or compose an existing chart from ui/charts.",
+          "'{{specifier}}' is a d3 import outside src/components/ui/charts. Move the scale or geometry into `src/components/ui/charts/kit/`, or compose an existing chart such as `SparkBars`.",
         pathMath:
-          'SVG path math outside src/components/ui/charts. Build the path with d3-shape inside ui/charts/kit/, or compose an existing chart primitive from ui/charts.',
+          'SVG path math outside src/components/ui/charts. Build the path with `d3-shape` inside `src/components/ui/charts/kit/`, or compose an existing chart such as `SparkBars`.',
       },
     },
 
@@ -257,8 +241,6 @@ function createRule(getBaseline) {
   }
 }
 
-let baselineCache = null
-
 /** @type {import('eslint').Rule.RuleModule & { withBaseline: (baseline: object) => import('eslint').Rule.RuleModule }} */
-module.exports = createRule(() => (baselineCache ??= loadBaseline()))
+module.exports = createRule(() => loadBaseline('composition-baseline.json'))
 module.exports.withBaseline = (baseline) => createRule(() => baseline)

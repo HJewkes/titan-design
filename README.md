@@ -127,10 +127,12 @@ titan-design/
 - **[Storybook Setup](./docs/STORYBOOK_SETUP.md)** - Storybook configuration guide
 - **[CLAUDE.md](./CLAUDE.md)** - Component patterns, tokens, and development conventions
 - **[Component Implementation Checklist](./docs/component-implementation-checklist.md)** - Per-component "done" gate for porting a frozen HTML prototype with pixel parity; other components follow the `titan-component` skill (`.claude/skills/titan-component`)'s Gate 2
+- **[CI and Scripts](./docs/ci-and-scripts.md)** - The CI jobs and their steps, Turbo argument passthrough, registering a root script, coverage thresholds and the bundle budget
 - **[Component States](./docs/component-states.md)** - The loading, empty, error and disabled checklist every component meets or explains
 - **[Line Charts](./packages/ui/src/components/custom/charts/README.md#line-charts)** - The structure a new line chart copies from `GoalTrajectoryChart`, and where `StrengthTrendChart` differs
 - **[Choosing Tokens](./packages/ui/TOKENS.md)** - Which colour, categorical palette, type, spacing and radius token a component should use; also rendered in Storybook as Foundations → Choosing Tokens
 - **[Maturity](./packages/ui/MATURITY.md)** - The `status:*` Storybook tags, the rule that derives them, and how a component is promoted to stable
+- **[Decisions](./docs/decisions/README.md)** - Numbered records of each new token category, palette, ramp step or primitive, with the template and the rule for when one is required
 - **[Rejected Directions](./packages/ui/REJECTED.md)** - Explorations tried and deliberately not adopted, with the reason, so they are not rebuilt
 - **[Deprecations](./packages/ui/DEPRECATIONS.md)** - Exports marked `@deprecated` but not yet removed, with their replacements and in-repo call sites
 - **[Library Roadmap](./packages/ui/docs/library-roadmap.md)** - The 2026-09-08 architecture decisions and epics; a change in one of those areas follows the decision or reopens it
@@ -161,7 +163,7 @@ Design for dark mode first, add explicit light mode styles.
 
 Complex components follow the Gluestack pattern:
 
-```tsx
+```tsx fragment
 <Button variant="solid" color="primary">
   <ButtonIcon as={PlusIcon} />
   <ButtonText>Add Item</ButtonText>

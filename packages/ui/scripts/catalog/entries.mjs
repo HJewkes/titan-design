@@ -47,8 +47,8 @@ function statusOf(source, stories, projectTags, vocabulary) {
   return statuses[0]
 }
 
-/** One catalog entry. `purpose` and `props` stay empty until docgen fills them. */
-export function buildEntry(component, { stories, projectTags, vocabulary }) {
+/** One catalog entry. `docs` is the entry's `{ purpose, props, source }` from docgen. */
+export function buildEntry(component, { stories, projectTags, vocabulary }, docs) {
   const files = storiesFor(component, stories)
   const source = statusSource(component, files)
   return {
@@ -57,10 +57,10 @@ export function buildEntry(component, { stories, projectTags, vocabulary }) {
     family: component.family,
     tier: component.tier,
     status: statusOf(source, stories, projectTags, vocabulary),
-    purpose: '',
-    props: [],
+    purpose: docs.purpose,
+    props: docs.props,
     composes: [...component.dependsOn].sort(),
     storyIds: [...new Set(files.flatMap((file) => stories.get(file).storyIds))].sort(),
-    sources: { status: source },
+    sources: { props: docs.source, status: source },
   }
 }

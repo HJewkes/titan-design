@@ -72,7 +72,7 @@ export interface SeverityLabelProps {
  * dot primitives in the system, and this is not a third). Used by
  * {@link TaskRow} and {@link TaskTable}'s legend.
  *
- * @deprecated Use `<Pill tone="…" leading="dot">` — removed after AW-127 consumer migration.
+ * @deprecated Use `<Pill tone="…" leading="dot">` — removed after the Pill consumer migration.
  */
 export function SeverityLabel({ severity, dotOnly = false, className }: SeverityLabelProps) {
   if (!severity) {

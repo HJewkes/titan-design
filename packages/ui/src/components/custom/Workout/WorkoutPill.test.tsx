@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { siblingSource, spacingClassesIn, resolveAll } from '../../../test/spacing-resolver'
+import { spacingClassesAt, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { WorkoutPill } from './WorkoutPill'
@@ -8,7 +8,7 @@ import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semanti
 import { alpha } from '../../../utils/colors'
 import { Surface } from '../../ui/surface'
 
-// Light status-deload equals dark, so light is swapped for another token to prove the mode is read.
+// Light status-deload is swapped for an unrelated token, so a pass proves the mode is read.
 vi.mock('../../../theme/tokens/semantic', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../../../theme/tokens/semantic')>()
   const light = actual.getSemanticColors('light')
@@ -26,9 +26,11 @@ describe('WorkoutPill', () => {
     expect(screen.getByText('Upper A')).toBeInTheDocument()
   })
 
-  it('shows checkmark for completed status', () => {
+  it('shows an SVG check, not a ✓ text glyph, for completed status', () => {
     render(<WorkoutPill name="Upper A" status="completed" />)
-    expect(screen.getByTestId('workout-pill-check')).toBeInTheDocument()
+    expect(screen.queryByText('\u2713')).toBeNull()
+    const svg = screen.getByTestId('workout-pill-check').querySelector('svg')
+    expect(svg?.getAttribute('width')).toBe('12')
   })
 
   it('shows dash for missed status', () => {
@@ -237,10 +239,9 @@ describe('WorkoutPill', () => {
 
 /** WorkoutPill's geometry, pinned (AW-142); pixels unchanged. 10px is off the squish-x ramp. */
 describe('WorkoutPill geometry resolves to the squish ramp', () => {
-  const source = siblingSource(import.meta.url, 'WorkoutPill.tsx')
-
   it('keeps the pill inset', () => {
-    const classes = spacingClassesIn(source, 'WorkoutPill')
+    render(<WorkoutPill name="Upper A" status="completed" />)
+    const classes = spacingClassesAt(screen.getByTestId('workout-pill-name').parentElement)
     expect(classes).toEqual(['px-2.5', 'py-squish-y-md'])
     expect(resolveAll(classes)).toEqual(['10px', '4px'])
   })

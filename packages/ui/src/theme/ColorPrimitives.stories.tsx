@@ -8,15 +8,8 @@ import {
   categoricalPalette,
   CATEGORICAL_CVD_SAFE_MAX,
 } from './tokens/primitives'
-import {
-  SWATCH_BORDER,
-  SectionIntro,
-  SectionTitle,
-  ScaleRow,
-  contrast,
-  CVD_MATRICES,
-  simulateCvd,
-} from './color-story-kit'
+import { SWATCH_BORDER, SectionIntro, SectionTitle, ScaleRow, contrast } from './color-story-kit'
+import { simulateCvd } from './color-checks'
 
 /**
  * Foundations/Color/Primitives — the raw material, and how it is validated.
@@ -224,14 +217,15 @@ const RAMP_MIDS = CHROMATIC_RAMPS.map(([key, name]) => ({
  * the comparison is worthless if the reader has to count across to pair them.
  */
 const CVD_LABEL_WIDTH = 96
+const CVD_MODE_LABEL = { deutan: 'deuteranopia', protan: 'protanopia' } as const
 
 function CvdStrips({ colors, width }: { colors: readonly string[]; width: number }) {
   return (
     <>
-      {(['deuteranopia', 'protanopia'] as const).map((mode) => (
+      {(Object.keys(CVD_MODE_LABEL) as Array<keyof typeof CVD_MODE_LABEL>).map((mode) => (
         <View key={mode} style={{ flexDirection: 'row', alignItems: 'center', marginTop: 3 }}>
           <Text className="text-text-secondary" style={{ fontSize: 9, width: CVD_LABEL_WIDTH }}>
-            {mode}
+            {CVD_MODE_LABEL[mode]}
           </Text>
           <View style={{ flexDirection: 'row', gap: 6 }}>
             {colors.map((hex, i) => (
@@ -241,7 +235,7 @@ function CvdStrips({ colors, width }: { colors: readonly string[]; width: number
                   width,
                   height: 14,
                   borderRadius: 3,
-                  backgroundColor: simulateCvd(CVD_MATRICES[mode], hex),
+                  backgroundColor: simulateCvd(hex, mode),
                 }}
               />
             ))}

@@ -1,4 +1,5 @@
 import {
+  Fragment,
   useLayoutEffect,
   useEffect,
   useMemo,
@@ -8,12 +9,18 @@ import {
   type Dispatch,
   type ReactNode,
 } from 'react'
-import { buildFeedback, unansweredQuestionIds } from '../src/feedback.ts'
+import type { BlindReveal } from '../src/blind-ab.ts'
+import { blockedShipGroup, buildFeedback, pendingQuestionIds, shipsAfter } from '../src/feedback.ts'
+import { prGroupOfPage } from '../src/pr-tabs.ts'
 import { feedbackProblems } from '../src/round.ts'
-import { roundLayout, type ResolvedSection } from '../src/sections.ts'
-import type { Manifest, Question, Variant } from '../src/schema.ts'
+import { roundLayout, type LayoutBlock, type ResolvedSection } from '../src/sections.ts'
+import type { Manifest, Question, StripKind, Variant } from '@titan-design/review-schema'
+import { BlindRevealTable } from './BlindAb.tsx'
+import { Markdown } from './Markdown.tsx'
+import { PrPage } from './PrTabs.tsx'
 import { QuestionBlock } from './QuestionBlock.tsx'
 import { ReviewScreen } from './ReviewScreen.tsx'
+import { SectionParts } from './SectionParts.tsx'
 import { browserStorage, clearDraft, saveDraft, type DraftStorage } from './draftStore.ts'
 import {
   OTHER_PAGE,
@@ -35,18 +42,38 @@ import { VariantCard } from './VariantCard.tsx'
 interface AppProps {
   manifest: Manifest
   manifestSha256: string
+  harnessWarning?: string
 }
 
-async function postFeedback(body: unknown): Promise<string[]> {
+interface SubmitReply {
+  errors: string[]
+  /** Each blind-ab question's key and picks, which the server sends only once the round is in. */
+  reveal: BlindReveal[]
+}
+
+async function postFeedback(body: unknown): Promise<SubmitReply> {
   const res = await fetch('api/submit', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(body),
   }).catch(() => null)
-  if (!res) return ['the titan-review process is gone; rerun it']
-  if (res.ok) return []
+  if (!res) return { errors: ['the titan-review process is gone; rerun it'], reveal: [] }
+  const reply = (await res.json().catch(() => ({}))) as Partial<SubmitReply>
+  if (res.ok) return { errors: [], reveal: reply.reveal ?? [] }
+  return { errors: reply.errors ?? [`HTTP ${res.status}`], reveal: [] }
+}
+
+/** The sent screen; a round with blind pairs reveals their engines here, and only here. */
+export function Sent({ reveal }: { reveal: BlindReveal[] }) {
   return (
-    ((await res.json().catch(() => ({}))) as { errors?: string[] }).errors ?? [`HTTP ${res.status}`]
+    <>
+      <p className="sent" data-testid="sent">
+        Sent. The agent has your answers; you can close this tab.
+      </p>
+      {reveal.map((r) => (
+        <BlindRevealTable key={r.questionId} reveal={r} />
+      ))}
+    </>
   )
 }
 
@@ -93,10 +120,10 @@ function Header({
       <h1>
         {manifest.unit} <span>round {manifest.round}</span>
       </h1>
-      {manifest.context && <p>{manifest.context}</p>}
+      {manifest.context && <Markdown>{manifest.context}</Markdown>}
       {manifest.sections && <Pager pages={pages} current={current} dispatch={dispatch} />}
       {manifest.sections ? (
-        <ol className="prompts">
+        <ol className="prompts sections">
           {pages.map((p, i) => (
             <li key={p.id} aria-current={i === current ? 'step' : undefined}>
               <JumpLink href={`#section-${p.id}`} index={p.first} dispatch={dispatch}>
@@ -108,7 +135,9 @@ function Header({
       ) : (
         <ol className="prompts">
           {orderedQuestions(manifest).map((q) => (
-            <li key={q.id}>{q.prompt}</li>
+            <li key={q.id}>
+              <Markdown inline>{q.prompt}</Markdown>
+            </li>
           ))}
         </ol>
       )}
@@ -171,6 +200,7 @@ interface PartProps {
 
 function Variants({ variants, ...props }: PartProps & { variants: Variant[] }) {
   const { manifest, state, dispatch, indexes } = props
+  if (variants.length === 0) return null
   return (
     <div
       className={state.singleColumn ? 'variants single' : 'variants'}
@@ -205,6 +235,8 @@ function Questions({ questions, ...props }: PartProps & { questions: Question[] 
           manifest={manifest}
           question={q}
           draft={state.draft.answers[q.id]}
+          shipBlock={blockedShipGroup(manifest, state.draft, q) ?? undefined}
+          shipsAfter={shipsAfter(manifest, q)}
           index={indexes.question(q.id)}
           active={state.active === indexes.question(q.id)}
           follow={state.follow}
@@ -215,7 +247,19 @@ function Questions({ questions, ...props }: PartProps & { questions: Question[] 
   )
 }
 
-/** The question(s) first, then the frames they are asked about. */
+/** A question with no frames of its own, the unclaimed strip, or a question under its frames. */
+function Block({ block, ...props }: PartProps & { block: LayoutBlock }) {
+  if (block.kind === 'question') return <Questions {...props} questions={[block.question]} />
+  if (block.kind === 'strip') return <Variants {...props} variants={block.variants} />
+  return (
+    <div className="anchored" data-testid={`anchored-${block.question.id}`}>
+      <Variants {...props} variants={block.variants} />
+      <Questions {...props} questions={[block.question]} />
+    </div>
+  )
+}
+
+/** The section's texts, then its blocks: each question sits right under the frames it names. */
 function SectionBlock({ section, ...props }: PartProps & { section: ResolvedSection }) {
   return (
     <section
@@ -225,7 +269,6 @@ function SectionBlock({ section, ...props }: PartProps & { section: ResolvedSect
     >
       <header className="section-head">
         <h2>{section.title}</h2>
-        {section.context && <p>{section.context}</p>}
         {section.seeAlso.length > 0 && (
           <p className="see-also">
             See also{' '}
@@ -242,9 +285,46 @@ function SectionBlock({ section, ...props }: PartProps & { section: ResolvedSect
           </p>
         )}
       </header>
-      <Questions {...props} questions={section.questions} />
-      <Variants {...props} variants={section.variants} />
+      <SectionText part="deciding" label="Deciding" text={section.deciding} />
+      <SectionText part="changed" label="Changed since last approved" text={section.changed} />
+      <SectionParts parts={section.parts} />
+      <SectionText part="context" label="Context only, not under review" text={section.context} />
+      {section.blocks.map((block) => (
+        <Fragment key={blockKey(block)}>
+          {block.kind === 'strip' && section.kind && (
+            <p className="strip-kind" data-testid={`strip-kind-${section.id}`}>
+              {STRIP_KIND_LABEL[section.kind]}
+            </p>
+          )}
+          <Block {...props} block={block} />
+        </Fragment>
+      ))}
     </section>
+  )
+}
+
+const blockKey = (block: LayoutBlock) =>
+  block.kind === 'strip' ? 'strip' : `${block.kind}-${block.question.id}`
+
+const STRIP_KIND_LABEL: Record<StripKind, string> = {
+  CHOICE: 'Choice: these frames differ only in what is being decided',
+  STATES: 'States: one design in several states; nothing to choose between',
+}
+
+interface SectionTextProps {
+  part: 'deciding' | 'changed' | 'context'
+  label: string
+  text?: string
+}
+
+/** One of a section's three texts, labelled so a decision never reads as background. */
+function SectionText({ part, label, text }: SectionTextProps) {
+  if (!text) return null
+  return (
+    <div className={`section-text section-${part}`} data-testid={`section-${part}`}>
+      <p className="section-text-label">{label}</p>
+      <Markdown>{text}</Markdown>
+    </div>
   )
 }
 
@@ -351,17 +431,28 @@ export function Form(props: Omit<PartProps, 'indexes'>) {
   const page = pages[current]
   useScrollOnPageChange(page.id, state.active === page.first)
   const paged = layout.sections.length > 0
-  const shows = (id: string) => !paged || page.id === id
+  const shows = (id: string) => !paged || page.id === id || page.sectionIds.includes(id)
   const parts = { ...props, indexes: stopIndexes(manifest), layout }
   const last = current === pages.length - 1
   const reviewRef = useFocusOnPageEntry(page.id, paged && last)
+  const group = paged ? prGroupOfPage(manifest, page.sectionIds) : undefined
+  const sections = layout.sections
+    .filter((s) => shows(s.id))
+    .map((s) => <SectionBlock key={s.id} {...parts} section={s} />)
   return (
     <main>
-      {layout.sections
-        .filter((s) => shows(s.id))
-        .map((s) => (
-          <SectionBlock key={s.id} {...parts} section={s} />
-        ))}
+      {group ? (
+        <PrPage
+          manifest={manifest}
+          group={group}
+          state={state}
+          dispatch={dispatch}
+          indexes={parts.indexes}
+          review={sections}
+        />
+      ) : (
+        sections
+      )}
       {shows(OTHER_PAGE) && <OtherFrames {...parts} />}
       {shows(OVERALL_PAGE) && <Overall {...parts} />}
       {paged && <Pager pages={pages} current={current} dispatch={dispatch} end />}
@@ -409,7 +500,20 @@ function ContrastOverrideBanner({ reason }: { reason: string }) {
   )
 }
 
-export function App({ manifest, manifestSha256 }: AppProps) {
+/** A Ship already picked in a group that has since gained free text or a non-implemented pick. */
+function pickedBlockedShips(manifest: Manifest, state: ReviewState): string[] {
+  return manifest.questions.flatMap((q) => {
+    const picked = state.draft.answers[q.id]?.pick
+    const group = picked === undefined ? null : blockedShipGroup(manifest, state.draft, q, picked)
+    return group
+      ? [
+          `${q.id}: Ship is picked, but ${group.pr} may not ship: ${group.blockers.map((b) => b.message).join('; ')}`,
+        ]
+      : []
+  })
+}
+
+export function App({ manifest, manifestSha256, harnessWarning }: AppProps) {
   const reducer = useMemo(() => createReducer(manifest), [manifest])
   const storage = useMemo(() => browserStorage(), [])
   const [state, dispatch] = useReducer(reducer, manifest, (m) =>
@@ -417,29 +521,32 @@ export function App({ manifest, manifestSha256 }: AppProps) {
   )
   useDraftBackup(storage, manifestSha256, state)
   const [hitTesting, setHitTesting] = useState<boolean | null>(null)
-  const unanswered = unansweredQuestionIds(manifest, state.draft)
+  const [reveal, setReveal] = useState<BlindReveal[]>([])
+  const unanswered = pendingQuestionIds(manifest, state.draft)
   const partial = unanswered.length > 0
   const feedback = buildFeedback(manifest, manifestSha256, state.draft, new Date(), partial)
-  const problems = feedbackProblems(feedback, manifest)
+  const problems = [...feedbackProblems(feedback, manifest), ...pickedBlockedShips(manifest, state)]
   const submit = async () => {
     if (state.screen !== 'review' || problems.length) return
     dispatch({ type: 'screen', screen: 'sending' })
-    const errors = await postFeedback(
+    const reply = await postFeedback(
       buildFeedback(manifest, manifestSha256, state.draft, new Date(), partial)
     )
+    const { errors } = reply
+    setReveal(reply.reveal)
     dispatch({ type: 'screen', screen: errors.length ? 'review' : 'sent', errors })
   }
   // Cmd+Enter sends only a complete round; a partial one takes the explicit Send partial click.
   const submitByKey = () => (partial ? undefined : submit())
   useKeyboard({ manifest, state, dispatch, submit: submitByKey })
-  if (state.screen === 'sent')
-    return (
-      <p className="sent" data-testid="sent">
-        Sent. The agent has your answers; you can close this tab.
-      </p>
-    )
+  if (state.screen === 'sent') return <Sent reveal={reveal} />
   return (
     <>
+      {harnessWarning && (
+        <p className="harness-warning" role="alert" data-testid="harness-warning">
+          {harnessWarning}
+        </p>
+      )}
       {manifest.contrastOverride && (
         <ContrastOverrideBanner reason={manifest.contrastOverride.reason} />
       )}
@@ -451,7 +558,8 @@ export function App({ manifest, manifestSha256 }: AppProps) {
         <ReviewScreen
           manifest={manifest}
           feedback={feedback}
-          problems={[...problems, ...state.errors]}
+          problems={problems}
+          sendErrors={state.errors}
           unanswered={unanswered}
           sending={state.screen === 'sending'}
           dispatch={dispatch}

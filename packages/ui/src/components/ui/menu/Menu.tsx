@@ -2,8 +2,10 @@ import React, { createContext, useContext } from 'react'
 import { View, Text, Pressable, type ViewProps } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { useControllableState } from '../../../hooks/useControllableState'
+import { Divider } from '../divider'
 import { Surface } from '../surface'
 import { TriggerSurface } from '../trigger'
+import { Typography } from '../typography'
 
 interface MenuContextType {
   isOpen: boolean
@@ -178,7 +180,7 @@ export function MenuItem({
       )}
     >
       {icon && <View className="mr-3">{icon}</View>}
-      <Text className={cn('text-sm', isDestructive ? 'text-status-error' : 'text-text-primary')}>
+      <Text className={cn('text-sm', isDestructive ? 'text-text-error' : 'text-text-primary')}>
         {children}
       </Text>
     </Pressable>
@@ -193,7 +195,7 @@ export interface MenuDividerProps {
  * Divider between menu items.
  */
 export function MenuDivider({ className }: MenuDividerProps) {
-  return <View className={cn('h-px bg-hairline my-1', className)} />
+  return <Divider className={cn('my-1', className)} />
 }
 
 export interface MenuGroupProps {
@@ -210,9 +212,9 @@ export function MenuGroup({ label, children, className }: MenuGroupProps) {
   return (
     <View className={className}>
       {label && (
-        <Text className="px-inset-lg py-inset-sm text-xs font-semibold text-text-secondary uppercase">
+        <Typography variant="overline" color="secondary" className="px-inset-lg py-inset-sm">
           {label}
-        </Text>
+        </Typography>
       )}
       {children}
     </View>

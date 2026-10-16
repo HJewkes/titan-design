@@ -1,5 +1,5 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { View, type ViewProps } from 'react-native'
+import { View } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { Divider } from '../../ui/divider'
 import { Pill, type PillColor } from '../../ui/pill'
@@ -7,10 +7,7 @@ import { Typography } from '../../ui/typography'
 import { MarkdownProse, type ProseLinker } from '../Prose'
 import { Eyebrow } from '../../ui/eyebrow'
 import { formatTaskAge } from './format-time'
-
-// RN's Role union omits 'list'/'listitem'; RNW passes them through to the DOM.
-const LIST_ROLE = 'list' as ViewProps['role']
-const LISTITEM_ROLE = 'listitem' as ViewProps['role']
+import { LIST_ROLE, LISTITEM_ROLE } from './aria-roles'
 
 /** What a loop is about, so the reader can colour and label its kind. */
 export type OpenLoopKind = 'task' | 'pr' | 'prose'

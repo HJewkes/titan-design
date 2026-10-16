@@ -39,8 +39,8 @@ describe('SessionDetail', () => {
         onPressPr={onPressPr}
       />
     )
-    fireEvent.click(within(screen.getByTestId('session-tasks-touched')).getByText('AW-17'))
-    expect(onPressTask).toHaveBeenCalledWith('AW-17')
+    fireEvent.click(within(screen.getByTestId('session-tasks-touched')).getByText('PL-17'))
+    expect(onPressTask).toHaveBeenCalledWith('PL-17')
     fireEvent.click(screen.getByTestId('prose-ref-wiki'))
     expect(onPressLink).toHaveBeenCalledWith('setup-walkthrough')
     fireEvent.click(screen.getByTestId('prose-ref-pr'))
@@ -63,7 +63,7 @@ describe('SessionDetail', () => {
     expect(screen.getByText('1 task touched')).toBeInTheDocument()
     const rows = screen.getAllByTestId('task-row')
     expect(rows).toHaveLength(1)
-    expect(within(rows[0]!).getByText('AW-17')).toBeInTheDocument()
+    expect(within(rows[0]!).getByText('PL-17')).toBeInTheDocument()
   })
 
   it('has no a11y violations', async () => {

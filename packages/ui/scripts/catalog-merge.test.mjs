@@ -5,14 +5,18 @@ import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
-import { CATALOG, buildCatalog, serializeCatalog } from './catalog.mjs'
+import { CATALOG, DIGEST, buildCatalog, serializeCatalog } from './catalog.mjs'
+import { renderDigest } from './catalog/digest.mjs'
 import { foldFragments, parseFragment } from './changelog-compile.mjs'
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../../..')
 const GRAPH = 'packages/ui/src/arch/arch-graph.json'
+const TSCONFIG = 'packages/ui/tsconfig.json'
 const CHANGELOG = 'packages/ui/CHANGELOG.md'
 const DIR = 'packages/ui/src/components/ui/widgets'
 const BASE_COMPONENTS = ['Alpha', 'Charlie', 'Echo', 'Golf']
+// Each regeneration runs docgen; CI under coverage is several times slower than a laptop.
+const DOCGEN_TIMEOUT = 60_000
 
 let root
 const git = (...args) => execFileSync('git', ['-C', root, ...args], { encoding: 'utf8' })
@@ -39,9 +43,18 @@ function writeStory(name) {
   )
 }
 
-/** The real generator over the working tree, written to the catalog path. */
+function writeComponent(name) {
+  write(
+    `${DIR}/${name}.tsx`,
+    `/** ${name} widget. */\nexport function ${name}({ label }: { label: string }) {\n  return label\n}\n`
+  )
+}
+
+/** The real generator over the working tree, written to the catalog and digest paths. */
 function regenerate() {
-  write(CATALOG, serializeCatalog(buildCatalog(root)))
+  const serialized = serializeCatalog(buildCatalog(root))
+  write(CATALOG, serialized)
+  write(DIGEST, renderDigest(JSON.parse(serialized)))
 }
 
 function addComponent(name) {
@@ -50,6 +63,7 @@ function addComponent(name) {
     a.file < b.file ? -1 : 1
   )
   write(GRAPH, `${JSON.stringify(graph, null, 2)}\n`)
+  writeComponent(name)
   writeStory(name)
   regenerate()
 }
@@ -85,6 +99,10 @@ beforeAll(() => {
     join(root, 'packages/ui/.storybook/preview.tsx'),
     { recursive: true }
   )
+  write(
+    TSCONFIG,
+    `${JSON.stringify({ compilerOptions: { strict: true, noLib: true } }, null, 2)}\n`
+  )
   write(GRAPH, `${JSON.stringify({ components: [] }, null, 2)}\n`)
   for (const name of BASE_COMPONENTS) addComponent(name)
   write(CHANGELOG, '# Changelog\n\n## [Unreleased]\n\n### Added\n\n- shipped earlier\n')
@@ -98,7 +116,7 @@ beforeAll(() => {
     addComponent('Foxtrot')
     addFragment('TD-2-foxtrot', 'Foxtrot widget (TD-2).')
   })
-})
+}, DOCGEN_TIMEOUT)
 
 afterAll(() => rmSync(root, { recursive: true, force: true }))
 
@@ -106,20 +124,28 @@ describe('two PRs that each add a component and a changelog entry', () => {
   it.each([
     ['pr-bravo', 'pr-foxtrot'],
     ['pr-foxtrot', 'pr-bravo'],
-  ])('merge with no conflict when %s lands before %s', (first, second) => {
-    expect(mergeInto(first, second)).toBe(true)
+  ])(
+    'merge with no conflict when %s lands before %s',
+    (first, second) => {
+      expect(mergeInto(first, second)).toBe(true)
 
-    const merged = JSON.parse(read(CATALOG))
-    expect(merged.entries.map((entry) => entry.name)).toEqual([
-      'Alpha',
-      'Bravo',
-      'Charlie',
-      'Echo',
-      'Foxtrot',
-      'Golf',
-    ])
-    expect(read(CATALOG)).toBe(serializeCatalog(buildCatalog(root)))
-  })
+      const merged = JSON.parse(read(CATALOG))
+      expect(merged.entries.map((entry) => entry.name)).toEqual([
+        'Alpha',
+        'Bravo',
+        'Charlie',
+        'Echo',
+        'Foxtrot',
+        'Golf',
+      ])
+      expect(merged.entries.find((entry) => entry.name === 'Foxtrot').purpose).toBe(
+        'Foxtrot widget.'
+      )
+      expect(read(CATALOG)).toBe(serializeCatalog(buildCatalog(root)))
+      expect(read(DIGEST)).toBe(renderDigest(merged))
+    },
+    DOCGEN_TIMEOUT
+  )
 
   it('fold both fragments into the changelog after the merge', () => {
     mergeInto('pr-bravo', 'pr-foxtrot')

@@ -69,7 +69,7 @@ function LabelCards({ yAxisLabels, ruleLabelText }: LabelArgs) {
  */
 const meta: Meta<LabelArgs> = {
   title: 'Lab/Decisions/Goal Chart Labels',
-  tags: ['status:lab'],
+  tags: ['status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
   argTypes: {
     yAxisLabels: { control: 'boolean' },

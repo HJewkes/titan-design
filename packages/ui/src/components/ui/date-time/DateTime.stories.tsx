@@ -19,6 +19,12 @@ const meta: Meta<typeof DateTime> = {
     isUTC: {
       control: 'boolean',
     },
+    isLive: {
+      control: 'boolean',
+      description:
+        'Re-render on an interval. With `format="relative"` the value stays relative to now; ' +
+        'without a value it is a clock.',
+    },
   },
 }
 

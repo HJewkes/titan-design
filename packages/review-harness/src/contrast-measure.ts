@@ -1,22 +1,23 @@
 import { chromium, type Page } from '@playwright/test'
-import { STORY_ROOT, captureViewportHeight, renderStory } from './capture.ts'
 import { evaluateFrame } from './contrast-check.ts'
 import { collectFrame } from './contrast-collect.ts'
 import type { MeasuredFrame } from './contrast-gate.ts'
+import { captureViewportHeight } from './frames.ts'
 import { storyUrl } from './round.ts'
+import { STORY_ROOT, renderStory } from './shooter.ts'
 import {
   THEME_MODES,
   isStoryVariant,
   type Manifest,
   type StoryVariant,
   type ThemeMode,
-} from './schema.ts'
+} from '@titan-design/review-schema'
 
 /** The Storybook global `withThemeByClassName` reads; light puts `.light` on <html>. */
 const THEME_GLOBAL = 'theme'
 
 /** The same story in the other theme: the variant's own globals, with the theme overridden. */
-export function themedVariant(variant: StoryVariant, mode: ThemeMode): StoryVariant {
+function themedVariant(variant: StoryVariant, mode: ThemeMode): StoryVariant {
   return { ...variant, globals: { ...variant.globals, [THEME_GLOBAL]: mode } }
 }
 

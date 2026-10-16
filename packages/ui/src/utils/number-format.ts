@@ -25,3 +25,23 @@ export function formatTrimmedDecimal(n: number, decimals: number): string {
 export function formatTenths(n: number): string {
   return n.toFixed(1)
 }
+
+const USD = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' })
+
+/**
+ * A dollar amount to the cent: `$4.81`, `$4,812.50`. A positive amount under a cent reads
+ * `<$0.01` rather than a misleading `$0.00`; a non-finite value reads `—`, never `$NaN`.
+ */
+export function formatUsd(n: number): string {
+  if (!Number.isFinite(n)) return '—'
+  if (n > 0 && n < 0.01) return '<$0.01'
+  return USD.format(n)
+}
+
+/** Grouped thousands and exactly `decimals` fraction digits: `1,234.5`, `-12,000`. */
+export function formatGrouped(n: number, decimals = 0): string {
+  return n.toLocaleString('en-US', {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  })
+}

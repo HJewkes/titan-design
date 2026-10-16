@@ -1,6 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { useMemo, useState } from 'react'
-import { View, Text, Pressable, type ViewProps } from 'react-native'
+import { View, Text, type ViewProps } from 'react-native'
 import { MesoStatusCard, type MesoStatusCardProps } from './MesoStatusCard'
 import {
   StrengthTrendChart,
@@ -21,9 +21,10 @@ import {
   calculateVelocityLoss,
   type VelocityZoneBandProp,
 } from './VelocityStrip'
-import { resolveColor } from '../../../theme/resolve-color'
+import { SectionCard } from './ExerciseDetailSectionCard'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../ui/surface'
+import { Tabs, TabList, Tab, TabPanels, TabPanel } from '../../ui/tabs'
 import { cn } from '../../../utils/cn'
 import { alpha } from '../../../utils/colors'
 import { formatVelocity } from '../../../utils/workout-format'
@@ -31,6 +32,8 @@ import { formatVelocity } from '../../../utils/workout-format'
 /** Inner plot width: page width 390 − 16 page padding − 12 card padding on each side. */
 const CHART_WIDTH = 326
 const CHART_HEIGHT = 150
+/** The panel sits one section rhythm (14px) under the tab bar, as the bar's siblings do. */
+const PANEL_SPACING = 'pt-3.5 pb-0'
 
 /** Which tab of the exercise detail view is showing. */
 export type ExerciseDetailTab = 'progress' | 'history' | 'advanced'
@@ -183,57 +186,6 @@ export function summarizeVbt(sets: ExerciseVbtSet[]): VbtSummary {
   return { meanVelocity, velocityLoss }
 }
 
-interface TabBarProps {
-  active: ExerciseDetailTab
-  onSelect: (tab: ExerciseDetailTab) => void
-}
-
-function TabBar({ active, onSelect }: TabBarProps) {
-  const brandPrimary = getSemanticColors(useSurfaceMode())['brand-primary']
-  return (
-    <View
-      className="flex-row"
-      style={{
-        borderBottomWidth: 1,
-        borderBottomColor: resolveColor('hairline-default'),
-      }}
-      accessibilityRole={'tablist' as ViewProps['accessibilityRole']}
-      testID="exercise-detail-page-tabs"
-    >
-      {EXERCISE_DETAIL_TABS.map(({ key, label }) => {
-        const isActive = key === active
-        return (
-          <Pressable
-            key={key}
-            onPress={() => onSelect(key)}
-            accessibilityRole="tab"
-            accessibilityState={{ selected: isActive }}
-            className="py-2.5"
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              borderBottomWidth: 2,
-              borderBottomColor: isActive ? brandPrimary : 'transparent',
-            }}
-            testID={`exercise-detail-page-tab-${key}`}
-          >
-            <Text
-              className={isActive ? 'text-text-primary' : 'text-text-tertiary'}
-              style={{
-                fontSize: 13,
-                fontFamily: 'Inter, sans-serif',
-                fontWeight: isActive ? '700' : '500',
-              }}
-            >
-              {label}
-            </Text>
-          </Pressable>
-        )
-      })}
-    </View>
-  )
-}
-
 const STAT_CARDS: Array<{ key: keyof ExerciseDetailStats; label: string }> = [
   { key: 'sessions', label: 'Sessions' },
   { key: 'bestE1rm', label: 'Best e1RM' },
@@ -282,41 +234,6 @@ function StatStrip({ stats, unit }: { stats: ExerciseDetailStats; unit: 'lbs' | 
           </View>
         )
       })}
-    </View>
-  )
-}
-
-function SectionCard({
-  title,
-  children,
-  testID,
-}: {
-  title: string
-  children: React.ReactNode
-  testID: string
-}) {
-  return (
-    <View
-      className="bg-surface-elevated border-hairline p-inset-md gap-2.5"
-      style={{
-        borderWidth: 1,
-        borderRadius: 12,
-      }}
-      testID={testID}
-    >
-      <Text
-        className="text-text-tertiary"
-        style={{
-          fontSize: 11,
-          fontFamily: 'Inter, sans-serif',
-          fontWeight: '600',
-          letterSpacing: 0.6,
-          textTransform: 'uppercase',
-        }}
-      >
-        {title}
-      </Text>
-      {children}
     </View>
   )
 }
@@ -388,7 +305,6 @@ function VbtBreakdown({
                 zones={zones}
                 variant="compact"
                 height={8}
-                hideBaseline
               />
             </View>
             <Text
@@ -453,10 +369,172 @@ function VbtSummaryRow({ summary }: { summary: VbtSummary }) {
   )
 }
 
+function useExpandedId(): [string | null, (id: string) => void] {
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+  const toggle = (id: string) => setExpandedId((current) => (current === id ? null : id))
+  return [expandedId, toggle]
+}
+
+function ExerciseDetailPageHeader({ exercise }: { exercise: ExerciseDetailHeader }) {
+  const brandPrimary = getSemanticColors(useSurfaceMode())['brand-primary']
+  return (
+    <View
+      className="flex-row items-start justify-between gap-inline-md"
+      testID="exercise-detail-page-header"
+    >
+      <View style={{ flexShrink: 1 }}>
+        <Text
+          accessibilityRole="header"
+          className="text-text-primary"
+          style={{
+            fontSize: 20,
+            fontFamily: '"Space Grotesk", sans-serif',
+            fontWeight: '700',
+          }}
+          testID="exercise-detail-page-title"
+        >
+          {exercise.name}
+        </Text>
+        <Text
+          className="text-text-secondary mt-0.5"
+          style={{
+            fontSize: 12,
+            fontFamily: 'Inter, sans-serif',
+          }}
+          testID="exercise-detail-page-subtitle"
+        >
+          {exercise.subtitle}
+        </Text>
+      </View>
+      {exercise.currentE1rm != null && (
+        <View
+          className="py-squish-y-md px-2.5"
+          style={{
+            borderRadius: 6,
+            backgroundColor: alpha(brandPrimary, 0.1),
+            borderWidth: 1,
+            borderColor: alpha(brandPrimary, 0.25),
+          }}
+          testID="exercise-detail-page-e1rm"
+        >
+          <Text
+            className="text-text-tertiary"
+            style={{
+              fontSize: 9,
+              fontFamily: 'Inter, sans-serif',
+              fontWeight: '600',
+              letterSpacing: 0.4,
+              textTransform: 'uppercase',
+            }}
+          >
+            e1RM
+          </Text>
+          <Text
+            style={{
+              fontSize: 15,
+              fontFamily: '"Space Grotesk", sans-serif',
+              fontWeight: '700',
+              color: brandPrimary,
+            }}
+          >
+            {`${exercise.currentE1rm} ${exercise.unit}`}
+          </Text>
+        </View>
+      )}
+    </View>
+  )
+}
+
+interface HistoryPanelProps {
+  entries: ExerciseDetailEntry[]
+  expandedId: string | null
+  onToggle: (id: string) => void
+}
+
+function HistoryPanel({ entries, expandedId, onToggle }: HistoryPanelProps) {
+  return (
+    <View className="gap-3.5" testID="exercise-detail-page-panel-history">
+      <SectionCard title="All Sessions" testID="exercise-detail-page-history">
+        <EntryList
+          entries={entries}
+          expandedId={expandedId}
+          onToggle={onToggle}
+          emptyLabel="No sessions logged yet"
+          testID="exercise-detail-page-history-list"
+        />
+      </SectionCard>
+    </View>
+  )
+}
+
+interface ProgressPanelProps extends HistoryPanelProps {
+  meso: MesoStatusCardProps
+  stats: ExerciseDetailStats
+  trend: ExerciseTrend
+  unit: 'lbs' | 'kg'
+}
+
+function ProgressPanel({
+  meso,
+  stats,
+  trend,
+  unit,
+  entries,
+  expandedId,
+  onToggle,
+}: ProgressPanelProps) {
+  return (
+    <View className="gap-3.5" testID="exercise-detail-page-panel-progress">
+      <MesoStatusCard {...meso} />
+      <StatStrip stats={stats} unit={unit} />
+      <SectionCard title="Strength Trend" testID="exercise-detail-page-trend">
+        <StrengthTrendChart
+          data={trend.data}
+          projection={trend.projection}
+          mesoBoundaries={trend.mesoBoundaries}
+          width={CHART_WIDTH}
+          height={CHART_HEIGHT}
+          unit={unit}
+          animateOnMount={false}
+        />
+      </SectionCard>
+      <SectionCard title="Week-by-Week" testID="exercise-detail-page-progression">
+        <EntryList
+          entries={entries}
+          expandedId={expandedId}
+          onToggle={onToggle}
+          emptyLabel="No progression logged yet"
+          testID="exercise-detail-page-progression-list"
+        />
+      </SectionCard>
+    </View>
+  )
+}
+
+function AdvancedPanel({ vbt, summary }: { vbt: ExerciseVbt; summary: VbtSummary }) {
+  return (
+    <View className="gap-3.5" testID="exercise-detail-page-panel-advanced">
+      <SectionCard title="Capacity Band" testID="exercise-detail-page-capacity">
+        <CapacityBandChart
+          band={vbt.band}
+          workouts={vbt.workouts}
+          projection={vbt.projection}
+          width={CHART_WIDTH}
+          height={CHART_HEIGHT}
+        />
+      </SectionCard>
+      <VbtSummaryRow summary={summary} />
+      <SectionCard title="Velocity Breakdown" testID="exercise-detail-page-velocity">
+        <VbtBreakdown sets={vbt.sets} zones={vbt.zones} />
+      </SectionCard>
+    </View>
+  )
+}
+
 /**
  * ExerciseDetailPage — a tabbed per-exercise view. A shared header (name,
  * context line, current e1RM pill) sits above a Progress / History / Advanced
- * tab bar. Progress composes the `MesoStatusCard` context banner, a stats
+ * `line` `Tabs` bar. Progress composes the `MesoStatusCard` context banner, a stats
  * strip, a `StrengthTrendChart`, and a week-by-week progression list with
  * inline `ExerciseCard` expansion. History lists every logged session with the
  * same inline expansion. Advanced surfaces VBT data via a `CapacityBandChart`,
@@ -483,17 +561,12 @@ export function ExerciseDetailPage({
   className,
   ...props
 }: ExerciseDetailPageProps) {
-  const brandPrimary = getSemanticColors(useSurfaceMode())['brand-primary']
   const [tab, setTab] = useState<ExerciseDetailTab>('progress')
-  const [expandedProgressId, setExpandedProgressId] = useState<string | null>(null)
-  const [expandedHistoryId, setExpandedHistoryId] = useState<string | null>(null)
+  const [expandedProgressId, toggleProgress] = useExpandedId()
+  const [expandedHistoryId, toggleHistory] = useExpandedId()
 
   const stats = useMemo(() => deriveExerciseStats(history), [history])
   const vbtSummary = useMemo(() => summarizeVbt(vbt.sets), [vbt.sets])
-
-  const toggle =
-    (setId: (updater: (current: string | null) => string | null) => void) => (id: string) =>
-      setId((current) => (current === id ? null : id))
 
   return (
     <View
@@ -505,131 +578,45 @@ export function ExerciseDetailPage({
       {...props}
     >
       <View className="p-gutter-sm gap-3.5" testID="exercise-detail-page-content">
-        <View
-          className="flex-row items-start justify-between gap-inline-md"
-          testID="exercise-detail-page-header"
+        <ExerciseDetailPageHeader exercise={exercise} />
+
+        <Tabs
+          variant="line"
+          value={EXERCISE_DETAIL_TABS.findIndex(({ key }) => key === tab)}
+          onValueChange={(index) => setTab(EXERCISE_DETAIL_TABS[index].key)}
+          testID="exercise-detail-page-tabs"
         >
-          <View style={{ flexShrink: 1 }}>
-            <Text
-              accessibilityRole="header"
-              className="text-text-primary"
-              style={{
-                fontSize: 20,
-                fontFamily: '"Space Grotesk", sans-serif',
-                fontWeight: '700',
-              }}
-              testID="exercise-detail-page-title"
-            >
-              {exercise.name}
-            </Text>
-            <Text
-              className="text-text-secondary mt-0.5"
-              style={{
-                fontSize: 12,
-                fontFamily: 'Inter, sans-serif',
-              }}
-              testID="exercise-detail-page-subtitle"
-            >
-              {exercise.subtitle}
-            </Text>
-          </View>
-          {exercise.currentE1rm != null && (
-            <View
-              className="py-squish-y-md px-2.5"
-              style={{
-                borderRadius: 6,
-                backgroundColor: alpha(brandPrimary, 0.1),
-                borderWidth: 1,
-                borderColor: alpha(brandPrimary, 0.25),
-              }}
-              testID="exercise-detail-page-e1rm"
-            >
-              <Text
-                className="text-text-tertiary"
-                style={{
-                  fontSize: 9,
-                  fontFamily: 'Inter, sans-serif',
-                  fontWeight: '600',
-                  letterSpacing: 0.4,
-                  textTransform: 'uppercase',
-                }}
-              >
-                e1RM
-              </Text>
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontFamily: '"Space Grotesk", sans-serif',
-                  fontWeight: '700',
-                  color: brandPrimary,
-                }}
-              >
-                {`${exercise.currentE1rm} ${exercise.unit}`}
-              </Text>
-            </View>
-          )}
-        </View>
-
-        <TabBar active={tab} onSelect={setTab} />
-
-        {tab === 'progress' && (
-          <View className="gap-3.5" testID="exercise-detail-page-panel-progress">
-            <MesoStatusCard {...meso} />
-            <StatStrip stats={stats} unit={exercise.unit} />
-            <SectionCard title="Strength Trend" testID="exercise-detail-page-trend">
-              <StrengthTrendChart
-                data={trend.data}
-                projection={trend.projection}
-                mesoBoundaries={trend.mesoBoundaries}
-                width={CHART_WIDTH}
-                height={CHART_HEIGHT}
+          <TabList className="flex-1">
+            {EXERCISE_DETAIL_TABS.map(({ key, label }) => (
+              <Tab key={key} className="flex-1 items-center">
+                {label}
+              </Tab>
+            ))}
+          </TabList>
+          <TabPanels>
+            <TabPanel className={PANEL_SPACING}>
+              <ProgressPanel
+                meso={meso}
+                stats={stats}
+                trend={trend}
                 unit={exercise.unit}
-                animateOnMount={false}
-              />
-            </SectionCard>
-            <SectionCard title="Week-by-Week" testID="exercise-detail-page-progression">
-              <EntryList
                 entries={progression}
                 expandedId={expandedProgressId}
-                onToggle={toggle(setExpandedProgressId)}
-                emptyLabel="No progression logged yet"
-                testID="exercise-detail-page-progression-list"
+                onToggle={toggleProgress}
               />
-            </SectionCard>
-          </View>
-        )}
-
-        {tab === 'history' && (
-          <View className="gap-3.5" testID="exercise-detail-page-panel-history">
-            <SectionCard title="All Sessions" testID="exercise-detail-page-history">
-              <EntryList
+            </TabPanel>
+            <TabPanel className={PANEL_SPACING}>
+              <HistoryPanel
                 entries={history}
                 expandedId={expandedHistoryId}
-                onToggle={toggle(setExpandedHistoryId)}
-                emptyLabel="No sessions logged yet"
-                testID="exercise-detail-page-history-list"
+                onToggle={toggleHistory}
               />
-            </SectionCard>
-          </View>
-        )}
-
-        {tab === 'advanced' && (
-          <View className="gap-3.5" testID="exercise-detail-page-panel-advanced">
-            <SectionCard title="Capacity Band" testID="exercise-detail-page-capacity">
-              <CapacityBandChart
-                band={vbt.band}
-                workouts={vbt.workouts}
-                projection={vbt.projection}
-                width={CHART_WIDTH}
-                height={CHART_HEIGHT}
-              />
-            </SectionCard>
-            <VbtSummaryRow summary={vbtSummary} />
-            <SectionCard title="Velocity Breakdown" testID="exercise-detail-page-velocity">
-              <VbtBreakdown sets={vbt.sets} zones={vbt.zones} />
-            </SectionCard>
-          </View>
-        )}
+            </TabPanel>
+            <TabPanel className={PANEL_SPACING}>
+              <AdvancedPanel vbt={vbt} summary={vbtSummary} />
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
       </View>
     </View>
   )

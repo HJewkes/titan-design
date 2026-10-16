@@ -6,8 +6,8 @@ import { resolveColor } from '../../../theme/resolve-color'
 import { formatVelocity } from '../../../utils/workout-format'
 import { ChevronRightIcon } from '../../icons'
 import { Typography } from '../../ui/typography'
+import { DualVelocityStrip } from '../../custom/Workout/DualVelocityStrip'
 import {
-  DualVelocityStrip,
   normalizeLossThresholds,
   type VelocityLossThresholds,
 } from '../../custom/Workout/VelocityStrip'

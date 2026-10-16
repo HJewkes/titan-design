@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { siblingSource, resolveAll } from '../../../test/spacing-resolver'
+import { spacingClassesAt, resolveAll } from '../../../test/spacing-resolver'
 import { space } from '../../../theme/tokens/semantic'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { axe } from 'jest-axe'
@@ -806,22 +806,34 @@ describe('VelocityStrip hero variant', () => {
  * stay local constants, as the spec requires.
  */
 describe('VelocityStrip chrome resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'VelocityStrip.tsx')
-
   it('keeps the framed strip’s inset, which tightens when the info row hides', () => {
-    expect(source).toContain('paddingTop: space.inset.lg')
-    expect(source).toContain('paddingBottom: showInfo ? space.inset.sm : space.inset.xs')
     expect([space.inset.lg, space.inset.sm, space.inset.xs]).toEqual([16, 8, 4])
+    const { unmount } = render(<VelocityStrip velocities={sampleVelocities} />)
+    expect(screen.getByTestId('velocity-strip')).toHaveStyle({
+      paddingTop: `${space.inset.lg}px`,
+      paddingBottom: `${space.inset.sm}px`,
+    })
+    unmount()
+    render(<VelocityStrip velocities={sampleVelocities} showInfo={false} />)
+    expect(screen.getByTestId('velocity-strip')).toHaveStyle({
+      paddingTop: `${space.inset.lg}px`,
+      paddingBottom: `${space.inset.xs}px`,
+    })
+  })
+
+  // The owner approved the framed strip without a fill (TD-509). Painting one is a visual change
+  // that goes through an owner Gate 2, so this fails if the strip starts rendering a background.
+  it('leaves the framed strip unfilled', () => {
+    render(<VelocityStrip velocities={sampleVelocities} />)
+    const { backgroundColor } = getComputedStyle(screen.getByTestId('velocity-strip'))
+    expect(['', 'transparent', 'rgba(0, 0, 0, 0)']).toContain(backgroundColor)
   })
 
   it('keeps the band label offset on the numeric scale', () => {
-    expect(source).toContain('mx-1.5')
-    expect(resolveAll(['mx-1.5'])).toEqual(['6px'])
-  })
-
-  it('leaves the bar geometry constants alone', () => {
-    expect(source).toContain('COMPACT_FOLD_GAP')
-    expect(source).toContain('chart geometry')
+    render(<VelocityStrip velocities={[1.0, 0.95, 0.88, 0.8]} variant="hero" height={300} />)
+    const label = screen.getAllByText(/^VL \d+%$/)[0]
+    expect(spacingClassesAt(label)).toEqual(['mx-1.5'])
+    expect(resolveAll(spacingClassesAt(label))).toEqual(['6px'])
   })
 })
 

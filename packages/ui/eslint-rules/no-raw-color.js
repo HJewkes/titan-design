@@ -31,8 +31,9 @@
  *     unaffected and still flagged
  */
 
-const path = require('node:path')
+const { loadBaseline, baselineKey } = require('./ratchet')
 const { extractRawColors, NAMED_KEYWORD } = require('./raw-color-patterns')
+const { classOptions, styleOptions, optionList } = require('./color-options')
 
 /** Colour-ish JSX attribute names accepted by the enum-member heuristic below. */
 const ENUM_COLOR_PROP_NAMES = /^(color|variant|tone)$/i
@@ -91,24 +92,14 @@ function isTextChildDoc(node) {
   return host?.type === 'JSXElement' && host.openingElement?.name?.name === 'Text'
 }
 
-let baselineCache = null
-function loadBaseline() {
-  if (baselineCache) return baselineCache
-  try {
-    baselineCache = require('./raw-color-baseline.json')
-  } catch {
-    baselineCache = {}
-  }
-  return baselineCache
-}
+const CLASS_IDS = new Set(['twPalette', 'twAchromatic', 'twArbitrary'])
 
-/** Baseline keys are package-relative POSIX paths, so they're stable across machines. */
-function baselineKey(context) {
-  const cwd = context.getCwd?.() ?? process.cwd()
-  return path
-    .relative(cwd, context.filename ?? context.getFilename())
-    .split(path.sep)
-    .join('/')
+/** A class colour lists the classes to write instead; a value colour lists the style resolvers. */
+function messageData(text, { value, id, index }) {
+  const options = CLASS_IDS.has(id)
+    ? optionList(classOptions(id, value, text.slice(0, index)))
+    : styleOptions
+  return { value, options, notation: value.replace(/\s*\($/, '') }
 }
 
 /** @type {import('eslint').Rule.RuleModule} */
@@ -121,16 +112,17 @@ module.exports = {
     },
     schema: [],
     messages: {
-      hex: 'Raw hex colour. Use a semantic token (getSemanticColors / Surface / a className) so this follows the ramps and the theme.',
+      hex: 'Raw hex colour "{{value}}": the token layer owns colour, and a hex cannot follow the ramps or the theme. In a style use {{options}}.',
       functional:
-        'Raw {{ notation }} colour. For translucency, derive it from a token (alpha(token, n)) rather than hardcoding channels.',
+        'Raw {{notation}}() colour: the token layer owns colour channels. For translucency derive it from a token with `alpha(color, a)` from utils/colors; otherwise use {{options}}.',
       twPalette:
-        'Tailwind palette colour. titan ships its own ramps — use a semantic utility (bg-surface-raised, text-text-primary) instead of Tailwind’s default palette.',
+        'Tailwind palette class "{{value}}": titan’s token layer owns colour, not Tailwind’s default palette. Use a token class: {{options}}.',
       twAchromatic:
-        'Tailwind white/black. Use a semantic token — pure white/black are almost never right on the dark ramp.',
+        'Tailwind white/black class "{{value}}": the token layer owns colour, and pure white or black is almost never right on the dark ramp. Use {{options}}.',
       twArbitrary:
-        'Arbitrary Tailwind colour value. This bypasses the token layer entirely; use a semantic utility.',
-      named: 'Bare CSS colour keyword. Use a semantic token so this responds to the theme.',
+        'Arbitrary Tailwind colour "{{value}}" bypasses the token layer, which owns colour. Use a token class: {{options}}.',
+      named:
+        'Bare CSS colour keyword "{{value}}": the token layer owns colour, and a keyword cannot respond to the theme. In a style use {{options}}.',
     },
   },
 
@@ -138,16 +130,19 @@ module.exports = {
     // Remaining allowance per colour VALUE, not a plain count. Keying on the
     // value means the message lands on the colour you just added rather than on
     // whichever grandfathered literal happened to sit at the count boundary.
-    const remaining = new Map(Object.entries(loadBaseline()[baselineKey(context)] ?? {}))
+    const remaining = new Map(
+      Object.entries(loadBaseline('raw-color-baseline.json')[baselineKey(context)] ?? {})
+    )
 
     const check = (text, node, loc) => {
-      for (const { value, id } of extractRawColors(text)) {
+      for (const found of extractRawColors(text)) {
+        const { value, id } = found
         const left = remaining.get(value) ?? 0
         if (left > 0) {
           remaining.set(value, left - 1)
           continue
         }
-        const data = { notation: id === 'functional' ? 'functional' : id }
+        const data = messageData(text, found)
         context.report(loc ? { loc, messageId: id, data } : { node, messageId: id, data })
         return // one message per literal is enough to act on
       }

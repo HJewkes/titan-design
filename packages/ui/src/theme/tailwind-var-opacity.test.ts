@@ -123,6 +123,12 @@ function sourceFiles(dir: string, found: string[] = []): string[] {
   return found
 }
 
+/** Lint-rule tests that feed the dead classes to the rule and the message contract as probes. */
+const PROBE_FILES = new Set([
+  'src/test/lint-message-contract.test.ts',
+  'src/test/no-var-color-opacity.test.ts',
+])
+
 describe('no var()-backed opacity modifier survives in src/', () => {
   it('finds no dead colour class', () => {
     const srcRoot = path.join(uiRoot, 'src')
@@ -131,6 +137,7 @@ describe('no var()-backed opacity modifier survives in src/', () => {
     for (const file of sourceFiles(srcRoot)) {
       // This file quotes the dead classes on purpose, as the probe list above.
       if (file === fileURLToPath(import.meta.url)) continue
+      if (PROBE_FILES.has(path.relative(uiRoot, file).split(path.sep).join('/'))) continue
       for (const match of readFileSync(file, 'utf8').matchAll(OPACITY_UTILITY)) {
         if (varBackedTokens.has(match[1])) {
           violations.push(`${path.relative(uiRoot, file)}: ${match[0]}`)

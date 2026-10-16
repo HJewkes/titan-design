@@ -1,6 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { ScrollView, View } from 'react-native'
-import { SessionRail } from '../../components'
+import { SessionRail } from '../../workout'
 import { ExerciseHeader, LiveView } from './LiveView'
 import { RestView } from './RestView'
 import { EmptyLiveView, type EmptyKind } from './EmptyLiveView'
@@ -72,7 +72,7 @@ export function LivePage({ variant = 'live', model = dashboardFixture }: LivePag
           width={272}
         />
         <View className="flex-1" style={{ minWidth: PANEL_MIN_WIDTH }}>
-          {sessionOpen && named && <ExerciseHeader session={model.session} />}
+          {!!sessionOpen && !!named && <ExerciseHeader session={model.session} />}
           <View className="flex-1">
             <EmptyLiveView
               kind={emptyKind}

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { render } from '@testing-library/react'
-import { composeStories } from '@storybook/react'
+import { composeStories } from '@storybook/react-vite'
 
 // jsdom never lays out, so the slide geometry needs a pinned width.
 vi.mock('../../../hooks/useMeasuredWidth', () => ({

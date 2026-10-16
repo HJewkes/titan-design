@@ -8,14 +8,19 @@ export interface NavItemProps {
   icon: ReactNode
   /** Short label shown under the glyph (uppercased for display; used as the accessible name). */
   label: string
-  /** Active category → left accent bar + accent-colored glyph & label. */
+  /** Active category → left accent bar + accent-colored glyph, label on `text-primary`. */
   active?: boolean
   /**
    * A set is running for this category while it is NOT the active view
    * (live-elsewhere) → a quiet muted-green label tint. Ignored when `active`.
    */
   live?: boolean
-  /** Semantic `text-*` token for the active glyph and label. Defaults to the Voltras brand. */
+  /**
+   * The words appended to the accessible name while a set runs in this category and it
+   * is not active ("Train, live"). Defaults to `'live'`.
+   */
+  liveLabel?: string
+  /** Semantic `text-*` token for the active glyph (a non-text mark). Defaults to the Voltras brand. */
   accentClassName?: string
   /** Semantic `bg-*` token for the active bar. Pair it with `accentClassName`. */
   accentBarClassName?: string
@@ -27,10 +32,11 @@ export interface NavItemProps {
  * Shell S2 · NavItem — one category button in the {@link SideNav}: a 20px glyph
  * over an uppercase micro-label in a 46×46 target. The button spans the full 60px
  * rail so the active **left accent bar** sits flush to the rail's edge. States:
- * active = accent bar + the accent token; `live` (while not active) tints only the
+ * active = accent bar + accent glyph over a `text-primary` label (an accent hue rarely
+ * clears 4.5:1 as text in both modes); `live` (while not active) tints only the
  * label `status-success-dark` (the glyph stays dim); otherwise dim `text-tertiary`.
  *
- * The accent follows the mounting app's brand, so a Brain shell reads yellow
+ * The accent follows the mounting app's brand, so a Brain shell reads amber
  * throughout rather than showing a Voltras-orange active item under its own lockup.
  */
 export function NavItem({
@@ -38,6 +44,7 @@ export function NavItem({
   label,
   active = false,
   live = false,
+  liveLabel = 'live',
   accentClassName = 'text-brand-primary',
   accentBarClassName = 'bg-brand-primary',
   onPress,
@@ -45,17 +52,20 @@ export function NavItem({
 }: NavItemProps) {
   const glyphColor = active ? accentClassName : 'text-text-tertiary'
   const labelColor = active
-    ? accentClassName
+    ? 'text-text-primary'
     : live
       ? 'text-status-live-muted'
       : 'text-text-tertiary'
 
+  const accessibleName = live && !active ? `${label}, ${liveLabel}` : label
+
   return (
     <Pressable
-      accessibilityRole="tab"
+      accessibilityRole="button"
+      // Native reads accessibilityState but not aria-current; web is the reverse.
       accessibilityState={{ selected: active }}
-      aria-selected={active}
-      accessibilityLabel={label}
+      aria-current={active ? 'page' : undefined}
+      accessibilityLabel={accessibleName}
       onPress={onPress}
       className={cn('relative h-[46px] w-[60px] items-center justify-center', className)}
     >

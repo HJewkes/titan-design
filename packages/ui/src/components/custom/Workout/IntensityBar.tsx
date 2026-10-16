@@ -42,7 +42,7 @@ function intensityColors(mode: ThemeMode) {
   const t = getSemanticColors(mode)
   return {
     trackBg: t['surface-raised'],
-    labelColor: t['result-neutral'],
+    labelColor: t['text-secondary'],
     targetLineColor: alpha(t['status-info'], 0.5),
     /** At-target is EMPHASIS, not depth: an info-toned glow through the shared builder. */
     atTargetGlow: getGlowShadow(t['status-info'], 'subtle'),
@@ -216,7 +216,7 @@ export function IntensityBar({
         {pct}%
       </Text>
 
-      {showThresholdLabel && threshold != null && (
+      {!!showThresholdLabel && threshold != null && (
         <Text
           className="mt-0.5"
           style={{

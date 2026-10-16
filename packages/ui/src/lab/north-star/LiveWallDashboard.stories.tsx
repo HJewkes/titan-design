@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { View } from 'react-native'
-import { WorkoutShell, type Device } from '../../components'
+import { WorkoutShell, type Device } from '../../workout'
 import { LivePage, type LivePageVariant } from './LivePage'
 import { dashboardFixture } from './fixtures'
 
@@ -59,6 +59,7 @@ const meta: Meta<WallArgs> = {
         liveKey={variant === 'rest' ? 'live' : null}
         devices={variant === 'no-device' ? [] : DEVICES}
         subtitle="wall dashboard"
+        contentPadding="none"
       >
         <LivePage variant={variant} model={tempo ? dashboardFixture : noTempoModel} />
       </WorkoutShell>

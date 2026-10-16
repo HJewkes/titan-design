@@ -1,5 +1,6 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
 import { View } from 'react-native'
+import { cn } from '../../../utils/cn'
 import { Card } from '../../ui/card'
 import { Pill } from '../../ui/pill'
 import { Typography } from '../../ui/typography'
@@ -22,13 +23,13 @@ export interface CoChangeChipProps {
  * is a pointer into {@link FileActivityDetail} rather than a full identifier.
  * Used by {@link FileHistoryExplorer}'s repo-wide co-change strip.
  *
- * @deprecated Use `<Pill tone="brand" size="xs">` — removed after AW-127 consumer migration.
+ * @deprecated Use `<Pill tone="brand" size="xs">` — removed after the Pill consumer migration.
  */
 export function CoChangeChip({ a, b, count, className }: CoChangeChipProps) {
   return (
     <Card
       variant="filled"
-      className={`gap-1 p-2.5 ${className ?? ''}`}
+      className={cn('gap-1 p-2.5', className)}
       accessibilityRole="text"
       accessibilityLabel={`${a} and ${b} changed together ${count} times`}
       testID="co-change-chip"

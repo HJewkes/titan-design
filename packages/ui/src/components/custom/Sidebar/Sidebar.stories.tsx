@@ -237,7 +237,7 @@ export const WithBadge: Story = {
 export const WithActiveItem: Story = {
   render: () => (
     <View style={{ flexDirection: 'row', gap: 16, height: 400 }}>
-      <Sidebar activeItem="home" width={200}>
+      <Sidebar activeItem="home" width={200} aria-label="Home active">
         <SidebarContent>
           <SidebarSection>
             <SidebarItem id="home" icon={HomeIcon} label="Home" />
@@ -246,7 +246,7 @@ export const WithActiveItem: Story = {
           </SidebarSection>
         </SidebarContent>
       </Sidebar>
-      <Sidebar activeItem="dashboard" width={200}>
+      <Sidebar activeItem="dashboard" width={200} aria-label="Dashboard active">
         <SidebarContent>
           <SidebarSection>
             <SidebarItem id="home" icon={HomeIcon} label="Home" />

@@ -25,14 +25,16 @@ FileHistoryExplorer .............. organism
 ├─ Eyebrow ....................... molecule
 ├─ FileActivityRow ............... row          (listbox `option`)
 │  ├─ FilePathLabel .............. atom → Typography (mono)  (Components/Atoms)
-│  └─ SparkBars .................. atom         (Custom/Charts — new shared primitive)
+│  └─ SparkBars .................. atom         (`ui/charts/spark-bars`)
 ├─ FileActivityDetail ............ card
 │  ├─ Tile / Pill / DataRow / DateTime .... (existing primitives)
-│  ├─ SparkBars .................. atom
 │  ├─ FilePathLabel .............. atom
-│  └─ Eyebrow .................... molecule
-└─ CoChangeChip .................. molecule
-   ├─ Card + Pill ................ (existing primitives)
+│  ├─ Eyebrow .................... molecule
+│  └─ GrowthWell ................. card         (`FileActivityGrowthWell`)
+│     ├─ CardInset ............... (existing primitive)
+│     ├─ SparkBars ............... atom         (`ui/charts/spark-bars`)
+│     └─ Eyebrow ................. molecule
+└─ Pill (co-change pair) ......... (existing primitive)
    └─ FilePathLabel .............. atom
 
 TaskTable ........................ organism
@@ -42,17 +44,17 @@ TaskTable ........................ organism
 ├─ SeverityLabel ................. molecule      (legend tallies)
 └─ TaskRow ....................... row
    ├─ TableRow + TableCell ....... (existing primitives, Table family)
-   ├─ SeverityLabel .............. molecule → Indicator
-   └─ Pill ....................... (existing primitive)
+   └─ Pill + Indicator / Tooltip . (existing primitives, severity)
 
 Session reader ................... (no organism: the host composes the two halves)
 ├─ SessionList ................... list
 │  ├─ Eyebrow .................... molecule
 │  └─ SessionListItem ............ row          (listbox `option`)
-│     ├─ DateTime / Pill ......... (existing primitives)
+│     ├─ DateTime / Tooltip ...... (existing primitives)
 │     └─ Typography .............. (existing primitive)
 └─ SessionDetail ................. card
-   ├─ Card / Divider / Pill / DateTime .... (existing primitives)
+   ├─ Card / Collapse / Divider / Pill / Tooltip / DateTime .... (existing primitives)
+   ├─ TaskTable .................. organism     (embedded task list)
    └─ MarkdownProse .............. molecule     (Custom/Prose — new shared primitive)
       └─ Typography .............. (existing primitive)
 
@@ -72,25 +74,28 @@ Initiative reader (no organism: the host composes the pieces)
 
 ## Dependency map
 
-| Component             | Tier     | Composes ↓                                                                   | Used-by ↑                                                     |
-| --------------------- | -------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| `PortfolioOverview`   | organism | Card, Metric, Eyebrow, InitiativeCard                                        | app root (`Custom/ActiveWork/PortfolioOverview`)              |
-| `InitiativeCard`      | card     | Card, Pill, StatusDot, SegmentedBar, Typography                              | PortfolioOverview                                             |
-| `FileHistoryExplorer` | organism | Card, Tile, Divider, Eyebrow, FileActivityRow/Detail, CoChangeChip           | app root (`Custom/ActiveWork/FileHistoryExplorer`)            |
-| `FileActivityDetail`  | card     | Card, Tile, Pill, DataRow, DateTime, SparkBars, FilePathLabel, Eyebrow       | FileHistoryExplorer                                           |
-| `FileActivityRow`     | row      | FilePathLabel, SparkBars, Typography                                         | FileHistoryExplorer                                           |
-| `CoChangeChip`        | molecule | Card, Pill, FilePathLabel, Typography                                        | FileHistoryExplorer                                           |
-| `FilePathLabel`       | atom     | Typography (`mono`) — moved to `ui/file-path-label` (TD-418)                 | FileActivityRow, FileActivityDetail, CoChangeChip             |
-| `TaskTable`           | organism | Table, useTable, TableHeader/Row/HeaderCell, TaskRow, SeverityLabel, Eyebrow | app root (`Custom/ActiveWork/TaskTable`)                      |
-| `TaskRow`             | row      | TableRow, TableCell, SeverityLabel, Pill, Typography                         | TaskTable                                                     |
-| `SeverityLabel`       | molecule | Indicator, Typography (`caption`)                                            | TaskRow, TaskTable (legend), InitiativeCard (vocabulary)      |
-| `TaskStagePill`       | molecule | Pill (+ `TASK_STAGE_META`)                                                   | not yet composed (TaskBoard and TaskDetail follow, TP-860b-d) |
-| `SessionList`         | list     | Eyebrow, SessionListItem                                                     | host composition (`Custom/ActiveWork/SessionReader` story)    |
-| `SessionListItem`     | row      | DateTime, Pill, Typography                                                   | SessionList                                                   |
-| `SessionDetail`       | card     | Card, Divider, Pill, DateTime, MarkdownProse (+ `sessionLinkers`)            | host composition (`Custom/ActiveWork/SessionReader` story)    |
-| `InitiativeHeader`    | molecule | StatusDot, Pill, DateTime, Typography (+ `INITIATIVE_STATE_META`)            | host composition (`Custom/ActiveWork/InitiativeReader` story) |
-| `OpenLoops`           | list     | Eyebrow, Pill, Divider, MarkdownProse                                        | host composition (`Custom/ActiveWork/InitiativeReader` story) |
-| `InitiativeBrief`     | card     | Eyebrow, Typography, MarkdownProse                                           | host composition (`Custom/ActiveWork/InitiativeReader` story) |
+| Component                | Tier     | Composes ↓                                                                                                                   | Used-by ↑                                                           |
+| ------------------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `PortfolioOverview`      | organism | Card, Metric, Typography, Eyebrow, InitiativeCard                                                                            | app root (`Custom/ActiveWork/PortfolioOverview`)                    |
+| `InitiativeCard`         | card     | Card, Pill, StatusDot, SegmentedBar, Typography, SeverityLabel                                                               | PortfolioOverview                                                   |
+| `FileHistoryExplorer`    | organism | Card, Tile, Divider, Typography, Eyebrow, FileActivityRow/Detail, Pill, FilePathLabel                                        | app root (`Custom/ActiveWork/FileHistoryExplorer`)                  |
+| `FileActivityDetail`     | card     | Card, Tile, Pill, DataRow, DateTime, Typography, FilePathLabel, Eyebrow, GrowthWell                                          | FileHistoryExplorer                                                 |
+| `FileActivityGrowthWell` | card     | CardInset, SparkBars (`ui/charts/spark-bars`), Typography, Eyebrow                                                           | FileActivityDetail                                                  |
+| `FileActivityRow`        | row      | FilePathLabel, SparkBars, Typography                                                                                         | FileHistoryExplorer                                                 |
+| `CoChangeChip`           | molecule | Card, Pill, FilePathLabel, Typography                                                                                        | none (deprecated)                                                   |
+| `FilePathLabel`          | atom     | Typography (`mono`) — moved to `ui/file-path-label` (TD-418)                                                                 | FileActivityRow, FileActivityDetail, FileHistoryExplorer            |
+| `TaskTable`              | organism | Table, useTable, TableHeader/Row/HeaderCell, TaskRow, SeverityLabel, Typography, Eyebrow                                     | app root (`Custom/ActiveWork/TaskTable`), SessionDetail             |
+| `TaskRow`                | row      | TableRow, TableCell, Pill, Indicator, Tooltip, Typography                                                                    | TaskTable                                                           |
+| `SeverityLabel`          | molecule | Indicator, Typography (`caption`)                                                                                            | TaskTable (legend), InitiativeCard (vocabulary)                     |
+| `TaskStagePill`          | molecule | Pill (+ `TASK_STAGE_META`)                                                                                                   | not yet composed (TaskBoard and TaskDetail follow, follow-up tasks) |
+| `SessionList`            | list     | Divider, Typography, Eyebrow, SessionListItem                                                                                | host composition (`Custom/ActiveWork/SessionReader` story)          |
+| `SessionListItem`        | row      | DateTime, Tooltip, Typography                                                                                                | SessionList, SessionDetail                                          |
+| `SessionDetail`          | card     | Card, Collapse, Divider, Pill, Tooltip, DateTime, Typography, MarkdownProse, SessionListItem, TaskTable (+ `sessionLinkers`) | host composition (`Custom/ActiveWork/SessionReader` story)          |
+| `InitiativeHeader`       | molecule | StatusDot, Pill, DateTime, Typography (+ `INITIATIVE_STATE_META`)                                                            | host composition (`Custom/ActiveWork/InitiativeReader` story)       |
+| `OpenLoops`              | list     | Eyebrow, Pill, Divider, MarkdownProse                                                                                        | host composition (`Custom/ActiveWork/InitiativeReader` story)       |
+| `InitiativeBrief`        | card     | Eyebrow, Typography, MarkdownProse                                                                                           | host composition (`Custom/ActiveWork/InitiativeReader` story)       |
+| `RelatedList`            | list     | Eyebrow, Typography, Skeleton, EmptyState, RefChip                                                                           | not yet composed (console detail pages' related panel)              |
+| `RefChip`                | molecule | Pill, Link (+ `REF_KIND_META`)                                                                                               | RelatedList                                                         |
 
 ## Surfaces and depth
 
@@ -190,11 +195,20 @@ maps stay separate on purpose — `low` is `status-info` as a dot (it must stay 
 ## Stage vocabulary has one owner
 
 `task-stage.ts` owns `TaskStage`, `TASK_STAGE_ORDER` and `TASK_STAGE_META` (label, tone, description), declared
-`as const satisfies Record<TaskStage, TaskStageMeta>`. There are two readers: the board columns (TP-860b) and
+`as const satisfies Record<TaskStage, TaskStageMeta>`. There are two readers: the board columns (the board task) and
 `TaskStagePill`, and neither takes a tone prop. `task-stage.single-owner.test.ts` fails if another source file in
 the family names a stage, so a second stage table cannot be written. `task-flow.ts` holds the task view model and
 its pure helpers; `task-pr.ts` holds the pull-request state table. Contract:
-`round0-TP-860-task-board-detail.md`.
+the Round 0 contract for the task board and detail.
+
+## Ref kind vocabulary has one owner
+
+`ref-kind.ts` owns `RefKind`, `REF_KIND_ORDER` and `REF_KIND_META` (label, plural, glyph, `ColorToken`), and the
+`EntityRef` shape: a kind, an id, a label, an optional status (`{ label, tone }` from `PillTone`) and an optional
+`href`. `RefChip` stays neutral; the per-kind colour is for consumers that colour by kind, and `refGraphKinds()`
+hands the table to NetworkGraph as node kinds. A pull request's state maps on through `TASK_PR_STATE_META`, which
+already has the `{ label, tone }` shape. `RefChip` composes `Link`, so its `href` becomes a real anchor when Link
+renders one (TD-493). Contract: TD-P5 and K1, K3 of the M3 page contracts.
 
 ## Reuse audit
 

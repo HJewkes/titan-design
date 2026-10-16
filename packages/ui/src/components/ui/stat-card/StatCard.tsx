@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { View, type ViewProps } from 'react-native'
 
 import { cn } from '../../../utils/cn'
+import { qaAttrs } from '../../../utils/qa-attrs'
 import { Card, type CardProps } from '../card'
 import { Typography } from '../typography'
 
@@ -63,8 +64,8 @@ function FigureRow(props: {
   }
   return (
     <View
-      style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-end', zIndex: Z.figure }}
-      className="justify-between gap-x-inline-md gap-y-stack-sm"
+      style={{ zIndex: Z.figure }}
+      className="flex-row flex-wrap items-end justify-between gap-x-inline-md gap-y-stack-sm"
       testID={props.testID}
     >
       {props.figure}
@@ -111,11 +112,12 @@ export function StatCard({
       style={[{ overflow: 'visible' }, style]}
       isLoading={isLoading}
       testID={testID}
+      {...qaAttrs({ container: true })}
       {...props}
     >
-      <View className="gap-stack-md" style={{ flex: 1 }} onLayout={onContentLayout}>
+      <View className="flex-1 gap-stack-md" onLayout={onContentLayout}>
         <View style={{ zIndex: Z.top }}>
-          <View style={{ zIndex: Z.header }} testID={part('header')}>
+          <View style={{ zIndex: Z.header }} testID={part('header')} {...qaAttrs({ title: true })}>
             {header}
           </View>
           <FigureRow
@@ -126,7 +128,7 @@ export function StatCard({
           />
         </View>
         {body !== undefined && (
-          <View style={{ marginTop: 'auto' }} testID={part('body')}>
+          <View className="mt-auto" testID={part('body')}>
             {body}
           </View>
         )}
@@ -147,21 +149,18 @@ export interface StatCardHeaderProps {
 export function StatCardHeader({ title, trailing, testID }: StatCardHeaderProps) {
   return (
     <View
-      style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}
-      className="justify-between gap-x-inline-md gap-y-stack-sm"
+      className="flex-row flex-wrap items-center justify-between gap-x-inline-md gap-y-stack-sm"
       testID={testID}
     >
       {typeof title === 'string' ? (
-        <Typography variant="overline" color="tertiary">
+        <Typography variant="overline" color="secondary">
           {title}
         </Typography>
       ) : (
         title
       )}
       {trailing !== undefined && (
-        <View style={{ flexDirection: 'row', alignItems: 'center' }} className="gap-inline-sm">
-          {trailing}
-        </View>
+        <View className="flex-row items-center gap-inline-sm">{trailing}</View>
       )}
     </View>
   )

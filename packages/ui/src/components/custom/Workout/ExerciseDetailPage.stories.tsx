@@ -201,7 +201,7 @@ const meta: Meta<typeof ExerciseDetailPage> = {
       },
     },
   },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   args: {
     exercise: {
       name: 'Barbell Bench Press',

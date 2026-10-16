@@ -2,10 +2,11 @@ import { describe, it, expect } from 'vitest'
 import { axe } from 'jest-axe'
 import { render, screen } from '@testing-library/react'
 import { GhostSpark, GHOST_GUTTER } from './GhostSpark'
-import { siblingSource } from '../../../test/spacing-resolver'
-import { FATIGUE_STATES } from './fatigue-mock'
+import { DualGhostSpark } from './DualGhostSpark'
+import { FATIGUE_STATES, buildMockModel, TARGET_TEMPO_SECONDS } from './fatigue-mock'
 
 const model = FATIGUE_STATES[3].model // the full 8-rep set
+const fiveRep = buildMockModel(4).velocityCurves
 
 describe('GhostSpark', () => {
   it('has no accessibility violations', async () => {
@@ -13,6 +14,18 @@ describe('GhostSpark', () => {
       <GhostSpark curves={model.velocityCurves} width={360} height={180} />
     )
     expect(await axe(container)).toHaveNoViolations()
+  })
+
+  it('exposes a text alternative as an image and hides the svg', () => {
+    const { container } = render(<GhostSpark curves={fiveRep} width={360} height={180} />)
+    expect(screen.getByRole('img', { name: /rep 5/i })).toBeInTheDocument()
+    expect(container.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
+  })
+
+  it('lets accessibilityLabel override the summary', () => {
+    render(<GhostSpark curves={fiveRep} width={360} height={180} accessibilityLabel="Bar speed" />)
+    expect(screen.getByRole('img', { name: 'Bar speed' })).toBeInTheDocument()
+    expect(screen.queryByRole('img', { name: /rep 5/i })).not.toBeInTheDocument()
   })
 
   it('renders without crashing for a populated set', () => {
@@ -61,16 +74,33 @@ describe('GhostSpark', () => {
  * the way GhostBand already exports BAND_H and BAND_GAP.
  */
 describe('GhostSpark gutter is one number', () => {
-  it('renders both branches through GHOST_GUTTER', () => {
-    const source = siblingSource(import.meta.url, 'GhostSpark.tsx')
+  const gutter = { paddingLeft: `${GHOST_GUTTER}px`, paddingRight: `${GHOST_GUTTER}px` }
+
+  it.each([
+    ['performed', model.velocityCurves],
+    ['prescribed', []],
+  ] as const)('renders the %s branch through GHOST_GUTTER', (_branch, curves) => {
+    render(
+      <GhostSpark
+        curves={[...curves]}
+        width={360}
+        height={180}
+        targetTempoSeconds={TARGET_TEMPO_SECONDS}
+      />
+    )
     expect(GHOST_GUTTER).toBe(4)
-    expect(source.match(/paddingHorizontal: GHOST_GUTTER/g)).toHaveLength(2)
-    expect(source).not.toMatch(/paddingHorizontal: [0-9]/)
+    expect(screen.getByTestId('ghost-spark')).toHaveStyle(gutter)
   })
 
   it('is the same gutter the dual spark carries', () => {
-    const dual = siblingSource(import.meta.url, 'DualGhostSpark.tsx')
-    expect(dual).toContain('paddingHorizontal: GHOST_GUTTER')
-    expect(dual).not.toMatch(/paddingHorizontal: [0-9]/)
+    render(
+      <DualGhostSpark
+        left={model.velocityCurves}
+        right={model.velocityCurves}
+        width={360}
+        height={232}
+      />
+    )
+    expect(screen.getByTestId('dual-ghost-spark')).toHaveStyle(gutter)
   })
 })

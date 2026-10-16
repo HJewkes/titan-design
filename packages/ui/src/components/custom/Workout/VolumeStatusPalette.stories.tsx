@@ -664,7 +664,7 @@ function VolumeStatusPaletteDecision({ backdrop, mode }: DecisionArgs & { mode: 
  */
 const meta: Meta<DecisionArgs> = {
   title: 'Lab/Decisions/Volume Status Palette',
-  tags: ['autodocs', 'status:lab'],
+  tags: ['autodocs', 'status:lab', '!status:review'],
   argTypes: {
     backdrop: {
       control: 'inline-radio',

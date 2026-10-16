@@ -103,7 +103,7 @@ function SectionHeading({
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
-      accessibilityState={{ expanded: open }}
+      aria-expanded={open}
       testID="brief-section-heading"
       className="flex-row items-center justify-between py-1.5"
     >

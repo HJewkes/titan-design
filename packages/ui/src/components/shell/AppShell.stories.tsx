@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { View, Text } from 'react-native'
+import { Text, View } from 'react-native'
 import { Surface } from '../ui/surface'
 import { Pill } from '../ui/pill'
 import { Typography } from '../ui/typography'
+import { Page, PageHeader } from '../ui/page'
 import { BotIcon, BrainIcon, HeadphonesIcon, LayersIcon, StarIcon } from '../icons'
 import { AppShell } from './AppShell'
 import { brandKeys } from './brands'
@@ -19,16 +20,16 @@ const audiobookNav: SideNavItem[] = [
   { key: 'saved', label: 'Saved', icon: <StarIcon size={20} color="currentColor" /> },
 ]
 
-function Page({ title }: { title: string }) {
+function Content({ title }: { title: string }) {
   return (
-    <View className="flex-1 gap-1.5 p-7">
-      <Typography variant="h4" color="primary">
-        {title}
-      </Typography>
-      <Typography variant="body2" color="tertiary">
-        A page mounts its content here; the shell keeps the nav + top-bar chrome persistent.
-      </Typography>
-    </View>
+    <Page
+      header={
+        <PageHeader
+          title={title}
+          description="A page mounts its content here; the shell keeps the nav + top-bar chrome persistent."
+        />
+      }
+    />
   )
 }
 
@@ -51,12 +52,17 @@ const meta: Meta<typeof AppShell> = {
           '**Composition (AW-132).** It knows nothing about any one app. Chrome arrives ' +
           'through `topBarTrailing`; categories through `navItems`; `topBar` and `nav` ' +
           'replace those regions outright. An app builds its own shell by composing this one ' +
-          '— see [WorkoutShell](?path=/docs/pages-workoutshell--docs).',
+          '— see [WorkoutShell](?path=/docs/pages-workoutshell--docs).\n\n' +
+          '**Content padding (TD-795).** The content region is padded `p-gutter-sm` below `md` ' +
+          'and `p-gutter-md` from it. `contentPadding="none"` drops it for a child that owns ' +
+          'its gutter (a `Page`) or bleeds to the edge; use the viewport toolbar ' +
+          'on Default to see 16px below 768px and 24px from it.',
       },
     },
   },
   argTypes: {
     brand: { control: 'select', options: brandKeys },
+    contentPadding: { control: 'inline-radio', options: ['default', 'none'] },
     onNavigate: { control: false },
     topBar: { control: false },
     nav: { control: false },
@@ -75,9 +81,24 @@ const meta: Meta<typeof AppShell> = {
 export default meta
 type Story = StoryObj<typeof AppShell>
 
-/** No app chrome at all — the frame on its own. */
+function PaddedBody() {
+  return (
+    <View className="flex-1 border border-dashed border-border-default">
+      <Typography variant="body2" color="primary">
+        Content sits one gutter in from the rail and the bar.
+      </Typography>
+    </View>
+  )
+}
+
+/** No app chrome at all — the frame on its own. `contentPadding` is the control. */
 export const Default: Story = {
-  args: { brand: 'voltras', navItems: brainNav, activeKey: 'notes' },
+  args: { brand: 'voltras', navItems: brainNav, activeKey: 'notes', contentPadding: 'default' },
+  render: (args) => (
+    <AppShell {...args}>
+      <PaddedBody />
+    </AppShell>
+  ),
 }
 
 /** The brain app: its own brand, categories, top-bar chrome and page. */
@@ -96,8 +117,8 @@ export const BrainApp: Story = {
     ],
   },
   render: (args) => (
-    <AppShell {...args}>
-      <Page title="Graph" />
+    <AppShell {...args} contentPadding="none">
+      <Content title="Graph" />
     </AppShell>
   ),
 }
@@ -116,18 +137,19 @@ export const AudiobookApp: Story = {
     ),
   },
   render: (args) => (
-    <AppShell {...args}>
-      <Page title="Library" />
+    <AppShell {...args} contentPadding="none">
+      <Content title="Library" />
     </AppShell>
   ),
 }
 
 /** Both slots replaced: the app brings its own bar and its own rail. */
 export const ReplacedRegions: Story = {
-  args: { navItems: brainNav, activeKey: 'notes' },
+  args: { brand: 'voltras', navItems: brainNav, activeKey: 'notes' },
   render: (args) => (
     <AppShell
       {...args}
+      contentPadding="none"
       topBar={
         <Surface level="elevated" className="h-[46px] justify-center border-b border-hairline px-4">
           <Text className="font-heading text-sm text-text-secondary">an app-owned bar</Text>
@@ -144,7 +166,7 @@ export const ReplacedRegions: Story = {
         </Surface>
       }
     >
-      <Page title="Anything" />
+      <Content title="Anything" />
     </AppShell>
   ),
 }

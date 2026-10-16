@@ -3,7 +3,8 @@ import { axe } from 'jest-axe'
 import { render, screen } from '@testing-library/react'
 import { FatigueLights } from './FatigueLights'
 import type { FatigueVerdict } from './fatigue-model'
-import { resolveAll, siblingSource, spacingClassesIn } from '../../../test/spacing-resolver'
+import { capturedByNode } from '../../../test/classname-capture'
+import { resolveAll, spacingClassesAt, spacingClassesOf } from '../../../test/spacing-resolver'
 
 const dims: FatigueVerdict['dimensions'] = { velocityLoss: 'alarm', rom: 'warn', tempo: 'ok' }
 
@@ -32,6 +33,13 @@ describe('FatigueLights', () => {
     expect(screen.getByLabelText('Tempo, ok')).toBeInTheDocument()
   })
 
+  it('exposes each light as a named image, so axe has a label to check', () => {
+    render(<FatigueLights dimensions={dims} />)
+    expect(screen.getByRole('img', { name: 'Velocity loss, alarm' })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'ROM depth, watch' })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'Tempo, ok' })).toBeInTheDocument()
+  })
+
   it('renders neutral "warming up" lights when dimensions are null', () => {
     render(<FatigueLights dimensions={null} />)
     expect(screen.getByLabelText('Velocity loss, warming up')).toBeInTheDocument()
@@ -48,15 +56,92 @@ describe('FatigueLights', () => {
  * `gap-4` — it is horizontal and the inline ramp stops at 12.
  */
 describe('FatigueLights geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'FatigueLights.tsx')
-
   it('spaces a dot from its label by gap-inline-sm', () => {
-    expect(spacingClassesIn(source, 'Light')).toEqual(['gap-inline-sm'])
+    render(<FatigueLights dimensions={dims} />)
+    expect(spacingClassesAt(screen.getByLabelText('Velocity loss, alarm'))).toEqual([
+      'gap-inline-sm',
+    ])
     expect(resolveAll(['gap-inline-sm'])).toEqual(['4px'])
   })
 
-  it('spaces the three lights by gap-4 when not spread', () => {
-    expect(source).toContain("spread ? 'justify-between' : 'justify-start gap-4'")
+  it.each([
+    ['grouped', false, ['gap-4']],
+    ['spread', true, []],
+  ] as const)('spaces the %s lights by their gap', (_label, spread, classes) => {
+    render(<FatigueLights dimensions={dims} spread={spread} />)
+    expect(spacingClassesOf('fatigue-lights')).toEqual([...classes])
     expect(resolveAll(['gap-4'])).toEqual(['16px'])
+  })
+})
+
+describe('FatigueLights dot variant per tone', () => {
+  it.each([
+    ['velocityLoss', 'alarm', 'error'],
+    ['rom', 'warn', 'warning'],
+    ['tempo', 'ok', 'success'],
+  ] as const)('%s at tone %s renders the %s StatusDot', (dimension, tone, variant) => {
+    const only = { velocityLoss: 'ok', rom: 'ok', tempo: 'ok', [dimension]: tone } as const
+    render(<FatigueLights dimensions={only} />)
+    const dots = screen.getAllByTestId('status-dot').map((d) => d.getAttribute('aria-label'))
+    const index = ['velocityLoss', 'rom', 'tempo'].indexOf(dimension)
+    expect(dots[index]).toBe(`${variant} status`)
+  })
+
+  it('renders a neutral dot while warming up', () => {
+    render(<FatigueLights dimensions={null} />)
+    for (const dot of screen.getAllByTestId('status-dot')) {
+      expect(dot).toHaveAttribute('aria-label', 'neutral status')
+    }
+  })
+})
+
+describe('FatigueLights variant="chips"', () => {
+  it('has no accessibility violations', async () => {
+    const { container } = render(<FatigueLights dimensions={dims} variant="chips" />)
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
+  it('gives each dimension a glyph and its label, with the tone word in the name', () => {
+    render(<FatigueLights dimensions={dims} variant="chips" />)
+
+    for (const [name, label] of [
+      ['Velocity loss, alarm', 'VEL'],
+      ['ROM depth, watch', 'ROM'],
+      ['Tempo, ok', 'TEMPO'],
+    ]) {
+      const chip = screen.getByRole('img', { name })
+      expect(chip.querySelector('svg')).not.toBeNull()
+      expect(chip).toHaveTextContent(label)
+    }
+    expect(screen.queryAllByTestId('status-dot')).toHaveLength(0)
+  })
+
+  it('draws the alarm chip with the error glyph and the ok chip with the success glyph', () => {
+    render(<FatigueLights dimensions={dims} variant="chips" />)
+
+    const stroke = (name: string) =>
+      screen.getByRole('img', { name }).querySelector('svg')!.getAttribute('stroke')
+    expect(stroke('Velocity loss, alarm')).toBe('var(--color-status-error)')
+    expect(stroke('Tempo, ok')).toBe('var(--color-status-success)')
+  })
+
+  it('sets every label in neutral text-primary ink, never a status colour', () => {
+    render(<FatigueLights dimensions={dims} variant="chips" />)
+
+    for (const label of ['VEL', 'ROM', 'TEMPO']) {
+      const classes = capturedByNode.get(screen.getByText(label)) ?? ''
+      expect(classes).toMatch(/\btext-text-primary\b/)
+      expect(classes).not.toMatch(/status-|text-text-(error|warning|success)/)
+    }
+  })
+
+  it('renders neutral chips while warming up', () => {
+    render(<FatigueLights dimensions={null} variant="chips" />)
+
+    const stroke = screen
+      .getByRole('img', { name: 'Tempo, warming up' })
+      .querySelector('svg')!
+      .getAttribute('stroke')
+    expect(stroke).toBe('var(--color-text-secondary)')
   })
 })

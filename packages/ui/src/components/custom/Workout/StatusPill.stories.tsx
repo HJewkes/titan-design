@@ -5,7 +5,7 @@ import { StatusPill } from './StatusPill'
 const meta: Meta<typeof StatusPill> = {
   title: 'Custom/Workout/StatusPill',
   component: StatusPill,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   parameters: {
     docs: {
       description: {

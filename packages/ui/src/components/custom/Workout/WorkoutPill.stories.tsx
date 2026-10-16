@@ -5,7 +5,7 @@ import { WorkoutPill } from './WorkoutPill'
 const meta: Meta<typeof WorkoutPill> = {
   title: 'Custom/Workout/WorkoutPill',
   component: WorkoutPill,
-  tags: ['autodocs'],
+  tags: ['autodocs', 'status:candidate', '!status:review'],
   argTypes: {
     name: { control: 'text', description: 'Workout name' },
     status: {

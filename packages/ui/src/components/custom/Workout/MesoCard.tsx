@@ -1,25 +1,13 @@
 // Font mapping: font-heading=Space Grotesk, font-body=Nunito Sans (UI), font-sans=Inter (body)
-import { useEffect, useState } from 'react'
-import { View, Text, Pressable, Animated, Easing, type ViewProps } from 'react-native'
+import { View, Text, type ViewProps } from 'react-native'
 import { Card } from '../../ui/card'
 import { Badge } from '../../ui/badge'
-import { WeekRow, type WeekRowProps } from './WeekRow'
+import type { WeekRowProps } from './WeekRow'
 import { getSemanticColors } from '../../../theme/tokens/semantic'
 import { useSurfaceMode } from '../../ui/surface'
-import {
-  MESO_ACCENT_GRADIENT_DARK,
-  MESO_ACCENT_GRADIENT_LIGHT,
-} from '../../../theme/extracted-colors-dataviz'
 import { getGlowShadow } from '../../../theme/elevation'
 import { alpha } from '../../../utils/colors'
-
-const BRAND_PRIMARY_DARK = MESO_ACCENT_GRADIENT_DARK
-const BRAND_PRIMARY_LIGHT = MESO_ACCENT_GRADIENT_LIGHT
-
-/** Gradient stops for the 3px top accent: dark -> primary -> light. */
-function accentStops(brandPrimary: string): string[] {
-  return [BRAND_PRIMARY_DARK, brandPrimary, BRAND_PRIMARY_LIGHT]
-}
+import { MesoAccentStrip, MesoCardPressRegion, MesoWeekList } from './MesoCard.parts'
 
 export interface MesoVolumeHeatmapEntry {
   /** Muscle group identifier (free-form to match plan data). */
@@ -64,10 +52,41 @@ function heatmapColor(percentage: number, brandPrimary: string): string {
   return alpha(brandPrimary, opacity)
 }
 
+function MesoHeatmapStrip({
+  entries,
+  brandPrimary,
+}: {
+  entries: ReadonlyArray<{ group: string; percentage: number }>
+  brandPrimary: string
+}) {
+  return (
+    <View
+      className="flex-row items-center mt-2.5"
+      // optical: hairline between 8px heatmap segments; 4px reads as separate bars.
+      style={{ gap: 3 }}
+      accessibilityElementsHidden
+      testID="meso-card-heatmap"
+    >
+      {entries.map((entry) => (
+        <View
+          key={entry.group}
+          style={{
+            flex: 1,
+            height: 8,
+            borderRadius: 2,
+            backgroundColor: heatmapColor(entry.percentage, brandPrimary),
+          }}
+          testID="meso-card-heatmap-cell"
+        />
+      ))}
+    </View>
+  )
+}
+
 /**
  * A mesocycle card with name, goal, split, week range, an optional volume
- * heatmap strip, and an expandable WeekRow list. Highlighting animates the
- * border toward brand-primary with a subtle glow to stay in sync with the
+ * heatmap strip, and an expandable WeekRow list. Highlighting sets a
+ * brand-primary border with a subtle glow to stay in sync with the
  * MesoProgressBar.
  *
  * @example
@@ -103,24 +122,6 @@ export function MesoCard({
   const t = getSemanticColors(useSurfaceMode())
   const brandPrimary = t['brand-primary']
   const borderDefault = t['hairline-default']
-  const isExpandable = onToggle != null
-  const [highlight] = useState(() => new Animated.Value(highlighted ? 1 : 0))
-
-  useEffect(() => {
-    const animation = Animated.timing(highlight, {
-      toValue: highlighted ? 1 : 0,
-      duration: 250,
-      easing: Easing.out(Easing.ease),
-      useNativeDriver: false,
-    })
-    animation.start()
-    return () => animation.stop()
-  }, [highlighted, highlight])
-
-  const borderColor = highlight.interpolate({
-    inputRange: [0, 1],
-    outputRange: [borderDefault, brandPrimary],
-  })
 
   const header = (
     <View className="px-3.5 pt-inset-md pb-2.5" testID="meso-card-body">
@@ -153,91 +154,42 @@ export function MesoCard({
       </Text>
 
       {volumeHeatmap && volumeHeatmap.length > 0 && (
-        <View
-          className="flex-row items-center mt-2.5"
-          // optical: hairline between 8px heatmap segments; 4px reads as separate bars.
-          style={{ gap: 3 }}
-          accessibilityElementsHidden
-          testID="meso-card-heatmap"
-        >
-          {volumeHeatmap.map((entry) => (
-            <View
-              key={entry.group}
-              style={{
-                flex: 1,
-                height: 8,
-                borderRadius: 2,
-                backgroundColor: heatmapColor(entry.percentage, brandPrimary),
-              }}
-              testID="meso-card-heatmap-cell"
-            />
-          ))}
-        </View>
+        <MesoHeatmapStrip entries={volumeHeatmap} brandPrimary={brandPrimary} />
       )}
     </View>
   )
 
   return (
-    <Animated.View
-      style={highlighted ? { transform: [{ scale: 1.0 }] } : undefined}
-      testID="meso-card-wrapper"
+    <Card
+      variant="outline"
+      elevation={2}
+      borderColor={highlighted ? brandPrimary : borderDefault}
+      className={className}
+      // Highlight is emphasis, not depth: a brand glow through the shared builder.
+      style={highlighted ? getGlowShadow(brandPrimary, 'subtle') : undefined}
+      testID="meso-card"
+      {...props}
     >
-      <Card
-        variant="outline"
-        elevation={2}
-        borderColor={highlighted ? brandPrimary : borderDefault}
-        className={className}
-        style={[
-          { borderColor: borderColor as unknown as string },
-          // Highlight is emphasis, not depth: a brand glow through the shared builder.
-          highlighted ? getGlowShadow(brandPrimary, 'subtle') : undefined,
-        ]}
-        testID="meso-card"
-        {...props}
+      <MesoAccentStrip brandPrimary={brandPrimary} />
+
+      <MesoCardPressRegion
+        onToggle={onToggle}
+        expanded={expanded}
+        name={name}
+        goal={goal}
+        weekRange={weekRange}
       >
-        <View
-          className="flex-row"
-          style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, zIndex: 1 }}
-          accessibilityElementsHidden
-          testID="meso-card-accent"
-        >
-          {accentStops(brandPrimary).map((color) => (
-            <View key={color} style={{ flex: 1, backgroundColor: color }} />
-          ))}
-        </View>
+        {header}
+      </MesoCardPressRegion>
 
-        {isExpandable ? (
-          <Pressable
-            onPress={onToggle}
-            accessibilityRole="button"
-            accessibilityLabel={`${name}, ${goal}, ${weekRange}`}
-            aria-expanded={expanded}
-            testID="meso-card-toggle"
-          >
-            {header}
-          </Pressable>
-        ) : (
-          <View accessibilityLabel={`${name}, ${goal}, ${weekRange}`} testID="meso-card-static">
-            {header}
-          </View>
-        )}
-
-        {expanded && weeks.length > 0 && (
-          <View
-            style={{ borderTopWidth: 1, borderTopColor: borderDefault }}
-            testID="meso-card-weeks"
-          >
-            {weeks.map((week) => (
-              <WeekRow
-                key={week.weekNumber}
-                {...week}
-                totalWeeks={week.totalWeeks ?? totalWeeks}
-                isCurrent={week.isCurrent ?? week.weekNumber === currentWeek}
-              />
-            ))}
-          </View>
-        )}
-      </Card>
-    </Animated.View>
+      {expanded && weeks.length > 0 && (
+        <MesoWeekList
+          weeks={weeks}
+          totalWeeks={totalWeeks}
+          currentWeek={currentWeek}
+          borderColor={borderDefault}
+        />
+      )}
+    </Card>
   )
 }

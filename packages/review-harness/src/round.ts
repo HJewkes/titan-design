@@ -1,4 +1,11 @@
-import type { Feedback, Manifest, Question, StoryVariant } from './schema.ts'
+import {
+  takesRecommendation,
+  type Answer,
+  type Feedback,
+  type Manifest,
+  type Question,
+  type StoryVariant,
+} from '@titan-design/review-schema'
 
 // Storybook drops URL arg keys and values outside these (docs: writing-stories/args).
 const URL_SAFE_VALUE = /^[A-Za-z0-9 _-]*$/
@@ -22,6 +29,11 @@ function encodeArgMap(map: ArgMap): string {
   return Object.entries(map)
     .map(([k, v]) => `${k}:${encodeValue(v)}`)
     .join(';')
+}
+
+/** The story with one more arg set, as a scale reference renders each candidate. */
+export function withArg(variant: StoryVariant, arg: string, value: string | number | boolean) {
+  return { ...variant, args: { ...variant.args, [arg]: value } }
 }
 
 export function storyUrl(base: string, variant: StoryVariant): string {
@@ -53,16 +65,74 @@ export function urlParamProblems(manifest: Manifest): string[] {
   return manifest.variants.flatMap((v) => [
     ...argMapProblems(`variant ${v.key} args`, v.args),
     ...argMapProblems(`variant ${v.key} globals`, v.globals),
+    ...(v.scale?.candidates ?? []).flatMap((candidate) =>
+      argMapProblems(`variant ${v.key} scale`, { [v.scale!.arg]: candidate })
+    ),
   ])
 }
 
-function answerProblems(
-  question: Question,
-  answer: Feedback['answers'][number] | undefined,
-  skipped: boolean
-) {
-  if (!answer) return question.required && !skipped ? [`${question.id}: required`] : []
-  const problems: string[] = []
+function revisionProblems(question: Question, answer: Answer): string[] {
+  if (!answer.revisionRequested) return []
+  if (question.kind !== 'pick-one')
+    return [`${question.id}: only a pick-one can request a revision`]
+  if (!offersBuiltInRevision(question) && question.revisionOption === undefined)
+    return [`${question.id}: this question offers no revision request`]
+  if (answer.pick !== undefined) return [`${question.id}: a revision request is not a pick`]
+  if (!(answer.comment ?? '').trim()) return [`${question.id}: a revision request needs a comment`]
+  return []
+}
+
+/** The picked option's `after`, which an answer echoes; a revision request picks nothing. */
+export function pickedAfter(question: Question, answer: Answer): string | undefined {
+  if (question.kind !== 'pick-one' || answer.pick === undefined) return undefined
+  return question.optionDetails?.[answer.pick]?.after
+}
+
+function seenProblems(question: Question, answer: Answer): string[] {
+  if (!answer.recommendationSeen) return []
+  if (!takesRecommendation(question) || !question.recommendation)
+    return [`${question.id}: recommendationSeen on a question with no recommendation`]
+  return isAnswered(question, answer) ? [] : [`${question.id}: recommendationSeen with no answer`]
+}
+
+/** Option notes, the echoed `after` and the seen tag must agree with the question and its answer. */
+function packetProblems(question: Question, answer: Answer): string[] {
+  const options =
+    question.kind === 'pick-one' || question.kind === 'pick-many' ? question.options : []
+  return [
+    ...(answer.optionNotes ?? [])
+      .filter((n) => !options.includes(n.option))
+      .map((n) => `${question.id}: a note on "${n.option}", which is not an option`),
+    ...(answer.after !== undefined && answer.after !== pickedAfter(question, answer)
+      ? [`${question.id}: after is not the picked option's`]
+      : []),
+    ...seenProblems(question, answer),
+  ]
+}
+
+/** A blind-ab answer names its own pairs once each, by position; only the server names engines. */
+function blindProblems(question: Question, answer: Answer): string[] {
+  if (!answer.pairs) return []
+  if (question.kind !== 'blind-ab') return [`${question.id}: only a blind-ab question has pairs`]
+  const ids = new Set(question.pairs.map((p) => p.id))
+  const given = answer.pairs.map((p) => p.pair)
+  return [
+    ...given.filter((p) => !ids.has(p)).map((p) => `${question.id}: unknown pair ${p}`),
+    ...given.filter((p, i) => given.indexOf(p) !== i).map((p) => `${question.id}: pair ${p} twice`),
+    ...(answer.pairs.some((p) => p.engine !== undefined)
+      ? [`${question.id}: engines are revealed by the server, never sent`]
+      : []),
+  ]
+}
+
+function answerProblems(question: Question, given: Answer | undefined, skipped: boolean) {
+  if (!given) return question.required && !skipped ? [`${question.id}: required`] : []
+  const answer = normalizeAnswer(question, given)
+  const problems = [
+    ...revisionProblems(question, answer),
+    ...packetProblems(question, answer),
+    ...blindProblems(question, answer),
+  ]
   if (question.kind === 'pick-one' && answer.pick !== undefined) {
     if (!question.options.includes(answer.pick)) problems.push(`${question.id}: unknown option`)
   }
@@ -79,10 +149,45 @@ function answerProblems(
   return problems
 }
 
-export function isAnswered(question: Question, answer: Feedback['answers'][number]): boolean {
-  if (question.kind === 'pick-one') return answer.pick !== undefined
+/** A required pick-one gets the built-in revision option unless the author listed their own. */
+export function offersBuiltInRevision(question: Question): boolean {
+  return question.kind === 'pick-one' && question.required === true && !question.revisionOption
+}
+
+/**
+ * The one reading of whether a pick-one answer requests a revision: the round's own
+ * `revisionOption` sent as a pick means the same as the built-in request. The page, the
+ * validator and the stored feedback all read answers through here.
+ */
+export function normalizeAnswer(question: Question, answer: Answer): Answer {
+  if (question.kind !== 'pick-one' || question.revisionOption === undefined) return answer
+  if (answer.pick !== question.revisionOption) return answer
+  const { pick: _pick, ...rest } = answer
+  return { ...rest, revisionRequested: true, ...(rest.recommendation ? { agreed: false } : {}) }
+}
+
+/** Feedback as it is stored: every answer read through `normalizeAnswer`. */
+export function normalizeFeedback(feedback: Feedback, manifest: Manifest): Feedback {
+  const questions = new Map(manifest.questions.map((q) => [q.id, q]))
+  return {
+    ...feedback,
+    answers: feedback.answers.map((a) => {
+      const question = questions.get(a.questionId)
+      return question ? normalizeAnswer(question, a) : a
+    }),
+  }
+}
+
+export function isAnswered(question: Question, given: Answer): boolean {
+  const answer = normalizeAnswer(question, given)
+  if (question.kind === 'pick-one')
+    return answer.pick !== undefined || answer.revisionRequested === true
   if (question.kind === 'pick-many') return (answer.picks ?? []).length > 0
   if (question.kind === 'scale') return answer.value !== undefined
+  if (question.kind === 'blind-ab') {
+    const chosen = new Set(answer.pairs?.map((p) => p.pair))
+    return question.pairs.every((p) => chosen.has(p.id))
+  }
   return (answer.text ?? '').trim() !== ''
 }
 

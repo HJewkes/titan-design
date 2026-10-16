@@ -101,7 +101,7 @@ function Strips({ scenario, restSeconds = 47 }: DecisionArgs) {
  */
 const meta: Meta<DecisionArgs> = {
   title: 'Lab/Decisions/Pinned Live Strip',
-  tags: ['status:lab'],
+  tags: ['status:lab', '!status:review'],
   parameters: { layout: 'fullscreen' },
   argTypes: {
     scenario: {
@@ -116,6 +116,7 @@ const meta: Meta<DecisionArgs> = {
       liveKey={args.scenario === 'idle' ? null : 'live'}
       state={SHELL_STATE[args.scenario]}
       subtitle="planning"
+      contentPadding="none"
     >
       <View className="flex-1 gap-section-sm p-gutter-sm" testID="page-content">
         <Strips {...args} />

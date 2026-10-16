@@ -1,0 +1,74 @@
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import { View } from 'react-native'
+import { FacetBar } from './FacetBar'
+import { facetBarFixtures, type FacetBarFixture } from './fixtures'
+
+const fixtureNames = Object.keys(facetBarFixtures) as Array<keyof typeof facetBarFixtures>
+
+const meta: Meta<typeof FacetBar> = {
+  title: 'Components/Molecules/FacetBar',
+  component: FacetBar,
+  tags: ['autodocs', 'status:candidate', '!status:review'],
+  args: {
+    label: 'Record',
+    options: facetBarFixtures.default.options,
+    selectionMode: 'multiple',
+    defaultValue: ['notes'],
+    size: 'sm',
+    color: 'primary',
+    isDisabled: false,
+    isLabelHidden: false,
+  },
+  argTypes: {
+    fixture: {
+      control: 'select',
+      options: fixtureNames,
+      mapping: facetBarFixtures,
+    },
+    options: { control: 'object' },
+    selectionMode: { control: 'select', options: ['multiple', 'single'] },
+    size: { control: 'select', options: ['sm', 'md', 'lg'] },
+    color: {
+      control: 'select',
+      options: ['default', 'primary', 'secondary', 'success', 'error', 'warning', 'info'],
+    },
+    isDisabled: { control: 'boolean' },
+    isLabelHidden: { control: 'boolean' },
+    onValueChange: { control: false },
+    formatCount: { control: false },
+    value: { control: false },
+  } as Meta<typeof FacetBar>['argTypes'],
+  decorators: [
+    (Story) => (
+      <View style={{ width: 360 }}>
+        <Story />
+      </View>
+    ),
+  ],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          '**Molecule.** Composes [Chip](?path=/docs/components-atoms-chip--docs) and [Eyebrow](?path=/docs/components-molecules-eyebrow--docs). ' +
+          'A labelled group of toggle buttons (`aria-pressed`). No loading or error state: the consumer ' +
+          'passes loaded options and renders its own failure. Empty options render nothing. Use the ' +
+          '`fixture` control for the degenerate cases. The selected face is the Chip solid face and the ' +
+          'unselected face is the Chip subtle face, the same table Badge reads.',
+      },
+    },
+  },
+}
+export default meta
+type Story = StoryObj<typeof FacetBar>
+
+export const Default: Story = {
+  render: function Render(args) {
+    const { fixture, ...rest } = args as unknown as { fixture?: FacetBarFixture } & Record<
+      string,
+      unknown
+    >
+    const picked = fixture
+    const props = { ...rest, ...picked } as unknown as React.ComponentProps<typeof FacetBar>
+    return <FacetBar key={String(picked?.label)} {...props} />
+  },
+}

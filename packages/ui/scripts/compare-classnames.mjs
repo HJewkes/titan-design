@@ -10,6 +10,8 @@ import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import ts from 'typescript'
 
+import { isEntryPoint } from './lib/entry.mjs'
+
 const SOURCE = /\.tsx?$/
 const SKIPPED = /\.(test|stories|characterise\.test)\.tsx?$|\.d\.ts$/
 
@@ -140,7 +142,7 @@ export function formatChanges(changes) {
     .join('\n')
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (isEntryPoint(import.meta.url, process.argv[1])) {
   const [ref, ...paths] = process.argv.slice(2)
   if (!ref || paths.length === 0) {
     console.error('Usage: node scripts/compare-classnames.mjs <base-ref> <file-or-dir>...')

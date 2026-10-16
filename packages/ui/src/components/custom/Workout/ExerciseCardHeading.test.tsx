@@ -1,10 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import {
-  siblingSource,
-  sizeClasses,
-  spacingClassesOn,
-  resolveAll,
-} from '../../../test/spacing-resolver'
+import { resolveAll, spacingClassesOf } from '../../../test/spacing-resolver'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { ExerciseCardHeading } from './ExerciseCardHeading'
@@ -285,8 +280,6 @@ describe('ExerciseCardHeading', () => {
  * horizontal has no semantic rung and stays numeric.
  */
 describe('ExerciseCardHeading density resolves to the inset tokens', () => {
-  const source = siblingSource(import.meta.url, 'ExerciseCardHeading.tsx')
-
   const shipped = [
     ['rail', ['py-inset-sm', 'px-inset-md'], ['8px', '12px']],
     ['compact', ['py-inset-md', 'px-3.5'], ['12px', '14px']],
@@ -294,7 +287,8 @@ describe('ExerciseCardHeading density resolves to the inset tokens', () => {
   ] as const
 
   it.each(shipped)('%s reads the inset keys', (level, classes, pixels) => {
-    expect(sizeClasses(source, 'DENSITY', level, 'padding')).toEqual([...classes])
+    render(<ExerciseCardHeading {...baseProps} density={level} />)
+    expect(spacingClassesOf('exercise-card')).toEqual([...classes])
     expect(resolveAll([...classes])).toEqual([...pixels])
   })
 
@@ -302,7 +296,8 @@ describe('ExerciseCardHeading density resolves to the inset tokens', () => {
   // which states no reason for sitting 1px under the rung. Normalised on the
   // operator's call rather than kept as an optical nudge.
   it('puts the strip offset on the stack ramp', () => {
-    expect(spacingClassesOn(source, 'exercise-card-strip')).toEqual(['mt-stack-md'])
+    render(<ExerciseCardHeading {...baseProps} />)
+    expect(spacingClassesOf('exercise-card-strip')).toEqual(['mt-stack-md'])
     expect(resolveAll(['mt-stack-md'])).toEqual(['8px'])
   })
 })

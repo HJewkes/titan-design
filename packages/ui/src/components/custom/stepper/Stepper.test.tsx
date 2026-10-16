@@ -44,11 +44,11 @@ describe('Stepper', () => {
       expect(screen.getByText('1')).toBeInTheDocument()
     })
 
-    it('shows checkmark for completed steps', () => {
-      renderStepper(2)
-      // Steps 0 and 1 should be completed, showing checkmarks
-      const checkmarks = screen.getAllByText('\u2713')
-      expect(checkmarks.length).toBe(2)
+    it('draws an SVG check for each completed step, not a ✓ text glyph', () => {
+      const { container } = renderStepper(2)
+      expect(screen.queryByText('\u2713')).toBeNull()
+      expect(container.querySelectorAll('svg')).toHaveLength(2)
+      expect(screen.getByText('3')).toBeInTheDocument()
     })
 
     it('shows number for upcoming steps', () => {
@@ -100,7 +100,7 @@ describe('Stepper', () => {
     })
 
     it('allows explicit completed status override', () => {
-      render(
+      const { container } = render(
         <Stepper activeStep={0}>
           <Step status="completed">
             <StepIndicator />
@@ -113,7 +113,8 @@ describe('Stepper', () => {
         </Stepper>
       )
       // The overridden step should show checkmark despite being at index 0 with activeStep 0
-      expect(screen.getByText('\u2713')).toBeInTheDocument()
+      expect(container.querySelectorAll('svg')).toHaveLength(1)
+      expect(screen.getByText('2')).toBeInTheDocument()
     })
   })
 

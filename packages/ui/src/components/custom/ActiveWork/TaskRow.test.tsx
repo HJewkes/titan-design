@@ -6,8 +6,8 @@ import { TaskRow } from './TaskRow'
 import type { TaskListItem } from './TaskRow'
 
 const task: TaskListItem = {
-  slug: 'active-work',
-  id: 'AW-22',
+  slug: 'planner',
+  id: 'PL-22',
   title: 'Read-only dashboard prototypes',
   severity: 'high',
   priority: 20,
@@ -59,8 +59,8 @@ describe('TaskRow', () => {
 
   it('renders every column of a fully-populated task', () => {
     renderRow()
-    expect(screen.getByText('active-work')).toBeInTheDocument()
-    expect(screen.getByText('AW-22')).toBeInTheDocument()
+    expect(screen.getByText('planner')).toBeInTheDocument()
+    expect(screen.getByText('PL-22')).toBeInTheDocument()
     expect(screen.getByText('Read-only dashboard prototypes')).toBeInTheDocument()
     expect(screen.getByText('High')).toBeInTheDocument()
     expect(screen.getByText('20')).toBeInTheDocument()
@@ -84,7 +84,7 @@ describe('TaskRow', () => {
   it('handles a task with no tags at all', () => {
     renderRow({ tags: undefined })
     expect(screen.queryByText(/^\+\d+$/)).not.toBeInTheDocument()
-    expect(screen.getByText('AW-22')).toBeInTheDocument()
+    expect(screen.getByText('PL-22')).toBeInTheDocument()
   })
 
   it('renders an em-dash for an absent estimate rather than a zero', () => {

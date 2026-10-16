@@ -2,6 +2,9 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { VolumeLandmarkBar, type VolumeLandmarks } from './VolumeLandmarkBar'
+import { getSemanticColors, type ThemeMode } from '../../../theme/tokens/semantic'
+import { Surface } from '../../ui/surface'
+import { capturedClassNames } from '../../../test/classname-capture'
 
 // Clean-number geometry: fraction(v) = v / scaleMax.
 const LANDMARKS: VolumeLandmarks = { mev: 5, mav: 15, mrv: 20 }
@@ -42,6 +45,26 @@ describe('VolumeLandmarkBar', () => {
     expect(screen.getByText('Hamstrings')).toBeInTheDocument()
     // 15 sets / 15 MAV = 100%
     expect(screen.getByTestId('volume-landmark-pct')).toHaveTextContent('100%')
+  })
+
+  it('sets the name as an overline label and the % bold, both in text-secondary', () => {
+    renderBar(10)
+    const classes = (id: string) => capturedClassNames.get(id)?.split(' ') ?? []
+    const name = classes('volume-landmark-muscle')
+    const pct = classes('volume-landmark-pct')
+    expect(name).toEqual(
+      expect.arrayContaining([
+        'font-body',
+        'text-xs',
+        'font-semibold',
+        'uppercase',
+        'text-text-secondary',
+      ])
+    )
+    expect(pct).toEqual(
+      expect.arrayContaining(['font-body', 'text-sm', 'text-text-secondary', 'font-bold'])
+    )
+    expect(pct).not.toContain('font-mono')
   })
 
   it('has the progressbar accessibility role', () => {
@@ -93,6 +116,37 @@ describe('VolumeLandmarkBar', () => {
     renderBar(10) // 10 / 25 = 40% of the track
     expect(screen.getByTestId('zone-track-fill')).toHaveStyle({ width: '40%' })
   })
+
+  // Normalise through the DOM so hex, rgb() and rgba() compare as one form.
+  function cssColor(color: string) {
+    const probe = document.createElement('div')
+    probe.style.backgroundColor = color
+    return probe.style.backgroundColor
+  }
+
+  // react-native-web writes `transparent` as rgba(0, 0, 0, 0).
+  const isPainted = (color: string) => color !== '' && !/^rgba\(.*,\s*0\)$/.test(color)
+
+  it.each(['dark', 'light'] as ThemeMode[])(
+    'paints the un-reached track with exactly one %s border-prominent layer',
+    (mode) => {
+      render(
+        <Surface theme={mode}>
+          <VolumeLandmarkBar
+            muscle="Quads"
+            currentSets={10}
+            landmarks={LANDMARKS}
+            width={WIDTH}
+            scaleMax={SCALE_MAX}
+          />
+        </Surface>
+      )
+      const layersUnderUnfilled = ['zone-track-track', 'zone-track-band', 'zone-track-unfilled']
+        .map((id) => (screen.getByTestId(id) as HTMLElement).style.backgroundColor)
+        .filter(isPainted)
+      expect(layersUnderUnfilled).toEqual([cssColor(getSemanticColors(mode)['border-prominent'])])
+    }
+  )
 
   describe('productive-zone glow', () => {
     it('glows the track in the productive zone', () => {

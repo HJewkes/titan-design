@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { capturedClassNames } from '../../../test/classname-capture'
 import { PortfolioOverview } from './PortfolioOverview'
 
 const stats = [
@@ -77,5 +78,22 @@ describe('PortfolioOverview', () => {
       <PortfolioOverview title="Portfolio" subtitle="Overview" stats={stats} sections={sections} />
     )
     expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+describe('PortfolioOverview className merge', () => {
+  it('lets a caller class replace the root class it conflicts with', () => {
+    render(
+      <PortfolioOverview
+        title="Portfolio"
+        stats={stats}
+        sections={[]}
+        className="gap-2"
+        testID="cn-root"
+      />
+    )
+    const classes = capturedClassNames.get('cn-root')?.split(/\s+/)
+    expect(classes).toContain('gap-2')
+    expect(classes).not.toContain('gap-5')
   })
 })

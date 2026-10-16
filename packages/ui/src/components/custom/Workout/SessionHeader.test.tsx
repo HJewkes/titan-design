@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { siblingSource, spacingClassesIn, resolveAll } from '../../../test/spacing-resolver'
+import { spacingClassesOf, spacingClassesAt, resolveAll } from '../../../test/spacing-resolver'
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { SessionHeader, type SessionHeaderPlanEntry } from './SessionHeader'
@@ -129,15 +129,16 @@ describe('SessionHeader', () => {
  * pace bar was 5px, off the grain, and takes `stack-sm`.
  */
 describe('SessionHeader geometry resolves to the spacing tokens', () => {
-  const source = siblingSource(import.meta.url, 'SessionHeader.tsx')
-
   it('insets the header uniformly', () => {
-    expect(spacingClassesIn(source, 'SessionHeader')).toEqual(['p-inset-md'])
+    render(<SessionHeader {...liveProps} />)
+    expect(spacingClassesOf('session-rail-header')).toEqual(['p-inset-md'])
     expect(resolveAll(['p-inset-md'])).toEqual(['12px'])
   })
 
   it('puts the pace-bar label row on the stack ramp', () => {
+    render(<SessionHeader {...liveProps} />)
+    const row = screen.getByTestId('session-rail-sets').parentElement
+    expect(spacingClassesAt(row)).toContain('mt-stack-sm')
     expect(resolveAll(['mt-stack-sm'])).toEqual(['4px'])
-    expect(source).toContain('mt-stack-sm')
   })
 })

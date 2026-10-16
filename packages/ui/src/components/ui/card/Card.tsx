@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react'
 import { View, Text, Pressable, type ViewProps, type ViewStyle } from 'react-native'
 import { cn } from '../../../utils/cn'
 import { liftStyle, type LiftStep } from '../../../theme/lift'
+import { resolveColor } from '../../../theme/resolve-color'
 import { Surface } from '../surface/Surface'
 import { SurfaceContext, type SurfaceContextValue } from '../surface/SurfaceContext'
 import { useResolvedSurface } from '../surface/resolveSurface'
@@ -147,7 +148,7 @@ export function Card({
     }
     if (variant === 'accent') {
       own.borderLeftWidth = accentWidth ?? 3
-      own.borderLeftColor = accentColor ?? 'var(--color-brand-primary)'
+      own.borderLeftColor = accentColor ?? resolveColor('brand-primary', depth.mode)
     }
     if (borderColor) own.borderColor = borderColor
     return style ? [own, style] : own
@@ -206,15 +207,18 @@ export function CardHeader({ children, className }: CardHeaderProps) {
 export interface CardTitleProps {
   children?: React.ReactNode
   className?: string
+  /** Heading level, 1 to 6. Web renders the matching h1..h6. */
+  level?: 1 | 2 | 3 | 4 | 5 | 6
 }
 
 /**
  * Title for CardHeader.
  */
-export function CardTitle({ children, className }: CardTitleProps) {
+export function CardTitle({ children, className, level = 3 }: CardTitleProps) {
   return (
     <Text
       accessibilityRole="header"
+      aria-level={level}
       className={cn('text-lg font-semibold text-text-primary font-heading', className)}
     >
       {children}
@@ -271,7 +275,7 @@ interface SkeletonBodyProps {
 function SkeletonBody({ hasHeader, hasFooter, contentLines }: SkeletonBodyProps) {
   return (
     <>
-      {hasHeader && (
+      {!!hasHeader && (
         <CardHeader>
           <View className="h-5 w-1/3 bg-interactive-disabled rounded" />
           <View className="h-4 w-2/3 bg-interactive-disabled rounded" />
@@ -288,7 +292,7 @@ function SkeletonBody({ hasHeader, hasFooter, contentLines }: SkeletonBodyProps)
           />
         ))}
       </CardContent>
-      {hasFooter && (
+      {!!hasFooter && (
         <CardFooter>
           <View className="h-9 w-24 bg-interactive-disabled rounded" />
         </CardFooter>
@@ -324,9 +328,11 @@ export function CardSkeleton({
   )
 }
 
+/** Props for {@link CardInset}, a recessed well one plane down from its card. */
 export interface CardInsetProps extends ViewProps {
   /** Additional className */
   className?: string
+  /** Content of the well. */
   children?: React.ReactNode
 }
 

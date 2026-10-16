@@ -12,15 +12,27 @@ as JSON on stdout and in `feedback.json`. Private workspace tool, not published.
 3. The active card has an orange border. `1` chosen, `2` rejected, `3` maybe, `0` clears.
 4. `Tab` jumps to that card's comment box. `Enter` moves to the next card or question.
 5. `a` turns pins on: click a spot on any frame, type a note. `Esc` turns pins off.
-6. On a question, `1`-`9` pick its options; the scale takes its value directly.
+6. On a question, `1`-`9` pick its options; the scale takes its value directly. `r` shows or
+   hides the question's recommendation.
 7. The last box is for general notes. `l` toggles one column per variant.
-   A sectioned round asks each group's question above that group's frames, and every frame
-   carries the question it belongs to in its (sticky) header. It shows one section at a time:
+   A sectioned round asks each question directly under the frames it names (`frames`); a
+   question without `frames` sits above its section's other frames, and a Ship question reads
+   last, under every frame. It shows one page at a time, a page being one section or every
+   section of one PR group:
    `]` pages to the next section, `[` to the previous one, and `Enter` past a section's last
    stop carries on into the next. The header lists every section as a link and says
    "Section N of M"; the end of every section repeats it between Previous and Next. Next is the
    primary button and takes focus whenever a section opens, so moving on is the default; on the
    last page Review answers takes that place.
+   A page for a PR named in `prGroups` heads with the PR, its short head and its kind, and splits
+   into three tabs (owner item 167). **Review** holds the sections, every question under its
+   frames; it is the only tab that asks anything. **Diff** sets each frame's `baseImage` beside
+   its head render, read-only, with its `change` class and a link back to its Review block.
+   **Context** shows the group's description, task and done-when, codewatch report and files.
+   The Review tab's badges count open questions and change requests. A **Ship bar** sits under
+   every tab: Ship and Don't ship (the same answer as the Ship question in Review), and either
+   "Ship enabled" or each open change request linked to its question. Moving to any stop, by key
+   or link, opens Review. A round without `prGroups` renders without tabs.
 8. `Cmd+Enter` opens the final check, which lists every answer and anything missing.
 9. `Cmd+Enter` again sends once every question has an answer. The tab says "Sent", and the
    agent is already iterating. If any question is unanswered, the check says how many, Back
@@ -35,12 +47,50 @@ as JSON on stdout and in `feedback.json`. Private workspace tool, not published.
 # Storybook first, from packages/ui (never bare `storybook dev`):
 node scripts/storybook-launch.mjs --isolated          # prints its port, e.g. 6107
 
-pnpm review --example --storybook http://127.0.0.1:6107 > <round-dir>/round.json   # a starting point
-pnpm review --example --sections --storybook http://127.0.0.1:6107                # the same, grouped
+pnpm review --example --storybook http://127.0.0.1:6107 > <round-dir>/draft.json   # a starting point
 pnpm review build <round-dir>/draft.json [--storybook <url>]   # contrast gate; writes round.json
+            [--tree <path>]                                   # required when a question binds a PR head
+            [--locks [<locks.json>]]                          # lock checks; see _Build with locks_
 pnpm review <round-dir>/round.json [--storybook <url>] [--out <dir>] [--no-open] [--no-capture]
-            [--contrast-override "<reason>"]
+            [--contrast-override "<reason>"] [--allow-stale]
 ```
+
+### Serve main's harness (TD-671)
+
+The Storybook is the round tree's; the harness must be `origin/main`'s, or the owner reviews
+on an old page. Before serving, `pnpm review` runs `git fetch origin main` and compares the
+tree hash of its own `packages/review-harness` (`HEAD:./`) with `origin/main`'s, and checks
+`git status` for uncommitted edits to tracked files there. It compares trees, not commits, so a
+commit on main outside the harness does not trip it.
+
+- **Equal, no uncommitted edits**: it serves.
+- **Different, or edited but not committed**: it refuses (exit 2) before serving or rewriting
+  anything. It prints the harness commits on main this checkout lacks, then the commands that
+  serve main's harness against this round's Storybook URL and round file, from a detached
+  checkout:
+
+  ```sh
+  git -C <repo> worktree add --detach "${TMPDIR:-/tmp}/titan-review-main-<hash>" origin/main 2>/dev/null ||
+    git -C "${TMPDIR:-/tmp}/titan-review-main-<hash>" checkout --quiet --detach origin/main
+  pnpm -C "${TMPDIR:-/tmp}/titan-review-main-<hash>" install --frozen-lockfile
+  pnpm -C "${TMPDIR:-/tmp}/titan-review-main-<hash>" review <round-dir>/round.json --storybook <url> [your flags]
+  ```
+
+  `<hash>` is the first 12 hex digits of the SHA-256 of the round directory's absolute path, so
+  each round gets its own checkout and the `checkout` fallback never moves files under a server
+  for another round. Re-serving the same round reuses its checkout; check `uptime` before the
+  install. Remove it with `git worktree remove` on the printed path when the review is done.
+  `feedback.json` and the PNGs still land beside the round, because the round path is absolute.
+
+- **`--allow-stale`** serves the different harness anyway. The terminal and a red banner at the
+  top of the page both say it is behind main. Use it to test harness changes on their own
+  branch (the e2es pass it); never for a round the owner reads.
+- **Fetch fails** (offline, no remote) or the harness is not in a git checkout: it serves, and
+  the terminal and the page banner say the harness was not checked against `origin/main`.
+
+The CLI prints these commands rather than running them. The install takes minutes on a
+monorepo, and a worktree is a lasting side effect that counts against the repo's worktree
+budget, so it should be a step the agent sees and chooses.
 
 Write the manifest as `draft.json` and let `build` produce `round.json` (see _Contrast gate_).
 `pnpm review` **refuses** (exit 2) a `round.json` without a passing `contrast.json` for its
@@ -78,18 +128,29 @@ sha256 of the manifest you wrote.
 
 ## Schemas
 
-`schema/round.schema.json` and `schema/feedback.schema.json` are generated from
-`src/schema.ts` (`pnpm --filter @titan-design/review-harness schema`; a test fails if they drift).
+The schemas live in [`@titan-design/review-schema`](../review-schema/README.md), which the harness
+imports. Its `schema/round.schema.json` and `schema/feedback.schema.json` are generated from its
+`src/schema.ts` (`pnpm --filter @titan-design/review-schema schema`; a test fails if they drift).
 
-- Manifest `titan-review/round@1`: `unit`, `round`, `storybookUrl`, `context?`, `widths[]`,
+- Manifest `titan-review/round@2`: `unit`, `round`, `storybookUrl`, `context?`, `widths[]`,
   `height` (a number of px or `"auto"`, default `"auto"`; at round level a number caps every
   frame), `maxHeight` (default 1200, the cap when the round's `height` is `"auto"`),
-  `variants[{key, storyId | image, label, args?, globals?, height?}]` (at most 12, or at most 80
-  in a round with `sections`),
-  `questions[{id, kind: pick-one|pick-many|scale|text, prompt, options | min+max, required?, scope?, optionVariants?, recommendation?}]`,
-  `sections?[{id, title, context?, questionIds[], variantKeys[], seeAlso?[], height?}]`,
+  `variants[{key, storyId | image | clip | audio, label, transcript? (audio), durationMs? (audio), args?, globals?, height?, motion?, scale?, frameReference?, variantUnit?, alternate?, change?: changed|new|removed|unchanged, baseImage? (a PNG of the frame from the PR's base)}]`
+  (`motion`, `clip`, `scale` and `frameReference`: see _Motion and scale_; `audio`: see _Audio and
+  blind A/B_) (at most 12 in a round
+  without `sections`, uncapped in one with them; empty for a round of questions only, which needs no placeholder
+  frame; every frame sits in a section),
+  `questions[{id, kind: pick-one|pick-many|scale|text|blind-ab, prompt, pairs + seed? (blind-ab), options | min+max, required?, scope?, optionVariants?, recommendation?, signsOff (pick-one), page?, merge? (pick-one), frames?[], decision?: iterate|ship|decide, outcomes? (option to accept|changes|neutral), implemented? (the option, or options for pick-many, the PR implements), touches? (the tokens a non-PR question decides; see _Build with locks_)}]`,
+  `sections[{id, title, deciding, changed, context, kind?: CHOICE|STATES, questionIds[], variantKeys[], seeAlso?[], height?}]`,
+  `prGroups?[{pr: owner/name#n, headSha, sectionIds[], title?, kind?, description?, task?{id, title?, doneWhen?}, codewatch?, files?[{path, status?}]}]` (a PR group named outright, and its read-only context),
+  `build?{mainSha, mergeSha}` (written by `build --tree`; a draft that carries it is refused),
   `recommendations` (`"after-answer"`, the default, or `"shown"`),
   `contrast?{knownDefects[], measured[], unmeasured[]}` (also on a section; see _Contrast gate_).
+  The round and section `context`, each question `prompt` and each recommendation `rationale`
+  render as GitHub-flavoured markdown (headings, lists, code, links, tables), and a single
+  newline is a line break. A prompt is a heading, so it keeps only inline markup. Raw HTML
+  shows as text; links keep only http, https, mailto and relative URLs; images show their alt
+  text.
   A question over variant keys is variant-scoped and sits right under the variants; set
   `scope` to override. Args and globals go in the Storybook URL, so keys and values are
   limited to letters, digits, space, `_` and `-` (numbers and booleans are fine); anything
@@ -111,12 +172,26 @@ sha256 of the manifest you wrote.
   `recommendation {answer, rationale, confidence, by}`, our own answer to it. `answer` is one of
   the options (pick-one), a list of them (pick-many) or a value on the scale; `confidence` is
   0 to 1; `by` names the recommender (an agent name or `design-coord`). A text question takes
-  none. The page hides the recommendation until the owner answers the question, so it cannot
-  anchor them, then shows it under their pick with whether the two match. Set the round's
-  `recommendations` to `"shown"` to show every recommendation from the start.
+  none. The page hides the recommendation until the owner reveals it or answers the question, so
+  it cannot anchor them unnoticed, then shows it under their pick with whether the two match. Set
+  the round's `recommendations` to `"shown"` to show every recommendation from the start. An
+  answer given while the recommendation is visible (after a reveal, after an earlier answer, or in
+  a `"shown"` round) is sent with `recommendationSeen: true`; a blind pick stays blind when the
+  owner reveals it afterwards, and clearing the answer clears the tag. The reveal is a "Show
+  recommendation" button (`r` on the active question) on every question with a recommendation;
+  it is disabled once an answer or a `"shown"` round makes the recommendation visible anyway.
+  The recommendation box adds the recommendation's `weakPoint` and `fallback`, and its verdict
+  says "seen before answering" on a seen answer.
+- Option cards: a pick-one or pick-many with `optionDetails` shows each option as a card instead
+  of a button, in option order, so hotkey `n` still picks option `n`. A card shows its `detail`,
+  its `weakPoint` (red rule, "Weak point:") and its `after` ("If you pick this:") from the start,
+  never gated by the recommendation, plus an "Add a note" field that writes `optionNotes`. Only
+  while the recommendation is visible does the recommended card carry a "Recommended" badge.
+  The review screen lists each option note as "on <option>: <note>", the pick's `after` in muted
+  type, and "(seen recommendation)" after a seen answer.
 - Feedback `titan-review/feedback@1`: `manifestSha256`, `submittedAt`,
-  `answers[{questionId, pick | picks | value | text, comment?, variantComments?, recommendation?, agreed?}]`,
-  `variants[{key, storyId | image, verdict: chosen|rejected|maybe|null, comment, annotations[], relatedQuestionIds?}]`,
+  `answers[{questionId, pick | picks | value | text | pairs | revisionRequested, comment?, variantComments?, recommendation?, agreed?, optionNotes?, after?, recommendationSeen?}]`,
+  `variants[{key, storyId | image | clip | audio, verdict: chosen|rejected|maybe|null, comment, annotations[], relatedQuestionIds?}]`,
   `general`, `unansweredQuestionIds?`, `contrastOverride?` (see _The agent's side_). Each annotation has `width`,
   `x`/`y` in CSS px of the story frame, `xPct`/`yPct` as fractions of it, a `note`, and `target {testId?, role?, text?}` from element hit-testing.
   `variantComments[{key, comment}]` repeats, under the answer, every comment left on a frame
@@ -124,20 +199,336 @@ sha256 of the manifest you wrote.
   Both appear only in a sectioned round. `recommendation` echoes the question's recommendation,
   and `agreed` says whether the owner's answer equals it (pick-many: the same set); `agreed` is
   absent when the owner only commented. Both appear only when the question has a
-  recommendation. `unansweredQuestionIds` marks a deliberate partial submit: it lists, in
+  recommendation. `optionNotes[{option, note}]` carries the owner's non-blank notes on the
+  question's options, in option order; a note counts as free text for Ship, as a comment does.
+  `after` echoes the picked option's `optionDetails` `after` (pick-one only, never on a revision
+  request), and the server rejects one that differs from it, a note on a non-option, and
+  `recommendationSeen` on a question with no recommendation or no answer. `unansweredQuestionIds` marks a deliberate partial submit: it lists, in
   manifest order, every question the owner sent without an answer (a comment alone is not an
   answer), and a required question it lists is not an error. A full submit omits the field; the
   page sends one only when every question has an answer. The server rejects a list that
-  disagrees with the answers sent. Everything else is unchanged and means what it always did.
+  disagrees with the answers sent. Every required pick-one also offers a final "None of these, request a revision". Choosing it
+  writes `revisionRequested: true` and no `pick`; the comment is then required, and a send
+  without one is blocked with a message. It counts as answered, and `agreed` is `false` against
+  a recommendation, even when the recommended answer is the round's own `revisionOption`. Anything that reads `pick` must check `revisionRequested` first. A round
+  that lists its own such option names it in the question's `revisionOption` (one of its
+  `options`); the built-in is then not added, and picking that option is recorded the same
+  way: the server rewrites a `pick` of it to `revisionRequested` before validating or storing.
+  The match is by that field, never by option text. Option text is unique across a round's
+  pick-ones, so only one question can list a plain `"none"`; the rest use the built-in. A
+  `revisionRequested` on a pick-one that offers neither is rejected. Everything else is unchanged and means what it always did.
+
+- **A PR gets one page and one ship/no-ship question.** Any question may carry `page`, a PR key
+  `owner/name#pr`; a question with no `page` sits on the general page. Each PR page carries exactly
+  one required pick-one, "Ship owner/name#pr at <head12>?", with options exactly
+  `["Ship", "Don't ship"]`, and only that question carries
+  `merge: {repo, pr, headSha, ship: ["Ship"]}` (`headSha` is 40 lower-case hex). The design
+  questions on the page carry no `merge`: they are feedback, not the merge decision. The schema
+  refuses a bound question that is not required, has other options or another ship set, or whose
+  `page` is not its own `repo#pr`; a PR bound by two questions (at one head or two); and a `page`
+  naming a PR that has no ship/no-ship question. A ship option can never be the question's
+  `revisionOption`: an option that requests a revision can never also approve a merge. A round
+  without `merge`, `page` or `build` parses as before.
+
+  ```json
+  [
+    {
+      "id": "tb-icon",
+      "kind": "pick-one",
+      "prompt": "Where does the icon sit?",
+      "signsOff": "the toolbar icon",
+      "options": ["In the well, as built", "Bare above the title"],
+      "page": "owner/name#123"
+    },
+    {
+      "id": "tb-ship",
+      "kind": "pick-one",
+      "prompt": "Ship owner/name#123 at 0123456789ab?",
+      "signsOff": "merging the toolbar",
+      "options": ["Ship", "Don't ship"],
+      "required": true,
+      "page": "owner/name#123",
+      "merge": {
+        "repo": "owner/name",
+        "pr": 123,
+        "headSha": "0123456789abcdef0123456789abcdef01234567",
+        "ship": ["Ship"]
+      }
+    }
+  ]
+  ```
+
+## Motion and scale (decision 339(2))
+
+Static screenshots of an animation, and a size shown alone, are both hard to judge. A variant can
+therefore play, and a size question can be asked inside a full video frame beside a ruler of
+known text sizes. `examples/motion-scale/draft.json` uses both.
+
+**Motion.** `motion` on a variant says how it moves. It autoplays and loops unless it says
+otherwise (`autoplay: false`, `loop: false`).
+
+- `{ "mechanism": "arg", "arg": "progress", "from": 0, "to": 1, "durationMs": 3000 }` drives a
+  live story through one numeric arg (`arg`, `from` and `to` default to `progress`, 0 and 1). The
+  card gets a Play/Pause button, a scrubber over the whole motion and a readout
+  (`1.2s / 3.0s · progress 0.40`). Each value goes to the story through Storybook's preview
+  channel (`updateStoryArgs`), so the story re-renders in place and never reloads; this works
+  because the frames are same-origin. Every width of the variant follows one playhead. The driven
+  arg may not also sit in `args`.
+- `{ "mechanism": "clip" }` plays the variant's `clip`, a third source beside `storyId` and
+  `image`: an `.mp4` or `.webm` path relative to the round file, under the same rules as an image
+  (no `..`, inside the round directory after symlinks, sniffed for an mp4 `ftyp` box or the webm
+  magic). It plays muted at each width, under the arg player's controls: Play/Pause, a scrubber
+  that pauses where it is dropped, a readout (`1.20 / 4.00 s`) and a **Loop** checkbox that starts
+  at `loop`. The server answers byte ranges so the video can seek. Use it for a component with no
+  such arg. `keyframes` name the clip's stages in time order,
+  `[{ "atMs": 2400, "label": "3 enter: D4" }]`, each at or before `durationMs` when that is
+  stated. They list under the clip as time chips; a click pauses there, and the chip for the
+  stage the playhead is in is marked. They sit beside the playing clip, never in its place. A clip
+  needs a contrast
+  `measured` or `unmeasured` entry per mode, as an image does. Capture copies it to
+  `<key>-clip.<ext>`.
+
+A CHOICE strip compares `motion` like any other frame setting, so a playing frame is never set
+against a static one. Round lint's `sampled-animation` refuses a STATES strip of static frames of
+one story that differ only in a time arg (`progress`, `t`, `time`, `frame`, `playhead`,
+`elapsed`, or any numeric arg whose samples all sit in 0..1): show one motion variant instead.
+Image strips cannot be told apart from real states, so the rule does not see them.
+
+**Scale.** `scale` on a story variant declares a size question's candidates:
+
+```json
+"scale": { "arg": "size", "candidates": ["sm", "md", "lg"] }
+```
+
+The page renders the story once per candidate (`args` plus `size=<candidate>`), side by side in
+one `frame` (default 1920x1080), with a reference ladder down its left edge. **Fit** scales the
+whole frame into the card; **1:1** draws it at real pixels and scrolls. Above the frame, each
+candidate lists the largest text it draws (measured from the story's computed styles) in px and
+as a share of the frame height, and the ladder lists its rungs the same way
+(`title 64px · 5.9% of 1080`). The ladder defaults to caption 24, body 32, title 64 and display
+96 px (`DEFAULT_SCALE_LADDER`). titan has no video type scale yet: its Typography scale
+(`packages/ui/src/theme/tokens/semantic.ts`) tops out at h1 = 56px and is sized for screens, so
+the default carries the working 1080p sizes from decision 339(2). Pass `ladder:
+[{ "label", "px" }]` to use another. `frame` and `ladder` sit in the scale, so the variant's
+manifest `widths` do not apply to it. Candidates go in the story URL, so they follow the URL-arg
+rules above. Capture shoots one PNG per candidate at the frame size,
+`<width>-<key>-<story>-<arg>-<candidate>.png`. The contrast gate measures the story at its own
+`args`, not at each candidate. A variant can carry both `motion` and `scale` when they drive
+different args; every candidate then follows the playhead.
+
+**True-size frames.** `frameReference` on an image or clip variant says the file is a
+true-size frame, with the same `frame` and `ladder` (and defaults) as a scale:
+
+```json
+"frameReference": { "frame": { "width": 1920, "height": 1080 }, "ladder": [{ "label": "44", "px": 44 }] }
+```
+
+Load refuses a PNG whose IHDR width or height is not the declared frame; a clip's `videoWidth`
+and `videoHeight` are checked as its metadata loads, and a mismatch shows the frame-dead alert.
+The variant is drawn once, at the frame's width, not at each manifest width. It is outlined, the
+caption reads `1920×1080 · shown at 47%` (or `1:1`), and **Fit** and **1:1** switch it like a
+scale frame. The ladder is drawn into the frame's top-right corner, each bar `px × k` tall at the
+scale `k` shown, so a bar sits beside text of that size in the frame. A story variant uses
+`scale` instead and may not carry `frameReference`.
+
+## Audio and blind A/B (TD-916)
+
+**Audio frames.** `audio` is a variant's fourth source: a `.wav`, `.mp3`, `.ogg` or `.m4a` path
+relative to the round file, under the image rules (no `..`, inside the round directory after
+symlinks, sniffed for a RIFF/WAVE, ID3 or mp3 frame, OggS or `ftyp` head). It needs a `transcript`,
+shown under the player, and may state `durationMs`. The card draws one player whatever the round's
+widths: the browser's own controls (play, pause, scrub) plus a **Loop** checkbox. The server serves
+it at `api/audio/<key>` in byte ranges. It takes no `motion`, `frameReference` or pins, and no
+contrast declaration. Feedback echoes `audio`.
+
+**Blind A/B.** A `blind-ab` question compares two engines over N pairs, blind. Each pair is one
+line read by both engines; the round plays each pair's takes as A and B in an order seeded per
+round. Each engine leads in half the pairs, shuffled by the seed (`blindAbOrder` in review-schema),
+so the same seed always gives the same order. The seed is the question's `seed`, else
+`<unit>#<round>/<question id>`, so a new round reshuffles.
+
+```json
+{
+  "id": "tts",
+  "kind": "blind-ab",
+  "prompt": "Which take of each line sounds more natural?",
+  "required": true,
+  "pairs": [
+    {
+      "id": "p1",
+      "transcript": "The kettle is on and the window is open.",
+      "takes": [
+        { "engine": "engine-x", "src": "audio/p1-x.wav", "durationMs": 400 },
+        { "engine": "engine-y", "src": "audio/p1-y.wav" }
+      ]
+    }
+  ]
+}
+```
+
+Put it in a section's `questionIds` like any question; `test/fixtures/blind-ab/round.json` is a
+complete two-pair round. A pair's two takes name different engines and share one file format, so
+the served type does not tell them apart. The key (which engine plays at A) never reaches the page:
+
+- `api/round` sends each take with its `engine` replaced by its position (`A`, `B`), its `src`
+  emptied, and the question's `seed` dropped.
+- The page fetches a take at `api/audio/<question>/<pair>/<A|B>`, a URL that names its position.
+- Each pair shows its transcript, a player for A and for B, **Play A then B** (A from the start,
+  then B as A ends; A stops looping for its turn), and an A or B pick. A second click on the
+  picked take clears it. The question counts as answered once every pair is picked.
+- The answer is `pairs: [{ pair, choice: "A" | "B" }]`. The server refuses one that names an
+  `engine`, then stores each pick with the `engine` its key maps it to.
+- The reply to the submit carries the reveal, and the sent screen shows it: per pair, the engines
+  at A and B and what was picked, and how many pairs each engine won.
+
+## A round from Morning items (TD-680)
+
+`titan-review round from-morning <items.json> [--decider <file>] [--out <draft.json>]` builds a
+`round@2` draft from a seat's Morning items with no agent in the loop: the same items always
+give the same draft. It writes `draft.json` beside the items file (never `round.json`, which
+`build` owns) and prints the `build` command to run next. A draft that would fail the review
+contract is refused with the field named, so nothing reaches `build` broken.
+
+The items file is `titan-review/morning-items@1`:
+
+```json
+{
+  "schema": "titan-review/morning-items@1",
+  "unit": "widget-shop-morning",
+  "round": 1,
+  "storybookUrl": "http://127.0.0.1:6006",
+  "widths": [1280],
+  "context": "Shown at the top of the round (markdown).",
+  "items": [
+    {
+      "id": "paint-1",
+      "seat": "paint-seat",
+      "morning": "1",
+      "door": "two-way",
+      "title": "Repaint the widget shelf in teal?",
+      "body": "What the item is and why it reaches the owner (markdown).",
+      "options": [
+        { "label": "A: Teal", "proposal": "Repaint in teal this week. Pro: matches the lamps." },
+        { "label": "B: Keep beige", "proposal": "Leave it. Pro: no paint cost." },
+        { "label": "C: Defer", "proposal": "Decide after the lamps arrive." }
+      ],
+      "images": [
+        { "key": "before", "file": "shots/before.png", "label": "Beige, today" },
+        { "key": "after", "file": "shots/after.png", "label": "Teal, proposed" }
+      ],
+      "signsOff": "the shelf colour"
+    }
+  ]
+}
+```
+
+- `unit` and `round` are the round's. `storybookUrl` (default `http://127.0.0.1:6006`), `widths`
+  (default `[1280]`) and `context` are optional.
+- Each item is one question and one section. `id` is the question and section id (letters,
+  digits, `_`, `-`; at most 32). `seat` groups the items: sections follow the seats' order of
+  first appearance, each seat's items together in file order. `morning` is the item's number on
+  the seat's list and is optional. `door` is `one-way` or `two-way` and is said in the section's
+  context. `title` is the question prompt (inline markdown only). `body` is the section's
+  `changed` text.
+- **Every option carries its proposal text.** `label` is the pick as the owner clicks it;
+  `proposal` is what picking it proposes, with its reasoning, and must not be blank. The
+  section's `deciding` lists each option as `**label** Proposed: proposal`, so an option is never
+  a bare heading. A label two items share (seats reuse "C: Defer") is qualified with the item's
+  id in every item, because options are a question's own under the contract.
+- `images` are optional captures of the change, paths relative to the items file. They become a
+  `STATES` strip of image variants, each declared `unmeasured` in light and dark; replace that
+  with `measured` in the draft when a ratio is known. The draft must sit beside, or below, the
+  items file so the paths stay inside its directory. An item with no images has no strip, and a
+  round with no images has no variants at all. Variant keys are the round's, so a `key` two
+  items share (every item's "before") becomes `<key>-<item id>` in each of them.
+- `signsOff` is optional; the default names the seat, the Morning number and the title.
+- Seat text (`body`, each `proposal`, the round `context`) is relabelled and repaired before it
+  is written: a "Recommended default", "Recommend yes" or "Default:" label becomes "Proposed",
+  "recommend" as a verb in a sentence becomes "propose", a table with no header row gets a
+  blank one (a table that has one is left alone), and an orphan `**` on a line is dropped.
+  Running it twice gives the same text. Code spans and fenced blocks are quoted verbatim.
+
+The decider's answers are a separate file so they never sit in the seat's text:
+
+```json
+[
+  {
+    "questionId": "paint-1",
+    "answer": "A: Teal",
+    "rationale": "The lamps are warm and teal reads well under them.",
+    "confidence": 0.7,
+    "cite": "paint-notes section 2"
+  }
+]
+```
+
+`answer` is the item's own option label (before any qualification); `cite` says where the
+reasoning is recorded and is appended to the rationale. Each becomes the question's
+`recommendation` with `by: "decider"`, hidden until the owner answers (`after-answer`). An
+answer that is not one of the options, or a `questionId` no item has, is refused.
 
 ## Contrast gate (TD-478)
 
 `titan-review build <draft.json>` measures every story variant at every manifest width in
 **light and dark** (the Storybook `theme` global; light is `.light` on `<html>`) in headless
 Chromium, using the same renderer as capture. It writes `contrast.json` beside the draft and
-copies the draft byte for byte to `round.json` only when nothing undeclared failed. Otherwise
+writes the draft, with the builder rules below applied, to `round.json` only when nothing undeclared failed. Otherwise
 it exits 3 and `round.json` is not written. A frame whose theme did not apply is an error,
 never a pass.
+
+`--tree <path>` names the checkout the Storybook was built from. A round in which any pick-one
+carries `merge` needs it: without it, `build` exits 3 naming the bound questions. With it,
+`build` reads the tree's `HEAD` and exits 3, naming each `repo#pr` and head, unless every bound
+`headSha` is an ancestor of that `HEAD` (`git merge-base --is-ancestor`), so a ship pick never
+names a head the Storybook did not render. On success `round.json` is the draft plus
+`build: {mainSha, mergeSha}`: `mergeSha` is the tree's `HEAD`, `mainSha` its `origin/main`.
+`contrast.json` records the sha of those bytes, so the round still serves. A rebuild at the same
+heads rewrites `build` only. A round without bindings needs no tree.
+
+### Builder rules (TD-768)
+
+`build` rewrites the draft into `round.json` under these rules (`src/round-rules.ts`,
+`src/ship-gate.ts`); applying them twice changes nothing.
+
+- **Stable ids.** A question's id is the one the draft supplies and `build` never renumbers it.
+  The ask's identity across rounds is its `ask:` topic: `ask:<repo>#<pr>/ship` for a Ship
+  question (so it holds across units) and `ask:<unit>/<id>` for any other. Draft-supplied
+  `topics` are kept. Keep the id for as long as the ask is the same ask.
+- **Labels.** Every prompt starts `ITERATION: ` or `SHIP: ` (a pick-one with `merge` is SHIP) and
+  carries `topic:iteration` or `topic:ship`.
+- **Stacked PRs.** A draft's `stackedOn` is written through. When no question is about the base
+  PR, every frame in the base PR's sections is labelled `base PR #n, not under review: <label>`.
+- **Stacked PR groups.** A `prGroups` entry's own `stackedOn` is written through, so groups in one
+  round can render on different bases. When no question is about a group's base, each frame in
+  that base's sections gets the prefix `rendered on #n at <short sha>, context, not under review: `
+  on its label. A base named by a group and by the round takes the group's prefix.
+- **Ships after.** On the page, the Ship of a group stacked on another group of the round reads
+  `ships after #n`, and is disabled, naming the holder, while the holder's Ship is answered Don't
+  ship or asks for a revision. The cross-round Ship gate below ignores the holder: a holder's
+  answer orders one round and does not refuse its dependent's Ship in the next.
+- **Grouping.** A section belongs to a PR by the `prGroups` entry that lists it, else its
+  questions' `page`, else a leading `#n` or `owner/name#n` in its title. Each PR's sections sit
+  together, at the first one's place, the section holding its Ship question last, and the Ship
+  question last in that section. The page shows each such group as one page and never splits one.
+- **Layout lint.** The ruled round must pass `lintRound` from `@titan-design/review-schema`, or
+  `build` throws with one `<rule>: <message>` line per problem: a deciding question without
+  `frames`, a frame outside its question's section or under two questions, a variant unit split
+  across blocks or alternates, alternates shown over different modes, a split PR group, a Ship
+  that is not last in its group, a Ship whose head or PR is not its group's one PR at one head, or
+  an `iterate` or `decide` pick question without `implemented`, a question about a grouped PR
+  outside that group's sections (it would not be asked in the PR's Review tab), or a `baseImage`
+  on a frame whose `change` is `new`.
+- **Ship gate.** `build` exits 3, writing no `round.json`, for a Ship question whose PR had a
+  changes-requested (`revisionRequested`), declined (a pick outside `merge.ship`) or non-agreed
+  (`agreed: false`, only on a question without `implemented`) answer in the latest earlier round that asked about it. It reads
+  `feedback.json` beside a `round.json` (whose sha it must match) in sibling round directories of
+  the same unit with a lower round number, and any `--prior-feedback <feedback.json>` given. A Ship
+  bound to a different head than that round's is a fix round's and is not blocked. The same gate
+  refuses on the owner's Ship rule (`shipBlocks` in review-schema): an answer in the PR's group
+  carries free text, or picks other than the question's `implemented` option. The page applies
+  the rule live: a blocked group's Ship option is disabled and the reasons show under it. An
+  unanswered question never blocks Ship, and neither does an implemented pick that differs from
+  the recommendation (owner item 166).
 
 Thresholds (WCAG 2.1 SC 1.4.3 and 1.4.11): text 4.5:1; large text (24px, or 18.66px at
 weight 700 or more) 3:1; non-text 3:1 against the adjacent plane. Each colour is composited
@@ -177,7 +568,7 @@ round-level `contrast` holds them for every frame:
 ```json
 "contrast": {
   "knownDefects": [
-    { "element": "chip-label", "mode": "light", "kind": "text", "maxRatio": 3.2, "route": "TD-490", "reason": "text-muted on the light base" }
+    { "element": "chip-label", "mode": "light", "kind": "text", "minRatio": 3.2, "route": "TD-490", "reason": "text-muted on the light base" }
   ],
   "measured": [
     { "variant": "Wall", "mode": "dark", "kind": "text", "element": "header", "ratio": 5.1, "source": "picker on the PNG" }
@@ -189,9 +580,9 @@ round-level `contrast` holds them for every frame:
 - A `knownDefects` entry excuses the miss of exactly one element. `element`, `mode` and `kind`
   are required, and loading refuses an entry that omits one. `element` is the failing
   element's own `data-testid`, or the full selector `build` printed for it in brackets. It is
-  compared exactly, never as a substring. `variant` narrows the match further. `maxRatio`,
-  when set, excuses the miss only at or below that ratio, so a regression past it blocks
-  again. `route` is required. It is the task id of the primitive or token audit that owns an
+  compared exactly, never as a substring. `variant` narrows the match further. `minRatio`,
+  the recorded contrast of the miss, excuses it only at or above that ratio, so a regression
+  below it blocks again. The old `maxRatio` is refused at load. `route` is required. It is the task id of the primitive or token audit that owns an
   inherited miss, or `component` for the component's own miss. A declared miss is still
   printed and written with its route and ratio. Only undeclared misses block. A declaration
   that matched nothing prints `UNMATCHED` so it does not linger and hide a later miss.
@@ -204,22 +595,256 @@ thresholds, the coverage lists above, a per-frame summary (checks, failures, kno
 exempt, indeterminate), and every failure, known defect, unmeasured frame, indeterminate
 pair and unmatched declaration. Passing checks are counted, not listed.
 
+## Static frames (TD-752)
+
+`build` also renders every story frame of a passing round to static PNGs, so a round can be
+read somewhere no Storybook is running (the console's rounds view). They land beside the round:
+
+```
+<round-dir>/frames/<width>-<key>-<story-name>.png   one per story variant per width
+<round-dir>/frames/frames.json                      the index (titan-review/frames@1)
+```
+
+The file name is the same one the post-submit capture writes, so a frame has one name in both
+places. `frames.json` lists `unit`, `round`, `storybookUrl`, the `manifestSha256` of the
+`round.json` the frames were rendered for, and one record per frame: `key` (the file stem),
+`variant`, `storyId`, `theme` (`light` or `dark`, as it applied on `<html>`), `viewport`
+(`{width, height}`), `file` (relative to the round directory) and `sha256` of the PNG. A variant
+whose `globals.theme` did not apply is an error, never a frame in the other theme. Image
+variants are already static files beside the round and are not copied. Frames are rendered
+only when the contrast gate passes, after `contrast.json` and before `round.json`; a refused
+build writes none. A render is staged in a sibling directory and swapped in for `frames/`
+only when every frame passes, so a failed render (a theme that did not apply, a story that
+throws, a browser that dies) leaves the previous frames and `frames.json` exactly as they
+were, and a successful one leaves no file an earlier render wrote.
+
+The renderer is the harness's package-local subpath export (the harness is `private`, so the
+export resolves inside this workspace, not from npm):
+
+```ts
+import { renderFrames } from '@titan-design/review-harness/frames'
+
+const index = await renderFrames(manifest, 'http://127.0.0.1:6100', {
+  roundsDir: '/path/to/rounds', // frames go under <roundsDir>/<roundId>/frames/
+  roundId: 'td-752-fixture',
+  manifestSha256, // optional, recorded in the index
+})
+```
+
+`manifest` is a parsed `round@2` (`RoundSchema` or `ManifestSchema` from
+`@titan-design/review-schema`). No server is started: the renderer needs only a Storybook on a
+loopback host (any other host is refused before anything is read) and headless Chromium at 2x,
+the same shooter as the post-submit capture. The contrast gate shares its story loading
+(`renderStory`, `STORY_ROOT`) but opens its own 1x page. It refuses a story the Storybook does
+not serve before a browser opens, naming each missing id. `frameKey(variant, width)` gives a
+frame's stem, `framesDir(roundsDir, roundId)` its directory, and `readFramesIndex(dir)` reads
+an index back. The `open` and `storyIds` options inject the browser and the story list for
+tests. Errors are `FrameRenderError`, which the CLI reports as a usage error (exit 2).
+
 ## Calibration
 
 `titan-review calibration <feedback.json...>` reads feedback files and prints how often the
 owner's answer matched the recommendation: one row per round, the overall rate, and the rate
 per confidence band (`<0.5`, `0.5-0.75`, `>=0.75`). An answer counts only when it has both a
-recommendation and an owner's answer.
+recommendation and an owner's answer. Every rate counts blind answers only (no
+`recommendationSeen`); a round row says how many seen answers it left out, and Overall adds the
+seen answers' own rate. Feedback written before the tag has none, so it counts as blind.
+
+## Lock footprint (TD-808)
+
+`titan-review locks footprint <pr>` prints what a PR head changes, as the `footprint` of a
+`titan-locks/1` lock (`LockFootprintSchema` in review-schema). It reads through `gh` and `git`
+only and writes nothing; the registry is never touched.
+
+```sh
+pnpm review locks footprint 800                     # gh pr view, then fetch base and refs/pull/800/head
+pnpm review locks footprint --base origin/main --head <sha>   # offline: no gh, no fetch
+            [--repo <path>]                         # the checkout to read (default: this one)
+```
+
+The diff is `merge-base(base, head)..head`; `derivedFrom` records both shas, `mainSha` being
+the merge-base. The output has:
+
+- `tokens`: every custom property of `packages/ui/src/theme/global.css` whose value differs,
+  per mode. The `:root` block is `dark` and the `.light` block is `light`; a token that moves in
+  one mode only is listed once. `name` is the token: `surface-raised` for
+  `--color-surface-raised`, and the property without its dashes for any other
+  (`space-inset-md`). `from` and `to` are the CSS values; an added token has only `to`, a
+  removed one only `from`. Comments and spacing never count as a change.
+- `files`: every changed path, sorted.
+- `components.direct`: the changed files that are component sources, that is `.ts` or `.tsx`
+  under `packages/ui/src/components/` that are not tests, type tests, stories, snapshots or type
+  stubs.
+- `components.readers`: every other component source that reads a changed property, plus every
+  source that imports a `direct` file, transitively (wrapped import clauses included). The
+  import closure is keyed by file, so two components that share a name never merge.
+- `components.rendersCount`: the size of the reverse import closure over `direct` and
+  `readers` together, which is where frames render.
+
+**What counts as a read.** The classes come from the head's `packages/ui/tailwind.config.js`,
+not from a guess: the command loads the config in a bare sandbox (`require` returns an empty
+object, so presets and plugins never load) and takes every `theme` and `theme.extend` entry whose
+value reads a `var(--…)`, `DEFAULT` keys and entries built in code included. Each entry gives a
+class stem under its theme key, and the theme key gives its Tailwind utilities, so
+`--color-hairline-default` is read by `border-hairline` or `divide-hairline`, `--space-inset-md`
+by `p-inset-md`, `gap-inset-md` or `-mt-inset-md`, and `--size-control-md` by `h-control-md` or
+`min-h-control-md`, each under any variant prefix (`web:hover:`, `[.light_&]:`). A stem never
+matches a longer one (`text-secondary` and `text-brand-secondary`; `border-hairline` and
+`border-hairline-subtle`). Two more forms count: a raw `var(--property)` anywhere in the source,
+and, for a colour, the token name as a string literal (`resolveColor('surface-raised')`). A head
+without the config is refused, since readers would be silently incomplete.
+
+Limits that remain: a token composed at runtime (`` `bg-${tone}` ``, a name built from parts) is
+not found; a theme key the utility table does not know (`src/tailwind-theme.ts`) is matched by
+any utility, which over-reports rather than under-reports; and only
+`packages/ui/src/components/` is read, so a change under `src/hooks`, `src/utils` or `src/theme`
+shows in `files` and `tokens`, not in `direct`, and reaches no component through the closure.
+
+The core is pure (`src/locks-footprint.ts`, given both CSS texts, the theme entries, the changed
+paths and a map of sources) and the tests run on fixtures under `test/fixtures/locks/` with git
+and gh faked; `test/tailwind-theme.test.ts` also reads the real config, so a config shape the
+loader cannot follow fails there first.
+
+## Lock sync (TD-813)
+
+`titan-review locks sync` reads every open lock that has holders, asks `gh pr view` about each
+holder PR and each dependent of that lock, and prints what changed. It runs none of the commands
+it prints and never writes the registry; a coordinator makes the edits and runs the commands.
+
+```sh
+pnpm review locks sync --registry <locks.json>      # or set TITAN_LOCKS_REGISTRY
+            [--repo <path>]                         # the checkout gh and git run in
+            [--json]                                # the report as JSON
+```
+
+Per holder, one of:
+
+- **merged**: when every holder has merged or closed and at least one merged, the lock goes
+  `open -> merged` with `mergeSha` and `closedAt` from the last merge. Each open `stack-on`
+  dependent still based on the holder's branch gets `gh pr edit <n> --base <the holder's base>`,
+  and every open `stack-on` dependent gets `titan-factory shepherd release <repo>#<n>`. A `defer`
+  dependent is noted as re-entering.
+- **closed**: when every holder closed unmerged, the lock goes `open -> released`. A stacked
+  dependent needs a rebase onto the holder's base first, which only its seat can do, so the
+  retarget and release are printed as a note, not as commands.
+- **new head**: the footprint is re-derived at the new head (as `locks footprint <pr>` does), and
+  so is each open dependent's. Each dependent is listed with what it shares with the new
+  footprint: files, tokens, and readers it edits. `[changed]` marks a dependent whose overlap
+  differs from the one the registry's footprint and `touches` give. A dependent's diff starts
+  at whichever of its base, the holder's recorded head and its new head leaves it the fewest
+  commits. A dependent stacked on the holder's recorded head may share two best merge-bases
+  with the moved holder (that head, and a main tip both merged in); `git merge-base` names
+  either, and naming main would hand the dependent the holder's whole diff. A dependent that
+  merged main in after stacking still shows main's later changes in its files.
+- **unchanged**: listed, nothing to do.
+
+The pure core is `src/locks-sync.ts` (`planSync`, `formatSync`); `lockSync` in `src/locks.ts`
+does the reads. Tests fake gh and git and assert no call writes.
+
+## Lock check (TD-814)
+
+`titan-review locks check` is the dispatch check: before a seat spawns an implementer, it gives
+the planned files and tokens and gets an exit code and advice to paste into the brief.
+
+```sh
+pnpm review locks check --registry <locks.json> \
+  --files 'packages/ui/src/components/ui/select/**' --tokens surface-base/light,text-secondary
+```
+
+`--files` takes paths or globs (`**` crosses directories, `*` and `?` do not); `--tokens` takes
+`name/light`, `name/dark`, or a bare name for both modes. Both are comma-separated and
+repeatable. Only `open` locks count. A lock's surface is its footprint's `files` and
+`components.direct`, its `touches.components`, and the tokens of both; a lock's token may name a
+family (`*-subtle`, `tint-{hue}-solid / on-tint-{hue}`).
+
+| exit | verdict    | when                                                                                                                                         |
+| ---- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0    | `clear`    | no open lock's surface is touched. A plan that edits only a lock's `components.readers` is clear, with a note that it renders under the lock |
+| 10   | `stack-on` | every lock touched has holders, and they are all one PR: the advice names its branch and head                                                |
+| 11   | `defer`    | a touched lock has no holder, or the touched locks are held by different PRs                                                                 |
+
+A lock with no holder is a decision only. The plan defers on it and the advice says not to
+re-ask the decision; if the task is the one that implements it, file it as the lock's holder.
+For example:
+
+```text
+Stack on #101 (branch feat/planes, lock L-0001): branch from feat/planes at aaaaaaa and open the
+PR with --base feat/planes; it retargets to main when #101 merges. Overlap: L-0001 on tokens
+text-secondary/light.
+```
+
+`--json` prints the verdict, the holder, the conflicts and render overlaps, and the advice. A
+usage error (no plan, a bad mode, no registry) exits 2. The pure core is `src/locks-check.ts`.
+
+## Build with locks (TD-810)
+
+`build --locks [<locks.json>]` is the authority: `locks check` advises dispatch, but the round
+builder refuses a round rendered on a state a lock supersedes. Bare `--locks` reads
+`$TITAN_LOCKS_REGISTRY`; give the flag after the draft. Without `--locks`, `build` is unchanged.
+
+```sh
+pnpm review build <round-dir>/draft.json --tree <path> --locks <locks.json>
+```
+
+The draft is read as a plan for `lockConflicts` in review-schema:
+
+- **Items.** Each `prGroups` entry is a PR at its `headSha`, rendered on its `stackedOn.headSha`
+  when it has one and on its own head otherwise; a Ship-bound PR with no group is an item too. An
+  item's touches are its head's footprint (`locks footprint --base origin/main --head <sha>`, read
+  in `--tree`, so `--locks` needs `--tree` whenever the draft holds a PR) plus the `touches` of the
+  questions on its page.
+- **Questions.** A question on no PR page declares what its answer decides as
+  `touches: { tokens: [{ name, mode? }], components?, axis? }`. One that declares nothing (other
+  than a `text` question) is not checked and prints a warning, so earlier drafts still build.
+- **Ships.** Each earlier round's Ship answers (the files the Ship gate reads) for the PRs the draft
+  holds, in round order, then the draft's own Ship asks. A PR the draft drops is not checked.
+
+`build` exits 3, writing no `round.json`, and prints the problems as lint problems print (one
+`<rule>: <message>` line each) for `superseded-state` (an item edits a locked token of an open
+lock it does not hold, on a base without the holder head: stack it on the holder or defer it),
+`lock-order`, `re-ask` and `stale-ship` from review-schema, and for its own `lock-head-missing`:
+an item overlaps an open lock (a locked token, or a changed file that is a locked file or a
+reader of a locked token) and a holder head of that lock is not an ancestor of the tree's HEAD, by
+the same `git merge-base --is-ancestor` test as the bound heads. A lock an item holds, or one
+that comes `after` a lock it holds, does not bind it: a holder renders before the decisions
+downstream of its own. A stale Ship is cured by asking Ship again at the planned head.
+
+Two more builder rules apply, before the layout lint, and applying them twice changes nothing
+(`src/locks-build.ts`):
+
+- **Holders first.** Sections about a PR that holds an open lock come first, in the registry's
+  `after` order, each group whole; every other section keeps its order.
+- **Render labels.** Every frame of an item that overlaps an open lock it does not hold is labelled
+  `rendered with decided #n: ` with the lock's holder PRs, so the page says which decided change
+  the frame shows. A lock with no holder adds no label.
+
+## The review contract (TD-670)
+
+`serve` and `build` refuse a round that does not meet it, naming the section or question and
+the field. The page still renders an older `round@1` file, but the CLI refuses to serve one.
+
+- **Every section says three things.** `deciding`: what this section asks the owner to decide.
+  `changed`: the diff against the last approved state. `context`: what is shown for context
+  only and is out of scope. The page shows deciding first, then changed, with context set back
+  as secondary. A frame that did not change belongs in `context`, not in `changed`.
+- **Every strip has a kind.** A section with frames sets `kind`. `CHOICE`: the frames differ
+  only in the property being decided. The harness refuses a CHOICE strip whose frames differ in
+  a frame setting the manifest records (`height`, `globals`, image or live story) or whose
+  image captures differ in pixel width. `STATES`: one design shown in several states. It asks
+  no choice, so none of its questions picks a frame.
+- **Every pick-one names what it signs off.** `signsOff` names the changed part an answer
+  approves. A prompt, option or `signsOff` that is only a blanket phrase such as "sign off as
+  built" is refused. A question's options are its own: none repeats within it, and no prose
+  option repeats another pick-one's (variant keys excepted).
 
 ## Writing a sectioned round (VW-530)
 
-Without `sections` the page renders exactly as it always has: all frames, then all questions.
-With them, it renders group by group, each group's QUESTION FIRST and then the frames that
+A round renders group by group, each group's QUESTION FIRST and then the frames that
 answer it, so the human knows what he is being asked before he looks.
 
 ```json
 {
-  "schema": "titan-review/round@1",
+  "schema": "titan-review/round@2",
   "unit": "vw-455-whole-body",
   "round": 4,
   "storybookUrl": "http://127.0.0.1:6107",
@@ -241,20 +866,15 @@ answer it, so the human knows what he is being asked before he looks.
       "kind": "pick-one",
       "prompt": "How long is the rate line?",
       "options": ["R-pct", "R-word"],
+      "signsOff": "the rate line's length",
       "required": true
     },
     {
       "id": "alignment",
       "kind": "pick-one",
       "prompt": "Do the two cards end level?",
-      "options": ["Right", "No, see my comments"],
-      "required": true
-    },
-    {
-      "id": "sign-off",
-      "kind": "pick-one",
-      "prompt": "Round outcome",
-      "options": ["Lock it", "Another round"],
+      "options": ["The cards end level", "Not level, see my comments"],
+      "signsOff": "how the two cards align on the page",
       "required": true
     }
   ],
@@ -262,13 +882,20 @@ answer it, so the human knows what he is being asked before he looks.
     {
       "id": "rate",
       "title": "How long is the rate line?",
+      "deciding": "Which rate line the card keeps.",
+      "changed": "The rate line gains a verdict word; R-pct is the approved line.",
       "context": "Same card, two lengths. Your comment on a card lands on this question too.",
+      "kind": "CHOICE",
       "questionIds": ["rate-length"],
       "variantKeys": ["R-pct", "R-word"]
     },
     {
       "id": "page",
       "title": "The two cards on the page",
+      "deciding": "Whether the two cards end level.",
+      "changed": "Nothing in the page layout; the card heights change with the rate line.",
+      "context": "The header and the rest of the page are not under review.",
+      "kind": "STATES",
       "questionIds": ["alignment"],
       "variantKeys": ["Page"],
       "seeAlso": ["R-pct"]
@@ -286,16 +913,28 @@ Rules worth knowing:
 - **A comment on a frame reaches the question.** It is still written on the variant, and it is
   repeated under the section's answers as `variantComments`, so nothing has to be retyped or
   moved. This is why the frames belong under their question rather than in one long wall.
-- **Leftovers have a home.** A variant in no section renders under "Other frames"; a question in
-  no section renders under "Overall", which is where sign-off belongs.
+- **Leftovers have a home.** A question in no section renders under "Overall". A variant in no
+  section is refused: every frame belongs to a strip.
 - **One frame per section.** A frame that also bears on another group goes in that group's
   `seeAlso`, which renders a link to it instead of a second iframe. Validation refuses a variant
   or question claimed by two sections, and refuses an unknown key with the id in the message.
-- **Sections are optional.** A round that does not need them should not have them.
-- **Sections page a big round (TD-343).** A round without sections shows every frame on one
-  page and is capped at 12 variants. A round with sections shows one section at a time, so it
-  takes up to 80, for example one Gate 2 batch of main and PR-head frames in light and dark.
-  The page order is the sections, then "Other frames", then "Overall" with the general note.
+- **A question sits under its own frames (TD-794).** `frames` on a question names the variant
+  keys it asks about. The page renders those frames, then the question, as one block, so a
+  decision is never read away from what it decides. A section reads top to bottom: questions
+  without `frames`, the strip of frames no question names, each question under its `frames`,
+  then the section's Ship question. Every key in `frames` must be a frame of the question's own
+  section, and a frame sits above one question only; `lintRound` refuses anything else, naming
+  the question, the frame and the section it is in. A STATES strip may hold a question that
+  picks among its own `frames`, and a CHOICE strip holds settings constant within each
+  question's `frames` (then among the frames no question names), not across the whole strip.
+- **Sections page a big round (TD-343, TD-794).** A round without sections shows every frame on
+  one page and is capped at 12 variants. A round with sections shows one page at a time and is
+  not capped: frames mount only as they near the viewport, so the round's size does not bound
+  what is on screen. (The old cap of 80 was sized for one Gate 2 batch, not a limit of the page.)
+  Consecutive sections about one PR (by their questions' `page`, else a leading `#n` in the
+  title, as the builder groups them) share a page, so a PR's frames, its picks and its Ship are
+  read together. The page order is those pages, then "Other frames", then "Overall" with the
+  general note.
   A `seeAlso` link pages to the section that holds that frame. `feedback.json` is unchanged.
 
 ### Heights
@@ -343,10 +982,12 @@ own text field keeps its typing, except `Cmd+Enter`.
 
 ## Tests
 
-- `pnpm --filter @titan-design/review-harness test`: schemas, feedback building, the
+- `pnpm --filter @titan-design/review-harness test`: schemas, feedback building, the harness
+  freshness gate (git mocked; equal, behind and offline), the
   keyboard model, the section layout and the pick-to-verdict link, the fitted-height maths,
   the page's markup for a sectioned and an unsectioned round (`react-dom/server`), section
-  paging over a 60-frame image round, and the
+  paging over a 60-frame image round, each refusal of the review contract
+  (`test/contract.test.ts`), and the
   server's proxy, submit and exit paths against a fake Storybook. `test/fixtures/rounds/`
   holds four real rounds, copied verbatim, that must keep parsing.
 - `pnpm --filter @titan-design/review-harness test:e2e`: a real isolated Storybook (or
