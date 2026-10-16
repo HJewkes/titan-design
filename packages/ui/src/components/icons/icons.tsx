@@ -1,6 +1,7 @@
 import { SvgIcon, type IconProps } from './SvgIcon'
 
 export { SearchIcon, DatabaseIcon, ChartIcon } from './consoleIcons'
+export { CheckMark } from './CheckMark'
 export { CircleCheckIcon, OctagonXIcon, CircleDashedIcon } from './statusIcons'
 
 /**

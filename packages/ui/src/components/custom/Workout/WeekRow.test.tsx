@@ -41,6 +41,25 @@ describe('WeekRow', () => {
       expect(screen.getByTestId('week-row-number')).toHaveTextContent('W1')
     })
 
+    it('marks a completed workout with an SVG check and a missed one with a dash', () => {
+      render(
+        <WeekRow
+          weekNumber={2}
+          totalWeeks={4}
+          intensityLevel={0.5}
+          workouts={[
+            { name: 'Upper', status: 'completed' },
+            { name: 'Lower', status: 'missed' },
+            { name: 'Pull', status: 'upcoming' },
+          ]}
+        />
+      )
+      expect(screen.queryByText('\u2713')).toBeNull()
+      expect(screen.getByTestId('workout-pill-check').querySelector('svg')).not.toBeNull()
+      expect(screen.getByTestId('workout-pill-dash')).toHaveTextContent('\u2014')
+      expect(screen.getAllByTestId('workout-pill-check')).toHaveLength(1)
+    })
+
     it('renders a workout pill for each workout', () => {
       render(<WeekRow {...baseProps} />)
       expect(screen.getAllByTestId('workout-pill')).toHaveLength(3)
